@@ -8,6 +8,7 @@ import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.util.CollectionUtilities;
+import com.garretwilson.util.Debug;
 import com.garretwilson.util.IdentityHashSet;
 import com.garretwilson.util.LocaleUtilities;
 import org.w3c.dom.*;

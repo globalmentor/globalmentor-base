@@ -29,7 +29,7 @@ public class Outcome extends TypedRDFResource implements MAQROConstants
 	*/
 	public Outcome(final Interaction interaction)
 	{
-		this();	//construct the class
+		this();	//construct the parent class
 		setInteraction(interaction);	//set the interaction
 	}
 	

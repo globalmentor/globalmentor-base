@@ -336,8 +336,17 @@ public class URIUtilities
 		 */
 	}
 
-
-
+	/**Creates a URN in the form <code>urn:<var>nid</var>:nss</code>.
+	@param nid The namespace identifier.
+	@param nss The namespace-specific string.
+	@return A URN based upon the given parameters.
+	@see http://www.ietf.org/rfc/rfc2141.txt
+	@throws  IllegalArgumentException if the resulting string violates RFC&nbsp;2396.
+	*/
+	public static URI createURN(final String nid, final String nss)
+	{
+		return URI.create(URN_SCHEME+SCHEME_SEPARATOR+nid+SCHEME_SEPARATOR+nss);	//construct and return the URN
+	}
 
 	/**Creates a URI from the given URI string relative to the given context object.
 	@param contextObject The source context, such as a URL, a URI, a File, or <code>null</code> if

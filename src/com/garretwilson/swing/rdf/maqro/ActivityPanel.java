@@ -18,6 +18,7 @@ import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.DCUtilities;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
+import static com.garretwilson.util.UUIDUtilities.*;
 import com.globalmentor.mentoract.activity.maqro.*;
 
 import org.w3c.dom.*;
@@ -389,7 +390,7 @@ public class ActivityPanel extends RDFPanel
 		 */
 		protected Object createItem() throws InstantiationException, IllegalAccessException
 		{
-			return new Question();
+			return new Question(toURI(UUID.randomUUID()));	//create a question with a random UUID URI
 		}
 
 		/**Edits an object from the list.

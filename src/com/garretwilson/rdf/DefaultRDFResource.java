@@ -556,6 +556,9 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	@return The hash code of the reference URI, or the number of properties if
 		this resource has no reference URI.
 	*/
+/*TODO important find out if we need this, and what will work best; this may have been added so that RDF resources would work well in hash maps, and this may have been required
+for some reason, this method as listed is crucial for determining if two resources with values of boolean:true are equal; find out why this hack fixes that, and what should be done to make it work
+*/ 
 	public int hashCode()
 	{
 		return getReferenceURI()!=null ? super.hashCode() : getPropertyCount();	//return the normal hash code if we have a reference URI, or the number of properties if we have no reference URI 
@@ -642,7 +645,6 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		final RDFLiteral value=RDFUtilities.getValue(this);	//get the value property, if any
 		if(getReferenceURI()!=null || value==null)	//if we have a reference URI and/or no value
 		{
-
 			stringBuffer.append(new RDFXMLifier().getLabel(this));	//start with the default string TODO fix with a common RDFXMLifier
 //G***testing			stringBuffer.append(super.toString());	//start with the default string
 		}
@@ -654,7 +656,14 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 			}
 			stringBuffer.append(value.getLexicalForm());	//append the lexical form of the resource
 		}
-		return stringBuffer.toString();	//return the string we constructed
+		if(stringBuffer.length()>0)	//if we've gathered anything at all
+		{
+			return stringBuffer.toString();	//return the string we constructed
+		}
+		else	//if we have nothing to return
+		{
+			return super.toString();	//return the default representation
+		}
 	}
 
 }
