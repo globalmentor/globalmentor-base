@@ -179,19 +179,21 @@ public class Name
 	public String toString()
 	{
 		final StringBuffer stringBuffer=new StringBuffer();	//create a new string buffer to hold the string we'll construct
-		StringBufferUtilities.append(stringBuffer, honorificPrefixes, '/');	//append the honorific prefixes, separated by a slash
+		StringBufferUtilities.append(stringBuffer, honorificPrefixes, ',');	//append the honorific prefixes, separated by a comma
 		if(honorificPrefixes.length>0 && (givenNames.length>0 || additionalNames.length>0 || familyNames.length>0 || honorificSuffixes.length>0))	//if we added information and there is more information following
 			stringBuffer.append(' ');	//append a space
 		StringBufferUtilities.append(stringBuffer, givenNames, '/');	//append the given names, separated by a slash
 		if(givenNames.length>0 && (additionalNames.length>0 || familyNames.length>0 || honorificSuffixes.length>0))	//if we added information and there is more information following
 			stringBuffer.append(' ');	//append a space
-		StringBufferUtilities.append(stringBuffer, additionalNames, '/');	//append the additional names, separated by a slash
+		StringBufferUtilities.append(stringBuffer, additionalNames, ", ");	//append the additional names, separated by a comma
 		if(additionalNames.length>0 && (familyNames.length>0 || honorificSuffixes.length>0))	//if we added information and there is more information following
 			stringBuffer.append(' ');	//append a space
 		StringBufferUtilities.append(stringBuffer, familyNames, '/');	//append the family names, separated by a slash
+		if(stringBuffer.length()>0 && honorificSuffixes.length>0)	//if we have any content before the suffixes, and there are suffixes
+			stringBuffer.append(',');		//add a comma before the suffixes
 		if(familyNames.length>0 && (honorificSuffixes.length>0))	//if we added information and there is more information following
 			stringBuffer.append(' ');	//append a space
-		StringBufferUtilities.append(stringBuffer, honorificSuffixes, '/');	//append the honorific suffixes, separated by a slash
+		StringBufferUtilities.append(stringBuffer, honorificSuffixes, ", ");	//append the honorific suffixes, separated by a comma
 		return stringBuffer.toString();	//return the string we constructed
 	}
 }
