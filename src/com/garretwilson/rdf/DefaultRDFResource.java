@@ -320,7 +320,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		and identical properties. Properties themselves are not cloned.
 	@param resource The resource to copy.
 	*/
-	DefaultRDFResource(final RDFResource resource)
+	DefaultRDFResource(final RDFResource resource)	//TODO delete this constructor when we can, now that we can simply change the reference URI at any time
 	{
 		super(resource.getReferenceURI());  //construct the parent class with the reference URI
 		namespaceURI=resource.getNamespaceURI(); //copy the namespace URI
@@ -332,7 +332,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	/**Default constructor that creates a resource without a reference URI.
 	@see RDF#createResource
 	*/
-	protected DefaultRDFResource()
+	public DefaultRDFResource()
 	{
 		this((URI)null);	//create a resource without a reference URI
 	}
@@ -341,7 +341,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	@param referenceURI The reference URI for the new resource.
 	@see RDF#createResource
 	*/
-	protected DefaultRDFResource(final URI referenceURI)
+	public DefaultRDFResource(final URI referenceURI)
 	{
 		super(referenceURI);  //construct the parent class with the reference URI
 		namespaceURI=null;  //show that there is no namespace URI

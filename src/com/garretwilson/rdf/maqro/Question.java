@@ -45,6 +45,15 @@ public class Question extends DefaultRDFResource implements MAQROConstants, Inte
 		RDFUtilities.setProperty(rdf, this, MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME, query);	//store the query
 	}
 
+	/**Adds a choice to the question.
+	@param choice The choice to add.
+	*/
+	public void addChoice(final RDFResource choice)
+	{
+		final RDF rdf=new RDF();	//TODO fix the data model
+		RDFUtilities.addProperty(rdf, this, MAQRO_NAMESPACE_URI, CHOICE_PROPERTY_NAME, choice);	//add the choice to the question
+	}
+
 	/**@return An iterator to choices, if any, of the question.*/
 	public Iterator getChoiceIterator()
 	{
