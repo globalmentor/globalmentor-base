@@ -21,7 +21,7 @@ import org.w3c.dom.*;
 /**Class which parses an input stream containing an OEB publication.
 @see XMLProcessor
 */
-public class OEBPackageProcessor implements OEBConstants, OEB2Constants, DCConstants, ResourceFactory
+public class OEBPackageProcessor implements OEBConstants, OEB2Constants, DCConstants, RDFResourceFactory
 {
 
 	/**The XML processor for parsing an OEB package description document.*/
