@@ -244,7 +244,10 @@ public class QuestionPanel extends TabbedViewPanel
 					if(queryAnswerPanel.requireAllCheckBox.isSelected())	//see if we should require all the answers
 					{
 						final RDFListResource answerList=new RDFListResource();	//create an empty list for the answers
-						CollectionUtilities.addAll(answerList, answers);	//add all the selected answers to the answer list
+						for(Object object:answers)	//look at each answer
+						{
+							answerList.add((RDFResource)object);	//add each answer to our answer list
+						}
 						question.addAnswer(answerList);	//add the list of answers to the question
 					}
 					else	//if we shouldn't require all the answers
