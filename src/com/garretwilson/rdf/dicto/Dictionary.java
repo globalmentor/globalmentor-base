@@ -1,7 +1,9 @@
 package com.garretwilson.rdf.dicto;
 
 import java.net.URI;
+import java.util.Locale;
 import com.garretwilson.rdf.*;
+import com.garretwilson.rdf.dublincore.DCUtilities;
 
 /**Class representing a Dictionary Ontology (Dicto) dictionary.
 @author Garret Wilson
@@ -29,6 +31,23 @@ public class Dictionary extends DefaultRDFResource implements DictoConstants
 	public RDFListResource getEntries()
 	{
 		return (RDFListResource)getPropertyValue(DICTO_NAMESPACE_URI, ENTRIES_PROPERTY_NAME);	//get the dicto:entries property value		
+	}
+
+	/**@return The language of the dictionary entries, or <code>null</code> if
+		dictionary language is not indicated.
+	*/
+	public Locale getDictionaryLanguage()
+	{
+		return DictoUtilities.getLanguage(this);	//return the dictionary language
+	}
+
+	/**@return The language of any translations, or <code>null</code> if
+		no translation language is indicated. If there are no translations, this
+		property should return the same as <code>getDictionaryLanguage()</code>.
+	*/
+	public Locale getLanguage()
+	{
+		return DCUtilities.getLanguage(this);	//return the language
 	}
 
 }

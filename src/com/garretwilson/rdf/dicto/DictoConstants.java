@@ -22,6 +22,8 @@ public interface DictoConstants
 		//Dicto property names
 	/**The form of an entry. The local name of dicto:form.*/
 //G***del if not needed	public final static String FORM_PROPERTY_NAME="form";
+	/**The definition of an entry. The local name of dicto:definition.*/
+	public final static String DEFINITION_PROPERTY_NAME="definition";
 	/**The entries of a dictionary. The local name of dicto:entries.*/
 	public final static String ENTRIES_PROPERTY_NAME="entries";
 	/**The source language of a dictionary. The local name of dicto:language.*/

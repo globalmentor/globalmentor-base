@@ -348,41 +348,13 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		localName=null; //show that there is no local name
 	}
 
-	/**Constructs a standalone copy of a resource with a different another
-		reference URI. All properties are copied but none are cloned.
-		<p>Note that if the original resource is part of a larger RDF data model,
-		inconsistencies may occur because both own the same properties.</p>
-	@param resource The resource from which to create the duplicate.
-	@param newReferenceURI The reference URI for the new resource.
-//G***del when works	@exception IllegalArgumentException Thrown if the provided reference URI is
-//G***del when works		<code>null</code>.
-	@see RDF#createResource
-	*/
-/*G***del when not needed
-	public DefaultRDFResource(final RDFResource rdfResource, final URI newReferenceURI) //G***del when works throws IllegalArgumentException
-	{
-		this(newReferenceURI);  //create a new resource with the given URI
-		CollectionUtilities.addAll(propertyList, rdfResource.getPropertyIterator()); //add all the property values from the resource being copied
-	}
-*/
-
-	/**Constructs a resource from a reference URI.
-	@param newReferenceURI The reference URI for the new resource.
-	*/
-/*G***del
-	public Resource(final String newReferenceURI)
-	{
-		this(newReferenceURI, null);  //construct a resource with no anchor ID
-	}
-*/
-
 	/**Convenience constructor that constructs a resource using a namespace URI
 		and local name which will be combined to form the reference URI.
 	@param newNamespaceURI The XML namespace URI used in the serialization.
 	@param newLocalName The XML local name used in the serialization.
 	@see RDF#createResource
 	*/
-	protected DefaultRDFResource(final URI newNamespaceURI, final String newLocalName)
+	public DefaultRDFResource(final URI newNamespaceURI, final String newLocalName)
 	{
 		this(RDFUtilities.createReferenceURI(newNamespaceURI, newLocalName));  //do the default construction, combining the namespace URI and the local name for the reference URI
 		namespaceURI=newNamespaceURI; //store the namespace URI
