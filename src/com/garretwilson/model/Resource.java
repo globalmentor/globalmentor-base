@@ -7,7 +7,7 @@ import com.garretwilson.util.IDable;
 /**Represents a generic resource with an identifying reference URI.
 @author Garret Wilson
 */
-public interface Resource extends Model, IDable<URI>	//G***del if not needed extends Comparable
+public interface Resource extends IDable<URI>	//G***del if not needed extends Comparable
 {
 
 	/**@return The resource identifier URI, or <code>null</code> if the identifier is not known.*/

@@ -9,7 +9,7 @@ import com.garretwilson.io.URIAccessible;
 @author GarretWilson
 @see com.garretwilson.util.Modifiable
 */
-public interface ViewIOKit<M extends Model> extends URIAccessible
+public interface ViewIOKit<M> extends URIAccessible
 {
 
 	/**Loads data into a view from a given URI.

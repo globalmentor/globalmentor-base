@@ -9,7 +9,7 @@ import com.garretwilson.io.*;
 @author GarretWilson
 @see com.garretwilson.util.Modifiable
 */
-public abstract class AbstractViewIOKit<M extends Model> extends DefaultURIAccessible implements ViewIOKit<M>
+public abstract class AbstractViewIOKit<M> extends DefaultURIAccessible implements ViewIOKit<M>
 {
 
 	/**Default constructor.*/

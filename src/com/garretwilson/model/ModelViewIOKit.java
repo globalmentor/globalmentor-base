@@ -11,7 +11,7 @@ import com.garretwilson.util.Modifiable;
 @author GarretWilson
 @see ModelIOKit
 */
-public class ModelViewIOKit<M extends Model> extends AbstractViewIOKit<M>
+public class ModelViewIOKit<M> extends AbstractViewIOKit<M>
 {
 
 	/**The implementation for loading and saving the model.*/
