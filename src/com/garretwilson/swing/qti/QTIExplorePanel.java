@@ -22,8 +22,6 @@ import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.util.*;
-import org.doomdark.uuid.*;
-import org.doomdark.uuid.UUID;	//TODO convert to Java's UUID if possible
 import org.w3c.dom.*;
 
 /**Panel for exploring a QTI data model in a tree+panel view.
@@ -362,9 +360,14 @@ Debug.trace("asking new item"); //G***del
 			if(response!=null)  //if we got a response
 			{
 				final Presentation presentation=new Presentation("", response);  //create presentation with the given reseponse
+/*G***del org.doomdark.uuid.UUID version when new Java 5.0 version works
 //G***del				final UUID uuid=UUIDGenerator.getInstance().generateTimeBasedUUID();  //create a new UUID
 				final UUID uuid=UUIDGenerator.getInstance().generateRandomBasedUUID();  //create a new UUID
 				final String ident="uuid:"+uuid.toString(); //create a UUID URI for the ID G***use a constant; fix better
+*/
+				final UUID uuid=UUID.randomUUID();  //create a new UUID
+				final String ident="uuid:"+uuid.toString(); //create a UUID URI for the ID G***use a constant; fix better
+				
 				final Item item=new Item(ident, presentation); //create an item with the presentation
 				return editItem(item);  //edit the item and return the edited item
 /*G***del when works
