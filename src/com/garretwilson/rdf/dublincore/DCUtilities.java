@@ -183,4 +183,14 @@ public class DCUtilities implements DCConstants
 		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME);
 	}
 
+	/**Returns the value of the first <code>dc:rights</code> property.
+	@param resource The resource the property of which should be located.
+	@return The value of the first <code>dc:rights</code> property, or
+		<code>null</code> if no such property exists.
+	*/
+	public static RDFObject getRights(final RDFResource resource)
+	{
+		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_RIGHTS_PROPERTY_NAME);
+	}
+
 }

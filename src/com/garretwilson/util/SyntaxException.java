@@ -61,7 +61,10 @@ public class SyntaxException extends Exception
 	public String getMessage()
 	{
 		final StringBuffer stringBuffer=new StringBuffer(this.getReason());	//create a string buffer with the reason
-		stringBuffer.append(':').append(' ').append(getInput());	//append the input
+		if(getInput()!=null && getInput().length()>0)	//if we know the input
+		{
+			stringBuffer.append(':').append(' ').append(getInput());	//append the input
+		}
 		if(getIndex()>=0)	//if we know the index
 		{
 			stringBuffer.append(" at index ").append(getIndex());	//append the index
