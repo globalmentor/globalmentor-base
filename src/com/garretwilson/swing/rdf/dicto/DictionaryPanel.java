@@ -338,6 +338,8 @@ public class DictionaryPanel extends RDFPanel
 				activityFrame.setVisible(true);	//show the activity frame
 				activityEngine.start();	//start the interaction
 */
+final ApplicationFrame activityFrame=new ApplicationFrame(activityPanel);	//construct a frame for the activity
+activityFrame.setVisible(true);	//show the activity frame
 			}
 		}
 	}

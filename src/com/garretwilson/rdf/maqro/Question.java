@@ -83,10 +83,38 @@ public class Question extends Interaction
 		this.setProperty(MAQRO_NAMESPACE_URI, EXPECT_PROPERTY_NAME, expect);	//set the expectation		
 	}
 
-	/**Adds an answer to the question.
+	/**Adds an explanation to the question.
+	@param explanation An explanation of the question.
+	*/
+	public void addExplanation(final Dialogue explanation)
+	{
+		addProperty(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME, explanation);	//add the explanation
+	}
+
+	/**@return An iterator to the explanations, if any, of the question.*/
+	public Iterator getExplanationIterator()
+	{
+		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME);	//return an iterator to the explanations 
+	}
+
+	/**Removes all answers from the question.*/
+	public void removeExplanations()
+	{
+		removeProperties(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME);	//remove all explanations
+	}
+
+	/**Adds an answer dialogue to the question.
 	@param answer A correct answer to the question.
 	*/
-	public void addAnswer(final RDFObject answer)
+	public void addAnswer(final Dialogue answer)
+	{
+		addProperty(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME, answer);	//add the correct answer
+	}
+
+	/**Adds an answer list to the question.
+	@param answerList A correct answer to the question.
+	*/
+	public void addAnswer(final RDFListResource answer)
 	{
 		addProperty(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME, answer);	//add the correct answer
 	}

@@ -65,6 +65,8 @@ public interface MAQROConstants
 	public final static String CHOICES_PROPERTY_NAME="choices";
 	/**The type of response a question expects. The local name of maqro:expect.*/
 	public final static String EXPECT_PROPERTY_NAME="expect";
+	/**An explanation of a question. The local name of maqro:explanation.*/
+	public final static String EXPLANATION_PROPERTY_NAME="explanation";
 	/**The minimum number of responses to accept. The local name of maqro:minResponseCount.*/
 	public final static String MIN_RESPONSE_COUNT_PROPERTY_NAME="minResponseCount";
 	/**The maximum number of responses to accept. The local name of maqro:maxResponseCount.*/

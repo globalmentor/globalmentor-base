@@ -3,7 +3,7 @@ package com.garretwilson.swing.rdf.maqro;
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 import javax.swing.*;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
@@ -108,7 +108,6 @@ public class ActivityPanel extends RDFPanel
 		interactAction=new InteractAction();	//create an action for interacting with the activity
 		book=new Book(1);	//create a new book for the WYSIWYG view, showing only one page
 		interactionSequencePanel=new InteractionSequencePanel();	//create a new interaction sequence panel
-//		interactionSequencePanel=new InteractionSequencePanel(model.getActivity()!=null ? model.getActivity().getInteractions() : null);	//G***make sure we want to possibly initialize without a list
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
 	}
@@ -146,20 +145,6 @@ public class ActivityPanel extends RDFPanel
 		{
 			model.getActivity().setInteractions(new RDFListResource());	//set a default list of interactions
 		}
-/*G***del when works
-			//get the interaction list, if there is one
-		final List interactionList=activityModel.getActivity()!=null && activityModel.getActivity().getInteractions()!=null ? activityModel.getActivity().getInteractions() : null;
-
-		final ListModel interactionListModel=interactionList!=null ? new ListListModel(interactionList) : null;	//create a list model, if we have a list of interactions
-		interactionSequencePanel.setListModel(interactionListModel);	//show the interactions in the list model
-		}
-		else if(((ListListModel)interactionSequencePanel.getListModel()).getList()!=model.getActivity().getInteractions())	//if the sequence panel isn't showing our interactions
-		{
-			interactionSequencePanel.setListModel(new ListListModel(model.getActivity().getInteractions()));	//create a list model from the interactions to show in the sequence panel
-		}
-*/
-//G***del when works		interactionSequencePanel.setListModel(new ListListModel(model.getActivity().getInteractions()));	//create a list model from the interactions to show in the sequence panel
-//G***del if not needed		interactionSequencePanel.setList(activityModel.getActivity()!=null ? activityModel.getActivity().getInteractions() : null);	//G***testing; fix
 			//if the sequence panel isn't showing any interactions or it's not showing our interactions
 		if(interactionSequencePanel.getListModel()==null || ((ListListModel)interactionSequencePanel.getListModel()).getList()!=model.getActivity().getInteractions())
 		{

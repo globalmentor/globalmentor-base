@@ -5,20 +5,15 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ItemListener;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.model.Resource;
-import com.garretwilson.rdf.DefaultRDFResource;
-import com.garretwilson.rdf.RDFConstants;
-import com.garretwilson.rdf.RDFListResource;
-import com.garretwilson.rdf.RDFObject;
+import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.BorderUtilities;
-import com.garretwilson.text.xml.schema.XMLSchemaConstants;
 import com.garretwilson.util.CollectionUtilities;
 
 /**Panel for editing a MAQRO question.
@@ -28,9 +23,11 @@ public class QuestionPanel extends TabbedViewPanel
 {
 	/**The view in which the query and choices and/or answers are shown.*/
 	public final static int QUERY_MODEL_VIEW=-1;
+	/**The view in which the explanations are shown.*/
+	public final static int EXPLANATION_MODEL_VIEW=-2;
 
 	/**The default model views supported by this panel.*/
-	private final int[] DEFAULT_SUPPORTED_MODEL_VIEWS=new int[]{QUERY_MODEL_VIEW};
+	private final int[] DEFAULT_SUPPORTED_MODEL_VIEWS=new int[]{QUERY_MODEL_VIEW, EXPLANATION_MODEL_VIEW};
 
 	/**The default default model view of this panel.*/
 	private final int DEFAULT_DEFAULT_MODEL_VIEW=QUERY_MODEL_VIEW;
@@ -52,6 +49,12 @@ public class QuestionPanel extends TabbedViewPanel
 	*/
 	public void setQuestionModel(final QuestionModel model) {setModel(model);}
 
+	private final JList explanationSwingList;
+	private final ListPanel explanationPanel;
+
+	/**The list of explanations for this question.*/
+	private final ListListModel explanationList;
+
 	/**Model constructor.
 	@param model The data model for which this component provides a view.
 	*/
@@ -70,6 +73,9 @@ public class QuestionPanel extends TabbedViewPanel
 		super(model, false);	//construct the parent class without initializing the panel
 		setSupportedModelViews(DEFAULT_SUPPORTED_MODEL_VIEWS);	//set the model views we support
 		setDefaultDataView(DEFAULT_DEFAULT_MODEL_VIEW);	//set the default data view
+		explanationList=new ListListModel(new ArrayList());	//create a list in which to store the explanations
+		explanationSwingList=new JList(explanationList);
+		explanationPanel=new ListPanel(explanationSwingList);
 		queryAnswerPanel=new QueryAnswerPanel();	//create the query/answer
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
@@ -81,12 +87,12 @@ public class QuestionPanel extends TabbedViewPanel
 		setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border
 		setTitle("Question");	//G***i18n
 		addView(QUERY_MODEL_VIEW, "Query and Response", IconResources.getIcon(IconResources.QUESTION_ICON_FILENAME), queryAnswerPanel);	//add the query view G***i18n
+		addView(EXPLANATION_MODEL_VIEW, "Explanations", IconResources.getIcon(IconResources.INFO_ICON_FILENAME), explanationPanel);	//add the explanation view G***i18n
 		super.initializeUI(); //do the default UI initialization
 		getTabbedPane().setTabPlacement(JTabbedPane.TOP);	//put the tabs on the top
-
-
-
-//G***del when works		queryAnswerPanel.addPropertyChangeListener(createModifyModifiedChangeListener());	//show that this panel is modified whenever the query/answer panel is modified 
+		explanationSwingList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	//only allow one explanation to be selected at a time
+		explanationPanel.setEditor(new ExplanationEditor());	//set the editor for explanations
+		explanationPanel.setEditable(true);	//allow the choices to be edited
 	}
 
 	/**Updates the states of the actions, including enabled/disabled status,
@@ -178,6 +184,12 @@ public class QuestionPanel extends TabbedViewPanel
 					}
 				}
 				break;
+			case EXPLANATION_MODEL_VIEW:	//if we're changing to the explanation view
+				if(question!=null)	//if there is a question
+				{			
+					explanationList.clear();	//clear the list of explanations
+					CollectionUtilities.addAll(explanationList, question.getExplanationIterator());	//add the explanations to the list
+				}
 		}
 	}
 
@@ -212,9 +224,9 @@ public class QuestionPanel extends TabbedViewPanel
 						for(int i=answers.length-1; i>=0; --i)	//look at each selected answer (order doesn't matter)
 						{
 							final Object answer=answers[i];	//get this answer
-							if(answer instanceof RDFObject)	//if this answer is an RDF object (it always should be)
+							if(answer instanceof Dialogue)	//if this answer is dialogue (it always should be)
 							{
-								question.addAnswer((RDFObject)answer);	//add this answer to the question
+								question.addAnswer((Dialogue)answer);	//add this answer to the question
 							}
 						}
 					}
@@ -232,6 +244,17 @@ public class QuestionPanel extends TabbedViewPanel
 				question.setMaxResponseCount(maxResponseCount);	//update the maximum responses allowed (which may remove the limit altogether)
 				model.setQuestion(question);	//put the question in the model, if it isn't there already
 				break;
+			case EXPLANATION_MODEL_VIEW:	//if we should store the explanations
+				question.removeExplanations();	//remove all explanations from the question
+				final Iterator explanationIterator=explanationList.iterator();	//get an iterator to the entered explanations
+				while(explanationIterator.hasNext())	//while there are more explanations
+				{
+					final Object explanation=explanationIterator.next();	//get the next explanation
+					if(explanation instanceof Dialogue)	//if this explanation is dialogue (it always should be)
+					{
+						question.addExplanation((Dialogue)explanation);	//add this explanation dialogue
+					}
+				}
 		}
 	}
 
@@ -399,6 +422,41 @@ public class QuestionPanel extends TabbedViewPanel
 				final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
 					//allow the dialogue to be edited in a dialog box; if the user accepts the changes
 				if(OptionPane.showConfirmDialog(parentComponent, dialoguePanel, "Choice", OptionPane.OK_CANCEL_OPTION)==OptionPane.OK_OPTION)	//G***i18n
+				{
+					return dialogueClone;	//return the new dialogue
+				}
+			}
+			return null;	//show that editing did not succeed
+		}
+	}
+
+	/**The editor that allows editing of explanations from a list.
+	@author Garret Wilson
+	*/
+	protected static class ExplanationEditor extends ListPanel.AbstractEditor
+	{
+		/**Default constructor.*/
+		public ExplanationEditor()
+		{
+			super(Dialogue.class);	//construct the parent class
+		}
+
+		/**Edits an object from the list.
+		@param parentComponent The component to use as a parent for any editing
+			components.
+		@param item The item to edit in the list.
+		@return The object with the modifications from the edit, or
+			<code>null</code> if the edits should not be accepted.
+		*/
+		public Object edit(final Component parentComponent, final Object item)
+		{
+			if(item instanceof Dialogue)	//if this is dialogue to be edited
+			{
+				final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
+				final DialogueModel dialogueModel=new DialogueModel(dialogueClone);	//create a model containing the dialogue
+				final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
+					//allow the dialogue to be edited in a dialog box; if the user accepts the changes
+				if(OptionPane.showConfirmDialog(parentComponent, dialoguePanel, "Explanation", OptionPane.OK_CANCEL_OPTION)==OptionPane.OK_OPTION)	//G***i18n
 				{
 					return dialogueClone;	//return the new dialogue
 				}

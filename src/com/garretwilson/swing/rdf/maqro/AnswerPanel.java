@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import javax.swing.*;
+
+import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.model.Resource;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.maqro.*;
@@ -103,7 +105,12 @@ public class AnswerPanel extends ContentPanel
 	*/
 	public void setExpectation(final Resource expectedType)
 	{
-		typeComboBox.setSelectedItem(expectedType);	//show the expected type in the combo box
+		if(!ObjectUtilities.equals(expectedType, typeComboBox.getSelectedItem()))	//if the combo box doesn't already have this item selected (this prevents the modification status from being changed when we really haven't modified anything)
+		{
+			typeComboBox.setSelectedItem(expectedType);	//show the expected type in the combo box
+		}
+		else	//G***testing; comment, and make sure we completely know why this isn't set already if the selected type was already correct
+			updateContentComponent(expectedType);	//update the content component to reflect the new selected type
 	}
 
 	/**@return A resource the reference URI of which indicates the expected
