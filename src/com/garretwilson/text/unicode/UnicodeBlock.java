@@ -3,7 +3,7 @@ package com.garretwilson.text.unicode;
 /**Describes a named range of Unicode characters.
 @author Garret Wilson
 */
-public class UnicodeBlock implements Comparable
+public class UnicodeBlock implements Comparable<UnicodeBlock>
 {
 	/**The name of the Unicode block.*/
 	private final String name;
@@ -66,13 +66,12 @@ public class UnicodeBlock implements Comparable
 		an <code>UnicodeBlock</code>.
 	@see #getStartCode
 	*/
-	public int compareTo(Object object) throws ClassCastException
+	public int compareTo(final UnicodeBlock object) throws ClassCastException
 	{
-		return getStartCode()-((UnicodeBlock)object).getStartCode()!=0 ? //subtract the start codes
-			getStartCode()-((UnicodeBlock)object).getStartCode() : //if the start codes aren't the same, we don't need to compare further
-		  getEndCode()-((UnicodeBlock)object).getEndCode();  //if the start codes are the same, see where they end
+		final int value=getStartCode()-object.getStartCode();	//compare the start codes
+		return value!=0 ? value //return the difference in start codes if they aren't equal
+				: getEndCode()-object.getEndCode();  //if the start codes are the same, see where they end
 	}
-
 
 	/**@return A string representation of this block in the format "name [0000-0000]".*/
 	public String toString()

@@ -3,10 +3,12 @@ package com.garretwilson.text.unicode;
 import java.io.*;
 import java.lang.ref.*;
 import java.util.*;
+import static java.util.Collections.*;
 import java.util.StringTokenizer;
 import com.garretwilson.lang.IntegerUtilities;
 import com.garretwilson.text.CharacterEncodingConstants;
 import static com.garretwilson.text.unicode.UnicodeConstants.*;
+import static com.garretwilson.text.unicode.UnicodeBlocks.*;
 import com.garretwilson.util.Debug;
 
 /**Represents the Unicode data in the file <code>UnicodeData.txt</code>.
@@ -27,6 +29,41 @@ public class UnicodeData
 	/**The map of soft references to Unicode characters, each keyed to a Unicode integer value.*/
 	protected final static Map<Integer, Reference<UnicodeCharacter>> unicodeCharacterReferenceMap=new HashMap<Integer, Reference<UnicodeCharacter>>();	//TODO create a SoftValueHashMap to use here
 
+		/**Looks up a cached Unicode character.
+		@param codePoint The code point of the character to find.
+		@return The Unicode character, or <code>null</code> if the character is not cached.
+		*/
+		protected static UnicodeCharacter getUnicodeCharacter(final Integer codePoint)
+		{
+			final Reference<UnicodeCharacter> unicodeCharacterReference=unicodeCharacterReferenceMap.get(codePoint);	//see if there is a reference to the character in our map
+			return unicodeCharacterReference!=null ? unicodeCharacterReference.get() : null;	//if the character was stored at one time, see if it still exists
+		}
+
+	/**The reference to the set of unassigned Unicode code points, which can be recollected by the garbage collector if needed.*/
+	protected static Reference<Set<Integer>> unassignedCodeSetReference=null;
+
+		/**@return The set of unassigned codes, created if necessary.*/
+		protected static Set<Integer> getUnassignedCodeSet()
+		{
+			Set<Integer> unassignedCodeSet=unassignedCodeSetReference!=null ? unassignedCodeSetReference.get() : null;	//get the set, if there is one
+			if(unassignedCodeSet==null)	//if there is no unassigned code set (it was never created, or it has been garbage collected)
+			{
+				unassignedCodeSet=new HashSet<Integer>();	//create a new hash set
+				unassignedCodeSetReference=new SoftReference<Set<Integer>>(unassignedCodeSet);	//store a soft reference to the set
+			}
+			return unassignedCodeSet;	//return the set of unassigned code points
+		}
+	
+		/**Determines if the given code point has been determined to be unassigned.
+		@param codePoint The code point of the character to check.
+		@return <code>true</code> if the given code point has been determined to be unassigned,
+			or <code>false</code> if the code point is unassigned or it is unknown whether the code point is assigned.
+		*/
+		protected static boolean isUnassigned(final Integer codePoint)
+		{
+			return getUnassignedCodeSet().contains(codePoint);	//see whether the given code point is in the set of unassigned code points
+		}
+		
 			//Unicode data file fields
 	/**The number of fields in the file.*/
 	public final static int MAX_FIELD=14;
@@ -70,33 +107,17 @@ public class UnicodeData
 	public static UnicodeCharacter getUnicodeCharacter(final int codeValue)
 	{
 		final Integer codeValueInteger=Integer.valueOf(codeValue);	//create an integer from the code value
-		final Reference<UnicodeCharacter> unicodeCharacterReference=unicodeCharacterReferenceMap.get(codeValueInteger);
-			//if the character was stored at one time, see if it still exists 
-		UnicodeCharacter unicodeCharacter=unicodeCharacterReference!=null ? unicodeCharacterReference.get() : null;
-		if(unicodeCharacter==null)	//if the unicode character was never stored or has been reclaimed
+		UnicodeCharacter unicodeCharacter=getUnicodeCharacter(codeValueInteger);	//look up the character in the cache
+		if(unicodeCharacter==null && !isUnassigned(codeValueInteger))	//if the Unicode character was never stored or has been reclaimed, and we haven't marked it as unassigned
 		{
 			try
 			{
-					//TODO fix a more intelligent range determination based upon Unicode code blocks 
-				load(codeValue, codeValue+256);	//load data for the character and for surrounding characters
-					//see if the character is loaded now
-				final Reference<UnicodeCharacter> loadedUnicodeCharacterReference=unicodeCharacterReferenceMap.get(codeValueInteger);
-					//if the character was stored at one time, see if it still exists 
-				unicodeCharacter=loadedUnicodeCharacterReference!=null ? loadedUnicodeCharacterReference.get() : null;
-	/*TODO fix for Unicode blocks after creating code to load our own Unicode block data			
-				boolean foundUnicodeBlock=false;	//we haven't found a Unicode block for this character, yet
-					//TODO replace the Java code block stuff with custom Unicode code block code 
-				if(codeValue<=Character.MAX_VALUE)	//if the code value within the character range, we can use the Java character methods
+				final UnicodeBlock unicodeBlock=getUnicodeBlockByCodePoint(codeValue);	//see in which block this character resides
+				if(unicodeBlock!=null)	//if we know the block of the code point (if we don't know the block, assume we don't know the character, either
 				{
-					final Character.UnicodeBlock unicodeBlock=Character.UnicodeBlock.of((char)codeValue)
-					if(unicodeBlock!=null)	//if Java knows of a Unicode block for this character
-					{
-						foundUnicodeBlock=true;	//show that we found a Unicode block for the character
-						unicodeBlock.get
-					}
+					final List<UnicodeCharacter> characterList=load(unicodeBlock.getStartCode(), unicodeBlock.getEndCode());	//load data for all the characters in the block
+					unicodeCharacter=getUnicodeCharacter(codeValueInteger);	//see if the character is loaded now
 				}
-				unicodeCharacter=load(codeValue);	//try to load the character
-	*/
 			}
 			catch(IOException ioException)	//we don't expect errors reading the data file, as it's a local resource
 			{
@@ -105,12 +126,27 @@ public class UnicodeData
 		}
 		return unicodeCharacter;	//return the character we found, if any
 	}
-	
+
+	/**Returns a list of Unicode characters from the Unicode data resource text file.
+	@return A list of Unicode character objects.
+	*/
+	public static List<UnicodeCharacter> getUnicodeCharacters()
+	{
+		try
+		{
+			return load(0, Integer.MAX_VALUE);	//load all the Unicode characters in the data file
+		}
+		catch(IOException ioException)	//we don't expect errors reading the data file, as it's a local resource
+		{
+			throw new AssertionError(ioException); 
+		}
+	}
+
 	/**@return A reader to the Unicode data resource file.
 	@throws UnsupportedEncodingException Thrown if the Unicode data file encoding
 		(ISO 8859-1) is unsupported. This situation should never occur.
 	*/
-	public static Reader getUnicodeDataReader() throws UnsupportedEncodingException
+	protected static Reader getUnicodeDataReader() throws UnsupportedEncodingException
 	{
 			//get an input stream to our Unicode data resource file
 		final InputStream inputStream=UnicodeData.class.getResourceAsStream(UNICODE_DATA_FILENAME);
@@ -123,7 +159,7 @@ public class UnicodeData
 	@return A list of Unicode character objects.
 	@exception IOException Thrown if there was an error parsing the Unicode data.
 	*/
-	public static List<UnicodeCharacter> load() throws IOException
+	protected static List<UnicodeCharacter> load() throws IOException
 	{
 		return load(0, Integer.MAX_VALUE);	//load all the Unicode characters in the data file
 	}
@@ -136,7 +172,7 @@ public class UnicodeData
 		found in the Unicode data file.
 	@exception IOException Thrown if there was an error parsing the Unicode data.
 	*/
-	public static UnicodeCharacter load(final int codeValue) throws IOException
+	protected static UnicodeCharacter load(final int codeValue) throws IOException
 	{
 		final List<UnicodeCharacter> unicodeCharacterList=load(codeValue, codeValue);	//load the single character
 		return unicodeCharacterList.size()>0 ? unicodeCharacterList.get(0) : null;	//return the character if we found it 
@@ -150,16 +186,29 @@ public class UnicodeData
 	@return A list of Unicode character objects.
 	@exception IOException Thrown if there was an error parsing the Unicode data.
 	*/
-	public static List<UnicodeCharacter> load(final int firstCodeValue, final int lastCodeValue) throws IOException
+	protected static List<UnicodeCharacter> load(final int firstCodeValue, final int lastCodeValue) throws IOException
 	{
 		final Reader reader=getUnicodeDataReader();	//get a reader to our data
 		try
 		{
 			final List<UnicodeCharacter> unicodeCharacterList=parse(reader, firstCodeValue, lastCodeValue);	//parse the Unicode data from the reader
+			sort(unicodeCharacterList);	//make sure the list is sorted
+			final Set<Integer> unassignedCodeSet=getUnassignedCodeSet();	//get the set of unassigned codes
+			int nextCodeValue=firstCodeValue;	//show that we expect the first code value first
 			for(final UnicodeCharacter unicodeCharacter:unicodeCharacterList)	//for each of the Unicode characters loaded
 			{
+				final int characterCodeValue=unicodeCharacter.getCodeValue();	//get this character's code value
 					//create a soft reference to the character and store it in our map, keyed to its integer code value
-				unicodeCharacterReferenceMap.put(Integer.valueOf(unicodeCharacter.getCodeValue()), new SoftReference<UnicodeCharacter>(unicodeCharacter));
+				unicodeCharacterReferenceMap.put(Integer.valueOf(characterCodeValue), new SoftReference<UnicodeCharacter>(unicodeCharacter));
+				for(int codeValue=nextCodeValue; codeValue<characterCodeValue; ++codeValue)	//for all the skipped code values (i.e. the unassigned code points)
+				{
+					unassignedCodeSet.add(Integer.valueOf(codeValue));	//add the skipped code value to the set of unassigned code points
+				}
+				nextCodeValue=characterCodeValue+1;	//show that we next expect the subsequent code value
+			}
+			for(int codeValue=nextCodeValue; codeValue<=lastCodeValue; ++codeValue)	//for all the unavailable code values (i.e. the unassigned code points) at the end of the list
+			{
+				unassignedCodeSet.add(Integer.valueOf(codeValue));	//add the skipped code value to the set of unassigned code points
 			}
 			return unicodeCharacterList;	//return the list of Unicode characters we loaded
 		}

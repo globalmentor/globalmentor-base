@@ -50,7 +50,7 @@ public class UnicodeBlocks
 	@return The Unicode block in which the specified character falls, or
 		<code>null</code> if this character does not fall in any known block.
 	*/
-	public UnicodeBlock getUnicodeBlockByCodePoint(final int codePoint)
+	public static UnicodeBlock getUnicodeBlockByCodePoint(final int codePoint)
 	{
 		for(final UnicodeBlock block:getUnicodeBlocks())	//look at each block TODO later, implement a better searching algorithm; this is, after all, a tree
 		{

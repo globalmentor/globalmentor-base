@@ -24,7 +24,7 @@ public class DefaultObjectState<T> extends DefaultModifiable implements ObjectSt
 		@param object The new object to describe.
 		@exception NullPointerException Thrown if the object is <code>null</code>.
 		*/
-		protected void setObject(final T object)
+		public void setObject(final T object)	//TODO determine if we want to make this public or not
 		{
 			this.object=checkNull(object, "Object cannot be null");
 		}

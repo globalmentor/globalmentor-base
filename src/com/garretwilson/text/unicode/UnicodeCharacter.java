@@ -1,13 +1,14 @@
 package com.garretwilson.text.unicode;
 
 import com.garretwilson.lang.IntegerUtilities;
+import static com.garretwilson.text.unicode.UnicodeConstants.*;
 
 /**Represents a character in the Unicode database.
 Created for Unicode 3.0.0.
 @author Garret Wilson
 @version 1.0
 */
-public class UnicodeCharacter implements UnicodeConstants
+public class UnicodeCharacter implements Comparable<UnicodeCharacter>
 {
 
 	/**The code value of the Unicode character.*/
@@ -292,7 +293,18 @@ public class UnicodeCharacter implements UnicodeConstants
 		stringBuilder.append(IntegerUtilities.toHexString(codeValue, codeValue<=0xFFFF ? 4 : 6).toUpperCase());
 		return stringBuilder.toString();	//return the string we constructed		
 	}
-	
+
+	/**Compares this object with the specified object for order.
+	This implementation compares code values
+	@param object The object to be compared.
+	@return A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+	@throws ClassCastException if the specified object's type prevents it from being compared to this object.
+	*/
+	public int compareTo(final UnicodeCharacter object)
+	{
+		return getCodeValue()-object.getCodeValue();	//compare code values
+	}
+
 	/**@return A string representation of the Unicode character in the form "U+XXXX[XX]".*/
 	public String toString()
 	{
