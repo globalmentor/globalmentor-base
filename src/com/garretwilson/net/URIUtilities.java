@@ -2,11 +2,13 @@ package com.garretwilson.net;
 
 import java.io.*;
 import java.net.*;
+import java.util.*;
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
-import com.garretwilson.text.CharacterEncodingConstants;
 import com.garretwilson.util.Debug;
 import com.garretwilson.util.NameValuePair;
+
+import static com.garretwilson.text.CharacterEncodingConstants.*;
 
 /**Various URI manipulating functions for working with URIs as defined in
 	in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
@@ -51,8 +53,8 @@ public class URIUtilities implements URIConstants
 		if(params.length()>0)	//if there is at least one parameter character
 		{
 			query.append(QUERY_SEPARATOR);	//append the query prefix
+			query.append(params);	//append the params
 		}
-		query.append(params);	//append the params
 		return query.toString();	//return the query string we constructed
 	}
 
@@ -71,10 +73,9 @@ public class URIUtilities implements URIConstants
 			{
 				try
 				{
-					//TODO use generics for NameValuePair
-					paramStringBuilder.append(URLEncoder.encode(param.getName(), CharacterEncodingConstants.UTF_8));	//append the parameter name
+					paramStringBuilder.append(URLEncoder.encode(param.getName(), UTF_8));	//append the parameter name
 					paramStringBuilder.append(QUERY_NAME_VALUE_ASSIGNMENT);	//append the value-assignment character
-					paramStringBuilder.append(URLEncoder.encode(param.getValue(), CharacterEncodingConstants.UTF_8));	//append the parameter value
+					paramStringBuilder.append(URLEncoder.encode(param.getValue(), UTF_8));	//append the parameter value
 					paramStringBuilder.append(QUERY_NAME_VALUE_PAIR_DELIMITER);	//append the name-value pair delimiter
 				}
 				catch(UnsupportedEncodingException unsupportedEncodingException)	//we should always support UTF-8
@@ -86,7 +87,145 @@ public class URIUtilities implements URIConstants
 		}
 		return paramStringBuilder.toString();	//return the query parameter string we constructed
 	}
-	
+
+	/**Creates a path-based query from a standard URI query.
+	A query in the form <code>?var1=value1&amp;var2=value2</code> will be converted to the form
+		<code>/var1%3Dvalue1/var2&3Dvalue2</code>.
+	@param query The standard URI query string, optionally beginning with '?'.
+	@return A query string converted to a path. A query string beginning with '?' will be converted into
+		an absolute path.
+	*/
+	public static String createPathQuery(final String query)
+	{
+		if(query.length()>0)	//if the query has at least one character
+		{
+			final StringBuilder stringBuilder=new StringBuilder();	//create a string builder for creating a path query
+			final int startIndex;	//find out if we should skip the first character			
+			if(query.charAt(0)==QUERY_SEPARATOR)	//if the first character is '?'
+			{
+				stringBuilder.append(PATH_SEPARATOR);	//convert it to a '/'
+				startIndex=1;	//skip the introductory character
+			}
+			else	//if the string doesn't begin with '?'
+			{
+				startIndex=0;	//we'll just start at the first
+			}
+				//tokenize the string on the attribute delimiter, '&'
+			final StringTokenizer stringTokenizer=new StringTokenizer(query.substring(startIndex), String.valueOf(QUERY_NAME_VALUE_PAIR_DELIMITER));
+			while(stringTokenizer.hasMoreTokens())	//while there are more tokens
+			{
+				final String token=stringTokenizer.nextToken();	//get the next token
+				try
+				{
+					stringBuilder.append(URLEncoder.encode(token, UTF_8));	//encode and append the next token
+				}
+				catch(UnsupportedEncodingException unsupportedEncodingException)	//we should always support UTF-8
+				{
+					throw new AssertionError(unsupportedEncodingException);
+				}					
+				if(stringTokenizer.hasMoreTokens())	//if there are more tokens
+				{
+					stringBuilder.append(PATH_SEPARATOR);	//add a path separator, '/'					
+				}
+			}
+			return stringBuilder.toString();	//return the string we constructed
+		}
+		else	//if the query is empty
+		{
+			return query;	//return the query as it is
+		}		
+	}
+
+	/**Creates a standard URI based query from a path-based query.
+	A query in the form <code>/var1%3Dvalue1/var2&3Dvalue2</code> will be converted to the form
+		<code>?var1=value1&amp;var2=value2</code>.
+	@param pathQuery The standard URI query string, optionally beginning with '?'.
+	@return A query string converted to a path. A query string beginning with '?' will be converted into
+		an absolute path.
+	*/
+	public static String createQuery(final String pathQuery)
+	{
+		if(pathQuery.length()>0)	//if the query has at least one character
+		{
+			final StringBuilder stringBuilder=new StringBuilder();	//create a string builder for creating a query
+			final int startIndex;	//find out if we should skip the first character			
+			if(pathQuery.charAt(0)==PATH_SEPARATOR)	//if the first character is '/'
+			{
+				stringBuilder.append(QUERY_SEPARATOR);	//convert it to a '?'
+				startIndex=1;	//skip the introductory character
+			}
+			else	//if the string doesn't begin with '/'
+			{
+				startIndex=0;	//we'll just start at the first
+			}
+				//tokenize the string on path separators, '/'
+			final StringTokenizer stringTokenizer=new StringTokenizer(pathQuery.substring(startIndex), String.valueOf(PATH_SEPARATOR));
+			while(stringTokenizer.hasMoreTokens())	//while there are more tokens
+			{
+				final String token=stringTokenizer.nextToken();	//get the next token
+				try
+				{
+					stringBuilder.append(URLDecoder.decode(token, UTF_8));	//encode and append the next token
+				}
+				catch(UnsupportedEncodingException unsupportedEncodingException)	//we should always support UTF-8
+				{
+					throw new AssertionError(unsupportedEncodingException);
+				}					
+				if(stringTokenizer.hasMoreTokens())	//if there are more tokens
+				{
+					stringBuilder.append(QUERY_NAME_VALUE_PAIR_DELIMITER);	//add a query name/value pair separator, '&'					
+				}
+			}
+			return stringBuilder.toString();	//return the string we constructed
+		}
+		else	//if the path query is empty
+		{
+			return pathQuery;	//return the path query as it is
+		}		
+	}
+
+	/**Retrieves name-value parameters from a standard URI query string.
+	@param query The URI query string, optionally beginning with a '?' character.
+	@return An array of name-value pairs representing query parameters.
+	*/
+	public static NameValuePair<String, String>[] getQueryParameters(final String query)
+	{
+		final List<NameValuePair<String, String>> parameterList=new ArrayList<NameValuePair<String, String>>();	//create a list to hold our parameters
+		if(query.length()>0)	//if the query has at least one character
+		{
+			final int startIndex;	//find out if we should skip the first character			
+			if(query.charAt(0)==QUERY_SEPARATOR)	//if the first character is '?'
+			{
+				startIndex=1;	//skip the introductory character
+			}
+			else	//if the string doesn't begin with '?'
+			{
+				startIndex=0;	//we'll just start at the first
+			}
+				//tokenize the string on the attribute delimiter, '&'
+			final StringTokenizer stringTokenizer=new StringTokenizer(query.substring(startIndex), String.valueOf(QUERY_NAME_VALUE_PAIR_DELIMITER));
+			while(stringTokenizer.hasMoreTokens())	//while there are more tokens
+			{
+				final String token=stringTokenizer.nextToken();	//get the next token
+				final int equalsIndex=token.indexOf(QUERY_NAME_VALUE_ASSIGNMENT);	//get the index of the '=' character
+				final String name;	//we'll determine the name and the value
+				final String value;
+				if(equalsIndex>=0)	//if there is an equals character
+				{
+					name=token.substring(0, equalsIndex);	//the name is everything up to but not including the '='
+					value=token.substring(equalsIndex+1);	//the value is everything after the '='
+				}
+				else	//if there is no equals character
+				{
+					name=token;	//take the token as it is for the name
+					value=null;	//there is no value G***is this the correct thing to do? should it be ""?
+				}
+				parameterList.add(new NameValuePair<String, String>(name, value));	//add this parameter to the list 
+			}
+		}
+		return parameterList.toArray(new NameValuePair[parameterList.size()]);	//return the list as an array
+	}
+
 	/**Determines the current level of a hierarchical URI.
 	@param uri The URI to examine.
 	@return A URI representing the current hierarchical level of a hierarchical
