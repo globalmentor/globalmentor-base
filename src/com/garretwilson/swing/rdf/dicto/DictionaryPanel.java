@@ -281,25 +281,22 @@ public class DictionaryPanel extends RDFPanel
 				}
 			}
 			final DictionaryActivityOptionsPanel optionsPanel=new DictionaryActivityOptionsPanel();	//create a new options panel
-			final SelectDescription selectDescription=new SelectDescription();	//create selection criteria
-			selectDescription.setRandom(true);	//default to random selection
-			final OrderDescription orderDescription=new OrderDescription();	//create a new order descriptoin
-			orderDescription.setRandom(true);	//specify random order
-			selectDescription.setOrder(orderDescription);	//set the order of the selection description
+			final Selection selection=new RandomSelection();	//create random selection criteria
+			selection.setOrder(new RandomOrder());	//set the order of the selection to random
 			optionsPanel.setAvailableCategorySet(availableCategorySet);	//set the available categories in the options panel
 					//select all available categories
 			final Iterator availableCategoryIterator=availableCategorySet.iterator();	//get an iterator to the available categories
 			while(availableCategoryIterator.hasNext())	//while there are more available categories
 			{
 					//add the next category to our selection
-				selectDescription.addProperty(MAQROConstants.MAQRO_NAMESPACE_URI, MAQROConstants.CATEGORY_PROPERTY_NAME, (RDFLiteral)availableCategoryIterator.next());
+				selection.addProperty(MAQROConstants.MAQRO_NAMESPACE_URI, MAQROConstants.CATEGORY_PROPERTY_NAME, (RDFLiteral)availableCategoryIterator.next());
 			}
 
 
 			if(translationLanguage!=null && !translationLanguage.equals(dictionaryLanguage))	//if this dictionary is a translation dictionary
 				optionsPanel.setChoicesProperty(DictionaryActivity.TRANSLATION_PROPERTY);	//default to using translations instead of definitions for choices
 
-			optionsPanel.setSelect(selectDescription);	//set the panel selection criteria
+			optionsPanel.setSelection(selection);	//set the panel selection criteria
 
 				//show the options; if the user accepts the options 
 			if(BasicOptionPane.showConfirmDialog(this, optionsPanel, "Dictionary Quiz Options", BasicOptionPane.OK_CANCEL_OPTION, BasicOptionPane.QUESTION_MESSAGE)==BasicOptionPane.OK_OPTION)	//G***i18n
@@ -311,7 +308,7 @@ public class DictionaryPanel extends RDFPanel
 				dictionaryActivity.setShowEachResult(true);
 				dictionaryActivity.setShowFinalResult(true);
 				DCUtilities.addTitle(dictionaryActivity, dictionaryLanguage.getDisplayLanguage()+" Quiz");	//add a title showing the language G***i18n
-				dictionaryActivity.setSelect(optionsPanel.getSelect());	//set the activity's selection criteria
+				dictionaryActivity.setSelect(optionsPanel.getSelection());	//set the activity's selection criteria
 /*G***fix and del
 				dictionaryActivity.setQuestionCount(optionsPanel.getQuestionCount());	//show how many questions to use
 				dictionaryActivity.setChoiceCount(optionsPanel.getChoiceCount());	//show how many questions to use

@@ -41,14 +41,12 @@ public interface MAQROConstants
 	public final static String DIALOGUE_CLASS_NAME="Dialogue";
 	/**The local name of maqro:Group.*/
 	public final static String GROUP_CLASS_NAME="Group";
-	/**The local name of maqro:OrderDescription.*/
-	public final static String ORDER_DESCRIPTION_CLASS_NAME="OrderDescription";
 	/**The local name of maqro:Question.*/
 	public final static String QUESTION_CLASS_NAME="Question";
 	/**The local name of maqro:Outcome.*/
 	public final static String OUTCOME_CLASS_NAME="Outcome";
-	/**The local name of maqro:SelectDescription.*/
-	public final static String SELECT_DESCRIPTION_CLASS_NAME="SelectDescription";
+	/**The local name of maqro:Selection.*/
+	public final static String SELECTION_CLASS_NAME="Selection";
 
 		//MAQRO interaction property names
 	/**A choice of an interaction. The local name of maqro:category.*/
@@ -92,7 +90,7 @@ public interface MAQROConstants
 	public final static String EXPECTATION_PROPERTY_NAME="expectation";
 	/**An explanation of a question. The local name of maqro:explanation.*/
 	public final static String EXPLANATION_PROPERTY_NAME="explanation";
-	/**A hints of a question. The local name of maqro:hints.*/
+	/**The hints of a question. The local name of maqro:hints.*/
 	public final static String HINTS_PROPERTY_NAME="hints";
 	/**The minimum number of responses to accept. The local name of maqro:minResponseCount.*/
 	public final static String MIN_RESPONSE_COUNT_PROPERTY_NAME="minResponseCount";
@@ -100,6 +98,25 @@ public interface MAQROConstants
 	public final static String MAX_RESPONSE_COUNT_PROPERTY_NAME="maxResponseCount";
 	/**The query of a question. The local name of maqro:query.*/
 	public final static String QUERY_PROPERTY_NAME="query";
+
+		//MAQRO selection class names
+	/**The local name of maqro:Selector.*/
+	public final static String SELECTOR_CLASS_NAME="Selector";
+	/**The local name of maqro:RandomOrder.*/
+	public final static String RANDOM_ORDER_CLASS_NAME="RandomOrder";
+	/**The local name of maqro:RandomSelection.*/
+	public final static String RANDOM_SELECTION_CLASS_NAME="RandomSelection";
+	/**The local name of maqro:SequentialOrder.*/
+	public final static String SEQUENTIAL_ORDER_CLASS_NAME="SequentialOrder";
+	/**The local name of maqro:SequentialSelection.*/
+	public final static String SEQUENTIAL_SELECTION_CLASS_NAME="SequentialSelection";
+		//MAQRO selection property names
+	/**The selectors of a selection. The local name of maqro:selectors.*/
+	public final static String SELECTORS_PROPERTY_NAME="selectors";
+	/**The number of interactions to select. The local name of maqro:count.*/
+	public final static String COUNT_PROPERTY_NAME="count";
+	/**The order criteria of an activity. The local name of maqro:order.*/
+	public final static String ORDER_PROPERTY_NAME="order";
 
 		//MAQRO outcome class names
 	/**The local name of maqro:Score.*/
@@ -118,19 +135,15 @@ public interface MAQROConstants
 
 		//MAQRO ontology property names
 	/**The number of choices to select. The local name of maqro:choiceCount.*/
-	public final static String CHOICE_COUNT_PROPERTY_NAME="choiceCount";
+//G***fix or del	public final static String CHOICE_COUNT_PROPERTY_NAME="choiceCount";
 	/**The number of interactions to select. The local name of maqro:questionCount.*/
-	public final static String QUESTION_COUNT_PROPERTY_NAME="questionCount";
+//G***del if not needed	public final static String QUESTION_COUNT_PROPERTY_NAME="questionCount";
 	/**Identifies an interaction. The local name of maqro:interaction.*/
 	public final static String INTERACTION_PROPERTY_NAME="interaction";
 	/**The interactions of an activity. The local name of maqro:interactions.*/
 	public final static String INTERACTIONS_PROPERTY_NAME="interactions";
-	/**The order criteria of an activity. The local name of maqro:order.*/
-	public final static String ORDER_PROPERTY_NAME="order";
-	/**Whether something should be random. The local name of maqro:random.*/
-	public final static String RANDOM_PROPERTY_NAME="random";
 	/**The selection criteria of an activity. The local name of maqro:select.*/
-	public final static String SELECT_PROPERTY_NAME="select";
+	public final static String SELECT_PROPERTY_NAME="select";	//TODO change to "selection"
 	/**A supplement to an interaction or part of a question. The local name of maqro:supplement.*/
 	public final static String SUPPLEMENT_PROPERTY_NAME="supplement";
 

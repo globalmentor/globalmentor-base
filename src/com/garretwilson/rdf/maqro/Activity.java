@@ -15,9 +15,6 @@ The activity is also a group, and can contain other groups, which themselves
 public class Activity extends Group
 {
 
-	/**@return The namespace URI of the ontology defining the default type of this resource.*/
-	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
-
 	/**@return The local name of the default type of this resource.*/
 	public String getDefaultTypeName() {return ACTIVITY_CLASS_NAME;}
 
@@ -113,16 +110,16 @@ public class Activity extends Group
 	/**@return The selection criteria, or <code>null</code> if there is no
 		selection criteria indicated or if it is not of the correct type.
 	*/
-	public SelectDescription getSelect()
+	public Selection getSelect()
 	{
 		final RDFObject select=getPropertyValue(MAQRO_NAMESPACE_URI, SELECT_PROPERTY_NAME);	//get the maqro:select property value
-		return select instanceof SelectDescription ? (SelectDescription)select : null;	//return the selection criteria if there are any
+		return select instanceof Selection ? (Selection)select : null;	//return the selection criteria if there are any
 	}
 
 	/**Sets the selection criteria for the activity.
 	@param selectDescription The selection criteria.
 	*/
-	public void setSelect(final SelectDescription selectDescription)
+	public void setSelect(final Selection selectDescription)
 	{
 		setProperty(MAQRO_NAMESPACE_URI, SELECT_PROPERTY_NAME, selectDescription);	//set the selection criteria
 	}

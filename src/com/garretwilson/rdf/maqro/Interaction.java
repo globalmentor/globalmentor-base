@@ -10,6 +10,9 @@ import com.garretwilson.rdf.*;
 public abstract class Interaction extends TypedRDFResource implements MAQROConstants
 {
 
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
+
 	/**Default constructor.*/
 	public Interaction()
 	{

@@ -6,8 +6,8 @@ import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
+import com.garretwilson.rdf.RDFListResource;
 import com.garretwilson.rdf.RDFObject;
-import com.garretwilson.rdf.RDFUtilities;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
@@ -17,7 +17,7 @@ import com.garretwilson.util.*;
 /**Panel for editing a MAQRO activity selection.
 @author Garret Wilson
 */
-public class SelectDescriptionPanel extends BasicPanel
+public class SelectionPanel extends BasicPanel	//TODO eventually separate SelectionPanel from individual SelectorPanels
 {
 
 	private final JLabel questionCountLabel;
@@ -36,57 +36,81 @@ public class SelectDescriptionPanel extends BasicPanel
 		protected Action getSelectCategoriesAction() {return selectCategoriesAction;}
 
 	/**@return New default selection criteria.*/
-	protected SelectDescription createSelectDescription()
+	protected Selection createSelection()
 	{
-		return new SelectDescription();	//create new selection criteria		
+		if(randomSelectionCheckBox.isSelected())	//if there should be random selection
+		{
+			return new RandomSelection();	//create a new random selection
+		}
+		else	//if there shouldn't be random selection
+		{
+			return new SequentialSelection();	//create a new sequential selection
+		}
 	}
 
-	/**@return SelectDescription criteria for selecting interactions.*/
-	public SelectDescription getSelect()
+	/**@return Selection criteria for selecting interactions.*/
+	public Selection getSelection()
 	{
-		final SelectDescription selectDescription=createSelectDescription();	//create new selection criteria
-		selectDescription.setRandom(randomSelectionCheckBox.isSelected());	//specify whether the selection should be random
-		if(randomOrderCheckBox.isSelected())	//if there should be random ordering
-		{
-			final OrderDescription orderDescription=new OrderDescription();	//create a new order descriptoin
-			orderDescription.setRandom(true);	//specify random order
-			selectDescription.setOrder(orderDescription);	//set the order of the selection description
-		}
+		final Selection selection=createSelection();	//create new selection criteria
+		final RDFListResource selectors=new RDFListResource();	//create a list of selectors
+		final Selector selector=new Selector();	//create a new selector
 		if(onlyQuestionsRadioButton.isSelected())	//if the user wants to limit the number of questions
 		{
-			selectDescription.setQuestionCount(Integer.parseInt(questionCountTextField.getText().trim()));	//get the interaction count
+			selector.setCount(Integer.parseInt(questionCountTextField.getText().trim()));	//set the interaction count
 		}
-			//copy the selected categories to the selection criteria
+			//copy the selected categories to the selector
 		final Iterator categoryIterator=getCategorySet().iterator();	//get an iterator to look at all the selected categories
 		while(categoryIterator.hasNext())	//while there are more categories
 		{
+			final RDFObject category=(RDFObject)categoryIterator.next();	//get the next category
 				//copy this category to the selection criteria
-			selectDescription.addProperty(MAQROConstants.MAQRO_NAMESPACE_URI, MAQROConstants.CATEGORY_PROPERTY_NAME, (RDFObject)categoryIterator.next());
+			selection.addProperty(MAQROConstants.MAQRO_NAMESPACE_URI, MAQROConstants.CATEGORY_PROPERTY_NAME, category);	//G***it would be best to clone the category
 		}
-		return selectDescription;	//return the selection criteria we constructed
+
+		final Order order;	//determine the order
+		if(randomOrderCheckBox.isSelected())	//if there should be random ordering
+		{
+			order=new RandomOrder();	//use random ordering
+		}
+		else	//if there shouldn't be random ordering
+		{
+			order=new SequentialOrder();	//use sequential ordering	
+		}
+		selection.setOrder(order);	//set the order of the selection criteria
+		return selection;	//return the selection criteria we constructed
 	}
 
 	/**Sets the selection criteria to show in the panel.
 	@param selectDescription The selection criteria.
 	*/
-	public void setSelect(final SelectDescription selectDescription)
+	public void setSelection(final Selection selection)
 	{
-		randomSelectionCheckBox.setSelected(selectDescription.isRandom());	//if this is a random selection, select the random selection checkbox
-		final OrderDescription orderDescription=selectDescription.getOrder();	//get the order description
-		randomOrderCheckBox.setSelected(orderDescription!=null && orderDescription.isRandom());	//if this is random ordering, select the random order checkbox
-		final int questionCount=selectDescription.getQuestionCount();	//get the questionCount
-		if(questionCount>=0)	//if a valid question count was given
-		{
-			onlyQuestionsRadioButton.setSelected(true);	//select the only questions radio button
-			questionCountTextField.setText(Integer.toString(questionCount));	//show the question count
-		}
-		else	//if all questions should be selected
-		{
-			allQuestionsRadioButton.setSelected(true);	//select the all questions radio button
-			questionCountTextField.setText("");	//clear the question count
-		}
+		randomSelectionCheckBox.setSelected(selection instanceof RandomSelection);	//if this is random selection, select the random selection checkbox
+		final Order order=selection.getOrder();	//get the order
+		randomOrderCheckBox.setSelected(order!=null && order instanceof RandomOrder);	//if this is random ordering, select the random order checkbox
+		final RDFListResource selectors=selection.getSelectors();	//get the selectors
+		final int count;	//we'll determine the count to show
 		categorySet.clear();	//clear our categories
-		CollectionUtilities.addAll(categorySet, selectDescription.getCategoryIterator());	//add all selection categories to our set of categories
+		if(selectors!=null && selectors.size()>0)	//if there is at least one selector, we'll use the first one and ignore the others
+		{
+			final Selector selector=(Selector)selectors.get(0);	//get the first selector G***should we really assume that this is a selector
+			count=selector.getCount();	//see if a count is specified
+			CollectionUtilities.addAll(categorySet, selector.getCategoryIterator());	//add all selector categories to our set of categories
+		}
+		else	//if there are no selectors
+		{
+			count=-1;	//use all interactions
+		}
+		if(count>=0)	//if a valid count was given
+		{
+			onlyQuestionsRadioButton.setSelected(true);	//select the count radio button
+			questionCountTextField.setText(Integer.toString(count));	//show the count count
+		}
+		else	//if all interactions should be selected
+		{
+			allQuestionsRadioButton.setSelected(true);	//select the all radio button
+			questionCountTextField.setText("");	//clear the count
+		}
 		updateStatus();	//update our status to reflect the new selection
 	}
 
@@ -125,7 +149,7 @@ public class SelectDescriptionPanel extends BasicPanel
 */
 
 	/**Default constructor.*/
-	public SelectDescriptionPanel()
+	public SelectionPanel()
 	{
 		this(true);	//construct the panel and initialize it
 	}
@@ -134,7 +158,7 @@ public class SelectDescriptionPanel extends BasicPanel
 	@param initialize <code>true</code> if the panel should initialize itself by
 		calling the initialization methods.
 	*/
-	public SelectDescriptionPanel(final boolean initialize)
+	public SelectionPanel(final boolean initialize)
 	{
 		super(new BasicGridBagLayout(), false);	//construct the panel using a grid bag layout, but don't initialize the panel
 		randomSelectionCheckBox=new JCheckBox();
