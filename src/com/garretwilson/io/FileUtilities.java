@@ -17,11 +17,23 @@ public class FileUtilities implements FileConstants
   private FileUtilities()
 	{
 	}
+
+	/**Adds the given extension to a file and returns the new file with
+		the new extension.
+		The filename is not checked to see if it currently has an extension.
+	@param file The file to which to add an extension.
+	@param extension The extension to set
+	@return The file with the new extension.
+	*/
+	public static File addExtension(final File file, final String extension)
+	{
+		return new File(addExtension(file.getPath(), extension));	//add an extension to the path and create and return a new file with that 
+	}
 	
 	/**Adds the given extension to a filename and returns the new filename with
 		the new extension.
 		The filename is not checked to see if it currently has an extension.
-	@param filename The file to which to add an extension.
+	@param filename The filename to which to add an extension.
 	@param extension The extension to set
 	@return The filename with the new extension.
 	*/

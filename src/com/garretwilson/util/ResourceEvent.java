@@ -13,25 +13,25 @@ public class ResourceEvent extends EventObject
 	private final URI oldParentResourceURI;
 
 		/**@return The old parent resource reference URI, or <code>null</code> if not applicable.*/
-		public URI getOldParentResourceURI() {return oldParentResourceURI;}
+//G***fix		public URI getOldParentResourceURI() {return oldParentResourceURI;}
 
 	/**A description of the old parent resource, or <code>null</code> if not applicable.*/
 	private final Resource oldParentResource;
 
 		/**@return A description of the old parent resource, or <code>null</code> if not applicable.*/
-		public Resource getOldParentResource() {return resource;}
+//G***fix		public Resource getOldParentResource() {return resource;}
 
 	/**The parent resource reference URI, or <code>null</code> if not applicable.*/
 	private final URI parentResourceURI;
 
 		/**@return The parent resource reference URI, or <code>null</code> if not applicable.*/
-		public URI getParentResourceURI() {return parentResourceURI;}
+//G***fix		public URI getParentResourceURI() {return parentResourceURI;}
 
 	/**A description of the parent resource, or <code>null</code> if not applicable.*/
 	private final Resource parentResource;
 
 		/**@return A description of the parent resource, or <code>null</code> if not applicable.*/
-		public Resource getParentResource() {return resource;}
+//G***fix		public Resource getParentResource() {return resource;}
 
 	/**The previous resource reference URI, or <code>null</code> if not applicable.*/
 	private final URI oldResourceURI;
@@ -164,8 +164,8 @@ public class ResourceEvent extends EventObject
 	public String toString()
 	{
 		final StringBuffer stringBuffer=new StringBuffer(super.toString()).append(' ').append('[');
-		stringBuffer.append(getOldParentResourceURI()).append('/').append(getOldResourceURI()).append(',').append(' ');	//oldParentResourceURI/oldResourceURI
-		stringBuffer.append(getParentResourceURI()).append('/').append(getResourceURI()).append(']');	//oldResourceURI/resourceURI
+		stringBuffer/*G***fix.append(getOldParentResourceURI()).append('/')*/.append(getOldResourceURI()).append(',').append(' ');	//oldParentResourceURI/oldResourceURI
+		stringBuffer/*G***fix.append(getParentResourceURI()).append('/')*/.append(getResourceURI()).append(']');	//oldResourceURI/resourceURI
 		return stringBuffer.toString();	//return the string we constructed
 	}
 
