@@ -56,6 +56,15 @@ public class ParseUnexpectedDataException extends ParseIOException
 		*/
 		protected void setFoundString(final String foundString) {FoundString=foundString;}
 
+	/**Constructor for an unexpected character error from a parse reader.
+	@param foundChar The character found at this location.
+	@param parseReader The parse reader the data of which is the source of the error.
+	*/
+	public ParseUnexpectedDataException(final char foundChar, final ParseReader parseReader)
+	{
+		this(foundChar, parseReader.getLineIndex(), parseReader.getCharIndex(), parseReader.getName());	//construct the class with values from the parse reader
+	}
+
 	/**Constructor for an unexpected character error.
 	@param foundChar The character found at this location.
 	@param lineIndex The index of the line in which the error occurred.
@@ -69,6 +78,17 @@ public class ParseUnexpectedDataException extends ParseIOException
 				".",
 				lineIndex, charIndex, sourceName);	//G***Int
 		setFoundCharacter(foundChar);	//save the character found
+	}
+
+	/**Constructor for an unexpected character error from a parse reader, when
+		one character was expected.
+	@param expectedChar The character expected at this location.
+	@param foundChar The character found at this location.
+	@param parseReader The parse reader the data of which is the source of the error.
+	*/
+	public ParseUnexpectedDataException(final char expectedChar, final char foundChar, final ParseReader parseReader)
+	{
+		this(expectedChar, foundChar, parseReader.getLineIndex(), parseReader.getCharIndex(), parseReader.getName());	//construct the class with values from the parse reader
 	}
 
 	/**Constructor for an unexpected character error, when one character was expected.
@@ -88,6 +108,17 @@ public class ParseUnexpectedDataException extends ParseIOException
 				lineIndex, charIndex, sourceName);	//G***Int
 		setExpectedCharacters(String.valueOf(expectedChar));	//save the expected character
 		setFoundCharacter(foundChar);	//save the character found
+	}
+
+	/**Constructor for an unexpected character error from a parse reader, when
+		multiple characters were expected.
+	@param expectedChars A string containing the characters expected at this location.
+	@param foundChar The character found at this location.
+	@param parseReader The parse reader the data of which is the source of the error.
+	*/
+	public ParseUnexpectedDataException(final String expectedChars, final char foundChar, final ParseReader parseReader)
+	{
+		this(expectedChars, foundChar, parseReader.getLineIndex(), parseReader.getCharIndex(), parseReader.getName());	//construct the class with values from the parse reader
 	}
 
 	/**Constructor for an unexpected character error, when multiple characters were expected.

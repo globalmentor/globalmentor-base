@@ -38,7 +38,7 @@ public class DirectoryProcessor implements DirectoryConstants
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
-	public DirectoryLine processDirectoryLine(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public ContentLine processDirectoryLine(final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
 		String group=null;	//we'll store the group here
 		String name=null;	//we'll store the name here
@@ -61,19 +61,31 @@ public class DirectoryProcessor implements DirectoryConstants
 				if(c==PARAM_SEPARATOR_CHAR)	//if this was the character separating the name from parameters, read the parameters
 				{
 					paramList=processParameters(reader);	//process the parameters, consuming the ending delimiter
+					reader.readExpectedChar(NAME_VALUE_SEPARATOR_CHAR);	//read the ':' that we expect to come after the parameters
 				}
-				//G***process the value
+				else	//if there were no parameters
+				{
+					paramList=new ArrayList();	//create an empty list, since we didn't read any parameters
+				}
+				final String valueString=reader.readStringUntilChar(CR);	//everything before the carriage return will constitute the value
+					//G***check the value
+				final Object value=processValue(group, name, paramList, reader);	//process the value and get an object that represents the object
+				//G***read the CRLF that's left
 				//G***decide whether to require CRLF
 				return null; //G***create and return the directory line
 
 
 //G***this isn't right---we shouldn't even check for a CR or LF at this point
-			case CR:	//if we just read a carriage return
+			case CR:	//if we just read a carriage return G***maybe later not even check for CR and LF here
+/*G***don't allow blank lines until we find out differently
 				reader.readExpectedChar(LF);	//there should always be an LF after a CR
+				if(token.trim().length()>0)	//if there is content before the CRLF, but none of the other delimiters we expect, there's a syntax error in the line
+					return new ParseIOException("")
 				return null;	//G***decide what to do with an empty line
+*/
 			case LF:	//if we see an LF before a CR
 			default:	//if we read anything else (there shouldn't be anything else unless there is a logic error)					
-				throw new ParseUnexpectedDataException(c, reader.getLineIndex(), reader.getCharIndex(), reader.getName());	//show that we didn't expect an LF here
+				throw new ParseUnexpectedDataException(""+PARAM_SEPARATOR_CHAR+NAME_VALUE_SEPARATOR_CHAR, c, reader);	//show that we didn't expect this character here
 		}
 	}
 
@@ -81,19 +93,20 @@ public class DirectoryProcessor implements DirectoryConstants
 		separator ('=') or the line name/value separator (':'), indicating we've
 		finished parameters.
 	*/ 
-	protected final static String PARAM_NAME_DELIMITER_CHARS=""+PARAM_NAME_VALUE_SEPARATOR_CHAR+NAME_VALUE_SEPARATOR_CHAR;
+//G***del	protected final static String PARAM_NAME_DELIMITER_CHARS=""+PARAM_NAME_VALUE_SEPARATOR_CHAR+NAME_VALUE_SEPARATOR_CHAR;
 
-	/**When reading the parameter name, we expect either a parameter separator
+	/**After reading the parameter value, we expect either a parameter separator
 		(';') the parameter value separator (',') indicating more values, or the
 		line name/value separator (':'), indicating we've finished parameters.
 	*/ 
 	protected final static String PARAM_VALUE_DELIMITER_CHARS=""+PARAM_SEPARATOR_CHAR+PARAM_VALUE_SEPARATOR_CHAR+NAME_VALUE_SEPARATOR_CHAR;
 
 	/**Retrieves parameters from a line of content from a directory.
-		Whatever delimiter ended the parameters will no longer exist in the reader.
+	<p>Whatever delimiter ended the value will be left in the reader.</p>
 	@param reader The reader that contains the lines of the directory.
-	@return A list of name/object pairs, the value of each is a <code>List</code>
-		of values.
+	@param The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>Object</code>.
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	@see NameValuePair
@@ -101,18 +114,16 @@ public class DirectoryProcessor implements DirectoryConstants
 	public List processParameters(final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
 		final List paramList=new ArrayList();	//create a list of parameters
-		while(true)	//keep reading parameters until we reach the end of the parameters
-		{	
+		char nextCharacter;	//we'll store the last peeked delimiter here each time in the loop
+		do	//read each parameter
+		{
 					//read the parameter name
-			final String paramName=reader.readStringUntilChar(PARAM_NAME_DELIMITER_CHARS);	//get the parameter name
-			if(reader.readChar()==NAME_VALUE_SEPARATOR_CHAR)	//if we're finished with the parameters
-				break;	//stop reading parameters
+			final String paramName=reader.readStringUntilChar(PARAM_NAME_VALUE_SEPARATOR_CHAR);	//get the parameter name, which is everything up to the ':' characters
 			//G***check the param name for validity
-			NameValuePair parameter=null;	//we'll create this when we have all the values for the parameter
 			final List paramValueList=new ArrayList();	//create a list to hold the parameter values
-					//read the parameter value
-			while(parameter==null)	//keep reading values until we reach the end of the parameter values and create a parameter
+			do	//read the parameter value(s)
 			{
+				reader.skip(1);	//skip the delimiter that got us here
 				final String paramValue;	//we'll read the value and store it here
 				switch(reader.peekChar())	//see what character is first in the value
 				{
@@ -124,21 +135,135 @@ public class DirectoryProcessor implements DirectoryConstants
 						break;
 				}
 				//G***check the parameter value, here
-				paramValueList.add(paramValue);	//add this value to our list of values
-				switch(reader.peekChar())	//see what comes after this parameter value
-				{
-					case PARAM_SEPARATOR_CHAR:	//if this is the last of the values for this parameter, and there's another parameter coming up
-					case NAME_VALUE_SEPARATOR_CHAR:	//if this is the last of the values for this parameter, and there are no more parameters
-						parameter=new NameValuePair(paramName, paramValueList);	//create a parameter with the name and list of values
-						break;
-				}				
-				reader.resetPeek();	//unpeek the character we peeked
+				paramList.add(new NameValuePair(paramName, paramValue));	//add this name/value pair to our list of parameters
+				nextCharacter=reader.peekChar();	//see what delimiter will come next
 			}
-			paramList.add(parameter);	//add this parameter to our list
-			if(reader.readChar()==NAME_VALUE_SEPARATOR_CHAR)	//if we're finished with the parameters
-				break;	//stop reading parameters
+			while(nextCharacter==PARAM_VALUE_SEPARATOR_CHAR);	//keep getting parameter values while there are more parameter value separators
 		}
+		while(nextCharacter!=NAME_VALUE_SEPARATOR_CHAR);	//keep reading parameters until we get to the '=' that separates the name from the value
+		reader.resetPeek();	//reset peeking, since we've been peeking
 		return paramList;	//return the list of parameters we filled
+	}
+
+	/**Processes the textual representation of a line's value and returns
+		one or more object representing the value, as some value types
+		support multiple values.
+	<p>Whatever delimiter ended the value will be left in the reader.</p>
+	<p>The following predefined types, along with the objects returned, are as
+		follows:</p>
+	<ul>
+		<li><code>URI_VALUE_TYPE</code> <code>URI</code></li>
+		<li><code>TEXT_VALUE_TYPE</code> <code>String</code></li>
+		<li><code>DATE_VALUE_TYPE</code> <code>Date</code></li>
+		<li><code>TIME_VALUE_TYPE</code> <code>Date</code></li>
+		<li><code>DATE_TIME_VALUE_TYPE</code> <code>Date</code></li>
+		<li><code>INTEGER_VALUE_TYPE</code> <code>Integer</code></li>
+		<li><code>BOOLEAN_VALUE_TYPE</code> <code>Boolean</code></li>
+		<li><code>FLOAT_VALUE_TYPE</code> <code>Double</code></li>
+	</ul>		
+	@param group The group specification, or <code>null</code> if there is no group.
+	@param name The name of the information.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>Object</code>.
+	@param reader The reader that contains the lines of the directory.
+	@return An array of objects represent the value string.
+	@exception IOException Thrown if there is an error reading the directory.
+	@exception ParseIOException Thrown if there is a an error interpreting the directory.
+	@see NameValuePair
+	@see URI_VALUE_TYPE
+	@see URI
+	@see TEXT_VALUE_TYPE
+	@see String
+	@see DATE_VALUE_TYPE
+	@see TIME_VALUE_TYPE
+	@see DATE_TIME_VALUE_TYPE
+	@see Date
+	@see INTEGER_VALUE_TYPE
+	@see Integer
+	@see BOOLEAN_VALUE_TYPE
+	@see Boolean
+	@see FLOAT_VALUE_TYPE
+	@see Double
+	*/
+	public Object[] processValue(final String group, final String name, final List paramList, final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	{
+//G***del		final List valueList=new ArrayList();	//create a new list to hold the objects we find
+		String valueType=null;	//start out not knowing what the value type will be
+		final Iterator paramIterator=paramList.iterator();	//get an iterator to the parameters
+		while(paramIterator.hasNext())	//while there are more parameters
+		{
+			final NameValuePair parameter=(NameValuePair)paramIterator.next();	//get the next parameter name/value pair
+			if(VALUE_PARAM_NAME.equals(parameter.getName()))	//if this is the "value" parameter
+			{
+				valueType=(String)parameter.getValue();	//get the value type
+				break;	//stop looking for a value type
+			}
+		}
+		if(TEXT_VALUE_TYPE.equals(valueType))	//if this is the "text" value type
+		{
+			return processTextValue(reader);	//process the text value
+		}
+		
+		
+		return null;	//G***fix
+	}
+
+
+	/**The delimiters that can divide a text value: '\\' ',' and CR.*/
+	protected final static String TEXT_VALUE_DELIMITER_CHARS=""+TEXT_ESCAPE_CHAR+VALUE_SEPARATOR_CHAR+CR; 
+	
+	
+	/**Processes a text value.
+	<p>The sequence "\n" or "\N" will be converted to a single newline character,
+		'\n'.</p>
+	<p>Whatever delimiter ended the value will be left in the reader.</p>
+	@param reader The reader that contains the lines of the directory.
+	@return An array of strings representing the values.
+	@exception IOException Thrown if there is an error reading the directory.
+	@exception ParseIOException Thrown if there is a an error interpreting the directory.
+	*/
+	protected String[] processTextValue(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	{
+		final List stringList=new ArrayList();	//create a new list to hold the strings we find
+//G***del when works		final StringBuffer stringBuffer=new StringBuffer(valueString);	//create a string buffer to parse the string value
+		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer to hold whatever string we're processing
+		while(true)	//keep collecting strings until we encounter a CR, at which point we'll return the value
+		{		
+			stringBuffer.append(reader.readStringUntilChar(TEXT_VALUE_DELIMITER_CHARS));	//read all undelimited characters until we find a delimiter
+			final char delimiter=reader.readChar();	//read the next character, the delimiter we found
+			switch(delimiter)	//see which delimiter we found
+			{
+				case TEXT_ESCAPE_CHAR:	//if this is an escape character ('\\')
+					{
+						final char escapedChar=reader.readChar();	//read the character after the escape character
+						switch(escapedChar)	//see what character comes after this one
+						{
+							case TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR:	//"\n"
+							case TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR:	//"\N"
+								stringBuffer.append('\n');	//append a single newline character
+								break;
+							case '\\':
+							case ',':
+								stringBuffer.append(escapedChar);	//escaped backslashes and commas get appended normally
+							default:	//if something else was escape, we don't recognize it
+								throw new ParseUnexpectedDataException("\\,"+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR+TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR, escapedChar, reader);	//show that we didn't expect this character here				
+						}
+					}
+					break;
+				case VALUE_SEPARATOR_CHAR:	//if this is the character separating multiple values (',')
+					stringList.add(stringBuffer.toString());	//add the string we've collected to the list of strings
+					stringBuffer.delete(0, stringBuffer.length());	//remove the contents of the string buffer
+					break;
+				case CR:	//if we just read a carriage return
+					stringList.add(stringBuffer.toString());	//add the string we've collected to the list of strings
+					reader.unread(delimiter);	//unread the carriage return
+					//G***check the text value
+					return (String[])stringList.toArray(new String[stringList.size()]);	//convert the list of strings to an array of strings and return the array
+				default:	//if we read anything else (there shouldn't be anything else unless there is a logic error)					
+					throw new ParseUnexpectedDataException(TEXT_VALUE_DELIMITER_CHARS, delimiter, reader);	//show that we didn't expect this character here
+			}
+		}
 	}
 
 }
