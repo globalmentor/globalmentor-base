@@ -54,7 +54,10 @@ public class MAQROActivityView extends XMLComponentBlockView	//TODO transfer all
 		if(submitButton!=null)	//if there is a submit button
 		{
 			submitButton.setFocusable(false);	//TODO fix component manager focus traversal
-			getComponentManager().add(submitButton, axis==X_AXIS ? ViewComponentManager.Border.LINE_END : ViewComponentManager.Border.PAGE_END); //add the button to the end of the activity view
+				//place the button in the far inset of the tile axis and in the middle of the perpendicular axis
+			final ViewComponentManager.AxisLocation.Region regionX=axis==X_AXIS ? ViewComponentManager.AxisLocation.Region.AFTER : ViewComponentManager.AxisLocation.Region.MIDDLE; 
+			final ViewComponentManager.AxisLocation.Region regionY=axis==Y_AXIS ? ViewComponentManager.AxisLocation.Region.AFTER : ViewComponentManager.AxisLocation.Region.MIDDLE; 
+			getComponentManager().add(submitButton, regionX, 0, regionY, 0); //add the button to the end of the activity view
 		}
 	}
 

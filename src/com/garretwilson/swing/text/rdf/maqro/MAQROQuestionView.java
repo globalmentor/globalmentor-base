@@ -77,7 +77,11 @@ public class MAQROQuestionView extends XMLComponentBlockView implements Outcomab
 //TODO del if not needed			hintButton.setOpaque(false);
 			//TODO add a rollover border
 			hintButton.setFocusable(false);	//TODO fix component manager focus traversal
-			getComponentManager().add(hintButton, axis==Y_AXIS ? ViewComponentManager.Border.LINE_END : ViewComponentManager.Border.PAGE_END); //add the button to the question view
+				//place the button in the near inset of the tile axis and in the far inset of the perpendicular axis
+			final ViewComponentManager.AxisLocation.Region regionX=axis==Y_AXIS ? ViewComponentManager.AxisLocation.Region.AFTER : ViewComponentManager.AxisLocation.Region.BEFORE; 
+			final ViewComponentManager.AxisLocation.Region regionY=axis==X_AXIS ? ViewComponentManager.AxisLocation.Region.AFTER : ViewComponentManager.AxisLocation.Region.BEFORE; 
+			getComponentManager().add(hintButton, regionX, 0, regionY, 0); //add the button to the question view
+//TODO del when works			getComponentManager().add(hintButton, axis==Y_AXIS ? ViewComponentManager.Border.LINE_END : ViewComponentManager.Border.PAGE_END); //add the button to the question view
 		}
 		else	//if there are no hints
 		{

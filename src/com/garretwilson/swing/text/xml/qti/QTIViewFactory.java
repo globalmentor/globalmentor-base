@@ -286,7 +286,11 @@ Debug.trace("QTI local name: ", elementLocalName);  //G***del when works
 				final XMLComponentBlockView assessmentView=new XMLComponentBlockView(element, QTIAssessmentView.Y_AXIS);  //create a new view for the assessment
 //G***del if not needed				final QTIAssessmentView assessmentView=new QTIAssessmentView(element, QTIAssessmentView.Y_AXIS, submitAction);  //create a new view for the assessment
 				final JButton submitButton=new JButton(submitAction); //create a new button for the submission
-				assessmentView.getComponentManager().add(submitButton, ViewComponentManager.Border.PAGE_END); //add the button to the bottom of the assessment view
+				//place the button in the far inset of the tile axis and in the middle of the perpendicular axis
+				final ViewComponentManager.AxisLocation.Region regionX=assessmentView.getAxis()==View.X_AXIS ? ViewComponentManager.AxisLocation.Region.AFTER : ViewComponentManager.AxisLocation.Region.MIDDLE; 
+				final ViewComponentManager.AxisLocation.Region regionY=assessmentView.getAxis()==View.Y_AXIS ? ViewComponentManager.AxisLocation.Region.AFTER : ViewComponentManager.AxisLocation.Region.MIDDLE; 
+				assessmentView.getComponentManager().add(submitButton, regionX, 0, regionY, 0); //add the button to the end of the activity view
+//TODO del when works				assessmentView.getComponentManager().add(submitButton, ViewComponentManager.Border.PAGE_END); //add the button to the bottom of the assessment view
 				return assessmentView;  //return the assessment view
 			}
 		  else if(ELEMENT_ITEM.equals(elementLocalName)) //if this is an <item>
