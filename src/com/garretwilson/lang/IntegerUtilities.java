@@ -21,6 +21,20 @@ public class IntegerUtilities
 		return integerObject instanceof Integer ? ((Integer)integerObject).intValue()==integer : false;
 	}
 
+	/**Determines whether a given value has given bits set.
+	@param value The value to test.
+	@param bits The value that has the given bits to testcapabilities that may be included, one or more
+		<code>XXX_CAPABILITY</code> constants, ORed together.
+	@return <code>true</code> if and only if the specified included capabilities
+		are all included in the full capabilities.
+	*/
+/*G***del; having a function that does this may outweigh the benefit of using bits to begin with
+	public static boolean isBitsSet(final long value, final long bits)
+	{
+		return (capabilities&includedCapabilities)==includedCapabilities;
+	}
+*/
+
 	/**Parses an integer value in the given string. If the string contains a
 		decimal point followed by zeros (a double representation of an integer
 		value), this method correctly returns the integer value without throwing

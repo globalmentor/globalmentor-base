@@ -43,4 +43,14 @@ public class Entry extends DefaultRDFResource implements DictoConstants
 		return (RDFPlainLiteral)getPropertyValue(DICTO_NAMESPACE_URI, TRANSLATION_PROPERTY_NAME);	//get the translation		
 	}
 
+	/**@return The transliteration of the entry, or <code>null</code> if there is
+		no transliteration.
+	@exception ClassCastException Thrown if the property object is not a plain
+		literal.
+	*/
+	public RDFPlainLiteral getTransliteration()
+	{
+		return (RDFPlainLiteral)getPropertyValue(DICTO_NAMESPACE_URI, TRANSLITERATION_PROPERTY_NAME);	//get the transliteration		
+	}
+
 }
