@@ -1,6 +1,7 @@
 package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.BorderLayout;
+import java.awt.Frame;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.*;
@@ -210,6 +211,19 @@ public class ActivityPanel extends RDFPanel
 			case CONFIGURATION_MODEL_VIEW:	//if we're changing to the configuration view
 				activityBehaviorPanel.loadModel();	//tell the configuration view to load the model
 				break;
+/*G***testing---why does the list view incorrectly size the list, exclusing the last item?					
+			case LIST_MODEL_VIEW:	//G***testing
+//G***testing				interactionListComponent.setVisibleRowCount(interactionListComponent.getModel().getSize());
+				{
+					final Frame frame=JOptionPane.getFrameForComponent(this);	//G***testing
+					if(frame!=null)
+					{
+						frame.invalidate();	//G***testing
+						frame.validate();	//G***testing
+					}
+				}
+				break;
+*/
 		}
 	}
 

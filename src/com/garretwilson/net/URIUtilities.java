@@ -3,8 +3,6 @@ package com.garretwilson.net;
 import java.io.*;
 import java.net.*;
 import com.garretwilson.io.*;
-import com.garretwilson.lang.CharSequenceUtilities;
-import com.garretwilson.lang.IntegerUtilities;
 import com.garretwilson.util.Debug;
 
 /**Various URI manipulating functions for working with URIs as defined in
@@ -12,7 +10,7 @@ import com.garretwilson.util.Debug;
 	"Uniform Resource Identifiers (URI): Generic Syntax".
 @see java.net.URI
 */
-public class URIUtilities implements URIConstants, URIInputStreamable
+public class URIUtilities implements URIConstants
 {
 
 	/**Default constructor.*/
@@ -166,21 +164,6 @@ Debug.trace("guessing URI: ", string);
 	public static URL getDirectoryURL(final URL url) throws MalformedURLException
 	{
 		return new URL(url, ".");  //create a new URL from the directory of the URL G***use a constant here
-	}
-
-	/**Returns an input stream from given URI by establishing a connection to
-		the requested URI.
-		<p>This implementation only supports URIs that are URLs.</p>
-		<p>This method fulfills the requirements of <code>URIInputStreamable</code>.</p>
-	@param uri A complete URL to a file.
-	@return An input stream to the contents of the file represented by the given URI.
-	@exception IOException Thrown if an I/O error occurred.
-	@see URIInputStreamable
-	*/
-	public InputStream getInputStream(final URI uri) throws IOException
-	{
-Debug.trace("getting input stream from URI: ", uri);
-		return URLUtilities.getInputStream(uri.toURL());	//open a connection to the URI (converted to a URL) and return an input stream to that connection
 	}
 
 	/**Returns a relative path to the URL from the given context URL.

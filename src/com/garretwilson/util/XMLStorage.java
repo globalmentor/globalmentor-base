@@ -1,8 +1,5 @@
 package com.garretwilson.util;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.beans.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,9 +10,7 @@ import com.garretwilson.io.FileUtilities;
 import com.garretwilson.lang.ClassUtilities;
 import com.garretwilson.lang.IntegerUtilities;
 import com.garretwilson.lang.JavaUtilities;
-import com.garretwilson.lang.StringUtilities;
-import com.garretwilson.text.CharacterConstants;
-import com.garretwilson.text.xml.XMLDocument;
+import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
@@ -332,10 +327,7 @@ public class XMLStorage
 	*/
 	public static void store(final Object object, final Document document)
 	{
-		final Element originalDocumentElement=document.getDocumentElement();  //get the document element, if there is one
-		if(originalDocumentElement!=null) //if there is a document element
-			document.removeChild(originalDocumentElement);  //remove the document element
-		storeChild(object, document); //store the object as the first child of the document
+		store(object, document.getDocumentElement());	//store the object in the document element
 	}
 
 	/**Creates a child element of the given node and stores the given object in
@@ -499,17 +491,18 @@ Debug.trace("using element: ", element.getNodeName());  //G***del
 	*/
 	protected static void store(final Object object, final OutputStream outputStream) throws IOException
 	{
-		final XMLDocument xmlDocument=new XMLDocument();  //create a new XML document G***use JAXP or something
-		store(object, xmlDocument); //store the object in the document
+		final DOMImplementation domImplementation=new XMLDOMImplementation();	//create a new DOM implementation TODO use a standard way of getting the DOM implementation
+		final Document document=domImplementation.createDocument(null, getStorageName(object.getClass()), null);	//create an XML document for the object
+		store(object, document); //store the object in the document
 		final XMLSerializer xmlSerializer=new XMLSerializer(true);  //create a formatted serializer
 		xmlSerializer.setXMLEncodePrivateUse(true);  //show that we should encode Unicode private use characteres, which will show the null character as a character reference
 		try
 		{
-			xmlSerializer.serialize(xmlDocument, outputStream); //serialize the document to the stream
+			xmlSerializer.serialize(document, outputStream); //serialize the document to the stream
 		}
 		catch(UnsupportedEncodingException e) //currently we only support UTF-8, which should always be supported
 		{
-			Debug.error(e);
+			throw new AssertionError(e);
 		}
 	}
 

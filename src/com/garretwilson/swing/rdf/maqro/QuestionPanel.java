@@ -1,6 +1,7 @@
 package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ItemListener;
@@ -439,6 +440,7 @@ public class QuestionPanel extends TabbedViewPanel
 					final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
 					final DialogueModel dialogueModel=new DialogueModel(dialogueClone);	//create a model containing the dialogue
 					final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
+					dialoguePanel.setPreferredSize(new Dimension(600, 400));	//don't allow the panel to get too small
 						//allow the dialogue to be edited in a dialog box; if the user accepts the changes
 					if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Choice", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
 					{
@@ -488,6 +490,7 @@ public class QuestionPanel extends TabbedViewPanel
 				final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
 				final DialogueModel dialogueModel=new DialogueModel(dialogueClone);	//create a model containing the dialogue
 				final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
+				dialoguePanel.setPreferredSize(new Dimension(600, 400));	//don't allow the panel to get too small
 					//allow the dialogue to be edited in a dialog box; if the user accepts the changes
 				if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Explanation", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
 				{
