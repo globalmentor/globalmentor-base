@@ -275,6 +275,69 @@ public class Address
 		setLocale(locale);
 	}
 
+	/**The string for separating the components of the string representation of
+		the address type.
+	*/
+	protected final static String ADDRESS_TYPE_SEPARATOR=", ";
+
+	/**@return A string to represent the delivery address type.*/
+	public String getAddressTypeString()
+	{
+		return getAddressTypeString(getAddressType());	//return a string for our address type
+	}
+
+	/**Constructs a string to represent the given delivery address type.
+	@param addressType The intended use, one or more of the
+		<code>XXX_ADDRESS_TYPE</code> constants ORed together.
+	 */
+	public static String getAddressTypeString(final int addressType)	//G***i18n
+	{
+		final StringBuffer stringBuffer=new StringBuffer();
+		if((addressType&PREFERRED_ADDRESS_TYPE)!=0)
+		{
+			if(stringBuffer.length()>0)
+				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
+			stringBuffer.append("preferred");
+		}		
+		if((addressType&WORK_ADDRESS_TYPE)!=0)
+		{
+			if(stringBuffer.length()>0)
+				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
+			stringBuffer.append("work");
+		}		
+		if((addressType&HOME_ADDRESS_TYPE)!=0)
+		{
+			if(stringBuffer.length()>0)
+				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
+			stringBuffer.append("home");
+		}		
+		if((addressType&INTERNATIONAL_ADDRESS_TYPE)!=0)
+		{
+			if(stringBuffer.length()>0)
+				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
+			stringBuffer.append("international");
+		}		
+		if((addressType&DOMESTIC_ADDRESS_TYPE)!=0)
+		{
+			if(stringBuffer.length()>0)
+				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
+			stringBuffer.append("domestic");
+		}		
+		if((addressType&PARCEL_ADDRESS_TYPE)!=0)
+		{
+			if(stringBuffer.length()>0)
+				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
+			stringBuffer.append("parcel");
+		}		
+		if((addressType&POSTAL_ADDRESS_TYPE)!=0)
+		{
+			if(stringBuffer.length()>0)
+				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
+			stringBuffer.append("postal");
+		}		
+		return stringBuffer.toString();		
+	}
+
 	/**@return A string representation of the address.*/
 	public String toString()
 	{
