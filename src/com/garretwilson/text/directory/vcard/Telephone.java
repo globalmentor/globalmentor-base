@@ -61,8 +61,6 @@ public class Telephone extends TelephoneNumber
 	/**Telephone number constructor with default telephone type of <code>VOICE_TELEPHONE_TYPE</code>.
 	@param telephoneNumber The telephone number from which values should be used
 		for initialization.
-	@param telephoneType The intended use, one of the
-		<code>XXX_TELEPHONE_TYPE</code> constants.
 	@exception TelephoneNumberSyntaxException Thrown if the values violate ITU-T
 		E.164.
 	*/
@@ -71,7 +69,7 @@ public class Telephone extends TelephoneNumber
 		this(telephoneNumber, DEFAULT_TELEPHONE_TYPE);	//construct a telephone with the default telephone type
 	}
 
-	/**Telephone number constructor.
+	/**Telephone number and type constructor.
 	@param telephoneNumber The telephone number from which values should be used
 		for initialization.
 	@param telephoneType The intended use, one or more of the
@@ -219,6 +217,6 @@ public class Telephone extends TelephoneNumber
 	/**@return A string representation of the address.*/
 	public String toString()
 	{
-		return super.toString()+" ("+getTelephoneTypeString(getTelephoneType())+")";	//return the telephone type appended to the telephone number 
+		return super.toString()+" ("+getTelephoneTypeString()+")";	//return the telephone type appended to the telephone number 
 	}
 }
