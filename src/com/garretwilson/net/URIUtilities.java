@@ -734,6 +734,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	*/
 	public static URI changeBase(final URI uri, final URI oldBaseURI, final URI newBaseURI)
 	{
+//G***del Debug.trace("changing base of ", uri, "from", oldBaseURI, "to", newBaseURI);
 		final URI relativeURI=oldBaseURI.relativize(uri);	//get a URI relative to the old base URI
 		if(relativeURI.isAbsolute())	//if we couldn't relativize the the URI to the old base URI and come up with a relative URI
 		{
