@@ -28,6 +28,9 @@ public class ActivityPanel extends RDFPanel
 	/**The book for the WYSIWYG view.*/
 	protected final Book book;
 
+	/**The panel representing a sequence of ineractions.*/
+	protected final InteractionSequencePanel interactionSequencePanel;
+
 	/**@return The data model for which this component provides a view.
 	@see RDFPanel#getRDFResourceModel()
 	*/
@@ -40,6 +43,7 @@ public class ActivityPanel extends RDFPanel
 	public void setActivityModel(final ActivityModel model)
 	{
 		book.getXMLTextPane().setURIInputStreamable(model.getURIInputStreamable());	//make sure the text pane knows from where to get input streams
+		interactionSequencePanel.setList(model.getActivity()!=null ? model.getActivity().getInteractions() : null);	//G***testing; fix
 		setRDFResourceModel(model);	//set the model
 	}
 
@@ -59,8 +63,9 @@ public class ActivityPanel extends RDFPanel
 	public ActivityPanel(final ActivityModel model, final boolean initialize)
 	{
 		super(model, false);	//construct the parent class without initializing it
-		setSupportedDataViews(getSupportedModelViews()|WYSIWYG_MODEL_VIEW);	//show that we now support WYSIWYG data views, too
+		setSupportedDataViews(getSupportedModelViews()|WYSIWYG_MODEL_VIEW|SEQUENCE_MODEL_VIEW);	//show that we now support WYSIWYG and sequence data views, too
 		book=new Book(1);	//create a new book for the WYSIWYG view, showing only one page
+		interactionSequencePanel=new InteractionSequencePanel(model.getActivity()!=null ? model.getActivity().getInteractions() : null);	//G***make sure we want to possibly initialize without a list
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
 	}
@@ -69,20 +74,25 @@ public class ActivityPanel extends RDFPanel
 	protected void initializeUI()
 	{
 		addView(WYSIWYG_MODEL_VIEW, "Activity", book, null);	//add the book component as the WYSIWYG view G***i18n
+		final ToolStatusPanel applicationPanel=new ToolStatusPanel(interactionSequencePanel, true, false, false);	//TODO probably create a custom application panel for a sequence panel
+		applicationPanel.getToolBar().add(interactionSequencePanel.getPreviousAction()); 
+		applicationPanel.getToolBar().add(interactionSequencePanel.getNextAction());
+		applicationPanel.initialize();	//G***testing 
+
+		addView(SEQUENCE_MODEL_VIEW, "Interactions", applicationPanel, null);	//add the interaction sequence panel as the sequence view G***i18n
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 //TODO set the book to be not editable
 	}
 
-	/**Loads the data from the model to the given view.
-	@param modelView The view of the data that should be loaded.
+	/**Loads the data from the model to the view, if necessary.
 	@exception IOException Thrown if there was an error loading the model.
 	*/
-	protected void loadModel(final int modelView) throws IOException
+	protected void loadModel() throws IOException
 	{
-		super.loadModel(modelView);	//do the default loading
+		super.loadModel();	//do the default loading
 		final ActivityModel model=getActivityModel();	//get the data model
-		switch(modelView)	//see which view of data we should load
+		switch(getModelView())	//see which view of data we should load
 		{
 			case WYSIWYG_MODEL_VIEW:	//if we're changing to the WYSIWYG view
 				book.getXMLTextPane().setURIInputStreamable(model.getURIInputStreamable());	//make sure the text pane knows from where to get input streams

@@ -11,7 +11,6 @@ import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 import com.garretwilson.text.xml.xhtml.XHTMLUtilities;
 import com.garretwilson.text.xml.xlink.XLinkConstants;
 import com.garretwilson.text.xml.xlink.XLinkUtilities;
-import com.garretwilson.util.Debug;
 import com.garretwilson.io.MediaType;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dicto.*;
@@ -74,15 +73,14 @@ public class DictionaryPanel extends RDFPanel
 //TODO set the book to be not editable
 	}
 
-	/**Loads the data from the model to the given view.
-	@param modelView The view of the data that should be loaded.
+	/**Loads the data from the model to the view, if necessary.
 	@exception IOException Thrown if there was an error loading the model.
 	*/
-	protected void loadModel(final int modelView) throws IOException
+	protected void loadModel() throws IOException
 	{
-		super.loadModel(modelView);	//do the default loading
+		super.loadModel();	//do the default loading
 		final DictionaryModel model=getDictionaryModel();	//get the data model
-		switch(modelView)	//see which view of data we should load
+		switch(getModelView())	//see which view of data we should load
 		{
 			case WYSIWYG_MODEL_VIEW:	//if we're changing to the WYSIWYG view
 				book.getXMLTextPane().setURIInputStreamable(model.getURIInputStreamable());	//make sure the text pane knows from where to get input streams
