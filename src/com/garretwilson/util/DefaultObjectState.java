@@ -76,7 +76,7 @@ public class DefaultObjectState extends DefaultModifiable implements ObjectState
 
 	/**Constructs an object state with an object.
 	@param object The non-<code>null</code> object being described
-	@exception IllegalArgumentException Thrown if the object is <code>null</code>.
+	@exception NullPointerException Thrown if the object is <code>null</code>.
 	*/
 	public DefaultObjectState(final Object object)
 	{
