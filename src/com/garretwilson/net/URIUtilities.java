@@ -306,6 +306,15 @@ public class URIUtilities
 		return uri.resolve(PARENT_LEVEL_PATH_SEGMENT);	//resolve the URI to ".."
 	}
 
+	/**Determines the canonical root URI a URI.
+	@param uri The URI to examine.
+	@return A URI representing the URI with no path and no query or fragment.
+	*/
+	public static URI getRootURI(final URI uri)
+	{
+		return create(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
+	}
+
 	/**Retrieves a <code>File</code> representing the file of the URI.
 	@param uri The URI for which to return a file.
 	@return A <code>File</code> object representing the file path of the URI
