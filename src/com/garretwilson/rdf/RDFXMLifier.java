@@ -425,6 +425,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants	//TODO why don
 		  if(!(TYPE_PROPERTY_REFERENCE_URI.equals(propertyResource.getReferenceURI()) && propertyValue.equals(resourceType)))
 			{
 				final URI propertyNamespaceURI=getNamespaceURI(propertyResource); //get the namespace URI of the property
+				assert propertyNamespaceURI!=null : "Missing preperty namespace.";	//TODO add real error handling here
 				boolean serializeLiteralAttribute=false; //start out by assuming we won't serialize as an attribute
 				  //see if we should use an attribute to serialize a plain literal TODO add support for typed literals
 				if(propertyValue instanceof RDFPlainLiteral)	//if this is a plain literal

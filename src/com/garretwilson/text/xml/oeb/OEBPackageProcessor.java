@@ -355,7 +355,7 @@ Debug.trace("item resource: ", XPackageUtilities.toString(itemResource));
 Debug.trace("adding item to organization");
 			spine.add(itemResource);	//add this item to the spine
 		}
-		setSpine(publicationResource, spine);	//add the spine to the resource
+		publicationResource.setSpine(spine);	//add the spine to the resource
 
 //G***fix with new navigation stuff
 		//XPath: /guide/reference

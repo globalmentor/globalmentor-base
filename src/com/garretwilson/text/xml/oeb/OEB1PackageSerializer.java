@@ -207,7 +207,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 		  }
 		}
 		  //package/spine
-		final RDFListResource spine=XEBUtilities.getSpine(publication); //get the spine
+		final RDFListResource spine=publication.getSpine(); //get the spine
 		if(spine!=null)  //if the publication has a spine
 		{
 			final Element spineElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_SPINE); //create the spine element

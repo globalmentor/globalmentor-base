@@ -154,7 +154,6 @@ public class BufferedPushbackReader extends Reader
 		protected void setEOF(final boolean eof)
 		{
 			EOF=eof;
-Debug.traceStack("Just set EOF true");	//G***del
 		}
 
 	/**A carriage return character.*/	//G***do we want these here?

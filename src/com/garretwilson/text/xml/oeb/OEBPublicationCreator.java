@@ -708,7 +708,7 @@ Debug.trace("using file for document: ", oebDocumentFile);
 				//add the preface to the manifest without adding it to the spine
 		  final RDFResource prefaceResource=gatherReference(publication, prefaceURL, prefaceURL.getFile(), OEB10_DOCUMENT_MEDIA_TYPE, false);
 				//add the preface as the first element in the spine
-		  XEBUtilities.getSpine(publication).add(0, prefaceResource);
+		  publication.getSpine().add(0, prefaceResource);
 		}
 			//add a title page if needed
 		final String titlePageLocation=getTitlePageLocation();  //see if we were given a title page to add
@@ -719,7 +719,7 @@ Debug.trace("using file for document: ", oebDocumentFile);
 				//add the title page to the manifest without adding it to the spine
 		  final RDFResource titlePageResource=gatherReference(publication, titlePageURL, titlePageURL.getFile(), OEB10_DOCUMENT_MEDIA_TYPE, false);
 				//add the title page as the first element in the spine
-		  XEBUtilities.getSpine(publication).add(0, titlePageResource);
+		  publication.getSpine().add(0, titlePageResource);
 		}
 			//add the stylesheets to the publication
 		  //G***fix to gather the stylesheet references into the manifest automatically through gatherReferences()
@@ -1157,7 +1157,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 								  //if this is an OEB document, and we should add it to the spine
 								if(shouldAddToSpine && mediaType.match(OEB10_DOCUMENT_MEDIA_TYPE))
 								{
-								  XEBUtilities.getSpine(publication).add(oebItem);  //add the item to the spine as well
+								  publication.getSpine().add(oebItem);  //add the item to the spine as well
 								}
 								if(getOutputDir()!=null)  //if we have an output directory where files should be copied
 								{

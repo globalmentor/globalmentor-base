@@ -8,7 +8,7 @@ import com.garretwilson.io.*;
 @author Garret Wilson
 @see LocaleText
 */
-public class TextIOKit extends AbstractIOKit<String>
+public class TextIOKit extends AbstractIOKit<StringBuilder>
 {
 
 	/**Default constructor.*/
@@ -48,30 +48,30 @@ public class TextIOKit extends AbstractIOKit<String>
 
 	/**Loads a model from an input stream.
 	@param inputStream The input stream from which to read the data.
-	@param baseURI The base URI of the content, or <code>null</code> if no base
-		URI is available.
+	@param baseURI The base URI of the content, or <code>null</code> if no base URI is available.
+	@return The text from the input stream.
 	@throws IOException Thrown if there is an error reading the data.
 	*/ 
-	public String load(final InputStream inputStream, final URI baseURI) throws IOException
+	public StringBuilder load(final InputStream inputStream, final URI baseURI) throws IOException
 	{
 		final CharacterEncoding encoding=InputStreamUtilities.getBOMEncoding(inputStream);	//try to sense from the byte order mark the encoding of the text
 		final byte[] bytes=InputStreamUtilities.getBytes(inputStream);	//get the bytes from the input stream
 		//use the character encoding we sensed to create a string, using a default encoding if we couldn't sense one from the byte order mark
 		final String string=encoding!=null ? new String(bytes, encoding.toString()) : new String(bytes);
-		return string;	//return a text model from the text we read
+		return new StringBuilder(string);	//return a text model from the text we read
 	}
 	
 	/**Saves a model to an output stream.
-	@param localeText The model the data of which will be written to the given output stream.
+	@param model The model the data of which will be written to the given output stream.
 	@param outputStream The output stream to which to write the model content.
 	@throws IOException Thrown if there is an error writing the model.
 	*/
-	public void save(final String localeText, final OutputStream outputStream) throws IOException
+	public void save(final StringBuilder model, final OutputStream outputStream) throws IOException
 	{
 		//TODO create a BOMWriter that does both steps
 		outputStream.write(CharacterEncodingConstants.BOM_UTF_8);	//write the UTF-8 byte order mark
 		final Writer writer=new OutputStreamWriter(outputStream, CharacterEncodingConstants.UTF_8);	//create a UTF-8 writer
-		writer.write(localeText);	//write the text to the writer
+		writer.write(model.toString());	//write the text to the writer
 		writer.flush();	//flush the data to the output stream
 	}
 }
