@@ -311,7 +311,7 @@ public class FileUtilities implements FileConstants
 	*/
 	public static void mkdirs(final File directory) throws IOException
 	{
-		if(!directory.mkdir())	//create the directory; if unsuccessful
+		if(!directory.mkdirs())	//create the directory; if unsuccessful
 		{
 			throw new IOException("Cannot create directories "+directory);	//throw an exception G***i18n
 		}

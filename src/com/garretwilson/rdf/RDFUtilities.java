@@ -192,13 +192,24 @@ public class RDFUtilities implements RDFConstants
 		has no type specified.
 	@exception ClassCastException Thrown if the resource type property value is
 		not a <code>RDFResource</code> (such as a <code>Literal</code>), which would
-		indicate that an incorrect value has been stored for thee type.
+		indicate that an incorrect value has been stored for the type.
 	*/
 	public static RDFResource getType(final RDFResource resource) throws ClassCastException
 	{
 		return (RDFResource)resource.getPropertyValue(RDF_NAMESPACE_URI, TYPE); //return the type property
 	}
-
+	
+	/**Returns an iterator to each property of <code>rdf:type</code>.
+	@param resource The resource the types of which will be returned.
+	@return An iterator to a read-only list of values of <code>rdf:type</code>
+		properties, each item of which is expected to be an <code>RDFResource</code>
+		of the type. 
+	*/
+	public static Iterator getTypeIterator(final RDFResource resource)
+	{
+		return resource.getPropertyValueIterator(RDF_NAMESPACE_URI, TYPE); //return an iterator to the type properties		
+	}
+	
 	/**Retrieves a label appropriate for the type of the resource. If the type
 		has namespace URI and local name, the XML qualified name will be returned in
 		<em>namespaceURI</em>:<em>localName</em> format; otherwise, the type

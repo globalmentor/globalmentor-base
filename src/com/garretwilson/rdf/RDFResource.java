@@ -1,7 +1,7 @@
 package com.garretwilson.rdf;
 
 import java.net.URI;
-import java.util.ListIterator;
+import java.util.*;
 import com.garretwilson.util.*;
 
 /**Represents the an RDF resource connected in an RDF graph.
@@ -60,6 +60,25 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Comparab
 		property.
 	*/
 	public RDFObject getPropertyValue(final URI namespaceURI, final String localName);
+
+	/**Searches and returns an iterator of all property values that appear as RDF
+		statement objects with a predicate of <code>propertyURI</code>.
+	@param propertyURI The reference URI of the property resources.
+	@return An iterator to a read-only list of values of properties, each either a
+		<code>RDFResource</code> or a <code>Literal</code>.
+	*/
+	public Iterator getPropertyValueIterator(final URI propertyURI);  //G***maybe fix to make the iterator dynamic to the RDF data model
+
+	/**Searches and returns an iterator of all property values that appear as
+		RDF statement objects with a predicate of a property URI formed by the
+		given namespace URI and local name. This is a convenience function that
+		creates a property URI automatically for searching.
+	@param namespaceURI The XML namespace URI that represents part of the reference URI.
+	@param localName The XML local name that represents part of the reference URI.
+	@return An iterator to a read-only list of values of properties, each either a
+		<code>RDFResource</code> or a <code>Literal</code>.
+	*/
+	public Iterator getPropertyValueIterator(final URI namespaceURI, final String localName);
 
 	/**Determines if the resource has the given property with the given value.
 		Each matching property is compared to the property value using the
