@@ -88,13 +88,22 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 	@param resource The resource to which a property should be added.
 	@return The new manifest resource, an <code>&lt;rdf:List&gt;</code>.
 	*/
-	public static RDFListResource addManifest(final RDFResource resource)
+	public static RDFListResource addManifest(final RDFResource resource)	//G***do we even need these addXXX() methods, now?
 	{
 		  //create a manifest resource from the data model
 		final RDFListResource manifestResource=new RDFListResource(resource.getRDF());
 			//add a manifest to the resource
 		resource.addProperty(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME, manifestResource);
 		return manifestResource;  //return the manifest resource we created
+	}
+
+	/**Set the <code>&lt;xpackage:manifest&gt;</code> property of the resource.
+	@param resource The resource for which a property should be set.
+	@param manifestResource The manifest resource, an <code>&lt;rdf:List&gt;</code>.
+	*/
+	public static void setManifest(final RDFResource resource, final RDFListResource manifestResource)
+	{
+		resource.setProperty(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME, manifestResource);	//set the manifest of the resource
 	}
 
 	/**Adds an <code>&lt;xpackage:organization&gt;</code> property to the resource.
