@@ -1143,7 +1143,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 								oebItem=XPackageUtilities.createXPackageResource(getRDF(), itemURI);
 //G***del								oebItem=new OEBItem(publication, itemID, hrefRelativePath, mediaType);
 								XPackageUtilities.addLocation(getRDF(), oebItem, hrefRelativePath);  //add the relative href to the item
-								XPackageUtilities.addContentType(getRDF(), oebItem, mediaType); //add the content type we determined
+								MIMEOntologyUtilities.addContentType(getRDF(), oebItem, mediaType); //add the content type we determined
 								XPackageUtilities.getManifest(publication).add(getRDF(), oebItem); //add the item to the publication's manifest
 								  //if this is an OEB document, and we should add it to the spine
 								if(shouldAddToSpine && mediaType.equals(OEB10_DOCUMENT_MEDIA_TYPE))

@@ -6,6 +6,7 @@ import java.util.*;
 import com.garretwilson.io.MediaType;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.DCConstants;
+import com.garretwilson.rdf.xpackage.MIMEOntologyUtilities;
 import com.garretwilson.rdf.xpackage.XPackageUtilities;
 import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.text.xml.XMLConstants;
@@ -247,7 +248,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 		  itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_HREF, href);		  //set the href
 //G***maybe assert that there is a media type, here
 		}
-		final MediaType mediaType=XPackageUtilities.getMediaType(oebItem);  //get the item's media type
+		final MediaType mediaType=MIMEOntologyUtilities.getMediaType(oebItem);  //get the item's media type
 		if(mediaType!=null) //if the item has a media type
 		{
 		  itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE, mediaType.toString());		  //set the media type

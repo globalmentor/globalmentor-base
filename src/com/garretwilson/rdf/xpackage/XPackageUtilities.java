@@ -39,18 +39,6 @@ public class XPackageUtilities implements XPackageConstants
 		return locationResource;  //return the location resource we created
 	}
 
-	/**Adds a <code>xpackage:contentType</code> property to the resource.
-	@param rdf The RDF data model to provide to lookup property resources.
-	@param resource The resource to which a property should be added.
-	@param mediaType The object that specifies the content type.
-	@return The new content type resource, a string literal.
-	*/
-	public static Literal addContentType(final RDF rdf, final RDFResource resource, final MediaType mediaType)
-	{
-		  //add the string value of the media type as the literal value of the xpackage:contentType property
-		return RDFUtilities.addProperty(rdf, resource, XPACKAGE_NAMESPACE_URI, CONTENT_TYPE_PROPERTY_NAME, mediaType.toString());
-	}
-
 	/**Adds an <code>&lt;xpackage:manifest&gt;</code> property to the resource.
 	@param rdf The RDF data model to provide to lookup property resources.
 	@param resource The resource to which a property should be added.
@@ -297,59 +285,6 @@ public class XPackageUtilities implements XPackageConstants
 	public static RDFBagResource getManifest(final RDFResource resource) throws ClassCastException
 	{
 		return (RDFBagResource)resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME); //return the manifest, cast to an RDF bag resource
-	}
-
-	/**Attempts to determine the media type of the given resource. The media type
-		is determined in this order:
-		<ol>
-		  <li>The <code>xpackage:contentType</code> property, if present, is
-				checked.</li>
-			<li>The extension of the <code>xpackage:location</code> property
-				<code>href</code>, if present, is checked.</li>
-			<li>The extension, if any, of the resource URI is checked.</li>
-		</ol>
-	@param resource The resource of which the media type should be determined.
-	@return The media type of the resource, or <code>null</code> if the media
-		type could not be determined.
-	*/
-	public static MediaType getMediaType(final RDFResource resource)
-	{
-		MediaType mediaType=null; //start out assuming we won't find the media type
-		final RDFObject mediaTypeObject=resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, CONTENT_TYPE_PROPERTY_NAME); //return the contentType property
-		if(mediaTypeObject!=null) //if there was a content type
-		{
-			try
-			{
-				final String mediaTypeString=((Literal)mediaTypeObject).getValue(); //get the media type string
-				mediaType=new MediaType(mediaTypeString); //create a media type from the string
-			}
-			catch(ClassCastException classCastException)
-			{
-				Debug.warn(classCastException); //if there was an error getting the media type, continue but create a warning
-			}
-		}
-		if(mediaType==null) //if we couldn't find the media type from the contentType property
-		{
-			try
-			{
-//G***del Debug.trace("getting location href"); //G***del
-				final String href=getLocationHRef(resource);  //get the location of the resource
-//G***del Debug.trace("location href: ", href); //G***del
-				if(href!=null)  //if this resource has a location
-				{
-					mediaType=FileUtilities.getMediaType(new File(href)); //get the media type of the file
-				}
-			}
-			catch(ClassCastException classCastException)
-			{
-				Debug.warn(classCastException); //if there was an error retrieving the location href, continue but create a warning
-			}
-		}
-		if(mediaType==null) //try to find the media type from the URI
-		{
-			mediaType=URIUtilities.getMediaType(resource.getReferenceURI());	//get the media type of the resource reference URI
-		}
-		return mediaType; //return whatever media type we found, if any
 	}
 
 	/**Retrieves the organization of the resource. If this resource has more than

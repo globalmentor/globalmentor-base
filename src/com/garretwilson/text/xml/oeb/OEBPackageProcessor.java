@@ -305,7 +305,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 				//create an RDF resource for the item with a type of rdf:resource
 			final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null)); //G***fix the reference URI
 //G***del when not needed		  final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null), XPackageConstants.XPACKAGE_NAMESPACE_URI, XPackageConstants.RESOURCE_TYPE_NAME); //G***fix the reference URI
-			XPackageUtilities.addContentType(rdf, itemResource, itemMediaType); //add the item's content type
+			MIMEOntologyUtilities.addContentType(rdf, itemResource, itemMediaType); //add the item's content type
 		  XPackageUtilities.addLocation(rdf, itemResource, itemHRef); //add the item's href
 		  manifestResource.add(rdf, itemResource);  //add the item to the manifest
 /*G***fix fallbacks
