@@ -1,6 +1,7 @@
 package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
+import java.util.Iterator;
 import com.garretwilson.rdf.*;
 
 /**Class representing a MAQRO question.
@@ -27,7 +28,12 @@ public class Question extends DefaultRDFResource implements MAQROConstants, Inte
 	*/
 	public RDFObject getQuery()
 	{
-		return getPropertyValue(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME);	//get the query
-		
+		return getPropertyValue(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME);	//get the query		
+	}
+
+	/**@return An iterator to choices, if any, of the question.*/
+	public Iterator getChoiceIterator()
+	{
+		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, CHOICE_PROPERTY_NAME);	//return an iterator to the choices 
 	}
 }
