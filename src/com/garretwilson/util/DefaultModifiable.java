@@ -6,7 +6,7 @@ import com.garretwilson.lang.BooleanUtilities;
 	having been modified.
 <p>Bound properties:</p>
 <ul>
-	<li><code>Modifiable.MODIFIED_PROPERTY_NAME</code> ("modified")</li>
+	<li><code>Modifiable.MODIFIED_PROPERTY_NAME</code> ("modified") <code>Boolean</code></li>
 </ul>
 @author Garret Wilson
 @see Modifiable#MODIFIED_PROPERTY_NAME

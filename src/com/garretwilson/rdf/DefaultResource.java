@@ -40,7 +40,7 @@ public class DefaultResource implements Resource
 		<code>object</code>.
 	@see #getReferenceURI
 	*/
-	public boolean equals(Object object)
+	public boolean equals(final Object object)
 	{
 		if(getReferenceURI()!=null)	//if we have a reference URI
 		{
