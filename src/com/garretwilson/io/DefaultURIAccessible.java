@@ -4,15 +4,12 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpURL;
-import org.apache.webdav.lib.WebdavResource;
-
 import com.garretwilson.util.BoundPropertyObject;
 import com.garretwilson.util.Debug;
 
 import static com.garretwilson.net.URIConstants.*;
-import com.garretwilson.net.http.webdav.WebDAVResource;
+import com.garretwilson.net.http.HTTPClient;
+import com.garretwilson.net.http.HTTPResource;
 
 /**Default implementation of a class that allows access to resources by
 	providing input streams and indicating a base URI against which relative URIs
@@ -21,6 +18,12 @@ import com.garretwilson.net.http.webdav.WebDAVResource;
 */
 public class DefaultURIAccessible extends BoundPropertyObject implements URIAccessible 
 {
+
+	/**The client used to access HTTP URIs.*/
+	private final HTTPClient httpClient;
+
+		/**@return The client used to access HTTP URIs.*/
+		protected HTTPClient getHTTPClient() {return httpClient;}
 
 	/**The username, or <code>null</code> for no user information.*/
 	private String username=null;	//TODO later transfer this stuff to an authenticator plugin
@@ -75,6 +78,14 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		this(null, null);
 	}
 
+	/**HTTP client default constructor.
+	@param httpClient The client used to access HTTP URIs.
+	*/
+	public DefaultURIAccessible(final HTTPClient httpClient)
+	{
+		this(null, null, httpClient);	//construct the class with the given HTTP client
+	}
+
 	/**URI input stream locator constructor.
 	@param uriInputStreamable The implementation to use for accessing a URI for
 		input, or <code>null</code> if the default implementation should be used.
@@ -93,7 +104,7 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		this(null, uriOutputStreamable);
 	}
 
-	/**Full constructor.
+	/**URI input and output stream locator constructor.
 	@param uriInputStreamable The implementation to use for accessing a URI for
 		input, or <code>null</code> if the default implementation should be used.
 	@param uriOutputStreamable The implementation to use for accessing a URI for
@@ -101,14 +112,23 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	*/
 	public DefaultURIAccessible(final URIInputStreamable uriInputStreamable, final URIOutputStreamable uriOutputStreamable)
 	{
+		this(uriInputStreamable, uriOutputStreamable, HTTPClient.getInstance());	//construct the class with the default HTTP client
+	}
+
+	/**Full constructor.
+	@param uriInputStreamable The implementation to use for accessing a URI for
+		input, or <code>null</code> if the default implementation should be used.
+	@param uriOutputStreamable The implementation to use for accessing a URI for
+		output, or <code>null</code> if the default implementation should be used.
+	@param httpClient The client used to access HTTP URIs.
+	*/
+	protected DefaultURIAccessible(final URIInputStreamable uriInputStreamable, final URIOutputStreamable uriOutputStreamable, final HTTPClient httpClient)
+	{
 		this.uriInputStreamable=uriInputStreamable;	//save the URI input stream locator
 		this.uriOutputStreamable=uriOutputStreamable;	//save the URI output stream locator
-/*G***del when works
-		this.uriInputStreamable=uriInputStreamable!=null ? uriInputStreamable : this;	//save the URI input stream locator, using our default if one was not given
-		this.uriOutputStreamable=uriOutputStreamable!=null ? uriOutputStreamable : this;	//save the URI output stream locator, using our default if one was not given
-*/
+		this.httpClient=httpClient;	//save the HTTP client
 	}
-		
+
 	/**Returns an input stream for the given URI.
 	The calling class has the responsibility for closing the input stream.
 	@param uri A URI to a resource.
@@ -121,13 +141,11 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		{
 			return uriInputStreamable.getInputStream(uri);	//delegate to the stored implementation
 		}
-/*TODO fix
 		final String scheme=uri.getScheme();	//see what type of URI this is
-		if(HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme))	//if this is an HTTP URI, try to use WebDAV
+		if(HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme))	//if this is an HTTP URI, try to use an HTTP resource with our HTTP client
 		{
-			return new WebDAVResource(uri).get();	//get the WebDAV resource
+			return new ByteArrayInputStream(new HTTPResource(uri, getHTTPClient()).get());	//get an HTTP resource to return the bytes using our HTTP client 
 		}
-*/
 		return uri.toURL().openConnection().getInputStream();	//convert the URI to a URL, open a connection to it, and get an input stream to it
 	}
 
@@ -148,10 +166,10 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		{
 			return new FileOutputStream(new File(uri));	//create and return an output stream to the file
 		}
-/*TODO fix
-		else if(HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme))	//if this is an HTTP URI, try to use WebDAV
+/*TODO fix to convert the output stream to a byte array using the adapter.
+		else if(HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme))	//if this is an HTTP URI, try to use an HTTP resource with our HTTP client
 		{
-			return new WebDAVResource(uri).put();	//put the WebDAV resource
+			return new HTTPResource(uri, getHTTPClient()).put();	//put the WebDAV resource
 		}
 */
 //TODO fix for other types of URIs
@@ -163,20 +181,22 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	 	at which point the data is written to the WebDAV resource.
 	@author Garret Wilson
 	*/
-	protected static class WebdavResourceOutputStreamAdapter extends OutputStreamDecorator<ByteArrayOutputStream>	//TODO maybe move this to its own independent class at some point
-	{
+//G***fix	protected static class WebdavResourceOutputStreamAdapter extends OutputStreamDecorator<ByteArrayOutputStream>	//TODO maybe move this to its own independent class at some point
+//G***fix	{
 		
 		/**The WebDAV resource being adapted.*/
-		protected WebdavResource webdavResource=null;
+//G***fix		protected WebdavResource webdavResource=null;
 		
 		/**Constructor that adapts a WebDAV resource.
 		@param webdavResource The WebDAV resource to adapt to an output stream.
 		*/
+/*G***fix
 		public WebdavResourceOutputStreamAdapter(final WebdavResource webdavResource)
 		{
 			super(new ByteArrayOutputStream());	//collect bytes in a decorated byte array output stream
 			this.webdavResource=webdavResource;		//save the WebDAV resource we'll be writing to
 		}
+*/
 		
 		//TODO improve flush() at some point to actually send data to the Webdav Resource
 		
@@ -184,6 +204,7 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	  This version writes the accumulated data to the WebDAV Resource.
 	  @exception  IOException  if an I/O error occurs.
 	  */
+/*G***fix
 	  public void close() throws IOException
 		{
 	  	if(webdavResource!=null)	//if we have a WebDAV resource object to write to (i.e. we haven't closed the adapter stream, yet)
@@ -209,6 +230,7 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	  			webdavResource=null;	//show that we don't have a WebDAV resource object to write to anymore
 				}
 	  	}
-		}		
+		}
 	}
+*/
 }
