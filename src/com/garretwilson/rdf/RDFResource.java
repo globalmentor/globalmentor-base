@@ -136,5 +136,22 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Comparab
 		or that have a reference URI that begins with "anonymous:".
 	*/
 	public boolean isAnonymous();
+	
+	/**Removes all properties with the given URI.
+	@param propertyURI The reference URI of the property resource of the
+		properties to be removed.
+	@return The number of properties removed.
+	*/
+	public int removeProperties(final URI propertyURI);
+	
+	/**Removes all properties with the given URI.
+	@param namespaceURI The XML namespace URI that represents part of the
+		reference URI of the properties to be removed.
+	@param localName The XML local name that represents part of the reference URI
+		of the properties to be removed.
+	@return The number of properties removed.
+	*/
+	public int removeProperties(final URI namespaceURI, final String localName);
+	
 
 }

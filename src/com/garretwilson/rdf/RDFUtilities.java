@@ -271,6 +271,46 @@ public class RDFUtilities implements RDFConstants
 	{
 		return resource.hasPropertyValue(RDF_NAMESPACE_URI, TYPE, RDFUtilities.createReferenceURI(typeNamespaceURI, typeLocalName)); //determine if the resource has a type property of the URI from the given namespace and local name
 	}
+	
+	/**Sets a property by first removing all such properties and then adding
+		a new property. This is a convenience method that combines these two actions.
+	@param rdf The RDF data model.
+	@param resource The resource to which the type should be added.
+	@param propertyNamespaceURI The XML namespace URI used in the serialization
+		of the property resource that is the predicate of an RDF statement.
+	@param propertyLocalName The XML local name used in the serialization of the
+		property resource that is the predicate of an RDF statement.
+	@param value A property value; the object of an RDF statement.
+	@return The added property value.
+	@see RDFResource#removeProperties(URI, String)
+	@see #addProperty(RDF, RDFResource, URI, String, RDFObject)
+	*/
+	public static RDFObject replaceProperties(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final RDFObject value)
+	{
+		resource.removeProperties(propertyNamespaceURI, propertyLocalName);	//remove all the properties with the property URI
+		return addProperty(rdf, resource, propertyNamespaceURI, propertyLocalName, value);	//add and return the property 
+	}
+
+	/**Sets a literal property from a string by first removing all such
+		properties and then adding a new property. This is a convenience method
+		that combines these two actions.
+	@param rdf The RDF data model.
+	@param resource The resource to which the type should be added.
+	@param propertyNamespaceURI The XML namespace URI used in the serialization
+		of the property resource that is the predicate of an RDF statement.
+	@param propertyLocalName The XML local name used in the serialization of the
+		property resource that is the predicate of an RDF statement.
+	@param literalValue A literal property value that will be stored in a
+		<code>Literal</code>; the object of an RDF statement.
+	@return The added property value.
+	@see RDFResource#removeProperties(URI, String)
+	@see #addProperty(RDF, RDFResource, URI, String, RDFObject)
+	*/
+	public static Literal replaceProperty(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue)
+	{
+		resource.removeProperties(propertyNamespaceURI, propertyLocalName);	//remove all the properties with the property URI
+		return addProperty(rdf, resource, propertyNamespaceURI, propertyLocalName, literalValue);	//add and return the property 
+	}
 
 	/**Converts an RDF data model to an XML string. If an error occurs converting
 		the XML document document to a string, the normal XML object string will be

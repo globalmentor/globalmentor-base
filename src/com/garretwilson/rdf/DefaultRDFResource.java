@@ -176,7 +176,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 	{
 		return hasPropertyValue(RDFUtilities.createReferenceURI(namespaceURI, localName), propertyValue); //check the property, combining the namespace URI and the local name for the reference URI
 	}
-
+	
 	/**Adds a property by creating a <code>NameValuePair</code> from the given
 		property and value. For each property, this resource serves as the subject
 		of an RDF statement with the property as the predicate and the value as
@@ -220,6 +220,39 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 	public boolean isAnonymous()
 	{
 		return getReferenceURI()!=null && getReferenceURI().toString().startsWith("anonymous:"); //return whether there is no URI or the URI begins with "anonymous:" G***use a constant here; fix better
+	}
+
+	/**Removes all properties with the given URI.
+	@param propertyURI The reference URI of the property resource of the
+		properties to be removed.
+	@return The number of properties removed.
+	*/
+	public int removeProperties(final URI propertyURI)
+	{
+		int propertiesRemovedCount=0;	//we haven't removed any properties, yet
+		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
+		while(propertyIterator.hasNext()) //while there are more properties
+		{
+			final NameValuePair nameValuePair=(NameValuePair)propertyIterator.next(); //get the next name/value pair
+			if(nameValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
+			{
+				propertyIterator.remove();	//remove this property
+				++propertiesRemovedCount;	//show that we removed another property
+			}
+		}
+		return propertiesRemovedCount;	//return the number of properties we removed
+	}
+	
+	/**Removes all properties with the given URI.
+	@param namespaceURI The XML namespace URI that represents part of the
+		reference URI of the properties to be removed.
+	@param localName The XML local name that represents part of the reference URI
+		of the properties to be removed.
+	@return The number of properties removed.
+	*/
+	public int removeProperties(final URI namespaceURI, final String localName)
+	{
+		return removeProperties(RDFUtilities.createReferenceURI(namespaceURI, localName)); //remove the property, combining the namespace URI and the local name for the reference URI
 	}
 
 	/**Copy constructor. Constructs a resource with an identical reference URI

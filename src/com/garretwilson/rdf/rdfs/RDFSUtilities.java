@@ -20,7 +20,6 @@ public class RDFSUtilities implements RDFSConstants
 	*/
 	public static void addComment(final RDF rdf, final RDFResource resource, final String value)
 	{
-//G***del when works		resource.addProperty(locateCommentProperty(rdf), new Literal(value));  //add a literal value to the resource as a comment
 		RDFUtilities.addProperty(rdf, resource, RDFS_NAMESPACE_URI, COMMENT_PROPERTY_NAME, new Literal(value)); //add a literal value to the resource as a comment
 	}
 
@@ -32,7 +31,6 @@ public class RDFSUtilities implements RDFSConstants
 	*/
 	public static void addLabel(final RDF rdf, final RDFResource resource, final String value)
 	{
-//G***del when works		resource.addProperty(locateLabelProperty(rdf), new Literal(value));  //add a literal value to the resource as a label
 		RDFUtilities.addProperty(rdf, resource, RDFS_NAMESPACE_URI, LABEL_PROPERTY_NAME, new Literal(value)); //add a literal value to the resource as a label
 	}
 
@@ -67,6 +65,17 @@ public class RDFSUtilities implements RDFSConstants
 //G***del Debug.trace("resource type: ", com.garretwilson.rdf.RDFUtilities.getType(resource)); //G***del
 		final RDFObject rdfObject=resource.getPropertyValue(RDFS_NAMESPACE_URI, LABEL_PROPERTY_NAME); //get the value of the label property
 		return rdfObject!=null ? rdfObject.toString() : null; //return the string value of the label property, or null if is no such property
+	}
+
+	/**Replaces all <code>rdfs:label</code> properties of the resource with a new
+		property with the given value.
+	@param rdf The RDF data model.
+	@param resource The resource for which the label properties should be replaced.
+	@param value A string label value.
+	*/
+	public static void replaceLabel(final RDF rdf, final RDFResource resource, final String value)
+	{
+		RDFUtilities.replaceProperties(rdf, resource, RDFS_NAMESPACE_URI, LABEL_PROPERTY_NAME, new Literal(value)); //replace all label properties with a literal label value
 	}
 
 	/**Gets an <code>rdfs:comment</code> property from RDF. This ensures that an
