@@ -217,6 +217,25 @@ public class CharSequenceUtilities
 		return stringBuffer.toString();	//return the result we constructed
 	}
 
+	/**Determines the first index of the given character.
+	@param charSequence The character sequence to check.
+	@param character The character to search for.
+	@return The index of the first occurrence of the given character, or -1 if
+		the character was not found.
+	*/
+	public static int indexOf(final CharSequence charSequence, final char character)
+	{
+		final int length=charSequence.length();
+		for(int i=0; i<length; ++i)	//look at each character
+		{
+			if(charSequence.charAt(i)==character)	//if this character matches
+			{
+				return i;	//return the matching index
+			}
+		}
+		return -1;	//show that we couldn't find the character
+	}
+
 	/**Searches a character sequence and returns the first index of any character
 		<em>not</em> in the specified string, starting from the beginning.
 	@param charSequence The character sequence to be searched.
@@ -275,6 +294,20 @@ public class CharSequenceUtilities
 				return i;	//return the index we're at
 		}
 		return -1;	//if we make it to here, we didn't find any characters which weren't in our character string
+	}
+
+	/**Trims the right side of the string beginning at the first occurrence of the
+		given character. If the character sequence does not contain the trim
+		character, no action takes place.
+	@param charSequence The character sequence to check.
+	@param trimChar The character indicating the part of the sequence to trim.
+	@return A new character sequence with the specified character and following
+		characters removed.
+	*/
+	public static CharSequence trimRightFirst(final CharSequence charSequence, final char trimChar)
+	{
+		final int index=indexOf(charSequence, trimChar);	//find the first occurrence of the trim character
+		return index>=0 ? charSequence.subSequence(index+1, charSequence.length()) : charSequence;	//trim the character sequence if we can		
 	}
 
 }

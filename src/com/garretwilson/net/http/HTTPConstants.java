@@ -3,9 +3,11 @@ package com.garretwilson.net.http;
 /**Constants relating to the HyperText Transfer Protocol (HTTP).
 @author Garret Wilson
 */
-public interface HTTPConstants
+public class HTTPConstants
 {
 
+	/**The HTTP header indicating the accepted content types.*/
+	public final static String ACCEPT_HEADER="accept";
 	/**The HTTP header for cache control.*/
 	public final static String CACHE_CONTROL_HEADER="Cache-Control";
 		/**The HTTP no-cache cache control header.*/
