@@ -268,7 +268,7 @@ public class RDFUtilities implements RDFConstants
 		one property of <code>rdf:value</code>, it is undefined which of these
 		property values will be returned.
 	@param resource The resource the value of which will be returned.
-	@return The value of the resource, or <code>null</code> if no value is
+	@return The value of the resource, or <code>null</code> if there is no value
 		or the value is not a literal.
 	*/
 	public static RDFLiteral getValue(final RDFResource resource)

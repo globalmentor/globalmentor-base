@@ -50,21 +50,17 @@ public class RDFSUtilities implements RDFSConstants
 		return rdfObject!=null ? rdfObject.toString() : null; //return the string value of the comment property, or null if is no such property
 	}
 
-	/**Retrieves the label of the resource. If this resource has more than one
-		property of <code>rdfs:label</code>, it is undefined which of these property
-		values will be returned.
-		If the property value is a literal, its text will be returned. If the
-		property value is a resource, its string value (usually its reference URI)
-		will be returned.
-	@param resource The resource the type of which will be returned.
-	@return The label of the resource, or <code>null</code> if no label is present.
+	/**Retrieves the label value of the resource. If this resource has more than
+		one property of <code>rdfs:label</code>, it is undefined which of these
+		property values will be returned.
+	@param resource The resource the label of which will be returned.
+	@return The label of the resource, or <code>null</code> if there is no label
+		or the label is not a literal.
 	*/
-	public static String getLabel(final RDFResource resource)
+	public static RDFLiteral getLabel(final RDFResource resource)
 	{
-//G***del Debug.trace("getting label for resource: ", resource);
-//G***del Debug.trace("resource type: ", com.garretwilson.rdf.RDFUtilities.getType(resource)); //G***del
 		final RDFObject rdfObject=resource.getPropertyValue(RDFS_NAMESPACE_URI, LABEL_PROPERTY_NAME); //get the value of the label property
-		return rdfObject!=null ? rdfObject.toString() : null; //return the string value of the label property, or null if is no such property
+		return rdfObject instanceof RDFLiteral ? (RDFLiteral)rdfObject : null; //return the literal value object, or null if is no such property or the property value is not a literal
 	}
 
 	/**Replaces all <code>rdfs:label</code> properties of the resource with a new
