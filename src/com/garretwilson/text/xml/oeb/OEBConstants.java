@@ -11,7 +11,7 @@ import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 public interface OEBConstants extends XHTMLConstants
 {
 	/**The package name of the OEB XML classes.*/
-	public final static String PACKAGE_NAME="com.garretwilson.text.xml.oeb";
+//TODO del	public final static String PACKAGE_NAME="com.garretwilson.text.xml.oeb";
 
 	/**The public ID for OEBPS 1.0 package.*/
 	public final static String OEB10_PACKAGE_PUBLIC_ID="+//ISBN 0-9673008-1-9//DTD OEB 1.0 Package//EN";

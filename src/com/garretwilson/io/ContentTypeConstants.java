@@ -35,6 +35,8 @@ public class ContentTypeConstants
 	public final static String XML_SUBTYPE_SUFFIX="xml";
 	/**The suffix for RDF application types.*/
 	public final static String RDF_XML_SUBTYPE_SUFFIX="rdf"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
+	/**The suffix for zip application types.*/
+	public final static String ZIP_SUBTYPE_SUFFIX="zip";
 
 	/**The character set parameters.*/
 	public final static String CHARSET_PARAMETER="charset";
@@ -43,8 +45,6 @@ public class ContentTypeConstants
 	/**An OEB 1.0 document.*/
 	public final static String X_OEB1_CSS_SUBTYPE="x-oeb1-css";
 	public final static String X_OEB1_DOCUMENT_SUBTYPE="x-oeb1-document";
-	public final static String X_OEB1_PACKAGE_SUBTYPE="x-oeb1-package";
-//G***del	public final static String TEXT_X_OEB1_PACKAGE=TEXT+DIVIDER+X_OEB1_PACKAGE; //G***should this be application/..., or +xml or something?
 	public final static String CALENDAR_SUBTYPE="calendar";
 	public final static String DIRECTORY_SUBTYPE="directory";
 	public final static String HTML_SUBTYPE="html";
@@ -96,6 +96,10 @@ public class ContentTypeConstants
 	public final static String X_QRO_RDF_XML_SUBTYPE="x-qro"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A Microsoft Word document; see <a href="http://www.iana.org/assignments/media-types/application/msword">http://www.iana.org/assignments/media-types/application/msword</a>.*/
 	public final static String MSWORD_SUBTYPE="msword";
+	/**An OEB 1.x publication zip file.*/
+	public final static String X_OEB_PUBLICATION_ZIP_SUBTYPE="x-oeb-publication"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX+SUBTYPE_SUFFIX_DELIMITER_CHAR+ZIP_SUBTYPE_SUFFIX;
+	/**An OEB 1.x package file.*/
+	public final static String X_OEB1_PACKAGE_SUBTYPE="x-oeb1-package"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**An Ogg Vorbis file; see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>.*/
 	public final static String OGG_SUBTYPE="ogg";
 	/**An Adobe PDF file.*/
