@@ -2,6 +2,8 @@ package com.garretwilson.rdf.maqro;
 
 import java.io.*;
 import java.net.*;
+import java.util.Map;
+import java.util.Set;
 
 import com.garretwilson.io.*;
 import com.garretwilson.rdf.*;
@@ -56,6 +58,7 @@ public class OutcomeIOKit extends AbstractIOKit<Outcome>
 	@param inputStream The input stream from which to read the data.
 	@param baseURI The base URI of the content, or <code>null</code> if no base
 		URI is available.
+	@return The outcome loaded from the input stream.
 	@throws IOException Thrown if there is an error reading the data.
 	*/ 
 	public Outcome load(final InputStream inputStream, final URI baseURI) throws IOException
@@ -69,16 +72,24 @@ public class OutcomeIOKit extends AbstractIOKit<Outcome>
 			document.normalize(); //normalize the package description document
 			final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf);	//create a new RDF processor
 			rdfProcessor.process(document, baseURI);  //parse the RDF from the document
-				//get the outcomes from the data model
+			final Map<RDFResource, Set<RDFResource>> referenceMap=rdf.getReferences();	//get all references to resources
+				//get the outcomes from the data model, and find the root outcome
 			for(final RDFResource outcomeResource:RDFUtilities.getResourcesByType(rdf, MAQRO_NAMESPACE_URI, OUTCOME_CLASS_NAME))
 			{
 				if(outcomeResource instanceof Outcome)	//if this is an outcome
 				{
+					final Set<RDFResource> referenceSet=referenceMap.get(outcomeResource);	//find out how many refereces there are to this outcome
+					if(referenceSet==null || referenceSet.size()==0)	//if there are no references to this outcome
+					{
+						return (Outcome)outcomeResource;	//return the outcome
+					}
+/*G***del when works
 					final Outcome outcome=(Outcome)outcomeResource;	//cast the resource to an outcome
 					if(outcome.getInteraction()!=null)	//if this outcome is for an interaction TODO fix better; make sure this is for the assessment
 					{
 						return outcome;	//return the outcome we found
 					}
+*/
 				}
 			}
 			throw new IOException("No outcome found.");	//G***i18n

@@ -133,7 +133,7 @@ public class Question extends Interaction
 	}
 
 	/**@return An iterator to the answers, if any, of the question.*/
-	public Iterator getAnswerIterator()
+	public Iterator<RDFObject> getAnswerIterator()
 	{
 		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME);	//return an iterator to the answers 
 	}

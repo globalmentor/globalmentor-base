@@ -21,7 +21,7 @@ import org.w3c.dom.*;
 TODO fix bug that doesn't serialize property value resources with no properties
 @author Garret Wilson
 */
-public class RDFXMLifier implements RDFConstants, RDFXMLConstants
+public class RDFXMLifier implements RDFConstants, RDFXMLConstants	//TODO why don't we keep the DOM implementation around at the class level?
 {
 
 //TODO why aren't we using real URIs here?

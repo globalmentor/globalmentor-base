@@ -2,6 +2,7 @@ package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
 import java.util.*;
+
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.xmlschema.BooleanLiteral;
 
@@ -62,6 +63,28 @@ public class Outcome extends TypedRDFResource implements MAQROConstants
 	{
 		return RDFUtilities.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, OUTCOMES_PROPERTY_NAME));	//get the maqro:outcomes property value as a list	
 	}
+	
+	/**Retrieves the first outcome that represents a particular interaction from the list of contained outcomes.
+	@param interaction The interaction for which an outcome should be retrieved.
+	@return An outcome containing information for the given interaction, or <code>null</code> if there
+		is no outcome the interaction.
+	@see #getOutcomes()
+	*/
+	public Outcome getOutcome(final Interaction interaction)
+	{
+		for(final RDFResource resource:getOutcomes())	//look at each outcome
+		{
+			if(resource instanceof Outcome)	//if this is an outcome
+			{
+				final Outcome outcome=(Outcome)resource;	//get the resource as an outcome
+				if(interaction.equals(((Outcome)resource).getInteraction()))	//if this is an outcome specified to be for the given interaction
+				{
+					return outcome;	//return the matching outcome
+				}
+			}
+		}
+		return null;	//show that we couldn't find a matching outcome
+	}
 
 	/**Sets the list of outcomes for this interaction's contained interactions.
 	@param outcomes The list of outcomes for this interaction group, or
@@ -81,7 +104,7 @@ public class Outcome extends TypedRDFResource implements MAQROConstants
 	}
 
 	/**@return An iterator to responses, if any, of the outcome.*/
-	public Iterator getResponseIterator()
+	public Iterator<RDFObject> getResponseIterator()
 	{
 		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, RESPONSE_PROPERTY_NAME);	//return an iterator to the responses 
 	}
@@ -95,7 +118,7 @@ public class Outcome extends TypedRDFResource implements MAQROConstants
 	}
 
 	/**@return An iterator to results, if any, of the outcome.*/
-	public Iterator getResultIterator()
+	public Iterator<RDFObject> getResultIterator()
 	{
 		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, RESULT_PROPERTY_NAME);	//return an iterator to the results 
 	}
