@@ -293,7 +293,6 @@ public class URIUtilities
 	public static URI getCurrentLevel(final URI uri)
 	{
 		return uri.resolve(CURRENT_LEVEL_PATH_SEGMENT);	//resolve the URI to "."
-			
 	}
 
 	/**Determines the parent level of a hierarchical URI.
@@ -304,6 +303,17 @@ public class URIUtilities
 	public static URI getParentLevel(final URI uri)
 	{
 		return uri.resolve(PARENT_LEVEL_PATH_SEGMENT);	//resolve the URI to ".."
+	}
+
+	/**Determines the parent collection of a hierarchical URI.
+	@param uri The URI to examine.
+	@return A URI representing the parent collection of a hierarchical
+		URI; if the URI ends in '/', equivalent to resolving the path ".." to the URI;
+		if the URI does not end in '/', equivalent to resolving the path "." to the URI.	
+	*/
+	public static URI getParentURI(final URI uri)
+	{
+		return endsWith(uri.toString(), PATH_SEPARATOR) ? getParentLevel(uri) : getCurrentLevel(uri);	//if the path ends with a slash, get the parent level; otherwise, get the current level
 	}
 
 	/**Determines the canonical root URI a URI.
