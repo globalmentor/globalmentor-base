@@ -160,7 +160,7 @@ public class URIUtilities implements URIConstants
 	@see URI
 	@see URL
 	*/
-	public static URI createURI(final Object contextObject, final String string) throws URISyntaxException
+	public static URI createURI(final Object contextObject, final String string) throws URISyntaxException	//TODO maybe delete this eventually
 	{
 		if(contextObject instanceof URI)	//if the context is a URI
 		{

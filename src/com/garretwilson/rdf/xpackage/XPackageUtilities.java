@@ -208,7 +208,7 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 		version of the specified href, or <code>null</code> if there is no match.
 	@see #getLocationHRef
 	*/
-	public static RDFResource getItemByLocationHRef(final List list, final URI baseURI, final String href)	//G***should we put this in RDFListResource?
+	public static RDFResource getItemByLocationHRef(final List<RDFResource> list, final URI baseURI, final String href)	//G***should we put this in RDFListResource?
 	{
 		try
 		{
@@ -234,21 +234,21 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 		<code>null</code> if there is no match.
 	@see #getLocationHRef
 	*/
-	public static RDFResource getItemByLocationHRef(final List list, final URI baseURI, final URI uri)	//G***should we put this in RDFListResource?
+	public static RDFResource getItemByLocationHRef(final List<RDFResource> list, final URI baseURI, final URI uri)	//G***should we put this in RDFListResource?
 	{
-//G***del Debug.trace("looking for resource that matches URL: ", url);  //G***del
-		final Iterator itemIterator=list.iterator(); //get an iterator to the items in this container
-		while(itemIterator.hasNext()) //while there are more items in this container
+Debug.trace("looking for resource that matches URI: ", uri);  //G***del
+Debug.trace("working from base URI: ", baseURI);  //G***del
+		for(final RDFResource item:list)	//look at each resource in the list
 		{
-			final RDFResource item=(RDFResource)itemIterator.next(); //get the next item
-//G***del Debug.trace("looking at resource: ", item); //G***del
+Debug.trace("looking at resource: ", item); //G***del
 		  final String itemHRef=getLocationHRef(item);  //get the item's href G***later add something that can look at all the locations rather than just the first one
+Debug.trace("has href: ", itemHRef); //G***del
 			if(itemHRef!=null)  //if there is an href
 			{
 				try
 				{
 					final URI itemURI=URIUtilities.createURI(baseURI, itemHRef);	//create a URI based upon the base URI and the item's location
-//G***del	Debug.trace("comparing with URL: ", itemURL); //G***del
+Debug.trace("comparing with URI: ", itemURI); //G***del
 					if(uri.equals(itemURI)) //if the URLs match
 						return item;  //return the item
 				}

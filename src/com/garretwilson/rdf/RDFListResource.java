@@ -14,7 +14,7 @@ import com.garretwilson.lang.ObjectUtilities;
 	by RDF.</p>
 @author Garret Wilson
 */
-public class RDFListResource extends TypedRDFResource implements List //G***del, Comparator
+public class RDFListResource extends TypedRDFResource implements List<RDFResource> //G***del, Comparator
 {
 
 	/**@return The namespace URI of the ontology defining the default type of this resource.*/
@@ -333,7 +333,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	}
 
 	/**@return An iterator over the elements in this list in proper sequence.*/
-	public Iterator iterator()
+	public Iterator<RDFResource> iterator()
 	{
 		return new RDFListIterator();	//create a new iterator over all the list elements
 	}
@@ -345,7 +345,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	 * @return a list iterator of the elements in this list (in proper
 	 * 	       sequence).
 	 */
-	public ListIterator listIterator()
+	public ListIterator<RDFResource> listIterator()
 	{
 		return null;	//TODO implement listIterator(), and have iterator() call this
 	}
@@ -365,7 +365,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 *         &lt; 0 || index &gt; size()).
 	 */
-	public ListIterator listIterator(int index)
+	public ListIterator<RDFResource> listIterator(int index)
 	{
 		return null;	//TODO implement listIterator(), and have iterator() call this
 	}
@@ -373,7 +373,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	/**@return an array containing all of the elements in this collection.*/
 	public Object[] toArray()
 	{
-		return toArray(new RDFObject[size()]);	//create a new array of RDF objects, store the elements in it, and return the array
+		return toArray(new RDFResource[size()]);	//create a new array of RDF objects, store the elements in it, and return the array
 	}
 
 	/**Returns an array containing all of the elements in this list. 
@@ -389,15 +389,15 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	 is not a supertype of the runtime type of every element in this list.
 	@exception NullPointerException if the specified array is <code>null</code>.
 	*/
-	public Object[] toArray(Object[] array)
+	public <RDFResource> RDFResource[] toArray(RDFResource[] array)	//G***what's the problem with this signature?
 	{
 		final int size=size();	//get our size
 		if(array.length<size)	//if the given array is not large enough
 		{
-			array=(Object[])Array.newInstance(array.getClass().getComponentType(), size);	//create a new array
+			array=(RDFResource[])Array.newInstance(array.getClass().getComponentType(), size);	//create a new array
 		}
 		int i=0;	//this will index into the array we're filling
-		final Iterator iterator=iterator();	//get an iterator to the elements
+		final Iterator<RDFResource> iterator=(Iterator<RDFResource>)iterator();	//get an iterator to the elements G***why is this cast needed
 		while(iterator.hasNext())	//while there are more elements
 		{
 			array[i++]=iterator.next();	//put the next object into the array and advance our index
@@ -407,6 +407,30 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 		return array;	//return the array we filled
 	}
 
+	/**Returns the first contained <code>RDFResource</code> with the specified
+	 	reference URI.
+	@param referenceURI The reference URI of the resource to retrieve.
+	@return The first contained resource with the given reference URI, or
+		<code>null</code> if the list does not contain a resource with the given
+		reference URI.
+	*/
+	public RDFResource getResourceByReferenceURI(final URI uri)
+	{
+		int currentIndex=0;	//start out on the first index
+		RDFResource list=this;	//start with this list resource
+		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
+		{
+			final RDFResource resource=getFirst(list);	//get this resource
+			if(uri.equals(resource.getReferenceURI()))	//if this resource has the correct reference URI
+			{
+				return resource;	//return the resource
+			}
+			list=getRest(list);	//look at the rest of the list
+			++currentIndex;	//go to the next index
+		}
+		return null;	//report that we couldn't find a resource containing the requested resource
+	}
+
 	/**Returns the <code>RDFObject</code> at the specified position in this list.
 	@param index The index of the element to return.
 	@return The element at the specified position in this list.
@@ -414,7 +438,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 		(<var>index</var>&lt;0 || <var>index</var>&gt;=size()).
 	@see RDFObject
 	*/
-	public Object get(int index)
+	public RDFResource get(int index)
 	{
 		int currentIndex=0;	//start out on the first index
 		RDFResource list=this;	//start with this list resource
@@ -442,9 +466,8 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	@exception IndexOutOfBoundsException Thrown if the index is out of range
 		(index &lt; 0 || index &gt;= size()).
 	*/
-	public Object set(final int index, final Object object)
+	public RDFResource set(final int index, final RDFResource object)
 	{
-		final RDFResource element=(RDFResource)object;	//convert the object to an RDF resource
 		int currentIndex=0;	//start out on the first index
 		RDFResource list=this;	//start with this list resource, which guarantees that the list will not be null the first time around
 		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
@@ -452,7 +475,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 			if(currentIndex==index)	///if this is the correct index
 			{
 				final RDFResource oldFirst=getFirst(list);	//get the current first of the list
-				setFirst(list, element);	//set this element as the value of this node
+				setFirst(list, object);	//set this element as the value of this node
 				return oldFirst;	//return the element that was previously at this index  
 			}
 			list=getRest(list);	//look at the rest of the list
@@ -470,7 +493,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	@exception IllegalArgumentException Thrown some aspect of this element
 		prevents it from being added to this collection.
 	*/
-	public boolean add(final Object object)
+	public boolean add(final RDFResource object)
 	{
 		add(size(), object);	//add the object to the end of the list
 		return true;	//show that we modified the list
@@ -491,7 +514,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 		<code>(index &le; 0 || index &gt; size())</code>.
 	@see #create(RDF, URI, RDFResource, RDFResource)
 	*/
-	public void add(final int index, final Object object)
+	public void add(final int index, final RDFResource object)
 	{
 		final RDFResource element=(RDFResource)object;	//convert the object to an RDF resource
 		int currentIndex=0;	//start out on the first index
@@ -558,7 +581,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	@exception IndexOutOfBoundsException Thrown if the index is out of range
 		(index &lt; 0 || index &gt;= size()).
 	*/
-	public Object remove(final int index)
+	public RDFResource remove(final int index)
 	{
 		int currentIndex=0;	//start out on the first index
 		RDFResource list=this;	//start with this list resource
@@ -615,10 +638,10 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 		collection prevents it from being added to this list.
 	@see #add(Object)
 	*/
-	public boolean addAll(final Collection collection)
+	public boolean addAll(final Collection<RDFResource> collection)
 	{
 		boolean modified=false;	//we haven't modified the list, yet
-		final Iterator iterator=collection.iterator();	//get an iterator to the collection
+		final Iterator<RDFResource> iterator=collection.iterator();	//get an iterator to the collection
 		while(iterator.hasNext())	//while there are more elements in the collection
 		{
 			if(add(iterator.next()))	//add the next element to our list; if the operation modified the list
@@ -659,7 +682,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 *		  &lt; 0 || index &gt; size()).
 	 */
-	public boolean addAll(final int index, final Collection collection)	//TODO implement addAll(int, Collection)
+	public boolean addAll(final int index, final Collection<RDFResource> collection)	//TODO implement addAll(int, Collection)
 	{
 		throw new UnsupportedOperationException("RDFListResource does not yet support addAll(int, Collection)");		
 	}
@@ -674,10 +697,10 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	@see #remove(Object)
 	@see #contains(Object)
 	*/
-	public boolean removeAll(final Collection collection)
+	public boolean removeAll(final Collection<RDFResource> collection)
 	{
 		boolean modified=false;	//we haven't modified the list, yet
-		final Iterator iterator=collection.iterator();	//get an iterator to the collection
+		final Iterator<RDFResource> iterator=collection.iterator();	//get an iterator to the collection
 		while(iterator.hasNext())	//while there are more elements in the collection
 		{
 			if(remove(iterator.next()))	//remove the next element from our list; if the operation modified the list
@@ -701,7 +724,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	@see #remove(Object)
 	@see #contains(Object)
 	*/
-	public boolean retainAll(final Collection collection)	//TODO add retainAll() support
+	public boolean retainAll(final Collection<RDFResource> collection)	//TODO add retainAll() support
 	{
 		throw new UnsupportedOperationException("RDFListResource does not yet support retainAll()");
 	}
@@ -801,7 +824,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	 * @throws IndexOutOfBoundsException for an illegal endpoint index value
 	 *     (fromIndex &lt; 0 || toIndex &gt; size || fromIndex &gt; toIndex).
 	 */
-	public List subList(final int fromIndex, final int toIndex)
+	public List<RDFResource> subList(final int fromIndex, final int toIndex)
 	{
 		return null;	//TODO implement subList()
 	}
@@ -809,7 +832,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	/**An iterator that allows iteration over the the elements in the list resource.
 	<p>This implementation does not support <code>remove()</code>.</p>
 	*/
-	protected class RDFListIterator implements Iterator
+	protected class RDFListIterator implements Iterator<RDFResource>
 	{
 		/**The next list resource in the list.*/
 		protected RDFResource nextList;
@@ -830,7 +853,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 		/**@return The next element in the iteration.
 		@exception NoSuchElementException iteration has no more elements.
 		*/
-		public Object next()
+		public RDFResource next()
 		{
 			if(hasNext())	//if we have a next element
 			{

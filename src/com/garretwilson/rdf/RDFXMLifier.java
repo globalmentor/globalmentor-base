@@ -2,6 +2,7 @@ package com.garretwilson.rdf;
 
 import java.net.URI;
 import java.util.*;
+
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import com.garretwilson.text.xml.XMLUtilities;
@@ -22,11 +23,13 @@ TODO fix bug that doesn't serialize property value resources with no properties
 public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 {
 
+//TODO why aren't we using real URIs here?
+	
 	/**The map of prefixes, keyed by namespace URIs.*/
-	private final Map namespacePrefixMap;
+	private final Map<String, String> namespacePrefixMap;
 
 		/**@return The map of prefixes, keyed by namespace URI.*/
-		protected Map getNamespacePrefixMap() {return namespacePrefixMap;}
+		protected Map<String, String> getNamespacePrefixMap() {return namespacePrefixMap;}
 		
 		/**Registers the given prefix to be used with the given namespace URI.
 			If a prefix is already registered with the given namespace, it is
@@ -51,7 +54,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	/**The set of resources that have been serialized, using identity rather 
 		than equality for equivalence, as required be serialization.
 	*/
-	private final Set serializedResourceSet;
+	private final Set<RDFResource> serializedResourceSet;
 
 		/**Determines if the given resource has been serialized.
 		@param resource The resource to check.
@@ -84,7 +87,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	/**A map that associates, for each resource, a set of all resources that
 		reference the that resource, using identity rather than equality for
 		equivalence.*/
-	private final Map resourceReferenceMap;
+	private final Map<RDFResource, Set<RDFResource>> resourceReferenceMap;
 
 		/**Returns the set of resources that reference this resource as already
 			calculated.
@@ -93,15 +96,15 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 			at an earlier time, or <code>null</code> if no references have been
 			gathered for the given resource.
 		*/
-		protected Set getReferenceSet(final RDFResource resource)
+		protected Set<RDFResource> getReferenceSet(final RDFResource resource)
 		{
-			return (Set)resourceReferenceMap.get(resource);	//get the set of references, if any, associated with the resource
+			return resourceReferenceMap.get(resource);	//get the set of references, if any, associated with the resource
 		}
 
 	/**A map of node ID strings keyed to the resource they represent, using
 		identity rather than equality for equivalence for comparing resources.
 	*/
-	private final Map nodeIDMap;
+	private final Map<RDFResource, String> nodeIDMap;
 
 		/**Retrieves a node ID appropriate for the given resource. If the resource
 			has already been assigned a node ID, it will be returned; otherwise, a
@@ -111,7 +114,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 		*/
 		protected String getNodeID(final RDFResource resource)
 		{
-			String nodeID=(String)nodeIDMap.get(resource);	//get a node ID for the given resource
+			String nodeID=nodeIDMap.get(resource);	//get a node ID for the given resource
 			if(nodeID==null)	//if there is no node ID for this resource
 			{
 				nodeID="node"+serializedResourceSet.size()+1;	//generate a node ID for the resource, based upon the number of resources already serialized
@@ -144,11 +147,11 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 		*/
 		public void setLiteralAttributeSerialization(final boolean newLiteralAttributeSerialization) {literalAttributeSerialization=newLiteralAttributeSerialization;}
 
-	/**A map of namespace URIs (keyed to the same namespaces URIs) the properties
+	/**A set of namespace URIs the properties
 		in which should have literal values serialized as attributes rather than
 		elements.
 	*/
-	private final Map literalAttributeSerializationNamespaceMap=new HashMap();
+	private final Set<URI> literalAttributeSerializationNamespaceSet=new HashSet<URI>();
 
 	/**Adds a namespace URI the properties in which namespace should be
 		categorically serialized as attributes if the property value is a literal.
@@ -159,7 +162,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	*/
 	public void addLiteralAttributeSerializationNamespaceURI(final URI namespaceURI)
 	{
-		literalAttributeSerializationNamespaceMap.put(namespaceURI, namespaceURI);  //add the namespace to the map both as a value and as that value's key
+		literalAttributeSerializationNamespaceSet.add(namespaceURI);  //add the namespace to the set
 	}
 
 	/**Determines whether literal property values from a given namespace should
@@ -172,7 +175,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	public boolean isLiteralAttributeSerializationNamespaceURI(final URI namespaceURI)
 	{
 //G***del		return isLiteralAttributeSerialization()  //if all literal property values should be serialized, return true
-		return literalAttributeSerializationNamespaceMap.get(namespaceURI)!=null; //if this namespace is listed in the map, return true
+		return literalAttributeSerializationNamespaceSet.contains(namespaceURI); //if this namespace is in the set, return true
 	}
 
 /*G***fix
@@ -197,9 +200,9 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	public RDFXMLifier(final boolean compact)
 	{
 		namespacePrefixMap=XMLSerializer.createNamespacePrefixMap();  //create a map of default XML namespace prefixes
-		serializedResourceSet=new IdentityHashSet();	//create a map that will determine whether resources have been serialized, based upon the identity of resources
-		resourceReferenceMap=new IdentityHashMap();	//create a map of sets of referring resources for each referant resource, using identity rather than equality for equivalence
-		nodeIDMap=new IdentityHashMap();	//create a map of node IDs keyed to resources, using identity rather than equality to determine associated resource
+		serializedResourceSet=new IdentityHashSet<RDFResource>();	//create a map that will determine whether resources have been serialized, based upon the identity of resources
+		resourceReferenceMap=new IdentityHashMap<RDFResource, Set<RDFResource>>();	//create a map of sets of referring resources for each referant resource, using identity rather than equality for equivalence
+		nodeIDMap=new IdentityHashMap<RDFResource, String>();	//create a map of node IDs keyed to resources, using identity rather than equality to determine associated resource
 		setLiteralAttributeSerialization(compact);  //if we should be compact, show literals as attributes
 	}
 

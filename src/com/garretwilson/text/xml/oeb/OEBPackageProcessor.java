@@ -329,6 +329,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 		}
 */
 
+Debug.trace("adding an organization to the publication");
 		  //add an organization to the publication
 		final RDFSequenceResource organizationResource=XPackageUtilities.addOrganization(publicationResource);
 
@@ -336,14 +337,23 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 		final NodeList spineElementList=(NodeList)XPath.evaluateLocationPath(rootElement,
 			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE+
 			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE_ITEMREF);
+Debug.trace("looking at spine elements");
 		for(int i=0; i<spineElementList.getLength(); ++i)	//look at each spine element
 		{
+Debug.trace("looking at spine element: ", i);
 			final Element itemElement=(Element)spineElementList.item(i);	//get a reference to this item in the spine
 //G***del Debug.trace("Found spine element: "+itemElement.getAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF));	//G***del
 		  final String itemIDRef=itemElement.getAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF);  //get the item's idref value
-		  final URI itemReferenceURI=new URI(URIConstants.URN_SCHEME, "local:"+itemIDRef, null);  //G***fix the reference URI
-			final RDFResource itemResource=XPackageUtilities.getItemByLocationHRef(manifestResource, publicationReferenceURI, itemReferenceURI);  //get the referenced item from the manifest G***make sure the we're using a workable baseURI, if that's even a concern 
+Debug.trace("idref: ", itemIDRef);
+			final URI itemReferenceURI=new URI(URIConstants.URN_SCHEME, "local:"+itemIDRef, null);  //G***fix the reference URI
+//G***del		  final URI itemReferenceURI=publicationReferenceURI.resolve();	//resolve the URI form of the string, creating a URISyntaxException if there is a problem
+//G***del		  	new URI(URIConstants.URN_SCHEME, "local:"+itemIDRef, null);  //G***fix the reference URI
+Debug.trace("item reference URI: ", itemReferenceURI);
+//G***del when works			final RDFResource itemResource=XPackageUtilities.getItemByLocationHRef(manifestResource, publicationReferenceURI, itemReferenceURI);  //get the referenced item from the manifest G***make sure the we're using a workable baseURI, if that's even a concern 
+			final RDFResource itemResource=manifestResource.getResourceByReferenceURI(itemReferenceURI);	//get the referenced item from the manifest
+Debug.trace("item resource: ", XPackageUtilities.toString(itemResource));
 			assert itemResource!=null : "Missing spine element: "+itemIDRef; //TODO fix with a real error message
+Debug.trace("adding item to organization");
 		  organizationResource.add(itemResource);  //add this item to the organization
 		}
 //G***fix with new navigation stuff
