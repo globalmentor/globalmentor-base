@@ -54,9 +54,34 @@ public interface MAQROConstants
 	/**A choice of an interaction. The local name of maqro:category.*/
 	public final static String CATEGORY_PROPERTY_NAME="category";
 
-		//MAQRO interact description property names
-	/**Whether real-time results should be displayed. The local name of maqro:showResultsProgress.*/
-	public final static String SHOW_RESULTS_PROGRESS_PROPERTY_NAME="showResultsProgress";
+		//MAQRO activity behavior property names
+			//permissions
+	/**Whether hints are allowed. The local name of maqro:allowHint.*/
+	public final static String ALLOW_HINT_PROPERTY_NAME="allowHint";
+	/**Whether navigating to the previous interaction is allowed. The local name of maqro:allowPrevious.*/
+	public final static String ALLOW_PREVIOUS_PROPERTY_NAME="allowPrevious";
+	/**Whether the activity can be canceled. The local name of maqro:allowCancel.*/
+	public final static String ALLOW_CANCEL_PROPERTY_NAME="allowCancel";
+			//process
+	/**Whether each response commit should be confirmed. The local name of maqro:confirmCommit.*/
+	public final static String CONFIRM_COMMIT_PROPERTY_NAME="confirmCommit";
+	/**Whether submission of the activity should be confirmed. The local name of maqro:confirmSubmit.*/
+	public final static String CONFIRM_SUBMIT_PROPERTY_NAME="confirmSubmit";
+	/**Whether a response is required for all applicable interactions. The local name of maqro:requireResponse.*/
+	public final static String REQUIRE_RESPONSE_PROPERTY_NAME="requireResponse";
+	/**The maximum amount of time for the activity, in milliseconds. The local name of maqro:maxTime.*/
+	public final static String MAX_TIME_PROPERTY_NAME="maxTime";
+			//feedback
+	/**Whether the result of each interaction should be immediately shown. The local name of maqro:showResult.*/
+	public final static String SHOW_EACH_RESULT_PROPERTY_NAME="showEachResult";
+	/**Whether the final result of the activity should be shown. The local name of maqro:showFinalResult.*/
+	public final static String SHOW_FINAL_RESULT_PROPERTY_NAME="showFinalResult";
+	/**Whether the current result should continuously be shown. The local name of maqro:showResultProgress.*/
+	public final static String SHOW_RESULT_PROGRESS_PROPERTY_NAME="showResultProgress";
+	/**Whether the position within the activity should be continuously shown. The local name of maqro:showProgress.*/
+	public final static String SHOW_PROGRESS_PROPERTY_NAME="showProgress";
+	/**Whether the current time used and/or available should be shown. The local name of maqro:showTime.*/
+	public final static String SHOW_TIME_PROPERTY_NAME="showTime";
 
 		//MAQRO question property names
 	/**The answer of a question. The local name of maqro:answer.*/

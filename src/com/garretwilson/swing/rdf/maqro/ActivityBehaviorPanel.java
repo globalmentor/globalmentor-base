@@ -1,56 +1,48 @@
 package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.*;
+import java.io.IOException;
+
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.model.Model;
+import com.garretwilson.rdf.RDFResource;
+import com.garretwilson.rdf.RDFResourceModel;
 import com.garretwilson.rdf.maqro.*;
+import com.garretwilson.rdf.xmlschema.BooleanLiteral;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.BorderUtilities;
+import com.garretwilson.swing.rdf.RDFResourceModelPanel;
 
-/**Panel for editing the behavior of an activity.
+/**Panel for editing behavior-related MAQRO resource properties.
+In most cases, the resource edited will be an activity.
 @author Garret Wilson
+@see Activity
 */
-public class ActivityBehaviorPanel extends ModelPanel
+public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQROConstants
 {
 
 	private final PermissionsPanel permissionsPanel;
 	private final ProcessPanel processPanel;
 	private final FeedbackPanel feedbackPanel;
 
-	/**@return The data model for which this component provides a view.
-	@see ModelPanel#getModel()
-	*/
-	public ActivityModel getActivityModel() {return (ActivityModel)getModel();}
-
-	/**Sets the data model.
-	@param model The data model for which this component provides a view.
-	@see #setModel(Model)
-	*/
-	public void setActivityModel(final ActivityModel model)
-	{
-		setModel(model);	//set the model
-	}
-
 	/**Sets the data model.
 	@param newModel The data model for which this component provides a view.
-	@exception ClassCastException Thrown if the model is not an <code>ActivityModel</code>.
+	@exception ClassCastException Thrown if the model is not an <code>RDFResourceModel</code>.
 	*/
 	public void setModel(final Model newModel)
 	{
-		super.setModel((ActivityModel)newModel);	//set the model in the parent class
-	}
-	
-	/**Default constructor.*/
-	public ActivityBehaviorPanel()
-	{
-		this(new ActivityModel());	//construct the panel with a default model
+		final RDFResourceModel resourceModel=(RDFResourceModel)newModel;	//cast the model to a resource model
+		permissionsPanel.setRDFResourceModel(resourceModel);	//update the models of the child panels
+		processPanel.setRDFResourceModel(resourceModel);	//update the models of the child panels
+		feedbackPanel.setRDFResourceModel(resourceModel);	//update the models of the child panels
+		super.setModel(resourceModel);	//set the model in the parent class
 	}
 
 	/**Model constructor.
 	@param model The data model for which this component provides a view.
 	*/
-	public ActivityBehaviorPanel(final ActivityModel model)
+	public ActivityBehaviorPanel(final RDFResourceModel model)
 	{
 		this(model, true);	//construct the panel and initialize it
 	}
@@ -60,12 +52,12 @@ public class ActivityBehaviorPanel extends ModelPanel
 	@param initialize <code>true</code> if the panel should initialize itself by
 		calling the initialization methods.
 	*/
-	public ActivityBehaviorPanel(final ActivityModel model, final boolean initialize)
+	public ActivityBehaviorPanel(final RDFResourceModel model, final boolean initialize)
 	{
 		super(new BasicGridBagLayout(), model, false);	//construct the panel using a grid bag layout, but don't initialize the panel
-		permissionsPanel=new PermissionsPanel();
-		processPanel=new ProcessPanel();
-		feedbackPanel=new FeedbackPanel();
+		permissionsPanel=new PermissionsPanel(model);
+		processPanel=new ProcessPanel(model);
+		feedbackPanel=new FeedbackPanel(model);
 		setDefaultFocusComponent(permissionsPanel);	//set the default focus component
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
@@ -100,6 +92,28 @@ public class ActivityBehaviorPanel extends ModelPanel
 	}
 */
 
+	/**Loads the data from the model to the view, if necessary.
+	@exception IOException Thrown if there was an error loading the model.
+	*/
+	public void loadModel() throws IOException
+	{
+		super.loadModel();	//do the default loading
+		permissionsPanel.loadModel();	//load the child panels
+		processPanel.loadModel();
+		feedbackPanel.loadModel();
+	}
+
+	/**Stores the current data being edited to the model, if necessary.
+	@exception IOException Thrown if there was an error saving the model.
+	*/
+	public void saveModel() throws IOException
+	{
+		super.saveModel();	//do the default saving
+		permissionsPanel.saveModel();	//save the child panels
+		processPanel.saveModel();
+		feedbackPanel.saveModel();		
+	}
+
 	/**Verifies the component.
 	@return <code>true</code> if the component contents are valid, <code>false</code>
 		if not.
@@ -133,17 +147,19 @@ public class ActivityBehaviorPanel extends ModelPanel
 	/**Panel for editing the activity permissions.
 	@author Garret Wilson
 	*/
-	protected static class PermissionsPanel extends ModifiablePanel
+	public static class PermissionsPanel extends RDFResourceModelPanel
 	{
 
 		private final JCheckBox allowHintCheckBox;
 		private final JCheckBox allowPreviousCheckBox;
 		private final JCheckBox allowCancelCheckBox;
 
-		/**Default constructor.*/
-		public PermissionsPanel()
+		/**Model constructor.
+		@param model The data model for which this component provides a view.
+		*/
+		public PermissionsPanel(final RDFResourceModel model)
 		{
-			super(new BasicGridBagLayout(), false);	//construct the parent class but don't initialize it
+			super(new BasicGridBagLayout(), model, false);	//construct the parent class but don't initialize it
 			allowHintCheckBox=new JCheckBox();
 			allowPreviousCheckBox=new JCheckBox();
 			allowCancelCheckBox=new JCheckBox();
@@ -165,27 +181,60 @@ public class ActivityBehaviorPanel extends ModelPanel
 			add(allowPreviousCheckBox, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 			add(allowCancelCheckBox, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 		}
+
+		/**Loads the data from the model to the view, if necessary.
+		@exception IOException Thrown if there was an error loading the model.
+		*/
+		public void loadModel() throws IOException
+		{
+			super.loadModel();	//do the default loading
+			final RDFResource resource=getRDFResourceModel().getRDFResource();	//get the resource
+			if(resource!=null)	//if we have a resource
+			{
+				allowHintCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_HINT_PROPERTY_NAME)));
+				allowPreviousCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_PREVIOUS_PROPERTY_NAME)));
+				allowCancelCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_CANCEL_PROPERTY_NAME)));
+			}
+		}
+
+		/**Stores the current data being edited to the model, if necessary.
+		@exception IOException Thrown if there was an error saving the model.
+		*/
+		public void saveModel() throws IOException
+		{
+			super.saveModel();	//do the default saving
+			final RDFResource resource=getRDFResourceModel().getRDFResource();	//get the resource
+			if(resource!=null)	//if we have a resource
+			{
+				resource.setProperty(MAQRO_NAMESPACE_URI, ALLOW_HINT_PROPERTY_NAME, new BooleanLiteral(allowHintCheckBox.isSelected()));
+				resource.setProperty(MAQRO_NAMESPACE_URI, ALLOW_PREVIOUS_PROPERTY_NAME, new BooleanLiteral(allowPreviousCheckBox.isSelected()));
+				resource.setProperty(MAQRO_NAMESPACE_URI, ALLOW_CANCEL_PROPERTY_NAME, new BooleanLiteral(allowCancelCheckBox.isSelected()));
+			}
+		}
 	}
 
 	/**Panel for editing the activity process.
 	@author Garret Wilson
 	*/
-	protected static class ProcessPanel extends ModifiablePanel
+	protected static class ProcessPanel extends RDFResourceModelPanel
 	{
 
 		private final JCheckBox confirmCommitCheckBox;
 		private final JCheckBox confirmSubmitCheckBox;
-	//G***del if not needed; maybe replace with question:minResponseCount	private final JCheckBox requireResponseCheckBox;
+		private final JCheckBox requireResponseCheckBox;
 		private final JCheckBox limitTimeCheckBox;
 		private final JTextField maxTimeTextField;
 		private final JLabel maxTimeUnitsLabel;
 
-		/**Default constructor.*/
-		public ProcessPanel()
+		/**Model constructor.
+		@param model The data model for which this component provides a view.
+		*/
+		public ProcessPanel(final RDFResourceModel model)
 		{
-			super(new BasicGridBagLayout(), false);	//construct the parent class but don't initialize it
+			super(new BasicGridBagLayout(), model, false);	//construct the parent class but don't initialize it
 			confirmCommitCheckBox=new JCheckBox();
 			confirmSubmitCheckBox=new JCheckBox();
+			requireResponseCheckBox=new JCheckBox();
 			limitTimeCheckBox=new JCheckBox();
 			maxTimeTextField=new JTextField(8);
 			maxTimeUnitsLabel=new JLabel();
@@ -201,6 +250,8 @@ public class ActivityBehaviorPanel extends ModelPanel
 			confirmCommitCheckBox.addItemListener(getModifyItemListener());
 			confirmSubmitCheckBox.setText("Confirm submit");	//G***i18n
 			confirmSubmitCheckBox.addItemListener(getModifyItemListener());
+			requireResponseCheckBox.setText("Require response");	//G***i18n
+			requireResponseCheckBox.addItemListener(getModifyItemListener());
 			limitTimeCheckBox.setText("Limit time");	//G***i18n
 			limitTimeCheckBox.addItemListener(createUpdateStatusItemListener());
 			limitTimeCheckBox.addItemListener(getModifyItemListener());
@@ -208,9 +259,10 @@ public class ActivityBehaviorPanel extends ModelPanel
 			maxTimeUnitsLabel.setText("milliseconds");	//G***i18n TODO use a special time selection control
 			add(confirmCommitCheckBox, new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 			add(confirmSubmitCheckBox, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-			add(limitTimeCheckBox, new GridBagConstraints(0, 2, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-			add(maxTimeTextField, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-			add(maxTimeUnitsLabel, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+			add(requireResponseCheckBox, new GridBagConstraints(0, 2, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+			add(limitTimeCheckBox, new GridBagConstraints(0, 3, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+			add(maxTimeTextField, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+			add(maxTimeUnitsLabel, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 		}
 
 		/**Updates the states of the actions, including enabled/disabled status,
@@ -222,12 +274,43 @@ public class ActivityBehaviorPanel extends ModelPanel
 			maxTimeTextField.setEnabled(limitTimeCheckBox.isSelected());	//only enable the maximum time text field if the limit time checkbox is selected
 		}
 
+		/**Loads the data from the model to the view, if necessary.
+		@exception IOException Thrown if there was an error loading the model.
+		*/
+		public void loadModel() throws IOException
+		{
+			super.loadModel();	//do the default loading
+			final RDFResource resource=getRDFResourceModel().getRDFResource();	//get the resource
+			if(resource!=null)	//if we have a resource
+			{
+				confirmCommitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME)));
+				confirmSubmitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_SUBMIT_PROPERTY_NAME)));
+				requireResponseCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, REQUIRE_RESPONSE_PROPERTY_NAME)));
+//TODO fix limit time controls
+			}
+		}
+
+		/**Stores the current data being edited to the model, if necessary.
+		@exception IOException Thrown if there was an error saving the model.
+		*/
+		public void saveModel() throws IOException
+		{
+			super.saveModel();	//do the default saving
+			final RDFResource resource=getRDFResourceModel().getRDFResource();	//get the resource
+			if(resource!=null)	//if we have a resource
+			{
+				resource.setProperty(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME, new BooleanLiteral(confirmCommitCheckBox.isSelected()));
+				resource.setProperty(MAQRO_NAMESPACE_URI, CONFIRM_SUBMIT_PROPERTY_NAME, new BooleanLiteral(confirmSubmitCheckBox.isSelected()));
+				resource.setProperty(MAQRO_NAMESPACE_URI, REQUIRE_RESPONSE_PROPERTY_NAME, new BooleanLiteral(requireResponseCheckBox.isSelected()));
+//TODO fix limit time controls
+			}
+		}
 	}
 
 	/**Panel for editing the activity feedback.
 	@author Garret Wilson
 	*/
-	protected static class FeedbackPanel extends ModifiablePanel
+	protected static class FeedbackPanel extends RDFResourceModelPanel
 	{
 
 		private final JCheckBox showEachResultCheckBox;
@@ -236,10 +319,12 @@ public class ActivityBehaviorPanel extends ModelPanel
 		private final JCheckBox showProgressCheckBox;
 		private final JCheckBox showTimeCheckBox;
 
-		/**Default constructor.*/
-		public FeedbackPanel()
+		/**Model constructor.
+		@param model The data model for which this component provides a view.
+		*/
+		public FeedbackPanel(final RDFResourceModel model)
 		{
-			super(new BasicGridBagLayout(), false);	//construct the parent class but don't initialize it
+			super(new BasicGridBagLayout(), model, false);	//construct the parent class but don't initialize it
 			showEachResultCheckBox=new JCheckBox();
 			showFinalResultCheckBox=new JCheckBox();
 			showResultProgressCheckBox=new JCheckBox();
@@ -270,6 +355,39 @@ public class ActivityBehaviorPanel extends ModelPanel
 			add(showTimeCheckBox, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 		}
 
+		/**Loads the data from the model to the view, if necessary.
+		@exception IOException Thrown if there was an error loading the model.
+		*/
+		public void loadModel() throws IOException
+		{
+			super.loadModel();	//do the default loading
+			final RDFResource resource=getRDFResourceModel().getRDFResource();	//get the resource
+			if(resource!=null)	//if we have a resource
+			{
+				showEachResultCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_EACH_RESULT_PROPERTY_NAME)));
+				showFinalResultCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_FINAL_RESULT_PROPERTY_NAME)));
+				showResultProgressCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_RESULT_PROGRESS_PROPERTY_NAME)));
+				showProgressCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_PROGRESS_PROPERTY_NAME)));
+				showTimeCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_TIME_PROPERTY_NAME)));
+			}
+		}
+
+		/**Stores the current data being edited to the model, if necessary.
+		@exception IOException Thrown if there was an error saving the model.
+		*/
+		public void saveModel() throws IOException
+		{
+			super.saveModel();	//do the default saving
+			final RDFResource resource=getRDFResourceModel().getRDFResource();	//get the resource
+			if(resource!=null)	//if we have a resource
+			{
+				resource.setProperty(MAQRO_NAMESPACE_URI, SHOW_EACH_RESULT_PROPERTY_NAME, new BooleanLiteral(showEachResultCheckBox.isSelected()));
+				resource.setProperty(MAQRO_NAMESPACE_URI, SHOW_FINAL_RESULT_PROPERTY_NAME, new BooleanLiteral(showFinalResultCheckBox.isSelected()));
+				resource.setProperty(MAQRO_NAMESPACE_URI, SHOW_RESULT_PROGRESS_PROPERTY_NAME, new BooleanLiteral(showResultProgressCheckBox.isSelected()));
+				resource.setProperty(MAQRO_NAMESPACE_URI, SHOW_PROGRESS_PROPERTY_NAME, new BooleanLiteral(showProgressCheckBox.isSelected()));
+				resource.setProperty(MAQRO_NAMESPACE_URI, SHOW_TIME_PROPERTY_NAME, new BooleanLiteral(showTimeCheckBox.isSelected()));
+			}
+		}
 	}
 
 }

@@ -68,8 +68,8 @@ public class ActivityPanel extends RDFPanel
 	public void setModel(final Model newModel)
 	{
 		final ActivityModel activityModel=(ActivityModel)newModel;	//cast the model to an activity model
+		activityBehaviorPanel.setRDFResourceModel(activityModel);	//set the new model in the activity behavior panel
 		super.setModel(activityModel);	//set the model in the parent class
-		activityBehaviorPanel.setActivityModel(activityModel);	//set the new model in the activity behavior panel
 	}
 
 	/**Default constructor.*/

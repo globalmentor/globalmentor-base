@@ -1,5 +1,6 @@
 package com.garretwilson.rdf.xmlschema;
 
+import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.rdf.*;
 import com.garretwilson.text.xml.schema.XMLSchemaConstants;
 
@@ -42,4 +43,27 @@ public class BooleanLiteral extends RDFTypedLiteral implements XMLSchemaConstant
 		super(Boolean.valueOf(lexicalForm), BOOLEAN_DATATYPE_URI);	//save a Boolean constructed from the text as the value, specifying the XML boolean datatype URI
 	}
 
+	/**Determines if the RDF object is a boolean literal and, if so, casts the 
+		object to a boolean literal and returns it.
+	@param rdfObject The RDF object in question.
+	@return The RDF object as a boolean literal, or <code>null</code> if the
+		object is not a boolean literal or the object is <code>null</code>.
+	*/
+	public static BooleanLiteral asBooleanLiteral(final RDFObject rdfObject)
+	{
+		return (BooleanLiteral)ObjectUtilities.asInstance(rdfObject, BooleanLiteral.class);	//cast the object to a boolean literal if we can
+	}
+
+	/**Determines if the RDF object is a boolean literal and, if so, casts the 
+		object to a boolean literal and returns its value; otherwise, returns
+		<code>false</code>.
+	@param rdfObject The RDF object in question.
+	@return The boolean value of the boolean literal, or <code>false</code> if the
+		object is not a boolean literal or the object is <code>null</code>.
+	*/
+	public static boolean asBooleanValue(final RDFObject rdfObject)
+	{
+		final BooleanLiteral booleanLiteral=asBooleanLiteral(rdfObject);	//cast the object to a boolean literal, if it is one
+		return booleanLiteral!=null ? booleanLiteral.getBoolean().booleanValue() : false;	//return the boolean value of the boolean literal, or false if there is no boolean literal
+	}
 }

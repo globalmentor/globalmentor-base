@@ -3,6 +3,7 @@ package com.garretwilson.rdf.maqro;
 import java.net.URI;
 import java.util.*;
 import com.garretwilson.rdf.*;
+import com.garretwilson.rdf.xmlschema.BooleanLiteral;
 import com.garretwilson.util.CollectionUtilities;
 
 /**Class representing a MAQRO activity.
@@ -120,6 +121,166 @@ public class Activity extends Group
 	public void setSelect(final SelectDescription selectDescription)
 	{
 		setProperty(MAQRO_NAMESPACE_URI, SELECT_PROPERTY_NAME, selectDescription);	//set the selection criteria
+	}
+
+		//behavior
+			//permissions
+	/**@return <code>true</code> if hints are allowed.*/
+	public boolean isAllowHint()
+	{
+		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_HINT_PROPERTY_NAME)); //get the boolean value of the property
+	}
+
+	/**Sets whether hints are allowed.
+	@param allowHint <code>true</code> if hints should be allowed.
+	*/
+	public void setAllowHint(final boolean allowHint)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, ALLOW_HINT_PROPERTY_NAME, new BooleanLiteral(allowHint)); //set the property with a boolean typed literal
+	}
+
+	/**@return <code>true</code> if previous nativation is allowed.*/
+	public boolean isAllowPrevious()
+	{
+		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_PREVIOUS_PROPERTY_NAME)); //get the boolean value of the property
+	}
+
+	/**Sets whether previous navigation is allowed.
+	@param allowPrevious <code>true</code> if previous navigation should be allowed.
+	*/
+	public void setAllowPrevious(final boolean allowPrevious)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, ALLOW_PREVIOUS_PROPERTY_NAME, new BooleanLiteral(allowPrevious)); //set the property with a boolean typed literal
+	}
+
+	/**@return <code>true</code> if the activity can be canceled.*/
+	public boolean isAllowCancel()
+	{
+		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_CANCEL_PROPERTY_NAME)); //get the boolean value of the property
+	}
+
+	/**Sets whether the activity can be canceled.
+	@param allowStop <code>true</code> if canceling should be allowed.
+	*/
+	public void setAllowCancel(final boolean allowCancel)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, ALLOW_CANCEL_PROPERTY_NAME, new BooleanLiteral(allowCancel)); //set the property with a boolean typed literal
+	}
+
+			//process
+	/**@return <code>true</code> if each response commit should be confirmed.*/
+	public boolean isConfirmCommit()
+	{
+		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME)); //get the boolean value of the property
+	}
+
+	/**Sets whether each response commit must be confirmed.
+	@param confirmCommit <code>true</code> if each commit must be confirmed.
+	*/
+	public void setConfirmCommit(final boolean confirmCommit)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME, new BooleanLiteral(confirmCommit)); //set the property with a boolean typed literal
+	}
+
+	/**@return <code>true</code> if activity submission should be confirmed.*/
+	public boolean isConfirmSubmit()
+	{
+		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_SUBMIT_PROPERTY_NAME)); //get the boolean value of the property
+	}
+
+	/**Sets whether activity submission must be confirmed.
+	@param confirmSubmit <code>true</code> if activity submission must be confirmed.
+	*/
+	public void setConfirmSubmit(final boolean confirmSubmit)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, CONFIRM_SUBMIT_PROPERTY_NAME, new BooleanLiteral(confirmSubmit)); //set the property with a boolean typed literal
+	}
+	
+	/**@return <code>true</code> if a response is required for all applicable interactions.*/
+	public boolean isRequireResponse()
+	{
+		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, REQUIRE_RESPONSE_PROPERTY_NAME)); //get the boolean value of the property
+	}
+
+	/**Sets whether a response is required for all applicable interactions.
+	@param confirmCommit <code>true</code> if a response is always required.
+	*/
+	public void setRequireResponse(final boolean requireResponse)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, REQUIRE_RESPONSE_PROPERTY_NAME, new BooleanLiteral(requireResponse)); //set the property with a boolean typed literal
+	}
+	
+	/**The maximum amount of time for the activity, in milliseconds. The local name of maqro:maxTime.*/
+//TODO fix max time	public final static String MAX_TIME_PROPERTY_NAME="maxTime";
+			//feedback
+	/**@return <code>true</code> if the result of each interaction should immediately be shown.*/
+	public boolean isShowEachResult()
+	{
+		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_EACH_RESULT_PROPERTY_NAME)); //get the boolean value of the property
+	}
+
+	/**Sets whether the result of each interaction should immediately be shown.
+	@param showResult <code>true</code> if each result should be shown.
+	*/
+	public void setShowEachResult(final boolean showResult)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, SHOW_EACH_RESULT_PROPERTY_NAME, new BooleanLiteral(showResult)); //set the property with a boolean typed literal
+	}
+
+	/**@return <code>true</code> if the final result of the activity should be shown.*/
+	public boolean isShowFinalResult()
+	{
+		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_FINAL_RESULT_PROPERTY_NAME)); //get the boolean value of the property
+	}
+
+	/**Sets whether the final result of the activity should be shown.
+	@param showFinalResult <code>true</code> if the activity result should be shown.
+	*/
+	public void setShowFinalResult(final boolean showFinalResult)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, SHOW_FINAL_RESULT_PROPERTY_NAME, new BooleanLiteral(showFinalResult)); //set the property with a boolean typed literal
+	}
+
+	/**@return <code>true</code> if the progress of results should be shown.*/
+	public boolean isShowResultProgress()
+	{
+		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_RESULT_PROGRESS_PROPERTY_NAME)); //get the boolean value of the property
+	}
+
+	/**Sets whether real-time results progress should be shown.
+	@param showResultProgress <code>true</code> if the results should continuously be shown.
+	*/
+	public void setShowResultProgress(final boolean showResultProgress)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, SHOW_RESULT_PROGRESS_PROPERTY_NAME, new BooleanLiteral(showResultProgress)); //set the property with a boolean typed literal
+	}
+
+	/**@return <code>true</code> if the position within the activity should be shown.*/
+	public boolean isShowProgress()
+	{
+		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_PROGRESS_PROPERTY_NAME)); //get the boolean value of the property
+	}
+
+	/**Sets whether the position within the activity should be shown.
+	@param showProgress <code>true</code> if the position within the activity should be shown.
+	*/
+	public void setShowProgress(final boolean showProgress)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, SHOW_PROGRESS_PROPERTY_NAME, new BooleanLiteral(showProgress)); //set the property with a boolean typed literal
+	}
+
+	/**@return <code>true</code> if the time used and/or time available should be shown.*/
+	public boolean isShowTime()
+	{
+		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_TIME_PROPERTY_NAME)); //get the boolean value of the property
+	}
+
+	/**Sets whether the time used and/or time available should be shown..
+	@param showTime <code>true</code> if the time used and/or time available should be shown..
+	*/
+	public void setShowTime(final boolean showTime)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, SHOW_TIME_PROPERTY_NAME, new BooleanLiteral(showTime)); //set the property with a boolean typed literal
 	}
 
 }
