@@ -72,7 +72,7 @@ public class NameValuePair<N, V> extends DefaultNamedObject<N>
 	/**@return A string representation of this object in the format "name=\"value\"".*/
 	public String toString()
 	{
-		return super.toString()+"="+(getValue()!=null ? "\""+getValue()+"\"" : getValue());  //return a string constructed from the name and the value
+		return getName()+"="+(getValue()!=null ? "\""+getValue()+"\"" : getValue());  //return a string constructed from the name and the value
 	}
 
 }

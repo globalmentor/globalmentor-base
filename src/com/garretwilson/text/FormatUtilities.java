@@ -16,10 +16,12 @@ public class FormatUtilities
 	@return The string buffer containing the new information.
 	@see Object#toString
 	*/
+/*TODO bring back when it's known why this causes an ambiguity with other methods.
 	public static StringBuilder formatList(final StringBuilder stringBuilder, final Object... items)
 	{
 		return formatList(stringBuilder, COMMA_CHAR, items);	//format the list using a comma as a delimiter
 	}
+*/
 	
 	/**Appends the string representations of the given objects separated by a delimiter character.
 	@param stringBuilder The string builder into which the result should be placed.
@@ -48,6 +50,7 @@ public class FormatUtilities
 	@return The string buffer containing the new information.
 	@see Object#toString
 	*/
+/*G***del if not needed
 	public static StringBuilder formatList(final StringBuilder stringBuilder, final String delimiter, final Object... items)
 	{
 		for(int i=0; i<items.length; ++i)	//look at each object
@@ -60,6 +63,7 @@ public class FormatUtilities
 		}
 		return stringBuilder;	//return the string builder, now containing the new information
 	}	
+*/
 
 	/**Formats a series of name-value pairs using the format:
 	 <var>name</var>="<var>value</value>", <var>name</var>="<var>value</value>"

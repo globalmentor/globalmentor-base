@@ -75,6 +75,16 @@ public class CharSequenceUtilities
 		return -1;	//if we make it to here, we didn't find any of the characters
 	}
 
+	/**Determines if a character sequence contains the given character.
+	@param charSequence The character sequence to be searched.
+	@param character The character to check.
+	@return <code>true</code> if the given character sequence contains the given character.
+	*/
+	public static boolean contains(final CharSequence charSequence, final char character)
+	{
+		return indexOf(charSequence, character)>=0;	//see if the given character is in the character sequence
+	}
+
 	/**Determines if a character sequence contains any of the given characters.
 	@param charSequence The character sequence to be searched.
 	@param charString The string of characters to check.

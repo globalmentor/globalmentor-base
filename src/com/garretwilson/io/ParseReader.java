@@ -194,6 +194,15 @@ public class ParseReader extends BufferedPushbackReader
 
 	/**Constructor to create a reader from the contents of a string.
 	@param inString The string that should be used for input.
+	@except IOException Thrown when an I/O error occurs.
+	*/
+	public ParseReader(final String inString) throws IOException
+	{
+		this(inString, null);	//construct the reader without a name
+	}
+
+	/**Constructor to create a reader from the contents of a string.
+	@param inString The string that should be used for input.
 	@param name The name of the reader.
 	@except IOException Thrown when an I/O error occurs.
 	*/
@@ -489,19 +498,19 @@ public class ParseReader extends BufferedPushbackReader
 	{
 		final long beginLineIndex=getLineIndex(), beginCharIndex=getCharIndex()+1;	//make a note of where we start searching G***what if we've been peeking before getting here? compensate
 //G***del		int compareIndex=0;	//we'll start comparing at the first position of every string
-		String peekedChars="";	//this will hold the characters we peek
+		final StringBuilder stringBuilder=new StringBuilder();	//this will hold the characters we peek
 		int matchesRemaining;	//we'll use this to see how many strings we have left that still match up to and including compareIndex
 		for(int i=0; i<expectedStrings.length; ++i)	//look at each string in our array
 		{
 //G***del System.out.println("peekExpectedStrings() string: "+i+" is "+expectedStrings[i]+", we have: "+peekedChars);	//G***del
 
-			if(expectedStrings[i].length()>peekedChars.length())	//if the string we're comparing is longer than what we've peeked so far
+			if(expectedStrings[i].length()>stringBuilder.length())	//if the string we're comparing is longer than what we've peeked so far
 			{
 //G***del System.out.println("peekExpectedStrings() needs more data, but first check what we have.");	//G***del
-				if(expectedStrings[i].substring(0, peekedChars.length()).equals(peekedChars))	//if what we've peeked so far matches the first part of this string
+				if(expectedStrings[i].substring(0, stringBuilder.length()).equals(stringBuilder.toString()))	//if what we've peeked so far matches the first part of this string
 				{
 //G***del System.out.println("peekExpectedStrings() needs more data, matches so far.");	//G***del
-					peekedChars+=peekStringEOF(expectedStrings[i].length()-peekedChars.length());	//peek enough to make up for the difference so we can check it, but don't throw an exception if there aren't enough characters (a shorter string later may match)
+					stringBuilder.append(peekStringEOF(expectedStrings[i].length()-stringBuilder.length()));	//peek enough to make up for the difference so we can check it, but don't throw an exception if there aren't enough characters (a shorter string later may match)
 				}
 				else	//if what we have so far doesn't match this string
 				{
@@ -511,7 +520,7 @@ public class ParseReader extends BufferedPushbackReader
 //G***maybe just read more characters one character at a time as we compare
 			}
 //G***del System.out.println("peekExpectedStrings() comparing strings.");	//G***del
-			if(expectedStrings[i].equals(peekedChars.substring(0, Math.min(expectedStrings[i].length(), peekedChars.length()))))	//if this string matches what we've peeked (use a subset of what we've peeked in case we've peeked more than we've needed, something that would happen if the strings are not in ascending order of length, and we might have peeked less than needed, if we reached the end of the string)
+			if(expectedStrings[i].equals(stringBuilder.substring(0, Math.min(expectedStrings[i].length(), stringBuilder.length()))))	//if this string matches what we've peeked (use a subset of what we've peeked in case we've peeked more than we've needed, something that would happen if the strings are not in ascending order of length, and we might have peeked less than needed, if we reached the end of the string)
 			{
 //G***del System.out.println("peekExpectedStrings() found string: "+expectedStrings[i]);	//G***del
 
@@ -519,7 +528,7 @@ public class ParseReader extends BufferedPushbackReader
 				return i;	//show that this string matches what we're peeking
 			}
 		}
-		throw new ParseUnexpectedDataException(expectedStrings, peekedChars, beginLineIndex, beginCharIndex, getName());	//show that we didn't get the string we were expecting G***we may want to have an XMLUnexpectedStringException or something
+		throw new ParseUnexpectedDataException(expectedStrings, stringBuilder.toString(), beginLineIndex, beginCharIndex, getName());	//show that we didn't get the string we were expecting G***we may want to have an XMLUnexpectedStringException or something
 	}
 
 	/**Reads a string of characters and makes sure they match a string in a given
@@ -796,7 +805,7 @@ public class ParseReader extends BufferedPushbackReader
 	public String readStringUntilCharEOF(String delimiterCharString) throws IOException
 	{
 //G***del System.out.println("Inside readStringUntilCharEOF() with: "+delimiterCharString);	//G***del
-		String characterString="";	//this string will receive the character's we've read
+		final StringBuilder stringBuilder=new StringBuilder();	//this will receive the characters we've read
 		boolean foundDelimiter=false;	//show that we haven't found the character, yet
 		while(!isEOF())	//if we're not at the end of the file
 		{
@@ -815,7 +824,7 @@ public class ParseReader extends BufferedPushbackReader
 				else	//if we haven't found a delimiter character
 					++checkIndex;	//look at the next character
 			}
-			characterString+=new String(buffer, getReadIndex(), checkIndex-getReadIndex());	//create a string with the number of characters checked that were not the delimiter character (this could be zero if the first character was a delimiter) and add it to our characters read
+			stringBuilder.append(buffer, getReadIndex(), checkIndex-getReadIndex());	//append the characters checked that were not the delimiter character (this could be zero if the first character was a delimiter)
 //G***del Debug.trace("new character string is: \""+characterString+"\"");	//G***del
 //G***del Debug.trace("Before updating read index EOF is: "+isEOF()+" lastBuffer is: "+isLastBuffer());	//G***del
 			setReadIndex(checkIndex);	//update our read position to wherever we wound up; this will also fetch another buffer if needed
@@ -828,7 +837,7 @@ public class ParseReader extends BufferedPushbackReader
 */
 		}
 		resetPeek();	//reset peeking just because this function always does, even at the end of the file
-		return characterString;	//return the characters we read
+		return stringBuilder.toString();	//return the characters we read
 	}
 
 	/**Gets the next character from the reader, and make sure it's the character we expected; otherwise an exception is thrown.

@@ -16,7 +16,7 @@ If a group has the same beginning and ending character, direct nesting of that
 	group is not allowed, although other groups may be interspersed.
 @author Garret Wilson
 */
-public class ReaderTokenizer implements Iterator<String>
+public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 {
 
 	/**The default delimiter characters: whitespace.
@@ -119,31 +119,25 @@ public class ReaderTokenizer implements Iterator<String>
 		*/
 //G***del		protected String getPrimedToken() {return nextToken;}
 
-	/**Reader constructor with default token delimiters and group delimiters.
+	/**Reader constructor with default token delimiters and no group delimiters.
 	@param reader The input characters to tokenize.
 	@param delimiters The delimiter characters.
 	@param groupBegins The valid group beginning characters.
 	@param groupEnds The valid group ending characters, matching to beginning characters.
 	@see #DEFAULT_DELIMITERS
-	@see #DEFAULT_GROUP_BEGINS
-	@see #DEFAULT_GROUP_ENDS
 	*/
 	public ReaderTokenizer(final Reader reader)
 	{
 		this(reader, DEFAULT_DELIMITERS);
 	}
 
-	/**Token delimiter constructor with default group delimiters.
+	/**Token delimiter constructor with no group delimiters.
 	@param reader The input characters to tokenize.
 	@param delimiters The delimiter characters.
-	@param groupBegins The valid group beginning characters.
-	@param groupEnds The valid group ending characters, matching to beginning characters.
-	@see #DEFAULT_GROUP_BEGINS
-	@see #DEFAULT_GROUP_ENDS
 	*/
 	public ReaderTokenizer(final Reader reader, final String delimiters)
 	{
-		this(reader, delimiters, DEFAULT_GROUP_BEGINS, DEFAULT_GROUP_ENDS);
+		this(reader, delimiters, null, null);	//construct the tokenizer with no group recognition
 	}
 
 	/**Delimiter and group constructor.
@@ -156,8 +150,8 @@ public class ReaderTokenizer implements Iterator<String>
 	{
 		this.reader=reader;
 		this.delimiters=delimiters;
-		this.groupBegins=groupBegins;
-		this.groupEnds=groupEnds;
+		this.groupBegins=groupBegins!=null ? groupBegins : "";
+		this.groupEnds=groupEnds!=null ? groupEnds : "";
 	}
 
 	/**@return <code>true</code> if there are more tokens.*/
@@ -276,5 +270,8 @@ public class ReaderTokenizer implements Iterator<String>
 		}
 		return primedToken;	//return the waiting token
 	}
+
+	/**@return An iterator over the tokens.*/
+	public Iterator<String> iterator() {return this;}
 
 }

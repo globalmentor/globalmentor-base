@@ -2,7 +2,7 @@ package com.garretwilson.lang;
 
 import java.io.*;
 import java.util.List;
-import com.garretwilson.lang.CharacterUtilities;
+import static com.garretwilson.lang.CharacterUtilities.*;
 import com.garretwilson.text.*;
 import com.garretwilson.util.Debug;
 
@@ -16,7 +16,7 @@ import static com.garretwilson.text.CharacterConstants.*;
 @see StringBufferUtilities
 @author Garret Wilson
 */
-public class StringUtilities extends CharacterUtilities
+public class StringUtilities 
 {
 	//TODO move most of the methods that reference CharSeqUtilities to that class
 
@@ -677,9 +677,9 @@ end;
 	*/
 	public static String createString(final char firstChar, final char lastChar)
 	{
-		final StringBuffer stringBuffer=new StringBuffer(lastChar-firstChar+1);	//create a string buffer with enough room to hold the characters
-		for(char c=firstChar; c<=lastChar; stringBuffer.append(c++));	//append the entire range of characters to the string buffer
-		return stringBuffer.toString();	//return the string we constructed
+		final StringBuilder stringBuilder=new StringBuilder(lastChar-firstChar+1);	//create a string buffer with enough room to hold the characters
+		for(char c=firstChar; c<=lastChar; stringBuilder.append(c++));	//append the entire range of characters to the string buffer
+		return stringBuilder.toString();	//return the string we constructed
 	}
 	
 	/**Creates a string with a given repetition of characters.

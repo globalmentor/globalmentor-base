@@ -2,6 +2,9 @@ package com.garretwilson.net.http;
 
 import javax.servlet.http.HttpServletResponse;
 
+import static com.garretwilson.lang.StringUtilities.*;
+import static com.garretwilson.text.CharacterConstants.*;
+
 /**Constants relating to the HyperText Transfer Protocol (HTTP).
 <p>Status code declarations and comments used from Tomcat org.apache.catalina.servlets.WebdavServlet by Remy Maucherat Revision: 1.19 $ $Date: 2004/09/19 01:20:10.</p>  
 @author Garret Wilson
@@ -11,6 +14,8 @@ public class HTTPConstants
 
 	/**The HTTP header indicating the accepted content types.*/
 	public final static String ACCEPT_HEADER="accept";
+	/**The HTTP header indicating authorization information.*/
+	public final static String AUTHORIZATION_HEADER="Authorization";
 	/**The HTTP header for cache control.*/
 	public final static String CACHE_CONTROL_HEADER="Cache-Control";
 		/**The HTTP no-cache cache control header.*/
@@ -50,9 +55,6 @@ public class HTTPConstants
 	public final static String DELETE_METHOD="DELETE";
 	/**The HTTP TRACE method.*/
 	public final static String TRACE_METHOD="TRACE";
-
-	/**HTTP forms of authentication.*/
-	public enum AuthenticationScheme{BASIC, CLIENT_CERT, DIGEST, FORM};
 
 	/**The "realm" parameter used in headers such as WWW-Authenticate.*/
 	public final static String REALM_PARAMETER="realm";
@@ -221,5 +223,45 @@ public class HTTPConstants
    */
   public static final int SC_UNSUPPORTED_MEDIA_TYPE = 415;
 
+  /**The character for delimiting HTTP list items.*/
+	public final static char LIST_DELIMITER=COMMA_CHAR;
 
+	/**The character used to escape quotation marks.*/
+	public final static char ESCAPE_CHAR='\\';
+
+  /**US-ASCII control characters.*/
+	public final static String CTL_CHARS=createString((char)0, (char)31)+(char)127;
+
+  /**US-ASCII carriage return.*/
+	public final static char CR_CHAR=(char)13;
+  /**US-ASCII linefeed.*/
+	public final static char LF_CHAR=(char)10;
+  /**US-ASCII space.*/
+	public final static char SP_CHAR=(char)32;
+  /**US-ASCII horizontal tab.*/
+	public final static char HT_CHAR=(char)9;
+  /**US-ASCII double-quote mark.*/
+	public final static char QUOTE_CHAR=(char)34;
+
+  /**The CR+LF carriage return + linefeed combination.*/
+	public final static String CRLF=""+CR_CHAR+LF_CHAR;
+
+	/**Characters that must be in a quoted string to be included in a parameter value.*/
+	public final static String SEPARATOR_CHARS="()<>@,;:\\"+QUOTE_CHAR+"/[]?={}"+SP_CHAR+HT_CHAR;
+
+	/**Characters that delimit tokens.*/
+	public final static String DELIMITER_CHARS=CTL_CHARS+SEPARATOR_CHARS; 
+
+
+/*TODO fix if needed
+HTTP/1.1 header field values can be folded onto multiple lines if the
+continuation line begins with a space or horizontal tab. All linear
+white space, including folding, has the same semantics as SP. A
+recipient MAY replace any linear white space with a single SP before
+interpreting the field value or forwarding the message downstream.
+
+LWS            = [CRLF] 1*( SP | HT )
+
+public final static String LWS
+*/
 }
