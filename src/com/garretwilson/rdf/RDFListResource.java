@@ -11,10 +11,8 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 
 	/**Constructs an RDF list resource with a reference URI.
 	@param newReferenceURI The reference URI for the new resource.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/
-	public RDFListResource(final URI newReferenceURI) throws IllegalArgumentException
+	public RDFListResource(final URI newReferenceURI)
 	{
 		super(newReferenceURI); //construct the parent class
 	}
@@ -34,13 +32,11 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 		The rest of the list is set to the RDF nil resource.
 	@param rdf The RDF data model.
 	@param first The first and only element of the list.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/
-	public RDFListResource(final RDF rdf, final RDFResource first) throws IllegalArgumentException
+	public RDFListResource(final RDF rdf, final RDFResource first)
 	{
 //G***del		final RDFResource nil=rdf.locateResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//get the nil resource
-		this(rdf, rdf.createAnonymousReferenceURI(), first);	//create a list with no other elements
+		this(rdf, (URI)null, first);	//create a list with no other elements
 	}
 
 	/**Constructs an RDF list resource with a single element.
@@ -48,10 +44,8 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	@param rdf The RDF data model.
 	@param newReferenceURI The reference URI for the new resource.
 	@param first The first and only element of the list.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/
-	public RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFResource first) throws IllegalArgumentException
+	public RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFResource first)
 	{
 //G***del		final RDFResource nil=rdf.locateResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//get the nil resource
 		this(rdf, newReferenceURI, first, RDFUtilities.locateNilResource(rdf));	//create a list with no other elements
@@ -62,12 +56,10 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	@param first The first element of the list.
 	@param rest The list resource representing the rest of the list, or <code>null</code>
 		if no rest should be specified.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/
-	public RDFListResource(final RDF rdf, final RDFResource first, final RDFResource rest) throws IllegalArgumentException
+	public RDFListResource(final RDF rdf, final RDFResource first, final RDFResource rest)
 	{
-		this(rdf, rdf.createAnonymousReferenceURI(), first, rest); //construct a list with an anonymous reference URI
+		this(rdf, (URI)null, first, rest); //construct a list with an anonymous reference URI
 	}
 
 	/**Constructs an RDF list resource with a current element and the rest of the list.
@@ -76,10 +68,8 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	@param first The first element of the list.
 	@param rest The list resource representing the rest of the list, or <code>null</code>
 		if no rest should be specified.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/
-	public RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFResource first, final RDFResource rest) throws IllegalArgumentException
+	public RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFResource first, final RDFResource rest)
 	{
 		super(newReferenceURI); //construct the list with the reference URI
 		setFirst(rdf, this, first);	//set the first element
@@ -90,22 +80,18 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	/**Constructs an anonymous RDF list resource with the contents of a collection.
 	@param rdf The RDF data model.
 	@param collection The collection with which to populate the list.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/
-	public static RDFListResource create(final RDF rdf, final Collection collection) throws IllegalArgumentException
+	public static RDFListResource create(final RDF rdf, final Collection collection)
 	{
-		return create(rdf, rdf.createAnonymousReferenceURI(), collection);	//create and return a list with an anonymous reference URI
+		return create(rdf, (URI)null, collection);	//create and return a list with an anonymous reference URI
 	}
 
 	/**Constructs an RDF list resource with the contents of a collection.
 	@param rdf The RDF data model.
 	@param collection The collection with which to populate the list, each
 		element of which is a <code>RDFResource</code>.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/
-	public static RDFListResource create(final RDF rdf, final URI newReferenceURI, final Collection collection) throws IllegalArgumentException
+	public static RDFListResource create(final RDF rdf, final URI newReferenceURI, final Collection collection)
 	{
 //G***del		final RDFResource nil=rdf.locateResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//get the nil resource
 		final RDFListResource listResource;	//we'll create a list resource for the collection 

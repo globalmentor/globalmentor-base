@@ -13,10 +13,8 @@ public class RDFBagResource extends RDFContainerResource
 
 	/**Constructs an RDF bag resource with a reference URI.
 	@param newReferenceURI The reference URI for the new resource.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/
-	public RDFBagResource(final URI newReferenceURI) throws IllegalArgumentException
+	public RDFBagResource(final URI newReferenceURI)
 	{
 		super(newReferenceURI); //construct the parent class
 	}

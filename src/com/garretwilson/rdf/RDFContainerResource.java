@@ -12,10 +12,8 @@ public abstract class RDFContainerResource extends DefaultRDFResource
 
 	/**Constructs an RDF container resource with a reference URI.
 	@param newReferenceURI The reference URI for the new resource.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/
-	public RDFContainerResource(final URI newReferenceURI) throws IllegalArgumentException
+	public RDFContainerResource(final URI newReferenceURI)
 	{
 		super(newReferenceURI); //construct the parent class
 	}

@@ -13,10 +13,8 @@ public class RDFSequenceResource extends RDFContainerResource implements Compara
 
 	/**Constructs an RDF sequence resource with a reference URI.
 	@param newReferenceURI The reference URI for the new resource.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/
-	public RDFSequenceResource(final URI newReferenceURI) throws IllegalArgumentException
+	public RDFSequenceResource(final URI newReferenceURI)
 	{
 		super(newReferenceURI); //construct the parent class
 	}

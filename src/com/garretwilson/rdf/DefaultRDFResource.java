@@ -217,10 +217,12 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		currently anonymous resources are those that either have no reference URI
 		or that have a reference URI that begins with "anonymous:".
 	*/
+/*G***del when works
 	public boolean isAnonymous()
 	{
 		return getReferenceURI()!=null && getReferenceURI().toString().startsWith("anonymous:"); //return whether there is no URI or the URI begins with "anonymous:" G***use a constant here; fix better
 	}
+*/
 
 	/**Removes all properties with the given URI.
 	@param propertyURI The reference URI of the property resource of the

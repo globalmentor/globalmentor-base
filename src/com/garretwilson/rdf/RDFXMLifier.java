@@ -228,7 +228,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 //G***del when works			referenceURI!=null && referenceURI.indexOf("anonymous")<0 //if this is not an anonymous node G***fix the way we determine anonymous resources
 
 //G***check to see if there are no references to this node---if so, we'll probably want to serialize it anyway
-			if(!resource.isAnonymous() //if this is not an anonymous node
+			if(resource.getReferenceURI()!=null //if this is not a blank node
 				  && resource.getPropertyCount()>0)  //if this resource actually has properties (even properties such as type identifiers are resources, but they don't have properties)
 			{
 				final Element resourceElement=createResourceElement(/*G***del if not needed rdf, */parentElement.getOwnerDocument(), resource); //create an element from this resource
@@ -265,7 +265,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 			final String qualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION);  //create a qualified name for the element
 		  resourceElement=document.createElementNS(RDF_NAMESPACE_URI.toString(), qualifiedName); //create an rdf:Description element
 		}
-		if(resource.getReferenceURI()!=null && !resource.isAnonymous())  //if this resource has a reference URI and it isn't an anonymous resource G***do we really want to check for the reference URI, because it isn't needed anymore---should this be an assert?
+		if(resource.getReferenceURI()!=null)  //if this resource has a reference URI (i.e. it isn't a blank node)
 		{
 				//set the rdf:about attribute to the reference URI
 			final String aboutAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_ABOUT);  //create a qualified name for reference URI
@@ -393,7 +393,7 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 			final RDFResource valueResource=(RDFResource)propertyValue; //cast the value to a resource
 			final URI valueReferenceURI=valueResource.getReferenceURI(); //get the reference URI of the value
 //G***del when works			if(valueReferenceURI==null || valueReferenceURI.indexOf("anonymous")>=0) //if this is an anonymous node G***fix the way we determine anonymous resources
-			if(valueResource.isAnonymous()) //if this is an anonymous node
+			if(valueResource.getReferenceURI()==null) //if this is a blank node
 			{
 					//G***rename allSubPropertiesLiterals
 				boolean allSubPropertiesLiterals=true; //we'll see if all the subproperties are literals; if so, we'll just add them as attributes

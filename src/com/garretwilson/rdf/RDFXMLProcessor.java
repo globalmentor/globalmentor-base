@@ -178,7 +178,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 			}
 			else  //if there is neither a resource ID nor an anchor ID
 			{
-				referenceURI=getRDF().createAnonymousReferenceURI();  //generate an anonymous reference URI for the resource
+				referenceURI=null;  //this is a blank node
 			}
 		}
 //G***del Debug.trace("resulting reference URI: ", referenceURI);  //G***del
@@ -397,9 +397,10 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			  propertyValue=propertyValueResource;  //the resource value is our property value
 	//G***make sure there are no attributes at all
 			}
-			else if(element.getChildNodes().getLength()==0) //if there are no child elements, this is an anonymous resource
+			else if(element.getChildNodes().getLength()==0) //if there are no child elements, this is a blank node
 			{
-			  final RDFResource propertyValueResource=getRDF().locateResource(getRDF().createAnonymousReferenceURI());  //get or create a resource from a generated anonymous reference URI
+//G***make sure this works when we implement node IDs			  final RDFResource propertyValueResource=getRDF().locateResource(getRDF().createAnonymousReferenceURI());  //get or create a resource from a generated anonymous reference URI
+				final RDFResource propertyValueResource=getRDF().createResource(null);  //get or create a resource from a generated anonymous reference URI
 				processAttributeProperties(propertyValueResource, element, REFERENCE_CONTEXT);  //parse the property attributes, assigning them to the property value
 			  propertyValue=propertyValueResource;  //the resource value is our property value
 			}
@@ -413,7 +414,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				for(int i=0; i<childNodeList.getLength(); ++i)  //look at each child node
 				{
 					final Node childNode=childNodeList.item(i); //get a reference to this child node
-					if(childNode.getNodeType()==childNode.ELEMENT_NODE) //if this is an element
+					if(childNode.getNodeType()==Node.ELEMENT_NODE) //if this is an element
 					{
 						if(childElement==null)  //if we haven't already found a child element
 						{

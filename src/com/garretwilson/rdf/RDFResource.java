@@ -140,7 +140,7 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***del
 		currently anonymous resources are those that either have no reference URI
 		or that have a reference URI that begins with "anonymous:".
 	*/
-	public boolean isAnonymous();
+//G***del when works	public boolean isAnonymous();
 	
 	/**Removes all properties with the given URI.
 	@param propertyURI The reference URI of the property resource of the
