@@ -24,7 +24,7 @@ public class CharacterEncoding implements CharacterEncodingConstants
 	private boolean littleEndian=true;
 
 	/**@return Whether the data is stored in littleEndian format.*/
-	public boolean isLittleEndian() {return littleEndian;}
+	public boolean isLittleEndian() {return littleEndian;}	//G***change this to use java.nioByteOrder
 
 	/**Sets whether the data is stored in littleEndian format.
 	@param newLittleEndian <code>true</code> if the data is stored in little endian
@@ -99,14 +99,19 @@ public class CharacterEncoding implements CharacterEncodingConstants
 //G***del if not needed	@exception UnsupportedEncodingException Thrown if the Byte Order Mark is not recognized.
 	*/
 	public static CharacterEncoding create(final int[] byteOrderMarkArray) //G***del if not needed throws UnsupportedEncodingException
-	{
+	{		//G***maybe eventually change the array to a byte array
 		if(byteOrderMarkArray.length>=2)	//if there are at least two bytes in the array
 		{
-			if(byteOrderMarkArray[0]==BOM_UTF_16_BIGENDIAN[0] && byteOrderMarkArray[1]==BOM_UTF_16_BIGENDIAN[1])	//FE FF: UTF-16, big endian
+			if((byte)byteOrderMarkArray[0]==BOM_UTF_16_BIG_ENDIAN[0] && (byte)byteOrderMarkArray[1]==BOM_UTF_16_BIG_ENDIAN[1])	//FE FF: UTF-16, big endian
 				return new CharacterEncoding(UTF_16, false);	//construct and return the correct character encoding object
-			if(byteOrderMarkArray[0]==BOM_UTF_16_LITTLEENDIAN[0] && byteOrderMarkArray[1]==BOM_UTF_16_LITTLEENDIAN[1])	//FF FE: UTF-16, little endian
+			if((byte)byteOrderMarkArray[0]==BOM_UTF_16_LITTLE_ENDIAN[0] && (byte)byteOrderMarkArray[1]==BOM_UTF_16_LITTLE_ENDIAN[1])	//FF FE: UTF-16, little endian
 				return new CharacterEncoding(UTF_16, true);	//construct and return the correct character encoding object
 		}
+		if(byteOrderMarkArray.length>=3)	//if there are at least two three in the array
+		{
+			if((byte)byteOrderMarkArray[0]==BOM_UTF_8[0] && (byte)byteOrderMarkArray[1]==BOM_UTF_8[1] && (byte)byteOrderMarkArray[2]==BOM_UTF_8[2])	//EF BB BF: UTF-8
+				return new CharacterEncoding(UTF_8, true);	//construct and return the correct character encoding object G***change this to a null ByteOrder object
+		}		
 		return null;  //show that we didn't find a byte order mark, and thus cannot construct a character encoding object
 //G***del when not needed		return new CharacterEncoding(UTF8, false);	//construct and return a default UTF-8 character encoding, since we don't recognize the Byte Order Mark (the big-endian/little-endian byte order flag is meaningless here)
 //G***del if not needed		throw new UnsupportedEncodingException("Unrecognized Byte Order Mark");	//show that we don't recognize the bytes in the Byte Order Mark byte array
