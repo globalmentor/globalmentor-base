@@ -1,6 +1,7 @@
 package com.garretwilson.swing.text.rdf.maqro;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -12,16 +13,23 @@ import javax.swing.text.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 
+import com.garretwilson.rdf.RDFLiteral;
+import com.garretwilson.rdf.RDFObject;
 import com.garretwilson.rdf.RDFResource;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.rdf.maqro.*;
+import com.garretwilson.rdf.xmlschema.IntegerLiteral;
+import com.garretwilson.rdf.xmlschema.NumberLiteral;
 import com.garretwilson.resources.icon.IconResources;
 
 import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
 
+import com.garretwilson.swing.BasicOptionPane;
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.util.Debug;
+import com.globalmentor.mentoract.activity.maqro.MAQROActivityEngine;
+import com.globalmentor.mentoract.activity.maqro.MAQROActivityPanel;
 
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
 
@@ -71,11 +79,7 @@ public class MAQROViewFactory extends XMLViewFactory
 				if(activity!=null)	//if the element stores the activity
 				{
 					final SubmitAction submitAction=new SubmitAction(activity); //create a new submission action for this activity
-					final XMLComponentBlockView activityView=new XMLComponentBlockView(element, View.Y_AXIS);  //create a new view for the activity
-					final JButton submitButton=new JButton(submitAction); //create a new button for the submission
-					submitButton.setFocusable(false);	//TODO fix component manager focus traversal
-					activityView.getComponentManager().add(submitButton, ViewComponentManager.Border.PAGE_END); //add the button to the bottom of the activity view
-					view=activityView;	//use the activity view we just created
+					view=new MAQROActivityView(element, View.Y_AXIS, submitAction);  //create a new view for the activity
 				}
 			}
 		  else if(QUESTION_CLASS_NAME.equals(elementLocalName)) //maqro:Question
@@ -124,12 +128,14 @@ Debug.trace("Creating new item view");
 
 									});
 */
-							view=choiceView;	//return the view we created for the choice
-						
+							view=choiceView;	//return the view we created for the choice						
 						}
 					}
 				}
-				view=new XMLParagraphView(element);	//for every other dialogue instances, create a paragraph view				
+				if(view==null)	//if we haven't created a special dialogue view
+				{
+					view=new XMLParagraphView(element);	//for every other dialogue instances, create a paragraph view
+				}
 			}
 		}
 		if(view==null)	//if we couldn't figure out which kind of view to create
@@ -155,6 +161,76 @@ Debug.trace("Creating new item view");
 	
 	}
 */
+
+	/**Submits an activity.
+	@param activity The activity to submit.
+	*/
+	protected void submit(final Activity activity)
+	{
+		final View activityView=resourceViewMap.get(activity);	//get the view associated with the activity
+		if(activityView!=null)	//if we have a view representing the activity
+		{
+			final Component component=asInstance(activityView.getContainer(), Component.class);	//get the component, if there is one, associated with the activity view
+			final MAQROActivityEngine activityEngine=new MAQROActivityEngine(activity);	//create a new activity engine
+			activityEngine.start();	//start the engine
+			try
+			{
+				while(activityEngine.hasNext())	//store all the responses; while there are more items
+				{
+					activityEngine.goNext();	//go to the next item
+					final Interaction interaction=activityEngine.getItem();	//get the current item
+					if(interaction!=null)	//if we have an interaction
+					{
+						final View interactionView=resourceViewMap.get(interaction);	//get the view associated with this interaction
+						if(interactionView instanceof Outcomable)	//if we can get the outcome from this view
+						{
+							final Outcome outcome=((Outcomable)interactionView).getOutcome();	//get the interation outcome, if there is one
+							activityEngine.setResult(interaction, outcome);	//tell the engine the result of the interaction
+						}
+					}
+				}
+				if(activityEngine.isConfirmSubmit())	//if we should explicitly confirm a commit
+				{
+						//ask the user for confimation to submit the activity; if the user doesn't really want to submit
+					if(BasicOptionPane.showConfirmDialog(component,
+							"Are you sure you want to submit the activity?", "Confirm submit", BasicOptionPane.OK_CANCEL_OPTION)!=BasicOptionPane.OK_OPTION)	//G***i18n
+					{
+						return;	//return without submitting
+					}
+				}
+				final Outcome outcome=activityEngine.submit(); //tell the engine to submit the results, and get the results TODO add more generic
+				String scoreString=null;	//we'll try to get a score string
+				final Iterator<RDFObject> resultIterator=outcome.getResultIterator();	//get an iterator to results
+				while(resultIterator.hasNext())	//while there are more results
+				{
+					final Result result=(Result)resultIterator.next();	//get the next result TODO make sure this is a result
+					if(result instanceof Score)	//if this result is a score
+					{
+						final Score score=(Score)result;	//cast the result to a score
+						scoreString=MAQROActivityEngine.getScoreString(score);	//get a string representing the score
+						break;	//stop looking for a result
+					}
+				}
+			  final StringBuffer resultStringBuffer=new StringBuffer(); //create a new string buffer in which to construct the results display
+				resultStringBuffer.append("<html>");
+	//G***fix		  resultStringBuffer.append("<h1>Assessment Results</h1>");
+				if(scoreString!=null)	//if there is a score string
+				{
+					resultStringBuffer.append("<p><strong>Score:</strong> ").append(scoreString).append("</p>");	//append the score
+				}
+	/*TODO fix
+				if(rawScore!=questionCount)	//if they missed any questions at all
+					resultStringBuffer.append("<p><strong>Questions Missed:</strong> ").append(missedStringBuffer).append("</p>");
+	*/
+			  resultStringBuffer.append("</html>");
+			  BasicOptionPane.showMessageDialog(component, resultStringBuffer.toString(), "Assessment Results", BasicOptionPane.INFORMATION_MESSAGE);	//G***i18n; comment
+			}
+			finally
+			{
+				activityEngine.stop();	//always stop the engine
+			}
+		}
+	}
 
 	/**Action for submitting an activity.
 	@author Garret Wilson
@@ -183,6 +259,7 @@ Debug.trace("Creating new item view");
 		*/
 		public void actionPerformed(final ActionEvent actionEvent)
 		{
+			submit(activity);	//submit the activity
 		}
 	}
 

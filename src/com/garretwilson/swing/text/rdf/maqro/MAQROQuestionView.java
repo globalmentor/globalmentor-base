@@ -10,14 +10,13 @@ import javax.swing.ButtonGroup;
 import javax.swing.text.*;
 
 import com.garretwilson.rdf.RDFResource;
-import com.garretwilson.rdf.maqro.Outcome;
-import com.garretwilson.rdf.maqro.Question;
+import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.swing.text.xml.*;
 
 /**View representing a MAQRO question.
 @author Garret Wilson
 */
-public class MAQROQuestionView extends XMLBlockView
+public class MAQROQuestionView extends XMLBlockView implements Outcomable
 {
 
 	/**The button group for the choices, if any.*/
@@ -38,7 +37,7 @@ public class MAQROQuestionView extends XMLBlockView
 		return asInstance(getRDFResource(getElement().getAttributes()), Question.class);	//get the question from the attributes 
 	}
 
-	/**Constructs a choice rendering view.
+	/**Constructs a question rendering view.
 	@param element The element this view is responsible for.
 	@param axis The tiling axis, either <code>View.X_AXIS</code> or <code>View.Y_AXIS</code>.
 	*/
@@ -48,9 +47,8 @@ public class MAQROQuestionView extends XMLBlockView
 	}
 
 	/**Retrieves user response information for the associated interaction and returns the outcome information.
-	@return An object representing the current state of user responses and
-		outcome for the current interaction, or <code>null</code> if no results are
-		available for the current interaction.
+	@return An object representing the current state of user responses and outcome for the current interaction,
+		or <code>null</code> if no results are available for the associated interaction.
 	*/
 	public Outcome getOutcome()
 	{
