@@ -103,6 +103,22 @@ public class Question extends Interaction
 		removeProperties(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME);	//remove all explanations
 	}
 
+	/**@return The list of hints for this question, or <code>null</code>
+		if there is no list of hints or the value is not a list.
+	*/
+	public RDFListResource getHints()
+	{
+		return RDFUtilities.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, HINTS_PROPERTY_NAME));	//get the maqro:hints property value as a list	
+	}
+
+	/**Sets the list of question hints.
+	@param hints The list of question hints
+	*/
+	public void setHints(final RDFListResource hints)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, HINTS_PROPERTY_NAME, hints);	//set the hints
+	}
+
 	/**Adds an answer dialogue to the question.
 	@param answer A correct answer to the question.
 	*/

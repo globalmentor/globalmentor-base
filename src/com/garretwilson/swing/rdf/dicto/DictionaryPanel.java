@@ -306,6 +306,10 @@ public class DictionaryPanel extends RDFPanel
 			{
 					//create a Mentoract activity adapter that will create questions based upon dictionary entries
 				final DictionaryActivity dictionaryActivity=new DictionaryActivity(dictionary);
+				dictionaryActivity.setAllowHint(true);
+				dictionaryActivity.setShowResultProgress(true);
+				dictionaryActivity.setShowEachResult(true);
+				dictionaryActivity.setShowFinalResult(true);
 				DCUtilities.addTitle(dictionaryActivity, dictionaryLanguage.getDisplayLanguage()+" Quiz");	//add a title showing the language G***i18n
 				dictionaryActivity.setSelect(optionsPanel.getSelect());	//set the activity's selection criteria
 /*G***fix and del
@@ -355,7 +359,8 @@ activityFrame.setVisible(true);	//show the activity frame
 			putValue(SHORT_DESCRIPTION, "Interactive Quiz");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Display an interactive quiz on the contents of the dictionary.");	//set the long description G***i18n
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_Q));  //set the mnemonic key; for some reason, 's' causes the action to be activated when Alt+F4 is pressed G***i18n
-			putValue(SMALL_ICON, IconResources.getIcon(IconResources.DOCUMENT_QUESTION_ICON_FILENAME)); //load the correct icon
+			putValue(SMALL_ICON, IconResources.getIcon(IconResources.ANIMATION_ICON_FILENAME)); //load the correct icon
+//G***del			putValue(SMALL_ICON, IconResources.getIcon(IconResources.DOCUMENT_QUESTION_ICON_FILENAME)); //load the correct icon
 			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK)); //add the accelerator G***i18n
 		}
 

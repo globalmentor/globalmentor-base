@@ -52,10 +52,12 @@ public class Activity extends Group
 		criteria.
 	@see #getSelect
 	*/
+/*TODO fix selection
 	public List getSelectedInteractionList()
 	{
 		return getSelectedInteractionList(this);	//return selected interactions from the activity itself
 	}
+*/
 
 	/**Selects group interactions from which to choose.
 	@param group The group from which to select interactions.
@@ -64,6 +66,7 @@ public class Activity extends Group
 		criteria.
 	@see #getSelect
 	*/
+/*TODO fix selection
 	public List getSelectedInteractionList(final Group group)
 	{
 		final SelectDescription select=getSelect();	//get the selection criteria
@@ -90,6 +93,7 @@ public class Activity extends Group
 			return group.getInteractions();	//return all the interactions for the group
 		} 
 	}
+*/
 
 	/**Determines if the given interaction should be selected.
 	@param interaction The interaction to select.

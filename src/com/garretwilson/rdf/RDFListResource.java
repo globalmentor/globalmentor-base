@@ -26,7 +26,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	/**Default constructor for an empty list with the <code>rdf:nil</code> reference URI.*/
 	public RDFListResource()
 	{
-		this(NIL_RESOURCE_URI);	//construct a list resource with a nil reference URI
+		this((RDF)null);	//construct a list resource with no RDF data model
 	}
 
 	/**Constructs an RDF list resource with a reference URI.
@@ -60,7 +60,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	*/
 	public RDFListResource(final RDF rdf)
 	{
-		this(rdf, (RDFResource)null); //construct the class no first resource specified
+		this(rdf, NIL_RESOURCE_URI); //construct the list with a nil reference URI
 	}
 
 	/**Constructs an anonymous RDF list resource with a single element.

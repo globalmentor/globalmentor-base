@@ -92,6 +92,8 @@ public interface MAQROConstants
 	public final static String EXPECTATION_PROPERTY_NAME="expectation";
 	/**An explanation of a question. The local name of maqro:explanation.*/
 	public final static String EXPLANATION_PROPERTY_NAME="explanation";
+	/**A hints of a question. The local name of maqro:hints.*/
+	public final static String HINTS_PROPERTY_NAME="hints";
 	/**The minimum number of responses to accept. The local name of maqro:minResponseCount.*/
 	public final static String MIN_RESPONSE_COUNT_PROPERTY_NAME="minResponseCount";
 	/**The maximum number of responses to accept. The local name of maqro:maxResponseCount.*/
