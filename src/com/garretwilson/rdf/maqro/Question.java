@@ -148,5 +148,16 @@ public class Question extends Interaction
 	{
 		setProperty(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME, count>=0 ? new IntegerLiteral(count) : null);	//set the value or remove it
 	}
+
+	/**Returns a string representation of the resource.
+	<p>This implementation returns the question query, if there is a query;
+		otherwise, the default string value is returned.</p> 
+	@return A string representation of the resource.
+	*/
+	public String toString()
+	{
+		final Dialogue query=getQuery();	//get the query, if there is one
+		return query!=null ? query.toString() : super.toString();	//return the string value of the query, if there is one; otherwise return the default string representation 
+	}
 	
 }

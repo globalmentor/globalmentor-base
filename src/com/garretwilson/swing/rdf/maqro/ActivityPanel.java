@@ -12,12 +12,7 @@ import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 import com.garretwilson.text.xml.xhtml.XHTMLUtilities;
 import com.garretwilson.io.MediaType;
 import com.garretwilson.model.Model;
-import com.garretwilson.rdf.RDFListResource;
-import com.garretwilson.rdf.RDFLiteral;
-import com.garretwilson.rdf.RDFObject;
-import com.garretwilson.rdf.RDFPlainLiteral;
-import com.garretwilson.rdf.RDFUtilities;
-import com.garretwilson.rdf.RDFXMLLiteral;
+import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.DCUtilities;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
@@ -43,6 +38,12 @@ public class ActivityPanel extends RDFPanel
 	/**The panel representing a sequence of ineractions.*/
 	protected final InteractionSequencePanel interactionSequencePanel;
 
+	/**The list of interactions in the list view.*/
+	protected final JList interactionListComponent;
+
+	/**The panel representing a list of ineractions.*/
+	protected final ListPanel interactionListPanel;
+	
 	/**@return The data model for which this component provides a view.
 	@see RDFPanel#getRDFResourceModel()
 	*/
@@ -102,10 +103,12 @@ public class ActivityPanel extends RDFPanel
 	public ActivityPanel(final ActivityModel model, final boolean initialize)
 	{
 		super(model, false);	//construct the parent class without initializing it
-		addSupportedModelViews(new int[]{WYSIWYG_MODEL_VIEW, SEQUENCE_MODEL_VIEW});	//show that we now support WYSIWYG and sequence data views, too
+		addSupportedModelViews(new int[]{WYSIWYG_MODEL_VIEW, SEQUENCE_MODEL_VIEW, LIST_MODEL_VIEW});	//show that we now support WYSIWYG, sequence, and list model views, too
 		interactAction=new InteractAction();	//create an action for interacting with the activity
 		book=new Book(1);	//create a new book for the WYSIWYG view, showing only one page
 		interactionSequencePanel=new InteractionSequencePanel();	//create a new interaction sequence panel
+		interactionListComponent=new JList();	//create a new list for the interactions
+		interactionListPanel=new ListPanel(interactionListComponent, new InteractionEditStrategy());	//create a new interaction list panel
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
 	}
@@ -125,10 +128,12 @@ public class ActivityPanel extends RDFPanel
 	{
 		addView(WYSIWYG_MODEL_VIEW, "Activity", book, null);	//add the book component as the WYSIWYG view G***i18n
 		addView(SEQUENCE_MODEL_VIEW, "Interaction Sequence", interactionSequencePanel, null);	//add the interaction sequence panel as the sequence view G***i18n
+		addView(LIST_MODEL_VIEW, "Interaction List", interactionListPanel, null);	//add the interaction list panel as the list view G***i18n
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 //TODO set the book to be not editable
 		//TODO fix status bar
+		interactionListPanel.setEditable(true);	//allow the interactions to be edited in the list
 	}
 
 	/**Loads the data from the model to the view, if necessary.
@@ -148,11 +153,9 @@ public class ActivityPanel extends RDFPanel
 		{
 			model.getActivity().setInteractions(new RDFListResource());	//set a default list of interactions
 		}
-			//if the sequence panel isn't showing any interactions or it's not showing our interactions
-//G***del when works		if(interactionSequencePanel.getListModel()==null || ((ListListModel)interactionSequencePanel.getListModel()).getList()!=model.getActivity().getInteractions())
-		{
-			interactionSequencePanel.setListModel(new ListListModel(model.getActivity().getInteractions()));	//create a list model from the interactions to show in the sequence panel
-		}
+		final ListModel interactionListModel=new ListListModel(model.getActivity().getInteractions());	//create a new list model from the interaction list G***this will change when we have nested groups, as it will be difficult to keep both the sequence and the list in synch; we may want to switch to load/save on view change
+		interactionSequencePanel.setListModel(interactionListModel);	//put the interaction list model in the sequence panel
+		interactionListComponent.setModel(interactionListModel);	//put the interaction list model in the interaction list component in the interaction list view G***make sure changing the model here keeps everything else in synch
 	}
 
 	/**Loads the data from the model to the specified view, if necessary.
@@ -325,6 +328,64 @@ public class ActivityPanel extends RDFPanel
 		public void actionPerformed(final ActionEvent actionEvent)
 		{
 			interact();	//interact with the activity
+		}
+	}
+
+	/**The edit strategy that allows editing of choices from a list.
+	 @author Garret Wilson
+	 */
+	protected class InteractionEditStrategy extends ListEditStrategy
+	{
+		/**Default constructor.*/
+		public InteractionEditStrategy()
+		{
+			super(interactionListComponent, ActivityPanel.this);	//construct the parent class
+		}
+
+		/**Creates a new default object to be edited.
+		 @return The new default object.
+		 @exception IllegalAccessException Thrown if the class or its nullary 
+		 constructor is not accessible.
+		 @exception InstantiationException Thrown if a class represents an abstract
+		 class, an interface, an array class, a primitive type, or void;
+		 or if the class has no nullary constructor; or if the instantiation fails
+		 for some other reason.
+		 */
+		protected Object createItem() throws InstantiationException, IllegalAccessException
+		{
+			return new Question();
+		}
+
+		/**Edits an object from the list.
+		 @param parentComponent The component to use as a parent for any editing
+		 components.
+		 @param item The item to edit in the list.
+		 @return The object with the modifications from the edit, or
+		 <code>null</code> if the edits should not be accepted.
+		 */
+		protected Object editItem(final Object item)
+		{
+			setModelView(SEQUENCE_MODEL_VIEW);	//switch to the sequence view
+			assert getListModel() instanceof List : "The interaction edit strategy relies on an implementation that uses a list model that implements the List interface.";
+			final int index=((List)getListModel()).indexOf(item);	//see if the item is in our list
+			if(index>=0)	//if the item we're editing is already in our list
+			{
+				interactionSequencePanel.go(index);	//navigate to the selected index
+			}
+			return item;	//G***testing
+/*TODO fix list editing of interactions
+			if(item instanceof Dialogue)	//if this is dialogue to be edited
+			{
+				final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
+				final DialogueModel dialogueModel=new DialogueModel(dialogueClone);	//create a model containing the dialogue
+				final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
+				//allow the dialogue to be edited in a dialog box; if the user accepts the changes
+				if(OptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Choice", OptionPane.OK_CANCEL_OPTION)==OptionPane.OK_OPTION)	//G***i18n
+				{
+					return dialogueClone;	//return the new dialogue
+				}
+			}
+*/
 		}
 	}
 
