@@ -125,7 +125,7 @@ public class ProxyCollection<E> implements Collection<E>
 	 * @throws NullPointerException if the specified array is <tt>null</tt>.
 	 */
     
-	public Object[] toArray(Object a[]) {return collection.toArray(a);}
+	public <T> T[] toArray(T a[]) {return collection.toArray(a);}
 
 	// Modification Operations
 
