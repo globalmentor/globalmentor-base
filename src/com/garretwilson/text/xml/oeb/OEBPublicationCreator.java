@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.*;
 import java.net.*;
+import java.net.URI;	//G***del when other URI is removed
 import java.text.MessageFormat;
 import java.util.*;
 import com.garretwilson.awt.ImageUtilities;
@@ -179,17 +180,17 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 		protected void setProjectGutenbergEText(final boolean newProjectGutenbergEText) {isProjectGutenbergEText=newProjectGutenbergEText;}
 
 	/**The ID of the work.*/
-	private String referenceURI=null;
+	private URI referenceURI=null;
 
 		/**@return The ID of the work, or <code>null</code> if the ID is not
 		  known.
 		*/
-		public String getReferenceURI() {return referenceURI;}
+		public URI getReferenceURI() {return referenceURI;}
 
 		/**Sets the ID of the work.
 		@param newReferenceURI The ID of the work.
 		*/
-		public void setReferenceURI(final String newReferenceURI) {referenceURI=newReferenceURI;}
+		public void setReferenceURI(final URI newReferenceURI) {referenceURI=newReferenceURI;}
 
 	/**The title of the work.*/
 	private String title=null;
@@ -506,7 +507,7 @@ Debug.trace("OEBPublicationCreator.createPublication() file: ", oebFile);
 		from the directory. G***fix comment
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	*/
-	public OEBPublication createPublicationFromOEBDocument(final URL oebDocumentURL, final String referenceURI, final File outputDir) throws MalformedURLException, IOException
+	public OEBPublication createPublicationFromOEBDocument(final URL oebDocumentURL, final URI referenceURI, final File outputDir) throws MalformedURLException, IOException
 	{
 		if(outputDir!=null) //if an output directory is specified
 			setOutputDir(outputDir.getCanonicalFile());  //set the output directory G***should we make sure this directory exists, and create it if  not?
@@ -514,7 +515,8 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 			//create a new OEB publication using the OEB document URL as the publication URL; this will later be changed to the actual name of the OEB publication file
 		final OEBPublication publication=(OEBPublication)OEBUtilities.createOEBPublication(getRDF(), referenceURI); //create a publication
 			//store the publication reference URI as a Dublin Core identifier property
-		RDFUtilities.addProperty(getRDF(), publication, DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, publication.getReferenceURI());
+		DCUtilities.addIdentifier(getRDF(), publication, publication.getReferenceURI().toString());
+//G***del when works		RDFUtilities.addProperty(getRDF(), publication, DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, publication.getReferenceURI());
 
 
 //G***fix; moved to text converter		final RDFResource oebItem=gatherReference(publication, oebDocumentURL, oebDocumentURL.getFile(), OEB10_DOCUMENT_MEDIA_TYPE);  //add this document to the manifest
@@ -553,7 +555,7 @@ Debug.trace("OEBPublicationCreator zip option: ", new Boolean(isZip())); //G***d
 		from the directory. G***fix comment
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	*/
-	public OEBPublication createPublicationFromText(final URL textURL, String referenceURI, final String encoding, final File outputDir) throws MalformedURLException, IOException
+	public OEBPublication createPublicationFromText(final URL textURL, URI referenceURI, final String encoding, final File outputDir) throws MalformedURLException, IOException
 	{
 Debug.trace("creating publication from text file: ", textURL);  //G***del
 		if(outputDir!=null) //if an output directory is specified
@@ -586,7 +588,7 @@ Debug.trace("is PG EText"); //G***del
 			pgHeaderFragment=PGUtilities.extractHeader(document);  //extract the Project Gutenberg header
 			if(pgHeaderFragment!=null)  //if we found a header
 			{
-				referenceURI=PGUtilities.getID(referenceURI); //convert this URI into a Project Gutenberg identifier by removing the version number
+				referenceURI=URIUtilities.toURI(PGUtilities.getID(referenceURI.toString())); //convert this URI into a Project Gutenberg identifier by removing the version number G***fix better for URI
 Debug.trace("found PG header"); //G***del
 				setTitle(PGUtilities.getTitle(pgHeaderFragment));  //get the title
 //G***del					Debug.notify("Title: "+title);  //G***del
@@ -1119,7 +1121,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 						String hrefRelativePath; //we'll set the relative path, if we can find it
 						hrefRelativePath=URLUtilities.getRelativePath(contextURL, url);  //try to create a relative path for the reference G***why do we need to do this yet again?
 	Debug.trace("href relative path: ", hrefRelativePath);  //G***de
-						final String itemURI=createURI(publication.getReferenceURI(), hrefRelativePath);  //create an ID from the relative path
+						final URI itemURI=createURI(publication.getReferenceURI(), hrefRelativePath);  //create an ID from the relative path
 //G***del						final String itemID=XMLUtilities.createName(hrefRelativePath);  //create an ID from the relative path
 						if(XPackageUtilities.getManifestItem(publication, itemURI)==null)  //if there isn't an item already in the manifest with this ID G***this could in some strange circumstances prevent two different paths from being stored, if the slash conversion to underline matches a filename with underlines in the same locations
 						{
@@ -1604,7 +1606,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 				? getTitle()  //get the title if we can
 				: (filename!=null
 						? filename  //if not, use the filename if we can
-						: (getReferenceURI()!=null ? getReferenceURI() : "(Untitled)"));  //lastly, use the reference URI G***use a constants
+						: (getReferenceURI()!=null ? getReferenceURI().toString() : "(Untitled)"));  //lastly, use the reference URI G***use a constants
 		  //the author (replacement parameter {1})
 		final String author=getAuthor()!=null ? getAuthor() : "";
 		  //"by" (replacement parameter {2})
@@ -1664,9 +1666,9 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 	@param href The relative location of the item.
 	@return An identifying URI of the item.
 	*/
-	public static String createURI(final String publicationURI, final String href)
+	public static URI createURI(final URI publicationURI, final String href)
 	{
-		return publicationURI+URIConstants.FRAGMENT_SEPARATOR+href; //create a URI in the form publicationURI#href
+		return URIUtilities.toURI(publicationURI.toString()+URIConstants.FRAGMENT_SEPARATOR+href); //create a URI in the form publicationURI#href G***fix to check the runtime exception this might throw
 		//G***del final String itemID=XMLUtilities.createName(hrefRelativePath);  //create an ID from the relative path
 	}
 

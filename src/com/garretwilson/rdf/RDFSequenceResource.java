@@ -1,5 +1,6 @@
 package com.garretwilson.rdf;
 
+import java.net.URI;
 import java.util.*;
 import com.garretwilson.util.Debug;
 import com.garretwilson.util.NameValuePair;
@@ -15,7 +16,7 @@ public class RDFSequenceResource extends RDFContainerResource implements Compara
 	@exception IllegalArgumentException Thrown if the provided reference URI is
 		<code>null</code>.
 	*/
-	public RDFSequenceResource(final String newReferenceURI) throws IllegalArgumentException
+	public RDFSequenceResource(final URI newReferenceURI) throws IllegalArgumentException
 	{
 		super(newReferenceURI); //construct the parent class
 	}
@@ -26,7 +27,7 @@ public class RDFSequenceResource extends RDFContainerResource implements Compara
 	@param newNamespaceURI The XML namespace URI used in the serialization.
 	@param newLocalName The XML local name used in the serialization.
 	*/
-	public RDFSequenceResource(final String newNamespaceURI, final String newLocalName)
+	public RDFSequenceResource(final URI newNamespaceURI, final String newLocalName)
 	{
 		super(newNamespaceURI, newLocalName); //construct the parent class
 	}
@@ -134,19 +135,19 @@ public class RDFSequenceResource extends RDFContainerResource implements Compara
 //G***del Debug.trace("length: ", RDF_LI_REFERENCE_URI_PREFIX_LENGTH);  //G***del
 //G***del		Debug.trace("comparation for li: ", RDF_LI_REFERENCE_URI+CONTAINER_MEMBER_PREFIX);  //G***del
 		  //get the reference URIs of the two properties
-		final String typeURI1=((RDFResource)((NameValuePair)object1).getName()).getReferenceURI();
+		final URI typeURI1=((RDFResource)((NameValuePair)object1).getName()).getReferenceURI();
 //G***del Debug.trace("type URI1: ", typeURI1); //G***del
-		final String typeURI2=((RDFResource)((NameValuePair)object2).getName()).getReferenceURI();
+		final URI typeURI2=((RDFResource)((NameValuePair)object2).getName()).getReferenceURI();
 //G***del Debug.trace("type URI2: ", typeURI2); //G***del
 //G***fix for better checking		if(typeURI1.startsWith(CONTAINER_MEMBER_PREFIX) && typeURI2.startsWith(CONTAINER_MEMBER_PREFIX))  //if
 
-		if(typeURI1.startsWith(RDF_LI_REFERENCE_URI_PREFIX))  //if the first property an rdf:li_XXX
+		if(typeURI1.toString().startsWith(RDF_LI_REFERENCE_URI_PREFIX))  //if the first property an rdf:li_XXX	//G***fix better
 		{
-		  if(typeURI2.startsWith(RDF_LI_REFERENCE_URI_PREFIX))  //if the second property an rdf:li_XXX as well
+		  if(typeURI2.toString().startsWith(RDF_LI_REFERENCE_URI_PREFIX))  //if the second property an rdf:li_XXX as well	//G***fix better
 			{
 					//G***make sure the strings actually start with the correct prefix, and that the numbers are actually numbers
-				final int count1=Integer.parseInt(typeURI1.substring(RDF_LI_REFERENCE_URI_PREFIX_LENGTH));  //get the first count by removing everyting before the count
-				final int count2=Integer.parseInt(typeURI2.substring(RDF_LI_REFERENCE_URI_PREFIX_LENGTH));  //get the first count by removing everyting before the count
+				final int count1=Integer.parseInt(typeURI1.toString().substring(RDF_LI_REFERENCE_URI_PREFIX_LENGTH));  //get the first count by removing everyting before the count
+				final int count2=Integer.parseInt(typeURI2.toString().substring(RDF_LI_REFERENCE_URI_PREFIX_LENGTH));  //get the first count by removing everyting before the count
 				return count1-count2; //see which number is great
 			}
 			else  //if only the first is an rdf:li_XXX
@@ -156,7 +157,7 @@ public class RDFSequenceResource extends RDFContainerResource implements Compara
 		}
 		else  //if the first property is not an rdf:li_XXX
 		{
-		  if(typeURI2.startsWith(RDF_LI_REFERENCE_URI_PREFIX))  //if only the second property an rdf:li_XXX
+		  if(typeURI2.toString().startsWith(RDF_LI_REFERENCE_URI_PREFIX))  //if only the second property an rdf:li_XXX	//G***fix better
 			{
 			  return 1; //put non-members at the end
 			}

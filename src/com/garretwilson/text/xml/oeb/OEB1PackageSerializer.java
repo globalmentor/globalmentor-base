@@ -1,6 +1,7 @@
 package com.garretwilson.text.xml.oeb;
 
 import java.io.*;
+import java.net.URI;
 import java.util.*;
 import com.garretwilson.io.MediaType;
 import com.garretwilson.rdf.*;
@@ -61,15 +62,15 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 	{
 		final Document document=OEBUtilities.createDefaultOEB1Package(); //create a package XML document
 		//package
-		final Element packageElement=XMLUtilities.appendElement(document, OEB1_PACKAGE_NAMESPACE_URI, PKG_ELEMENT_PACKAGE); //create the package element G***fix to correctly use DOM
+		final Element packageElement=XMLUtilities.appendElement(document, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_PACKAGE); //create the package element G***fix to correctly use DOM
 		  //package/metadata
-		final Element metadataElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI, PKG_ELEMENT_METADATA); //create the metadata element
+		final Element metadataElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA); //create the metadata element
 			  //package/metadata/dc-metadata
-		final Element dcMetadataElement=XMLUtilities.appendElement(metadataElement, OEB1_PACKAGE_NAMESPACE_URI, PKG_ELEMENT_METADATA_DC_METADATA); //create the dc-metadata element
+		final Element dcMetadataElement=XMLUtilities.appendElement(metadataElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA_DC_METADATA); //create the dc-metadata element
 			  //add the attribute, xmlns:dc="http://purl.org/dc/elements/1.0/"
-		dcMetadataElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, DCMI_ELEMENTS_NAMESPACE_PREFIX), DCMI10_ELEMENTS_NAMESPACE_URI);
+		dcMetadataElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, DCMI_ELEMENTS_NAMESPACE_PREFIX), DCMI10_ELEMENTS_NAMESPACE_URI.toString());
 			  //add the attribute, xmlns:oebpackage="http://openebook.org/namespaces/oeb-package/1.0/"
-		dcMetadataElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, OEB1_PACKAGE_NAMESPACE_PREFIX), OEB1_PACKAGE_NAMESPACE_URI);
+		dcMetadataElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, OEB1_PACKAGE_NAMESPACE_PREFIX), OEB1_PACKAGE_NAMESPACE_URI.toString());
 		final Iterator propertyIterator=publication.getPropertyIterator();  //get an iterator to the publication's properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
@@ -93,61 +94,61 @@ Debug.trace("property value: ", propertyValue); //G***del
 					//<package><metadata><dc-metadata><dc:Title>
 					if(DC_TITLE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TITLE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Creator>
 					else if(DC_CREATOR_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CREATOR, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Subject>
 					else if(DC_SUBJECT_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SUBJECT, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Description>
 					else if(DC_DESCRIPTION_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DESCRIPTION, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Publisher>
 					else if(DC_PUBLISHER_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_PUBLISHER, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Contributor>
 					else if(DC_CONTRIBUTOR_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CONTRIBUTOR, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Date>
 					else if(DC_DATE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DATE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Type>
 					else if(DC_TYPE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TYPE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Format>
 					else if(DC_FORMAT_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_FORMAT, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Identifier>
 					else if(DC_IDENTIFIER_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						final Element dcIdentifierElement=XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						final Element dcIdentifierElement=XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_IDENTIFIER, propertyValue);  //add the OEBPPS 1.x DC metadata element
 								//if the package has not yet been assigned a unique identifier attribute
 						if(!packageElement.hasAttributeNS(null, PKG_ELEMENT_PACKAGE_ATTRIBUTE_UNIQUE_IDENTIFIER))
@@ -161,31 +162,31 @@ Debug.trace("property value: ", propertyValue); //G***del
 					//<package><metadata><dc-metadata><dc:Source>
 					else if(DC_SOURCE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SOURCE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Language>
 					else if(DC_LANGUAGE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_LANGUAGE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Relation>
 					else if(DC_RELATION_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RELATION, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Coverage>
 					else if(DC_COVERAGE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_COVERAGE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Rights>
 					else if(DC_RIGHTS_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI,
+						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RIGHTS, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 				}
@@ -195,7 +196,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 		final RDFBagResource manifest=XPackageUtilities.getManifest(publication); //get the manifest
 		if(manifest!=null)  //if the publication has a manifest
 		{
-			final Element manifestElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI, PKG_ELEMENT_MANIFEST); //create the manifest element
+			final Element manifestElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_MANIFEST); //create the manifest element
 		  final Iterator itemIterator=manifest.getItemIterator(); //get an iterator to the manifest items
 			while(itemIterator.hasNext()) //while there are more items in the manifest
 			{
@@ -207,7 +208,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 		final RDFSequenceResource spine=XPackageUtilities.getOrganization(publication); //get the spine
 		if(spine!=null)  //if the publication has a spine
 		{
-			final Element spineElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI, PKG_ELEMENT_SPINE); //create the spine element
+			final Element spineElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_SPINE); //create the spine element
 		  final Iterator spineIterator=spine.getItemIterator(); //get an iterator to iterate through the spine
 			while(spineIterator.hasNext()) //while there are more items in the spine
 			{
@@ -218,7 +219,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 		if(publication.getGuideList().size()>0) //if there are guides
 		{
 				//package/guide
-			final Element guideElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI, PKG_ELEMENT_GUIDE); //create the guide element
+			final Element guideElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_GUIDE); //create the guide element
 			final Iterator guideIterator=publication.getGuideList().iterator(); //get an iterator to iterate through the guides
 			while(guideIterator.hasNext()) //while there are more items in the guide
 			{
@@ -236,10 +237,10 @@ Debug.trace("property value: ", propertyValue); //G***del
 		publication URI has no bearing on identifiers used.
 	@return An XML element representing the OEB item.
 	*/
-	public static Element generateItemElement(final Document document, final RDFResource oebItem, final String publicationURI)
+	public static Element generateItemElement(final Document document, final RDFResource oebItem, final URI publicationURI)
 	{
-		final Element itemElement=document.createElementNS(OEB1_PACKAGE_NAMESPACE_URI, PKG_ELEMENT_MANIFEST_ITEM);  //create an OEB item element
-		itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_ID, createItemID(oebItem.getReferenceURI(), publicationURI));		  //set the ID
+		final Element itemElement=document.createElementNS(OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_MANIFEST_ITEM);  //create an OEB item element
+		itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_ID, createItemID(oebItem.getReferenceURI().toString(), publicationURI));		  //set the ID
 		final String href=XPackageUtilities.getLocationHRef(oebItem); //get the item's href
 		if(href!=null)  //if the item has an href
 		{
@@ -266,10 +267,10 @@ Debug.trace("property value: ", propertyValue); //G***del
 		publication URI has no bearing on identifiers used.
 	@return An XML element representing the OEB item.
 	*/
-	public static Element generateItemRefElement(final Document document, final RDFResource oebItem, final String publicationURI)
+	public static Element generateItemRefElement(final Document document, final RDFResource oebItem, final URI publicationURI)
 	{
-		final Element itemrefElement=document.createElementNS(OEB1_PACKAGE_NAMESPACE_URI, PKG_ELEMENT_SPINE_ITEMREF);  //create an OEB itemref element
-		itemrefElement.setAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF, createItemID(oebItem.getReferenceURI(), publicationURI));		  //set the ID
+		final Element itemrefElement=document.createElementNS(OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_SPINE_ITEMREF);  //create an OEB itemref element
+		itemrefElement.setAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF, createItemID(oebItem.getReferenceURI().toString(), publicationURI));		  //set the ID
 		return itemrefElement; //return the element for the OEB itemref
 	}
 
@@ -280,7 +281,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 	*/
 	public static Element generateReferenceElement(final Document document, final OEBGuide oebGuide)
 	{
-		final Element referenceElement=document.createElementNS(OEB1_PACKAGE_NAMESPACE_URI, PKG_ELEMENT_GUIDE_REFERENCE);  //create an OEB guide reference element
+		final Element referenceElement=document.createElementNS(OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_GUIDE_REFERENCE);  //create an OEB guide reference element
 		referenceElement.setAttributeNS(null, PKG_GUIDE_REFERENCE_ATTRIBUTE_TYPE, oebGuide.getType());		  //set the type
 		referenceElement.setAttributeNS(null, PKG_GUIDE_REFERENCE_ATTRIBUTE_TITLE, oebGuide.getTitle());		  //set the title
 		referenceElement.setAttributeNS(null, PKG_GUIDE_REFERENCE_ATTRIBUTE_HREF, oebGuide.getHRef());		  //set the href
@@ -298,7 +299,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 		publication URI has no bearing on identifiers used.
 	@return An XML name to be used as an ID for OEB 1 package items.
 	*/
-	public static String createItemID(final String identifier, final String publicationURI)
+	public static String createItemID(final String identifier, final URI publicationURI)
 	{
 		if(!XMLUtilities.isName(identifier))  //if the identifier is not a name already
 		{
@@ -316,7 +317,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 //G***del Debug.trace("prefix: ", prefix);
 //G***del Debug.trace("publication URI: ", publicationURI);
 
-				  if(prefix.equals(publicationURI)) //if the prefix is the publication URI
+				  if(prefix.equals(publicationURI.toString())) //if the prefix is the publication URI
 						stringBuffer.delete(0, i+1);  //delete the entire prefix, including this character
 					break;  //stop looking for a non-nam character
 				}

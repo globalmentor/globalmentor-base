@@ -1,5 +1,6 @@
 package com.garretwilson.rdf;
 
+import java.net.URI;
 import java.util.*;
 import com.garretwilson.util.Debug;
 import com.garretwilson.util.NameValuePair;
@@ -15,7 +16,7 @@ public class RDFBagResource extends RDFContainerResource
 	@exception IllegalArgumentException Thrown if the provided reference URI is
 		<code>null</code>.
 	*/
-	public RDFBagResource(final String newReferenceURI) throws IllegalArgumentException
+	public RDFBagResource(final URI newReferenceURI) throws IllegalArgumentException
 	{
 		super(newReferenceURI); //construct the parent class
 	}
@@ -26,7 +27,7 @@ public class RDFBagResource extends RDFContainerResource
 	@param newNamespaceURI The XML namespace URI used in the serialization.
 	@param newLocalName The XML local name used in the serialization.
 	*/
-	public RDFBagResource(final String newNamespaceURI, final String newLocalName)
+	public RDFBagResource(final URI newNamespaceURI, final String newLocalName)
 	{
 		super(newNamespaceURI, newLocalName); //construct the parent class
 	}

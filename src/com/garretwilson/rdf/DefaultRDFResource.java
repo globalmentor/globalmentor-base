@@ -1,5 +1,6 @@
 package com.garretwilson.rdf;
 
+import java.net.URI;
 import java.util.*;
 import com.garretwilson.util.*;
 
@@ -12,10 +13,10 @@ public class DefaultRDFResource implements RDFResource
 {
 
 	/**The non-<code>null</code> resource identifier URI.*/
-	private String referenceURI;
+	private URI referenceURI;
 
 		/**@return The non-<code>null</code> resource identifier URI.*/
-		public String getReferenceURI() {return referenceURI;}
+		public URI getReferenceURI() {return referenceURI;}
 
 	/**The resource anchor ID.*/
 //G***del	private String anchorID;
@@ -24,11 +25,11 @@ public class DefaultRDFResource implements RDFResource
 //G***del		public String getAnchorID() {return anchorID;}
 
 	/**The XML namespace URI.*/
-	private String namespaceURI;
+	private URI namespaceURI;
 
 		/**@return The XML namespace URI used in serialization, or <code>null</code>
 		  if no namespace URI was used or there was no namespace.*/
-		public String getNamespaceURI() {return namespaceURI;}
+		public URI getNamespaceURI() {return namespaceURI;}
 
 	/**The XML local name.*/
 	private String localName;
@@ -81,7 +82,7 @@ public class DefaultRDFResource implements RDFResource
 		<code>Literal</code>, or <code>null</code> if this resource has no such
 		property.
 	*/
-	public RDFObject getPropertyValue(final String propertyURI)
+	public RDFObject getPropertyValue(final URI propertyURI)
 	{
 		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
 		while(propertyIterator.hasNext()) //while there are more properties
@@ -103,7 +104,7 @@ public class DefaultRDFResource implements RDFResource
 		<code>Literal</code>, or <code>null</code> if this resource has no such
 		property.
 	*/
-	public RDFObject getPropertyValue(final String namespaceURI, final String localName)
+	public RDFObject getPropertyValue(final URI namespaceURI, final String localName)
 	{
 		return getPropertyValue(RDFUtilities.createReferenceURI(namespaceURI, localName)); //look for the property, combining the namespace URI and the local name for the reference URI
 	}
@@ -114,7 +115,7 @@ public class DefaultRDFResource implements RDFResource
 	@return An iterator to a read-only list of values of properties, each either a
 		<code>RDFResource</code> or a <code>Literal</code>.
 	*/
-	public Iterator getPropertyValueIterator(final String propertyURI)  //G***maybe fix to make the iterator dynamic to the RDF data model
+	public Iterator getPropertyValueIterator(final URI propertyURI)  //G***maybe fix to make the iterator dynamic to the RDF data model
 	{
 		final List propertyValueList=new ArrayList(); //cerate a list in which to store the property values
 		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
@@ -138,7 +139,7 @@ public class DefaultRDFResource implements RDFResource
 	@return An iterator to a read-only list of values of properties, each either a
 		<code>RDFResource</code> or a <code>Literal</code>.
 	*/
-	public Iterator getPropertyValueIterator(final String namespaceURI, final String localName)
+	public Iterator getPropertyValueIterator(final URI namespaceURI, final String localName)
 	{
 		return getPropertyValueIterator(RDFUtilities.createReferenceURI(namespaceURI, localName)); //look for the property, combining the namespace URI and the local name for the reference URI
 	}
@@ -152,7 +153,7 @@ public class DefaultRDFResource implements RDFResource
 	@return <code>true</code> if the specified property is set to the specified
 		value.
 	*/
-	public boolean hasPropertyValue(final String propertyURI, final Object propertyValue)
+	public boolean hasPropertyValue(final URI propertyURI, final Object propertyValue)
 	{
 //G***del Debug.trace("looking for property value for property: ", propertyURI);  //G***del
 //G***del Debug.trace("looking for property value: ", propertyValue);  //G***del
@@ -183,7 +184,7 @@ public class DefaultRDFResource implements RDFResource
 	@return <code>true</code> if the specified property is set to the specified
 		value.
 	*/
-	public boolean hasPropertyValue(final String namespaceURI, final String localName, final Object propertyValue)
+	public boolean hasPropertyValue(final URI namespaceURI, final String localName, final Object propertyValue)
 	{
 		return hasPropertyValue(RDFUtilities.createReferenceURI(namespaceURI, localName), propertyValue); //check the property, combining the namespace URI and the local name for the reference URI
 	}
@@ -230,7 +231,7 @@ public class DefaultRDFResource implements RDFResource
 	*/
 	public boolean isAnonymous()
 	{
-		return /*G***del when not needed getReferenceURI()==null || */getReferenceURI().startsWith("anonymous:"); //return whether there is no URI or the URI begins with "anonymous:" G***use a constant here; fix better
+		return /*G***del when not needed getReferenceURI()==null || */getReferenceURI().toString().startsWith("anonymous:"); //return whether there is no URI or the URI begins with "anonymous:" G***use a constant here; fix better
 	}
 
 	/**Copy constructor. Constructs a resource with an identical reference URI
@@ -252,7 +253,7 @@ public class DefaultRDFResource implements RDFResource
 		<code>null</code>.
 	@see RDF#createResource
 	*/
-	protected DefaultRDFResource(final String newReferenceURI) throws IllegalArgumentException
+	protected DefaultRDFResource(final URI newReferenceURI) throws IllegalArgumentException
 	{
 //G***del		Debug.assert(!(newReferenceURI==null && newAnchorID==null), "A resource must have a reference URI or anchor ID.");  //G***change to throw an illegal argument exception
 		if(newReferenceURI==null) //if a null reference URI was provided
@@ -277,7 +278,7 @@ public class DefaultRDFResource implements RDFResource
 		<code>null</code>.
 	@see RDF#createResource
 	*/
-	public DefaultRDFResource(final RDFResource rdfResource, final String newReferenceURI) throws IllegalArgumentException
+	public DefaultRDFResource(final RDFResource rdfResource, final URI newReferenceURI) throws IllegalArgumentException
 	{
 		this(newReferenceURI);  //create a new resource with the given URI
 		CollectionUtilities.addAll(propertyList, rdfResource.getPropertyIterator()); //add all the property values from the resource being copied
@@ -299,7 +300,7 @@ public class DefaultRDFResource implements RDFResource
 	@param newLocalName The XML local name used in the serialization.
 	@see RDF#createResource
 	*/
-	protected DefaultRDFResource(final String newNamespaceURI, final String newLocalName)
+	protected DefaultRDFResource(final URI newNamespaceURI, final String newLocalName)
 	{
 		this(RDFUtilities.createReferenceURI(newNamespaceURI, newLocalName)/*G***del, newAnchorID*/);  //do the default construction, combining the namespace URI and the local name for the reference URI
 		namespaceURI=newNamespaceURI; //store the namespace URI
@@ -307,9 +308,9 @@ public class DefaultRDFResource implements RDFResource
 	}
 
 	/**If <code>object</code> is another <code>Resource</code>, compares the
-		resource reference URIs. If <code>object</code> is a <code>String</code>,
-		compares the string with this object's resource URI. Otherwise, compares the
-		objects using the superclass functionality.
+		resource reference URIs. If <code>object</code> is a <code>URI</code>, or a
+		<code>String</code>, compares the string with this object's resource URI.
+		Otherwise, compares the objects using the superclass functionality.
 	@param object The object with which to compare this RDF resource; should be
 		another resource or a Java string.
 	@return <code>true<code> if this resource equals that specified in
@@ -333,9 +334,13 @@ public class DefaultRDFResource implements RDFResource
 			}
 */
 		}
+		else if(object instanceof URI)	//if we're being compared with a URI
+		{
+			return getReferenceURI()!=null ? getReferenceURI().equals((URI)object) : false; //compare our reference URI with the URI
+		}
 		else if(object instanceof String)	//if we're being compared with a string
 		{
-			return getReferenceURI()!=null ? getReferenceURI().equals((String)object) : false; //compare our reference URI with the string
+			return getReferenceURI()!=null ? getReferenceURI().toString().equals((String)object) : false; //compare our reference URI with the string
 		}
 		else	//if we're being compared with anything else
 			return super.equals(object);	//use the default compare
@@ -371,7 +376,7 @@ public class DefaultRDFResource implements RDFResource
 	*/
 	public String toString()
 	{
-		return getReferenceURI(); //G***fix to print out the entire resource tree, perhaps
+		return getReferenceURI().toString(); //G***fix to print out the entire resource tree, perhaps
 /*G***del
 //G***fix to just return the reference URI
 		final StringBuffer stringBuffer=new StringBuffer(); //create a new string buffer

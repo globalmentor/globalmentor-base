@@ -1,25 +1,10 @@
 package com.garretwilson.text.xml.oeb;
 
 import java.io.*;
-/*G***bring back as needed
-import java.util.Vector;
-*/
 import java.util.*;
 import java.util.zip.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-/*G***bring back as needed
-import org.w3c.dom.DOMException;
-import com.garretwilson.util.StringManipulator;
-*/
-import com.garretwilson.io.InputStreamLocator;
-import com.garretwilson.io.MediaType;
-import com.garretwilson.net.URLConstants;
-import com.garretwilson.net.URLUtilities;
-import com.garretwilson.text.xml.*; //G***del all this when everything below is converted to strictly DOM
+import java.net.*;
 import com.garretwilson.rdf.*;
-import com.garretwilson.util.Debug;
-import org.w3c.dom.*;
 
 //G***del all the XMLUndefinedEntityReferenceException throws when we don't need them anymore, in favor of XMLWellFormednessException
 
@@ -377,7 +362,7 @@ Debug.trace("Getting manifest item by URL");
 	@exception IllegalArgumentException Thrown if the provided reference URI is
 		<code>null</code>.
 	*/
-	protected OEBPublication(final String referenceURI) throws IllegalArgumentException
+	protected OEBPublication(final URI referenceURI) throws IllegalArgumentException
 	{
 		super(referenceURI);  //construct the parent class
 	}

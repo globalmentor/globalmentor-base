@@ -1,5 +1,6 @@
 package com.garretwilson.rdf.event;
 
+import java.net.URI;
 import java.util.EventObject;
 import com.garretwilson.rdf.RDFResource;
 
@@ -12,7 +13,7 @@ public class ResourceEvent extends EventObject
 	/***Convenience method to return the resource URI.
 	@return The reference URI, the source cast to a URI.
 	*/
-	public String getReferenceURI() {return (String)getSource();}
+	public URI getReferenceURI() {return (URI)getSource();}
 
 	/**A description of the resource, or <code>null</code> if there is no description.*/
 	private final RDFResource resource;
@@ -23,7 +24,7 @@ public class ResourceEvent extends EventObject
 	/**Constructor that specifies the resource URI.
 	@param referenceURI the reference URI of the resource.
 	*/
-  public ResourceEvent(final String referenceURI)
+  public ResourceEvent(final URI referenceURI)
   {
 		this(referenceURI, null); //construct the event with no description
   }
@@ -33,7 +34,7 @@ public class ResourceEvent extends EventObject
 	@param rdfResource A description of the resource, or <code>null</code> if
 		there is no description.
 	*/
-  public ResourceEvent(final String referenceURI, final RDFResource rdfResource)
+  public ResourceEvent(final URI referenceURI, final RDFResource rdfResource)
   {
 		super(referenceURI);  //construct the parent class
 		resource=rdfResource; //save the resource description

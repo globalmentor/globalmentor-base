@@ -1,5 +1,6 @@
 package com.garretwilson.rdf;
 
+import java.net.URI;
 import java.util.*;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLUtilities;
@@ -24,7 +25,7 @@ public class RDFXMLifier implements RDFConstants
 		public Map getNamespacePrefixMap() {return namespacePrefixMap;}
 
 	/**A general <code>rdf:type</code> property to use in comparisons.*/
-	protected final static String TYPE_PROPERTY=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, TYPE);
+	protected final static URI TYPE_PROPERTY;	//initialized below
 
 	/**Indicates literals should be serialized as attributes by default.*/
 //G***del	public final static boolean LITERAL_ATTRIBUTE_SERIALIZATION=1;
@@ -58,7 +59,7 @@ public class RDFXMLifier implements RDFConstants
 	@param namespaceURI The URI of the namespace that should have its literal
 		property values serialized as attributes.
 	*/
-	public void addLiteralAttributeSerializationNamespaceURI(final String namespaceURI)
+	public void addLiteralAttributeSerializationNamespaceURI(final URI namespaceURI)
 	{
 		literalAttributeSerializationNamespaceMap.put(namespaceURI, namespaceURI);  //add the namespace to the map both as a value and as that value's key
 	}
@@ -70,7 +71,7 @@ public class RDFXMLifier implements RDFConstants
 		namespace should be serialized as attributes.
 	@see #isLiteralAttributeSerialization
 	*/
-	public boolean isLiteralAttributeSerializationNamespaceURI(final String namespaceURI)
+	public boolean isLiteralAttributeSerializationNamespaceURI(final URI namespaceURI)
 	{
 //G***del		return isLiteralAttributeSerialization()  //if all literal property values should be serialized, return true
 		return literalAttributeSerializationNamespaceMap.get(namespaceURI)!=null; //if this namespace is listed in the map, return true
@@ -108,11 +109,11 @@ public class RDFXMLifier implements RDFConstants
 	public static Document createDefaultRDFDocument(final DOMImplementation domImplementation)
 	{
 		  //create an RDF document
-		final Document document=domImplementation.createDocument(RDF_NAMESPACE_URI, XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_RDF), null);
+		final Document document=domImplementation.createDocument(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_RDF), null);
 		final Element rdfElement=createRDFElement(document);  //G***fix; the DOM should already create this
 		document.appendChild(rdfElement);	//add the RDF element to the document //G***del when DOM is updated
 		  //add the RDF namespace declaration prefix, xmlns:rdf
-		document.getDocumentElement().setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, RDFConstants.RDF_NAMESPACE_PREFIX), RDFConstants.RDF_NAMESPACE_URI);
+		document.getDocumentElement().setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, RDFConstants.RDF_NAMESPACE_PREFIX), RDFConstants.RDF_NAMESPACE_URI.toString());
 		return document;  //return the document we created
 	}
 
@@ -173,7 +174,7 @@ public class RDFXMLifier implements RDFConstants
 	*/
 	public static Element createRDFElement(final Document document)
 	{
-		return document.createElementNS(RDF_NAMESPACE_URI, XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_RDF));	//create an <rdf:RDF> element for the given document
+		return document.createElementNS(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_RDF));	//create an <rdf:RDF> element for the given document
 	}
 
 	/**Creates an <code>&lt;rdf:RDF&gt;</code> XML element and creates elements
@@ -185,7 +186,7 @@ public class RDFXMLifier implements RDFConstants
 	public Element createElement(final RDF rdf, final Document document)
 	{
 			//create an <rdf:RDF> element
-		final Element rdfElement=document.createElementNS(RDF_NAMESPACE_URI, XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_RDF));
+		final Element rdfElement=document.createElementNS(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_RDF));
 		createElements(rdf, rdfElement); //XMLify the resourcs as elements under the RDF element
 		return rdfElement;  //return the element we constructed with RDF resources as child elements
 	}
@@ -202,7 +203,7 @@ public class RDFXMLifier implements RDFConstants
 		{
 			final RDFResource resource=(RDFResource)resourceIterator.next();  //get the next resource
 Debug.trace("looking at resource: ", resource); //G***del
-			final String referenceURI=resource.getReferenceURI(); //get the resource reference URI
+			final URI referenceURI=resource.getReferenceURI(); //get the resource reference URI
 			//G***in throwing away anonymous resources, some might have been described at the top of the hierarchy---we should really just check to see which resources are not referenced
 //G***del when works			referenceURI!=null && referenceURI.indexOf("anonymous")<0 //if this is not an anonymous node G***fix the way we determine anonymous resources
 
@@ -232,21 +233,21 @@ Debug.trace("creating resource element for resource: ", resource);  //G***del
 			resourceType=null;  //don't use the resource type for creating the element name
 		if(resourceType!=null)   //if thie resource has a type that we can use for the element name
 		{
-			final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), resourceType.getNamespaceURI());  //get the prefix for use with this namespace
+			final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), resourceType.getNamespaceURI().toString());  //get the prefix for use with this namespace
 			final String qualifiedName=XMLUtilities.createQualifiedName(prefix, resourceType.getLocalName());  //create a qualified name for the element
-			resourceElement=document.createElementNS(resourceType.getNamespaceURI(), qualifiedName);  //create an element from the resource type
+			resourceElement=document.createElementNS(resourceType.getNamespaceURI().toString(), qualifiedName);  //create an element from the resource type
 		}
 		else  //if we can't create an element from its type
 		{
 			final String qualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION);  //create a qualified name for the element
-		  resourceElement=document.createElementNS(RDF_NAMESPACE_URI, qualifiedName); //create an rdf:Description element
+		  resourceElement=document.createElementNS(RDF_NAMESPACE_URI.toString(), qualifiedName); //create an rdf:Description element
 		}
 		if(resource.getReferenceURI()!=null && !resource.isAnonymous())  //if this resource has a reference URI and it isn't an anonymous resource G***do we really want to check for the reference URI, because it isn't needed anymore---should this be an assert?
 		{
 				//set the rdf:about attribute to the reference URI
 			final String aboutAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_ABOUT);  //create a qualified name for reference URI
 				//add the rdf:about attribute with the value set to the reference URI of the resource
-			resourceElement.setAttributeNS(RDF_NAMESPACE_URI, aboutAttributeQualifiedName, resource.getReferenceURI());
+			resourceElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), aboutAttributeQualifiedName, resource.getReferenceURI().toString());
 		}
 		addProperties(document, resourceElement, resource);  //add all the properties of the resource to the resource element
 /*G***del when works
@@ -302,7 +303,7 @@ Debug.trace("looking at non-type property value: ", propertyValue);
 			{
 Debug.trace("looking at non-type property: ", propertyResource);
 Debug.trace("looking at non-type property value: ", propertyValue);
-				final String propertyNamespaceURI=propertyResource.getNamespaceURI(); //get the namespace URI of the property
+				final URI propertyNamespaceURI=propertyResource.getNamespaceURI(); //get the namespace URI of the property
 				boolean serializeLiteralAttribute=false; //start out by assuming we won't serialize as an attribute
 				  //if the property value is a literal
 				if(propertyValue instanceof Literal)
@@ -329,10 +330,10 @@ Debug.trace("looking at non-type property value: ", propertyValue);
 */
 				if(serializeLiteralAttribute)  //if we should use an attribute for serializing this property value
 				{
-					final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), propertyResource.getNamespaceURI());  //get the prefix for use with this namespace
+					final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), propertyResource.getNamespaceURI().toString());  //get the prefix for use with this namespace
 					final String qualifiedName=XMLUtilities.createQualifiedName(prefix, propertyResource.getLocalName());  //create a qualified name for the attribute
 						//store the property as an attribute
-				  element.setAttributeNS(propertyResource.getNamespaceURI(), qualifiedName, ((Literal)propertyValue).getValue());
+				  element.setAttributeNS(propertyResource.getNamespaceURI().toString(), qualifiedName, ((Literal)propertyValue).getValue());
 				}
 				else  //if the value is a resource or we don't know the property's namespace URI and local name G***add more logic here later to automatically determine the namespace
 				{
@@ -357,14 +358,14 @@ G***del if not needed	@param rdf The RDF data model.
 	protected Element createPropertyElement(/*G***del if not neededfinal RDF rdf, */final Document document, final RDFResource propertyResource, final RDFObject propertyValue)
 	{
 Debug.trace("creating property element for property: ", propertyResource);  //G***del
-		final String namespaceURI; //we'll store here the namespace URI of the property element
+		final URI namespaceURI; //we'll store here the namespace URI of the property element
 		final String qualifiedName; //we'll store here the qualified name of the property element
 			//if we know the namespace URI and local name of the property
 				  //G***replace all this code with the new utility method getLabel(RDFResource)
 		if(propertyResource.getNamespaceURI()!=null && propertyResource.getLocalName()!=null)
 		{
 		  namespaceURI=propertyResource.getNamespaceURI();  //get the namespace URI
-			final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), namespaceURI);  //get the prefix for use with this namespace
+			final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), namespaceURI.toString());  //get the prefix for use with this namespace
 			String localName=propertyResource.getLocalName(); //get the local name of the property
 			if(RDF_NAMESPACE_URI.equals(namespaceURI))  //if this is the RDF namespace
 			{
@@ -377,13 +378,13 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 		{
 				//G***we might want to check this for rdf:li_XXX as well
 			namespaceURI=null;  //show that we don't know the namespace
-			qualifiedName=propertyResource.getReferenceURI(); //use the entire reference URI for the element name G***fix; this won't work---what can we do here?
+			qualifiedName=propertyResource.getReferenceURI().toString(); //use the entire reference URI for the element name G***fix; this won't work---what can we do here?
 		}
-		final Element propertyElement=document.createElementNS(namespaceURI, qualifiedName);  //create an element from the property resource
+		final Element propertyElement=document.createElementNS(namespaceURI.toString(), qualifiedName);  //create an element from the property resource
 		if(propertyValue instanceof RDFResource) //if the property value is a resource
 		{
 			final RDFResource valueResource=(RDFResource)propertyValue; //cast the value to a resource
-			final String valueReferenceURI=valueResource.getReferenceURI(); //get the reference URI of the value
+			final URI valueReferenceURI=valueResource.getReferenceURI(); //get the reference URI of the value
 //G***del when works			if(valueReferenceURI==null || valueReferenceURI.indexOf("anonymous")>=0) //if this is an anonymous node G***fix the way we determine anonymous resources
 			if(valueResource.isAnonymous()) //if this is an anonymous node
 			{
@@ -395,7 +396,7 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 					final NameValuePair subPropertyNameValuePair=(NameValuePair)propertyIterator.next(); //get the next property name/value pair
 					final RDFResource subPropertyResource=(RDFResource)subPropertyNameValuePair.getName();  //get the property resource
 					final RDFObject subPropertyValue=(RDFObject)subPropertyNameValuePair.getValue();  //get the property value
-				  final String subPropertyNamespaceURI=subPropertyResource.getNamespaceURI(); //get the namespace URI of the property
+				  final URI subPropertyNamespaceURI=subPropertyResource.getNamespaceURI(); //get the namespace URI of the property
 					if(!(subPropertyValue instanceof Literal)) //if this value is not a literal
 					{
 						allSubPropertiesLiterals=false; //show that all subproperties are not literals
@@ -428,7 +429,7 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 			{
 				final String resourceAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_RESOURCE);  //create a qualified name for the link attribute
 					//add the rdf:resource attribute with the value set to the reference URI of the property value resource
-				propertyElement.setAttributeNS(RDF_NAMESPACE_URI, resourceAttributeQualifiedName, valueReferenceURI);
+				propertyElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), resourceAttributeQualifiedName, valueReferenceURI.toString());
 			}
 		}
 		else if(propertyValue instanceof Literal)  //if the value is a literal
@@ -467,23 +468,23 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 	*/
 	public String getLabel(final RDFResource resource)
 	{
-		String namespaceURI=resource.getNamespaceURI(); //get the resource namespace URI, if it has one
+		URI namespaceURI=resource.getNamespaceURI(); //get the resource namespace URI, if it has one
 		String localName=resource.getLocalName(); //get the resource's local name
 		  //if there is no namespace URI known, see if a namespace URI is registered that matches the beginning of this reference URI
 		if(namespaceURI==null || localName==null)  //if there is no namespace URI or local name
 		{
-			final String referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
+			final URI referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
 				//G***right now we iterate through the namespaces each time; there might be a better way to do this
 			final Iterator namespaceIterator=getNamespacePrefixMap().keySet().iterator(); //get an iterator to the namespace URIs
 			while(namespaceIterator.hasNext())  //while there are more namespaces
 			{
 //G***del				final Map.Entry namespaceEntry=namespaceEntryIterator.next(); //get the next namespace entry
-				final String registeredNamespaceURI=(String)namespaceIterator.next();  //get this namespace URI
-				if(referenceURI.startsWith(registeredNamespaceURI)) //if this reference URI is in this namespace
+				final URI registeredNamespaceURI=(URI)namespaceIterator.next();  //get this namespace URI
+				if(referenceURI.toString().startsWith(registeredNamespaceURI.toString())) //if this reference URI is in this namespace	//G***fix, now that we're using real URIs
 				{
 //G***del					final String prefix=(String)namespaceEntry.getKey();  //get this namespace prefix
 				  namespaceURI=registeredNamespaceURI;  //we'll use the registered namespace URI
-				  localName=referenceURI.substring(registeredNamespaceURI.length()); //remove the namespace URI from the front of the reference URI to get the local name
+				  localName=referenceURI.toString().substring(registeredNamespaceURI.toString().length()); //remove the namespace URI from the front of the reference URI to get the local name	//G***fix better, now that we're using real URIs
 //G***del					return XMLUtilities.createQualifiedName(prefix, localName);  //create an XML qualified name for this namespace prefix and local name
 				}
 			}
@@ -494,7 +495,7 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 Debug.trace("has namespace: ", namespaceURI); //G***del
 Debug.trace("has local name: ", localName); //G***del
 				//get the prefix from the to be used for this namespace
-			final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), namespaceURI);
+			final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), namespaceURI.toString());
 Debug.trace("prefix: ", prefix); //G***del
 			if(RDF_NAMESPACE_URI.equals(namespaceURI))  //if this is the RDF namespace
 			{
@@ -521,7 +522,12 @@ Debug.trace("prefix: ", prefix); //G***del
 				}
 			}
 */
-			return resource.getReferenceURI(); //just use the reference URI as the label, if we can't find anything else G***we might want to check for rdf:li_ here as well; maybe not
+			return resource.getReferenceURI().toString(); //just use the reference URI as the label, if we can't find anything else G***we might want to check for rdf:li_ here as well; maybe not
 		}
+	}
+	
+	static
+	{
+		TYPE_PROPERTY=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, TYPE);	//initialize the RDF type property URI
 	}
 }

@@ -2,8 +2,11 @@ package com.garretwilson.net;
 
 import java.io.*;
 import java.net.*;
+
 import com.garretwilson.io.*;
+import java.net.*;
 import java.net.URI;	//G***del when other URI is removed
+
 
 /**Various URL manipulating functions.
 @see java.net.URL
@@ -228,6 +231,47 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		return new String(bytes, encoding); //convert the bytes into a string, using the given encoding
 	}
 */
+
+	/**Returns a URI constructed from the string.
+	If the URI is not syntactically correct, a runtime exception
+	will be thrown, created from the <code>URISyntaxException</code>.
+	<p>This method should normally only be used when the format
+	of the string is known to be a syntactically correct URI.</p>
+	@param string The string from which to construct a URI.
+	*/
+	public static URI toURI(final String string)
+	{
+		try
+		{
+			return new URI(string);	//create and return a new URI
+		}
+		catch (URISyntaxException e)
+		{
+			throw new RuntimeException(e);	//throw a runtime exception
+		}	
+	}
+
+	/**Returns a URI constructed from the given parts, any of
+	which can be <code>null</code>.
+	If the URI is not syntactically correct, a runtime exception
+	will be thrown, created from the <code>URISyntaxException</code>.
+	<p>This method should normally only be used when the format
+	of the string is known to be a syntactically correct URI.</p>
+	@param scheme The name of the URI scheme.
+	@param ssp The scheme-specific part.
+	@param fragment The fragment at the end of the URI.
+	*/
+	public static URI toURI(final String scheme, final String ssp, final String fragment)
+	{
+		try
+		{
+			return new URI(scheme, ssp, fragment);	//create and return a new URI
+		}
+		catch (URISyntaxException e)
+		{
+			throw new RuntimeException(e);	//throw a runtime exception
+		}	
+	}
 
 	/**Stores the contents of a URL in an output stream.
 	@param url The URL to copy.

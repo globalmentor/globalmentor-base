@@ -1,5 +1,6 @@
 package com.garretwilson.rdf;
 
+import java.net.URI;
 import java.util.ListIterator;
 
 /**Represents the an RDF resource connected in an RDF graph.
@@ -10,11 +11,11 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Comparab
 {
 
 	/**@return The non-<code>null</code> resource identifier URI.*/
-	public String getReferenceURI();
+	public URI getReferenceURI();
 
 	/**@return The XML namespace URI used in serialization, or <code>null</code>
 		if no namespace URI was used or there was no namespace.*/
-	public String getNamespaceURI();
+	public URI getNamespaceURI();
 
 	/**@return The XML local name used in serialization, or <code>null</code>
 		if no namespace URI and local name was used.*/
@@ -45,7 +46,7 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Comparab
 		<code>Literal</code>, or <code>null</code> if this resource has no such
 		property.
 	*/
-	public RDFObject getPropertyValue(final String propertyURI);
+	public RDFObject getPropertyValue(final URI propertyURI);
 
 	/**Searches and returns the first occurring property value that appears as
 		an RDF statement object with a predicate of a property URI formed by the
@@ -57,7 +58,7 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Comparab
 		<code>Literal</code>, or <code>null</code> if this resource has no such
 		property.
 	*/
-	public RDFObject getPropertyValue(final String namespaceURI, final String localName);
+	public RDFObject getPropertyValue(final URI namespaceURI, final String localName);
 
 	/**Determines if the resource has the given property with the given value.
 		Each matching property is compared to the property value using the
@@ -68,7 +69,7 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Comparab
 	@return <code>true</code> if the specified property is set to the specified
 		value.
 	*/
-	public boolean hasPropertyValue(final String propertyURI, final Object propertyValue);
+	public boolean hasPropertyValue(final URI propertyURI, final Object propertyValue);
 
 	/**Determines if the resource has the given property with the given value.
 		Each matching property is compared to the property value using the
@@ -81,7 +82,7 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Comparab
 	@return <code>true</code> if the specified property is set to the specified
 		value.
 	*/
-	public boolean hasPropertyValue(final String namespaceURI, final String localName, final Object propertyValue);
+	public boolean hasPropertyValue(final URI namespaceURI, final String localName, final Object propertyValue);
 
 	/**Adds a property by creating a <code>NameValuePair</code> from the given
 		property and value. For each property, this resource serves as the subject

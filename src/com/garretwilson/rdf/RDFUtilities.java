@@ -1,7 +1,9 @@
 package com.garretwilson.rdf;
 
 import java.io.*;
+import java.net.URI;
 import java.util.*;
+import com.garretwilson.net.URIUtilities;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
@@ -34,7 +36,7 @@ public class RDFUtilities implements RDFConstants
 	@param value A property value; the object of an RDF statement.
 	@return The added property value.
 	*/
-	public static RDFObject addProperty(final RDF rdf, final RDFResource resource, final String propertyNamespaceURI, final String propertyLocalName, final RDFObject value)
+	public static RDFObject addProperty(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final RDFObject value)
 	{
 		return resource.addProperty(rdf.locateResource(propertyNamespaceURI, propertyLocalName), value); //create a property from the namespace URI and local name, then add the actual property value
 	}
@@ -58,7 +60,7 @@ public class RDFUtilities implements RDFConstants
 		<code>Literal</code>; the object of an RDF statement.
 	@return The added property value.
 	*/
-	public static Literal addProperty(final RDF rdf, final RDFResource resource, final String propertyNamespaceURI, final String propertyLocalName, final String literalValue)
+	public static Literal addProperty(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue)
 	{
 		return resource.addProperty(rdf.locateResource(propertyNamespaceURI, propertyLocalName), literalValue); //create a new literal value and store the property
 	}
@@ -87,7 +89,7 @@ public class RDFUtilities implements RDFConstants
 		property value resource that is the object of an RDF statement.
 	@return The added property value.
 	*/
-	public static RDFObject addType(final RDF rdf, final RDFResource resource, final String valueNamespaceURI, final String valueLocalName)
+	public static RDFObject addType(final RDF rdf, final RDFResource resource, final URI valueNamespaceURI, final String valueLocalName)
 	{
 		return addType(rdf, resource, rdf.locateResource(valueNamespaceURI, valueLocalName));  //get a resource from the namespace and local name and add it as a type
 	}
@@ -97,14 +99,15 @@ public class RDFUtilities implements RDFConstants
 	@param namespaceURI The XML namespace URI used in the serialization.
 	@param localName The XML local name used in the serialization.
 	@return An RDF reference URI constructed from the given namespace and local name.
+//G***del if not needed	@exception URISyntaxException Thrown if a valid URI cannot be created from the given namespace and local name.
 	*/
-	public static String createReferenceURI(final String namespaceURI, final String localName)
+	public static URI createReferenceURI(final URI namespaceURI, final String localName) //G***del if not needed throws URISyntaxException
 	{
 		final StringBuffer stringBuffer=new StringBuffer();  //create a string buffer to hold the resource URI
-		if(namespaceURI!=null)  //if there is a namespace URI
+		if(namespaceURI!=null)  //if there is a namespace URI	//G***is this right?
 		  stringBuffer.append(namespaceURI);  //append the namespace URI
 		stringBuffer.append(localName); //append the local name
-		return stringBuffer.toString(); //return the string we constructed
+		return URIUtilities.toURI(stringBuffer.toString()); //return a URI from the the string we constructed; if somehow concatenating the strings does not create a valid URI, a runtime exception will be thrown
 	}
 
 	/**Gets an <code>rdf:type</code> property from RDF. This ensures that an
@@ -160,7 +163,7 @@ public class RDFUtilities implements RDFConstants
 	@param typeLocalName The XML local name that represents part of the reference URI.
 	@return A read-only collection of resources that are of the requested type.
 	*/
-	public static Collection getResourcesByType(final RDF rdf, final String typeNamespaceURI, final String typeLocalName)
+	public static Collection getResourcesByType(final RDF rdf, final URI typeNamespaceURI, final String typeLocalName)
 	{
 		return getResourcesByType(rdf, RDFUtilities.createReferenceURI(typeNamespaceURI, typeLocalName)); //gather the resources with a type property of the URI from the given namespace and local name
 	}
@@ -170,7 +173,7 @@ public class RDFUtilities implements RDFConstants
 	@param typeURI The reference URI of the type resource.
 	@return A read-only collection of resources that are of the requested type.
 	*/
-	public static Collection getResourcesByType(final RDF rdf, final String typeURI)
+	public static Collection getResourcesByType(final RDF rdf, final URI typeURI)
 	{
 		final List resourceList=new ArrayList();  //create a list in which to store the resources
 		final Iterator resourceIterator=rdf.getResourceIterator();  //get an iterator to the resources in this data model
@@ -243,7 +246,7 @@ public class RDFUtilities implements RDFConstants
 	@param typeURI The reference URI of the type resource.
 	@return <code>true</code> if the resource has the indicated type property.
 	*/
-	public static boolean isType(final RDFResource resource, final String typeURI)
+	public static boolean isType(final RDFResource resource, final URI typeURI)
 	{
 		return resource.hasPropertyValue(RDF_NAMESPACE_URI, TYPE, typeURI); //determine if the resource has a type property of the given URI
 	}
@@ -255,7 +258,7 @@ public class RDFUtilities implements RDFConstants
 	@param typeLocalName The XML local name that represents part of the reference URI.
 	@return <code>true</code> if the resource has the indicated type property.
 	*/
-	public static boolean isType(final RDFResource resource, final String typeNamespaceURI, final String typeLocalName)
+	public static boolean isType(final RDFResource resource, final URI typeNamespaceURI, final String typeLocalName)
 	{
 		return resource.hasPropertyValue(RDF_NAMESPACE_URI, TYPE, RDFUtilities.createReferenceURI(typeNamespaceURI, typeLocalName)); //determine if the resource has a type property of the URI from the given namespace and local name
 	}

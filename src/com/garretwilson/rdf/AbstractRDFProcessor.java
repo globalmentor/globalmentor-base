@@ -1,5 +1,7 @@
 package com.garretwilson.rdf;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import com.garretwilson.net.URLConstants;
 import com.garretwilson.text.xml.XMLUtilities;
@@ -42,17 +44,16 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 			statementList.clear();  //clear the list of statements
 		}
 
-
 	/**The base URI of the RDF being processed, or <code>null</code> if
 		no base URI was specified.
 	*/
-	private String baseURI=null;
+	private URI baseURI=null;
 
 		/**Sets the base URI for the RDF being processed.
 		@param newBaseURI The base URI of the RDF being processed, or
 			<code>null</code> if no base URI was specified.
 		*/
-		protected void setBaseURI(final String newBaseURI)
+		protected void setBaseURI(final URI newBaseURI)
 		{
 			baseURI=newBaseURI; //set the base URI
 		}
@@ -60,9 +61,16 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 		/**@return The base URI of the RDF being processed, or "online:" if no
 			base URI is known.
 		*/
-		protected String getBaseURI()
+		protected URI getBaseURI()
 		{
-			return baseURI!=null ? baseURI : "online:"; //return the base URI if we know it
+			try
+			{
+				return baseURI!=null ? baseURI : new URI("online:/");	//return the base URI if we know it	//G***use a constant
+			}
+			catch (URISyntaxException e)
+			{
+				return null;	//G***fix
+			} 
 		}
 
 	/**The list of all statements used to create the resources.*/

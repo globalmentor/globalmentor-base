@@ -2,6 +2,7 @@ package com.garretwilson.net;
 
 import java.io.*;
 import java.net.*;
+import java.net.URI;	//G**del when old URI is gone
 import com.garretwilson.io.*;
 
 /**Various URL manipulating functions.
@@ -322,6 +323,25 @@ Debug.trace("file: ", new File(contextURL.getFile()).getName());  //G***del
 		final byte[] bytes=readBytes(url); //load the contents of the URL
 		return new String(bytes, encoding); //convert the bytes into a string, using the given encoding
 	}
+	
+	/**Returns the URI version of the URL.
+	If the URL is not syntactically correct, a runtime exception
+	will be thrown, created from the <code>URISyntaxException</code>.
+	(This should seldom if ever happen as every URL should be a valid URI.)
+	@param string The string from which to construct a URI.
+	*/
+	public static URI toURI(final URL url)
+	{
+		try
+		{
+			return new URI(url.toString());	//create and return a new URI from the URL
+		}
+		catch (URISyntaxException e)
+		{
+			throw new RuntimeException(e);	//throw a runtime exception
+		}	
+	}
+	
 
 	/**Stores the contents of a URL in an output stream.
 	@param url The URL to copy.

@@ -1,8 +1,9 @@
 package com.garretwilson.rdf;
 
-import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
-import com.garretwilson.net.URLConstants;
+import com.garretwilson.net.*;
 import com.garretwilson.text.xml.XMLBase;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.util.Debug;
@@ -44,8 +45,9 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	@param document The XML document that might contain RDF data.
 	@return The RDF data model resulting from this processing and any previous
 		processing.
+	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
-	public RDF process(final Document document)
+	public RDF process(final Document document) throws URISyntaxException
 	{
 		return process(document, null);  //process this document with no base URI specified
 	}
@@ -57,8 +59,9 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		known.
 	@return The RDF data model resulting from this processing and any previous
 		processing.
+	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
-	public RDF process(final Document document, final String baseURI)
+	public RDF process(final Document document, final URI baseURI) throws URISyntaxException
 	{
 		return process(document.getDocumentElement(), baseURI); //process the data in the document element
 	}
@@ -69,8 +72,9 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	@param element The XML element that might contain RDF data.
 	@return The RDF data model resulting from this processing and any previous
 		processing.
+	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
-	public RDF process(final Element element)
+	public RDF process(final Element element) throws URISyntaxException
 	{
 		return process(element, null);  //process this element without specifying a base URI
 	}
@@ -84,11 +88,12 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		known.
 	@return The RDF data model resulting from this processing and any previous
 		processing.
+	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
-	public RDF process(final Element element, final String baseURI)
+	public RDF process(final Element element, final URI baseURI) throws URISyntaxException
 	{
 		setBaseURI(baseURI);  //set the base URI
-		if(RDF_NAMESPACE_URI.equals(element.getNamespaceURI()) //if this element is in the RDF namespace
+		if(RDF_NAMESPACE_URI.toString().equals(element.getNamespaceURI()) //if this element is in the RDF namespace G***fix better
 			  && ELEMENT_RDF.equals(element.getLocalName())) //if this element indicates that the children are RDF
 		{
 			final NodeList childNodeList=element.getChildNodes(); //get a list of child nodes
@@ -119,8 +124,9 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	/**Processes the given element categorically as RDF, as if it were contained
 		in an <code>&lt;rdf:RDF&gt;</code> element.
 	@param element The XML element that represents RDF data.
+	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
-	public void processRDF(final Element element) //G***where is this used? does it really need to be public? if so, it probably needs a baseURI parameter version
+	public void processRDF(final Element element) throws URISyntaxException //G***where is this used? does it really need to be public? if so, it probably needs a baseURI parameter version
 	{
 		//G***what do we do if <rdf:RDF> occurs inside <rdf:RDF>?
 		processResource(element); //process the given element as an RDF resource
@@ -129,15 +135,16 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	/**Processes the given element as representing an RDF resource.
 	@param element The XML element that represents the RDF resource.
 	@return The constructed resource the XML element represents.
+	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
-	protected RDFResource processResource(final Element element)
+	protected RDFResource processResource(final Element element) throws URISyntaxException
 	{
-		final String elementNamespaceURI=element.getNamespaceURI(); //get the element's namespace
+		final URI elementNamespaceURI=new URI(element.getNamespaceURI()); //get the element's namespace
 		final String elementLocalName=element.getLocalName(); //get the element's local name
 Debug.trace("processing resource with XML element namespace: ", elementNamespaceURI); //G***del
 Debug.trace("processing resource with XML local name: ", elementLocalName); //G***del
 		//G***what do we do if <rdf:RDF> occurs inside <rdf:RDF>?
-		/*G***bring back final */String referenceURI;  //we'll determine the reference URI from the rdf:about or rdf:ID attribute
+		/*G***bring back final */URI referenceURI;  //we'll determine the reference URI from the rdf:about or rdf:ID attribute
 		{
 			final String referenceURIValue=getRDFAttribute(element, ATTRIBUTE_ABOUT); //get the reference URI, if there is one
 			final String anchorID=getRDFAttribute(element, ATTRIBUTE_ID); //get the anchor ID if there is one
@@ -148,12 +155,12 @@ Debug.trace("found reference URI: ", referenceURIValue);  //G***del
 //G***del				//G***we need to normalize the reference URI
 				try
 				{
-				referenceURI=XMLBase.resolveURI(referenceURIValue, element, getBaseURI());  //resolve the reference URI to the base URI
+					referenceURI=XMLBase.resolveURI(new URI(referenceURIValue), element, getBaseURI());  //resolve the reference URI to the base URI
 				}
-				catch(MalformedURLException malformedURLException)
+				catch(URISyntaxException uriSyntaxException)
 				{
 //G***fix					Debug.warn(malformedURLException);  //G***fix
-					referenceURI=referenceURIValue; //G***fix
+					referenceURI=URIUtilities.toURI(referenceURIValue); //G***fix
 				}
 			}
 			else if(anchorID!=null)  //if there is an anchor ID
@@ -161,12 +168,12 @@ Debug.trace("found reference URI: ", referenceURIValue);  //G***del
 Debug.trace("found anchor ID: ", anchorID);  //G***del
 				try
 				{
-				referenceURI=XMLBase.getBaseURI(element, getBaseURI())+URLConstants.FRAGMENT_SEPARATOR_CHAR+anchorID;  //create a reference URI from the document base URI and the anchor ID
+					referenceURI=new URI(XMLBase.getBaseURI(element, getBaseURI()).toString()+URIConstants.FRAGMENT_SEPARATOR+anchorID);  //create a reference URI from the document base URI and the anchor ID	//G***make better with new URI methods
 				}
-				catch(MalformedURLException malformedURLException)
+				catch(URISyntaxException uriSyntaxException)
 				{
 //G***fix					Debug.warn(malformedURLException);  //G***fix
-					referenceURI=getBaseURI()+URLConstants.FRAGMENT_SEPARATOR_CHAR+anchorID;  //G***fix
+					referenceURI=URIUtilities.toURI(getBaseURI().toString()+URLConstants.FRAGMENT_SEPARATOR_CHAR+anchorID);  //G***fix
 				}
 			}
 			else  //if there is neither a resource ID nor an anchor ID
@@ -214,7 +221,7 @@ Debug.trace("resulting reference URI: ", referenceURI);  //G***del
 		}
 		processAttributeProperties(resource, element, DESCRIPTION_CONTEXT);  //parse the attributes for the resource description
 			//parse the child elements
-		final String RDF_LI_REFERENCE_URI=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, ELEMENT_LI);  //create a reference URI from the rdf:li element qualified name
+		final URI RDF_LI_REFERENCE_URI=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, ELEMENT_LI);  //create a reference URI from the rdf:li element qualified name G***maybe make this static somewhere
 		int memberCount=0; //show that we haven't found any container members, yet
 		final NodeList childNodeList=element.getChildNodes(); //get a list of child nodes
 		for(int i=0; i<childNodeList.getLength(); ++i)  //look at each child node
@@ -249,15 +256,16 @@ Debug.trace("resulting reference URI: ", referenceURI);  //G***del
 	@param context The context, <code>DESCRIPTION_CONTEXT</code> or
 		<code>REFERENCE_CONTEXT</code>, describing whether the attributes are part
 		of a resource description or a resource reference.
+	@exception URISyntaxException Thrown if an RDF URI is syntactically incorrect.
 	*/
-	protected void processAttributeProperties(final RDFResource resource, final Element element, final int context)
+	protected void processAttributeProperties(final RDFResource resource, final Element element, final int context) throws URISyntaxException
 	{
-		final String elementNamespaceURI=element.getNamespaceURI(); //get the element's namespace
+		final URI elementNamespaceURI=new URI(element.getNamespaceURI()); //get the element's namespace
 		final NamedNodeMap attributeNodeMap=element.getAttributes();  //get a map of the attributes
 		for(int i=attributeNodeMap.getLength()-1; i>=0; --i)  //look at each of the attributes
 		{
 			final Attr attribute=(Attr)attributeNodeMap.item(i);  //get a reference to this attribute
-		  final String attributeNamespaceURI=attribute.getNamespaceURI(); //get the attribute's namespace URI
+		  final URI attributeNamespaceURI=new URI(attribute.getNamespaceURI()); //get the attribute's namespace URI
 		  final String attributeLocalName=attribute.getLocalName(); //get the attribute's local name
 		  final String attributeValue=attribute.getValue(); //get the attribute's value
 /*G***del
@@ -308,10 +316,11 @@ Debug.trace("processing attribute from value: ", attributeValue);
 	@return A name/value pair the name of which is a property resource (the RDF
 		statement predicate) and the value of which is a value resource or a literal
 		(the RDF statement object).
+	@exception URISyntaxException Thrown if an RDF URI is syntactically incorrect.
 	*/
-	protected NameValuePair processProperty(final Element element)
+	protected NameValuePair processProperty(final Element element) throws URISyntaxException
 	{
-		final String elementNamespaceURI=element.getNamespaceURI(); //get the element's namespace
+		final URI elementNamespaceURI=new URI(element.getNamespaceURI()); //get the element's namespace
 		final String elementLocalName=element.getLocalName(); //get the element's local name
 //G***del Debug.trace("processing property with XML element namespace: ", elementNamespaceURI); //G***del
 //G***del Debug.trace("processing property with XML local name: ", elementLocalName); //G***del
@@ -322,18 +331,19 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		if(referenceURIValue!=null) //if there is a reference URI
 		{
 //G***del				//G***we need to normalize the reference URI
-		  /*G***bring back final */String referenceURI;
+		  /*G***bring back final */URI referenceURI;
 			try
 			{
 Debug.trace("Resolving rdf:resource: ", referenceURIValue); //G***del
 					referenceURI=XMLBase.resolveURI(referenceURIValue, element, getBaseURI());  //resolve the reference URI to the base URI
 				}
-				catch(MalformedURLException malformedURLException)
+				catch(URISyntaxException uriSyntaxException)
 				{
 //G***fix					Debug.warn(malformedURLException);  //G***fix
-					referenceURI=referenceURIValue; //G***fix
+					referenceURI=null; //G***fix
+//G***fix					referenceURI=new URI(referenceURIValue); //G***fix
 				}
-Debug.trace("found referene URI: ", referenceURI);  //G***del
+Debug.trace("found reference URI: ", referenceURI);  //G***del
 		  final RDFResource propertyValueResource=getRDF().locateResource(referenceURI); //get or create a new resource with the given reference URI
 //G***del Debug.trace("property value resource: ", propertyValueResource);  //G***del
 
@@ -393,11 +403,11 @@ Debug.trace("found referene URI: ", referenceURI);  //G***del
 	*/
 	protected String getRDFAttribute(final Element element, final String attributeLocalName)
 	{
-		if(element.hasAttributeNS(RDF_NAMESPACE_URI, attributeLocalName))  //if there is a prefixed attribute value
+		if(element.hasAttributeNS(RDF_NAMESPACE_URI.toString(), attributeLocalName))  //if there is a prefixed attribute value
 		{
-		  return element.getAttributeNS(RDF_NAMESPACE_URI, attributeLocalName); //get the prefixed attribute value
+		  return element.getAttributeNS(RDF_NAMESPACE_URI.toString(), attributeLocalName); //get the prefixed attribute value
 		}
-		else if(RDF_NAMESPACE_URI.equals(element.getNamespaceURI()) && element.hasAttributeNS(null, attributeLocalName)) //if there is a non-prefixed attribute value
+		else if(element.getNamespaceURI()!=null && element.getNamespaceURI().equals(RDF_NAMESPACE_URI.toString()) && element.hasAttributeNS(null, attributeLocalName)) //if there is a non-prefixed attribute value
 		{
 			Debug.warn("Non-prefixed rdf:"+attributeLocalName+" attribute deprecated."); //G***put in a real warning
 		  return element.getAttributeNS(null, attributeLocalName); //return the non-prefixed attribute value

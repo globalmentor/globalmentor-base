@@ -1,5 +1,6 @@
 package com.garretwilson.rdf;
 
+import java.net.URI;
 import java.util.*;
 import com.garretwilson.util.Debug;
 import com.garretwilson.util.NameValuePair;
@@ -15,7 +16,7 @@ public abstract class RDFContainerResource extends DefaultRDFResource
 	@exception IllegalArgumentException Thrown if the provided reference URI is
 		<code>null</code>.
 	*/
-	public RDFContainerResource(final String newReferenceURI) throws IllegalArgumentException
+	public RDFContainerResource(final URI newReferenceURI) throws IllegalArgumentException
 	{
 		super(newReferenceURI); //construct the parent class
 	}
@@ -26,7 +27,7 @@ public abstract class RDFContainerResource extends DefaultRDFResource
 	@param newNamespaceURI The XML namespace URI used in the serialization.
 	@param newLocalName The XML local name used in the serialization.
 	*/
-	public RDFContainerResource(final String newNamespaceURI, final String newLocalName)
+	public RDFContainerResource(final URI newNamespaceURI, final String newLocalName)
 	{
 		super(newNamespaceURI, newLocalName); //construct the parent class
 	}
@@ -39,14 +40,14 @@ public abstract class RDFContainerResource extends DefaultRDFResource
 	{
 		  //create the start of a reference URI from the rdf:li element qualified
 			//  name (i.e. "rdfNamespaceURI#li_"), which we'll use to check for items
-		final String RDF_LI_REFERENCE_PREFIX=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX);
+		final String RDF_LI_REFERENCE_PREFIX=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX).toString();
 		final List itemPropertyList=new ArrayList();  //create a list in which to store the items
 		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to all properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final NameValuePair nameValuePair=(NameValuePair)propertyIterator.next(); //get the next name/value pair
 				//if this property name begins with rdf:_
-		  if(((Resource)nameValuePair.getName()).getReferenceURI().startsWith(RDF_LI_REFERENCE_PREFIX))
+		  if(((Resource)nameValuePair.getName()).getReferenceURI().toString().startsWith(RDF_LI_REFERENCE_PREFIX))
 				itemPropertyList.add(nameValuePair);  //add this name and value to the list
 		}
 		return itemPropertyList;  //return the list of name/value pairs
@@ -78,7 +79,7 @@ public abstract class RDFContainerResource extends DefaultRDFResource
 	@return The first encountered item resource with the given reference URI, or
 		<code>null</code> if this container holds no such resource.
 	*/
-	public RDFResource getItem(final String referenceURI)
+	public RDFResource getItem(final URI referenceURI)
 	{
 		final Iterator itemIterator=getItemIterator();  //get an iterator to look through the items
 		while(itemIterator.hasNext()) //while there are more items
@@ -119,16 +120,16 @@ Debug.trace("sorted value is: ", nameValuePair.getValue()); //G***del
 		int highestNumber=0; //we haven't found a highest number, yet
 		  //create the start of a reference URI from the rdf:li element qualified
 			//  name (i.e. "rdfNamespaceURI#li_"), which we'll use to check for items
-		final String RDF_LI_REFERENCE_PREFIX=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX);
+		final String RDF_LI_REFERENCE_PREFIX=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX).toString();
 		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to all properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final NameValuePair nameValuePair=(NameValuePair)propertyIterator.next(); //get the next name/value pair
-			final String propertyReferenceURI=((Resource)nameValuePair.getName()).getReferenceURI();  //get the reference URI of the property
-		  if(propertyReferenceURI.startsWith(RDF_LI_REFERENCE_PREFIX))  //if this property name begins with rdf:_
+			final URI propertyReferenceURI=((Resource)nameValuePair.getName()).getReferenceURI();  //get the reference URI of the property
+		  if(propertyReferenceURI.toString().startsWith(RDF_LI_REFERENCE_PREFIX))  //if this property name begins with rdf:_	//G***fix better
 			{
 					//get the current number by removing the start of the URI up to and including "#_"
-				final String numberString=propertyReferenceURI.substring(RDF_LI_REFERENCE_PREFIX.length());
+				final String numberString=propertyReferenceURI.toString().substring(RDF_LI_REFERENCE_PREFIX.length());	//G***fix better
 				try
 				{
 				  final int number=Integer.parseInt(numberString);  //parse the integer from the string
@@ -149,16 +150,16 @@ Debug.trace("sorted value is: ", nameValuePair.getValue()); //G***del
 	{
 		  //create the start of a reference URI from the rdf:li element qualified
 			//  name (i.e. "rdfNamespaceURI#li_"), which we'll use to check for items
-		final String RDF_LI_REFERENCE_PREFIX=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX);
+		final String RDF_LI_REFERENCE_PREFIX=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX).toString();
 		final ListIterator propertyIterator=getPropertyIterator();  //get an iterator to all properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final NameValuePair nameValuePair=(NameValuePair)propertyIterator.next(); //get the next name/value pair
-			final String propertyReferenceURI=((Resource)nameValuePair.getName()).getReferenceURI();  //get the reference URI of the property
-		  if(propertyReferenceURI.startsWith(RDF_LI_REFERENCE_PREFIX))  //if this property name begins with rdf:_
+			final URI propertyReferenceURI=((Resource)nameValuePair.getName()).getReferenceURI();  //get the reference URI of the property
+		  if(propertyReferenceURI.toString().startsWith(RDF_LI_REFERENCE_PREFIX))  //if this property name begins with rdf:_ G***fix better
 			{
 					//get the current number by removing the start of the URI up to and including "#_"
-				final String numberString=propertyReferenceURI.substring(RDF_LI_REFERENCE_PREFIX.length());
+				final String numberString=propertyReferenceURI.toString().substring(RDF_LI_REFERENCE_PREFIX.length());
 				try
 				{
 				  final int number=Integer.parseInt(numberString);  //parse the integer from the string

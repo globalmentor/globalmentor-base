@@ -21,7 +21,7 @@ public class Literal implements RDFObject
 	}
 
 	/**If <code>object</code> is another <code>Literal</code>, compares the
-		resource reference URIs. If <code>object</code> is a <code>String</code>,
+		literal values. If <code>object</code> is a <code>String</code>
 		compares the string with this literal's value. Otherwise, compares the
 		objects using the superclass functionality.
 	@param object The object with which to compare this literal; should be
