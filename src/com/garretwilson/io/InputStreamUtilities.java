@@ -137,34 +137,31 @@ Debug.trace("ready to get bytes", length);
 	<p>The input stream must be at its beginning and must support marking
 		and resetting.</p>
 	@param inputStream The stream the encoding of which will be detected.
-	@return The character encoding detected, or <code>null</code> no encoding
-		could be detected.
+	@return The character encoding detected, or <code>null</code> no encoding could be detected.
 	@exception IOException Thrown if an I/O error occurred.
 	*/
 	public static CharacterEncoding getBOMEncoding(final InputStream inputStream) throws IOException
+	{
+		return getBOMEncoding(inputStream, null);	//get the BOM encoding, returning null if the BOM encoding can't be determined
+	}
+
+	/**Attempts to automatically detect the character encoding of a particular
+		input stream based upon its byte order marker (BOM).
+	<p>The input stream must be at its beginning and must support marking
+		and resetting.</p>
+	@param inputStream The stream the encoding of which will be detected.
+	@param defaultCharacterEncoding The character encoding to return if the encoding can't be
+		determined by the byte order mark.
+	@return The character encoding detected, or the given default if no encoding could be detected.
+	@exception IOException Thrown if an I/O error occurred.
+	*/
+	public static CharacterEncoding getBOMEncoding(final InputStream inputStream, final CharacterEncoding defaultCharacterEncoding) throws IOException
 	{
 		final int BYTE_ORDER_MARK_LENGTH=4; //the number of bytes in the largest byte order mark
 		inputStream.mark(BYTE_ORDER_MARK_LENGTH); //we won't read more than the byte order mark
 		final byte[] byteOrderMarkArray=new byte[BYTE_ORDER_MARK_LENGTH];	//create an array to hold the byte order mark G***make sure this is initialized to zero bytes---or just read them all, which will but -1 in all the remaining bytes
 		Arrays.fill(byteOrderMarkArray, (byte)0);	//fill the array with zeros, in case we can't completely fill it with bytes from the input stream
 		final int byteOrderMarkCount=inputStream.read(byteOrderMarkArray);	//read as many characters of the byte order mark as we can
-/*G***del when works
-		boolean eof=false;	//we'll set this to true if we reach the end of the file
-		for(int i=0; i<byteOrderMarkArray.length && !eof; ++i)	//read each character unless we reach the end of the file (we're using a loop instead of read(int[]) because the latter could read less than the number of bytes requested, even if there are more available)
-		{
-			final int byteOrderMark=inputStream.read();	//read the next byte
-			if(byteOrderMark!=-1)	//if we didn't reach the end of the file
-			{
-				byteOrderMarkArray[i]=(byte)byteOrderMark;	//store the next byte order mark
-			}
-			else	//if we did reach the end of the file
-			{
-				eof=true;	//show that we reached the end of the file
-			}
-		}
-		if(!eof)	//if we didn't reach the end of the data
-		{
-*/
 		if(byteOrderMarkCount>0)	//if we read any characters as all
 		{
 			CharacterEncoding characterEncoding=CharacterEncoding.create(byteOrderMarkArray);	//see if we can recognize the encoding by the beginning characters G***probably create a static CharacterEncoding method to return a string without creating a new objet
@@ -180,7 +177,7 @@ Debug.trace("ready to get bytes", length);
 		  }
 		}
 		inputStream.reset();  //reset the stream back to where we found it
-		return null;	//we couldn't find an encoding
+		return defaultCharacterEncoding;	//we couldn't find an encoding; return the default
 	}
 
 }

@@ -350,7 +350,7 @@ Debug.trace("idref: ", itemIDRef);
 			final URI itemReferenceURI=new URI(URIConstants.URN_SCHEME, "local:"+itemIDRef, null);  //G***fix the reference URI
 Debug.trace("item reference URI: ", itemReferenceURI);
 			final RDFResource itemResource=manifestResource.getResourceByReferenceURI(itemReferenceURI);	//get the referenced item from the manifest
-Debug.trace("item resource: ", XPackageUtilities.toString(itemResource));
+Debug.trace("item resource: ", RDFUtilities.toString(itemResource));
 			assert itemResource!=null : "Missing spine element: "+itemIDRef; //TODO fix with a real error message
 Debug.trace("adding item to organization");
 			spine.add(itemResource);	//add this item to the spine

@@ -9,6 +9,9 @@ import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xlink.XLinkConstants;
 import com.garretwilson.rdf.*;
+import static com.garretwilson.rdf.RDFUtilities.*;
+import static com.garretwilson.rdf.xpackage.XPackageConstants.*;
+import static com.garretwilson.rdf.xpackage.*;
 import com.garretwilson.util.Debug;
 import org.w3c.dom.*;
 
@@ -17,7 +20,7 @@ import java.net.URI;	//G***del when other URI is removed
 /**Utilities for working woth XPackage RDF.
 @author Garret Wilson
 */
-public class XPackageUtilities extends RDFUtilities implements XPackageConstants
+public class XPackageUtilities 
 {
 
 	/**Adds an alternate to a resource.
@@ -274,36 +277,30 @@ Debug.trace("comparing with URI: ", itemURI); //G***del
 		}
 	}
 
-	/**Returns an item resource in the given RDF container that has a matching
-		xpackage:location with an xlink:href that matches the requested href,
-		relative to the given URI.
-	@param rdfContainer The container that hold RDF resources.
+	/**Returns an item resource in the manifest of the given resource, if present,
+		that has a matching xpackage:location with an xlink:href that matches the requested URI,
+		relative to the given base URI.
+	@param resource The resource the manifest of which should be searched.
 	@param baseURI The base URI of the package, used to construct absolute URIs
 		from relative URIs.
-	@param href The relative or absolute reference to the item, which will be
-		converted to an absolute URI in order to compare it with each item's fully
-		qualified URI.
-	@return The item whose fully qualified URI matches the fully qualified
-		version of the specified href, or <code>null</code> if there is no match.
+	@param uri The absolute reference to the item, which will be compare with
+		each item's fully qualified URI.
+	@return The item whose fully qualified URI matches the given URI, or
+		<code>null</code> if there is no match.
 	@see #getLocationHRef
 	*/
-/*G***del if not needed
-	public static RDFResource getItemByLocationHRef(final RDFContainerResource rdfContainer, final URI baseURI, final String href)
+	public static RDFResource getManifestItemByLocationHRef(final RDFResource resource, final URI baseURI, final URI uri)
 	{
-//G***del Debug.trace("Inside OEBPublication.getManifestItemByHRef() for "+href);	//G***del
-		try
+		final RDFListResource manifest=getManifest(resource);  //get the manifest of this resource
+		if(manifest!=null)  //if this resource has a manifest
 		{
-		  final URI absoluteURI=URIUtilities.createURI(baseURI, href);	//create a URI based upon the base URI and the given file location
-//G***del Debug.trace("Getting manifest item by URL: ", absoluteURL);
-			return getItemByLocationHRef(rdfContainer, baseURI, absoluteURI);	//look up the item based upon the URI we formed
+			return getItemByLocationHRef(manifest, baseURI, uri);  //get an item in the manifest that matches the given location
 		}
-		catch(URISyntaxException uriSyntaxException)	//if there is an error with the URI
+		else  //if there is no manifest
 		{
-//G***fix			Debug.error(uriSyntaxException);	//log the error
-			return null;	//that simply means we can't find the item
+			return null;  //show that we couldn't find a matching item resource
 		}
 	}
-*/
 
 	/**Returns an item resource in the given RDF container that has a matching
 		xpackage:location with an xlink:href that matches the requested URI,
