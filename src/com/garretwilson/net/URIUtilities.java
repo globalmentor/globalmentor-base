@@ -15,9 +15,15 @@ import com.garretwilson.util.NameValuePair;
 public class URIUtilities implements URIConstants
 {
 
-	/**Default constructor.*/
-	public URIUtilities()
+	/**Creates a new URI identical to the supplied URI with a different path.
+	@param uri The URI to change.
+	@param path The correctly escaped path.
+	@return A new URI with the new path information.
+	*/
+	public static URI changePath(final URI uri, final String path)
 	{
+			//construct an identical URI except for the supplied path
+		return create(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), path, uri.getRawQuery(), uri.getRawFragment());
 	}
 
 	/**Constructs a query string for a URI by URL-encoding each name-value pair,
@@ -416,6 +422,36 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		}	
 	}
 
+	/**Returns a URI constructed from the given parts, any of
+		which can be <code>null</code>.
+	<p>If the URI is not syntactically correct, an
+		<code>IllegalArgumentException</code>	will be thrown, created from the
+		<code>URISyntaxException</code>.</p>
+	<p>This method should normally only be used when the format
+		of the string is known to be a syntactically correct URI.</p>
+	@param scheme The name of the URI scheme.
+	@param userInfo The user information.
+	@param host The host information.
+	@param port The port number, or -1 for no defined port.
+	@param path The path, correctly encoded.
+	@param query The URI query.
+	@param fragment The fragment at the end of the URI.
+	@exception IllegalArgumentException Thrown if the a URI cannot be constructed
+		from the given strings.
+	@see URI#create
+	*/
+	public static URI create(final String scheme, final String userInfo, final String host, final int port, final String path, final String query, final String fragment) throws IllegalArgumentException
+	{
+		try
+		{
+			return new URI(scheme, userInfo, host, port, path, query, fragment);	//create and return a new URI
+		}
+		catch(URISyntaxException uriSyntaxException)	//if the given information is not correct URI syntax
+		{
+			throw (IllegalArgumentException)new IllegalArgumentException(uriSyntaxException.getMessage()).initCause(uriSyntaxException);	//create a new illegal argument exception from the URI syntax exception and rethrow it
+		}	
+	}
+
 	/**Stores the contents of a URL in an output stream.
 	@param url The URL to copy.
 	@param outputStream The destination of the URL contents.
@@ -466,4 +502,29 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		return CharSequenceUtilities.unescapeHex(uri, ESCAPE_CHARACTER, 2);	//unescape according to URI encoding rules
 	}
 */
+
+	/**Changes a URI from one base to another.
+	For example, <code>http://example.com/base1/test.txt</code> changed to base
+		<code>http://example.com/base2/level2/</code> yields
+		<code>http://example.com/base2/level2/test.txt</code>.
+	@param uri The URI the base of which to change.
+	@param oldBaseURI The current base URI.
+	@param newBaseURI The base URI of the new URI to construct.
+	@return A new URI constructed by relativizing the URI to the old base URI and
+		resolving the resulting URI agains the new base URI.
+	@see URI#relativize(URI)
+	@see URI#resolve(URI)
+	@exception IllegalArgumentException Thrown if <var>oldBaseURI</code> is not
+		a base URI of <var>uri</var>.
+	*/
+	public static URI changeBase(final URI uri, final URI oldBaseURI, final URI newBaseURI)
+	{
+		final URI relativeURI=oldBaseURI.relativize(uri);	//get a URI relative to the old base URI
+		if(relativeURI.isAbsolute())	//if we couldn't relativize the the URI to the old base URI and come up with a relative URI
+		{
+			throw new IllegalArgumentException(oldBaseURI.toString()+" is not a base URI of "+uri);
+		}
+		final URI newURI=newBaseURI.resolve(relativeURI);	//resolve the relative URI to the new base URI
+		return newURI;	//return the new URI with the changed base
+	}
 }

@@ -69,6 +69,18 @@ public class CharSequenceUtilities extends CharacterUtilities
 		return -1;	//if we make it to here, we didn't find any of the characters
 	}
 
+	/**Determines if the character sequence ends with the given character.
+	@param charSequence The character sequence to examine.
+	@param character The character to compare.
+	@return <code>true</code> if the last character of the character sequence
+		matches that of the given string.
+	*/
+	public static boolean endsWith(final CharSequence charSequence, final char character)
+	{
+			//see if the character sequence has at least one character, and the last character matches our character
+		return charSequence.length()>0 && charSequence.charAt(charSequence.length()-1)==character;
+	}
+
 	/**Determines if the character sequence ends with the given string.
 	@param charSequence The character sequence to examine.
 	@param string The string to compare.

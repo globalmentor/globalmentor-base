@@ -2,15 +2,24 @@ package com.garretwilson.io;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URI;
 import com.garretwilson.lang.*;
-import com.garretwilson.net.URIUtilities;
-import com.garretwilson.net.URLUtilities;
+import com.garretwilson.net.*;
 import com.garretwilson.util.Debug;
+
+import static com.garretwilson.io.FileConstants.*;
+import static com.garretwilson.io.InputStreamUtilities.*;
+import static com.garretwilson.io.OutputStreamUtilities.*;
+import static com.garretwilson.lang.CharacterUtilities.*;
+import static com.garretwilson.lang.CharSequenceUtilities.*;
+import static com.garretwilson.lang.IntegerUtilities.*;
+import static com.garretwilson.lang.SystemUtilities.*;
+import static com.garretwilson.net.URIUtilities.*;
 
 /**Various utilities for examining files.
 @author Garret Wilson
 */
-public class FileUtilities implements FileConstants
+public class FileUtilities
 {
 
 	/**This class cannot be publicly instantiated.*/
@@ -156,6 +165,26 @@ public class FileUtilities implements FileConstants
 		return extension!=null ? MediaType.getMediaType(extension) : null; //return the media type based on the file's extension, if there is one
 	}
 
+	/**Returns the appropriate URI for a directory, whether or not the directory
+		exists. Contrast this behavior with <code>File.toURI()</code>, which will
+		return a file URI without a trailing slash if the directory does not exist.
+	@param directory The name of a directory, which may or may not exist.
+	@return A URI, with trailing slash, to represent the given directory.
+	*/
+	public static URI getDirectoryURI(final File directory)
+	{
+		final URI fileURI=directory.toURI();	//create a URI from the file
+		if(endsWith(fileURI.getRawPath(), URIConstants.PATH_SEPARATOR))	//if the file URI is a directory URI
+		{
+			return fileURI;	//return the URI as-is
+		}
+		else	//if the file URI isn't yet a directory URI
+		{
+				//create a new URI with the path separator appended
+			return changePath(fileURI, fileURI.getRawPath()+URIConstants.PATH_SEPARATOR);
+		}		
+	}
+
 	/**Returns the media type for the specified filename based on its extension.
 	@param filename The filename to examine.
 	@return The default media type for the filename's extension, or <code>null</code>
@@ -264,7 +293,7 @@ public class FileUtilities implements FileConstants
 	*/
 	public static boolean isFilename(final String string)
 	{
-		if(SystemUtilities.isWindowsOS())	//if we're running on Windows
+		if(isWindowsOS())	//if we're running on Windows
 			return isFilename(string, WINDOWS_FILENAME_RESERVED_CHARACTERS, WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS);	//check the filename using Windows reserved characters
 		else	//for all other operating systems TODO fix for Macintosh
 			return isFilename(string, POSIX_FILENAME_RESERVED_CHARACTERS, null);	//check the filename for POSIX
@@ -282,7 +311,7 @@ public class FileUtilities implements FileConstants
 	public static boolean isFilename(final String string, final String reservedCharacters, final String reservedFinalCharacters)
 	{
 			//the string is a filename if the string ing isn't null and there are no illegal characters in the string
-		final boolean isFilename=string!=null && CharSequenceUtilities.charIndexOf(string, reservedCharacters)<0;
+		final boolean isFilename=string!=null && charIndexOf(string, reservedCharacters)<0;
 		if(isFilename && reservedFinalCharacters!=null && reservedFinalCharacters.length()>0)	//if we should check the final character
 		{
 			if(string.length()>0)	//if we have any characters at all
@@ -382,7 +411,7 @@ public class FileUtilities implements FileConstants
 	*/
 	public static String encodeFilename(final String filename)
 	{
-		if(SystemUtilities.isWindowsOS())	//if we're running on Windows
+		if(isWindowsOS())	//if we're running on Windows
 			return encodeFilename(filename, WINDOWS_FILENAME_RESERVED_CHARACTERS, WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS);	//encode the filename using Windows reserved characters
 		else	//for all other operating systems TODO fix for Macintosh
 			return encodeFilename(filename, POSIX_FILENAME_RESERVED_CHARACTERS, null);	//encode the filename for POSIX
@@ -414,7 +443,7 @@ public class FileUtilities implements FileConstants
 		}
 		else	//if something about the filename isn't correct
 		{
-			final String encodedFilename=CharSequenceUtilities.escapeHex(filename, reservedCharacters, ESCAPE_CHARACTER, 2);
+			final String encodedFilename=escapeHex(filename, reservedCharacters, ESCAPE_CHARACTER, 2);
 			if(reservedFinalCharacters!=null && reservedFinalCharacters.length()>0)	//if we should check the final character (e.g. on Windows)
 			{
 				if(encodedFilename.length()>0)	//if we have a filename
@@ -423,7 +452,7 @@ public class FileUtilities implements FileConstants
 					if(reservedFinalCharacters.indexOf(lastChar)>=0)	//if the last character is a reserved character
 					{
 						return encodedFilename.substring(0, encodedFilename.length()-1)	//remove the last character
-								+ESCAPE_CHARACTER+IntegerUtilities.toHexString(lastChar, 2);	//add the escaped version of the character in its place
+								+ESCAPE_CHARACTER+toHexString(lastChar, 2);	//add the escaped version of the character in its place
 					}
 				}
 			}
@@ -441,7 +470,7 @@ public class FileUtilities implements FileConstants
 	*/
 	public static String decodeFilename(final String filename)
 	{
-		return CharSequenceUtilities.unescapeHex(filename, ESCAPE_CHARACTER, 2);	//decode the filename
+		return unescapeHex(filename, ESCAPE_CHARACTER, 2);	//decode the filename
 	}
 
 	/**Deletes a file, throwing an exception if unsuccessful.
@@ -498,7 +527,7 @@ public class FileUtilities implements FileConstants
 		final InputStream fileInputStream=new FileInputStream(file);  //create an input stream to the file
 		try
 		{
-			return InputStreamUtilities.getBytes(fileInputStream);  //convert the file to an array of bytes
+			return getBytes(fileInputStream);  //convert the file to an array of bytes
 		}
 		finally
 		{
