@@ -80,12 +80,19 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Cloneabl
 	public RDFObject getPropertyValue(final URI namespaceURI, final String localName);
 
 	/**Searches and returns an iterator of all property values that appear as RDF
-		statement objects with a predicate of <code>propertyURI</code>.
+		statement objects with a predicate of <var>propertyURI</var>.
 	@param propertyURI The reference URI of the property resources.
-	@return An iterator to a read-only list of values of properties, each either a
-		<code>RDFResource</code> or a <code>RDFLiteral</code>.
+	@return An iterator to a read-only list of values of properties.
 	*/
-	public Iterator<RDFObject> getPropertyValueIterator(final URI propertyURI);  //G***maybe fix to make the iterator dynamic to the RDF data model
+	public Iterator<RDFObject> getPropertyValueIterator(final URI propertyURI);
+
+	/**Searches and returns an iterator of all property values of the requested type that appear as RDF
+		statement objects with a predicate of <var>propertyURI</var>.
+	@param propertyURI The reference URI of the property resources.
+	@param valueType The type of values to include
+	@return An iterator to a read-only list of values of properties.
+	*/
+	public <T> Iterator<T> getPropertyValueIterator(final URI propertyURI, final Class<T> valueType);
 
 	/**Searches and returns an iterator of all property values that appear as
 		RDF statement objects with a predicate of a property URI formed by the
@@ -93,10 +100,20 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Cloneabl
 		creates a property URI automatically for searching.
 	@param namespaceURI The XML namespace URI that represents part of the reference URI.
 	@param localName The XML local name that represents part of the reference URI.
-	@return An iterator to a read-only list of values of properties, each either a
-		<code>RDFResource</code> or a <code>RDFLiteral</code>.
+	@return An iterator to a read-only list of values of properties.
 	*/
 	public Iterator<RDFObject> getPropertyValueIterator(final URI namespaceURI, final String localName);
+
+	/**Searches and returns an iterator of all property values of the requested type that appear as
+		RDF statement objects with a predicate of a property URI formed by the
+		given namespace URI and local name. This is a convenience function that
+		creates a property URI automatically for searching.
+	@param namespaceURI The XML namespace URI that represents part of the reference URI.
+	@param localName The XML local name that represents part of the reference URI.
+	@param valueType The type of values to include
+	@return An iterator to a read-only list of values of properties.
+	*/
+	public <T> Iterator<T> getPropertyValueIterator(final URI namespaceURI, final String localName, final Class<T> valueType);
 
 	/**Determines if the resource has the given property with the resource
 		identified by the given URI.

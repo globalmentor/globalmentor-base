@@ -3,6 +3,7 @@ package com.garretwilson.rdf;
 import java.lang.ref.*;
 import java.net.URI;
 import java.util.*;
+
 import com.garretwilson.model.*;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
 import com.garretwilson.util.Debug;
@@ -58,7 +59,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		with the name being the property predicate and the value being the property
 		value.
 	*/
-	protected ArrayList<RDFPropertyValuePair> propertyList=new ArrayList();  //G***should this really be protected, and not private? currently only used by RDFSequenceResource
+	protected ArrayList<RDFPropertyValuePair> propertyList=new ArrayList<RDFPropertyValuePair>();  //G***should this really be protected, and not private? currently only used by RDFSequenceResource
 
 	/**@return The number of properties this resource has.*/
 	public int getPropertyCount() {return propertyList.size();}
@@ -126,38 +127,65 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	}
 
 	/**Searches and returns an iterator of all property values that appear as RDF
-		statement objects with a predicate of <code>propertyURI</code>.
+		statement objects with a predicate of <var>propertyURI</var>.
 	@param propertyURI The reference URI of the property resources.
-	@return An iterator to a read-only list of values of properties, each either a
-		<code>RDFResource</code> or a <code>RDFLiteral</code>.
+	@return An iterator to a read-only list of values of properties.
 	*/
-	public Iterator<RDFObject> getPropertyValueIterator(final URI propertyURI)  //G***maybe fix to make the iterator dynamic to the RDF data model
+	public Iterator<RDFObject> getPropertyValueIterator(final URI propertyURI)
 	{
-		final List<RDFObject> propertyValueList=new ArrayList<RDFObject>(); //cerate a list in which to store the property values
+		return getPropertyValueIterator(propertyURI, RDFObject.class);	//get all properties, whether they are resources or literals
+	}
+	
+	/**Searches and returns an iterator of all property values of the requested type that appear as RDF
+		statement objects with a predicate of <var>propertyURI</var>.
+	@param propertyURI The reference URI of the property resources.
+	@param valueType The type of values to include
+	@return An iterator to a read-only list of values of properties.
+	*/
+	public <T> Iterator<T> getPropertyValueIterator(final URI propertyURI, final Class<T> valueType)
+	{
+		final List<T> propertyValueList=new ArrayList<T>(); //cerate a list in which to store the property values
 		final Iterator<RDFPropertyValuePair> propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
 		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 			{
-				propertyValueList.add(propertyValuePair.getPropertyValue()); //add the value of the property to the value list
+				final RDFObject propertyValue=propertyValuePair.getPropertyValue();	//get the property value
+				if(valueType.isInstance(propertyValue))	//if the property is of the correct type
+				{
+					propertyValueList.add((T)propertyValue); //add the value of the property to the value list
+				}
 			}
 		}
 		return Collections.unmodifiableList(propertyValueList).iterator();  //return an iterator to the list of properties
 	}
-
+	
 	/**Searches and returns an iterator of all property values that appear as
 		RDF statement objects with a predicate of a property URI formed by the
 		given namespace URI and local name. This is a convenience function that
 		creates a property URI automatically for searching.
 	@param namespaceURI The XML namespace URI that represents part of the reference URI.
 	@param localName The XML local name that represents part of the reference URI.
-	@return An iterator to a read-only list of values of properties, each either a
-		<code>RDFResource</code> or a <code>RDFLiteral</code>.
+	@return An iterator to a read-only list of values of properties.
 	*/
 	public Iterator<RDFObject> getPropertyValueIterator(final URI namespaceURI, final String localName)
 	{
-		return getPropertyValueIterator(RDFUtilities.createReferenceURI(namespaceURI, localName)); //look for the property, combining the namespace URI and the local name for the reference URI
+		return getPropertyValueIterator(namespaceURI, localName, RDFObject.class);	//get all properties, whether they are resources or literals		
+	}
+	
+	/**Searches and returns an iterator of all property values of the requested type that appear as
+		RDF statement objects with a predicate of a property URI formed by the
+		given namespace URI and local name. This is a convenience function that
+		creates a property URI automatically for searching.
+	@param namespaceURI The XML namespace URI that represents part of the reference URI.
+	@param localName The XML local name that represents part of the reference URI.
+	@param valueType The type of values to include
+	@return An iterator to a read-only list of values of properties.
+	*/
+	public <T> Iterator<T> getPropertyValueIterator(final URI namespaceURI, final String localName, final Class<T> valueType)
+	{
+		return getPropertyValueIterator(RDFUtilities.createReferenceURI(namespaceURI, localName), valueType); //look for the property, combining the namespace URI and the local name for the reference URI
 	}
 
 	/**Determines if the resource has the given property with the resource
