@@ -17,10 +17,14 @@ import com.garretwilson.util.*;
 @see InputStreamLocator
 @see OEBConstants
 */
-public class OEBPublication extends DefaultRDFResource /*G***del implements InputStreamLocator, OEBConstants*/
+public class OEBPublication extends TypedRDFResource implements OEB2Constants	//TODO eventually get rid of this and use an XEB class
 {
 
-//TODO descend from TypedRDFResource
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+	public URI getDefaultTypeNamespaceURI() {return OEB2_PACKAGE_NAMESPACE_URI;}
+
+	/**@return The local name of the default type of this resource.*/
+	public String getDefaultTypeName() {return PUBLICATION_TYPE_NAME;}
 
 	/**@return The namespace URI of the ontology defining the default type of this resource.*/
 //TODO fix	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
@@ -368,10 +372,8 @@ Debug.trace("Getting manifest item by URL");
 
 	/**Constructs a publication with a reference URI.
 	@param referenceURI The reference URI for the new publication.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/
-	protected OEBPublication(final URI referenceURI) throws IllegalArgumentException
+	protected OEBPublication(final URI referenceURI)
 	{
 		super(referenceURI);  //construct the parent class
 	}
