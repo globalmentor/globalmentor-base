@@ -23,6 +23,8 @@ import com.garretwilson.util.*;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
+import static com.garretwilson.text.CharacterConstants.*;
+
 /**Creates an OEB publication by gathering all source files from a directory.
 	If the tidy option is turned on, each document in the manifest will be loaded,
 	tidied, and saved after the original copy is renamed with a ".backup" extension.
@@ -1538,7 +1540,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 					//see if this is a significant heading
 				final boolean isSignificant=StringUtilities.indexOfIgnoreCase(elementClass, "significant")>=0;  //G***use a constant
 				final String text=XMLUtilities.getText(element, true).trim(); //get the text of the element
-				final boolean hasLetterOrDigit=StringUtilities.hasLetterOrDigit(text);  //see if the text has a letter or digit
+				final boolean hasLetterOrDigit=CharSequenceUtilities.containsLetterOrDigit(text);  //see if the text has a letter or digit
 				final int headingType=getHeadingType(text); //see what type of heading this is
 					//make sure there is a letter or digit in the text
 					//if this heading is marked as significant, or if we know that it's significant based upon its heading level
@@ -1707,8 +1709,8 @@ Debug.trace("looking at text: ", text);  //G***del
 				{
 						//if the text is in uppercase or if it's a title, assume it's the book title if it has at least one letter in it
 	//G***fix				if(StringUtilities.isUpperCase(text) || TextUtilities.getHeadingType(text)!=TextUtilities.NO_HEADING) //G***probably put this routine in some common area
-					if(StringUtilities.hasLetter(text) &&
-							(StringUtilities.isUpperCase(text) || isTitleHeading(text))) //G***probably put this routine in some common area
+					if(CharSequenceUtilities.containsLetter(text) &&
+							(CharSequenceUtilities.isUpperCase(text) || isTitleHeading(text))) //G***probably put this routine in some common area
 					{
 	Debug.trace("This is a title: ", text);  //G***del
 						String title=text;  //G***fix, tidy
@@ -1922,7 +1924,7 @@ Debug.trace("unacceptable because of: ", word); //G***del
 		if(StringUtilities.indexOfIgnoreCase(string, "copyright")>=0) //G***use a constant
 			return false; //this isn't valid
 				//if the string only has punctuation G***should we eventually add dependent punctuation to the general punctuation string?
-		if(!StringUtilities.hasLetterOrDigit(string)) //if there are no letters or digits in the string
+		if(!CharSequenceUtilities.containsLetterOrDigit(string)) //if there are no letters or digits in the string
 			return false; //this isn't valie
 		return true;  //the string passed all our tests
 	}

@@ -83,6 +83,34 @@ public class CharSequenceUtilities
 		return charIndexOf(charSequence, charString)>=0;	//see if any of the given characters are in the character sequence
 	}
 
+	/**Determines if the following character sequence contains a letter.
+	@param charSequence The character sequence to search.
+	@return <code>true</code> if the sequence has at least one letter.
+	*/
+	public static boolean containsLetter(final CharSequence charSequence) //G***maybe change this to indexOfLetterOrDigit
+	{
+		for(int i=charSequence.length()-1; i>=0; --i) //look at each character in the string
+		{
+			if(Character.isLetter(charSequence.charAt(i)))  //if this is a letter
+				return true;  //we found a letter
+		}
+		return false; //we found no letters
+	}
+
+	/**Determines if the following character sequence contains a letter or a digit.
+	@param charSequence The character sequence to search.
+	@return <code>true</code> if the sequence has at least one letter or digit.
+	*/
+	static public boolean containsLetterOrDigit(final CharSequence charSequence) //G***maybe change this to indexOfLetterOrDigit
+	{
+		for(int i=charSequence.length()-1; i>=0; --i) //look at each character in the string
+		{
+			if(Character.isLetterOrDigit(charSequence.charAt(i)))  //if this is a letter or digit
+				return true;  //we found a letter or digit
+		}
+		return false; //we found no letters or digits
+	}
+
 	/**Determines if a character sequence contains whitespace.
 	@param charSequence The character sequence to be searched.
 	@return <code>true</code> if the given character sequence contains whitespace.
@@ -294,6 +322,176 @@ public class CharSequenceUtilities
 				return i;	//return the index we're at
 		}
 		return -1;	//if we make it to here, we didn't find any characters which weren't in our character string
+	}
+
+	/**Determines if the character sequence consists of nothing but the following
+		character.
+	@param charSequence The character sequence to examine.
+	@param c The character that could make up the entire sequence.
+	@param <code>true</code> if there are no other characters but the specified
+	  character, <code>false</code> if there are other characters or if the string
+		is the empty string.
+	*/
+	public final static boolean isAll(final CharSequence charSequence, final char c)
+	{
+		if(charSequence.length()==0) //if this is an empty string
+			return false; //there are no characters to check
+		for(int i=charSequence.length()-1; i>=0; --i)  //look at each character in the string
+		{
+			if(charSequence.charAt(i)!=c) //if this isn't the specified character
+				return false; //show that the string contains other characters besides the one specified
+		}
+		return true;  //if we make it to here, there weren't any characters other than the one specified
+	}
+
+	/**Determines if the character sequence consists of nothing but characters in
+		the given string.
+	@param charSequence The character sequence to examine.
+	@param characters The characters that could make up the entire string, in any
+		order.
+	@param <code>true</code> if there are no other characters but the specified
+	  characters, <code>false</code> if there are other characters or if the
+		character sequence is empty.
+	*/
+	public final static boolean isAllChars(final CharSequence charSequence, final String characters)
+	{
+		if(charSequence.length()==0) //if this is an empty string
+			return false; //there are no characters to check
+		for(int i=charSequence.length()-1; i>=0; --i)  //look at each character in the string
+		{
+			if(characters.indexOf(charSequence.charAt(i))<0) //if this character isn't in the string
+				return false; //show that the string contains other characters besides the ones specified
+		}
+		return true;  //if we make it to here, there weren't any characters other than the ones specified
+	}
+
+	/**Determines whether a character sequence is capitalized.
+		A character sequence is capitalized if it contains any characters and the
+		first character is uppercase.
+	@param charSequence The character sequence to examine.
+	@return <code>true</code> if the character sequence is capitalized.
+	*/
+	public final static boolean isCapitalized(final CharSequence charSequence)
+	{
+		return charSequence.length()>0 && Character.isUpperCase(charSequence.charAt(0)); //determine if the first character is capitalized
+	}
+
+	/**Determines whether a character sequence contains only Unicode digits.
+	@param charSequence The character sequence to examine.
+	@return <code>true</code> if all the characters in the sequence are digits.
+	*/
+	public final static boolean isDigits(final CharSequence charSequence)
+	{
+		if(charSequence.length()==0) //if this is an empty string
+			return false; //there are no characters to check
+		for(int i=charSequence.length()-1; i>=0; --i)  //look at each letter in the string
+		{
+			if(!Character.isDigit(charSequence.charAt(i))) //if this isn't a digit
+				return false; //show that the string doesn't contain only digits
+		}
+		return true;  //if we make it to here, there weren't any non-digits in the string
+	}
+
+	/**Determines whether a character sequence contains only the digits '0'-'9'.
+	@param charSequence The character sequence to examine.
+	@return <code>true</code> if all the characters in the sequence are ISO_LATIN_1 digits.
+	*/
+	public final static boolean isLatinDigits(final CharSequence charSequence)
+	{
+		if(charSequence.length()==0) //if this is an empty string
+			return false; //there are no characters to check
+		for(int i=charSequence.length()-1; i>=0; --i)  //look at each letter in the string
+		{
+			if(!isLatinDigit(charSequence.charAt(i))) //if this isn't a Latin digit
+				return false; //show that the string doesn't contain only latin digits
+		}
+		return true;  //if we make it to here, there weren't any non-latin-digits in the string
+	}
+
+	/**Determines whether a character sequence contains only Unicode letters.
+	@param charSequence The character sequence to examine.
+	@return <code>true</code> if all the characters in the sequence are letters.
+	*/
+	public final static boolean isLetters(final CharSequence charSequence)
+	{
+		if(charSequence.length()==0) //if this is an empty string
+			return false; //there are no characters to check
+		for(int i=charSequence.length()-1; i>=0; --i)  //look at each letter in the string
+		{
+			if(!Character.isLetter(charSequence.charAt(i))) //if this isn't a letter
+				return false; //show that the string doesn't contain only letters
+		}
+		return true;  //if we make it to here, there weren't any non-letters in the string
+	}
+
+	/**Determines whether a character sequence contains only Unicode letters
+		and digits.
+	@param charSequence The character sequence to examine.
+	@return <code>true</code> if all the characters in the sequence are letters
+		and digits.
+	*/
+	public final static boolean isLettersDigits(final CharSequence charSequence)
+	{
+		if(charSequence.length()==0) //if this is an empty string
+			return false; //there are no characters to check
+		for(int i=charSequence.length()-1; i>=0; --i)  //look at each letter in the string
+		{
+			final char character=charSequence.charAt(i);  //get this character
+			if(!Character.isLetter(character) && !Character.isDigit(character))  //if this is not a letter or a digit
+				return false; //show that the string contains non-letter or non-digit characters
+		}
+		return true;  //if we make it to here, there weren't any non-letters or non-digits in the string
+	}
+
+	/**Determines whether a character sequence contains only numbers and decimals
+		or commas.
+	@param charSequence The character sequence to examine.
+	@return <code>true</code> if all the characters represent a number.
+	*/
+	public final static boolean isNumber(final CharSequence charSequence) //G***use a regex, and verify format
+	{
+		if(charSequence.length()==0) //if this is an empty string
+			return false; //there are no characters to check
+		for(int i=charSequence.length()-1; i>=0; --i)  //look at each letter in the string
+		{
+			final char c=charSequence.charAt(i);  //get this character
+			if(!Character.isDigit(c) && c!='.' && c!=',') //if this isn't a digit, a decimal, or a comma
+				return false; //show that the string doesn't contain a number
+		}
+		return true;  //if we make it to here, this is a number
+	}
+
+	/**Determines whether a character sequeence contains only Roman numerals.
+	@param charSequence The character sequence to examine.
+	@return <code>true</code> if all the characters in the sequence are roman numerals.
+	*/
+	public final static boolean isRomanNumerals(final CharSequence charSequence)
+	{
+		if(charSequence.length()==0) //if this is an empty string
+			return false; //there are no characters to check
+		for(int i=charSequence.length()-1; i>=0; --i)  //look at each character in the string
+		{
+			if(!isRomanNumeral(charSequence.charAt(i))) //if this isn't a roman numberal
+				return false; //show that the string doesn't contain only roman numberals
+		}
+		return true;  //if we make it to here, there weren't any characters in the string that were not roman numerals
+	}
+
+	/**Determines whether all the letters in a character sequence are capital letters.
+	@param charSequence The character sequence to examine.
+	@return <code>true</code> if all the letters in the sequence are capitalized.
+	*/
+	public final static boolean isUpperCase(final CharSequence charSequence)
+	{
+		if(charSequence.length()==0) //if this is an empty string
+			return false; //there are no characters to check
+		for(int i=charSequence.length()-1; i>=0; --i)  //look at each letter in the string
+		{
+			final char character=charSequence.charAt(i);  //get this character
+			if(Character.isLetter(character) && !Character.isUpperCase(character))  //if this is a letter that is not uppercase
+				return false; //show that the string contains non-uppercase characters
+		}
+		return true;  //if we make it to here, there weren't any non-uppercase characters in the string
 	}
 
 	/**Trims the right side of the string beginning at the first occurrence of the

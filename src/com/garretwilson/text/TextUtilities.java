@@ -9,11 +9,14 @@ import com.garretwilson.lang.*;
 import com.garretwilson.text.*;
 import com.garretwilson.util.*;
 
+import static com.garretwilson.lang.CharSequenceUtilities.*;
+import static com.garretwilson.text.CharacterConstants.*;
+
 /**Utilities for working with the semantics of text, as opposed to the syntax
 	of strings.
 @author Garret Wilson
 */
-public class TextUtilities implements CharacterConstants
+public class TextUtilities
 {
 /*G***add these values from OEBPS 1.x, which are from the 13th Edition of _The Chicago Manual of Style_
 cover the book cover(s), jacket information, etc.
@@ -261,7 +264,7 @@ preface
 //G***del Debug.trace("is just * and -: "+StringUtilities.isAllChars(text, "*-"));  //G***del
 //G***del Debug.trace("stripped of punctuation and whitespace: ", StringUtilities.trim(text, PUNCTUATION_CHARS+WHITESPACE_CHARS));  //G***del
 		  //if the string is only made up of asterisks and hyphens
-		if(text.length()>2 && StringUtilities.isAllChars(text, "*-_"+EM_DASH_CHAR+EN_DASH_CHAR))  //G***use constants
+		if(text.length()>2 && isAllChars(text, "*-_"+EM_DASH_CHAR+EN_DASH_CHAR))  //G***use constants
 			return true;  //this is a page break heading
 				//if this line contains "page" surrounded by only punctuation
 		else if("page".equalsIgnoreCase(StringUtilities.trim(text, PUNCTUATION_CHARS+WHITESPACE_CHARS)))
@@ -295,11 +298,11 @@ preface
 				++pageCount;  //show we found another page indicator
 			}
 				//if this is a number
-			else if(StringUtilities.isDigits(token) || StringUtilities.isRomanNumerals(token))
+			else if(isDigits(token) || isRomanNumerals(token))
 			{
 			  ++numberCount;  //show that we found another number
 			}
-			else if(StringUtilities.isLetters(token)) //if this token is letters (but not the special "page" sequence, for which we already checked)
+			else if(isLetters(token)) //if this token is letters (but not the special "page" sequence, for which we already checked)
 			{
 				return false; //it's probably not page number if other characters are present---at least we can't take that chance
 			}
@@ -320,7 +323,7 @@ preface
 		if(text.length()>0 && !isQuoted(text)) //if there is text and it's not quoted
 		{
 				//if the text is in uppercase, and there is text G***a hasLetters() would be equivalent and more efficient
-			if(StringUtilities.hasLetter(text) && StringUtilities.isUpperCase(text) /*G***del && !StringUtilities.isDigits(text)*/)
+			if(containsLetter(text) && isUpperCase(text) /*G***del && !StringUtilities.isDigits(text)*/)
 			{
 				return true;  //the text has pased our tests
 			}
@@ -339,7 +342,7 @@ preface
 	*/
 	public static boolean isTitleHeading(final String text)
 	{
-		if(isQuoted(text) || !StringUtilities.hasLetterOrDigit(text))  //if this text is quoted or has no letters or digits
+		if(isQuoted(text) || !containsLetterOrDigit(text))  //if this text is quoted or has no letters or digits
 		  return false; //quoted strings are not headings
 /*G***do we really need this? check
 		if(StringUtilities.charIndexOf(text, EOL_CHARS)>0)  //if the text is not on a single line
@@ -520,12 +523,12 @@ preface
 				if(tokenizer.hasMoreTokens()) //if there is another token
 				{
 					final String numberString=tokenizer.nextToken();  //get the next token
-					if(StringUtilities.isDigits(numberString))  //if the section label is followed by a number
+					if(isDigits(numberString))  //if the section label is followed by a number
 					{
 //G***del		Debug.trace("parsing number: ", numberString);  //G***del
 						return Integer.parseInt(numberString);  //return the value of the number
 					}
-					else if(StringUtilities.isRomanNumerals(numberString))  //if the section label is followed by a Roman numeral
+					else if(isRomanNumerals(numberString))  //if the section label is followed by a Roman numeral
 					{
 						return RomanNumeralUtilities.parseRomanNumerals(numberString);  //return the value of the Roman numerals G***maybe modularize the Roman numeral routines better at some point
 					}

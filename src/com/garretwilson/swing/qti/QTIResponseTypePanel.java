@@ -3,6 +3,7 @@ package com.garretwilson.swing.qti;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import com.garretwilson.lang.CharSequenceUtilities;
 import com.garretwilson.lang.StringUtilities;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.assess.qti.*;
@@ -352,7 +353,7 @@ public class QTIResponseTypePanel extends JPanel implements Verifiable
 				if(MC_TEMPLATE_RESPONSE_TYPE.equals(responseType))  //if multiple choice was selected
 				{
 							//make sure a valid number of choices is listed
-					if(numChoicesTextField.getText().length()==0 || !StringUtilities.isLatinDigits(numChoicesTextField.getText()))
+					if(numChoicesTextField.getText().length()==0 || !CharSequenceUtilities.isLatinDigits(numChoicesTextField.getText()))
 					{
 		  			JOptionPane.showMessageDialog(this, "A valid number of choices must be specified.", "Invalid number of choices", JOptionPane.ERROR_MESSAGE);	//G***i18n
 						numChoicesTextField.requestFocus(); //focus on the number of choices text field
