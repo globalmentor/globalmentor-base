@@ -10,8 +10,41 @@ import com.garretwilson.lang.*;
 public class Address
 {
 	
-//TODO create INTL_ADDRESS_TYPE, WORK_ADDRESS_TYPE, etc.
-	
+	/**Indicates no address type is specified.*/
+	public final static int NO_ADDRESS_TYPE=0;
+	/**A domestic delivery address.*/
+	public final static int DOMESTIC_ADDRESS_TYPE=1;
+	/**An international delivery address.*/
+	public final static int INTERNATIONAL_ADDRESS_TYPE=2;
+	/**A postal delivery address.*/
+	public final static int POSTAL_ADDRESS_TYPE=4;
+	/**A parcel delivery address.*/
+	public final static int PARCEL_ADDRESS_TYPE=8;
+	/**A delivery address for a residence.*/
+	public final static int HOME_ADDRESS_TYPE=16;
+	/**A delivery address for a place of work.*/
+	public final static int WORK_ADDRESS_TYPE=32;
+	/**The preferred delivery address.*/
+	public final static int PREFERRED_ADDRESS_TYPE=64;
+
+	/**The default delivery address type.*/
+	public final static int DEFAULT_ADDRESS_TYPE=INTERNATIONAL_ADDRESS_TYPE|POSTAL_ADDRESS_TYPE|PARCEL_ADDRESS_TYPE|WORK_ADDRESS_TYPE;
+
+	/**The delivery address type.*/
+	private int addressType;
+
+		/**@return The delivery address type; defaults to
+			<code>INTERNATIONTAL_ADDRESS_TYPE</code> | </code>POSTAL_ADDRESS_TYPE</code>
+			| <code>PARCEL_ADDRESS_TYPE</code> | <code>WORK_ADDRESS_TYPE</code>.
+		*/
+		public int getAddressType() {return addressType;}
+
+		/**Sets the delivery address type.
+		@param addressType The new delivery address type, one of the
+			<code>XXX_ADDRESS_TYPE</code> constants.
+		*/
+		public void setAddressType(final int addressType) {this.addressType=addressType;}
+   	
 	/**The post office box.*/
 	private String postOfficeBox;
 
@@ -105,7 +138,15 @@ public class Address
 		*/
 		public void setCountryName(final String countryName) {this.countryName=countryName;}
 
-	/**Full constructor.
+	/**Default constructor.*/
+	public Address()
+	{
+		this((String)null, (String)null, (String)null, (String)null, (String)null, (String)null, (String)null);	//construct a default address with no information
+	}
+
+	/**Constructor with default address type of
+		<code>INTERNATIONTAL_ADDRESS_TYPE</code> | </code>POSTAL_ADDRESS_TYPE</code>
+		| <code>PARCEL_ADDRESS_TYPE</code> | <code>WORK_ADDRESS_TYPE</code>.
 	@param postOfficeBox The post office box, or <code>null</code> for no post office box.
 	@param extendedAddresses The extended addresses.
 	@param streetAddresses The street addresses.
@@ -116,6 +157,22 @@ public class Address
 	*/
 	public Address(final String postOfficeBox, final String[] extendedAddresses, final String[] streetAddresses, final String locality, final String region, final String postalCode, final String countryName)
 	{
+		this(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, DEFAULT_ADDRESS_TYPE);	//construct an address with the default address type
+	}
+
+	/**Full constructor.
+	@param postOfficeBox The post office box, or <code>null</code> for no post office box.
+	@param extendedAddresses The extended addresses.
+	@param streetAddresses The street addresses.
+	@param locality The locality (e.g. city), or <code>null</code> for no locality.
+	@param region The region (e.g. state or province), or <code>null</code> for no region.
+	@param postalCode The postal code, or <code>null</code> for no postal code.
+	@param countryName The country name, or <code>null</code> for no country name.
+	@param addressType The new delivery address type, one of the
+		<code>XXX_ADDRESS_TYPE</code> constants.
+	*/
+	public Address(final String postOfficeBox, final String[] extendedAddresses, final String[] streetAddresses, final String locality, final String region, final String postalCode, final String countryName, final int addressType)
+	{
 		setPostOfficeBox(postOfficeBox);
 		setExtendedAddresses(extendedAddresses);
 		setStreetAddresses(streetAddresses);
@@ -123,9 +180,12 @@ public class Address
 		setRegion(region);
 		setPostalCode(postalCode);
 		setCountryName(countryName);
+		setAddressType(addressType);
 	}
 
-	/**Full single constructor.
+	/**Single constructor with default address type of
+		<code>INTERNATIONTAL_ADDRESS_TYPE</code> | </code>POSTAL_ADDRESS_TYPE</code>
+		| <code>PARCEL_ADDRESS_TYPE</code> | <code>WORK_ADDRESS_TYPE</code>.
 	@param postOfficeBox The post office box, or <code>null</code> for no post office box.
 	@param extendedAddress The extended address, or <code>null</code> for no extended address.
 	@param streetAddress The street address, or <code>null</code> for no street address.
@@ -136,6 +196,20 @@ public class Address
 	*/
 	public Address(final String postOfficeBox, final String extendedAddress, final String streetAddress, final String locality, final String region, final String postalCode, final String countryName)
 	{
+		this(postOfficeBox, extendedAddress, streetAddress, locality, region, postalCode, countryName, DEFAULT_ADDRESS_TYPE);	//construct the address with the default address type
+	} 
+	
+	/**Full single constructor.
+	@param postOfficeBox The post office box, or <code>null</code> for no post office box.
+	@param extendedAddress The extended address, or <code>null</code> for no extended address.
+	@param streetAddress The street address, or <code>null</code> for no street address.
+	@param locality The locality (e.g. city), or <code>null</code> for no locality.
+	@param region The region (e.g. state or province), or <code>null</code> for no region.
+	@param postalCode The postal code, or <code>null</code> for no postal code.
+	@param countryName The country name, or <code>null</code> for no country name.
+	*/
+	public Address(final String postOfficeBox, final String extendedAddress, final String streetAddress, final String locality, final String region, final String postalCode, final String countryName, final int addressType)
+	{
 		setPostOfficeBox(postOfficeBox);
 		setExtendedAddress(extendedAddress);
 		setStreetAddress(streetAddress);
@@ -143,6 +217,7 @@ public class Address
 		setRegion(region);
 		setPostalCode(postalCode);
 		setCountryName(countryName);
+		setAddressType(addressType);
 	}
 
 	/**@return A string representation of the address.*/

@@ -9,10 +9,6 @@ import com.garretwilson.lang.BooleanUtilities;
 	<dt><code>Modifiable.MODIFIED_PROPERTY_NAME</code> (<code>Boolean</code>)</dt>
 	<dd>Indicates a the boolean modified property has been changed.</dd>
 </dl>
-
-<ul>
-	<li><code>Modifiable.MODIFIED_PROPERTY_NAME</code> (<code>Boolean</code>)</li>
-</ul>
 @author Garret Wilson
 @see Modifiable#MODIFIED_PROPERTY_NAME
 */

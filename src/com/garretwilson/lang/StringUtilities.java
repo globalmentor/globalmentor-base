@@ -167,8 +167,8 @@ public class StringUtilities extends CharacterUtilities
 	public static String concat(final Object[] objects, final String separator)
 	{
 		return StringBufferUtilities.append(new StringBuffer(), objects, separator).toString();	//append the objects to a string buffer and return the string
-	}	
-
+	}
+	
 	/**Searches a string and returns the first index of any character <em>not</em>
 		in the specified string, starting from the beginning.
 	@param inString The string to be searched.
@@ -325,6 +325,16 @@ public class StringUtilities extends CharacterUtilities
 	public static InputStream getInputStream(final String string, final String encoding) throws UnsupportedEncodingException
 	{
 		return new ByteArrayInputStream(string.getBytes(encoding)); //return an input stream to the bytes of the string, encoded using the given encoding
+	}
+
+	/**Returns the string or <code>null</code> if the string is the empty string ("").
+	@param string The string to examine.
+	@return <code>string</code> if the length of the string is greater than zero,
+		otherwise <code>null</code>.
+	*/
+	public static String getNonEmptyString(final String string)
+	{
+		return string.length()>0 ? string : null;	//return the string if it has a positive length
 	}
 
 	/**Determines if the following string contains a letter.
