@@ -321,8 +321,8 @@ Debug.trace("looking at non-type property value: ", propertyValue);
 				//if this property is not a type property we already used for creating the element name
 		  if(!(propertyResource.equals(TYPE_PROPERTY) && propertyValue.equals(resourceType)))
 			{
-Debug.trace("looking at non-type property: ", propertyResource);
-Debug.trace("looking at non-type property value: ", propertyValue);
+//G***del Debug.trace("looking at non-type property: ", propertyResource);
+//G***del Debug.trace("looking at non-type property value: ", propertyValue);
 				final URI propertyNamespaceURI=propertyResource.getNamespaceURI(); //get the namespace URI of the property
 				boolean serializeLiteralAttribute=false; //start out by assuming we won't serialize as an attribute
 				  //if the property value is a literal

@@ -2,10 +2,10 @@ package com.garretwilson.rdf;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
 import com.garretwilson.net.*;
 import com.garretwilson.text.xml.XMLBase;
 import com.garretwilson.text.xml.XMLUtilities;
+import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.util.Debug;
 import com.garretwilson.util.NameValuePair;
 import org.w3c.dom.*;
@@ -100,7 +100,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 			for(int i=0; i<childNodeList.getLength(); ++i)  //look at each child node
 			{
 				final Node childNode=childNodeList.item(i); //get a reference to this child node
-				if(childNode.getNodeType()==childNode.ELEMENT_NODE) //if this is an element
+				if(childNode.getNodeType()==Node.ELEMENT_NODE) //if this is an element
 				{
 					processRDF((Element)childNode);  //parse the contents of the RDF container element
 				}
@@ -112,7 +112,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 			for(int i=0; i<childNodeList.getLength(); ++i)  //look at each child node
 			{
 				final Node childNode=childNodeList.item(i); //get a reference to this child node
-				if(childNode.getNodeType()==childNode.ELEMENT_NODE) //if this is an element
+				if(childNode.getNodeType()==Node.ELEMENT_NODE) //if this is an element
 				{
 					process((Element)childNode);  //parse the contents of the element, not knowing if this is an RDF element or not
 				}
@@ -139,7 +139,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	*/
 	protected RDFResource processResource(final Element element) throws URISyntaxException
 	{
-		final URI elementNamespaceURI=new URI(element.getNamespaceURI()); //get the element's namespace
+		final URI elementNamespaceURI=element.getNamespaceURI()!=null ? new URI(element.getNamespaceURI()) : null; //get the element's namespace, or null if the element has no namespace
 		final String elementLocalName=element.getLocalName(); //get the element's local name
 //G***del Debug.trace("processing resource with XML element namespace: ", elementNamespaceURI); //G***del
 //G***del Debug.trace("processing resource with XML local name: ", elementLocalName); //G***del
@@ -260,12 +260,13 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	*/
 	protected void processAttributeProperties(final RDFResource resource, final Element element, final int context) throws URISyntaxException
 	{
-		final URI elementNamespaceURI=new URI(element.getNamespaceURI()); //get the element's namespace
+		final URI elementNamespaceURI=element.getNamespaceURI()!=null ? new URI(element.getNamespaceURI()) : null; //get the element's namespace, or null if there is no namespace URI
 		final NamedNodeMap attributeNodeMap=element.getAttributes();  //get a map of the attributes
 		for(int i=attributeNodeMap.getLength()-1; i>=0; --i)  //look at each of the attributes
 		{
 			final Attr attribute=(Attr)attributeNodeMap.item(i);  //get a reference to this attribute
-		  final URI attributeNamespaceURI=new URI(attribute.getNamespaceURI()); //get the attribute's namespace URI
+		  final URI attributeNamespaceURI=attribute.getNamespaceURI()!=null ? new URI(attribute.getNamespaceURI()) : null; //get the attribute's namespace URI, or null if it has no namespace URI
+			final String attributePrefix=attribute.getPrefix(); //get the attribute's prefix
 		  final String attributeLocalName=attribute.getLocalName(); //get the attribute's local name
 		  final String attributeValue=attribute.getValue(); //get the attribute's value
 /*G***del
@@ -273,6 +274,17 @@ Debug.trace("processing attribute from namespace: ", attributeNamespaceURI);
 Debug.trace("processing attribute from local name: ", attributeLocalName);
 Debug.trace("processing attribute from value: ", attributeValue);
 */
+				//ignore attributes with the "xmlns" prefix or in the xmlns namespace
+			if(XMLConstants.XMLNS_NAMESPACE_PREFIX.equals(attributePrefix) || XMLConstants.XMLNS_NAMESPACE_URI.equals(attributeNamespaceURI))
+			{
+				continue;
+			}
+				//process attributes with the "xml" prefix (or in the xml namespace) specially
+			if(XMLConstants.XML_NAMESPACE_PREFIX.equals(attributePrefix) || XMLConstants.XML_NAMESPACE_URI.equals(attributeNamespaceURI))
+			{
+					//TODO add support for xml:lang
+				continue;
+			}
 			  //ignore the rdf:about attribute in descriptions, disallow it in references
 			if(ATTRIBUTE_ABOUT.equals(attributeLocalName))
 			{
@@ -320,7 +332,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 	*/
 	protected NameValuePair processProperty(final Element element) throws URISyntaxException
 	{
-		final URI elementNamespaceURI=new URI(element.getNamespaceURI()); //get the element's namespace
+		final URI elementNamespaceURI=element.getNamespaceURI()!=null ? new URI(element.getNamespaceURI()) : null; //get the element's namespace, or null if there is no namespace URI
 		final String elementLocalName=element.getLocalName(); //get the element's local name
 //G***del Debug.trace("processing property with XML element namespace: ", elementNamespaceURI); //G***del
 //G***del Debug.trace("processing property with XML local name: ", elementLocalName); //G***del
