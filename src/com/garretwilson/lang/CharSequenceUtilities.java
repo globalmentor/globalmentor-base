@@ -1,5 +1,8 @@
 package com.garretwilson.lang;
 
+import static com.garretwilson.lang.CharacterUtilities.*;
+import static com.garretwilson.text.CharacterConstants.*;
+
 /**Various text manipulating functions. These methods work on
 	objects that implement the <code>CharacterSequence</code> interface.
 	To avoid creation of new strings, some of these methods should
@@ -8,7 +11,7 @@ package com.garretwilson.lang;
 @see StringBufferUtilities
 @author Garret Wilson
 */
-public class CharSequenceUtilities extends CharacterUtilities
+public class CharSequenceUtilities
 {
 
 	/**Searches a character sequence and returns the first index of any character
@@ -59,7 +62,7 @@ public class CharSequenceUtilities extends CharacterUtilities
 	@return The index of the last occurrence of one of the supplied characters, or
 		-1 if none were found.
 	*/
-	static public int charLastIndexOf(final CharSequence charSequence, final String charString, final int fromIndex)
+	public static int charLastIndexOf(final CharSequence charSequence, final String charString, final int fromIndex)
 	{
 		for(int i=fromIndex; i>=0; --i)	//look at each character in the sequence , starting at the end
 		{
@@ -67,6 +70,27 @@ public class CharSequenceUtilities extends CharacterUtilities
 				return i;	//return the index we're at
 		}
 		return -1;	//if we make it to here, we didn't find any of the characters
+	}
+
+	/**Determines if a character sequence contains any of the given characters.
+	@param charSequence The character sequence to be searched.
+	@param charString The string of characters to check.
+	@return <code>true</code> if the given character sequence contains one of the
+		given characters.
+	*/
+	public static boolean containsChar(final CharSequence charSequence, final String charString)
+	{
+		return charIndexOf(charSequence, charString)>=0;	//see if any of the given characters are in the character sequence
+	}
+
+	/**Determines if a character sequence contains whitespace.
+	@param charSequence The character sequence to be searched.
+	@return <code>true</code> if the given character sequence contains whitespace.
+	@see CharacterConstants#WHITESPACE_CHARS
+	*/
+	public static boolean containsWhitespace(final CharSequence charSequence)
+	{
+		return containsChar(charSequence, WHITESPACE_CHARS);	//see if the character sequence contains whitespace
 	}
 
 	/**Determines if the character sequence ends with the given character.

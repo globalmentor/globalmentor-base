@@ -6,6 +6,8 @@ import com.garretwilson.lang.CharacterUtilities;
 import com.garretwilson.text.*;
 import com.garretwilson.util.Debug;
 
+import static com.garretwilson.text.CharacterConstants.*;
+
 /**Various text manipulating functions. These methods work on
 	<code>String</code> objects, which are immutable heavyweight objects that must
 	be recreated with every modification. Many of these methods should therefore

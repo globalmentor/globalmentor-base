@@ -1,8 +1,9 @@
 package com.garretwilson.csv;
 
 import java.io.*;
-import com.garretwilson.lang.CharacterUtilities;
 import com.garretwilson.lang.StringBufferUtilities;
+
+import static com.garretwilson.text.CharacterConstants.*;
 
 /**Serializes Comma Separated Value (CSV) information
 @author Garret Wilson
@@ -74,9 +75,9 @@ public class CSVSerializer implements CSVConstants
 	public static String encodeField(final String string)
 	{
 		final StringBuffer stringBuffer=new StringBuffer(string);	//create a new string buffer to process the string 
-		StringBufferUtilities.replace(stringBuffer, CharacterUtilities.QUOTATION_MARK_CHAR, ESCAPED_QUOTATION_MARK_STRING);	//replace all quotes with doubled quotes
-		stringBuffer.insert(0, CharacterUtilities.QUOTATION_MARK_CHAR);	//prepend a quotation mark
-		stringBuffer.append(CharacterUtilities.QUOTATION_MARK_CHAR);	//append a quotation mark
+		StringBufferUtilities.replace(stringBuffer, QUOTATION_MARK_CHAR, ESCAPED_QUOTATION_MARK_STRING);	//replace all quotes with doubled quotes
+		stringBuffer.insert(0, QUOTATION_MARK_CHAR);	//prepend a quotation mark
+		stringBuffer.append(QUOTATION_MARK_CHAR);	//append a quotation mark
 		return stringBuffer.toString();	//return the string we created
 	}
 }
