@@ -551,11 +551,12 @@ Debug.trace("OEBPublicationCreator zip option: ", new Boolean(isZip())); //G***d
 	@param outputDir The output directory to use for writing files, or
 		<code>null</code> if the default should be used.
 	@return A new publication constructed from the text document.
+	@exception URISyntaxException Thrown if an invalid reference was discovered.
 	@exception MalformedURLException Thrown if there is an error creating a URL
 		from the directory. G***fix comment
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	*/
-	public OEBPublication createPublicationFromText(final URL textURL, URI referenceURI, final String encoding, final File outputDir) throws MalformedURLException, IOException
+	public OEBPublication createPublicationFromText(final URL textURL, URI referenceURI, final String encoding, final File outputDir) throws URISyntaxException, MalformedURLException, IOException
 	{
 Debug.trace("creating publication from text file: ", textURL);  //G***del
 		if(outputDir!=null) //if an output directory is specified
@@ -1017,10 +1018,11 @@ Debug.trace("New image dimensions, width: "+element.getAttributeNS(null, ELEMENT
 		appeared in the manifext, or <code>null</code> if the item was not added and
 		did not already appear in the manifest.
 G***fix outputDir
+	@exception URISyntaxException Thrown if an invalid reference was discovered.
 	@exception MalformedURLException Thrown if a an invalid reference is discovered.
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	*/
-	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href) throws MalformedURLException, IOException
+	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href) throws URISyntaxException, MalformedURLException, IOException
 	{
 		return gatherReference(publication, contextURL, href, null); //gather the reference without specifying a media type
 	}
@@ -1037,10 +1039,11 @@ G***fix outputDir
 	@return The item created to represent the reference or the item that already
 		appeared in the manifext, or <code>null</code> if the item was not added and
 		did not already appear in the manifest.
+	@exception URISyntaxException Thrown if an invalid reference was discovered.
 	@exception MalformedURLException Thrown if a an invalid reference is discovered.
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	*/
-	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, MediaType mediaType) throws MalformedURLException, IOException
+	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, MediaType mediaType) throws URISyntaxException, MalformedURLException, IOException
 	{
 			//gather the reference, specifying that the reference should be added to the spine as well
 		return gatherReference(publication, contextURL, href, mediaType, true);
@@ -1058,10 +1061,11 @@ G***fix outputDir
 		appeared in the manifext, or <code>null</code> if the item was not added and
 		did not already appear in the manifest.
 G***fix outputDir
+	@exception URISyntaxException Thrown if an invalid reference was discovered.
 	@exception MalformedURLException Thrown if a an invalid reference is discovered.
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	*/
-	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, final boolean shouldAddToSpine) throws MalformedURLException, IOException
+	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, final boolean shouldAddToSpine) throws URISyntaxException, MalformedURLException, IOException
 	{
 		return gatherReference(publication, contextURL, href, null, shouldAddToSpine); //gather the reference without specifying a media type
 	}
@@ -1080,10 +1084,11 @@ G***fix outputDir
 	@return The item created to represent the reference or the item that already
 		appeared in the manifext, or <code>null</code> if the item was not added and
 		did not already appear in the manifest.
+	@exception URISyntaxException Thrown if an invalid reference was discovered.
 	@exception MalformedURLException Thrown if a an invalid reference is discovered.
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	*/
-	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, MediaType mediaType, final boolean shouldAddToSpine) throws MalformedURLException, IOException
+	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, MediaType mediaType, final boolean shouldAddToSpine) throws URISyntaxException, MalformedURLException, IOException
 	{
 Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 		RDFResource oebItem=null; //we'll try to gather a reference, and if we do we'll store the corresponding OEB item here
@@ -1095,7 +1100,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 //G***make sure this works; see why we originally had to re-relativize this to the publication URL
 //G***del	Debug.trace("publicationHRef: ", publicationHRef);  //G***del
 				//get the path of the file relative to the publication
-		  oebItem=XPackageUtilities.getManifestItemByLocationHRef(publication, URI.create(contextURL.toString()), href);
+		  oebItem=XPackageUtilities.getManifestItemByLocationHRef(publication, URIUtilities.createURI(contextURL), href);
 //G***del			oebItem=publication.getManifestItemByHRef(publicationHRef); //see if this item is already in the manifest
 			if(oebItem==null) //if this item is not already in the manifest
 			{

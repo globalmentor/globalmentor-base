@@ -2,7 +2,6 @@ package com.garretwilson.net;
 
 import java.io.*;
 import java.net.*;
-import java.net.URI;	//G**del when old URI is gone
 import com.garretwilson.io.*;
 
 /**Various URL manipulating functions.
@@ -157,6 +156,7 @@ public class URLUtilities implements URLConstants	//G***del, InputStreamLocator
 
 	/**Returns an input stream from given URL by establishing a connection to
 		the requested URL.
+	<p>This method knows how to follow HTTP redirects.</p>
 	<p>This method fulfills the requirements of <code>InputStreamLocator</code>.</p>
 	@param url A complete URL to a file.
 	@return An input stream to the contents of the file represented by the given URL.
@@ -166,11 +166,11 @@ public class URLUtilities implements URLConstants	//G***del, InputStreamLocator
 	public static InputStream getInputStream(final URL url) throws IOException
 	{
 		return url.openConnection().getInputStream();	//open a connection to the URL and return an input stream to that connection
-/*G***fix redirects, update with new JDK1.4.2 code from JEditorPane.java
-	
-	URLConnection conn = page.openConnection();
-	if (conn instanceof HttpURLConnection) {
-	    HttpURLConnection hconn = (HttpURLConnection) conn;
+/*TODO fix; but this doesn't report back the new URL
+		final URLConnection urlConnection=page.openConnection();	//open a connection to the URL
+		if(urlConnection instanceof HttpURLConnection)	//if this is an HTTP URL connection
+		{
+			HttpURLConnection hconn = (HttpURLConnection) conn;
 	    hconn.setInstanceFollowRedirects(false);
 	    int response = hconn.getResponseCode();
 	    boolean redirect = (response >= 300 && response <= 399);
@@ -351,6 +351,7 @@ Debug.trace("file: ", new File(contextURL.getFile()).getName());  //G***del
 	(This should seldom if ever happen as every URL should be a valid URI.)
 	@param string The string from which to construct a URI.
 	*/
+/*G***del; moved to URIUtiliites.createURI()
 	public static URI toURI(final URL url)
 	{
 		try
@@ -362,7 +363,7 @@ Debug.trace("file: ", new File(contextURL.getFile()).getName());  //G***del
 			throw new RuntimeException(e);	//throw a runtime exception
 		}	
 	}
-	
+*/
 
 	/**Stores the contents of a URL in an output stream.
 	@param url The URL to copy.

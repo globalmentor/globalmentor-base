@@ -5,6 +5,7 @@ import java.net.*;
 import com.garretwilson.io.*;
 import com.garretwilson.lang.CharSequenceUtilities;
 import com.garretwilson.lang.IntegerUtilities;
+import com.garretwilson.util.Debug;
 
 /**Various URI manipulating functions for working with URIs as defined in
 	in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
@@ -51,7 +52,7 @@ public class URIUtilities implements URIConstants, URIInputStreamable
 	}
 
 	/**Retrieves the file name of the URI.
-	@param url The URI for which to return a file name.
+	@param uri The URI for which to return a file name.
 	@return The name of the file in the URI.
 	@see #getFile
 	*/
@@ -63,12 +64,26 @@ public class URIUtilities implements URIConstants, URIInputStreamable
 	/**Returns the media type for the specified URI based on its file extension.
 	@param uri The URI for which to return a media type.
 	@return The default media type for the URI's file extension, or <code>null</code>
-		if no known media type is associated with this URL's extension.
+		if no known media type is associated with this URI's extension.
 	@see MediaType#getMediaType
 	*/
 	public static MediaType getMediaType(final URI uri)
 	{
 		return MediaType.getMediaType(FileUtilities.getExtension(getFile(uri))); //return the media type based on the extension of the URI filename
+	}
+
+	/**Creates a URI from a URL.
+	@param url The URL to convert to a URI. The URL should already be properly
+		encoded.
+	@return The URI form of the URL.
+	@exception URISyntaxException Thrown if the URL could not be converted to a URI.
+	*/ 
+	public static URI createURI(final URL url) throws URISyntaxException
+	{
+		return new URI(url.toString());	//assuming the URL is already escaped, create a new URI from the string representation of the URL
+		/*The following does not work, because it will escape whatever information it gets, doubly-escaping an escaped URL. 
+		 *	return new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef()); 
+		 */
 	}
 
 	/**Creates a URI from the given URI string relative to the given context object.
@@ -88,6 +103,8 @@ public class URIUtilities implements URIConstants, URIInputStreamable
 		{
 			try
 			{
+//TODO if the string contains illegal URI characters, such as spaces, this won't work
+//TODO also check to see if the string is null.
 				return ((URI)contextObject).resolve(string);	//convert the URL to a URI and use it as a context
 			}
 			catch(IllegalArgumentException illegalArgumentException)	//if the given string isn't syntactically correct
@@ -98,7 +115,7 @@ public class URIUtilities implements URIConstants, URIInputStreamable
 		}
 		else if(contextObject instanceof URL)	//if the context is a URL
 		{
-			return createURI(new URI(((URL)contextObject).toString()), string);	//convert the URL to a URI and use it as a context
+			return createURI(createURI((URL)contextObject), string);	//convert the URL to a URI and use it as a context
 		}
 		else if(contextObject instanceof File)	//if the context object is a file
 		{
@@ -107,6 +124,41 @@ public class URIUtilities implements URIConstants, URIInputStreamable
 		else	//if we don't recognize the context object
 		{
 			return new URI(string);	//create a new URI from the string, ignoring the context object
+		}
+	}
+
+	/**Creates an absolute URI from the given string, guessing what the string represents.
+	<p>If the string is not a valid URL (e.g. it contains a space), this method
+		assumes that a file was intended and a file URI is constructed.</p>
+	<p>This method is convenient for creating URIs based upon user input.</p>
+	@param string The string to convert to a URI. 
+	@return A URI representing the contents of the string, interpreted in a
+		lenient fashion.
+	*/
+	public static URI guessAbsoluteURI(final String string)
+	{
+Debug.trace("guessing URI: ", string);
+		try
+		{
+			final URI uri=new URI(string);	//see if the string is already a valid URI
+			if(uri.isAbsolute())	//if the URI is absolute
+			{
+				return uri;	//return the URI
+			}
+			else	//if the URI is not absolute
+			{
+				return new File(string).toURI();	//a local file must have been requested				
+			}
+		}
+/*G***del if not needed
+		catch(IllegalArgumentException illegalArgumentException)	//if the string is not an absolute URI
+		{
+			return new File(string).toURI();	//construct a file object and convert that to a URI
+		}
+*/
+		catch(URISyntaxException uriSyntaxException)	//if the string is not a valid URI
+		{
+			return new File(string).toURI();	//construct a file object and convert that to an absolute URI
 		}
 	}
 
@@ -132,6 +184,7 @@ public class URIUtilities implements URIConstants, URIInputStreamable
 	*/
 	public InputStream getInputStream(final URI uri) throws IOException
 	{
+Debug.trace("getting input stream from URI: ", uri);
 		return URLUtilities.getInputStream(uri.toURL());	//open a connection to the URI (converted to a URL) and return an input stream to that connection
 	}
 
@@ -331,10 +384,12 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	@see URIConstants#ESCAPE_CHARACTER
 	@see URIConstants#RESERVED_CHARACTERS
 	*/
+/*G***del if not needed
 	public static String encode(final String uri)
 	{
 		return CharSequenceUtilities.escapeHex(uri, RESERVED_CHARACTERS, ESCAPE_CHARACTER, 2);	//escape according to URI encoding rules
 	}
+*/
 
 	/**Decodes the escaped ('%') characters in the character iterator
 		according to the URI encoding rules in
@@ -344,9 +399,10 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	@return A string containing the unescaped data.
 	@see URIConstants#ESCAPE_CHARACTER
 	*/
+/*G***del if not needed
 	public static String decode(final String uri)
 	{
 		return CharSequenceUtilities.unescapeHex(uri, ESCAPE_CHARACTER, 2);	//unescape according to URI encoding rules
 	}
-
+*/
 }

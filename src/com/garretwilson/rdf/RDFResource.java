@@ -85,29 +85,28 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***del
 	*/
 	public Iterator getPropertyValueIterator(final URI namespaceURI, final String localName);
 
-	/**Determines if the resource has the given property with the given value.
-		Each matching property is compared to the property value using the
-		property's <code>equal()</code> method.
+	/**Determines if the resource has the given property with the resource
+		identified by the given URI.
 	@param propertyURI The reference URI of the property resource.
-	@param propertyValue The object to which the property should be compared,
-		such a resource reference URI, a resource, or a literal.
+	@param propertyValueURI The URI of the resource to which the property should
+		be compared.
 	@return <code>true</code> if the specified property is set to the specified
 		value.
 	*/
-	public boolean hasPropertyValue(final URI propertyURI, final Object propertyValue);
+	public boolean hasPropertyResourceValue(final URI propertyURI, final URI propertyValueURI);
 
-	/**Determines if the resource has the given property with the given value.
-		Each matching property is compared to the property value using the
-		property's <code>equal()</code> method. This is a convenience function that
-		creates a property URI from an XML qualified name automatically for searching.
+	/**Determines if the resource has the given property with the resource
+		identified by the given URI.
+	This is a convenience function that creates a property URI from an XML
+		qualified name automatically for searching.
 	@param namespaceURI The XML namespace URI that represents part of the reference URI.
 	@param localName The XML local name that represents part of the reference URI.
-	@param propertyValue The object to which the property should be compared,
-		such a resource reference URI, a resource, or a literal.
+	@param propertyValueURI The URI of the resource to which the property should
+		be compared.
 	@return <code>true</code> if the specified property is set to the specified
 		value.
 	*/
-	public boolean hasPropertyValue(final URI namespaceURI, final String localName, final Object propertyValue);
+	public boolean hasPropertyResourceValue(final URI namespaceURI, final String localName, final URI propertyValueURI);
 
 	/**Adds a property by creating a <code>NameValuePair</code> from the given
 		property and value. For each property, this resource serves as the subject

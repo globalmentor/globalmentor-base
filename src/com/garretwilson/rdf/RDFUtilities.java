@@ -266,7 +266,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static boolean isType(final RDFResource resource, final URI typeURI)
 	{
-		return resource.hasPropertyValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME, typeURI); //determine if the resource has a type property of the given URI
+		return resource.hasPropertyResourceValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME, typeURI); //determine if the resource has a type property of the given URI
 	}
 
 	/**Determines whether a given resource is of a particular type.
@@ -278,7 +278,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static boolean isType(final RDFResource resource, final URI typeNamespaceURI, final String typeLocalName)
 	{
-		return resource.hasPropertyValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME, RDFUtilities.createReferenceURI(typeNamespaceURI, typeLocalName)); //determine if the resource has a type property of the URI from the given namespace and local name
+		return resource.hasPropertyResourceValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME, RDFUtilities.createReferenceURI(typeNamespaceURI, typeLocalName)); //determine if the resource has a type property of the URI from the given namespace and local name
 	}
 
 	/**Retreives a nil list resource from the data model, or creates one and

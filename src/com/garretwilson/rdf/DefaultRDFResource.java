@@ -132,16 +132,15 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		return getPropertyValueIterator(RDFUtilities.createReferenceURI(namespaceURI, localName)); //look for the property, combining the namespace URI and the local name for the reference URI
 	}
 
-	/**Determines if the resource has the given property with the given value.
-		Each matching property is compared to the property value using the
-		property's <code>equal()</code> method.
+	/**Determines if the resource has the given property with the resource
+		identified by the given URI.
 	@param propertyURI The reference URI of the property resource.
-	@param propertyValue The object to which the property should be compared,
-		such a resource reference URI, a resource, or a literal.
+	@param propertyValueURI The URI of the resource to which the property should
+		be compared.
 	@return <code>true</code> if the specified property is set to the specified
 		value.
 	*/
-	public boolean hasPropertyValue(final URI propertyURI, final Object propertyValue)
+	public boolean hasPropertyResourceValue(final URI propertyURI, final URI propertyValueURI)
 	{
 //G***del Debug.trace("looking for property value for property: ", propertyURI);  //G***del
 //G***del Debug.trace("looking for property value: ", propertyValue);  //G***del
@@ -154,27 +153,31 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 //G***del Debug.trace("looking at value: ", nameValuePair.getValue());  //G***del
 		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 			{
-				if(propertyValue.equals(propertyValuePair.getPropertyValue()))  //if the value compares equally with the given value
-					return true;
+				if(propertyValuePair.getPropertyValue() instanceof RDFResource)	//if the value is a resource
+				{
+					//if the resource value has the correct reference URI
+					if(propertyValueURI.equals(((RDFResource)propertyValuePair.getPropertyValue()).getReferenceURI())) 
+						return true;
+				}
 			}
 		}
 		return false; //show that there was no matching property
 	}
 
-	/**Determines if the resource has the given property with the given value.
-		Each matching property is compared to the property value using the
-		property's <code>equal()</code> method. This is a convenience function that
-		creates a property URI from an XML qualified name automatically for searching.
+	/**Determines if the resource has the given property with the resource
+		identified by the given URI.
+	This is a convenience function that creates a property URI from an XML
+		qualified name automatically for searching.
 	@param namespaceURI The XML namespace URI that represents part of the reference URI.
 	@param localName The XML local name that represents part of the reference URI.
-	@param propertyValue The object to which the property should be compared,
-		such a resource reference URI, a resource, or a literal.
+	@param propertyValueURI The URI of the resource to which the property should
+		be compared.
 	@return <code>true</code> if the specified property is set to the specified
 		value.
 	*/
-	public boolean hasPropertyValue(final URI namespaceURI, final String localName, final Object propertyValue)
+	public boolean hasPropertyResourceValue(final URI namespaceURI, final String localName, final URI propertyValueURI)
 	{
-		return hasPropertyValue(RDFUtilities.createReferenceURI(namespaceURI, localName), propertyValue); //check the property, combining the namespace URI and the local name for the reference URI
+		return hasPropertyResourceValue(RDFUtilities.createReferenceURI(namespaceURI, localName), propertyValueURI); //check the property, combining the namespace URI and the local name for the reference URI
 	}
 	
 	/**Adds a property by creating a <code>RDFPropertyValuePair</code> from the given
