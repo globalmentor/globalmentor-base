@@ -4,30 +4,28 @@ import java.net.URI;
 
 /**Represents the default implementation of a resource.
 	This class provides compare functionality that sorts according to the reference
-	URI.
+	URI, if available.
 @author Garret Wilson
 */
 public class DefaultResource implements Resource
 {
 
-	/**The resource identifier URI.*/
+	/**The resource identifier URI, or <code>null</code> if the identifier is not known.*/
 	private URI referenceURI;
 
-		/**@return The resource identifier URI.*/
+		/**@return The resource identifier URI, or <code>null</code> if the identifier is not known.*/
 		public URI getReferenceURI() {return referenceURI;}
 
 		/**Sets the reference URI of the resource.
-		@param uri The new reference URI.
+		@param uri The new reference URI, or <code>null</code> if the identifier is not known.
 		*/
-		protected void setReferenceURI(final URI uri) {referenceURI=uri;}
+		public void setReferenceURI(final URI uri) {referenceURI=uri;}
 
-	/**Default constructor that allows a derived class to set the reference URI
-		later during construction. Derived classes should <em>always</em> update
-		the referenc URI before construction is finished.
-	*/
+	/**Default constructor that allows the reference URI to be set later.*/
 	protected DefaultResource()
 	{
-		referenceURI=null; //set the reference URI to null for now
+		this(null);	//construct the class without a reference URI
+//G***del		referenceURI=null; //set the reference URI to null for now
 	}
 
 	/**Constructs a resource with a reference URI.
@@ -39,22 +37,27 @@ public class DefaultResource implements Resource
 	}
 
 	/**If <code>object</code> is another <code>Resource</code>, compares the
-		resource reference URIs. If <code>object</code> is a <code>URI</code>, or a
-		<code>String</code>, compares the string with this object's resource URI.
+		resource reference URIs.
 		Otherwise, compares the objects using the superclass functionality.
 	@param object The object with which to compare this RDF resource; should be
-		another resource or a Java string.
+		another resource.
 	@return <code>true<code> if this resource equals that specified in
 		<code>object</code>.
 	@see #getReferenceURI
 	*/
 	public boolean equals(final Object object)	//G***do we really want to compare with a non-URI?
 	{
+Debug.assert(!(object instanceof URI), "DefaultResource no longer allows equals(URI)");	//G***del when not needed
+Debug.assert(!(object instanceof String), "DefaultResource no longer allows equals(String)");	//G***del when not needed
+
 		if(getReferenceURI()!=null)	//if we have a reference URI
 		{
 			if(object instanceof Resource)	//if we're being compared with another resource
 			{
-				return getReferenceURI().equals(((Resource)object).getReferenceURI());  //compare the reference URIs
+				final URI otherReferenceURI=((Resource)object).getReferenceURI();	//get the other reference URI
+				if(otherReferenceURI!=null)	//if we can compare URIs
+					return getReferenceURI().equals(otherReferenceURI);	//see if the URIs match
+//G***del when works				return getReferenceURI().equals(((Resource)object).getReferenceURI());  //compare the reference URIs
 //G***fix, as null reference URIs are allowed here
 	/*G***del when works; we no longer allow null reference URIs
 			  if(getReferenceURI()!=null && ((Resource)object).getReferenceURI()!=null) //if neither reference URI is null
@@ -68,6 +71,7 @@ public class DefaultResource implements Resource
 				}
 	*/
 			}
+/*G***del when not needed
 			else if(object instanceof URI)	//if we're being compared with a URI
 			{
 				return getReferenceURI()!=null ? getReferenceURI().equals((URI)object) : false; //compare our reference URI with the URI
@@ -76,6 +80,7 @@ public class DefaultResource implements Resource
 			{
 				return getReferenceURI()!=null ? getReferenceURI().toString().equals((String)object) : false; //compare our reference URI with the string
 			}
+*/
 		}
 		return super.equals(object);	//if we're being compared with anything else or have a null reference URI, use the default compare
 	}
@@ -99,11 +104,15 @@ public class DefaultResource implements Resource
 		a <code>Resource</code>.
 	@see #getReferenceURI
 	*/
+/*G***del if not needed
 	public int compareTo(Object object) throws ClassCastException
 	{
+//G***fix		final Resource otherResource=(Resource)object;	//cast the object to a resource
+		
 		//G***check about comparing null reference URIs
 		return getReferenceURI().compareTo(((Resource)object).getReferenceURI()); //compare reference URIs
 	}
+*/
 
 	/**@return A string representation of the resource.
 	*/

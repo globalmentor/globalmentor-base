@@ -9,7 +9,7 @@ import com.garretwilson.util.*;
 	URI.
 @author Garret Wilson
 */
-public class DefaultRDFResource extends DefaultResource implements RDFResource
+public class DefaultRDFResource extends DefaultResource implements RDFResource, Comparable
 {
 
 	/**The XML namespace URI.*/
@@ -57,8 +57,8 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
-		  if(propertyValuePair.getName().equals(propertyResource))  //if this resource is the same as the one requested
-				return (RDFObject)propertyValuePair.getValue(); //return the value of the property as an RDF object
+		  if(propertyValuePair.getProperty().equals(propertyResource))  //if this resource is the same as the one requested
+				return propertyValuePair.getPropertyValue(); //return the value of the property as an RDF object
 		}
 		return null;  //show that we couldn't find such a property
 	}
@@ -76,8 +76,8 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
-		  if(propertyValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
-				return (RDFObject)propertyValuePair.getValue(); //return the value of the property as an RDF object
+		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
+				return propertyValuePair.getPropertyValue(); //return the value of the property as an RDF object
 		}
 		return null;  //show that we couldn't find such a property
 	}
@@ -110,9 +110,9 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
-		  if(propertyValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
+		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 			{
-				propertyValueList.add(propertyValuePair.getValue()); //add the value of the property to the value list
+				propertyValueList.add(propertyValuePair.getPropertyValue()); //add the value of the property to the value list
 			}
 		}
 		return Collections.unmodifiableList(propertyValueList).iterator();  //return an iterator to the list of properties
@@ -152,9 +152,9 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 //G***del Debug.trace("looking at name/value pair: ", nameValuePair);  //G***del
 //G***del Debug.trace("looking at name: ", nameValuePair.getName());  //G***del
 //G***del Debug.trace("looking at value: ", nameValuePair.getValue());  //G***del
-		  if(propertyValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
+		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 			{
-				if(propertyValuePair.getValue().equals(propertyValue))  //if the value compares equally with the given value
+				if(propertyValue.equals(propertyValuePair.getPropertyValue()))  //if the value compares equally with the given value
 					return true;
 			}
 		}
@@ -234,7 +234,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
-			if(propertyValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
+			if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 			{
 				propertyIterator.remove();	//remove this property
 				++propertiesRemovedCount;	//show that we removed another property
@@ -268,23 +268,21 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 //G***del when works		propertyList.addAll(resource.propertyList); //add all the property values from the resource being copied
 	}
 
-	/**Constructs a resource with a reference URI.
-	@param referenceURI The reference URI for the new resource.
-//G***del when works	@exception IllegalArgumentException Thrown if the provided reference URI is
-//G***del when works		<code>null</code>.
+	/**Default constructor that creates a resource without a reference URI.
 	@see RDF#createResource
 	*/
-	protected DefaultRDFResource(final URI referenceURI) //G***del when works throws IllegalArgumentException
+	protected DefaultRDFResource()
+	{
+		this((URI)null);	//create a resource without a reference URI
+	}
+
+	/**Constructs a resource with a reference URI.
+	@param referenceURI The reference URI for the new resource.
+	@see RDF#createResource
+	*/
+	protected DefaultRDFResource(final URI referenceURI)
 	{
 		super(referenceURI);  //construct the parent class with the reference URI
-/*G***del when works
-		if(newReferenceURI==null) //if a null reference URI was provided
-		{
-			final IllegalArgumentException illegalArgumentException=new IllegalArgumentException("Resource reference URI is null.");
-			Debug.error(illegalArgumentException);
-			throw illegalArgumentException;
-		}
-*/
 		namespaceURI=null;  //show that there is no namespace URI
 		localName=null; //show that there is no local name
 	}
@@ -299,11 +297,13 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 //G***del when works		<code>null</code>.
 	@see RDF#createResource
 	*/
+/*G***del when not needed
 	public DefaultRDFResource(final RDFResource rdfResource, final URI newReferenceURI) //G***del when works throws IllegalArgumentException
 	{
 		this(newReferenceURI);  //create a new resource with the given URI
 		CollectionUtilities.addAll(propertyList, rdfResource.getPropertyIterator()); //add all the property values from the resource being copied
 	}
+*/
 
 	/**Constructs a resource from a reference URI.
 	@param newReferenceURI The reference URI for the new resource.
@@ -323,8 +323,29 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 	*/
 	protected DefaultRDFResource(final URI newNamespaceURI, final String newLocalName)
 	{
-		this(RDFUtilities.createReferenceURI(newNamespaceURI, newLocalName)/*G***del, newAnchorID*/);  //do the default construction, combining the namespace URI and the local name for the reference URI
+		this(RDFUtilities.createReferenceURI(newNamespaceURI, newLocalName));  //do the default construction, combining the namespace URI and the local name for the reference URI
 		namespaceURI=newNamespaceURI; //store the namespace URI
 		localName=newLocalName; //store the local name
 	}
+
+	/**Compares this object to another object.
+		This method determines order based upon the reference URI of the resource.
+	@param object The object with which to compare the component. This must be
+		another <code>Resource</code> object.
+	@return A negative integer, zero, or a positive integer as this resource
+		reference URI is less than, equal to, or greater than the reference URI of
+		the specified resource, respectively.
+	@exception ClassCastException Thrown if the specified object's type is not
+		a <code>Resource</code>.
+	@see #getReferenceURI
+	*/
+	public int compareTo(Object object) throws ClassCastException	//TODO fix, and maybe transfer back up to DefaultResource
+	{
+//G***fix		final Resource otherResource=(Resource)object;	//cast the object to a resource
+		if(getReferenceURI()!=null && ((Resource)object).getReferenceURI()!=null)	//if both resources have reference URIs				
+			return getReferenceURI().compareTo(((Resource)object).getReferenceURI()); //compare reference URIs
+		else	//if one of the two resources doesn't have a reference URI
+			return hashCode()-object.hashCode();	//make an arbitrary comparison G***fix
+	}
+
 }

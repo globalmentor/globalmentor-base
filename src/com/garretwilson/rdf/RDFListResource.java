@@ -168,7 +168,7 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	*/
 	public static void setFirst(final RDF rdf, final RDFResource resource, final RDFResource value)
 	{
-		RDFUtilities.setProperty(rdf, resource, RDF_NAMESPACE_URI, REST_PROPERTY_NAME, value); //set the first value
+		RDFUtilities.setProperty(rdf, resource, RDF_NAMESPACE_URI, FIRST_PROPERTY_NAME, value); //set the first value
 	}
 
 	/**Replaces all <code>rdf:rest</code> properties of the resource with a new

@@ -45,7 +45,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 		}
 
 	/**A general <code>rdf:type</code> property to use in comparisons.*/
-	protected final static URI TYPE_PROPERTY;	//initialized below
+	protected final static URI TYPE_PROPERTY_REFERENCE_URI;	//initialized below
 
 	/**Indicates literals should be serialized as attributes by default.*/
 //G***del	public final static boolean LITERAL_ATTRIBUTE_SERIALIZATION=1;
@@ -318,11 +318,11 @@ Debug.trace("looking at non-type property value: ", propertyValue);
 		final Iterator propertyIterator=resource.getPropertyIterator(); //get an iterator to all the element properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final NameValuePair propertyNameValuePair=(NameValuePair)propertyIterator.next(); //get the next property name/value pair
-		  final RDFResource propertyResource=(RDFResource)propertyNameValuePair.getName();  //get the property predicate
-			final RDFObject propertyValue=(RDFObject)propertyNameValuePair.getValue();  //get the property value
+			final RDFPropertyValuePair rdfPropertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next property name/value pair
+		  final RDFResource propertyResource=rdfPropertyValuePair.getProperty();  //get the property predicate
+			final RDFObject propertyValue=rdfPropertyValuePair.getPropertyValue();  //get the property value
 				//if this property is not a type property we already used for creating the element name
-		  if(!(propertyResource.equals(TYPE_PROPERTY) && propertyValue.equals(resourceType)))
+		  if(!(TYPE_PROPERTY_REFERENCE_URI.equals(propertyResource.getReferenceURI()) && propertyValue.equals(resourceType)))
 			{
 //G***del Debug.trace("looking at non-type property: ", propertyResource);
 //G***del Debug.trace("looking at non-type property value: ", propertyValue);
@@ -400,9 +400,9 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 				final Iterator propertyIterator=valueResource.getPropertyIterator(); //get an iterator to all the element properties
 				while(propertyIterator.hasNext()) //while there are more properties
 				{
-					final NameValuePair subPropertyNameValuePair=(NameValuePair)propertyIterator.next(); //get the next property name/value pair
-					final RDFResource subPropertyResource=(RDFResource)subPropertyNameValuePair.getName();  //get the property resource
-					final RDFObject subPropertyValue=(RDFObject)subPropertyNameValuePair.getValue();  //get the property value
+					final RDFPropertyValuePair subPropertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next property name/value pair
+					final RDFResource subPropertyResource=subPropertyValuePair.getProperty();  //get the property resource
+					final RDFObject subPropertyValue=subPropertyValuePair.getPropertyValue();  //get the property value
 				  final URI subPropertyNamespaceURI=getNamespaceURI(subPropertyResource); //get the namespace URI of the property
 					if(!(subPropertyValue instanceof Literal)) //if this value is not a literal
 					{
@@ -476,6 +476,8 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 	public String getLabel(final RDFResource resource)
 	{
 		URI namespaceURI=getNamespaceURI(resource); //get the resource namespace URI, if it has one
+		
+//TODO once we make the transition to not storing namespaces, see if the above method returns null and if so, use a label of the entire reference URI
 		String localName=getLocalName(resource); //get the resource's local name
 		  //if there is no namespace URI known, see if a namespace URI is registered that matches the beginning of this reference URI
 		if(namespaceURI==null || localName==null)  //if there is no namespace URI or local name
@@ -537,7 +539,8 @@ Debug.trace("prefix: ", prefix); //G***del
 		serialization.
 	For most resources, this is the URI formed by all the the reference URI
 		characters up to and including the last character that is not a valid
-		XML name character.
+		XML name character. If all characters are valid XML name characters,
+		the last non-alphanumeric character is used as a delimiter.
 	@param resource The resource for which a namespace URI should be determined.
 	@return The namespace URI of the resource reference URI.
 	 */
@@ -557,6 +560,18 @@ Debug.trace("prefix: ", prefix); //G***del
 					break;	//stop looking for a non-XML name character
 				}
 			}
+			if(namespaceURI==null)	//if we still don't know the namespace URI, look for the last non-alphanumeric character
+			{
+				for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
+				{
+					if(!Character.isLetter(referenceURIString.charAt(i)) && !Character.isDigit(referenceURIString.charAt(i)))	//if this is not a letter or a number
+					{
+							//TODO correctly check for a URI syntax error here
+						namespaceURI=URI.create(referenceURIString.substring(0, i+1));	//create a URI using everything up to and including the last non-XML name character
+						break;	//stop looking for a non-XML name character
+					}
+				}
+			}
 		}
 		Debug.assert(namespaceURI!=null, "Could not determine namespace URI for "+resource.getReferenceURI());	//TODO fix
 		return namespaceURI;	//return the namespace URI we found
@@ -566,7 +581,8 @@ Debug.trace("prefix: ", prefix); //G***del
 		serialization.
 	For most resources, this is the name formed by all the the reference URI
 		characters after but not including the last character that is not a valid
-		XML name character.
+		XML name character. If all characters are valid XML name characters,
+		the last non-alphanumeric character is used as a delimiter.
 	@param resource The resource for which a local name should be determined.
 	@return The local name of the resource reference URI.
 	 */
@@ -585,6 +601,17 @@ Debug.trace("prefix: ", prefix); //G***del
 					break;	//stop looking for a non-XML name character
 				}
 			}
+			if(localName==null)	//if we still don't know the local name, look for the last non-alphanumeric character
+			{
+				for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
+				{
+					if(!Character.isLetter(referenceURIString.charAt(i)) && !Character.isDigit(referenceURIString.charAt(i)))	//if this is not a letter or a number
+					{
+						localName=referenceURIString.substring(i+1);	//create a local name using everything after the last non-XML name character
+						break;	//stop looking for a non-XML name character
+					}
+				}
+			}
 		}
 		Debug.assert(localName!=null, "Could not determine local name for "+resource.getReferenceURI());	//TODO fix
 		return localName;	//return the local name we found
@@ -592,6 +619,6 @@ Debug.trace("prefix: ", prefix); //G***del
 	
 	static
 	{
-		TYPE_PROPERTY=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME);	//initialize the RDF type property URI
+		TYPE_PROPERTY_REFERENCE_URI=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME);	//initialize the RDF type property URI
 	}
 }

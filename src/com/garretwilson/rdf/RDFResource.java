@@ -8,11 +8,16 @@ import com.garretwilson.util.*;
 @author Garret Wilson
 @see DefaultRDFResource
 */
-public interface RDFResource extends RDFObject, Resource, RDFConstants, Comparable
+public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***del if not needed, Comparable
 {
 
-	/**@return The resource identifier URI.*/
-	public URI getReferenceURI();
+	/**@return The resource identifier URI, or <code>null</code> if the identifier is not known.*/
+//G***del; this is already in Resource	public URI getReferenceURI();
+
+	/**Sets the reference URI of the resource.
+	@param uri The new reference URI, or <code>null</code> if the identifier is not known.
+	*/
+	public void setReferenceURI(final URI uri);
 
 	/**@return The XML namespace URI used in serialization, or <code>null</code>
 		if no namespace URI was used or there was no namespace.*/
