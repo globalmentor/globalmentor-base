@@ -1099,7 +1099,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 //G***make sure this works; see why we originally had to re-relativize this to the publication URL
 //G***del	Debug.trace("publicationHRef: ", publicationHRef);  //G***del
 				//get the path of the file relative to the publication
-		  oebItem=XPackageUtilities.getManifestItemByLocationHRef(publication, URIUtilities.createURI(contextURL), href);
+		  oebItem=XPackageUtilities.getManifestItemByLocationHRef(publication, contextURL.toURI(), href);
 //G***del			oebItem=publication.getManifestItemByHRef(publicationHRef); //see if this item is already in the manifest
 			if(oebItem==null) //if this item is not already in the manifest
 			{

@@ -64,7 +64,20 @@ public class StringBuilderUtilities
 	*/
 	public static int collapse(final StringBuilder stringBuilder, final String collapseChars, final String replaceString)
 	{
-		return collapse(stringBuilder, collapseChars, replaceString, 0, stringBuilder.length());	//collapse the entire string builder
+		return collapse(stringBuilder, collapseChars, replaceString, 0);	//collapse the entire string builder
+	}
+
+	/**Collapses every run of any number of collapseChars to a single replaceString,
+	 	starting with the given offset and collapsing until the end of the string
+	@param stringBuilder The buffer in which the information will be collapsed.
+	@param collapseChars The characters to be removed from the string.
+	@param replaceString The string which will replace the collapseChars.
+	@param offset The offset at which to start collapsing.
+	@return The new length of the run with collapsed characters.
+	*/
+	public static int collapse(final StringBuilder stringBuilder, final String collapseChars, final String replaceString, final int offset)
+	{
+		return collapse(stringBuilder, collapseChars, replaceString, offset, stringBuilder.length());	//collapse the rest of the string builder
 	}
 
 	/**Collapses every run of any number of collapseChars to a single replaceString.
