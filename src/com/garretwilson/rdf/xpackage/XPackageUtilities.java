@@ -1,11 +1,8 @@
 package com.garretwilson.rdf.xpackage;
 
-import java.io.File;
 import java.net.*;
 import java.util.Iterator;
-import com.garretwilson.io.*;
 import com.garretwilson.net.*;
-//G***del import com.garretwilson.rdf.dublincore.DCConstants;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xlink.XLinkConstants;
@@ -18,64 +15,60 @@ import java.net.URI;	//G***del when other URI is removed
 /**Utilities for working woth XPackage RDF.
 @author Garret Wilson
 */
-public class XPackageUtilities implements XPackageConstants
+public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 {
 
 	/**Sets the <code>&lt;xpackage:children&gt;</code> property of the resource.
-	@param rdf The RDF data model to provide to look up property resources.
 	@param resource The resource to which a property should be added.
 	@param childrenList The list of children.
 	@return The added list of children.
 	*/
-	public static RDFListResource setChildren(final RDF rdf, final RDFResource resource, final RDFListResource childrenList)
+	public static RDFListResource setChildren(final RDFResource resource, final RDFListResource childrenList)
 	{
-		RDFUtilities.setProperty(rdf, resource, XPACKAGE_NAMESPACE_URI, CHILDREN_PROPERTY_NAME, childrenList);	//add the children property to the resource
+		setProperty(resource, XPACKAGE_NAMESPACE_URI, CHILDREN_PROPERTY_NAME, childrenList);	//add the children property to the resource
 		return childrenList;  //return the list of children we added
 	}
 
 	/**Adds an <code>&lt;xpackage:location&gt;</code> property to the resource.
-	@param rdf The RDF data model to provide to look up property resources.
 	@param resource The resource to which a property should be added.
 	@param href The location of the resource, to become an <code>xlink:href</code>
 		property of the location property.
 	@return The new location resource.
 	*/
-	public static RDFResource addLocation(final RDF rdf, final RDFResource resource, final String href)
+	public static RDFResource addLocation(final RDFResource resource, final String href)
 	{
-		final RDFResource locationResource=rdf.createResource(); //create an anonymous location resource
-//G***del; the location doesn't have a type		RDFUtilities.addType(rdf, locationResource, XPACKAGE_NAMESPACE_URI, LOCATION);  //set the location type to xpackage:location
+		final RDFResource locationResource=RDFUtilities.locateResource(resource, null); //create an anonymous location resource
+//G***del; the location doesn't have a type		addType(rdf, locationResource, XPACKAGE_NAMESPACE_URI, LOCATION);  //set the location type to xpackage:location
 			//add the XLink:href to the location
-		RDFUtilities.addProperty(rdf, locationResource, XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.HREF, href);
+		addProperty(locationResource, XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.HREF, href);
 			//add the location property to the resource
-		RDFUtilities.addProperty(rdf, resource, XPACKAGE_NAMESPACE_URI, LOCATION_PROPERTY_NAME, locationResource);
+		addProperty(resource, XPACKAGE_NAMESPACE_URI, LOCATION_PROPERTY_NAME, locationResource);
 		return locationResource;  //return the location resource we created
 	}
 
 	/**Adds an <code>&lt;xpackage:manifest&gt;</code> property to the resource.
-	@param rdf The RDF data model to provide to look up property resources.
 	@param resource The resource to which a property should be added.
 	@return The new manifest resource, an <code>&lt;rdf:Bag&gt;</code>.
 	*/
-	public static RDFBagResource addManifest(final RDF rdf, final RDFResource resource)
+	public static RDFBagResource addManifest(final RDFResource resource)
 	{
 		  //create an anonymous manifest resource from the data model
-		final RDFBagResource manifestResource=(RDFBagResource)rdf.createResource(null, RDFConstants.RDF_NAMESPACE_URI, RDFConstants.BAG_TYPE_NAME);	//G***maybe creaate a utility method for this
+		final RDFBagResource manifestResource=(RDFBagResource)locateTypedResource(resource, null, RDF_NAMESPACE_URI, BAG_TYPE_NAME);	//G***maybe creaate a utility method for this
 			//add the manifest property to the resource
-		RDFUtilities.addProperty(rdf, resource, XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME, manifestResource);
+		addProperty(resource, XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME, manifestResource);
 		return manifestResource;  //return the manifest resource we created
 	}
 
 	/**Adds an <code>&lt;xpackage:organization&gt;</code> property to the resource.
-	@param rdf The RDF data model to provide to look up property resources.
 	@param resource The resource to which a property should be added.
 	@return The new manifest resource, an <code>&lt;rdf:Seq&gt;</code>.
 	*/
-	public static RDFSequenceResource addOrganization(final RDF rdf, final RDFResource resource)
+	public static RDFSequenceResource addOrganization(final RDFResource resource)
 	{
 		  //create an anonymous organization resource from the data model
-		final RDFSequenceResource organizationResource=(RDFSequenceResource)rdf.createResource(null, RDFConstants.RDF_NAMESPACE_URI, RDFConstants.SEQ_TYPE_NAME);	//G***maybe create a utility method for this
+		final RDFSequenceResource organizationResource=(RDFSequenceResource)locateTypedResource(resource, null, RDF_NAMESPACE_URI, SEQ_TYPE_NAME);	//G***maybe create a utility method for this
 			//add the organization property to the resource
-		RDFUtilities.addProperty(rdf, resource, XPACKAGE_NAMESPACE_URI, ORGANIZATION_PROPERTY_NAME, organizationResource);
+		addProperty(resource, XPACKAGE_NAMESPACE_URI, ORGANIZATION_PROPERTY_NAME, organizationResource);
 		return organizationResource;  //return the organization resource we created
 	}
 
@@ -94,7 +87,7 @@ public class XPackageUtilities implements XPackageConstants
 		  //get the xpackage:description element
 		final Element descriptionElement=document.getDocumentElement();
 		  //add the RDF namespace declaration prefix, xmlns:rdf
-		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, RDFConstants.RDF_NAMESPACE_PREFIX), RDFConstants.RDF_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, RDF_NAMESPACE_PREFIX), RDF_NAMESPACE_URI.toString());
 		  //add the XPackage namespace declaration prefix, xmlns:xpackage
 		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, XPACKAGE_NAMESPACE_PREFIX), XPACKAGE_NAMESPACE_URI.toString());
 		  //add the XLink namespace declaration prefix, xmlns:xlink
@@ -124,11 +117,13 @@ public class XPackageUtilities implements XPackageConstants
 	@param referenceURI The reference URI to give to the resource.
 	@return A new OEB xpackage:resource object with the given reference URI.
 	*/
+/*G***del if not needed
 	public static RDFResource createXPackageResource(final RDF rdf, final URI referenceURI)
 	{
 		return rdf.createResource(referenceURI);
 //G***del when not needed		return rdf.createResource(referenceURI, XPACKAGE_NAMESPACE_URI, RESOURCE_TYPE_NAME);
 	}
+*/
 
 	/**Returns an item resource in the manifest of the given resource, if present,
 		that has a reference URI.

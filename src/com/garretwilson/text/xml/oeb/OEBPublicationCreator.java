@@ -515,7 +515,7 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 			//create a new OEB publication using the OEB document URL as the publication URL; this will later be changed to the actual name of the OEB publication file
 		final OEBPublication publication=(OEBPublication)OEBUtilities.createOEBPublication(getRDF(), referenceURI); //create a publication
 			//store the publication reference URI as a Dublin Core identifier property
-		DCUtilities.addIdentifier(getRDF(), publication, publication.getReferenceURI().toString());
+		DCUtilities.addIdentifier(publication, publication.getReferenceURI().toString());
 //G***del when works		RDFUtilities.addProperty(getRDF(), publication, DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, publication.getReferenceURI());
 
 
@@ -651,23 +651,23 @@ Debug.trace("using file for document: ", oebDocumentFile);
 			//create a publication from our new OEB document
 		final OEBPublication publication=createPublicationFromOEBDocument(oebDocumentFile.toURL(), referenceURI, getOutputDir());
 		if(getTitle()!=null) //if we have a title
-		  DCUtilities.addTitle(getRDF(), publication, getTitle()); //add the title to the publication
+		  DCUtilities.addTitle(publication, getTitle()); //add the title to the publication
 		if(getAuthor()!=null) //if we have an author
-		  DCUtilities.addCreator(getRDF(), publication, getAuthor()); //add the author to the publication
+		  DCUtilities.addCreator(publication, getAuthor()); //add the author to the publication
 		if(getDescription()!=null) //if we have a description
-		  DCUtilities.addDescription(getRDF(), publication, getDescription()); //add the description to the publication
+		  DCUtilities.addDescription(publication, getDescription()); //add the description to the publication
 		if(languageLocale!=null) //if we have a language
-		  DCUtilities.addLanguage(getRDF(), publication, languageLocale); //add the language to the publication
-		DCUtilities.addDate(getRDF(), publication, new Date());  //add the current date and time
-		DCUtilities.addSource(getRDF(), publication, "file:"+URLUtilities.getFileName(textURL));  //add the text filename as the source G***use a constant
+		  DCUtilities.addLanguage(publication, languageLocale); //add the language to the publication
+		DCUtilities.addDate(publication, new Date());  //add the current date and time
+		DCUtilities.addSource(publication, "file:"+URLUtilities.getFileName(textURL));  //add the text filename as the source G***use a constant
 		if(isProjectGutenbergEText) //if we got this text from Project Gutenberg
 		{
-			DCUtilities.addContributor(getRDF(), publication, "Project Gutenberg");  //add Project Gutenberg as a contributor G***use a constant
+			DCUtilities.addContributor(publication, "Project Gutenberg");  //add Project Gutenberg as a contributor G***use a constant
 		}
 		if(getPublisher()!=null)  //if we have a publisher
-		  DCUtilities.addPublisher(getRDF(), publication, getPublisher()); //add the publisher to the publication
+		  DCUtilities.addPublisher(publication, getPublisher()); //add the publisher to the publication
 		if(getRights()!=null)  //if we have a rights statement
-		  DCUtilities.addRights(getRDF(), publication, getRights()); //add the rights statement to the publication
+		  DCUtilities.addRights(publication, getRights()); //add the rights statement to the publication
 		if(pgHeaderFragment!=null)  //if we have a Project Gutenberg header, write it to its own file
 		{
 			final Document pgHeaderDocument=OEBUtilities.createOEB1Document(pgHeaderFragment);  //create a document from the header fragment
@@ -704,7 +704,7 @@ Debug.trace("using file for document: ", oebDocumentFile);
 				//add the preface to the manifest without adding it to the spine
 		  final RDFResource prefaceResource=gatherReference(publication, prefaceURL, prefaceURL.getFile(), OEB10_DOCUMENT_MEDIA_TYPE, false);
 				//add the preface as the first element in the spine
-		  XPackageUtilities.getOrganization(publication).add(getRDF(), prefaceResource, 1);
+		  XPackageUtilities.getOrganization(publication).add(prefaceResource, 1);
 		}
 			//add a title page if needed
 		final String titlePageLocation=getTitlePageLocation();  //see if we were given a title page to add
@@ -715,7 +715,7 @@ Debug.trace("using file for document: ", oebDocumentFile);
 				//add the title page to the manifest without adding it to the spine
 		  final RDFResource titlePageResource=gatherReference(publication, titlePageURL, titlePageURL.getFile(), OEB10_DOCUMENT_MEDIA_TYPE, false);
 				//add the title page  as the first element in the spine
-		  XPackageUtilities.getOrganization(publication).add(getRDF(), titlePageResource, 1);
+		  XPackageUtilities.getOrganization(publication).add(titlePageResource, 1);
 		}
 			//add the stylesheets to the publication
 		  //G***fix to gather the stylesheet references into the manifest automatically through gatherReferences()
@@ -1145,14 +1145,14 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 							{
 	Debug.trace("found media type");
 									//create a new OEB item to go in the manifest to represent this object or link targe
-								oebItem=XPackageUtilities.createXPackageResource(getRDF(), itemURI);
+								oebItem=getRDF().locateResource(itemURI);
 //G***del								oebItem=new OEBItem(publication, itemID, hrefRelativePath, mediaType);
-								XPackageUtilities.addLocation(getRDF(), oebItem, hrefRelativePath);  //add the relative href to the item
-								MIMEOntologyUtilities.addContentType(getRDF(), oebItem, mediaType); //add the content type we determined
-								XPackageUtilities.getManifest(publication).add(getRDF(), oebItem); //add the item to the publication's manifest
+								XPackageUtilities.addLocation(oebItem, hrefRelativePath);  //add the relative href to the item
+								MIMEOntologyUtilities.addContentType(oebItem, mediaType); //add the content type we determined
+								XPackageUtilities.getManifest(publication).add(oebItem); //add the item to the publication's manifest
 								  //if this is an OEB document, and we should add it to the spine
 								if(shouldAddToSpine && mediaType.equals(OEB10_DOCUMENT_MEDIA_TYPE))
-								  XPackageUtilities.getOrganization(publication).add(getRDF(), oebItem);  //add the item to the spine as well
+								  XPackageUtilities.getOrganization(publication).add(oebItem);  //add the item to the spine as well
 								if(getOutputDir()!=null)  //if we have an output directory where files should be copied
 								{
 	Debug.trace("output dir: ", getOutputDir());

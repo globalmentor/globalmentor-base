@@ -40,9 +40,8 @@ public class MAQROActivity extends DefaultRDFResource implements Interaction, MA
 		RDFListResource interactionList=getInteractions();	//get the list of interactions
 		if(interactionList==null)	//if we have no list
 		{
-			final RDF rdf=new RDF();	//TODO fix data model
 				//create a new list resource containing the added interaction 
-			RDFUtilities.setProperty(rdf, this, MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME, new RDFListResource(rdf, interaction));
+			RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME, new RDFListResource(getRDF(), interaction));
 		}
 		else	//if we already have a list
 		{

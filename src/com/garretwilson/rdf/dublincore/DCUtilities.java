@@ -9,7 +9,7 @@ import com.garretwilson.util.*;
 /**Utilities for working with Dublin Core stored in RDF.
 @author Garret Wilson
 */
-public class DCUtilities implements DCConstants
+public class DCUtilities extends RDFUtilities implements DCConstants
 {
 
 	/**@return A new date format for formatting W3C-style dates.*/
@@ -21,125 +21,115 @@ public class DCUtilities implements DCConstants
 
 	/**Adds a <code>dc:creator</code> property with the given value to the
 		resource.
-	@param rdf The RDF data model to be used as a property factory.
 	@param resource The resource to which the property should be added.
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static RDFLiteral addCreator(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addCreator(final RDFResource resource, final String value)
 	{
-		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_CREATOR_PROPERTY_NAME, value);
+		return addProperty(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_CREATOR_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:contributor</code> property with the given value to the
 		resource.
-	@param rdf The RDF data model to be used as a property factory.
 	@param resource The resource to which the property should be added.
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static RDFLiteral addContributor(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addContributor(final RDFResource resource, final String value)
 	{
-		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_CONTRIBUTOR_PROPERTY_NAME, value);
+		return addProperty(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_CONTRIBUTOR_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:date</code> property with the given value to the
 		resource.
-	@param rdf The RDF data model to be used as a property factory.
 	@param resource The resource to which the property should be added.
 	@param date The property value to add.
 	@return The added literal property value.
 	*/
-	public static RDFLiteral addDate(final RDF rdf, final RDFResource resource, final Date date)
+	public static RDFLiteral addDate(final RDFResource resource, final Date date)
 	{
 		  //G***fix
 //G***del		final DateFormat dateFormat=DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT); //G***testing
-		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME, createDateFormat().format(date));
+		return addProperty(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME, createDateFormat().format(date));
 	}
 
 	/**Adds a <code>dc:description</code> property with the given value to the
 		resource.
-	@param rdf The RDF data model to be used as a property factory.
 	@param resource The resource to which the property should be added.
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static RDFLiteral addDescription(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addDescription(final RDFResource resource, final String value)
 	{
-		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DESCRIPTION_PROPERTY_NAME, value);
+		return addProperty(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DESCRIPTION_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:identifier</code> property with the given value to the
 		resource.
-	@param rdf The RDF data model to be used as a property factory.
 	@param resource The resource to which the property should be added.
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static RDFLiteral addIdentifier(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addIdentifier(final RDFResource resource, final String value)
 	{
-		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, value);
+		return addProperty(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:language</code> property with the given value to the
 		resource.
-	@param rdf The RDF data model to be used as a property factory.
 	@param resource The resource to which the property should be added.
 	@param locale The property value to add.
 	@return The added literal property value.
 	*/
-	public static RDFLiteral addLanguage(final RDF rdf, final RDFResource resource, final Locale locale)
+	public static RDFLiteral addLanguage(final RDFResource resource, final Locale locale)
 	{
 			//add the literal language tag for this locale
-		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, LocaleUtilities.getLanguageTag(locale));
+		return addProperty(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, LocaleUtilities.getLanguageTag(locale));
 	}
 
 	/**Adds a <code>dc:publisher</code> property with the given value to the
 		resource.
-	@param rdf The RDF data model to be used as a property factory.
 	@param resource The resource to which the property should be added.
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static RDFLiteral addPublisher(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addPublisher(final RDFResource resource, final String value)
 	{
-		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_PUBLISHER_PROPERTY_NAME, value);
+		return addProperty(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_PUBLISHER_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:rights</code> property with the given value to the
 		resource.
-	@param rdf The RDF data model to be used as a property factory.
 	@param resource The resource to which the property should be added.
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static RDFLiteral addRights(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addRights(final RDFResource resource, final String value)
 	{
-		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_RIGHTS_PROPERTY_NAME, value);
+		return addProperty(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_RIGHTS_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:source</code> property with the given value to the
 		resource.
-	@param rdf The RDF data model to be used as a property factory.
 	@param resource The resource to which the property should be added.
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static RDFLiteral addSource(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addSource(final RDFResource resource, final String value)
 	{
-		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_SOURCE_PROPERTY_NAME, value);
+		return addProperty(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_SOURCE_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:title</code> property with the given value to the
 		resource.
-	@param rdf The RDF data model to be used as a property factory.
 	@param resource The resource to which the property should be added.
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static RDFLiteral addTitle(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addTitle(final RDFResource resource, final String value)
 	{
-		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME, value);
+		return addProperty(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME, value);
 	}
 
 	/**Returns the value of the first <code>dc:creator</code> property.
@@ -203,15 +193,14 @@ public class DCUtilities implements DCConstants
 
 	/**Sets the <code>dc:language</code> property with the given value to the
 		resource.
-	@param rdf The RDF data model to be used as a property factory.
 	@param resource The resource to which the property should be set.
 	@param locale The property value to set.
 	@return The added literal property value.
 	*/
-	public static RDFLiteral setLanguage(final RDF rdf, final RDFResource resource, final Locale locale)
+	public static RDFLiteral setLanguage(final RDFResource resource, final Locale locale)
 	{
 			//set the literal language tag for this locale
-		return RDFUtilities.setProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, LocaleUtilities.getLanguageTag(locale));
+		return setProperty(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, LocaleUtilities.getLanguageTag(locale));
 	}
 
 }

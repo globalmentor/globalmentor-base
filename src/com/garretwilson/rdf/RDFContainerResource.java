@@ -29,6 +29,31 @@ public abstract class RDFContainerResource extends DefaultRDFResource
 		super(newNamespaceURI, newLocalName); //construct the parent class
 	}
 
+	/**Reference URI and optional namespace URI and local name constructor.
+	@param newReferenceURI The reference URI for the new resource.
+	@param newNamespaceURI The XML namespace URI used in the serialization, or
+		<code>null</code> if the namespace URI is not known.
+	@param newLocalName The XML local name used in the serialization, or
+		<code>null</code> if the local name is not known.
+	*/
+	RDFContainerResource(final URI newReferenceURI, final URI newNamespaceURI, final String newLocalName)
+	{
+		super(newReferenceURI, newNamespaceURI, newLocalName); //construct the parent class
+	}
+
+	/**Data model, reference URI, and optional namespace URI and local name constructor.
+	@param rdf The data model associated with the container.
+	@param newReferenceURI The reference URI for the new resource.
+	@param newNamespaceURI The XML namespace URI used in the serialization, or
+		<code>null</code> if the namespace URI is not known.
+	@param newLocalName The XML local name used in the serialization, or
+		<code>null</code> if the local name is not known.
+	*/
+	RDFContainerResource(final RDF rdf, final URI newReferenceURI, final URI newNamespaceURI, final String newLocalName)
+	{
+		super(rdf, newReferenceURI, newNamespaceURI, newLocalName); //construct the parent class
+	}
+
 	/**@return A collection of name/value pairs that represent <code>rdf:li_</code>
 		properties and their values, in an undefined order.
 	@see NameValuePair
@@ -139,11 +164,10 @@ Debug.trace("sorted value is: ", nameValuePair.getValue()); //G***del
 	}
 
 	/**Changes all numbers starting with the given number of all members.
-	@param rdf The data model to use as a resource factory. G***should we eventually just allow a ResourceLocator interface parameter, or put this method in RDFUtilities?
 	@param minNumber The number that represents the lowest number to be changed.
 	@param delta The amount each number should be changed by.
 	*/
-	protected void changeNumbers(final RDF rdf, final int minNumber, final int delta)
+	protected void changeNumbers(final int minNumber, final int delta)
 	{
 		  //create the start of a reference URI from the rdf:li element qualified
 			//  name (i.e. "rdfNamespaceURI#li_"), which we'll use to check for items
@@ -163,7 +187,7 @@ Debug.trace("sorted value is: ", nameValuePair.getValue()); //G***del
 					if(number>=minNumber) //if this number is within our range
 					{
 						  //create a new property pair with a new number in the property
-						final NameValuePair newProperty=new NameValuePair(getMemberProperty(rdf, number+delta), nameValuePair.getValue());
+						final NameValuePair newProperty=new NameValuePair(getMemberProperty(number+delta), nameValuePair.getValue());
 						propertyIterator.set(newProperty);  //change this property
 					}
 				}
@@ -174,35 +198,32 @@ Debug.trace("sorted value is: ", nameValuePair.getValue()); //G***del
 
 	/**Adds an item to the container as an <code>&lt;rdf:li</code> property, using
 		the next available item number.
-	@param rdf The data model to use as a resource factory. G***should we eventually just allow a ResourceLocator interface parameter, or put this method in RDFUtilities?
 	@param propertyValue The item to add to the container.
 	*/
-	public void add(final RDF rdf, final RDFObject propertyValue) //G***should we replace all this with "member" instead of "item"?
+	public void add(final RDFObject propertyValue) //G***should we replace all this with "member" instead of "item"?
 	{
-		add(rdf, propertyValue, getNextItemNumber()); //store the item at the next available number
+		add(propertyValue, getNextItemNumber()); //store the item at the next available number
 	}
 
 	/**Adds an item to the container as an <code>&lt;rdf:li</code> property, using
 		the given item number.
-	@param rdf The data model to use as a resource factory. G***should we eventually just allow a ResourceLocator interface parameter, or put this method in RDFUtilities?
 	@param propertyValue The item to add to the container.
 	@param number The number to give to the item.
 	*/
-	public void add(final RDF rdf, final RDFObject propertyValue, final int number) //G***should we replace all this with "member" instead of "item"?
+	public void add(final RDFObject propertyValue, final int number) //G***should we replace all this with "member" instead of "item"?
 	{
-		changeNumbers(rdf, number, 1); //increment by one any members that have this number or higher
-		addProperty(getMemberProperty(rdf, number), propertyValue); //add the property and value to the resource
+		changeNumbers(number, 1); //increment by one any members that have this number or higher
+		addProperty(getMemberProperty(number), propertyValue); //add the property and value to the resource
 	}
 
 	/**Determines the property to use for a member with the given number.
-	@param rdf The data model to use as a resource factory. G***should we eventually just allow a ResourceLocator interface parameter, or put this method in RDFUtilities?
 	@param number The number of a member.
 	@return The URI of the property representing this numbered member.
 	*/
-	protected static RDFResource getMemberProperty(final RDF rdf, final int number)
+	protected RDFResource getMemberProperty(final int number)
 	{
 		final String propertyLocalName=CONTAINER_MEMBER_PREFIX+number;  //create a local name for the number
-		return rdf.locateResource(RDF_NAMESPACE_URI, propertyLocalName); //use the URI containing the number as the property
+		return RDFUtilities.locateResource(this, RDF_NAMESPACE_URI, propertyLocalName); //use the URI containing the number as the property
 	}
 
 }

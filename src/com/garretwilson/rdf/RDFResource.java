@@ -27,6 +27,11 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***fix
 		if no namespace URI and local name was used.*/
 	public String getLocalName();
 
+	/**@return The RDF data model with which this resource is associated, or
+		<code>null</code> if this resource is not associated with a data model.
+	*/
+	public RDF getRDF();
+
 	/**@return The number of properties this resource has.*/
 	public int getPropertyCount();
 

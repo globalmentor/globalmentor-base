@@ -1,12 +1,15 @@
 package com.garretwilson.rdf;
 
+import java.lang.ref.*;
 import java.net.URI;
 import java.util.*;
 import com.garretwilson.util.*;
 
 /**Represents the default implementation of an RDF resource.
-	This class provides compare functionality that sorts according to the reference
-	URI.
+<p>This class provides compare functionality that sorts according to the reference
+	URI.</p>
+<p>This resource keeps a weak reference to the data model that created it, if
+	any.</p> 
 @author Garret Wilson
 */
 public class DefaultRDFResource extends DefaultResource implements RDFResource, Comparable
@@ -25,6 +28,19 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		/**@return The XML local name used in serialization, or <code>null</code>
 		  if no namespace URI and local name was used.*/
 		public String getLocalName() {return localName;}
+
+	/*The data model that created this resource, or <code>null</code> if the
+		resource was created separate from a data model.
+	*/
+	private Reference rdfReference;
+
+		/**@return The RDF data model with which this resource is associated, or
+			<code>null</code> if this resource is not associated with a data model.
+		*/
+		public RDF getRDF()
+		{
+			return rdfReference!=null ? (RDF)rdfReference.get() : null;	//return the RDF, if any, indicated by the reference
+		}
 
 	/**The list of properties, each of which is a <code>RDFPropertyValuePair</code>,
 		with the name being the property predicate and the value being the property
@@ -320,6 +336,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		and identical properties. Properties themselves are not cloned.
 	@param resource The resource to copy.
 	*/
+/*G***del if not needed
 	DefaultRDFResource(final RDFResource resource)	//TODO delete this constructor when we can, now that we can simply change the reference URI at any time
 	{
 		super(resource.getReferenceURI());  //construct the parent class with the reference URI
@@ -328,6 +345,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		CollectionUtilities.addAll(propertyList, resource.getPropertyIterator()); //add all the property values from the resource being copied
 //G***del when works		propertyList.addAll(resource.propertyList); //add all the property values from the resource being copied
 	}
+*/
 
 	/**Default constructor that creates a resource without a reference URI.
 	@see RDF#createResource
@@ -343,9 +361,17 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	*/
 	public DefaultRDFResource(final URI referenceURI)
 	{
-		super(referenceURI);  //construct the parent class with the reference URI
-		namespaceURI=null;  //show that there is no namespace URI
-		localName=null; //show that there is no local name
+		this(null, referenceURI);	//construct the class with no data model
+	}
+
+	/**Constructs a resource with a reference URI from a data model.
+	@param rdf The data model with which this resource should be associated.
+	@param referenceURI The reference URI for the new resource.
+	@see RDF#createResource
+	*/
+	public DefaultRDFResource(final RDF rdf, final URI referenceURI)
+	{
+		this(rdf, referenceURI, null, null);	//construct the class with no namespace URI or local name
 	}
 
 	/**Convenience constructor that constructs a resource using a namespace URI
@@ -356,7 +382,49 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	*/
 	public DefaultRDFResource(final URI newNamespaceURI, final String newLocalName)
 	{
-		this(RDFUtilities.createReferenceURI(newNamespaceURI, newLocalName));  //do the default construction, combining the namespace URI and the local name for the reference URI
+		this((RDF)null, newNamespaceURI, newLocalName);  //do the default construction, combining the namespace URI and the local name for the reference URI
+	}
+
+	/**Convenience constructor that constructs a resource using a namespace URI
+		and local name which will be combined to form the reference URI.
+	@param rdf The data model with which this resource should be associated.
+	@param newNamespaceURI The XML namespace URI used in the serialization.
+	@param newLocalName The XML local name used in the serialization.
+	@see RDF#createResource
+	*/
+	public DefaultRDFResource(final RDF rdf, final URI newNamespaceURI, final String newLocalName)
+	{
+		this(rdf, RDFUtilities.createReferenceURI(newNamespaceURI, newLocalName), newNamespaceURI, newLocalName);  //do the default construction, combining the namespace URI and the local name for the reference URI
+	}
+
+	/**Constructs a resource with a reference URI and separate namespace URI and
+		local name.
+	@param referenceURI The reference URI for the new resource.
+	@param newNamespaceURI The XML namespace URI used in the serialization, or
+		<code>null</code> if the namespace URI is not known.
+	@param newLocalName The XML local name used in the serialization, or
+		<code>null</code> if the local name is not known.
+	@see RDF#createResource
+	*/
+	DefaultRDFResource(final URI referenceURI, final URI newNamespaceURI, final String newLocalName)
+	{
+		this(null, referenceURI, newNamespaceURI, newLocalName);	//construct the resource with no known data model
+	}
+
+	/**Constructs a resource with a reference URI and separate namespace URI and
+		local name from a data model.
+	@param rdf The data model with which this resource should be associated.
+	@param referenceURI The reference URI for the new resource.
+	@param newNamespaceURI The XML namespace URI used in the serialization, or
+		<code>null</code> if the namespace URI is not known.
+	@param newLocalName The XML local name used in the serialization, or
+		<code>null</code> if the local name is not known.
+	@see RDF#createResource
+	*/
+	DefaultRDFResource(final RDF rdf, final URI referenceURI, final URI newNamespaceURI, final String newLocalName)
+	{
+		super(referenceURI);  //construct the parent class with the reference URI
+		rdfReference=rdf!=null ? new WeakReference(rdf) : null;	//save the RDF, if any, using a weak reference
 		namespaceURI=newNamespaceURI; //store the namespace URI
 		localName=newLocalName; //store the local name
 	}

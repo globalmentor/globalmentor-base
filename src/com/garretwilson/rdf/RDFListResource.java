@@ -17,14 +17,12 @@ import com.garretwilson.lang.ObjectUtilities;
 public class RDFListResource extends DefaultRDFResource implements List //G***del, Comparator
 {
 
-//TODO create RDF data model aware reference URI constructors
-
 	/**Constructs an RDF list resource with a reference URI.
 	@param newReferenceURI The reference URI for the new resource.
 	*/
 	public RDFListResource(final URI newReferenceURI)
 	{
-		super(newReferenceURI); //construct the parent class
+		this((RDF)null, newReferenceURI, (URI)null, (String)null); //construct the class with no data model 
 	}
 
 	/**Convenience constructor that constructs an RDF sequence resource using a
@@ -35,7 +33,44 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	*/
 	public RDFListResource(final URI newNamespaceURI, final String newLocalName)
 	{
-		super(newNamespaceURI, newLocalName); //construct the parent class
+		this((RDF)null, newNamespaceURI, newLocalName); //construct the class with no data model
+	}
+
+	/**Reference URI and optional namespace URI and local name constructor.
+	@param newReferenceURI The reference URI for the new resource.
+	@param newNamespaceURI The XML namespace URI used in the serialization, or
+		<code>null</code> if the namespace URI is not known.
+	@param newLocalName The XML local name used in the serialization, or
+		<code>null</code> if the local name is not known.
+	*/
+	protected RDFListResource(final URI newReferenceURI, final URI newNamespaceURI, final String newLocalName)
+	{
+		this(null, newReferenceURI, newNamespaceURI, newLocalName); //construct the class with no data model
+	}
+
+	/**Data model optional namespace URI and local name constructor.
+	@param rdf The RDF data model to use as a factory for creating properties.
+	@param newNamespaceURI The XML namespace URI used in the serialization, or
+		<code>null</code> if the namespace URI is not known.
+	@param newLocalName The XML local name used in the serialization, or
+		<code>null</code> if the local name is not known.
+	*/
+	public RDFListResource(final RDF rdf, final URI newNamespaceURI, final String newLocalName)
+	{
+		this(rdf, RDFUtilities.createReferenceURI(newNamespaceURI, newLocalName), newNamespaceURI, newLocalName); //construct the class with a reference URI constructed from the namespace URI and local name
+	}
+
+	/**Data model, reference URI, and optional namespace URI and local name constructor.
+	@param rdf The RDF data model to use as a factory for creating properties.
+	@param newReferenceURI The reference URI for the new resource.
+	@param newNamespaceURI The XML namespace URI used in the serialization, or
+		<code>null</code> if the namespace URI is not known.
+	@param newLocalName The XML local name used in the serialization, or
+		<code>null</code> if the local name is not known.
+	*/
+	protected RDFListResource(final RDF rdf, final URI newReferenceURI, final URI newNamespaceURI, final String newLocalName)
+	{
+		this(rdf, newReferenceURI, newNamespaceURI, newLocalName, null, null); //construct the class without a first or next resource
 	}
 
 	/**Constructs an anonymous RDF list resource with a single element.
@@ -64,7 +99,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	*/
 	public RDFListResource(final URI newReferenceURI, final RDFResource first)
 	{
-		this(newReferenceURI, first, createNil());	//create a list with no other elements
+		this(newReferenceURI, first, new RDFListResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME));	//create a list with no other elements
 	}
 
 	/**Constructs an RDF list resource with a single element.
@@ -75,7 +110,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	*/
 	public RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFResource first)
 	{
-		this(rdf, newReferenceURI, first, createNil());	//create a list with no other elements
+		this(rdf, newReferenceURI, first, new RDFListResource(rdf, RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME));	//create a list with no other elements
 	}
 
 	/**Constructs an anonymous RDF list resource with a current element and the
@@ -111,13 +146,32 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	*/
 	public RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFResource first, final RDFResource rest)
 	{
-		super(newReferenceURI); //construct the list with the reference URI
-		//TODO use the RDF data model to store local references to the properties we need, make the non-RDF constructors protected, and then copy the property information over when we construct a new list from this class 
+		this(rdf, newReferenceURI, null, null, first, rest);	//construct the class without knowing the namespace URI and local name
+	}
+
+	/**Constructs an RDF list resource with a current element and the rest of the list.
+	@param rdf The RDF data model to use as a factory for creating properties.
+	@param newReferenceURI The reference URI for the new resource.
+	@param newNamespaceURI The XML namespace URI used in the serialization, or
+		<code>null</code> if the namespace URI is not known.
+	@param newLocalName The XML local name used in the serialization, or
+		<code>null</code> if the local name is not known.
+	@param first The first element of the list, or <code>null</code> if there
+		should be no first element.
+	@param rest The list resource representing the rest of the list, or <code>null</code>
+		if no rest should be specified.
+	*/
+	protected RDFListResource(final RDF rdf, final URI newReferenceURI, final URI newNamespaceURI, final String newLocalName, final RDFResource first, final RDFResource rest)
+	{
+		super(rdf, newReferenceURI, newNamespaceURI, newLocalName); //construct the list with the reference URI and namespace URI and local name information
 		if(first!=null)	//if there is a first element
 			setFirst(first);	//set the first element
 		if(rest!=null)	//if a rest is specified
 			setRest(rest);	//set the rest of the list
 	}
+
+
+
 
 	/**Constructs an anonymous RDF list resource with the contents of a collection.
 	@param rdf The RDF data model to use as a factory for creating properties.
@@ -143,19 +197,19 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 		{
 			final Iterator resourceIterator=collection.iterator();	//get an iterator to the elements of the collection
 				//G***maybe throw an illegal argument exception if the elements in the collection are not resources
-			listResource=new RDFListResource((RDFResource)resourceIterator.next());	//get the first resource in the collection
+			listResource=new RDFListResource(rdf, (RDFResource)resourceIterator.next());	//get the first resource in the collection
 			RDFListResource list=listResource;	//we'll keep adding to the list as we go along
 			while(resourceIterator.hasNext())	//while there are more elements in the collection
 			{
 				
-				final RDFListResource nextList=new RDFListResource((RDFResource)resourceIterator.next());	//get the next resource in the collection
+				final RDFListResource nextList=new RDFListResource(rdf, (RDFResource)resourceIterator.next());	//get the next resource in the collection
 				setRest(list, nextList);	//add the next list to this one
 				list=nextList;	//we'll use the next list the next time around 
 			}
 		}
 		else	//if the collection is empty
 		{
-			listResource=createNil();	//use the nil list
+			listResource=new RDFListResource(rdf, RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//use the nil list
 		}
 		return listResource;	//return whichever list resource we created or used
 	}
@@ -220,32 +274,20 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 
 	/**Replaces all <code>rdf:first</code> properties of the resource with a new
 		property with the given value.
-	@param rdf The RDF data model.
-	@param resource The resource for which the first property should be set.
-	@param value The first element of the list, or <code>null</code> if the
-		element should be removed.
-	*/
-	public static void setFirst(final RDF rdf, final RDFResource resource, final RDFResource value)
-	{
-		if(value!=null)	//if there is a value
-		{
-			RDFUtilities.setProperty(rdf, resource, RDF_NAMESPACE_URI, FIRST_PROPERTY_NAME, value); //set the first value
-		}
-		else	//if there is no value
-		{
-			resource.removeProperties(RDF_NAMESPACE_URI, FIRST_PROPERTY_NAME); //remove the first value		
-		}		
-	}
-
-	/**Replaces all <code>rdf:first</code> properties of the resource with a new
-		property with the given value.
 	@param resource The resource for which the first property should be set.
 	@param value The first element of the list, or <code>null</code> if the
 		element should be removed.
 	*/
 	public static void setFirst(final RDFResource resource, final RDFResource value)
 	{
-		setFirst(new RDF(), resource, value); //set the first value G***fix data model
+		if(value!=null)	//if there is a value
+		{
+			RDFUtilities.setProperty(resource, RDF_NAMESPACE_URI, FIRST_PROPERTY_NAME, value); //set the first value
+		}
+		else	//if there is no value
+		{
+			resource.removeProperties(RDF_NAMESPACE_URI, FIRST_PROPERTY_NAME); //remove the first value		
+		}		
 	}
 
 	/**Replaces all <code>rdf:first</code> properties of this list with a new
@@ -260,26 +302,6 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 
 	/**Replaces all <code>rdf:rest</code> properties of the resource with a new
 		property with the given value.
-	@param rdf The RDF data model.
-	@param resource The resource for which the rest property should be set.
-	@param value The resource, which should be a list, representing the rest
-		of the elements of the list, or <code>null</code> if the rest should be
-		removed.
-	*/
-	public static void setRest(final RDF rdf, final RDFResource resource, final RDFResource value)
-	{
-		if(value!=null)	//if there is a value
-		{
-			RDFUtilities.setProperty(rdf, resource, RDF_NAMESPACE_URI, REST_PROPERTY_NAME, value); //set the first value
-		}
-		else	//if there is no value
-		{
-			resource.removeProperties(RDF_NAMESPACE_URI, REST_PROPERTY_NAME); //remove the rest of the list		
-		}
-	}
-
-	/**Replaces all <code>rdf:rest</code> properties of the resource with a new
-		property with the given value.
 	@param resource The resource for which the rest property should be set.
 	@param value The resource, which should be a list, representing the rest
 		of the elements of the list, or <code>null</code> if the rest should be
@@ -287,7 +309,14 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	*/
 	public static void setRest(final RDFResource resource, final RDFResource value)
 	{
-		setRest(new RDF(), resource, value);	//set the first value G***fix the data model
+		if(value!=null)	//if there is a value
+		{
+			RDFUtilities.setProperty(resource, RDF_NAMESPACE_URI, REST_PROPERTY_NAME, value); //set the first value
+		}
+		else	//if there is no value
+		{
+			resource.removeProperties(RDF_NAMESPACE_URI, REST_PROPERTY_NAME); //remove the rest of the list		
+		}
 	}
 
 	/**Replaces all <code>rdf:rest</code> properties of this list with a new
@@ -302,9 +331,9 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	}
 
 	/**@return A new instance of an RDF list resource representing the nil resource.*/
-	protected static RDFListResource createNil()
+	protected RDFListResource createNil()
 	{
-		return new RDFListResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//create a nil list resource
+		return new RDFListResource(getRDF(), RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//create a nil list resource
 	}
 
 	/**Returns the number of elements in this list.  If this list contains more

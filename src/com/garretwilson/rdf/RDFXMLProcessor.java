@@ -192,14 +192,14 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 			  //get or create a new resource with the given reference URI and type;
 				//  this allows a resource factory to create the appropriate type of
 				//  resource object
-			resource=getRDF().locateResource(referenceURI, elementNamespaceURI, elementLocalName);
+			resource=getRDF().locateTypedResource(referenceURI, elementNamespaceURI, elementLocalName);
 /*G***del when works
 			final Resource typeProperty=RDFUtilities.getTypeProperty(getRDF()); //get a rdf:type resource G***maybe create this beforehand somewhere
 			final Resource typeValue=getRDF().locateResource(elementNamespaceURI, elementLocalName);  //get a resource for the value of the property
 			resource.addProperty(typeProperty, typeValue);  //add the property to the resource
 */
 				  //G***we need to just use the RDFUtilities to get the type, probably, to replace this early version
-			final RDFResource typeProperty=RDFUtilities.locateTypeProperty(getRDF()); //get the rdf:type resource
+			final RDFResource typeProperty=getRDF().locateResource(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //get an rdf:type resource
 //G***del Debug.trace("type property: ", typeProperty); //G***del
 			RDFObject typeValue=resource.getPropertyValue(typeProperty); //get the value of the type that was added when the object was created
 //G***del Debug.trace("type value: ", typeValue); //G***del
@@ -406,20 +406,20 @@ Debug.trace("processing attribute from value: ", attributeValue);
 					final RDFListResource elementListResource=new RDFListResource(getRDF(), elementValue);	//create a list for this element
 							//G***do we want to add the type here, or somewhere automatically in RDFListResource? probably here for constistency
 							//G***also what about addStatement(typeProperty, resource, typeValue)? check the way resources are created and types added above
-					RDFUtilities.addType(getRDF(), elementListResource, RDF_NAMESPACE_URI, LIST_TYPE_NAME);	//show that the list is of type rdf:List 
+					RDFUtilities.addType(elementListResource, RDF_NAMESPACE_URI, LIST_TYPE_NAME);	//show that the list is of type rdf:List 
 					if(list==null)	//if this is the first element in the list
 					{
 						list=elementListResource;	//store that as the start of the list
 					}
 					else if(lastElementListResource!=null)	//if this is not the first element in the list (this check is logically unnecessary)
 					{
-						RDFListResource.setRest(getRDF(), lastElementListResource, elementListResource);	//point the last list element to this new element
+						RDFListResource.setRest(lastElementListResource, elementListResource);	//point the last list element to this new element
 					}
 					lastElementListResource=elementListResource;	//remember which element we processed the last time around
 				}
 			}
 					//TODO what about setting the rdf:List type of the rdf:nil resource? where would we best do that?
-			propertyValue=list!=null ? list : RDFUtilities.locateNilResource(getRDF());	//if we found no elements for the list, use the empty list resource
+			propertyValue=list!=null ? list : new RDFListResource(getRDF(), RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//if we found no elements for the list, use the empty list resource
 		}
 		else if(RESOURCE_PARSE_TYPE.equals(parseType))	//if this is a resource as a property-and-node
 		{

@@ -39,10 +39,9 @@ public class Question extends DefaultRDFResource implements MAQROConstants, Inte
 	*/
 	public void setQueryValue(final String queryValue, final Locale language)
 	{
-		final RDF rdf=new RDF();	//TODO fix the data model
-		final RDFResource query=rdf.locateResource(null);	//get an anonymous query
-		RDFUtilities.setValue(rdf, query, queryValue, language);	//set the query value
-		RDFUtilities.setProperty(rdf, this, MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME, query);	//store the query
+		final RDFResource query=RDFUtilities.locateResource(this, null);	//create an anonymous query
+		RDFUtilities.setValue(query, queryValue, language);	//set the query value
+		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME, query);	//store the query
 	}
 
 	/**Adds a choice to the question.
@@ -50,8 +49,7 @@ public class Question extends DefaultRDFResource implements MAQROConstants, Inte
 	*/
 	public void addChoice(final RDFResource choice)
 	{
-		final RDF rdf=new RDF();	//TODO fix the data model
-		RDFUtilities.addProperty(rdf, this, MAQRO_NAMESPACE_URI, CHOICE_PROPERTY_NAME, choice);	//add the choice to the question
+		RDFUtilities.addProperty(this, MAQRO_NAMESPACE_URI, CHOICE_PROPERTY_NAME, choice);	//add the choice to the question
 	}
 
 	/**@return An iterator to choices, if any, of the question.*/
