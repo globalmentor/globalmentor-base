@@ -7,21 +7,21 @@ import java.util.*;
 <p>Derived classes may use this comparison algorithm as a default fallback.
 @author Garret Wilson
 */
-public class DefaultOrderComparator implements Comparator
+public class DefaultOrderComparator<T> implements Comparator<T>
 {
 		
 	/**The list that determines the default order of the objects.*/ 
-	private final List defaultOrderList;
+	private final List<T> defaultOrderList;
 
 		/**@return The list that determines the default order of the objects.*/ 
-		protected List getDefaultOrderList() {return defaultOrderList;}
+		protected List<T> getDefaultOrderList() {return defaultOrderList;}
 		
 	/**Constructs a comparator to compare objects based upon the order in which
 		they appear in a given list.
 	@param defaultOrderList The list that determines the default order of the
 		objects. This must not a different list than any list being sorted.
 	*/
-	public DefaultOrderComparator(final List defaultOrderList)
+	public DefaultOrderComparator(final List<T> defaultOrderList)
 	{
 		this.defaultOrderList=defaultOrderList;	//save the default order list
 	}
@@ -37,7 +37,7 @@ public class DefaultOrderComparator implements Comparator
 		the default order list.
 	@see #getDefaultOrderList()
 	*/
-	public int compare(final Object object1, final Object object2)
+	public int compare(final T object1, final T object2)
 	{
 		final int index1=getDefaultOrderList().indexOf(object1);	//get the first index
 		if(index1<0)	//if the object is not in the list

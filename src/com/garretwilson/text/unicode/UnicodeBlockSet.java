@@ -1,11 +1,10 @@
 package com.garretwilson.text.unicode;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.LineNumberReader;
-import java.util.Iterator;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
+import java.io.*;
+import java.util.*;
+
+import static com.garretwilson.lang.CharSequenceUtilities.*;
+import com.garretwilson.text.CharacterEncodingConstants;
 import com.garretwilson.util.Debug;
 
 /**A set of Unicode named character blocks. The iterator returned by the class
@@ -15,10 +14,10 @@ the following format:
 <blockquote><code>Start Code (hex); End Code (hex); Block Name</code></blockquote>
 @see UnicodeBlock
 */
-public class UnicodeBlockSet extends TreeSet
+public class UnicodeBlockSet extends TreeSet<UnicodeBlock>
 {
 	/**The default name used by Unicode to store block data.*/
-	public final static String DEFAULT_BLOCKS_FILENAME="Blocks.txt";
+	public final static String BLOCKS_FILENAME="Blocks.txt";
 
 	/**The data file's field delimiter character.*/
 	public final static char FIELD_DELIMITER=';';
@@ -34,14 +33,41 @@ public class UnicodeBlockSet extends TreeSet
 	public UnicodeBlock getUnicodeBlockByCharacter(final char character)
 	{
 			//G***later, implement a better searching algorithm; this is, after all, a tree
-		final Iterator blockIterator=iterator(); //get an iterator to look through each block
-		while(blockIterator.hasNext())  //keep looking until we run out of blocks
+		for(final UnicodeBlock block:this)	//look at each block
 		{
-		  final UnicodeBlock block=(UnicodeBlock)blockIterator.next();  //get the next block
 			if(character>=block.getStartCode() && character<=block.getEndCode())  //if this character falls within this block
 				return block; //return this block
 		}
 		return null;  //show that we can't find a matching block
+	}
+
+	/**@return A reader to the Unicode blocks resource file.
+	@throws UnsupportedEncodingException Thrown if the blocks file encoding
+		(ISO 8859-1) is unsupported. This situation should never occur.
+	*/
+	public static Reader getBlocksReader() throws UnsupportedEncodingException
+	{
+			//get an input stream to our Unicode data resource file
+		final InputStream inputStream=UnicodeData.class.getResourceAsStream(BLOCKS_FILENAME);
+			//buffer the input stream and turn it into an ASCII reader
+		return new InputStreamReader(new BufferedInputStream(inputStream), CharacterEncodingConstants.ISO_8859_1);
+	}
+
+	/**Loads a set of Unicode blocks from the Unicode blocks resource text file.
+	@return A set of Unicode blocks.
+	@exception IOException Thrown if there was an error parsing the blocks.
+	*/
+	public static UnicodeBlockSet load() throws IOException
+	{
+		final Reader reader=getBlocksReader();	//get a reader to our data
+		try
+		{
+			return parse(reader);	//parse and return the Unicode blocks
+		}
+		finally
+		{
+			reader.close();	//always close our reader
+		}		
 	}
 
 	/**Parses an input reader which contains the unicode block ranges and names,
@@ -68,9 +94,9 @@ public class UnicodeBlockSet extends TreeSet
 			}
 			return blockSet;	//return our set of Unicode block objects
 		}
-		catch(Exception e)	//if any errors occur
+		catch(final Exception exception)	//if any errors occur
 		{
-			throw new IOException("Error parsing line "+lineNumberReader.getLineNumber()+": "+e.toString());	//indicate the line we were trying to parse
+			throw (IOException)new IOException("Error parsing line "+lineNumberReader.getLineNumber()+": "+exception.toString()).initCause(exception);	//indicate the line we were trying to parse
 		}
 	}
 
@@ -81,34 +107,33 @@ public class UnicodeBlockSet extends TreeSet
 		the line was a comment or an empty line.
 	@exception IOException Thrown if there was an error parsing the Unicode block data.
 	*/
-	protected static UnicodeBlock parseLine(String blockLine) throws IOException
+	protected static UnicodeBlock parseLine(final String blockLine) throws IOException
 	{
-		final String trimmedBlockLine=blockLine.trim();  //trim the line
+		final String trimmedBlockLine=blockLine.trim();  //trim the line TODO maybe forego the trimming
 		if(trimmedBlockLine.length()==0 || trimmedBlockLine.startsWith("#"))  //if this is a blank line or a comment line
 			return null;  //show that this is a comment or blank line
-		blockLine+=FIELD_DELIMITER;	//since the Unicode block file doesn't have an ending delimiter, add one so that StringTokenizer will recognize the last field
-//G***fix		final UnicodeCharacter unicodeCharacter=new UnicodeCharacter();	//create a new Unicode character that will hold the data we parse from this line
-		final StringTokenizer fieldTokenizer=new StringTokenizer(trimmedBlockLine, String.valueOf(FIELD_DELIMITER), false);	//create an object to tokenize the line of Unicode block data G***use a constant string instead of creating one each time
-		if(fieldTokenizer.hasMoreTokens())	//if there are more fields on this line
+		final CharSequence[] fields=split(blockLine, FIELD_DELIMITER);	//split the line based upon the delimiter
+		if(fields.length==2)	//if there are two fields
 		{
-			final String startCodeValue=fieldTokenizer.nextToken().trim();	//get the start code value and trim it
-//G***del Debug.trace("Start: "+startCodeValue);
-		  final char startCode=(char)Integer.parseInt(startCodeValue, 16); //convert the hex value to a character
-			if(fieldTokenizer.hasMoreTokens())	//if there are more fields on this line
+			final StringTokenizer rangeTokenizer=new StringTokenizer(fields[0].toString(), String.valueOf('.'), false);	//create an object to tokenize the block range TODO use a constant string instead of creating one each time
+			if(rangeTokenizer.hasMoreTokens())	//if there are more fields on this line
 			{
-				final String endCodeValue=fieldTokenizer.nextToken().trim();	//get the end code value and trim it
-//G***del Debug.trace("End: "+endCodeValue);
-				final char endCode=(char)Integer.parseInt(endCodeValue, 16); //convert the hex value to a character
-				if(fieldTokenizer.hasMoreTokens())	//if there are more fields on this line
+				final String startCodeValue=rangeTokenizer.nextToken().trim();	//get the start code value and trim it
+	//G***del Debug.trace("Start: "+startCodeValue);
+			  final char startCode=(char)Integer.parseInt(startCodeValue, 16); //convert the hex value to a character
+				if(rangeTokenizer.hasMoreTokens())	//if there are more fields on this line
 				{
-					final String name=fieldTokenizer.nextToken().trim();	//get the block name and trim it
-//G***del Debug.trace("Name: "+name);
+					final String endCodeValue=rangeTokenizer.nextToken().trim();	//get the end code value and trim it
+	//G***del Debug.trace("End: "+endCodeValue);
+					final char endCode=(char)Integer.parseInt(endCodeValue, 16); //convert the hex value to a character
+					final String name=fields[1].toString().trim();	//get the block name and trim it
+	//G***del Debug.trace("Name: "+name);
 				  return new UnicodeBlock(name, startCode, endCode);  //create a new Unicode block and return it
 				}
 			}
 		}
 			//if we reach this point, we've ran out of field
-		throw new IOException("Missing field.");	//show that there weren't enough fields on this line
+		throw new IOException("Incorrect number of fields.");	//show that there weren't enough fields on this line
 	}
 
 }

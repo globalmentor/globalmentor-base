@@ -131,6 +131,44 @@ public class CharSequenceUtilities
 		return containsChar(charSequence, WHITESPACE_CHARS);	//see if the character sequence contains whitespace
 	}
 
+	/**Counts the number of occurences of a particular character in a character sequence.
+	@param charSequence The character sequence to examine.
+	@param character The character to count.
+	@return The number of occurences of the character in the character sequence.
+	*/
+	public static int count(final CharSequence charSequence, final char character)
+	{
+		int count=0;	//start out without knowing any occurrences
+		for(int i=charSequence.length()-1; i>=0; --i)	//look at each character
+		{
+			if(charSequence.charAt(i)==character)	//if this character matches the given characters
+			{
+				++count;	//show that we found one more occurence characters
+			}
+		}
+		return count;	//return the total count
+	}
+
+	/**Counts the number of occurences of any one of given characters in a character sequence.
+	@param charSequence The character sequence to examine.
+	@param characters The scharacter to count.
+	@return The number of occurences of the characters in the character sequence.
+	*/
+/*TODO fix
+	public static int count(final CharSequence charSequence, final char character)
+	{
+		int count=0;	//start out without knowing any occurrences
+		for(int i=charSequence.length()-1; i>=0; --i)	//look at each character
+		{
+			if(charSequence.charAt(i)==character)	//if this character matches the given characters
+			{
+				++count;	//show that we found one more occurence characters
+			}
+		}
+		return count;	//return the total count
+	}
+*/
+
 	/**Determines if the character sequence ends with the given character.
 	@param charSequence The character sequence to examine.
 	@param character The character to compare.
@@ -234,7 +272,7 @@ public class CharSequenceUtilities
 		{
 			final char c=charSequence.charAt(i);	//get a reference to this character
 				//if this is the beginning of an escaped character, and there's room for enough hex characters after it (the last test is lenient, throwing no exception if the escape character doesn't actually encode anything) 
-			if(c==escapeChar && i<charSequence.length()-length)	
+			if(c==escapeChar && i<charSequence.length()-length)
 			{
 				try
 				{
@@ -535,6 +573,44 @@ public class CharSequenceUtilities
 		return true;  //if we make it to here, there weren't any non-uppercase characters in the string
 	}
 
+	/**Splits a characters sequence into subsequences based upon the given delimiter.
+	Subsequences will be returned between delimiters even if they are empty, and
+		a subsequence will be returned after the last delimiter, even if there are no
+		remaining characters. In other words, the number of character subsequences returned
+		is <var>delimiterCount</var>+1.
+	@param charSequence The character sequence to split.
+	@param delimiter The delimiter to use for splitting.
+	@return An array of character subsequences between the delimiters.
+	*/
+	public static CharSequence[] split(final CharSequence charSequence, final char delimiter)
+	{
+		final int length=charSequence.length();	//get the length of the character sequence
+		if(length>0)	//if there are any characters
+		{
+			final int delimiterCount=count(charSequence, delimiter);	//count the number of delimiters
+			if(delimiterCount>0)	//if there is at least one delimiter
+			{
+					//count the delimiters; this should be faster than creating a list and dynamically adding subsequences
+				final CharSequence[] subSequences=new CharSequence[delimiterCount+1];	//there will always be one more character sequence than delimiter
+				int start=0;	//start searching at the beginning
+				int delimiterIndex;	//we'll keep track of where we find the delimiter each time
+				int i=0;	//keep track of the subsequence index
+				do
+				{
+					assert start<charSequence.length() : "Delmiter counting and splitting logic out of synchronization.";
+					delimiterIndex=indexOf(charSequence, delimiter, start);	//find the index of the next delimiter
+					final int end=delimiterIndex>=0 ? delimiterIndex : length;	//if we didn't find a delimiter, just use the rest of the character sequence
+					subSequences[i]=charSequence.subSequence(start, end);	//create a subsequence between delimiters
+					start=end+1;	//start looking at the position after the delimiter
+					++i;	//go to the next position for storing subsequences
+				}
+				while(i<subSequences.length);	//keep looking until we've found the correct number of delimiters
+				return subSequences;	//return the array of subsequences
+			}
+		}
+		return new CharSequence[]{charSequence};	//return an array cotaining the character sequence itself if there are no characters or no delimiters
+	}
+	
 	/**Determines if the character sequence starts with the given character.
 	@param charSequence The character sequence to examine.
 	@param character The character to compare.
