@@ -40,41 +40,49 @@ import com.garretwilson.util.*;
 @see BOOLEAN_VALUE_TYPE
 @see FLOAT_VALUE_TYPE
 */
-public class DirectoryProcessor implements DirectoryConstants, ValueFactory
+public class DirectoryProcessor implements DirectoryConstants
 {
 	
-	/**A map of value type strings keyed to supported type name strings.*/
-	private final Map typeNameValueTypeMap=new HashMap();
+	/**The profile for the predefined types.*/
+	private final PredefinedProfile predefinedProfile=new PredefinedProfile();		
 
-		/**Registers a value type keyed to the lowercase version of a type name.
-		@param typeName The type name for which a value type should be retrieved.
-		@param valueType The value type to associate with this type name.
-		*/
-		protected void registerValueType(final String typeName, final String valueType)
+		/**@return The profile for the predefined types.*/
+		protected PredefinedProfile getPredefinedProfile() {return predefinedProfile;}
+		
+	/**A map of profiles keyed to the lowercase version of the profile name.*/
+	private final Map profileMap=new HashMap();	
+
+		/**Registers a profile.
+		@param profileName The name of the profile.
+		@param profile The profile to be registered with this profilename.
+		*/	
+		public void registerProfile(final String profileName, final Profile profile)
 		{
-			typeNameValueTypeMap.put(typeName.toLowerCase(), valueType);	//put the value type in the map, keyed to the lowercase version of the type name		
+			profileMap.put(profileName.toLowerCase(), profile);	//put the profile in the map, keyed to the lowercase version of the profile name
 		}
 
-		/**Returns a value type keyed to the lowercase version of a type name.
-		@param typeName The type name for which a value type should be associated.
-		@return The value type associated with this type name, or
-			<code>null</code> if no value type has been registered with the type name.
-		*/
-		protected String getValueType(final String typeName)
+		/**Retrieves a profile for the given profile name.
+		@param profileName The name of the profile to return, or <code>null</code>
+			if the predefined profile should be returned.
+		@return A profile for this profile name, or <code>null</code> if there
+			is no profile registered for this profile name.
+		@see #getPredefinedProfile
+		*/ 
+		protected Profile getProfile(final String profileName)
 		{
-			return (String)typeNameValueTypeMap.get(typeName.toLowerCase());	//get whatever value type we have associated with this type name, if any
+			return profileName!=null ? (Profile)profileMap.get(profileName.toLowerCase()) : getPredefinedProfile();	//get the profile keyed to the lowercase version of the profile name, or return the predefined profile if null was passed
 		}
-
+		
 	/**A map of value factories keyed to the lowercase version of the value type.*/
-	private final Map valueTypeValueFactoryMap=new HashMap();	
+	private final Map valueFactoryMap=new HashMap();	
 
 		/**Registers a value factory by value type.
 		@param valueType The value type for which this value factory can create values.
 		@param valueFactory The value factory to be registered with this value type.
 		*/	
-		public void registerValueFactoryByValueType(final String valueType, final ValueFactory valueFactory)
+		public void registerValueFactory(final String valueType, final ValueFactory valueFactory)
 		{
-			valueTypeValueFactoryMap.put(valueType.toLowerCase(), valueFactory);	//put the value factory in the map, keyed to the lowercase version of the type
+			valueFactoryMap.put(valueType.toLowerCase(), valueFactory);	//put the value factory in the map, keyed to the lowercase version of the type
 		}
 		
 		/**Retrieves a value factory to create values for the given value type.
@@ -82,33 +90,11 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		@return A value factory for this value type, or <code>null</code> if there
 			is no value factory registered for this value type.
 		*/ 
-		protected ValueFactory getValueFactoryByValueType(final String valueType)
+		protected ValueFactory getValueFactory(final String valueType)
 		{
-			return (ValueFactory)valueTypeValueFactoryMap.get(valueType.toLowerCase());	//get the value factory keyed to the lowercase version of this value type
+			return (ValueFactory)valueFactoryMap.get(valueType.toLowerCase());	//get the value factory keyed to the lowercase version of this value type
 		}
 		
-	/**A map of value factories keyed to the lowercase version of the profile.*/
-	private final Map profileValueFactoryMap=new HashMap();	
-
-		/**Registers a value factory by profile.
-		@param profile The profile for which this value factory can create values.
-		@param valueFactory The value factory to be registered with this profile.
-		*/	
-		public void registerValueFactoryByProfile(final String profile, final ValueFactory valueFactory)
-		{
-			profileValueFactoryMap.put(profile.toLowerCase(), valueFactory);	//put the value factory in the map, keyed to the lowercase version of the profile
-		}
-
-		/**Retrieves a value factory to create values for the given value profile.
-		@param profile The profile for which a value factory should be returned.
-		@return A value factory for this profile, or <code>null</code> if there
-			is no value factory registered for this profile.
-		*/ 
-		protected ValueFactory getValueFactoryByProfile(final String profile)
-		{
-			return (ValueFactory)profileValueFactoryMap.get(profile.toLowerCase());	//get the value factory keyed to the lowercase version of this profile
-		}
-
 	/**The profile last encountered in a "profile:" type content line.*/
 	private String defaultProfile=null;
 
@@ -175,25 +161,21 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		}
 
 	/**Default constructor.
-	This class automatically registers itself with itself as a value factory for
-		the standard value types.*/
+	This class automatically registers a predefined profile for the <code>null</code>
+		profile name, and registers that profile as a value factory for standard
+		value types.
+	*/
 	public DirectoryProcessor()
 	{
-			//register the predefined types in our map
-		registerValueType(SOURCE_TYPE, URI_VALUE_TYPE);	//SOURCE: uri		
-		registerValueType(NAME_TYPE, TEXT_VALUE_TYPE);	//NAME: text		
-		registerValueType(PROFILE_TYPE, TEXT_VALUE_TYPE);	//PROFILE: text		
-		registerValueType(BEGIN_TYPE, TEXT_VALUE_TYPE);	//BEGIN: text		
-		registerValueType(END_TYPE, TEXT_VALUE_TYPE);	//END: text		
-			//register ourselves as a value factory for the standard value types
-		registerValueFactoryByValueType(URI_VALUE_TYPE, this);			
-		registerValueFactoryByValueType(TEXT_VALUE_TYPE, this);		
-		registerValueFactoryByValueType(DATE_VALUE_TYPE, this);		
-		registerValueFactoryByValueType(TIME_VALUE_TYPE, this);		
-		registerValueFactoryByValueType(DATE_TIME_VALUE_TYPE, this);		
-		registerValueFactoryByValueType(INTEGER_VALUE_TYPE, this);		
-		registerValueFactoryByValueType(BOOLEAN_VALUE_TYPE, this);		
-		registerValueFactoryByValueType(FLOAT_VALUE_TYPE, this);		
+			//register the predefined profile as a value factory for the standard value types
+		registerValueFactory(URI_VALUE_TYPE, getPredefinedProfile());			
+		registerValueFactory(TEXT_VALUE_TYPE, getPredefinedProfile());		
+		registerValueFactory(DATE_VALUE_TYPE, getPredefinedProfile());		
+		registerValueFactory(TIME_VALUE_TYPE, getPredefinedProfile());		
+		registerValueFactory(DATE_TIME_VALUE_TYPE, getPredefinedProfile());		
+		registerValueFactory(INTEGER_VALUE_TYPE, getPredefinedProfile());		
+		registerValueFactory(BOOLEAN_VALUE_TYPE, getPredefinedProfile());		
+		registerValueFactory(FLOAT_VALUE_TYPE, getPredefinedProfile());		
 	}
 
 	/**The delimiter characters separating the main components of a content line
@@ -428,15 +410,16 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 	<p>When attempting to find a <code>ValueFactory</code> to process a given
 		value, an attempt is made to locate a value factory based in this order:</p>
 	<ol>
-		<li>If no explicit value type is given and a profile is known, the
-			<code>ValueFactory</code> registered for that profile, if any, is asked
+		<li>If no explicit value type is given and a profile name is known, the
+			<code>Profile</code> registered for that profile, if any, is asked
 			for the type.</li>
-		<li>If no explicit value type is still not known, the directory processor
-			attempts to locate a predefined value type for the predefined type name.</li>
-		<li>If the value type is known, the <code>ValueFactory</code> registered for
-			the type, if any, is asked to create the value object.</li>
-		<li>If no value object was created and a profile is known, the
-			<code>ValueFactory</code> registered with the profile, if any, is asked
+		<li>If no explicit value type is still not known, the predefined profile
+			is asked for the predefined type name.</li>
+		<li>If a profile name is known and the
+			<code>Profile</code> registered with the profile, if any, implements
+			<code>ValueFactory</code>, it is asked to create the value object.</li>
+		<li>If no value object was created, if the value type is known,
+			the <code>ValueFactory</code> registered for the type, if any, is asked
 			to create the value object.</li>
 		<li>If no value object was created, a string is returned containing the
 			literal contents of the value.</li> 
@@ -456,39 +439,32 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	@see NameValuePair
 	*/
-	protected Object[] processValue(final String profile, final String group, final String name, final List paramList, final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	protected Object[] processValue(final String profileName, final String group, final String name, final List paramList, final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
 		Object[] objects=null;	//start out by assuming we can't process the value
+		final Profile profile=getProfile(profileName);	//see if we have a profile registered with this profile name
 		String valueType=DirectoryUtilities.getParamValue(paramList, VALUE_PARAM_NAME);	//get the value type parameter value
 		if(valueType==null)	//if the value type wasn't explicitly given
 		{
-			if(profile!=null)	//if we know the profile
+			if(profile!=null)	//if there is a profile for this profile name
 			{
-				final ValueFactory profileValueFactory=getValueFactoryByProfile(profile);	//see if we have a value factory registered with this profile
-				if(profileValueFactory!=null)	//if there is a value factory for this profile
-				{
-					valueType=profileValueFactory.getValueType(profile, group, name, paramList);	//ask this profile's value factory for the value type
-				}
+				valueType=profile.getValueType(profileName, group, name, paramList);	//ask this profile's value factory for the value type
 			}
-			if(valueType==null)	//if we still don't know the type
+			if(valueType==null && profile!=getPredefinedProfile())	//if we still don't know the type, and we didn't already check the predefined profile 
 			{
-				valueType=getValueType(profile, group, name, paramList);	//ask ourselves for the value type
+				valueType=getPredefinedProfile().getValueType(profileName, group, name, paramList);	//ask the predefined profile for the value type
 			}
 		}
-		if(valueType!=null)	//if we know the value type
+		if(profile instanceof ValueFactory)	//if our profile is a value factory, use the profile as a  value factory
 		{
-			final ValueFactory valueTypeValueFactory=getValueFactoryByValueType(valueType);	//see if we have a value factory registered with this value type
-			if(valueTypeValueFactory!=null)	//if there is a value factory for this value type
-			{
-				objects=valueTypeValueFactory.createValues(profile, group, name, paramList, valueType, reader);	//create objects for this value type
-			}
+			objects=((ValueFactory)profile).createValues(profileName, group, name, paramList, valueType, reader);	//create objects for this profile
 		}
-		if(objects==null && profile!=null)	//if no objects were created, to use use a value factory based upon the profile, if we have a profile
+		if(objects==null && valueType!=null)	//if no objects were created, but we know the value type
 		{
-			final ValueFactory profileValueFactory=getValueFactoryByProfile(profile);	//see if we have a value factory registered with this profile
-			if(profileValueFactory!=null)	//if there is a value factory for this profile
+			final ValueFactory valueFactory=getValueFactory(valueType);	//see if we have a value factory registered with this value type
+			if(valueFactory!=null)	//if there is a value factory for this value type
 			{
-				objects=profileValueFactory.createValues(profile, group, name, paramList, valueType, reader);	//create objects for this profile
+				objects=valueFactory.createValues(profileName, group, name, paramList, valueType, reader);	//create objects for this value type
 			}
 		}
 		if(objects==null)	//if no objects were created
@@ -497,161 +473,6 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 			objects=new String[]{valueString};	//put the single value string in an array of strings and use that for the value objects
 		}
 		return objects;	//return the value objects we processed
-	}
-
-	/**Processes the textual representation of a line's value and returns
-		one or more object representing the value, as some value types
-		support multiple values.
-	<p>Whatever delimiter ended the value will be left in the reader.</p>
-	<p>This method knows how to create predefined types, which,
-		along with the objects returned, are as follows:</p>
-	<ul>
-		<li><code>URI_VALUE_TYPE</code> <code>URI</code></li>
-		<li><code>TEXT_VALUE_TYPE</code> <code>String</code></li>
-		<li><code>DATE_VALUE_TYPE</code> <code>Date</code></li>
-		<li><code>TIME_VALUE_TYPE</code> <code>Date</code></li>
-		<li><code>DATE_TIME_VALUE_TYPE</code> <code>Date</code></li>
-		<li><code>INTEGER_VALUE_TYPE</code> <code>Integer</code></li>
-		<li><code>BOOLEAN_VALUE_TYPE</code> <code>Boolean</code></li>
-		<li><code>FLOAT_VALUE_TYPE</code> <code>Double</code></li>
-	</ul>
-	@param profile The profile of this content line, or <code>null</code> if
-		there is no profile.
-	@param group The group specification, or <code>null</code> if there is no group.
-	@param name The name of the information.
-	@param paramList The list of parameters, each item of which is a
-		<code>NameValuePair</code> with a name of type <code>String</code> and a
-		value of type <code>String</code>.
-	@param valueType The type of value, or <code>null</code> if the type of value
-		is unknown.
-	@param reader The reader that contains the lines of the directory.
-	@return An array of objects represent the value string, or <code>null</code>
-		if the type of value cannot be determined by the given line information,
-		in which case no information is removed from the reader.
-	@exception IOException Thrown if there is an error reading the directory.
-	@exception ParseIOException Thrown if there is a an error interpreting the directory.
-	@see NameValuePair
-	@see URI_VALUE_TYPE
-	@see URI
-	@see TEXT_VALUE_TYPE
-	@see String
-	@see DATE_VALUE_TYPE
-	@see TIME_VALUE_TYPE
-	@see DATE_TIME_VALUE_TYPE
-	@see Date
-	@see INTEGER_VALUE_TYPE
-	@see Integer
-	@see BOOLEAN_VALUE_TYPE
-	@see Boolean
-	@see FLOAT_VALUE_TYPE
-	@see Double
-	*/
-	public Object[] createValues(final String profile, final String group, final String name, final List paramList, final String valueType, final LineUnfoldParseReader reader) throws IOException, ParseIOException
-	{
-		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//if this is the "text" value type
-		{
-			return processTextValueList(reader);	//process the text value
-		}
-		return null;	//show that we can't create a value
-	}
-	
-	/**Processes a text value.
-	<p>The sequence "\n" or "\N" will be converted to a single newline character,
-		'\n'.</p>
-	<p>Whatever delimiter ended the value will be left in the reader.</p>
-	@param reader The reader that contains the lines of the directory.
-	@return An array of strings representing the values.
-	@exception IOException Thrown if there is an error reading the directory.
-	@exception ParseIOException Thrown if there is a an error interpreting the directory.
-	*/
-	protected String[] processTextValueList(final LineUnfoldParseReader reader) throws IOException, ParseIOException
-	{
-		final List stringList=new ArrayList();	//create a new list to hold the strings we find
-		char delimiter;	//we'll store the last delimiter peeked		
-		do
-		{
-			reader.resetPeek();	//reset peeking
-			final String string=processTextValue(reader);	//read a string
-//		G***del Debug.trace("read text string: ", string);	//G***del
-			stringList.add(string);	//add the string to our list			
-			delimiter=reader.peekChar();	//see what character is next
-//		G***del Debug.trace("next delimiter: ", delimiter);	//G***del			
-		}
-		while(delimiter==VALUE_SEPARATOR_CHAR);	//keep getting strings while we are still running into value separators
-		reader.resetPeek();	//reset peeking
-		return (String[])stringList.toArray(new String[stringList.size()]);	//convert the list of strings to an array of strings and return the array
-	}
-
-	/**The delimiters that can divide a text value: '\\' ',' and CR.*/
-	protected final static String TEXT_VALUE_DELIMITER_CHARS=""+TEXT_ESCAPE_CHAR+VALUE_SEPARATOR_CHAR+CR; 
-
-	/**Processes a single text value.
-	<p>The sequence "\n" or "\N" will be converted to a single newline character,
-		'\n'.</p>
-	<p>Whatever delimiter ended the value will be left in the reader.</p>
-	@param reader The reader that contains the lines of the directory.
-	@return An array of strings representing the values.
-	@exception IOException Thrown if there is an error reading the directory.
-	@exception ParseIOException Thrown if there is a an error interpreting the directory.
-	*/
-	protected String processTextValue(final LineUnfoldParseReader reader) throws IOException, ParseIOException
-	{
-		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer to hold whatever string we're processing
-		char delimiter;	//we'll store the last delimiter peeked		
-		do	
-		{
-//		G***del Debug.trace("string buffer so far: ", stringBuffer);	//G***del			
-			stringBuffer.append(reader.readStringUntilChar(TEXT_VALUE_DELIMITER_CHARS));	//read all undelimited characters until we find a delimiter
-			delimiter=reader.peekChar();	//see what the delimiter will be
-			switch(delimiter)	//see which delimiter we found
-			{
-				case TEXT_ESCAPE_CHAR:	//if this is an escape character ('\\')
-					{
-						reader.skip(1);	//skip the delimiter
-						final char escapedChar=reader.readChar();	//read the character after the escape character
-						switch(escapedChar)	//see what character comes after this one
-						{
-							case TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR:	//"\n"
-							case TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR:	//"\N"
-								stringBuffer.append('\n');	//append a single newline character
-								break;
-							case '\\':
-							case ',':
-								stringBuffer.append(escapedChar);	//escaped backslashes and commas get appended normally
-							default:	//if something else was escape, we don't recognize it
-								throw new ParseUnexpectedDataException("\\,"+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR+TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR, escapedChar, reader);	//show that we didn't expect this character here				
-						}
-					}
-					break;
-				case VALUE_SEPARATOR_CHAR:	//if this is the character separating multiple values (',')
-				case CR:	//if we just read a carriage return
-					break;	//don't do anything---we'll just collect our characters and leave
-				default:	//if we read anything else (there shouldn't be anything else unless there is a logic error)					
-					throw new ParseUnexpectedDataException(TEXT_VALUE_DELIMITER_CHARS, delimiter, reader);	//show that we didn't expect this character here
-			}
-		}
-		while(delimiter!=VALUE_SEPARATOR_CHAR && delimiter!=CR);	//keep collecting parts of the string until we encounter a ',' or a CR
-		//G***check the text value
-		reader.resetPeek();	//reset peeking
-//	G***del Debug.trace("returning string: ", stringBuffer);	//G***del			
-		return stringBuffer.toString();	//return the string we've collected so far
-	}
-
-
-	/**Determines the value type of the given content line value.
-	@param profile The profile of this content line, or <code>null</code> if
-		there is no profile.
-	@param group The group specification, or <code>null</code> if there is no group.
-	@param name The name of the information.
-	@param paramList The list of parameters, each item of which is a
-		<code>NameValuePair</code> with a name of type <code>String</code> and a
-		value of type <code>String</code>.
-	@return The value type of the content line, or <code>null</code> if the
-		value type cannot be determined.
-	*/	
-	public String getValueType(final String profile, final String group, final String name, final List paramList)
-	{
-		return getValueType(name);	//return whatever value type we have associated with this type name, if any
 	}
 
 }

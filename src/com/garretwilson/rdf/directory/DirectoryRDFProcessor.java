@@ -17,73 +17,36 @@ import com.garretwilson.util.*;
 	"A MIME Content-Type for Directory Information".
 @author Garret Wilson
 */
-public class DirectoryRDFProcessor extends AbstractRDFProcessor implements DirectoryConstants, com.garretwilson.text.directory.DirectoryConstants, RDFPropertyFactory, RDFPropertyValueFactory
+public class DirectoryRDFProcessor extends AbstractRDFProcessor implements DirectoryConstants, com.garretwilson.text.directory.DirectoryConstants
 {
+	/**The profile for the predefined types.*/
+	private final PredefinedRDFProfile predefinedProfile=new PredefinedRDFProfile();		
 
-	/**A map of property URIs keyed to supported type name strings.*/
-	private final Map typeNamePropertyURIMap=new HashMap();
+		/**@return The profile for the predefined types.*/
+		protected PredefinedRDFProfile getPredefinedProfile() {return predefinedProfile;}
+	
+	/**A map of profiles keyed to the lowercase version of the profile name.*/
+	private final Map profileMap=new HashMap();	
 
-		/**Registers a property URI keyed to the lowercase version of a type name.
-		@param typeName The type name for which a property URIshould be associated.
-		@param propertyURI The property URI to associate with this type name.
-		*/
-		protected void registerPropertyURI(final String typeName, final URI propertyURI)
-		{
-			typeNamePropertyURIMap.put(typeName.toLowerCase(), propertyURI);	//put the property URI in the map, keyed to the lowercase version of the type name		
-		}
-
-		/**Returns a property URI keyed to the lowercase version of a type name.
-		@param typeName The type name for which property URI should be retrieved.
-		@return The property URI associated with this type name, or
-			<code>null</code> if no property URI has been registered with the type name.
-		*/
-		protected URI getPropertyURI(final String typeName)
-		{
-			return (URI)typeNamePropertyURIMap.get(typeName.toLowerCase());	//get whatever property URI we have associated with this type name, if any
-		}
-
-	/**A map of property factories keyed to the lowercase version of the type name.*/
-	private final Map typeNamePropertyFactoryMap=new HashMap();	
-
-		/**Registers a property factory by type name.
-		@param typeName The type name for which this property factory can create RDF property resources.
-		@param propertyFactory The property factory to be registered with this type name.
+		/**Registers a profile.
+		@param profileName The name of the profile.
+		@param profile The profile to be registered with this profilename.
 		*/	
-		public void registerPropertyFactoryByTypeName(final String typeName, final RDFPropertyFactory propertyFactory)
+		public void registerProfile(final String profileName, final Profile profile)
 		{
-			typeNamePropertyFactoryMap.put(typeName.toLowerCase(), propertyFactory);	//put the property factory in the map, keyed to the lowercase version of the type name
-		}
-		
-		/**Retrieves a property factory to create RDF property resources for the given type name.
-		@param typeName The type name for which a property factory should be returned.
-		@return A property factory for this type name, or <code>null</code> if there
-			is no property factory registered for this type name.
-		*/ 
-		protected RDFPropertyFactory getPropertyFactoryByTypeName(final String typeName)
-		{
-			return (RDFPropertyFactory)typeNamePropertyFactoryMap.get(typeName.toLowerCase());	//get the property factory keyed to the lowercase version of this type name
-		}
-		
-	/**A map of property factories keyed to the lowercase version of the profile.*/
-	private final Map profilePropertyFactoryMap=new HashMap();	
-
-		/**Registers a property factory by profile.
-		@param profile The profile for which this property factory can create RDF property resources.
-		@param propertyFactory The property factory to be registered with this profile.
-		*/	
-		public void registerPropertyFactoryByProfile(final String profile, final RDFPropertyFactory propertyFactory)
-		{
-			profilePropertyFactoryMap.put(profile.toLowerCase(), propertyFactory);	//put the property factory in the map, keyed to the lowercase version of the profile
+			profileMap.put(profileName.toLowerCase(), profile);	//put the profile in the map, keyed to the lowercase version of the profile name
 		}
 
-		/**Retrieves a property factory to create RDF property resources for the given value profile.
-		@param profile The profile for which a property factory should be returned.
-		@return A property factory for this profile, or <code>null</code> if there
-			is no property factory registered for this profile.
+		/**Retrieves a profile for the given profile name.
+		@param profileName The name of the profile to return, or <code>null</code>
+			if the predefined profile should be returned.
+		@return A profile for this profile name, or <code>null</code> if there
+			is no profile registered for this profile name.
+		@see #getPredefinedProfile
 		*/ 
-		protected RDFPropertyFactory getPropertyFactoryByProfile(final String profile)
+		protected Profile getProfile(final String profileName)
 		{
-			return (RDFPropertyFactory)profilePropertyFactoryMap.get(profile.toLowerCase());	//get the property factory keyed to the lowercase version of this profile
+			return profileName!=null ? (Profile)profileMap.get(profileName.toLowerCase()) : getPredefinedProfile();	//get the profile keyed to the lowercase version of the profile name, or return the predefined profile if null was passed
 		}
 
 	/**A map of property value factories keyed to the lowercase version of the value type.*/
@@ -108,46 +71,10 @@ public class DirectoryRDFProcessor extends AbstractRDFProcessor implements Direc
 			return (RDFPropertyValueFactory)valueTypePropertyValueFactoryMap.get(valueType.toLowerCase());	//get the property value factory keyed to the lowercase version of this value type
 		}
 		
-	/**A map of property value factories keyed to the lowercase version of the profile.*/
-	private final Map profilePropertyValueFactoryMap=new HashMap();	
-
-		/**Registers a property value factory by profile.
-		@param profile The profile for which this property value factory can create RDF objects.
-		@param propertyValueFactory The property value factory to be registered with this profile.
-		*/	
-		public void registerPropertyValueFactoryByProfile(final String profile, final RDFPropertyValueFactory propertyValueFactory)
-		{
-			profilePropertyValueFactoryMap.put(profile.toLowerCase(), propertyValueFactory);	//put the property value factory in the map, keyed to the lowercase version of the profile
-		}
-
-		/**Retrieves a property value factory to create RDF objects for the given value profile.
-		@param profile The profile for which a property value factory should be returned.
-		@return A property value factory for this profile, or <code>null</code> if there
-			is no property value factory registered for this profile.
-		*/ 
-		protected RDFPropertyValueFactory getPropertyValueFactoryByProfile(final String profile)
-		{
-			return (RDFPropertyValueFactory)profilePropertyValueFactoryMap.get(profile.toLowerCase());	//get the property value factory keyed to the lowercase version of this profile
-		}
-
 	/**Default constructor.*/
 	public DirectoryRDFProcessor()
 	{
-			//register property URIs for the predefined types
-		registerPropertyURI(SOURCE_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, SOURCE_TYPE.toLowerCase()));	//SOURCE		
-		registerPropertyURI(NAME_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, SOURCE_TYPE.toLowerCase()));	//NAME
-		registerPropertyURI(PROFILE_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, SOURCE_TYPE.toLowerCase()));	//PROFILE		
-		registerPropertyURI(BEGIN_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, SOURCE_TYPE.toLowerCase()));	//BEGIN
-		registerPropertyURI(END_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, SOURCE_TYPE.toLowerCase()));	//END		
-			//register ourselves as a property value factory for the standard value types
-		registerPropertyValueFactoryByValueType(URI_VALUE_TYPE, this);			
-		registerPropertyValueFactoryByValueType(TEXT_VALUE_TYPE, this);		
-		registerPropertyValueFactoryByValueType(DATE_VALUE_TYPE, this);		
-		registerPropertyValueFactoryByValueType(TIME_VALUE_TYPE, this);		
-		registerPropertyValueFactoryByValueType(DATE_TIME_VALUE_TYPE, this);		
-		registerPropertyValueFactoryByValueType(INTEGER_VALUE_TYPE, this);		
-		registerPropertyValueFactoryByValueType(BOOLEAN_VALUE_TYPE, this);		
-		registerPropertyValueFactoryByValueType(FLOAT_VALUE_TYPE, this);		
+		this(new RDF());	//construct the class with a default RDF data model
 	}
 
 	/**Constructor that specifies an existing data model to continue filling.
@@ -156,6 +83,15 @@ public class DirectoryRDFProcessor extends AbstractRDFProcessor implements Direc
 	public DirectoryRDFProcessor(final RDF rdf)
 	{
 		super(rdf);  //construct the parent class
+			//register the predefined profile as a property value factory for the standard value types
+		registerPropertyValueFactoryByValueType(URI_VALUE_TYPE, getPredefinedProfile());
+		registerPropertyValueFactoryByValueType(TEXT_VALUE_TYPE, getPredefinedProfile());
+		registerPropertyValueFactoryByValueType(DATE_VALUE_TYPE, getPredefinedProfile());
+		registerPropertyValueFactoryByValueType(TIME_VALUE_TYPE, getPredefinedProfile());
+		registerPropertyValueFactoryByValueType(DATE_TIME_VALUE_TYPE, getPredefinedProfile());
+		registerPropertyValueFactoryByValueType(INTEGER_VALUE_TYPE, getPredefinedProfile());
+		registerPropertyValueFactoryByValueType(BOOLEAN_VALUE_TYPE, getPredefinedProfile());
+		registerPropertyValueFactoryByValueType(FLOAT_VALUE_TYPE, getPredefinedProfile());
 	}
 
 	/**Processes a directory and converts content lines into property of the
@@ -164,17 +100,17 @@ public class DirectoryRDFProcessor extends AbstractRDFProcessor implements Direc
 		are created and added to the resource as a property. The property and
 		value are created using factories obtained in the following manner:</p>
 	<ol>
-		<li>Obtain a property factory from the type name.</li>
-		<li>If no property factory is available for the type name, or it cannot
-			create a property resource, obtain a property factory for the profile.</li>
-		<li>If no property factory has been obtained, attempt to create a property
-			for one of the predefined types using the processor property factory.</li> 
-		<li>If no RDF property object can be created, the content line is ignored.</li>
-		<li>If the content line has an explicit value type, obtain a property value
-			factory for that value type.</li>
-		<li>If no property value factory is available for the value type, or it
-			cannot create a property value, obtain a property value factory for the
-			profile.</li>
+		<li>If a profile is registered that implements
+			<code>RDFPropertyFactory</code>, it is used to create the property.
+			Otherwise, the predefined profile is asked to create the property.</li>
+		<li>If the content line doesn't specifiy a value type, but the profile
+			implements <code>ValueFactory</code>, that profile is asked for the
+			value type.</li>
+		<li>If the profile implements <code>RDFPropertyValueFactory</code>, the
+			profile is asked to create the value.</li>
+		<li>If there is a value type and there is a property value factory
+			specifically registered for that value type, it is asked to create the
+			value.</li>
 		<li>If no RDF property value object can be created, the content line is
 			ignored.</li>
 	</ol> 
@@ -190,47 +126,45 @@ public class DirectoryRDFProcessor extends AbstractRDFProcessor implements Direc
 		while(contentLineIterator.hasNext())	//while there are more content lines
 		{
 			final ContentLine contentLine=(ContentLine)contentLineIterator.next();	//get the next content line
+			final String profileName=contentLine.getProfile();	//get the name of this content line's profile 
+			final Profile profile=getProfile(profileName);	//see if we have a profile registered with this profile name
 			RDFResource property=null;	//we'll try to get the property resource to use
-				//try to create a property from a property factory registered with the type name
-			final RDFPropertyFactory typeNamePropertyFactory=getPropertyFactoryByTypeName(contentLine.getTypeName());	//try to get a property factory for the type name
-			if(typeNamePropertyFactory!=null)	//if there is a property factory for this type name
+			if(profile instanceof RDFPropertyFactory)	//if this profile knows how to create properties
 			{
-				property=typeNamePropertyFactory.createProperty(rdf, contentLine);	//try to create a property
+				property=((RDFPropertyFactory)profile).createProperty(rdf, contentLine);	//ask the profile to create a property for this content line
 			}
-				//try to create a property from a property factory registered with the profile
-			if(property==null && contentLine.getProfile()!=null)	//if there is yet no property, and this content line has a profile
+			if(property==null && profile!=getPredefinedProfile())	//if we still don't know the property, and we didn't already check the predefined profile 
 			{
-				final RDFPropertyFactory profilePropertyFactory=getPropertyFactoryByProfile(contentLine.getProfile());	//try to get a property factory for the profile
-				if(profilePropertyFactory!=null)	//if there is a property factory for this profile
-				{
-					property=profilePropertyFactory.createProperty(rdf, contentLine);	//try to create a property
-				}
-			}
-				//try to create a property from our own property factory
-			if(property==null)	//if there is still no property
-			{
-				property=createProperty(rdf, contentLine);	//try to create a property ourselves
+				property=getPredefinedProfile().createProperty(rdf, contentLine);	//ask the predefined profile for the property
 			}
 			if(property!=null)	//if we have a property
 			{
 				RDFObject value=null;	//we'll try to create an RDF object from the value
 					//try to create a property value from a property value factory registered with the value type
-				final String valueType=contentLine.getParamValue(VALUE_PARAM_NAME);	//get the value type parameter
-				if(valueType!=null)	//if there is an explicit value type
+				String valueType=contentLine.getParamValue(VALUE_PARAM_NAME);	//get the value type parameter
+				if(valueType==null)	//if the value type wasn't explicitly given
+				{
+					if(profile!=null)	//if there is a profile for this profile name
+					{
+						valueType=profile.getValueType(contentLine.getProfile(), contentLine.getGroup(), contentLine.getTypeName(), contentLine.getParamList());	//ask this profile's value factory for the value type
+					}
+					if(valueType==null && profile!=getPredefinedProfile())	//if we still don't know the type, and we didn't already check the predefined profile 
+					{
+						valueType=getPredefinedProfile().getValueType(contentLine.getProfile(), contentLine.getGroup(), contentLine.getTypeName(), contentLine.getParamList());	//ask the predefined profile for the value type
+					}
+				}
+					//try to create a property value from the profile
+				if(profile instanceof RDFPropertyValueFactory)	//if there is yet no value, and profile is an RDF property value factory
+				{
+					((RDFPropertyValueFactory)profile).createPropertyValue(rdf, contentLine, valueType);	//ask the profile to create an an RDF object for the value
+				}
+					//try to create a property value from any value factory specifically registered for this value type
+				if(value==null && valueType!=null)	//if we don't have a value but we determined a value type
 				{
 					final RDFPropertyValueFactory valueTypePropertyValueFactory=getPropertyValueFactoryByValueType(valueType);	//try to get a property value factory registered with the value type
 					if(valueTypePropertyValueFactory!=null)	//if we have a property value factory registered with the value type
 					{
-						value=valueTypePropertyValueFactory.createPropertyValue(rdf, contentLine);	//ask the factory to create an RDF object for the value 
-					}
-				}
-					//try to create a property value from a property value factory registered with the profile
-				if(value==null && contentLine.getProfile()!=null)	//if there is yet no value, and this content line has a profile
-				{
-					final RDFPropertyValueFactory profilePropertyValueFactory=getPropertyValueFactoryByProfile(contentLine.getProfile());	//try to get a property value factory for the profile
-					if(profilePropertyValueFactory!=null)	//if there is a property value factory for this profile
-					{
-						value=profilePropertyValueFactory.createPropertyValue(rdf, contentLine);	//try to create an an RDF object for the value
+						value=valueTypePropertyValueFactory.createPropertyValue(rdf, contentLine, valueType);	//ask the factory to create an RDF object for the value 
 					}
 				}
 				if(value!=null)	//if we  have a value (we also have a property, or we wouldn't have made it here)
@@ -242,39 +176,4 @@ public class DirectoryRDFProcessor extends AbstractRDFProcessor implements Direc
 		return rdf;  //return the RDF data model
 	}
 	
-	/**Creates an RDF property resource to represent the given directory
-		content line.
-	@param rdf The RDF data model to use when creating the RDF property resource.
-	@param contentLine The directory content line to be converted to an RDF
-		property.
-	@return An RDF property resource representing the directory content line,
-		or <code>null</code> if an RDF property resource cannot be creatd. 
-	*/
-	public RDFResource createProperty(final RDF rdf, final ContentLine contentLine)
-	{
-		final URI propertyURI=getPropertyURI(contentLine.getTypeName());	//get whatever property URI we have associated with this type name, if any
-		return propertyURI!=null ? rdf.locateResource(propertyURI) : null;	//if we have a property URI, return a resource for it from the RDF data model
-	}	
-
-	/**Creates an RDF object to represent the value of the given directory
-		content line.
-	@param rdf The RDF data model to use when creating the RDF objects.
-	@param contentLine The directory content line to be converted to an RDF
-		object.
-	@return An RDF object representing the value of the directory content line,
-		or <code>null</code> if an RDF object cannot be creatd. 
-	*/
-	public RDFObject createPropertyValue(final RDF rdf, final ContentLine contentLine)
-	{
-		final String valueType=contentLine.getParamValue(VALUE_PARAM_NAME);	//get the value type parameter
-		if(valueType!=null)	//if there is an explicit value type
-		{ 
-			if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//if this is the "text" value type
-			{
-				return new Literal(contentLine.getValue().toString());	//return the string value of the content line
-			}
-		}
-		return null;	//show that we can't create a value
-	}
-
 }

@@ -8,10 +8,6 @@ import com.garretwilson.io.*;
 	the lines of a <code>text/directory</code> as defined in 
 	<a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
 	"A MIME Content-Type for Directory Information".
-<p>Each value factory may create and return value object from
-	<code>createValues()</code>, or simply return from <code>getValueType()</code>
-	a predefined value type or a value type known to be recognized by another
-	registered <code>ValueFactory</code>.</p>
 @author Garret Wilson
 */
 public interface ValueFactory
@@ -38,18 +34,5 @@ public interface ValueFactory
 	@see NameValuePair
 	*/	
 	public Object[] createValues(final String profile, final String group, final String name, final List paramList, final String valueType, final LineUnfoldParseReader reader) throws IOException, ParseIOException;
-
-	/**Determines the value type of the given content line value.
-	@param profile The profile of this content line, or <code>null</code> if
-		there is no profile.
-	@param group The group specification, or <code>null</code> if there is no group.
-	@param name The name of the information.
-	@param paramList The list of parameters, each item of which is a
-		<code>NameValuePair</code> with a name of type <code>String</code> and a
-		value of type <code>String</code>.
-	@return The value type of the content line, or <code>null</code> if the
-		value type cannot be determined.
-	*/	
-	public String getValueType(final String profile, final String group, final String name, final List paramList);
 	
 }

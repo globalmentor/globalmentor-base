@@ -18,9 +18,10 @@ public interface RDFPropertyValueFactory
 	@param rdf The RDF data model to use when creating the RDF objects.
 	@param contentLine The directory content line to be converted to an RDF
 		object.
+	@param valueType The type of directory value the content line represents.
 	@return An RDF object representing the value of the directory content line,
 		or <code>null</code> if an RDF object cannot be creatd. 
 	*/
-	public RDFObject createPropertyValue(final RDF rdf, final ContentLine contentLine);
+	public RDFObject createPropertyValue(final RDF rdf, final ContentLine contentLine, final String valueType);
 	
 }
