@@ -20,7 +20,7 @@ public class DefaultResource implements Resource
 		/**Sets the reference URI of the resource.
 		@param uri The new reference URI.
 		*/
-		protected void setReferenceURI(final URI uri) {referenceURI=uri;}
+//G***decide if we want this or not		protected void setReferenceURI(final URI uri) {referenceURI=uri;}
 
 	/**Constructs a resource with a reference URI.
 	@param referenceURI The reference URI for the new resource.
