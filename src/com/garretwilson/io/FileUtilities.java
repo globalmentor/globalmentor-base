@@ -2,8 +2,11 @@ package com.garretwilson.io;
 
 import java.io.*;
 import java.net.MalformedURLException;
+
+import com.garretwilson.lang.CharSequenceUtilities;
 import com.garretwilson.lang.StringUtilities;
 import com.garretwilson.lang.SystemConstants;
+import com.garretwilson.net.URIUtilities;
 import com.garretwilson.net.URLUtilities;
 import com.garretwilson.util.Debug;
 
@@ -186,6 +189,7 @@ public class FileUtilities implements FileConstants
 			{
 					//get the relative path of the file and put a path separator on the
 					//  front of it to represent the local root directory
+//TODO fix this to work with the new URI relativize
 				return String.valueOf(FileConstants.PATH_SEPARATOR)+
 						URLUtilities.getRelativePath(rootDirectory.toURL(), file.toURL());
 			}
@@ -238,12 +242,12 @@ public class FileUtilities implements FileConstants
 		does not ensure that such a file actually exists.
 	@param string The string of characters which may represent a filename.
 	@return <code>true</code> if the string contains no illegal filname characters.
-	@see FileConstants#ILLEGAL_FILENAME_CHARS
+	@see FileConstants#RESERVED_CHARACTERS
 	*/
 	static public boolean isFilename(final String string)
 	{
-		//return true if the string isn't null and there are no illegal characters in the string
-		return string!=null && StringUtilities.charIndexOf(string, ILLEGAL_FILENAME_CHARS)<0;
+			//the string is a filename if the string ing isn't null and there are no illegal characters in the string
+		return string!=null && StringUtilities.charIndexOf(string, RESERVED_CHARACTERS)<0;
 	}
 
 	/**Checks to see if a particular file exists. If the file does not exist, yet
@@ -292,21 +296,33 @@ public class FileUtilities implements FileConstants
 
 	protected final static char REPLACEMENT_CHAR='_';  //the character to use to replace any other character  G***maybe move these up and/or rename
 
-	/**Creates a filename from a string by replacing every character not allowed
-		in a filename with an underscore ('_') character. Illegal filename characters
-		are those specified in the <code>FileConstants.ILLEGAL_FILENAME_CHARS</code>
-		string.
-	@param string The string to be changed to a filename.
+	/**Escape all reserved filename characters to a two-digit hex
+		representation using '_' as an escape character.
+	Note that this encodes path separators, and therefore this
+		method should only be called on filenames, not paths.
+	@param string The filename string to be encoded.
 	@return The string modified to be a filename.
-	@see FileConstants#ILLEGAL_FILENAME_CHARS
+	@see FileConstants#RESERVED_CHARACTERS
+	@see FileConstants#ESCAPE_CHARACTER
+	@see CharSequenceUtilities#escapeHex
 	@see #isFilename
 	*/
-	public static String createFilename(final String string)
+	public static String encode(final String filename)
 	{
-		if(isFilename(string))  //if the string is already a filename (we'll check all the characters, assuming that most of the time the strings will already be valid filenames, making this more efficient)
-		  return string;  //return the string, because it doesn't need to be converted
-		else  //if the string isn't a filename already
-			return StringUtilities.replace(string, ILLEGAL_FILENAME_CHARS, REPLACEMENT_CHAR); //convert any illegal filename characters to the underscore and return the new string
+		return CharSequenceUtilities.escapeHex(filename, RESERVED_CHARACTERS, ESCAPE_CHARACTER, 2);
+	}
+
+	/**Unescapes all characters in a string that are encoded 
+		using '_' as an escape character followed by two hex digits.
+	@param string The filename string to be decoded.
+	@return The filename string decoded back to a normal string.
+	@see FileConstants#RESERVED_CHARACTERS
+	@see FileConstants#ESCAPE_CHARACTER
+	@see CharSequenceUtilities#unescapeHex
+	*/
+	public static String decode(final String filename)
+	{
+		return CharSequenceUtilities.unescapeHex(filename, ESCAPE_CHARACTER, 2);	//decode the filename
 	}
 
 	/**Deletes a file, throwing an exception if unsuccessful.

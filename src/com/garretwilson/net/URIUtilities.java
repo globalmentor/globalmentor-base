@@ -2,13 +2,14 @@ package com.garretwilson.net;
 
 import java.io.*;
 import java.net.*;
-import java.net.URI;	//G***del when other URI is removed
 import com.garretwilson.io.*;
+import com.garretwilson.lang.CharSequenceUtilities;
+import com.garretwilson.lang.IntegerUtilities;
 
-
-
-/**Various URL manipulating functions.
-@see java.net.URL
+/**Various URI manipulating functions for working with URIs as defined in
+	in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
+	"Uniform Resource Identifiers (URI): Generic Syntax".
+@see java.net.URI
 */
 public class URIUtilities implements URIConstants, URIInputStreamable
 {
@@ -320,5 +321,32 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		}
 	}
 */
+
+	/**Encodes the URI reserved characters in the string,
+		using '%' as an escape character, according to the URI encoding rules 
+		in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
+		"Uniform Resource Identifiers (URI): Generic Syntax".
+	@param uri The data to URI-encode.
+	@return A string containing the escaped data.
+	@see URIConstants#ESCAPE_CHARACTER
+	@see URIConstants#RESERVED_CHARACTERS
+	*/
+	public static String encode(final String uri)
+	{
+		return CharSequenceUtilities.escapeHex(uri, RESERVED_CHARACTERS, ESCAPE_CHARACTER, 2);	//escape according to URI encoding rules
+	}
+
+	/**Decodes the escaped ('%') characters in the character iterator
+		according to the URI encoding rules in
+		<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
+		"Uniform Resource Identifiers (URI): Generic Syntax".
+	@param uri The data to URI-decode.
+	@return A string containing the unescaped data.
+	@see URIConstants#ESCAPE_CHARACTER
+	*/
+	public static String decode(final String uri)
+	{
+		return CharSequenceUtilities.unescapeHex(uri, ESCAPE_CHARACTER, 2);	//unescape according to URI encoding rules
+	}
 
 }

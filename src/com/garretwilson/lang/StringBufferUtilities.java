@@ -573,5 +573,4 @@ public class StringBufferUtilities implements CharacterConstants
 		return stringBuffer;  //return the resulting string buffer
 	}
 
-
 }

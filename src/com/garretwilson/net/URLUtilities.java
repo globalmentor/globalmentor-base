@@ -203,6 +203,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	*/
 	public static String getRelativePath(final URL contextURL, final URL url) throws MalformedURLException
 	{
+//TODO fix this to work with the new URI relativize
 /*G***del
 		final String canonicalReferenceDirectoryPath=referenceDirectory.getCanonicalPath(); //convert the reference directory to its canonical form
 		final String canonicalFilePath=file.getCanonicalPath(); //convert the file to its canonical form
