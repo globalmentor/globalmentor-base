@@ -1,6 +1,7 @@
 package com.garretwilson.text.directory;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 import com.garretwilson.io.*;
 import com.garretwilson.lang.*;
@@ -88,10 +89,14 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	*/
 	public Object[] createValues(final String profile, final String group, final String name, final List paramList, final String valueType, final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
-		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//if this is the "text" value type
+		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//text
 		{
 			return processTextValueList(reader, paramList);	//process the text value
 		}
+		else if(URI_VALUE_TYPE.equalsIgnoreCase(valueType))	//uri
+		{
+			return new Object[]{processURIValue(reader)};	//process the URI value type			
+		}		
 		return null;	//show that we can't create a value
 	}
 	
@@ -162,6 +167,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 							case '\\':
 							case ',':
 								stringBuffer.append(escapedChar);	//escaped backslashes and commas get appended normally
+								break;
 							default:	//if something else was escaped, we don't recognize it
 								throw new ParseUnexpectedDataException("\\,"+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR+TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR, escapedChar, reader);	//show that we didn't expect this character here				
 						}
@@ -179,6 +185,28 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		reader.resetPeek();	//reset peeking
 //	G***del Debug.trace("returning string: ", stringBuffer);	//G***del			
 		return stringBuffer.toString();	//return the string we've collected so far
+	}
+
+	/**Processes the value for the URI value types.
+	<p>Whatever delimiter ended the value will be left in the reader.</p>
+	@param reader The reader that contains the lines of the directory.
+	@return A URI object representing the value.
+	@exception IOException Thrown if there is an error reading the directory.
+	@exception ParseIOException Thrown if there is a an error interpreting the directory.
+	*/
+	public static URI processURIValue(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	{
+		final String uriString=reader.readStringUntilChar(CR);	//read the string representing the URI
+		try
+		{
+			return new URI(uriString);	//create a URI
+		}
+		catch(URISyntaxException uriSyntaxException)	//if the URI was not syntactically correct
+		{
+			final ParseIOException parseIOException=new ParseIOException(uriSyntaxException.getMessage(), reader);	//create an I/O parse exception from the URI syntax exception
+			parseIOException.initCause(uriSyntaxException);	//show what caused this exception
+			throw parseIOException;	//throw the I/O parse exceptoin
+		}
 	}
 
 	/**Serializes a line's value.
@@ -214,12 +242,17 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	*/	
 	public boolean serializeValue(final String profile, final String group, final String name, final List paramList, final Object value, final String valueType, final Writer writer) throws IOException
 	{
-		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//if this is the "text" value type
+		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//text
 		{
 			serializeTextValue(((LocaleText)value).getText(), writer);	//serialize the text
 //G***del			writer.write(((LocaleText)value).getText());	//serialize the text
 			return true;	//show that we serialized the value 
 		}
+		else if(URI_VALUE_TYPE.equalsIgnoreCase(valueType))	//uri
+		{
+			writer.write(((URI)value).toString());	//write the URI
+			return true;	//show that we serialized the value 
+		}		
 		return false;	//show that we can't serialize the value
 	}
 
@@ -230,7 +263,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	protected final static String[] TEXT_REPLACEMENT_STRINGS=new String[]{"\\n", "\\\\", "\\,"};
 
 	/**Serializes a text value.
-	<p>The newline character '\n' will be be converted to "\n", and 
+	<p>CR, LF, and CRLF will be be converted to "\n", and 
 		and '\\' and ',' will be escaped with '\\'.</p>
 	@param text The text value to serialize.
 	@param writer The writer to which the directory information should be written.
@@ -238,8 +271,10 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	*/	
 	public void serializeTextValue(final String text, final Writer writer) throws IOException
 	{
-			//replace characters with their escaped versions and write the resulting string
-		writer.write(StringUtilities.replace(text, TEXT_MATCH_CHARS, TEXT_REPLACEMENT_STRINGS));
+		final StringBuffer stringBuffer=new StringBuffer(text);	//create a string buffer to use for escaping values
+		StringBufferUtilities.replace(stringBuffer, CRLF, "\\n");	//replace every occurrence of CRLF with "\n" (there may still be lone CRs or LFs
+		StringBufferUtilities.replace(stringBuffer, TEXT_MATCH_CHARS, TEXT_REPLACEMENT_STRINGS);	//replace characters with their escaped versions
+		writer.write(stringBuffer.toString());	//write the resulting string
 	}
 
 	/**Creates a directory from the given content lines.

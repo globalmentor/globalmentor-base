@@ -1,5 +1,6 @@
 package com.garretwilson.text.directory.vcard;
 
+import java.net.*;
 import java.util.*;
 import com.garretwilson.text.directory.*;
 import com.garretwilson.util.*;
@@ -71,6 +72,12 @@ public class VCard extends Directory implements VCardConstants
 		*/
 		public List getAddressList() {return addressList;}
 
+		/**@return An array of the delivery addresses for the vCard object.*/
+		public Address[] getAddresses()
+		{
+			return (Address[])getAddressList().toArray(new Address[getAddressList().size()]);	//return an array version of the address list
+		}
+
 		/**Sets the components of the delivery addresss for the vCard object.
 		@param addresses The array of address.
 		*/
@@ -88,16 +95,22 @@ public class VCard extends Directory implements VCardConstants
 		*/
 		public List getLabelList() {return labelList;}
 
+		/**@return An array of the delivery address labels for the vCard object.*/
+		public Label[] getLabels()
+		{
+			return (Label[])getLabelList().toArray(new Label[getLabelList().size()]);	//return an array version of the label list
+		}
+
 		/**Sets the formatted text corresponding to delivery addresses of the
 			object the vCard represents.
 		@param labels The array of delivery address labels.
 		*/
-		public void setLabels(final LocaleText[] labels)
+		public void setLabels(final Label[] labels)
 		{
 			labelList.clear();	//clear the list
 			CollectionUtilities.addAll(labelList, labels);	//add the new values
 		}
-
+		
 			//telecommunications addressing types
 
 	/**The list of telephone numbers for telephony communication with the object the vCard represents.*/
@@ -240,7 +253,20 @@ public class VCard extends Directory implements VCardConstants
 		*/
 		public void setNote(final LocaleText note) {this.note=note;}
 
-//TODO add URL and other explanatory types
+//TODO add other explanatory types
+
+	/**The URL associated with the vCard*/
+	private URI url=null;
+
+		/**@return The URL that is associated with the vCard, or <code>null</code>
+			if there is no URL.
+		*/
+		public URI getURL() {return url;}
+
+		/**Sets the URL that is associated with the vCard.
+		@param url The URL, or <code>null</code> if there is no URL.
+		*/
+		public void setURL(final URI url) {this.url=url;}
 
 	/**The the version of the vCard specification used to format this vCard.*/
 	private String version=VCARD_VERSION_VALUE;

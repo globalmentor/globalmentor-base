@@ -1302,8 +1302,12 @@ end;
 	@param replaceString The string to replace.
 	@param withString The string that will replace replaceString.
 	@return A new string with the specified information replaced.*/
-	static public String replace(final String inString, final String replaceString, final String withString)
+	public static String replace(final String inString, final String replaceString, final String withString)
 	{
+		final StringBuffer stringBuffer=new StringBuffer(inString);	//create a string buffer from the string
+		StringBufferUtilities.replace(stringBuffer, replaceString, withString);	//replace the contents of the string buffer
+		return stringBuffer.toString();	//return the string in which we replaced the charactersz
+/*G***del when works
 		final StringBuffer outStringBuffer=new StringBuffer();	//create a string buffer to receive the output of processing
 		int beginSearchIndex=0;	//we'll start searching from the beginning of the string
 		int nextReplaceIndex;	//this will hold the next location of the replaceString each time we search for it
@@ -1320,6 +1324,7 @@ end;
 			beginSearchIndex=nextReplaceIndex+replaceString.length();	//skip over the string we replaced in the input string
 		}
 		return outStringBuffer.toString();	//convert the output buffer to a string and return it
+*/
 /*G***del when works
 		String outString=inString;	//this is the string we'll process
 		int i;	//this will hold the location of the string to replace

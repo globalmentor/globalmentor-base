@@ -430,6 +430,34 @@ public class StringBufferUtilities implements CharacterConstants
 		return replacementCount;  //show how many characters we replaced
 	}
 
+	/**Replaces every occurrence of a specified string with another string.
+	@param stringBuffer The string buffer in which the information will be replaced.
+	@param replaceString The string to replace.
+	@param withString The string that will replace replaceString.
+	@return The number of replacements made.
+	*/
+	static public int replace(final StringBuffer stringBuffer, final String replaceString, final String withString)
+	{
+		int replacementCount=0; //show that we have not replaced any characters, yet
+		int beginSearchIndex=0;	//we'll start searching from the beginning of the string
+		int nextReplaceIndex;	//this will hold the next location of the replaceString each time we search for it
+		while(beginSearchIndex<stringBuffer.length())	//while we haven't examined all the characters
+		{
+			nextReplaceIndex=stringBuffer.indexOf(replaceString, beginSearchIndex);	//search for another occurrence of the string
+			if(nextReplaceIndex>=0)	//if there is another occurrence of the string to replace
+			{
+				stringBuffer.replace(nextReplaceIndex, nextReplaceIndex+replaceString.length(), withString);	//replace this string with the replacement string
+				beginSearchIndex=nextReplaceIndex+replaceString.length();	//skip over the string we replaced in the input string
+				++replacementCount; //show that we replaced a character
+			}
+			else	//if there are no more occurrences of the string to replace
+			{
+				break;	//stop searching for more matches
+			}
+		}
+		return replacementCount;  //show how many characters we replaced
+	}
+
 	/**Replaces all runs of the given character with another character.
 		A run is subsequent repeated characters.
 		If a run is shorter than <code>minRunLength</code> or longer than

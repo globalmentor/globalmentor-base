@@ -2,6 +2,7 @@ package com.garretwilson.text.directory.vcard;
 
 import java.io.*;
 import java.lang.ref.*;
+import java.net.*;
 import java.util.*;
 import com.garretwilson.io.*;
 import com.garretwilson.itu.*;
@@ -54,7 +55,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		registerValueType(SORT_STRING_TYPE, TEXT_VALUE_TYPE);	//SORT-STRING: text
 		registerValueType(SOUND_TYPE, BINARY_VALUE_TYPE);	//SOUND: binary
 		registerValueType(UID_TYPE, TEXT_VALUE_TYPE);	//UID: text
-		registerValueType(URL_TYPE, TEXT_VALUE_TYPE);	//URL: uri
+		registerValueType(URL_TYPE, URI_VALUE_TYPE);	//URL: uri
 		registerValueType(VERSION_TYPE, TEXT_VALUE_TYPE);	//VERSION: text
 					//security types
 		registerValueType(CLASS_TYPE, TEXT_VALUE_TYPE);	//CLASS: text
@@ -74,7 +75,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		<li><code>PHOTO_TYPE</code></li>
 		<li><code>BDAY_TYPE</code></li>
 		<li><code>ADR_TYPE</code> <code>Address</code></li>
-		<li><code>LABEL_TYPE</code> <code>LocaleText</code></li>
+		<li><code>LABEL_TYPE</code> <code>Label</code></li>
 		<li><code>TEL_TYPE</code> <code>Telephone</code></li>
 		<li><code>EMAIL_TYPE</code> <code>LocaleText</code></li>
 		<li><code>MAILER_TYPE</code></li>
@@ -130,6 +131,30 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		else if(ADR_TYPE.equalsIgnoreCase(name))	//ADR
 		{
 			return new Object[]{processADRValue(reader, paramList)};	//process the ADR value
+		}
+		else if(LABEL_TYPE.equalsIgnoreCase(name))	//LABEL
+		{
+			final LocaleText[] localeTexts=PredefinedProfile.processTextValueList(reader, paramList);	//process the text values
+			int addressType;	//we'll determine the address type
+			final String[] types=DirectoryUtilities.getParamValues(paramList, TYPE_PARAM_NAME);	//get the address types specified
+			if(types.length>0)	//if there are types given
+			{
+				addressType=Address.NO_ADDRESS_TYPE;	//start out not knowing any address type
+				for(int i=types.length-1; i>=0; --i)	//look at each address type
+				{
+					addressType|=getAddressType(types[i]);	//get this address type and combine it with the ones we've found already
+				}
+			}
+			else	//if there are no types given
+			{
+				addressType=Address.DEFAULT_ADDRESS_TYPE;	//use the default address type
+			}
+			final Label[] labels=new Label[localeTexts.length];	//create a new array of labels
+			for(int i=localeTexts.length-1; i>=0; --i)	//look at each locale text object
+			{
+				labels[i]=new Label(localeTexts[i], addressType);	//create a label from the locale text
+			}
+			return labels;	//return the labels we constructed from the locale test information
 		}
 			//organizational types
 		else if(ORG_TYPE.equalsIgnoreCase(name))	//ORG
@@ -597,7 +622,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		<li><code>PHOTO_TYPE</code></li>
 		<li><code>BDAY_TYPE</code></li>
 		<li><code>ADR_TYPE</code> <code>Address</code></li>
-		<li><code>LABEL_TYPE</code> <code>LocaleText</code></li>
+		<li><code>LABEL_TYPE</code> <code>Label</code></li>
 		<li><code>TEL_TYPE</code> <code>Telephone</code></li>
 		<li><code>EMAIL_TYPE</code> <code>LocaleText</code></li>
 		<li><code>MAILER_TYPE</code></li>
@@ -694,13 +719,13 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			//place the field arrays into an array
 		final String[][] adr=new String[][]
 				{
-					new String[]{address.getPostOfficeBox()},
+					new String[]{address.getPostOfficeBox()!=null ? address.getPostOfficeBox() : ""},
 					address.getExtendedAddresses(),
 					address.getStreetAddresses(),
-					new String[]{address.getLocality()},
-					new String[]{address.getRegion()},
-					new String[]{address.getPostalCode()},
-					new String[]{address.getCountryName()}
+					new String[]{address.getLocality()!=null ? address.getLocality() : ""},
+					new String[]{address.getRegion()!=null ? address.getRegion() : ""},
+					new String[]{address.getPostalCode()!=null ? address.getPostalCode() : ""},
+					new String[]{address.getCountryName()!=null ? address.getCountryName() : ""}
 				};
 		serializeStructuredTextValue(adr, writer);	//serialize the value
 	}
@@ -830,7 +855,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			}
 			else if(LABEL_TYPE.equalsIgnoreCase(typeName))	//LABEL
 			{
-				vcard.getLabelList().add((LocaleText)contentLine.getValue());	//add this label to our list
+				vcard.getLabelList().add((Label)contentLine.getValue());	//add this label to our list
 				continue;	//don't process this content line further
 			}
 					//telecommunications addressing types
@@ -907,6 +932,14 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 					continue;	//don't process this content line further
 				}
 			}
+			else if(URL_TYPE.equalsIgnoreCase(typeName))	//URL
+			{
+				if(vcard.getURL()==null)	//if there is not yet a URL
+				{
+					vcard.setURL((URI)contentLine.getValue());	//set the URL
+					continue;	//don't process this content line further
+				}
+			}
 			else if(VERSION_TYPE.equalsIgnoreCase(typeName))	//VERSION
 			{
 				vcard.setVersion(((LocaleText)contentLine.getValue()).getText());	//set the version
@@ -969,8 +1002,14 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		final Iterator labelIterator=vcard.getLabelList().iterator();	//get an iterator to the labels
 		while(labelIterator.hasNext())	//while there are more labels
 		{
-			final LocaleText label=(LocaleText)labelIterator.next();	//get the next label
-			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, LABEL_TYPE, label));	//LABEL
+			final Label label=(Label)labelIterator.next();	//get the next label
+			final ContentLine contentLine=DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, LABEL_TYPE, label);	//LABEL
+			final String[] addressTypeNames=getAddressTypeNames(label.getAddressType());	//get the label type names
+			for(int i=0; i<addressTypeNames.length; ++i)	//look at each address type
+			{
+				DirectoryUtilities.addParam(contentLine.getParamList(), TYPE_PARAM_NAME, addressTypeNames[i]);	//add this address type parameter
+			}
+			contentLineList.add(contentLine);	//add the content line
 		}
 				//telecommunications addressing types
 		final Iterator telIterator=vcard.getTelephoneList().iterator();	//get an iterator to the telephones
@@ -1033,6 +1072,10 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		if(vcard.getNote()!=null)	//NOTE
 		{
 			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, NOTE_TYPE, vcard.getNote()));	//NOTE
+		}
+		if(vcard.getURL()!=null)	//URL
+		{
+			contentLineList.add(new ContentLine(VCARD_PROFILE_NAME, null, URL_TYPE, vcard.getURL()));	//URL
 		}
 			//ignore the given vCard version, and always create "version:3.0"
 		contentLineList.add(new ContentLine(VERSION_TYPE, new LocaleText(VCARD_VERSION_VALUE)));	//VERSION
