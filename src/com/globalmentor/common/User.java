@@ -1,11 +1,13 @@
 package com.globalmentor.common;
 
-import com.garretwilson.util.IDable;;
+import java.security.Principal;
+
+import com.garretwilson.util.IDable;
 
 /**A representation of an individual.
 @author Garret Wilson
 */
-public interface User<I> extends IDable<I>
+public interface User<I> extends IDable<I>, Principal
 {
 
 	/**@return The first name of the user.*/
@@ -15,7 +17,7 @@ public interface User<I> extends IDable<I>
 	public String getLastName();
 
 	/**@return The composite name of the user.*/
-	public String getName();
+	public String getFullName();
 
 	/**@return The password of the user.*/
 	public String getPassword();

@@ -19,8 +19,12 @@ public class HTTPConstants
 	public final static String CONTENT_DESCRIPTION_HEADER="Content-Description";
 	/**The HTTP header indicating the content disposition.*/
 	public final static String CONTENT_DISPOSITION_HEADER="Content-Disposition";
+	/**The HTTP header indicating the canonical location of the resource.*/
+	public final static String CONTENT_LOCATION_HEADER="Content-Location";
 	/**The HTTP header indicating the expiration of the content.*/
 	public final static String EXPIRES_HEADER="Expires";
+	/**The HTTP header indicating the destination of a redirection.*/
+	public final static String LOCATION_HEADER="Location";
 	/**The HTTP pragma header.*/
 	public final static String PRAGMA_HEADER="Pragma";
 		/**The HTTP no-cache pragma header.*/
@@ -44,7 +48,6 @@ public class HTTPConstants
 	public final static String DELETE_METHOD="DELETE";
 	/**The HTTP TRACE method.*/
 	public final static String TRACE_METHOD="TRACE";
-
 	
   /**
    * Status code (200) indicating the request succeeded normally.
