@@ -951,7 +951,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		final Iterator nicknameIterator=vcard.getNicknameList().iterator();	//get an iterator to the nicknames
 		while(nicknameIterator.hasNext())	//while there are more nicknames
 		{
-			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, N_TYPE, (LocaleText)nicknameIterator.next()));	//NICKNAME			
+			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, NICKNAME_TYPE, (LocaleText)nicknameIterator.next()));	//NICKNAME			
 		}
 				//delivery addressing types
 		final Iterator adrIterator=vcard.getAddressList().iterator();	//get an iterator to the addresses
@@ -1027,7 +1027,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		final Iterator categoryIterator=vcard.getCategoryList().iterator();	//get an iterator to the categories
 		while(categoryIterator.hasNext())	//while there are more categories
 		{
-			final LocaleText category=(LocaleText)emailIterator.next();	//get the next category
+			final LocaleText category=(LocaleText)categoryIterator.next();	//get the next category
 			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, CATEGORIES_TYPE, category));	//CATEGORIES
 		}
 		if(vcard.getNote()!=null)	//NOTE

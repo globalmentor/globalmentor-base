@@ -365,11 +365,15 @@ public class FileUtilities implements FileConstants
 	*/
 	public static String removeExtension(final String filename)
 	{
+//G***del Debug.trace("removing extension from: ", filename);	//G***del
 			//G***we may first want to chop off anything before the last '/' or '\'
 			//G***better yet, make sure the extension is after the last slash
 		final int separatorIndex=filename.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
 		if(separatorIndex>=0)  //if we found a separator
+		{
+//G***del Debug.trace("returning: ", filename.substring(0, separatorIndex));	//G***del
 			return filename.substring(0, separatorIndex);  //return everything before the separator
+		}
 		else  //if there is no separator
 			return filename;  //there was no extension to begin with, so just return the original filename
 	}
