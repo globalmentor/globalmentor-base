@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import com.garretwilson.text.CharacterEncoding;
-import com.garretwilson.util.Debug;
 
 /**Class to manipulate input streams.*/
 public class InputStreamUtilities
@@ -59,51 +58,21 @@ public class InputStreamUtilities
 			bytesCopied+=bytesToCopy;	//show that we copied this many bytes
 		}
 		return finalBuffer;	//return the final buffer
-
-/*G***this works; del when the new way works
-		final BufferedInputStream bufferedInputStream=new BufferedInputStream(inputStream);	//create a buffered input stream from the input stream
-		  //G***for some reason, if we don't have a buffered input stream the stream will be truncated at times -- it can't read the whole file at once; make sure it's OK to use a buffered input stream like this
-
-//G***fix Debug.trace("Ready to read from input stream.");  //G***fix
-		final List bufferList=new ArrayList();	//create a list for the buffers
-		final int bufferSize=64*1024;	//use a series of 64K buffer
-		int bufferBytesRead=0;		//show that we haven't read any bytes in this buffer
-		int totalBytesRead=0;	//show that we haven't read anything at all yet
-		do
-		{
-			final byte[] buffer=new byte[bufferSize];	//create a new buffer
-			bufferBytesRead=bufferedInputStream.read(buffer);	//read as much as we can into this buffer G***testing buffered
-			totalBytesRead+=bufferBytesRead;	//update our total bytes read
-			bufferList.add(buffer);	//add this buffer to our list of buffers
-		}
-		while(bufferBytesRead==bufferSize);	//keep adding new buffers until we run out of bytes (leaving one buffer not fully filled)
-		final byte[] finalBuffer=new byte[totalBytesRead];	//create a buffer of the correct length of all the bytes we've read
-		int bytesCopied=0;	//show that we haven't copied any bytes yet
-		for(int i=0; i<bufferList.size(); ++i)	//look at each of our buffers
-		{
-			//all the buffers should be full except for the last one, which will only hold the number of bytes last read
-			final int bytesToCopy=(i<bufferList.size()-1) ? bufferSize : bufferBytesRead;
-			System.arraycopy((byte[])bufferList.get(i), 0, finalBuffer, bytesCopied, bytesToCopy);	//copy bytes from this buffer to our final buffer
-			bytesCopied+=bytesToCopy;	//show that we copied this many bytes
-		}
-		return finalBuffer;	//return the final buffer
-*/
 	}
 
 	/**Attempts to automatically detect the character encoding of a particular
 		input stream based upon its byte order marker (BOM).
-		<p>The input stream must be at its first and support marking and resetting.</p>
+	<p>The input stream must be at its beginning and must support marking
+		and resetting.</p>
 	@param inputStream The stream the encoding of which will be detected.
-	@return The name of the character encoding detected, or <code>null</code>
-		no encoding could be detected.
+	@return The character encoding detected, or <code>null</code> no encoding
+		could be detected.
 	@exception IOException Thrown if an I/O error occurred.
 	*/
-	public static String getBOMEncoding(final InputStream inputStream) throws IOException
+	public static CharacterEncoding getBOMEncoding(final InputStream inputStream) throws IOException
 	{
 		final int BYTE_ORDER_MARK_LENGTH=4; //the number of bytes in the largest byte order mark
 		inputStream.mark(BYTE_ORDER_MARK_LENGTH); //we won't read more than the byte order mark
-//G***del		final StringBuffer prereadCharacters=new StringBuffer();	//we'll store here any characters we preread while looking for the character encoding
-//G***del		String characterEncodingName=null;		//we'll store here the name of the character encoding, when we determine it
 		final byte[] byteOrderMarkArray=new byte[BYTE_ORDER_MARK_LENGTH];	//create an array to hold the byte order mark G***make sure this is initialized to zero bytes---or just read them all, which will but -1 in all the remaining bytes
 		boolean eof=false;	//we'll set this to true if we reach the end of the file
 		for(int i=0; i<byteOrderMarkArray.length && !eof; ++i)	//read each character unless we reach the end of the file (we're using a loop instead of read(int[]) because the latter could read less than the number of bytes requested, even if there are more available)
@@ -123,29 +92,17 @@ public class InputStreamUtilities
 			CharacterEncoding characterEncoding=CharacterEncoding.create(byteOrderMarkArray);	//see if we can recognize the encoding by the beginning characters G***probably create a static CharacterEncoding method to return a string without creating a new objet
 		  if(characterEncoding!=null) //if we got a character encoding
 		  {
-					//throw away the BOM G***fix better
+					//throw away the BOM
 				inputStream.reset();  //reset the stream back to where we found it
-		  	//G***add a characterEncoding.getBOM() and throw away that many bytes
-		  	final int byteThrowAwayCount=characterEncoding.getBytesPerCharacter()==1 ? 3 : characterEncoding.getBytesPerCharacter();	//G***hack; fix better
-				for(int i=byteThrowAwayCount-1; i>=0; --i)	//throw away the correct number of bytes
+				for(int i=characterEncoding.getByteOrderMark().length-1; i>=0; --i)	//throw away the correct number of bytes
+				{
 					inputStream.read();	//throw away a byte
-				return characterEncoding.getEncoding(); //return the encoding
+				}
+				return characterEncoding; //return the encoding
 		  }
-//G***del				characterEncodingName=characterEncoding.getEncoding(); //return the encoding
 		}
 		inputStream.reset();  //reset the stream back to where we found it
-/*G***del
-		for(int i=byteOrderMarkArray.length-1; i>=0; --i)	//unread each character that we read
-		{
-			if(byteOrderMarkArray[i]>=0)  //if we read this byte
-				inputStream.mar
-			byteOrderMarkArray[i]=inputStream.read();	//read the next byte
-			eof=byteOrderMarkArray[i]==-1;	//see if we reached the end of the file
-		}
-*/
 		return null;	//we couldn't find an encoding
-//G***del		return characterEncodingName;	//return the character encoding or nul if we couldn't find an encoding
 	}
-
 
 }

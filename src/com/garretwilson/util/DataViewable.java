@@ -16,9 +16,10 @@ public interface DataViewable
 	/**The name of the bound view property.*/
 	public final static String DATA_VIEW_PROPERTY=DataViewable.class.getName()+JavaConstants.PACKAGE_SEPARATOR+"dataView";
 
-	/**Represents no valid view. Not a valid view value to set or get.*/
+	/**Represents no view of the data. This should only be used for error
+		conditions and when the data is not being viewed.
+	*/
 	public final static int NO_DATA_VIEW=0;
-
 	/**The view in which the data is shown in a tree structure.*/
 	public final static int TREE_DATA_VIEW=1<<1;
 	/**The view in which the data is shown in a graph structure.*/
@@ -40,6 +41,9 @@ public interface DataViewable
 		indicated data views.
 	*/
 	public boolean isDataViewsSupported(final int dataViews);	
+
+	/**@return The default view of the data, such as <code>SUMMARY_DATA_VIEW</code>.*/
+	public int getDefaultDataView();
 
 	/**@return The view of the data, such as <code>SUMMARY_DATA_VIEW</code>.*/
 	public int getDataView();

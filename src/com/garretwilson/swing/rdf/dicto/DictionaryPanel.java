@@ -87,12 +87,12 @@ public class DictionaryPanel extends RDFPanel
 	/**Initialize the user interface.*/
 	protected void initializeUI()
 	{
+		addView(WYSIWYG_DATA_VIEW, "Dictionary", book, null, 0);	//add the WYSIWYG component as the tree view G***i18n
+		setDefaultDataView(WYSIWYG_DATA_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 //G***del		wysiwygTextPane.setContentType(MediaType.APPLICATION_XHTML_XML);	//set the text pane content type to "application/xhtml+xml"
 //G***del		wysiwygTextPane.setEditable(false);	//don't let the WYSIWYG text pane be edited
 //TODO set the book to be not editable
-		addView(WYSIWYG_DATA_VIEW, "Dictionary", book, null, 0);	//add the WYSIWYG component as the tree view G***i18n
-		setDataView(WYSIWYG_DATA_VIEW);	//set the default view
 	}
 
 	/**Indicates that the view of the data has changed.
