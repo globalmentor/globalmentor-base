@@ -3,14 +3,29 @@ package com.garretwilson.text.directory;
 import java.io.*;
 import java.util.*;
 import com.garretwilson.io.*;
-import com.garretwilson.util.LocaleText;
+import com.garretwilson.lang.*;
+import com.garretwilson.util.*;
 
 /**Profile for predefined types of a <code>text/directory</code> as defined in 
 	<a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
 	"A MIME Content-Type for Directory Information".
+<p>The predefined profile knows how to process
+	the standard directory value types: <code>URI_VALUE_TYPE</code>,
+	<code>TEXT_VALUE_TYPE</code>, <code>DATE_VALUE_TYPE</code>,
+	<code>TIME_VALUE_TYPE</code>, <li><code>DATE_TIME_VALUE_TYPE</code>,
+	<code>INTEGER_VALUE_TYPE</code>, <code>BOOLEAN_VALUE_TYPE</code>,
+	and <code>FLOAT_VALUE_TYPE</code>.</p>
 @author Garret Wilson
+@see URI_VALUE_TYPE
+@see TEXT_VALUE_TYPE
+@see DATE_VALUE_TYPE
+@see TIME_VALUE_TYPE
+@see DATE_TIME_VALUE_TYPE
+@see INTEGER_VALUE_TYPE
+@see BOOLEAN_VALUE_TYPE
+@see FLOAT_VALUE_TYPE
 */
-public class PredefinedProfile extends AbstractProfile implements ValueFactory, DirectoryConstants
+public class PredefinedProfile extends AbstractProfile implements ValueFactory, ValueSerializer, DirectoryConstants
 {
 
 	/**Default constructor.*/	
@@ -116,7 +131,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 
 	/**Processes a single text value.
 	<p>The sequence "\n" or "\N" will be converted to a single newline character,
-		'\n'.</p>
+		'\n', and '\\' and ',' must be escaped with '\\'.</p>
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
 	@param reader The reader that contains the lines of the directory.
 	@return An array of strings representing the values.
@@ -147,7 +162,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 							case '\\':
 							case ',':
 								stringBuffer.append(escapedChar);	//escaped backslashes and commas get appended normally
-							default:	//if something else was escape, we don't recognize it
+							default:	//if something else was escaped, we don't recognize it
 								throw new ParseUnexpectedDataException("\\,"+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR+TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR, escapedChar, reader);	//show that we didn't expect this character here				
 						}
 					}
@@ -166,8 +181,21 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		return stringBuffer.toString();	//return the string we've collected so far
 	}
 
-
-	/**Determines the value type of the given content line value.
+	/**Serializes a line's value.
+	<p>Only the value will be serialized, not any previous or subsequent
+		parts of the line or delimiters.</p>
+	<p>This method knows how to serialized predefined types, which,
+		along with the objects expected, are as follows:</p>
+	<ul>
+		<li><code>URI_VALUE_TYPE</code> <code>URI</code></li>
+		<li><code>TEXT_VALUE_TYPE</code> <code>LocaleText</code></li>
+		<li><code>DATE_VALUE_TYPE</code> <code>Date</code></li>
+		<li><code>TIME_VALUE_TYPE</code> <code>Date</code></li>
+		<li><code>DATE_TIME_VALUE_TYPE</code> <code>Date</code></li>
+		<li><code>INTEGER_VALUE_TYPE</code> <code>Integer</code></li>
+		<li><code>BOOLEAN_VALUE_TYPE</code> <code>Boolean</code></li>
+		<li><code>FLOAT_VALUE_TYPE</code> <code>Double</code></li>
+	</ul>
 	@param profile The profile of this content line, or <code>null</code> if
 		there is no profile.
 	@param group The group specification, or <code>null</code> if there is no group.
@@ -175,12 +203,42 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	@param paramList The list of parameters, each item of which is a
 		<code>NameValuePair</code> with a name of type <code>String</code> and a
 		value of type <code>String</code>.
-	@return The value type of the content line, or <code>null</code> if the
-		value type cannot be determined.
+	@param value The value to serialize.
+	@param valueType The type of value, or <code>null</code> if the type of value
+		is unknown.
+	@param writer The writer to which the directory information should be written.
+	@return <code>true</code> if the operation was successful, else
+		<code>false</code> if this class does not support writing the given value.
+	@exception IOException Thrown if there is an error writing to the directory.
+	@see NameValuePair
 	*/	
-	public String getValueType(final String profile, final String group, final String name, final List paramList)
+	public boolean serializeValue(final String profile, final String group, final String name, final List paramList, final Object value, final String valueType, final Writer writer) throws IOException
 	{
-		return getValueType(name);	//return whatever value type we have associated with this type name, if any
+		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//if this is the "text" value type
+		{
+			writer.write(((LocaleText)value).getText());	//serialize the text
+			return true;	//show that we serialized the value 
+		}
+		return false;	//show that we can't serialize the value
+	}
+
+	/**The characters that must be escaped in text: '\n', '\\', and ','.*/
+	protected final static char[] TEXT_MATCH_CHARS=new char[]{'\n', '\\', ','};
+
+	/**The strings to replace the characters to be escaped in text.*/
+	protected final static String[] TEXT_REPLACEMENT_STRINGS=new String[]{"\n", "\\", "\\,"};
+
+	/**Serializes a text value.
+	<p>The newline character '\n' will be be converted to "\n", and 
+		and '\\' and ',' will be escaped with '\\'.</p>
+	@param text The text value to serialize.
+	@param writer The writer to which the directory information should be written.
+	@exception IOException Thrown if there is an error writing to the directory.
+	*/	
+	public void serializeTextValue(final String text, final Writer writer) throws IOException
+	{
+			//replace characters with their escaped versions and write the resulting string
+		writer.write(StringUtilities.replace(text, TEXT_MATCH_CHARS, TEXT_REPLACEMENT_STRINGS));
 	}
 
 	/**Creates a directory from the given content lines.

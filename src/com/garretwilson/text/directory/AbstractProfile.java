@@ -31,4 +31,22 @@ public abstract class AbstractProfile implements Profile
 		{
 			return (String)typeNameValueTypeMap.get(typeName.toLowerCase());	//get whatever value type we have associated with this type name, if any
 		}
+
+	/**Determines the value type of the given content line value.
+	<p>This version determines the value type by the value name.</p>
+	@param profile The profile of this content line, or <code>null</code> if
+		there is no profile.
+	@param group The group specification, or <code>null</code> if there is no group.
+	@param name The name of the information.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
+	@return The value type of the content line, or <code>null</code> if the
+		value type cannot be determined.
+	@see #getValueType(String)
+	*/	
+	public String getValueType(final String profile, final String group, final String name, final List paramList)
+	{
+		return getValueType(name);	//return whatever value type we have associated with this type name, if any
+	}
 }

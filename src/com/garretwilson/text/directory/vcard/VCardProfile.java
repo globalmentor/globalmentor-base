@@ -17,9 +17,8 @@ import com.garretwilson.util.*;
 	<code>BINARY_VALUE_TYPE</code>, <code>VCARD_VALUE_TYPE</code>,
 	<code>PHONE_NUMBER_VALUE_TYPE</code>, and <code>UTC_OFFSET_VALUE_TYPE</code>.</p>
 @author Garret Wilson
-@see ValueFactory
 */
-public class VCardProfile extends AbstractProfile implements DirectoryConstants, VCardConstants, ValueFactory
+public class VCardProfile extends AbstractProfile implements DirectoryConstants, VCardConstants, ValueFactory, ValueSerializer
 {
 	
 	/**Default constructor.*/
@@ -66,7 +65,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		one or more object representing the value, as some value types
 		support multiple values.
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
-	<p>This method knows how to create predefined types, which,
+	<p>This method knows how to create vCard types, which,
 		along with the objects returned, are as follows:</p>
 	<ul>
 		<li><code>FN_TYPE</code> <code>LocaleText</code></li>
@@ -477,7 +476,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	@param paramList The list of parameters, each item of which is a
 		<code>NameValuePair</code> with a name of type <code>String</code> and a
 		value of type <code>String</code>.
-	@return An array of local text objects representing the organizational name
+	@return An array of locale text objects representing the organizational name
 		and units.
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
@@ -525,11 +524,13 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		return (String[][])fieldList.toArray(new String[fieldList.size()][]);	//convert the list of string arrays to an array of string arrays and return the array
 	}
 
-	/**The delimiters that can divide a structured text value: ';' ',' and CR.*/
-	protected final static String STRUCTURED_TEXT_VALUE_DELIMITER_CHARS=""+STRUCTURED_TEXT_VALUE_DELIMITER+VALUE_SEPARATOR_CHAR+CR; 
+	/**The delimiters that can divide a structured text value: '\\', ';' ',' and CR.*/
+	protected final static String STRUCTURED_TEXT_VALUE_DELIMITER_CHARS=""+TEXT_ESCAPE_CHAR+STRUCTURED_TEXT_VALUE_DELIMITER+VALUE_SEPARATOR_CHAR+CR; 
 
 	/**Processes a single field of a structured text value.
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
+	<p>The sequence "\n" or "\N" will be converted to a single newline character,
+		'\n', and '\\', ';', and ',' must be escaped with '\\'.</p>
 	@param reader The reader that contains the lines of the directory.
 	@return An array of strings representing the values of the field.
 	@exception IOException Thrown if there is an error reading the directory.
@@ -538,16 +539,39 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	public static String[] processStructuredTextFieldValue(final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
 		final List valueList=new ArrayList();	//create a new list to hold the values we find
+		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer to hold whatever string we're processing
 		char delimiter;	//we'll store the last delimiter peeked		
 		do	
 		{
-			valueList.add(reader.readStringUntilChar(STRUCTURED_TEXT_VALUE_DELIMITER_CHARS));	//read all value characters until we find a delimiter, and add that value to the list
+			stringBuffer.append(reader.readStringUntilChar(STRUCTURED_TEXT_VALUE_DELIMITER_CHARS));	//read all value characters until we find a delimiter, and add the value so far to the string buffer
+//G***del when works			valueList.add(reader.readStringUntilChar(STRUCTURED_TEXT_VALUE_DELIMITER_CHARS));	//read all value characters until we find a delimiter, and add that value to the list
 			delimiter=reader.peekChar();	//see what the delimiter will be
 			switch(delimiter)	//see which delimiter we found
 			{
 				case VALUE_SEPARATOR_CHAR:	//if this is the character separating multiple values (',')
+					valueList.add(stringBuffer.toString());	//add the value we collected
+					stringBuffer.delete(0, stringBuffer.length());	//clear the string buffer
 					reader.skip(1);	//skip the delimiter
 					break;				
+				case TEXT_ESCAPE_CHAR:	//if this is an escape character ('\\')
+					{
+						reader.skip(1);	//skip the delimiter
+						final char escapedChar=reader.readChar();	//read the character after the escape character
+						switch(escapedChar)	//see what character comes after this one
+						{
+							case TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR:	//"\n"
+							case TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR:	//"\N"
+								stringBuffer.append('\n');	//append a single newline character
+								break;
+							case '\\':
+							case ';':
+							case ',':
+								stringBuffer.append(escapedChar);	//escaped backslashes and commas get appended normally
+							default:	//if something else was escaped, we don't recognize it
+								throw new ParseUnexpectedDataException("\\;,"+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR+TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR, escapedChar, reader);	//show that we didn't expect this character here				
+						}
+					}
+					break;
 				case STRUCTURED_TEXT_VALUE_DELIMITER:	//if this is the character separating fields in the structured text value (';')
 				case CR:	//if we just read a carriage return
 					break;	//don't do anything---we'll just collect our characters and leave
@@ -556,11 +580,46 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			}
 		}
 		while(delimiter!=STRUCTURED_TEXT_VALUE_DELIMITER && delimiter!=CR);	//keep collecting parts of the string until we encounter a ';' or a CR
+		valueList.add(stringBuffer.toString());	//add the value we collected
 		reader.resetPeek();	//reset peeking
 		return (String[])valueList.toArray(new String[valueList.size()]);	//convert the list of strings to an array of strings return the array
 	}
-	
-	/**Determines the value type of the given content line value.
+
+	/**Serializes a line's value.
+	<p>Only the value will be serialized, not any previous or subsequent
+		parts of the line or delimiters.</p>
+	<p>This method knows how to serialize vCard types, which,
+		along with the objects returned, are as follows:</p>
+	<ul>
+		<li><code>FN_TYPE</code> <code>LocaleText</code></li>
+		<li><code>N_TYPE</code> <code>Name</code></li>
+		<li><code>NICKNAME_TYPE</code> <code>String</code></li>
+		<li><code>PHOTO_TYPE</code></li>
+		<li><code>BDAY_TYPE</code></li>
+		<li><code>ADR_TYPE</code> <code>Address</code></li>
+		<li><code>LABEL_TYPE</code> <code>LocaleText</code></li>
+		<li><code>TEL_TYPE</code> <code>Telephone</code></li>
+		<li><code>EMAIL_TYPE</code> <code>LocaleText</code></li>
+		<li><code>MAILER_TYPE</code></li>
+		<li><code>TZ_TYPE</code></li>
+		<li><code>GEO_TYPE</code></li>
+		<li><code>TITLE_TYPE</code> <code>LocaleText</code></li>
+		<li><code>ROLE_TYPE</code> <code>LocaleText</code></li>
+		<li><code>LOGO_TYPE</code></li>
+		<li><code>AGENT_TYPE</code></li>
+		<li><code>ORG_TYPE</code> <code>LocaleText[]</code></li>
+		<li><code>CATEGORIES_TYPE</code> <code>LocaleText</code></li>
+		<li><code>NOTE_TYPE</code> <code>LocaleText</code></li>
+		<li><code>PRODID_TYPE</code></li>
+		<li><code>REV_TYPE</code></li>
+		<li><code>SORT_STRING_TYPE</code></li>
+		<li><code>SOUND_TYPE</code></li>
+		<li><code>UID_TYPE</code></li>
+		<li><code>URL_TYPE=</code></li>
+		<li><code>VERSION_TYPE</code></li>
+		<li><code>CLASS_TYPE</code></li>
+		<li><code>KEY_TYPE</code></li>	
+	</ul>
 	@param profile The profile of this content line, or <code>null</code> if
 		there is no profile.
 	@param group The group specification, or <code>null</code> if there is no group.
@@ -568,12 +627,146 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	@param paramList The list of parameters, each item of which is a
 		<code>NameValuePair</code> with a name of type <code>String</code> and a
 		value of type <code>String</code>.
-	@return The value type of the content line, or <code>null</code> if the
-		value type cannot be determined.
+	@param value The value to serialize.
+	@param valueType The type of value, or <code>null</code> if the type of value
+		is unknown.
+	@param writer The writer to which the directory information should be written.
+	@return <code>true</code> if the operation was successful, else
+		<code>false</code> if this class does not support writing the given value.
+	@exception IOException Thrown if there is an error writing to the directory.
+	@see NameValuePair
 	*/	
-	public String getValueType(final String profile, final String group, final String name, final List paramList)
+	public boolean serializeValue(final String profile, final String group, final String name, final List paramList, final Object value, final String valueType, final Writer writer) throws IOException
 	{
-		return getValueType(name);	//return whatever value type we have associated with this type name, if any
+			//see if we recognize the value type
+		if(PHONE_NUMBER_VALUE_TYPE.equalsIgnoreCase(valueType))	//phone-number
+		{
+			writer.write(((Telephone)value).toCanonicalString());	//write the canonical version of the phone number
+			return true;	//show that we serialized the value 
+		}		
+			//see if we recognize the type name		
+				//identification types
+		if(N_TYPE.equalsIgnoreCase(name))	//N
+		{
+Debug.trace("serializing N: ", value);	//G***del
+			serializeNValue((Name)value, writer);	//serialize the value
+			return true;	//show that we serialized the value 
+		}
+				//delivery addressing types
+		else if(ADR_TYPE.equalsIgnoreCase(name))	//ADR
+		{
+			serializeADRValue((Address)value, writer);	//serialize the value
+			return true;	//show that we serialized the value 
+		}
+			//organizational types
+		else if(ORG_TYPE.equalsIgnoreCase(name))	//ORG
+		{
+			serializeORGValue((LocaleText[])value, writer);	//serialize the value
+			return true;	//show that we serialized the value 
+		}
+		return false;	//show that we can't serialize the value
+	}
+
+	/**Serializes the value for the <code>N</code> type name.
+	<p>Only the value will be serialized, not any previous or subsequent
+		parts of the line or delimiters.</p>
+	@param name An object representing the vCard structured name to serialize.
+	@param writer The writer to which the directory information should be written.
+	@exception IOException Thrown if there is an error reading the directory.
+	*/
+	public static void serializeNValue(final Name name, final Writer writer) throws IOException
+	{
+			//place the field arrays into an array
+		final String[][] n=new String[][]{name.getFamilyNames(), name.getGivenNames(), name.getAdditionalNames(), name.getHonorificPrefixes(), name.getHonorificSuffixes()};
+		serializeStructuredTextValue(n, writer);	//serialize the value
+	}
+
+	/**Serializes the value for the <code>ADR</code> type name.
+	<p>Whatever delimiter ended the value will be left in the reader.</p>
+	<p>Only the value will be serialized, not any previous or subsequent
+		parts of the line or delimiters.</p>
+	@param address An address object representing the value to serialize.
+	@param name An object representing the vCard structured name to serialize.
+	@param writer The writer to which the directory information should be written.
+	@exception IOException Thrown if there is an error reading the directory.
+	*/
+	public static void serializeADRValue(final Address address, final Writer writer) throws IOException
+	{
+			//place the field arrays into an array
+		final String[][] adr=new String[][]
+				{
+					new String[]{address.getPostOfficeBox()},
+					address.getExtendedAddresses(),
+					address.getStreetAddresses(),
+					new String[]{address.getLocality()},
+					new String[]{address.getRegion()},
+					new String[]{address.getPostalCode()},
+					new String[]{address.getCountryName()}
+				};
+		serializeStructuredTextValue(adr, writer);	//serialize the value
+	}
+
+	/**Serializes the value for the <code>ORG</code> type name.
+	<p>Whatever delimiter ended the value will be left in the reader.</p>
+	@param org An array of locale text objects representing the organizational
+		name and units.
+	@param writer The writer to which the directory information should be written.
+	@exception IOException Thrown if there is an error reading the directory.
+	*/
+	public static void serializeORGValue(final LocaleText[] org, final Writer writer) throws IOException
+	{
+		final String[][] orgFields=new String[org.length][];	//create an array of string arrays
+		for(int i=org.length-1; i>=0; --i)	//look at each of the org components
+		{
+			orgFields[i]=new String[]{org[i].getText()};	//store the text of this org component in an array representing this field
+		}
+		serializeStructuredTextValue(orgFields, writer);	//serialize the value
+	}
+
+	/**Serializes structured text.
+	Structured text is series of fields separated by ';', each field of which
+		can have multiple values separated by ','.
+	<p>Only the value will be serialized, not any previous or subsequent
+		parts of the line or delimiters.</p>
+	@param structuredText An array of string arrays, each string array representing the values
+		of each field.
+	@param writer The writer to which the directory information should be written.
+	@exception IOException Thrown if there is an error reading the directory.
+	@exception ParseIOException Thrown if there is a an error interpreting the directory.
+	*/
+	public static void serializeStructuredTextValue(final String[][] structuredText, final Writer writer) throws IOException
+	{
+		for(int fieldIndex=0; fieldIndex<structuredText.length; ++fieldIndex)	//look at each structured text field
+		{
+			final String[] fieldValues=structuredText[fieldIndex];	//get the values for this field
+			for(int fieldValueIndex=0; fieldValueIndex<fieldValues.length; ++fieldValueIndex)	//look at each field value
+			{
+				serializeStructuredTextFieldValue(fieldValues[fieldValueIndex], writer);	//write this structured text field value
+				if(fieldValueIndex<fieldValues.length-1)	//if this is not the last field value
+					writer.write(VALUE_SEPARATOR_CHAR);	//write the value separator ','
+			}
+			if(fieldIndex<structuredText.length-1)	//if this is not the last field
+				writer.write(STRUCTURED_TEXT_VALUE_DELIMITER);	//write the field separator ';'
+		}
+	}
+
+	/**The characters that must be escaped in structured text: '\n', '\\', and ','.*/
+	protected final static char[] STRUCTURED_TEXT_MATCH_CHARS=new char[]{'\n', '\\', ';', ','};
+
+	/**The strings to replace the characters to be escaped in structured text.*/
+	protected final static String[] STRUCTURED_TEXT_REPLACEMENT_STRINGS=new String[]{"\n", "\\", "\\;", "\\,"};
+
+	/**Serializes a structured text field value.
+	<p>The newline character '\n' will be be converted to "\n", and 
+		and '\\', ';', and ',' will be escaped with '\\'.</p>
+	@param text The structured text value to serialize.
+	@param writer The writer to which the directory information should be written.
+	@exception IOException Thrown if there is an error writing to the directory.
+	*/	
+	public static void serializeStructuredTextFieldValue(final String text, final Writer writer) throws IOException
+	{
+			//replace characters with their escaped versions and write the resulting string
+		writer.write(StringUtilities.replace(text, STRUCTURED_TEXT_MATCH_CHARS, STRUCTURED_TEXT_REPLACEMENT_STRINGS));
 	}
 
 	/**Creates a directory from the given content lines.
@@ -594,11 +787,11 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			final String typeName=contentLine.getTypeName();	//get this content line's type name
 			if(BEGIN_TYPE.equalsIgnoreCase(typeName))	//BEGIN
 			{
-				//ignore begin
+				continue;	//ignore begin; don't process this content line further G***maybe only ignore these if they are the vCard profile
 			}
 			else if(END_TYPE.equalsIgnoreCase(typeName))	//END
 			{
-				//ignore end
+				continue;	//ignore end; don't process this content line further
 			}
 			else if(NAME_TYPE.equalsIgnoreCase(typeName))	//if this is NAME
 			{
@@ -732,13 +925,24 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	*/
 	public static ContentLine[] createContentLines(final VCard vcard)
 	{
-		final List contentLineList=new ArrayList(vcard.getContentLineList());	//create a content line list initially containing all the unrecognized content lines of the vCard
-				//TODO add locale support for the name
-		contentLineList.add(0, new ContentLine(NAME_TYPE, vcard.getDisplayName()));	//add the display name at the front of the list
-		contentLineList.add(new ContentLine(BEGIN_TYPE, VCARD_PROFILE_NAME));	//BEGIN:VCARD
+//G***del		final List contentLineList=new ArrayList(vcard.getContentLineList());	//create a content line list initially containing all the unrecognized content lines of the vCard
+		final List contentLineList=new ArrayList();	//create a content line list to fill
+		contentLineList.add(new ContentLine(BEGIN_TYPE, new LocaleText(VCARD_PROFILE_NAME)));	//BEGIN:VCARD
+				//predefined directory types
+		if(vcard.getDisplayName()!=null)	//NAME
+		{
+			contentLineList.add(new ContentLine(NAME_TYPE, vcard.getDisplayName()));	//add the display name
+//G***del			contentLineList.add(0, new ContentLine(NAME_TYPE, vcard.getDisplayName()));	//add the display name at the front of the list
+		}
 				//identification types
-		contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, FN_TYPE, vcard.getFormattedName()));	//FN
-		contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, N_TYPE, vcard.getName(), vcard.getName().getLocale()));	//N
+		if(vcard.getFormattedName()!=null)	//FN
+		{
+			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, FN_TYPE, vcard.getFormattedName()));	//FN
+		}
+		if(vcard.getName()!=null)	//N
+		{
+			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, N_TYPE, vcard.getName(), vcard.getName().getLocale()));	//N
+		}
 		final Iterator nicknameIterator=vcard.getNicknameList().iterator();	//get an iterator to the nicknames
 		while(nicknameIterator.hasNext())	//while there are more nicknames
 		{
@@ -753,7 +957,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			final String[] addressTypeNames=getAddressTypeNames(address.getAddressType());	//get the address type names
 			for(int i=0; i<addressTypeNames.length; ++i)	//look at each address type
 			{
-				DirectoryUtilities.setParamValue(contentLine.getParamList(), TYPE_PARAM_NAME, addressTypeNames[i]);	//add this address type parameter
+				DirectoryUtilities.addParam(contentLine.getParamList(), TYPE_PARAM_NAME, addressTypeNames[i]);	//add this address type parameter
 			}
 			contentLineList.add(contentLine);	//add the content line
 		}
@@ -772,7 +976,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			final String[] telephoneTypeNames=getTelephoneTypeNames(telephone.getTelephoneType());	//get the telephone type names
 			for(int i=0; i<telephoneTypeNames.length; ++i)	//look at each telephone type
 			{
-				DirectoryUtilities.setParamValue(contentLine.getParamList(), TYPE_PARAM_NAME, telephoneTypeNames[i]);	//add this telephone type parameter
+				DirectoryUtilities.addParam(contentLine.getParamList(), TYPE_PARAM_NAME, telephoneTypeNames[i]);	//add this telephone type parameter
 			}
 			contentLineList.add(contentLine);	//add the content line
 		}
@@ -780,11 +984,11 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		while(emailIterator.hasNext())	//while there are more emails
 		{
 			final Email email=(Email)emailIterator.next();	//get the next email
-			final ContentLine contentLine=new ContentLine(VCARD_PROFILE_NAME, null, EMAIL_TYPE, email);	//EMAIL
+			final ContentLine contentLine=DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, EMAIL_TYPE, new LocaleText(email.getAddress(), email.getLocale()));	//EMAIL G***maybe fix to store the email object, if that's what we decide to store there when reading the value
 			final String[] emailTypeNames=getEmailTypeNames(email.getEmailType());	//get the email type names
 			for(int i=0; i<emailTypeNames.length; ++i)	//look at each email type
 			{
-				DirectoryUtilities.setParamValue(contentLine.getParamList(), TYPE_PARAM_NAME, emailTypeNames[i]);	//add this email type parameter
+				DirectoryUtilities.addParam(contentLine.getParamList(), TYPE_PARAM_NAME, emailTypeNames[i]);	//add this email type parameter
 			}
 			contentLineList.add(contentLine);	//add the content line
 		}
@@ -801,10 +1005,19 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		{
 			org=units;	//just use the units, since there is no organization name
 		}
-		final Locale orgLocale=org.length>0 ? org[0].getLocale() : null;	//get the locale of the first organization component, if there are any organization components
-		contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, ORG_TYPE, org, orgLocale));	//ORG
-		contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, TITLE_TYPE, vcard.getTitle()));	//TITLE
-		contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, ROLE_TYPE, vcard.getRole()));	//ROLE
+		if(org.length>0)	//ORG
+		{
+			final Locale orgLocale=org[0].getLocale();	//get the locale of the first organization component
+			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, ORG_TYPE, org, orgLocale));	//ORG
+		}
+		if(vcard.getTitle()!=null)	//TITLE
+		{
+			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, TITLE_TYPE, vcard.getTitle()));	//TITLE
+		}
+		if(vcard.getRole()!=null)	//ROLE
+		{
+			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, ROLE_TYPE, vcard.getRole()));	//ROLE
+		}
 				//explanatory types
 		final Iterator categoryIterator=vcard.getCategoryList().iterator();	//get an iterator to the categories
 		while(categoryIterator.hasNext())	//while there are more categories
@@ -812,8 +1025,12 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			final LocaleText category=(LocaleText)emailIterator.next();	//get the next category
 			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, CATEGORIES_TYPE, category));	//CATEGORIES
 		}
-		contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, NOTE_TYPE, vcard.getNote()));	//NOTE
-		contentLineList.add(new ContentLine(END_TYPE, VCARD_PROFILE_NAME));	//END:VCARD
+		if(vcard.getNote()!=null)	//NOTE
+		{
+			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, NOTE_TYPE, vcard.getNote()));	//NOTE
+		}
+		contentLineList.addAll(vcard.getContentLineList());	//add all of our unrecognized content lines
+		contentLineList.add(new ContentLine(END_TYPE, new LocaleText(VCARD_PROFILE_NAME)));	//END:VCARD
 		return (ContentLine[])contentLineList.toArray(new ContentLine[contentLineList.size()]);	//return the content lines we produced	
 	}
 }

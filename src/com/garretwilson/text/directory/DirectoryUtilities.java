@@ -29,13 +29,15 @@ public class DirectoryUtilities implements DirectoryConstants
 	@param group The group specification, or <code>null</code> if there is no group.
 	@param name The name of the information.
 	@param value The value of the information.
-	@param locale The value to give to the language parameter. 
+	@param locale The value to give to the language parameter, or
+		<code>null</code> if no language should be specified. 
 	@see #setLanguageParamValue
 	*/
 	public static ContentLine createContentLine(final String profile, final String group, final String name, final Object value, final Locale locale)
 	{
 		final ContentLine contentLine=new ContentLine(profile, group, name, value);	//create a content line with the value
-		setLanguageParamValue(contentLine.getParamList(), locale);	//set the language of the content line
+		if(locale!=null)	//if a locale was specified
+			setLanguageParamValue(contentLine.getParamList(), locale);	//set the language of the content line
 		return contentLine;	//return the content line we created
 	}
 
@@ -164,10 +166,24 @@ public class DirectoryUtilities implements DirectoryConstants
 		available parameters in a case insensitive way.
 	@param paramValue The value to give to the added parameter. 
 	@see #removeParams
+	@see #addParam
 	*/
 	public static void setParamValue(final List paramList, final String paramName, final String paramValue)
 	{
 		removeParams(paramList, paramName);	//remove all parameters with the given name
+		addParam(paramList, paramName, paramValue);	//add the param name and value
+	}
+
+	/**Adds a new	parameter with the given value.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
+	@param paramName The name of the parameter, which will be matched against
+		available parameters in a case insensitive way.
+	@param paramValue The value to give to the added parameter. 
+	*/
+	public static void addParam(final List paramList, final String paramName, final String paramValue)
+	{
 		paramList.add(new NameValuePair(paramName, paramValue));	//create a name value pair with the given name and value
 	}
 

@@ -17,12 +17,6 @@ import com.garretwilson.util.*;
 	defined in 
 	<a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
 	"A MIME Content-Type for Directory Information".
-<p>The processor knows how to process
-	the standard directory value types: <code>URI_VALUE_TYPE</code>,
-	<code>TEXT_VALUE_TYPE</code>, <code>DATE_VALUE_TYPE</code>,
-	<code>TIME_VALUE_TYPE</code>, <li><code>DATE_TIME_VALUE_TYPE</code>,
-	<code>INTEGER_VALUE_TYPE</code>, <code>BOOLEAN_VALUE_TYPE</code>,
-	and <code>FLOAT_VALUE_TYPE</code>.</p>
 <p>This processor makes the following decisions for ambiguities in the
 	specification:</p>
 <ul>
@@ -31,14 +25,8 @@ import com.garretwilson.util.*;
 </ul>
 @author Garret Wilson
 @see ValueFactory
-@see URI_VALUE_TYPE
-@see TEXT_VALUE_TYPE
-@see DATE_VALUE_TYPE
-@see TIME_VALUE_TYPE
-@see DATE_TIME_VALUE_TYPE
-@see INTEGER_VALUE_TYPE
-@see BOOLEAN_VALUE_TYPE
-@see FLOAT_VALUE_TYPE
+@see Profile
+@see PredefinedProfile
 */
 public class DirectoryProcessor implements DirectoryConstants
 {
@@ -161,9 +149,8 @@ public class DirectoryProcessor implements DirectoryConstants
 		}
 
 	/**Default constructor.
-	This class automatically registers a predefined profile for the <code>null</code>
-		profile name, and registers that profile as a value factory for standard
-		value types.
+	This class automatically registers the predefined profile as a value factory
+		for standard value types.
 	*/
 	public DirectoryProcessor()
 	{
@@ -445,7 +432,7 @@ Debug.trace("found group: ", group);
 		support multiple values.
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
 	<p>When attempting to find a <code>ValueFactory</code> to process a given
-		value, an attempt is made to locate a value factory based in this order:</p>
+		value, an attempt is made to locate a value factory in this order:</p>
 	<ol>
 		<li>If no explicit value type is given and a profile name is known, the
 			<code>Profile</code> registered for that profile, if any, is asked
@@ -461,8 +448,6 @@ Debug.trace("found group: ", group);
 		<li>If no value object was created, a string is returned containing the
 			literal contents of the value.</li> 
 	</ol> 
-	<p>If the value cannot be created using a <code>ViewFactory</code>, the
-		value is converted to a single string.</p>
 	@param profile The profile of this content line, or <code>null</code> if
 		there is no profile.
 	@param group The group specification, or <code>null</code> if there is no group.
@@ -492,7 +477,7 @@ Debug.trace("found group: ", group);
 				valueType=getPredefinedProfile().getValueType(profileName, group, name, paramList);	//ask the predefined profile for the value type
 			}
 		}
-		if(profile instanceof ValueFactory)	//if our profile is a value factory, use the profile as a  value factory
+		if(profile instanceof ValueFactory)	//if our profile is a value factory, use the profile as a value factory
 		{
 			objects=((ValueFactory)profile).createValues(profileName, group, name, paramList, valueType, reader);	//create objects for this profile
 		}

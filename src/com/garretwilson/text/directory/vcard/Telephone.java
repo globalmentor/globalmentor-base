@@ -242,7 +242,7 @@ public class Telephone extends TelephoneNumber
 		return stringBuffer.toString();		
 	}
 
-	/**@return A string representation of the address.*/
+	/**@return A string representation of the telephone.*/
 	public String toString()
 	{
 		return super.toString()+" ("+getTelephoneTypeString()+")";	//return the telephone type appended to the telephone number 

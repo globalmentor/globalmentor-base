@@ -423,6 +423,7 @@ public class StringBufferUtilities implements CharacterConstants
 					stringBuffer.replace(charIndex, charIndex+1, replacementStrings[matchIndex]);
 					charIndex+=replacementStrings[matchIndex].length()-1; //skip to the last character of the replaced string
 					++replacementCount; //show that we replaced a character
+					break;	//stop looking for matches for this character, and go on to the next character
 				}
 			}
 		}
