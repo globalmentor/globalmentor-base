@@ -1,6 +1,9 @@
 package com.garretwilson.lang;
 
+import java.io.UnsupportedEncodingException;
+
 import static com.garretwilson.lang.CharacterUtilities.*;
+import com.garretwilson.text.CharacterEncodingConstants;
 import static com.garretwilson.text.CharacterConstants.*;
 
 /**Various text manipulating functions. These methods work on

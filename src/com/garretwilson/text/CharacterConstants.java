@@ -34,6 +34,8 @@ public interface CharacterConstants
 	public final static char COLON_CHAR=0x003A;
 	/**A semicolon character.*/
 	public final static char SEMICOLON_CHAR=0x003B;
+	/**An equals sign character.*/
+	public final static char EQUALS_SIGN_CHAR=0x003D;
 	/**A grave accent character.*/
 	public final static char GRAVE_ACCENT_CHAR=0x0060;
 	/**A left-pointing guillemet character.*/

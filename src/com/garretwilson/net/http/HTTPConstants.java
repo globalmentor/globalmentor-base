@@ -33,6 +33,8 @@ public class HTTPConstants
 	public final static String REFERER_HEADER="Referer";
 	/**The HTTP header indicating the user agent.*/
 	public final static String USER_AGENT_HEADER="User-Agent";
+	/**The HTTP header indicating the credentials expected by the server.*/
+	public final static String WWW_AUTHENTICATE_HEADER="WWW-Authenticate";
 
 	/**The HTTP GET method.*/
 	public final static String GET_METHOD="GET";
@@ -48,8 +50,14 @@ public class HTTPConstants
 	public final static String DELETE_METHOD="DELETE";
 	/**The HTTP TRACE method.*/
 	public final static String TRACE_METHOD="TRACE";
-	
-  /**
+
+	/**HTTP forms of authentication.*/
+	public enum AuthenticationScheme{BASIC, CLIENT_CERT, DIGEST, FORM};
+
+	/**The "realm" parameter used in headers such as WWW-Authenticate.*/
+	public final static String REALM_PARAMETER="realm";
+
+	/**
    * Status code (200) indicating the request succeeded normally.
    */
   public static final int SC_OK = HttpServletResponse.SC_OK;

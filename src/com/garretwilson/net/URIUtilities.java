@@ -6,10 +6,9 @@ import java.net.*;
 import java.util.*;
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
-import com.garretwilson.util.Debug;
-import com.garretwilson.util.NameValuePair;
-import com.garretwilson.util.SyntaxException;
+import com.garretwilson.util.*;
 
+import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
 
@@ -740,16 +739,25 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		{
 			throw new IllegalArgumentException(oldBaseURI.toString()+" is not a base URI of "+uri);
 		}
-		final URI newURI=newBaseURI.resolve(relativeURI);	//resolve the relative URI to the new base URI
-			//check for the JDK 5.0 bug that chops off the first few forward slashes for Windows network names
+		URI newURI=newBaseURI.resolve(relativeURI);	//resolve the relative URI to the new base URI
+//G***del Debug.trace("new URI:", newURI);
 		final String newBaseURIString=newBaseURI.toString();	//get the string of the new base URI
+//G***del; maybe not needed		final StringBuilder newURIStringBuilder=new StringBuilder(newURI.toString());	//get the string of the new URI
 		final String newURIString=newURI.toString();	//get the string version of the new URI
+/*G***del
+			//if the old URI ended with '/' but the new URI doesn't (this can occur when the new URI references a directory
+		if(endsWith(uri.toString(), PATH_SEPARATOR) && !endsWith(newURIStringBuilder, PATH_SEPARATOR))
+		{
+			
+		}
+*/
+			//check for the JDK 5.0 bug that chops off the first few forward slashes for Windows network names
 		if(!newURIString.startsWith(newBaseURIString))	//if the new URI doesn't start with the new base URI we were expecting
 		{
 			if(newBaseURIString.startsWith(EXPECTED_URI_PREFIX) && newURIString.startsWith(RESULT_URI_PREFIX))				
 			{
 				final String fixedURIString=EXPECTED_URI_PREFIX+newURIString.substring(RESULT_URI_PREFIX.length());	//replace the incorrect beginning section
-				return URI.create(fixedURIString);	//return create a URI that goes back to the new base URI we expected
+				newURI=URI.create(fixedURIString);	//return create a URI that goes back to the new base URI we expected
 			}
 			else	//if this is a different bug than we expected
 			{
