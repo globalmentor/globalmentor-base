@@ -2,15 +2,15 @@ package com.garretwilson.net;
 
 import java.io.*;
 import java.net.*;
-import com.garretwilson.io.*;
-import java.net.*;
 import java.net.URI;	//G***del when other URI is removed
+import com.garretwilson.io.*;
+
 
 
 /**Various URL manipulating functions.
 @see java.net.URL
 */
-public class URIUtilities implements URIConstants	//G***del InputStreamLocator
+public class URIUtilities implements URIConstants, URIInputStreamable
 {
 
 	/**Default constructor.*/
@@ -70,65 +70,44 @@ public class URIUtilities implements URIConstants	//G***del InputStreamLocator
 		return MediaType.getMediaType(FileUtilities.getExtension(getFile(uri))); //return the media type based on the extension of the URI filename
 	}
 
-	/**Creates a URL from the given filename relative to the given context object.
-		This correctly creates URLs when the filename is a fragment beginning with "#".
-	@param contextObject The source context, such as a URL or File, or <code>null</code> if
+	/**Creates a URI from the given URI string relative to the given context object.
+	@param contextObject The source context, such as a URL, a URI, a File, or <code>null</code> if
 		the filename should not be referenced from any object.
-	@param filename The name of the file, either relative or absolute, or a URL
+	@param string The string version of a URI, either relative or absolute, or a URI
 		fragment beginning with "#".
-	@return A URL constructed from the filename and context object, or
-		<code>null</code> if no URL could be constructed.
-	@exception MalformedURLException Thrown if the filename is not a valid filename or URL name.
+	@return A URI constructed from the URI string and context object.
+	@exception URISyntaxException Thrown if the context object and string cannot be used to create a valid URI.
 	@see File
+	@see URI
 	@see URL
 	*/
-/*G***fix	
-	public static URL createURL(Object contextObject, final String filename) throws MalformedURLException
+	public static URI createURI(final Object contextObject, final String string) throws URISyntaxException
 	{
-		URL url=null;	//we'll use this variable to store the new URL we create
-		try
+		if(contextObject instanceof URI)	//if the context is a URI
 		{
-			if(contextObject!=null)	//if we know where we're getting its data from
+			try
 			{
-				if(contextObject instanceof URL)	//if the data is coming from a URL
-				{
-//G***del Debug.trace("Context object is a URL: ", contextObject);	//G***del
-//G***del Debug.trace("filename: ", filename);	//G***del
-					final URL contextURL=(URL)contextObject;	//cast the contect object to a URL
-					url=new URL(contextURL, filename);	//create a new URL from the old one
-//G***del Debug.trace("new url: ", url);  //G***del
-					//Since in Java 1.2 new URL("file://...", "#...") causes the filename
-					//	to be lost, create a workaround.
-					//This workaround is modified from code in
-					//	javax.swing.text.html.HTMLEditorKit.java version 1.96 02/02/00 by
-					// 	Timothy Prinzing.
-
-					if(filename!=null && FILE_PROTOCOL.equals(url.getProtocol())  //if there is an href, it starts with "#", and the document base is a file
-						&& filename.length()>0 && filename.charAt(0)==FRAGMENT_SEPARATOR_CHAR)
-					{
-				    final String baseFile=contextURL.getFile();	//get the context base URL as a file string
-				    final String newFile=url.getFile();	//get a string from the URL we created
-				    if(baseFile!=null && newFile!=null && !newFile.startsWith(baseFile))	//if the URL doesn't already start with the base URL
-							url=new URL(contextURL, baseFile+filename);	//append the href to the base URL
-					}
-//G***del System.out.println("created new URL: "+newURL);	//G***del
-				}
-				//G***check for an instance of File here
+				return ((URI)contextObject).resolve(string);	//convert the URL to a URI and use it as a context
 			}
-//G***del		InputStream inputStream;	//we don't know where our input stream is coming from, yet
-			if(url==null)	//if we haven't found a URL, yet
-				url=new URL(filename);	//try to create one directly from the filename they give us
+			catch(IllegalArgumentException illegalArgumentException)	//if the given string isn't syntactically correct
+			{
+					//throw a new URI syntax exception from the illegal argument exception
+				throw (URISyntaxException)new URISyntaxException(string, illegalArgumentException.getMessage()).initCause(illegalArgumentException);
+			}
 		}
-		catch(MalformedURLException e)	//if the location isn't a valid URL
+		else if(contextObject instanceof URL)	//if the context is a URL
 		{
-//G***del System.out.println(filename+" must be a file.");	//G***del
-			url=new File(filename).toURL();	//create a file object and convert that to a URL
-			//G***check for MalformedURLException
+			return createURI(new URI(((URL)contextObject).toString()), string);	//convert the URL to a URI and use it as a context
 		}
-		return url;	//return the URL we created
-		//G***do something if we can't read from the URL
+		else if(contextObject instanceof File)	//if the context object is a file
+		{
+			return createURI(((File)contextObject).toURI(), string);	//convert the File to a URI and use it as a context
+		}
+		else	//if we don't recognize the context object
+		{
+			return new URI(string);	//create a new URI from the string, ignoring the context object
+		}
 	}
-
 
 	/**Returns a URL representing the directory of the given file URL. (It is
 		assumed that the given URL represents a file.)
@@ -141,17 +120,18 @@ public class URIUtilities implements URIConstants	//G***del InputStreamLocator
 		return new URL(url, ".");  //create a new URL from the directory of the URL G***use a constant here
 	}
 
-	/**Returns an input stream from given URL by establishing a connection to
-		the requested URL.
-		This method fulfills the requirements of <code>InputStreamLocator</code>.
-	@param url A complete URL to a file.
-	@return An input stream to the contents of the file represented by the given URL.
+	/**Returns an input stream from given URI by establishing a connection to
+		the requested URI.
+		<p>This implementation only supports URIs that are URLs.</p>
+		<p>This method fulfills the requirements of <code>URIInputStreamable</code>.</p>
+	@param uri A complete URL to a file.
+	@return An input stream to the contents of the file represented by the given URI.
 	@exception IOException Thrown if an I/O error occurred.
-	@see InputStreamLocator
+	@see URIInputStreamable
 	*/
-	public InputStream getInputStream(final URL url) throws IOException
+	public InputStream getInputStream(final URI uri) throws IOException
 	{
-		return url.openConnection().getInputStream();	//open a connection to the URL and return an input stream to that connection
+		return uri.toURL().openConnection().getInputStream();	//open a connection to the URI (converted to a URL) and return an input stream to that connection
 	}
 
 	/**Returns a relative path to the URL from the given context URL.
@@ -273,6 +253,26 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 */
 
+	/**Creates a URL from a URI. If a valid URL cannot be
+		formed, <code>null</code> is returned.
+	@param uri The URI to convert to a URL, or <code>null</code>
+		if no URI is available (in which case <code>null</code> will
+		be returned).
+	@return The URL form of the URI, or <code>null</code>
+		if the URI cannot be converted to a valid URL. 
+	*/ 
+	public static URL toValidURL(final URI uri)
+	{
+		try
+		{
+			return uri!=null ? uri.toURL() : null;	//convert the URI to a URL, if we have a URI	
+		}
+		catch (MalformedURLException e)	//if there was an error converting to a URL
+		{
+			return null;	//show that we couldn't create a valid URL from the given URI
+		}
+	}
+
 	/**Returns a URI constructed from the given parts, any of
 	which can be <code>null</code>.
 	If the URI is not syntactically correct, an
@@ -287,7 +287,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		from the given strings.
 	@see URI#create
 	*/
-	public static URI create(final String scheme, final String ssp, final String fragment) throws IllegalArgumentException
+	public static URI create(final String scheme, final String ssp, final String fragment) throws IllegalArgumentException	//G***why don't we want to use the URISyntaxException here?
 	{
 		try
 		{

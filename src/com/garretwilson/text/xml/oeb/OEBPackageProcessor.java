@@ -63,21 +63,21 @@ public class OEBPackageProcessor implements OEBConstants, OEB2Constants, DCConst
 		RDF data model. If the input stream contains an OEB 1.x package document, it
 		will be converted.
 	@param packageInputStream The input stream containing the package information.
-	@param packageURL The URL to the package information, or <code>null</code> if
-		the package URL is not available.
+	@param packageURI The URI to the package information, or <code>null</code> if
+		the package URI is not available.
 	@return The RDF data model of the package information.
 	@exception IOException Thrown if there is an error reading the package
 		information from the input stream.
 	*/
 	//G***add error reporting to this code
-	public RDF read(final InputStream packageInputStream, final URL packageURL) throws IOException
+	public RDF read(final InputStream packageInputStream, final URI packageURI) throws IOException
 	{
 		final RDF rdf=new RDF();  //create a new RDF data model
 		rdf.registerResourceFactory(OEB1_PACKAGE_NAMESPACE_URI, this);  //register ourselves as a factory for OEB 1.x package resources
 		rdf.registerResourceFactory(OEB2_PACKAGE_NAMESPACE_URI, this);  //register ourselves as a factory for OEB 2.x package resources
 
-Debug.trace("reading package from URL: ", packageURL);  //G***del
-		final Document document=getXMLProcessor().parseDocument(packageInputStream, packageURL);	//parse the package description document
+Debug.trace("reading package from URI: ", packageURI);  //G***del
+		final Document document=getXMLProcessor().parseDocument(packageInputStream, packageURI);	//parse the package description document
 		document.normalize(); //normalize the package description document
 		try
 		{
@@ -93,7 +93,7 @@ Debug.trace("reading package from URL: ", packageURL);  //G***del
 			  }
 			}
 			final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf);	//create a new RDF processor using the RDF data model we already created
-			return rdfProcessor.process(document, URLUtilities.toURI(packageURL));  //parse the RDF from the document
+			return rdfProcessor.process(document, packageURI);  //parse the RDF from the document
 		}
 		catch (URISyntaxException e)
 		{

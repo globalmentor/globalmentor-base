@@ -156,21 +156,21 @@ public class XPackageUtilities implements XPackageConstants
 		that has a matching xpackage:location with an xlink:href that matches the
 		requested href, relative to the given URL.
 	@param resource The resource the manifest of which should be searched.
-	@param baseURL The base URL of the package, used to construct absolute URLs
-		from relative URLs.
+	@param baseURI The base URI of the package, used to construct absolute URIs
+		from relative URIs.
 	@param href The relative or absolute reference to the item, which will be
-		converted to an absolute URL in order to compare it with each item's fully
-		qualified URL.
-	@return The item whose fully qualified URL matches the fully qualified
+		converted to an absolute URI in order to compare it with each item's fully
+		qualified URI.
+	@return The item whose fully qualified URI matches the fully qualified
 		version of the specified href, or <code>null</code> if there is no match.
 	@see #getLocationHRef
 	*/
-	public static RDFResource getManifestItemByLocationHRef(final RDFResource resource, final URL baseURL, final String href)
+	public static RDFResource getManifestItemByLocationHRef(final RDFResource resource, final URI baseURI, final String href)
 	{
 		final RDFBagResource manifest=getManifest(resource);  //get the manifest of this resource
 		if(manifest!=null)  //if this resource has a manifest
 		{
-			return getItemByLocationHRef(manifest, baseURL, href);  //get an item in the manifest that matches the given location
+			return getItemByLocationHRef(manifest, baseURI, href);  //get an item in the manifest that matches the given location
 		}
 		else  //if there is no manifest
 		{
@@ -180,46 +180,53 @@ public class XPackageUtilities implements XPackageConstants
 
 	/**Returns an item resource in the given RDF container that has a matching
 		xpackage:location with an xlink:href that matches the requested href,
-		relative to the given URL.
+		relative to the given URI.
 	@param rdfContainer The container that hold RDF resources.
-	@param baseURL The base URL of the package, used to construct absolute URLs
-		from relative URLs.
+	@param baseURI The base URI of the package, used to construct absolute URIs
+		from relative URIs.
 	@param href The relative or absolute reference to the item, which will be
-		converted to an absolute URL in order to compare it with each item's fully
-		qualified URL.
-	@return The item whose fully qualified URL matches the fully qualified
+		converted to an absolute URI in order to compare it with each item's fully
+		qualified URI.
+	@return The item whose fully qualified URI matches the fully qualified
 		version of the specified href, or <code>null</code> if there is no match.
 	@see #getLocationHRef
 	*/
-	public static RDFResource getItemByLocationHRef(final RDFContainerResource rdfContainer, final URL baseURL, final String href)
+	public static RDFResource getItemByLocationHRef(final RDFContainerResource rdfContainer, final URI baseURI, final String href)
 	{
 //G***del Debug.trace("Inside OEBPublication.getManifestItemByHRef() for "+href);	//G***del
 		try
 		{
-		  final URL absoluteURL=URLUtilities.createURL(baseURL, href);	//create a URL based upon the base URL and the given file location
+		  final URI absoluteURI=URIUtilities.createURI(baseURI, href);	//create a URI based upon the base URI and the given file location
 //G***del Debug.trace("Getting manifest item by URL: ", absoluteURL);
-			return getItemByLocationHRef(rdfContainer, baseURL, absoluteURL);	//lookup the item based upon the URL we formed
+			return getItemByLocationHRef(rdfContainer, baseURI, absoluteURI);	//look up the item based upon the URI we formed
 		}
+		catch(URISyntaxException uriSyntaxException)	//if there is an error with the URI
+		{
+//G***fix			Debug.error(uriSyntaxException);	//log the error
+			return null;	//that simply means we can't find the item
+		}
+/*G***del when works
 		catch(MalformedURLException e)	//if there is an error with the URL
 		{
 			Debug.error(e);	//log the error
 			return null;	//that simply means we can't find the item
 		}
+*/
 	}
 
 	/**Returns an item resource in the given RDF container that has a matching
-		xpackage:location with an xlink:href that matches the requested URL,
-		relative to the given base URL.
+		xpackage:location with an xlink:href that matches the requested URI,
+		relative to the given base URI.
 	@param rdfContainer The container that hold RDF resources.
-	@param baseURL The base URL of the package, used to construct absolute URLs
-		from relative URLs.
-	@param url The absolute reference to the item, which will be compare with
-		each item's fully qualified URL.
-	@return The item whose fully qualified URL matches the given URL, or
+	@param baseURI The base URI of the package, used to construct absolute URIs
+		from relative URIs.
+	@param uri The absolute reference to the item, which will be compare with
+		each item's fully qualified URI.
+	@return The item whose fully qualified URI matches the given URI, or
 		<code>null</code> if there is no match.
 	@see #getLocationHRef
 	*/
-	public static RDFResource getItemByLocationHRef(final RDFContainerResource rdfContainer, final URL baseURL, final URL url)
+	public static RDFResource getItemByLocationHRef(final RDFContainerResource rdfContainer, final URI baseURI, final URI uri)
 	{
 //G***del Debug.trace("looking for resource that matches URL: ", url);  //G***del
 		final Iterator itemIterator=rdfContainer.getItemIterator(); //get an iterator to the items in this container
@@ -232,15 +239,21 @@ public class XPackageUtilities implements XPackageConstants
 			{
 				try
 				{
-					final URL itemURL=URLUtilities.createURL(baseURL, itemHRef);	//create a URL based upon the base URL and the item's location
+					final URI itemURI=URIUtilities.createURI(baseURI, itemHRef);	//create a URI based upon the base URI and the item's location
 //G***del	Debug.trace("comparing with URL: ", itemURL); //G***del
-					if(url.equals(itemURL)) //if the URLs match
+					if(uri.equals(itemURI)) //if the URLs match
 						return item;  //return the item
 				}
+				catch(URISyntaxException uriSyntaxException)	//if there is an error creating the URI
+				{
+					Debug.warn(uriSyntaxException);	//warn about the error, but keep searching
+				}
+/*G***del when works
 				catch(MalformedURLException e)	//if there is an error creating the URL
 				{
 					Debug.warn(e);	//warn about the error, but keep searching
 				}
+*/
 			}
 		}
 		return null;  //show that no location matched

@@ -2,6 +2,8 @@ package com.garretwilson.swing.text.xml.qti;
 
 import java.awt.Image;
 import java.io.IOException;
+import java.net.URISyntaxException;
+
 import javax.swing.text.*;
 import com.garretwilson.awt.ImageUtilities;
 import com.garretwilson.swing.text.xml.XMLComponentImageView;
@@ -66,6 +68,10 @@ Debug.trace("loaded the image"); //G***del
 Debug.trace("height: ", height); //G***del
 Debug.trace("width", width); //G***del
 				freeImage();  //free the image memory; this should speed up view flowing
+			}
+			catch(URISyntaxException e)	//G***do something better here
+			{
+				Debug.error(e);
 			}
 			catch(IOException e)	//G***do something better here
 			{

@@ -2,6 +2,7 @@ package com.garretwilson.util.zip;
 
 import java.io.*;
 import java.net.*;
+import java.net.URI;
 import java.util.*;
 import java.util.zip.*;
 import com.garretwilson.io.*;
@@ -9,14 +10,14 @@ import com.garretwilson.net.*;
 import com.garretwilson.util.Debug;
 
 /**Facilitates access to a zip file.
-	Keeps track of zip contents by zip entry name as a URL as if each zip entry
+	Keeps track of zip contents by zip entry name as a URI as if each zip entry
 	were unarchived in the current location of the zip file.
 	<p>This class cannot descend from <code>ZipFile</code> because a
 	<code>ZipFile</code> cannot be arbitrarily opened and closed.</p>
 @author Garret Wilson
 @see ZipFile
 */
-public class ZipManager implements InputStreamLocator
+public class ZipManager implements URIInputStreamable
 {
 
 	/**The file containing the zipped information.*/
@@ -25,28 +26,28 @@ public class ZipManager implements InputStreamLocator
 		/**@return The file containing the zipped information.*/
 		public File getFile() {return file;}
 
-	/**The URL of the canonical zip file.*/
-	private final URL zipFileURL;
+	/**The URI of the canonical zip file.*/
+	private final URI zipFileURI;
 
-		/**@return The URL of the canonical zip file.*/
-		public URL getZipFileURL() {return zipFileURL;}
+		/**@return The URI of the canonical zip file.*/
+		public URI getZipFileURI() {return zipFileURI;}
 
-	/**A map for storing zip entries, each keyed to a URL of what their filename
+	/**A map for storing zip entries, each keyed to a URI of what their filename
 		would be if uncompressed.*/
 	private final Map zipEntryMap=new HashMap();
 
-		/**@return A map for storing zip entries, each keyed to a URL of what their
+		/**@return A map for storing zip entries, each keyed to a URI of what their
 			filename would be if uncompressed.*/
 		protected Map getZipEntryMap() {return zipEntryMap;}
 
-		/**Gets the zip entry that corresponds to the given URL.
-		@param url The URL for which a URL should be returned.
-		@return The zip entry corresponding to the given URL, or <code>null</code>
+		/**Gets the zip entry that corresponds to the given URI.
+		@param uri The URI for which a URI should be returned.
+		@return The zip entry corresponding to the given URI, or <code>null</code>
 			if there is no corresponding zip entry.
 		*/
-		public ZipEntry getZipEntry(final URL url)
+		public ZipEntry getZipEntry(final URI uri)
 		{
-			return (ZipEntry)zipEntryMap.get(url);  //get the zip entry keyed to the given URL
+			return (ZipEntry)zipEntryMap.get(uri);  //get the zip entry keyed to the given URI
 		}
 
 		/**@return An iterator to all zip entries in the zip file in an undefined
@@ -107,7 +108,7 @@ public class ZipManager implements InputStreamLocator
 	public ZipManager(final File zippedFile) throws IOException
 	{
 		file=zippedFile;  //store the file we're using
-		zipFileURL=file.getCanonicalFile().toURL(); //store the URL to the zip file itself
+		zipFileURI=file.getCanonicalFile().toURI(); //store the URI to the zip file itself
 		loadZipEntries(); //load the zip entries
 	}
 
@@ -116,7 +117,7 @@ public class ZipManager implements InputStreamLocator
 
 
 	/**Loads and maps the entries of the zip file.
-		For each zip entry, a URL is created for the canonical filename of the
+		For each zip entry, a URI is created for the canonical filename of the
 		entry as if it were extracted with its current path under the directory
 		of the zip file.
 	@exception IOException Thrown if there is an error opening and reading from
@@ -124,7 +125,6 @@ public class ZipManager implements InputStreamLocator
 	*/
 	protected void loadZipEntries() throws IOException
 	{
-//G***del		final URL zipFileURL=getZipFileURL(); //get the URL of the zip file
 		final Map zipEntryMap=getZipEntryMap(); //get the map of zip entries
 		zipEntryMap.clear();  //remove all entries from the zip entry map
 		final ZipFile zipFile=new ZipFile(getFile()); //open the zip file for reading
@@ -134,13 +134,22 @@ public class ZipManager implements InputStreamLocator
 			while(zipEntryEnumeration.hasMoreElements())	//while there is another zip entry left
 			{
 				final ZipEntry zipEntry=(ZipEntry)zipEntryEnumeration.nextElement();	//get a reference to this zip entry
+				try
+				{
 Debug.trace("storing zip entry: ", zipEntry.getName()); //G***del
-Debug.trace("storing zip entry under: ", getURL(zipEntry)); //G***del
-				zipEntryMap.put(getURL(zipEntry), zipEntry);	//store this zip entry in the map, keyed to its URL
+Debug.trace("storing zip entry under: ", getURI(zipEntry)); //G***del
+					zipEntryMap.put(getURI(zipEntry), zipEntry);	//store this zip entry in the map, keyed to its URI
 /*G***fix in the bigger picture
 				if(packageHRef==null && zipEntryName.endsWith(".opf")) 	//if this zip file claims to be a package file and we haven't found a package file
 					packageHRef=zipEntryName;	//show that this is the first package file we found, so we'll take it to be the package file for the zip file
 */
+				}
+				catch(URISyntaxException uriSyntaxException)
+				{
+					final IOException ioException=new IOException(uriSyntaxException.getMessage());	//create an I/O exception from the error
+					ioException.initCause(ioException);	//show the cause of the syntax exception
+					throw ioException;	//throw the I/O exception representing the syntax exceptoin
+				}
 			}
 		}
 		finally
@@ -179,52 +188,52 @@ Debug.trace("storing zip entry under: ", getURL(zipEntry)); //G***del
 		}
 	}
 */
-	/**Creates a URL from the file location, based on the zip file's URL.
-	@param href The location, either a URL or a filename, of the file.
-	@return A URL representing the specified file.
-	@exception MalformedURLException Thrown if the filename is not a valid filename or URL name.
-	@see #getZipFileURL
-	@see URLUtilities
+	/**Creates a URI from the file location, based on the zip file's URI.
+	@param href The location, either a URI or a filename, of the file.
+	@return A URI representing the specified file.
+	@exception URISyntaxException Thrown if the filename is not a valid filename or URI name.
+	@see #getZipFileURI
+	@see URIUtilities
 	*/
-	public URL getURL(final String href) throws MalformedURLException
+	public URI getURI(final String href) throws URISyntaxException
 	{
-		return URLUtilities.createURL(getZipFileURL(), href);	//create a URL based upon the location of the zip file and the given file location
+		return URIUtilities.createURI(getZipFileURI(), href);	//create a URI based upon the location of the zip file and the given file location
 	}
 
-	/**Creates a URL to represent the given zip entry, based upon the zip entry's
-		path relative to the URL of the zip file itself.
-	@param zipEntry The zip entry for which a URL should be returned.
-	@return A URL representing the specified zip entry.
-	@exception MalformedURLException Thrown if the zip entry does not have
-		filename valid filename if a URL cannot be constructed from the filename.
+	/**Creates a URI to represent the given zip entry, based upon the zip entry's
+		path relative to the URI of the zip file itself.
+	@param zipEntry The zip entry for which a URI should be returned.
+	@return A URI representing the specified zip entry.
+	@exception URISyntaxException Thrown if the zip entry does not have
+		a valid filename (a URI cannot be constructed from the filename).
 	*/
-	public URL getURL(final ZipEntry zipEntry) throws MalformedURLException
+	public URI getURI(final ZipEntry zipEntry) throws URISyntaxException
 	{
-		return getURL(zipEntry.getName()); //create a URL from the zip entry name relative to the URL of the zip file itself
+		return getURI(zipEntry.getName()); //create a URI from the zip entry name relative to the URI of the zip file itself
 	}
 
-	/**Returns an input stream from given URL.
-		If the URL can be matched with a zip file entry, an input stream to that
+	/**Returns an input stream from given URI.
+		If the URI can be matched with a zip file entry, an input stream to that
 		entry will be returned.
 		The input stream will be left open and should be closed after use.
-	@param url A complete URL to a file.
-	@return An input stream to the contents of the file represented by the given URL.
-	@exception FileNotFoundException Thrown if the file referenced by the URL
+	@param uri A complete URI to a file.
+	@return An input stream to the contents of the file represented by the given URI.
+	@exception FileNotFoundException Thrown if the file referenced by the URI
 		could not be located.
 	@exception IOException Thrown if an I/O error occurred.
 	*/
-	public InputStream getInputStream(final URL url) throws FileNotFoundException, IOException
+	public InputStream getInputStream(final URI uri) throws FileNotFoundException, IOException
 	{
 		final ZipFile zipFile=grabZipFile();  //grab the zip file, which may include opening the zip file
 		try
 		{
-			final ZipEntry zipEntry=(ZipEntry)getZipEntryMap().get(url);	//get the zip entry represented by this URL
+			final ZipEntry zipEntry=(ZipEntry)getZipEntryMap().get(uri);	//get the zip entry represented by this URI
 		  if(zipEntry!=null)  //if the file is in the zip file
 			{
 Debug.trace("Found zip entry: ", zipEntry.getName());	//G***del
 //G***del				Debug.assert(getZipFile()!=null, "OEBPublication zip file unexpectedly closed.");
 				//G***check to make sure the file is really in the zip file, and throw a FileNotFoundException if not
-				return zipFile.getInputStream(zipEntry);	//get an input stream to the zip entry represented by this URL
+				return zipFile.getInputStream(zipEntry);	//get an input stream to the zip entry represented by this URI
 			}
 /*G***fix in the big OEB publication picture
 			else if(URLConstants.HTTP_PROTOCOL.equals(url.getProtocol()))  //if the URL is not in the zip file, but it uses the HTTP protocol G***this is here so that the XML parse can get external DTDs and such from the web, but it would probably be better to place it in a higher-level method
@@ -234,7 +243,7 @@ Debug.trace("Found zip entry: ", zipEntry.getName());	//G***del
 */
 			else  //if we can't find the file
 			{
-				throw new FileNotFoundException(url+" cannot be found in zip file "+getZipFileURL()); //throw an exception G***i18n
+				throw new FileNotFoundException(uri+" cannot be found in zip file "+getZipFileURI()); //throw an exception G***i18n
 			}
 		}
 		finally

@@ -8,7 +8,7 @@ import com.garretwilson.io.*;
 /**Various URL manipulating functions.
 @see java.net.URL
 */
-public class URLUtilities implements URLConstants, InputStreamLocator
+public class URLUtilities implements URLConstants	//G***del, InputStreamLocator
 {
 
 	/**Default constructor.*/
@@ -163,10 +163,12 @@ public class URLUtilities implements URLConstants, InputStreamLocator
 	@exception IOException Thrown if an I/O error occurred.
 	@see InputStreamLocator
 	*/
+/*G***del if not needed
 	public InputStream getInputStream(final URL url) throws IOException
 	{
 		return url.openConnection().getInputStream();	//open a connection to the URL and return an input stream to that connection
 	}
+*/
 
 	/**Returns a relative path to the URL from the given context URL.
 		This version requires the file to be on the same branch of the context
