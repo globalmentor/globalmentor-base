@@ -29,6 +29,21 @@ public class FileUtilities implements FileConstants
 	{
 		return new StringBuffer(filename).append(EXTENSION_SEPARATOR).append(extension).toString();  //add the requested extension and return the new filename
 	}
+	
+	/**Creates a new file, throwing an exception if unsuccessful.
+	@param file The file to create.
+	@exception IOException Thrown if there is an error creating the file.
+	*/
+	public static void createNewFile(final File file) throws IOException
+	{
+		if(!file.createNewFile())	//create the file; if unsuccessful
+		{
+			if(file.exists())	//if the file already exists
+				throw new IOException("File "+file+" already exists and cannot be created.");	//throw an exception G***i18n
+			else	//if the file doesn't exist, there must have been some other creation error
+				throw new IOException("Cannot create "+file);	//throw an exception G***i18n
+		}
+	}	
 
 	/**Extracts the extension from a file.
 	@param file The file to examine.
@@ -235,6 +250,33 @@ public class FileUtilities implements FileConstants
 		  return string;  //return the string, because it doesn't need to be converted
 		else  //if the string isn't a filename already
 			return StringUtilities.replace(string, ILLEGAL_FILENAME_CHARS, REPLACEMENT_CHAR); //convert any illegal filename characters to the underscore and return the new string
+	}
+	
+	/**Creates the directory named by this abstract pathname, throwing an
+		exception if unsuccessful.
+	@param directory The directory to create.
+	@exception IOException Thrown if there is an error creating the directory.
+	*/
+	public static void mkdir(final File directory) throws IOException
+	{
+		if(!directory.mkdir())	//create the directory; if unsuccessful
+		{
+			throw new IOException("Cannot create directory "+directory);	//throw an exception G***i18n
+		}
+	}
+	
+	/**Creates the directory named by this abstract pathname, including any
+		necessary but nonexistent parent directories, throwing an exception if
+		unsuccessful.
+	@param directory The directory to create.
+	@exception IOException Thrown if there is an error creating the directory.
+	*/
+	public static void mkdirs(final File directory) throws IOException
+	{
+		if(!directory.mkdir())	//create the directory; if unsuccessful
+		{
+			throw new IOException("Cannot create directories "+directory);	//throw an exception G***i18n
+		}
 	}
 
 	/**Loads the contents of a file into an array of bytes. The file is closed
