@@ -3,12 +3,14 @@ package com.garretwilson.io;
 import java.io.*;
 import java.net.URI;
 
+import com.garretwilson.util.BoundPropertyObject;
+
 /**Default implementation of a class that allows access to resources by
 	providing input streams and indicating a base URI against which relative URIs
 	should be resolved.
 @author Garret Wilson
 */
-public class DefaultURIAccessible implements URIAccessible 
+public class DefaultURIAccessible extends BoundPropertyObject implements URIAccessible 
 {
 
 	/**The lazily-created singleton default instance of a default implementation with no base URI and default stream access.*/
@@ -36,6 +38,12 @@ public class DefaultURIAccessible implements URIAccessible
 		/**@return The non-<code>null</code> implementation to use for retrieving an input stream to a URI.*/
 		public URIInputStreamable getURIInputStreamable() {return uriInputStreamable;}
 
+	/**The implementation to use for retrieving an output stream to a URI.*/
+	private final URIOutputStreamable uriOutputStreamable;
+
+		/**@return The non-<code>null</code> implementation to use for retrieving an output stream to a URI.*/
+		public URIOutputStreamable getURIOutputStreamable() {return uriOutputStreamable;}
+
 	/**Default constructor.*/
 	public DefaultURIAccessible()
 	{
@@ -47,7 +55,7 @@ public class DefaultURIAccessible implements URIAccessible
 	*/
 	public DefaultURIAccessible(final URI baseURI)
 	{
-		this(baseURI, null);
+		this(baseURI, null, null);
 	}
 
 	/**URI input stream locator constructor.
@@ -59,15 +67,47 @@ public class DefaultURIAccessible implements URIAccessible
 		this(null, uriInputStreamable);
 	}
 
+	/**URI output stream locator constructor.
+	@param uriOutputStreamable The implementation to use for accessing a URI for
+		output, or <code>null</code> if the default implementation should be used.
+	*/
+	public DefaultURIAccessible(final URIOutputStreamable uriOutputStreamable)
+	{
+		this(null, uriOutputStreamable);
+	}
+
+	/**Base URI and input stream locator constructor.
+	@param baseURI The base URI, or <code>null</code> if unknown.
+	@param uriInputStreamable The implementation to use for accessing a URI for
+		input, or <code>null</code> if the default implementation should be used.
+	*/
+	public DefaultURIAccessible(final URI baseURI, final URIInputStreamable uriInputStreamable)
+	{
+		this(baseURI, uriInputStreamable, null);	//construct the class with the default output stream locator
+	}
+
+	/**Base URI and output stream locator constructor.
+	@param baseURI The base URI, or <code>null</code> if unknown.
+	@param uriOutputStreamable The implementation to use for accessing a URI for
+		output, or <code>null</code> if the default implementation should be used.
+	*/
+	public DefaultURIAccessible(final URI baseURI, final URIOutputStreamable uriOutputStreamable)
+	{
+		this(baseURI, null, uriOutputStreamable);	//construct the class with the default input stream locator
+	}
+
 	/**Full constructor.
 	@param baseURI The base URI, or <code>null</code> if unknown.
 	@param uriInputStreamable The implementation to use for accessing a URI for
 		input, or <code>null</code> if the default implementation should be used.
-	 */
-	public DefaultURIAccessible(final URI baseURI, final URIInputStreamable uriInputStreamable)
+	@param uriOutputStreamable The implementation to use for accessing a URI for
+		output, or <code>null</code> if the default implementation should be used.
+	*/
+	public DefaultURIAccessible(final URI baseURI, final URIInputStreamable uriInputStreamable, final URIOutputStreamable uriOutputStreamable)
 	{
 		this.baseURI=baseURI;	//save the base URI
 		this.uriInputStreamable=uriInputStreamable!=null ? uriInputStreamable : this;	//save the URI input stream locator, using our default if one was not given
+		this.uriOutputStreamable=uriOutputStreamable!=null ? uriOutputStreamable : this;	//save the URI output stream locator, using our default if one was not given
 	}
 		
 	/**Returns an input stream for the given URI.
@@ -79,6 +119,17 @@ public class DefaultURIAccessible implements URIAccessible
 	public InputStream getInputStream(final URI uri) throws IOException
 	{
 		return uri.toURL().openConnection().getInputStream();	//convert the URI to a URL, open a connection to it, and get an input stream to it
+	}
+
+	/**Returns an output stream for the given URI.
+	The calling class has the responsibility for closing the output stream.
+	@param uri A URI to a resource.
+	@return An output stream to the contents of the resource represented by the given URI.
+	@exception IOException Thrown if an I/O error occurred.
+	*/
+	public OutputStream getOutputStream(final URI uri) throws IOException
+	{
+		return uri.toURL().openConnection().getOutputStream();	//convert the URI to a URL, open a connection to it, and get an output stream to it
 	}
 
 }
