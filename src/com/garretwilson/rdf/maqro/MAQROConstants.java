@@ -45,8 +45,8 @@ public interface MAQROConstants
 	public final static String ORDER_DESCRIPTION_CLASS_NAME="OrderDescription";
 	/**The local name of maqro:Question.*/
 	public final static String QUESTION_CLASS_NAME="Question";
-	/**The local name of maqro:Result.*/
-	public final static String RESULT_CLASS_NAME="Result";
+	/**The local name of maqro:Outcome.*/
+	public final static String OUTCOME_CLASS_NAME="Outcome";
 	/**The local name of maqro:SelectDescription.*/
 	public final static String SELECT_DESCRIPTION_CLASS_NAME="SelectDescription";
 
@@ -99,11 +99,20 @@ public interface MAQROConstants
 	/**The query of a question. The local name of maqro:query.*/
 	public final static String QUERY_PROPERTY_NAME="query";
 
-		//MAQRO result property names
+		//MAQRO outcome class names
+	/**The local name of maqro:Score.*/
+	public final static String SCORE_CLASS_NAME="Score";
+		//MAQRO outcome property names
 	/**Whether the result is correct. The local name of maqro:correct.*/
 	public final static String CORRECT_PROPERTY_NAME="correct";
+	/**The outcomes of a group's interactions. The local name of maqro:outcomes.*/
+	public final static String OUTCOMES_PROPERTY_NAME="outcomes";
+	/**The possible score. The local name of maqro:possible.*/
+	public final static String POSSIBLE_PROPERTY_NAME="possible";
 	/**A response to an interaction. The local name of maqro:response.*/
 	public final static String RESPONSE_PROPERTY_NAME="response";
+	/**A result of an outcome evaluation. The local name of maqro:result.*/
+	public final static String RESULT_PROPERTY_NAME="result";
 
 		//MAQRO ontology property names
 	/**The number of choices to select. The local name of maqro:choiceCount.*/

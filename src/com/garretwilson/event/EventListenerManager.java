@@ -30,7 +30,7 @@ import com.garretwilson.util.*;
 @author Garret Wilson
 @see javax.swing.EventListenerList
 */
-public class EventListenerManager
+public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't a good idea, as anonymous listeners may not be referenced after being added to this class
 {
 
 	//Any access to a set is syncrhonized.
@@ -58,7 +58,8 @@ public class EventListenerManager
 		Set listenerSet=(Set)listenerSetMap.get(key);	//get the set of listeners associated with the key
 		if(listenerSet==null)	//if there is no set of listeners associated with the key
 		{
-			listenerSet=Collections.synchronizedSet(new WeakHashSet());	//create a new synchronized weak set in which to store the listeners
+//TODO fix weak hash set, which will not work for anonymous classes with no other references			listenerSet=Collections.synchronizedSet(new WeakHashSet());	//create a new synchronized weak set in which to store the listeners
+			listenerSet=Collections.synchronizedSet(new HashSet());	//create a new synchronized weak set in which to store the listeners
 			listenerSetMap.put(key, listenerSet);	//store the set in the map keyed to the key
 		}
 		return listenerSet;	//return the set of listeners
