@@ -37,12 +37,13 @@ public class Question extends Interaction
 	@param queryValue The literal value of the query.
 	@param language The language of the query value, or <code>null</code> if
 		no language should be specified.
-	*/
-	public void setQueryValue(final String queryValue, final Locale language)
+	@return The added query resource containing the given value.
+	*	*/
+	public RDFResource setQueryValue(final String queryValue, final Locale language)
 	{
 		final RDFResource query=RDFUtilities.locateResource(this, null);	//create an anonymous query
 		RDFUtilities.setValue(query, queryValue, language);	//set the query value
-		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME, query);	//store the query
+		return (RDFResource)setProperty(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME, query);	//store the query
 	}
 
 	/**Adds a choice to the question.
@@ -50,7 +51,7 @@ public class Question extends Interaction
 	*/
 	public void addChoice(final RDFResource choice)
 	{
-		RDFUtilities.addProperty(this, MAQRO_NAMESPACE_URI, CHOICE_PROPERTY_NAME, choice);	//add the choice to the question
+		addProperty(MAQRO_NAMESPACE_URI, CHOICE_PROPERTY_NAME, choice);	//add the choice to the question
 	}
 
 	/**@return An iterator to choices, if any, of the question.*/
@@ -80,9 +81,9 @@ public class Question extends Interaction
 	/**Sets the maximum number of responses to accept.
 	@param count The maximum number of responses.
 	*/
-	public void setQuestionCount(final int count)
+	public void setMaxResponseCount(final int count)
 	{
-		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME, new IntegerLiteral(count));	//set the value
+		setProperty(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME, new IntegerLiteral(count));	//set the value
 	}
 	
 }

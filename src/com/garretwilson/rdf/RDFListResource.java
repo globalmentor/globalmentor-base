@@ -282,7 +282,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	{
 		if(value!=null)	//if there is a value
 		{
-			RDFUtilities.setProperty(resource, RDF_NAMESPACE_URI, FIRST_PROPERTY_NAME, value); //set the first value
+			resource.setProperty(RDF_NAMESPACE_URI, FIRST_PROPERTY_NAME, value); //set the first value
 		}
 		else	//if there is no value
 		{
@@ -311,7 +311,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	{
 		if(value!=null)	//if there is a value
 		{
-			RDFUtilities.setProperty(resource, RDF_NAMESPACE_URI, REST_PROPERTY_NAME, value); //set the first value
+			resource.setProperty(RDF_NAMESPACE_URI, REST_PROPERTY_NAME, value); //set the first value
 		}
 		else	//if there is no value
 		{

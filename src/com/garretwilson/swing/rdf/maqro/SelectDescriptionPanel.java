@@ -61,7 +61,7 @@ public class SelectDescriptionPanel extends BasicPanel
 		while(categoryIterator.hasNext())	//while there are more categories
 		{
 				//copy this category to the selection criteria
-			RDFUtilities.addProperty(selectDescription, MAQROConstants.MAQRO_NAMESPACE_URI, MAQROConstants.CATEGORY_PROPERTY_NAME, (RDFObject)categoryIterator.next());
+			selectDescription.addProperty(MAQROConstants.MAQRO_NAMESPACE_URI, MAQROConstants.CATEGORY_PROPERTY_NAME, (RDFObject)categoryIterator.next());
 		}
 		return selectDescription;	//return the selection criteria we constructed
 	}

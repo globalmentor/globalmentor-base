@@ -50,10 +50,11 @@ public class BasicGridBagLayout extends GridBagLayout implements ContainerConsta
 		<code>X_AXIS</code> or <code>Y_AXIS</code>
 	@return The largest coordinate on the given axis, or <code>-1</code> if
 		no components were added using a <code>GridBagConstraint</code>.
+	@exception IllegalArgumentException Thrown if the axis value is unrecognized
 	@see #X_AXIS
 	@see #Y_AXIS
 	*/
-	protected int getMaxGrid(final int axis)	//TODO probably replace this with getGridBounds() 
+	protected int getMaxGrid(final int axis) throws IllegalArgumentException	//TODO probably replace this with getGridBounds() 
 	{
 		int max=-1;	//start out not finding any coordinate
 		final Iterator constraintsIterator=comptable.values().iterator();	//get an iterator to all the constraints
@@ -68,6 +69,8 @@ public class BasicGridBagLayout extends GridBagLayout implements ContainerConsta
 				case Y_AXIS:
 					max=Math.max(max, constraints.gridy);	//see if we need to update the largest y coordinate
 					break;
+				default:	//if the axis value isn't recognized
+					throw new IllegalArgumentException("Unrecognized axis value");	//G***i18n
 			}
 		}
 		return max;	//return whatever max value we found
@@ -99,10 +102,11 @@ public class BasicGridBagLayout extends GridBagLayout implements ContainerConsta
 		<code>X_AXIS</code> or <code>Y_AXIS</code>
 	@return A grid bag constraint object for adding a new component in single
 		file along the horizontal or vertical axis.
+	@exception IllegalArgumentException Thrown if the axis value is unrecognized
 	@see #X_AXIS
 	@see #Y_AXIS
 	*/
-	public GridBagConstraints createNextBoxConstraints(final int axis) 
+	public GridBagConstraints createNextBoxConstraints(final int axis) throws IllegalArgumentException 
 	{
 		return createNextBoxConstraints(axis, 0.0);	//return box constraints with no weight
 	}
@@ -118,10 +122,11 @@ public class BasicGridBagLayout extends GridBagLayout implements ContainerConsta
 		axis.
 	@return A grid bag constraint object for adding a new component in single
 		file along the horizontal or vertical axis.
+	@exception IllegalArgumentException Thrown if the axis value is unrecognized
 	@see #X_AXIS
 	@see #Y_AXIS
 	*/
-	public GridBagConstraints createNextBoxConstraints(final int axis, double weight) 
+	public GridBagConstraints createNextBoxConstraints(final int axis, double weight) throws IllegalArgumentException 
 	{
 		return createNextBoxConstraints(axis, weight, GridBagConstraints.CENTER, GridBagConstraints.BOTH);	//create box constraints anchoring in the center and filling both axes
 	}
@@ -137,8 +142,9 @@ public class BasicGridBagLayout extends GridBagLayout implements ContainerConsta
 		file along the horizontal or vertical axis.
 	@see #X_AXIS
 	@see #Y_AXIS
+	@exception IllegalArgumentException Thrown if the axis value is unrecognized
 	*/
-	public GridBagConstraints createNextBoxConstraints(final int axis, final int anchor, final int fill) 
+	public GridBagConstraints createNextBoxConstraints(final int axis, final int anchor, final int fill) throws IllegalArgumentException 
 	{
 		return createNextBoxConstraints(axis, 0.0, anchor, fill);	//create constraints with no weight		
 	}
@@ -153,12 +159,23 @@ public class BasicGridBagLayout extends GridBagLayout implements ContainerConsta
 	@param fill	How the component should fill the grid cell.
 	@return A grid bag constraint object for adding a new component in single
 		file along the horizontal or vertical axis.
+	@exception IllegalArgumentException Thrown if the axis value is unrecognized
 	@see #X_AXIS
 	@see #Y_AXIS
 	*/
-	public GridBagConstraints createNextBoxConstraints(final int axis, double weight, final int anchor, final int fill) 
+	public GridBagConstraints createNextBoxConstraints(final int axis, double weight, final int anchor, final int fill) throws IllegalArgumentException 
 	{
 		final int nextGrid=getMaxGrid(axis)+1;	//determine the next coordinate on the grid
+		switch(axis)	//see which axis we're dealing with
+		{
+			case X_AXIS:
+				return new GridBagConstraints(nextGrid, 0, 1, MAXGRIDSIZE, weight, 1.0, anchor, fill, NO_INSETS, 0, 0);
+			case Y_AXIS:
+				return new GridBagConstraints(0, nextGrid, MAXGRIDSIZE, 1, 1.0, weight, anchor, fill, NO_INSETS, 0, 0);
+			default:	//if the axis value isn't recognized
+				throw new IllegalArgumentException("Unrecognized axis value");	//G***i18n
+		}
+/*G***del when works
 		return new GridBagConstraints(
 				axis==X_AXIS ? nextGrid : 0,	//use the next coordinate for the appropriate axis
 				axis==Y_AXIS ? nextGrid : 0,
@@ -167,6 +184,7 @@ public class BasicGridBagLayout extends GridBagLayout implements ContainerConsta
 				axis==X_AXIS ? weight : 1.0,	//use the weight for the appropriate axis
 				axis==Y_AXIS ? weight : 1.0,
 				anchor, fill, NO_INSETS, 0, 0);
+*/
 	}
 
 

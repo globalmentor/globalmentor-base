@@ -41,7 +41,7 @@ public class Group extends Interaction
 		if(interactionList==null)	//if we have no list
 		{
 				//create a new list resource containing the added interaction 
-			RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME, new RDFListResource(getRDF(), interaction));
+			setProperty(MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME, new RDFListResource(getRDF(), interaction));
 		}
 		else	//if we already have a list
 		{

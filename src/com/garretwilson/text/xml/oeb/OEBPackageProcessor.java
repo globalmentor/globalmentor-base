@@ -187,56 +187,56 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 			if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TITLE.equals(dcMetadataElementName))
 			{
 				//store the title as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Creator>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CREATOR.equals(dcMetadataElementName))
 			{
 				  //G***currently we ignore the file-as and role attributes
 				//store the creator as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_CREATOR_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_CREATOR_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Subject>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SUBJECT.equals(dcMetadataElementName))
 			{
 				//store the subject as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_SUBJECT_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_SUBJECT_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Description>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DESCRIPTION.equals(dcMetadataElementName))
 			{
 				//store the description as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DESCRIPTION_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_DESCRIPTION_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Publisher>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_PUBLISHER.equals(dcMetadataElementName))
 			{
 				//store the publisher as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_PUBLISHER_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_PUBLISHER_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Contributor>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CONTRIBUTOR.equals(dcMetadataElementName))
 			{
 				//store the contributor as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_CONTRIBUTOR_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_CONTRIBUTOR_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Date>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DATE.equals(dcMetadataElementName))
 			{
 				//store the date as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Type>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TYPE.equals(dcMetadataElementName))
 			{
 				//store the type as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_TYPE_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_TYPE_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Format>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_FORMAT.equals(dcMetadataElementName))
 			{
 				//store the format as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_FORMAT_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_FORMAT_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Identifier>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_IDENTIFIER.equals(dcMetadataElementName))
@@ -256,37 +256,37 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 				  identifier=scheme+' '+dcMetadataElementText;  //we'll add the scheme to the front of the identifier, as recommended by http://www.dublincore.org/documents/2001/11/28/dcmes-xml/
 				}
 				//store the identifier as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, identifier);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, identifier);
 			}
 			//<package><metadata><dc-metadata><dc:Source>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SOURCE.equals(dcMetadataElementName))
 			{
 				//store the source as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_SOURCE_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_SOURCE_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Language>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_LANGUAGE.equals(dcMetadataElementName))
 			{
 				//store the language as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Relation>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RELATION.equals(dcMetadataElementName))
 			{
 				//store the relation as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_RELATION_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_RELATION_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Coverage>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_COVERAGE.equals(dcMetadataElementName))
 			{
 				//store the coverage as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_COVERAGE_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_COVERAGE_PROPERTY_NAME, dcMetadataElementText);
 			}
 			//<package><metadata><dc-metadata><dc:Rights>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RIGHTS.equals(dcMetadataElementName))
 			{
 				//store the rights as a property of the publication
-				RDFUtilities.addProperty(publicationResource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_RIGHTS_PROPERTY_NAME, dcMetadataElementText);
+				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_RIGHTS_PROPERTY_NAME, dcMetadataElementText);
 			}
 		}
 //G***fix fallbacks		final Map fallbackMap=new HashMap();  //create a map to be used for storing references to fallbacks

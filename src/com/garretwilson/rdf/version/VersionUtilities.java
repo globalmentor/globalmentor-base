@@ -16,7 +16,7 @@ public class VersionUtilities extends RDFUtilities implements VersionConstants
 	*/
 	public static RDFLiteral addVersion(final RDFResource resource, final String value)
 	{
-		return addProperty(resource, VERSION_NAMESPACE_URI, VERSION_PROPERTY_NAME, value);
+		return resource.addProperty(VERSION_NAMESPACE_URI, VERSION_PROPERTY_NAME, value);
 	}
 
 	/**Returns the value of the first <code>ver:version</code> property.

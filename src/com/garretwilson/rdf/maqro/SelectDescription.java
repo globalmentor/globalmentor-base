@@ -38,7 +38,7 @@ public class SelectDescription extends DefaultRDFResource implements MAQROConsta
 	*/
 	public void setQuestionCount(final int questionCount)
 	{
-		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, QUESTION_COUNT_PROPERTY_NAME, new IntegerLiteral(questionCount));	//set the interaction count
+		setProperty(MAQRO_NAMESPACE_URI, QUESTION_COUNT_PROPERTY_NAME, new IntegerLiteral(questionCount));	//set the interaction count
 	}
 
 	/**Determines whether selection should be random.
@@ -75,7 +75,7 @@ public class SelectDescription extends DefaultRDFResource implements MAQROConsta
 	*/
 	public void setChoiceCount(final int choiceCount)
 	{
-		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, CHOICE_COUNT_PROPERTY_NAME, new IntegerLiteral(choiceCount));	//set the choice count
+		setProperty(MAQRO_NAMESPACE_URI, CHOICE_COUNT_PROPERTY_NAME, new IntegerLiteral(choiceCount));	//set the choice count
 	}
 
 	/**@return The order criteria, or <code>null</code> if there is no
@@ -92,7 +92,7 @@ public class SelectDescription extends DefaultRDFResource implements MAQROConsta
 	*/
 	public void setOrder(final OrderDescription orderDescription)
 	{
-		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, ORDER_PROPERTY_NAME, orderDescription);	//set the order criteria
+		setProperty(MAQRO_NAMESPACE_URI, ORDER_PROPERTY_NAME, orderDescription);	//set the order criteria
 	}
 
 	/**Adds a category to the selection.

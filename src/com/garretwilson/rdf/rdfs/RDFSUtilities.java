@@ -15,7 +15,7 @@ public class RDFSUtilities extends RDFUtilities implements RDFSConstants
 	*/
 	public static void addComment(final RDFResource resource, final String value)
 	{
-		addProperty(resource, RDFS_NAMESPACE_URI, COMMENT_PROPERTY_NAME, value); //add a literal value to the resource as a comment
+		resource.addProperty(RDFS_NAMESPACE_URI, COMMENT_PROPERTY_NAME, value); //add a literal value to the resource as a comment
 	}
 
 	/**Adds an <code>rdfs:label</code> property to the resource.
@@ -25,7 +25,7 @@ public class RDFSUtilities extends RDFUtilities implements RDFSConstants
 	*/
 	public static void addLabel(final RDFResource resource, final String value)
 	{
-		addProperty(resource, RDFS_NAMESPACE_URI, LABEL_PROPERTY_NAME, value); //add a literal value to the resource as a label
+		resource.addProperty(RDFS_NAMESPACE_URI, LABEL_PROPERTY_NAME, value); //add a literal value to the resource as a label
 	}
 
 	/**Retrieves the comment of the resource. If this resource has more than one
@@ -64,7 +64,7 @@ public class RDFSUtilities extends RDFUtilities implements RDFSConstants
 	*/
 	public static void setLabel(final RDFResource resource, final String value)
 	{
-		setProperty(resource, RDFS_NAMESPACE_URI, LABEL_PROPERTY_NAME, value); //replace all label properties with a literal label value
+		resource.setProperty(RDFS_NAMESPACE_URI, LABEL_PROPERTY_NAME, value); //replace all label properties with a literal label value
 	}
 
 	/**Gets an <code>rdfs:comment</code> property from RDF. This ensures that an

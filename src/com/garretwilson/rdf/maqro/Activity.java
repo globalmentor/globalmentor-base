@@ -113,7 +113,7 @@ public class Activity extends Group
 	*/
 	public void setSelect(final SelectDescription selectDescription)
 	{
-		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, SELECT_PROPERTY_NAME, selectDescription);	//set the selection criteria
+		setProperty(MAQRO_NAMESPACE_URI, SELECT_PROPERTY_NAME, selectDescription);	//set the selection criteria
 	}
 
 	/**@return The list of interactions for this activity.
@@ -134,7 +134,7 @@ public class Activity extends Group
 		if(interactionList==null)	//if we have no list
 		{
 				//create a new list resource containing the added interaction 
-			RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME, new RDFListResource(getRDF(), interaction));
+			setProperty(MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME, new RDFListResource(getRDF(), interaction));
 		}
 		else	//if we already have a list
 		{

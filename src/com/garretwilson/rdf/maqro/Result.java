@@ -45,7 +45,7 @@ public class Result extends DefaultRDFResource implements MAQROConstants
 	 */
 	public void setInteraction(final Interaction interaction)
 	{
-		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, INTERACTION_PROPERTY_NAME, interaction);	//set the interaction
+		setProperty(MAQRO_NAMESPACE_URI, INTERACTION_PROPERTY_NAME, interaction);	//set the interaction
 	}
 
 	/**Adds a response to the result.
@@ -53,7 +53,7 @@ public class Result extends DefaultRDFResource implements MAQROConstants
 	*/
 	public void addResponse(final RDFObject response)
 	{
-		RDFUtilities.addProperty(this, MAQRO_NAMESPACE_URI, RESPONSE_PROPERTY_NAME, response);	//add the response to the result
+		addProperty(MAQRO_NAMESPACE_URI, RESPONSE_PROPERTY_NAME, response);	//add the response to the result
 	}
 
 	/**@return An iterator to responses, if any, of the result.*/

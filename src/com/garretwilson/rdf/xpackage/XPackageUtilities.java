@@ -18,6 +18,23 @@ import java.net.URI;	//G***del when other URI is removed
 public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 {
 
+	/**Adds an alternate to a resource.
+	@param resource The resource to which the property should be added.
+	@param alternate The alternate to add.
+	*/
+	public static void addAlternate(final RDFResource resource, final RDFObject alternate)
+	{
+		resource.addProperty(XPACKAGE_NAMESPACE_URI, ALTERNATE_PROPERTY_NAME, alternate);	//add the alternate to the resource
+	}
+
+	/**@return An iterator to alternates, if any, of a resource.
+	@param resource The resource for which properties should be iterated.
+	*/
+	public static Iterator getAlternateIterator(final RDFResource resource)
+	{
+		return resource.getPropertyValueIterator(XPACKAGE_NAMESPACE_URI, ALTERNATE_PROPERTY_NAME); //return an iterator to the alternate properties
+	}
+
 	/**Sets the <code>&lt;xpackage:children&gt;</code> property of the resource.
 	@param resource The resource to which a property should be added.
 	@param childrenList The list of children.
@@ -25,7 +42,7 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 	*/
 	public static RDFListResource setChildren(final RDFResource resource, final RDFListResource childrenList)
 	{
-		setProperty(resource, XPACKAGE_NAMESPACE_URI, CHILDREN_PROPERTY_NAME, childrenList);	//add the children property to the resource
+		resource.setProperty(XPACKAGE_NAMESPACE_URI, CHILDREN_PROPERTY_NAME, childrenList);	//add the children property to the resource
 		return childrenList;  //return the list of children we added
 	}
 
@@ -40,9 +57,9 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 		final RDFResource locationResource=RDFUtilities.locateResource(resource, null); //create an anonymous location resource
 //G***del; the location doesn't have a type		addType(rdf, locationResource, XPACKAGE_NAMESPACE_URI, LOCATION);  //set the location type to xpackage:location
 			//add the XLink:href to the location
-		addProperty(locationResource, XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.ATTRIBUTE_HREF, href);
+		locationResource.addProperty(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.ATTRIBUTE_HREF, href);
 			//add the location property to the resource
-		addProperty(resource, XPACKAGE_NAMESPACE_URI, LOCATION_PROPERTY_NAME, locationResource);
+		resource.addProperty(XPACKAGE_NAMESPACE_URI, LOCATION_PROPERTY_NAME, locationResource);
 		return locationResource;  //return the location resource we created
 	}
 
@@ -55,7 +72,7 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 		  //create an anonymous manifest resource from the data model
 		final RDFBagResource manifestResource=(RDFBagResource)locateTypedResource(resource, null, RDF_NAMESPACE_URI, BAG_CLASS_NAME);	//G***maybe creaate a utility method for this
 			//add the manifest property to the resource
-		addProperty(resource, XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME, manifestResource);
+		resource.addProperty(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME, manifestResource);
 		return manifestResource;  //return the manifest resource we created
 	}
 
@@ -68,7 +85,7 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 		  //create an anonymous organization resource from the data model
 		final RDFSequenceResource organizationResource=(RDFSequenceResource)locateTypedResource(resource, null, RDF_NAMESPACE_URI, SEQ_CLASS_NAME);	//G***maybe create a utility method for this
 			//add the organization property to the resource
-		addProperty(resource, XPACKAGE_NAMESPACE_URI, ORGANIZATION_PROPERTY_NAME, organizationResource);
+		resource.addProperty(XPACKAGE_NAMESPACE_URI, ORGANIZATION_PROPERTY_NAME, organizationResource);
 		return organizationResource;  //return the organization resource we created
 	}
 

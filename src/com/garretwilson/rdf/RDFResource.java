@@ -8,7 +8,7 @@ import com.garretwilson.util.*;
 @author Garret Wilson
 @see DefaultRDFResource
 */
-public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***fix, Comparable
+public interface RDFResource extends RDFObject, Resource, RDFConstants, Cloneable	//G***fix, Comparable
 {
 
 	/**@return The resource identifier URI, or <code>null</code> if the identifier is not known.*/
@@ -133,6 +133,24 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***fix
 	*/
 	public RDFObject addProperty(final RDFResource property, final RDFObject value);
 
+	/**Adds a property by creating a <code>RDFPropertyValuePair</code> from the given
+		property and value. This is a convenience method that allows specification
+		of the property resource through a namespace URI and a local name.
+		For each property, this resource serves as the subject
+		of an RDF statement with the property as the predicate and the value as
+		the object.
+	<p>Note that the property is not simply a property URI &mdash; it is a
+		resource that is identified by the property URI.</p>
+	<p>If an equivalent property already exists, no action is taken.</p>
+	@param propertyNamespaceURI The XML namespace URI used in the serialization
+		of the property resource that is the predicate of an RDF statement.
+	@param propertyLocalName The XML local name used in the serialization of the
+		property resource that is the predicate of an RDF statement.
+	@param value A property value; the object of an RDF statement.
+	@return The added property value.
+	*/
+	public RDFObject addProperty(final URI propertyNamespaceURI, final String propertyLocalName, final RDFObject value);
+
 	/**Adds a plain literal property from a string by creating a <code>RDFPropertyValuePair</code>
 		from the given property and value. For each property, this resource serves
 		as the subject of an RDF statement with the property as the predicate and
@@ -146,6 +164,25 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***fix
 	@return The added property value.
 	*/
 	public RDFLiteral addProperty(final RDFResource property, final String literalValue);
+
+	/**Adds a plain literal property from a string by creating a <code>RDFPropertyValuePair</code>
+		from the given property and value. This is a convenience method that allows specification
+		of the property resource through a namespace URI and a local name.
+		For each property, this resource serves as the subject of an RDF statement
+		with the property as the predicate and the value, stored as a literal, as
+		the object. No language is specified
+		<p>Note that the property is not simply a property URI &mdash; it is a
+		resource that is identified by the property URI.</p>
+		<p>If an equivalent property already exists, no action is taken.</p>
+	@param propertyNamespaceURI The XML namespace URI used in the serialization
+		of the property resource that is the predicate of an RDF statement.
+	@param propertyLocalName The XML local name used in the serialization of the
+		property resource that is the predicate of an RDF statement.
+	@param literalValue A literal property value that will be stored in a
+		<code>RDFLiteral</code>; the object of an RDF statement.
+	@return The added property value.
+	*/
+	public RDFLiteral addProperty(final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue);
 
 	/**Adds a plain literal property from a string by creating a <code>RDFPropertyValuePair</code>
 		from the given property and value. For each property, this resource serves
@@ -162,6 +199,27 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***fix
 	@return The added property value.
 	*/
 	public RDFLiteral addProperty(final RDFResource property, final String literalValue, final Locale language);
+
+	/**Adds a plain literal property from a string by creating a <code>RDFPropertyValuePair</code>
+		from the given property and value. This is a convenience method that allows specification
+		of the property resource through a namespace URI and a local name.
+		For each property, this resource serves as the subject of an RDF statement
+		with the property as the predicate and the value, stored as a literal, as
+		the object.
+		<p>Note that the property is not simply a property URI &mdash; it is a
+		resource that is identified by the property URI.</p>
+		<p>If an equivalent property already exists, no action is taken.</p>
+	@param propertyNamespaceURI The XML namespace URI used in the serialization
+		of the property resource that is the predicate of an RDF statement.
+	@param propertyLocalName The XML local name used in the serialization of the
+		property resource that is the predicate of an RDF statement.
+	@param literalValue A literal property value that will be stored in a
+		<code>RDFLiteral</code>; the object of an RDF statement.
+	@param language The language of the plain literal, or <code>null</code> if
+		no language should be specified.
+	@return The added property value.
+	*/
+	public RDFLiteral addProperty(final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue, final Locale language);
 	
 	/**Removes all properties with the given URI.
 	@param propertyURI The reference URI of the property resource of the
@@ -190,6 +248,17 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***fix
 	*/
 	public RDFObject setProperty(final RDFResource property, final RDFObject value);
 
+	/**Sets a property by first removing all such properties and then adding
+		a new property.
+	@param propertyNamespaceURI The XML namespace URI used in the serialization
+		of the property resource that is the predicate of an RDF statement.
+	@param propertyLocalName The XML local name used in the serialization of the
+		property resource that is the predicate of an RDF statement.
+	@param value A property value; the object of an RDF statement.
+	@return The added property value.
+	*/
+	public RDFObject setProperty(final URI propertyNamespaceURI, final String propertyLocalName, final RDFObject value);
+
 	/**Sets a plain literal property from a string by removing all property values
 		for the given property and creating a new <code>RDFPropertyValuePair</code>
 		from the given property and value. No language is specified.
@@ -201,6 +270,18 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***fix
 	@see #addProperty(RDFResource, String)
 	*/
 	public RDFLiteral setProperty(final RDFResource property, final String literalValue);
+
+	/**Sets a plain literal property from a string by first removing all such
+		properties and then adding a new property. No language is specified.
+	@param propertyNamespaceURI The XML namespace URI used in the serialization
+		of the property resource that is the predicate of an RDF statement.
+	@param propertyLocalName The XML local name used in the serialization of the
+		property resource that is the predicate of an RDF statement.
+	@param literalValue A literal property value that will be stored in a
+		<code>RDFLiteral</code>; the object of an RDF statement.
+	@return The added property value.
+	*/
+	public RDFLiteral setProperty(final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue);
 
 	/**Sets a plain literal property from a string by removing all property values
 		for the given property and creating a new <code>RDFPropertyValuePair</code>
@@ -215,5 +296,22 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***fix
 	@see #addProperty(RDFResource, String)
 	*/
 	public RDFLiteral setProperty(final RDFResource property, final String literalValue, final Locale language);
+
+	/**Sets a plain literal property from a string by first removing all such
+		properties and then adding a new property.
+	@param propertyNamespaceURI The XML namespace URI used in the serialization
+		of the property resource that is the predicate of an RDF statement.
+	@param propertyLocalName The XML local name used in the serialization of the
+		property resource that is the predicate of an RDF statement.
+	@param literalValue A literal property value that will be stored in a
+		<code>RDFLiteral</code>; the object of an RDF statement.
+	@param language The language of the plain literal, or <code>null</code> if
+		no language should be specified.
+	@return The added property value.
+	*/
+	public RDFLiteral setProperty(final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue, final Locale language);
+
+	/**@return A copy of this resource with the same URI and identical properties.*/
+	public Object clone();
 
 }
