@@ -86,7 +86,7 @@ Debug.trace("ready to encode objects");
 	{
 Debug.trace("ready to encode object to document");
 //G***bring back when SavaJe works		final String packageName=object.getClass().getPackage().getName();  //get the name of the object's package
-		final String packageName=ClassUtilities.getPackageName(object.getClass());  //get the name of the object's package
+		final String packageName=object.getClass().getPackage().getName();  //get the name of the object's package
 		final ObjectXMLFactory objectXMLFactory=getObjectXMLFactory(packageName);  //get a factory based on the package name
 		if(objectXMLFactory!=null)  //if we have a factory for creating elements from this package
 			return objectXMLFactory.create(object, document);  //let the factory create an element from the object

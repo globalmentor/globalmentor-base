@@ -21,12 +21,14 @@ public class ClassUtilities implements JavaConstants
 	@param objectClass The class for which the Java package will be determined.
 	@return A string representing the package name of the given class.
 	*/
+/*G***del; support for SavaJe isn't currently necessary
 	public static String getPackageName(final Class objectClass)
 	{
 		final String className=objectClass.getName(); //get the class name
 		final int classNameDividerIndex=className.lastIndexOf('.'); //G***testnig
 		return classNameDividerIndex>=0 ? className.substring(0, classNameDividerIndex) : className;  //G***testing
 	}
+}
 
 	/**Convenience function to locate and return the public default constructor of
 		a particular class. This differs from <code>Class.getConstructor()</code> in
@@ -52,6 +54,34 @@ public class ClassUtilities implements JavaConstants
 				return constructor; //we found the default constructor
 		}
 		return null;  //show that we could not find a default constructor
+	}
+
+	/**Creates a full name analogous to a class name from the package of an
+	 	existing class. For example, a class of <code>com.garretwilson.Foo</code>
+	 	and a local name of <code>Bar</code> will result in a full name of
+	 	<code>com.garretwilson.Bar</code>.
+	@param objectClass The class to supply the package name.
+	@param localName The local name for constructing the full name within the package.
+	@return A full class name in the package of the given class with the given
+		local name.
+	@see #getFullName(Package, String)
+	*/
+	public static String getFullName(final Class objectClass, final String localName)
+	{
+		return getFullName(objectClass.getPackage(), localName);	//return the package plus the name separated by a package separator
+	}
+
+	/**Creates a full name given package and a local name.
+	 	For example, a package of <code>com.garretwilson</code>
+	 	and a local name of <code>Bar</code> will result in a full name of
+	 	<code>com.garretwilson.Bar</code>.
+	@param objectClass The class to supply the package name.
+	@param localName The local name for constructing the full name within the package.
+	@return A full class name in the given package and the given local name.
+	*/
+	public static String getFullName(final Package objectPackage, final String localName)
+	{
+		return objectPackage.getName()+PACKAGE_SEPARATOR+localName;	//return the package plus the name separated by a package separator
 	}
 
 	/**Returns the local name of the class, with the package name removed.

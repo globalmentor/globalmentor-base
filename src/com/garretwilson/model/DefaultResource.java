@@ -7,7 +7,7 @@ import java.net.URI;
 	URI, if available.
 @author Garret Wilson
 */
-public class DefaultResource implements Resource
+public class DefaultResource implements Resource, Comparable<Resource>
 {
 
 	/**The resource identifier URI, or <code>null</code> if the identifier is not known.*/
@@ -71,25 +71,22 @@ public class DefaultResource implements Resource
 	}
 
 	/**Compares this object to another object.
-		This method determines order based upon the reference URI of the resource.
-	@param object The object with which to compare the component. This must be
+	<p>This method determines order based upon the reference URI of the resource,
+		if any; otherwise, the string versions of the resources are compared.</p>
+	@param object The object with which to compare the object. This must be
 		another <code>Resource</code> object.
 	@return A negative integer, zero, or a positive integer as this resource
 		reference URI is less than, equal to, or greater than the reference URI of
 		the specified resource, respectively.
-	@exception ClassCastException Thrown if the specified object's type is not
-		a <code>Resource</code>.
 	@see #getReferenceURI
 	*/
-/*G***del if not needed
-	public int compareTo(Object object) throws ClassCastException
+	public int compareTo(final Resource resource)	//TODO comparing different things may result in circular comparisons
 	{
-//G***fix		final Resource otherResource=(Resource)object;	//cast the object to a resource
-		
-		//G***check about comparing null reference URIs
-		return getReferenceURI().compareTo(((Resource)object).getReferenceURI()); //compare reference URIs
+		if(getReferenceURI()!=null && resource.getReferenceURI()!=null)	//if both resources have reference URIs				
+			return getReferenceURI().compareTo(resource.getReferenceURI()); //compare reference URIs
+		else	//if one of the two resources doesn't have a reference URI
+			return toString().compareTo(resource.toString());	//compare strings
 	}
-*/
 
 	/**Returns a string representation of the resource.
 	<p>This version returns the reference URI if there is one; otherwise, the

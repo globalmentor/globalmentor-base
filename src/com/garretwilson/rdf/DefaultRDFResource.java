@@ -12,7 +12,7 @@ import com.garretwilson.model.*;
 	any.</p> 
 @author Garret Wilson
 */
-public class DefaultRDFResource extends DefaultResource implements RDFResource, Comparable, Cloneable
+public class DefaultRDFResource extends DefaultResource implements RDFResource, Cloneable
 {
 
 	/**The XML namespace URI.*/
@@ -627,27 +627,6 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 			}
 		}
 		return super.equals(object);	//if we have a reference URI or the other object isn't an RDF resource, do a default comparison (usually using reference URIs)
-	}
-
-	/**Compares this object to another object.
-	<p>This method determines order based upon the reference URI of the resource,
-		if any.</p>
-	@param object The object with which to compare the object. This must be
-		another <code>Resource</code> object.
-	@return A negative integer, zero, or a positive integer as this resource
-		reference URI is less than, equal to, or greater than the reference URI of
-		the specified resource, respectively.
-	@exception ClassCastException Thrown if the specified object's type is not
-		a <code>Resource</code>.
-	@see #getReferenceURI
-	*/
-	public int compareTo(Object object) throws ClassCastException	//TODO fix, and maybe transfer back up to DefaultResource
-	{
-//G***fix		final Resource otherResource=(Resource)object;	//cast the object to a resource
-		if(getReferenceURI()!=null && ((Resource)object).getReferenceURI()!=null)	//if both resources have reference URIs				
-			return getReferenceURI().compareTo(((Resource)object).getReferenceURI()); //compare reference URIs
-		else	//if one of the two resources doesn't have a reference URI
-			return hashCode()-object.hashCode();	//make an arbitrary comparison G***fix
 	}
 
 	/**@return A copy of this resource with the same URI and identical properties.*/
