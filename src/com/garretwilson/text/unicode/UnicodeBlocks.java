@@ -1,41 +1,60 @@
 package com.garretwilson.text.unicode;
 
 import java.io.*;
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.util.*;
 
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import com.garretwilson.text.CharacterEncodingConstants;
 import com.garretwilson.util.Debug;
 
-/**A set of Unicode named character blocks. The iterator returned by the class
-will return the blocks in sequential order. This class contains functionality
-to read and parse information from a Unicode <code>Blocks.txt</code> file in
-the following format:
-<blockquote><code>Start Code (hex); End Code (hex); Block Name</code></blockquote>
+/**Accesses Unicode named character blocks.
+The set iterator will return the blocks in sequential order.
+This class contains functionality to read and parse information from a Unicode <code>Blocks.txt</code> file in the following format:
+<blockquote><code>Start Code (hex)..End Code (hex); Block Name</code></blockquote>
 @see UnicodeBlock
 */
-public class UnicodeBlockSet extends TreeSet<UnicodeBlock>
+public class UnicodeBlocks
 {
 	/**The default name used by Unicode to store block data.*/
-	public final static String BLOCKS_FILENAME="Blocks.txt";
+	protected final static String BLOCKS_FILENAME="Blocks.txt";
 
 	/**The data file's field delimiter character.*/
 	public final static char FIELD_DELIMITER=';';
 
-	/**Default constructor.*/
-	public UnicodeBlockSet() {}
+	/**A reference to a cached unmodifiable set of Unicode blocks.*/
+	private static Reference<SortedSet<UnicodeBlock>> blockSetReference=null; 
+
+		/**@return An unmodifiable set of Unicode blocks, reloading them if needed.*/
+		public static SortedSet<UnicodeBlock> getUnicodeBlocks()
+		{
+			SortedSet<UnicodeBlock> blockSet=blockSetReference!=null ? blockSetReference.get() : null;	//get the cached Unicode block set, if there is one
+			if(blockSet==null)	//if we haven't loaded the blocks, or they have been reclaimed by the garbage collector
+			{
+				try
+				{
+					blockSet=Collections.unmodifiableSortedSet(load());	//load a new block set
+				}
+				catch(final IOException ioException)	//if there is an error loading the blocks (there never should be, as they should be known resources)
+				{
+					throw new AssertionError(ioException);
+				}
+				blockSetReference=new SoftReference<SortedSet<UnicodeBlock>>(blockSet);	//create a new soft reference to the set of Unicode blocks we just loaded
+			}
+			return blockSet;	//return the block set
+		}
 
 	/**Returns the block in which the specified character falls.
-	@param character The Unicode character.
+	@param codePoint The Unicode character.
 	@return The Unicode block in which the specified character falls, or
 		<code>null</code> if this character does not fall in any known block.
 	*/
-	public UnicodeBlock getUnicodeBlockByCharacter(final char character)
+	public UnicodeBlock getUnicodeBlockByCodePoint(final int codePoint)
 	{
-			//G***later, implement a better searching algorithm; this is, after all, a tree
-		for(final UnicodeBlock block:this)	//look at each block
+		for(final UnicodeBlock block:getUnicodeBlocks())	//look at each block TODO later, implement a better searching algorithm; this is, after all, a tree
 		{
-			if(character>=block.getStartCode() && character<=block.getEndCode())  //if this character falls within this block
+			if(codePoint>=block.getStartCode() && codePoint<=block.getEndCode())  //if this character falls within this block
 				return block; //return this block
 		}
 		return null;  //show that we can't find a matching block
@@ -45,7 +64,7 @@ public class UnicodeBlockSet extends TreeSet<UnicodeBlock>
 	@throws UnsupportedEncodingException Thrown if the blocks file encoding
 		(ISO 8859-1) is unsupported. This situation should never occur.
 	*/
-	public static Reader getBlocksReader() throws UnsupportedEncodingException
+	protected static Reader getBlocksReader() throws UnsupportedEncodingException
 	{
 			//get an input stream to our Unicode data resource file
 		final InputStream inputStream=UnicodeData.class.getResourceAsStream(BLOCKS_FILENAME);
@@ -57,7 +76,7 @@ public class UnicodeBlockSet extends TreeSet<UnicodeBlock>
 	@return A set of Unicode blocks.
 	@exception IOException Thrown if there was an error parsing the blocks.
 	*/
-	public static UnicodeBlockSet load() throws IOException
+	protected static SortedSet<UnicodeBlock> load() throws IOException
 	{
 		final Reader reader=getBlocksReader();	//get a reader to our data
 		try
@@ -77,9 +96,9 @@ public class UnicodeBlockSet extends TreeSet<UnicodeBlock>
 	@exception IOException Thrown if there was an error parsing the Unicode data.
 	@see UnicodeBlock
 	*/
-	public static UnicodeBlockSet parse(final Reader reader) throws IOException
+	protected static SortedSet<UnicodeBlock> parse(final Reader reader) throws IOException
 	{
-		final UnicodeBlockSet blockSet=new UnicodeBlockSet(); //create a set in which we can store the unicode blocks
+		final SortedSet<UnicodeBlock> blockSet=new TreeSet<UnicodeBlock>(); //create a set in which we can store the unicode blocks
 		final LineNumberReader lineNumberReader=new LineNumberReader(reader);	//create a reader to allow us to read the file line by line
 		try
 		{
@@ -120,12 +139,12 @@ public class UnicodeBlockSet extends TreeSet<UnicodeBlock>
 			{
 				final String startCodeValue=rangeTokenizer.nextToken().trim();	//get the start code value and trim it
 	//G***del Debug.trace("Start: "+startCodeValue);
-			  final char startCode=(char)Integer.parseInt(startCodeValue, 16); //convert the hex value to a character
+			  final int startCode=Integer.parseInt(startCodeValue, 16); //convert the hex value to a character
 				if(rangeTokenizer.hasMoreTokens())	//if there are more fields on this line
 				{
 					final String endCodeValue=rangeTokenizer.nextToken().trim();	//get the end code value and trim it
 	//G***del Debug.trace("End: "+endCodeValue);
-					final char endCode=(char)Integer.parseInt(endCodeValue, 16); //convert the hex value to a character
+					final int endCode=Integer.parseInt(endCodeValue, 16); //convert the hex value to a character
 					final String name=fields[1].toString().trim();	//get the block name and trim it
 	//G***del Debug.trace("Name: "+name);
 				  return new UnicodeBlock(name, startCode, endCode);  //create a new Unicode block and return it

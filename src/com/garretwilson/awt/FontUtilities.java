@@ -109,6 +109,27 @@ Debug.trace("Font name: ", font.getFontName()); //G***del
 		return font;  //return the font we found in the map or created
 	}
 
+	/**Gets a new font for the specified character by searching all available fonts
+	 	if the character is not supported by the provided font.
+	If no font supports the character, the preferred font is returned.
+	@param c The character for which a font should be returned.
+	@param suggestedFont The preferred font.
+	@return The new font, or <code>null</code> if a font could not be found that
+		matched this character.
+	*/
+	public static Font getFont(final char c, final Font preferredFont)
+	{
+		if(preferredFont.canDisplay(c)) //if the font can display the character
+		{
+			return preferredFont; //return the font
+		}
+		else	//if the font cannot display the character
+		{
+			final Font font=getFont(c, preferredFont.getStyle(), preferredFont.getSize());	//get a font of the same style and size that supports this character
+			return font!=null ? font : preferredFont;	//return the new font or, if there is no new font, the preferred font
+		}
+	}
+
 	/**Gets a new font for the specified character by searching all available fonts.
 	<p>Once a font is found for a particular character, that font family name is
 		stored with the character's Unicode block so that retrieving a font for the
@@ -162,7 +183,7 @@ Debug.trace("Font style bold: ", style & Font.BOLD);
 			}			
 		}
 		//see which Unicode block this character is in
-		final Character.UnicodeBlock unicodeBlock=Character.UnicodeBlock.of(c);
+		final Character.UnicodeBlock unicodeBlock=Character.UnicodeBlock.of(c);	//TODO user our own Unicode block implementation
 //G***del Debug.trace("character in unicode block: "+unicodeBlock); //G***del
 		//see if we know about a font family name for this block
 		final String blockFamilyName=(String)characterFontFamilyNameMap.get(unicodeBlock);
@@ -183,6 +204,7 @@ Debug.trace("Font style bold: ", style & Font.BOLD);
 //G***fix for Arabic				if(unicodeBlock.equals(Character.UnicodeBlock.ARABIC))  //if this is an unrecognized Arabic character
 //G***fix for Arabic					return getFont(childView, "Lucinda Sans Regular", font.getStyle(), font.getSize()); //use the font we know can display this character correctly G***fix, use constants G***what about the font.getSize2D()?
 		  //G***add Batang and others to the last-resort fonts
+		//TODO should these be "Lucida Sans"?
 		if(unicodeBlock.equals(Character.UnicodeBlock.ARROWS))  //if this is an arrow
 			possibleFontFamilyNames=new String[]{"Lucida Sans Regular", "Berling Antiqua", "Batang"};  //show which font family names we want to try G***use a pre-created static version
 		else if(unicodeBlock.equals(Character.UnicodeBlock.LETTERLIKE_SYMBOLS))  //if this is a letter-like symbol

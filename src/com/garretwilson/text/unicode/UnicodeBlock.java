@@ -1,36 +1,34 @@
 package com.garretwilson.text.unicode;
 
-import com.garretwilson.lang.IntegerUtilities;
-
 /**Describes a named range of Unicode characters.
 @author Garret Wilson
 */
 public class UnicodeBlock implements Comparable
 {
 	/**The name of the Unicode block.*/
-	private String name;
+	private final String name;
 
 		/**@return The name of the Unicode block.*/
-		private String getName() {return name;}
+		public String getName() {return name;}
 
 	/**The start code of the Unicode block.*/
-	private char startCode;
+	private final int startCode;
 
 		/**@return The start code of the Unicode block.*/
-		public char getStartCode() {return startCode;}
+		public int getStartCode() {return startCode;}
 
 	/**The inclusive end code of the Unicode block.*/
-	private char endCode;
+	private final int endCode;
 
 		/**@return The inclusive end code of the Unicode block.*/
-		public char getEndCode() {return endCode;}
+		public int getEndCode() {return endCode;}
 
 	/**Constructs a named Unicode block with a given name.
 	@param newName The name of the Unicode block.
 	@param newStartCode The start code.
 	@param newEndCode The inclusive end code.
 	*/
-	public UnicodeBlock(final String newName, final char newStartCode, final char newEndCode)
+	public UnicodeBlock(final String newName, final int newStartCode, final int newEndCode)
 	{
 		name=newName; //set the name
 		startCode=newStartCode; //set the start code
@@ -79,8 +77,6 @@ public class UnicodeBlock implements Comparable
 	/**@return A string representation of this block in the format "name [0000-0000]".*/
 	public String toString()
 	{
-		return getName()+" ["+  //G***use UnicodeUtilities or something here instead of UnicodeData
-			  IntegerUtilities.toHexString(getStartCode(), 4).toUpperCase()+"-"+
-			  IntegerUtilities.toHexString(getEndCode(), 4).toUpperCase()+"]";
+		return getName()+" ["+UnicodeCharacter.getCodePointString(getStartCode())+'-'+UnicodeCharacter.getCodePointString(getEndCode())+']';
 	}
 }

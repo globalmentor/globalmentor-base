@@ -16,10 +16,7 @@ public class UnicodeCharacter implements UnicodeConstants
 		/**@returns The code value of the Unicode character.*/
 		public int getCodeValue() {return codeValue;}
 
-		/**Sets the code value of the Unicode character.
-		@param newCodeValue The code value of the Unicode character.
-		*/
-		public void setCodeValue(final int newCodeValue) {codeValue=newCodeValue;}
+		void setCodeValue(final int newCodeValue) {codeValue=newCodeValue;}	//TODO del and change the parsing routine to collect all data before construction
 
 	/**The name of the character.*/
 	private String characterName;
@@ -32,7 +29,7 @@ public class UnicodeCharacter implements UnicodeConstants
 		*/
 		public void setCharacterName(final String newCharacterName) {characterName=newCharacterName;}
 
-		/**If this is a control character (<&lt;control&gt;), returns the Unicode 1.0 name.
+		/**If this is a control character (&lt;control&gt;), returns the Unicode 1.0 name.
 		@return The unique name of the character, or the empty string if there
 			is no unique name.
 		@see UnicodeConstants#CONTROL_NAME
@@ -42,9 +39,17 @@ public class UnicodeCharacter implements UnicodeConstants
 		public String getUniqueCharacterName()
 		{
 			String uniqueName=getCharacterName();	//get the character name
-			if(uniqueName.equalsIgnoreCase(CONTROL_NAME))	//if this is a control character
+			if(CONTROL_NAME.equalsIgnoreCase(uniqueName))	//if this is a control character
 				uniqueName=getUnicode10Name();	//use the Unicode 1.0 name
 			return uniqueName;	//return the name we found (which still could be "")
+		}
+
+		/**@return <code>true</code> if this is a control character (the name is "&lt;control&gt;").
+		@see #getCharacterName()
+		*/
+		public boolean isControl()
+		{
+			return CONTROL_NAME.equalsIgnoreCase(getCharacterName());	//return whether the name is "<control>"
 		}
 
 	/**The character's general category.*/
@@ -256,34 +261,42 @@ public class UnicodeCharacter implements UnicodeConstants
 		*/
 		public void setTitlecaseMapping(final char newTitlecaseMapping) {titlecaseMapping=newTitlecaseMapping;}
 
-	/**Default constructor.*/
-	public UnicodeCharacter() {}
-
+	public UnicodeCharacter() {}	//TODO del and change the parsing routine to collect all data before construction
+		
 	/**Creates a new Unicode character.
 	@param newCodeValue The code value of the Unicode character.
 	*/
-	public UnicodeCharacter(final char newCodeValue)
+	public UnicodeCharacter(final int newCodeValue)	//TODO make a complete constructor and remove this constructor
 	{
-		setCodeValue(newCodeValue);	//set the code value
+		codeValue=newCodeValue;	//save the code value
 	}
 
 	/**Creates a new Unicode character with a name.
 	@param newCodeValue The code value of the Unicode character.
 	@param newCharacterName The name of the Unicode character.
 	*/
-	public UnicodeCharacter(final char newCodeValue, final String newCharacterName)
+	public UnicodeCharacter(final int newCodeValue, final String newCharacterName)
 	{
 		this(newCodeValue);	//do the default construction
 		setCharacterName(newCharacterName);	//set the character name
 	}
 
+	/**Creates a string representation of a given Unicode code point in the form "U+XXXX[XX]".
+	@param codeValue The Unicode code point to represent.
+	@return A string representation of the Unicode code point in the form "U+XXXX[XX]"
+	 */
+	public static String getCodePointString(final int codeValue)
+	{
+		final StringBuilder stringBuilder=new StringBuilder("U+");	//create a string buffer
+			//append the code value, using six digits if needed
+		stringBuilder.append(IntegerUtilities.toHexString(codeValue, codeValue<=0xFFFF ? 4 : 6).toUpperCase());
+		return stringBuilder.toString();	//return the string we constructed		
+	}
+	
 	/**@return A string representation of the Unicode character in the form "U+XXXX[XX]".*/
 	public String toString()
 	{
-		final StringBuffer stringBuffer=new StringBuffer("U+");	//create a string buffer
-			//append the code value, using six digits if needed
-		stringBuffer.append(IntegerUtilities.toHexString(codeValue, codeValue<=0xFFFF ? 4 : 6).toUpperCase());
-		return stringBuffer.toString();	//return the string we constructed
+		return getCodePointString(getCodeValue());	//return a string representation of the code point
 	}
 
 }

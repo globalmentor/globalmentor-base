@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.StringTokenizer;
 import com.garretwilson.lang.IntegerUtilities;
 import com.garretwilson.text.CharacterEncodingConstants;
+import static com.garretwilson.text.unicode.UnicodeConstants.*;
 import com.garretwilson.util.Debug;
 
 /**Represents the Unicode data in the file <code>UnicodeData.txt</code>.
@@ -17,11 +18,11 @@ import com.garretwilson.util.Debug;
 @author Garret Wilson
 @version 1.0
 */
-public class UnicodeData implements UnicodeConstants
+public class UnicodeData
 {
 
 	/**The name of the Unicode data text file.*/
-	public final static String FILENAME="UnicodeData.txt";
+	protected final static String UNICODE_DATA_FILENAME="UnicodeData.txt";
 
 	/**The map of soft references to Unicode characters, each keyed to a Unicode integer value.*/
 	protected final static Map<Integer, Reference<UnicodeCharacter>> unicodeCharacterReferenceMap=new HashMap<Integer, Reference<UnicodeCharacter>>();	//TODO create a SoftValueHashMap to use here
@@ -112,7 +113,7 @@ public class UnicodeData implements UnicodeConstants
 	public static Reader getUnicodeDataReader() throws UnsupportedEncodingException
 	{
 			//get an input stream to our Unicode data resource file
-		final InputStream inputStream=UnicodeData.class.getResourceAsStream(FILENAME);
+		final InputStream inputStream=UnicodeData.class.getResourceAsStream(UNICODE_DATA_FILENAME);
 			//buffer the input stream and turn it into an ASCII reader
 		return new InputStreamReader(new BufferedInputStream(inputStream), CharacterEncodingConstants.ISO_8859_1);
 	}
@@ -192,7 +193,7 @@ public class UnicodeData implements UnicodeConstants
 	@see UnicodeCharacter
 	@see UnicodeConstants
 	*/
-	public static List<UnicodeCharacter> parse(final Reader reader, final int firstCodeValue, final int lastCodeValue) throws IOException
+	public static List<UnicodeCharacter> parse(final Reader reader, final int firstCodeValue, final int lastCodeValue) throws IOException	//TODO as some characters aren't described in the file, put dummy characters in the map so that they won't be reloaded every time just because they are missing
 	{
 		final List<UnicodeCharacter> unidataList=new ArrayList<UnicodeCharacter>();	//create a list so that we can pass back the Unicode characters
 		final LineNumberReader lineNumberReader=new LineNumberReader(reader);	//create a reader to allow us to read the file line by line
