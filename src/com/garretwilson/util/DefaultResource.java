@@ -1,7 +1,6 @@
-package com.garretwilson.rdf;
+package com.garretwilson.util;
 
 import java.net.URI;
-import com.garretwilson.util.*;
 
 /**Represents the default implementation of a resource.
 	This class provides compare functionality that sorts according to the reference
@@ -20,7 +19,16 @@ public class DefaultResource implements Resource
 		/**Sets the reference URI of the resource.
 		@param uri The new reference URI.
 		*/
-//G***decide if we want this or not		protected void setReferenceURI(final URI uri) {referenceURI=uri;}
+		protected void setReferenceURI(final URI uri) {referenceURI=uri;}
+
+	/**Default constructor that allows a derived class to set the reference URI
+		later during construction. Derived classes should <em>always</em> update
+		the referenc URI before construction is finished.
+	*/
+	protected DefaultResource()
+	{
+		referenceURI=null; //set the reference URI to null for now
+	}
 
 	/**Constructs a resource with a reference URI.
 	@param referenceURI The reference URI for the new resource.
@@ -40,7 +48,7 @@ public class DefaultResource implements Resource
 		<code>object</code>.
 	@see #getReferenceURI
 	*/
-	public boolean equals(final Object object)
+	public boolean equals(final Object object)	//G***do we really want to compare with a non-URI?
 	{
 		if(getReferenceURI()!=null)	//if we have a reference URI
 		{
