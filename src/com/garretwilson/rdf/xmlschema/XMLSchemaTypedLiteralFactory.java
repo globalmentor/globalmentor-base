@@ -25,7 +25,11 @@ public class XMLSchemaTypedLiteralFactory implements RDFTypedLiteralFactory, XML
 	*/
 	public RDFTypedLiteral createTypedLiteral(final String lexicalForm, final URI datatypeURI)
 	{
-		if(BOOLEAN_DATATYPE_URI.equals(datatypeURI))	//boolean
+		if(BASE64_BINARY_DATATYPE_URI.equals(datatypeURI))	//base64-encoded binary
+		{
+			return new Base64BinaryLiteral(lexicalForm);	//create and return a base64-encoded binary literal
+		}
+		else if(BOOLEAN_DATATYPE_URI.equals(datatypeURI))	//boolean
 		{
 			return new BooleanLiteral(lexicalForm);	//create and return a boolean literal
 		}

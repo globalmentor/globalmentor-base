@@ -56,7 +56,7 @@ public class IntegerLiteral extends RDFTypedLiteral implements XMLSchemaConstant
 
 	/**Determines if the RDF object is an integer literal and, if so, casts the 
 		object to an integer literal and returns its value; otherwise, returns
-		<code>false</code>.
+		-1.
 	@param rdfObject The RDF object in question.
 	@return The boolean value of the integer literal, or -1 if
 		the object is not an integer literal or the object is <code>null</code>.

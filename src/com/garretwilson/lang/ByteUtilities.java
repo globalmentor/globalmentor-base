@@ -26,6 +26,7 @@ public class ByteUtilities
 	}
 */
 
+/*G***del if not needed; now using com.garretwilson.util.Base64
 	protected final static char[] ALPHABET=
 			{
 				'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',		//  0 to  7
@@ -37,6 +38,7 @@ public class ByteUtilities
 				'w', 'x', 'y', 'z', '0', '1', '2', '3',		// 48 to 55
 				'4', '5', '6', '7', '8', '9', '+', '/' 		// 56 to 63
 			};
+*/
 
 	/**Base64-encodes an array of bytes into a string.
 	<p>Based upon Base64Encoder version 1998-06-08
@@ -46,6 +48,7 @@ public class ByteUtilities
 	@see RFC 1421
 	@see http://www.javaworld.com/javaworld/javatips/jw-javatip47.html
 	*/
+/*G***del if not needed; now using com.garretwilson.util.Base64
 	public static String encodeBase64(final byte[] bytes)
 	{
 		int bits24;
@@ -96,6 +99,7 @@ public class ByteUtilities
 		}
 		return new String(out);
 	}
+*/
 	
 	/**Converts an array of bytes into a hex string, with each character pair
 		representing the hexadecimal value of the byte.
