@@ -67,7 +67,8 @@ public class InteractionSequencePanel extends AbstractListComponentSequencePanel
 	{
 		if(object instanceof Question)	//if the object is a question
 		{
-			
+			final QuestionModel questionModel=new QuestionModel((Question)object);	//create a new model for the question TODO add the base URI and URIInputStreamable
+			return new QuestionPanel(questionModel);	//create a new panel for the question
 		}
 		return new JLabel("Unrecognized interaction");	//TODO fix unrecognized interaction
 	}

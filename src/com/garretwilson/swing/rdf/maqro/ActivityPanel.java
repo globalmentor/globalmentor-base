@@ -63,7 +63,7 @@ public class ActivityPanel extends RDFPanel
 	public ActivityPanel(final ActivityModel model, final boolean initialize)
 	{
 		super(model, false);	//construct the parent class without initializing it
-		setSupportedDataViews(getSupportedModelViews()|WYSIWYG_MODEL_VIEW|SEQUENCE_MODEL_VIEW);	//show that we now support WYSIWYG and sequence data views, too
+		addSupportedModelViews(new int[]{WYSIWYG_MODEL_VIEW, SEQUENCE_MODEL_VIEW});	//show that we now support WYSIWYG and sequence data views, too
 		book=new Book(1);	//create a new book for the WYSIWYG view, showing only one page
 		interactionSequencePanel=new InteractionSequencePanel(model.getActivity()!=null ? model.getActivity().getInteractions() : null);	//G***make sure we want to possibly initialize without a list
 		if(initialize)  //if we should initialize
@@ -74,12 +74,7 @@ public class ActivityPanel extends RDFPanel
 	protected void initializeUI()
 	{
 		addView(WYSIWYG_MODEL_VIEW, "Activity", book, null);	//add the book component as the WYSIWYG view G***i18n
-		final ToolStatusPanel applicationPanel=new ToolStatusPanel(interactionSequencePanel, true, false, false);	//TODO probably create a custom application panel for a sequence panel
-		applicationPanel.getToolBar().add(interactionSequencePanel.getPreviousAction()); 
-		applicationPanel.getToolBar().add(interactionSequencePanel.getNextAction());
-		applicationPanel.initialize();	//G***testing 
-
-		addView(SEQUENCE_MODEL_VIEW, "Interactions", applicationPanel, null);	//add the interaction sequence panel as the sequence view G***i18n
+		addView(SEQUENCE_MODEL_VIEW, "Interactions", interactionSequencePanel, null);	//add the interaction sequence panel as the sequence view G***i18n
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 //TODO set the book to be not editable

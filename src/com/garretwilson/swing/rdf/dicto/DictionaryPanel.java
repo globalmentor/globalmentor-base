@@ -58,7 +58,7 @@ public class DictionaryPanel extends RDFPanel
 	public DictionaryPanel(final DictionaryModel model, final boolean initialize)
 	{
 		super(model, false);	//construct the parent class without initializing it
-		setSupportedDataViews(getSupportedModelViews()|WYSIWYG_MODEL_VIEW);	//show that we now support WYSIWYG data views, too
+		addSupportedModelView(WYSIWYG_MODEL_VIEW);	//show that we now support WYSIWYG data views, too
 		book=new Book(2);	//create a new book for the WYSIWYG view, showing two pages at a time
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel

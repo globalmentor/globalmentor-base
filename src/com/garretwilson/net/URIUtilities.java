@@ -86,6 +86,9 @@ public class URIUtilities implements URIConstants, URIInputStreamable
 		 */
 	}
 
+
+
+
 	/**Creates a URI from the given URI string relative to the given context object.
 	@param contextObject The source context, such as a URL, a URI, a File, or <code>null</code> if
 		the filename should not be referenced from any object.
@@ -101,17 +104,9 @@ public class URIUtilities implements URIConstants, URIInputStreamable
 	{
 		if(contextObject instanceof URI)	//if the context is a URI
 		{
-			try
-			{
 //TODO if the string contains illegal URI characters, such as spaces, this won't work
 //TODO also check to see if the string is null.
-				return ((URI)contextObject).resolve(string);	//convert the URL to a URI and use it as a context
-			}
-			catch(IllegalArgumentException illegalArgumentException)	//if the given string isn't syntactically correct
-			{
-					//throw a new URI syntax exception from the illegal argument exception
-				throw (URISyntaxException)new URISyntaxException(string, illegalArgumentException.getMessage()).initCause(illegalArgumentException);
-			}
+			return ((URI)contextObject).resolve(new URI(string));	//resolve the URI form of the string, creating a URISyntaxException if there is a problem
 		}
 		else if(contextObject instanceof URL)	//if the context is a URL
 		{

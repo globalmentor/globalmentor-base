@@ -21,28 +21,27 @@ public interface ModelViewable
 	*/
 	public final static int NO_MODEL_VIEW=0;
 	/**The view in which the data is shown in a tree structure.*/
-	public final static int TREE_MODEL_VIEW=1<<0;
+	public final static int TREE_MODEL_VIEW=1;
 	/**The view in which the data is shown in a graph structure.*/
-	public final static int GRAPH_MODEL_VIEW=1<<1;
+	public final static int GRAPH_MODEL_VIEW=2;
 	/**The view in which the data is shown as it would be in its final form.*/
-	public final static int WYSIWYG_MODEL_VIEW=1<<2;
+	public final static int WYSIWYG_MODEL_VIEW=3;
 	/**The view in which a sequence of items is shown, perhaps as a card deck.*/
-	public final static int SEQUENCE_MODEL_VIEW=1<<3;
+	public final static int SEQUENCE_MODEL_VIEW=4;
 	/**The view in which the data is shown as a brief overview.*/
-	public final static int SUMMARY_MODEL_VIEW=1<<4;
+	public final static int SUMMARY_MODEL_VIEW=5;
 	/**The view in which any source data used to generate the data is shown.*/
-	public final static int SOURCE_MODEL_VIEW=1<<5;
-	
-	/**@return A value representing the supported data views ORed together.*/
-	public int getSupportedModelViews();
+	public final static int SOURCE_MODEL_VIEW=6;
 
-	/**Determines whether this object supports the data views.
-	@param dataViews One or more <code>XXX_DATA_VIEW</code> constants
-		ORed together.
-	@return <code>true</code> if and only if this object kit supports all the
-		indicated data views.
+	/**@return An array of supported model views.*/
+	public int[] getSupportedModelViews();
+
+	/**Determines whether this object supports the given data view.
+	@param dataView A model view such as <code>SUMMARY_MODEL_VIEW</code>.
+	@return <code>true</code> if and only if this object supports the indicated
+		model view.
 	*/
-	public boolean isModelViewsSupported(final int dataViews);	
+	public boolean isModelViewSupported(final int modelView);	
 
 	/**@return The default view of the data, such as <code>SUMMARY_MODEL_VIEW</code>.*/
 	public int getDefaultModelView();
