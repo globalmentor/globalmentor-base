@@ -312,7 +312,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 		<code>Integer.MAX_VALUE</code>.
 	@return The number of elements in this list.
 	*/
-	public int size()
+	public int size()	//TODO cache the size of the list if we can at all, because walking the list is very expensive; perhaps only cache the size if there are no non-anonymous list nodes within the list (even though if a data model was constructed from a nodeID serialization, other lists could reference an anonymous sublist)
 	{
 		int size=0;	//start out knowing about no elements
 		RDFResource list=this;	//start with this list resource
@@ -357,7 +357,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	 */
 	public ListIterator listIterator()
 	{
-		return null;	//TODO implement listIterator()
+		return null;	//TODO implement listIterator(), and have iterator() call this
 	}
 
 	/**
@@ -377,7 +377,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	 */
 	public ListIterator listIterator(int index)
 	{
-		return null;	//TODO implement listIterator()
+		return null;	//TODO implement listIterator(), and have iterator() call this
 	}
 
 	/**@return an array containing all of the elements in this collection.*/
