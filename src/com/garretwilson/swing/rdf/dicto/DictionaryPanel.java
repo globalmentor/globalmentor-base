@@ -99,9 +99,9 @@ public class DictionaryPanel extends RDFPanel
 	@param oldView The view before the change.
 	@param newView The new view of the data
 	*/
-	protected void onViewChanged(final int oldView, final int newView)
+	protected void onDataViewChanged(final int oldView, final int newView)
 	{
-		super.onViewChanged(oldView, newView);	//do the default view updating
+		super.onDataViewChanged(oldView, newView);	//do the default view updating
 		switch(oldView)	//see what view we're changing from
 		{
 			case WYSIWYG_DATA_VIEW:	//if we're changing from the WYSIWYG view
