@@ -71,10 +71,10 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 		super(model, false);	//construct the parent class without initializing the panel
 		setSupportedModelViews(DEFAULT_SUPPORTED_MODEL_VIEWS);	//set the model views we support
 		setDefaultDataView(DEFAULT_DEFAULT_MODEL_VIEW);	//set the default data view
-		hintList=new ListListModel<RDFResource>(new ArrayList());	//create a list in which to store the hints
+		hintList=new ListListModel<RDFResource>(new ArrayList<RDFResource>());	//create a list in which to store the hints
 		hintSwingList=new JList(hintList);
 		hintPanel=new ListPanel<Dialogue>(hintSwingList, new HintEditStrategy());
-		explanationList=new ListListModel<RDFResource>(new ArrayList());	//create a list in which to store the explanations
+		explanationList=new ListListModel<RDFResource>(new ArrayList<RDFResource>());	//create a list in which to store the explanations
 		explanationSwingList=new JList(explanationList);
 		explanationPanel=new ListPanel<Dialogue>(explanationSwingList, new ExplanationEditStrategy());
 		queryAnswerPanel=new QueryAnswerPanel();	//create the query/answer
@@ -366,6 +366,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			choiceList.setUI(new ToggleListUI()); //allow the choices to be toggled on and off
 			choiceList.setCellRenderer(new CheckBoxListCellRenderer());  //display the choices with checkboxes
 			choiceList.setEnabled(false);	//default to disabling the choice list; it will be enabled if the corresponding radio button is selected
+			choiceList.addListSelectionListener(getModifyListSelectionListener());	//selecting a different choice modifies the panel
 			choicePanel.setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border for the choice panel
 			choicePanel.setTitle("Choices and Answers");	//G***i18n
 			choicePanel.setEditable(true);	//allow the choices to be edited
