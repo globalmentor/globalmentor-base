@@ -507,6 +507,14 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		this(null, referenceURI);	//construct the class with no data model
 	}
 
+	/**Constructs a resource from a data model.
+	@param rdf The data model with which this resource should be associated.
+	*/
+	public DefaultRDFResource(final RDF rdf)
+	{
+		this(rdf, null);	//construct the resource with no reference URI
+	}
+
 	/**Constructs a resource with a reference URI from a data model.
 	@param rdf The data model with which this resource should be associated.
 	@param referenceURI The reference URI for the new resource.
