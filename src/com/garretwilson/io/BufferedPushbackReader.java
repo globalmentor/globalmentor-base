@@ -800,7 +800,7 @@ System.out.println("Peek index now: "+getPeekIndex()+" Read index now: "+getRead
 	@except IOException Thrown when an I/O error occurs.
 	*/
 	public long skip(long n) throws IOException
-	{
+	{		
 		long numCharsSkipped=0;	//this will store the number of characters actually skipped; right now, we don't know if we're going to skip any characters
 		if(!isEOF())	//if we're not at the end of the file
 		{

@@ -8,7 +8,7 @@ import com.garretwilson.util.*;
 	"A MIME Content-Type for Directory Information".
 @author Garret Wilson
 */
-public class ContentLine extends NameValuePair
+public class ContentLine extends NameValuePair implements DirectoryConstants
 {
 
 	/**The profile of this content line, or <code>null</code> if there is no profile.*/
@@ -78,5 +78,31 @@ public class ContentLine extends NameValuePair
 	{
 		return DirectoryUtilities.getParamValue(getParamList(), paramName);	//get the value from the parameter list 
 	}
-	
+
+	/**@return A string representation of this content line.*/
+	public String toString()
+	{
+		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer to use in constructing the string
+		if(getProfile()!=null)	//if there's a profile
+		{
+			stringBuffer.append('[').append(getProfile()).append(']').append(' ');	//append the profile
+		}
+		if(getGroup()!=null)	//if there's a group
+		{
+			stringBuffer.append(getGroup()).append(GROUP_NAME_SEPARATOR_CHAR);	//append the group
+		}
+		stringBuffer.append(getTypeName());	//append the type name
+		if(getParamList().size()>0)	//if there are parameters
+		{
+			final Iterator paramIterator=getParamList().iterator();	//get an iterator to the parameters
+			while(paramIterator.hasNext())	//while there are more parameters
+			{
+				final NameValuePair param=(NameValuePair)paramIterator.next();	//get the next parameter name/value pair
+					//append the parameter name and value
+				stringBuffer.append(PARAM_SEPARATOR_CHAR).append(param.getName().toString()).append(PARAM_NAME_VALUE_SEPARATOR_CHAR).append(param.getValue().toString());
+			}
+		}
+		stringBuffer.append(NAME_VALUE_SEPARATOR_CHAR).append(getValue().toString());	//append the value
+		return stringBuffer.toString();	//return the string we constructed
+	}
 }

@@ -43,6 +43,28 @@ import com.garretwilson.util.*;
 public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 {
 	
+	/**A map of value type strings keyed to supported type name strings.*/
+	private final Map typeNameValueTypeMap=new HashMap();
+
+		/**Registers a value type keyed to the lowercase version of a type name.
+		@param typeName The type name for which a value type should be retrieved.
+		@param valueType The value type to associate with this type name.
+		*/
+		protected void registerValueType(final String typeName, final String valueType)
+		{
+			typeNameValueTypeMap.put(typeName.toLowerCase(), valueType);	//put the value type in the map, keyed to the lowercase version of the type name		
+		}
+
+		/**Returns a value type keyed to the lowercase version of a type name.
+		@param typeName The type name for which a value type should be associated.
+		@return The value type associated with this type name, or
+			<code>null</code> if no value type has been registered with the type name.
+		*/
+		protected String getValueType(final String typeName)
+		{
+			return (String)typeNameValueTypeMap.get(typeName.toLowerCase());	//get whatever value type we have associated with this type name, if any
+		}
+
 	/**A map of value factories keyed to the lowercase version of the value type.*/
 	private final Map valueTypeValueFactoryMap=new HashMap();	
 
@@ -86,7 +108,6 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		{
 			return (ValueFactory)profileValueFactoryMap.get(profile.toLowerCase());	//get the value factory keyed to the lowercase version of this profile
 		}
-
 
 	/**The profile last encountered in a "profile:" type content line.*/
 	private String defaultProfile=null;
@@ -158,7 +179,14 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		the standard value types.*/
 	public DirectoryProcessor()
 	{
-		registerValueFactoryByValueType(URI_VALUE_TYPE, this);	//register ourselves as a value factory for the standard value types		
+			//register the predefined types in our map
+		registerValueType(SOURCE_TYPE, URI_VALUE_TYPE);	//SOURCE: uri		
+		registerValueType(NAME_TYPE, TEXT_VALUE_TYPE);	//NAME: text		
+		registerValueType(PROFILE_TYPE, TEXT_VALUE_TYPE);	//PROFILE: text		
+		registerValueType(BEGIN_TYPE, TEXT_VALUE_TYPE);	//BEGIN: text		
+		registerValueType(END_TYPE, TEXT_VALUE_TYPE);	//END: text		
+			//register ourselves as a value factory for the standard value types
+		registerValueFactoryByValueType(URI_VALUE_TYPE, this);			
 		registerValueFactoryByValueType(TEXT_VALUE_TYPE, this);		
 		registerValueFactoryByValueType(DATE_VALUE_TYPE, this);		
 		registerValueFactoryByValueType(TIME_VALUE_TYPE, this);		
@@ -178,7 +206,20 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 	*/
 	protected final static String CONTENT_LINE_DELIMITER_CHARS=GROUP_NAME_SEPARATOR_CHAR+GROUPLESS_CONTENT_LINE_DELIMITER_CHARS;	
 
-	/**Retrieves content llines from a directory of type <code>text/directory</code>.
+	/**Retrieves content lines from a directory of type <code>text/directory</code>.
+	@param reader The reader that contains the lines of the directory.
+	@param sourceObject The source of the data (e.g. a <code>String</code>,
+		<code>File</code>, <code>URL</code>, or <code>URI</code>).
+	@return An object representing the directory.
+	@exception IOException Thrown if there is an error reading the directory.
+	@exception ParseIOException Thrown if there is a an error interpreting the directory.
+	*/
+	public Directory processDirectory(final Reader reader, final Object sourceObject) throws IOException, ParseIOException
+	{
+		return processDirectory(new LineUnfoldParseReader(reader, sourceObject));	//create a new line unfold parse reader and use that to process the directory
+	}
+
+	/**Retrieves content lines from a directory of type <code>text/directory</code>.
 	@param reader The reader that contains the lines of the directory.
 	@return An object representing the directory.
 	@exception IOException Thrown if there is an error reading the directory.
@@ -190,47 +231,51 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		defaultProfile=null;	//show that there is no default profile
 		useDefaultProfile=false;	//don't use the default profile
 		final Directory directory=new Directory();	//create a new directory
-		while(reader.isEOF())	//while we haven't reached the end of the file
+		while(!reader.isEOF())	//while we haven't reached the end of the file
 		{		
 			final ContentLine[] contentLines=processContentLine(reader);	//process one or more lines of contents, all of which should have the same type
-			for(int i=0; i<contentLines.length; ++i)	//look at each line of content
+			if(contentLines!=null)	//if there were one or more content lines
 			{
-				final ContentLine contentLine=contentLines[i];	//get a reference to this content line
-				final String typeName=contentLine.getTypeName();	//get the type
-				if(END_TYPE.equalsIgnoreCase(typeName))	//if this is END
+				for(int i=0; i<contentLines.length; ++i)	//look at each line of content
 				{
-					if(directory.getName()==null)	//if the directory does not yet have a name
+					final ContentLine contentLine=contentLines[i];	//get a reference to this content line
+//G***del Debug.trace("just processed content line: ", contentLine);	//G***del
+					final String typeName=contentLine.getTypeName();	//get the type
+					if(END_TYPE.equalsIgnoreCase(typeName))	//if this is END
 					{
-						directory.setName((String)contentLine.getValue());	//get the directory name
+						if(directory.getName()==null)	//if the directory does not yet have a name
+						{
+							directory.setName((String)contentLine.getValue());	//get the directory name
+						}
 					}
-				}
-				else if(PROFILE_TYPE.equalsIgnoreCase(typeName))	//if this is PROFILE
-				{
-					final String profile=(String)contentLine.getValue();	//get the profile
-					contentLine.setProfile(profile);	//a profile type should have the same profile as the one it sets
-					setProfile(profile);	//set the profile to the new profile
-				}
-				else if(BEGIN_TYPE.equalsIgnoreCase(typeName))	//if this is BEGIN:xxx
-				{
-					final String profile=(String)contentLine.getValue();	//get the profile
-					contentLine.setProfile(profile);	//a beginning profile type should have the same profile as the one it sets
-					pushProfile(profile);	//push the new profile
-				}
-				else if(END_TYPE.equalsIgnoreCase(typeName))	//if this is END:xxx
-				{
-					final String profile=(String)contentLine.getValue();	//get the profile
-					contentLine.setProfile(profile);	//an ending profile type should have the same profile to which it refers
-					try
+					else if(PROFILE_TYPE.equalsIgnoreCase(typeName))	//if this is PROFILE
 					{
-						final String oldProfile=popProfile();	//pop the profile from the stack
-						//G***make sure the old profile is what we expect
+						final String profile=(String)contentLine.getValue();	//get the profile
+						contentLine.setProfile(profile);	//a profile type should have the same profile as the one it sets
+						setProfile(profile);	//set the profile to the new profile
 					}
-					catch(NoSuchElementException noSuchElementException)	//if there are no more profiles on the stack
+					else if(BEGIN_TYPE.equalsIgnoreCase(typeName))	//if this is BEGIN:xxx
 					{
-						throw new ParseIOException("Profile \""+profile+"\" END without BEGIN.", reader);	//throw an error indicating that there was no beginning to the profile
+						final String profile=(String)contentLine.getValue();	//get the profile
+						contentLine.setProfile(profile);	//a beginning profile type should have the same profile as the one it sets
+						pushProfile(profile);	//push the new profile
 					}
-				}				
-				directory.getContentLineList().add(contentLines[i]);	//add this content line to the directory
+					else if(END_TYPE.equalsIgnoreCase(typeName))	//if this is END:xxx
+					{
+						final String profile=(String)contentLine.getValue();	//get the profile
+						contentLine.setProfile(profile);	//an ending profile type should have the same profile to which it refers
+						try
+						{
+							final String oldProfile=popProfile();	//pop the profile from the stack
+							//G***make sure the old profile is what we expect
+						}
+						catch(NoSuchElementException noSuchElementException)	//if there are no more profiles on the stack
+						{
+							throw new ParseIOException("Profile \""+profile+"\" END without BEGIN.", reader);	//throw an error indicating that there was no beginning to the profile
+						}
+					}
+					directory.getContentLineList().add(contentLine);	//add this content line to the directory
+				}
 			}
 		}		
 		profileStack=null;	//release the profile stack
@@ -255,13 +300,25 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		String group=null;	//we'll store the group here
 		String name=null;	//we'll store the name here
 		List paramList=null;	//we'll store parameters here, if we have any
-		String token=reader.readStringUntilCharEOF(CONTENT_LINE_DELIMITER_CHARS);	//read the next line token
+		String token=reader.readStringUntilCharEOF(CONTENT_LINE_DELIMITER_CHARS);	//read the next line token; don't throw an exception if the end of the file is reached, because this could be an empty line
+		if(reader.isEOF())	//if we reached the end of the file
+		{
+			if(token.trim().length()>0)	//if there is non-whitespace content before the end of the line, but none of the other delimiters we expect, there's a syntax error in the line
+			{
+				throw new ParseEOFException(reader);	//show that we didn't expect to run out of data here
+			}
+			else	//if this was an empty line
+			{
+				return null;	//there's no content on this line			
+			}
+		}
 		char c=reader.readChar();	//get the delimiter character we encountered
 		if(c==GROUP_NAME_SEPARATOR_CHAR)	//if we just read a group
 		{
 			//G***check the syntax of the group
 			group=token;	//save the group we read
-			token=reader.readStringUntilCharEOF(GROUPLESS_CONTENT_LINE_DELIMITER_CHARS);	//read the next line token after the group, which should be the name
+//		G***del Debug.trace("found group: ", group);
+			token=reader.readStringUntilChar(GROUPLESS_CONTENT_LINE_DELIMITER_CHARS);	//read the next line token after the group, which should be the name
 			c=reader.readChar();	//get the delimiter character we encountered, and fall through to checking the name
 		}
 		switch(c)	//see which delimiter character we encountered
@@ -270,15 +327,17 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 			case NAME_VALUE_SEPARATOR_CHAR:	//if we just read the character separates the name from the value
 				//G***check the name
 				name=token;	//this is the name
+//		G***del Debug.trace("found name: ", name);
 				if(c==PARAM_SEPARATOR_CHAR)	//if this was the character separating the name from parameters, read the parameters
 				{
-					paramList=processParameters(reader);	//process the parameters, consuming the ending delimiter
+					paramList=processParameters(reader);	//process the parameters
 					reader.readExpectedChar(NAME_VALUE_SEPARATOR_CHAR);	//read the ':' that we expect to come after the parameters
 				}
 				else	//if there were no parameters
 				{
 					paramList=new ArrayList();	//create an empty list, since we didn't read any parameters
 				}
+//		G***del Debug.trace("ready to process value");
 				final Object[] values=processValue(profile, group, name, paramList, reader);	//process the value and get an object that represents the object
 				reader.readExpectedString(CRLF);	//there should always be a CRLF after the value
 				final ContentLine[] contentLines=new ContentLine[values.length];	//create an array of content lines that we'll fill with new content lines
@@ -330,6 +389,7 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		{
 					//read the parameter name
 			final String paramName=reader.readStringUntilChar(PARAM_NAME_VALUE_SEPARATOR_CHAR);	//get the parameter name, which is everything up to the ':' characters
+//		G***del Debug.trace("found param name: ", paramName);
 			//G***check the param name for validity
 			final List paramValueList=new ArrayList();	//create a list to hold the parameter values
 			do	//read the parameter value(s)
@@ -345,11 +405,16 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 						paramValue=reader.readStringUntilChar(PARAM_VALUE_DELIMITER_CHARS);	//read everything until the end of this parameter
 						break;
 				}
+//			G***del Debug.trace("found param value: ", paramValue);
 				//G***check the parameter value, here
 				paramList.add(new NameValuePair(paramName, paramValue));	//add this name/value pair to our list of parameters
 				nextCharacter=reader.peekChar();	//see what delimiter will come next
 			}
 			while(nextCharacter==PARAM_VALUE_SEPARATOR_CHAR);	//keep getting parameter values while there are more parameter value separators
+			if(nextCharacter==PARAM_SEPARATOR_CHAR)	//if the next character is the character that separates multiple parameters
+			{
+				reader.skip(1);	//skip the parameter separator
+			}
 		}
 		while(nextCharacter!=NAME_VALUE_SEPARATOR_CHAR);	//keep reading parameters until we get to the '=' that separates the name from the value
 		reader.resetPeek();	//reset peeking, since we've been peeking
@@ -418,7 +483,7 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 				objects=valueTypeValueFactory.createValues(profile, group, name, paramList, valueType, reader);	//create objects for this value type
 			}
 		}
-		if(objects==null)	//if no objects were created, to use use a value factory based upon the profile
+		if(objects==null && profile!=null)	//if no objects were created, to use use a value factory based upon the profile, if we have a profile
 		{
 			final ValueFactory profileValueFactory=getValueFactoryByProfile(profile);	//see if we have a value factory registered with this profile
 			if(profileValueFactory!=null)	//if there is a value factory for this profile
@@ -507,7 +572,10 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		{
 			reader.resetPeek();	//reset peeking
 			final String string=processTextValue(reader);	//read a string
+//		G***del Debug.trace("read text string: ", string);	//G***del
+			stringList.add(string);	//add the string to our list			
 			delimiter=reader.peekChar();	//see what character is next
+//		G***del Debug.trace("next delimiter: ", delimiter);	//G***del			
 		}
 		while(delimiter==VALUE_SEPARATOR_CHAR);	//keep getting strings while we are still running into value separators
 		reader.resetPeek();	//reset peeking
@@ -531,7 +599,8 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer to hold whatever string we're processing
 		char delimiter;	//we'll store the last delimiter peeked		
 		do	
-		{		
+		{
+//		G***del Debug.trace("string buffer so far: ", stringBuffer);	//G***del			
 			stringBuffer.append(reader.readStringUntilChar(TEXT_VALUE_DELIMITER_CHARS));	//read all undelimited characters until we find a delimiter
 			delimiter=reader.peekChar();	//see what the delimiter will be
 			switch(delimiter)	//see which delimiter we found
@@ -564,6 +633,7 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		while(delimiter!=VALUE_SEPARATOR_CHAR && delimiter!=CR);	//keep collecting parts of the string until we encounter a ',' or a CR
 		//G***check the text value
 		reader.resetPeek();	//reset peeking
+//	G***del Debug.trace("returning string: ", stringBuffer);	//G***del			
 		return stringBuffer.toString();	//return the string we've collected so far
 	}
 
@@ -581,18 +651,7 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 	*/	
 	public String getValueType(final String profile, final String group, final String name, final List paramList)
 	{
-		if(SOURCE_TYPE.equalsIgnoreCase(name))	//SOURCE
-			return URI_VALUE_TYPE;	//uri
-		else if(NAME_TYPE.equalsIgnoreCase(name))	//NAME
-			return TEXT_VALUE_TYPE;	//text
-		else if(PROFILE_TYPE.equalsIgnoreCase(name))	//PROFILE
-			return TEXT_VALUE_TYPE;	//text
-		else if(BEGIN_TYPE.equalsIgnoreCase(name))	//BEGIN
-			return TEXT_VALUE_TYPE;	//text
-		else if(END_TYPE.equalsIgnoreCase(name))	//END
-			return TEXT_VALUE_TYPE;	//text
-		else	//if we don't recognize the type
-			return null;	//show that we don't recognize the type
+		return getValueType(name);	//return whatever value type we have associated with this type name, if any
 	}
 
 }

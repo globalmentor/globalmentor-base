@@ -8,6 +8,14 @@ Used by com.garretwilson.io.ParseReader.
 public class ParseEOFException extends ParseIOException
 {
 
+	/**Constructs an EOF exception from a parse reader.
+	@param parseReader The parse reader the data of which is the source of the error.
+	*/
+	public ParseEOFException(final ParseReader parseReader)
+	{
+		this(parseReader.getLineIndex(), parseReader.getCharIndex(), parseReader.getName());	//construct the class with values from the parse reader
+	}
+
 	/**Constructs an EOF exception with a line index, a character index, and the
 		name of the source.
 	@param lineIndex The index of the line in which the error occurred.

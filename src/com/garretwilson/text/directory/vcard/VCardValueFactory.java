@@ -34,12 +34,22 @@ public class VCardValueFactory implements DirectoryConstants, VCardConstants, Va
 	private final Map typeNameValueTypeMap=new HashMap();
 
 		/**Registers a value type keyed to the lowercase version of a type name.
-		@param typeName The type name for which a value type should be associated.
+		@param typeName The type name for which a value type should be retrieved.
 		@param valueType The value type to associate with this type name.
 		*/
 		protected void registerValueType(final String typeName, final String valueType)
 		{
-			typeNameValueTypeMap.put(typeName.toLowerCase(), TEXT_VALUE_TYPE);	//put the value type in the map, keyed to the lowercase version of the type name		
+			typeNameValueTypeMap.put(typeName.toLowerCase(), valueType);	//put the value type in the map, keyed to the lowercase version of the type name		
+		}
+
+		/**Returns a value type keyed to the lowercase version of a type name.
+		@param typeName The type name for which a value type should be associated.
+		@return The value type associated with this type name, or
+			<code>null</code> if no value type has been registered with the type name.
+		*/
+		protected String getValueType(final String typeName)
+		{
+			return (String)typeNameValueTypeMap.get(typeName.toLowerCase());	//get whatever value type we have associated with this type name, if any
 		}
 
 	/**Default constructor.*/
@@ -138,7 +148,7 @@ public class VCardValueFactory implements DirectoryConstants, VCardConstants, Va
 	*/	
 	public String getValueType(final String profile, final String group, final String name, final List paramList)
 	{
-		return (String)typeNameValueTypeMap.get(name);	//get whatever value type we have associated with this type name, if any
+		return getValueType(name);	//return whatever value type we have associated with this type name, if any
 	}
 
 }

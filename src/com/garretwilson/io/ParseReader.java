@@ -806,7 +806,7 @@ public class ParseReader extends BufferedPushbackReader
 			while(checkIndex<getFetchBufferIndex())	//look at each character until the end of the data in this buffer
 //G***del when works			for(checkIndex=; checkIndex<getFetchBufferIndex(); ++checkIndex)	//look at each character until the end of the data in this buffer
 			{
-//G***del System.out.println("Checking character: "+buffer[checkIndex]);	//G***del
+//G***del Debug.trace("Checking character: "+buffer[checkIndex]+" ", buffer[checkIndex]);	//G***del
 				if(delimiterCharString.indexOf(buffer[checkIndex])!=-1)	//if this character is one we're looking for
 				{
 					foundDelimiter=true;	//show that we found one of the delimiters
@@ -816,9 +816,10 @@ public class ParseReader extends BufferedPushbackReader
 					++checkIndex;	//look at the next character
 			}
 			characterString+=new String(buffer, getReadIndex(), checkIndex-getReadIndex());	//create a string with the number of characters checked that were not the delimiter character (this could be zero if the first character was a delimiter) and add it to our characters read
-//G***del System.out.println("Before updating read index EOF is: "+isEOF()+" lastBuffer is: "+isLastBuffer());	//G***del
+//G***del Debug.trace("new character string is: \""+characterString+"\"");	//G***del
+//G***del Debug.trace("Before updating read index EOF is: "+isEOF()+" lastBuffer is: "+isLastBuffer());	//G***del
 			setReadIndex(checkIndex);	//update our read position to wherever we wound up; this will also fetch another buffer if needed
-//G***del System.out.println("After updating read index EOF is: "+isEOF()+" lastBuffer is: "+isLastBuffer());	//G***del
+//G***del Debug.trace("After updating read index EOF is: "+isEOF()+" lastBuffer is: "+isLastBuffer());	//G***del
 			if(foundDelimiter)	//if we found the delimiter
 				break;	//stop looking for one
 /*G***del
