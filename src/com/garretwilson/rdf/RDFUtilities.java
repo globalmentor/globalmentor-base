@@ -646,4 +646,24 @@ public class RDFUtilities implements RDFConstants
 		return XMLUtilities.toString(document); //convert the XML document to a string and return it
 	}
 
+	/**Converts an RDF resource to an XML string. If an error occurs converting
+		the XML document document to a string, the normal XML object string will be
+		returned.
+	@param resource The RDF resource to convert.
+	@return A string representation of an XML serialization of the RDF resource.
+	*/
+	public static String toString(final RDFResource resource)
+	{
+		final ByteArrayOutputStream outputStream=new ByteArrayOutputStream(); //create an output stream of bytes
+		final RDFXMLifier rdfXMLifier=new RDFXMLifier();  //create an object to turn the RDF into XML
+/*G***setup namespace prefixes if we can
+				//setup the Mentoract namespace prefixes
+		rdfXMLifier.getNamespacePrefixMap().put(MENTORACT_PROTOCOL_NAMESPACE_URI, MENTORACT_PROTOCOL_DEFAULT_PREFIX);
+		rdfXMLifier.getNamespacePrefixMap().put(MentoractResourceURIConstants.MENTORACT_RESOURCE_NAMESPACE_URI, MentoractResourceURIConstants.MENTORACT_RESOURCE_DEFAULT_PREFIX);
+*/
+			//create an XML document from the RDF
+		final Document document=rdfXMLifier.createDocument(resource, new XMLDOMImplementation());  //G***try to make this XML parser agnostic
+		return XMLUtilities.toString(document); //convert the XML document to a string and return it
+	}
+
 }

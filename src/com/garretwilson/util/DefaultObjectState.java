@@ -20,13 +20,13 @@ public class DefaultObjectState extends DefaultModifiable implements ObjectState
 		
 		/**Sets the object being described.
 		@param object The new object to describe.
-		@exception IllegalArgumentException Thrown if the object is <code>null</code>.
+		@exception NullPointerException Thrown if the object is <code>null</code>.
 		*/
 		protected void setObject(final Object object)
 		{
 			if(object==null)	//if the object is null
 			{
-				throw new IllegalArgumentException("Object cannot be null.");	//throw an exception
+				throw new NullPointerException("Object cannot be null.");	//throw an exception
 			}			
 			this.object=object;
 		}

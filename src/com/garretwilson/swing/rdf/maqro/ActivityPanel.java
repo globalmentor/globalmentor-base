@@ -1,7 +1,7 @@
 package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import javax.swing.*;
 import com.garretwilson.swing.*;
@@ -190,7 +190,7 @@ public class ActivityPanel extends RDFPanel
 			super("Interact");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Interactive Activity");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Test the interactive activity.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('i'));  //set the mnemonic key; for some reason, 's' causes the action to be activated when Alt+F4 is pressed G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_I));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.ANIMATION_ICON_FILENAME)); //load the correct icon
 //G***del			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK)); //add the accelerator G***i18n
 		}

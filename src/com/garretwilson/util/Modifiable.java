@@ -10,7 +10,7 @@ public interface Modifiable
 {
 
 	/**The name of the modified property, if it is bound in any modifiable object.*/
-	public final String MODIFIED_PROPERTY=Modifiable.class.getName()+JavaConstants.PACKAGE_SEPARATOR+"modified";
+	public final static String MODIFIED_PROPERTY=Modifiable.class.getName()+JavaConstants.PACKAGE_SEPARATOR+"modified";
 
 	/**@return Whether the object has been modified.*/
 	public boolean isModified();

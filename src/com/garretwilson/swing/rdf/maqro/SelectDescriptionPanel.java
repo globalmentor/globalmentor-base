@@ -261,7 +261,7 @@ public class SelectDescriptionPanel extends BasicPanel
 			super("Categories...");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Select categories...");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Select the categories of entries to include.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('c'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.GROUP_ICON_FILENAME)); //load the correct icon
 		}
 	

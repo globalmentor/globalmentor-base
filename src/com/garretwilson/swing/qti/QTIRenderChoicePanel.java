@@ -55,17 +55,17 @@ public class QTIRenderChoicePanel extends QTIRenderPanel //G***del implements Li
 		getAddResponseLabelAction().putValue(Action.NAME, "Add Choice...");
 		getAddResponseLabelAction().putValue(Action.SHORT_DESCRIPTION, "Add choice");
 		getAddResponseLabelAction().putValue(Action.LONG_DESCRIPTION, "Add a new choice.");
-//G***fix putValue(MNEMONIC_KEY, new Integer('p'));  //set the mnemonic key G***i18n
+//G***fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
 		  //update the remove action properties to be specific to the type of rendering
 		getRemoveResponseLabelAction().putValue(Action.NAME, "Remove Choice...");
 		getRemoveResponseLabelAction().putValue(Action.SHORT_DESCRIPTION, "Remove choice");
 		getRemoveResponseLabelAction().putValue(Action.LONG_DESCRIPTION, "Remove the selected choice.");
-//G***fix putValue(MNEMONIC_KEY, new Integer('p'));  //set the mnemonic key G***i18n
+//G***fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
 		  //update the edit action properties to be specific to the type of rendering
 		getEditResponseLabelAction().putValue(Action.NAME, "Edit Choice...");
 		getEditResponseLabelAction().putValue(Action.SHORT_DESCRIPTION, "Edit choice");
 		getEditResponseLabelAction().putValue(Action.LONG_DESCRIPTION, "Edit the selected choice.");
-//G***fix putValue(MNEMONIC_KEY, new Integer('p'));  //set the mnemonic key G***i18n
+//G***fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
 	}
 
 	/**Creates a new response label.

@@ -1,7 +1,7 @@
 package com.garretwilson.swing.qti;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -178,7 +178,7 @@ public class QTIMaterialPanel extends JPanel
 			super("Set Image...");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Set image.");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Set the image to use with the material.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('i'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_I));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.IMAGE_ICON_FILENAME)); //load the correct icon
 		}
 
@@ -218,7 +218,7 @@ public class QTIMaterialPanel extends JPanel
 			super("Preview Image...");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Preview image.");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Preview the image assocciated with the material.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('p'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.IMAGE_PREVIEW_ICON_FILENAME)); //load the correct icon
 		}
 
@@ -276,7 +276,7 @@ public class QTIMaterialPanel extends JPanel
 			super("Delete Image...");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Delete image.");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Delete the image currently assocciated with the material.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('d'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_D));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.IMAGE_DELETE_ICON_FILENAME)); //load the correct icon
 		}
 

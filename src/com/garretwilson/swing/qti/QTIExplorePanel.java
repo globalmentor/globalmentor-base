@@ -426,7 +426,7 @@ Debug.trace("asking new item"); //G***del
 			super("Edit item...");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Edit item");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Edit the selected item.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('e'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.EDIT_ICON_FILENAME)); //load the correct icon
 			item=qtiItem; //save the item for editing
 			itemTreeNode=qtiItemTreeNode; //save the item tree node
@@ -505,7 +505,7 @@ Debug.trace("asking new item"); //G***del
 			super("Delete item");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Delete item");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Delete the selected item.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('d'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_D));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.DELETE_ICON_FILENAME)); //load the correct icon
 			item=qtiItem; //save the item for editing
 			itemTreeNode=qtiItemTreeNode; //save the item tree node
@@ -552,7 +552,7 @@ Debug.trace("asking new item"); //G***del
 			super("Add Question...");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Add question");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Create a new question.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('q'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_Q));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.QUESTION_NEW_ICON_FILENAME)); //load the correct icon
 //G***del when works			new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
 //G***del when works			putValue(SMALL_ICON, new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
@@ -646,7 +646,7 @@ Debug.trace("asking new item"); //G***del
 			super("Add Section...");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Add section");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Create a new section.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('s'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.FOLDER_NEW_ICON_FILENAME)); //load the correct icon
 //G***del when works			new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
 //G***del when works			putValue(SMALL_ICON, new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon

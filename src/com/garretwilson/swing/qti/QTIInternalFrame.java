@@ -152,7 +152,7 @@ Debug.trace("Setting QTI"); //G***del
 			super("New Section...");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "new section");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Create a new section.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('s'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.FOLDER_NEW_ICON_FILENAME)); //load the correct icon
 //G***del when works			new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
 //G***del when works			putValue(SMALL_ICON, new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon

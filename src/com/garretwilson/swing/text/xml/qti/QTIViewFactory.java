@@ -915,7 +915,7 @@ Debug.trace("Getting ready to create varequal with value: ", element.getDocument
 			super("Submit");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Submit the assessment.");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Submit the assessment.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('s'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.SUBMIT_ICON_FILENAME)); //load the correct icon
 			assessment=submitAssessment;  //store the specified assessment
 		}

@@ -1,7 +1,7 @@
 package com.garretwilson.swing.qti;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.util.*;
@@ -241,7 +241,7 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 			super("Add Response Label...");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Add response label.");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Add a new response label.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('a'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.ADD_ICON_FILENAME)); //load the correct icon
 //G***del when works			new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
 //G***del when works			putValue(SMALL_ICON, new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
@@ -273,7 +273,7 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 			super("Remove Response Label...");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Remove response label.");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Remove the selected response label.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('r'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_R));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.SUBTRACT_ICON_FILENAME)); //load the correct icon
 		}
 
@@ -307,7 +307,7 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 			super("Edit Response Label...");	//create the base class G***i18n
 			putValue(SHORT_DESCRIPTION, "Edit response label.");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Edit the selected response label.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer('e'));  //set the mnemonic key G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.EDIT_ICON_FILENAME)); //load the correct icon
 		}
 

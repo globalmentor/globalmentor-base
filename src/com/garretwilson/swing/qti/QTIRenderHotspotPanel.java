@@ -46,17 +46,17 @@ public class QTIRenderHotspotPanel extends QTIRenderPanel
 		getAddResponseLabelAction().putValue(Action.NAME, "Add Hotspot...");
 		getAddResponseLabelAction().putValue(Action.SHORT_DESCRIPTION, "Add hotspot");
 		getAddResponseLabelAction().putValue(Action.LONG_DESCRIPTION, "Add a new hotspot.");
-//G***fix putValue(MNEMONIC_KEY, new Integer('p'));  //set the mnemonic key G***i18n
+//G***fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
 		  //update the remove action properties to be specific to the type of rendering
 		getRemoveResponseLabelAction().putValue(Action.NAME, "Remove Hotspot...");
 		getRemoveResponseLabelAction().putValue(Action.SHORT_DESCRIPTION, "Remove hotspot");
 		getRemoveResponseLabelAction().putValue(Action.LONG_DESCRIPTION, "Remove the selected hotspot.");
-//G***fix putValue(MNEMONIC_KEY, new Integer('p'));  //set the mnemonic key G***i18n
+//G***fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
 		  //update the edit action properties to be specific to the type of rendering
 		getEditResponseLabelAction().putValue(Action.NAME, "Edit Hotspot...");
 		getEditResponseLabelAction().putValue(Action.SHORT_DESCRIPTION, "Edit hotspot");
 		getEditResponseLabelAction().putValue(Action.LONG_DESCRIPTION, "Edit the selected hotspot.");
-//G***fix putValue(MNEMONIC_KEY, new Integer('p'));  //set the mnemonic key G***i18n
+//G***fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
 	}
 
 	/**Creates a new response label.
