@@ -291,7 +291,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 		}
 //G***fix fallbacks		final Map fallbackMap=new HashMap();  //create a map to be used for storing references to fallbacks
 		  //add a manifest to the publication
-		final RDFBagResource manifestResource=XPackageUtilities.addManifest(publicationResource);
+		final RDFListResource manifestResource=XPackageUtilities.addManifest(publicationResource);
 		//XPath: /manifest/item
 		final NodeList manifestElementList=(NodeList)XPath.evaluateLocationPath(rootElement,
 			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST+
@@ -342,7 +342,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 //G***del Debug.trace("Found spine element: "+itemElement.getAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF));	//G***del
 		  final String itemIDRef=itemElement.getAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF);  //get the item's idref value
 		  final URI itemReferenceURI=new URI(URIConstants.URN_SCHEME, "local:"+itemIDRef, null);  //G***fix the reference URI
-			final RDFResource itemResource=manifestResource.getItem(itemReferenceURI);  //get the referenced item from the manifest G***this is very inefficient; maybe use maps or something
+			final RDFResource itemResource=XPackageUtilities.getItemByLocationHRef(manifestResource, publicationReferenceURI, itemReferenceURI);  //get the referenced item from the manifest G***make sure the we're using a workable baseURI, if that's even a concern 
 			assert itemResource!=null : "Missing spine element: "+itemIDRef; //TODO fix with a real error message
 		  organizationResource.add(itemResource);  //add this item to the organization
 		}

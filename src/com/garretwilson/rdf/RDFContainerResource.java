@@ -71,6 +71,7 @@ public abstract class RDFContainerResource extends TypedRDFResource
 	@return The first encountered item resource with the given reference URI, or
 		<code>null</code> if this container holds no such resource.
 	*/
+/*G***del if not needed
 	public RDFResource getItem(final URI referenceURI)
 	{
 		final Iterator itemIterator=getItemIterator();  //get an iterator to look through the items
@@ -82,6 +83,7 @@ public abstract class RDFContainerResource extends TypedRDFResource
 		}
 		return null;  //show that we couldn't find the given item resource
 	}
+*/
 
 	/**Creates a list of item property values from the name/value pairs stored
 		in the given list. The list will maintain the order of the item values.

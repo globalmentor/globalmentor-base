@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**Represents a list that is a subset of some larger list, based upon an array.
 @author Garret Wilson
 */
-public class ArraySubList extends ArrayList implements SubList
+public class ArraySubList<E> extends ArrayList<E> implements SubList<E>
 {
 
 	/**The size of the superlist of which this list is a sublist.*/

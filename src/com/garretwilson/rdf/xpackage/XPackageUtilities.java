@@ -2,6 +2,8 @@ package com.garretwilson.rdf.xpackage;
 
 import java.net.*;
 import java.util.Iterator;
+import java.util.List;
+
 import com.garretwilson.net.*;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLUtilities;
@@ -40,11 +42,13 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 	@param childrenList The list of children.
 	@return The added list of children.
 	*/
+/*G***del when not used
 	public static RDFListResource setChildren(final RDFResource resource, final RDFListResource childrenList)
 	{
 		resource.setProperty(XPACKAGE_NAMESPACE_URI, CHILDREN_PROPERTY_NAME, childrenList);	//add the children property to the resource
 		return childrenList;  //return the list of children we added
 	}
+*/
 
 	/**Adds an <code>&lt;xpackage:location&gt;</code> property to the resource.
 	The link will be set to <code>xlink:type="simple"</code>.
@@ -82,13 +86,13 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 
 	/**Adds an <code>&lt;xpackage:manifest&gt;</code> property to the resource.
 	@param resource The resource to which a property should be added.
-	@return The new manifest resource, an <code>&lt;rdf:Bag&gt;</code>.
+	@return The new manifest resource, an <code>&lt;rdf:List&gt;</code>.
 	*/
-	public static RDFBagResource addManifest(final RDFResource resource)
+	public static RDFListResource addManifest(final RDFResource resource)
 	{
-		  //create an anonymous manifest resource from the data model
-		final RDFBagResource manifestResource=(RDFBagResource)locateTypedResource(resource, null, RDF_NAMESPACE_URI, BAG_CLASS_NAME);	//G***maybe creaate a utility method for this
-			//add the manifest property to the resource
+		  //create a manifest resource from the data model
+		final RDFListResource manifestResource=new RDFListResource(resource.getRDF());
+			//add a manifest to the resource
 		resource.addProperty(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME, manifestResource);
 		return manifestResource;  //return the manifest resource we created
 	}
@@ -168,17 +172,85 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 	*/
 	public static RDFResource getManifestItem(final RDFResource resource, final URI referenceURI)
 	{
-		final RDFBagResource manifest=getManifest(resource);  //get the manifest of this resource
+		final RDFListResource manifest=getManifest(resource);  //get the manifest of this resource
 		if(manifest!=null)  //if this resource has a manifest
 		{
-			return manifest.getItem(referenceURI);  //return the item by its reference URI
+			final Iterator itemIterator=manifest.iterator();  //get an iterator to look through the items
+			while(itemIterator.hasNext()) //while there are more items
+			{
+				final RDFResource item=(RDFResource)itemIterator.next();  //get the next item
+				if(referenceURI.equals(item.getReferenceURI())) //if this item has the correct reference URI
+					return item;  //return the item we found
+			}
 		}
-		else  //if there is no manifest
+		return null;  //show that we couldn't find a matching item resource
+	}
+
+	/**Returns an item resource in the given RDF list that has a matching
+		xpackage:location with an xlink:href that matches the requested href,
+		relative to the given URI.
+	@param list The list of RDF resources.
+	@param baseURI The base URI of the package, used to construct absolute URIs
+		from relative URIs.
+	@param href The relative or absolute reference to the item, which will be
+		converted to an absolute URI in order to compare it with each item's fully
+		qualified URI.
+	@return The item whose fully qualified URI matches the fully qualified
+		version of the specified href, or <code>null</code> if there is no match.
+	@see #getLocationHRef
+	*/
+	public static RDFResource getItemByLocationHRef(final List list, final URI baseURI, final String href)	//G***should we put this in RDFListResource?
+	{
+		try
 		{
-			return null;  //show that we couldn't find a matching item resource
+		  final URI absoluteURI=URIUtilities.createURI(baseURI, href);	//create a URI based upon the base URI and the given file location
+			return getItemByLocationHRef(list, baseURI, absoluteURI);	//look up the item based upon the URI we formed
+		}
+		catch(URISyntaxException uriSyntaxException)	//if there is an error with the URI
+		{
+//G***fix			Debug.error(uriSyntaxException);	//log the error
+			return null;	//that simply means we can't find the item
 		}
 	}
 
+	/**Returns an item resource in the given RDF list that has a matching
+		xpackage:location with an xlink:href that matches the requested URI,
+		relative to the given base URI.
+	@param list The list of RDF resources.
+	@param baseURI The base URI of the package, used to construct absolute URIs
+		from relative URIs.
+	@param uri The absolute reference to the item, which will be compare with
+		each item's fully qualified URI.
+	@return The item whose fully qualified URI matches the given URI, or
+		<code>null</code> if there is no match.
+	@see #getLocationHRef
+	*/
+	public static RDFResource getItemByLocationHRef(final List list, final URI baseURI, final URI uri)	//G***should we put this in RDFListResource?
+	{
+//G***del Debug.trace("looking for resource that matches URL: ", url);  //G***del
+		final Iterator itemIterator=list.iterator(); //get an iterator to the items in this container
+		while(itemIterator.hasNext()) //while there are more items in this container
+		{
+			final RDFResource item=(RDFResource)itemIterator.next(); //get the next item
+//G***del Debug.trace("looking at resource: ", item); //G***del
+		  final String itemHRef=getLocationHRef(item);  //get the item's href G***later add something that can look at all the locations rather than just the first one
+			if(itemHRef!=null)  //if there is an href
+			{
+				try
+				{
+					final URI itemURI=URIUtilities.createURI(baseURI, itemHRef);	//create a URI based upon the base URI and the item's location
+//G***del	Debug.trace("comparing with URL: ", itemURL); //G***del
+					if(uri.equals(itemURI)) //if the URLs match
+						return item;  //return the item
+				}
+				catch(URISyntaxException uriSyntaxException)	//if there is an error creating the URI
+				{
+					Debug.warn(uriSyntaxException);	//warn about the error, but keep searching
+				}
+			}
+		}
+		return null;  //show that no location matched
+	}
 
 	/**Returns an item resource in the manifest of the given resource, if present,
 		that has a matching xpackage:location with an xlink:href that matches the
@@ -195,7 +267,7 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 	*/
 	public static RDFResource getManifestItemByLocationHRef(final RDFResource resource, final URI baseURI, final String href)
 	{
-		final RDFBagResource manifest=getManifest(resource);  //get the manifest of this resource
+		final RDFListResource manifest=getManifest(resource);  //get the manifest of this resource
 		if(manifest!=null)  //if this resource has a manifest
 		{
 			return getItemByLocationHRef(manifest, baseURI, href);  //get an item in the manifest that matches the given location
@@ -219,6 +291,7 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 		version of the specified href, or <code>null</code> if there is no match.
 	@see #getLocationHRef
 	*/
+/*G***del if not needed
 	public static RDFResource getItemByLocationHRef(final RDFContainerResource rdfContainer, final URI baseURI, final String href)
 	{
 //G***del Debug.trace("Inside OEBPublication.getManifestItemByHRef() for "+href);	//G***del
@@ -233,14 +306,8 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 //G***fix			Debug.error(uriSyntaxException);	//log the error
 			return null;	//that simply means we can't find the item
 		}
-/*G***del when works
-		catch(MalformedURLException e)	//if there is an error with the URL
-		{
-			Debug.error(e);	//log the error
-			return null;	//that simply means we can't find the item
-		}
-*/
 	}
+*/
 
 	/**Returns an item resource in the given RDF container that has a matching
 		xpackage:location with an xlink:href that matches the requested URI,
@@ -254,6 +321,7 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 		<code>null</code> if there is no match.
 	@see #getLocationHRef
 	*/
+/*G***del if not needed
 	public static RDFResource getItemByLocationHRef(final RDFContainerResource rdfContainer, final URI baseURI, final URI uri)
 	{
 //G***del Debug.trace("looking for resource that matches URL: ", url);  //G***del
@@ -276,16 +344,11 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 				{
 					Debug.warn(uriSyntaxException);	//warn about the error, but keep searching
 				}
-/*G***del when works
-				catch(MalformedURLException e)	//if there is an error creating the URL
-				{
-					Debug.warn(e);	//warn about the error, but keep searching
-				}
-*/
 			}
 		}
 		return null;  //show that no location matched
 	}
+*/
 
 	/**Retrieves the location resource of the resource. If this resource has more
 		than one property of <code>xpackage:location</code>, it is undefined which
@@ -331,13 +394,11 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 		property values will be returned.
 	@param resource The resource the manifest of which will be returned.
 	@return The manifest of the resource, or <code>null</code> if no manifest
-		property exists.
-	@exception ClassCastException Thrown if the manifest is not an
-		<code>rdf:Bag</code>.
+		property exists or the manifest is not a list resource.
 	*/
-	public static RDFBagResource getManifest(final RDFResource resource) throws ClassCastException
+	public static RDFListResource getManifest(final RDFResource resource) throws ClassCastException
 	{
-		return (RDFBagResource)resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME); //return the manifest, cast to an RDF bag resource
+		return asListResource(resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME)); //return the manifest as a list resource
 	}
 
 	/**Retrieves the organization of the resource. If this resource has more than

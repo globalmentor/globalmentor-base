@@ -194,11 +194,11 @@ Debug.trace("property value: ", propertyValue); //G***del
 			}
 		}
 		  //package/manifest
-		final RDFBagResource manifest=XPackageUtilities.getManifest(publication); //get the manifest
+		final RDFListResource manifest=XPackageUtilities.getManifest(publication); //get the manifest
 		if(manifest!=null)  //if the publication has a manifest
 		{
 			final Element manifestElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_MANIFEST); //create the manifest element
-		  final Iterator itemIterator=manifest.getItemIterator(); //get an iterator to the manifest items
+		  final Iterator itemIterator=manifest.iterator(); //get an iterator to the manifest items
 			while(itemIterator.hasNext()) //while there are more items in the manifest
 			{
 			  final RDFResource oebItem=(RDFResource)itemIterator.next(); //get the next OEB item
