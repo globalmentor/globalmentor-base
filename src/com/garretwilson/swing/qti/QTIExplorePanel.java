@@ -569,7 +569,7 @@ Debug.trace("asking new item"); //G***del
 				final MutableTreeNode itemTreeNode=new QTIItemTreeNode(item);  //create a new node for the item
 				TreePath path=qtiTree.getSelectionPath(); //get the selected path
 				if(path==null)  //if there is no path selected
-				  path=TreePathUtilities.getLastPath(qtiTree.getModel());  //create a path on the last part of the tree
+				  path=TreeUtilities.getLastPath(qtiTree.getModel());  //create a path on the last part of the tree
 				while(path!=null) //while we haven't reached the root
 				{
 					final Object pathComponent=path.getLastPathComponent(); //get the last path component

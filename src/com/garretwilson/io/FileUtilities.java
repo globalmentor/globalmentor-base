@@ -43,8 +43,46 @@ public class FileUtilities implements FileConstants
 			else	//if the file doesn't exist, there must have been some other creation error
 				throw new IOException("Cannot create "+file);	//throw an exception G***i18n
 		}
-	}	
+	}
 
+	/**Deletes a directory or file, throwing an exception if unsuccessful.
+	@param file The directory or file to delete.
+	@exception IOException Thrown if there is an problem deleting any directory
+		or file.
+	*/
+	public static void delete(final File file) throws IOException
+	{
+		delete(file, false);	//delete the file without recursion
+	}
+
+	/**Deletes a directory or file, throwing an exception if unsuccessful.
+		The operation will stop on the first error.
+	@param file The directory or file to delete.
+		If a directory is passed, all its child files and directories will
+			recursively be deleted if <code>recursive</code> is <code>true</code>.
+		If a file is passed, it will be deleted normally.
+	@param recursive <code>true</code> if all child directories and files of a
+		directory should recursively be deleted.
+	@exception IOException Thrown if there is an problem deleting any directory
+		or file.
+	*/
+	public static void delete(final File file, final boolean recursive) throws IOException
+	{
+		if(recursive && file.isDirectory())	//if this is a directory and we should recursively delete files
+		{
+			final File[] files=file.listFiles();	//get all the files in the directory
+			Debug.assert(files!=null, "File "+file+" is not a directory.");
+			for(int i=files.length-1; i>=0; --i)	//look at each file in the directory
+			{
+				delete(files[i], recursive);	//delete this file
+			}
+		}
+		if(!file.delete())	//delete the file; if unsuccessful
+		{
+			throw new IOException("Unable to delete "+file);	//throw an exception G***i18n
+		}
+	}
+	
 	/**Extracts the extension from a file.
 	@param file The file to examine.
 	@return The extension of the file (not including '.'), or <code>null</code> if
