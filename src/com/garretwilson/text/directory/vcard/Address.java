@@ -101,7 +101,7 @@ public class Address implements AddressConstants
 	private String postalCode;
 
 		/**@return The postal code.*/
-		public String getPostalCode() {return region;}
+		public String getPostalCode() {return postalCode;}
 		
 		/**Sets the postal code.
 		@param postalCode The postal code, or <code>null</code> for no postal code.
