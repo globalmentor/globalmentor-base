@@ -27,7 +27,7 @@ public class URIUtilities
 	*/
 	public static URI changePath(final URI uri, final String path)
 	{
-			//construct an identical URI except for the supplied path
+			//construct an identical URI except for the supplied path	TODO it's unclear if raw information should be used or not; check to see if escaped information is handled correctly, such as escaped slashes
 		return create(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), path, uri.getRawQuery(), uri.getRawFragment());
 	}
 

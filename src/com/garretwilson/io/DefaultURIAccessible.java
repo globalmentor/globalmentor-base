@@ -123,26 +123,9 @@ Debug.trace("we have scheme:", scheme);
 		}
 		else if(HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme))	//if this is an HTTP URI, try to use WebDAV
 		{
-Debug.trace("is a HTTP URI");
 			final HttpURL httpURL=new HttpURL(uri.toString());	//create an Apache HTTP URL from the URI TODO make sure the string is properly escaped
-Debug.trace("HTTP URL", httpURL);
-//G***fix			try
-			{
-/*G***fix
-				final WebdavResource webdavResource=new WebdavResource(httpURL);	//create a WebDAV resource to the URI
-Debug.trace("WebDAV resource", webdavResource);
-*/
-				return new WebdavResourceOutputStreamAdapter(httpURL);	//adapt the resource to an output stream and return it
-			}
-/*G***fix
-			catch(HttpException x)
-			{
-				Debug.trace("message: ", x.getMessage());
-				Debug.trace("reason code: ", Integer.valueOf(x.getReasonCode()));
-				Debug.trace("reason: ", x.getReason());
-				throw x;
-			}
-*/
+			final WebdavResource webdavResource=new WebdavResource(httpURL, WebdavResource.NOACTION, 0);	//create a WebDAV resource to the URI
+			return new WebdavResourceOutputStreamAdapter(webdavResource);	//adapt the resource to an output stream and return it
 		}
 //TODO fix for other types of URIs
 		return uri.toURL().openConnection().getOutputStream();	//convert the URI to a URL, open a connection to it, and get an output stream to it
@@ -157,18 +140,15 @@ Debug.trace("WebDAV resource", webdavResource);
 	{
 		
 		/**The WebDAV resource being adapted.*/
-//G***fix		protected WebdavResource webdavResource=null;
-		
-		protected HttpURL httpURL=null;
+		protected WebdavResource webdavResource=null;
 		
 		/**Constructor that adapts a WebDAV resource.
 		@param webdavResource The WebDAV resource to adapt to an output stream.
 		*/
-		public WebdavResourceOutputStreamAdapter(final HttpURL httpURL)
+		public WebdavResourceOutputStreamAdapter(final WebdavResource webdavResource)
 		{
 			super(new ByteArrayOutputStream());	//collect bytes in a decorated byte array output stream
-			this.httpURL=httpURL;
-//G***fix			this.webdavResource=webdavResource;		//save the WebDAV resource we'll be writing to
+			this.webdavResource=webdavResource;		//save the WebDAV resource we'll be writing to
 		}
 		
 		//TODO improve flush() at some point to actually send data to the Webdav Resource
@@ -179,9 +159,7 @@ Debug.trace("WebDAV resource", webdavResource);
 	  */
 	  public void close() throws IOException
 		{
-Debug.trace("ready to close");
-if(httpURL!=null)	//if we have a WebDAV resource object to write to (i.e. we haven't closed the adapter stream, yet)
-//G***fix	  	if(webdavResource!=null)	//if we have a WebDAV resource object to write to (i.e. we haven't closed the adapter stream, yet)
+	  	if(webdavResource!=null)	//if we have a WebDAV resource object to write to (i.e. we haven't closed the adapter stream, yet)
 	  	{
 //G***fix Debug.trace("we still have our resouce:", webdavResource);
 	  		try
@@ -189,38 +167,19 @@ if(httpURL!=null)	//if we have a WebDAV resource object to write to (i.e. we hav
 	  			final ByteArrayOutputStream byeAtrrayOutputStream=getOutputStream();	//get the decorated output stream
 	  			super.close();	//do the default closing, releasing the decorated output stream from the decorator
 	  			final byte[] bytes=byeAtrrayOutputStream.toByteArray();	//get the collected bytes (use our reference of the decorated output stream, because it will have been released by the decorator at this point)
-Debug.trace("we have this many bytes to write", Integer.valueOf(bytes.length));
-					WebdavResource webdavResource=null;	//TODO fix all this much better
-	  			try
-	  			{
-	  				final String old=httpURL.toString();
-						if(old.endsWith("/"))
-						{
-							webdavResource=new WebdavResource(httpURL);
-		  				webdavResource.putMethod(bytes);	//put the bytes to the WebDAV resource						
-						}
-						else
-						{
-							final int index=old.lastIndexOf('/');
-							final HttpURL parentURL=new HttpURL(old.substring(0, index+1));
-Debug.trace("using new parent:", parentURL);
-//G***fix							final String path=old.substring(index+1);
-							final String path=httpURL.getPath();
-Debug.trace("new path:", path);
-							webdavResource=new WebdavResource(parentURL);
-Debug.trace("result of putting:", Boolean.valueOf(webdavResource.putMethod(path, bytes)));	//put the bytes to the WebDAV resource						
-						}
-	  			}
+//G***del Debug.trace("we have this many bytes to write", Integer.valueOf(bytes.length));
+					try
+					{
+						webdavResource.putMethod(bytes);	//put the bytes to the WebDAV resource
+					}
 	  			finally
 					{
-	  				if(webdavResource!=null)
-	  					webdavResource.close();	//close the WebDAV resource
+  					webdavResource.close();	//close the WebDAV resource
 					}
 	  		}
 	  		finally
 				{
-	  			httpURL=null;	//show that we don't have a WebDAV resource object to write to anymore
-//G***fix	  			webdavResource=null;	//show that we don't have a WebDAV resource object to write to anymore
+	  			webdavResource=null;	//show that we don't have a WebDAV resource object to write to anymore
 				}
 	  	}
 		}		
