@@ -35,6 +35,15 @@ public class UnicodeBlock implements Comparable<UnicodeBlock>
 		endCode=newEndCode; //set the ending code
 	}
 
+	/**Determines if the given Unicode code point falls within the range of this Unicode block.
+	@param codePoint The Unicode code point to check.
+	@return <code>true</code> if the given code point falls within the range (<var>startCode</var>, <var>endCode</var>), inclusive. 
+	*/
+	public boolean contains(final int codePoint)
+	{
+		return codePoint>=getStartCode() && codePoint<=getEndCode();	//determine whether the code point falls within this block's range
+	}
+	
 	/**If <code>object</code> is a <code>UnicodeBlock</code>, compares the start
 		and end codes. Otherwise, compares the objects using the superclass functionality.
 	@param object The object with which to compare this Unicode block; should be a
