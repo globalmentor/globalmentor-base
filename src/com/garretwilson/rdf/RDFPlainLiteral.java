@@ -43,6 +43,8 @@ public class RDFPlainLiteral extends RDFLiteral
 		language=languageLocale;	//set the language locale
 	}
 
+//TODO update hashCode() to work take into account the language
+
 	/**If <code>object</code> is another <code>RDFLiteral</code>, compares the
 		literal values. If <code>object</code> is a <code>String</code>
 		compares the string with this literal's value. Otherwise, compares the

@@ -104,12 +104,19 @@ public class InputStreamUtilities
 		inputStream.mark(BYTE_ORDER_MARK_LENGTH); //we won't read more than the byte order mark
 //G***del		final StringBuffer prereadCharacters=new StringBuffer();	//we'll store here any characters we preread while looking for the character encoding
 //G***del		String characterEncodingName=null;		//we'll store here the name of the character encoding, when we determine it
-		final int[] byteOrderMarkArray=new int[BYTE_ORDER_MARK_LENGTH];	//create an array to hold the byte order mark G***make sure this is initialized to zero bytes---or just read them all, which will but -1 in all the remaining bytes
+		final byte[] byteOrderMarkArray=new byte[BYTE_ORDER_MARK_LENGTH];	//create an array to hold the byte order mark G***make sure this is initialized to zero bytes---or just read them all, which will but -1 in all the remaining bytes
 		boolean eof=false;	//we'll set this to true if we reach the end of the file
 		for(int i=0; i<byteOrderMarkArray.length && !eof; ++i)	//read each character unless we reach the end of the file (we're using a loop instead of read(int[]) because the latter could read less than the number of bytes requested, even if there are more available)
 		{
-			byteOrderMarkArray[i]=inputStream.read();	//read the next byte
-			eof=byteOrderMarkArray[i]==-1;	//see if we reached the end of the file
+			final int byteOrderMark=inputStream.read();	//read the next byte
+			if(byteOrderMark!=-1)	//if we didn't reach the end of the file
+			{
+				byteOrderMarkArray[i]=(byte)byteOrderMark;	//store the next byte order mark
+			}
+			else	//if we did reach the end of the file
+			{
+				eof=true;	//show that we reached the end of the file
+			}
 		}
 		if(!eof)	//if we didn't reach the end of the data
 		{

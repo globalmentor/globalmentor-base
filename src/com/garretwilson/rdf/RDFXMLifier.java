@@ -217,22 +217,12 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	*/
 	public void createElements(final RDF rdf, final Element parentElement)
 	{
-		final Iterator resourceIterator=rdf.getResourceIterator();  //get an iterator to all the RDF resources
-		while(resourceIterator.hasNext()) //while there are resources remaining
+		final Iterator rootResourceIterator=rdf.getRootResourceIterator();  //get an iterator to the root RDF resources
+		while(rootResourceIterator.hasNext()) //while there are root resources remaining
 		{
-			final RDFResource resource=(RDFResource)resourceIterator.next();  //get the next resource
-//G***del Debug.trace("looking at resource: ", resource); //G***del
-			final URI referenceURI=resource.getReferenceURI(); //get the resource reference URI
-			//G***in throwing away anonymous resources, some might have been described at the top of the hierarchy---we should really just check to see which resources are not referenced
-//G***del when works			referenceURI!=null && referenceURI.indexOf("anonymous")<0 //if this is not an anonymous node G***fix the way we determine anonymous resources
-
-//G***check to see if there are no references to this node---if so, we'll probably want to serialize it anyway
-			if(resource.getReferenceURI()!=null //if this is not a blank node
-				  && resource.getPropertyCount()>0)  //if this resource actually has properties (even properties such as type identifiers are resources, but they don't have properties)
-			{
-				final Element resourceElement=createResourceElement(/*G***del if not needed rdf, */parentElement.getOwnerDocument(), resource); //create an element from this resource
-				parentElement.appendChild(resourceElement); //add the resource element to our parent element
-			}
+			final RDFResource resource=(RDFResource)rootResourceIterator.next();  //get the next root resource
+			final Element resourceElement=createResourceElement(/*G***del if not needed rdf, */parentElement.getOwnerDocument(), resource); //create an element from this resource
+			parentElement.appendChild(resourceElement); //add the resource element to our parent element
 		}
 	}
 
@@ -603,7 +593,7 @@ Debug.trace("prefix: ", prefix); //G***del
 		Debug.assert(localName!=null, "Could not determine local name for "+resource.getReferenceURI());	//TODO fix
 		return localName;	//return the local name we found
 	}
-	
+
 	static
 	{
 		TYPE_PROPERTY_REFERENCE_URI=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME);	//initialize the RDF type property URI

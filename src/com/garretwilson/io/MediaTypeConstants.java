@@ -67,6 +67,9 @@ public interface MediaTypeConstants
 	/**A stream of bytes.*/
 	public final static String OCTET_STREAM="octet-stream";
 	public final static String APPLICATION_OCTET_STREAM=APPLICATION+DIVIDER+OCTET_STREAM;
+	/**A Dictionary Ontology (Dicto) dictionary.*/
+	public final static String X_DICTO_RDF_XML="x-dicto+rdf+xml";
+	public final static String APPLICATION_DICTO=APPLICATION+DIVIDER+X_DICTO_RDF_XML;
 	/**A Java application.*/
 	public final static String JAVA="java";
 	public final static String APPLICATION_JAVA=APPLICATION+DIVIDER+JAVA;
