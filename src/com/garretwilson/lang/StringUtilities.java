@@ -852,7 +852,7 @@ end;
 	@return A string containing a range of characters including the first and
 		last characters provided.
 	*/
-	public static String create(final char firstChar, final char lastChar)
+	public static String createString(final char firstChar, final char lastChar)
 	{
 		final StringBuffer stringBuffer=new StringBuffer(lastChar-firstChar+1);	//create a string buffer with enough room to hold the characters
 		for(char c=firstChar; c<=lastChar; stringBuffer.append(c++));	//append the entire range of characters to the string buffer
@@ -863,7 +863,7 @@ end;
 	@param ch The character to be in the string.
 	@param count The number of repetitions of the character.
 	@return A string with count repetitions of ch.*/
-	static public String makeString(final char ch, final int count)	//rename to createString()
+	static public String createString(final char ch, final int count)	//rename to createString()
 	{
 //G***this is horribly inefficient; change to use a string buffer
 		String outString="";
@@ -893,7 +893,7 @@ end;
 				outString=remove(outString, pos, removeCount);	//remove the characters
 			}
 			else if(outString.length()<len)	//if the string is too short
-				outString=insert(outString, pos, makeString(ch, len-outString.length()));	//insert a string of the correct length at the correct position with the specified characters
+				outString=insert(outString, pos, createString(ch, len-outString.length()));	//insert a string of the correct length at the correct position with the specified characters
 		}
 		return outString;	//return our resulting string
 	}

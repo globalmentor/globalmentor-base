@@ -257,7 +257,7 @@ public class StringBufferUtilities implements CharacterConstants
 		return replacementCount;  //show how many characters we replaced
 	}
 
-	/**Replaces each matching character with the given replacement.
+	/**Replaces each matching character with the given replacement character.
 	@param stringBuffer The buffer in which the replacements will be made.
 	@param matchChar The character to be replaced.
 	@param replacementChar The character for replacing the match character.
@@ -273,6 +273,34 @@ public class StringBufferUtilities implements CharacterConstants
 			{
 				stringBuffer.setCharAt(i, replacementChar); //replace the original character with its replacement
 				++replacementCount; //show that we replaced a character
+			}
+		}
+		return replacementCount;  //show how many characters we replaced
+	}
+
+	/**Replaces each matching character with the given replacement string.
+	@param stringBuffer The buffer in which the replacements will be made.
+	@param matchChar The character to be replaced.
+	@param replacementString The string for replacing the match character.
+	@return The number of replacements made.
+	*/
+	public static int replace(final StringBuffer stringBuffer, final char matchChar, final String replacementString)
+	{
+		int replacementCount=0; //show that we have not replaced any characters, yet
+		int beginSearchIndex=0;	//we'll start searching from the beginning of the string
+		int nextReplaceIndex;	//this will hold the next location of the replaceString each time we search for it
+		while(beginSearchIndex<stringBuffer.length())	//while we haven't examined all the characters
+		{
+			nextReplaceIndex=indexOf(stringBuffer, matchChar, beginSearchIndex);	//search for another occurrence of the character
+			if(nextReplaceIndex>=0)	//if there is another occurrence of the character to replace
+			{
+				stringBuffer.replace(nextReplaceIndex, nextReplaceIndex+1, replacementString);	//replace this character with the replacement string
+				beginSearchIndex=nextReplaceIndex+replacementString.length();	//skip over the string we replaced in the input string
+				++replacementCount; //show that we replaced a character
+			}
+			else	//if there are no more occurrences of the string to replace
+			{
+				break;	//stop searching for more matches
 			}
 		}
 		return replacementCount;  //show how many characters we replaced
