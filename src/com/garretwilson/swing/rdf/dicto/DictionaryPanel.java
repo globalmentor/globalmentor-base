@@ -51,7 +51,7 @@ public class DictionaryPanel extends RDFPanel
 		this(model, true);	//construct and initialize the panel
 	}
 
-	/**Dictionary constructor with optional initialization.
+	/**Model constructor with optional initialization.
 	@param model The data model for which this component provides a view.
 	@param initialize <code>true</code> if the panel should initialize itself by
 		calling the initialization methods.
@@ -60,7 +60,7 @@ public class DictionaryPanel extends RDFPanel
 	{
 		super(model, false);	//construct the parent class without initializing it
 		setSupportedDataViews(getSupportedModelViews()|WYSIWYG_MODEL_VIEW);	//show that we now support WYSIWYG data views, too
-		book=new Book(1);	//create a new book for the WYSIWYG view, showing only one page
+		book=new Book(2);	//create a new book for the WYSIWYG view, showing two pages at a time
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
 	}
@@ -68,7 +68,7 @@ public class DictionaryPanel extends RDFPanel
 	/**Initialize the user interface.*/
 	protected void initializeUI()
 	{
-		addView(WYSIWYG_MODEL_VIEW, "Dictionary", book, null, 0);	//add the WYSIWYG component as the tree view G***i18n
+		addView(WYSIWYG_MODEL_VIEW, "Dictionary", book, null);	//add the book component as the WYSIWYG view G***i18n
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 //TODO set the book to be not editable
@@ -211,7 +211,6 @@ public class DictionaryPanel extends RDFPanel
 		switch(oldView)	//see what view we're changing from
 		{
 			case WYSIWYG_MODEL_VIEW:	//if we're changing from the WYSIWYG view
-//G***del				wysiwygTextPane.setDocument(wysiwygTextPane.getEditorKit().createDefaultDocument());	//to conserve memory, remove the content from the editor kit by installing a new document
 				book.close();	//to conserve memory, remove the content from the book
 				break;
 		}
