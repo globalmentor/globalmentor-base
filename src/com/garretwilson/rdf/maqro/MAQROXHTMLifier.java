@@ -75,7 +75,8 @@ public class MAQROXHTMLifier
 			{
 				final Dialogue dialogue=(Dialogue)object;	//cast the object to dialogue
 				dlElement.appendChild(XMLUtilities.createElement(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Response"));	//TODO i18n
-				dlElement.appendChild(XMLUtilities.createElement(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD, getDialogueString(dialogue)));	//show the result
+				final Element ddElement=XMLUtilities.appendElement(dlElement, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//append an element for dialogue
+				constructElement(ddElement, dialogue);	//show the result
 			}
 		}		
 	}
@@ -119,7 +120,8 @@ public class MAQROXHTMLifier
 			if(query!=null)
 			{
 				dlElement.appendChild(XMLUtilities.createElement(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Query"));	//TODO i18n
-				dlElement.appendChild(XMLUtilities.createElement(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD, getDialogueString(query)));	//show the query				
+				final Element ddElement=XMLUtilities.appendElement(dlElement, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//append an element for dialogue
+				constructElement(ddElement, query);	//show the query
 			}
 				//TODO fix for AND answers and OR answers
 			final Iterator<RDFObject> answerIterator=question.getAnswerIterator();	//get an iterator to answers
@@ -130,17 +132,45 @@ public class MAQROXHTMLifier
 				{
 					final Dialogue dialogue=(Dialogue)object;	//cast the object to dialogue
 					dlElement.appendChild(XMLUtilities.createElement(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Answer"));	//TODO i18n
-					dlElement.appendChild(XMLUtilities.createElement(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD, getDialogueString(dialogue)));	//show the result
+					final Element ddElement=XMLUtilities.appendElement(dlElement, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//append an element for dialogue
+					constructElement(ddElement, dialogue);	//show the result
 				}
 			}		
 		}
 	}
 
+	/**Constructs an XHTML element representing dialogue.
+	Literal dialogue information will be placed as as text child of the element.
+	XML literal dialogue information will be imported into the element hierarchy.
+	@param element The element to hold the dialogue information
+	@param dialogue The dialogue information to represent in XHTML.
+	*/
+	protected void constructElement(final Element element, final Dialogue dialogue)
+	{
+		final RDFLiteral dialogueValue=dialogue.getValue();	//get the value of this dialogue
+		if(dialogueValue instanceof RDFPlainLiteral)	//if the dialogue is a plain literal
+		{
+			XMLUtilities.appendText(element, dialogueValue.getLexicalForm());	//append the literal text to the element
+		}
+		else if(dialogueValue instanceof RDFXMLLiteral)	//if the dialogue is an XML literal
+		{
+			final RDFXMLLiteral xmlLiteralDialogueValue=(RDFXMLLiteral)dialogueValue;
+			final DocumentFragment documentFragment=xmlLiteralDialogueValue.getDocumentFragment();	//get the document fragment of the literal
+			XMLUtilities.appendImportedChildNodes(element, documentFragment, true);	//import the document fragment children into the element
+		}
+/*TODO fix
+		else	//if we don't understand the type of dialogue value given (i.e. it's not a plain literal or an XML literal)
+		{
+			throw new IllegalArgumentException("Unknown dialogue literal type for "+dialogueValue);
+		}
+*/	
+	}
+	
 	/**Creates a string to represent the given result.
 	@param result The result to represent.
 	@return A string representation of the result.
 	*/
-	protected String getResultString(final Result result)
+	protected String getResultString(final Result result)	//TODO refactor and harmonize with the MAQROActivityEngine version
 	{
 		final StringBuilder stringBuilder=new StringBuilder();
 		if(result instanceof Score)	//if this is a score
@@ -166,12 +196,13 @@ public class MAQROXHTMLifier
 	@param dialogue The dialogue to represent.
 	@return A string representation of the dialogue.
 	*/
+/*TODO del when new Dialogue element construction method works
 	protected String getDialogueString(final Dialogue dialogue)	//TODO somewhere along the way, literal XML character entities get escaped; fix
 	{
 		final StringBuilder stringBuilder=new StringBuilder();
 		final RDFLiteral literalValue=dialogue.getValue();	//get the literal value, if there is one
 		return literalValue!=null ? literalValue.getLexicalForm() : "";	//return the literal value if there is one
 	}
-
+*/
 
 }

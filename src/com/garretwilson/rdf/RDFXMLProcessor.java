@@ -472,7 +472,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			final Document document=XMLUtilities.createDocument(element);	//create a new document from a copy of the given element
 			//G***do we want to ensure namespace declarations?
 			final Element documentElement=document.getDocumentElement();	//get a reference to the document element
-			final DocumentFragment documentFragment=XMLUtilities.extractChildren(documentElement);	//extract the children of the document element to a document fragment
+			final DocumentFragment documentFragment=XMLUtilities.extractChildren(documentElement);	//extract the children of the document element to a document fragment TODO important probably reset the owner document, so that this won't keep the entire original document tree around
 			propertyValue=new RDFXMLLiteral(documentFragment);	//create an XML literal containing the document fragment, which now contains a copy of the information of the XML tree below the given element
 		}
 		else	//by default assume that we're parsing a resource as the property value
