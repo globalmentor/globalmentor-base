@@ -6,6 +6,7 @@ import java.util.*;
 import com.garretwilson.io.*;
 import com.garretwilson.itu.*;
 import com.garretwilson.text.directory.*;
+import com.garretwilson.util.*;
 
 /**Class that can create values for the "VCARD" profile of a
 	<code>text/directory</code>as defined in
@@ -481,7 +482,9 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 				{
 					if(vcard.getFormattedName()==null)	//if there is not yet a formatted name
 					{
-						vcard.setFormattedName(contentLine.getValue().toString());	//get the formatted name
+							//TODO fix to get the locale; comment
+						final LocaleText formattedName=new LocaleText(contentLine.getValue().toString());
+						vcard.setFormattedName(formattedName);	//get the formatted name
 						continue;	//don't process this content line further
 					}
 				}

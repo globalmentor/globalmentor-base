@@ -21,15 +21,15 @@ public class VCard
 			//identification types
 
 	/**Formatted text corresponding to the name of the object the vCard represents.*/
-	private String formattedName=null;
+	private LocaleText formattedName=null;
 
 		/**@return Formatted text corresponding to the name of the object the vCard represents.*/
-		public String getFormattedName() {return formattedName;}
+		public LocaleText getFormattedName() {return formattedName;}
 
-	/**Sets  the ormatted text corresponding to the name of the object the vCard represents.
-	@param fn The formatted name.
-	*/
-	public void setFormattedName(final String fn) {formattedName=fn;}
+		/**Sets  the ormatted text corresponding to the name of the object the vCard represents.
+		@param fn The formatted name.
+		*/
+		public void setFormattedName(final LocaleText fn) {formattedName=fn;}
 
 	/**The components of the name of the object the vCard represents.*/
 	private Name name=null;

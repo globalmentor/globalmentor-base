@@ -3,7 +3,6 @@ package com.garretwilson.rdf.dublincore;
 import java.text.*;
 import java.util.*;
 import com.garretwilson.rdf.*;
-import com.garretwilson.lang.StringUtilities;
 import com.garretwilson.util.*;
 
 /**Utilities for working with Dublin Core stored in RDF.
@@ -91,8 +90,8 @@ public class DCUtilities implements DCConstants
 	{
 		  //G***fix
 //G***del		final DateFormat dateFormat=DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT); //G***testing
-		final String languageString=locale.toString().replace('_', '-');  //G***testing
-Debug.trace("DC language string: ", languageString);  //G***del
+		final String languageString=LocaleUtilities.getLanguageTag(locale);	//get the language tag for this locale
+//G***del Debug.trace("DC language string: ", languageString);  //G***del
 		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, languageString);
 	}
 
