@@ -513,7 +513,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		final String[][] fields=processStructuredTextValue(reader);	//process the structured text fields
 		for(int i=0; i<fields.length; ++i)	//look at each field
 		{
-			for(int j=0; j<fields.length; ++j)	//look at each field value (this isn't in the specification, but it won't hurt to add these values within each field to keep from losing them, even if they shouldn't be there)
+			for(int j=0; j<fields[i].length; ++j)	//look at each field value (this isn't in the specification, but it won't hurt to add these values within each field to keep from losing them, even if they shouldn't be there)
 			{
 				orgList.add(new LocaleText(fields[i][j], locale));	//add this field value as either the organization name or an organizational unit
 			}

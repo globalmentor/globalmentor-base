@@ -367,6 +367,9 @@ public class QuestionPanel extends TabbedViewPanel
 			final boolean isChoicesSelected=choicesRadioButton.isSelected();
 			mutuallyExclusiveCheckBox.setEnabled(isChoicesSelected);
 			requireAllCheckBox.setEnabled(isChoicesSelected && ! mutuallyExclusiveCheckBox.isSelected());	//don't allow requiring all if only one choice can be selected
+
+			choicePanel.setVisible(isChoicesSelected);	//G***testing
+			
 			choiceList.setEnabled(isChoicesSelected);	//only enable the choice list if the choices radio button is selected
 			if(mutuallyExclusiveCheckBox.isSelected())	//if the choices should be mutually exclusive
 			{
@@ -390,6 +393,9 @@ public class QuestionPanel extends TabbedViewPanel
 			}
 			choicePanel.updateStatus();	//update the status of the choice panel, in case we changed the selection mode
 			answerPanel.setEnabled(expectRadioButton.isSelected());	//only enable the answer panel if the expect radio button is selected
+
+			answerPanel.setVisible(expectRadioButton.isSelected());	//G***testing
+			
 		}
 
 		/**The edit strategy that allows editing of choices from a list.
