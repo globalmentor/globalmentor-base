@@ -56,6 +56,21 @@ public class ParseUnexpectedDataException extends ParseIOException
 		*/
 		protected void setFoundString(final String foundString) {FoundString=foundString;}
 
+	/**Constructor for an unexpected character error.
+	@param foundChar The character found at this location.
+	@param lineIndex The index of the line in which the error occurred.
+	@param charIndex The index of the character at which the error occurred on the current line.
+	@param sourceName The name of the source of the data (perhaps a filename).
+	*/
+	public ParseUnexpectedDataException(final char foundChar, final long lineIndex, final long charIndex, final String sourceName)
+	{
+		super("Unexpected character: found "+
+				convertDelimitersToMessage(String.valueOf(foundChar))+
+				".",
+				lineIndex, charIndex, sourceName);	//G***Int
+		setFoundCharacter(foundChar);	//save the character found
+	}
+
 	/**Constructor for an unexpected character error, when one character was expected.
 	@param expectedChar The character expected at this location.
 	@param foundChar The character found at this location.

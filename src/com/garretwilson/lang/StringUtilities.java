@@ -911,13 +911,26 @@ end;
 	}
 */
 
+	/**Creates a string containing a range of characters.
+	@param firstChar The character to start with.
+	@param lastChar The last character to include, which should have a value
+		higher than or equal to <code>firstChar</code>.
+	@return A string containing a range of characters including the first and
+		last characters provided.
+	*/
+	public static String create(final char firstChar, final char lastChar)
+	{
+		final StringBuffer stringBuffer=new StringBuffer(lastChar-firstChar+1);	//create a string buffer with enough room to hold the characters
+		for(char c=firstChar; c<=lastChar; stringBuffer.append(c++));	//append the entire range of characters to the string buffer
+		return stringBuffer.toString();	//return the string we constructed
+	}
+	
 	/**Creates a string with a given repetition of characters.
 	@param ch The character to be in the string.
 	@param count The number of repetitions of the character.
 	@return A string with count repetitions of ch.*/
-	static public String makeString(final char ch, final int count)
+	static public String makeString(final char ch, final int count)	//rename to createString()
 	{
-
 //G***this is horribly inefficient; change to use a string buffer
 		String outString="";
 		for(int i=0; i<count; ++i)	//for each count

@@ -7,50 +7,50 @@ Used by com.garretwilson.io.ParseReader.
 @see IOException
 @see ParseReader
 */
-public class ParseIOException extends IOException	//G***why were we descending from Exception for a while?
+public class ParseIOException extends IOException
 {
 	/**The index of the line on which the error occurred.
-	@see CharIndex
+	@see #charIndex
 	*/
-	private long LineIndex;
+	private long lineIndex;
 
 		/**@return The index of the line on which the error occurred.
-		@see getCharIndex
+		@see #getCharIndex
 		*/
-		public long getLineIndex() {return LineIndex;}
+		public long getLineIndex() {return lineIndex;}
 
 		/**Sets the index of the line on which the error occurred.
 		@param lineIndex The new line index.
 		@see #setCharIndex
 		*/
-		public void setLineIndex(final long lineIndex) {LineIndex=lineIndex;}
+		public void setLineIndex(final long lineIndex) {this.lineIndex=lineIndex;}
 
 	/**The index of the character at which the error occurred on the current line.
-	@see LineIndex
+	@see #lineIndex
 	*/
-	private long CharIndex;
+	private long charIndex;
 
 		/**@return The index of the character at which the error occurred on the current line.
-		@see getLineIndex
+		@see #getLineIndex
 		*/
-		public long getCharIndex()	{return CharIndex;}
+		public long getCharIndex()	{return charIndex;}
 
 		/**Sets the index of the character at which the error occurred on the current line.
 		@param charIndex The new character index.
 		@see #setLineIndex
 		*/
-		public void setCharIndex(final long charIndex) {CharIndex=charIndex;}
+		public void setCharIndex(final long charIndex) {this.charIndex=charIndex;}
 
 	/**The name of the source of this exception, such as a filename.*/
-	private String SourceName="";
+	private String sourceName="";
 
 		/**@return The name of the source of this exception, such as a filename.*/
-		public String getSourceName() {return SourceName;}
+		public String getSourceName() {return sourceName;}
 
 		/**Sets the name of the source of this exception, such as a filename.
 		@param sourceName The new name of the sourceof the exception.
 		*/
-		public void setSourceName(final String sourceName) {SourceName=sourceName;}
+		public void setSourceName(final String sourceName) {this.sourceName=sourceName;}
 
 	/**Default constructor for a generic parsing error.*/
 	public ParseIOException()

@@ -5,6 +5,7 @@ import java.net.URL;	//G***decide if we want a URL constructor or not
 //G***testing import com.garretwilson.io.TextReader;
 import com.garretwilson.io.BufferedPushbackReader;
 //G***del if we don't need import com.garretwilson.util.StringManipulator;
+import com.garretwilson.lang.*;
 import com.garretwilson.util.Debug;
 
 /**Class which provides methods for parsing data from a stream.*/
@@ -924,8 +925,9 @@ public class ParseReader extends BufferedPushbackReader
 */
 		return foundString;	//return the string we read
 	}
-
-	/**Reads text from an input stream that ends in a certain delimiter. The ending delimiter will be discarded.
+	
+	/**Reads text from an input stream that ends in a certain delimiter.
+		The ending delimiter will be discarded.
 	@param endDelimiter The string to expect at the end of the characters.
 	@except IOException Thrown when an i/o error occurs.
 //G***del	@except ParseUnexpectedDataException Thrown when an unexpected character is found.
@@ -934,24 +936,24 @@ public class ParseReader extends BufferedPushbackReader
 	*/
 	public String readDelimitedString(final String endDelimiter) throws IOException, /*G***del ParseUnexpectedDataException, */ParseEOFException
 	{
-		String characterData="";	//this will hold the characters we find
+		final StringBuffer characterData=new StringBuffer();	//this will hold the characters we find
 		final int endDelimiterLength=endDelimiter.length();	//store the length of the ending delimiter
 		final char endDelimiterLastChar=endDelimiter.charAt(endDelimiter.length()-1);	//get the last character in the ending delimiter
 		while(true)	//we'll break out of this loop when we find a match of the end delimiter or an exception is thrown
 		{
-			characterData+=readStringUntilChar(endDelimiterLastChar)+endDelimiterLastChar;	//read everything up to and including the last character in the delimiter
+			characterData.append(readStringUntilChar(endDelimiterLastChar)).append(endDelimiterLastChar);	//read everything up to and including the last character in the delimiter
 			skip(1);	//skip the ending delimiter's last character, since we already added it to the end of our string
 			final int characterDataLength=characterData.length();	//find out how many characters we've read so far
 				//if we've read enough to compare characters with the ending delimiter, and the last characters read match the ending delimiter
-			if(characterDataLength>=endDelimiterLength && characterData.substring(characterDataLength-endDelimiterLength).equals(endDelimiter))
+			if(characterDataLength>=endDelimiterLength && characterData.substring(characterDataLength-endDelimiterLength).equals(endDelimiter))	//G***this can be made more efficient
 			{
-				characterData=characterData.substring(0, characterData.length()-endDelimiterLength);	//chop off the ending delimiter
-				return characterData;	//return the characters we found which were between the delimiters
+				return characterData.substring(0, characterData.length()-endDelimiterLength);	//chop off the ending delimiter and return the characters we found which were between the delimiters
 			}
 		}
 	}
 
-	/**Reads text from an input stream that that has certain beginning and ending delimiters. The ending delimiter will be discarded.
+	/**Reads text from an input stream that that has certain beginning and ending
+		delimiters. The ending delimiter will be discarded.
 	@param startDelimiter The string to expect at the first of the characters.
 	@param endDelimiter The string to expect at the end of the characters.
 	@except IOException Thrown when an i/o error occurs.
@@ -964,48 +966,42 @@ public class ParseReader extends BufferedPushbackReader
 //G***del		String characterData="";	//this will hold the characters we find
 		readExpectedString(startDelimiter);	//make sure the characters start with the correct delimiters
 		return readDelimitedString(endDelimiter);	//read the content up to the ending delimiter and throw away the end delimiter
-//G***del		int compareEndDelimiterIndex=0;	//no characters in the ending delimiter have matched so far
-//G***del		final int endDelimiterLength=endDelimiter.length();	//store the length of the ending delimiter
-//G***del		final char endDelimiterLastChar=endDelimiter.charAt(endDelimiter.length()-1);	//get the last character in the ending delimiter
-/*G***del when new version works better
-			//keep getting character data until we've read the delimiter string
-		while(characterData.length()<endDelimiters.length() || !characterData.substring(characterData.length()-endDelimiters.length()).equals(endDelimiters))
-			characterData+=readChar();	//read a character and add it to our character data
-		characterData=characterData.substring(0, characterData.length()-endDelimiters.length());	//chop off the ending delimiters
-*/
-/*G***del
-		while(true)	//we'll break out of this loop when we find a match of the end delimiter or an exception is thrown
-		{
-			//G***maybe simply include source from readStringUntilChar(), modified to check for a string
-			characterData+=readStringUntilChar(endDelimiterLastChar)+endDelimiterLastChar;	//read everything up to and including the last character in the delimiter
-			skip(1);	//skip the ending delimiter's last character, since we already added it to the end of our string
-			final int characterDataLength=characterData.length();	//find out how many characters we've read so far
-				//if we've read enough to compare characters with the ending delimiter, and the last characters read match the ending delimiter
-			if(characterDataLength>=endDelimiterLength && characterData.substring(characterDataLength-endDelimiterLength).equals(endDelimiter))
-			{
-				characterData=characterData.substring(0, characterData.length()-endDelimiterLength);	//chop off the ending delimiter
-				return characterData;	//return the characters we found which were between the delimiters
-			}
-		}
-*/
-/*G***del when works
-		while(compareEndDelimiterIndex<endDelimiterLength)	//while we haven't matched the entire ending delimiter
-		{
-			final char c=readChar();	//read another character
-			characterData+=c;	//add the character to our character data
-			if(c==endDelimiter.charAt(compareEndDelimiterIndex))	//if the character we're comparing in the ending delimiter matches what we just read
-				++endDelimiterIndex;	//we'll compare the next letter the next time
-			else	//if this character doesn't match the current character in the ending delimiter
-				endDelimiterIndex=0;	//we'll start comparing at the beginning of the ending delimiter the next time
-		}
-		characterData=characterData.substring(0, characterData.length()-endDelimiterLength);	//chop off the ending delimiter
-*/
 		//G***somehow fit an error here for EOF (which happens now) which indicates that we were searching for the end delimiters (which we don't do now)
-//G***del		return characterData;	//return the characters we found which were between the delimiters
 	}
 
-	/**Reads text from an input stream that that has certain beginning and ending delimiters,
-	and returns the string <em>including</em> the delimiters.
+	/**Reads text from an input stream that that has certain beginning and ending
+		delimiter characters. The ending delimiter will be discarded.
+	@param startDelimiter The character to expect at the first of the characters.
+	@param endDelimiter The character to expect at the end of the characters.
+	@except IOException Thrown when an i/o error occurs.
+	@except ParseUnexpectedDataException Thrown when an unexpected character is found.
+	@except ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	@return The characters between the delimiters.
+	*/
+	public String readDelimitedString(final char startDelimiter, final char endDelimiter) throws IOException, ParseUnexpectedDataException, ParseEOFException
+	{
+		readExpectedChar(startDelimiter);	//read the first delimiter
+		final String string=readStringUntilChar(endDelimiter);	//read until the end delimiter is reached
+		readExpectedChar(endDelimiter);	//read the ending delimiter
+		return string;	//return the string in-between
+	}
+
+	/**Reads text from an input stream that that has certain beginning and ending
+		delimiter characters, and returns the string <em>including</em> the delimiters.
+	@param startDelimiter The character to expect at the first of the characters.
+	@param endDelimiter The character to expect at the end of the characters.
+	@except IOException Thrown when an i/o error occurs.
+	@except ParseUnexpectedDataException Thrown when an unexpected character is found.
+	@except ParseEOFException Thrown when the end of the input stream is reached unexpectedly.
+	@return The delimiters with the character between them.
+	*/
+	public String readDelimitedStringInclusive(final char startDelimiter, final char endDelimiter) throws IOException, ParseUnexpectedDataException, ParseEOFException
+	{
+		return readExpectedChar(startDelimiter)+readStringUntilChar(endDelimiter)+readExpectedChar(endDelimiter);	//read the start and ending delimiters, and everything in-between		
+	}
+
+	/**Reads text from an input stream that that has certain beginning and ending
+		delimiters, and returns the string <em>including</em> the delimiters.
 	@param startDelimiter The string to expect at the first of the characters.
 	@param endDelimiter The string to expect at the end of the characters.
 	@except IOException Thrown when an i/o error occurs.
