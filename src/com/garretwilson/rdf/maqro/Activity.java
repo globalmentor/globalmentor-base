@@ -59,22 +59,29 @@ public class Activity extends Group
 	*/
 	public List getSelectedInteractionList(final Group group)
 	{
-			//check categories
-		final Set selectCategorySet=new HashSet();	//create a set of categories
 		final SelectDescription select=getSelect();	//get the selection criteria
-		CollectionUtilities.addAll(selectCategorySet, select.getCategoryIterator());	//put the selection categories into our set
-		final List selectedInteractionList=new ArrayList();	//create a list into which we'll place our selected interactions
-		final List interactionList=group.getInteractions();	//get the interactions from this group
-		final Iterator interactionIterator=interactionList.iterator();	//get an iterator to the interactions
-		while(interactionIterator.hasNext())	//while there are more interactions
+		if(select!=null)	//if we have selection criteria
 		{
-			final Interaction interaction=(Interaction)interactionIterator.next();	//get the next interaction
-			if(isSelected(interaction, selectCategorySet))	//if we should select this interaction
+				//check categories
+			final Set selectCategorySet=new HashSet();	//create a set of categories
+			CollectionUtilities.addAll(selectCategorySet, select.getCategoryIterator());	//put the selection categories into our set
+			final List selectedInteractionList=new ArrayList();	//create a list into which we'll place our selected interactions
+			final List interactionList=group.getInteractions();	//get the interactions from this group
+			final Iterator interactionIterator=interactionList.iterator();	//get an iterator to the interactions
+			while(interactionIterator.hasNext())	//while there are more interactions
 			{
-				selectedInteractionList.add(interaction);	//add this interaction to our list
+				final Interaction interaction=(Interaction)interactionIterator.next();	//get the next interaction
+				if(isSelected(interaction, selectCategorySet))	//if we should select this interaction
+				{
+					selectedInteractionList.add(interaction);	//add this interaction to our list
+				}
 			}
+			return selectedInteractionList;	//return the list of selected interactions
 		}
-		return selectedInteractionList;	//return the list of selected interactions 
+		else	//if there is no selection criteria
+		{
+			return group.getInteractions();	//return all the interactions for the group
+		} 
 	}
 
 	/**Determines if the given interaction should be selected.

@@ -89,8 +89,7 @@ public class DictionaryPanel extends RDFPanel
 //G***del		wysiwygTextPane.setContentType(MediaType.APPLICATION_XHTML_XML);	//set the text pane content type to "application/xhtml+xml"
 //G***del		wysiwygTextPane.setEditable(false);	//don't let the WYSIWYG text pane be edited
 //TODO set the book to be not editable
-		getTabbedPane().insertTab("Dictionary", null, book, null, 0);	//G***i18n	
-		setViewComponent(WYSIWYG_DATA_VIEW, book);	//associate the WYSIWYG component with the tree view
+		addView(WYSIWYG_DATA_VIEW, "Dictionary", book, null, 0);	//add the WYSIWYG component as the tree view G***i18n
 		setDataView(WYSIWYG_DATA_VIEW);	//set the default view
 	}
 
