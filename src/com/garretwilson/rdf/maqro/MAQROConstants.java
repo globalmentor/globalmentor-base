@@ -57,6 +57,8 @@ public interface MAQROConstants
 	public final static String SHOW_RESULTS_PROGRESS_PROPERTY_NAME="showResultsProgress";
 
 		//MAQRO question property names
+	/**The answer of a question. The local name of maqro:answer.*/
+	public final static String ANSWER_PROPERTY_NAME="answer";
 	/**A choice of a question. The local name of maqro:choice.*/
 	public final static String CHOICE_PROPERTY_NAME="choice";
 	/**The type of response a question expects. The local name of maqro:expect.*/
@@ -69,6 +71,8 @@ public interface MAQROConstants
 	public final static String QUERY_PROPERTY_NAME="query";
 
 		//MAQRO result property names
+	/**Whether the result is correct. The local name of maqro:correct.*/
+	public final static String CORRECT_PROPERTY_NAME="correct";
 	/**A response to an interaction. The local name of maqro:response.*/
 	public final static String RESPONSE_PROPERTY_NAME="response";
 

@@ -60,7 +60,6 @@ public class SelectDescription extends DefaultRDFResource implements MAQROConsta
 		MAQROUtilities.setRandom(this, random);	//set whether the selection should be random
 	}
 
-
 	/**@return The number of choices to include, or -1 if the choice
 		count is not indicated.
 	*/

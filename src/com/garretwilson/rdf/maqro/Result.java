@@ -3,6 +3,7 @@ package com.garretwilson.rdf.maqro;
 import java.net.URI;
 import java.util.*;
 import com.garretwilson.rdf.*;
+import com.garretwilson.rdf.xmlschema.BooleanLiteral;
 
 /**Represents the result, including responses, evaluations, and scores, of a
 	MAQRO interaction such as an activity or question.
@@ -60,6 +61,26 @@ public class Result extends DefaultRDFResource implements MAQROConstants
 	public Iterator getResponseIterator()
 	{
 		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, RESPONSE_PROPERTY_NAME);	//return an iterator to the responses 
+	}
+
+	/**Determines whether the result is correct.
+	@return <code>true</code> if the resource is marked as correct, else
+		<code>false</code> if the resource is marked as not correct or does not
+		indicate correctness.
+	*/
+	public boolean isCorrect()
+	{
+		final RDFObject rdfObject=getPropertyValue(MAQRO_NAMESPACE_URI, CORRECT_PROPERTY_NAME); //get the value of the correct property
+		return rdfObject instanceof BooleanLiteral ? ((BooleanLiteral)rdfObject).getBoolean().booleanValue() : false; //return the boolean value of the object, or null if is no such property or the property value is not a boolean typed literal
+	}
+
+	/**Sets whether the result is correct.
+	@param correct <code>true</code> if the result is correct, else
+		<code>false</code>.
+	*/
+	public void setCorrect(final boolean correct)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, CORRECT_PROPERTY_NAME, new BooleanLiteral(correct)); //set the correct property with a boolean typed literal
 	}
 
 }

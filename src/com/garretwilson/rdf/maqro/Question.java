@@ -69,6 +69,20 @@ public class Question extends Interaction
 		return RDFUtilities.asResource(getPropertyValue(MAQRO_NAMESPACE_URI, EXPECT_PROPERTY_NAME));	//get the expectation		
 	}
 
+	/**Adds an answer to the question.
+	@param answer A correct answer to the question.
+	*/
+	public void addAnswer(final RDFObject answer)
+	{
+		addProperty(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME, answer);	//add the correct answer
+	}
+
+	/**@return An iterator to the answers, if any, of the question.*/
+	public Iterator getAnswerIterator()
+	{
+		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME);	//return an iterator to the answers 
+	}
+
 	/**@return The maximum number of responses to accept, or -1 if the maximum
 		response count is not indicated.
 	*/
