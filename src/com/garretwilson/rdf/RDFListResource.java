@@ -99,7 +99,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	*/
 	public RDFListResource(final URI newReferenceURI, final RDFResource first)
 	{
-		this(newReferenceURI, first, new RDFListResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME));	//create a list with no other elements
+		this(newReferenceURI, first, new RDFListResource(RDF_NAMESPACE_URI, NIL_RESOURCE_NAME));	//create a list with no other elements
 	}
 
 	/**Constructs an RDF list resource with a single element.
@@ -110,7 +110,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	*/
 	public RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFResource first)
 	{
-		this(rdf, newReferenceURI, first, new RDFListResource(rdf, RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME));	//create a list with no other elements
+		this(rdf, newReferenceURI, first, new RDFListResource(rdf, RDF_NAMESPACE_URI, NIL_RESOURCE_NAME));	//create a list with no other elements
 	}
 
 	/**Constructs an anonymous RDF list resource with a current element and the
@@ -209,7 +209,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 		}
 		else	//if the collection is empty
 		{
-			listResource=new RDFListResource(rdf, RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//use the nil list
+			listResource=new RDFListResource(rdf, RDF_NAMESPACE_URI, NIL_RESOURCE_NAME);	//use the nil list
 		}
 		return listResource;	//return whichever list resource we created or used
 	}
@@ -333,7 +333,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	/**@return A new instance of an RDF list resource representing the nil resource.*/
 	protected RDFListResource createNil()
 	{
-		return new RDFListResource(getRDF(), RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//create a nil list resource
+		return new RDFListResource(getRDF(), RDF_NAMESPACE_URI, NIL_RESOURCE_NAME);	//create a nil list resource
 	}
 
 	/**Returns the number of elements in this list.  If this list contains more

@@ -406,7 +406,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 					final RDFListResource elementListResource=new RDFListResource(getRDF(), elementValue);	//create a list for this element
 							//G***do we want to add the type here, or somewhere automatically in RDFListResource? probably here for constistency
 							//G***also what about addStatement(typeProperty, resource, typeValue)? check the way resources are created and types added above
-					RDFUtilities.addType(elementListResource, RDF_NAMESPACE_URI, LIST_TYPE_NAME);	//show that the list is of type rdf:List 
+					RDFUtilities.addType(elementListResource, RDF_NAMESPACE_URI, LIST_CLASS_NAME);	//show that the list is of type rdf:List 
 					if(list==null)	//if this is the first element in the list
 					{
 						list=elementListResource;	//store that as the start of the list
@@ -419,7 +419,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				}
 			}
 					//TODO what about setting the rdf:List type of the rdf:nil resource? where would we best do that?
-			propertyValue=list!=null ? list : new RDFListResource(getRDF(), RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//if we found no elements for the list, use the empty list resource
+			propertyValue=list!=null ? list : new RDFListResource(getRDF(), RDF_NAMESPACE_URI, NIL_RESOURCE_NAME);	//if we found no elements for the list, use the empty list resource
 		}
 		else if(RESOURCE_PARSE_TYPE.equals(parseType))	//if this is a resource as a property-and-node
 		{

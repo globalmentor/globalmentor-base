@@ -32,6 +32,13 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***fix
 	*/
 	public RDF getRDF();
 
+	/**Associates this resource with an RDF data model.
+	@param rdf The RDF data model with which to associate this resource, or
+		<code>null</code> if this resource should not be associated with any
+		RDF data model.
+	*/
+	public void setRDF(final RDF rdf);
+
 	/**@return The number of properties this resource has.*/
 	public int getPropertyCount();
 

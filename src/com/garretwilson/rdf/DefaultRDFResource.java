@@ -42,6 +42,16 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 			return rdfReference!=null ? (RDF)rdfReference.get() : null;	//return the RDF, if any, indicated by the reference
 		}
 
+		/**Associates this resource with an RDF data model.
+		@param rdf The RDF data model with which to associate this resource, or
+			<code>null</code> if this resource should not be associated with any
+			RDF data model.
+		*/
+		public void setRDF(final RDF rdf)
+		{
+			rdfReference=rdf!=null ? new WeakReference(rdf) : null;	//save the RDF, if any, using a weak reference			
+		}
+
 	/**The list of properties, each of which is a <code>RDFPropertyValuePair</code>,
 		with the name being the property predicate and the value being the property
 		value.
@@ -424,9 +434,9 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	DefaultRDFResource(final RDF rdf, final URI referenceURI, final URI newNamespaceURI, final String newLocalName)
 	{
 		super(referenceURI);  //construct the parent class with the reference URI
-		rdfReference=rdf!=null ? new WeakReference(rdf) : null;	//save the RDF, if any, using a weak reference
 		namespaceURI=newNamespaceURI; //store the namespace URI
 		localName=newLocalName; //store the local name
+		setRDF(rdf);	//associate the resource with the given RDF data model, if any
 	}
 
 	/**Compares this object to another object.
