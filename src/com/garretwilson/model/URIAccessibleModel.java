@@ -3,29 +3,22 @@ package com.garretwilson.model;
 import java.io.*;
 import java.net.URI;
 import com.garretwilson.io.*;
-import com.garretwilson.lang.JavaConstants;
 
 /**A model that keeps track of a base URI and knows how to access input streams
 	based upon URIs.
 <p>Bound properties:</p>
 <dl>
-	<dt><code>BASE_URI_PROPERTY</code> (<code>URI</code>)</dt>
+	<dt><code>URIAccessible.BASE_URI_PROPERTY</code> (<code>URI</code>)</dt>
 	<dd>Indicates that the base URI of the model.</dd>
-	<dt><code>URI_INPUT_STREAMABLE_PROPERTY</code> (<code>URIInputStreamable</code>)</dt>
+	<dt><code>URIAccessible.URI_INPUT_STREAMABLE_PROPERTY</code> (<code>URIInputStreamable</code>)</dt>
 	<dd>Indicates that model's source of input streams.</dd>
 </dl>
 @author Garret Wilson
-@see #BASE_URI_PROPERTY
-@see #URI_INPUT_STREAMABLE_PROPERTY
+@see URIAccessible#BASE_URI_PROPERTY
+@see URIAccessible#URI_INPUT_STREAMABLE_PROPERTY
 */
 public abstract class URIAccessibleModel extends DefaultModel implements URIAccessible
 {
-
-	/**The base URI property.*/
-	public final String BASE_URI_PROPERTY=URIAccessibleModel.class.getName()+JavaConstants.PACKAGE_SEPARATOR+"baseURI";
-
-	/**The URI input streamable property.*/
-	public final String URI_INPUT_STREAMABLE_PROPERTY=URIAccessibleModel.class.getName()+JavaConstants.PACKAGE_SEPARATOR+"uriInputStreamable";
 
 	/**The base URI of the model, or <code>null</code> if unknown.*/
 	private URI baseURI;
@@ -102,7 +95,7 @@ public abstract class URIAccessibleModel extends DefaultModel implements URIAcce
 	public URIAccessibleModel(final URI baseURI, final URIInputStreamable uriInputStreamable)
 	{
 		this.baseURI=baseURI;	//save the base URI
-		this.uriInputStreamable=uriInputStreamable;	//save the URI input stream locator
+		this.uriInputStreamable=uriInputStreamable!=null ? uriInputStreamable : this;	//save the URI input stream locator, using our default if one was not given
 	}
 
 	/**Returns an input stream for the given URI.

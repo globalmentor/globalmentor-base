@@ -18,6 +18,15 @@ public class RDFSUtilities extends RDFUtilities implements RDFSConstants
 		resource.addProperty(RDFS_NAMESPACE_URI, COMMENT_PROPERTY_NAME, value); //add a literal value to the resource as a comment
 	}
 
+	/**Adds an <code>rdfs:label</code> literal property to the resource.
+	@param resource The resource to which the label should be added.
+	@param value A literal label value.
+	*/
+	public static void addLabel(final RDFResource resource, final RDFLiteral value)
+	{
+		resource.addProperty(RDFS_NAMESPACE_URI, LABEL_PROPERTY_NAME, value); //add a literal value to the resource as a label
+	}
+
 	/**Adds an <code>rdfs:label</code> property to the resource.
 		<p>If an equivalent property already exists, no action is taken.</p>
 	@param resource The resource to which the label should be added.

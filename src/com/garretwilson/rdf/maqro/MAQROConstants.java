@@ -93,7 +93,8 @@ public interface MAQROConstants
 	public final static String RANDOM_PROPERTY_NAME="random";
 	/**The selection criteria of an activity. The local name of maqro:select.*/
 	public final static String SELECT_PROPERTY_NAME="select";
-
+	/**A supplement to an interaction or part of a question. The local name of maqro:supplement.*/
+	public final static String SUPPLEMENT_PROPERTY_NAME="supplement";
 
 	/**The constant category that indicates no specified category.*/
 	public final static RDFPlainLiteral NO_CATEGORY=new RDFPlainLiteral("No category specified");	//G***i18n 
