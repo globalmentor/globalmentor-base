@@ -14,6 +14,8 @@ import com.garretwilson.util.Debug;
 import com.garretwilson.io.MediaType;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dicto.*;
+import com.globalmentor.mentoract.reader.BookApplicationPanel;
+
 import org.w3c.dom.*;
 
 /**A panel to view and edit a Dictionary Ontology (Dicto) dictionary.
@@ -26,10 +28,13 @@ public class DictionaryPanel extends RDFPanel
 	public Dictionary getDictionary() {return (Dictionary)getResource();}
 
 	/**The scroll pane for the dictionary WYSIWYG view.*/
-	protected final JScrollPane wysiwygScrollPane;
+//G***del	protected final JScrollPane wysiwygScrollPane;
 
 	/**The text pane for the WYSIWYG view.*/
-	protected final JTextPane wysiwygTextPane;
+//G***del	protected final JTextPane wysiwygTextPane;
+
+	/**The book for the WYSIWYG view.*/
+	protected final Book book;
 
 	/**Default constructor with default dictionary.*/
 	public DictionaryPanel()
@@ -67,8 +72,9 @@ public class DictionaryPanel extends RDFPanel
 	{
 		super(rdf, dictionary, false);	//construct the parent class without initializing it
 		setSupportedDataViews(getSupportedDataViews()|WYSIWYG_DATA_VIEW);	//show that we now support WYSIWYG data views, too
-		wysiwygTextPane=new XMLTextPane();	//create a new XML text pane for the WYSIWYG view
-		wysiwygScrollPane=new JScrollPane(wysiwygTextPane);	//create a new scroll pane with the dictionary text pane inside
+//G***del		wysiwygTextPane=new XMLTextPane();	//create a new XML text pane for the WYSIWYG view
+		book=new Book(1);	//create a new book for the WYSIWYG view, showing only one page
+//G***del		wysiwygScrollPane=new JScrollPane(wysiwygTextPane);	//create a new scroll pane with the dictionary text pane inside
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
 	}
@@ -77,10 +83,11 @@ public class DictionaryPanel extends RDFPanel
 	protected void initializeUI()
 	{
 		super.initializeUI(); //do the default UI initialization
-		wysiwygTextPane.setContentType(MediaType.APPLICATION_XHTML_XML);	//set the text pane content type to "application/xhtml+xml"
-		wysiwygTextPane.setEditable(false);	//don't let the WYSIWYG text pane be edited
-		getTabbedPane().insertTab("Dictionary", null, wysiwygScrollPane, null, 0);	//G***i18n	
-		setViewComponent(WYSIWYG_DATA_VIEW, wysiwygScrollPane);	//associate the WYSIWYG component with the tree view
+//G***del		wysiwygTextPane.setContentType(MediaType.APPLICATION_XHTML_XML);	//set the text pane content type to "application/xhtml+xml"
+//G***del		wysiwygTextPane.setEditable(false);	//don't let the WYSIWYG text pane be edited
+//TODO set the book to be not editable
+		getTabbedPane().insertTab("Dictionary", null, book, null, 0);	//G***i18n	
+		setViewComponent(WYSIWYG_DATA_VIEW, book);	//associate the WYSIWYG component with the tree view
 		setDataView(WYSIWYG_DATA_VIEW);	//set the default view
 	}
 
@@ -94,7 +101,8 @@ public class DictionaryPanel extends RDFPanel
 		switch(oldView)	//see what view we're changing from
 		{
 			case WYSIWYG_DATA_VIEW:	//if we're changing from the WYSIWYG view
-				wysiwygTextPane.setDocument(wysiwygTextPane.getEditorKit().createDefaultDocument());	//to conserve memory, remove the content from the editor kit by installing a new document
+//G***del				wysiwygTextPane.setDocument(wysiwygTextPane.getEditorKit().createDefaultDocument());	//to conserve memory, remove the content from the editor kit by installing a new document
+				book.close();	//to conserve memory, remove the content from the book
 				break;
 		}
 		switch(newView)	//see what view we're changing to
@@ -126,9 +134,11 @@ public class DictionaryPanel extends RDFPanel
 							XMLUtilities.appendText(ddElement, " "+translation);	//show the translation TODO use a constant for the space
 						}
 					}
-					final XMLDocument swingDocument=(XMLDocument)wysiwygTextPane.getDocument();	//get the Swing XML document G***this may change if setXML() moves from the editor kit to the document 
+						//show the XML in the book
+					book.setXML(xhtmlDocument, null, new MediaType(MediaType.APPLICATION_XHTML_XML));
+//G***del					final XMLDocument swingDocument=(XMLDocument)wysiwygTextPane.getDocument();	//get the Swing XML document G***this may change if setXML() moves from the editor kit to the document 
 						//put the XHTML into the WYSIWYG text pane
-					((XMLEditorKit)wysiwygTextPane.getEditorKit()).setXML(xhtmlDocument, null, new MediaType(MediaType.APPLICATION_XHTML_XML), swingDocument);
+//G***del					((XMLEditorKit)wysiwygTextPane.getEditorKit()).setXML(xhtmlDocument, null, new MediaType(MediaType.APPLICATION_XHTML_XML), swingDocument);
 				}
 				break;
 		}
