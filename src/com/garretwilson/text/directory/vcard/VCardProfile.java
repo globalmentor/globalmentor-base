@@ -6,7 +6,6 @@ import java.util.*;
 import com.garretwilson.io.*;
 import com.garretwilson.itu.*;
 import com.garretwilson.text.directory.*;
-import com.garretwilson.util.*;
 
 /**Class that can create values for the "VCARD" profile of a
 	<code>text/directory</code>as defined in
@@ -31,7 +30,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		registerValueType(PHOTO_TYPE, BINARY_VALUE_TYPE);	//PHOTO: binary
 		registerValueType(BDAY_TYPE, DATE_VALUE_TYPE);	//BDAY: date
 					//delivery addressing types
-		registerValueType(ADR_TYPE, null);	//BDAY: structured text
+		registerValueType(ADR_TYPE, null);	//ADR: structured text
 		registerValueType(LABEL_TYPE, TEXT_VALUE_TYPE);	//LABEL: text
 					//telecommunications addressing types
 		registerValueType(TEL_TYPE, PHONE_NUMBER_VALUE_TYPE);	//TEL: phone-number
@@ -75,8 +74,8 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		<li><code>BDAY_TYPE</code></li>
 		<li><code>ADR_TYPE</code> <code>Address</code></li>
 		<li><code>LABEL_TYPE</code> <code>String</code></li>
-		<li><code>TEL_TYPE</code> <code>Telephone</code></li>
-		<li><code>EMAIL_TYPE</code> <code>Email</code></li>
+		<li><code>TEL_TYPE</code> <code>TelephoneNumber</code></li>
+		<li><code>EMAIL_TYPE</code> <code>String</code></li>
 		<li><code>MAILER_TYPE</code></li>
 		<li><code>TZ_TYPE</code></li>
 		<li><code>GEO_TYPE</code></li>
@@ -115,6 +114,12 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	*/
 	public Object[] createValues(final String profile, final String group, final String name, final List paramList, final String valueType, final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
+			//see if we recognize the value type
+		if(PHONE_NUMBER_VALUE_TYPE.equalsIgnoreCase(valueType))	//phone-number
+		{
+			return new Object[]{processPhoneNumberValue(reader)};	//process the phone number value type			
+		}		
+			//see if we recognize the type name		
 				//identification types
 		if(N_TYPE.equalsIgnoreCase(name))	//N
 		{
@@ -126,10 +131,12 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			return new Object[]{processADRValue(reader, paramList)};	//process the ADR value
 		}
 			//telecommunications addressing types
+/*G***del when works			
 		else if(TEL_TYPE.equalsIgnoreCase(name))	//TEL
 		{
 			return new Object[]{processTELValue(reader, paramList)};	//process the TEL value
 		}
+*/
 			//organizational types
 		else if(ORG_TYPE.equalsIgnoreCase(name))	//ORG
 		{
@@ -267,26 +274,16 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	/**Processes the value for the <code>TEL</code> type name.
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
 	@param reader The reader that contains the lines of the directory.
-	@param paramList The list of parameters, each item of which is a
-		<code>NameValuePair</code> with a name of type <code>String</code> and a
-		value of type <code>String</code>.
 	@return A telephone object representing the value.
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
-	public static Telephone processTELValue(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
+	public static TelephoneNumber processPhoneNumberValue(final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
-		int telephoneType=Telephone.NO_TELEPHONE_TYPE;	//start out not knowing any telephone type
-		final String[] types=DirectoryUtilities.getParamValues(paramList, TYPE_PARAM_NAME);	//get the telephone types specified
-		for(int i=types.length-1; i>=0; --i)	//look at each telephone type
-		{
-			telephoneType|=getTelephoneType(types[i]);	//get this telephone type and combine it with the ones we've found already
-		}
 		final String telephoneNumberString=reader.readStringUntilChar(CR);	//read the string representing the telephone number
 		try
 		{
-			final TelephoneNumber telephoneNumber=new TelephoneNumber(telephoneNumberString);	//convert the string to a telephone number
-			return new Telephone(telephoneNumber, telephoneType);	//create and return a vCard telephone from the telephone number and telephone type we parsed
+			return new TelephoneNumber(telephoneNumberString);	//convert the string to a telephone number
 		}
 		catch(TelephoneNumberSyntaxException telephoneNumberSyntaxException)	//if the telephone number was not syntactically correct
 		{
@@ -338,6 +335,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
+/*G***del when works	
 	public static Email processEMAILValue(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
 	{
 		int emailType=Email.NO_EMAIL_TYPE;	//start out not knowing any email type
@@ -349,6 +347,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		final String emailAddress=reader.readStringUntilChar(CR);	//read the string representing the email address
 		return new Email(emailAddress, emailType);	//create and return an email from the address and type we parsed
 	}
+*/
 
 	/**Processes the value for the <code>ORG</code> type name.
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
@@ -486,7 +485,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 						continue;	//don't process this content line further
 					}
 				}
-				else if(NAME_TYPE.equalsIgnoreCase(typeName))	//NAME
+				else if(N_TYPE.equalsIgnoreCase(typeName))	//N
 				{
 					if(vcard.getName()==null)	//if there is not yet a name
 					{
@@ -514,12 +513,34 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 						//telecommunications addressing types
 				else if(TEL_TYPE.equalsIgnoreCase(typeName))	//TEL
 				{
-					vcard.getTelephoneList().add((Telephone)contentLine.getValue());	//add this telephone to our list
-					continue;	//don't process this content line further
+					int telephoneType=Telephone.NO_TELEPHONE_TYPE;	//start out not knowing any telephone type
+					final String[] types=DirectoryUtilities.getParamValues(contentLine.getParamList(), TYPE_PARAM_NAME);	//get the telephone types specified
+					for(int typeIndex=types.length-1; typeIndex>=0; --typeIndex)	//look at each telephone type
+					{
+						telephoneType|=getTelephoneType(types[typeIndex]);	//get this telephone type and combine it with the ones we've found already
+					}
+					final TelephoneNumber telephoneNumber=((TelephoneNumber)contentLine.getValue());	//get the telephone number
+					try
+					{
+						final Telephone telephone=new Telephone(telephoneNumber, telephoneType);	//create a vCard telephone from the telephone number and telephone type
+						vcard.getTelephoneList().add(telephone);	//add this telephone to our list
+						continue;	//don't process this content line further
+					}
+					catch(TelephoneNumberSyntaxException telephoneNumberSyntaxException)	//if the telephone number was not syntactically correct (this should never happen here, because it has already been parsed and handed to us), ignore the error and just store the content line
+					{
+					}
 				}
 				else if(EMAIL_TYPE.equalsIgnoreCase(typeName))	//EMAIL
 				{
-					vcard.getEmailList().add((Email)contentLine.getValue());	//add this email to our list
+//G***del when works					vcard.getEmailList().add((Email)contentLine.getValue());	//add this email to our list
+					int emailType=Email.NO_EMAIL_TYPE;	//start out not knowing any email type
+					final String[] types=DirectoryUtilities.getParamValues(contentLine.getParamList(), TYPE_PARAM_NAME);	//get the email types specified
+					for(int typeIndex=types.length-1; typeIndex>=0; --typeIndex)	//look at each email type
+					{
+						emailType|=getEmailType(types[typeIndex]);	//get this email type and combine it with the ones we've found already
+					}
+					final Email email=new Email(contentLine.getValue().toString(), emailType);	//create an email from the address and type we parsed
+					vcard.getEmailList().add(email);	//add this email to our list
 					continue;	//don't process this content line further
 				}
 						//organizational type
@@ -529,7 +550,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 					if(org.length>0 && vcard.getOrganizationName()==null)	//if there is an organization name, and we haven't yet stored an organization name
 					{
 						vcard.setOrganizationName(org[0]);	//set the organization name from the first oganizational component
-						if(org.length>0)	//if there are units specified
+						if(org.length>1)	//if there are units specified
 						{
 							final String[] units=new String[org.length-1];	//create a string array to contain all the units (ignore the first item, the organization name)
 							System.arraycopy(org, 1, units, 0, units.length);	//copy the units from the organizational array to the units array

@@ -1,6 +1,7 @@
 package com.garretwilson.lang;
 
 import java.io.*;
+import java.util.List;
 import com.garretwilson.lang.CharacterUtilities;
 import com.garretwilson.text.*;
 import com.garretwilson.util.Debug;
@@ -1135,6 +1136,15 @@ end;
 		final int index=indexOfIgnoreCase(string, substring);  //see if the substring appears in the text
 			//if the substring is present, remove it and everything following
 		return index>=0 ? string.substring(0, index) : string;
+	}
+	
+	/**Converts a list of strings into an array of strings.
+	@param list The list of strings.
+	@return An array containing the strings in the list.
+	*/
+	public static String[] toStringArray(final List list)
+	{
+		return (String[])list.toArray(new String[list.size()]);	//create a string array of the correct size and put the contents of the list in the array
 	}
 
 	/**Trims the right side of the string beginning at the last occurrence of

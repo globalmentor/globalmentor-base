@@ -21,7 +21,7 @@ public class VCard
 			//identification types
 
 	/**Formatted text corresponding to the name of the object the vCard represents.*/
-	private String formattedName;
+	private String formattedName=null;
 
 		/**@return Formatted text corresponding to the name of the object the vCard represents.*/
 		public String getFormattedName() {return formattedName;}
@@ -32,7 +32,7 @@ public class VCard
 	public void setFormattedName(final String fn) {formattedName=fn;}
 
 	/**The components of the name of the object the vCard represents.*/
-	private Name name;
+	private Name name=null;
 
 		/**@return The components of the name of the object the vCard represents.*/
 		public Name getName() {return name;}
@@ -143,7 +143,7 @@ public class VCard
 			//organizational types
 
 	/**The organization name.*/
-	private String organizationName;
+	private String organizationName=null;
 
 		/**@return The organization name, or <code>null</code> for no name.*/
 		public String getOrganizationName() {return organizationName;}
@@ -154,7 +154,7 @@ public class VCard
 		public void setOrganizationName(final String org) {organizationName=org;}
 
 	/**The organizational units.*/
-	private String[] organizationUnits;
+	private String[] organizationUnits=new String[]{};
 
 		/**@return The organizational units.*/
 		public String[] getOrganizationUnits() {return organizationUnits;}
@@ -173,7 +173,7 @@ public class VCard
 		public void setOrganizationUnit(final String unit) {setOrganizationUnits(StringUtilities.createArray(unit));}
 
 	/**The job title, functional position or function at the organization.*/
-	private String title;
+	private String title=null;
 
 		/**@return The job title, functional position or function at the,
 			organization or <code>null</code> for no title.
@@ -187,7 +187,7 @@ public class VCard
 		public void setTitle(final String title) {this.title=title;}
 
 	/**The role, occupation, or business category at the organization.*/
-	private String role;
+	private String role=null;
 
 		/**@return The role, occupation, or business category at the
 			organization, or <code>null</code> for no role.
@@ -226,7 +226,7 @@ public class VCard
 		}
 
 	/**The supplemental information or a comment that is associated with the vCard*/
-	private String note;
+	private String note=null;
 
 		/**@return The supplemental information or a comment that is associated
 			with the vCard, or <code>null</code> if there is no note.

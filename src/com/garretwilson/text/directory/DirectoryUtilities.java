@@ -45,7 +45,7 @@ public class DirectoryUtilities
 	*/
 	public static String[] getParamValues(final List paramList, final String paramName)
 	{
-		final List paramValueList=new ArrayList(paramList);	//create a list to hold parameters, knowing we won't need room for more parameters than the we were given
+		final List paramValueList=new ArrayList(paramList.size());	//create a list to hold parameters, knowing we won't need room for more parameters than the we were given
 		final Iterator paramIterator=paramList.iterator();	//get an iterator to the parameters
 		while(paramIterator.hasNext())	//while there are more parameters
 		{

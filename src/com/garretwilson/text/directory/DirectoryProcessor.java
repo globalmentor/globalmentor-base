@@ -299,7 +299,7 @@ public class DirectoryProcessor implements DirectoryConstants
 		{
 			//G***check the syntax of the group
 			group=token;	//save the group we read
-//		G***del Debug.trace("found group: ", group);
+Debug.trace("found group: ", group);
 			token=reader.readStringUntilChar(GROUPLESS_CONTENT_LINE_DELIMITER_CHARS);	//read the next line token after the group, which should be the name
 			c=reader.readChar();	//get the delimiter character we encountered, and fall through to checking the name
 		}
