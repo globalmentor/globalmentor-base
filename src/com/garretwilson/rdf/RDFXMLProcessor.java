@@ -237,7 +237,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 			{
 				final RDFPropertyValuePair propertyValuePair=processProperty((Element)childNode);  //parse the element representing an RDF property
 				final RDFResource property;  //we'll see whether we should convert <rdf:li>
-				if(RDF_LI_REFERENCE_URI.equals(propertyValuePair.getProperty()))  //if this is a rdf:li property
+				if(RDF_LI_REFERENCE_URI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this is a rdf:li property
 				{
 					++memberCount;  //show that we have another member
 					//create a local name in the form "_X"
@@ -245,7 +245,9 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 					property=getRDF().locateResource(RDF_NAMESPACE_URI, propertyLocalName); //use the revised member form as the property
 				}
 				else  //if this is a normal property
+				{
 					property=(RDFResource)propertyValuePair.getProperty(); //just use the property as is
+				}
 					//add a statement to our data model in the form {property, resource, value}
 				addStatement(property, resource, propertyValuePair.getPropertyValue());
 			}

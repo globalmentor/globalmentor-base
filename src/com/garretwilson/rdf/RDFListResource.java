@@ -228,7 +228,7 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 		{
 			if(currentIndex==index)	///if this is the correct index
 			{
-				return getFirst();	//return the element at this index
+				return getFirst(list);	//return the element at this index
 			}
 			list=getRest(list);	//look at the rest of the list
 			++currentIndex;	//go to the next index
