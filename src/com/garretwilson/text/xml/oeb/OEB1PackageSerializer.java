@@ -63,7 +63,7 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 	{
 		final Document document=OEBUtilities.createDefaultOEB1Package(); //create a package XML document
 		//package
-		final Element packageElement=XMLUtilities.appendElement(document, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_PACKAGE); //create the package element G***fix to correctly use DOM
+		final Element packageElement=XMLUtilities.replaceDocumentElement(document, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_PACKAGE); //create the package element
 		  //package/metadata
 		final Element metadataElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA); //create the metadata element
 			  //package/metadata/dc-metadata

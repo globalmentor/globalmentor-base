@@ -376,9 +376,7 @@ Debug.trace("DOM attribute value: ", attribute.getValue()); //G***del
 		//create a qualified name for the document root element
 		final String documentElementQualifiedName=XMLUtilities.createQualifiedName(soapParentElementName.getPrefix(), soapParentElementName.getLocalName());
 		final Document document=domImplementation.createDocument(soapParentElementName.getURI(), documentElementQualifiedName, null);	//create a document with the same element name as the SOAP body
-		final Element documentElement=document.createElementNS(soapParentElementName.getURI(), documentElementQualifiedName);	//G***fix; the DOM should already create this
-		document.appendChild(documentElement);	//add the root element to the document
-		final Element rootElement=document.getDocumentElement();  //get the document element
+		final Element rootElement=document.getDocumentElement();	//get the document element
 		final Iterator soapElementIterator=soapParentElement.getChildElements(); //get an iterator to all SOAP body elements
 		while(soapElementIterator.hasNext())  //while there are more SOAP body elements
 		{

@@ -91,15 +91,14 @@ public class XPackageUtilities implements XPackageConstants
 //G***del		final Document document=domImplementation.createDocument(OEB1_DOCUMENT_NAMESPACE_URI, ELEMENT_HTML, documentType);	//create an OEB XML document
 		  //create an XPackage package description document
 		final Document document=domImplementation.createDocument(XPACKAGE_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XPACKAGE_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION), null);
-		  //create the xpackage:description element
-		final Element descriptionElement=document.createElementNS(XPACKAGE_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XPACKAGE_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION));	//G***fix; the DOM document creation should have created this already
+		  //get the xpackage:description element
+		final Element descriptionElement=document.getDocumentElement();
 		  //add the RDF namespace declaration prefix, xmlns:rdf
 		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, RDFConstants.RDF_NAMESPACE_PREFIX), RDFConstants.RDF_NAMESPACE_URI.toString());
 		  //add the XPackage namespace declaration prefix, xmlns:xpackage
 		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, XPACKAGE_NAMESPACE_PREFIX), XPACKAGE_NAMESPACE_URI.toString());
 		  //add the XLink namespace declaration prefix, xmlns:xlink
 		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, XLinkConstants.XLINK_NAMESPACE_PREFIX), XLinkConstants.XLINK_NAMESPACE_URI.toString());
-		document.appendChild(descriptionElement); //append the description element
 		final Element rdfElement=RDFXMLifier.createRDFElement(document);  //create an <rdf:RDF> element
 		descriptionElement.appendChild(rdfElement);	//add the RDF element to the document
 		return document;  //return the document we created

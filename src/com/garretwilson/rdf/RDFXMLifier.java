@@ -130,8 +130,6 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	{
 		  //create an RDF document
 		final Document document=domImplementation.createDocument(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_RDF), null);
-		final Element rdfElement=createRDFElement(document);  //G***fix; the DOM should already create this
-		document.appendChild(rdfElement);	//add the RDF element to the document //G***del when DOM is updated
 		  //add the RDF namespace declaration prefix, xmlns:rdf
 		document.getDocumentElement().setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, RDFConstants.RDF_NAMESPACE_PREFIX), RDFConstants.RDF_NAMESPACE_URI.toString());
 		return document;  //return the document we created

@@ -252,7 +252,7 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 		{
 			final Material material=((QTIMaterialTreeNode)selectedObject).getMaterial(); //get the object stored in the node
 			xmlDocument=QTIXMLifier.createDocument(); //create a blank document G***fix
-			xmlDocument.appendChild(QTIXMLifier.createElement(xmlDocument, material));  //create an XML element from the material and add it to the document
+			xmlDocument.replaceChild(QTIXMLifier.createElement(xmlDocument, material), xmlDocument.getDocumentElement());  //create an XML element from the material and set it as the document element
 			editAction.setProxiedAction(null); //G***fix
 			deleteAction.setProxiedAction(null); //G***fix
 		}
@@ -260,7 +260,7 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 		{
 			final Presentation presentation=((QTIPresentationTreeNode)selectedObject).getPresentation(); //get the object stored in the node
 			xmlDocument=QTIXMLifier.createDocument(); //create a blank document G***fix
-			xmlDocument.appendChild(QTIXMLifier.createElement(xmlDocument, presentation));  //create an XML element from the presentation and add it to the document
+			xmlDocument.replaceChild(QTIXMLifier.createElement(xmlDocument, presentation), xmlDocument.getDocumentElement());  //create an XML element from the presentation and set it as the document element
 			editAction.setProxiedAction(null); //G***fix
 			deleteAction.setProxiedAction(null); //G***fix
 		}
@@ -268,7 +268,7 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 		{
 			final Section section=((QTISectionTreeNode)selectedObject).getSection(); //get the object stored in the node
 			xmlDocument=QTIXMLifier.createDocument(); //create a blank document G***fix
-			xmlDocument.appendChild(QTIXMLifier.createElement(xmlDocument, section));  //create an XML element from the section and add it to the document
+			xmlDocument.replaceChild(QTIXMLifier.createElement(xmlDocument, section), xmlDocument.getDocumentElement());  //create an XML element from the section and set it as the document element
 			editAction.setProxiedAction(null); //G***fix
 			deleteAction.setProxiedAction(null); //G***fix
 		}
@@ -276,7 +276,7 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 		{
 			final Assessment assessment=((QTIAssessmentTreeNode)selectedObject).getAssessment(); //get the object stored in the node
 			xmlDocument=QTIXMLifier.createDocument(); //create a blank document G***fix
-			xmlDocument.appendChild(QTIXMLifier.createElement(xmlDocument, assessment));  //create an XML element from the assessment and add it to the document
+			xmlDocument.replaceChild(QTIXMLifier.createElement(xmlDocument, assessment), xmlDocument.getDocumentElement());  //create an XML element from the assessment and set it as the document element
 			editAction.setProxiedAction(null); //G***fix
 			deleteAction.setProxiedAction(null); //G***fix
 		}

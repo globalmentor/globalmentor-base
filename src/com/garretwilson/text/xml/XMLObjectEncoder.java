@@ -67,8 +67,7 @@ public class XMLObjectEncoder
 Debug.trace("ready to encode objects");
 		//create a dummy document in which to store the given message G***fix; use constants
 		final Document document=domImplementation.createDocument(null, "objects", null);  //G***use a constant here
-		final Element documentElement=document.createElementNS(null, "objects");	//G***fix; the DOM should already create this G***use a constant here
-		document.appendChild(documentElement);	//add the root element to the document
+		final Element documentElement=document.getDocumentElement();	//G***use a constant here
 		for(int i=0; i<objects.length; ++i)  //look at each of the objects
 		{
 			final Element element=encode(objects[i], document); //encode this object to an element
