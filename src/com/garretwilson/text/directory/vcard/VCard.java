@@ -11,6 +11,12 @@ import com.garretwilson.util.*;
 */
 public class VCard
 {
+	
+	/**The list of content lines that represent unrecognized and/or unprocessed information.*/
+	private final List contentLineList=new ArrayList();
+
+		/**@return The list of content lines that represent unrecognized and/or unprocessed information.*/
+		public List getContentLineList() {return contentLineList;}
 
 			//identification types
 

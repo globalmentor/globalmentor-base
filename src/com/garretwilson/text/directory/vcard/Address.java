@@ -9,7 +9,7 @@ import com.garretwilson.lang.*;
 */
 public class Address
 {
-	
+
 	/**Indicates no address type is specified.*/
 	public final static int NO_ADDRESS_TYPE=0;
 	/**A domestic delivery address.*/

@@ -1,8 +1,10 @@
 package com.garretwilson.text.directory.vcard;
 
 import java.io.*;
+import java.lang.ref.*;
 import java.util.*;
 import com.garretwilson.io.*;
+import com.garretwilson.itu.*;
 import com.garretwilson.text.directory.*;
 import com.garretwilson.util.*;
 
@@ -10,12 +12,9 @@ import com.garretwilson.util.*;
 	<code>text/directory</code>as defined in
 	 <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>,
 	"vCard MIME Directory Profile".
-TODO update comments: <p>The processor knows how to process
-	the standard directory value types: <code>URI_VALUE_TYPE</code>,
-	<code>TEXT_VALUE_TYPE</code>, <code>DATE_VALUE_TYPE</code>,
-	<code>TIME_VALUE_TYPE</code>, <li><code>DATE_TIME_VALUE_TYPE</code>,
-	<code>INTEGER_VALUE_TYPE</code>, <code>BOOLEAN_VALUE_TYPE</code>,
-	and <code>FLOAT_VALUE_TYPE</code>.</p>
+<p>The processor knows how to process the vCard types:
+	<code>BINARY_VALUE_TYPE</code>, <code>VCARD_VALUE_TYPE</code>,
+	<code>PHONE_NUMBER_VALUE_TYPE</code>, and <code>UTC_OFFSET_VALUE_TYPE</code>.</p>
 @author Garret Wilson
 @see ValueFactory
 */
@@ -66,17 +65,37 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		one or more object representing the value, as some value types
 		support multiple values.
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
-	TODO update comments: <p>This method knows how to create predefined types, which,
+	<p>This method knows how to create predefined types, which,
 		along with the objects returned, are as follows:</p>
 	<ul>
-		<li><code>URI_VALUE_TYPE</code> <code>URI</code></li>
-		<li><code>TEXT_VALUE_TYPE</code> <code>String</code></li>
-		<li><code>DATE_VALUE_TYPE</code> <code>Date</code></li>
-		<li><code>TIME_VALUE_TYPE</code> <code>Date</code></li>
-		<li><code>DATE_TIME_VALUE_TYPE</code> <code>Date</code></li>
-		<li><code>INTEGER_VALUE_TYPE</code> <code>Integer</code></li>
-		<li><code>BOOLEAN_VALUE_TYPE</code> <code>Boolean</code></li>
-		<li><code>FLOAT_VALUE_TYPE</code> <code>Double</code></li>
+		<li><code>FN_TYPE</code> <code>String</code></li>
+		<li><code>N_TYPE</code> <code>Name</code></li>
+		<li><code>NICKNAME_TYPE</code> <code>String</code></li>
+		<li><code>PHOTO_TYPE</code></li>
+		<li><code>BDAY_TYPE</code></li>
+		<li><code>ADR_TYPE</code> <code>Address</code></li>
+		<li><code>LABEL_TYPE</code> <code>String</code></li>
+		<li><code>TEL_TYPE</code> <code>Telephone</code></li>
+		<li><code>EMAIL_TYPE</code> <code>Email</code></li>
+		<li><code>MAILER_TYPE</code></li>
+		<li><code>TZ_TYPE</code></li>
+		<li><code>GEO_TYPE</code></li>
+		<li><code>TITLE_TYPE</code> <code>String</code></li>
+		<li><code>ROLE_TYPE</code> <code>String</code></li>
+		<li><code>LOGO_TYPE</code></li>
+		<li><code>AGENT_TYPE</code></li>
+		<li><code>ORG_TYPE</code> <code>String[]</code></li>
+		<li><code>CATEGORIES_TYPE</code> <code>String</code></li>
+		<li><code>NOTE_TYPE</code> <code>String</code></li>
+		<li><code>PRODID_TYPE</code></li>
+		<li><code>REV_TYPE</code></li>
+		<li><code>SORT_STRING_TYPE</code></li>
+		<li><code>SOUND_TYPE</code></li>
+		<li><code>UID_TYPE</code></li>
+		<li><code>URL_TYPE=</code></li>
+		<li><code>VERSION_TYPE</code></li>
+		<li><code>CLASS_TYPE</code></li>
+		<li><code>KEY_TYPE</code></li>	
 	</ul>
 	@param profile The profile of this content line, or <code>null</code> if
 		there is no profile.
@@ -96,13 +115,25 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	*/
 	public Object[] createValues(final String profile, final String group, final String name, final List paramList, final String valueType, final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
-			//create the structured types
+				//identification types
 		if(N_TYPE.equalsIgnoreCase(name))	//N
 		{
-			final Name temp=processNValue(reader);
-			Debug.trace("parsed name: ", temp);
-			return new Object[]{temp};	//process the N value
-//G***bring back			return new Object[]{processNValue(reader)};	//process the N value
+			return new Object[]{processNValue(reader)};	//process the N value
+		}
+				//delivery addressing types
+		else if(ADR_TYPE.equalsIgnoreCase(name))	//ADR
+		{
+			return new Object[]{processADRValue(reader, paramList)};	//process the ADR value
+		}
+			//telecommunications addressing types
+		else if(TEL_TYPE.equalsIgnoreCase(name))	//TEL
+		{
+			return new Object[]{processTELValue(reader, paramList)};	//process the TEL value
+		}
+			//organizational types
+		else if(ORG_TYPE.equalsIgnoreCase(name))	//ORG
+		{
+			return new Object[]{processORGValue(reader)};	//process the ORG value
 		}
 		return null;	//show that we can't create a value
 	}
@@ -110,7 +141,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	/**Processes the value for the <code>N</code> type name.
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
 	@param reader The reader that contains the lines of the directory.
-	@return An array of strings representing the values.
+	@return An object representing the vCard structured name.
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
@@ -123,6 +154,221 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		final String[] honorificPrefixes=fields.length>3 ? fields[3] : new String[]{};	//get the honorific prefixes, if present
 		final String[] honorificSuffixes=fields.length>4 ? fields[4] : new String[]{};	//get the honorific suffixes, if present
 		return new Name(familyNames, givenNames, additionalNames, honorificPrefixes, honorificSuffixes);	//create and return a vCard name object with the parsed information
+	}
+
+	/**The reference to a map of <code>Integer</code>s representing address
+		types, keyed to lowercase versions of address type names. This map can
+		be reclaimed by the JVM if it is not being used.
+	@see Address 
+	*/
+	private static SoftReference addressTypeIntegerMapReference=null;
+	
+	/**Determines the integer address type value to represent the given address
+		type name. Comparison is made without regard to case.
+	@param addressTypeName The name of the address type.
+	@return The delivery address type, one of the
+		<code>Address.XXX_ADDRESS_TYPE</code> constants, or
+		<code>Address.NO_ADDRESS_TYPE</code> if the address type name was not
+		recognized.
+	@see Address
+	*/
+	public static int getAddressType(final String addressTypeName)
+	{
+			//get the map, if it has been created and hasn't been reclaimed
+		Map addressTypeIntegerMap=addressTypeIntegerMapReference!=null ? (Map)addressTypeIntegerMapReference.get() : null;
+		if(addressTypeIntegerMap==null)	//if we no longer have a map, create one and initialize it with lowercase address type values
+		{
+			addressTypeIntegerMap=new HashMap();	//create a new map
+			addressTypeIntegerMap.put(ADR_DOM_PARAM_VALUE.toLowerCase(), new Integer(Address.DOMESTIC_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_INTL_PARAM_VALUE.toLowerCase(), new Integer(Address.INTERNATIONAL_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_POSTAL_PARAM_VALUE.toLowerCase(), new Integer(Address.POSTAL_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_PARCEL_PARAM_VALUE.toLowerCase(), new Integer(Address.PARCEL_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_HOME_PARAM_VALUE.toLowerCase(), new Integer(Address.HOME_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_WORK_PARAM_VALUE.toLowerCase(), new Integer(Address.WORK_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_PREF_PARAM_VALUE.toLowerCase(), new Integer(Address.PREFERRED_ADDRESS_TYPE));
+			addressTypeIntegerMapReference=new SoftReference(addressTypeIntegerMap);	//store the map in a soft reference, so it can be reclaimed if needed			
+		}
+		final Integer addressTypeInteger=(Integer)addressTypeIntegerMap.get(addressTypeName.toLowerCase());	//get the integer representing this address type name
+		return addressTypeInteger!=null ? addressTypeInteger.intValue() : Address.NO_ADDRESS_TYPE;	//return the address type we found, or NO_ADDRESS_TYPE if we didn't find an address type
+	}
+
+	/**Processes the value for the <code>ADR</code> type name.
+	<p>Whatever delimiter ended the value will be left in the reader.</p>
+	@param reader The reader that contains the lines of the directory.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
+	@return An address object representing the value.
+	@exception IOException Thrown if there is an error reading the directory.
+	@exception ParseIOException Thrown if there is a an error interpreting the directory.
+	*/
+	public static Address processADRValue(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
+	{
+		int addressType=Address.NO_ADDRESS_TYPE;	//start out not knowing any address type
+		final String[] types=DirectoryUtilities.getParamValues(paramList, TYPE_PARAM_NAME);	//get the address types specified
+		for(int i=types.length-1; i>=0; --i)	//look at each address type
+		{
+			addressType|=getAddressType(types[i]);	//get this address type and combine it with the ones we've found already
+		}
+		final String[][] fields=processStructuredTextValue(reader);	//process the structured text fields
+		final String postOfficeBox=fields.length>0 && fields[0].length>0? fields[0][0] : null;	//get the post office box, if present
+		final String[] extendedAddresses=fields.length>1 ? fields[1] : new String[]{};	//get the extended addresses, if present
+		final String[] streetAddresses=fields.length>2 ? fields[2] : new String[]{};	//get the street addresses, if present
+		final String locality=fields.length>3 && fields[3].length>0 ? fields[3][0] : null;	//get the locality, if present
+		final String region=fields.length>4 && fields[4].length>0 ? fields[4][0] : null;	//get the region, if present
+		final String postalCode=fields.length>5 && fields[5].length>0 ? fields[5][0] : null;	//get the postal code, if present
+		final String countryName=fields.length>6 && fields[6].length>0 ? fields[6][0] : null;	//get the country name, if present
+		return new Address(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, addressType);	//create and return a vCard address with the parsed information
+	}
+
+	/**The reference to a map of <code>Integer</code>s representing telephone
+		types, keyed to lowercase versions of telephone type names. This map can
+		be reclaimed by the JVM if it is not being used.
+	@see Address 
+	*/
+	private static SoftReference telephoneTypeIntegerMapReference=null;
+	
+	/**Determines the integer telephone type value to represent the given
+		telephone type name. Comparison is made without regard to case.
+	@param telephoneTypeName The name of the telephone type.
+	@return The telephone type, one of the
+		<code>Telephone.XXX_TELEPHONE_TYPE</code> constants, or
+		<code>Telephone.NO_TELEPHONE_TYPE</code> if the telephone type name was not
+		recognized.
+	@see Telephone
+	*/
+	public static int getTelephoneType(final String telephoneTypeName)
+	{
+			//get the map, if it has been created and hasn't been reclaimed
+		Map telephoneTypeIntegerMap=telephoneTypeIntegerMapReference!=null ? (Map)telephoneTypeIntegerMapReference.get() : null;
+		if(telephoneTypeIntegerMap==null)	//if we no longer have a map, create one and initialize it with lowercase telephone type values
+		{
+			telephoneTypeIntegerMap=new HashMap();	//create a new map
+			telephoneTypeIntegerMap.put(TEL_HOME_PARAM_VALUE.toLowerCase(), new Integer(Telephone.HOME_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_MSG_PARAM_VALUE.toLowerCase(), new Integer(Telephone.MESSAGE_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_WORK_PARAM_VALUE.toLowerCase(), new Integer(Telephone.WORK_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_PREF_PARAM_VALUE.toLowerCase(), new Integer(Telephone.PREFERRED_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_VOICE_PARAM_VALUE.toLowerCase(), new Integer(Telephone.VOICE_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_FAX_PARAM_VALUE.toLowerCase(), new Integer(Telephone.FAX_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_CELL_PARAM_VALUE.toLowerCase(), new Integer(Telephone.CELL_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_VIDEO_PARAM_VALUE.toLowerCase(), new Integer(Telephone.VIDEO_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_PAGER_PARAM_VALUE.toLowerCase(), new Integer(Telephone.PAGER_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_BBS_PARAM_VALUE.toLowerCase(), new Integer(Telephone.BBS_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_MODEM_PARAM_VALUE.toLowerCase(), new Integer(Telephone.MODEM_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_CAR_PARAM_VALUE.toLowerCase(), new Integer(Telephone.CAR_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_ISDN_PARAM_VALUE.toLowerCase(), new Integer(Telephone.ISDN_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_PCS_PARAM_VALUE.toLowerCase(), new Integer(Telephone.PCS_TELEPHONE_TYPE));
+			telephoneTypeIntegerMapReference=new SoftReference(telephoneTypeIntegerMap);	//store the map in a soft reference, so it can be reclaimed if needed			
+		}
+		final Integer telephoneTypeInteger=(Integer)telephoneTypeIntegerMap.get(telephoneTypeName.toLowerCase());	//get the integer representing this telephone type name
+		return telephoneTypeInteger!=null ? telephoneTypeInteger.intValue() : Telephone.NO_TELEPHONE_TYPE;	//return the telephone type we found, or NO_TELEPHONE_TYPE if we didn't find a telephone type
+	}
+
+	/**Processes the value for the <code>TEL</code> type name.
+	<p>Whatever delimiter ended the value will be left in the reader.</p>
+	@param reader The reader that contains the lines of the directory.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
+	@return A telephone object representing the value.
+	@exception IOException Thrown if there is an error reading the directory.
+	@exception ParseIOException Thrown if there is a an error interpreting the directory.
+	*/
+	public static Telephone processTELValue(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
+	{
+		int telephoneType=Telephone.NO_TELEPHONE_TYPE;	//start out not knowing any telephone type
+		final String[] types=DirectoryUtilities.getParamValues(paramList, TYPE_PARAM_NAME);	//get the telephone types specified
+		for(int i=types.length-1; i>=0; --i)	//look at each telephone type
+		{
+			telephoneType|=getTelephoneType(types[i]);	//get this telephone type and combine it with the ones we've found already
+		}
+		final String telephoneNumberString=reader.readStringUntilChar(CR);	//read the string representing the telephone number
+		try
+		{
+			final TelephoneNumber telephoneNumber=new TelephoneNumber(telephoneNumberString);	//convert the string to a telephone number
+			return new Telephone(telephoneNumber, telephoneType);	//create and return a vCard telephone from the telephone number and telephone type we parsed
+		}
+		catch(TelephoneNumberSyntaxException telephoneNumberSyntaxException)	//if the telephone number was not syntactically correct
+		{
+			final ParseIOException parseIOException=new ParseIOException(telephoneNumberSyntaxException.getMessage(), reader);	//create an I/O parse exception from the telephone number syntax exception
+			parseIOException.initCause(telephoneNumberSyntaxException);	//show what caused this exception
+			throw parseIOException;	//throw the I/O parse exceptoin
+		}
+	}
+
+	/**The reference to a map of <code>Integer</code>s representing email
+		types, keyed to lowercase versions of email type names. This map can
+		be reclaimed by the JVM if it is not being used.
+	@see Address 
+	*/
+	private static SoftReference emailTypeIntegerMapReference=null;
+	
+	/**Determines the integer email type value to represent the given
+		email type name. Comparison is made without regard to case.
+	@param emailTypeName The name of the email type.
+	@return The email type, one of the
+		<code>Email.XXX_EMAIL_TYPE</code> constants, or
+		<code>Email.NO_EMAIL_TYPE</code> if the email type name was not
+		recognized.
+	@see Email
+	*/
+	public static int getEmailType(final String emailTypeName)
+	{
+			//get the map, if it has been created and hasn't been reclaimed
+		Map emailTypeIntegerMap=emailTypeIntegerMapReference!=null ? (Map)emailTypeIntegerMapReference.get() : null;
+		if(emailTypeIntegerMap==null)	//if we no longer have a map, create one and initialize it with lowercase email type values
+		{
+			emailTypeIntegerMap=new HashMap();	//create a new map
+			emailTypeIntegerMap.put(EMAIL_INTERNET_PARAM_VALUE.toLowerCase(), new Integer(Email.INTERNET_EMAIL_TYPE));
+			emailTypeIntegerMap.put(EMAIL_X400_PARAM_VALUE.toLowerCase(), new Integer(Email.X400_EMAIL_TYPE));
+			emailTypeIntegerMap.put(EMAIL_PREF_PARAM_VALUE.toLowerCase(), new Integer(Email.PREFERRED_EMAIL_TYPE));
+			emailTypeIntegerMapReference=new SoftReference(emailTypeIntegerMap);	//store the map in a soft reference, so it can be reclaimed if needed			
+		}
+		final Integer emailTypeInteger=(Integer)emailTypeIntegerMap.get(emailTypeName.toLowerCase());	//get the integer representing this email type name
+		return emailTypeInteger!=null ? emailTypeInteger.intValue() : Email.NO_EMAIL_TYPE;	//return the email type we found, or NO_EMAIL_TYPE if we didn't find an email type
+	}
+
+	/**Processes the value for the <code>EMAIL</code> type name.
+	<p>Whatever delimiter ended the value will be left in the reader.</p>
+	@param reader The reader that contains the lines of the directory.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
+	@return An email object representing the value.
+	@exception IOException Thrown if there is an error reading the directory.
+	@exception ParseIOException Thrown if there is a an error interpreting the directory.
+	*/
+	public static Email processEMAILValue(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
+	{
+		int emailType=Email.NO_EMAIL_TYPE;	//start out not knowing any email type
+		final String[] types=DirectoryUtilities.getParamValues(paramList, TYPE_PARAM_NAME);	//get the email types specified
+		for(int i=types.length-1; i>=0; --i)	//look at each email type
+		{
+			emailType|=getEmailType(types[i]);	//get this email type and combine it with the ones we've found already
+		}
+		final String emailAddress=reader.readStringUntilChar(CR);	//read the string representing the email address
+		return new Email(emailAddress, emailType);	//create and return an email from the address and type we parsed
+	}
+
+	/**Processes the value for the <code>ORG</code> type name.
+	<p>Whatever delimiter ended the value will be left in the reader.</p>
+	@param reader The reader that contains the lines of the directory.
+	@return An array of strings representing the organizational name and units.
+	@exception IOException Thrown if there is an error reading the directory.
+	@exception ParseIOException Thrown if there is a an error interpreting the directory.
+	*/
+	public static String[] processORGValue(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	{
+		final List orgList=new ArrayList();	//create a list into which we will place the organizational name and units, as we'll ignore any structured components that are empty 
+		final String[][] fields=processStructuredTextValue(reader);	//process the structured text fields
+		for(int i=0; i<fields.length; ++i)	//look at each field
+		{
+			for(int j=0; j<fields.length; ++j)	//look at each field value (this isn't in the specification, but it won't hurt to add these values within each field to keep from losing them, even if they shouldn't be there)
+			{
+				orgList.add(fields[i][j]);	//add this field value as either the organization name or an organizational unit
+			}
+		}
+		return (String[])orgList.toArray(new String[orgList.size()]);	//return an array version of the organization component list
 	}
 
 	/**Processes structured text into an array of string arrays.
@@ -311,7 +557,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 						//explanatory types
 				else if(CATEGORIES_TYPE.equalsIgnoreCase(typeName))	//CATEGORIES
 				{
-					vcard.addCategories((String[])contentLine.getValue());	//add these categories to our list
+					vcard.getCategoryList().add(contentLine.getValue().toString());	//add this category to our list
 					continue;	//don't process this content line further
 				}
 				else if(NOTE_TYPE.equalsIgnoreCase(typeName))	//NOTE
@@ -324,7 +570,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 				}
 					//if we make it to here, we either don't recognize the content line
 					//	or we can't proces it (e.g. a duplicate value we don't support)
-//TODO store the unrecognized content lines
+				vcard.getContentLineList().add(contentLine);	//add this unprocessed content line to the vCard's list of content lines
 			}
 		}
 		else	//if there are no vCard content lines
