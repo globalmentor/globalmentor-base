@@ -2,6 +2,8 @@ package com.garretwilson.swing.text.rdf.maqro;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.util.*;
 
@@ -101,7 +103,29 @@ Debug.trace("Creating new item view");
 						if(questionElement!=null)	//if we found the question element
 						{
 							final MAQROQuestionView questionView=(MAQROQuestionView)elementViewMap.get(questionElement);	//get the view for the question
-							return new MAQRODialogueChoiceView(element, questionView);	//create a dialogue choice view
+							final MAQRODialogueChoiceView choiceView=new MAQRODialogueChoiceView(element, questionView);	//create a dialogue choice view
+/*TODO fix; transfer to the choice view
+							choiceView.getToggleButton().addItemListener(new ItemListener()	//listen for the response being checked or unchecked
+									{
+										public void itemStateChanged(final ItemEvent itemEvent)	//if the choice button was toggled
+										{
+											updateOutcome(questionView.getQ)
+//G***del Debug.trace("storing value in response map for ID: ", id);  //G***del
+//G***del Debug.trace("storing in response map: ", getResponseMap()); //G***del
+												//update the response with a boolean indication of the selection state
+											getItemResponseMap(itemIdent).put(ident, new Boolean(responseLabelView.getToggleButton().isSelected()));
+//G***del Debug.trace("reponse map now has size: ", getResponseMap().size());  //G***del
+
+//G***del Debug.notify("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //G***testing
+//G***del	System.out.println("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //G***testing
+
+										}
+
+
+									});
+*/
+							view=choiceView;	//return the view we created for the choice
+						
 						}
 					}
 				}
@@ -123,6 +147,14 @@ Debug.trace("Creating new item view");
 		}
 		return view;	//return the created view
 	}
+
+/*TODO fix
+	protected void updateOutcome(final Interaction interaction)
+	{
+		
+	
+	}
+*/
 
 	/**Action for submitting an activity.
 	@author Garret Wilson

@@ -4,10 +4,13 @@ import javax.swing.*;
 import javax.swing.text.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
+
+import com.garretwilson.rdf.RDFResource;
 import com.garretwilson.rdf.maqro.Question;
 import com.garretwilson.swing.text.ViewComponentManager;
 
 import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
+
 import com.garretwilson.swing.text.xml.*;
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
 
@@ -24,25 +27,24 @@ public class MAQRODialogueChoiceView extends XMLComponentParagraphView
 		/**@return The toggle button (radio button or checkbox) this choice view presents.*/
 		public JToggleButton getToggleButton() {return toggleButton;}
 
-	/**@return The question stored in a parent element's attributes, or <code>null</code> if no question could be found.*/ 
-	protected Question getQuestion()
+	/**@return The choice stored in a element's attributes, or <code>null</code> if no choice could be found.*/ 
+	public RDFResource getChoice()
 	{
-		final Element questionElement=getAncestorElement(getElement(), MAQRO_NAMESPACE_URI.toString(), QUESTION_CLASS_NAME);
-		return questionElement!=null ? asInstance(getRDFResource(questionElement.getAttributes()), Question.class) : null;	//get the question from the attributes 
+		return getRDFResource(getElement().getAttributes());	//get the choice from the attributes 
 	}
 				
 	/**Constructs a response label view for a question and adds the view to the map of the logical ID response view.
 	@param element The element for which this view is responsible.
 	@param questionView The question view with which this choice is associated, or <code>null</code> if there is no associated question rendering view.
- 	@exception IllegalArgumentException if the given element does not have an ancestor element representing a question.
+ 	@exception IllegalArgumentException if the element of the given question view does not represent a question.
 	*/
 	public MAQRODialogueChoiceView(final Element element, final MAQROQuestionView questionView)
 	{
 		super(element); //construct the parent view
-		final Question question=getQuestion();	//get the corresponding question
+		final Question question=questionView.getQuestion();	//get the corresponding question
 		if(question==null)
 		{
-			throw new IllegalArgumentException("Element does not have question ancestor.");
+			throw new IllegalArgumentException("Question view element does not represent a question.");
 		}
 		final int maxResponseCount=question.getMaxResponseCount();	//find out the maximum responses allowed
 		if(maxResponseCount>1)  //if we allow multiple responses
@@ -59,7 +61,8 @@ public class MAQRODialogueChoiceView extends XMLComponentParagraphView
 		final String ident=(String)StyleUtilities.getDefinedAttribute(element.getAttributes(), ATTRIBUTE_IDENT); //get the ident, if available
 		toggleButton.setActionCommand(ident); //set the ident as the action command G***should we check to see if this is null? probably not---just use it as is
 */
-		if(questionView!=null && maxResponseCount<=1) //if we have an enclosing choice rendering view, and we shouldn't allow multiple selections
+		questionView.addChoiceView(this);	//tell the question view that this view is one of its choices
+		if(maxResponseCount<=1) //if we shouldn't allow multiple selections
 		{
 			questionView.getButtonGroup().add(getToggleButton()); //add our radio button to the enclosing question button group to allow for mutual exclusion
 		}

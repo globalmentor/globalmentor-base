@@ -12,7 +12,7 @@ public class ObjectUtilities
 	/**Checks to see if a given variable is <code>null</code> and if so,
 	 	throws a <code>NullPointerException</code>.
 	@param <T> The type of variable to check.
-	@param variable The variable to check
+	@param variable The variable to check.
 	@return The given variable.
 	@exception NullPointerException if the given variable is <code>null</code>.
 	*/
@@ -24,7 +24,7 @@ public class ObjectUtilities
 	/**Checks to see if a given variable is <code>null</code> and if so,
 	 	throws a <code>NullPointerException</code>.
 	@param <T> The type of variable to check.
-	@param variable The variable to check
+	@param variable The variable to check.
 	@param description A description of the variable to be used when generating an exception,
 		or <code>null</code> for no description.
 	@return The given variable.
@@ -37,6 +37,39 @@ public class ObjectUtilities
 			throw new NullPointerException(description);
 		}
 		return variable;	//return the variable
+	}
+
+	/**Checks to see if a given variable is of the correct type and if not,
+	 	throws a <code>ClassCastException</code>.
+	@param <T> The type of variable to check.
+	@param variable The variable to check.
+	@param type The type to verify.
+	@return The given variable.
+	@exception ClassCastException if the given variable is not <code>null</code> and not an instance of type <var>type</var>.
+	*/
+	public static <T> T checkType(final Object variable, final Class<T> type)
+	{
+		return checkType(variable, type, null);	//check for type with no description
+	}
+	
+	/**Checks to see if a given variable is of the correct type and if not,
+	 	throws a <code>NullPointerException</code>.
+	 	throws a <code>ClassCastException</code>.
+	@param <T> The type of variable to check.
+	@param variable The variable to check.
+	@param type The type to verify.
+	@param description A description of the variable to be used when generating an exception,
+		or <code>null</code> for no description.
+	@return The given variable.
+	@exception ClassCastException if the given variable is not <code>null</code> and not an instance of type <var>type</var>.
+	*/
+	public static <T> T checkType(final Object variable, final Class<T> type, final String description)
+	{
+		if(variable!=null && !type.isInstance(variable))	//if the variable is not null but is of a different type
+		{
+			throw new ClassCastException(description);
+		}
+		return (T)variable;	//return the variable
 	}
 
 	/**Convenience method that returns the given object if and only if it is an
