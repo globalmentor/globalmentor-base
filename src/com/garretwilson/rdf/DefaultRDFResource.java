@@ -376,9 +376,11 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 
 	/**Sets a property by removing all property values for the given property and
 		creating a new <code>RDFPropertyValuePair</code> from the given
-		property and value.
-	@param property A property resource; the predicate of an RDF statement.
-	@param value A property value; the object of an RDF statement.
+		property and value. If no value is given, all such properties are removed.
+	@param property A property resource&mdash;the predicate of an RDF statement.
+	@param value A property value&mdash;the object of an RDF statement&mdash;or
+		<code>null</code> if all such properties should be removed with nothing
+		to replace them.
 	@return The added property value.
 	@see #removeProperties(URI)
 	@see #addProperty(RDFResource, RDFObject)
@@ -386,16 +388,21 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	public RDFObject setProperty(final RDFResource property, final RDFObject value)
 	{
 		removeProperties(property.getReferenceURI());	//remove all existing object values for this property
-		return addProperty(property, value);	//add the given property and value
+		if(value!=null)	//if there is a value to add
+			return addProperty(property, value);	//add the given property and value
+		else	//if no value was given
+			return null;	//show that no value was added
 	}
 
 	/**Sets a property by first removing all such properties and then adding
-		a new property.
+		a new property. If no value is given, all such properties are removed.
 	@param propertyNamespaceURI The XML namespace URI used in the serialization
 		of the property resource that is the predicate of an RDF statement.
 	@param propertyLocalName The XML local name used in the serialization of the
 		property resource that is the predicate of an RDF statement.
-	@param value A property value; the object of an RDF statement.
+	@param value A property value&mdash;the object of an RDF statement&mdash;or
+		<code>null</code> if all such properties should be removed with nothing
+		to replace them.
 	@return The added property value.
 	*/
 	public RDFObject setProperty(final URI propertyNamespaceURI, final String propertyLocalName, final RDFObject value)
@@ -665,7 +672,9 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		final RDFLiteral value=RDFUtilities.getValue(this);	//get the value property, if any
 		if(getReferenceURI()!=null || value==null)	//if we have a reference URI and/or no value
 		{
-			stringBuffer.append(super.toString());	//start with the default string
+
+			stringBuffer.append(new RDFXMLifier().getLabel(this));	//start with the default string TODO fix with a common RDFXMLifier
+//G***testing			stringBuffer.append(super.toString());	//start with the default string
 		}
 		if(value!=null)	//if we have a value
 		{

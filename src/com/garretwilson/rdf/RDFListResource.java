@@ -11,7 +11,7 @@ import com.garretwilson.lang.ObjectUtilities;
 	anonymous resources that are are not known to the underlying RDF data model
 	that produced this list resource. Similarly, multiple resources may be
 	created to represent the nil resource, the special immutable resource defined
-	by RDF.
+	by RDF.</p>
 @author Garret Wilson
 */
 public class RDFListResource extends TypedRDFResource implements List //G***del, Comparator
@@ -22,6 +22,14 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 
 	/**@return The local name of the default type of this resource.*/
 	public String getDefaultTypeName() {return LIST_CLASS_NAME;}
+
+	/**Default constructor.*/
+/*G***del---force the RDFListResource(rdf:nil) constructor to be used, as the default constructor will create, not an empty list, but an anonymous list with no properties at all
+	public RDFListResource()
+	{
+		this((URI)null);	//construct a list resource with no reference URI
+	}
+*/
 
 	/**Constructs an RDF list resource with a reference URI.
 	@param newReferenceURI The reference URI for the new resource.
@@ -49,7 +57,7 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 		this((URI)null, first);	//create a list with no other elements
 	}
 
-	/**Data modelconstructor.
+	/**Data model constructor.
 	@param rdf The RDF data model to use as a factory for creating properties.
 	*/
 	public RDFListResource(final RDF rdf)

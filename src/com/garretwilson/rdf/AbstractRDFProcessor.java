@@ -6,7 +6,6 @@ import java.util.*;
 import com.garretwilson.lang.JavaConstants;
 import com.garretwilson.model.DefaultResource;
 import com.garretwilson.model.Resource;
-import com.garretwilson.util.Debug;
 
 /**Base class for RDF processors.
 	Each instance of an RDF processor maintains an internal
@@ -208,7 +207,6 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 		while(statementIterator.hasNext())	//while there are more statements
 		{
 			final Statement statement=(Statement)statementIterator.next();	//get the next statement
-Debug.trace("statement: ", statement);
 			if(statement instanceof DefaultStatement)	//if this is a default statement
 			{
 				final DefaultStatement defaultStatement=(DefaultStatement)statement;	//cast the statement to one we can change	
@@ -227,7 +225,6 @@ Debug.trace("statement: ", statement);
 				final Object object=defaultStatement.getObject();	//get the statement object
 				if(object instanceof ResourceProxy)	//if the object is just a proxy
 				{
-Debug.trace("ready to unproxy resource: ", object);
 						//unproxy the resource by either retrieving an already-created resource or creating a new one
 					defaultStatement.setObject(unproxyRDFResource((ResourceProxy)object));
 				}
@@ -298,7 +295,6 @@ Debug.trace("ready to unproxy resource: ", object);
 		while(statementIterator.hasNext())	//while there are more statements
 		{
 			final Statement statement=(Statement)statementIterator.next();	//get the next statement
-Debug.trace("statement: ", statement);
 			final Resource subject=statement.getSubject();	//get the statement subject
 			final Resource predicate=statement.getPredicate();	//get the statement predicate
 				//if both the subject and predicate of the statement are RDF resources

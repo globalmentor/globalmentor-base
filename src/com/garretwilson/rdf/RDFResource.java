@@ -241,9 +241,11 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Cloneabl
 	
 	/**Sets a property by removing all property values for the given property and
 		creating a new <code>RDFPropertyValuePair</code> from the given
-		property and value.
-	@param property A property resource; the predicate of an RDF statement.
-	@param value A property value; the object of an RDF statement.
+		property and value. If no value is given, all such properties are removed.
+	@param property A property resource&mdash;the predicate of an RDF statement.
+	@param value A property value&mdash;the object of an RDF statement&mdash;or
+		<code>null</code> if all such properties should be removed with nothing
+		to replace them.
 	@return The added property value.
 	@see #removeProperties(URI)
 	@see #addProperty(RDFResource, RDFObject)
@@ -251,12 +253,14 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Cloneabl
 	public RDFObject setProperty(final RDFResource property, final RDFObject value);
 
 	/**Sets a property by first removing all such properties and then adding
-		a new property.
+		a new property. If no value is given, all such properties are removed.
 	@param propertyNamespaceURI The XML namespace URI used in the serialization
 		of the property resource that is the predicate of an RDF statement.
 	@param propertyLocalName The XML local name used in the serialization of the
 		property resource that is the predicate of an RDF statement.
-	@param value A property value; the object of an RDF statement.
+	@param value A property value&mdash;the object of an RDF statement&mdash;or
+		<code>null</code> if all such properties should be removed with nothing
+		to replace them.
 	@return The added property value.
 	*/
 	public RDFObject setProperty(final URI propertyNamespaceURI, final String propertyLocalName, final RDFObject value);

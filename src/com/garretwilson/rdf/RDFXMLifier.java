@@ -9,7 +9,6 @@ import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.util.CollectionUtilities;
 import com.garretwilson.util.IdentityHashSet;
 import com.garretwilson.util.LocaleUtilities;
-import com.garretwilson.util.Debug;
 import org.w3c.dom.*;
 
 /**Class that creates an XML representation of RDF through DOM.
@@ -462,7 +461,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	*/  //G***del rdf if we don't need
 	protected Element createPropertyElement(final Document document, final RDFResource propertyResource, final RDFObject propertyValue)
 	{
-Debug.trace("creating property element for property: ", propertyResource);  //G***del
+//G***del Debug.trace("creating property element for property: ", propertyResource);  //G***del
 //G***del		final URI namespaceURI; //we'll store here the namespace URI of the property element
 		final String qualifiedName; //we'll store here the qualified name of the property element
 			//if we know the namespace URI and local name of the property
@@ -649,21 +648,21 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 		
 //TODO once we make the transition to not storing namespaces, see if the above method returns null and if so, use a label of the entire reference URI
 		String localName=getLocalName(resource); //get the resource's local name
+		final URI referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
 		  //if there is no namespace URI known, see if a namespace URI is registered that matches the beginning of this reference URI
-		if(namespaceURI==null || localName==null)  //if there is no namespace URI or local name
+		if((namespaceURI==null || localName==null) && referenceURI!=null)  //if there is no namespace URI or local name, but there is a reference URI
 		{
-			final URI referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
 				//G***right now we iterate through the namespaces each time; there might be a better way to do this
 			final Iterator namespaceIterator=getNamespacePrefixMap().keySet().iterator(); //get an iterator to the namespace URIs
 			while(namespaceIterator.hasNext())  //while there are more namespaces
 			{
 //G***del				final Map.Entry namespaceEntry=namespaceEntryIterator.next(); //get the next namespace entry
-				final URI registeredNamespaceURI=(URI)namespaceIterator.next();  //get this namespace URI
-				if(referenceURI.toString().startsWith(registeredNamespaceURI.toString())) //if this reference URI is in this namespace	//G***fix, now that we're using real URIs
+				final String registeredNamespaceURI=(String)namespaceIterator.next();  //get this namespace URI TODO eventually use URIs in the map
+				if(referenceURI.toString().startsWith(registeredNamespaceURI)) //if this reference URI is in this namespace	//G***fix, now that we're using real URIs
 				{
 //G***del					final String prefix=(String)namespaceEntry.getKey();  //get this namespace prefix
-				  namespaceURI=registeredNamespaceURI;  //we'll use the registered namespace URI
-				  localName=referenceURI.toString().substring(registeredNamespaceURI.toString().length()); //remove the namespace URI from the front of the reference URI to get the local name	//G***fix better, now that we're using real URIs
+				  namespaceURI=URI.create(registeredNamespaceURI);  //we'll use the registered namespace URI
+				  localName=referenceURI.toString().substring(registeredNamespaceURI.length()); //remove the namespace URI from the front of the reference URI to get the local name	//G***fix better, now that we're using real URIs
 //G***del					return XMLUtilities.createQualifiedName(prefix, localName);  //create an XML qualified name for this namespace prefix and local name
 				}
 			}
@@ -671,11 +670,8 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 		}
 		if(namespaceURI!=null && localName!=null) //if we've determined a namespace URI and a local name
 		{
-Debug.trace("has namespace: ", namespaceURI); //G***del
-Debug.trace("has local name: ", localName); //G***del
 				//get the prefix from the to be used for this namespace, but don't generate a new prefix if we don't recognize it
 			final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), namespaceURI.toString(), false);
-Debug.trace("prefix: ", prefix); //G***del
 			if(prefix!=null)	//if we know a prefix for this namespace URI
 			{
 				if(RDF_NAMESPACE_URI.equals(namespaceURI))  //if this is the RDF namespace
@@ -686,7 +682,7 @@ Debug.trace("prefix: ", prefix); //G***del
 				return XMLUtilities.createQualifiedName(prefix, localName);  //create an XML qualified name for this namespace prefix and local name
 			}
 		}
-		return resource.getReferenceURI().toString(); //just use the reference URI as the label, if we can't find anything else G***we might want to check for rdf:li_ here as well; maybe not
+		return referenceURI!=null ? referenceURI.toString() : ""; //just use the reference URI as the label, if we can't find anything else G***we might want to check for rdf:li_ here as well; maybe not
 	}
 
 	/**Determines the namespace URI to be used for the given resource for XML
@@ -701,7 +697,7 @@ Debug.trace("prefix: ", prefix); //G***del
 	public static URI getNamespaceURI(final RDFResource resource)
 	{
 		URI namespaceURI=resource.getNamespaceURI();	//get the namespace URI of which the resource has record TODO remove storing namespaces
-		if(namespaceURI==null)	//if the resource doesn't know its namespace URI
+		if(namespaceURI==null && resource.getReferenceURI()!=null)	//if the resource doesn't know its namespace URI, but there is a reference URI
 			namespaceURI=RDFUtilities.getNamespaceURI(resource.getReferenceURI());	//try to get the namespace URI from the resource reference URI
 
 			//TODO check somewhere else that the namespace was defined in the parsed document---otherwise, only the local name will be set, even for the reference URI
@@ -722,7 +718,7 @@ Debug.trace("prefix: ", prefix); //G***del
 	public static String getLocalName(final RDFResource resource)
 	{
 		String localName=resource.getLocalName();	//get the local name of which the resource has record TODO remove storing local names
-		if(localName==null)	//if the resource doesn't know its local name
+		if(localName==null && resource.getReferenceURI()!=null)	//if the resource doesn't know its local name, but there is a reference URI
 			localName=RDFUtilities.getLocalName(resource.getReferenceURI());	//try to get the local name from the resource reference URI
 		assert localName!=null : "Could not determine local name for "+resource.getReferenceURI();	//TODO fix
 		return localName;	//return the local name we found

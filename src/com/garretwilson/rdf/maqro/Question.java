@@ -40,17 +40,13 @@ public class Question extends Interaction
 		return (Dialogue)ObjectUtilities.asInstance(getPropertyValue(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME), Dialogue.class);	//get the query only if it is Dialogue		
 	}
 
-	/**Replaces the query, if any, with a query that has the given string value.
-	@param queryValue The literal value of the query.
-	@param language The language of the query value, or <code>null</code> if
-		no language should be specified.
-	@return The added query resource containing the given value.
+	/**Sets the query of the question.
+	@param query The query part of the question, or <code>null</code> if there
+		should be no query.
 	*/
-	public RDFResource setQueryValue(final String queryValue, final Locale language)
+	public void setQuery(final Dialogue query)
 	{
-		final RDFResource query=RDFUtilities.locateResource(this, null);	//create an anonymous query
-		RDFUtilities.setValue(query, queryValue, language);	//set the query value
-		return (RDFResource)setProperty(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME, query);	//store the query
+		this.setProperty(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME, query);	//set the query		
 	}
 
 	/**@return The list of choices for this question, or <code>null</code>
@@ -78,6 +74,15 @@ public class Question extends Interaction
 		return RDFUtilities.asResource(getPropertyValue(MAQRO_NAMESPACE_URI, EXPECT_PROPERTY_NAME));	//get the expectation		
 	}
 
+	/**Sets the expectation of the question.
+	@param expect The resource indicating the datatype expected in the response,
+		or <code>null</code> if there is no expected datatype.
+	*/
+	public void setExpect(final RDFResource expect)
+	{
+		this.setProperty(MAQRO_NAMESPACE_URI, EXPECT_PROPERTY_NAME, expect);	//set the expectation		
+	}
+
 	/**Adds an answer to the question.
 	@param answer A correct answer to the question.
 	*/
@@ -90,6 +95,12 @@ public class Question extends Interaction
 	public Iterator getAnswerIterator()
 	{
 		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME);	//return an iterator to the answers 
+	}
+
+	/**Removes all answers from the question.*/
+	public void removeAnswers()
+	{
+		removeProperties(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME);	//remove all answers
 	}
 
 	/**@return The maximum number of responses to accept, or -1 if the maximum
