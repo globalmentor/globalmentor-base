@@ -1,5 +1,6 @@
 package com.garretwilson.text;
 
+import com.garretwilson.lang.IntegerUtilities;
 import static com.garretwilson.lang.StringBuilderUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
 import com.garretwilson.util.NameValuePair;
@@ -22,6 +23,21 @@ public class FormatUtilities
 		return formatList(stringBuilder, COMMA_CHAR, items);	//format the list using a comma as a delimiter
 	}
 */
+
+	/**Formats an array of bytes into a sequence of hex characters,
+	 	with each character pairrepresenting the hexadecimal value of the byte.
+	@param stringBuilder The string builder into which the result should be placed.
+	@param bytes The values to convert.
+	@return A lowercase string with hexadecimal digits, each pair representing a byte in the byte array.
+	*/
+	public static StringBuilder formatHex(final StringBuilder stringBuilder, final byte[] bytes)	//TODO make generic to allow different bases 
+	{
+		for(final byte b:bytes)	//for each byte
+		{
+		  stringBuilder.append(IntegerUtilities.toHexString(b, 2));  //convert the byte to a two-character hex string and add it to our string buffer TODO make more efficient			
+		}
+		return stringBuilder;	//return the string builder we used
+	}
 	
 	/**Appends the string representations of the given objects separated by a delimiter character.
 	@param stringBuilder The string builder into which the result should be placed.

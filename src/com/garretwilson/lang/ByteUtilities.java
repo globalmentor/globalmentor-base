@@ -1,5 +1,7 @@
 package com.garretwilson.lang;
 
+import com.garretwilson.text.FormatUtilities;
+
 /**Utilities for manipulating bytes.
 @author Garret Wilson
 */
@@ -104,17 +106,12 @@ public class ByteUtilities
 	/**Converts an array of bytes into a hex string, with each character pair
 		representing the hexadecimal value of the byte.
 	@param bytes The values to convert.
-	@return A lowercase string with hexadecimal digits each pair representing a byte in the
+	@return A lowercase string with hexadecimal digits, each pair representing a byte in the
 		byte array.
 	*/
 	public static String toHexString(final byte[] bytes)
 	{
-		final StringBuffer stringBuffer=new StringBuffer(bytes.length*2); //create a string buffer large enough to hold the hex digits
-		for(int i=0; i<bytes.length; ++i)  //look at each of the bytes
-		{
-		  stringBuffer.append(IntegerUtilities.toHexString(bytes[i], 2));  //convert the byte to a two-character hex string and add it to our string buffer
-		}
-		return stringBuffer.toString(); //return the string we constructed
+		return FormatUtilities.formatHex(new StringBuilder(), bytes).toString();	//format the hex into a string buffer and return the string version
 	}
 
 }
