@@ -33,6 +33,19 @@ public class Directory extends DefaultNamedObject
 		super(null);	//construct a directory with no name
 	}
 
+	/**Gets all content lines within the given profile, ignoring case when making
+		all matches.
+	@param profile The profile of the lines to return, <code>null</code> for no
+		profile (the predefined types), or <code>ALL_PROFILES</code>
+		if all profiles should be included.
+	@return An array of content lines that meet the given criteria.
+	@see #ALL_PROFILES
+	*/
+	public ContentLine[] getContentLinesByProfile(final String profile)
+	{
+		return getContentLines(profile, ALL_TYPES);	//return content lines from the specified profile		
+	}
+
 	/**Gets the value of the first content line with the specified type name
 		within any profile, ignoring case when making all matches.
 	@param typeName The type name of the line to return, or

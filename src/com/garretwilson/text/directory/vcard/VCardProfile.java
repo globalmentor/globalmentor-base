@@ -2,16 +2,8 @@ package com.garretwilson.text.directory.vcard;
 
 import java.io.*;
 import java.util.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-//G***del if we don't need import java.text.MessageFormat;
-import org.w3c.dom.DOMException;
 import com.garretwilson.io.*;
-import com.garretwilson.net.URLUtilities;
-import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.text.directory.*;
-import com.garretwilson.text.xml.schema.*;
-//G***del import com.garretwilson.util.StringManipulator;
 import com.garretwilson.util.*;
 
 /**Class that can create values for the "VCARD" profile of a
@@ -212,4 +204,133 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		return getValueType(name);	//return whatever value type we have associated with this type name, if any
 	}
 
+	/**Creates a vCard object from the vCard profile directory entries in the
+		given directory. Unrecognized or unusable content lines within the vCard
+		profile will be saved as literal content lines so that their information
+		will be preserved.
+	@param directory The <code>text/directory</code> containing a vCard profile.
+	@return A vCard object, or <code>null</code> if no vCard profile was included
+		in the given directory.
+	*/ 
+	public static VCard createVCard(final Directory directory)
+	{
+		final VCard vcard;	//we'll create a vCard and store it here
+		final ContentLine[] contentLines=directory.getContentLinesByProfile(VCARD_PROFILE_NAME);	//get all vCard content lines
+		if(contentLines.length>0)	//if there are content lines in the vCard profile
+		{
+			vcard=new VCard();	//create a new default vCard
+			for(int i=0; i<contentLines.length; ++i)	//look at each content line
+			{
+				final ContentLine contentLine=contentLines[i];	//get a reference to this content line
+				final String typeName=contentLine.getTypeName();	//get this content line's type name
+				if(BEGIN_TYPE.equalsIgnoreCase(typeName))	//BEGIN
+				{
+					//ignore begin
+				}
+				else if(END_TYPE.equalsIgnoreCase(typeName))	//END
+				{
+					//ignore end
+				}
+						//identification types
+				else if(FN_TYPE.equalsIgnoreCase(typeName))	//FN
+				{
+					if(vcard.getFormattedName()==null)	//if there is not yet a formatted name
+					{
+						vcard.setFormattedName(contentLine.getValue().toString());	//get the formatted name
+						continue;	//don't process this content line further
+					}
+				}
+				else if(NAME_TYPE.equalsIgnoreCase(typeName))	//NAME
+				{
+					if(vcard.getName()==null)	//if there is not yet a name
+					{
+						vcard.setName((Name)contentLine.getValue());	//get the name
+						continue;	//don't process this content line further
+					}
+				}
+				else if(NICKNAME_TYPE.equalsIgnoreCase(typeName))	//NICKNAME
+				{
+					vcard.getNicknameList().add(contentLine.getValue().toString());	//add this nickname to our list
+					continue;	//don't process this content line further
+				}
+						//delivery addressing types
+				else if(ADR_TYPE.equalsIgnoreCase(typeName))	//ADR
+				{
+					vcard.getAddressList().add((Address)contentLine.getValue());	//add this address to our list
+					continue;	//don't process this content line further
+				}
+				else if(LABEL_TYPE.equalsIgnoreCase(typeName))	//LABEL
+				{
+//TODO make sure the NameAddressPanel stores label information so that it won't be lost
+					vcard.getLabelList().add(contentLine.getValue().toString());	//add this label to our list
+					continue;	//don't process this content line further
+				}
+						//telecommunications addressing types
+				else if(TEL_TYPE.equalsIgnoreCase(typeName))	//TEL
+				{
+					vcard.getTelephoneList().add((Telephone)contentLine.getValue());	//add this telephone to our list
+					continue;	//don't process this content line further
+				}
+				else if(EMAIL_TYPE.equalsIgnoreCase(typeName))	//EMAIL
+				{
+					vcard.getEmailList().add((Email)contentLine.getValue());	//add this email to our list
+					continue;	//don't process this content line further
+				}
+						//organizational type
+				else if(ORG_TYPE.equalsIgnoreCase(typeName))	//ORG
+				{
+					final String[] org=(String[])contentLine.getValue();	//get the organization information
+					if(org.length>0 && vcard.getOrganizationName()==null)	//if there is an organization name, and we haven't yet stored an organization name
+					{
+						vcard.setOrganizationName(org[0]);	//set the organization name from the first oganizational component
+						if(org.length>0)	//if there are units specified
+						{
+							final String[] units=new String[org.length-1];	//create a string array to contain all the units (ignore the first item, the organization name)
+							System.arraycopy(org, 1, units, 0, units.length);	//copy the units from the organizational array to the units array
+							vcard.setOrganizationUnits(units);	//set the vCard units 
+						}
+						continue;	//don't process this content line further
+					}
+				}
+				else if(TITLE_TYPE.equalsIgnoreCase(typeName))	//TITLE
+				{
+					if(vcard.getTitle()==null)	//if there is not yet a title
+					{
+						vcard.setTitle(contentLine.getValue().toString());	//get the title
+						continue;	//don't process this content line further
+					}
+				}
+				else if(ROLE_TYPE.equalsIgnoreCase(typeName))	//ROLE
+				{
+					if(vcard.getRole()==null)	//if there is not yet a role
+					{
+						vcard.setRole(contentLine.getValue().toString());	//get the role
+						continue;	//don't process this content line further
+					}
+				}
+						//explanatory types
+				else if(CATEGORIES_TYPE.equalsIgnoreCase(typeName))	//CATEGORIES
+				{
+					vcard.addCategories((String[])contentLine.getValue());	//add these categories to our list
+					continue;	//don't process this content line further
+				}
+				else if(NOTE_TYPE.equalsIgnoreCase(typeName))	//NOTE
+				{
+					if(vcard.getNote()==null)	//if there is not yet a note
+					{
+						vcard.setNote(contentLine.getValue().toString());	//get the note
+						continue;	//don't process this content line further
+					}
+				}
+					//if we make it to here, we either don't recognize the content line
+					//	or we can't proces it (e.g. a duplicate value we don't support)
+//TODO store the unrecognized content lines
+			}
+		}
+		else	//if there are no vCard content lines
+		{
+			vcard=null;	//there can be no vCard
+		}
+		return vcard;	//return the vCard we created or null if there were no vCard profile content lines 
+	}
 }
