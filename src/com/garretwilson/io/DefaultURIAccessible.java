@@ -1,8 +1,10 @@
 package com.garretwilson.io;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URI;
 
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpURL;
 import org.apache.webdav.lib.WebdavResource;
 
@@ -107,20 +109,40 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	*/
 	public OutputStream getOutputStream(final URI uri) throws IOException
 	{
+Debug.trace("getting output stream for URI", uri);
 		if(uriOutputStreamable!=null)	//if we have a delegate output streamable
 		{
+Debug.trace("already have URIOutputStreamable");
 			return uriOutputStreamable.getOutputStream(uri);	//delegate to the stored implementation
 		}
 		final String scheme=uri.getScheme();	//see what type of URI this is
+Debug.trace("we have scheme:", scheme);
 		if(FILE_SCHEME.equals(scheme))	//if this is a file URI
 		{
 			return new FileOutputStream(new File(uri));	//create and return an output stream to the file
 		}
 		else if(HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme))	//if this is an HTTP URI, try to use WebDAV
 		{
+Debug.trace("is a HTTP URI");
 			final HttpURL httpURL=new HttpURL(uri.toString());	//create an Apache HTTP URL from the URI TODO make sure the string is properly escaped
-			final WebdavResource webdavResource=new WebdavResource(httpURL);	//create a WebDAV resource to the URI
-			return new WebdavResourceOutputStreamAdapter(webdavResource);	//adapt the resource to an output stream and return it
+Debug.trace("HTTP URL", httpURL);
+//G***fix			try
+			{
+/*G***fix
+				final WebdavResource webdavResource=new WebdavResource(httpURL);	//create a WebDAV resource to the URI
+Debug.trace("WebDAV resource", webdavResource);
+*/
+				return new WebdavResourceOutputStreamAdapter(httpURL);	//adapt the resource to an output stream and return it
+			}
+/*G***fix
+			catch(HttpException x)
+			{
+				Debug.trace("message: ", x.getMessage());
+				Debug.trace("reason code: ", Integer.valueOf(x.getReasonCode()));
+				Debug.trace("reason: ", x.getReason());
+				throw x;
+			}
+*/
 		}
 //TODO fix for other types of URIs
 		return uri.toURL().openConnection().getOutputStream();	//convert the URI to a URL, open a connection to it, and get an output stream to it
@@ -131,19 +153,22 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	 	at which point the data is written to the WebDAV resource.
 	@author Garret Wilson
 	*/
-	protected static class WebdavResourceOutputStreamAdapter extends OutputStreamDecorator<ByteArrayOutputStream>	//TODO maybe move this to its own independt class at some point
+	protected static class WebdavResourceOutputStreamAdapter extends OutputStreamDecorator<ByteArrayOutputStream>	//TODO maybe move this to its own independent class at some point
 	{
 		
 		/**The WebDAV resource being adapted.*/
-		protected WebdavResource webdavResource=null;
+//G***fix		protected WebdavResource webdavResource=null;
+		
+		protected HttpURL httpURL=null;
 		
 		/**Constructor that adapts a WebDAV resource.
 		@param webdavResource The WebDAV resource to adapt to an output stream.
 		*/
-		public WebdavResourceOutputStreamAdapter(final WebdavResource webdavResource)
+		public WebdavResourceOutputStreamAdapter(final HttpURL httpURL)
 		{
 			super(new ByteArrayOutputStream());	//collect bytes in a decorated byte array output stream
-			this.webdavResource=webdavResource;		//save the WebDAV resource we'll be writing to
+			this.httpURL=httpURL;
+//G***fix			this.webdavResource=webdavResource;		//save the WebDAV resource we'll be writing to
 		}
 		
 		//TODO improve flush() at some point to actually send data to the Webdav Resource
@@ -154,25 +179,48 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	  */
 	  public void close() throws IOException
 		{
-	  	if(webdavResource!=null)	//if we have a WebDAV resource object to write to (i.e. we haven't closed the adapter stream, yet)
+Debug.trace("ready to close");
+if(httpURL!=null)	//if we have a WebDAV resource object to write to (i.e. we haven't closed the adapter stream, yet)
+//G***fix	  	if(webdavResource!=null)	//if we have a WebDAV resource object to write to (i.e. we haven't closed the adapter stream, yet)
 	  	{
+//G***fix Debug.trace("we still have our resouce:", webdavResource);
 	  		try
 	  		{
 	  			final ByteArrayOutputStream byeAtrrayOutputStream=getOutputStream();	//get the decorated output stream
 	  			super.close();	//do the default closing, releasing the decorated output stream from the decorator
-	  			final byte[] bytes=byeAtrrayOutputStream.toByteArray();	//get the collected bytes (use our reference of the decorated output stream, because it will have been released by the decorator at this point) 
+	  			final byte[] bytes=byeAtrrayOutputStream.toByteArray();	//get the collected bytes (use our reference of the decorated output stream, because it will have been released by the decorator at this point)
+Debug.trace("we have this many bytes to write", Integer.valueOf(bytes.length));
+					WebdavResource webdavResource=null;	//TODO fix all this much better
 	  			try
 	  			{
-	  				webdavResource.putMethod(bytes);	//put the bytes to the WebDAV resource
+	  				final String old=httpURL.toString();
+						if(old.endsWith("/"))
+						{
+							webdavResource=new WebdavResource(httpURL);
+		  				webdavResource.putMethod(bytes);	//put the bytes to the WebDAV resource						
+						}
+						else
+						{
+							final int index=old.lastIndexOf('/');
+							final HttpURL parentURL=new HttpURL(old.substring(0, index+1));
+Debug.trace("using new parent:", parentURL);
+//G***fix							final String path=old.substring(index+1);
+							final String path=httpURL.getPath();
+Debug.trace("new path:", path);
+							webdavResource=new WebdavResource(parentURL);
+Debug.trace("result of putting:", Boolean.valueOf(webdavResource.putMethod(path, bytes)));	//put the bytes to the WebDAV resource						
+						}
 	  			}
 	  			finally
 					{
-	  				webdavResource.close();	//close the WebDAV resource
+	  				if(webdavResource!=null)
+	  					webdavResource.close();	//close the WebDAV resource
 					}
 	  		}
 	  		finally
 				{
-	  			webdavResource=null;	//show that we don't have a WebDAV resource object to write to anymore
+	  			httpURL=null;	//show that we don't have a WebDAV resource object to write to anymore
+//G***fix	  			webdavResource=null;	//show that we don't have a WebDAV resource object to write to anymore
 				}
 	  	}
 		}		

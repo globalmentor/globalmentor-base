@@ -8,6 +8,8 @@ import com.garretwilson.io.*;
 import com.garretwilson.util.Debug;
 import com.garretwilson.util.NameValuePair;
 
+import static java.net.URLEncoder.*;
+import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
 
 /**Various URI manipulating functions for working with URIs as defined in
@@ -15,7 +17,7 @@ import static com.garretwilson.text.CharacterEncodingConstants.*;
 	"Uniform Resource Identifiers (URI): Generic Syntax".
 @see java.net.URI
 */
-public class URIUtilities implements URIConstants
+public class URIUtilities
 {
 
 	/**Creates a new URI identical to the supplied URI with a different path.
@@ -29,6 +31,48 @@ public class URIUtilities implements URIConstants
 		return create(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), path, uri.getRawQuery(), uri.getRawFragment());
 	}
 
+	/**Constructs an absolute path from the given elements in the form:
+	<code>/<var>element1</var>/<var>element2</var></code>.
+	Each element in the path is URI-encoded using UTF-8.
+	@param absolute <code>true</code> if the path should be absolute
+		and therefore should begin with '/'.
+	@param pathElements <code>true</code> if the path represents a collection
+		and therefore should end with '/'. 
+	@return A path constructed according to the given rules.
+	@exception IllegalArgumentException if there are no path elements and an
+		absolute non-collection or non-absolute collection is requested.
+	*/
+	public static String constructPath(final boolean absolute, final boolean collection, final String... pathElements)
+	{
+		if(pathElements.length==0 && absolute!=collection)	//if there are no path elements, an absolute URI must also be a collection
+		{
+			throw new IllegalArgumentException("A path with no elements must be an absolute collection or a relative non-collection.");
+		}
+		final StringBuilder stringBuilder=new StringBuilder();	//create a string builder
+		if(absolute)	//if this should be an absolute path
+		{
+			stringBuilder.append(PATH_SEPARATOR);	//prepend '/'
+		}
+		boolean hasPath=false;	//don't assume we have any path elements
+		for(final String pathElement:pathElements)	//look at each path element
+		{
+			try
+			{
+				stringBuilder.append(encode(pathElement, UTF_8));	//encode and append this path element
+				stringBuilder.append(PATH_SEPARATOR);	//separate the path elements
+			}
+			catch(final UnsupportedEncodingException unsupportedEncodingException)	//we should always support UTF-8
+			{
+				throw new AssertionError(unsupportedEncodingException);
+			}
+		}
+		if(!collection && pathElements.length>0)	//if there were path elements but this wasn't a collection, we have one too many path separators 
+		{
+			stringBuilder.deleteCharAt(stringBuilder.length()-1);	//remove the last character, a '/'
+		}
+		return stringBuilder.toString();	//return the string version of the constructed path
+	}
+	
 	/**Constructs a query string for a URI by URL-encoding each name-value pair,
 	 	separating them with '&', and prepending the entire string (if there is
 	 	at least one parameter) with '?'.
