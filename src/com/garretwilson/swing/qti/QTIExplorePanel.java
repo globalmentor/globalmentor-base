@@ -354,7 +354,7 @@ Debug.trace("asking new item"); //G***del
 //G***testing optionpane
 //G***del		OptionPane.test();  //G***del
 			//ask what type of response should be added; if they make a selection G***i18n
-		if(OptionPane.showConfirmDialog(this, responseTypePanel, "Response Type", JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION)
+		if(BasicOptionPane.showConfirmDialog(this, responseTypePanel, "Response Type", JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION)
 		{
 			final Response response=responseTypePanel.createResponse();  //create a response from the given information in the panel
 			if(response!=null)  //if we got a response
@@ -387,7 +387,7 @@ Debug.trace("asking new item"); //G***del
 		final QTIItemPanel itemPanel=new QTIItemPanel(item);  //create an panel to edit the item
 		itemPanel.setPreferredSize(new Dimension(400, 400));  //G***fix preferred size QTI
 			//edit the new item; if the user accepts the changes
-		if(OptionPane.showConfirmDialog(QTIExplorePanel.this, itemPanel, "Item", JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION)  //G***i18n
+		if(BasicOptionPane.showConfirmDialog(QTIExplorePanel.this, itemPanel, "Item", JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION)  //G***i18n
 		{
 			return itemPanel.getItem();  //return the new, edited item
 		}

@@ -440,7 +440,7 @@ public class QuestionPanel extends TabbedViewPanel
 					final DialogueModel dialogueModel=new DialogueModel(dialogueClone);	//create a model containing the dialogue
 					final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
 						//allow the dialogue to be edited in a dialog box; if the user accepts the changes
-					if(OptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Choice", OptionPane.OK_CANCEL_OPTION)==OptionPane.OK_OPTION)	//G***i18n
+					if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Choice", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
 					{
 						return dialogueClone;	//return the new dialogue
 					}
@@ -489,7 +489,7 @@ public class QuestionPanel extends TabbedViewPanel
 				final DialogueModel dialogueModel=new DialogueModel(dialogueClone);	//create a model containing the dialogue
 				final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
 					//allow the dialogue to be edited in a dialog box; if the user accepts the changes
-				if(OptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Explanation", OptionPane.OK_CANCEL_OPTION)==OptionPane.OK_OPTION)	//G***i18n
+				if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Explanation", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
 				{
 					return dialogueClone;	//return the new dialogue
 				}

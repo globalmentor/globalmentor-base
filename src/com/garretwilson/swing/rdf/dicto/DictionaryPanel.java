@@ -302,7 +302,7 @@ public class DictionaryPanel extends RDFPanel
 			optionsPanel.setSelect(selectDescription);	//set the panel selection criteria
 
 				//show the options; if the user accepts the options 
-			if(OptionPane.showConfirmDialog(this, optionsPanel, "Dictionary Quiz Options", OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE)==OptionPane.OK_OPTION)	//G***i18n
+			if(BasicOptionPane.showConfirmDialog(this, optionsPanel, "Dictionary Quiz Options", BasicOptionPane.OK_CANCEL_OPTION, BasicOptionPane.QUESTION_MESSAGE)==BasicOptionPane.OK_OPTION)	//G***i18n
 			{
 					//create a Mentoract activity adapter that will create questions based upon dictionary entries
 				final DictionaryActivity dictionaryActivity=new DictionaryActivity(dictionary);

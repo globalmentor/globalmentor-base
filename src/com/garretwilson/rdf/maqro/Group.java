@@ -3,6 +3,7 @@ package com.garretwilson.rdf.maqro;
 import java.net.URI;
 import java.util.List;
 import com.garretwilson.rdf.*;
+import com.garretwilson.rdf.xmlschema.IntegerLiteral;
 
 /**Class representing a group of MAQRO interactions.
 @author Garret Wilson
@@ -62,4 +63,22 @@ public class Group extends Interaction
 			interactionList.add(interaction);	//add the interaction to the list
 		}
 	}
+
+	/**@return The maximum amount of time for the group, in milliseconds, or -1
+	if the time is not specified.
+	*/
+	public int getMaxTime()
+	{
+		return IntegerLiteral.asIntValue(getPropertyValue(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME)); //get the integer value of the property
+	}
+
+	/**Sets the maximum amount of time for the group, in milliseconds.
+	@param maxTime The maximum amount of time for the group, in milliseconds, or
+		-1 if there should not be a maximum time.
+	*/
+	public void setMaxTime(final int maxTime)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME, maxTime>=0 ? new IntegerLiteral(maxTime) : null); //set the property with an integer typed literal
+	}
+
 }

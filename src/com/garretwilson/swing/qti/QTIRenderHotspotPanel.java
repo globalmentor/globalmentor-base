@@ -108,7 +108,7 @@ Debug.trace("found image"); //G***del
 				responseLabelPanel.setResponseLabel(responseLabel, image); //set the response label
 //G***del				responseLabelPanel.setPreferredSize(new Dimension(300, 200));  //G***fix preferred size QTI
 					//show the response label panel
-				final int result=OptionPane.showConfirmDialog(this, responseLabelPanel, "Response Label", JOptionPane.OK_CANCEL_OPTION);  //G***i18n; comment
+				final int result=BasicOptionPane.showConfirmDialog(this, responseLabelPanel, "Response Label", JOptionPane.OK_CANCEL_OPTION);  //G***i18n; comment
 				return result==JOptionPane.OK_OPTION ? responseLabelPanel.getResponseLabel() : null; //return their response, or null if they cancelled
 
 

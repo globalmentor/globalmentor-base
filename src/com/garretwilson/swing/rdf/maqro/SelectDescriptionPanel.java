@@ -245,7 +245,7 @@ public class SelectDescriptionPanel extends BasicPanel
 			}
 		}
 			//show the categories; if the user accepts the new selections 
-		if(OptionPane.showConfirmDialog(this, new ListPanel(categorySwingList), "Selected categories", OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE)==OptionPane.OK_OPTION)	//G***i18n
+		if(BasicOptionPane.showConfirmDialog(this, new ListPanel(categorySwingList), "Selected categories", BasicOptionPane.OK_CANCEL_OPTION, BasicOptionPane.QUESTION_MESSAGE)==BasicOptionPane.OK_OPTION)	//G***i18n
 		{
 			categorySet.clear();	//clear our set of categories
 			CollectionUtilities.addAll(categorySet, categorySwingList.getSelectedValues());	//add the selected categories

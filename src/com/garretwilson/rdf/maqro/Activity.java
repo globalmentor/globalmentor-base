@@ -210,8 +210,6 @@ public class Activity extends Group
 		setProperty(MAQRO_NAMESPACE_URI, REQUIRE_RESPONSE_PROPERTY_NAME, new BooleanLiteral(requireResponse)); //set the property with a boolean typed literal
 	}
 	
-	/**The maximum amount of time for the activity, in milliseconds. The local name of maqro:maxTime.*/
-//TODO fix max time	public final static String MAX_TIME_PROPERTY_NAME="maxTime";
 			//feedback
 	/**@return <code>true</code> if the result of each interaction should immediately be shown.*/
 	public boolean isShowEachResult()
