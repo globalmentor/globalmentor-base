@@ -90,5 +90,5 @@ public class JavaUtilities
 		replace(stringBuilder, ILLEGAL_VARIABLE_NAME_CHARACTERS, '_');	//replace every '.' and '$' with '_'
 		return stringBuilder.toString();
 	}
-	
+
 }

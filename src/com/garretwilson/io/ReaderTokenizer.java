@@ -3,6 +3,8 @@ package com.garretwilson.io;
 import java.io.Reader;
 import java.io.IOException;
 import java.util.*;
+
+import com.garretwilson.util.Debug;
 import com.garretwilson.util.SyntaxException;
 
 import static com.garretwilson.text.CharacterConstants.*;
@@ -10,6 +12,8 @@ import static com.garretwilson.text.CharacterConstants.*;
 /**Tokenizes input from a reader, recognizing groups.
 All text within a group will be ignored when delimiting tokens, except that
 	group delimiters are checked for matching.
+If a group has the same beginning and ending character, direct nesting of that
+	group is not allowed, although other groups may be interspersed.
 @author Garret Wilson
 */
 public class ReaderTokenizer implements Iterator<String>
@@ -79,6 +83,24 @@ public class ReaderTokenizer implements Iterator<String>
 			{
 				throw new EmptyStackException();	//show that there are no more groups
 			}
+		}
+
+		/**Returns the character of the group currently on the stack.
+		@return The character used to begin the group.
+		@throws StringIndexOutOfBoundsException {@inheritDoc}
+		@exception EmptyStackException if there are no groups left.
+		*/
+		protected char peekGroup() throws EmptyStackException
+		{
+			final int groupDepth=getGroupDepth();	//see how many groups there are
+			if(groupDepth>0)	//if we have groups
+			{
+				return groupStackStringBuilder.charAt(groupDepth-1);	//get the group beginning character
+			}
+			else	//if we are out of groups
+			{
+				throw new EmptyStackException();	//show that there are no more groups
+			}			
 		}
 
 		/**@return The number of nested groups currently being processed.*/
@@ -205,9 +227,26 @@ public class ReaderTokenizer implements Iterator<String>
 					}
 					else	//if this is not a delimiter, or we're inside the group, we'll keep the character
 					{
-						if(groupBegins.indexOf(character)>=0)	//if this is a group beginning
+						final int groupBeginCharIndex=groupBegins.indexOf(character);	//see if this is a group beginning character
+						if(groupBeginCharIndex>=0)	//if this is a group beginning
 						{
-							pushGroup(character);	//push the group onto the stack
+							if(groupEnds.charAt(groupBeginCharIndex)==character	//if the beginning and ending character is the same for this group...
+									&& getGroupDepth()>0	//...and if we're inside a group...
+									&& peekGroup()==character)	//...and the group we're in has the same character as we just found, assume we're closing the group
+							{
+								try
+								{
+									final char groupBegin=popGroup();	//pop a group from the stack
+								}
+								catch(EmptyStackException emptyStackException)	//this should never happen, as we've already checked the group depth, and we even know that the delimiters match
+								{
+									throw new AssertionError(emptyStackException);
+								}
+							}
+							else	//if this group has different beginning or ending characters, or we're inside another group, assume we really are starting a new group
+							{
+								pushGroup(character);	//push the group onto the stack
+							}
 						}
 						else	//if this is not a group beginning
 						{

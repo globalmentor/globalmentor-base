@@ -109,14 +109,11 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	*/
 	public OutputStream getOutputStream(final URI uri) throws IOException
 	{
-Debug.trace("getting output stream for URI", uri);
 		if(uriOutputStreamable!=null)	//if we have a delegate output streamable
 		{
-Debug.trace("already have URIOutputStreamable");
 			return uriOutputStreamable.getOutputStream(uri);	//delegate to the stored implementation
 		}
 		final String scheme=uri.getScheme();	//see what type of URI this is
-Debug.trace("we have scheme:", scheme);
 		if(FILE_SCHEME.equals(scheme))	//if this is a file URI
 		{
 			return new FileOutputStream(new File(uri));	//create and return an output stream to the file
