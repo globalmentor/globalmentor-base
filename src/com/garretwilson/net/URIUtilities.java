@@ -504,10 +504,16 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 */
 
+		//variables for fixing a JDK URI.resolve() bug
+	private final static String EXPECTED_URI_PREFIX="file:////";
+	private final static String RESULT_URI_PREFIX="file:/";
+
 	/**Changes a URI from one base to another.
 	For example, <code>http://example.com/base1/test.txt</code> changed to base
 		<code>http://example.com/base2/level2/</code> yields
 		<code>http://example.com/base2/level2/test.txt</code>.
+	<p>This method contains a workaround for the JDK 5.0 bug that chops off the
+		first few forward slashes for Windows network names.</p>
 	@param uri The URI the base of which to change.
 	@param oldBaseURI The current base URI.
 	@param newBaseURI The base URI of the new URI to construct.
@@ -526,6 +532,21 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 			throw new IllegalArgumentException(oldBaseURI.toString()+" is not a base URI of "+uri);
 		}
 		final URI newURI=newBaseURI.resolve(relativeURI);	//resolve the relative URI to the new base URI
+			//check for the JDK 5.0 bug that chops off the first few forward slashes for Windows network names
+		final String newBaseURIString=newBaseURI.toString();	//get the string of the new base URI
+		final String newURIString=newURI.toString();	//get the string version of the new URI
+		if(!newURIString.startsWith(newBaseURIString))	//if the new URI doesn't start with the new base URI we were expecting
+		{
+			if(newBaseURIString.startsWith(EXPECTED_URI_PREFIX) && newURIString.startsWith(RESULT_URI_PREFIX))				
+			{
+				final String fixedURIString=EXPECTED_URI_PREFIX+newURIString.substring(RESULT_URI_PREFIX.length());	//replace the incorrect beginning section
+				return URI.create(fixedURIString);	//return create a URI that goes back to the new base URI we expected
+			}
+			else	//if this is a different bug than we expected
+			{
+				throw new AssertionError(newURIString+" does not begin with expected new base URI "+newBaseURIString);
+			}
+		}
 		return newURI;	//return the new URI with the changed base
 	}
 }
