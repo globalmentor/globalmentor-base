@@ -1,12 +1,13 @@
 package com.garretwilson.rdf;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
+import java.util.Locale;
 import com.garretwilson.net.*;
 import com.garretwilson.text.xml.XMLBase;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.util.Debug;
+import com.garretwilson.util.LocaleUtilities;
 import org.w3c.dom.*;
 
 /**Class that is able to construct an RDF data model from an XML-based
@@ -25,6 +26,16 @@ import org.w3c.dom.*;
 */
 public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstants, RDFXMLConstants
 {
+
+	//constants for parseAttributeProperties()
+	/**An attribute in the context of a resource description (<code>&lt;rdf:Description&gt;</code>).*/
+	protected static final int DESCRIPTION_CONTEXT=1;
+	/**An attribute in the context of a resource reference (<code>reference="&hellip;"</code>).*/
+	protected static final int REFERENCE_CONTEXT=2;
+	/**An attribute in the context of a property reference with only attributes and no children.*/
+	protected static final int EMPTY_PROPERTY_CONTEXT=3;
+	/**An attribute in the context of a reference short form (<code>parse=Type"Resource"</code>).*/
+	protected static final int PROPERTY_AND_NODE_CONTEXT=4;
 
 	/**Default constructor.*/
 	public RDFXMLProcessor()
@@ -153,28 +164,12 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 			{
 //G***del Debug.trace("found reference URI: ", referenceURIValue);  //G***del
 //G***del				//G***we need to normalize the reference URI
-				try
-				{
-					referenceURI=XMLBase.resolveURI(new URI(referenceURIValue), element, getBaseURI());  //resolve the reference URI to the base URI
-				}
-				catch(URISyntaxException uriSyntaxException)
-				{
-//G***fix					Debug.warn(malformedURLException);  //G***fix
-					referenceURI=URI.create(referenceURIValue); //G***fix
-				}
+				referenceURI=XMLBase.resolveURI(new URI(referenceURIValue), element, getBaseURI());  //resolve the reference URI to the base URI
 			}
 			else if(anchorID!=null)  //if there is an anchor ID
 			{
 //G***del Debug.trace("found anchor ID: ", anchorID);  //G***del
-				try
-				{
-					referenceURI=new URI(XMLBase.getBaseURI(element, getBaseURI()).toString()+URIConstants.FRAGMENT_SEPARATOR+anchorID);  //create a reference URI from the document base URI and the anchor ID	//G***make better with new URI methods
-				}
-				catch(URISyntaxException uriSyntaxException)
-				{
-//G***fix					Debug.warn(malformedURLException);  //G***fix
-					referenceURI=URI.create(getBaseURI().toString()+URLConstants.FRAGMENT_SEPARATOR_CHAR+anchorID);  //G***fix
-				}
+				referenceURI=new URI(XMLBase.getBaseURI(element, getBaseURI()).toString()+URIConstants.FRAGMENT_SEPARATOR+anchorID);  //create a reference URI from the document base URI and the anchor ID	//G***make better with new URI methods
 			}
 			else  //if there is neither a resource ID nor an anchor ID
 			{
@@ -182,7 +177,6 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 			}
 		}
 //G***del Debug.trace("resulting reference URI: ", referenceURI);  //G***del
-
 //G***del		final String anchorID=getRDFAttribute(element, ATTRIBUTE_ID); //get the anchor ID, if there is one
 		final RDFResource resource;  //we'll create a resource and store it here
 //G***del when works		final Resource resource=getRDF().locateResource(referenceURI); //get or create a new resource with the given reference URI
@@ -220,7 +214,19 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 		  addStatement(typeProperty, resource, typeValue);
 		}
 		processAttributeProperties(resource, element, DESCRIPTION_CONTEXT);  //parse the attributes for the resource description
-			//parse the child elements
+		processChildElementProperties(resource, element);	//parse the child elements as properties
+		return resource;  //return the resource we created
+	}
+
+	/**Parses the child elements of the given element and assign them as
+	  properties to the given resource.
+	@param resource The resource to which the properties should be added.
+	@param element The element that contains the attributes to be considered
+		properties.
+	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
+	*/
+	protected void processChildElementProperties(final RDFResource resource, final Element element) throws URISyntaxException
+	{
 		final URI RDF_LI_REFERENCE_URI=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, ELEMENT_LI);  //create a reference URI from the rdf:li element qualified name G***maybe make this static somewhere
 		int memberCount=0; //show that we haven't found any container members, yet
 		final NodeList childNodeList=element.getChildNodes(); //get a list of child nodes
@@ -244,7 +250,6 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 				addStatement(property, resource, propertyValuePair.getPropertyValue());
 			}
 		}
-		return resource;  //return the resource we created
 	}
 
 	/**Parses the attributes of the given element and assign them as properties
@@ -253,9 +258,12 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 	@param resource The resource to which the properties should be added.
 	@param element The element that contains the attributes to be considered
 		properties.
-	@param context The context, <code>DESCRIPTION_CONTEXT</code> or
-		<code>REFERENCE_CONTEXT</code>, describing whether the attributes are part
-		of a resource description or a resource reference.
+	@param context The context, <code>DESCRIPTION_CONTEXT</code>,
+		<code>REFERENCE_CONTEXT</code>, <code>PROPERTY_AND_NODE_CONTEXT</code>,
+		or <code>EMPTY_PROPERTY_CONTEXT</code>, describing whether the attributes
+		are part of a resource description, a resource reference, or a reference to
+		a blank node resource in short form, or the creation of a blank node from
+		an empty property element, respectively.
 	@exception URISyntaxException Thrown if an RDF URI is syntactically incorrect.
 	*/
 	protected void processAttributeProperties(final RDFResource resource, final Element element, final int context) throws URISyntaxException
@@ -280,46 +288,84 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				continue;
 			}
 				//process attributes with the "xml" prefix (or in the xml namespace) specially
-			if(XMLConstants.XML_NAMESPACE_PREFIX.equals(attributePrefix) || XMLConstants.XML_NAMESPACE_URI.equals(attributeNamespaceURI))
+			else if(XMLConstants.XML_NAMESPACE_PREFIX.equals(attributePrefix) || XMLConstants.XML_NAMESPACE_URI.equals(attributeNamespaceURI))
 			{
 					//TODO add support for xml:lang
 				continue;
 			}
 			  //ignore the rdf:about attribute in descriptions, disallow it in references
-			if(ATTRIBUTE_ABOUT.equals(attributeLocalName))
+			else if(isRDFAttribute(ATTRIBUTE_ABOUT, elementNamespaceURI, attributeNamespaceURI, attributeLocalName))
 			{
-			  if(RDF_NAMESPACE_URI.equals(attributeNamespaceURI) || (attributeNamespaceURI==null && RDF_NAMESPACE_URI.equals(elementNamespaceURI)))
+				switch(context)	//only allow this attribute in certain contexts
 				{
-					if(context==DESCRIPTION_CONTEXT)  //ignore rdf:about in descriptions
-				    continue;
-					else if(context==REFERENCE_CONTEXT) //rdf:about isn't allowed in a reference
+					case REFERENCE_CONTEXT:	//rdf:about isn't allowed in a reference
+					case EMPTY_PROPERTY_CONTEXT:	//rdf:about isn't allowed in an empty property element
+					case PROPERTY_AND_NODE_CONTEXT: 	//rdf:about isn't allowed in parseType="Resource"
 						Debug.error("rdf:about attribute is not allowed in a resource reference."); //G***fix with real exceptions
+						return;
+					case DESCRIPTION_CONTEXT:	//ignore rdf:about in descriptions
+					default:
+						continue;
 				}
 			}
 			  //ignore the rdf:ID attribute in descriptions, disallow it in references
-			if(ATTRIBUTE_ID.equals(attributeLocalName))
+			else if(isRDFAttribute(ATTRIBUTE_ID, elementNamespaceURI, attributeNamespaceURI, attributeLocalName))
 			{
-			  if(RDF_NAMESPACE_URI.equals(attributeNamespaceURI) || (attributeNamespaceURI==null && RDF_NAMESPACE_URI.equals(elementNamespaceURI)))
+				switch(context)	//only allow this attribute in certain contexts
 				{
-					if(context==DESCRIPTION_CONTEXT)  //ignore rdf:ID in descriptions
-				    continue;
-					else if(context==REFERENCE_CONTEXT) //rdf:ID isn't allowed in a reference
+					case REFERENCE_CONTEXT:	//rdf:ID isn't allowed in a reference
+					case EMPTY_PROPERTY_CONTEXT:	//rdf:ID isn't allowed in an empty property element
+					case PROPERTY_AND_NODE_CONTEXT: 	//rdf:ID isn't allowed in parseType="Resource"
 						Debug.error("rdf:ID attribute is not allowed in a resource reference."); //G***fix with real exceptions
+						return;
+					case DESCRIPTION_CONTEXT:	//ignore rdf:ID in descriptions
+					default:
+						continue;
+				}
+			}
+			  //ignore the rdf:parseType attribute in references, disallow it in descriptions
+			else if(isRDFAttribute(ATTRIBUTE_PARSE_TYPE, elementNamespaceURI, attributeNamespaceURI, attributeLocalName))
+			{
+				switch(context)	//only allow this attribute in certain contexts
+				{
+					case DESCRIPTION_CONTEXT:	//rdf:parseType isn't allowed in a description
+					case REFERENCE_CONTEXT:	//rdf:parseType isn't allowed in references
+					case EMPTY_PROPERTY_CONTEXT:	//rdf:parseType isn't allowed in an empty property element
+						Debug.error("rdf:parseType attribute is not allowed in a resource description."); //G***fix with real exceptions
+						return;
+					case PROPERTY_AND_NODE_CONTEXT: 	//ignore rdf:parseType in the property-and-node context (that's the attribute that defined this context, after all)
+					default:
+						continue;
 				}
 			}
 			  //ignore the rdf:resource attribute in reference, disallow it in descriptions
-			if(ATTRIBUTE_RESOURCE.equals(attributeLocalName))
+			else if(isRDFAttribute(ATTRIBUTE_RESOURCE, elementNamespaceURI, attributeNamespaceURI, attributeLocalName))
 			{
-			  if(RDF_NAMESPACE_URI.equals(attributeNamespaceURI) || (attributeNamespaceURI==null && RDF_NAMESPACE_URI.equals(elementNamespaceURI)))
+				switch(context)	//only allow this attribute in certain contexts
 				{
-					if(context==DESCRIPTION_CONTEXT)  //ignore rdf:ID in descriptions
-						Debug.error("rdf:resource attribute is not allowed in a resource description."); //G***fix with real exceptions
-					else if(context==REFERENCE_CONTEXT) //rdf:ID isn't allowed in a reference
-				    continue;
+					case DESCRIPTION_CONTEXT:	//rdf:resource isn't allowed in descriptions
+					case EMPTY_PROPERTY_CONTEXT:	//rdf:resource isn't allowed in an empty property element
+					case PROPERTY_AND_NODE_CONTEXT: 	//rdf:ID isn't allowed in parseType="Resource"
+						Debug.error("rdf:resource attribute is not allowed in a resource reference."); //G***fix with real exceptions
+						return;
+					case REFERENCE_CONTEXT:	//rdf:resource isn't allowed in a reference
+					default:
+						continue;
 				}
 			}
-				//add a statement to our data model in the form {attributeName, resource, attributeValue}
-		  addStatement(getRDF().locateResource(attributeNamespaceURI, attributeLocalName), resource, new Literal(attributeValue));
+			else	//for all other attributes
+			{
+				switch(context)	//only allow this attribute in certain contexts
+				{
+					case REFERENCE_CONTEXT:	//normal attributes are allowed for a normal reference
+					case PROPERTY_AND_NODE_CONTEXT: 	//normal attributes isn't allowed in the parseType="Resource" context
+						Debug.error(attribute.getName()+" attribute is not allowed in a property-and-node context."); //G***fix with real exceptions
+						return;
+					default:
+							//add a statement to our data model in the form {attributeName, resource, attributeValue}
+					  addStatement(getRDF().locateResource(attributeNamespaceURI, attributeLocalName), resource, new RDFPlainLiteral(attributeValue));
+				}
+			}
 		}
 	}
 
@@ -373,45 +419,35 @@ Debug.trace("processing attribute from value: ", attributeValue);
 					//TODO what about setting the rdf:List type of the rdf:nil resource? where would we best do that?
 			propertyValue=list!=null ? list : RDFUtilities.locateNilResource(getRDF());	//if we found no elements for the list, use the empty list resource
 		}
-			//TODO add the other parse types here
+		else if(RESOURCE_PARSE_TYPE.equals(parseType))	//if this is a resource as a property-and-node
+		{
+//G***make sure this works when we implement node IDs			  final RDFResource propertyValueResource=getRDF().locateResource(getRDF().createAnonymousReferenceURI());  //get or create a resource from a generated anonymous reference URI
+			final RDFResource propertyValueResource=getRDF().createResource(null);  //create a blank node resource
+			processAttributeProperties(propertyValueResource, element, PROPERTY_AND_NODE_CONTEXT);  //parse the property attributes, which will simply create errors if there are any unexpected attributes
+			processChildElementProperties(propertyValueResource, element);	//parse the child elements as properties
+		  propertyValue=propertyValueResource;  //the resource value is our property value
+		}
 		else	//by default assume that we're parsing a resource as the property value
 		{
 			final String referenceURIValue=getRDFAttribute(element, ATTRIBUTE_RESOURCE); //get the reference URI of the referenced resource, if there is one
 	//G***del Debug.trace("RDF attribute: ", referenceURIValue);  //G***del
 			if(referenceURIValue!=null) //if there is a reference URI
 			{
-	//G***del				//G***we need to normalize the reference URI
-			  /*G***bring back final */URI referenceURI;
-				try
-				{
-	//G***del Debug.trace("Resolving rdf:resource: ", referenceURIValue); //G***del
-						referenceURI=XMLBase.resolveURI(referenceURIValue, element, getBaseURI());  //resolve the reference URI to the base URI
-					}
-					catch(URISyntaxException uriSyntaxException)
-					{
-	//G***fix					Debug.warn(malformedURLException);  //G***fix
-						referenceURI=null; //G***fix
-	//G***fix					referenceURI=new URI(referenceURIValue); //G***fix
-					}
-	//G***del Debug.trace("found reference URI: ", referenceURI);  //G***del
+				final URI referenceURI=XMLBase.resolveURI(referenceURIValue, element, getBaseURI());  //resolve the reference URI to the base URI
 			  final RDFResource propertyValueResource=getRDF().locateResource(referenceURI); //get or create a new resource with the given reference URI
-	//G***del Debug.trace("property value resource: ", propertyValueResource);  //G***del
-	
 				processAttributeProperties(propertyValueResource, element, REFERENCE_CONTEXT);  //parse the property attributes, assigning them to the property value
 			  propertyValue=propertyValueResource;  //the resource value is our property value
-	//G***make sure there are no attributes at all
 			}
 			else if(element.getChildNodes().getLength()==0) //if there are no child elements, this is a blank node
 			{
 //G***make sure this works when we implement node IDs			  final RDFResource propertyValueResource=getRDF().locateResource(getRDF().createAnonymousReferenceURI());  //get or create a resource from a generated anonymous reference URI
-				final RDFResource propertyValueResource=getRDF().createResource(null);  //get or create a resource from a generated anonymous reference URI
-				processAttributeProperties(propertyValueResource, element, REFERENCE_CONTEXT);  //parse the property attributes, assigning them to the property value
+				final RDFResource propertyValueResource=getRDF().createResource(null);  //get or create a blank node resource
+				processAttributeProperties(propertyValueResource, element, EMPTY_PROPERTY_CONTEXT);  //parse the property attributes, assigning them to the property value
 			  propertyValue=propertyValueResource;  //the resource value is our property value
 			}
-			else  //if there is no reference URI
+			else  //if there is no reference URI, there is either a normal property description below, or a literal
 			{
 				//G***we should make sure there are no attributes
-				//G***check to if we should parse literally or not
 				Element childElement=null; //show that we haven't found any child elements, yet
 					//parse the child elements
 				final NodeList childNodeList=element.getChildNodes(); //get a list of child nodes
@@ -434,14 +470,39 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				{
 					propertyValue=processResource(childElement); //process the child element as an RDF resource, the value of the property in this case
 				}
-				else  //if we didn't find any child elements
+				else  //if we didn't find any child elements, the content is a literal
 				{
-					propertyValue=new Literal(XMLUtilities.getText(element, false));  //create a literal from the element's text
+						//get the xml:lang language tag, if there is one
+					final String languageTag=XMLUtilities.getDefinedAttributeNS(element, XMLConstants.XML_NAMESPACE_URI, XMLConstants.ATTRIBUTE_LANG);
+						//create a locale for the language if there is a language tag
+					final Locale languageLocale=languageTag!=null ? LocaleUtilities.createLocale(languageTag) : null;
+					propertyValue=new RDFPlainLiteral(XMLUtilities.getText(element, false));  //create a literal from the element's text
 				}
 			}
 		}
 //G***del Debug.trace("returning name/value pair: ", new NameValuePair(propertyResource, propertyValue)); //G***del
 		return new RDFPropertyValuePair(propertyResource, propertyValue);  //return a name/value pair consisting of the property resource (the predicate) and its value (the object)
+	}
+
+	/**Determines if an element attribute is an RDF attribute, recognizing
+		either prefixed or non-prefixed attributes.
+	@param rdfAttributeLocalName The RDF attribute name to check for. 
+	@param elementNamespaceURI The namespace of the element to which the
+		attribute belongs.
+	@param attributeNamespaceURI namespace of the RDF attribute.
+	@param attributeLocalName The local name of the RDF attribute.
+	@return <code>true</code> if this is the specified RDF attribute.
+	*/
+	protected boolean isRDFAttribute(final String rdfAttributeLocalName, final URI elementNamespaceURI, final URI attributeNamespaceURI, final String attributeLocalName)
+	{
+		if(rdfAttributeLocalName.equals(attributeLocalName))	//if the attribute has the correct local name
+		{
+			if(RDF_NAMESPACE_URI.equals(attributeNamespaceURI) || (attributeNamespaceURI==null && RDF_NAMESPACE_URI.equals(elementNamespaceURI)))
+			{
+				return true;	//show that this is the expected RDF attribute
+			}
+		}
+		return false;	//show that this attribute is not the RDF attribute expected
 	}
 
 	/**Retrieves an RDF attribute from an element, if it exists, recognizing

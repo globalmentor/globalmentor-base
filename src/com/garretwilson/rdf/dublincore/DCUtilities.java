@@ -26,7 +26,7 @@ public class DCUtilities implements DCConstants
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static Literal addCreator(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addCreator(final RDF rdf, final RDFResource resource, final String value)
 	{
 		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_CREATOR_PROPERTY_NAME, value);
 	}
@@ -38,7 +38,7 @@ public class DCUtilities implements DCConstants
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static Literal addContributor(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addContributor(final RDF rdf, final RDFResource resource, final String value)
 	{
 		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_CONTRIBUTOR_PROPERTY_NAME, value);
 	}
@@ -50,7 +50,7 @@ public class DCUtilities implements DCConstants
 	@param date The property value to add.
 	@return The added literal property value.
 	*/
-	public static Literal addDate(final RDF rdf, final RDFResource resource, final Date date)
+	public static RDFLiteral addDate(final RDF rdf, final RDFResource resource, final Date date)
 	{
 		  //G***fix
 //G***del		final DateFormat dateFormat=DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT); //G***testing
@@ -64,7 +64,7 @@ public class DCUtilities implements DCConstants
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static Literal addDescription(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addDescription(final RDF rdf, final RDFResource resource, final String value)
 	{
 		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DESCRIPTION_PROPERTY_NAME, value);
 	}
@@ -76,7 +76,7 @@ public class DCUtilities implements DCConstants
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static Literal addIdentifier(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addIdentifier(final RDF rdf, final RDFResource resource, final String value)
 	{
 		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, value);
 	}
@@ -88,7 +88,7 @@ public class DCUtilities implements DCConstants
 	@param locale The property value to add.
 	@return The added literal property value.
 	*/
-	public static Literal addLanguage(final RDF rdf, final RDFResource resource, final Locale locale)
+	public static RDFLiteral addLanguage(final RDF rdf, final RDFResource resource, final Locale locale)
 	{
 		  //G***fix
 //G***del		final DateFormat dateFormat=DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT); //G***testing
@@ -104,7 +104,7 @@ public class DCUtilities implements DCConstants
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static Literal addPublisher(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addPublisher(final RDF rdf, final RDFResource resource, final String value)
 	{
 		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_PUBLISHER_PROPERTY_NAME, value);
 	}
@@ -116,7 +116,7 @@ public class DCUtilities implements DCConstants
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static Literal addRights(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addRights(final RDF rdf, final RDFResource resource, final String value)
 	{
 		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_RIGHTS_PROPERTY_NAME, value);
 	}
@@ -128,7 +128,7 @@ public class DCUtilities implements DCConstants
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static Literal addSource(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addSource(final RDF rdf, final RDFResource resource, final String value)
 	{
 		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_SOURCE_PROPERTY_NAME, value);
 	}
@@ -140,7 +140,7 @@ public class DCUtilities implements DCConstants
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static Literal addTitle(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addTitle(final RDF rdf, final RDFResource resource, final String value)
 	{
 		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME, value);
 	}

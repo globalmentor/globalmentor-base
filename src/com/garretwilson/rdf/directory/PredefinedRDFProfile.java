@@ -78,7 +78,7 @@ public class PredefinedRDFProfile extends PredefinedProfile implements Directory
 	{
 		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//if this is the "text" value type
 		{
-			return new Literal(contentLine.getValue().toString());	//return the string value of the content line as a literal
+			return new RDFPlainLiteral(contentLine.getValue().toString());	//return the string value of the content line as a literal
 /*G***fix
 				if(contentLine.getGroup()==null && contentLine.getParamList().size()==0)	//if there is no group and no parameters
 				{

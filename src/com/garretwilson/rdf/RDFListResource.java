@@ -123,7 +123,7 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	@return The first element of the list, or <code>null</code> if the resource
 		has no first element specified.
 	@exception ClassCastException Thrown if the first element property value is
-		not a <code>RDFResource</code> (such as a <code>Literal</code>), which would
+		not a <code>RDFResource</code> (such as a <code>RDFLiteral</code>), which would
 		indicate that an incorrect value has been stored for the property.
 	*/
 	public static RDFResource getFirst(final RDFResource resource) throws ClassCastException
@@ -137,7 +137,7 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	@return The first element of this list, or <code>null</code> if there is
 		no first element specified.
 	@exception ClassCastException Thrown if the first element property value is
-		not a <code>RDFResource</code> (such as a <code>Literal</code>), which would
+		not a <code>RDFResource</code> (such as a <code>RDFLiteral</code>), which would
 		indicate that an incorrect value has been stored for the property.
 	*/
 	public RDFResource getFirst() throws ClassCastException
@@ -152,7 +152,7 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	@return The resource representing the rest of the list, or <code>null</code> if
 		the resource has no rest of the list specified.
 	@exception ClassCastException Thrown if the rest property value is
-		not a <code>RDFResource</code> (such as a <code>Literal</code>), which would
+		not a <code>RDFResource</code> (such as a <code>RDFLiteral</code>), which would
 		indicate that an incorrect value has been stored for the property.
 	*/
 	public static RDFResource getRest(final RDFResource resource) throws ClassCastException
@@ -166,7 +166,7 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	@return The resource representing the rest of the list, or <code>null</code> if
 		this resource has no rest of the list specified.
 	@exception ClassCastException Thrown if the rest property value is
-		not a <code>RDFResource</code> (such as a <code>Literal</code>), which would
+		not a <code>RDFResource</code> (such as a <code>RDFLiteral</code>), which would
 		indicate that an incorrect value has been stored for the property.
 	*/
 	public RDFResource getRest() throws ClassCastException

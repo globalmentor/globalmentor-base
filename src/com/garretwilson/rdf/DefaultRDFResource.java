@@ -48,7 +48,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		an RDF statement object with a predicate of <code>propertyResource</code>.
 	@param propertyResource The property resource.
 	@return The value of the property, either a <code>RDFResource</code> or a
-		<code>Literal</code>, or <code>null</code> if this resource has no such
+		<code>RDFLiteral</code>, or <code>null</code> if this resource has no such
 		property.
 	*/
 	public RDFObject getPropertyValue(final RDFResource propertyResource)
@@ -67,7 +67,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		an RDF statement object with a predicate of <code>propertyURI</code>.
 	@param propertyURI The reference URI of the property resource.
 	@return The value of the property, either a <code>RDFResource</code> or a
-		<code>Literal</code>, or <code>null</code> if this resource has no such
+		<code>RDFLiteral</code>, or <code>null</code> if this resource has no such
 		property.
 	*/
 	public RDFObject getPropertyValue(final URI propertyURI)
@@ -89,7 +89,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	@param namespaceURI The XML namespace URI used in the serialization.
 	@param localName The XML local name used in the serialization.
 	@return The value of the property, either a <code>RDFResource</code> or a
-		<code>Literal</code>, or <code>null</code> if this resource has no such
+		<code>RDFLiteral</code>, or <code>null</code> if this resource has no such
 		property.
 	*/
 	public RDFObject getPropertyValue(final URI namespaceURI, final String localName)
@@ -101,7 +101,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		statement objects with a predicate of <code>propertyURI</code>.
 	@param propertyURI The reference URI of the property resources.
 	@return An iterator to a read-only list of values of properties, each either a
-		<code>RDFResource</code> or a <code>Literal</code>.
+		<code>RDFResource</code> or a <code>RDFLiteral</code>.
 	*/
 	public Iterator getPropertyValueIterator(final URI propertyURI)  //G***maybe fix to make the iterator dynamic to the RDF data model
 	{
@@ -125,7 +125,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	@param namespaceURI The XML namespace URI that represents part of the reference URI.
 	@param localName The XML local name that represents part of the reference URI.
 	@return An iterator to a read-only list of values of properties, each either a
-		<code>RDFResource</code> or a <code>Literal</code>.
+		<code>RDFResource</code> or a <code>RDFLiteral</code>.
 	*/
 	public Iterator getPropertyValueIterator(final URI namespaceURI, final String localName)
 	{
@@ -208,12 +208,12 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		<p>If an equivalent property already exists, no action is taken.</p>
 	@param property A property resource; the predicate of an RDF statement.
 	@param literalValue A literal property value that will be stored in a
-		<code>Literal</code>; the object of an RDF statement.
+		<code>RDFLiteral</code>; the object of an RDF statement.
 	@return The added property value.
 	*/
-	public Literal addProperty(final RDFResource property, final String literalValue)
+	public RDFLiteral addProperty(final RDFResource property, final String literalValue)
 	{
-		return (Literal)addProperty(property, new Literal(literalValue)); //create a new literal value and store the property
+		return (RDFLiteral)addProperty(property, new RDFPlainLiteral(literalValue)); //create a new literal value and store the property
 	}
 
 	/**@return <code>true</code> if this resource is an anonymous resource;

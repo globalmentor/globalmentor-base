@@ -55,10 +55,10 @@ public class RDFUtilities implements RDFConstants
 	@param propertyLocalName The XML local name used in the serialization of the
 		property resource that is the predicate of an RDF statement.
 	@param literalValue A literal property value that will be stored in a
-		<code>Literal</code>; the object of an RDF statement.
+		<code>RDFLiteral</code>; the object of an RDF statement.
 	@return The added property value.
 	*/
-	public static Literal addProperty(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue)
+	public static RDFLiteral addProperty(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue)
 	{
 		return resource.addProperty(rdf.locateResource(propertyNamespaceURI, propertyLocalName), literalValue); //create a new literal value and store the property
 	}
@@ -206,7 +206,7 @@ public class RDFUtilities implements RDFConstants
 	@return The type value of the resource, or <code>null</code> if the resource
 		has no type specified.
 	@exception ClassCastException Thrown if the resource type property value is
-		not a <code>RDFResource</code> (such as a <code>Literal</code>), which would
+		not a <code>RDFResource</code> (such as a <code>RDFLiteral</code>), which would
 		indicate that an incorrect value has been stored for the type.
 	*/
 	public static RDFResource getType(final RDFResource resource) throws ClassCastException
@@ -235,7 +235,7 @@ public class RDFUtilities implements RDFConstants
 	@return A label representing the type of the resource, or <code>null</code>
 		if the resource has no type.
 	@exception ClassCastException Thrown if the resource type property value is
-		not a <code>RDFResource</code> (such as a <code>Literal</code>), which would
+		not a <code>RDFResource</code> (such as a <code>RDFLiteral</code>), which would
 		indicate that an incorrect value has been stored for thee type.
 	*/
 /*G***del if not needed
@@ -335,12 +335,12 @@ public class RDFUtilities implements RDFConstants
 	@param propertyLocalName The XML local name used in the serialization of the
 		property resource that is the predicate of an RDF statement.
 	@param literalValue A literal property value that will be stored in a
-		<code>Literal</code>; the object of an RDF statement.
+		<code>RDFLiteral</code>; the object of an RDF statement.
 	@return The added property value.
 	@see RDFResource#removeProperties(URI, String)
 	@see #addProperty(RDF, RDFResource, URI, String, RDFObject)
 	*/
-	public static Literal setProperty(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue)
+	public static RDFLiteral setProperty(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue)
 	{
 		resource.removeProperties(propertyNamespaceURI, propertyLocalName);	//remove all the properties with the property URI
 		return addProperty(rdf, resource, propertyNamespaceURI, propertyLocalName, literalValue);	//add and return the property 

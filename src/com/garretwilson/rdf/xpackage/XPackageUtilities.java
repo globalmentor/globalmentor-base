@@ -290,8 +290,8 @@ public class XPackageUtilities implements XPackageConstants
 //G***del Debug.trace("found location resource: ", locationResource);
 		if(locationResource!=null)  //if there this resource has a location
 		{
-			final Literal hrefLiteral=(Literal)locationResource.getPropertyValue(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.HREF);  //get the XLink href value
-	  	return hrefLiteral!=null ? hrefLiteral.getValue() : null;  //return the href value or null if there is no href
+			final RDFLiteral hrefLiteral=(RDFLiteral)locationResource.getPropertyValue(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.HREF);  //get the XLink href value
+	  	return hrefLiteral!=null ? hrefLiteral.getLexicalForm() : null;  //return the href value or null if there is no href
 		}
 		else  //if there is no location
 			return null;  //show that there is no location

@@ -5,7 +5,7 @@ import java.util.*;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.XMLSerializer;
-import com.garretwilson.util.NameValuePair;
+import com.garretwilson.util.LocaleUtilities;
 import com.garretwilson.util.Debug;
 import org.w3c.dom.*;
 
@@ -326,13 +326,15 @@ Debug.trace("looking at non-type property value: ", propertyValue);
 //G***del Debug.trace("looking at non-type property value: ", propertyValue);
 				final URI propertyNamespaceURI=getNamespaceURI(propertyResource); //get the namespace URI of the property
 				boolean serializeLiteralAttribute=false; //start out by assuming we won't serialize as an attribute
-				  //if the property value is a literal
-				if(propertyValue instanceof Literal)
+				  //see if we should use an attribute to serialize a plain literal TODO add support for typed literals
+				if(propertyValue instanceof RDFPlainLiteral)	//if this is a plain literal
 				{
 						//if we should serialize all literal property values as attributes, or if we should serialize literal property values from this namespace 
 					if(isLiteralAttributeSerialization() || isLiteralAttributeSerializationNamespaceURI(propertyNamespaceURI))
 					{
-						serializeLiteralAttribute=true;  //show that we should use an attribute
+						final RDFPlainLiteral plainLiteral=(RDFPlainLiteral)propertyValue;	//cast the value to a plain literal
+						if(plainLiteral.getLanguage()==null)	//if there is no language definition
+							serializeLiteralAttribute=true;  //show that we should use an attribute for serialization
 					}
 				}
 /*G***del
@@ -347,7 +349,7 @@ Debug.trace("looking at non-type property value: ", propertyValue);
 					final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), propertyNamespaceURI.toString());  //get the prefix for use with this namespace
 					final String qualifiedName=XMLUtilities.createQualifiedName(prefix, getLocalName(propertyResource));  //create a qualified name for the attribute
 						//store the property as an attribute
-				  element.setAttributeNS(propertyNamespaceURI.toString(), qualifiedName, ((Literal)propertyValue).getValue());
+				  element.setAttributeNS(propertyNamespaceURI.toString(), qualifiedName, ((RDFLiteral)propertyValue).getLexicalForm());
 				}
 				else  //if the value is a resource or we don't know the property's namespace URI and local name G***add more logic here later to automatically determine the namespace
 				{
@@ -393,8 +395,7 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 //G***del when works			if(valueReferenceURI==null || valueReferenceURI.indexOf("anonymous")>=0) //if this is an anonymous node G***fix the way we determine anonymous resources
 			if(valueResource.getReferenceURI()==null) //if this is a blank node
 			{
-					//G***rename allSubPropertiesLiterals
-				boolean allSubPropertiesLiterals=true; //we'll see if all the subproperties are literals; if so, we'll just add them as attributes
+				boolean serializeSubPropertyLiteralAttributes=true; //we'll see if all the subproperties are plain literals without language indications; if so, we'll just add them as attributes
 				final Iterator propertyIterator=valueResource.getPropertyIterator(); //get an iterator to all the element properties
 				while(propertyIterator.hasNext()) //while there are more properties
 				{
@@ -402,9 +403,10 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 					final RDFResource subPropertyResource=subPropertyValuePair.getProperty();  //get the property resource
 					final RDFObject subPropertyValue=subPropertyValuePair.getPropertyValue();  //get the property value
 				  final URI subPropertyNamespaceURI=getNamespaceURI(subPropertyResource); //get the namespace URI of the property
-					if(!(subPropertyValue instanceof Literal)) //if this value is not a literal
+							//if this value is not a plain literal, or the plain literal has a language indication, we can't store it in an attribute
+					if(!(subPropertyValue instanceof RDFPlainLiteral) || ((RDFPlainLiteral)subPropertyValue).getLanguage()!=null) 
 					{
-						allSubPropertiesLiterals=false; //show that all subproperties are not literals
+						serializeSubPropertyLiteralAttributes=false; //show that all subproperties are not literals
 						break;  //stop looking for a non-literal
 					}
 					else if(!isLiteralAttributeSerialization()) //if we shouldn't serialize all literal property values as attributes
@@ -413,20 +415,20 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 						{
 							if(!isLiteralAttributeSerializationNamespaceURI(subPropertyNamespaceURI)) //if we should serialize literal property values from this namespace
 							{
-								allSubPropertiesLiterals=false; //show that all subproperties are not literals, because we shouldn't serialize this literal as an attribute
+								serializeSubPropertyLiteralAttributes=false; //show that all subproperties are not literals, because we shouldn't serialize this literal as an attribute
 							}
 						}
 						else  //we couldn't check to see if we should serialize literals as attributes from this namespace; assume we can't
-							allSubPropertiesLiterals=false; //show that all subproperties are not literals, because we shouldn't serialize this one as an attribute
+							serializeSubPropertyLiteralAttributes=false; //show that all subproperties are not literals, because we shouldn't serialize this one as an attribute
 					}
 				}
-				if(allSubPropertiesLiterals)  //if all subproperties are literals, then just add them as attributes
+				if(serializeSubPropertyLiteralAttributes)  //if all subproperties are literals, then just add them as attributes
 				{
 				  addProperties(document, propertyElement, valueResource);  //add all the properties of the value resource to the element representing the property
 				}
 				else  //if not all subproperties of the anonymous element are literals, add the value resource as a subelement of the property element
 			  {
-					final Element anonymousResourceElement=createResourceElement(/*G***del if not needed rdf, */document, valueResource); //create an element from this resource
+					final Element anonymousResourceElement=createResourceElement(document, valueResource); //create an element from this resource
 					propertyElement.appendChild(anonymousResourceElement); //add the anonymous resource element to the property element
 			  }
 			}
@@ -437,10 +439,20 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 				propertyElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), resourceAttributeQualifiedName, valueReferenceURI.toString());
 			}
 		}
-		else if(propertyValue instanceof Literal)  //if the value is a literal
+		else if(propertyValue instanceof RDFLiteral)  //if the value is a literal
 		{
-			final Literal valueLiteral=(Literal)propertyValue;  //cast the value to a literal
-			XMLUtilities.appendText(propertyElement, valueLiteral.getValue());  //append the literal value as content of the property element
+			final RDFLiteral valueLiteral=(RDFLiteral)propertyValue;  //cast the value to a literal
+			XMLUtilities.appendText(propertyElement, valueLiteral.getLexicalForm());  //append the literal value as content of the property element
+			if(valueLiteral instanceof RDFPlainLiteral)	//if this is a plain literal
+			{
+				final RDFPlainLiteral valuePlainLiteral=(RDFPlainLiteral)valueLiteral;	//cast the literal to a plain literal
+				if(valuePlainLiteral.getLanguage()!=null)	//if there is a language indication
+				{
+					final String languageTag=LocaleUtilities.getLanguageTag(valuePlainLiteral.getLanguage());	//create a language tag from the locale
+						//store the language tag in the xml:lang attribute
+					propertyElement.setAttributeNS(XMLConstants.XML_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XML_NAMESPACE_PREFIX, XMLConstants.ATTRIBUTE_LANG), languageTag);
+				}
+			}	//TODO fix for typed literals, and special-case XMLLiteral to ensure correct namespace designations
 		}
 		return propertyElement; //return the property element we constructed
 	}

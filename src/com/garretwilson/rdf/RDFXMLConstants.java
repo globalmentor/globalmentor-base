@@ -23,9 +23,15 @@ public interface RDFXMLConstants
 	public final static String ATTRIBUTE_PARSE_TYPE="parseType";
 	/**The name of the rdf:resource attribute.*/
 	public final static String ATTRIBUTE_RESOURCE="resource";
+	/**The name of the rdf:datatype attribute.*/
+	public final static String ATTRIBUTE_DATATYPE="datatype";
 
 		//RDF XML attribute values
 	/**The parse type for a collection.*/
 	public final static String COLLECTION_PARSE_TYPE="Collection";
+	/**The parse type for an XML literal.*/
+	public final static String LITERAL_PARSE_TYPE="Literal";
+	/**The parse type for a resource.*/
+	public final static String RESOURCE_PARSE_TYPE="Resource";
 
 }

@@ -53,8 +53,8 @@ public class Statement
 		final RDFObject object=getObject(); //get the object of the statement
 		if(object instanceof RDFResource)  //if the object is a resource
 			stringBuffer.append('[').append(((RDFResource)object).getReferenceURI()).append(']');  //[resource]
-		else if(object instanceof Literal)  //if the object is a literal
-			stringBuffer.append('"').append(((Literal)object).getValue()).append('"'); //"literal"
+		else if(object instanceof RDFLiteral)  //if the object is a literal
+			stringBuffer.append('"').append(((RDFLiteral)object).getLexicalForm()).append('"'); //"literal"
 		else  //if we don't know what type the object is (this should never happen unless RDF is changed in the future)
 			stringBuffer.append(getObject().toString());  //let the object produce a string representing itself
 		stringBuffer.append('}');

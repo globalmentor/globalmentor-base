@@ -86,10 +86,10 @@ Debug.trace("property namespace URI: ", propertyResource.getNamespaceURI()); //G
 				final String propertyLocalName=propertyResource.getLocalName(); //get the  local name of the property
 Debug.trace("property local name: ", propertyLocalName); //G***del
 				final Object propertyValueObject=property.getValue(); //get the property value
-				if(propertyValueObject instanceof Literal)  //if the value is a literal
+				if(propertyValueObject instanceof RDFLiteral)  //if the value is a literal
 				{
 Debug.trace("property value is a literal"); //G**8del
-					final String propertyValue=((Literal)propertyValueObject).getValue(); //get the literal value of the property
+					final String propertyValue=((RDFLiteral)propertyValueObject).getLexicalForm(); //get the literal value of the property
 Debug.trace("property value: ", propertyValue); //G***del
 //G***del					Element dcElement=null; //we'll try to create an element for this Dublin Core property
 					//<package><metadata><dc-metadata><dc:Title>

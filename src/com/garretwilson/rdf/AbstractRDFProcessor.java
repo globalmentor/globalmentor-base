@@ -25,10 +25,6 @@ import org.w3c.dom.*;
 public abstract class AbstractRDFProcessor implements RDFConstants
 {
 
-	//constants for parseAttributeProperties()
-	protected static final int DESCRIPTION_CONTEXT=1;
-	protected static final int REFERENCE_CONTEXT=2;
-
 	/**The RDF data model that is filled by the processor.*/
 	private RDF rdf;
 

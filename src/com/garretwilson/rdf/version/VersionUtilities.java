@@ -15,7 +15,7 @@ public class VersionUtilities implements VersionConstants
 	@param value The property value to add.
 	@return The added literal property value.
 	*/
-	public static Literal addVersion(final RDF rdf, final RDFResource resource, final String value)
+	public static RDFLiteral addVersion(final RDF rdf, final RDFResource resource, final String value)
 	{
 		return RDFUtilities.addProperty(rdf, resource, VERSION_NAMESPACE_URI, VERSION_PROPERTY_NAME, value);
 	}
