@@ -2,10 +2,12 @@ package com.garretwilson.lang;
 
 import java.lang.reflect.*;
 
+import static com.garretwilson.lang.JavaConstants.*;
+
 /**Utilities for manipulating Java classes.
 @author Garret Wilson
 */
-public class ClassUtilities implements JavaConstants
+public class ClassUtilities
 {
 
 	/**This class cannot be publicly instantiated.*/

@@ -1,14 +1,11 @@
 package com.garretwilson.text.xml.oeb;
 
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.io.*;
 import java.net.*;
 import java.net.URI;	//G***del when other URI is removed
 import java.text.MessageFormat;
 import java.util.*;
 import javax.mail.internet.ContentType;
-import com.garretwilson.awt.ImageUtilities;
 import com.garretwilson.io.*;
 import com.garretwilson.lang.*;
 import com.garretwilson.net.*;
@@ -17,7 +14,6 @@ import com.garretwilson.rdf.dublincore.*;
 import com.garretwilson.rdf.xpackage.*;
 import com.garretwilson.text.*;
 import com.garretwilson.text.xml.*;
-import com.garretwilson.text.xml.stylesheets.XMLStyleSheetConstants;
 import com.garretwilson.text.xml.xhtml.*;
 import com.garretwilson.util.*;
 import org.w3c.dom.*;
@@ -44,7 +40,7 @@ import static com.garretwilson.text.CharacterConstants.*;
 //G***fix	with an option: Images are loaded and the width and height of their corresponding elements are updated.
 @author Garret Wilson
 */
-public class OEBPublicationCreator extends TextUtilities implements OEBConstants, OEB2Constants, DCConstants, JavaConstants, FileConstants
+public class OEBPublicationCreator extends TextUtilities implements OEBConstants, OEB2Constants, DCConstants
 {
 
 	/**The English string indicating that the author is not specified.*/

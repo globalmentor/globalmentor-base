@@ -2,10 +2,13 @@ package com.garretwilson.lang;
 
 import java.beans.Introspector;
 
+import static com.garretwilson.lang.StringBuilderUtilities.*;
+import static com.garretwilson.lang.JavaConstants.*;
+
 /**Various utilities to assist programming with language-specific Java features.
 @author Garret Wilson
 */
-public class JavaUtilities implements JavaConstants
+public class JavaUtilities
 {
 
 	/**This class cannot be publicly instantiated.*/
@@ -72,4 +75,20 @@ public class JavaUtilities implements JavaConstants
 	{
 		return Introspector.decapitalize(name); //decapitalize the name and return it
 	}
+
+	/**Illagal variable characters to be replaced when creating a valid variable name.*/
+	private final static String ILLEGAL_VARIABLE_NAME_CHARACTERS=""+PACKAGE_SEPARATOR+INTERNAL_CLASS_SEPARATOR;
+
+	/**Creates a safe Java variable name by replacing all illegal
+	 	characters with the underscore ('_') character.
+	This version only checks for the '.' and '$' characters.
+	@param string A string to convert to a variable
+	*/ 
+	public static String createVariableName(final String string)
+	{
+		final StringBuilder stringBuilder=new StringBuilder(string);
+		replace(stringBuilder, ILLEGAL_VARIABLE_NAME_CHARACTERS, '_');	//replace every '.' and '$' with '_'
+		return stringBuilder.toString();
+	}
+	
 }
