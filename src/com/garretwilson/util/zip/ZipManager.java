@@ -26,19 +26,19 @@ public class ZipManager implements URIInputStreamable
 		/**@return The file containing the zipped information.*/
 		public File getFile() {return file;}
 
-	/**The URI of the canonical zip file.*/
-	private final URI zipFileURI;
+	/**The base URI to use in determining zip entry URIs.*/
+	private final URI baseURI;
 
-		/**@return The URI of the canonical zip file.*/
-		public URI getZipFileURI() {return zipFileURI;}
+		/**@return The base URI to use in determining zip entry URIs.*/
+		public URI getBaseURI() {return baseURI;}
 
 	/**A map for storing zip entries, each keyed to a URI of what their filename
 		would be if uncompressed.*/
-	private final Map zipEntryMap=new HashMap();
+	private final Map<URI, ZipEntry> zipEntryMap=new HashMap();
 
 		/**@return A map for storing zip entries, each keyed to a URI of what their
 			filename would be if uncompressed.*/
-		protected Map getZipEntryMap() {return zipEntryMap;}
+		protected Map<URI, ZipEntry> getZipEntryMap() {return zipEntryMap;}
 
 		/**Gets the zip entry that corresponds to the given URI.
 		@param uri The URI for which a URI should be returned.
@@ -47,13 +47,12 @@ public class ZipManager implements URIInputStreamable
 		*/
 		public ZipEntry getZipEntry(final URI uri)
 		{
-			return (ZipEntry)zipEntryMap.get(uri);  //get the zip entry keyed to the given URI
+			return zipEntryMap.get(uri);  //get the zip entry keyed to the given URI
 		}
 
-		/**@return An iterator to all zip entries in the zip file in an undefined
-		  order.
+		/**@return An iterator to all zip entries in the zip file in an undefined order.
 		*/
-		public Iterator getZipEntryIterator() {return zipEntryMap.values().iterator();}
+		public Iterator<ZipEntry> getZipEntryIterator() {return zipEntryMap.values().iterator();}
 
 	/**The number of callers that have grabbed the zip file.*/
 	private int holdCount=0;
@@ -102,19 +101,16 @@ public class ZipManager implements URIInputStreamable
 	/**Constructs a zip manager to manage entries in a zip file stored in the
 		specified file.
 	@param zippedFile The file in which the zipped information is stored.
+	@param baseURI The base URI to use in determining zip entry URIs.
 	@exception IOException Thrown if there is an error accessing the given zip
 		file.
 	*/
-	public ZipManager(final File zippedFile) throws IOException
+	public ZipManager(final File zippedFile, final URI baseURI) throws IOException
 	{
 		file=zippedFile;  //store the file we're using
-		zipFileURI=file.getCanonicalFile().toURI(); //store the URI to the zip file itself
+		this.baseURI=baseURI; //store the URI to use when calculating zip entry URIs
 		loadZipEntries(); //load the zip entries
 	}
-
-
-//G***fix				final ZipFile zipFile=new ZipFile(getPublicationURL().getFile());	//create a new zip file from which to read the files
-
 
 	/**Loads and maps the entries of the zip file.
 		For each zip entry, a URI is created for the canonical filename of the
@@ -125,15 +121,15 @@ public class ZipManager implements URIInputStreamable
 	*/
 	protected void loadZipEntries() throws IOException
 	{
-		final Map zipEntryMap=getZipEntryMap(); //get the map of zip entries
+		final Map<URI, ZipEntry> zipEntryMap=getZipEntryMap(); //get the map of zip entries
 		zipEntryMap.clear();  //remove all entries from the zip entry map
 		final ZipFile zipFile=new ZipFile(getFile()); //open the zip file for reading
 		try
 		{
-			final Enumeration zipEntryEnumeration=zipFile.entries();	//get an enumeration of all the entries in the zip file
+			final Enumeration<? extends ZipEntry> zipEntryEnumeration=zipFile.entries();	//get an enumeration of all the entries in the zip file
 			while(zipEntryEnumeration.hasMoreElements())	//while there is another zip entry left
 			{
-				final ZipEntry zipEntry=(ZipEntry)zipEntryEnumeration.nextElement();	//get a reference to this zip entry
+				final ZipEntry zipEntry=zipEntryEnumeration.nextElement();	//get a reference to this zip entry
 				try
 				{
 Debug.trace("storing zip entry: ", zipEntry.getName()); //G***del
@@ -144,9 +140,9 @@ Debug.trace("storing zip entry under: ", getURI(zipEntry)); //G***del
 					packageHRef=zipEntryName;	//show that this is the first package file we found, so we'll take it to be the package file for the zip file
 */
 				}
-				catch(URISyntaxException uriSyntaxException)
+				catch(final IllegalArgumentException illegalArgumentException)	//if one of the zip entries has an invalid filename
 				{
-					final IOException ioException=new IOException(uriSyntaxException.getMessage());	//create an I/O exception from the error
+					final IOException ioException=new IOException(illegalArgumentException.getMessage());	//create an I/O exception from the error
 					ioException.initCause(ioException);	//show the cause of the syntax exception
 					throw ioException;	//throw the I/O exception representing the syntax exceptoin
 				}
@@ -191,23 +187,23 @@ Debug.trace("storing zip entry under: ", getURI(zipEntry)); //G***del
 	/**Creates a URI from the file location, based on the zip file's URI.
 	@param href The location, either a URI or a filename, of the file.
 	@return A URI representing the specified file.
-	@exception URISyntaxException Thrown if the filename is not a valid filename or URI name.
+	@exception IllegalArgumentException if the given string violates RFC&nbsp;2396.
 	@see #getZipFileURI
 	@see URIUtilities
 	*/
-	public URI getURI(final String href) throws URISyntaxException
+	public URI getURI(final String href)
 	{
-		return URIUtilities.createURI(getZipFileURI(), href);	//create a URI based upon the location of the zip file and the given file location
+		return getBaseURI().resolve(href);	//resolve the file location against the base URI to yield a full URI
 	}
 
 	/**Creates a URI to represent the given zip entry, based upon the zip entry's
 		path relative to the URI of the zip file itself.
 	@param zipEntry The zip entry for which a URI should be returned.
 	@return A URI representing the specified zip entry.
-	@exception URISyntaxException Thrown if the zip entry does not have
+	@exception IllegalArgumentException if the the zip entry does not have
 		a valid filename (a URI cannot be constructed from the filename).
 	*/
-	public URI getURI(final ZipEntry zipEntry) throws URISyntaxException
+	public URI getURI(final ZipEntry zipEntry)
 	{
 		return getURI(zipEntry.getName()); //create a URI from the zip entry name relative to the URI of the zip file itself
 	}
@@ -243,7 +239,7 @@ Debug.trace("Found zip entry: ", zipEntry.getName());	//G***del
 */
 			else  //if we can't find the file
 			{
-				throw new FileNotFoundException(uri+" cannot be found in zip file "+getZipFileURI()); //throw an exception G***i18n
+				throw new FileNotFoundException(uri+" cannot be found in zip file "+getFile()); //throw an exception G***i18n
 			}
 		}
 		finally

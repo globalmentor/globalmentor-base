@@ -7,13 +7,14 @@ import java.beans.PropertyChangeListener;
 	<li>Descriptive properties of the object.</li>
 	<li>Whether the object has been modified.</li>
 </ul>
+@param <T> The type of object the state of which is being stored.
 @author Garret Wilson
 */
-public interface ObjectState extends Modifiable
+public interface ObjectState<T> extends Modifiable
 {
 
 	/**@return The non-<code>null</code> object being described.*/
-	public Object getObject();
+	public T getObject();
 	
 	/**Sets the object being described.
 	@param object The object being described.

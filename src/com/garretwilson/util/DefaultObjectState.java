@@ -1,34 +1,32 @@
 package com.garretwilson.util;
 
 import java.util.*;
+import static com.garretwilson.lang.ObjectUtilities.*;
 
 /**A default implementation of object state information.
 <p>Each property changed using <code>setProperty</code> will fire a
 	property change event if its key is a string.</p>
+@param <T> The type of object the state of which is being stored.
 @author Garret Wilson
 @see Modifiable#MODIFIED_PROPERTY
 @see java.beans.PropertyChangeEvent
 */
-public class DefaultObjectState extends DefaultModifiable implements ObjectState	//G***maybe just store the modified value in the properties rather than having an explicit modified variable; right now, setting a property of "modified" would result in an identical property change firing
+public class DefaultObjectState<T> extends DefaultModifiable implements ObjectState<T>	//G***maybe just store the modified value in the properties rather than having an explicit modified variable; right now, setting a property of "modified" would result in an identical property change firing
 {
 	
 	/**The non-<code>null</code> object being described.*/
-	private Object object;
+	private T object;
 
 		/**@return The non-<code>null</code> object being described.*/
-		public Object getObject() {return object;}
+		public T getObject() {return object;}
 		
 		/**Sets the object being described.
 		@param object The new object to describe.
 		@exception NullPointerException Thrown if the object is <code>null</code>.
 		*/
-		protected void setObject(final Object object)
+		protected void setObject(final T object)
 		{
-			if(object==null)	//if the object is null
-			{
-				throw new NullPointerException("Object cannot be null.");	//throw an exception
-			}			
-			this.object=object;
+			this.object=checkNull(object, "Object cannot be null");
 		}
 
 	/**The map of properties.*/
@@ -78,7 +76,7 @@ public class DefaultObjectState extends DefaultModifiable implements ObjectState
 	@param object The non-<code>null</code> object being described
 	@exception NullPointerException Thrown if the object is <code>null</code>.
 	*/
-	public DefaultObjectState(final Object object)
+	public DefaultObjectState(final T object)
 	{
 		setObject(object);	//save the object
 	}
