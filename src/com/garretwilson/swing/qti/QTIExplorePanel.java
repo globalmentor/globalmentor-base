@@ -334,6 +334,7 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 	//G***del Debug.trace("navigating");  //G***del
 Debug.trace("****setting XML");  //G***del
 
+//TODO use the XMLTextPane.setXML() version if we can
 						//G***testing for style application
 			((XMLEditorKit)xmlTextPane.getEditorKit()).setXML(xmlDocument, null, new MediaType("text/xml"), swingDocument); //set the XML document in the text pane
 	//G***del Debug.trace("navigating");  //G***del
