@@ -43,6 +43,9 @@ public class ActivityPanel extends RDFPanel
 
 	/**The panel representing a list of ineractions.*/
 	protected final ListPanel interactionListPanel;
+
+	/**The panel that allows editing of the activity behavior settings.*/
+	protected final ActivityBehaviorPanel activityBehaviorPanel;
 	
 	/**@return The data model for which this component provides a view.
 	@see RDFPanel#getRDFResourceModel()
@@ -65,20 +68,8 @@ public class ActivityPanel extends RDFPanel
 	public void setModel(final Model newModel)
 	{
 		final ActivityModel activityModel=(ActivityModel)newModel;	//cast the model to an activity model
-/*G***del when works
-		book.getXMLTextPane().setURIInputStreamable(activityModel);	//make sure the text pane knows from where to get input streams
-		if(activityModel.getActivity()==null)	//if there is no activity
-		{
-			activityModel.setActivity(new Activity());	//create a new activity
-		}
-		if(activityModel.getActivity().getInteractions()==null)	//if the activity has no interactions
-		{
-			activityModel.getActivity().setInteractions(new RDFListResource());	//set a default list of interactions
-		}
-		interactionSequencePanel.setListModel(new ListListModel(activityModel.getActivity().getInteractions()));	//create a list model from the interactions to show in the sequence panel
-//G***del if not needed		interactionSequencePanel.setList(activityModel.getActivity()!=null ? activityModel.getActivity().getInteractions() : null);	//G***testing; fix
-*/
 		super.setModel(activityModel);	//set the model in the parent class
+		activityBehaviorPanel.setActivityModel(activityModel);	//set the new model in the activity behavior panel
 	}
 
 	/**Default constructor.*/
@@ -103,12 +94,13 @@ public class ActivityPanel extends RDFPanel
 	public ActivityPanel(final ActivityModel model, final boolean initialize)
 	{
 		super(model, false);	//construct the parent class without initializing it
-		addSupportedModelViews(new int[]{WYSIWYG_MODEL_VIEW, SEQUENCE_MODEL_VIEW, LIST_MODEL_VIEW});	//show that we now support WYSIWYG, sequence, and list model views, too
+		addSupportedModelViews(new int[]{WYSIWYG_MODEL_VIEW, SEQUENCE_MODEL_VIEW, LIST_MODEL_VIEW, CONFIGURATION_MODEL_VIEW});	//show that we now support WYSIWYG, sequence, list model, and configuration views, too
 		interactAction=new InteractAction();	//create an action for interacting with the activity
 		book=new Book(1);	//create a new book for the WYSIWYG view, showing only one page
 		interactionSequencePanel=new InteractionSequencePanel();	//create a new interaction sequence panel
 		interactionListComponent=new JList();	//create a new list for the interactions
 		interactionListPanel=new ListPanel(interactionListComponent, new InteractionEditStrategy());	//create a new interaction list panel
+		activityBehaviorPanel=new ActivityBehaviorPanel(model);	//create a panel for the behavior panel
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
 	}
@@ -129,6 +121,7 @@ public class ActivityPanel extends RDFPanel
 		addView(WYSIWYG_MODEL_VIEW, "Activity", book, null);	//add the book component as the WYSIWYG view G***i18n
 		addView(SEQUENCE_MODEL_VIEW, "Interaction Sequence", interactionSequencePanel, null);	//add the interaction sequence panel as the sequence view G***i18n
 		addView(LIST_MODEL_VIEW, "Interaction List", interactionListPanel, null);	//add the interaction list panel as the list view G***i18n
+		addView(CONFIGURATION_MODEL_VIEW, "Behavior", activityBehaviorPanel, null);	//add the activity behavior panel as the configuration/settings view G***i18n
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 //TODO set the book to be not editable
@@ -139,7 +132,7 @@ public class ActivityPanel extends RDFPanel
 	/**Loads the data from the model to the view, if necessary.
 	@exception IOException Thrown if there was an error loading the model.
 	*/
-	protected void loadModel() throws IOException
+	public void loadModel() throws IOException
 	{
 		super.loadModel();	//do the default loading
 		final ActivityModel model=getActivityModel();	//get the data model
@@ -214,6 +207,25 @@ public class ActivityPanel extends RDFPanel
 				}
 				break;	//TODO reset this after we change from the view
 */
+			case CONFIGURATION_MODEL_VIEW:	//if we're changing to the configuration view
+				activityBehaviorPanel.loadModel();	//tell the configuration view to load the model
+				break;
+		}
+	}
+
+	/**Stores the current data being edited to the model, if necessary.
+	@param modelView The view of the data, such as <code>SUMMARY_MODEL_VIEW</code>.
+	@exception IOException Thrown if there was an error saving the model.
+	*/
+	protected void saveModel(final int modelView) throws IOException
+	{
+		super.saveModel(modelView);	//do the default saving
+		final ActivityModel model=getActivityModel();	//get the data model
+		switch(modelView)	//see which view of data we should save
+		{
+			case CONFIGURATION_MODEL_VIEW:	//if we're saving the configuration view
+				activityBehaviorPanel.saveModel();	//tell the configuration view to save the model
+				break;
 		}
 	}
 

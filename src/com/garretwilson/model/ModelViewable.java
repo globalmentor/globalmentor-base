@@ -34,6 +34,8 @@ public interface ModelViewable
 	public final static int SUMMARY_MODEL_VIEW=6;
 	/**The view in which any source data used to generate the data is shown.*/
 	public final static int SOURCE_MODEL_VIEW=7;
+	/**The view in which configuration and settings data is shown.*/
+	public final static int CONFIGURATION_MODEL_VIEW=8;
 
 	/**@return An array of supported model views.*/
 	public int[] getSupportedModelViews();

@@ -108,7 +108,7 @@ public class QuestionPanel extends TabbedViewPanel
 	/**Loads the data from the model to the view, if necessary.
 	@exception IOException Thrown if there was an error loading the model.
 	*/
-	protected void loadModel() throws IOException
+	public void loadModel() throws IOException
 	{
 		super.loadModel();	//do the default loading
 		final QuestionModel model=getQuestionModel();	//get the data model
@@ -195,7 +195,7 @@ public class QuestionPanel extends TabbedViewPanel
 	/**Stores the current data being edited to the model, if necessary.
 	@exception IOException Thrown if there was an error loading the model.
 	*/
-	protected void saveModel() throws IOException
+	public void saveModel() throws IOException
 	{
 		super.saveModel();	//do the default saving
 		final QuestionModel model=getQuestionModel();	//get the data model
