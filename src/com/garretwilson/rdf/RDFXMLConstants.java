@@ -17,8 +17,10 @@ public interface RDFXMLConstants
 		//RDF XML attributes
 	/**The name of the rdf:about attribute.*/
 	public final static String ATTRIBUTE_ABOUT="about";
-	/**The name of the rdf:id attribute.*/
+	/**The name of the rdf:ID attribute.*/
 	public final static String ATTRIBUTE_ID="ID";
+	/**The name of the rdf:nodeID attribute.*/
+	public final static String ATTRIBUTE_NODE_ID="nodeID";
 	/**The name of the rdf:parseType attribute.*/
 	public final static String ATTRIBUTE_PARSE_TYPE="parseType";
 	/**The name of the rdf:resource attribute.*/

@@ -6,21 +6,25 @@ import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.XMLSerializer;
+import com.garretwilson.util.CollectionUtilities;
+import com.garretwilson.util.IdentityHashSet;
 import com.garretwilson.util.LocaleUtilities;
 import com.garretwilson.util.Debug;
 import org.w3c.dom.*;
 
 /**Class that creates an XML representation of RDF through DOM.
+<p>This implementation resets the node ID generator between each XML generation,
+	which means that use of the same instance of this class is not appropriate
+	for multiple generations to the same RDF instance XML document or
+	fragment.</p>
+TODO fix bug that doesn't serialize property value resources with no properties
 @author Garret Wilson
 */
 public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 {
 
-//G***del	protected final static String RDF_LI
-//G***del		RDFUtilities.createReferenceURI()
-
 	/**The map of prefixes, keyed by namespace URIs.*/
-	protected final Map namespacePrefixMap;
+	private final Map namespacePrefixMap;
 
 		/**@return The map of prefixes, keyed by namespace URI.*/
 		protected Map getNamespacePrefixMap() {return namespacePrefixMap;}
@@ -44,6 +48,83 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 		{
 			namespacePrefixMap.remove(namespaceURI);	//remove whatever prefix is registered with this namespace, if any
 		}
+
+	/**The set of resources that have been serialized, using identity rather 
+		than equality for equivalence, as required be serialization.
+	*/
+	private final Set serializedResourceSet;
+
+		/**Determines if the given resource has been serialized.
+		@param resource The resource to check.
+		@return <code>true</code> if the resource has already been serialized, else
+			<code>false</code>.
+		*/
+		protected final boolean isSerialized(final RDFResource resource)
+		{
+			return serializedResourceSet.contains(resource);	//see if the resource is in our set
+		}
+
+		/**Sets the serialized status of a given resource.
+		@param resource The resource for which the serialization status should be
+			set.
+		@param serialized <code>true</code> if the resource has been serialized,
+			or <code>false</code> if not.
+		*/
+		protected final void setSerialized(final RDFResource resource, final boolean serialized)
+		{
+			if(serialized)	//if the resource has been serialized
+			{
+				serializedResourceSet.add(resource);	//add the resource to the set of serialized resources
+			}
+			else	//if the resource has not been serialized
+			{
+				serializedResourceSet.remove(resource);	//remove the resource from the set of serialized resources
+			} 
+		}
+
+	/**A map that associates, for each resource, a set of all resources that
+		reference the that resource, using identity rather than equality for
+		equivalence.*/
+	private final Map resourceReferenceMap;
+
+		/**Returns the set of resources that reference this resource as already
+			calculated.
+		@param resource The resource for which references should be returned.
+		@return A set of all references to the resource that have been gathered
+			at an earlier time, or <code>null</code> if no references have been
+			gathered for the given resource.
+		*/
+		protected Set getReferenceSet(final RDFResource resource)
+		{
+			return (Set)resourceReferenceMap.get(resource);	//get the set of references, if any, associated with the resource
+		}
+
+	/**A map of node ID strings keyed to the resource they represent, using
+		identity rather than equality for equivalence for comparing resources.
+	*/
+	private final Map nodeIDMap;
+
+		/**Retrieves a node ID appropriate for the given resource. If the resource
+			has already been assigned a node ID, it will be returned; otherwise, a
+			new node ID will be generated.
+		@param resource The resource for which a node ID should be returned
+		@return
+		*/
+		protected String getNodeID(final RDFResource resource)
+		{
+			String nodeID=(String)nodeIDMap.get(resource);	//get a node ID for the given resource
+			if(nodeID==null)	//if there is no node ID for this resource
+			{
+				nodeID="node"+serializedResourceSet.size()+1;	//generate a node ID for the resource, based upon the number of resources already serialized
+				nodeIDMap.put(resource, nodeID);	//associate the node ID with the resource
+			}
+			return nodeID;	//return the retrieved or generated node ID
+		} 
+
+	/**Whether we're in the mode that allows us to put off serialization of some
+		resources until the very end.
+	*/
+//G***fix	private boolean isSerializationDeferable=true;
 
 	/**A general <code>rdf:type</code> property to use in comparisons.*/
 	protected final static URI TYPE_PROPERTY_REFERENCE_URI;	//initialized below
@@ -120,7 +201,18 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	public RDFXMLifier(final boolean compact)
 	{
 		namespacePrefixMap=XMLSerializer.createNamespacePrefixMap();  //create a map of default XML namespace prefixes
+		serializedResourceSet=new IdentityHashSet();	//create a map that will determine whether resources have been serialized, based upon the identity of resources
+		resourceReferenceMap=new IdentityHashMap();	//create a map of sets of referring resources for each referant resource, using identity rather than equality for equivalence
+		nodeIDMap=new IdentityHashMap();	//create a map of node IDs keyed to resources, using identity rather than equality to determine associated resource
 		setLiteralAttributeSerialization(compact);  //if we should be compact, show literals as attributes
+	}
+
+	/**Releases memory by clearing all internal maps and sets of resources.*/ 
+	protected void reset()
+	{
+		serializedResourceSet.clear();	//show that we've not serialized any resources
+		resourceReferenceMap.clear();	//clear all our references to resources
+		nodeIDMap.clear();	//clear our map of node IDs
 	}
 
 	/**Creates a default RDF XML document.
@@ -145,10 +237,19 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	*/
 	public Document createDocument(final RDF rdf, final DOMImplementation domImplementation)
 	{
-		final Document document=createDefaultRDFDocument(domImplementation);  //create a default RDF document
-		final Element rootElement=document.getDocumentElement();  //get the document element
-		createElements(rdf, rootElement); //XMLify the resource as elements under the document element
-		return document;  //return the document we created
+		reset();	//make sure we don't have information left over from other calls to this method
+		rdf.getReferences(resourceReferenceMap);	//get all the references to resources in the RDF data model
+		try
+		{
+			final Document document=createDefaultRDFDocument(domImplementation);  //create a default RDF document
+			final Element rootElement=document.getDocumentElement();  //get the document element
+			createElements(rdf, rootElement); //XMLify the resource as elements under the document element
+			return document;  //return the document we created
+		}
+		finally
+		{
+			reset();	//clean up by releasing all local references to resources
+		}
 	}
 
 	/**Creates an XML document with <code>&lt;rdf:RDF&gt;</code> as the document
@@ -160,11 +261,20 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	*/
 	public Document createDocument(final RDFResource resource, final DOMImplementation domImplementation)
 	{
-		final Document document=createDefaultRDFDocument(domImplementation);  //create a default RDF document
-		final Element rootElement=document.getDocumentElement();  //get the document element
-		final Element resourceElement=createResourceElement(document, resource); //create an element from this resource
-		rootElement.appendChild(resourceElement); //add the resource element to the root element
-		return document;  //return the document we created
+		reset();	//make sure we don't have information left over from other calls to this method
+		RDF.getReferences(resource, resourceReferenceMap);	//get all the references to the given resource
+		try
+		{
+			final Document document=createDefaultRDFDocument(domImplementation);  //create a default RDF document
+			final Element rootElement=document.getDocumentElement();  //get the document element
+			final Element resourceElement=createResourceElement(document, resource); //create an element from this resource
+			rootElement.appendChild(resourceElement); //add the resource element to the root element
+			return document;  //return the document we created
+		}
+		finally
+		{
+			reset();	//clean up by releasing all local references to resources
+		}
 	}
 
 	/**Creates the <rdf:RDF> element needed in an XML serialization of RDF.
@@ -184,10 +294,19 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	*/
 	public Element createElement(final RDF rdf, final Document document)
 	{
-			//create an <rdf:RDF> element
-		final Element rdfElement=document.createElementNS(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_RDF));
-		createElements(rdf, rdfElement); //XMLify the resourcs as elements under the RDF element
-		return rdfElement;  //return the element we constructed with RDF resources as child elements
+		reset();	//make sure we don't have information left over from other calls to this method
+		rdf.getReferences(resourceReferenceMap);	//get all the references to resources in the RDF data model
+		try
+		{
+				//create an <rdf:RDF> element
+			final Element rdfElement=document.createElementNS(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_RDF));
+			createElements(rdf, rdfElement); //XMLify the resourcs as elements under the RDF element
+			return rdfElement;  //return the element we constructed with RDF resources as child elements
+		}
+		finally
+		{
+			reset();	//clean up by releasing all local references to resources
+		}
 	}
 
 	/**Creates elements representing the given RDF data model as children of the
@@ -195,7 +314,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	@param rdf The RDF data model to XMLify.
 	@param parentElement The parent XML element of the elements to be added.
 	*/
-	public void createElements(final RDF rdf, final Element parentElement)
+	protected void createElements(final RDF rdf, final Element parentElement)
 	{
 		final Iterator rootResourceIterator=rdf.getRootResourceIterator();  //get an iterator to the root RDF resources
 		while(rootResourceIterator.hasNext()) //while there are root resources remaining
@@ -210,18 +329,13 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	@param document The document to be used as an element factory.
 	@param resource The resource for which an element should be created.
 	@return The XML element that represents the given RDF resource.
-	*/  //G***del rdf if we don't need
-	public Element createResourceElement(final Document document, final RDFResource resource)
+	*/
+	protected Element createResourceElement(final Document document, final RDFResource resource)
 	{
-//G***del Debug.trace("creating resource element for resource: ", resource);  //G***del
+		final URI referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
 		final Element resourceElement;  //we'll store here the element that we create
 		RDFResource resourceType=RDFUtilities.getType(resource); //get the type of the resource
-/*G***del when works		
-			//if the resource has a type, but we can't extract a namespace URI and local name from it G***add more logic here later to automatically determine the namespace
-		if(resourceType!=null && (resourceType.getNamespaceURI()==null || resourceType.getLocalName()==null))
-			resourceType=null;  //don't use the resource type for creating the element name
-*/
-		if(resourceType!=null)   //if thie resource has a type that we can use for the element name
+		if(resourceType!=null)   //if this resource has a type that we can use for the element name
 		{
 			final URI namespaceURI=getNamespaceURI(resourceType);	//get the type's namespace URI
 			final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), namespaceURI.toString());  //get the prefix for use with this namespace
@@ -233,16 +347,64 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 			final String qualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION);  //create a qualified name for the element
 		  resourceElement=document.createElementNS(RDF_NAMESPACE_URI.toString(), qualifiedName); //create an rdf:Description element
 		}
-		if(resource.getReferenceURI()!=null)  //if this resource has a reference URI (i.e. it isn't a blank node)
+		if(!isSerialized(resource))	//if we haven't serialized the property value resource, yet
 		{
-				//set the rdf:about attribute to the reference URI
-			final String aboutAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_ABOUT);  //create a qualified name for reference URI
-				//add the rdf:about attribute with the value set to the reference URI of the resource
-			resourceElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), aboutAttributeQualifiedName, resource.getReferenceURI().toString());
+			if(referenceURI!=null)  //if this resource has a reference URI (i.e. it isn't a blank node)
+			{
+					//set the rdf:about attribute to the reference URI
+				final String aboutAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_ABOUT);  //create a qualified name for reference URI
+					//add the rdf:about attribute with the value set to the reference URI of the resource
+				resourceElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), aboutAttributeQualifiedName, referenceURI.toString());
+			}
+			else	//if this resource has no reference URI, we'll have to give it a node ID if any other resources reference it
+			{
+				final Set referenceSet=getReferenceSet(resource);	//find out which resources reference this resource
+				if(referenceSet!=null && referenceSet.size()>1)	//if more than one resource references this resource (if there's only one reference to it, we'll just serialize it inline)
+				{
+					final String nodeID=getNodeID(resource);	//get the node ID for this resource
+						//set the rdf:nodeID attribute to the node ID
+					final String nodeIDAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_NODE_ID);  //create a qualified name for node ID
+						//add the rdf:nodeID attribute with the value set to the node ID of the resource
+					resourceElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), nodeIDAttributeQualifiedName, nodeID);
+				}
+			}
+			setSerialized(resource, true);	//show that we've serialized this resource (do this before adding properties, just in case there are circular references)
+			addProperties(document, resourceElement, resource);  //add all the properties of the resource to the resource element
 		}
-		addProperties(document, resourceElement, resource);  //add all the properties of the resource to the resource element
+		else  //if we've already serialized the resource
+		{
+			setReference(resourceElement, resource);	//reference the already-serialized resource
+		}
 		return resourceElement; //return the resource element we created
 	}
+
+	/**Sets the appropriate attributes of the given element so that the element
+		becomes a reference to the indicated resource. This will either be
+		<code>rdf:resource</code> if the resource has a reference URI, or
+		<code>rdf:nodeID</code> if the resource has no reference URI.
+	@param element The XML element which should indicate a reference to the
+		resource.
+	@param resource The resource this element should reference.
+	*/
+	protected void setReference(final Element element, final RDFResource resource)
+	{
+		final URI referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
+		if(referenceURI!=null)	//if the resource has a reference URI, reference the reference URI using rdf:resource
+		{
+			final String resourceAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_RESOURCE);  //create a qualified name for the link attribute
+				//add the rdf:resource attribute with the value set to the reference URI of the property value resource
+			element.setAttributeNS(RDF_NAMESPACE_URI.toString(), resourceAttributeQualifiedName, referenceURI.toString());
+		}
+		else	//if the object resource has no reference URI, we'll reference it using rdf:nodeID
+		{
+			final String nodeID=getNodeID(resource);	//get the node ID for this resource
+				//set the rdf:nodeID attribute to the node ID
+			final String nodeIDAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_NODE_ID);  //create a qualified name for node ID
+				//add the rdf:nodeID attribute with the value set to the node ID of the resource
+			element.setAttributeNS(RDF_NAMESPACE_URI.toString(), nodeIDAttributeQualifiedName, nodeID);
+		}
+	}
+
 
 	/**Adds all properties of the resource to the given element.
 	@param document The document to be used as an element factory.
@@ -316,6 +478,10 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 			if(localName.startsWith(CONTAINER_MEMBER_PREFIX)) //if this is one of the rdf:li_XXX members
 				localName=ELEMENT_LI; //just use the normal rdf:li property name---the order is implicit in the serialization
 		}
+
+		if("expect".equals(localName))	//G***del; debugging
+			System.out.println("found expect");
+
 		qualifiedName=XMLUtilities.createQualifiedName(prefix, localName);  //create a qualified name for the element
 		final Element propertyElement=document.createElementNS(namespaceURI.toString(), qualifiedName);  //create an element from the property resource
 		if(propertyValue instanceof RDFResource) //if the property value is a resource
@@ -336,9 +502,27 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 			else	//if this is a normal property resource value
 			{
 				final RDFResource valueResource=(RDFResource)propertyValue; //cast the value to a resource
-				final URI valueReferenceURI=valueResource.getReferenceURI(); //get the reference URI of the value
-	//G***del when works			if(valueReferenceURI==null || valueReferenceURI.indexOf("anonymous")>=0) //if this is an anonymous node G***fix the way we determine anonymous resources
-				if(valueResource.getReferenceURI()==null) //if this is a blank node
+				final Set referenceSet=getReferenceSet(valueResource);	//find out which resources reference this property value
+//G***if we're only serializing a single resource tree, the commented-out code on this line will result in missing nodes; maybe allow a setFlatSerialization option later, but that may be too flat---maybe have a setSortOfFlat()...				if(valueResource.getReferenceURI()==null) //if this is a blank node
+	/*G***fix or delete
+				if(!isSerialized(valueResource))	//if we haven't serialized the property value resource, yet
+				{
+						//if more than one resource references this resource, don't try to
+						//	choose which one gets an inline reference---defer serialization
+						//	until later
+					if(referenceSet!=null && referenceSet.size()>1 && isSerializationDeferable())	//if more than one resource references this resource (i.e. more than one property has this resource for a value) and we can defer serialization
+					{
+						deferSerialization(valueResource);	//defer serialization until later
+					}
+*/
+					//see if we should serialize inline; we'll do so if all the following are true
+					//	1. the resource is not yet serialized
+					//	2. the resource is not referenced by a list elsewhere (always defer to the list for inline serialization)
+					//	3. the resource has at least one property
+					//if all the conditions are not met, we'll only reference the resource
+				if(!isSerialized(valueResource)	//if we haven't serialized the property value resource, yet
+						&& (referenceSet==null || !CollectionUtilities.containsInstance(referenceSet, RDFListResource.class))	//if this resource is not referenced by a list
+						&& valueResource.getPropertyCount()>0)	//if this resource has at least one property 
 				{
 					boolean serializeSubPropertyLiteralAttributes=true; //we'll see if all the subproperties are plain literals without language indications; if so, we'll just add them as attributes
 					final Iterator propertyIterator=valueResource.getPropertyIterator(); //get an iterator to all the element properties
@@ -369,19 +553,18 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 					}
 					if(serializeSubPropertyLiteralAttributes)  //if all subproperties are literals, then just add them as attributes
 					{
+						setSerialized(valueResource, true);	//show that we've serialized this resource (do this before adding properties, just in case there are circular references)
 					  addProperties(document, propertyElement, valueResource);  //add all the properties of the value resource to the element representing the property
 					}
 					else  //if not all subproperties of the anonymous element are literals, add the value resource as a subelement of the property element
 				  {
-						final Element anonymousResourceElement=createResourceElement(document, valueResource); //create an element from this resource
+						final Element anonymousResourceElement=createResourceElement(document, valueResource); //create an element from this resource, which will mark the resource as serialized
 						propertyElement.appendChild(anonymousResourceElement); //add the anonymous resource element to the property element
 				  }
 				}
-				else  //if this is not an anymous mode, just link to it with rdf:resource
+				else  //if we've already serialized the property value resource or the resource is referenced by a list
 				{
-					final String resourceAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_RESOURCE);  //create a qualified name for the link attribute
-						//add the rdf:resource attribute with the value set to the reference URI of the property value resource
-					propertyElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), resourceAttributeQualifiedName, valueReferenceURI.toString());
+					setReference(propertyElement, valueResource);	//make the property XML element reference the resource rather than including the resource inline
 				}
 			}
 		}
