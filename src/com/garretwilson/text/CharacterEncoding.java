@@ -1,65 +1,51 @@
 package com.garretwilson.text;
 
-import com.garretwilson.lang.CharSequenceUtilities;
+import static com.garretwilson.lang.CharSequenceUtilities.*;
+import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.text.CharacterEncodingConstants.*;
+
+import com.garretwilson.lang.ObjectUtilities;
 
 /**Represents a character encoding and related information.
 @author Garret Wilson
+@see http://www.unicode.org/faq/utf_bom.html#BOM
 */
-public class CharacterEncoding implements CharacterEncodingConstants
+public class CharacterEncoding
 {
 
+	/**Whether a character encoding is little-endiand or big-endian.*/
+	public enum Endian{LE, BE};
+
 	/**The encoding family (UTF-8, UTF-16, or UCS-4).*/
-	private String family=UTF_8;
+	private final String family;
 
 		/**@return The encoding family (UTF-8, UTF-16, or UCS-4).*/
 		public String getFamily() {return family;}
-	
-		/**Sets the encoding family.
-		@param newFamily The encoding family, one of the constants <code>UTF8</code>,
-				<code>UTF16</code>, or <coode>UCS4</code>.*/
-		public void setFamily(final String newFamily) {family=newFamily;}
 
-	/**Whether the data is stored in littleEndian format.*/
-	private boolean littleEndian=true;
+	/**Whether the character encoding is little-endian or big-endian, or <code>null</code> if endianness is not specified.*/
+	private final Endian endian;
 
-		/**@return Whether the data is stored in littleEndian format.*/
-		public boolean isLittleEndian() {return littleEndian;}	//G***change this to use java.nioByteOrder
-	
-		/**Sets whether the data is stored in littleEndian format.
-		@param newLittleEndian <code>true</code> if the data is stored in little endian
-				format, <code>false</code> if the data is stored in big endian format or
-				if big/little-endian does not apply to the format (such as UTF-8).
-		*/
-		public void setLittleEndian(final boolean newLittleEndian) {littleEndian=newLittleEndian;}
+		/**@return Whether the character encoding is little-endian or big-endian, or <code>null</code> if endianness is not specified.*/
+		public final Endian getEndian() {return endian;}
 
 	/**The byte order mark, if any, that was used to determine this character encoding.*/
-	private byte[] bom=new byte[] {};
-
-		/**Indicates the byte order mark used to determine this encoding.
-		@param newBOM The non-<code>null</code> array of byte order mark bytes, if
-			any, that were used to determine this character encoding.
-		*/		
-		protected void setByteOrderMark(final byte[] newBOM) {bom=newBOM;}
+	private final byte[] bom;
 
 		/**The non-<code>null</code> array of byte order mark bytes, if any, that
 			were used to determine this character encoding.
 		*/
 		public byte[] getByteOrderMark() {return bom;}
 
-	/**@return The specific character encoding used; UTF-16 little endian, for example,
-		would return UTF-16LE.*/
+	/**@return The specific character encoding used; UTF-16 little endian, for example, would return UTF-16LE.*/
 	public String getEncoding()
 	{
-		final String encoding=getFamily();	//get the generic encoding type
-		if(encoding.equalsIgnoreCase(UTF_16))	//if this is some type of UTF-16
+		final StringBuilder stringBuilder=new StringBuilder(getFamily());	//get the generic encoding type
+		final Endian endian=getEndian();	//get the endianness
+		if(endian!=null)	//if endianness is specified
 		{
-			if(isLittleEndian())	//if this is little-endian UTF-16
-				return UTF_16LE;	//show that the actual encoding type is UTF-16LE
-			else	//if this is big-endian UTF-16
-				return UTF_16BE;	//show that the actual encoding type is UTF-16BE
+			stringBuilder.append(endian);	//add the endianness string
 		}
-		else	//if this is some other type
-			return encoding;	//the encoding and the family should match
+		return stringBuilder.toString();	//return the constructed encoding
 	}
 
 	/**@return A string representation of the specific character encoding used.
@@ -70,52 +56,56 @@ public class CharacterEncoding implements CharacterEncodingConstants
 		return getEncoding();	//return the encoding
 	}
 
-	/**Default constructor which creates a character encoding with UTF-8 stored in
-		little endian format.*/
-	public CharacterEncoding()
-	{
-		this(UTF_8, true);	//create the object with the default values
-	}
-
 	/**Creates a new character encoding from an encoding string.
-	@param encoding The encoding string, specifying big or little-endian if
-		appropriate.
-	@param newLittleEndian <code>true</code> if the data is stored in little endian
-		format, <code>false</code> if the data is stored in big endian format or
-		if big/little-endian does not apply to the format (such as UTF-8).
+	The character encoding will be given the canonical byte order mark for this family and endianness, if appropriate.
+	@param encoding The encoding string, specifying big or little-endian if appropriate.
+	@see #getByteOrderMark(String, Endian)
+	@exception NullPointerException if the encoding is <code>null</code>.
 	*/
 	public CharacterEncoding(final String encoding)
 	{
-		this(getFamily(encoding), isLittleEndian(encoding));	//parse out the family and endianness and construct the class
+		this(getFamily(encoding), getEndian(encoding));	//parse out the family and endianness and construct the class
+	}
+
+	/**Creates a new character encoding from an encoding string and a byte order mark.
+	@param encoding The encoding string, specifying big or little-endian if appropriate.
+	@param bom The non-<code>null</code> array of byte order mark bytes, if
+		any, that were used to determine this character encoding.
+	@exception NullPointerException if the encoding or byte order mark is <code>null</code>.
+	*/
+	public CharacterEncoding(final String encoding, final byte[] bom)
+	{
+		this(getFamily(encoding), getEndian(encoding), bom);	//parse out the family and endianness and construct the class
 	}
 
 	/**Creates a new character encoding with a family and byte order.
-	@param newFamily The encoding family, one of the constants <code>UTF8</code>,
-			<code>UTF16</code>, or <coode>UCS4</code>.
-	@param newLittleEndian <code>true</code> if the data is stored in little endian
-		format, <code>false</code> if the data is stored in big endian format or
-		if big/little-endian does not apply to the format (such as UTF-8).
+	The character encoding will be given the canonical byte order mark for this family and endianness, if appropriate.
+	@param family The encoding family, one of the constants <code>UTF8</code>,
+		<code>UTF16</code>, or <coode>UCS4</code>.
+	@param endian Whether the character encoding is little-endian or big-endian,
+		or <code>null</code> if endianness is not specified.
+	@exception NullPointerException if the family is <code>null</code>.
+	@see #getByteOrderMark(String, Endian)
 	*/
-	public CharacterEncoding(final String newFamily, final boolean newLittleEndian)
+	public CharacterEncoding(final String family, final Endian endian)
 	{
-		this(newFamily, newLittleEndian, new byte[]{});	//construct a character encoding with no byte order mark
+		this(family, endian, getByteOrderMark(family, endian));	//construct a character encoding with no byte order mark
 	}
 
-	/**Creates a new character encoding with a family, byte order, and byte
-		order mark.
-	@param newFamily The encoding family, one of the constants <code>UTF8</code>,
-			<code>UTF16</code>, or <coode>UCS4</code>.
-	@param newLittleEndian <code>true</code> if the data is stored in little endian
-			format, <code>false</code> if the data is stored in big endian format or
-			if big/little-endian does not apply to the format (such as UTF-8).
-	@param newBOM The non-<code>null</code> array of byte order mark bytes, if
+	/**Creates a new character encoding with a family, byte order, and byte order mark.
+	@param family The encoding family, one of the constants <code>UTF8</code>,
+		<code>UTF16</code>, or <coode>UCS4</code>.
+	@param endian Whether the character encoding is little-endian or big-endian,
+		or <code>null</code> if endianness is not specified.
+	@param bom The non-<code>null</code> array of byte order mark bytes, if
 		any, that were used to determine this character encoding.
+	@exception NullPointerException if the family or byte order mark is <code>null</code>.
 	*/
-	protected CharacterEncoding(final String newFamily, final boolean newLittleEndian, final byte[] bom)
+	public CharacterEncoding(final String family, final Endian endian, final byte[] bom)
 	{
-		setFamily(newFamily);	//set the character encoding family
-		setLittleEndian(newLittleEndian);	//set the byte order
-		setByteOrderMark(bom);	//store the byte order mark used to determine this character encoding
+		this.family=checkNull(family, "Character encoding family must be given.");	//set the character encoding family
+		this.endian=endian;	//set the endianness
+		this.bom=checkNull(bom, "Non-null byte order mark must be provided.");	//store the byte order mark used to determine this character encoding
 	}
 
 	/**Determines the family from a complete encoding name.
@@ -124,35 +114,67 @@ public class CharacterEncoding implements CharacterEncodingConstants
 	*/
 	public static String getFamily(final String encoding)
 	{
-		if(CharSequenceUtilities.endsWithIgnoreCase(encoding, "LE") || CharSequenceUtilities.endsWithIgnoreCase(encoding, "BE"))	//TODO use constants
-		{
-			return encoding.substring(0, encoding.length()-2);	//TODO comment
-		}
-		else
-			return encoding;	//TODO comment
+		final Endian endian=getEndian(encoding);	//get the endianness of the encoding
+			//if endianness is specified, remove that part from the string
+		return endian!=null ? encoding.substring(0, encoding.length()-endian.toString().length()) : encoding;
 	}
 
 	/**Determines the endianness of the given encoding.
 	@param encoding The encoding string.
-	@return The family name, without specifying endianness.
-	@param newLittleEndian <code>true</code> if the encoding specifies little
-		format, <code>false</code> if the data is stored in big endian format or
-		if big/little-endian does not apply to the format (such as UTF-8) or is
-		not specified.
+	@return Whether the character encoding is little-endian or big-endian,
+		or <code>null</code> if endianness is not specified.
 	*/
-	public static boolean isLittleEndian(final String encoding)
+	public static Endian getEndian(final String encoding)
 	{
-		return CharSequenceUtilities.endsWithIgnoreCase(encoding, "LE");	//return whether the encoding specifies little-endian TODO use a constant
+		for(final Endian endian:Endian.values())	//for each possible endian value
+		{
+			if(endsWithIgnoreCase(encoding, endian.toString()))	//if the encoding ends with this endian value
+			{
+				return endian;	//return this endianness
+			}
+		}
+		return null;	//show that the encoding does not specify and endianness
+	}
+
+	/**Determines the canonical byte order mark for representing this character encoding.
+	For UTF-16 and UCS-4, if no byte order is present then little-endian is assumed.
+	@param family The encoding family, such as one of the constants <code>UTF_8</code>,
+		<code>UTF_16</code>, or <coode>UCS4</code>.
+	@param endian Whether the character encoding is little-endian or big-endian,
+		or <code>null</code> if endianness is not specified.
+	@return The canonical byte order mark for representing this family and byte order,
+	 	which can be an empty array if there is no preferred byte order mark for this encoding.
+	@see CharacterEncodingConstants#NO_BOM
+	*/ 
+	public static byte[] getByteOrderMark(final String family, final Endian endian)
+	{
+		if(UTF_8.equalsIgnoreCase(family))	//UTF-8
+		{
+			return BOM_UTF_8;	//UTF-8 has only one BOM
+		}
+		else if(UTF_16.equalsIgnoreCase(family))	//UTF-16
+		{
+			return endian==Endian.BE ? BOM_UTF_16_BIG_ENDIAN : BOM_UTF_16_LITTLE_ENDIAN;	//return the correct BOM based upon endianness
+		}
+		else if(UCS_4.equalsIgnoreCase(family))	//UTF-32
+		{
+			return endian==Endian.BE ? BOM_UTF_32_BIG_ENDIAN : BOM_UTF_32_LITTLE_ENDIAN;	//return the correct BOM based upon endianness
+		}
+		else	//if we don't have a BOM for the encoding
+		{
+			return NO_BOM;	//return no BOM
+		}
 	}
 
 	/**@return The number of bytes used for each character for this encoding family.*/
 	public int getBytesPerCharacter()
 	{
-		if(getFamily().equalsIgnoreCase(UTF_8))	//if the encoding family is UTF-8
+		final String family=getFamily();	//get the family of this encoding TODO should we store this in canonical form, or always compare case insensitively
+		if(UTF_8.equalsIgnoreCase(family))	//if the encoding family is UTF-8
 			return 1;	//UTF-8 has one byte per character
-		else if(getFamily().equalsIgnoreCase(UTF_16))	//if the encoding family is UTF-16
+		else if(UTF_16.equalsIgnoreCase(family))	//if the encoding family is UTF-16
 			return 2;	//UTF-16 has two bytes per character
-		else if(getFamily().equalsIgnoreCase(UCS_4))	//if the encoding family is UCS-4
+		else if(UCS_4.equalsIgnoreCase(family))	//if the encoding family is UCS-4
 			return 4;	//UCS-4 has four bytes per character
 		else	//there should be no other encoding families, but just in case
 			return 1;	//the default is one byte per character
@@ -197,17 +219,17 @@ public class CharacterEncoding implements CharacterEncodingConstants
 	public static CharacterEncoding create(final byte[] byteOrderMarkArray)
 	{
 		if(isByteOrderMark(byteOrderMarkArray, BOM_UTF_16_BIG_ENDIAN))	//FE FF: UTF-16, big endian
-			return new CharacterEncoding(UTF_16, false, BOM_UTF_16_BIG_ENDIAN);	//construct and return the correct character encoding object
+			return new CharacterEncoding(UTF_16, Endian.BE, BOM_UTF_16_BIG_ENDIAN);	//construct and return the correct character encoding object
 		else if(isByteOrderMark(byteOrderMarkArray, BOM_UTF_16_LITTLE_ENDIAN))	//FF FE: UTF-16, little endian
-			return new CharacterEncoding(UTF_16, true, BOM_UTF_16_LITTLE_ENDIAN);	//construct and return the correct character encoding object
+			return new CharacterEncoding(UTF_16, Endian.LE, BOM_UTF_16_LITTLE_ENDIAN);	//construct and return the correct character encoding object
 		else if(isByteOrderMark(byteOrderMarkArray, BOM_UTF_8))	//EF BB BF: UTF-8
-			return new CharacterEncoding(UTF_8, true, BOM_UTF_8);	//construct and return the correct character encoding object G***change this to a null ByteOrder object
+			return new CharacterEncoding(UTF_8, null, BOM_UTF_8);	//construct and return the correct character encoding object G***change this to a null ByteOrder object
 		else	//if we don't recognize the byte order mark
 			return null;  //show that we didn't find a byte order mark, and thus cannot construct a character encoding object
 	}
 
 	/**Creates a <code>CharacterEncoding</code> object from the given Byte Order Mark or,
-			if a true Byte Order Mark is not present, by comparing the bytes to expected characters.
+	 	if a true Byte Order Mark is not present, by comparing the bytes to expected characters.
 	@param byteOrderMarkArray The array of bytes representing the Byte Order Mark.
 	@param expectedCharacters The characters expected, regardless of the encoding method used. At least four characters should included.
 	@return The character encoding object from the given Byte Order Mark, or if no
@@ -215,7 +237,7 @@ public class CharacterEncoding implements CharacterEncodingConstants
 		to the expected characters, or <code>null</code> if neither method can determine
 		a character encoding.
 	*/
-	public static CharacterEncoding create(final byte[] byteOrderMarkArray, final String expectedCharacters)
+	public static CharacterEncoding create(final byte[] byteOrderMarkArray, final String expectedCharacters)	//TODO maybe allow a default eight-bit encoding to be specified
 	{
 		CharacterEncoding characterEncoding=create(byteOrderMarkArray);	//check the byte order mark by itself; if there is no Byte Order Mark, this will return null
 		if(characterEncoding==null)  //if no byte order mark was found, try to compare characters with what is expected
@@ -225,10 +247,10 @@ public class CharacterEncoding implements CharacterEncodingConstants
 				final char firstExpectedChar=expectedCharacters.charAt(0);	//find the first character they were expecting
 				if(byteOrderMarkArray[0]==0x00 && byteOrderMarkArray[1]==0x00
 						&& byteOrderMarkArray[2]==0x00 && byteOrderMarkArray[3]==(byte)firstExpectedChar)	//00 00 00 X1: UCS-4, big-endian (1234 order)
-					return new CharacterEncoding(UCS_4, false);	//construct and return the correct character encoding object
+					return new CharacterEncoding(UCS_4, Endian.BE, NO_BOM);	//construct and return the correct character encoding object; no byte order mark was found
 				if(byteOrderMarkArray[0]==(byte)firstExpectedChar && byteOrderMarkArray[1]==0x00
 						&& byteOrderMarkArray[2]==0x00 && byteOrderMarkArray[3]==0x00)	//X1 00 00 00: UCS-4, little-endian (4321 order)
-					return new CharacterEncoding(UCS_4, true);	//construct and return the correct character encoding object
+					return new CharacterEncoding(UCS_4, Endian.LE, NO_BOM);	//construct and return the correct character encoding object; no byte order mark was found
 	/*G***maybe fix this later for unusual byte orders
 				if(byteOrderMarkArray[0]==0x00 && byteOrderMarkArray[1]==0x00
 						&& byteOrderMarkArray[2]==(byte)firstExpectedChar && byteOrderMarkArray[3]==0x00)	//00 00 X1 00: UCS-4, 2143 order
@@ -240,22 +262,44 @@ public class CharacterEncoding implements CharacterEncodingConstants
 					final char secondExpectedChar=expectedCharacters.charAt(1);	//find the second character they were expecting
 					if(byteOrderMarkArray[0]==0x00 && byteOrderMarkArray[1]==(byte)firstExpectedChar
 							&& byteOrderMarkArray[2]==0x00 && byteOrderMarkArray[3]==(byte)secondExpectedChar)	//00 X1 00 X2: UTF-16, big-endian, no Byte Order Mark
-						return new CharacterEncoding(UTF_16, false);	//construct and return the correct character encoding object
+						return new CharacterEncoding(UTF_16, Endian.BE, NO_BOM);	//construct and return the correct character encoding object; no byte order mark was found
 					if(byteOrderMarkArray[0]==(byte)firstExpectedChar && byteOrderMarkArray[1]==0x00
 							&& byteOrderMarkArray[2]==(byte)secondExpectedChar && byteOrderMarkArray[3]==0x00)	//X1 00 X2 00: UTF-16, little-endian, no Byte Order Mark
-						return new CharacterEncoding(UTF_16, true);	//construct and return the correct character encoding object
+						return new CharacterEncoding(UTF_16, Endian.LE, NO_BOM);	//construct and return the correct character encoding object; no byte order mark was found
 					if(expectedCharacters.length()>=4)	//if we have at least four character with which to compare the bytes in the array
 					{
 						final char thirdExpectedChar=expectedCharacters.charAt(2);	//find the third character they were expecting
 						final char fourthExpectedChar=expectedCharacters.charAt(3);	//find the fourth character they were expecting
 						if(byteOrderMarkArray[0]==(byte)firstExpectedChar && byteOrderMarkArray[1]==(byte)secondExpectedChar
 								&& byteOrderMarkArray[2]==(byte)thirdExpectedChar && byteOrderMarkArray[3]==(byte)fourthExpectedChar)	//X1 X2 X3 X4: UTF-8 (or similar), no Byte Order Mark
-							return new CharacterEncoding(UTF_8, false);	//construct and return the correct character encoding object (although the big-endian/little-endian byte order flag is meaningless here)
+							return new CharacterEncoding(UTF_8, null, NO_BOM);	//construct and return the correct character encoding object; no byte order mark was found
 					}
 				}
 			}
 		}
 		return characterEncoding; //return whatever character encoding was found (which may be null)
+	}
+
+	/**@return <code>true</code> if the given object is another character encoding with the same family and endianness.*/
+	public boolean equals(final Object object)
+	{
+		if(object instanceof CharacterEncoding)	//if the object is a character encoding
+		{
+			final CharacterEncoding characterEncoding=(CharacterEncoding)object;	//get the encoding as a character encoding object			
+			return getFamily().equals(characterEncoding.getFamily())	//compare encoding family
+					&& ObjectUtilities.equals(getEndian(), characterEncoding.getEndian());	//compare endianness
+		}
+		else	//if the character is not a character encoding
+		{
+			return false;	//the object is not equal to this one
+		}
+	}
+
+
+	/**@return A hashcode value constructed from the encoding string.*/
+	public int hashCode()
+	{
+		return getEncoding().hashCode();  //return the hash code of the encoding
 	}
 
 }

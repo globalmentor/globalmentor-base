@@ -17,7 +17,7 @@ import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.swing.text.xml.qti.QTIViewFactory;
 import com.garretwilson.swing.tree.*;
 import com.garretwilson.swing.qti.tree.*;
-import com.garretwilson.text.CharacterEncoding;
+import static com.garretwilson.text.CharacterEncodingConstants.*;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.assess.qti.*;
@@ -291,9 +291,7 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 			//setup the source view
 			try
 			{
-				final ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();  //create a byte array output string in which to store the source
-				xmlSerializer.serialize(xmlDocument.getDocumentElement(), byteArrayOutputStream, CharacterEncoding.UTF_8); //serialize the XML into the byte array using UTF-8
-				final String qtiXMLString=new String(byteArrayOutputStream.toByteArray(), CharacterEncoding.UTF_8); //create a string from the byte representation of the QTI XML
+				final String qtiXMLString=xmlSerializer.serialize(xmlDocument.getDocumentElement());	//serialize the document element to a string
 				sourceTextArea.setText(qtiXMLString); //put the QTI XML source in the preview window
 				sourceTextArea.setCaretPosition(0);  //scroll to the top of the text
 			}

@@ -1,12 +1,10 @@
 package com.garretwilson.rdf;
 
 import java.io.*;
-import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.util.Debug;
-import com.garretwilson.util.LocaleText;
 
 import org.w3c.dom.*;
 
@@ -36,11 +34,7 @@ public class RDFXMLLiteral extends RDFTypedLiteral
 		try
 		{
 			final XMLSerializer xmlSerializer=new XMLSerializer(false);	//create an unformatted XML serializer
-				//create a new byte array output stream in which to serialize the contents of the document fragment
-			final ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
-				//serialize the document fragment into the stream using UTF-8 encoding
-			xmlSerializer.serializeContent(getDocumentFragment(), byteArrayOutputStream, CharacterEncoding.UTF_8);
-			return byteArrayOutputStream.toString(CharacterEncoding.UTF_8);	//convert the serialized content to a string and return it
+			return xmlSerializer.serialize(getDocumentFragment());	//serialize the document fragment into a string and return that string
 		}
 		catch(IOException ioException)	//if there are any IO errors (this should never happen)
 		{

@@ -6,12 +6,12 @@ import java.util.*;
 import javax.mail.internet.ContentType;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.DCConstants;
-import com.garretwilson.rdf.xeb.XEBUtilities;
 import com.garretwilson.rdf.xpackage.MIMEOntologyUtilities;
 import com.garretwilson.rdf.xpackage.XPackageUtilities;
+import static com.garretwilson.text.CharacterEncodingConstants.*;
+
 import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.text.xml.XMLConstants;
-import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.util.*;
@@ -29,7 +29,7 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 	}
 
 	/**Serializes the package for the specified publication to the given output
-		stream using the UTF-8 encoding.
+		stream using the UTF-8 encoding with the UTF-8 byte order mark.
 	@param publication The OEB publication to serialize.
 	@param outputStream The stream into which the document should be serialized.
 	@exception IOException Thrown if an I/O error occurred.
@@ -37,18 +37,19 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 	*/
 	public static void serialize(final OEBPublication publication, final OutputStream outputStream) throws UnsupportedEncodingException, IOException
 	{
-		serialize(publication, outputStream, CharacterEncoding.UTF_8);	//serialize the publication, defaulting to UTF-8
+		serialize(publication, outputStream, UTF_8_ENCODING);	//serialize the publication, defaulting to UTF-8
 	}
 
 	/**Serializes the package for the specified publication to the given output
 		stream using the specified encoding.
+	Any byte order mark specified in the character encoding will be written to the stream.
 	@param publication The OEB publication to serialize.
 	@param outputStream The stream into which the document should be serialized.
 	@param encoding The encoding format to use when serializing.
 	@exception IOException Thrown if an I/O error occurred.
 	@exception UnsupportedEncodingException Thrown if the specified encoding is not recognized.
 	*/
-	public static void serialize(final OEBPublication publication, final OutputStream outputStream, final String encoding) throws IOException, UnsupportedEncodingException
+	public static void serialize(final OEBPublication publication, final OutputStream outputStream, final CharacterEncoding encoding) throws IOException, UnsupportedEncodingException
 	{
 		final Document packageDocument=generatePackage(publication); //generate an XML document representing the publication package
 		final Properties serializeOptions=new Properties(); //create properties for the serialization options
