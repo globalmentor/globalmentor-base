@@ -8,7 +8,7 @@ import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.BorderUtilities;
-import com.garretwilson.text.xml.XMLModel;
+import com.garretwilson.text.xml.XMLDocumentFragmentModel;
 import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 
 /**Panel for editing a MAQRO question.
@@ -65,7 +65,7 @@ public class QuestionPanel extends TabbedViewPanel
 		setDefaultDataView(DEFAULT_DEFAULT_MODEL_VIEW);	//set the default data view
 		queryPanel=new BasicPanel(new BasicGridBagLayout());	//create the query panel
 		queryLabel=new JLabel();
-		queryXMLPanel=new XMLPanel(new XMLModel(), XHTMLConstants.XHTML_CONTENT_TYPE);	//TODO set the base URI and URIInputStreamable 
+		queryXMLPanel=new XMLPanel(new XMLDocumentFragmentModel(), XHTMLConstants.XHTML_CONTENT_TYPE);	//TODO set the base URI and URIInputStreamable 
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
 	}
