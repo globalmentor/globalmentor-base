@@ -112,7 +112,7 @@ public class RDFSequenceResource extends RDFContainerResource implements Compara
 	}
 */
 
-	/**Compares two <code>NameValuePair</code> objectsfor order. Returns a
+	/**Compares two <code>NameValuePair</code> objects for order. Returns a
 		negative integer, zero, or a positive integer as the first argument is less
 		than, equal to, or greater than the second.
 		<p>The name of the object is interpreted to be an RDF container property

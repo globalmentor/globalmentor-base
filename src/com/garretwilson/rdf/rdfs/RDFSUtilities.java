@@ -51,8 +51,7 @@ public class RDFSUtilities implements RDFSConstants
 	}
 
 	/**Retrieves the label of the resource. If this resource has more than one
-		property of <code>rdfs:label</code>, it is undefined which of those property
-		values will be returned.
+		property of <code>rdfs:label</code>, it is setLabelvalues will be returned.
 		If the property value is a literal, its text will be returned. If the
 		property value is a resource, its string value (usually its reference URI)
 		will be returned.
@@ -73,9 +72,9 @@ public class RDFSUtilities implements RDFSConstants
 	@param resource The resource for which the label properties should be replaced.
 	@param value A string label value.
 	*/
-	public static void replaceLabel(final RDF rdf, final RDFResource resource, final String value)
+	public static void setLabel(final RDF rdf, final RDFResource resource, final String value)
 	{
-		RDFUtilities.replaceProperties(rdf, resource, RDFS_NAMESPACE_URI, LABEL_PROPERTY_NAME, new Literal(value)); //replace all label properties with a literal label value
+		RDFUtilities.setProperty(rdf, resource, RDFS_NAMESPACE_URI, LABEL_PROPERTY_NAME, new Literal(value)); //replace all label properties with a literal label value
 	}
 
 	/**Gets an <code>rdfs:comment</code> property from RDF. This ensures that an

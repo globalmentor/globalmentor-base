@@ -12,7 +12,7 @@ import org.w3c.dom.*;
 /**Class that creates an XML representation of RDF through DOM.
 @author Garret Wilson
 */
-public class RDFXMLifier implements RDFConstants
+public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 {
 
 //G***del	protected final static String RDF_LI
@@ -592,6 +592,6 @@ Debug.trace("prefix: ", prefix); //G***del
 	
 	static
 	{
-		TYPE_PROPERTY=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, TYPE);	//initialize the RDF type property URI
+		TYPE_PROPERTY=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME);	//initialize the RDF type property URI
 	}
 }

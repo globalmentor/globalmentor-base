@@ -47,7 +47,7 @@ public class XPackageUtilities implements XPackageConstants
 	public static RDFBagResource addManifest(final RDF rdf, final RDFResource resource)
 	{
 		  //create an anonymous manifest resource from the data model
-		final RDFBagResource manifestResource=(RDFBagResource)rdf.createResource(null, RDFConstants.RDF_NAMESPACE_URI, RDFConstants.ELEMENT_BAG);
+		final RDFBagResource manifestResource=(RDFBagResource)rdf.createResource(null, RDFConstants.RDF_NAMESPACE_URI, RDFConstants.BAG_TYPE_NAME);	//G***maybe creaate a utility method for this
 			//add the manifest property to the resource
 		RDFUtilities.addProperty(rdf, resource, XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME, manifestResource);
 		return manifestResource;  //return the manifest resource we created
@@ -61,7 +61,7 @@ public class XPackageUtilities implements XPackageConstants
 	public static RDFSequenceResource addOrganization(final RDF rdf, final RDFResource resource)
 	{
 		  //create an anonymous organization resource from the data model
-		final RDFSequenceResource organizationResource=(RDFSequenceResource)rdf.createResource(null, RDFConstants.RDF_NAMESPACE_URI, RDFConstants.ELEMENT_SEQ);
+		final RDFSequenceResource organizationResource=(RDFSequenceResource)rdf.createResource(null, RDFConstants.RDF_NAMESPACE_URI, RDFConstants.SEQ_TYPE_NAME);	//G***maybe create a utility method for this
 			//add the organization property to the resource
 		RDFUtilities.addProperty(rdf, resource, XPACKAGE_NAMESPACE_URI, ORGANIZATION_PROPERTY_NAME, organizationResource);
 		return organizationResource;  //return the organization resource we created

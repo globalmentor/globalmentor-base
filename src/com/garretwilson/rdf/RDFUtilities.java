@@ -115,7 +115,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static RDFResource locateTypeProperty(final RDF rdf)
 	{
-		return rdf.locateResource(RDF_NAMESPACE_URI, TYPE); //get an rdf:type resource
+		return rdf.locateResource(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //get an rdf:type resource
 	}
 
 	/**Retrieves a label appropriate for the reference URI of the resource. If the
@@ -196,7 +196,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static RDFResource getType(final RDFResource resource) throws ClassCastException
 	{
-		return (RDFResource)resource.getPropertyValue(RDF_NAMESPACE_URI, TYPE); //return the type property
+		return (RDFResource)resource.getPropertyValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //return the type property
 	}
 	
 	/**Returns an iterator to each property of <code>rdf:type</code>.
@@ -207,7 +207,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static Iterator getTypeIterator(final RDFResource resource)
 	{
-		return resource.getPropertyValueIterator(RDF_NAMESPACE_URI, TYPE); //return an iterator to the type properties		
+		return resource.getPropertyValueIterator(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //return an iterator to the type properties		
 	}
 	
 	/**Retrieves a label appropriate for the type of the resource. If the type
@@ -257,7 +257,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static boolean isType(final RDFResource resource, final URI typeURI)
 	{
-		return resource.hasPropertyValue(RDF_NAMESPACE_URI, TYPE, typeURI); //determine if the resource has a type property of the given URI
+		return resource.hasPropertyValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME, typeURI); //determine if the resource has a type property of the given URI
 	}
 
 	/**Determines whether a given resource is of a particular type.
@@ -269,7 +269,17 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static boolean isType(final RDFResource resource, final URI typeNamespaceURI, final String typeLocalName)
 	{
-		return resource.hasPropertyValue(RDF_NAMESPACE_URI, TYPE, RDFUtilities.createReferenceURI(typeNamespaceURI, typeLocalName)); //determine if the resource has a type property of the URI from the given namespace and local name
+		return resource.hasPropertyValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME, RDFUtilities.createReferenceURI(typeNamespaceURI, typeLocalName)); //determine if the resource has a type property of the URI from the given namespace and local name
+	}
+
+	/**Retreives a nil list resource from the data model, or creates one and
+		adds it if one does not exist in the data model.
+	@param rdf The RDF data model in which to locate the resource.
+		@return A list resource with the reference URI &amp;rdf;nil. 
+	*/
+	public static RDFResource locateNilResource(final RDF rdf)
+	{
+		return rdf.locateResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//locate the nil resource
 	}
 	
 	/**Sets a property by first removing all such properties and then adding
@@ -285,7 +295,7 @@ public class RDFUtilities implements RDFConstants
 	@see RDFResource#removeProperties(URI, String)
 	@see #addProperty(RDF, RDFResource, URI, String, RDFObject)
 	*/
-	public static RDFObject replaceProperties(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final RDFObject value)
+	public static RDFObject setProperty(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final RDFObject value)
 	{
 		resource.removeProperties(propertyNamespaceURI, propertyLocalName);	//remove all the properties with the property URI
 		return addProperty(rdf, resource, propertyNamespaceURI, propertyLocalName, value);	//add and return the property 
@@ -306,7 +316,7 @@ public class RDFUtilities implements RDFConstants
 	@see RDFResource#removeProperties(URI, String)
 	@see #addProperty(RDF, RDFResource, URI, String, RDFObject)
 	*/
-	public static Literal replaceProperty(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue)
+	public static Literal setProperty(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue)
 	{
 		resource.removeProperties(propertyNamespaceURI, propertyLocalName);	//remove all the properties with the property URI
 		return addProperty(rdf, resource, propertyNamespaceURI, propertyLocalName, literalValue);	//add and return the property 

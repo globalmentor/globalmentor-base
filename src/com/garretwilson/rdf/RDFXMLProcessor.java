@@ -23,7 +23,7 @@ import org.w3c.dom.*;
 	actions.</p>
 @author Garret Wilson
 */
-public class RDFXMLProcessor extends AbstractRDFProcessor
+public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstants, RDFXMLConstants
 {
 
 	/**Default constructor.*/
@@ -227,7 +227,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		for(int i=0; i<childNodeList.getLength(); ++i)  //look at each child node
 		{
 			final Node childNode=childNodeList.item(i); //get a reference to this child node
-			if(childNode.getNodeType()==childNode.ELEMENT_NODE) //if this is an element
+			if(childNode.getNodeType()==Node.ELEMENT_NODE) //if this is an element
 			{
 				final NameValuePair propertyNameValuePair=processProperty((Element)childNode);  //parse the element representing an RDF property
 				final RDFResource property;  //we'll see whether we should convert <rdf:li>
@@ -338,42 +338,15 @@ Debug.trace("processing attribute from value: ", attributeValue);
 //G***del Debug.trace("processing property with XML local name: ", elementLocalName); //G***del
 		final RDFResource propertyResource=getRDF().locateResource(elementNamespaceURI, elementLocalName); //get a resource from the element name
 		final RDFObject propertyValue;  //we'll assign the property value to this variable
-		final String referenceURIValue=getRDFAttribute(element, ATTRIBUTE_RESOURCE); //get the reference URI of the referenced resource, if there is one
-//G***del Debug.trace("RDF attribute: ", referenceURIValue);  //G***del
-		if(referenceURIValue!=null) //if there is a reference URI
-		{
-//G***del				//G***we need to normalize the reference URI
-		  /*G***bring back final */URI referenceURI;
-			try
-			{
-//G***del Debug.trace("Resolving rdf:resource: ", referenceURIValue); //G***del
-					referenceURI=XMLBase.resolveURI(referenceURIValue, element, getBaseURI());  //resolve the reference URI to the base URI
-				}
-				catch(URISyntaxException uriSyntaxException)
-				{
-//G***fix					Debug.warn(malformedURLException);  //G***fix
-					referenceURI=null; //G***fix
-//G***fix					referenceURI=new URI(referenceURIValue); //G***fix
-				}
-//G***del Debug.trace("found reference URI: ", referenceURI);  //G***del
-		  final RDFResource propertyValueResource=getRDF().locateResource(referenceURI); //get or create a new resource with the given reference URI
-//G***del Debug.trace("property value resource: ", propertyValueResource);  //G***del
 
-			processAttributeProperties(propertyValueResource, element, REFERENCE_CONTEXT);  //parse the property attributes, assigning them to the property value
-		  propertyValue=propertyValueResource;  //the resource value is our property value
-//G***make sure there are no attributes at all
-		}
-		else if(element.getChildNodes().getLength()==0) //if there are no child elements, this is an anonymous resource
+		final String parseType=getRDFAttribute(element, ATTRIBUTE_PARSE_TYPE); //get the parse type, if there is one
+		if(COLLECTION_PARSE_TYPE.equals(parseType))	//if this is a collection
 		{
-		  final RDFResource propertyValueResource=getRDF().locateResource(getRDF().createAnonymousReferenceURI());  //get or create a resource from a generated anonymous reference URI
-			processAttributeProperties(propertyValueResource, element, REFERENCE_CONTEXT);  //parse the property attributes, assigning them to the property value
-		  propertyValue=propertyValueResource;  //the resource value is our property value
-		}
-		else  //if there is no reference URI
-		{
-			//G***we should make sure there are no attributes
-			//G***check to if we should parse literally or not
-			Element childElement=null; //show that we haven't found any child elements, yet
+			//G***we should make sure there are no other attributes
+			RDFListResource list=null;	//we'll process each element of the list
+
+//G***fix			RDFListResource listResource=RDFListResource.create();	//we'll process each element of the list
+			RDFListResource lastElementListResource=null;	//we'll keep track of the last element so that we can update it to point to the new list element
 				//parse the child elements
 			final NodeList childNodeList=element.getChildNodes(); //get a list of child nodes
 			for(int i=0; i<childNodeList.getLength(); ++i)  //look at each child node
@@ -381,23 +354,85 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				final Node childNode=childNodeList.item(i); //get a reference to this child node
 				if(childNode.getNodeType()==childNode.ELEMENT_NODE) //if this is an element
 				{
-					if(childElement==null)  //if we haven't already found a child element
+					final RDFResource elementValue=processResource((Element)childNode); //process the child element as an RDF resource
+					final RDFListResource elementListResource=RDFListResource.create(getRDF(), elementValue);	//create a list for this element
+					if(list==null)	//if this is the first element in the list
 					{
-						childElement=(Element)childNode;  //cast the child node to an element
+						list=elementListResource;	//store that as the start of the list
 					}
-					else if(childElement!=null)  //if we've already found a child element
+					else if(lastElementListResource!=null)	//if this is not the first element in the list (this check is logically unnecessary)
 					{
-						Debug.warn("Only one property value allowed for "+propertyResource); //G***fix with real error handling
+						RDFListResource.setRest(getRDF(), lastElementListResource, elementListResource);	//point the last list element to this new element
 					}
+					lastElementListResource=elementListResource;	//remember which element we processed the last time around
 				}
 			}
-			if(childElement!=null)  //if we found a child element for the property value
+			propertyValue=list!=null ? list : RDFUtilities.locateNilResource(getRDF());	//if we found no elements for the list, use the empty list resource
+		}
+			//TODO add the other parse types here
+		else	//by default assume that we're parsing a resource as the property value
+		{
+			final String referenceURIValue=getRDFAttribute(element, ATTRIBUTE_RESOURCE); //get the reference URI of the referenced resource, if there is one
+	//G***del Debug.trace("RDF attribute: ", referenceURIValue);  //G***del
+			if(referenceURIValue!=null) //if there is a reference URI
 			{
-				propertyValue=processResource(childElement); //process the child element as an RDF resource, the value of the property in this case
+	//G***del				//G***we need to normalize the reference URI
+			  /*G***bring back final */URI referenceURI;
+				try
+				{
+	//G***del Debug.trace("Resolving rdf:resource: ", referenceURIValue); //G***del
+						referenceURI=XMLBase.resolveURI(referenceURIValue, element, getBaseURI());  //resolve the reference URI to the base URI
+					}
+					catch(URISyntaxException uriSyntaxException)
+					{
+	//G***fix					Debug.warn(malformedURLException);  //G***fix
+						referenceURI=null; //G***fix
+	//G***fix					referenceURI=new URI(referenceURIValue); //G***fix
+					}
+	//G***del Debug.trace("found reference URI: ", referenceURI);  //G***del
+			  final RDFResource propertyValueResource=getRDF().locateResource(referenceURI); //get or create a new resource with the given reference URI
+	//G***del Debug.trace("property value resource: ", propertyValueResource);  //G***del
+	
+				processAttributeProperties(propertyValueResource, element, REFERENCE_CONTEXT);  //parse the property attributes, assigning them to the property value
+			  propertyValue=propertyValueResource;  //the resource value is our property value
+	//G***make sure there are no attributes at all
 			}
-			else  //if we didn't find any child elements
+			else if(element.getChildNodes().getLength()==0) //if there are no child elements, this is an anonymous resource
 			{
-				propertyValue=new Literal(XMLUtilities.getText(element, false));  //create a literal from the element's text
+			  final RDFResource propertyValueResource=getRDF().locateResource(getRDF().createAnonymousReferenceURI());  //get or create a resource from a generated anonymous reference URI
+				processAttributeProperties(propertyValueResource, element, REFERENCE_CONTEXT);  //parse the property attributes, assigning them to the property value
+			  propertyValue=propertyValueResource;  //the resource value is our property value
+			}
+			else  //if there is no reference URI
+			{
+				//G***we should make sure there are no attributes
+				//G***check to if we should parse literally or not
+				Element childElement=null; //show that we haven't found any child elements, yet
+					//parse the child elements
+				final NodeList childNodeList=element.getChildNodes(); //get a list of child nodes
+				for(int i=0; i<childNodeList.getLength(); ++i)  //look at each child node
+				{
+					final Node childNode=childNodeList.item(i); //get a reference to this child node
+					if(childNode.getNodeType()==childNode.ELEMENT_NODE) //if this is an element
+					{
+						if(childElement==null)  //if we haven't already found a child element
+						{
+							childElement=(Element)childNode;  //cast the child node to an element
+						}
+						else if(childElement!=null)  //if we've already found a child element
+						{
+							Debug.warn("Only one property value allowed for "+propertyResource); //G***fix with real error handling
+						}
+					}
+				}
+				if(childElement!=null)  //if we found a child element for the property value
+				{
+					propertyValue=processResource(childElement); //process the child element as an RDF resource, the value of the property in this case
+				}
+				else  //if we didn't find any child elements
+				{
+					propertyValue=new Literal(XMLUtilities.getText(element, false));  //create a literal from the element's text
+				}
 			}
 		}
 //G***del Debug.trace("returning name/value pair: ", new NameValuePair(propertyResource, propertyValue)); //G***del
