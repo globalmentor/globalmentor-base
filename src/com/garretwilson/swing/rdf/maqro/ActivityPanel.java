@@ -112,6 +112,18 @@ public class ActivityPanel extends RDFPanel
 			initialize();   //initialize the panel
 	}
 
+	/**Initializes actions in the action manager.
+	@param actionManager The implementation that manages actions.
+	*/
+	protected void initializeActions(final ActionManager actionManager)
+	{
+		super.initializeActions(actionManager);	//do the default initialization
+		actionManager.addToolAction(getAddInteractionAction());
+		actionManager.addToolAction(new ActionManager.SeparatorAction());
+		actionManager.addToolAction(getInteractAction());
+		add(ToolBarUtilities.createApplicationToolBar(getActionManager()), BorderLayout.NORTH);	//put a toolbar in the north with our tool actions
+	}
+
 	/**Initialize the user interface.*/
 	protected void initializeUI()
 	{
@@ -120,11 +132,6 @@ public class ActivityPanel extends RDFPanel
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 //TODO set the book to be not editable
-		final ActionManager actionManager=getActionManager();	//get our action manager and set up tool actions
-		actionManager.addToolAction(getAddInteractionAction());
-		actionManager.addToolAction(new ActionManager.SeparatorAction());
-		actionManager.addToolAction(getInteractAction());
-		add(ToolBarUtilities.createApplicationToolBar(getActionManager()), BorderLayout.NORTH);	//put a toolbar in the north with our tool actions
 		//TODO fix status bar
 	}
 
