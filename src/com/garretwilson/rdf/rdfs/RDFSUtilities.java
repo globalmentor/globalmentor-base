@@ -51,7 +51,8 @@ public class RDFSUtilities implements RDFSConstants
 	}
 
 	/**Retrieves the label of the resource. If this resource has more than one
-		property of <code>rdfs:label</code>, it is setLabelvalues will be returned.
+		property of <code>rdfs:label</code>, it is undefined which of these property
+		values will be returned.
 		If the property value is a literal, its text will be returned. If the
 		property value is a resource, its string value (usually its reference URI)
 		will be returned.

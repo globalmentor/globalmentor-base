@@ -427,6 +427,15 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			processChildElementProperties(propertyValueResource, element);	//parse the child elements as properties
 		  propertyValue=propertyValueResource;  //the resource value is our property value
 		}
+		else if(LITERAL_PARSE_TYPE.equals(parseType))	//if this is an XMLLiteral
+		{
+			//TODO process the attributes to make sure there are no unexpected attributes
+			final Document document=XMLUtilities.createDocument(element);	//create a new document from a copy of the given element
+			//G***do we want to ensure namespace declarations?
+			final Element documentElement=document.getDocumentElement();	//get a reference to the document element
+			final DocumentFragment documentFragment=XMLUtilities.extractChildren(documentElement);	//extract the children of the document element to a document fragment
+			propertyValue=new RDFXMLLiteral(documentFragment);	//create an XML literal containing the document fragment, which now contains a copy of the information of the XML tree below the given element
+		}
 		else	//by default assume that we're parsing a resource as the property value
 		{
 			final String referenceURIValue=getRDFAttribute(element, ATTRIBUTE_RESOURCE); //get the reference URI of the referenced resource, if there is one
@@ -473,7 +482,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				else  //if we didn't find any child elements, the content is a literal
 				{
 						//get the xml:lang language tag, if there is one
-					final String languageTag=XMLUtilities.getDefinedAttributeNS(element, XMLConstants.XML_NAMESPACE_URI, XMLConstants.ATTRIBUTE_LANG);
+					final String languageTag=XMLUtilities.getDefinedAttributeNS(element, XMLConstants.XML_NAMESPACE_URI.toString(), XMLConstants.ATTRIBUTE_LANG);
 						//create a locale for the language if there is a language tag
 					final Locale languageLocale=languageTag!=null ? LocaleUtilities.createLocale(languageTag) : null;
 					propertyValue=new RDFPlainLiteral(XMLUtilities.getText(element, false));  //create a literal from the element's text

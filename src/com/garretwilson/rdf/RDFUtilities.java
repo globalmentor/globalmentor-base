@@ -264,6 +264,19 @@ public class RDFUtilities implements RDFConstants
 	}
 */
 
+	/**Retrieves the literal value of the resource. If this resource has more than
+		one property of <code>rdf:value</code>, it is undefined which of these
+		property values will be returned.
+	@param resource The resource the value of which will be returned.
+	@return The value of the resource, or <code>null</code> if no value is
+		or the value is not a literal.
+	*/
+	public static RDFLiteral getValue(final RDFResource resource)
+	{
+		final RDFObject rdfObject=resource.getPropertyValue(RDF_NAMESPACE_URI, VALUE_PROPERTY_NAME); //get the value of the value property
+		return rdfObject instanceof RDFLiteral ? (RDFLiteral)rdfObject : null; //return the literal value object, or null if is no such property or the property value is not a literal
+	}
+
 	/**Determines if the given list is the empty list.
 	@param rdf The RDF data model in which to locate the resource.
 	@return A list resource with the reference URI &amp;rdf;nil. 
@@ -344,6 +357,73 @@ public class RDFUtilities implements RDFConstants
 	{
 		resource.removeProperties(propertyNamespaceURI, propertyLocalName);	//remove all the properties with the property URI
 		return addProperty(rdf, resource, propertyNamespaceURI, propertyLocalName, literalValue);	//add and return the property 
+	}
+
+	/**Determines the RDF namespace of the given reference URI.
+	For most reference URIs, this is the URI formed by all the the reference URI
+		characters up to and including the last character that is not a valid
+		XML name character. If all characters are valid XML name characters,
+		the last non-alphanumeric character is used as a delimiter.
+	@param referenceURI The reference URI for which a namespace URI should be
+		determined.
+	@return The namespace URI of the reference URI, or <code>null</code> if the
+		namespace URI could not be determined.
+	*/
+	public static URI getNamespaceURI(final URI referenceURI)
+	{
+			//TODO do something special for certain namespaces such as for XLink that do not follow the rules
+		final String referenceURIString=referenceURI.toString();	//get a string version of the reference URI
+		for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
+		{
+			if(!XMLUtilities.isNameChar(referenceURIString.charAt(i)))	//if this is not a name character
+			{
+					//TODO correctly check for a URI syntax error here
+				return URI.create(referenceURIString.substring(0, i+1));	//create a URI using everything up to and including the last non-XML name character
+			}
+		}
+			//if we still don't know the namespace URI, look for the last non-alphanumeric character
+		for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
+		{
+			if(!Character.isLetter(referenceURIString.charAt(i)) && !Character.isDigit(referenceURIString.charAt(i)))	//if this is not a letter or a number
+			{
+					//TODO correctly check for a URI syntax error here
+				return URI.create(referenceURIString.substring(0, i+1));	//create a URI using everything up to and including the last non-XML name character
+			}
+		}
+		return null;	//show that we couldn't determine a namespace URI from the given reference URI
+	}
+
+	/**Determines the local name to be used for the given reference URI,
+		suitable for XML serialization.
+	For most reference URIs, this is the name formed by all the the reference URI
+		characters after but not including the last character that is not a valid
+		XML name character. If all characters are valid XML name characters,
+		the last non-alphanumeric character is used as a delimiter.
+	@param referenceURI The reference URI for which a local name should be
+		determined.
+	@return The local name of the reference URI, or <code>null</code> if a local
+		name could not be determined.
+	 */
+	public static String getLocalName(final URI referenceURI)
+	{
+			//TODO do something special for certain namespaces such as for XLink that do not follow the rules
+		final String referenceURIString=referenceURI.toString();	//get a string version of the reference URI
+		for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
+		{
+			if(!XMLUtilities.isNameChar(referenceURIString.charAt(i)))	//if this is not a name character
+			{
+				return referenceURIString.substring(i+1);	//create a local name using everything after the last non-XML name character
+			}
+		}
+			//if we still don't know the local name, look for the last non-alphanumeric character
+		for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
+		{
+			if(!Character.isLetter(referenceURIString.charAt(i)) && !Character.isDigit(referenceURIString.charAt(i)))	//if this is not a letter or a number
+			{
+				return referenceURIString.substring(i+1);	//create a local name using everything after the last non-XML name character
+			}
+		}
+		return null;	//show that we couldn't determine a local name from the given reference URI
 	}
 
 	/**Converts an RDF data model to an XML string. If an error occurs converting

@@ -94,11 +94,11 @@ public class XPackageUtilities implements XPackageConstants
 		  //get the xpackage:description element
 		final Element descriptionElement=document.getDocumentElement();
 		  //add the RDF namespace declaration prefix, xmlns:rdf
-		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, RDFConstants.RDF_NAMESPACE_PREFIX), RDFConstants.RDF_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, RDFConstants.RDF_NAMESPACE_PREFIX), RDFConstants.RDF_NAMESPACE_URI.toString());
 		  //add the XPackage namespace declaration prefix, xmlns:xpackage
-		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, XPACKAGE_NAMESPACE_PREFIX), XPACKAGE_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, XPACKAGE_NAMESPACE_PREFIX), XPACKAGE_NAMESPACE_URI.toString());
 		  //add the XLink namespace declaration prefix, xmlns:xlink
-		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, XLinkConstants.XLINK_NAMESPACE_PREFIX), XLinkConstants.XLINK_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, XLinkConstants.XLINK_NAMESPACE_PREFIX), XLinkConstants.XLINK_NAMESPACE_URI.toString());
 		final Element rdfElement=RDFXMLifier.createRDFElement(document);  //create an <rdf:RDF> element
 		descriptionElement.appendChild(rdfElement);	//add the RDF element to the document
 		return document;  //return the document we created

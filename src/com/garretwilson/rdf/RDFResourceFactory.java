@@ -22,9 +22,7 @@ public interface RDFResourceFactory
 		URI, or <code>null</code> if the type is not known.
 	@return The resource created with this reference URI, with the given type
 		added if a type was given.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/
-	public RDFResource createResource(final URI referenceURI, final URI typeNamespaceURI, final String typeLocalName) throws IllegalArgumentException;
+	public RDFResource createResource(final URI referenceURI, final URI typeNamespaceURI, final String typeLocalName);
 
 }

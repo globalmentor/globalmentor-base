@@ -4,6 +4,6 @@ package com.garretwilson.rdf;
 	Java <code>Object</code>s.
 @author Garret Wilson
 */
-public interface RDFObject
+public interface RDFObject extends RDFConstants
 {
 }

@@ -378,10 +378,8 @@ Debug.trace("converted OEB publication RDF: ", RDFUtilities.toString(rdf)); //G*
 		URI, or <code>null</code> if the type is not known.
 	@return The resource created with this reference URI, with the given type
 		added if a type was given.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
 	*/  //G***change to use OEBUtilities as a factory
-	public RDFResource createResource(final URI referenceURI, final URI typeNamespaceURI, final String typeLocalName) throws IllegalArgumentException
+	public RDFResource createResource(final URI referenceURI, final URI typeNamespaceURI, final String typeLocalName)
 	{
 		if(OEB1_PACKAGE_NAMESPACE_URI.equals(typeNamespaceURI) //if this resource is an OEB 1.x package resource
 				|| OEB2_PACKAGE_NAMESPACE_URI.equals(typeNamespaceURI)) //or if this resource is an OEB 2.x package resource

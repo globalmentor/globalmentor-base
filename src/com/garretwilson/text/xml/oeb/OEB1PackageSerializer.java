@@ -69,9 +69,9 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 			  //package/metadata/dc-metadata
 		final Element dcMetadataElement=XMLUtilities.appendElement(metadataElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA_DC_METADATA); //create the dc-metadata element
 			  //add the attribute, xmlns:dc="http://purl.org/dc/elements/1.0/"
-		dcMetadataElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, DCMI_ELEMENTS_NAMESPACE_PREFIX), DCMI10_ELEMENTS_NAMESPACE_URI.toString());
+		dcMetadataElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, DCMI_ELEMENTS_NAMESPACE_PREFIX), DCMI10_ELEMENTS_NAMESPACE_URI.toString());
 			  //add the attribute, xmlns:oebpackage="http://openebook.org/namespaces/oeb-package/1.0/"
-		dcMetadataElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, OEB1_PACKAGE_NAMESPACE_PREFIX), OEB1_PACKAGE_NAMESPACE_URI.toString());
+		dcMetadataElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, OEB1_PACKAGE_NAMESPACE_PREFIX), OEB1_PACKAGE_NAMESPACE_URI.toString());
 		final Iterator propertyIterator=publication.getPropertyIterator();  //get an iterator to the publication's properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{

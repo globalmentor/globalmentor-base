@@ -3,6 +3,7 @@ package com.garretwilson.rdf;
 import java.net.URI;
 import java.util.*;
 import com.garretwilson.text.xml.XMLConstants;
+import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.util.LocaleUtilities;
@@ -131,7 +132,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 		  //create an RDF document
 		final Document document=domImplementation.createDocument(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_RDF), null);
 		  //add the RDF namespace declaration prefix, xmlns:rdf
-		document.getDocumentElement().setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, RDFConstants.RDF_NAMESPACE_PREFIX), RDFConstants.RDF_NAMESPACE_URI.toString());
+		document.getDocumentElement().setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, RDFConstants.RDF_NAMESPACE_PREFIX), RDFConstants.RDF_NAMESPACE_URI.toString());
 		return document;  //return the document we created
 	}
 
@@ -442,17 +443,38 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 		else if(propertyValue instanceof RDFLiteral)  //if the value is a literal
 		{
 			final RDFLiteral valueLiteral=(RDFLiteral)propertyValue;  //cast the value to a literal
-			XMLUtilities.appendText(propertyElement, valueLiteral.getLexicalForm());  //append the literal value as content of the property element
-			if(valueLiteral instanceof RDFPlainLiteral)	//if this is a plain literal
+				//store the value
+			if(propertyValue instanceof RDFXMLLiteral)	//special-case XML literals because they have a special XML serialization syntax---that of XML itself
 			{
-				final RDFPlainLiteral valuePlainLiteral=(RDFPlainLiteral)valueLiteral;	//cast the literal to a plain literal
-				if(valuePlainLiteral.getLanguage()!=null)	//if there is a language indication
+				final RDFXMLLiteral valueXMLLiteral=(RDFXMLLiteral)valueLiteral;	//cast the literal to an XML literal
+					//add an rdf:parseType="Literal" attribute
+				propertyElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_PARSE_TYPE), LITERAL_PARSE_TYPE);
+					//import the document fragment to our document
+				final Node importedDocumentFragment=document.importNode(valueXMLLiteral.getDocumentFragment(), true);
+				propertyElement.appendChild(importedDocumentFragment);	//append the children of the document fragment to this node
+					//make sure all namespaces are properly declared for all child elements, declaring the namespaces on the property element itself if possible
+				XMLNamespaceProcessor.ensureChildNamespaceDeclarations(propertyElement); 
+			}
+			else	//for all other XML literals, just store their lexical form as a text child to the property element
+			{
+				XMLUtilities.appendText(propertyElement, valueLiteral.getLexicalForm());  //append the literal value as content of the property element
+				if(valueLiteral instanceof RDFPlainLiteral)	//if this is a plain literal
 				{
-					final String languageTag=LocaleUtilities.getLanguageTag(valuePlainLiteral.getLanguage());	//create a language tag from the locale
-						//store the language tag in the xml:lang attribute
-					propertyElement.setAttributeNS(XMLConstants.XML_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XML_NAMESPACE_PREFIX, XMLConstants.ATTRIBUTE_LANG), languageTag);
+					final RDFPlainLiteral valuePlainLiteral=(RDFPlainLiteral)valueLiteral;	//cast the literal to a plain literal
+					if(valuePlainLiteral.getLanguage()!=null)	//if there is a language indication
+					{
+						final String languageTag=LocaleUtilities.getLanguageTag(valuePlainLiteral.getLanguage());	//create a language tag from the locale
+							//store the language tag in the xml:lang attribute
+						propertyElement.setAttributeNS(XMLConstants.XML_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XML_NAMESPACE_PREFIX, XMLConstants.ATTRIBUTE_LANG), languageTag);
+					}
 				}
-			}	//TODO fix for typed literals, and special-case XMLLiteral to ensure correct namespace designations
+				else if(valueLiteral instanceof RDFTypedLiteral)	//if this is a typed literal
+				{
+					final RDFTypedLiteral valueTypedLiteral=(RDFTypedLiteral)valueLiteral;	//cast the literal to a typed literal
+						//store the datatype reference URI in the rdf:datatype attribute
+					propertyElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_DATATYPE), valueTypedLiteral.getDatatypeURI().toString());
+				}
+			}
 		}
 		return propertyElement; //return the property element we constructed
 	}
@@ -559,31 +581,7 @@ Debug.trace("prefix: ", prefix); //G***del
 	{
 		URI namespaceURI=resource.getNamespaceURI();	//get the namespace URI of which the resource has record TODO remove storing namespaces
 		if(namespaceURI==null)	//if the resource doesn't know its namespace URI
-		{
-				//TODO do something special for certain namespaces such as for XLink that do not follow the rules
-			final String referenceURIString=resource.getReferenceURI().toString();	//get a string version of the reference URI
-			for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
-			{
-				if(!XMLUtilities.isNameChar(referenceURIString.charAt(i)))	//if this is not a name character
-				{
-						//TODO correctly check for a URI syntax error here
-					namespaceURI=URI.create(referenceURIString.substring(0, i+1));	//create a URI using everything up to and including the last non-XML name character
-					break;	//stop looking for a non-XML name character
-				}
-			}
-			if(namespaceURI==null)	//if we still don't know the namespace URI, look for the last non-alphanumeric character
-			{
-				for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
-				{
-					if(!Character.isLetter(referenceURIString.charAt(i)) && !Character.isDigit(referenceURIString.charAt(i)))	//if this is not a letter or a number
-					{
-							//TODO correctly check for a URI syntax error here
-						namespaceURI=URI.create(referenceURIString.substring(0, i+1));	//create a URI using everything up to and including the last non-XML name character
-						break;	//stop looking for a non-XML name character
-					}
-				}
-			}
-		}
+			namespaceURI=RDFUtilities.getNamespaceURI(resource.getReferenceURI());	//try to get the namespace URI from the resource reference URI
 		Debug.assert(namespaceURI!=null, "Could not determine namespace URI for "+resource.getReferenceURI());	//TODO fix
 		return namespaceURI;	//return the namespace URI we found
 	}
@@ -601,29 +599,7 @@ Debug.trace("prefix: ", prefix); //G***del
 	{
 		String localName=resource.getLocalName();	//get the local name of which the resource has record TODO remove storing local names
 		if(localName==null)	//if the resource doesn't know its local name
-		{
-				//TODO do something special for certain namespaces such as for XLink that do not follow the rules
-			final String referenceURIString=resource.getReferenceURI().toString();	//get a string version of the reference URI
-			for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
-			{
-				if(!XMLUtilities.isNameChar(referenceURIString.charAt(i)))	//if this is not a name character
-				{
-					localName=referenceURIString.substring(i+1);	//create a local name using everything after the last non-XML name character
-					break;	//stop looking for a non-XML name character
-				}
-			}
-			if(localName==null)	//if we still don't know the local name, look for the last non-alphanumeric character
-			{
-				for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
-				{
-					if(!Character.isLetter(referenceURIString.charAt(i)) && !Character.isDigit(referenceURIString.charAt(i)))	//if this is not a letter or a number
-					{
-						localName=referenceURIString.substring(i+1);	//create a local name using everything after the last non-XML name character
-						break;	//stop looking for a non-XML name character
-					}
-				}
-			}
-		}
+			localName=RDFUtilities.getLocalName(resource.getReferenceURI());	//try to get the local name from the resource reference URI
 		Debug.assert(localName!=null, "Could not determine local name for "+resource.getReferenceURI());	//TODO fix
 		return localName;	//return the local name we found
 	}

@@ -236,7 +236,7 @@ Debug.trace("DOM attribute value: ", attribute.getValue()); //G***del
 				  //the Spring 2002 XML pack has a SOAP RI that doesn't correctly
 					//  process attribute namespaces; add hacks to get around this
 				String namespaceURI=attribute.getNamespaceURI();  //get the namespace URI
-				if(XMLConstants.XMLNS_NAMESPACE_URI.equals(attribute.getNamespaceURI()) //if this is the xmlns namespace (e.g. xmlns:xxx="")
+				if(XMLConstants.XMLNS_NAMESPACE_URI.toString().equals(attribute.getNamespaceURI()) //if this is the xmlns namespace (e.g. xmlns:xxx="")
 						|| XMLConstants.XMLNS_NAMESPACE_PREFIX.equals(attribute.getLocalName()) //or if this is the xmlns attribute being defined (e.g. xmlns="")
 						|| attribute.getNamespaceURI()==null)  //if the attribute has no namespace at all
 				{
