@@ -157,18 +157,36 @@ public class URLUtilities implements URLConstants	//G***del, InputStreamLocator
 
 	/**Returns an input stream from given URL by establishing a connection to
 		the requested URL.
-		This method fulfills the requirements of <code>InputStreamLocator</code>.
+	<p>This method fulfills the requirements of <code>InputStreamLocator</code>.</p>
 	@param url A complete URL to a file.
 	@return An input stream to the contents of the file represented by the given URL.
 	@exception IOException Thrown if an I/O error occurred.
 	@see InputStreamLocator
 	*/
-/*G***del if not needed
-	public InputStream getInputStream(final URL url) throws IOException
+	public static InputStream getInputStream(final URL url) throws IOException
 	{
 		return url.openConnection().getInputStream();	//open a connection to the URL and return an input stream to that connection
+/*G***fix redirects, update with new JDK1.4.2 code from JEditorPane.java
+	
+	URLConnection conn = page.openConnection();
+	if (conn instanceof HttpURLConnection) {
+	    HttpURLConnection hconn = (HttpURLConnection) conn;
+	    hconn.setInstanceFollowRedirects(false);
+	    int response = hconn.getResponseCode();
+	    boolean redirect = (response >= 300 && response <= 399);
+
+	    if (redirect) {
+		String loc = conn.getHeaderField("Location");
+		if (loc.startsWith("http", 0)) {
+		    page = new URL(loc);
+		} else {
+		    page = new URL(page, loc);
+		}
+		return getStream(page);
+	    }
 	}
-*/
+*/		
+	}
 
 	/**Returns a relative path to the URL from the given context URL.
 		This version requires the file to be on the same branch of the context

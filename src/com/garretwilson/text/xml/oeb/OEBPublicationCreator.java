@@ -267,7 +267,7 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 	protected final static MediaType IMAGE_PNG_MEDIA_TYPE=new MediaType(MediaType.IMAGE, MediaType.PNG);
 
 	/**A static text/html media type for quick reference when comparing media types.*/
-	protected final static MediaType TEXT_HTML_MEDIA_TYPE=new MediaType(MediaType.TEXT, MediaType.HTML);
+	protected final static MediaType APPLICATION_XHTML_XML_MEDIA_TYPE=new MediaType(MediaType.APPLICATION, MediaType.XHTML_XML);
 
 	/**Whether we should load and tidy each OEB document.*/
 	private boolean tidy=false;
@@ -1132,7 +1132,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 							if(mediaType==null) //if no media type is given
 							{
 								mediaType=URLUtilities.getMediaType(url);  //try to see which of media type the reference is by examining the URL
-								if(mediaType.equals(TEXT_HTML_MEDIA_TYPE))  //if this is the "text/html" media type
+								if(mediaType.equals(APPLICATION_XHTML_XML_MEDIA_TYPE))  //if this is the "application/xhtml+xml" media type
 									mediaType=OEB10_DOCUMENT_MEDIA_TYPE;  //assume it's really the OEB document media type
 							}
 							Debug.assert(mediaType!=null, "\""+url+"\" has unknown media type.");  //G***put in better error handling here

@@ -131,7 +131,7 @@ public class URIUtilities implements URIConstants, URIInputStreamable
 	*/
 	public InputStream getInputStream(final URI uri) throws IOException
 	{
-		return uri.toURL().openConnection().getInputStream();	//open a connection to the URI (converted to a URL) and return an input stream to that connection
+		return URLUtilities.getInputStream(uri.toURL());	//open a connection to the URI (converted to a URL) and return an input stream to that connection
 	}
 
 	/**Returns a relative path to the URL from the given context URL.
