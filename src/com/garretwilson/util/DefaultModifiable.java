@@ -1,24 +1,37 @@
 package com.garretwilson.util;
 
+import com.garretwilson.lang.BooleanUtilities;
+
 /**A default implementation of a modifiable object. The object defaults to not
 	having been modified.
+<p>Bound properties:</p>
+<ul>
+	<li><code>Modifiable.MODIFIED_PROPERTY_NAME</code> ("modified")</li>
+</ul>
 @author Garret Wilson
+@see Modifiable#MODIFIED_PROPERTY_NAME
 */
-public class DefaultModifiable implements Modifiable
+public class DefaultModifiable extends BoundPropertyObject implements Modifiable
 {
-
-	/**Default constructor.*/
-	public DefaultModifiable() {}
 
 	/**Whether the object has been modified; the default is not modified.*/
 	private boolean modified=false;
 
-	/**@return Whether the object has been modified.*/
-	public boolean isModified() {return modified;}
+		/**@return Whether the object been modified.*/
+		public boolean isModified() {return modified;}
 
-	/**Sets whether the object has been modified.
-	@param newModified The new modification status.
-	*/
-	public void setModified(final boolean newModified) {modified=newModified;}
-
+		/**Sets whether the object has been modified.
+			This is a bound property.
+		@param newModified The new modification status.
+		*/
+		public void setModified(final boolean newModified)
+		{
+			final boolean oldModified=modified; //get the old modified value
+			if(oldModified!=newModified)  //if the value is really changing
+			{
+				modified=newModified; //update the value
+					//show that the modified property has changed
+				firePropertyChange(MODIFIED_PROPERTY_NAME, BooleanUtilities.toBoolean(oldModified), BooleanUtilities.toBoolean(newModified));
+			}
+		}
 }

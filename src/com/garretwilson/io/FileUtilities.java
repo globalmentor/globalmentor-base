@@ -197,7 +197,7 @@ public class FileUtilities implements FileConstants
 	*/
 	public static File getTempFile(final File file)
 	{
-		return new File(file.getParent(), file.getName()+EXTENSION_SEPARATOR+TEMP_EXTENSION); //return the file with a "temp" extension
+		return new File(file.getParent(), addExtension(file.getName(), TEMP_EXTENSION)); //return the file with a "temp" extension
 	}
 
 	/**Returns a file suitable for backup, based on the specified filename, by
@@ -208,7 +208,7 @@ public class FileUtilities implements FileConstants
 	*/
 	public static File getBackupFile(final File file)
 	{
-		return new File(file.getParent(), file.getName()+EXTENSION_SEPARATOR+BACKUP_EXTENSION); //return the file with a "backup" extension
+		return new File(file.getParent(), addExtension(file.getName(), BACKUP_EXTENSION)); //return the file with a "backup" extension
 	}
 
 	/**@return The user's current directory.
@@ -289,6 +289,20 @@ public class FileUtilities implements FileConstants
 		else  //if the string isn't a filename already
 			return StringUtilities.replace(string, ILLEGAL_FILENAME_CHARS, REPLACEMENT_CHAR); //convert any illegal filename characters to the underscore and return the new string
 	}
+
+	/**Deletes a file, throwing an exception if unsuccessful.
+	@param file The file to delete.
+	@exception IOException Thrown if there is an error deleting the file.
+	*/
+/*G***del; this is already implemented here	
+	public static void delete(final File file) throws IOException
+	{
+		if(!file.delete)	//delete file; if unsuccessful
+		{
+			throw new IOException("Cannot delete "+file);	//throw an exception G***i18n
+		}
+	}
+*/
 	
 	/**Creates the directory named by this abstract pathname, throwing an
 		exception if unsuccessful.
@@ -381,12 +395,11 @@ public class FileUtilities implements FileConstants
 		it exists.
 	@param sourceFile The file to be moved.
 	@param destinationFile The location to where the source files should be be moved.
-	@return <code>true</code> if the source file was successfully moved to the
-		destination file.
+	@exception IOException Thrown if there is an error moving the file.
 	*/
-	public static boolean moveFile(final File sourceFile, final File destinationFile)
+	public static void moveFile(final File sourceFile, final File destinationFile) throws IOException
 	{
-		return moveFile(sourceFile, destinationFile, null); //move the source file to the destination file, specifying that no backup should be made
+		moveFile(sourceFile, destinationFile, null); //move the source file to the destination file, specifying that no backup should be made
 	}
 
 	/**Moves a file to a different location, overwriting the destination file if
@@ -397,19 +410,19 @@ public class FileUtilities implements FileConstants
 	@param destinationFile The location to where the source files should be be moved.
 	@param backupFile The backup file to where the destination file, if any, will
 		first be moved, or <code>null</code> if no backup file is necessary.
-	@return <code>true</code> if the source file was successfully moved to the
-		destination file.
+	@exception IOException Thrown if there is an error renaming the file.
 	*/
-	public static boolean moveFile(final File sourceFile, final File destinationFile, final File backupFile)
+	public static void moveFile(final File sourceFile, final File destinationFile, final File backupFile) throws IOException
 	{
 		if(backupFile!=null && destinationFile.exists())  //if we should backup the original destination file, and the original destination file exists
 		{
-			if(!moveFile(destinationFile, backupFile)) //try to move the destination file to the backup file; if we were unsuccessful
-				return false; //don't try to do anything else; at worst, we should leave the destination file at the same state it was in to begin with
+				//try to move the destination file to the backup file
+				//if this fails, at worst it will leave the destination file at the same state it was in to begin with 
+			moveFile(destinationFile, backupFile); 
 		}
 		if(destinationFile.exists())	//if the destination file exists
-			destinationFile.delete();		//delete the destination file
-		return sourceFile.renameTo(destinationFile);  //move the source file to the destination file, and return whether or not we were successful
+			delete(destinationFile);		//delete the destination file, throwing an exception if there is an error
+		renameTo(sourceFile, destinationFile);  //move the source file to the destination file
 	}
 
 	/**Returns a relative path to the file from the given directory. This version

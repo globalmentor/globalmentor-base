@@ -22,7 +22,27 @@ public class RDFXMLifier implements RDFConstants
 	protected final Map namespacePrefixMap;
 
 		/**@return The map of prefixes, keyed by namespace URI.*/
-		public Map getNamespacePrefixMap() {return namespacePrefixMap;}
+		protected Map getNamespacePrefixMap() {return namespacePrefixMap;}
+		
+		/**Registers the given prefix to be used with the given namespace URI.
+			If a prefix is already registered with the given namespace, it is
+			replaced with this prefix.
+		@param namespaceURI The XML namespace.
+		@param prefix The serialization prefix to use with the given namespace.
+		*/
+		public void registerNamespacePrefix(final String namespaceURI, final String prefix)
+		{
+			namespacePrefixMap.put(namespaceURI, prefix);	//store the prefix in the map, keyed to the URI
+		}
+
+		/**Unregisters the prefix for the given namespace URI.
+			If no prefix is registered for the given namespace, no action occurs.
+		@param namespaceURI The XML namespace.
+		*/
+		public void unregisterNamespacePrefix(final String namespaceURI, final String prefix)
+		{
+			namespacePrefixMap.remove(namespaceURI);	//remove whatever prefix is registered with this namespace, if any
+		}
 
 	/**A general <code>rdf:type</code> property to use in comparisons.*/
 	protected final static URI TYPE_PROPERTY;	//initialized below
@@ -202,7 +222,7 @@ public class RDFXMLifier implements RDFConstants
 		while(resourceIterator.hasNext()) //while there are resources remaining
 		{
 			final RDFResource resource=(RDFResource)resourceIterator.next();  //get the next resource
-Debug.trace("looking at resource: ", resource); //G***del
+//G***del Debug.trace("looking at resource: ", resource); //G***del
 			final URI referenceURI=resource.getReferenceURI(); //get the resource reference URI
 			//G***in throwing away anonymous resources, some might have been described at the top of the hierarchy---we should really just check to see which resources are not referenced
 //G***del when works			referenceURI!=null && referenceURI.indexOf("anonymous")<0 //if this is not an anonymous node G***fix the way we determine anonymous resources
@@ -225,7 +245,7 @@ Debug.trace("looking at resource: ", resource); //G***del
 	*/  //G***del rdf if we don't need
 	public Element createResourceElement(/*G***del if not needed final RDF rdf, */final Document document, final RDFResource resource)
 	{
-Debug.trace("creating resource element for resource: ", resource);  //G***del
+//G***del Debug.trace("creating resource element for resource: ", resource);  //G***del
 		final Element resourceElement;  //we'll store here the element that we create
 		RDFResource resourceType=RDFUtilities.getType(resource); //get the type of the resource
 			//if the resource has a type, but we can't extract a namespace URI and local name from it G***add more logic here later to automatically determine the namespace
