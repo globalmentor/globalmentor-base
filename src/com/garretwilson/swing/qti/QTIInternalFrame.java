@@ -118,7 +118,7 @@ Debug.trace("saving item list model with size: ", listModel.size()); //G***del
 //G***del Debug.trace("ready to set list model with size: ", itemListModel.size()); //G***del
     this.getContentPane().setLayout(borderLayout);
 			//forward all explore panel "modified" property changes to anyone listening to our property changes
-		explorePanel.addPropertyChangeListener(MODIFIED_PROPERTY_NAME, new java.beans.PropertyChangeListener()
+		explorePanel.addPropertyChangeListener(MODIFIED_PROPERTY, new java.beans.PropertyChangeListener()
     {
       public void propertyChange(final PropertyChangeEvent propertyChangeEvent) //if the "modified" property changes in the explore panel
       {

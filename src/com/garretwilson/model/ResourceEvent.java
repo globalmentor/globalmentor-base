@@ -1,4 +1,4 @@
-package com.garretwilson.util;
+package com.garretwilson.model;
 
 import java.net.URI;
 import java.util.EventObject;

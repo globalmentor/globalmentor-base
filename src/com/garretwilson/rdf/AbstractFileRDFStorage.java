@@ -14,10 +14,10 @@ import org.w3c.dom.*;
 	automatically created and used to recover from corrupted files.</p>  
 <p>Bound properties:</p>
 <ul>
-	<li><code>Modifiable.MODIFIED_PROPERTY_NAME</code> ("modified")</li>
+	<li><code>Modifiable.MODIFIED_PROPERTY</code> ("modified")</li>
 </ul>
 @author Garret Wilson
-@see Modifiable#MODIFIED_PROPERTY_NAME
+@see Modifiable#MODIFIED_PROPERTY
 */
 public abstract class AbstractFileRDFStorage extends AbstractRDFStorage 
 {

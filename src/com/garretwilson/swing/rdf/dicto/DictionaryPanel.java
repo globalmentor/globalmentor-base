@@ -1,13 +1,10 @@
 package com.garretwilson.swing.rdf.dicto;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Locale;
-
-import javax.swing.*;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
-import com.garretwilson.swing.text.xml.XMLDocument;
-import com.garretwilson.swing.text.xml.XMLEditorKit;
 import com.garretwilson.text.CharacterConstants;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.XHTMLConstants;
@@ -19,7 +16,6 @@ import com.garretwilson.io.MediaType;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dicto.*;
 import com.garretwilson.rdf.xpackage.XPackageUtilities;
-import com.globalmentor.mentoract.reader.BookApplicationPanel;
 
 import org.w3c.dom.*;
 
@@ -76,7 +72,7 @@ public class DictionaryPanel extends RDFPanel
 	public DictionaryPanel(final RDF rdf, final Dictionary dictionary, final boolean initialize)
 	{
 		super(rdf, dictionary, false);	//construct the parent class without initializing it
-		setSupportedDataViews(getSupportedDataViews()|WYSIWYG_DATA_VIEW);	//show that we now support WYSIWYG data views, too
+		setSupportedDataViews(getSupportedModelViews()|WYSIWYG_MODEL_VIEW);	//show that we now support WYSIWYG data views, too
 //G***del		wysiwygTextPane=new XMLTextPane();	//create a new XML text pane for the WYSIWYG view
 		book=new Book(1);	//create a new book for the WYSIWYG view, showing only one page
 //G***del		wysiwygScrollPane=new JScrollPane(wysiwygTextPane);	//create a new scroll pane with the dictionary text pane inside
@@ -87,31 +83,24 @@ public class DictionaryPanel extends RDFPanel
 	/**Initialize the user interface.*/
 	protected void initializeUI()
 	{
-		addView(WYSIWYG_DATA_VIEW, "Dictionary", book, null, 0);	//add the WYSIWYG component as the tree view G***i18n
-		setDefaultDataView(WYSIWYG_DATA_VIEW);	//set the WYSIWYG view as the default view
+		addView(WYSIWYG_MODEL_VIEW, "Dictionary", book, null, 0);	//add the WYSIWYG component as the tree view G***i18n
+		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 //G***del		wysiwygTextPane.setContentType(MediaType.APPLICATION_XHTML_XML);	//set the text pane content type to "application/xhtml+xml"
 //G***del		wysiwygTextPane.setEditable(false);	//don't let the WYSIWYG text pane be edited
 //TODO set the book to be not editable
 	}
 
-	/**Indicates that the view of the data has changed.
-	@param oldView The view before the change.
-	@param newView The new view of the data
+	/**Loads the data from the model to the given view.
+	@param modelView The view of the data that should be loaded.
+	@exception IOException Thrown if there was an error loading the model.
 	*/
-	protected void onDataViewChanged(final int oldView, final int newView)
+	protected void loadModel(final int modelView) throws IOException
 	{
-		super.onDataViewChanged(oldView, newView);	//do the default view updating
-		switch(oldView)	//see what view we're changing from
+		super.loadModel(modelView);	//do the default loading
+		switch(modelView)	//see which view of data we should load
 		{
-			case WYSIWYG_DATA_VIEW:	//if we're changing from the WYSIWYG view
-//G***del				wysiwygTextPane.setDocument(wysiwygTextPane.getEditorKit().createDefaultDocument());	//to conserve memory, remove the content from the editor kit by installing a new document
-				book.close();	//to conserve memory, remove the content from the book
-				break;
-		}
-		switch(newView)	//see what view we're changing to
-		{
-			case WYSIWYG_DATA_VIEW:	//if we're changing to the WYSIWYG view
+			case WYSIWYG_MODEL_VIEW:	//if we're changing to the WYSIWYG view
 				{
 					final Document xhtmlDocument=XHTMLUtilities.createXHTMLDocument();	//create an XHTML document
 					final Element bodyElement=XHTMLUtilities.getBodyElement(xhtmlDocument);	//get the body element
@@ -222,7 +211,22 @@ public class DictionaryPanel extends RDFPanel
 				}
 				break;
 		}
+	}
 
+	/**Indicates that the view of the data has changed.
+	@param oldView The view before the change.
+	@param newView The new view of the data
+	*/
+	protected void onModelViewChange(final int oldView, final int newView)
+	{
+		super.onModelViewChange(oldView, newView);	//perform the default functionality
+		switch(oldView)	//see what view we're changing from
+		{
+			case WYSIWYG_MODEL_VIEW:	//if we're changing from the WYSIWYG view
+//G***del				wysiwygTextPane.setDocument(wysiwygTextPane.getEditorKit().createDefaultDocument());	//to conserve memory, remove the content from the editor kit by installing a new document
+				book.close();	//to conserve memory, remove the content from the book
+				break;
+		}
 	}
 
 }

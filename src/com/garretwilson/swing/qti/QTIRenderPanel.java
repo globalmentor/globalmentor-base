@@ -52,7 +52,7 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 			{
 			  modified=newModified; //update the value
 				  //show that the modified property has changed
-        firePropertyChange(MODIFIED_PROPERTY_NAME, BooleanUtilities.toBoolean(oldModified), BooleanUtilities.toBoolean(newModified));
+        firePropertyChange(MODIFIED_PROPERTY, Boolean.valueOf(oldModified), Boolean.valueOf(newModified));
 			}
 		}
 

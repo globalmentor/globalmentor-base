@@ -90,7 +90,7 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 			{
 			  modified=newModified; //update the value
 				  //show that the modified property has changed
-        firePropertyChange(MODIFIED_PROPERTY_NAME, BooleanUtilities.toBoolean(oldModified), BooleanUtilities.toBoolean(newModified));
+        firePropertyChange(MODIFIED_PROPERTY, Boolean.valueOf(oldModified), Boolean.valueOf(newModified));
 			}
 		}
 

@@ -3,6 +3,8 @@ package com.garretwilson.rdf;
 import java.lang.ref.*;
 import java.net.URI;
 import java.util.*;
+
+import com.garretwilson.model.*;
 import com.garretwilson.util.*;
 
 /**Represents the default implementation of an RDF resource.

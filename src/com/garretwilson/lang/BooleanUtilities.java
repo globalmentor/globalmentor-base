@@ -9,16 +9,6 @@ public class BooleanUtilities
 	/**This class cannot be publicly instantiated.*/
 	private BooleanUtilities() {}
 
-	/**Returns a <code>Boolean</code> object with the given boolean value.
-	@param b The boolean value to wrap in a <code>Boolean</code> object.
-	@return <code>Boolean.TRUE</code> or <code>Boolean.FALSE</code> if the value
-		is <code>true</code> or <code>false</code>, respectively.
-	*/
-	public final static Boolean toBoolean(final boolean b)
-	{
-		return b ? Boolean.TRUE : Boolean.FALSE;
-	}
-
 	/**Returns the boolean value of the object, if the object is an instance of
 		<code>Boolean</code>.
 	@param booleanObject The object for which a boolean value should be returned.

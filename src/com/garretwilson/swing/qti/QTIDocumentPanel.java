@@ -124,7 +124,7 @@ public class QTIDocumentPanel extends AbstractMDIDocumentPanel implements Modifi
   {
 		super.initializeUI(); //do the default initialization
 			//forward all explore panel "modified" property changes to anyone listening to our property changes
-		qtiExplorePanel.addPropertyChangeListener(MODIFIED_PROPERTY_NAME, new java.beans.PropertyChangeListener()
+		qtiExplorePanel.addPropertyChangeListener(MODIFIED_PROPERTY, new java.beans.PropertyChangeListener()
     {
       public void propertyChange(final PropertyChangeEvent propertyChangeEvent) //if the "modified" property changes in the explore panel
       {

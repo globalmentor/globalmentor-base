@@ -16,10 +16,10 @@ import org.w3c.dom.*;
 <p>The data storage and retrieval operations of this class are thread-safe.</p>
 <p>Bound properties:</p>
 <ul>
-	<li><code>Modifiable.MODIFIED_PROPERTY_NAME</code> ("modified")</li>
+	<li><code>Modifiable.MODIFIED_PROPERTY</code> ("modified")</li>
 </ul>
 @author Garret Wilson
-@see Modifiable#MODIFIED_PROPERTY_NAME
+@see Modifiable#MODIFIED_PROPERTY
 */
 public abstract class AbstractRDFStorage extends DefaultModifiable implements URIInputStreamable, URIOutputStreamable 
 {

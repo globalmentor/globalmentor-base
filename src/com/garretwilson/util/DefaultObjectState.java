@@ -6,7 +6,7 @@ import java.util.*;
 <p>Each property changed using <code>setProperty</code> will fire a
 	property change event if its key is a string.</p>
 @author Garret Wilson
-@see Modifiable#MODIFIED_PROPERTY_NAME
+@see Modifiable#MODIFIED_PROPERTY
 @see java.beans.PropertyChangeEvent
 */
 public class DefaultObjectState extends DefaultModifiable implements ObjectState	//G***maybe just store the modified value in the properties rather than having an explicit modified variable; right now, setting a property of "modified" would result in an identical property change firing

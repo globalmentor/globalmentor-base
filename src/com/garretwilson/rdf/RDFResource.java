@@ -2,6 +2,8 @@ package com.garretwilson.rdf;
 
 import java.net.URI;
 import java.util.*;
+
+import com.garretwilson.model.*;
 import com.garretwilson.util.*;
 
 /**Represents the an RDF resource connected in an RDF graph.
