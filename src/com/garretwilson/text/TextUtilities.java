@@ -3,14 +3,14 @@ package com.garretwilson.text;
 import java.io.UnsupportedEncodingException;
 import java.util.*;
 import javax.mail.internet.ContentType;
-import com.garretwilson.io.ContentTypeConstants;
-import com.garretwilson.io.ContentTypeUtilities;
 import com.garretwilson.lang.*;
 import com.garretwilson.text.*;
 import com.garretwilson.util.*;
 
+import static com.garretwilson.io.ContentTypeConstants.*;
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.xml.XMLUtilities.*;
 
 /**Utilities for working with the semantics of text, as opposed to the syntax
 	of strings.
@@ -586,25 +586,24 @@ preface
 	<p>Text media types include:</p>
 	<ul>
 		<li><code>text/*</code></li>
+		<li><code>application/xml</code></li>
 		<li><code>application/*+xml</code></li>
 	</ul>
 	@param contentType The content type of a resource, or <code>null</code> for no
 		content type.
-	@return <code>true</code> if the given content type is one of several HTML
+	@return <code>true</code> if the given content type is one of several text
 		media types.
+	@see XMLUtilities#isXML(ContentType)
 	*/ 
 	public static boolean isText(final ContentType contentType)
 	{
 		if(contentType!=null)	//if a content type is given
 		{
-			if(ContentTypeConstants.TEXT.equals(contentType.getPrimaryType()))	//if this is "text/*"
+			if(TEXT.equals(contentType.getPrimaryType()))	//if this is "text/*"
 			{
 				return true;	//text/* is a text content type
 			}
-			if(ContentTypeConstants.APPLICATION.equals(contentType.getPrimaryType()))	//if this is "application/*"
-			{
-				return ContentTypeUtilities.hasSubTypeSuffix(contentType, ContentTypeConstants.XML_SUBTYPE_SUFFIX);	//see if the subtype has an XML suffix
-			}
+			return isXML(contentType);	//return whether this is an XML content type; all XML content types are text content types
 		}
 		return false;	//this is not a media type we recognize as being HTML
 	}

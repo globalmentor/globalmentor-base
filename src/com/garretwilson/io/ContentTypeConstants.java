@@ -26,96 +26,75 @@ public class ContentTypeConstants
 	/**The separator character that delimits a subtype suffix.*/
 	public final static char SUBTYPE_SUFFIX_DELIMITER_CHAR='+';
 
+		//subtype suffixes
+	/**The suffix for XML application types.*/
+	public final static String XML_SUBTYPE_SUFFIX="xml";
+	/**The suffix for RDF application types.*/
+	public final static String RDF_XML_SUBTYPE_SUFFIX="rdf"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
+	
 		//text media types
 	/**An OEB 1.0 document.*/
-	public final static String X_OEB1_CSS="x-oeb1-css";
-	public final static String X_OEB1_DOCUMENT="x-oeb1-document";
-	public final static String TEXT_X_OEB1_DOCUMENT=TEXT+DIVIDER+X_OEB1_DOCUMENT;
-	public final static String X_OEB1_PACKAGE="x-oeb1-package";
-	public final static String TEXT_X_OEB1_PACKAGE=TEXT+DIVIDER+X_OEB1_PACKAGE; //G***should this be application/..., or +xml or something?
-	public final static String CALENDAR="calendar";
-	public final static String TEXT_CALENDAR=TEXT+DIVIDER+CALENDAR;
-	public final static String DIRECTORY="directory";
-	public final static String TEXT_DIRECTORY=TEXT+DIVIDER+DIRECTORY;
-	public final static String HTML="html";
-	public final static String TEXT_HTML=TEXT+DIVIDER+HTML;
-	public final static String PLAIN="plain";
-	public final static String TEXT_PLAIN=TEXT+DIVIDER+PLAIN;
-	public final static String XML="xml";
-	public final static String TEXT_XML=TEXT+DIVIDER+XML;
+	public final static String X_OEB1_CSS_SUBTYPE="x-oeb1-css";
+	public final static String X_OEB1_DOCUMENT_SUBTYPE="x-oeb1-document";
+	public final static String X_OEB1_PACKAGE_SUBTYPE="x-oeb1-package";
+//G***del	public final static String TEXT_X_OEB1_PACKAGE=TEXT+DIVIDER+X_OEB1_PACKAGE; //G***should this be application/..., or +xml or something?
+	public final static String CALENDAR_SUBTYPE="calendar";
+	public final static String DIRECTORY_SUBTYPE="directory";
+	public final static String HTML_SUBTYPE="html";
+	public final static String JAVASCRIPT_SUBTYPE="javascript";
+	public final static String PLAIN_SUBTYPE="plain";
+	public final static String XML_SUBTYPE="xml";
 
 		//image media types
 	/**A GIF image.*/
-	public final static String GIF="gif";
-	public final static String IMAGE_GIF=IMAGE+DIVIDER+GIF;
+	public final static String GIF_SUBTYPE="gif";
 	/**A JPEG image.*/
-	public final static String JPEG="jpeg";
-	public final static String IMAGE_JPEG=IMAGE+DIVIDER+JPEG;
+	public final static String JPEG_SUBTYPE="jpeg";
 	/**A PNG image.*/
-	public final static String PNG="png";
-	public final static String IMAGE_PNG=IMAGE+DIVIDER+PNG;
+	public final static String PNG_SUBTYPE="png";
 	/**An SVG image.*/
-	public final static String SVG_XML="svg+xml";
-	public final static String IMAGE_SVG_XML=IMAGE+DIVIDER+SVG_XML;
+	public final static String SVG_XML_SUBTYPE="svg"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**A TIFF image.*/
-	public final static String TIFF="tiff";
-	public final static String IMAGE_TIFF=IMAGE+DIVIDER+TIFF;
+	public final static String TIFF_SUBTYPE="tiff";
 	/**A bitmap image.*/
-	public final static String X_BITMAP="x-bitmap";
-	public final static String IMAGE_X_BITMAP=IMAGE+DIVIDER+X_BITMAP;
+	public final static String X_BITMAP_SUBTYPE="x-bitmap";
 
 		//video media types
 	/**An MPEG video.*/
-	public final static String MPEG="mpeg";
-	public final static String VIDEO_MPEG=VIDEO+DIVIDER+MPEG;
+	public final static String MPEG_SUBTYPE="mpeg";
 
 		//audio media types
 	/**Single channel audio encoded using 8-bit ISDN mu-law [PCM] at a sample rate of 8000 Hz.*/
-	public final static String BASIC="basic";
-	public final static String AUDIO_BASIC=AUDIO+DIVIDER+BASIC;
+	public final static String BASIC_SUBTYPE="basic";
 	/**MPEG 2 layer 3 (MP3); see <a href="http://www.rfc-editor.org/rfc/rfc3003.txt">RFC 3003</a>.*/
-	public final static String AUDIO_MPEG=AUDIO+DIVIDER+MPEG;
+//G***fix	public final static String AUDIO_MPEG=AUDIO+DIVIDER+MPEG;
 	/**Microsoft Windows Wave audio format.*/
-	public final static String X_WAV="x-wav";
-	public final static String AUDIO_WAV=AUDIO+DIVIDER+X_WAV;
+	public final static String X_WAV_SUBTYPE="x-wav";
 
 		//application media types
 
 	/**A stream of bytes.*/
-	public final static String OCTET_STREAM="octet-stream";
-	public final static String APPLICATION_OCTET_STREAM=APPLICATION+DIVIDER+OCTET_STREAM;
+	public final static String OCTET_STREAM_SUBTYPE="octet-stream";
 	/**A Dictionary Ontology (Dicto) dictionary.*/
-	public final static String X_DICTO_RDF_XML="x-dicto+rdf+xml";
-	public final static String APPLICATION_DICTO=APPLICATION+DIVIDER+X_DICTO_RDF_XML;
+	public final static String X_DICTO_RDF_XML_SUBTYPE="x-dicto"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A Java application.*/
-	public final static String JAVA="java";
-	public final static String APPLICATION_JAVA=APPLICATION+DIVIDER+JAVA;
+	public final static String JAVA_SUBTYPE="java";
 	/**A  MathML application.*/
-	public final static String MATHML_XML="mathml+xml";
-	public final static String APPLICATION_MATHML_XML=APPLICATION+DIVIDER+MATHML_XML;
+	public final static String MATHML_XML_SUBTYPE="mathml"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**A MAQRO activity.*/
-	public final static String X_MAQRO_RDF_XML="x-maqro+rdf+xml";
-	public final static String APPLICATION_MAQRO=APPLICATION+DIVIDER+X_MAQRO_RDF_XML;
+	public final static String X_MAQRO_RDF_XML_SUBTYPE="x-maqro"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A MAQRO question.*/
-	public final static String X_QRO_RDF_XML="x-qro+rdf+xml";
-	public final static String APPLICATION_QRO=APPLICATION+DIVIDER+X_QRO_RDF_XML;
+	public final static String X_QRO_RDF_XML_SUBTYPE="x-qro"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A Microsoft Word document; see <a href="http://www.iana.org/assignments/media-types/application/msword">http://www.iana.org/assignments/media-types/application/msword</a>.*/
-	public final static String MSWORD="msword";
-	public final static String APPLICATION_MSWORD=APPLICATION+DIVIDER+MSWORD;
+	public final static String MSWORD_SUBTYPE="msword";
 	/**An Ogg Vorbis file; see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>.*/
-	public final static String OGG="ogg";
-	public final static String APPLICATION_OGG=APPLICATION+DIVIDER+OGG;
+	public final static String OGG_SUBTYPE="ogg";
 	/**An Adobe PDF file.*/
-	public final static String PDF="pdf";
-	public final static String APPLICATION_PDF=APPLICATION+DIVIDER+PDF;
+	public final static String PDF_SUBTYPE="pdf";
 	/**An XML application.*/
-	public final static String APPLICATION_XML=APPLICATION+DIVIDER+XML;
-	/**The suffix for XML application types.*/
-	public final static String XML_SUBTYPE_SUFFIX="xml";
+//G***fix	public final static String APPLICATION_XML=APPLICATION+DIVIDER+XML;
 	/**An XHTML application.*/
-	public final static String XHTML_XML="xhtml+xml";
-	public final static String APPLICATION_XHTML_XML=APPLICATION+DIVIDER+XHTML_XML;
+	public final static String XHTML_XML_SUBTYPE="xhtml"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**A Zip file.*/
-	public final static String ZIP="zip";
-	public final static String APPLICATION_ZIP=APPLICATION+DIVIDER+ZIP;
+	public final static String ZIP_SUBTYPE="zip";
 }
