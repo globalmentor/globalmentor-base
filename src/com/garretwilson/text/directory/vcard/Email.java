@@ -1,5 +1,7 @@
 package com.garretwilson.text.directory.vcard;
 
+import java.util.*;
+
 /**An object representing the "EMAIL" type of a vCard <code>text/directory</code>
 	profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>,
 	"vCard MIME Directory Profile".
@@ -45,6 +47,22 @@ public class Email
 		*/
 		public void setEmailType(final int emailType) {this.emailType=emailType;}
 
+	/**The locale that represents the language of the text, or <code>null</code>
+		if no language is indicated.
+	*/
+	private Locale locale;
+
+		/**@return The locale that represents the language of the text, or
+			<code>null</code> if no language is indicated.
+		*/
+		public Locale getLocale() {return locale;}
+
+		/**Sets the language used by the text.
+		@param locale The locale that represents the language of the text, or
+			<code>null</code> if no language should be indicated.
+		*/
+		public void setLocale(final Locale locale) {this.locale=locale;}
+
 	/**Email address constructor with default telephone type of <code>INTERNET_EMAIL_TYPE</code>.
 	@param emailAddress The email address.
 	*/
@@ -61,8 +79,22 @@ public class Email
 	*/
 	public Email(final String emailAddress, final int emailType)
 	{
+		this(emailAddress, emailType, null);	//construct an email with no locale	
+	}
+
+	/**Email address, type, and locale constructor.
+	@param telephoneNumber The telephone number from which values should be used
+		for initialization.
+	@param emailType The email addressing type, one of the
+		<code>XXX_EMAIL_TYPE</code> constants.
+	@param locale The locale that represents the language of the text, or
+		<code>null</code> if no language should be indicated.
+	*/
+	public Email(final String emailAddress, final int emailType, final Locale locale)
+	{
 		setAddress(emailAddress);
 		setEmailType(emailType);
+		setLocale(locale);
 	}
 
 	/**The string for separating the components of the string representation of

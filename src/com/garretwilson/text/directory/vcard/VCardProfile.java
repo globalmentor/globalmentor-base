@@ -124,7 +124,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 				//identification types
 		if(N_TYPE.equalsIgnoreCase(name))	//N
 		{
-			return new Object[]{processNValue(reader)};	//process the N value
+			return new Object[]{processNValue(reader, paramList)};	//process the N value
 		}
 				//delivery addressing types
 		else if(ADR_TYPE.equalsIgnoreCase(name))	//ADR
@@ -141,7 +141,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			//organizational types
 		else if(ORG_TYPE.equalsIgnoreCase(name))	//ORG
 		{
-			return new Object[]{processORGValue(reader)};	//process the ORG value
+			return new Object[]{processORGValue(reader, paramList)};	//process the ORG value
 		}
 		return null;	//show that we can't create a value
 	}
@@ -149,19 +149,23 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	/**Processes the value for the <code>N</code> type name.
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
 	@param reader The reader that contains the lines of the directory.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
 	@return An object representing the vCard structured name.
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
-	public static Name processNValue(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public static Name processNValue(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
 	{
+		final Locale locale=DirectoryUtilities.getLanguageParamValue(paramList);	//get the language, if there is one
 		final String[][] fields=processStructuredTextValue(reader);	//process the structured text fields
 		final String[] familyNames=fields.length>0 ? fields[0] : new String[]{};	//get the family names, if present
 		final String[] givenNames=fields.length>1 ? fields[1] : new String[]{};	//get the given names, if present
 		final String[] additionalNames=fields.length>2 ? fields[2] : new String[]{};	//get the additional names, if present
 		final String[] honorificPrefixes=fields.length>3 ? fields[3] : new String[]{};	//get the honorific prefixes, if present
 		final String[] honorificSuffixes=fields.length>4 ? fields[4] : new String[]{};	//get the honorific suffixes, if present
-		return new Name(familyNames, givenNames, additionalNames, honorificPrefixes, honorificSuffixes);	//create and return a vCard name object with the parsed information
+		return new Name(familyNames, givenNames, additionalNames, honorificPrefixes, honorificSuffixes, locale);	//create and return a vCard name object with the parsed information
 	}
 
 	/**The reference to a map of <code>Integer</code>s representing address
@@ -212,6 +216,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	*/
 	public static Address processADRValue(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
 	{
+		final Locale locale=DirectoryUtilities.getLanguageParamValue(paramList);	//get the language, if there is one
 		int addressType=Address.NO_ADDRESS_TYPE;	//start out not knowing any address type
 		final String[] types=DirectoryUtilities.getParamValues(paramList, TYPE_PARAM_NAME);	//get the address types specified
 		for(int i=types.length-1; i>=0; --i)	//look at each address type
@@ -226,7 +231,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		final String region=fields.length>4 && fields[4].length>0 ? fields[4][0] : null;	//get the region, if present
 		final String postalCode=fields.length>5 && fields[5].length>0 ? fields[5][0] : null;	//get the postal code, if present
 		final String countryName=fields.length>6 && fields[6].length>0 ? fields[6][0] : null;	//get the country name, if present
-		return new Address(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, addressType);	//create and return a vCard address with the parsed information
+		return new Address(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, addressType, locale);	//create and return a vCard address with the parsed information
 	}
 
 	/**The reference to a map of <code>Integer</code>s representing telephone
@@ -353,11 +358,14 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	/**Processes the value for the <code>ORG</code> type name.
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
 	@param reader The reader that contains the lines of the directory.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
 	@return An array of strings representing the organizational name and units.
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
-	public static String[] processORGValue(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public static String[] processORGValue(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
 	{
 		final List orgList=new ArrayList();	//create a list into which we will place the organizational name and units, as we'll ignore any structured components that are empty 
 		final String[][] fields=processStructuredTextValue(reader);	//process the structured text fields
@@ -481,9 +489,8 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 				else if(FN_TYPE.equalsIgnoreCase(typeName))	//FN
 				{
 					if(vcard.getFormattedName()==null)	//if there is not yet a formatted name
-					{
-							//TODO fix to get the locale; comment
-						final LocaleText formattedName=new LocaleText(contentLine.getValue().toString());
+					{							
+						final LocaleText formattedName=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
 						vcard.setFormattedName(formattedName);	//get the formatted name
 						continue;	//don't process this content line further
 					}
@@ -492,13 +499,15 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 				{
 					if(vcard.getName()==null)	//if there is not yet a name
 					{
+							//G***maybe retrieve the locale here rather than upon value creation
 						vcard.setName((Name)contentLine.getValue());	//get the name
 						continue;	//don't process this content line further
 					}
 				}
 				else if(NICKNAME_TYPE.equalsIgnoreCase(typeName))	//NICKNAME
 				{
-					vcard.getNicknameList().add(contentLine.getValue().toString());	//add this nickname to our list
+					final LocaleText nickname=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
+					vcard.getNicknameList().add(nickname);	//add this nickname to our list
 					continue;	//don't process this content line further
 				}
 						//delivery addressing types
@@ -510,7 +519,8 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 				else if(LABEL_TYPE.equalsIgnoreCase(typeName))	//LABEL
 				{
 //TODO make sure the NameAddressPanel stores label information so that it won't be lost
-					vcard.getLabelList().add(contentLine.getValue().toString());	//add this label to our list
+					final LocaleText label=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
+					vcard.getLabelList().add(label);	//add this label to our list
 					continue;	//don't process this content line further
 				}
 						//telecommunications addressing types
@@ -549,14 +559,19 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 						//organizational type
 				else if(ORG_TYPE.equalsIgnoreCase(typeName))	//ORG
 				{
+					final Locale locale=DirectoryUtilities.getLanguageParamValue(contentLine.getParamList());	//get the locale, if there is one					
 					final String[] org=(String[])contentLine.getValue();	//get the organization information
 					if(org.length>0 && vcard.getOrganizationName()==null)	//if there is an organization name, and we haven't yet stored an organization name
 					{
-						vcard.setOrganizationName(org[0]);	//set the organization name from the first oganizational component
+						vcard.setOrganizationName(new LocaleText(org[0], locale));	//set the organization name from the first oganizational component
 						if(org.length>1)	//if there are units specified
 						{
-							final String[] units=new String[org.length-1];	//create a string array to contain all the units (ignore the first item, the organization name)
-							System.arraycopy(org, 1, units, 0, units.length);	//copy the units from the organizational array to the units array
+							final LocaleText[] units=new LocaleText[org.length-1];	//create a string array to contain all the units (ignore the first item, the organization name)
+							for(int unitIndex=units.length-1; unitIndex>=0; --unitIndex)	//look at each unit
+							{
+								units[unitIndex]=new LocaleText(org[unitIndex+1], locale);	//create this unit, specifying the locale
+							}
+//G***del when works							System.arraycopy(org, 1, units, 0, units.length);	//copy the units from the organizational array to the units array
 							vcard.setOrganizationUnits(units);	//set the vCard units 
 						}
 						continue;	//don't process this content line further
@@ -566,7 +581,10 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 				{
 					if(vcard.getTitle()==null)	//if there is not yet a title
 					{
-						vcard.setTitle(contentLine.getValue().toString());	//get the title
+						final LocaleText title=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
+//TODO add support for multiple titles with multiple languages
+//G***del Debug.trace("title language: ", title.getLocale());	//G***del
+						vcard.setTitle(title);	//set the title
 						continue;	//don't process this content line further
 					}
 				}
@@ -574,21 +592,24 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 				{
 					if(vcard.getRole()==null)	//if there is not yet a role
 					{
-						vcard.setRole(contentLine.getValue().toString());	//get the role
+						final LocaleText role=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
+						vcard.setRole(role);	//set the role
 						continue;	//don't process this content line further
 					}
 				}
 						//explanatory types
 				else if(CATEGORIES_TYPE.equalsIgnoreCase(typeName))	//CATEGORIES
 				{
-					vcard.getCategoryList().add(contentLine.getValue().toString());	//add this category to our list
+					final LocaleText category=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
+					vcard.getCategoryList().add(category);	//add this category to our list
 					continue;	//don't process this content line further
 				}
 				else if(NOTE_TYPE.equalsIgnoreCase(typeName))	//NOTE
 				{
 					if(vcard.getNote()==null)	//if there is not yet a note
 					{
-						vcard.setNote(contentLine.getValue().toString());	//get the note
+						final LocaleText note=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
+						vcard.setNote(note);	//set the note
 						continue;	//don't process this content line further
 					}
 				}

@@ -1,7 +1,6 @@
 package com.garretwilson.text.directory.vcard;
 
 import java.util.*;
-import com.garretwilson.lang.*;
 import com.garretwilson.util.*;
 
 /**An object representing a vCard <code>text/directory</code> profile as defined
@@ -53,7 +52,7 @@ public class VCard
 		/**Sets the text corresponding to the nickname of the object the vCard represents.
 		@param nicknames The nicknames.
 		*/
-		public void setNicknames(final String[] nicknames)
+		public void setNicknames(final LocaleText[] nicknames)
 		{
 			nicknameList.clear();	//clear the list
 			CollectionUtilities.addAll(nicknameList, nicknames);	//add the new values
@@ -92,7 +91,7 @@ public class VCard
 			object the vCard represents.
 		@param labels The array of delivery address labels.
 		*/
-		public void setLabels(final String[] labels)
+		public void setLabels(final LocaleText[] labels)
 		{
 			labelList.clear();	//clear the list
 			CollectionUtilities.addAll(labelList, labels);	//add the new values
@@ -143,62 +142,62 @@ public class VCard
 			//organizational types
 
 	/**The organization name.*/
-	private String organizationName=null;
+	private LocaleText organizationName=null;
 
 		/**@return The organization name, or <code>null</code> for no name.*/
-		public String getOrganizationName() {return organizationName;}
+		public LocaleText getOrganizationName() {return organizationName;}
 
 		/**Sets the organization name.
 		@param org The name of the organization, or <code>null</code> for no name.
 		*/
-		public void setOrganizationName(final String org) {organizationName=org;}
+		public void setOrganizationName(final LocaleText org) {organizationName=org;}
 
 	/**The organizational units.*/
-	private String[] organizationUnits=new String[]{};
+	private LocaleText[] organizationUnits=new LocaleText[]{};
 
 		/**@return The organizational units.*/
-		public String[] getOrganizationUnits() {return organizationUnits;}
+		public LocaleText[] getOrganizationUnits() {return organizationUnits;}
 
 		/**@return The first organizational unit, or <code>null</code> if there are no organizational units.*/
-		public String getOrganizationUnit() {return organizationUnits.length>0 ? organizationUnits[0] : null;}
+		public LocaleText getOrganizationUnit() {return organizationUnits.length>0 ? organizationUnits[0] : null;}
 		
 		/**Sets the organizational units.
 		@param units The organizational units.
 		*/
-		public void setOrganizationUnits(final String[] units) {organizationUnits=units;}
+		public void setOrganizationUnits(final LocaleText[] units) {organizationUnits=units;}
 		
 		/**Sets the organizational unit.
 		@param unit The organizational unit, or <code>null</code> for no organizational unit.
 		*/
-		public void setOrganizationUnit(final String unit) {setOrganizationUnits(StringUtilities.createArray(unit));}
+		public void setOrganizationUnit(final LocaleText unit) {setOrganizationUnits(unit!=null ? new LocaleText[]{unit} : null);}
 
 	/**The job title, functional position or function at the organization.*/
-	private String title=null;
+	private LocaleText title=null;
 
 		/**@return The job title, functional position or function at the,
 			organization or <code>null</code> for no title.
 		*/
-		public String getTitle() {return title;}
+		public LocaleText getTitle() {return title;}
 
 		/**Sets the job title.
 		@param title The job title, functional position or function at the
 			organization, or <code>null</code> for no title.
 		*/
-		public void setTitle(final String title) {this.title=title;}
+		public void setTitle(final LocaleText title) {this.title=title;}
 
 	/**The role, occupation, or business category at the organization.*/
-	private String role=null;
+	private LocaleText role=null;
 
 		/**@return The role, occupation, or business category at the
 			organization, or <code>null</code> for no role.
 		*/
-		public String getRole() {return role;}
+		public LocaleText getRole() {return role;}
 
 		/**Sets the role.
 		@param role The role, occupation, or business category at the organization,
 			or <code>null</code> for no role.
 		*/
-		public void setRole(final String role) {this.role=role;}
+		public void setRole(final LocaleText role) {this.role=role;}
 
 			//explanatory types
 
@@ -211,7 +210,7 @@ public class VCard
 		/**Adds the application category information about the vCard.
 		@param categories The array of categories to add.
 		*/
-		public void addCategories(final String[] categories)
+		public void addCategories(final LocaleText[] categories)
 		{
 			CollectionUtilities.addAll(categoryList, categories);	//add the new values
 		}
@@ -219,26 +218,26 @@ public class VCard
 		/**Sets the application category information about the vCard.
 		@param emails The array of categories.
 		*/
-		public void setCategories(final String[] categories)
+		public void setCategories(final LocaleText[] categories)
 		{
 			categoryList.clear();	//clear the list
 			addCategories(categories);	//add the new values
 		}
 
 	/**The supplemental information or a comment that is associated with the vCard*/
-	private String note=null;
+	private LocaleText note=null;
 
 		/**@return The supplemental information or a comment that is associated
 			with the vCard, or <code>null</code> if there is no note.
 		*/
-		public String getNote() {return note;}
+		public LocaleText getNote() {return note;}
 
 		/**Sets the supplemental information or a comment that is associated
 			with the vCard.
 		@param note The supplemental information or a comment, or <code>null</code>
 			if there is no note.
 		*/
-		public void setNote(final String note) {this.note=note;}
+		public void setNote(final LocaleText note) {this.note=note;}
 
 //TODO add URL
 

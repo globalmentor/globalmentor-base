@@ -7,7 +7,7 @@ import com.garretwilson.lang.BooleanUtilities;
 <p>Bound properties:</p>
 <dl>
 	<dt><code>Modifiable.MODIFIED_PROPERTY_NAME</code> (<code>Boolean</code>)</dt>
-	<dd>Indicates a the boolean modified property has been changed.</dd>
+	<dd>Indicates that the boolean modified property has been changed.</dd>
 </dl>
 @author Garret Wilson
 @see Modifiable#MODIFIED_PROPERTY_NAME

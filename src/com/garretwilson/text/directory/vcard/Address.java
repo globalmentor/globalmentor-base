@@ -1,5 +1,6 @@
 package com.garretwilson.text.directory.vcard;
 
+import java.util.*;
 import com.garretwilson.lang.*;
 
 /**An object representing the "ADR" type of a vCard <code>text/directory</code>
@@ -138,6 +139,22 @@ public class Address
 		*/
 		public void setCountryName(final String countryName) {this.countryName=countryName;}
 
+	/**The locale that represents the language of the text, or <code>null</code>
+		if no language is indicated.
+	*/
+	private Locale locale;
+
+		/**@return The locale that represents the language of the text, or
+			<code>null</code> if no language is indicated.
+		*/
+		public Locale getLocale() {return locale;}
+
+		/**Sets the language used by the text.
+		@param locale The locale that represents the language of the text, or
+			<code>null</code> if no language should be indicated.
+		*/
+		public void setLocale(final Locale locale) {this.locale=locale;}
+
 	/**Default constructor.*/
 	public Address()
 	{
@@ -160,7 +177,7 @@ public class Address
 		this(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, DEFAULT_ADDRESS_TYPE);	//construct an address with the default address type
 	}
 
-	/**Full constructor.
+	/**Address type constructor.
 	@param postOfficeBox The post office box, or <code>null</code> for no post office box.
 	@param extendedAddresses The extended addresses.
 	@param streetAddresses The street addresses.
@@ -173,6 +190,24 @@ public class Address
 	*/
 	public Address(final String postOfficeBox, final String[] extendedAddresses, final String[] streetAddresses, final String locality, final String region, final String postalCode, final String countryName, final int addressType)
 	{
+		this(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, addressType, null);	//construct an address with no locale		
+	}
+
+	/**Full constructor.
+	@param postOfficeBox The post office box, or <code>null</code> for no post office box.
+	@param extendedAddresses The extended addresses.
+	@param streetAddresses The street addresses.
+	@param locality The locality (e.g. city), or <code>null</code> for no locality.
+	@param region The region (e.g. state or province), or <code>null</code> for no region.
+	@param postalCode The postal code, or <code>null</code> for no postal code.
+	@param countryName The country name, or <code>null</code> for no country name.
+	@param addressType The delivery address type, one or more of the
+		<code>XXX_ADDRESS_TYPE</code> constants ORed together.
+	@param locale The locale that represents the language of the text, or
+		<code>null</code> if no language should be indicated.
+	*/
+	public Address(final String postOfficeBox, final String[] extendedAddresses, final String[] streetAddresses, final String locality, final String region, final String postalCode, final String countryName, final int addressType, final Locale locale)
+	{
 		setPostOfficeBox(postOfficeBox);
 		setExtendedAddresses(extendedAddresses);
 		setStreetAddresses(streetAddresses);
@@ -181,6 +216,7 @@ public class Address
 		setPostalCode(postalCode);
 		setCountryName(countryName);
 		setAddressType(addressType);
+		setLocale(locale);
 	}
 
 	/**Single constructor with default address type of
@@ -198,6 +234,22 @@ public class Address
 	{
 		this(postOfficeBox, extendedAddress, streetAddress, locality, region, postalCode, countryName, DEFAULT_ADDRESS_TYPE);	//construct the address with the default address type
 	} 
+
+	/**Address type constructor.
+	@param postOfficeBox The post office box, or <code>null</code> for no post office box.
+	@param extendedAddress The extended address, or <code>null</code> for no extended address.
+	@param streetAddress The street address, or <code>null</code> for no street address.
+	@param locality The locality (e.g. city), or <code>null</code> for no locality.
+	@param region The region (e.g. state or province), or <code>null</code> for no region.
+	@param postalCode The postal code, or <code>null</code> for no postal code.
+	@param countryName The country name, or <code>null</code> for no country name.
+	@param addressType The delivery address type, one or more of the
+		<code>XXX_ADDRESS_TYPE</code> constants ORed together.
+	*/
+	public Address(final String postOfficeBox, final String extendedAddress, final String streetAddress, final String locality, final String region, final String postalCode, final String countryName, final int addressType)
+	{
+		this(postOfficeBox, extendedAddress, streetAddress, locality, region, postalCode, countryName, addressType, null);	//construct the address with no locale	
+	}
 	
 	/**Full single constructor.
 	@param postOfficeBox The post office box, or <code>null</code> for no post office box.
@@ -207,8 +259,10 @@ public class Address
 	@param region The region (e.g. state or province), or <code>null</code> for no region.
 	@param postalCode The postal code, or <code>null</code> for no postal code.
 	@param countryName The country name, or <code>null</code> for no country name.
+	@param locale The locale that represents the language of the text, or
+		<code>null</code> if no language should be indicated.
 	*/
-	public Address(final String postOfficeBox, final String extendedAddress, final String streetAddress, final String locality, final String region, final String postalCode, final String countryName, final int addressType)
+	public Address(final String postOfficeBox, final String extendedAddress, final String streetAddress, final String locality, final String region, final String postalCode, final String countryName, final int addressType, final Locale locale)
 	{
 		setPostOfficeBox(postOfficeBox);
 		setExtendedAddress(extendedAddress);
@@ -218,6 +272,7 @@ public class Address
 		setPostalCode(postalCode);
 		setCountryName(countryName);
 		setAddressType(addressType);
+		setLocale(locale);
 	}
 
 	/**@return A string representation of the address.*/

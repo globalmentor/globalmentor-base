@@ -9,8 +9,37 @@ import com.garretwilson.util.*;
 	"A MIME Content-Type for Directory Information".
 @author Garret Wilson
 */
-public class DirectoryUtilities
+public class DirectoryUtilities implements DirectoryConstants
 {
+
+	/**Creates a <code>LocaleText</code> by combining the language param, if
+		present, with the string value of the given object.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
+	@param value The content line value.
+	@return An object representing the text and locale of the value
+	*/
+	public static LocaleText createLocaleTextValue(final List paramList, final Object value)
+	{
+		final Locale locale=getLanguageParamValue(paramList);	//get the locale
+		return new LocaleText(value.toString(), locale);	//create and return the locale text
+	}
+
+	/**Retrieves the value of the first language parameter as a <code>Locale</code>.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
+	@return A locale representing the given language, or <code>null</code> if
+		no language is indicated.
+	*/
+	public static Locale getLanguageParamValue(final List paramList)
+	{
+		final String languageValue=getParamValue(paramList, LANGUAGE_PARAM_NAME);	//get the first language parameter
+		return languageValue!=null && languageValue.trim().length()>0	//if there is a language and it isn't just whitespace 
+			? LocaleUtilities.createLocale(languageValue.trim())	//create a locale from the language value
+			: null;	//show that there was no language
+	}
 	
 	/**Retrieves the first value of a parameter with the given name.
 	@param paramList The list of parameters, each item of which is a

@@ -1,5 +1,6 @@
 package com.garretwilson.text.directory.vcard;
 
+import java.util.*;
 import com.garretwilson.lang.*;
 
 /**An object representing the "N" type of a vCard <code>text/directory</code>
@@ -7,9 +8,9 @@ import com.garretwilson.lang.*;
 	"vCard MIME Directory Profile".
 @author Garret Wilson
 */
-public class Name
+public class Name	//TODO probably make a LocaleObject that can be used as a basis for all these classes
 {
-	
+
 	/**The family names.*/
 	private String[] familyNames;
 
@@ -105,6 +106,22 @@ public class Name
 		*/
 		public void setHonorificSuffix(final String honorificSuffix) {setFamilyNames(StringUtilities.createArray(honorificSuffix));}
 
+	/**The locale that represents the language of the text, or <code>null</code>
+		if no language is indicated.
+	*/
+	private Locale locale;
+
+		/**@return The locale that represents the language of the text, or
+			<code>null</code> if no language is indicated.
+		*/
+		public Locale getLocale() {return locale;}
+
+		/**Sets the language used by the text.
+		@param locale The locale that represents the language of the text, or
+			<code>null</code> if no language should be indicated.
+		*/
+		public void setLocale(final Locale locale) {this.locale=locale;}
+
 	/**Name constructor.
 	@param familyNames The family names.
 	@param givenNames The given names.
@@ -124,7 +141,7 @@ public class Name
 		this(familyNames, givenNames, additionalNames, new String[]{}, new String[]{});	//construct the name with no prefixes or suffixes
 	}
 
-	/**Full constructor.
+	/**Full name constructor.
 	@param familyNames The family names.
 	@param givenNames The given names.
 	@param additionalNames The additional names.
@@ -133,11 +150,26 @@ public class Name
 	*/
 	public Name(final String[] familyNames, final String[] givenNames, final String[] additionalNames, final String[] honorificPrefixes, final String[] honorificSuffixes)
 	{
+		this(familyNames, givenNames, additionalNames, honorificPrefixes, honorificSuffixes, null);	//construct the name with no locale	
+	}
+
+	/**Full constructor.
+	@param familyNames The family names.
+	@param givenNames The given names.
+	@param additionalNames The additional names.
+	@param honorificPrefix The honorific prefixes.
+	@param honorificSuffixes The honorific suffixes.
+	@param locale The locale that represents the language of the text, or
+		<code>null</code> if no language should be indicated.
+	*/
+	public Name(final String[] familyNames, final String[] givenNames, final String[] additionalNames, final String[] honorificPrefixes, final String[] honorificSuffixes, final Locale locale)
+	{
 		setFamilyNames(familyNames);	//set the names
 		setGivenNames(givenNames);
 		setAdditionalNames(additionalNames);
 		setHonorificPrefixes(honorificPrefixes);
-		setHonorificSuffixes(honorificSuffixes);		
+		setHonorificSuffixes(honorificSuffixes);
+		setLocale(locale);		
 	}
 
 	/**Single constructor.
@@ -159,7 +191,7 @@ public class Name
 		this(familyName, givenName, additionalName, null, null);	//construct the name with no prefix or suffix
 	}
 
-	/**Full single constructor.
+	/**Full name constructor.
 	@param familyName The family name, or <code>null</code> for no family name.
 	@param givenName The given name, or <code>null</code> for no given name.
 	@param additionalName The additional name, or <code>null</code> for no additional name.
@@ -168,11 +200,26 @@ public class Name
 	*/
 	public Name(final String familyName, final String givenName, final String additionalName, final String honorificPrefix, final String honorificSuffix)
 	{
+		this(familyName, givenName, additionalName, honorificPrefix, honorificSuffix, null);	//construct the name with no locale	
+	}
+
+	/**Full single constructor.
+	@param familyName The family name, or <code>null</code> for no family name.
+	@param givenName The given name, or <code>null</code> for no given name.
+	@param additionalName The additional name, or <code>null</code> for no additional name.
+	@param honorificPrefix The honorific prefix, or <code>null</code> for no honorific prefix.
+	@param honorificSuffix The honorific suffix, or <code>null</code> for no honorific suffix.
+	@param locale The locale that represents the language of the text, or
+		<code>null</code> if no language should be indicated.
+	*/
+	public Name(final String familyName, final String givenName, final String additionalName, final String honorificPrefix, final String honorificSuffix, final Locale locale)
+	{
 		setFamilyName(familyName);	//set the names
 		setGivenName(givenName);
 		setAdditionalName(additionalName);
 		setHonorificPrefix(honorificPrefix);
-		setHonorificSuffix(honorificSuffix);		
+		setHonorificSuffix(honorificSuffix);
+		setLocale(locale);		
 	}
 
 	/**@return A string representation of the name.*/
