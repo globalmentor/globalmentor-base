@@ -6,6 +6,7 @@ import java.util.*;
 import com.garretwilson.lang.JavaConstants;
 import com.garretwilson.model.DefaultResource;
 import com.garretwilson.model.Resource;
+import com.garretwilson.util.Debug;
 
 /**Base class for RDF processors.
 	Each instance of an RDF processor maintains an internal
@@ -73,7 +74,7 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 		}
 
 	/**The map of resource proxies keyed to reference URIs.*/
-	private final Map referenceURIResourceProxyMap=new HashMap();
+	private final Map<URI, ResourceProxy> referenceURIResourceProxyMap=new HashMap<URI, ResourceProxy>();
 
 		/**Retrieves a resource proxy to represent a resource with the given
 			reference URI. If such a proxy already exists, it will be returned;
@@ -83,7 +84,7 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 		*/
 		protected ResourceProxy getResourceProxy(final URI referenceURI)
 		{
-			ResourceProxy resourceProxy=(ResourceProxy)referenceURIResourceProxyMap.get(referenceURI);	//see if there is a proxy associated with the reference URI
+			ResourceProxy resourceProxy=referenceURIResourceProxyMap.get(referenceURI);	//see if there is a proxy associated with the reference URI
 			if(resourceProxy==null)	///if there is no such resource proxy
 			{
 				resourceProxy=new ResourceProxy(referenceURI);	//create a new resource proxy
@@ -93,7 +94,7 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 		}
 
 	/**The map of resource proxies keyed to node IDs.*/
-	private final Map nodeIDResourceProxyMap=new HashMap();
+	private final Map<String, ResourceProxy> nodeIDResourceProxyMap=new HashMap<String, ResourceProxy>();
 
 		/**Retrieves a resource proxy to represent a resource with the given
 			node ID. If such a proxy already exists, it will be returned;
@@ -103,7 +104,7 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 		*/
 		protected ResourceProxy getResourceProxy(final String nodeID)
 		{
-			ResourceProxy resourceProxy=(ResourceProxy)nodeIDResourceProxyMap.get(nodeID);	//see if there is a proxy associated with the node ID
+			ResourceProxy resourceProxy=nodeIDResourceProxyMap.get(nodeID);	//see if there is a proxy associated with the node ID
 			if(resourceProxy==null)	///if there is no such resource proxy
 			{
 				resourceProxy=new ResourceProxy(nodeID);	//create a new resource proxy
@@ -113,7 +114,7 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 		}
 
 	/**The map of RDF resources keyed to resource proxies.*/ 
-	private final Map proxiedRDFResourceMap=new HashMap();
+	private final Map<ResourceProxy, RDFResource> proxiedRDFResourceMap=new HashMap<ResourceProxy, RDFResource>();
 
 		/**Retrieves a resource associated with the given resource proxy, if any.
 		@param resourceProxy The object standing in for the resource.
@@ -123,7 +124,7 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 		*/
 		protected RDFResource getProxiedRDFResource(final ResourceProxy resourceProxy)
 		{
-			return (RDFResource)proxiedRDFResourceMap.get(resourceProxy); //get any resource associated with the resource proxy
+			return proxiedRDFResourceMap.get(resourceProxy); //get any resource associated with the resource proxy
 		}
 
 		/**Stores a reference to a resource keyed to a resource proxy.
@@ -145,7 +146,7 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 	}
 
 	/**The set of all statements used to create the resources.*/
-	private final Set statementSet=new HashSet();
+	private final Set<Statement> statementSet=new HashSet<Statement>();
 
 	/**Adds a statement to the list of statements.
 	If an equivalent statement already exists in the list, no action occurs.
@@ -156,10 +157,9 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 	  statementSet.add(statement); //add the statement to the set
 	}
 
-	/**@return A read-only iterator of all statements collected and processed by
-		the processor.
+	/**@return A read-only iterator of all statements collected and processed by the processor.
 	*/
-	public Iterator getStatementIterator()
+	public Iterator<Statement> getStatementIterator()
 	{
 		return Collections.unmodifiableSet(statementSet).iterator();  //create an unmodifiable list set the statement set and return an iterator to it
 	}
@@ -213,10 +213,10 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 	protected RDFResource createResources(final Resource resource)	//TODO maybe check to make sure any RDFResource passed to us is really one of the ones in the list of statements
 	{
 		RDFResource rdfResource=resource instanceof RDFResource ? (RDFResource)resource : null;	//if the given resource is already an RDF resource, there's nothing to unproxy
-		final Iterator statementIterator=getStatementIterator();	//get an iterator to statements
+		final Iterator<Statement> statementIterator=getStatementIterator();	//get an iterator to statements
 		while(statementIterator.hasNext())	//while there are more statements
 		{
-			final Statement statement=(Statement)statementIterator.next();	//get the next statement
+			final Statement statement=statementIterator.next();	//get the next statement
 			if(statement instanceof DefaultStatement)	//if this is a default statement
 			{
 				final DefaultStatement defaultStatement=(DefaultStatement)statement;	//cast the statement to one we can change	
@@ -275,10 +275,10 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 		RDFResource resource=getProxiedRDFResource(resourceProxy);	//see if we already have a resource represented by the proxy
 		if(resource==null)	//if we have no such resource, create one; first, look for an appropriate type
 		{
-			final Iterator statementIterator=getStatementIterator();	//get an iterator to statements
+			final Iterator<Statement> statementIterator=getStatementIterator();	//get an iterator to statements
 			while(resource==null && statementIterator.hasNext())	//while there are more statements and we haven't created a resource
 			{
-				final Statement statement=(Statement)statementIterator.next();	//get the next statement
+				final Statement statement=statementIterator.next();	//get the next statement
 					//if this is a statement in the form, {resource proxy, rdf:type, XXX}
 				if(statement.getSubject().equals(resourceProxy)	//if this statement has this resource proxy as its subject
 						&& TYPE_PROPERTY_REFERENCE_URI.equals(statement.getPredicate().getReferenceURI()))	//if this statement has a predicate of rdf:type
@@ -291,7 +291,7 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 					}
 					else if(typeValueResource instanceof ResourceProxy)	//if the type value is only resource proxy
 					{
-						typeValueRDFResource=unproxyRDFResource(resourceProxy);	//unproxy the type value (note that this will not replace the proxy in the statement, but it will create the resource and associate it with the proxy so that when it does come time to replace the proxy, it will already be there)
+						typeValueRDFResource=unproxyRDFResource((ResourceProxy)typeValueResource);	//unproxy the type value (note that this will not replace the proxy in the statement, but it will create the resource and associate it with the proxy so that when it does come time to replace the proxy, it will already be there)
 					}
 					else	//if we don't recognize the value
 					{

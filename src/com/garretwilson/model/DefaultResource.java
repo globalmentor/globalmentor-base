@@ -24,7 +24,7 @@ public class DefaultResource implements Resource, Comparable<Resource>
 		public void setReferenceURI(final URI uri) {referenceURI=uri;}
 
 	/**@return The unique identifier of the object.*/
-	public URI getID() {return getReferenceURI();}
+//TODO del when not needed	public URI getID() {return getReferenceURI();}
 
 	/**Default constructor that allows the reference URI to be set later.*/
 	protected DefaultResource()

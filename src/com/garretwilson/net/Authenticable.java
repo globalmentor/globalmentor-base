@@ -21,8 +21,14 @@ public interface Authenticable
 	*/
 //G***fix	public PasswordAuthentication getPasswordAuthentication(final String username);
 
+	/**Determines password information in relation to a given description.
+	@param prompt A description of the authentication.
+	@return The password authentication collected from the user, or <code>null</code> if none is provided.
+	*/
+	public PasswordAuthentication getPasswordAuthentication(final String prompt);
+
 	/**Determines password information in relation to a given URI and description.
-	@param uri The URI for which authentication is requested.
+	@param uri The URI for which authentication is requested, or <code>null</code> if there is no relevant URI.
 	@param prompt A description of the authentication.
 	@return The password authentication collected from the user, or <code>null</code> if none is provided.
 	*/
@@ -30,7 +36,7 @@ public interface Authenticable
 
 	/**Determines password information for a given user in relation to a given URI and description.
 	The user must not be allowed to change the username, if one is provided.
-	@param uri The URI for which authentication is requested.
+	@param uri The URI for which authentication is requested, or <code>null</code> if there is no relevant URI.
 	@param prompt A description of the authentication.
 	@param username The user for which password information should be gathered, or <code>null</code> if the username is not restricted.
 	@return The password authentication collected from the user, or <code>null</code> if none is provided.

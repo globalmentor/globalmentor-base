@@ -327,12 +327,12 @@ public class URIUtilities
 
 	/**Retrieves a <code>File</code> representing the file of the URI.
 	@param uri The URI for which to return a file.
-	@return A <code>File</code> object representing the file path of the URI
-		with no query string.
+	@return A <code>File</code> object representing the file path of the URI with no query string, or <code>null</code> if there is no path.
 	*/
 	public static File getFile(final URI uri)
 	{
-		return new File(uri.getPath()); //create a new File from the URI path
+		final String path=uri.getPath();	//get the path of the URI
+		return path!=null ? new File(uri.getPath()) : null; //create a new File from the URI path, if there is one
 	}
 
 	/**Retrieves the file name of the URI.
@@ -353,7 +353,8 @@ public class URIUtilities
 	*/
 	public static ContentType getMediaType(final URI uri)
 	{
-		return ContentTypeUtilities.getMediaType(FileUtilities.getExtension(getFile(uri))); //return the media type based on the extension of the URI filename
+		final File file=getFile(uri);	//get the file from the URI
+		return file!=null ? ContentTypeUtilities.getMediaType(FileUtilities.getExtension(file)) : null; //return the media type based on the extension of the URI filename, if there is one
 	}
 
 	/**Creates a URI from a URL.

@@ -347,33 +347,29 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants	//TODO why don
 			final String qualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION);  //create a qualified name for the element
 		  resourceElement=document.createElementNS(RDF_NAMESPACE_URI.toString(), qualifiedName); //create an rdf:Description element
 		}
-		if(!isSerialized(resource))	//if we haven't serialized the property value resource, yet
+		if(referenceURI!=null)  //if this resource has a reference URI (i.e. it isn't a blank node)
 		{
-			if(referenceURI!=null)  //if this resource has a reference URI (i.e. it isn't a blank node)
+				//set the rdf:about attribute to the reference URI
+			final String aboutAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_ABOUT);  //create a qualified name for reference URI
+				//add the rdf:about attribute with the value set to the reference URI of the resource
+			resourceElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), aboutAttributeQualifiedName, referenceURI.toString());
+		}
+		else	//if this resource has no reference URI, we'll have to give it a node ID if any other resources reference it
+		{
+			final Set referenceSet=getReferenceSet(resource);	//find out which resources reference this resource
+			if(referenceSet!=null && referenceSet.size()>1)	//if more than one resource references this resource (if there's only one reference to it, we'll just serialize it inline)
 			{
-					//set the rdf:about attribute to the reference URI
-				final String aboutAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_ABOUT);  //create a qualified name for reference URI
-					//add the rdf:about attribute with the value set to the reference URI of the resource
-				resourceElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), aboutAttributeQualifiedName, referenceURI.toString());
+				final String nodeID=getNodeID(resource);	//get the node ID for this resource
+					//set the rdf:nodeID attribute to the node ID
+				final String nodeIDAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_NODE_ID);  //create a qualified name for node ID
+					//add the rdf:nodeID attribute with the value set to the node ID of the resource
+				resourceElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), nodeIDAttributeQualifiedName, nodeID);
 			}
-			else	//if this resource has no reference URI, we'll have to give it a node ID if any other resources reference it
-			{
-				final Set referenceSet=getReferenceSet(resource);	//find out which resources reference this resource
-				if(referenceSet!=null && referenceSet.size()>1)	//if more than one resource references this resource (if there's only one reference to it, we'll just serialize it inline)
-				{
-					final String nodeID=getNodeID(resource);	//get the node ID for this resource
-						//set the rdf:nodeID attribute to the node ID
-					final String nodeIDAttributeQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_NODE_ID);  //create a qualified name for node ID
-						//add the rdf:nodeID attribute with the value set to the node ID of the resource
-					resourceElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), nodeIDAttributeQualifiedName, nodeID);
-				}
-			}
+		}
+		if(!isSerialized(resource))	//if we haven't serialized this resource, yet
+		{
 			setSerialized(resource, true);	//show that we've serialized this resource (do this before adding properties, just in case there are circular references)
 			addProperties(document, resourceElement, resource);  //add all the properties of the resource to the resource element
-		}
-		else  //if we've already serialized the resource
-		{
-			setReference(resourceElement, resource);	//reference the already-serialized resource
 		}
 		return resourceElement; //return the resource element we created
 	}
