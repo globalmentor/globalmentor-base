@@ -99,16 +99,10 @@ public class ActivityPanel extends RDFPanel
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 //TODO set the book to be not editable
-		add(ToolBarUtilities.createToolBar(getToolBarActions()), BorderLayout.NORTH);	//put a toolbar in the north
+		final ActionManager actionManager=getActionManager();	//get our action manager and set up tool actions
+		actionManager.addToolAction(getQuizAction());
+		add(ToolBarUtilities.createToolBar(getActionManager()), BorderLayout.NORTH);	//put a toolbar in the north with our tool actions
 		//TODO fix status bar
-	}
-
-	/**@return An array of actions to use in a toolbar, with any
-		<code>null</code> actions representing separators.
-	*/
-	public Action[] getToolBarActions()
-	{
-		return new Action[]{getQuizAction()};	//return the toolbar actions for this panel
 	}
 
 	/**Loads the data from the model to the view, if necessary.
@@ -166,7 +160,6 @@ public class ActivityPanel extends RDFPanel
 	/**Interacts with the activity.*/
 	public void interact()
 	{
-/*TODO fix with non-ResourceApplicationFrame
 		final ActivityModel model=getActivityModel();	//get our model
 		if(verify() && model.getActivity()!=null)	//verify the contents of the user interface; if things verify and we have an activity
 		{
@@ -174,11 +167,10 @@ public class ActivityPanel extends RDFPanel
 			activityEngine.setBaseURI(model.getBaseURI());	//set the base URI of the engine TODO probably make the resource application panel URIAccessible
 			activityEngine.setURIInputStreamable(model);	//tell the activity engine to use our URI sourcefor reading
 			final MAQROActivityPanel activityPanel=new MAQROActivityPanel(activityEngine);	//create a new activity panel for the engine
-			final ResourceApplicationFrame activityFrame=new ResourceApplicationFrame(activityPanel);	//construct an activity frame without initializing it TODO eventually switch to a more generic application frame
+			final ApplicationFrame activityFrame=new ApplicationFrame(activityPanel);	//construct a frame for the activity
 			activityFrame.setVisible(true);	//show the activity frame
-			activityEngine.start();	//start the interaction
+//G***del			activityEngine.start();	//start the interaction
 		}
-*/
 	}
 
 	/**Activity action that allows quizing on the dictionary's contents.*/

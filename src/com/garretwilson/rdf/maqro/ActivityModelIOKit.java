@@ -72,6 +72,10 @@ public class ActivityModelIOKit extends AbstractModelIOKit implements MAQROConst
 			rdfProcessor.process(document, baseURI);  //parse the RDF from the document
 				//get an activity from the data model
 			final Activity activity=(Activity)RDFUtilities.getResourceByType(rdf, MAQRO_NAMESPACE_URI, ACTIVITY_CLASS_NAME);
+			if(activity==null)	//if there is no activity
+			{
+				throw new IOException("No activity found.");	//G***i18n
+			}
 			return new ActivityModel(activity, baseURI, this);	//create and return an activity model from the activity
 		}
 		catch(URISyntaxException uriSyntaxException)	//if any of the URIs were incorrect

@@ -70,6 +70,10 @@ public class DictionaryModelIOKit extends AbstractModelIOKit implements DictoCon
 			rdfProcessor.process(document, baseURI);  //parse the RDF from the document
 				//get a dictionary from the data model
 			final Dictionary dictionary=(Dictionary)RDFUtilities.getResourceByType(rdf, DICTO_NAMESPACE_URI, DICTIONARY_CLASS_NAME);
+			if(dictionary==null)	//if there is no dictionary
+			{
+				throw new IOException("No dictionary found.");	//G**i18n
+			}
 			return new DictionaryModel(dictionary, baseURI, this);	//return a new dictionary model with the dictionary, if we loaded one
 		}
 		catch(URISyntaxException uriSyntaxException)	//if any of the URIs were incorrect

@@ -73,8 +73,10 @@ public class VCardIOKit extends AbstractModelIOKit implements VCardConstants
 			return (VCard)directory;	//cast the directory to a vCard and return it as the model 
 //G***del			displayName=vcard.getDisplayName();	//save the display name so that we won't lose it TODO allow this to be edited							
 		}
-		//G***do something if this directory is not a vCard
-		return null;	//show that we weren't able to load a vCard
+		else	//if this directory is not a vCard
+		{
+			throw new IOException("Directory "+directory.getDisplayName()+" is not a vCard.");	//G***i18n
+		}
 	}
 	
 	/**Saves a model to an output stream.

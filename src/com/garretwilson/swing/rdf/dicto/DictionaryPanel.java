@@ -1,5 +1,6 @@
 package com.garretwilson.swing.rdf.dicto;
 
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -12,7 +13,6 @@ import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.*;
 import com.garretwilson.text.xml.xlink.*;
 import com.garretwilson.io.MediaType;
-import com.garretwilson.model.Model;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dicto.*;
 import com.garretwilson.rdf.dicto.Dictionary;
@@ -100,17 +100,10 @@ public class DictionaryPanel extends RDFPanel
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 //TODO set the book to be not editable
+		final ActionManager actionManager=getActionManager();	//get our action manager and set up tool actions
+		actionManager.addToolAction(getQuizAction());
+		add(ToolBarUtilities.createToolBar(getActionManager()), BorderLayout.NORTH);	//put a toolbar in the north with our tool actions
 	}
-
-	/**@return An array of actions to use in a toolbar, with any
-		<code>null</code> actions representing separators.
-	*/
-/*G***fix
-	public Action[] getToolBarActions()
-	{
-		return new Action[]{getQuizAction()};	//return the toolbar actions for this panel
-	}
-*/
 
 	/**Loads the data from the model to the view, if necessary.
 	@exception IOException Thrown if there was an error loading the model.
