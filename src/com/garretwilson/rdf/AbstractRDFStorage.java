@@ -250,7 +250,7 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	protected RDF retrieveRDF(final Document document) throws URISyntaxException
 	{
 		final RDFXMLProcessor rdfXMLProcessor=getRDFXMLProcessor();	//get the processor for processing RDF from the XML document
-		return rdfXMLProcessor.process(document);	//process the RDF from the XML and return the RDF data model
+		return rdfXMLProcessor.processRDF(document);	//process the RDF from the XML and return the RDF data model
 	}
 	
 	/**Retrieves an XML document from a URI.

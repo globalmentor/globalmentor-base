@@ -68,7 +68,7 @@ public class DictionaryModelIOKit extends AbstractIOKit<ResourceModel<Dictionary
 			final Document document=xmlProcessor.parseDocument(inputStream, baseURI);	//parse the activity file
 			document.normalize(); //normalize the package description document
 			final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf);	//create a new RDF processor
-			rdfProcessor.process(document, baseURI);  //parse the RDF from the document
+			rdfProcessor.processRDF(document, baseURI);  //parse the RDF from the document
 				//get a dictionary from the data model
 			final Dictionary dictionary=(Dictionary)RDFUtilities.getResourceByType(rdf, DICTO_NAMESPACE_URI, DICTIONARY_CLASS_NAME);
 			if(dictionary==null)	//if there is no dictionary

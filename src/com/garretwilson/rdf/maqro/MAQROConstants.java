@@ -62,6 +62,8 @@ public interface MAQROConstants
 	public final static String ALLOW_PREVIOUS_PROPERTY_NAME="allowPrevious";
 	/**Whether the activity can be canceled. The local name of maqro:allowCancel.*/
 	public final static String ALLOW_CANCEL_PROPERTY_NAME="allowCancel";
+	/**Whether the activity can be submitted. The local name of maqro:allowSubmit.*/
+	public final static String ALLOW_SUBMIT_PROPERTY_NAME="allowSubmit";
 			//process
 	/**Whether each response commit should be confirmed. The local name of maqro:confirmCommit.*/
 	public final static String CONFIRM_COMMIT_PROPERTY_NAME="confirmCommit";

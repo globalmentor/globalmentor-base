@@ -1,10 +1,14 @@
 package com.garretwilson.swing.text.rdf.maqro;
 
+import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
+
 import java.awt.Dimension;
 
 import javax.swing.*;
 import javax.swing.text.*;
 
+import com.garretwilson.rdf.maqro.Activity;
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
 
@@ -27,6 +31,12 @@ public class MAQROActivityView extends XMLComponentBlockView
 		/**@return The button interface to the submit action, or <code>null</code> if there is no submit button.*/
 		protected AbstractButton getSubmitButton() {return submitButton;}
 
+	/**@return The activity stored in a element's attributes, or <code>null</code> if no activity could be found.*/ 
+	public Activity getActivity()
+	{
+		return asInstance(getRDFResource(getElement().getAttributes()), Activity.class);	//get the question from the attributes 
+	}
+
 	/**Constructs an activity rendering view.
 	@param element The element this view is responsible for.
 	@param axis The tiling axis, either <code>View.X_AXIS</code> or <code>View.Y_AXIS</code>.
@@ -37,7 +47,10 @@ public class MAQROActivityView extends XMLComponentBlockView
 	{
 		super(element, axis); //construct the parent
 		this.submitAction=submitAction;	//save the submit action
-		submitButton=submitAction!=null ? new JButton(submitAction) : null;	//create a button for the submit action if there is one
+		final Activity activity=getActivity();	//get the activity
+		submitButton=activity!=null && activity.isAllowSubmit() && submitAction!=null	//if we have a submitable activity and were provided a submit action	
+				? new JButton(submitAction)	//create a button for the submit action
+				: null;	//don't create a submit button if we don't have a submitable activity and a submit action
 		if(submitButton!=null)	//if there is a submit button
 		{
 			submitButton.setFocusable(false);	//TODO fix component manager focus traversal

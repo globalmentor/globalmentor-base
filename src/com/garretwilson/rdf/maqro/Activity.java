@@ -168,6 +168,20 @@ public class Activity extends Group
 		setProperty(MAQRO_NAMESPACE_URI, ALLOW_CANCEL_PROPERTY_NAME, new BooleanLiteral(allowCancel)); //set the property with a boolean typed literal
 	}
 
+	/**@return <code>true</code> if submission is allowed; the default is <code>true</code>.*/
+	public boolean isAllowSubmit()
+	{
+		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_SUBMIT_PROPERTY_NAME), true); //get the boolean value of the property, defaulting to true
+	}
+
+	/**Sets whether submission is allowed.
+	@param allowSubmit <code>true</code> if submission should be allowed.
+	*/
+	public void setAllowSubmit(final boolean allowSubmit)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, ALLOW_SUBMIT_PROPERTY_NAME, new BooleanLiteral(allowSubmit)); //set the property with a boolean typed literal
+	}
+
 			//process
 	/**@return <code>true</code> if each response commit should be confirmed.*/
 	public boolean isConfirmCommit()

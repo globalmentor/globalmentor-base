@@ -70,7 +70,7 @@ public class ActivityModelIOKit extends AbstractIOKit<ResourceModel<Activity>>
 			final Document document=xmlProcessor.parseDocument(inputStream, baseURI);	//parse the activity file
 			document.normalize(); //normalize the package description document
 			final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf);	//create a new RDF processor
-			rdfProcessor.process(document, baseURI);  //parse the RDF from the document
+			rdfProcessor.processRDF(document, baseURI);  //parse the RDF from the document
 				//get an activity from the data model
 			final Activity activity=(Activity)RDFUtilities.getResourceByType(rdf, MAQRO_NAMESPACE_URI, ACTIVITY_CLASS_NAME);
 			if(activity==null)	//if there is no activity

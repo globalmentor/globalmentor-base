@@ -120,6 +120,7 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 		private final JCheckBox allowHintCheckBox;
 		private final JCheckBox allowPreviousCheckBox;
 		private final JCheckBox allowCancelCheckBox;
+		private final JCheckBox allowSubmitCheckBox;
 
 		/**Model constructor.
 		@param model The data model for which this component provides a view.
@@ -130,6 +131,7 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 			allowHintCheckBox=new JCheckBox();
 			allowPreviousCheckBox=new JCheckBox();
 			allowCancelCheckBox=new JCheckBox();
+			allowSubmitCheckBox=new JCheckBox();
 			initialize();   //initialize the panel
 			setDefaultFocusComponent(allowHintCheckBox);
 		}
@@ -144,9 +146,12 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 			allowPreviousCheckBox.addItemListener(getModifyItemListener());
 			allowCancelCheckBox.setText("Allow cancel");	//G***i18n
 			allowCancelCheckBox.addItemListener(getModifyItemListener());
+			allowSubmitCheckBox.setText("Allow submit");	//G***i18n
+			allowSubmitCheckBox.addItemListener(getModifyItemListener());
 			add(allowHintCheckBox, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 			add(allowPreviousCheckBox, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 			add(allowCancelCheckBox, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+			add(allowSubmitCheckBox, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 		}
 
 		/**Loads the data from the model to the view, if necessary.
@@ -161,6 +166,7 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 				allowHintCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_HINT_PROPERTY_NAME)));
 				allowPreviousCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_PREVIOUS_PROPERTY_NAME)));
 				allowCancelCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_CANCEL_PROPERTY_NAME)));
+				allowSubmitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_SUBMIT_PROPERTY_NAME)));
 			}
 		}
 
@@ -176,6 +182,7 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 				resource.setProperty(MAQRO_NAMESPACE_URI, ALLOW_HINT_PROPERTY_NAME, new BooleanLiteral(allowHintCheckBox.isSelected()));
 				resource.setProperty(MAQRO_NAMESPACE_URI, ALLOW_PREVIOUS_PROPERTY_NAME, new BooleanLiteral(allowPreviousCheckBox.isSelected()));
 				resource.setProperty(MAQRO_NAMESPACE_URI, ALLOW_CANCEL_PROPERTY_NAME, new BooleanLiteral(allowCancelCheckBox.isSelected()));
+				resource.setProperty(MAQRO_NAMESPACE_URI, ALLOW_SUBMIT_PROPERTY_NAME, new BooleanLiteral(allowSubmitCheckBox.isSelected()));
 			}
 		}
 	}

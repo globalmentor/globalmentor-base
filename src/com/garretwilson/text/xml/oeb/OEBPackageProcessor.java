@@ -93,7 +93,7 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 			  }
 			}
 			final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf);	//create a new RDF processor using the RDF data model we already created
-			return rdfProcessor.process(document, packageURI);  //parse the RDF from the document
+			return rdfProcessor.processRDF(document, packageURI);  //parse the RDF from the document
 		}
 		catch (URISyntaxException e)
 		{

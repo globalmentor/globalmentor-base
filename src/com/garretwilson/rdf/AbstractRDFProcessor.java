@@ -40,12 +40,13 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 		/**@return The RDF data model being constructed by the RDF processor.*/
 		public RDF getRDF() {return rdf;}
 
-		/**Sets the RDF data model and resets the statement list.
+		/**Sets the RDF data model, resets the statement list, and updates the base URI to that of the RDF.
 		@param newRDF The RDF data model to use.
 		*/
 		public void setRDF(final RDF newRDF)
 		{
 			rdf=newRDF; //set the RDF data model
+			setBaseURI(rdf.getBaseURI());	//use the same base URI
 			statementSet.clear();  //clear the set of statements
 		}
 
@@ -58,7 +59,7 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 		@param newBaseURI The base URI of the RDF being processed, or
 			<code>null</code> if no base URI was specified.
 		*/
-		protected void setBaseURI(final URI newBaseURI)
+		public void setBaseURI(final URI newBaseURI)
 		{
 			baseURI=newBaseURI; //set the base URI
 		}
@@ -66,16 +67,9 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 		/**@return The base URI of the RDF being processed, or "online:" if no
 			base URI is known.
 		*/
-		protected URI getBaseURI()
+		public URI getBaseURI()
 		{
-			try
-			{
-				return baseURI!=null ? baseURI : new URI("online:/");	//return the base URI if we know it	//G***use a constant
-			}
-			catch (URISyntaxException e)
-			{
-				return null;	//G***fix
-			} 
+			return baseURI!=null ? baseURI : URI.create("online:/");	//return the base URI if we know it	//TODO use a constant
 		}
 
 	/**The map of resource proxies keyed to reference URIs.*/
@@ -181,7 +175,7 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 	*/
 	public AbstractRDFProcessor(final RDF newRDF)
 	{
-		setRDF(newRDF);  //set the RDF data model
+		setRDF(newRDF);  //set the RDF data model and the base URI
 	}
 
 	/**Resets the processor by clearing all temporary references and maps, 
@@ -203,6 +197,22 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 	*/
 	protected void createResources()
 	{
+		createResources(null);	//create resources without keeping track of any resource in particular
+	}
+
+	/**Iterates through all collected statements and, for any resources in the
+		statement that are only proxies for RDF resources, creates appropriate
+		resources, using any provided types in other statements if possible.
+	The final created RDF resource of the given resource is returned.
+	@param resource The resource, either an RDF resource or a proxy, for which an unproxied RDF resource should be returned,
+		or <code>null</code> if no specific resource should be returned.
+	@return The created resource from the given resource proxy, or the given resource itself if the resource is already an RDF resource.
+	@exception IllegalArgumentException if a resource was given that is not one of the resources in the list of RDF statements.
+	@see #ResourceProxy
+	*/
+	protected RDFResource createResources(final Resource resource)	//TODO maybe check to make sure any RDFResource passed to us is really one of the ones in the list of statements
+	{
+		RDFResource rdfResource=resource instanceof RDFResource ? (RDFResource)resource : null;	//if the given resource is already an RDF resource, there's nothing to unproxy
 		final Iterator statementIterator=getStatementIterator();	//get an iterator to statements
 		while(statementIterator.hasNext())	//while there are more statements
 		{
@@ -214,22 +224,42 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 				if(subject instanceof ResourceProxy)	//if the subject is just a proxy
 				{
 						//unproxy the resource by either retrieving an already-created resource or creating a new one
-					defaultStatement.setSubject(unproxyRDFResource((ResourceProxy)subject));
+					final RDFResource subjectRDFResource=unproxyRDFResource((ResourceProxy)subject);
+					defaultStatement.setSubject(subjectRDFResource);	//update the subject to the unproxied RDF resource
+					if(subject==resource)	//if the subject is the resource we are supposed to keep track of
+					{
+						rdfResource=subjectRDFResource;	//show that we now have an RDF resource for the proxy
+					}
 				}
 				final Resource predicate=defaultStatement.getPredicate();	//get the statement predicate
 				if(predicate instanceof ResourceProxy)	//if the predicate is just a proxy
 				{
 						//unproxy the resource by either retrieving an already-created resource or creating a new one
-					defaultStatement.setPredicate(unproxyRDFResource((ResourceProxy)predicate));
+					final RDFResource predicateRDFResource=unproxyRDFResource((ResourceProxy)predicate);
+					defaultStatement.setPredicate(predicateRDFResource); //update the predicate to the unproxied RDF resource
+					if(predicate==resource)	//if the predicate is the resource we are supposed to keep track of
+					{
+						rdfResource=predicateRDFResource;	//show that we now have an RDF resource for the proxy
+					}
 				}
 				final Object object=defaultStatement.getObject();	//get the statement object
 				if(object instanceof ResourceProxy)	//if the object is just a proxy
 				{
 						//unproxy the resource by either retrieving an already-created resource or creating a new one
-					defaultStatement.setObject(unproxyRDFResource((ResourceProxy)object));
+					final RDFResource objectRDFResource=unproxyRDFResource((ResourceProxy)object);
+					defaultStatement.setObject(objectRDFResource);
+					if(object==resource)	//if the object is the resource we are supposed to keep track of
+					{
+						rdfResource=objectRDFResource;	//show that we now have an RDF resource for the proxy
+					}
 				}
 			}
 		}
+		if(resource!=null && rdfResource==null)	//if we were unable to find a suitable RDF resource for a valid given resource, the given resource proxy must have not been in the list of statements
+		{
+			throw new IllegalArgumentException("Resource "+resource+" unknown in list of statements.");
+		}
+		return rdfResource;	//return the resource we unproxied if needed
 	}
 
 	/**For the given resource proxy, returns the existing RDF resource the

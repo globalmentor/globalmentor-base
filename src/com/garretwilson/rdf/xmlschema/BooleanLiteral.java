@@ -63,7 +63,20 @@ public class BooleanLiteral extends RDFTypedLiteral
 	*/
 	public static boolean asBooleanValue(final RDFObject rdfObject)
 	{
+		return asBooleanValue(rdfObject, false);	//return the boolean value, defaulting to false if the given object is not a boolean literal
+	}
+
+	/**Determines if the RDF object is a boolean literal and, if so, casts the 
+		object to a boolean literal and returns its value; otherwise, returns
+		the given default.
+	@param rdfObject The RDF object in question.
+	@param defaultValue The default boolean value to return if the object is not a boolean literal.
+	@return The boolean value of the boolean literal, or <var>defaultValue</var> if the
+		object is not a boolean literal or the object is <code>null</code>.
+	*/
+	public static boolean asBooleanValue(final RDFObject rdfObject, final boolean defaultValue)
+	{
 		final BooleanLiteral booleanLiteral=asBooleanLiteral(rdfObject);	//cast the object to a boolean literal, if it is one
-		return booleanLiteral!=null ? booleanLiteral.getBoolean().booleanValue() : false;	//return the boolean value of the boolean literal, or false if there is no boolean literal
+		return booleanLiteral!=null ? booleanLiteral.getBoolean().booleanValue() : defaultValue;	//return the boolean value of the boolean literal, or the default value if there is no boolean literal
 	}
 }

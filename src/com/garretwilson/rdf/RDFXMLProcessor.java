@@ -62,10 +62,10 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 		processing.
 	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
-	public RDF process(final Document document, final URI baseURI) throws URISyntaxException
+	public RDF processRDF(final Document document, final URI baseURI) throws URISyntaxException
 	{
 		setBaseURI(baseURI);  //set the base URI
-		return process(document); //process the data in the document
+		return processRDF(document); //process the data in the document
 	}
 
 	/**Processes RDF serialized in an XML document. Processes data contained in
@@ -76,9 +76,9 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 		processing.
 	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
-	public RDF process(final Document document) throws URISyntaxException
+	public RDF processRDF(final Document document) throws URISyntaxException
 	{
-		return process(document.getDocumentElement()); //process the data in the document element
+		return processRDF(document.getDocumentElement()); //process the data in the document element
 	}
 
 	/**Processes RDF serialized in an XML document. Searches the given element and
@@ -91,10 +91,10 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 		processing.
 	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
-	public RDF process(final Element element, final URI baseURI) throws URISyntaxException
+	public RDF processRDF(final Element element, final URI baseURI) throws URISyntaxException
 	{
 		setBaseURI(baseURI);  //set the base URI
-		return process(element);	//process the element 
+		return processRDF(element);	//process the element 
 	}
 
 	/**Processes RDF serialized in an XML document. Searches the given element
@@ -106,9 +106,43 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 		processing.
 	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
-	public RDF process(final Element element) throws URISyntaxException
+	public RDF processRDF(final Element element) throws URISyntaxException
 	{
 		reset();	//make sure we don't have temporary data left over from last time
+		processRDFIslands(element);	//process any internal RDF islands
+		createResources();	//create all proxied resources in the statements we gathered
+		processStatements();	//process all the statements and assign resources to properties
+		reset();	//release all our references temporary resource proxies
+		return getRDF();  //return the RDF data collected
+	}
+
+	/**Processes an RDF resource serialized in the provided XML document.
+	Whatever base URI has been set is unchanged.
+	@param element The XML element that might contain RDF data.
+	@return The RDF data model resulting from this processing and any previous processing.
+	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
+	*/
+	public RDFResource processRDFResource(final Element element) throws URISyntaxException
+	{
+		reset();	//make sure we don't have temporary data left over from last time
+		final Resource resource=processResource(element);	//process the given RDF resource
+		final RDFResource rdfResource=createResources(resource);	//create all proxied resources in the statements we gathered, and get the RDF resource the element represents
+		processStatements();	//process all the statements and assign resources to properties
+		reset();	//release all our references temporary resource proxies
+		return rdfResource;  //return the RDF resource the element represents
+}
+
+	/**Processes RDF serialized in an XML document. Searches the given element
+		and all its children, processing data contained in every
+		<code>&lt;rdf:RDF&gt;</code> data island. Whatever base URI has been
+		set is unchanged.
+	@param element The XML element that might contain RDF data.
+	@return The RDF data model resulting from this processing and any previous
+		processing.
+	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
+	*/
+	protected void processRDFIslands(final Element element) throws URISyntaxException
+	{
 		if(RDF_NAMESPACE_URI.toString().equals(element.getNamespaceURI()) //if this element is in the RDF namespace G***fix better
 			  && ELEMENT_RDF.equals(element.getLocalName())) //if this element indicates that the children are RDF
 		{
@@ -130,14 +164,10 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 				final Node childNode=childNodeList.item(i); //get a reference to this child node
 				if(childNode.getNodeType()==Node.ELEMENT_NODE) //if this is an element
 				{
-					process((Element)childNode);  //parse the contents of the element, not knowing if this is an RDF element or not
+					processRDFIslands((Element)childNode);  //parse the contents of the element, not knowing if this is an RDF element or not
 				}
 			}
 		}
-		createResources();	//create all proxied resources in the statements we gathered
-		processStatements();	//process all the statements and assign resources to properties
-		reset();	//release all our references temporary resource proxies
-		return getRDF();  //return the RDF data collected
 	}
 
 	/**Processes the given element as representing an RDF resource.
