@@ -103,7 +103,7 @@ public class DictionaryPanel extends RDFPanel
 //TODO set the book to be not editable
 		final ActionManager actionManager=getActionManager();	//get our action manager and set up tool actions
 		actionManager.addToolAction(getQuizAction());
-		add(ToolBarUtilities.createApplicationToolBar(getActionManager()), BorderLayout.NORTH);	//put a toolbar in the north with our tool actions
+		add(ToolBarUtilities.setupToolBar(new ApplicationToolBar(), getActionManager()), BorderLayout.NORTH);	//put a toolbar in the north with our tool actions
 	}
 
 	/**Loads the data from the model to the specified view, if necessary.

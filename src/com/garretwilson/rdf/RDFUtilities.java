@@ -7,6 +7,7 @@ import java.util.*;
 import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLUtilities;
+import com.garretwilson.util.Debug;
 
 import org.w3c.dom.*;
 
@@ -577,7 +578,7 @@ public class RDFUtilities implements RDFConstants
 		{
 			if(!XMLUtilities.isNameChar(referenceURIString.charAt(i)))	//if this is not a name character
 			{
-					//TODO correctly check for a URI syntax error here
+					//TODO correctly check for a URI syntax error here; watch out for '%', which is not an XML name character, but isn't a valid URI character, either
 				return URI.create(referenceURIString.substring(0, i+1));	//create a URI using everything up to and including the last non-XML name character
 			}
 		}

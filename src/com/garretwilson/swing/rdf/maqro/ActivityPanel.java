@@ -121,7 +121,7 @@ public class ActivityPanel extends RDFPanel
 		actionManager.addToolAction(getAddInteractionAction());
 		actionManager.addToolAction(new ActionManager.SeparatorAction());
 		actionManager.addToolAction(getInteractAction());
-		add(ToolBarUtilities.createApplicationToolBar(getActionManager()), BorderLayout.NORTH);	//put a toolbar in the north with our tool actions
+		add(ToolBarUtilities.setupToolBar(new ApplicationToolBar(), getActionManager()), BorderLayout.NORTH);	//put a toolbar in the north with our tool actions
 	}
 
 	/**Initialize the user interface.*/
