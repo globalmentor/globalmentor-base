@@ -414,7 +414,7 @@ public class QuestionPanel extends TabbedViewPanel
 			*/
 			protected Object createItem() throws InstantiationException, IllegalAccessException
 			{
-				return new Question();
+				return new Dialogue();
 			}
 
 			/**Edits an object from the list.
@@ -469,8 +469,6 @@ public class QuestionPanel extends TabbedViewPanel
 		}
 
 		/**Edits an object from the list.
-		@param parentComponent The component to use as a parent for any editing
-			components.
 		@param item The item to edit in the list.
 		@return The object with the modifications from the edit, or
 			<code>null</code> if the edits should not be accepted.

@@ -2,6 +2,8 @@ package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.*;
 import javax.swing.*;
+
+import com.garretwilson.rdf.RDFPlainLiteral;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.swing.*;
 
@@ -49,7 +51,8 @@ public class InteractionSequencePanel extends AbstractListModelComponentSequence
 	public InteractionSequencePanel(final ListModel listModel, final boolean hasToolBar, final boolean hasStatusBar, final boolean initialize)
 	{
 		super(listModel, hasToolBar, hasStatusBar, false);	//construct the panel, but don't initialize
-//TODO do something or initialize directly
+		setEditStrategy(new InteractionEditStrategy());	//set the edit strategy
+		setEditable(true);	//allow the interactions to be edited
 		if(initialize)  //if we should initialize the panel
 			initialize();   //initialize everything		
 	}
@@ -87,6 +90,29 @@ public class InteractionSequencePanel extends AbstractListModelComponentSequence
 	protected void onIntervalAdded(final int index0, final int index1)
 	{
 		go(index0);	//go to the indicated index, which will update our status
+	}
+
+	/**The edit strategy that allows editing of interactions.
+	@author Garret Wilson
+	*/
+	protected class InteractionEditStrategy extends EditStrategy
+	{
+		/**Creates a new default object to be edited.
+		@return The new default object.
+		@exception IllegalAccessException Thrown if the class or its nullary 
+			constructor is not accessible.
+		@exception InstantiationException Thrown if a class represents an abstract
+			class, an interface, an array class, a primitive type, or void;
+			or if the class has no nullary constructor; or if the instantiation fails
+			for some other reason.
+		*/
+		protected Object createItem() throws InstantiationException, IllegalAccessException
+		{
+			final Question question=new Question();	//G***testing
+			question.setQuery(new Dialogue(new RDFPlainLiteral("New question.")));
+			return question;	//G***testing
+		}
+
 	}
 
 }
