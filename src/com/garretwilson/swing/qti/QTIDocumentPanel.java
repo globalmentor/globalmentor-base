@@ -142,9 +142,10 @@ public class QTIDocumentPanel extends AbstractMDIDocumentPanel implements Modifi
 	/**Loads the document by reading the contents of the document from the given
 		input stream.
 	@param inputStream The source of the content.
+	@param description The object describing the input stream.
 	@exception IOException Thrown if there is an error reading the contents.
-	*/
-	public void read(final InputStream inputStream) throws IOException
+	*/ 
+	public void read(final InputStream inputStream, final Object description) throws IOException
 	{
 //G***fix
 	}
