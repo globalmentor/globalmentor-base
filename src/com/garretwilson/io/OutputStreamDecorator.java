@@ -145,7 +145,8 @@ public abstract class OutputStreamDecorator<O extends OutputStream> extends Outp
   	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
   	if(outputStream!=null)	//if we still have an output stream to decorate
   	{
-  		getOutputStream().close();
+  		outputStream.close();
+  		this.outputStream=null;	//release the decorated output stream
   	}
 	}
 }

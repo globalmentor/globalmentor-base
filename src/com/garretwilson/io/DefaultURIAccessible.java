@@ -144,7 +144,7 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		final String scheme=uri.getScheme();	//see what type of URI this is
 		if(HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme))	//if this is an HTTP URI, try to use an HTTP resource with our HTTP client
 		{
-			return new ByteArrayInputStream(new HTTPResource(uri, getHTTPClient()).get());	//get an HTTP resource to return the bytes using our HTTP client 
+			return new HTTPResource(uri, getHTTPClient()).getInputStream();	//get an HTTP resource using our HTTP client and get an input stream to the resource 
 		}
 		return uri.toURL().openConnection().getInputStream();	//convert the URI to a URL, open a connection to it, and get an input stream to it
 	}
@@ -166,71 +166,11 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		{
 			return new FileOutputStream(new File(uri));	//create and return an output stream to the file
 		}
-/*TODO fix to convert the output stream to a byte array using the adapter.
 		else if(HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme))	//if this is an HTTP URI, try to use an HTTP resource with our HTTP client
 		{
-			return new HTTPResource(uri, getHTTPClient()).put();	//put the WebDAV resource
+			return new HTTPResource(uri, getHTTPClient()).getOutputStream();	//get an HTTP resource using our HTTP client and get an output stream to the resource 
 		}
-*/
-//TODO fix for other types of URIs
 		return uri.toURL().openConnection().getOutputStream();	//convert the URI to a URL, open a connection to it, and get an output stream to it
 	}
 
-
-	/**Creates an output stream that simply collects bytes until closed,
-	 	at which point the data is written to the WebDAV resource.
-	@author Garret Wilson
-	*/
-//G***fix	protected static class WebdavResourceOutputStreamAdapter extends OutputStreamDecorator<ByteArrayOutputStream>	//TODO maybe move this to its own independent class at some point
-//G***fix	{
-		
-		/**The WebDAV resource being adapted.*/
-//G***fix		protected WebdavResource webdavResource=null;
-		
-		/**Constructor that adapts a WebDAV resource.
-		@param webdavResource The WebDAV resource to adapt to an output stream.
-		*/
-/*G***fix
-		public WebdavResourceOutputStreamAdapter(final WebdavResource webdavResource)
-		{
-			super(new ByteArrayOutputStream());	//collect bytes in a decorated byte array output stream
-			this.webdavResource=webdavResource;		//save the WebDAV resource we'll be writing to
-		}
-*/
-		
-		//TODO improve flush() at some point to actually send data to the Webdav Resource
-		
-	  /**Closes this output stream and releases any system resources associated with this stream.
-	  This version writes the accumulated data to the WebDAV Resource.
-	  @exception  IOException  if an I/O error occurs.
-	  */
-/*G***fix
-	  public void close() throws IOException
-		{
-	  	if(webdavResource!=null)	//if we have a WebDAV resource object to write to (i.e. we haven't closed the adapter stream, yet)
-	  	{
-//G***fix Debug.trace("we still have our resouce:", webdavResource);
-	  		try
-	  		{
-	  			final ByteArrayOutputStream byeAtrrayOutputStream=getOutputStream();	//get the decorated output stream
-	  			super.close();	//do the default closing, releasing the decorated output stream from the decorator
-	  			final byte[] bytes=byeAtrrayOutputStream.toByteArray();	//get the collected bytes (use our reference of the decorated output stream, because it will have been released by the decorator at this point)
-//G***del Debug.trace("we have this many bytes to write", Integer.valueOf(bytes.length));
-					try
-					{
-						webdavResource.putMethod(bytes);	//put the bytes to the WebDAV resource
-					}
-	  			finally
-					{
-  					webdavResource.close();	//close the WebDAV resource
-					}
-	  		}
-	  		finally
-				{
-	  			webdavResource=null;	//show that we don't have a WebDAV resource object to write to anymore
-				}
-	  	}
-		}
-	}
-*/
 }
