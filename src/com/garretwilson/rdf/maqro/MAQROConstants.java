@@ -24,6 +24,8 @@ public interface MAQROConstants
 	public final static String QUERY_PROPERTY_NAME="query";
 	/**A choice of a question. The local name of maqro:choice.*/
 	public final static String CHOICE_PROPERTY_NAME="choice";
+	/**The type of response a question expects. The local name of maqro:expect.*/
+	public final static String EXPECT_PROPERTY_NAME="expect";
 	/**A interactions of an activity. The local name of maqro:interactions.*/
 	public final static String INTERACTIONS_PROPERTY_NAME="interactions";
 

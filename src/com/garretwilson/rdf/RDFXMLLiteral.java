@@ -6,7 +6,6 @@ import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.util.Debug;
-
 import org.w3c.dom.*;
 
 /**An encapsulation of <code>rdf:XMLLiteral</code> that holds a

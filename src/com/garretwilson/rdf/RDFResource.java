@@ -31,7 +31,7 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***del
 	public int getPropertyCount();
 
 	/**@return An iterator that allows traversal of all properties, each of which
-		is a <code>NameValuePair</code>, with the name being the property predicate
+		is a <code>RDFPropertyValuePair</code>, with the name being the property predicate
 		and the value being the property value.
 	*/
 	public ListIterator getPropertyIterator();
@@ -108,7 +108,7 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***del
 	*/
 	public boolean hasPropertyResourceValue(final URI namespaceURI, final String localName, final URI propertyValueURI);
 
-	/**Adds a property by creating a <code>NameValuePair</code> from the given
+	/**Adds a property by creating a <code>RDFPropertyValuePair</code> from the given
 		property and value. For each property, this resource serves as the subject
 		of an RDF statement with the property as the predicate and the value as
 		the object.
@@ -121,7 +121,7 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***del
 	*/
 	public RDFObject addProperty(final RDFResource property, final RDFObject value);
 
-	/**Adds a literal property from a string by creating a <code>NameValuePair</code>
+	/**Adds a literal property from a string by creating a <code>RDFPropertyValuePair</code>
 		from the given property and value. For each property, this resource serves
 		as the subject of an RDF statement with the property as the predicate and
 		the value, stored as a literal, as the object.
@@ -133,7 +133,7 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants	//G***del
 		<code>RDFLiteral</code>; the object of an RDF statement.
 	@return The added property value.
 	*/
-	public RDFLiteral addProperty(final RDFResource property, final String literalValue);
+	public RDFLiteral addProperty(final RDFResource property, final String literalValue);	//G***should we just remove this? is this too much convenience in the resource interface?
 
 	/**@return <code>true</code> if this resource is an anonymous resource;
 		currently anonymous resources are those that either have no reference URI

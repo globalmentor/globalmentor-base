@@ -36,4 +36,14 @@ public class Question extends DefaultRDFResource implements MAQROConstants, Inte
 	{
 		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, CHOICE_PROPERTY_NAME);	//return an iterator to the choices 
 	}
+
+	/**@return The resource indicating the datatype expected in the response, or
+		<code>null</code> if there is no expected datatype or the expected datatype
+		is not a resource.
+	*/
+	public RDFResource getExpect()
+	{
+		return RDFUtilities.asResource(getPropertyValue(MAQRO_NAMESPACE_URI, EXPECT_PROPERTY_NAME));	//get the expectation		
+	}
+	
 }
