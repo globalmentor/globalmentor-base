@@ -1,0 +1,362 @@
+package com.garretwilson.rdf.xpackage;
+
+import java.io.File;
+import java.net.*;
+import java.util.Iterator;
+import com.garretwilson.io.FileUtilities;
+import com.garretwilson.io.MediaType;
+import com.garretwilson.net.URLUtilities;
+//G***del import com.garretwilson.rdf.dublincore.DCConstants;
+import com.garretwilson.text.xml.XMLConstants;
+import com.garretwilson.text.xml.XMLUtilities;
+import com.garretwilson.text.xml.xlink.XLinkConstants;
+import com.garretwilson.rdf.*;
+import com.garretwilson.util.Debug;
+import org.w3c.dom.*;
+
+/**Utilities for working woth XPackage RDF.
+@author Garret Wilson
+*/
+public class XPackageUtilities implements XPackageConstants
+{
+
+	/**Adds an <code>&lt;xpackage:location&gt;</code> property to the resource.
+	@param rdf The RDF data model to provide to lookup property resources.
+	@param resource The resource to which a property should be added.
+	@param href The location of the resource, to become an <code>xlink:href</code>
+		property of the location property.
+	@return The new location resource.
+	*/
+	public static RDFResource addLocation(final RDF rdf, final RDFResource resource, final String href)
+	{
+		final RDFResource locationResource=rdf.createResource(); //create an anonymous location resource
+//G***del; the location doesn't have a type		RDFUtilities.addType(rdf, locationResource, XPACKAGE_NAMESPACE_URI, LOCATION);  //set the location type to xpackage:location
+			//add the XLink:href to the location
+		RDFUtilities.addProperty(rdf, locationResource, XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.HREF, href);
+			//add the location property to the resource
+		RDFUtilities.addProperty(rdf, resource, XPACKAGE_NAMESPACE_URI, LOCATION_PROPERTY_NAME, locationResource);
+		return locationResource;  //return the location resource we created
+	}
+
+	/**Adds a <code>xpackage:contentType</code> property to the resource.
+	@param rdf The RDF data model to provide to lookup property resources.
+	@param resource The resource to which a property should be added.
+	@param mediaType The object that specifies the content type.
+	@return The new content type resource, a string literal.
+	*/
+	public static Literal addContentType(final RDF rdf, final RDFResource resource, final MediaType mediaType)
+	{
+		  //add the string value of the media type as the literal value of the xpackage:contentType property
+		return RDFUtilities.addProperty(rdf, resource, XPACKAGE_NAMESPACE_URI, CONTENT_TYPE_PROPERTY_NAME, mediaType.toString());
+	}
+
+	/**Adds an <code>&lt;xpackage:manifest&gt;</code> property to the resource.
+	@param rdf The RDF data model to provide to lookup property resources.
+	@param resource The resource to which a property should be added.
+	@return The new manifest resource, an <code>&lt;rdf:Bag&gt;</code>.
+	*/
+	public static RDFBagResource addManifest(final RDF rdf, final RDFResource resource)
+	{
+		  //create an anonymous manifest resource from the data model
+		final RDFBagResource manifestResource=(RDFBagResource)rdf.createResource(null, RDFConstants.RDF_NAMESPACE_URI, RDFConstants.ELEMENT_BAG);
+			//add the manifest property to the resource
+		RDFUtilities.addProperty(rdf, resource, XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME, manifestResource);
+		return manifestResource;  //return the manifest resource we created
+	}
+
+	/**Adds an <code>&lt;xpackage:organization&gt;</code> property to the resource.
+	@param rdf The RDF data model to provide to lookup property resources.
+	@param resource The resource to which a property should be added.
+	@return The new manifest resource, an <code>&lt;rdf:Seq&gt;</code>.
+	*/
+	public static RDFSequenceResource addOrganization(final RDF rdf, final RDFResource resource)
+	{
+		  //create an anonymous organization resource from the data model
+		final RDFSequenceResource organizationResource=(RDFSequenceResource)rdf.createResource(null, RDFConstants.RDF_NAMESPACE_URI, RDFConstants.ELEMENT_SEQ);
+			//add the organization property to the resource
+		RDFUtilities.addProperty(rdf, resource, XPACKAGE_NAMESPACE_URI, ORGANIZATION_PROPERTY_NAME, organizationResource);
+		return organizationResource;  //return the organization resource we created
+	}
+
+	/**Creates a default XPackage package description document.
+	@param domImplementation The DOM implementation to use.
+	@return A newly created default XPackage package description document with an
+		RDF section.
+	*/
+	public static Document createDefaultXPackageDocument(final DOMImplementation domImplementation)
+	{
+//G***del		final XMLDOMImplementation domImplementation=new XMLDOMImplementation();	//create a new DOM implementation G***later use some Java-specific stuff
+//G***del if not needed		final DocumentType documentType=domImplementation.createDocumentType(ELEMENT_DESCRIPTION, OEB101_DOCUMENT_PUBLIC_ID, OEB101_DOCUMENT_SYSTEM_ID);	//create an OEB document type
+//G***del		final Document document=domImplementation.createDocument(OEB1_DOCUMENT_NAMESPACE_URI, ELEMENT_HTML, documentType);	//create an OEB XML document
+		  //create an XPackage package description document
+		final Document document=domImplementation.createDocument(XPACKAGE_NAMESPACE_URI, XMLUtilities.createQualifiedName(XPACKAGE_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION), null);
+		  //create the xpackage:description element
+		final Element descriptionElement=document.createElementNS(XPACKAGE_NAMESPACE_URI, XMLUtilities.createQualifiedName(XPACKAGE_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION));	//G***fix; the DOM document creation should have created this already
+		  //add the RDF namespace declaration prefix, xmlns:rdf
+		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, RDFConstants.RDF_NAMESPACE_PREFIX), RDFConstants.RDF_NAMESPACE_URI);
+		  //add the XPackage namespace declaration prefix, xmlns:xpackage
+		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, XPACKAGE_NAMESPACE_PREFIX), XPACKAGE_NAMESPACE_URI);
+		  //add the XLink namespace declaration prefix, xmlns:xlink
+		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI, XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, XLinkConstants.XLINK_NAMESPACE_PREFIX), XLinkConstants.XLINK_NAMESPACE_URI);
+		document.appendChild(descriptionElement); //append the description element
+		final Element rdfElement=RDFXMLifier.createRDFElement(document);  //create an <rdf:RDF> element
+		descriptionElement.appendChild(rdfElement);	//add the RDF element to the document
+		return document;  //return the document we created
+	}
+
+	/**Creates an object that will appropriately generate an XPackage-compliant
+		XML representation of RDF data models.
+		The created <code>RDFXMLifier</code> will be initialized to encode
+		properties from the XLink namespace as XML attributes, for example.
+	@return An object for creating an XML tree from RDF data.
+	*/
+	public static RDFXMLifier createRDFXMLifier()
+	{
+		final RDFXMLifier rdfXMLifier=new RDFXMLifier(false);  //create a new RDF XMLifier that isn't compact
+		  //show that XLink properties should be serialized as attributes
+		rdfXMLifier.addLiteralAttributeSerializationNamespaceURI(XLinkConstants.XLINK_NAMESPACE_URI);
+		return rdfXMLifier; //return the XMLifier we constructed
+	}
+
+	/**Creates an XPackage resource that has the specified reference URI
+		within the given RDF data model.
+	@param rdf The RDF data model in which the resource should be created.
+	@param referenceURI The reference URI to give to the resource.
+	@return A new OEB xpackage:resource object with the given reference URI.
+	*/
+	public static RDFResource createXPackageResource(final RDF rdf, final String referenceURI)
+	{
+		return rdf.createResource(referenceURI, XPACKAGE_NAMESPACE_URI, RESOURCE_TYPE_NAME);
+	}
+
+	/**Returns an item resource in the manifest of the given resource, if present,
+		that has a reference URI.
+	@param resource The resource the manifest of which should be searched.
+	@param referenceURI The reference URI of the item to retrieve.
+	@return The manifest item with the given reference URI, or <code>null</code>
+		if there is no match.
+	*/
+	public static RDFResource getManifestItem(final RDFResource resource, final String referenceURI)
+	{
+		final RDFBagResource manifest=getManifest(resource);  //get the manifest of this resource
+		if(manifest!=null)  //if this resource has a manifest
+		{
+			return manifest.getItem(referenceURI);  //return the item by its reference URI
+		}
+		else  //if there is no manifest
+		{
+			return null;  //show that we couldn't find a matching item resource
+		}
+	}
+
+
+	/**Returns an item resource in the manifest of the given resource, if present,
+		that has a matching xpackage:location with an xlink:href that matches the
+		requested href, relative to the given URL.
+	@param resource The resource the manifest of which should be searched.
+	@param baseURL The base URL of the package, used to construct absolute URLs
+		from relative URLs.
+	@param href The relative or absolute reference to the item, which will be
+		converted to an absolute URL in order to compare it with each item's fully
+		qualified URL.
+	@return The item whose fully qualified URL matches the fully qualified
+		version of the specified href, or <code>null</code> if there is no match.
+	@see #getLocationHRef
+	*/
+	public static RDFResource getManifestItemByLocationHRef(final RDFResource resource, final URL baseURL, final String href)
+	{
+		final RDFBagResource manifest=getManifest(resource);  //get the manifest of this resource
+		if(manifest!=null)  //if this resource has a manifest
+		{
+			return getItemByLocationHRef(manifest, baseURL, href);  //get an item in the manifest that matches the given location
+		}
+		else  //if there is no manifest
+		{
+			return null;  //show that we couldn't find a matching item resource
+		}
+	}
+
+	/**Returns an item resource in the given RDF container that has a matching
+		xpackage:location with an xlink:href that matches the requested href,
+		relative to the given URL.
+	@param rdfContainer The container that hold RDF resources.
+	@param baseURL The base URL of the package, used to construct absolute URLs
+		from relative URLs.
+	@param href The relative or absolute reference to the item, which will be
+		converted to an absolute URL in order to compare it with each item's fully
+		qualified URL.
+	@return The item whose fully qualified URL matches the fully qualified
+		version of the specified href, or <code>null</code> if there is no match.
+	@see #getLocationHRef
+	*/
+	public static RDFResource getItemByLocationHRef(final RDFContainerResource rdfContainer, final URL baseURL, final String href)
+	{
+//G***del Debug.trace("Inside OEBPublication.getManifestItemByHRef() for "+href);	//G***del
+		try
+		{
+		  final URL absoluteURL=URLUtilities.createURL(baseURL, href);	//create a URL based upon the base URL and the given file location
+Debug.trace("Getting manifest item by URL: ", absoluteURL);
+			return getItemByLocationHRef(rdfContainer, baseURL, absoluteURL);	//lookup the item based upon the URL we formed
+		}
+		catch(MalformedURLException e)	//if there is an error with the URL
+		{
+			Debug.error(e);	//log the error
+			return null;	//that simply means we can't find the item
+		}
+	}
+
+	/**Returns an item resource in the given RDF container that has a matching
+		xpackage:location with an xlink:href that matches the requested URL,
+		relative to the given base URL.
+	@param rdfContainer The container that hold RDF resources.
+	@param baseURL The base URL of the package, used to construct absolute URLs
+		from relative URLs.
+	@param url The absolute reference to the item, which will be compare with
+		each item's fully qualified URL.
+	@return The item whose fully qualified URL matches the given URL, or
+		<code>null</code> if there is no match.
+	@see #getLocationHRef
+	*/
+	public static RDFResource getItemByLocationHRef(final RDFContainerResource rdfContainer, final URL baseURL, final URL url)
+	{
+Debug.trace("looking for resource that matches URL: ", url);  //G***del
+		final Iterator itemIterator=rdfContainer.getItemIterator(); //get an iterator to the items in this container
+		while(itemIterator.hasNext()) //while there are more items in this container
+		{
+			final RDFResource item=(RDFResource)itemIterator.next(); //get the next item
+Debug.trace("looking at resource: ", item); //G***del
+		  final String itemHRef=getLocationHRef(item);  //get the item's href G***later add something that can look at all the locations rather than just the first one
+			if(itemHRef!=null)  //if there is an href
+			{
+				try
+				{
+					final URL itemURL=URLUtilities.createURL(baseURL, itemHRef);	//create a URL based upon the base URL and the item's location
+	Debug.trace("comparing with URL: ", itemURL); //G***del
+					if(url.equals(itemURL)) //if the URLs match
+						return item;  //return the item
+				}
+				catch(MalformedURLException e)	//if there is an error creating the URL
+				{
+					Debug.warn(e);	//warn about the error, but keep searching
+				}
+			}
+		}
+		return null;  //show that no location matched
+	}
+
+	/**Retrieves the location resource of the resource. If this resource has more
+		than one property of <code>xpackage:location</code>, it is undefined which
+		of those property values will be returned.
+	@param resource The resource the manifest of which will be returned.
+	@return The location of the resource, or <code>null</code> if no location
+		property exists.
+	@exception ClassCastException Thrown if the location is not a resource (an
+		XPackage location should never be a literal).
+	*/
+	public static RDFResource getLocation(final RDFResource resource) throws ClassCastException
+	{
+		return (RDFResource)resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, LOCATION_PROPERTY_NAME); //return the location, cast to a resource
+	}
+
+	/**Retrieves the location href of the resource, which is the literal href
+		property of the location property resource.
+		If this resource has more than one property of
+		<code>xpackage:location</code>, it is undefined which of those properties
+		will be used.
+	@param resource The resource the manifest of which will be returned.
+	@return The location href of the resource, or <code>null</code> if no location
+		property exists, or if the location has no href.
+	@exception ClassCastException Thrown if the location is not a resource (an
+		XPackage location should never be a literal) or if the href is not a literal.
+	*/
+	public static String getLocationHRef(final RDFResource resource) throws ClassCastException
+	{
+Debug.trace("getting location href in routine");
+		final RDFResource locationResource=getLocation(resource);  //get the location resource
+Debug.trace("found location resource: ", locationResource);
+		if(locationResource!=null)  //if there this resource has a location
+		{
+			final Literal hrefLiteral=(Literal)locationResource.getPropertyValue(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.HREF);  //get the XLink href value
+	  	return hrefLiteral!=null ? hrefLiteral.getValue() : null;  //return the href value or null if there is no href
+		}
+		else  //if there is no location
+			return null;  //show that there is no location
+	}
+
+	/**Retrieves the manifest of the resource. If this resource has more than one
+		property of <code>xpackage:manifest</code>, it is undefined which of those
+		property values will be returned.
+	@param resource The resource the manifest of which will be returned.
+	@return The manifest of the resource, or <code>null</code> if no manifest
+		property exists.
+	@exception ClassCastException Thrown if the manifest is not an
+		<code>rdf:Bag</code>.
+	*/
+	public static RDFBagResource getManifest(final RDFResource resource) throws ClassCastException
+	{
+		return (RDFBagResource)resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME); //return the manifest, cast to an RDF bag resource
+	}
+
+	/**Attempts to determine the media type of the given resource. The media type
+		is determined in this order:
+		<ol>
+		  <li>The <code>xpackage:contentType</code> property, if present, is
+				checked.</li>
+			<li>The extension of the <code>xpackage:location</code> property
+				<code>href</code>, if present, is checked.</li>
+		</ol>
+	@param resource The resource of which the media type should be determined.
+	@return The media type of the resource, or <code>null</code> if the media
+		type could not be determined.
+	*/
+	public static MediaType getMediaType(final RDFResource resource)
+	{
+		MediaType mediaType=null; //start out assuming we won't find the media type
+		final RDFObject mediaTypeObject=resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, CONTENT_TYPE_PROPERTY_NAME); //return the contentType property
+		if(mediaTypeObject!=null) //if there was a content type
+		{
+			try
+			{
+				final String mediaTypeString=((Literal)mediaTypeObject).getValue(); //get the media type string
+				mediaType=new MediaType(mediaTypeString); //create a media type from the string
+			}
+			catch(ClassCastException classCastException)
+			{
+				Debug.warn(classCastException); //if there was an error getting the media type, continue but create a warning
+			}
+		}
+		if(mediaType==null) //if we couldn't find the media type from the contentType property
+		{
+			try
+			{
+Debug.trace("getting location href"); //G***del
+				final String href=getLocationHRef(resource);  //get the location of the resource
+Debug.trace("location href: ", href); //G***del
+				if(href!=null)  //if this resource has a location
+				{
+					mediaType=FileUtilities.getMediaType(new File(href)); //get the media type of the file
+				}
+			}
+			catch(ClassCastException classCastException)
+			{
+				Debug.warn(classCastException); //if there was an error retrieving the location href, continue but create a warning
+			}
+		}
+		return mediaType; //return whatever media type we found, if any
+	}
+
+	/**Retrieves the organization of the resource. If this resource has more than
+		one property of <code>xpackage:organization</code>, it is undefined which
+		of those property values will be returned.
+	@param resource The resource the organization of which will be returned.
+	@return The organization of the resource, or <code>null</code> if no
+		organization property exists.
+	@exception ClassCastException Thrown if the organization is not an
+		<code>rdf:Seq</code>.
+	*/
+	public static RDFSequenceResource getOrganization(final RDFResource resource) throws ClassCastException
+	{
+		return (RDFSequenceResource)resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, ORGANIZATION_PROPERTY_NAME); //return the organization, cast to an RDF sequence resource
+	}
+
+}
