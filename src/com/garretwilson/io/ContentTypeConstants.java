@@ -97,4 +97,9 @@ public class ContentTypeConstants
 	public final static String XHTML_XML_SUBTYPE="xhtml"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**A Zip file.*/
 	public final static String ZIP_SUBTYPE="zip";
+
+	//multipart media types
+	/**Submitted form data; see <a href="http://www.rfc-editor.org/rfc/rfc1867.txt">RFC 1867</a>.*/
+	public final static String FORM_DATA_SUBTYPE="form-data";
+
 }
