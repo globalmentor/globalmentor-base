@@ -26,6 +26,8 @@ public interface DictoConstants
 	public final static String DEFINITION_PROPERTY_NAME="definition";
 	/**The entries of a dictionary. The local name of dicto:entries.*/
 	public final static String ENTRIES_PROPERTY_NAME="entries";
+	/**The gender of a word. The local name of dicto:gender.*/
+	public final static String GENDER_PROPERTY_NAME="gender";
 	/**The source language of a dictionary. The local name of dicto:language.*/
 	public final static String LANGUAGE_PROPERTY_NAME="language";
 	/**The number of an entry. The local name of dicto:number.*/

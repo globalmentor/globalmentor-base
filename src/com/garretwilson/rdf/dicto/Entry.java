@@ -24,6 +24,16 @@ public class Entry extends DefaultRDFResource implements DictoConstants
 		super(referenceURI);  //construct the parent class
 	}
 
+	/**@return The definition of the entry, or <code>null</code> if there is
+		no definition.
+	@exception ClassCastException Thrown if the property object is not a plain
+		literal.
+	*/
+	public RDFPlainLiteral getDefinition()
+	{
+		return (RDFPlainLiteral)getPropertyValue(DICTO_NAMESPACE_URI, DEFINITION_PROPERTY_NAME);	//get the definition		
+	}
+
 	/**@return The orthography of the entry, or <code>null</code> if there is
 		no orthography.
 	@exception ClassCastException Thrown if the property object is not a plain

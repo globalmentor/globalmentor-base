@@ -1,12 +1,14 @@
 package com.garretwilson.swing.rdf.dicto;
 
 import java.util.Iterator;
+import java.util.Locale;
 
 import javax.swing.*;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
 import com.garretwilson.swing.text.xml.XMLDocument;
 import com.garretwilson.swing.text.xml.XMLEditorKit;
+import com.garretwilson.text.CharacterConstants;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 import com.garretwilson.text.xml.xhtml.XHTMLUtilities;
@@ -115,7 +117,9 @@ public class DictionaryPanel extends RDFPanel
 					final Element bodyElement=XHTMLUtilities.getBodyElement(xhtmlDocument);	//get the body element
 					Debug.assert(bodyElement!=null, "Missing <body> element in default XHTML document.");
 						//set the title
-					final Element h1Element=XMLUtilities.appendElement(bodyElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_H1, "Dictionary");	//TODO i18n
+					final Locale dictionaryLanguage=getDictionary().getDictionaryLanguage();	//get the language of the entries
+					final String languageTitle=dictionaryLanguage!=null ? dictionaryLanguage.getDisplayLanguage()+" " : "";	//get the language part of the title
+					final Element h1Element=XMLUtilities.appendElement(bodyElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_H1, languageTitle+"Dictionary");	//G***i18n
 					if(getDictionary()!=null && getDictionary().getEntries()!=null)	//if we have a dictionary and it has entries
 					{
 						final Element dlElement=XMLUtilities.appendElement(bodyElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_DL);
@@ -165,10 +169,49 @@ public class DictionaryPanel extends RDFPanel
 							final Element ddElement=XMLUtilities.appendElement(dlElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(),
 									XHTMLConstants.ELEMENT_DD);	//create the definition element
 							final RDFPlainLiteral transliteration=entry.getTransliteration();	//get the entry transliteration
-							XMLUtilities.appendElement(ddElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(),
-									XHTMLConstants.ELEMENT_EM, transliteration.toString());	//show the entry transliteration TODO add xml:lang to all of these terms
+							if(transliteration!=null)	//if there is a transliteration
+							{
+								XMLUtilities.appendElement(ddElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(),
+										XHTMLConstants.ELEMENT_EM, transliteration.toString());	//show the entry transliteration TODO add xml:lang to all of these terms
+								XMLUtilities.appendText(ddElement, CharacterConstants.SPACE_CHAR);	//add a space
+							}
+							if(entry instanceof Word)	//if this is a word
+							{
+								final Word word=(Word)entry;	//cast the entry to a word
+								final RDFPlainLiteral speechPart=word.getSpeechPart();	//get the word part of speech
+								final RDFPlainLiteral gender=word.getGender();	//get the word gender
+								if(speechPart!=null || gender!=null)	//if there is a part of speech or gender
+								{
+									XMLUtilities.appendText(ddElement, '(');	//add a left parenthesis
+									if(speechPart!=null)	//if there is a part of speech
+									{
+										XMLUtilities.appendText(ddElement, speechPart.toString());	//add the part of speech TODO add xml:lang to all of these terms
+									}
+									if(gender!=null)	//if there is a gender
+									{
+										if(speechPart!=null)	//if there was a part of speech
+										{
+											XMLUtilities.appendText(ddElement, ": ");	//separate the part of speech and gender
+										}
+										XMLUtilities.appendText(ddElement, gender.toString());	//add the gender TODO add xml:lang to all of these terms
+									}
+									XMLUtilities.appendText(ddElement, ')');	//add a right parenthesis
+									XMLUtilities.appendText(ddElement, CharacterConstants.SPACE_CHAR);	//add a space
+								}
+							}
 							final RDFPlainLiteral translation=entry.getTranslation();	//get the entry translation
-							XMLUtilities.appendText(ddElement, " "+translation);	//show the translation TODO use a constant for the space
+							if(translation!=null)	//if there is a translation
+							{
+								XMLUtilities.appendText(ddElement, translation.toString());	//show the translation
+								XMLUtilities.appendText(ddElement, CharacterConstants.SPACE_CHAR);	//add a space
+							}
+							final RDFPlainLiteral definition=entry.getDefinition();	//get the entry definition
+							if(definition!=null)	//if there is a definition
+							{
+								XMLUtilities.appendText(ddElement, CharacterConstants.EM_DASH_CHAR);	//add an em-dash
+								XMLUtilities.appendText(ddElement, definition.toString());	//show the definition
+								XMLUtilities.appendText(ddElement, CharacterConstants.SPACE_CHAR);	//add a space
+							}
 						}
 					}
 						//show the XML in the book, specifying the base URI of the RDF data model
