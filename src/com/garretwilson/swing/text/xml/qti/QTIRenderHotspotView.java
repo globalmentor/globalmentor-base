@@ -6,6 +6,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.text.*;
 import com.garretwilson.awt.geom.GeometryUtilities;
+import com.garretwilson.swing.text.InvisibleView;
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.assess.qti.*;
@@ -14,7 +15,7 @@ import com.garretwilson.util.Debug;
 /**Represents a QTI hotspot rendering.
 @author Garret Wilson
 */
-public class QTIRenderHotspotView extends XMLHiddenView implements QTIConstants
+public class QTIRenderHotspotView extends InvisibleView implements QTIConstants
 {
 
 	/**The button group for the choices.*/
