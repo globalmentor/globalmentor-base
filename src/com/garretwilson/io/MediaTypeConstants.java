@@ -4,6 +4,8 @@ package com.garretwilson.io;
 	<a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>,
 	"MIME Part 2: Media Types".
 @author Garret Wilson
+@see http://www.rfc-editor.org/rfc/rfc2046.txt
+@see http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020430/
 */
 public interface MediaTypeConstants
 {
@@ -48,6 +50,9 @@ public interface MediaTypeConstants
 	/**A PNG image.*/
 	public final static String PNG="png";
 	public final static String IMAGE_PNG=IMAGE+DIVIDER+PNG;
+	/**An SVG image.*/
+	public final static String SVG_XML="svg+xml";
+	public final static String IMAGE_SVG_XML=IMAGE+DIVIDER+SVG_XML;
 	/**A TIFF image.*/
 	public final static String TIFF="tiff";
 	public final static String IMAGE_TIFF=IMAGE+DIVIDER+TIFF;
@@ -80,6 +85,9 @@ public interface MediaTypeConstants
 	/**A Java application.*/
 	public final static String JAVA="java";
 	public final static String APPLICATION_JAVA=APPLICATION+DIVIDER+JAVA;
+	/**A  MathML application.*/
+	public final static String MATHML_XML="mathml+xml";
+	public final static String APPLICATION_MATHML_XML=APPLICATION+DIVIDER+MATHML_XML;
 	/**A MAQRO activity.*/
 	public final static String X_MAQRO_RDF_XML="x-maqro+rdf+xml";
 	public final static String APPLICATION_MAQRO=APPLICATION+DIVIDER+X_MAQRO_RDF_XML;
