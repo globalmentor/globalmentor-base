@@ -25,19 +25,7 @@ public class AnswerPanel extends ContentPanel
 
 	final JLabel typeLabel;
 	final JComboBox typeComboBox;
-	final JLabel valueLabel;
-
-	/**Sets whether or not this component is enabled.
-		This implementation enables or disables child components appropriately.
-	@param enabled <code>true</code> if this component should be enabled,
-		<code>false</code> otherwise.
-	*/
-	public void setEnabled(final boolean enabled)
-	{
-		super.setEnabled(enabled);	//do the default enabling
-		typeComboBox.setEnabled(enabled);	//enable or disable the type combo box
-		getContentComponent().setEnabled(enabled);	//enable or disable the content component, representing the answer
-	}
+	final JCheckBox answerCheckBox;
 
 	/**Default constructor.*/
 	public AnswerPanel()
@@ -45,7 +33,7 @@ public class AnswerPanel extends ContentPanel
 		super(new JPanel(), new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0), false);	//construct the parent class but don't initialize it
 		typeLabel=new JLabel();
 		typeComboBox=new JComboBox();
-		valueLabel=new JLabel();
+		answerCheckBox=new JCheckBox();
 		initialize();   //initialize the panel
 	}
 
@@ -57,13 +45,13 @@ public class AnswerPanel extends ContentPanel
 		typeComboBox.setEditable(true);
 		typeComboBox.setModel(new DefaultComboBoxModel(TYPE_EXAMPLES));	//set up the example type resources
 //G***del		typeComboBox.setPrototypeDisplayValue(TYPE_EXAMPLES[0]);
-		typeComboBox.addItemListener(getModifyItemListener());
+		typeComboBox.addActionListener(getModifyActionListener());
 		typeComboBox.addActionListener(new ActionListener()
 				{
 					public void actionPerformed(final ActionEvent actionEvent)	//if a different type is selected
 					{
-						final Object typeObject=typeComboBox.getSelectedItem();	//get the new selected item
 						final RDFResource typeResource;	//well determine a resource for this type
+						final Object typeObject=typeComboBox.getSelectedItem();	//get the new selected item
 						if(typeObject!=null && typeObject.toString().trim().length()>0)	//if something that wasn't nothing was selected
 						{
 							try
@@ -82,25 +70,30 @@ public class AnswerPanel extends ContentPanel
 							typeResource=null;	//use no type at all
 						}
 						updateContentComponent(typeResource);	//update the content component to reflect the new selected type
+						updateStatus();	//update the status
 					}
 				});
-		valueLabel.setText("Value");	//G***i18n
+		answerCheckBox.setText("Answer");	//G***i18n
+		answerCheckBox.setSelected(true);	//default to providing an answer
+		answerCheckBox.addItemListener(getModifyItemListener());
+		answerCheckBox.addItemListener(createUpdateStatusItemListener());	//update the status if the answer checkbox is changed
 		add(typeLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 		add(typeComboBox, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, NO_INSETS, 0, 0));
-		add(valueLabel, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+		add(answerCheckBox, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 	}
 
 	/**Updates the states of the actions, including enabled/disabled status,
 		proxied actions, etc.
 	*/
-/*G***del if not needed
-	protected void updateStatus()
+	public void updateStatus()
 	{
 		super.updateStatus();	//do the default updating
-		choiceList.setEnabled(choicesRadioButton.isSelected());	//only enable the choice list if the choices radio button is selected
-//	G***fix for expectation		choiceList.setEnabled(choicesRadioButton.isSelected());	//only enable the choice list if the choices radio button is selected
+		final boolean isEnabled=isEnabled();	//see if we're enabled
+		typeComboBox.setEnabled(isEnabled);	//enable or disable the type combo box
+		final Object typeObject=typeComboBox.getSelectedItem();	//get the currently selected item
+		answerCheckBox.setEnabled(isEnabled && typeObject!=null && typeObject.toString().trim().length()>0);	//only enable the answer checkbox if a type is selected
+		getContentComponent().setEnabled(isEnabled && answerCheckBox.isSelected());	//enable or disable the content component, representing the answer, only if this panel is enabled and an answer is allowed
 	}
-*/
 
 	/**Sets the expected answer type.
 	@param expectedType A resource that indicates the expected type, such as a
@@ -175,27 +168,27 @@ public class AnswerPanel extends ContentPanel
 	*/
 	public Dialogue getAnswer()
 	{
-		final RDFLiteral value;	//we'll determine the literal value to use, if any
-		final Component answerComponent=getContentComponent();	//get the answer component
-		if(answerComponent instanceof BooleanPanel)	//if this is a boolean panel
+		if(answerCheckBox.isSelected())	//if the answer checkbox is selected, then and only then will we provide an answer
 		{
-			final Boolean booleanValue=((BooleanPanel)answerComponent).getValue();	//get the boolean value from the panel
-			value=booleanValue!=null ? new BooleanLiteral(booleanValue.booleanValue()) : null;	//create a boolean literal with the given answer, if there is an answer
+			final RDFLiteral value;	//we'll determine the literal value to use, if any
+			final Component answerComponent=getContentComponent();	//get the answer component
+			if(answerComponent instanceof BooleanPanel)	//if this is a boolean panel
+			{
+				final Boolean booleanValue=((BooleanPanel)answerComponent).getValue();	//get the boolean value from the panel
+				value=booleanValue!=null ? new BooleanLiteral(booleanValue.booleanValue()) : null;	//create a boolean literal with the given answer, if there is an answer
+			}
+			else	//if we don't recognize the answer component
+			{
+				value=null;	//we can't have an answer
+			}
+			if(value!=null)	//if we have an answer value
+			{
+				final Dialogue answer=new Dialogue();	//create a new answer
+				answer.setValue(value);	//set the value of the answer
+				return answer;	//return the answer
+			}
 		}
-		else	//if we don't recognize the answer component
-		{
-			value=null;	//we can't have an answer
-		}
-		if(value!=null)	//if we have an answer value
-		{
-			final Dialogue answer=new Dialogue();	//create a new answer
-			answer.setValue(value);	//set the value of the answer
-			return answer;	//return the answer
-		}
-		else	//if there is no answer value
-		{
-			return null;	//show that there is no answer
-		}
+		return null;	//show that there is no answer
 	}
 
 	/**Determines a resource appropriate for representing the indicated type object.

@@ -23,13 +23,11 @@ public class RDFListResource extends TypedRDFResource implements List //G***del,
 	/**@return The local name of the default type of this resource.*/
 	public String getDefaultTypeName() {return LIST_CLASS_NAME;}
 
-	/**Default constructor.*/
-/*G***del---force the RDFListResource(rdf:nil) constructor to be used, as the default constructor will create, not an empty list, but an anonymous list with no properties at all
+	/**Default constructor for an empty list with the <code>rdf:nil</code> reference URI.*/
 	public RDFListResource()
 	{
-		this((URI)null);	//construct a list resource with no reference URI
+		this(NIL_RESOURCE_URI);	//construct a list resource with a nil reference URI
 	}
-*/
 
 	/**Constructs an RDF list resource with a reference URI.
 	@param newReferenceURI The reference URI for the new resource.

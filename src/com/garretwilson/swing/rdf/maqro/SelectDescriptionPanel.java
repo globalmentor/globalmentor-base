@@ -188,7 +188,7 @@ public class SelectDescriptionPanel extends BasicPanel
 	/**Updates the states of the actions, including enabled/disabled status,
 		proxied actions, etc.
 	*/
-	protected void updateStatus()
+	public void updateStatus()
 	{
 		super.updateStatus();	//do the default updating
 			//only allow entry of a question count if the only questions radio button is selected

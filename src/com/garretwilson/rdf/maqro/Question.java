@@ -104,7 +104,7 @@ public class Question extends Interaction
 	}
 
 	/**@return The maximum number of responses to accept, or -1 if the maximum
-		response count is not indicated.
+		response count is not indicated and should be infinite.
 	*/
 	public int getMaxResponseCount()
 	{
@@ -113,11 +113,12 @@ public class Question extends Interaction
 	}
 
 	/**Sets the maximum number of responses to accept.
-	@param count The maximum number of responses.
+	@param count The maximum number of responses, or -1 if the maximum response
+		count should be infinite.
 	*/
 	public void setMaxResponseCount(final int count)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME, new IntegerLiteral(count));	//set the value
+		setProperty(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME, count>=0 ? new IntegerLiteral(count) : null);	//set the value or remove it
 	}
 	
 }
