@@ -17,6 +17,18 @@ public class FileUtilities implements FileConstants
   private FileUtilities()
 	{
 	}
+	
+	/**Adds the given extension to a filename and returns the new filename with
+		the new extension.
+		The filename is not checked to see if it currently has an extension.
+	@param filename The file to which to add an extension.
+	@param extension The extension to set
+	@return The filename with the new extension.
+	*/
+	public static String addExtension(final String filename, final String extension)
+	{
+		return new StringBuffer(filename).append(EXTENSION_SEPARATOR).append(extension).toString();  //add the requested extension and return the new filename
+	}
 
 	/**Extracts the extension from a file.
 	@param file The file to examine.
@@ -59,7 +71,7 @@ public class FileUtilities implements FileConstants
 			final int separatorIndex=filename.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
 			if(separatorIndex!=-1)  //if we found a separator
 				filename=filename.substring(0, separatorIndex); //remove the extension
-		  filename+=String.valueOf(EXTENSION_SEPARATOR)+extension;  //add the requested extension
+			filename=addExtension(filename, extension);	//add the requested extension
 			return new File(file.getParent(), filename);  //return a file based on the name with the new extension
 		}
 		else  //if there is no filename
@@ -270,6 +282,19 @@ public class FileUtilities implements FileConstants
 			//G***we may first want to chop off anything before the last '/' or '\'
 			//G***better yet, make sure the extension is after the last slash
 		return new File(removeExtension(file.getPath()));	//remove the extension from the file path and create a file from that
+	}
+	
+	/**Renames the file, throwing an exception if unsuccessful.
+	@param source The file to rename.
+	@param destination The new name of the file
+	@exception IOException Thrown if there is an error renaming the file.
+	*/
+	public static void renameTo(final File source, final File destination) throws IOException
+	{
+		if(!source.renameTo(destination))	//rename the file to its new filename; if unsuccessful
+		{
+			throw new IOException("Cannot rename "+source+" to "+destination);	//throw an exception G***i18n
+		}
 	}
 
 	/**Moves a file to a different location, overwriting the destination file if
