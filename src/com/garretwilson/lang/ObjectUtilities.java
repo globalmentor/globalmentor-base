@@ -8,6 +8,37 @@ public class ObjectUtilities
 	/**This class cannot be publicly instantiated.*/
 	private ObjectUtilities() {}
 
+
+	/**Checks to see if a given variable is <code>null</code> and if so,
+	 	throws a <code>NullPointerException</code>.
+	@param <T> The type of variable to check.
+	@param variable The variable to check
+	@return The given variable.
+	@exception NullPointerException if the given variable is <code>null</code>.
+	*/
+	public static <T> T checkNull(final T variable)
+	{
+		return checkNull(variable, null);	//check for null with no description
+	}
+	
+	/**Checks to see if a given variable is <code>null</code> and if so,
+	 	throws a <code>NullPointerException</code>.
+	@param <T> The type of variable to check.
+	@param variable The variable to check
+	@param description A description of the variable to be used when generating an exception,
+		or <code>null</code> for no description.
+	@return The given variable.
+	@exception NullPointerException if the given variable is <code>null</code>.
+	*/
+	public static <T> T checkNull(final T variable, final String description)
+	{
+		if(variable==null)	//if the variable is null
+		{
+			throw new NullPointerException(description);
+		}
+		return variable;	//return the variable
+	}
+
 	/**Convenience method that returns the given object if and only if it is an
 		instance of the given class. This method is equivalent to
 		<code><var>object</var> instanceof <var>instanceClass</var> ? object : null</code>. 

@@ -66,4 +66,26 @@ public class Host extends DefaultNamedObject<String>
 		}
 		return stringBuilder.toString();	//return the string we constructed
 	}
+
+	/**If <code>object</code> is another <code>Host</code>, compares the
+		hostname and port.
+	@param object The object with which to compare this host; should be
+		another <code>Host</code>.
+	@return <code>true<code> if this host equals a host specified in
+		<code>object</code>.
+	@see #getName
+	@see #getPort
+	*/
+	public boolean equals(Object object)
+	{
+		if(object instanceof Host)	//if we're being compared with another host
+		{
+			return super.equals(object) && getPort()==((Host)object).getPort();	//compare names and ports
+		}
+		else	//if the object is not a host
+		{
+			return false;
+		}
+	}
+
 }

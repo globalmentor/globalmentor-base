@@ -26,6 +26,10 @@ public class HTTPConstants
 	public final static String CACHE_CONTROL_HEADER="Cache-Control";
 		/**The HTTP no-cache cache control header.*/
 		public final static String NO_CACHE_CACHE_CONTROL="no-cache";
+	/**The HTTP header indicating the connection persistency.*/
+	public final static String CONNECTION_HEADER="Connection";
+		/**The HTTP "close" Connection header value.*/
+		public final static String CONNECTION_CLOSE="close";
 	/**The HTTP header indicating the content description.*/
 	public final static String CONTENT_DESCRIPTION_HEADER="Content-Description";
 	/**The HTTP header indicating the content disposition.*/

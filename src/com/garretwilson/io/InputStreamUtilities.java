@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import com.garretwilson.text.CharacterEncoding;
+import com.garretwilson.util.Debug;
 
 /**Class to manipulate input streams.*/
 public class InputStreamUtilities
@@ -77,6 +78,7 @@ public class InputStreamUtilities
 	*/
 	public static byte[] getBytes(final InputStream inputStream, final long offset, final int length) throws IOException
 	{
+Debug.trace("ready to get bytes", length);
 		if(offset<0)	//if a negative offset is requested
 		{
 			throw new IllegalArgumentException("Offset cannot be negative.");
