@@ -83,7 +83,7 @@ public class Digest extends TypedRDFResource implements CryptoConstants
 	*/
 	public DigestMethod getDigestMethod()
 	{
-		return (DigestMethod)ObjectUtilities.asInstance(getPropertyValue(CRYPTO_NAMESPACE_URI, DIGEST_METHOD_PROPERTY_NAME), DigestMethod.class); //get the value of the digest method property as the correct type
+		return ObjectUtilities.asInstance(getPropertyValue(CRYPTO_NAMESPACE_URI, DIGEST_METHOD_PROPERTY_NAME), DigestMethod.class); //get the value of the digest method property as the correct type
 	}
 
 	/**Retrieves the digest value of the resource. If this resource has more

@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.URI;
 import java.util.*;
 
-import com.garretwilson.lang.ObjectUtilities;
+import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLUtilities;
 
@@ -104,7 +104,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static RDFListResource asListResource(final RDFObject rdfObject)
 	{
-		return (RDFListResource)ObjectUtilities.asInstance(rdfObject, RDFListResource.class);	//cast the object to a list if we can
+		return asInstance(rdfObject, RDFListResource.class);	//cast the object to a list if we can
 	}
 
 	/**Determines if the RDF object is a literal and, if so, casts the object 
@@ -115,7 +115,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static RDFLiteral asLiteral(final RDFObject rdfObject)
 	{
-		return (RDFLiteral)ObjectUtilities.asInstance(rdfObject, RDFLiteral.class);	//cast the object to a literal if we can
+		return asInstance(rdfObject, RDFLiteral.class);	//cast the object to a literal if we can
 	}
 
 	/**Determines if the RDF object is a resource and, if so, casts the object 
@@ -126,7 +126,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static RDFResource asResource(final RDFObject rdfObject)
 	{
-		return (RDFResource)ObjectUtilities.asInstance(rdfObject, RDFResource.class);	//cast the object to a resource if we can
+		return asInstance(rdfObject, RDFResource.class);	//cast the object to a resource if we can
 	}
 
 	/**Creates a resource reference URI from an XML namespace URI (which may be

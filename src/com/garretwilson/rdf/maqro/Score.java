@@ -1,7 +1,9 @@
 package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
+import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.rdf.*;
+import com.garretwilson.rdf.xmlschema.NumberLiteral;
 
 /**The result of a score evalution.
 @author Garret Wilson
@@ -41,20 +43,20 @@ public class Score extends Result implements MAQROConstants
 	}
 
 	/**Sets the value of the score.
-	@param literal The literal score value.
+	@param literal The literal number score value.
 	*/
-	public void setValue(final RDFLiteral literal)
+	public void setValue(final NumberLiteral literal)
 	{
 		RDFUtilities.setValue(this, literal);	//set the value of this score resource
 	}
 
-	/**Retrieves the literal value of the score.
+	/**Retrieves the literal number value of the score.
 	@return The score value, or <code>null</code> if there is no value
-		or the value is not a literal.
+		or the value is not a number.
 	*/
-	public RDFLiteral getValue()
+	public NumberLiteral getValue()
 	{
-		return RDFUtilities.getValue(this);	//get the value of this score resource
+		return asInstance(RDFUtilities.getValue(this), NumberLiteral.class);	//get the value of this score resource
 	}
 
 	/**Sets the possible value of the score.
@@ -65,13 +67,13 @@ public class Score extends Result implements MAQROConstants
 		setProperty(RDF_NAMESPACE_URI, POSSIBLE_PROPERTY_NAME, literal); //replace all possible properties with the given literal value
 	}
 
-	/**Retrieves the literal possible value of the score.
+	/**Retrieves the literal number possible value of the score.
 	@return The possible score value, or <code>null</code> if there is no possible
-		value or the possible value is not a literal.
+		value or the possible value is not a number.
 	*/
-	public RDFLiteral getPossible()
+	public NumberLiteral getPossible()
 	{
-		return RDFUtilities.asLiteral(getPropertyValue(RDF_NAMESPACE_URI, POSSIBLE_PROPERTY_NAME)); //get the value of the possible property only if it is a literal
+		return asInstance(getPropertyValue(RDF_NAMESPACE_URI, POSSIBLE_PROPERTY_NAME), NumberLiteral.class); //get the value of the possible property only if it is a number
 	}
 	
 }

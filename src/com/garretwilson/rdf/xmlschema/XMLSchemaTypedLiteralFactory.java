@@ -2,12 +2,12 @@ package com.garretwilson.rdf.xmlschema;
 
 import java.net.URI;
 import com.garretwilson.rdf.*;
-import com.garretwilson.text.xml.schema.XMLSchemaConstants;
+import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 
 /**A factory to create typed literals within the XML schema namespace.
 @author Garret Wilson
 */
-public class XMLSchemaTypedLiteralFactory implements RDFTypedLiteralFactory, XMLSchemaConstants 
+public class XMLSchemaTypedLiteralFactory implements RDFTypedLiteralFactory 
 {
 
 	/**Creates a typed literal from the provided lexical form based upon the
@@ -21,7 +21,6 @@ public class XMLSchemaTypedLiteralFactory implements RDFTypedLiteralFactory, XML
 	@param datatypeURI The datatype reference URI of the datatype.
 	@return A typed literal containing a value object mapped from the given
 		lexical form and datatype
-	@see BooleanLiteral
 	*/
 	public RDFTypedLiteral createTypedLiteral(final String lexicalForm, final URI datatypeURI)
 	{
@@ -33,6 +32,7 @@ public class XMLSchemaTypedLiteralFactory implements RDFTypedLiteralFactory, XML
 		{
 			return new BooleanLiteral(lexicalForm);	//create and return a boolean literal
 		}
+				//TODO add support for decimal
 		else if(DOUBLE_DATATYPE_URI.equals(datatypeURI))	//double
 		{
 			return new DoubleLiteral(lexicalForm);	//create and return a double literal

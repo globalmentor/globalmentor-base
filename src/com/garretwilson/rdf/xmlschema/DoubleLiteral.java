@@ -1,13 +1,14 @@
 package com.garretwilson.rdf.xmlschema;
 
+import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.rdf.*;
-import com.garretwilson.text.xml.schema.XMLSchemaConstants;
+import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 
 /**An RDF literal that represents an XML Schema 64-bit double.
 @author Garret Wilson
 @see Double
 */
-public class DoubleLiteral extends RDFTypedLiteral implements XMLSchemaConstants
+public class DoubleLiteral extends NumberLiteral
 {
 
 	/**Returns the literal value that the lexical form represents.
@@ -22,7 +23,7 @@ public class DoubleLiteral extends RDFTypedLiteral implements XMLSchemaConstants
 	*/
 	public DoubleLiteral(final double value)
 	{
-		this(new Double(value));	//create a new Double object and construct the class with it
+		this(Double.valueOf(value));	//create a new Double object and construct the class with it
 	}
 
 	/**Constructs a double literal using the datatype
@@ -40,6 +41,17 @@ public class DoubleLiteral extends RDFTypedLiteral implements XMLSchemaConstants
 	public DoubleLiteral(final String lexicalForm)
 	{
 		super(Double.valueOf(lexicalForm), DOUBLE_DATATYPE_URI);	//save a Double constructed from the text as the value, specifying the XML double datatype URI
+	}
+
+	/**Determines if the RDF object is a double literal and, if so, casts the 
+	object to a float literal and returns it.
+	@param rdfObject The RDF object in question.
+	@return The RDF object as a float literal, or <code>null</code> if the
+		object is not a float literal or the object is <code>null</code>.
+	*/
+	public static DoubleLiteral asDoubleLiteral(final RDFObject rdfObject)
+	{
+		return asInstance(rdfObject, DoubleLiteral.class);	//cast the object to a double literal if we can
 	}
 
 }

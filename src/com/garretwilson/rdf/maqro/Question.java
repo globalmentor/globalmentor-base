@@ -34,7 +34,7 @@ public class Question extends Interaction
 	*/
 	public Dialogue getQuery()
 	{
-		return (Dialogue)ObjectUtilities.asInstance(getPropertyValue(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME), Dialogue.class);	//get the query only if it is Dialogue		
+		return ObjectUtilities.asInstance(getPropertyValue(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME), Dialogue.class);	//get the query only if it is Dialogue		
 	}
 
 	/**Sets the query of the question.

@@ -1,13 +1,14 @@
 package com.garretwilson.rdf.xmlschema;
 
+import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.rdf.*;
-import com.garretwilson.text.xml.schema.XMLSchemaConstants;
+import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 
 /**An RDF literal that represents an XML Schema 32-bit float.
 @author Garret Wilson
 @see Float
 */
-public class FloatLiteral extends RDFTypedLiteral implements XMLSchemaConstants
+public class FloatLiteral extends NumberLiteral
 {
 
 	/**Returns the literal value that the lexical form represents.
@@ -22,7 +23,7 @@ public class FloatLiteral extends RDFTypedLiteral implements XMLSchemaConstants
 	*/
 	public FloatLiteral(final float value)
 	{
-		this(new Float(value));	//create a new Float object and construct the class with it
+		this(Float.valueOf(value));	//create a new Float object and construct the class with it
 	}
 
 	/**Constructs a float literal using the datatype
@@ -40,6 +41,17 @@ public class FloatLiteral extends RDFTypedLiteral implements XMLSchemaConstants
 	public FloatLiteral(final String lexicalForm)
 	{
 		super(Float.valueOf(lexicalForm), FLOAT_DATATYPE_URI);	//save a Float constructed from the text as the value, specifying the XML float datatype URI
+	}
+
+	/**Determines if the RDF object is a float literal and, if so, casts the 
+		object to a float literal and returns it.
+	@param rdfObject The RDF object in question.
+	@return The RDF object as a float literal, or <code>null</code> if the
+		object is not a float literal or the object is <code>null</code>.
+	*/
+	public static FloatLiteral asFloatLiteral(final RDFObject rdfObject)
+	{
+		return asInstance(rdfObject, FloatLiteral.class);	//cast the object to a float literal if we can
 	}
 
 }

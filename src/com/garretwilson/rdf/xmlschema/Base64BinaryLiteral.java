@@ -50,7 +50,7 @@ public class Base64BinaryLiteral extends RDFTypedLiteral implements XMLSchemaCon
 	*/
 	public static Base64BinaryLiteral asBase64BinaryLiteral(final RDFObject rdfObject)
 	{
-		return (Base64BinaryLiteral)ObjectUtilities.asInstance(rdfObject, Base64BinaryLiteral.class);	//cast the object to an integer literal if we can
+		return ObjectUtilities.asInstance(rdfObject, Base64BinaryLiteral.class);	//cast the object to an integer literal if we can
 	}
 
 	/**Determines if the RDF object is a base64-encoded binary literal and, if so, 

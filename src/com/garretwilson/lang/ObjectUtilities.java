@@ -16,9 +16,9 @@ public class ObjectUtilities
 	@return The object if it is an instance of the given class, otherwise
 		<code>null</code>.
 	 */
-	public static Object asInstance(final Object object, final Class instanceClass)
+	public static <T> T asInstance(final Object object, final Class<T> instanceClass)
 	{
-		return instanceClass.isInstance(object) ? object : null;	//return the object if it is an instance of the class, otherwise null
+		return instanceClass.isInstance(object) ? (T)object : null;	//return the object if it is an instance of the class, otherwise null
 	}
 
 	/**Compares two object to make sure that the objects are equal, or the

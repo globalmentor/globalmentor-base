@@ -1,14 +1,14 @@
 package com.garretwilson.rdf.xmlschema;
 
-import com.garretwilson.lang.ObjectUtilities;
+import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.rdf.*;
-import com.garretwilson.text.xml.schema.XMLSchemaConstants;
+import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 
 /**An RDF literal that represents an XML Schema boolean.
 @author Garret Wilson
 @see Boolean
 */
-public class BooleanLiteral extends RDFTypedLiteral implements XMLSchemaConstants
+public class BooleanLiteral extends RDFTypedLiteral
 {
 
 	/**Returns the literal value that the lexical form represents.
@@ -51,7 +51,7 @@ public class BooleanLiteral extends RDFTypedLiteral implements XMLSchemaConstant
 	*/
 	public static BooleanLiteral asBooleanLiteral(final RDFObject rdfObject)
 	{
-		return (BooleanLiteral)ObjectUtilities.asInstance(rdfObject, BooleanLiteral.class);	//cast the object to a boolean literal if we can
+		return asInstance(rdfObject, BooleanLiteral.class);	//cast the object to a boolean literal if we can
 	}
 
 	/**Determines if the RDF object is a boolean literal and, if so, casts the 
