@@ -2,6 +2,7 @@ package com.garretwilson.rdf.dublincore;
 
 import java.text.*;
 import java.util.*;
+import com.garretwilson.text.*;
 import com.garretwilson.rdf.*;
 import com.garretwilson.util.*;
 
@@ -14,7 +15,8 @@ public class DCUtilities implements DCConstants
 	/**@return A new date format for formatting W3C-style dates.*/
 	public final static DateFormat createDateFormat()  //G***put this in an appropriate package
 	{
-		return new SimpleDateFormat(W3C_DATE_FORMAT); //return a new simple date formatter with the W3C date template
+		return new W3CDateFormat(W3CDateFormat.DATE_STYLE);	//return a W3C date and time formatter for just the date 
+//G***del		return new SimpleDateFormat(W3C_DATE_FORMAT); //return a new simple date formatter with the W3C date template
 	}
 
 	/**Adds a <code>dc:creator</code> property with the given value to the
