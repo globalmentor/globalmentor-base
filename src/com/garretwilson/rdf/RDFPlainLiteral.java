@@ -3,6 +3,8 @@ package com.garretwilson.rdf;
 import java.text.Collator;
 import java.util.Locale;
 
+import com.garretwilson.util.LocaleText;
+
 /**Represents a plain RDF literal.
 @author Garret Wilson
 */
@@ -24,6 +26,12 @@ public class RDFPlainLiteral extends RDFLiteral
 			language specified.
 		*/
 		public Locale getLanguage() {return language;}
+
+	/**@return A locale-aware representation of the literal's lexical form, indicating any locale information available.*/
+	public LocaleText toLocaleText()
+	{
+		return new LocaleText(getLexicalForm(), getLanguage());	//return the text and the language 
+	}
 
 	/**Constructs a plain literal with a lexical value.
 	@param lexicalValue The lexical form of the literal.

@@ -6,6 +6,8 @@ import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.util.Debug;
+import com.garretwilson.util.LocaleText;
+
 import org.w3c.dom.*;
 
 /**An encapsulation of <code>rdf:XMLLiteral</code> that holds a
@@ -47,6 +49,13 @@ public class RDFXMLLiteral extends RDFTypedLiteral
 		}
 	}
 
+	/**@return A locale-aware representation of the literal's lexical form, indicating any locale information available.*/
+/*TODO create and return a special LocaleText subclass that has both plain text and an XML fragment 
+	public LocaleText toLocaleText()
+	{
+		return new LocaleText(getLexicalForm());	//by default we don't know any locale 
+	}
+*/
 	/**Constructs an XML literal using the datatype
 	<code>http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral</code>.
 	@param documentFragment The document fragment representing the value of the

@@ -2,6 +2,8 @@ package com.garretwilson.rdf;
 
 import java.text.Collator;
 
+import com.garretwilson.util.LocaleText;
+
 /**Represents an RDF literal, either plain or typed.
 @author Garret Wilson
 */
@@ -21,6 +23,12 @@ public abstract class RDFLiteral implements RDFObject, Comparable
 	public String toString()
 	{
 		return getLexicalForm();  //return the lexical form
+	}
+
+	/**@return A locale-aware representation of the literal's lexical form, indicating any locale information available.*/
+	public LocaleText toLocaleText()
+	{
+		return new LocaleText(getLexicalForm());	//by default we don't know any locale 
 	}
 
 	/**Initializes a collator for comparison.
