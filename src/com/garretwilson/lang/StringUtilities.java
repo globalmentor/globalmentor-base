@@ -16,6 +16,8 @@ import com.garretwilson.util.Debug;
 */
 public class StringUtilities extends CharacterUtilities
 {
+	//TODO move most of the methods that reference CharSeqUtilities to that class
+
 /*G***del
 	public final static String WHITESPACE_STRING="\001\002\003\004\005\006\007\010\011\012\013\014\015\016\017\020\021\022\023\024\025\026\027\030\031\032\033\034\035\036\037\040";
 	public final static String PUNCTUATION_STRING=".,:;?!";	//punctuation characters
@@ -38,61 +40,6 @@ public class StringUtilities extends CharacterUtilities
 	public static String[] createArray(final String string)
 	{
 		return string!=null ? new String[]{string} : new String[]{};	//return an array containing the string, or an empty array if the string is null
-	}
-
-	/**Searches a string and returns the first index of any character in the specified string, starting at the beginning.
-	@param inString The string to be searched.
-	@param charString The string of characters to check.
-	@return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
-	*/
-	static public int charIndexOf(final String inString, final String charString)
-	{
-		return charIndexOf(inString, charString, 0);	//look of the characters, starting at the beginning of the string
-	}
-
-	/**Searches a string and returns the first index of any character in the
-		specified string, starting at <code>fromIndex</code>.
-	@param inString The string to be searched.
-	@param charString The string of characters to check.
-	@param fromIndex The index to search from
-	@return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
-	*/
-	static public int charIndexOf(final String inString, final String charString, final int fromIndex)
-	{
-		for(int i=fromIndex; i<inString.length(); ++i)	//look at each character in the string
-		{
-			if(charString.indexOf(inString.charAt(i))!=-1)	//if this character is in our character string
-				return i;	//return the index we're at
-		}
-		return -1;	//if we make it to here, we didn't find any of the characters
-	}
-
-	/**Searches a string in reverse and returns the last index of any character,
-		starting from <code>fromIndex</code>.
-	@param inString The string to be searched.
-	@param charString The string of characters to check.
-	@return The index of the last occurrence of one of the supplied characters, or -1 if none were found.
-	*/
-	static public int charLastIndexOf(final String inString, final String charString)
-	{
-		return charLastIndexOf(inString, charString, inString.length()-1);  //search the string, starting at the end
-	}
-
-	/**Searches a string in reverse and returns the last index of any character
-		in the specified string, starting from <code>fromIndex</code>.
-	@param inString The string to be searched.
-	@param charString The string of characters to check.
-	@param fromIndex The index to search from
-	@return The index of the last occurrence of one of the supplied characters, or -1 if none were found.
-	*/
-	static public int charLastIndexOf(final String inString, final String charString, final int fromIndex)
-	{
-		for(int i=fromIndex; i>=0; --i)	//look at each character in the string, starting at the end
-		{
-			if(charString.indexOf(inString.charAt(i))!=-1)	//if this character is in our character string
-				return i;	//return the index we're at
-		}
-		return -1;	//if we make it to here, we didn't find any of the characters
 	}
 	
 	/**Searches a string in reverse and returns the last index of any character
@@ -170,66 +117,6 @@ public class StringUtilities extends CharacterUtilities
 		return StringBufferUtilities.append(new StringBuffer(), objects, separator).toString();	//append the objects to a string buffer and return the string
 	}
 	
-	/**Searches a string and returns the first index of any character <em>not</em>
-		in the specified string, starting from the beginning.
-	@param inString The string to be searched.
-	@param notCharString The string of characters to check.
-	@return The index of the first occurrence of one of the supplied characters,
-		or -1 if none were found.
-	*/
-	static public int notCharIndexOf(final String inString, final String notCharString)
-	{
-		return notCharIndexOf(inString, notCharString, 0);  //start looking from the beginning
-	}
-
-	/**Searches a string and returns the first index of any character <em>not</em>
-		in the specified string, starting at <code>fromIndex</code>.
-	@param inString The string to be searched.
-	@param notCharString The string of characters to check.
-	@param fromIndex The index to search from
-	@return The index of the first occurrence of one of the supplied characters,
-		or -1 if none were found.
-	*/
-	static public int notCharIndexOf(final String inString, final String notCharString, final int fromIndex)
-	{
-		for(int i=fromIndex; i<inString.length(); ++i)	//look at each character in the string
-		{
-			if(notCharString.indexOf(inString.charAt(i))==-1)	//if this character is not in our character string
-				return i;	//return the index we're at
-		}
-		return -1;	//if we make it to here, we didn't find any characters which weren't in our character string
-	}
-
-	/**Searches a string and returns the last index of any character <em>not</em>
-		in the specified string, starting at the last index.
-	@param inString The string to be searched.
-	@param notCharString The string of characters to check.
-	@return The index of the last occurrence of one of the supplied characters,
-		or -1 if none were found.
-	*/
-	static public int notCharLastIndexOf(final String inString, final String notCharString)
-	{
-		return notCharLastIndexOf(inString, notCharString, inString.length()-1);  //start searching from the end
-	}
-
-	/**Searches a string and returns the last index of any character <em>not</em>
-		in the specified string, starting at <code>fromIndex</code>.
-	@param inString The string to be searched.
-	@param notCharString The string of characters to check.
-	@param fromIndex The index to search from
-	@return The index of the last occurrence of one of the supplied characters,
-		or -1 if none were found.
-	*/
-	static public int notCharLastIndexOf(final String inString, final String notCharString, final int fromIndex)
-	{
-		for(int i=fromIndex; i>=0; --i)	//look at each character in the string, looking from right to left
-		{
-			if(notCharString.indexOf(inString.charAt(i))==-1)	//if this character is not in our character string
-				return i;	//return the index we're at
-		}
-		return -1;	//if we make it to here, we didn't find any characters which weren't in our character string
-	}
-
 	/**Determines whether the string ends with the given suffix, ignoring case.
 	@param string The string to search.
 	@param suffix The ending string to check for.
@@ -707,7 +594,7 @@ end;
 		int i=0;	//start at the beginning of the string
 		while(true)
 		{
-			i=notCharIndexOf(inString, delimiters, i);	//find the next token
+			i=CharSequenceUtilities.notCharIndexOf(inString, delimiters, i);	//find the next token
 			if(i==-1)	//if there is no other token
 				break;		//exit, because there are no more tokens left
 			tokenNumber--;	//show that we've found another token
@@ -715,7 +602,7 @@ end;
 				break;	//leave, because i now has the position of that token
 			else	//if there are still more tokens to find
 			{
-				i=charIndexOf(inString, delimiters, i);	//starting at our current position, find the next delimiter character
+				i=CharSequenceUtilities.charIndexOf(inString, delimiters, i);	//starting at our current position, find the next delimiter character
 				if(i==-1)	//if there is no delimiter after this token (i.e. this is the last token)
 					break;	//exit, because there are no more tokens left
 			}
@@ -734,7 +621,7 @@ end;
 		int i=tokenIndex(inString, tokenNumber, delimiters);	//find the beginning of the specified token
 		if(i!=-1)	//if we found the beginning of the specified token
 		{
-			i=charIndexOf(inString, delimiters, i);	//find the character right after the token
+			i=CharSequenceUtilities.charIndexOf(inString, delimiters, i);	//find the character right after the token
 			if(i==-1)	//if there are no more delimiters after this token
 				i=inString.length();	//we know that this token goes to the end of the string
 		}
@@ -899,7 +786,7 @@ end;
 		int fromIndex=0;	//we'll start looking for links at the beginning of the string
 		while(fromIndex<outString.length())	//keep looking until we run out of characters
 		{
-			int checkIndex=charIndexOf(outString, ".@", fromIndex);	//see if we can find any of the hyperlink characters
+			int checkIndex=CharSequenceUtilities.charIndexOf(outString, ".@", fromIndex);	//see if we can find any of the hyperlink characters
 			if(checkIndex!=-1)	//if we found one of them
 			{
 				int wordBegin=getWordBeginning(outString, checkIndex);	//find the beginning of this word
@@ -1079,8 +966,10 @@ end;
 	/**Removes every occurrence of a specified character.
 	@param inString the String from which the information will be removed.
 	@param removeChar The character to remove from the string.
-	@return A new string with the specified information removed.*/
-	static public String removeEvery(final String inString, final char removeChar)
+	@return A new string with the specified information removed.
+	*/
+/*G***del if not needed, else call the StringBuffer version
+	public static String removeEvery(final String inString, final char removeChar)
 	{
 		String outString=inString;	//this is the string we'll process
 		int i=0;	//start at the beginning of the string
@@ -1093,12 +982,15 @@ end;
 		}
 		return outString;	//return the processed string
 	}
+*/
 
 	/**Removes every occurrence of any of the given specified characters.
 	@param inString the String from which the information will be removed.
 	@param removeChars The characters to be removed from the string.
-	@return A new string with the specified information removed.*/
-	static public String removeEveryChar(final String inString, final String removeChars)
+	@return A new string with the specified information removed.
+	*/
+/*G***del if not needed, else call the StringBuffer version
+	public static String removeEveryChar(final String inString, final String removeChars)
 	{
 		String outString=inString;	//this is the string we'll process
 		int i=0;	//start at the beginning of the string
@@ -1111,6 +1003,7 @@ end;
 		}
 		return outString;	//return the processed string
 	}
+*/
 
 	/**Removes all characters that come before the last occurrence of the given'
 		character. If the character does not exist in the string, the original
@@ -1412,7 +1305,7 @@ end;
 	*/
 	public static String truncateChar(final String string, final String delimiters)
 	{
-		final int index=charIndexOf(string, delimiters);  //find the first occurrence of one of the characters
+		final int index=CharSequenceUtilities.charIndexOf(string, delimiters);  //find the first occurrence of one of the characters
 			//if one of the characters is present, remove it and everything following
 		return index>=0 ? string.substring(0, index) : string;
 	}
@@ -1424,7 +1317,7 @@ end;
 	@return A new string with the specified information collapsed.*/
 	static public String collapseEveryChar(final String inString, final String collapseChars, final String replaceString)
 	{
-		if(charIndexOf(inString, collapseChars)>=0)  //first search the string to see if we would replace something; if so
+		if(CharSequenceUtilities.charIndexOf(inString, collapseChars)>=0)  //first search the string to see if we would replace something; if so
 		{
 			final StringBuffer stringBuffer=new StringBuffer(inString); //create a new string buffer from the string
 			StringBufferUtilities.collapse(stringBuffer, collapseChars, replaceString); //collapse the characters
@@ -1512,7 +1405,7 @@ end;
 		from the beginning and end of the string.
 	@param inString The string to be processed.
 	*/
-	static public String trimWhitespaceNoBreak(final String inString)
+	static public String trimWhitespaceNoBreak(final String inString)	//TODO update with our new Unicode 4.x constants
 	{
 		final int length=inString.length(); //get the string's length
 		int beginIndex, endIndex;

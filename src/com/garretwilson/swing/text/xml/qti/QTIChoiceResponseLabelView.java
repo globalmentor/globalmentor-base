@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.text.*;
 import com.garretwilson.assess.qti.QTIConstants;
 import com.garretwilson.swing.text.xml.*;
-import com.garretwilson.swing.text.xml.css.XMLCSSStyleConstants;
+import com.garretwilson.swing.text.xml.css.XMLCSSStyleUtilities;
 import com.garretwilson.util.Debug;
 
 /**Displays a QTI response label for a coice rendering, along with the

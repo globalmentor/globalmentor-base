@@ -282,7 +282,7 @@ public class FileUtilities implements FileConstants
 	public static boolean isFilename(final String string, final String reservedCharacters, final String reservedFinalCharacters)
 	{
 			//the string is a filename if the string ing isn't null and there are no illegal characters in the string
-		final boolean isFilename=string!=null && StringUtilities.charIndexOf(string, reservedCharacters)<0;
+		final boolean isFilename=string!=null && CharSequenceUtilities.charIndexOf(string, reservedCharacters)<0;
 		if(isFilename && reservedFinalCharacters!=null && reservedFinalCharacters.length()>0)	//if we should check the final character
 		{
 			if(string.length()>0)	//if we have any characters at all

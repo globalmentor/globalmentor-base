@@ -1837,10 +1837,10 @@ Debug.trace("checking to see if this is an acceptable by");  //G***del
 								if(wordIndex>=0)  //if the word appears before "by"
 								{
 										//for "etext", we don't care if "etext by" appears as long as it is "Project Gutenberg etext by" (e.g. jjstg10.txt), not "etext by"
-									if(!"etext".equals(word) || StringUtilities.charIndexOf(text, "Project Gutenberg")<byIndex)
+									if(!"etext".equals(word) || CharSequenceUtilities.charIndexOf(text, "Project Gutenberg")<byIndex)
 									{
 											//if there is just whitespace between the word and "by" (e.g. "donated by"), this is unacceptable
-										if(StringUtilities.notCharIndexOf(text, WHITESPACE_CHARS, wordIndex+word.length())>=byIndex)
+										if(CharSequenceUtilities.notCharIndexOf(text, WHITESPACE_CHARS, wordIndex+word.length())>=byIndex)
 										{
 Debug.trace("unacceptable because of: ", word); //G***del
 											isAcceptableBy=false; //don't accept this phrase
@@ -1866,9 +1866,9 @@ Debug.trace("unacceptable because of: ", word); //G***del
 */
 								final String authorText=text.substring(byIndex+BY.length());  //get everything after "by"
 	Debug.trace("got author text: ", authorText); //G***del
-								if(StringUtilities.charIndexOf(authorText, EOL_CHARS)<0 //if everything's on a single line
+								if(CharSequenceUtilities.charIndexOf(authorText, EOL_CHARS)<0 //if everything's on a single line
 												//or if the other lines are just numbers and hyphens (hack for hrlnd10.txt)
-										|| StringUtilities.charIndexOf(StringUtilities.trim(authorText, WHITESPACE_CHARS+"0123456789-"), EOL_CHARS)<0)
+										|| CharSequenceUtilities.charIndexOf(StringUtilities.trim(authorText, WHITESPACE_CHARS+"0123456789-"), EOL_CHARS)<0)
 								{
 										//get the author and trim it of certain delimiters, and then collapse the whitespace
 									final String author=PGUtilities.tidyAuthor(authorText);  //G***use a common method, not in PGUtilities

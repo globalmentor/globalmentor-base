@@ -42,18 +42,54 @@ public interface CharacterConstants
 	public final static char RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR=0x00BB;
 	/**The copyright symbol.*/
 	public final static char COPYRIGHT_SIGN=0x00A9;
+	/**The pilcrow or paragraph sign.
+	@see #PARAGRAPH_SIGN_CHAR
+	*/
+	public final static char PILCROW_SIGN_CHAR=0x00B6;
+	/**The paragraph sign.
+	@see #PILCROW_SIGN_CHAR
+	*/
+	public final static char PARAGRAPH_SIGN_CHAR=PILCROW_SIGN_CHAR;
 	/**An uppercase oe ligature.*/
 	public final static char LATIN_CAPITAL_LIGATURE_OE_CHAR=0x0152;
 	/**A lowercase oe ligature.*/
 	public final static char LATIN_SMALL_LIGATURE_OE_CHAR=0x0153;
 	/**A Y umlaut.*/
 	public final static char LATIN_CAPITAL_LETTER_Y_WITH_DIAERESIS_CHAR=0x0178;
+	/**A zero-width space (ZWSP) that may expand during justification.*/
+	public final static char ZERO_WIDTH_SPACE_CHAR=0x200B;
+	/**A zero-width non-joiner (200C;ZERO WIDTH NON-JOINER;Cf;0;BN;;;;;N;;;;;).*/
+	public final static char ZERO_WIDTH_NON_JOINER_CHAR=0x200C;
+	/**A zero-width joiner (200D;ZERO WIDTH JOINER;Cf;0;BN;;;;;N;;;;;).*/
+	public final static char ZERO_WIDTH_JOINER_CHAR=0x200D;
+	/**A left-to-right mark (200E;LEFT-TO-RIGHT MARK;Cf;0;L;;;;;N;;;;;).*/
+	public final static char LEFT_TO_RIGHT_MARK_CHAR=0x200E;
+	/**A right-to-right mark (200F;RIGHT-TO-LEFT MARK;Cf;0;R;;;;;N;;;;;).*/
+	public final static char RIGHT_TO_LEFT_MARK_CHAR=0x200F;
+	/**A zero-width non-breaking space&mdash;word joiner (WJ).*/
+	public final static char WORD_JOINER_CHAR=0x2060;
 	/**A left single quote.*/
 	public final static char LEFT_SINGLE_QUOTATION_MARK_CHAR=0x2018;
 	/**A right single quote.*/
 	public final static char RIGHT_SINGLE_QUOTATION_MARK_CHAR=0x2019;
 	/**A single low-9 quotation mark.*/
 	public final static char SINGLE_LOW_9_QUOTATION_MARK_CHAR=0x201A;
+/*TODO fix and add to FORMAT_CHARS 
+	202A;LEFT-TO-RIGHT EMBEDDING;Cf;0;LRE;;;;;N;;;;;
+	202B;RIGHT-TO-LEFT EMBEDDING;Cf;0;RLE;;;;;N;;;;;
+	202C;POP DIRECTIONAL FORMATTING;Cf;0;PDF;;;;;N;;;;;
+	202D;LEFT-TO-RIGHT OVERRIDE;Cf;0;LRO;;;;;N;;;;;
+	202E;RIGHT-TO-LEFT OVERRIDE;Cf;0;RLO;;;;;N;;;;;
+206A;INHIBIT SYMMETRIC SWAPPING;Cf;0;BN;;;;;N;;;;;
+206B;ACTIVATE SYMMETRIC SWAPPING;Cf;0;BN;;;;;N;;;;;
+206C;INHIBIT ARABIC FORM SHAPING;Cf;0;BN;;;;;N;;;;;
+206D;ACTIVATE ARABIC FORM SHAPING;Cf;0;BN;;;;;N;;;;;
+206E;NATIONAL DIGIT SHAPES;Cf;0;BN;;;;;N;;;;;
+206F;NOMINAL DIGIT SHAPES;Cf;0;BN;;;;;N;;;;;
+FFF9;INTERLINEAR ANNOTATION ANCHOR;Cf;0;BN;;;;;N;;;;;
+FFFA;INTERLINEAR ANNOTATION SEPARATOR;Cf;0;BN;;;;;N;;;;;
+FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
+*/
 	/**A single high-reversed-9 quotation mark.*/
 	public final static char SINGLE_HIGH_REVERSED_9_QUOTATION_MARK_CHAR=0x201B;
 	/**A left double quote.*/
@@ -78,7 +114,7 @@ public interface CharacterConstants
 	public final static char SINGLE_RIGHT_POINTING_ANGLE_QUOTATION_MARK_CHAR=0x203A;
 	/**Unicode trademark character.*/
 	public final static char TRADE_MARK_SIGN_CHAR=0x2122;
-	/**Unicode no-break space.*/
+	/**Unicode no-break space (NBSP).*/
 	public final static char NO_BREAK_SPACE_CHAR=0x00A0;
 	/**A reversed double prime quotation mark.*/
 	public final static char REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR=0x301D;
@@ -88,6 +124,19 @@ public interface CharacterConstants
 	public final static char LOW_DOUBLE_PRIME_QUOTATION_MARK_CHAR=0x301F;
 	/**A full width quotation mark.*/
 	public final static char FULLWIDTH_QUOTATION_MARK_CHAR=0xFF02;
+	/**A zero-width no-breaking space (ZWNBSP)&mdash;the Byte Order Mark (BOM) (FEFF;ZERO WIDTH NO-BREAK SPACE;Cf;0;BN;;;;;N;BYTE ORDER MARK;;;;).
+	For non-breaking purposes, deprecated in favor of <code>WORD_JOINER_CHAR</code>.
+	@see #WORD_JOINER_CHAR
+	*/
+	public final static char ZERO_WIDTH_NO_BREAK_SPACE_CHAR=0xFEFF;
+	/**The Byte Order Mark (BOM).
+	@see #ZERO_WIDTH_NO_BREAK_SPACE_CHAR
+	*/
+	public final static char BOM_CHAR=ZERO_WIDTH_NO_BREAK_SPACE_CHAR;
+	/**A character for a placeholder in text for an otherwise unspecified object.*/
+	public final static char OBJECT_REPLACEMENT_CHAR=0xFFFC;
+	/**Represents a character that is unknown or unrepresentable in Unicode.*/
+	public final static char REPLACEMENT_CHAR=0xFFFD;
 	/**An invalid, undefined Unicode character.*/
 	public final static char UNDEFINED_CHAR=0xFFFF;
 
@@ -112,7 +161,8 @@ public interface CharacterConstants
 		The therefore include the <code>NO_BREAK_SPACE_CHAR</code>, 0x00A0.
 		G***finish this to include things found in java.lang.Character.isWhiteSpace()
 		G***does this need to be compatible with the Unicode whitespace characters? Unicode makes a distinction between ws, b, etc.
-	*/
+	*/	//TODO fix for Unicode; fix all the uses of this string; it should *not* have no-break-space character in it, and it should not have control characters
+			//TODO most of the calling methods probably want to use TRIM_CHARS
 	public final static String WHITESPACE_CHARS=CONTROL_CHARS+
 		  SPACE_CHAR+
 			NO_BREAK_SPACE_CHAR;
@@ -127,9 +177,20 @@ public interface CharacterConstants
 			SPACE_CHAR+
 			NO_BREAK_SPACE_CHAR*/;
 
+	/**Unicode formatting characters; Unicode characters marked with "Cf",
+		such as <code>WORD_JOINER</code>.
+	*/
+	public final static String FORMAT_CHARS=""+ZERO_WIDTH_NON_JOINER_CHAR+ZERO_WIDTH_JOINER_CHAR
+			+LEFT_TO_RIGHT_MARK_CHAR+RIGHT_TO_LEFT_MARK_CHAR
+			+WORD_JOINER_CHAR+ZERO_WIDTH_NO_BREAK_SPACE_CHAR;
+
 	/**Characters considered to be end-of-line markers (e.g. CR and LF).*/
 	public final static String EOL_CHARS=""+CARRIAGE_RETURN_CHAR+LINE_FEED_CHAR;
 
+	/**Characters that do not contain visible "content", and may be trimmed from ends of a string.
+	These include whitespace, control characters, and formatting characters.
+	*/
+	public final static String TRIM_CHARS=WHITESPACE_CHARS+CONTROL_CHARS+FORMAT_CHARS;
 	/**Characters used in Roman numbers.*/
 //G***del	public final static String ROMAN_NUMERAL_CHARS="IVXCLM";  //G***make sure this is exhaustive
 

@@ -275,7 +275,7 @@ preface
 	*/
 	public static boolean isPageNumber(final String text) //G***put this in some common routine in a common package
 	{
-		if(StringUtilities.charIndexOf(text, EOL_CHARS)>0)  //if the text is not on a single line
+		if(CharSequenceUtilities.charIndexOf(text, EOL_CHARS)>0)  //if the text is not on a single line
 			return false; //this isn't a page number
 //G***del Debug.trace("checking page number: ", text);  //G***del
 		/**The strings that count as page indications.*/
@@ -501,7 +501,7 @@ preface
 	protected static int getSectionNumber(final String text, final String sectionLabel)
 	{
 //G***del Debug.trace("checking chapter heading text: ", text); //G***del
-		final int eolIndex=StringUtilities.charIndexOf(text, EOL_CHARS);  //find the end of the line
+		final int eolIndex=CharSequenceUtilities.charIndexOf(text, EOL_CHARS);  //find the end of the line
 		final String line=text.substring(0, eolIndex>=0 ? eolIndex : text.length());  //get the text up to our delimiter, if there is one
 		if(isQuoted(line))  //if this line is quoted
 		  return -1; //quoted strings are not headings
@@ -563,13 +563,13 @@ preface
 	public static boolean isQuoted(final String string)
 	{
 		  //get the index of the first non-whitespace character
-		final int firstCharIndex=StringUtilities.notCharIndexOf(string, WHITESPACE_CHARS);
+		final int firstCharIndex=CharSequenceUtilities.notCharIndexOf(string, WHITESPACE_CHARS);
 		if(firstCharIndex>=0) //if there is a first character (which also means there's a last character
 		{
 			if(LEFT_QUOTE_CHARS.indexOf(string.charAt(firstCharIndex))>=0) //if the line starts with a quote character
 				return true; //show that we found a quote
 				//get the index of the last non-whitespace character (we don't need to make sure it's valid--if there's a first character, there's a last character)
-			final int lastCharIndex=StringUtilities.notCharLastIndexOf(string, WHITESPACE_CHARS);
+			final int lastCharIndex=CharSequenceUtilities.notCharLastIndexOf(string, WHITESPACE_CHARS);
 			if(RIGHT_QUOTE_CHARS.indexOf(string.charAt(lastCharIndex))>=0) //if the line ends with a quote character
 				return true; //show that we found a quote
 		}

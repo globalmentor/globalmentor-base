@@ -316,6 +316,41 @@ public class StringBufferUtilities implements CharacterConstants
 		return stringBuffer;  //return the string buffer
 	}
 
+
+	/**Removes every occurrence of a specified character.
+	@param stringBuffer The string buffer from which the information will be removed.
+	@param removeChar The character to remove from the string buffer.
+	@return The string buffer after removal.
+	*/
+	public static StringBuffer removeEvery(final StringBuffer stringBuffer, final char removeChar)
+	{
+		for(int i=stringBuffer.length()-1; i>=0; --i)	//look at each character, from the last to the first
+		{
+			if(stringBuffer.charAt(i)==removeChar)	//if we have found a character to remove
+			{
+				stringBuffer.deleteCharAt(i);	//delete this character
+			}
+		}
+		return stringBuffer;  //return the string buffer
+	}
+
+	/**Removes every occurrence of any of the given specified characters.
+	@param stringBuffer The string buffer from which the information will be removed.
+	@param removeChars The characters to be removed from the string buffer.
+	@return The string buffer after removal.
+	*/
+	public static StringBuffer removeEveryChar(final StringBuffer stringBuffer, final String removeChars)
+	{
+		for(int i=stringBuffer.length()-1; i>=0; --i)	//look at each character, from the last to the first
+		{
+			if(removeChars.indexOf(stringBuffer.charAt(i))>=0)	//if this character is one of our remove characters
+			{
+				stringBuffer.deleteCharAt(i);	//delete this character
+			}
+		}
+		return stringBuffer;  //return the string buffer
+	}
+
 	/**Converts all characters in the string buffer to corresponding characters in
 		a given lookup table. Any characters not in the table will remain unchanged.
 	@param stringBuffer The string buffer in which characters should be replaced.

@@ -110,7 +110,7 @@ Debug.trace("Font name: ", font.getFontName()); //G***del
 	}
 
 	/**Gets a new font for the specified character by searching all available fonts.
-		Once a font is found for a particular character, that font family name is
+	<p>Once a font is found for a particular character, that font family name is
 		stored with the character's Unicode block so that retrieving a font for the
 		same block character will be much faster in the future. The name will also
 		be stored keyed to the character itself. If a character is requested for the
@@ -118,8 +118,11 @@ Debug.trace("Font name: ", font.getFontName()); //G***del
 		the font family name will be searched with the character as the key. This
 		speeds searches yet saves space based on the assumption that most fonts, if
 		they contain one character in a Unicode block, will contain all characters
-		in a Unicode block.
-		<p>This method also keeps a list of recommended fonts for several character
+		in a Unicode block.</p>
+	<p>If no fonts on the system support the given character, this method will
+		flag that character as unsupported so that during the next call to this
+		method all the fonts will not be searched.</p>		
+	<p>This method also keeps a list of recommended fonts for several character
 		blocks so that those fonts may be searched first, if the character is not
 		represented in the map.</p>
 	@param c The character for which a font should be returned.
@@ -150,6 +153,13 @@ Debug.trace("Font style bold: ", style & Font.BOLD);
 				return characterFont; //return the font
 			else  //if the font can't display the character
 				characterFontFamilyNameMap.remove(character); //remove the character key from the map; it was misleading
+		}
+		else	//if we didn't find a family name, this might mean there's no font stored for this character, or we previously stored null, meaning there is no supporting font
+		{
+			if(characterFontFamilyNameMap.containsKey(character))	//if we actually stored the null value keyed to this character
+			{
+				return null;	//there's no use searching further---we've searched for this character before, and turned up nothing
+			}			
 		}
 		//see which Unicode block this character is in
 		final Character.UnicodeBlock unicodeBlock=Character.UnicodeBlock.of(c);
@@ -189,7 +199,7 @@ Debug.trace("Font cannot support character: "+Integer.toHexString(c)+", but we h
 			//try the suggested fonts based upon the Unicode block G***we might want to make sure each font is available on the system, first
 		if(possibleFontFamilyNames!=null) //if know of several font family names to try
 		{
-Debug.trace("Trying possible fonts");
+Debug.trace("Font cannot support character: "+Integer.toHexString(c)+"; trying possible fonts");
 			for(int i=0; i<possibleFontFamilyNames.length; ++i)  //look at each font family name
 			{
 				final Font possibleFont=new Font(possibleFontFamilyNames[i], style, size); //create a font with the possible name, but don't get it using getFont() because we're not sure we want to add it to our cache
@@ -234,7 +244,10 @@ Debug.trace("Finally chose font: ", chosenFont); //G***del
 		  return chosenFont;  //return the font we chose
 		}
 		else  //if we could not find a font for the character
-			return null;  //show that we could not find a font that can display the specified character G***it would be nice to cache the not-found characters as well
+		{
+			characterFontFamilyNameMap.put(character, null); //remind ourselves next time that we've tried all fonts and couldn't find any to work with this character
+			return null;  //show that we could not find a font that can display the specified character
+		}
 	}
 
 	//G***create the transient fontReferenceMap in a readObject

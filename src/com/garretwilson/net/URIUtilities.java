@@ -329,11 +329,12 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 
 	/**Returns a URI constructed from a given URI and a fragment identifier.
 	<p>If the URI is not syntactically correct, an
-		<code>IllegalArgumentException</code>	will be thrown, created from the
-		<code>URISyntaxException</code>.</p>
+		<code>IllegalArgumentException</code>	will be thrown.
 	<p>This method should normally only be used when the format
 		of the string is known to be a syntactically correct URI.</p>
-	@param URI The URI to which to add a fragement identifier.
+	<p>If no URI is provided, a URI is created from the fragment itself.</p>
+	@param URI The URI to which to add a fragement identifier, or
+		<code>null</code> if a URI chould be created from just the fragment.
 	@param fragment The fragment to add to the end of the URI.
 	@exception IllegalArgumentException Thrown if the a URI cannot be constructed
 		from the given information.
@@ -341,17 +342,11 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	*/
 	public static URI resolveFragment(final URI uri, final String fragment) throws IllegalArgumentException
 	{
-		return uri.resolve(new StringBuffer().append(FRAGMENT_SEPARATOR).append(fragment).toString());	//resolve the fragment against the URI 
-/*G***del when works
-		try
-		{
-			return uri.resolve(fragment);	//resolve the fragment against the URI 
-		}
-		catch(URISyntaxException uriSyntaxException)
-		{
-			throw (IllegalArgumentException)new IllegalArgumentException(uriSyntaxException.getMessage()).initCause(uriSyntaxException);	//create a new illegal argument exception from the URI syntax exception and rethrow it
-		}	
-*/
+		final String fragmentSuffix=new StringBuffer().append(FRAGMENT_SEPARATOR).append(fragment).toString();	//create a suffix that includes the fragment separator and the fragment
+		if(uri!=null)	//if there is a URI
+			return uri.resolve(fragmentSuffix);	//resolve the fragment against the URI
+		else	//if there is no URI
+			return URI.create(fragmentSuffix);	//create a URI from the fragment suffix itself 
 	}
 
 	/**Returns a URI constructed from the given parts, any of
