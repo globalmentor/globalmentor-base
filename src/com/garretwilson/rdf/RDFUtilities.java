@@ -3,9 +3,7 @@ package com.garretwilson.rdf;
 import java.io.*;
 import java.net.URI;
 import java.util.*;
-import com.garretwilson.net.URIUtilities;
 import com.garretwilson.text.xml.XMLDOMImplementation;
-import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
 import org.w3c.dom.*;
 
@@ -107,7 +105,7 @@ public class RDFUtilities implements RDFConstants
 		if(namespaceURI!=null)  //if there is a namespace URI	//G***is this right?
 		  stringBuffer.append(namespaceURI);  //append the namespace URI
 		stringBuffer.append(localName); //append the local name
-		return URIUtilities.toURI(stringBuffer.toString()); //return a URI from the the string we constructed; if somehow concatenating the strings does not create a valid URI, a runtime exception will be thrown
+		return URI.create(stringBuffer.toString()); //return a URI from the the string we constructed; if somehow concatenating the strings does not create a valid URI, a runtime exception will be thrown
 	}
 
 	/**Gets an <code>rdf:type</code> property from RDF. This ensures that an

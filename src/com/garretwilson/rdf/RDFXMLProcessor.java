@@ -160,7 +160,7 @@ Debug.trace("found reference URI: ", referenceURIValue);  //G***del
 				catch(URISyntaxException uriSyntaxException)
 				{
 //G***fix					Debug.warn(malformedURLException);  //G***fix
-					referenceURI=URIUtilities.toURI(referenceURIValue); //G***fix
+					referenceURI=URI.create(referenceURIValue); //G***fix
 				}
 			}
 			else if(anchorID!=null)  //if there is an anchor ID
@@ -173,7 +173,7 @@ Debug.trace("found anchor ID: ", anchorID);  //G***del
 				catch(URISyntaxException uriSyntaxException)
 				{
 //G***fix					Debug.warn(malformedURLException);  //G***fix
-					referenceURI=URIUtilities.toURI(getBaseURI().toString()+URLConstants.FRAGMENT_SEPARATOR_CHAR+anchorID);  //G***fix
+					referenceURI=URI.create(getBaseURI().toString()+URLConstants.FRAGMENT_SEPARATOR_CHAR+anchorID);  //G***fix
 				}
 			}
 			else  //if there is neither a resource ID nor an anchor ID

@@ -2,7 +2,6 @@ package com.garretwilson.text.xml.oeb;
 
 import java.net.URI;
 import com.garretwilson.io.MediaType;
-import com.garretwilson.net.URIUtilities;
 import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 
 /**Several constants for OEB.
@@ -28,7 +27,7 @@ public interface OEBConstants extends XHTMLConstants
 	/**The recommended prefix to the OEB 1.0 package namespace.*/
 	public static final String OEB1_PACKAGE_NAMESPACE_PREFIX="oebpackage";
 	/**The URI to the OEB 1.0 package namespace.*/
-	public static final URI OEB1_PACKAGE_NAMESPACE_URI=URIUtilities.toURI("http://openebook.org/namespaces/oeb-package/1.0/");
+	public static final URI OEB1_PACKAGE_NAMESPACE_URI=URI.create("http://openebook.org/namespaces/oeb-package/1.0/");
 
 	//The OEB 1.0 XML package element names.*/
 	public final static String PKG_ELEMENT_PACKAGE="package";
@@ -92,7 +91,7 @@ public interface OEBConstants extends XHTMLConstants
 	public static final String OEB1_DOCUMENT_NAMESPACE_PREFIX="oeb1";
 
 	/**The URI to the OEB 1.0 namespace.*/
-	public static final URI OEB1_DOCUMENT_NAMESPACE_URI=URIUtilities.toURI("http://openebook.org/namespaces/oeb-document/1.0/");
+	public static final URI OEB1_DOCUMENT_NAMESPACE_URI=URI.create("http://openebook.org/namespaces/oeb-document/1.0/");
 
 
 	//The media types recognized by OEB

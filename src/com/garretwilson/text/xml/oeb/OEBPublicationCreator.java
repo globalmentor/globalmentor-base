@@ -588,7 +588,7 @@ Debug.trace("is PG EText"); //G***del
 			pgHeaderFragment=PGUtilities.extractHeader(document);  //extract the Project Gutenberg header
 			if(pgHeaderFragment!=null)  //if we found a header
 			{
-				referenceURI=URIUtilities.toURI(PGUtilities.getID(referenceURI.toString())); //convert this URI into a Project Gutenberg identifier by removing the version number G***fix better for URI
+				referenceURI=URI.create(PGUtilities.getID(referenceURI.toString())); //convert this URI into a Project Gutenberg identifier by removing the version number G***fix better for URI
 Debug.trace("found PG header"); //G***del
 				setTitle(PGUtilities.getTitle(pgHeaderFragment));  //get the title
 //G***del					Debug.notify("Title: "+title);  //G***del
@@ -1668,7 +1668,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 	*/
 	public static URI createURI(final URI publicationURI, final String href)
 	{
-		return URIUtilities.toURI(publicationURI.toString()+URIConstants.FRAGMENT_SEPARATOR+href); //create a URI in the form publicationURI#href G***fix to check the runtime exception this might throw
+		return URI.create(publicationURI.toString()+URIConstants.FRAGMENT_SEPARATOR+href); //create a URI in the form publicationURI#href G***fix to check the runtime exception this might throw---and make sure spaces in the fragment won't hurt anything
 		//G***del final String itemID=XMLUtilities.createName(hrefRelativePath);  //create an ID from the relative path
 	}
 
