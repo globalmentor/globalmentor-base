@@ -30,4 +30,10 @@ public class Fraction<N extends Number, D extends Number>
 		this.numerator=numerator;
 		this.denominator=denominator;
 	}
+	
+	/**@return A string representation of the fraction in the form <var>numerator</var>/<var>denominator</var>.*/
+	public String toString()
+	{
+		return getNumerator().toString()+"/"+getDenominator().toString();	//don't format the numbers; this general method lets each number format itself
+	}
 }

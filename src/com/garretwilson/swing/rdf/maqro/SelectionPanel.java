@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.util.List;
+import static java.util.Collections.*;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.rdf.RDFListResource;
@@ -303,7 +304,7 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 		if(BasicOptionPane.showConfirmDialog(this, new ListPanel(categorySwingList), "Selected categories", BasicOptionPane.OK_CANCEL_OPTION, BasicOptionPane.QUESTION_MESSAGE)==BasicOptionPane.OK_OPTION)	//G***i18n
 		{
 			categorySet.clear();	//clear our set of categories
-			CollectionUtilities.addAll(categorySet, categorySwingList.getSelectedValues());	//add the selected categories
+			addAll(categorySet, categorySwingList.getSelectedValues());	//add the selected categories
 		}
 	}
 

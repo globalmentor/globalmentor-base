@@ -2,6 +2,7 @@ package com.garretwilson.text.directory.vcard;
 
 import java.net.*;
 import java.util.*;
+import static java.util.Collections.*;
 import com.garretwilson.model.Model;
 import com.garretwilson.text.directory.*;
 import com.garretwilson.util.*;
@@ -58,7 +59,7 @@ public class VCard extends Directory implements Model, VCardConstants
 		public void setNicknames(final LocaleText[] nicknames)
 		{
 			nicknameList.clear();	//clear the list
-			CollectionUtilities.addAll(nicknameList, nicknames);	//add the new values
+			addAll(nicknameList, nicknames);	//add the new values
 		}
 		
 //TODO add birthday
@@ -85,7 +86,7 @@ public class VCard extends Directory implements Model, VCardConstants
 		public void setAddresses(final Address[] addresses)
 		{
 			addressList.clear();	//clear the list
-			CollectionUtilities.addAll(addressList, addresses);	//add the new values
+			addAll(addressList, addresses);	//add the new values
 		}
 
 	/**The list of formatted text corresponding to delivery addresses of the object the vCard represents.*/
@@ -109,7 +110,7 @@ public class VCard extends Directory implements Model, VCardConstants
 		public void setLabels(final Label[] labels)
 		{
 			labelList.clear();	//clear the list
-			CollectionUtilities.addAll(labelList, labels);	//add the new values
+			addAll(labelList, labels);	//add the new values
 		}
 		
 			//telecommunications addressing types
@@ -130,7 +131,7 @@ public class VCard extends Directory implements Model, VCardConstants
 		public void setTelephones(final Telephone[] telephones)
 		{
 			telephoneList.clear();	//clear the list
-			CollectionUtilities.addAll(telephoneList, telephones);	//add the new values
+			addAll(telephoneList, telephones);	//add the new values
 		}
 
 	/**The list of electronic mail addresses for communication with the object the vCard represents.*/
@@ -149,7 +150,7 @@ public class VCard extends Directory implements Model, VCardConstants
 		public void setEmails(final Email[] emails)
 		{
 			emailList.clear();	//clear the list
-			CollectionUtilities.addAll(emailList, emails);	//add the new values
+			addAll(emailList, emails);	//add the new values
 		}
 
 //TODO add geographical types
@@ -227,7 +228,7 @@ public class VCard extends Directory implements Model, VCardConstants
 		*/
 		public void addCategories(final LocaleText[] categories)
 		{
-			CollectionUtilities.addAll(categoryList, categories);	//add the new values
+			addAll(categoryList, categories);	//add the new values
 		}
 
 		/**Sets the application category information about the vCard.

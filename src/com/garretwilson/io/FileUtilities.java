@@ -3,6 +3,9 @@ package com.garretwilson.io;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.*;
+import static java.util.Collections.*;
+
 import javax.mail.internet.ContentType;
 import com.garretwilson.lang.*;
 import com.garretwilson.net.*;
@@ -673,6 +676,44 @@ Debug.trace("Canonical file: "+canonicalFilePath);
 		return null;  //show that we couldn't determine a relative path
 	}
 */
+
+	
+	/**Sorts a list of files in ascending order by modified time and secondly by file name.
+	This method caches file information so that each file is accessed only once.
+	@param fileList The list to be sorted.
+	@throws IOException if there is an error accessing the file.
+	@throws SecurityException if file access is not allowed.
+	@throws UnsupportedOperationException if the specified list's
+		list-iterator does not support the <code>set</code> operation.
+	*/
+	public static <T> void sortLastModified(final List<? extends File> fileList) throws IOException
+	{
+			//create a map of files mapped to modified times; use an identity map to speed things up (and will even allow files to appear in the list multiple times) 
+		final Map<File, Long> lastModifiedMap=new IdentityHashMap<File, Long>(fileList.size());
+		//create a map of files mapped to canonical paths; use an identity map to speed things up (and will even allow files to appear in the list multiple times) 
+		final Map<File, String> canonicalPathMap=new IdentityHashMap<File, String>(fileList.size());
+		for(final File file:fileList)	//get the last modified times and the canonical pathnames ahead of time to speed things up---and to throw an I/O exception here rather than during comparison
+		{
+			lastModifiedMap.put(file, Long.valueOf(file.lastModified()));	//cache the last modified time
+			canonicalPathMap.put(file, file.getCanonicalPath());	//cache the canonical path
+		}
+		sort(fileList, new Comparator<File>()	//compare the files based upon last modified time and secondly canonical path 
+				{
+					public int compare(final File file1, final File file2)
+					{
+						final long lastModified1=lastModifiedMap.get(file1);	//get the last modified times from the map
+						final long lastModified2=lastModifiedMap.get(file2);
+						if(lastModified1!=lastModified2)	//if the modified times of the files are different
+						{
+							return lastModified1>lastModified2 ? 1 : -1;	//return the difference between modifications (we can't simply subtract, as the times theoretically could be farther apart than the integer range)
+						}
+						else	//if the files have the same modification times
+						{
+							return canonicalPathMap.get(file1).compareTo(canonicalPathMap.get(file2));	//compare canonical paths
+						}
+					}
+				});
+	}
 
 	/**Stores an array of bytes in a file. The file is closed after the operation.
 	@param file The file in which the bytes should be stored.
