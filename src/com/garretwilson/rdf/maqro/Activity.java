@@ -4,9 +4,10 @@ import java.net.URI;
 import com.garretwilson.rdf.*;
 
 /**Class representing a MAQRO activity.
+	The activity, besides containing interaction, is an interaction itself.
 @author Garret Wilson
 */
-public class Activity extends DefaultRDFResource implements MAQROConstants
+public class Activity extends DefaultRDFResource implements Interaction, MAQROConstants
 {
 
 	/**Default constructor.*/
