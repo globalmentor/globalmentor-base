@@ -6,7 +6,7 @@ package com.garretwilson.text.unicode;
 	at <a href="http://www.tip.nl/users/o.van.vlijmen/charsets.html">http://www.tip.nl/users/o.van.vlijmen/charsets.html</a>.
 @author Garret Wilson
 */
-public interface SymbolEncodingConstants
+public class SymbolEncodingConstants
 {
 
 	/**A map of Unicode characters stored at the symbol font indexes. Conversion

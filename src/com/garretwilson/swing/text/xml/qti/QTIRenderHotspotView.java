@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.text.*;
 import com.garretwilson.awt.geom.GeometryUtilities;
 import com.garretwilson.swing.text.InvisibleView;
+import com.garretwilson.swing.text.StyleUtilities;
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.assess.qti.*;
@@ -44,7 +45,7 @@ public class QTIRenderHotspotView extends InvisibleView implements QTIConstants
 				//G***maybe put some of this into common routines
 			boolean allowMultipleSelections=false;  //start out assuming we won't allow multiple selections
 				//get the enclosing logical ID response element
-			final Element responseLIDElement=XMLStyleUtilities.getAncestorElement(element, ELEMENT_RESPONSE_LID);
+			final Element responseLIDElement=XMLStyleUtilities.getAncestorElement(element, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_RESPONSE_LID);
 			final AttributeSet responseLIDAttributeSet=responseLIDElement!=null ?
 					responseLIDElement.getAttributes() : null;	//get the attributes of the logical ID response element
 			if(responseLIDAttributeSet!=null)  //if the logical ID response has attributes
@@ -68,7 +69,7 @@ public class QTIRenderHotspotView extends InvisibleView implements QTIConstants
 				if(ELEMENT_RESPONSE_LABEL.equals(elementLocalName))  //if this element is a <response_label>
 				{
 						//get the area type G***use namespaces here
-					final String areaType=(String)XMLStyleUtilities.getDefinedAttribute(childAttributeSet, ATTRIBUTE_RAREA);
+					final String areaType=(String)StyleUtilities.getDefinedAttribute(childAttributeSet, ATTRIBUTE_RAREA);
 						//get the text describing the area
 					try
 					{

@@ -77,7 +77,7 @@ public class ActivityModelIOKit extends AbstractIOKit<ResourceModel<Activity>>
 			{
 				throw new IOException("No activity found.");	//G***i18n
 			}
-			return new ResourceModel<Activity>(activity, baseURI, this);	//create and return an activity model from the activity
+			return new ResourceModel<Activity>(activity, baseURI, this);	//create and return an activity model from the activity TODO we should really pass back the underlying stream accessors rather than using the IO kit
 		}
 		catch(URISyntaxException uriSyntaxException)	//if any of the URIs were incorrect
 		{

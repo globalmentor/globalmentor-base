@@ -2,14 +2,14 @@ package com.garretwilson.text.xml.oeb.css;
 
 import java.lang.ref.*;
 import java.util.*;
-import com.garretwilson.text.xml.oeb.OEBConstants;
-import com.garretwilson.text.xml.stylesheets.css.XMLCSSConstants;
+import static com.garretwilson.text.xml.oeb.OEBConstants.*;
+import static com.garretwilson.text.xml.stylesheets.css.XMLCSSConstants.*;
 
 
 /**Utilities for working with OEB CSS. G***should this go inside the com.garretwilson.text.xml.oeb package? or com.garretwilson.text.xml.stylesheets.css.oeb?
 @author Garret Wilson
 */
-public class OEBCSSUtilities implements XMLCSSConstants, OEBConstants
+public class OEBCSSUtilities
 {
 
 	/**A reference to a set containing the OEB 1.0 CSS property names.*/

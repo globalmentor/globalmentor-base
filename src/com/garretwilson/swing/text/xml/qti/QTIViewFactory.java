@@ -358,13 +358,13 @@ Debug.trace("Creating response LID object by itself."); //G***del
 */
 Debug.trace("building render hotspot view");
 				QTIMaterialImageView materialImageView=null;  //try to find the image with which this hotspot is paired
-				final Element presentationElement=XMLStyleUtilities.getAncestorElement(element, ELEMENT_PRESENTATION);  //get the presentation element in which this element resides
+				final Element presentationElement=XMLStyleUtilities.getAncestorElement(element, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_PRESENTATION);  //get the presentation element in which this element resides
 				if(presentationElement!=null) //if there is an enclosing presentation element
 				{
-					final Element materialElement=XMLStyleUtilities.getChildElement(presentationElement, ELEMENT_MATERIAL); //get the child material element, if there is one
+					final Element materialElement=XMLStyleUtilities.getChildElement(presentationElement, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_MATERIAL); //get the child material element, if there is one
 					if(materialElement!=null) //if there is a material element in the presentation
 					{
-						final Element materialImageElement=XMLStyleUtilities.getChildElement(materialElement, ELEMENT_MATIMAGE); //get the child material image element, if there is one
+						final Element materialImageElement=XMLStyleUtilities.getChildElement(materialElement, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_MATIMAGE); //get the child material image element, if there is one
 						if(materialImageElement!=null) //if there is a material element in the presentation
 						{
 							materialImageView=(QTIMaterialImageView)getQTIView(materialImageElement);  //get the view created for the element
@@ -405,7 +405,7 @@ Debug.trace("found ident to display QTI response: ", ident);  //G***del
 							if(id!=null)  //if we have an ID
 							{
 */
-							final Element itemElement=XMLStyleUtilities.getAncestorElement(element, ELEMENT_ITEM);  //get the item element in which this element resides
+							final Element itemElement=XMLStyleUtilities.getAncestorElement(element, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_ITEM);  //get the item element in which this element resides
 							if(itemElement!=null) //if there is an enclosing item element
 							{
 									//get the item's ident
