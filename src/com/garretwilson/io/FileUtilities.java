@@ -83,7 +83,7 @@ public class FileUtilities implements FileConstants
 		if(recursive && file.isDirectory())	//if this is a directory and we should recursively delete files
 		{
 			final File[] files=file.listFiles();	//get all the files in the directory
-			Debug.assert(files!=null, "File "+file+" is not a directory.");
+			assert files!=null : "File "+file+" is not a directory.";
 			for(int i=files.length-1; i>=0; --i)	//look at each file in the directory
 			{
 				delete(files[i], recursive);	//delete this file

@@ -49,8 +49,8 @@ public class DefaultResource implements Resource
 	*/
 	public boolean equals(final Object object)	//G***do we really want to compare with a non-URI?
 	{
-Debug.assert(!(object instanceof URI), "DefaultResource no longer allows equals(URI)");	//G***del when not needed
-Debug.assert(!(object instanceof String), "DefaultResource no longer allows equals(String)");	//G***del when not needed
+		assert !(object instanceof URI) : "DefaultResource no longer allows equals(URI)";	//G***del when not needed
+		assert !(object instanceof String) : "DefaultResource no longer allows equals(String)";	//G***del when not needed
 
 		if(getReferenceURI()!=null)	//if we have a reference URI
 		{

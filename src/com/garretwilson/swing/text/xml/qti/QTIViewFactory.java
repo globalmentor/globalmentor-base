@@ -996,7 +996,7 @@ Debug.trace("Response ID: ", responseIdent); //G***del
 								if(conditionVar.getConditionList().size()>0)  //if there is at least one condition var G***fix; right now we're only grabbing the first one
 								{
 									final Condition condition=(Condition)conditionVar.getConditionList().get(0); //grab the first condition
-									Debug.assert(condition instanceof VarEqual, "Unknown condition; we only support VarEqual"); //G***fix
+									assert condition instanceof VarEqual : "Unknown condition; we only support VarEqual"; //G***fix
 								  final VarEqual varEqual=(VarEqual)condition;  //cast the condition to a VarEqual
 								  final String varEqualValue=varEqual.getValue(); //get the expected value
 Debug.trace("expected value: ", varEqualValue); //G***del

@@ -159,7 +159,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 		{
 			final String referenceURIValue=getRDFAttribute(element, ATTRIBUTE_ABOUT); //get the reference URI, if there is one
 			final String anchorID=getRDFAttribute(element, ATTRIBUTE_ID); //get the anchor ID if there is one
-		  Debug.assert(referenceURIValue==null || anchorID==null, "Resource cannot have both reference URI "+referenceURIValue+" and anchor ID "+anchorID+"."); //G***change to an actual RDF error
+		  assert referenceURIValue==null || anchorID==null : "Resource cannot have both reference URI "+referenceURIValue+" and anchor ID "+anchorID+"."; //TODO change to an actual RDF error
 			if(referenceURIValue!=null) //if there is a reference URI
 			{
 //G***del Debug.trace("found reference URI: ", referenceURIValue);  //G***del

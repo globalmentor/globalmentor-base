@@ -1140,7 +1140,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 								if(mediaType.equals(APPLICATION_XHTML_XML_MEDIA_TYPE))  //if this is the "application/xhtml+xml" media type
 									mediaType=OEB10_DOCUMENT_MEDIA_TYPE;  //assume it's really the OEB document media type
 							}
-							Debug.assert(mediaType!=null, "\""+url+"\" has unknown media type.");  //G***put in better error handling here
+							assert mediaType!=null : "\""+url+"\" has unknown media type.";  //G***put in better error handling here
 							if(mediaType!=null) //if we have a media type
 							{
 	Debug.trace("found media type");

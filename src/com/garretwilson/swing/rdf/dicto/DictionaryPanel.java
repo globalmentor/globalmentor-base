@@ -91,7 +91,7 @@ public class DictionaryPanel extends RDFPanel
 					final Dictionary dictionary=model.getDictionary();	//get the dictionary represented by the model
 					final Document xhtmlDocument=XHTMLUtilities.createXHTMLDocument();	//create an XHTML document
 					final Element bodyElement=XHTMLUtilities.getBodyElement(xhtmlDocument);	//get the body element
-					Debug.assert(bodyElement!=null, "Missing <body> element in default XHTML document.");
+					assert bodyElement!=null : "Missing <body> element in default XHTML document.";
 						//set the title
 					final Locale dictionaryLanguage=dictionary.getDictionaryLanguage();	//get the language of the entries
 					final String languageTitle=dictionaryLanguage!=null ? dictionaryLanguage.getDisplayLanguage()+" " : "";	//get the language part of the title

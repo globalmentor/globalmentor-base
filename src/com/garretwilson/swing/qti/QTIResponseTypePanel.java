@@ -442,8 +442,9 @@ public class QTIResponseTypePanel extends JPanel implements Verifiable
 			response=render!=null ? new ResponseLID(render) :  null;
 		}
 		else  //if we don't recognize the response type
-			response=null;  //don't create a response
-		Debug.assert(response!=null, "Unrecognized response type"); //this should never evaluate to true once we add conditions for all the choices
+		{
+			throw new AssertionError("Unrecognized response type"); //this should never happen once we add conditions for all the choices
+		}
 		return response;  //return the type of response requested
 	}
 

@@ -33,7 +33,10 @@ public class Statement
 	*/
 	public Statement(final RDFResource newPredicate, final RDFResource newSubject, final RDFObject newObject)
 	{
-		Debug.assert(newObject!=null, "Object of statement with subject "+newSubject+" and predicate "+newPredicate+" is null."); //G***del
+		if(newObject==null)	//if there is no object
+		{
+			throw new IllegalArgumentException("Object of statement with subject "+newSubject+" and predicate "+newPredicate+" is null."); //G***del
+		}
 		predicate=newPredicate; //set the predicate
 		subject=newSubject; //set the subject
 		object=newObject; //set the object

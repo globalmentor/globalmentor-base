@@ -91,7 +91,7 @@ public class ActivityPanel extends RDFPanel
 					final Activity activity=model.getActivity();	//get the activity represented by the model
 					final Document xhtmlDocument=XHTMLUtilities.createXHTMLDocument();	//create an XHTML document
 					final Element bodyElement=XHTMLUtilities.getBodyElement(xhtmlDocument);	//get the body element
-					Debug.assert(bodyElement!=null, "Missing <body> element in default XHTML document.");
+					assert bodyElement!=null : "Missing <body> element in default XHTML document.";
 						//TODO fix activity WYSIWYG view
 					final Element h1Element=XMLUtilities.appendElement(bodyElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_H1, "Test Activity");	//G***i18n
 						//show the XML in the book, specifying the base URI of the RDF data model

@@ -60,7 +60,7 @@ public class QTIMaterialImageView extends XMLComponentImageView implements QTICo
 Debug.trace("we don't know the dimensions of the QTI image; we'll have to get it"); //G***del
 				final Image image=getImage(); //get the image, loading it if needed (in initialize() it will usually have to be loaded)
 Debug.trace("got the image;  loading it"); //G***del
-	Debug.assert(image!=null, "fImage is null");  //G***fix
+assert image!=null : "fImage is null";  //G***fix
   			ImageUtilities.loadImage(image);  //load the image G***optimize: perhaps there's a way to just load part of the image, to get the image dimensions
 Debug.trace("loaded the image"); //G***del
 				height=image.getHeight(this);	//get the image's height

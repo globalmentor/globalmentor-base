@@ -343,7 +343,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 		  final String itemIDRef=itemElement.getAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF);  //get the item's idref value
 		  final URI itemReferenceURI=new URI(URIConstants.URN_SCHEME, "local:"+itemIDRef, null);  //G***fix the reference URI
 			final RDFResource itemResource=manifestResource.getItem(itemReferenceURI);  //get the referenced item from the manifest G***this is very inefficient; maybe use maps or something
-			Debug.assert(itemResource!=null, "Missing spine element: "+itemIDRef); //G***fix with a real error message
+			assert itemResource!=null : "Missing spine element: "+itemIDRef; //TODO fix with a real error message
 		  organizationResource.add(itemResource);  //add this item to the organization
 		}
 //G***fix with new navigation stuff

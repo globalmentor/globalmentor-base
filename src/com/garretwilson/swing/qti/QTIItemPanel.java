@@ -98,7 +98,7 @@ public class QTIItemPanel extends JPanel implements Verifiable
 		presentationPanel.setPresentation(item.getPresentation()); //set the presentation shown in the panel
 
 		  //G***testing; fix for other things besides logical ID responses
-		Debug.assert((QTIResponseLIDPanel)presentationPanel.getResponsePanel(0) instanceof QTIResponseLIDPanel, "Response panel is not a QTIResponseLIDPanel");
+		assert (QTIResponseLIDPanel)presentationPanel.getResponsePanel(0) instanceof QTIResponseLIDPanel : "Response panel is not a QTIResponseLIDPanel";
 		final QTIResponseLIDPanel responseLIDPanel=(QTIResponseLIDPanel)presentationPanel.getResponsePanel(0);
 		final QTIRenderPanel renderPanel=responseLIDPanel.getRenderPanel(0);  //get the first render panel G***fix to work with all render panels
 		  //add a property listener so that we can update the answer list when the choices are modified

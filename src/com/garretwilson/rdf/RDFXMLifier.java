@@ -530,7 +530,7 @@ Debug.trace("prefix: ", prefix); //G***del
 
 			//TODO check somewhere else that the namespace was defined in the parsed document---otherwise, only the local name will be set, even for the reference URI
 
-		Debug.assert(namespaceURI!=null, "Could not determine namespace URI for "+resource.getReferenceURI());	//TODO fix
+		assert namespaceURI!=null : "Could not determine namespace URI for "+resource.getReferenceURI();	//TODO fix
 		return namespaceURI;	//return the namespace URI we found
 	}
 
@@ -548,7 +548,7 @@ Debug.trace("prefix: ", prefix); //G***del
 		String localName=resource.getLocalName();	//get the local name of which the resource has record TODO remove storing local names
 		if(localName==null)	//if the resource doesn't know its local name
 			localName=RDFUtilities.getLocalName(resource.getReferenceURI());	//try to get the local name from the resource reference URI
-		Debug.assert(localName!=null, "Could not determine local name for "+resource.getReferenceURI());	//TODO fix
+		assert localName!=null : "Could not determine local name for "+resource.getReferenceURI();	//TODO fix
 		return localName;	//return the local name we found
 	}
 
