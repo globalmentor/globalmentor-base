@@ -9,7 +9,7 @@ import com.garretwilson.util.*;
 	"vCard MIME Directory Profile".
 @author Garret Wilson
 */
-public class VCard extends Directory
+public class VCard extends Directory implements VCardConstants
 {
 	
 	/**The list of content lines that represent unrecognized and/or unprocessed information.*/
@@ -240,6 +240,19 @@ public class VCard extends Directory
 		*/
 		public void setNote(final LocaleText note) {this.note=note;}
 
-//TODO add URL
+//TODO add URL and other explanatory types
+
+	/**The the version of the vCard specification used to format this vCard.*/
+	private String version=VCARD_VERSION_VALUE;
+
+		/**@return The the version of the vCard specification used to format this
+			vCard, which defaults to "3.0".
+		*/
+		public String getVersion() {return version;}
+
+		/**Sets the the version of the vCard specification used to format this vCard.
+		@param version The version of the vCard specification used to format this vCard.
+		*/
+		public void setVersion(final String version) {this.version=version;}
 
 }

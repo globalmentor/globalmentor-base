@@ -648,7 +648,6 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 				//identification types
 		if(N_TYPE.equalsIgnoreCase(name))	//N
 		{
-Debug.trace("serializing N: ", value);	//G***del
 			serializeNValue((Name)value, writer);	//serialize the value
 			return true;	//show that we serialized the value 
 		}
@@ -882,7 +881,6 @@ Debug.trace("serializing N: ", value);	//G***del
 				if(vcard.getTitle()==null)	//if there is not yet a title
 				{
 //TODO add support for multiple titles with multiple languages
-//G***del Debug.trace("title language: ", title.getLocale());	//G***del
 					vcard.setTitle((LocaleText)contentLine.getValue());	//set the title
 					continue;	//don't process this content line further
 				}
@@ -909,6 +907,11 @@ Debug.trace("serializing N: ", value);	//G***del
 					continue;	//don't process this content line further
 				}
 			}
+			else if(VERSION_TYPE.equalsIgnoreCase(typeName))	//VERSION
+			{
+				vcard.setVersion(((LocaleText)contentLine.getValue()).getText());	//set the version
+				continue;	//don't process this content line further
+			}
 				//if we make it to here, we either don't recognize the content line
 				//	or we can't proces it (e.g. a duplicate value we don't support)
 			vcard.getContentLineList().add(contentLine);	//add this unprocessed content line to the vCard's list of content lines
@@ -917,12 +920,15 @@ Debug.trace("serializing N: ", value);	//G***del
 	}
 
 	/**Creates a list of content lines from the given vCard.
+	<p>This implementation ignores the version of the given vCard and adds a
+		content line with the version used here: "3.0".</p>
 	@param vcard The vCard object to be converted to content lines.
 	@return A directory object representing the directory, or <code>null</code>
 		if this profile cannot create a directory from the given information.
 	@return The content lines that represent the vCard information.
+	@see VCardConstants#VCARD_VERSION_VALUE
 	*/
-	public static ContentLine[] createContentLines(final VCard vcard)
+	public static ContentLine[] createContentLines(final VCard vcard)	//TODO make sure displayName and formattedName are included
 	{
 //G***del		final List contentLineList=new ArrayList(vcard.getContentLineList());	//create a content line list initially containing all the unrecognized content lines of the vCard
 		final List contentLineList=new ArrayList();	//create a content line list to fill
@@ -1028,6 +1034,8 @@ Debug.trace("serializing N: ", value);	//G***del
 		{
 			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, NOTE_TYPE, vcard.getNote()));	//NOTE
 		}
+			//ignore the given vCard version, and always create "version:3.0"
+		contentLineList.add(new ContentLine(VERSION_TYPE, new LocaleText(VCARD_VERSION_VALUE)));	//VERSION
 		contentLineList.addAll(vcard.getContentLineList());	//add all of our unrecognized content lines
 		contentLineList.add(new ContentLine(END_TYPE, new LocaleText(VCARD_PROFILE_NAME)));	//END:VCARD
 		return (ContentLine[])contentLineList.toArray(new ContentLine[contentLineList.size()]);	//return the content lines we produced	
