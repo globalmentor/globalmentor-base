@@ -87,7 +87,17 @@ public class VCardIOKit extends AbstractModelIOKit implements VCardConstants
 	public void save(final Model model, final OutputStream outputStream) throws IOException
 	{
 //G***del		vcard.setDisplayName(displayName);	//add the display name we saved
-		final ContentLine[] contentLines=VCardProfile.createContentLines((VCard)model);	//create content lines from the vCard
+		write((VCard)model, outputStream);	//write the vCard to the output stream
+	}
+
+	/**Writes a vCard to an output stream.
+	@param vcard The vCard which will be written to the given output stream.
+	@param outputStream The output stream to which to write the vCard.
+	@throws IOException Thrown if there is an error writing the vCard.
+	*/
+	public static void write(final VCard vcard, final OutputStream outputStream) throws IOException
+	{
+		final ContentLine[] contentLines=VCardProfile.createContentLines(vcard);	//create content lines from the vCard
 		final DirectorySerializer directorySerializer=new DirectorySerializer();	//create a new directory serializer
 		directorySerializer.registerProfile(VCardProfile.VCARD_PROFILE_NAME, VCARD_PROFILE);	//register the vCard profile with the vCard serializer
 		final Writer writer=new OutputStreamWriter(outputStream, CharacterEncodingConstants.UTF_8);	//write the vCard using UTF-8

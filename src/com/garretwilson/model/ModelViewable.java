@@ -28,10 +28,12 @@ public interface ModelViewable
 	public final static int WYSIWYG_MODEL_VIEW=3;
 	/**The view in which a sequence of items is shown, perhaps as a card deck.*/
 	public final static int SEQUENCE_MODEL_VIEW=4;
+	/**The view in which a list of items is shown.*/
+	public final static int LIST_MODEL_VIEW=5;
 	/**The view in which the data is shown as a brief overview.*/
-	public final static int SUMMARY_MODEL_VIEW=5;
+	public final static int SUMMARY_MODEL_VIEW=6;
 	/**The view in which any source data used to generate the data is shown.*/
-	public final static int SOURCE_MODEL_VIEW=6;
+	public final static int SOURCE_MODEL_VIEW=7;
 
 	/**@return An array of supported model views.*/
 	public int[] getSupportedModelViews();

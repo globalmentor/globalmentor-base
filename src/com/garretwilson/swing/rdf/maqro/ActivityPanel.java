@@ -13,7 +13,12 @@ import com.garretwilson.text.xml.xhtml.XHTMLUtilities;
 import com.garretwilson.io.MediaType;
 import com.garretwilson.model.Model;
 import com.garretwilson.rdf.RDFListResource;
+import com.garretwilson.rdf.RDFLiteral;
+import com.garretwilson.rdf.RDFObject;
 import com.garretwilson.rdf.RDFPlainLiteral;
+import com.garretwilson.rdf.RDFUtilities;
+import com.garretwilson.rdf.RDFXMLLiteral;
+import com.garretwilson.rdf.dublincore.DCUtilities;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.globalmentor.mentoract.activity.maqro.*;
@@ -25,12 +30,6 @@ import org.w3c.dom.*;
 */
 public class ActivityPanel extends RDFPanel
 {
-
-	/**The action for adding an interaction to the activity.*/
-	private final Action addInteractionAction;
-
-		/**@return The action for adding an interaction to the activity.*/
-		public Action getAddInteractionAction() {return addInteractionAction;}
 
 	/**The action for interacting with the activity.*/
 	private final Action interactAction;
@@ -104,7 +103,6 @@ public class ActivityPanel extends RDFPanel
 	{
 		super(model, false);	//construct the parent class without initializing it
 		addSupportedModelViews(new int[]{WYSIWYG_MODEL_VIEW, SEQUENCE_MODEL_VIEW});	//show that we now support WYSIWYG and sequence data views, too
-		addInteractionAction=new AddInteractionAction();	//create an action for adding an interaction to the activity
 		interactAction=new InteractAction();	//create an action for interacting with the activity
 		book=new Book(1);	//create a new book for the WYSIWYG view, showing only one page
 		interactionSequencePanel=new InteractionSequencePanel();	//create a new interaction sequence panel
@@ -118,8 +116,6 @@ public class ActivityPanel extends RDFPanel
 	protected void initializeActions(final ActionManager actionManager)
 	{
 		super.initializeActions(actionManager);	//do the default initialization
-		actionManager.addToolAction(getAddInteractionAction());
-		actionManager.addToolAction(new ActionManager.SeparatorAction());
 		actionManager.addToolAction(getInteractAction());
 		add(ToolBarUtilities.setupToolBar(new ApplicationToolBar(), getActionManager()), BorderLayout.NORTH);	//put a toolbar in the north with our tool actions
 	}
@@ -128,7 +124,7 @@ public class ActivityPanel extends RDFPanel
 	protected void initializeUI()
 	{
 		addView(WYSIWYG_MODEL_VIEW, "Activity", book, null);	//add the book component as the WYSIWYG view G***i18n
-		addView(SEQUENCE_MODEL_VIEW, "Interactions", interactionSequencePanel, null);	//add the interaction sequence panel as the sequence view G***i18n
+		addView(SEQUENCE_MODEL_VIEW, "Interaction Sequence", interactionSequencePanel, null);	//add the interaction sequence panel as the sequence view G***i18n
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 //TODO set the book to be not editable
@@ -165,6 +161,7 @@ public class ActivityPanel extends RDFPanel
 	*/
 	protected void loadModel(final int modelView) throws IOException
 	{
+		super.loadModel(modelView);	//do the default loading
 		final ActivityModel model=getActivityModel();	//get the data model
 		switch(modelView)	//see which view of data we should load
 		{
@@ -176,8 +173,24 @@ public class ActivityPanel extends RDFPanel
 					final Document xhtmlDocument=XHTMLUtilities.createXHTMLDocument();	//create an XHTML document
 					final Element bodyElement=XHTMLUtilities.getBodyElement(xhtmlDocument);	//get the body element
 					assert bodyElement!=null : "Missing <body> element in default XHTML document.";
-						//TODO fix activity WYSIWYG view
-					final Element h1Element=XMLUtilities.appendElement(bodyElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_H1, "Test Activity");	//G***i18n
+						//set the title
+					final RDFLiteral title=RDFUtilities.asLiteral(DCUtilities.getTitle(activity));	//get the activity's title
+					if(title!=null)	//if there is a title
+					{
+						final Element h1Element=XMLUtilities.appendElement(bodyElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_H1, title.toString());	//G***i18n
+					}
+					if(activity.getInteractions()!=null)	//if the activity has interactions
+					{
+						final Element olElement=XMLUtilities.appendElement(bodyElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_OL);
+						final Iterator interactionIterator=activity.getInteractions().iterator();	//get an iterator to look at all the activity interactions
+						while(interactionIterator.hasNext())	//while there are more interactions
+						{
+							final Interaction interaction=(Interaction)interactionIterator.next();	//get the next interaction
+							final Element interactionElement=createElement(xhtmlDocument, interaction);	//create an XML element from this interaction
+							final Element liElement=XMLUtilities.appendElement(olElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_LI);
+							liElement.appendChild(interactionElement);	//append this interaction element to the list item element
+						}
+					}
 						//show the XML in the book, specifying the base URI of the RDF data model
 					book.setXML(xhtmlDocument, model.getBaseURI(), new MediaType(MediaType.APPLICATION_XHTML_XML));
 				}
@@ -216,13 +229,64 @@ public class ActivityPanel extends RDFPanel
 		}
 	}
 
-	/**Adds an interaction to the activity.*/
-	public void addInteraction()
+	/**Creates an XML element to represent the given interaction.
+	@param document The XHTML document that serves as an element factory.
+	@param interaction The interaction to represent in XHTML.
+	@return An XML element representing the given interaction.
+	*/
+	protected Element createElement(final Document document, final Interaction interaction)
 	{
-		final ListListModel interactionListModel=(ListListModel)interactionSequencePanel.getListModel();	//get the list model representing interactions TODO probably keep a single list model around somewhere, especially for when we have different views of the interactions
-		final Question question=new Question();	//G***testing
-		question.setQuery(new Dialogue(new RDFPlainLiteral("New question.")));
-		interactionListModel.add(question);	//add the question to the list
+		if(interaction instanceof Question)	//if this is a question
+		{
+			final Question question=(Question)interaction;	//cast the interaction to a question
+			final Element questionElement=document.createElementNS(XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_DIV);	//create an element for the entire question
+			final Dialogue query=question.getQuery();	//get the question's query
+			if(query!=null)	//if we have a query
+			{
+				final Element queryElement=XMLUtilities.appendElement(questionElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_DIV);	//append an element for the query
+				appendDialogue(document, queryElement, query);	//append the query
+			}
+			final RDFListResource choices=question.getChoices();	//get the list of choices
+			if(choices!=null)	//if there are choices
+			{
+				final Element olElement=XMLUtilities.appendElement(questionElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_OL);
+				final Iterator choiceIterator=choices.iterator();	//get an iterator to the choices
+				while(choiceIterator.hasNext())	//while there are more choices
+				{
+					final RDFObject choice=(RDFObject)choiceIterator.next();	//get the next choice
+					if(choice instanceof Dialogue)	//if the choice is dialogue
+					{
+						final Dialogue choiceDialogue=(Dialogue)choice;	//cast the choice to dialogue
+						final Element choiceElement=XMLUtilities.appendElement(olElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_LI);	//append an element for the choice
+						appendDialogue(document, choiceElement, choiceDialogue);	//append the choice
+					}
+				}
+			}
+			return questionElement;	//return the element we constructed for the question
+		}
+		throw new AssertionError("Unrecognized interaction type.");	//TODO fix to ignore unrecognized interaction types
+	}		
+
+	/**Adds dialogue to an XML element.
+	@param document The XHTML document that serves as an element factory.
+	@param element The element to which the dialogue should be added.
+	@param dialogue The The dialogue to add to the element.
+	*/
+	protected void appendDialogue(final Document document, final Element element, final Dialogue dialogue)
+	{
+		final RDFLiteral value=dialogue.getValue();	//get the dialogue value
+		if(value!=null)	//if the dialogue has a value
+		{
+			if(value instanceof RDFXMLLiteral)	//if the value is an XML literal
+			{
+				final DocumentFragment fragment=((RDFXMLLiteral)value).getDocumentFragment();	//get the value's XML fragment
+				element.appendChild(document.importNode(fragment, true));	//import the fragment and append it to the element 
+			}
+			else	//if the value is not an XML literal
+			{
+				XMLUtilities.appendText(element, value.getLexicalForm());	//append the literal text to the element
+			}
+		}		
 	}
 
 	/**Interacts with the activity.*/
@@ -238,29 +302,6 @@ public class ActivityPanel extends RDFPanel
 			final ApplicationFrame activityFrame=new ApplicationFrame(activityPanel);	//construct a frame for the activity
 			activityFrame.setVisible(true);	//show the activity frame
 //G***del			activityEngine.start();	//start the interaction
-		}
-	}
-
-	/**Action to add an interaction.*/
-	protected class AddInteractionAction extends AbstractAction
-	{
-		/**Default constructor.*/
-		public AddInteractionAction()
-		{
-			super("Add Interaction");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Add interaction");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Add an interaction to the current group.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));  //set the mnemonic key G***i18n
-			putValue(SMALL_ICON, IconResources.getIcon(IconResources.ADD_ICON_FILENAME)); //load the correct icon
-	//G***del			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK)); //add the accelerator G***i18n
-		}
-	
-		/**Called when the action should be performed.
-		@param actionEvent The event causing the action.
-		*/
-		public void actionPerformed(final ActionEvent actionEvent)
-		{
-			addInteraction();	//add an interaction
 		}
 	}
 

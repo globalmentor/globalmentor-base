@@ -93,6 +93,16 @@ public class ActivityModelIOKit extends AbstractModelIOKit implements MAQROConst
 	{
 		final ActivityModel activityModel=(ActivityModel)model;	//cast the model to an activity model
 		final Activity activity=activityModel.getActivity();	//get the current activity
+		write(activity, outputStream);	//write the activity to the output stream
+	}
+
+	/**Writes an activity to an output stream.
+	@param activity The activity which will be written to the given output stream.
+	@param outputStream The output stream to which to write the activity.
+	@throws IOException Thrown if there is an error writing the activity.
+	*/
+	public static void write(final Activity activity, final OutputStream outputStream) throws IOException
+	{
 			//create an XML document containing the activity TODO see about using a commong RDFXMLifier
 		final Document document=new RDFXMLifier().createDocument(activity, new XMLDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
 		final XMLSerializer xmlSerializer=new XMLSerializer(true);  //create a formatted serializer

@@ -2,8 +2,6 @@ package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.*;
 import javax.swing.*;
-
-import com.garretwilson.rdf.RDFPlainLiteral;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.swing.*;
 
@@ -108,9 +106,7 @@ public class InteractionSequencePanel extends AbstractListModelComponentSequence
 		*/
 		protected Object createItem() throws InstantiationException, IllegalAccessException
 		{
-			final Question question=new Question();	//G***testing
-			question.setQuery(new Dialogue(new RDFPlainLiteral("New question.")));
-			return question;	//G***testing
+			return new Question();	//create a new question and return it
 		}
 
 	}
