@@ -26,7 +26,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 		  if no namespace URI and local name was used.*/
 		public String getLocalName() {return localName;}
 
-	/**The list of properties, each of which is a <code>NameValuePair</code>,
+	/**The list of properties, each of which is a <code>RDFPropertyValuePair</code>,
 		with the name being the property predicate and the value being the property
 		value.
 	*/
@@ -36,7 +36,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 	public int getPropertyCount() {return propertyList.size();}
 
 	/**@return An iterator that allows traversal of all properties, each of which
-		is a <code>NameValuePair</code>, with the name being the property predicate
+		is a <code>RDFPropertyValuePair</code>, with the name being the property predicate
 		and the value being the property value.
 	*/
 	public ListIterator getPropertyIterator()
@@ -56,9 +56,9 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final NameValuePair nameValuePair=(NameValuePair)propertyIterator.next(); //get the next name/value pair
-		  if(nameValuePair.getName().equals(propertyResource))  //if this resource is the same as the one requested
-				return (RDFObject)nameValuePair.getValue(); //return the value of the property as an RDF object
+			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
+		  if(propertyValuePair.getName().equals(propertyResource))  //if this resource is the same as the one requested
+				return (RDFObject)propertyValuePair.getValue(); //return the value of the property as an RDF object
 		}
 		return null;  //show that we couldn't find such a property
 	}
@@ -75,9 +75,9 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final NameValuePair nameValuePair=(NameValuePair)propertyIterator.next(); //get the next name/value pair
-		  if(nameValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
-				return (RDFObject)nameValuePair.getValue(); //return the value of the property as an RDF object
+			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
+		  if(propertyValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
+				return (RDFObject)propertyValuePair.getValue(); //return the value of the property as an RDF object
 		}
 		return null;  //show that we couldn't find such a property
 	}
@@ -109,10 +109,10 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final NameValuePair nameValuePair=(NameValuePair)propertyIterator.next(); //get the next name/value pair
-		  if(nameValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
+			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
+		  if(propertyValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
 			{
-				propertyValueList.add(nameValuePair.getValue()); //add the value of the property to the value list
+				propertyValueList.add(propertyValuePair.getValue()); //add the value of the property to the value list
 			}
 		}
 		return Collections.unmodifiableList(propertyValueList).iterator();  //return an iterator to the list of properties
@@ -148,13 +148,13 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final NameValuePair nameValuePair=(NameValuePair)propertyIterator.next(); //get the next name/value pair
+			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
 //G***del Debug.trace("looking at name/value pair: ", nameValuePair);  //G***del
 //G***del Debug.trace("looking at name: ", nameValuePair.getName());  //G***del
 //G***del Debug.trace("looking at value: ", nameValuePair.getValue());  //G***del
-		  if(nameValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
+		  if(propertyValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
 			{
-				if(nameValuePair.getValue().equals(propertyValue))  //if the value compares equally with the given value
+				if(propertyValuePair.getValue().equals(propertyValue))  //if the value compares equally with the given value
 					return true;
 			}
 		}
@@ -177,7 +177,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 		return hasPropertyValue(RDFUtilities.createReferenceURI(namespaceURI, localName), propertyValue); //check the property, combining the namespace URI and the local name for the reference URI
 	}
 	
-	/**Adds a property by creating a <code>NameValuePair</code> from the given
+	/**Adds a property by creating a <code>RDFPropertyValuePair</code> from the given
 		property and value. For each property, this resource serves as the subject
 		of an RDF statement with the property as the predicate and the value as
 		the object.
@@ -190,13 +190,13 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 	*/
 	public RDFObject addProperty(final RDFResource property, final RDFObject value)
 	{
-		final NameValuePair nameValuePair=new NameValuePair(property, value); //create a name/value pair with the property and value
-		if(!propertyList.contains(nameValuePair)) //if there is not already this property with this value
-			propertyList.add(nameValuePair);  //add the property and value to the list
+		final RDFPropertyValuePair propertyValuePair=new RDFPropertyValuePair(property, value); //create a name/value pair with the property and value
+		if(!propertyList.contains(propertyValuePair)) //if there is not already this property with this value
+			propertyList.add(propertyValuePair);  //add the property and value to the list
 		return value; //return the value we added
 	}
 
-	/**Adds a literal property from a string by creating a <code>NameValuePair</code>
+	/**Adds a literal property from a string by creating a <code>RDFPropertyValuePair</code>
 		from the given property and value. For each property, this resource serves
 		as the subject of an RDF statement with the property as the predicate and
 		the value, stored as a literal, as the object.
@@ -233,8 +233,8 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource
 		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final NameValuePair nameValuePair=(NameValuePair)propertyIterator.next(); //get the next name/value pair
-			if(nameValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
+			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
+			if(propertyValuePair.getName().equals(propertyURI))  //if this resource is that identified by the property URI
 			{
 				propertyIterator.remove();	//remove this property
 				++propertiesRemovedCount;	//show that we removed another property

@@ -70,6 +70,12 @@ public interface MediaTypeConstants
 	/**A Java application.*/
 	public final static String JAVA="java";
 	public final static String APPLICATION_JAVA=APPLICATION+DIVIDER+JAVA;
+	/**A MAQRO activity.*/
+	public final static String X_MAQRO_RDF_XML="x-maqro+rdf+xml";
+	public final static String APPLICATION_MAQRO=APPLICATION+DIVIDER+X_MAQRO_RDF_XML;
+	/**A MAQRO question.*/
+	public final static String X_QRO_RDF_XML="x-qro+rdf+xml";
+	public final static String APPLICATION_QRO=APPLICATION+DIVIDER+X_QRO_RDF_XML;
 	/**An XML application.*/
 	public final static String APPLICATION_XML=APPLICATION+DIVIDER+XML;
 	/**An XHTML application.*/

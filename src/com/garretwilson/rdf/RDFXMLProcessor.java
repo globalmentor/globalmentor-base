@@ -7,7 +7,6 @@ import com.garretwilson.text.xml.XMLBase;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.util.Debug;
-import com.garretwilson.util.NameValuePair;
 import org.w3c.dom.*;
 
 /**Class that is able to construct an RDF data model from an XML-based
@@ -229,9 +228,9 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 			final Node childNode=childNodeList.item(i); //get a reference to this child node
 			if(childNode.getNodeType()==Node.ELEMENT_NODE) //if this is an element
 			{
-				final NameValuePair propertyNameValuePair=processProperty((Element)childNode);  //parse the element representing an RDF property
+				final RDFPropertyValuePair propertyValuePair=processProperty((Element)childNode);  //parse the element representing an RDF property
 				final RDFResource property;  //we'll see whether we should convert <rdf:li>
-				if(propertyNameValuePair.getName().equals(RDF_LI_REFERENCE_URI))  //if this is a rdf:li property
+				if(propertyValuePair.getName().equals(RDF_LI_REFERENCE_URI))  //if this is a rdf:li property
 				{
 					++memberCount;  //show that we have another member
 					//create a local name in the form "_X"
@@ -239,9 +238,9 @@ public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstant
 					property=getRDF().locateResource(RDF_NAMESPACE_URI, propertyLocalName); //use the revised member form as the property
 				}
 				else  //if this is a normal property
-					property=(RDFResource)propertyNameValuePair.getName(); //just use the property as is
+					property=(RDFResource)propertyValuePair.getName(); //just use the property as is
 					//add a statement to our data model in the form {property, resource, value}
-				addStatement(property, resource, (RDFObject)propertyNameValuePair.getValue());
+				addStatement(property, resource, (RDFObject)propertyValuePair.getValue());
 			}
 		}
 		return resource;  //return the resource we created
@@ -330,7 +329,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		(the RDF statement object).
 	@exception URISyntaxException Thrown if an RDF URI is syntactically incorrect.
 	*/
-	protected NameValuePair processProperty(final Element element) throws URISyntaxException
+	protected RDFPropertyValuePair processProperty(final Element element) throws URISyntaxException
 	{
 		final URI elementNamespaceURI=element.getNamespaceURI()!=null ? new URI(element.getNamespaceURI()) : null; //get the element's namespace, or null if there is no namespace URI
 		final String elementLocalName=element.getLocalName(); //get the element's local name
@@ -436,7 +435,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			}
 		}
 //G***del Debug.trace("returning name/value pair: ", new NameValuePair(propertyResource, propertyValue)); //G***del
-		return new NameValuePair(propertyResource, propertyValue);  //return a name/value pair consisting of the property resource (the predicate) and its value (the object)
+		return new RDFPropertyValuePair(propertyResource, propertyValue);  //return a name/value pair consisting of the property resource (the predicate) and its value (the object)
 	}
 
 	/**Retrieves an RDF attribute from an element, if it exists, recognizing
