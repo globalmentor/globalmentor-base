@@ -1,14 +1,9 @@
 package com.garretwilson.util;
 
 import java.util.*;
-import com.garretwilson.util.*;
 
 /**A default implementation of object state information.
-<p>Bound properties:</p>
-<ul>
-	<li><code>Modifiable.MODIFIED_PROPERTY_NAME</code> ("modified") <code>Boolean</code></li>
-</ul>
-<p>Each property changed using <code>setProperty</code> will also fire a
+<p>Each property changed using <code>setProperty</code> will fire a
 	property change event if its key is a string.</p>
 @author Garret Wilson
 @see Modifiable#MODIFIED_PROPERTY_NAME
