@@ -6,16 +6,16 @@ import java.util.*;
 	<code>List</code> interface.
 @author Garret Wilson
 */
-public class ProxyList extends ProxyCollection implements List
+public class ProxyList<E> extends ProxyCollection<E> implements List<E>
 {
 
 	/**The list this class proxies.*/
-	protected final List list;
+	protected final List<E> list;
 
 	/**List constructor.
 	@param list The list this list should proxy.
 	*/
-	public ProxyList(final List list)
+	public ProxyList(final List<E> list)
 	{
 		super(list);	//construct the parent class
 		this.list=list;	//save the list
@@ -53,7 +53,7 @@ public class ProxyList extends ProxyCollection implements List
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 *		  &lt; 0 || index &gt; size()).
 	 */
-	public boolean addAll(int index, Collection c) {return list.addAll(index, c);}
+	public boolean addAll(int index, Collection<? extends E> c) {return list.addAll(index, c);}
 
 	// Positional Access Operations
 
@@ -66,7 +66,7 @@ public class ProxyList extends ProxyCollection implements List
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 * 		  &lt; 0 || index &gt;= size()).
 	 */
-	public Object get(int index) {return list.get(index);}
+	public E get(int index) {return list.get(index);}
 
 	/**
 	 * Replaces the element at the specified position in this list with the
@@ -87,7 +87,7 @@ public class ProxyList extends ProxyCollection implements List
 	 * @throws    IndexOutOfBoundsException if the index is out of range
 	 *		  (index &lt; 0 || index &gt;= size()).
 	 */
-	public Object set(int index, Object element) {return list.set(index, element);}
+	public E set(int index, E element) {return list.set(index, element);}
 
 	/**
 	 * Inserts the specified element at the specified position in this list
@@ -109,7 +109,7 @@ public class ProxyList extends ProxyCollection implements List
 	 * @throws    IndexOutOfBoundsException if the index is out of range
 	 *		  (index &lt; 0 || index &gt; size()).
 	 */
-	public void add(int index, Object element) {list.add(index, element);}
+	public void add(int index, E element) {list.add(index, element);}
 
 	/**
 	 * Removes the element at the specified position in this list (optional
@@ -125,7 +125,7 @@ public class ProxyList extends ProxyCollection implements List
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 *            &lt; 0 || index &gt;= size()).
 	 */
-	public Object remove(int index) {return list.remove(index);}
+	public E remove(int index) {return list.remove(index);}
 
 
 	// Search Operations
@@ -174,7 +174,7 @@ public class ProxyList extends ProxyCollection implements List
 	 * @return a list iterator of the elements in this list (in proper
 	 * 	       sequence).
 	 */
-	public ListIterator listIterator() {return list.listIterator();}
+	public ListIterator<E> listIterator() {return list.listIterator();}
 
 	/**
 	 * Returns a list iterator of the elements in this list (in proper
@@ -191,7 +191,7 @@ public class ProxyList extends ProxyCollection implements List
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 *         &lt; 0 || index &gt; size()).
 	 */
-	public ListIterator listIterator(int index) {return list.listIterator(index);}
+	public ListIterator<E> listIterator(int index) {return list.listIterator(index);}
 
 	// View
 
@@ -229,6 +229,6 @@ public class ProxyList extends ProxyCollection implements List
 	 * @throws IndexOutOfBoundsException for an illegal endpoint index value
 	 *     (fromIndex &lt; 0 || toIndex &gt; size || fromIndex &gt; toIndex).
 	 */
-	public List subList(int fromIndex, int toIndex) {return list.subList(fromIndex, toIndex);}
+	public List<E> subList(int fromIndex, int toIndex) {return list.subList(fromIndex, toIndex);}
 
 }

@@ -6,16 +6,16 @@ import java.util.*;
 	<code>Collection</code> interface.
 @author Garret Wilson
 */
-public class ProxyCollection implements Collection
+public class ProxyCollection<E> implements Collection<E>
 {
 
 	/**The collection this class proxies.*/
-	protected final Collection collection;
+	protected final Collection<E> collection;
 
 	/**Collection constructor.
 	@param collection The collection this collection should proxy.
 	*/
-	public ProxyCollection(final Collection collection)
+	public ProxyCollection(final Collection<E> collection)
 	{
 		this.collection=collection;	//save the collection
 	}
@@ -60,7 +60,7 @@ public class ProxyCollection implements Collection
 	 * 
 	 * @return an <tt>Iterator</tt> over the elements in this collection
 	 */
-	public Iterator iterator() {return collection.iterator();}
+	public Iterator<E> iterator() {return collection.iterator();}
 
 	/**
 	 * Returns an array containing all of the elements in this collection.  If
@@ -161,7 +161,7 @@ public class ProxyCollection implements Collection
 	 * @throws IllegalArgumentException some aspect of this element prevents
 	 *         it from being added to this collection.
 	 */
-	public boolean add(Object o) {return collection.add(o);}
+	public boolean add(E o) {return collection.add(o);}
 
 	/**
 	 * Removes a single instance of the specified element from this
@@ -204,7 +204,7 @@ public class ProxyCollection implements Collection
 	 *         <tt>null</tt>.
 	 * @see    #contains(Object)
 	 */
-	public boolean containsAll(Collection c) {return collection.containsAll(c);}
+	public boolean containsAll(Collection<?> c) {return collection.containsAll(c);}
 
 	/**
 	 * Adds all of the elements in the specified collection to this collection
@@ -230,7 +230,7 @@ public class ProxyCollection implements Collection
 	 *	       collection.
 	 * @see #add(Object)
 	 */
-	public boolean addAll(Collection c) {return collection.addAll(c);}
+	public boolean addAll(Collection<? extends E> c) {return collection.addAll(c);}
 
 	/**
 	 * 
@@ -256,7 +256,7 @@ public class ProxyCollection implements Collection
 	 * @see #remove(Object)
 	 * @see #contains(Object)
 	 */
-	public boolean removeAll(Collection c) {return collection.removeAll(c);}
+	public boolean removeAll(Collection<?> c) {return collection.removeAll(c);}
 
 	/**
 	 * Retains only the elements in this collection that are contained in the
@@ -281,7 +281,7 @@ public class ProxyCollection implements Collection
 	 * @see #remove(Object)
 	 * @see #contains(Object)
 	 */
-	public boolean retainAll(Collection c) {return collection.retainAll(c);}
+	public boolean retainAll(Collection<?> c) {return collection.retainAll(c);}
 
 	/**
 	 * Removes all of the elements from this collection (optional operation).
