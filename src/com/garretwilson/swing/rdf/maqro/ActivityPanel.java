@@ -166,6 +166,7 @@ public class ActivityPanel extends RDFPanel
 	/**Interacts with the activity.*/
 	public void interact()
 	{
+/*TODO fix with non-ResourceApplicationFrame
 		final ActivityModel model=getActivityModel();	//get our model
 		if(verify() && model.getActivity()!=null)	//verify the contents of the user interface; if things verify and we have an activity
 		{
@@ -177,6 +178,7 @@ public class ActivityPanel extends RDFPanel
 			activityFrame.setVisible(true);	//show the activity frame
 			activityEngine.start();	//start the interaction
 		}
+*/
 	}
 
 	/**Activity action that allows quizing on the dictionary's contents.*/

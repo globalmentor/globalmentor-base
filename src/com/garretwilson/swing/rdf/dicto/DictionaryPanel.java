@@ -323,7 +323,12 @@ public class DictionaryPanel extends RDFPanel
 				activityEngine.setBaseURI(getDictionaryModel().getBaseURI());	//set the base URI of the engine TODO probably make the resource application panel URIAccessible
 				activityEngine.setURIInputStreamable(getDictionaryModel());	//tell the activity engine to use our URI sourcefor reading
 				final MAQROActivityPanel activityPanel=new MAQROActivityPanel(activityEngine);	//create a new activity panel for the engine
+
+				/*TODO fix with non-ResourceApplicationFrame
+
 				final ResourceApplicationFrame activityFrame=new ResourceApplicationFrame(activityPanel, false);	//construct an activity frame without initializing it
+*/
+
 	//TODO should we just make ApplicationFrame a concrete class?
 	/*G***fix
 				resourceApplicationFrame.setApplicationName(getLabel());	//set the type of resource as the application name of the frame
@@ -332,9 +337,13 @@ public class DictionaryPanel extends RDFPanel
 				resourceApplicationFrame.setFileExitAction(resourceApplicationFrame.getCloseAction());	//show the closing action for file|exit
 				resourceApplicationFrame.setHelpMenuInclusions(ResourceApplicationFrame.MENU_HELP_NONE);	//don't show the help menu
 	*/
+
+	/*TODO fix with non-ResourceApplicationFrame
+
 				activityFrame.initialize();	//initialize the frame
 				activityFrame.setVisible(true);	//show the activity frame
 				activityEngine.start();	//start the interaction
+*/
 			}
 		}
 	}

@@ -14,6 +14,6 @@ public interface Resource	//G***del if not needed extends Comparable
 	/**Sets the reference URI of the resource.
 	@param uri The new reference URI, or <code>null</code> if the identifier is not known.
 	*/
-//G***del if not needed	public void setReferenceURI(final URI uri);
+	public void setReferenceURI(final URI uri);
 
 }
