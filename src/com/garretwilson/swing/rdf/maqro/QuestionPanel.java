@@ -114,7 +114,7 @@ public class QuestionPanel extends TabbedViewPanel
 				if(question!=null)	//if there is a question
 				{
 					final Dialogue query=question.getQuery();	//get the query
-					queryAnswerPanel.queryPanel.setDialogueModel(new DialogueModel(query, model.getBaseURI(), model.getURIInputStreamable()));	//set the query in the panel
+					queryAnswerPanel.queryPanel.setDialogueModel(new DialogueModel(query, model.getBaseURI(), model));	//set the query in the panel
 					final Resource expectation=question.getExpect();	//get the expectation
 					queryAnswerPanel.answerPanel.setExpectation(expectation);	//show the expectation in the combo box, even if there isn't an expectation
 					final List choices=question.getChoices();	//get the question choices
@@ -247,7 +247,7 @@ public class QuestionPanel extends TabbedViewPanel
 		{
 			case QUERY_MODEL_VIEW:	//if we're changing from the query view
 //G***fix				getSourceTextPane().getDocument().removeDocumentListener(getModifyDocumentListener());	//don't listen for changes to the source text pane any more
-				queryAnswerPanel.queryPanel.setDialogueModel(new DialogueModel(model.getBaseURI(), model.getURIInputStreamable()));	//clear the query panel
+				queryAnswerPanel.queryPanel.setDialogueModel(new DialogueModel(model.getBaseURI(), model));	//clear the query panel
 				break;
 		}
 		switch(newView)	//see which view we're changing to
@@ -284,7 +284,7 @@ public class QuestionPanel extends TabbedViewPanel
 		{
 			super(new BasicGridBagLayout(), false);	//construct the parent class but don't initialize it
 			queryLabel=new JLabel();
-			queryPanel=new DialoguePanel(new DialogueModel(getQuestionModel().getBaseURI(), getQuestionModel().getURIInputStreamable())); 
+			queryPanel=new DialoguePanel(new DialogueModel(getQuestionModel().getBaseURI(), getQuestionModel())); 
 			expectButtonGroup=new ButtonGroup();
 			choicesRadioButton=new JRadioButton();
 			mutuallyExclusiveCheckBox=new JCheckBox();

@@ -2,6 +2,7 @@ package com.garretwilson.text.directory.vcard;
 
 import java.net.*;
 import java.util.*;
+import com.garretwilson.model.Model;
 import com.garretwilson.text.directory.*;
 import com.garretwilson.util.*;
 
@@ -10,7 +11,7 @@ import com.garretwilson.util.*;
 	"vCard MIME Directory Profile".
 @author Garret Wilson
 */
-public class VCard extends Directory implements VCardConstants
+public class VCard extends Directory implements Model, VCardConstants
 {
 	
 	/**The list of content lines that represent unrecognized and/or unprocessed information.*/

@@ -1,6 +1,7 @@
 package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 import com.garretwilson.rdf.maqro.*;
@@ -12,6 +13,12 @@ import com.garretwilson.swing.*;
 */
 public class InteractionSequencePanel extends AbstractListComponentSequencePanel
 {
+
+	/**Default constructor.*/
+	public InteractionSequencePanel()
+	{
+		this(new ArrayList());
+	}
 
 	/**List constructor.
 	@param list The list the items of which the components in this sequence panel

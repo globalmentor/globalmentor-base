@@ -11,15 +11,16 @@ public abstract class URIAccessibleModel extends DefaultURIAccessible implements
 {
 
 	/**Whether the object has been modified; the default is not modified.*/
-	private boolean modified=false;
+//G***del if not needed	private boolean modified=false;
 
 		/**@return Whether the object been modified.*/
-		public boolean isModified() {return modified;}
+//G***del if not needed		public boolean isModified() {return modified;}
 
 		/**Sets whether the object has been modified.
 		This is a bound property.
 		@param newModified The new modification status.
 		*/
+/*G***del if not needed
 		public void setModified(final boolean newModified)
 		{
 			final boolean oldModified=modified; //get the old modified value
@@ -30,11 +31,18 @@ public abstract class URIAccessibleModel extends DefaultURIAccessible implements
 				firePropertyChange(MODIFIED_PROPERTY, Boolean.valueOf(oldModified), Boolean.valueOf(newModified));
 			}
 		}
+*/
+
+	/**The base URI of the model, or <code>null</code> if unknown.*/
+	private final URI baseURI;	//G***maybe move this up into XMLNodeModel---or, more likely, down into Model itself
+	
+		/**@return The base URI of the model, or <code>null</code> if unknown.*/
+		public URI getBaseURI() {return baseURI;}
 
 	/**Default constructor.*/
 	public URIAccessibleModel()
 	{
-		super();
+		this((URI)null);
 	}
 
 	/**Base URI constructor.
@@ -42,7 +50,7 @@ public abstract class URIAccessibleModel extends DefaultURIAccessible implements
 	*/
 	public URIAccessibleModel(final URI baseURI)
 	{
-		super(baseURI);
+		this(baseURI, null, null);
 	}
 
 	/**URI input stream locator constructor.
@@ -51,7 +59,7 @@ public abstract class URIAccessibleModel extends DefaultURIAccessible implements
 	*/
 	public URIAccessibleModel(final URIInputStreamable uriInputStreamable)
 	{
-		super(uriInputStreamable);
+		this(null, uriInputStreamable, null);
 	}
 
 	/**URI output stream locator constructor.
@@ -60,7 +68,7 @@ public abstract class URIAccessibleModel extends DefaultURIAccessible implements
 	*/
 	public URIAccessibleModel(final URIOutputStreamable uriOutputStreamable)
 	{
-		super(uriOutputStreamable);
+		this(null, uriOutputStreamable);
 	}
 
 	/**Base URI and input stream locator constructor.
@@ -70,7 +78,7 @@ public abstract class URIAccessibleModel extends DefaultURIAccessible implements
 	*/
 	public URIAccessibleModel(final URI baseURI, final URIInputStreamable uriInputStreamable)
 	{
-		super(baseURI, uriInputStreamable);
+		this(baseURI, uriInputStreamable, null);
 	}
 
 	/**Base URI and output stream locator constructor.
@@ -80,7 +88,7 @@ public abstract class URIAccessibleModel extends DefaultURIAccessible implements
 	*/
 	public URIAccessibleModel(final URI baseURI, final URIOutputStreamable uriOutputStreamable)
 	{
-		super(baseURI, uriOutputStreamable);
+		this(baseURI, null, uriOutputStreamable);
 	}
 
 	/**Full constructor.
@@ -92,6 +100,7 @@ public abstract class URIAccessibleModel extends DefaultURIAccessible implements
 	*/
 	public URIAccessibleModel(final URI baseURI, final URIInputStreamable uriInputStreamable, final URIOutputStreamable uriOutputStreamable)
 	{
-		super(baseURI, uriInputStreamable, uriOutputStreamable);
+		super(uriInputStreamable, uriOutputStreamable);
+		this.baseURI=baseURI;	//save the base URI
 	}
 }

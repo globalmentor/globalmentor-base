@@ -6,7 +6,7 @@ import com.garretwilson.util.Modifiable;
 /**Indicates that an implementing class is a data model.
 @author Garret Wilson
 */
-public interface Model extends Modifiable
+public interface Model //G***del if not needed extends Modifiable
 {
 
 	/**The property for the data model for which a component provides a view.*/

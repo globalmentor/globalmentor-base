@@ -11,7 +11,7 @@ import com.garretwilson.lang.JavaConstants;
 public interface URIAccessible extends URIInputStreamable, URIOutputStreamable
 {
 
-	/**The base URI property, if it is bound to an object.*/
+	/**The base URI property, if it is bound to an object.*/	//TODO move to somewhere else that actually uses this
 	public final String BASE_URI_PROPERTY=URIAccessible.class.getName()+JavaConstants.PACKAGE_SEPARATOR+"baseURI";
 
 	/**The URI input streamable property, if it is bound to an object..*/
@@ -23,6 +23,6 @@ public interface URIAccessible extends URIInputStreamable, URIOutputStreamable
 	/**@return The base URI from which relative URIs should be resolved, or
 		<code>null</code> if there is no base URI.
 	*/
-	public URI getBaseURI();
+//G***del if not needed	public URI getBaseURI();
 
 }

@@ -2,6 +2,7 @@ package com.garretwilson.io;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import com.garretwilson.text.CharacterEncoding;
 
@@ -74,6 +75,9 @@ public class InputStreamUtilities
 		final int BYTE_ORDER_MARK_LENGTH=4; //the number of bytes in the largest byte order mark
 		inputStream.mark(BYTE_ORDER_MARK_LENGTH); //we won't read more than the byte order mark
 		final byte[] byteOrderMarkArray=new byte[BYTE_ORDER_MARK_LENGTH];	//create an array to hold the byte order mark G***make sure this is initialized to zero bytes---or just read them all, which will but -1 in all the remaining bytes
+		Arrays.fill(byteOrderMarkArray, (byte)0);	//fill the array with zeros, in case we can't completely fill it with bytes from the input stream
+		final int byteOrderMarkCount=inputStream.read(byteOrderMarkArray);	//read as many characters of the byte order mark as we can
+/*G***del when works
 		boolean eof=false;	//we'll set this to true if we reach the end of the file
 		for(int i=0; i<byteOrderMarkArray.length && !eof; ++i)	//read each character unless we reach the end of the file (we're using a loop instead of read(int[]) because the latter could read less than the number of bytes requested, even if there are more available)
 		{
@@ -88,6 +92,9 @@ public class InputStreamUtilities
 			}
 		}
 		if(!eof)	//if we didn't reach the end of the data
+		{
+*/
+		if(byteOrderMarkCount>0)	//if we read any characters as all
 		{
 			CharacterEncoding characterEncoding=CharacterEncoding.create(byteOrderMarkArray);	//see if we can recognize the encoding by the beginning characters G***probably create a static CharacterEncoding method to return a string without creating a new objet
 		  if(characterEncoding!=null) //if we got a character encoding
