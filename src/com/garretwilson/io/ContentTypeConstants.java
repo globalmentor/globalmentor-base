@@ -99,10 +99,13 @@ public class ContentTypeConstants
 	/**A MAQRO question.*/
 	public final static String X_QRO_RDF_XML="x-qro+rdf+xml";
 	public final static String APPLICATION_QRO=APPLICATION+DIVIDER+X_QRO_RDF_XML;
+	/**A Microsoft Word document; see <a href="http://www.iana.org/assignments/media-types/application/msword">http://www.iana.org/assignments/media-types/application/msword</a>.*/
+	public final static String MSWORD="msword";
+	public final static String APPLICATION_MSWORD=APPLICATION+DIVIDER+MSWORD;
 	/**An Ogg Vorbis file; see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>.*/
 	public final static String OGG="ogg";
 	public final static String APPLICATION_OGG=APPLICATION+DIVIDER+OGG;
-	/**A PDF file.*/
+	/**An Adobe PDF file.*/
 	public final static String PDF="pdf";
 	public final static String APPLICATION_PDF=APPLICATION+DIVIDER+PDF;
 	/**An XML application.*/
