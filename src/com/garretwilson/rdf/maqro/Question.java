@@ -1,7 +1,7 @@
 package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
-import java.util.Iterator;
+import java.util.*;
 import com.garretwilson.rdf.*;
 
 /**Class representing a MAQRO question.
@@ -11,14 +11,15 @@ public class Question extends DefaultRDFResource implements MAQROConstants, Inte
 {
 
 	/**Default constructor.*/
-	protected Question()
+	public Question()
 	{
+		super();	//construct the parent class
 	}
 	
 	/**Constructs a question with a reference URI.
-	@param referenceURI The reference URI for the new publication.
+	@param referenceURI The reference URI for the new resource.
 	*/
-	protected Question(final URI referenceURI)
+	public Question(final URI referenceURI)
 	{
 		super(referenceURI);  //construct the parent class
 	}
@@ -29,6 +30,19 @@ public class Question extends DefaultRDFResource implements MAQROConstants, Inte
 	public RDFObject getQuery()
 	{
 		return getPropertyValue(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME);	//get the query		
+	}
+
+	/**Replaces the query, if any, with a query that has the given string value.
+	@param queryValue The literal value of the query.
+	@param language The language of the query value, or <code>null</code> if
+		no language should be specified.
+	*/
+	public void setQueryValue(final String queryValue, final Locale language)
+	{
+		final RDF rdf=new RDF();	//TODO fix the data model
+		final RDFResource query=rdf.locateResource(null);	//get an anonymous query
+		RDFUtilities.setValue(rdf, query, queryValue, language);	//set the query value
+		RDFUtilities.setProperty(rdf, this, MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME, query);	//store the query
 	}
 
 	/**@return An iterator to choices, if any, of the question.*/

@@ -199,10 +199,10 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		return value; //return the value we added
 	}
 
-	/**Adds a literal property from a string by creating a <code>RDFPropertyValuePair</code>
+	/**Adds a plain literal property from a string by creating a <code>RDFPropertyValuePair</code>
 		from the given property and value. For each property, this resource serves
 		as the subject of an RDF statement with the property as the predicate and
-		the value, stored as a literal, as the object.
+		the value, stored as a literal, as the object. No language is specified.
 		<p>Note that the property is not simply a property URI &mdash; it is a
 		resource that is identified by the property URI.</p>
 		<p>If an equivalent property already exists, no action is taken.</p>
@@ -213,19 +213,27 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	*/
 	public RDFLiteral addProperty(final RDFResource property, final String literalValue)
 	{
-		return (RDFLiteral)addProperty(property, new RDFPlainLiteral(literalValue)); //create a new literal value and store the property
+		return addProperty(property, literalValue, null);	//add the plain literal with no language specified
 	}
 
-	/**@return <code>true</code> if this resource is an anonymous resource;
-		currently anonymous resources are those that either have no reference URI
-		or that have a reference URI that begins with "anonymous:".
+	/**Adds a plain literal property from a string by creating a <code>RDFPropertyValuePair</code>
+		from the given property and value. For each property, this resource serves
+		as the subject of an RDF statement with the property as the predicate and
+		the value, stored as a literal, as the object.
+		<p>Note that the property is not simply a property URI &mdash; it is a
+		resource that is identified by the property URI.</p>
+		<p>If an equivalent property already exists, no action is taken.</p>
+	@param property A property resource; the predicate of an RDF statement.
+	@param literalValue A literal property value that will be stored in a
+		<code>RDFLiteral</code>; the object of an RDF statement.
+	@param language The language of the plain literal, or <code>null</code> if
+		no language should be specified.
+	@return The added property value.
 	*/
-/*G***del when works
-	public boolean isAnonymous()
+	public RDFLiteral addProperty(final RDFResource property, final String literalValue, final Locale language)
 	{
-		return getReferenceURI()!=null && getReferenceURI().toString().startsWith("anonymous:"); //return whether there is no URI or the URI begins with "anonymous:" G***use a constant here; fix better
+		return (RDFLiteral)addProperty(property, new RDFPlainLiteral(literalValue, language)); //create a new literal value and store the property
 	}
-*/
 
 	/**Removes all properties with the given URI.
 	@param propertyURI The reference URI of the property resource of the
@@ -258,6 +266,54 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	public int removeProperties(final URI namespaceURI, final String localName)
 	{
 		return removeProperties(RDFUtilities.createReferenceURI(namespaceURI, localName)); //remove the property, combining the namespace URI and the local name for the reference URI
+	}
+
+	/**Sets a property by removing all property values for the given property and
+		creating a new <code>RDFPropertyValuePair</code> from the given
+		property and value.
+	@param property A property resource; the predicate of an RDF statement.
+	@param value A property value; the object of an RDF statement.
+	@return The added property value.
+	@see #removeProperties(URI)
+	@see #addProperty(RDFResource, RDFObject)
+	*/
+	public RDFObject setProperty(final RDFResource property, final RDFObject value)
+	{
+		removeProperties(property.getReferenceURI());	//remove all existing object values for this property
+		return addProperty(property, value);	//add the given property and value
+	}
+
+	/**Sets a plain literal property from a string by removing all property values
+		for the given property and creating a new <code>RDFPropertyValuePair</code>
+		from the given property and value. No language is specified.
+	@param property A property resource; the predicate of an RDF statement.
+	@param literalValue A literal property value that will be stored in a
+		<code>RDFLiteral</code>; the object of an RDF statement.
+	@return The added property value.
+	@see #removeProperties(URI)
+	@see #addProperty(RDFResource, String)
+	*/
+	public RDFLiteral setProperty(final RDFResource property, final String literalValue)
+	{
+		return setProperty(property, literalValue, null);	//set the property without specifying a language
+	}
+
+	/**Sets a plain literal property from a string by removing all property values
+		for the given property and creating a new <code>RDFPropertyValuePair</code>
+		from the given property and value.
+	@param property A property resource; the predicate of an RDF statement.
+	@param literalValue A literal property value that will be stored in a
+		<code>RDFLiteral</code>; the object of an RDF statement.
+	@param language The language of the plain literal, or <code>null</code> if
+		no language should be specified.
+	@return The added property value.
+	@see #removeProperties(URI)
+	@see #addProperty(RDFResource, String)
+	*/
+	public RDFLiteral setProperty(final RDFResource property, final String literalValue, final Locale language)
+	{
+		removeProperties(property.getReferenceURI());	//remove all existing object values for this property
+		return addProperty(property, literalValue, language);	//add the given property and value
 	}
 
 	/**Copy constructor. Constructs a resource with an identical reference URI
@@ -334,7 +390,8 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	}
 
 	/**Compares this object to another object.
-		This method determines order based upon the reference URI of the resource.
+	<p>This method determines order based upon the reference URI of the resource,
+		if any.</p>
 	@param object The object with which to compare the component. This must be
 		another <code>Resource</code> object.
 	@return A negative integer, zero, or a positive integer as this resource

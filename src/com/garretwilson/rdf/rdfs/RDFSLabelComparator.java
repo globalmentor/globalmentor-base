@@ -32,32 +32,33 @@ public class RDFSLabelComparator implements Comparator
 		final RDFLiteral label2=RDFSUtilities.getLabel(resource2);
 		if(label1!=null && label2!=null)	//if both resources have labels
 		{
+			final Collator collator;	//we'll create a collator to compare the labels, preferably using something locale-specific			
 			if(label1 instanceof RDFPlainLiteral && label2 instanceof RDFPlainLiteral)	//if both labels are plain literals
 			{
-				Collator collator;	//we'll create a collator to compare the labels, preferably using something locale-specific			
 				final RDFPlainLiteral plainLiteral1=(RDFPlainLiteral)label1;	//cast the labels to plain literals
 				final RDFPlainLiteral plainLiteral2=(RDFPlainLiteral)label2;
 				final Locale language1=plainLiteral1.getLanguage();	//get the language of both literals
 				final Locale language2=plainLiteral2.getLanguage();
-				if(language1.equals(language2))	//if the languages match, we'll use a collator for that language
+				if(language1!=null && language1.equals(language2))	//if there are languages and the languages match, we'll use a collator for that language
 				{
 					collator=Collator.getInstance(language1);	//get a collator tuned to the language
 				}
 				else	//if the languages don't match
 				{
-					collator=Collator.getInstance();	//get a collator using whatever locale we're in (this will ensure that all non-same-language literals will get sorted the same way, regardless of order
+					collator=Collator.getInstance();	//get a collator using whatever locale we're in (this will ensure that all non-same-language literals will get sorted the same way, regardless of order of comparison)
 				}
-				collator.setStrength(Collator.PRIMARY);	//only consider primary differences---not accents, and not case
-				collator.setDecomposition(Collator.FULL_DECOMPOSITION);	//fully decompose Unicode characters to get the best comparison
-				return collator.compare(plainLiteral1.getLexicalForm(), plainLiteral2.getLexicalForm());	//compare the lexical forms of the two plain literals 
 			}
 			else	//if both labels are not plain literals
 			{
-				return label1.getLexicalForm().compareTo(label2.getLexicalForm());	//sort the lexical forms TODO probably use a collator here as well
+				collator=Collator.getInstance();	//get a collator using whatever locale we're in (this will ensure that all non-same-type literals will get sorted the same way, regardless of order of comparison)
 			}
+			collator.setStrength(Collator.PRIMARY);	//sort according to primary differences--ignore accents and case differences
+			collator.setDecomposition(Collator.FULL_DECOMPOSITION);	//fully decompose Unicode characters to get the best comparison
+			return collator.compare(label1.getLexicalForm(), label2.getLexicalForm());	//compare the lexical forms of the two plain literals 
 		}
 		else	//if both resources don't have labels
 		{
+//TODO fix comparator sorting for no labels; use inherent resource comparison, once that's fixed
 		//G***fix		final Resource otherResource=(Resource)object;	//cast the object to a resource
 			if(resource1.getReferenceURI()!=null && resource2.getReferenceURI()!=null)	//if both resources have reference URIs				
 				return resource1.getReferenceURI().compareTo(resource2.getReferenceURI()); //compare reference URIs

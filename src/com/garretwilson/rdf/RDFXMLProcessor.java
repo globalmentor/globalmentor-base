@@ -487,7 +487,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 					final String languageTag=XMLUtilities.getDefinedAttributeNS(element, XMLConstants.XML_NAMESPACE_URI.toString(), XMLConstants.ATTRIBUTE_LANG);
 						//create a locale for the language if there is a language tag
 					final Locale languageLocale=languageTag!=null ? LocaleUtilities.createLocale(languageTag) : null;
-					propertyValue=new RDFPlainLiteral(XMLUtilities.getText(element, false));  //create a literal from the element's text
+					propertyValue=new RDFPlainLiteral(XMLUtilities.getText(element, false), languageLocale);  //create a literal from the element's text, noting the specified language if any
 				}
 			}
 		}

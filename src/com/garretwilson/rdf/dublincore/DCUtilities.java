@@ -90,11 +90,8 @@ public class DCUtilities implements DCConstants
 	*/
 	public static RDFLiteral addLanguage(final RDF rdf, final RDFResource resource, final Locale locale)
 	{
-		  //G***fix
-//G***del		final DateFormat dateFormat=DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT); //G***testing
-		final String languageString=LocaleUtilities.getLanguageTag(locale);	//get the language tag for this locale
-//G***del Debug.trace("DC language string: ", languageString);  //G***del
-		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, languageString);
+			//add the literal language tag for this locale
+		return RDFUtilities.addProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, LocaleUtilities.getLanguageTag(locale));
 	}
 
 	/**Adds a <code>dc:publisher</code> property with the given value to the
@@ -168,11 +165,20 @@ public class DCUtilities implements DCConstants
 	/**Returns the value of the first <code>dc:Language</code> property.
 	@param resource The resource the property of which should be located.
 	@return The value of the first <code>dc:language</code> property, or
-		<code>null</code> if no such property exists.
+		<code>null</code> if no such property exists or the property value does
+		not contain a literal language tag.
 	*/
-	public static RDFObject getLanguage(final RDFResource resource) //G***maybe fix to return a Locale
+	public static Locale getLanguage(final RDFResource resource)
 	{
-		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME);
+		final RDFObject languageObject=resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME);
+		if(languageObject instanceof RDFLiteral)	//if this is a literal value
+		{
+			return LocaleUtilities.createLocale(((RDFLiteral)languageObject).getLexicalForm());	//create a locale from the literal's lexical form
+		}
+		else	//if there is no literal language tag
+		{
+			return null;	//show that we can't create a language locale from a non-literal
+		}
 	}
 
 	/**Returns the value of the first <code>dc:title</code> property.
@@ -193,6 +199,19 @@ public class DCUtilities implements DCConstants
 	public static RDFObject getRights(final RDFResource resource)
 	{
 		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_RIGHTS_PROPERTY_NAME);
+	}
+
+	/**Sets the <code>dc:language</code> property with the given value to the
+		resource.
+	@param rdf The RDF data model to be used as a property factory.
+	@param resource The resource to which the property should be set.
+	@param locale The property value to set.
+	@return The added literal property value.
+	*/
+	public static RDFLiteral setLanguage(final RDF rdf, final RDFResource resource, final Locale locale)
+	{
+			//set the literal language tag for this locale
+		return RDFUtilities.setProperty(rdf, resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, LocaleUtilities.getLanguageTag(locale));
 	}
 
 }

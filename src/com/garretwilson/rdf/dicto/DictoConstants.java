@@ -14,12 +14,18 @@ public interface DictoConstants
 	public final static URI DICTO_NAMESPACE_URI=URI.create("http://globalmentor.com/namespaces/2003/dicto#");
 
 		//Dicto class names
-	/**The local name of dicto:Activity.*/
+	/**The local name of dicto:Dictionary.*/
+	public final static String DICTIONARY_CLASS_NAME="Dictionary";
+	/**The local name of dicto:Word.*/
 	public final static String WORD_CLASS_NAME="Word";
 
 		//Dicto property names
 	/**The form of an entry. The local name of dicto:form.*/
-	public final static String FORM_PROPERTY_NAME="form";
+//G***del if not needed	public final static String FORM_PROPERTY_NAME="form";
+	/**The entries of a dictionary. The local name of dicto:entries.*/
+	public final static String ENTRIES_PROPERTY_NAME="entries";
+	/**The source language of a dictionary. The local name of dicto:language.*/
+	public final static String LANGUAGE_PROPERTY_NAME="language";
 	/**The number of an entry. The local name of dicto:number.*/
 	public final static String NUMBER_PROPERTY_NAME="number";
 	/**The orthography of an entry. The local name of dicto:number.*/
