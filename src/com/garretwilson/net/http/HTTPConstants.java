@@ -27,6 +27,8 @@ public class HTTPConstants
 		public final static String NO_CACHE_PRAGMA="no-cache";
 	/**The HTTP header indicating the referring location.*/
 	public final static String REFERER_HEADER="Referer";
+	/**The HTTP header indicating the user agent.*/
+	public final static String USER_AGENT_HEADER="User-Agent";
 
 	/**The HTTP GET method.*/
 	public final static String GET_METHOD="GET";
