@@ -362,13 +362,12 @@ public class URIUtilities
 	@return The URI form of the URL.
 	@exception URISyntaxException Thrown if the URL could not be converted to a URI.
 	*/ 
+/*TODO del if not needed
 	public static URI createURI(final URL url) throws URISyntaxException
 	{
 		return new URI(url.toString());	//assuming the URL is already escaped, create a new URI from the string representation of the URL
-		/*The following does not work, because it will escape whatever information it gets, doubly-escaping an escaped URL. 
-		 *	return new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef()); 
-		 */
 	}
+*/
 
 	/**Creates a URN in the form <code>urn:<var>nid</var>:nss</code>.
 	@param nid The namespace identifier.
@@ -403,7 +402,7 @@ public class URIUtilities
 		}
 		else if(contextObject instanceof URL)	//if the context is a URL
 		{
-			return createURI(createURI((URL)contextObject), string);	//convert the URL to a URI and use it as a context
+			return ((URL)contextObject).toURI();	//convert the URL to a URI and use it as a context
 		}
 		else if(contextObject instanceof File)	//if the context object is a file
 		{

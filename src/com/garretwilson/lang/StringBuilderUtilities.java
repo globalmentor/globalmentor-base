@@ -60,35 +60,46 @@ public class StringBuilderUtilities
 	@param stringBuilder The buffer in which the information will be collapsed.
 	@param collapseChars The characters to be removed from the string.
 	@param replaceString The string which will replace the collapseChars.
+	@return The new length of the run with collapsed characters.
 	*/
-	public static void collapse(final StringBuilder stringBuilder, final String collapseChars, final String replaceString)
+	public static int collapse(final StringBuilder stringBuilder, final String collapseChars, final String replaceString)
 	{
-	//G***del Debug.trace("ready to collapse: ", stringBuilder); //G***del
-	//G***shouldn't we trim the string, first? no, probably not
+		return collapse(stringBuilder, collapseChars, replaceString, 0, stringBuilder.length());	//collapse the entire string builder
+	}
+
+	/**Collapses every run of any number of collapseChars to a single replaceString.
+	@param stringBuilder The buffer in which the information will be collapsed.
+	@param collapseChars The characters to be removed from the string.
+	@param replaceString The string which will replace the collapseChars.
+	@param offset The offset at which to start collapsing.
+	@param length The length of the run of characters to check.
+	@return The new length of the run with collapsed characters.
+	*/
+	public static int collapse(final StringBuilder stringBuilder, final String collapseChars, final String replaceString, final int offset, final int length)
+	{
 		final int replaceLength=replaceString.length(); //find the length of the replacement string
-		int nextIndex=0;	//start at the beginning of the string
-		while(nextIndex<stringBuilder.length())	//keep going until we reach the end of the string buffer
+		int nextIndex=offset;	//start at the requested offset
+		int newLength=length;	//find out the resulting length; this will change as we collapse characters
+		while(nextIndex<newLength)	//keep going until we reach the endpoint
 		{
-	//G***del System.out.println(outString.length());	//G***del
-	//G***del Debug.trace("checking index: ", nextIndex); //G***del
-	//G***del Debug.trace("checking character: "+(int)stringBuilder.charAt(nextIndex)+" "+stringBuilder.charAt(nextIndex)); //G***del
 			if(collapseChars.indexOf(stringBuilder.charAt(nextIndex))>=0)	//if this character is one of our remove characters
 			{
 	//G***del Debug.trace("found collapse character at index: ", nextIndex);  //G***del
 				int removeEnd=nextIndex+1;	//start looking at the next character to see how long this run is
 				while(removeEnd<stringBuilder.length() && collapseChars.indexOf(stringBuilder.charAt(removeEnd))>=0)	//while we still have more characters, and the characters we're finding are characters to remove
+				{
 					++removeEnd;
-	//G***del				final int removeLength=removeEnd-nextIndex;	//find out how many characters to remove
-	//G***del System.out.println("Ready to remove stuff from: "+StringManipulator.replace(outString, '\n', "\\n"));	//G***del
-	//G***del				replace(stringBuilder, nextIndex, removeLength, replaceString);	//replace our characters with the given string
-	//G***del Debug.trace("after collapse: ", stringBuilder); //G***del
+				}
 				stringBuilder.replace(nextIndex, removeEnd, replaceString);	//replace our characters with the given string
+				newLength+=replaceLength-(removeEnd-nextIndex);	//find out how much the string changed and add this to our length
 				nextIndex+=replaceLength; //move to the position after the replacement string
-	//G***del System.out.println("New out string: "+StringManipulator.replace(outString, '\n', "\\n"));	//G***del
 			}
 			else  //if this is not a character to replace
+			{
 				++nextIndex;	//look at the next character in the string
+			}
 		}
+		return newLength;	//return the new length of the run
 	}
 	
 
