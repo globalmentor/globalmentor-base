@@ -154,7 +154,7 @@ public class BufferedPushbackReader extends Reader
 		protected void setEOF(final boolean eof)
 		{
 			EOF=eof;
-//G***del System.out.println("Just set EOF true");	//G***del
+Debug.traceStack("Just set EOF true");	//G***del
 		}
 
 	/**A carriage return character.*/	//G***do we want these here?
@@ -730,15 +730,15 @@ public class BufferedPushbackReader extends Reader
 	@param cbuf Destination buffer.
 	@param off Offset at which to start storing characters.
 	@param len Maximum number of characters to peek.
-	@return The number of characters peeked, or -1 if the end of the stream has been reached.
+	@return The number of characters peeked, or 0 if the end of the stream has been reached.
 	@exception IOException Thrown if an I/O error occurs.
 	*/
 	public int peek(char[] cbuf, int off, int len) throws IOException
 	{
 //G***del System.out.println("needed: "+len);	//G***del
+		int numCharsPeeked=0;	//this will store the number of characters actually peeked; right now, we don't know if we're going to peek any characters
 		if(!isEOF())	//if we're not at the end of the file
 		{
-			int numCharsPeeked=0;	//this will store the number of characters actually peeked; right now, we don't know if we're going to peek any characters
 			while(numCharsPeeked<len)	//keep peeking characters until we've peeked as many as they want
 			{
 //G***del System.out.println("peeked: "+numCharsPeeked);	//G***del
@@ -766,10 +766,12 @@ System.out.println("Peek index now: "+getPeekIndex()+" Read index now: "+getRead
 						break;	//show that there's nothing left to peek
 				}
 			}
-			return numCharsPeeked;	//return the number of characters we were able to peek before reaching the end of the file
+			if(numCharsPeeked==0)	//if no characters were peeked
+			{
+				setEOF(true);	//show that we've reached the end of the file
+			}
 		}
-		else	//if we've reached the end of the file
-			return EOF_VALUE;	//show that we're at the end of the data
+		return numCharsPeeked;	//return the number of characters we were able to peek before reaching the end of the file
 	}
 
 	/**Resets any characters we've peeked so that the next peek will reflect the next character which will be read.

@@ -528,7 +528,12 @@ public class ParseReader extends BufferedPushbackReader
 				return i;	//show that this string matches what we're peeking
 			}
 		}
-		throw new ParseUnexpectedDataException(expectedStrings, stringBuilder.toString(), beginLineIndex, beginCharIndex, getName());	//show that we didn't get the string we were expecting G***we may want to have an XMLUnexpectedStringException or something
+		if(isEOF())	//if we reached the end of the file
+			throw new ParseEOFException("End of stream reached while reading data.", beginLineIndex, beginCharIndex, getName());	//show that we hit the end of the file G***Int
+		else	//if we didn't reach the end of the file
+		{
+			throw new ParseUnexpectedDataException(expectedStrings, stringBuilder.toString(), beginLineIndex, beginCharIndex, getName());	//show that we didn't get the string we were expecting G***we may want to have an XMLUnexpectedStringException or something
+		}
 	}
 
 	/**Reads a string of characters and makes sure they match a string in a given
@@ -653,7 +658,7 @@ public class ParseReader extends BufferedPushbackReader
 			int checkIndex=getReadIndex();	//start looking where we're supposed to start reading
 			while(checkIndex<getFetchBufferIndex())	//look at each character until the end of the data in this buffer
 			{
-//G***del System.out.println("Looking at checkIndex: "+checkIndex+" finding character: "+buffer[checkIndex]);	//G***del
+//G***del Debug.trace("Looking at checkIndex", checkIndex, "finding character", buffer[checkIndex]);	//G***del
 				if(skipChars.indexOf(buffer[checkIndex])==-1)	//if this character is not one we want to skip
 				{
 					foundNonDelimiter=true;	//show that we found a character that isn't a skip character
@@ -804,7 +809,7 @@ public class ParseReader extends BufferedPushbackReader
 	*/
 	public String readStringUntilCharEOF(String delimiterCharString) throws IOException
 	{
-//G***del System.out.println("Inside readStringUntilCharEOF() with: "+delimiterCharString);	//G***del
+//G***del Debug.trace("Inside readStringUntilCharEOF() with", delimiterCharString);	//G***del
 		final StringBuilder stringBuilder=new StringBuilder();	//this will receive the characters we've read
 		boolean foundDelimiter=false;	//show that we haven't found the character, yet
 		while(!isEOF())	//if we're not at the end of the file
@@ -815,7 +820,7 @@ public class ParseReader extends BufferedPushbackReader
 			while(checkIndex<getFetchBufferIndex())	//look at each character until the end of the data in this buffer
 //G***del when works			for(checkIndex=; checkIndex<getFetchBufferIndex(); ++checkIndex)	//look at each character until the end of the data in this buffer
 			{
-//G***del Debug.trace("Checking character: "+buffer[checkIndex]+" ", buffer[checkIndex]);	//G***del
+//G***del Debug.trace("Checking character at index ", checkIndex, ":", buffer[checkIndex]);	//G***del
 				if(delimiterCharString.indexOf(buffer[checkIndex])!=-1)	//if this character is one we're looking for
 				{
 					foundDelimiter=true;	//show that we found one of the delimiters
