@@ -21,8 +21,20 @@ import java.net.URI;	//G***del when other URI is removed
 public class XPackageUtilities implements XPackageConstants
 {
 
+	/**Sets the <code>&lt;xpackage:children&gt;</code> property of the resource.
+	@param rdf The RDF data model to provide to look up property resources.
+	@param resource The resource to which a property should be added.
+	@param childrenList The list of children.
+	@return The added list of children.
+	*/
+	public static RDFListResource setChildren(final RDF rdf, final RDFResource resource, final RDFListResource childrenList)
+	{
+		RDFUtilities.setProperty(rdf, resource, XPACKAGE_NAMESPACE_URI, CHILDREN_PROPERTY_NAME, childrenList);	//add the children property to the resource
+		return childrenList;  //return the list of children we added
+	}
+
 	/**Adds an <code>&lt;xpackage:location&gt;</code> property to the resource.
-	@param rdf The RDF data model to provide to lookup property resources.
+	@param rdf The RDF data model to provide to look up property resources.
 	@param resource The resource to which a property should be added.
 	@param href The location of the resource, to become an <code>xlink:href</code>
 		property of the location property.
@@ -40,7 +52,7 @@ public class XPackageUtilities implements XPackageConstants
 	}
 
 	/**Adds an <code>&lt;xpackage:manifest&gt;</code> property to the resource.
-	@param rdf The RDF data model to provide to lookup property resources.
+	@param rdf The RDF data model to provide to look up property resources.
 	@param resource The resource to which a property should be added.
 	@return The new manifest resource, an <code>&lt;rdf:Bag&gt;</code>.
 	*/
@@ -54,7 +66,7 @@ public class XPackageUtilities implements XPackageConstants
 	}
 
 	/**Adds an <code>&lt;xpackage:organization&gt;</code> property to the resource.
-	@param rdf The RDF data model to provide to lookup property resources.
+	@param rdf The RDF data model to provide to look up property resources.
 	@param resource The resource to which a property should be added.
 	@return The new manifest resource, an <code>&lt;rdf:Seq&gt;</code>.
 	*/

@@ -249,6 +249,15 @@ public class RDFUtilities implements RDFConstants
 	}
 */
 
+	/**Determines if the given list is the empty list.
+	@param rdf The RDF data model in which to locate the resource.
+	@return A list resource with the reference URI &amp;rdf;nil. 
+	*/
+	public static boolean isNil(final RDFListResource listResource)
+	{
+		return listResource!=null && NIL_RESOURCE_URI.equals(listResource.getReferenceURI());	//see if the resource has the nil URI 
+	}
+
 	/**Determines whether a given resource is of a particular type.
 		Every type property of the resource is checked.
 	@param resource The resource the type type of which to check.
@@ -275,11 +284,11 @@ public class RDFUtilities implements RDFConstants
 	/**Retreives a nil list resource from the data model, or creates one and
 		adds it if one does not exist in the data model.
 	@param rdf The RDF data model in which to locate the resource.
-		@return A list resource with the reference URI &amp;rdf;nil. 
+	@return A list resource with the reference URI <code>&amp;rdf;nil</code>. 
 	*/
-	public static RDFResource locateNilResource(final RDF rdf)
+	public static RDFListResource locateNilResource(final RDF rdf)
 	{
-		return rdf.locateResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//locate the nil resource
+		return (RDFListResource)rdf.locateResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//locate the nil resource
 	}
 	
 	/**Sets a property by first removing all such properties and then adding

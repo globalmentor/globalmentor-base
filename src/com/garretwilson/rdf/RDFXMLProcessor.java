@@ -355,7 +355,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				if(childNode.getNodeType()==childNode.ELEMENT_NODE) //if this is an element
 				{
 					final RDFResource elementValue=processResource((Element)childNode); //process the child element as an RDF resource
-					final RDFListResource elementListResource=RDFListResource.create(getRDF(), elementValue);	//create a list for this element
+					final RDFListResource elementListResource=new RDFListResource(getRDF(), elementValue);	//create a list for this element
 					if(list==null)	//if this is the first element in the list
 					{
 						list=elementListResource;	//store that as the start of the list

@@ -1,6 +1,7 @@
 package com.garretwilson.rdf;
 
 import java.net.URI;
+import java.util.*;
 
 /**Represents an RDF list resource.
 @author Garret Wilson
@@ -36,10 +37,10 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	@exception IllegalArgumentException Thrown if the provided reference URI is
 		<code>null</code>.
 	*/
-	public static RDFListResource create(final RDF rdf, final RDFResource first) throws IllegalArgumentException
+	public RDFListResource(final RDF rdf, final RDFResource first) throws IllegalArgumentException
 	{
 //G***del		final RDFResource nil=rdf.locateResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//get the nil resource
-		return create(rdf, first, RDFUtilities.locateNilResource(rdf));	//create a list with no other elements
+		this(rdf, rdf.createAnonymousReferenceURI(), first);	//create a list with no other elements
 	}
 
 	/**Constructs an RDF list resource with a single element.
@@ -50,10 +51,10 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	@exception IllegalArgumentException Thrown if the provided reference URI is
 		<code>null</code>.
 	*/
-	public static RDFListResource create(final RDF rdf, final URI newReferenceURI, final RDFResource first) throws IllegalArgumentException
+	public RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFResource first) throws IllegalArgumentException
 	{
 //G***del		final RDFResource nil=rdf.locateResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//get the nil resource
-		return create(rdf, newReferenceURI, first, RDFUtilities.locateNilResource(rdf));	//create a list with no other elements
+		this(rdf, newReferenceURI, first, RDFUtilities.locateNilResource(rdf));	//create a list with no other elements
 	}
 
 	/**Constructs an anonymous RDF list resource with a current element and the rest of the list.
@@ -64,13 +65,9 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	@exception IllegalArgumentException Thrown if the provided reference URI is
 		<code>null</code>.
 	*/
-	public static RDFListResource create(final RDF rdf, final RDFResource first, final RDFResource rest) throws IllegalArgumentException
+	public RDFListResource(final RDF rdf, final RDFResource first, final RDFResource rest) throws IllegalArgumentException
 	{
-		final RDFListResource list=new RDFListResource(rdf.createAnonymousReferenceURI()); //construct a list with the reference URI
-		setFirst(rdf, list, first);	//set the first element
-		if(rest!=null)	//if a rest is specified
-			setRest(rdf, list, rest);	//set the rest of the list
-		return list;	//return the list we constructed
+		this(rdf, rdf.createAnonymousReferenceURI(), first, rest); //construct a list with an anonymous reference URI
 	}
 
 	/**Constructs an RDF list resource with a current element and the rest of the list.
@@ -82,13 +79,55 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	@exception IllegalArgumentException Thrown if the provided reference URI is
 		<code>null</code>.
 	*/
-	public static RDFListResource create(final RDF rdf, final URI newReferenceURI, final RDFResource first, final RDFResource rest) throws IllegalArgumentException
+	public RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFResource first, final RDFResource rest) throws IllegalArgumentException
 	{
-		final RDFListResource list=new RDFListResource(newReferenceURI); //construct a list with the reference URI
-		setFirst(rdf, list, first);	//set the first element
+		super(newReferenceURI); //construct the list with the reference URI
+		setFirst(rdf, this, first);	//set the first element
 		if(rest!=null)	//if a rest is specified
-			setRest(rdf, list, rest);	//set the rest of the list
-		return list;	//return the list we constructed
+			setRest(rdf, this, rest);	//set the rest of the list
+	}
+
+	/**Constructs an anonymous RDF list resource with the contents of a collection.
+	@param rdf The RDF data model.
+	@param collection The collection with which to populate the list.
+	@exception IllegalArgumentException Thrown if the provided reference URI is
+		<code>null</code>.
+	*/
+	public static RDFListResource create(final RDF rdf, final Collection collection) throws IllegalArgumentException
+	{
+		return create(rdf, rdf.createAnonymousReferenceURI(), collection);	//create and return a list with an anonymous reference URI
+	}
+
+	/**Constructs an RDF list resource with the contents of a collection.
+	@param rdf The RDF data model.
+	@param collection The collection with which to populate the list, each
+		element of which is a <code>RDFResource</code>.
+	@exception IllegalArgumentException Thrown if the provided reference URI is
+		<code>null</code>.
+	*/
+	public static RDFListResource create(final RDF rdf, final URI newReferenceURI, final Collection collection) throws IllegalArgumentException
+	{
+//G***del		final RDFResource nil=rdf.locateResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//get the nil resource
+		final RDFListResource listResource;	//we'll create a list resource for the collection 
+		if(collection.size()>0)	//if there are elements in the collection
+		{
+			final Iterator resourceIterator=collection.iterator();	//get an iterator to the elements of the collection
+				//G***maybe throw an illegal argument exception if the elements in the collection are not resources
+			listResource=new RDFListResource(rdf, (RDFResource)resourceIterator.next());	//get the first resource in the collection
+			RDFListResource list=listResource;	//we'll keep adding to the list as we go along
+			while(resourceIterator.hasNext())	//while there are more elements in the collection
+			{
+				
+				final RDFListResource nextList=new RDFListResource(rdf, (RDFResource)resourceIterator.next());	//get the next resource in the collection
+				setRest(rdf, list, nextList);	//add the next list to this one
+				list=nextList;	//we'll use the next list the next time around 
+			}
+		}
+		else	//if the collection is empty
+		{
+			listResource=RDFUtilities.locateNilResource(rdf);	//use the nil list
+		}
+		return listResource;	//return whichever list resource we created or used
 	}
 
 	/**Retrieves the first element of the list. If this resource has more than one
@@ -199,7 +238,7 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 			final RDFResource oldRest=getRest(list);	//get the current rest of the list
 			if(nextIndex==index)	//if the next element is the correct insertion index
 			{
-				final RDFResource newRest=create(rdf, element, oldRest);	//create a new element for this element and the rest of the elements
+				final RDFResource newRest=new RDFListResource(rdf, element, oldRest);	//create a new element for this element and the rest of the elements
 				setRest(rdf, list, newRest);	//set the rest of the list
 				return;	//stop looking for the appropriate index
 			}
