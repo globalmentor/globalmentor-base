@@ -131,8 +131,22 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 		return (RDFResource)resource.getPropertyValue(RDF_NAMESPACE_URI, FIRST_PROPERTY_NAME); //return the first element property
 	}
 
+	/**Retrieves the first element of this list. If this resource has more than one
+		property of <code>rdf:first</code>, it is undefined which of those property
+		values will be returned.
+	@return The first element of this list, or <code>null</code> if there is
+		no first element specified.
+	@exception ClassCastException Thrown if the first element property value is
+		not a <code>RDFResource</code> (such as a <code>Literal</code>), which would
+		indicate that an incorrect value has been stored for the property.
+	*/
+	public RDFResource getFirst() throws ClassCastException
+	{
+		return getFirst(this); //return the first element property
+	}
+
 	/**Retrieves the rest of the list, which is usually another list.
-		If this resource has more than one property of <code>rdf:rest</code>,
+		If the resource has more than one property of <code>rdf:rest</code>,
 		it is undefined which of those property values will be returned.
 	@param resource The list resource for which the rest property will be returned.
 	@return The resource representing the rest of the list, or <code>null</code> if
@@ -144,6 +158,20 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 	public static RDFResource getRest(final RDFResource resource) throws ClassCastException
 	{
 		return (RDFResource)resource.getPropertyValue(RDF_NAMESPACE_URI, REST_PROPERTY_NAME); //return the rest property
+	}
+
+	/**Retrieves the rest of this list, which is usually another list.
+		If this resource has more than one property of <code>rdf:rest</code>,
+		it is undefined which of those property values will be returned.
+	@return The resource representing the rest of the list, or <code>null</code> if
+		this resource has no rest of the list specified.
+	@exception ClassCastException Thrown if the rest property value is
+		not a <code>RDFResource</code> (such as a <code>Literal</code>), which would
+		indicate that an incorrect value has been stored for the property.
+	*/
+	public RDFResource getRest() throws ClassCastException
+	{
+		return getRest(this); //return the rest property
 	}
 
 	/**Replaces all <code>rdf:first</code> properties of the resource with a new
@@ -169,7 +197,9 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 		RDFUtilities.setProperty(rdf, resource, RDF_NAMESPACE_URI, REST_PROPERTY_NAME, value); //set the first value
 	}
 
-	/**Returns the number of elements in this list.
+	/**Returns the number of elements in this list.  If this list contains more
+		than <code>Integer.MAX_VALUE</code> elements, returns
+		<code>Integer.MAX_VALUE</code>.
 	@return The number of elements in this list.
 	*/
 	public int size()
@@ -178,13 +208,32 @@ public class RDFListResource extends DefaultRDFResource	//G***fix implements Lis
 		RDFResource list=this;	//start with this list resource
 		while(list!=null && !NIL_RESOURCE_URI.equals(list.getReferenceURI()))	//while we have a list and it's not the nil resource
 		{
-			if(getFirst(list)!=null)	//if there is an element
-			{
-				++size;	//show that we found another element
-			}
+			++size;	//show that we found another element
 			list=getRest(list);	//look at the rest of the list
 		}
 		return size;	//return whatever size we found
+	}
+
+	/**Returns the element at the specified position in this list.
+	@param index The index of the element to return.
+	@return The element at the specified position in this list.
+	@throws IndexOutOfBoundsException Thrown if the index is out of range
+		(<var>index</var>&lt;0 || <var>index</var>&gt;=size()).
+	*/
+	public Object get(int index)
+	{
+		int currentIndex=0;	//start out on the first index
+		RDFResource list=this;	//start with this list resource
+		while(list!=null && !NIL_RESOURCE_URI.equals(list.getReferenceURI()))	//while we have a list and it's not the nil resource
+		{
+			if(currentIndex==index)	///if this is the correct index
+			{
+				return getFirst();	//return the element at this index
+			}
+			list=getRest(list);	//look at the rest of the list
+			++currentIndex;	//go to the next index
+		}
+		throw new IndexOutOfBoundsException("The index "+index+" must be >=0 and <"+currentIndex);	//show that we don't have an element for this index
 	}
 
 	/**Appends the specified element to the end of the list.

@@ -466,6 +466,7 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 	}
 */
 
+
 	/**Retrieves a label appropriate for the reference URI of the resource. If the
 		resource has namespace URI and local name, the XML qualified name will be
 		returned in <em>namespaceURI</em>:<em>localName</em> format; otherwise,
@@ -473,7 +474,23 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 	@param resource The resource the label of which to return.
 	@return A label representing the reference URI of the resource.
 	*/
+/*G**del if not needed
 	public String getLabel(final RDFResource resource)
+	{
+		return getLabel(resource, true);	//get 
+	}
+*/
+
+	/**Retrieves a label appropriate for the reference URI of the resource. If the
+		resource has namespace URI and local name, the XML qualified name will be
+		returned in <em>namespaceURI</em>:<em>localName</em> format; otherwise,
+		reference URI itself will be returned.
+	@param resource The resource the label of which to return.
+//G***del	@param generatePrefix <code>true</code> if a prefix should be generated if
+//G***del		no prefix is assigned to the given namespace URI.
+	@return A label representing the reference URI of the resource.
+	*/
+	public String getLabel(final RDFResource resource/*G***del, final boolean generatePrefix*/)
 	{
 		URI namespaceURI=getNamespaceURI(resource); //get the resource namespace URI, if it has one
 		
@@ -503,36 +520,20 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 		{
 Debug.trace("has namespace: ", namespaceURI); //G***del
 Debug.trace("has local name: ", localName); //G***del
-				//get the prefix from the to be used for this namespace
-			final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), namespaceURI.toString());
+				//get the prefix from the to be used for this namespace, but don't generate a new prefix if we don't recognize it
+			final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), namespaceURI.toString(), false);
 Debug.trace("prefix: ", prefix); //G***del
-			if(RDF_NAMESPACE_URI.equals(namespaceURI))  //if this is the RDF namespace
+			if(prefix!=null)	//if we know a prefix for this namespace URI
 			{
-				if(localName.startsWith(CONTAINER_MEMBER_PREFIX)) //if this is one of the rdf:li_XXX members
-					localName=ELEMENT_LI; //just use the normal rdf:li property name---the order is implicit in the serialization
-			}
-			return XMLUtilities.createQualifiedName(prefix, localName);  //create an XML qualified name for this namespace prefix and local name
-		}
-		else  //if there is no namespace URI known, see if a namespace URI is registered that matches the beginning of this reference URI
-		{
-/*G***del
-			final String referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
-				//G***right now we iterate through the namespaces each time; there might be a better way to do this
-			final Iterator namespaceEntryIterator=getNamespacePrefixMap().entrySet().iterator(); //get an iterator to the namespace prefixes and URIs
-			while(namespaceEntryIterator.hasNext())  //while there are more namespace entries
-			{
-				final Map.Entry namespaceEntry=namespaceEntryIterator.next(); //get the next namespace entry
-				final String namespaceURI=(String)namespaceEntry.getValue();  //get this namespace URI
-				if(referenceURI.startsWith(namespaceURI)) //if this reference URI is in this namespace
+				if(RDF_NAMESPACE_URI.equals(namespaceURI))  //if this is the RDF namespace
 				{
-					final String prefix=(String)namespaceEntry.getKey();  //get this namespace prefix
-					final String localName=referenceURI.substring(namespaceURI.length()); //remove the namespace URI from the front of the reference URI to get the local name
-					return XMLUtilities.createQualifiedName(prefix, localName);  //create an XML qualified name for this namespace prefix and local name
+					if(localName.startsWith(CONTAINER_MEMBER_PREFIX)) //if this is one of the rdf:li_XXX members
+						localName=ELEMENT_LI; //just use the normal rdf:li property name---the order is implicit in the serialization
 				}
+				return XMLUtilities.createQualifiedName(prefix, localName);  //create an XML qualified name for this namespace prefix and local name
 			}
-*/
-			return resource.getReferenceURI().toString(); //just use the reference URI as the label, if we can't find anything else G***we might want to check for rdf:li_ here as well; maybe not
 		}
+		return resource.getReferenceURI().toString(); //just use the reference URI as the label, if we can't find anything else G***we might want to check for rdf:li_ here as well; maybe not
 	}
 
 	/**Determines the namespace URI to be used for the given resource for XML
