@@ -7,50 +7,12 @@ import com.garretwilson.io.*;
 /**Various URL manipulating functions.
 @see java.net.URL
 */
-public class URLUtilities implements URLConstants, InputStreamLocator
+public class URIUtilities implements URIConstants	//G***del InputStreamLocator
 {
 
 	/**Default constructor.*/
-	public URLUtilities()
+	public URIUtilities()
 	{
-	}
-
-	/**Checks to see if a file exists at the location specified by the URL. The
-		following protocols are supported:
-		<ul>
-		  <li>file</li>
-			<li>http</li>
-		</ul>
-		URLs using other protocols are assumed to exist.
-	@param url The URL of the file to check.
-	@return <code>false</code> if it can be determined that no file exists at the
-		given URL, otherwise <code>true</code>.
-	*/
-	public static boolean exists(final URL url)
-	{
-		final String protocol=url.getProtocol();  //get the protocol of the URL
-		if(FILE_PROTOCOL.equals(protocol))  //if this is the file protocol
-		{
-		  return getFile(url).exists();  //create a file from the URL and see if it exists
-		}
-		else if(HTTP_PROTOCOL.equals(protocol))  //if this is the HTTP protocol
-		{
-			try
-			{
-				final URLConnection urlConnection=url.openConnection();  //open a connection to the URL
-				if(urlConnection instanceof HttpURLConnection) //if this is an HTTP connection
-				{
-						//if this URL returned a 404 Not Found response code
-					if(((HttpURLConnection)urlConnection).getResponseCode()==HttpURLConnection.HTTP_NOT_FOUND)
-						return false; //show that the file does not exist
-				}
-			}
-			catch(IOException ioException)  //if we can't even make a connection to the URL
-			{
-				return false; //show that the file doesn't exist
-			}
-		}
-		return true;  //if we don't know that it doesn't assume the file exists
 	}
 
 	/**Retrieves a <code>File</code> representing the file of the URI.
@@ -63,35 +25,25 @@ public class URLUtilities implements URLConstants, InputStreamLocator
 		return new File(uri.getPath()); //create a new File from the URI path
 	}
 
-	/**Retrieves a <code>File</code> representing the file of the URL.
-	@param url The URL for which to return a file.
-	@return A <code>File</code> object representing the file path of the URL
-		with no query string.
-	*/
-	public static File getFile(final URL url)
-	{
-		return new File(url.getPath()); //create a new File from the URL path
-	}
-
-	/**Retrieves the file name of the URL.
-	@param url The URL for which to return a file name.
-	@return The name of the file in the URL.
+	/**Retrieves the file name of the URI.
+	@param url The URI for which to return a file name.
+	@return The name of the file in the URI.
 	@see #getFile
 	*/
-	public static String getFileName(final URL url)
+	public static String getFileName(final URI uri)
 	{
-		return getFile(url).getName();  //return the name of the file we construct from the URL
+		return getFile(uri).getName();  //return the name of the file we construct from the URI
 	}
 
-	/**Returns the media type for the specified URL based on its file extension.
-	@param url The URL for which to return a media type.
-	@return The default media type for the URL's file extension, or <code>null</code>
+	/**Returns the media type for the specified URI based on its file extension.
+	@param uri The URI for which to return a media type.
+	@return The default media type for the URI's file extension, or <code>null</code>
 		if no known media type is associated with this URL's extension.
 	@see MediaType#getMediaType
 	*/
-	public static MediaType getMediaType(final URL url)
+	public static MediaType getMediaType(final URI uri)
 	{
-		return MediaType.getMediaType(FileUtilities.getExtension(getFile(url))); //return the media type based on the extension of the URL filename
+		return MediaType.getMediaType(FileUtilities.getExtension(getFile(uri))); //return the media type based on the extension of the URI filename
 	}
 
 	/**Creates a URL from the given filename relative to the given context object.
@@ -106,6 +58,7 @@ public class URLUtilities implements URLConstants, InputStreamLocator
 	@see File
 	@see URL
 	*/
+/*G***fix	
 	public static URL createURL(Object contextObject, final String filename) throws MalformedURLException
 	{
 		URL url=null;	//we'll use this variable to store the new URL we create
@@ -190,73 +143,20 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	@throws MalformedURLException Thrown if a relative URL cannot be
 		determined from the context URL.
 	*/
+/*G***fix
 	public static String getRelativePath(final URL contextURL, final URL url) throws MalformedURLException
 	{
-/*G***del
-		final String canonicalReferenceDirectoryPath=referenceDirectory.getCanonicalPath(); //convert the reference directory to its canonical form
-		final String canonicalFilePath=file.getCanonicalPath(); //convert the file to its canonical form
-		final int canonicalReferenceDirectoryPathLength=canonicalReferenceDirectoryPath.length(); //see how long the canonical directory is
-Debug.trace("Canonical directory: "+canonicalReferenceDirectoryPath);
-Debug.trace("Canonical file: "+canonicalFilePath);
-*/
 
-//G***del 		final String contextURLString=contextURL.toString(); //get the string version of the context URL
-//G***del 		final String urlString=url.toString(); //get the string version of the URL
-
-//G***del Debug.trace("context URL: ", contextURL);
-//G***del Debug.trace("URL: ", url);
-		final URL directoryURL=getDirectoryURL(contextURL); //get the directory URL of the context URL
-		final String directoryURLPath=directoryURL.getPath(); //get the path of the context URL
-//G***del Debug.trace("context URL string: ", contextURLString);  //G***del
-		final String urlPath=url.getPath(); //get the path of the URL
-//G***del Debug.trace("URL string: ", urlString);  //G***del
-/*G***del; this is going in the wrong direction
-		final File contextURLPathFile=new File(contextURLPathFile); //create a file from the URL path
-		final File contextURLFilename=contextURLPathFile.getName(); //get the name of the context URL; this should be an empty string
-		if(contextURLFilename.length()>0) //if there is a context filename
-*/
-
-
-//G***del		final int contextURLStringLength=contextURLString.length(); //see how long the context URL is
-//G***del if not needed		if(contextURLStringLength<urlString.length())  //make sure the context is shorter than the entire url
-/*G***del
-Debug.trace("context URL filename: ", contextURL.getFile());  //G***del
-Debug.trace("context URL path: ", contextURL.getPath());  //G***del
-Debug.trace("context URL ref: ", contextURL.getRef());  //G***del
-Debug.trace("file: ", new File(contextURL.getFile()).getName());  //G***del
-*/
 		  //G***check this new implementation; this simply chops off everything that matches
-/*G***del
-	final int minLength=Math.min(contextURLPath.length(), urlPath.length());  //see which is the shortest string
-	for(int i=0; i<minLength; ++i)  //look at each character in the path
-	{
-		if(contextURLPath.charAt(i)!=urlPath.charAt(i)) //if this character is the first one that doesn't match
-		{
-			for(; i>0; --i) //go backwards and try to find the last slash
-			{
-				if(urlPath.charAt(i-1)=='/' || urlPath.charAt(i-1)=='\\') //see if the previous character was a directory divider G***use constants here
-				  return urlPath.substring(i);  //return everything left in the URL path, starting at this char
-			}
-		}
-	}
-	return new File(urlPath).getName(); //if the url is exactly the same as the context URL, we'll just use the filename of the URL
-*/
-
 
 		if(urlPath.startsWith(directoryURLPath)) //if the directory URL path is at the beginning of the URL path
 		{
 			final String relativePath=urlPath.substring(directoryURLPath.length());  //get everything after the directory URL
-/*G***del
-			if(relativePath.length()==0)  //if the url is exactly the same as the context URL G***fix by changing the context URL from a file to a directory
-				relativePath=new File(urlPath).getName(); //we'll just use the filename of the url
-*/
-//G***del Debug.trace("relative path context URL: ", contextURL);
-//G***del Debug.trace("relative path URL: ", url);
-//G***del Debug.trace("relative path: ", relativePath);
 			return relativePath;  //return the relative path
 		}
 		throw new MalformedURLException("Cannot create relative path for "+url+" from context "+contextURL);  //show that we couldn't determine a relative path
 	}
+*/
 
 	/**Opens a connection to the given URL, recognizing redirects.
 		This method was inspired by the source code to
@@ -299,6 +199,7 @@ Debug.trace("file: ", new File(contextURL.getFile()).getName());  //G***del
 	@exception IOException Thrown if there is an error loading the bytes.
 	@see InputStreamUtilities#getBytes
 	*/
+/*G***fix
 	public static byte[] readBytes(final URL url) throws IOException
 	{
 		final InputStream urlInputStream=url.openConnection().getInputStream();  //create an input stream to the URL
@@ -311,6 +212,7 @@ Debug.trace("file: ", new File(contextURL.getFile()).getName());  //G***del
 			urlInputStream.close();  //always close the URL input stream
 		}
 	}
+*/
 
 	/**Loads the contents of a URL into a string.
 	@param url The URL from which to read.
@@ -318,26 +220,20 @@ Debug.trace("file: ", new File(contextURL.getFile()).getName());  //G***del
 	@return A string containing the contents of the URL.
 	@exception IOException Thrown if there is an error loading the bytes.
 	*/
+/*G***fix
 	public static String readString(final URL url, final String encoding) throws IOException
 	{
-/*G***del
-		final URLConnection urlConnection=url.openConnection(); //open a connection to the URL
-		urlConnection.getContentEncoding()
-		if(urlConnection instanceof HttpURLConnection)  //if this is a HTTP connection
-
-	String contentType = conn.getContentType();
-	if(contentType!=null) //if we receive at least a guess of the content type
-	{
-*/
 		final byte[] bytes=readBytes(url); //load the contents of the URL
 		return new String(bytes, encoding); //convert the bytes into a string, using the given encoding
 	}
+*/
 
 	/**Stores the contents of a URL in an output stream.
 	@param url The URL to copy.
 	@param outputStream The destination of the URL contents.
 	@exception IOException Thrown if there is an error copying the URL.
 	*/
+/*G***fix
 	public static void write(final URL url, final OutputStream outputStream) throws IOException
 	{
 		final InputStream fileInputStream=new BufferedInputStream(url.openConnection().getInputStream()); //created a buffered input stream to the URL
@@ -350,5 +246,6 @@ Debug.trace("file: ", new File(contextURL.getFile()).getName());  //G***del
 			fileInputStream.close();  //always close the file input stream
 		}
 	}
+*/
 
 }
