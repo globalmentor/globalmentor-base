@@ -1,4 +1,4 @@
-package com.garretwilson.rdf;
+package com.garretwilson.util;
 
 import java.net.URI;
 

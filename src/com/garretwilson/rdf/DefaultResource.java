@@ -1,6 +1,7 @@
 package com.garretwilson.rdf;
 
 import java.net.URI;
+import com.garretwilson.util.*;
 
 /**Represents the default implementation of a resource.
 	This class provides compare functionality that sorts according to the reference

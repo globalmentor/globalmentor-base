@@ -1,8 +1,7 @@
-package com.garretwilson.rdf.event;
+package com.garretwilson.util;
 
 import java.net.URI;
 import java.util.EventObject;
-import com.garretwilson.rdf.Resource;
 
 /**An event related to a resource.
 @author Garret Wilson

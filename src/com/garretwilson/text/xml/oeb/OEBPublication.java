@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.zip.*;
 import java.net.*;
 import com.garretwilson.rdf.*;
+import com.garretwilson.util.*;
 
 //G***del all the XMLUndefinedEntityReferenceException throws when we don't need them anymore, in favor of XMLWellFormednessException
 

@@ -1,4 +1,4 @@
-package com.garretwilson.rdf.event;
+package com.garretwilson.util;
 
 import java.util.EventListener;
 

@@ -13,7 +13,7 @@ import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XPath;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.xpackage.*;
-import com.garretwilson.util.Debug;
+import com.garretwilson.util.*;
 import org.w3c.dom.*;
 
 //G***del all the XMLUndefinedEntityReferenceException throws when we don't need them anymore, in favor of XMLWellFormednessException
