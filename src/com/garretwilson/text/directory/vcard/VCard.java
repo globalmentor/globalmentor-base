@@ -238,7 +238,7 @@ public class VCard extends Directory implements VCardConstants
 			addCategories(categories);	//add the new values
 		}
 
-	/**The supplemental information or a comment that is associated with the vCard*/
+	/**The supplemental information or a comment that is associated with the vCard.*/
 	private LocaleText note=null;
 
 		/**@return The supplemental information or a comment that is associated
@@ -252,6 +252,21 @@ public class VCard extends Directory implements VCardConstants
 			if there is no note.
 		*/
 		public void setNote(final LocaleText note) {this.note=note;}
+
+	/**The national-language-specific sorting string.*/
+	private LocaleText sortString=null;
+
+		/**@return The national-language-specific sorting string, or
+			<code>null</code> if there is no sorting string specified.
+		*/
+		public LocaleText getSortString() {return sortString;}
+
+		/**Sets the national-language-specific sorting string associated
+			with the vCard.
+		@param sortingString The sorting string, or <code>null</code>
+			if there should be no sorting string.
+		*/
+		public void setSortString(final LocaleText sortString) {this.sortString=sortString;}
 
 //TODO add other explanatory types
 

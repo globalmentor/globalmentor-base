@@ -592,6 +592,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 							case ';':
 							case ',':
 								stringBuffer.append(escapedChar);	//escaped backslashes and commas get appended normally
+								break;
 							default:	//if something else was escaped, we don't recognize it
 								throw new ParseUnexpectedDataException("\\;,"+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR+TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR, escapedChar, reader);	//show that we didn't expect this character here				
 						}
@@ -932,6 +933,16 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 					continue;	//don't process this content line further
 				}
 			}
+/*TODO fix when we allow this to be edited
+			else if(SORT_STRING_TYPE.equalsIgnoreCase(typeName))	//SORT-STRING
+			{
+				if(vcard.getSortString()==null)	//if there is not yet a sorting string
+				{
+					vcard.setSortString((LocaleText)contentLine.getValue());	//set the sorting string
+					continue;	//don't process this content line further
+				}
+			}
+*/
 			else if(URL_TYPE.equalsIgnoreCase(typeName))	//URL
 			{
 				if(vcard.getURL()==null)	//if there is not yet a URL
@@ -1073,6 +1084,12 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		{
 			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, NOTE_TYPE, vcard.getNote()));	//NOTE
 		}
+/*TODO fix when we allow this to be edited
+		if(vcard.getSortString()!=null)	//SORT-STRING
+		{
+			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, SORT_STRING_TYPE, vcard.getNote()));	//SORT-STRING
+		}
+*/
 		if(vcard.getURL()!=null)	//URL
 		{
 			contentLineList.add(new ContentLine(VCARD_PROFILE_NAME, null, URL_TYPE, vcard.getURL()));	//URL
