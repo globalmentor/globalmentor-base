@@ -23,7 +23,7 @@ import com.garretwilson.util.*;
 		}
 	}
 	</pre></code></blockquote>
-	</p>
+</p>
 <p>This class uses little memory if there are no registered event listeners.</p>
 <p>This class was inspired by <code>javax.swing.EventListenerList</code>
 	1.33 12/03/01 by Georges Saab, Hans Muller, and James Gosling.</p>
