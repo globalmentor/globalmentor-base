@@ -831,7 +831,6 @@ Debug.trace("serializing N: ", value);	//G***del
 			}
 			else if(LABEL_TYPE.equalsIgnoreCase(typeName))	//LABEL
 			{
-//TODO make sure the NameAddressPanel stores label information so that it won't be lost
 				vcard.getLabelList().add((LocaleText)contentLine.getValue());	//add this label to our list
 				continue;	//don't process this content line further
 			}

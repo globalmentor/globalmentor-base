@@ -158,60 +158,22 @@ public class DirectorySerializer implements DirectoryConstants
 		registerValueSerializer(FLOAT_VALUE_TYPE, getPredefinedProfile());		
 	}
 
-	/**Serializer the content lines from a directory of type <code>text/directory</code>.
-	@param writer The writer to which the lines of the directory should be serialized.
-	@exception IOException Thrown if there is an error writing to the directory.
-	*/
-/*G***fix if we later decide to allow automatic line folding
-	public void serialize(final Writer writer) throws IOException
-	{
-		return processDirectory(new LineUnfoldParseReader(reader, sourceObject));	//create a new line unfold parse reader and use that to process the directory
-	}
-*/
-
-	/**Processes the content lines from a directory of type <code>text/directory</code>.
-	The first profile encountered that can create a directory object will be
-		used to create the directory object. Otherwise, the predefined profile
-		will be used to create a default directory object containing the content
-		lines. 
-	@param reader The reader that contains the lines of the directory.
-	@return An object representing the directory.
-	@exception IOException Thrown if there is an error reading the directory.
-	@exception ParseIOException Thrown if there is a an error interpreting the directory.
-	*/
-/*G***fix
-	public Directory processDirectory(final LineUnfoldParseReader reader) throws IOException, ParseIOException
-	{
-		final Set checkedProfileNameSet=new HashSet();	//create a set to store the profile names we check
-		final ContentLine[] contentLines=processContentLines(reader);	//process the content lines
-		for(int i=0; i<contentLines.length; ++i)	//look at each content line
-		{
-			final String profileName=contentLines[i].getProfile();	//get this line's profile name
-			if(profileName!=null && !checkedProfileNameSet.contains(profileName))	//if this content line is in a profile that we haven't checked
-			{
-				final Profile profile=getProfile(profileName);	//see if we have a profile object for this profile
-				if(profile!=null)	//if we have a profile object registered
-				{
-					final Directory directory=profile.createDirectory(contentLines);	//ask this profile to create a directory
-					if(directory!=null)	//if the profile created a directory
-					{
-						return directory;		//return the directory the profile created
-					}
-					
-				}
-				checkedProfileNameSet.add(profileName);	//show that we've checked this profile 				
-			}
-		}
-		return getPredefinedProfile().createDirectory(contentLines);	//if none of the profiles can create a directory, ask the predefined profile to create a directory
-	}
-*/
-
 	/**Serializes content lines from a directory of type <code>text/directory</code>.
 	@param contentLines An array of content lines in the directory.
 	@param writer The writer to which the lines of the directory should be serialized.
 	@exception IOException Thrown if there is an error writing to the directory.
 	*/
 	public void serializeContentLines(final ContentLine[] contentLines, final Writer writer) throws IOException
+	{
+		serializeContentLines(contentLines, new LineFoldWriter(writer));	//create a new line fold writer and use that to serialize the directory
+	}
+
+	/**Serializes content lines from a directory of type <code>text/directory</code>.
+	@param contentLines An array of content lines in the directory.
+	@param writer The writer to which the lines of the directory should be serialized.
+	@exception IOException Thrown if there is an error writing to the directory.
+	*/
+	protected void serializeContentLines(final ContentLine[] contentLines, final LineFoldWriter writer) throws IOException
 	{
 		profileStack=new LinkedList();	//create a new profile stack
 		defaultProfile=null;	//show that there is no default profile
@@ -258,7 +220,7 @@ public class DirectorySerializer implements DirectoryConstants
 			writer.write(GROUP_NAME_SEPARATOR_CHAR);	//write the group name separator
 		}
 		final String typeName=contentLine.getTypeName();	//get the type name of the line
-Debug.trace("Serializing content line for type name: ", typeName);
+//G***del Debug.trace("Serializing content line for type name: ", typeName);
 		writer.write(typeName);	//write the type name
 		final List paramList=contentLine.getParamList();	//get the list of parameters
 		if(paramList.size()>0)	//if there are parameters

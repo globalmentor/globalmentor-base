@@ -216,7 +216,8 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	{
 		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//if this is the "text" value type
 		{
-			writer.write(((LocaleText)value).getText());	//serialize the text
+			serializeTextValue(((LocaleText)value).getText(), writer);	//serialize the text
+//G***del			writer.write(((LocaleText)value).getText());	//serialize the text
 			return true;	//show that we serialized the value 
 		}
 		return false;	//show that we can't serialize the value
@@ -226,7 +227,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	protected final static char[] TEXT_MATCH_CHARS=new char[]{'\n', '\\', ','};
 
 	/**The strings to replace the characters to be escaped in text.*/
-	protected final static String[] TEXT_REPLACEMENT_STRINGS=new String[]{"\n", "\\", "\\,"};
+	protected final static String[] TEXT_REPLACEMENT_STRINGS=new String[]{"\\n", "\\\\", "\\,"};
 
 	/**Serializes a text value.
 	<p>The newline character '\n' will be be converted to "\n", and 

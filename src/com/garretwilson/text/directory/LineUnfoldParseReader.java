@@ -4,11 +4,6 @@ import java.io.Reader;
 import java.io.IOException;
 import com.garretwilson.io.ParseReader;
 
-/**A line in a directory of type <code>text/directory</code> as defined in
-	"RFC 2425: A MIME Content-Type for Directory Information".
-@author Garret Wilson
-*/
-
 /**Reader that unfolds lines of type <code>text/directory</code> as defined
 	"RFC 2425: A MIME Content-Type for Directory Information".
 @author Garret Wilson
@@ -107,7 +102,7 @@ public class LineUnfoldParseReader extends ParseReader implements DirectoryConst
 		{
 			if(buffer[sourceIndex]==CR && buffer[sourceIndex+1]==LF && buffer[sourceIndex+2]==SP)	//if this is CRLF+SP
 			{
-				sourceIndex+=2;	//skip the next two characters, which on the next increment will skip the entire CRLF+SP
+				sourceIndex+=3;	//skip the entire CRLF+SP
 			}
 			if(sourceIndex!=destIndex)	//if we've collapsed at least one CRLF+SP, we'll be copying information
 				buffer[destIndex]=buffer[sourceIndex];	//copy this byte
