@@ -7,7 +7,6 @@ import java.util.*;
 import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.util.Debug;
 
 import org.w3c.dom.*;
 
@@ -328,7 +327,7 @@ public class RDFUtilities implements RDFConstants
 	@param typeLocalName The XML local name that represents part of the reference URI.
 	@return A read-only collection of resources that are of the requested type.
 	*/
-	public static Collection getResourcesByType(final RDF rdf, final URI typeNamespaceURI, final String typeLocalName)
+	public static Collection<RDFResource> getResourcesByType(final RDF rdf, final URI typeNamespaceURI, final String typeLocalName)
 	{
 		return getResourcesByType(rdf, RDFUtilities.createReferenceURI(typeNamespaceURI, typeLocalName)); //gather the resources with a type property of the URI from the given namespace and local name
 	}
@@ -338,10 +337,10 @@ public class RDFUtilities implements RDFConstants
 	@param typeURI The reference URI of the type resource.
 	@return A read-only collection of resources that are of the requested type.
 	*/
-	public static Collection getResourcesByType(final RDF rdf, final URI typeURI)
+	public static Collection<RDFResource> getResourcesByType(final RDF rdf, final URI typeURI)
 	{
-		final List resourceList=new ArrayList();  //create a list in which to store the resources
-		final Iterator resourceIterator=rdf.getResourceIterator();  //get an iterator to the resources in this data model
+		final List<RDFResource> resourceList=new ArrayList<RDFResource>();  //create a list in which to store the resources
+		final Iterator<RDFResource> resourceIterator=rdf.getResourceIterator();  //get an iterator to the resources in this data model
 		while(resourceIterator.hasNext()) //while there are more resources
 		{
 		  final RDFResource resource=(RDFResource)resourceIterator.next();  //get the next resource
@@ -372,7 +371,7 @@ public class RDFUtilities implements RDFConstants
 		properties, each item of which is expected to be an <code>RDFResource</code>
 		of the type. 
 	*/
-	public static Iterator getTypeIterator(final RDFResource resource)
+	public static Iterator<RDFObject> getTypeIterator(final RDFResource resource)
 	{
 		return resource.getPropertyValueIterator(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //return an iterator to the type properties		
 	}

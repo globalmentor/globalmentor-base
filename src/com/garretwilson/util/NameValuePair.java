@@ -7,20 +7,20 @@ import com.garretwilson.lang.ObjectUtilities;
 	implement the <code>Comparable</code> interface.
 @author Garret Wilson
 */
-public class NameValuePair extends DefaultNamedObject
+public class NameValuePair<N, V> extends DefaultNamedObject<N>
 {
 
 	/**The value of the object.*/
-	final private Object value;
+	final private V value;
 
 		/**@return The value of the object.*/
-		public Object getValue() {return value;}
+		public V getValue() {return value;}
 
 	/**Constructor specifying the name and value.
 	@param newName The object's new name.
 	@param newValue The object's new value
 	*/
-	public NameValuePair(final Object newName, final Object newValue)
+	public NameValuePair(final N newName, final V newValue)
 	{
 		super(newName);	//construct the parent class
 		value=newValue; //set the value
@@ -62,11 +62,11 @@ public class NameValuePair extends DefaultNamedObject
 	@see #getName
 	@see #getValue
 	*/
-	public int compareTo(Object object) throws ClassCastException
+	public int compareTo(NameValuePair<N, V> nameValuePair) throws ClassCastException
 	{
-		final int result=super.compareTo(object); //compare names
+		final int result=super.compareTo(nameValuePair); //compare names
 			//if the names are equal, compare the values
-		return result!=0 ? result : ((Comparable)getValue()).compareTo(((NameValuePair)object).getValue()); //compare values
+		return result!=0 ? result : ((Comparable<V>)getValue()).compareTo(nameValuePair.getValue()); //compare values
 	}
 
 	/**@return A string representation of this object in the format "name=\"value\"".*/

@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.*;
 
 import com.garretwilson.model.*;
-import com.garretwilson.util.*;
 
 /**Represents the an RDF resource connected in an RDF graph.
 @author Garret Wilson
@@ -48,7 +47,7 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Cloneabl
 		is a <code>RDFPropertyValuePair</code>, with the name being the property predicate
 		and the value being the property value.
 	*/
-	public ListIterator getPropertyIterator();
+	public ListIterator<RDFPropertyValuePair> getPropertyIterator();
 
 	/**Searches and returns the first occurring property value that appears as
 		an RDF statement object with a predicate of <code>propertyResource</code>.
@@ -86,7 +85,7 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Cloneabl
 	@return An iterator to a read-only list of values of properties, each either a
 		<code>RDFResource</code> or a <code>RDFLiteral</code>.
 	*/
-	public Iterator getPropertyValueIterator(final URI propertyURI);  //G***maybe fix to make the iterator dynamic to the RDF data model
+	public Iterator<RDFObject> getPropertyValueIterator(final URI propertyURI);  //G***maybe fix to make the iterator dynamic to the RDF data model
 
 	/**Searches and returns an iterator of all property values that appear as
 		RDF statement objects with a predicate of a property URI formed by the
@@ -97,7 +96,7 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Cloneabl
 	@return An iterator to a read-only list of values of properties, each either a
 		<code>RDFResource</code> or a <code>RDFLiteral</code>.
 	*/
-	public Iterator getPropertyValueIterator(final URI namespaceURI, final String localName);
+	public Iterator<RDFObject> getPropertyValueIterator(final URI namespaceURI, final String localName);
 
 	/**Determines if the resource has the given property with the resource
 		identified by the given URI.

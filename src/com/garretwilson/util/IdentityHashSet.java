@@ -15,9 +15,9 @@ import java.util.*;
 @see java.util.HashSet
 @see java.util.IdentityHashMap
 */
-public class IdentityHashSet extends AbstractSet implements Set, Cloneable
+public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E>, Cloneable
 {
-    private transient IdentityHashMap map;
+    private transient IdentityHashMap<E, Object> map;
 
     // Dummy value to associate with an Object in the backing Map
     private static final Object PRESENT = new Object();
@@ -27,7 +27,7 @@ public class IdentityHashSet extends AbstractSet implements Set, Cloneable
      * default initial capacity (16) and load factor (0.75).
      */
     public IdentityHashSet() {
-	map = new IdentityHashMap();
+	map = new IdentityHashMap<E, Object>();
     }
 
     /**
@@ -39,8 +39,8 @@ public class IdentityHashSet extends AbstractSet implements Set, Cloneable
      * @param c the collection whose elements are to be placed into this set.
      * @throws NullPointerException   if the specified collection is null.
      */
-    public IdentityHashSet(Collection c) {
-	map = new IdentityHashMap(Math.max((int) (c.size()/.75f) + 1, 16));
+    public IdentityHashSet(Collection<E> c) {
+	map = new IdentityHashMap<E, Object>(Math.max((int) (c.size()/.75f) + 1, 16));
 	addAll(c);
     }
 
@@ -54,7 +54,7 @@ public class IdentityHashSet extends AbstractSet implements Set, Cloneable
      *             than zero.
      */
     public IdentityHashSet(int initialCapacity) {
-	map = new IdentityHashMap(initialCapacity);
+	map = new IdentityHashMap<E, Object>(initialCapacity);
     }
 
     /**
@@ -64,7 +64,7 @@ public class IdentityHashSet extends AbstractSet implements Set, Cloneable
      * @return an Iterator over the elements in this set.
      * @see ConcurrentModificationException
      */
-    public Iterator iterator() {
+    public Iterator<E> iterator() {
 	return map.keySet().iterator();
     }
 
@@ -104,7 +104,7 @@ public class IdentityHashSet extends AbstractSet implements Set, Cloneable
      * @return <tt>true</tt> if the set did not already contain the specified
      * element.
      */
-    public boolean add(Object o) {
+    public boolean add(E o) {
 	return map.put(o, PRESENT)==null;
     }
 
@@ -133,8 +133,8 @@ public class IdentityHashSet extends AbstractSet implements Set, Cloneable
      */
     public Object clone() {
 	try { 
-	    IdentityHashSet newSet = (IdentityHashSet)super.clone();
-	    newSet.map = (IdentityHashMap)map.clone();
+	    IdentityHashSet<E> newSet = (IdentityHashSet<E>)super.clone();
+	    newSet.map = (IdentityHashMap<E, Object>)map.clone();
 	    return newSet;
 	} catch (CloneNotSupportedException e) { 
 	    throw new InternalError();

@@ -32,14 +32,14 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	/*The data model that created this resource, or <code>null</code> if the
 		resource was created separate from a data model.
 	*/
-	private Reference rdfReference;
+	private Reference<RDF> rdfReference;
 
 		/**@return The RDF data model with which this resource is associated, or
 			<code>null</code> if this resource is not associated with a data model.
 		*/
 		public RDF getRDF()
 		{
-			return rdfReference!=null ? (RDF)rdfReference.get() : null;	//return the RDF, if any, indicated by the reference
+			return rdfReference!=null ? rdfReference.get() : null;	//return the RDF, if any, indicated by the reference
 		}
 
 		/**Associates this resource with an RDF data model.
@@ -49,14 +49,14 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		*/
 		public void setRDF(final RDF rdf)
 		{
-			rdfReference=rdf!=null ? new WeakReference(rdf) : null;	//save the RDF, if any, using a weak reference			
+			rdfReference=rdf!=null ? new WeakReference<RDF>(rdf) : null;	//save the RDF, if any, using a weak reference			
 		}
 
 	/**The list of properties, each of which is a <code>RDFPropertyValuePair</code>,
 		with the name being the property predicate and the value being the property
 		value.
 	*/
-	protected ArrayList propertyList=new ArrayList();  //G***should this really be protected, and not private? currently only used by RDFSequenceResource
+	protected ArrayList<RDFPropertyValuePair> propertyList=new ArrayList();  //G***should this really be protected, and not private? currently only used by RDFSequenceResource
 
 	/**@return The number of properties this resource has.*/
 	public int getPropertyCount() {return propertyList.size();}
@@ -65,7 +65,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		is a <code>RDFPropertyValuePair</code>, with the name being the property predicate
 		and the value being the property value.
 	*/
-	public ListIterator getPropertyIterator()
+	public ListIterator<RDFPropertyValuePair> getPropertyIterator()
 	{
 		return propertyList.listIterator(); //return an iterator to the properties
 	}
@@ -79,10 +79,10 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	*/
 	public RDFObject getPropertyValue(final RDFResource propertyResource)
 	{
-		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
+		final Iterator<RDFPropertyValuePair> propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
+			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
 		  if(propertyValuePair.getProperty().equals(propertyResource))  //if this resource is the same as the one requested
 				return propertyValuePair.getPropertyValue(); //return the value of the property as an RDF object
 		}
@@ -98,10 +98,10 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	*/
 	public RDFObject getPropertyValue(final URI propertyURI)
 	{
-		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
+		final Iterator<RDFPropertyValuePair> propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
+			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
 		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 				return propertyValuePair.getPropertyValue(); //return the value of the property as an RDF object
 		}
@@ -129,13 +129,13 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	@return An iterator to a read-only list of values of properties, each either a
 		<code>RDFResource</code> or a <code>RDFLiteral</code>.
 	*/
-	public Iterator getPropertyValueIterator(final URI propertyURI)  //G***maybe fix to make the iterator dynamic to the RDF data model
+	public Iterator<RDFObject> getPropertyValueIterator(final URI propertyURI)  //G***maybe fix to make the iterator dynamic to the RDF data model
 	{
-		final List propertyValueList=new ArrayList(); //cerate a list in which to store the property values
-		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
+		final List<RDFObject> propertyValueList=new ArrayList<RDFObject>(); //cerate a list in which to store the property values
+		final Iterator<RDFPropertyValuePair> propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
+			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
 		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 			{
 				propertyValueList.add(propertyValuePair.getPropertyValue()); //add the value of the property to the value list
@@ -153,7 +153,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	@return An iterator to a read-only list of values of properties, each either a
 		<code>RDFResource</code> or a <code>RDFLiteral</code>.
 	*/
-	public Iterator getPropertyValueIterator(final URI namespaceURI, final String localName)
+	public Iterator<RDFObject> getPropertyValueIterator(final URI namespaceURI, final String localName)
 	{
 		return getPropertyValueIterator(RDFUtilities.createReferenceURI(namespaceURI, localName)); //look for the property, combining the namespace URI and the local name for the reference URI
 	}
@@ -168,15 +168,10 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	*/
 	public boolean hasPropertyResourceValue(final URI propertyURI, final URI propertyValueURI)
 	{
-//G***del Debug.trace("looking for property value for property: ", propertyURI);  //G***del
-//G***del Debug.trace("looking for property value: ", propertyValue);  //G***del
-		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
+		final Iterator<RDFPropertyValuePair> propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
-//G***del Debug.trace("looking at name/value pair: ", nameValuePair);  //G***del
-//G***del Debug.trace("looking at name: ", nameValuePair.getName());  //G***del
-//G***del Debug.trace("looking at value: ", nameValuePair.getValue());  //G***del
+			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
 		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 			{
 				if(propertyValuePair.getPropertyValue() instanceof RDFResource)	//if the value is a resource
@@ -328,19 +323,6 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		return addProperty(RDFUtilities.locateResource(this, propertyNamespaceURI, propertyLocalName), literalValue, language); //create a new literal value and add the property
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	/**Removes all properties with the given URI.
 	@param propertyURI The reference URI of the property resource of the
 		properties to be removed.
@@ -349,10 +331,10 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	public int removeProperties(final URI propertyURI)
 	{
 		int propertiesRemovedCount=0;	//we haven't removed any properties, yet
-		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
+		final Iterator<RDFPropertyValuePair> propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
+			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
 			if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 			{
 				propertyIterator.remove();	//remove this property
@@ -475,21 +457,6 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		return setProperty(RDFUtilities.locateResource(this, propertyNamespaceURI, propertyLocalName), literalValue, language); //create a new literal value and set the property
 	}
 
-	/**Copy constructor. Constructs a resource with an identical reference URI
-		and identical properties. Properties themselves are not cloned.
-	@param resource The resource to copy.
-	*/
-/*G***del if not needed
-	DefaultRDFResource(final RDFResource resource)	//TODO delete this constructor when we can, now that we can simply change the reference URI at any time
-	{
-		super(resource.getReferenceURI());  //construct the parent class with the reference URI
-		namespaceURI=resource.getNamespaceURI(); //copy the namespace URI
-		localName=resource.getLocalName(); //copy the local name
-		CollectionUtilities.addAll(propertyList, resource.getPropertyIterator()); //add all the property values from the resource being copied
-//G***del when works		propertyList.addAll(resource.propertyList); //add all the property values from the resource being copied
-	}
-*/
-
 	/**Default constructor that creates a resource without a reference URI.
 	@see RDF#createResource
 	*/
@@ -580,17 +547,6 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		setRDF(rdf);	//associate the resource with the given RDF data model, if any
 	}
 
-	/**Copy constructor.
-	@param resource The resource that provides the data for the new copy.
-	*/
-/*G***del if not needed
-	private DefaultRDFResource(final DefaultRDFResource resource)
-	{
-		this(resource.getRDF(), resource.getReferenceURI(), resource.getNamespaceURI(), resource.getLocalName());  //construct a copy of the resource
-		propertyList.addAll(resource.propertyList);	//copy the properties
-	}
-*/
-
 	/**Returns a hash code value for the resource. 
 		If this resource has a reference URI, the default hash code is returned
 		(i.e. the hash code of the refeference URI). If this resource has no
@@ -635,7 +591,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		try
 		{ 
 			DefaultRDFResource resource=(DefaultRDFResource)super.clone();	//create a cloned copy of this resource
-			resource.propertyList=(ArrayList)propertyList.clone();	//clone the property list
+			resource.propertyList=(ArrayList<RDFPropertyValuePair>)propertyList.clone();	//clone the property list
 			return resource;	//return the cloned resource
 		}
 		catch(CloneNotSupportedException e)
