@@ -3,9 +3,13 @@ package com.garretwilson.util;
 import java.util.List;
 
 /**A list that allows quick lookup of its elements.
+This interface does not implement <code>Map</code>, because the <code>Map</code> interface
+has <code>remove(Object)</code> semantics that conflict with those of the corresponding <code>List</code> method. 
 @author Garret Wilson
+@see java.util.List
+@see java.util.Map
 */
-public interface MappedList<K, E> extends List<E>	//TODO maybe simply implement Map and List, with the Map implementation read-only
+public interface MappedList<K, E> extends List<E>
 {
   /**
    * Returns <tt>true</tt> if this map contains a mapping for the specified
@@ -24,7 +28,6 @@ public interface MappedList<K, E> extends List<E>	//TODO maybe simply implement 
    *            does not permit <tt>null</tt> keys (optional).
    */
   public boolean containsKey(Object key);
-
 
   /**
    * Returns the value to which this map maps the specified key.  Returns
@@ -51,5 +54,19 @@ public interface MappedList<K, E> extends List<E>	//TODO maybe simply implement 
    * @see #containsKey(Object)
    */
   public E get(Object key);
+
+  /**Removes the value from the list mapped to the given key value.
+  @param key The key whose mapping is to be removed from the map
+  	and whose corresponding value is to be removed from the list.
+  @return previous value associated with specified key, or <code>null</code>
+  	if there was no mapping for key.
+  @throws ClassCastException if the key is of an inappropriate type for
+  	this mapped list (optional).
+  @throws NullPointerException if the key is <code>null</code> and this mapped list
+  	does not permit <code>null</code> keys (optional).
+	@throws UnsupportedOperationException if the <code>remove</code> method is
+		not supported by this mapped list.
+	*/
+  public E removeKey(Object key);
 
 }

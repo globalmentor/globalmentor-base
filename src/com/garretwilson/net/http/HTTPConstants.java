@@ -5,12 +5,16 @@ import javax.servlet.http.HttpServletResponse;
 import static com.garretwilson.lang.StringUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
 
-/**Constants relating to the HyperText Transfer Protocol (HTTP).
+/**Constants relating to the HyperText Transfer Protocol (HTTP) as defined by
+<a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>,	"Hypertext Transfer Protocol -- HTTP/1.1".
 <p>Status code declarations and comments used from Tomcat org.apache.catalina.servlets.WebdavServlet by Remy Maucherat Revision: 1.19 $ $Date: 2004/09/19 01:20:10.</p>  
 @author Garret Wilson
 */
 public class HTTPConstants
 {
+	
+	/**The default HTTP port, 80.*/
+	public final static int DEFAULT_PORT=80;
 
 	/**The HTTP header indicating the allowed methods.*/
 	public final static String ALLOW_HEADER="Allow";
@@ -26,10 +30,14 @@ public class HTTPConstants
 	public final static String CONTENT_DESCRIPTION_HEADER="Content-Description";
 	/**The HTTP header indicating the content disposition.*/
 	public final static String CONTENT_DISPOSITION_HEADER="Content-Disposition";
+	/**The HTTP header indicating the size of the entity body.*/
+	public final static String CONTENT_LENGTH_HEADER="Content-Length";
 	/**The HTTP header indicating the canonical location of the resource.*/
 	public final static String CONTENT_LOCATION_HEADER="Content-Location";
 	/**The HTTP header indicating the expiration of the content.*/
 	public final static String EXPIRES_HEADER="Expires";
+	/**The HTTP header indicating Internet host and port number of the resource being requested.*/
+	public final static String HOST_HEADER="Host";
 	/**The HTTP header indicating the destination of a redirection.*/
 	public final static String LOCATION_HEADER="Location";
 	/**The HTTP pragma header.*/
@@ -230,9 +238,24 @@ public class HTTPConstants
    */
   public static final int SC_UNSUPPORTED_MEDIA_TYPE = 415;
 
+  
+  
+	/**The character '.' which separates components of an HTTP version.*/
+	public final static char VERSION_DELIMITER='.';
+
+	/**The character '/' which separates the letters "HTTP" from the HTTP version.*/
+	public final static char VERSION_SEPARATOR='/';
+
+	/**The string "HTTP" begins an HTTP version.*/
+	public final static String VERSION_IDENTIFIER="HTTP";
+  
   /**The character for delimiting HTTP list items.*/
 	public final static char LIST_DELIMITER=COMMA_CHAR;
 
+	
+  /**The character which separates a header name from a header value.*/
+	public final static char HEADER_SEPARATOR=':';
+	
 	/**The character used to escape quotation marks.*/
 	public final static char ESCAPE_CHAR='\\';
 
@@ -240,35 +263,27 @@ public class HTTPConstants
 	public final static String CTL_CHARS=createString((char)0, (char)31)+(char)127;
 
   /**US-ASCII carriage return.*/
-	public final static char CR_CHAR=(char)13;
+	public final static char CR=(char)13;
   /**US-ASCII linefeed.*/
-	public final static char LF_CHAR=(char)10;
+	public final static char LF=(char)10;
   /**US-ASCII space.*/
-	public final static char SP_CHAR=(char)32;
+	public final static char SP=(char)32;
   /**US-ASCII horizontal tab.*/
-	public final static char HT_CHAR=(char)9;
+	public final static char HT=(char)9;
   /**US-ASCII double-quote mark.*/
-	public final static char QUOTE_CHAR=(char)34;
+	public final static char QUOTE=(char)34;
 
   /**The CR+LF carriage return + linefeed combination.*/
-	public final static String CRLF=""+CR_CHAR+LF_CHAR;
+	public final static String CRLF=""+CR+LF;
 
 	/**Characters that must be in a quoted string to be included in a parameter value.*/
-	public final static String SEPARATOR_CHARS="()<>@,;:\\"+QUOTE_CHAR+"/[]?={}"+SP_CHAR+HT_CHAR;
+	public final static String SEPARATOR_CHARS="()<>@,;:\\"+QUOTE+"/[]?={}"+SP+""+HT;
 
 	/**Characters that delimit tokens.*/
 	public final static String DELIMITER_CHARS=CTL_CHARS+SEPARATOR_CHARS; 
 
+	/**Linear whitespace characters which can, in the correct sequence, be folded into single spaces.*/
+	public final static String LWS_CHARS=new StringBuilder(CRLF).append(SP).append(HT).toString();
 
-/*TODO fix if needed
-HTTP/1.1 header field values can be folded onto multiple lines if the
-continuation line begins with a space or horizontal tab. All linear
-white space, including folding, has the same semantics as SP. A
-recipient MAY replace any linear white space with a single SP before
-interpreting the field value or forwarding the message downstream.
-
-LWS            = [CRLF] 1*( SP | HT )
-
-public final static String LWS
-*/
 }
+

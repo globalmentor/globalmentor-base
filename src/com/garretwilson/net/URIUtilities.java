@@ -442,6 +442,53 @@ Debug.trace("guessing URI: ", string);
 		return new URL(url, ".");  //create a new URL from the directory of the URL G***use a constant here
 	}
 
+	/**Returns the unencoded host and optional port of the given URI.
+	@param uri The URI from which to extract the host and optional port.
+	@return A URI containing the host and optional port of the given URI,
+		or <code>null</code> if neither of those components are present in the given URI.
+	*/ 
+	public static URI getHostURI(final URI uri)
+	{
+		final StringBuilder stringBuilder=new StringBuilder();
+		final String host=uri.getHost();	//get the host
+		final int port=uri.getPort();	//get the port
+		try
+		{
+			return new URI(null, null, host, port, null, null, null);	//create and return a URI with only the host and port
+		}
+		catch(final URISyntaxException uriSyntaxException)	//this should never happen, as we're constructing a URI from the components of another URI
+		{
+			throw new AssertionError(uriSyntaxException);
+		}
+	}
+
+	/**Returns the unencoded path, optional unencoded query, and optional unencoded fragment of the given URI.
+	@param uri The URI from which to extract the path, optional query, and optional fragment.
+	@return An unencoded path in the form <code>[<var>path</var>][?<var>query</var>][#<var>fragment</var>]</code>,
+		or <code>null</code> if none of those components are present in the given URI.
+	*/ 
+	public static String getRawPathQueryFragment(final URI uri)
+	{
+		final StringBuilder stringBuilder=new StringBuilder();
+		final String rawPath=uri.getRawPath();	//get the path
+		if(rawPath!=null)	//if there is a path
+		{
+			stringBuilder.append(rawPath);	//path
+		}
+		final String rawQuery=uri.getRawQuery();	//get the query
+		if(rawQuery!=null)	//if there is a query
+		{
+			stringBuilder.append(QUERY_SEPARATOR).append(rawQuery);	//?query
+		}
+		final String rawFragment=uri.getRawFragment();	//get the fragment
+		if(rawFragment!=null)	//if there is a fragment
+		{
+			stringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment);	//#query			
+		}
+			//if any of the components were present (which is distinct from them having string content), return the constructed string; otherwise, return null
+		return rawPath!=null || rawFragment!=null || rawFragment!=null ? stringBuilder.toString() : null;		
+	}
+	
 	/**Returns a relative path to the URL from the given context URL.
 		This version requires the file to be on the same branch of the context
 		path (e.g. "http://abc.de/a/c/d.html" is not on the same branch of
@@ -540,26 +587,25 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 */
 
-	/**Returns a URI constructed from the string.
-	If the URI is not syntactically correct, a runtime exception
-	will be thrown, created from the <code>URISyntaxException</code>.
-	<p>This method should normally only be used when the format
-	of the string is known to be a syntactically correct URI.</p>
-	@param string The string from which to construct a URI.
+
+	/**Determines whether the path of the URI (which may or may not be absolute) is absolute.
+	@param uri The URI the path of which to examine.
+	@return <code>true</code> if the path of the given URI begins with '/'.
 	*/
-/*G***del when converted to URI.create	
-	public static URI toURI(final String string)
+	public static boolean isAbsolutePath(final URI uri)
 	{
-		try
-		{
-			return new URI(string);	//create and return a new URI
-		}
-		catch (URISyntaxException e)
-		{
-			throw new RuntimeException(e);	//throw a runtime exception
-		}	
+		return startsWith(uri.getRawPath(), PATH_SEPARATOR);	//see if the path begins with '/' (use the raw path in case the first character is an encoded slash)		
 	}
-*/
+	
+	/**Determines whether the URI contains only a host and optional port.
+	@param uri The URI the path of which to examine.
+	@return <code>true</code> if the URI contains only a host and optionally a port.
+	*/
+	public static boolean isHost(final URI uri)
+	{
+		return uri.getHost()!=null	//a host URI contains only a host and nothing else except maybe a port
+				&& uri.getScheme()==null && uri.getUserInfo()==null && uri.getPath()==null && uri.getQuery()==null && uri.getFragment()==null;
+	}
 
 	/**Creates a URL from a URI. If a valid URL cannot be
 		formed, <code>null</code> is returned.
