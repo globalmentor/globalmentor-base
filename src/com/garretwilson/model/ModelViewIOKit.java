@@ -53,6 +53,8 @@ public class ModelViewIOKit extends AbstractViewIOKit implements ViewIOKit
 	*/
 	public void save(final ModelView view, final OutputStream outputStream) throws IOException
 	{
+//TODO shouldn't we verify the view here?		if(view.verify())	//verify the view to make sure we have the latest data; if it verifies TODO fix the XML panel, which never allows saving if the source doesn't verify
+		
 		getModelIOKit().save(view.getModel(), outputStream);	//get the model from the view and save it
 		if(view instanceof Modifiable)	//if the view is modifiable
 		{
