@@ -2,10 +2,7 @@ package com.garretwilson.io;
 
 import java.io.*;
 import java.net.MalformedURLException;
-
-import com.garretwilson.lang.CharSequenceUtilities;
-import com.garretwilson.lang.StringUtilities;
-import com.garretwilson.lang.SystemConstants;
+import com.garretwilson.lang.*;
 import com.garretwilson.net.URIUtilities;
 import com.garretwilson.net.URLUtilities;
 import com.garretwilson.util.Debug;
@@ -231,24 +228,81 @@ public class FileUtilities implements FileConstants
 	@exception SecurityException Thrown if we don't have permission to access the
 		user's directory.
 	@see System
-	@see SystemConstants#USER_DIR
+	@see SystemConstants#USER_DIR_PROPERTY
 	*/
 	public static File getUserDirectory() throws SecurityException
 	{
-		return new File(System.getProperty(SystemConstants.USER_DIR)); //try to get the current directory
+		return new File(System.getProperty(SystemConstants.USER_DIR_PROPERTY)); //try to get the current directory
 	}
 
-	/**Checks to ensure that a particular string is a valid filename. This method
-		does not ensure that such a file actually exists.
+	/**@return The characters that are not allowed in filenames of this operating system.*/
+/*G***del if not needed
+	public static String getSystemFilenameReservedCharacters()
+	{
+		if(SystemUtilities.isWindowsOS())	//if we're running on Windows
+			return WINDOWS_FILENAME_RESERVED_CHARACTERS;	//return the Windows filename reserved characters
+		else	//for all other operating systems (TODO fix for Macintosh)
+			return POSIX_FILENAME_RESERVED_CHARACTERS;	//return the POSIX filename reserved characters
+	}
+*/
+
+	/**Checks to ensure that a particular string is a valid filename across
+		operating systems. This method does not ensure that such a file actually exists.
 	@param string The string of characters which may represent a filename.
 	@return <code>true</code> if the string contains no illegal filname characters.
-	@see FileConstants#RESERVED_CHARACTERS
 	*/
-	static public boolean isFilename(final String string)
+	public static boolean isCrossPlatformFilename(final String string)
+	{
+		return isFilename(string, CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS, CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS);	//check the filename using cross-platform reserved characters
+	}
+
+	/**Checks to ensure that a particular string is a valid filename for the
+		operating system. This method does not ensure that such a file actually exists.
+	<p>The reserved characters of the operating system will be used.</p>
+	@param string The string of characters which may represent a filename.
+	@return <code>true</code> if the string contains no illegal filname characters.
+	*/
+	public static boolean isFilename(final String string)
+	{
+		if(SystemUtilities.isWindowsOS())	//if we're running on Windows
+			return isFilename(string, WINDOWS_FILENAME_RESERVED_CHARACTERS, WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS);	//check the filename using Windows reserved characters
+		else	//for all other operating systems TODO fix for Macintosh
+			return isFilename(string, POSIX_FILENAME_RESERVED_CHARACTERS, null);	//check the filename for POSIX
+	}
+
+	/**Checks to ensure that a particular string is a valid filename.
+	This method does not ensure that such a file actually exists.
+	@param string The string of characters which may represent a filename.
+	@param reservedCharacters The reserved characters which should be encoded.
+	@param reservedFinalCharacters The characters that should be encoded if they
+		appear in the final position of the filename, or <code>null</code> if the
+		final character doesn't have to meet special rules.
+	@return <code>true</code> if the string contains no reserved filename characters.
+	*/
+	public static boolean isFilename(final String string, final String reservedCharacters, final String reservedFinalCharacters)
 	{
 			//the string is a filename if the string ing isn't null and there are no illegal characters in the string
-		return string!=null && StringUtilities.charIndexOf(string, RESERVED_CHARACTERS)<0;
+		final boolean isFilename=string!=null && StringUtilities.charIndexOf(string, reservedCharacters)<0;
+		if(isFilename && reservedFinalCharacters!=null && reservedFinalCharacters.length()>0)	//if we should check the final character
+		{
+			if(string.length()>0)	//if we have any characters at all
+			{
+				final char lastChar=string.charAt(string.length()-1);	//see what the last character is
+				if(reservedFinalCharacters.indexOf(lastChar)>=0)	//if the last character is reserved
+				{
+					return false;	//this is not a valid filename
+				}
+			}
+		}
+		return isFilename;	//return what we thought to begin with
 	}
+
+
+	/**Escape all reserved filename characters to a two-digit hex
+		representation using '^' as an escape character.
+	<p>Note that this encodes path separators, and therefore this
+		method should only be called on filenames, not paths.</p>
+	@param string The filename string to be encoded.
 
 	/**Checks to see if a particular file exists. If the file does not exist, yet
 		a backup file exists, the backup file will be moved to the original file
@@ -297,9 +351,10 @@ public class FileUtilities implements FileConstants
 	protected final static char REPLACEMENT_CHAR='_';  //the character to use to replace any other character  G***maybe move these up and/or rename
 
 	/**Escape all reserved filename characters to a two-digit hex
-		representation using '_' as an escape character.
-	Note that this encodes path separators, and therefore this
-		method should only be called on filenames, not paths.
+		representation using '^' as an escape character so that the filename can
+		be used across operating systems.
+	<p>Note that this encodes path separators, and therefore this
+		method should only be called on filenames, not paths.</p>
 	@param string The filename string to be encoded.
 	@return The string modified to be a filename.
 	@see FileConstants#RESERVED_CHARACTERS
@@ -307,20 +362,84 @@ public class FileUtilities implements FileConstants
 	@see CharSequenceUtilities#escapeHex
 	@see #isFilename
 	*/
-	public static String encode(final String filename)
+	public static String encodeCrossPlatformFilename(final String filename)
 	{
-		return CharSequenceUtilities.escapeHex(filename, RESERVED_CHARACTERS, ESCAPE_CHARACTER, 2);
+		return encodeFilename(filename, CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS, CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS);	//encode the filename using cross-platform reserved characters
+	}
+
+	/**Escape all reserved filename characters to a two-digit hex
+		representation using '^' as an escape character.
+	<p>Note that this encodes path separators, and therefore this
+		method should only be called on filenames, not paths.</p>
+	<p>The filename is encoded using the reserved characters of the current
+		operating system.</p>
+	@param string The filename string to be encoded.
+	@return The string modified to be a filename.
+	@see FileConstants#RESERVED_CHARACTERS
+	@see FileConstants#ESCAPE_CHARACTER
+	@see CharSequenceUtilities#escapeHex
+	@see #isFilename
+	*/
+	public static String encodeFilename(final String filename)
+	{
+		if(SystemUtilities.isWindowsOS())	//if we're running on Windows
+			return encodeFilename(filename, WINDOWS_FILENAME_RESERVED_CHARACTERS, WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS);	//encode the filename using Windows reserved characters
+		else	//for all other operating systems TODO fix for Macintosh
+			return encodeFilename(filename, POSIX_FILENAME_RESERVED_CHARACTERS, null);	//encode the filename for POSIX
+	}
+
+	/**Escape all reserved filename characters to a two-digit hex
+		representation using '^' as an escape character.
+	<p>Note that this encodes path separators, and therefore this
+		method should only be called on filenames, not paths.</p>
+	@param string The filename string to be encoded.
+	@param reservedCharacters The reserved characters which should be encoded.
+	@param reservedFinalCharacters The characters that should be encoded if they
+		appear in the final position of the filename, or <code>null</code> if the
+		final character doesn't have to meet special rules.
+	@return The string modified to be a filename.
+	@see FileConstants#RESERVED_CHARACTERS
+	@see FileConstants#ESCAPE_CHARACTER
+	@see CharSequenceUtilities#escapeHex
+	@see #isFilename
+	*/
+	public static String encodeFilename(final String filename, final String reservedCharacters, final String reservedFinalCharacters)
+	{
+			//check to see if this is already a valid filename; if so (it usually is), this will give us a performance increase
+			//even if this is a valid filename, make sure it doesn't have the escape character in it---we would have to escape that, too, even though it isn't reserved
+		if(isFilename(filename, reservedCharacters, reservedFinalCharacters)	//if this is a valid filename already	
+				&& filename.indexOf(ESCAPE_CHARACTER)<0)	//if the filename doesn't contain the escape character	
+		{
+				return filename;	//return the string as is---it already is a valid filename
+		}
+		else	//if something about the filename isn't correct
+		{
+			final String encodedFilename=CharSequenceUtilities.escapeHex(filename, reservedCharacters, ESCAPE_CHARACTER, 2);
+			if(reservedFinalCharacters!=null && reservedFinalCharacters.length()>0)	//if we should check the final character (e.g. on Windows)
+			{
+				if(encodedFilename.length()>0)	//if we have a filename
+				{
+					final char lastChar=encodedFilename.charAt(encodedFilename.length()-1);	//see what the last character is
+					if(reservedFinalCharacters.indexOf(lastChar)>=0)	//if the last character is a reserved character
+					{
+						return encodedFilename.substring(0, encodedFilename.length()-1)	//remove the last character
+								+ESCAPE_CHARACTER+IntegerUtilities.toHexString(lastChar, 2);	//add the escaped version of the character in its place
+					}
+				}
+			}
+			return encodedFilename;	//return the encoded filename since we didn't need to modify it further
+		}
 	}
 
 	/**Unescapes all characters in a string that are encoded 
-		using '_' as an escape character followed by two hex digits.
+		using '^' as an escape character followed by two hex digits.
 	@param string The filename string to be decoded.
 	@return The filename string decoded back to a normal string.
 	@see FileConstants#RESERVED_CHARACTERS
 	@see FileConstants#ESCAPE_CHARACTER
 	@see CharSequenceUtilities#unescapeHex
 	*/
-	public static String decode(final String filename)
+	public static String decodeFilename(final String filename)
 	{
 		return CharSequenceUtilities.unescapeHex(filename, ESCAPE_CHARACTER, 2);	//decode the filename
 	}
@@ -362,7 +481,7 @@ public class FileUtilities implements FileConstants
 	{
 		if(!directory.mkdirs())	//create the directory; if unsuccessful
 		{
-			throw new IOException("Cannot create directories "+directory);	//throw an exception G***i18n
+			throw new IOException("encodeFilenamee directories "+directory);	//throw an exception G***i18n
 		}
 	}
 
