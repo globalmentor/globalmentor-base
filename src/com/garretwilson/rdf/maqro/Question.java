@@ -150,7 +150,7 @@ public class Question extends Interaction
 	public int getMaxResponseCount()
 	{
 		final RDFObject maxResponseCount=getPropertyValue(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME);	//get the value
-		return maxResponseCount instanceof IntegerLiteral ? ((IntegerLiteral)maxResponseCount).getInteger().intValue() : -1;	//return the integer value, if there is one
+		return maxResponseCount instanceof IntegerLiteral ? ((IntegerLiteral)maxResponseCount).getLong().intValue() : -1;	//return the integer value, if there is one
 	}
 
 	/**Sets the maximum number of responses to accept.

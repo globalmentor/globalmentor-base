@@ -64,16 +64,16 @@ public class Group extends Interaction
 	/**@return The maximum amount of time for the group, in milliseconds, or -1
 	if the time is not specified.
 	*/
-	public int getMaxTime()
+	public long getMaxTime()
 	{
-		return IntegerLiteral.asIntValue(getPropertyValue(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME)); //get the integer value of the property
+		return IntegerLiteral.asLongValue(getPropertyValue(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME)); //get the integer value of the property
 	}
 
 	/**Sets the maximum amount of time for the group, in milliseconds.
 	@param maxTime The maximum amount of time for the group, in milliseconds, or
 		-1 if there should not be a maximum time.
 	*/
-	public void setMaxTime(final int maxTime)
+	public void setMaxTime(final long maxTime)
 	{
 		setProperty(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME, maxTime>=0 ? new IntegerLiteral(maxTime) : null); //set the property with an integer typed literal
 	}

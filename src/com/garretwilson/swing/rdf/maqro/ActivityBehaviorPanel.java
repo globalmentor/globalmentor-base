@@ -255,12 +255,11 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 				confirmCommitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME)));
 				confirmSubmitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_SUBMIT_PROPERTY_NAME)));
 				requireResponseCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, REQUIRE_RESPONSE_PROPERTY_NAME)));
-//TODO probably make maxTime to be long
-				final int maxTime=IntegerLiteral.asIntValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME));
+				final long maxTime=IntegerLiteral.asLongValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME));
 				if(maxTime>=0)	//if a maximum amount of time was specified
 				{
 					limitTimeCheckBox.setSelected(true);
-					maxTimeTextField.setText(Integer.toString(maxTime));	//show the maximum amount of time in the text field
+					maxTimeTextField.setText(Long.toString(maxTime));	//show the maximum amount of time in the text field
 				}
 				else	//if no maximum time was specified
 				{

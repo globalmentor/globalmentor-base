@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
+import com.garretwilson.net.URIConstants;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLUtilities;
 
@@ -575,9 +576,9 @@ public class RDFUtilities implements RDFConstants
 		final String referenceURIString=referenceURI.toString();	//get a string version of the reference URI
 		for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
 		{
-			if(!XMLUtilities.isNameChar(referenceURIString.charAt(i)))	//if this is not a name character
+			final char character=referenceURIString.charAt(i);	//get this character
+			if(!XMLUtilities.isNameChar(character) && character!=URIConstants.ESCAPE_CHAR)	//if this is not a name character (but it isn't the URI escape character, either)
 			{
-					//TODO correctly check for a URI syntax error here; watch out for '%', which is not an XML name character, but isn't a valid URI character, either
 				return URI.create(referenceURIString.substring(0, i+1));	//create a URI using everything up to and including the last non-XML name character
 			}
 		}
@@ -610,7 +611,8 @@ public class RDFUtilities implements RDFConstants
 		final String referenceURIString=referenceURI.toString();	//get a string version of the reference URI
 		for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
 		{
-			if(!XMLUtilities.isNameChar(referenceURIString.charAt(i)))	//if this is not a name character
+			final char character=referenceURIString.charAt(i);	//get this character
+			if(!XMLUtilities.isNameChar(character) && character!=URIConstants.ESCAPE_CHAR)	//if this is not a name character (but it isn't the URI escape character, either)
 			{
 				return referenceURIString.substring(i+1);	//create a local name using everything after the last non-XML name character
 			}

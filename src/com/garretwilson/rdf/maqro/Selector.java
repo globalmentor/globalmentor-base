@@ -38,7 +38,7 @@ public class Selector extends TypedRDFResource implements MAQROConstants
 	/**@return The number of interactions to include, or -1 if the question
 		count is not indicated.
 	*/
-	public int getCount()
+	public int getCount()	//TODO do we want this to be a long?
 	{
 		return IntegerLiteral.asIntValue(getPropertyValue(MAQRO_NAMESPACE_URI, COUNT_PROPERTY_NAME));	//get the integer question count
 	}

@@ -27,7 +27,7 @@ public class InputStreamUtilities
 //G***del		final BufferedInputStream bufferedInputStream=new BufferedInputStream(inputStream);	//create a buffered input stream from the input stream
 		  //G***for some reason, if we don't have a buffered input stream the stream will be truncated at times -- it can't read the whole file at once; make sure it's OK to use a buffered input stream like this
 //G***fix Debug.trace("Ready to read from input stream.");  //G***fix
-		final List bufferList=new ArrayList();	//create a list for the buffers
+		final List<byte[]> bufferList=new ArrayList<byte[]>();	//create a list for the buffers
 		final int bufferSize=64*1024;	//use a series of 64K buffers
 		int totalBytesRead=0;	//show that we haven't read anything at all yet
 		int bufferBytesRead;		//we'll use this to store the number of bytes read into this buffer
@@ -55,7 +55,7 @@ public class InputStreamUtilities
 		{
 			//all the buffers should be full except for the last one, which will only hold the number of bytes last read
 			final int bytesToCopy=(i<bufferList.size()-1) ? bufferSize : bufferBytesRead;
-			System.arraycopy((byte[])bufferList.get(i), 0, finalBuffer, bytesCopied, bytesToCopy);	//copy bytes from this buffer to our final buffer
+			System.arraycopy(bufferList.get(i), 0, finalBuffer, bytesCopied, bytesToCopy);	//copy bytes from this buffer to our final buffer
 			bytesCopied+=bytesToCopy;	//show that we copied this many bytes
 		}
 		return finalBuffer;	//return the final buffer
