@@ -272,8 +272,8 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 					final String typeLocalName=RDFXMLifier.getLocalName(typeValueRDFResource);	//see if we can get a local name for the type
 					if(typeNamespaceURI!=null && typeLocalName!=null)	//if we have both a type and local name
 					{
-							//try to create a resource using the appropriate resource factory 
-						resource=getRDF().createTypedResourceFromFactory(resourceProxy.getReferenceURI(), typeNamespaceURI, typeLocalName);
+							//try to create a resource using the appropriate resource factory, creating a default resource if no factory could generate one 
+						resource=getRDF().createTypedResource(resourceProxy.getReferenceURI(), typeNamespaceURI, typeLocalName);
 					}
 				}
 			}

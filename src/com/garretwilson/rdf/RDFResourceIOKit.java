@@ -101,6 +101,19 @@ public class RDFResourceIOKit extends AbstractModelIOKit
 		*/
 		protected RDFResourceFactory getResourceFactory() {return resourceFactory;}
 
+	/**Constructor.
+	@param uriInputStreamable The implementation to use for accessing a URI for
+		input, or <code>null</code> if the default implementation should be used.
+	@param uriOutputStreamable The implementation to use for accessing a URI for
+		output, or <code>null</code> if the default implementation should be used.
+	@param namespaceURI The namespace of the resource type to serialize.
+	@param className The local name of the resource type to serialize.
+	*/
+	public RDFResourceIOKit(final URIInputStreamable uriInputStreamable, final URIOutputStreamable uriOutputStreamable, final URI namespaceURI, final String className) 
+	{
+		this(uriInputStreamable, uriOutputStreamable, namespaceURI, className, null);	//construct the class with no resource factory
+	}
+
 	/**Constructor with optional resource factory.
 	@param uriInputStreamable The implementation to use for accessing a URI for
 		input, or <code>null</code> if the default implementation should be used.

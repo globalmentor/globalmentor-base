@@ -47,6 +47,7 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 	}
 
 	/**Adds an <code>&lt;xpackage:location&gt;</code> property to the resource.
+	The link will be set to <code>xlink:type="simple"</code>.
 	@param resource The resource to which a property should be added.
 	@param href The location of the resource, to become an <code>xlink:href</code>
 		property of the location property.
@@ -56,11 +57,27 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 	{
 		final RDFResource locationResource=RDFUtilities.locateResource(resource, null); //create an anonymous location resource
 //G***del; the location doesn't have a type		addType(rdf, locationResource, XPACKAGE_NAMESPACE_URI, LOCATION);  //set the location type to xpackage:location
-			//add the XLink:href to the location
+			//add the xlink:href property to the location
 		locationResource.addProperty(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.ATTRIBUTE_HREF, href);
+			//add the xlink:type="simple" property to the location
+		locationResource.addProperty(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.ATTRIBUTE_TYPE, XLinkConstants.SIMPLE_TYPE);
 			//add the location property to the resource
 		resource.addProperty(XPACKAGE_NAMESPACE_URI, LOCATION_PROPERTY_NAME, locationResource);
 		return locationResource;  //return the location resource we created
+	}
+
+	/**Sets the <code>&lt;xpackage:location&gt;</code> property to the resource.
+	The link will be set to <code>xlink:type="simple"</code>.
+	@param resource The resource to which a property should be added.
+	@param href The location of the resource, to become an <code>xlink:href</code>
+		property of the location property.
+	@return The new location resource.
+	*/
+	public static RDFResource setLocation(final RDFResource resource, final String href)
+	{
+			//remove all location properties from the resource
+		resource.removeProperties(XPACKAGE_NAMESPACE_URI, LOCATION_PROPERTY_NAME);
+		return addLocation(resource, href);	//add the location to the resource
 	}
 
 	/**Adds an <code>&lt;xpackage:manifest&gt;</code> property to the resource.
