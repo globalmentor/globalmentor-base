@@ -3,9 +3,8 @@ package com.garretwilson.rdf.xpackage;
 import java.io.File;
 import java.net.*;
 import java.util.Iterator;
-import com.garretwilson.io.FileUtilities;
-import com.garretwilson.io.MediaType;
-import com.garretwilson.net.URLUtilities;
+import com.garretwilson.io.*;
+import com.garretwilson.net.*;
 //G***del import com.garretwilson.rdf.dublincore.DCConstants;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLUtilities;
@@ -13,6 +12,8 @@ import com.garretwilson.text.xml.xlink.XLinkConstants;
 import com.garretwilson.rdf.*;
 import com.garretwilson.util.Debug;
 import org.w3c.dom.*;
+
+import java.net.URI;	//G***del when other URI is removed
 
 /**Utilities for working woth XPackage RDF.
 @author Garret Wilson
@@ -304,6 +305,7 @@ Debug.trace("found location resource: ", locationResource);
 				checked.</li>
 			<li>The extension of the <code>xpackage:location</code> property
 				<code>href</code>, if present, is checked.</li>
+			<li>The extension, if any, of the resource URI is checked.</li>
 		</ol>
 	@param resource The resource of which the media type should be determined.
 	@return The media type of the resource, or <code>null</code> if the media
@@ -341,6 +343,10 @@ Debug.trace("location href: ", href); //G***del
 			{
 				Debug.warn(classCastException); //if there was an error retrieving the location href, continue but create a warning
 			}
+		}
+		if(mediaType==null) //try to find the media type from the URI
+		{
+			mediaType=URIUtilities.getMediaType(resource.getReferenceURI());	//get the media type of the resource reference URI
 		}
 		return mediaType; //return whatever media type we found, if any
 	}
