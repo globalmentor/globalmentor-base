@@ -10,8 +10,16 @@ public class Activity extends DefaultRDFResource implements MAQROConstants
 {
 
 	/**Default constructor.*/
-	protected Activity()
+	public Activity()
 	{
+	}
+
+	/**Constructs an activity with a reference URI.
+	@param referenceURI The reference URI for the new publication.
+	*/
+	public Activity(final URI referenceURI)
+	{
+		super(referenceURI);  //construct the parent class
 	}
 
 	/**@return The list of interactions for this activity.
@@ -24,11 +32,4 @@ public class Activity extends DefaultRDFResource implements MAQROConstants
 		
 	}
 
-	/**Constructs an activity with a reference URI.
-	@param referenceURI The reference URI for the new publication.
-	*/
-	protected Activity(final URI referenceURI)
-	{
-		super(referenceURI);  //construct the parent class
-	}
 }

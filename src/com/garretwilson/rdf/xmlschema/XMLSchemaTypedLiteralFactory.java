@@ -29,6 +29,18 @@ public class XMLSchemaTypedLiteralFactory implements RDFTypedLiteralFactory, XML
 		{
 			return new BooleanLiteral(lexicalForm);	//create and return a boolean literal
 		}
+		else if(DOUBLE_DATATYPE_URI.equals(datatypeURI))	//double
+		{
+			return new DoubleLiteral(lexicalForm);	//create and return a double literal
+		}
+		else if(FLOAT_DATATYPE_URI.equals(datatypeURI))	//float
+		{
+			return new FloatLiteral(lexicalForm);	//create and return a float literal
+		}
+		else if(INTEGER_DATATYPE_URI.equals(datatypeURI))	//integer
+		{
+			return new IntegerLiteral(lexicalForm);	//create and return an integer literal
+		}
 		else	//if we don't recognize the type
 		{
 			return null;	//show that we don't recognize the datatype URI 
