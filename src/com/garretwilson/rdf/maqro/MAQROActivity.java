@@ -7,18 +7,18 @@ import com.garretwilson.rdf.*;
 	The activity, besides containing interaction, is an interaction itself.
 @author Garret Wilson
 */
-public class Activity extends DefaultRDFResource implements Interaction, MAQROConstants
+public class MAQROActivity extends DefaultRDFResource implements Interaction, MAQROConstants
 {
 
 	/**Default constructor.*/
-	public Activity()
+	public MAQROActivity()
 	{
 	}
 
 	/**Constructs an activity with a reference URI.
 	@param referenceURI The reference URI for the new publication.
 	*/
-	public Activity(final URI referenceURI)
+	public MAQROActivity(final URI referenceURI)
 	{
 		super(referenceURI);  //construct the parent class
 	}
