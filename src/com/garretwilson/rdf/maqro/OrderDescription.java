@@ -8,8 +8,14 @@ import com.garretwilson.rdf.xmlschema.*;
 /**Criteria for ordering MAQRO interactions.
 @author Garret Wilson
 */
-public class OrderDescription extends DefaultRDFResource implements MAQROConstants
+public class OrderDescription extends TypedRDFResource implements MAQROConstants
 {
+
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
+
+	/**@return The local name of the default type of this resource.*/
+	public String getDefaultTypeName() {return ORDER_DESCRIPTION_CLASS_NAME;}
 
 	/**Default constructor.*/
 	public OrderDescription()

@@ -7,7 +7,7 @@ import com.garretwilson.util.*;
 /**Represents an RDF resource that is a container, such as a bag or a sequence.
 @author Garret Wilson
 */
-public abstract class RDFContainerResource extends DefaultRDFResource
+public abstract class RDFContainerResource extends TypedRDFResource
 {
 
 	/**Constructs an RDF container resource with a reference URI.

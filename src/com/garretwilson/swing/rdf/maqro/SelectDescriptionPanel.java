@@ -167,13 +167,13 @@ public class SelectDescriptionPanel extends BasicPanel
 		questionCountButtonGroup.add(allQuestionsRadioButton);
 		questionCountButtonGroup.add(onlyQuestionsRadioButton);
 
-		final ActionListener updateStatusModifyListener=createUpdateStatusActionListener();	//create an action listener to update the status		
+		final ItemListener updateStatusItemListener=createUpdateStatusItemListener();	//create an item listener to update the status		
 		allQuestionsRadioButton.setText("All");	//G***i18n
 		allQuestionsRadioButton.setSelected(true);
-		allQuestionsRadioButton.addActionListener(updateStatusModifyListener);	//update the status if this button is pressed
+		allQuestionsRadioButton.addItemListener(updateStatusItemListener);	//update the status if this button is pressed
 		questionCountTextField.setColumns(4);
 		onlyQuestionsRadioButton.setText("Only");	//G***i18n
-		onlyQuestionsRadioButton.addActionListener(updateStatusModifyListener);	//update the status if this button is pressed
+		onlyQuestionsRadioButton.addItemListener(updateStatusItemListener);	//update the status if this button is pressed
 		categoriesButton.setText("Categories...");	//G***i18n
 
 		add(questionCountLabel, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));

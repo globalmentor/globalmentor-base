@@ -10,6 +10,12 @@ import com.garretwilson.util.NameValuePair;
 public class RDFSequenceResource extends RDFContainerResource implements Comparator
 {
 
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+	public URI getDefaultTypeNamespaceURI() {return RDF_NAMESPACE_URI;}
+
+	/**@return The local name of the default type of this resource.*/
+	public String getDefaultTypeName() {return SEQ_CLASS_NAME;}
+
 	/**Constructs an RDF sequence resource with a reference URI.
 	@param newReferenceURI The reference URI for the new resource.
 	*/

@@ -12,6 +12,12 @@ import com.garretwilson.rdf.xmlschema.IntegerLiteral;
 public class Question extends Interaction
 {
 
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
+
+	/**@return The local name of the default type of this resource.*/
+	public String getDefaultTypeName() {return QUESTION_CLASS_NAME;}
+
 	/**Default constructor.*/
 	public Question()
 	{

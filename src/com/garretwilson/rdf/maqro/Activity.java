@@ -14,6 +14,12 @@ The activity is also a group, and can contain other groups, which themselves
 public class Activity extends Group
 {
 
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
+
+	/**@return The local name of the default type of this resource.*/
+	public String getDefaultTypeName() {return ACTIVITY_CLASS_NAME;}
+
 	/**Default constructor.*/
 	public Activity()
 	{

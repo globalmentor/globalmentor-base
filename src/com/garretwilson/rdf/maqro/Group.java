@@ -10,6 +10,12 @@ import com.garretwilson.rdf.*;
 public class Group extends Interaction
 {
 
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
+
+	/**@return The local name of the default type of this resource.*/
+	public String getDefaultTypeName() {return GROUP_CLASS_NAME;}
+
 	/**Default constructor.*/
 	public Group()
 	{

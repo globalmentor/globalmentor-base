@@ -12,7 +12,7 @@ import com.garretwilson.model.*;
 	any.</p> 
 @author Garret Wilson
 */
-public class DefaultRDFResource extends DefaultResource implements RDFResource, Comparable
+public class DefaultRDFResource extends DefaultResource implements RDFResource, Comparable, Cloneable
 {
 
 	/**The XML namespace URI.*/
@@ -56,7 +56,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		with the name being the property predicate and the value being the property
 		value.
 	*/
-	protected final List propertyList=new ArrayList();  //G***should this really be protected, and not private? currently only used by RDFSequenceResource
+	protected ArrayList propertyList=new ArrayList();  //G***should this really be protected, and not private? currently only used by RDFSequenceResource
 
 	/**@return The number of properties this resource has.*/
 	public int getPropertyCount() {return propertyList.size();}
@@ -568,11 +568,13 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	/**Copy constructor.
 	@param resource The resource that provides the data for the new copy.
 	*/
+/*G***del if not needed
 	private DefaultRDFResource(final DefaultRDFResource resource)
 	{
 		this(resource.getRDF(), resource.getReferenceURI(), resource.getNamespaceURI(), resource.getLocalName());  //construct a copy of the resource
 		propertyList.addAll(resource.propertyList);	//copy the properties
 	}
+*/
 
 	/**Returns a hash code value for the resource. 
 		If this resource has a reference URI, the default hash code is returned
@@ -636,7 +638,16 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	/**@return A copy of this resource with the same URI and identical properties.*/
 	public Object clone()
 	{
-		return new DefaultRDFResource(this);	//create a copy of the resource and return it
+		try
+		{ 
+			DefaultRDFResource resource=(DefaultRDFResource)super.clone();	//create a cloned copy of this resource
+			resource.propertyList=(ArrayList)propertyList.clone();	//clone the property list
+			return resource;	//return the cloned resource
+		}
+		catch(CloneNotSupportedException e)
+		{ 
+			throw new AssertionError("Cloning is unexpectedly not supported.");
+		}
 	}
 
 	/**Returns a string representation of the resource.

@@ -8,8 +8,14 @@ import com.garretwilson.rdf.dublincore.DCUtilities;
 /**Class representing a Dictionary Ontology (Dicto) dictionary.
 @author Garret Wilson
 */
-public class Dictionary extends DefaultRDFResource implements DictoConstants
+public class Dictionary extends TypedRDFResource implements DictoConstants
 {
+
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+	public URI getDefaultTypeNamespaceURI() {return DICTO_NAMESPACE_URI;}
+
+	/**@return The local name of the default type of this resource.*/
+	public String getDefaultTypeName() {return DICTIONARY_CLASS_NAME;}
 
 	/**Default constructor.*/
 	public Dictionary()

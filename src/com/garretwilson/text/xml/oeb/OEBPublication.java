@@ -20,6 +20,14 @@ import com.garretwilson.util.*;
 public class OEBPublication extends DefaultRDFResource /*G***del implements InputStreamLocator, OEBConstants*/
 {
 
+//TODO descend from TypedRDFResource
+
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+//TODO fix	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
+
+	/**@return The local name of the default type of this resource.*/
+//TODO fix	public String getDefaultTypeName() {return DIALOGUE_CLASS_NAME;}
+
 	/**Whether or not the publication is open. This value may not reflect any
 		resources being open if the publication is not stored in a zip file.
 	*/

@@ -8,7 +8,7 @@ import com.garretwilson.rdf.*;
 	(Dicto) dictionary.
 @author Garret Wilson
 */
-public class Entry extends DefaultRDFResource implements DictoConstants
+public abstract class Entry extends TypedRDFResource implements DictoConstants
 {
 
 	/**Default constructor.*/

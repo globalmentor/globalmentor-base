@@ -14,8 +14,14 @@ import com.garretwilson.lang.ObjectUtilities;
 	by RDF.
 @author Garret Wilson
 */
-public class RDFListResource extends DefaultRDFResource implements List //G***del, Comparator
+public class RDFListResource extends TypedRDFResource implements List //G***del, Comparator
 {
+
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+	public URI getDefaultTypeNamespaceURI() {return RDF_NAMESPACE_URI;}
+
+	/**@return The local name of the default type of this resource.*/
+	public String getDefaultTypeName() {return LIST_CLASS_NAME;}
 
 	/**Constructs an RDF list resource with a reference URI.
 	@param newReferenceURI The reference URI for the new resource.

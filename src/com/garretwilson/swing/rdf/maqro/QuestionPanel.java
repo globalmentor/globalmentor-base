@@ -1,7 +1,9 @@
 package com.garretwilson.swing.rdf.maqro;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.*;
@@ -26,18 +28,10 @@ public class QuestionPanel extends TabbedViewPanel
 	private final int DEFAULT_DEFAULT_MODEL_VIEW=QUERY_MODEL_VIEW;
 
 	/**The tab in which the query and choices and/or answers are shown.*/
-	private final BasicPanel queryResponsePanel;
+	private final QueryAnswerPanel queryAnswerPanel;
 
 		/**@return The tab in which the query and choices and/or answers are shown.*/
-		private BasicPanel getQueryResponsePanel() {return queryResponsePanel;}
-
-	private final JLabel queryLabel;
-	private final DialoguePanel queryPanel;
-	private final ButtonGroup expectButtonGroup;
-	private final JRadioButton choicesRadioButton;
-	private final JList choiceList;
-	private final ChoiceListPanel choicePanel;
-	private final JRadioButton expectRadioButton;
+		private QueryAnswerPanel getQueryAnswerPanel() {return queryAnswerPanel;}
 
 	/**@return The data model for which this component provides a view.
 	@see ModelViewablePanel#getModel()
@@ -68,14 +62,7 @@ public class QuestionPanel extends TabbedViewPanel
 		super(model, false);	//construct the parent class without initializing the panel
 		setSupportedModelViews(DEFAULT_SUPPORTED_MODEL_VIEWS);	//set the model views we support
 		setDefaultDataView(DEFAULT_DEFAULT_MODEL_VIEW);	//set the default data view
-		queryResponsePanel=new BasicPanel(new BasicGridBagLayout());	//create the query panel
-		queryLabel=new JLabel();
-		expectButtonGroup=new ButtonGroup();
-		choicesRadioButton=new JRadioButton();
-		choiceList=new JList();
-		choicePanel=new ChoiceListPanel(choiceList);
-		expectRadioButton=new JRadioButton();
-		queryPanel=new DialoguePanel(new DialogueModel(model.getBaseURI(), model.getURIInputStreamable())); 
+		queryAnswerPanel=new QueryAnswerPanel();	//create the query/answer
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
 	}
@@ -83,41 +70,24 @@ public class QuestionPanel extends TabbedViewPanel
 	/**Initialize the user interface.*/
 	protected void initializeUI()
 	{
-		final ActionListener updateStatusActionListener=createUpdateStatusActionListener();	//create an action listener that will update the status
 		setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border
 		setTitle("Question");	//G***i18n
-		addView(QUERY_MODEL_VIEW, "Query and Response", IconResources.getIcon(IconResources.QUESTION_ICON_FILENAME), queryResponsePanel);	//add the query view G***i18n
+		addView(QUERY_MODEL_VIEW, "Query and Response", IconResources.getIcon(IconResources.QUESTION_ICON_FILENAME), queryAnswerPanel);	//add the query view G***i18n
 		super.initializeUI(); //do the default UI initialization
 		getTabbedPane().setTabPlacement(JTabbedPane.TOP);	//put the tabs on the top
-		queryLabel.setText("Query");	//G***i18n
-		expectButtonGroup.add(choicesRadioButton);
-		expectButtonGroup.add(expectRadioButton);
-		choicesRadioButton.setText("Provide Choices");	//G***i18n
-		choicesRadioButton.addActionListener(updateStatusActionListener); 
-		choiceList.setUI(new ToggleListUI()); //allow the choices to be toggled on and off
-		choiceList.setCellRenderer(new CheckBoxListCellRenderer());  //display the choices with checkboxes
-		choiceList.setEnabled(false);	//default to disabling the choice list; it will be enabled if the corresponding radio button is selected
-		choicePanel.setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border for the choice panel
-		choicePanel.setTitle("Choices");	//G***i18n
-		choicePanel.setEditable(true);	//allow the choices to be edited
-		expectRadioButton.setText("Expect Response Type");	//G***i18n
-		expectRadioButton.addActionListener(updateStatusActionListener); 
-		queryResponsePanel.add(queryLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		queryResponsePanel.add(queryPanel, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
-		queryResponsePanel.add(choicesRadioButton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		queryResponsePanel.add(choicePanel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
-		queryResponsePanel.add(expectRadioButton, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+		queryAnswerPanel.addPropertyChangeListener(createModifyModifiedChangeListener());	//show that this panel is modified whenever the query/answer panel is modified 
 	}
 
 	/**Updates the states of the actions, including enabled/disabled status,
 		proxied actions, etc.
 	*/
+/*G***del if not needed
 	protected void updateStatus()
 	{
 		super.updateStatus();	//do the default updating
-		choiceList.setEnabled(choicesRadioButton.isSelected());	//only enable the choice list if the choices radio button is selected
 //G***fix for expectation		choiceList.setEnabled(choicesRadioButton.isSelected());	//only enable the choice list if the choices radio button is selected
 	}
+*/
 
 	/**Loads the data from the model to the view, if necessary.
 	@exception IOException Thrown if there was an error loading the model.
@@ -133,12 +103,12 @@ public class QuestionPanel extends TabbedViewPanel
 				if(question!=null)	//if there is a question
 				{
 					final Dialogue query=question.getQuery();	//get the query
-					queryPanel.setDialogueModel(new DialogueModel(query, model.getBaseURI(), model.getURIInputStreamable()));	//set the query in the panel
+					queryAnswerPanel.queryPanel.setDialogueModel(new DialogueModel(query, model.getBaseURI(), model.getURIInputStreamable()));	//set the query in the panel
 					final List choices=question.getChoices();	//get the question choices
 					if(choices!=null)	//if there are choices
 					{
-						choicesRadioButton.setSelected(true);	//show that we're selecting choices
-						choiceList.setModel(new ListListModel(choices));	//set the choices in the panel
+						queryAnswerPanel.choicesRadioButton.setSelected(true);	//show that we're selecting choices
+						queryAnswerPanel.choiceList.setModel(new ListListModel(choices));	//set the choices in the panel
 					}
 				}
 				break;
@@ -171,7 +141,7 @@ public class QuestionPanel extends TabbedViewPanel
 		{
 			case QUERY_MODEL_VIEW:	//if we're changing from the query view
 //G***fix				getSourceTextPane().getDocument().removeDocumentListener(getModifyDocumentListener());	//don't listen for changes to the source text pane any more
-				queryPanel.setDialogueModel(new DialogueModel(model.getBaseURI(), model.getURIInputStreamable()));	//clear the query panel
+				queryAnswerPanel.queryPanel.setDialogueModel(new DialogueModel(model.getBaseURI(), model.getURIInputStreamable()));	//clear the query panel
 				break;
 		}
 		switch(newView)	//see which view we're changing to
@@ -184,37 +154,106 @@ public class QuestionPanel extends TabbedViewPanel
 		}
 	}
 
-	/**The panel that allows editing of choices from a list.
+	/**Panel for editing the query and answer of a MAQRO question.
+	Usually used as one tab on a question panel.
 	@author Garret Wilson
+	@see com.garretwilson.swing.rdf.maqro.QuestionPanel
 	*/
-	protected class ChoiceListPanel extends ListPanel
+	protected class QueryAnswerPanel extends BasicPanel
 	{
-		/**List constructor.
-		@param list The list component, which will be wrapped in a scroll pane.
-		@see JScrollPane
-		*/
-		public ChoiceListPanel(final JList list)
+		private final JLabel queryLabel;
+		private final DialoguePanel queryPanel;
+		private final ButtonGroup expectButtonGroup;
+		private final JRadioButton choicesRadioButton;
+		private final JList choiceList;
+		private final ListPanel choicePanel;
+		private final JRadioButton expectRadioButton;
+
+		/**Default constructor.*/
+		public QueryAnswerPanel()
 		{
-			super(list);	//construct the parent class
+			super(new BasicGridBagLayout(), false);	//construct the parent class but don't initialize it
+			queryLabel=new JLabel();
+			expectButtonGroup=new ButtonGroup();
+			choicesRadioButton=new JRadioButton();
+			choiceList=new JList();
+			choicePanel=new ListPanel(choiceList);
+			expectRadioButton=new JRadioButton();
+			queryPanel=new DialoguePanel(new DialogueModel(getQuestionModel().getBaseURI(), getQuestionModel().getURIInputStreamable())); 
+			initialize();   //initialize the panel
 		}
 
-		/**Edits the given item in the list.*/
-		public void edit(final Object item)
+		/**Initialize the user interface.*/
+		protected void initializeUI()
+		{
+			super.initializeUI(); //do the default UI initialization
+			final ItemListener updateStatusItemListener=createUpdateStatusItemListener();	//create an item listener that will update the status			
+			queryLabel.setText("Query");	//G***i18n
+			queryPanel.addPropertyChangeListener(createModifyModifiedChangeListener());	//show that this panel is modified whenever the query panel is modified 
+			expectButtonGroup.add(choicesRadioButton);
+			expectButtonGroup.add(expectRadioButton);
+			choicesRadioButton.setText("Provide Choices");	//G***i18n
+			choicesRadioButton.addItemListener(updateStatusItemListener); 
+			choiceList.setUI(new ToggleListUI()); //allow the choices to be toggled on and off
+			choiceList.setCellRenderer(new CheckBoxListCellRenderer());  //display the choices with checkboxes
+			choiceList.setEnabled(false);	//default to disabling the choice list; it will be enabled if the corresponding radio button is selected
+			choicePanel.setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border for the choice panel
+			choicePanel.setTitle("Choices");	//G***i18n
+			choicePanel.setEditor(new ChoiceEditor());	//set the editor for choices
+			choicePanel.setEditable(true);	//allow the choices to be edited
+			expectRadioButton.setText("Expect Response Type");	//G***i18n
+			expectRadioButton.addItemListener(updateStatusItemListener); 
+			add(queryLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+			add(queryPanel, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
+			add(choicesRadioButton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+			add(choicePanel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
+			add(expectRadioButton, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+		}
+
+		/**Updates the states of the actions, including enabled/disabled status,
+			proxied actions, etc.
+		*/
+		protected void updateStatus()
+		{
+			super.updateStatus();	//do the default updating
+			choiceList.setEnabled(choicesRadioButton.isSelected());	//only enable the choice list if the choices radio button is selected
+//	G***fix for expectation		choiceList.setEnabled(choicesRadioButton.isSelected());	//only enable the choice list if the choices radio button is selected
+		}
+	}
+
+	/**The editor that allows editing of choices from a list.
+	@author Garret Wilson
+	*/
+	protected static class ChoiceEditor extends ListPanel.AbstractEditor
+	{
+		/**Default constructor.*/
+		public ChoiceEditor()
+		{
+			super(Dialogue.class);	//construct the parent class
+		}
+
+		/**Edits an object from the list.
+		@param parentComponent The component to use as a parent for any editing
+			components.
+		@param item The item to edit in the list.
+		@return The object with the modifications from the edit, or
+			<code>null</code> if the edits should not be accepted.
+		*/
+		public Object edit(final Component parentComponent, final Object item)
 		{
 			if(item instanceof Dialogue)	//if this is dialogue to be edited
 			{
-//TODO fix the cloning just have an elegant framework, but update DefaultRDFResource so that cloning creates the correct derived type				final Dialogue dialogueClone=((Dialogue)item).clone();	//
-				final DialogueModel dialogueModel=new DialogueModel((Dialogue)item);	//create a model containing the dialogue
+				final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
+				final DialogueModel dialogueModel=new DialogueModel(dialogueClone);	//create a model containing the dialogue
 				final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
 					//allow the dialogue to be edited in a dialog box; if the user accepts the changes
-				if(OptionPane.showConfirmDialog(this, dialoguePanel, "Choice", OptionPane.OK_CANCEL_OPTION)==OptionPane.OK_OPTION)	//G***i18n
+				if(OptionPane.showConfirmDialog(parentComponent, dialoguePanel, "Choice", OptionPane.OK_CANCEL_OPTION)==OptionPane.OK_OPTION)	//G***i18n
 				{
-					ListListModel listModel=(ListListModel)getList().getModel();	//get the list model (we know what type of list model we're using
-					final int index=listModel.indexOf(item);	//get the index of the item
-					listModel.set(index, item);	//set the item back in the list so that the Swing list will update G***maybe do something better here
+					return dialogueClone;	//return the new dialogue
 				}
 			}
+			return null;	//show that editing did not succeed
 		}
-
 	}
+
 }

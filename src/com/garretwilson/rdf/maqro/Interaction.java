@@ -7,7 +7,7 @@ import com.garretwilson.rdf.*;
 /**Designates an object is an interaction that can be part of a MAQRO activity.
 @author Garret Wilson
 */
-public abstract class Interaction extends DefaultRDFResource implements MAQROConstants
+public abstract class Interaction extends TypedRDFResource implements MAQROConstants
 {
 
 	/**Default constructor.*/

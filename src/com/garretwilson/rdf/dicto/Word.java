@@ -10,6 +10,12 @@ import com.garretwilson.rdf.*;
 public class Word extends Entry
 {
 
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+	public URI getDefaultTypeNamespaceURI() {return DICTO_NAMESPACE_URI;}
+
+	/**@return The local name of the default type of this resource.*/
+	public String getDefaultTypeName() {return WORD_CLASS_NAME;}
+
 	/**Default constructor.*/
 	protected Word()
 	{

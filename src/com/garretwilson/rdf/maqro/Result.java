@@ -9,8 +9,14 @@ import com.garretwilson.rdf.xmlschema.BooleanLiteral;
 	MAQRO interaction such as an activity or question.
 @author Garret Wilson
 */
-public class Result extends DefaultRDFResource implements MAQROConstants
+public class Result extends TypedRDFResource implements MAQROConstants
 {
+
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
+
+	/**@return The local name of the default type of this resource.*/
+	public String getDefaultTypeName() {return RESULT_CLASS_NAME;}
 
 	/**Default constructor.*/
 	public Result()

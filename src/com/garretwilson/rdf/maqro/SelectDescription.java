@@ -8,8 +8,14 @@ import com.garretwilson.rdf.xmlschema.*;
 /**Criteria for selecting MAQRO interactions.
 @author Garret Wilson
 */
-public class SelectDescription extends DefaultRDFResource implements MAQROConstants
+public class SelectDescription extends TypedRDFResource implements MAQROConstants
 {
+
+	/**@return The namespace URI of the ontology defining the default type of this resource.*/
+	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
+
+	/**@return The local name of the default type of this resource.*/
+	public String getDefaultTypeName() {return SELECT_DESCRIPTION_CLASS_NAME;}
 
 	/**Default constructor.*/
 	public SelectDescription()
