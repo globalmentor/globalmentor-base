@@ -1,8 +1,6 @@
 package com.garretwilson.text.directory;
 
-import java.io.*;
 import java.util.*;
-import com.garretwilson.io.*;
 
 /**Class that knows how to give profile-specific information for types within
 	a profile of a <code>text/directory</code> as defined in 
@@ -28,5 +26,13 @@ public interface Profile
 		value type cannot be determined.
 	*/	
 	public String getValueType(final String profile, final String group, final String name, final List paramList);
-	
+
+	/**Creates a directory from the given content lines.
+	Unrecognized or unusable content lines within the directory object will be
+		saved as literal content lines so that their information will be preserved.
+	@param contentLines The content lines that make up the directory.
+	@return A directory object representing the directory, or <code>null</code>
+		if this profile cannot create a directory from the given information.
+	*/
+	public Directory createDirectory(final ContentLine[] contentLines);
 }

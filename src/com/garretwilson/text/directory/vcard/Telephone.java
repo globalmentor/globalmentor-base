@@ -1,6 +1,5 @@
 package com.garretwilson.text.directory.vcard;
 
-import java.util.*;
 import com.garretwilson.itu.*;
 
 /**An object representing the "TEL" type of a vCard <code>text/directory</code>
@@ -59,22 +58,6 @@ public class Telephone extends TelephoneNumber
 		*/
 		public void setTelephoneType(final int telephoneType) {this.telephoneType=telephoneType;}
 
-	/**The locale that represents the language of the text, or <code>null</code>
-		if no language is indicated.
-	*/
-	private Locale locale;
-
-		/**@return The locale that represents the language of the text, or
-			<code>null</code> if no language is indicated.
-		*/
-		public Locale getLocale() {return locale;}
-
-		/**Sets the language used by the text.
-		@param locale The locale that represents the language of the text, or
-			<code>null</code> if no language should be indicated.
-		*/
-		public void setLocale(final Locale locale) {this.locale=locale;}
-
 	/**Telephone number constructor with default telephone type of <code>VOICE_TELEPHONE_TYPE</code>.
 	@param telephoneNumber The telephone number from which values should be used
 		for initialization.
@@ -122,25 +105,36 @@ public class Telephone extends TelephoneNumber
 	*/
 	public Telephone(final String cc, final String ndc, final String sn, final int telephoneType) throws TelephoneNumberSyntaxException
 	{
-		this(cc, ndc, sn, telephoneType, null);	//construct a telephone with no locale	
-	}
-
-	/**Full constructor from separate telephone number components.
-	@param cc The country code for geographic areas.
-	@param ndc The national destination code
-	@param sn The subscriber number.
-	@param telephoneType The intended use, one or more of the
-		<code>XXX_TELEPHONE_TYPE</code> constants ORed together.
-	@param locale The locale that represents the language of the text, or
-		<code>null</code> if no language should be indicated.
-	@exception TelephoneNumberSyntaxException Thrown if the values violate ITU-T
-		E.164.
-	*/
-	public Telephone(final String cc, final String ndc, final String sn, final int telephoneType, final Locale locale) throws TelephoneNumberSyntaxException
-	{
 		super(cc, ndc, sn);	//construct the parent class
 		setTelephoneType(telephoneType);	//set the telephone type
-		setLocale(locale);	//set the locale
+	}
+
+	/**Constructs a telephone with the default type by parsing the given string.
+	Expects the country code to begin with '+' and accepts code field delimiters
+		of '-' and ' '. 
+	@param string The string to be parsed into a telephone number.
+	@exception TelephoneNumberSyntaxException Thrown if the value violates ITU-T
+		E.164.
+	*/
+	public Telephone(final String string) throws TelephoneNumberSyntaxException
+	{
+		this(string, DEFAULT_TELEPHONE_TYPE);	//construct a telephone from the string using the default telephone type
+	}
+
+	/**Constructs a telephone by parsing the given string and assigning a
+		telephone type.
+	Expects the country code to begin with '+' and accepts code field delimiters
+		of '-' and ' '. 
+	@param string The string to be parsed into a telephone number.
+	@param telephoneType The intended use, one or more of the
+		<code>XXX_TELEPHONE_TYPE</code> constants ORed together.
+	@exception TelephoneNumberSyntaxException Thrown if the value violates ITU-T
+		E.164.
+	*/
+	public Telephone(final String string, final int telephoneType) throws TelephoneNumberSyntaxException
+	{
+		super(string);	//construct the parent class
+		setTelephoneType(telephoneType);	//set the telephone type
 	}
 
 	/**The string for separating the components of the string representation of

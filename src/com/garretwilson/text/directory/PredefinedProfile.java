@@ -3,6 +3,7 @@ package com.garretwilson.text.directory;
 import java.io.*;
 import java.util.*;
 import com.garretwilson.io.*;
+import com.garretwilson.util.LocaleText;
 
 /**Profile for predefined types of a <code>text/directory</code> as defined in 
 	<a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
@@ -31,7 +32,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		along with the objects returned, are as follows:</p>
 	<ul>
 		<li><code>URI_VALUE_TYPE</code> <code>URI</code></li>
-		<li><code>TEXT_VALUE_TYPE</code> <code>String</code></li>
+		<li><code>TEXT_VALUE_TYPE</code> <code>LocaleText</code></li>
 		<li><code>DATE_VALUE_TYPE</code> <code>Date</code></li>
 		<li><code>TIME_VALUE_TYPE</code> <code>Date</code></li>
 		<li><code>DATE_TIME_VALUE_TYPE</code> <code>Date</code></li>
@@ -58,7 +59,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	@see URI_VALUE_TYPE
 	@see URI
 	@see TEXT_VALUE_TYPE
-	@see String
+	@see LocaleText
 	@see DATE_VALUE_TYPE
 	@see TIME_VALUE_TYPE
 	@see DATE_TIME_VALUE_TYPE
@@ -74,7 +75,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	{
 		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//if this is the "text" value type
 		{
-			return processTextValueList(reader);	//process the text value
+			return processTextValueList(reader, paramList);	//process the text value
 		}
 		return null;	//show that we can't create a value
 	}
@@ -84,26 +85,30 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		'\n'.</p>
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
 	@param reader The reader that contains the lines of the directory.
-	@return An array of strings representing the values.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
+	@return An array of locale text objects representing the values.
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
-	public static String[] processTextValueList(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public static LocaleText[] processTextValueList(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
 	{
-		final List stringList=new ArrayList();	//create a new list to hold the strings we find
+		final Locale locale=DirectoryUtilities.getLanguageParamValue(paramList);	//get the language, if any
+		final List localeTextList=new ArrayList();	//create a new list to hold the locale text objects we find
 		char delimiter;	//we'll store the last delimiter peeked		
 		do
 		{
 			reader.resetPeek();	//reset peeking
 			final String string=processTextValue(reader);	//read a string
 //		G***del Debug.trace("read text string: ", string);	//G***del
-			stringList.add(string);	//add the string to our list			
+			localeTextList.add(new LocaleText(string, locale));	//add the text to our list			
 			delimiter=reader.peekChar();	//see what character is next
 //		G***del Debug.trace("next delimiter: ", delimiter);	//G***del			
 		}
 		while(delimiter==VALUE_SEPARATOR_CHAR);	//keep getting strings while we are still running into value separators
 		reader.resetPeek();	//reset peeking
-		return (String[])stringList.toArray(new String[stringList.size()]);	//convert the list of strings to an array of strings and return the array
+		return LocaleText.toLocaleTextArray(localeTextList);	//convert the list of locale text objects to an array and return the array
 	}
 
 	/**The delimiters that can divide a text value: '\\' ',' and CR.*/
@@ -177,4 +182,35 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	{
 		return getValueType(name);	//return whatever value type we have associated with this type name, if any
 	}
+
+	/**Creates a directory from the given content lines.
+	Unrecognized or unusable content lines within the directory object will be
+		saved as literal content lines so that their information will be preserved.
+	This version creates a basic <code>Directory</code> object.
+	@param contentLines The content lines that make up the directory.
+	@return A directory object representing the directory, or <code>null</code>
+		if this profile cannot create a directory from the given information.
+	*/
+	public Directory createDirectory(final ContentLine[] contentLines)
+	{
+		final Directory directory=new Directory();	//create a basic directory object
+		for(int i=0; i<contentLines.length; ++i)	//look at each content line
+		{
+			final ContentLine contentLine=contentLines[i];	//get a reference to this content line
+			final String typeName=contentLine.getTypeName();	//get this content line's type name
+			if(NAME_TYPE.equalsIgnoreCase(typeName))	//if this is NAME
+			{
+				if(directory.getDisplayName()==null)	//if the directory does not yet have a display name
+				{
+					directory.setDisplayName((LocaleText)contentLine.getValue());	//set the directory display name
+					continue;	//don't process this content line further
+				}
+			}
+				//if we make it to here, we either don't recognize the content line
+				//	or we can't proces it (e.g. a duplicate value we don't support)
+			directory.getContentLineList().add(contentLine);	//add this unprocessed content line to the directory's list of content lines
+		}
+		return directory;	//return the directory we created
+	}
+
 }

@@ -5,6 +5,7 @@ import java.lang.ref.*;
 import java.util.*;
 import com.garretwilson.io.*;
 import com.garretwilson.itu.*;
+import com.garretwilson.lang.*;
 import com.garretwilson.text.directory.*;
 import com.garretwilson.util.*;
 
@@ -68,25 +69,25 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	<p>This method knows how to create predefined types, which,
 		along with the objects returned, are as follows:</p>
 	<ul>
-		<li><code>FN_TYPE</code> <code>String</code></li>
+		<li><code>FN_TYPE</code> <code>LocaleText</code></li>
 		<li><code>N_TYPE</code> <code>Name</code></li>
 		<li><code>NICKNAME_TYPE</code> <code>String</code></li>
 		<li><code>PHOTO_TYPE</code></li>
 		<li><code>BDAY_TYPE</code></li>
 		<li><code>ADR_TYPE</code> <code>Address</code></li>
-		<li><code>LABEL_TYPE</code> <code>String</code></li>
-		<li><code>TEL_TYPE</code> <code>TelephoneNumber</code></li>
-		<li><code>EMAIL_TYPE</code> <code>String</code></li>
+		<li><code>LABEL_TYPE</code> <code>LocaleText</code></li>
+		<li><code>TEL_TYPE</code> <code>Telephone</code></li>
+		<li><code>EMAIL_TYPE</code> <code>LocaleText</code></li>
 		<li><code>MAILER_TYPE</code></li>
 		<li><code>TZ_TYPE</code></li>
 		<li><code>GEO_TYPE</code></li>
-		<li><code>TITLE_TYPE</code> <code>String</code></li>
-		<li><code>ROLE_TYPE</code> <code>String</code></li>
+		<li><code>TITLE_TYPE</code> <code>LocaleText</code></li>
+		<li><code>ROLE_TYPE</code> <code>LocaleText</code></li>
 		<li><code>LOGO_TYPE</code></li>
 		<li><code>AGENT_TYPE</code></li>
-		<li><code>ORG_TYPE</code> <code>String[]</code></li>
-		<li><code>CATEGORIES_TYPE</code> <code>String</code></li>
-		<li><code>NOTE_TYPE</code> <code>String</code></li>
+		<li><code>ORG_TYPE</code> <code>LocaleText[]</code></li>
+		<li><code>CATEGORIES_TYPE</code> <code>LocaleText</code></li>
+		<li><code>NOTE_TYPE</code> <code>LocaleText</code></li>
 		<li><code>PRODID_TYPE</code></li>
 		<li><code>REV_TYPE</code></li>
 		<li><code>SORT_STRING_TYPE</code></li>
@@ -118,7 +119,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			//see if we recognize the value type
 		if(PHONE_NUMBER_VALUE_TYPE.equalsIgnoreCase(valueType))	//phone-number
 		{
-			return new Object[]{processPhoneNumberValue(reader)};	//process the phone number value type			
+			return new Object[]{processPhoneNumberValue(reader, paramList)};	//process the phone number value type			
 		}		
 			//see if we recognize the type name		
 				//identification types
@@ -131,13 +132,6 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		{
 			return new Object[]{processADRValue(reader, paramList)};	//process the ADR value
 		}
-			//telecommunications addressing types
-/*G***del when works			
-		else if(TEL_TYPE.equalsIgnoreCase(name))	//TEL
-		{
-			return new Object[]{processTELValue(reader, paramList)};	//process the TEL value
-		}
-*/
 			//organizational types
 		else if(ORG_TYPE.equalsIgnoreCase(name))	//ORG
 		{
@@ -174,17 +168,12 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	@see Address 
 	*/
 	private static SoftReference addressTypeIntegerMapReference=null;
-	
-	/**Determines the integer address type value to represent the given address
-		type name. Comparison is made without regard to case.
-	@param addressTypeName The name of the address type.
-	@return The delivery address type, one of the
-		<code>Address.XXX_ADDRESS_TYPE</code> constants, or
-		<code>Address.NO_ADDRESS_TYPE</code> if the address type name was not
-		recognized.
-	@see Address
+
+	/**@return The map of <code>Integer</code>s representing address
+		types, keyed to lowercase versions of address type names, or a new map if
+		the old one has been reclaimed by the JVM.
 	*/
-	public static int getAddressType(final String addressTypeName)
+	protected static Map getAddressTypeIntegerMap()
 	{
 			//get the map, if it has been created and hasn't been reclaimed
 		Map addressTypeIntegerMap=addressTypeIntegerMapReference!=null ? (Map)addressTypeIntegerMapReference.get() : null;
@@ -200,8 +189,45 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			addressTypeIntegerMap.put(ADR_PREF_PARAM_VALUE.toLowerCase(), new Integer(Address.PREFERRED_ADDRESS_TYPE));
 			addressTypeIntegerMapReference=new SoftReference(addressTypeIntegerMap);	//store the map in a soft reference, so it can be reclaimed if needed			
 		}
+		return addressTypeIntegerMap;	//return the map
+	}
+	
+	/**Determines the integer address type value to represent the given address
+		type name. Comparison is made without regard to case.
+	@param addressTypeName The name of the address type.
+	@return The delivery address type, one of the
+		<code>Address.XXX_ADDRESS_TYPE</code> constants, or
+		<code>Address.NO_ADDRESS_TYPE</code> if the address type name was not
+		recognized.
+	@see Address
+	*/
+	public static int getAddressType(final String addressTypeName)
+	{
+		final Map addressTypeIntegerMap=getAddressTypeIntegerMap();	//get the map of integers keyed to address types
 		final Integer addressTypeInteger=(Integer)addressTypeIntegerMap.get(addressTypeName.toLowerCase());	//get the integer representing this address type name
 		return addressTypeInteger!=null ? addressTypeInteger.intValue() : Address.NO_ADDRESS_TYPE;	//return the address type we found, or NO_ADDRESS_TYPE if we didn't find an address type
+	}
+	
+	/**Determines the address type names to represent the given address type.
+	@param addressType The delivery address types, one or more of the
+		<code>Address.XXX_ADDRESS_TYPE</code> constants ORed together.
+	@return The names of the of the given address type.
+	@see Address
+	*/
+	public static String[] getAddressTypeNames(final int addressType)
+	{
+		final List addressTypeNameList=new ArrayList();	//create an array of address type names
+		final Iterator addressTypeEntryIterator=getAddressTypeIntegerMap().entrySet().iterator();	//create an iterator to the address type entries
+		while(addressTypeEntryIterator.hasNext())	//while there are more address type entries
+		{
+			final Map.Entry addressTypeEntry=(Map.Entry)addressTypeEntryIterator.next();	//get the next address type entry
+			final int addressTypeIntValue=((Integer)addressTypeEntry.getValue()).intValue();	//get the value of this address type
+			if((addressType & addressTypeIntValue)==addressTypeIntValue)	//if our address type includes this value
+			{
+				addressTypeNameList.add(addressTypeEntry.getKey());	//add this address type name to our list 
+			}
+		}
+		return StringUtilities.toStringArray(addressTypeNameList);	//return our list of address type names as an array
 	}
 
 	/**Processes the value for the <code>ADR</code> type name.
@@ -217,11 +243,19 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	public static Address processADRValue(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
 	{
 		final Locale locale=DirectoryUtilities.getLanguageParamValue(paramList);	//get the language, if there is one
-		int addressType=Address.NO_ADDRESS_TYPE;	//start out not knowing any address type
+		int addressType;	//we'll determine the address type
 		final String[] types=DirectoryUtilities.getParamValues(paramList, TYPE_PARAM_NAME);	//get the address types specified
-		for(int i=types.length-1; i>=0; --i)	//look at each address type
+		if(types.length>0)	//if there are types given
 		{
-			addressType|=getAddressType(types[i]);	//get this address type and combine it with the ones we've found already
+			addressType=Address.NO_ADDRESS_TYPE;	//start out not knowing any address type
+			for(int i=types.length-1; i>=0; --i)	//look at each address type
+			{
+				addressType|=getAddressType(types[i]);	//get this address type and combine it with the ones we've found already
+			}
+		}
+		else	//if there are no types given
+		{
+			addressType=Address.DEFAULT_ADDRESS_TYPE;	//use the default address type
 		}
 		final String[][] fields=processStructuredTextValue(reader);	//process the structured text fields
 		final String postOfficeBox=fields.length>0 && fields[0].length>0? fields[0][0] : null;	//get the post office box, if present
@@ -240,17 +274,12 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	@see Address 
 	*/
 	private static SoftReference telephoneTypeIntegerMapReference=null;
-	
-	/**Determines the integer telephone type value to represent the given
-		telephone type name. Comparison is made without regard to case.
-	@param telephoneTypeName The name of the telephone type.
-	@return The telephone type, one of the
-		<code>Telephone.XXX_TELEPHONE_TYPE</code> constants, or
-		<code>Telephone.NO_TELEPHONE_TYPE</code> if the telephone type name was not
-		recognized.
-	@see Telephone
+
+	/**@return The map of <code>Integer</code>s representing telephone
+		types, keyed to lowercase versions of telephone type names, or a new map if
+		the old one has been reclaimed by the JVM.
 	*/
-	public static int getTelephoneType(final String telephoneTypeName)
+	protected static Map getTelephoneTypeIntegerMap()
 	{
 			//get the map, if it has been created and hasn't been reclaimed
 		Map telephoneTypeIntegerMap=telephoneTypeIntegerMapReference!=null ? (Map)telephoneTypeIntegerMapReference.get() : null;
@@ -273,23 +302,78 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			telephoneTypeIntegerMap.put(TEL_PCS_PARAM_VALUE.toLowerCase(), new Integer(Telephone.PCS_TELEPHONE_TYPE));
 			telephoneTypeIntegerMapReference=new SoftReference(telephoneTypeIntegerMap);	//store the map in a soft reference, so it can be reclaimed if needed			
 		}
+		return telephoneTypeIntegerMap;	//return the map
+	}
+	
+	/**Determines the integer telephone type value to represent the given
+		telephone type name. Comparison is made without regard to case.
+	@param telephoneTypeName The name of the telephone type.
+	@return The telephone type, one of the
+		<code>Telephone.XXX_TELEPHONE_TYPE</code> constants, or
+		<code>Telephone.NO_TELEPHONE_TYPE</code> if the telephone type name was not
+		recognized.
+	@see Telephone
+	*/
+	public static int getTelephoneType(final String telephoneTypeName)
+	{
+		final Map telephoneTypeIntegerMap=getTelephoneTypeIntegerMap();	//get the map of integers keyed to telephone types
 		final Integer telephoneTypeInteger=(Integer)telephoneTypeIntegerMap.get(telephoneTypeName.toLowerCase());	//get the integer representing this telephone type name
 		return telephoneTypeInteger!=null ? telephoneTypeInteger.intValue() : Telephone.NO_TELEPHONE_TYPE;	//return the telephone type we found, or NO_TELEPHONE_TYPE if we didn't find a telephone type
+	}
+
+	/**Determines the telephone type names to represent the given telpehone type.
+	@param telephoneType The telephone types, one or more of the
+		<code>Telephone.XXX_TELEPHONE_TYPE</code> constants ORed together.
+	@return The names of the of the given telephone type.
+	@see Telephone
+	*/
+	public static String[] getTelephoneTypeNames(final int telephoneType)
+	{
+		final List telephoneTypeNameList=new ArrayList();	//create an array of telephone type names
+		final Iterator telephoneTypeEntryIterator=getTelephoneTypeIntegerMap().entrySet().iterator();	//create an iterator to the telephone type entries
+		while(telephoneTypeEntryIterator.hasNext())	//while there are more telephone type entries
+		{
+			final Map.Entry telephoneTypeEntry=(Map.Entry)telephoneTypeEntryIterator.next();	//get the next telephone type entry
+			final int telephoneTypeIntValue=((Integer)telephoneTypeEntry.getValue()).intValue();	//get the value of this telephone type
+			if((telephoneType & telephoneTypeIntValue)==telephoneTypeIntValue)	//if our telephone type includes this value
+			{
+				telephoneTypeNameList.add(telephoneTypeEntry.getKey());	//add this telephone type name to our list 
+			}
+		}
+		return StringUtilities.toStringArray(telephoneTypeNameList);	//return our list of telephone type names as an array
 	}
 
 	/**Processes the value for the <code>TEL</code> type name.
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
 	@param reader The reader that contains the lines of the directory.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
 	@return A telephone object representing the value.
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
-	public static TelephoneNumber processPhoneNumberValue(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public static Telephone processPhoneNumberValue(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
 	{
+		final Locale locale=DirectoryUtilities.getLanguageParamValue(paramList);	//get the language, if there is one
 		final String telephoneNumberString=reader.readStringUntilChar(CR);	//read the string representing the telephone number
+		int telephoneType;	//we'll determine the telephone type
+		final String[] types=DirectoryUtilities.getParamValues(paramList, TYPE_PARAM_NAME);	//get the telephone types specified
+		if(types.length>0)	//if there are types given
+		{
+			telephoneType=Telephone.NO_TELEPHONE_TYPE;	//start out not knowing any telephone type
+			for(int typeIndex=types.length-1; typeIndex>=0; --typeIndex)	//look at each telephone type
+			{
+				telephoneType|=getTelephoneType(types[typeIndex]);	//get this telephone type and combine it with the ones we've found already
+			}
+		}
+		else	//if there are no types given
+		{
+			telephoneType=Telephone.DEFAULT_TELEPHONE_TYPE;	//use the default telephone type
+		}
 		try
 		{
-			return new TelephoneNumber(telephoneNumberString);	//convert the string to a telephone number
+			return new Telephone(telephoneNumberString, telephoneType);	//create a telephone from the telephone number and telephone type
 		}
 		catch(TelephoneNumberSyntaxException telephoneNumberSyntaxException)	//if the telephone number was not syntactically correct
 		{
@@ -305,6 +389,25 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	@see Address 
 	*/
 	private static SoftReference emailTypeIntegerMapReference=null;
+
+	/**@return The map of <code>Integer</code>s representing email
+		types, keyed to lowercase versions of email type names, or a new map if
+		the old one has been reclaimed by the JVM.
+	*/
+	protected static Map getEmailTypeIntegerMap()
+	{
+			//get the map, if it has been created and hasn't been reclaimed
+		Map emailTypeIntegerMap=emailTypeIntegerMapReference!=null ? (Map)emailTypeIntegerMapReference.get() : null;
+		if(emailTypeIntegerMap==null)	//if we no longer have a map, create one and initialize it with lowercase email type values
+		{
+			emailTypeIntegerMap=new HashMap();	//create a new map
+			emailTypeIntegerMap.put(EMAIL_INTERNET_PARAM_VALUE.toLowerCase(), new Integer(Email.INTERNET_EMAIL_TYPE));
+			emailTypeIntegerMap.put(EMAIL_X400_PARAM_VALUE.toLowerCase(), new Integer(Email.X400_EMAIL_TYPE));
+			emailTypeIntegerMap.put(EMAIL_PREF_PARAM_VALUE.toLowerCase(), new Integer(Email.PREFERRED_EMAIL_TYPE));
+			emailTypeIntegerMapReference=new SoftReference(emailTypeIntegerMap);	//store the map in a soft reference, so it can be reclaimed if needed			
+		}
+		return emailTypeIntegerMap;	//return the map
+	}
 	
 	/**Determines the integer email type value to represent the given
 		email type name. Comparison is made without regard to case.
@@ -317,18 +420,31 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	*/
 	public static int getEmailType(final String emailTypeName)
 	{
-			//get the map, if it has been created and hasn't been reclaimed
-		Map emailTypeIntegerMap=emailTypeIntegerMapReference!=null ? (Map)emailTypeIntegerMapReference.get() : null;
-		if(emailTypeIntegerMap==null)	//if we no longer have a map, create one and initialize it with lowercase email type values
-		{
-			emailTypeIntegerMap=new HashMap();	//create a new map
-			emailTypeIntegerMap.put(EMAIL_INTERNET_PARAM_VALUE.toLowerCase(), new Integer(Email.INTERNET_EMAIL_TYPE));
-			emailTypeIntegerMap.put(EMAIL_X400_PARAM_VALUE.toLowerCase(), new Integer(Email.X400_EMAIL_TYPE));
-			emailTypeIntegerMap.put(EMAIL_PREF_PARAM_VALUE.toLowerCase(), new Integer(Email.PREFERRED_EMAIL_TYPE));
-			emailTypeIntegerMapReference=new SoftReference(emailTypeIntegerMap);	//store the map in a soft reference, so it can be reclaimed if needed			
-		}
+		final Map emailTypeIntegerMap=getEmailTypeIntegerMap();	//get the map of integers keyed to email types
 		final Integer emailTypeInteger=(Integer)emailTypeIntegerMap.get(emailTypeName.toLowerCase());	//get the integer representing this email type name
 		return emailTypeInteger!=null ? emailTypeInteger.intValue() : Email.NO_EMAIL_TYPE;	//return the email type we found, or NO_EMAIL_TYPE if we didn't find an email type
+	}
+
+	/**Determines the email type names to represent the given email type.
+	@param addressType The email types, one or more of the
+		<code>Email.XXX_EMAIL_TYPE</code> constants ORed together.
+	@return The names of the of the given email type.
+	@see Email
+	*/
+	public static String[] getEmailTypeNames(final int emailType)
+	{
+		final List emailTypeNameList=new ArrayList();	//create an array of email type names
+		final Iterator emailTypeEntryIterator=getEmailTypeIntegerMap().entrySet().iterator();	//create an iterator to the email type entries
+		while(emailTypeEntryIterator.hasNext())	//while there are more email type entries
+		{
+			final Map.Entry emailTypeEntry=(Map.Entry)emailTypeEntryIterator.next();	//get the next email type entry
+			final int emailTypeIntValue=((Integer)emailTypeEntry.getValue()).intValue();	//get the value of this email type
+			if((emailType & emailTypeIntValue)==emailTypeIntValue)	//if our email type includes this value
+			{
+				emailTypeNameList.add(emailTypeEntry.getKey());	//add this email type name to our list 
+			}
+		}
+		return StringUtilities.toStringArray(emailTypeNameList);	//return our list of email type names as an array
 	}
 
 	/**Processes the value for the <code>EMAIL</code> type name.
@@ -361,22 +477,24 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 	@param paramList The list of parameters, each item of which is a
 		<code>NameValuePair</code> with a name of type <code>String</code> and a
 		value of type <code>String</code>.
-	@return An array of strings representing the organizational name and units.
+	@return An array of local text objects representing the organizational name
+		and units.
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
-	public static String[] processORGValue(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
+	public static LocaleText[] processORGValue(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
 	{
+		final Locale locale=DirectoryUtilities.getLanguageParamValue(paramList);	//get the language, if there is one
 		final List orgList=new ArrayList();	//create a list into which we will place the organizational name and units, as we'll ignore any structured components that are empty 
 		final String[][] fields=processStructuredTextValue(reader);	//process the structured text fields
 		for(int i=0; i<fields.length; ++i)	//look at each field
 		{
 			for(int j=0; j<fields.length; ++j)	//look at each field value (this isn't in the specification, but it won't hurt to add these values within each field to keep from losing them, even if they shouldn't be there)
 			{
-				orgList.add(fields[i][j]);	//add this field value as either the organization name or an organizational unit
+				orgList.add(new LocaleText(fields[i][j], locale));	//add this field value as either the organization name or an organizational unit
 			}
 		}
-		return (String[])orgList.toArray(new String[orgList.size()]);	//return an array version of the organization component list
+		return LocaleText.toLocaleTextArray(orgList);	//return an array version of the organization component list
 	}
 
 	/**Processes structured text into an array of string arrays.
@@ -458,170 +576,244 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		return getValueType(name);	//return whatever value type we have associated with this type name, if any
 	}
 
-	/**Creates a vCard object from the vCard profile directory entries in the
-		given directory. Unrecognized or unusable content lines within the vCard
-		profile will be saved as literal content lines so that their information
-		will be preserved.
-	@param directory The <code>text/directory</code> containing a vCard profile.
-	@return A vCard object, or <code>null</code> if no vCard profile was included
-		in the given directory.
-	*/ 
-	public static VCard createVCard(final Directory directory)
+	/**Creates a directory from the given content lines.
+	Unrecognized or unusable content lines within the directory object will be
+		saved as literal content lines so that their information will be preserved.
+	This version creates a <code>VCard</code> object.
+	@param contentLines The content lines that make up the directory.
+	@return A directory object representing the directory, or <code>null</code>
+		if this profile cannot create a directory from the given information.
+	@see VCard
+	*/
+	public Directory createDirectory(final ContentLine[] contentLines)
 	{
-		final VCard vcard;	//we'll create a vCard and store it here
-		final ContentLine[] contentLines=directory.getContentLinesByProfile(VCARD_PROFILE_NAME);	//get all vCard content lines
-		if(contentLines.length>0)	//if there are content lines in the vCard profile
+		final VCard vcard=new VCard();	//we'll store the vCard information here
+		for(int i=0; i<contentLines.length; ++i)	//look at each content line
 		{
-			vcard=new VCard();	//create a new default vCard
-			for(int i=0; i<contentLines.length; ++i)	//look at each content line
+			final ContentLine contentLine=contentLines[i];	//get a reference to this content line
+			final String typeName=contentLine.getTypeName();	//get this content line's type name
+			if(BEGIN_TYPE.equalsIgnoreCase(typeName))	//BEGIN
 			{
-				final ContentLine contentLine=contentLines[i];	//get a reference to this content line
-				final String typeName=contentLine.getTypeName();	//get this content line's type name
-				if(BEGIN_TYPE.equalsIgnoreCase(typeName))	//BEGIN
+				//ignore begin
+			}
+			else if(END_TYPE.equalsIgnoreCase(typeName))	//END
+			{
+				//ignore end
+			}
+			else if(NAME_TYPE.equalsIgnoreCase(typeName))	//if this is NAME
+			{
+				if(vcard.getDisplayName()==null)	//if the vCard does not yet have a display name
 				{
-					//ignore begin
-				}
-				else if(END_TYPE.equalsIgnoreCase(typeName))	//END
-				{
-					//ignore end
-				}
-						//identification types
-				else if(FN_TYPE.equalsIgnoreCase(typeName))	//FN
-				{
-					if(vcard.getFormattedName()==null)	//if there is not yet a formatted name
-					{							
-						final LocaleText formattedName=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
-						vcard.setFormattedName(formattedName);	//get the formatted name
-						continue;	//don't process this content line further
-					}
-				}
-				else if(N_TYPE.equalsIgnoreCase(typeName))	//N
-				{
-					if(vcard.getName()==null)	//if there is not yet a name
-					{
-							//G***maybe retrieve the locale here rather than upon value creation
-						vcard.setName((Name)contentLine.getValue());	//get the name
-						continue;	//don't process this content line further
-					}
-				}
-				else if(NICKNAME_TYPE.equalsIgnoreCase(typeName))	//NICKNAME
-				{
-					final LocaleText nickname=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
-					vcard.getNicknameList().add(nickname);	//add this nickname to our list
+					vcard.setDisplayName((LocaleText)contentLine.getValue());	//set the vCard display name
 					continue;	//don't process this content line further
 				}
-						//delivery addressing types
-				else if(ADR_TYPE.equalsIgnoreCase(typeName))	//ADR
-				{
-					vcard.getAddressList().add((Address)contentLine.getValue());	//add this address to our list
+			}
+					//identification types
+			else if(FN_TYPE.equalsIgnoreCase(typeName))	//FN
+			{
+				if(vcard.getFormattedName()==null)	//if there is not yet a formatted name
+				{							
+					vcard.setFormattedName((LocaleText)contentLine.getValue());	//get the formatted name
 					continue;	//don't process this content line further
 				}
-				else if(LABEL_TYPE.equalsIgnoreCase(typeName))	//LABEL
+			}
+			else if(N_TYPE.equalsIgnoreCase(typeName))	//N
+			{
+				if(vcard.getName()==null)	//if there is not yet a name
 				{
+					vcard.setName((Name)contentLine.getValue());	//get the name
+					continue;	//don't process this content line further
+				}
+			}
+			else if(NICKNAME_TYPE.equalsIgnoreCase(typeName))	//NICKNAME
+			{
+				vcard.getNicknameList().add((LocaleText)contentLine.getValue());	//add this nickname to our list
+				continue;	//don't process this content line further
+			}
+					//delivery addressing types
+			else if(ADR_TYPE.equalsIgnoreCase(typeName))	//ADR
+			{
+				vcard.getAddressList().add((Address)contentLine.getValue());	//add this address to our list
+				continue;	//don't process this content line further
+			}
+			else if(LABEL_TYPE.equalsIgnoreCase(typeName))	//LABEL
+			{
 //TODO make sure the NameAddressPanel stores label information so that it won't be lost
-					final LocaleText label=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
-					vcard.getLabelList().add(label);	//add this label to our list
-					continue;	//don't process this content line further
-				}
-						//telecommunications addressing types
-				else if(TEL_TYPE.equalsIgnoreCase(typeName))	//TEL
-				{
-					int telephoneType=Telephone.NO_TELEPHONE_TYPE;	//start out not knowing any telephone type
-					final String[] types=DirectoryUtilities.getParamValues(contentLine.getParamList(), TYPE_PARAM_NAME);	//get the telephone types specified
-					for(int typeIndex=types.length-1; typeIndex>=0; --typeIndex)	//look at each telephone type
-					{
-						telephoneType|=getTelephoneType(types[typeIndex]);	//get this telephone type and combine it with the ones we've found already
-					}
-					final TelephoneNumber telephoneNumber=((TelephoneNumber)contentLine.getValue());	//get the telephone number
-					try
-					{
-						final Telephone telephone=new Telephone(telephoneNumber, telephoneType);	//create a vCard telephone from the telephone number and telephone type
-						vcard.getTelephoneList().add(telephone);	//add this telephone to our list
-						continue;	//don't process this content line further
-					}
-					catch(TelephoneNumberSyntaxException telephoneNumberSyntaxException)	//if the telephone number was not syntactically correct (this should never happen here, because it has already been parsed and handed to us), ignore the error and just store the content line
-					{
-					}
-				}
-				else if(EMAIL_TYPE.equalsIgnoreCase(typeName))	//EMAIL
-				{
+				vcard.getLabelList().add((LocaleText)contentLine.getValue());	//add this label to our list
+				continue;	//don't process this content line further
+			}
+					//telecommunications addressing types
+			else if(TEL_TYPE.equalsIgnoreCase(typeName))	//TEL
+			{
+				vcard.getTelephoneList().add((Telephone)contentLine.getValue());	//add this telephone to our list
+				continue;	//don't process this content line further
+			}
+			else if(EMAIL_TYPE.equalsIgnoreCase(typeName))	//EMAIL
+			{	//G***decide if we want to add the email object when this line is processed
 //G***del when works					vcard.getEmailList().add((Email)contentLine.getValue());	//add this email to our list
-					int emailType=Email.NO_EMAIL_TYPE;	//start out not knowing any email type
-					final String[] types=DirectoryUtilities.getParamValues(contentLine.getParamList(), TYPE_PARAM_NAME);	//get the email types specified
+				int emailType;	//we'll determine the email type
+				final String[] types=DirectoryUtilities.getParamValues(contentLine.getParamList(), TYPE_PARAM_NAME);	//get the email types specified
+				if(types.length>0)	//if there are types given
+				{
+					emailType=Email.NO_EMAIL_TYPE;	//start out not knowing any email type
 					for(int typeIndex=types.length-1; typeIndex>=0; --typeIndex)	//look at each email type
 					{
 						emailType|=getEmailType(types[typeIndex]);	//get this email type and combine it with the ones we've found already
 					}
-					final Email email=new Email(contentLine.getValue().toString(), emailType);	//create an email from the address and type we parsed
-					vcard.getEmailList().add(email);	//add this email to our list
+				}
+				else	//if there are no types given
+				{
+					emailType=Email.DEFAULT_EMAIL_TYPE;	//use the default email type
+				}
+				final Email email=new Email(((LocaleText)contentLine.getValue()).getText(), emailType);	//create an email from the address and type we parsed
+				vcard.getEmailList().add(email);	//add this email to our list
+				continue;	//don't process this content line further
+			}
+					//organizational type
+			else if(ORG_TYPE.equalsIgnoreCase(typeName))	//ORG
+			{
+				final LocaleText[] org=(LocaleText[])contentLine.getValue();	//get the organization information
+				if(org.length>0 && vcard.getOrganizationName()==null)	//if there is an organization name, and we haven't yet stored an organization name
+				{
+					vcard.setOrganizationName(org[0]);	//set the organization name from the first oganizational component
+					if(org.length>1)	//if there are units specified
+					{
+						final LocaleText[] units=new LocaleText[org.length-1];	//create a string array to contain all the units (ignore the first item, the organization name)
+						System.arraycopy(org, 1, units, 0, units.length);	//copy the units from the organizational array to the units array
+						vcard.setOrganizationUnits(units);	//set the vCard units 
+					}
 					continue;	//don't process this content line further
 				}
-						//organizational type
-				else if(ORG_TYPE.equalsIgnoreCase(typeName))	//ORG
+			}
+			else if(TITLE_TYPE.equalsIgnoreCase(typeName))	//TITLE
+			{
+				if(vcard.getTitle()==null)	//if there is not yet a title
 				{
-					final Locale locale=DirectoryUtilities.getLanguageParamValue(contentLine.getParamList());	//get the locale, if there is one					
-					final String[] org=(String[])contentLine.getValue();	//get the organization information
-					if(org.length>0 && vcard.getOrganizationName()==null)	//if there is an organization name, and we haven't yet stored an organization name
-					{
-						vcard.setOrganizationName(new LocaleText(org[0], locale));	//set the organization name from the first oganizational component
-						if(org.length>1)	//if there are units specified
-						{
-							final LocaleText[] units=new LocaleText[org.length-1];	//create a string array to contain all the units (ignore the first item, the organization name)
-							for(int unitIndex=units.length-1; unitIndex>=0; --unitIndex)	//look at each unit
-							{
-								units[unitIndex]=new LocaleText(org[unitIndex+1], locale);	//create this unit, specifying the locale
-							}
-//G***del when works							System.arraycopy(org, 1, units, 0, units.length);	//copy the units from the organizational array to the units array
-							vcard.setOrganizationUnits(units);	//set the vCard units 
-						}
-						continue;	//don't process this content line further
-					}
-				}
-				else if(TITLE_TYPE.equalsIgnoreCase(typeName))	//TITLE
-				{
-					if(vcard.getTitle()==null)	//if there is not yet a title
-					{
-						final LocaleText title=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
 //TODO add support for multiple titles with multiple languages
 //G***del Debug.trace("title language: ", title.getLocale());	//G***del
-						vcard.setTitle(title);	//set the title
-						continue;	//don't process this content line further
-					}
-				}
-				else if(ROLE_TYPE.equalsIgnoreCase(typeName))	//ROLE
-				{
-					if(vcard.getRole()==null)	//if there is not yet a role
-					{
-						final LocaleText role=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
-						vcard.setRole(role);	//set the role
-						continue;	//don't process this content line further
-					}
-				}
-						//explanatory types
-				else if(CATEGORIES_TYPE.equalsIgnoreCase(typeName))	//CATEGORIES
-				{
-					final LocaleText category=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
-					vcard.getCategoryList().add(category);	//add this category to our list
+					vcard.setTitle((LocaleText)contentLine.getValue());	//set the title
 					continue;	//don't process this content line further
 				}
-				else if(NOTE_TYPE.equalsIgnoreCase(typeName))	//NOTE
-				{
-					if(vcard.getNote()==null)	//if there is not yet a note
-					{
-						final LocaleText note=DirectoryUtilities.createLocaleTextValue(contentLine.getParamList(), contentLine.getValue());	//combine the text value with the locale
-						vcard.setNote(note);	//set the note
-						continue;	//don't process this content line further
-					}
-				}
-					//if we make it to here, we either don't recognize the content line
-					//	or we can't proces it (e.g. a duplicate value we don't support)
-				vcard.getContentLineList().add(contentLine);	//add this unprocessed content line to the vCard's list of content lines
 			}
+			else if(ROLE_TYPE.equalsIgnoreCase(typeName))	//ROLE
+			{
+				if(vcard.getRole()==null)	//if there is not yet a role
+				{
+					vcard.setRole((LocaleText)contentLine.getValue());	//set the role
+					continue;	//don't process this content line further
+				}
+			}
+					//explanatory types
+			else if(CATEGORIES_TYPE.equalsIgnoreCase(typeName))	//CATEGORIES
+			{
+				vcard.getCategoryList().add((LocaleText)contentLine.getValue());	//add this category to our list
+				continue;	//don't process this content line further
+			}
+			else if(NOTE_TYPE.equalsIgnoreCase(typeName))	//NOTE
+			{
+				if(vcard.getNote()==null)	//if there is not yet a note
+				{
+					vcard.setNote((LocaleText)contentLine.getValue());	//set the note
+					continue;	//don't process this content line further
+				}
+			}
+				//if we make it to here, we either don't recognize the content line
+				//	or we can't proces it (e.g. a duplicate value we don't support)
+			vcard.getContentLineList().add(contentLine);	//add this unprocessed content line to the vCard's list of content lines
 		}
-		else	//if there are no vCard content lines
+		return vcard;	//return the vCard we created 
+	}
+
+	/**Creates a list of content lines from the given vCard.
+	@param vcard The vCard object to be converted to content lines.
+	@return A directory object representing the directory, or <code>null</code>
+		if this profile cannot create a directory from the given information.
+	@return The content lines that represent the vCard information.
+	*/
+	public static ContentLine[] createContentLines(final VCard vcard)
+	{
+		final List contentLineList=new ArrayList(vcard.getContentLineList());	//create a content line list initially containing all the unrecognized content lines of the vCard
+				//TODO add locale support for the name
+		contentLineList.add(0, new ContentLine(NAME_TYPE, vcard.getDisplayName()));	//add the display name at the front of the list
+		contentLineList.add(new ContentLine(BEGIN_TYPE, VCARD_PROFILE_NAME));	//BEGIN:VCARD
+				//identification types
+		contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, FN_TYPE, vcard.getFormattedName()));	//FN
+		contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, N_TYPE, vcard.getName(), vcard.getName().getLocale()));	//N
+		final Iterator nicknameIterator=vcard.getNicknameList().iterator();	//get an iterator to the nicknames
+		while(nicknameIterator.hasNext())	//while there are more nicknames
 		{
-			vcard=null;	//there can be no vCard
+			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, N_TYPE, (LocaleText)nicknameIterator.next()));	//NICKNAME			
 		}
-		return vcard;	//return the vCard we created or null if there were no vCard profile content lines 
+				//delivery addressing types
+		final Iterator adrIterator=vcard.getAddressList().iterator();	//get an iterator to the addresses
+		while(adrIterator.hasNext())	//while there are more addresses
+		{
+			final Address address=(Address)adrIterator.next();	//get the next address
+			final ContentLine contentLine=DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, ADR_TYPE, address, address.getLocale());	//ADR
+			final String[] addressTypeNames=getAddressTypeNames(address.getAddressType());	//get the address type names
+			for(int i=0; i<addressTypeNames.length; ++i)	//look at each address type
+			{
+				DirectoryUtilities.setParamValue(contentLine.getParamList(), TYPE_PARAM_NAME, addressTypeNames[i]);	//add this address type parameter
+			}
+			contentLineList.add(contentLine);	//add the content line
+		}
+		final Iterator labelIterator=vcard.getLabelList().iterator();	//get an iterator to the labels
+		while(labelIterator.hasNext())	//while there are more labels
+		{
+			final LocaleText label=(LocaleText)labelIterator.next();	//get the next label
+			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, LABEL_TYPE, label));	//LABEL
+		}
+				//telecommunications addressing types
+		final Iterator telIterator=vcard.getTelephoneList().iterator();	//get an iterator to the telephones
+		while(telIterator.hasNext())	//while there are more telephones
+		{
+			final Telephone telephone=(Telephone)telIterator.next();	//get the next telephone
+			final ContentLine contentLine=new ContentLine(VCARD_PROFILE_NAME, null, TEL_TYPE, telephone);	//TEL
+			final String[] telephoneTypeNames=getTelephoneTypeNames(telephone.getTelephoneType());	//get the telephone type names
+			for(int i=0; i<telephoneTypeNames.length; ++i)	//look at each telephone type
+			{
+				DirectoryUtilities.setParamValue(contentLine.getParamList(), TYPE_PARAM_NAME, telephoneTypeNames[i]);	//add this telephone type parameter
+			}
+			contentLineList.add(contentLine);	//add the content line
+		}
+		final Iterator emailIterator=vcard.getEmailList().iterator();	//get an iterator to the emails
+		while(emailIterator.hasNext())	//while there are more emails
+		{
+			final Email email=(Email)emailIterator.next();	//get the next email
+			final ContentLine contentLine=new ContentLine(VCARD_PROFILE_NAME, null, EMAIL_TYPE, email);	//EMAIL
+			final String[] emailTypeNames=getEmailTypeNames(email.getEmailType());	//get the email type names
+			for(int i=0; i<emailTypeNames.length; ++i)	//look at each email type
+			{
+				DirectoryUtilities.setParamValue(contentLine.getParamList(), TYPE_PARAM_NAME, emailTypeNames[i]);	//add this email type parameter
+			}
+			contentLineList.add(contentLine);	//add the content line
+		}
+				//organizational type
+		final LocaleText[] org;	//we'll create an array for the org or, if there is no org name, just use the units array
+		final LocaleText[] units=vcard.getOrganizationUnits();	//get the organizational units
+		if(vcard.getOrganizationName()!=null)	//if a name is supplied
+		{
+			org=new LocaleText[units.length+1];	//create a new array with room for the name and the units
+			org[0]=vcard.getOrganizationName();	//store the organization name as the first element
+			System.arraycopy(units, 0, org, 1, units.length);	//copy the units into the org array after the organization name
+		}
+		else	//if there is no name supplied
+		{
+			org=units;	//just use the units, since there is no organization name
+		}
+		final Locale orgLocale=org.length>0 ? org[0].getLocale() : null;	//get the locale of the first organization component, if there are any organization components
+		contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, ORG_TYPE, org, orgLocale));	//ORG
+		contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, TITLE_TYPE, vcard.getTitle()));	//TITLE
+		contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, ROLE_TYPE, vcard.getRole()));	//ROLE
+				//explanatory types
+		final Iterator categoryIterator=vcard.getCategoryList().iterator();	//get an iterator to the categories
+		while(categoryIterator.hasNext())	//while there are more categories
+		{
+			final LocaleText category=(LocaleText)emailIterator.next();	//get the next category
+			contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, CATEGORIES_TYPE, category));	//CATEGORIES
+		}
+		contentLineList.add(DirectoryUtilities.createContentLine(VCARD_PROFILE_NAME, null, NOTE_TYPE, vcard.getNote()));	//NOTE
+		contentLineList.add(new ContentLine(END_TYPE, VCARD_PROFILE_NAME));	//END:VCARD
+		return (ContentLine[])contentLineList.toArray(new ContentLine[contentLineList.size()]);	//return the content lines we produced	
 	}
 }

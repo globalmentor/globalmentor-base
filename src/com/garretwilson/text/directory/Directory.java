@@ -8,29 +8,44 @@ import com.garretwilson.util.*;
 	"RFC 2425: A MIME Content-Type for Directory Information".
 @author Garret Wilson
 */
-public class Directory extends DefaultNamedObject
+public class Directory
 {
 	
 	/**The constant representing all profiles.*/
-	public final static String ALL_PROFILES="$ALL_PROFILES";
+//G***del	public final static String ALL_PROFILES="$ALL_PROFILES";
 	/**The constant representing all types.*/
-	public final static String ALL_TYPES="$ALL_TYPES";
+//G***del	public final static String ALL_TYPES="$ALL_TYPES";
 
-	/**Sets the name of the directory.
-	@param name The new name of the directory.
-	*/
-	public void setName(final Object name) {super.setName(name);}	//G***maybe replace any name content lines when this is set
+	/**The display name of the directory.*/
+	private LocaleText displayName=null;
+
+		/**@return The display name of the directory.*/
+		public LocaleText getDisplayName() {return displayName;}
+
+		/**Sets the display name of the directory.
+		@param displayName The new display name of the directory.
+		*/
+		public void setDisplayName(final LocaleText displayName) {this.displayName=displayName;}
 
 	/**The list of content lines in the directory.*/
-	private final List contentLineList=new ArrayList();
+//G***del	private final List contentLineList=new ArrayList();
 	
 		/**@return The list of content lines in the directory.*/
+//G***del		public List getContentLineList() {return contentLineList;}
+
+		/**@return An iterator to the list of all content lines in the directory.*/
+//G***del		public Iterator getContentLineIterator() {return contentLineList.iterator();}
+
+	/**The list of content lines that represent unrecognized and/or unprocessed information.*/
+	private final List contentLineList=new ArrayList();
+
+		/**@return The list of content lines that represent unrecognized and/or unprocessed information.*/
 		public List getContentLineList() {return contentLineList;}
 
 	/**Default constructor.*/
 	public Directory()
 	{
-		super(null);	//construct a directory with no name
+//G***del		super(null);	//construct a directory with no name
 	}
 
 	/**Gets all content lines within the given profile, ignoring case when making
@@ -41,10 +56,12 @@ public class Directory extends DefaultNamedObject
 	@return An array of content lines that meet the given criteria.
 	@see #ALL_PROFILES
 	*/
+/*G***del
 	public ContentLine[] getContentLinesByProfile(final String profile)
 	{
 		return getContentLines(profile, ALL_TYPES);	//return content lines from the specified profile		
 	}
+*/
 
 	/**Gets the value of the first content line with the specified type name
 		within any profile, ignoring case when making all matches.
@@ -54,12 +71,13 @@ public class Directory extends DefaultNamedObject
 		<code>null</code> if no content lines met the given criteria.
 	@see #ALL_TYPES
 	*/
+/*G***del
 	public Object getContentLineValueByType(final String typeName)
 	{
 		final ContentLine contentLine=getContentLineByType(typeName);	//get the value of the first matchine content line
 		return contentLine!=null ? contentLine.getValue() : null;	//if we found a content line, return its value
 	}
-
+*/
 	/**Gets the first content line with the specified type name within any
 		profile, ignoring case when making all matches.
 	@param typeName The type name of the line to return, or
@@ -68,11 +86,12 @@ public class Directory extends DefaultNamedObject
 		<code>null</code> if no content lines met the given criteria.
 	@see #ALL_TYPES
 	*/
+	/*G***del
 	public ContentLine getContentLineByType(final String typeName)
 	{
 		return getContentLine(ALL_PROFILES, typeName);	//return the first content line with the specified type from any profiles
 	}
-
+*/
 	/**Gets all content lines with the specified type name within any profile,
 		ignoring case when making all matches.
 	@param typeName The type name of the lines to return, or
@@ -80,11 +99,12 @@ public class Directory extends DefaultNamedObject
 	@return An array of content lines that meet the given criteria.
 	@see #ALL_TYPES
 	*/
+	/*G***del
 	public ContentLine[] getContentLinesByType(final String typeName)
 	{
 		return getContentLines(ALL_PROFILES, typeName);	//return content lines with the specified type from all profiles
 	}
-
+*/
 	/**Gets the value of the first content line with the specified type name
 		within the given profile, ignoring case when making all matches.
 	@param profile The profile of the lines to return, <code>null</code> for no
@@ -97,12 +117,13 @@ public class Directory extends DefaultNamedObject
 	@see #ALL_PROFILES
 	@see #ALL_TYPES
 	*/
+	/*G***del
 	public Object getContentLineValue(final String profile, final String typeName)
 	{
 		final ContentLine contentLine=getContentLine(profile, typeName);	//get the value of the requested content line
 		return contentLine!=null ? contentLine.getValue() : null;	//if we found a content line, return its value
 	}
-
+*/
 	/**Gets the first content line with the specified type name within the given
 		profile, ignoring case when making all matches.
 	@param profile The profile of the lines to return, <code>null</code> for no
@@ -115,12 +136,13 @@ public class Directory extends DefaultNamedObject
 	@see #ALL_PROFILES
 	@see #ALL_TYPES
 	*/
+	/*G***del
 	public ContentLine getContentLine(final String profile, final String typeName)
 	{
 		final ContentLine[] contentLines=getContentLines(profile, typeName);	//get all relevant content lines
 		return contentLines.length>0 ? contentLines[0] : null;	//return the first content line, or null if there were no content lines
 	}
-	
+*/	
 	/**Gets all content lines with the specified type name within the given
 		profile, ignoring case when making all matches.
 	@param profile The profile of the lines to return, <code>null</code> for no
@@ -132,6 +154,7 @@ public class Directory extends DefaultNamedObject
 	@see #ALL_PROFILES
 	@see #ALL_TYPES
 	*/
+	/*G***del
 	public ContentLine[] getContentLines(final String profile, final String typeName)
 	{
 		final boolean acceptAllProfiles=ALL_PROFILES.equals(profile);	//see if we should accept all profiles
@@ -149,8 +172,9 @@ public class Directory extends DefaultNamedObject
 		}
 		return (ContentLine[])matchingContentLineList.toArray(new ContentLine[matchingContentLineList.size()]);	//return an array of the content lines we found
 	}
-
+*/
 	/**@return A string representation of the directory.*/
+	/*G***del
 	public String toString()
 	{
 		final StringBuffer stringBuffer=new StringBuffer("text/directory");	//create a new string buffer in which to construct the string
@@ -167,4 +191,5 @@ public class Directory extends DefaultNamedObject
 		}
 		return stringBuffer.toString();	//return the string we constructed
 	}
+*/
 }

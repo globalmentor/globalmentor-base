@@ -32,7 +32,6 @@ public class ContentLine extends NameValuePair implements DirectoryConstants
 		@param group The group specification, or <code>null</code> if there is no group.
 		*/
 		public void setGroup(final String group) {this.group=group;}
-
 	
 	/**@return The type name of this content line as a string.
 	Convenience method for <code>getName()</code>.
@@ -49,8 +48,52 @@ public class ContentLine extends NameValuePair implements DirectoryConstants
 		@see NameValuePair
 		*/
 		public List getParamList() {return paramList;}
+
+	/**Creates a directory content line with a name and value.
+	@param name The name of the information.
+	@param value The value of the information.
+	*/
+	public ContentLine(final String name, final Object value)
+	{
+		this(null, name, value);	//create a content line with no group
+	}
+
+	/**Creates a directory content line with a group, name, and value.
+	@param group The group specification, or <code>null</code> if there is no group.
+	@param name The name of the information.
+	@param value The value of the information.
+	*/
+	public ContentLine(final String group, final String name, final Object value)
+	{
+		this(null, group, name, value);	//create a content line with no profile
+	}
+
+	/**Creates a directory content line with a group, name, parameter list, and value.
+	@param group The group specification, or <code>null</code> if there is no group.
+	@param name The name of the information.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>Object</code>.
+	@param value The value of the information.
+	*/
+	public ContentLine(final String group, final String name, final List paramList, final Object value)
+	{
+		this(null, group, name, paramList, value);	//create a content line with no profile
+	}
+
+	/**Creates a directory content line with a profile, group, name, and value.
+	@param profile The profile of this content line, or <code>null</code> if
+		there is no profile.
+	@param group The group specification, or <code>null</code> if there is no group.
+	@param name The name of the information.
+	@param value The value of the information.
+	*/
+	public ContentLine(final String profile, final String group, final String name, final Object value)
+	{
+		this(profile, group, name, new ArrayList(), value);	//create a content line with an empty param list
+	}
 	
-	/**Creates a directory line with a group, name, parameter, list, and value.
+	/**Creates a directory content line with a profile, group, name, parameter list, and value.
 	@param profile The profile of this content line, or <code>null</code> if
 		there is no profile.
 	@param group The group specification, or <code>null</code> if there is no group.

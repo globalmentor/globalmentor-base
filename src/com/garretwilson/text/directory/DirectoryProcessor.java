@@ -188,7 +188,7 @@ public class DirectoryProcessor implements DirectoryConstants
 	*/
 	protected final static String CONTENT_LINE_DELIMITER_CHARS=GROUP_NAME_SEPARATOR_CHAR+GROUPLESS_CONTENT_LINE_DELIMITER_CHARS;	
 
-	/**Retrieves content lines from a directory of type <code>text/directory</code>.
+	/**Processes the content lines from a directory of type <code>text/directory</code>.
 	@param reader The reader that contains the lines of the directory.
 	@param sourceObject The source of the data (e.g. a <code>String</code>,
 		<code>File</code>, <code>URL</code>, or <code>URI</code>).
@@ -201,7 +201,11 @@ public class DirectoryProcessor implements DirectoryConstants
 		return processDirectory(new LineUnfoldParseReader(reader, sourceObject));	//create a new line unfold parse reader and use that to process the directory
 	}
 
-	/**Retrieves content lines from a directory of type <code>text/directory</code>.
+	/**Processes the content lines from a directory of type <code>text/directory</code>.
+	The first profile encountered that can create a directory object will be
+		used to create the directory object. Otherwise, the predefined profile
+		will be used to create a default directory object containing the content
+		lines. 
 	@param reader The reader that contains the lines of the directory.
 	@return An object representing the directory.
 	@exception IOException Thrown if there is an error reading the directory.
@@ -209,10 +213,41 @@ public class DirectoryProcessor implements DirectoryConstants
 	*/
 	public Directory processDirectory(final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
+		final Set checkedProfileNameSet=new HashSet();	//create a set to store the profile names we check
+		final ContentLine[] contentLines=processContentLines(reader);	//process the content lines
+		for(int i=0; i<contentLines.length; ++i)	//look at each content line
+		{
+			final String profileName=contentLines[i].getProfile();	//get this line's profile name
+			if(profileName!=null && !checkedProfileNameSet.contains(profileName))	//if this content line is in a profile that we haven't checked
+			{
+				final Profile profile=getProfile(profileName);	//see if we have a profile object for this profile
+				if(profile!=null)	//if we have a profile object registered
+				{
+					final Directory directory=profile.createDirectory(contentLines);	//ask this profile to create a directory
+					if(directory!=null)	//if the profile created a directory
+					{
+						return directory;		//return the directory the profile created
+					}
+					
+				}
+				checkedProfileNameSet.add(profileName);	//show that we've checked this profile 				
+			}
+		}
+		return getPredefinedProfile().createDirectory(contentLines);	//if none of the profiles can create a directory, ask the predefined profile to create a directory
+	}
+
+	/**Retrieves content lines from a directory of type <code>text/directory</code>.
+	@param reader The reader that contains the lines of the directory.
+	@return An array of content lines in the directory.
+	@exception IOException Thrown if there is an error reading the directory.
+	@exception ParseIOException Thrown if there is a an error interpreting the directory.
+	*/
+	public ContentLine[] processContentLines(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	{
 		profileStack=new LinkedList();	//create a new profile stack
 		defaultProfile=null;	//show that there is no default profile
 		useDefaultProfile=false;	//don't use the default profile
-		final Directory directory=new Directory();	//create a new directory
+		final List contentLineList=new ArrayList();	//create an array in which to told the content lines
 		while(!reader.isEOF())	//while we haven't reached the end of the file
 		{		
 			final ContentLine[] contentLines=processContentLine(reader);	//process one or more lines of contents, all of which should have the same type
@@ -223,28 +258,30 @@ public class DirectoryProcessor implements DirectoryConstants
 					final ContentLine contentLine=contentLines[i];	//get a reference to this content line
 //G***del Debug.trace("just processed content line: ", contentLine);	//G***del
 					final String typeName=contentLine.getTypeName();	//get the type
-					if(END_TYPE.equalsIgnoreCase(typeName))	//if this is END
+/*G***del when works
+					if(NAME_TYPE.equalsIgnoreCase(typeName))	//if this is NAME
 					{
 						if(directory.getName()==null)	//if the directory does not yet have a name
 						{
 							directory.setName((String)contentLine.getValue());	//get the directory name
 						}
 					}
-					else if(PROFILE_TYPE.equalsIgnoreCase(typeName))	//if this is PROFILE
+*/
+					if(PROFILE_TYPE.equalsIgnoreCase(typeName))	//if this is PROFILE
 					{
-						final String profile=(String)contentLine.getValue();	//get the profile
+						final String profile=((LocaleText)contentLine.getValue()).getText();	//get the profile
 						contentLine.setProfile(profile);	//a profile type should have the same profile as the one it sets
 						setProfile(profile);	//set the profile to the new profile
 					}
 					else if(BEGIN_TYPE.equalsIgnoreCase(typeName))	//if this is BEGIN:xxx
 					{
-						final String profile=(String)contentLine.getValue();	//get the profile
+						final String profile=((LocaleText)contentLine.getValue()).getText();	//get the profile
 						contentLine.setProfile(profile);	//a beginning profile type should have the same profile as the one it sets
 						pushProfile(profile);	//push the new profile
 					}
 					else if(END_TYPE.equalsIgnoreCase(typeName))	//if this is END:xxx
 					{
-						final String profile=(String)contentLine.getValue();	//get the profile
+						final String profile=((LocaleText)contentLine.getValue()).getText();	//get the profile
 						contentLine.setProfile(profile);	//an ending profile type should have the same profile to which it refers
 						try
 						{
@@ -256,14 +293,14 @@ public class DirectoryProcessor implements DirectoryConstants
 							throw new ParseIOException("Profile \""+profile+"\" END without BEGIN.", reader);	//throw an error indicating that there was no beginning to the profile
 						}
 					}
-					directory.getContentLineList().add(contentLine);	//add this content line to the directory
+					contentLineList.add(contentLine);	//add this content line to the list of content lines
 				}
 			}
 		}		
 		profileStack=null;	//release the profile stack
 		defaultProfile=null;	//show that there is no default profile
 		useDefaultProfile=false;	//don't use the default profile
-		return directory;	//return the directory we processed				
+		return (ContentLine[])contentLineList.toArray(new ContentLine[contentLineList.size()]);	//return the content lines we processed				
 	}
 
 	/**Retrieves one or more content lines from a directory, all of which will

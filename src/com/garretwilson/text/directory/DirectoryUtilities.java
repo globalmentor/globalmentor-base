@@ -11,6 +11,33 @@ import com.garretwilson.util.*;
 */
 public class DirectoryUtilities implements DirectoryConstants
 {
+	/**Creates a directory content line from locale text.
+	@param profile The profile of this content line, or <code>null</code> if
+		there is no profile.
+	@param group The group specification, or <code>null</code> if there is no group.
+	@param name The name of the information.
+	@param localeText The value of the information.
+	*/
+	public static ContentLine createContentLine(final String profile, final String group, final String name, final LocaleText localeText)
+	{
+		return createContentLine(profile, group, name, localeText, localeText.getLocale());	//create and return a content line from the locale text and the locale
+	}
+
+	/**Creates a directory content line with the given language parameter.
+	@param profile The profile of this content line, or <code>null</code> if
+		there is no profile.
+	@param group The group specification, or <code>null</code> if there is no group.
+	@param name The name of the information.
+	@param value The value of the information.
+	@param locale The value to give to the language parameter. 
+	@see #setLanguageParamValue
+	*/
+	public static ContentLine createContentLine(final String profile, final String group, final String name, final Object value, final Locale locale)
+	{
+		final ContentLine contentLine=new ContentLine(profile, group, name, value);	//create a content line with the value
+		setLanguageParamValue(contentLine.getParamList(), locale);	//set the language of the content line
+		return contentLine;	//return the content line we created
+	}
 
 	/**Creates a <code>LocaleText</code> by combining the language param, if
 		present, with the string value of the given object.
@@ -96,4 +123,52 @@ public class DirectoryUtilities implements DirectoryConstants
 		
 	}
 */
+
+	/**Removes all parameters with the given name.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
+	@param paramName The name of the parameter, which will be matched against
+		available parameters in a case insensitive way.
+	*/
+	public static void removeParams(final List paramList, final String paramName)
+	{
+		final Iterator paramIterator=paramList.iterator();	//get an iterator to the parameters
+		while(paramIterator.hasNext())	//while there are more parameters
+		{
+			final NameValuePair parameter=(NameValuePair)paramIterator.next();	//get the next parameter name/value pair
+			if(paramName.equals(parameter.getName()))	//if this is the correct parameter
+			{
+				paramIterator.remove();	//remove this parameter
+			}
+		}
+	}
+
+	/**Sets the language parameter to the value of a <code>Locale</code>.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
+	@param locale The value to give to the language parameter. 
+	*/
+	public static void setLanguageParamValue(final List paramList, final Locale locale)
+	{
+		setParamValue(paramList, LANGUAGE_PARAM_NAME, LocaleUtilities.getLanguageTag(locale));	//store the language tag representation of the locale as the value of the language parameter 
+	}
+
+	/**Removes all parameters with the given name and adds a new
+		parameter with the given value.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
+	@param paramName The name of the parameter, which will be matched against
+		available parameters in a case insensitive way.
+	@param paramValue The value to give to the added parameter. 
+	@see #removeParams
+	*/
+	public static void setParamValue(final List paramList, final String paramName, final String paramValue)
+	{
+		removeParams(paramList, paramName);	//remove all parameters with the given name
+		paramList.add(new NameValuePair(paramName, paramValue));	//create a name value pair with the given name and value
+	}
+
 }
