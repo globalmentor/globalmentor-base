@@ -105,15 +105,16 @@ public class QuestionPanel extends TabbedViewPanel
 	}
 */
 
-	/**Loads the data from the model to the view, if necessary.
+	/**Loads the data from the model to the specified view, if necessary.
+	@param modelView The view of the data, such as <code>SUMMARY_MODEL_VIEW</code>.
 	@exception IOException Thrown if there was an error loading the model.
 	*/
-	public void loadModel() throws IOException
+	protected void loadModel(final int modelView) throws IOException
 	{
-		super.loadModel();	//do the default loading
+		super.loadModel(modelView);	//do the default loading
 		final QuestionModel model=getQuestionModel();	//get the data model
 		final Question question=model.getQuestion();	//get the question, if there is one
-		switch(getModelView())	//see which view of data we should load
+		switch(modelView)	//see which view of data we should load
 		{
 			case QUERY_MODEL_VIEW:	//if we're changing to the query view
 				if(question!=null)	//if there is a question
@@ -193,14 +194,15 @@ public class QuestionPanel extends TabbedViewPanel
 	}
 
 	/**Stores the current data being edited to the model, if necessary.
-	@exception IOException Thrown if there was an error loading the model.
+	@param modelView The view of the data, such as <code>SUMMARY_MODEL_VIEW</code>.
+	@exception IOException Thrown if there was an error saving the model.
 	*/
-	public void saveModel() throws IOException
+	protected void saveModel(final int modelView) throws IOException
 	{
-		super.saveModel();	//do the default saving
+		super.saveModel(modelView);	//do the default saving
 		final QuestionModel model=getQuestionModel();	//get the data model
 		final Question question=model.getQuestion()!=null ? model.getQuestion() : new Question();	//get the question, if there is one; if not, create one
-		switch(getModelView())	//see which view of data we have, in order to get the current RDF
+		switch(modelView)	//see which view of data we have, in order to get the current RDF
 		{
 			case QUERY_MODEL_VIEW:	//if we should store the query
 				final Dialogue query=queryAnswerPanel.queryPanel.getDialogueModel().getDialogue();	//get the query from the panel

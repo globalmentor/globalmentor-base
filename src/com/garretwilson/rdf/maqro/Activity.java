@@ -220,11 +220,11 @@ public class Activity extends Group
 	}
 
 	/**Sets whether the result of each interaction should immediately be shown.
-	@param showResult <code>true</code> if each result should be shown.
+	@param showEachResult <code>true</code> if each result should be shown.
 	*/
-	public void setShowEachResult(final boolean showResult)
+	public void setShowEachResult(final boolean showEachResult)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, SHOW_EACH_RESULT_PROPERTY_NAME, new BooleanLiteral(showResult)); //set the property with a boolean typed literal
+		setProperty(MAQRO_NAMESPACE_URI, SHOW_EACH_RESULT_PROPERTY_NAME, new BooleanLiteral(showEachResult)); //set the property with a boolean typed literal
 	}
 
 	/**@return <code>true</code> if the final result of the activity should be shown.*/
