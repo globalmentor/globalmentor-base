@@ -37,6 +37,12 @@ public class ActivityPanel extends RDFPanel
 	/**The book for the WYSIWYG view.*/
 	protected final Book book;
 
+	/**The strategy for editing interactions.*/
+	private final InteractionEditStrategy interactionEditStrategy;
+
+		/**@return The strategy for editing interactions.*/
+		protected InteractionEditStrategy getInteractionEditStrategy() {return interactionEditStrategy;}
+
 	/**The panel representing a sequence of ineractions.*/
 	protected final InteractionSequencePanel interactionSequencePanel;
 
@@ -99,9 +105,10 @@ public class ActivityPanel extends RDFPanel
 		addSupportedModelViews(new int[]{WYSIWYG_MODEL_VIEW, SEQUENCE_MODEL_VIEW, LIST_MODEL_VIEW, CONFIGURATION_MODEL_VIEW});	//show that we now support WYSIWYG, sequence, list model, and configuration views, too
 		interactAction=new InteractAction();	//create an action for interacting with the activity
 		book=new Book(1);	//create a new book for the WYSIWYG view, showing only one page
-		interactionSequencePanel=new InteractionSequencePanel();	//create a new interaction sequence panel
 		interactionListComponent=new JList();	//create a new list for the interactions
-		interactionListPanel=new ListPanel(interactionListComponent, new InteractionEditStrategy());	//create a new interaction list panel
+		interactionEditStrategy=new InteractionEditStrategy();	//create the edit strategy for interactions
+		interactionSequencePanel=new InteractionSequencePanel();	//create a new interaction sequence panel
+		interactionListPanel=new ListPanel(interactionListComponent, interactionEditStrategy);	//create a new interaction list panel
 		activityBehaviorPanel=new ActivityBehaviorPanel(model);	//create a panel for the behavior panel
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
@@ -113,7 +120,9 @@ public class ActivityPanel extends RDFPanel
 	protected void initializeActions(final ActionManager actionManager)
 	{
 		super.initializeActions(actionManager);	//do the default initialization
-		actionManager.addToolAction(getInteractAction());
+		actionManager.addToolAction(getInteractionEditStrategy().getAddAction());	//add an action for adding a new interaction
+		actionManager.addToolAction(new ActionManager.SeparatorAction());	//--
+		actionManager.addToolAction(getInteractAction());	//add an action for testing the activity
 		add(getActionManager().addToolComponents(new ApplicationToolBar()), BorderLayout.NORTH);	//put a toolbar in the north with our tool actions
 	}
 

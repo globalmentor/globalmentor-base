@@ -23,17 +23,19 @@ public interface ResourceSelector extends URIAccessible
 		<code>null</code> if there is no selected resource.
 	@return The selected resource, or <code>null</code> if selection was
 		canceled.
+	@exception SecurityException Thrown if selecting an input resource is not allowed.
 	@exception IOException Thrown if there is an error locating a resource.
 	*/
-	public Resource selectInputResource(final Resource oldResource) throws IOException;	//TODO check for a security exception
+	public Resource selectInputResource(final Resource oldResource) throws SecurityException, IOException;
 
 	/**Selects a resource for output.
 	@param oldResource The currently selected resource, if applicable, or
 		<code>null</code> if there is no selected resource.
 	@return The selected resource, or <code>null</code> if selection was
 		canceled.
+	@exception SecurityException Thrown if selecting an output resource is not allowed.
 	@exception IOException Thrown if there is an error locating a resource.
 	*/
-	public Resource selectOutputResource(final Resource oldResource) throws IOException;
+	public Resource selectOutputResource(final Resource oldResource) throws SecurityException, IOException;
 
 }
