@@ -17,6 +17,27 @@ public class URIUtilities implements URIConstants	//G***del InputStreamLocator
 	public URIUtilities()
 	{
 	}
+	
+	/**Determines the current level of a hierarchical URI.
+	@param uri The URI to examine.
+	@return A URI representing the current hierarchical level of a hierarchical
+		URI; equivalent to resolving the path "." to the URI.	
+	*/
+	public static URI getCurrentLevel(final URI uri)
+	{
+		return uri.resolve(CURRENT_LEVEL_PATH_SEGMENT);	//resolve the URI to "."
+			
+	}
+
+	/**Determines the parent level of a hierarchical URI.
+	@param uri The URI to examine.
+	@return A URI representing the parent hierarchical level of a hierarchical
+		URI; equivalent to resolving the path ".." to the URI.	
+	*/
+	public static URI getParentLevel(final URI uri)
+	{
+		return uri.resolve(PARENT_LEVEL_PATH_SEGMENT);	//resolve the URI to ".."
+	}
 
 	/**Retrieves a <code>File</code> representing the file of the URI.
 	@param uri The URI for which to return a file.
