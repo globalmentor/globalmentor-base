@@ -1,16 +1,26 @@
 package com.garretwilson.swing.text.rdf.maqro;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.*;
 
+import javax.swing.*;
 import javax.swing.text.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
+
 import com.garretwilson.rdf.RDFResource;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.rdf.maqro.*;
+import com.garretwilson.resources.icon.IconResources;
 
 import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
+
+import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
+import com.garretwilson.util.Debug;
+
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
 
 /**Creates views for MAQRO elements.
@@ -55,17 +65,16 @@ public class MAQROViewFactory extends XMLViewFactory
 			final String elementLocalName=XMLStyleUtilities.getXMLElementLocalName(attributeSet); //get the local name of this element
 		  if(ACTIVITY_CLASS_NAME.equals(elementLocalName)) //maqro:Activity
 			{
-/*TODO fix
-				final Assessment assessment=createAssessment(element);  //create an assessment from this element hierarcy
-				final SubmitAction submitAction=new SubmitAction(assessment); //create a new submission action for this assessment
-//G***del if not needed				putAssessment(assessment);  //put the assessment in our map
-				final XMLComponentBlockView assessmentView=new XMLComponentBlockView(element, QTIAssessmentView.Y_AXIS);  //create a new view for the assessment
-//G***del if not needed				final QTIAssessmentView assessmentView=new QTIAssessmentView(element, QTIAssessmentView.Y_AXIS, submitAction);  //create a new view for the assessment
-				final JButton submitButton=new JButton(submitAction); //create a new button for the submission
-				assessmentView.add(submitButton, BorderLayout.AFTER_LAST_LINE); //add the button to the bottom of the assessment view
-				return assessmentView;  //return the assessment view
-*/
-				view=new XMLBlockView(element, View.Y_AXIS);	//create a block view				
+				final Activity activity=asInstance(getRDFResource(attributeSet), Activity.class);	//get the activity
+				if(activity!=null)	//if the element stores the activity
+				{
+					final SubmitAction submitAction=new SubmitAction(activity); //create a new submission action for this activity
+					final XMLComponentBlockView activityView=new XMLComponentBlockView(element, View.Y_AXIS);  //create a new view for the activity
+					final JButton submitButton=new JButton(submitAction); //create a new button for the submission
+					submitButton.setFocusable(false);	//TODO fix component manager focus traversal
+					activityView.getComponentManager().add(submitButton, ViewComponentManager.Border.PAGE_END); //add the button to the bottom of the activity view
+					view=activityView;	//use the activity view we just created
+				}
 			}
 		  else if(QUESTION_CLASS_NAME.equals(elementLocalName)) //maqro:Question
 			{
@@ -113,6 +122,36 @@ Debug.trace("Creating new item view");
 			}
 		}
 		return view;	//return the created view
+	}
+
+	/**Action for submitting an activity.
+	@author Garret Wilson
+	*/
+	protected class SubmitAction extends AbstractAction
+	{
+
+		/**The activity to be submitted.*/
+		protected final Activity activity;
+
+		/**Constructs an activity submit action.
+		@param activity The activity to be submitted
+		*/
+		public SubmitAction(final Activity activity)
+		{
+			super("Submit");	//create the base class G***i18n
+			putValue(SHORT_DESCRIPTION, "Submit the activity.");	//set the short description G***i18n
+			putValue(LONG_DESCRIPTION, "Submit the activity.");	//set the long description G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));  //set the mnemonic key G***i18n
+			putValue(SMALL_ICON, IconResources.getIcon(IconResources.SUBMIT_ICON_FILENAME)); //load the correct icon
+			this.activity=activity;  //store the activity
+		}
+
+		/**Called when the action should be performed.
+		@param actionEvent The event causing the action.
+		*/
+		public void actionPerformed(final ActionEvent actionEvent)
+		{
+		}
 	}
 
 }

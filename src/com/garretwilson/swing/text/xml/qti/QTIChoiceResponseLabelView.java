@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.text.*;
 import com.garretwilson.assess.qti.QTIConstants;
 import com.garretwilson.swing.text.StyleUtilities;
+import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.swing.text.xml.css.XMLCSSStyleUtilities;
 import com.garretwilson.util.Debug;
@@ -81,7 +82,7 @@ public class QTIChoiceResponseLabelView extends XMLComponentBlockView implements
 //G***del			responseLIDView.getResponseLabelViewMap().put(ident, this); //store ourselves in the logical ID response view map, keyed by ident G***do we really want to add ourselves here? outside the constructor somewhere might be a better place
 			renderChoiceView.getButtonGroup().add(getToggleButton()); //add our radio button to the enclosing choice rendering button group to allow for mutual exclusion
 		}
-		add(getToggleButton(), BorderLayout.BEFORE_LINE_BEGINS); //add the radio button before this line begins
+		getComponentManager().add(getToggleButton(), ViewComponentManager.Border.LINE_START); //add the radio button before this line begins
 	}
 
 }

@@ -286,7 +286,7 @@ Debug.trace("QTI local name: ", elementLocalName);  //G***del when works
 				final XMLComponentBlockView assessmentView=new XMLComponentBlockView(element, QTIAssessmentView.Y_AXIS);  //create a new view for the assessment
 //G***del if not needed				final QTIAssessmentView assessmentView=new QTIAssessmentView(element, QTIAssessmentView.Y_AXIS, submitAction);  //create a new view for the assessment
 				final JButton submitButton=new JButton(submitAction); //create a new button for the submission
-				assessmentView.add(submitButton, BorderLayout.AFTER_LAST_LINE); //add the button to the bottom of the assessment view
+				assessmentView.getComponentManager().add(submitButton, ViewComponentManager.Border.PAGE_END); //add the button to the bottom of the assessment view
 				return assessmentView;  //return the assessment view
 			}
 		  else if(ELEMENT_ITEM.equals(elementLocalName)) //if this is an <item>
