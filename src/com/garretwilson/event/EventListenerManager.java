@@ -7,34 +7,23 @@ import com.garretwilson.util.*;
 	of another class that allows event listeners to be registered with it.
 <p>This class maintains weak references to event listeners so that they may be
 	collected by the garbage collector when they are no longer in ordinary use.</p>
-<p>This class uses thread-safe access methods. Any calling class that iterates
-	over installed listeners should synchronize on the object returned by
-	<code>getLock()</code> in order to be thread-safe. As <code>getLock()</code>
-	can create unneeded objects in the case of no listeners, that method should
-	only be called if <code>getListenerCount()</code> returns a positive value.
+<p>This class uses thread-safe access methods. Returned listener arrays are
+	 "snapshots" of currently registered listeners, so may be accessed even
+	 though other threads (or even the event listener itself) may add and/or
+	 remove listeners.
 	Example:
 	<blockquote><pre><code>
-	if(manager.getListenerCount(MyListener.class)>0)
+	final MyListener[] myListeners=getListeners(MyListener.class);
+	if(myListeners.length>0)
 	{
-		synchronize(manager.getLock(MyListener.class))
+		final MyEvent myEvent=new MyEvent();
+		for(int i=myListeners.length-1; i>=0; --i)
 		{
-			final MyEvent myEvent=new MyEvent();
-			final Iterator listenerIterator=manager.getListenerIterator(MyListener.class);
-			while(listenerIterator.hasNext()
-			{
-				final MyListener myListener=(MyListener)listenerIterator.next()
-				myListener.fireEvent(myEvent);
-			}
+			((MyListener)myListeners[i]).fireEvent(myEvent);
 		}
 	}
 	</pre></code></blockquote>
-	This code does not remove the possibility that between checking the listener
-	count and getting a lock, another thread will have created removed all
-	listeners, thus leaving unneeded objects allocated. Howver, this will occur
-	infrequently, no logic errors will occur, and subsequent calls to the manager
-	will remove these unneeded objects. (i.e. in the above code, the unneeded
-	objects would be removed when <code>getListenerIterator()</code> is called).
-</p>
+	</p>
 <p>This class uses little memory if there are no registered event listeners.</p>
 <p>This class was inspired by <code>javax.swing.EventListenerList</code>
 	1.33 12/03/01 by Georges Saab, Hans Muller, and James Gosling.</p>
@@ -49,8 +38,8 @@ public class EventListenerManager
 	//Rather than synchronizing on the map, each method that accesses the map is
 	//	synchronized because the map can be created and destroyed.
 
-	/**The shared iterator that contains no elements.*/
-	protected final static Iterator EMPTY_ITERATOR=new IteratorUtilities.EmptyIterator();
+	/**The shared empty array of event listeners.*/
+	protected final static EventListener[] NO_LISTENERS=new EventListener[]{};
 
 	/**The map containing weak sets of event listeners; only allocated when needed.*/
 	private Map listenerSetMap=null;
@@ -69,8 +58,7 @@ public class EventListenerManager
 		Set listenerSet=(Set)listenerSetMap.get(key);	//get the set of listeners associated with the key
 		if(listenerSet==null)	//if there is no set of listeners associated with the key
 		{
-//G***fix			listenerSet=Collections.synchronizedSet(new WeakHashSet());	//create a new synchronized weak set in which to store the listeners
-			listenerSet=Collections.synchronizedSet(new HashSet());	//create a new synchronized weak set in which to store the listeners
+			listenerSet=Collections.synchronizedSet(new WeakHashSet());	//create a new synchronized weak set in which to store the listeners
 			listenerSetMap.put(key, listenerSet);	//store the set in the map keyed to the key
 		}
 		return listenerSet;	//return the set of listeners
@@ -149,7 +137,6 @@ public class EventListenerManager
 			{
 				synchronized(listenerSet)	//don't allow other threads to access the set while we access it
 				{
-					checkListenerSet(key, listenerSet);	//remove the listener set and the map if they are no longer needed
 					return listenerSet.size();	//return the size of the set of listeners
 				}
 			}
@@ -157,15 +144,12 @@ public class EventListenerManager
 		return 0;	//show that we have no listeners registered with the given key
 	}
 
-	/**Retrieves an iterator to the listeners associated with the given key. 
-	For thread-safe access, the iterator should be within a block synchronized
-		on the lock object obtained by <code>getLock()</code>.
-	<p>Example: <code>getListenerIterator(MyListener.class);</code></p>
+	/**Retrieves an arry of listeners associated with the given key. 
+	<p>Example: <code>getListeners(MyListener.class);</code></p>
 	@param key The key with which listeners have been associated.
-	@return An iterator to all registered listeners.
-	@see #getLock
+	@return An array of all currently registered listeners.
 	*/
-	public synchronized Iterator getListenerIterator(final Object key)
+	public synchronized EventListener[] getListeners(final Object key)
 	{
 		if(listenerSetMap!=null)	//if we have a map of listener sets
 		{
@@ -176,16 +160,12 @@ public class EventListenerManager
 				{
 					if(listenerSet.size()>0)	//if there are elements in the listener set
 					{
-						return listenerSet.iterator();	//return an iterator to the weak set of listeners
-					}
-					else	//if there are no elements in the listener set
-					{
-						checkListenerSet(key, listenerSet);	//remove the listener set and the map if they are no longer needed, and just return an empty set
+						return (EventListener[])listenerSet.toArray(new EventListener[listenerSet.size()]);	//create and return an array of the listeners in the set
 					}
 				}
 			}
 		}
-		return EMPTY_ITERATOR;	//return an empty iterator if we can't find a set of listeners 
+		return NO_LISTENERS;	//return an empty array of event listeners
 	}
 
 	/**Retrieves a lock to allow thread-safe access to a set of iterators
