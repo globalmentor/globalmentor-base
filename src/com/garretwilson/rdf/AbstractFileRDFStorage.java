@@ -3,7 +3,6 @@ package com.garretwilson.rdf;
 import java.io.*;
 import java.net.*;
 import com.garretwilson.io.*;
-import com.garretwilson.rdf.*;
 import org.w3c.dom.*;
 
 /**A modifiable object that knows how to store and retrieve itself as RDF in a
@@ -130,7 +129,7 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 		if(isBackupUsed())	//if backup files are used
 		{
 			final File storageFile=new File(uri);	//get the file to represent the URI
-			final File backupFile=FileUtilities.getBackupFile(storageFile);  //get the expected backup file
+			final File backupFile=FileUtilities.getBackupFile(storageFile);  //get the expected backup file G***can't we just remove this parameter and use the default?
 			FileUtilities.checkExists(storageFile, backupFile);	//check to see if the file exists; if not, try to use the backup file instead
 		}
 		super.retrieve(uri);	//attempt to retrieve the file normally		

@@ -481,7 +481,7 @@ public class FileUtilities implements FileConstants
 	{
 		if(!directory.mkdirs())	//create the directory; if unsuccessful
 		{
-			throw new IOException("encodeFilenamee directories "+directory);	//throw an exception G***i18n
+			throw new IOException("Cannot create directories "+directory);	//throw an exception G***i18n
 		}
 	}
 

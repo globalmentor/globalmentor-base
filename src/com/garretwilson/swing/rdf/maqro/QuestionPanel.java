@@ -122,7 +122,7 @@ public class QuestionPanel extends TabbedViewPanel
 				{
 					final Dialogue query=question.getQuery();	//get the query
 					queryAnswerPanel.queryPanel.setDialogueModel(new DialogueModel(query, model.getBaseURI(), model));	//set the query in the panel
-					final Resource expectation=question.getExpect();	//get the expectation
+					final Resource expectation=question.getExpectation();	//get the expectation
 					queryAnswerPanel.answerPanel.setExpectation(expectation);	//show the expectation in the combo box, even if there isn't an expectation
 					final List choices=question.getChoices();	//get the question choices
 					if(choices!=null)	//if there are choices
@@ -212,7 +212,7 @@ public class QuestionPanel extends TabbedViewPanel
 				int maxResponseCount=-1;	//default to unlimited responses allowed
 				if(queryAnswerPanel.choicesRadioButton.isSelected())	//if we should expect choices
 				{
-					question.setExpect(null);	//show that we don't expect any answer type in particular
+					question.setExpectation(null);	//show that we don't expect any answer type in particular
 					question.setChoices((RDFListResource)((ListListModel)queryAnswerPanel.choiceList.getModel()).getList());	//make sure the question knows of the choices
 					final Object[] answers=queryAnswerPanel.choiceList.getSelectedValues();	//get the selected answers
 					if(queryAnswerPanel.requireAllCheckBox.isSelected())	//see if we should require all the answers
@@ -237,7 +237,7 @@ public class QuestionPanel extends TabbedViewPanel
 				else if(queryAnswerPanel.expectRadioButton.isSelected())	//if we should expect a particular answer type
 				{
 					question.setChoices(null);	//remove all choices
-					question.setExpect(queryAnswerPanel.answerPanel.getExpectation());	//update the expectation TODO make sure the expectation has been removed
+					question.setExpectation(queryAnswerPanel.answerPanel.getExpectation());	//update the expectation TODO make sure the expectation has been removed
 					final Dialogue answer=queryAnswerPanel.answerPanel.getAnswer();	//get the answer
 					if(answer!=null)	//if an answer is specified
 						question.addAnswer(answer);	//add the answer (we cleared all the answers earlier)

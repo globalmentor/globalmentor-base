@@ -88,8 +88,8 @@ public interface MAQROConstants
 	public final static String ANSWER_PROPERTY_NAME="answer";
 	/**A choice of a question. The local name of maqro:choices.*/
 	public final static String CHOICES_PROPERTY_NAME="choices";
-	/**The type of response a question expects. The local name of maqro:expect.*/
-	public final static String EXPECT_PROPERTY_NAME="expect";
+	/**The type of response a question expects. The local name of maqro:expectation.*/
+	public final static String EXPECTATION_PROPERTY_NAME="expectation";
 	/**An explanation of a question. The local name of maqro:explanation.*/
 	public final static String EXPLANATION_PROPERTY_NAME="explanation";
 	/**The minimum number of responses to accept. The local name of maqro:minResponseCount.*/
@@ -112,7 +112,7 @@ public interface MAQROConstants
 	public final static String QUESTION_COUNT_PROPERTY_NAME="questionCount";
 	/**Identifies an interaction. The local name of maqro:interaction.*/
 	public final static String INTERACTION_PROPERTY_NAME="interaction";
-	/**A interactions of an activity. The local name of maqro:interactions.*/
+	/**The interactions of an activity. The local name of maqro:interactions.*/
 	public final static String INTERACTIONS_PROPERTY_NAME="interactions";
 	/**The order criteria of an activity. The local name of maqro:order.*/
 	public final static String ORDER_PROPERTY_NAME="order";

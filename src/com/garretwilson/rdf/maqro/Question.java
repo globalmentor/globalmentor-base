@@ -69,18 +69,18 @@ public class Question extends Interaction
 		<code>null</code> if there is no expected datatype or the expected datatype
 		is not a resource.
 	*/
-	public RDFResource getExpect()
+	public RDFResource getExpectation()
 	{
-		return RDFUtilities.asResource(getPropertyValue(MAQRO_NAMESPACE_URI, EXPECT_PROPERTY_NAME));	//get the expectation		
+		return RDFUtilities.asResource(getPropertyValue(MAQRO_NAMESPACE_URI, EXPECTATION_PROPERTY_NAME));	//get the expectation		
 	}
 
 	/**Sets the expectation of the question.
-	@param expect The resource indicating the datatype expected in the response,
-		or <code>null</code> if there is no expected datatype.
+	@param expectation The resource indicating the datatype expected in the
+		response, or <code>null</code> if there is no expected datatype.
 	*/
-	public void setExpect(final RDFResource expect)
+	public void setExpectation(final RDFResource expectation)
 	{
-		this.setProperty(MAQRO_NAMESPACE_URI, EXPECT_PROPERTY_NAME, expect);	//set the expectation		
+		this.setProperty(MAQRO_NAMESPACE_URI, EXPECTATION_PROPERTY_NAME, expectation);	//set the expectation		
 	}
 
 	/**Adds an explanation to the question.

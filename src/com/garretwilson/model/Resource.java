@@ -5,7 +5,7 @@ import java.net.URI;
 /**Represents a generic resource with an identifying reference URI.
 @author Garret Wilson
 */
-public interface Resource	//G***del if not needed extends Comparable
+public interface Resource extends Model	//G***del if not needed extends Comparable
 {
 
 	/**@return The resource identifier URI, or <code>null</code> if the identifier is not known.*/

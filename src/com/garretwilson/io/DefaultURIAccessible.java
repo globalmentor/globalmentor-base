@@ -2,7 +2,7 @@ package com.garretwilson.io;
 
 import java.io.*;
 import java.net.URI;
-
+import com.garretwilson.net.URIConstants;
 import com.garretwilson.util.BoundPropertyObject;
 
 /**Default implementation of a class that allows access to resources by
@@ -105,7 +105,11 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		{
 			return uriOutputStreamable.getOutputStream(uri);	//delegate to the stored implementation
 		}
-//TODO fix to check for a file or something---a URL doesn't allow creation of output streams
+		if(URIConstants.FILE_SCHEME.equals(uri.getScheme()))	//if this is a file URI
+		{
+			return new FileOutputStream(new File(uri));	//create and return an output stream to the file
+		}
+//TODO fix for other types of URIs
 		return uri.toURL().openConnection().getOutputStream();	//convert the URI to a URL, open a connection to it, and get an output stream to it
 	}
 
