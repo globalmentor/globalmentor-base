@@ -57,7 +57,7 @@ public class QTIMaterialPanel extends JPanel
 			}
 			catch(IOException ioException)
 			{
-				Debug.error(ioException); //we don't expect to get this error
+				throw new AssertionError(ioException); //we don't expect to get this error
 			}
 			updateActions();  //update the actions, now that the image has changed
 		}
@@ -115,7 +115,7 @@ public class QTIMaterialPanel extends JPanel
 			catch(MalformedURLException malformedURLException)
 			{
 				imageURI=null;  //show that we couldn't get an image
-				Debug.error(malformedURLException); //we don't expect to get this error
+				throw new AssertionError(malformedURLException); //we don't expect to get this error
 			}
 		}
 		else  //if there  is no associated image
@@ -156,7 +156,7 @@ public class QTIMaterialPanel extends JPanel
 			}
 			catch(MalformedURLException malformedURLException)
 			{
-				Debug.error(malformedURLException); //G***fix
+				throw new AssertionError(malformedURLException); //G***fix
 			}
 		}
 	}

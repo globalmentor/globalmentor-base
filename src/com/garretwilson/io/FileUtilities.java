@@ -222,8 +222,8 @@ public class FileUtilities
 			}
 			catch(MalformedURLException malformedURLException)  //if a URL was malformed
 			{
-				Debug.error(malformedURLException); //we should never get this error
-				return file.getPath().replace('\\', FileConstants.PATH_SEPARATOR);  //this should never be reached G***use a constant here
+				throw new AssertionError(malformedURLException); //we should never get this error
+//TODO del				return file.getPath().replace('\\', FileConstants.PATH_SEPARATOR);  //this should never be reached G***use a constant here
 			}
 		}
 		else  //if we were not given a root directory

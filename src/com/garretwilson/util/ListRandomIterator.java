@@ -10,31 +10,31 @@ import java.util.*;
 <p>This iterator allows filtering of the returned objects.</p>
 @author Garret Wilson
 */
-public class ListRandomIterator implements Iterator 
+public class ListRandomIterator<E> implements Iterator<E> 
 {
 
 	/**The list to randomly iterate.*/
-	private final List list;
+	private final List<E> list;
 
 	/**The iterator that determines the next index of the list to return.*/
 	protected final RandomIntegerIterator indexIterator;
 
 	/**The filter used to exclude items from the iterator.*/
-	private Filter filter;
+	private Filter<E> filter;
 
 		/**@return The filter used to exclude items from the iterator.*/
-		public Filter getFilter() {return filter;}
+		public Filter<E> getFilter() {return filter;}
 
 		/*Sets the filter used to exclude items from the iterator.
 		@param filter The new filter to use.
 		*/
-		public void setFilter(final Filter filter) {this.filter=filter;}
+		public void setFilter(final Filter<E> filter) {this.filter=filter;}
 
 	/**Constructs an iterator that returns all of the elements of the list.
 	<p>A default random number generator is used.</p>
 	@param list The list to randomly iterate.
 	*/
-	public ListRandomIterator(final List list)
+	public ListRandomIterator(final List<E> list)
 	{
 		this(list, new Random());
 	}
@@ -43,7 +43,7 @@ public class ListRandomIterator implements Iterator
 	@param list The list to randomly iterate.
 	@param random The random number generator.
 	*/
-	public ListRandomIterator(final List list, final Random random)
+	public ListRandomIterator(final List<E> list, final Random random)
 	{
 		this(list, random, list.size());
 	}
@@ -56,7 +56,7 @@ public class ListRandomIterator implements Iterator
 	@exception IllegalArgumentException Thrown if the given maximum count is
 		greater than the allowed range or less than zero.
 	*/
-	public ListRandomIterator(final List list, final int maxCount)
+	public ListRandomIterator(final List<E> list, final int maxCount)
 	{
 		this(list, new Random(), maxCount);
 	}
@@ -69,7 +69,7 @@ public class ListRandomIterator implements Iterator
 	@exception IllegalArgumentException Thrown if the given maximum count is
 		greater than the allowed range or less than zero.
 	*/
-	public ListRandomIterator(final List list, final Random random, final int maxCount)
+	public ListRandomIterator(final List<E> list, final Random random, final int maxCount)
 	{
 		if(maxCount<0)	//if they want a negative number of elements from the list (the random integer iterator will make sure the maximum count is not too high)
 			throw new IllegalArgumentException("Cannot return less than zero elements from a list.");
@@ -101,7 +101,7 @@ public class ListRandomIterator implements Iterator
 		possible (but not guaranteed) that the element will be returned from
 		future calls to <code>next()</code>.
 	*/
-	public void setExcluded(final Object object, final boolean exclude)
+	public void setExcluded(final E object, final boolean exclude)
 	{
 		final int index=list.indexOf(object);	//get the index in the list of the object
 		if(index>=0)	//if the object is in the list
@@ -117,9 +117,9 @@ public class ListRandomIterator implements Iterator
 	/**@return The next random element in the iteration.
 	@exception NoSuchElementException Thrown if the iteration has no more elements.
 	*/
-	public Object next()
+	public E next()
 	{
-		return list.get(((Integer)indexIterator.next()).intValue());	//get the next random index and return the corresponding object from the list
+		return list.get(indexIterator.next().intValue());	//get the next random index and return the corresponding object from the list
 	}
 
 	/**This implementation does not support element removal, and always throws
@@ -136,7 +136,7 @@ public class ListRandomIterator implements Iterator
 		the given index in our list passes the criteria of our local filter.
 	@author Garret Wilson
 	*/
-	protected class IndexFilter implements Filter
+	protected class IndexFilter implements Filter<Integer>
 	{
 		/**Determines whether a given object should pass through the filter or be
 			filtered out.
@@ -146,17 +146,12 @@ public class ListRandomIterator implements Iterator
 		@return <code>true</code> if the object should pass through the filter, else
 			<code>false</code> if the object should be filtered out.
 		*/
-		public boolean isPass(final Object object)
+		public boolean isPass(final Integer integer)
 		{
 			if(getFilter()!=null)	//if we have a local filter
 			{
-				if(object instanceof Integer)	//if the object is an integer (it always should be an integer
-				{
-					final Integer integer=(Integer)object;	//cast the object to an integer
-					final Object item=list.get(integer.intValue());	//get this item in our list
-					return getFilter().isPass(item);	//filter the item in our list using our local filter
-				}
-				return false;	//filter out anything we don't understand
+				final E item=list.get(integer.intValue());	//get this item in our list
+				return getFilter().isPass(item);	//filter the item in our list using our local filter
 			}
 			else	//if we don't have a filter
 			{

@@ -98,7 +98,7 @@ Debug.trace("new center: ", center);  //G***del
 					}
 					catch(BadLocationException badLocationException)  //if we try to get text from the document from a location that doesn't exist
 					{
-						Debug.error(badLocationException);  //this should never happen unless the document element structure is corrupted
+						throw new AssertionError(badLocationException);  //this should never happen unless the document element structure is corrupted
 					}
 				}
 			}

@@ -4,7 +4,7 @@ package com.garretwilson.util;
 	the filter be filtered out.
 @author Garret Wilson
 */
-public interface Filter
+public interface Filter<T>
 {
 
 	/**Determines whether a given object should pass through the filter or be
@@ -13,5 +13,5 @@ public interface Filter
 	@return <code>true</code> if the object should pass through the filter, else
 		<code>false</code> if the object should be filtered out.
 	*/
-	public boolean isPass(final Object object);
+	public boolean isPass(final T object);
 }

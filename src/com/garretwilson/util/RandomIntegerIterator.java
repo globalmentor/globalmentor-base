@@ -6,11 +6,10 @@ import java.util.*;
 	The iterator has the ability to restrict its output to a particular range.
 	A subset of the range can optionally be returned.
 	This iterator can keep track of the numbers used and only return unused integers.
-<p>This iterator returns object of type <code>Integer</code>.</p>
 @author Garret Wilson
 @see Integer
 */
-public class RandomIntegerIterator implements Iterator 
+public class RandomIntegerIterator implements Iterator<Integer>	//TODO maybe later make this generic for Number subclasses 
 {
 
 	/**The random number generator.*/
@@ -34,27 +33,27 @@ public class RandomIntegerIterator implements Iterator
 	protected final boolean repeat;
 
 	/**Create a new set to hold the integers excluded from the iterator.*/
-	protected final SortedSet excludedIntegerSortedSet;
+	protected final SortedSet<Integer> excludedIntegerSortedSet;
 
 	/**The total number of integers returned.*/
 	protected int count;
 
 	/**The filter used to exclude items from the iterator.*/
-	private Filter filter;
+	private Filter<Integer> filter;
 
 		/**@return The filter used to exclude items from the iterator.*/
-		public Filter getFilter() {return filter;}
+		public Filter<Integer> getFilter() {return filter;}
 
 		/*Sets the filter used to exclude items from the iterator.
 		@param filter The new filter to use, or <code>null</code> if there should
 			be no filtering.
 		*/
-		public void setFilter(final Filter filter) {this.filter=filter;}
+		public void setFilter(final Filter<Integer> filter) {this.filter=filter;}
 
 	/**The value that has been retrieved and has passed the filter and is waiting
 		to be returned, or <code>null</code> if there is no primed next object.
 	*/
-	protected Object primedNext;
+	protected Integer primedNext;
 
 	/**Shuffle constructor.
 	Constructs an iterator that returns numbers between zero (inclusive) and
@@ -170,7 +169,7 @@ public class RandomIntegerIterator implements Iterator
 		range=rangeMax-rangeMin+1;	//see how many integers are in the range
 		if(maxCount>range)	//if they want more than they can have in the range
 			throw new IllegalArgumentException("Cannot return "+maxCount+" from a range of only "+range);
-		excludedIntegerSortedSet=new TreeSet();	//create a sorted set in which to hold the excluded integers 
+		excludedIntegerSortedSet=new TreeSet<Integer>();	//create a sorted set in which to hold the excluded integers 
 		this.random=random;	//save the values
 		this.rangeMin=rangeMin;
 		this.rangeMax=rangeMax;
@@ -191,7 +190,7 @@ public class RandomIntegerIterator implements Iterator
 	*/
 	public void setExcluded(final int integer, final boolean exclude)
 	{
-		setExcluded(new Integer(integer), exclude);	//exclude or not the Integer version of the value
+		setExcluded(Integer.valueOf(integer), exclude);	//exclude or not the Integer version of the value
 	}
 
 	/**Determines whether the given integer value should be excluded from the iteration.
@@ -221,11 +220,11 @@ public class RandomIntegerIterator implements Iterator
 	/**@return The next random integer in the iteration.
 	@exception NoSuchElementException Thrown if the iteration has no more elements.
 	*/
-	public Object next()
+	public Integer next()
 	{
 		if(hasNext())	//if there is a next object waiting for us, and we haven't reached our maximum value
 		{
-			final Object next=primedNext;	//get the next object primed and waiting
+			final Integer next=primedNext;	//get the next object primed and waiting
 			primedNext=null;	//show that we've used the primed next object
 			++count;	//show that we've retrieved another value
 			return next;	//return the next integer we found
@@ -253,9 +252,9 @@ public class RandomIntegerIterator implements Iterator
 	/**@return The next random integer in the iteration, or <code>null</code> if
 		the iteration has no more elements.
 	*/
-	protected Object getNext()
+	protected Integer getNext()
 	{
-		final Filter filter=getFilter();	//get our filter, if there is one
+		final Filter<Integer> filter=getFilter();	//get our filter, if there is one
 		int includedRange=range-excludedIntegerSortedSet.size();	//see how many are left in the range if we exclude the excluded integers
 		while(includedRange>0)	//while there are available items to choose from
 		{
@@ -263,10 +262,10 @@ public class RandomIntegerIterator implements Iterator
 			int value=rangeMin+index;	//shift the index to the start of the range
 			if(excludedIntegerSortedSet.size()>0)	//if we have any exluded integers, adjust our value accordingly; otherwise, we already have the correct value
 			{
-				final Iterator excludedIntegerIterator=excludedIntegerSortedSet.iterator();	//look at the excluded integers in order
+				final Iterator<Integer> excludedIntegerIterator=excludedIntegerSortedSet.iterator();	//look at the excluded integers in order
 				while(excludedIntegerIterator.hasNext())	//look at each excluded integer in order
 				{
-					final Integer excludedInteger=(Integer)excludedIntegerIterator.next();	//get the next excluded integer in order
+					final Integer excludedInteger=excludedIntegerIterator.next();	//get the next excluded integer in order
 					if(excludedInteger.intValue()<=value)	//if our indexed value includes this excluded value, so to speak
 					{
 						++value;	//increase our value to compensate for the excluded value
@@ -277,7 +276,7 @@ public class RandomIntegerIterator implements Iterator
 					}
 				}
 			}
-			final Integer nextInteger=new Integer(value);	//we've found the next integer value
+			final Integer nextInteger=Integer.valueOf(value);	//we've found the next integer value
 			final boolean isPass=filter==null || filter.isPass(nextInteger);	//see if our next integer passes
 			if(!repeat || !isPass)	//if we shouldn't repeat values, or if this item is filtered out
 			{

@@ -10,7 +10,7 @@ import java.util.*;
 	given maximum.</p>
 @author Garret Wilson
 */
-public class FilterIterator extends ProxyIterator
+public class FilterIterator<E> extends ProxyIterator<E>
 {
 
 	/**The number of elements to return, or -1 if all of the elements in the
@@ -22,16 +22,16 @@ public class FilterIterator extends ProxyIterator
 	protected int count;
 
 	/**The filter used to exclude items from the iterator.*/
-	private Filter filter;
+	private Filter<E> filter;
 
 		/**@return The filter used to exclude items from the iterator.*/
-		public Filter getFilter() {return filter;}
+		public Filter<E> getFilter() {return filter;}
 
 		/*Sets the filter used to exclude items from the iterator.
 		@param filter The new filter to use, or <code>null</code> if there should
 			be no filtering.
 		*/
-		public void setFilter(final Filter filter) {this.filter=filter;}
+		public void setFilter(final Filter<E> filter) {this.filter=filter;}
 
 	/**The constant object representing no next object available.*/
 	protected final static Object NO_NEXT_OBJECT=new Object();
@@ -40,12 +40,12 @@ public class FilterIterator extends ProxyIterator
 		to be returned, or <code>NO_NEXT_OBJECT</code> if there is no primed next
 		object.
 	*/
-	protected Object primedNext;
+	protected Object primedNext;	//TODO fix this better using generics, if possible
 
 	/**Iterator constructor.
 	@param iterator The iterator this iterator should proxy.
 	*/
-	public FilterIterator(final Iterator iterator)
+	public FilterIterator(final Iterator<E> iterator)
 	{
 		this(iterator, -1);	//construct a filter iterator that uses all the elements in the proxied iterator
 	}
@@ -55,7 +55,7 @@ public class FilterIterator extends ProxyIterator
 	@param maxCount The number of elements to return, or -1 if all of the elements
 		in the proxied iterator should be returned.
 	*/
-	public FilterIterator(final Iterator iterator, final int maxCount)
+	public FilterIterator(final Iterator<E> iterator, final int maxCount)
 	{
 		super(iterator);	//construct the parent class
 		primedNext=NO_NEXT_OBJECT;	//show that we have no primed next value
@@ -73,13 +73,13 @@ public class FilterIterator extends ProxyIterator
 	/**@return The next element in the iteration.
 	@exception NoSuchElementException Thrown if the iteration has no more elements.
 	*/
-	public Object next()
+	public E next()
 	{
 		if(hasNext())	//if there is a next object waiting for us
 		{
 			final Object next=primedNext;	//get the next object primed and waiting
 			primedNext=NO_NEXT_OBJECT;	//show that we've used the primed next object
-			return next;	//return the next object we found
+			return (E)next;	//return the next object we found
 		}
 		else	//if we've ran out of objects
 		{
@@ -106,10 +106,10 @@ public class FilterIterator extends ProxyIterator
 	*/
 	protected Object getNext()
 	{
-		final Filter filter=getFilter();	//get our filter, if there is one
+		final Filter<E> filter=getFilter();	//get our filter, if there is one
 		while(iterator.hasNext())	//while there are available items in the proxied iterator
 		{
-			final Object next=iterator.next();	//get the next element from the iterator
+			final E next=iterator.next();	//get the next element from the iterator
 			final boolean isPass=filter==null || filter.isPass(next);	//see if our next element passes
 			if(isPass)	//if this item isn't filtered out
 			{

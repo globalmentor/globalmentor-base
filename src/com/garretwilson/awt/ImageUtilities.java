@@ -43,7 +43,7 @@ public class ImageUtilities
 				}
 				catch (InterruptedException e)
 				{
-					Debug.error(e);
+					throw new AssertionError(e);
 				}
 				return mediaTracker.statusID(imageID, false); //return the loading status
 			}

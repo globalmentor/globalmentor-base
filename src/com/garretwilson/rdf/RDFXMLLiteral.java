@@ -44,8 +44,7 @@ public class RDFXMLLiteral extends RDFTypedLiteral
 		}
 		catch(IOException ioException)	//if there are any IO errors (this should never happen)
 		{
-			Debug.error(ioException);
-			return ioException.toString();
+			throw new AssertionError(ioException);
 		}
 	}
 

@@ -6,16 +6,16 @@ import java.util.*;
 	<code>Iterator</code> interface.
 @author Garret Wilson
 */
-public class ProxyIterator implements Iterator
+public class ProxyIterator<E> implements Iterator<E>	//TODO rename to IteratorDecorator
 {
 
 	/**The iterator this class proxies.*/
-	protected final Iterator iterator;
+	protected final Iterator<E> iterator;
 
 	/**Iterator constructor.
 	@param iterator The iterator this iterator should proxy.
 	*/
-	public ProxyIterator(final Iterator iterator)
+	public ProxyIterator(final Iterator<E> iterator)
 	{
 		this.iterator=iterator;	//save the iterator
 	}
@@ -35,7 +35,7 @@ public class ProxyIterator implements Iterator
 	 * @return the next element in the iteration.
 	 * @exception NoSuchElementException iteration has no more elements.
 	 */
-	public Object next() {return iterator.next();}
+	public E next() {return iterator.next();}
 
 	/**
 	 * 
