@@ -1,6 +1,6 @@
 package com.garretwilson.lang;
 
-import com.garretwilson.util.Debug;
+import com.garretwilson.text.CharacterConstants;;
 
 /**Various methods that manipulate <code>StringBuffer</code> objects. These
 	methods are fast relative to their <code>StringBufferUtilities</code>
@@ -11,11 +11,62 @@ import com.garretwilson.util.Debug;
 @see StringUtilities
 @author Garret Wilson
 */
-public class StringBufferUtilities
+public class StringBufferUtilities implements CharacterConstants
 {
 
-	/**This class cannot be publicly instantiated.*/
-	private StringBufferUtilities() {}
+	/**Concatenates the string representations of the objects
+		in the array by appending them to the string buffer.
+	@param stringBuffer The string buffer into which the result should be placed.
+	@param objects The array of objects (such as strings) to be concatenated.
+	@return A concatenation of string representations of all objects in the
+		array.
+	@see Object#toString
+	@return The string buffer containing the new information.
+	*/
+	public static StringBuffer append(final StringBuffer stringBuffer, final Object[] objects)
+	{
+		return append(stringBuffer, objects, null);	//append the objects with no separator
+	}
+
+	/**Concatenates the string representations of the objects
+		in the array, separated by the given separator character, by appending
+		them to the string buffer.
+	@param stringBuffer The string buffer into which the result should be placed.
+	@param objects The array of objects (such as strings) to be concatenated.
+	@param separator The separator character to be inserted between the object
+		strings. 
+	@return A concatenation of string representations of all objects in the
+		array, separted by the separator character.
+	@see Object#toString
+	@return The string buffer containing the new information.
+	*/
+	public static StringBuffer append(final StringBuffer stringBuffer, final Object[] objects, final char separator)
+	{
+		return append(stringBuffer, objects, String.valueOf(separator));	//convert the separator to a string and append the objects
+	}
+	
+	/**Concatenates the string representations of the objects
+		in the array, separated by the given separator string, by appending
+		them to the string buffer.
+	@param stringBuffer The string buffer into which the result should be placed.
+	@param objects The array of objects (such as strings) to be concatenated.
+	@param separator The separator string to be inserted between the object
+		strings, or <code>null</code> (if no separator should be used. 
+	@return A concatenation of string representations of all objects in the
+		array, separted by the separator.
+	@see Object#toString
+	@return The string buffer containing the new information.
+	*/
+	public static StringBuffer append(final StringBuffer stringBuffer, final Object[] objects, final String separator)
+	{
+		for(int i=0; i<objects.length; ++i)	//look at each object
+		{
+			stringBuffer.append(objects[i].toString());	//add the string representation of this object to the string buffer
+			if(i<objects.length-1 && separator!=null)	//if this isn't the last object, and there is a separator string
+				stringBuffer.append(separator);	//append the separator character 			
+		}
+		return stringBuffer;	//return the string buffer, now containing the new information
+	}	
 
 	/**Searches a string buffer and returns the first index of any character in
 		the specified string buffer, starting at the beginning.
@@ -111,7 +162,7 @@ public class StringBufferUtilities
 				++nextIndex;	//look at the next character in the string
 		}
 	}
-
+	
 	/**Determines if the string buffer ends with the given string.
 	@param stringBuffer The string buffer to examine.
 	@param string The string to compare.

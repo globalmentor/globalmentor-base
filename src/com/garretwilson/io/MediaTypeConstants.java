@@ -25,6 +25,10 @@ public interface MediaTypeConstants
 	public final static String TEXT_X_OEB1_DOCUMENT=TEXT+DIVIDER+X_OEB1_DOCUMENT;
 	public final static String X_OEB1_PACKAGE="x-oeb1-package";
 	public final static String TEXT_X_OEB1_PACKAGE=TEXT+DIVIDER+X_OEB1_PACKAGE; //G***should this be application/..., or +xml or something?
+	public final static String CALENDAR="calendar";
+	public final static String TEXT_CALENDAR=TEXT+DIVIDER+CALENDAR;
+	public final static String DIRECTORY="directory";
+	public final static String TEXT_DIRECTORY=TEXT+DIVIDER+DIRECTORY;
 	public final static String HTML="html";
 	public final static String TEXT_HTML=TEXT+DIVIDER+HTML;
 	public final static String PLAIN="plain";

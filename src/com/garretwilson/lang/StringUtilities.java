@@ -28,31 +28,16 @@ public class StringUtilities extends CharacterUtilities
 	/**The non-breaking space character, Unicode 00A0.*/
 //G***del	public final static char NON_BREAKING_SPACE='\u00A0'; //G***maybe put this in some Unicode class G***del; moved to com.garretwilson.text.CharacterConstants
 
-	/**@param path A complete path to a file.
-	@return The filename from a file path.*/
-/*G***del if not needed
-	static public String extractFilename(final String path)
+	/**Creates an array of strings from the given string.
+	@param string The string to include in the array, or <code>null</code> if the
+		array should be empty.
+	@return A non-<code>null</code> array containing the string, or empty if
+		the string is <code>null</code>.
+	*/
+	public static String[] createArray(final String string)
 	{
-		int pos=charLastIndexOf(path, "/\\");	//see if we can find a forward slash or a backwards slash, starting at the end of the path
-		if(pos!=-1)	//if we found a slash
-			return path.substring(pos+1);	//return the rest of the path, which should be the filename
-		else	//if we didn't find a slash
-			return path;	//the path should be the filename already, because there are no slashes
+		return string!=null ? new String[]{string} : new String[]{};	//return an array containing the string, or an empty array if the string is null
 	}
-*/
-
-	/**@param path A complete path to a file.
-	@return The directory of the file, including the '/' or '\' slash character.*/
-/*G***del if not needed
-	static public String extractDirectory(final String path)
-	{
-		int pos=charLastIndexOf(path, "/\\");	//see if we can find a forward slash or a backwards slash, starting at the end of the path
-		if(pos!=-1)	//if we found a slash
-			return path.substring(0, pos+1);	//return the part of the path without the filename
-		else	//if we didn't find a slash
-			return "";	//show that we couldn't find a path
-	}
-*/
 
 	/**Searches a string and returns the first index of any character in the specified string, starting at the beginning.
 	@param inString The string to be searched.
@@ -108,8 +93,7 @@ public class StringUtilities extends CharacterUtilities
 		}
 		return -1;	//if we make it to here, we didn't find any of the characters
 	}
-
-
+	
 	/**Searches a string in reverse and returns the last index of any character
 		in the specified string, starting from <code>fromIndex</code>, ignoring
 		case.
@@ -141,6 +125,49 @@ public class StringUtilities extends CharacterUtilities
 		return -1;	//if we make it to here, we didn't find any of the characters
 	}
 */
+
+	/**Concatenates the string representations of the objects
+		in the array.
+	@param objects The array of objects (such as strings) to be concatenated.
+	@return A concatenation of string representations of all objects in the
+		array.
+	@see Object#toString
+	@return The string containing the concatenated information.
+	*/
+	public static String append(final Object[] objects)
+	{
+		return StringBufferUtilities.append(new StringBuffer(), objects).toString();	//append the objects to a string buffer and return the string
+	}
+	
+	/**Concatenates the string representations of the objects
+		in the array, separated by the given separator character.
+	@param objects The array of objects (such as strings) to be concatenated.
+	@param separator The separator character to be inserted between the object
+		strings. 
+	@return A concatenation of string representations of all objects in the
+		array, separted by the separator character.
+	@see Object#toString
+	@return The string containing the concatenated information.
+	*/
+	public static String concat(final Object[] objects, final char separator)
+	{
+		return StringBufferUtilities.append(new StringBuffer(), objects, separator).toString();	//append the objects to a string buffer and return the string
+	}
+		
+	/**Concatenates the string representations of the objects
+		in the array, separated by the given separator string.
+	@param objects The array of objects (such as strings) to be concatenated.
+	@param separator The separator string to be inserted between the object
+		strings, or <code>null</code> (if no separator should be used. 
+	@return A concatenation of string representations of all objects in the
+		array, separted by the separator.
+	@see Object#toString
+	@return The string containing the concatenated information.
+	*/
+	public static String concat(final Object[] objects, final String separator)
+	{
+		return StringBufferUtilities.append(new StringBuffer(), objects, separator).toString();	//append the objects to a string buffer and return the string
+	}	
 
 	/**Searches a string and returns the first index of any character <em>not</em>
 		in the specified string, starting from the beginning.
@@ -212,6 +239,26 @@ public class StringUtilities extends CharacterUtilities
 	{
 		return string.toUpperCase().endsWith(suffix.toUpperCase()); //convert the strings to uppercase and check the suffix G***use a more efficient method that doesn't include creating new strings
 	}
+	
+	/**Compares two strings to make sure that the strings are equal ignoring
+		case, , or the strings are both set to <code>null</code>. If the first
+		string is not <code>null</code>, it is compared to the second using the
+		first strings's <code>equalIgnoreCase()</code> method.
+		This is a convenience method to compare two strings using the
+		<code>equalsIgnoreCase()</code> method when it's not known if one of the
+		strings is <code>null</code>.
+	@param string1 The first string to compare.
+	@param string2 The second string to compare.
+	@return <code>true</code> if the string are equal according to the first
+		strings's <code>equalIgnoreCase()</code> method or if both strings are
+		<code>null</code>.
+	@see String#equalsIgnoreCase(java.lang.String)
+	*/
+	public final static boolean equalsIgnoreCase(final String string1, final String string2)
+	{
+			//if the first string isn't null, compare it to the second; otherwise, see if the second string is null as well
+		return string1!=null ? string1.equalsIgnoreCase(string2) : string2==null;
+	}	
 
 	/**Extracts the string which comes after the given character. If the character
 		does not exist in the string, the

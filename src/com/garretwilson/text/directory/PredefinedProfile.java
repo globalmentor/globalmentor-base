@@ -88,7 +88,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
-	protected String[] processTextValueList(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public static String[] processTextValueList(final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
 		final List stringList=new ArrayList();	//create a new list to hold the strings we find
 		char delimiter;	//we'll store the last delimiter peeked		
@@ -118,7 +118,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
-	protected String processTextValue(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public static String processTextValue(final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
 		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer to hold whatever string we're processing
 		char delimiter;	//we'll store the last delimiter peeked		
