@@ -10,7 +10,7 @@ import java.util.ListIterator;
 public interface RDFResource extends RDFObject, Resource, RDFConstants, Comparable
 {
 
-	/**@return The non-<code>null</code> resource identifier URI.*/
+	/**@return The resource identifier URI.*/
 	public URI getReferenceURI();
 
 	/**@return The XML namespace URI used in serialization, or <code>null</code>

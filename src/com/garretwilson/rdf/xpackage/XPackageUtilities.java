@@ -196,7 +196,7 @@ public class XPackageUtilities implements XPackageConstants
 		try
 		{
 		  final URL absoluteURL=URLUtilities.createURL(baseURL, href);	//create a URL based upon the base URL and the given file location
-Debug.trace("Getting manifest item by URL: ", absoluteURL);
+//G***del Debug.trace("Getting manifest item by URL: ", absoluteURL);
 			return getItemByLocationHRef(rdfContainer, baseURL, absoluteURL);	//lookup the item based upon the URL we formed
 		}
 		catch(MalformedURLException e)	//if there is an error with the URL
@@ -220,19 +220,19 @@ Debug.trace("Getting manifest item by URL: ", absoluteURL);
 	*/
 	public static RDFResource getItemByLocationHRef(final RDFContainerResource rdfContainer, final URL baseURL, final URL url)
 	{
-Debug.trace("looking for resource that matches URL: ", url);  //G***del
+//G***del Debug.trace("looking for resource that matches URL: ", url);  //G***del
 		final Iterator itemIterator=rdfContainer.getItemIterator(); //get an iterator to the items in this container
 		while(itemIterator.hasNext()) //while there are more items in this container
 		{
 			final RDFResource item=(RDFResource)itemIterator.next(); //get the next item
-Debug.trace("looking at resource: ", item); //G***del
+//G***del Debug.trace("looking at resource: ", item); //G***del
 		  final String itemHRef=getLocationHRef(item);  //get the item's href G***later add something that can look at all the locations rather than just the first one
 			if(itemHRef!=null)  //if there is an href
 			{
 				try
 				{
 					final URL itemURL=URLUtilities.createURL(baseURL, itemHRef);	//create a URL based upon the base URL and the item's location
-	Debug.trace("comparing with URL: ", itemURL); //G***del
+//G***del	Debug.trace("comparing with URL: ", itemURL); //G***del
 					if(url.equals(itemURL)) //if the URLs match
 						return item;  //return the item
 				}
@@ -272,9 +272,9 @@ Debug.trace("looking at resource: ", item); //G***del
 	*/
 	public static String getLocationHRef(final RDFResource resource) throws ClassCastException
 	{
-Debug.trace("getting location href in routine");
+//G***del Debug.trace("getting location href in routine");
 		final RDFResource locationResource=getLocation(resource);  //get the location resource
-Debug.trace("found location resource: ", locationResource);
+//G***del Debug.trace("found location resource: ", locationResource);
 		if(locationResource!=null)  //if there this resource has a location
 		{
 			final Literal hrefLiteral=(Literal)locationResource.getPropertyValue(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.HREF);  //get the XLink href value
@@ -331,9 +331,9 @@ Debug.trace("found location resource: ", locationResource);
 		{
 			try
 			{
-Debug.trace("getting location href"); //G***del
+//G***del Debug.trace("getting location href"); //G***del
 				final String href=getLocationHRef(resource);  //get the location of the resource
-Debug.trace("location href: ", href); //G***del
+//G***del Debug.trace("location href: ", href); //G***del
 				if(href!=null)  //if this resource has a location
 				{
 					mediaType=FileUtilities.getMediaType(new File(href)); //get the media type of the file

@@ -12,11 +12,16 @@ import com.garretwilson.util.*;
 public class DefaultRDFResource implements RDFResource
 {
 
-	/**The non-<code>null</code> resource identifier URI.*/
+	/**The resource identifier URI.*/
 	private URI referenceURI;
 
-		/**@return The non-<code>null</code> resource identifier URI.*/
+		/**@return The resource identifier URI.*/
 		public URI getReferenceURI() {return referenceURI;}
+
+		/**Sets the reference URI of the resource.
+		@param uri The new reference URI.
+		*/
+		protected void setReferenceURI(final URI uri) {referenceURI=uri;}
 
 	/**The resource anchor ID.*/
 //G***del	private String anchorID;
@@ -231,7 +236,7 @@ public class DefaultRDFResource implements RDFResource
 	*/
 	public boolean isAnonymous()
 	{
-		return /*G***del when not needed getReferenceURI()==null || */getReferenceURI().toString().startsWith("anonymous:"); //return whether there is no URI or the URI begins with "anonymous:" G***use a constant here; fix better
+		return getReferenceURI()!=null && getReferenceURI().toString().startsWith("anonymous:"); //return whether there is no URI or the URI begins with "anonymous:" G***use a constant here; fix better
 	}
 
 	/**Copy constructor. Constructs a resource with an identical reference URI
@@ -249,21 +254,21 @@ public class DefaultRDFResource implements RDFResource
 
 	/**Constructs a resource with a reference URI.
 	@param newReferenceURI The reference URI for the new resource.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
+//G***del when works	@exception IllegalArgumentException Thrown if the provided reference URI is
+//G***del when works		<code>null</code>.
 	@see RDF#createResource
 	*/
-	protected DefaultRDFResource(final URI newReferenceURI) throws IllegalArgumentException
+	protected DefaultRDFResource(final URI newReferenceURI) //G***del when works throws IllegalArgumentException
 	{
-//G***del		Debug.assert(!(newReferenceURI==null && newAnchorID==null), "A resource must have a reference URI or anchor ID.");  //G***change to throw an illegal argument exception
+/*G***del when works
 		if(newReferenceURI==null) //if a null reference URI was provided
 		{
 			final IllegalArgumentException illegalArgumentException=new IllegalArgumentException("Resource reference URI is null.");
 			Debug.error(illegalArgumentException);
 			throw illegalArgumentException;
 		}
+*/
 		referenceURI=newReferenceURI; //set the reference URI
-//G***del		anchorID=newAnchorID; //set the anchor ID
 		namespaceURI=null;  //show that there is no namespace URI
 		localName=null; //show that there is no local name
 	}
@@ -274,11 +279,11 @@ public class DefaultRDFResource implements RDFResource
 		inconsistencies may occur because both own the same properties.</p>
 	@param resource The resource from which to create the duplicate.
 	@param newReferenceURI The reference URI for the new resource.
-	@exception IllegalArgumentException Thrown if the provided reference URI is
-		<code>null</code>.
+//G***del when works	@exception IllegalArgumentException Thrown if the provided reference URI is
+//G***del when works		<code>null</code>.
 	@see RDF#createResource
 	*/
-	public DefaultRDFResource(final RDFResource rdfResource, final URI newReferenceURI) throws IllegalArgumentException
+	public DefaultRDFResource(final RDFResource rdfResource, final URI newReferenceURI) //G***del when works throws IllegalArgumentException
 	{
 		this(newReferenceURI);  //create a new resource with the given URI
 		CollectionUtilities.addAll(propertyList, rdfResource.getPropertyIterator()); //add all the property values from the resource being copied
@@ -319,31 +324,33 @@ public class DefaultRDFResource implements RDFResource
 	*/
 	public boolean equals(Object object)
 	{
-		if(object instanceof Resource)	//if we're being compared with another resource
+		if(getReferenceURI()!=null)	//if we have a reference URI
 		{
-			return getReferenceURI().equals(((Resource)object).getReferenceURI());  //compare the reference URIs
-/*G***del when works; we no longer allow null reference URIs
-		  if(getReferenceURI()!=null && ((Resource)object).getReferenceURI()!=null) //if neither reference URI is null
-				return getReferenceURI().equals(((Resource)object).getReferenceURI());  //compare the reference URIs
-		  else  //if one of the reference URIs is null
+			if(object instanceof Resource)	//if we're being compared with another resource
 			{
-				if(getReferenceURI()!=null || ((Resource)object).getReferenceURI()!=null) //if one of the reference URIs is not null
-				  return false; //the resources aren't equal
-				else  //if both reference URIs are null
-				  return this==object; //just compare object reference pointers G***we could compare actual properties, here
+				return getReferenceURI().equals(((Resource)object).getReferenceURI());  //compare the reference URIs
+	/*G***del when works; we no longer allow null reference URIs
+			  if(getReferenceURI()!=null && ((Resource)object).getReferenceURI()!=null) //if neither reference URI is null
+					return getReferenceURI().equals(((Resource)object).getReferenceURI());  //compare the reference URIs
+			  else  //if one of the reference URIs is null
+				{
+					if(getReferenceURI()!=null || ((Resource)object).getReferenceURI()!=null) //if one of the reference URIs is not null
+					  return false; //the resources aren't equal
+					else  //if both reference URIs are null
+					  return this==object; //just compare object reference pointers G***we could compare actual properties, here
+				}
+	*/
 			}
-*/
+			else if(object instanceof URI)	//if we're being compared with a URI
+			{
+				return getReferenceURI()!=null ? getReferenceURI().equals((URI)object) : false; //compare our reference URI with the URI
+			}
+			else if(object instanceof String)	//if we're being compared with a string
+			{
+				return getReferenceURI()!=null ? getReferenceURI().toString().equals((String)object) : false; //compare our reference URI with the string
+			}
 		}
-		else if(object instanceof URI)	//if we're being compared with a URI
-		{
-			return getReferenceURI()!=null ? getReferenceURI().equals((URI)object) : false; //compare our reference URI with the URI
-		}
-		else if(object instanceof String)	//if we're being compared with a string
-		{
-			return getReferenceURI()!=null ? getReferenceURI().toString().equals((String)object) : false; //compare our reference URI with the string
-		}
-		else	//if we're being compared with anything else
-			return super.equals(object);	//use the default compare
+		return super.equals(object);	//if we're being compared with anything else or have a null reference URI, use the default compare
 	}
 
 	/**@return A hashcode value composed from the reference URI.*/
@@ -371,12 +378,11 @@ public class DefaultRDFResource implements RDFResource
 		return getReferenceURI().compareTo(((Resource)object).getReferenceURI()); //compare reference URIs
 	}
 
-	/**@return A string representation of the resource in the form:
-		"referenceURI".
+	/**@return A string representation of the resource.
 	*/
 	public String toString()
 	{
-		return getReferenceURI().toString(); //G***fix to print out the entire resource tree, perhaps
+		return getReferenceURI()!=null ? getReferenceURI().toString() : super.toString();	//return the reference URI, if available
 /*G***del
 //G***fix to just return the reference URI
 		final StringBuffer stringBuffer=new StringBuffer(); //create a new string buffer

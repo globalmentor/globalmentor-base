@@ -108,12 +108,14 @@ public class QTIDocumentPanel extends AbstractMDIDocumentPanel implements Modifi
 	/**Creates the default resource used for describing the document.
 	@return A resource for describing the document.
 	*/
+/*G***del when works
 	protected RDFResource createDefaultResource()
 	{
 		final RDFResource resource=super.createDefaultResource(); //create the default resource
 		XPackageUtilities.addContentType(getRDF(), resource, new MediaType("application", "x-qti-assessment")); //G***testing; use constants
 		return resource;  //return the default resource with our new properties added
 	}
+*/
 
 	/**Initializes the user interface.
 		Any derived class that overrides this method should call this version.
