@@ -55,7 +55,7 @@ public class URIUtilities implements URIConstants
 	@return A string representing the constructed query, or the empty string if
 		there were no parameters.
 	*/
-	public static String constructQueryParameters(final NameValuePair<String, String>[] params)	//TODO recode with varargs
+	public static String constructQueryParameters(final NameValuePair<String, String>... params)
 	{
 		final StringBuilder paramStringBuilder=new StringBuilder();
 		if(params.length>0)	//if there is at least one parameter

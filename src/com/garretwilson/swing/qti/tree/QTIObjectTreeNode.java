@@ -1,7 +1,6 @@
 package com.garretwilson.swing.qti.tree;
 
 import javax.swing.tree.*;
-import com.garretwilson.text.xml.qti.*;
 
 /**A tree node that represents a QTI object.
 	The QTI object is stored as the user object of the tree node.

@@ -3,7 +3,6 @@ package com.garretwilson.swing.qti;
 import java.awt.*;
 import javax.swing.*;
 import java.util.*;
-import com.garretwilson.text.xml.qti.*;
 
 /**Provides a visual editing environment for properties for a QTI assessment,
 	section, or item.

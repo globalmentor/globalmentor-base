@@ -389,18 +389,26 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 	 is not a supertype of the runtime type of every element in this list.
 	@exception NullPointerException if the specified array is <code>null</code>.
 	*/
-	public <RDFResource> RDFResource[] toArray(RDFResource[] array)	//G***what's the problem with this signature?
+	public <T> T[] toArray(T[] array)	//G***what's the problem with this signature?
 	{
 		final int size=size();	//get our size
 		if(array.length<size)	//if the given array is not large enough
 		{
-			array=(RDFResource[])Array.newInstance(array.getClass().getComponentType(), size);	//create a new array
+			array=(T[])Array.newInstance(array.getClass().getComponentType(), size);	//create a new array
 		}
 		int i=0;	//this will index into the array we're filling
-		final Iterator<RDFResource> iterator=(Iterator<RDFResource>)iterator();	//get an iterator to the elements G***why is this cast needed
+		final Iterator<RDFResource> iterator=iterator();	//get an iterator to the elements G***why is this cast needed
 		while(iterator.hasNext())	//while there are more elements
 		{
-			array[i++]=iterator.next();	//put the next object into the array and advance our index
+			try
+			{
+				array[i++]=(T)iterator.next();	//put the next object into the array and advance our index
+			}
+			catch(ClassCastException classCastException)	//if there is a problem casting to T
+			{
+				throw (ArrayStoreException)new ArrayStoreException(classCastException.getMessage()).initCause(classCastException);
+			}
+			
 		}
 		if(array.length>size)	//if we didn't fill the array
 			array[size]=null;	//set the next element to null
@@ -638,13 +646,12 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 		collection prevents it from being added to this list.
 	@see #add(Object)
 	*/
-	public boolean addAll(final Collection<RDFResource> collection)
+	public boolean addAll(final Collection<? extends RDFResource> collection)
 	{
 		boolean modified=false;	//we haven't modified the list, yet
-		final Iterator<RDFResource> iterator=collection.iterator();	//get an iterator to the collection
-		while(iterator.hasNext())	//while there are more elements in the collection
+    for(RDFResource resource:collection)   //look at each resource in the collection
 		{
-			if(add(iterator.next()))	//add the next element to our list; if the operation modified the list
+			if(add(resource))	//add the next element to our list; if the operation modified the list
 			{
 				modified=true;	//show that we modified the list
 			}
@@ -682,7 +689,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 *		  &lt; 0 || index &gt; size()).
 	 */
-	public boolean addAll(final int index, final Collection<RDFResource> collection)	//TODO implement addAll(int, Collection)
+	public boolean addAll(final int index, final Collection<? extends RDFResource> collection)	//TODO implement addAll(int, Collection)
 	{
 		throw new UnsupportedOperationException("RDFListResource does not yet support addAll(int, Collection)");		
 	}
@@ -697,13 +704,12 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 	@see #remove(Object)
 	@see #contains(Object)
 	*/
-	public boolean removeAll(final Collection<RDFResource> collection)
+	public boolean removeAll(final Collection<?> collection)
 	{
 		boolean modified=false;	//we haven't modified the list, yet
-		final Iterator<RDFResource> iterator=collection.iterator();	//get an iterator to the collection
-		while(iterator.hasNext())	//while there are more elements in the collection
+    for(Object object:collection)   //look at each object in the collection
 		{
-			if(remove(iterator.next()))	//remove the next element from our list; if the operation modified the list
+			if(remove(object))	//remove the next element from our list; if the operation modified the list
 			{
 				modified=true;	//show that we modified the list
 			}
@@ -724,7 +730,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 	@see #remove(Object)
 	@see #contains(Object)
 	*/
-	public boolean retainAll(final Collection<RDFResource> collection)	//TODO add retainAll() support
+	public boolean retainAll(final Collection<?> collection)	//TODO add retainAll() support
 	{
 		throw new UnsupportedOperationException("RDFListResource does not yet support retainAll()");
 	}

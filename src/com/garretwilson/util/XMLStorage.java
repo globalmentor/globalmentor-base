@@ -265,7 +265,7 @@ public class XMLStorage
 	{
 		try
 		{
-			final Method getMethod=object.getClass().getMethod(GET+name, null);	//get the object's get method
+			final Method getMethod=object.getClass().getMethod(GET+name);	//get the object's get method
 			final NodeList nodeList=(NodeList)XPath.evaluateLocationPath(document.getDocumentElement(), locationPath);	//get the values from the appropriate section of the document
 			if(nodeList.getLength()>0)	//if we retrieved at least one value from the document
 			{
