@@ -1,35 +1,32 @@
 package com.garretwilson.swing.text.rdf.maqro;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.util.*;
 
+import javax.mail.internet.ContentType;
 import javax.swing.*;
 import javax.swing.text.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 
-import com.garretwilson.rdf.RDFLiteral;
-import com.garretwilson.rdf.RDFObject;
-import com.garretwilson.rdf.RDFResource;
+import static com.garretwilson.io.ContentTypeConstants.*;
+import com.garretwilson.io.ContentTypeUtilities;
+import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.rdf.maqro.*;
-import com.garretwilson.rdf.xmlschema.IntegerLiteral;
-import com.garretwilson.rdf.xmlschema.NumberLiteral;
 import com.garretwilson.resources.icon.IconResources;
 
 import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
 
 import com.garretwilson.swing.BasicOptionPane;
-import com.garretwilson.swing.text.ViewComponentManager;
+import com.garretwilson.swing.XMLTextPane;
 import com.garretwilson.swing.text.xml.*;
+import com.garretwilson.text.xml.XMLUtilities;
+import com.garretwilson.text.xml.xhtml.XHTMLUtilities;
 import com.garretwilson.util.Debug;
 import com.globalmentor.mentoract.activity.maqro.MAQROActivityEngine;
-import com.globalmentor.mentoract.activity.maqro.MAQROActivityPanel;
 
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
 
@@ -84,17 +81,6 @@ public class MAQROViewFactory extends XMLViewFactory
 			}
 		  else if(QUESTION_CLASS_NAME.equals(elementLocalName)) //maqro:Question
 			{
-/*TODO fix
-				if(getQTIObject(element)==null) //if no QTI item has been created yet for the given item element
-				{
-Debug.trace("Creating item object without an assessment."); //G***del
-					createItem(element);  //create an item from the element, which will automatically add it to the map of created items G***do we want this routine to automatically add the item?
-				}
-Debug.trace("Creating new item view");
-				final QTIItemView itemView=new QTIItemView(element, QTIItemView.Y_AXIS);  //construct an item view
-				putQTIView(element, itemView);  //store the view keyed indirectly to the element by the QTI object
-				return itemView;  //return the item view we created
-*/
 				view=new MAQROQuestionView(element, View.Y_AXIS);	//create a question view				
 			}
 		  else if(DIALOGUE_CLASS_NAME.equals(elementLocalName)) //maqro:Dialogue
@@ -108,7 +94,7 @@ Debug.trace("Creating new item view");
 						{
 							final MAQROQuestionView questionView=(MAQROQuestionView)elementViewMap.get(questionElement);	//get the view for the question
 							final MAQRODialogueChoiceView choiceView=new MAQRODialogueChoiceView(element, questionView);	//create a dialogue choice view
-/*TODO fix; transfer to the choice view
+/*TODO fix; transfer to the choice view or question view if we want automatic feedback, for instance
 							choiceView.getToggleButton().addItemListener(new ItemListener()	//listen for the response being checked or unchecked
 									{
 										public void itemStateChanged(final ItemEvent itemEvent)	//if the choice button was toggled
@@ -186,6 +172,12 @@ Debug.trace("Creating new item view");
 						{
 							final Outcome outcome=((Outcomable)interactionView).getOutcome();	//get the interation outcome, if there is one
 							activityEngine.setResult(interaction, outcome);	//tell the engine the result of the interaction
+/*TODO del if not needed
+							if(outcome.hasCorrect() && !outcome.isCorrect())	//if the outcome is marked as incorrect
+							{
+								incorrectInteractionIndexList.add(Integer.valueOf(activityEngine.getItemIndex()));	//add this incorrect index to our list
+							}
+*/
 						}
 					}
 				}
@@ -199,31 +191,53 @@ Debug.trace("Creating new item view");
 					}
 				}
 				final Outcome outcome=activityEngine.submit(); //tell the engine to submit the results, and get the results TODO add more generic
-				String scoreString=null;	//we'll try to get a score string
-				final Iterator<RDFObject> resultIterator=outcome.getResultIterator();	//get an iterator to results
-				while(resultIterator.hasNext())	//while there are more results
-				{
-					final Result result=(Result)resultIterator.next();	//get the next result TODO make sure this is a result
-					if(result instanceof Score)	//if this result is a score
-					{
-						final Score score=(Score)result;	//cast the result to a score
-						scoreString=MAQROActivityEngine.getScoreString(score);	//get a string representing the score
-						break;	//stop looking for a result
-					}
-				}
-			  final StringBuffer resultStringBuffer=new StringBuffer(); //create a new string buffer in which to construct the results display
+/*TODO del if not needed
+				final String scoreString=MAQROActivityEngine.getScoreString(outcome);	//try to get a score string
+				final StringBuffer resultStringBuffer=new StringBuffer(); //create a new string buffer in which to construct the results display
 				resultStringBuffer.append("<html>");
 	//G***fix		  resultStringBuffer.append("<h1>Assessment Results</h1>");
 				if(scoreString!=null)	//if there is a score string
 				{
 					resultStringBuffer.append("<p><strong>Score:</strong> ").append(scoreString).append("</p>");	//append the score
 				}
-	/*TODO fix
-				if(rawScore!=questionCount)	//if they missed any questions at all
-					resultStringBuffer.append("<p><strong>Questions Missed:</strong> ").append(missedStringBuffer).append("</p>");
-	*/
+				if(incorrectInteractionIndexList.size()>0)	//if they missed any questions at all
+				{
+					resultStringBuffer.append("<p><strong>Questions Missed:</strong>");	//start the questions missed section TODO i18n
+					for(final Integer incorrectInteractionIndex:incorrectInteractionIndexList)	//for each incorect interaction index
+					{
+						resultStringBuffer.append(' ').append(incorrectInteractionIndex.intValue()+1).append(',');	//show this interaction number
+					}
+					resultStringBuffer.setCharAt(resultStringBuffer.length()-1, '.');	//change the last comma to a period
+					resultStringBuffer.append("</p>");	//end the questions missed section
+				}
 			  resultStringBuffer.append("</html>");
-			  BasicOptionPane.showMessageDialog(component, resultStringBuffer.toString(), "Assessment Results", BasicOptionPane.INFORMATION_MESSAGE);	//G***i18n; comment
+*/
+				final MAQROXHTMLifier maqroXHTMLifier=new MAQROXHTMLifier();	//create an object to create XHTML from a MAQRO outcome
+				final org.w3c.dom.Document document=XHTMLUtilities.createXHTMLDocument();	//create an XHTML document
+					//create an element document from the outcome and append it to the XHTML body element
+				XHTMLUtilities.getBodyElement(document).appendChild(maqroXHTMLifier.createElement(document, outcome));
+				final XMLTextPane outcomeTextPane=new XMLTextPane();	//TODO create a content type constructor
+				final ContentType contentType=new ContentType(APPLICATION, XHTML_XML_SUBTYPE, null);	//create an application/xhtml+xml content type
+				outcomeTextPane.setContentType(contentType.toString());	//set the content type to application/xhtml+xml
+				outcomeTextPane.setXML(document, null, contentType);	//set the XML in the text pane
+				outcomeTextPane.setEditable(false);	//don't allow the text pane to be editable
+				
+//TODO fix				final String outcomeXHTMLString=XMLUtilities.toString(document.getDocumentElement());	//get a string version of the entire XHTML document
+/*TODO fix
+				final MAQROXHTMLifier maqroXHTMLifier=new MAQROXHTMLifier();	//create an object to create XHTML from a MAQRO outcome
+				final org.w3c.dom.Document document=XHTMLUtilities.createXHTMLDocument();	//create an XHTML document
+					//create an element document from the outcome and append it to the XHTML body element
+				XHTMLUtilities.getBodyElement(document).appendChild(maqroXHTMLifier.createElement(document, outcome));
+				final String outcomeXHTMLString=XMLUtilities.toString(document.getDocumentElement());	//get a string version of the entire XHTML document
+*/
+				/*TODO fix
+				final org.w3c.dom.Document document=XHTMLUtilities.createXHTMLDocument();	//create an XHTML document
+				final org.w3c.dom.Element element=new MAQROXHTMLifier().createElement(document, outcome);	//create an XHTML element from the outcome
+				final String outcomeXHTMLString="<html>"+XMLUtilities.toString(element)+"</html>";	//get a string version of the entire XHTML document, using HTML as Swing doesn't understand XHTML
+System.out.println(outcomeXHTMLString);
+			  BasicOptionPane.showMessageDialog(component, outcomeXHTMLString, "Assessment Results", BasicOptionPane.INFORMATION_MESSAGE);	//G***i18n; comment
+*/
+			  BasicOptionPane.showMessageDialog(component, new JScrollPane(outcomeTextPane), "Assessment Results", BasicOptionPane.INFORMATION_MESSAGE);	//G***i18n; comment
 			}
 			finally
 			{

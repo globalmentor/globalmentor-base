@@ -123,6 +123,15 @@ public class Outcome extends TypedRDFResource implements MAQROConstants
 		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, RESULT_PROPERTY_NAME);	//return an iterator to the results 
 	}
 
+	/**Determines whether the outcome is marked as correct or incorrect.
+	@return <code>true</code> if the resource is marked as correct or incorrect, else
+		<code>false</code> if the resource does not indicate correctness.
+	*/
+	public boolean hasCorrect()
+	{
+		return getPropertyValue(MAQRO_NAMESPACE_URI, CORRECT_PROPERTY_NAME) instanceof BooleanLiteral; //see if the correct property is present
+	}
+
 	/**Determines whether the outcome is correct.
 	@return <code>true</code> if the resource is marked as correct, else
 		<code>false</code> if the resource is marked as not correct or does not

@@ -29,6 +29,7 @@ public class MAQROXHTMLifier
 	}
 
 	/**Creates an XHTML element representing the given outcome.
+	The element is not added to the documet.
 	@param document The document to serve as an element factory.
 	@param outcome The outcome to represent in XHTML.
 	@return An XHTML element representing the outcome.
@@ -36,7 +37,7 @@ public class MAQROXHTMLifier
 	public Element createElement(final Document document, final Outcome outcome)
 	{
 		final Element element=document.createElementNS(XHTML_NAMESPACE_URI.toString(), ELEMENT_DIV);	//<div>
-		constructElement(element, outcome);	//construc the element
+		constructElement(element, outcome);	//construct the element
 		return element;	//return the element representing the outcome
 	}
 
