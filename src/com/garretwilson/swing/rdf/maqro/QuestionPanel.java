@@ -4,16 +4,12 @@ import java.awt.GridBagConstraints;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
-
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
-import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.BorderUtilities;
-import com.garretwilson.text.xml.XMLDocumentFragmentModel;
-import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 
 /**Panel for editing a MAQRO question.
 @author Garret Wilson
@@ -30,17 +26,17 @@ public class QuestionPanel extends TabbedViewPanel
 	private final int DEFAULT_DEFAULT_MODEL_VIEW=QUERY_MODEL_VIEW;
 
 	/**The tab in which the query and choices and/or answers are shown.*/
-	private final BasicPanel queryPanel;
+	private final BasicPanel queryResponsePanel;
 
 		/**@return The tab in which the query and choices and/or answers are shown.*/
-		private BasicPanel getQueryPanel() {return queryPanel;}
+		private BasicPanel getQueryResponsePanel() {return queryResponsePanel;}
 
 	private final JLabel queryLabel;
-	private final XMLPanel queryXMLPanel;
+	private final DialoguePanel queryPanel;
 	private final ButtonGroup expectButtonGroup;
 	private final JRadioButton choicesRadioButton;
 	private final JList choiceList;
-	private final ListPanel choicePanel;
+	private final ChoiceListPanel choicePanel;
 	private final JRadioButton expectRadioButton;
 
 	/**@return The data model for which this component provides a view.
@@ -72,14 +68,14 @@ public class QuestionPanel extends TabbedViewPanel
 		super(model, false);	//construct the parent class without initializing the panel
 		setSupportedModelViews(DEFAULT_SUPPORTED_MODEL_VIEWS);	//set the model views we support
 		setDefaultDataView(DEFAULT_DEFAULT_MODEL_VIEW);	//set the default data view
-		queryPanel=new BasicPanel(new BasicGridBagLayout());	//create the query panel
+		queryResponsePanel=new BasicPanel(new BasicGridBagLayout());	//create the query panel
 		queryLabel=new JLabel();
 		expectButtonGroup=new ButtonGroup();
 		choicesRadioButton=new JRadioButton();
 		choiceList=new JList();
-		choicePanel=new ListPanel(choiceList);
+		choicePanel=new ChoiceListPanel(choiceList);
 		expectRadioButton=new JRadioButton();
-		queryXMLPanel=new XMLPanel(new XMLDocumentFragmentModel(), XHTMLConstants.XHTML_CONTENT_TYPE);	//TODO set the base URI and URIInputStreamable 
+		queryPanel=new DialoguePanel(new DialogueModel(model.getBaseURI(), model.getURIInputStreamable())); 
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
 	}
@@ -90,7 +86,7 @@ public class QuestionPanel extends TabbedViewPanel
 		final ActionListener updateStatusActionListener=createUpdateStatusActionListener();	//create an action listener that will update the status
 		setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border
 		setTitle("Question");	//G***i18n
-		addView(QUERY_MODEL_VIEW, "Query and Response", IconResources.getIcon(IconResources.QUESTION_ICON_FILENAME), queryPanel);	//add the query view G***i18n
+		addView(QUERY_MODEL_VIEW, "Query and Response", IconResources.getIcon(IconResources.QUESTION_ICON_FILENAME), queryResponsePanel);	//add the query view G***i18n
 		super.initializeUI(); //do the default UI initialization
 		getTabbedPane().setTabPlacement(JTabbedPane.TOP);	//put the tabs on the top
 		queryLabel.setText("Query");	//G***i18n
@@ -103,13 +99,14 @@ public class QuestionPanel extends TabbedViewPanel
 		choiceList.setEnabled(false);	//default to disabling the choice list; it will be enabled if the corresponding radio button is selected
 		choicePanel.setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border for the choice panel
 		choicePanel.setTitle("Choices");	//G***i18n
+		choicePanel.setEditable(true);	//allow the choices to be edited
 		expectRadioButton.setText("Expect Response Type");	//G***i18n
 		expectRadioButton.addActionListener(updateStatusActionListener); 
-		queryPanel.add(queryLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		queryPanel.add(queryXMLPanel, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
-		queryPanel.add(choicesRadioButton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		queryPanel.add(choicePanel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
-		queryPanel.add(expectRadioButton, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+		queryResponsePanel.add(queryLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+		queryResponsePanel.add(queryPanel, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
+		queryResponsePanel.add(choicesRadioButton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+		queryResponsePanel.add(choicePanel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
+		queryResponsePanel.add(expectRadioButton, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 	}
 
 	/**Updates the states of the actions, including enabled/disabled status,
@@ -135,21 +132,8 @@ public class QuestionPanel extends TabbedViewPanel
 			case QUERY_MODEL_VIEW:	//if we're changing to the query view
 				if(question!=null)	//if there is a question
 				{
-					final Dialogue queryPresentation=question.getQuery();	//get the query
-					if(queryPresentation!=null)	//if there is a query
-					{
-						final RDFLiteral queryValue=RDFUtilities.getValue(queryPresentation);	//get the query value
-	/*TODO fix for plain literal queries
-						if(queryValueObject instanceof RDFPlainLiteral)	//if the query is a plain literal
-						{
-							
-						}
-						else*/ if(queryValue instanceof RDFXMLLiteral)	//if the query is an XML literal
-						{
-							final RDFXMLLiteral xmlLiteralQueryValue=(RDFXMLLiteral)queryValue;
-							queryXMLPanel.setXMLModel(new XMLDocumentFragmentModel(xmlLiteralQueryValue.getDocumentFragment()));	//put the XML literal into the panel
-						}
-					}
+					final Dialogue query=question.getQuery();	//get the query
+					queryPanel.setDialogueModel(new DialogueModel(query, model.getBaseURI(), model.getURIInputStreamable()));	//set the query in the panel
 					final List choices=question.getChoices();	//get the question choices
 					if(choices!=null)	//if there are choices
 					{
@@ -182,11 +166,12 @@ public class QuestionPanel extends TabbedViewPanel
 	protected void onModelViewChange(final int oldView, final int newView)
 	{
 		super.onModelViewChange(oldView, newView);	//perform the default functionality
+		final QuestionModel model=getQuestionModel();	//get the data model
 		switch(oldView)	//see which view we're changing from
 		{
 			case QUERY_MODEL_VIEW:	//if we're changing from the query view
 //G***fix				getSourceTextPane().getDocument().removeDocumentListener(getModifyDocumentListener());	//don't listen for changes to the source text pane any more
-				queryXMLPanel.setXMLModel(new XMLDocumentFragmentModel());	//clear the XML panel
+				queryPanel.setDialogueModel(new DialogueModel(model.getBaseURI(), model.getURIInputStreamable()));	//clear the query panel
 				break;
 		}
 		switch(newView)	//see which view we're changing to
@@ -197,5 +182,39 @@ public class QuestionPanel extends TabbedViewPanel
 				break;
 */
 		}
+	}
+
+	/**The panel that allows editing of choices from a list.
+	@author Garret Wilson
+	*/
+	protected class ChoiceListPanel extends ListPanel
+	{
+		/**List constructor.
+		@param list The list component, which will be wrapped in a scroll pane.
+		@see JScrollPane
+		*/
+		public ChoiceListPanel(final JList list)
+		{
+			super(list);	//construct the parent class
+		}
+
+		/**Edits the given item in the list.*/
+		public void edit(final Object item)
+		{
+			if(item instanceof Dialogue)	//if this is dialogue to be edited
+			{
+//TODO fix the cloning just have an elegant framework, but update DefaultRDFResource so that cloning creates the correct derived type				final Dialogue dialogueClone=((Dialogue)item).clone();	//
+				final DialogueModel dialogueModel=new DialogueModel((Dialogue)item);	//create a model containing the dialogue
+				final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
+					//allow the dialogue to be edited in a dialog box; if the user accepts the changes
+				if(OptionPane.showConfirmDialog(this, dialoguePanel, "Choice", OptionPane.OK_CANCEL_OPTION)==OptionPane.OK_OPTION)	//G***i18n
+				{
+					ListListModel listModel=(ListListModel)getList().getModel();	//get the list model (we know what type of list model we're using
+					final int index=listModel.indexOf(item);	//get the index of the item
+					listModel.set(index, item);	//set the item back in the list so that the Swing list will update G***maybe do something better here
+				}
+			}
+		}
+
 	}
 }
