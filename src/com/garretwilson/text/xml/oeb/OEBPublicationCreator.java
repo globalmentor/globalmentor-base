@@ -11,6 +11,7 @@ import com.garretwilson.lang.*;
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.*;
+import com.garretwilson.rdf.xeb.XEBUtilities;
 import com.garretwilson.rdf.xpackage.*;
 import com.garretwilson.text.*;
 import com.garretwilson.text.xml.*;
@@ -40,7 +41,7 @@ import static com.garretwilson.text.CharacterConstants.*;
 //G***fix	with an option: Images are loaded and the width and height of their corresponding elements are updated.
 @author Garret Wilson
 */
-public class OEBPublicationCreator extends TextUtilities implements OEBConstants, OEB2Constants, DCConstants
+public class OEBPublicationCreator extends TextUtilities implements OEBConstants, DCConstants	//TODO update this class to work with XEbook; this class may not even function properly anymore
 {
 
 	/**The English string indicating that the author is not specified.*/
@@ -340,9 +341,10 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 			if(rdf==null)  //if there is no RDF data model
 			{
 				rdf=new RDF();  //create new RDF
+/*TODO del if not needed
 				final OEBUtilities oebUtilities=new OEBUtilities(); //create a new OEB utility object
 				rdf.registerResourceFactory(OEB1_PACKAGE_NAMESPACE_URI, oebUtilities);  //register a factory for OEB 1.x package resources
-				rdf.registerResourceFactory(OEB2_PACKAGE_NAMESPACE_URI, oebUtilities);  //register a factory for OEB 2.x package resources
+*/
 			}
 			return rdf;  //return the RDF data model
 		}
@@ -511,8 +513,11 @@ Debug.trace("OEBPublicationCreator.createPublication() file: ", oebFile);
 		if(outputDir!=null) //if an output directory is specified
 			setOutputDir(outputDir.getCanonicalFile());  //set the output directory G***should we make sure this directory exists, and create it if  not?
 Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentURL);
+		final RDF rdf=getRDF();	//get the RDF data model
 			//create a new OEB publication using the OEB document URL as the publication URL; this will later be changed to the actual name of the OEB publication file
-		final OEBPublication publication=(OEBPublication)OEBUtilities.createOEBPublication(getRDF(), referenceURI); //create a publication
+		final OEBPublication publication=new OEBPublication(referenceURI);	//create a new OEB publication
+		publication.setRDF(rdf);	//set the publication's RDF data model
+		rdf.addResource(publication);	//add the resource to the RDF data model
 			//store the publication reference URI as a Dublin Core identifier property
 		DCUtilities.addIdentifier(publication, publication.getReferenceURI().toString());
 //G***del when works		RDFUtilities.addProperty(getRDF(), publication, DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, publication.getReferenceURI());
@@ -703,7 +708,7 @@ Debug.trace("using file for document: ", oebDocumentFile);
 				//add the preface to the manifest without adding it to the spine
 		  final RDFResource prefaceResource=gatherReference(publication, prefaceURL, prefaceURL.getFile(), OEB10_DOCUMENT_MEDIA_TYPE, false);
 				//add the preface as the first element in the spine
-		  XPackageUtilities.getOrganization(publication).add(prefaceResource, 1);
+		  XEBUtilities.getSpine(publication).add(0, prefaceResource);
 		}
 			//add a title page if needed
 		final String titlePageLocation=getTitlePageLocation();  //see if we were given a title page to add
@@ -713,8 +718,8 @@ Debug.trace("using file for document: ", oebDocumentFile);
 		  setTitlePageURL(titlePageURL);  //save the URL to the title page
 				//add the title page to the manifest without adding it to the spine
 		  final RDFResource titlePageResource=gatherReference(publication, titlePageURL, titlePageURL.getFile(), OEB10_DOCUMENT_MEDIA_TYPE, false);
-				//add the title page  as the first element in the spine
-		  XPackageUtilities.getOrganization(publication).add(titlePageResource, 1);
+				//add the title page as the first element in the spine
+		  XEBUtilities.getSpine(publication).add(0, titlePageResource);
 		}
 			//add the stylesheets to the publication
 		  //G***fix to gather the stylesheet references into the manifest automatically through gatherReferences()
@@ -1151,7 +1156,9 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 								XPackageUtilities.getManifest(publication).add(oebItem); //add the item to the publication's manifest
 								  //if this is an OEB document, and we should add it to the spine
 								if(shouldAddToSpine && mediaType.match(OEB10_DOCUMENT_MEDIA_TYPE))
-								  XPackageUtilities.getOrganization(publication).add(oebItem);  //add the item to the spine as well
+								{
+								  XEBUtilities.getSpine(publication).add(oebItem);  //add the item to the spine as well
+								}
 								if(getOutputDir()!=null)  //if we have an output directory where files should be copied
 								{
 	Debug.trace("output dir: ", getOutputDir());

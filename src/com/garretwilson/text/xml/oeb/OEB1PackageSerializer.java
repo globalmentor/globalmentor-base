@@ -6,6 +6,7 @@ import java.util.*;
 import javax.mail.internet.ContentType;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.DCConstants;
+import com.garretwilson.rdf.xeb.XEBUtilities;
 import com.garretwilson.rdf.xpackage.MIMEOntologyUtilities;
 import com.garretwilson.rdf.xpackage.XPackageUtilities;
 import com.garretwilson.text.CharacterEncoding;
@@ -206,15 +207,13 @@ Debug.trace("property value: ", propertyValue); //G***del
 		  }
 		}
 		  //package/spine
-		final RDFSequenceResource spine=XPackageUtilities.getOrganization(publication); //get the spine
+		final RDFListResource spine=XEBUtilities.getSpine(publication); //get the spine
 		if(spine!=null)  //if the publication has a spine
 		{
 			final Element spineElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_SPINE); //create the spine element
-		  final Iterator spineIterator=spine.getItemIterator(); //get an iterator to iterate through the spine
-			while(spineIterator.hasNext()) //while there are more items in the spine
+			for(final RDFResource item:spine)	//for each item in the spine
 			{
-				final RDFResource oebItem=(RDFResource)spineIterator.next(); //get the next OEB item
-				spineElement.appendChild(generateItemRefElement(document, oebItem, publication.getReferenceURI()));  //generate an item element and add it to the manifest element
+				spineElement.appendChild(generateItemRefElement(document, item, publication.getReferenceURI()));  //generate an item element and add it to the spine element
 			}
 		}
 		if(publication.getGuideList().size()>0) //if there are guides

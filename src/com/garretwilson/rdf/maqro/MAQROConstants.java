@@ -47,6 +47,8 @@ public interface MAQROConstants
 	public final static String OUTCOME_CLASS_NAME="Outcome";
 	/**The local name of maqro:Selection.*/
 	public final static String SELECTION_CLASS_NAME="Selection";
+	/**The local name of maqro:Text.*/
+	public final static String TEXT_CLASS_NAME="Text";	//TODO add to spec
 
 		//MAQRO interaction property names
 	/**A choice of an interaction. The local name of maqro:category.*/

@@ -106,19 +106,6 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 		resource.setProperty(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME, manifestResource);	//set the manifest of the resource
 	}
 
-	/**Adds an <code>&lt;xpackage:organization&gt;</code> property to the resource.
-	@param resource The resource to which a property should be added.
-	@return The new manifest resource, an <code>&lt;rdf:Seq&gt;</code>.
-	*/
-	public static RDFSequenceResource addOrganization(final RDFResource resource)
-	{
-		  //create an anonymous organization resource from the data model
-		final RDFSequenceResource organizationResource=(RDFSequenceResource)locateTypedResource(resource, null, RDF_NAMESPACE_URI, SEQ_CLASS_NAME);	//G***maybe create a utility method for this
-			//add the organization property to the resource
-		resource.addProperty(XPACKAGE_NAMESPACE_URI, ORGANIZATION_PROPERTY_NAME, organizationResource);
-		return organizationResource;  //return the organization resource we created
-	}
-
 	/**Creates a default XPackage package description document.
 	@param domImplementation The DOM implementation to use.
 	@return A newly created default XPackage package description document with an
@@ -405,23 +392,9 @@ Debug.trace("comparing with URI: ", itemURI); //G***del
 	@return The manifest of the resource, or <code>null</code> if no manifest
 		property exists or the manifest is not a list resource.
 	*/
-	public static RDFListResource getManifest(final RDFResource resource) throws ClassCastException
+	public static RDFListResource getManifest(final RDFResource resource)
 	{
 		return asListResource(resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME)); //return the manifest as a list resource
-	}
-
-	/**Retrieves the organization of the resource. If this resource has more than
-		one property of <code>xpackage:organization</code>, it is undefined which
-		of those property values will be returned.
-	@param resource The resource the organization of which will be returned.
-	@return The organization of the resource, or <code>null</code> if no
-		organization property exists.
-	@exception ClassCastException Thrown if the organization is not an
-		<code>rdf:Seq</code>.
-	*/
-	public static RDFSequenceResource getOrganization(final RDFResource resource) throws ClassCastException
-	{
-		return (RDFSequenceResource)resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, ORGANIZATION_PROPERTY_NAME); //return the organization, cast to an RDF sequence resource
 	}
 
 }

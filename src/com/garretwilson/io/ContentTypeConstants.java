@@ -99,13 +99,17 @@ public class ContentTypeConstants
 	/**An OEB 1.x publication zip file.*/
 	public final static String X_OEB_PUBLICATION_ZIP_SUBTYPE="x-oeb-publication"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX+SUBTYPE_SUFFIX_DELIMITER_CHAR+ZIP_SUBTYPE_SUFFIX;
 	/**An OEB 1.x package file.*/
-	public final static String X_OEB1_PACKAGE_SUBTYPE="x-oeb1-package"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
+	public final static String X_OEB1_PACKAGE_XML_SUBTYPE="x-oeb1-package"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**An Ogg Vorbis file; see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>.*/
 	public final static String OGG_SUBTYPE="ogg";
 	/**An Adobe PDF file.*/
 	public final static String PDF_SUBTYPE="pdf";
 	/**An XML application.*/
 //G***fix	public final static String APPLICATION_XML=APPLICATION+DIVIDER+XML;
+	/**An XEB book file, <code>x-xebook+rdf+xml</code>.*/
+	public final static String X_XEBOOK_RDF_XML_SUBTYPE="x-xebook"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
+	/**An XEB book zip file, <code>x-xebook+rdf+xml+zip</code>.*/
+	public final static String X_XEBOOK_RDF_XML_ZIP_SUBTYPE=X_XEBOOK_RDF_XML_SUBTYPE+SUBTYPE_SUFFIX_DELIMITER_CHAR+ZIP_SUBTYPE_SUFFIX;
 	/**An XHTML application.*/
 	public final static String XHTML_XML_SUBTYPE="xhtml"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**A Zip file.*/

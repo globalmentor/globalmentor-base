@@ -2,27 +2,27 @@ package com.garretwilson.text.xml.oeb;
 
 import java.io.*;
 import java.net.*;
-import java.net.URI;	//G**del when old URI is gone
 
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.ContentTypeUtilities;
 import com.garretwilson.net.*;
-import com.garretwilson.rdf.dublincore.DCConstants;
-//G***del import com.garretwilson.text.xml.XMLDOMImplementation;
+import com.garretwilson.rdf.*;
+import static com.garretwilson.rdf.dublincore.DCConstants.*;
+import com.garretwilson.rdf.xpackage.*;
+import static com.garretwilson.rdf.xeb.XEBUtilities.*;
+import static com.garretwilson.rdf.xpackage.XPackageUtilities.*;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XPath;
-import com.garretwilson.rdf.*;
-import com.garretwilson.rdf.xpackage.*;
+import static com.garretwilson.text.xml.oeb.OEBConstants.*;
 import com.garretwilson.util.*;
 import org.w3c.dom.*;
 
-//G***del all the XMLUndefinedEntityReferenceException throws when we don't need them anymore, in favor of XMLWellFormednessException
-
 /**Class which parses an input stream containing an OEB publication.
+If the input stream contains an OEB 1.x package document, it will be converted to an XEbook.
 @see XMLProcessor
 */
-public class OEBPackageProcessor implements OEBConstants, OEB2Constants, DCConstants, RDFResourceFactory
+public class OEBPackageProcessor
 {
 
 	/**The XML processor for parsing an OEB package description document.*/
@@ -48,7 +48,7 @@ public class OEBPackageProcessor implements OEBConstants, OEB2Constants, DCConst
 
 	/**Reads an OEB publication from a package file and converts it to an
 		RDF data model. If the input stream contains an OEB 1.x package document, it
-		will be converted.
+		will be converted to an XEbook.
 	@param packageInputStream The input stream containing the package information.
 	@return The RDF data model of the package information.
 	@exception IOException Thrown if there is an error reading the package
@@ -62,7 +62,7 @@ public class OEBPackageProcessor implements OEBConstants, OEB2Constants, DCConst
 
 	/**Reads an OEB publication from a package file and converts it to an
 		RDF data model. If the input stream contains an OEB 1.x package document, it
-		will be converted.
+		will be converted to an XEbook.
 	@param packageInputStream The input stream containing the package information.
 	@param packageURI The URI to the package information, or <code>null</code> if
 		the package URI is not available.
@@ -74,9 +74,8 @@ public class OEBPackageProcessor implements OEBConstants, OEB2Constants, DCConst
 	public RDF read(final InputStream packageInputStream, final URI packageURI) throws IOException
 	{
 		final RDF rdf=new RDF();  //create a new RDF data model
-		rdf.registerResourceFactory(OEB1_PACKAGE_NAMESPACE_URI, this);  //register ourselves as a factory for OEB 1.x package resources
-		rdf.registerResourceFactory(OEB2_PACKAGE_NAMESPACE_URI, this);  //register ourselves as a factory for OEB 2.x package resources
-
+//TODO del		rdf.registerResourceFactory(OEB1_PACKAGE_NAMESPACE_URI, this);  //register ourselves as a factory for OEB 1.x package resources
+//TODO del		rdf.registerResourceFactory(OEB2_PACKAGE_NAMESPACE_URI, this);  //register ourselves as a factory for OEB 2.x package resources
 Debug.trace("reading package from URI: ", packageURI);  //G***del
 		final Document document=getXMLProcessor().parseDocument(packageInputStream, packageURI);	//parse the package description document
 		document.normalize(); //normalize the package description document
@@ -98,12 +97,11 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 		}
 		catch (URISyntaxException e)
 		{
-			throw new IOException(e.toString());
+			throw (IOException)new IOException(e.getMessage()).initCause(e);
 		} 
 	}
 
-	/**Converts an OEB 1.x package document to an OEB publication stored in an
-		RDF data model.
+	/**Converts an OEB 1.x package document to an XEBook stored in an RDF data model.
 	@param rdf The RDF data model to use, which should already have the
 		appropriate resource factories registered.
 	@param oeb1PackageDocument The XML document containing the OEB 1.x package
@@ -171,8 +169,12 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 //G***del when works					publicationReferenceURI=URIConstants.URN+URIConstants.SCHEME_SEPARATOR+scheme+URIConstants.SCHEME_SEPARATOR+dcIdentifierElementText.trim();
 				}
 			}
+			//TODO add uuid scheme conversion
 		}
-		final OEBPublication publicationResource=OEBUtilities.createOEBPublication(rdf, publicationReferenceURI);
+		
+		final OEBPublication publicationResource=new OEBPublication(publicationReferenceURI);	//create a new OEB publication
+		publicationResource.setRDF(rdf);	//set the publication's RDF data model
+		rdf.addResource(publicationResource);	//add the resource to the RDF data model
 Debug.trace("converting OEB package, created publication resource: ", publicationResource.getClass().getName());  //G***del
 		//XPath: /metadata/dc-metadata/*
 		final NodeList dcMetadataElementList=(NodeList)XPath.evaluateLocationPath(rootElement,
@@ -292,7 +294,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 		}
 //G***fix fallbacks		final Map fallbackMap=new HashMap();  //create a map to be used for storing references to fallbacks
 		  //add a manifest to the publication
-		final RDFListResource manifestResource=XPackageUtilities.addManifest(publicationResource);
+		final RDFListResource manifestResource=addManifest(publicationResource);
 		//XPath: /manifest/item
 		final NodeList manifestElementList=(NodeList)XPath.evaluateLocationPath(rootElement,
 			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST+
@@ -307,7 +309,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 			final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null)); //G***fix the reference URI
 //G***del when not needed		  final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null), XPackageConstants.XPACKAGE_NAMESPACE_URI, XPackageConstants.RESOURCE_TYPE_NAME); //G***fix the reference URI
 			MIMEOntologyUtilities.addContentType(itemResource, itemMediaType); //add the item's content type
-		  XPackageUtilities.addLocation(itemResource, itemHRef); //add the item's href
+		  addLocation(itemResource, itemHRef); //add the item's href
 		  manifestResource.add(itemResource);  //add the item to the manifest
 /*G***fix fallbacks
 			if(itemElement.hasAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_FALLBACK)) //if the element has a fallback attribute
@@ -331,9 +333,8 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 */
 
 Debug.trace("adding an organization to the publication");
-		  //add an organization to the publication
-		final RDFSequenceResource organizationResource=XPackageUtilities.addOrganization(publicationResource);
-
+		  //add the publication spine
+		final RDFListResource spine=new RDFListResource();	//create a new list for the spine
 		//XPath: /spine/itemref
 		final NodeList spineElementList=(NodeList)XPath.evaluateLocationPath(rootElement,
 			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE+
@@ -347,16 +348,15 @@ Debug.trace("looking at spine element: ", i);
 		  final String itemIDRef=itemElement.getAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF);  //get the item's idref value
 Debug.trace("idref: ", itemIDRef);
 			final URI itemReferenceURI=new URI(URIConstants.URN_SCHEME, "local:"+itemIDRef, null);  //G***fix the reference URI
-//G***del		  final URI itemReferenceURI=publicationReferenceURI.resolve();	//resolve the URI form of the string, creating a URISyntaxException if there is a problem
-//G***del		  	new URI(URIConstants.URN_SCHEME, "local:"+itemIDRef, null);  //G***fix the reference URI
 Debug.trace("item reference URI: ", itemReferenceURI);
-//G***del when works			final RDFResource itemResource=XPackageUtilities.getItemByLocationHRef(manifestResource, publicationReferenceURI, itemReferenceURI);  //get the referenced item from the manifest G***make sure the we're using a workable baseURI, if that's even a concern 
 			final RDFResource itemResource=manifestResource.getResourceByReferenceURI(itemReferenceURI);	//get the referenced item from the manifest
 Debug.trace("item resource: ", XPackageUtilities.toString(itemResource));
 			assert itemResource!=null : "Missing spine element: "+itemIDRef; //TODO fix with a real error message
 Debug.trace("adding item to organization");
-		  organizationResource.add(itemResource);  //add this item to the organization
+			spine.add(itemResource);	//add this item to the spine
 		}
+		setSpine(publicationResource, spine);	//add the spine to the resource
+
 //G***fix with new navigation stuff
 		//XPath: /guide/reference
 		final NodeList guideElementList=(NodeList)XPath.evaluateLocationPath(rootElement,
@@ -375,32 +375,6 @@ Debug.trace("found guide type: "+type+" title: "+title+" href: "+href);
 		}
 Debug.trace("converted OEB publication RDF: ", RDFUtilities.toString(rdf)); //G***del
 		return rdf; //return the RDF data model of the publication we created
-	}
-
-	/**Creates a resource with the provided reference URI based upon the
-		type reference URI composed of the given XML serialization type namespace
-		and local name
-		<p>This method creates OEB-specific resource.</p>
-	@param referenceURI The non-<code>null</code> reference URI of the resource
-		to create.
-	@param typeNamespaceURI The XML namespace used in the serialization of the
-		type URI, or <code>null</code> if the type is not known.
-	@param typeLocalName The XML local name used in the serialization of the type
-		URI, or <code>null</code> if the type is not known.
-	@return The resource created with this reference URI, with the given type
-		added if a type was given.
-	*/  //G***change to use OEBUtilities as a factory
-	public RDFResource createResource(final URI referenceURI, final URI typeNamespaceURI, final String typeLocalName)
-	{
-		if(OEB1_PACKAGE_NAMESPACE_URI.equals(typeNamespaceURI) //if this resource is an OEB 1.x package resource
-				|| OEB2_PACKAGE_NAMESPACE_URI.equals(typeNamespaceURI)) //or if this resource is an OEB 2.x package resource
-		{
-			if(PUBLICATION_TYPE_NAME.equals(typeLocalName)) //<oebps:publication>
-			{
-				return new OEBPublication(referenceURI);  //create and return a new OEB publication
-			}
-		}
-		return null;  //show that we couldn't create a resource
 	}
 
 }
