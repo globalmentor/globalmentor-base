@@ -3,6 +3,7 @@ package com.garretwilson.swing.rdf.maqro;
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.List;
 import javax.swing.*;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
@@ -10,7 +11,9 @@ import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 import com.garretwilson.text.xml.xhtml.XHTMLUtilities;
 import com.garretwilson.io.MediaType;
-import com.garretwilson.rdf.RDFResourceModel;
+import com.garretwilson.model.Model;
+import com.garretwilson.rdf.RDFListResource;
+import com.garretwilson.rdf.RDFPlainLiteral;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.globalmentor.mentoract.activity.maqro.*;
@@ -23,11 +26,17 @@ import org.w3c.dom.*;
 public class ActivityPanel extends RDFPanel
 {
 
+	/**The action for adding an interaction to the activity.*/
+	private final Action addInteractionAction;
+
+		/**@return The action for adding an interaction to the activity.*/
+		public Action getAddInteractionAction() {return addInteractionAction;}
+
 	/**The action for interacting with the activity.*/
 	private final Action interactAction;
 
 		/**@return The action for interacting with the activity.*/
-		public Action getQuizAction() {return interactAction;}
+		public Action getInteractAction() {return interactAction;}
 
 	/**The book for the WYSIWYG view.*/
 	protected final Book book;
@@ -53,12 +62,23 @@ public class ActivityPanel extends RDFPanel
 	@param newModel The data model for which this component provides a view.
 	@exception ClassCastException Thrown if the model is not an <code>ActivityModel</code>.
 	*/
-	public void setRDFResourceModel(final RDFResourceModel newModel)
+	public void setModel(final Model newModel)
 	{
 		final ActivityModel activityModel=(ActivityModel)newModel;	//cast the model to an activity model
+/*G***del when works
 		book.getXMLTextPane().setURIInputStreamable(activityModel);	//make sure the text pane knows from where to get input streams
-		interactionSequencePanel.setList(activityModel.getActivity()!=null ? activityModel.getActivity().getInteractions() : null);	//G***testing; fix
-		super.setRDFResourceModel(activityModel);	//set the model in the parent class
+		if(activityModel.getActivity()==null)	//if there is no activity
+		{
+			activityModel.setActivity(new Activity());	//create a new activity
+		}
+		if(activityModel.getActivity().getInteractions()==null)	//if the activity has no interactions
+		{
+			activityModel.getActivity().setInteractions(new RDFListResource());	//set a default list of interactions
+		}
+		interactionSequencePanel.setListModel(new ListListModel(activityModel.getActivity().getInteractions()));	//create a list model from the interactions to show in the sequence panel
+//G***del if not needed		interactionSequencePanel.setList(activityModel.getActivity()!=null ? activityModel.getActivity().getInteractions() : null);	//G***testing; fix
+*/
+		super.setModel(activityModel);	//set the model in the parent class
 	}
 
 	/**Default constructor.*/
@@ -84,9 +104,11 @@ public class ActivityPanel extends RDFPanel
 	{
 		super(model, false);	//construct the parent class without initializing it
 		addSupportedModelViews(new int[]{WYSIWYG_MODEL_VIEW, SEQUENCE_MODEL_VIEW});	//show that we now support WYSIWYG and sequence data views, too
+		addInteractionAction=new AddInteractionAction();	//create an action for adding an interaction to the activity
 		interactAction=new InteractAction();	//create an action for interacting with the activity
 		book=new Book(1);	//create a new book for the WYSIWYG view, showing only one page
-		interactionSequencePanel=new InteractionSequencePanel(model.getActivity()!=null ? model.getActivity().getInteractions() : null);	//G***make sure we want to possibly initialize without a list
+		interactionSequencePanel=new InteractionSequencePanel();	//create a new interaction sequence panel
+//		interactionSequencePanel=new InteractionSequencePanel(model.getActivity()!=null ? model.getActivity().getInteractions() : null);	//G***make sure we want to possibly initialize without a list
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
 	}
@@ -100,7 +122,9 @@ public class ActivityPanel extends RDFPanel
 		super.initializeUI(); //do the default UI initialization
 //TODO set the book to be not editable
 		final ActionManager actionManager=getActionManager();	//get our action manager and set up tool actions
-		actionManager.addToolAction(getQuizAction());
+		actionManager.addToolAction(getAddInteractionAction());
+		actionManager.addToolAction(new ActionManager.SeparatorAction());
+		actionManager.addToolAction(getInteractAction());
 		add(ToolBarUtilities.createToolBar(getActionManager()), BorderLayout.NORTH);	//put a toolbar in the north with our tool actions
 		//TODO fix status bar
 	}
@@ -112,6 +136,35 @@ public class ActivityPanel extends RDFPanel
 	{
 		super.loadModel();	//do the default loading
 		final ActivityModel model=getActivityModel();	//get the data model
+
+		book.getXMLTextPane().setURIInputStreamable(model);	//make sure the text pane knows from where to get input streams
+		if(model.getActivity()==null)	//if there is no activity
+		{
+			model.setActivity(new Activity());	//create a new activity
+		}
+		if(model.getActivity().getInteractions()==null)	//if the activity has no interactions
+		{
+			model.getActivity().setInteractions(new RDFListResource());	//set a default list of interactions
+		}
+/*G***del when works
+			//get the interaction list, if there is one
+		final List interactionList=activityModel.getActivity()!=null && activityModel.getActivity().getInteractions()!=null ? activityModel.getActivity().getInteractions() : null;
+
+		final ListModel interactionListModel=interactionList!=null ? new ListListModel(interactionList) : null;	//create a list model, if we have a list of interactions
+		interactionSequencePanel.setListModel(interactionListModel);	//show the interactions in the list model
+		}
+		else if(((ListListModel)interactionSequencePanel.getListModel()).getList()!=model.getActivity().getInteractions())	//if the sequence panel isn't showing our interactions
+		{
+			interactionSequencePanel.setListModel(new ListListModel(model.getActivity().getInteractions()));	//create a list model from the interactions to show in the sequence panel
+		}
+*/
+//G***del when works		interactionSequencePanel.setListModel(new ListListModel(model.getActivity().getInteractions()));	//create a list model from the interactions to show in the sequence panel
+//G***del if not needed		interactionSequencePanel.setList(activityModel.getActivity()!=null ? activityModel.getActivity().getInteractions() : null);	//G***testing; fix
+			//if the sequence panel isn't showing any interactions or it's not showing our interactions
+		if(interactionSequencePanel.getListModel()==null || ((ListListModel)interactionSequencePanel.getListModel()).getList()!=model.getActivity().getInteractions())
+		{
+			interactionSequencePanel.setListModel(new ListListModel(model.getActivity().getInteractions()));	//create a list model from the interactions to show in the sequence panel
+		}
 		switch(getModelView())	//see which view of data we should load
 		{
 			case WYSIWYG_MODEL_VIEW:	//if we're changing to the WYSIWYG view
@@ -132,13 +185,18 @@ public class ActivityPanel extends RDFPanel
 					book.close();	//remove the content from the book					
 				}
 				break;
+/*G***fix
 			case SEQUENCE_MODEL_VIEW:	//if we're changing to the sequence view
-					//if the sequence panel isn't showing our interactions
-				if(model.getActivity().getInteractions()!=null && interactionSequencePanel.getList()!=model.getActivity().getInteractions())
+				if(model.getActivity()==null || model.getActivity().getInteractions()==null)	//if we don't have an activity or the activity has no interactions
 				{
-					interactionSequencePanel.setList(model.getActivity().getInteractions());	//show the list in the sequence panel
+					interactionSequencePanel.setListModel(null);	//remove any list shown G***won't we want to do this when the model changes?
+				}
+				else if(((ListListModel)interactionSequencePanel.getListModel()).getList()!=model.getActivity().getInteractions())	//if the sequence panel isn't showing our interactions
+				{
+					interactionSequencePanel.setListModel(new ListListModel(model.getActivity().getInteractions()));	//create a list model from the interactions to show in the sequence panel
 				}
 				break;	//TODO reset this after we change from the view
+*/
 		}
 	}
 
@@ -157,6 +215,15 @@ public class ActivityPanel extends RDFPanel
 		}
 	}
 
+	/**Adds an interaction to the activity.*/
+	public void addInteraction()
+	{
+		final ListListModel interactionListModel=(ListListModel)interactionSequencePanel.getListModel();	//get the list model representing interactions TODO probably keep a single list model around somewhere, especially for when we have different views of the interactions
+		final Question question=new Question();	//G***testing
+		question.setQuery(new Dialogue(new RDFPlainLiteral("New question.")));
+		interactionListModel.add(question);	//add the question to the list
+	}
+
 	/**Interacts with the activity.*/
 	public void interact()
 	{
@@ -173,6 +240,29 @@ public class ActivityPanel extends RDFPanel
 		}
 	}
 
+	/**Action to add an interaction.*/
+	protected class AddInteractionAction extends AbstractAction
+	{
+		/**Default constructor.*/
+		public AddInteractionAction()
+		{
+			super("Add Interaction");	//create the base class G***i18n
+			putValue(SHORT_DESCRIPTION, "Add interaction");	//set the short description G***i18n
+			putValue(LONG_DESCRIPTION, "Add an interaction to the current group.");	//set the long description G***i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));  //set the mnemonic key G***i18n
+			putValue(SMALL_ICON, IconResources.getIcon(IconResources.ADD_ICON_FILENAME)); //load the correct icon
+	//G***del			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK)); //add the accelerator G***i18n
+		}
+	
+		/**Called when the action should be performed.
+		@param actionEvent The event causing the action.
+		*/
+		public void actionPerformed(final ActionEvent actionEvent)
+		{
+			addInteraction();	//add an interaction
+		}
+	}
+
 	/**Activity action that allows quizing on the dictionary's contents.*/
 	protected class InteractAction extends AbstractAction
 	{
@@ -180,7 +270,7 @@ public class ActivityPanel extends RDFPanel
 		public InteractAction()
 		{
 			super("Interact");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Interactive Activity");	//set the short description G***i18n
+			putValue(SHORT_DESCRIPTION, "Interactive activity");	//set the short description G***i18n
 			putValue(LONG_DESCRIPTION, "Test the interactive activity.");	//set the long description G***i18n
 			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_I));  //set the mnemonic key G***i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.ANIMATION_ICON_FILENAME)); //load the correct icon

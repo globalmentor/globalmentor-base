@@ -1,6 +1,7 @@
 package com.garretwilson.model;
 
 import java.net.URI;
+import com.garretwilson.event.EventListenerManager;
 import com.garretwilson.io.*;
 
 /**A model that keeps track of a base URI and knows how to access input streams
@@ -32,6 +33,12 @@ public abstract class URIAccessibleModel extends DefaultURIAccessible implements
 			}
 		}
 */
+
+	/**The manager of the registered event listeners.*/
+	private final EventListenerManager eventListenerManager=new EventListenerManager();
+	
+		/**@return The manager of the registered event listeners.*/
+		public EventListenerManager getEventListenerManager() {return eventListenerManager;}
 
 	/**The base URI of the model, or <code>null</code> if unknown.*/
 	private final URI baseURI;	//G***maybe move this up into XMLNodeModel---or, more likely, down into Model itself

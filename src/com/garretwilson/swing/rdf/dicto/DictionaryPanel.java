@@ -13,6 +13,7 @@ import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.*;
 import com.garretwilson.text.xml.xlink.*;
 import com.garretwilson.io.MediaType;
+import com.garretwilson.model.Model;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dicto.*;
 import com.garretwilson.rdf.dicto.Dictionary;
@@ -58,10 +59,10 @@ public class DictionaryPanel extends RDFPanel
 	@param newModel The data model for which this component provides a view.
 	@exception ClassCastException Thrown if the model is not a <code>DictionaryModel</code>.
 	*/
-	public void setRDFResourceModel(final RDFResourceModel newModel)
+	public void setModel(final Model newModel)
 	{
 		book.getXMLTextPane().setURIInputStreamable((DictionaryModel)newModel);	//make sure the text pane knows from where to get input streams
-		super.setRDFResourceModel(newModel);	//set the model in the parent class
+		super.setModel(newModel);	//set the model in the parent class
 	}
 
 	/**Default constructor.*/
