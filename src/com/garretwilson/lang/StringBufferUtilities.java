@@ -68,66 +68,6 @@ public class StringBufferUtilities implements CharacterConstants
 		return stringBuffer;	//return the string buffer, now containing the new information
 	}	
 
-	/**Searches a string buffer and returns the first index of any character in
-		the specified string buffer, starting at the beginning.
-	@param stringBuffer The string buffer to be searched.
-	@param charString The string of characters to check.
-	@return The index of the first occurrence of one of the supplied characters,
-		or -1 if none were found.
-	*/
-	static public int charIndexOf(final StringBuffer stringBuffer, final String charString)
-	{
-		return charIndexOf(stringBuffer, charString, 0);	//look of the characters, starting at the beginning of the string
-	}
-
-	/**Searches a string buffer and returns the first index of any character in the
-		specified string buffer, starting at <code>fromIndex</code>.
-	@param stringBuffer The string buffer to be searched.
-	@param charString The string of characters to check.
-	@param fromIndex The index to search from
-	@return The index of the first occurrence of one of the supplied characters,
-		or -1 if none were found.
-	*/
-	static public int charIndexOf(final StringBuffer stringBuffer, final String charString, final int fromIndex)
-	{
-		for(int i=fromIndex; i<stringBuffer.length(); ++i)	//look at each character in the string
-		{
-			if(charString.indexOf(stringBuffer.charAt(i))>=0)	//if this character is in our character string
-				return i;	//return the index we're at
-		}
-		return -1;	//if we make it to here, we didn't find any of the characters
-	}
-
-	/**Searches a string buffer in reverse and returns the last index of any
-		of the specified characters, starting from <code>fromIndex</code>.
-	@param stringBuffer The characters to be searched.
-	@param charString The string of characters to check.
-	@return The index of the last occurrence of one of the supplied characters,
-		or -1 if none were found.
-	*/
-	static public int charLastIndexOf(final StringBuffer stringBuffer, final String charString)
-	{
-		return charLastIndexOf(stringBuffer, charString, stringBuffer.length()-1);  //search the string buffer, starting at the end
-	}
-
-	/**Searches a string buffer in reverse and returns the last index of any
-		of the specified characters, starting from <code>fromIndex</code>.
-	@param stringBuffer The characters to be searched.
-	@param charString The string of characters to check.
-	@param fromIndex The index to search from
-	@return The index of the last occurrence of one of the supplied characters,
-		or -1 if none were found.
-	*/
-	static public int charLastIndexOf(final StringBuffer stringBuffer, final String charString, final int fromIndex)
-	{
-		for(int i=fromIndex; i>=0; --i)	//look at each character in the string, starting at the end
-		{
-			if(charString.indexOf(stringBuffer.charAt(i))>=0)	//if this character is in our character string
-				return i;	//return the index we're at
-		}
-		return -1;	//if we make it to here, we didn't find any of the characters
-	}
-
 	/**Collapses every run of any number of collapseChars to a single replaceString.
 	@param stringBuffer The buffer in which the information will be collapsed.
 	@param collapseChars The characters to be removed from the string.
@@ -163,45 +103,6 @@ public class StringBufferUtilities implements CharacterConstants
 		}
 	}
 	
-	/**Determines if the string buffer ends with the given string.
-	@param stringBuffer The string buffer to examine.
-	@param string The string to compare.
-	@return <code>true</code> if the last characters of the string buffer match
-		those of the given string.
-	*/
-	public static boolean endsWith(final StringBuffer stringBuffer, final String string)
-	{
-		final int delta=stringBuffer.length()-string.length();  //find out the difference in length between the strings
-		if(delta<0) //if the substring is too long
-			return false; //the substring is too big to start the string buffer
-		for(int i=string.length()-1; i>=0; --i) //look at each character of the string
-		{
-			if(string.charAt(i)!=stringBuffer.charAt(i+delta))  //if these characters don't match in the same position
-				return false; //the string doens't match
-		}
-		return true;  //the string buffer ends with the string
-	}
-
-	/**Determines if the string buffer ends with the given string without case
-		sensitivity.
-	@param stringBuffer The string buffer to examine.
-	@param string The string to compare.
-	@return <code>true</code> if the last characters of the string buffer match
-		those of the given string, case insensitively.
-	*/
-	public static boolean endsWithIgnoreCase(final StringBuffer stringBuffer, final String string)
-	{
-		final int delta=stringBuffer.length()-string.length();  //find out the difference in length between the strings
-		if(delta<0) //if the substring is too long
-			return false; //the substring is too big to start the string buffer
-		for(int i=string.length()-1; i>=0; --i) //look at each character of the string
-		{
-			if(Character.toUpperCase(string.charAt(i))!=Character.toUpperCase(stringBuffer.charAt(i+delta)))  //if these characters don't match in the same position
-				return false; //the string doens't match
-		}
-		return true;  //the string buffer ends with the string
-	}
-
 	/**Returns the index of the first ocurrence of the given character in the
 		string buffer.
 	@param stringBuffer The string buffer to search.
@@ -231,45 +132,6 @@ public class StringBufferUtilities implements CharacterConstants
 				return i; //return the index at which the character occurs
 		}
 		return -1;  //show that the character was not found
-	}
-
-	/**Returns the index of the first ocurrence of the given string in the
-		string buffer from the beginning.
-	@param stringBuffer The string buffer to search.
-	@param string The string to look for.
-	@return The index in the string buffer of the given string, or -1 if no
-		occurrence was found.
-	*/
-	public static int indexOf(final StringBuffer stringBuffer, final String string)
-	{
-		return indexOf(stringBuffer, string, 0);  //search from the beginning
-	}
-
-	/**Returns the index of the first ocurrence of the given string in the
-		string buffer from the given index.
-	@param stringBuffer The string buffer to search.
-	@param string The string to look for.
-	@param fromIndex The index at which to start the search.
-	@return The index in the string buffer of the given string, or -1 if no
-		occurrence was found.
-	*/
-	public static int indexOf(final StringBuffer stringBuffer, final String string, final int fromIndex)
-	{
-		final int stringBufferLength=stringBuffer.length(); //see how many characters are in the string buffer
-		final int stringLength=string.length(); //get the length of the string
-		final int endIndex=stringBufferLength-(stringLength-1);  //there's no way the substring could appear in a space smaller than it is
-		for(int i=fromIndex; i<endIndex; ++i) //look at each character in the string buffer
-		{
-			int j;  //this inner loop will compare the string with the string buffer at this position
-			for(j=stringLength-1; j>=0; --j)  //compare each character (it doesn't matter which direction we use here)
-			{
-				if(string.charAt(j)!=stringBuffer.charAt(i+j))  //if these characters do not match
-					break;  //stop searching this substring
-			}
-			if(j<0) //if we went through the whole string
-			  return i;  //it's a match
-		}
-		return -1;  //if none of the positions worked, there was no match
 	}
 
 	/**Searches a string buffer and returns the first index of any character
@@ -310,7 +172,7 @@ public class StringBufferUtilities implements CharacterConstants
 	*/
 	public static StringBuffer removeFirstCharLength(final StringBuffer stringBuffer, final String delimiters)
 	{
-		final int index=charIndexOf(stringBuffer, delimiters);  //find the first occurence of the delimiters
+		final int index=CharSequenceUtilities.charIndexOf(stringBuffer, delimiters);  //find the first occurence of the delimiters
 		if(index>=0)  //if one of the delimiters was found
 			stringBuffer.delete(index, stringBuffer.length());  //remove everything after and including the character
 		return stringBuffer;  //return the string buffer

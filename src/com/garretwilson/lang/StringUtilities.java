@@ -117,17 +117,6 @@ public class StringUtilities extends CharacterUtilities
 		return StringBufferUtilities.append(new StringBuffer(), objects, separator).toString();	//append the objects to a string buffer and return the string
 	}
 	
-	/**Determines whether the string ends with the given suffix, ignoring case.
-	@param string The string to search.
-	@param suffix The ending string to check for.
-	@return <code>true</code> if the string ends with the given suffix, ignoring
-		case.
-	*/
-	static public boolean endsWithIgnoreCase(final String string, final String suffix)
-	{
-		return string.toUpperCase().endsWith(suffix.toUpperCase()); //convert the strings to uppercase and check the suffix G***use a more efficient method that doesn't include creating new strings
-	}
-	
 	/**Compares two strings to make sure that the strings are equal ignoring
 		case, , or the strings are both set to <code>null</code>. If the first
 		string is not <code>null</code>, it is compared to the second using the

@@ -69,6 +69,45 @@ public class CharSequenceUtilities extends CharacterUtilities
 		return -1;	//if we make it to here, we didn't find any of the characters
 	}
 
+	/**Determines if the character sequence ends with the given string.
+	@param charSequence The character sequence to examine.
+	@param string The string to compare.
+	@return <code>true</code> if the last characters of the character sequence
+		match those of the given string.
+	*/
+	public static boolean endsWith(final CharSequence charSequence, final String string)
+	{
+		final int delta=charSequence.length()-string.length();  //find out the difference in length between the strings
+		if(delta<0) //if the substring is too long
+			return false; //the substring is too big to start the character sequence
+		for(int i=string.length()-1; i>=0; --i) //look at each character of the string
+		{
+			if(string.charAt(i)!=charSequence.charAt(i+delta))  //if these characters don't match in the same position
+				return false; //the string doens't match
+		}
+		return true;  //the character sequence ends with the string
+	}
+
+	/**Determines if the character sequence ends with the given string without
+		case sensitivity.
+	@param charSequence The character sequence to examine.
+	@param string The string to compare.
+	@return <code>true</code> if the last characters of the character sequence
+		match those of the given string, case insensitively.
+	*/
+	public static boolean endsWithIgnoreCase(final CharSequence charSequence, final String string)
+	{
+		final int delta=charSequence.length()-string.length();  //find out the difference in length between the strings
+		if(delta<0) //if the substring is too long
+			return false; //the substring is too big to start the character sequence
+		for(int i=string.length()-1; i>=0; --i) //look at each character of the string
+		{
+			if(Character.toUpperCase(string.charAt(i))!=Character.toUpperCase(charSequence.charAt(i+delta)))  //if these characters don't match in the same position
+				return false; //the string doens't match
+		}
+		return true;  //the character sequence ends with the string
+	}
+
 	/**Escapes the indicated characters in the character iterator
 		using the supplied escape character.
 	Every matching character is converted to its Unicode hex equivalent

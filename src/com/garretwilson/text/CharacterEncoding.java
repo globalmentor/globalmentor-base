@@ -1,5 +1,7 @@
 package com.garretwilson.text;
 
+import com.garretwilson.lang.CharSequenceUtilities;
+
 /**Represents a character encoding and related information.
 @author Garret Wilson
 */
@@ -75,12 +77,24 @@ public class CharacterEncoding implements CharacterEncodingConstants
 		this(UTF_8, true);	//create the object with the default values
 	}
 
+	/**Creates a new character encoding from an encoding string.
+	@param encoding The encoding string, specifying big or little-endian if
+		appropriate.
+	@param newLittleEndian <code>true</code> if the data is stored in little endian
+		format, <code>false</code> if the data is stored in big endian format or
+		if big/little-endian does not apply to the format (such as UTF-8).
+	*/
+	public CharacterEncoding(final String encoding)
+	{
+		this(getFamily(encoding), isLittleEndian(encoding));	//parse out the family and endianness and construct the class
+	}
+
 	/**Creates a new character encoding with a family and byte order.
 	@param newFamily The encoding family, one of the constants <code>UTF8</code>,
 			<code>UTF16</code>, or <coode>UCS4</code>.
 	@param newLittleEndian <code>true</code> if the data is stored in little endian
-			format, <code>false</code> if the data is stored in big endian format or
-			if big/little-endian does not apply to the format (such as UTF-8).
+		format, <code>false</code> if the data is stored in big endian format or
+		if big/little-endian does not apply to the format (such as UTF-8).
 	*/
 	public CharacterEncoding(final String newFamily, final boolean newLittleEndian)
 	{
@@ -102,6 +116,33 @@ public class CharacterEncoding implements CharacterEncodingConstants
 		setFamily(newFamily);	//set the character encoding family
 		setLittleEndian(newLittleEndian);	//set the byte order
 		setByteOrderMark(bom);	//store the byte order mark used to determine this character encoding
+	}
+
+	/**Determines the family from a complete encoding name.
+	@param encoding The encoding string.
+	@return The family name, without specifying endianness.
+	*/
+	public static String getFamily(final String encoding)
+	{
+		if(CharSequenceUtilities.endsWithIgnoreCase(encoding, "LE") || CharSequenceUtilities.endsWithIgnoreCase(encoding, "BE"))	//TODO use constants
+		{
+			return encoding.substring(0, encoding.length()-2);	//TODO comment
+		}
+		else
+			return encoding;	//TODO comment
+	}
+
+	/**Determines the endianness of the given encoding.
+	@param encoding The encoding string.
+	@return The family name, without specifying endianness.
+	@param newLittleEndian <code>true</code> if the encoding specifies little
+		format, <code>false</code> if the data is stored in big endian format or
+		if big/little-endian does not apply to the format (such as UTF-8) or is
+		not specified.
+	*/
+	public static boolean isLittleEndian(final String encoding)
+	{
+		return CharSequenceUtilities.endsWithIgnoreCase(encoding, "LE");	//return whether the encoding specifies little-endian TODO use a constant
 	}
 
 	/**@return The number of bytes used for each character for this encoding family.*/
