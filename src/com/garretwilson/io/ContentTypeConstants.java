@@ -23,6 +23,9 @@ public class ContentTypeConstants
 	public final static String MULTIPART="multipart";
 	public final static String MESSAGE="message";
 
+	/**The separator character that delimits a subtype suffix.*/
+	public final static char SUBTYPE_SUFFIX_DELIMITER_CHAR='+';
+
 		//text media types
 	/**An OEB 1.0 document.*/
 	public final static String X_OEB1_CSS="x-oeb1-css";
@@ -77,6 +80,7 @@ public class ContentTypeConstants
 	public final static String AUDIO_WAV=AUDIO+DIVIDER+X_WAV;
 
 		//application media types
+
 	/**A stream of bytes.*/
 	public final static String OCTET_STREAM="octet-stream";
 	public final static String APPLICATION_OCTET_STREAM=APPLICATION+DIVIDER+OCTET_STREAM;
@@ -103,6 +107,8 @@ public class ContentTypeConstants
 	public final static String APPLICATION_PDF=APPLICATION+DIVIDER+PDF;
 	/**An XML application.*/
 	public final static String APPLICATION_XML=APPLICATION+DIVIDER+XML;
+	/**The suffix for XML application types.*/
+	public final static String XML_SUBTYPE_SUFFIX="xml";
 	/**An XHTML application.*/
 	public final static String XHTML_XML="xhtml+xml";
 	public final static String APPLICATION_XHTML_XML=APPLICATION+DIVIDER+XHTML_XML;

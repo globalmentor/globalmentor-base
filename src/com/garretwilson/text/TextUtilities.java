@@ -2,6 +2,9 @@ package com.garretwilson.text;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+import javax.mail.internet.ContentType;
+import com.garretwilson.io.ContentTypeConstants;
+import com.garretwilson.io.ContentTypeUtilities;
 import com.garretwilson.lang.*;
 import com.garretwilson.text.*;
 import com.garretwilson.util.*;
@@ -574,6 +577,33 @@ preface
 				return true; //show that we found a quote
 		}
 		return false; //we couldn't find a beginning or ending quote
+	}
+
+	/**Determines if the given content type is one representing text in some form.
+	<p>Text media types include:</p>
+	<ul>
+		<li><code>text/*</code></li>
+		<li><code>application/*+xml</code></li>
+	</ul>
+	@param contentType The content type of a resource, or <code>null</code> for no
+		content type.
+	@return <code>true</code> if the given content type is one of several HTML
+		media types.
+	*/ 
+	public static boolean isText(final ContentType contentType)
+	{
+		if(contentType!=null)	//if a content type is given
+		{
+			if(ContentTypeConstants.TEXT.equals(contentType.getPrimaryType()))	//if this is "text/*"
+			{
+				return true;	//text/* is a text content type
+			}
+			if(ContentTypeConstants.APPLICATION.equals(contentType.getPrimaryType()))	//if this is "application/*"
+			{
+				return ContentTypeUtilities.hasSubTypeSuffix(contentType, ContentTypeConstants.XML_SUBTYPE_SUFFIX);	//see if the subtype has an XML suffix
+			}
+		}
+		return false;	//this is not a media type we recognize as being HTML
 	}
 
 	/**Re-encodes the given string to the new encoding (such as UTF-8), assuming
