@@ -84,9 +84,9 @@ public class QTIChoiceResponseLabelView extends XMLComponentBlockView implements
 		}
 			//place the button in the near inset of the tile axis and in the middle of the perpendicular axis
 		final int axis=getAxis();	//get our axis
-		final ViewComponentManager.AxisLocation.Region regionX=axis==X_AXIS ? ViewComponentManager.AxisLocation.Region.BEFORE : ViewComponentManager.AxisLocation.Region.MIDDLE; 
-		final ViewComponentManager.AxisLocation.Region regionY=axis==Y_AXIS ? ViewComponentManager.AxisLocation.Region.BEFORE : ViewComponentManager.AxisLocation.Region.MIDDLE; 
-		getComponentManager().add(getToggleButton(), regionX, 0, regionY, 0); //add the radio button at the start of the line
+		final ViewComponentManager.AxisLocation.Region regionX=axis==X_AXIS ? ViewComponentManager.AxisLocation.Region.MIDDLE : ViewComponentManager.AxisLocation.Region.BEFORE; 
+		final ViewComponentManager.AxisLocation.Region regionY=axis==Y_AXIS ? ViewComponentManager.AxisLocation.Region.MIDDLE : ViewComponentManager.AxisLocation.Region.BEFORE; 
+		getComponentManager().add(getToggleButton(), regionX, 0.5f, regionY, 0.5f); //add the radio button at the start of the line
 //TODO del when works		getComponentManager().add(getToggleButton(), ViewComponentManager.Border.LINE_START); //add the radio button before this line begins
 	}
 

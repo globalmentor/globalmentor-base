@@ -289,7 +289,7 @@ Debug.trace("QTI local name: ", elementLocalName);  //G***del when works
 				//place the button in the far inset of the tile axis and in the middle of the perpendicular axis
 				final ViewComponentManager.AxisLocation.Region regionX=assessmentView.getAxis()==View.X_AXIS ? ViewComponentManager.AxisLocation.Region.AFTER : ViewComponentManager.AxisLocation.Region.MIDDLE; 
 				final ViewComponentManager.AxisLocation.Region regionY=assessmentView.getAxis()==View.Y_AXIS ? ViewComponentManager.AxisLocation.Region.AFTER : ViewComponentManager.AxisLocation.Region.MIDDLE; 
-				assessmentView.getComponentManager().add(submitButton, regionX, 0, regionY, 0); //add the button to the end of the activity view
+				assessmentView.getComponentManager().add(submitButton, regionX, 0.5f, regionY, 0.5f); //add the button to the end of the activity view
 //TODO del when works				assessmentView.getComponentManager().add(submitButton, ViewComponentManager.Border.PAGE_END); //add the button to the bottom of the assessment view
 				return assessmentView;  //return the assessment view
 			}

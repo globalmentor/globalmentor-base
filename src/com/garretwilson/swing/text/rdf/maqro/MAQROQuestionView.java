@@ -60,7 +60,7 @@ public class MAQROQuestionView extends XMLComponentBlockView implements Outcomab
 	*/
 	public MAQROQuestionView(final Element element, final int axis, final MAQROActivityView activityView)
 	{
-		super(element, axis); //construct the parent class
+		super(element, axis, false); //construct the parent class, but don't compensate for the hint button
 		final Question question=getQuestion();	//get a reference to the associated question
 		if(question==null)
 		{
@@ -80,7 +80,7 @@ public class MAQROQuestionView extends XMLComponentBlockView implements Outcomab
 				//place the button in the near inset of the tile axis and in the far inset of the perpendicular axis
 			final ViewComponentManager.AxisLocation.Region regionX=axis==Y_AXIS ? ViewComponentManager.AxisLocation.Region.AFTER : ViewComponentManager.AxisLocation.Region.BEFORE; 
 			final ViewComponentManager.AxisLocation.Region regionY=axis==X_AXIS ? ViewComponentManager.AxisLocation.Region.AFTER : ViewComponentManager.AxisLocation.Region.BEFORE; 
-			getComponentManager().add(hintButton, regionX, 0, regionY, 0); //add the button to the question view
+			getComponentManager().add(hintButton, regionX, 0.5f, regionY, 0.5f); //add the button to the question view
 //TODO del when works			getComponentManager().add(hintButton, axis==Y_AXIS ? ViewComponentManager.Border.LINE_END : ViewComponentManager.Border.PAGE_END); //add the button to the question view
 		}
 		else	//if there are no hints

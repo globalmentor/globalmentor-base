@@ -30,4 +30,16 @@ Debug.trace("final value: "+(float)(Math.round(a*multiplier)/multiplier));  //G*
 */
 		return (float)(Math.round(a*multiplier)/multiplier); //multiply by the multiplier, round, then divide by the multiplier
 	}
+
+	/**Returns the greater of two <code>short</code> values
+	@param a An argument.
+	@param b Another argument.
+	@return  the larger of <code>a</code> and <code>b</code>.
+	@see Math#max(int, int)
+	*/
+	public static short max(final short a, final short b)
+	{
+		return a>=b ? a : b;	//return the greater of a and b
+	}
+
 }
