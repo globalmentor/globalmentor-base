@@ -25,57 +25,42 @@ import org.w3c.dom.*;
 public class DictionaryPanel extends RDFPanel
 {
 
-	/**@return The dictionary being displayed.*/
-	public Dictionary getDictionary() {return (Dictionary)getResource();}
-
-	/**The scroll pane for the dictionary WYSIWYG view.*/
-//G***del	protected final JScrollPane wysiwygScrollPane;
-
-	/**The text pane for the WYSIWYG view.*/
-//G***del	protected final JTextPane wysiwygTextPane;
-
 	/**The book for the WYSIWYG view.*/
 	protected final Book book;
 
-	/**Default constructor with default dictionary.*/
-	public DictionaryPanel()
+	/**@return The data model for which this component provides a view.
+	@see RDFPanel#getRDFResourceModel()
+	*/
+	public DictionaryModel getDictionaryModel() {return (DictionaryModel)getRDFResourceModel();}
+
+	/**Sets the data model.
+	@param model The data model for which this component provides a view.
+	@see RDFPanel#setRDFResourceModel(Model)
+	*/
+	public void setDictionaryModel(final DictionaryModel model)
 	{
-		this(new Dictionary());  //create a panel with a default dictionary
+		book.getXMLTextPane().setURIInputStreamable(model.getURIInputStreamable());	//make sure the text pane knows from where to get input streams
+		setRDFResourceModel(model);	//set the model
 	}
 
-	/**Dictionary constructor with a default RDF data model.
-	@param dictionary The dictionary to display.
-	@exception IllegalArgumentException Thrown if a valid dictionary is not given.
+	/**Model constructor.
+	@param model The data model for which this component provides a view.
 	*/
-	public DictionaryPanel(final Dictionary dictionary)
+	public DictionaryPanel(final DictionaryModel model)
 	{
-		this(new RDF(), dictionary);	//construct and initialize the panel with a default RDF data model
-	}
-
-	/**Dictionary constructor.
-	@param rdf The RDF data model in which the dictionary lies.
-	@param dictionary The dictionary to display.
-	@exception IllegalArgumentException Thrown if a valid dictionary is not given.
-	*/
-	public DictionaryPanel(final RDF rdf, final Dictionary dictionary)
-	{
-		this(rdf, dictionary, true);	//construct and initialize the panel
+		this(model, true);	//construct and initialize the panel
 	}
 
 	/**Dictionary constructor with optional initialization.
-	@param rdf The RDF data model in which the dictionary lies.
-	@param dictionary The dictionary to display.
+	@param model The data model for which this component provides a view.
 	@param initialize <code>true</code> if the panel should initialize itself by
 		calling the initialization methods.
-	@exception IllegalArgumentException Thrown if a valid dictionary is not given.
 	*/
-	public DictionaryPanel(final RDF rdf, final Dictionary dictionary, final boolean initialize)
+	public DictionaryPanel(final DictionaryModel model, final boolean initialize)
 	{
-		super(rdf, dictionary, false);	//construct the parent class without initializing it
+		super(model, false);	//construct the parent class without initializing it
 		setSupportedDataViews(getSupportedModelViews()|WYSIWYG_MODEL_VIEW);	//show that we now support WYSIWYG data views, too
-//G***del		wysiwygTextPane=new XMLTextPane();	//create a new XML text pane for the WYSIWYG view
 		book=new Book(1);	//create a new book for the WYSIWYG view, showing only one page
-//G***del		wysiwygScrollPane=new JScrollPane(wysiwygTextPane);	//create a new scroll pane with the dictionary text pane inside
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
 	}
@@ -86,8 +71,6 @@ public class DictionaryPanel extends RDFPanel
 		addView(WYSIWYG_MODEL_VIEW, "Dictionary", book, null, 0);	//add the WYSIWYG component as the tree view G***i18n
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
-//G***del		wysiwygTextPane.setContentType(MediaType.APPLICATION_XHTML_XML);	//set the text pane content type to "application/xhtml+xml"
-//G***del		wysiwygTextPane.setEditable(false);	//don't let the WYSIWYG text pane be edited
 //TODO set the book to be not editable
 	}
 
@@ -98,21 +81,25 @@ public class DictionaryPanel extends RDFPanel
 	protected void loadModel(final int modelView) throws IOException
 	{
 		super.loadModel(modelView);	//do the default loading
+		final DictionaryModel model=getDictionaryModel();	//get the data model
 		switch(modelView)	//see which view of data we should load
 		{
 			case WYSIWYG_MODEL_VIEW:	//if we're changing to the WYSIWYG view
+				book.getXMLTextPane().setURIInputStreamable(model.getURIInputStreamable());	//make sure the text pane knows from where to get input streams
+				if(model.getDictionary()!=null)	//if we have a dictionary
 				{
+					final Dictionary dictionary=model.getDictionary();	//get the dictionary represented by the model
 					final Document xhtmlDocument=XHTMLUtilities.createXHTMLDocument();	//create an XHTML document
 					final Element bodyElement=XHTMLUtilities.getBodyElement(xhtmlDocument);	//get the body element
 					Debug.assert(bodyElement!=null, "Missing <body> element in default XHTML document.");
 						//set the title
-					final Locale dictionaryLanguage=getDictionary().getDictionaryLanguage();	//get the language of the entries
+					final Locale dictionaryLanguage=dictionary.getDictionaryLanguage();	//get the language of the entries
 					final String languageTitle=dictionaryLanguage!=null ? dictionaryLanguage.getDisplayLanguage()+" " : "";	//get the language part of the title
 					final Element h1Element=XMLUtilities.appendElement(bodyElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_H1, languageTitle+"Dictionary");	//G***i18n
-					if(getDictionary()!=null && getDictionary().getEntries()!=null)	//if we have a dictionary and it has entries
+					if(dictionary.getEntries()!=null)	//if we have a dictionary and it has entries
 					{
 						final Element dlElement=XMLUtilities.appendElement(bodyElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_DL);
-						final Iterator entryIterator=getDictionary().getEntries().iterator();	//get an iterator to look at all the dictionary entries
+						final Iterator entryIterator=dictionary.getEntries().iterator();	//get an iterator to look at all the dictionary entries
 						while(entryIterator.hasNext())	//while there are more dictionary entries
 						{
 								//TODO check for null for each of the entry properties
@@ -204,10 +191,11 @@ public class DictionaryPanel extends RDFPanel
 						}
 					}
 						//show the XML in the book, specifying the base URI of the RDF data model
-					book.setXML(xhtmlDocument, getRDF().getBaseURI(), new MediaType(MediaType.APPLICATION_XHTML_XML));
-//G***del					final XMLDocument swingDocument=(XMLDocument)wysiwygTextPane.getDocument();	//get the Swing XML document G***this may change if setXML() moves from the editor kit to the document 
-						//put the XHTML into the WYSIWYG text pane
-//G***del					((XMLEditorKit)wysiwygTextPane.getEditorKit()).setXML(xhtmlDocument, null, new MediaType(MediaType.APPLICATION_XHTML_XML), swingDocument);
+					book.setXML(xhtmlDocument, model.getBaseURI(), new MediaType(MediaType.APPLICATION_XHTML_XML));
+				}
+				else	//if we don't have a dictionary
+				{
+					book.close();	//remove the content from the book					
 				}
 				break;
 		}

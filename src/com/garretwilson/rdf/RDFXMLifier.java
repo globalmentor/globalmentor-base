@@ -145,45 +145,25 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	*/
 	public Document createDocument(final RDF rdf, final DOMImplementation domImplementation)
 	{
-//G***del		final Document document=createDefaultRDFDocument(domImplementation);  //create a default RDF document
-/*G***del
-		final String rdfElementQualifiedName=XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_RDF);  //create a qualified name for the document root element
-		final Document document=domImplementation.createDocument(RDF_NAMESPACE_URI, rdfElementQualifiedName, null);	//create a document with <rdf:RDF> as the body element
-		final Element rdfElement=createRDFElement(document);  //G***fix; the DOM should already create this
-		document.appendChild(rdfElement);	//add the RDF element to the document
-*/
-/*G***del
+		final Document document=createDefaultRDFDocument(domImplementation);  //create a default RDF document
 		final Element rootElement=document.getDocumentElement();  //get the document element
 		createElements(rdf, rootElement); //XMLify the resource as elements under the document element
 		return document;  //return the document we created
-*/
-		return createDocument(rdf, null, domImplementation);  //create a document for the whole RDF data model, without specifying a specific resource
 	}
 
 	/**Creates an XML document with <code>&lt;rdf:RDF&gt;</code> as the document
-		element, and creates an element representing the given resource or, if
-		no resource is given, creates elements representing all the non-anonymous
-		resources of the given RDF data model as children of the that element.
-	@param rdf The RDF data model to XMLify.
+		element, and creates an element representing the given resource.
 	@param resource The resource to store as an XML element, or <code>null</code>
 		if all non-anonymous resources should be stored.
 	@param domImplementation The DOM implementation to use.
-	@return The XML document tree that represents the given RDF resource or data
-		model.
+	@return The XML document tree that represents the given RDF resource.
 	*/
-	public Document createDocument(final RDF rdf, final RDFResource resource, final DOMImplementation domImplementation)
+	public Document createDocument(final RDFResource resource, final DOMImplementation domImplementation)
 	{
 		final Document document=createDefaultRDFDocument(domImplementation);  //create a default RDF document
 		final Element rootElement=document.getDocumentElement();  //get the document element
-		if(resource!=null)  //if a resource as passed
-		{
-			final Element resourceElement=createResourceElement(document, resource); //create an element from this resource
-			rootElement.appendChild(resourceElement); //add the resource element to the root element
-		}
-		else  //if no resource was passed, we'll create a document with all the resources
-		{
-			createElements(rdf, rootElement); //XMLify the resource as elements under the document element
-		}
+		final Element resourceElement=createResourceElement(document, resource); //create an element from this resource
+		rootElement.appendChild(resourceElement); //add the resource element to the root element
 		return document;  //return the document we created
 	}
 
@@ -221,18 +201,17 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 		while(rootResourceIterator.hasNext()) //while there are root resources remaining
 		{
 			final RDFResource resource=(RDFResource)rootResourceIterator.next();  //get the next root resource
-			final Element resourceElement=createResourceElement(/*G***del if not needed rdf, */parentElement.getOwnerDocument(), resource); //create an element from this resource
+			final Element resourceElement=createResourceElement(parentElement.getOwnerDocument(), resource); //create an element from this resource
 			parentElement.appendChild(resourceElement); //add the resource element to our parent element
 		}
 	}
 
 	/**Creates an XML element to represent the given resource.
-//G***del if not needed	@param rdf The RDF data model.
 	@param document The document to be used as an element factory.
 	@param resource The resource for which an element should be created.
 	@return The XML element that represents the given RDF resource.
 	*/  //G***del rdf if we don't need
-	public Element createResourceElement(/*G***del if not needed final RDF rdf, */final Document document, final RDFResource resource)
+	public Element createResourceElement(final Document document, final RDFResource resource)
 	{
 //G***del Debug.trace("creating resource element for resource: ", resource);  //G***del
 		final Element resourceElement;  //we'll store here the element that we create
@@ -305,7 +284,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 				}
 				else  //if the value is a resource or we don't know the property's namespace URI and local name G***add more logic here later to automatically determine the namespace
 				{
-					final Element propertyElement=createPropertyElement(/*G***del if not neededrdf, */document, propertyResource, propertyValue); //create a property element
+					final Element propertyElement=createPropertyElement(document, propertyResource, propertyValue); //create a property element
 					element.appendChild(propertyElement); //append the property element we created
 				}
 			}
@@ -316,14 +295,13 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 		All anonymous	property value resources will be created as child elements.
 		If an anonymous property value's properties are all literals, that property
 		resource value's properties will be created as attributes of the property.
-G***del if not needed	@param rdf The RDF data model.
 	@param document The document to be used as an element factory.
 	@param propertyResource The property predicate for which an element should be
 		created.
 	@param propertyValue The property value for which an element should be created.
 	@return The XML element that represents the given RDF property.
 	*/  //G***del rdf if we don't need
-	protected Element createPropertyElement(/*G***del if not neededfinal RDF rdf, */final Document document, final RDFResource propertyResource, final RDFObject propertyValue)
+	protected Element createPropertyElement(final Document document, final RDFResource propertyResource, final RDFObject propertyValue)
 	{
 Debug.trace("creating property element for property: ", propertyResource);  //G***del
 //G***del		final URI namespaceURI; //we'll store here the namespace URI of the property element
