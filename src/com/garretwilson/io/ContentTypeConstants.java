@@ -88,6 +88,8 @@ public class ContentTypeConstants
 	public final static String JAVA_SUBTYPE="java";
 	/**A  MathML application.*/
 	public final static String MATHML_XML_SUBTYPE="mathml"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
+	/**A Java JNLP file.*/
+	public final static String X_JAVA_JNLP_FILE="x-java-jnlp-file";
 	/**A MAQRO activity.*/
 	public final static String X_MAQRO_RDF_XML_SUBTYPE="x-maqro"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A MAQRO question.*/

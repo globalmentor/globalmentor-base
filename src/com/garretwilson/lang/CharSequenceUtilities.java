@@ -465,6 +465,25 @@ public class CharSequenceUtilities
 		return true;  //if we make it to here, there weren't any non-letters or non-digits in the string
 	}
 
+	/**Determines whether a character sequence contains only Unicode letters, digits,
+	 	and the supplied extra characters.
+	@param charSequence The character sequence to examine.
+	@param characters Extra characters to allow.
+	@return <code>true</code> if all the characters in the sequence are letters, digits, and/or allowed characters.
+	*/
+	public final static boolean isLettersDigitsCharacters(final CharSequence charSequence, final String characters)
+	{
+		if(charSequence.length()==0) //if this is an empty string
+			return false; //there are no characters to check
+		for(int i=charSequence.length()-1; i>=0; --i)  //look at each letter in the string
+		{
+			final char character=charSequence.charAt(i);  //get this character
+			if(!Character.isLetter(character) && !Character.isDigit(character) && !contains(characters, character))  //if this is not a letter or a digit, and it's not in our extra character list
+				return false; //show that the string contains something in none of our lists 
+		}
+		return true;  //if we make it to here, there weren't any non-letters or non-digits in the string
+}
+
 	/**Determines whether a character sequence contains only numbers and decimals
 		or commas.
 	@param charSequence The character sequence to examine.
