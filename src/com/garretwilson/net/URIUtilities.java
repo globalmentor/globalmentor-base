@@ -27,30 +27,57 @@ public class URIUtilities implements URIConstants
 	@return A string representing the constructed query, or the empty string if
 		there were no parameters.
 	*/
-	public static String constructQuery(final NameValuePair[] params)	//TODO recode with varargs
+	public static String constructQuery(final NameValuePair<String, String>[] params)	//TODO recode with varargs
+	{
+		return constructQuery(constructQueryParameters(params));	//construct a query, prepended with the query character
+	}
+
+	/**Constructs a query string for a URI by prepending the given query string,
+	 	if it is not the empty string, with '?'.
+	@param params The string representing the query parameters.
+	@return A string representing the constructed query, or the empty string if
+		there were no parameters.
+	*/
+	public static String constructQuery(final String params)
 	{
 		final StringBuilder query=new StringBuilder();
-		if(params.length>0)	//if there is at least one parameter
+		if(params.length()>0)	//if there is at least one parameter character
 		{
 			query.append(QUERY_SEPARATOR);	//append the query prefix
-			for(NameValuePair param : params)	//look at each parameter
+		}
+		query.append(params);	//append the params
+		return query.toString();	//return the query string we constructed
+	}
+
+	/**Constructs a query string for a URI by URL-encoding each name-value pair,
+	 	separating them with '&'.
+	@param params The name-value pairs representing the query parameters.
+	@return A string representing the constructed query, or the empty string if
+		there were no parameters.
+	*/
+	public static String constructQueryParameters(final NameValuePair<String, String>[] params)	//TODO recode with varargs
+	{
+		final StringBuilder paramStringBuilder=new StringBuilder();
+		if(params.length>0)	//if there is at least one parameter
+		{
+			for(NameValuePair<String, String> param : params)	//look at each parameter
 			{
 				try
 				{
 					//TODO use generics for NameValuePair
-					query.append(URLEncoder.encode(param.getName().toString(), CharacterEncodingConstants.UTF_8));	//append the parameter name
-					query.append(QUERY_NAME_VALUE_ASSIGNMENT);	//append the value-assignment character
-					query.append(URLEncoder.encode(param.getValue().toString(), CharacterEncodingConstants.UTF_8));	//append the parameter value
-					query.append(QUERY_NAME_VALUE_PAIR_DELIMITER);	//append the name-value pair delimiter
+					paramStringBuilder.append(URLEncoder.encode(param.getName(), CharacterEncodingConstants.UTF_8));	//append the parameter name
+					paramStringBuilder.append(QUERY_NAME_VALUE_ASSIGNMENT);	//append the value-assignment character
+					paramStringBuilder.append(URLEncoder.encode(param.getValue(), CharacterEncodingConstants.UTF_8));	//append the parameter value
+					paramStringBuilder.append(QUERY_NAME_VALUE_PAIR_DELIMITER);	//append the name-value pair delimiter
 				}
 				catch(UnsupportedEncodingException unsupportedEncodingException)	//we should always support UTF-8
 				{
 					throw new AssertionError(unsupportedEncodingException);
 				}
 			}
-			query.delete(query.length()-1, query.length());	//remove the last name-value pair delimiter
+			paramStringBuilder.delete(paramStringBuilder.length()-1, paramStringBuilder.length());	//remove the last name-value pair delimiter
 		}
-		return query.toString();	//return the query we constructed
+		return paramStringBuilder.toString();	//return the query parameter string we constructed
 	}
 	
 	/**Determines the current level of a hierarchical URI.

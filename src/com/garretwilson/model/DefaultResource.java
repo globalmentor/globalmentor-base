@@ -2,6 +2,8 @@ package com.garretwilson.model;
 
 import java.net.URI;
 
+import com.garretwilson.util.Debug;
+
 /**Represents the default implementation of a resource.
 	This class provides compare functionality that sorts according to the reference
 	URI, if available.
@@ -73,8 +75,7 @@ public class DefaultResource implements Resource, Comparable<Resource>
 	/**Compares this object to another object.
 	<p>This method determines order based upon the reference URI of the resource,
 		if any; otherwise, the string versions of the resources are compared.</p>
-	@param object The object with which to compare the object. This must be
-		another <code>Resource</code> object.
+	@param resource The resource with which to compare this resouce.
 	@return A negative integer, zero, or a positive integer as this resource
 		reference URI is less than, equal to, or greater than the reference URI of
 		the specified resource, respectively.
@@ -82,8 +83,10 @@ public class DefaultResource implements Resource, Comparable<Resource>
 	*/
 	public int compareTo(final Resource resource)	//TODO comparing different things may result in circular comparisons
 	{
-		if(getReferenceURI()!=null && resource.getReferenceURI()!=null)	//if both resources have reference URIs				
+		if(getReferenceURI()!=null && resource.getReferenceURI()!=null)	//if both resources have reference URIs
+		{
 			return getReferenceURI().compareTo(resource.getReferenceURI()); //compare reference URIs
+		}
 		else	//if one of the two resources doesn't have a reference URI
 			return toString().compareTo(resource.toString());	//compare strings
 	}

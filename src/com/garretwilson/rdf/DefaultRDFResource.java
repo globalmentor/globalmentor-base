@@ -4,6 +4,8 @@ import java.lang.ref.*;
 import java.net.URI;
 import java.util.*;
 import com.garretwilson.model.*;
+import com.garretwilson.rdf.rdfs.RDFSUtilities;
+import com.garretwilson.util.Debug;
 
 /**Represents the default implementation of an RDF resource.
 <p>This class provides compare functionality that sorts according to the reference
@@ -598,6 +600,31 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		{ 
 			throw new AssertionError("Cloning is unexpectedly not supported.");
 		}
+	}
+
+	/**Compares this resource to another resource.
+	<p>This version attempts to compare resource labels, if the object is an
+		RDF resource; otherwise, the default ordering is used based upon the
+		reference URI of the resource, if any.</p>
+	@param resource The resource with which to compare this resource. This must be
+		another <code>Resource</code> object.
+	@return A negative integer, zero, or a positive integer as this resource
+		reference URI is less than, equal to, or greater than the reference URI of
+		the specified resource, respectively.
+	@see RDFSUtilities#getLabel(RDFResource)
+	*/
+	public int compareTo(final Resource resource)	//G***is it correct to compare on different things? will this violate comparison rules? (e.g. two RDFResources with labels may compare differently than each of them compared against a normal Resource)
+	{
+		if(resource instanceof RDFResource)	//if this resource is an RDF resource
+		{
+			final RDFLiteral label1=RDFSUtilities.getLabel(this);	//see if this resource has a label
+			final RDFLiteral label2=RDFSUtilities.getLabel((RDFResource)resource);	//see if there is a label for the other resource
+			if(label1!=null && label2!=null)	//if we have two labels to compare
+			{
+				return label1.compareTo(label2);	//compare labels
+			}
+		}
+		return super.compareTo(resource);	//if all else fails, do a default comparison
 	}
 
 	/**Returns a string representation of the resource.
