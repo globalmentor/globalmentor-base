@@ -6,6 +6,20 @@ package com.garretwilson.net.http;
 public interface HTTPConstants
 {
 
+	/**The HTTP header for cache control.*/
+	public final static String CACHE_CONTROL_HEADER="Cache-Control";
+		/**The HTTP no-cache cache control header.*/
+		public final static String NO_CACHE_CACHE_CONTROL="no-cache";
+	/**The HTTP header indicating the content description.*/
+	public final static String CONTENT_DESCRIPTION_HEADER="Content-Description";
+	/**The HTTP header indicating the content disposition.*/
+	public final static String CONTENT_DISPOSITION_HEADER="Content-Disposition";
+	/**The HTTP header indicating the expiration of the content.*/
+	public final static String EXPIRES_HEADER="Expires";
+	/**The HTTP pragma header.*/
+	public final static String PRAGMA_HEADER="Pragma";
+		/**The HTTP no-cache pragma header.*/
+		public final static String NO_CACHE_PRAGMA="no-cache";
 	/**The HTTP header indicating the referring location.*/
 	public final static String REFERER_HEADER="Referer";
 
