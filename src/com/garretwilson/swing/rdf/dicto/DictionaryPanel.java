@@ -106,14 +106,15 @@ public class DictionaryPanel extends RDFPanel
 		add(ToolBarUtilities.createApplicationToolBar(getActionManager()), BorderLayout.NORTH);	//put a toolbar in the north with our tool actions
 	}
 
-	/**Loads the data from the model to the view, if necessary.
+	/**Loads the data from the model to the specified view, if necessary.
+	@param modelView The view of the data, such as <code>SUMMARY_MODEL_VIEW</code>.
 	@exception IOException Thrown if there was an error loading the model.
 	*/
-	protected void loadModel() throws IOException
+	protected void loadModel(final int modelView) throws IOException
 	{
-		super.loadModel();	//do the default loading
+		super.loadModel(modelView);	//do the default loading
 		final DictionaryModel model=getDictionaryModel();	//get the data model
-		switch(getModelView())	//see which view of data we should load
+		switch(modelView)	//see which view of data we should load
 		{
 			case WYSIWYG_MODEL_VIEW:	//if we're changing to the WYSIWYG view
 				book.getXMLTextPane().setURIInputStreamable(model);	//make sure the text pane knows from where to get input streams

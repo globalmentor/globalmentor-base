@@ -153,11 +153,20 @@ public class ActivityPanel extends RDFPanel
 			model.getActivity().setInteractions(new RDFListResource());	//set a default list of interactions
 		}
 			//if the sequence panel isn't showing any interactions or it's not showing our interactions
-		if(interactionSequencePanel.getListModel()==null || ((ListListModel)interactionSequencePanel.getListModel()).getList()!=model.getActivity().getInteractions())
+//G***del when works		if(interactionSequencePanel.getListModel()==null || ((ListListModel)interactionSequencePanel.getListModel()).getList()!=model.getActivity().getInteractions())
 		{
 			interactionSequencePanel.setListModel(new ListListModel(model.getActivity().getInteractions()));	//create a list model from the interactions to show in the sequence panel
 		}
-		switch(getModelView())	//see which view of data we should load
+	}
+
+	/**Loads the data from the model to the specified view, if necessary.
+	@param modelView The view of the data, such as <code>SUMMARY_MODEL_VIEW</code>.
+	@exception IOException Thrown if there was an error loading the model.
+	*/
+	protected void loadModel(final int modelView) throws IOException
+	{
+		final ActivityModel model=getActivityModel();	//get the data model
+		switch(modelView)	//see which view of data we should load
 		{
 			case WYSIWYG_MODEL_VIEW:	//if we're changing to the WYSIWYG view
 				book.getXMLTextPane().setURIInputStreamable(model);	//make sure the text pane knows from where to get input streams
