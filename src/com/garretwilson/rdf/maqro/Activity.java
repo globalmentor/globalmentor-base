@@ -110,18 +110,18 @@ public class Activity extends Group
 	/**@return The selection criteria, or <code>null</code> if there is no
 		selection criteria indicated or if it is not of the correct type.
 	*/
-	public Selection getSelect()
+	public Selection getSelection()
 	{
-		final RDFObject select=getPropertyValue(MAQRO_NAMESPACE_URI, SELECT_PROPERTY_NAME);	//get the maqro:select property value
+		final RDFObject select=getPropertyValue(MAQRO_NAMESPACE_URI, SELECTION_PROPERTY_NAME);	//get the maqro:select property value
 		return select instanceof Selection ? (Selection)select : null;	//return the selection criteria if there are any
 	}
 
 	/**Sets the selection criteria for the activity.
 	@param selectDescription The selection criteria.
 	*/
-	public void setSelect(final Selection selectDescription)
+	public void setSelection(final Selection selection)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, SELECT_PROPERTY_NAME, selectDescription);	//set the selection criteria
+		setProperty(MAQRO_NAMESPACE_URI, SELECTION_PROPERTY_NAME, selection);	//set the selection criteria
 	}
 
 		//behavior

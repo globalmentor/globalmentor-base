@@ -284,15 +284,15 @@ public class DictionaryPanel extends RDFPanel
 			final Selection selection=new RandomSelection();	//create random selection criteria
 			selection.setOrder(new RandomOrder());	//set the order of the selection to random
 			optionsPanel.setAvailableCategorySet(availableCategorySet);	//set the available categories in the options panel
-					//select all available categories
+/*G***del; no selected categories selects all categories
+			//select all available categories
 			final Iterator availableCategoryIterator=availableCategorySet.iterator();	//get an iterator to the available categories
 			while(availableCategoryIterator.hasNext())	//while there are more available categories
 			{
 					//add the next category to our selection
 				selection.addProperty(MAQROConstants.MAQRO_NAMESPACE_URI, MAQROConstants.CATEGORY_PROPERTY_NAME, (RDFLiteral)availableCategoryIterator.next());
 			}
-
-
+*/
 			if(translationLanguage!=null && !translationLanguage.equals(dictionaryLanguage))	//if this dictionary is a translation dictionary
 				optionsPanel.setChoicesProperty(DictionaryActivity.TRANSLATION_PROPERTY);	//default to using translations instead of definitions for choices
 
@@ -308,7 +308,7 @@ public class DictionaryPanel extends RDFPanel
 				dictionaryActivity.setShowEachResult(true);
 				dictionaryActivity.setShowFinalResult(true);
 				DCUtilities.addTitle(dictionaryActivity, dictionaryLanguage.getDisplayLanguage()+" Quiz");	//add a title showing the language G***i18n
-				dictionaryActivity.setSelect(optionsPanel.getSelection());	//set the activity's selection criteria
+				dictionaryActivity.setSelection(optionsPanel.getSelection());	//set the activity's selection criteria
 /*G***fix and del
 				dictionaryActivity.setQuestionCount(optionsPanel.getQuestionCount());	//show how many questions to use
 				dictionaryActivity.setChoiceCount(optionsPanel.getChoiceCount());	//show how many questions to use

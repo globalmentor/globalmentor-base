@@ -1,18 +1,19 @@
 package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
+import com.garretwilson.rdf.*;
 
-/**Random selection of MAQRO interactions.
+/**Filter for choosing MAQRO interactions based upon interaction type.
 @author Garret Wilson
 */
-public class RandomSelection extends Selection implements MAQROConstants
+public class InteractionTypeFilter extends Filter implements MAQROConstants
 {
 
 	/**@return The local name of the default type of this resource.*/
-	public String getDefaultTypeName() {return RANDOM_SELECTION_CLASS_NAME;}
+	public String getDefaultTypeName() {return INTERACTION_TYPE_FILTER_CLASS_NAME;}
 
 	/**Default constructor.*/
-	public RandomSelection()
+	public InteractionTypeFilter()
 	{
 		super();	//construct the parent class
 	}
@@ -20,7 +21,7 @@ public class RandomSelection extends Selection implements MAQROConstants
 	/**Constructs selection criteria with a reference URI.
 	@param referenceURI The reference URI for the new resource.
 	*/
-	public RandomSelection(final URI referenceURI)
+	public InteractionTypeFilter(final URI referenceURI)
 	{
 		super(referenceURI);  //construct the parent class
 	}

@@ -100,6 +100,10 @@ public interface MAQROConstants
 	public final static String QUERY_PROPERTY_NAME="query";
 
 		//MAQRO selection class names
+	/**The local name of maqro:CategoryFilter.*/
+	public final static String CATEGORY_FILTER_CLASS_NAME="CategoryFilter";
+	/**The local name of maqro:InteractionTypeFilter.*/
+	public final static String INTERACTION_TYPE_FILTER_CLASS_NAME="InteractionTypeFilter";
 	/**The local name of maqro:Selector.*/
 	public final static String SELECTOR_CLASS_NAME="Selector";
 	/**The local name of maqro:RandomOrder.*/
@@ -111,6 +115,8 @@ public interface MAQROConstants
 	/**The local name of maqro:SequentialSelection.*/
 	public final static String SEQUENTIAL_SELECTION_CLASS_NAME="SequentialSelection";
 		//MAQRO selection property names
+	/**The filters of a selector. The local name of maqro:filters.*/
+	public final static String FILTERS_PROPERTY_NAME="filters";
 	/**The selectors of a selection. The local name of maqro:selectors.*/
 	public final static String SELECTORS_PROPERTY_NAME="selectors";
 	/**The number of interactions to select. The local name of maqro:count.*/
@@ -142,8 +148,8 @@ public interface MAQROConstants
 	public final static String INTERACTION_PROPERTY_NAME="interaction";
 	/**The interactions of an activity. The local name of maqro:interactions.*/
 	public final static String INTERACTIONS_PROPERTY_NAME="interactions";
-	/**The selection criteria of an activity. The local name of maqro:select.*/
-	public final static String SELECT_PROPERTY_NAME="select";	//TODO change to "selection"
+	/**The selection criteria of an activity. The local name of maqro:selection.*/
+	public final static String SELECTION_PROPERTY_NAME="selection";
 	/**A supplement to an interaction or part of a question. The local name of maqro:supplement.*/
 	public final static String SUPPLEMENT_PROPERTY_NAME="supplement";
 

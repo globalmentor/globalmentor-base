@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.Iterator;
 import java.util.Locale;
 
+import com.garretwilson.rdf.RDFListResource;
+import com.garretwilson.rdf.RDFUtilities;
 import com.garretwilson.rdf.TypedRDFResource;
 import com.garretwilson.rdf.xmlschema.IntegerLiteral;
 
@@ -49,19 +51,20 @@ public class Selector extends TypedRDFResource implements MAQROConstants
 		setProperty(MAQRO_NAMESPACE_URI, COUNT_PROPERTY_NAME, new IntegerLiteral(questionCount));	//set the interaction count
 	}
 
-	/**Adds a category to the selection.
-	@param category The category to add.
-	@param language The language of the category, or <code>null</code> if
-		no language should be specified.
+	/**@return The list of filters for this selection, or <code>null</code>
+		if there is no list of filters or the value is not a list.
 	*/
-	public void addCategory(final String category, final Locale language)
+	public RDFListResource getFilters()
 	{
-		MAQROUtilities.addCategory(this, category, language);	//add the category to the selection
+		return RDFUtilities.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, FILTERS_PROPERTY_NAME));	//get the maqro:filters property value as a list	
 	}
 
-	/**@return An iterator to categories, if any, of the selection.*/
-	public Iterator getCategoryIterator()
+	/**Sets the list of filters.
+	@param selectors The list of filters.
+	*/
+	public void setFilters(final RDFListResource selectors)
 	{
-		return MAQROUtilities.getCategoryIterator(this);	//return an iterator to the categories
+		setProperty(MAQRO_NAMESPACE_URI, FILTERS_PROPERTY_NAME, selectors);	//set the filters
 	}
+
 }

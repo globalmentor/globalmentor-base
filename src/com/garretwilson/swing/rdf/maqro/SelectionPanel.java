@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.rdf.RDFListResource;
+import com.garretwilson.rdf.RDFLiteral;
 import com.garretwilson.rdf.RDFObject;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
@@ -15,6 +16,7 @@ import com.garretwilson.swing.border.BorderUtilities;
 import com.garretwilson.util.*;
 
 /**Panel for editing a MAQRO activity selection.
+<p>This implementation does not support multiple selector filters of the same type.</p>
 @author Garret Wilson
 */
 public class SelectionPanel extends BasicPanel	//TODO eventually separate SelectionPanel from individual SelectorPanels
@@ -58,15 +60,30 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 		{
 			selector.setCount(Integer.parseInt(questionCountTextField.getText().trim()));	//set the interaction count
 		}
+		final RDFListResource filters=new RDFListResource();	//create a list of filters
 			//copy the selected categories to the selector
 		final Iterator categoryIterator=getCategorySet().iterator();	//get an iterator to look at all the selected categories
-		while(categoryIterator.hasNext())	//while there are more categories
+		if(categoryIterator.hasNext())	//if there are any categories specified
 		{
-			final RDFObject category=(RDFObject)categoryIterator.next();	//get the next category
-				//copy this category to the selection criteria
-			selection.addProperty(MAQROConstants.MAQRO_NAMESPACE_URI, MAQROConstants.CATEGORY_PROPERTY_NAME, category);	//G***it would be best to clone the category
+			final CategoryFilter categoryFilter=new CategoryFilter();	//create a category filter (assuming the categories are ORed selections)
+			do	//look at each category requested (we already did a check, so use a post-check in the loop) 
+			{
+				final RDFObject category=(RDFObject)categoryIterator.next();	//get the next category
+				if(category instanceof RDFLiteral)	//if this category is a literal
+				{
+						//copy this category to the selection criteria
+					categoryFilter.addCategory((RDFLiteral)category);	//G***it would be best to clone the category
+				}
+			}
+			while(categoryIterator.hasNext());	//keep adding the categories while there are more categories
+			filters.add(categoryFilter);	//add this category filter to the list of filters
 		}
-
+		if(filters.size()>0)	//if filters are specified
+		{
+			selector.setFilters(filters);	//specify the filters
+		}
+		selectors.add(selector);	//add the selector to the list of selectors
+		selection.setSelectors(selectors);	//set the list of the selection's selectors
 		final Order order;	//determine the order
 		if(randomOrderCheckBox.isSelected())	//if there should be random ordering
 		{
@@ -95,7 +112,21 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 		{
 			final Selector selector=(Selector)selectors.get(0);	//get the first selector G***should we really assume that this is a selector
 			count=selector.getCount();	//see if a count is specified
-			CollectionUtilities.addAll(categorySet, selector.getCategoryIterator());	//add all selector categories to our set of categories
+			final RDFListResource filters=selector.getFilters();	//get any filters of this selector
+			if(filters!=null)	//if we have filters
+			{
+				final Iterator filterIterator=filters.iterator();	//get an iterator to the filters
+				while(filterIterator.hasNext())	//while there are more filters
+				{
+					final RDFObject filter=(RDFObject)filterIterator.next();	//get the next filter
+					if(filter instanceof CategoryFilter)	//if this is a filter iterator
+					{
+						final CategoryFilter categoryFilter=(CategoryFilter)filter;	//cast the filter to a category filter
+						CollectionUtilities.addAll(categorySet, categoryFilter.getCategoryIterator());	//add all selector categories to our set of categories G***we should really create clones of these
+						break;	//this implementation only recognizes the first category filter
+					}
+				}
+			}			
 		}
 		else	//if there are no selectors
 		{

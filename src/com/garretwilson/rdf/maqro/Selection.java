@@ -1,7 +1,6 @@
 package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
-import java.util.*;
 import com.garretwilson.rdf.*;
 
 /**Criteria for selecting MAQRO interactions.
@@ -53,7 +52,7 @@ public abstract class Selection extends TypedRDFResource implements MAQROConstan
 	*/
 	public RDFListResource getSelectors()
 	{
-		return RDFUtilities.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, SELECTORS_PROPERTY_NAME));	//get the maqro:hints property value as a list	
+		return RDFUtilities.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, SELECTORS_PROPERTY_NAME));	//get the maqro:selectors property value as a list	
 	}
 
 	/**Sets the list of selectors.

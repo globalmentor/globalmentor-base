@@ -9,7 +9,7 @@ public class RandomOrder extends Order implements MAQROConstants
 {
 
 	/**@return The local name of the default type of this resource.*/
-	public String getDefaultTypeName() {return SEQUENTIAL_ORDER_CLASS_NAME;}
+	public String getDefaultTypeName() {return RANDOM_ORDER_CLASS_NAME;}
 
 	/**Default constructor.*/
 	public RandomOrder()
