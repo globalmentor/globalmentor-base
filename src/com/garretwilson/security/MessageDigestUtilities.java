@@ -4,7 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.*;
 
 import static com.garretwilson.lang.CharacterUtilities.*;
-import com.garretwilson.text.CharacterEncodingConstants;
+import com.garretwilson.text.CharacterEncoding;
+import static com.garretwilson.text.CharacterEncodingConstants.*;
 
 /**Utility methods for working with message digests.
 @author Garret Wilson
@@ -12,28 +13,29 @@ import com.garretwilson.text.CharacterEncodingConstants;
 public class MessageDigestUtilities
 {
 
-	/**Computes a digest for the given string using the UTF-8 character encoding.
+	/**Computes a digest for the given strings using the UTF-8 character encoding.
 	@param messageDigest The implementation of a message digest algorithm.
-	@param string The string to digest.
+	@param strings The strings to digest.
 	@return The array of bytes for the resulting hash value.
 	*/
-	public static byte[] digest(final MessageDigest messageDigest, final String string)
+	public static byte[] digest(final MessageDigest messageDigest, final String... strings)
 	{
-		return digest(messageDigest, string.toCharArray());	//create the digest from the string's characters
+		update(messageDigest, strings);	//update the digest with the given strings
+		return messageDigest.digest();	//complete and return the digest
 	}
 
 	/**Computes a digest for the given string, using the given character encoding.
 	@param messageDigest The implementation of a message digest algorithm.
-	@param string The string to digest.
 	@param encoding The encoding to use when converting characters to bytes.
+	@param strings The strings to digest.
 	@return The array of bytes for the resulting hash value.
 	@exception UnsupportedEncodingException if the given encoding is not supported.
 	*/
-	public static byte[] digest(final MessageDigest messageDigest, final String string, final String encoding) throws UnsupportedEncodingException
+	public static byte[] digest(final MessageDigest messageDigest, final CharacterEncoding encoding, final String... strings) throws UnsupportedEncodingException
 	{
-		return digest(messageDigest, string.toCharArray(), encoding);	//create the digest from the string's characters using the given encoding
+		update(messageDigest, encoding, strings);	//update the digest from the string's characters using the given encoding
+		return messageDigest.digest();	//complete and return the digest
 	}
-
 
 	/**Computes a digest for the given characters using the UTF-8 character encoding.
 	@param messageDigest The implementation of a message digest algorithm.
@@ -44,7 +46,7 @@ public class MessageDigestUtilities
 	{
 		try
 		{
-			return digest(messageDigest, characters, CharacterEncodingConstants.UTF_8);	//digest the characters using UTF-8
+			return digest(messageDigest, UTF_8_ENCODING, characters);	//digest the characters using UTF-8
 		}
 		catch(UnsupportedEncodingException unsupportedEncodingException)	//all JVMs should support UTF-8
 		{
@@ -54,15 +56,71 @@ public class MessageDigestUtilities
 
 	/**Computes a digest for the given characters, using the given character encoding.
 	@param messageDigest The implementation of a message digest algorithm.
-	@param characters The characters to digest.
 	@param encoding The encoding to use when converting characters to bytes.
+	@param characters The arrays of characters to digest.
 	@return The array of bytes for the resulting hash value.
 	@exception UnsupportedEncodingException if the given encoding is not supported.
 	*/
-	public static byte[] digest(final MessageDigest messageDigest, final char[] characters, final String encoding) throws UnsupportedEncodingException
+	public static byte[] digest(final MessageDigest messageDigest, final CharacterEncoding encoding, final char[] characters) throws UnsupportedEncodingException
 	{
-		final byte[] bytes=toByteArray(characters, encoding);	//convert the characters to bytes
+		final byte[] bytes=toByteArray(characters, encoding.getEncoding());	//convert the characters to bytes
 		return messageDigest.digest(bytes);	//calculate and return the digest
 	}
 
+	/**Updates a digest from the given strings using the UTF-8 character encoding.
+	@param messageDigest The implementation of a message digest algorithm.
+	@param strings The string to digest.
+	@return The message digest.
+	*/
+	public static void update(final MessageDigest messageDigest, final String... strings)
+	{
+		for(final String string:strings)	//for each string
+		{
+			update(messageDigest, string.toCharArray());	//update the digest from the string's characters
+		}
+	}
+
+	/**Updates a digest from given strings, using the given character encoding.
+	@param messageDigest The implementation of a message digest algorithm.
+	@param encoding The encoding to use when converting characters to bytes.
+	@param strings The strings to digest.
+	@exception UnsupportedEncodingException if the given encoding is not supported.
+	*/
+	public static void update(final MessageDigest messageDigest, final CharacterEncoding encoding, final String... strings) throws UnsupportedEncodingException
+	{
+		for(final String string:strings)	//for each string
+		{
+			update(messageDigest, encoding, string.toCharArray());	//update the digest from the string's characters using the given encoding
+		}
+	}
+	
+	/**Updates a digest with the given characters using the UTF-8 character encoding.
+	@param messageDigest The implementation of a message digest algorithm.
+	@param characters The characters to digest.
+	*/
+	public static void update(final MessageDigest messageDigest, final char[] characters)
+	{
+		try
+		{
+			update(messageDigest, UTF_8_ENCODING, characters);	//update the digest using UTF-8
+		}
+		catch(UnsupportedEncodingException unsupportedEncodingException)	//all JVMs should support UTF-8
+		{
+			throw new AssertionError(unsupportedEncodingException);
+		}
+	}
+
+	/**Updates a digest with the given characters, using the given character encoding.
+	@param messageDigest The implementation of a message digest algorithm.
+	@param encoding The encoding to use when converting characters to bytes.
+	@param characters The arrays of characters to digest.
+	@exception UnsupportedEncodingException if the given encoding is not supported.
+	*/
+	public static void update(final MessageDigest messageDigest, final CharacterEncoding encoding, final char[] characters) throws UnsupportedEncodingException
+	{
+		final byte[] bytes=toByteArray(characters, encoding.getEncoding());	//convert the characters to bytes
+		messageDigest.update(bytes);	//update the digest
+	}
+	
+	
 }

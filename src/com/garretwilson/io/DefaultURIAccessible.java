@@ -21,6 +21,28 @@ import static com.garretwilson.net.URIConstants.*;
 public class DefaultURIAccessible extends BoundPropertyObject implements URIAccessible 
 {
 
+	/**The username, or <code>null</code> for no user information.*/
+	private String username=null;	//TODO later transfer this stuff to an authenticator plugin
+
+		/**@return The username, or <code>null</code> for no user information.*/
+		public String getUsername() {return username;}
+		
+		/**Sets the username.
+		@param username The username, or <code>null</code> for no user information.
+		*/
+		public void setUsername(final String username) {this.username=username;}
+
+	/**The user password, or <code>null</code> for no user information.*/
+	private char[] password=null;
+
+		/**@return The user password, or <code>null</code> for no user information.*/
+		public char[] getPassword() {return null;}
+		
+		/**Sets the user password.
+		@param password The user password, or <code>null</code> for no user information.
+		*/
+		public void setPassword(final char[] password) {this.password=password;}
+
 	/**The lazily-created singleton default instance of a default implementation with no base URI and default stream access.*/
 	private static URIAccessible defaultURIAccessible=null;
 
@@ -122,6 +144,12 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		{
 			final HttpURL httpURL=new HttpURL(uri.toString());	//create an Apache HTTP URL from the URI TODO make sure the string is properly escaped
 			final WebdavResource webdavResource=new WebdavResource(httpURL, WebdavResource.NOACTION, 0);	//create a WebDAV resource to the URI
+			final String username=getUsername();	//get the username, if any
+			final char[] password=getPassword();	//get the password, if any
+			if(username!=null && password!=null)		//if a username and password is given
+			{
+				webdavResource.setUserInfo(username, new String(password));	//set the username and password for the WebDAV resource
+			}
 			return new WebdavResourceOutputStreamAdapter(webdavResource);	//adapt the resource to an output stream and return it
 		}
 //TODO fix for other types of URIs
