@@ -1,6 +1,6 @@
 package com.garretwilson.text.unicode;
 
-import java.text.MessageFormat;
+import com.garretwilson.lang.IntegerUtilities;
 
 /**Represents a character in the Unicode database.
 Created for Unicode 3.0.0.
@@ -11,15 +11,15 @@ public class UnicodeCharacter implements UnicodeConstants
 {
 
 	/**The code value of the Unicode character.*/
-	private char codeValue;
+	private int codeValue;
 
 		/**@returns The code value of the Unicode character.*/
-		public char getCodeValue() {return codeValue;}
+		public int getCodeValue() {return codeValue;}
 
 		/**Sets the code value of the Unicode character.
 		@param newCodeValue The code value of the Unicode character.
 		*/
-		public void setCodeValue(final char newCodeValue) {codeValue=newCodeValue;}
+		public void setCodeValue(final int newCodeValue) {codeValue=newCodeValue;}
 
 	/**The name of the character.*/
 	private String characterName;
@@ -277,15 +277,13 @@ public class UnicodeCharacter implements UnicodeConstants
 		setCharacterName(newCharacterName);	//set the character name
 	}
 
-	/**@return A string representation of the Unicode character.*/
-/*G***fix
-	public toString()
+	/**@return A string representation of the Unicode character in the form "U+XXXX[XX]".*/
+	public String toString()
 	{
-		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer
-		stringBuffer.append(convertValueToFourDigitHexString(getCodeValue()));	//append the code value
-		stringBuffer.append(UnicodeData.
-
-0000;<control>;Cc;0;BN;;;;;N;NULL;;;;
-*/
+		final StringBuffer stringBuffer=new StringBuffer("U+");	//create a string buffer
+			//append the code value, using six digits if needed
+		stringBuffer.append(IntegerUtilities.toHexString(codeValue, codeValue<=0xFFFF ? 4 : 6));
+		return stringBuffer.toString();	//return the string we constructed
+	}
 
 }

@@ -1,19 +1,31 @@
 package com.garretwilson.text.unicode;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.LineNumberReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.lang.ref.*;
+import java.util.*;
 import java.util.StringTokenizer;
 import com.garretwilson.lang.IntegerUtilities;
+import com.garretwilson.text.CharacterEncodingConstants;
+import com.garretwilson.util.Debug;
 
-/**Represents the Unicode 3.0 file <code>UnicodeData.txt</code>.
+/**Represents the Unicode data in the file <code>UnicodeData.txt</code>.
+<p>This class expects the Unicode data file to exist in the same package as
+	this class.</p>
+<p>This class keeps soft references of all requested Unicode characters so that
+	they may be quickly returned when needed, but still be garbage collected if
+	memory is a premium.</p>
 @author Garret Wilson
 @version 1.0
 */
 public class UnicodeData implements UnicodeConstants
 {
+
+	/**The name of the Unicode data text file.*/
+	public final static String FILENAME="UnicodeData.txt";
+
+	/**The map of soft to icons, each keyed to a Unicode integer value.*/
+	protected final static Map unicodeCharacterReferenceMap=new HashMap();	//TODO create a SoftValueHashMap to use here
+
 			//Unicode data file fields
 	/**The number of fields in the file.*/
 	public final static int MAX_FIELD=14;
@@ -48,6 +60,116 @@ public class UnicodeData implements UnicodeConstants
 	/**The character which divides a fraction.*/
 	public final static char FRACTION_DIVIDER='/';
 
+	/**Returns character data for the given Unicode code value.
+	@param codeValue The code point for which to return a character.
+	@return A Unicode character objects representing the given code value, or
+		<code>null</code> if character data for that code value is not specified
+		in the Unicode data file.
+	*/
+	public static UnicodeCharacter getUnicodeCharacter(final int codeValue)
+	{
+		final Integer codeValueInteger=new Integer(codeValue);	//create an integer from the code value
+		final Reference unicodeCharacterReference=(Reference)unicodeCharacterReferenceMap.get(codeValueInteger);
+			//if the character was stored at one time, see if it still exists 
+		UnicodeCharacter unicodeCharacter=unicodeCharacterReference!=null ? (UnicodeCharacter)unicodeCharacterReference.get() : null;
+		if(unicodeCharacter==null)	//if the unicode character was never stored or has been reclaimed
+		{
+			try
+			{
+					//TODO fix a more intelligent range determination based upon Unicode code blocks 
+				load(codeValue, codeValue+256);	//load data for the character and for surrounding characters
+					//see if the character is loaded now
+				final Reference loadedUnicodeCharacterReference=(Reference)unicodeCharacterReferenceMap.get(codeValueInteger);
+					//if the character was stored at one time, see if it still exists 
+				unicodeCharacter=loadedUnicodeCharacterReference!=null ? (UnicodeCharacter)loadedUnicodeCharacterReference.get() : null;
+	/*TODO fix for Unicode blocks after creating code to load our own Unicode block data			
+				boolean foundUnicodeBlock=false;	//we haven't found a Unicode block for this character, yet
+					//TODO replace the Java code block stuff with custom Unicode code block code 
+				if(codeValue<=Character.MAX_VALUE)	//if the code value within the character range, we can use the Java character methods
+				{
+					final Character.UnicodeBlock unicodeBlock=Character.UnicodeBlock.of((char)codeValue)
+					if(unicodeBlock!=null)	//if Java knows of a Unicode block for this character
+					{
+						foundUnicodeBlock=true;	//show that we found a Unicode block for the character
+						unicodeBlock.get
+					}
+				}
+				unicodeCharacter=load(codeValue);	//try to load the character
+	*/
+			}
+			catch(IOException ioException)	//we don't expect errors reading the data file, as it's a local resource
+			{
+				Debug.warn(ioException);	//don't do anything major if we can't read the data file 
+			}
+		}
+		return unicodeCharacter;	//return the character we found, if any
+	}
+	
+	/**@return A reader to the Unicode data resource file.
+	@throws UnsupportedEncodingException Thrown if the Unicode data file encoding
+		(ISO 8859-1) is unsupported. This situation should never occur.
+	*/
+	public static Reader getUnicodeDataReader() throws UnsupportedEncodingException
+	{
+			//get an input stream to our Unicode data resource file
+		final InputStream inputStream=UnicodeData.class.getResourceAsStream(FILENAME);
+			//buffer the input stream and turn it into an ASCII reader
+		return new InputStreamReader(new BufferedInputStream(inputStream), CharacterEncodingConstants.ISO_8859_1);
+	}
+
+	/**Loads the list of Unicode characters from the Unicode data resource text file.
+	<p>Every loaded character will be weakly cached for fast lookup in the future.</p>
+	@return A list of Unicode character objects.
+	@exception IOException Thrown if there was an error parsing the Unicode data.
+	*/
+	public static List load() throws IOException
+	{
+		return load(0, Integer.MAX_VALUE);	//load all the Unicode characters in the data file
+	}
+
+	/**Loads a single Unicode characters from the Unicode data resource text file.
+	<p>The loaded character will be weakly cached for fast lookup in the future.</p>
+	@param codeValue The code point for which to return a character.
+	@return A Unicode character objects representing the given code value, or
+		<code>null</code> if character data for that code value could not be
+		found in the Unicode data file.
+	@exception IOException Thrown if there was an error parsing the Unicode data.
+	*/
+	public static UnicodeCharacter load(final int codeValue) throws IOException
+	{
+		final List unicodeCharacterList=load(codeValue, codeValue);	//load the single character
+		return unicodeCharacterList.size()>0 ? (UnicodeCharacter)unicodeCharacterList.get(0) : null;	//return the character if we found it 
+	}
+
+	/**Loads a list of Unicode characters from the Unicode data resource text file.
+	<p>Every loaded character will be weakly cached for fast lookup in the future.</p>
+	@param firstCodeValue The first code point for which to return a character.
+	@param lastCodeValue The last code point, inclusive, for which to return a
+		character.
+	@return A list of Unicode character objects.
+	@exception IOException Thrown if there was an error parsing the Unicode data.
+	*/
+	public static List load(final int firstCodeValue, final int lastCodeValue) throws IOException
+	{
+		final Reader reader=getUnicodeDataReader();	//get a reader to our data
+		try
+		{
+			final List unicodeCharacterList=parse(reader, firstCodeValue, lastCodeValue);	//parse the Unicode data from the reader
+			final Iterator unicodeCharacterIterator=unicodeCharacterList.iterator();	//get an iterator to the Unicode characters loaded
+			while(unicodeCharacterIterator.hasNext())	//while there are more Unicode characters
+			{
+				final UnicodeCharacter unicodeCharacter=(UnicodeCharacter)unicodeCharacterIterator.next();	//get the next Unicode character
+					//create a soft reference to the character and store it in our map, keyed to its integer code value
+				unicodeCharacterReferenceMap.put(new Integer(unicodeCharacter.getCodeValue()), new SoftReference(unicodeCharacter));
+			}
+			return unicodeCharacterList;	//return the list of Unicode characters we loaded
+		}
+		finally
+		{
+			reader.close();	//always close our reader
+		}
+		
+	}
 
 	/**Parses an input reader which contains Unicode data, and creates and returns
 		a list of Unicode characters.
@@ -59,6 +181,22 @@ public class UnicodeData implements UnicodeConstants
 	*/
 	public static List parse(final Reader reader) throws IOException
 	{
+		return parse(reader, 0, Integer.MAX_VALUE);	//return all code points
+	}
+
+	/**Parses an input reader which contains Unicode data, and creates and returns
+		a list of Unicode characters.
+	@param reader The reader which contains the data in the Unicode data format.
+	@param firstCodeValue The first code point for which to return a character.
+	@param lastCodeValue The last code point, inclusive, for which to return a
+		character.
+	@return A list of Unicode character objects.
+	@exception IOException Thrown if there was an error parsing the Unicode data.
+	@see UnicodeCharacter
+	@see UnicodeConstants
+	*/
+	public static List parse(final Reader reader, final int firstCodeValue, final int lastCodeValue) throws IOException
+	{
 		final List unidataList=new ArrayList();	//create a list so that we can pass back the Unicode characters
 		final LineNumberReader lineNumberReader=new LineNumberReader(reader);	//create a reader to allow us to read the file line by line
 		try
@@ -66,14 +204,30 @@ public class UnicodeData implements UnicodeConstants
 			String unidataLine=lineNumberReader.readLine();	//read the first line of text
 			while(unidataLine!=null)	//while there are more lines left
 			{
-				unidataList.add(parseLine(unidataLine));	//parse this line and add the resulting Unicode character to our list
+				final UnicodeCharacter unicodeCharacter=parseLine(unidataLine);	//parse the next character
+				final int codeValue=unicodeCharacter.getCodeValue();	//get the parsed character's code value
+				if(codeValue>=firstCodeValue)	//if this character is the starting character or higher
+				{
+					if(codeValue<=lastCodeValue)	//if the character is out of the range
+					{
+						unidataList.add(unicodeCharacter);	//add the Unicode character to our list
+					}
+					else	//if we've went out of range
+					{
+						break;	//stop looking
+					}
+				}
 				unidataLine=lineNumberReader.readLine();	//read the next line of text
 			}
 			return unidataList;	//return our list of Unicode character objects
 		}
-		catch(Exception e)	//if any errors occur
+		catch(IOException ioException)	//if any IO exceptions occur
 		{
-			throw new IOException("Error parsing line "+lineNumberReader.getLineNumber()+": "+e.toString());	//indicate the line we were trying to parse
+			throw ioException;	//rethrow the exception
+		}
+		catch(Exception e)	//if any other errors occur
+		{
+			throw (IOException)new IOException("Error parsing line "+lineNumberReader.getLineNumber()+": "+e.getMessage()).initCause(e);	//indicate the line we were trying to parse
 		}
 	}
 
@@ -88,23 +242,6 @@ public class UnicodeData implements UnicodeConstants
 //G***del		UnicodeCharacter unicodeCharacter=null;	//we'll create this when we find the code value
 		unidataLine+=FIELD_DELIMITER;	//since the Unicode data file doesn't have an ending delimiter, add one so that StringTokenizer will recognize the last field
 		final UnicodeCharacter unicodeCharacter=new UnicodeCharacter();	//create a new Unicode character that will hold the data we parse from this line
-/*G***del
-		int codeValue=-1;	//we'll change this from -1 when we get a valid code value
-		String characterName=null;
-		String generalCategory=null;
-		int canonicalCombiningClass=-1;
-		String bidirectionalCategory=null;
-		String characterDecompositionMappings="";
-		int decimalDigitValue=-1;
-		int digitValue=-1;
-		float numericValue=Float.NaN;
-		boolean mirrored=false;
-		String unicode10Name=null;
-		String iso10646Comment=null;
-		char uppercaseMapping=0;
-		char lowercaseMapping=0;
-		char titlecaseMapping=0;
-*/
 		final StringTokenizer fieldTokenizer=new StringTokenizer(unidataLine, String.valueOf(FIELD_DELIMITER), true);	//create an object to tokenize the line of Unicode data, and return the delimiters as well (because otherwise two consecutive delimiters will be skipped)
 		int fieldIndex=0;	//show which field we are processing
 		boolean expectingToken=true;	//show that we're expecting a token first of all
@@ -130,7 +267,7 @@ public class UnicodeData implements UnicodeConstants
 				switch(fieldIndex)	//see which field this is
 				{
 					case FIELD_CODE_VALUE:
-						unicodeCharacter.setCodeValue((char)Integer.parseInt(fieldValue, 16));	//decode the hexadecimal code value
+						unicodeCharacter.setCodeValue(Integer.parseInt(fieldValue, 16));	//decode the hexadecimal code value
 						break;
 					case FIELD_CHARACTER_NAME:
 						unicodeCharacter.setCharacterName(fieldValue);	//store the character name
@@ -244,7 +381,9 @@ public class UnicodeData implements UnicodeConstants
 	public static String toUnicodeDataLine(final UnicodeCharacter unicodeCharacter)
 	{
 		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer
-		stringBuffer.append(IntegerUtilities.toHexString(unicodeCharacter.getCodeValue(), 4));	//append the code value
+		final int codeValue=unicodeCharacter.getCodeValue();	//get the code value
+			//append the code value, using six digits if needed
+		stringBuffer.append(IntegerUtilities.toHexString(codeValue, codeValue<=0xFFFF ? 4 : 6));
 		stringBuffer.append(FIELD_DELIMITER);	//separate the fields
 		stringBuffer.append(unicodeCharacter.getCharacterName());	//append the character name
 		stringBuffer.append(FIELD_DELIMITER);	//separate the fields
