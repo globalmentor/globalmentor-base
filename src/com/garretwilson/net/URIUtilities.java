@@ -2,6 +2,7 @@ package com.garretwilson.net;
 
 import java.io.*;
 import java.net.*;
+import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
 import com.garretwilson.text.CharacterEncodingConstants;
 import com.garretwilson.util.Debug;
@@ -133,9 +134,9 @@ public class URIUtilities implements URIConstants
 		if no known media type is associated with this URI's extension.
 	@see MediaType#getMediaType
 	*/
-	public static MediaType getMediaType(final URI uri)
+	public static ContentType getMediaType(final URI uri)
 	{
-		return MediaType.getMediaType(FileUtilities.getExtension(getFile(uri))); //return the media type based on the extension of the URI filename
+		return ContentTypeUtilities.getMediaType(FileUtilities.getExtension(getFile(uri))); //return the media type based on the extension of the URI filename
 	}
 
 	/**Creates a URI from a URL.

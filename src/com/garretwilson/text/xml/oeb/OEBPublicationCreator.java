@@ -7,6 +7,7 @@ import java.net.*;
 import java.net.URI;	//G***del when other URI is removed
 import java.text.MessageFormat;
 import java.util.*;
+import javax.mail.internet.ContentType;
 import com.garretwilson.awt.ImageUtilities;
 import com.garretwilson.io.*;
 import com.garretwilson.lang.*;
@@ -258,16 +259,16 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 		public void setRights(final String newRights) {rights=newRights;}
 
 	/**A static application/java media type for quick reference when comparing media types.*/
-	protected final static MediaType APPLICATION_JAVA_MEDIA_TYPE=new MediaType(MediaType.APPLICATION, MediaType.JAVA);
+	protected final static ContentType APPLICATION_JAVA_MEDIA_TYPE=new ContentType(ContentTypeConstants.APPLICATION, ContentTypeConstants.JAVA, null);
 
 	/**A static image/gif media type for quick reference when comparing media types.*/
-	protected final static MediaType IMAGE_GIF_MEDIA_TYPE=new MediaType(MediaType.IMAGE, MediaType.GIF);
+	protected final static ContentType IMAGE_GIF_MEDIA_TYPE=new ContentType(ContentTypeConstants.IMAGE, ContentTypeConstants.GIF, null);
 
 	/**A static image/png media type for quick reference when comparing media types.*/
-	protected final static MediaType IMAGE_PNG_MEDIA_TYPE=new MediaType(MediaType.IMAGE, MediaType.PNG);
+	protected final static ContentType IMAGE_PNG_MEDIA_TYPE=new ContentType(ContentTypeConstants.IMAGE, ContentTypeConstants.PNG, null);
 
 	/**A static text/html media type for quick reference when comparing media types.*/
-	protected final static MediaType APPLICATION_XHTML_XML_MEDIA_TYPE=new MediaType(MediaType.APPLICATION, MediaType.XHTML_XML);
+	protected final static ContentType APPLICATION_XHTML_XML_MEDIA_TYPE=new ContentType(ContentTypeConstants.APPLICATION, ContentTypeConstants.XHTML_XML, null);
 
 	/**Whether we should load and tidy each OEB document.*/
 	private boolean tidy=false;
@@ -940,7 +941,7 @@ Debug.trace("gatherReferences() found object.");
 Debug.trace("found codetype: ", codeType);
 					final MediaType mediaType=new MediaType(codeType); //create a media type from the given type
 Debug.trace("media type: ", mediaType);
-					if(mediaType.equals(APPLICATION_JAVA_MEDIA_TYPE))  //if this is a java applet
+					if(mediaType.match(APPLICATION_JAVA_MEDIA_TYPE))  //if this is a java applet
 					{
 Debug.trace("determined media type: ", mediaType);
 						final String classID=element.getAttributeNS(null, ELEMENT_OBJECT_ATTRIBUTE_CLASSID); //see if there is a class ID attribute
@@ -1043,7 +1044,7 @@ G***fix outputDir
 	@exception MalformedURLException Thrown if a an invalid reference is discovered.
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	*/
-	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, MediaType mediaType) throws URISyntaxException, MalformedURLException, IOException
+	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, ContentType mediaType) throws URISyntaxException, MalformedURLException, IOException
 	{
 			//gather the reference, specifying that the reference should be added to the spine as well
 		return gatherReference(publication, contextURL, href, mediaType, true);
@@ -1088,7 +1089,7 @@ G***fix outputDir
 	@exception MalformedURLException Thrown if a an invalid reference is discovered.
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	*/
-	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, MediaType mediaType, final boolean shouldAddToSpine) throws URISyntaxException, MalformedURLException, IOException
+	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, ContentType mediaType, final boolean shouldAddToSpine) throws URISyntaxException, MalformedURLException, IOException
 	{
 Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 		RDFResource oebItem=null; //we'll try to gather a reference, and if we do we'll store the corresponding OEB item here
@@ -1137,7 +1138,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 							if(mediaType==null) //if no media type is given
 							{
 								mediaType=URLUtilities.getMediaType(url);  //try to see which of media type the reference is by examining the URL
-								if(mediaType.equals(APPLICATION_XHTML_XML_MEDIA_TYPE))  //if this is the "application/xhtml+xml" media type
+								if(mediaType.match(APPLICATION_XHTML_XML_MEDIA_TYPE))  //if this is the "application/xhtml+xml" media type
 									mediaType=OEB10_DOCUMENT_MEDIA_TYPE;  //assume it's really the OEB document media type
 							}
 							assert mediaType!=null : "\""+url+"\" has unknown media type.";  //G***put in better error handling here
@@ -1151,7 +1152,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 								MIMEOntologyUtilities.addContentType(oebItem, mediaType); //add the content type we determined
 								XPackageUtilities.getManifest(publication).add(oebItem); //add the item to the publication's manifest
 								  //if this is an OEB document, and we should add it to the spine
-								if(shouldAddToSpine && mediaType.equals(OEB10_DOCUMENT_MEDIA_TYPE))
+								if(shouldAddToSpine && mediaType.match(OEB10_DOCUMENT_MEDIA_TYPE))
 								  XPackageUtilities.getOrganization(publication).add(oebItem);  //add the item to the spine as well
 								if(getOutputDir()!=null)  //if we have an output directory where files should be copied
 								{
@@ -1172,7 +1173,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 	Debug.trace("Created directories");  //G***del
 													//if we're tidying and this is an OEB document, it will be copied automatically;
 													//  otherwise, we'll need to copy it ourselves
-												if(!isTidy() || !mediaType.equals(OEB10_DOCUMENT_MEDIA_TYPE))
+												if(!isTidy() || !mediaType.match(OEB10_DOCUMENT_MEDIA_TYPE))
 												{
 	Debug.trace("ready to copy file");  //G***del
 													NetworkUtilities.copy(url, outputFile); //copy the URL to the output directory

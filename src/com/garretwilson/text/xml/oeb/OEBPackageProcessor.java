@@ -4,7 +4,8 @@ import java.io.*;
 import java.net.*;
 import java.net.URI;	//G**del when old URI is gone
 
-import com.garretwilson.io.MediaType;
+import javax.mail.internet.ContentType;
+import com.garretwilson.io.ContentTypeUtilities;
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.dublincore.DCConstants;
 //G***del import com.garretwilson.text.xml.XMLDOMImplementation;
@@ -301,7 +302,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 			final Element itemElement=(Element)manifestElementList.item(i);	//get a reference to this item in the manifest
 		  final String itemID=itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_ID); //get the item ID
 		  final String itemHRef=itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_HREF); //get the item href
-		  final MediaType itemMediaType=new MediaType(itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE));  //get the item's media type
+		  final ContentType itemMediaType=ContentTypeUtilities.createContentType(itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE));  //get the item's media type
 				//create an RDF resource for the item with a type of rdf:resource
 			final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null)); //G***fix the reference URI
 //G***del when not needed		  final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null), XPackageConstants.XPACKAGE_NAMESPACE_URI, XPackageConstants.RESOURCE_TYPE_NAME); //G***fix the reference URI

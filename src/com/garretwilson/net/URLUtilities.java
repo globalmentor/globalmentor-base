@@ -2,6 +2,7 @@ package com.garretwilson.net;
 
 import java.io.*;
 import java.net.*;
+import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
 
 /**Various URL manipulating functions.
@@ -79,9 +80,9 @@ public class URLUtilities implements URLConstants	//G***del, InputStreamLocator
 		if no known media type is associated with this URL's extension.
 	@see MediaType#getMediaType
 	*/
-	public static MediaType getMediaType(final URL url)
+	public static ContentType getMediaType(final URL url)
 	{
-		return MediaType.getMediaType(FileUtilities.getExtension(getFile(url))); //return the media type based on the extension of the URL filename
+		return ContentTypeUtilities.getMediaType(FileUtilities.getExtension(getFile(url))); //return the media type based on the extension of the URL filename
 	}
 
 	/**Creates a URL from the given filename relative to the given context object.

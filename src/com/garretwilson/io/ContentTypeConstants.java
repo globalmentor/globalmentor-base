@@ -4,10 +4,11 @@ package com.garretwilson.io;
 	<a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>,
 	"MIME Part 2: Media Types".
 @author Garret Wilson
+@see javax.mail.internet.ContentType
 @see http://www.rfc-editor.org/rfc/rfc2046.txt
 @see http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020430/
 */
-public interface MediaTypeConstants
+public class ContentTypeConstants
 {
 	/**The divider character for media type strings.*/
 	public final static char DIVIDER='/';

@@ -3,6 +3,7 @@ package com.garretwilson.io;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URI;
+import javax.mail.internet.ContentType;
 import com.garretwilson.lang.*;
 import com.garretwilson.net.*;
 import com.garretwilson.util.Debug;
@@ -159,10 +160,10 @@ public class FileUtilities
 		file has no extension.
 	@see MediaType#getMediaType
 	*/
-	public static MediaType getMediaType(final File file)
+	public static ContentType getMediaType(final File file)
 	{
 		final String extension=getExtension(file);  //get the file's extension
-		return extension!=null ? MediaType.getMediaType(extension) : null; //return the media type based on the file's extension, if there is one
+		return extension!=null ? ContentTypeUtilities.getMediaType(extension) : null; //return the media type based on the file's extension, if there is one
 	}
 
 	/**Returns the appropriate URI for a directory, whether or not the directory
@@ -192,10 +193,10 @@ public class FileUtilities
 		filename has no extension.
 	@see MediaType#getMediaType
 	*/
-	public static MediaType getMediaType(final String filename)
+	public static ContentType getMediaType(final String filename)
 	{
 		final String extension=getExtension(filename);  //get the file's extension
-		return extension!=null ? MediaType.getMediaType(extension) : null; //return the media type based on the filename's extension, if there is one
+		return extension!=null ? ContentTypeUtilities.getMediaType(extension) : null; //return the media type based on the filename's extension, if there is one
 	}
 
 	/**Determines the path of the file relative to a root directory. Backslashes

@@ -5,14 +5,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.*;
+import javax.mail.internet.ContentType;
 import javax.swing.*;
+import com.garretwilson.io.ContentTypeConstants;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
 import com.garretwilson.text.CharacterConstants;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.*;
 import com.garretwilson.text.xml.xlink.*;
-import com.garretwilson.io.MediaType;
 import com.garretwilson.model.Model;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dicto.*;
@@ -223,7 +224,7 @@ public class DictionaryPanel extends RDFPanel
 						}
 					}
 						//show the XML in the book, specifying the base URI of the RDF data model
-					book.setXML(xhtmlDocument, model.getBaseURI(), new MediaType(MediaType.APPLICATION_XHTML_XML));
+					book.setXML(xhtmlDocument, model.getBaseURI(), XHTMLConstants.XHTML_CONTENT_TYPE);
 				}
 				else	//if we don't have a dictionary
 				{

@@ -4,11 +4,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
+import javax.mail.internet.ContentType;
 import javax.swing.*;
 import javax.swing.event.*;
 //G***del import javax.swing.text.*;
 import javax.swing.tree.*;
-import com.garretwilson.io.MediaType;
 import com.garretwilson.lang.BooleanUtilities;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
@@ -18,6 +18,7 @@ import com.garretwilson.swing.text.xml.qti.QTIViewFactory;
 import com.garretwilson.swing.tree.*;
 import com.garretwilson.swing.qti.tree.*;
 import com.garretwilson.text.CharacterEncoding;
+import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.util.*;
@@ -337,7 +338,7 @@ Debug.trace("****setting XML");  //G***del
 
 //TODO use the XMLTextPane.setXML() version if we can
 						//G***testing for style application
-			((XMLEditorKit)xmlTextPane.getEditorKit()).setXML(xmlDocument, null, new MediaType("text/xml"), swingDocument); //set the XML document in the text pane
+			((XMLEditorKit)xmlTextPane.getEditorKit()).setXML(xmlDocument, null, XMLConstants.XML_CONTENT_TYPE, swingDocument); //set the XML document in the text pane
 	//G***del Debug.trace("navigating");  //G***del
 					}
 				});

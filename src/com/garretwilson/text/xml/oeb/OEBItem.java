@@ -20,9 +20,9 @@ import java.net.URL;
 import org.w3c.dom.DOMException;
 import com.garretwilson.util.StringManipulator;
 */
+import javax.mail.internet.ContentType;
 import javax.sound.sampled.*;
 //G***del when works import com.garretwilson.awt.ImageUtilities;
-import com.garretwilson.io.MediaType;
 //G***del import com.garretwilson.io.InputStreamUtilities;
 import com.garretwilson.sound.sampled.SampledSoundUtilities;
 import com.garretwilson.text.xml.XMLReader;
@@ -72,10 +72,10 @@ public class OEBItem
 */
 
 	/**The media type of this item.*/
-	private MediaType mediaType;
+	private ContentType mediaType;
 
 		/**@return The media type of this item.*/
-		public MediaType getMediaType() {return mediaType;}
+		public ContentType getMediaType() {return mediaType;}
 
 
 	/**The item to be used as a fallback, or <code>null</code> for no fallback.*/
@@ -116,7 +116,7 @@ public class OEBItem
 	@param href The filename of this item.
 	@param newMediaType The media type of this item.
 	*/
-	public OEBItem(/*G***del final OEBPublication publication, */final String id, final String href, final MediaType newMediaType)
+	public OEBItem(/*G***del final OEBPublication publication, */final String id, final String href, final ContentType newMediaType)
 	{
 		this(/*G***del publication, */id, href, newMediaType, null); //do the default construction with a null fallback
 	}
@@ -128,7 +128,7 @@ public class OEBItem
 	@param newMediaType The media type of this item.
 	@param fallback The fallback item, or <code>null</code> for no fallback.
 	*/
-	public OEBItem(/*G***del final OEBPublication publication, */final String id, final String href, final MediaType newMediaType, final OEBItem fallback)
+	public OEBItem(/*G***del final OEBPublication publication, */final String id, final String href, final ContentType newMediaType, final OEBItem fallback)
 	{
 //G***del		Publication=publication;	//set the owner publication
 		ID=id;	//set the ID G***maybe make setXXX() functions for these

@@ -5,9 +5,9 @@ import java.awt.event.*;
 import java.beans.*;
 import java.io.*; //G***move
 import java.util.*;
+import javax.mail.internet.ContentType;
 import javax.swing.*;
 import javax.swing.event.*;
-import com.garretwilson.io.MediaType; //G***move
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.text.xml.XMLEditorKit;

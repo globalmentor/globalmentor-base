@@ -2,8 +2,8 @@ package com.garretwilson.swing.qti;
 
 import java.beans.*;
 import java.io.*;
+import javax.mail.internet.ContentType;
 import javax.swing.*;
-import com.garretwilson.io.MediaType;
 import com.garretwilson.rdf.xpackage.XPackageUtilities;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.assess.qti.*;

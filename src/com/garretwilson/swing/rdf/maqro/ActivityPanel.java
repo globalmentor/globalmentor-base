@@ -5,13 +5,14 @@ import java.awt.Frame;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.*;
+import javax.mail.internet.ContentType;
 import javax.swing.*;
+import com.garretwilson.io.ContentTypeConstants;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 import com.garretwilson.text.xml.xhtml.XHTMLUtilities;
-import com.garretwilson.io.MediaType;
 import com.garretwilson.model.Model;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.DCUtilities;
@@ -189,7 +190,7 @@ public class ActivityPanel extends RDFPanel
 						}
 					}
 						//show the XML in the book, specifying the base URI of the RDF data model
-					book.setXML(xhtmlDocument, model.getBaseURI(), new MediaType(MediaType.APPLICATION_XHTML_XML));
+					book.setXML(xhtmlDocument, model.getBaseURI(), XHTMLConstants.XHTML_CONTENT_TYPE);
 				}
 				else	//if we don't have an activity
 				{
