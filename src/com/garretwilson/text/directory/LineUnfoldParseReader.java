@@ -103,7 +103,7 @@ public class LineUnfoldParseReader extends ParseReader implements DirectoryConst
 			//ignore the last two characters for the moment, giving us enough guaranteed room to look for CRLF+SPACE at the end of the line
 		for(sourceIndex=newDataBeginIndex, destIndex=newDataBeginIndex; sourceIndex<bufferEndIndex-2; ++sourceIndex, ++destIndex)
 		{
-			if(buffer[sourceIndex]==CR && buffer[sourceIndex+1]==LF && buffer[sourceIndex+2]==SPACE)	//if this is CRLF+SPACE
+			if(buffer[sourceIndex]==CR && buffer[sourceIndex+1]==LF && buffer[sourceIndex+2]==SP)	//if this is CRLF+SPACE
 			{
 				sourceIndex+=2;	//skip the next two characters, which on the next increment will skip the entire CRLF+SPACE
 			}

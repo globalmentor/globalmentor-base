@@ -23,6 +23,12 @@ import com.garretwilson.util.*;
 	<code>TIME_VALUE_TYPE</code>, <li><code>DATE_TIME_VALUE_TYPE</code>,
 	<code>INTEGER_VALUE_TYPE</code>, <code>BOOLEAN_VALUE_TYPE</code>,
 	and <code>FLOAT_VALUE_TYPE</code>.</p>
+<p>This processor makes the following decisions for ambiguities in the
+	specification:</p>
+<ul>
+	<li>Every content line, including the last, is required to end in CRLF.</li>
+	<li>Lines containing only whitespace are ignored.</li>
+</ul>
 @author Garret Wilson
 @see ValueFactory
 @see URI_VALUE_TYPE
@@ -80,7 +86,73 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		{
 			return (ValueFactory)profileValueFactoryMap.get(profile.toLowerCase());	//get the value factory keyed to the lowercase version of this profile
 		}
+
+
+	/**The profile last encountered in a "profile:" type content line.*/
+	private String defaultProfile=null;
+
+	/**Whether the default profile was the last profile encountered.*/
+	private boolean useDefaultProfile=false;
+	
+	/**The stack of profiles encountered in a "begin:"/"end:" blocks;
+		created before processing and released afterwards.
+	*/
+	private LinkedList profileStack=null;
 		
+		/**Sets the profile to be used for subsequent content lines.
+		If in the middle of a profile "begin:"/"end:" block, the profile of that
+			block will be suspended until the block ends or another block begins.
+		@param profile The new profile of the directory.
+		*/
+		protected void setProfile(final String profile)
+		{
+			defaultProfile=profile;	//save the profile
+			useDefaultProfile=true;	//show that we should use the default profile
+		}
+		
+		/**@return The current profile, either the last set profile, the profile of
+			the current "begin:"/"end:" block, or <code>null</code> if there is no
+			profile, in that order.
+		@return String
+		*/
+		protected String getProfile()
+		{
+			if(useDefaultProfile && defaultProfile!=null)	//if we should use the default profile and there is a profile set
+			{
+				return defaultProfile;	//return the last set profile
+			}
+			else if(profileStack.size()>0)	//if we're in a profile "begin:"/"end:" block
+			{
+				return (String)profileStack.getLast();	//return the profile of the current block
+			}
+			else	//if no profile is set, and we're not in a profile "begin:"/"end:" block
+			{
+				return defaultProfile;	//if there's no profile "begin:"/"end:" block, we'll have to use the default profile, even if it is null
+			}
+		}
+		
+		/**Pushes the given profile on the stack, and removes the set profile, if any.
+		Suspends the currently set profile, if any.
+		@param profile The profile of the new "begin:"/"end:" block block. 
+		*/
+		protected void pushProfile(final String profile)
+		{
+			profileStack.addLast(profile);	//push the profile onto the stack
+			useDefaultProfile=false;	//suspend use of the default profile
+		}
+		
+		/**Removes the profile from the top of the stack.
+		Suspends the currently set profile, if any.
+		@return The profile from the top of the stack.
+		@exception NoSuchElementException Thrown if there are no more profiles on
+			the stack.
+		*/
+		protected String popProfile()
+		{
+			useDefaultProfile=false;	//suspend use of the default profile
+			return (String)profileStack.removeLast();	//pop the profile from the stack
+		}
+
 	/**Default constructor.
 	This class automatically registers itself with itself as a value factory for
 		the standard value types.*/
@@ -106,14 +178,80 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 	*/
 	protected final static String CONTENT_LINE_DELIMITER_CHARS=GROUP_NAME_SEPARATOR_CHAR+GROUPLESS_CONTENT_LINE_DELIMITER_CHARS;	
 
-	/**Retrieves a line of content from a directory.
+	/**Retrieves content llines from a directory of type <code>text/directory</code>.
 	@param reader The reader that contains the lines of the directory.
-	@return A line of content from the directory
+	@return An object representing the directory.
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
-	public ContentLine processDirectoryLine(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public Directory processDirectory(final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
+		profileStack=new LinkedList();	//create a new profile stack
+		defaultProfile=null;	//show that there is no default profile
+		useDefaultProfile=false;	//don't use the default profile
+		final Directory directory=new Directory();	//create a new directory
+		while(reader.isEOF())	//while we haven't reached the end of the file
+		{		
+			final ContentLine[] contentLines=processContentLine(reader);	//process one or more lines of contents, all of which should have the same type
+			for(int i=0; i<contentLines.length; ++i)	//look at each line of content
+			{
+				final ContentLine contentLine=contentLines[i];	//get a reference to this content line
+				final String typeName=contentLine.getTypeName();	//get the type
+				if(END_TYPE.equalsIgnoreCase(typeName))	//if this is END
+				{
+					if(directory.getName()==null)	//if the directory does not yet have a name
+					{
+						directory.setName((String)contentLine.getValue());	//get the directory name
+					}
+				}
+				else if(PROFILE_TYPE.equalsIgnoreCase(typeName))	//if this is PROFILE
+				{
+					final String profile=(String)contentLine.getValue();	//get the profile
+					contentLine.setProfile(profile);	//a profile type should have the same profile as the one it sets
+					setProfile(profile);	//set the profile to the new profile
+				}
+				else if(BEGIN_TYPE.equalsIgnoreCase(typeName))	//if this is BEGIN:xxx
+				{
+					final String profile=(String)contentLine.getValue();	//get the profile
+					contentLine.setProfile(profile);	//a beginning profile type should have the same profile as the one it sets
+					pushProfile(profile);	//push the new profile
+				}
+				else if(END_TYPE.equalsIgnoreCase(typeName))	//if this is END:xxx
+				{
+					final String profile=(String)contentLine.getValue();	//get the profile
+					contentLine.setProfile(profile);	//an ending profile type should have the same profile to which it refers
+					try
+					{
+						final String oldProfile=popProfile();	//pop the profile from the stack
+						//G***make sure the old profile is what we expect
+					}
+					catch(NoSuchElementException noSuchElementException)	//if there are no more profiles on the stack
+					{
+						throw new ParseIOException("Profile \""+profile+"\" END without BEGIN.", reader);	//throw an error indicating that there was no beginning to the profile
+					}
+				}				
+				directory.getContentLineList().add(contentLines[i]);	//add this content line to the directory
+			}
+		}		
+		profileStack=null;	//release the profile stack
+		defaultProfile=null;	//show that there is no default profile
+		useDefaultProfile=false;	//don't use the default profile
+		return directory;	//return the directory we processed				
+	}
+
+	/**Retrieves one or more content lines from a directory, all of which will
+		have the same type name
+	If the parsed content line has multiple values, a new identical content line
+		will be created for to contain each value, differing only in the value.
+	@param reader The reader that contains the lines of the directory.
+	@return A one or more content lines from the directory, or <code>null</code>
+		if the line contained only whitespace.
+	@exception IOException Thrown if there is an error reading the directory.
+	@exception ParseIOException Thrown if there is a an error interpreting the directory.
+	*/
+	public ContentLine[] processContentLine(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	{
+		String profile=getProfile();	//get the current profile, if there is one
 		String group=null;	//we'll store the group here
 		String name=null;	//we'll store the name here
 		List paramList=null;	//we'll store parameters here, if we have any
@@ -141,22 +279,21 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 				{
 					paramList=new ArrayList();	//create an empty list, since we didn't read any parameters
 				}
-				final String valueString=reader.readStringUntilChar(CR);	//everything before the carriage return will constitute the value
-					//G***check the value
-				final Object value=processValue(group, name, paramList, reader);	//process the value and get an object that represents the object
-				//G***read the CRLF that's left
-				//G***decide whether to require CRLF
-				return null; //G***create and return the directory line
-
-
-//G***this isn't right---we shouldn't even check for a CR or LF at this point
-			case CR:	//if we just read a carriage return G***maybe later not even check for CR and LF here
-/*G***don't allow blank lines until we find out differently
-				reader.readExpectedChar(LF);	//there should always be an LF after a CR
+				final Object[] values=processValue(profile, group, name, paramList, reader);	//process the value and get an object that represents the object
+				reader.readExpectedString(CRLF);	//there should always be a CRLF after the value
+				final ContentLine[] contentLines=new ContentLine[values.length];	//create an array of content lines that we'll fill with new content lines
+				for(int i=0; i<values.length; ++i)	//look at each value
+				{
+					contentLines[i]=new ContentLine(profile, group, name, new ArrayList(paramList), values[i]);	//create a content line with this value, making a copy of the parameter list
+				}
+				return contentLines; //return the array of content lines we created and filled
+			case CR:	//if we just read a carriage return
 				if(token.trim().length()>0)	//if there is content before the CRLF, but none of the other delimiters we expect, there's a syntax error in the line
-					return new ParseIOException("")
+				{
+					throw new ParseUnexpectedDataException(""+PARAM_SEPARATOR_CHAR+NAME_VALUE_SEPARATOR_CHAR, c, reader);	//show that we didn't expect this character here
+				}
+				reader.readExpectedChar(LF);	//there should always be an LF after a CR
 				return null;	//G***decide what to do with an empty line
-*/
 			case LF:	//if we see an LF before a CR
 			default:	//if we read anything else (there shouldn't be anything else unless there is a logic error)					
 				throw new ParseUnexpectedDataException(""+PARAM_SEPARATOR_CHAR+NAME_VALUE_SEPARATOR_CHAR, c, reader);	//show that we didn't expect this character here
@@ -180,7 +317,7 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 	@param reader The reader that contains the lines of the directory.
 	@param The list of parameters, each item of which is a
 		<code>NameValuePair</code> with a name of type <code>String</code> and a
-		value of type <code>Object</code>.
+		value of type <code>String</code>.
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	@see NameValuePair
@@ -224,53 +361,70 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		support multiple values.
 	<p>Whatever delimiter ended the value will be left in the reader.</p>
 	<p>When attempting to find a <code>ValueFactory</code> to process a given
-		value, an attempt is made to locate a value factory based upon, in this
-		order:</p>
-	<ul>
-		<li>value type; if there is no value type, or no value was created, then</li>
-		<li>profile</li>
-	</ul> 
+		value, an attempt is made to locate a value factory based in this order:</p>
+	<ol>
+		<li>If no explicit value type is given and a profile is known, the
+			<code>ValueFactory</code> registered for that profile, if any, is asked
+			for the type.</li>
+		<li>If no explicit value type is still not known, the directory processor
+			attempts to locate a predefined value type for the predefined type name.</li>
+		<li>If the value type is known, the <code>ValueFactory</code> registered for
+			the type, if any, is asked to create the value object.</li>
+		<li>If no value object was created and a profile is known, the
+			<code>ValueFactory</code> registered with the profile, if any, is asked
+			to create the value object.</li>
+		<li>If no value object was created, a string is returned containing the
+			literal contents of the value.</li> 
+	</ol> 
 	<p>If the value cannot be created using a <code>ViewFactory</code>, the
 		value is converted to a single string.</p>
+	@param profile The profile of this content line, or <code>null</code> if
+		there is no profile.
 	@param group The group specification, or <code>null</code> if there is no group.
 	@param name The name of the information.
 	@param paramList The list of parameters, each item of which is a
 		<code>NameValuePair</code> with a name of type <code>String</code> and a
-		value of type <code>Object</code>.
+		value of type <code>String</code>.
 	@param reader The reader that contains the lines of the directory.
 	@return An array of objects represent the value string.
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	@see NameValuePair
 	*/
-	protected Object[] processValue(final String group, final String name, final List paramList, final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	protected Object[] processValue(final String profile, final String group, final String name, final List paramList, final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
-		String valueType=null;	//start out not knowing what the value type will be
-		final Iterator paramIterator=paramList.iterator();	//get an iterator to the parameters
-		while(paramIterator.hasNext())	//while there are more parameters
+		Object[] objects=null;	//start out by assuming we can't process the value
+		String valueType=DirectoryUtilities.getParamValue(paramList, VALUE_PARAM_NAME);	//get the value type parameter value
+		if(valueType==null)	//if the value type wasn't explicitly given
 		{
-			final NameValuePair parameter=(NameValuePair)paramIterator.next();	//get the next parameter name/value pair
-			if(VALUE_PARAM_NAME.equals(parameter.getName()))	//if this is the "value" parameter
+			if(profile!=null)	//if we know the profile
 			{
-				valueType=(String)parameter.getValue();	//get the value type
-				break;	//stop looking for a value type
+				final ValueFactory profileValueFactory=getValueFactoryByProfile(profile);	//see if we have a value factory registered with this profile
+				if(profileValueFactory!=null)	//if there is a value factory for this profile
+				{
+					valueType=profileValueFactory.getValueType(profile, group, name, paramList);	//ask this profile's value factory for the value type
+				}
+			}
+			if(valueType==null)	//if we still don't know the type
+			{
+				valueType=getValueType(profile, group, name, paramList);	//ask ourselves for the value type
 			}
 		}
-		Object[] objects=null;	//start out by assuming we can't process the value
-		final ValueFactory valueTypeValueFactory=getValueFactoryByValueType(valueType);	//see if we have a value factory registered with this value type
-		if(valueTypeValueFactory!=null)	//if there is a value factory for this value type
+		if(valueType!=null)	//if we know the value type
 		{
-			objects=valueTypeValueFactory.createValue(group, name, paramList, valueType, reader);	//create objects for this value type
+			final ValueFactory valueTypeValueFactory=getValueFactoryByValueType(valueType);	//see if we have a value factory registered with this value type
+			if(valueTypeValueFactory!=null)	//if there is a value factory for this value type
+			{
+				objects=valueTypeValueFactory.createValues(profile, group, name, paramList, valueType, reader);	//create objects for this value type
+			}
 		}
-		if(objects==null)	//if no objects were created
+		if(objects==null)	//if no objects were created, to use use a value factory based upon the profile
 		{
-/*G***fix looking up by profile			
 			final ValueFactory profileValueFactory=getValueFactoryByProfile(profile);	//see if we have a value factory registered with this profile
 			if(profileValueFactory!=null)	//if there is a value factory for this profile
 			{
-				objects=profileValueFactory.createValue(group, name, paramList, valueType, reader);	//create objects for this profile
+				objects=profileValueFactory.createValues(profile, group, name, paramList, valueType, reader);	//create objects for this profile
 			}
-*/
 		}
 		if(objects==null)	//if no objects were created
 		{
@@ -296,11 +450,13 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		<li><code>BOOLEAN_VALUE_TYPE</code> <code>Boolean</code></li>
 		<li><code>FLOAT_VALUE_TYPE</code> <code>Double</code></li>
 	</ul>
+	@param profile The profile of this content line, or <code>null</code> if
+		there is no profile.
 	@param group The group specification, or <code>null</code> if there is no group.
 	@param name The name of the information.
 	@param paramList The list of parameters, each item of which is a
 		<code>NameValuePair</code> with a name of type <code>String</code> and a
-		value of type <code>Object</code>.
+		value of type <code>String</code>.
 	@param valueType The type of value, or <code>null</code> if the type of value
 		is unknown.
 	@param reader The reader that contains the lines of the directory.
@@ -325,7 +481,7 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 	@see FLOAT_VALUE_TYPE
 	@see Double
 	*/
-	public Object[] createValue(final String group, final String name, final List paramList, final String valueType, final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public Object[] createValues(final String profile, final String group, final String name, final List paramList, final String valueType, final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
 		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//if this is the "text" value type
 		{
@@ -333,7 +489,7 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		}
 		return null;	//show that we can't create a value
 	}
-
+	
 	/**Processes a text value.
 	<p>The sequence "\n" or "\N" will be converted to a single newline character,
 		'\n'.</p>
@@ -409,6 +565,34 @@ public class DirectoryProcessor implements DirectoryConstants, ValueFactory
 		//G***check the text value
 		reader.resetPeek();	//reset peeking
 		return stringBuffer.toString();	//return the string we've collected so far
+	}
+
+
+	/**Determines the value type of the given content line value.
+	@param profile The profile of this content line, or <code>null</code> if
+		there is no profile.
+	@param group The group specification, or <code>null</code> if there is no group.
+	@param name The name of the information.
+	@param paramList The list of parameters, each item of which is a
+		<code>NameValuePair</code> with a name of type <code>String</code> and a
+		value of type <code>String</code>.
+	@return The value type of the content line, or <code>null</code> if the
+		value type cannot be determined.
+	*/	
+	public String getValueType(final String profile, final String group, final String name, final List paramList)
+	{
+		if(SOURCE_TYPE.equalsIgnoreCase(name))	//SOURCE
+			return URI_VALUE_TYPE;	//uri
+		else if(NAME_TYPE.equalsIgnoreCase(name))	//NAME
+			return TEXT_VALUE_TYPE;	//text
+		else if(PROFILE_TYPE.equalsIgnoreCase(name))	//PROFILE
+			return TEXT_VALUE_TYPE;	//text
+		else if(BEGIN_TYPE.equalsIgnoreCase(name))	//BEGIN
+			return TEXT_VALUE_TYPE;	//text
+		else if(END_TYPE.equalsIgnoreCase(name))	//END
+			return TEXT_VALUE_TYPE;	//text
+		else	//if we don't recognize the type
+			return null;	//show that we don't recognize the type
 	}
 
 }

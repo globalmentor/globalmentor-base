@@ -7,14 +7,8 @@ import com.garretwilson.lang.ObjectUtilities;
 	implement the <code>Comparable</code> interface.
 @author Garret Wilson
 */
-public class NameValuePair implements Comparable  //G***isn't there a better name for this? what does "tuple" mean, anyway?
+public class NameValuePair extends DefaultNamedObject
 {
-
-	/**The name of the object.*/
-	final private Object name;
-
-		/**@return The name of the object.*/
-		public Object getName() {return name;}
 
 	/**The value of the object.*/
 	final private Object value;
@@ -22,20 +16,13 @@ public class NameValuePair implements Comparable  //G***isn't there a better nam
 		/**@return The value of the object.*/
 		public Object getValue() {return value;}
 
-	/**Default constructor.*/
-/*G***del
-	public NameValuePair()
-	{
-	}
-*/
-
 	/**Constructor specifying the name and value.
 	@param newName The object's new name.
 	@param newValue The object's new value
 	*/
 	public NameValuePair(final Object newName, final Object newValue)
 	{
-		name=newName; //set the name
+		super(newName);	//construct the parent class
 		value=newValue; //set the value
 	}
 
@@ -64,7 +51,7 @@ public class NameValuePair implements Comparable  //G***isn't there a better nam
 		This method determines order based upon first the name, and then the value.
 		Both objects must implement <code>Comparable</code> or an exception will be
 		thrown.
-	@param object The object with which to compare the component. This must be
+	@param object The object with which to compare this object. This must be
 		another <code>NameValuePair</code> object.
 	@return A negative integer, zero, or a positive integer as this name is
 		less than, equal to, or greater than the name and value of the specified
@@ -77,21 +64,15 @@ public class NameValuePair implements Comparable  //G***isn't there a better nam
 	*/
 	public int compareTo(Object object) throws ClassCastException
 	{
-		final int result=((Comparable)getName()).compareTo(((NameValuePair)object).getName()); //compare names
+		final int result=super.compareTo(object); //compare names
 			//if the names are equal, compare the values
 		return result!=0 ? result : ((Comparable)getValue()).compareTo(((NameValuePair)object).getValue()); //compare values
-	}
-
-	/**@return A hashcode value composed from the name.*/
-	public int hashCode()
-	{
-		return getName().hashCode();  //return the hash code of the name
 	}
 
 	/**@return A string representation of this object in the format "name=\"value\"".*/
 	public String toString()
 	{
-		return super.toString()+": "+getName()+"="+(getValue()!=null ? "\""+getValue()+"\"" : getValue());  //return a string constructed from the name and the value
+		return super.toString()+"="+(getValue()!=null ? "\""+getValue()+"\"" : getValue());  //return a string constructed from the name and the value
 	}
 
 }

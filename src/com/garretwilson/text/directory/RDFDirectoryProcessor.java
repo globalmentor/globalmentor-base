@@ -51,14 +51,6 @@ public class RDFDirectoryProcessor extends AbstractRDFProcessor
 	}
 	
 	
-	/**Retrieves a line of content from the directory.
-	 * 
-	 * @param reader
-	 * @return ContentLine
-	 */
-	public ContentLine processContentLine(final LineUnfoldParseReader reader)
-	{
-	}
 
 
 	/**A line in a directory of type <code>text/directory</code> as defined in

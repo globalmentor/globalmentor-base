@@ -79,6 +79,15 @@ public class ParseIOException extends IOException
 		setSourceName(sourceName);	//set the source name
 	}
 
+	/**Constructor for a generic parsing error with error message from a parse reader.
+	@param s The error message.
+	@param parseReader The parse reader the data of which is the source of the error.
+	*/
+	public ParseIOException(String s, final ParseReader parseReader)
+	{
+		this(s, parseReader.getLineIndex(), parseReader.getCharIndex(), parseReader.getName());	//construct the class with values from the parse reader
+	}
+
 	/**Constructor for a generic parsing error with error message and error location specified.
 	@param s The error message.
 	@param lineIndex The index of the line in which the error occurred.
