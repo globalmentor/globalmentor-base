@@ -6,7 +6,7 @@ import com.garretwilson.rdf.*;
 /**Class representing a MAQRO question.
 @author Garret Wilson
 */
-public class Question extends DefaultRDFResource implements Interaction
+public class Question extends DefaultRDFResource implements MAQROConstants, Interaction
 {
 
 	/**Default constructor.*/
@@ -20,5 +20,14 @@ public class Question extends DefaultRDFResource implements Interaction
 	protected Question(final URI referenceURI)
 	{
 		super(referenceURI);  //construct the parent class
+	}
+
+	/**@return The query part of the question, or <code>null</code> if there is
+		no query.
+	*/
+	public RDFObject getQuery()
+	{
+		return getPropertyValue(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME);	//get the query
+		
 	}
 }

@@ -155,6 +155,21 @@ public class RDFUtilities implements RDFConstants
 	}
 */
 
+	/**Retrieves resources in an RDF data model that is of the requested type.
+	If there are more than one resource with the requested type, it is undefined
+		which one will be returned.
+	@param rdf The RDF data model.
+	@param typeNamespaceURI The XML namespace URI that represents part of the reference URI.
+	@param typeLocalName The XML local name that represents part of the reference URI.
+	@return A resource of the requested type, or <code>null</code> if there are
+		 no resourcees with the specified type.
+	*/
+	public static RDFResource getResourceByType(final RDF rdf, final URI typeNamespaceURI, final String typeLocalName)
+	{
+		final Iterator resourceIterator=getResourcesByType(rdf, typeNamespaceURI, typeLocalName).iterator();	//get an iterator to matching resources
+		return resourceIterator.hasNext() ? (RDFResource)resourceIterator.next() : null;	//return the first resoure, if there are any at all
+	}
+
 	/**Retrieves the resources in an RDF data model that are of the requested type.
 	@param rdf The RDF data model.
 	@param typeNamespaceURI The XML namespace URI that represents part of the reference URI.
