@@ -7,7 +7,7 @@ import java.net.URISyntaxException;
 import javax.swing.text.*;
 import com.garretwilson.awt.ImageUtilities;
 import com.garretwilson.swing.text.xml.XMLComponentImageView;
-import com.garretwilson.swing.text.xml.XMLStyleConstants;
+import com.garretwilson.swing.text.xml.XMLStyleUtilities;
 import com.garretwilson.assess.qti.QTIConstants;
 import com.garretwilson.util.Debug;
 
@@ -35,7 +35,7 @@ public class QTIMaterialImageView extends XMLComponentImageView implements QTICo
 	{
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 //G***del		final String elementName=XMLStyleConstants.getXMLElementName(attributeSet); //get the name of this element
-		final String uri=(String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_URI);  //get the URI of the image
+		final String uri=XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_URI);  //get the URI of the image
 			setHRef(uri);	//set the href to the value we found
 		int height=-1; //assume for now that the image dimensions are not defined in the attributes
 		int width=-1;  //

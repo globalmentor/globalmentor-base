@@ -276,7 +276,7 @@ public class QTIViewFactory extends XMLViewFactory implements QTIConstants
 		if(attributeSet!=null)  //if we have an attribute set
 		{
 			//G***we should probably make sure this element is in our namespace
-			final String elementLocalName=XMLStyleConstants.getXMLElementLocalName(attributeSet); //get the local name of this element
+			final String elementLocalName=XMLStyleUtilities.getXMLElementLocalName(attributeSet); //get the local name of this element
 Debug.trace("QTI local name: ", elementLocalName);  //G***del when works
 		  if(ELEMENT_ASSESSMENT.equals(elementLocalName)) //if this is an assessment
 			{
@@ -358,13 +358,13 @@ Debug.trace("Creating response LID object by itself."); //G***del
 */
 Debug.trace("building render hotspot view");
 				QTIMaterialImageView materialImageView=null;  //try to find the image with which this hotspot is paired
-				final Element presentationElement=XMLStyleConstants.getAncestorElement(element, ELEMENT_PRESENTATION);  //get the presentation element in which this element resides
+				final Element presentationElement=XMLStyleUtilities.getAncestorElement(element, ELEMENT_PRESENTATION);  //get the presentation element in which this element resides
 				if(presentationElement!=null) //if there is an enclosing presentation element
 				{
-					final Element materialElement=XMLStyleConstants.getChildElement(presentationElement, ELEMENT_MATERIAL); //get the child material element, if there is one
+					final Element materialElement=XMLStyleUtilities.getChildElement(presentationElement, ELEMENT_MATERIAL); //get the child material element, if there is one
 					if(materialElement!=null) //if there is a material element in the presentation
 					{
-						final Element materialImageElement=XMLStyleConstants.getChildElement(materialElement, ELEMENT_MATIMAGE); //get the child material image element, if there is one
+						final Element materialImageElement=XMLStyleUtilities.getChildElement(materialElement, ELEMENT_MATIMAGE); //get the child material image element, if there is one
 						if(materialImageElement!=null) //if there is a material element in the presentation
 						{
 							materialImageView=(QTIMaterialImageView)getQTIView(materialImageElement);  //get the view created for the element
@@ -384,7 +384,7 @@ Debug.trace("building response label view");
 				if(attributeSet!=null)  //if we have an attribute set
 				{
 					//G***we should probably make sure this element is in our namespace
-					final String parentElementLocalName=XMLStyleConstants.getXMLElementLocalName(parentAttributeSet); //get the local name of the parent element
+					final String parentElementLocalName=XMLStyleUtilities.getXMLElementLocalName(parentAttributeSet); //get the local name of the parent element
 				  if(ELEMENT_RENDER_CHOICE.equals(parentElementLocalName)) //if the parent is a <render_choice>
 					{
 						final QTIRenderChoiceView renderChoiceView=(QTIRenderChoiceView)getQTIView(parentElement);  //get the choice rendering view already created, if one is available
@@ -395,7 +395,7 @@ Debug.trace("building response label view");
 				{
 */
 						final QTIChoiceResponseLabelView responseLabelView=new QTIChoiceResponseLabelView(element, renderChoiceView);  //construct a response label, passing the enclosing choice rendering view
-						final String ident=((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_IDENT));  //get the ident
+						final String ident=XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT);  //get the ident
 						if(ident!=null && ident.length()>0) //if there is an ident
 						{
 Debug.trace("found ident to display QTI response: ", ident);  //G***del
@@ -405,11 +405,11 @@ Debug.trace("found ident to display QTI response: ", ident);  //G***del
 							if(id!=null)  //if we have an ID
 							{
 */
-							final Element itemElement=XMLStyleConstants.getAncestorElement(element, ELEMENT_ITEM);  //get the item element in which this element resides
+							final Element itemElement=XMLStyleUtilities.getAncestorElement(element, ELEMENT_ITEM);  //get the item element in which this element resides
 							if(itemElement!=null) //if there is an enclosing item element
 							{
 									//get the item's ident
-								final String itemIdent=((String)XMLStyleConstants.getDefinedAttribute(itemElement.getAttributes(), ATTRIBUTE_IDENT));
+								final String itemIdent=XMLStyleUtilities.getXMLAttributeValue(itemElement.getAttributes(), null, ATTRIBUTE_IDENT);
 								if(itemIdent!=null && itemIdent.length()>0) //if there is an item ident
 								{
 	Debug.trace("found item ident to display QTI response: ", itemIdent);  //G***del
@@ -470,8 +470,8 @@ Debug.trace();
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  assessment.setIdent((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_IDENT));  //set the ident
-		  assessment.setTitle((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_TITLE));  //set the title
+		  assessment.setIdent(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
+		  assessment.setTitle(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_TITLE));  //set the title
 		}
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
 		{
@@ -480,7 +480,7 @@ Debug.trace();
 			if(childAttributeSet!=null) //if this child has attributes
 			{
 				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleConstants.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_SECTION.equals(childElementLocalName)) //if this is a section
 				{
 					final Section section=createSection(childElement);  //create a section
@@ -502,8 +502,8 @@ Debug.trace();
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  section.setIdent((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_IDENT));  //set the ident
-		  section.setTitle((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_TITLE));  //set the title
+		  section.setIdent(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
+		  section.setTitle(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_TITLE));  //set the title
 		}
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
 		{
@@ -512,7 +512,7 @@ Debug.trace();
 			if(childAttributeSet!=null) //if this child has attributes
 			{
 				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleConstants.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_ITEM.equals(childElementLocalName)) //if this is an item
 				{
 					final Item item=createItem(childElement);  //create an item
@@ -534,8 +534,8 @@ Debug.trace();
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  item.setIdent((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_IDENT));  //set the ident
-		  item.setTitle((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_TITLE));  //set the title
+		  item.setIdent(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
+		  item.setTitle(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_TITLE));  //set the title
 		}
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
 		{
@@ -544,7 +544,7 @@ Debug.trace();
 			if(childAttributeSet!=null) //if this child has attributes
 			{
 				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleConstants.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_PRESENTATION.equals(childElementLocalName)) //if this is presentation
 				{
 					final Presentation presentation=createPresentation(childElement);  //create presentation
@@ -583,7 +583,7 @@ Debug.trace();
 			if(childAttributeSet!=null) //if this child has attributes
 			{
 				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleConstants.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_RESPONSE_LID.equals(childElementLocalName)) //if this is a logical ID response
 				{
 					final ResponseLID responseLID=createResponseLID(childElement);  //create a logical ID response
@@ -605,7 +605,7 @@ Debug.trace();
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  responseLID.setIdent((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_IDENT));  //set the ident
+		  responseLID.setIdent(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
 //G***fix for cardinality and timing		  item.setTitle((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_TITLE));  //set the title
 		}
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
@@ -615,7 +615,7 @@ Debug.trace();
 			if(childAttributeSet!=null) //if this child has attributes
 			{
 				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleConstants.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_RENDER_CHOICE.equals(childElementLocalName)) //if this is render choice
 				{
 					final RenderChoice renderChoice=createRenderChoice(childElement);  //create a render choice
@@ -649,7 +649,7 @@ Debug.trace();
 			if(childAttributeSet!=null) //if this child has attributes
 			{
 				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleConstants.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_RESPONSE_LABEL.equals(childElementLocalName)) //if this is a response label
 				{
 					final ResponseLabel responseLabel=createResponseLabel(childElement);  //create a response label
@@ -671,7 +671,7 @@ Debug.trace();
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  responseLabel.setIdent((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_IDENT));  //set the ident
+		  responseLabel.setIdent(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
 //G***fix for rshuffle, etc.		  item.setTitle((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_TITLE));  //set the title
 		}
 /*G***fix for ResponseLabel sub-elements
@@ -710,7 +710,7 @@ Debug.trace("Found resprocessing");  //G***del
 			if(childAttributeSet!=null) //if this child has attributes
 			{
 				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleConstants.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_OUTCOMES.equals(childElementLocalName)) //if this is outcomes
 				{
 					final Outcomes outcomes=createOutcomes(childElement);  //create outcomes
@@ -742,7 +742,7 @@ Debug.trace("Found outcomes");  //G***del
 			if(childAttributeSet!=null) //if this child has attributes
 			{
 				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleConstants.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_DECVAR.equals(childElementLocalName)) //if this is a variable declaration
 				{
 					final DecVar decVar=new DecVar(); //G***fix; for now, create a default score variable
@@ -765,7 +765,7 @@ Debug.trace("Found respcondition");  //G***del
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  responseCondition.setTitle((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_TITLE));  //set the title
+		  responseCondition.setTitle(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_TITLE));  //set the title
 		}
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
 		{
@@ -774,7 +774,7 @@ Debug.trace("Found respcondition");  //G***del
 			if(childAttributeSet!=null) //if this child has attributes
 			{
 				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleConstants.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_CONDITIONVAR.equals(childElementLocalName)) //if this is a condition variable group
 				{
 					final ConditionVar conditionVar=createConditionVar(childElement);  //create the condition variable group
@@ -806,7 +806,7 @@ Debug.trace("Found conditionvar");  //G***del
 			if(childAttributeSet!=null) //if this child has attributes
 			{
 				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleConstants.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_VAREQUAL.equals(childElementLocalName)) //if this is variable equal condition
 				{
 					final VarEqual varEqual=createVarEqual(childElement);  //create the variable equal condition
@@ -854,7 +854,7 @@ Debug.trace("Getting ready to create varequal with value: ", element.getDocument
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  setVar.setAction((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_ACTION));  //set the action
+		  setVar.setAction(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_ACTION));  //set the action
 		}
 		try
 		{

@@ -43,13 +43,13 @@ public class QTIRenderHotspotView extends XMLHiddenView implements QTIConstants
 				//G***maybe put some of this into common routines
 			boolean allowMultipleSelections=false;  //start out assuming we won't allow multiple selections
 				//get the enclosing logical ID response element
-			final Element responseLIDElement=XMLStyleConstants.getAncestorElement(element, ELEMENT_RESPONSE_LID);
+			final Element responseLIDElement=XMLStyleUtilities.getAncestorElement(element, ELEMENT_RESPONSE_LID);
 			final AttributeSet responseLIDAttributeSet=responseLIDElement!=null ?
 					responseLIDElement.getAttributes() : null;	//get the attributes of the logical ID response element
 			if(responseLIDAttributeSet!=null)  //if the logical ID response has attributes
 			{
 					//get the cardinality defined for the response LID G***why not just store the responseLID in the view?
-				final String cardinality=(String)XMLStyleConstants.getDefinedAttribute(responseLIDAttributeSet, ATTRIBUTE_RCARDINALITY);
+				final String cardinality=XMLStyleUtilities.getXMLAttributeValue(responseLIDAttributeSet, null, ATTRIBUTE_RCARDINALITY);
 					//if we allow multiple selections
 				if(MULTIPLE_CARDINALITY.equals(cardinality) || ORDERED_CARDINALITY.equals(cardinality))
 				{
@@ -63,11 +63,11 @@ public class QTIRenderHotspotView extends XMLHiddenView implements QTIConstants
 				final Element childElement=element.getElement(i); //get a reference to this child element
 				final AttributeSet childAttributeSet=childElement.getAttributes();  //get the child element's attribute set
 				//G***we should probably make sure this element is in our namespace
-				final String elementLocalName=XMLStyleConstants.getXMLElementLocalName(childAttributeSet); //get the local name of this element
+				final String elementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this element
 				if(ELEMENT_RESPONSE_LABEL.equals(elementLocalName))  //if this element is a <response_label>
 				{
 						//get the area type G***use namespaces here
-					final String areaType=(String)XMLStyleConstants.getDefinedAttribute(childAttributeSet, ATTRIBUTE_RAREA);
+					final String areaType=(String)XMLStyleUtilities.getDefinedAttribute(childAttributeSet, ATTRIBUTE_RAREA);
 						//get the text describing the area
 					try
 					{
