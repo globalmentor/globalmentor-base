@@ -175,6 +175,7 @@ public class QTIItemPanel extends JPanel implements Verifiable
 			return false; //show that verification failed
 		}
 		return true;  //if we couldn't find any problems, verification succeeded
+//TODO change this panel to inherit from BasicPanel, and verify the parent class (removing the implements Verifiable)		return super.verify();  //if we couldn't find any problems, verify the parent class
 	}
 
 }

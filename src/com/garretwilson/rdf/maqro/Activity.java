@@ -9,7 +9,7 @@ import com.garretwilson.rdf.*;
 	The activity, besides containing interactions, is an interaction itself.
 @author Garret Wilson
 */
-public class Activity extends DefaultRDFResource implements Interaction, MAQROConstants
+public class Activity extends Interaction
 {
 
 	/**Default constructor.*/
@@ -28,18 +28,18 @@ public class Activity extends DefaultRDFResource implements Interaction, MAQROCo
 	/**@return The selection criteria, or <code>null</code> if there is no
 		selection criteria indicated or if it is not of the correct type.
 	*/
-	public SelectionCriteria getSelectionCriteria()
+	public Selection getSelect()
 	{
-		final RDFObject selectionCriteria=getPropertyValue(MAQRO_NAMESPACE_URI, SELECTION_PROPERTY_NAME);	//get the maqro:selection property value
-		return selectionCriteria instanceof SelectionCriteria ? (SelectionCriteria)selectionCriteria : null;	//return the selection criteria if there are any
+		final RDFObject selectionCriteria=getPropertyValue(MAQRO_NAMESPACE_URI, SELECT_PROPERTY_NAME);	//get the maqro:selection property value
+		return selectionCriteria instanceof Selection ? (Selection)selectionCriteria : null;	//return the selection criteria if there are any
 	}
 
 	/**Sets the selection criteria for the activity.
 	@param selectionCriteria The selection criteria
 	*/
-	public void setSelectionCriteria(final SelectionCriteria selectionCriteria)
+	public void setSelect(final Selection selectionCriteria)
 	{
-		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, SELECTION_PROPERTY_NAME, selectionCriteria);	//set the selection criteria
+		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, SELECT_PROPERTY_NAME, selectionCriteria);	//set the selection criteria
 	}
 
 	/**@return The list of interactions for this activity.

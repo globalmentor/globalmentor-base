@@ -3,7 +3,10 @@ package com.garretwilson.util;
 import java.util.*;
 
 /**An iterator that randomly iterates a list.
-	A subset of the list can optionally be returned.
+<p>A subset of the list can optionally be returned.</p>
+<p>By default the iterator returns a random selection in random order. To
+	iterate a random subset in non-random list order, call
+	<code>setRandomOrder</code> with <code>false</code>. TODO fix setRandomOrder()</p>
 @author Garret Wilson
 */
 public class ListRandomIterator implements Iterator 

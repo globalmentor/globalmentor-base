@@ -371,6 +371,7 @@ public class QTIResponseTypePanel extends JPanel implements Verifiable
 				return false;
 		}
 		return true;  //if we couldn't find any problems, verification succeeded
+//	TODO change this panel to inherit from BasicPanel, and verify the parent class (removing the implements Verifiable)		return super.verify();  //if we couldn't find any problems, verify the parent class
 	}
 
 	/**Creates and returns the appropriate default response object from the given

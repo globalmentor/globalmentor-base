@@ -7,7 +7,7 @@ import com.garretwilson.rdf.*;
 /**Class representing a MAQRO question.
 @author Garret Wilson
 */
-public class Question extends DefaultRDFResource implements MAQROConstants, Interaction
+public class Question extends Interaction
 {
 
 	/**Default constructor.*/
