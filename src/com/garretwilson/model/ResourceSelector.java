@@ -3,12 +3,13 @@ package com.garretwilson.model;
 import java.io.IOException;
 import java.net.URI;
 import com.garretwilson.io.URIAccessible;
+import com.garretwilson.util.prefs.Preferenceable;
 
 /**An interface to an object that allows resources to be selected for input or output.
 @param <R> The type of resource being selected.
 @author Garret Wilson
 */
-public interface ResourceSelector<R extends Resource> extends URIAccessible
+public interface ResourceSelector<R extends Resource> extends URIAccessible, Preferenceable
 {
 
 	/**Retrieves a description of the resource with the given reference URI.
