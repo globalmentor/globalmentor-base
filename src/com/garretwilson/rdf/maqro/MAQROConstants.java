@@ -43,6 +43,8 @@ public interface MAQROConstants
 	public final static String ORDER_DESCRIPTION_CLASS_NAME="OrderDescription";
 	/**The local name of maqro:Question.*/
 	public final static String QUESTION_CLASS_NAME="Question";
+	/**The local name of maqro:Result.*/
+	public final static String RESULT_CLASS_NAME="Result";
 	/**The local name of maqro:SelectDescription.*/
 	public final static String SELECT_DESCRIPTION_CLASS_NAME="SelectDescription";
 
@@ -66,11 +68,17 @@ public interface MAQROConstants
 	/**The query of a question. The local name of maqro:query.*/
 	public final static String QUERY_PROPERTY_NAME="query";
 
+		//MAQRO result property names
+	/**A response to an interaction. The local name of maqro:response.*/
+	public final static String RESPONSE_PROPERTY_NAME="response";
+
 		//MAQRO ontology property names
 	/**The number of choices to select. The local name of maqro:choiceCount.*/
 	public final static String CHOICE_COUNT_PROPERTY_NAME="choiceCount";
 	/**The number of interactions to select. The local name of maqro:questionCount.*/
 	public final static String QUESTION_COUNT_PROPERTY_NAME="questionCount";
+	/**Identifies an interaction. The local name of maqro:interaction.*/
+	public final static String INTERACTION_PROPERTY_NAME="interaction";
 	/**A interactions of an activity. The local name of maqro:interactions.*/
 	public final static String INTERACTIONS_PROPERTY_NAME="interactions";
 	/**The order criteria of an activity. The local name of maqro:order.*/

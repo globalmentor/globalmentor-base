@@ -39,7 +39,7 @@ public class DefaultResource implements Resource
 	/**If <code>object</code> is another <code>Resource</code>, compares the
 		resource reference URIs.
 		Otherwise, compares the objects using the superclass functionality.
-	@param object The object with which to compare this RDF resource; should be
+	@param object The object with which to compare this  resource; should be
 		another resource.
 	@return <code>true<code> if this resource equals that specified in
 		<code>object</code>.
@@ -57,30 +57,7 @@ Debug.assert(!(object instanceof String), "DefaultResource no longer allows equa
 				final URI otherReferenceURI=((Resource)object).getReferenceURI();	//get the other reference URI
 				if(otherReferenceURI!=null)	//if we can compare URIs
 					return getReferenceURI().equals(otherReferenceURI);	//see if the URIs match
-//G***del when works				return getReferenceURI().equals(((Resource)object).getReferenceURI());  //compare the reference URIs
-//G***fix, as null reference URIs are allowed here
-	/*G***del when works; we no longer allow null reference URIs
-			  if(getReferenceURI()!=null && ((Resource)object).getReferenceURI()!=null) //if neither reference URI is null
-					return getReferenceURI().equals(((Resource)object).getReferenceURI());  //compare the reference URIs
-			  else  //if one of the reference URIs is null
-				{
-					if(getReferenceURI()!=null || ((Resource)object).getReferenceURI()!=null) //if one of the reference URIs is not null
-					  return false; //the resources aren't equal
-					else  //if both reference URIs are null
-					  return this==object; //just compare object reference pointers G***we could compare actual properties, here
-				}
-	*/
 			}
-/*G***del when not needed
-			else if(object instanceof URI)	//if we're being compared with a URI
-			{
-				return getReferenceURI()!=null ? getReferenceURI().equals((URI)object) : false; //compare our reference URI with the URI
-			}
-			else if(object instanceof String)	//if we're being compared with a string
-			{
-				return getReferenceURI()!=null ? getReferenceURI().toString().equals((String)object) : false; //compare our reference URI with the string
-			}
-*/
 		}
 		return super.equals(object);	//if we're being compared with anything else or have a null reference URI, use the default compare
 	}

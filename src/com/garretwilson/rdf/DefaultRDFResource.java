@@ -3,6 +3,7 @@ package com.garretwilson.rdf;
 import java.lang.ref.*;
 import java.net.URI;
 import java.util.*;
+import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.util.*;
 
 /**Represents the default implementation of an RDF resource.
@@ -437,6 +438,38 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		namespaceURI=newNamespaceURI; //store the namespace URI
 		localName=newLocalName; //store the local name
 		setRDF(rdf);	//associate the resource with the given RDF data model, if any
+	}
+
+	/**Returns a hash code value for the resource. 
+		If this resource has a reference URI, the default hash code is returned
+		(i.e. the hash code of the refeference URI). If this resource has no
+		reference URI, the number of properties is returned.
+	@return The hash code of the reference URI, or the number of properties if
+		this resource has no reference URI.
+	*/
+	public int hashCode()
+	{
+		return getReferenceURI()!=null ? super.hashCode() : getPropertyCount();	//return the normal hash code if we have a reference URI, or the number of properties if we have no reference URI 
+	}
+
+	/**If this resource has a reference URI, compares using the superclass
+		functionality (comparing reference URIs). Otherwise, if the other object
+		is also an RDF resource, compares properties.
+	@param object The object with which to compare this RDF resource; should be
+		another resource.
+	@return <code>true<code> if this resource equals that specified in
+		<code>object</code>.
+	@see #getReferenceURI
+	*/
+	public boolean equals(final Object object)
+	{
+		if(getReferenceURI()==null && object instanceof RDFResource)	//if we don't have a reference URI, and the other object is an RDF resource
+		{
+			//TODO compare all properties; right now, we only compare rdf:value so that other code will work
+			final RDFResource rdfResource=(RDFResource)object;	//cast the other object to an RDF resource
+			return ObjectUtilities.equals(RDFUtilities.getValue(this), RDFUtilities.getValue(rdfResource));	//compare values			
+		}
+		return super.equals(object);	//if we have a reference URI or the other object isn't an RDF resource, do a default comparison (usually using reference URIs)
 	}
 
 	/**Compares this object to another object.

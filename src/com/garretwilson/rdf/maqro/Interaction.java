@@ -16,7 +16,7 @@ public abstract class Interaction extends DefaultRDFResource implements MAQROCon
 		super();	//construct the parent class
 	}
 	
-	/**Constructs a question with a reference URI.
+	/**Reference URI constructor.
 	@param referenceURI The reference URI for the new resource.
 	*/
 	public Interaction(final URI referenceURI)
