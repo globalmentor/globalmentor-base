@@ -13,19 +13,19 @@ public class Address
 	/**Indicates no address type is specified.*/
 	public final static int NO_ADDRESS_TYPE=0;
 	/**A domestic delivery address.*/
-	public final static int DOMESTIC_ADDRESS_TYPE=1;
+	public final static int DOMESTIC_ADDRESS_TYPE=1<<0;
 	/**An international delivery address.*/
-	public final static int INTERNATIONAL_ADDRESS_TYPE=2;
+	public final static int INTERNATIONAL_ADDRESS_TYPE=1<<1;
 	/**A postal delivery address.*/
-	public final static int POSTAL_ADDRESS_TYPE=4;
+	public final static int POSTAL_ADDRESS_TYPE=1<<2;
 	/**A parcel delivery address.*/
-	public final static int PARCEL_ADDRESS_TYPE=8;
+	public final static int PARCEL_ADDRESS_TYPE=1<<3;
 	/**A delivery address for a residence.*/
-	public final static int HOME_ADDRESS_TYPE=16;
+	public final static int HOME_ADDRESS_TYPE=1<<4;
 	/**A delivery address for a place of work.*/
-	public final static int WORK_ADDRESS_TYPE=32;
+	public final static int WORK_ADDRESS_TYPE=1<<5;
 	/**The preferred delivery address.*/
-	public final static int PREFERRED_ADDRESS_TYPE=64;
+	public final static int PREFERRED_ADDRESS_TYPE=1<<6;
 
 	/**The default delivery address type.*/
 	public final static int DEFAULT_ADDRESS_TYPE=INTERNATIONAL_ADDRESS_TYPE|POSTAL_ADDRESS_TYPE|PARCEL_ADDRESS_TYPE|WORK_ADDRESS_TYPE;
@@ -40,8 +40,8 @@ public class Address
 		public int getAddressType() {return addressType;}
 
 		/**Sets the delivery address type.
-		@param addressType The new delivery address type, one of the
-			<code>XXX_ADDRESS_TYPE</code> constants.
+		@param addressType The delivery address type, one or more of the
+			<code>XXX_ADDRESS_TYPE</code> constants ORed together.
 		*/
 		public void setAddressType(final int addressType) {this.addressType=addressType;}
    	
@@ -168,8 +168,8 @@ public class Address
 	@param region The region (e.g. state or province), or <code>null</code> for no region.
 	@param postalCode The postal code, or <code>null</code> for no postal code.
 	@param countryName The country name, or <code>null</code> for no country name.
-	@param addressType The new delivery address type, one of the
-		<code>XXX_ADDRESS_TYPE</code> constants.
+	@param addressType The delivery address type, one or more of the
+		<code>XXX_ADDRESS_TYPE</code> constants ORed together.
 	*/
 	public Address(final String postOfficeBox, final String[] extendedAddresses, final String[] streetAddresses, final String locality, final String region, final String postalCode, final String countryName, final int addressType)
 	{
