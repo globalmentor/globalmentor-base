@@ -216,7 +216,7 @@ public class HTTPConstants
   public static final int SC_GONE=410;
 
   /**Status code (411) indicating that the server refuses to accept the request without a defined Content-Length.*/
-  public static final int SC_LengthRequired=411;
+  public static final int SC_LENGTH_REQUIRED=411;
 
   /**
    * Status code (412) indicating the precondition given in one
@@ -231,7 +231,7 @@ public class HTTPConstants
    * process a request because the request entity is larger
    * than the server is willing or able to process.
    */
-  public static final int SC_REQUEST_TOO_LONG = 413;
+  public static final int SC_REQUEST_ENTITY_TOO_LARGE = 413;
 
 
   /**
