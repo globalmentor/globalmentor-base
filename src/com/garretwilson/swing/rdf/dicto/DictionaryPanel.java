@@ -10,10 +10,13 @@ import com.garretwilson.swing.text.xml.XMLEditorKit;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 import com.garretwilson.text.xml.xhtml.XHTMLUtilities;
+import com.garretwilson.text.xml.xlink.XLinkConstants;
+import com.garretwilson.text.xml.xlink.XLinkUtilities;
 import com.garretwilson.util.Debug;
 import com.garretwilson.io.MediaType;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dicto.*;
+import com.garretwilson.rdf.xpackage.XPackageUtilities;
 import com.globalmentor.mentoract.reader.BookApplicationPanel;
 
 import org.w3c.dom.*;
@@ -123,10 +126,45 @@ public class DictionaryPanel extends RDFPanel
 								//TODO check for null for each of the entry properties
 							final Entry entry=(Entry)entryIterator.next();	//get the next entry
 							final RDFPlainLiteral orthography=entry.getOrthography();	//get the entry orthography
+							RDFPlainLiteral plainLiteralPronunciation=null;	//we'll see if there is pronunciation text
+							RDFResource resourcePronunciation=null;	//we'll see if there is a pronunciation object
+							final Iterator pronunciationIterator=entry.getPronunciationIterator();	//get an iterator to all pronunciations
+							while(pronunciationIterator.hasNext())	//while there are more pronunciations
+							{
+								final Object pronunciation=pronunciationIterator.next();	//get the next pronunciation
+								if(pronunciation instanceof RDFPlainLiteral && plainLiteralPronunciation==null)	//if this is text pronunciation and we don't have any, yet
+								{
+									plainLiteralPronunciation=(RDFPlainLiteral)pronunciation;	//save the text pronunciation
+								}
+								else if(pronunciation instanceof RDFResource && resourcePronunciation==null)	//if this is a resouce pronunciation and we don't have one, yet
+								{
+									resourcePronunciation=(RDFResource)pronunciation;	//save the resource pronunciation
+								}
+							}
+							final StringBuffer orthographyStringBuffer=new StringBuffer(orthography.toString());	//deterine the orthography HTML
+/*G***del
+							if(resourcePronunciation!=null)	//if we have a pronunciation resource
+							{
+								final String href=XPackageUtilities.getLocationHRef(resourcePronunciation);	//see if the resource has a link to a resource
+								if(href!=null)	//if there is a link to a resouce
+								{
+									orthographyStringBuffer.insert(0, "<a href="+href+">");	//prepend the orthography with a link TODO use constants
+									orthographyStringBuffer.append("</a>");	//postpend the orthography with a link TODO use constants
+								}
+							}
+*/
 							final Element dtElement=XMLUtilities.appendElement(dlElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(),
 									XHTMLConstants.ELEMENT_DT, orthography.toString());	//show the entry orthography TODO add xml:lang to all of these terms
+							if(resourcePronunciation!=null)	//if we have a pronunciation resource
+							{
+								final String href=XPackageUtilities.getLocationHRef(resourcePronunciation);	//see if the resource has a link to a resource
+								if(href!=null)	//if there is a link to a resouce
+								{
+									XLinkUtilities.setXLink(dtElement, XLinkConstants.SIMPLE_TYPE, href);	//link the term to the linked pronunciation resource
+								}
+							}
 							final Element ddElement=XMLUtilities.appendElement(dlElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(),
-									XHTMLConstants.ELEMENT_DT);	//create the definition element
+									XHTMLConstants.ELEMENT_DD);	//create the definition element
 							final RDFPlainLiteral transliteration=entry.getTransliteration();	//get the entry transliteration
 							XMLUtilities.appendElement(ddElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(),
 									XHTMLConstants.ELEMENT_EM, transliteration.toString());	//show the entry transliteration TODO add xml:lang to all of these terms
@@ -134,8 +172,8 @@ public class DictionaryPanel extends RDFPanel
 							XMLUtilities.appendText(ddElement, " "+translation);	//show the translation TODO use a constant for the space
 						}
 					}
-						//show the XML in the book
-					book.setXML(xhtmlDocument, null, new MediaType(MediaType.APPLICATION_XHTML_XML));
+						//show the XML in the book, specifying the base URI of the RDF data model
+					book.setXML(xhtmlDocument, getRDF().getBaseURI(), new MediaType(MediaType.APPLICATION_XHTML_XML));
 //G***del					final XMLDocument swingDocument=(XMLDocument)wysiwygTextPane.getDocument();	//get the Swing XML document G***this may change if setXML() moves from the editor kit to the document 
 						//put the XHTML into the WYSIWYG text pane
 //G***del					((XMLEditorKit)wysiwygTextPane.getEditorKit()).setXML(xhtmlDocument, null, new MediaType(MediaType.APPLICATION_XHTML_XML), swingDocument);

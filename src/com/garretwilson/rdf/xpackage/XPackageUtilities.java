@@ -40,7 +40,7 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 		final RDFResource locationResource=RDFUtilities.locateResource(resource, null); //create an anonymous location resource
 //G***del; the location doesn't have a type		addType(rdf, locationResource, XPACKAGE_NAMESPACE_URI, LOCATION);  //set the location type to xpackage:location
 			//add the XLink:href to the location
-		addProperty(locationResource, XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.HREF, href);
+		addProperty(locationResource, XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.ATTRIBUTE_HREF, href);
 			//add the location property to the resource
 		addProperty(resource, XPACKAGE_NAMESPACE_URI, LOCATION_PROPERTY_NAME, locationResource);
 		return locationResource;  //return the location resource we created
@@ -285,7 +285,7 @@ public class XPackageUtilities extends RDFUtilities implements XPackageConstants
 //G***del Debug.trace("found location resource: ", locationResource);
 		if(locationResource!=null)  //if there this resource has a location
 		{
-			final RDFLiteral hrefLiteral=(RDFLiteral)locationResource.getPropertyValue(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.HREF);  //get the XLink href value
+			final RDFLiteral hrefLiteral=(RDFLiteral)locationResource.getPropertyValue(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.ATTRIBUTE_HREF);  //get the XLink href value
 	  	return hrefLiteral!=null ? hrefLiteral.getLexicalForm() : null;  //return the href value or null if there is no href
 		}
 		else  //if there is no location

@@ -566,12 +566,15 @@ Debug.trace("prefix: ", prefix); //G***del
 		the last non-alphanumeric character is used as a delimiter.
 	@param resource The resource for which a namespace URI should be determined.
 	@return The namespace URI of the resource reference URI.
-	 */
+	*/
 	public static URI getNamespaceURI(final RDFResource resource)
 	{
 		URI namespaceURI=resource.getNamespaceURI();	//get the namespace URI of which the resource has record TODO remove storing namespaces
 		if(namespaceURI==null)	//if the resource doesn't know its namespace URI
 			namespaceURI=RDFUtilities.getNamespaceURI(resource.getReferenceURI());	//try to get the namespace URI from the resource reference URI
+
+			//TODO check somewhere else that the namespace was defined in the parsed document---otherwise, only the local name will be set, even for the reference URI
+
 		Debug.assert(namespaceURI!=null, "Could not determine namespace URI for "+resource.getReferenceURI());	//TODO fix
 		return namespaceURI;	//return the namespace URI we found
 	}

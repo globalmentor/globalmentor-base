@@ -30,8 +30,10 @@ public interface DictoConstants
 	public final static String LANGUAGE_PROPERTY_NAME="language";
 	/**The number of an entry. The local name of dicto:number.*/
 	public final static String NUMBER_PROPERTY_NAME="number";
-	/**The orthography of an entry. The local name of dicto:number.*/
+	/**The orthography of an entry. The local name of dicto:orthography.*/
 	public final static String ORTHOGRAPHY_PROPERTY_NAME="orthography";
+	/**The pronunciation of an entry. The local name of dicto:pronunciation.*/
+	public final static String PRONUNCIATION_PROPERTY_NAME="pronunciation";
 	/**The part of speech of an entry. The local name of dicto:speechPart.*/
 	public final static String SPEECH_PART_PROPERTY_NAME="speechPart";
 	/**The translation of an entry. The local name of dicto:translation.*/

@@ -1,6 +1,8 @@
 package com.garretwilson.io;
 
-/**Constant values related to MIME media types.
+/**Constant values related to MIME media types, as originally defined in
+	<a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>,
+	"MIME Part 2: Media Types".
 @author Garret Wilson
 */
 public interface MediaTypeConstants
@@ -53,15 +55,20 @@ public interface MediaTypeConstants
 	public final static String X_BITMAP="x-bitmap";
 	public final static String IMAGE_X_BITMAP=IMAGE+DIVIDER+X_BITMAP;
 
-		//audio media types
-	/**Single channel audio encoded using 8-bit ISDN mu-law [PCM] at a sample rate of 8000 Hz.*/
-	public final static String BASIC="basic";
-	public final static String AUDIO_BASIC=AUDIO+DIVIDER+BASIC;
-
 		//video media types
 	/**An MPEG video.*/
 	public final static String MPEG="mpeg";
 	public final static String VIDEO_MPEG=VIDEO+DIVIDER+MPEG;
+
+		//audio media types
+	/**Single channel audio encoded using 8-bit ISDN mu-law [PCM] at a sample rate of 8000 Hz.*/
+	public final static String BASIC="basic";
+	public final static String AUDIO_BASIC=AUDIO+DIVIDER+BASIC;
+	/**MPEG 2 layer 3 (MP3); see <a href="http://www.rfc-editor.org/rfc/rfc3003.txt">RFC 3003</a>.*/
+	public final static String AUDIO_MPEG=AUDIO+DIVIDER+MPEG;
+	/**Microsoft Windows Wave audio format.*/
+	public final static String X_WAV="x-wav";
+	public final static String AUDIO_WAV=AUDIO+DIVIDER+X_WAV;
 
 		//application media types
 	/**A stream of bytes.*/
@@ -79,6 +86,9 @@ public interface MediaTypeConstants
 	/**A MAQRO question.*/
 	public final static String X_QRO_RDF_XML="x-qro+rdf+xml";
 	public final static String APPLICATION_QRO=APPLICATION+DIVIDER+X_QRO_RDF_XML;
+	/**An Ogg Vorbis file; see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>.*/
+	public final static String OGG="ogg";
+	public final static String APPLICATION_OGG=APPLICATION+DIVIDER+OGG;
 	/**An XML application.*/
 	public final static String APPLICATION_XML=APPLICATION+DIVIDER+XML;
 	/**An XHTML application.*/

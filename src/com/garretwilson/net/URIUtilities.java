@@ -319,6 +319,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	{
 		try
 		{
+//TODO we probably want to check for the condition java.lang.IllegalArgumentException: URI is not absolute
 			return uri!=null ? uri.toURL() : null;	//convert the URI to a URL, if we have a URI	
 		}
 		catch (MalformedURLException e)	//if there was an error converting to a URL
