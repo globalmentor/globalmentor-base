@@ -22,55 +22,16 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	*/
 	public RDFListResource(final URI newReferenceURI)
 	{
-		this((RDF)null, newReferenceURI, (URI)null, (String)null); //construct the class with no data model 
-	}
-
-	/**Convenience constructor that constructs an RDF sequence resource using a
-		namespace URI and local name which will be combined to form the reference
-		URI.
-	@param newNamespaceURI The XML namespace URI used in the serialization.
-	@param newLocalName The XML local name used in the serialization.
-	*/
-	public RDFListResource(final URI newNamespaceURI, final String newLocalName)
-	{
-		this((RDF)null, newNamespaceURI, newLocalName); //construct the class with no data model
-	}
-
-	/**Reference URI and optional namespace URI and local name constructor.
-	@param newReferenceURI The reference URI for the new resource.
-	@param newNamespaceURI The XML namespace URI used in the serialization, or
-		<code>null</code> if the namespace URI is not known.
-	@param newLocalName The XML local name used in the serialization, or
-		<code>null</code> if the local name is not known.
-	*/
-	protected RDFListResource(final URI newReferenceURI, final URI newNamespaceURI, final String newLocalName)
-	{
-		this(null, newReferenceURI, newNamespaceURI, newLocalName); //construct the class with no data model
-	}
-
-	/**Data model andn optional namespace URI and local name constructor.
-	@param rdf The RDF data model to use as a factory for creating properties.
-	@param newNamespaceURI The XML namespace URI used in the serialization, or
-		<code>null</code> if the namespace URI is not known.
-	@param newLocalName The XML local name used in the serialization, or
-		<code>null</code> if the local name is not known.
-	*/
-	public RDFListResource(final RDF rdf, final URI newNamespaceURI, final String newLocalName)
-	{
-		this(rdf, RDFUtilities.createReferenceURI(newNamespaceURI, newLocalName), newNamespaceURI, newLocalName); //construct the class with a reference URI constructed from the namespace URI and local name
+		this((RDF)null, newReferenceURI); //construct the class with no data model 
 	}
 
 	/**Data model, reference URI, and optional namespace URI and local name constructor.
 	@param rdf The RDF data model to use as a factory for creating properties.
 	@param newReferenceURI The reference URI for the new resource.
-	@param newNamespaceURI The XML namespace URI used in the serialization, or
-		<code>null</code> if the namespace URI is not known.
-	@param newLocalName The XML local name used in the serialization, or
-		<code>null</code> if the local name is not known.
 	*/
-	protected RDFListResource(final RDF rdf, final URI newReferenceURI, final URI newNamespaceURI, final String newLocalName)
+	protected RDFListResource(final RDF rdf, final URI newReferenceURI)
 	{
-		this(rdf, newReferenceURI, newNamespaceURI, newLocalName, null, null); //construct the class without a first or next resource
+		this(rdf, newReferenceURI, null, null); //construct the class without a first or next resource
 	}
 
 	/**Constructs an anonymous RDF list resource with a single element.
@@ -87,7 +48,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	*/
 	public RDFListResource(final RDF rdf)
 	{
-		this(rdf, null); //construct the class no first resource specified
+		this(rdf, (RDFResource)null); //construct the class no first resource specified
 	}
 
 	/**Constructs an anonymous RDF list resource with a single element.
@@ -107,7 +68,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	*/
 	public RDFListResource(final URI newReferenceURI, final RDFResource first)
 	{
-		this(newReferenceURI, first, new RDFListResource(RDF_NAMESPACE_URI, NIL_RESOURCE_NAME));	//create a list with no other elements
+		this(newReferenceURI, first, new RDFListResource(NIL_RESOURCE_URI));	//create a list with no other elements
 	}
 
 	/**Constructs an RDF list resource with a single element.
@@ -118,7 +79,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	*/
 	public RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFResource first)
 	{
-		this(rdf, newReferenceURI, first, new RDFListResource(rdf, RDF_NAMESPACE_URI, NIL_RESOURCE_NAME));	//create a list with no other elements
+		this(rdf, newReferenceURI, first, new RDFListResource(rdf, NIL_RESOURCE_URI));	//create a list with no other elements
 	}
 
 	/**Constructs an anonymous RDF list resource with a current element and the
@@ -152,34 +113,14 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	@param rest The list resource representing the rest of the list, or <code>null</code>
 		if no rest should be specified.
 	*/
-	public RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFResource first, final RDFResource rest)
+	protected RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFResource first, final RDFResource rest)
 	{
-		this(rdf, newReferenceURI, null, null, first, rest);	//construct the class without knowing the namespace URI and local name
-	}
-
-	/**Constructs an RDF list resource with a current element and the rest of the list.
-	@param rdf The RDF data model to use as a factory for creating properties.
-	@param newReferenceURI The reference URI for the new resource.
-	@param newNamespaceURI The XML namespace URI used in the serialization, or
-		<code>null</code> if the namespace URI is not known.
-	@param newLocalName The XML local name used in the serialization, or
-		<code>null</code> if the local name is not known.
-	@param first The first element of the list, or <code>null</code> if there
-		should be no first element.
-	@param rest The list resource representing the rest of the list, or <code>null</code>
-		if no rest should be specified.
-	*/
-	protected RDFListResource(final RDF rdf, final URI newReferenceURI, final URI newNamespaceURI, final String newLocalName, final RDFResource first, final RDFResource rest)
-	{
-		super(rdf, newReferenceURI, newNamespaceURI, newLocalName); //construct the list with the reference URI and namespace URI and local name information
+		super(rdf, newReferenceURI); //construct the list with the reference URI and namespace URI and local name information
 		if(first!=null)	//if there is a first element
 			setFirst(first);	//set the first element
 		if(rest!=null)	//if a rest is specified
 			setRest(rest);	//set the rest of the list
 	}
-
-
-
 
 	/**Constructs an anonymous RDF list resource with the contents of a collection.
 	@param rdf The RDF data model to use as a factory for creating properties.
@@ -217,7 +158,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 		}
 		else	//if the collection is empty
 		{
-			listResource=new RDFListResource(rdf, RDF_NAMESPACE_URI, NIL_RESOURCE_NAME);	//use the nil list
+			listResource=new RDFListResource(rdf, NIL_RESOURCE_URI);	//use the nil list
 		}
 		return listResource;	//return whichever list resource we created or used
 	}
@@ -341,7 +282,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	/**@return A new instance of an RDF list resource representing the nil resource.*/
 	protected RDFListResource createNil()
 	{
-		return new RDFListResource(getRDF(), RDF_NAMESPACE_URI, NIL_RESOURCE_NAME);	//create a nil list resource
+		return new RDFListResource(getRDF(), NIL_RESOURCE_URI);	//create a nil list resource
 	}
 
 	/**Returns the number of elements in this list.  If this list contains more

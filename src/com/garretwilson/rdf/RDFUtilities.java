@@ -16,6 +16,11 @@ import org.w3c.dom.*;
 public class RDFUtilities implements RDFConstants
 {
 
+	/**The start of a reference URI from the rdf:li element qualified
+		name (i.e. "rdfNamespaceURI#li_"), which we'll use to check for items
+	*/
+	protected final static String RDF_LI_REFERENCE_PREFIX=createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX).toString();
+
 	/**Sets a typed literal property from lexical form and datatype URI by
 		creating a <code>RDFPropertyValuePair</code> from the given property and
 		value. This is a convenience method that allows specification
@@ -138,6 +143,18 @@ public class RDFUtilities implements RDFConstants
 		  stringBuffer.append(namespaceURI);  //append the namespace URI
 		stringBuffer.append(localName); //append the local name
 		return URI.create(stringBuffer.toString()); //return a URI from the the string we constructed; if somehow concatenating the strings does not create a valid URI, a runtime exception will be thrown
+	}
+
+	/**Determines if the given property reference URI is an RDF container member
+		reference&mdash;i.e. it begins with <code>rdf:_</code>.
+	@param propertyReferenceURI The reference URI of the predicate of an RDF
+		statement.
+	@return <code>true</code> if the property reference URI represents a
+		container member.
+	*/
+	public static boolean isContainerMemberPropertyReference(final URI propertyReferenceURI)
+	{
+		return propertyReferenceURI.toString().startsWith(RDF_LI_REFERENCE_PREFIX);	//return whether this property name begins with rdf:_
 	}
 
 	/**Locates and returns an existing resource or creates a new resource 

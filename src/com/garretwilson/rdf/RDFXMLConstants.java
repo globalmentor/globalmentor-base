@@ -11,8 +11,6 @@ public interface RDFXMLConstants
 	public final static String ELEMENT_RDF="RDF";
 	/**The name of the RDF description element.*/
 	public final static String ELEMENT_DESCRIPTION="Description";
-	/**The name of the RDF container member element.*/
-	public final static String ELEMENT_LI="li";
 
 		//RDF XML attributes
 	/**The name of the rdf:about attribute.*/

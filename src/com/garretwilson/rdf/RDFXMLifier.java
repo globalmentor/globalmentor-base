@@ -126,9 +126,6 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants
 	*/
 //G***fix	private boolean isSerializationDeferable=true;
 
-	/**A general <code>rdf:type</code> property to use in comparisons.*/
-	protected final static URI TYPE_PROPERTY_REFERENCE_URI;	//initialized below
-
 	/**Indicates literals should be serialized as attributes by default.*/
 //G***del	public final static boolean LITERAL_ATTRIBUTE_SERIALIZATION=1;
 	/**Indicates literals should be serialized as elements by default.*/
@@ -476,12 +473,8 @@ Debug.trace("creating property element for property: ", propertyResource);  //G*
 		if(RDF_NAMESPACE_URI.equals(namespaceURI))  //if this is the RDF namespace
 		{
 			if(localName.startsWith(CONTAINER_MEMBER_PREFIX)) //if this is one of the rdf:li_XXX members
-				localName=ELEMENT_LI; //just use the normal rdf:li property name---the order is implicit in the serialization
+				localName=LI_PROPERTY_NAME; //just use the normal rdf:li property name---the order is implicit in the serialization
 		}
-
-		if("expect".equals(localName))	//G***del; debugging
-			System.out.println("found expect");
-
 		qualifiedName=XMLUtilities.createQualifiedName(prefix, localName);  //create a qualified name for the element
 		final Element propertyElement=document.createElementNS(namespaceURI.toString(), qualifiedName);  //create an element from the property resource
 		if(propertyValue instanceof RDFResource) //if the property value is a resource
@@ -688,7 +681,7 @@ Debug.trace("prefix: ", prefix); //G***del
 				if(RDF_NAMESPACE_URI.equals(namespaceURI))  //if this is the RDF namespace
 				{
 					if(localName.startsWith(CONTAINER_MEMBER_PREFIX)) //if this is one of the rdf:li_XXX members
-						localName=ELEMENT_LI; //just use the normal rdf:li property name---the order is implicit in the serialization
+						localName=LI_PROPERTY_NAME; //just use the normal rdf:li property name---the order is implicit in the serialization
 				}
 				return XMLUtilities.createQualifiedName(prefix, localName);  //create an XML qualified name for this namespace prefix and local name
 			}
@@ -733,10 +726,5 @@ Debug.trace("prefix: ", prefix); //G***del
 			localName=RDFUtilities.getLocalName(resource.getReferenceURI());	//try to get the local name from the resource reference URI
 		assert localName!=null : "Could not determine local name for "+resource.getReferenceURI();	//TODO fix
 		return localName;	//return the local name we found
-	}
-
-	static
-	{
-		TYPE_PROPERTY_REFERENCE_URI=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME);	//initialize the RDF type property URI
 	}
 }

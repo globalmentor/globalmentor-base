@@ -2,8 +2,6 @@ package com.garretwilson.rdf;
 
 import java.net.URI;
 import java.util.*;
-
-import com.garretwilson.model.*;
 import com.garretwilson.util.*;
 
 /**Represents an RDF resource that is a container, such as a bag or a sequence.
@@ -20,59 +18,29 @@ public abstract class RDFContainerResource extends DefaultRDFResource
 		super(newReferenceURI); //construct the parent class
 	}
 
-	/**Convenience constructor that constructs an RDF container resource using a
-		namespace URI and local name which will be combined to form the reference
-		URI.
-	@param newNamespaceURI The XML namespace URI used in the serialization.
-	@param newLocalName The XML local name used in the serialization.
-	*/
-	public RDFContainerResource(final URI newNamespaceURI, final String newLocalName)
-	{
-		super(newNamespaceURI, newLocalName); //construct the parent class
-	}
-
-	/**Reference URI and optional namespace URI and local name constructor.
-	@param newReferenceURI The reference URI for the new resource.
-	@param newNamespaceURI The XML namespace URI used in the serialization, or
-		<code>null</code> if the namespace URI is not known.
-	@param newLocalName The XML local name used in the serialization, or
-		<code>null</code> if the local name is not known.
-	*/
-	RDFContainerResource(final URI newReferenceURI, final URI newNamespaceURI, final String newLocalName)
-	{
-		super(newReferenceURI, newNamespaceURI, newLocalName); //construct the parent class
-	}
-
-	/**Data model, reference URI, and optional namespace URI and local name constructor.
+	/**Data model and reference URI constructor.
 	@param rdf The data model associated with the container.
 	@param newReferenceURI The reference URI for the new resource.
-	@param newNamespaceURI The XML namespace URI used in the serialization, or
-		<code>null</code> if the namespace URI is not known.
-	@param newLocalName The XML local name used in the serialization, or
-		<code>null</code> if the local name is not known.
 	*/
-	RDFContainerResource(final RDF rdf, final URI newReferenceURI, final URI newNamespaceURI, final String newLocalName)
+	RDFContainerResource(final RDF rdf, final URI newReferenceURI)
 	{
-		super(rdf, newReferenceURI, newNamespaceURI, newLocalName); //construct the parent class
+		super(rdf, newReferenceURI); //construct the parent class
 	}
 
 	/**@return A collection of name/value pairs that represent <code>rdf:li_</code>
 		properties and their values, in an undefined order.
-	@see NameValuePair
+	@see RDFPropertyValuePair
 	*/
 	protected List getItemProperties()
 	{
-		  //create the start of a reference URI from the rdf:li element qualified
-			//  name (i.e. "rdfNamespaceURI#li_"), which we'll use to check for items
-		final String RDF_LI_REFERENCE_PREFIX=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX).toString();
 		final List itemPropertyList=new ArrayList();  //create a list in which to store the items
 		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to all properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final NameValuePair nameValuePair=(NameValuePair)propertyIterator.next(); //get the next name/value pair
-				//if this property name begins with rdf:_
-		  if(((Resource)nameValuePair.getName()).getReferenceURI().toString().startsWith(RDF_LI_REFERENCE_PREFIX))
-				itemPropertyList.add(nameValuePair);  //add this name and value to the list
+			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
+				//if this property reference URI begins with rdf:_
+		  if(RDFUtilities.isContainerMemberPropertyReference(propertyValuePair.getProperty().getReferenceURI()))
+				itemPropertyList.add(propertyValuePair);  //add this property and value to the list
 		}
 		return itemPropertyList;  //return the list of name/value pairs
 	}
@@ -120,7 +88,7 @@ public abstract class RDFContainerResource extends DefaultRDFResource
 	@param itemPropertyList A list of name/value pairs, with the name holding
 		the property resource and the value holding the property value.
 	@return A list of values in the same order as the name/value pairs.
-	@see NameValuePair
+	@see PropertyValuePair
 	*/
 	protected List getItemList(final List itemPropertyList)
 	{
@@ -129,10 +97,10 @@ public abstract class RDFContainerResource extends DefaultRDFResource
 		final Iterator itemPropertyIterator=itemPropertyList.iterator();  //get an iterator to all the item properties
 		while(itemPropertyIterator.hasNext()) //while there are more item properties
 		{
-			final NameValuePair nameValuePair=(NameValuePair)itemPropertyIterator.next(); //get the next name/value pair
-Debug.trace("getting sorted value for: ", nameValuePair.getName()); //G***del
-Debug.trace("sorted value is: ", nameValuePair.getValue()); //G***del
-		  itemList.add(nameValuePair.getValue()); //store the value (which should be an RDFObject) in the list
+			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)itemPropertyIterator.next(); //get the next name/value pair
+Debug.trace("getting sorted value for: ", propertyValuePair.getName()); //G***del
+Debug.trace("sorted value is: ", propertyValuePair.getValue()); //G***del
+		  itemList.add(propertyValuePair.getPropertyValue()); //store the value (which should be an RDFObject) in the list
 		}
 		return itemList;  //return the list list of items
 	}
@@ -142,18 +110,15 @@ Debug.trace("sorted value is: ", nameValuePair.getValue()); //G***del
 	protected int getNextItemNumber()
 	{
 		int highestNumber=0; //we haven't found a highest number, yet
-		  //create the start of a reference URI from the rdf:li element qualified
-			//  name (i.e. "rdfNamespaceURI#li_"), which we'll use to check for items
-		final String RDF_LI_REFERENCE_PREFIX=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX).toString();
 		final Iterator propertyIterator=getPropertyIterator();  //get an iterator to all properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final NameValuePair nameValuePair=(NameValuePair)propertyIterator.next(); //get the next name/value pair
-			final URI propertyReferenceURI=((Resource)nameValuePair.getName()).getReferenceURI();  //get the reference URI of the property
-		  if(propertyReferenceURI.toString().startsWith(RDF_LI_REFERENCE_PREFIX))  //if this property name begins with rdf:_	//G***fix better
+			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
+			final URI propertyReferenceURI=propertyValuePair.getProperty().getReferenceURI();  //get the reference URI of the property
+		  if(RDFUtilities.isContainerMemberPropertyReference(propertyReferenceURI))  //if this property name begins with rdf:_
 			{
 					//get the current number by removing the start of the URI up to and including "#_"
-				final String numberString=propertyReferenceURI.toString().substring(RDF_LI_REFERENCE_PREFIX.length());	//G***fix better
+				final String numberString=propertyReferenceURI.toString().substring(RDFUtilities.RDF_LI_REFERENCE_PREFIX.length());	//G***fix better
 				try
 				{
 				  final int number=Integer.parseInt(numberString);  //parse the integer from the string
@@ -171,25 +136,22 @@ Debug.trace("sorted value is: ", nameValuePair.getValue()); //G***del
 	*/
 	protected void changeNumbers(final int minNumber, final int delta)
 	{
-		  //create the start of a reference URI from the rdf:li element qualified
-			//  name (i.e. "rdfNamespaceURI#li_"), which we'll use to check for items
-		final String RDF_LI_REFERENCE_PREFIX=RDFUtilities.createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX).toString();
 		final ListIterator propertyIterator=getPropertyIterator();  //get an iterator to all properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final NameValuePair nameValuePair=(NameValuePair)propertyIterator.next(); //get the next name/value pair
-			final URI propertyReferenceURI=((Resource)nameValuePair.getName()).getReferenceURI();  //get the reference URI of the property
-		  if(propertyReferenceURI.toString().startsWith(RDF_LI_REFERENCE_PREFIX))  //if this property name begins with rdf:_ G***fix better
+			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
+			final URI propertyReferenceURI=propertyValuePair.getProperty().getReferenceURI();  //get the reference URI of the property
+			if(RDFUtilities.isContainerMemberPropertyReference(propertyReferenceURI))  //if this property name begins with rdf:_
 			{
 					//get the current number by removing the start of the URI up to and including "#_"
-				final String numberString=propertyReferenceURI.toString().substring(RDF_LI_REFERENCE_PREFIX.length());
+				final String numberString=propertyReferenceURI.toString().substring(RDFUtilities.RDF_LI_REFERENCE_PREFIX.length());
 				try
 				{
 				  final int number=Integer.parseInt(numberString);  //parse the integer from the string
 					if(number>=minNumber) //if this number is within our range
 					{
 						  //create a new property pair with a new number in the property
-						final NameValuePair newProperty=new NameValuePair(getMemberProperty(number+delta), nameValuePair.getValue());
+						final RDFPropertyValuePair newProperty=new RDFPropertyValuePair(getMemberProperty(number+delta), propertyValuePair.getPropertyValue());
 						propertyIterator.set(newProperty);  //change this property
 					}
 				}

@@ -171,7 +171,7 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 				}
 			}
 		}
-		final OEBPublication publicationResource=(OEBPublication)rdf.createTypedResource(publicationReferenceURI, OEB2_PACKAGE_NAMESPACE_URI, PUBLICATION_TYPE_NAME);  //G***fix reference URI
+		final OEBPublication publicationResource=OEBUtilities.createOEBPublication(rdf, publicationReferenceURI);
 Debug.trace("converting OEB package, created publication resource: ", publicationResource.getClass().getName());  //G***del
 		//XPath: /metadata/dc-metadata/*
 		final NodeList dcMetadataElementList=(NodeList)XPath.evaluateLocationPath(rootElement,
