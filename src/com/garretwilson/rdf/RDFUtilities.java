@@ -3,6 +3,8 @@ package com.garretwilson.rdf;
 import java.io.*;
 import java.net.URI;
 import java.util.*;
+
+import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLUtilities;
 
@@ -97,7 +99,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static RDFLiteral asLiteral(final RDFObject rdfObject)
 	{
-		return rdfObject instanceof RDFLiteral ? (RDFLiteral)rdfObject : null;	//cast the object to a literal if we can
+		return (RDFLiteral)ObjectUtilities.asInstance(rdfObject, RDFLiteral.class);	//cast the object to a literal if we can
 	}
 
 	/**Determines if the RDF object is a resource and, if so, casts the object 
@@ -108,7 +110,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static RDFResource asResource(final RDFObject rdfObject)
 	{
-		return rdfObject instanceof RDFResource ? (RDFResource)rdfObject : null;	//cast the object to a resource if we can
+		return (RDFResource)ObjectUtilities.asInstance(rdfObject, RDFResource.class);	//cast the object to a resource if we can
 	}
 
 	/**Creates a resource reference URI from an XML namespace URI (which may be
@@ -394,8 +396,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static RDFLiteral getValue(final RDFResource resource)
 	{
-		final RDFObject rdfObject=resource.getPropertyValue(RDF_NAMESPACE_URI, VALUE_PROPERTY_NAME); //get the value of the value property
-		return rdfObject instanceof RDFLiteral ? (RDFLiteral)rdfObject : null; //return the literal value object, or null if is no such property or the property value is not a literal
+		return asLiteral(resource.getPropertyValue(RDF_NAMESPACE_URI, VALUE_PROPERTY_NAME)); //get the value of the value property only if it is a literal
 	}
 
 	/**Replaces all <code>rdf:value</code> properties of the resource with a new

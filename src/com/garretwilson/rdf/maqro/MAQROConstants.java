@@ -37,10 +37,16 @@ public interface MAQROConstants
 		//MAQRO ontology class names
 	/**The local name of maqro:Activity.*/
 	public final static String ACTIVITY_CLASS_NAME="Activity";
+	/**The local name of maqro:Choice.*/
+	public final static String CHOICE_CLASS_NAME="Choice";
 	/**The local name of maqro:Group.*/
 	public final static String GROUP_CLASS_NAME="Group";
+	/**The local name of maqro:Hint.*/
+	public final static String HINT_CLASS_NAME="Hint";
 	/**The local name of maqro:OrderDescription.*/
 	public final static String ORDER_DESCRIPTION_CLASS_NAME="OrderDescription";
+	/**The local name of maqro:Query.*/
+	public final static String QUERY_CLASS_NAME="Query";
 	/**The local name of maqro:Question.*/
 	public final static String QUESTION_CLASS_NAME="Question";
 	/**The local name of maqro:Result.*/

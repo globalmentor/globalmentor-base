@@ -93,7 +93,10 @@ public class DefaultResource implements Resource
 	}
 */
 
-	/**@return A string representation of the resource.
+	/**Returns a string representation of the resource.
+	<p>This version returns the reference URI if there is one; otherwise, the
+		default string representation of the object is returned.</p>
+	@return A string representation of the resource.
 	*/
 	public String toString()
 	{

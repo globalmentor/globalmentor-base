@@ -3,9 +3,7 @@ package com.garretwilson.rdf;
 import java.lang.ref.*;
 import java.net.URI;
 import java.util.*;
-
 import com.garretwilson.model.*;
-import com.garretwilson.util.*;
 
 /**Represents the default implementation of an RDF resource.
 <p>This class provides compare functionality that sorts according to the reference
@@ -596,6 +594,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	@return <code>true<code> if this resource equals that specified in
 		<code>object</code>.
 	@see #getReferenceURI
+	@see RDFUtilities#getValue(RDFResource)
 	*/
 	public boolean equals(final Object object)
 	{
@@ -638,6 +637,34 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	public Object clone()
 	{
 		return new DefaultRDFResource(this);	//create a copy of the resource and return it
+	}
+
+	/**Returns a string representation of the resource.
+	<p>This implementation returns the reference URI, if any, along with the
+		lexical form of the literal <code>rdf:value</code> property value, if any.
+		If this resource has neither a reference URI or a literal
+		<code>rdf:value</code> property value, the default representation will be
+		used.</p> 
+	@return A string representation of the resource.
+	@see RDFUtilities#getValue(RDFResource)
+	*/
+	public String toString()
+	{
+		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer in which to construct a string representation
+		final RDFLiteral value=RDFUtilities.getValue(this);	//get the value property, if any
+		if(getReferenceURI()!=null || value==null)	//if we have a reference URI and/or no value
+		{
+			stringBuffer.append(super.toString());	//start with the default string
+		}
+		if(value!=null)	//if we have a value
+		{
+			if(stringBuffer.length()>0)	//if we added something to the string buffer already
+			{
+				stringBuffer.append(':').append(' ');	//separate the other information and the value
+			}
+			stringBuffer.append(value.getLexicalForm());	//append the lexical form of the resource
+		}
+		return getReferenceURI()!=null ? getReferenceURI().toString() : super.toString();	//return the reference URI, if available
 	}
 
 }

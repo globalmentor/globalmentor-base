@@ -8,6 +8,19 @@ public class ObjectUtilities
 	/**This class cannot be publicly instantiated.*/
 	private ObjectUtilities() {}
 
+	/**Convenience method that returns the given object if and only if it is an
+		instance of the given class. This method is equivalent to
+		<code><var>object</var> instanceof <var>instanceClass</var> ? object : null</code>. 
+	@param object The object to examine.
+	@param instanceClass The class of which the object may be an instance.
+	@return The object if it is an instance of the given class, otherwise
+		<code>null</code>.
+	 */
+	public static Object asInstance(final Object object, final Class instanceClass)
+	{
+		return instanceClass.isInstance(object) ? object : null;	//return the object if it is an instance of the class, otherwise null
+	}
+
 	/**Compares two object to make sure that the objects are equal, or the
 		objects are both set to <code>null</code>. If the first object is not
 		<code>null</code>, it is compared to the second using the first object's

@@ -2,6 +2,7 @@ package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
 import java.util.*;
+import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.xmlschema.IntegerLiteral;
 
@@ -17,7 +18,7 @@ public class Question extends Interaction
 		super();	//construct the parent class
 	}
 	
-	/**Constructs a question with a reference URI.
+	/**Reference URI constructor.
 	@param referenceURI The reference URI for the new resource.
 	*/
 	public Question(final URI referenceURI)
@@ -28,9 +29,9 @@ public class Question extends Interaction
 	/**@return The query part of the question, or <code>null</code> if there is
 		no query.
 	*/
-	public RDFObject getQuery()
+	public Presentation getQuery()
 	{
-		return getPropertyValue(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME);	//get the query		
+		return (Presentation)ObjectUtilities.asInstance(getPropertyValue(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME), Presentation.class);	//get the query only if it is Presentation		
 	}
 
 	/**Replaces the query, if any, with a query that has the given string value.
@@ -38,7 +39,7 @@ public class Question extends Interaction
 	@param language The language of the query value, or <code>null</code> if
 		no language should be specified.
 	@return The added query resource containing the given value.
-	*	*/
+	*/
 	public RDFResource setQueryValue(final String queryValue, final Locale language)
 	{
 		final RDFResource query=RDFUtilities.locateResource(this, null);	//create an anonymous query

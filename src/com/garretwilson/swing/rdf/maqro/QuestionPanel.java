@@ -1,9 +1,11 @@
 package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.GridBagConstraints;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
+import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
@@ -33,6 +35,11 @@ public class QuestionPanel extends TabbedViewPanel
 
 	private final JLabel queryLabel;
 	private final XMLPanel queryXMLPanel;
+	private final ButtonGroup expectButtonGroup;
+	private final JRadioButton choicesRadioButton;
+	private final JList choiceList;
+	private final ListPanel choicePanel;
+	private final JRadioButton expectRadioButton;
 
 	/**@return The data model for which this component provides a view.
 	@see ModelViewablePanel#getModel()
@@ -65,6 +72,11 @@ public class QuestionPanel extends TabbedViewPanel
 		setDefaultDataView(DEFAULT_DEFAULT_MODEL_VIEW);	//set the default data view
 		queryPanel=new BasicPanel(new BasicGridBagLayout());	//create the query panel
 		queryLabel=new JLabel();
+		expectButtonGroup=new ButtonGroup();
+		choicesRadioButton=new JRadioButton();
+		choiceList=new JList();
+		choicePanel=new ListPanel(choiceList);
+		expectRadioButton=new JRadioButton();
 		queryXMLPanel=new XMLPanel(new XMLDocumentFragmentModel(), XHTMLConstants.XHTML_CONTENT_TYPE);	//TODO set the base URI and URIInputStreamable 
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
@@ -73,14 +85,37 @@ public class QuestionPanel extends TabbedViewPanel
 	/**Initialize the user interface.*/
 	protected void initializeUI()
 	{
+		final ActionListener updateStatusActionListener=createUpdateStatusActionListener();	//create an action listener that will update the status
 		setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border
 		setTitle("Question");	//G***i18n
 		addView(QUERY_MODEL_VIEW, "Query and Response", IconResources.getIcon(IconResources.QUESTION_ICON_FILENAME), queryPanel);	//add the query view G***i18n
 		super.initializeUI(); //do the default UI initialization
 		getTabbedPane().setTabPlacement(JTabbedPane.TOP);	//put the tabs on the top
 		queryLabel.setText("Query");	//G***i18n
+		expectButtonGroup.add(choicesRadioButton);
+		expectButtonGroup.add(expectRadioButton);
+		choicesRadioButton.setText("Provide Choices");	//G***i18n
+		choicesRadioButton.addActionListener(updateStatusActionListener); 
+		choiceList.setEnabled(false);	//default to disabling the choice list; it will be enabled if the corresponding radio button is selected
+		choicePanel.setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border for the choice panel
+		choicePanel.setTitle("Choices");	//G***i18n
+		expectRadioButton.setText("Expect Response Type");	//G***i18n
+		expectRadioButton.addActionListener(updateStatusActionListener); 
 		queryPanel.add(queryLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 		queryPanel.add(queryXMLPanel, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
+		queryPanel.add(choicesRadioButton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+		queryPanel.add(choicePanel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
+		queryPanel.add(expectRadioButton, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.SOUTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+	}
+
+	/**Updates the states of the actions, including enabled/disabled status,
+		proxied actions, etc.
+	*/
+	protected void updateStatus()
+	{
+		super.updateStatus();	//do the default updating
+		choiceList.setEnabled(choicesRadioButton.isSelected());	//only enable the choice list if the choices radio button is selected
+//G***fix for expectation		choiceList.setEnabled(choicesRadioButton.isSelected());	//only enable the choice list if the choices radio button is selected
 	}
 
 	/**Loads the data from the model to the view, if necessary.
@@ -90,9 +125,35 @@ public class QuestionPanel extends TabbedViewPanel
 	{
 		super.loadModel();	//do the default loading
 		final QuestionModel model=getQuestionModel();	//get the data model
+		final Question question=model.getQuestion();	//get the question, if there is one
 		switch(getModelView())	//see which view of data we should load
 		{
 			case QUERY_MODEL_VIEW:	//if we're changing to the query view
+				if(question!=null)	//if there is a question
+				{
+					final Presentation queryPresentation=question.getQuery();	//get the query
+					if(queryPresentation!=null)	//if there is a query
+					{
+						final RDFLiteral queryValue=RDFUtilities.getValue(queryPresentation);	//get the query value
+	/*TODO fix for plain literal queries
+						if(queryValueObject instanceof RDFPlainLiteral)	//if the query is a plain literal
+						{
+							
+						}
+						else*/ if(queryValue instanceof RDFXMLLiteral)	//if the query is an XML literal
+						{
+							final RDFXMLLiteral xmlLiteralQueryValue=(RDFXMLLiteral)queryValue;
+							queryXMLPanel.setXMLModel(new XMLDocumentFragmentModel(xmlLiteralQueryValue.getDocumentFragment()));	//put the XML literal into the panel
+						}
+					}
+
+
+//TODO change maqro:choice->maqro:choices/maqro:Choice implementation
+
+//TODO show the choices in the choice list
+
+
+				}
 				break;
 		}
 	}
@@ -115,23 +176,23 @@ public class QuestionPanel extends TabbedViewPanel
 	@param oldView The view before the change.
 	@param newView The new view of the data
 	*/
-/*G***del if not needed
 	protected void onModelViewChange(final int oldView, final int newView)
 	{
 		super.onModelViewChange(oldView, newView);	//perform the default functionality
 		switch(oldView)	//see which view we're changing from
 		{
-			case SOURCE_MODEL_VIEW:	//if we're changing from the source view
-				getSourceTextPane().getDocument().removeDocumentListener(getModifyDocumentListener());	//don't listen for changes to the source text pane any more
-				getSourceTextPane().setDocument(getSourceTextPane().getEditorKit().createDefaultDocument());	//remove the content from the source text pane by installing a new document
+			case QUERY_MODEL_VIEW:	//if we're changing from the query view
+//G***fix				getSourceTextPane().getDocument().removeDocumentListener(getModifyDocumentListener());	//don't listen for changes to the source text pane any more
+				queryXMLPanel.setXMLModel(new XMLDocumentFragmentModel());	//clear the XML panel
 				break;
 		}
 		switch(newView)	//see which view we're changing to
 		{
+/*G***fix
 			case SOURCE_MODEL_VIEW:	//if we're changing to the source view
 				getSourceTextPane().getDocument().addDocumentListener(getModifyDocumentListener());	//add ourselves as a document listener to see if the source pane is modified
 				break;
+*/
 		}
 	}
-*/
 }
