@@ -127,7 +127,8 @@ public class XPackageUtilities implements XPackageConstants
 	*/
 	public static RDFResource createXPackageResource(final RDF rdf, final URI referenceURI)
 	{
-		return rdf.createResource(referenceURI, XPACKAGE_NAMESPACE_URI, RESOURCE_TYPE_NAME);
+		return rdf.createResource(referenceURI);
+//G***del when not needed		return rdf.createResource(referenceURI, XPACKAGE_NAMESPACE_URI, RESOURCE_TYPE_NAME);
 	}
 
 	/**Returns an item resource in the manifest of the given resource, if present,
