@@ -1,14 +1,15 @@
 package com.garretwilson.net;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.*;
 import java.util.*;
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
 import com.garretwilson.util.Debug;
 import com.garretwilson.util.NameValuePair;
+import com.garretwilson.util.SyntaxException;
 
-import static java.net.URLEncoder.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
 
@@ -56,15 +57,18 @@ public class URIUtilities
 		boolean hasPath=false;	//don't assume we have any path elements
 		for(final String pathElement:pathElements)	//look at each path element
 		{
-			try
+//G***fix			try
 			{
-				stringBuilder.append(encode(pathElement, UTF_8));	//encode and append this path element
+//TODO fix encoding using a real encoder, not the www-encoding URLEncoder				stringBuilder.append(encode(pathElement, UTF_8));	//encode and append this path element
+				stringBuilder.append(pathElement);	//encode and append this path element
 				stringBuilder.append(PATH_SEPARATOR);	//separate the path elements
 			}
+/*G***fix
 			catch(final UnsupportedEncodingException unsupportedEncodingException)	//we should always support UTF-8
 			{
 				throw new AssertionError(unsupportedEncodingException);
 			}
+*/
 		}
 		if(!collection && pathElements.length>0)	//if there were path elements but this wasn't a collection, we have one too many path separators 
 		{
@@ -80,10 +84,12 @@ public class URIUtilities
 	@return A string representing the constructed query, or the empty string if
 		there were no parameters.
 	*/
+/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
 	public static String constructQuery(final NameValuePair<String, String>[] params)	//TODO recode with varargs
 	{
 		return constructQuery(constructQueryParameters(params));	//construct a query, prepended with the query character
 	}
+*/
 
 	/**Constructs a query string for a URI by prepending the given query string,
 	 	if it is not the empty string, with '?'.
@@ -91,6 +97,7 @@ public class URIUtilities
 	@return A string representing the constructed query, or the empty string if
 		there were no parameters.
 	*/
+/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
 	public static String constructQuery(final String params)
 	{
 		final StringBuilder query=new StringBuilder();
@@ -101,6 +108,7 @@ public class URIUtilities
 		}
 		return query.toString();	//return the query string we constructed
 	}
+*/
 
 	/**Constructs a query string for a URI by URL-encoding each name-value pair,
 	 	separating them with '&'.
@@ -108,6 +116,7 @@ public class URIUtilities
 	@return A string representing the constructed query, or the empty string if
 		there were no parameters.
 	*/
+/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
 	public static String constructQueryParameters(final NameValuePair<String, String>... params)
 	{
 		final StringBuilder paramStringBuilder=new StringBuilder();
@@ -131,6 +140,7 @@ public class URIUtilities
 		}
 		return paramStringBuilder.toString();	//return the query parameter string we constructed
 	}
+*/
 
 	/**Creates a path-based query from a standard URI query.
 	A query in the form <code>?var1=value1&amp;var2=value2</code> will be converted to the form
@@ -139,6 +149,7 @@ public class URIUtilities
 	@return A query string converted to a path. A query string beginning with '?' will be converted into
 		an absolute path.
 	*/
+/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
 	public static String createPathQuery(final String query)
 	{
 		if(query.length()>0)	//if the query has at least one character
@@ -179,6 +190,7 @@ public class URIUtilities
 			return query;	//return the query as it is
 		}		
 	}
+*/
 
 	/**Creates a standard URI based query from a path-based query.
 	A query in the form <code>/var1%3Dvalue1/var2&3Dvalue2</code> will be converted to the form
@@ -187,6 +199,7 @@ public class URIUtilities
 	@return A query string converted to a path. A query string beginning with '?' will be converted into
 		an absolute path.
 	*/
+/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
 	public static String createQuery(final String pathQuery)
 	{
 		if(pathQuery.length()>0)	//if the query has at least one character
@@ -227,11 +240,13 @@ public class URIUtilities
 			return pathQuery;	//return the path query as it is
 		}		
 	}
+*/
 
 	/**Retrieves name-value parameters from a standard URI query string.
 	@param query The URI query string, optionally beginning with a '?' character.
 	@return An array of name-value pairs representing query parameters.
 	*/
+/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
 	public static NameValuePair<String, String>[] getQueryParameters(final String query)
 	{
 		final List<NameValuePair<String, String>> parameterList=new ArrayList<NameValuePair<String, String>>();	//create a list to hold our parameters
@@ -269,6 +284,7 @@ public class URIUtilities
 		}
 		return parameterList.toArray(new NameValuePair[parameterList.size()]);	//return the list as an array
 	}
+*/
 
 	/**Determines the current level of a hierarchical URI.
 	@param uri The URI to examine.
@@ -741,4 +757,117 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		}
 		return newURI;	//return the new URI with the changed base
 	}
+
+	/**Characters that can appear in a URI path with no escape sequences.*/
+//G***del	protected final static String COMPRESS_CHARS=ALPHA_CHARS+DIGIT_CHARS;	//length 49
+
+	/**Compresses a URI into a shorter string representation.
+	The resulting string consists only of URI <code>xalpha</code> characters with no escape sequences.
+	@param uri The URI to compress.
+	@return A compressed string representation of the URI.
+	*/
+/*G***fix
+	public static String compress(final URI uri)
+	{
+		final int INPUT_CHAR_WIDTH=6;	//no URI character can be more than six bits wide 
+		final int COMPRESS_BASE=NORMAL_CHARS.length();	//this is the numbering base we'll use for compression 
+		final String uriString=uri.toString();
+		final StringBuilder stringBuilder=new StringBuilder();
+		int accumulator=0;	//we'll accumulate bits here
+		int bit=0;	//this is how many bits we have to shift an incoming character
+		for(int i=uriString.length()-1; i>=0; --i)
+		{
+			final char character=uriString.charAt(i);	//get the next character to compress
+			accumulator|=character<<bit;	//combine our value with the character's value
+			bit+=INPUT_CHAR_WIDTH;	//we'll have to shift the next character up above the bits we just added
+			while(accumulator>COMPRESS_BASE)	//while the value is more than our conversion base
+			{
+				final index
+				
+			}
+		}
+	}
+*/
+
+	/**URI alphabetic and digit characters.*/
+	private final static String COMPRESS_NORMAL_CHARS=ALPHA_CHARS+DIGIT_CHARS;	//"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" length 62
+
+	/**Characters that will be compressed.*/
+	private final static String OTHER_CHARS=SAFE_CHARS+EXTRA_CHARS+ESCAPE_CHAR+RESERVED_CHARS;	//"$-_@.&!*\"'(),%=;/#?: " length 21
+
+	/**Characters that can appear in a URI path with no escape sequences.*/
+	private final static String COMPRESS_ENCODE_CHARS="-_()@";	//length 5
+
+	/**Compresses a URI into a shorter string representation.
+	@param uri The URI to compress.
+	@return A compressed string representation of the URI.
+	*/
+	public static String safeEncode(final URI uri)
+	{
+		final int ENCODE_BASE=COMPRESS_ENCODE_CHARS.length();	//this is the base into which we'll encode certain characters
+		final String uriString=uri.toString();
+		final StringBuilder stringBuilder=new StringBuilder();
+		for(int i=0; i<uriString.length(); ++i)	//look at each URI character
+		{
+			final char character=uriString.charAt(i);	//get the next character
+			if(COMPRESS_NORMAL_CHARS.indexOf(character)>=0)	//if this is a normal character
+			{
+				stringBuilder.append(character);	//add the character normally
+			}
+			else	//if this is a character to be encoded
+			{
+				final int index=OTHER_CHARS.indexOf(character);	//get the character's index within our set of special characters
+				assert index>=0 : "Invalid URI character: "+character;	//if the character came in the URI object, it should always be valid
+				final int high=index/ENCODE_BASE;	//get the high bits of our encoding
+				final int low=index%ENCODE_BASE;	//get the high bits of our encoding
+				stringBuilder.append(COMPRESS_ENCODE_CHARS.charAt(high));	//add a character to represent our high bits
+				stringBuilder.append(COMPRESS_ENCODE_CHARS.charAt(low));	//add a character to represent our low bits
+			}
+		}
+		return stringBuilder.toString();	//return our encoded URI string
+	}
+
+	/**Compresses a URI into a shorter string representation.
+	@param String The alphanumeric string.
+	@return An uncompressed URI from the alphanumeric string.
+	@exception SyntaxException Thrown if the given string is not correctly encoded. 
+	*/
+	public static URI safeDecode(final String string) throws SyntaxException
+	{
+		final int ENCODE_BASE=COMPRESS_ENCODE_CHARS.length();	//this is the base into which we'll encode certain characters TODO maybe place this outside the method
+		final StringBuilder stringBuilder=new StringBuilder();
+		for(int i=0; i<string.length(); ++i)	//look at each character
+		{
+			final char character=string.charAt(i);	//get the next character
+			if(COMPRESS_NORMAL_CHARS.indexOf(character)>=0)	//if this is a normal character
+			{
+				stringBuilder.append(character);	//add the character normally
+			}
+			else	//if this is a character to be encoded
+			{
+				final int high=COMPRESS_ENCODE_CHARS.indexOf(character);	//get the high bits
+				if(high<0)	//if the high character wasn't recognized
+				{
+					throw new SyntaxException(string, "Invalid character.");	//indicate that an unexpected character was encountered					
+				}
+				if(i==string.length()-1)	//if there are no more characters
+				{
+					throw new SyntaxException(string, "Incomplete encoding sequence.");	//indicate that the encoding character was not present.
+				}
+				final int low=COMPRESS_ENCODE_CHARS.indexOf(string.charAt(++i));	//go to the next character and get its index
+				if(low<0)	//if the low character wasn't recognized
+				{
+					throw new SyntaxException(string, "Invalid character.");	//indicate that an unexpected character was encountered					
+				}
+				final int index=high*ENCODE_BASE+low;	//get the index of the original character
+				if(index>=OTHER_CHARS.length())	//if the resulting sequence does not match one of our original characters
+				{
+					throw new SyntaxException(string, "Invalid encoding sequence.");	//indicate that the encoding resulted in an invalid sequence					
+				}
+				stringBuilder.append(OTHER_CHARS.charAt(index));	//add the encoded character to our string builder
+			}
+		}
+		return URI.create(stringBuilder.toString());	//return the original URI
+	}
+
 }
