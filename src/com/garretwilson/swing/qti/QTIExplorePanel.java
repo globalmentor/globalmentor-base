@@ -22,6 +22,7 @@ import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.util.*;
 import org.doomdark.uuid.*;
+import org.doomdark.uuid.UUID;	//TODO convert to Java's UUID if possible
 import org.w3c.dom.*;
 
 /**Panel for exploring a QTI data model in a tree+panel view.
