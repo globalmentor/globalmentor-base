@@ -77,7 +77,7 @@ public class ActivityPanel extends RDFPanel
 		addView(SEQUENCE_MODEL_VIEW, "Interactions", interactionSequencePanel, null);	//add the interaction sequence panel as the sequence view G***i18n
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
-		interactionSequencePanel.addPropertyChangeListener(createModifyModifiedChangeListener());	//show that this panel is modified whenever the interaction sequence panel is modified 
+//G***del when ModifiablePanel works		interactionSequencePanel.addPropertyChangeListener(createModifyModifiedChangeListener());	//show that this panel is modified whenever the interaction sequence panel is modified 
 //TODO set the book to be not editable
 	}
 

@@ -75,7 +75,10 @@ public class QuestionPanel extends TabbedViewPanel
 		addView(QUERY_MODEL_VIEW, "Query and Response", IconResources.getIcon(IconResources.QUESTION_ICON_FILENAME), queryAnswerPanel);	//add the query view G***i18n
 		super.initializeUI(); //do the default UI initialization
 		getTabbedPane().setTabPlacement(JTabbedPane.TOP);	//put the tabs on the top
-		queryAnswerPanel.addPropertyChangeListener(createModifyModifiedChangeListener());	//show that this panel is modified whenever the query/answer panel is modified 
+
+
+
+//G***del when works		queryAnswerPanel.addPropertyChangeListener(createModifyModifiedChangeListener());	//show that this panel is modified whenever the query/answer panel is modified 
 	}
 
 	/**Updates the states of the actions, including enabled/disabled status,
@@ -159,7 +162,7 @@ public class QuestionPanel extends TabbedViewPanel
 	@author Garret Wilson
 	@see com.garretwilson.swing.rdf.maqro.QuestionPanel
 	*/
-	protected class QueryAnswerPanel extends BasicPanel
+	protected class QueryAnswerPanel extends ModifiablePanel
 	{
 		private final JLabel queryLabel;
 		private final DialoguePanel queryPanel;
@@ -189,7 +192,6 @@ public class QuestionPanel extends TabbedViewPanel
 			super.initializeUI(); //do the default UI initialization
 			final ItemListener updateStatusItemListener=createUpdateStatusItemListener();	//create an item listener that will update the status			
 			queryLabel.setText("Query");	//G***i18n
-			queryPanel.addPropertyChangeListener(createModifyModifiedChangeListener());	//show that this panel is modified whenever the query panel is modified 
 			expectButtonGroup.add(choicesRadioButton);
 			expectButtonGroup.add(expectRadioButton);
 			choicesRadioButton.setText("Provide Choices");	//G***i18n
