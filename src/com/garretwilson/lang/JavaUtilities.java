@@ -13,6 +13,14 @@ public class JavaUtilities implements JavaConstants
 
 //G***del	public static Object ensureSafeCast(
 
+/*G***del if can't use
+	public final static assertArgumentInstanceOf(final Object argument1, final Object argument2) throws IllegalArgumentException
+	{
+		instanceof
+		if(!applicationPanel instanceof TextApplicationPanel)	//if this isn't the correct type of application panel
+			throw new IllegalArgumentException("Expected "+TextApplicationPanel.)
+*/
+
 	/**Compares one object with another, taking into account that one or both
 		objects may be <code>null</code>. If one object is <code>null</code> but
 		the other is not, the <code>null</code> object is considered to be less
