@@ -141,8 +141,8 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	{
 		final URI elementNamespaceURI=new URI(element.getNamespaceURI()); //get the element's namespace
 		final String elementLocalName=element.getLocalName(); //get the element's local name
-Debug.trace("processing resource with XML element namespace: ", elementNamespaceURI); //G***del
-Debug.trace("processing resource with XML local name: ", elementLocalName); //G***del
+//G***del Debug.trace("processing resource with XML element namespace: ", elementNamespaceURI); //G***del
+//G***del Debug.trace("processing resource with XML local name: ", elementLocalName); //G***del
 		//G***what do we do if <rdf:RDF> occurs inside <rdf:RDF>?
 		/*G***bring back final */URI referenceURI;  //we'll determine the reference URI from the rdf:about or rdf:ID attribute
 		{
@@ -151,7 +151,7 @@ Debug.trace("processing resource with XML local name: ", elementLocalName); //G*
 		  Debug.assert(referenceURIValue==null || anchorID==null, "Resource cannot have both reference URI "+referenceURIValue+" and anchor ID "+anchorID+"."); //G***change to an actual RDF error
 			if(referenceURIValue!=null) //if there is a reference URI
 			{
-Debug.trace("found reference URI: ", referenceURIValue);  //G***del
+//G***del Debug.trace("found reference URI: ", referenceURIValue);  //G***del
 //G***del				//G***we need to normalize the reference URI
 				try
 				{
@@ -165,7 +165,7 @@ Debug.trace("found reference URI: ", referenceURIValue);  //G***del
 			}
 			else if(anchorID!=null)  //if there is an anchor ID
 			{
-Debug.trace("found anchor ID: ", anchorID);  //G***del
+//G***del Debug.trace("found anchor ID: ", anchorID);  //G***del
 				try
 				{
 					referenceURI=new URI(XMLBase.getBaseURI(element, getBaseURI()).toString()+URIConstants.FRAGMENT_SEPARATOR+anchorID);  //create a reference URI from the document base URI and the anchor ID	//G***make better with new URI methods
@@ -181,7 +181,7 @@ Debug.trace("found anchor ID: ", anchorID);  //G***del
 				referenceURI=getRDF().createAnonymousReferenceURI();  //generate an anonymous reference URI for the resource
 			}
 		}
-Debug.trace("resulting reference URI: ", referenceURI);  //G***del
+//G***del Debug.trace("resulting reference URI: ", referenceURI);  //G***del
 
 //G***del		final String anchorID=getRDFAttribute(element, ATTRIBUTE_ID); //get the anchor ID, if there is one
 		final RDFResource resource;  //we'll create a resource and store it here
@@ -334,7 +334,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		  /*G***bring back final */URI referenceURI;
 			try
 			{
-Debug.trace("Resolving rdf:resource: ", referenceURIValue); //G***del
+//G***del Debug.trace("Resolving rdf:resource: ", referenceURIValue); //G***del
 					referenceURI=XMLBase.resolveURI(referenceURIValue, element, getBaseURI());  //resolve the reference URI to the base URI
 				}
 				catch(URISyntaxException uriSyntaxException)
@@ -343,7 +343,7 @@ Debug.trace("Resolving rdf:resource: ", referenceURIValue); //G***del
 					referenceURI=null; //G***fix
 //G***fix					referenceURI=new URI(referenceURIValue); //G***fix
 				}
-Debug.trace("found reference URI: ", referenceURI);  //G***del
+//G***del Debug.trace("found reference URI: ", referenceURI);  //G***del
 		  final RDFResource propertyValueResource=getRDF().locateResource(referenceURI); //get or create a new resource with the given reference URI
 //G***del Debug.trace("property value resource: ", propertyValueResource);  //G***del
 

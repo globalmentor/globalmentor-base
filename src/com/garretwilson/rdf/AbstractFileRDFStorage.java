@@ -70,6 +70,31 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 		return new FileOutputStream(new File(uri));	//create and return an output stream to the file
 	}
 	
+	/**Checks to see if the storage file exists. If the file does not exist, yet
+		a backup file exists, the backup file will be moved to the original file
+		location. If this method returns true, there will be a file located at
+		<code>file</code>.
+	<p>If backup file use is not enabled, this version simply checks to see if
+		the storage file exists.</p>
+	@return <code>true</code> if the storage file existed or exists now after
+		moving the backup file, else <code>false</code> if neither file exists.
+	@exception IOException Thrown if the backup file cannot be moved.
+	@see #isBackupUsed
+	*/
+	public boolean exists() throws IOException
+	{
+		final File storageFile=new File(getStorageURI());	//get the file to represent the URI
+		if(isBackupUsed())	//if backup files are used
+		{
+			final File backupFile=FileUtilities.getBackupFile(storageFile);  //get the expected backup file
+			return FileUtilities.checkExists(storageFile, backupFile);	//check to see if the file exists; if not, try to use the backup file instead
+		}
+		else	//if backup file use is not enabled
+		{
+			return storageFile.exists();	//just return whether the file exists, without checking for a backup file if it doesn't
+		}
+	}
+	
 	/**Stores the RDF information at the storage URI.
 	A temporary file and optionally a backup file is used to mitigate data loss.
 	<p>Classes may override this method and provide last-minute modifications of
@@ -92,20 +117,22 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 		store(document, tempFile.toURI());	//store the document in the temporary file
 		FileUtilities.moveFile(tempFile, storageFile, backupFile); //move the temp file to the normal file, creating a backup if necessary
 	}
-	
-/*G***fix retrieve
- 		if(useBackup) //if we should use a backup file if the file doesn't exist
-			FileUtilities.checkExists(file);  //see if we can use a backup file if the file doesn't exist
-		final InputStream inputStream=new BufferedInputStream(new FileInputStream(file));  //create a buffered input stream for the file
-		try
+
+	/**Retrieves the information from RDF stored at the given URI.
+	This version attempts to locate a backup copy if the requested file does not
+	exist.
+	@param uri The URI at which the information is be stored
+	@exception IOException Thrown if there is a problem retrieving the information.
+	@see #isBackupUsed
+	*/
+	public void retrieve(final URI uri) throws IOException
+	{
+		if(isBackupUsed())	//if backup files are used
 		{
-		  return retrieve(inputStream, file, type); //read and return the object, passing the file as the source of the information
+			final File storageFile=new File(uri);	//get the file to represent the URI
+			final File backupFile=FileUtilities.getBackupFile(storageFile);  //get the expected backup file
+			FileUtilities.checkExists(storageFile, backupFile);	//check to see if the file exists; if not, try to use the backup file instead
 		}
-		finally
-		{
-		  inputStream.close(); //always close the input stream
-		}
-	}
-*/
-	
+		super.retrieve(uri);	//attempt to retrieve the file normally		
+	}	
 }

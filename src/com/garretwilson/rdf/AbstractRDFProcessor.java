@@ -83,7 +83,7 @@ public abstract class AbstractRDFProcessor implements RDFConstants
 	*/
 	protected void addStatement(final Statement statement)
 	{
-		Debug.trace("adding statement: ", statement); //G***del
+//G***del		Debug.trace("adding statement: ", statement); //G***del
 //G***del Debug.traceStack();		  //G***del
 		//G***convert to a map-based list and create a Statement.equals() method
 		if(!statementList.contains(statement)) //if the list doesn't already contain the statement

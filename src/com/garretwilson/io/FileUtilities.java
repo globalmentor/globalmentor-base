@@ -242,15 +242,21 @@ public class FileUtilities implements FileConstants
 	@param backupFile The file to use as a backup if the original does not exist.
 	@return <code>true</code> if the file existed or exists now after moving
 		the backup file, else <code>false</code> if neither file exists.
+	@exception IOException Thrown if the backup file cannot be moved.
 	*/
-	public static boolean checkExists(final File file, final File backupFile)
+	public static boolean checkExists(final File file, final File backupFile) throws IOException
 	{
 		if(file.exists()) //if the file exists
+		{
 			return true;  //there's nothing more to do; return true
+		}
 		else  //if the file doesn't exist
 		{
 			if(backupFile.exists()) //if the backup file exists
-				return backupFile.renameTo(file);  //try to rename the backup file to the original file, returning true if successful
+			{
+				renameTo(backupFile, file);  //try to rename the backup file to the original file
+				return true;	//show that a file now exists where it is expected to be
+			}
 			else  //if the backup file does not exist
 				return false; //show that we can't find either file
 		}
@@ -264,9 +270,10 @@ public class FileUtilities implements FileConstants
 	@param file The file to check for existence.
 	@return <code>true</code> if the file existed or exists now after moving
 		the backup file, else <code>false</code> if neither file exists.
+	@exception IOException Thrown if the backup file cannot be moved.
 	@see #getBackupFile
 	*/
-	public static boolean checkExists(final File file)
+	public static boolean checkExists(final File file) throws IOException
 	{
 		return checkExists(file, getBackupFile(file)); //check to see if the file exists, using the default filename for the backup file
 	}
