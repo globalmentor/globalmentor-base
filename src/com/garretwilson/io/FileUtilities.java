@@ -456,7 +456,7 @@ public class FileUtilities
 					if(reservedFinalCharacters.indexOf(lastChar)>=0)	//if the last character is a reserved character
 					{
 						return encodedFilename.substring(0, encodedFilename.length()-1)	//remove the last character
-								+ESCAPE_CHARACTER+toHexString(lastChar, 2);	//add the escaped version of the character in its place
+								+ESCAPE_CHARACTER+toHexString(lastChar, 2).toUpperCase();	//add the escaped version of the character in its place
 					}
 				}
 			}

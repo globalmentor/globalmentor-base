@@ -104,7 +104,7 @@ public class ByteUtilities
 	/**Converts an array of bytes into a hex string, with each character pair
 		representing the hexadecimal value of the byte.
 	@param bytes The values to convert.
-	@return A string with hexadecimal digits each pair representing a byte in the
+	@return A lowercase string with hexadecimal digits each pair representing a byte in the
 		byte array.
 	*/
 	public static String toHexString(final byte[] bytes)

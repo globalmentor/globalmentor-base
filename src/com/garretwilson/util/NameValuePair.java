@@ -5,9 +5,10 @@ import com.garretwilson.lang.ObjectUtilities;
 /**A convenience container for a name and a value.
 	Name/value pairs are sorted first by name, then by value, assuming both
 	implement the <code>Comparable</code> interface.
+The class allows identification (though not necessarily unique) through its name object.
 @author Garret Wilson
 */
-public class NameValuePair<N, V> extends DefaultNamedObject<N>
+public class NameValuePair<N, V> extends DefaultNamedObject<N> implements IDable<N>
 {
 
 	/**The value of the object.*/
@@ -16,6 +17,9 @@ public class NameValuePair<N, V> extends DefaultNamedObject<N>
 		/**@return The value of the object.*/
 		public V getValue() {return value;}
 
+	/**@return The name of the name-value pair, allowing identification.*/
+	public N getID() {return getName();}
+	
 	/**Constructor specifying the name and value.
 	@param newName The object's new name.
 	@param newValue The object's new value

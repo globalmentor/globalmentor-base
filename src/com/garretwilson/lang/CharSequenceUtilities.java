@@ -208,7 +208,7 @@ public class CharSequenceUtilities
 			if(c==escapeChar || encodeCharacters.indexOf(c)>=0)	//if this a character to escape
 			{
 					//append the escape character, along with a two-digit representation of the character value
-				stringBuffer.append(escapeChar).append(IntegerUtilities.toHexString(c, length));
+				stringBuffer.append(escapeChar).append(IntegerUtilities.toHexString(c, length).toUpperCase());
 			}
 			else	//if this is not a character to escape
 			{

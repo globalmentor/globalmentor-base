@@ -14,7 +14,7 @@ public class StringBuilderUtilities
 
 	/**Concatenates the string representations of the objects
 		in the array by appending them to the string buffer.
-	@param stringBuilder The string buffer builder which the result should be placed.
+	@param stringBuilder The string builder which the result should be placed.
 	@param objects The array of objects (such as strings) to be concatenated.
 	@return The string builder containing the new information.
 	@see Object#toString
@@ -25,6 +25,34 @@ public class StringBuilderUtilities
 		{
 			stringBuilder.append(object);	//append this object
 		}
+		return stringBuilder;	//return the string builder object
+	}
+
+	/**Appends a given repetition of characters to a string builder.
+	@param stringBuilder The string builder to which the characters should be appended.
+	@param character The character to append.
+	@param count The number of repetitions of the character.
+	@return The string builder with the appended repetitions of the character.
+	*/
+	public static StringBuilder append(final StringBuilder stringBuilder, final char character, int count)
+	{
+		insert(stringBuilder, stringBuilder.length(), character, count);	//insert the characters at the end of the string builder
+		return stringBuilder;	//return the string builder object
+	}
+
+	/**Inserts a given repetition of characters into a string builder.
+	@param stringBuilder The string builder into which the characters should be inserted.
+	@param offset The index at which to insert the characters.
+	@param character The character to append.
+	@param count The number of repetitions of the character.
+	@return The string builder with the inserted repetitions of the character.
+	@exception StringIndexOutOfBoundsException if the index is negative or greater than the length.
+	*/
+	public static StringBuilder insert(final StringBuilder stringBuilder, final int offset, final char character, final int count)
+	{
+		final char[] buffer=new char[count];	//create a new array of characters
+		for(int i=count-1; i>=0; buffer[i--]=character);	//fill the buffer with the specified character
+		stringBuilder.insert(offset, buffer);	//insert the characters into the string builder
 		return stringBuilder;	//return the string builder object
 	}
 

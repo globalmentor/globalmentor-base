@@ -80,7 +80,7 @@ public class UnicodeBlock implements Comparable
 	public String toString()
 	{
 		return getName()+" ["+  //G***use UnicodeUtilities or something here instead of UnicodeData
-			  IntegerUtilities.toHexString(getStartCode(), 4)+"-"+
-			  IntegerUtilities.toHexString(getEndCode(), 4)+"]";
+			  IntegerUtilities.toHexString(getStartCode(), 4).toUpperCase()+"-"+
+			  IntegerUtilities.toHexString(getEndCode(), 4).toUpperCase()+"]";
 	}
 }

@@ -3,6 +3,7 @@ package com.garretwilson.lang;
 import java.io.*;
 import java.util.List;
 import static com.garretwilson.lang.CharacterUtilities.*;
+import static com.garretwilson.lang.StringBuilderUtilities.*;
 import com.garretwilson.text.*;
 import com.garretwilson.util.Debug;
 
@@ -686,13 +687,9 @@ end;
 	@param ch The character to be in the string.
 	@param count The number of repetitions of the character.
 	@return A string with count repetitions of ch.*/
-	static public String createString(final char ch, final int count)	//rename to createString()
+	public static String createString(final char ch, final int count)
 	{
-//G***this is horribly inefficient; change to use a string buffer
-		String outString="";
-		for(int i=0; i<count; ++i)	//for each count
-			outString+=ch;	//add a character
-		return outString;	//return the string we created
+		return StringBuilderUtilities.append(new StringBuilder(), ch, count).toString();	//append the characters to a new string builder and return the string version of the result
 	}
 
 	/**Ensures that the given string is the correct length by adding or deleting characters to or from the front.
@@ -701,24 +698,31 @@ end;
 	@param ch The character to be added to the string, if needed.
 	@param pos The position at which to insert or delete characters, or -1 if the end should be used.
 	@return A string with the correct length.*/
-	static public String makeStringLength(final String inString, final int len, final char ch, int pos)
+	public static String makeStringLength(final String inString, final int len, final char ch, int pos)	//TODO refactor this into a StringBuilderUtilities method
 	{
-		String outString=inString;	//make a copy of the string
-		if(outString.length()!=len)		//if the string isn't the correct length already
+		final int originalLength=inString.length();	//get the length of the original string
+		if(originalLength==len)		//if the string is already the correct length
 		{
-			if(pos==-1 && pos>outString.length())	//if they want to insert/delete characters at the end of the string (or if they supplied an incorrect position)
-				pos=outString.length();	//find that position
-			if(outString.length()>len)	//if the string is too long
-			{
-				final int removeCount=outString.length()-len;	//find out how many characters to remove
-				if(pos>outString.length()-removeCount)	//if our position is too close to the end to successfully remove all characters
-					pos=outString.length()-removeCount;	//place our position at just the right place to remove the characters
-				outString=remove(outString, pos, removeCount);	//remove the characters
-			}
-			else if(outString.length()<len)	//if the string is too short
-				outString=insert(outString, pos, createString(ch, len-outString.length()));	//insert a string of the correct length at the correct position with the specified characters
+			return inString;	//return the string untouched
 		}
-		return outString;	//return our resulting string
+		else	//if the string isn't the correct length already
+		{
+			final StringBuilder stringBuilder=new StringBuilder(inString);	//create a new string builder with the contents of the existing string
+			if(pos==-1 && pos>originalLength)	//if they want to insert/delete characters at the end of the string (or if they supplied an incorrect position) TODO don't be so lenient here---throw an exception, as this probably reflects an error somewhere else in the code
+				pos=originalLength;	//find that position
+			if(originalLength>len)	//if the string is too long
+			{
+				final int removeCount=originalLength-len;	//find out how many characters to remove
+				if(pos>originalLength-removeCount)	//if our position is too close to the end to successfully remove all characters
+					pos=originalLength-removeCount;	//place our position at just the right place to remove the characters
+				stringBuilder.delete(pos, pos+removeCount);	//remove the characters
+			}
+			else	//if the string is too short
+			{
+				StringBuilderUtilities.insert(stringBuilder, pos, ch, len-originalLength);	//insert a string of the correct length at the correct position with the specified characters
+			}
+			return stringBuilder.toString();	//return a string representation of our string builder
+		}
 	}
 
 	/**Parses the string and converts tabs, carriage returns, and linefeeds to HTML paragraphs.

@@ -282,7 +282,7 @@ public class UnicodeCharacter implements UnicodeConstants
 	{
 		final StringBuffer stringBuffer=new StringBuffer("U+");	//create a string buffer
 			//append the code value, using six digits if needed
-		stringBuffer.append(IntegerUtilities.toHexString(codeValue, codeValue<=0xFFFF ? 4 : 6));
+		stringBuffer.append(IntegerUtilities.toHexString(codeValue, codeValue<=0xFFFF ? 4 : 6).toUpperCase());
 		return stringBuffer.toString();	//return the string we constructed
 	}
 
