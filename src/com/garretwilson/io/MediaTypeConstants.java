@@ -89,6 +89,9 @@ public interface MediaTypeConstants
 	/**An Ogg Vorbis file; see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>.*/
 	public final static String OGG="ogg";
 	public final static String APPLICATION_OGG=APPLICATION+DIVIDER+OGG;
+	/**A PDF file.*/
+	public final static String PDF="pdf";
+	public final static String APPLICATION_PDF=APPLICATION+DIVIDER+PDF;
 	/**An XML application.*/
 	public final static String APPLICATION_XML=APPLICATION+DIVIDER+XML;
 	/**An XHTML application.*/

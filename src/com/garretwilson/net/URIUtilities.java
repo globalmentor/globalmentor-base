@@ -3,7 +3,9 @@ package com.garretwilson.net;
 import java.io.*;
 import java.net.*;
 import com.garretwilson.io.*;
+import com.garretwilson.text.CharacterEncodingConstants;
 import com.garretwilson.util.Debug;
+import com.garretwilson.util.NameValuePair;
 
 /**Various URI manipulating functions for working with URIs as defined in
 	in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
@@ -16,6 +18,39 @@ public class URIUtilities implements URIConstants
 	/**Default constructor.*/
 	public URIUtilities()
 	{
+	}
+
+	/**Constructs a query string for a URI by URL-encoding each name-value pair,
+	 	separating them with '&', and prepending the entire string (if there is
+	 	at least one parameter) with '?'.
+	@param params The name-value pairs representing the query parameters.
+	@return A string representing the constructed query, or the empty string if
+		there were no parameters.
+	*/
+	public static String constructQuery(final NameValuePair[] params)	//TODO recode with varargs
+	{
+		final StringBuilder query=new StringBuilder();
+		if(params.length>0)	//if there is at least one parameter
+		{
+			query.append(QUERY_SEPARATOR);	//append the query prefix
+			for(NameValuePair param : params)	//look at each parameter
+			{
+				try
+				{
+					//TODO use generics for NameValuePair
+					query.append(URLEncoder.encode(param.getName().toString(), CharacterEncodingConstants.UTF_8));	//append the parameter name
+					query.append(QUERY_NAME_VALUE_ASSIGNMENT);	//append the value-assignment character
+					query.append(URLEncoder.encode(param.getValue().toString(), CharacterEncodingConstants.UTF_8));	//append the parameter value
+					query.append(QUERY_NAME_VALUE_PAIR_DELIMITER);	//append the name-value pair delimiter
+				}
+				catch(UnsupportedEncodingException unsupportedEncodingException)	//we should always support UTF-8
+				{
+					throw new AssertionError(unsupportedEncodingException);
+				}
+			}
+			query.delete(query.length()-1, query.length());	//remove the last name-value pair delimiter
+		}
+		return query.toString();	//return the query we constructed
 	}
 	
 	/**Determines the current level of a hierarchical URI.
