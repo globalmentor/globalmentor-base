@@ -1,6 +1,7 @@
 package com.garretwilson.io;
 
 import java.io.*;
+import static java.lang.System.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,17 +35,7 @@ public class InputStreamUtilities
 		do
 		{
 			final byte[] buffer=new byte[bufferSize];	//create a new buffer
-			bufferBytesRead=0;		//show that we haven't read any bytes in this buffer
-		  int segmentBytesRead; //we'll use this to hold the number of bytes we read in each segment
-			do  //read each segment of the buffer; the buffer may take several segments, since we're not guaranteed to have a buffered reader
-			{
-					//read as much as we can into this buffer, at the next location, although this may not fill up the buffer
-				segmentBytesRead=inputStream.read(buffer, bufferBytesRead, buffer.length-bufferBytesRead);
-				if(segmentBytesRead>=0) //if we haven't hit the end of the stream
-					bufferBytesRead+=segmentBytesRead;  //update the number of bytes we've read for the buffer
-//G***del Debug.trace("Read segment of length: "+segmentBytesRead+" in buffer of length: "+bufferSize);
-			}
-			while(segmentBytesRead>=0 && bufferBytesRead<bufferSize);  //keep reading segments while we haven't reached the end of the file and we haven't filled up the buffer
+			bufferBytesRead=read(inputStream, buffer);	//read bytes into the buffer
 		  totalBytesRead+=bufferBytesRead;	//update our total bytes read
 			bufferList.add(buffer);	//add this buffer to our list of buffers
 		}
@@ -55,10 +46,88 @@ public class InputStreamUtilities
 		{
 			//all the buffers should be full except for the last one, which will only hold the number of bytes last read
 			final int bytesToCopy=(i<bufferList.size()-1) ? bufferSize : bufferBytesRead;
-			System.arraycopy(bufferList.get(i), 0, finalBuffer, bytesCopied, bytesToCopy);	//copy bytes from this buffer to our final buffer
+			arraycopy(bufferList.get(i), 0, finalBuffer, bytesCopied, bytesToCopy);	//copy bytes from this buffer to our final buffer
 			bytesCopied+=bytesToCopy;	//show that we copied this many bytes
 		}
 		return finalBuffer;	//return the final buffer
+	}
+
+	/**Reads a specified number of bytes from the stream and returns them in a byte array.
+	@param inputStream The input stream from which to read.
+	@param length The number of bytes to read
+	@return An array of bytes containing the read characters, which may be shorter than
+		the length specified if the number of bytes actually available were less than requested.
+	@exception IllegalArgumentException if the offset or the length is negative.
+	@exception IOException if there is an error reading from the input stream.
+	*/
+	public static byte[] getBytes(final InputStream inputStream, final int length) throws IOException
+	{
+		return getBytes(inputStream, 0, length);	//get bytes from the stream starting at the beginning
+	}
+
+	/**Reads a specified number of bytes from the stream and returns them in a byte array,
+	 	starting at a given offset.
+	@param inputStream The input stream from which to read.
+	@param offset The number of bytes to skip at the beginning of the input stream.
+	@param length The number of bytes to read
+	@return An array of bytes containing the read characters, which may be shorter than
+		the length specified if the number of bytes actually available were less than requested.
+	@exception IllegalArgumentException if the offset or the length is negative.
+	@exception IOException if there is an error reading from the input stream.
+	*/
+	public static byte[] getBytes(final InputStream inputStream, final long offset, final int length) throws IOException
+	{
+		if(offset<0)	//if a negative offset is requested
+		{
+			throw new IllegalArgumentException("Offset cannot be negative.");
+		}
+		if(length<0)	//if a negative length is requested
+		{
+			throw new IllegalArgumentException("Length cannot be negative.");
+		}
+		final long bytesSkipped=offset>0 ? inputStream.skip(offset) : 0;	//skip the requested amount, if any
+		if(bytesSkipped==offset)	//if all the requested bytes were skipped
+		{
+			final byte[] buffer=new byte[length];	//create a new array of bytes
+			final int bytesRead=read(inputStream, buffer);	//read bytes into the buffer
+			if(bytesRead==length)	//if all the bytes were read
+			{
+				return buffer;	//return the buffer normally
+			}
+			else	//if less bytes were read then requested
+			{
+				final byte[] shortBuffer=new byte[bytesRead];	//create a shorter buffer
+				arraycopy(buffer, 0, shortBuffer, 0, bytesRead);	//copy the bytes read from the expected buffer to the shorter buffer
+				return shortBuffer;	//return the shorter buffer of bytes that were actually read
+			}
+		}
+		else	//if not all the skipped bytes requested were actually skipped
+		{
+			return new byte[0];	//return an empty byte array
+		}
+	}
+
+	/**Fills a buffer with bytes from an input stream, blocking until the buffer is full
+	 	or the end of the stream is reached.
+	@param inputStream The input stream from which to read.
+	@param buffer The buffer to fill.
+	@return The number of bytes actually read.
+	@exception IOException if there is an error reading from the input stream.
+	*/
+	public static int read(final InputStream inputStream, final byte[] buffer) throws IOException
+	{
+		final int bufferLength=buffer.length;	//get the length of the buffer
+		int bufferBytesRead=0;		//show that we haven't read any bytes in this buffer
+	  int segmentBytesRead; //we'll use this to hold the number of bytes we read in each segment
+		do  //read each segment of the buffer; the buffer may take several segments, since we're not guaranteed to have a buffered reader
+		{
+				//read as much as we can into this buffer, at the next location, although this may not fill up the buffer
+			segmentBytesRead=inputStream.read(buffer, bufferBytesRead, bufferLength-bufferBytesRead);
+			if(segmentBytesRead>=0) //if we haven't hit the end of the stream
+				bufferBytesRead+=segmentBytesRead;  //update the number of bytes we've read for the buffer
+		}
+		while(segmentBytesRead>=0 && bufferBytesRead<bufferLength);  //keep reading segments while we haven't reached the end of the file and we haven't filled up the buffer
+		return bufferBytesRead;	//return the number of bytes read
 	}
 
 	/**Attempts to automatically detect the character encoding of a particular

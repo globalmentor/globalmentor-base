@@ -2,6 +2,7 @@ package com.garretwilson.rdf.dublincore;
 
 import java.text.*;
 import java.util.*;
+
 import com.garretwilson.text.*;
 import com.garretwilson.rdf.*;
 import com.garretwilson.util.*;
@@ -11,13 +12,6 @@ import com.garretwilson.util.*;
 */
 public class DCUtilities extends RDFUtilities implements DCConstants
 {
-
-	/**@return A new date format for formatting W3C-style dates.*/
-	public final static DateFormat createDateFormat()  //G***put this in an appropriate package
-	{
-		return new W3CDateFormat(W3CDateFormat.DATE_STYLE);	//return a W3C date and time formatter for just the date 
-//G***del		return new SimpleDateFormat(W3C_DATE_FORMAT); //return a new simple date formatter with the W3C date template
-	}
 
 	/**Adds a <code>dc:creator</code> property with the given value to the
 		resource.
@@ -47,12 +41,14 @@ public class DCUtilities extends RDFUtilities implements DCConstants
 	@param date The property value to add.
 	@return The added literal property value.
 	*/
+/*G***del if not needed
 	public static RDFLiteral addDate(final RDFResource resource, final Date date)
 	{
 		  //G***fix
 //G***del		final DateFormat dateFormat=DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT); //G***testing
 		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME, createDateFormat().format(date));
 	}
+*/
 
 	/**Adds a <code>dc:description</code> property with the given value to the
 		resource.
@@ -142,6 +138,57 @@ public class DCUtilities extends RDFUtilities implements DCConstants
 		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_CREATOR_PROPERTY_NAME);
 	}
 
+	/**Returns the value of the first <code>dc:date</code> property parsed as a date,
+	 	using the default W3C full date style.
+	@param resource The resource the property of which should be located.
+	@param style The style of the date formatting.
+	@return The value of the first <code>dc:date</code> property, or
+		<code>null</code> if no such property exists or it does not contain
+		a date.
+	@see W3CDateFormat#Style#DATE_TIME
+	*/
+	public static Date getDate(final RDFResource resource)
+	{
+		return getDate(resource, W3CDateFormat.Style.DATE_TIME);	//get the date using the default formatter
+	}
+
+	/**Returns the value of the first <code>dc:date</code> property parsed as a date.
+	@param resource The resource the property of which should be located.
+	@param style The style of the date formatting.
+	@return The value of the first <code>dc:date</code> property, or
+		<code>null</code> if no such property exists or it does not contain
+		a date.
+	*/
+	public static Date getDate(final RDFResource resource, final W3CDateFormat.Style style)
+	{
+		return getDate(resource, new W3CDateFormat(style));	//create a date format and get the date
+	}
+	
+	/**Returns the value of the first <code>dc:date</code> property parsed as a date.
+	@param resource The resource the property of which should be located.
+	@param dateFormat The object to parse the date.
+	@return The value of the first <code>dc:date</code> property, or
+		<code>null</code> if no such property exists or it does not contain
+		a date.
+	*/
+	public static Date getDate(final RDFResource resource, final DateFormat dateFormat)
+	{
+		final RDFObject dateObject=resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME);	//get the date object
+		if(dateObject instanceof RDFLiteral)	//if this is a literal
+		{
+			final String dateString=((RDFLiteral)dateObject).getLexicalForm();	//get the string version of the date
+			try
+			{
+				return dateFormat.parse(dateString);	//parse the date from the string and return it
+			}
+			catch(final ParseException parseException)	//if there is a problem with the format
+			{
+				Debug.warn(parseException);	//warn of the problem, but continue on
+			}
+		}
+		return null;	//show that for some reason we couldn't parse the date
+	}
+
 	/**Returns the value of the first <code>dc:description</code> property.
 	@param resource The resource the property of which should be located.
 	@return The value of the first <code>dc:description</code> property, or
@@ -189,6 +236,42 @@ public class DCUtilities extends RDFUtilities implements DCConstants
 	public static RDFObject getRights(final RDFResource resource)
 	{
 		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_RIGHTS_PROPERTY_NAME);
+	}
+
+	/**Sets the <code>dc:date</code> property with the given value to the
+		resource, using the default W3C full date style.
+	@param resource The resource to which the property should be set.
+	@param date The property value to set.
+	@return The added literal property value.
+	@see W3CDateFormat#Style#DATE_TIME
+	*/
+	public static RDFLiteral setDate(final RDFResource resource, final Date date)
+	{
+		return setDate(resource, date, W3CDateFormat.Style.DATE_TIME);	//set the date using the default formatter
+	}
+
+	/**Sets the <code>dc:date</code> property with the given value to the
+		resource, using the given style.
+	@param resource The resource to which the property should be set.
+	@param date The property value to set.
+	@param style The style of the date formatting.
+	@return The added literal property value.
+	*/
+	public static RDFLiteral setDate(final RDFResource resource, final Date date, final W3CDateFormat.Style style)
+	{
+		return setDate(resource, date, new W3CDateFormat(style));	//create a date formatter and set the date
+	}
+
+	/**Sets the <code>dc:date</code> property with the given value to the
+		resource, using the given formatter.
+	@param resource The resource to which the property should be set.
+	@param date The property value to set.
+	@param dateFormat The object to format the date.
+	@return The added literal property value.
+	*/
+	public static RDFLiteral setDate(final RDFResource resource, final Date date, final DateFormat dateFormat)
+	{
+		return resource.setProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME, dateFormat.format(date));
 	}
 
 	/**Sets the <code>dc:language</code> property with the given value to the

@@ -12,6 +12,10 @@ public class ContentTypeConstants
 {
 	/**The divider character for media type strings.*/
 	public final static char DIVIDER='/';
+	/**The delimiter character separating parameters from the base content type and from each other.*/
+	public final static char PARAMETER_DELIMITER_CHAR=';';
+	/**The character used to assign parameter values.*/
+	public final static char PARAMETER_ASSIGNMENT_CHAR='=';
 
 		//discrete top-level media types
 	public final static String TEXT="text";
@@ -31,7 +35,10 @@ public class ContentTypeConstants
 	public final static String XML_SUBTYPE_SUFFIX="xml";
 	/**The suffix for RDF application types.*/
 	public final static String RDF_XML_SUBTYPE_SUFFIX="rdf"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
-	
+
+	/**The character set parameters.*/
+	public final static String CHARSET_PARAMETER="charset";
+
 		//text media types
 	/**An OEB 1.0 document.*/
 	public final static String X_OEB1_CSS_SUBTYPE="x-oeb1-css";

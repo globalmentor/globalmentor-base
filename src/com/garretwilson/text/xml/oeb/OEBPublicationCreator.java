@@ -657,7 +657,7 @@ Debug.trace("using file for document: ", oebDocumentFile);
 		  DCUtilities.addDescription(publication, getDescription()); //add the description to the publication
 		if(languageLocale!=null) //if we have a language
 		  DCUtilities.addLanguage(publication, languageLocale); //add the language to the publication
-		DCUtilities.addDate(publication, new Date());  //add the current date and time
+		DCUtilities.setDate(publication, new Date());  //add the current date and time
 		DCUtilities.addSource(publication, "file:"+URLUtilities.getFileName(textURL));  //add the text filename as the source G***use a constant
 		if(isProjectGutenbergEText) //if we got this text from Project Gutenberg
 		{

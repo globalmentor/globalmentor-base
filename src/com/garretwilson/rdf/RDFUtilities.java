@@ -6,6 +6,7 @@ import java.util.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.URIConstants;
+import com.garretwilson.rdf.rdfs.RDFSUtilities;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLUtilities;
 
@@ -139,6 +140,7 @@ public class RDFUtilities implements RDFConstants
 	*/
 	public static URI createReferenceURI(final URI namespaceURI, final String localName) //G***del if not needed throws URISyntaxException
 	{
+			//TODO check for local names that aren't valid URI characters---see QualifiedName.createReferenceURI
 		final StringBuffer stringBuffer=new StringBuffer();  //create a string buffer to hold the resource URI
 		if(namespaceURI!=null)  //if there is a namespace URI	//G***is this right?
 		  stringBuffer.append(namespaceURI);  //append the namespace URI
@@ -560,6 +562,38 @@ public class RDFUtilities implements RDFConstants
 	}
 */
 
+	/**Determines a string value for resource appropriate for representation.
+	The label is determined in the following sequence:
+	<ol>
+		<li>The lexical form of any literal <code>rdfs:label</code>.</li>
+		<li>The reference URI.</li>
+		<li>The lexical form of any literal <code>rdfs:value</code>.</li>
+		<li>The Java string representation of the resource as given by its <code>toString()</code> method.</li>
+	</ol>
+	@param resource The resource the label of which will be returned.
+	@return The label of the resource, or <code>null</code> if there is no label
+		or the label is not a literal.
+	*/
+	public static String getDisplayLabel(final RDFResource resource)
+	{
+		final RDFLiteral labelLiteral=RDFSUtilities.getLabel(resource);	//see if there is an rdfs:label property
+		if(labelLiteral!=null)	//if a rdfs:label property was provided
+		{
+			return labelLiteral.getLexicalForm();	//return the rdfs:label property's lexical form
+		}
+		final URI referenceURI=resource.getReferenceURI();	//get the resource's reference URI
+		if(referenceURI!=null)	//if the resource has a reference URI
+		{
+			return referenceURI.toString();	//return the reference URI
+		}
+		final RDFLiteral valueLiteral=RDFUtilities.getValue(resource);	//get the rdfs:value property, if any
+		if(valueLiteral!=null)	//if a rdfs:value property was provided
+		{
+			return valueLiteral.getLexicalForm();	//return the rdfs:value property's lexical form
+		}
+		return resource.toString();	//there's nothing else to do but return the resource's string value
+	}
+	
 	/**Determines the RDF namespace of the given reference URI.
 	For most reference URIs, this is the URI formed by all the the reference URI
 		characters up to and including the last character that is not a valid
