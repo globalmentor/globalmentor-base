@@ -2,7 +2,6 @@ package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.*;
 import java.io.IOException;
-
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.model.Model;
@@ -10,7 +9,7 @@ import com.garretwilson.rdf.RDFResource;
 import com.garretwilson.rdf.RDFResourceModel;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.rdf.xmlschema.BooleanLiteral;
-import com.garretwilson.swing.*;
+import com.garretwilson.rdf.xmlschema.IntegerLiteral;
 import com.garretwilson.swing.border.BorderUtilities;
 import com.garretwilson.swing.rdf.RDFResourceModelPanel;
 
@@ -113,36 +112,6 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 		processPanel.saveModel();
 		feedbackPanel.saveModel();		
 	}
-
-	/**Verifies the component.
-	@return <code>true</code> if the component contents are valid, <code>false</code>
-		if not.
-	*/
-/*G***fix
-	public boolean verify()
-	{
-		if(onlyQuestionsRadioButton.isSelected())	//if the user wants to limit the number of questions
-		{
-			try
-			{
-				final int questionCount=Integer.parseInt(questionCountTextField.getText().trim());	//see if we can convert the question count string to an integer
-				if(questionCount==0)	//if there are no questions requested
-				{
-					JOptionPane.showMessageDialog(this, "You must enter a positive number of questions.", "Invalid number of questions", JOptionPane.ERROR_MESSAGE);	//G***i18n
-					questionCountTextField.requestFocusInWindow(); //focus on the question count text field
-					return false; //show that verification failed				
-				}
-			}
-			catch(NumberFormatException numberFormatException)	//if there was an error converting the string to an integer
-			{
-				JOptionPane.showMessageDialog(this, "You must enter a valid number of questions.", "Invalid number of questions", JOptionPane.ERROR_MESSAGE);	//G***i18n
-				questionCountTextField.requestFocusInWindow(); //focus on the question count text field
-				return false; //show that verification failed
-			}
-		}
-		return super.verify();  //if we couldn't find any problems, verify the parent class
-	}
-*/
 
 	/**Panel for editing the activity permissions.
 	@author Garret Wilson
@@ -286,7 +255,18 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 				confirmCommitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME)));
 				confirmSubmitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_SUBMIT_PROPERTY_NAME)));
 				requireResponseCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, REQUIRE_RESPONSE_PROPERTY_NAME)));
-//TODO fix limit time controls
+//TODO probably make maxTime to be long
+				final int maxTime=IntegerLiteral.asIntValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME));
+				if(maxTime>=0)	//if a maximum amount of time was specified
+				{
+					limitTimeCheckBox.setSelected(true);
+					maxTimeTextField.setText(Integer.toString(maxTime));	//show the maximum amount of time in the text field
+				}
+				else	//if no maximum time was specified
+				{
+					limitTimeCheckBox.setSelected(false);
+					maxTimeTextField.setText("");
+				}
 			}
 		}
 
@@ -302,9 +282,53 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 				resource.setProperty(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME, new BooleanLiteral(confirmCommitCheckBox.isSelected()));
 				resource.setProperty(MAQRO_NAMESPACE_URI, CONFIRM_SUBMIT_PROPERTY_NAME, new BooleanLiteral(confirmSubmitCheckBox.isSelected()));
 				resource.setProperty(MAQRO_NAMESPACE_URI, REQUIRE_RESPONSE_PROPERTY_NAME, new BooleanLiteral(requireResponseCheckBox.isSelected()));
-//TODO fix limit time controls
+				final IntegerLiteral maxTimeLiteral;
+				if(limitTimeCheckBox.isSelected())	//if the user wishes to limit time
+				{
+					try
+					{
+						maxTimeLiteral=new IntegerLiteral(Integer.parseInt(maxTimeTextField.getText().trim()));	//get the entered time
+					}
+					catch(NumberFormatException numberFormatException)	//if there was an error converting the string to an integer
+					{
+						throw (IOException)new IOException(numberFormatException.getMessage()).initCause(numberFormatException);
+					}					
+				}
+				else	//if the user doesn't want to limit time
+				{
+					maxTimeLiteral=null;	//don't limit the time
+				}
+				resource.setProperty(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME, maxTimeLiteral);
 			}
 		}
+
+		/**Verifies the component.
+		@return <code>true</code> if the component contents are valid, <code>false</code>
+			if not.
+		*/
+		public boolean verify()
+		{
+			if(limitTimeCheckBox.isSelected())	//if the user wants to limit time
+			{
+				try
+				{
+					final int time=Integer.parseInt(maxTimeTextField.getText().trim());	//see if we can convert the max time string to an integer
+					if(time<=0)	//if the time limit is not positive
+					{
+						JOptionPane.showMessageDialog(this, "You must enter a positive amount of time in milliseconds.", "Invalid time limit", JOptionPane.ERROR_MESSAGE);	//G***i18n
+						maxTimeTextField.requestFocusInWindow(); //focus on the maximum time text field
+						return false; //show that verification failed				
+					}
+				}
+				catch(NumberFormatException numberFormatException)	//if there was an error converting the string to an integer
+				{
+					JOptionPane.showMessageDialog(this, "You must enter a valid amount of time in milliseconds.", "Invalid time limit", JOptionPane.ERROR_MESSAGE);	//G***i18n
+					maxTimeTextField.requestFocusInWindow(); //focus on the maximum time text field
+					return false; //show that verification failed
+				}
+			}
+			return super.verify();  //if we couldn't find any problems, verify the parent class
+		}	
 	}
 
 	/**Panel for editing the activity feedback.
