@@ -10,13 +10,43 @@ public interface ResourceListener extends EventListener //G***mabye replace com.
 {
 
 	/**Called when a resource is added.
-	The URI of the added resource will be in <code>getResoureURI()</code>, and
-	the resource description may be in <code>getResource()</code>, depending on
-	the implementing class.
-	@param resourceEvent The event identifying the resource.
+	The URI of the added resource will be in <code>getResoureURI()</code>.
+	The resource description may be in <code>getResource()</code>, and information
+	about the parent resource may be in <code>getParentResourceURI()</code> and
+	<code>getParentResource()</code>, depending on the implementing class.
+	@param resourceEvent The event identifying the added resource.
 	@see ResourceEvent#getResourceURI
 	@see ResourceEvent#getResource
 	*/
 	public void onResourceAdded(final ResourceEvent resourceEvent);
+
+	/**Called when a resource is removed.
+	The URI of the removed resource will be in <code>getResoureURI()</code>.
+	The resource description may be in <code>getResource()</code>, and information
+	about the parent resource may be in <code>getParentResourceURI()</code> and
+	<code>getParentResource()</code>, depending on the implementing class.
+	@param resourceEvent The event identifying the removed resource.
+	@see ResourceEvent#getResourceURI
+	@see ResourceEvent#getResource
+	*/
+	public void onResourceRemoved(final ResourceEvent resourceEvent);
+
+	/**Called when a resource is renamed to a different referenceURI.
+	The new URI of the renamed resource will be in <code>getResoureURI()</code>,
+	and its resource description may be in <code>getResource()</code>, depending
+	on the implementing class.
+	The old URI of the renamed resource will be in <code>getOldResourceURI</code>,
+	and its old resource description may be in <code>getOldResource()</code>,
+	depending on the implementing class.
+	Information about the new parent resource may be in
+	<code>getParentResourceURI()</code> and <code>getParentResource()</code>,
+	depending on the implementing class.
+	@param resourceEvent The event identifying the removed resource.
+	@see ResourceEvent#getOldResourceURI
+	@see ResourceEvent#getOldResource
+	@see ResourceEvent#getResourceURI
+	@see ResourceEvent#getResource
+	*/
+	public void onResourceRenamed(final ResourceEvent resourceEvent);
 
 }
