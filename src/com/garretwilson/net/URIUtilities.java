@@ -444,22 +444,32 @@ Debug.trace("guessing URI: ", string);
 
 	/**Returns the unencoded host and optional port of the given URI.
 	@param uri The URI from which to extract the host and optional port.
-	@return A URI containing the host and optional port of the given URI,
-		or <code>null</code> if neither of those components are present in the given URI.
+	@return The host name and optional port of the given URI,
+		or <code>null</code> if there is no host specified in the given URI.
 	*/ 
-	public static URI getHostURI(final URI uri)
+	public static Host getHost(final URI uri)
 	{
-		final StringBuilder stringBuilder=new StringBuilder();
 		final String host=uri.getHost();	//get the host
 		final int port=uri.getPort();	//get the port
-		try
+		return host!=null ? new Host(host, port) : null;	//if there is a hostname, return the host information
+/*G***del		
+		if(host!=null)	//if a host is given
 		{
-			return new URI(null, null, host, port, null, null, null);	//create and return a URI with only the host and port
+			final int port=uri.getPort();	//get the port
+			if(port>=0)	//if a port is given
+			{
+				return new StringBuilder(host).append(PORT_SEPARATOR).append(port).toString();	//append the port
+			}
+			else	//if no port is given
+			{
+				return host;	//just return the host
+			}
 		}
-		catch(final URISyntaxException uriSyntaxException)	//this should never happen, as we're constructing a URI from the components of another URI
+		else	//if no host was given
 		{
-			throw new AssertionError(uriSyntaxException);
+			return null;	//show that no host can be returned
 		}
+*/
 	}
 
 	/**Returns the unencoded path, optional unencoded query, and optional unencoded fragment of the given URI.

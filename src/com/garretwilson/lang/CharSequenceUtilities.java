@@ -1,9 +1,6 @@
 package com.garretwilson.lang;
 
-import java.io.UnsupportedEncodingException;
-
 import static com.garretwilson.lang.CharacterUtilities.*;
-import com.garretwilson.text.CharacterEncodingConstants;
 import static com.garretwilson.text.CharacterConstants.*;
 
 /**Various text manipulating functions. These methods work on
@@ -266,8 +263,20 @@ public class CharSequenceUtilities
 	*/
 	public static int indexOf(final CharSequence charSequence, final char character)
 	{
+		return indexOf(charSequence, character, 0);	//search from the beginning
+	}
+
+	/**Determines the first index of the given character.
+	@param charSequence The character sequence to check.
+	@param character The character to search for.
+	@param index The first index to examine.
+	@return The index of the first occurrence of the given character, or -1 if
+		the character was not found.
+	*/
+	public static int indexOf(final CharSequence charSequence, final char character, final int index)
+	{
 		final int length=charSequence.length();
-		for(int i=0; i<length; ++i)	//look at each character
+		for(int i=index; i<length; ++i)	//look at each character
 		{
 			if(charSequence.charAt(i)==character)	//if this character matches
 			{
@@ -517,6 +526,36 @@ public class CharSequenceUtilities
 	{
 			//see if the character sequence has at least one character, and the first character matches our character
 		return charSequence.length()>0 && charSequence.charAt(0)==character;
+	}
+
+	/**Determines if the character sequence starts with the given string.
+	@param charSequence The character sequence to examine.
+	@param string The string to compare.
+	@return <code>true</code> if the first characters of the character sequence
+		match those of the given string.
+	*/
+	public static boolean startsWith(final CharSequence charSequence, final String string)	//TODO refactor startsWith() and endsWith() into a generic method
+	{
+		if(charSequence.length()<string.length()) //if the substring is too long
+			return false; //the substring is too big to start the character sequence
+		for(int i=string.length()-1; i>=0; --i) //look at each character of the string
+		{
+			if(string.charAt(i)!=charSequence.charAt(i))  //if these characters don't match in the same position
+				return false; //the string doens't match
+		}
+		return true;  //the character sequence starts with the string
+	}
+
+	/**Determines if the character sequence starts with one of the given characters.
+	@param charSequence The character sequence to examine.
+	@param characters The characters to compare.
+	@return <code>true</code> if the first character of the character sequence
+		matches one of those in the given string.
+	*/
+	public static boolean startsWithChar(final CharSequence charSequence, final String characters)
+	{
+			//see if the character sequence has at least one character, and the first character matches our character
+		return charSequence.length()>0 && characters.indexOf(charSequence.charAt(0))>=0;
 	}
 
 	/**Trims the right side of the string beginning at the first occurrence of the

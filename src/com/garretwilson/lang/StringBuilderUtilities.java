@@ -454,7 +454,7 @@ public class StringBuilderUtilities
 		for(int i=string.length()-1; i>=0; --i) //look at each character of the string
 		{
 			if(string.charAt(i)!=stringBuilder.charAt(i))  //if these characters don't match in the same position
-				return false; //the string doens't match
+				return false; //the string doesn't match
 		}
 		return true;  //the string buffer starts with the string
 	}
@@ -466,27 +466,33 @@ public class StringBuilderUtilities
 	*/
 	public static StringBuilder trim(final StringBuilder stringBuilder, final String delimiters)
 	{
-	//G***del System.out.println("trimming: "+stringBuilder);  //G***del
-		int beginIndex, endIndex;
+		trimBeginning(stringBuilder, delimiters);	//trim the beginning of the string builder
+		trimEnd(stringBuilder, delimiters);	//trim the end of the string builder
+		return stringBuilder;  //return the resulting string buffer
+	}
+
+	/**Trims the specified delimiters from the beginning of the string buffer.
+	@param stringBuilder The characters to be processed.
+	@param delimiters The string containing delimiter characters.
+	@return The trimmed string buffer.
+	*/
+	public static StringBuilder trimBeginning(final StringBuilder stringBuilder, final String delimiters)
+	{
+		int beginIndex;
 		final int length=stringBuilder.length(); //get the length of the original string
 		for(beginIndex=0; beginIndex<length && delimiters.indexOf(stringBuilder.charAt(beginIndex))>=0; ++beginIndex);	//find the first non-delimiter in the string buffer
-		for(endIndex=length; endIndex>beginIndex && delimiters.indexOf(stringBuilder.charAt(endIndex-1))>=0; --endIndex);	//find the last non-delimiter in the string buffer
-		if(endIndex<length)  //if we should trim the end
-		  stringBuilder.delete(endIndex, length);  //remove the end of the buffer
-	//G***del System.out.println("begin index: "+beginIndex); //G***del
 		if(beginIndex>0)  //if we should trim the beginning
 		  stringBuilder.delete(0, beginIndex); //remove the beginning of the buffer
 		return stringBuilder;  //return the resulting string buffer
 	}
-	
+
 	/**Trims the specified delimiters from the end of the string buffer.
 	@param stringBuilder The characters to be processed.
 	@param delimiters The string containing delimiter characters.
 	@return The trimmed string buffer.
 	*/
-	public static StringBuilder trimEnd(final StringBuilder stringBuilder, final String delimiters)  //G***later call this method from trim()
+	public static StringBuilder trimEnd(final StringBuilder stringBuilder, final String delimiters)
 	{
-	//G***del System.out.println("trimming: "+stringBuilder);  //G***del
 		int endIndex;
 		final int length=stringBuilder.length(); //get the length of the original string
 		for(endIndex=length; endIndex>0 && delimiters.indexOf(stringBuilder.charAt(endIndex-1))>=0; --endIndex);	//find the last non-delimiter in the string buffer

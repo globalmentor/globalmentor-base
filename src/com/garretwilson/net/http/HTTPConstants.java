@@ -277,7 +277,7 @@ public class HTTPConstants
 	public final static String CRLF=""+CR+LF;
 
 	/**Characters that must be in a quoted string to be included in a parameter value.*/
-	public final static String SEPARATOR_CHARS="()<>@,;:\\"+QUOTE+"/[]?={}"+SP+""+HT;
+	public final static String SEPARATOR_CHARS=new StringBuilder().append("()<>@,;:\\").append(QUOTE).append("/[]?={}").append(SP).append(HT).toString();
 
 	/**Characters that delimit tokens.*/
 	public final static String DELIMITER_CHARS=CTL_CHARS+SEPARATOR_CHARS; 

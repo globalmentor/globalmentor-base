@@ -1,5 +1,7 @@
 package com.garretwilson.text;
 
+import static java.util.Collections.*;
+import java.util.*;
 import static java.util.Arrays.*;
 
 import com.garretwilson.lang.IntegerUtilities;
@@ -134,7 +136,7 @@ public class FormatUtilities
 	*/
 	public static StringBuilder formatAttributes(final StringBuilder stringBuilder, final NameValuePair<?, ?>... attributes)
 	{
-		return formatAttributes(stringBuilder, COMMA_CHAR, EQUALS_SIGN_CHAR, QUOTATION_MARK_CHAR, attributes);	//format the attributes using the standard formatting characters
+		return formatAttributes(stringBuilder, COMMA_CHAR, EQUALS_SIGN_CHAR, QUOTATION_MARK_CHAR, emptySet(), attributes);	//format the attributes using the standard formatting characters
 	}
 
 	/**Formats a series of name-value pairs.
@@ -142,18 +144,29 @@ public class FormatUtilities
 	@param delimiter The character for delimiting the parameters.
 	@param assignment The character for assigning the pairs.
 	@param quote The quote character to use for the value.
+	@param unquotedNames The set of names that should not be quoted.
 	@param attributes The attributes to format. 
 	@return The string builder used for formatting.
 	*/
-	public static StringBuilder formatAttributes(final StringBuilder stringBuilder, final char delimiter, final char assignment, final char quote, final NameValuePair<?, ?>... attributes)
+	public static StringBuilder formatAttributes(final StringBuilder stringBuilder, final char delimiter, final char assignment, final char quote, final Set<?> unquotedNames, final NameValuePair<?, ?>... attributes)
 	{
 		if(attributes.length>0)	//if there are attributes
 		{
 			for(final NameValuePair<?, ?> attribute:attributes)	//for each attribute
 			{
-				stringBuilder.append(attribute.getName());	//name
+				final Object name=attribute.getName();	//get the attribute name
+				final boolean isQuoted=!unquotedNames.contains(name);	//see if we should quote this attribute
+				stringBuilder.append(name);	//name
 				stringBuilder.append(assignment);	//=
-				stringBuilder.append(quote).append(attribute.getValue()).append(quote);	//"value"
+				if(isQuoted)	//if this attribute is quoted
+				{
+					stringBuilder.append(quote);	//"
+				}
+				stringBuilder.append(attribute.getValue());	//value
+				if(isQuoted)	//if this attribute is quoted
+				{
+					stringBuilder.append(quote);	//"
+				}
 				stringBuilder.append(delimiter);	//append a delimiter
 			}
 			deleteLastChar(stringBuilder);	//remove the last delimiter
