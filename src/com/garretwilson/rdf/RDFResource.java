@@ -9,7 +9,7 @@ import com.garretwilson.model.*;
 @author Garret Wilson
 @see DefaultRDFResource
 */
-public interface RDFResource extends RDFObject, Resource, RDFConstants, Cloneable, Comparable<Resource>
+public interface RDFResource extends RDFObject, Resource, RDFConstants, Cloneable, Comparable<RDFResource>
 {
 
 	/**@return The resource identifier URI, or <code>null</code> if the identifier is not known.*/

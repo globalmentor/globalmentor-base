@@ -1,12 +1,173 @@
 package com.garretwilson.model;
 
-import com.garretwilson.io.URIAccessible;
+import java.net.URI;
+import com.garretwilson.io.*;
+import static com.garretwilson.lang.ClassUtilities.*;
 
 /**A model of a resource.
+<p>Bound properties:</p>
+<dl>
+	<dt><code>RESOURCE_PROPERTY</code> (<code>Resource</code>)</dt>
+	<dd>Indicates that the resource property has been changed.</dd>
+</dl>
 @author Garret Wilson
+@see #RESOURCE_PROPERTY
 */
-public interface ResourceModel extends Model, URIAccessible
+public class ResourceModel<R extends Resource> extends URIAccessibleModel
 {
-	/**@return The resource being modeled, or <code>null</code> if there is no resource.*/
-	public Resource getResource();
+	/**The resource property.*/
+	public final String RESOURCE_PROPERTY=getFullName(ResourceModel.class, "resource");
+
+	/**The resource being modeled, or <code>null</code> if there is no resource.*/
+	private R resource=null;
+
+		/**@return The resource being modeled, or <code>null</code> if there is no resource.*/
+		public R getResource() {return resource;}
+
+		/**Sets the resource being modeled.
+		This is a bound property.
+		@param newResource The resource being modeled, or <code>null</code> if
+			there is no resource.
+		*/
+		public void setResource(final R newResource)
+		{
+			final R oldResource=resource; //get the old value
+			if(oldResource!=newResource)  //if the value is really changing
+			{
+				resource=newResource; //update the value
+					//show that the property has changed
+				firePropertyChange(RESOURCE_PROPERTY, oldResource, newResource);
+			}
+		}
+
+	/**Default constructor.*/
+	public ResourceModel()
+	{
+		this((R)null);
+	}
+
+	/**Resource constructor.
+	@param resource The resource being modeled, or <code>null</code> if there is no resource.
+	*/
+	public ResourceModel(final R resource)
+	{
+		this(resource, resource!=null ? resource.getReferenceURI() : (URI)null);
+	}
+
+	/**Base URI constructor.
+	@param baseURI The base URI of the model, or <code>null</code> if unknown.
+	*/
+	public ResourceModel(final URI baseURI)
+	{
+		this((R)null, baseURI);
+	}
+
+	/**Resource and base URI constructor.
+	@param resource The resource being modeled, or <code>null</code> if there is no resource.
+	@param baseURI The base URI of the model, or <code>null</code> if unknown.
+	*/
+	public ResourceModel(final R resource, final URI baseURI)
+	{
+		this(resource, baseURI, null, null);
+	}
+
+	/**URI input stream locator constructor.
+	@param uriInputStreamable The implementation to use for accessing a URI for
+		input, or <code>null</code> if the default implementation should be used.
+	*/
+	public ResourceModel(final URIInputStreamable uriInputStreamable)
+	{
+		this((R)null, uriInputStreamable);
+	}
+
+	/**Resource and URI input stream locator constructor.
+	@param resource The resource being modeled, or <code>null</code> if there is no resource.
+	@param uriInputStreamable The implementation to use for accessing a URI for
+		input, or <code>null</code> if the default implementation should be used.
+	*/
+	public ResourceModel(final R resource, final URIInputStreamable uriInputStreamable)
+	{
+		this(resource, uriInputStreamable, (URIOutputStreamable)null);
+	}
+
+	/**Resource and URI output stream locator constructor.
+	@param resource The resource being modeled, or <code>null</code> if there is no resource.
+	@param uriOutputStreamable The implementation to use for accessing a URI for
+		output, or <code>null</code> if the default implementation should be used.
+	*/
+	public ResourceModel(final R resource, final URIOutputStreamable uriOutputStreamable)
+	{
+		this(resource, (URIInputStreamable)null, uriOutputStreamable);
+	}
+
+	/**Base URI and input stream locator constructor.
+	@param resource The resource being modeled, or <code>null</code> if there is no resource.
+	@param baseURI The base URI of the model, or <code>null</code> if unknown.
+	@param uriInputStreamable The implementation to use for accessing a URI for
+		input, or <code>null</code> if the default implementation should be used.
+	*/
+	public ResourceModel(final URI baseURI, final URIInputStreamable uriInputStreamable)
+	{
+		this(null, baseURI, uriInputStreamable);
+	}
+
+	/**Resource, base URI, and input stream locator constructor.
+	@param resource The resource being modeled, or <code>null</code> if there is no resource.
+	@param baseURI The base URI of the model, or <code>null</code> if unknown.
+	@param uriInputStreamable The implementation to use for accessing a URI for
+		input, or <code>null</code> if the default implementation should be used.
+	*/
+	public ResourceModel(final R resource, final URI baseURI, final URIInputStreamable uriInputStreamable)
+	{
+		this(resource, baseURI, uriInputStreamable, null);
+	}
+
+	/**Resource, base URI, and URI accessible constructor.
+	@param resource The resource being modeled, or <code>null</code> if there is no resource.
+	@param baseURI The base URI of the model, or <code>null</code> if unknown.
+	@param uriAccessible The implementation to use for accessing a URI for input and output,
+		or <code>null</code> if the default implementation should be used.
+	*/
+	public ResourceModel(final R resource, final URI baseURI, final URIAccessible uriAccessible)
+	{
+		this(resource, baseURI, uriAccessible, uriAccessible);	//use the URI accessible object for accessing the URI for input and output
+	}
+
+	/**Resource, base URI, and output stream locator constructor.
+	@param resource The resource being modeled, or <code>null</code> if there is no resource.
+	@param baseURI The base URI of the model, or <code>null</code> if unknown.
+	@param uriOutputStreamable The implementation to use for accessing a URI for
+		output, or <code>null</code> if the default implementation should be used.
+	*/
+	public ResourceModel(final R resource, final URI baseURI, final URIOutputStreamable uriOutputStreamable)
+	{
+		this(resource, baseURI, null, uriOutputStreamable);
+	}
+
+	/**Resource and input/output stream locator constructor.
+	@param resource The resource being modeled, or <code>null</code> if there is no resource.
+	@param uriInputStreamable The implementation to use for accessing a URI for
+		input, or <code>null</code> if the default implementation should be used.
+	@param uriOutputStreamable The implementation to use for accessing a URI for
+		output, or <code>null</code> if the default implementation should be used.
+	*/
+	public ResourceModel(final R resource, final URIInputStreamable uriInputStreamable, final URIOutputStreamable uriOutputStreamable)
+	{
+		this(resource, resource!=null ? resource.getReferenceURI() : (URI)null, uriInputStreamable, uriOutputStreamable);
+	}
+
+	/**Full constructor.
+	@param resource The resource being modeled, or <code>null</code> if there is no resource.
+	@param baseURI The base URI of the model, or <code>null</code> if unknown.
+	@param uriInputStreamable The implementation to use for accessing a URI for
+		input, or <code>null</code> if the default implementation should be used.
+	@param uriOutputStreamable The implementation to use for accessing a URI for
+		output, or <code>null</code> if the default implementation should be used.
+	*/
+	public ResourceModel(final R resource, final URI baseURI, final URIInputStreamable uriInputStreamable, final URIOutputStreamable uriOutputStreamable)
+	{
+		super(baseURI, uriInputStreamable, uriOutputStreamable);	//construct the parent class
+		this.resource=resource;	//save the resource
+	}
+
 }

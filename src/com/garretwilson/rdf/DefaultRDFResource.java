@@ -616,9 +616,9 @@ for some reason, this method as listed is crucial for determining if two resourc
 		the specified resource, respectively.
 	@see RDFSUtilities#getLabel(RDFResource)
 	*/
-	public int compareTo(final Resource resource)	//G***is it correct to compare on different things? will this violate comparison rules? (e.g. two RDFResources with labels may compare differently than each of them compared against a normal Resource)
+	public int compareTo(final RDFResource resource)	//G***is it correct to compare on different things? will this violate comparison rules? (e.g. two RDFResources with labels may compare differently than each of them compared against a normal Resource)
 	{
-		if(resource instanceof RDFResource)	//if this resource is an RDF resource
+//TODO del when works		if(resource instanceof RDFResource)	//if this resource is an RDF resource
 		{
 			final RDFLiteral label1=RDFSUtilities.getLabel(this);	//see if this resource has a label
 			final RDFLiteral label2=RDFSUtilities.getLabel((RDFResource)resource);	//see if there is a label for the other resource

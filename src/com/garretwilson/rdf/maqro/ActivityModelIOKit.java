@@ -5,6 +5,7 @@ import java.net.*;
 import com.garretwilson.io.*;
 import com.garretwilson.model.*;
 import com.garretwilson.rdf.*;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XMLSerializer;
@@ -14,7 +15,7 @@ import org.w3c.dom.Document;
 @author Garret Wilson
 @see ActivityModel
 */
-public class ActivityModelIOKit extends AbstractModelIOKit implements MAQROConstants
+public class ActivityModelIOKit extends AbstractIOKit<ResourceModel<Activity>>
 {
 
 	/**Default constructor.*/
@@ -58,7 +59,7 @@ public class ActivityModelIOKit extends AbstractModelIOKit implements MAQROConst
 		URI is available.
 	@throws IOException Thrown if there is an error reading the data.
 	*/ 
-	public Model load(final InputStream inputStream, final URI baseURI) throws IOException
+	public ResourceModel<Activity> load(final InputStream inputStream, final URI baseURI) throws IOException
 	{
 		try
 		{
@@ -76,7 +77,7 @@ public class ActivityModelIOKit extends AbstractModelIOKit implements MAQROConst
 			{
 				throw new IOException("No activity found.");	//G***i18n
 			}
-			return new ActivityModel(activity, baseURI, this);	//create and return an activity model from the activity
+			return new ResourceModel<Activity>(activity, baseURI, this);	//create and return an activity model from the activity
 		}
 		catch(URISyntaxException uriSyntaxException)	//if any of the URIs were incorrect
 		{
@@ -89,11 +90,9 @@ public class ActivityModelIOKit extends AbstractModelIOKit implements MAQROConst
 	@param outputStream The output stream to which to write the model content.
 	@throws IOException Thrown if there is an error writing the model.
 	*/
-	public void save(final Model model, final OutputStream outputStream) throws IOException
+	public void save(final ResourceModel<Activity> model, final OutputStream outputStream) throws IOException
 	{
-		final ActivityModel activityModel=(ActivityModel)model;	//cast the model to an activity model
-		final Activity activity=activityModel.getActivity();	//get the current activity
-		write(activity, outputStream);	//write the activity to the output stream
+		write(model.getResource(), outputStream);	//write the activity to the output stream
 	}
 
 	/**Writes an activity to an output stream.

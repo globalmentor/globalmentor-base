@@ -5,6 +5,7 @@ import java.net.*;
 import com.garretwilson.io.*;
 import com.garretwilson.model.*;
 import com.garretwilson.rdf.*;
+import static com.garretwilson.rdf.dicto.DictoConstants.*;
 import com.garretwilson.text.xml.XMLProcessor;
 
 import org.w3c.dom.Document;
@@ -13,7 +14,7 @@ import org.w3c.dom.Document;
 @author Garret Wilson
 @see DictionaryModel
 */
-public class DictionaryModelIOKit extends AbstractModelIOKit implements DictoConstants
+public class DictionaryModelIOKit extends AbstractIOKit<ResourceModel<Dictionary>>
 {
 
 	/**Default constructor.*/
@@ -57,7 +58,7 @@ public class DictionaryModelIOKit extends AbstractModelIOKit implements DictoCon
 		URI is available.
 	@throws IOException Thrown if there is an error reading the data.
 	*/ 
-	public Model load(final InputStream inputStream, final URI baseURI) throws IOException
+	public ResourceModel<Dictionary> load(final InputStream inputStream, final URI baseURI) throws IOException
 	{
 		try
 		{
@@ -74,7 +75,7 @@ public class DictionaryModelIOKit extends AbstractModelIOKit implements DictoCon
 			{
 				throw new IOException("No dictionary found.");	//G**i18n
 			}
-			return new DictionaryModel(dictionary, baseURI, this);	//return a new dictionary model with the dictionary, if we loaded one
+			return new ResourceModel<Dictionary>(dictionary, baseURI, this);	//return a new dictionary model with the dictionary, if we loaded one
 		}
 		catch(URISyntaxException uriSyntaxException)	//if any of the URIs were incorrect
 		{
@@ -87,7 +88,7 @@ public class DictionaryModelIOKit extends AbstractModelIOKit implements DictoCon
 	@param outputStream The output stream to which to write the model content.
 	@throws IOException Thrown if there is an error writing the model.
 	*/
-	public void save(final Model model, final OutputStream outputStream) throws IOException
+	public void save(final ResourceModel<Dictionary> model, final OutputStream outputStream) throws IOException
 	{
 		throw new IOException("Dictionary save is not yet implemented");
 		/*G***fix when needed

@@ -3,14 +3,13 @@ package com.garretwilson.text;
 import java.io.*;
 import java.net.*;
 import com.garretwilson.io.*;
-import com.garretwilson.model.*;
 import com.garretwilson.util.LocaleText;
 
 /**Class for loading and saving text. Text is saved in the UTF-8 encoding.
 @author Garret Wilson
 @see LocaleText
 */
-public class TextIOKit extends AbstractModelIOKit
+public class TextIOKit extends AbstractIOKit<LocaleText>
 {
 
 	/**Default constructor.*/
@@ -54,7 +53,7 @@ public class TextIOKit extends AbstractModelIOKit
 		URI is available.
 	@throws IOException Thrown if there is an error reading the data.
 	*/ 
-	public Model load(final InputStream inputStream, final URI baseURI) throws IOException
+	public LocaleText load(final InputStream inputStream, final URI baseURI) throws IOException
 	{
 		final CharacterEncoding encoding=InputStreamUtilities.getBOMEncoding(inputStream);	//try to sense from the byte order mark the encoding of the text
 		final byte[] bytes=InputStreamUtilities.getBytes(inputStream);	//get the bytes from the input stream
@@ -64,13 +63,12 @@ public class TextIOKit extends AbstractModelIOKit
 	}
 	
 	/**Saves a model to an output stream.
-	@param model The model the data of which will be written to the given output stream.
+	@param localeText The model the data of which will be written to the given output stream.
 	@param outputStream The output stream to which to write the model content.
 	@throws IOException Thrown if there is an error writing the model.
 	*/
-	public void save(final Model model, final OutputStream outputStream) throws IOException
+	public void save(final LocaleText localeText, final OutputStream outputStream) throws IOException
 	{
-		final LocaleText localeText=(LocaleText)model;	//cast the model to one we understand
 		//TODO create a BOMWriter that does both steps
 		outputStream.write(CharacterEncodingConstants.BOM_UTF_8);	//write the UTF-8 byte order mark
 		final Writer writer=new OutputStreamWriter(outputStream, CharacterEncodingConstants.UTF_8);	//create a UTF-8 writer

@@ -3,7 +3,6 @@ package com.garretwilson.text.directory.vcard;
 import java.io.*;
 import java.net.*;
 import com.garretwilson.io.*;
-import com.garretwilson.model.*;
 import com.garretwilson.text.CharacterEncodingConstants;
 import com.garretwilson.text.directory.*;
 
@@ -13,7 +12,7 @@ import com.garretwilson.text.directory.*;
 @author Garret Wilson
 @see VCard
 */
-public class VCardIOKit extends AbstractModelIOKit implements VCardConstants
+public class VCardIOKit extends AbstractIOKit<VCard>
 {
 
 	/**The profile to handle vCards.*/
@@ -60,7 +59,7 @@ public class VCardIOKit extends AbstractModelIOKit implements VCardConstants
 		URI is available.
 	@throws IOException Thrown if there is an error reading the data.
 	*/ 
-	public Model load(final InputStream inputStream, final URI baseURI) throws IOException
+	public VCard load(final InputStream inputStream, final URI baseURI) throws IOException
 	{
 		final DirectoryProcessor directoryProcessor=new DirectoryProcessor();	//create a new directory processor
 		directoryProcessor.registerProfile(VCardProfile.VCARD_PROFILE_NAME, VCARD_PROFILE);	//register the vCard profile with the vCard processor
@@ -84,10 +83,10 @@ public class VCardIOKit extends AbstractModelIOKit implements VCardConstants
 	@param outputStream The output stream to which to write the model content.
 	@throws IOException Thrown if there is an error writing the model.
 	*/
-	public void save(final Model model, final OutputStream outputStream) throws IOException
+	public void save(final VCard model, final OutputStream outputStream) throws IOException
 	{
 //G***del		vcard.setDisplayName(displayName);	//add the display name we saved
-		write((VCard)model, outputStream);	//write the vCard to the output stream
+		write(model, outputStream);	//write the vCard to the output stream
 	}
 
 	/**Writes a vCard to an output stream.
@@ -95,7 +94,7 @@ public class VCardIOKit extends AbstractModelIOKit implements VCardConstants
 	@param outputStream The output stream to which to write the vCard.
 	@throws IOException Thrown if there is an error writing the vCard.
 	*/
-	public static void write(final VCard vcard, final OutputStream outputStream) throws IOException
+	public static void write(final VCard vcard, final OutputStream outputStream) throws IOException	//TODO probably remove this, as save() allows the same thing
 	{
 		final ContentLine[] contentLines=VCardProfile.createContentLines(vcard);	//create content lines from the vCard
 		final DirectorySerializer directorySerializer=new DirectorySerializer();	//create a new directory serializer

@@ -5,7 +5,7 @@ import com.garretwilson.util.Verifiable;
 /**Represents a view of a model.
 @author Garret Wilson
 */
-public interface ModelView extends Verifiable
+public interface ModelView<M extends Model> extends Verifiable
 {
 
 	/**Returns the view data model.
@@ -14,11 +14,11 @@ public interface ModelView extends Verifiable
 	@return The data model for which this component provides a view.
 	@see #verify()
 	*/
-	public Model getModel();
+	public M getModel();
 
 	/**Sets the data model.
 	@param newModel The data model for which this object provides a view.
 	*/
-	public void setModel(final Model newModel);
+	public void setModel(final M newModel);
 
 }

@@ -2,6 +2,8 @@ package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.*;
 import javax.swing.*;
+
+import com.garretwilson.model.ResourceModel;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.swing.*;
 
@@ -9,7 +11,7 @@ import com.garretwilson.swing.*;
 	optionally to be edited.
 @author Garret Wilson
 */
-public class InteractionSequencePanel extends AbstractListModelComponentSequencePanel
+public class InteractionSequencePanel extends AbstractListModelComponentSequencePanel<Interaction>
 {
 
 	/**Default constructor.*/
@@ -66,14 +68,14 @@ public class InteractionSequencePanel extends AbstractListModelComponentSequence
 
 	/**Returns a component appropriate for representing the given object from
 		the list.
-	@param object An object in the list.
+	@param interaction An object in the list.
 	@return A component appropriate for representing the object.
 	*/
-	protected Component getComponent(final Object object)
+	protected Component getComponent(final Interaction interaction)
 	{
-		if(object instanceof Question)	//if the object is a question
+		if(interaction instanceof Question)	//if the object is a question
 		{
-			final QuestionModel questionModel=new QuestionModel((Question)object);	//create a new model for the question TODO add the base URI and URIInputStreamable
+			final ResourceModel<Question> questionModel=new ResourceModel<Question>((Question)interaction);	//create a new model for the question TODO add the base URI and URIInputStreamable
 			return new QuestionPanel(questionModel);	//create a new panel for the question
 		}
 		return new JLabel("Unrecognized interaction");	//TODO fix unrecognized interaction

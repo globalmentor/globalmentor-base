@@ -15,6 +15,7 @@ import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.*;
 import com.garretwilson.text.xml.xlink.*;
 import com.garretwilson.model.Model;
+import com.garretwilson.model.ResourceModel;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dicto.*;
 import com.garretwilson.rdf.dicto.Dictionary;
@@ -30,7 +31,7 @@ import org.w3c.dom.*;
 /**A panel to view and edit a Dictionary Ontology (Dicto) dictionary.
 @author Garret Wilson
 */
-public class DictionaryPanel extends RDFPanel
+public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictionary>>
 {
 
 	/**The action for performing a quiz.*/
@@ -42,40 +43,26 @@ public class DictionaryPanel extends RDFPanel
 	/**The book for the WYSIWYG view.*/
 	protected final Book book;
 
-	/**@return The data model for which this component provides a view.
-	@see RDFPanel#getRDFResourceModel()
-	*/
-	public DictionaryModel getDictionaryModel() {return (DictionaryModel)getRDFResourceModel();}
-
-	/**Sets the data model.
-	@param model The data model for which this component provides a view.
-	@see #setRDFResourceModel(Model)
-	*/
-	public void setDictionaryModel(final DictionaryModel model)
-	{
-		setRDFResourceModel(model);	//set the model
-	}
-
 	/**Sets the data model.
 	@param newModel The data model for which this component provides a view.
 	@exception ClassCastException Thrown if the model is not a <code>DictionaryModel</code>.
 	*/
-	public void setModel(final Model newModel)
+	public void setModel(final ResourceModel<Dictionary> newModel)
 	{
-		book.getXMLTextPane().setURIInputStreamable((DictionaryModel)newModel);	//make sure the text pane knows from where to get input streams
+		book.getXMLTextPane().setURIInputStreamable(newModel);	//make sure the text pane knows from where to get input streams
 		super.setModel(newModel);	//set the model in the parent class
 	}
 
 	/**Default constructor.*/
 	public DictionaryPanel()
 	{
-		this(new DictionaryModel());	//construct the panel with a default model
+		this(new ResourceModel<Dictionary>());	//construct the panel with a default model
 	}
 
 	/**Model constructor.
 	@param model The data model for which this component provides a view.
 	*/
-	public DictionaryPanel(final DictionaryModel model)
+	public DictionaryPanel(final ResourceModel<Dictionary> model)
 	{
 		this(model, true);	//construct and initialize the panel
 	}
@@ -85,7 +72,7 @@ public class DictionaryPanel extends RDFPanel
 	@param initialize <code>true</code> if the panel should initialize itself by
 		calling the initialization methods.
 	*/
-	public DictionaryPanel(final DictionaryModel model, final boolean initialize)
+	public DictionaryPanel(final ResourceModel<Dictionary> model, final boolean initialize)
 	{
 		super(model, false);	//construct the parent class without initializing it
 		addSupportedModelView(WYSIWYG_MODEL_VIEW);	//show that we now support WYSIWYG data views, too
@@ -114,14 +101,14 @@ public class DictionaryPanel extends RDFPanel
 	protected void loadModel(final int modelView) throws IOException
 	{
 		super.loadModel(modelView);	//do the default loading
-		final DictionaryModel model=getDictionaryModel();	//get the data model
+		final ResourceModel<Dictionary> model=getModel();	//get the data model
 		switch(modelView)	//see which view of data we should load
 		{
 			case WYSIWYG_MODEL_VIEW:	//if we're changing to the WYSIWYG view
 				book.getXMLTextPane().setURIInputStreamable(model);	//make sure the text pane knows from where to get input streams
-				if(model.getDictionary()!=null)	//if we have a dictionary
+				if(model.getResource()!=null)	//if we have a dictionary
 				{
-					final Dictionary dictionary=model.getDictionary();	//get the dictionary represented by the model
+					final Dictionary dictionary=model.getResource();	//get the dictionary represented by the model
 					final Document xhtmlDocument=XHTMLUtilities.createXHTMLDocument();	//create an XHTML document
 					final Element bodyElement=XHTMLUtilities.getBodyElement(xhtmlDocument);	//get the body element
 					assert bodyElement!=null : "Missing <body> element in default XHTML document.";
@@ -253,7 +240,7 @@ public class DictionaryPanel extends RDFPanel
 	public void quiz()
 	{
 		//TODO correctly enable or disable the corresponding action based upon the presence of a dictionary
-		final Dictionary dictionary=getDictionaryModel().getDictionary();
+		final Dictionary dictionary=getModel().getResource();
 		if(dictionary!=null)	//if we have a dictionary
 		{
 			final Locale dictionaryLanguage=dictionary.getDictionaryLanguage();	//get the language of the entries
@@ -317,8 +304,8 @@ public class DictionaryPanel extends RDFPanel
 				dictionaryActivity.setChoicesProperty(optionsPanel.getChoicesProperty());	//show which property to use for the choices
 */
 				final MAQROActivityEngine activityEngine=new MAQROActivityEngine(dictionaryActivity);	//create an engine for the activity
-				activityEngine.setBaseURI(getDictionaryModel().getBaseURI());	//set the base URI of the engine TODO probably make the resource application panel URIAccessible
-				activityEngine.setURIInputStreamable(getDictionaryModel());	//tell the activity engine to use our URI sourcefor reading
+				activityEngine.setBaseURI(getModel().getBaseURI());	//set the base URI of the engine TODO probably make the resource application panel URIAccessible
+				activityEngine.setURIInputStreamable(getModel());	//tell the activity engine to use our URI sourcefor reading
 				final MAQROActivityPanel activityPanel=new MAQROActivityPanel(activityEngine);	//create a new activity panel for the engine
 
 				/*TODO fix with non-ResourceApplicationFrame

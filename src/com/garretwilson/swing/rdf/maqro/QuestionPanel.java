@@ -9,6 +9,7 @@ import java.util.*;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.model.Resource;
+import com.garretwilson.model.ResourceModel;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
@@ -19,7 +20,7 @@ import com.garretwilson.util.CollectionUtilities;
 /**Panel for editing a MAQRO question.
 @author Garret Wilson
 */
-public class QuestionPanel extends TabbedViewPanel
+public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 {
 	/**The view in which the query and choices and/or answers are shown.*/
 	public final static int QUERY_MODEL_VIEW=-1;
@@ -40,34 +41,22 @@ public class QuestionPanel extends TabbedViewPanel
 		/**@return The tab in which the query and choices and/or answers are shown.*/
 		private QueryAnswerPanel getQueryAnswerPanel() {return queryAnswerPanel;}
 
-	/**@return The data model for which this component provides a view.
-	@see ModelViewablePanel#getModel()
-	*/
-	public QuestionModel getQuestionModel() {return (QuestionModel)getModel();}
-
-	/**Sets the data model.
-	@param model The data model for which this component provides a view.
-	@see ModelViewablePanel#setModel(Model)
-	*/
-	public void setQuestionModel(final QuestionModel model) {setModel(model);}
-
 	private final JList hintSwingList;
-	private final ListPanel hintPanel;
+	private final ListPanel<Dialogue> hintPanel;
 
 	/**The list of hints for this question.*/
-	private final ListListModel hintList;
+	private final ListListModel<RDFResource> hintList;
 
 	private final JList explanationSwingList;
-	private final ListPanel explanationPanel;
-
+	private final ListPanel<Dialogue> explanationPanel;
 
 	/**The list of explanations for this question.*/
-	private final ListListModel explanationList;
+	private final ListListModel<RDFResource> explanationList;
 
 	/**Model constructor.
 	@param model The data model for which this component provides a view.
 	*/
-	public QuestionPanel(final QuestionModel model)
+	public QuestionPanel(final ResourceModel<Question> model)
 	{
 		this(model, true);	//construct and initialize the panel
 	}
@@ -77,17 +66,17 @@ public class QuestionPanel extends TabbedViewPanel
 	@param initialize <code>true</code> if the panel should initialize itself by
 		calling the initialization methods.
 	*/
-	public QuestionPanel(final QuestionModel model, final boolean initialize)
+	public QuestionPanel(final ResourceModel<Question> model, final boolean initialize)
 	{
 		super(model, false);	//construct the parent class without initializing the panel
 		setSupportedModelViews(DEFAULT_SUPPORTED_MODEL_VIEWS);	//set the model views we support
 		setDefaultDataView(DEFAULT_DEFAULT_MODEL_VIEW);	//set the default data view
-		hintList=new ListListModel(new ArrayList());	//create a list in which to store the hints
+		hintList=new ListListModel<RDFResource>(new ArrayList());	//create a list in which to store the hints
 		hintSwingList=new JList(hintList);
-		hintPanel=new ListPanel(hintSwingList, new HintEditStrategy());
-		explanationList=new ListListModel(new ArrayList());	//create a list in which to store the explanations
+		hintPanel=new ListPanel<Dialogue>(hintSwingList, new HintEditStrategy());
+		explanationList=new ListListModel<RDFResource>(new ArrayList());	//create a list in which to store the explanations
 		explanationSwingList=new JList(explanationList);
-		explanationPanel=new ListPanel(explanationSwingList, new ExplanationEditStrategy());
+		explanationPanel=new ListPanel<Dialogue>(explanationSwingList, new ExplanationEditStrategy());
 		queryAnswerPanel=new QueryAnswerPanel();	//create the query/answer
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
@@ -127,15 +116,15 @@ public class QuestionPanel extends TabbedViewPanel
 	protected void loadModel(final int modelView) throws IOException
 	{
 		super.loadModel(modelView);	//do the default loading
-		final QuestionModel model=getQuestionModel();	//get the data model
-		final Question question=model.getQuestion();	//get the question, if there is one
+		final ResourceModel<Question> model=getModel();	//get the data model
+		final Question question=model.getResource();	//get the question, if there is one
 		switch(modelView)	//see which view of data we should load
 		{
 			case QUERY_MODEL_VIEW:	//if we're changing to the query view
 				if(question!=null)	//if there is a question
 				{
 					final Dialogue query=question.getQuery();	//get the query
-					queryAnswerPanel.queryPanel.setDialogueModel(new DialogueModel(query, model.getBaseURI(), model));	//set the query in the panel
+					queryAnswerPanel.queryPanel.setModel(new ResourceModel<Dialogue>(query, model.getBaseURI(), model));	//set the query in the panel
 					final Resource expectation=question.getExpectation();	//get the expectation
 					queryAnswerPanel.answerPanel.setExpectation(expectation);	//show the expectation in the combo box, even if there isn't an expectation
 					final List choices=question.getChoices();	//get the question choices
@@ -227,12 +216,12 @@ public class QuestionPanel extends TabbedViewPanel
 	protected void saveModel(final int modelView) throws IOException
 	{
 		super.saveModel(modelView);	//do the default saving
-		final QuestionModel model=getQuestionModel();	//get the data model
-		final Question question=model.getQuestion()!=null ? model.getQuestion() : new Question();	//get the question, if there is one; if not, create one
+		final ResourceModel<Question> model=getModel();	//get the data model
+		final Question question=model.getResource()!=null ? model.getResource() : new Question();	//get the question, if there is one; if not, create one
 		switch(modelView)	//see which view of data we have, in order to get the current RDF
 		{
 			case QUERY_MODEL_VIEW:	//if we should store the query
-				final Dialogue query=queryAnswerPanel.queryPanel.getDialogueModel().getDialogue();	//get the query from the panel
+				final Dialogue query=queryAnswerPanel.queryPanel.getModel().getResource();	//get the query from the panel
 				question.setQuery(query);	//update the query
 				question.removeAnswers();	//remove all answers from the question
 				int maxResponseCount=-1;	//default to unlimited responses allowed
@@ -273,7 +262,7 @@ public class QuestionPanel extends TabbedViewPanel
 					maxResponseCount=1;	//only allow one response for an expected type G***allow more later
 				}
 				question.setMaxResponseCount(maxResponseCount);	//update the maximum responses allowed (which may remove the limit altogether)
-				model.setQuestion(question);	//put the question in the model, if it isn't there already
+				model.setResource(question);	//put the question in the model, if it isn't there already
 				break;
 			case HINT_MODEL_VIEW:	//if we should store the hints
 				final RDFListResource hints=new RDFListResource();	//create a new list of hints
@@ -302,12 +291,12 @@ public class QuestionPanel extends TabbedViewPanel
 	protected void onModelViewChange(final int oldView, final int newView)
 	{
 		super.onModelViewChange(oldView, newView);	//perform the default functionality
-		final QuestionModel model=getQuestionModel();	//get the data model
+		final ResourceModel<Question> model=getModel();	//get the data model
 		switch(oldView)	//see which view we're changing from
 		{
 			case QUERY_MODEL_VIEW:	//if we're changing from the query view
 //G***fix				getSourceTextPane().getDocument().removeDocumentListener(getModifyDocumentListener());	//don't listen for changes to the source text pane any more
-				queryAnswerPanel.queryPanel.setDialogueModel(new DialogueModel(model.getBaseURI(), model));	//clear the query panel
+				queryAnswerPanel.queryPanel.setModel(new ResourceModel<Dialogue>(model.getBaseURI(), model));	//clear the query panel
 				break;
 		}
 		switch(newView)	//see which view we're changing to
@@ -335,7 +324,7 @@ public class QuestionPanel extends TabbedViewPanel
 		private final JCheckBox mutuallyExclusiveCheckBox;
 		private final JCheckBox requireAllCheckBox;
 		private final JList choiceList;
-		private final ListPanel choicePanel;
+		private final ListPanel<Dialogue> choicePanel;
 		private final JRadioButton expectRadioButton;
 		private final AnswerPanel answerPanel;
 
@@ -344,13 +333,13 @@ public class QuestionPanel extends TabbedViewPanel
 		{
 			super(new BasicGridBagLayout(), false);	//construct the parent class but don't initialize it
 			queryLabel=new JLabel();
-			queryPanel=new DialoguePanel(new DialogueModel(getQuestionModel().getBaseURI(), getQuestionModel())); 
+			queryPanel=new DialoguePanel(new ResourceModel<Dialogue>(getModel().getBaseURI(), getModel())); 
 			expectButtonGroup=new ButtonGroup();
 			choicesRadioButton=new JRadioButton();
 			mutuallyExclusiveCheckBox=new JCheckBox();
 			requireAllCheckBox=new JCheckBox();
-			choiceList=new JList(new ListListModel(new RDFListResource(RDFConstants.NIL_RESOURCE_URI)));	//create a default empty list for the choices
-			choicePanel=new ListPanel(choiceList, new ChoiceEditStrategy());
+			choiceList=new JList(new ListListModel<RDFResource>(new RDFListResource(RDFConstants.NIL_RESOURCE_URI)));	//create a default empty list for the choices
+			choicePanel=new ListPanel<Dialogue>(choiceList, new ChoiceEditStrategy());
 			expectRadioButton=new JRadioButton();
 			answerPanel=new AnswerPanel();
 			initialize();   //initialize the panel
@@ -439,7 +428,7 @@ public class QuestionPanel extends TabbedViewPanel
 		/**The edit strategy that allows editing of choices from a list.
 		@author Garret Wilson
 		*/
-		protected class ChoiceEditStrategy extends ListEditStrategy
+		protected class ChoiceEditStrategy extends ListEditStrategy<Dialogue>
 		{
 			/**Default constructor.*/
 			public ChoiceEditStrategy()
@@ -456,7 +445,7 @@ public class QuestionPanel extends TabbedViewPanel
 				or if the class has no nullary constructor; or if the instantiation fails
 				for some other reason.
 			*/
-			protected Object createItem() throws InstantiationException, IllegalAccessException
+			protected Dialogue createItem() throws InstantiationException, IllegalAccessException
 			{
 				return new Dialogue();
 			}
@@ -468,19 +457,16 @@ public class QuestionPanel extends TabbedViewPanel
 			@return The object with the modifications from the edit, or
 				<code>null</code> if the edits should not be accepted.
 			*/
-			protected Object editItem(final Object item)
+			protected Dialogue editItem(final Dialogue item)
 			{
-				if(item instanceof Dialogue)	//if this is dialogue to be edited
+				final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
+				final ResourceModel<Dialogue> dialogueModel=new ResourceModel<Dialogue>(dialogueClone);	//create a model containing the dialogue
+				final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
+				dialoguePanel.setPreferredSize(new Dimension(600, 400));	//don't allow the panel to get too small
+					//allow the dialogue to be edited in a dialog box; if the user accepts the changes
+				if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Choice", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
 				{
-					final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
-					final DialogueModel dialogueModel=new DialogueModel(dialogueClone);	//create a model containing the dialogue
-					final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
-					dialoguePanel.setPreferredSize(new Dimension(600, 400));	//don't allow the panel to get too small
-						//allow the dialogue to be edited in a dialog box; if the user accepts the changes
-					if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Choice", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
-					{
-						return dialogueClone;	//return the new dialogue
-					}
+					return dialogueClone;	//return the new dialogue
 				}
 				return null;	//show that editing did not succeed
 			}
@@ -491,7 +477,7 @@ public class QuestionPanel extends TabbedViewPanel
 	/**The edit strategy that allows editing of hints from a list.
 	@author Garret Wilson
 	*/
-	protected class HintEditStrategy extends ListEditStrategy	//G***maybe eventually create a generic base DialogueEditStrategy class
+	protected class HintEditStrategy extends ListEditStrategy<Dialogue>
 	{
 		/**Default constructor.*/
 		public HintEditStrategy()
@@ -508,7 +494,7 @@ public class QuestionPanel extends TabbedViewPanel
 			or if the class has no nullary constructor; or if the instantiation fails
 			for some other reason.
 		*/
-		protected Object createItem() throws InstantiationException, IllegalAccessException
+		protected Dialogue createItem() throws InstantiationException, IllegalAccessException
 		{
 			return new Dialogue();
 		}
@@ -518,19 +504,16 @@ public class QuestionPanel extends TabbedViewPanel
 		@return The object with the modifications from the edit, or
 			<code>null</code> if the edits should not be accepted.
 		*/
-		protected Object editItem(final Object item)
+		protected Dialogue editItem(final Dialogue item)
 		{
-			if(item instanceof Dialogue)	//if this is dialogue to be edited
+			final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
+			final ResourceModel<Dialogue> dialogueModel=new ResourceModel<Dialogue>(dialogueClone);	//create a model containing the dialogue
+			final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
+			dialoguePanel.setPreferredSize(new Dimension(600, 400));	//don't allow the panel to get too small
+				//allow the dialogue to be edited in a dialog box; if the user accepts the changes
+			if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Hint", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
 			{
-				final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
-				final DialogueModel dialogueModel=new DialogueModel(dialogueClone);	//create a model containing the dialogue
-				final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
-				dialoguePanel.setPreferredSize(new Dimension(600, 400));	//don't allow the panel to get too small
-					//allow the dialogue to be edited in a dialog box; if the user accepts the changes
-				if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Hint", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
-				{
-					return dialogueClone;	//return the new dialogue
-				}
+				return dialogueClone;	//return the new dialogue
 			}
 			return null;	//show that editing did not succeed
 		}
@@ -539,7 +522,7 @@ public class QuestionPanel extends TabbedViewPanel
 	/**The edit strategy that allows editing of explanations from a list.
 	@author Garret Wilson
 	*/
-	protected class ExplanationEditStrategy extends ListEditStrategy
+	protected class ExplanationEditStrategy extends ListEditStrategy<Dialogue>
 	{
 		/**Default constructor.*/
 		public ExplanationEditStrategy()
@@ -556,7 +539,7 @@ public class QuestionPanel extends TabbedViewPanel
 			or if the class has no nullary constructor; or if the instantiation fails
 			for some other reason.
 		*/
-		protected Object createItem() throws InstantiationException, IllegalAccessException
+		protected Dialogue createItem() throws InstantiationException, IllegalAccessException
 		{
 			return new Dialogue();
 		}
@@ -566,19 +549,16 @@ public class QuestionPanel extends TabbedViewPanel
 		@return The object with the modifications from the edit, or
 			<code>null</code> if the edits should not be accepted.
 		*/
-		protected Object editItem(final Object item)
+		protected Dialogue editItem(final Dialogue item)
 		{
-			if(item instanceof Dialogue)	//if this is dialogue to be edited
+			final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
+			final ResourceModel<Dialogue> dialogueModel=new ResourceModel<Dialogue>(dialogueClone);	//create a model containing the dialogue
+			final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
+			dialoguePanel.setPreferredSize(new Dimension(600, 400));	//don't allow the panel to get too small
+				//allow the dialogue to be edited in a dialog box; if the user accepts the changes
+			if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Explanation", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
 			{
-				final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
-				final DialogueModel dialogueModel=new DialogueModel(dialogueClone);	//create a model containing the dialogue
-				final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
-				dialoguePanel.setPreferredSize(new Dimension(600, 400));	//don't allow the panel to get too small
-					//allow the dialogue to be edited in a dialog box; if the user accepts the changes
-				if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Explanation", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
-				{
-					return dialogueClone;	//return the new dialogue
-				}
+				return dialogueClone;	//return the new dialogue
 			}
 			return null;	//show that editing did not succeed
 		}

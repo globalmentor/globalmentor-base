@@ -14,14 +14,14 @@ import org.w3c.dom.Document;
 @author Garret Wilson
 @see RDFResource
 */
-public class RDFResourceIOKit extends AbstractModelIOKit
+public class RDFResourceIOKit<R extends RDFResource> extends AbstractIOKit<R>
 {
 
 	/**The map of prefixes, keyed by namespace URIs.*/
-	protected final Map namespacePrefixMap=new HashMap();
+	protected final Map<URI, String> namespacePrefixMap=new HashMap<URI, String>();
 
 		/**@return The map of prefixes, keyed by namespace URI.*/
-		protected Map getNamespacePrefixMap() {return namespacePrefixMap;}
+		protected Map<URI, String> getNamespacePrefixMap() {return namespacePrefixMap;}
 		
 		/**Registers the given prefix to be used with the given namespace URI.
 			If a prefix is already registered with the given namespace, it is
@@ -49,7 +49,7 @@ public class RDFResourceIOKit extends AbstractModelIOKit
 		}
 
 	/**A map of resource factories, keyed to namespace URI.*/
-	private final Map resourceFactoryMap=new HashMap();
+	private final Map<URI, RDFResourceFactory> resourceFactoryMap=new HashMap<URI, RDFResourceFactory>();
 
 		/**Registers a resource factory to be used to create resources with a type
 			from the specified namespace. If a resource factory is already registered
@@ -144,12 +144,10 @@ public class RDFResourceIOKit extends AbstractModelIOKit
 	protected RDFXMLifier getRDFXMLifier()
 	{
 		final RDFXMLifier rdfXMLifier=new RDFXMLifier();	//create an object to convert the RDF data model to an XML data model
-		final Iterator namespacePrefixEntryIterator=namespacePrefixMap.entrySet().iterator();	//get an iterator to look through all namespace URIs and prefixes
-		while(namespacePrefixEntryIterator.hasNext())	//while there are more prefixes
+		for(final Map.Entry<URI, String> namespacePrefixEntry:namespacePrefixMap.entrySet())	//look through all namespace URIs and prefixes
 		{
-			final Map.Entry namespacePrefixEntry=(Map.Entry)namespacePrefixEntryIterator.next();	//get the next entry
-			final URI namespaceURI=(URI)namespacePrefixEntry.getKey();	//get the namespace URI
-			final String namespacePrefix=(String)namespacePrefixEntry.getValue();	//get the namespace prefix
+			final URI namespaceURI=namespacePrefixEntry.getKey();	//get the namespace URI
+			final String namespacePrefix=namespacePrefixEntry.getValue();	//get the namespace prefix
 			rdfXMLifier.registerNamespacePrefix(namespaceURI.toString(), namespacePrefix);	//register this prefix for the this namespace
 		}
 		return rdfXMLifier;	//return the XMLifier we created
@@ -167,13 +165,14 @@ public class RDFResourceIOKit extends AbstractModelIOKit
 		return new XMLProcessor(this);	//create an XML processor using the correct input stream locator
 	}
 	
-	/**Loads a model from an input stream.
+	/**Loads an RDF resource from an input stream.
 	@param inputStream The input stream from which to read the data.
 	@param baseURI The base URI of the content, or <code>null</code> if no base
 		URI is available.
+	@return The RDF resource loaded from the input stream.
 	@throws IOException Thrown if there is an error reading the data.
 	*/ 
-	public Model load(final InputStream inputStream, final URI baseURI) throws IOException
+	public R load(final InputStream inputStream, final URI baseURI) throws IOException
 	{
 		try
 		{
@@ -197,7 +196,7 @@ public class RDFResourceIOKit extends AbstractModelIOKit
 			{
 				throw new IOException("No resource found of type "+RDFUtilities.createReferenceURI(getNamespaceURI(), getClassName()));	//G***i18n
 			}
-			return resource;	//return the resource we read 
+			return (R)resource;	//return the resource we read TODO make sure the resource is of the correct type somehow 
 		}
 		catch(URISyntaxException uriSyntaxException)	//if any of the URIs were incorrect
 		{
@@ -206,14 +205,14 @@ public class RDFResourceIOKit extends AbstractModelIOKit
 	}
 	
 	/**Saves a model to an output stream.
-	@param model The model the data of which will be written to the given output stream.
+	@param resource The resource which will be written to the given output stream.
 	@param outputStream The output stream to which to write the model content.
 	@throws IOException Thrown if there is an error writing the model.
 	*/
-	public void save(final Model model, final OutputStream outputStream) throws IOException
+	public void save(final R resource, final OutputStream outputStream) throws IOException
 	{
 			//create an XML document containing the resource
-		final Document document=getRDFXMLifier().createDocument((RDFResource)model, new XMLDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
+		final Document document=getRDFXMLifier().createDocument((RDFResource)resource, new XMLDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
 		getXMLSerializer().serialize(document, outputStream);	//serialize the document to the output stream
 	}
 

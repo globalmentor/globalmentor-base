@@ -9,7 +9,7 @@ import com.garretwilson.io.*;
 @author GarretWilson
 @see com.garretwilson.util.Modifiable
 */
-public abstract class AbstractViewIOKit extends DefaultURIAccessible implements ViewIOKit
+public abstract class AbstractViewIOKit<M extends Model> extends DefaultURIAccessible implements ViewIOKit<M>
 {
 
 	/**Default constructor.*/
@@ -53,7 +53,7 @@ public abstract class AbstractViewIOKit extends DefaultURIAccessible implements 
 	@param uri The URI that identifies the resource to be loaded.
 	@exception IOException Thrown if there is an error reading the data.
 	*/
-	public void load(final ModelView view, final URI uri) throws IOException
+	public void load(final ModelView<M> view, final URI uri) throws IOException
 	{
 			//get an input stream to the resource
 		final InputStream inputStream=getInputStream(uri);
@@ -80,7 +80,7 @@ public abstract class AbstractViewIOKit extends DefaultURIAccessible implements 
 	@see com.garretwilson.util.Modifiable
 	@see Verifiable#verify()
 	*/
-	public void save(final ModelView view, final URI uri) throws IOException
+	public void save(final ModelView<M> view, final URI uri) throws IOException
 	{
 		final OutputStream outputStream=getOutputStream(uri);	//get an output stream to this URI
 		try

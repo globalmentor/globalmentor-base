@@ -9,7 +9,7 @@ import com.garretwilson.io.URIAccessible;
 @author GarretWilson
 @see com.garretwilson.util.Modifiable
 */
-public interface ViewIOKit extends URIAccessible
+public interface ViewIOKit<M extends Model> extends URIAccessible
 {
 
 	/**Loads data into a view from a given URI.
@@ -17,7 +17,7 @@ public interface ViewIOKit extends URIAccessible
 	@param uri The URI that identifies the resource to be loaded.
 	@exception IOException Thrown if there is an error reading the data.
 	*/
-	public void load(final ModelView view, final URI uri) throws IOException;
+	public void load(final ModelView<M> view, final URI uri) throws IOException;
 
 	/**Loads data into a view from an input stream.
 	@param view The view into which the data should be loaded.
@@ -26,7 +26,7 @@ public interface ViewIOKit extends URIAccessible
 		URI is available.
 	@throws IOException Thrown if there is an error reading the data.
 	*/ 
-	public void load(final ModelView view, final InputStream inputStream, final URI baseURI) throws IOException;
+	public void load(final ModelView<M> view, final InputStream inputStream, final URI baseURI) throws IOException;
 
 	/**Saves a view to a given URI.
 	<p>If saving is successful and the view is <code>Modifiable</code>, the
@@ -40,7 +40,7 @@ public interface ViewIOKit extends URIAccessible
 	@see com.garretwilson.util.Modifiable
 	@see Verifiable#verify()
 	*/
-	public void save(final ModelView view, final URI uri) throws IOException;
+	public void save(final ModelView<M> view, final URI uri) throws IOException;
 
 	/**Saves a view to an output stream.
 	<p>If saving is successful and the view is <code>Modifiable</code>, the
@@ -54,6 +54,6 @@ public interface ViewIOKit extends URIAccessible
 	@see com.garretwilson.util.Modifiable
 	@see Verifiable#verify()
 	*/
-	public void save(final ModelView view, final OutputStream outputStream) throws IOException;
+	public void save(final ModelView<M> view, final OutputStream outputStream) throws IOException;
 
 }

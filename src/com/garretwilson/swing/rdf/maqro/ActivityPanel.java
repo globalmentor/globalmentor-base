@@ -14,6 +14,7 @@ import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 import com.garretwilson.text.xml.xhtml.XHTMLUtilities;
 import com.garretwilson.model.Model;
+import com.garretwilson.model.ResourceModel;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.DCUtilities;
 import com.garretwilson.rdf.maqro.*;
@@ -26,7 +27,7 @@ import org.w3c.dom.*;
 /**A panel to view and edit a MAQRO activity.
 @author Garret Wilson
 */
-public class ActivityPanel extends RDFPanel
+public class ActivityPanel extends RDFPanel<Activity, ResourceModel<Activity>>
 {
 
 	/**The action for interacting with the activity.*/
@@ -51,46 +52,31 @@ public class ActivityPanel extends RDFPanel
 	protected final JList interactionListComponent;
 
 	/**The panel representing a list of ineractions.*/
-	protected final ListPanel interactionListPanel;
+	protected final ListPanel<Interaction> interactionListPanel;
 
 	/**The panel that allows editing of the activity behavior settings.*/
 	protected final ActivityBehaviorPanel activityBehaviorPanel;
 	
-	/**@return The data model for which this component provides a view.
-	@see RDFPanel#getRDFResourceModel()
-	*/
-	public ActivityModel getActivityModel() {return (ActivityModel)getRDFResourceModel();}
-
-	/**Sets the data model.
-	@param model The data model for which this component provides a view.
-	@see #setRDFResourceModel(Model)
-	*/
-	public void setActivityModel(final ActivityModel model)
-	{
-		setRDFResourceModel(model);	//set the model
-	}
-
 	/**Sets the data model.
 	@param newModel The data model for which this component provides a view.
 	@exception ClassCastException Thrown if the model is not an <code>ActivityModel</code>.
 	*/
-	public void setModel(final Model newModel)
+	public void setModel(final ResourceModel<Activity> newModel)
 	{
-		final ActivityModel activityModel=(ActivityModel)newModel;	//cast the model to an activity model
-		activityBehaviorPanel.setRDFResourceModel(activityModel);	//set the new model in the activity behavior panel
-		super.setModel(activityModel);	//set the model in the parent class
+		activityBehaviorPanel.setModel(newModel);	//set the new model in the activity behavior panel
+		super.setModel(newModel);	//set the model in the parent class
 	}
 
 	/**Default constructor.*/
 	public ActivityPanel()
 	{
-		this(new ActivityModel());	//construct the panel with a default model
+		this(new ResourceModel<Activity>());	//construct the panel with a default model
 	}
 
 	/**Model constructor.
 	@param model The data model for which this component provides a view.
 	*/
-	public ActivityPanel(final ActivityModel model)
+	public ActivityPanel(final ResourceModel<Activity> model)
 	{
 		this(model, true);	//construct and initialize the panel
 	}
@@ -100,7 +86,7 @@ public class ActivityPanel extends RDFPanel
 	@param initialize <code>true</code> if the panel should initialize itself by
 		calling the initialization methods.
 	*/
-	public ActivityPanel(final ActivityModel model, final boolean initialize)
+	public ActivityPanel(final ResourceModel<Activity> model, final boolean initialize)
 	{
 		super(model, false);	//construct the parent class without initializing it
 		addSupportedModelViews(new int[]{WYSIWYG_MODEL_VIEW, SEQUENCE_MODEL_VIEW, LIST_MODEL_VIEW, CONFIGURATION_MODEL_VIEW});	//show that we now support WYSIWYG, sequence, list model, and configuration views, too
@@ -109,7 +95,7 @@ public class ActivityPanel extends RDFPanel
 		interactionListComponent=new JList();	//create a new list for the interactions
 		interactionEditStrategy=new InteractionEditStrategy();	//create the edit strategy for interactions
 		interactionSequencePanel=new InteractionSequencePanel();	//create a new interaction sequence panel
-		interactionListPanel=new ListPanel(interactionListComponent, interactionEditStrategy);	//create a new interaction list panel
+		interactionListPanel=new ListPanel<Interaction>(interactionListComponent, interactionEditStrategy);	//create a new interaction list panel
 		activityBehaviorPanel=new ActivityBehaviorPanel(model);	//create a panel for the behavior panel
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
@@ -147,18 +133,18 @@ public class ActivityPanel extends RDFPanel
 	public void loadModel() throws IOException
 	{
 		super.loadModel();	//do the default loading
-		final ActivityModel model=getActivityModel();	//get the data model
+		final ResourceModel<Activity> model=getModel();	//get the data model
 
 		book.getXMLTextPane().setURIInputStreamable(model);	//make sure the text pane knows from where to get input streams
-		if(model.getActivity()==null)	//if there is no activity
+		if(model.getResource()==null)	//if there is no activity
 		{
-			model.setActivity(new Activity());	//create a new activity
+			model.setResource(new Activity());	//create a new activity
 		}
-		if(model.getActivity().getInteractions()==null)	//if the activity has no interactions
+		if(model.getResource().getInteractions()==null)	//if the activity has no interactions
 		{
-			model.getActivity().setInteractions(new RDFListResource());	//set a default list of interactions
+			model.getResource().setInteractions(new RDFListResource());	//set a default list of interactions
 		}
-		final ListModel interactionListModel=new ListListModel(model.getActivity().getInteractions());	//create a new list model from the interaction list G***this will change when we have nested groups, as it will be difficult to keep both the sequence and the list in synch; we may want to switch to load/save on view change
+		final ListModel interactionListModel=new ListListModel<RDFResource>(model.getResource().getInteractions());	//create a new list model from the interaction list G***this will change when we have nested groups, as it will be difficult to keep both the sequence and the list in synch; we may want to switch to load/save on view change
 		interactionSequencePanel.setListModel(interactionListModel);	//put the interaction list model in the sequence panel
 		interactionListComponent.setModel(interactionListModel);	//put the interaction list model in the interaction list component in the interaction list view G***make sure changing the model here keeps everything else in synch
 	}
@@ -170,14 +156,14 @@ public class ActivityPanel extends RDFPanel
 	protected void loadModel(final int modelView) throws IOException
 	{
 		super.loadModel(modelView);	//do the default loading
-		final ActivityModel model=getActivityModel();	//get the data model
+		final ResourceModel<Activity> model=getModel();	//get the data model
 		switch(modelView)	//see which view of data we should load
 		{
 			case WYSIWYG_MODEL_VIEW:	//if we're changing to the WYSIWYG view
 				book.getXMLTextPane().setURIInputStreamable(model);	//make sure the text pane knows from where to get input streams
-				if(model.getActivity()!=null)	//if we have an activity
+				final Activity activity=model.getResource();	//get the activity represented by the model
+				if(activity!=null)	//if we have an activity
 				{
-					final Activity activity=model.getActivity();	//get the activity represented by the model
 					final Document xhtmlDocument=XHTMLUtilities.createXHTMLDocument();	//create an XHTML document
 					final Element bodyElement=XHTMLUtilities.getBodyElement(xhtmlDocument);	//get the body element
 					assert bodyElement!=null : "Missing <body> element in default XHTML document.";
@@ -245,7 +231,7 @@ public class ActivityPanel extends RDFPanel
 	protected void saveModel(final int modelView) throws IOException
 	{
 		super.saveModel(modelView);	//do the default saving
-		final ActivityModel model=getActivityModel();	//get the data model
+		final ResourceModel<Activity> model=getModel();	//get the data model
 		switch(modelView)	//see which view of data we should save
 		{
 			case CONFIGURATION_MODEL_VIEW:	//if we're saving the configuration view
@@ -332,10 +318,10 @@ public class ActivityPanel extends RDFPanel
 	/**Interacts with the activity.*/
 	public void interact()
 	{
-		final ActivityModel model=getActivityModel();	//get our model
-		if(verify() && model.getActivity()!=null)	//verify the contents of the user interface; if things verify and we have an activity
+		final ResourceModel<Activity> model=getModel();	//get our model
+		if(verify() && model.getResource()!=null)	//verify the contents of the user interface; if things verify and we have an activity
 		{
-			final MAQROActivityEngine activityEngine=new MAQROActivityEngine(model.getActivity());	//create an engine for the activity
+			final MAQROActivityEngine activityEngine=new MAQROActivityEngine(model.getResource());	//create an engine for the activity
 			activityEngine.setBaseURI(model.getBaseURI());	//set the base URI of the engine TODO probably make the resource application panel URIAccessible
 			activityEngine.setURIInputStreamable(model);	//tell the activity engine to use our URI sourcefor reading
 			final MAQROActivityPanel activityPanel=new MAQROActivityPanel(activityEngine);	//create a new activity panel for the engine
@@ -371,7 +357,7 @@ public class ActivityPanel extends RDFPanel
 	/**The edit strategy that allows editing of choices from a list.
 	 @author Garret Wilson
 	 */
-	protected class InteractionEditStrategy extends ListEditStrategy
+	protected class InteractionEditStrategy extends ListEditStrategy<Interaction>
 	{
 		/**Default constructor.*/
 		public InteractionEditStrategy()
@@ -388,7 +374,7 @@ public class ActivityPanel extends RDFPanel
 		 or if the class has no nullary constructor; or if the instantiation fails
 		 for some other reason.
 		 */
-		protected Object createItem() throws InstantiationException, IllegalAccessException
+		protected Interaction createItem() throws InstantiationException, IllegalAccessException
 		{
 			return new Question(toURI(UUID.randomUUID()));	//create a question with a random UUID URI
 		}
@@ -400,7 +386,7 @@ public class ActivityPanel extends RDFPanel
 		 @return The object with the modifications from the edit, or
 		 <code>null</code> if the edits should not be accepted.
 		 */
-		protected Object editItem(final Object item)
+		protected Interaction editItem(final Interaction item)
 		{
 			setModelView(SEQUENCE_MODEL_VIEW);	//switch to the sequence view
 			assert getListModel() instanceof List : "The interaction edit strategy relies on an implementation that uses a list model that implements the List interface.";

@@ -4,21 +4,21 @@ import java.awt.*;
 import java.io.IOException;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
-import com.garretwilson.model.Model;
+import com.garretwilson.model.ResourceModel;
 import com.garretwilson.rdf.RDFResource;
-import com.garretwilson.rdf.RDFResourceModel;
 import com.garretwilson.rdf.maqro.*;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.rdf.xmlschema.BooleanLiteral;
 import com.garretwilson.rdf.xmlschema.IntegerLiteral;
+import com.garretwilson.swing.ModelPanel;
 import com.garretwilson.swing.border.BorderUtilities;
-import com.garretwilson.swing.rdf.RDFResourceModelPanel;
 
 /**Panel for editing behavior-related MAQRO resource properties.
 In most cases, the resource edited will be an activity.
 @author Garret Wilson
 @see Activity
 */
-public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQROConstants
+public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RDFResource>>
 {
 
 	private final PermissionsPanel permissionsPanel;
@@ -27,21 +27,19 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 
 	/**Sets the data model.
 	@param newModel The data model for which this component provides a view.
-	@exception ClassCastException Thrown if the model is not an <code>RDFResourceModel</code>.
 	*/
-	public void setModel(final Model newModel)
+	public void setModel(final ResourceModel<? extends RDFResource> newModel)
 	{
-		final RDFResourceModel resourceModel=(RDFResourceModel)newModel;	//cast the model to a resource model
-		permissionsPanel.setRDFResourceModel(resourceModel);	//update the models of the child panels
-		processPanel.setRDFResourceModel(resourceModel);	//update the models of the child panels
-		feedbackPanel.setRDFResourceModel(resourceModel);	//update the models of the child panels
-		super.setModel(resourceModel);	//set the model in the parent class
+		permissionsPanel.setModel(newModel);	//update the models of the child panels
+		processPanel.setModel(newModel);	//update the models of the child panels
+		feedbackPanel.setModel(newModel);	//update the models of the child panels
+		super.setModel(newModel);	//set the model in the parent class
 	}
 
 	/**Model constructor.
 	@param model The data model for which this component provides a view.
 	*/
-	public ActivityBehaviorPanel(final RDFResourceModel model)
+	public ActivityBehaviorPanel(final ResourceModel<? extends RDFResource> model)
 	{
 		this(model, true);	//construct the panel and initialize it
 	}
@@ -51,7 +49,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 	@param initialize <code>true</code> if the panel should initialize itself by
 		calling the initialization methods.
 	*/
-	public ActivityBehaviorPanel(final RDFResourceModel model, final boolean initialize)
+	public ActivityBehaviorPanel(final ResourceModel<? extends RDFResource> model, final boolean initialize)
 	{
 		super(new BasicGridBagLayout(), model, false);	//construct the panel using a grid bag layout, but don't initialize the panel
 		permissionsPanel=new PermissionsPanel(model);
@@ -116,7 +114,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 	/**Panel for editing the activity permissions.
 	@author Garret Wilson
 	*/
-	public static class PermissionsPanel extends RDFResourceModelPanel
+	public static class PermissionsPanel extends ModelPanel<ResourceModel<? extends RDFResource>>
 	{
 
 		private final JCheckBox allowHintCheckBox;
@@ -126,7 +124,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 		/**Model constructor.
 		@param model The data model for which this component provides a view.
 		*/
-		public PermissionsPanel(final RDFResourceModel model)
+		public PermissionsPanel(final ResourceModel<? extends RDFResource> model)
 		{
 			super(new BasicGridBagLayout(), model, false);	//construct the parent class but don't initialize it
 			allowHintCheckBox=new JCheckBox();
@@ -157,7 +155,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 		public void loadModel() throws IOException
 		{
 			super.loadModel();	//do the default loading
-			final RDFResource resource=getRDFResourceModel().getRDFResource();	//get the resource
+			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
 				allowHintCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_HINT_PROPERTY_NAME)));
@@ -172,7 +170,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 		public void saveModel() throws IOException
 		{
 			super.saveModel();	//do the default saving
-			final RDFResource resource=getRDFResourceModel().getRDFResource();	//get the resource
+			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
 				resource.setProperty(MAQRO_NAMESPACE_URI, ALLOW_HINT_PROPERTY_NAME, new BooleanLiteral(allowHintCheckBox.isSelected()));
@@ -185,7 +183,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 	/**Panel for editing the activity process.
 	@author Garret Wilson
 	*/
-	protected static class ProcessPanel extends RDFResourceModelPanel
+	protected static class ProcessPanel extends ModelPanel<ResourceModel<? extends RDFResource>>
 	{
 
 		private final JCheckBox confirmCommitCheckBox;
@@ -198,7 +196,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 		/**Model constructor.
 		@param model The data model for which this component provides a view.
 		*/
-		public ProcessPanel(final RDFResourceModel model)
+		public ProcessPanel(final ResourceModel<? extends RDFResource> model)
 		{
 			super(new BasicGridBagLayout(), model, false);	//construct the parent class but don't initialize it
 			confirmCommitCheckBox=new JCheckBox();
@@ -249,7 +247,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 		public void loadModel() throws IOException
 		{
 			super.loadModel();	//do the default loading
-			final RDFResource resource=getRDFResourceModel().getRDFResource();	//get the resource
+			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
 				confirmCommitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME)));
@@ -275,7 +273,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 		public void saveModel() throws IOException
 		{
 			super.saveModel();	//do the default saving
-			final RDFResource resource=getRDFResourceModel().getRDFResource();	//get the resource
+			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
 				resource.setProperty(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME, new BooleanLiteral(confirmCommitCheckBox.isSelected()));
@@ -333,7 +331,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 	/**Panel for editing the activity feedback.
 	@author Garret Wilson
 	*/
-	protected static class FeedbackPanel extends RDFResourceModelPanel
+	protected static class FeedbackPanel extends ModelPanel<ResourceModel<? extends RDFResource>>
 	{
 
 		private final JCheckBox showEachResultCheckBox;
@@ -345,7 +343,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 		/**Model constructor.
 		@param model The data model for which this component provides a view.
 		*/
-		public FeedbackPanel(final RDFResourceModel model)
+		public FeedbackPanel(final ResourceModel<? extends RDFResource> model)
 		{
 			super(new BasicGridBagLayout(), model, false);	//construct the parent class but don't initialize it
 			showEachResultCheckBox=new JCheckBox();
@@ -384,7 +382,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 		public void loadModel() throws IOException
 		{
 			super.loadModel();	//do the default loading
-			final RDFResource resource=getRDFResourceModel().getRDFResource();	//get the resource
+			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
 				showEachResultCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_EACH_RESULT_PROPERTY_NAME)));
@@ -401,7 +399,7 @@ public class ActivityBehaviorPanel extends RDFResourceModelPanel implements MAQR
 		public void saveModel() throws IOException
 		{
 			super.saveModel();	//do the default saving
-			final RDFResource resource=getRDFResourceModel().getRDFResource();	//get the resource
+			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
 				resource.setProperty(MAQRO_NAMESPACE_URI, SHOW_EACH_RESULT_PROPERTY_NAME, new BooleanLiteral(showEachResultCheckBox.isSelected()));

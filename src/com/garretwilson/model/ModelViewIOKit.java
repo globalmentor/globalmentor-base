@@ -2,6 +2,8 @@ package com.garretwilson.model;
 
 import java.io.*;
 import java.net.URI;
+
+import com.garretwilson.io.IOKit;
 import com.garretwilson.util.Modifiable;
 
 /**An implementation for loading information into a view or
@@ -9,19 +11,19 @@ import com.garretwilson.util.Modifiable;
 @author GarretWilson
 @see ModelIOKit
 */
-public class ModelViewIOKit extends AbstractViewIOKit implements ViewIOKit
+public class ModelViewIOKit<M extends Model> extends AbstractViewIOKit<M>
 {
 
 	/**The implementation for loading and saving the model.*/
-	private final ModelIOKit modelIOKit;
+	private final IOKit<M> modelIOKit;
 
 		/**@return The implementation for loading and saving the model.*/
-		protected ModelIOKit getModelIOKit() {return modelIOKit;}
+		protected IOKit<M> getModelIOKit() {return modelIOKit;}
 
 	/**Constructs a model/view kit from a model's input/output implementation.
 	@param modelIOKit The implementation for loading and saving a model.
 	*/
-	public ModelViewIOKit(final ModelIOKit modelIOKit)
+	public ModelViewIOKit(final IOKit<M> modelIOKit)
 	{
 		super(modelIOKit, modelIOKit);	//construct the parent class, using the model I/O kit to retrieve both input and output streams
 		this.modelIOKit=modelIOKit;	//save the model I/O kit
@@ -34,7 +36,7 @@ public class ModelViewIOKit extends AbstractViewIOKit implements ViewIOKit
 		URI is available.
 	@throws IOException Thrown if there is an error reading the data.
 	*/ 
-	public void load(final ModelView view, final InputStream inputStream, final URI baseURI) throws IOException
+	public void load(final ModelView<M> view, final InputStream inputStream, final URI baseURI) throws IOException
 	{
 		view.setModel(getModelIOKit().load(inputStream, baseURI));	//load the model and put it in the view
 	}
@@ -51,7 +53,7 @@ public class ModelViewIOKit extends AbstractViewIOKit implements ViewIOKit
 	@see Modifiable
 	@see Verifiable#verify()
 	*/
-	public void save(final ModelView view, final OutputStream outputStream) throws IOException
+	public void save(final ModelView<M> view, final OutputStream outputStream) throws IOException
 	{
 //TODO shouldn't we verify the view here?		if(view.verify())	//verify the view to make sure we have the latest data; if it verifies TODO fix the XML panel, which never allows saving if the source doesn't verify
 		
