@@ -16,7 +16,7 @@ import com.garretwilson.swing.text.xml.*;
 The view optionally contains a submit button representing a provided submit action.
 @author Garret Wilson
 */
-public class MAQROActivityView extends XMLComponentBlockView
+public class MAQROActivityView extends XMLComponentBlockView	//TODO transfer all the actual MAQRO interactivity views to a globalmentor package
 {
 
 	/**The action representing a submission, or <code>null</code> if there is no submit action.*/
@@ -54,7 +54,7 @@ public class MAQROActivityView extends XMLComponentBlockView
 		if(submitButton!=null)	//if there is a submit button
 		{
 			submitButton.setFocusable(false);	//TODO fix component manager focus traversal
-			getComponentManager().add(submitButton, axis==X_AXIS ? ViewComponentManager.Border.LINE_END: ViewComponentManager.Border.PAGE_END); //add the button to the end of the activity view
+			getComponentManager().add(submitButton, axis==X_AXIS ? ViewComponentManager.Border.LINE_END : ViewComponentManager.Border.PAGE_END); //add the button to the end of the activity view
 		}
 	}
 

@@ -81,7 +81,9 @@ public class MAQROViewFactory extends XMLViewFactory
 			}
 		  else if(QUESTION_CLASS_NAME.equals(elementLocalName)) //maqro:Question
 			{
-				view=new MAQROQuestionView(element, View.Y_AXIS);	//create a question view				
+				final Element activityElement=getAncestorElement(element, MAQRO_NAMESPACE_URI.toString(), ACTIVITY_CLASS_NAME);	//get the element of any enclosing activity
+				final MAQROActivityView activityView=activityElement!=null ? asInstance(elementViewMap.get(activityElement), MAQROActivityView.class) : null;	//get the associated activity view, if there is one
+				view=new MAQROQuestionView(element, View.Y_AXIS, activityView);	//create a question view				
 			}
 		  else if(DIALOGUE_CLASS_NAME.equals(elementLocalName)) //maqro:Dialogue
 			{
