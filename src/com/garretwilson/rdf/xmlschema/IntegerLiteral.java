@@ -47,7 +47,7 @@ public class IntegerLiteral extends NumberLiteral
 	*/
 	public IntegerLiteral(final String lexicalForm)
 	{
-		super(Integer.valueOf(lexicalForm), INTEGER_DATATYPE_URI);	//save an Integer constructed from the text as the value, specifying the XML boolean datatype URI
+		super(Long.valueOf(lexicalForm), INTEGER_DATATYPE_URI);	//save a Long constructed from the text as the value, specifying the XML boolean datatype URI
 	}
 
 	/**Determines if the RDF object is an integer literal and, if so, casts the 

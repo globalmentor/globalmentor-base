@@ -12,6 +12,7 @@ import com.garretwilson.util.BoundPropertyObject;
 import com.garretwilson.util.Debug;
 
 import static com.garretwilson.net.URIConstants.*;
+import com.garretwilson.net.http.webdav.WebDAVResource;
 
 /**Default implementation of a class that allows access to resources by
 	providing input streams and indicating a base URI against which relative URIs
@@ -120,6 +121,11 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		{
 			return uriInputStreamable.getInputStream(uri);	//delegate to the stored implementation
 		}
+		final String scheme=uri.getScheme();	//see what type of URI this is
+		if(HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme))	//if this is an HTTP URI, try to use WebDAV
+		{
+			return new WebDAVResource(uri).get();	//get the WebDAV resource
+		}
 		return uri.toURL().openConnection().getInputStream();	//convert the URI to a URL, open a connection to it, and get an input stream to it
 	}
 
@@ -142,6 +148,8 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		}
 		else if(HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme))	//if this is an HTTP URI, try to use WebDAV
 		{
+			return new WebDAVResource(uri).put();	//put the WebDAV resource
+/*G***del when works
 			final HttpURL httpURL=new HttpURL(uri.toString());	//create an Apache HTTP URL from the URI TODO make sure the string is properly escaped
 			final WebdavResource webdavResource=new WebdavResource(httpURL, WebdavResource.NOACTION, 0);	//create a WebDAV resource to the URI
 			final String username=getUsername();	//get the username, if any
@@ -151,6 +159,7 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 				webdavResource.setUserInfo(username, new String(password));	//set the username and password for the WebDAV resource
 			}
 			return new WebdavResourceOutputStreamAdapter(webdavResource);	//adapt the resource to an output stream and return it
+*/
 		}
 //TODO fix for other types of URIs
 		return uri.toURL().openConnection().getOutputStream();	//convert the URI to a URL, open a connection to it, and get an output stream to it

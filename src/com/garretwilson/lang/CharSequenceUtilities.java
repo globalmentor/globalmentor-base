@@ -507,6 +507,18 @@ public class CharSequenceUtilities
 		return true;  //if we make it to here, there weren't any non-uppercase characters in the string
 	}
 
+	/**Determines if the character sequence starts with the given character.
+	@param charSequence The character sequence to examine.
+	@param character The character to compare.
+	@return <code>true</code> if the first character of the character sequence
+		matches that of the given string.
+	*/
+	public static boolean startsWith(final CharSequence charSequence, final char character)
+	{
+			//see if the character sequence has at least one character, and the first character matches our character
+		return charSequence.length()>0 && charSequence.charAt(0)==character;
+	}
+
 	/**Trims the right side of the string beginning at the first occurrence of the
 		given character. If the character sequence does not contain the trim
 		character, no action takes place.

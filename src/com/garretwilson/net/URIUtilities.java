@@ -22,13 +22,13 @@ public class URIUtilities
 
 	/**Creates a new URI identical to the supplied URI with a different path.
 	@param uri The URI to change.
-	@param path The correctly escaped path.
+	@param path The unescaped path.
 	@return A new URI with the new path information.
 	*/
-	public static URI changePath(final URI uri, final String path)
+	public static URI changePath(final URI uri, final String path)	//TODO check all references to this method to make sure escaped/unescaped semantics are followed
 	{
-			//construct an identical URI except for the supplied path	TODO it's unclear if raw information should be used or not; check to see if escaped information is handled correctly, such as escaped slashes
-		return create(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), path, uri.getRawQuery(), uri.getRawFragment());
+			//construct an identical URI except for the supplied path
+		return create(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), path, uri.getQuery(), uri.getFragment());
 	}
 
 	/**Constructs an absolute path from the given elements in the form:

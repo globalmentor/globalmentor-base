@@ -200,6 +200,11 @@ public class HTTPConstants
    */
   public static final int SC_CONFLICT = 409;
 
+  /**Status code (410) indicating that the requested resource is no longer available at the server and no forwarding address is known.*/
+  public static final int SC_GONE=410;
+
+  /**Status code (411) indicating that the server refuses to accept the request without a defined Content-Length.*/
+  public static final int SC_LengthRequired=411;
 
   /**
    * Status code (412) indicating the precondition given in one
