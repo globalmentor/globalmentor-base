@@ -7,16 +7,28 @@ import java.util.*;
 <p>By default the iterator returns a random selection in random order. To
 	iterate a random subset in non-random list order, call
 	<code>setRandomOrder</code> with <code>false</code>. TODO fix setRandomOrder()</p>
+<p>This iterator allows filtering of the returned objects.</p>
 @author Garret Wilson
 */
 public class ListRandomIterator implements Iterator 
 {
 
 	/**The list to randomly iterate.*/
-	final List list;
+	private final List list;
 
 	/**The iterator that determines the next index of the list to return.*/
 	protected final RandomIntegerIterator indexIterator;
+
+	/**The filter used to exclude items from the iterator.*/
+	private Filter filter;
+
+		/**@return The filter used to exclude items from the iterator.*/
+		public Filter getFilter() {return filter;}
+
+		/*Sets the filter used to exclude items from the iterator.
+		@param filter The new filter to use.
+		*/
+		public void setFilter(final Filter filter) {this.filter=filter;}
 
 	/**Constructs an iterator that returns all of the elements of the list.
 	<p>A default random number generator is used.</p>
@@ -63,6 +75,7 @@ public class ListRandomIterator implements Iterator
 			throw new IllegalArgumentException("Cannot return less than zero elements from a list.");
 		this.list=list;	//save the list
 		indexIterator=new RandomIntegerIterator(random, list.size(), maxCount, false);	//randomly iterate through maxCount indexes without repeating
+		indexIterator.setFilter(new IndexFilter());	//create a filter that will filter out indexes based upon the object they represent
 	}
 
 	/**Determines whether the given index should be excluded from the iteration.
@@ -117,6 +130,40 @@ public class ListRandomIterator implements Iterator
 	public void remove()
 	{
 		throw new UnsupportedOperationException();
+	}
+
+	/**A class that filters random integers based upon whether the object at
+		the given index in our list passes the criteria of our local filter.
+	@author Garret Wilson
+	*/
+	protected class IndexFilter implements Filter
+	{
+		/**Determines whether a given object should pass through the filter or be
+			filtered out.
+		An integer object will be filtered out if the object at that index in our
+			list doesn't pass our main list filter.
+		@param object The object to filter.
+		@return <code>true</code> if the object should pass through the filter, else
+			<code>false</code> if the object should be filtered out.
+		*/
+		public boolean isPass(final Object object)
+		{
+			if(getFilter()!=null)	//if we have a local filter
+			{
+				if(object instanceof Integer)	//if the object is an integer (it always should be an integer
+				{
+					final Integer integer=(Integer)object;	//cast the object to an integer
+					final Object item=list.get(integer.intValue());	//get this item in our list
+					return getFilter().isPass(item);	//filter the item in our list using our local filter
+				}
+				return false;	//filter out anything we don't understand
+			}
+			else	//if we don't have a filter
+			{
+				return true;	//let everything pass
+			}
+		}
+		
 	}
 
 }

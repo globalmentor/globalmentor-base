@@ -1,5 +1,6 @@
 package com.garretwilson.rdf;
 
+import java.text.Collator;
 import java.util.Locale;
 
 /**Represents a plain RDF literal.
@@ -67,6 +68,35 @@ public class RDFPlainLiteral extends RDFLiteral
 		}
 		else	//if we're being compared with anything else
 			return super.equals(object);	//use the default compare
+	}
+
+
+	/**Returns an initialized collator appropriate for comparing this literal to
+		another.
+	<p>This version returns a language-specific collator if both literals specify
+		languages and both languages are the same. Otherwise, the default collator
+		for the default locale is returned. This is done to ensure that all
+		non-same-language literals will get sorted the same way, regardless of
+		order of comparison.</p>
+	@return A collator appropriate for comparing this literal to the given literal.
+	@see #initializeCollator(Collator)
+	*/  
+	protected Collator getCollator(final RDFLiteral literal)
+	{
+		final Locale language1=getLanguage();	//get our language
+		if(language1!=null)	//if we have a language
+		{
+			if(literal instanceof RDFPlainLiteral)	//if both literals are plain literals
+			{
+				final RDFPlainLiteral plainLiteral=(RDFPlainLiteral)literal;	//cast the literal to a plain literal
+				final Locale language2=plainLiteral.getLanguage();	//get the language of the plain literal
+				if(language1.equals(language2))	//if we and the other literal have the same languages, we'll use a collator for that language
+				{
+					return initializeCollator(Collator.getInstance(language1));	//get a collator using whatever locale we're in and initialize it
+				}
+			}
+		}
+		return super.getCollator(literal);	//if the other literal isn't a plain literal, or it has a different language, return the default collator
 	}
 
 }

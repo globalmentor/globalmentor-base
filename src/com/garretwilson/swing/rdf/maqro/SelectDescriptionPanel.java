@@ -6,6 +6,8 @@ import java.util.*;
 import java.util.List;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
+import com.garretwilson.rdf.RDFObject;
+import com.garretwilson.rdf.RDFUtilities;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
@@ -15,11 +17,12 @@ import com.garretwilson.util.*;
 /**Panel for editing a MAQRO activity selection.
 @author Garret Wilson
 */
-public class SelectionPanel extends BasicPanel
+public class SelectDescriptionPanel extends BasicPanel
 {
 
 	private final JLabel questionCountLabel;
-	private final JCheckBox randomCheckBox;
+	private final JCheckBox randomSelectionCheckBox;
+	private final JCheckBox randomOrderCheckBox;
 	private final ButtonGroup questionCountButtonGroup;
 	private final JRadioButton allQuestionsRadioButton;
 	private final JRadioButton onlyQuestionsRadioButton;
@@ -32,25 +35,46 @@ public class SelectionPanel extends BasicPanel
 		/**@return The action for selecting categories.*/
 		protected Action getSelectCategoriesAction() {return selectCategoriesAction;}
 
-	/**@return Selection criteria for selecting interactions.*/
-	public Selection getSelection()
+	/**@return New default selection criteria.*/
+	protected SelectDescription createSelectDescription()
 	{
-		final Selection selection=new Selection();	//create new selection criteria
-		selection.setRandom(randomCheckBox.isSelected());	//specify whether the selection should be random
+		return new SelectDescription();	//create new selection criteria		
+	}
+
+	/**@return SelectDescription criteria for selecting interactions.*/
+	public SelectDescription getSelect()
+	{
+		final SelectDescription selectDescription=createSelectDescription();	//create new selection criteria
+		selectDescription.setRandom(randomSelectionCheckBox.isSelected());	//specify whether the selection should be random
+		if(randomOrderCheckBox.isSelected())	//if there should be random ordering
+		{
+			final OrderDescription orderDescription=new OrderDescription();	//create a new order descriptoin
+			orderDescription.setRandom(true);	//specify random order
+			selectDescription.setOrder(orderDescription);	//set the order of the selection description
+		}
 		if(onlyQuestionsRadioButton.isSelected())	//if the user wants to limit the number of questions
 		{
-			selection.setQuestionCount(Integer.parseInt(questionCountTextField.getText().trim()));	//get the interaction count
+			selectDescription.setQuestionCount(Integer.parseInt(questionCountTextField.getText().trim()));	//get the interaction count
 		}
-		return selection;	//return the selection criteria we constructed
+			//copy the selected categories to the selection criteria
+		final Iterator categoryIterator=getCategorySet().iterator();	//get an iterator to look at all the selected categories
+		while(categoryIterator.hasNext())	//while there are more categories
+		{
+				//copy this category to the selection criteria
+			RDFUtilities.addProperty(selectDescription, MAQROConstants.MAQRO_NAMESPACE_URI, MAQROConstants.CATEGORY_PROPERTY_NAME, (RDFObject)categoryIterator.next());
+		}
+		return selectDescription;	//return the selection criteria we constructed
 	}
 
 	/**Sets the selection criteria to show in the panel.
-	@param selection The selection criteria.
+	@param selectDescription The selection criteria.
 	*/
-	public void setSelection(final Selection selection)
+	public void setSelect(final SelectDescription selectDescription)
 	{
-		randomCheckBox.setSelected(selection.isRandom());	//if this is a random selection, select the random checkbox
-		final int questionCount=selection.getQuestionCount();	//get the questionCount
+		randomSelectionCheckBox.setSelected(selectDescription.isRandom());	//if this is a random selection, select the random selection checkbox
+		final OrderDescription orderDescription=selectDescription.getOrder();	//get the order description
+		randomOrderCheckBox.setSelected(orderDescription!=null && orderDescription.isRandom());	//if this is random ordering, select the random order checkbox
+		final int questionCount=selectDescription.getQuestionCount();	//get the questionCount
 		if(questionCount>=0)	//if a valid question count was given
 		{
 			onlyQuestionsRadioButton.setSelected(true);	//select the only questions radio button
@@ -62,7 +86,7 @@ public class SelectionPanel extends BasicPanel
 			questionCountTextField.setText("");	//clear the question count
 		}
 		categorySet.clear();	//clear our categories
-		CollectionUtilities.addAll(categorySet, selection.getCategoryIterator());	//add all selection categories to our set of categories
+		CollectionUtilities.addAll(categorySet, selectDescription.getCategoryIterator());	//add all selection categories to our set of categories
 		updateStatus();	//update our status to reflect the new selection
 	}
 
@@ -101,10 +125,20 @@ public class SelectionPanel extends BasicPanel
 */
 
 	/**Default constructor.*/
-	public SelectionPanel()
+	public SelectDescriptionPanel()
+	{
+		this(true);	//construct the panel and initialize it
+	}
+
+	/**Constructor with optional initialization.
+	@param initialize <code>true</code> if the panel should initialize itself by
+		calling the initialization methods.
+	*/
+	public SelectDescriptionPanel(final boolean initialize)
 	{
 		super(new BasicGridBagLayout(), false);	//construct the panel using a grid bag layout, but don't initialize the panel
-		randomCheckBox=new JCheckBox();
+		randomSelectionCheckBox=new JCheckBox();
+		randomOrderCheckBox=new JCheckBox();
 		questionCountLabel=new JLabel();
 		questionCountButtonGroup=new ButtonGroup();
 		allQuestionsRadioButton=new JRadioButton();
@@ -115,7 +149,8 @@ public class SelectionPanel extends BasicPanel
 		availableCategorySet=new HashSet();	//default to no available categories
 		categorySet=new HashSet();	//default to no categories
 		setDefaultFocusComponent(allQuestionsRadioButton);	//set the default focus component
-		initialize();	//initialize the panel
+		if(initialize)  //if we should initialize
+			initialize();   //initialize the panel
 	}
 	
 	/**Initializes the user interface.*/
@@ -124,8 +159,10 @@ public class SelectionPanel extends BasicPanel
 		super.initializeUI();	//do the default user interface initialization
 		setBorder(BorderUtilities.createDefaultTitledBorder());
 		setTitle("Selection");	//G***i18n
-		randomCheckBox.setText("Random selection");	//G***i18n
-		randomCheckBox.setSelected(true);
+		randomSelectionCheckBox.setText("Random selection");	//G***i18n
+		randomSelectionCheckBox.setSelected(true);
+		randomOrderCheckBox.setText("Random order");	//G***i18n
+		randomOrderCheckBox.setSelected(true);
 		questionCountLabel.setText("Number of questions");	//G***i18n
 		questionCountButtonGroup.add(allQuestionsRadioButton);
 		questionCountButtonGroup.add(onlyQuestionsRadioButton);
@@ -143,8 +180,9 @@ public class SelectionPanel extends BasicPanel
 		add(allQuestionsRadioButton, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 		add(onlyQuestionsRadioButton, new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 		add(questionCountTextField, new GridBagConstraints(2, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		add(randomCheckBox, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		add(categoriesButton, new GridBagConstraints(0, 2, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+		add(randomSelectionCheckBox, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+		add(randomOrderCheckBox, new GridBagConstraints(0, 2, 3, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+		add(categoriesButton, new GridBagConstraints(0, 3, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 	}
 
 	/**Updates the states of the actions, including enabled/disabled status,
@@ -191,22 +229,26 @@ public class SelectionPanel extends BasicPanel
 	public void selectCategories()
 	{
 		final Set categorySet=getCategorySet();	//get the set of selected categories
-		final JList categoryList=new JList();	//create a list of categories
-		categoryList.setUI(new ToggleListUI()); //allow the answers to be toggled on and off
-		categoryList.setCellRenderer(new CheckBoxListCellRenderer());  //display the answers with checkboxes
+		final JList categorySwingList=new JList();	//create a list of categories
+		categorySwingList.setUI(new ToggleListUI()); //allow the answers to be toggled on and off
+		categorySwingList.setCellRenderer(new CheckBoxListCellRenderer());  //display the answers with checkboxes
 		final List availableCategoryList=new ArrayList(getAvailableCategorySet());	//create a list of available categories
 		Collections.sort(availableCategoryList);	//sort the list of available categories
-		categoryList.setListData(availableCategoryList.toArray());	//put the available categories in the list
+		categorySwingList.setListData(availableCategoryList.toArray());	//put the available categories in the list
 		final Iterator categoryIterator=categorySet.iterator();	//get an iterator to the selected categories
 		while(categoryIterator.hasNext())	//while there are more categories 
 		{
-			categoryList.setSelectedValue(categoryIterator.next(), false);	//select this category without scrolling
+			final int availableCategoryIndex=availableCategoryList.indexOf(categoryIterator.next());	//get the index of this selected category
+			if(availableCategoryIndex>=0)	//if the selected category is in our list
+			{
+				categorySwingList.addSelectionInterval(availableCategoryIndex, availableCategoryIndex);	//select that category
+			}
 		}
 			//show the categories; if the user accepts the new selections 
-		if(OptionPane.showConfirmDialog(this, new ListPanel(categoryList), "Selected categories", OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE)==OptionPane.OK_OPTION)	//G***i18n
+		if(OptionPane.showConfirmDialog(this, new ListPanel(categorySwingList), "Selected categories", OptionPane.OK_CANCEL_OPTION, OptionPane.QUESTION_MESSAGE)==OptionPane.OK_OPTION)	//G***i18n
 		{
 			categorySet.clear();	//clear our set of categories
-			CollectionUtilities.addAll(categorySet, categoryList.getSelectedValues());	//add the selected categories
+			CollectionUtilities.addAll(categorySet, categorySwingList.getSelectedValues());	//add the selected categories
 		}
 	}
 

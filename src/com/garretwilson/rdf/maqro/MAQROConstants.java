@@ -1,7 +1,7 @@
 package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
-//G***fix import com.garretwilson.rdf.RDFUtilities;
+import com.garretwilson.rdf.*;
 
 /**Constants used in MAQRO processing.
 @author Garret Wilson
@@ -37,12 +37,14 @@ public interface MAQROConstants
 		//MAQRO ontology class names
 	/**The local name of maqro:Activity.*/
 	public final static String ACTIVITY_CLASS_NAME="Activity";
+	/**The local name of maqro:Group.*/
+	public final static String GROUP_CLASS_NAME="Group";
+	/**The local name of maqro:OrderDescription.*/
+	public final static String ORDER_DESCRIPTION_CLASS_NAME="OrderDescription";
 	/**The local name of maqro:Question.*/
 	public final static String QUESTION_CLASS_NAME="Question";
-	/**The local name of maqro:Selection.*/
-	public final static String RANDOM_SELECTION_CLASS_NAME="RandomSelection";
-	/**The local name of maqro:Selection.*/
-	public final static String SELECTION_CLASS_NAME="Selection";
+	/**The local name of maqro:SelectDescription.*/
+	public final static String SELECT_DESCRIPTION_CLASS_NAME="SelectDescription";
 
 		//MAQRO ontology property names
 	/**A choice of an interaction. The local name of maqro:category.*/
@@ -57,13 +59,17 @@ public interface MAQROConstants
 	public final static String QUESTION_COUNT_PROPERTY_NAME="questionCount";
 	/**A interactions of an activity. The local name of maqro:interactions.*/
 	public final static String INTERACTIONS_PROPERTY_NAME="interactions";
-	/**The order in which to present interactions. The local name of maqro:order.*/
-//G***fix	public final static String ORDER_PROPERTY_NAME="order";
+	/**The order criteria of an activity. The local name of maqro:order.*/
+	public final static String ORDER_PROPERTY_NAME="order";
 	/**The query of a question. The local name of maqro:query.*/
 	public final static String QUERY_PROPERTY_NAME="query";
 	/**Whether something should be random. The local name of maqro:random.*/
 	public final static String RANDOM_PROPERTY_NAME="random";
 	/**The selection criteria of an activity. The local name of maqro:select.*/
 	public final static String SELECT_PROPERTY_NAME="select";
+
+
+	/**The constant category that indicates no specified category.*/
+	public final static RDFPlainLiteral NO_CATEGORY=new RDFPlainLiteral("No category specified");	//G***i18n 
 
 }

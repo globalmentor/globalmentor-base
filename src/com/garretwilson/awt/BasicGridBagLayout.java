@@ -77,7 +77,7 @@ public class BasicGridBagLayout extends GridBagLayout implements ContainerConsta
 	@return A rectangle representing the upper left x and y coordinates as well
 		as the extent of the grid.
 	*/
-	protected Rectangle getGridBounds() 
+	public Rectangle getGridBounds() 
 	{
 		int minX=0, minY=0, maxX=0, maxY=0;	//the minimum and maximum coordinates
 		final Iterator constraintsIterator=comptable.values().iterator();	//get an iterator to all the constraints

@@ -8,22 +8,22 @@ import com.garretwilson.rdf.xmlschema.*;
 /**Criteria for selecting MAQRO interactions.
 @author Garret Wilson
 */
-public class Selection extends DefaultRDFResource implements MAQROConstants
+public class SelectDescription extends DefaultRDFResource implements MAQROConstants
 {
 
 	/**Default constructor.*/
-	public Selection()
+	public SelectDescription()
 	{
 	}
 
 	/**Constructs selection criteria with a reference URI.
 	@param referenceURI The reference URI for the new resource.
 	*/
-	public Selection(final URI referenceURI)
+	public SelectDescription(final URI referenceURI)
 	{
 		super(referenceURI);  //construct the parent class
 	}
-	
+
 	/**@return The number of questions to include, or -1 if the question
 		count is not indicated.
 	*/
@@ -41,7 +41,7 @@ public class Selection extends DefaultRDFResource implements MAQROConstants
 		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, QUESTION_COUNT_PROPERTY_NAME, new IntegerLiteral(questionCount));	//set the interaction count
 	}
 
-	/**Determines whether the selection criteria is random.
+	/**Determines whether selection should be random.
 	@return <code>true</code> if the resource is marked as random, else
 		<code>false</code> if the resource is marked as not random or does not
 		indicate randomness.
@@ -51,7 +51,7 @@ public class Selection extends DefaultRDFResource implements MAQROConstants
 		return MAQROUtilities.isRandom(this);	//return whether the selection is random
 	}
 
-	/**Sets the random designation of the selection criteria.
+	/**Sets whether selection should be random.
 	@param random <code>true</code> if randomness should be indicated, else
 		<code>false</code>.
 	*/
@@ -78,41 +78,22 @@ public class Selection extends DefaultRDFResource implements MAQROConstants
 		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, CHOICE_COUNT_PROPERTY_NAME, new IntegerLiteral(choiceCount));	//set the choice count
 	}
 
-	/**Replaces the query, if any, with a query that has the given string value.
-	@param queryValue The literal value of the query.
-	@param language The language of the query value, or <code>null</code> if
-		no language should be specified.
+	/**@return The order criteria, or <code>null</code> if there is no
+		order criteria indicated or if it is not of the correct type.
 	*/
-/*G***fix
-	public void setQueryValue(final String queryValue, final Locale language)
+	public OrderDescription getOrder()
 	{
-		final RDF rdf=new RDF();	//TODO fix the data model
-		final RDFResource query=rdf.locateResource(null);	//get an anonymous query
-		RDFUtilities.setValue(rdf, query, queryValue, language);	//set the query value
-		RDFUtilities.setProperty(rdf, this, MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME, query);	//store the query
+		final RDFObject order=getPropertyValue(MAQRO_NAMESPACE_URI, ORDER_PROPERTY_NAME);	//get the maqro:order property value
+		return order instanceof OrderDescription ? (OrderDescription)order : null;	//return the order criteria if there are any
 	}
-*/
 
-	/**@return The resource indicating the order of selection, or
-		<code>null</code> if order is not indicated or is of an unexpected type.
+	/**Sets the order criteria for the activity.
+	@param orderDescription The order criteria.
 	*/
-/*G**fix
-	public RDFResource getOrder()
+	public void setOrder(final OrderDescription orderDescription)
 	{
-		final RDFObject order=getPropertyValue(MAQRO_NAMESPACE_URI, ORDER_PROPERTY_NAME);	//get the order
-		return order instanceof RDFResource ? (RDFResource)order : null;	//return the order, if there is one
+		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, ORDER_PROPERTY_NAME, orderDescription);	//set the order criteria
 	}
-*/
-
-	/**Sets the selection order.
-	@param order A resource the reference URI of which indicates the order of selection
-	*/
-/*G***fix
-	public void setOrder(final RDFResource order)
-	{
-		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, ORDER_PROPERTY_NAME, order);	//set the order
-	}
-*/
 
 	/**Adds a category to the selection.
 	@param category The category to add.

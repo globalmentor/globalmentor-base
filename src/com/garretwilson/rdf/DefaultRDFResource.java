@@ -442,7 +442,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	/**Compares this object to another object.
 	<p>This method determines order based upon the reference URI of the resource,
 		if any.</p>
-	@param object The object with which to compare the component. This must be
+	@param object The object with which to compare the object. This must be
 		another <code>Resource</code> object.
 	@return A negative integer, zero, or a positive integer as this resource
 		reference URI is less than, equal to, or greater than the reference URI of

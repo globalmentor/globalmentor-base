@@ -26,7 +26,7 @@ public class RandomIntegerIterator implements Iterator
 	protected final int range;
 
 	/**The number of integers to return, or -1 if an
-		unlimited number of integers should be returned
+		unlimited number of integers should be returned.
 	*/
 	protected final int maxCount;
 
@@ -38,6 +38,23 @@ public class RandomIntegerIterator implements Iterator
 
 	/**The total number of integers returned.*/
 	protected int count;
+
+	/**The filter used to exclude items from the iterator.*/
+	private Filter filter;
+
+		/**@return The filter used to exclude items from the iterator.*/
+		public Filter getFilter() {return filter;}
+
+		/*Sets the filter used to exclude items from the iterator.
+		@param filter The new filter to use, or <code>null</code> if there should
+			be no filtering.
+		*/
+		public void setFilter(final Filter filter) {this.filter=filter;}
+
+	/**The value that has been retrieved and has passed the filter and is waiting
+		to be returned, or <code>null</code> if there is no primed next object.
+	*/
+	protected Object primedNext;
 
 	/**Shuffle constructor.
 	Constructs an iterator that returns numbers between zero (inclusive) and
@@ -160,6 +177,8 @@ public class RandomIntegerIterator implements Iterator
 		this.maxCount=maxCount;
 		this.repeat=repeat;
 		count=0;	//show that we have not yet retrieved any integers
+		primedNext=null;	//show that we have no primed next value
+		filter=null;	//default to no filter
 	}
 
 	/**Determines whether the given integer value should be excluded from the iteration.
@@ -194,7 +213,9 @@ public class RandomIntegerIterator implements Iterator
 	/**@return <code>true</code> if there are more integers left to retrieve.*/
 	public boolean hasNext()
 	{
-		return maxCount<0 || count<maxCount;	//determine if we haven't reached the maximum count or there is no maximum count
+			//determine if we haven't reached the maximum count or there is no maximum count
+			//then prime another value if we can
+		return (maxCount<0 || count<maxCount) && primeNext();	//if there are more integers to retrieve, and one is primed and ready
 	}
 
 	/**@return The next random integer in the iteration.
@@ -202,9 +223,42 @@ public class RandomIntegerIterator implements Iterator
 	*/
 	public Object next()
 	{
-		if(hasNext())	//if we have more elements
+		if(hasNext())	//if there is a next object waiting for us, and we haven't reached our maximum value
 		{
-			final int includedRange=range-excludedIntegerSortedSet.size();	//see how many are left in the range if we exclude the excluded integers
+			final Object next=primedNext;	//get the next object primed and waiting
+			primedNext=null;	//show that we've used the primed next object
+			++count;	//show that we've retrieved another value
+			return next;	//return the next integer we found
+		}
+		else	//if we've reached our max count
+		{
+			throw new NoSuchElementException();
+		}
+	}
+
+	/**Retrieves the next object and stores it locally to return from the next
+		call to <code>next()</code>. If an object is already primed, no action
+		occurs.
+	@return <code>true</code> if there is another integer left to retrieve.
+	*/
+	protected boolean primeNext()
+	{
+		if(primedNext==null)	//if there is no primed next object
+		{
+			primedNext=getNext();	//get the next object
+		}
+		return primedNext!=null;	//return whether or not there now is a primed next object		
+	}
+
+	/**@return The next random integer in the iteration, or <code>null</code> if
+		the iteration has no more elements.
+	*/
+	protected Object getNext()
+	{
+		final Filter filter=getFilter();	//get our filter, if there is one
+		int includedRange=range-excludedIntegerSortedSet.size();	//see how many are left in the range if we exclude the excluded integers
+		while(includedRange>0)	//while there are available items to choose from
+		{
 			final int index=random.nextInt(includedRange);	//select an index into the included range that's left
 			int value=rangeMin+index;	//shift the index to the start of the range
 			if(excludedIntegerSortedSet.size()>0)	//if we have any exluded integers, adjust our value accordingly; otherwise, we already have the correct value
@@ -224,17 +278,18 @@ public class RandomIntegerIterator implements Iterator
 				}
 			}
 			final Integer nextInteger=new Integer(value);	//we've found the next integer value
-			if(!repeat)	//if we shouldn't repeat values
+			final boolean isPass=filter==null || filter.isPass(nextInteger);	//see if our next integer passes
+			if(!repeat || !isPass)	//if we shouldn't repeat values, or if this item is filtered out
 			{
 				excludedIntegerSortedSet.add(nextInteger);	//add this integer to our excluded integer set so that we won't use it next time
+				--includedRange;	//show that we have a smaller included range to choose from, now that we've excluded something
 			}
-			++count;	//show that we've retrieved another value
-			return nextInteger;	//return the integer we found
+			if(isPass)	//if this item isn't filtered out
+			{
+				return nextInteger;	//return the integer we found
+			}
 		}
-		else	//if we've reached our max count
-		{
-			throw new NoSuchElementException();
-		}
+		return null;	//if we've reached our max count, return null
 	}
 
 	/**This implementation does not support element removal, and always throws
