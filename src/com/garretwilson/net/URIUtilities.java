@@ -3,6 +3,7 @@ package com.garretwilson.net;
 import java.io.*;
 import java.net.*;
 import com.garretwilson.io.*;
+import java.net.URI;	//G***del when other URI is removed
 
 /**Various URL manipulating functions.
 @see java.net.URL

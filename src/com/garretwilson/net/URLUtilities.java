@@ -53,16 +53,6 @@ public class URLUtilities implements URLConstants, InputStreamLocator
 		return true;  //if we don't know that it doesn't assume the file exists
 	}
 
-	/**Retrieves a <code>File</code> representing the file of the URI.
-	@param uri The URI for which to return a file.
-	@return A <code>File</code> object representing the file path of the URI
-		with no query string.
-	*/
-	public static File getFile(final URI uri)
-	{
-		return new File(uri.getPath()); //create a new File from the URI path
-	}
-
 	/**Retrieves a <code>File</code> representing the file of the URL.
 	@param url The URL for which to return a file.
 	@return A <code>File</code> object representing the file path of the URL
