@@ -123,6 +123,10 @@ public class MAQROViewFactory extends XMLViewFactory
 					view=new XMLParagraphView(element);	//for every other dialogue instances, create a paragraph view
 				}
 			}
+		  else if(CHOICES_PROPERTY_NAME.equals(elementLocalName)) //maqro:choices
+			{
+				view=new XMLBlockView(element, View.Y_AXIS);	//create block view for choices TODO maybe create a list view				
+			}
 		}
 		if(view==null)	//if we couldn't figure out which kind of view to create
 		{

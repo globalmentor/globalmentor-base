@@ -1,0 +1,27 @@
+Activity
+{
+	display: block;
+}
+
+Question
+{
+	display: list-item;
+	list-style-type: decimal;
+	margin-left: 2em;
+}
+
+choices
+{
+	display: block;
+}
+
+choices Dialogue
+{
+	display: block;
+	margin-left: 2em;
+}
+
+Dialogue
+{
+	display: block;
+}

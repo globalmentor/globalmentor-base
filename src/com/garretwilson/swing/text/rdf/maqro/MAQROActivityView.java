@@ -1,15 +1,12 @@
 package com.garretwilson.swing.text.rdf.maqro;
 
 import java.awt.Dimension;
-import static java.lang.Math.*;
 
 import javax.swing.*;
 import javax.swing.text.*;
 
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
-import com.garretwilson.swing.text.xml.css.XMLCSSStyleUtilities;
-import com.garretwilson.util.Debug;
 
 /**View representing a MAQRO activity.
 The view optionally contains a submit button representing a provided submit action.
@@ -51,7 +48,7 @@ public class MAQROActivityView extends XMLComponentBlockView
 	/**Sets the cached properties from the attributes.
 	This version compensates for the submit button, if present.
 	*/
-	protected void setPropertiesFromAttributes()	//TODO maybe important: transfer the insets to any new fragment; this may not be important for CSS-updated views, but may be necessary for 
+	protected void setPropertiesFromAttributes() 
 	{
 		super.setPropertiesFromAttributes();	//set the properties normally
 		final AbstractButton submitButton=getSubmitButton();	//see if we have a submit button
@@ -123,4 +120,70 @@ public class MAQROActivityView extends XMLComponentBlockView
 		return minimumSpan;	//return the minimum span
 	}
 */
+
+	/**Creates a fragment view into which pieces of this view will be placed.
+	@param isFirstFragment Whether this fragment holds the first part of the original view.
+	@param isLastFragment Whether this fragment holds the last part of the original view.
+	*/
+	public View createFragmentView(final boolean isFirstFragment, final boolean isLastFragment)
+	{
+	  return new MAQROFragmentActivityView(getElement(), getAxis(), this, isFirstFragment, isLastFragment);	//create a fragment of this view
+	}
+
+	/**The class that serves as a fragment if the paragraph is broken.
+	@author Garret Wilson
+	*/
+	protected class MAQROFragmentActivityView extends XMLComponentFragmentBlockView	//TODO this code duplication in the fragment views is getting excessive---determine how we can consolidate perhaps by modifying the fragment hierarchy
+	{
+
+		/**Constructs a fragment view.
+		@param element The element this view is responsible for.
+		@param axis The tiling axis, either View.X_AXIS or View.Y_AXIS.
+		@param wholeView The original, unfragmented view from which this fragment (or one or more intermediate fragments) was broken.
+		@param firstFragment Whether this is the first fragment of the original view.
+		@param lastFragment Whether this is the last fragment of the original view.
+		*/
+		public MAQROFragmentActivityView(final Element element, final int axis, final View wholeView, final boolean firstFragment, final boolean lastFragment)
+		{
+			super(element, axis, wholeView, firstFragment, lastFragment); //do the default construction
+		}
+
+		/**Creates a fragment view into which pieces of this view will be placed.
+		@param isFirstFragment Whether this fragment holds the first part of the original view.
+		@param isLastFragment Whether this fragment holds the last part of the original view.
+		*/
+		public View createFragmentView(final boolean isFirstFragment, final boolean isLastFragment)
+		{
+		  return new MAQROFragmentActivityView(getElement(), getAxis(), getWholeView(), isFirstFragment, isLastFragment);	//create a fragment of this view, indicating the original view
+		}
+
+		/**Sets the cached properties from the attributes.
+		This version compensates for the submit button, if present.
+		*/
+		protected void setPropertiesFromAttributes() 
+		{
+			super.setPropertiesFromAttributes();	//set the properties normally
+			final AbstractButton submitButton=getSubmitButton();	//see if we have a submit button
+			if(submitButton!=null)	//if we have a submit button
+			{
+				final Dimension submitButtonPreferredSize=submitButton.getPreferredSize();	//get the preferred size of the button 
+				short topInset=getTopInset();	//get the insets
+				short leftInset=getLeftInset();
+				short bottomInset=getBottomInset();
+				short rightInset=getRightInset();
+				switch(getAxis())	//compensate for the submit button based upon the axis TODO compensate for orientation; eventually, maybe move all this to ViewComponent manager with an option
+				{
+					case X_AXIS:
+						rightInset+=submitButtonPreferredSize.width;	//compensate for the button width
+						break;
+					case Y_AXIS:
+						bottomInset+=submitButtonPreferredSize.height;	//compensate for the button height
+						break;
+						
+				}
+			  setInsets(topInset, leftInset, bottomInset, rightInset);	//update our insets with the new values
+			}
+		}
+	}
+
 }
