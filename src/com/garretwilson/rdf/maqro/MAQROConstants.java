@@ -46,23 +46,35 @@ public interface MAQROConstants
 	/**The local name of maqro:SelectDescription.*/
 	public final static String SELECT_DESCRIPTION_CLASS_NAME="SelectDescription";
 
-		//MAQRO ontology property names
+		//MAQRO interaction property names
 	/**A choice of an interaction. The local name of maqro:category.*/
 	public final static String CATEGORY_PROPERTY_NAME="category";
+
+		//MAQRO interact description property names
+	/**Whether real-time results should be displayed. The local name of maqro:showResultsProgress.*/
+	public final static String SHOW_RESULTS_PROGRESS_PROPERTY_NAME="showResultsProgress";
+
+		//MAQRO question property names
 	/**A choice of a question. The local name of maqro:choice.*/
 	public final static String CHOICE_PROPERTY_NAME="choice";
-	/**The number of choices to select. The local name of maqro:choiceCount.*/
-	public final static String CHOICE_COUNT_PROPERTY_NAME="choiceCount";
 	/**The type of response a question expects. The local name of maqro:expect.*/
 	public final static String EXPECT_PROPERTY_NAME="expect";
+	/**The minimum number of responses to accept. The local name of maqro:minResponseCount.*/
+	public final static String MIN_RESPONSE_COUNT_PROPERTY_NAME="minResponseCount";
+	/**The maximum number of responses to accept. The local name of maqro:maxResponseCount.*/
+	public final static String MAX_RESPONSE_COUNT_PROPERTY_NAME="maxResponseCount";
+	/**The query of a question. The local name of maqro:query.*/
+	public final static String QUERY_PROPERTY_NAME="query";
+
+		//MAQRO ontology property names
+	/**The number of choices to select. The local name of maqro:choiceCount.*/
+	public final static String CHOICE_COUNT_PROPERTY_NAME="choiceCount";
 	/**The number of interactions to select. The local name of maqro:questionCount.*/
 	public final static String QUESTION_COUNT_PROPERTY_NAME="questionCount";
 	/**A interactions of an activity. The local name of maqro:interactions.*/
 	public final static String INTERACTIONS_PROPERTY_NAME="interactions";
 	/**The order criteria of an activity. The local name of maqro:order.*/
 	public final static String ORDER_PROPERTY_NAME="order";
-	/**The query of a question. The local name of maqro:query.*/
-	public final static String QUERY_PROPERTY_NAME="query";
 	/**Whether something should be random. The local name of maqro:random.*/
 	public final static String RANDOM_PROPERTY_NAME="random";
 	/**The selection criteria of an activity. The local name of maqro:select.*/

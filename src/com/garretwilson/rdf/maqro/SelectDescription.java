@@ -34,7 +34,7 @@ public class SelectDescription extends DefaultRDFResource implements MAQROConsta
 	}
 
 	/**Sets the number of questions to include.
-	@param questionCount The number of questions to include
+	@param questionCount The number of questions to include.
 	*/
 	public void setQuestionCount(final int questionCount)
 	{

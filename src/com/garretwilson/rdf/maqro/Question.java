@@ -3,6 +3,7 @@ package com.garretwilson.rdf.maqro;
 import java.net.URI;
 import java.util.*;
 import com.garretwilson.rdf.*;
+import com.garretwilson.rdf.xmlschema.IntegerLiteral;
 
 /**Class representing a MAQRO question.
 @author Garret Wilson
@@ -65,6 +66,23 @@ public class Question extends Interaction
 	public RDFResource getExpect()
 	{
 		return RDFUtilities.asResource(getPropertyValue(MAQRO_NAMESPACE_URI, EXPECT_PROPERTY_NAME));	//get the expectation		
+	}
+
+	/**@return The maximum number of responses to accept, or -1 if the maximum
+		response count is not indicated.
+	*/
+	public int getMaxResponseCount()
+	{
+		final RDFObject maxResponseCount=getPropertyValue(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME);	//get the value
+		return maxResponseCount instanceof IntegerLiteral ? ((IntegerLiteral)maxResponseCount).getInteger().intValue() : -1;	//return the integer value, if there is one
+	}
+
+	/**Sets the maximum number of responses to accept.
+	@param count The maximum number of responses.
+	*/
+	public void setQuestionCount(final int count)
+	{
+		RDFUtilities.setProperty(this, MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME, new IntegerLiteral(count));	//set the value
 	}
 	
 }

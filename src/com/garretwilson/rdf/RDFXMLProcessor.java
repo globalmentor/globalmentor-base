@@ -483,11 +483,20 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				}
 				else  //if we didn't find any child elements, the content is a literal
 				{
-						//get the xml:lang language tag, if there is one
-					final String languageTag=XMLUtilities.getDefinedAttributeNS(element, XMLConstants.XML_NAMESPACE_URI.toString(), XMLConstants.ATTRIBUTE_LANG);
-						//create a locale for the language if there is a language tag
-					final Locale languageLocale=languageTag!=null ? LocaleUtilities.createLocale(languageTag) : null;
-					propertyValue=new RDFPlainLiteral(XMLUtilities.getText(element, false), languageLocale);  //create a literal from the element's text, noting the specified language if any
+					final String childText=XMLUtilities.getText(element, true);	//retrieve the child text
+					final String datatype=getRDFAttribute(element, ATTRIBUTE_DATATYPE); //get the datatype, if there is one TODO check elsewhere to make sure a datatype isn't given for non-literal content
+					if(datatype!=null)	//if a datatype is present
+					{
+						propertyValue=getRDF().createTypedLiteral(childText, new URI(datatype));	//create a typed literal from the typed literal text
+					}
+					else	//if a datatype is not present, this is a plain literal
+					{
+							//get the xml:lang language tag, if there is one
+						final String languageTag=XMLUtilities.getDefinedAttributeNS(element, XMLConstants.XML_NAMESPACE_URI.toString(), XMLConstants.ATTRIBUTE_LANG);
+							//create a locale for the language if there is a language tag
+						final Locale languageLocale=languageTag!=null ? LocaleUtilities.createLocale(languageTag) : null;
+						propertyValue=new RDFPlainLiteral(childText, languageLocale);  //create a literal from the element's text, noting the specified language if any
+					}
 				}
 			}
 		}
