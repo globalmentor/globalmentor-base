@@ -37,16 +37,12 @@ public interface MAQROConstants
 		//MAQRO ontology class names
 	/**The local name of maqro:Activity.*/
 	public final static String ACTIVITY_CLASS_NAME="Activity";
-	/**The local name of maqro:Choice.*/
-	public final static String CHOICE_CLASS_NAME="Choice";
+	/**The local name of maqro:Dialogue.*/
+	public final static String DIALOGUE_CLASS_NAME="Dialogue";
 	/**The local name of maqro:Group.*/
 	public final static String GROUP_CLASS_NAME="Group";
-	/**The local name of maqro:Hint.*/
-	public final static String HINT_CLASS_NAME="Hint";
 	/**The local name of maqro:OrderDescription.*/
 	public final static String ORDER_DESCRIPTION_CLASS_NAME="OrderDescription";
-	/**The local name of maqro:Query.*/
-	public final static String QUERY_CLASS_NAME="Query";
 	/**The local name of maqro:Question.*/
 	public final static String QUESTION_CLASS_NAME="Question";
 	/**The local name of maqro:Result.*/
@@ -65,8 +61,8 @@ public interface MAQROConstants
 		//MAQRO question property names
 	/**The answer of a question. The local name of maqro:answer.*/
 	public final static String ANSWER_PROPERTY_NAME="answer";
-	/**A choice of a question. The local name of maqro:choice.*/
-	public final static String CHOICE_PROPERTY_NAME="choice";
+	/**A choice of a question. The local name of maqro:choices.*/
+	public final static String CHOICES_PROPERTY_NAME="choices";
 	/**The type of response a question expects. The local name of maqro:expect.*/
 	public final static String EXPECT_PROPERTY_NAME="expect";
 	/**The minimum number of responses to accept. The local name of maqro:minResponseCount.*/

@@ -3,6 +3,8 @@ package com.garretwilson.swing.rdf.maqro;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.List;
+
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.rdf.*;
@@ -96,6 +98,8 @@ public class QuestionPanel extends TabbedViewPanel
 		expectButtonGroup.add(expectRadioButton);
 		choicesRadioButton.setText("Provide Choices");	//G***i18n
 		choicesRadioButton.addActionListener(updateStatusActionListener); 
+		choiceList.setUI(new ToggleListUI()); //allow the choices to be toggled on and off
+		choiceList.setCellRenderer(new CheckBoxListCellRenderer());  //display the choices with checkboxes
 		choiceList.setEnabled(false);	//default to disabling the choice list; it will be enabled if the corresponding radio button is selected
 		choicePanel.setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border for the choice panel
 		choicePanel.setTitle("Choices");	//G***i18n
@@ -131,7 +135,7 @@ public class QuestionPanel extends TabbedViewPanel
 			case QUERY_MODEL_VIEW:	//if we're changing to the query view
 				if(question!=null)	//if there is a question
 				{
-					final Presentation queryPresentation=question.getQuery();	//get the query
+					final Dialogue queryPresentation=question.getQuery();	//get the query
 					if(queryPresentation!=null)	//if there is a query
 					{
 						final RDFLiteral queryValue=RDFUtilities.getValue(queryPresentation);	//get the query value
@@ -146,13 +150,12 @@ public class QuestionPanel extends TabbedViewPanel
 							queryXMLPanel.setXMLModel(new XMLDocumentFragmentModel(xmlLiteralQueryValue.getDocumentFragment()));	//put the XML literal into the panel
 						}
 					}
-
-
-//TODO change maqro:choice->maqro:choices/maqro:Choice implementation
-
-//TODO show the choices in the choice list
-
-
+					final List choices=question.getChoices();	//get the question choices
+					if(choices!=null)	//if there are choices
+					{
+						choicesRadioButton.setSelected(true);	//show that we're selecting choices
+						choiceList.setModel(new ListListModel(choices));	//set the choices in the panel
+					}
 				}
 				break;
 		}

@@ -91,10 +91,21 @@ public class RDFUtilities implements RDFConstants
 		return addType(resource, locateResource(resource, valueNamespaceURI, valueLocalName));  //get a resource from the namespace and local name and add it as a type
 	}
 
+	/**Determines if the RDF object is a list and, if so, casts the object 
+		to a list and returns it.
+	@param rdfObject The RDF object in question.
+	@return The RDF object as a list, or <code>null</code> if the object is
+		not a list or the object is <code>null</code>.
+	*/
+	public static RDFListResource asListResource(final RDFObject rdfObject)
+	{
+		return (RDFListResource)ObjectUtilities.asInstance(rdfObject, RDFListResource.class);	//cast the object to a list if we can
+	}
+
 	/**Determines if the RDF object is a literal and, if so, casts the object 
 		to a literal and returns it.
 	@param rdfObject The RDF object in question.
-	@return The RDF object as a literal , or <code>null</code> if the object is
+	@return The RDF object as a literal, or <code>null</code> if the object is
 		not a literal or the object is <code>null</code>.
 	*/
 	public static RDFLiteral asLiteral(final RDFObject rdfObject)

@@ -116,29 +116,4 @@ public class Activity extends Group
 		setProperty(MAQRO_NAMESPACE_URI, SELECT_PROPERTY_NAME, selectDescription);	//set the selection criteria
 	}
 
-	/**@return The list of interactions for this activity.
-	@exception ClassCastException if the value of the interactions property
-		is not a list.
-	*/
-	public List getInteractions()	//G***should we automatically create a list if there isn't one already?
-	{
-		return (List)getPropertyValue(MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME);	//get the maqro:interactions property value	
-	}
-
-	/**Adds an interaction to the activity.
-	@param interaction The interaction to add to the list.
-	*/
-	public void addInteraction(final Interaction interaction)
-	{
-		List interactionList=getInteractions();	//get the list of interactions
-		if(interactionList==null)	//if we have no list
-		{
-				//create a new list resource containing the added interaction 
-			setProperty(MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME, new RDFListResource(getRDF(), interaction));
-		}
-		else	//if we already have a list
-		{
-			interactionList.add(interaction);	//add the interaction to the list
-		}
-	}
 }

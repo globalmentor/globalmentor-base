@@ -23,13 +23,12 @@ public class Group extends Interaction
 		super(referenceURI);  //construct the parent class
 	}
 
-	/**@return The list of interactions for this group.
-	@exception ClassCastException if the value of the interactions property
-		is not a list.
+	/**@return The list of interactions for this group, or <code>null</code>
+		if there is no list of interactions or the value is not a list.
 	*/
-	public List getInteractions()	//G***should we automatically create a list if there isn't one already?
+	public List getInteractions()
 	{
-		return (List)getPropertyValue(MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME);	//get the maqro:interactions property value	
+		return RDFUtilities.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME));	//get the maqro:interactions property value as a list	
 	}
 
 	/**Adds an interaction to the group.

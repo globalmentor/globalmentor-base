@@ -664,7 +664,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 			}
 			stringBuffer.append(value.getLexicalForm());	//append the lexical form of the resource
 		}
-		return getReferenceURI()!=null ? getReferenceURI().toString() : super.toString();	//return the reference URI, if available
+		return stringBuffer.toString();	//return the string we constructed
 	}
 
 }

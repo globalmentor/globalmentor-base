@@ -48,7 +48,7 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 		this(null, newReferenceURI, newNamespaceURI, newLocalName); //construct the class with no data model
 	}
 
-	/**Data model optional namespace URI and local name constructor.
+	/**Data model andn optional namespace URI and local name constructor.
 	@param rdf The RDF data model to use as a factory for creating properties.
 	@param newNamespaceURI The XML namespace URI used in the serialization, or
 		<code>null</code> if the namespace URI is not known.
@@ -80,6 +80,14 @@ public class RDFListResource extends DefaultRDFResource implements List //G***de
 	public RDFListResource(final RDFResource first)
 	{
 		this((URI)null, first);	//create a list with no other elements
+	}
+
+	/**Data modelconstructor.
+	@param rdf The RDF data model to use as a factory for creating properties.
+	*/
+	public RDFListResource(final RDF rdf)
+	{
+		this(rdf, null); //construct the class no first resource specified
 	}
 
 	/**Constructs an anonymous RDF list resource with a single element.

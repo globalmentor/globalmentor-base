@@ -29,9 +29,9 @@ public class Question extends Interaction
 	/**@return The query part of the question, or <code>null</code> if there is
 		no query.
 	*/
-	public Presentation getQuery()
+	public Dialogue getQuery()
 	{
-		return (Presentation)ObjectUtilities.asInstance(getPropertyValue(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME), Presentation.class);	//get the query only if it is Presentation		
+		return (Dialogue)ObjectUtilities.asInstance(getPropertyValue(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME), Dialogue.class);	//get the query only if it is Dialogue		
 	}
 
 	/**Replaces the query, if any, with a query that has the given string value.
@@ -47,18 +47,20 @@ public class Question extends Interaction
 		return (RDFResource)setProperty(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME, query);	//store the query
 	}
 
-	/**Adds a choice to the question.
-	@param choice The choice to add.
+	/**@return The list of choices for this question, or <code>null</code>
+		if there is no list of choices or the value is not a list.
 	*/
-	public void addChoice(final RDFResource choice)
+	public RDFListResource getChoices()
 	{
-		addProperty(MAQRO_NAMESPACE_URI, CHOICE_PROPERTY_NAME, choice);	//add the choice to the question
+		return RDFUtilities.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, CHOICES_PROPERTY_NAME));	//get the maqro:choices property value as a list	
 	}
 
-	/**@return An iterator to choices, if any, of the question.*/
-	public Iterator getChoiceIterator()
+	/**Sets the list of question choices.
+	@param choices The list of question choices
+	*/
+	public void setChoices(final RDFListResource choices)
 	{
-		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, CHOICE_PROPERTY_NAME);	//return an iterator to the choices 
+		setProperty(MAQRO_NAMESPACE_URI, CHOICES_PROPERTY_NAME, choices);	//set the choices
 	}
 
 	/**@return The resource indicating the datatype expected in the response, or
