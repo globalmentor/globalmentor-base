@@ -447,7 +447,7 @@ public class FileUtilities
 		}
 		else	//if something about the filename isn't correct
 		{
-			final String encodedFilename=escapeHex(filename, reservedCharacters, ESCAPE_CHARACTER, 2);
+			final String encodedFilename=escapeHex(filename, null, reservedCharacters, ESCAPE_CHARACTER, 2);
 			if(reservedFinalCharacters!=null && reservedFinalCharacters.length()>0)	//if we should check the final character (e.g. on Windows)
 			{
 				if(encodedFilename.length()>0)	//if we have a filename

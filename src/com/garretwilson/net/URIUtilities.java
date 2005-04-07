@@ -1,16 +1,13 @@
 package com.garretwilson.net;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.net.*;
-import java.util.*;
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
 import com.garretwilson.util.*;
 
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.text.CharacterEncodingConstants.*;
 
 /**Various URI manipulating functions for working with URIs as defined in
 	in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
@@ -755,21 +752,20 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 */
 
+
 	/**Encodes the URI reserved characters in the string,
 		using '%' as an escape character, according to the URI encoding rules 
 		in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
 		"Uniform Resource Identifiers (URI): Generic Syntax".
 	@param uri The data to URI-encode.
 	@return A string containing the escaped data.
-	@see URIConstants#ESCAPE_CHARACTER
-	@see URIConstants#RESERVED_CHARACTERS
+	@see URIConstants#ESCAPE_CHAR
+	@see URIConstants#NORMAL_CHARS
 	*/
-/*G***del if not needed
 	public static String encode(final String uri)
 	{
-		return CharSequenceUtilities.escapeHex(uri, RESERVED_CHARACTERS, ESCAPE_CHARACTER, 2);	//escape according to URI encoding rules
+		return escapeHex(uri, NORMAL_CHARS, null, ESCAPE_CHAR, 2);	//escape according to URI encoding rules		
 	}
-*/
 
 	/**Decodes the escaped ('%') characters in the character iterator
 		according to the URI encoding rules in
@@ -779,12 +775,10 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	@return A string containing the unescaped data.
 	@see URIConstants#ESCAPE_CHARACTER
 	*/
-/*G***del if not needed
 	public static String decode(final String uri)
 	{
-		return CharSequenceUtilities.unescapeHex(uri, ESCAPE_CHARACTER, 2);	//unescape according to URI encoding rules
+		return unescapeHex(uri, ESCAPE_CHAR, 2);	//unescape according to URI encoding rules
 	}
-*/
 
 		//variables for fixing a JDK URI.resolve() bug
 	private final static String EXPECTED_URI_PREFIX="file:////";

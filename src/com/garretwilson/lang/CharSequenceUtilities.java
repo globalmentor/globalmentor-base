@@ -222,35 +222,41 @@ public class CharSequenceUtilities
 
 	/**Escapes the indicated characters in the character iterator
 		using the supplied escape character.
-	Every matching character is converted to its Unicode hex equivalent
+	Every invalid character is converted to its Unicode hex equivalent
 		and prefixed with the given escape character.
+	Characters are assumed to be valid unless specified otherwise.
 	<p>As an example, the URI encoding rules in
 		<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
 		"Uniform Resource Identifiers (URI): Generic Syntax" would use
-		<code>escapeHex(charSequence, ";/?:@&=+$,", '%', 2);</code>.</p>
+		<code>escapeHex(charSequence, <var>validCharacters</var>, null, '%', 2);</code>.</p>
 	@param charSequence The data to escape.
-	@param encodeCharacters The characters that, if they appear, should be escaped.
+	@param validCharacters The characters that should not be escaped and all others should be escaped, or <code>null</code> if characters should not be matched against valid characters.
+	@param invalidCharacters The characters that, if they appear, should be escaped, or <code>null</code> if characters should not be matched against invalid characters.
 	@param escapeChar The character to prefix the hex representation.
 	@param length The number of characters to use for the hex representation.
 	@return A string containing the escaped data.
+	@exception IllegalArgumentException if neither valid nor invalid characters are given.
 	*/
-	public static String escapeHex(final CharSequence charSequence, final String encodeCharacters, final char escapeChar, final int length)
+	public static String escapeHex(final CharSequence charSequence, final String validCharacters, final String invalidCharacters, final char escapeChar, final int length)
 	{
-		final StringBuffer stringBuffer=new StringBuffer();	//create a new string buffer to hold the result
+		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to hold the result
 		for(int i=0; i<charSequence.length(); ++i)	//look at each character in the sequence
 		{
 			final char c=charSequence.charAt(i);	//get a reference to this character
-			if(c==escapeChar || encodeCharacters.indexOf(c)>=0)	//if this a character to escape
+			final boolean encode=c==escapeChar	//always encode the escape character
+					|| (validCharacters!=null && validCharacters.indexOf(c)<0)	//encode if there is a list of valid characters and this character is not one of them
+					|| (invalidCharacters!=null && invalidCharacters.indexOf(c)>=0);	//encode if there is a list of invalid characters and this character is one of them
+			if(encode)	//if this a character to escape
 			{
 					//append the escape character, along with a two-digit representation of the character value
-				stringBuffer.append(escapeChar).append(IntegerUtilities.toHexString(c, length).toUpperCase());
+				stringBuilder.append(escapeChar).append(IntegerUtilities.toHexString(c, length).toUpperCase());
 			}
 			else	//if this is not a character to escape
 			{
-				stringBuffer.append(c);	//add this character to the result without escaping it
+				stringBuilder.append(c);	//add this character to the result without escaping it
 			}	
 		}
-		return stringBuffer.toString();	//return the result we constructed
+		return stringBuilder.toString();	//return the result we constructed
 	}
 
 	/**Decodes the escaped characters in the character iterator by
@@ -267,7 +273,7 @@ public class CharSequenceUtilities
 	*/
 	public static String unescapeHex(final CharSequence charSequence, final char escapeChar, final int length)
 	{
-		final StringBuffer stringBuffer=new StringBuffer();	//create a new string buffer to hold the result
+		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to hold the result
 		for(int i=0; i<charSequence.length(); ++i)	//look at each character in the sequence
 		{
 			final char c=charSequence.charAt(i);	//get a reference to this character
@@ -277,20 +283,20 @@ public class CharSequenceUtilities
 				try
 				{
 						//convert the next two hex characters to a single character value and add it to the string buffer
-					stringBuffer.append((char)Integer.parseInt(charSequence.subSequence(i+1, i+length+1).toString(), 16));
+					stringBuilder.append((char)Integer.parseInt(charSequence.subSequence(i+1, i+length+1).toString(), 16));
 					i+=length;	//skip the escape sequence (we'll go to the last character, and we'll be advanced one character when we go back to the start of the loop)
 				}
 				catch(NumberFormatException numberFormatException)	//if the characters weren't really hex characters
 				{
-					stringBuffer.append(c);	//we'll assume this wasn't an escape character after all, and add it normally (this is really lenient; this method could be written to throw an exception)
+					stringBuilder.append(c);	//we'll assume this wasn't an escape character after all, and add it normally (this is really lenient; this method could be written to throw an exception)
 				}
 			} 
 			else	//if this is not an escaped character
 			{
-				stringBuffer.append(c);	//add this character to the result with no change
+				stringBuilder.append(c);	//add this character to the result with no change
 			}	
 		}
-		return stringBuffer.toString();	//return the result we constructed
+		return stringBuilder.toString();	//return the result we constructed
 	}
 
 	/**Determines the first index of the given character.
