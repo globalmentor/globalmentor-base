@@ -643,7 +643,7 @@ for some reason, this method as listed is crucial for determining if two resourc
 		reference URI is less than, equal to, or greater than the reference URI of
 		the specified resource, respectively.
 	@see RDFSUtilities#getLabel(RDFResource)
-	*/
+	*/	//TODO fix compare and Comparable; maybe remove, and use custom Comparable elsewhere (as in Collections.sort())
 	public int compareTo(final RDFResource resource)	//G***is it correct to compare on different things? will this violate comparison rules? (e.g. two RDFResources with labels may compare differently than each of them compared against a normal Resource)
 	{
 //TODO del when works		if(resource instanceof RDFResource)	//if this resource is an RDF resource

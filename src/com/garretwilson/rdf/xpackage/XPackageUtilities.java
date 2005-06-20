@@ -11,7 +11,6 @@ import com.garretwilson.text.xml.xlink.XLinkConstants;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.xpackage.XPackageConstants.*;
-import static com.garretwilson.rdf.xpackage.*;
 import com.garretwilson.util.Debug;
 import org.w3c.dom.*;
 
