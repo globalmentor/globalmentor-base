@@ -1,12 +1,17 @@
 package com.garretwilson.event;
 
 import java.util.*;
-import com.garretwilson.util.*;
+import static com.garretwilson.util.CollectionUtilities.*;
 
 /**Class that stores and retrieves event listeners, facilitating the creation
 	of another class that allows event listeners to be registered with it.
 <p>This class maintains weak references to event listeners so that they may be
-	collected by the garbage collector when they are no longer in ordinary use.</p>
+	collected by the garbage collector when they are no longer in ordinary use. TODO remove comment</p>
+<p>A class is used as a key to a set of event listeners, all of which must be instances of that class or a subclass.
+	Generics are used to ensure that only instances of the class or subclasses are keyed to a particular class.
+	If the event listener type itself is generic, using classes should ensure that all listeners keyed to a particular
+	class are indeed generic subclasses of the class, as Java 5 <code>Class&lt;<var>T</var>&gt;</code> objects do not keep track
+	of the generic type of <var>T</var>.</p> 
 <p>This class uses thread-safe access methods. Returned listener arrays are
 	 "snapshots" of currently registered listeners, so may be accessed even
 	 though other threads (or even the event listener itself) may add and/or
@@ -25,8 +30,7 @@ import com.garretwilson.util.*;
 	</pre></code></blockquote>
 </p>
 <p>This class uses little memory if there are no registered event listeners.</p>
-<p>This class was inspired by <code>javax.swing.EventListenerList</code>
-	1.33 12/03/01 by Georges Saab, Hans Muller, and James Gosling.</p>
+<p>This class was inspired by <code>javax.swing.EventListenerList</code> 1.33 12/03/01 by Georges Saab, Hans Muller, and James Gosling.</p>
 @author Garret Wilson
 @see javax.swing.EventListenerList
 */
@@ -42,24 +46,25 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 	protected final static EventListener[] NO_LISTENERS=new EventListener[]{};
 
 	/**The map containing weak sets of event listeners; only allocated when needed.*/
-	private Map listenerSetMap=null;
+	private Map<Class<? extends EventListener>, Set<? extends EventListener>> listenerSetMap=null;
 
 	/**Retrieves the set of listeners associated with the given key.
 	If no listener set map or no listener set exists, it will be created.
 	@param key The key with which the listeners would be associated.
 	@return The set in which listeners associated with the given key are stored.
 	*/
-	protected synchronized Set getListenerSet(final Object key)
+	@SuppressWarnings("unchecked")
+	protected synchronized <T extends EventListener> Set<T> getListenerSet(final Class<T> key)
 	{
 		if(listenerSetMap==null)	//if there is no map of listener sets
 		{
-			listenerSetMap=new HashMap();	//create a map of listener sets
+			listenerSetMap=new HashMap<Class<? extends EventListener>, Set<? extends EventListener>>();	//create a map of listener sets
 		}
-		Set listenerSet=(Set)listenerSetMap.get(key);	//get the set of listeners associated with the key
+		Set<T> listenerSet=(Set<T>)listenerSetMap.get(key);	//get the set of listeners associated with the key; we will have only stored subclasses of the class keyed to the given key
 		if(listenerSet==null)	//if there is no set of listeners associated with the key
 		{
 //TODO fix weak hash set, which will not work for anonymous classes with no other references			listenerSet=Collections.synchronizedSet(new WeakHashSet());	//create a new synchronized weak set in which to store the listeners
-			listenerSet=Collections.synchronizedSet(new HashSet());	//create a new synchronized weak set in which to store the listeners
+			listenerSet=Collections.synchronizedSet(new HashSet<T>());	//create a new synchronized weak set in which to store the listeners
 			listenerSetMap.put(key, listenerSet);	//store the set in the map keyed to the key
 		}
 		return listenerSet;	//return the set of listeners
@@ -70,7 +75,7 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 	@param key The key with which the listener set is associated.
 	@param listenerSet The set of listeners to check
 	*/
-	protected synchronized void checkListenerSet(final Object key, final Set listenerSet)
+	protected synchronized <T extends EventListener, L extends T> void checkListenerSet(final Class<T> key, final Set<L> listenerSet)
 	{
 		synchronized(listenerSet)	//don't allow other threads to access the set while we access it
 		{
@@ -90,9 +95,9 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 	@param key The key with which the listener should be associated.
 	@param listener The event listener with which to associated the listener.
 	*/
-	public synchronized void add(final Object key, final EventListener listener)
+	public synchronized <T extends EventListener, L extends T> void add(final Class<T> key, final L listener)	//use generics to make sure that the listener is a subclass of the given type
 	{
-		final Set listenerSet=getListenerSet(key);	//get the set of listeners associated with the given key, creating a map and/or set if needed
+		final Set<T> listenerSet=getListenerSet(key);	//get the set of listeners associated with the given key, creating a map and/or set if needed
 		synchronized(listenerSet)	//don't allow other threads to access the set while we access it
 		{
 			listenerSet.add(listener);	//add the listener to the set of listeners
@@ -106,12 +111,13 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 	@param listener The listener to remove from the manager.
 	@return <code>true</code> if the manager contained the specified listener.
 	*/
-	public synchronized boolean remove(final Object key, final EventListener listener)
+	@SuppressWarnings("unchecked")
+	public synchronized <T extends EventListener, L extends T> boolean remove(final Class<T> key, final L listener)
 	{
 		boolean containedListener=false;	//start out assuming we don't have the listener
 		if(listenerSetMap!=null)	//if we have a map of listener sets
 		{
-			final Set listenerSet=(Set)listenerSetMap.get(key);	//get the set of listeners associated with this key
+			final Set<T> listenerSet=(Set<T>)listenerSetMap.get(key);	//get the set of listeners associated with this key; we will have only stored subclasses of the class keyed to the given key
 			if(listenerSet!=null)	//if there is a set of listeners associated with this key
 			{
 				synchronized(listenerSet)	//don't allow other threads to access the set while we access it
@@ -129,11 +135,12 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 	@param key The key with which the listeners are associated.
 	@return Thte number of listeners associated with the given key.
 	*/
-	public synchronized int getListenerCount(final Object key)
+	@SuppressWarnings("unchecked")
+	public synchronized <T extends EventListener> int getListenerCount(final Class<T> key)
 	{
 		if(listenerSetMap!=null)	//if we have a map of listener sets
 		{
-			final Set listenerSet=(Set)listenerSetMap.get(key);	//get the set of listeners associated with this key
+			final Set<T> listenerSet=(Set<T>)listenerSetMap.get(key);	//get the set of listeners associated with this key; we will have only stored subclasses of the class keyed to the given key
 			if(listenerSet!=null)	//if there is a set of listeners associated with this key
 			{
 				synchronized(listenerSet)	//don't allow other threads to access the set while we access it
@@ -150,23 +157,24 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 	@param key The key with which listeners have been associated.
 	@return An array of all currently registered listeners.
 	*/
-	public synchronized EventListener[] getListeners(final Object key)
+	@SuppressWarnings("unchecked")
+	public synchronized <T extends EventListener> T[] getListeners(final Class<T> key)
 	{
 		if(listenerSetMap!=null)	//if we have a map of listener sets
 		{
-			final Set listenerSet=(Set)listenerSetMap.get(key);	//get the set of listeners associated with this key
+			final Set<T> listenerSet=(Set<T>)listenerSetMap.get(key);	//get the set of listeners associated with this key; we will have only stored subclasses of the class keyed to the given key
 			if(listenerSet!=null)	//if there is a set of listeners associated with this key
 			{
 				synchronized(listenerSet)	//don't allow other threads to access the set while we access it
 				{
 					if(listenerSet.size()>0)	//if there are elements in the listener set
 					{
-						return (EventListener[])listenerSet.toArray(new EventListener[listenerSet.size()]);	//create and return an array of the listeners in the set
+						return toArray(listenerSet);	//return an array of listeners
 					}
 				}
 			}
 		}
-		return NO_LISTENERS;	//return an empty array of event listeners
+		return (T[])NO_LISTENERS;	//return an empty array of event listeners
 	}
 
 	/**Retrieves a lock to allow thread-safe access to a set of iterators
@@ -175,7 +183,7 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 	@param key The key with which the listeners are associated.
 	@return A lock that allows thread synchronization before accessing listeners.
 	*/
-	public synchronized Object getLock(final Object key)
+	public synchronized <T extends EventListener> Object getLock(final Class<T> key)
 	{
 		return getListenerSet(key);	//return the listener set, which should be used as the lock
 	}
