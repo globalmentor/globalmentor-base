@@ -13,7 +13,6 @@ import com.garretwilson.swing.rdf.RDFPanel;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 import com.garretwilson.text.xml.xhtml.XHTMLUtilities;
-import com.garretwilson.model.Model;
 import com.garretwilson.model.ResourceModel;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.DCUtilities;

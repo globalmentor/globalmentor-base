@@ -58,6 +58,17 @@ public class ClassUtilities
 		return null;  //show that we could not find a default constructor
 	}
 
+	/**Creates a property name by appending the property local name to the full class name.
+	@param objectClass The class to supply the class name.
+	@param localName The local name of the property.
+	@return A full class name plus property name.
+	@see #getFullName(Package, String)
+	*/
+	public static String getPropertyName(final Class objectClass, final String localName)
+	{
+		return objectClass.getName()+OBJECT_PREDICATE_SEPARATOR+localName;	//return the class name plus the local name separated by a package separator
+	}
+
 	/**Creates a full name analogous to a class name from the package of an
 	 	existing class. For example, a class of <code>com.garretwilson.Foo</code>
 	 	and a local name of <code>Bar</code> will result in a full name of

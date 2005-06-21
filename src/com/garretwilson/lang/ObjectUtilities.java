@@ -63,6 +63,7 @@ public class ObjectUtilities
 	@return The given variable.
 	@exception ClassCastException if the given variable is not <code>null</code> and not an instance of type <var>type</var>.
 	*/
+	@SuppressWarnings("unchecked")
 	public static <T> T checkType(final Object variable, final Class<T> type, final String description)
 	{
 		if(variable!=null && !type.isInstance(variable))	//if the variable is not null but is of a different type
@@ -80,6 +81,7 @@ public class ObjectUtilities
 	@return The object if it is an instance of the given class, otherwise
 		<code>null</code>.
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T asInstance(final Object object, final Class<T> instanceClass)
 	{
 		return instanceClass.isInstance(object) ? (T)object : null;	//return the object if it is an instance of the class, otherwise null

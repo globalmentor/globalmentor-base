@@ -14,7 +14,6 @@ import com.garretwilson.text.CharacterConstants;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.*;
 import com.garretwilson.text.xml.xlink.*;
-import com.garretwilson.model.Model;
 import com.garretwilson.model.ResourceModel;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dicto.*;
