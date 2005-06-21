@@ -102,6 +102,8 @@ public class ContentTypeConstants
 	public final static String X_OEB1_PACKAGE_XML_SUBTYPE="x-oeb1-package"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**An Ogg Vorbis file; see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>.*/
 	public final static String OGG_SUBTYPE="ogg";
+	/**A Rar compressed file.*/	
+	public final static String X_RAR_COMPRESSED_SUBTYPTE="x-rar-compressed";
 	/**An Adobe PDF file.*/
 	public final static String PDF_SUBTYPE="pdf";
 	/**An XML application.*/
