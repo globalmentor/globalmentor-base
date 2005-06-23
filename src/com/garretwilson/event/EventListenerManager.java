@@ -1,7 +1,7 @@
 package com.garretwilson.event;
 
 import java.util.*;
-import static com.garretwilson.util.CollectionUtilities.*;
+import static java.util.Collections.*;
 
 /**Class that stores and retrieves event listeners, facilitating the creation
 	of another class that allows event listeners to be registered with it.
@@ -12,19 +12,19 @@ import static com.garretwilson.util.CollectionUtilities.*;
 	If the event listener type itself is generic, using classes should ensure that all listeners keyed to a particular
 	class are indeed generic subclasses of the class, as Java 5 <code>Class&lt;<var>T</var>&gt;</code> objects do not keep track
 	of the generic type of <var>T</var>.</p> 
-<p>This class uses thread-safe access methods. Returned listener arrays are
+<p>This class uses thread-safe access methods. Returned listener sets are
 	 "snapshots" of currently registered listeners, so may be accessed even
 	 though other threads (or even the event listener itself) may add and/or
 	 remove listeners.
 	Example:
 	<blockquote><pre><code>
-	final MyListener[] myListeners=getListeners(MyListener.class);
-	if(myListeners.length>0)
+	final Set&lt;MyListener&gt; myListeners=getListeners(MyListener.class);
+	if(!myListeners.isEmpty())
 	{
 		final MyEvent myEvent=new MyEvent();
-		for(int i=myListeners.length-1; i>=0; --i)
+		for(final MyListener myListener:myListeners)
 		{
-			((MyListener)myListeners[i]).fireEvent(myEvent);
+			myListener.fireEvent(myEvent);
 		}
 	}
 	</pre></code></blockquote>
@@ -41,9 +41,6 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 
 	//Rather than synchronizing on the map, each method that accesses the map is
 	//	synchronized because the map can be created and destroyed.
-
-	/**The shared empty array of event listeners.*/
-	protected final static EventListener[] NO_LISTENERS=new EventListener[]{};
 
 	/**The map containing weak sets of event listeners; only allocated when needed.*/
 	private Map<Class<? extends EventListener>, Set<? extends EventListener>> listenerSetMap=null;
@@ -152,13 +149,13 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 		return 0;	//show that we have no listeners registered with the given key
 	}
 
-	/**Retrieves an arry of listeners associated with the given key. 
+	/**Retrieves a read-only copied set of listeners associated with the given key. 
 	<p>Example: <code>getListeners(MyListener.class);</code></p>
 	@param key The key with which listeners have been associated.
-	@return An array of all currently registered listeners.
+	@return A set of all currently registered listeners.
 	*/
 	@SuppressWarnings("unchecked")
-	public synchronized <T extends EventListener> T[] getListeners(final Class<T> key)
+	public synchronized <T extends EventListener> Set<T> getListeners(final Class<T> key)
 	{
 		if(listenerSetMap!=null)	//if we have a map of listener sets
 		{
@@ -169,12 +166,12 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 				{
 					if(listenerSet.size()>0)	//if there are elements in the listener set
 					{
-						return toArray(listenerSet);	//return an array of listeners
+						return unmodifiableSet(new HashSet<T>(listenerSet));	//return a read-only copy of the listener set
 					}
 				}
 			}
 		}
-		return (T[])NO_LISTENERS;	//return an empty array of event listeners
+		return EMPTY_SET;	//return an empty set of event listeners
 	}
 
 	/**Retrieves a lock to allow thread-safe access to a set of iterators
