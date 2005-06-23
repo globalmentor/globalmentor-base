@@ -1,15 +1,17 @@
-package com.garretwilson.util;
+package com.garretwilson.beans;
 
 import java.beans.*;
 
 /**An object that natively supports bound properties.
-	<p>Property change support is only created when needed; if no property change
+<p>Property change support is only created when needed; if no property change
 	listeners are added, the property change support will never be created or
 	invoked, even when firing property change events.</p>
-	<p>This class was modeled from the property support of
-	<code>java.awt.Component</code>.</p>
+<p>This class was modeled from the property support of <code>java.awt.Component</code>.</p>
+<p>This class creates generic-aware property value change events.</p>
 @author Garret Wilson
 @see PropertyChangeSupport
+@see PropertyValueChangeEvent
+@see PropertyValueChangeListener
 */
 public class BoundPropertyObject
 {
@@ -21,21 +23,6 @@ public class BoundPropertyObject
 	@see #firePropertyChange
 	*/
 	private PropertyChangeSupport propertyChangeSupport=null;
-
-	/**Retrieves the support for property changes that keeps track of
-	  <code>PropertyChangeListener</code>s that have been registered and handles
-		firing of events. The support object is lazily created; if this method is
-		never called, it will never be created.
-	@return The property change support object.
-	*/
-/*G***del
-	protected PropertyChangeSupport getPropertyChangeSupport()
-	{
-		if(propertyChangeSupport==null) //if no property change support has been created
-			propertyChangeSupport=new PropertyChangeSupport(this);  //create new property change support
-		return propertyChangeSupport; //return the support for property changes
-	}
-*/
 
 	/**Default constructor.*/
 	public BoundPropertyObject()
@@ -113,10 +100,33 @@ public class BoundPropertyObject
 	@see PropertyChangeEvent
 	@see PropertyChangeListener
 	*/
+/*TODO del when works
 	protected void firePropertyChange(final String propertyName, Object oldValue, final Object newValue)
 	{
 		if(propertyChangeSupport!=null) //if we have property change support (if not, no listeners could have been added so there would be no reason to fire change events)
 			propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);  //let the change support fire the property change
 	}
+*/
 
+	/**Reports that a bound property has changed. This method can be called
+	when a bound property has changed and it will send the appropriate
+	property change event to any registered property change listeners.
+	No event is fired if old and new are equal and non-<code>null</code>.
+	@param propertyName The name of the property being changed.
+	@param oldValue The old property value.
+	@param newValue The new property value.
+	@see PropertyChangeEvent
+	@see PropertyChangeListener
+	*/
+	protected <V> void firePropertyChange(final String propertyName, V oldValue, final V newValue)
+	{
+		if(propertyChangeSupport!=null) //if we have property change support (if not, no listeners could have been added so there would be no reason to fire change events)
+		{
+			if(oldValue==null || newValue==null || !oldValue.equals(newValue))	//if one of the values are null, or the values are actually different
+			{
+					//create and fire generic subclass of a property change event
+				propertyChangeSupport.firePropertyChange(new PropertyValueChangeEvent<V>(this, propertyName, oldValue, newValue));
+			}
+		}
+	}
 }

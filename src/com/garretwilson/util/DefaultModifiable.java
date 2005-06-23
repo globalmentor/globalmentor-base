@@ -1,5 +1,7 @@
 package com.garretwilson.util;
 
+import com.garretwilson.beans.BoundPropertyObject;
+
 /**A default implementation of a modifiable object. The object defaults to not
 	having been modified.
 <p>Bound properties:</p>
