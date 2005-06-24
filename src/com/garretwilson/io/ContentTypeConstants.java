@@ -46,6 +46,8 @@ public class ContentTypeConstants
 	public final static String X_OEB1_CSS_SUBTYPE="x-oeb1-css";
 	public final static String X_OEB1_DOCUMENT_SUBTYPE="x-oeb1-document";
 	public final static String CALENDAR_SUBTYPE="calendar";
+	/**A Cascading Style Sheet document.*/
+	public final static String CSS_SUBTYPE="css";
 	public final static String DIRECTORY_SUBTYPE="directory";
 	public final static String HTML_SUBTYPE="html";
 	public final static String JAVASCRIPT_SUBTYPE="javascript";

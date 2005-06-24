@@ -16,7 +16,7 @@ public abstract class AbstractPropertyValueChangeListener<V> implements Property
 	@see PropertyValueChangeListener#propertyValueChange(PropertyValueChangeEvent)
 	*/
 	@SuppressWarnings("unchecked")
-	public void propertyChange(final PropertyChangeEvent propertyChangeEvent)
+	public final void propertyChange(final PropertyChangeEvent propertyChangeEvent)
 	{
 		final PropertyValueChangeEvent<V> propertyValueChangeEvent;	//we'll create a property value change event of the correct generic type
 		if(propertyChangeEvent instanceof PropertyValueChangeEvent)	//if the event is a property value change event
