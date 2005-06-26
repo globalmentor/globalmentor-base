@@ -2,11 +2,13 @@ package com.garretwilson.net;
 
 import java.io.*;
 import java.net.*;
+
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
 import com.garretwilson.util.*;
 
 import static com.garretwilson.lang.CharSequenceUtilities.*;
+import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
 
 /**Various URI manipulating functions for working with URIs as defined in
@@ -281,6 +283,21 @@ public class URIUtilities
 		return parameterList.toArray(new NameValuePair[parameterList.size()]);	//return the list as an array
 	}
 */
+
+	/**Creates a URI from the given path, verifying that the string contains only a path.
+	@param path The string version of a path to convert to a URI form of that same path.
+	@exception NullPointerException if the given path is <code>null</code>.
+	@exception IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
+	*/
+	public static URI createPathURI(final String path)
+	{
+		final URI pathURI=URI.create(checkNull(path, "Path cannot be null"));	//create a URI from the given path
+		if(pathURI.getScheme()!=null || pathURI.getRawAuthority()!=null)	//if there is a scheme or an authority
+		{
+			throw new IllegalArgumentException("Path cannot have a URI scheme or authority: "+path);
+		}
+		return pathURI;	//return the URI we created
+	}
 
 	/**Determines the current level of a hierarchical URI.
 	@param uri The URI to examine.
@@ -617,12 +634,22 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	/**Determines whether the path of the URI (which may or may not be absolute) is absolute.
 	@param uri The URI the path of which to examine.
 	@return <code>true</code> if the path of the given URI begins with '/'.
+	@see #isAbsolutePath(String)
 	*/
 	public static boolean isAbsolutePath(final URI uri)
 	{
-		return startsWith(uri.getRawPath(), PATH_SEPARATOR);	//see if the path begins with '/' (use the raw path in case the first character is an encoded slash)		
+		return isAbsolutePath(uri.getRawPath());	//see if the path begins with '/' (use the raw path in case the first character is an encoded slash)		
 	}
-	
+
+	/**Determines whether the given path is absolute.
+	@param path The path to examine.
+	@return <code>true</code> if the path begins with '/'.
+	*/
+	public static boolean isAbsolutePath(final String path)
+	{
+		return path.startsWith(ROOT_PATH);	//see if the path begins with '/'		
+	}
+
 	/**Determines whether the URI contains only a host and optional port.
 	@param uri The URI the path of which to examine.
 	@return <code>true</code> if the URI contains only a host and optionally a port.

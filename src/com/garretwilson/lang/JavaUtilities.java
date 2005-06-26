@@ -46,34 +46,45 @@ public class JavaUtilities
 			return comparable1==null ? -1 : 1;  //the null object is lower
 	}
 
-	/**Constructs a proper name from the given name by capitalizing the first
-		letter of the name
+	/**Constructs a proper name from the given name by capitalizing the first letter of the name
 	@param name The name to convert to a proper name.
 	@return A proper name appropriate for the given name.
-	@see #getVariableName
+	@see #getVariableName(String)
 	*/
 	public static String getProperName(final String name)
 	{
 		if(!Character.isUpperCase(name.charAt(0)))  //if the first letter is not in uppercase
 		{
-			final StringBuffer stringBuffer=new StringBuffer(name); //create a new string buffer containing the name
-			stringBuffer.setCharAt(0, Character.toUpperCase(stringBuffer.charAt(0))); //make sure the first letter is in uppercase
-			return stringBuffer.toString(); //convert the string buffer to a string and return it
+			final StringBuilder stringBuilder=new StringBuilder(name); //create a new string builder containing the name
+			stringBuilder.setCharAt(0, Character.toUpperCase(stringBuilder.charAt(0))); //make sure the first letter is in uppercase
+			return stringBuilder.toString(); //convert the string buffer to a string and return it
 		}
 		else  //if the first letter is already in uppercase
 			return name;  //return the name itself; it's already a proper name
 	}
 
-	/**Constructs a variable name from the given name by decapitalizing the first
-		letter of the name, unless the name begins with two capital letters.
+	/**Constructs a variable name from the given name by decapitalizing all of the beginning uppercase letters of the name.
 	@param name The name to convert to a variable name.
 	@return A variable name appropriate for the given name.
-	@see Introspector.decapitalize
-	@see #getProperName
+	@see #getProperName(String)
 	*/
 	public static String getVariableName(final String name)
 	{
-		return Introspector.decapitalize(name); //decapitalize the name and return it
+		final StringBuilder stringBuilder=new StringBuilder(name);	//create a new string builder with which to examine and modify the name
+		final int length=stringBuilder.length();	//get the length of the string builder
+		for(int i=0; i<length; ++i)	//for each character
+		{
+			final char character=stringBuilder.charAt(i);	//get the current character
+			if(Character.isUpperCase(character))	//if this is an uppercase character TODO check for extended characters
+			{
+				stringBuilder.setCharAt(i, Character.toLowerCase(character));	//convert the character to lowercase
+			}
+			else	//if the character is already lowercase
+			{
+				break;	//we've converted all the beginning uppercase characters to lowercase
+			}
+		}
+		return stringBuilder.toString();	//return the variable name we created
 	}
 
 	/**Illagal variable characters to be replaced when creating a valid variable name.*/

@@ -3,6 +3,7 @@ package com.garretwilson.lang;
 import java.lang.reflect.*;
 
 import static com.garretwilson.lang.JavaConstants.*;
+import static com.garretwilson.lang.StringUtilities.*;
 
 /**Utilities for manipulating Java classes.
 @author Garret Wilson
@@ -106,7 +107,7 @@ public class ClassUtilities
 	public static String getLocalName(final Class objectClass)
 	{
 			//return the class name, with everything before the last package separator removed
-		return StringUtilities.removeBeforeLast(objectClass.getName(), PACKAGE_SEPARATOR);
+		return removeBeforeLast(objectClass.getName(), PACKAGE_SEPARATOR);
 	}
 
 	/**Returns the local name of the class, with the package name removed. If
@@ -121,7 +122,18 @@ public class ClassUtilities
 	public static String getSimpleName(final Class objectClass)
 	{
 			//return the local name, with everything before the last internal class separator removed
-		return StringUtilities.removeBeforeLast(getLocalName(objectClass), INTERNAL_CLASS_SEPARATOR);
+		return removeBeforeLast(getLocalName(objectClass), INTERNAL_CLASS_SEPARATOR);
+	}
+
+	/**Constructs a variable name from the class by by decapitalizing all of the beginning uppercase letters of the simple name of the class.
+	@param objectClass The class for which a variable name should be returned.
+	@return A variable name appropriate for the class.
+	@see #getSimpleName(Class)
+	@see JavaUtilities#getVariableName(String)
+	*/
+	public static String getVariableName(final Class objectClass)
+	{
+		return JavaUtilities.getVariableName(getSimpleName(objectClass));	//get the variable name form of the simple name of the class
 	}
 
 }
