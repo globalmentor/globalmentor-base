@@ -12,7 +12,7 @@ public abstract class AbstractPropertyValueChangeListener<V> implements Property
 	/**Called when a bound property is changed.
 	This not-generics version calls the generic version, creating a new event if necessary.
 	No checks are made at compile time to ensure the given event actually supports the given generic type.
-	@param propertyValueChangeEvent An event object describing the event source, the property that has changed, and its old and new values.
+	@param propertyChangeEvent An event object describing the event source, the property that has changed, and its old and new values.
 	@see PropertyValueChangeListener#propertyValueChange(PropertyValueChangeEvent)
 	*/
 	@SuppressWarnings("unchecked")
@@ -24,7 +24,7 @@ public abstract class AbstractPropertyValueChangeListener<V> implements Property
 	/**Converts a property change event to a generics-aware property value change event.
 	This is a utility method to facilitate creation of property value change listeners that cannot subclass this class.
 	No checks are made at compile time to ensure the given event actually supports the given generic type.
-	@param propertyValueChangeEvent An event object describing the event source, the property that has changed, and its old and new values.
+	@param propertyChangeEvent An event object describing the event source, the property that has changed, and its old and new values.
 	@return A generics-aware property change event, either cast from the provided object or created from the provided object's values as appropriate.
 	*/
 	@SuppressWarnings("unchecked")

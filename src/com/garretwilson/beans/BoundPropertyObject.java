@@ -88,7 +88,7 @@ public class BoundPropertyObject implements PropertyBindable
 			propertyChangeSupport.removePropertyChangeListener(propertyName, listener);  //remove the property change listener that was listening to a specified property from our change support
 	}
 
-  /**Returns an array of all the listeners that were added to the with {@link addPropertyChangeListener()}.
+  /**Returns an array of all the listeners that were added to the with {@link #addPropertyChangeListener(PropertyChangeListener)}.
 	If some listeners have been added with a named property, then
 	the returned array will be a mixture of <code>PropertyChangeListener</code>s
 	and <code>PropertyChangeListenerProxy</code>s. If the calling
@@ -112,43 +112,45 @@ public class BoundPropertyObject implements PropertyBindable
 		return propertyChangeSupport!=null ? propertyChangeSupport.getPropertyChangeListeners(propertyName) : NO_PROPERTY_CHANGE_LISTENERS;	//if we have property change support, delegate to that, else return an empty list
   }
 
-	/**Reports that a bound property has changed. This method can be called
-		when a bound property has changed and it will send the appropriate
-		property change event to any registered property change listeners.
-	@param propertyName The name of the property being changed.
-	@param oldValue The old property value.
-	@param newValue The new property value.
-	@see PropertyChangeEvent
-	@see PropertyChangeListener
-	*/
-/*TODO del when works
-	protected void firePropertyChange(final String propertyName, Object oldValue, final Object newValue)
-	{
-		if(propertyChangeSupport!=null) //if we have property change support (if not, no listeners could have been added so there would be no reason to fire change events)
-			propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);  //let the change support fire the property change
-	}
-*/
-
-	/**Reports that a bound property has changed. This method can be called
-	when a bound property has changed and it will send the appropriate
-	property change event to any registered property change listeners.
+	/**Reports that a bound property has changed. This method can be called	when a bound property has changed and it will send the appropriateproperty change event to any registered property change listeners.
 	No event is fired if old and new are equal and non-<code>null</code>.
+	This method delegates actual firing of the event to {@link #firePropertyChange(PropertyChangeEvent)}.
 	@param propertyName The name of the property being changed.
 	@param oldValue The old property value.
 	@param newValue The new property value.
-	@see PropertyChangeEvent
-	@see PropertyChangeListener
+	@see #firePropertyChange(PropertyChangeEvent)
+	@see PropertyValueChangeEvent
+	@see PropertyValueChangeListener
 	*/
 	protected <V> void firePropertyChange(final String propertyName, V oldValue, final V newValue)
 	{
 		if(propertyChangeSupport!=null) //if we have property change support (if not, no listeners could have been added so there would be no reason to fire change events)
 		{
 			if(oldValue==null || newValue==null || !oldValue.equals(newValue))	//if one of the values are null, or the values are actually different
-			{
-					//create and fire generic subclass of a property change event
-				propertyChangeSupport.firePropertyChange(new PropertyValueChangeEvent<V>(this, propertyName, oldValue, newValue));
+			{					
+				firePropertyChange(new PropertyValueChangeEvent<V>(this, propertyName, oldValue, newValue));	//create and fire a genericized subclass of a property change event
 			}
 		}
 	}
 
+	/**Reports that a bound property has changed.
+	This method does the actual delegation to the property change support.
+	@param propertyChangeEvent The event to fire.
+	*/
+	protected void firePropertyChange(final PropertyChangeEvent propertyChangeEvent)
+	{
+		if(propertyChangeSupport!=null)	//if we have property change support (otherwise, no listeners would be listening)
+		{
+			propertyChangeSupport.firePropertyChange(propertyChangeEvent);	//delegate to the property change support
+		}
+	}
+
+	/**Creates an object representing a postponement of firing the property change event.
+	@param propertyChangeEvent The property change event the firing of which to postpone.
+	@return A newly created postponed property change event.
+	*/
+	protected PostponedPropertyChangeEvent createPostponedPropertyChangeEvent(final PropertyChangeEvent propertyChangeEvent)
+	{
+		return new PostponedPropertyChangeEvent(propertyChangeSupport, propertyChangeEvent);	//create a new postponed property change event with our current property change support, if any		
+	}
 }
