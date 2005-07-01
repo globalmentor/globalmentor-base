@@ -2,20 +2,19 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-/**A list that wraps an existing list, providing access through the
-	<code>List</code> interface.
+/**A list that wraps an existing list, providing access through the <code>List</code> interface.
 @author Garret Wilson
 */
-public class ProxyList<E> extends ProxyCollection<E> implements List<E>
+public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 {
 
-	/**The list this class proxies.*/
+	/**The list this class decorates.*/
 	protected final List<E> list;
 
 	/**List constructor.
-	@param list The list this list should proxy.
+	@param list The list this list should decoratey.
 	*/
-	public ProxyList(final List<E> list)
+	public ListDecorator(final List<E> list)
 	{
 		super(list);	//construct the parent class
 		this.list=list;	//save the list

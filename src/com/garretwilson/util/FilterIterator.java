@@ -10,7 +10,7 @@ import java.util.*;
 	given maximum.</p>
 @author Garret Wilson
 */
-public class FilterIterator<E> extends ProxyIterator<E>
+public class FilterIterator<E> extends IteratorDecorator<E>
 {
 
 	/**The number of elements to return, or -1 if all of the elements in the

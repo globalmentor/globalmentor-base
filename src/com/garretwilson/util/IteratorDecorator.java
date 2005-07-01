@@ -2,20 +2,19 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-/**An iterator that wraps an existing iterator, providing access through the
-	<code>Iterator</code> interface.
+/**An iterator that wraps an existing iterator, providing access through the <code>Iterator</code> interface.
 @author Garret Wilson
 */
-public class ProxyIterator<E> implements Iterator<E>	//TODO rename to IteratorDecorator
+public class IteratorDecorator<E> implements Iterator<E>
 {
 
-	/**The iterator this class proxies.*/
+	/**The iterator this class decorates.*/
 	protected final Iterator<E> iterator;
 
 	/**Iterator constructor.
-	@param iterator The iterator this iterator should proxy.
+	@param iterator The iterator this iterator should decorate.
 	*/
-	public ProxyIterator(final Iterator<E> iterator)
+	public IteratorDecorator(final Iterator<E> iterator)
 	{
 		this.iterator=iterator;	//save the iterator
 	}

@@ -2,20 +2,19 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-/**A list iterator that wraps an existing list iterator, providing access
-	through the <code>ListIterator</code> interface.
+/**A list iterator that wraps an existing list iterator, providing access through the <code>ListIterator</code> interface.
 @author Garret Wilson
 */
-public class ProxyListIterator extends ProxyIterator implements ListIterator
+public class ListIteratorDecorator<E> extends IteratorDecorator<E> implements ListIterator<E>
 {
 
-	/**The list iterator this class proxies.*/
-	protected final ListIterator listIterator;
+	/**The list iterator this class decorates.*/
+	protected final ListIterator<E> listIterator;
 
 	/**List iterator constructor.
-	@param listIterator The list iterator this list iterator should proxy.
+	@param listIterator The list iterator this list iterator should decorate.
 	*/
-	public ProxyListIterator(final ListIterator listIterator)
+	public ListIteratorDecorator(final ListIterator<E> listIterator)
 	{
 		super(listIterator);	//construct the parent class
 		this.listIterator=listIterator;	//save the list iterator
@@ -46,7 +45,7 @@ public class ProxyListIterator extends ProxyIterator implements ListIterator
 	 * @exception NoSuchElementException if the iteration has no previous
 	 *            element.
 	 */
-	public Object previous() {return listIterator.previous();}
+	public E previous() {return listIterator.previous();}
 
 	/**
 	 * Returns the index of the element that would be returned by a subsequent
@@ -93,7 +92,7 @@ public class ProxyListIterator extends ProxyIterator implements ListIterator
 	 *		  <tt>add</tt> have been called after the last call to
 	 * 		  <tt>next</tt> or <tt>previous</tt>.
 	 */
-	public void set(Object o) {listIterator.set(o);}
+	public void set(E o) {listIterator.set(o);}
 
 	/**
 	 * Inserts the specified element into the list (optional operation).  The
@@ -117,6 +116,6 @@ public class ProxyListIterator extends ProxyIterator implements ListIterator
 	 * @exception IllegalArgumentException if some aspect of this element
 	 *            prevents it from being added to this list.
 	 */
-	public void add(Object o) {listIterator.add(o);}
+	public void add(E o) {listIterator.add(o);}
 
 }

@@ -2,20 +2,19 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-/**A collection that wraps an existing collection, providing access through the
-	<code>Collection</code> interface.
+/**A collection that wraps an existing collection, providing access through the <code>Collection</code> interface.
 @author Garret Wilson
 */
-public class ProxyCollection<E> implements Collection<E>
+public class CollectionDecorator<E> implements Collection<E>
 {
 
-	/**The collection this class proxies.*/
+	/**The collection this class decorates.*/
 	protected final Collection<E> collection;
 
 	/**Collection constructor.
-	@param collection The collection this collection should proxy.
+	@param collection The collection this collection should decorate.
 	*/
-	public ProxyCollection(final Collection<E> collection)
+	public CollectionDecorator(final Collection<E> collection)
 	{
 		this.collection=collection;	//save the collection
 	}
