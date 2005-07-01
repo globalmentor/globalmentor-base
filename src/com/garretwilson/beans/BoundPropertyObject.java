@@ -112,19 +112,31 @@ public class BoundPropertyObject implements PropertyBindable
 		return propertyChangeSupport!=null ? propertyChangeSupport.getPropertyChangeListeners(propertyName) : NO_PROPERTY_CHANGE_LISTENERS;	//if we have property change support, delegate to that, else return an empty list
   }
 
-	/**Reports that a bound property has changed. This method can be called	when a bound property has changed and it will send the appropriateproperty change event to any registered property change listeners.
+	/**Checks if there are any listeners for a specific property, including those registered on all properties.
+	If <code>propertyName</code> <code>null</code>, this method only checks for listeners registered on all properties.
+	@param propertyName  the property name.
+	@return true if there are one or more listeners for the given property
+	*/
+	public boolean hasListeners(final String propertyName)
+	{
+		return propertyChangeSupport!=null ? propertyChangeSupport.hasListeners(propertyName) : false;	//if we have property change support, ask it about listeners; if there is no support, there can be no listeners
+	}
+
+	/**Reports that a bound property has changed. This method can be called	when a bound property has changed and it will send the appropriate property change event to any registered property change listeners.
 	No event is fired if old and new are equal and non-<code>null</code>.
+	No event is fired if no listeners are registered for the given property.
 	This method delegates actual firing of the event to {@link #firePropertyChange(PropertyChangeEvent)}.
 	@param propertyName The name of the property being changed.
 	@param oldValue The old property value.
 	@param newValue The new property value.
 	@see #firePropertyChange(PropertyChangeEvent)
+	@see #hasListeners(String)
 	@see PropertyValueChangeEvent
 	@see PropertyValueChangeListener
 	*/
 	protected <V> void firePropertyChange(final String propertyName, V oldValue, final V newValue)
 	{
-		if(propertyChangeSupport!=null) //if we have property change support (if not, no listeners could have been added so there would be no reason to fire change events)
+		if(hasListeners(propertyName)) //if we have listeners registered for this property
 		{
 			if(oldValue==null || newValue==null || !oldValue.equals(newValue))	//if one of the values are null, or the values are actually different
 			{					

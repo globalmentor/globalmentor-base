@@ -22,7 +22,6 @@ public interface PropertyBindable
 	public void removePropertyChangeListener(final PropertyChangeListener listener);
 
 	/**Add a property change listener for a specific property.
-	The listener will be invoked only when a call to {@link #firePropertyChange(String, V, V)} names that specific property.
 	<p>If the listener is <code>null</code>, no exception is thrown and no action is performed.</p>
 	@param propertyName The name of the property to listen on.
 	@param listener The <code>PropertyChangeListener</code> to be added.
@@ -36,7 +35,7 @@ public interface PropertyBindable
 	*/
 	public void removePropertyChangeListener(final String propertyName, final PropertyChangeListener listener);
 
-  /**Returns an array of all the listeners that were added to the with {@link addPropertyChangeListener()}.
+  /**Returns an array of all the listeners that were added to the with {@link #addPropertyChangeListener(PropertyChangeListener)}.
 	If some listeners have been added with a named property, then
 	the returned array will be a mixture of <code>PropertyChangeListener</code>s
 	and <code>PropertyChangeListenerProxy</code>s. If the calling
@@ -53,5 +52,12 @@ public interface PropertyBindable
 	if no such listeners have been added or if <code>propertyName</code> is <code>null</code>, an empty array is returned
 	*/
 	public PropertyChangeListener[] getPropertyChangeListeners(final String propertyName);
+
+	/**Checks if there are any listeners for a specific property, including those registered on all properties.
+	If <code>propertyName</code> <code>null</code>, this method only checks for listeners registered on all properties.
+	@param propertyName  the property name.
+	@return true if there are one or more listeners for the given property
+	*/
+	public boolean hasListeners(final String propertyName);
 
 }

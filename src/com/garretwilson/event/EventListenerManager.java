@@ -108,7 +108,7 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 	@return The number of listeners associated with the given key.
 	*/
 	@SuppressWarnings("unchecked")
-	public <T extends EventListener> int getListenerCount(final Class<T> key)	//this entire read operation does not need to be synchronized
+	public <T extends EventListener> int getListenerCount(final Class<T> key)
 	{
 		final Set<T> listenerSet;	//we'll get the set of listeners associated with this key; we will have only stored subclasses of the class keyed to the given key
 		synchronized(this)	//only synchronize long enough to get the set
@@ -116,6 +116,17 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 			listenerSet=listenerSetMap!=null ? (Set<T>)listenerSetMap.get(key) : null;	//get the set of listeners associated with this key; we will have only stored subclasses of the class keyed to the given key
 		}
 		return listenerSet!=null ? listenerSet.size() : 0;	//if there is a set of listeners associated with this key, return the size (the set allows concurrent access); otherwise, show that we have no listeners registered with the given key
+	}
+
+	/**Determines whether there are listeners associated with the given key.
+	<p>Example: <code>hasListeners(MyListener.class);</code>
+	@param key The key with which the listeners are associated.
+	@return <code>true</code> if there is at least one listener associated with the given key.
+	@see #getListenerCount(Class)
+	*/
+	public <T extends EventListener> boolean hasListeners(final Class<T> key)
+	{
+		return getListenerCount(key)>0;	//see if there is more than one listener associated with the given key
 	}
 
 	/**Retrieves a thread-safe snapshot iterator of listeners associated with the given key. 
