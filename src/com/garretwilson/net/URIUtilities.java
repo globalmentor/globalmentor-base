@@ -2,6 +2,8 @@ package com.garretwilson.net;
 
 import java.io.*;
 import java.net.*;
+import java.util.*;
+import static java.util.Collections.*;
 
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
@@ -284,6 +286,29 @@ public class URIUtilities
 	}
 */
 
+	/**Retrieves a map of parameter value lists from the query of a URI, if present.
+	@param uri The URI from which to extract parameters.
+	@return The map of parameter value lists, keyed to parameter names.
+	*/
+	public static ListMap<String, String> getParameters(final URI uri)
+	{
+		final ListMap<String, String> parameterListMap=new ArrayListHashMap<String, String>();	//create a new list map in which to store the parameters
+		final String query=uri.getRawQuery();	//get the query of the URI
+		if(query!=null)	//if this URI specified a query
+		{
+			final String[] parameters=query.split(String.valueOf(QUERY_NAME_VALUE_PAIR_DELIMITER));	//split the query into parameters
+			for(final String parameter:parameters)	//for each parameters
+			{
+				final String[] nameValue=parameter.split(String.valueOf(QUERY_NAME_VALUE_ASSIGNMENT));	//split the parameter into its name and value
+				if(nameValue.length==2)	//if we found a name and a value
+				{
+					parameterListMap.addItem(decode(nameValue[0]), decode(nameValue[1]));	//add this name and value, each of which may have been encoded
+				}
+			}
+		}
+		return parameterListMap;	//return the parameters, if any
+	}
+	
 	/**Creates a URI from the given path, verifying that the string contains only a path.
 	@param path The string version of a path to convert to a URI form of that same path.
 	@exception NullPointerException if the given path is <code>null</code>.
@@ -800,7 +825,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		"Uniform Resource Identifiers (URI): Generic Syntax".
 	@param uri The data to URI-decode.
 	@return A string containing the unescaped data.
-	@see URIConstants#ESCAPE_CHARACTER
+	@see URIConstants#ESCAPE_CHAR
 	*/
 	public static String decode(final String uri)
 	{
@@ -933,7 +958,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 
 	/**Compresses a URI into a shorter string representation.
-	@param String The alphanumeric string.
+	@param string The alphanumeric string.
 	@return An uncompressed URI from the alphanumeric string.
 	@exception SyntaxException Thrown if the given string is not correctly encoded. 
 	*/

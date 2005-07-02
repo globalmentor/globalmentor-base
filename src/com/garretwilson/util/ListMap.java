@@ -3,6 +3,8 @@ package com.garretwilson.util;
 import java.util.*;
 
 /**A map that stores a list of values for each key, with special methods for retrieving single values.
+@param <K> The type of key used in the map.
+@param <V> The type of value stored in each list in the map.
 @author Garret Wilson
 */
 public interface ListMap<K, V> extends Map<K, List<V>> 
