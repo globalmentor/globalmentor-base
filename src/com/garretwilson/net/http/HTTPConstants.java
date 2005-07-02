@@ -20,6 +20,8 @@ public class HTTPConstants
 	public final static String ALLOW_HEADER="Allow";
 	/**The HTTP header indicating the accepted content types.*/
 	public final static String ACCEPT_HEADER="Accept";
+	/**The HTTP header indicating the accepted language types.*/
+	public final static String ACCEPT_LANGUAGE_HEADER="Accept-Language";
 	/**The HTTP header indicating authorization information.*/
 	public final static String AUTHORIZATION_HEADER="Authorization";
 	/**The HTTP header for cache control.*/

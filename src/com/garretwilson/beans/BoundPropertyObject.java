@@ -1,6 +1,7 @@
 package com.garretwilson.beans;
 
 import java.beans.*;
+import com.garretwilson.lang.ObjectUtilities;
 
 /**An object that automatically supports bound properties.
 <p>Property change support is only created when needed; if no property change
@@ -123,7 +124,7 @@ public class BoundPropertyObject implements PropertyBindable
 	}
 
 	/**Reports that a bound property has changed. This method can be called	when a bound property has changed and it will send the appropriate property change event to any registered property change listeners.
-	No event is fired if old and new are equal and non-<code>null</code>.
+	No event is fired if old and new are both <code>null</code> or are both non-<code>null</code> and equal according to the {@link Object#equals(java.lang.Object)} method.
 	No event is fired if no listeners are registered for the given property.
 	This method delegates actual firing of the event to {@link #firePropertyChange(PropertyChangeEvent)}.
 	@param propertyName The name of the property being changed.
@@ -138,10 +139,40 @@ public class BoundPropertyObject implements PropertyBindable
 	{
 		if(hasListeners(propertyName)) //if we have listeners registered for this property
 		{
-			if(oldValue==null || newValue==null || !oldValue.equals(newValue))	//if one of the values are null, or the values are actually different
+			if(!ObjectUtilities.equals(oldValue, newValue))	//if the values are different
 			{					
 				firePropertyChange(new PropertyValueChangeEvent<V>(this, propertyName, oldValue, newValue));	//create and fire a genericized subclass of a property change event
 			}
+		}
+	}
+
+	/**Reports that a bound integer property has changed, reporting old and new values of type <code>Integer</code>.
+	No event is fired if the values are equal, or if no event is fired if no listeners are registered for the given property.
+	This method delegates actual firing of the event to {@link #firePropertyChange(String, V, V)}.
+	@param propertyName The name of the property being changed.
+	@param oldValue The old property value.
+	@param newValue The new property value.
+	*/
+	protected void firePropertyChange(final String propertyName, final int oldValue, final int newValue)
+	{
+		if(oldValue!=newValue)	//if the values are different
+		{
+			firePropertyChange(propertyName, new Integer(oldValue), new Integer(newValue));	//convert the primitive values to objects and fire the event
+		}
+	}
+
+	/**Reports that a bound boolean property has changed, reporting old and new values of type <code>Boolean</code>.
+	No event is fired if the values are equal, or if no event is fired if no listeners are registered for the given property.
+	This method delegates actual firing of the event to {@link #firePropertyChange(String, V, V)}.
+	@param propertyName The name of the property being changed.
+	@param oldValue The old property value.
+	@param newValue The new property value.
+	*/
+	protected void firePropertyChange(final String propertyName, final boolean oldValue, final boolean newValue)
+	{
+		if(oldValue!=newValue)	//if the values are different
+		{
+			firePropertyChange(propertyName, Boolean.valueOf(oldValue), Boolean.valueOf(newValue));	//convert the primitive values to objects and fire the event
 		}
 	}
 
