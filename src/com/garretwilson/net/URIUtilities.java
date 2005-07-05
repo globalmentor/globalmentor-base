@@ -8,6 +8,7 @@ import static java.util.Collections.*;
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
 import com.garretwilson.util.*;
+import com.sun.mail.iap.Argument;
 
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
@@ -655,6 +656,19 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 */
 
+	/**Determines the relative path of the given absolute path by removing the root path '/' character from the beginning of the path.
+	@param absolutePath The absolute path to convert to a relative path.
+	@return A relative path from the root of the absolute path.
+	@exception IllegalArgumentException if the given path is not absolute.
+	*/
+	public static String getRelativePath(final String absolutePath)
+	{
+		if(!isAbsolutePath(absolutePath))	//if the path is not really absolute
+		{
+			throw new IllegalArgumentException("Path is not absolute: "+absolutePath);
+		}
+		return absolutePath.substring(ROOT_PATH.length());	//remove the beginning root path indicator
+	}
 
 	/**Determines whether the path of the URI (which may or may not be absolute) is absolute.
 	@param uri The URI the path of which to examine.

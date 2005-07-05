@@ -16,6 +16,6 @@ public interface Resource	//TODO del when works extends IDable<URI>	//G***del if
 	/**Sets the reference URI of the resource.
 	@param uri The new reference URI, or <code>null</code> if the identifier is not known.
 	*/
-	public void setReferenceURI(final URI uri);
+	public void setReferenceURI(final URI uri);	//TODO later create a MoveableResource and only require this method with that interface
 
 }
