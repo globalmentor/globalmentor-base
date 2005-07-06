@@ -670,9 +670,28 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		return absolutePath.substring(ROOT_PATH.length());	//remove the beginning root path indicator
 	}
 
+	/**Determines whether the path of the URI is a canonical container path.
+	@param uri The URI the path of which to examine.
+	@return <code>true</code> if the path of the given URI ends with a slash ('/').
+	@see #isContainerPath(String)
+	*/
+	public static boolean isContainerPath(final URI uri)
+	{
+		return isContainerPath(uri.getRawPath());	//see if the path ends with '/' (use the raw path in case the last character is an encoded slash)		
+	}
+
+	/**Determines whether the given path is a canonical container path.
+	@param path The path to examine.
+	@return <code>true</code> if the path ends with a slash ('/').
+	*/
+	public static boolean isContainerPath(final String path)
+	{
+		return endsWith(path, PATH_SEPARATOR);	//see if the path ends with '/'		
+	}
+
 	/**Determines whether the path of the URI (which may or may not be absolute) is absolute.
 	@param uri The URI the path of which to examine.
-	@return <code>true</code> if the path of the given URI begins with '/'.
+	@return <code>true</code> if the path of the given URI begins with a slash ('/').
 	@see #isAbsolutePath(String)
 	*/
 	public static boolean isAbsolutePath(final URI uri)
@@ -682,7 +701,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 
 	/**Determines whether the given path is absolute.
 	@param path The path to examine.
-	@return <code>true</code> if the path begins with '/'.
+	@return <code>true</code> if the path begins with a slash ('/').
 	*/
 	public static boolean isAbsolutePath(final String path)
 	{
