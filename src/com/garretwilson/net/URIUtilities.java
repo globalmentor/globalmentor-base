@@ -309,20 +309,44 @@ public class URIUtilities
 		}
 		return parameterListMap;	//return the parameters, if any
 	}
-	
+
 	/**Creates a URI from the given path, verifying that the string contains only a path.
 	@param path The string version of a path to convert to a URI form of that same path.
 	@exception NullPointerException if the given path is <code>null</code>.
 	@exception IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
+	@see #isPathURI(URI)
 	*/
 	public static URI createPathURI(final String path)
 	{
 		final URI pathURI=URI.create(checkNull(path, "Path cannot be null"));	//create a URI from the given path
-		if(pathURI.getScheme()!=null || pathURI.getRawAuthority()!=null)	//if there is a scheme or an authority
+		if(!isPathURI(pathURI))	//if there is a scheme or an authority
 		{
-			throw new IllegalArgumentException("Path cannot have a URI scheme or authority: "+path);
+			throw new IllegalArgumentException("Path cannot have a URI scheme or authority, and must include a path: "+path);
 		}
 		return pathURI;	//return the URI we created
+	}
+
+	/**Determines if a given path is only a path and not a URI with a scheme and/or authority.
+	@param path The string version of a path to determine if it.
+	@return <code>true</code> if the path is a path and does not specifiy a scheme (i.e. the URI is not absolute) or authority.
+	@exception NullPointerException if the given path is <code>null</code>.
+	@see #isPathURI(URI)
+	*/
+	public static boolean isPath(final String path)
+	{
+		final URI pathURI=URI.create(checkNull(path, "Path cannot be null"));	//create a URI from the given path
+		return isPathURI(pathURI);	//indicate whether the constructed URI represents a path
+	}
+
+	/**Determines if a given URI contains only a path and does not have a scheme and/or authority.
+	@param uri The URI to check to for path status.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@return <code>true</code> if the URI has a path and does not specifiy a scheme (i.e. the URI is not absolute) or authority.
+	*/
+	public static boolean isPathURI(final URI uri)
+	{
+		checkNull(uri, "URI cannot be null");
+		return uri.getScheme()==null && uri.getRawAuthority()==null && uri.getPath()!=null;	//see if there is no scheme, no authority, and a path
 	}
 
 	/**Determines the current level of a hierarchical URI.
@@ -395,6 +419,32 @@ public class URIUtilities
 	{
 		final File file=getFile(uri);	//get the file from the URI
 		return file!=null ? ContentTypeUtilities.getMediaType(FileUtilities.getExtension(file)) : null; //return the media type based on the extension of the URI filename, if there is one
+	}
+
+	/**Normalizes the given path by resolving the '.' and '..' path segments.
+	@param path The path to normalize.
+	@return The normalized form of the given path.
+	@exception NullPointerException if the given path is <code>null</code>.
+	@exception IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
+	@see URI#normalize()
+	*/
+	public static String normalizePath(final String path)
+	{
+		return createPathURI(path).normalize().getPath();	//get a URI from the path, normalize that URI, and then return the path of the resulting URI
+	}
+
+	/**Relativizes the given full path against the given base path.
+	@param basePath The path against which the full path should be relativized.
+	@param fullPath The full path to be relativized.
+	@return A form of the full path relative to the base path.
+	@exception NullPointerException if one of the given paths is <code>null</code>.
+	@exception IllegalArgumentException if one of the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
+	*/
+	public static String relativizePath(final String basePath, final String fullPath)
+	{
+		final URI baseURI=createPathURI(basePath);	//create a URI for the base path, ensuring it's a path
+		final URI fullURI=createPathURI(fullPath);	//create a URI for the full path, ensuring it's a path
+		return baseURI.relativize(fullURI).getPath();	//relativize the URIs and return the path
 	}
 
 	/**Creates a URI from a URL.

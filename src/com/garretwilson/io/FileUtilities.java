@@ -52,7 +52,7 @@ public class FileUtilities
 	*/
 	public static String addExtension(final String filename, final String extension)
 	{
-		return new StringBuffer(filename).append(EXTENSION_SEPARATOR).append(extension).toString();  //add the requested extension and return the new filename
+		return new StringBuilder(filename).append(EXTENSION_SEPARATOR).append(extension).toString();  //add the requested extension and return the new filename
 	}
 	
 	/**Creates a new file, throwing an exception if unsuccessful.
@@ -119,19 +119,15 @@ public class FileUtilities
 		return getExtension(file.getName());  //return the extension of the filename
 	}
 
-	/**Extracts the extension from a filename.
+	/**Extracts the extension from a filename or path.
+	Anything after the last path character ('/') is ignored.
 	@param filename The filename to examine.
-	@return The extension of the file (not including '.'), or <code>null</code> if
-		no extension is present.
+	@return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
 	*/
 	public static String getExtension(final String filename)
 	{
-			//G***we may first want to chop off anything before the last '/' or '\'
-		final int separatorIndex=filename.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
-		if(separatorIndex>=0)  //if we found a separator
-			return filename.substring(separatorIndex+1);  //return everything after the separator
-		else  //if there is no separator
-			return null;  //show that there is no extension
+		final int separatorIndex=getExtensionSeparatorIndex(filename); //see if we can find the extension separator
+		return separatorIndex>=0 ? filename.substring(separatorIndex+1) : null;	//if we found a separator, return everything after it 
 	}
 
 	/**Changes the extension of a file and returns a new file with the new
@@ -146,7 +142,7 @@ public class FileUtilities
 		String filename=file.getName();  //get the name of the file
 		if(filename.length()!=0)  //if we found a filename
 		{
-			final int separatorIndex=filename.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
+			final int separatorIndex=getExtensionSeparatorIndex(filename); //see if we can find the extension separator
 			if(separatorIndex!=-1)  //if we found a separator
 				filename=filename.substring(0, separatorIndex); //remove the extension
 			filename=addExtension(filename, extension);	//add the requested extension
@@ -156,12 +152,43 @@ public class FileUtilities
 			return file;  //return the unmodified file
 	}
 
+	/**Appends a given string to the end of a filename before the extension, if any.
+	This is useful for forming a locale-aware filename, such as <code>test_fr.txt</code> from <code>test.txt</code>. 
+	@param path The path that may contain an extension.
+	@param charSequence The characters to append to the filename.
+	@return A path with the given string appended before the filename extension, if any.
+	*/
+	public static String appendFilename(final String path, final CharSequence charSequence)
+	{
+		final int separatorIndex=getExtensionSeparatorIndex(path); //see if we can find the extension separator
+		final int insertionIndex=separatorIndex>=0 ? separatorIndex : path.length();	//insert the characters before the extension or, if there is no extension, at the end of the string
+		return new StringBuilder(path).insert(insertionIndex, charSequence).toString();	//create a new string builder, insert the characters, and return the new string
+	}
+
+	/**Determines the index of a file extension separator character ('.').
+	Anything after the last path character ('/') is ignored.
+	@param path The filename or path to examine.
+	@return The index of the extension separator character ('.'), or -1 if no extension is present.
+	*/
+	protected static int getExtensionSeparatorIndex(final String path)
+	{
+		final int separatorIndex=path.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
+		if(separatorIndex>=0)  //if we found a separator
+		{
+			if(path.indexOf(PATH_SEPARATOR, separatorIndex+1)<0)	//if there is no slash after after the extension separator
+			{
+				return separatorIndex;	//return the index of the extension separator
+			}				
+		}
+		return -1;  //show that there is no extension		
+	}
+
 	/**Returns the media type for the specified file based on its extension.
 	@param file The file for which to return a media type.
 	@return The default media type for the file's extension, or <code>null</code>
 		if no known media type is associated with this file's extension, or if this
 		file has no extension.
-	@see MediaType#getMediaType
+	@see ContentTypeUtilities#getMediaType(String)
 	*/
 	public static ContentType getMediaType(final File file)
 	{
@@ -194,7 +221,7 @@ public class FileUtilities
 	@return The default media type for the filename's extension, or <code>null</code>
 		if no known media type is associated with this file's extension or if the
 		filename has no extension.
-	@see MediaType#getMediaType
+	@see ContentTypeUtilities#getMediaType(String)
 	*/
 	public static ContentType getMediaType(final String filename)
 	{

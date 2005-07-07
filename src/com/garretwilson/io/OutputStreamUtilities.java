@@ -3,7 +3,9 @@ package com.garretwilson.io;
 import java.io.*;
 import com.garretwilson.util.Debug;
 
-/**Class to manipulate output streams.*/
+/**Class to manipulate output streams.
+@author Garret Wilson
+*/
 public class OutputStreamUtilities
 {
 
