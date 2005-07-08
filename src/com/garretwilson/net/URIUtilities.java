@@ -33,6 +33,15 @@ public class URIUtilities
 		return create(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), path, uri.getQuery(), uri.getFragment());
 	}
 
+	/**Creates a new URI identical to the supplied URI with no query or fragment.
+	@param uri The URI from which to remove the query and fragment, if any.
+	@return A new URI with no query or fragment.
+	*/
+	public static URI getPlainURI(final URI uri)	//TODO change all references to raw access, and change create() to use raw inputs
+	{
+		return create(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), null, null);	//construct an identical URI except with no query or fragment
+	}
+
 	/**Constructs an absolute path from the given elements in the form:
 	<code>/<var>element1</var>/<var>element2</var></code>.
 	Each element in the path is URI-encoded using UTF-8.
