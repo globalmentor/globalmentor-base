@@ -26,8 +26,24 @@ public class HTTPConstants
 	public final static String AUTHORIZATION_HEADER="Authorization";
 	/**The HTTP header for cache control.*/
 	public final static String CACHE_CONTROL_HEADER="Cache-Control";
+		/**The HTTP max-age cache control header.*/
+		public final static String MAX_AGE_CACHE_CONTROL="max-age";
+		/**The HTTP max-stalee cache control header.*/
+		public final static String MAX_STALE_CACHE_CONTROL="max-stale";
+		/**The HTTP min-fresh cache control header.*/
+		public final static String MIN_FRESH_CACHE_CONTROL="min-fresh";
+		/**The HTTP must-revalidate cache control header.*/
+		public final static String MUST_REVALIDATE_CACHE_CONTROL="must-revalidate";
 		/**The HTTP no-cache cache control header.*/
 		public final static String NO_CACHE_CACHE_CONTROL="no-cache";
+		/**The HTTP no-store cache control header.*/
+		public final static String NO_STORE_CACHE_CONTROL="no-store";
+		/**The HTTP no-transform cache control header.*/
+		public final static String NO_TRANSFORM_CACHE_CONTROL="no-transform";
+		/**The HTTP proxy-revalidate cache control header.*/
+		public final static String PROXY_REVALIDATE_CACHE_CONTROL="proxy-revalidate";
+		/**The HTTP s-maxage cache control header.*/
+		public final static String S_MAXAGE_CACHE_CONTROL="s-maxage";
 	/**The HTTP header indicating the connection persistency.*/
 	public final static String CONNECTION_HEADER="Connection";
 		/**The HTTP "close" Connection header value.*/
