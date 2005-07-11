@@ -81,7 +81,6 @@ public class ContentTypeConstants
 	public final static String X_WAV_SUBTYPE="x-wav";
 
 		//application media types
-
 	/**A stream of bytes.*/
 	public final static String OCTET_STREAM_SUBTYPE="octet-stream";
 	/**A Dictionary Ontology (Dicto) dictionary.*/
@@ -104,10 +103,12 @@ public class ContentTypeConstants
 	public final static String X_OEB1_PACKAGE_XML_SUBTYPE="x-oeb1-package"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**An Ogg Vorbis file; see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>.*/
 	public final static String OGG_SUBTYPE="ogg";
-	/**A Rar compressed file.*/	
-	public final static String X_RAR_COMPRESSED_SUBTYPTE="x-rar-compressed";
 	/**An Adobe PDF file.*/
 	public final static String PDF_SUBTYPE="pdf";
+	/**A Rar compressed file.*/	
+	public final static String X_RAR_COMPRESSED_SUBTYPTE="x-rar-compressed";
+	/**Submitted URL-encoded form data; see <a href="http://www.rfc-editor.org/rfc/rfc1867.txt">RFC 1867</a>.*/
+	public final static String X_WWW_FORM_URLENCODED="x-www-form-urlencoded";
 	/**An XML application.*/
 //G***fix	public final static String APPLICATION_XML=APPLICATION+DIVIDER+XML;
 	/**An XEB book file, <code>x-xebook+rdf+xml</code>.*/
@@ -119,7 +120,7 @@ public class ContentTypeConstants
 	/**A Zip file.*/
 	public final static String ZIP_SUBTYPE="zip";
 
-	//multipart media types
+		//multipart media types
 	/**Submitted form data; see <a href="http://www.rfc-editor.org/rfc/rfc1867.txt">RFC 1867</a>.*/
 	public final static String FORM_DATA_SUBTYPE="form-data";
 

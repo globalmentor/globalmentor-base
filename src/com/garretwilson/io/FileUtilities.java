@@ -170,7 +170,7 @@ public class FileUtilities
 	@param path The filename or path to examine.
 	@return The index of the extension separator character ('.'), or -1 if no extension is present.
 	*/
-	protected static int getExtensionSeparatorIndex(final String path)
+	protected static int getExtensionSeparatorIndex(final String path)	//TODO fix to work with Windows backslashes as well
 	{
 		final int separatorIndex=path.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
 		if(separatorIndex>=0)  //if we found a separator
