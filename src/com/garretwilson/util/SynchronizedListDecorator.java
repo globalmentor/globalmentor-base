@@ -3,10 +3,11 @@ package com.garretwilson.util;
 import java.util.*;
 
 /**A list that wraps an existing list, providing access through the <code>List</code> interface.
+All collection access is synchronized on the provided synchronization object.
 @param <E> The type of element contained in the list.
 @author Garret Wilson
 */
-public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
+public class SynchronizedListDecorator<E> extends SynchronizedCollectionDecorator<E> implements List<E>
 {
 
 	/**The list this class decorates.*/
@@ -14,11 +15,12 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 
 	/**List constructor.
 	@param list The list this list should decorate.
-	@exception NullPointerException if the provided list is <code>null</code>.
+	@param mutex The mutual exclusion synchronization object.
+	@exception NullPointerException if the provided list and/or mutex is <code>null</code>.
 	*/
-	public ListDecorator(final List<E> list)
+	public SynchronizedListDecorator(final List<E> list, final Object mutex)
 	{
-		super(list);	//construct the parent class
+		super(list, mutex);	//construct the parent class
 		this.list=list;	//save the list
 	}
 
@@ -54,7 +56,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 *		  &lt; 0 || index &gt; size()).
 	 */
-	public boolean addAll(int index, Collection<? extends E> c) {return list.addAll(index, c);}
+	public boolean addAll(int index, Collection<? extends E> c) {synchronized(mutex) {return list.addAll(index, c);}}
 
 	// Positional Access Operations
 
@@ -67,7 +69,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 * 		  &lt; 0 || index &gt;= size()).
 	 */
-	public E get(int index) {return list.get(index);}
+	public E get(int index) {synchronized(mutex) {return list.get(index);}}
 
 	/**
 	 * Replaces the element at the specified position in this list with the
@@ -88,7 +90,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 	 * @throws    IndexOutOfBoundsException if the index is out of range
 	 *		  (index &lt; 0 || index &gt;= size()).
 	 */
-	public E set(int index, E element) {return list.set(index, element);}
+	public E set(int index, E element) {synchronized(mutex) {return list.set(index, element);}}
 
 	/**
 	 * Inserts the specified element at the specified position in this list
@@ -110,7 +112,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 	 * @throws    IndexOutOfBoundsException if the index is out of range
 	 *		  (index &lt; 0 || index &gt; size()).
 	 */
-	public void add(int index, E element) {list.add(index, element);}
+	public void add(int index, E element) {synchronized(mutex) {list.add(index, element);}}
 
 	/**
 	 * Removes the element at the specified position in this list (optional
@@ -126,7 +128,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 *            &lt; 0 || index &gt;= size()).
 	 */
-	public E remove(int index) {return list.remove(index);}
+	public E remove(int index) {synchronized(mutex) {return list.remove(index);}}
 
 
 	// Search Operations
@@ -146,7 +148,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 	 * @throws NullPointerException if the specified element is null and this
 	 *         list does not support null elements (optional).
 	 */
-	public int indexOf(Object o) {return list.indexOf(o);}
+	public int indexOf(Object o) {synchronized(mutex) {return list.indexOf(o);}}
 
 	/**
 	 * Returns the index in this list of the last occurrence of the specified
@@ -163,7 +165,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 	 * @throws NullPointerException if the specified element is null and this
 	 *         list does not support null elements (optional).
 	 */
-	public int lastIndexOf(Object o) {return list.lastIndexOf(o);}
+	public int lastIndexOf(Object o) {synchronized(mutex) {return list.lastIndexOf(o);}}
 
 
 	// List Iterators
@@ -175,7 +177,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 	 * @return a list iterator of the elements in this list (in proper
 	 * 	       sequence).
 	 */
-	public ListIterator<E> listIterator() {return list.listIterator();}
+	public ListIterator<E> listIterator() {synchronized(mutex) {return list.listIterator();}}
 
 	/**
 	 * Returns a list iterator of the elements in this list (in proper
@@ -192,7 +194,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 *         &lt; 0 || index &gt; size()).
 	 */
-	public ListIterator<E> listIterator(int index) {return list.listIterator(index);}
+	public ListIterator<E> listIterator(int index) {synchronized(mutex) {return list.listIterator(index);}}
 
 	// View
 
@@ -230,6 +232,6 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 	 * @throws IndexOutOfBoundsException for an illegal endpoint index value
 	 *     (fromIndex &lt; 0 || toIndex &gt; size || fromIndex &gt; toIndex).
 	 */
-	public List<E> subList(int fromIndex, int toIndex) {return list.subList(fromIndex, toIndex);}
+	public List<E> subList(int fromIndex, int toIndex) {synchronized(mutex) {return list.subList(fromIndex, toIndex);}}
 
 }

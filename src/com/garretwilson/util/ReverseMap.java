@@ -3,11 +3,12 @@ package com.garretwilson.util;
 import java.util.Map;
 
 /**A map that also allows lookup of the map keys keyed to the values. 
-<p>The keys and values in this map have a one-to-one relationship. Associating
-	multiple values with a key will likely result in errant functionality.</p>
+<p>The keys and values in this map have a one-to-one relationship. Associating multiple values with a key will likely result in errant functionality.</p>
+@param <K> The type of map key.
+@param <V> The type of map value.
 @author Garret Wilson
 */
-public interface ReverseMap extends Map
+public interface ReverseMap<K, V> extends Map<K, V>
 {
 
 	/**Returns the key that represents the given value. 
@@ -20,6 +21,6 @@ public interface ReverseMap extends Map
 		this map does not not permit <code>null</code> keys (optional).
 	@see #containsValue(Object)
 	*/
-	public Object getKey(final Object value);
+	public K getKey(final V value);
 
 }

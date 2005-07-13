@@ -5,22 +5,28 @@ import java.util.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 
 /**A collection that wraps an existing collection, providing access through the <code>Collection</code> interface.
+All collection access is synchronized on the provided synchronization object.
 @param <E> The type of element contained in the collection.
 @author Garret Wilson
 */
-public class CollectionDecorator<E> implements Collection<E>
+public class SynchronizedCollectionDecorator<E> implements Collection<E>
 {
 
 	/**The collection this class decorates.*/
 	protected final Collection<E> collection;
 
+	/**The mutual exclusion synchronization object.*/
+	protected final Object mutex;
+
 	/**Collection constructor.
 	@param collection The collection this collection should decorate.
-	@exception NullPointerException if the provided collection is <code>null</code>.
+	@param mutex The mutual exclusion synchronization object.
+	@exception NullPointerException if the provided collection and/or mutex is <code>null</code>.
 	*/
-	public CollectionDecorator(final Collection<E> collection)
+	public SynchronizedCollectionDecorator(final Collection<E> collection, final Object mutex)
 	{
 		this.collection=checkNull(collection, "Collection cannot be null");	//save the collection
+		this.mutex=checkNull(mutex, "Mutex cannot be null");	//save the mutex
 	}
 
 	/**
@@ -30,14 +36,14 @@ public class CollectionDecorator<E> implements Collection<E>
 	 * 
 	 * @return the number of elements in this collection
 	 */
-	public int size() {return collection.size();}
+	public int size() {synchronized(mutex) {return collection.size();}}
 
 	/**
 	 * Returns <tt>true</tt> if this collection contains no elements.
 	 *
 	 * @return <tt>true</tt> if this collection contains no elements
 	 */
-	public boolean isEmpty() {return collection.isEmpty();}
+	public boolean isEmpty() {synchronized(mutex) {return collection.isEmpty();}}
 
 	/**
 	 * Returns <tt>true</tt> if this collection contains the specified
@@ -53,7 +59,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	 * @throws NullPointerException if the specified element is null and this
 	 *         collection does not support null elements (optional).
 	 */
-	public boolean contains(Object o) {return collection.contains(o);}
+	public boolean contains(Object o) {synchronized(mutex) {return collection.contains(o);}}
 
 	/**
 	 * Returns an iterator over the elements in this collection.  There are no
@@ -63,7 +69,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	 * 
 	 * @return an <tt>Iterator</tt> over the elements in this collection
 	 */
-	public Iterator<E> iterator() {return collection.iterator();}
+	public Iterator<E> iterator() {synchronized(mutex) {return collection.iterator();}}
 
 	/**
 	 * Returns an array containing all of the elements in this collection.  If
@@ -81,7 +87,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	 *
 	 * @return an array containing all of the elements in this collection
 	 */
-	public Object[] toArray() {return collection.toArray();} 
+	public Object[] toArray() {synchronized(mutex) {return collection.toArray();}} 
 	
 	/**
 	 * Returns an array containing all of the elements in this collection; 
@@ -128,7 +134,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	 * @throws NullPointerException if the specified array is <tt>null</tt>.
 	 */
     
-	public <T> T[] toArray(T a[]) {return collection.toArray(a);}
+	public <T> T[] toArray(T a[]) {synchronized(mutex) {return collection.toArray(a);}}
 
 	// Modification Operations
 
@@ -164,7 +170,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	 * @throws IllegalArgumentException some aspect of this element prevents
 	 *         it from being added to this collection.
 	 */
-	public boolean add(E o) {return collection.add(o);}
+	public boolean add(E o) {synchronized(mutex) {return collection.add(o);}}
 
 	/**
 	 * Removes a single instance of the specified element from this
@@ -186,7 +192,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	 * @throws UnsupportedOperationException remove is not supported by this
 	 *         collection.
 	 */
-	public boolean remove(Object o) {return collection.remove(o);}
+	public boolean remove(Object o) {synchronized(mutex) {return collection.remove(o);}}
 
 	// Bulk Operations
 
@@ -207,7 +213,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	 *         <tt>null</tt>.
 	 * @see    #contains(Object)
 	 */
-	public boolean containsAll(Collection<?> c) {return collection.containsAll(c);}
+	public boolean containsAll(Collection<?> c) {synchronized(mutex) {return collection.containsAll(c);}}
 
 	/**
 	 * Adds all of the elements in the specified collection to this collection
@@ -233,7 +239,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	 *	       collection.
 	 * @see #add(Object)
 	 */
-	public boolean addAll(Collection<? extends E> c) {return collection.addAll(c);}
+	public boolean addAll(Collection<? extends E> c) {synchronized(mutex) {return collection.addAll(c);}}
 
 	/**
 	 * 
@@ -259,7 +265,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	 * @see #remove(Object)
 	 * @see #contains(Object)
 	 */
-	public boolean removeAll(Collection<?> c) {return collection.removeAll(c);}
+	public boolean removeAll(Collection<?> c) {synchronized(mutex) {return collection.removeAll(c);}}
 
 	/**
 	 * Retains only the elements in this collection that are contained in the
@@ -284,7 +290,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	 * @see #remove(Object)
 	 * @see #contains(Object)
 	 */
-	public boolean retainAll(Collection<?> c) {return collection.retainAll(c);}
+	public boolean retainAll(Collection<?> c) {synchronized(mutex) {return collection.retainAll(c);}}
 
 	/**
 	 * Removes all of the elements from this collection (optional operation).
@@ -331,7 +337,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	 * @see Set#equals(Object)
 	 * @see List#equals(Object)
 	 */
-//TODO del if not needed or wanted	public boolean equals(Object o) {return collection.equals(o);}	
+	public boolean equals(Object o) {synchronized(mutex) {return collection.equals(o);}}	
 
 	/**
 	 * Returns the hash code value for this collection.  While the
@@ -348,6 +354,6 @@ public class CollectionDecorator<E> implements Collection<E>
 	 * @see Object#hashCode()
 	 * @see Object#equals(Object)
 	 */
-//TODO del if not needed or wanted	public int hashCode() {return collection.hashCode();}
+	public int hashCode() {synchronized(mutex) {return collection.hashCode();}}
 	
 }
