@@ -13,6 +13,7 @@ public class ListIteratorDecorator<E> extends IteratorDecorator<E> implements Li
 
 	/**List iterator constructor.
 	@param listIterator The list iterator this list iterator should decorate.
+	@exception NullPointerException if the given iterator is <code>null</code>.
 	*/
 	public ListIteratorDecorator(final ListIterator<E> listIterator)
 	{

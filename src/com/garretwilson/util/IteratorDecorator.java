@@ -1,6 +1,7 @@
 package com.garretwilson.util;
 
 import java.util.*;
+import static com.garretwilson.lang.ObjectUtilities.*;
 
 /**An iterator that wraps an existing iterator, providing access through the <code>Iterator</code> interface.
 @author Garret Wilson
@@ -13,10 +14,11 @@ public class IteratorDecorator<E> implements Iterator<E>
 
 	/**Iterator constructor.
 	@param iterator The iterator this iterator should decorate.
+	@exception NullPointerException if the given iterator is <code>null</code>.
 	*/
 	public IteratorDecorator(final Iterator<E> iterator)
 	{
-		this.iterator=iterator;	//save the iterator
+		this.iterator=checkNull(iterator, "Iterator cannot be null");	//save the iterator
 	}
 
 	/**
