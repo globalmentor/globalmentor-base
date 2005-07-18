@@ -52,6 +52,8 @@ public class HTTPConstants
 	public final static String CONTENT_DESCRIPTION_HEADER="Content-Description";
 	/**The HTTP header indicating the content disposition.*/
 	public final static String CONTENT_DISPOSITION_HEADER="Content-Disposition";
+	/**The HTTP header indicating the natural language(s) of the intended audience for the enclosed entity.*/
+	public final static String CONTENT_LANGUAGE_HEADER="Content-Language";
 	/**The HTTP header indicating the size of the entity body.*/
 	public final static String CONTENT_LENGTH_HEADER="Content-Length";
 	/**The HTTP header indicating the canonical location of the resource.*/
