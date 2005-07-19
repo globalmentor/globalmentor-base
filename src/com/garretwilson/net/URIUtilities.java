@@ -761,10 +761,11 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	/**Determines whether the given path is absolute.
 	@param path The path to examine.
 	@return <code>true</code> if the path begins with a slash ('/').
+	@exception NullPointerException if the path is <code>null</code>.
 	*/
 	public static boolean isAbsolutePath(final String path)
 	{
-		return path.startsWith(ROOT_PATH);	//see if the path begins with '/'		
+		return checkNull(path, "Path cannot be null").startsWith(ROOT_PATH);	//see if the path begins with '/'		
 	}
 
 	/**Determines whether the URI contains only a host and optional port.
