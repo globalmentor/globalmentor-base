@@ -7,6 +7,7 @@ import java.util.List;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.model.DefaultResource;
+import com.garretwilson.util.CollectionUtilities;
 
 /**A resource accessible by a file.
 The file may or may not have the same URI as the resource.
@@ -47,7 +48,7 @@ public class FileResource extends DefaultResource
 	*/
 	public List<FileResource> getChildResources()
 	{
-		return Collections.emptyList();	//TODO implement
+		return CollectionUtilities.emptyList();	//TODO implement
 	}
 
 }

@@ -457,17 +457,16 @@ public class URIUtilities
 	}
 
 	/**Creates a URI from a URL.
-	@param url The URL to convert to a URI. The URL should already be properly
-		encoded.
+	JDK 1.5 provides an equivalent {@link URL#toURI()}.
+	This method is provided for backwards-compatibility using for example Retroweaver. 
+	@param url The URL to convert to a URI. The URL should already be properly encoded.
 	@return The URI form of the URL.
 	@exception URISyntaxException Thrown if the URL could not be converted to a URI.
 	*/ 
-/*TODO del if not needed
 	public static URI createURI(final URL url) throws URISyntaxException
 	{
 		return new URI(url.toString());	//assuming the URL is already escaped, create a new URI from the string representation of the URL
 	}
-*/
 
 	/**Creates a URN in the form <code>urn:<var>nid</var>:nss</code>.
 	@param nid The namespace identifier.
@@ -502,7 +501,7 @@ public class URIUtilities
 		}
 		else if(contextObject instanceof URL)	//if the context is a URL
 		{
-			return ((URL)contextObject).toURI();	//convert the URL to a URI and use it as a context
+			return createURI(((URL)contextObject));	//convert the URL to a URI and use it as a context
 		}
 		else if(contextObject instanceof File)	//if the context object is a file
 		{

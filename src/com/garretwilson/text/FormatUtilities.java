@@ -7,6 +7,8 @@ import static java.util.Arrays.*;
 import com.garretwilson.lang.IntegerUtilities;
 import static com.garretwilson.lang.StringBuilderUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
+
+import com.garretwilson.util.CollectionUtilities;
 import com.garretwilson.util.NameValuePair;
 
 /**Utilities for formatting text.
@@ -80,25 +82,27 @@ public class FormatUtilities
 	/**Appends the string representations of the given objects separated by a delimiter character.
 	@param stringBuilder The string builder into which the result should be placed.
 	@param delimiter The separator character to be inserted between the object strings. 
-	@param iterable The objects to be formatted.
+	@param collection The objects to be formatted.
 	@return The string buffer containing the new information.
 	@see Object#toString
 	*/
-	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final Iterable<?> iterable)
+//TODO bring back when backwards-compatibility isn't needed	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final Iterable<?> iterable)
+	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final Collection<?> collection)
 	{
-		return formatList(stringBuilder, String.valueOf(delimiter), iterable);	//format the list with a string delimiter
+		return formatList(stringBuilder, String.valueOf(delimiter), collection);	//format the list with a string delimiter
 	}
 
 	/**Appends the string representations of the given objects separated by a delimiter character.
 	@param stringBuilder The string builder into which the result should be placed.
 	@param delimiter The separator to be inserted between the object strings. 
-	@param iterable The objects to be formatted.
+	@param collection The objects to be formatted.
 	@return The string buffer containing the new information.
 	@see Object#toString
 	*/
-	public static StringBuilder formatList(final StringBuilder stringBuilder, final String delimiter, final Iterable<?> iterable)
+//TODO bring back when backwards-compatibility isn't needed	public static StringBuilder formatList(final StringBuilder stringBuilder, final String delimiter, final Iterable<?> iterable)
+	public static StringBuilder formatList(final StringBuilder stringBuilder, final String delimiter, final Collection<?> collection)
 	{
-		for(final Object item:iterable)	//for each item
+		for(final Object item:collection)	//for each item
 		{
 			stringBuilder.append(item).append(delimiter);	//append the item and the delimiter
 		}
@@ -136,7 +140,7 @@ public class FormatUtilities
 	*/
 	public static StringBuilder formatAttributes(final StringBuilder stringBuilder, final NameValuePair<?, ?>... attributes)
 	{
-		return formatAttributes(stringBuilder, COMMA_CHAR, EQUALS_SIGN_CHAR, QUOTATION_MARK_CHAR, emptySet(), attributes);	//format the attributes using the standard formatting characters
+		return formatAttributes(stringBuilder, COMMA_CHAR, EQUALS_SIGN_CHAR, QUOTATION_MARK_CHAR, CollectionUtilities.emptySet(), attributes);	//format the attributes using the standard formatting characters
 	}
 
 	/**Formats a series of name-value pairs.

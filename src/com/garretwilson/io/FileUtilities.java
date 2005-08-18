@@ -162,7 +162,7 @@ public class FileUtilities
 	{
 		final int separatorIndex=getExtensionSeparatorIndex(path); //see if we can find the extension separator
 		final int insertionIndex=separatorIndex>=0 ? separatorIndex : path.length();	//insert the characters before the extension or, if there is no extension, at the end of the string
-		return new StringBuilder(path).insert(insertionIndex, charSequence).toString();	//create a new string builder, insert the characters, and return the new string
+		return StringBuilderUtilities.insert(new StringBuilder(path), insertionIndex, charSequence).toString();	//create a new string builder, insert the characters, and return the new string
 	}
 
 	/**Determines the index of a file extension separator character ('.').

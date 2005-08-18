@@ -56,6 +56,28 @@ public class StringBuilderUtilities
 		return stringBuilder;	//return the string builder object
 	}
 
+	/**Inserts a character sequence into a string builder.
+	This method offers identical functionality to JDK 5.0 {@link StringBuilder#insert(int, java.lang.CharSequence)} and is provided here for backwards-compatibility using RetroWeaver, for example. 
+	@param stringBuilder The string builder into which the characters should be inserted.
+	@param offset The index at which to insert the characters.
+	@exception IndexOutOfBoundsException if the given destination index is outside the bounds of the string builder.
+	@see StringBuilder#insert(int, java.lang.CharSequence) 
+	*/
+	public static StringBuilder insert(final StringBuilder stringBuilder, final int offset, CharSequence charSequence)
+	{
+		if(charSequence==null)	//if the character sequence is null
+			charSequence="null";	//replace it with the string "null"
+		if(charSequence instanceof String)	//if the character sequence is a string
+		{
+			return stringBuilder.insert(offset, (String)charSequence);	//use the already-made string insertion method
+		}
+		else	//if the character sequence is not a string
+		{
+			//TODO fix full non-JDK 1.5 support
+      return stringBuilder.insert(offset, charSequence, 0, charSequence.length());	//insert the character sequence into the string builder
+		}
+  }
+
 	/**Collapses every run of any number of collapseChars to a single replaceString.
 	@param stringBuilder The buffer in which the information will be collapsed.
 	@param collapseChars The characters to be removed from the string.

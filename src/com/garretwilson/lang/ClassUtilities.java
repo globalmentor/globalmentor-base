@@ -136,4 +136,25 @@ public class ClassUtilities
 		return JavaUtilities.getVariableName(getSimpleName(objectClass));	//get the variable name form of the simple name of the class
 	}
 
+	/**Casts an object to the given class.
+	This method is available in JDK 5.0 via {@link Class#cast(java.lang.Object)}, but is provided here for backwards-compatibility using RetroWeaver for example.
+	@param <T> The type to which to cast.
+	@param objectClass The class to which the object will be cast.
+	@param object The object to be cast.
+	@return The object after casting, or <code>null</code> if the object is <code>null</code>.
+	@exception ClassCastException if the object is not null and is not assignable to the type T.
+	*/
+	@SuppressWarnings("unchecked")
+	public static <T> T cast(final Class<T> objectClass, final Object object)
+	{
+		if(object==null || objectClass.isInstance(object))	//if the object is null or an instance of the class
+		{
+			return (T)object;	//cast and return the object
+		}
+		else	//if the object isn't null and is not an instance of the class
+		{
+			throw new ClassCastException(objectClass.getName());	//throw an exception
+		}
+	}
+
 }
