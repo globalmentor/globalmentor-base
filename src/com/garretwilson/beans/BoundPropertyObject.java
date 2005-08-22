@@ -135,7 +135,7 @@ public class BoundPropertyObject implements PropertyBindable
 	@see PropertyValueChangeEvent
 	@see PropertyValueChangeListener
 	*/
-	protected <V> void firePropertyChange(final String propertyName, V oldValue, final V newValue)
+	protected <V> void firePropertyChange(final String propertyName, final V oldValue, final V newValue)
 	{
 		if(hasListeners(propertyName)) //if we have listeners registered for this property
 		{
