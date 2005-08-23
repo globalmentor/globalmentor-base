@@ -23,7 +23,7 @@ public class BoundPropertyObject implements PropertyBindable
 	/**Lazily-created support that keeps track of <code>PropertyChangeListener</code>s that have been registered, and handles firing of events.*/
 	private PropertyChangeSupport propertyChangeSupport=null;
 
-		/**@return Support for property change event management, creating one if necessary.*/
+		/**@return Support for property change event management, creating support if necessary.*/
 		protected synchronized PropertyChangeSupport getPropertyChangeSupport()
 		{
 			if(propertyChangeSupport==null)	//if we don't have property change support, yet
