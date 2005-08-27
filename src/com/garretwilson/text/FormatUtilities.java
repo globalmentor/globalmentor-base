@@ -76,7 +76,13 @@ public class FormatUtilities
 	*/
 	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final Object... items)
 	{
-		return formatList(stringBuilder, delimiter, asList(items));	//format the items as a list
+			//TODO later just pass the arguments to the iterable version if possible
+		for(final Object item:items)	//for each item
+		{
+			stringBuilder.append(item).append(delimiter);	//append the item and the delimiter
+		}
+		deleteLastChar(stringBuilder);	//remove the last delimiter
+		return stringBuilder;	//return the string builder we used
 	}
 
 	/**Appends the string representations of the given objects separated by a delimiter character.

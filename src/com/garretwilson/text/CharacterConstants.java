@@ -26,6 +26,8 @@ public interface CharacterConstants
 	public final static char QUOTATION_MARK_CHAR=0x0022;
 	/**An apostrophe character.*/
 	public final static char APOSTROPHE_CHAR=0x0027;
+	/**A plus sign character.*/
+	public final static char PLUS_SIGN_CHAR=0x002B;
 	/**A comma character.*/
 	public final static char COMMA_CHAR=0x002C;
 	/**A hyphen or minus character.*/
@@ -42,6 +44,8 @@ public interface CharacterConstants
 	public final static char LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR=0x00AB;
 	/**A right-pointing guillemet character.*/
 	public final static char RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR=0x00BB;
+	/**A middle dot character.*/
+	public final static char MIDDLE_DOT_CHAR=0x00B7;
 	/**The copyright symbol.*/
 	public final static char COPYRIGHT_SIGN=0x00A9;
 	/**The pilcrow or paragraph sign.
