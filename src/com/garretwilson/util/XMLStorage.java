@@ -14,7 +14,8 @@ import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.text.xml.XPath;
+import com.garretwilson.text.xml.xpath.XPath;
+
 import org.w3c.dom.*;
 
 /**An object that facilitates storing data in an XML document.
@@ -164,12 +165,12 @@ public class XMLStorage
 		try
 		{
 			final Method setMethod=object.getClass().getMethod(SET+name, new Class[]{type});	//get the object's set method
-			final NodeList nodeList=(NodeList)XPath.evaluateLocationPath(document.getDocumentElement(), locationPath);	//get the values from the appropriate section of the document
+			final List<Node> nodeList=(List<Node>)XPath.evaluatePathExpression(document.getDocumentElement(), locationPath);	//get the values from the appropriate section of the document
 	//G***del when works		Object returnObject=null;	//this is the object we'll return
 			Object convertedValue;	//we'll use this variable to get the converted value which should be used in the setXXX() function
-			if(nodeList.getLength()>0)	//if we retrieved at least one value from the document
+			if(nodeList.size()>0)	//if we retrieved at least one value from the document
 			{
-				final Node node=nodeList.item(0);	//get the first returned node
+				final Node node=nodeList.get(0);	//get the first returned node
 				final String stringValue=node.getNodeValue();	//get the string value of the node
 				try
 				{
@@ -266,10 +267,10 @@ public class XMLStorage
 		try
 		{
 			final Method getMethod=object.getClass().getMethod(GET+name);	//get the object's get method
-			final NodeList nodeList=(NodeList)XPath.evaluateLocationPath(document.getDocumentElement(), locationPath);	//get the values from the appropriate section of the document
-			if(nodeList.getLength()>0)	//if we retrieved at least one value from the document
+			final List<Node> nodeList=(List<Node>)XPath.evaluatePathExpression(document.getDocumentElement(), locationPath);	//get the values from the appropriate section of the document
+			if(nodeList.size()>0)	//if we retrieved at least one value from the document
 			{
-				final Node node=nodeList.item(0);	//get the first returned node
+				final Node node=nodeList.get(0);	//get the first returned node
 					final Object valueObject=getMethod.invoke(object, new Object[]{});	//call the object's getXXX() method to get the value to store
 					node.setNodeValue(valueObject.toString());	//convert the object to a string and store it
 /*G***del when works

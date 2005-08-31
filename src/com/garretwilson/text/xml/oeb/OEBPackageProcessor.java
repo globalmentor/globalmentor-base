@@ -2,6 +2,7 @@ package com.garretwilson.text.xml.oeb;
 
 import java.io.*;
 import java.net.*;
+import java.util.List;
 
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.ContentTypeUtilities;
@@ -13,7 +14,9 @@ import static com.garretwilson.rdf.xeb.XEBUtilities.*;
 import static com.garretwilson.rdf.xpackage.XPackageUtilities.*;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.XMLProcessor;
-import com.garretwilson.text.xml.XPath;
+import com.garretwilson.text.xml.xpath.XPath;
+import com.garretwilson.text.xml.xpath.XPathConstants;
+
 import static com.garretwilson.text.xml.oeb.OEBConstants.*;
 import com.garretwilson.util.*;
 import org.w3c.dom.*;
@@ -116,13 +119,13 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 		URI publicationReferenceURI=new URI(URIConstants.URN_SCHEME, "local:anonymous:publication", null); //we'll try to find a URI for the publication; start by assuming we won't be successful G***use constants here
 		//get a list of all dc:Identifier elements
 		//XPath: /metadata/dc-metadata/dc:Identifier
-		final NodeList dcIdentifierElementList=(NodeList)XPath.evaluateLocationPath(rootElement,
-			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA+
-			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA_DC_METADATA+
-			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST_DC_METADATA_DC_IDENTIFIER);
-		for(int i=0; i<dcIdentifierElementList.getLength(); ++i)	//look at each DC metadata element
+		final List<Node> dcIdentifierElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
+			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA+
+			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA_DC_METADATA+
+			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST_DC_METADATA_DC_IDENTIFIER);
+		for(int i=0; i<dcIdentifierElementList.size(); ++i)	//look at each DC metadata element
 		{
-			final Element dcIdentifierElement=(Element)dcIdentifierElementList.item(i);	//get a reference to this DC identifier element
+			final Element dcIdentifierElement=(Element)dcIdentifierElementList.get(i);	//get a reference to this DC identifier element
 		  final String dcIdentifierElementText=XMLUtilities.getText(dcIdentifierElement, true); //get the text of the element
 				//get the trimmed scheme (in lowercase) being used by this Dublin Core identifier in OEBPS 1.x
 			final String scheme=dcIdentifierElement.getAttributeNS(null, PKG_METADATA_DC_METADATA_DC_IDENTIFIER_ATTRIBUTE_SCHEME).trim().toLowerCase();
@@ -177,10 +180,10 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 		rdf.addResource(publicationResource);	//add the resource to the RDF data model
 Debug.trace("converting OEB package, created publication resource: ", publicationResource.getClass().getName());  //G***del
 		//XPath: /metadata/dc-metadata/*
-		final NodeList dcMetadataElementList=(NodeList)XPath.evaluateLocationPath(rootElement,
-			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA+
-			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA_DC_METADATA+
-			XPath.LOCATION_STEP_SEPARATOR_CHAR+XPath.WILDCARD_CHAR);
+		final NodeList dcMetadataElementList=(NodeList)XPath.evaluatePathExpression(rootElement,
+			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA+
+			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA_DC_METADATA+
+			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+XPathConstants.WILDCARD_CHAR);
 		for(int i=0; i<dcMetadataElementList.getLength(); ++i)	//look at each DC metadata element
 		{
 			final Element dcMetadataElement=(Element)dcMetadataElementList.item(i);	//get a reference to this DC metadata element
@@ -296,9 +299,9 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 		  //add a manifest to the publication
 		final RDFListResource manifestResource=addManifest(publicationResource);
 		//XPath: /manifest/item
-		final NodeList manifestElementList=(NodeList)XPath.evaluateLocationPath(rootElement,
-			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST+
-			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST_ITEM);
+		final NodeList manifestElementList=(NodeList)XPath.evaluatePathExpression(rootElement,
+			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST+
+			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST_ITEM);
 		for(int i=0; i<manifestElementList.getLength(); ++i)	//look at each manifest element
 		{
 			final Element itemElement=(Element)manifestElementList.item(i);	//get a reference to this item in the manifest
@@ -336,9 +339,9 @@ Debug.trace("adding an organization to the publication");
 		  //add the publication spine
 		final RDFListResource spine=new RDFListResource();	//create a new list for the spine
 		//XPath: /spine/itemref
-		final NodeList spineElementList=(NodeList)XPath.evaluateLocationPath(rootElement,
-			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE+
-			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE_ITEMREF);
+		final NodeList spineElementList=(NodeList)XPath.evaluatePathExpression(rootElement,
+			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE+
+			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE_ITEMREF);
 Debug.trace("looking at spine elements");
 		for(int i=0; i<spineElementList.getLength(); ++i)	//look at each spine element
 		{
@@ -359,9 +362,9 @@ Debug.trace("adding item to organization");
 
 //G***fix with new navigation stuff
 		//XPath: /guide/reference
-		final NodeList guideElementList=(NodeList)XPath.evaluateLocationPath(rootElement,
-			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_GUIDE+
-			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_GUIDE_REFERENCE);
+		final NodeList guideElementList=(NodeList)XPath.evaluatePathExpression(rootElement,
+			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_GUIDE+
+			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_GUIDE_REFERENCE);
 		for(int i=0; i<guideElementList.getLength(); ++i)	//look at each guide element
 		{
 			final Element referenceElement=(Element)guideElementList.item(i);	//get a reference to this reference in the guide

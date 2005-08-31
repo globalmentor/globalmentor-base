@@ -27,6 +27,9 @@ public class ContentTypeConstants
 	public final static String MULTIPART="multipart";
 	public final static String MESSAGE="message";
 
+	/**The separator character that begins a non-standard extension type.*/
+	public final static String EXTENSION_PREFIX="x-";
+
 	/**The separator character that delimits a subtype suffix.*/
 	public final static char SUBTYPE_SUFFIX_DELIMITER_CHAR='+';
 
@@ -43,8 +46,8 @@ public class ContentTypeConstants
 
 		//text media types
 	/**An OEB 1.0 document.*/
-	public final static String X_OEB1_CSS_SUBTYPE="x-oeb1-css";
-	public final static String X_OEB1_DOCUMENT_SUBTYPE="x-oeb1-document";
+	public final static String X_OEB1_CSS_SUBTYPE=EXTENSION_PREFIX+"oeb1-css";
+	public final static String X_OEB1_DOCUMENT_SUBTYPE=EXTENSION_PREFIX+"oeb1-document";
 	public final static String CALENDAR_SUBTYPE="calendar";
 	/**A Cascading Style Sheet document.*/
 	public final static String CSS_SUBTYPE="css";
@@ -66,7 +69,7 @@ public class ContentTypeConstants
 	/**A TIFF image.*/
 	public final static String TIFF_SUBTYPE="tiff";
 	/**A bitmap image.*/
-	public final static String X_BITMAP_SUBTYPE="x-bitmap";
+	public final static String X_BITMAP_SUBTYPE=EXTENSION_PREFIX+"bitmap";
 
 		//video media types
 	/**An MPEG video.*/
@@ -78,41 +81,41 @@ public class ContentTypeConstants
 	/**MPEG 2 layer 3 (MP3); see <a href="http://www.rfc-editor.org/rfc/rfc3003.txt">RFC 3003</a>.*/
 //G***fix	public final static String AUDIO_MPEG=AUDIO+DIVIDER+MPEG;
 	/**Microsoft Windows Wave audio format.*/
-	public final static String X_WAV_SUBTYPE="x-wav";
+	public final static String X_WAV_SUBTYPE=EXTENSION_PREFIX+"wav";
 
 		//application media types
 	/**A stream of bytes.*/
 	public final static String OCTET_STREAM_SUBTYPE="octet-stream";
 	/**A Dictionary Ontology (Dicto) dictionary.*/
-	public final static String X_DICTO_RDF_XML_SUBTYPE="x-dicto"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
+	public final static String X_DICTO_RDF_XML_SUBTYPE=EXTENSION_PREFIX+"dicto"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A Java application.*/
 	public final static String JAVA_SUBTYPE="java";
 	/**A  MathML application.*/
 	public final static String MATHML_XML_SUBTYPE="mathml"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**A Java JNLP file.*/
-	public final static String X_JAVA_JNLP_FILE="x-java-jnlp-file";
+	public final static String X_JAVA_JNLP_FILE=EXTENSION_PREFIX+"java-jnlp-file";
 	/**A MAQRO activity.*/
-	public final static String X_MAQRO_RDF_XML_SUBTYPE="x-maqro"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
+	public final static String X_MAQRO_RDF_XML_SUBTYPE=EXTENSION_PREFIX+"maqro"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A MAQRO question.*/
-	public final static String X_QRO_RDF_XML_SUBTYPE="x-qro"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
+	public final static String X_QRO_RDF_XML_SUBTYPE=EXTENSION_PREFIX+"qro"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A Microsoft Word document; see <a href="http://www.iana.org/assignments/media-types/application/msword">http://www.iana.org/assignments/media-types/application/msword</a>.*/
 	public final static String MSWORD_SUBTYPE="msword";
 	/**An OEB 1.x publication zip file.*/
-	public final static String X_OEB_PUBLICATION_ZIP_SUBTYPE="x-oeb-publication"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX+SUBTYPE_SUFFIX_DELIMITER_CHAR+ZIP_SUBTYPE_SUFFIX;
+	public final static String X_OEB_PUBLICATION_ZIP_SUBTYPE=EXTENSION_PREFIX+"oeb-publication"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX+SUBTYPE_SUFFIX_DELIMITER_CHAR+ZIP_SUBTYPE_SUFFIX;
 	/**An OEB 1.x package file.*/
-	public final static String X_OEB1_PACKAGE_XML_SUBTYPE="x-oeb1-package"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
+	public final static String X_OEB1_PACKAGE_XML_SUBTYPE=EXTENSION_PREFIX+"oeb1-package"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**An Ogg Vorbis file; see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>.*/
 	public final static String OGG_SUBTYPE="ogg";
 	/**An Adobe PDF file.*/
 	public final static String PDF_SUBTYPE="pdf";
 	/**A Rar compressed file.*/	
-	public final static String X_RAR_COMPRESSED_SUBTYPTE="x-rar-compressed";
+	public final static String X_RAR_COMPRESSED_SUBTYPTE=EXTENSION_PREFIX+"rar-compressed";
 	/**Submitted URL-encoded form data; see <a href="http://www.rfc-editor.org/rfc/rfc1867.txt">RFC 1867</a>.*/
-	public final static String X_WWW_FORM_URLENCODED="x-www-form-urlencoded";
+	public final static String X_WWW_FORM_URLENCODED=EXTENSION_PREFIX+"www-form-urlencoded";
 	/**An XML application.*/
 //G***fix	public final static String APPLICATION_XML=APPLICATION+DIVIDER+XML;
 	/**An XEB book file, <code>x-xebook+rdf+xml</code>.*/
-	public final static String X_XEBOOK_RDF_XML_SUBTYPE="x-xebook"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
+	public final static String X_XEBOOK_RDF_XML_SUBTYPE=EXTENSION_PREFIX+"xebook"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**An XEB book zip file, <code>x-xebook+rdf+xml+zip</code>.*/
 	public final static String X_XEBOOK_RDF_XML_ZIP_SUBTYPE=X_XEBOOK_RDF_XML_SUBTYPE+SUBTYPE_SUFFIX_DELIMITER_CHAR+ZIP_SUBTYPE_SUFFIX;
 	/**An XHTML application.*/
