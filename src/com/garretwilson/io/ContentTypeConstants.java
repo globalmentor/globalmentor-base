@@ -16,6 +16,8 @@ public class ContentTypeConstants
 	public final static char PARAMETER_DELIMITER_CHAR=';';
 	/**The character used to assign parameter values.*/
 	public final static char PARAMETER_ASSIGNMENT_CHAR='=';
+	/**The wildcard character.*/
+	public final static char WILDCARD_CHAR='*';
 
 		//discrete top-level media types
 	public final static String TEXT="text";
@@ -55,6 +57,10 @@ public class ContentTypeConstants
 	public final static String HTML_SUBTYPE="html";
 	public final static String JAVASCRIPT_SUBTYPE="javascript";
 	public final static String PLAIN_SUBTYPE="plain";
+	/**A <code>text/uri-list</code> content type as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>, "URI Resolution Services Necessary for URN Resolution".*/
+	public final static String URI_LIST_SUBTYPE="uri-list";
+	/**The wildcard subtype, matching any subtype.*/
+	public final static String WILDCARD_SUBTYPE=String.valueOf(WILDCARD_CHAR);
 	public final static String XML_SUBTYPE="xml";
 
 		//image media types

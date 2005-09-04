@@ -7,6 +7,7 @@ import static java.util.Collections.*;
 
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
+import com.garretwilson.text.FormatUtilities;
 import com.garretwilson.util.*;
 import com.sun.mail.iap.Argument;
 
@@ -15,12 +16,21 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
 
 /**Various URI manipulating functions for working with URIs as defined in
-	in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
+	<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
 	"Uniform Resource Identifiers (URI): Generic Syntax".
 @see java.net.URI
 */
 public class URIUtilities
 {
+
+	/**Creates a string of type <code>text/uri-list</code> as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>, "URI Resolution Services Necessary for URN Resolution".
+	@param uris The URIs to include in the list.
+	@return A URI list string.
+	*/ 
+	public static String createURIList(final URI... uris)
+	{
+		return FormatUtilities.formatList(new StringBuilder(), "\r\n", (Object[])uris).toString();	//create the URI list
+	}
 
 	/**Creates a new URI identical to the supplied URI with a different path.
 	@param uri The URI to change.

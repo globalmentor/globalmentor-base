@@ -98,7 +98,19 @@ public class FormatUtilities
 		return formatList(stringBuilder, String.valueOf(delimiter), collection);	//format the list with a string delimiter
 	}
 
-	/**Appends the string representations of the given objects separated by a delimiter character.
+	/**Appends the string representations of the given objects separated by a delimiter string.
+	@param stringBuilder The string builder into which the result should be placed.
+	@param delimiter The separator to be inserted between the object strings. 
+	@param items The objects to be formatted.
+	@return The string buffer containing the new information.
+	@see Object#toString
+	*/
+	public static StringBuilder formatList(final StringBuilder stringBuilder, final String delimiter, final Object... items)	//TODO delete when we can use Iterable again
+	{
+		return formatList(stringBuilder, delimiter, asList(items));
+	}
+
+	/**Appends the string representations of the given objects separated by a delimiter string.
 	@param stringBuilder The string builder into which the result should be placed.
 	@param delimiter The separator to be inserted between the object strings. 
 	@param collection The objects to be formatted.
@@ -112,7 +124,8 @@ public class FormatUtilities
 		{
 			stringBuilder.append(item).append(delimiter);	//append the item and the delimiter
 		}
-		deleteLastChar(stringBuilder);	//remove the last delimiter
+		final int length=stringBuilder.length();	//get the length of the string builder
+		stringBuilder.delete(length-delimiter.length(), length);	//delete the last delimiter
 		return stringBuilder;	//return the string builder we used
 	}
 
