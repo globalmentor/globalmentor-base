@@ -97,27 +97,22 @@ public class URIUtilities
 		return stringBuilder.toString();	//return the string version of the constructed path
 	}
 	
-	/**Constructs a query string for a URI by URL-encoding each name-value pair,
+	/**Constructs a query string for a URI by URI-encoding each name-value pair,
 	 	separating them with '&', and prepending the entire string (if there is
 	 	at least one parameter) with '?'.
 	@param params The name-value pairs representing the query parameters.
 	@return A string representing the constructed query, or the empty string if
 		there were no parameters.
 	*/
-/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
-	public static String constructQuery(final NameValuePair<String, String>[] params)	//TODO recode with varargs
+	public static String constructQuery(final NameValuePair<String, String>... params)
 	{
 		return constructQuery(constructQueryParameters(params));	//construct a query, prepended with the query character
 	}
-*/
 
-	/**Constructs a query string for a URI by prepending the given query string,
-	 	if it is not the empty string, with '?'.
+	/**Constructs a query string for a URI by prepending the given query string, if it is not the empty string, with '?'.
 	@param params The string representing the query parameters.
-	@return A string representing the constructed query, or the empty string if
-		there were no parameters.
+	@return A string representing the constructed query, or the empty string if there were no parameters.
 	*/
-/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
 	public static String constructQuery(final String params)
 	{
 		final StringBuilder query=new StringBuilder();
@@ -128,15 +123,11 @@ public class URIUtilities
 		}
 		return query.toString();	//return the query string we constructed
 	}
-*/
 
-	/**Constructs a query string for a URI by URL-encoding each name-value pair,
-	 	separating them with '&'.
+	/**Constructs a query string for a URI by URI-encoding each name-value pair, separating them with '&'.
 	@param params The name-value pairs representing the query parameters.
-	@return A string representing the constructed query, or the empty string if
-		there were no parameters.
+	@return A string representing the constructed query, or the empty string if there were no parameters.
 	*/
-/*TODO fix; do *not* use URLEncoder, which is for www-encoded forms	
 	public static String constructQueryParameters(final NameValuePair<String, String>... params)
 	{
 		final StringBuilder paramStringBuilder=new StringBuilder();
@@ -144,23 +135,15 @@ public class URIUtilities
 		{
 			for(NameValuePair<String, String> param : params)	//look at each parameter
 			{
-				try
-				{
-					paramStringBuilder.append(URLEncoder.encode(param.getName(), UTF_8));	//append the parameter name
-					paramStringBuilder.append(QUERY_NAME_VALUE_ASSIGNMENT);	//append the value-assignment character
-					paramStringBuilder.append(URLEncoder.encode(param.getValue(), UTF_8));	//append the parameter value
-					paramStringBuilder.append(QUERY_NAME_VALUE_PAIR_DELIMITER);	//append the name-value pair delimiter
-				}
-				catch(UnsupportedEncodingException unsupportedEncodingException)	//we should always support UTF-8
-				{
-					throw new AssertionError(unsupportedEncodingException);
-				}
+				paramStringBuilder.append(encode(param.getName()));	//append the parameter name
+				paramStringBuilder.append(QUERY_NAME_VALUE_ASSIGNMENT);	//append the value-assignment character
+				paramStringBuilder.append(encode(param.getValue()));	//append the parameter value
+				paramStringBuilder.append(QUERY_NAME_VALUE_PAIR_DELIMITER);	//append the name-value pair delimiter
 			}
 			paramStringBuilder.delete(paramStringBuilder.length()-1, paramStringBuilder.length());	//remove the last name-value pair delimiter
 		}
 		return paramStringBuilder.toString();	//return the query parameter string we constructed
 	}
-*/
 
 	/**Creates a path-based query from a standard URI query.
 	A query in the form <code>?var1=value1&amp;var2=value2</code> will be converted to the form
@@ -814,16 +797,14 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	<p>This method should normally only be used when the format
 		of the string is known to be a syntactically correct URI.</p>
 	<p>If no URI is provided, a URI is created from the fragment itself.</p>
-	@param URI The URI to which to add a fragement identifier, or
-		<code>null</code> if a URI chould be created from just the fragment.
+	@param uri The URI to which to add a fragement identifier, or <code>null</code> if a URI chould be created from just the fragment.
 	@param fragment The fragment to add to the end of the URI.
-	@exception IllegalArgumentException Thrown if the a URI cannot be constructed
-		from the given information.
+	@exception IllegalArgumentException Thrown if the a URI cannot be constructed from the given information.
 	@see URI#create
 	*/
 	public static URI resolveFragment(final URI uri, final String fragment) throws IllegalArgumentException
 	{
-		final String fragmentSuffix=new StringBuffer().append(FRAGMENT_SEPARATOR).append(fragment).toString();	//create a suffix that includes the fragment separator and the fragment
+		final String fragmentSuffix=new StringBuilder().append(FRAGMENT_SEPARATOR).append(fragment).toString();	//create a suffix that includes the fragment separator and the fragment
 		if(uri!=null)	//if there is a URI
 			return uri.resolve(fragmentSuffix);	//resolve the fragment against the URI
 		else	//if there is no URI
