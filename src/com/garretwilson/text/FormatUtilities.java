@@ -125,7 +125,10 @@ public class FormatUtilities
 			stringBuilder.append(item).append(delimiter);	//append the item and the delimiter
 		}
 		final int length=stringBuilder.length();	//get the length of the string builder
-		stringBuilder.delete(length-delimiter.length(), length);	//delete the last delimiter
+		if(length>0)	//if items were added
+		{
+			stringBuilder.delete(length-delimiter.length(), length);	//delete the last delimiter
+		}
 		return stringBuilder;	//return the string builder we used
 	}
 
