@@ -1,6 +1,7 @@
 package com.garretwilson.lang;
 
 import java.lang.reflect.*;
+import java.util.*;
 
 import static com.garretwilson.lang.JavaConstants.*;
 import static com.garretwilson.lang.StringUtilities.*;
@@ -157,4 +158,57 @@ public class ClassUtilities
 		}
 	}
 
+	/**Determines all super classes and interfaces of the given class.
+	@param objectClass The class for which super classes and interfaces should be found.
+	@param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
+	@param includeSuperClasses Whether super classes should be returned.
+	@param includeAbstract Whether abstract classes should be returned.
+	@param includeInterfaces Whether implemented interfaces should be returned.
+	@return The set of all super classes and implemented interfaces.
+	*/
+	public static Set<Class<?>> getClasses(final Class<?> objectClass, final Class<?> rootClass, final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces)
+	{
+		final Set<Class<?>> classes=new HashSet<Class<?>>();	//create a new set of classes
+		getClasses(objectClass, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classes);	//get all the classes
+		return classes;	//return the classes we retrieved
+	}
+
+	/**Determines all super classes and interfaces of the given class.
+	@param objectClass The class for which super classes and interfaces should be found.
+	@param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
+	@param includeSuperClasses Whether super classes should be returned.
+	@param includeAbstract Whether abstract classes should be returned.
+	@param includeInterfaces Whether implemented interfaces should be returned.
+	@param classes The set of classes to which the super classes and implemented interfaces should be added.
+	*/
+	protected static void getClasses(final Class<?> objectClass, final Class<?> rootClass, final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces, final Set<Class<?>> classes)
+	{
+		if(includeSuperClasses)	//if super classes should be included
+		{
+			final Class<?> superClass=objectClass.getSuperclass();	//get the super class
+			if(superClass!=null)	//if there is a super class
+			{
+				if(rootClass==null || rootClass.isAssignableFrom(superClass))	//if the super class extends or implements the root class
+				{
+					if(includeAbstract || !Modifier.isAbstract(superClass.getModifiers()))	// make sure we should include abstract classes if this is an abstract class
+					{
+						classes.add(superClass);	//add the super class to the set
+					}
+					getClasses(superClass, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classes);	//get all the classes of the super class
+				}
+			}
+		}
+		if(includeInterfaces)	//if interfaces should be included
+		{
+			for(final Class<?> classInterface:objectClass.getInterfaces())	//look at each implemented interface
+			{
+
+				if(rootClass==null || rootClass.isAssignableFrom(classInterface))	//if this interface extends the root class
+				{
+					classes.add(classInterface);	//add the interface to the set
+					getClasses(classInterface, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classes);	//get all the classes of the interface
+				}
+			}
+		}
+	}
 }
