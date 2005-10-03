@@ -415,7 +415,7 @@ public class URIUtilities
 	@param uri The URI for which to return a media type.
 	@return The default media type for the URI's file extension, or <code>null</code>
 		if no known media type is associated with this URI's extension.
-	@see MediaType#getMediaType
+	@see ContentTypeUtilities#getMediaType
 	*/
 	public static ContentType getMediaType(final URI uri)
 	{
