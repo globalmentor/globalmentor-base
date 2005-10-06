@@ -6,7 +6,7 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 
 /**A resource bundle backed by a hash map.
 @author Garret Wilson
-@see java.util.PropertyResourceBundle
+@see PropertyResourceBundle
 */
 public class HashMapResourceBundle extends ResourceBundle
 {
