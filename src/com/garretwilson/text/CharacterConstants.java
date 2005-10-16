@@ -24,6 +24,8 @@ public interface CharacterConstants
 	public final static char SPACE_CHAR=0x0020;
 	/**A quotation mark character.*/
 	public final static char QUOTATION_MARK_CHAR=0x0022;
+	/**The percent sign.*/
+	public final static char PERCENT_SIGN_CHAR=0x0025;
 	/**An apostrophe character.*/
 	public final static char APOSTROPHE_CHAR=0x0027;
 	/**A plus sign character.*/
