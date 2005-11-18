@@ -160,4 +160,34 @@ public class IntegerUtilities
 		return StringUtilities.makeStringLength(Integer.toHexString(value), length, '0', 0);
 	}
 
+	/**Creates an array of primitive values from the given array of objects.
+	@param integers The objects to place in an primitive value array.
+	@return An array of primitive values representing the given objects.
+	*/
+	public static int[] toIntArray(final Integer... integers)
+	{
+		final int count=integers.length;	//find out how many integers there are
+		final int[] ints=new int[count];	//create an array of ints
+		for(int i=count-1; i>=0; --i)	//for each index
+		{
+			ints[i]=integers[i].intValue();	//extract the int value and place it in the new array
+		}
+		return ints;	//return the array we created and filled
+	}
+
+	/**Creates an array of objects from the given array of primitive values.
+	@param ints The primitive values to place in an object array.
+	@return An array of object values representing the given primitive values.
+	*/
+	public static Integer[] toIntegerArray(final int... ints)
+	{
+		final int count=ints.length;	//find out how many ints there are
+		final Integer[] integers=new Integer[count];	//create an array of integers
+		for(int i=count-1; i>=0; --i)	//for each index
+		{
+			integers[i]=new Integer(ints[i]);	//create an object from this integer and place it in the new array
+		}
+		return integers;	//return the array we created and filled
+	}
+
 }
