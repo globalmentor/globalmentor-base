@@ -5,7 +5,7 @@ import java.beans.PropertyChangeListener;
 /**A Java Beans property change listener retrofitted to use generics to cast to proper value type.
 An implementing class must override the non-generic property change method and call the generic version,
 so that the property change can be noted by either method. 
-The abstract version of this class, <code>AbstractPropertyValueChangeListener</code>, will be used most often.
+The abstract version of this class, {@link AbstractPropertyValueChangeListener}, will be used most often.
 @author Garret Wilson
 */
 public interface PropertyValueChangeListener<V> extends PropertyChangeListener
