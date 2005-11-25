@@ -7,7 +7,7 @@ All collection access is synchronized on the provided synchronization object.
 @param <E> The type of element contained in the list.
 @author Garret Wilson
 */
-public class SynchronizedListDecorator<E> extends SynchronizedCollectionDecorator<E> implements List<E>
+public class SynchronizedListDecorator<E> extends SynchronizedCollectionDecorator<E> implements List<E>	//TODO fix to return a synchronized list iterator
 {
 
 	/**The list this class decorates.*/
