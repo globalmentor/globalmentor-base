@@ -9,6 +9,22 @@ public class IntegerUtilities
 	/**This class cannot be publicly instantiated.*/
 	private IntegerUtilities() {}
 
+	/**Checks to make sure that a given index is within the given range.
+	@param index The index to check.
+	@param rangeMin The minimum range index, inclusive.
+	@param rangeMax The maximum range index, exclusive.
+	@exception IndexOutOfBoundsException if the index is before the range minimum, or equal to or greater than the range maximum.
+	@return The given index.
+	*/
+	public static int checkIndexBounds(final int index, int rangeMin, int rangeMax)
+	{
+		if(index<rangeMin || index>=rangeMax)	//if the index not within its bounds
+		{
+			throw new IndexOutOfBoundsException("Index out of bounds: "+index);
+		}
+		return index;	//return the index, which has been determined to be in bounds
+  }
+
 	/**Compares an integer object with the value of a literal integer.
 	@param integerObject The object that supposedly holds an integer.
 	@param integer The literal integer value to compare to the integer object.
