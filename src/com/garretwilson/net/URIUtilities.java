@@ -289,27 +289,67 @@ public class URIUtilities
 	}
 */
 
-	/**Retrieves a map of parameter value lists from the query of a URI, if present.
+	/**Retrieves the parameters from the query of a URI, if present.
 	@param uri The URI from which to extract parameters.
-	@return The map of parameter value lists, keyed to parameter names.
+	@return An array of parameters.
 	*/
-	public static ListMap<String, String> getParameters(final URI uri)
+	public static ListMap<String, String> getParameterMap(final URI uri)
 	{
+		final NameValuePair<String, String>[] parameters=getParameters(uri);	//get the parameters from the URI
 		final ListMap<String, String> parameterListMap=new ArrayListHashMap<String, String>();	//create a new list map in which to store the parameters
-		final String query=uri.getRawQuery();	//get the query of the URI
-		if(query!=null)	//if this URI specified a query
+		if(parameters!=null)	//if this URI specified a query
 		{
-			final String[] parameters=query.split(String.valueOf(QUERY_NAME_VALUE_PAIR_DELIMITER));	//split the query into parameters
-			for(final String parameter:parameters)	//for each parameters
+			for(final NameValuePair<String, String> parameter:parameters)	//for each parameter
 			{
-				final String[] nameValue=parameter.split(String.valueOf(QUERY_NAME_VALUE_ASSIGNMENT));	//split the parameter into its name and value
-				if(nameValue.length==2)	//if we found a name and a value
-				{
-					parameterListMap.addItem(decode(nameValue[0]), decode(nameValue[1]));	//add this name and value, each of which may have been encoded
-				}
+				parameterListMap.addItem(parameter.getName(), parameter.getValue());	//add this name and value, each of which may have been encoded
 			}
 		}
 		return parameterListMap;	//return the parameters, if any
+	}
+
+	/**Retrieves the query parameters from a URI.
+	@param uri The URI which may contain a query.
+	@return An array of parameters represented by the URI query, or <code>null</code> if the given URI does not contain a query.
+	*/
+	public static NameValuePair<String, String>[] getParameters(final URI uri)
+	{
+		return getParameters(uri.getRawQuery());	//return the paramters for this URI query, if there is a query
+	}		
+
+	/**Retrieves the parameters from a URI query.
+	@param query The string containing URI query parameters (without the '?' prefix), or <code>null</code>.
+	@return An array of parameters represented by the query, or <code>null</code> if the given query is <code>null</code>.
+	*/
+	@SuppressWarnings("unchecked")	//we can't check the creation of a generic array
+	public static NameValuePair<String, String>[] getParameters(final String query)
+	{
+		if(query!=null)	//if a query was given
+		{
+			final String[] parameterStrings=query.split(String.valueOf(QUERY_NAME_VALUE_PAIR_DELIMITER));	//split the query into parameters
+			final NameValuePair<String, String>[] parameters=new NameValuePair[parameterStrings.length];	//create an array to hold parameters
+			int i=0;
+			for(final String parameterString:parameterStrings)	//for each parameters
+			{
+				final String[] nameValue=parameterString.split(String.valueOf(QUERY_NAME_VALUE_ASSIGNMENT));	//split the parameter into its name and value
+				final String name;	//we'll get the parameter name
+				final String value;	//we'll get the parameter value
+				if(nameValue.length>0)	//if there was at least one token
+				{
+					name=decode(nameValue[0]);	//the first token is the name
+					value=nameValue.length>1 ? decode(nameValue[1]) : "";	//use thet empty string for the value if no value was provided
+				}
+				else	//if there wasn't at least one token
+				{
+					name=value="";	//there is no name or value
+				}
+				parameters[i++]=new NameValuePair<String, String>(name, value);	//create a new parameter and advance to the next index
+			}
+			return parameters;	//return the parameters
+		}
+		else	//if no query is given
+		{
+			return null;	//there are no parameters
+		}
 	}
 
 	/**Creates a URI from the given path, verifying that the string contains only a path.

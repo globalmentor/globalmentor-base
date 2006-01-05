@@ -30,6 +30,12 @@ public class NameValuePair<N, V> extends DefaultNamedObject<N> implements IDable
 		value=newValue; //set the value
 	}
 
+	/**@return A hash code value for the object.*/
+	public int hashCode()
+	{
+		return ObjectUtilities.hashCode(getName(), getValue());	//calculate a hash code from the name and value
+	}
+
 	/**If <code>object</code> is another <code>NameValuePair</code>, compares the
 		names and values. Otherwise, compares the objects using the superclass functionality.
 	@param object The object with which to compare this name/value pair; should be
