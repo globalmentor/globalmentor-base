@@ -116,6 +116,8 @@ public class ContentTypeConstants
 	public final static String PDF_SUBTYPE="pdf";
 	/**A Rar compressed file.*/	
 	public final static String X_RAR_COMPRESSED_SUBTYPTE=EXTENSION_PREFIX+"rar-compressed";
+	/**A Macromedia Flash object.*/
+	public final static String X_SHOCKWAVE_FLASH_SUBTYPE="x-shockwave-flash";
 	/**Submitted URL-encoded form data; see <a href="http://www.rfc-editor.org/rfc/rfc1867.txt">RFC 1867</a>.*/
 	public final static String X_WWW_FORM_URLENCODED=EXTENSION_PREFIX+"www-form-urlencoded";
 	/**An XML application.*/
