@@ -5,6 +5,7 @@ import java.util.*;
 import javax.mail.internet.ContentType;
 import com.garretwilson.lang.*;
 import com.garretwilson.text.*;
+import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.util.*;
 
 import static com.garretwilson.io.ContentTypeConstants.*;
@@ -588,12 +589,15 @@ preface
 		<li><code>text/*</code></li>
 		<li><code>application/xml</code></li>
 		<li><code>application/*+xml</code></li>
+		<li><code>application/xml-external-parsed-entity</code></li>
+		<li><code>application/*+xml-external-parsed-entity</code> (not formally defined)</li>
 	</ul>
 	@param contentType The content type of a resource, or <code>null</code> for no
 		content type.
 	@return <code>true</code> if the given content type is one of several text
 		media types.
 	@see XMLUtilities#isXML(ContentType)
+	@see XMLUtilities#isXMLExternalParsedEntity(ContentType)
 	*/ 
 	public static boolean isText(final ContentType contentType)
 	{
@@ -603,7 +607,7 @@ preface
 			{
 				return true;	//text/* is a text content type
 			}
-			return isXML(contentType);	//return whether this is an XML content type; all XML content types are text content types
+			return isXML(contentType) || isXMLExternalParsedEntity(contentType);	//return whether this is an XML document or external parsed entity content type; all XML content types are text content types
 		}
 		return false;	//this is not a media type we recognize as being HTML
 	}

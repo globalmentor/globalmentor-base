@@ -15,24 +15,28 @@ public class ClassUtilities
 	/**This class cannot be publicly instantiated.*/
 	private ClassUtilities() {}
 
-	/**Returns the package name of the given class. For example, passing
-		<code>String.class</code> will return "java.lang".
-		<p>This method is redundant, returning the same value as
-		<code>Class.getPackage().getName()</code>, but is necessary to work around
-		SavaJe OS 1.1 returning <code>null</code> for <code>Class.getPackage()</code>.</p>
-		<p>Currently the package names returned for internal classes will not be
-		correct.</p>
-	@param objectClass The class for which the Java package will be determined.
-	@return A string representing the package name of the given class.
+  /**Finds a defined constructor of a class.
+	This method differs from {@link Class#getConstructor} in that if no matching constructor is found, <code>null</code> is returned rather than an exception being thrown.
+	@param objectClass The class for which the constructor should be found.
+	@param parameterTypes The constructor parameters.
+	@return The <code>Method</code> object of the public constructor that matches the specified <code>parameterTypes</code>, or <code>null</code> if no such constructor exists.
+	@exception SecurityException If a security manager, <em>s</em>, is present and any of the following conditions is met:
+  <ul>
+		<li>Invocation of <code>{@link SecurityManager#checkMemberAccess s.checkMemberAccess(this, Member.PUBLIC)}</code> denies access to the constructor.</li>
+		<li>The caller's class loader is not the same as or an ancestor of the class loader for the current class and invocation of <code>{@link SecurityManager#checkPackageAccess s.checkPackageAccess()}</code> denies access to the package of this class.</li>
+	</ul>
 	*/
-/*G***del; support for SavaJe isn't currently necessary
-	public static String getPackageName(final Class objectClass)
-	{
-		final String className=objectClass.getName(); //get the class name
-		final int classNameDividerIndex=className.lastIndexOf('.'); //G***testnig
-		return classNameDividerIndex>=0 ? className.substring(0, classNameDividerIndex) : className;  //G***testing
-	}
-}
+  public static <T> Constructor<T> getConstructor(final Class<T> objectClass, final Class ... parameterTypes) throws SecurityException
+  {
+  	try
+		{
+			return objectClass.getConstructor(parameterTypes);	//ask the class for the constructor
+		}
+  	catch(final NoSuchMethodException noSuchMethodException)	//if the constructor isn't found
+		{
+  		return null;	//indicate that the constructor couldn't be found
+		}	
+  }
 
 	/**Convenience function to locate and return the public default constructor of
 		a particular class. This differs from <code>Class.getConstructor()</code> in

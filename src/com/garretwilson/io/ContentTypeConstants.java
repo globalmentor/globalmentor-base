@@ -36,8 +36,10 @@ public class ContentTypeConstants
 	public final static char SUBTYPE_SUFFIX_DELIMITER_CHAR='+';
 
 		//subtype suffixes
-	/**The suffix for XML application types.*/
+	/**The suffix for XML application types, as defined in <a href="http://www.ietf.org/rfc/rfc3023.txt">RFC 3023</a>, "XML Media Types".*/
 	public final static String XML_SUBTYPE_SUFFIX="xml";
+	/**The suffix for XML external parsed entity subtyes (not yet formally defined).*/
+	public final static String XML_EXTERNAL_PARSED_ENTITY_SUBTYPE_SUFFIX="xml-external-parsed-entity";
 	/**The suffix for RDF application types.*/
 	public final static String RDF_XML_SUBTYPE_SUFFIX="rdf"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**The suffix for zip application types.*/
@@ -62,6 +64,8 @@ public class ContentTypeConstants
 	/**The wildcard subtype, matching any subtype.*/
 	public final static String WILDCARD_SUBTYPE=String.valueOf(WILDCARD_CHAR);
 	public final static String XML_SUBTYPE="xml";
+	/**An XML external parsed entity, as defined in <a href="http://www.ietf.org/rfc/rfc3023.txt">RFC 3023</a>, "XML Media Types".*/
+	public final static String XML_EXTERNAL_PARSED_ENTITY_SUBTYPE="xml-external-parsed-entity";
 
 		//image media types
 	/**A GIF image.*/
@@ -128,6 +132,8 @@ public class ContentTypeConstants
 	public final static String X_XEBOOK_RDF_XML_ZIP_SUBTYPE=X_XEBOOK_RDF_XML_SUBTYPE+SUBTYPE_SUFFIX_DELIMITER_CHAR+ZIP_SUBTYPE_SUFFIX;
 	/**An XHTML application.*/
 	public final static String XHTML_XML_SUBTYPE="xhtml"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
+	/**An XHTML fragment (not yet formally defined).*/
+	public final static String XHTML_XML_EXTERNAL_PARSED_ENTITY_SUBTYPE="xhtml"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_EXTERNAL_PARSED_ENTITY_SUBTYPE_SUFFIX;
 	/**A Zip file.*/
 	public final static String ZIP_SUBTYPE="zip";
 
