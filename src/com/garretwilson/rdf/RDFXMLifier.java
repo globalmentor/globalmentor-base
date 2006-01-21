@@ -704,6 +704,10 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants	//TODO why don
 			//TODO check somewhere else that the namespace was defined in the parsed document---otherwise, only the local name will be set, even for the reference URI
 
 		assert namespaceURI!=null : "Could not determine namespace URI for "+resource.getReferenceURI();	//TODO fix
+		if(namespaceURI==null)	//TODO improve
+		{
+			throw new AssertionError("Missing namespace URI for resource reference URI "+resource.getReferenceURI());
+		}
 		return namespaceURI;	//return the namespace URI we found
 	}
 
