@@ -309,5 +309,11 @@ public class HTTPConstants
 	/**Linear whitespace characters which can, in the correct sequence, be folded into single spaces.*/
 	public final static String LWS_CHARS=new StringBuilder(CRLF).append(SP).append(HT).toString();
 
+	/**The regular expression for a product version in the form X.X.X, where all but the first version is optional.
+	Each group represents a numeric segment of the version string.
+	This regular expression accepts versions with letters, such as "7.0b" and "1.23b2", in which case the letters and everything after are not included in the groups.
+	This regular expression therefore accepts "6.0", "7.0b", "8.9.10", and "2.17b3".
+	*/
+	public final static String PRODUCT_VERSION_REGEX="(\\d+)(?:\\.(\\d+)[a-z]*\\d*(?:\\.(\\d+)[a-z]*\\d?)?)?";
 }
 
