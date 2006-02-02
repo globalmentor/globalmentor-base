@@ -62,6 +62,12 @@ public class HTTPConstants
 	public final static String EXPIRES_HEADER="Expires";
 	/**The HTTP header indicating Internet host and port number of the resource being requested.*/
 	public final static String HOST_HEADER="Host";
+	/**The HTTP header indicating content should be retrieved only if it has been modified after a certain date.*/
+	public final static String IF_MODIFIED_SINCE_HEADER="If-Modified-Since";
+	/**The HTTP header indicating content should be retrieved only if it has not been modified after a certain date.*/
+	public final static String IF_UNMODIFIED_SINCE_HEADER="If-Unmodified-Since";	
+	/**The HTTP header indicating the date and time at which the origin server believes the variant was last modified.*/
+	public final static String LAST_MODIFIED_HEADER="Last-Modified";
 	/**The HTTP header indicating the destination of a redirection.*/
 	public final static String LOCATION_HEADER="Location";
 	/**The HTTP pragma header.*/
