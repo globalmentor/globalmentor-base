@@ -1,6 +1,7 @@
 package com.garretwilson.beans;
 
 import java.beans.*;
+
 import com.garretwilson.lang.ObjectUtilities;
 
 /**An object that automatically supports bound properties.
@@ -31,6 +32,25 @@ public class BoundPropertyObject implements PropertyBindable
 				propertyChangeSupport=new PropertyChangeSupport(this);  //create new property change support				
 			}
 			return propertyChangeSupport;	//return the property change support
+		}
+
+	/**A lazily-created property change listener to repeat copies of events received, using this component as the source.*/ 
+	private PropertyChangeListener repeaterPropertyChangeListener=null;
+
+		/**A property change listener to repeat copies of events received, using this component as the source.*/ 
+		protected synchronized PropertyChangeListener getRepeaterPropertyChangeListener()	//TODO update to work with PropertyValueChangeEvent
+		{
+			if(repeaterPropertyChangeListener==null)	//if we have not yet created the repeater property change listener
+			{
+				repeaterPropertyChangeListener=new PropertyChangeListener()	//create a listener to listen for the value model changing a property value
+						{
+							public void propertyChange(final PropertyChangeEvent propertyChangeEvent)	//if the value model changes a property value
+									{
+										firePropertyChange(propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());	//forward the property change event, indicating this component as the event source
+									}			
+						};
+			}
+			return repeaterPropertyChangeListener;	//return the repeater property change listener
 		}
 
 	/**Default constructor.*/
