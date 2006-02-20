@@ -4,6 +4,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import static com.garretwilson.lang.JavaConstants.*;
+import static com.garretwilson.lang.JavaUtilities.*;
 import static com.garretwilson.lang.StringUtilities.*;
 
 /**Utilities for manipulating Java classes.
@@ -62,6 +63,47 @@ public class ClassUtilities
 				return constructor; //we found the default constructor
 		}
 		return null;  //show that we could not find a default constructor
+	}
+
+	/**Returns the getter method of a given class.
+	@param objectClass The class for which a getter method should be returned.
+	@param propertyName The property name, such as "propertyName".
+	@return The method with the name "get<var>PropertyName</var>".
+	@throws NoSuchMethodException if a matching method is not found or if the name is "<init>"or "<clinit>".
+	*/
+	public static Method getGetterMethod(final Class objectClass, final String propertyName) throws NoSuchMethodException
+	{
+		return objectClass.getMethod(getGetterMethodName(propertyName));	//return the getter method, if there is one
+	}
+
+	/**Returns the setter method of a given class.
+	@param objectClass The class for which a setter method should be returned.
+	@param propertyName The property name, such as "propertyName".
+	@param valueClass The type of property value to be set. 
+	@return The method with the name "set<var>PropertyName</var>" and the given value class as a parameter type.
+	@throws NoSuchMethodException if a matching method is not found or if the name is "<init>"or "<clinit>".
+	*/
+	public static Method getSetterMethod(final Class objectClass, final String propertyName, final Class valueClass) throws NoSuchMethodException
+	{
+		return objectClass.getMethod(getSetterMethodName(propertyName), valueClass);	//return the setter method, if there is one
+	}
+
+	/**The name of the getter method corresponding to the given property.
+	@param propertyName The property name, such as "propertyName".
+	@return The name of the getter method in the form "get<var>PropertyName</var>".
+	*/
+	public static String getGetterMethodName(final String propertyName)
+	{
+		return "get"+getProperName(propertyName);	//return "getPropertyName" TODO use a constant
+	}
+
+	/**The name of the setter method corresponding to the given property.
+	@param propertyName The property name, such as "propertyName".
+	@return The name of the setter method in the form "set<var>PropertyName</var>".
+	*/
+	public static String getSetterMethodName(final String propertyName)
+	{
+		return "set"+getProperName(propertyName);	//return "setPropertyName" TODO use a constant
 	}
 
 	/**Creates a property name by appending the property local name to the full class name.
