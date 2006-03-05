@@ -14,8 +14,8 @@ import com.garretwilson.util.EmptyIterator;
 	class are indeed generic subclasses of the class, as Java 5 <code>Class&lt;<var>T</var>&gt;</code> objects do not keep track
 	of the generic type of <var>T</var>.</p> 
 <p>This class uses thread-safe access methods. Returned listener iterators are "snapshots" of currently registered listeners, so may be accessed even
-	 though other threads (or even the event listener itself) may add and/or remove listeners.
-	Example:
+	 though other threads (or even the event listener itself) may add and/or remove listeners.</p>
+<p>Example:</p>
 	<blockquote><pre><code>
 	final Iterator&lt;MyListener&gt; myListeners=getListeners(MyListener.class);
 	if(myListeners.hasNext())

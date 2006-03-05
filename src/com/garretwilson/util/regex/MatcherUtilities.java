@@ -30,12 +30,13 @@ public class MatcherUtilities
 	*/
 	public static int[] getIntGroups(final Matcher matcher, final int beginGroupNumber)
 	{
-		final int groupCount=matcher.groupCount();	//see how many groups there are
+		final int groupCount=matcher.groupCount()-(beginGroupNumber-1);	//see how many groups there are, compensating for the beginning group number, which is one-based
 		final int[] array=new int[groupCount];	//create an array of values
-		for(int groupNumber=beginGroupNumber; groupNumber<=groupCount; ++groupNumber)	//for each group, using the required regular expression group one-based indexing
+		for(int groupIndex=0; groupIndex<groupCount; ++groupIndex)	//for each group
 		{
+			final int groupNumber=beginGroupNumber+groupIndex;	//see which group number this is, using the required regular expression group one-based indexing
 			final String group=matcher.group(groupNumber);	//get this group
-			array[groupNumber-1]=group!=null ? Integer.parseInt(group) : 0;	//parse this group, using zero for a null group
+			array[groupIndex]=group!=null ? Integer.parseInt(group) : 0;	//parse this group, using zero for a null group
 		}
 		return array;	//return the array of integer
 	}
