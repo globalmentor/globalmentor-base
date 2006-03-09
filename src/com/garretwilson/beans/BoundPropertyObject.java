@@ -9,7 +9,7 @@ import com.garretwilson.lang.ObjectUtilities;
 	listeners are added, the property change support will never be created or
 	invoked, even when firing property change events.</p>
 <p>This class was modeled from the property support of {@link java.awt.Component}.</p>
-<p>This class creates generic-aware property value change events.</p>
+<p>This implementation creates generic-aware property value change events.</p>
 @author Garret Wilson
 @see PropertyChangeSupport
 @see PropertyValueChangeEvent
