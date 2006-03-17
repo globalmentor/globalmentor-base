@@ -6,9 +6,12 @@ package com.guiseframework.model;
 public enum TaskStatus
 {
 
-	/**The task has been started.*/
-	STARTED,
-	
+	/**The task has been started but is incomplete.*/
+	INCOMPLETE,
+
+	/**The task has been started but there is an error.*/
+	ERROR,
+
 	/**The task is temporarily paused.*/
 	PAUSED,
 	
