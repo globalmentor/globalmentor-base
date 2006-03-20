@@ -92,22 +92,9 @@ public class FormatUtilities
 	@return The string buffer containing the new information.
 	@see Object#toString
 	*/
-//TODO bring back when backwards-compatibility isn't needed	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final Iterable<?> iterable)
-	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final Collection<?> collection)
+	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final Iterable<?> iterable)
 	{
-		return formatList(stringBuilder, String.valueOf(delimiter), collection);	//format the list with a string delimiter
-	}
-
-	/**Appends the string representations of the given objects separated by a delimiter string.
-	@param stringBuilder The string builder into which the result should be placed.
-	@param delimiter The separator to be inserted between the object strings. 
-	@param items The objects to be formatted.
-	@return The string buffer containing the new information.
-	@see Object#toString
-	*/
-	public static StringBuilder formatList(final StringBuilder stringBuilder, final String delimiter, final Object... items)	//TODO delete when we can use Iterable again
-	{
-		return formatList(stringBuilder, delimiter, asList(items));
+		return formatList(stringBuilder, String.valueOf(delimiter), iterable);	//format the list with a string delimiter
 	}
 
 	/**Appends the string representations of the given objects separated by a delimiter string.
@@ -117,10 +104,9 @@ public class FormatUtilities
 	@return The string buffer containing the new information.
 	@see Object#toString
 	*/
-//TODO bring back when backwards-compatibility isn't needed	public static StringBuilder formatList(final StringBuilder stringBuilder, final String delimiter, final Iterable<?> iterable)
-	public static StringBuilder formatList(final StringBuilder stringBuilder, final String delimiter, final Collection<?> collection)
+	public static StringBuilder formatList(final StringBuilder stringBuilder, final String delimiter, final Iterable<?> iterable)
 	{
-		for(final Object item:collection)	//for each item
+		for(final Object item:iterable)	//for each item
 		{
 			stringBuilder.append(item).append(delimiter);	//append the item and the delimiter
 		}
@@ -139,7 +125,6 @@ public class FormatUtilities
 	@return The string buffer containing the new information.
 	@see Object#toString
 	*/
-/*G***del if not needed
 	public static StringBuilder formatList(final StringBuilder stringBuilder, final String delimiter, final Object... items)
 	{
 		for(int i=0; i<items.length; ++i)	//look at each object
@@ -152,7 +137,6 @@ public class FormatUtilities
 		}
 		return stringBuilder;	//return the string builder, now containing the new information
 	}	
-*/
 
 	/**Formats a series of name-value pairs using the format:
 	 <var>name</var>="<var>value</value>", <var>name</var>="<var>value</value>"
