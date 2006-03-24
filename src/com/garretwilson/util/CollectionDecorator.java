@@ -331,7 +331,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	 * @see Set#equals(Object)
 	 * @see List#equals(Object)
 	 */
-//TODO del if not needed or wanted	public boolean equals(Object o) {return collection.equals(o);}	
+	public boolean equals(Object o) {return collection.equals(o);}	
 
 	/**
 	 * Returns the hash code value for this collection.  While the
@@ -348,6 +348,6 @@ public class CollectionDecorator<E> implements Collection<E>
 	 * @see Object#hashCode()
 	 * @see Object#equals(Object)
 	 */
-//TODO del if not needed or wanted	public int hashCode() {return collection.hashCode();}
+	public int hashCode() {return collection.hashCode();}
 	
 }

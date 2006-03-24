@@ -5,23 +5,28 @@ import java.util.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 
 /**A map that wraps an existing map, providing access through the <code>Map</code> interface.
-@param <K> The type of map key.
-@param <V> The type of map value.
+All map access is synchronized on the provided synchronization object.
+@param <K> The type of key used in the map.
+@param <V> The type of value stored in the map.
 @author Garret Wilson
 */
-public class MapDecorator<K, V> implements Map<K, V>
+public class SynchronizedMapDecorator<K, V> implements Map<K, V>
 {
-
 	/**The map this class decorates.*/
 	protected final Map<K, V> map;
 
+	/**The mutual exclusion synchronization object.*/
+	protected final Object mutex;
+
 	/**Map constructor.
 	@param map The map this map should decorate.
-	@exception NullPointerException if the provided map is <code>null</code>.
+	@param mutex The mutual exclusion synchronization object.
+	@exception NullPointerException if the provided map and/or mutex is <code>null</code>.
 	*/
-	public MapDecorator(final Map<K, V> map)
+	public SynchronizedMapDecorator(final Map<K, V> map, final Object mutex)
 	{
 		this.map=checkNull(map, "Map cannot be null");	//save the map
+		this.mutex=checkNull(mutex, "Mutex cannot be null");	//save the mutex
 	}
 
   /**
@@ -31,14 +36,14 @@ public class MapDecorator<K, V> implements Map<K, V>
    *
    * @return the number of key-value mappings in this map.
    */
-  public int size() {return map.size();}
+  public int size() {synchronized(mutex) {return map.size();}}
 
   /**
    * Returns <tt>true</tt> if this map contains no key-value mappings.
    *
    * @return <tt>true</tt> if this map contains no key-value mappings.
    */
-  public boolean isEmpty() {return map.isEmpty();}
+  public boolean isEmpty() {synchronized(mutex) {return map.isEmpty();}}
 
   /**
    * Returns <tt>true</tt> if this map contains a mapping for the specified
@@ -56,7 +61,7 @@ public class MapDecorator<K, V> implements Map<K, V>
    * @throws NullPointerException if the key is <tt>null</tt> and this map
    *            does not permit <tt>null</tt> keys (optional).
    */
-  public boolean containsKey(Object key) {return map.containsKey(key);}
+  public boolean containsKey(Object key) {synchronized(mutex) {return map.containsKey(key);}}
 
   /**
    * Returns <tt>true</tt> if this map maps one or more keys to the
@@ -74,7 +79,7 @@ public class MapDecorator<K, V> implements Map<K, V>
    * @throws NullPointerException if the value is <tt>null</tt> and this map
    *            does not permit <tt>null</tt> values (optional).
    */
-  public boolean containsValue(Object value) {return map.containsValue(value);}
+  public boolean containsValue(Object value) {synchronized(mutex) {return map.containsValue(value);}}
 
   /**
    * Returns the value to which this map maps the specified key.  Returns
@@ -100,7 +105,7 @@ public class MapDecorator<K, V> implements Map<K, V>
    * 
    * @see #containsKey(Object)
    */
-  public V get(Object key) {return map.get(key);}
+  public V get(Object key) {synchronized(mutex) {return map.get(key);}}
 
   // Modification Operations
 
@@ -130,7 +135,7 @@ public class MapDecorator<K, V> implements Map<K, V>
    *            keys or values, and the specified key or value is
    *            <tt>null</tt>.
    */
-  public V put(K key, V value) {return map.put(key, value);}
+  public V put(K key, V value) {synchronized(mutex) {return map.put(key, value);}}
 
   /**
    * Removes the mapping for this key from this map if it is present
@@ -157,7 +162,7 @@ public class MapDecorator<K, V> implements Map<K, V>
    * @throws UnsupportedOperationException if the <tt>remove</tt> method is
    *         not supported by this map.
    */
-  public V remove(Object key) {return map.remove(key);}
+  public V remove(Object key) {synchronized(mutex) {return map.remove(key);}}
 
 
   // Bulk Operations
@@ -184,7 +189,7 @@ public class MapDecorator<K, V> implements Map<K, V>
    *         this map does not permit <tt>null</tt> keys or values, and the
    *         specified map contains <tt>null</tt> keys or values.
    */
-  public void putAll(Map<? extends K, ? extends V> t) {map.putAll(t);}
+  public void putAll(Map<? extends K, ? extends V> t) {synchronized(mutex) {map.putAll(t);}}
 
   /**
    * Removes all mappings from this map (optional operation).
@@ -192,7 +197,7 @@ public class MapDecorator<K, V> implements Map<K, V>
    * @throws UnsupportedOperationException clear is not supported by this
    * 		  map.
    */
-  public void clear() {map.clear();}
+  public void clear() {synchronized(mutex) {map.clear();}}
 
 
   // Views
@@ -210,7 +215,7 @@ public class MapDecorator<K, V> implements Map<K, V>
    *
    * @return a set view of the keys contained in this map.
    */
-  public Set<K> keySet() {return map.keySet();}
+  public Set<K> keySet() {synchronized(mutex) {return map.keySet();}}
 
   /**
    * Returns a collection view of the values contained in this map.  The
@@ -226,7 +231,7 @@ public class MapDecorator<K, V> implements Map<K, V>
    *
    * @return a collection view of the values contained in this map.
    */
-  public Collection<V> values() {return map.values();}
+  public Collection<V> values() {synchronized(mutex) {return map.values();}}
 
   /**
    * Returns a set view of the mappings contained in this map.  Each element
@@ -243,59 +248,38 @@ public class MapDecorator<K, V> implements Map<K, V>
    *
    * @return a set view of the mappings contained in this map.
    */
-  public Set<Map.Entry<K, V>> entrySet() {return map.entrySet();}
+  public Set<Map.Entry<K, V>> entrySet() {synchronized(mutex) {return map.entrySet();}}
 
-	// Comparison and hashing
+  // Comparison and hashing
 
-	/**
-	 * Compares the specified object with this collection for equality. <p>
-	 *
-	 * While the <tt>Collection</tt> interface adds no stipulations to the
-	 * general contract for the <tt>Object.equals</tt>, programmers who
-	 * implement the <tt>Collection</tt> interface "directly" (in other words,
-	 * create a class that is a <tt>Collection</tt> but is not a <tt>Set</tt>
-	 * or a <tt>List</tt>) must exercise care if they choose to override the
-	 * <tt>Object.equals</tt>.  It is not necessary to do so, and the simplest
-	 * course of action is to rely on <tt>Object</tt>'s implementation, but
-	 * the implementer may wish to implement a "value comparison" in place of
-	 * the default "reference comparison."  (The <tt>List</tt> and
-	 * <tt>Set</tt> interfaces mandate such value comparisons.)<p>
-	 *
-	 * The general contract for the <tt>Object.equals</tt> method states that
-	 * equals must be symmetric (in other words, <tt>a.equals(b)</tt> if and
-	 * only if <tt>b.equals(a)</tt>).  The contracts for <tt>List.equals</tt>
-	 * and <tt>Set.equals</tt> state that lists are only equal to other lists,
-	 * and sets to other sets.  Thus, a custom <tt>equals</tt> method for a
-	 * collection class that implements neither the <tt>List</tt> nor
-	 * <tt>Set</tt> interface must return <tt>false</tt> when this collection
-	 * is compared to any list or set.  (By the same logic, it is not possible
-	 * to write a class that correctly implements both the <tt>Set</tt> and
-	 * <tt>List</tt> interfaces.)
-	 *
-	 * @param o Object to be compared for equality with this collection.
-	 * @return <tt>true</tt> if the specified object is equal to this
-	 * collection
-	 * 
-	 * @see Object#equals(Object)
-	 * @see Set#equals(Object)
-	 * @see List#equals(Object)
-	 */
-	public boolean equals(Object o) {return map.equals(o);}	
+  /**
+   * Compares the specified object with this map for equality.  Returns
+   * <tt>true</tt> if the given object is also a map and the two Maps
+   * represent the same mappings.  More formally, two maps <tt>t1</tt> and
+   * <tt>t2</tt> represent the same mappings if
+   * <tt>t1.entrySet().equals(t2.entrySet())</tt>.  This ensures that the
+   * <tt>equals</tt> method works properly across different implementations
+   * of the <tt>Map</tt> interface.
+   *
+   * @param o object to be compared for equality with this map.
+   * @return <tt>true</tt> if the specified object is equal to this map.
+   */
+  public boolean equals(Object o) {synchronized(mutex) {return map.equals(o);}}
 
-	/**
-	 * Returns the hash code value for this collection.  While the
-	 * <tt>Collection</tt> interface adds no stipulations to the general
-	 * contract for the <tt>Object.hashCode</tt> method, programmers should
-	 * take note that any class that overrides the <tt>Object.equals</tt>
-	 * method must also override the <tt>Object.hashCode</tt> method in order
-	 * to satisfy the general contract for the <tt>Object.hashCode</tt>method.
-	 * In particular, <tt>c1.equals(c2)</tt> implies that
-	 * <tt>c1.hashCode()==c2.hashCode()</tt>.
-	 *
-	 * @return the hash code value for this collection
-	 * 
-	 * @see Object#hashCode()
-	 * @see Object#equals(Object)
-	 */
-	public int hashCode() {return map.hashCode();}
+  /**
+   * Returns the hash code value for this map.  The hash code of a map
+   * is defined to be the sum of the hashCodes of each entry in the map's
+   * entrySet view.  This ensures that <tt>t1.equals(t2)</tt> implies
+   * that <tt>t1.hashCode()==t2.hashCode()</tt> for any two maps
+   * <tt>t1</tt> and <tt>t2</tt>, as required by the general
+   * contract of Object.hashCode.
+   *
+   * @return the hash code value for this map.
+   * @see Map.Entry#hashCode()
+   * @see Object#hashCode()
+   * @see Object#equals(Object)
+   * @see #equals(Object)
+   */
+  public int hashCode() {synchronized(mutex) {return map.hashCode();}}
+
 }

@@ -35,22 +35,46 @@ public class BoundPropertyObject implements PropertyBindable
 		}
 
 	/**A lazily-created property change listener to repeat copies of events received, using this component as the source.*/ 
-	private PropertyChangeListener repeaterPropertyChangeListener=null;
+	private PropertyChangeListener repeatPropertyChangeListener=null;
 
 		/**A property change listener to repeat copies of events received, using this component as the source.*/ 
-		protected synchronized PropertyChangeListener getRepeaterPropertyChangeListener()	//TODO update to work with PropertyValueChangeEvent
+		protected synchronized PropertyChangeListener getRepeatPropertyChangeListener()	//TODO update to work with PropertyValueChangeEvent
 		{
-			if(repeaterPropertyChangeListener==null)	//if we have not yet created the repeater property change listener
+			if(repeatPropertyChangeListener==null)	//if we have not yet created the repeater property change listener
 			{
-				repeaterPropertyChangeListener=new PropertyChangeListener()	//create a listener to listen for the value model changing a property value
+				repeatPropertyChangeListener=new PropertyChangeListener()	//create a listener to listen for a changing a property value
 						{
-							public void propertyChange(final PropertyChangeEvent propertyChangeEvent)	//if the value model changes a property value
+							public void propertyChange(final PropertyChangeEvent propertyChangeEvent)	//if a property value changes
 									{
-										firePropertyChange(propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());	//forward the property change event, indicating this component as the event source
+/*TODO del; doesn't work with versions that fire other types
+											//create a new property change event to repeat TODO update to work with other property change event types
+										final PropertyChangeEvent repeatPropertyChangeEvent=new PropertyValueChangeEvent<Object>(this, propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());
+										firePropertyChange(repeatPropertyChangeEvent);	//repeat the property change event, indicating this component as the event source
+*/
+										firePropertyChange(propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());	//repeat the property change event, indicating this component as the event source
 									}			
 						};
 			}
-			return repeaterPropertyChangeListener;	//return the repeater property change listener
+			return repeatPropertyChangeListener;	//return the repeater property change listener
+		}
+
+	/**A lazily-created property change listener to forward along events received unmodified.*/ 
+	private PropertyChangeListener forwardPropertyChangeListener=null;
+
+		/**A lazily-created property change listener to forward along events received unmodified.*/ 
+		protected synchronized PropertyChangeListener getForwardPropertyChangeListener()
+		{
+			if(forwardPropertyChangeListener==null)	//if we have not yet created the forward property change listener
+			{
+				forwardPropertyChangeListener=new PropertyChangeListener()	//create a listener to listen for a changing a property value
+						{
+							public void propertyChange(final PropertyChangeEvent propertyChangeEvent)	//if a property value changes
+									{
+										firePropertyChange(propertyChangeEvent);	//forward the property change event unmodified
+									}			
+						};
+			}
+			return forwardPropertyChangeListener;	//return the forward property change listener
 		}
 
 	/**Default constructor.*/

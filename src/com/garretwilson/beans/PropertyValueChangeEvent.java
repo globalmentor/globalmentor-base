@@ -2,7 +2,7 @@ package com.garretwilson.beans;
 
 import java.beans.PropertyChangeEvent;
 
-/**A propety value change event is a Java Beans property change event retrofitted to use generics to cast to proper value type.
+/**A property value change event is a Java Beans property change event retrofitted to use generics to cast to proper value type.
 @param <V> The type of property value.
 @author Garret Wilson
 */
