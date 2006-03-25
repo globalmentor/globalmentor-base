@@ -11,11 +11,14 @@ import java.lang.reflect.*;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.regex.Pattern;
 
 import com.garretwilson.rdf.*;
 import com.garretwilson.util.*;
 
 /**Processes PLOOP objects from an RDF data model.
+<p>This is a stateful processor and may only be used for one RDF data model instance.</p>
+<p>This processor is not thread safe.</p>
 <p>This processor can create the following types of objects from strings:</p>
 <ul>
 	<li><code>boolean</code></li>
@@ -36,7 +39,9 @@ import com.garretwilson.util.*;
 */
 public class PLOOPProcessor
 {
-
+	
+		//TODO eventually delete the name property functionality
+	
 	/**The default arguments that can be used in calling class constructors.*/
 	private final Set<Object> defaultConstructorArguments=new CopyOnWriteArraySet<Object>();
 
@@ -54,6 +59,9 @@ public class PLOOPProcessor
 		*/
 		public void setNameProperty(final String nameProperty) {this.nameProperty=nameProperty;}
 
+	/**The map of created objects keyed to the resources from which they were created.*/
+	protected final Map<RDFResource, Object> resourceObjectMap=new HashMap<RDFResource, Object>();
+		
 	/**Default arguments constructor.
 	@param defaultConstructorArguments The objects that can be used as default arguments in class constructors.
 	*/
@@ -62,12 +70,40 @@ public class PLOOPProcessor
 		addAll(this.defaultConstructorArguments, defaultConstructorArguments);	//add all the given default constructor arguments to our set of default constructor arguments
 	}
 
+	/**Retrieves an object to represent the given RDF object.
+	The RDF object must be one of the following:
+	<dl>
+		<dt>{@link RDFLiteral}</dt> <dd>Currently returns the string version of the literal's lexical form, regardless of the literal type.</dd>
+		<dt>{@link RDFListResource}</dt> <dd>Returns a {@link List} recursively containing objects defined by the list's contents.</dd>
+		<dt>{@link RDFResource}</dt> <dd>Returns an object based upon the <code>java:</code> type information.
+	</dl>
+	If the RDF object is a resource for which an object has already been created, the existing object will be returned.
+	Otherwise the object is created using {@link #createObject(RDFObject)} and a reference to the created object is stored for later retrieval inside {@link #initializeObject(Object, RDFResource, Map)}.
+	@param rdfObject The RDF object describing the Java object to be created.
+	@return A created and initialized object according to the given RDF description. 
+ 	@exception IllegalArgumentException if the given RDF object is a resource that does not specify Java type information.
+ 	@exception IllegalArgumentException if the given RDF object is a Java-typed resource the class of which cannot be found.
+ 	@exception IllegalArgumentException if the given RDF object indicates a Java class that has no appropriate constructor.
+ 	@exception IllegalArgumentException if the given RDF object indicates a Java class that is an interface or an abstract class.
+ 	@exception IllegalArgumentException if the given RDF object indicates a Java class the constructor of which is not accessible.
+	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
+	*/
+	public Object getObject(final RDFObject rdfObject) throws InvocationTargetException
+	{
+		Object object=rdfObject instanceof RDFResource ? resourceObjectMap.get((RDFResource)rdfObject) : null;	//look up an existing object if the description is a resource
+		if(object==null)	//if we don't have an object already
+		{
+			object=createObject(rdfObject);	//create the object from the description
+		}
+		return object;	//return the created object
+	}
+	
 	/**Creates and initializes an object to represent the given RDF object.
 	The RDF object must be one of the following:
 	<dl>
-		<dt>RDFLiteral</dt> <dd>Currently returns the string version of the literal's lexical form, regardless of the literal type.</dd>
-		<dt>RDFListResource</dt> <dd>Returns a {@link List} recursively containing objects defined by the list's contents.</dd>
-		<dt>RDFResource</dt> <dd>Returns an object based upon the <code>java:</code> type information.
+		<dt>{@link RDFLiteral}</dt> <dd>Currently returns the string version of the literal's lexical form, regardless of the literal type.</dd>
+		<dt>{@link RDFListResource}</dt> <dd>Returns a {@link List} recursively containing objects defined by the list's contents.</dd>
+		<dt>{@link RDFResource}</dt> <dd>Returns an object based upon the <code>java:</code> type information.
 	</dl>
 	@param rdfObject The RDF object describing the Java object to be created.
 	@return A created and initialized object according to the given RDF description. 
@@ -78,7 +114,7 @@ public class PLOOPProcessor
  	@exception IllegalArgumentException if the given RDF object indicates a Java class the constructor of which is not accessible.
 	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
 	*/
-	public Object createObject(final RDFObject rdfObject) throws InvocationTargetException
+	protected Object createObject(final RDFObject rdfObject) throws InvocationTargetException
 	{
 		if(rdfObject instanceof RDFLiteral)	//if the object is a literal
 		{
@@ -90,7 +126,7 @@ public class PLOOPProcessor
 			final List<Object> list=new ArrayList<Object>(rdfListResource.size());	//create a new list of the correct size
 			for(final RDFResource rdfListItem:rdfListResource)	//for each RDF resource in the list
 			{
-				list.add(createObject(rdfListItem));	//create an object from this RDF list item and add it to our list
+				list.add(getObject(rdfListItem));	//get or create an object from this RDF list item and add it to our list
 			}
 			return list;	//return the list of objects we created
 		}
@@ -193,7 +229,7 @@ public class PLOOPProcessor
 								{
 //								TODO del Debug.trace("found constructor with the following arguments:", ArrayUtilities.toString(arguments));
 									final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
-									initializeObject(object, resource.getReferenceURI(), propertyDescriptionMap);	//initialize the object with the properties
+									initializeObject(object, resource, propertyDescriptionMap);	//initialize the object with the properties
 									return object;	//return the constructed and initialized object
 								}
 /*TODO del; we're now allowing more arguments than just the session
@@ -228,6 +264,7 @@ public class PLOOPProcessor
 	}
 
 	/**Initializes an object based upon the given description.
+	The object being initialized will be stored locally keyed to the resource description for later lookup.
 	@param object The object to initialize.
 	@param resource The description for the object.
 	@exception ClassNotFoundException if a class was specified and the indicated class cannot be found.
@@ -237,17 +274,19 @@ public class PLOOPProcessor
 	public void initializeObject(final Object object, final RDFResource resource) throws ClassNotFoundException, InvocationTargetException
 	{
 		final Map<URI, PropertyDescription> propertyDescriptionMap=getPropertyDescriptionMap(object.getClass(), resource);	//get property descriptions from the resource description
-		initializeObject(object, resource.getReferenceURI(), propertyDescriptionMap);	//initialize the object from the property descriptions
+		initializeObject(object, resource, propertyDescriptionMap);	//initialize the object from the property descriptions
 	}
 
 	/**Initializes an object based upon the given URI and property descriptions.
+	The object being initialized will be stored locally keyed to the resource description for later lookup.
 	@param object The object to initialize.
-	@param referenceURI The reference URI of the resource, or <code>null</code> if there is no reference URI.
+	@param resource The description for the object.
 	@param propertyDescriptionMap The property descriptions fo initializing the object.
 	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
 	*/
-	protected void initializeObject(final Object object, final URI referenceURI, final Map<URI, PropertyDescription> propertyDescriptionMap) throws InvocationTargetException
+	protected void initializeObject(final Object object, final RDFResource resource, final Map<URI, PropertyDescription> propertyDescriptionMap) throws InvocationTargetException
 	{
+/*TODO del functionality and remove from PLOOP
 		final String nameProperty=getNameProperty();	//get the property to use when storing a name
 		if(nameProperty!=null)	//if object naming is supported
 		{
@@ -271,6 +310,7 @@ public class PLOOPProcessor
 				}
 			}
 		}
+*/
 		for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
 		{
 			final Method setter=propertyDescription.getSetter();	//get the setter method for this property
@@ -291,78 +331,8 @@ public class PLOOPProcessor
 				}											
 			}
 		}
+		resourceObjectMap.put(resource, object);	//associate the initialized object with its resource description
 	}
-
-	/**Sets a property of the object based upon the given RDF property/value pair.
-	If the property isn't recognized as relevant to Guise, or the object cannot set the property, no action is taken.
-	@param object The component being constructed.
-	@param property The RDF property/value pair potentially representing a Guise object property.
-	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
-	@exception IllegalArgumentException if a string given for an enum property value does not match any of the enum's values.
-	*/
-/*TODO del when works
-	protected void setObjectProperty(final Object object, final RDFPropertyValuePair property) throws InvocationTargetException
-	{
-//TODO del		final RDFObject propertyValue=property.getValue();	//get the property value
-		final URI propertyURI=property.getName().getReferenceURI();	//get the URI of the property
-//TODO del Debug.trace("looking at property:", propertyURI);
-		if(GUISE_PROPERTY_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//if this is a property for Guise
-		{
-			final RDFObject propertyValueRDFObject=property.getValue();	//get the property value
-			final Object propertyValue=createValue(propertyValueRDFObject);	//get the appropriate value for the property
-			final Class<?> propertyValueType=propertyValue.getClass();	//get the type of the value
-			final String variableName=getLocalName(propertyURI);	//get the local name of the property
-	Debug.trace("looking at property name:", variableName);
-			final String setterMethodName="set"+getProperName(variableName);	//get the setter method
-Debug.trace("setter: ", setterMethodName);
-			final Class<?> objectClass=object.getClass();	//get the object class TODO check generic class type
-			final Method[] methods=objectClass.getMethods();	//get all the class methods
-			for(final Method method:methods)	//for each method
-			{
-				if(method.getName().equals(setterMethodName))	//if this has the setter name
-				{
-Debug.trace("found setter", setterMethodName);
-					final Class<?>[] parameterTypes=method.getParameterTypes();	//get the parameter types for this method
-					if(parameterTypes.length==1)	//if this setter has one parameter
-					{
-	Debug.trace("this setter has one param");
-						final Class<?> parameterType=parameterTypes[0];	//get the type of the method parameter
-						final Object parameter=convertObject(propertyValue, parameterType);	//convert the object to the correct type
-						if(parameter!=null)	//if we found a parameter to use for this method
-						{
-							Debug.trace("param has correct type:", parameterType, "ready to invoke with value:", parameter);
-							try
-							{
-								method.invoke(object, parameter);
-							} catch (IllegalArgumentException e)
-							{
-								Debug.error(e);
-							} catch (IllegalAccessException e)
-							{
-								Debug.error(e);
-							} catch (InvocationTargetException e)
-							{
-								Debug.error(e);
-							}							
-						}
-					}
-				}
-			}
-		}
-	}
-*/
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	/**Constructs a map of property descriptions for a class.
 	If there are duplicate properties, only one will be stored.
@@ -403,7 +373,7 @@ Debug.trace("found setter", setterMethodName);
 		if(PLOOP_PROPERTY_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//if this is a PLOOP property
 		{
 			final RDFObject propertyValueRDFObject=property.getValue();	//get the property value
-			final Object propertyValue=createObject(propertyValueRDFObject);	//get the appropriate value for the property TODO get the type and save it somewhere, because this may return null
+			final Object propertyValue=getObject(propertyValueRDFObject);	//get the appropriate value for the property TODO get the type and save it somewhere, because this may return null
 			final Class<?> propertyValueType=propertyValue.getClass();	//get the type of the value
 			final String variableName=getLocalName(propertyURI);	//get the local name of the property
 //		TODO del 	Debug.trace("looking at property name:", variableName);
@@ -451,18 +421,6 @@ Debug.trace("found setter", setterMethodName);
 		return null;	//indicate that we don't recognize this property
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	/**Converts an object to the correct type.
 	If the object is already of the correct type, no action occurs.
 	Strings can be converted to the following types of objects:
@@ -479,6 +437,7 @@ Debug.trace("found setter", setterMethodName);
 		<li>{@link Integer}</li>
 		<li><code>long</code></li>
 		<li>{@link Long}</li>
+		<li>{@link Pattern}</li>
 	</ul>
 	@param object The object to convert
 	@param requiredType The required type of the object.
@@ -526,6 +485,10 @@ Debug.trace("found setter", setterMethodName);
 				else if(Float.TYPE.equals(requiredType) || Float.class.isAssignableFrom(requiredType))	//if the required type is float or Float
 				{
 					return Float.valueOf(stringObject);	//create a Float from the object
+				}
+				else if(Pattern.class.isAssignableFrom(requiredType))	//if the required type is Pattern
+				{
+					return Pattern.compile(stringObject);	//compile a pattern from the string
 				}
 			}
 		}
