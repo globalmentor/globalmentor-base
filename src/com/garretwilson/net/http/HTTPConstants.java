@@ -15,6 +15,8 @@ public class HTTPConstants
 	
 	/**The default HTTP port, 80.*/
 	public final static int DEFAULT_PORT=80;
+	/**The default HTTPS port, 143.*/
+	public final static int DEFAULT_SECURE_PORT=443;
 
 	/**The HTTP header indicating the allowed methods.*/
 	public final static String ALLOW_HEADER="Allow";
@@ -72,10 +74,22 @@ public class HTTPConstants
 	public final static String LOCATION_HEADER="Location";
 	/**The HTTP pragma header.*/
 	public final static String PRAGMA_HEADER="Pragma";
-		/**The HTTP no-cache pragma header.*/
+		/**The HTTP no-cache pragma.*/
 		public final static String NO_CACHE_PRAGMA="no-cache";
 	/**The HTTP header indicating the referring location.*/
 	public final static String REFERER_HEADER="Referer";
+	/**The HTTP header indicating the what (if any) type of transformation has been applied to the message body in order to safely transfer it between the sender and the recipient.*/
+	public final static String TRANSFER_ENCODING_HEADER="Transfer-Encoding";
+		/**The HTTP chunked transfer coding.*/
+		public final static String CHUNKED_TRANSFER_CODING="chunked";
+		/**The HTTP COMPRESS transfer coding.*/
+		public final static String COMPRESS_TRANSFER_CODING="compress";
+		/**The HTTP deflate transfer coding.*/
+		public final static String DEFLATE_TRANSFER_CODING="deflate";
+		/**The HTTP gzip transfer coding.*/
+		public final static String GZIP_TRANSFER_CODING="gzip";
+		/**The HTTP identity transfer coding.*/
+		public final static String IDENTITY_TRANSFER_CODING="identity";
 	/**The HTTP header indicating the user agent.*/
 	public final static String USER_AGENT_HEADER="User-Agent";
 	/**The HTTP header indicating the credentials expected by the server.*/
