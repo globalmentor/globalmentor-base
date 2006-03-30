@@ -317,6 +317,7 @@ public class URIUtilities
 	}		
 
 	/**Retrieves the parameters from a URI query.
+	An empty string query will return an empty array of name/value pairs.
 	@param query The string containing URI query parameters (without the '?' prefix), or <code>null</code>.
 	@return An array of parameters represented by the query, or <code>null</code> if the given query is <code>null</code>.
 	*/
@@ -325,6 +326,10 @@ public class URIUtilities
 	{
 		if(query!=null)	//if a query was given
 		{
+			if(query.length()==0)	//if there is no query in the string
+			{
+				return new NameValuePair[0];	//return an empty array
+			}
 			final String[] parameterStrings=query.split(String.valueOf(QUERY_NAME_VALUE_PAIR_DELIMITER));	//split the query into parameters
 			final NameValuePair<String, String>[] parameters=new NameValuePair[parameterStrings.length];	//create an array to hold parameters
 			int i=0;
