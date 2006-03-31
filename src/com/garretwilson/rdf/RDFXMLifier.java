@@ -338,6 +338,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants	//TODO why don
 		if(resourceType!=null)   //if this resource has a type that we can use for the element name
 		{
 			final URI namespaceURI=getNamespaceURI(resourceType);	//get the type's namespace URI
+//TODO important: check for namespace URI null
 			final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), namespaceURI.toString());  //get the prefix for use with this namespace
 			final String qualifiedName=XMLUtilities.createQualifiedName(prefix, getLocalName(resourceType));  //create a qualified name for the element
 			resourceElement=document.createElementNS(namespaceURI.toString(), qualifiedName);  //create an element from the resource type
@@ -468,6 +469,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants	//TODO why don
 			//if we know the namespace URI and local name of the property
 				  //G***replace all this code with the new utility method getLabel(RDFResource)
 		final URI namespaceURI=getNamespaceURI(propertyResource); //get the namespace URI of the property
+//TODO important: check the namespace URI for null
 		final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), namespaceURI.toString());  //get the prefix for use with this namespace
 		String localName=getLocalName(propertyResource); //get the local name of the property
 		if(RDF_NAMESPACE_URI.equals(namespaceURI))  //if this is the RDF namespace
@@ -636,7 +638,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants	//TODO why don
 
 	/**Retrieves a label appropriate for the reference URI of the resource. If the
 		resource has namespace URI and local name, the XML qualified name will be
-		returned in <em>namespaceURI</em>:<em>localName</em> format; otherwise,
+		returned in <var>namespaceURI</var>:<var>localName</var> format; otherwise,
 		reference URI itself will be returned.
 	@param resource The resource the label of which to return.
 //G***del	@param generatePrefix <code>true</code> if a prefix should be generated if
@@ -686,21 +688,22 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants	//TODO why don
 		return referenceURI!=null ? referenceURI.toString() : ""; //just use the reference URI as the label, if we can't find anything else G***we might want to check for rdf:li_ here as well; maybe not
 	}
 
-	/**Determines the namespace URI to be used for the given resource for XML
-		serialization.
+	/**Determines the namespace URI to be used for the given resource for XML serialization.
 	For most resources, this is the URI formed by all the the reference URI
 		characters up to and including the last character that is not a valid
 		XML name character. If all characters are valid XML name characters,
 		the last non-alphanumeric character is used as a delimiter.
 	@param resource The resource for which a namespace URI should be determined.
-	@return The namespace URI of the resource reference URI.
+	@return The namespace URI of the resource reference URI, or <code>null</code> if the namespace URI could not be determined.
 	*/
 	public static URI getNamespaceURI(final RDFResource resource)
 	{
 		URI namespaceURI=resource.getNamespaceURI();	//get the namespace URI of which the resource has record TODO remove storing namespaces
 		if(namespaceURI==null && resource.getReferenceURI()!=null)	//if the resource doesn't know its namespace URI, but there is a reference URI
+		{
 			namespaceURI=RDFUtilities.getNamespaceURI(resource.getReferenceURI());	//try to get the namespace URI from the resource reference URI
-
+		}
+/*TODO del when works
 			//TODO check somewhere else that the namespace was defined in the parsed document---otherwise, only the local name will be set, even for the reference URI
 
 		assert namespaceURI!=null : "Could not determine namespace URI for "+resource.getReferenceURI();	//TODO fix
@@ -708,6 +711,7 @@ public class RDFXMLifier implements RDFConstants, RDFXMLConstants	//TODO why don
 		{
 			throw new AssertionError("Missing namespace URI for resource reference URI "+resource.getReferenceURI());
 		}
+*/
 		return namespaceURI;	//return the namespace URI we found
 	}
 

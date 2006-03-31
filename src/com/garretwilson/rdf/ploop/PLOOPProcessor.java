@@ -97,6 +97,48 @@ public class PLOOPProcessor
 		}
 		return object;	//return the created object
 	}
+
+	/**Retrieves objects representing the given RDF instance.
+	Objects for all Java typed resources will be returned. This is a convenient way to ensure all Java classes described by an RDF instance have been created.
+	If the RDF object is a resource for which an object has already been created, the existing object will be returned.
+	Otherwise the object is created using {@link #createObject(RDFObject)} and a reference to the created object is stored for later retrieval inside {@link #initializeObject(Object, RDFResource, Map)}.
+	@param rdf The RDF instance describing the Java objects to be created.
+	@return A created and initialized object according to the given RDF description. 
+ 	@exception IllegalArgumentException if the given RDF object is a resource that does not specify Java type information.
+ 	@exception IllegalArgumentException if the given RDF object is a Java-typed resource the class of which cannot be found.
+ 	@exception IllegalArgumentException if the given RDF object indicates a Java class that has no appropriate constructor.
+ 	@exception IllegalArgumentException if the given RDF object indicates a Java class that is an interface or an abstract class.
+ 	@exception IllegalArgumentException if the given RDF object indicates a Java class the constructor of which is not accessible.
+	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
+	*/
+	public List<Object> getObjects(final RDF rdf) throws InvocationTargetException
+	{
+		final List<Object> objects=new ArrayList<Object>();	//create a new list of objects
+		final Iterator<RDFResource> resourceIterator=rdf.getResourceIterator();	//get an iterator to resources
+		while(resourceIterator.hasNext())	//while there are more resources
+		{
+			final RDFResource resource=resourceIterator.next();	//get the next resource
+			boolean hasJavaType=false;	//we'll see if this resource has a Java type
+			final Iterator<RDFObject> typeIterator=getTypeIterator(resource);	//get an iterator to all the resource types
+			while(!hasJavaType && typeIterator.hasNext())	//while we haven't found a Java type and there are other types left
+			{
+				final RDFObject typeResource=typeIterator.next();	//get the next type
+				if(typeResource instanceof RDFResource)	//if the type is an RDF resource (it always should be)
+				{
+					final URI typeURI=((RDFResource)typeResource).getReferenceURI();	//get the type URI
+					if(JAVA_SCHEME.equals(typeURI.getScheme()))	//if the type is a Java type
+					{
+						hasJavaType=true;	//show that this resource has a Java type
+					}
+				}
+			}
+			if(hasJavaType)	//if this resource has a Java type
+			{
+				objects.add(getObject(resource));	//get the instance of this resource
+			}
+		}
+		return objects;
+	}
 	
 	/**Creates and initializes an object to represent the given RDF object.
 	The RDF object must be one of the following:
@@ -118,7 +160,34 @@ public class PLOOPProcessor
 	{
 		if(rdfObject instanceof RDFLiteral)	//if the object is a literal
 		{
-			return ((RDFLiteral)rdfObject).getLexicalForm();	//TODO see if this is a typed literal, and construct other object types accordingly
+			final RDFLiteral rdfLiteral=(RDFLiteral)rdfObject;	//cast the object to a literal
+			final String literalLexicalForm=rdfLiteral.getLexicalForm();	//get the lexical form of the typed literal
+			if(rdfLiteral instanceof RDFTypedLiteral)	//if this is a typed literal
+			{
+				final RDFTypedLiteral rdfTypedLiteral=(RDFTypedLiteral)rdfLiteral;	//cast the literal to a typed literal
+				final URI datatypeURI=rdfTypedLiteral.getDatatypeURI();	//get the datatype URI
+				if(JAVA_SCHEME.equals(datatypeURI.getScheme()))	//if the datatype is a Java type
+				{
+					final String datatypeClassName=datatypeURI.getSchemeSpecificPart();	//get the class name part of the type
+					try
+					{
+						final Class<?> datatypeClass=Class.forName(datatypeClassName);	//load the class
+						return convertObject(literalLexicalForm, datatypeClass);	//convert the lexical form of the literal to the correct type
+					}
+					catch(final ClassNotFoundException classNotFoundException)	//if we couldn't find the class
+					{
+						throw new IllegalArgumentException(classNotFoundException);
+					}
+				}
+				else	//if the datatype is not a Java type TODO add support for automatic conversion from W3C primitive types
+				{
+					throw new IllegalArgumentException("Unsupported typed literal "+rdfLiteral);
+				}
+			}
+			else	//if this is not a typed literal
+			{
+				return literalLexicalForm;	//return the lexical form of the typed literal
+			}
 		}
 		else if(rdfObject instanceof RDFListResource)	//if the object is a list
 		{
@@ -133,6 +202,7 @@ public class PLOOPProcessor
 		else if(rdfObject instanceof RDFResource)	//if the object is a resource
 		{
 			final RDFResource resource=(RDFResource)rdfObject;	//cast the object to a resource
+//TODO del Debug.trace("Creating object for RDF object", RDFUtilities.toString(resource));
 			String valueClassName=null;	//we'll try to find a Java class name part of the type
 //			RDFResource typeResource=null;	//we'll try to find a java: type
 			final Iterator<RDFObject> typeIterator=getTypeIterator(resource);	//get an iterator to all the resource types
@@ -151,6 +221,7 @@ public class PLOOPProcessor
 			if(valueClassName==null)	//if we don't know the type of the resource
 			{
 				throw new IllegalArgumentException("Value resource "+resource+" missing type information.");
+				//TODO this will also happen if an rdf:nodeID has been used that doesn't reference anything, so maybe indicate that possibility in the error message
 			}
 //		TODO del Debug.trace("Loading class", valueClassName);
 //TODO del			final Object value;	//we'll determine the value by invoking the constructor
@@ -391,6 +462,7 @@ public class PLOOPProcessor
 					{
 //					TODO del Debug.trace("this setter has one param");
 						final Class<?> parameterType=parameterTypes[0];	//get the single parameter type
+							//TODO don't convert the object if this is a typed literal; instead, accept whatever type was given
 						final Object value=convertObject(propertyValue, parameterType);	//convert the object to the correct type
 						if(value!=null)	//if we found a parameter to use for this method
 						{
