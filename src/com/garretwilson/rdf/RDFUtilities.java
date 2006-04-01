@@ -7,6 +7,7 @@ import java.util.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.URIConstants;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
+import static com.garretwilson.rdf.RDFConstants.*;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLUtilities;
 
@@ -15,7 +16,7 @@ import org.w3c.dom.*;
 /**Various supporting methods for processing RDF.
 @author Garret Wilson
 */
-public class RDFUtilities implements RDFConstants
+public class RDFUtilities
 {
 
 	/**The start of a reference URI from the rdf:li element qualified
@@ -138,14 +139,14 @@ public class RDFUtilities implements RDFConstants
 	@return An RDF reference URI constructed from the given namespace and local name.
 //G***del if not needed	@exception URISyntaxException Thrown if a valid URI cannot be created from the given namespace and local name.
 	*/
-	public static URI createReferenceURI(final URI namespaceURI, final String localName) //G***del if not needed throws URISyntaxException
+	public static URI createReferenceURI(final URI namespaceURI, final String localName) //G***del if not needed throws URISyntaxException	//TODO del if not needed with QualifiedName.createReferenceURI
 	{
 			//TODO check for local names that aren't valid URI characters---see QualifiedName.createReferenceURI
-		final StringBuffer stringBuffer=new StringBuffer();  //create a string buffer to hold the resource URI
+		final StringBuilder stringBuilder=new StringBuilder();  //create a string builder to hold the resource URI
 		if(namespaceURI!=null)  //if there is a namespace URI	//G***is this right?
-		  stringBuffer.append(namespaceURI);  //append the namespace URI
-		stringBuffer.append(localName); //append the local name
-		return URI.create(stringBuffer.toString()); //return a URI from the the string we constructed; if somehow concatenating the strings does not create a valid URI, a runtime exception will be thrown
+		  stringBuilder.append(namespaceURI);  //append the namespace URI
+		stringBuilder.append(localName); //append the local name
+		return URI.create(stringBuilder.toString()); //return a URI from the the string we constructed; if somehow concatenating the strings does not create a valid URI, a runtime exception will be thrown
 	}
 
 	/**Determines if the given property reference URI is an RDF container member

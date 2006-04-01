@@ -6,6 +6,7 @@ import java.util.*;
 import com.garretwilson.lang.JavaConstants;
 import com.garretwilson.model.DefaultResource;
 import com.garretwilson.model.Resource;
+import static com.garretwilson.rdf.RDFConstants.*;
 import com.garretwilson.util.Debug;
 
 /**Base class for RDF processors.
@@ -32,7 +33,7 @@ import com.garretwilson.util.Debug;
 </ol>
 @author Garret Wilson
 */
-public abstract class AbstractRDFProcessor implements RDFConstants
+public abstract class AbstractRDFProcessor
 {
 
 	/**The RDF data model that is filled by the processor.*/

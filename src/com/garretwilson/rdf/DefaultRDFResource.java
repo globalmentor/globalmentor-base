@@ -64,6 +64,13 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	/**@return The number of properties this resource has.*/
 	public int getPropertyCount() {return propertyList.size();}
 
+	/**@return Iterable access to all properties, each of which is a {@link RDFPropertyValuePair}, with the name being the property predicate and the value being the property value.*/
+	@SuppressWarnings("unchecked")	//we're cloning our own list, so we know its generic type
+	public Iterable<RDFPropertyValuePair> getProperties()
+	{
+		return (Iterable<RDFPropertyValuePair>)propertyList.clone();	//clone and return the list of properties
+	}
+	
 	/**@return An iterator that allows traversal of all properties, each of which
 		is a <code>RDFPropertyValuePair</code>, with the name being the property predicate
 		and the value being the property value.

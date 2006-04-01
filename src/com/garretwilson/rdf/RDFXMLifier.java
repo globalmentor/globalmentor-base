@@ -3,6 +3,8 @@ package com.garretwilson.rdf;
 import java.net.URI;
 import java.util.*;
 
+import static com.garretwilson.rdf.RDFConstants.*;
+import static com.garretwilson.rdf.RDFXMLConstants.*;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import com.garretwilson.text.xml.XMLUtilities;
@@ -21,7 +23,7 @@ import org.w3c.dom.*;
 TODO fix bug that doesn't serialize property value resources with no properties
 @author Garret Wilson
 */
-public class RDFXMLifier implements RDFConstants, RDFXMLConstants	//TODO why don't we keep the DOM implementation around at the class level?
+public class RDFXMLifier	//TODO why don't we keep the DOM implementation around at the class level?
 {
 
 //TODO why aren't we using real URIs here?

@@ -9,7 +9,7 @@ import com.garretwilson.model.*;
 @author Garret Wilson
 @see DefaultRDFResource
 */
-public interface RDFResource extends RDFObject, Resource, RDFConstants, Cloneable	//TODO fix, Comparable<RDFResource>
+public interface RDFResource extends RDFObject, Resource, Cloneable	//TODO fix, Comparable<RDFResource>
 {
 
 	/**@return The resource identifier URI, or <code>null</code> if the identifier is not known.*/
@@ -43,6 +43,9 @@ public interface RDFResource extends RDFObject, Resource, RDFConstants, Cloneabl
 	/**@return The number of properties this resource has.*/
 	public int getPropertyCount();
 
+	/**@return Iterable access to all properties, each of which is a {@link RDFPropertyValuePair}, with the name being the property predicate and the value being the property value.*/
+	public Iterable<RDFPropertyValuePair> getProperties();
+	
 	/**@return An iterator that allows traversal of all properties, each of which
 		is a <code>RDFPropertyValuePair</code>, with the name being the property predicate
 		and the value being the property value.

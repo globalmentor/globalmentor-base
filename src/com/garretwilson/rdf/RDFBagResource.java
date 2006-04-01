@@ -2,6 +2,8 @@ package com.garretwilson.rdf;
 
 import java.net.URI;
 
+import static com.garretwilson.rdf.RDFConstants.*;
+
 /**Represents an RDF bag resource.
 @author Garret Wilson
 */

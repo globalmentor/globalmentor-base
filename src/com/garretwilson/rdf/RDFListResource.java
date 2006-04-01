@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.*;
 
 import com.garretwilson.lang.ObjectUtilities;
+import static com.garretwilson.rdf.RDFConstants.*;
 
 /**Represents an RDF list resource.
 <p>Manipulating an RDF list resource using its convenience methods may add

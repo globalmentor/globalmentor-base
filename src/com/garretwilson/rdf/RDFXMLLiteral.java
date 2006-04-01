@@ -1,6 +1,7 @@
 package com.garretwilson.rdf;
 
 import java.io.*;
+import static com.garretwilson.rdf.RDFConstants.*;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;

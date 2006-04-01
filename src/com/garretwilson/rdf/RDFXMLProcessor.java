@@ -5,6 +5,8 @@ import java.util.*;
 
 import com.garretwilson.model.Resource;
 import com.garretwilson.net.*;
+import static com.garretwilson.rdf.RDFConstants.*;
+import static com.garretwilson.rdf.RDFXMLConstants.*;
 import com.garretwilson.text.xml.XMLBase;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.XMLConstants;
@@ -26,7 +28,7 @@ import org.w3c.dom.*;
 	TODO If a property from a non-RDF namespace has (for example) a "resource" attribute (i.e. a property with no namespace), property resources are not correctly created and can cause endless loops when trying to analyze the namespace
 @author Garret Wilson
 */
-public class RDFXMLProcessor extends AbstractRDFProcessor implements RDFConstants, RDFXMLConstants
+public class RDFXMLProcessor extends AbstractRDFProcessor
 {
 
 	//constants for parseAttributeProperties()

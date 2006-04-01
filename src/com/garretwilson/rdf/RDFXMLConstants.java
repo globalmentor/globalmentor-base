@@ -3,7 +3,7 @@ package com.garretwilson.rdf;
 /**Constants used in RDF XML serializations.
 @author Garret Wilson
 */
-public interface RDFXMLConstants
+public class RDFXMLConstants
 {
 
 	//RDF XML elements

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.garretwilson.net.*;
+import static com.garretwilson.rdf.RDFConstants.*;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xlink.XLinkConstants;

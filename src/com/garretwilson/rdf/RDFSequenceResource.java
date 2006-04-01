@@ -2,6 +2,7 @@ package com.garretwilson.rdf;
 
 import java.net.URI;
 import java.util.*;
+import static com.garretwilson.rdf.RDFConstants.*;
 import com.garretwilson.util.NameValuePair;
 
 /**Represents an RDF sequence resource.
