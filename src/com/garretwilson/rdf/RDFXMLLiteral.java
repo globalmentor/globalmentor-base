@@ -5,7 +5,6 @@ import static com.garretwilson.rdf.RDFConstants.*;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.util.Debug;
 
 import org.w3c.dom.*;
 
@@ -14,28 +13,20 @@ import org.w3c.dom.*;
 @author Garret Wilson
 @see DocumentFragment
 */
-public class RDFXMLLiteral extends RDFTypedLiteral
+public class RDFXMLLiteral extends RDFTypedLiteral<DocumentFragment>
 {
 
-	/**Returns the literal value that the lexical form represents in the form
-		of an XML document fragment. Convenience method for <code>getValue()</code>.
-	@return The literal value as an XML document fragment.
-	@see DocumentFragment
-	*/
-	public DocumentFragment getDocumentFragment() {return (DocumentFragment)getValue();}
-
 	/**Returns the lexical form of the literal.
-	This version returns a serialized version of the contents of the stored XML
-		document fragment.
+	This version returns a serialized version of the contents of the stored XML document fragment.
 	@return The lexical form, a Unicode string in Normal Form C.
-	@see #getValue
+	@see #getValue()
 	*/
 	public String getLexicalForm()
 	{
 		try
 		{
 			final XMLSerializer xmlSerializer=new XMLSerializer(false);	//create an unformatted XML serializer
-			return xmlSerializer.serialize(getDocumentFragment());	//serialize the document fragment into a string and return that string
+			return xmlSerializer.serialize(getValue());	//serialize the document fragment into a string and return that string
 		}
 		catch(IOException ioException)	//if there are any IO errors (this should never happen)
 		{
@@ -50,10 +41,8 @@ public class RDFXMLLiteral extends RDFTypedLiteral
 		return new LocaleText(getLexicalForm());	//by default we don't know any locale 
 	}
 */
-	/**Constructs an XML literal using the datatype
-	<code>http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral</code>.
-	@param documentFragment The document fragment representing the value of the
-		XML literal.
+	/**Constructs an XML literal using the datatype <code>http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral</code>.
+	@param documentFragment The document fragment representing the value of the XML literal.
 	*/
 	public RDFXMLLiteral(final DocumentFragment documentFragment)
 	{

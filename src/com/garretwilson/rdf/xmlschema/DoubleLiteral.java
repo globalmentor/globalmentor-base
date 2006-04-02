@@ -8,17 +8,10 @@ import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 @author Garret Wilson
 @see Double
 */
-public class DoubleLiteral extends NumberLiteral
+public class DoubleLiteral extends NumberLiteral<Double>
 {
 
-	/**Returns the literal value that the lexical form represents.
-	Convenience method for <code>getValue()</code>.
-	@return The literal value as a <code>Double</code>.
-	*/
-	public Double getDouble() {return (Double)getValue();}
-
-	/**Constructs a double literal using the datatype
-	<code>http://www.w3.org/2001/XMLSchema#double</code>.
+	/**Constructs a double literal using the datatype <code>http://www.w3.org/2001/XMLSchema#double</code>.
 	@param value The double value representing the value of the literal.
 	*/
 	public DoubleLiteral(final double value)
@@ -26,8 +19,7 @@ public class DoubleLiteral extends NumberLiteral
 		this(Double.valueOf(value));	//create a new Double object and construct the class with it
 	}
 
-	/**Constructs a double literal using the datatype
-	<code>http://www.w3.org/2001/XMLSchema#double</code>.
+	/**Constructs a double literal using the datatype <code>http://www.w3.org/2001/XMLSchema#double</code>.
 	@param object The <code>Double</code> object representing the value of the literal.
 	*/
 	public DoubleLiteral(final Double object)

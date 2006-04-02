@@ -2,11 +2,14 @@ package com.garretwilson.rdf;
 
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.URIConstants;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
+import com.garretwilson.rdf.xmlschema.URILiteral;
+
 import static com.garretwilson.rdf.RDFConstants.*;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLUtilities;
@@ -110,11 +113,9 @@ public class RDFUtilities
 		return asInstance(rdfObject, RDFListResource.class);	//cast the object to a list if we can
 	}
 
-	/**Determines if the RDF object is a literal and, if so, casts the object 
-		to a literal and returns it.
+	/**Determines if the RDF object is a literal and, if so, casts the object to a literal and returns it.
 	@param rdfObject The RDF object in question.
-	@return The RDF object as a literal, or <code>null</code> if the object is
-		not a literal or the object is <code>null</code>.
+	@return The RDF object as a literal, or <code>null</code> if the object is not a literal or the object is <code>null</code>.
 	*/
 	public static RDFLiteral asLiteral(final RDFObject rdfObject)
 	{
@@ -132,6 +133,33 @@ public class RDFUtilities
 		return asInstance(rdfObject, RDFResource.class);	//cast the object to a resource if we can
 	}
 
+	/**Determines if the RDF object is a plain literal or a URI typed literal and, if so, creates a URI from the literal's lexical form if possible.
+	@param rdfObject The RDF object in question.
+	@return The RDF object as a URI, or <code>null</code> if the object is not a literal, the lexical form does not contain a valid URI, or the object is <code>null</code>.
+	*/
+	public static URI asURI(final RDFObject rdfObject)	//TODO should we allow a resource as well and return its reference URI?
+	{
+		if(rdfObject instanceof RDFLiteral)	//if this object is a literal
+		{
+			final RDFLiteral rdfLiteral=(RDFLiteral)rdfObject;	//cast the object to a literal
+			if(rdfLiteral instanceof URILiteral)	//if this is a URI literal
+			{
+				return ((URILiteral)rdfLiteral).getValue();	//return the URI literals' value
+			}
+			else if(rdfLiteral instanceof RDFPlainLiteral)	//if this is a plain literal
+			{
+				try
+				{
+					return new URI(rdfLiteral.getLexicalForm());	//create a URI from the literal's lexical form
+				}
+				catch(final URISyntaxException uriSyntaxException)	//ignore URI format errors and return null
+				{
+				}
+			}
+		}
+		return null;	//indicate that the object didn't contain a valid URI
+	}
+	
 	/**Creates a resource reference URI from an XML namespace URI (which may be
 		<code>null</code> and an XML local name.
 	@param namespaceURI The XML namespace URI used in the serialization.

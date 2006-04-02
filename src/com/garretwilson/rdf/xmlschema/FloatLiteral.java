@@ -8,17 +8,10 @@ import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 @author Garret Wilson
 @see Float
 */
-public class FloatLiteral extends NumberLiteral
+public class FloatLiteral extends NumberLiteral<Float>
 {
 
-	/**Returns the literal value that the lexical form represents.
-	Convenience method for <code>getValue()</code>.
-	@return The literal value as a <code>Float</code>.
-	*/
-	public Float getFloat() {return (Float)getValue();}
-
-	/**Constructs a float literal using the datatype
-	<code>http://www.w3.org/2001/XMLSchema#float</code>.
+	/**Constructs a float literal using the datatype <code>http://www.w3.org/2001/XMLSchema#float</code>.
 	@param value The float value representing the value of the literal.
 	*/
 	public FloatLiteral(final float value)
@@ -26,8 +19,7 @@ public class FloatLiteral extends NumberLiteral
 		this(Float.valueOf(value));	//create a new Float object and construct the class with it
 	}
 
-	/**Constructs a float literal using the datatype
-	<code>http://www.w3.org/2001/XMLSchema#float</code>.
+	/**Constructs a float literal using the datatype <code>http://www.w3.org/2001/XMLSchema#float</code>.
 	@param object The <code>Float</code> object representing the value of the literal.
 	*/
 	public FloatLiteral(final Float object)

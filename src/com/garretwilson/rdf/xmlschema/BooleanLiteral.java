@@ -8,17 +8,10 @@ import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 @author Garret Wilson
 @see Boolean
 */
-public class BooleanLiteral extends RDFTypedLiteral
+public class BooleanLiteral extends RDFTypedLiteral<Boolean>
 {
 
-	/**Returns the literal value that the lexical form represents.
-	Convenience method for <code>getValue()</code>.
-	@return The literal value as a <code>Boolean</code>.
-	*/
-	public Boolean getBoolean() {return (Boolean)getValue();}
-
-	/**Constructs a boolean literal using the datatype
-	<code>http://www.w3.org/2001/XMLSchema#boolean</code>.
+	/**Constructs a boolean literal using the datatype <code>http://www.w3.org/2001/XMLSchema#boolean</code>.
 	@param value The boolean value representing the value of the literal.
 	*/
 	public BooleanLiteral(final boolean value)
@@ -26,8 +19,7 @@ public class BooleanLiteral extends RDFTypedLiteral
 		this(Boolean.valueOf(value));	//get one of the predefined Boolean objects from the given value and construct this object
 	}
 
-	/**Constructs a boolean literal using the datatype
-	<code>http://www.w3.org/2001/XMLSchema#boolean</code>.
+	/**Constructs a boolean literal using the datatype <code>http://www.w3.org/2001/XMLSchema#boolean</code>.
 	@param object The <code>Boolean</code> object representing the value of the literal.
 	*/
 	public BooleanLiteral(final Boolean object)
@@ -77,6 +69,6 @@ public class BooleanLiteral extends RDFTypedLiteral
 	public static boolean asBooleanValue(final RDFObject rdfObject, final boolean defaultValue)
 	{
 		final BooleanLiteral booleanLiteral=asBooleanLiteral(rdfObject);	//cast the object to a boolean literal, if it is one
-		return booleanLiteral!=null ? booleanLiteral.getBoolean().booleanValue() : defaultValue;	//return the boolean value of the boolean literal, or the default value if there is no boolean literal
+		return booleanLiteral!=null ? booleanLiteral.getValue().booleanValue() : defaultValue;	//return the boolean value of the boolean literal, or the default value if there is no boolean literal
 	}
 }

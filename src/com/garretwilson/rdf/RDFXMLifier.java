@@ -575,7 +575,7 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 					//add an rdf:parseType="Literal" attribute
 				propertyElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_PARSE_TYPE), LITERAL_PARSE_TYPE);
 					//import the document fragment to our document
-				final Node importedDocumentFragment=document.importNode(valueXMLLiteral.getDocumentFragment(), true);
+				final Node importedDocumentFragment=document.importNode(valueXMLLiteral.getValue(), true);
 				propertyElement.appendChild(importedDocumentFragment);	//append the children of the document fragment to this node
 					//make sure all namespaces are properly declared for all child elements, declaring the namespaces on the property element itself if possible
 				XMLNamespaceProcessor.ensureChildNamespaceDeclarations(propertyElement); 

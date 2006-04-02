@@ -155,7 +155,7 @@ public class MAQROXHTMLifier
 		else if(dialogueValue instanceof RDFXMLLiteral)	//if the dialogue is an XML literal
 		{
 			final RDFXMLLiteral xmlLiteralDialogueValue=(RDFXMLLiteral)dialogueValue;
-			final DocumentFragment documentFragment=xmlLiteralDialogueValue.getDocumentFragment();	//get the document fragment of the literal
+			final DocumentFragment documentFragment=xmlLiteralDialogueValue.getValue();	//get the document fragment of the literal
 			XMLUtilities.appendImportedChildNodes(element, documentFragment, true);	//import the document fragment children into the element
 		}
 /*TODO fix
@@ -180,13 +180,13 @@ public class MAQROXHTMLifier
 			final NumberLiteral value=score.getValue();	//get the value of the score
 			if(value!=null)	//if there is a value
 			{
-				stringBuilder.append(value.getNumber());	//append the value
+				stringBuilder.append(value.getValue());	//append the value
 			}
 			stringBuilder.append('/');	//'/'
 			final NumberLiteral possible=score.getPossible();	//get the possible of the score
 			if(possible!=null)	//if there is a possible value
 			{
-				stringBuilder.append(possible.getNumber());	//append the possible value
+				stringBuilder.append(possible.getValue());	//append the possible value
 			}
 		}
 		return stringBuilder.toString();	//return the string we constructed

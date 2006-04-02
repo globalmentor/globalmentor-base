@@ -140,7 +140,7 @@ public class Outcome extends TypedRDFResource implements MAQROConstants
 	public boolean isCorrect()
 	{
 		final RDFObject rdfObject=getPropertyValue(MAQRO_NAMESPACE_URI, CORRECT_PROPERTY_NAME); //get the value of the correct property
-		return rdfObject instanceof BooleanLiteral ? ((BooleanLiteral)rdfObject).getBoolean().booleanValue() : false; //return the boolean value of the object, or null if is no such property or the property value is not a boolean typed literal
+		return rdfObject instanceof BooleanLiteral ? ((BooleanLiteral)rdfObject).getValue().booleanValue() : false; //return the boolean value of the object, or null if is no such property or the property value is not a boolean typed literal
 	}
 
 	/**Sets whether the outcome is correct.

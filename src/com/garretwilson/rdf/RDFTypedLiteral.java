@@ -2,21 +2,20 @@ package com.garretwilson.rdf;
 
 import java.net.URI;
 
+import static com.garretwilson.lang.ObjectUtilities.*;
+
 /**The base class for all RDF typed literals.
+@param <T> The type of object the literal represents.
 @author Garret Wilson
 */
-public class RDFTypedLiteral extends RDFLiteral
+public class RDFTypedLiteral<T> extends RDFLiteral
 {
 
-	/**The literal value that the lexical form represents.*/
-	private Object value;
+	/**The literal value the lexical form represents.*/
+	private T value;
 
-		/**Returns the literal value that the lexical form represents.
-		The type of this object will vary depending on the specific
-			typed literal in question and the support of the implementation. 
-		@return The literal value represented by the lexical form.
-		*/
-		public Object getValue() {return value;}
+		/**@return The literal value represented by the lexical form.*/
+		public T getValue() {return value;}
 
 	/**The reference URI identifying the datatype of this literal.*/
 	private final URI datatypeURI;
@@ -27,27 +26,24 @@ public class RDFTypedLiteral extends RDFLiteral
 	/**Returns the lexical form of the literal.
 	By default this version returns the string version of the stored object.
 	@return The lexical form, a Unicode string in Normal Form C.
-	@see #getValue
+	@see #getValue()
 	*/
 	public String getLexicalForm() {return getValue().toString();}
 
 	/**Constructs a typed literal.
 	@param literalValue The literal value that the lexical form represents.
 	@param literalDatatypeURI The reference URI identifying the datatype of this literal.
+	@exception NullPointerException if the value and/or the datatype URI is <code>null</code>.
 	*/
-	public RDFTypedLiteral(final Object literalValue, final URI literalDatatypeURI)
+	public RDFTypedLiteral(final T literalValue, final URI literalDatatypeURI)
 	{
-		value=literalValue;	//save the value
-		datatypeURI=literalDatatypeURI;	//save the datatype URI
+		value=checkNull(literalValue, "Literal value cannot be null.");	//save the value
+		datatypeURI=checkNull(literalDatatypeURI, "Literal datatype cannot be null.");	//save the datatype URI
 	}
 
-	/**If <code>object</code> is another <code>RDFTypedLiteral</code>, compares
-		the datatype URI and value objects; otherwise, compares the
-		objects using the superclass functionality.
-	@param object The object with which to compare this typed literal; should be
-		another typed literal.
-	@return <code>true<code> if this literal equals that specified in
-		<code>object</code>.
+	/**If <code>object</code> is another {@link RDFTypedLiteral}, compares the datatype URI and value objects; otherwise, compares the objects using the superclass functionality.
+	@param object The object with which to compare this typed literal; should be another typed literal.
+	@return <code>true<code> if this literal equals that specified in <code>object</code>.
 	@see #getValue
 	*/
 	public boolean equals(final Object object)

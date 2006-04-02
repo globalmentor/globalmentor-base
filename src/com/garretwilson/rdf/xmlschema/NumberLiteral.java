@@ -6,23 +6,19 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.rdf.*;
 
 /**An RDF literal that represents an abstract number object.
+@param <T> The type of object the literal represents.
 @author Garret Wilson
 @see Number
 */
-public abstract class NumberLiteral extends RDFTypedLiteral
+public abstract class NumberLiteral<T extends Number> extends RDFTypedLiteral<T>
 {
-
-	/**Returns the literal value that the lexical form represents.
-	Convenience method for <code>getValue()</code>.
-	@return The literal value as an <code>Integer</code>.
-	*/
-	public Number getNumber() {return (Number)getValue();}
 
 	/**Constructs a typed number literal.
 	@param literalValue The literal value that the lexical form represents.
 	@param literalDatatypeURI The reference URI identifying the datatype of this literal.
+	@exception NullPointerException if the value and/or the datatype URI is <code>null</code>.
 	*/
-	public NumberLiteral(final Number literalValue, final URI literalDatatypeURI)
+	public NumberLiteral(final T literalValue, final URI literalDatatypeURI)
 	{
 		super(literalValue, literalDatatypeURI);	//construct the parent class with the number
 	}

@@ -205,7 +205,7 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 		else if(dialogueValue instanceof RDFXMLLiteral)	//if the dialogue is an XML literal
 		{
 			final RDFXMLLiteral xmlLiteralDialogueValue=(RDFXMLLiteral)dialogueValue;
-			getDefaultXMLElementKit().appendElementSpecListContent(elementSpecList, xmlLiteralDialogueValue.getDocumentFragment(), attributeSet, baseURI);	//
+			getDefaultXMLElementKit().appendElementSpecListContent(elementSpecList, xmlLiteralDialogueValue.getValue(), attributeSet, baseURI);	//
 		}
 		else	//if we don't understand the type of dialogue value given (i.e. it's not a plain literal or an XML literal)
 		{

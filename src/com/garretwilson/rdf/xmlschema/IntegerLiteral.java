@@ -7,25 +7,12 @@ import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 /**An RDF literal that represents an XML Schema integer.
 The integer is represented by a Java long data type.
 @author Garret Wilson
-@see Integer
+@see Long
 */
-public class IntegerLiteral extends NumberLiteral
+public class IntegerLiteral extends NumberLiteral<Long>
 {
 
-	/**Returns the literal value that the lexical form represents.
-	Convenience method for <code>getValue()</code>.
-	@return The literal value as an <code>Integer</code>.
-	*/
-//TODO del if not needed; perhaps use BigInteger for long integers	public Integer getInteger() {return (Integer)getValue();}
-
-	/**Returns the literal value that the lexical form represents.
-	Convenience method for <code>getValue()</code>.
-	@return The literal value as an <code>Long</code>.
-	*/
-	public Long getLong() {return (Long)getValue();}
-
-	/**Constructs an integer literal using the datatype
-	<code>http://www.w3.org/2001/XMLSchema#integer</code>.
+	/**Constructs an integer literal using the datatype <code>http://www.w3.org/2001/XMLSchema#integer</code>.
 	@param value The boolean value representing the value of the literal.
 	*/
 	public IntegerLiteral(final long value)
@@ -33,8 +20,7 @@ public class IntegerLiteral extends NumberLiteral
 		this(Long.valueOf(value));	//create a new Integer object and construct the class with it
 	}
 
-	/**Constructs an integer literal using the datatype
-	<code>http://www.w3.org/2001/XMLSchema#integer</code>.
+	/**Constructs an integer literal using the datatype <code>http://www.w3.org/2001/XMLSchema#integer</code>.
 	@param object The <code>Integer</code> object representing the value of the literal.
 	*/
 	public IntegerLiteral(final Long object)
@@ -71,7 +57,7 @@ public class IntegerLiteral extends NumberLiteral
 	public static long asLongValue(final RDFObject rdfObject)
 	{
 		final IntegerLiteral integerLiteral=asIntegerLiteral(rdfObject);	//cast the object to an integer literal, if it is one
-		return integerLiteral!=null ? integerLiteral.getLong().longValue() : -1;	//return the long value of the integer literal, or -1 if there is no integer literal
+		return integerLiteral!=null ? integerLiteral.getValue().longValue() : -1;	//return the long value of the integer literal, or -1 if there is no integer literal
 	}
 
 	/**Determines if the RDF object is an integer literal and, if so, casts the 
@@ -84,7 +70,7 @@ public class IntegerLiteral extends NumberLiteral
 	public static int asIntValue(final RDFObject rdfObject)	//TODO del if not needed or desired
 	{
 		final IntegerLiteral integerLiteral=asIntegerLiteral(rdfObject);	//cast the object to an integer literal, if it is one
-		return integerLiteral!=null ? integerLiteral.getLong().intValue() : -1;	//return the integer value of the integer literal, or -1 if there is no integer literal
+		return integerLiteral!=null ? integerLiteral.getValue().intValue() : -1;	//return the integer value of the integer literal, or -1 if there is no integer literal
 	}
 
 }

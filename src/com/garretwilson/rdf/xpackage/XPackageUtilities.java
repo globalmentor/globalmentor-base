@@ -10,6 +10,8 @@ import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xlink.XLinkConstants;
 import com.garretwilson.rdf.*;
+import com.garretwilson.rdf.xmlschema.URILiteral;
+
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.xpackage.XPackageConstants.*;
 import com.garretwilson.util.Debug;
@@ -73,7 +75,7 @@ public class XPackageUtilities
 		return locationResource;  //return the location resource we created
 	}
 
-	/**Sets the <code>&lt;xpackage:location&gt;</code> property to the resource.
+	/**Sets the <code>xpackage:location</code> property to the resource.
 	The link will be set to <code>xlink:type="simple"</code>.
 	@param resource The resource to which a property should be added.
 	@param href The location of the resource, to become an <code>xlink:href</code>
@@ -148,6 +150,24 @@ public class XPackageUtilities
 		return rdfXMLifier; //return the XMLifier we constructed
 	}
 
+	/**Retrieves the icon URI of the resource. If this resource has more than one property of <code>xpackage:icon</code>, it is undefined which of those property values will be returned.
+	@param resource The resource the icon of which will be returned.
+	@return The icon URI of the resource, or <code>null</code> if no valid icon property exists.
+	*/
+	public static URI getIcon(final RDFResource resource)
+	{
+		return asURI(resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, ICON_PROPERTY_NAME)); //get the icon URI, if any, and return it
+	}
+
+	/**Sets the <code>xpackage:icon</code> property to the resource.
+	@param resource The resource on which the property should be set.
+	@param iconURI The URI of the icon, or <code>null</code> if there should be no icon property.
+	*/
+	public static void setIcon(final RDFResource resource, final URI iconURI)
+	{
+		resource.setProperty(XPACKAGE_NAMESPACE_URI, ICON_PROPERTY_NAME, iconURI!=null ? new URILiteral(iconURI) : null);	//set the icon property
+	}	
+	
 	/**Creates an XPackage resource that has the specified reference URI
 		within the given RDF data model.
 	@param rdf The RDF data model in which the resource should be created.

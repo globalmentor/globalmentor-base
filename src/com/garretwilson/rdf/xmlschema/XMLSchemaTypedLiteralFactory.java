@@ -1,6 +1,8 @@
 package com.garretwilson.rdf.xmlschema;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+
 import com.garretwilson.rdf.*;
 import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 
@@ -44,6 +46,17 @@ public class XMLSchemaTypedLiteralFactory implements RDFTypedLiteralFactory
 		else if(INTEGER_DATATYPE_URI.equals(datatypeURI))	//integer
 		{
 			return new IntegerLiteral(lexicalForm);	//create and return an integer literal
+		}
+		else if(URI_DATATYPE_URI.equals(datatypeURI))	//URI
+		{
+			try
+			{
+				return new URILiteral(lexicalForm);	//create and return a URI literal
+			}
+			catch(final URISyntaxException uriSyntaxException)	//if the URI is not syntactically correct
+			{
+				return null;	//we can't create the typed literal TODO provide better error
+			}
 		}
 		else	//if we don't recognize the type
 		{

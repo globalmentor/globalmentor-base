@@ -154,7 +154,7 @@ public class AnswerPanel extends ContentPanel
 				{
 					if(answerTypedLiteral instanceof BooleanLiteral)	//if this is a boolean literal
 					{
-						((BooleanPanel)getContentComponent()).setValue(((BooleanLiteral)answerTypedLiteral).getBoolean());	//set the value of the boolean panel
+						((BooleanPanel)getContentComponent()).setValue(((BooleanLiteral)answerTypedLiteral).getValue());	//set the value of the boolean panel
 					}
 				}
 				//G***fix for unexpected types else--put the lexical form in a generic text field

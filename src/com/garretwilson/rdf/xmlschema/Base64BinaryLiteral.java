@@ -2,24 +2,17 @@ package com.garretwilson.rdf.xmlschema;
 
 import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.rdf.*;
-import com.garretwilson.text.xml.schema.XMLSchemaConstants;
+import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 import com.garretwilson.util.Base64;
 
 /**An RDF literal that represents an XML Schema base64-encoded binary value.
 @author Garret Wilson
 @see Byte
 */
-public class Base64BinaryLiteral extends RDFTypedLiteral implements XMLSchemaConstants
+public class Base64BinaryLiteral extends RDFTypedLiteral<byte[]>
 {
 
-	/**Returns the literal value that the lexical form represents.
-	Convenience method for <code>getValue()</code>.
-	@return The literal value as an <code>Integer</code>.
-	*/
-	public byte[] getBytes() {return (byte[])getValue();}
-
-	/**Constructs an integer literal using the datatype
-	<code>http://www.w3.org/2001/XMLSchema#base64Binary</code>.
+	/**Constructs an integer literal using the datatype <code>http://www.w3.org/2001/XMLSchema#base64Binary</code>.
 	@param value The binary value of the literal.
 	*/
 	public Base64BinaryLiteral(final byte[] value)
@@ -38,9 +31,9 @@ public class Base64BinaryLiteral extends RDFTypedLiteral implements XMLSchemaCon
 	/**Returns the lexical form of the literal.
 	This version returns the base64-encoded string version of the stored bytes.
 	@return The lexical form, the base64-encoded string version of the stored bytes.
-	@see #getValue
+	@see #getValue()
 	*/
-	public String getLexicalForm() {return Base64.encodeBytes(getBytes());}
+	public String getLexicalForm() {return Base64.encodeBytes(getValue());}
 
 	/**Determines if the RDF object is a base64-encoded binary literal and, if so, 
 		casts the object to a base64-encoded binary literal and returns it.
@@ -63,7 +56,7 @@ public class Base64BinaryLiteral extends RDFTypedLiteral implements XMLSchemaCon
 	public static byte[] asBytes(final RDFObject rdfObject)
 	{
 		final Base64BinaryLiteral base64BinaryLiteral=asBase64BinaryLiteral(rdfObject);	//cast the object to a base64-encoded binary literal, if it is one
-		return base64BinaryLiteral!=null ? base64BinaryLiteral.getBytes() : null;	//return the binary value of the base64-encoded binary literal, or null if there is no base64-encoded binary literal
+		return base64BinaryLiteral!=null ? base64BinaryLiteral.getValue() : null;	//return the binary value of the base64-encoded binary literal, or null if there is no base64-encoded binary literal
 	}
 
 }

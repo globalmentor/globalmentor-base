@@ -304,7 +304,7 @@ public class ActivityPanel extends RDFPanel<Activity, ResourceModel<Activity>>
 		{
 			if(value instanceof RDFXMLLiteral)	//if the value is an XML literal
 			{
-				final DocumentFragment fragment=((RDFXMLLiteral)value).getDocumentFragment();	//get the value's XML fragment
+				final DocumentFragment fragment=((RDFXMLLiteral)value).getValue();	//get the value's XML fragment
 				element.appendChild(document.importNode(fragment, true));	//import the fragment and append it to the element 
 			}
 			else	//if the value is not an XML literal

@@ -55,7 +55,7 @@ public class Score extends Result implements MAQROConstants
 	@return The score value, or <code>null</code> if there is no value
 		or the value is not a number.
 	*/
-	public NumberLiteral getValue()
+	public NumberLiteral<?> getValue()
 	{
 		return asInstance(RDFUtilities.getValue(this), NumberLiteral.class);	//get the value of this score resource
 	}
@@ -72,7 +72,7 @@ public class Score extends Result implements MAQROConstants
 	@return The possible score value, or <code>null</code> if there is no possible
 		value or the possible value is not a number.
 	*/
-	public NumberLiteral getPossible()
+	public NumberLiteral<?> getPossible()
 	{
 		return asInstance(getPropertyValue(RDF_NAMESPACE_URI, POSSIBLE_PROPERTY_NAME), NumberLiteral.class); //get the value of the possible property only if it is a number
 	}
