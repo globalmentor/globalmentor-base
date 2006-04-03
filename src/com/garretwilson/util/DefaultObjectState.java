@@ -26,7 +26,7 @@ public class DefaultObjectState<T> extends DefaultModifiable implements ObjectSt
 		*/
 		public void setObject(final T object)	//TODO determine if we want to make this public or not
 		{
-			this.object=checkNull(object, "Object cannot be null");
+			this.object=checkInstance(object, "Object cannot be null");
 		}
 
 	/**The map of properties.*/

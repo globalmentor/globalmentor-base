@@ -25,7 +25,7 @@ public class EnumerationIterator<E> implements Iterator<E>, Enumeration<E>
 	*/
 	public EnumerationIterator(final Enumeration<E> enumeration)
 	{
-		this.enumeration=checkNull(enumeration, "Enumeration cannot be null.");		
+		this.enumeration=checkInstance(enumeration, "Enumeration cannot be null.");		
 	}
 
 	/**@return <code>true</code> if the iteration has more elements.*/

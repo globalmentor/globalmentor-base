@@ -21,7 +21,7 @@ public class MapDecorator<K, V> implements Map<K, V>
 	*/
 	public MapDecorator(final Map<K, V> map)
 	{
-		this.map=checkNull(map, "Map cannot be null");	//save the map
+		this.map=checkInstance(map, "Map cannot be null");	//save the map
 	}
 
   /**

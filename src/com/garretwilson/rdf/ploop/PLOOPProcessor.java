@@ -617,8 +617,8 @@ public class PLOOPProcessor
 		*/
 		public PropertyDescription(final URI propertyURI, final Class<?> propertyClass, final Object value, final Method setter)
 		{
-			this.propertyURI=checkNull(propertyURI, "Property URI cannot be null.");
-			this.propertyClass=checkNull(propertyClass, "Property class cannot be null.");
+			this.propertyURI=checkInstance(propertyURI, "Property URI cannot be null.");
+			this.propertyClass=checkInstance(propertyClass, "Property class cannot be null.");
 			this.setter=setter;
 			this.value=value;
 		}

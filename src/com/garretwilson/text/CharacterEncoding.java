@@ -103,9 +103,9 @@ public class CharacterEncoding
 	*/
 	public CharacterEncoding(final String family, final Endian endian, final byte[] bom)
 	{
-		this.family=checkNull(family, "Character encoding family must be given.");	//set the character encoding family
+		this.family=checkInstance(family, "Character encoding family must be given.");	//set the character encoding family
 		this.endian=endian;	//set the endianness
-		this.bom=checkNull(bom, "Non-null byte order mark must be provided.");	//store the byte order mark used to determine this character encoding
+		this.bom=checkInstance(bom, "Non-null byte order mark must be provided.");	//store the byte order mark used to determine this character encoding
 	}
 
 	/**Determines the family from a complete encoding name.

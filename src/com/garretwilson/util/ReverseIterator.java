@@ -1,6 +1,6 @@
 package com.garretwilson.util;
 
-import static com.garretwilson.lang.ObjectUtilities.checkNull;
+import static com.garretwilson.lang.ObjectUtilities.checkInstance;
 
 import java.util.*;
 
@@ -21,7 +21,7 @@ public class ReverseIterator<E> implements Iterator<E>
 	*/
 	public ReverseIterator(final ListIterator<E> listIterator)
 	{
-		this.listIterator=checkNull(listIterator, "Iterator cannot be null");	//save the iterator
+		this.listIterator=checkInstance(listIterator, "Iterator cannot be null");	//save the iterator
 	}
 
 	/**Returns <code>true</code> if the iteration has more elements.

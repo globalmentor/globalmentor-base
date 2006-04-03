@@ -37,8 +37,8 @@ public class RDFTypedLiteral<T> extends RDFLiteral
 	*/
 	public RDFTypedLiteral(final T literalValue, final URI literalDatatypeURI)
 	{
-		value=checkNull(literalValue, "Literal value cannot be null.");	//save the value
-		datatypeURI=checkNull(literalDatatypeURI, "Literal datatype cannot be null.");	//save the datatype URI
+		value=checkInstance(literalValue, "Literal value cannot be null.");	//save the value
+		datatypeURI=checkInstance(literalDatatypeURI, "Literal datatype cannot be null.");	//save the datatype URI
 	}
 
 	/**If <code>object</code> is another {@link RDFTypedLiteral}, compares the datatype URI and value objects; otherwise, compares the objects using the superclass functionality.

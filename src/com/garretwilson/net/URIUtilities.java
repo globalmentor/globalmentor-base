@@ -365,7 +365,7 @@ public class URIUtilities
 	*/
 	public static URI createPathURI(final String path)
 	{
-		final URI pathURI=URI.create(checkNull(path, "Path cannot be null"));	//create a URI from the given path
+		final URI pathURI=URI.create(checkInstance(path, "Path cannot be null"));	//create a URI from the given path
 		if(!isPathURI(pathURI))	//if there is a scheme or an authority
 		{
 			throw new IllegalArgumentException("Path cannot have a URI scheme or authority, and must include a path: "+path);
@@ -381,7 +381,7 @@ public class URIUtilities
 	*/
 	public static boolean isPath(final String path)
 	{
-		final URI pathURI=URI.create(checkNull(path, "Path cannot be null"));	//create a URI from the given path
+		final URI pathURI=URI.create(checkInstance(path, "Path cannot be null"));	//create a URI from the given path
 		return isPathURI(pathURI);	//indicate whether the constructed URI represents a path
 	}
 
@@ -392,7 +392,7 @@ public class URIUtilities
 	*/
 	public static boolean isPathURI(final URI uri)
 	{
-		checkNull(uri, "URI cannot be null");
+		checkInstance(uri, "URI cannot be null");
 		return uri.getScheme()==null && uri.getRawAuthority()==null && uri.getPath()!=null;	//see if there is no scheme, no authority, and a path
 	}
 
@@ -802,7 +802,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	*/
 	public static boolean isAbsolutePath(final String path)
 	{
-		return checkNull(path, "Path cannot be null").startsWith(ROOT_PATH);	//see if the path begins with '/'		
+		return checkInstance(path, "Path cannot be null").startsWith(ROOT_PATH);	//see if the path begins with '/'		
 	}
 
 	/**Determines whether the URI contains only a host and optional port.

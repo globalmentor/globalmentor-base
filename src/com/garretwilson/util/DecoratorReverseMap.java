@@ -24,7 +24,7 @@ public class DecoratorReverseMap<K, V> extends MapDecorator<K, V> implements Rev
 	public DecoratorReverseMap(final Map<K, V> map, final Map<V, K> reverseMap)
 	{
 		super(map);	//create the parent class
-		this.reverseMap=checkNull(reverseMap, "Reverse map cannot be null.");
+		this.reverseMap=checkInstance(reverseMap, "Reverse map cannot be null.");
 	}
 
 	/**Returns the key that represents the given value. 

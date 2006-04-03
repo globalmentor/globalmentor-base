@@ -25,8 +25,8 @@ public class SynchronizedCollectionDecorator<E> implements Collection<E>
 	*/
 	public SynchronizedCollectionDecorator(final Collection<E> collection, final Object mutex)
 	{
-		this.collection=checkNull(collection, "Collection cannot be null");	//save the collection
-		this.mutex=checkNull(mutex, "Mutex cannot be null");	//save the mutex
+		this.collection=checkInstance(collection, "Collection cannot be null");	//save the collection
+		this.mutex=checkInstance(mutex, "Mutex cannot be null");	//save the mutex
 	}
 
 	/**

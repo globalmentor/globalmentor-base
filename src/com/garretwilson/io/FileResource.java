@@ -40,7 +40,7 @@ public class FileResource extends DefaultResource
 	public FileResource(final File file, final URI referenceURI)
 	{
 		super(referenceURI);	//construct the parent class TODO fix null check in parent class
-		this.file=checkNull(file, "File cannot be null.");	//save the file
+		this.file=checkInstance(file, "File cannot be null.");	//save the file
 	}
 
 	/**Retrieves an list of child resources of this resource.

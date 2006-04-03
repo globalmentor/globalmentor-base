@@ -18,7 +18,7 @@ public class IteratorDecorator<E> implements Iterator<E>
 	*/
 	public IteratorDecorator(final Iterator<E> iterator)
 	{
-		this.iterator=checkNull(iterator, "Iterator cannot be null");	//save the iterator
+		this.iterator=checkInstance(iterator, "Iterator cannot be null");	//save the iterator
 	}
 
 	/**

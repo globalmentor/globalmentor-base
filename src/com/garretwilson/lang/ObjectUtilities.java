@@ -8,21 +8,18 @@ public class ObjectUtilities
 	/**This class cannot be publicly instantiated.*/
 	private ObjectUtilities() {}
 
-
-	/**Checks to see if a given variable is <code>null</code> and if so,
-	 	throws a <code>NullPointerException</code>.
+	/**Checks to see if a given variable is an instance of any object, and throws a {@link NullPointerException} if the variable is <code>null</code>.
 	@param <T> The type of variable to check.
 	@param variable The variable to check.
 	@return The given variable.
 	@exception NullPointerException if the given variable is <code>null</code>.
 	*/
-	public static <T> T checkNull(final T variable)
+	public static <T> T checkInstance(final T variable)
 	{
-		return checkNull(variable, null);	//check for null with no description
+		return checkInstance(variable, null);	//check for null with no description
 	}
 	
-	/**Checks to see if a given variable is <code>null</code> and if so,
-	 	throws a <code>NullPointerException</code>.
+	/**Checks to see if a given variable is an instance of any object, and throws a {@link NullPointerException} if the variable is <code>null</code>.
 	@param <T> The type of variable to check.
 	@param variable The variable to check.
 	@param description A description of the variable to be used when generating an exception,
@@ -30,7 +27,7 @@ public class ObjectUtilities
 	@return The given variable.
 	@exception NullPointerException if the given variable is <code>null</code>.
 	*/
-	public static <T> T checkNull(final T variable, final String description)
+	public static <T> T checkInstance(final T variable, final String description)
 	{
 		if(variable==null)	//if the variable is null
 		{
@@ -39,10 +36,9 @@ public class ObjectUtilities
 		return variable;	//return the variable
 	}
 
-	/**Checks to see if a given variable is of the correct type and if not,
-	 	throws a <code>ClassCastException</code>.
+	/**Checks to see if a given variable is of the correct type and if not, throws a <code>ClassCastException</code>.
 	@param <T> The type of variable to check.
-	@param variable The variable to check.
+	@param variable The variable to check, or <code>null</code>.
 	@param type The type to verify.
 	@return The given variable.
 	@exception ClassCastException if the given variable is not <code>null</code> and not an instance of type <var>type</var>.
@@ -52,14 +48,11 @@ public class ObjectUtilities
 		return checkType(variable, type, null);	//check for type with no description
 	}
 	
-	/**Checks to see if a given variable is of the correct type and if not,
-	 	throws a <code>NullPointerException</code>.
-	 	throws a <code>ClassCastException</code>.
+	/**Checks to see if a given variable is of the correct type and if not, throws a <code>ClassCastException</code>.
 	@param <T> The type of variable to check.
-	@param variable The variable to check.
+	@param variable The variable to check, or <code>null</code>.
 	@param type The type to verify.
-	@param description A description of the variable to be used when generating an exception,
-		or <code>null</code> for no description.
+	@param description A description of the variable to be used when generating an exception, or <code>null</code> for no description.
 	@return The given variable.
 	@exception ClassCastException if the given variable is not <code>null</code> and not an instance of type <var>type</var>.
 	*/

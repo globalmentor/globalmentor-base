@@ -20,7 +20,7 @@ public class CollectionDecorator<E> implements Collection<E>
 	*/
 	public CollectionDecorator(final Collection<E> collection)
 	{
-		this.collection=checkNull(collection, "Collection cannot be null");	//save the collection
+		this.collection=checkInstance(collection, "Collection cannot be null");	//save the collection
 	}
 
 	/**

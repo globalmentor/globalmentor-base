@@ -66,7 +66,7 @@ public class HashMapResourceBundle extends ResourceBundle
 	*/
 	protected Object handleGetObject(final String key)
 	{
-		return map.get(checkNull(key, "Resource key cannot be null."));	//look up the object from the map
+		return map.get(checkInstance(key, "Resource key cannot be null."));	//look up the object from the map
 	}
 
 	/**@return An enumeration of the resouce keys.*/

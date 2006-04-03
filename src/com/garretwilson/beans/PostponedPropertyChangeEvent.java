@@ -36,7 +36,7 @@ public class PostponedPropertyChangeEvent implements PostponedEvent<PropertyChan
 	public PostponedPropertyChangeEvent(final PropertyChangeSupport propertyChangeSupport, final PropertyChangeEvent propertyChangeEvent)
 	{
 		this.propertyChangeSupport=propertyChangeSupport;
-		this.propertyChangeEvent=checkNull(propertyChangeEvent, "Property change event cannot be null.");
+		this.propertyChangeEvent=checkInstance(propertyChangeEvent, "Property change event cannot be null.");
 	}
 
 	/**Reports that a bound property has changed.

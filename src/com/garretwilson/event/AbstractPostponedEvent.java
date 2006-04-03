@@ -47,8 +47,8 @@ public abstract class AbstractPostponedEvent<L extends EventListener, E extends 
 	public AbstractPostponedEvent(final EventListenerManager eventListenerManager, final Class<L> listenerKey, final E event)
 	{
 		this.eventListenerManager=eventListenerManager;
-		this.listenerKey=checkNull(listenerKey, "Listener key cannot be null.");
-		this.event=checkNull(event, "Event cannot be null.");
+		this.listenerKey=checkInstance(listenerKey, "Listener key cannot be null.");
+		this.event=checkInstance(event, "Event cannot be null.");
 	}
 
 	/**Fires the postponed event.
