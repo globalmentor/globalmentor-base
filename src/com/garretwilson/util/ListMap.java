@@ -21,4 +21,10 @@ public interface ListMap<K, V> extends Map<K, List<V>>
 	@return The first value in the list, or <code>null</code> if there is no list associated with the key or no values in the list.
 	*/
 	public V getItem(final K key);
+
+	/**Retrieves iterable access to all items, if any, associated with the given key
+	@param key The key in the map.
+	@return An object that will iterate all items, if any, associated with the given key.
+	*/
+	public Iterable<V> getItems(final K key);
 }
