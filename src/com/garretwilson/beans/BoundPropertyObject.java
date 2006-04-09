@@ -12,8 +12,8 @@ import com.garretwilson.lang.ObjectUtilities;
 <p>This implementation creates generic-aware property value change events.</p>
 @author Garret Wilson
 @see PropertyChangeSupport
-@see PropertyValueChangeEvent
-@see PropertyValueChangeListener
+@see GenericPropertyChangeEvent
+@see GenericPropertyChangeListener
 */
 public class BoundPropertyObject implements PropertyBindable
 {
@@ -176,8 +176,8 @@ public class BoundPropertyObject implements PropertyBindable
 	@param newValue The new property value.
 	@see #firePropertyChange(PropertyChangeEvent)
 	@see #hasListeners(String)
-	@see PropertyValueChangeEvent
-	@see PropertyValueChangeListener
+	@see GenericPropertyChangeEvent
+	@see GenericPropertyChangeListener
 	*/
 	protected <V> void firePropertyChange(final String propertyName, final V oldValue, final V newValue)
 	{
@@ -185,7 +185,7 @@ public class BoundPropertyObject implements PropertyBindable
 		{
 			if(!ObjectUtilities.equals(oldValue, newValue))	//if the values are different
 			{					
-				firePropertyChange(new PropertyValueChangeEvent<V>(this, propertyName, oldValue, newValue));	//create and fire a genericized subclass of a property change event
+				firePropertyChange(new GenericPropertyChangeEvent<V>(this, propertyName, oldValue, newValue));	//create and fire a genericized subclass of a property change event
 			}
 		}
 	}

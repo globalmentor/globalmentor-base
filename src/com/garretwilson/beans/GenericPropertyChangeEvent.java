@@ -6,7 +6,7 @@ import java.beans.PropertyChangeEvent;
 @param <V> The type of property value.
 @author Garret Wilson
 */
-public class PropertyValueChangeEvent<V> extends PropertyChangeEvent
+public class GenericPropertyChangeEvent<V> extends PropertyChangeEvent
 {
 
 	/**Source, property name, with old and new value constructor.
@@ -15,7 +15,7 @@ public class PropertyValueChangeEvent<V> extends PropertyChangeEvent
 	@param oldValue The old value of the property, or <code>null</code> if no old value is not available.
 	@param newValue The new value of the property, or <code>null</code> if the new value is not available.
 	*/
-	public PropertyValueChangeEvent(final Object source, final String propertyName, final V oldValue, V newValue)
+	public GenericPropertyChangeEvent(final Object source, final String propertyName, final V oldValue, V newValue)
 	{
 		super(source, propertyName, oldValue, newValue);	//construct the parent class
 	}
@@ -23,7 +23,7 @@ public class PropertyValueChangeEvent<V> extends PropertyChangeEvent
 	/**Property change event copy constructor
 	@param propertyChangeEvent A property change event the values of which will later cast to this class' generic type.
 	*/
-	public PropertyValueChangeEvent(final PropertyChangeEvent propertyChangeEvent)
+	public GenericPropertyChangeEvent(final PropertyChangeEvent propertyChangeEvent)
 	{
 		super(propertyChangeEvent.getSource(), propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());	//construct the parent class with identical values
 		setPropagationId(propertyChangeEvent.getPropagationId());	//update our propagation ID to match
