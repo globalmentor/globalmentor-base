@@ -2,7 +2,6 @@ package com.garretwilson.event;
 
 import java.util.*;
 import com.garretwilson.event.PostponedEvent;
-import com.garretwilson.util.Debug;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 
@@ -69,10 +68,9 @@ public abstract class AbstractPostponedEvent<L extends EventListener, E extends 
 		if(eventListenerManager!=null)	//if we have support for listeners
 		{
 			final E event=getEvent();	//get the postponed event
-			final Iterator<L> listeners=getEventListenerManager().getListeners(getListenerKey());	//get an iterator to the listeners
-			while(listeners.hasNext())	//for each listener
+			for(final L listener:eventListenerManager.getListeners(getListenerKey()))	//for each registered event listeners
 			{
-				fireEvent(listeners.next(), event);	//dispatch the event
+				fireEvent(listener, event);	//dispatch the event
 			}
 			
 		}

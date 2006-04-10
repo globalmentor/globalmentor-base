@@ -1,8 +1,8 @@
 package com.garretwilson.event;
 
 import java.util.*;
+import static java.util.Collections.*;
 import java.util.concurrent.CopyOnWriteArraySet;
-import com.garretwilson.util.EmptyIterator;
 
 /**Class that stores and retrieves event listeners, facilitating the creation
 	of another class that allows event listeners to be registered with it.
@@ -17,13 +17,12 @@ import com.garretwilson.util.EmptyIterator;
 	 though other threads (or even the event listener itself) may add and/or remove listeners.</p>
 <p>Example:</p>
 	<blockquote><pre><code>
-	final Iterator&lt;MyListener&gt; myListeners=getListeners(MyListener.class);
-	if(myListeners.hasNext())
+	if(haslisteners(MyListener.class)
 	{
 		final MyEvent myEvent=new MyEvent();
-		while(myListeners.hasNext())
+		for(final myListener:getListeners(MyListener.class))
 		{
-			myListeners.next().fireEvent(myEvent);
+			myListener.fireEvent(myEvent);		
 		}
 	}
 	</pre></code></blockquote>
@@ -129,20 +128,20 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 		return getListenerCount(key)>0;	//see if there is more than one listener associated with the given key
 	}
 
-	/**Retrieves a thread-safe snapshot iterator of listeners associated with the given key. 
+	/**Retrieves a thread-safe snapshot iterable of listeners associated with the given key. 
 	<p>Example: <code>getListeners(MyListener.class);</code></p>
 	@param key The key with which listeners have been associated.
-	@return A set of all currently registered listeners.
+	@return An iterable of all currently registered listeners.
 	*/
 	@SuppressWarnings("unchecked")
-	public <T extends EventListener> Iterator<T> getListeners(final Class<T> key)
+	public <T extends EventListener> Iterable<T> getListeners(final Class<T> key)
 	{
 		final Set<T> listenerSet;	//we'll get the set of listeners associated with this key; we will have only stored subclasses of the class keyed to the given key
 		synchronized(this)	//only synchronize long enough to get the set
 		{
 			listenerSet=listenerSetMap!=null ? (Set<T>)listenerSetMap.get(key) : null;	//get the set of listeners associated with this key; we will have only stored subclasses of the class keyed to the given key
 		}
-		return listenerSet!=null ? listenerSet.iterator() : new EmptyIterator<T>();	//if there is a set of listeners associated with this key, return an iterator to it (unsynchronized read access to the set is safe); otherwise, return an empty iterator 
+		return listenerSet!=null ? listenerSet : (Iterable<T>)emptySet();	//if there is a set of listeners associated with this key, return the set (unsynchronized read access to the set is safe); otherwise, return an empty set 
 	}
 
 }
