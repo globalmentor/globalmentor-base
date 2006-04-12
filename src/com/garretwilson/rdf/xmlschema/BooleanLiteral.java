@@ -24,7 +24,7 @@ public class BooleanLiteral extends RDFTypedLiteral<Boolean>
 	*/
 	public BooleanLiteral(final Boolean object)
 	{
-		super(object, BOOLEAN_DATATYPE_URI);	//save the Boolean  object as the value, specifying the XML Schema boolean datatype URI
+		super(object, BOOLEAN_DATATYPE_URI);	//save the Boolean object as the value, specifying the XML Schema boolean datatype URI
 	}
 
 	/**Constructs a boolean literal from a lexical value.

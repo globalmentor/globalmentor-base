@@ -2,8 +2,13 @@ package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
 import java.util.*;
+
 import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.rdf.*;
+
+import static com.garretwilson.rdf.RDFUtilities.asListResource;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
+
 import com.garretwilson.rdf.xmlschema.IntegerLiteral;
 
 /**Class representing a MAQRO question.
@@ -62,6 +67,20 @@ public class Question extends Interaction
 		setProperty(MAQRO_NAMESPACE_URI, CHOICES_PROPERTY_NAME, choices);	//set the choices
 	}
 
+	/**@return The <code>maqro:evaluations</code> list of evaluations for this question, or <code>null</code> if there is no list of evaluations or the value is not a list.*/
+	public RDFListResource getEvaluations()
+	{
+		return asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, EVALUATIONS_PROPERTY_NAME));	//get the maqro:evaluations property value as a list	
+	}
+
+	/**Sets the <code>maqro:evaluations</code> list of evaluations for this question.
+	@param evaluations The list of evaluations for this question, or <code>null</code> if the list of evaluations should be removed.
+	*/
+	public void setEvaluations(final RDFListResource evaluations)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, EVALUATIONS_PROPERTY_NAME, evaluations);	//set the maqro:evaluations property
+	}
+	
 	/**@return The resource indicating the datatype expected in the response, or
 		<code>null</code> if there is no expected datatype or the expected datatype
 		is not a resource.
@@ -100,6 +119,20 @@ public class Question extends Interaction
 		removeProperties(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME);	//remove all explanations
 	}
 
+	/**@return The <code>maqro:followups</code> list of followups for this question, or <code>null</code> if there is no list of followups or the value is not a list.*/
+	public RDFListResource getFollowups()
+	{
+		return asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, FOLLOWUPS_PROPERTY_NAME));	//get the maqro:followups property value as a list	
+	}
+
+	/**Sets the <code>maqro:followups</code> list of followups for this question.
+	@param followups The list of followups for this question, or <code>null</code> if the list of followups should be removed.
+	*/
+	public void setFollowups(final RDFListResource followups)
+	{
+		setProperty(MAQRO_NAMESPACE_URI, FOLLOWUPS_PROPERTY_NAME, followups);	//set the maqro:followups property
+	}
+	
 	/**@return The list of hints for this question, or <code>null</code>
 		if there is no list of hints or the value is not a list.
 	*/

@@ -4,13 +4,14 @@ import java.net.URI;
 import java.util.*;
 
 import com.garretwilson.rdf.*;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.rdf.xmlschema.BooleanLiteral;
 
 /**Represents the outcome, including responses, evaluations, and scores, of a
 	MAQRO interaction such as an activity or question.
 @author Garret Wilson
 */
-public class Outcome extends TypedRDFResource implements MAQROConstants
+public class Outcome extends TypedRDFResource
 {
 
 	/**@return The namespace URI of the ontology defining the default type of this resource.*/

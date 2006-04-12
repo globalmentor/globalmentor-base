@@ -6,13 +6,13 @@ import com.garretwilson.rdf.*;
 /**Constants used in MAQRO processing.
 @author Garret Wilson
 */
-public interface MAQROConstants
+public class MAQROConstants
 {
 
 	/**The recommended prefix to the MAQRO ontology namespace.*/
 	public final static String MAQRO_NAMESPACE_PREFIX="maqro";
 	/**The URI to the MAQRO namespace.*/
-	public final static URI MAQRO_NAMESPACE_URI=URI.create("http://maqro.org/namespaces/2003/maqro#");
+	public final static URI MAQRO_NAMESPACE_URI=URI.create("http://maqro.org/namespaces/maqro#");
 
 	/**The recommended prefix to the MAQRO ontology scoring algorithm namespace.*/
 //G***fix	public final static String MAQRO_SCORING_NAMESPACE_PREFIX="maqroScoring";
@@ -39,6 +39,8 @@ public interface MAQROConstants
 	public final static String ACTIVITY_CLASS_NAME="Activity";
 	/**The local name of maqro:Dialogue.*/
 	public final static String DIALOGUE_CLASS_NAME="Dialogue";
+	/**The local name of maqro:FollowupEvaluation.*/
+	public final static String FOLLOWUP_EVALUATION_CLASS_NAME="FollowupEvaluation";
 	/**The local name of maqro:Group.*/
 	public final static String GROUP_CLASS_NAME="Group";
 	/**The local name of maqro:Question.*/
@@ -85,6 +87,10 @@ public interface MAQROConstants
 	/**Whether the current time used and/or available should be shown. The local name of maqro:showTime.*/
 	public final static String SHOW_TIME_PROPERTY_NAME="showTime";
 
+		//MAQRO dialogue property names
+	/**The text of dialogue. The local name of maqro:text.*/
+//TODO del	public final static String TEXT_PROPERTY_NAME="text";
+	
 		//MAQRO question property names
 	/**The answer of a question. The local name of maqro:answer.*/
 	public final static String ANSWER_PROPERTY_NAME="answer";
@@ -148,6 +154,14 @@ public interface MAQROConstants
 //G***fix or del	public final static String CHOICE_COUNT_PROPERTY_NAME="choiceCount";
 	/**The number of interactions to select. The local name of maqro:questionCount.*/
 //G***del if not needed	public final static String QUESTION_COUNT_PROPERTY_NAME="questionCount";
+	/**Identifies a SPARQL condition. The local name of maqro:condition.*/
+	public final static String CONDITION_PROPERTY_NAME="condition";
+	/**Identifies an ordered list of evaluations. The local name of maqro:evaluations.*/
+	public final static String EVALUATIONS_PROPERTY_NAME="evaluations";
+	/**Identifies a followup interaction. The local name of maqro:followup.*/
+	public final static String FOLLOWUP_PROPERTY_NAME="followup";
+	/**Identifies an ordered list of followup interactions. The local name of maqro:followups.*/
+	public final static String FOLLOWUPS_PROPERTY_NAME="followups";
 	/**Identifies an interaction. The local name of maqro:interaction.*/
 	public final static String INTERACTION_PROPERTY_NAME="interaction";
 	/**The interactions of an activity. The local name of maqro:interactions.*/

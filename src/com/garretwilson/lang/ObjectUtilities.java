@@ -68,16 +68,16 @@ public class ObjectUtilities
 
 	/**Convenience method that returns the given object if and only if it is an
 		instance of the given class. This method is equivalent to
-		<code><var>object</var> instanceof <var>instanceClass</var> ? object : null</code>. 
+		<code><var>object</var> instanceof <var>Type</var> ? (Type)object : null</code>. 
+	@param <T> The type of object to check for.
 	@param object The object to examine.
 	@param instanceClass The class of which the object may be an instance.
 	@return The object if it is an instance of the given class, otherwise
 		<code>null</code>.
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T> T asInstance(final Object object, final Class<T> instanceClass)
 	{
-		return instanceClass.isInstance(object) ? (T)object : null;	//return the object if it is an instance of the class, otherwise null
+		return instanceClass.isInstance(object) ? instanceClass.cast(object) : null;	//cast and return the object if it is an instance of the class, otherwise null
 	}
 
 	/**Compares two object to make sure that the objects are equal, or the

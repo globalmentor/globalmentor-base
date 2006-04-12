@@ -1,11 +1,12 @@
 package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 
 /**Random ordering of MAQRO interactions.
 @author Garret Wilson
 */
-public class RandomOrder extends Order implements MAQROConstants
+public class RandomOrder extends Order
 {
 
 	/**@return The local name of the default type of this resource.*/

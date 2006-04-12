@@ -4,11 +4,12 @@ import java.net.URI;
 import java.util.*;
 
 import com.garretwilson.rdf.RDFLiteral;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 
 /**Filter for choosing MAQRO interactions based upon category.
 @author Garret Wilson
 */
-public class CategoryFilter extends Filter implements MAQROConstants
+public class CategoryFilter extends Filter
 {
 
 	/**@return The local name of the default type of this resource.*/

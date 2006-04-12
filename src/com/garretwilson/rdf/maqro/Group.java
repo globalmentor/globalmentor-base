@@ -3,6 +3,9 @@ package com.garretwilson.rdf.maqro;
 import java.net.URI;
 import java.util.List;
 import com.garretwilson.rdf.*;
+
+import static com.garretwilson.rdf.RDFUtilities.*;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.rdf.xmlschema.IntegerLiteral;
 
 /**Class representing a group of MAQRO interactions.
@@ -27,17 +30,14 @@ public class Group extends Interaction
 		super(referenceURI);  //construct the parent class
 	}
 
-	/**@return The list of interactions for this group, or <code>null</code>
-		if there is no list of interactions or the value is not a list.
-	*/
+	/**@return The list of interactions for this group, or <code>null</code> if there is no list of interactions or the value is not a list.*/
 	public List<RDFResource> getInteractions()	//TODO we're forced to return List instead of RDFListResource because of DictionaryActivity; see how we can get around this---this may be a holdover from some obsolete code
 	{
-		return RDFUtilities.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME));	//get the maqro:interactions property value as a list	
+		return asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME));	//get the maqro:interactions property value as a list	
 	}
 
 	/**Sets the list of interactions for this group.
-	@param interactions The list of interactions for this group, or
-		<code>null</code> if the list of interactions should be removed.
+	@param interactions The list of interactions for this group, or <code>null</code> if the list of interactions should be removed.
 	*/
 	public void setInteractions(final RDFListResource interactions)
 	{
@@ -49,7 +49,7 @@ public class Group extends Interaction
 	*/
 	public void addInteraction(final Interaction interaction)
 	{
-		List interactionList=getInteractions();	//get the list of interactions
+		List<RDFResource> interactionList=getInteractions();	//get the list of interactions
 		if(interactionList==null)	//if we have no list
 		{
 				//create a new list resource containing the added interaction 

@@ -8,6 +8,7 @@ import java.util.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.URIConstants;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
+import com.garretwilson.rdf.xmlschema.StringLiteral;
 import com.garretwilson.rdf.xmlschema.URILiteral;
 
 import static com.garretwilson.rdf.RDFConstants.*;
@@ -133,9 +134,20 @@ public class RDFUtilities
 		return asInstance(rdfObject, RDFResource.class);	//cast the object to a resource if we can
 	}
 
+	/**Determines if the RDF object is a plain literal or a String typed literal and, if so, returns the string lexical form.
+	@param rdfObject The RDF object in question.
+	@return The RDF object as a string, or <code>null</code> if the object is not a plain literal or a string typed literal, or the object is <code>null</code>.
+	*/
+	public static String asString(final RDFObject rdfObject)	//TODO should we check the object's rdf:value?
+	{
+		return rdfObject instanceof RDFPlainLiteral || rdfObject instanceof StringLiteral	//if this object is a plain literal or a string literal
+				? ((RDFLiteral)rdfObject).getLexicalForm()	//return the lexical form of the literal (if the object is a plain literal or a string litera, it's an RDFLiteral)
+				: null;	//indicate that the object shouldn't be interpreted as a string
+	}
+	
 	/**Determines if the RDF object is a plain literal or a URI typed literal and, if so, creates a URI from the literal's lexical form if possible.
 	@param rdfObject The RDF object in question.
-	@return The RDF object as a URI, or <code>null</code> if the object is not a literal, the lexical form does not contain a valid URI, or the object is <code>null</code>.
+	@return The RDF object as a URI, or <code>null</code> if the object is not a plain literal or a URI typed literal, the lexical form does not contain a valid URI, or the object is <code>null</code>.
 	*/
 	public static URI asURI(final RDFObject rdfObject)	//TODO should we allow a resource as well and return its reference URI?
 	{

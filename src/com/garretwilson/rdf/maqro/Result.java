@@ -2,12 +2,13 @@ package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
 import com.garretwilson.rdf.*;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 
 /**A result of an outcome evaluation.
 @author Garret Wilson
 @see Outcome
 */
-public abstract class Result extends TypedRDFResource implements MAQROConstants
+public abstract class Result extends TypedRDFResource
 {
 
 	/**Default constructor.*/

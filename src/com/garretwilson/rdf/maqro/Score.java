@@ -4,12 +4,13 @@ import java.net.URI;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFConstants.*;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.rdf.xmlschema.NumberLiteral;
 
 /**The result of a score evalution.
 @author Garret Wilson
 */
-public class Score extends Result implements MAQROConstants
+public class Score extends Result
 {
 
 	/**@return The namespace URI of the ontology defining the default type of this resource.*/

@@ -545,6 +545,44 @@ public class FileUtilities
 		}
 	}
 
+	/**Reads an object from a file using the given I/O support.
+	@param file The file from which to read.
+	@param io The I/O support for reading the object.
+	@return The object read from the file.
+	@throws IOException Thrown if there is an error reading the data.
+	*/ 
+	public static <T> T read(final File file, final IO<T> io) throws IOException
+	{
+		final InputStream bufferedInputStream=new BufferedInputStream(new FileInputStream(file));	//create a buffered input stream to the file
+		try
+		{
+			return io.read(bufferedInputStream, file.toURI());	//read the object, determining the base URI from the file
+		}
+		finally
+		{
+			bufferedInputStream.close();	//always close the input stream
+		}
+	}
+	
+	/**Writes an object to a file.
+	@param file The file to which to write.
+	@param io The I/O support for writing the object.
+	@param object The object to write to the given file.
+	@throws IOException Thrown if there is an error writing the data.
+	*/
+	public static <T> void write(final File file, final IO<T> io, final T object) throws IOException
+	{
+		final OutputStream bufferedOutputStream=new BufferedOutputStream(new FileOutputStream(file));//create a buffered output stream to the file
+		try
+		{
+			io.write(bufferedOutputStream, file.toURI(), object);	//write the object, determining the base URI from the file
+		}
+		finally
+		{
+			bufferedOutputStream.close();	//always close the output stream
+		}
+	}
+
 	/**Loads the contents of a file into an array of bytes. The file is closed
 		after the operation.
 	@param file The file from which to read.

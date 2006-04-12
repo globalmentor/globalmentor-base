@@ -3,11 +3,12 @@ package com.garretwilson.rdf.maqro;
 import java.net.URI;
 import java.util.*;
 import com.garretwilson.rdf.*;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 
 /**Designates an object is an interaction that can be part of a MAQRO activity.
 @author Garret Wilson
 */
-public abstract class Interaction extends TypedRDFResource implements MAQROConstants
+public abstract class Interaction extends TypedRDFResource
 {
 
 	/**@return The namespace URI of the ontology defining the default type of this resource.*/

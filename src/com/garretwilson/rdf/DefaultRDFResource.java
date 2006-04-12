@@ -676,24 +676,24 @@ for some reason, this method as listed is crucial for determining if two resourc
 	*/
 	public String toString()
 	{
-		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer in which to construct a string representation
+		final StringBuilder stringBuilder=new StringBuilder();	//create a string buffer in which to construct a string representation
 		final RDFLiteral value=RDFUtilities.getValue(this);	//get the value property, if any
 		if(getReferenceURI()!=null || value==null)	//if we have a reference URI and/or no value
 		{
-			stringBuffer.append(new RDFXMLifier().getLabel(this));	//start with the default string TODO fix with a common RDFXMLifier
+			stringBuilder.append(new RDFXMLifier().getLabel(this));	//start with the default string TODO fix with a common RDFXMLifier
 //G***testing			stringBuffer.append(super.toString());	//start with the default string
 		}
 		if(value!=null)	//if we have a value
 		{
-			if(stringBuffer.length()>0)	//if we added something to the string buffer already
+			if(stringBuilder.length()>0)	//if we added something to the string buffer already
 			{
-				stringBuffer.append(':').append(' ');	//separate the other information and the value
+				stringBuilder.append(':').append(' ');	//separate the other information and the value
 			}
-			stringBuffer.append(value.getLexicalForm());	//append the lexical form of the resource
+			stringBuilder.append(value.getLexicalForm());	//append the lexical form of the resource
 		}
-		if(stringBuffer.length()>0)	//if we've gathered anything at all
+		if(stringBuilder.length()>0)	//if we've gathered anything at all
 		{
-			return stringBuffer.toString();	//return the string we constructed
+			return stringBuilder.toString();	//return the string we constructed
 		}
 		else	//if we have nothing to return
 		{

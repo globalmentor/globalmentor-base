@@ -1,18 +1,17 @@
 package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
-import java.util.Iterator;
-import java.util.Locale;
 
 import com.garretwilson.rdf.RDFListResource;
 import com.garretwilson.rdf.RDFUtilities;
 import com.garretwilson.rdf.TypedRDFResource;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.rdf.xmlschema.IntegerLiteral;
 
 /**A selector of MAQRO group selection criteria.
 @author Garret Wilson
 */
-public class Selector extends TypedRDFResource implements MAQROConstants
+public class Selector extends TypedRDFResource
 {
 
 	/**@return The namespace URI of the ontology defining the default type of this resource.*/

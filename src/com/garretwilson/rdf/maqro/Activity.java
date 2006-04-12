@@ -3,8 +3,8 @@ package com.garretwilson.rdf.maqro;
 import java.net.URI;
 import java.util.*;
 import com.garretwilson.rdf.*;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.rdf.xmlschema.BooleanLiteral;
-import com.garretwilson.util.CollectionUtilities;
 
 /**Class representing a MAQRO activity.
 The activity, besides containing interactions, is an interaction itself.
@@ -289,7 +289,7 @@ public class Activity extends Group
 	}
 
 	/**Sets whether the time used and/or time available should be shown..
-	@param showTime <code>true</code> if the time used and/or time available should be shown..
+	@param showTime <code>true</code> if the time used and/or time available should be shown.
 	*/
 	public void setShowTime(final boolean showTime)
 	{

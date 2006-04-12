@@ -47,6 +47,10 @@ public class XMLSchemaTypedLiteralFactory implements RDFTypedLiteralFactory
 		{
 			return new IntegerLiteral(lexicalForm);	//create and return an integer literal
 		}
+		else if(STRING_DATATYPE_URI.equals(datatypeURI))	//string
+		{
+			return new StringLiteral(lexicalForm);	//create and return a string literal
+		}
 		else if(URI_DATATYPE_URI.equals(datatypeURI))	//URI
 		{
 			try

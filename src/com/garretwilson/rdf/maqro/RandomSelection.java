@@ -1,11 +1,12 @@
 package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 
 /**Random selection of MAQRO interactions.
 @author Garret Wilson
 */
-public class RandomSelection extends Selection implements MAQROConstants
+public class RandomSelection extends Selection
 {
 
 	/**@return The local name of the default type of this resource.*/

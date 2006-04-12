@@ -2,11 +2,12 @@ package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
 import com.garretwilson.rdf.*;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 
 /**Filter for choosing MAQRO interactions based upon interaction type.
 @author Garret Wilson
 */
-public class InteractionTypeFilter extends Filter implements MAQROConstants
+public class InteractionTypeFilter extends Filter
 {
 
 	/**@return The local name of the default type of this resource.*/

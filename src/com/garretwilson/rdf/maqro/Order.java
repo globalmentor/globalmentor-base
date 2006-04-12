@@ -2,11 +2,12 @@ package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
 import com.garretwilson.rdf.*;
+import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 
 /**Criteria for ordering MAQRO interactions.
 @author Garret Wilson
 */
-public abstract class Order extends TypedRDFResource implements MAQROConstants
+public abstract class Order extends TypedRDFResource
 {
 
 	/**@return The namespace URI of the ontology defining the default type of this resource.*/

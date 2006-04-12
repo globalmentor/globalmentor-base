@@ -1,5 +1,7 @@
 package com.garretwilson.lang;
 
+import java.lang.reflect.UndeclaredThrowableException;
+
 /**Utility methods for threads.
 @author Garret Wilson
 */
@@ -39,15 +41,75 @@ public class ThreadUtilities
 	}
 
 	/**Creates a thread in the given thread group and calls the given runnable in the thread, waiting until the thread is finished.
+	This version catches any uncaught {@link Error} or {@link RuntimeException} in the thread and rethrows it from this thread.
+	If any other {@link Exception} is thrown in the thread, this method throws an {@link UndeclaredThrowableException}.
+	This method delegates to {@link #call(ThreadGroup, Runnable, UncaughtExceptionHandler)}
 	@param threadGroup The thread group in which the thread is to be run.
 	@param runnable The runnable interface to run in the thread.
 	@return The thread that has been run in the thread group.
+	@exception UndeclaredThrowableException if the thread throws any {@link Throwable} that is not an {@link Error} or a {@link RuntimeException}.
 	@see #call(Thread)
 	*/
 	public static Thread call(final ThreadGroup threadGroup, final Runnable runnable)
 	{
+		final UncaughtExceptionHandler uncaughtExceptionHandler=new UncaughtExceptionHandler();	//create an uncaught exception handler that will store any error
+		final Thread thread=call(threadGroup, runnable, uncaughtExceptionHandler);	//call the runnable with our local exception handler
+		final Throwable throwable=uncaughtExceptionHandler.getThrowable();	//get the error, if any
+		if(throwable!=null)	//if there was an error
+		{
+			if(throwable instanceof Error)	//if this was an Error, we can throw it in this thread
+			{
+				throw (Error)throwable;
+			}
+			if(throwable instanceof RuntimeException)	//if this was a RuntimeException, we can throw that in this thread as well
+			{
+				throw (RuntimeException)throwable;
+			}
+			else	//if this was any other Exception
+			{
+				throw new UndeclaredThrowableException(throwable);	//throw a wrapper exception
+			}
+		}
+		return thread;
+	}
+
+	/**Creates a thread in the given thread group and calls the given runnable in the thread, waiting until the thread is finished.
+	@param threadGroup The thread group in which the thread is to be run.
+	@param runnable The runnable interface to run in the thread.
+	@param uncaughtExceptionHandler The exception handler for the thread, or <code>null</code> if no exception handler should be installed.
+	@return The thread that has been run in the thread group.
+	@see #call(Thread)
+	*/
+	public static Thread call(final ThreadGroup threadGroup, final Runnable runnable, final Thread.UncaughtExceptionHandler uncaughtExceptionHandler)
+	{
 		final Thread thread=new Thread(threadGroup, runnable);	//create a new thread in the thread group for the runnable
+		if(uncaughtExceptionHandler!=null)	//if an exception handler was given
+		{
+			thread.setUncaughtExceptionHandler(uncaughtExceptionHandler);	//install the exception handler
+		}
 		call(thread);	//call the thread
 		return thread;	//return the thread
 	}
+
+	/**The uncaught exception handler that stores the error for later access.
+	@author Garret Wilson
+	*/
+	private static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
+	{
+		/**The error that occurred, or <code>null</code> if no error occurred.*/
+		private Throwable throwable=null;
+
+			/**@return The error that occurred, or <code>null</code> if no error occurred.*/
+			public Throwable getThrowable() {return throwable;}
+
+		/**Invoked when the given thread terminates due to an given uncaught exception.
+		@param thread The thread in which the exception occurred.
+		@param throwable The exception that occurrred.
+		*/
+		public void uncaughtException(final Thread thread, final Throwable throwable)
+		{
+			this.throwable=throwable;	//save the throwable for later
+		}
+	};
+
 }
