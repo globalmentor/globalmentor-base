@@ -37,16 +37,17 @@ public class BoundPropertyObject implements PropertyBindable
 	/**A lazily-created property change listener to repeat copies of events received, using this component as the source.*/ 
 	private PropertyChangeListener repeatPropertyChangeListener=null;
 
-		/**A property change listener to repeat copies of events received, using this component as the source.*/ 
+		/**@return A property change listener to repeat copies of events received, using this component as the source.*/ 
 		protected synchronized PropertyChangeListener getRepeatPropertyChangeListener()	//TODO update to work with PropertyValueChangeEvent
 		{
 			if(repeatPropertyChangeListener==null)	//if we have not yet created the repeater property change listener
 			{
-				repeatPropertyChangeListener=new PropertyChangeListener()	//create a listener to listen for a changing a property value
+				repeatPropertyChangeListener=new PropertyChangeListener()	//create a listener to listen for a changing property value
 						{
 							public void propertyChange(final PropertyChangeEvent propertyChangeEvent)	//if a property value changes
 									{
 /*TODO del; doesn't work with versions that fire other types
+//TODO fix: "this" should be "BoundPropertyObject.this"
 											//create a new property change event to repeat TODO update to work with other property change event types
 										final PropertyChangeEvent repeatPropertyChangeEvent=new PropertyValueChangeEvent<Object>(this, propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());
 										firePropertyChange(repeatPropertyChangeEvent);	//repeat the property change event, indicating this component as the event source
@@ -61,12 +62,12 @@ public class BoundPropertyObject implements PropertyBindable
 	/**A lazily-created property change listener to forward along events received unmodified.*/ 
 	private PropertyChangeListener forwardPropertyChangeListener=null;
 
-		/**A lazily-created property change listener to forward along events received unmodified.*/ 
+		/**@return A lazily-created property change listener to forward along events received unmodified.*/ 
 		protected synchronized PropertyChangeListener getForwardPropertyChangeListener()
 		{
 			if(forwardPropertyChangeListener==null)	//if we have not yet created the forward property change listener
 			{
-				forwardPropertyChangeListener=new PropertyChangeListener()	//create a listener to listen for a changing a property value
+				forwardPropertyChangeListener=new PropertyChangeListener()	//create a listener to listen for a changing property value
 						{
 							public void propertyChange(final PropertyChangeEvent propertyChangeEvent)	//if a property value changes
 									{
