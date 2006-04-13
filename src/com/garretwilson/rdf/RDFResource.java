@@ -287,6 +287,7 @@ public interface RDFResource extends RDFObject, Resource, Cloneable	//TODO fix, 
 	/**Sets a plain literal property from a string by removing all property values
 		for the given property and creating a new <code>RDFPropertyValuePair</code>
 		from the given property and value. No language is specified.
+	If no value is given, all such properties are removed.
 	@param property A property resource; the predicate of an RDF statement.
 	@param literalValue A literal property value that will be stored in a
 		<code>RDFLiteral</code>; the object of an RDF statement.
@@ -298,6 +299,7 @@ public interface RDFResource extends RDFObject, Resource, Cloneable	//TODO fix, 
 
 	/**Sets a plain literal property from a string by first removing all such
 		properties and then adding a new property. No language is specified.
+	If no value is given, all such properties are removed.
 	@param propertyNamespaceURI The XML namespace URI used in the serialization
 		of the property resource that is the predicate of an RDF statement.
 	@param propertyLocalName The XML local name used in the serialization of the
@@ -311,6 +313,7 @@ public interface RDFResource extends RDFObject, Resource, Cloneable	//TODO fix, 
 	/**Sets a plain literal property from a string by removing all property values
 		for the given property and creating a new <code>RDFPropertyValuePair</code>
 		from the given property and value.
+	If no value is given, all such properties are removed.
 	@param property A property resource; the predicate of an RDF statement.
 	@param literalValue A literal property value that will be stored in a
 		<code>RDFLiteral</code>; the object of an RDF statement.
@@ -324,6 +327,7 @@ public interface RDFResource extends RDFObject, Resource, Cloneable	//TODO fix, 
 
 	/**Sets a plain literal property from a string by first removing all such
 		properties and then adding a new property.
+	If no value is given, all such properties are removed.
 	@param propertyNamespaceURI The XML namespace URI used in the serialization
 		of the property resource that is the predicate of an RDF statement.
 	@param propertyLocalName The XML local name used in the serialization of the

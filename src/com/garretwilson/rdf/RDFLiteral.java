@@ -19,6 +19,23 @@ public abstract class RDFLiteral implements RDFObject, Comparable
 		return getLexicalForm().hashCode();  //return the hash code of the value
 	}
 
+	/**Determines whether the given object is another literal with the same lexical form.
+	@param object The object with which to compare this literal.
+	@return <code>true<code> if this literal equals that specified in <code>object</code>.
+	@see #getLexicalForm()
+	*/
+	public boolean equals(Object object)
+	{
+		if(object instanceof RDFLiteral)	//if we're being compared with another literal
+		{
+			return getLexicalForm().equals(((RDFLiteral)object).getLexicalForm()); //compare values
+		}
+		else	//if we're being compared with anything else
+		{
+			return false;	//the objects aren't equal
+		}
+	}
+
 	/**@return A string representation of the literal's lexical form.*/
 	public String toString()
 	{

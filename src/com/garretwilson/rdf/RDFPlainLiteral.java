@@ -3,6 +3,7 @@ package com.garretwilson.rdf;
 import java.text.Collator;
 import java.util.Locale;
 
+import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.util.LocaleText;
 
 /**Represents a plain RDF literal.
@@ -35,6 +36,7 @@ public class RDFPlainLiteral extends RDFLiteral
 
 	/**Constructs a plain literal with a lexical value.
 	@param lexicalValue The lexical form of the literal.
+	@exception NullPointerException if the given lexical value is <code>null</code>.
 	*/
 	public RDFPlainLiteral(final String lexicalValue)
 	{
@@ -43,12 +45,12 @@ public class RDFPlainLiteral extends RDFLiteral
 
 	/**Constructs a plain literal with a lexical value and a language.
 	@param lexicalValue The lexical form of the literal.
-	@param languageLocale A locale representing the language, or <code>null</code>
-		if no language should be specified.
+	@param languageLocale A locale representing the language, or <code>null</code> if no language should be specified.
+	@exception NullPointerException if the given lexical value is <code>null</code>.
 	*/
 	public RDFPlainLiteral(final String lexicalValue, final Locale languageLocale)
 	{
-		lexicalForm=lexicalValue; //set the lexical form
+		lexicalForm=checkInstance(lexicalValue, "Lexical value cannot be null."); //set the lexical form
 		language=languageLocale;	//set the language locale
 	}
 
@@ -64,6 +66,7 @@ public class RDFPlainLiteral extends RDFLiteral
 		<code>object</code>.
 	@see #getLexicalForm
 	*/
+/*TODO del
 	public boolean equals(Object object)	//G***do we really want to compare this with a string?
 	{
 		if(object instanceof RDFLiteral)	//if we're being compared with another literal
@@ -77,7 +80,7 @@ public class RDFPlainLiteral extends RDFLiteral
 		else	//if we're being compared with anything else
 			return super.equals(object);	//use the default compare
 	}
-
+*/
 
 	/**Returns an initialized collator appropriate for comparing this literal to
 		another.

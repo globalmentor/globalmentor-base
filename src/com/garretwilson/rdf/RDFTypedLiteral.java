@@ -41,10 +41,10 @@ public class RDFTypedLiteral<T> extends RDFLiteral
 		datatypeURI=checkInstance(literalDatatypeURI, "Literal datatype cannot be null.");	//save the datatype URI
 	}
 
-	/**If <code>object</code> is another {@link RDFTypedLiteral}, compares the datatype URI and value objects; otherwise, compares the objects using the superclass functionality.
-	@param object The object with which to compare this typed literal; should be another typed literal.
+	/**If <code>object</code> is another {@link RDFTypedLiteral}, compares the datatype URI and value objects.
+	@param object The object with which to compare this typed literal.
 	@return <code>true<code> if this literal equals that specified in <code>object</code>.
-	@see #getValue
+	@see #getValue()
 	*/
 	public boolean equals(final Object object)
 	{
@@ -55,7 +55,9 @@ public class RDFTypedLiteral<T> extends RDFLiteral
 					&& getValue().equals(typedLiteral.getValue()); //compare values
 		}
 		else	//if we're being compared with anything else
-			return super.equals(object);	//use the default compare
+		{
+			return false;	//the objects aren't equal
+		}
 	}
 
 }

@@ -117,8 +117,7 @@ public class DCUtilities extends RDFUtilities implements DCConstants
 		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_SOURCE_PROPERTY_NAME, value);
 	}
 
-	/**Adds a <code>dc:title</code> property with the given value to the
-		resource.
+	/**Adds a <code>dc:title</code> property with the given value to the resource.
 	@param resource The resource to which the property should be added.
 	@param value The property value to add.
 	@return The added literal property value.
@@ -220,12 +219,21 @@ public class DCUtilities extends RDFUtilities implements DCConstants
 
 	/**Returns the value of the first <code>dc:title</code> property.
 	@param resource The resource the property of which should be located.
-	@return The value of the first <code>dc:title</code> property, or
-		<code>null</code> if no such property exists.
+	@return The value of the first <code>dc:title</code> property, or <code>null</code> if no such property exists.
 	*/
 	public static RDFObject getTitle(final RDFResource resource)
 	{
 		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME);
+	}
+
+	/**Set the <code>dc:title</code> property of the resource.
+	@param resource The resource of which the property should be set.
+	@param value The property value to set.
+	@return The set literal property value.
+	*/
+	public static RDFLiteral setTitle(final RDFResource resource, final String value)
+	{
+		return resource.setProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME, value);
 	}
 
 	/**Returns the value of the first <code>dc:rights</code> property.

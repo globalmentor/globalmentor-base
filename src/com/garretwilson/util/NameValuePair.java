@@ -36,14 +36,11 @@ public class NameValuePair<N, V> extends DefaultNamedObject<N> implements IDable
 		return ObjectUtilities.hashCode(getName(), getValue());	//calculate a hash code from the name and value
 	}
 
-	/**If <code>object</code> is another <code>NameValuePair</code>, compares the
-		names and values. Otherwise, compares the objects using the superclass functionality.
-	@param object The object with which to compare this name/value pair; should be
-		another name/value pair.
-	@return <code>true<code> if this name/value pair equals that specified in
-		<code>object</code>.
-	@see #getName
-	@see #getValue
+	/**Determines if the given object is another name value pair with the same name and value.
+	@param object The object with which to compare this name/value pair.
+	@return <code>true<code> if this name/value pair equals that specified in <code>object</code>.
+	@see #getName()
+	@see #getValue()
 	*/
 	public boolean equals(Object object)
 	{
@@ -54,7 +51,9 @@ public class NameValuePair<N, V> extends DefaultNamedObject<N> implements IDable
 					&& ObjectUtilities.equals(getValue(), ((NameValuePair)object).getValue());
 		}
 		else	//if we're being compared with anything else
-			return super.equals(object);	//use the default compare
+		{
+			return false;	//the objects aren't equal
+		}
 	}
 
 	/**Compares this object to another object.
