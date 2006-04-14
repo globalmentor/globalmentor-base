@@ -5,8 +5,9 @@ import java.net.URI;
 import java.util.*;
 
 import com.garretwilson.model.*;
+import static com.garretwilson.rdf.RDFUtilities.*;
+import static com.garretwilson.rdf.dublincore.DCUtilities.*;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
-import com.garretwilson.util.Debug;
 
 /**Represents the default implementation of an RDF resource.
 <p>This class provides compare functionality that sorts according to the reference
@@ -15,7 +16,7 @@ import com.garretwilson.util.Debug;
 	any.</p> 
 @author Garret Wilson
 */
-public class DefaultRDFResource extends DefaultResource implements RDFResource, Cloneable
+public class DefaultRDFResource extends BoundPropertyResource implements RDFResource, Cloneable
 {
 
 	/**The XML namespace URI.*/
@@ -253,7 +254,10 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 	{
 		final RDFPropertyValuePair propertyValuePair=new RDFPropertyValuePair(property, value); //create a name/value pair with the property and value
 		if(!propertyList.contains(propertyValuePair)) //if there is not already this property with this value
+		{
 			propertyList.add(propertyValuePair);  //add the property and value to the list
+			firePropertyChange(property.getReferenceURI().toString(), null, value);	//fire a property change event with the new property value
+		}
 		return value; //return the value we added
 	}
 
@@ -360,6 +364,42 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 		return addProperty(RDFUtilities.locateResource(this, propertyNamespaceURI, propertyLocalName), literalValue, language); //create a new literal value and add the property
 	}
 
+	/**Removes the property with the given property URI and property value.
+	@param propertyURI The reference URI of the property resource of the property to be removed.
+	@param propertyvalue The value of the property to be removed.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	*/
+	public void removeProperty(final URI propertyURI, final RDFObject propertyValue)
+	{
+		int propertiesRemovedCount=0;	//we haven't removed any properties, yet
+		final Iterator<RDFPropertyValuePair> propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
+		while(propertyIterator.hasNext()) //while there are more properties
+		{
+			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
+			if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
+			{
+				if(propertyValue.equals(propertyValuePair.getValue()))	//if the value matches
+				{
+					propertyIterator.remove();	//remove this property
+					firePropertyChange(propertyURI.toString(), propertyValuePair.getValue(), null);	//fire a property change event with the old property value
+					++propertiesRemovedCount;	//show that we removed another property
+				}
+			}
+		}
+//TODO fix in a shared method		return propertiesRemovedCount;	//return the number of properties we removed
+	}
+	
+	/**Removes the property with the given property URI and property value.
+	@param namespaceURI The XML namespace URI that represents part of the reference URI of the property to be removed.
+	@param localName The XML local name that represents part of the reference URI of the property to be removed.
+	@param propertyValue The value of the property to be removed.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	*/
+	public void removeProperty(final URI namespaceURI, final String localName, final RDFObject propertyValue)
+	{
+		removeProperty(RDFUtilities.createReferenceURI(namespaceURI, localName), propertyValue); //remove the property, combining the namespace URI and the local name for the reference URI
+	}
+
 	/**Removes all properties with the given URI.
 	@param propertyURI The reference URI of the property resource of the
 		properties to be removed.
@@ -375,6 +415,7 @@ public class DefaultRDFResource extends DefaultResource implements RDFResource, 
 			if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 			{
 				propertyIterator.remove();	//remove this property
+				firePropertyChange(propertyURI.toString(), propertyValuePair.getValue(), null);	//fire a property change event with the old property value
 				++propertiesRemovedCount;	//show that we removed another property
 			}
 		}
@@ -674,7 +715,7 @@ for some reason, this method as listed is crucial for determining if two resourc
 
 	/**Returns a string representation of the resource.
 	<p>This implementation returns the reference URI, if any, along with the
-		lexical form of the literal <code>rdf:value</code> property value, if any.
+		lexical form of the literal <code>rdf:value</code> property value or the <code>dc:title</code>, if any.
 		If this resource has neither a reference URI or a literal
 		<code>rdf:value</code> property value, the default representation will be
 		used.</p> 
@@ -684,7 +725,13 @@ for some reason, this method as listed is crucial for determining if two resourc
 	public String toString()
 	{
 		final StringBuilder stringBuilder=new StringBuilder();	//create a string buffer in which to construct a string representation
-		final RDFLiteral value=RDFUtilities.getValue(this);	//get the value property, if any
+		final RDFLiteral value=getValue(this);	//get the value property, if any
+/*TODO del if not wanted
+		if(value==null)	//if there is no value, try to get the dc:title
+		{
+			value=asLiteral(getTitle(this));	//get the title and use it if it is a literal
+		}
+*/
 		if(getReferenceURI()!=null || value==null)	//if we have a reference URI and/or no value
 		{
 			stringBuilder.append(new RDFXMLifier().getLabel(this));	//start with the default string TODO fix with a common RDFXMLifier

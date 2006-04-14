@@ -13,6 +13,8 @@ public class MAQROConstants
 	public final static String MAQRO_NAMESPACE_PREFIX="maqro";
 	/**The URI to the MAQRO namespace.*/
 	public final static URI MAQRO_NAMESPACE_URI=URI.create("http://maqro.org/namespaces/maqro#");
+	/**The URI to the MAQRO representation namespace.*/
+//TODO fix	public final static URI MAQRO_REPRESENTATION_NAMESPACE_URI=URI.create("http://maqro.org/namespaces/representation#");
 
 	/**The recommended prefix to the MAQRO ontology scoring algorithm namespace.*/
 //G***fix	public final static String MAQRO_SCORING_NAMESPACE_PREFIX="maqroScoring";
@@ -172,6 +174,11 @@ public class MAQROConstants
 	public final static String SUPPLEMENT_PROPERTY_NAME="supplement";
 
 	/**The constant category that indicates no specified category.*/
-	public final static RDFPlainLiteral NO_CATEGORY=new RDFPlainLiteral("No category specified");	//G***i18n 
+	public final static RDFPlainLiteral NO_CATEGORY=new RDFPlainLiteral("No category specified");	//G***i18n
+
+		//MAQRO representation names
+	/**The name for the yes/no representation boolean. The fragement identifier of <code>http://maqro.org/namespaces/representation#booleanYesNo</code>.*/
+//TODO fix	public final static String BASE64_BINARY_DATATYPE_NAME="base64Binary";
+
 
 }

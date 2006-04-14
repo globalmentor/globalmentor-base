@@ -241,7 +241,22 @@ public interface RDFResource extends RDFObject, Resource, Cloneable	//TODO fix, 
 	@return The added property value.
 	*/
 	public RDFLiteral addProperty(final URI propertyNamespaceURI, final String propertyLocalName, final String literalValue, final Locale language);
+
+	/**Removes the property with the given property URI and property value.
+	@param propertyURI The reference URI of the property resource of the property to be removed.
+	@param propertyvalue The value of the property to be removed.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	*/
+	public void removeProperty(final URI propertyURI, final RDFObject propertyValue);
 	
+	/**Removes the property with the given property URI and property value.
+	@param namespaceURI The XML namespace URI that represents part of the reference URI of the property to be removed.
+	@param localName The XML local name that represents part of the reference URI of the property to be removed.
+	@param propertyValue The value of the property to be removed.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	*/
+	public void removeProperty(final URI namespaceURI, final String localName, final RDFObject propertyValue);
+
 	/**Removes all properties with the given URI.
 	@param propertyURI The reference URI of the property resource of the
 		properties to be removed.

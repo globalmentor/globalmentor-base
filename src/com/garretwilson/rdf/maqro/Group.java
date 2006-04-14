@@ -6,6 +6,8 @@ import com.garretwilson.rdf.*;
 
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
+
+import static com.garretwilson.rdf.dublincore.DCUtilities.*;
 import com.garretwilson.rdf.xmlschema.IntegerLiteral;
 
 /**Class representing a group of MAQRO interactions.
@@ -78,4 +80,14 @@ public class Group extends Interaction
 		setProperty(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME, maxTime>=0 ? new IntegerLiteral(maxTime) : null); //set the property with an integer typed literal
 	}
 
+
+	/**Returns a string representation of the resource.
+	<p>This implementation returns the <code>dc:title</code>, if there is title, otherwise, the default string value is returned.</p> 
+	@return A string representation of the resource.
+	*/
+	public String toString()
+	{
+		final RDFObject title=getTitle(this);	//get the group title, if there is one
+		return title instanceof RDFLiteral ? ((RDFLiteral)title).getLexicalForm() : super.toString();	//use the title if there is one
+	}
 }
