@@ -20,7 +20,7 @@ public class AbstractClient
 	}
 
 	/**The authenticator object used to retrieve client authentication.*/
-	private Authenticable authenticator=null;
+	private Authenticable authenticator;
 
 	/**Sets the authenticator object used to retrieve client authentication.
 	@param authenticable The object to retrieve authentication information regarding a client.
@@ -36,10 +36,24 @@ public class AbstractClient
 			return authenticator;		//return the authenticator
 		else if(getDefaultInstance()!=this)	//if the default instance is not this object
 			return getDefaultInstance().getAuthenticator();	//ask the default instance for the authenticator
-		else	//if this class is the defefault client
+		else	//if this class is the default client
 			return null;	//we've already determined we don't have an authenticator, so return null
 	}
 
+	/**Default constructor with no authenticator.*/
+	public AbstractClient()
+	{
+		this(null);	//construct the class with no authenticator
+	}
+
+	/**Authenticator constructor.
+	@param authenticator The authenticator to use for this client, or <code>null</code> if the default authenticator should be used if available. 
+	*/
+	public AbstractClient(final Authenticable authenticator)
+	{
+		this.authenticator=authenticator;	//save the authenticator
+	}
+	
 	/**The ID of the user to which this client is restricted, or <code>null</code> if this client is not restricted to a single user.*/
 	private String username;
 

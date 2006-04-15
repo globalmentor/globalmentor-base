@@ -549,7 +549,7 @@ public class FileUtilities
 	@param file The file from which to read.
 	@param io The I/O support for reading the object.
 	@return The object read from the file.
-	@throws IOException Thrown if there is an error reading the data.
+	@throws IOException if there is an error reading the data.
 	*/ 
 	public static <T> T read(final File file, final IO<T> io) throws IOException
 	{
@@ -564,13 +564,13 @@ public class FileUtilities
 		}
 	}
 	
-	/**Writes an object to a file.
+	/**Writes an object to a file using the given I/O support.
 	@param file The file to which to write.
-	@param io The I/O support for writing the object.
 	@param object The object to write to the given file.
-	@throws IOException Thrown if there is an error writing the data.
+	@param io The I/O support for writing the object.
+	@throws IOException if there is an error writing the data.
 	*/
-	public static <T> void write(final File file, final IO<T> io, final T object) throws IOException
+	public static <T> void write(final File file, final T object, final IO<T> io) throws IOException
 	{
 		final OutputStream bufferedOutputStream=new BufferedOutputStream(new FileOutputStream(file));//create a buffered output stream to the file
 		try
