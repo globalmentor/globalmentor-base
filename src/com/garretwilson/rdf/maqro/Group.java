@@ -63,6 +63,18 @@ public class Group extends Interaction
 		}
 	}
 
+	/**Removes an interaction from the group.
+	@param interaction The interaction to remove from the group.
+	*/
+	public void removeInteraction(final Interaction interaction)
+	{
+		List<RDFResource> interactionList=getInteractions();	//get the list of interactions
+		if(interactionList!=null)	//if we have a list
+		{
+			interactionList.remove(interaction);	//remove the interaction from the list
+		}
+	}
+
 	/**@return The maximum amount of time for the group, in milliseconds, or -1
 	if the time is not specified.
 	*/
@@ -79,7 +91,6 @@ public class Group extends Interaction
 	{
 		setProperty(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME, maxTime>=0 ? new IntegerLiteral(maxTime) : null); //set the property with an integer typed literal
 	}
-
 
 	/**Returns a string representation of the resource.
 	<p>This implementation returns the <code>dc:title</code>, if there is title, otherwise, the default string value is returned.</p> 
