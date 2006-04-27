@@ -1,6 +1,7 @@
 package com.garretwilson.text.directory.vcard;
 
 import com.garretwilson.itu.*;
+import com.garretwilson.text.SyntaxException;
 
 /**An object representing the "TEL" type of a vCard <code>text/directory</code>
 	profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>,
@@ -61,10 +62,10 @@ public class Telephone extends TelephoneNumber
 	/**Telephone number constructor with default telephone type of <code>VOICE_TELEPHONE_TYPE</code>.
 	@param telephoneNumber The telephone number from which values should be used
 		for initialization.
-	@exception TelephoneNumberSyntaxException Thrown if the values violate ITU-T
+	@exception SyntaxException Thrown if the values violate ITU-T
 		E.164.
 	*/
-	public Telephone(final TelephoneNumber telephoneNumber) throws TelephoneNumberSyntaxException
+	public Telephone(final TelephoneNumber telephoneNumber) throws SyntaxException
 	{
 		this(telephoneNumber, DEFAULT_TELEPHONE_TYPE);	//construct a telephone with the default telephone type
 	}
@@ -74,10 +75,10 @@ public class Telephone extends TelephoneNumber
 		for initialization.
 	@param telephoneType The intended use, one or more of the
 		<code>XXX_TELEPHONE_TYPE</code> constants ORed together.
-	@exception TelephoneNumberSyntaxException Thrown if the values violate ITU-T
+	@exception SyntaxException Thrown if the values violate ITU-T
 		E.164.
 	*/
-	public Telephone(final TelephoneNumber telephoneNumber, final int telephoneType) throws TelephoneNumberSyntaxException
+	public Telephone(final TelephoneNumber telephoneNumber, final int telephoneType) throws SyntaxException
 	{
 		this(telephoneNumber.getCountryCode(), telephoneNumber.getNationalDestinationCode(), telephoneNumber.getSubscriberNumber(), telephoneType);	//construct the class from the components of the given telephone number
 	}
@@ -86,10 +87,10 @@ public class Telephone extends TelephoneNumber
 	@param cc The country code for geographic areas.
 	@param ndc The national destination code
 	@param sn The subscriber number.
-	@exception TelephoneNumberSyntaxException Thrown if the values violate ITU-T
+	@exception SyntaxException Thrown if the values violate ITU-T
 		E.164.
 	*/
-	public Telephone(final String cc, final String ndc, final String sn) throws TelephoneNumberSyntaxException
+	public Telephone(final String cc, final String ndc, final String sn) throws SyntaxException
 	{
 		this(cc, ndc, sn, DEFAULT_TELEPHONE_TYPE);	//construct a telephone with the default telephone type
 	}
@@ -100,10 +101,10 @@ public class Telephone extends TelephoneNumber
 	@param sn The subscriber number.
 	@param telephoneType The intended use, one or more of the
 		<code>XXX_TELEPHONE_TYPE</code> constants ORed together.
-	@exception TelephoneNumberSyntaxException Thrown if the values violate ITU-T
+	@exception SyntaxException Thrown if the values violate ITU-T
 		E.164.
 	*/
-	public Telephone(final String cc, final String ndc, final String sn, final int telephoneType) throws TelephoneNumberSyntaxException
+	public Telephone(final String cc, final String ndc, final String sn, final int telephoneType) throws SyntaxException
 	{
 		super(cc, ndc, sn);	//construct the parent class
 		setTelephoneType(telephoneType);	//set the telephone type
@@ -113,10 +114,10 @@ public class Telephone extends TelephoneNumber
 	Expects the country code to begin with '+' and accepts code field delimiters
 		of '-' and ' '. 
 	@param string The string to be parsed into a telephone number.
-	@exception TelephoneNumberSyntaxException Thrown if the value violates ITU-T
+	@exception SyntaxException Thrown if the value violates ITU-T
 		E.164.
 	*/
-	public Telephone(final String string) throws TelephoneNumberSyntaxException
+	public Telephone(final String string) throws SyntaxException
 	{
 		this(string, DEFAULT_TELEPHONE_TYPE);	//construct a telephone from the string using the default telephone type
 	}
@@ -128,10 +129,10 @@ public class Telephone extends TelephoneNumber
 	@param string The string to be parsed into a telephone number.
 	@param telephoneType The intended use, one or more of the
 		<code>XXX_TELEPHONE_TYPE</code> constants ORed together.
-	@exception TelephoneNumberSyntaxException Thrown if the value violates ITU-T
+	@exception SyntaxException Thrown if the value violates ITU-T
 		E.164.
 	*/
-	public Telephone(final String string, final int telephoneType) throws TelephoneNumberSyntaxException
+	public Telephone(final String string, final int telephoneType) throws SyntaxException
 	{
 		super(string);	//construct the parent class
 		setTelephoneType(telephoneType);	//set the telephone type

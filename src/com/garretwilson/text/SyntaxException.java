@@ -1,7 +1,7 @@
-package com.garretwilson.util;
+package com.garretwilson.text;
 
-/**Generic checked exception thrown to indicate that a string could not be
-	parsed. 
+/**Generic checked exception thrown to indicate that a string could not be parsed.
+Allows convenient indication of optional cause exception as well as optional indication of a reason message.
 @author Garret Wilson
 */
 public class SyntaxException extends Exception
@@ -68,7 +68,7 @@ public class SyntaxException extends Exception
 			throw new NullPointerException("Missing input string.");	//indicate that we only received null
 		if(index<-1)	//if the index is less than negative one, the "unknown index" value
 			throw new IllegalArgumentException();	//report the error
-		this.input=input;	//save th input
+		this.input=input;	//save the input
 		this.index=index;	//save the index		
 	}
 

@@ -7,6 +7,7 @@ import java.util.*;
 import com.garretwilson.io.*;
 import com.garretwilson.itu.*;
 import com.garretwilson.lang.*;
+import com.garretwilson.text.SyntaxException;
 import com.garretwilson.text.directory.*;
 import com.garretwilson.util.*;
 
@@ -399,10 +400,10 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		{
 			return new Telephone(telephoneNumberString, telephoneType);	//create a telephone from the telephone number and telephone type
 		}
-		catch(TelephoneNumberSyntaxException telephoneNumberSyntaxException)	//if the telephone number was not syntactically correct
+		catch(final SyntaxException syntaxException)	//if the telephone number was not syntactically correct
 		{
-			final ParseIOException parseIOException=new ParseIOException(telephoneNumberSyntaxException.getMessage(), reader);	//create an I/O parse exception from the telephone number syntax exception
-			parseIOException.initCause(telephoneNumberSyntaxException);	//show what caused this exception
+			final ParseIOException parseIOException=new ParseIOException(syntaxException.getMessage(), reader);	//create an I/O parse exception from the telephone number syntax exception
+			parseIOException.initCause(syntaxException);	//show what caused this exception
 			throw parseIOException;	//throw the I/O parse exceptoin
 		}
 	}

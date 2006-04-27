@@ -8,6 +8,7 @@ import static java.util.Collections.*;
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
 import com.garretwilson.text.FormatUtilities;
+import com.garretwilson.text.SyntaxException;
 import com.garretwilson.util.*;
 import com.sun.mail.iap.Argument;
 

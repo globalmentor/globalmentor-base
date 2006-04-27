@@ -72,6 +72,23 @@ public class CharSequenceUtilities
 		return -1;	//if we make it to here, we didn't find any of the characters
 	}
 
+	/**Ensures that the given character sequence has a minimum the specified number of characters.
+	@param <T> The type of character sequence being used.
+	@param charSequence The character sequence to check.
+	@param minLength The minimum length required.
+	@return The given character sequence.
+	@exception NullPointerException if the given character sequence is <code>null</code>.
+	@exception IllegalArgumentException if the length of the given character sequence is less than the indicated minimum length.
+	*/
+	public static <T extends CharSequence> T checkMinLength(final T charSequence, final int minLength)
+	{
+		if(charSequence.length()<minLength)	//if the length of the given characters sequence is less than required
+		{
+			throw new IllegalArgumentException("Character sequence is not at least "+minLength+" characters long: "+charSequence);
+		}
+		return charSequence;	//return the character sequence
+	}
+	
 	/**Determines if a character sequence contains the given character.
 	@param charSequence The character sequence to be searched.
 	@param character The character to check.
@@ -111,7 +128,7 @@ public class CharSequenceUtilities
 	@param charSequence The character sequence to search.
 	@return <code>true</code> if the sequence has at least one letter or digit.
 	*/
-	static public boolean containsLetterOrDigit(final CharSequence charSequence) //G***maybe change this to indexOfLetterOrDigit
+	public static boolean containsLetterOrDigit(final CharSequence charSequence) //G***maybe change this to indexOfLetterOrDigit
 	{
 		for(int i=charSequence.length()-1; i>=0; --i) //look at each character in the string
 		{
@@ -337,7 +354,7 @@ public class CharSequenceUtilities
 	@return The index of the first occurrence of one of the supplied characters,
 		or -1 if none were found.
 	*/
-	static public int notCharIndexOf(final CharSequence charSequence, final String notCharString)
+	public static int notCharIndexOf(final CharSequence charSequence, final String notCharString)
 	{
 		return notCharIndexOf(charSequence, notCharString, 0);  //start looking from the beginning
 	}
@@ -350,7 +367,7 @@ public class CharSequenceUtilities
 	@return The index of the first occurrence of one of the supplied characters,
 		or -1 if none were found.
 	*/
-	static public int notCharIndexOf(final CharSequence charSequence, final String notCharString, final int fromIndex)
+	public static int notCharIndexOf(final CharSequence charSequence, final String notCharString, final int fromIndex)
 	{
 		for(int i=fromIndex; i<charSequence.length(); ++i)	//look at each character in the sequence
 		{
@@ -367,7 +384,7 @@ public class CharSequenceUtilities
 	@return The index of the last occurrence of one of the supplied characters,
 		or -1 if none were found.
 	*/
-	static public int notCharLastIndexOf(final CharSequence charSequence, final String notCharString)
+	public static int notCharLastIndexOf(final CharSequence charSequence, final String notCharString)
 	{
 		return notCharLastIndexOf(charSequence, notCharString, charSequence.length()-1);  //start searching from the end
 	}
@@ -380,7 +397,7 @@ public class CharSequenceUtilities
 	@return The index of the last occurrence of one of the supplied characters,
 		or -1 if none were found.
 	*/
-	static public int notCharLastIndexOf(final CharSequence charSequence, final String notCharString, final int fromIndex)
+	public static int notCharLastIndexOf(final CharSequence charSequence, final String notCharString, final int fromIndex)
 	{
 		for(int i=fromIndex; i>=0; --i)	//look at each character in the sequence , looking from right to left
 		{

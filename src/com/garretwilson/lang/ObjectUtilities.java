@@ -1,5 +1,7 @@
 package com.garretwilson.lang;
 
+import com.garretwilson.util.Range;
+
 /**Various utilities to manipulate Java objects.
 @author Garret Wilson
 */
@@ -64,6 +66,27 @@ public class ObjectUtilities
 			throw new ClassCastException(description);
 		}
 		return (T)variable;	//return the variable
+	}
+
+	/**Compares two objects for order, taking into account <code>null</code>.
+	If both objects are <code>null</code> they are considered equal.
+	If only one object is <code>null</code>, comparison will be performed based upon whether <code>null</code> is considered higher or lower.
+	Otherwise, the second object is compared to the first using the first object's {@link Comparable#compareTo(Object)} method.
+	@param object1 The first object to be compared.
+	@param object2 The second object to be compared.
+	@param nullBias A negative or positive integer indicating if <code>null</code> should be considered less than or greater than non-<code>null</code> objects.
+	@return A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+	*/
+	public static <T extends Comparable<T>> int compare(final T object1, final T object2, final int nullBias)
+	{
+		if(object1==null)	//if the first object is null
+		{
+			return object2==null ? 0 : nullBias;	//if both objects are null, they are considered equal; otherwise, send back whatever null should be
+		}
+		else	//if the first object is not null
+		{
+			return object2!=null ? object1.compareTo(object2) : -nullBias;	//if both objects are non-null, they can be compared; otherwise, the second object is the only one null, and gets the negation of the null bias
+		}		
 	}
 
 	/**Convenience method that returns the given object if and only if it is an

@@ -4,8 +4,8 @@ import java.io.Reader;
 import java.io.IOException;
 import java.util.*;
 
+import com.garretwilson.text.SyntaxException;
 import com.garretwilson.util.Debug;
-import com.garretwilson.util.SyntaxException;
 
 import static com.garretwilson.text.CharacterConstants.*;
 

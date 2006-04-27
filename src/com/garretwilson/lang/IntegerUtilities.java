@@ -163,12 +163,24 @@ public class IntegerUtilities
 		return -1;  //show that the string doesn't seem to contain a number string value we have
 	}
 
+  /**Returns a string representation of a given integer in the given radix, modified to match the the given length.
+	@param value An integer to be converted to a string.
+	@param radix The radix to use in the string representation.
+	@param length The number of digits the returned string should have.
+	@return A string representation of the argument in the specified radix.
+	@see Integer#toString(int, int)
+	*/
+  public static String toString(final int value, final int radix, final int length)
+  {
+	  //convert the integer to a string, then make the string the correct length by padding the beginning with zeros
+		return StringUtilities.makeStringLength(Integer.toString(value, radix), length, '0', 0);
+  }
 
 	/**Converts an integer into a hex string with the specified number of digits.
 	@param value The value to convert.
 	@param length The number of digits the returned string should have.
-	@return Lowercase hex version of the given value with the correct number of
-		digits, using zeros to pad the left of the string to the correct length.
+	@return Lowercase hex version of the given value with the correct number of digits, using zeros to pad the left of the string to the correct length.
+	@see Integer#toHexString(int)
 	*/
 	public static String toHexString(final int value, final int length)
 	{

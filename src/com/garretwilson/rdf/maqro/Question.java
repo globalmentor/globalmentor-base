@@ -120,18 +120,22 @@ public class Question extends Interaction
 	}
 
 	/**@return The <code>maqro:followups</code> list of followups for this question, or <code>null</code> if there is no list of followups or the value is not a list.*/
+/*TODO del when works
 	public RDFListResource getFollowups()
 	{
 		return asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, FOLLOWUPS_PROPERTY_NAME));	//get the maqro:followups property value as a list	
 	}
+*/
 
 	/**Sets the <code>maqro:followups</code> list of followups for this question.
 	@param followups The list of followups for this question, or <code>null</code> if the list of followups should be removed.
 	*/
+/*TODO del when works
 	public void setFollowups(final RDFListResource followups)
 	{
 		setProperty(MAQRO_NAMESPACE_URI, FOLLOWUPS_PROPERTY_NAME, followups);	//set the maqro:followups property
 	}
+*/
 	
 	/**@return The list of hints for this question, or <code>null</code>
 		if there is no list of hints or the value is not a list.

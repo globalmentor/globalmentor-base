@@ -42,14 +42,12 @@ public interface CharacterConstants
 	public final static char EQUALS_SIGN_CHAR=0x003D;
 	/**A grave accent character.*/
 	public final static char GRAVE_ACCENT_CHAR=0x0060;
-	/**A left-pointing guillemet character.*/
-	public final static char LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR=0x00AB;
-	/**A right-pointing guillemet character.*/
-	public final static char RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR=0x00BB;
-	/**A middle dot character.*/
-	public final static char MIDDLE_DOT_CHAR=0x00B7;
+	/**Unicode no-break space (NBSP).*/
+	public final static char NO_BREAK_SPACE_CHAR=0x00A0;
 	/**The copyright symbol.*/
 	public final static char COPYRIGHT_SIGN=0x00A9;
+	/**A left-pointing guillemet character.*/
+	public final static char LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR=0x00AB;
 	/**The pilcrow or paragraph sign.
 	@see #PARAGRAPH_SIGN_CHAR
 	*/
@@ -58,6 +56,10 @@ public interface CharacterConstants
 	@see #PILCROW_SIGN_CHAR
 	*/
 	public final static char PARAGRAPH_SIGN_CHAR=PILCROW_SIGN_CHAR;
+	/**A middle dot character.*/
+	public final static char MIDDLE_DOT_CHAR=0x00B7;
+	/**A right-pointing guillemet character.*/
+	public final static char RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR=0x00BB;
 	/**An uppercase oe ligature.*/
 	public final static char LATIN_CAPITAL_LIGATURE_OE_CHAR=0x0152;
 	/**A lowercase oe ligature.*/
@@ -120,10 +122,10 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	public final static char SINGLE_LEFT_POINTING_ANGLE_QUOTATION_MARK_CHAR=0x2039;
 	/**A right-pointing single guillemet character.*/
 	public final static char SINGLE_RIGHT_POINTING_ANGLE_QUOTATION_MARK_CHAR=0x203A;
-	/**Unicode trademark character.*/
+	/**Trademark character.*/
 	public final static char TRADE_MARK_SIGN_CHAR=0x2122;
-	/**Unicode no-break space (NBSP).*/
-	public final static char NO_BREAK_SPACE_CHAR=0x00A0;
+	/**Infinity symbol (221E;INFINITY;Sm;0;ON;;;;;N;;;;;).*/
+	public final static char INFINITY_CHAR=0x2122;
 	/**A reversed double prime quotation mark.*/
 	public final static char REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR=0x301D;
 	/**A double prime quotation mark.*/
