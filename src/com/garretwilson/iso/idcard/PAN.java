@@ -7,6 +7,7 @@ import static com.garretwilson.lang.CharacterUtilities.*;
 import com.garretwilson.lang.IntegerUtilities;
 import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.math.Luhn;
+import com.garretwilson.text.ArgumentSyntaxException;
 
 /**Primary Account Number (PAN) of an identification card as defined in ISO/IEC 7812-1:2000(E),
 	"Identification cards — Identification of issuers — Part 1: Numbering system".
@@ -65,10 +66,10 @@ public class PAN implements Comparable<PAN>
 		public char getCheckDigitCharacter() {return (char)('0'+checkDigit);}
 
 	/**The value of the primary account number.*/
-	private final int value;
+	private final long value;
 
 		/**@return The value of the primary account number.*/
-		public int getValue() {return value;}
+		public long getValue() {return value;}
 
 	/**The calculated hash code.*/
 	private final int hashCode;
@@ -98,9 +99,9 @@ public class PAN implements Comparable<PAN>
 	/**Account number constructor.
 	This constructor is not reliable if a PAN has an IIN with one or more leading zeros. 
 	@param pan The primary account number value.
-	@exception IllegalArgumentException if the string form of the PAN is less than {@value #MIN_PAN_LENGTH} in length, one of the components of the account number is not valid, and/or if the components do not match the ending check digit.
+	@exception ArgumentSyntaxException if the string form of the PAN is less than {@value #MIN_PAN_LENGTH} in length, one of the components of the account number is not valid, and/or if the components do not match the ending check digit.
 	*/
-	public PAN(final int pan)
+	public PAN(final int pan) throws ArgumentSyntaxException
 	{
 		this(Integer.toString(pan));	//create a string from the PAN value
 	}
@@ -108,9 +109,9 @@ public class PAN implements Comparable<PAN>
 	/**Character sequence constructor.
 	@param pan The primary account number representation.
 	@exception NullPointerException if the given primary account number string is <code>null</code>.
-	@exception IllegalArgumentException if the string is less than {@value #MIN_PAN_LENGTH} in length, one of the components of the account number is not valid, and/or if the components do not match the ending check digit.
+	@exception ArgumentSyntaxException if the string is less than {@value #MIN_PAN_LENGTH} in length, one of the components of the account number is not valid, and/or if the components do not match the ending check digit.
 	*/
-	public PAN(final CharSequence pan)
+	public PAN(final CharSequence pan) throws ArgumentSyntaxException
 	{
 		this(checkMinLength(checkInstance(pan, "Primary account number cannot be null."), MIN_PAN_LENGTH).subSequence(0, IIN_LENGTH),	//split out the individual components
 				pan.subSequence(IIN_LENGTH, pan.length()-1),
@@ -122,47 +123,47 @@ public class PAN implements Comparable<PAN>
 	@param iai The individual account identification; a maximum of 12 digits.
 	@param checkDigit The check digit.
 	@exception NullPointerException if the given IIN and/or individual account identification is <code>null</code>.
-	@exception IllegalArgumentException if the given IIN is not {@value #IIN_LENGTH} digits in length and/or is not composed solely of Latin digits.
-	@exception IllegalArgumentException if the given individual account identification is more than {@value #MAX_IAD_LENGTH} digits in length and/or is not composed solely of Latin digits.
-	@exception IllegalArgumentException if the given check digit is not a Latin digit.
-	@exception IllegalArgumentException if the provided check digit is not the appropriate check digit for this primary account number.
+	@exception ArgumentSyntaxException if the given IIN is not {@value #IIN_LENGTH} digits in length and/or is not composed solely of Latin digits.
+	@exception ArgumentSyntaxException if the given individual account identification is more than {@value #MAX_IAD_LENGTH} digits in length and/or is not composed solely of Latin digits.
+	@exception ArgumentSyntaxException if the given check digit is not a Latin digit.
+	@exception ArgumentSyntaxException if the provided check digit is not the appropriate check digit for this primary account number.
 	*/
-	public PAN(final CharSequence iin, final CharSequence iai, final char checkDigit)
+	public PAN(final CharSequence iin, final CharSequence iai, final char checkDigit) throws ArgumentSyntaxException
 	{
 		checkInstance(iin, "IIN cannot be null.");
 		if(!isLatinDigits(iin))	//if the IIN is not solely latin digits
 		{
-			throw new IllegalArgumentException("IIN must be composed entirely of Latin digits: "+iin);			
+			throw new ArgumentSyntaxException("IIN must be composed entirely of Latin digits: "+iin);			
 		}
 		if(iin.length()!=IIN_LENGTH)	//if the IIN is not six digits long
 		{
-			throw new IllegalArgumentException("IIN must be six digits in length: "+iin);
+			throw new ArgumentSyntaxException("IIN must be six digits in length: "+iin);
 		}
 		checkInstance(iai, "Individual account identification cannot be null.");
 		if(!isLatinDigits(iai))	//if the individual account identification is not solely latin digits
 		{
-			throw new IllegalArgumentException("IIN must be composed entirely of Latin digits: "+iin);			
+			throw new ArgumentSyntaxException("IIN must be composed entirely of Latin digits: "+iin);			
 		}
 		if(iai.length()>MAX_IAD_LENGTH)	//if the individual account identification is over 12 digits long
 		{
-			throw new IllegalArgumentException("IIN must be six digits in length: "+iin);
+			throw new ArgumentSyntaxException("IIN must be six digits in length: "+iin);
 		}
 		if(!isLatinDigit(checkDigit))	//if the check digit is not a Latin digit
 		{
-			throw new IllegalArgumentException("Check digit "+checkDigit+" must be a Latin digit.");						
+			throw new ArgumentSyntaxException("Check digit "+checkDigit+" must be a Latin digit.");						
 		}
 		final String baseDigits=new StringBuilder().append(iin).append(iai).toString();	//get the base digits to checksum
 		if(Luhn.getCheckDigit(baseDigits)!=checkDigit)	//if the number doesn't match its check digit
 		{
-			throw new IllegalArgumentException("Check digit "+checkDigit+" is not appropriate for digits: "+baseDigits);
+			throw new ArgumentSyntaxException("Check digit "+checkDigit+" is not appropriate for digits: "+baseDigits);
 		}
-		this.iin=Integer.valueOf(iin.toString());	//save the IIN
+		this.iin=Integer.parseInt(iin.toString());	//save the IIN
 		mii=iin.charAt(0)-'0';	//save the value represented by the first character of the IIN as the MII
 		final String iaiString=iai.toString();	//get the individual account identification string
 		this.individualAccountIDLength=iaiString.length();	//save the original length of the individual account identification
-		this.individualAccountID=Integer.valueOf(iaiString);	//save the individual account identification
+		this.individualAccountID=Integer.parseInt(iaiString);	//save the individual account identification
 		this.checkDigit=checkDigit-'0';	//save the check digit value
-		this.value=Integer.valueOf(toString()).intValue();	//save the integer value of the PAN
+		this.value=Long.parseLong(toString());	//save the long value of the PAN
 		this.hashCode=ObjectUtilities.hashCode(getIIN(), getIndividualAccountID());	//a PAN is uniquely identified by its IIN and IAI
 	}
 
@@ -195,7 +196,9 @@ public class PAN implements Comparable<PAN>
 	*/
 	public int compareTo(final PAN pan)
 	{
-		return getValue()-pan.getValue();	//compare values
+		final long value1=value;	//get this value
+		final long value2=pan.getValue();	//get the other value
+		return value1<value2 ? -1 : value1==value2 ? 0 : 1;	//compare values, as we can't be sure a simple subtraction will yield a value within the supported range of integer (check for equality last, becuase it's more likely that the numbers will not be equal, so almost 50% of the time we'll save one comparison)
 	}
 
 	/**Returns a string representation of this primary account number.

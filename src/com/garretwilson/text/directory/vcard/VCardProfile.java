@@ -7,6 +7,7 @@ import java.util.*;
 import com.garretwilson.io.*;
 import com.garretwilson.itu.*;
 import com.garretwilson.lang.*;
+import com.garretwilson.text.ArgumentSyntaxException;
 import com.garretwilson.text.SyntaxException;
 import com.garretwilson.text.directory.*;
 import com.garretwilson.util.*;
@@ -400,7 +401,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 		{
 			return new Telephone(telephoneNumberString, telephoneType);	//create a telephone from the telephone number and telephone type
 		}
-		catch(final SyntaxException syntaxException)	//if the telephone number was not syntactically correct
+		catch(final ArgumentSyntaxException syntaxException)	//if the telephone number was not syntactically correct
 		{
 			final ParseIOException parseIOException=new ParseIOException(syntaxException.getMessage(), reader);	//create an I/O parse exception from the telephone number syntax exception
 			parseIOException.initCause(syntaxException);	//show what caused this exception
@@ -668,7 +669,7 @@ public class VCardProfile extends AbstractProfile implements DirectoryConstants,
 			//see if we recognize the value type
 		if(PHONE_NUMBER_VALUE_TYPE.equalsIgnoreCase(valueType))	//phone-number
 		{
-			writer.write(((Telephone)value).toCanonicalString());	//write the canonical version of the phone number
+			writer.write(((Telephone)value).getCanonicalString());	//write the canonical version of the phone number
 			return true;	//show that we serialized the value 
 		}		
 			//see if we recognize the type name		

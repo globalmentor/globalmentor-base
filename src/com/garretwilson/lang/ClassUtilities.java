@@ -16,14 +16,82 @@ public class ClassUtilities
 	/**This class cannot be publicly instantiated.*/
 	private ClassUtilities() {}
 
+	/**Returns a constructor of a class that is compatible with the given parameter types.
+	A constructor is considered compatible if each of the given parameter types can be assigned to the formal parameter type in the constructor.
+	A constructor is first located the formal parameter types of which match the given parameters. If that fails, a compatible constructor is located.
+	@param <T> The type of class.
+	@param objectClass The class for which compatible constructors should be returned.
+	@param parameterTypes The types of parameters to be used.
+	@return A compatible constructors, or <code>null</code> if no compatible constructor could be found.
+	@exception SecurityException If a security manager, <var>s</var>, is present and any of the following conditions is met:
+  <ul>
+		<li>Invocation of <code>{@link SecurityManager#checkMemberAccess(Class, int) s.checkMemberAccess(this, Member.PUBLIC)}</code> denies access to the constructor.</li>
+		<li>The caller's class loader is not the same as or an ancestor of the class loader for the current class and invocation of <code>{@link SecurityManager#checkPackageAccess s.checkPackageAccess()}</code> denies access to the package of this class.</li>
+	</ul>
+	*/
+	public static <T> Constructor<T> getCompatibleConstructor(final Class<T> objectClass, final Class ... parameterTypes) throws SecurityException
+	{
+		Constructor<T> constructor=getConstructor(objectClass, parameterTypes);	//see if we can find an exact constructor
+		if(constructor==null)	//if there is no exact constructor
+		{
+			final Constructor<T>[] compatibleConstructors=getCompatibleConstructors(objectClass, parameterTypes);	//get the compatible constructors, if any
+			if(compatibleConstructors.length>0)	//if there is at least one compatible constructor
+			{
+				constructor=compatibleConstructors[0];	//use the first compatible constructor
+			}
+		}
+		return constructor;	//return the compatible constructor, if we found one
+	}
+
+	/**Returns all constructors of a class that are compatible with the given parameter types.
+	A constructor is considered compatible if each of the given parameter types can be assigned to the formal parameter type in the constructor.
+	@param <T> The type of class.
+	@param objectClass The class for which compatible constructors should be returned.
+	@param parameterTypes The types of parameters to be used.
+	@return An array of compatible constructors.
+	@exception SecurityException If a security manager, <var>s</var>, is present and any of the following conditions is met:
+  <ul>
+		<li>Invocation of <code>{@link SecurityManager#checkMemberAccess(Class, int) s.checkMemberAccess(this, Member.PUBLIC)}</code> denies access to the constructor.</li>
+		<li>The caller's class loader is not the same as or an ancestor of the class loader for the current class and invocation of <code>{@link SecurityManager#checkPackageAccess s.checkPackageAccess()}</code> denies access to the package of this class.</li>
+	</ul>
+	*/
+	@SuppressWarnings("unchecked")	//casts are used because arrays are not generic-aware
+	public static <T> Constructor<T>[] getCompatibleConstructors(final Class<T> objectClass, final Class ... parameterTypes) throws SecurityException
+	{
+		final int parameterCount=parameterTypes.length;	//get the number of requested parameters
+		final Constructor[] constructors=objectClass.getConstructors();	//get all constructors for this class
+		final List<Constructor<T>> compatibleConstructors=new ArrayList<Constructor<T>>(constructors.length);	//create a list sufficiently large to hold all constructors
+		for(final Constructor constructor:constructors)	//for each constructor
+		{
+			final Class[] formalParameterTypes=constructor.getParameterTypes();	//get the formal parameter types
+			if(formalParameterTypes.length==parameterCount)	//if this constructor has the correct number of formal parameters
+			{
+				boolean isCompatible=true;	//start out assuming this is a compatible constructor
+				for(int i=parameterCount-1; isCompatible && i>=0; --i)	//for each parameter, as long we we think this is a compatible constructor
+				{
+					if(!((Class<?>)formalParameterTypes[i]).isAssignableFrom(parameterTypes[i]))	//if we can't assign the requested parameter type to the formal parameter type
+					{
+						isCompatible=false;	//this is not a compatible constructor
+					}
+				}
+				if(isCompatible)	//if this is a compatible constructor
+				{
+					compatibleConstructors.add((Constructor<T>)constructor);	//add this constructor to the list
+				}
+			}
+		}
+		return compatibleConstructors.toArray((Constructor<T>[])new Constructor[compatibleConstructors.size()]);	//return an array of compatible constructors
+	}
+	
+	
   /**Finds a defined constructor of a class.
-	This method differs from {@link Class#getConstructor} in that if no matching constructor is found, <code>null</code> is returned rather than an exception being thrown.
+	This method differs from {@link Class#getConstructor(Class[])} in that if no matching constructor is found, <code>null</code> is returned rather than an exception being thrown.
 	@param objectClass The class for which the constructor should be found.
 	@param parameterTypes The constructor parameters.
 	@return The <code>Method</code> object of the public constructor that matches the specified <code>parameterTypes</code>, or <code>null</code> if no such constructor exists.
-	@exception SecurityException If a security manager, <em>s</em>, is present and any of the following conditions is met:
+	@exception SecurityException If a security manager, <var>s</var>, is present and any of the following conditions is met:
   <ul>
-		<li>Invocation of <code>{@link SecurityManager#checkMemberAccess s.checkMemberAccess(this, Member.PUBLIC)}</code> denies access to the constructor.</li>
+		<li>Invocation of <code>{@link SecurityManager#checkMemberAccess(Class, int) s.checkMemberAccess(this, Member.PUBLIC)}</code> denies access to the constructor.</li>
 		<li>The caller's class loader is not the same as or an ancestor of the class loader for the current class and invocation of <code>{@link SecurityManager#checkPackageAccess s.checkPackageAccess()}</code> denies access to the package of this class.</li>
 	</ul>
 	*/
@@ -181,27 +249,6 @@ public class ClassUtilities
 	public static String getVariableName(final Class objectClass)
 	{
 		return JavaUtilities.getVariableName(getSimpleName(objectClass));	//get the variable name form of the simple name of the class
-	}
-
-	/**Casts an object to the given class.
-	This method is available in JDK 5.0 via {@link Class#cast(java.lang.Object)}, but is provided here for backwards-compatibility using RetroWeaver for example.
-	@param <T> The type to which to cast.
-	@param objectClass The class to which the object will be cast.
-	@param object The object to be cast.
-	@return The object after casting, or <code>null</code> if the object is <code>null</code>.
-	@exception ClassCastException if the object is not null and is not assignable to the type T.
-	*/
-	@SuppressWarnings("unchecked")
-	public static <T> T cast(final Class<T> objectClass, final Object object)
-	{
-		if(object==null || objectClass.isInstance(object))	//if the object is null or an instance of the class
-		{
-			return (T)object;	//cast and return the object
-		}
-		else	//if the object isn't null and is not an instance of the class
-		{
-			throw new ClassCastException(objectClass.getName());	//throw an exception
-		}
 	}
 
 	/**Determines all super classes and interfaces of the given class.

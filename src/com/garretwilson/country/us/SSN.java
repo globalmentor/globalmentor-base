@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import com.garretwilson.lang.IntegerUtilities;
 import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.text.ArgumentSyntaxException;
 import com.garretwilson.util.Debug;
 
 /**Encapsulation of a United States Social Security Number (SSN).
@@ -80,12 +81,12 @@ public class SSN
 
 	/**SSN value constructor.
 	@param ssn The social security number value.
-	@exception IllegalArgumentException if the resulting string is longer than nine digits.
-	@exception IllegalArgumentException if the resulting area number is 000.
-	@exception IllegalArgumentException if the resulting group number is 00.
-	@exception IllegalArgumentException if the resulting serial number is 0000.
+	@exception ArgumentSyntaxException if the resulting string is longer than nine digits.
+	@exception ArgumentSyntaxException if the resulting area number is 000.
+	@exception ArgumentSyntaxException if the resulting group number is 00.
+	@exception ArgumentSyntaxException if the resulting serial number is 0000.
 	*/
-	public SSN(final int ssn)
+	public SSN(final int ssn) throws ArgumentSyntaxException
 	{
 		this(IntegerUtilities.toString(ssn, 10, AREA_NUMBER_LENGTH+GROUP_NUMBER_LENGTH+SERIAL_NUMBER_LENGTH));	//create a string from the SSN value
 	}
@@ -93,38 +94,38 @@ public class SSN
 	/**Character sequence constructor.
 	@param ssn A SSN character sequence in the form "XXXXXXXXX" or "XXX-XX-XXXX".
 	@exception NullPointerException if the given character sequence is <code>null</code>.
-	@exception IllegalArgumentException if the character sequence is not in the form "XXXXXXXXX" or "XXX-XX-XXXX".
-	@exception IllegalArgumentException if the area number is 000.
-	@exception IllegalArgumentException if the group number is 00.
-	@exception IllegalArgumentException if the serial number is 0000.
+	@exception ArgumentSyntaxException if the character sequence is not in the form "XXXXXXXXX" or "XXX-XX-XXXX".
+	@exception ArgumentSyntaxException if the area number is 000.
+	@exception ArgumentSyntaxException if the group number is 00.
+	@exception ArgumentSyntaxException if the serial number is 0000.
 	*/
-	public SSN(final CharSequence ssn)
+	public SSN(final CharSequence ssn) throws ArgumentSyntaxException
 	{
 		final Matcher matcher=PATTERN.matcher(checkInstance(ssn, "Social Security Number cannot be null."));	//create a matcher from the SSN pattern
 		if(matcher.matches())	//if the SSN matches the pattern
 		{
 			final int groupDelta=matcher.group(1)!=null ? 0 : 3;	//see if we should use the first or second set of groups
-			areaNumber=Integer.valueOf(matcher.group(1+groupDelta));	//save the area number
+			areaNumber=Integer.parseInt(matcher.group(1+groupDelta));	//save the area number
 			if(areaNumber==0)	//if the area number is zero
 			{
-				throw new IllegalArgumentException("SSN area number cannot be 000.");
+				throw new ArgumentSyntaxException("SSN area number cannot be 000.");
 			}
-			groupNumber=Integer.valueOf(matcher.group(2+groupDelta));	//save the group number
+			groupNumber=Integer.parseInt(matcher.group(2+groupDelta));	//save the group number
 			if(groupNumber==0)	//if the group number is zero
 			{
-				throw new IllegalArgumentException("SSN group number cannot be 00.");
+				throw new ArgumentSyntaxException("SSN group number cannot be 00.");
 			}
-			serialNumber=Integer.valueOf(matcher.group(3+groupDelta));	//save the serial number
+			serialNumber=Integer.parseInt(matcher.group(3+groupDelta));	//save the serial number
 			if(serialNumber==0)	//if the serial number is zero
 			{
-				throw new IllegalArgumentException("SSN serial number cannot be 0000.");
+				throw new ArgumentSyntaxException("SSN serial number cannot be 0000.");
 			}
-			value=Integer.valueOf(getPlainString()).intValue();	//save the integer value of the SSN
+			value=Integer.parseInt(getPlainString());	//save the integer value of the SSN
 			hashCode=ObjectUtilities.hashCode(areaNumber, groupNumber, serialNumber);	//a SSN is uniquely identified by each of its components
 		}
 		else	//if the SSN doesn't match the pattern
 		{
-			throw new IllegalArgumentException("SSN "+ssn+" is not a valid social security number in the form \"XXXXXXXXX\" or \"XXX-XX-XXXX\".");
+			throw new ArgumentSyntaxException("SSN "+ssn+" is not a valid social security number in the form \"XXXXXXXXX\" or \"XXX-XX-XXXX\".");
 		}
 	}
 

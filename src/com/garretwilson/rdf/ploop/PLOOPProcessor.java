@@ -562,6 +562,7 @@ public class PLOOPProcessor
 				{
 					return Pattern.compile(stringObject);	//compile a pattern from the string
 				}
+				//TODO check for a string-compatible constructor
 			}
 		}
 		return null;	//indicate we couldn't get an object of the correct type

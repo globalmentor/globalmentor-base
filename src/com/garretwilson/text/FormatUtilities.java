@@ -89,12 +89,56 @@ public class FormatUtilities
 	@param stringBuilder The string builder into which the result should be placed.
 	@param delimiter The separator character to be inserted between the object strings. 
 	@param collection The objects to be formatted.
-	@return The string buffer containing the new information.
-	@see Object#toString
+	@return The string builder containing the new information.
+	@see Object#toString()
 	*/
 	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final Iterable<?> iterable)
 	{
 		return formatList(stringBuilder, String.valueOf(delimiter), iterable);	//format the list with a string delimiter
+	}
+
+	/**Appends the string representations of the given ints separated by a delimiter character.
+	@param stringBuilder The string builder into which the result should be placed.
+	@param delimiter The separator character to be inserted between the int strings, or {@link CharacterConstants#NULL_CHAR} (Unicode code point 0) if no delimiter should be used. 
+	@param items The items to be formatted.
+	@return The string builder containing the new information.
+	@see Integer#toString(int)
+	@see CharacterConstants#NULL_CHAR
+	*/
+	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final int... items)
+	{
+		final int itemCount=items.length;	//find out how many items there are.
+		for(int i=0; i<itemCount; ++i)	//for each item
+		{
+			stringBuilder.append(items[i]);	//append the item
+			if(delimiter!=NULL_CHAR && i<itemCount-1)	//if there is a delimiter and we're not at the last item
+			{
+				stringBuilder.append(delimiter);	//append the delimiter
+			}
+		}
+		return stringBuilder;	//return the string builder we used
+	}
+
+	/**Appends the string representations of the given longs separated by a delimiter character.
+	@param stringBuilder The string builder into which the result should be placed.
+	@param delimiter The separator character to be inserted between the int strings, or {@link CharacterConstants#NULL_CHAR} (Unicode code point 0) if no delimiter should be used. 
+	@param items The items to be formatted.
+	@return The string builder containing the new information.
+	@see Integer#toString(int)
+	@see CharacterConstants#NULL_CHAR
+	*/
+	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final long... items)
+	{
+		final int itemCount=items.length;	//find out how many items there are.
+		for(int i=0; i<itemCount; ++i)	//for each item
+		{
+			stringBuilder.append(items[i]);	//append the item
+			if(delimiter!=NULL_CHAR && i<itemCount-1)	//if there is a delimiter and we're not at the last item
+			{
+				stringBuilder.append(delimiter);	//append the delimiter
+			}
+		}
+		return stringBuilder;	//return the string builder we used
 	}
 
 	/**Appends the string representations of the given objects separated by a delimiter string.

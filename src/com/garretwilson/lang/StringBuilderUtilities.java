@@ -12,8 +12,7 @@ package com.garretwilson.lang;
 public class StringBuilderUtilities
 {
 
-	/**Concatenates the string representations of the objects
-		in the array by appending them to the string buffer.
+	/**Concatenates the string representations of the objects in the array by appending them to the string buffer.
 	@param stringBuilder The string builder which the result should be placed.
 	@param objects The array of objects (such as strings) to be concatenated.
 	@return The string builder containing the new information.
@@ -24,6 +23,20 @@ public class StringBuilderUtilities
 		for(final Object object:objects)	//for each object
 		{
 			stringBuilder.append(object);	//append this object
+		}
+		return stringBuilder;	//return the string builder object
+	}
+
+	/**Concatenates the given strings by appending them to the string buffer.
+	@param stringBuilder The string builder which the result should be placed.
+	@param string The strings to be concatenated.
+	@return The string builder containing the new information.
+	*/
+	public static StringBuilder append(final StringBuilder stringBuilder, final String... strings)
+	{
+		for(final String string:strings)	//for each string
+		{
+			stringBuilder.append(string);	//append this string
 		}
 		return stringBuilder;	//return the string builder object
 	}
@@ -146,25 +159,21 @@ public class StringBuilderUtilities
 		stringBuilder.deleteCharAt(stringBuilder.length()-1);	//remove the last character
 	}
 
-	/**Returns the index of the first ocurrence of the given character in the
-		string buffer.
+	/**Returns the index of the first ocurrence of the given character in the string buffer.
 	@param stringBuilder The string buffer to search.
 	@param c The character to look for.
-	@return The index in the string buffer of the given character, or -1 if no
-		occurrence was found.
+	@return The index in the string buffer of the given character, or -1 if no occurrence was found.
 	*/
 	public static int indexOf(final StringBuilder stringBuilder, final char c)
 	{
 		return indexOf(stringBuilder, c, 0); //start searching from the beginning
 	}
 	
-	/**Returns the index of the first ocurrence of the given character in the
-		string buffer from the given index.
+	/**Returns the index of the first ocurrence of the given character in the string buffer from the given index.
 	@param stringBuilder The string buffer to search.
 	@param c The character to look for.
 	@param fromIndex The index at which to start the search.
-	@return The index in the string buffer of the given character, or -1 if no
-		occurrence was found.
+	@return The index in the string buffer of the given character, or -1 if no occurrence was found.
 	*/
 	public static int indexOf(final StringBuilder stringBuilder, final char c, final int fromIndex)
 	{
@@ -187,6 +196,33 @@ public class StringBuilderUtilities
 	public static int notCharIndexOf(final StringBuilder stringBuilder, final String notCharString)
 	{
 		return notCharIndexOf(stringBuilder, notCharString, 0);  //start looking from the beginning
+	}
+
+	/**Returns the index of the first non-ocurrence of the given character in the string buffer.
+	@param stringBuilder The string buffer to search.
+	@param c The character to look for.
+	@return The index in the string buffer of anything but the given character, or -1 if no non-occurrence was found.
+	*/
+	public static int indexNotOf(final StringBuilder stringBuilder, final char c)
+	{
+		return indexNotOf(stringBuilder, c, 0); //start searching from the beginning
+	}
+	
+	/**Returns the index of the first non-ocurrence of the given character in the string buffer from the given index.
+	@param stringBuilder The string buffer to search.
+	@param c The character to look for.
+	@param fromIndex The index at which to start the search.
+	@return The index in the string buffer of anything but the given character, or -1 if no non-occurrence was found.
+	*/
+	public static int indexNotOf(final StringBuilder stringBuilder, final char c, final int fromIndex)
+	{
+		final int length=stringBuilder.length(); //see how many characters are in the string buffer
+		for(int i=fromIndex; i<length; ++i) //look at each character in the string buffer
+		{
+		  if(stringBuilder.charAt(i)!=c) //if this character doesn't match the supplied character
+				return i; //return the index at which the character occurs
+		}
+		return -1;  //show that the character was not found
 	}
 	
 	/**Searches a string buffer and returns the first index of any character
