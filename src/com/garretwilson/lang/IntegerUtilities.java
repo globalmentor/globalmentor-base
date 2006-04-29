@@ -13,7 +13,7 @@ public class IntegerUtilities
 	@param index The index to check.
 	@param rangeMin The minimum range index, inclusive.
 	@param rangeMax The maximum range index, exclusive.
-	@exception IndexOutOfBoundsException if the index is before the range minimum, or equal to or greater than the range maximum.
+	@exception IndexOutOfBoundsException if the index is less than the range minimum, or equal to or greater than the range maximum.
 	@return The given index.
 	*/
 	public static int checkIndexBounds(final int index, int rangeMin, int rangeMax)
@@ -23,6 +23,22 @@ public class IntegerUtilities
 			throw new IndexOutOfBoundsException("Index out of bounds: "+index);
 		}
 		return index;	//return the index, which has been determined to be in bounds
+  }
+
+	/**Checks to make sure that a given value is within the given range.
+	@param value The value to check.
+	@param rangeMin The minimum range value, inclusive.
+	@param rangeMax The maximum range value, inclusive.
+	@exception IllegalArgumentException if the value is less than the range minimum or greater than the range maximum.
+	@return The given index.
+	*/
+	public static int checkRange(final int value, int rangeMin, int rangeMax)
+	{
+		if(value<rangeMin || value>rangeMax)	//if the value not within the range
+		{
+			throw new IllegalArgumentException("Value "+value+" is not within the range "+rangeMin+" to "+rangeMax);
+		}
+		return value;	//return the value, which has been determined to be within the range
   }
 
 	/**Compares an integer object with the value of a literal integer.

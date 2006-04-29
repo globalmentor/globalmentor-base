@@ -1,5 +1,6 @@
 package com.garretwilson.country.us;
 
+import static com.garretwilson.lang.IntegerUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 
 import java.util.regex.Matcher;
@@ -35,13 +36,13 @@ public class SSN
 	public final static int SERIAL_NUMBER_LENGTH=4;
 
 	/**The canonical delimiter for social security numbers.*/
-	public final char DELIMITER='-';
+	public final static char DELIMITER='-';
 	
 	/**A regular expression pattern matching a SSN in the form "XXXXXXXXX" or "XXX-XX-XXXX".
 	Three regular expression groups (1, 2, and 3; or 4, 5, and 6; depending on format) are formed representing the area number, the group number, and the serial number. 
 	*/
 //TODO del when works	public final Pattern PATTERN=Pattern.compile("(\\d{3})(?:(?:\\-(\\d{2})\\-(\\d{4}))|(?:(\\d{2})(\\d{4})))");
-	public final Pattern PATTERN=Pattern.compile("(?:(\\d{3})(\\d{2})(\\d{4}))|(?:(\\d{3})\\-(\\d{2})\\-(\\d{4}))");
+	public final static Pattern PATTERN=Pattern.compile("(?:(\\d{3})(\\d{2})(\\d{4}))|(?:(\\d{3})\\-(\\d{2})\\-(\\d{4}))");
 	
 	/**The area number.*/
 	private final int areaNumber;
@@ -76,19 +77,16 @@ public class SSN
 		/**@return The value of the social security number.*/
 		public int getValue() {return value;}
 
-	/**The calculated hash code.*/
-	private final int hashCode;
-
 	/**SSN value constructor.
 	@param ssn The social security number value.
-	@exception ArgumentSyntaxException if the resulting string is longer than nine digits.
+	@exception IllegalArgumentException if the resulting string is longer than nine digits.
 	@exception ArgumentSyntaxException if the resulting area number is 000.
 	@exception ArgumentSyntaxException if the resulting group number is 00.
 	@exception ArgumentSyntaxException if the resulting serial number is 0000.
 	*/
 	public SSN(final int ssn) throws ArgumentSyntaxException
 	{
-		this(IntegerUtilities.toString(ssn, 10, AREA_NUMBER_LENGTH+GROUP_NUMBER_LENGTH+SERIAL_NUMBER_LENGTH));	//create a string from the SSN value
+		this(IntegerUtilities.toString(checkRange(ssn, 0, 999999999), 10, AREA_NUMBER_LENGTH+GROUP_NUMBER_LENGTH+SERIAL_NUMBER_LENGTH));	//create a string from the SSN value
 	}
 		
 	/**Character sequence constructor.
@@ -101,7 +99,7 @@ public class SSN
 	*/
 	public SSN(final CharSequence ssn) throws ArgumentSyntaxException
 	{
-		final Matcher matcher=PATTERN.matcher(checkInstance(ssn, "Social Security Number cannot be null."));	//create a matcher from the SSN pattern
+		final Matcher matcher=PATTERN.matcher(checkInstance(ssn, "Social security number cannot be null."));	//create a matcher from the SSN pattern
 		if(matcher.matches())	//if the SSN matches the pattern
 		{
 			final int groupDelta=matcher.group(1)!=null ? 0 : 3;	//see if we should use the first or second set of groups
@@ -121,7 +119,6 @@ public class SSN
 				throw new ArgumentSyntaxException("SSN serial number cannot be 0000.");
 			}
 			value=Integer.parseInt(getPlainString());	//save the integer value of the SSN
-			hashCode=ObjectUtilities.hashCode(areaNumber, groupNumber, serialNumber);	//a SSN is uniquely identified by each of its components
 		}
 		else	//if the SSN doesn't match the pattern
 		{
@@ -132,24 +129,16 @@ public class SSN
 	/**@return A hash code representing this object.*/
 	public int hashCode()
 	{
-		return hashCode;	//return the precalculated hash code
+		return getValue();	//return the value itself
 	}
 
 	/**Determines if this object is equivalent to another object.
-	This method considers another object equivalent if it is another SSN with the same area number, group number, and serial number.
+	This method considers another object equivalent if it is another SSN with the same value.
 	@return <code>true</code> if the given object is an equivalent SSN.
 	*/
 	public boolean equals(final Object object)
 	{
-		if(object instanceof SSN)	//if the other object is a SSN
-		{
-			final SSN ssn=(SSN)object;	//get the other object as a SSN
-			return getAreaNumber()==ssn.getAreaNumber() && getGroupNumber()==ssn.getGroupNumber() && getSerialNumber()==ssn.getSerialNumber();	//compare
-		}
-		else	//if the other object is not a SSN
-		{
-			return false;	//the objects aren't equal
-		}
+		return object instanceof SSN && getValue()==((SSN)object).getValue();	//if the object is a SSN, compare values
 	}
 
 	/**Compares this object with the specified object for order.
