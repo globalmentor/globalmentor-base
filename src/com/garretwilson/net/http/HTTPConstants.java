@@ -7,7 +7,8 @@ import static com.garretwilson.text.CharacterConstants.*;
 
 /**Constants relating to the HyperText Transfer Protocol (HTTP) as defined by
 <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>,	"Hypertext Transfer Protocol -- HTTP/1.1".
-<p>Status code declarations and comments used from Tomcat org.apache.catalina.servlets.WebdavServlet by Remy Maucherat Revision: 1.19 $ $Date: 2004/09/19 01:20:10.</p>  
+<p>Status code declarations and comments used from Tomcat org.apache.catalina.servlets.WebdavServlet by Remy Maucherat Revision: 1.19 $ $Date: 2004/09/19 01:20:10.</p>
+@see <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>  
 @author Garret Wilson
 */
 public class HTTPConstants

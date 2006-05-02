@@ -42,6 +42,10 @@ public interface CharacterConstants
 	public final static char EQUALS_SIGN_CHAR=0x003D;
 	/**A grave accent character.*/
 	public final static char GRAVE_ACCENT_CHAR=0x0060;
+	/**A start of string control character.*/
+	public final static char START_OF_STRING_CHAR=0x0098;
+	/**A string terminator control character.*/
+	public final static char STRING_TERMINATOR_CHAR=0x009C;
 	/**Unicode no-break space (NBSP).*/
 	public final static char NO_BREAK_SPACE_CHAR=0x00A0;
 	/**The copyright symbol.*/

@@ -27,6 +27,7 @@ public class URIUtilities
 	/**Creates a string of type <code>text/uri-list</code> as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>, "URI Resolution Services Necessary for URN Resolution".
 	@param uris The URIs to include in the list.
 	@return A URI list string.
+	@see <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483: URI Resolution Services Necessary for URN Resolution</a> 
 	*/ 
 	public static String createURIList(final URI... uris)
 	{
@@ -41,7 +42,7 @@ public class URIUtilities
 	public static URI changePath(final URI uri, final String path)	//TODO check all references to this method to make sure escaped/unescaped semantics are followed
 	{
 			//construct an identical URI except for the supplied path
-		return create(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), path, uri.getQuery(), uri.getFragment());
+		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), path, uri.getQuery(), uri.getFragment());
 	}
 
 	/**Creates a new URI identical to the supplied URI with no query or fragment.
@@ -50,7 +51,7 @@ public class URIUtilities
 	*/
 	public static URI getPlainURI(final URI uri)	//TODO change all references to raw access, and change create() to use raw inputs
 	{
-		return create(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), null, null);	//construct an identical URI except with no query or fragment
+		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), null, null);	//construct an identical URI except with no query or fragment
 	}
 
 	/**Constructs an absolute path from the given elements in the form:
@@ -342,7 +343,7 @@ public class URIUtilities
 				if(nameValue.length>0)	//if there was at least one token
 				{
 					name=decode(nameValue[0]);	//the first token is the name
-					value=nameValue.length>1 ? decode(nameValue[1]) : "";	//use thet empty string for the value if no value was provided
+					value=nameValue.length>1 ? decode(nameValue[1]) : "";	//use the empty string for the value if no value was provided
 				}
 				else	//if there wasn't at least one token
 				{
@@ -434,7 +435,7 @@ public class URIUtilities
 	*/
 	public static URI getRootURI(final URI uri)
 	{
-		return create(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
+		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
 	}
 
 	/**Retrieves a <code>File</code> representing the file of the URI.
@@ -838,15 +839,13 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 
 	/**Returns a URI constructed from a given URI and a fragment identifier.
-	<p>If the URI is not syntactically correct, an
-		<code>IllegalArgumentException</code>	will be thrown.
-	<p>This method should normally only be used when the format
-		of the string is known to be a syntactically correct URI.</p>
+	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>	will be thrown.
+	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
 	<p>If no URI is provided, a URI is created from the fragment itself.</p>
 	@param uri The URI to which to add a fragement identifier, or <code>null</code> if a URI chould be created from just the fragment.
 	@param fragment The fragment to add to the end of the URI.
-	@exception IllegalArgumentException Thrown if the a URI cannot be constructed from the given information.
-	@see URI#create
+	@exception IllegalArgumentException if the a URI cannot be constructed from the given information.
+	@see URI#create(String)
 	*/
 	public static URI resolveFragment(final URI uri, final String fragment) throws IllegalArgumentException
 	{
@@ -857,21 +856,27 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 			return URI.create(fragmentSuffix);	//create a URI from the fragment suffix itself 
 	}
 
-	/**Returns a URI constructed from the given parts, any of
-		which can be <code>null</code>.
-	<p>If the URI is not syntactically correct, an
-		<code>IllegalArgumentException</code>	will be thrown, created from the
-		<code>URISyntaxException</code>.</p>
-	<p>This method should normally only be used when the format
-		of the string is known to be a syntactically correct URI.</p>
+	/**Returns a URI constructed from the given parts, any of which can be <code>null</code>.
+	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>	will be thrown, created from the <code>URISyntaxException</code>.</p>
+	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
+	@param scheme The name of the URI scheme.
+	@param ssp The scheme-specific part.
+	@exception IllegalArgumentException if the a URI cannot be constructed from the given strings.
+	*/
+	public static URI createURI(final String scheme, final String ssp) throws IllegalArgumentException
+	{
+		return createURI(scheme, ssp, null);	//create a URI with no fragment
+	}
+
+	/**Returns a URI constructed from the given parts, any of which can be <code>null</code>.
+	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>	will be thrown, created from the <code>URISyntaxException</code>.</p>
+	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
 	@param scheme The name of the URI scheme.
 	@param ssp The scheme-specific part.
 	@param fragment The fragment at the end of the URI.
-	@exception IllegalArgumentException Thrown if the a URI cannot be constructed
-		from the given strings.
-	@see URI#create
+	@exception IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	*/
-	public static URI create(final String scheme, final String ssp, final String fragment) throws IllegalArgumentException
+	public static URI createURI(final String scheme, final String ssp, final String fragment) throws IllegalArgumentException
 	{
 		try
 		{
@@ -879,7 +884,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		}
 		catch(URISyntaxException uriSyntaxException)
 		{
-			throw (IllegalArgumentException)new IllegalArgumentException(uriSyntaxException.getMessage()).initCause(uriSyntaxException);	//create a new illegal argument exception from the URI syntax exception and rethrow it
+			throw new IllegalArgumentException(uriSyntaxException);	//create a new illegal argument exception from the URI syntax exception and rethrow it
 		}	
 	}
 
@@ -901,7 +906,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		from the given strings.
 	@see URI#create
 	*/
-	public static URI create(final String scheme, final String userInfo, final String host, final int port, final String path, final String query, final String fragment) throws IllegalArgumentException
+	public static URI createURI(final String scheme, final String userInfo, final String host, final int port, final String path, final String query, final String fragment) throws IllegalArgumentException
 	{
 		try
 		{
@@ -909,7 +914,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		}
 		catch(URISyntaxException uriSyntaxException)	//if the given information is not correct URI syntax
 		{
-			throw (IllegalArgumentException)new IllegalArgumentException(uriSyntaxException.getMessage()).initCause(uriSyntaxException);	//create a new illegal argument exception from the URI syntax exception and rethrow it
+			throw new IllegalArgumentException(uriSyntaxException);	//create a new illegal argument exception from the URI syntax exception and rethrow it
 		}	
 	}
 

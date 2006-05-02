@@ -2,6 +2,7 @@ package com.garretwilson.text;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
+
 import javax.mail.internet.ContentType;
 import com.garretwilson.lang.*;
 import com.garretwilson.text.*;
@@ -10,6 +11,7 @@ import com.garretwilson.util.*;
 
 import static com.garretwilson.io.ContentTypeConstants.*;
 import static com.garretwilson.lang.CharSequenceUtilities.*;
+import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
 import static com.garretwilson.text.xml.XMLUtilities.*;
 
@@ -75,6 +77,19 @@ preface
 	/**Default constructor.*/
 	public TextUtilities()
 	{
+	}
+
+	/**Creates a control string according to ECMA-48, "Control Functions for Coded Character Sets", Section 5.6, "Control strings".
+	A control string begins with the Start of String control character (U+0098) and ends with a String Terminator control character (U+009C).
+	ECMA-48 publication is also approved as ISO/IEC 6429.
+	@param string The string from which a control string will be created.
+	@return An ECMA-48 control string with the given string as its content.
+	@exception NullPointerException if the given string is <code>null</code>.
+	@see <a href="http://www.ecma-international.org/publications/standards/Ecma-048.htm">ECMA-48: Control Functions for Coded Character Sets</a>
+	*/
+	public final static String createControlString(final String string)
+	{
+		return START_OF_STRING_CHAR+checkInstance(string, "String cannot be null.")+STRING_TERMINATOR_CHAR;	//wrap the string with a SOS/ST pair
 	}
 
 	/**Checks to see which type of heading is represented by the given text.

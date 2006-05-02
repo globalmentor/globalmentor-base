@@ -1,8 +1,6 @@
 package com.garretwilson.text;
 
-import static java.util.Collections.*;
 import java.util.*;
-import static java.util.Arrays.*;
 
 import com.garretwilson.lang.IntegerUtilities;
 import static com.garretwilson.lang.StringBuilderUtilities.*;
@@ -74,10 +72,9 @@ public class FormatUtilities
 	@return The string buffer containing the new information.
 	@see Object#toString
 	*/
-	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final Object... items)
+	public static <T> StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final T... items)
 	{
-			//TODO later just pass the arguments to the iterable version if possible
-		for(final Object item:items)	//for each item
+		for(final T item:items)	//for each item
 		{
 			stringBuilder.append(item).append(delimiter);	//append the item and the delimiter
 		}
