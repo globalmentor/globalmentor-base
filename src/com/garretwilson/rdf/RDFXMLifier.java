@@ -318,10 +318,8 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 	*/
 	protected void createElements(final RDF rdf, final Element parentElement)
 	{
-		final Iterator rootResourceIterator=rdf.getRootResourceIterator();  //get an iterator to the root RDF resources
-		while(rootResourceIterator.hasNext()) //while there are root resources remaining
+		for(final RDFResource resource:rdf.getRootResources())  //for each root RDF resource
 		{
-			final RDFResource resource=(RDFResource)rootResourceIterator.next();  //get the next root resource
 			final Element resourceElement=createResourceElement(parentElement.getOwnerDocument(), resource); //create an element from this resource
 			parentElement.appendChild(resourceElement); //add the resource element to our parent element
 		}

@@ -367,9 +367,9 @@ public class RDFUtilities
 	@param rdf The RDF data model.
 	@param typeNamespaceURI The XML namespace URI that represents part of the reference URI.
 	@param typeLocalName The XML local name that represents part of the reference URI.
-	@return A read-only collection of resources that are of the requested type.
+	@return A read-only iterable of resources that are of the requested type.
 	*/
-	public static Collection<RDFResource> getResourcesByType(final RDF rdf, final URI typeNamespaceURI, final String typeLocalName)
+	public static Iterable<RDFResource> getResourcesByType(final RDF rdf, final URI typeNamespaceURI, final String typeLocalName)
 	{
 		return getResourcesByType(rdf, RDFUtilities.createReferenceURI(typeNamespaceURI, typeLocalName)); //gather the resources with a type property of the URI from the given namespace and local name
 	}
@@ -389,15 +389,13 @@ public class RDFUtilities
 	/**Retrieves the resources in an RDF data model that are of the requested type.
 	@param rdf The RDF data model.
 	@param typeURI The reference URI of the type resource.
-	@return A read-only collection of resources that are of the requested type.
+	@return A read-only iterable of resources that are of the requested type.
 	*/
-	public static Collection<RDFResource> getResourcesByType(final RDF rdf, final URI typeURI)
+	public static Iterable<RDFResource> getResourcesByType(final RDF rdf, final URI typeURI)
 	{
 		final List<RDFResource> resourceList=new ArrayList<RDFResource>();  //create a list in which to store the resources
-		final Iterator<RDFResource> resourceIterator=rdf.getResourceIterator();  //get an iterator to the resources in this data model
-		while(resourceIterator.hasNext()) //while there are more resources
+		for(final RDFResource resource:rdf.getResources())  //for each resource in this data model
 		{
-		  final RDFResource resource=(RDFResource)resourceIterator.next();  //get the next resource
 		  if(isType(resource, typeURI)) //if this resource is of the given type
 				resourceList.add(resource); //add this resource to our list
 		}

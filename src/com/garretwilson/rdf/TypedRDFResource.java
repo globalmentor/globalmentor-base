@@ -2,7 +2,7 @@ package com.garretwilson.rdf;
 
 import java.net.URI;
 
-/**An RDF resource that by default adds an rdf:type property upon creation. 
+/**An RDF resource that by default adds an <code>rdf:type</code> property upon creation. 
 @author Garret Wilson
 */
 public abstract class TypedRDFResource extends DefaultRDFResource

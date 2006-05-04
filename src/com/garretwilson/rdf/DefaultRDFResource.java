@@ -33,7 +33,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		  if no namespace URI and local name was used.*/
 		public String getLocalName() {return localName;}
 
-	/*The data model that created this resource, or <code>null</code> if the
+	/**The data model that created this resource, or <code>null</code> if the
 		resource was created separate from a data model.
 	*/
 	private Reference<RDF> rdfReference;

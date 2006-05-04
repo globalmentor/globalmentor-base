@@ -114,10 +114,8 @@ public class PLOOPProcessor
 	public List<Object> getObjects(final RDF rdf) throws InvocationTargetException
 	{
 		final List<Object> objects=new ArrayList<Object>();	//create a new list of objects
-		final Iterator<RDFResource> resourceIterator=rdf.getResourceIterator();	//get an iterator to resources
-		while(resourceIterator.hasNext())	//while there are more resources
+		for(final RDFResource resource:rdf.getResources())	//for each resource
 		{
-			final RDFResource resource=resourceIterator.next();	//get the next resource
 			boolean hasJavaType=false;	//we'll see if this resource has a Java type
 			final Iterator<RDFObject> typeIterator=getTypeIterator(resource);	//get an iterator to all the resource types
 			while(!hasJavaType && typeIterator.hasNext())	//while we haven't found a Java type and there are other types left
