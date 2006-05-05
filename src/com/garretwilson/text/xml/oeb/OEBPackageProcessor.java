@@ -180,13 +180,13 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 		rdf.addResource(publicationResource);	//add the resource to the RDF data model
 Debug.trace("converting OEB package, created publication resource: ", publicationResource.getClass().getName());  //G***del
 		//XPath: /metadata/dc-metadata/*
-		final NodeList dcMetadataElementList=(NodeList)XPath.evaluatePathExpression(rootElement,
+		final List<Node> dcMetadataElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
 			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA+
 			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA_DC_METADATA+
 			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+XPathConstants.WILDCARD_CHAR);
-		for(int i=0; i<dcMetadataElementList.getLength(); ++i)	//look at each DC metadata element
+		for(int i=0; i<dcMetadataElementList.size(); ++i)	//look at each DC metadata element
 		{
-			final Element dcMetadataElement=(Element)dcMetadataElementList.item(i);	//get a reference to this DC metadata element
+			final Element dcMetadataElement=(Element)dcMetadataElementList.get(i);	//get a reference to this DC metadata element
 			final String dcMetadataElementName=dcMetadataElement.getNodeName();	//get the name of this DC metadata element
 		  final String dcMetadataElementText=XMLUtilities.getText(dcMetadataElement, true); //get the text of the element
 			//<package><metadata><dc-metadata><dc:Title>
@@ -299,12 +299,12 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 		  //add a manifest to the publication
 		final RDFListResource manifestResource=addManifest(publicationResource);
 		//XPath: /manifest/item
-		final NodeList manifestElementList=(NodeList)XPath.evaluatePathExpression(rootElement,
+		final List<Node> manifestElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
 			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST+
 			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST_ITEM);
-		for(int i=0; i<manifestElementList.getLength(); ++i)	//look at each manifest element
+		for(int i=0; i<manifestElementList.size(); ++i)	//look at each manifest element
 		{
-			final Element itemElement=(Element)manifestElementList.item(i);	//get a reference to this item in the manifest
+			final Element itemElement=(Element)manifestElementList.get(i);	//get a reference to this item in the manifest
 		  final String itemID=itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_ID); //get the item ID
 		  final String itemHRef=itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_HREF); //get the item href
 		  final ContentType itemMediaType=ContentTypeUtilities.createContentType(itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE));  //get the item's media type
@@ -339,14 +339,14 @@ Debug.trace("adding an organization to the publication");
 		  //add the publication spine
 		final RDFListResource spine=new RDFListResource();	//create a new list for the spine
 		//XPath: /spine/itemref
-		final NodeList spineElementList=(NodeList)XPath.evaluatePathExpression(rootElement,
+		final List<Node> spineElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
 			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE+
 			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE_ITEMREF);
 Debug.trace("looking at spine elements");
-		for(int i=0; i<spineElementList.getLength(); ++i)	//look at each spine element
+		for(int i=0; i<spineElementList.size(); ++i)	//look at each spine element
 		{
 Debug.trace("looking at spine element: ", i);
-			final Element itemElement=(Element)spineElementList.item(i);	//get a reference to this item in the spine
+			final Element itemElement=(Element)spineElementList.get(i);	//get a reference to this item in the spine
 //G***del Debug.trace("Found spine element: "+itemElement.getAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF));	//G***del
 		  final String itemIDRef=itemElement.getAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF);  //get the item's idref value
 Debug.trace("idref: ", itemIDRef);
@@ -362,12 +362,12 @@ Debug.trace("adding item to organization");
 
 //G***fix with new navigation stuff
 		//XPath: /guide/reference
-		final NodeList guideElementList=(NodeList)XPath.evaluatePathExpression(rootElement,
+		final List<Node> guideElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
 			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_GUIDE+
 			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_GUIDE_REFERENCE);
-		for(int i=0; i<guideElementList.getLength(); ++i)	//look at each guide element
+		for(int i=0; i<guideElementList.size(); ++i)	//look at each guide element
 		{
-			final Element referenceElement=(Element)guideElementList.item(i);	//get a reference to this reference in the guide
+			final Element referenceElement=(Element)guideElementList.get(i);	//get a reference to this reference in the guide
 		  final String type=referenceElement.getAttributeNS(null, PKG_GUIDE_REFERENCE_ATTRIBUTE_TYPE);  //get the guide type
 		  final String title=referenceElement.getAttributeNS(null, PKG_GUIDE_REFERENCE_ATTRIBUTE_TITLE);  //get the guide title
 		  final String href=referenceElement.getAttributeNS(null, PKG_GUIDE_REFERENCE_ATTRIBUTE_HREF);  //get the guide href
