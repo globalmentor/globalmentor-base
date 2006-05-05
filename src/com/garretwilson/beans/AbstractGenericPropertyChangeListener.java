@@ -3,6 +3,7 @@ package com.garretwilson.beans;
 import java.beans.PropertyChangeEvent;
 
 /**A Java Beans property change listener retrofitted to use generics to cast to proper value type.
+@param <V> The type of property value.
 @author Garret Wilson
 */
 public abstract class AbstractGenericPropertyChangeListener<V> implements GenericPropertyChangeListener<V>

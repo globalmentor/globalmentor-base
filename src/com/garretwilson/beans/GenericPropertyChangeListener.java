@@ -6,6 +6,7 @@ import java.beans.PropertyChangeListener;
 An implementing class must override the non-generic property change method and call the generic version,
 so that the property change can be noted by either method. 
 The abstract version of this class, {@link AbstractGenericPropertyChangeListener}, will be used most often.
+@param <V> The type of property value.
 @author Garret Wilson
 */
 public interface GenericPropertyChangeListener<V> extends PropertyChangeListener

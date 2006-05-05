@@ -2,7 +2,7 @@ package com.garretwilson.beans;
 
 import java.beans.*;
 
-/**Indicates that an object supports bound properties and listener notification.
+/**Indicates that an object supports bound properties and property change listener notification.
 @author Garret Wilson
 */
 public interface PropertyBindable
@@ -53,11 +53,11 @@ public interface PropertyBindable
 	*/
 	public PropertyChangeListener[] getPropertyChangeListeners(final String propertyName);
 
-	/**Checks if there are any listeners for a specific property, including those registered on all properties.
-	If <code>propertyName</code> <code>null</code>, this method only checks for listeners registered on all properties.
-	@param propertyName  the property name.
-	@return true if there are one or more listeners for the given property
+	/**Checks if there are any property change listeners for a specific property, including those registered on all properties.
+	If <code>propertyName</code> is <code>null</code>, this method only checks for listeners registered on all properties.
+	@param propertyName The property name.
+	@return <code>true</code> if there are one or more listeners for the given property.
 	*/
-	public boolean hasListeners(final String propertyName);
+	public boolean hasPropertyChangeListeners(final String propertyName);
 
 }
