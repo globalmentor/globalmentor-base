@@ -65,14 +65,10 @@ public class BoundPropertyObject implements PropertyBindable
 						{
 							public void propertyChange(final PropertyChangeEvent propertyChangeEvent)	//if a property value changes
 									{
-/*TODO del; doesn't work with versions that fire other types
-//TODO fix: "this" should be "BoundPropertyObject.this"
-											//create a new property change event to repeat TODO update to work with other property change event types
-										final PropertyChangeEvent repeatPropertyChangeEvent=new PropertyValueChangeEvent<Object>(this, propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());
-										firePropertyChange(repeatPropertyChangeEvent);	//repeat the property change event, indicating this component as the event source
-*/
-										firePropertyChange(propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());	//repeat the property change event, indicating this component as the event source
-									}			
+										final PropertyChangeEvent repeatPropertyChangeEvent=new GenericPropertyChangeEvent<Object>(BoundPropertyObject.this, propertyChangeEvent);	//copy the property change event with this class as its source, but keeping the same target if present
+										firePropertyChange(repeatPropertyChangeEvent);	//fire the repeated property change event
+//TODO del when works										firePropertyChange(propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());	//repeat the property change event, indicating this component as the event source
+									}
 						};
 			}
 			return repeatPropertyChangeListener;	//return the repeater property change listener
@@ -109,13 +105,9 @@ public class BoundPropertyObject implements PropertyBindable
 						{
 							public void vetoableChange(final PropertyChangeEvent propertyChangeEvent) throws PropertyVetoException	//if a property value changes
 									{
-/*TODO del; doesn't work with versions that fire other types
-//	TODO fix: "this" should be "BoundPropertyObject.this"
-												//create a new property change event to repeat TODO update to work with other property change event types
-											final PropertyChangeEvent repeatPropertyChangeEvent=new PropertyValueChangeEvent<Object>(this, propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());
-											firePropertyChange(repeatPropertyChangeEvent);	//repeat the property change event, indicating this component as the event source
-	*/
-										fireVetoableChange(propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());	//repeat the vetoable change event, indicating this component as the event source
+										final PropertyChangeEvent repeatPropertyChangeEvent=new GenericPropertyChangeEvent<Object>(BoundPropertyObject.this, propertyChangeEvent);	//copy the property change event with this class as its source, but keeping the same target if present
+										fireVetoableChange(repeatPropertyChangeEvent);	//fire the repeated vetoable change event
+//TODO del when works										fireVetoableChange(propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());	//repeat the vetoable change event, indicating this component as the event source
 									}			
 						};
 			}
