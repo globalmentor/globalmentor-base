@@ -34,12 +34,12 @@ public class XPackageUtilities
 		resource.addProperty(XPACKAGE_NAMESPACE_URI, ALTERNATE_PROPERTY_NAME, alternate);	//add the alternate to the resource
 	}
 
-	/**@return An iterator to alternates, if any, of a resource.
+	/**@return An iterable to alternates, if any, of a resource.
 	@param resource The resource for which properties should be iterated.
 	*/
-	public static Iterator getAlternateIterator(final RDFResource resource)
+	public static Iterable<RDFObject> getAlternateIterator(final RDFResource resource)
 	{
-		return resource.getPropertyValueIterator(XPACKAGE_NAMESPACE_URI, ALTERNATE_PROPERTY_NAME); //return an iterator to the alternate properties
+		return resource.getPropertyValues(XPACKAGE_NAMESPACE_URI, ALTERNATE_PROPERTY_NAME); //return an iterator to the alternate properties
 	}
 
 	/**Sets the <code>&lt;xpackage:children&gt;</code> property of the resource.

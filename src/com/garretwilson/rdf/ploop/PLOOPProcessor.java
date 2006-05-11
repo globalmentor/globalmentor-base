@@ -117,7 +117,7 @@ public class PLOOPProcessor
 		for(final RDFResource resource:rdf.getResources())	//for each resource
 		{
 			boolean hasJavaType=false;	//we'll see if this resource has a Java type
-			final Iterator<RDFObject> typeIterator=getTypeIterator(resource);	//get an iterator to all the resource types
+			final Iterator<RDFObject> typeIterator=getTypes(resource).iterator();	//get an iterator to all the resource types
 			while(!hasJavaType && typeIterator.hasNext())	//while we haven't found a Java type and there are other types left
 			{
 				final RDFObject typeResource=typeIterator.next();	//get the next type
@@ -203,7 +203,7 @@ public class PLOOPProcessor
 //TODO del Debug.trace("Creating object for RDF object", RDFUtilities.toString(resource));
 			String valueClassName=null;	//we'll try to find a Java class name part of the type
 //			RDFResource typeResource=null;	//we'll try to find a java: type
-			final Iterator<RDFObject> typeIterator=getTypeIterator(resource);	//get an iterator to all the resource types
+			final Iterator<RDFObject> typeIterator=getTypes(resource).iterator();	//get an iterator to all the resource types
 			while(valueClassName==null && typeIterator.hasNext())	//while we haven't found a type URI and there are other types left
 			{
 				final RDFObject typeResource=typeIterator.next();	//get the next type

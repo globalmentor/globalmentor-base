@@ -417,15 +417,15 @@ public class RDFUtilities
 		return (RDFResource)resource.getPropertyValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //return the type property
 	}
 	
-	/**Returns an iterator to each property of <code>rdf:type</code>.
+	/**Returns an iterable to each property of <code>rdf:type</code>.
 	@param resource The resource the types of which will be returned.
-	@return An iterator to a read-only list of values of <code>rdf:type</code>
+	@return A read-only iterable the values of <code>rdf:type</code>
 		properties, each item of which is expected to be an <code>RDFResource</code>
 		of the type. 
 	*/
-	public static Iterator<RDFObject> getTypeIterator(final RDFResource resource)
+	public static Iterable<RDFObject> getTypes(final RDFResource resource)
 	{
-		return resource.getPropertyValueIterator(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //return an iterator to the type properties		
+		return resource.getPropertyValues(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //return an iterable to the type properties		
 	}
 	
 	/**Retrieves a label appropriate for the type of the resource. If the type

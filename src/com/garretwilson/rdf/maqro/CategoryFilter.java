@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.*;
 
 import com.garretwilson.rdf.RDFLiteral;
+import com.garretwilson.rdf.RDFObject;
+
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 
 /**Filter for choosing MAQRO interactions based upon category.
@@ -47,10 +49,10 @@ public class CategoryFilter extends Filter
 		MAQROUtilities.addCategory(this, category, language);	//add the category to the filter
 	}
 
-	/**@return An iterator to categories, if any, of the interaction.*/
-	public Iterator getCategoryIterator()
+	/**@return An iterable to categories, if any, of the interaction.*/
+	public Iterable<RDFObject> getCategories()
 	{
-		return MAQROUtilities.getCategoryIterator(this);	//return an iterator to the categories
+		return MAQROUtilities.getCategories(this);	//return an iterator to the categories
 	}
 
 }

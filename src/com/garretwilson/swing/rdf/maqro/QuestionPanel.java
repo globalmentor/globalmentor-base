@@ -135,7 +135,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 						queryAnswerPanel.mutuallyExclusiveCheckBox.setSelected(maxResponseCount==1);	//set mutual exclusivity if only one response is allowed
 						queryAnswerPanel.choiceList.setModel(new ListListModel(choices));	//set the choices in the panel
 						boolean requireAll=false;	//start out assuming we won't require all the answers
-						final Iterator answerIterator=question.getAnswerIterator();	//get an iterator to the answers
+						final Iterator answerIterator=question.getAnswers().iterator();	//get an iterator to the answers
 						while(!requireAll && answerIterator.hasNext())	//while there are other answers, and we haven't yet discovered that we require all the answers
 						{
 							final Object answer=answerIterator.next();	//get the first answer
@@ -171,7 +171,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 					{
 						queryAnswerPanel.choiceList.setModel(new ListListModel(new RDFListResource(RDFConstants.NIL_RESOURCE_URI)));	//create a default empty list for the choices
 						queryAnswerPanel.expectRadioButton.setSelected(true);	//show that we're expecting an answer
-						final Iterator answerIterator=question.getAnswerIterator();	//get an iterator to the answers
+						final Iterator answerIterator=question.getAnswers().iterator();	//get an iterator to the answers
 						if(answerIterator.hasNext())	//if there is at least one answer
 						{
 							final Object answerObject=answerIterator.next();	//get the first answer
@@ -192,10 +192,10 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 				if(question!=null)	//if there is a question
 				{			
 					hintList.clear();	//clear the list of hints
-					final List questionHintList=question.getHints();	//get the hints of the question
+					final List<RDFResource> questionHintList=question.getHints();	//get the hints of the question
 					if(questionHintList!=null)	//if the question has hints
 					{
-						hintList.addAll(questionHintList);	//add the hints to the list
+						hintList.addAll(questionHintList);	//add the hints to the list 
 					}
 				}
 				break;
@@ -203,7 +203,13 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 				if(question!=null)	//if there is a question
 				{			
 					explanationList.clear();	//clear the list of explanations
-					CollectionUtilities.addAll(explanationList, question.getExplanationIterator());	//add the explanations to the list
+					for(final RDFObject explanation:question.getExplanations())	//for each explanation
+					{
+						if(explanation instanceof RDFResource)	//if the explanation is a resouce
+						{
+							explanationList.add((RDFResource)explanation);	//add the explanation resouce to the list
+						}
+					}
 				}
 				break;
 		}

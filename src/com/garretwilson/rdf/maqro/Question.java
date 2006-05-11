@@ -1,7 +1,6 @@
 package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
-import java.util.*;
 
 import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.rdf.*;
@@ -107,10 +106,10 @@ public class Question extends Interaction
 		addProperty(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME, explanation);	//add the explanation
 	}
 
-	/**@return An iterator to the explanations, if any, of the question.*/
-	public Iterator getExplanationIterator()
+	/**@return An iterable to the explanations, if any, of the question.*/
+	public Iterable<RDFObject> getExplanations()
 	{
-		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME);	//return an iterator to the explanations 
+		return getPropertyValues(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME);	//return an iterable to the explanations 
 	}
 
 	/**Removes all answers from the question.*/
@@ -169,10 +168,10 @@ public class Question extends Interaction
 		addProperty(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME, answer);	//add the correct answer
 	}
 
-	/**@return An iterator to the answers, if any, of the question.*/
-	public Iterator<RDFObject> getAnswerIterator()
+	/**@return An iterable to the answers, if any, of the question.*/
+	public Iterable<RDFObject> getAnswers()
 	{
-		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME);	//return an iterator to the answers 
+		return getPropertyValues(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME);	//return an iterable to the answers 
 	}
 
 	/**Removes all answers from the question.*/

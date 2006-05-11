@@ -126,10 +126,8 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 							final RDFPlainLiteral orthography=entry.getOrthography();	//get the entry orthography
 							RDFPlainLiteral plainLiteralPronunciation=null;	//we'll see if there is pronunciation text
 							RDFResource resourcePronunciation=null;	//we'll see if there is a pronunciation object
-							final Iterator pronunciationIterator=entry.getPronunciationIterator();	//get an iterator to all pronunciations
-							while(pronunciationIterator.hasNext())	//while there are more pronunciations
+							for(final RDFObject pronunciation:entry.getPronunciations())	//for each pronunciation
 							{
-								final Object pronunciation=pronunciationIterator.next();	//get the next pronunciation
 								if(pronunciation instanceof RDFPlainLiteral && plainLiteralPronunciation==null)	//if this is text pronunciation and we don't have any, yet
 								{
 									plainLiteralPronunciation=(RDFPlainLiteral)pronunciation;	//save the text pronunciation
@@ -252,12 +250,9 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 				while(entryIterator.hasNext())	//while there are more entries
 				{
 					final Entry entry=(Entry)entryIterator.next();	//get the next entry
-					final Iterator availableCategoryIterator=MAQROUtilities.getCategoryIterator(entry);	//get the categories for this entry
 					int entryCategoryCount=0;	//keep track of how many categories we retrieve for this category
-					while(availableCategoryIterator.hasNext())	//while there are more categories
+					for(final RDFObject cat:MAQROUtilities.getCategories(entry))	//for each of the categories for this entry
 					{
-						final Object cat=availableCategoryIterator.next();	//get the next category (which should be a literal) and add it to our set
-//G***bring back						availableCategorySet.add(availableCategoryIterator.next());	//get the next category (which should be a literal) and add it to our set
 						availableCategorySet.add(cat);	//get the next category (which should be a literal) and add it to our set
 						++entryCategoryCount;	//show that we added another category for this entry
 					}

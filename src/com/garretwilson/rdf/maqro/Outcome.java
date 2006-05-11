@@ -104,10 +104,10 @@ public class Outcome extends TypedRDFResource
 		addProperty(MAQRO_NAMESPACE_URI, RESPONSE_PROPERTY_NAME, response);	//add the response to the outcome
 	}
 
-	/**@return An iterator to responses, if any, of the outcome.*/
-	public Iterator<RDFObject> getResponseIterator()
+	/**@return An iterable to responses, if any, of the outcome.*/
+	public Iterable<RDFObject> getResponses()
 	{
-		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, RESPONSE_PROPERTY_NAME);	//return an iterator to the responses 
+		return getPropertyValues(MAQRO_NAMESPACE_URI, RESPONSE_PROPERTY_NAME);	//return an iterable to the responses 
 	}
 
 	/**Adds a result to the outcome.
@@ -118,10 +118,10 @@ public class Outcome extends TypedRDFResource
 		addProperty(MAQRO_NAMESPACE_URI, RESULT_PROPERTY_NAME, result);	//add the result to the outcome
 	}
 
-	/**@return An iterator to results, if any, of the outcome.*/
-	public Iterator<RDFObject> getResultIterator()
+	/**@return An iterable to results, if any, of the outcome.*/
+	public Iterable<RDFObject> getResults()
 	{
-		return getPropertyValueIterator(MAQRO_NAMESPACE_URI, RESULT_PROPERTY_NAME);	//return an iterator to the results 
+		return getPropertyValues(MAQRO_NAMESPACE_URI, RESULT_PROPERTY_NAME);	//return an iterable to the results 
 	}
 
 	/**Determines whether the outcome is marked as correct or incorrect.

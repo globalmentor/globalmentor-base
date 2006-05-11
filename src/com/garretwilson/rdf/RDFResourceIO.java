@@ -9,6 +9,7 @@ import javax.xml.parsers.*;
 
 import com.garretwilson.io.IO;
 
+import static com.garretwilson.lang.ClassUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.text.xml.XMLUtilities.createDocumentBuilder;
@@ -63,7 +64,19 @@ public class RDFResourceIO<T extends RDFResource> implements IO<T>
 		/**@return The class name of the RDF resource supported.*/
 		public String getResourceClassName() {return resourceClassName;}
 
-	/**Class and type constructor.
+	/**Class and namespace constructor.
+	A {@link DefaultRDFResourceFactory} will be registered with the given namespace, configured to create Java instances from the package of the resource class.
+	The class name will be set to the local name of the given resource class.
+	@param resourceClass The class representing the type of resource expected from the RDF instance.
+	@param resourceNamespaceURI The namespace of the RDF resource supported.
+	@exception NullPointerException if the given class and/or namespace URI is <code>null</code>.
+	*/
+	public RDFResourceIO(final Class<T> resourceClass, final URI resourceNamespaceURI)
+	{
+		this(resourceClass, resourceNamespaceURI, getLocalName(resourceClass), new DefaultRDFResourceFactory(resourceClass.getPackage()));	//construct the class with a default resource factory
+	}
+
+	/**Class, namespace, and class name constructor.
 	@param resourceClass The class representing the type of resource expected from the RDF instance.
 	@param resourceNamespaceURI The namespace of the RDF resource supported.
 	@param resourceClassName The class name of the RDF resource supported.

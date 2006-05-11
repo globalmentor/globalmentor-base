@@ -38,10 +38,10 @@ public abstract class Interaction extends TypedRDFResource
 		MAQROUtilities.addCategory(this, category, language);	//add the category to the interaction
 	}
 
-	/**@return An iterator to categories, if any, of the interaction.*/
-	public Iterator getCategoryIterator()
+	/**@return An iterable to categories, if any, of the interaction.*/
+	public Iterable<RDFObject> getCategories()
 	{
-		return MAQROUtilities.getCategoryIterator(this);	//return an iterator to the categories
+		return MAQROUtilities.getCategories(this);	//return an iterable to the categories
 	}
 
 	/**Determines if the interaction has a category in the given category set.

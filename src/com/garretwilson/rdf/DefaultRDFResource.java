@@ -90,10 +90,8 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	*/
 	public RDFObject getPropertyValue(final RDFResource propertyResource)
 	{
-		final Iterator<RDFPropertyValuePair> propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
-		while(propertyIterator.hasNext()) //while there are more properties
+		for(final RDFPropertyValuePair propertyValuePair:propertyList)  //for each property
 		{
-			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
 		  if(propertyValuePair.getProperty().equals(propertyResource))  //if this resource is the same as the one requested
 				return propertyValuePair.getPropertyValue(); //return the value of the property as an RDF object
 		}
@@ -109,10 +107,8 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	*/
 	public RDFObject getPropertyValue(final URI propertyURI)
 	{
-		final Iterator<RDFPropertyValuePair> propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
-		while(propertyIterator.hasNext()) //while there are more properties
+		for(final RDFPropertyValuePair propertyValuePair:propertyList)  //for each property
 		{
-			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
 		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 				return propertyValuePair.getPropertyValue(); //return the value of the property as an RDF object
 		}
@@ -134,29 +130,27 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		return getPropertyValue(RDFUtilities.createReferenceURI(namespaceURI, localName)); //look for the property, combining the namespace URI and the local name for the reference URI
 	}
 
-	/**Searches and returns an iterator of all property values that appear as RDF
+	/**Searches and returns an iterable of all property values that appear as RDF
 		statement objects with a predicate of <var>propertyURI</var>.
 	@param propertyURI The reference URI of the property resources.
-	@return An iterator to a read-only list of values of properties.
+	@return A read-only iterable of values of properties.
 	*/
-	public Iterator<RDFObject> getPropertyValueIterator(final URI propertyURI)
+	public Iterable<RDFObject> getPropertyValues(final URI propertyURI)
 	{
-		return getPropertyValueIterator(propertyURI, RDFObject.class);	//get all properties, whether they are resources or literals
+		return getPropertyValues(propertyURI, RDFObject.class);	//get all properties, whether they are resources or literals
 	}
 	
-	/**Searches and returns an iterator of all property values of the requested type that appear as RDF
+	/**Searches and returns an iterable of all property values of the requested type that appear as RDF
 		statement objects with a predicate of <var>propertyURI</var>.
 	@param propertyURI The reference URI of the property resources.
 	@param valueType The type of values to include
-	@return An iterator to a read-only list of values of properties.
+	@return A read-only iterable of values of properties.
 	*/
-	public <T> Iterator<T> getPropertyValueIterator(final URI propertyURI, final Class<T> valueType)
+	public <T> Iterable<T> getPropertyValues(final URI propertyURI, final Class<T> valueType)
 	{
-		final List<T> propertyValueList=new ArrayList<T>(); //cerate a list in which to store the property values
-		final Iterator<RDFPropertyValuePair> propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
-		while(propertyIterator.hasNext()) //while there are more properties
+		final List<T> propertyValueList=new ArrayList<T>(); //create a list in which to store the property values
+		for(final RDFPropertyValuePair propertyValuePair:propertyList)  //for each property
 		{
-			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
 		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 			{
 				final RDFObject propertyValue=propertyValuePair.getPropertyValue();	//get the property value
@@ -166,34 +160,34 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 				}
 			}
 		}
-		return Collections.unmodifiableList(propertyValueList).iterator();  //return an iterator to the list of properties
+		return Collections.unmodifiableList(propertyValueList);  //return an unmodifiable version of the list of properties we collected
 	}
 	
-	/**Searches and returns an iterator of all property values that appear as
+	/**Searches and returns an iterable of all property values that appear as
 		RDF statement objects with a predicate of a property URI formed by the
 		given namespace URI and local name. This is a convenience function that
 		creates a property URI automatically for searching.
 	@param namespaceURI The XML namespace URI that represents part of the reference URI.
 	@param localName The XML local name that represents part of the reference URI.
-	@return An iterator to a read-only list of values of properties.
+	@return A read-only iterable of values of properties.
 	*/
-	public Iterator<RDFObject> getPropertyValueIterator(final URI namespaceURI, final String localName)
+	public Iterable<RDFObject> getPropertyValues(final URI namespaceURI, final String localName)
 	{
-		return getPropertyValueIterator(namespaceURI, localName, RDFObject.class);	//get all properties, whether they are resources or literals		
+		return getPropertyValues(namespaceURI, localName, RDFObject.class);	//get all properties, whether they are resources or literals		
 	}
 	
-	/**Searches and returns an iterator of all property values of the requested type that appear as
+	/**Searches and returns an iterable of all property values of the requested type that appear as
 		RDF statement objects with a predicate of a property URI formed by the
 		given namespace URI and local name. This is a convenience function that
 		creates a property URI automatically for searching.
 	@param namespaceURI The XML namespace URI that represents part of the reference URI.
 	@param localName The XML local name that represents part of the reference URI.
 	@param valueType The type of values to include
-	@return An iterator to a read-only list of values of properties.
+	@return A read-only iterable of values of properties.
 	*/
-	public <T> Iterator<T> getPropertyValueIterator(final URI namespaceURI, final String localName, final Class<T> valueType)
+	public <T> Iterable<T> getPropertyValues(final URI namespaceURI, final String localName, final Class<T> valueType)
 	{
-		return getPropertyValueIterator(RDFUtilities.createReferenceURI(namespaceURI, localName), valueType); //look for the property, combining the namespace URI and the local name for the reference URI
+		return getPropertyValues(RDFUtilities.createReferenceURI(namespaceURI, localName), valueType); //look for the property, combining the namespace URI and the local name for the reference URI
 	}
 
 	/**Determines if the resource has the given property with the resource
@@ -206,10 +200,8 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	*/
 	public boolean hasPropertyResourceValue(final URI propertyURI, final URI propertyValueURI)
 	{
-		final Iterator<RDFPropertyValuePair> propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
-		while(propertyIterator.hasNext()) //while there are more properties
+		for(final RDFPropertyValuePair propertyValuePair:propertyList)  //for each property
 		{
-			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
 		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
 			{
 				if(propertyValuePair.getPropertyValue() instanceof RDFResource)	//if the value is a resource

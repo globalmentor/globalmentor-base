@@ -1,7 +1,6 @@
 package com.garretwilson.rdf.dicto;
 
 import java.net.URI;
-import java.util.Iterator;
 import com.garretwilson.rdf.*;
 
 /**Class representing an entry that can be part of a Dictionary Ontology
@@ -52,10 +51,10 @@ public abstract class Entry extends TypedRDFResource implements DictoConstants
 		return getPropertyValue(DICTO_NAMESPACE_URI, PRONUNCIATION_PROPERTY_NAME);	//get the pronunciation		
 	}
 
-	/**@return An iterator to pronunciations, if any, of the entry.*/
-	public Iterator getPronunciationIterator()
+	/**@return An iterable to pronunciations, if any, of the entry.*/
+	public Iterable<RDFObject> getPronunciations()
 	{
-		return getPropertyValueIterator(DICTO_NAMESPACE_URI, PRONUNCIATION_PROPERTY_NAME); //return an iterator to the pronunciation properties
+		return getPropertyValues(DICTO_NAMESPACE_URI, PRONUNCIATION_PROPERTY_NAME); //return an iterable to the pronunciation properties
 	}
 
 	/**@return The translation of the entry, or <code>null</code> if there is

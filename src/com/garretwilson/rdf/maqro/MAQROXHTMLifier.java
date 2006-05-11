@@ -1,14 +1,10 @@
 package com.garretwilson.rdf.maqro;
 
-import java.net.URI;
-import java.util.*;
-
 import org.w3c.dom.*;
 
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.xmlschema.*;
 import com.garretwilson.text.xml.XMLUtilities;
-import static com.garretwilson.text.xml.XMLUtilities.*;
 import static com.garretwilson.text.xml.xhtml.XHTMLConstants.*;
 
 /**Creates an XHTML tree representing MAQRO resources.
@@ -51,10 +47,8 @@ public class MAQROXHTMLifier
 		final Document document=element.getOwnerDocument();	//get the document to use an an element factory
 		final Element dlElement=document.createElementNS(XHTML_NAMESPACE_URI.toString(), ELEMENT_DL);	//<dl>
 		element.appendChild(dlElement);	//add the definition list
-		final Iterator<RDFObject> resultIterator=outcome.getResultIterator();	//get an iterator to results
-		while(resultIterator.hasNext())	//while there are more results
+		for(final RDFObject object:outcome.getResults())	//for each result
 		{
-			final RDFObject object=resultIterator.next();	//get the next result
 			if(object instanceof Result)	//if this is a result object
 			{
 				final Result result=(Result)object;	//cast the object to a result
@@ -67,10 +61,8 @@ public class MAQROXHTMLifier
 		final Element interactionElement=document.createElementNS(XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//create an element for the interaction
 		dlElement.appendChild(interactionElement);	//add the interaction element to the 
 		constructElement(interactionElement, outcome, interaction);
-		final Iterator<RDFObject> responseIterator=outcome.getResponseIterator();	//get an iterator to responses
-		while(responseIterator.hasNext())	//while there are more responses
+		for(final RDFObject object:outcome.getResponses())	//for each response
 		{
-			final RDFObject object=responseIterator.next();	//get the next response
 			if(object instanceof Dialogue)	//if this is dialogue
 			{
 				final Dialogue dialogue=(Dialogue)object;	//cast the object to dialogue
@@ -124,10 +116,8 @@ public class MAQROXHTMLifier
 				constructElement(ddElement, query);	//show the query
 			}
 				//TODO fix for AND answers and OR answers
-			final Iterator<RDFObject> answerIterator=question.getAnswerIterator();	//get an iterator to answers
-			while(answerIterator.hasNext())	//while there are more answers
+			for(final RDFObject object:question.getAnswers())	//for each answer
 			{
-				final RDFObject object=answerIterator.next();	//get the next answer
 				if(object instanceof Dialogue)	//if this is dialogue
 				{
 					final Dialogue dialogue=(Dialogue)object;	//cast the object to dialogue

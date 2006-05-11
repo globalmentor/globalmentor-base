@@ -123,7 +123,8 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 					if(filter instanceof CategoryFilter)	//if this is a filter iterator
 					{
 						final CategoryFilter categoryFilter=(CategoryFilter)filter;	//cast the filter to a category filter
-						CollectionUtilities.addAll(categorySet, categoryFilter.getCategoryIterator());	//add all selector categories to our set of categories G***we should really create clones of these
+							//TODO upgrade to generics
+						CollectionUtilities.addAll(categorySet, categoryFilter.getCategories());	//add all selector categories to our set of categories G***we should really create clones of these
 						break;	//this implementation only recognizes the first category filter
 					}
 				}

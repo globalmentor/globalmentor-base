@@ -1,7 +1,5 @@
 package com.garretwilson.rdf.xpackage;
 
-import java.util.Iterator;
-
 import com.garretwilson.rdf.*;
 
 import static com.garretwilson.rdf.xpackage.XMLOntologyConstants.*;
@@ -12,21 +10,21 @@ import static com.garretwilson.rdf.xpackage.XMLOntologyConstants.*;
 public class XMLOntologyUtilities
 {
 
-	/**Retrieves an iterator to the XML style resources, represented by  <code>x:style</code> properties.
+	/**Retrieves an iterable to the XML style resources, represented by <code>x:style</code> properties.
 	@param resource The resource the styles of which will be returned.
-	@return An iterator to the styles of the resource, if any.
+	@return An iterable to the styles of the resource, if any.
 	*/
-	public static Iterator<RDFObject> getStyles(final RDFResource resource)
+	public static Iterable<RDFResource> getStyles(final RDFResource resource)
 	{
-		return resource.getPropertyValueIterator(XML_ONTOLOGY_NAMESPACE_URI, STYLE_PROPERTY_NAME); //return an iterator to style properties
+		return resource.getPropertyValues(XML_ONTOLOGY_NAMESPACE_URI, STYLE_PROPERTY_NAME, RDFResource.class); //return an iterable to style properties
 	}
 
-	/**Retrieves an iterator to the XML namespace resources, represented by  <code>x:namespace</code> properties.
+	/**Retrieves an iterable to the XML namespace resources, represented by <code>x:namespace</code> properties.
 	@param resource The resource the namespaces of which will be returned.
-	@return An iterator to the namespaces of the resource, if any.
+	@return An iterable to the namespaces of the resource, if any.
 	*/
-	public static Iterator<RDFResource> getNamespaces(final RDFResource resource)
+	public static Iterable<RDFResource> getNamespaces(final RDFResource resource)
 	{
-		return resource.getPropertyValueIterator(XML_ONTOLOGY_NAMESPACE_URI, NAMESPACE_PROPERTY_NAME, RDFResource.class); //return an iterator to namespace properties
+		return resource.getPropertyValues(XML_ONTOLOGY_NAMESPACE_URI, NAMESPACE_PROPERTY_NAME, RDFResource.class); //return an iterable to namespace properties
 	}
 }
