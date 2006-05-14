@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import com.garretwilson.rdf.*;
 import com.garretwilson.util.*;
+import com.guiseframework.style.RGBColor;
 
 /**Processes PLOOP objects from an RDF data model.
 <p>This is a stateful processor and may only be used for one RDF data model instance.</p>
@@ -508,13 +509,14 @@ public class PLOOPProcessor
 		<li><code>long</code></li>
 		<li>{@link Long}</li>
 		<li>{@link Pattern}</li>
+		<li>{@link RGBColor}</li>
 	</ul>
 	@param object The object to convert
 	@param requiredType The required type of the object.
 	@return The object as the required type, or <code>null</code> if the object cannot be converted to the required type.
 	@exception ClassNotFoundException if the required type is {@link Class} and the indicated class cannot be found.
 	*/
-	protected Object convertObject(final Object object, final Class<?> requiredType) throws ClassNotFoundException
+	protected Object convertObject(final Object object, final Class<?> requiredType) throws ClassNotFoundException	//TODO search for a string contructor or a static valueOf() method
 	{
 		final Class<?> objectType=object.getClass();	//get the type of the object
 		if(requiredType.isAssignableFrom(objectType))	//if we expect this type (this algorithm could be improved to first try to find an exact match and then find a convertible match)
@@ -559,6 +561,10 @@ public class PLOOPProcessor
 				else if(Pattern.class.isAssignableFrom(requiredType))	//if the required type is Pattern
 				{
 					return Pattern.compile(stringObject);	//compile a pattern from the string
+				}
+				else if(RGBColor.class.isAssignableFrom(requiredType))	//if the required type is RGBColor
+				{
+					return RGBColor.valueOf(stringObject);	//compile an RGB color from the string
 				}
 				//TODO check for a string-compatible constructor
 			}
