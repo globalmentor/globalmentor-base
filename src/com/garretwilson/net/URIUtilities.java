@@ -483,6 +483,7 @@ public class URIUtilities
 	}
 
 	/**Relativizes the given full path against the given base path.
+	If the full path is not composed of the given base path, the full path is returned.
 	@param basePath The path against which the full path should be relativized.
 	@param fullPath The full path to be relativized.
 	@return A form of the full path relative to the base path.
