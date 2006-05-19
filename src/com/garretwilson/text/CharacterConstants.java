@@ -38,10 +38,18 @@ public interface CharacterConstants
 	public final static char COLON_CHAR=0x003A;
 	/**A semicolon character.*/
 	public final static char SEMICOLON_CHAR=0x003B;
-	/**An equals sign character.*/
+	/**A less-than sign character (003C;LESS-THAN SIGN;Sm;0;ON;;;;;Y;;;;;).*/
+	public final static char LESS_THAN_CHAR=0x003C;
+	/**An equals sign character (003D;EQUALS SIGN;Sm;0;ON;;;;;N;;;;;).*/
 	public final static char EQUALS_SIGN_CHAR=0x003D;
+	/**A greater-than sign character (003E;GREATER-THAN SIGN;Sm;0;ON;;;;;Y;;;;;).*/
+	public final static char GREATER_THAN_CHAR=0x003E;
+	/**A question mark character (003F;QUESTION MARK;Po;0;ON;;;;;N;;;;;).*/
+	public final static char QUESTION_MARK_CHAR=0x003F;
 	/**A grave accent character.*/
 	public final static char GRAVE_ACCENT_CHAR=0x0060;
+	/**A tilde character (007E;TILDE;Sm;0;ON;;;;;N;;;;;).*/
+	public final static char TILDE_CHAR=0x007E;	
 	/**A start of string control character.*/
 	public final static char START_OF_STRING_CHAR=0x0098;
 	/**A string terminator control character.*/

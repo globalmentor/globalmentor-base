@@ -4,16 +4,16 @@ import java.io.Reader;
 import java.io.IOException;
 import java.util.*;
 
+import com.garretwilson.text.CharacterConstants;
 import com.garretwilson.text.SyntaxException;
 import com.garretwilson.util.Debug;
 
 import static com.garretwilson.text.CharacterConstants.*;
 
 /**Tokenizes input from a reader, recognizing groups.
-All text within a group will be ignored when delimiting tokens, except that
-	group delimiters are checked for matching.
-If a group has the same beginning and ending character, direct nesting of that
-	group is not allowed, although other groups may be interspersed.
+All text within a group will be ignored when delimiting tokens, except that group delimiters are checked for matching.
+If a group has the same beginning and ending character, direct nesting of that group is not allowed, although other groups may be interspersed.
+This class does not return independent iterators.
 @author Garret Wilson
 */
 public class ReaderTokenizer implements Iterator<String>, Iterable<String>
@@ -191,7 +191,27 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	{
 		throw new UnsupportedOperationException();
 	}
-	
+
+	/**The last delimiter encountered, which introduced the current token.*/
+	private char lastDelimiter=CharacterConstants.NULL_CHAR;
+
+		/**Returns the last delimiter encountered, which introduced the current token.
+		If no last delimiter has been encountered, {@link CharacterConstants#NULL_CHAR} is returned.
+		@return The last delimiter encountered.
+		@see #getDelimiters()
+		*/
+		public char getLastDelimiter() {return lastDelimiter;}
+
+	/**The current delimiter encountered, which delimits the current token.*/
+	private char delimiter=CharacterConstants.NULL_CHAR;
+
+		/**Returns the current delimiter encountered, which delimits the current token.
+		If no delimiters have been encountered, or the end of the reader was reached, {@link CharacterConstants#NULL_CHAR} is returned.
+		@return The current delimiter encountered.
+		@see #getDelimiters()
+		*/
+		public char getDelimiter() {return delimiter;}
+
 	/**If there is no token primed, attempts to retrieve the next token.
 	@return Either the token that was already primed or, if there is no token
 		already, the token newly primed by this method. If no token is available,
@@ -208,15 +228,24 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 			final StringBuilder stringBuilder=new StringBuilder();	//create a string builder to build our token
 			try
 			{
-				int value;	//this will keep track of each character we read
-				while((value=reader.read())>=0)	//read the next character; while there are more characters
+				while(true)
 				{
+					final int value=reader.read();	//read the next character
+					if(value<0)	//if there are no more characters
+					{
+						this.lastDelimiter=this.delimiter;	//move the delimiter to the last delimiter
+						this.delimiter=NULL_CHAR;	//indicate that we did not encounter a delimiter; we ran out of characters
+						break;	//stop processing characters
+					}
 					final char character=(char)value;	//cast the character value to a char
 					if(getGroupDepth()==0 && delimiters.indexOf(character)>=0)	//only look at delimiters when we're not in a group
 					{
-						if(stringBuilder.length()>0)	//if we've already started a token, return the token; otherwise, just ignore the delimiter
+						this.lastDelimiter=this.delimiter;	//move the delimiter to the last delimiter
+						this.delimiter=character;	//save the delimiter							
+							//TODO improve; does this not allow empty tokens? there should at least be an option for this
+						if(stringBuilder.length()>0)	//if we've already started a token, return the token; otherwise, just skip the delimiter
 						{
-							break;	//we found a delimiter, so we've finished a token
+							break;	//we found a delimiter, so we've finished a token; this will shift delimiters
 						}
 					}
 					else	//if this is not a delimiter, or we're inside the group, we'll keep the character
