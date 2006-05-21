@@ -53,6 +53,15 @@ public class StringBuilderUtilities
 		return stringBuilder;	//return the string builder object
 	}
 
+	/**Removes all the content of a string builder.
+	@param stringBuilder The string builder the content of which should be cleared.
+	@return The string builder after all content is removed.
+	*/
+	public static StringBuilder clear(final StringBuilder stringBuilder)
+	{
+		return stringBuilder.delete(0, stringBuilder.length());	//delete all characters in the string builder
+	}
+
 	/**Inserts a given repetition of characters into a string builder.
 	@param stringBuilder The string builder into which the characters should be inserted.
 	@param offset The index at which to insert the characters.
