@@ -1,5 +1,7 @@
 package com.garretwilson.net.http;
 
+import java.util.regex.Pattern;
+
 import javax.servlet.http.HttpServletResponse;
 
 import static com.garretwilson.lang.StringUtilities.*;
@@ -23,6 +25,8 @@ public class HTTPConstants
 	public final static String ALLOW_HEADER="Allow";
 	/**The HTTP header indicating the accepted content types.*/
 	public final static String ACCEPT_HEADER="Accept";
+	/**The HTTP header indicating the accepted encodings.*/
+	public final static String ACCEPT_ENCODING_HEADER="Accept-Encoding";
 	/**The HTTP header indicating the accepted language types.*/
 	public final static String ACCEPT_LANGUAGE_HEADER="Accept-Language";
 	/**The HTTP header indicating authorization information.*/
@@ -55,6 +59,16 @@ public class HTTPConstants
 	public final static String CONTENT_DESCRIPTION_HEADER="Content-Description";
 	/**The HTTP header indicating the content disposition.*/
 	public final static String CONTENT_DISPOSITION_HEADER="Content-Disposition";
+	/**The HTTP header indicating the content encoding.*/
+	public final static String CONTENT_ENCODING_HEADER="Content-Encoding";
+		/**The HTTP compress content coding.*/
+		public final static String COMPRESS_CONTENT_CODING="compress";
+		/**The HTTP deflate content coding.*/
+		public final static String DEFLATE_CONTENT_CODING="deflate";
+		/**The HTTP gzip content coding.*/
+		public final static String GZIP_CONTENT_CODING="gzip";
+		/**The HTTP identity content coding.*/
+		public final static String IDENTITY_CONTENT_CODING="identity";
 	/**The HTTP header indicating the natural language(s) of the intended audience for the enclosed entity.*/
 	public final static String CONTENT_LANGUAGE_HEADER="Content-Language";
 	/**The HTTP header indicating the size of the entity body.*/
@@ -79,11 +93,13 @@ public class HTTPConstants
 		public final static String NO_CACHE_PRAGMA="no-cache";
 	/**The HTTP header indicating the referring location.*/
 	public final static String REFERER_HEADER="Referer";
+	/**The HTTP header indicating what extension transfer-codings it is willing to accept in the response and whether or not it is willing to accept trailer fields in a chunked transfer-coding.*/
+	public final static String TE_HEADER="TE";
 	/**The HTTP header indicating the what (if any) type of transformation has been applied to the message body in order to safely transfer it between the sender and the recipient.*/
 	public final static String TRANSFER_ENCODING_HEADER="Transfer-Encoding";
 		/**The HTTP chunked transfer coding.*/
 		public final static String CHUNKED_TRANSFER_CODING="chunked";
-		/**The HTTP COMPRESS transfer coding.*/
+		/**The HTTP compress transfer coding.*/
 		public final static String COMPRESS_TRANSFER_CODING="compress";
 		/**The HTTP deflate transfer coding.*/
 		public final static String DEFLATE_TRANSFER_CODING="deflate";
@@ -297,12 +313,20 @@ public class HTTPConstants
   /**The character for delimiting HTTP list items.*/
 	public final static char LIST_DELIMITER=COMMA_CHAR;
 
-	
+  /**The regular expression pattern for the character for delimiting HTTP list items.*/
+	public final static Pattern LIST_DELIMITER_PATTERN=Pattern.compile(String.valueOf(LIST_DELIMITER));
+
+	/**The character for delimiting parameters, such as qvalue weights in lists.*/
+	public final static char PARAMETER_DELIMITER=SEMICOLON_CHAR;
+
   /**The character which separates a header name from a header value.*/
 	public final static char HEADER_SEPARATOR=':';
 	
 	/**The character used to escape quotation marks.*/
 	public final static char ESCAPE_CHAR='\\';
+
+	/**The HTTP character used as a wildcard.*/
+	public final static char WILDCARD_CHAR='*';
 
   /**US-ASCII control characters.*/
 	public final static String CTL_CHARS=createString((char)0, (char)31)+(char)127;
@@ -329,6 +353,15 @@ public class HTTPConstants
 
 	/**Linear whitespace characters which can, in the correct sequence, be folded into single spaces.*/
 	public final static String LWS_CHARS=new StringBuilder(CRLF).append(SP).append(HT).toString();
+
+	/**The regular expression string matching linear whitespace.*/
+	public final static String LWS_REGULAR_EXPRESSION="[\\r\\f \\t]";
+
+	/**The regular expression attern for a weighted list element.
+	Matching group 1 is the list element.
+	Matching group 2 is the quality value, which may be null if no quality value is present.
+	*/
+	public final static Pattern LIST_ELEMENT_WEIGHT_PATTERN=Pattern.compile("(.*)(?:;"+LWS_REGULAR_EXPRESSION+"*q=(\\d[\\.\\d{1, 3}]))?");
 
 	/**The regular expression for a product version in the form X.X.X, where all but the first version is optional.
 	Each group represents a numeric segment of the version string.

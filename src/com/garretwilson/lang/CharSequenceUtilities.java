@@ -605,7 +605,7 @@ public class CharSequenceUtilities
 	@param delimiter The delimiter to use for splitting.
 	@return An array of character subsequences between the delimiters.
 	*/
-	public static CharSequence[] split(final CharSequence charSequence, final char delimiter)
+	public static CharSequence[] split(final CharSequence charSequence, final char delimiter)	//TODO convert to using regular expressions
 	{
 		final int length=charSequence.length();	//get the length of the character sequence
 		if(length>0)	//if there are any characters
@@ -690,4 +690,14 @@ public class CharSequenceUtilities
 		return index>=0 ? charSequence.subSequence(index+1, charSequence.length()) : charSequence;	//trim the character sequence if we can		
 	}
 
+	/**Determines if the given character sequence is composed of the single given character.
+	This method allows comparison of a character string with a character without creating a string for the character, for example.
+	@param charSequence The character sequence to compare.
+	@param character The character to compare with the character sequence.
+	@return <code>true</code> if the character sequence is composed of one character and that character matches the given character.
+	*/
+	public final static boolean equals(final CharSequence charSequence, final char character)
+	{
+		return charSequence.length()==1 && charSequence.charAt(0)==character;	//see if the character sequence has only one character, the given character
+	}
 }
