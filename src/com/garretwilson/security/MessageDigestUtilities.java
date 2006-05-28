@@ -72,33 +72,37 @@ public class MessageDigestUtilities
 	@param strings The string to digest.
 	@return The message digest.
 	*/
-	public static void update(final MessageDigest messageDigest, final String... strings)
+	public static MessageDigest update(final MessageDigest messageDigest, final String... strings)
 	{
 		for(final String string:strings)	//for each string
 		{
 			update(messageDigest, string.toCharArray());	//update the digest from the string's characters
 		}
+		return messageDigest;	//return the message digest
 	}
 
 	/**Updates a digest from given strings, using the given character encoding.
 	@param messageDigest The implementation of a message digest algorithm.
 	@param encoding The encoding to use when converting characters to bytes.
 	@param strings The strings to digest.
+	@return The message digest.
 	@exception UnsupportedEncodingException if the given encoding is not supported.
 	*/
-	public static void update(final MessageDigest messageDigest, final CharacterEncoding encoding, final String... strings) throws UnsupportedEncodingException
+	public static MessageDigest update(final MessageDigest messageDigest, final CharacterEncoding encoding, final String... strings) throws UnsupportedEncodingException
 	{
 		for(final String string:strings)	//for each string
 		{
 			update(messageDigest, encoding, string.toCharArray());	//update the digest from the string's characters using the given encoding
 		}
+		return messageDigest;	//return the message digest
 	}
 	
 	/**Updates a digest with the given characters using the UTF-8 character encoding.
 	@param messageDigest The implementation of a message digest algorithm.
 	@param characters The characters to digest.
+	@return The message digest.
 	*/
-	public static void update(final MessageDigest messageDigest, final char[] characters)
+	public static MessageDigest update(final MessageDigest messageDigest, final char[] characters)
 	{
 		try
 		{
@@ -108,19 +112,21 @@ public class MessageDigestUtilities
 		{
 			throw new AssertionError(unsupportedEncodingException);
 		}
+		return messageDigest;	//return the message digest
 	}
 
 	/**Updates a digest with the given characters, using the given character encoding.
 	@param messageDigest The implementation of a message digest algorithm.
 	@param encoding The encoding to use when converting characters to bytes.
 	@param characters The arrays of characters to digest.
+	@return The message digest.
 	@exception UnsupportedEncodingException if the given encoding is not supported.
 	*/
-	public static void update(final MessageDigest messageDigest, final CharacterEncoding encoding, final char[] characters) throws UnsupportedEncodingException
+	public static MessageDigest update(final MessageDigest messageDigest, final CharacterEncoding encoding, final char[] characters) throws UnsupportedEncodingException
 	{
 		final byte[] bytes=toByteArray(characters, encoding.getEncoding());	//convert the characters to bytes
 		messageDigest.update(bytes);	//update the digest
-	}
-	
+		return messageDigest;	//return the message digest
+	}	
 	
 }
