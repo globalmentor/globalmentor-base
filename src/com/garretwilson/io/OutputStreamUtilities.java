@@ -9,13 +9,12 @@ import com.garretwilson.util.Debug;
 public class OutputStreamUtilities
 {
 
-	/**Copies the contents of an input stream to an output stream. Neither stream
-		is closed after the operation.
+	/**Copies the contents of an input stream to an output stream. Neither stream is closed after the operation.
 	@param inputStream The content to copy.
 	@param outputStream The destination of the input stream contents.
 	@exception IOException Thrown if there is an error copying the content.
 	*/
-	public static void write(final InputStream inputStream, final OutputStream outputStream) throws IOException
+	public static void copy(final InputStream inputStream, final OutputStream outputStream) throws IOException
 	{
 		final byte[] buffer=new byte[64*1024];  //create a new 64k buffer
 		int bytesRead;  //we'll keep track of the bytes we read each time

@@ -810,7 +810,7 @@ Debug.trace("Canonical file: "+canonicalFilePath);
 		final InputStream fileInputStream=new BufferedInputStream(new FileInputStream(file)); //created a buffered input stream to the file
 		try
 		{
-			OutputStreamUtilities.write(fileInputStream, outputStream);  //copy the contents of the input stream to the output stream
+			OutputStreamUtilities.copy(fileInputStream, outputStream);  //copy the contents of the input stream to the output stream
 		}
 		finally
 		{

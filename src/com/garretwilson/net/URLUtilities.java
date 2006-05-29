@@ -376,7 +376,7 @@ Debug.trace("file: ", new File(contextURL.getFile()).getName());  //G***del
 		final InputStream fileInputStream=new BufferedInputStream(url.openConnection().getInputStream()); //created a buffered input stream to the URL
 		try
 		{
-			OutputStreamUtilities.write(fileInputStream, outputStream);  //copy the contents of the input stream to the output stream
+			OutputStreamUtilities.copy(fileInputStream, outputStream);  //copy the contents of the input stream to the output stream
 		}
 		finally
 		{
