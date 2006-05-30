@@ -861,7 +861,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>	will be thrown, created from the <code>URISyntaxException</code>.</p>
 	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
 	@param scheme The name of the URI scheme.
-	@param ssp The scheme-specific part.
+	@param ssp The scheme-specific part; illegal characters will be quoted.
 	@exception IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	*/
 	public static URI createURI(final String scheme, final String ssp) throws IllegalArgumentException
@@ -873,7 +873,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>	will be thrown, created from the <code>URISyntaxException</code>.</p>
 	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
 	@param scheme The name of the URI scheme.
-	@param ssp The scheme-specific part.
+	@param ssp The scheme-specific part; illegal characters will be quoted.
 	@param fragment The fragment at the end of the URI.
 	@exception IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	*/

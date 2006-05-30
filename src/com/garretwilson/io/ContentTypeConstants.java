@@ -104,6 +104,8 @@ public class ContentTypeConstants
 	public final static String MATHML_XML_SUBTYPE="mathml"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**A Java JNLP file.*/
 	public final static String X_JAVA_JNLP_FILE=EXTENSION_PREFIX+"java-jnlp-file";
+	/**A Java object.*/
+	public final static String X_JAVA_OBJECT=EXTENSION_PREFIX+"java-object";
 	/**A MAQRO activity.*/
 	public final static String X_MAQRO_RDF_XML_SUBTYPE=EXTENSION_PREFIX+"maqro"+SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A MAQRO question.*/

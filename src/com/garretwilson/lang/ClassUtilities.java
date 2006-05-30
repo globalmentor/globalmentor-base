@@ -1,11 +1,14 @@
 package com.garretwilson.lang;
 
 import java.lang.reflect.*;
+import java.net.URI;
 import java.util.*;
 
 import static com.garretwilson.lang.JavaConstants.*;
 import static com.garretwilson.lang.JavaUtilities.*;
 import static com.garretwilson.lang.StringUtilities.*;
+import static com.garretwilson.net.URIConstants.JAVA_SCHEME;
+import static com.garretwilson.net.URIUtilities.createURI;
 
 /**Utilities for manipulating Java classes.
 @author Garret Wilson
@@ -15,6 +18,27 @@ public class ClassUtilities
 
 	/**This class cannot be publicly instantiated.*/
 	private ClassUtilities() {}
+
+	/**Returns a content type identifying the given class in the form <code>application/x-java;class=<var>package.Class</var></code>.
+	@param objectClass The class for which a content type should be returned.
+	@return A content type identifying the given class in the form <code>application/x-java;class=<var>package.Class</var></code>.
+	*/
+/*TODO del if not used; decide on content type subtype, which may be java, x-java, x-java-class, x-java-object, x-java-serialized-object, etc. 
+	public ContentType getContentType(final Class<?> objectClass)
+	{
+		ContentTypeConstants
+		return createURI(JAVA_SCHEME, objectClass.getName());	//return a Java URI with the class name
+	}
+*/
+
+	/**Returns a URI identifying the given class in the form <code>java:<var>package.Class</var></code>.
+	@param objectClass The class for which a URI should be returned.
+	@return A URI identifying the given class in the form <code>java:<var>package.Class</var></code>.
+	*/
+	public URI getURI(final Class<?> objectClass)
+	{
+		return createURI(JAVA_SCHEME, objectClass.getName());	//return a Java URI with the class name
+	}
 
 	/**Returns a constructor of a class that is compatible with the given parameter types.
 	A constructor is considered compatible if each of the given parameter types can be assigned to the formal parameter type in the constructor.
