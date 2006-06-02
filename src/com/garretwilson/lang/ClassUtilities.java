@@ -4,6 +4,10 @@ import java.lang.reflect.*;
 import java.net.URI;
 import java.util.*;
 
+import javax.mail.internet.*;
+
+import static com.garretwilson.io.ContentTypeConstants.APPLICATION;
+import static com.garretwilson.io.ContentTypeConstants.X_JAVA_OBJECT;
 import static com.garretwilson.lang.JavaConstants.*;
 import static com.garretwilson.lang.JavaUtilities.*;
 import static com.garretwilson.lang.StringUtilities.*;
@@ -19,23 +23,33 @@ public class ClassUtilities
 	/**This class cannot be publicly instantiated.*/
 	private ClassUtilities() {}
 
-	/**Returns a content type identifying the given class in the form <code>application/x-java;class=<var>package.Class</var></code>.
+	/**Returns a content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
 	@param objectClass The class for which a content type should be returned.
-	@return A content type identifying the given class in the form <code>application/x-java;class=<var>package.Class</var></code>.
+	@return A content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
+	@exception IllegalArgumentException if the given object class is <code>null</code>.
 	*/
-/*TODO del if not used; decide on content type subtype, which may be java, x-java, x-java-class, x-java-object, x-java-serialized-object, etc. 
-	public ContentType getContentType(final Class<?> objectClass)
+	public static ContentType getObjectContentType(final Class<?> objectClass)
 	{
-		ContentTypeConstants
-		return createURI(JAVA_SCHEME, objectClass.getName());	//return a Java URI with the class name
-	}
+//TODO del		try
+		{
+			final ParameterList parameterList=new ParameterList();	//create a new parameter list
+			parameterList.set("class", objectClass.getName());	//TODO testing
+			return new ContentType(APPLICATION, X_JAVA_OBJECT, parameterList);	//create a content type appropriate for this object class TODO use a constant
+//TODO fix and del			return new ContentType(APPLICATION, X_JAVA_OBJECT, new ParameterList("x-class=\""+objectClass.getName()+"\""));	//create a content type appropriate for this object class TODO use a constant
+		}
+/*TODO del when works
+		catch(final ParseException parseException)	//there should never be a parse exception, as we construct the content type from parameters with known syntax
+		{
+			throw new AssertionError(parseException);
+		}
 */
+	}
 
 	/**Returns a URI identifying the given class in the form <code>java:<var>package.Class</var></code>.
 	@param objectClass The class for which a URI should be returned.
 	@return A URI identifying the given class in the form <code>java:<var>package.Class</var></code>.
 	*/
-	public URI getURI(final Class<?> objectClass)
+	public static URI getURI(final Class<?> objectClass)
 	{
 		return createURI(JAVA_SCHEME, objectClass.getName());	//return a Java URI with the class name
 	}
