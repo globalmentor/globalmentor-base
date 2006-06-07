@@ -676,6 +676,18 @@ public class CharSequenceUtilities
 		return charSequence.length()>0 && characters.indexOf(charSequence.charAt(0))>=0;
 	}
 
+	/**Returns a string builder with the given character sequence content.
+	If the given character sequence is a string builder, it will be returned; otherwise, a setring builder will be created.
+	@param charSequence The character sequence containing the content for a string builder.
+	@return given The character sequence, if it is a string builder, or a new string builder created from the character sequence.
+	*/
+/*TODO del; this may be dangerous if a calling method doesn't realize the character sequence will be modified when this is used to change a passed character sequence
+	public static StringBuilder toStringBuilder(final CharSequence charSequence)
+	{
+		return charSequence instanceof StringBuilder ? (StringBuilder)charSequence : new StringBuilder(charSequence);	//only create a new string builder if we need to
+	}
+*/
+	
 	/**Trims the right side of the string beginning at the first occurrence of the
 		given character. If the character sequence does not contain the trim
 		character, no action takes place.

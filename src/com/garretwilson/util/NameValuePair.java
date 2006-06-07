@@ -81,7 +81,8 @@ public class NameValuePair<N, V> extends DefaultNamedObject<N> implements IDable
 	/**@return A string representation of this object in the format "name=\"value\"".*/
 	public String toString()
 	{
-		return getName()+"="+(getValue()!=null ? "\""+getValue()+"\"" : getValue());  //return a string constructed from the name and the value
+		final V value=getValue();	//get the value
+		return getName()+"="+(value!=null ? "\""+value+"\"" : value);  //return a string constructed from the name and the value
 	}
 
 }

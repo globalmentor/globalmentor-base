@@ -16,6 +16,7 @@ import static com.garretwilson.util.TimeZoneConstants.GMT_ID;
 	822 (+/-HHmm) rather than as specified by W3C NOTE-datetime (+/-HH:mm).
 	The decimal portions of seconds may also not be correct.</p>
 @author Garret Wilson
+@see <a href="http://www.w3.org/TR/NOTE-datetime">Date and Time Formats</a>
 */
 public class W3CDateFormat extends SimpleDateFormat
 {
@@ -28,15 +29,15 @@ public class W3CDateFormat extends SimpleDateFormat
 		YEAR_MONTH,
 		/**Pattern for complete date: YYYY-MM-DD (eg 1997-07-16)*/
 		DATE,
-		/**Pattern for complete date plus hours and minutes (without timezone):
+		/**Pattern for complete date plus hours and minutes:
 			YYYY-MM-DDThh:mmTZD (eg 1997-07-16T19:20+01:00)
 		*/
 		DATE_HOURS_MINUTES,
-		/**Pattern for complete date plus hours, minutes and seconds (without timezone):
+		/**Pattern for complete date plus hours, minutes and seconds:
 			YYYY-MM-DDThh:mm:ssTZD (eg 1997-07-16T19:20:30+01:00)
 		*/
 		DATE_HOURS_MINUTES_SECONDS,
-		/**Pattern for complete date plus hours, minutes, seconds and a decimal fraction of a second (without timezone):
+		/**Pattern for complete date plus hours, minutes, seconds and a decimal fraction of a second:
 			YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
 		*/
 		DATE_TIME
@@ -176,5 +177,12 @@ public class W3CDateFormat extends SimpleDateFormat
 		}
 		return super.parse(revised, pos);
 	}
-	
+
+	/**Formats a date by creating a W3C date and time formatter using the given style.
+	@param style One of the W3C date/time styles.
+	*/
+	public static String format(final Date date, final Style style)
+	{
+		return new W3CDateFormat(style).format(date);	//create a new format class and format the date
+	}
 }

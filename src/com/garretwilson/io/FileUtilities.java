@@ -518,8 +518,7 @@ public class FileUtilities
 	}
 */
 	
-	/**Creates the directory named by this abstract pathname, throwing an
-		exception if unsuccessful.
+	/**Creates the directory named by this abstract pathname, throwing an exception if unsuccessful.
 	@param directory The directory to create.
 	@exception IOException Thrown if there is an error creating the directory.
 	*/
@@ -531,9 +530,7 @@ public class FileUtilities
 		}
 	}
 	
-	/**Creates the directory named by this abstract pathname, including any
-		necessary but nonexistent parent directories, throwing an exception if
-		unsuccessful.
+	/**Creates the directory named by this abstract pathname, including any necessary but nonexistent parent directories, throwing an exception if unsuccessful.
 	@param directory The directory to create.
 	@exception IOException Thrown if there is an error creating the directory.
 	*/
@@ -543,6 +540,19 @@ public class FileUtilities
 		{
 			throw new IOException("Cannot create directories "+directory);	//throw an exception G***i18n
 		}
+	}
+
+	/**If the directory does not exist, creates the directory named by this abstract pathname, including any necessary but nonexistent parent directories, throwing an exception if unsuccessful.
+	@param directory The directory to create if necessary.
+	@exception IOException Thrown if there is an error creating the directory.
+	@see #mkdirs(File)
+	*/
+	public static void ensureDirectoryExists(final File directory) throws IOException
+	{
+		if(!directory.exists() || !directory.isDirectory())	//if the directory doesn't exist as a directory
+		{
+			mkdirs(directory);	//make the directories
+		}		
 	}
 
 	/**Reads an object from a file using the given I/O support.
