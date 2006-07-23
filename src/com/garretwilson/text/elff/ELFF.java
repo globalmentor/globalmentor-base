@@ -44,9 +44,6 @@ public class ELFF
 	/**The pattern for formatting an ELFF date+time value.*/
 	public final static String DATE_TIME_FORMAT_PATTERN=DATE_FORMAT_PATTERN+' '+TIME_FORMAT_PATTERN;
 
-	/**The name of the WebTrends ID cookie.*/
-	public final static String WEBTRENDS_ID_COOKIE_NAME="WEBTRENDS_ID";
-	
 	/**The value to represent null in a field.*/
 	public final static String NULL_FIELD_VALUE="-";
 	

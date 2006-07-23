@@ -98,7 +98,7 @@ public class URIUtilities
 		}
 		return stringBuilder.toString();	//return the string version of the constructed path
 	}
-	
+
 	/**Constructs a query string for a URI by URI-encoding each name-value pair,
 	 	separating them with '&', and prepending the entire string (if there is
 	 	at least one parameter) with '?'.
@@ -126,6 +126,18 @@ public class URIUtilities
 		return query.toString();	//return the query string we constructed
 	}
 
+	/**Constructs a query string for a URI and appends it to the given query, if any.
+	@param query The existing query paramters, or <code>null</code> or the empty string if there is no query.
+	@param params The name-value pairs representing the query parameters.
+	@return A string representing the query with the appended parameters, or the empty string if
+		there was no query and there were no parameters.
+	*/
+	public static String appendQueryParameters(final String query, final NameValuePair<String, String>... params)
+	{
+		final String queryParameters=constructQueryParameters(params);	//get query parameters
+		return query!=null && query.length()>0 ? query+QUERY_NAME_VALUE_PAIR_DELIMITER+queryParameters : queryParameters;	//if there was a query, append the new parameters; otherwise, just return the parameters
+	}
+
 	/**Constructs a query string for a URI by URI-encoding each name-value pair, separating them with '&'.
 	@param params The name-value pairs representing the query parameters.
 	@return A string representing the constructed query, or the empty string if there were no parameters.
@@ -135,7 +147,7 @@ public class URIUtilities
 		final StringBuilder paramStringBuilder=new StringBuilder();
 		if(params.length>0)	//if there is at least one parameter
 		{
-			for(NameValuePair<String, String> param : params)	//look at each parameter
+			for(NameValuePair<String, String> param:params)	//look at each parameter
 			{
 				paramStringBuilder.append(encode(param.getName()));	//append the parameter name
 				paramStringBuilder.append(QUERY_NAME_VALUE_ASSIGNMENT);	//append the value-assignment character
