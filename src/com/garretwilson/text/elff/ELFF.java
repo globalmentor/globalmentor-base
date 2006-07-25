@@ -2,13 +2,16 @@ package com.garretwilson.text.elff;
 
 import java.io.*;
 import java.net.*;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.garretwilson.util.NameValuePair;
+import static com.garretwilson.util.TimeZoneConstants.*;
 
 import static com.garretwilson.lang.StringBuilderUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.text.CharacterEncodingConstants.*;
 
 /**Access to a log in the Extended Log File Format (ELFF).
 @author Garret Wilson
@@ -78,7 +81,9 @@ public class ELFF
 			logDirective(writer, directive.getName(), directive.getValue());	//log this directive
 		}
 		logDirective(writer, VERSION_DIRECTIVE, LATEST_VERSION);	//log the version
-		logDirective(writer, DATE_DIRECTIVE, new SimpleDateFormat(DATE_TIME_FORMAT_PATTERN).format(new Date()));	//log the date+time
+		final DateFormat dateTimeFormat=new SimpleDateFormat(DATE_TIME_FORMAT_PATTERN);	//create a date+time format object
+		dateTimeFormat.setTimeZone(TimeZone.getTimeZone(GMT_ID));	//switch to the GMT time zone
+		logDirective(writer, DATE_DIRECTIVE, dateTimeFormat.format(new Date()));	//log the date+time
 		final StringBuilder fieldsStringBuilder=new StringBuilder();	//create a new string builder for formatting the fields specification
 		if(fields.length>0)	//if there are fields
 		{
@@ -210,10 +215,18 @@ public class ELFF
 					stringBuilder.append(((URI)value).toString());	//write the URI value
 					break;
 				case DATE:
-					stringBuilder.append(new SimpleDateFormat(DATE_FORMAT_PATTERN).format((Date)value));	//convert to a date and format to the writer
+					{
+						final DateFormat dateFormat=new SimpleDateFormat(DATE_FORMAT_PATTERN);	//create a date format object
+						dateFormat.setTimeZone(TimeZone.getTimeZone(GMT_ID));	//switch to the GMT time zone
+						stringBuilder.append(dateFormat.format((Date)value));	//convert to a date and format to the writer
+					}
 					break;
 				case TIME:
-					stringBuilder.append(new SimpleDateFormat(TIME_FORMAT_PATTERN).format((Date)value));	//convert to a date and format to the writer
+					{
+						final DateFormat timeFormat=new SimpleDateFormat(TIME_FORMAT_PATTERN);	//create a time format object
+						timeFormat.setTimeZone(TimeZone.getTimeZone(GMT_ID));	//switch to the GMT time zone
+						stringBuilder.append(timeFormat.format((Date)value));	//convert to a date and format to the writer
+					}
 					break;
 				case STRING:
 					stringBuilder.append(encodeString((String)value));
@@ -239,8 +252,11 @@ public class ELFF
 	 */
 	public final static String encodeString(final String string)
 	{
+
 		final StringBuilder stringBuilder=new StringBuilder(string);	//create a new string builder
-		replace(stringBuilder, '"', "\"");	//replace each quote with two quotes
+//TODO reconcile with ELFF specification; WebTrends URL-encodes strings		replace(stringBuilder, '"', "\"");	//replace each quote with two quotes
+		replace(stringBuilder, '+', "++");	//replace each plus with two plusses (it is not clear whether WebTrends does this or not, but they have to do something to compensate for literal plus characters)
+		replace(stringBuilder, ' ', "+");	//replace each quote with two quotes		
 		return stringBuilder.toString();	//return the encoded string
 	}
 }
