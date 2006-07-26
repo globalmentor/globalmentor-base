@@ -5,6 +5,7 @@ import java.net.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.garretwilson.util.NameValuePair;
 import static com.garretwilson.util.TimeZoneConstants.*;
@@ -12,6 +13,7 @@ import static com.garretwilson.util.TimeZoneConstants.*;
 import static com.garretwilson.lang.StringBuilderUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
+import static com.garretwilson.util.MapUtilities.*;
 
 /**Access to a log in the Extended Log File Format (ELFF).
 @author Garret Wilson
@@ -56,26 +58,81 @@ public class ELFF
 		/**@return The fields used in this ELFF log.*/
 //TODO del or provide a read-only iterator		public Field[] getFields() {return fields;}
 
+	/**The date and time of the log.*/
+	private Date date;
+
+		/**@return The date and time of the log.*/
+		public Date getDate() {return date;}
+
+	/**The writer representing the destination of the log information.*/
+	private Writer writer;
+
+		/**@return The writer representing the destination of the log information.*/
+		public Writer getWriter() {return writer;}
+
+		/**Sets the writer to be used for logging.
+		@param writer The writer representing the destination of the log information.
+		*/
+		public synchronized void setWriter(final Writer writer) {this.writer=writer;}
+
+	/**The thread-safe map of directives to be added when directives are written.*/
+	private final Map<String, String> directiveMap=new ConcurrentHashMap<String, String>();
+
+		/**Retreives a set directive.
+		@param name The name of a directive to retrieve.
+		@return The value of the directive, or <code>null</code> if the directive is not set.
+		*/
+		public String getDirective(final String name) {return directiveMap.get(name);}
+
+		/**Sets a directive.
+		@param name The name of the directive to set.
+		@param value The value of the directive, or <code>null</code> if the value should be removed.
+		@return The old value of the directive, or <code>null</code> if the directive had no value.
+		*/
+		public String setDirective(final String name, final String value)
+		{
+			return putRemoveNull(directiveMap, name, value);	//set the value or remove the key, depending on the value
+		}
+		
 	/**Fields constructor.
+	@param writer The writer representing the destination of the log information.
 	@param fields The fields to use for each log entry.
-	@exception NullPointerException if the array of fields is <code>null</code>.
+	@exception NullPointerException if the writer and/or the array of fields is <code>null</code>.
 	*/
-	public ELFF(final Field<?>... fields)
+	public ELFF(final Writer writer, final Field<?>... fields)
 	{
+		this.writer=checkInstance(writer, "Writer cannot be null.");
 		this.fields=checkInstance(fields, "Fields cannot be null.");	//TODO make a copy
+		this.date=new Date();	//initialize the date
+	}
+
+	/**Resets the log for new use.
+	This is useful for starting a new log file with a new date and time, for instance.
+	The date is set to the current date.
+	*/
+	public void reset()
+	{
+		date=new Date();	//reset the date
 	}
 
 	/**Writes the appropriate directives for this log.
+	Any values set via {@link #setDirective(String, String)} are included, resulting in duplicating if any of those directives are specified here.
 	The {@value #VERSION_DIRECTIVE}, {@value #DATE_DIRECTIVE}, and {@value #FIELDS_DIRECTIVE} directives are always written,
 		resulting in duplication if any of these directives are specified.
 	The writer is flushed after writing.
 	This method is thread-safe.
-	@param writer The writer for writing to the log.
 	@param directives The names and values of the directives to write.
 	@exception IOException if there is an error writing to the log.
 	*/
-	public synchronized void logDirectives(final Writer writer, final NameValuePair<String, String>... directives) throws IOException
+	public synchronized void logDirectives(final NameValuePair<String, String>... directives) throws IOException
 	{
+		final Writer writer=getWriter();	//get a reference to the writer
+			//log predefined directives
+		for(final Map.Entry<String, String> directiveEntry:directiveMap.entrySet())	//for each directive entry in the map
+		{
+			logDirective(writer, directiveEntry.getKey(), directiveEntry.getValue());	//log this directive
+		}
+			//log specified directives
 		for(final NameValuePair<String, String> directive:directives)	//for each directive
 		{
 			logDirective(writer, directive.getName(), directive.getValue());	//log this directive
@@ -83,7 +140,7 @@ public class ELFF
 		logDirective(writer, VERSION_DIRECTIVE, LATEST_VERSION);	//log the version
 		final DateFormat dateTimeFormat=new SimpleDateFormat(DATE_TIME_FORMAT_PATTERN);	//create a date+time format object
 		dateTimeFormat.setTimeZone(TimeZone.getTimeZone(GMT_ID));	//switch to the GMT time zone
-		logDirective(writer, DATE_DIRECTIVE, dateTimeFormat.format(new Date()));	//log the date+time
+		logDirective(writer, DATE_DIRECTIVE, dateTimeFormat.format(getDate()));	//log the date+time of the log
 		final StringBuilder fieldsStringBuilder=new StringBuilder();	//create a new string builder for formatting the fields specification
 		if(fields.length>0)	//if there are fields
 		{
@@ -122,7 +179,7 @@ public class ELFF
 	@param value The value of the directive.
 	@exception IOException if there is an error writing to the log.
 	*/
-	public synchronized void logDirective(final Writer writer, final String name, final String value) throws IOException
+	public static void logDirective(final Writer writer, final String name, final String value) throws IOException
 	{
 		final StringBuilder directiveStringBuilder=new StringBuilder();	//create a string builder for the directive
 		formatDirective(directiveStringBuilder, name, value);	//format this directive
@@ -146,12 +203,12 @@ public class ELFF
 	/**Writes the given entry to the given writer.
 	The writer is flushed after writing.
 	This method is thread-safe.
-	@param writer The writer for writing to the log.
 	@param entry The entry to write to the log.
 	@exception IOException if there is an error writing to the log.
 	*/
-	public synchronized void log(final Writer writer, final Entry entry) throws IOException
+	public synchronized void log(final Entry entry) throws IOException
 	{
+		final Writer writer=getWriter();	//get a reference to the writer
 		final StringBuilder entryStringBuilder=new StringBuilder();	//create a string builder for the entry
 		for(final Field<?> field:fields)	//for each field in the log
 		{
@@ -175,7 +232,7 @@ public class ELFF
 	@param field The field the value of which to format.
 	@return The string builder with the new formatted content.
 	*/
-	public <T> StringBuilder formatFieldValue(final StringBuilder stringBuilder, final Entry entry, final Field<T> field)
+	public static <T> StringBuilder formatFieldValue(final StringBuilder stringBuilder, final Entry entry, final Field<T> field)
 	{
 		return formatFieldValue(stringBuilder, field, entry.getFieldValue(field));	//retrieve the field value from the entry and write it to the field
 	}
