@@ -361,7 +361,7 @@ public class HTTPConstants
 	Matching group 1 is the list element.
 	Matching group 2 is the quality value, which may be null if no quality value is present.
 	*/
-	public final static Pattern LIST_ELEMENT_WEIGHT_PATTERN=Pattern.compile("(.*)(?:;"+LWS_REGULAR_EXPRESSION+"*q=(\\d[\\.\\d{1, 3}]))?");
+	public final static Pattern LIST_ELEMENT_WEIGHT_PATTERN=Pattern.compile("([^;]*)(?:;"+LWS_REGULAR_EXPRESSION+"*q=(\\d(?:\\.\\d{1,3})?))?");
 
 	/**The regular expression for a product version in the form X.X.X, where all but the first version is optional.
 	Each group represents a numeric segment of the version string.
