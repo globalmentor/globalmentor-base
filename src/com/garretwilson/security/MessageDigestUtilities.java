@@ -74,11 +74,14 @@ public class MessageDigestUtilities
 	*/
 	public static MessageDigest update(final MessageDigest messageDigest, final String... strings)
 	{
-		for(final String string:strings)	//for each string
+		try
 		{
-			update(messageDigest, string.toCharArray());	//update the digest from the string's characters
+			return update(messageDigest, UTF_8_ENCODING, strings);	//update the digest using UTF-8
 		}
-		return messageDigest;	//return the message digest
+		catch(UnsupportedEncodingException unsupportedEncodingException)	//all JVMs should support UTF-8
+		{
+			throw new AssertionError(unsupportedEncodingException);
+		}
 	}
 
 	/**Updates a digest from given strings, using the given character encoding.
@@ -92,7 +95,7 @@ public class MessageDigestUtilities
 	{
 		for(final String string:strings)	//for each string
 		{
-			update(messageDigest, encoding, string.toCharArray());	//update the digest from the string's characters using the given encoding
+			update(messageDigest, encoding, string);	//update the digest from the string using the given encoding
 		}
 		return messageDigest;	//return the message digest
 	}
@@ -114,6 +117,20 @@ public class MessageDigestUtilities
 		}
 		return messageDigest;	//return the message digest
 	}
+
+	/**Updates a digest with the given string, using the given character encoding.
+	@param messageDigest The implementation of a message digest algorithm.
+	@param encoding The encoding to use when converting characters to bytes.
+	@param string The string to digest.
+	@return The message digest.
+	@exception UnsupportedEncodingException if the given encoding is not supported.
+	*/
+	public static MessageDigest update(final MessageDigest messageDigest, final CharacterEncoding encoding, final String string) throws UnsupportedEncodingException
+	{
+		final byte[] bytes=string.getBytes(UTF_8);	//convert the characters to bytes
+		messageDigest.update(bytes);	//update the digest
+		return messageDigest;	//return the message digest
+	}	
 
 	/**Updates a digest with the given characters, using the given character encoding.
 	@param messageDigest The implementation of a message digest algorithm.

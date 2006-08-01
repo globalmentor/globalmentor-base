@@ -184,7 +184,7 @@ public class StringBuilderUtilities
 	@param fromIndex The index at which to start the search.
 	@return The index in the string buffer of the given character, or -1 if no occurrence was found.
 	*/
-	public static int indexOf(final StringBuilder stringBuilder, final char c, final int fromIndex)
+	public static int indexOf(final StringBuilder stringBuilder, final char c, final int fromIndex)	//TODO optimize; this is very inefficient
 	{
 		final int length=stringBuilder.length(); //see how many characters are in the string buffer
 		for(int i=fromIndex; i<length; ++i) //look at each character in the string buffer
@@ -414,7 +414,7 @@ public class StringBuilderUtilities
 		}
 		return replacementCount;  //show how many characters we replaced
 	}
-	
+
 	/**Replaces each matching character with the corresponding replacement string.
 	@param stringBuilder The buffer in which the replacements will be made.
 	@param matchChars An array of characters to be replaced.
