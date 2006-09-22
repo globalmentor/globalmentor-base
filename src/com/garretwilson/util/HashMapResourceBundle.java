@@ -40,6 +40,7 @@ public class HashMapResourceBundle extends ResourceBundle
 	}
 
 	/**Map and parent constructor.
+	All values will be copied to the map.
 	Keys will be converted to strings.
 	@param map The map containing the resource mappings which will be copied to this map.
 	@param parent The parent resource bundle, or <code>null</code> if there should be no parent for resolving resources.
