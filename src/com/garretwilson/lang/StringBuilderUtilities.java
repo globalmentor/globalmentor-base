@@ -424,19 +424,38 @@ public class StringBuilderUtilities
 	*/
 	public static int replace(final StringBuilder stringBuilder, final char[] matchChars, final String[] replacementStrings)
 	{
+		final int matchCount=matchChars.length;	//find out how many match characters there are
+			//we can optimize the process by finding the range of match characters up front, assuming that most characters will not be in the matching character range
+		char minChar=Character.MAX_VALUE;	//we'll find the lowest match character 
+		char maxChar=Character.MIN_VALUE;	//we'll find the highest match character 
+		for(int matchIndex=matchCount-1; matchIndex>=0; --matchIndex)  //look at each of the characters to match
+		{
+			final char matchChar=matchChars[matchIndex];  //get this match character
+			if(matchChar<minChar)	//if this is a lower character that the lowest
+			{
+				minChar=matchChar;	//this character is the new lowest
+			}
+			if(matchChar>maxChar)	//if this is a higher character that the highest
+			{
+				maxChar=matchChar;	//this character is the new highest
+			}			
+		}
 		int replacementCount=0; //show that we have not replaced any characters, yet
 		for(int charIndex=0; charIndex<stringBuilder.length(); ++charIndex) //look at each character in the string buffer
 		{
 			final char c=stringBuilder.charAt(charIndex);  //get this character
-			for(int matchIndex=matchChars.length-1; matchIndex>=0; --matchIndex)  //look at each of the characters to match
+			if(c>=minChar && c<=maxChar)	//if this character is within the match range, see if it actually matches
 			{
-				if(c==matchChars[matchIndex]) //if the character matches this match character
+				for(int matchIndex=matchCount-1; matchIndex>=0; --matchIndex)  //look at each of the characters to match
 				{
-						//replace this character with the replacement string
-					stringBuilder.replace(charIndex, charIndex+1, replacementStrings[matchIndex]);
-					charIndex+=replacementStrings[matchIndex].length()-1; //skip to the last character of the replaced string
-					++replacementCount; //show that we replaced a character
-					break;	//stop looking for matches for this character, and go on to the next character
+					if(c==matchChars[matchIndex]) //if the character matches this match character
+					{
+							//replace this character with the replacement string
+						stringBuilder.replace(charIndex, charIndex+1, replacementStrings[matchIndex]);
+						charIndex+=replacementStrings[matchIndex].length()-1; //skip to the last character of the replaced string
+						++replacementCount; //show that we replaced a character
+						break;	//stop looking for matches for this character, and go on to the next character
+					}
 				}
 			}
 		}
