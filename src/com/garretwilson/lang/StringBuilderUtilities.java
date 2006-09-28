@@ -418,8 +418,7 @@ public class StringBuilderUtilities
 	/**Replaces each matching character with the corresponding replacement string.
 	@param stringBuilder The buffer in which the replacements will be made.
 	@param matchChars An array of characters to be replaced.
-	@param replacementStrings An array of strings to replace the characters
-		appearing at the same indexes as those in <code>matchChars</code>.
+	@param replacementStrings An array of strings to replace the characters appearing at the same indexes as those in <var>matchChars</var>.
 	@return The number of replacements made.
 	*/
 	public static int replace(final StringBuilder stringBuilder, final char[] matchChars, final String[] replacementStrings)

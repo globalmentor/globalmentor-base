@@ -759,7 +759,6 @@ end;
 		return inString.substring(0, index)+inString.substring(index+len);	//return a string with the specified information removed
 	}
 
-
 	/**Removes all characters that come after and including the first occurrence
 		of a character in the given delimiter string. If the character does not
 		exist in the string, the original string will be returned.
@@ -846,7 +845,7 @@ end;
 			//if the substring is present, remove it and everything following
 		return index>=0 ? string.substring(0, index) : string;
 	}
-	
+
 	/**Converts a list of strings into an array of strings.
 	@param list The list of strings.
 	@return An array containing the strings in the list.
@@ -1013,38 +1012,9 @@ end;
 	@return A new string with the specified information replaced.*/
 	public static String replace(final String inString, final String replaceString, final String withString)
 	{
-		final StringBuffer stringBuffer=new StringBuffer(inString);	//create a string buffer from the string
-		StringBufferUtilities.replace(stringBuffer, replaceString, withString);	//replace the contents of the string buffer
-		return stringBuffer.toString();	//return the string in which we replaced the charactersz
-/*G***del when works
-		final StringBuffer outStringBuffer=new StringBuffer();	//create a string buffer to receive the output of processing
-		int beginSearchIndex=0;	//we'll start searching from the beginning of the string
-		int nextReplaceIndex;	//this will hold the next location of the replaceString each time we search for it
-		while(beginSearchIndex<inString.length())	//while we haven't examined all the characters
-		{
-			nextReplaceIndex=inString.indexOf(replaceString, beginSearchIndex);	//search for another occurrence of the string
-			if(nextReplaceIndex==-1)	//if there are no more occurrences of the string to replace
-			{
-				outStringBuffer.append(inString.substring(beginSearchIndex));	//we still need to include whatever non-matching part of the string is left
-				break;	//stop searching for more matches
-			}
-			outStringBuffer.append(inString.substring(beginSearchIndex, nextReplaceIndex));	//append in our output buffer everything up to the next portion to replace
-			outStringBuffer.append(withString);	//append the replacement string in our output buffer
-			beginSearchIndex=nextReplaceIndex+replaceString.length();	//skip over the string we replaced in the input string
-		}
-		return outStringBuffer.toString();	//convert the output buffer to a string and return it
-*/
-/*G***del when works
-		String outString=inString;	//this is the string we'll process
-		int i;	//this will hold the location of the string to replace
-		while((i=outString.indexOf(replaceString))!=-1)	//if there are still occurrences of replaceString to replace
-		{
-			outString=remove(outString, i, replaceString.length());	//remove the replaceString from the input string, which will mean that i is now at the next character
-			outString=insert(outString, i, withString);	//insert the string at the same index, putting i at the beginning of the inserted string
-			i+=withString.length();	//skip to the character just after the string we just inserted
-		}
-		return outString;	//return the processed string
-*/
+		final StringBuilder stringBuilder=new StringBuilder(inString);	//create a string builder from the string
+		StringBuilderUtilities.replace(stringBuilder, replaceString, withString);	//replace the contents of the string builder
+		return stringBuilder.toString();	//return the string in which we replaced the charactersz
 	}
 
 	/**Replaces any of several matching characters with a paricular character.
@@ -1086,17 +1056,26 @@ end;
 */
 
 	/**Replaces each matching character with the corresponding replacement string.
-	@param string The string on which to have replacements be made.
+	@param string The string in which the replacements will be made.
 	@param matchChars An array of characters to be replaced.
-	@param replacementStrings An array of strings to replace the characters
-		appearing at the same indexes as those in <code>matchChars</code>.
-	@return A string with the replacements made.
+	@param replacementStrings An array of strings to replace the characters appearing at the same indexes as those in <var>matchChars</var>.
+	@return The string with replacements made, which may be the original string if no replacements were made.
 	*/
 	public static String replace(final String string, final char[] matchChars, final String[] replacementStrings)
 	{
-		final StringBuffer stringBuffer=new StringBuffer(string); //create a new string buffer with the given text
-		StringBufferUtilities.replace(stringBuffer, matchChars, replacementStrings);  //do the replacement on the buffer
-		return stringBuffer.toString(); //convert the results to a string and return it
+			//first see if this string contains one of the match characters
+			//we assume that most strings will not contain a match character, so we won't have to do any replacements
+			//letting the string do the per-character search is much faster than using String.charAt()
+		for(final char matchChar:matchChars)	//for each character to match
+		{
+			if(string.indexOf(matchChar)>=0)	//if the string contains this match character
+			{
+				final StringBuffer stringBuffer=new StringBuffer(string); //create a new string buffer with the given text
+				StringBufferUtilities.replace(stringBuffer, matchChars, replacementStrings);  //do the replacement on the buffer
+				return stringBuffer.toString(); //convert the results to a string and return it
+			}
+		}
+		return string;	//if there are no matching match characters in the string, there's nothing to replace, so just return the original string
 	}
 
 	/**Truncates the string, if needed, to ensure that the string is no longer
