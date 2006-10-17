@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import com.garretwilson.rdf.*;
 import com.garretwilson.util.*;
+import com.guiseframework.AbstractGuiseApplication;
 import com.guiseframework.style.RGBColor;
 
 /**Processes PLOOP objects from an RDF data model.
@@ -34,6 +35,9 @@ import com.guiseframework.style.RGBColor;
 	<li>{@link Integer}</li>
 	<li><code>long</code></li>
 	<li>{@link Long}</li>
+	<li>{@link Pattern}</li>
+	<li>{@link RGBColor}</li>
+	<li>{@link URI}</li>
 </ul>
 <p>This class is thread safe.</p>
 @author Garret Wilson
@@ -104,7 +108,7 @@ public class PLOOPProcessor
 	If the RDF object is a resource for which an object has already been created, the existing object will be returned.
 	Otherwise the object is created using {@link #createObject(RDFObject)} and a reference to the created object is stored for later retrieval inside {@link #initializeObject(Object, RDFResource, Map)}.
 	@param rdf The RDF instance describing the Java objects to be created.
-	@return A created and initialized object according to the given RDF description. 
+	@return A list of created and initialized objects according to the given RDF description. 
  	@exception IllegalArgumentException if the given RDF object is a resource that does not specify Java type information.
  	@exception IllegalArgumentException if the given RDF object is a Java-typed resource the class of which cannot be found.
  	@exception IllegalArgumentException if the given RDF object indicates a Java class that has no appropriate constructor.
@@ -138,7 +142,31 @@ public class PLOOPProcessor
 		}
 		return objects;
 	}
-	
+
+	/**Retrieves an object of the given type or subtype from the given RDF instance.
+	All Java classes described by an RDF instance will first be ensured to have been created.
+	@param rdf The RDF instance describing the Java objects to be created.
+	@param type The type of object to return.
+	@return A created and initialized object according to the given RDF description of the first object of the given type, or <code>null</code> if no object of the given type is described in the RDF instance. 
+ 	@exception IllegalArgumentException if the given RDF object is a resource that does not specify Java type information.
+ 	@exception IllegalArgumentException if the given RDF object is a Java-typed resource the class of which cannot be found.
+ 	@exception IllegalArgumentException if the given RDF object indicates a Java class that has no appropriate constructor.
+ 	@exception IllegalArgumentException if the given RDF object indicates a Java class that is an interface or an abstract class.
+ 	@exception IllegalArgumentException if the given RDF object indicates a Java class the constructor of which is not accessible.
+	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
+	*/
+	public <T> T getObject(final RDF rdf, final Class<T> type) throws InvocationTargetException
+	{
+		for(final Object object:getObjects(rdf))	//get all objects and look at each one of them
+		{
+			if(type.isInstance(object))	//if the object is an instance of the type
+			{
+				return type.cast(object);	//cast the object to the correct type and return it
+			}
+		}
+		return null;	//indicate that no matching object could be found
+	}
+
 	/**Creates and initializes an object to represent the given RDF object.
 	The RDF object must be one of the following:
 	<dl>
@@ -231,26 +259,23 @@ public class PLOOPProcessor
 				final List<PropertyDescription> readOnlyProperties=new ArrayList<PropertyDescription>(propertyDescriptionMap.size());	//the set of read-only properties, which we may use in the constructor
 				for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
 				{
+//TODO del Debug.trace("to determine read-only properties, looking at property description for", propertyDescription.getPropertyURI());
 					if(propertyDescription.getSetter()==null)	//if there is no setter for this property, it is a read-only property; save it in case we can use it for the constructor
 					{
+//TODO del Debug.trace("this is a read-only property");
 						readOnlyProperties.add(propertyDescription);	//add this property ot the list of read-only properties
 					}
 				}
 //TODO del when works				readOnlyProperties.add(new PropertyDescription(RDFUtilities.createReferenceURI(GUISE_PROPERTY_NAMESPACE_URI, "session"), GuiseSession.class, getSession()));	//artificially popuplate the read-only property with a session TODO refactor this to allow such variables to be specfified in a general way
 				final Constructor[] constructors=valueClass.getConstructors();	//get all available constructors
-				int maxParameterCount=0;	//we'll determine the maximum number of parameters available
-				for(final Constructor constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
+				
+					//see if there is an rdf:value
+				final RDFLiteral valuePropertyLiteral=getValue(resource);	//get the literal value of the rdf:value property, if there is one
+				if(valuePropertyLiteral!=null)	//if there is is a literal property value for rdf:value
 				{
-					final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
-					final int parameterCount=parameterTypes.length;	//see how how many parameters this constructor has
-					if(parameterCount>maxParameterCount)	//if this parameter count is more than we know about
-					{
-						maxParameterCount=parameterCount;	//update the maximum parameter count
-					}
-				}
-//			TODO del Debug.trace("ready to create object of type", valueClassName, "with constructors with max parameters", maxParameterCount);
-				for(int parameterCount=0; parameterCount<=maxParameterCount; ++parameterCount)	//find a constructor with the least number of parameters, starting with the default constructor, until we exhaust the available constructors
-				{
+//TODO del if not wanted					final String[] valueTokens=valuePropertyLiteral.toString().split("[ ,:'_-]");	//split the value into tokens TODO use a constant
+					final String[] valueTokens=valuePropertyLiteral.toString().split(",");	//split the value into tokens TODO use a constant
+					final int parameterCount=valueTokens.length;	//see how many parameters to expect
 					for(final Constructor constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
 					{
 						final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
@@ -263,35 +288,16 @@ public class PLOOPProcessor
 							{
 								final Class<?> parameterType=parameterTypes[parameterIndex];	//get this parameter type
 //							TODO del Debug.trace("Parameter", parameterIndex, "type: ", parameterType);
-								boolean foundArgument=false;	//we'll try to find an argument
-								for(final PropertyDescription propertyDescription:readOnlyProperties)	//look at all the properties to find one for this parameter
+								final Object argument=convertObject(valueTokens[parameterIndex], parameterType);	//convert the object to the correct type
+								if(argument!=null)	//if we successfully converted this constructor argument
 								{
-//								TODO del Debug.trace("checking read-only property:", propertyDescription.getPropertyClass());
-									if(parameterType.isAssignableFrom(propertyDescription.getPropertyClass()))	//if this read-only property will work for this parameter
-									{
-//									TODO del Debug.trace("matches!");
-										arguments[parameterIndex]=propertyDescription.getValue();	//use this read-only property in the constructor
-										foundArgument=true;	//show that we found an argument
-										break;	//stop looking for the argument
-									}
+									arguments[parameterIndex]=argument;	//store the argument
 								}
-								if(!foundArgument)	//if there is no read-only property for this constructor argument, check the default arguments
+								else	//if we couldn't convert this constructor argument
 								{
-									for(final Object defaultConstructorArgument:getDefaultConstructorArguments())	//for each default constructor argument
-									{
-										if(parameterType.isAssignableFrom(defaultConstructorArgument.getClass()))	//if this default property argument will work for this parameter
-										{
-//										TODO del Debug.trace("matches!");
-											arguments[parameterIndex]=defaultConstructorArgument;	//use this default constructor argument in the constructor
-											foundArgument=true;	//show that we found an argument
-											break;	//stop looking for the argument
-										}
-									}									
-								}
-								if(!foundArgument)	//if we couldn't find an argument for this parameter
-								{
-									foundArguments=false;	//indicate that parameters don't match for this constructor
-								}
+									foundArguments=false;	//show that we couldn't convert this argument
+									break;	//stop looking at this constructor
+								}								
 							}
 							if(foundArguments)	//if we found a constructor for which we have arguments
 							{
@@ -319,8 +325,94 @@ public class PLOOPProcessor
 							}
 						}
 					}
+					throw new IllegalArgumentException("Value class "+valueClassName+" does not have a constructor appropriate for the specified rdf:value: "+valuePropertyLiteral.toString());
 				}
-				throw new IllegalArgumentException("Value class "+valueClassName+" does not have a constructor appropriate for the available read-only properties.");
+				else	//if there is no rdf:value literal property value
+				{
+					int maxParameterCount=0;	//we'll determine the maximum number of parameters available
+					for(final Constructor constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
+					{
+						final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
+						final int parameterCount=parameterTypes.length;	//see how how many parameters this constructor has
+						if(parameterCount>maxParameterCount)	//if this parameter count is more than we know about
+						{
+							maxParameterCount=parameterCount;	//update the maximum parameter count
+						}
+					}
+	//			TODO del Debug.trace("ready to create object of type", valueClassName, "with constructors with max parameters", maxParameterCount);
+					for(int parameterCount=0; parameterCount<=maxParameterCount; ++parameterCount)	//find a constructor with the least number of parameters, starting with the default constructor, until we exhaust the available constructors
+					{
+						for(final Constructor constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
+						{
+							final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
+							if(parameterTypes.length==parameterCount)	//if this constructor has the correct number of parameters
+							{
+	//						TODO del Debug.trace("Looking at constructor with parameter count:", parameterCount);
+								boolean foundArguments=true;	//start out by assuming the parameters match
+								final Object[] arguments=new Object[parameterCount];	//create an array sufficient for the arguments
+								for(int parameterIndex=0; parameterIndex<parameterCount && foundArguments; ++parameterIndex)	//for each parameter, as long we we have matching parameters
+								{
+									final Class<?> parameterType=parameterTypes[parameterIndex];	//get this parameter type
+	//							TODO del Debug.trace("Parameter", parameterIndex, "type: ", parameterType);
+									boolean foundArgument=false;	//we'll try to find an argument
+									for(final PropertyDescription propertyDescription:readOnlyProperties)	//look at all the properties to find one for this parameter
+									{
+	//								TODO del Debug.trace("checking read-only property:", propertyDescription.getPropertyClass());
+										if(parameterType.isAssignableFrom(propertyDescription.getPropertyClass()))	//if this read-only property will work for this parameter
+										{
+	//									TODO del Debug.trace("matches!");
+											arguments[parameterIndex]=propertyDescription.getValue();	//use this read-only property in the constructor
+											foundArgument=true;	//show that we found an argument
+											break;	//stop looking for the argument
+										}
+									}
+									if(!foundArgument)	//if there is no read-only property for this constructor argument, check the default arguments
+									{
+										for(final Object defaultConstructorArgument:getDefaultConstructorArguments())	//for each default constructor argument
+										{
+											if(parameterType.isAssignableFrom(defaultConstructorArgument.getClass()))	//if this default property argument will work for this parameter
+											{
+	//										TODO del Debug.trace("matches!");
+												arguments[parameterIndex]=defaultConstructorArgument;	//use this default constructor argument in the constructor
+												foundArgument=true;	//show that we found an argument
+												break;	//stop looking for the argument
+											}
+										}									
+									}
+									if(!foundArgument)	//if we couldn't find an argument for this parameter
+									{
+										foundArguments=false;	//indicate that parameters don't match for this constructor
+									}
+								}
+								if(foundArguments)	//if we found a constructor for which we have arguments
+								{
+									try
+									{
+	//								TODO del Debug.trace("found constructor with the following arguments:", ArrayUtilities.toString(arguments));
+										final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
+										initializeObject(object, resource, propertyDescriptionMap);	//initialize the object with the properties
+										return object;	//return the constructed and initialized object
+									}
+	/*TODO del; we're now allowing more arguments than just the session
+									catch(final IllegalArgumentException illegalArgumentException)	//our Guise session should always work OK---and we shouldn't get this exception for the default constructor
+									{
+										throw new AssertionError(illegalArgumentException);
+									}
+	*/
+									catch(final InstantiationException instantiationException)
+									{
+										throw new IllegalArgumentException(instantiationException);
+									}
+									catch(final IllegalAccessException illegalAccessException)
+									{
+										throw new IllegalArgumentException(illegalAccessException);
+									}
+								}
+							}
+						}
+					}
+					throw new IllegalArgumentException("Value class "+valueClassName+" does not have a constructor appropriate for the available read-only properties.");
+				}
 			}
 			catch(final ClassNotFoundException classNotFoundException)	//if we couldn't find the class
 			{
@@ -419,6 +511,7 @@ public class PLOOPProcessor
 		while(propertyIterator.hasNext())	//while there are more properties
 		{
 			final RDFPropertyValuePair property=propertyIterator.next();	//get the next property
+//TODO del Debug.trace("filling property description map; looking at property", property.getProperty().getReferenceURI());
 			final PropertyDescription propertyDescription=getPropertyDescription(objectClass, property);	//get a description for this property
 			if(propertyDescription!=null)	//if this was a recognized property
 			{
@@ -465,7 +558,7 @@ public class PLOOPProcessor
 						final Object value=convertObject(propertyValue, parameterType);	//convert the object to the correct type
 						if(value!=null)	//if we found a parameter to use for this method
 						{
-							Debug.trace("property value has correct type for setter:", parameterType, "property value:", value);
+//TODO del							Debug.trace("property value has correct type for setter:", parameterType, "property value:", value);
 							return new PropertyDescription(propertyURI, parameterType, value, method);	//return a description of this property with the method and parameter
 						}
 					}
@@ -483,7 +576,7 @@ public class PLOOPProcessor
 					final Object value=convertObject(propertyValue, returnType);	//convert the object to the getter return type, if we can
 					if(value!=null)	//if we can convert the property value to the getter return type
 					{
-						Debug.trace("property value has correct type for getter:", returnType, "property value:", value);
+//TODO del						Debug.trace("property value has correct type for getter:", returnType, "property value:", value);
 						return new PropertyDescription(propertyURI, value!=null ? value.getClass() : returnType, value);	//return a description of this property with just the value TODO see why covariant return types aren't working correctly; for now, we'll just get the value type directly
 					}
 				}
@@ -510,6 +603,7 @@ public class PLOOPProcessor
 		<li>{@link Long}</li>
 		<li>{@link Pattern}</li>
 		<li>{@link RGBColor}</li>
+		<li>{@link URI}</li>
 	</ul>
 	@param object The object to convert
 	@param requiredType The required type of the object.
@@ -550,6 +644,12 @@ public class PLOOPProcessor
 				{
 					return Integer.valueOf(stringObject);	//create an Integer from the object
 				}
+/*TODO del
+				else if(Locale.class.isAssignableFrom(requiredType))	//if the required type is Locale 
+				{
+					return createLocale(stringObject);	//construct a Locale from the object, accepting the RFC 1766 syntax as well as the Java syntax
+				}
+*/
 				else if(Long.TYPE.equals(requiredType) || Long.class.isAssignableFrom(requiredType))	//if the required type is long or Long 
 				{
 					return Long.valueOf(stringObject);	//create a Long from the object
@@ -565,6 +665,10 @@ public class PLOOPProcessor
 				else if(RGBColor.class.isAssignableFrom(requiredType))	//if the required type is RGBColor
 				{
 					return RGBColor.valueOf(stringObject);	//compile an RGB color from the string
+				}
+				else if(URI.class.isAssignableFrom(requiredType))	//if the required type is URI TODO maybe change to using the string constructor
+				{
+					return URI.create(stringObject);	//create a URI from the string
 				}
 				//TODO check for a string-compatible constructor
 			}

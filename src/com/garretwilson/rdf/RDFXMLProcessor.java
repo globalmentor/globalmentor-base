@@ -527,13 +527,15 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				}
 				processAttributeProperties((Resource)propertyValue, element, REFERENCE_CONTEXT);  //parse the property attributes, assigning them to the property value
 			}
+/*TODO verify; this was apparently incorrect, as an element with no child nodes represents a property value of an empty string literal; blank nodes must have a resource URI or node ID designation; see RDF/XML Syntax Specification (Revised) 2.11
 			else if(element.getChildNodes().getLength()==0) //if there are no child elements, this is a blank node
 			{
 //G***make sure this works when we implement node IDs			  final RDFResource propertyValueResource=getRDF().locateResource(getRDF().createAnonymousReferenceURI());  //get or create a resource from a generated anonymous reference URI
 				propertyValue=getResourceProxy(generateNodeID());	//retrieve or create a new resource proxy with our own generated node ID, as the node is completely anonymous			
 				processAttributeProperties((Resource)propertyValue, element, EMPTY_PROPERTY_CONTEXT);  //parse the property attributes, assigning them to the property value
 			}
-			else  //if there is no reference URI, there is either a normal property description below, or a literal
+*/
+			else  //if there is no reference URI or node ID, there is either a normal property description below, or a literal
 			{
 				//G***we should make sure there are no attributes
 				Element childElement=null; //show that we haven't found any child elements, yet
