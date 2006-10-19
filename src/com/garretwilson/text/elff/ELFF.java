@@ -12,7 +12,8 @@ import static com.garretwilson.util.TimeZoneConstants.*;
 
 import static com.garretwilson.lang.StringBuilderUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
-import static com.garretwilson.text.CharacterEncodingConstants.*;
+import static com.garretwilson.net.URIConstants.*;
+import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.util.MapUtilities.*;
 
 /**Access to a log in the Extended Log File Format (ELFF).
@@ -315,5 +316,28 @@ public class ELFF
 		replace(stringBuilder, '+', "++");	//replace each plus with two plusses (it is not clear whether WebTrends does this or not, but they have to do something to compensate for literal plus characters)
 		replace(stringBuilder, ' ', "+");	//replace each quote with two quotes		
 		return stringBuilder.toString();	//return the encoded string
+	}
+
+	/**Constructs a query name/values pair in the form <code><var>name</var>=<var>value1</var>;<var>value2</var>...</code>.
+	Multiple values will be separated by the ';' character.
+	@param stringBuilder The string builder to which the query parameter should be appended.
+	@param name The name of the query parameter.
+	@param values The values to associate with the query parameter name.
+	@return The string builder being used to build the query parameter.  
+	 */
+	public static StringBuilder appendURIQueryParameter(final StringBuilder stringBuilder, final String name, final String... values)
+	{
+		stringBuilder.append(encode(name));	//append the parameter name
+		stringBuilder.append(QUERY_NAME_VALUE_ASSIGNMENT);	//append the value-assignment character
+		if(values.length>0)	//if there are values
+		{
+			for(final String value:values)	//for each value
+			{
+				stringBuilder.append(encode(value));	//append the parameter value
+				stringBuilder.append(';');	//append the value delimeter TODO use a constant
+			}
+			stringBuilder.delete(stringBuilder.length()-1, stringBuilder.length());	//remove the last value delimiter
+		}
+		return stringBuilder;	//return the string builder, which now also contains the query parameter we constructed		
 	}
 }

@@ -24,6 +24,12 @@ public class WebTrendsConstants
 	/**The attribute signifying the client's color depth.*/
 	public final static String COLOR_DEPTH_QUERY_ATTRIBUTE_NAME=createQueryAttributeName(WEBTRENDS_QUERY_NAMESPACE, "cd");
 
+	/**The attribute signifying one or more content groups.*/
+	public final static String CONTENT_GROUP_NAME_QUERY_ATTRIBUTE_NAME=createQueryAttributeName(WEBTRENDS_QUERY_NAMESPACE, "cg_n");
+
+	/**The attribute signifying one or more content subgroups.*/
+	public final static String CONTENT_SUBGROUP_NAME_QUERY_ATTRIBUTE_NAME=createQueryAttributeName(WEBTRENDS_QUERY_NAMESPACE, "cg_s");
+
 	/**The attribute signifying whether the client has Java enabled.*/
 	public final static String JAVA_ENABLED_QUERY_ATTRIBUTE_NAME=createQueryAttributeName(WEBTRENDS_QUERY_NAMESPACE, "jo");
 

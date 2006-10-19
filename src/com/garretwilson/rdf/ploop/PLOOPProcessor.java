@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 import com.garretwilson.rdf.*;
 import com.garretwilson.util.*;
-import com.guiseframework.AbstractGuiseApplication;
 import com.guiseframework.style.RGBColor;
 
 /**Processes PLOOP objects from an RDF data model.
