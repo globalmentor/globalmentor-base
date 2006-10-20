@@ -2,6 +2,9 @@ package com.garretwilson.lang;
 
 import static com.garretwilson.lang.CharacterUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.CharacterEncodingConstants.*;
+
+import java.io.UnsupportedEncodingException;
 
 /**Various text manipulating functions. These methods work on
 	objects that implement the <code>CharacterSequence</code> interface.
@@ -237,13 +240,12 @@ public class CharSequenceUtilities
 		return true;  //the character sequence ends with the string
 	}
 
-	/**Escapes the indicated characters in the character iterator
-		using the supplied escape character.
-	Every invalid character is converted to its Unicode hex equivalent
-		and prefixed with the given escape character.
+	/**Escapes the indicated characters in the character sequence using the supplied escape character.
+	All characters are first encoded using UTF-8.
+	Every invalid character is converted to its Unicode hex equivalent and prefixed with the given escape character.
 	Characters are assumed to be valid unless specified otherwise.
 	<p>As an example, the URI encoding rules in
-		<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
+		<a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
 		"Uniform Resource Identifiers (URI): Generic Syntax" would use
 		<code>escapeHex(charSequence, <var>validCharacters</var>, null, '%', 2);</code>.</p>
 	@param charSequence The data to escape.
@@ -253,27 +255,36 @@ public class CharSequenceUtilities
 	@param length The number of characters to use for the hex representation.
 	@return A string containing the escaped data.
 	@exception IllegalArgumentException if neither valid nor invalid characters are given.
+	@see <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>
 	*/
 	public static String escapeHex(final CharSequence charSequence, final String validCharacters, final String invalidCharacters, final char escapeChar, final int length)
 	{
-		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to hold the result
-		for(int i=0; i<charSequence.length(); ++i)	//look at each character in the sequence
+		try
 		{
-			final char c=charSequence.charAt(i);	//get a reference to this character
-			final boolean encode=c==escapeChar	//always encode the escape character
-					|| (validCharacters!=null && validCharacters.indexOf(c)<0)	//encode if there is a list of valid characters and this character is not one of them
-					|| (invalidCharacters!=null && invalidCharacters.indexOf(c)>=0);	//encode if there is a list of invalid characters and this character is one of them
-			if(encode)	//if this a character to escape
+			final byte[] charBytes=charSequence.toString().getBytes(UTF_8);	//get the UTF-8 bytes of the string
+			final StringBuilder stringBuilder=new StringBuilder(charBytes.length+16);	//create a new string builder to hold the result, reserving some extra characters
+			for(byte charByte:charBytes)	//look at each character's byte in the sequence
 			{
-					//append the escape character, along with a two-digit representation of the character value
-				stringBuilder.append(escapeChar).append(IntegerUtilities.toHexString(c, length).toUpperCase());
+				final char c=(char)charByte;	//look at this UTF-8 byte as a character
+				final boolean encode=c==escapeChar	//always encode the escape character
+						|| (validCharacters!=null && validCharacters.indexOf(c)<0)	//encode if there is a list of valid characters and this character is not one of them
+						|| (invalidCharacters!=null && invalidCharacters.indexOf(c)>=0);	//encode if there is a list of invalid characters and this character is one of them
+				if(encode)	//if this a character to escape
+				{
+						//append the escape character, along with a two-digit representation of the character value
+					stringBuilder.append(escapeChar).append(IntegerUtilities.toHexString(c, length).toUpperCase());
+				}
+				else	//if this is not a character to escape
+				{
+					stringBuilder.append(c);	//add this character to the result without escaping it
+				}	
 			}
-			else	//if this is not a character to escape
-			{
-				stringBuilder.append(c);	//add this character to the result without escaping it
-			}	
+			return stringBuilder.toString();	//return the result we constructed
 		}
-		return stringBuilder.toString();	//return the result we constructed
+		catch(final UnsupportedEncodingException unsupportedEncodingException)	//the JVM should always know how to convert a string to UTF-8
+		{
+			throw new AssertionError(unsupportedEncodingException);
+		}
 	}
 
 	/**Decodes the escaped characters in the character iterator by

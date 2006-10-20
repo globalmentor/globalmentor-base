@@ -42,6 +42,9 @@ public class WebTrendsConstants
 	/**The attribute signifying the client's screen resolution.*/
 	public final static String SCREEN_RESOLUTION_QUERY_ATTRIBUTE_NAME=createQueryAttributeName(WEBTRENDS_QUERY_NAMESPACE, "sr");
 
+	/**The attribute signifying the content title.*/
+	public final static String TITLE_QUERY_ATTRIBUTE_NAME=createQueryAttributeName(WEBTRENDS_QUERY_NAMESPACE, "ti");
+
 	/**The attribute signifying the client's time zone offset from GMT.*/
 	public final static String TIMEZONE_QUERY_ATTRIBUTE_NAME=createQueryAttributeName(WEBTRENDS_QUERY_NAMESPACE, "tz");
 
