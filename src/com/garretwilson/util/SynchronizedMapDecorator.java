@@ -4,7 +4,7 @@ import java.util.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 
-/**A map that wraps an existing map, providing access through the <code>Map</code> interface.
+/**A map that wraps an existing map, providing access through the {@link Map} interface.
 All map access is synchronized on the provided synchronization object.
 @param <K> The type of key used in the map.
 @param <V> The type of value stored in the map.
@@ -19,6 +19,17 @@ public class SynchronizedMapDecorator<K, V> implements Map<K, V>
 	protected final Object mutex;
 
 	/**Map constructor.
+	The new instance of this class is used as a mutex.
+	@param map The map this map should decorate.
+	@exception NullPointerException if the provided map is <code>null</code>.
+	*/
+	public SynchronizedMapDecorator(final Map<K, V> map)
+	{
+		this.map=checkInstance(map, "Map cannot be null");	//save the map
+		this.mutex=this;	//use this instance as a mutex		
+	}
+
+	/**Map and mutex constructor.
 	@param map The map this map should decorate.
 	@param mutex The mutual exclusion synchronization object.
 	@exception NullPointerException if the provided map and/or mutex is <code>null</code>.

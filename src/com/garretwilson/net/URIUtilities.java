@@ -10,7 +10,6 @@ import com.garretwilson.io.*;
 import com.garretwilson.text.FormatUtilities;
 import com.garretwilson.text.SyntaxException;
 import com.garretwilson.util.*;
-import com.sun.mail.iap.Argument;
 
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
@@ -307,10 +306,10 @@ public class URIUtilities
 	@param uri The URI from which to extract parameters.
 	@return An array of parameters.
 	*/
-	public static ListMap<String, String> getParameterMap(final URI uri)
+	public static CollectionMap<String, String, List<String>> getParameterMap(final URI uri)
 	{
 		final NameValuePair<String, String>[] parameters=getParameters(uri);	//get the parameters from the URI
-		final ListMap<String, String> parameterListMap=new ArrayListHashMap<String, String>();	//create a new list map in which to store the parameters
+		final CollectionMap<String, String, List<String>> parameterListMap=new ArrayListHashMap<String, String>();	//create a new list map in which to store the parameters
 		if(parameters!=null)	//if this URI specified a query
 		{
 			for(final NameValuePair<String, String> parameter:parameters)	//for each parameter

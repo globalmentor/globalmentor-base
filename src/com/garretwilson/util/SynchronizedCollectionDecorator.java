@@ -19,6 +19,17 @@ public class SynchronizedCollectionDecorator<E> implements Collection<E>
 	protected final Object mutex;
 
 	/**Collection constructor.
+	The new instance of this class is used as a mutex.
+	@param collection The collection this collection should decorate.
+	@exception NullPointerException if the provided collection is <code>null</code>.
+	*/
+	public SynchronizedCollectionDecorator(final Collection<E> collection)
+	{
+		this.collection=checkInstance(collection, "Collection cannot be null");	//save the collection
+		this.mutex=this;	//use this instance as a mutex		
+	}
+
+	/**Collection and mutex constructor.
 	@param collection The collection this collection should decorate.
 	@param mutex The mutual exclusion synchronization object.
 	@exception NullPointerException if the provided collection and/or mutex is <code>null</code>.
