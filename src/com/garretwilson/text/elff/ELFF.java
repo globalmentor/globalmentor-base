@@ -17,6 +17,7 @@ import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.util.MapUtilities.*;
 
 /**Access to a log in the Extended Log File Format (ELFF).
+This class is thread-safe and can be used to concurrently generate log information.
 @author Garret Wilson
 @see <a href="file:///D:/reference/W3C/ELFF/WD-logfile.html">W3C Extended Log File Format</a>
 */
@@ -56,26 +57,6 @@ public class ELFF
 	/**The fields used in this ELFF log.*/
 	private final Field[] fields;
 	
-		/**@return The fields used in this ELFF log.*/
-//TODO del or provide a read-only iterator		public Field[] getFields() {return fields;}
-
-	/**The date and time of the log.*/
-	private Date date;
-
-		/**@return The date and time of the log.*/
-		public Date getDate() {return date;}
-
-	/**The writer representing the destination of the log information.*/
-	private Writer writer;
-
-		/**@return The writer representing the destination of the log information.*/
-		public Writer getWriter() {return writer;}
-
-		/**Sets the writer to be used for logging.
-		@param writer The writer representing the destination of the log information.
-		*/
-		public synchronized void setWriter(final Writer writer) {this.writer=writer;}
-
 	/**The thread-safe map of directives to be added when directives are written.*/
 	private final Map<String, String> directiveMap=new ConcurrentHashMap<String, String>();
 
@@ -96,52 +77,36 @@ public class ELFF
 		}
 		
 	/**Fields constructor.
-	@param writer The writer representing the destination of the log information.
 	@param fields The fields to use for each log entry.
 	@exception NullPointerException if the writer and/or the array of fields is <code>null</code>.
 	*/
-	public ELFF(final Writer writer, final Field<?>... fields)
+	public ELFF(final Field<?>... fields)
 	{
-		this.writer=checkInstance(writer, "Writer cannot be null.");
-		this.fields=checkInstance(fields, "Fields cannot be null.");	//TODO make a copy
-		this.date=new Date();	//initialize the date
+		this.fields=checkInstance(fields, "Fields cannot be null.").clone();	//store a copy of the fields so that they can't be modified later by the caller
 	}
 
-	/**Resets the log for new use.
-	This is useful for starting a new log file with a new date and time, for instance.
-	The date is set to the current date.
-	*/
-	public void reset()
-	{
-		date=new Date();	//reset the date
-	}
-
-	/**Writes the appropriate directives for this log.
+	/**Creates a string representation of the appropriate directives for this log.
 	Any values set via {@link #setDirective(String, String)} are included, resulting in duplicating if any of those directives are specified here.
 	The {@value #VERSION_DIRECTIVE}, {@value #DATE_DIRECTIVE}, and {@value #FIELDS_DIRECTIVE} directives are always written,
 		resulting in duplication if any of these directives are specified.
-	The writer is flushed after writing.
-	This method is thread-safe.
 	@param directives The names and values of the directives to write.
-	@exception IOException if there is an error writing to the log.
+	@return A string representing the given directives.
 	*/
-	public synchronized void logDirectives(final NameValuePair<String, String>... directives) throws IOException
+	public String serializeDirectives(final NameValuePair<String, String>... directives) throws IOException
 	{
-		final Writer writer=getWriter();	//get a reference to the writer
+		final StringBuilder directiveStringBuilder=new StringBuilder();	//create a string builder for assembling the directives
 			//log predefined directives
 		for(final Map.Entry<String, String> directiveEntry:directiveMap.entrySet())	//for each directive entry in the map
 		{
-			logDirective(writer, directiveEntry.getKey(), directiveEntry.getValue());	//log this directive
+			formatDirective(directiveStringBuilder, directiveEntry.getKey(), directiveEntry.getValue());	//format this directive
 		}
 			//log specified directives
 		for(final NameValuePair<String, String> directive:directives)	//for each directive
 		{
-			logDirective(writer, directive.getName(), directive.getValue());	//log this directive
+			formatDirective(directiveStringBuilder, directive.getName(), directive.getValue());	//format this directive
 		}
-		logDirective(writer, VERSION_DIRECTIVE, LATEST_VERSION);	//log the version
-		final DateFormat dateTimeFormat=new SimpleDateFormat(DATE_TIME_FORMAT_PATTERN);	//create a date+time format object
-		dateTimeFormat.setTimeZone(TimeZone.getTimeZone(GMT_ID));	//switch to the GMT time zone
-		logDirective(writer, DATE_DIRECTIVE, dateTimeFormat.format(getDate()));	//log the date+time of the log
+		formatDirective(directiveStringBuilder, VERSION_DIRECTIVE, LATEST_VERSION);	//format the version
+		formatDirective(directiveStringBuilder, DATE_DIRECTIVE, createDateTimeFormat().format(new Date()));	//format the date+time of the log
 		final StringBuilder fieldsStringBuilder=new StringBuilder();	//create a new string builder for formatting the fields specification
 		if(fields.length>0)	//if there are fields
 		{
@@ -163,67 +128,71 @@ public class ELFF
 				}
 				else	//if there is no prefix
 				{
-					fieldsStringBuilder.append(identifier);	//identifier					
+					fieldsStringBuilder.append(identifier);	//identifier
 				}
 				fieldsStringBuilder.append(' ');	//separate the field identifiers
 			}
 			fieldsStringBuilder.deleteCharAt(fieldsStringBuilder.length()-1);	//remove the last space
 		}		
-		logDirective(writer, FIELDS_DIRECTIVE, fieldsStringBuilder.toString());	//log the fields specifications
+		formatDirective(directiveStringBuilder, FIELDS_DIRECTIVE, fieldsStringBuilder.toString());	//format the fields specifications
+		return directiveStringBuilder.toString();	//return the string we constructed
 	}
 
-	/**Writes a directive to the log.
-	The writer is flushed after writing.
-	This method is thread-safe.
-	@param writer The writer for writing to the log.
+	/**Creates a string representation of a directive.
+	The serialization of the directive includes the ending newline character.
 	@param name The name of the directive.
 	@param value The value of the directive.
-	@exception IOException if there is an error writing to the log.
+	@return A string representing the given directive.
 	*/
-	public static void logDirective(final Writer writer, final String name, final String value) throws IOException
+	public String serializeDirective(final String name, final String value) throws IOException
 	{
-		final StringBuilder directiveStringBuilder=new StringBuilder();	//create a string builder for the directive
-		formatDirective(directiveStringBuilder, name, value);	//format this directive
-		directiveStringBuilder.append('\n');	//append an end-of-line character
-		writer.write(directiveStringBuilder.toString());	//write the formatted entry
-		writer.flush();	//flush the contents
+		return formatDirective(new StringBuilder(), name, value).toString();	//format the directive and return the string value
 	}
 
 	/**Formats a directive for a log.
+	The directive serialization includes the ending newline character.
 	@param stringBuilder The string builder for formatting the value.
 	@param field The field with which the value is associated.
 	@param value The value to write to the log, or <code>null</code> if this field has no value in the current entry.
 	@return The string builder with the new formatted content.
 	@exception ClassCastException if the given value is not compatible with the field's type
 	*/
-	public static <T> StringBuilder formatDirective(final StringBuilder stringBuilder, final String name, final String value)
+	public StringBuilder formatDirective(final StringBuilder stringBuilder, final String name, final String value)
 	{
-		return stringBuilder.append('#').append(name).append(':').append(' ').append(value);	//#name: value
+		return stringBuilder.append('#').append(name).append(':').append(' ').append(value).append('\n');	//#name: value\n
 	}
 
-	/**Writes the given entry to the given writer.
-	The writer is flushed after writing.
-	This method is thread-safe.
-	@param entry The entry to write to the log.
-	@exception IOException if there is an error writing to the log.
+	/**Creates a string representation of the given entry.
+	The serialized entry string includes the ending newline character.
+	@param entry The entry to serialize.
+	@return A string representing the given entry.
 	*/
-	public synchronized void log(final Entry entry) throws IOException
+	public String serializeEntry(final Entry entry) throws IOException
 	{
-		final Writer writer=getWriter();	//get a reference to the writer
-		final StringBuilder entryStringBuilder=new StringBuilder();	//create a string builder for the entry
+		return formatEntry(new StringBuilder(), entry).toString();	//format the entry and return the string value
+	}
+
+	/**Formats an entry for a log.
+	The entry serialization includes the ending newline character.
+	@param stringBuilder The string builder for formatting the value.
+	@param entry The entry to serialize.
+	@return The string builder with the new formatted content.
+	@exception ClassCastException if the given value is not compatible with the field's type
+	*/
+	public StringBuilder formatEntry(final StringBuilder stringBuilder, final Entry entry)
+	{
 		for(final Field<?> field:fields)	//for each field in the log
 		{
-			formatFieldValue(entryStringBuilder, entry, field);	//format this field's value
-			entryStringBuilder.append(' ');	//separate the field values
+			formatFieldValue(stringBuilder, entry, field);	//format this field's value
+			stringBuilder.append(' ');	//separate the field values
 		}
-		final int untrimmedLength=entryStringBuilder.length();	//find out the length before trimming
+		final int untrimmedLength=stringBuilder.length();	//find out the length before trimming
 		if(untrimmedLength>0)	//if we wrote any fields
 		{
-			entryStringBuilder.deleteCharAt(untrimmedLength-1);	//remove the last space
+			stringBuilder.deleteCharAt(untrimmedLength-1);	//remove the last space
 		}
-		entryStringBuilder.append('\n');	//append an end-of-line character
-		writer.write(entryStringBuilder.toString());	//write the formatted entry
-		writer.flush();	//flush the contents
+		stringBuilder.append('\n');	//append an end-of-line character
+		return stringBuilder;	//return the string builder used
 	}
 
 	/**Formats a field value of an entry.
@@ -339,5 +308,15 @@ public class ELFF
 			stringBuilder.delete(stringBuilder.length()-1, stringBuilder.length());	//remove the last value delimiter
 		}
 		return stringBuilder;	//return the string builder, which now also contains the query parameter we constructed		
+	}
+
+	/**Creates a date format to format a date and a time in GMT according to the ELFF specification.
+	@return A new date format for formatting a date and time
+	*/
+	public static DateFormat createDateTimeFormat()
+	{
+		final DateFormat dateTimeFormat=new SimpleDateFormat(DATE_TIME_FORMAT_PATTERN);	//create a date+time format object
+		dateTimeFormat.setTimeZone(TimeZone.getTimeZone(GMT_ID));	//switch to the GMT time zone
+		return dateTimeFormat;	//return the date+time format object
 	}
 }
