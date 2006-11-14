@@ -35,9 +35,6 @@ public class AsynchronousWriter extends Writer
 	/**The predefined, shared character buffer that, when produced, indicates that the underlying writer should close.*/
 	protected final static char[] CLOSE_INDICATOR=new char[0];
 
-	/**The predefined, shared character buffer that, when produced, indicates a drain point.*/
-//TODO del	protected final static char[] DRAIN_INDICATOR=new char[0];
-
 	/**The underlying writer to which information will be asynchronously written.*/
 	private final Writer writer;
 
@@ -53,11 +50,6 @@ public class AsynchronousWriter extends Writer
 	/**The thread-safe queue of any I/O errors encountered by the consumer thread, to be returned by the production methods.*/
 	private final Queue<IOException> ioExceptionQueue=new ConcurrentLinkedQueue<IOException>();
 		
-	/**The producer thread, used when the producer thread wants to wait for the consumer thread to awkaken the producer thread after receiving {@link #INTERRUPT_CONSUMER_INDICATOR}.
-	Access to this thread must be synchronized on the writer lock.
-	*/
-//TODO del	private Thread producerThread=null;
-
 	/**Writer constructor with a default {@link LinkedBlockingQueue} used for data production and consumption, with critical sections synchronized on the writer itself.
 	@param writer The writer being decorated.
 	@exception NullPointerException if the given writer is <code>null</code>.
@@ -77,7 +69,9 @@ public class AsynchronousWriter extends Writer
 		super();	//construct the parent class using this class as a lock
 		this.writer=checkInstance(writer, "Writer cannot be null.");
 		this.blockingQueue=checkInstance(blockingQueue, "Blocking queue cannot be null.");
-		new Thread(new Consumer()).start();	//start a new consumer thread
+		final Thread consumerThread=new Thread(new Consumer());	//create a new consumer thread
+		consumerThread.setDaemon(true);	//make the consumer thread a daemon so that it won't hold up the application when the system shuts down
+		consumerThread.start();	//start the consumer thread
 	}
 
 	/**Writer and lock constructor with a default {@link LinkedBlockingQueue} used for data production and consumption.
@@ -221,6 +215,15 @@ public class AsynchronousWriter extends Writer
   	}
   }
 
+	/**Cleans up the asynchronous writer by ensuring that the writer is closed and thereby the consumer thread is ended.
+	@exception  IOException  if an I/O error occurs.
+	@see #close()
+	*/
+	protected void finalize() throws IOException
+	{
+		close();	//flush and close the writer, if it isn't closed already
+	}
+
 	protected class Consumer implements Runnable
 	{
 
@@ -290,6 +293,5 @@ public class AsynchronousWriter extends Writer
 				}
 			}
 		}
-		
 	}
 }

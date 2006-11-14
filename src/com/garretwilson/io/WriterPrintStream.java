@@ -16,7 +16,7 @@ public class WriterPrintStream extends PrintStream	//TODO fix encoding
 {
 
 	/**The system line separator characters in use when the class is created.*/
-	private final static String lineSeparator=getLineSeparator();
+	private final static String LINE_SEPARATOR=getLineSeparator();
 
 	/**The writer to which print stream information will be written.*/
 	private final Writer writer;
@@ -224,7 +224,7 @@ public class WriterPrintStream extends PrintStream	//TODO fix encoding
 	*/
   private void newLine()
   {
-  	write(lineSeparator, autoflush);	//write the line separator string, flushing if autoflushing is turned on
+  	write(LINE_SEPARATOR, autoflush);	//write the line separator string, flushing if autoflushing is turned on
   }
 
   /* Methods that do not terminate lines */
