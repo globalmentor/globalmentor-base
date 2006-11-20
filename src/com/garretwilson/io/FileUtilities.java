@@ -205,14 +205,14 @@ public class FileUtilities
 	public static URI getDirectoryURI(final File directory)
 	{
 		final URI fileURI=directory.toURI();	//create a URI from the file
-		if(endsWith(fileURI.getRawPath(), URIConstants.PATH_SEPARATOR))	//if the file URI is a directory URI
+		if(endsWith(fileURI.getRawPath(), PATH_SEPARATOR))	//if the file URI is a directory URI
 		{
 			return fileURI;	//return the URI as-is
 		}
 		else	//if the file URI isn't yet a directory URI
 		{
 				//create a new URI with the path separator appended
-			return changePath(fileURI, fileURI.getRawPath()+URIConstants.PATH_SEPARATOR);
+			return changePath(fileURI, fileURI.getRawPath()+PATH_SEPARATOR);
 		}		
 	}
 

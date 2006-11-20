@@ -648,8 +648,7 @@ public class CharSequenceUtilities
 	/**Determines if the character sequence starts with the given character.
 	@param charSequence The character sequence to examine.
 	@param character The character to compare.
-	@return <code>true</code> if the first character of the character sequence
-		matches that of the given string.
+	@return <code>true</code> if the first character of the character sequence matches that of the given string.
 	*/
 	public static boolean startsWith(final CharSequence charSequence, final char character)
 	{

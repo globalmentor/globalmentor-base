@@ -986,6 +986,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	For example, <code>http://example.com/base1/test.txt</code> changed to base
 		<code>http://example.com/base2/level2/</code> yields
 		<code>http://example.com/base2/level2/test.txt</code>.
+	<p>If the old and new base URIs are the same, the given URI is returned.</p>
 	<p>This method contains a workaround for the JDK 5.0 bug that chops off the
 		first few forward slashes for Windows network names.</p>
 	@param uri The URI the base of which to change.
@@ -1000,6 +1001,10 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	*/
 	public static URI changeBase(final URI uri, final URI oldBaseURI, final URI newBaseURI)
 	{
+		if(oldBaseURI.equals(newBaseURI))	//if the old and new base URIs are the same
+		{
+			return uri;	//the URI will not change
+		}
 //G***del Debug.trace("changing base of ", uri, "from", oldBaseURI, "to", newBaseURI);
 		final URI relativeURI=oldBaseURI.relativize(uri);	//get a URI relative to the old base URI
 		if(relativeURI.isAbsolute())	//if we couldn't relativize the the URI to the old base URI and come up with a relative URI
@@ -1032,6 +1037,20 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 			}
 		}
 		return newURI;	//return the new URI with the changed base
+	}
+
+	/**Determines whether the given URI is a child relative to the given base URI.
+	The base URI is considered a child of itself.
+	This for the base URI <code>http://www.example.com/base/</code>, the URIs <code>http://www.example.com/base/</code> and <code>http://www.example.com/base/child/</code> are considered
+	child URIs, while <code>http://www.example.com/</code> and <code>http://www.example.com/other/</code> are not.
+	@param baseURI The assumed base URI.
+	@param uri The URI which may be relative to the given base URI.
+	@return <code>true</code> if the given URI can be made relative to the given base URI resulting in a non-absolute form.
+	*/
+	public static boolean isChild(final URI baseURI, final URI uri)
+	{
+		final URI relativeURI=baseURI.relativize(uri);	//get a URI relative to the base URI
+		return !relativeURI.isAbsolute();	//if the relativized URI is not absolute, the URI is relative to the base
 	}
 
 	/**Characters that can appear in a URI path with no escape sequences.*/
