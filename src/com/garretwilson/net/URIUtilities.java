@@ -3,7 +3,6 @@ package com.garretwilson.net;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import static java.util.Collections.*;
 
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
@@ -386,6 +385,16 @@ public class URIUtilities
 		return pathURI;	//return the URI we created
 	}
 
+	/**Determines if the given URI has an HTTP scheme, either {@value URIConstants#HTTP_SCHEME} or {@value URIConstants#HTTPS_SCHEME}.
+	@param uri The URI the scheme of which to test.
+	@return <code>true</code> if the given URI has a scheme designating HTTP or secure HTTP.
+	*/
+	public static boolean isHTTPScheme(final URI uri)
+	{
+		final String scheme=uri.getScheme();	//get the URI scheme
+		return HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme);	//see if the scheme is "http" or "https"
+	}
+
 	/**Determines if a given path is only a path and not a URI with a scheme and/or authority.
 	@param path The string version of a path to determine if it.
 	@return <code>true</code> if the path is a path and does not specifiy a scheme (i.e. the URI is not absolute) or authority.
@@ -566,8 +575,7 @@ public class URIUtilities
 	}
 
 	/**Creates an absolute URI from the given string, guessing what the string represents.
-	<p>If the string is not a valid URL (e.g. it contains a space), this method
-		assumes that a file was intended and a file URI is constructed.</p>
+	<p>If the string is not a valid URL (e.g. it contains a space), this method assumes that a file was intended and a file URI is constructed.</p>
 	<p>This method is convenient for creating URIs based upon user input.</p>
 	@param string The string to convert to a URI. 
 	@return A URI representing the contents of the string, interpreted in a
@@ -575,7 +583,7 @@ public class URIUtilities
 	*/
 	public static URI guessAbsoluteURI(final String string)
 	{
-Debug.trace("guessing URI: ", string);
+//TODO del Debug.trace("guessing URI: ", string);
 		try
 		{
 			final URI uri=new URI(string);	//see if the string is already a valid URI

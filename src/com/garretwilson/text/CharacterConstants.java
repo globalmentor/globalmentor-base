@@ -1,10 +1,9 @@
 package com.garretwilson.text;
 
-/**Named constants representing several often-used characters. In most cases,
-	names are derived from Unicode 3.0 names.
+/**Named constants representing several often-used characters. In most cases, names are derived from Unicode 3.0 names.
 @author Garret Wilson
 */
-public interface CharacterConstants
+public class CharacterConstants
 {
 	/**The character with Unicode code point zero.*/
 	public final static char NULL_CHAR=0x0000;
