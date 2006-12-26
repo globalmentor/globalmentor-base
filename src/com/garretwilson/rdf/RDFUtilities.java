@@ -3,6 +3,8 @@ package com.garretwilson.rdf;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
@@ -12,8 +14,11 @@ import com.garretwilson.rdf.xmlschema.StringLiteral;
 import com.garretwilson.rdf.xmlschema.URILiteral;
 
 import static com.garretwilson.rdf.RDFConstants.*;
+
+import com.garretwilson.text.W3CDateFormat;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLUtilities;
+import com.garretwilson.util.Debug;
 
 import org.w3c.dom.*;
 
@@ -311,6 +316,94 @@ public class RDFUtilities
 	{
 			//TODO pass along the rdf:Property type, maybe, and create a separate method for creating properties
 		return locateResource(contextResource, RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //get an rdf:type resource
+	}
+
+	/**Returns the value of the first indicated property parsed as a date, using the default W3C full date style.
+	@param resource The resource the property of which should be located.
+	@param typeNamespaceURI The XML namespace URI that represents part of the reference URI.
+	@param typeLocalName The XML local name that represents part of the reference URI.
+	@param style The style of the date formatting.
+	@return The value of the first indicated property, or <code>null</code> if no such property exists or it does not contain a date.
+	@see W3CDateFormat.Style#DATE_TIME
+	*/
+	public static Date getDate(final RDFResource resource, final URI typeNamespaceURI, final String typeLocalName)
+	{
+		return getDate(resource, typeNamespaceURI, typeLocalName, W3CDateFormat.Style.DATE_TIME);	//get the date using the default formatter
+	}
+	
+	/**Returns the value of the first indicated property parsed as a date.
+	@param resource The resource the property of which should be located.
+	@param typeNamespaceURI The XML namespace URI that represents part of the reference URI.
+	@param typeLocalName The XML local name that represents part of the reference URI.
+	@param style The style of the date formatting.
+	@return The value of the first indicated property, or <code>null</code> if no such property exists or it does not contain a date.
+	*/
+	public static Date getDate(final RDFResource resource, final URI typeNamespaceURI, final String typeLocalName, final W3CDateFormat.Style style)
+	{
+		return getDate(resource, typeNamespaceURI, typeLocalName, new W3CDateFormat(style));	//create a date format and get the date
+	}
+
+	/**Returns the value of the first indicated property parsed as a date.
+	@param resource The resource the property of which should be located.
+	@param typeNamespaceURI The XML namespace URI that represents part of the reference URI.
+	@param typeLocalName The XML local name that represents part of the reference URI.
+	@param dateFormat The object to parse the date.
+	@return The value of the first property, or <code>null</code> if no such property exists or it does not contain a date.
+	*/
+	public static Date getDate(final RDFResource resource, final URI typeNamespaceURI, final String typeLocalName, final DateFormat dateFormat)
+	{
+		final RDFObject dateObject=resource.getPropertyValue(typeNamespaceURI, typeLocalName);	//get the date object
+		if(dateObject instanceof RDFLiteral)	//if this is a literal
+		{
+			final String dateString=((RDFLiteral)dateObject).getLexicalForm();	//get the string version of the date
+			try
+			{
+				return dateFormat.parse(dateString);	//parse the date from the string and return it
+			}
+			catch(final ParseException parseException)	//if there is a problem with the format, ignore it and return null
+			{
+			}
+		}
+		return null;	//show that for some reason we couldn't parse the date
+	}
+
+	/**Sets the indicated property with the given date value to the resource, using the default W3C full date style.
+	@param resource The resource to which the property should be set.
+	@param typeNamespaceURI The XML namespace URI that represents part of the reference URI.
+	@param typeLocalName The XML local name that represents part of the reference URI.
+	@param date The property value to set.
+	@return The added literal property value.
+	@see W3CDateFormat.Style#DATE_TIME
+	*/
+	public static RDFLiteral setDate(final RDFResource resource, final URI typeNamespaceURI, final String typeLocalName, final Date date)
+	{
+		return setDate(resource, typeNamespaceURI, typeLocalName, date, W3CDateFormat.Style.DATE_TIME);	//set the date using the default formatter
+	}
+	
+	/**Sets the indicated property with the given date value to the resource, using the given style.
+	@param resource The resource to which the property should be set.
+	@param typeNamespaceURI The XML namespace URI that represents part of the reference URI.
+	@param typeLocalName The XML local name that represents part of the reference URI.
+	@param date The property value to set.
+	@param style The style of the date formatting.
+	@return The added literal property value.
+	*/
+	public static RDFLiteral setDate(final RDFResource resource, final URI typeNamespaceURI, final String typeLocalName, final Date date, final W3CDateFormat.Style style)
+	{
+		return setDate(resource, typeNamespaceURI, typeLocalName, date, new W3CDateFormat(style));	//create a date formatter and set the date
+	}
+	
+	/**Sets the indicated property with the given date value to the resource, using the given formatter.
+	@param resource The resource to which the property should be set.
+	@param typeNamespaceURI The XML namespace URI that represents part of the reference URI.
+	@param typeLocalName The XML local name that represents part of the reference URI.
+	@param date The property value to set.
+	@param dateFormat The object to format the date.
+	@return The added literal property value.
+	*/
+	public static RDFLiteral setDate(final RDFResource resource, final URI typeNamespaceURI, final String typeLocalName, final Date date, final DateFormat dateFormat)
+	{
+		return resource.setProperty(typeNamespaceURI, typeLocalName, dateFormat.format(date));
 	}
 
 	/**Retrieves a label appropriate for the reference URI of the resource. If the

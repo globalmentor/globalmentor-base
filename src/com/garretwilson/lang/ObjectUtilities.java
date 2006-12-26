@@ -1,7 +1,5 @@
 package com.garretwilson.lang;
 
-import com.garretwilson.util.Range;
-
 /**Various utilities to manipulate Java objects.
 @author Garret Wilson
 */

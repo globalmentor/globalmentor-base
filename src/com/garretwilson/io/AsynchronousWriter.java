@@ -69,7 +69,7 @@ public class AsynchronousWriter extends Writer
 		super();	//construct the parent class using this class as a lock
 		this.writer=checkInstance(writer, "Writer cannot be null.");
 		this.blockingQueue=checkInstance(blockingQueue, "Blocking queue cannot be null.");
-		final Thread consumerThread=new Thread(new Consumer());	//create a new consumer thread
+		final Thread consumerThread=new Thread(new Consumer(), "asynchthread");	//create a new consumer thread TODO fix name
 		consumerThread.setDaemon(true);	//make the consumer thread a daemon so that it won't hold up the application when the system shuts down
 		consumerThread.start();	//start the consumer thread
 	}
@@ -224,6 +224,10 @@ public class AsynchronousWriter extends Writer
 		close();	//flush and close the writer, if it isn't closed already
 	}
 
+	/**The consumer runnable that writes data to the underlying writer.
+	This runnable's interruption policy is to close the underlying writer and end execution.
+	@author Garret Wilson
+	*/
 	protected class Consumer implements Runnable
 	{
 

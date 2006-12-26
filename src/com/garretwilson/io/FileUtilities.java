@@ -134,22 +134,62 @@ public class FileUtilities
 		extension. If the file does not currently have an extension, one will be
 		added. If the file has no path or name, the same file will be returned.
 	@param file The file to examine.
-	@param extension The extension to set
+	@param extension The extension to set, or <code>null</code> if the extension should be removed.
 	@return The file with the new extension.
 	*/
 	public static File changeExtension(final File file, final String extension)
 	{
-		String filename=file.getName();  //get the name of the file
+		final String filename=file.getName();  //get the name of the file
 		if(filename.length()!=0)  //if we found a filename
 		{
-			final int separatorIndex=getExtensionSeparatorIndex(filename); //see if we can find the extension separator
-			if(separatorIndex!=-1)  //if we found a separator
-				filename=filename.substring(0, separatorIndex); //remove the extension
-			filename=addExtension(filename, extension);	//add the requested extension
-			return new File(file.getParent(), filename);  //return a file based on the name with the new extension
+			return new File(file.getParent(), changeExtension(filename, extension));  //return a file based on the name with the new extension
 		}
 		else  //if there is no filename
+		{
 			return file;  //return the unmodified file
+		}
+	}
+
+	/**Changes the extension of a filename and returns a new filename with the new
+		extension. If the filename does not currently have an extension, one will be
+		added. If the filename has no path or name, the same filename will be returned.
+	@param filename The file to examine.
+	@param extension The extension to set, or <code>null</code> if the extension should be removed.
+	@return The filename with the new extension.
+	*/
+	public static String changeExtension(String filename, final String extension)
+	{
+		final int separatorIndex=getExtensionSeparatorIndex(filename); //see if we can find the extension separator
+		if(separatorIndex>=0)  //if we found a separator
+		{
+			filename=filename.substring(0, separatorIndex); //remove the extension
+		}
+		if(extension!=null)	//if an extension was given
+		{
+			filename=addExtension(filename, extension);	//add the requested extension
+		}
+		return filename;	//return the new filename
+	}
+
+	/**Removes the extension of a filename, if any, and returns a new file with no extension.
+	This is a convenience method that delegates to {@link #changeExtension(File, String)}.
+	@param file The file to examine.
+	@param extension The extension to set, or <code>null</code> if the extension should be removed.
+	@return The file with no extension.
+	*/
+	public static File removeExtension(final File file)
+	{
+		return changeExtension(file, null);	//replace the extension with nothing
+	}
+
+	/**Removes the extension of a filename, if any, and returns a new filename with no extension.
+	This is a convenience method that delegates to {@link #changeExtension(String, String)}.
+	@param filename The file to examine.
+	@return The filename with no extension.
+	*/
+	public static String removeExtension(final String filename)
+	{
+		return changeExtension(filename, null);	//replace the extension with nothing
 	}
 
 	/**Appends a given string to the end of a filename before the extension, if any.
@@ -614,36 +654,6 @@ public class FileUtilities
 		}
 	}
 
-	/**Returns a string with the extension removed.
-	@param filename The filename to examine.
-	@return The filename without any extension.
-	*/
-	public static String removeExtension(final String filename)
-	{
-//G***del Debug.trace("removing extension from: ", filename);	//G***del
-			//G***we may first want to chop off anything before the last '/' or '\'
-			//G***better yet, make sure the extension is after the last slash
-		final int separatorIndex=filename.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
-		if(separatorIndex>=0)  //if we found a separator
-		{
-//G***del Debug.trace("returning: ", filename.substring(0, separatorIndex));	//G***del
-			return filename.substring(0, separatorIndex);  //return everything before the separator
-		}
-		else  //if there is no separator
-			return filename;  //there was no extension to begin with, so just return the original filename
-	}
-
-	/**Returns a file with the extension removed.
-	@param file The file to examine.
-	@return The file without any extension.
-	*/
-	public static File removeExtension(final File file)
-	{
-			//G***we may first want to chop off anything before the last '/' or '\'
-			//G***better yet, make sure the extension is after the last slash
-		return new File(removeExtension(file.getPath()));	//remove the extension from the file path and create a file from that
-	}
-	
 	/**Renames the file, throwing an exception if unsuccessful.
 	@param source The file to rename.
 	@param destination The new name of the file
