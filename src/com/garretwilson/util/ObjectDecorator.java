@@ -44,7 +44,15 @@ public class ObjectDecorator<T>
 	*/
 	public boolean equals(final Object object)
 	{
-		return getClass().isInstance(object) && getDecoratedObject().equals(((ObjectDecorator)object).getDecoratedObject());	//see if the object is of this class and our decorated object is equal to its decorated object
+		return getClass().isInstance(object) && getDecoratedObject().equals(((ObjectDecorator<?>)object).getDecoratedObject());	//see if the object is of this class and our decorated object is equal to its decorated object
+	}
+
+	/**Returns a string representation of the object.
+	This version returns a string version of the decorated object.
+	*/
+	public String toString()
+	{
+		return getDecoratedObject().toString();	//delegate to the decorated object
 	}
 	
 }

@@ -10,8 +10,19 @@ import com.garretwilson.net.Authenticable;
 Keeps a cache of authentication information for visited domains and realms.
 @author Garret Wilson
 */
-public class AbstractClient
+public class AbstractClient implements Client
 {
+
+	/**Whether this client logs its communication.*/
+	private boolean logged=false;
+
+		/**@return Whether this client logs its communication.*/
+		public boolean isLogged() {return logged;}
+
+		/**Sets whether this client logs its communication.
+		@param logged <code>true</code> if this client should log its communication.
+		*/
+		public void setLogged(final boolean logged) {this.logged=logged;}
 
 	/**@return The default instance of this class, or <code>null</code> if there is no default instance.*/
 	protected AbstractClient getDefaultInstance()

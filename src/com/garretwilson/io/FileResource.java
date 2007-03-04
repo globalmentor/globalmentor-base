@@ -2,12 +2,11 @@ package com.garretwilson.io;
 
 import java.io.File;
 import java.net.URI;
-import java.util.Collections;
+import static java.util.Collections.*;
 import java.util.List;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.model.DefaultResource;
-import com.garretwilson.util.CollectionUtilities;
 
 /**A resource accessible by a file.
 The file may or may not have the same URI as the resource.
@@ -48,7 +47,7 @@ public class FileResource extends DefaultResource
 	*/
 	public List<FileResource> getChildResources()
 	{
-		return CollectionUtilities.emptyList();	//TODO implement
+		return emptyList();	//TODO implement
 	}
 
 }

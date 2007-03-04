@@ -1,9 +1,11 @@
 package com.garretwilson.io;
 
 import java.io.*;
+import static com.garretwilson.lang.ObjectUtilities.*;
 
 /**Wraps an existing output stream.
 The decorated output stream is released when this stream is closed.
+This decorator provides convenience methods {@link #beforeClose()} and {@link #afterClose()} called before and after the stream is closed, respectively.
 @author Garret Wilson
 */
 public abstract class OutputStreamDecorator<O extends OutputStream> extends OutputStream
@@ -12,15 +14,16 @@ public abstract class OutputStreamDecorator<O extends OutputStream> extends Outp
 	/**The output stream being decorated.*/
 	private O outputStream;
 
-		/**@return The output stream being decorated, or <code>null</code> if it has been released after this stream was closed..*/
+		/**@return The output stream being decorated, or <code>null</code> if it has been released after this stream was closed.*/
 		protected O getOutputStream() {return outputStream;}
 
 	/**Decorates the given output stream.
-	@param outputStream The output stream to decorate
+	@param outputStream The output stream to decorate.
+	@exception NullPointerException if the given stream is <code>null</code>.
 	*/
 	public OutputStreamDecorator(final O outputStream)
 	{
-		this.outputStream=outputStream;	//save the decorated output stream
+		this.outputStream=checkInstance(outputStream, "Output stream cannot be null.");	//save the decorated output stream
 	}
 
   /**
@@ -43,7 +46,7 @@ public abstract class OutputStreamDecorator<O extends OutputStream> extends Outp
   	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
   	if(outputStream!=null)	//if we still have an output stream to decorate
   	{
-  		getOutputStream().write(b);
+  		outputStream.write(b);
   	}
 	}
 
@@ -62,7 +65,7 @@ public abstract class OutputStreamDecorator<O extends OutputStream> extends Outp
   	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
   	if(outputStream!=null)	//if we still have an output stream to decorate
   	{
-  		getOutputStream().write(b);
+  		outputStream.write(b);
   	}
   }
 
@@ -99,7 +102,7 @@ public abstract class OutputStreamDecorator<O extends OutputStream> extends Outp
   	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
   	if(outputStream!=null)	//if we still have an output stream to decorate
   	{
-  		getOutputStream().write(b, off, len);
+  		outputStream.write(b, off, len);
   	}
   }
 
@@ -126,27 +129,39 @@ public abstract class OutputStreamDecorator<O extends OutputStream> extends Outp
   	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
   	if(outputStream!=null)	//if we still have an output stream to decorate
   	{
-  		getOutputStream().flush();
+  		outputStream.flush();
   	}
   }
 
-  /**
-   * Closes this output stream and releases any system resources 
-   * associated with this stream. The general contract of <code>close</code> 
-   * is that it closes the output stream. A closed stream cannot perform 
-   * output operations and cannot be reopened.
-   * <p>
-   * The <code>close</code> method of <code>OutputStream</code> does nothing.
-   *
-   * @exception  IOException  if an I/O error occurs.
-   */
+  /**Called before the stream is closed.
+	@exception IOException if an I/O error occurs.
+	*/
+  protected void beforeClose() throws IOException 
+  {
+  }
+
+  /**Called after the stream is successfully closed.
+	@exception IOException if an I/O error occurs.
+	*/
+  protected void afterClose() throws IOException
+  {
+  }
+
+	/**Closes this output stream and releases any system resources associated with this stream. 
+	A closed stream cannot perform output operations and cannot be reopened.
+	@exception IOException if an I/O error occurs.
+	@see #beforeClose()
+	@see #afterClose()
+	*/
   public void close() throws IOException
 	{
   	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
   	if(outputStream!=null)	//if we still have an output stream to decorate
   	{
-  		outputStream.close();
-  		this.outputStream=null;	//release the decorated output stream
+  		beforeClose();	//perform actions before closing
+  		outputStream.close();	//close the decorated output stream
+  		this.outputStream=null;	//release the decorated output stream if closing was successful
+  		afterClose();	//perform actions after closing
   	}
 	}
 }

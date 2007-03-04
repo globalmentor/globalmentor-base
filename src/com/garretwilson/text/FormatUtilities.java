@@ -1,12 +1,12 @@
 package com.garretwilson.text;
 
 import java.util.*;
+import static java.util.Collections.*;
 
 import com.garretwilson.lang.IntegerUtilities;
 import static com.garretwilson.lang.StringBuilderUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
 
-import com.garretwilson.util.CollectionUtilities;
 import com.garretwilson.util.NameValuePair;
 
 /**Utilities for formatting text.
@@ -187,7 +187,7 @@ public class FormatUtilities
 	*/
 	public static StringBuilder formatAttributes(final StringBuilder stringBuilder, final NameValuePair<?, ?>... attributes)
 	{
-		return formatAttributes(stringBuilder, COMMA_CHAR, EQUALS_SIGN_CHAR, QUOTATION_MARK_CHAR, CollectionUtilities.emptySet(), attributes);	//format the attributes using the standard formatting characters
+		return formatAttributes(stringBuilder, COMMA_CHAR, EQUALS_SIGN_CHAR, QUOTATION_MARK_CHAR, emptySet(), attributes);	//format the attributes using the standard formatting characters
 	}
 
 	/**Formats a series of name-value pairs.
