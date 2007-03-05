@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.*;
 import javax.mail.internet.ContentType;
 import com.garretwilson.rdf.*;
+import static com.garretwilson.rdf.RDFUtilities.*;
 import com.garretwilson.rdf.dublincore.DCConstants;
 import com.garretwilson.rdf.xpackage.MIMEOntologyUtilities;
 import com.garretwilson.rdf.xpackage.XPackageUtilities;
@@ -80,12 +81,14 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 			final NameValuePair property=(NameValuePair)propertyIterator.next();  //get the property
 			final RDFResource propertyResource=(RDFResource)property.getName();  //get the property resource
 Debug.trace("looking at publication property: ", propertyResource); //G***del
-Debug.trace("property namespace URI: ", propertyResource.getNamespaceURI()); //G***del
+			final URI propertyNamespaceURI=getNamespaceURI(propertyResource.getReferenceURI());	//get the namespace of hte property
+				//TODO check for null in both the namespace URI and local name
+Debug.trace("property namespace URI: ", propertyNamespaceURI); //G***del
 				//if this is a Dublin Core property
-			if(DCMI11_ELEMENTS_NAMESPACE_URI.equals(propertyResource.getNamespaceURI())
-				  || DCMI10_ELEMENTS_NAMESPACE_URI.equals(propertyResource.getNamespaceURI()))
+			if(DCMI11_ELEMENTS_NAMESPACE_URI.equals(propertyNamespaceURI)
+				  || DCMI10_ELEMENTS_NAMESPACE_URI.equals(propertyNamespaceURI))
 			{
-				final String propertyLocalName=propertyResource.getLocalName(); //get the  local name of the property
+				final String propertyLocalName=getLocalName(propertyResource.getReferenceURI()); //get the  local name of the property
 Debug.trace("property local name: ", propertyLocalName); //G***del
 				final Object propertyValueObject=property.getValue(); //get the property value
 				if(propertyValueObject instanceof RDFLiteral)  //if the value is a literal

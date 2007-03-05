@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.*;
 
 import static com.garretwilson.rdf.RDFConstants.*;
+import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLNamespaceProcessor;
@@ -334,13 +335,15 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 	{
 		final URI referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
 		final Element resourceElement;  //we'll store here the element that we create
-		RDFResource resourceType=RDFUtilities.getType(resource); //get the type of the resource
+		RDFResource resourceType=getType(resource); //get the type of the resource
 		if(resourceType!=null)   //if this resource has a type that we can use for the element name
 		{
-			final URI namespaceURI=getNamespaceURI(resourceType);	//get the type's namespace URI
+			final URI resourceTypeURI=resourceType.getReferenceURI();	//get the URI of the type
+			final URI namespaceURI=getNamespaceURI(resourceTypeURI);	//get the type's namespace URI
 //TODO important: check for namespace URI null
 			final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), namespaceURI.toString());  //get the prefix for use with this namespace
-			final String qualifiedName=XMLUtilities.createQualifiedName(prefix, getLocalName(resourceType));  //create a qualified name for the element
+			final String qualifiedName=XMLUtilities.createQualifiedName(prefix, getLocalName(resourceTypeURI));  //create a qualified name for the element
+				//TODO check for null on local name
 			resourceElement=document.createElementNS(namespaceURI.toString(), qualifiedName);  //create an element from the resource type
 		}
 		else  //if we can't create an element from its type
@@ -411,7 +414,7 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 	*/
 	protected void addProperties(final Document document, final Element element, final RDFResource resource)
 	{
-		RDFResource resourceType=RDFUtilities.getType(resource); //get the type of the resource G***do we want this in the general routine? we probably have to have it
+		RDFResource resourceType=getType(resource); //get the type of the resource G***do we want this in the general routine? we probably have to have it
 		final Iterator propertyIterator=resource.getPropertyIterator(); //get an iterator to all the element properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
@@ -421,7 +424,7 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 				//if this property is not a type property we already used for creating the element name
 		  if(!(TYPE_PROPERTY_REFERENCE_URI.equals(propertyResource.getReferenceURI()) && propertyValue.equals(resourceType)))
 			{
-				final URI propertyNamespaceURI=getNamespaceURI(propertyResource); //get the namespace URI of the property
+				final URI propertyNamespaceURI=getNamespaceURI(propertyResource.getReferenceURI()); //get the namespace URI of the property
 				assert propertyNamespaceURI!=null : "Missing preperty namespace.";	//TODO add real error handling here
 				boolean serializeLiteralAttribute=false; //start out by assuming we won't serialize as an attribute
 				  //see if we should use an attribute to serialize a plain literal TODO add support for typed literals
@@ -438,7 +441,8 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 				if(serializeLiteralAttribute)  //if we should use an attribute for serializing this property value
 				{
 					final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), propertyNamespaceURI.toString());  //get the prefix for use with this namespace
-					final String qualifiedName=XMLUtilities.createQualifiedName(prefix, getLocalName(propertyResource));  //create a qualified name for the attribute
+					final String qualifiedName=XMLUtilities.createQualifiedName(prefix, getLocalName(propertyResource.getReferenceURI()));  //create a qualified name for the attribute
+						//TODO check for null on local name
 						//store the property as an attribute
 				  element.setAttributeNS(propertyNamespaceURI.toString(), qualifiedName, ((RDFLiteral)propertyValue).getLexicalForm());
 				}
@@ -467,11 +471,13 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 //G***del		final URI namespaceURI; //we'll store here the namespace URI of the property element
 		final String qualifiedName; //we'll store here the qualified name of the property element
 			//if we know the namespace URI and local name of the property
-				  //G***replace all this code with the new utility method getLabel(RDFResource)
-		final URI namespaceURI=getNamespaceURI(propertyResource); //get the namespace URI of the property
+				  //TODO replace all this code with the new utility method getLabel(RDFResource)
+		final URI propertyResourceURI=propertyResource.getReferenceURI();	//get the URI of the property
+		final URI namespaceURI=getNamespaceURI(propertyResourceURI); //get the namespace URI of the property
 //TODO important: check the namespace URI for null
 		final String prefix=XMLSerializer.getNamespacePrefix(getNamespacePrefixMap(), namespaceURI.toString());  //get the prefix for use with this namespace
-		String localName=getLocalName(propertyResource); //get the local name of the property
+		String localName=getLocalName(propertyResourceURI); //get the local name of the property
+			//TODO check for null on local name
 		if(RDF_NAMESPACE_URI.equals(namespaceURI))  //if this is the RDF namespace
 		{
 			if(localName.startsWith(CONTAINER_MEMBER_PREFIX)) //if this is one of the rdf:li_XXX members
@@ -485,8 +491,8 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 			{
 					//set the rdf:parseType attribute to "Collection" TODO eventually get our prefix from a prefix rather than hard-coding RDF, maybe
 				propertyElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX.toString(), ATTRIBUTE_PARSE_TYPE), COLLECTION_PARSE_TYPE);
-				final RDFListResource propertylistResource=(RDFListResource)propertyValue;	//cast the resource to a list
-				final Iterator iterator=propertylistResource.iterator();	//get an iterator to look at the list elements
+				final RDFListResource propertyListResource=(RDFListResource)propertyValue;	//cast the resource to a list
+				final Iterator<RDFResource> iterator=propertyListResource.iterator();	//get an iterator to look at the list elements
 				while(iterator.hasNext())	//while there are more elements
 				{
 					final RDFResource elementResource=(RDFResource)iterator.next();	//get the next element of the list
@@ -497,7 +503,7 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 			else	//if this is a normal property resource value
 			{
 				final RDFResource valueResource=(RDFResource)propertyValue; //cast the value to a resource
-				final Set referenceSet=getReferenceSet(valueResource);	//find out which resources reference this property value
+				final Set<RDFResource> referenceSet=getReferenceSet(valueResource);	//find out which resources reference this property value
 //G***if we're only serializing a single resource tree, the commented-out code on this line will result in missing nodes; maybe allow a setFlatSerialization option later, but that may be too flat---maybe have a setSortOfFlat()...				if(valueResource.getReferenceURI()==null) //if this is a blank node
 	/*G***fix or delete
 				if(!isSerialized(valueResource))	//if we haven't serialized the property value resource, yet
@@ -526,7 +532,9 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 						final RDFPropertyValuePair subPropertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next property name/value pair
 						final RDFResource subPropertyResource=subPropertyValuePair.getProperty();  //get the property resource
 						final RDFObject subPropertyValue=subPropertyValuePair.getPropertyValue();  //get the property value
-					  final URI subPropertyNamespaceURI=getNamespaceURI(subPropertyResource); //get the namespace URI of the property
+						final URI subPropertyResourceURI=subPropertyResource.getReferenceURI();	//get the URI of the subproperty
+					  final URI subPropertyNamespaceURI=getNamespaceURI(subPropertyResourceURI); //get the namespace URI of the property
+					  	//TODO make sure null is handled for the namespace URI
 								//if this value is not a plain literal, or the plain literal has a language indication, we can't store it in an attribute
 						if(!(subPropertyValue instanceof RDFPlainLiteral) || ((RDFPlainLiteral)subPropertyValue).getLanguage()!=null) 
 						{
@@ -535,7 +543,7 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 						}
 						else if(!isLiteralAttributeSerialization()) //if we shouldn't serialize all literal property values as attributes
 						{
-							if(subPropertyNamespaceURI!=null && getLocalName(subPropertyResource)!=null)	//TODO remove this check because of new method for determining namespace URI and local name
+							if(subPropertyNamespaceURI!=null && getLocalName(subPropertyResourceURI)!=null)	//TODO remove this check because of new method for determining namespace URI and local name
 							{
 								if(!isLiteralAttributeSerializationNamespaceURI(subPropertyNamespaceURI)) //if we should serialize literal property values from this namespace
 								{
@@ -636,40 +644,34 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 	}
 */
 
-	/**Retrieves a label appropriate for the reference URI of the resource. If the
-		resource has namespace URI and local name, the XML qualified name will be
-		returned in <var>namespaceURI</var>:<var>localName</var> format; otherwise,
-		reference URI itself will be returned.
-	@param resource The resource the label of which to return.
-//G***del	@param generatePrefix <code>true</code> if a prefix should be generated if
-//G***del		no prefix is assigned to the given namespace URI.
+	//TODO maybe bring back the getNamespaceURI() and getLocalName() methods removed on 2007-03-04 so that the registered URIs are searched
+	
+	/**Retrieves a label appropriate for the reference URI of the resource.
+	If the resource has namespace URI and local name, the XML qualified name will be
+	returned in <var>namespaceURI</var>:<var>localName</var> format;
+	otherwise, the reference URI itself will be returned.
+	@param resourceURI The URI of the resource the label of which to return.
 	@return A label representing the reference URI of the resource.
 	*/
-	public String getLabel(final RDFResource resource/*G***del, final boolean generatePrefix*/)
+	public String getLabel(final URI resourceURI)
 	{
-		URI namespaceURI=getNamespaceURI(resource); //get the resource namespace URI, if it has one
-		
-//TODO once we make the transition to not storing namespaces, see if the above method returns null and if so, use a label of the entire reference URI
-		String localName=getLocalName(resource); //get the resource's local name
-		final URI referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
+		URI namespaceURI=getNamespaceURI(resourceURI); //get the resource namespace URI, if it has one		
+		String localName=getLocalName(resourceURI); //get the resource's local name
 		  //if there is no namespace URI known, see if a namespace URI is registered that matches the beginning of this reference URI
-		if((namespaceURI==null || localName==null) && referenceURI!=null)  //if there is no namespace URI or local name, but there is a reference URI
+		if((namespaceURI==null || localName==null) && resourceURI!=null)  //if there is no namespace URI or local name, but there is a reference URI
 		{
-				//G***right now we iterate through the namespaces each time; there might be a better way to do this
-			final Iterator namespaceIterator=getNamespacePrefixMap().keySet().iterator(); //get an iterator to the namespace URIs
+				//TODO right now we iterate through the namespaces each time; there might be a better way to do this
+			final String resourceURIString=resourceURI.toString();	//get a string version of the resource URI to use in comparisons
+			final Iterator<String> namespaceIterator=getNamespacePrefixMap().keySet().iterator(); //get an iterator to the namespace URIs
 			while(namespaceIterator.hasNext())  //while there are more namespaces
 			{
-//G***del				final Map.Entry namespaceEntry=namespaceEntryIterator.next(); //get the next namespace entry
-				final String registeredNamespaceURI=(String)namespaceIterator.next();  //get this namespace URI TODO eventually use URIs in the map
-				if(referenceURI.toString().startsWith(registeredNamespaceURI)) //if this reference URI is in this namespace	//G***fix, now that we're using real URIs
+				final String registeredNamespaceURI=namespaceIterator.next();  //get this namespace URI TODO eventually use URIs in the map
+				if(resourceURIString.startsWith(registeredNamespaceURI)) //if this reference URI is in this namespace
 				{
-//G***del					final String prefix=(String)namespaceEntry.getKey();  //get this namespace prefix
 				  namespaceURI=URI.create(registeredNamespaceURI);  //we'll use the registered namespace URI
-				  localName=referenceURI.toString().substring(registeredNamespaceURI.length()); //remove the namespace URI from the front of the reference URI to get the local name	//G***fix better, now that we're using real URIs
-//G***del					return XMLUtilities.createQualifiedName(prefix, localName);  //create an XML qualified name for this namespace prefix and local name
+				  localName=resourceURIString.substring(registeredNamespaceURI.length()); //remove the namespace URI from the front of the reference URI to get the local name
 				}
 			}
-//G***del			return referenceURI; //just use the reference URI as the label, if we can't find anything else G***we might want to check for rdf:li_ here as well; maybe not
 		}
 		if(namespaceURI!=null && localName!=null) //if we've determined a namespace URI and a local name
 		{
@@ -685,51 +687,7 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 				return XMLUtilities.createQualifiedName(prefix, localName);  //create an XML qualified name for this namespace prefix and local name
 			}
 		}
-		return referenceURI!=null ? referenceURI.toString() : ""; //just use the reference URI as the label, if we can't find anything else G***we might want to check for rdf:li_ here as well; maybe not
+		return resourceURI!=null ? resourceURI.toString() : ""; //just use the reference URI as the label, if we can't find anything else TODO we might want to check for rdf:li_ here as well; maybe not
 	}
 
-	/**Determines the namespace URI to be used for the given resource for XML serialization.
-	For most resources, this is the URI formed by all the the reference URI
-		characters up to and including the last character that is not a valid
-		XML name character. If all characters are valid XML name characters,
-		the last non-alphanumeric character is used as a delimiter.
-	@param resource The resource for which a namespace URI should be determined.
-	@return The namespace URI of the resource reference URI, or <code>null</code> if the namespace URI could not be determined.
-	*/
-	public static URI getNamespaceURI(final RDFResource resource)
-	{
-		URI namespaceURI=resource.getNamespaceURI();	//get the namespace URI of which the resource has record TODO remove storing namespaces
-		if(namespaceURI==null && resource.getReferenceURI()!=null)	//if the resource doesn't know its namespace URI, but there is a reference URI
-		{
-			namespaceURI=RDFUtilities.getNamespaceURI(resource.getReferenceURI());	//try to get the namespace URI from the resource reference URI
-		}
-/*TODO del when works
-			//TODO check somewhere else that the namespace was defined in the parsed document---otherwise, only the local name will be set, even for the reference URI
-
-		assert namespaceURI!=null : "Could not determine namespace URI for "+resource.getReferenceURI();	//TODO fix
-		if(namespaceURI==null)	//TODO improve
-		{
-			throw new AssertionError("Missing namespace URI for resource reference URI "+resource.getReferenceURI());
-		}
-*/
-		return namespaceURI;	//return the namespace URI we found
-	}
-
-	/**Determines the local name to be used for the given resource for XML
-		serialization.
-	For most resources, this is the name formed by all the the reference URI
-		characters after but not including the last character that is not a valid
-		XML name character. If all characters are valid XML name characters,
-		the last non-alphanumeric character is used as a delimiter.
-	@param resource The resource for which a local name should be determined.
-	@return The local name of the resource reference URI.
-	 */
-	public static String getLocalName(final RDFResource resource)
-	{
-		String localName=resource.getLocalName();	//get the local name of which the resource has record TODO remove storing local names
-		if(localName==null && resource.getReferenceURI()!=null)	//if the resource doesn't know its local name, but there is a reference URI
-			localName=RDFUtilities.getLocalName(resource.getReferenceURI());	//try to get the local name from the resource reference URI
-		assert localName!=null : "Could not determine local name for "+resource.getReferenceURI();	//TODO fix
-		return localName;	//return the local name we found
-	}
 }

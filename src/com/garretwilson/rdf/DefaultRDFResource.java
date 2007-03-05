@@ -6,7 +6,6 @@ import java.util.*;
 
 import com.garretwilson.model.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
-import static com.garretwilson.rdf.dublincore.DCUtilities.*;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
 
 /**Represents the default implementation of an RDF resource.
@@ -18,20 +17,6 @@ import com.garretwilson.rdf.rdfs.RDFSUtilities;
 */
 public class DefaultRDFResource extends BoundPropertyResource implements RDFResource, Cloneable
 {
-
-	/**The XML namespace URI.*/
-	private URI namespaceURI;
-
-		/**@return The XML namespace URI used in serialization, or <code>null</code>
-		  if no namespace URI was used or there was no namespace.*/
-		public URI getNamespaceURI() {return namespaceURI;}
-
-	/**The XML local name.*/
-	private String localName;
-
-		/**@return The XML local name used in serialization, or <code>null</code>
-		  if no namespace URI and local name was used.*/
-		public String getLocalName() {return localName;}
 
 	/**The data model that created this resource, or <code>null</code> if the
 		resource was created separate from a data model.
@@ -462,6 +447,19 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		return setProperty(RDFUtilities.locateResource(this, propertyNamespaceURI, propertyLocalName), value); //create a property from the namespace URI and local name, then set the actual property value
 	}
 
+	/**Sets a property by first removing all such properties and then adding
+		a new property. If no value is given, all such properties are removed.
+	@param propertyURI The reference URI of the property resource.
+	@param value A property value&mdash;the object of an RDF statement&mdash;or
+		<code>null</code> if all such properties should be removed with nothing
+		to replace them.
+	@return The added property value.
+	*/
+	public RDFObject setProperty(final URI propertyURI, final RDFObject value)
+	{
+		return setProperty(RDFUtilities.locateResource(this, propertyURI), value); //create a property from the property URI, then set the actual property value
+	}
+
 	/**Sets a plain literal property from a string by removing all property values
 		for the given property and creating a new <code>RDFPropertyValuePair</code>
 		from the given property and value. No language is specified.
@@ -559,16 +557,6 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		this(rdf, null);	//construct the resource with no reference URI
 	}
 
-	/**Constructs a resource with a reference URI from a data model.
-	@param rdf The data model with which this resource should be associated.
-	@param referenceURI The reference URI for the new resource.
-	@see RDF#createResource
-	*/
-	public DefaultRDFResource(final RDF rdf, final URI referenceURI)
-	{
-		this(rdf, referenceURI, null, null);	//construct the class with no namespace URI or local name
-	}
-
 	/**Convenience constructor that constructs a resource using a namespace URI
 		and local name which will be combined to form the reference URI.
 	@param newNamespaceURI The XML namespace URI used in the serialization.
@@ -577,7 +565,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	*/
 	public DefaultRDFResource(final URI newNamespaceURI, final String newLocalName)
 	{
-		this((RDF)null, newNamespaceURI, newLocalName);  //do the default construction, combining the namespace URI and the local name for the reference URI
+		this(null, newNamespaceURI, newLocalName);  //do the default construction, combining the namespace URI and the local name for the reference URI
 	}
 
 	/**Convenience constructor that constructs a resource using a namespace URI
@@ -589,38 +577,17 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	*/
 	public DefaultRDFResource(final RDF rdf, final URI newNamespaceURI, final String newLocalName)
 	{
-		this(rdf, RDFUtilities.createReferenceURI(newNamespaceURI, newLocalName), newNamespaceURI, newLocalName);  //do the default construction, combining the namespace URI and the local name for the reference URI
+		this(rdf, RDFUtilities.createReferenceURI(newNamespaceURI, newLocalName));  //do the default construction, combining the namespace URI and the local name for the reference URI
 	}
 
-	/**Constructs a resource with a reference URI and separate namespace URI and
-		local name.
-	@param referenceURI The reference URI for the new resource.
-	@param newNamespaceURI The XML namespace URI used in the serialization, or
-		<code>null</code> if the namespace URI is not known.
-	@param newLocalName The XML local name used in the serialization, or
-		<code>null</code> if the local name is not known.
-	@see RDF#createResource
-	*/
-	DefaultRDFResource(final URI referenceURI, final URI newNamespaceURI, final String newLocalName)
-	{
-		this(null, referenceURI, newNamespaceURI, newLocalName);	//construct the resource with no known data model
-	}
-
-	/**Constructs a resource with a reference URI and separate namespace URI and
-		local name from a data model.
+	/**Constructs a resource with a reference URI from a data model.
 	@param rdf The data model with which this resource should be associated.
 	@param referenceURI The reference URI for the new resource.
-	@param newNamespaceURI The XML namespace URI used in the serialization, or
-		<code>null</code> if the namespace URI is not known.
-	@param newLocalName The XML local name used in the serialization, or
-		<code>null</code> if the local name is not known.
 	@see RDF#createResource
 	*/
-	DefaultRDFResource(final RDF rdf, final URI referenceURI, final URI newNamespaceURI, final String newLocalName)
+	public DefaultRDFResource(final RDF rdf, final URI referenceURI)
 	{
 		super(referenceURI);  //construct the parent class with the reference URI
-		namespaceURI=newNamespaceURI; //store the namespace URI
-		localName=newLocalName; //store the local name
 		setRDF(rdf);	//associate the resource with the given RDF data model, if any
 	}
 
@@ -726,7 +693,7 @@ for some reason, this method as listed is crucial for determining if two resourc
 */
 		if(getReferenceURI()!=null || value==null)	//if we have a reference URI and/or no value
 		{
-			stringBuilder.append(new RDFXMLifier().getLabel(this));	//start with the default string TODO fix with a common RDFXMLifier
+			stringBuilder.append(new RDFXMLifier().getLabel(getReferenceURI()));	//start with the default string TODO fix with a common RDFXMLifier
 //G***testing			stringBuffer.append(super.toString());	//start with the default string
 		}
 		if(value!=null)	//if we have a value

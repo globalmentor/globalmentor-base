@@ -286,7 +286,7 @@ public class RDFUtilities
 	@return A new resource, optionally with the given type, created from the
 		given resource's RDF data model if possible.
 	*/
-	static RDFResource locateTypedResource(final RDFResource contextResource, final URI referenceURI, final URI namespaceURI, final String localName, final URI typeNamespaceURI, final String typeLocalName)
+	static RDFResource locateTypedResource(final RDFResource contextResource, final URI referenceURI, final URI namespaceURI, final String localName, final URI typeNamespaceURI, final String typeLocalName)	//TODO remove some of these parameters are no longer needed after namespaces and local names are no longer stored
 	{
 		final RDF rdf=contextResource.getRDF();	//get the RDF data model of the given resource
 		if(rdf!=null)	//if we know which RDF data model to use
@@ -296,7 +296,7 @@ public class RDFUtilities
 		}
 		else	//if there is no known data model
 		{
-			final RDFResource resource=new DefaultRDFResource(referenceURI, namespaceURI, localName);  //create a new resource from the given reference URI
+			final RDFResource resource=new DefaultRDFResource(referenceURI);  //create a new resource from the given reference URI
 			if(typeNamespaceURI!=null && typeLocalName!=null)	//if we were given a type
 			{
 				RDFUtilities.addType(resource, typeNamespaceURI, typeLocalName); //add the type property
@@ -452,7 +452,7 @@ public class RDFUtilities
 	*/
 	public static RDFResource getResourceByType(final RDF rdf, final URI typeNamespaceURI, final String typeLocalName)	//TODO should we move these to the RDF data model?
 	{
-		final Iterator resourceIterator=getResourcesByType(rdf, typeNamespaceURI, typeLocalName).iterator();	//get an iterator to matching resources
+		final Iterator<RDFResource> resourceIterator=getResourcesByType(rdf, typeNamespaceURI, typeLocalName).iterator();	//get an iterator to matching resources
 		return resourceIterator.hasNext() ? (RDFResource)resourceIterator.next() : null;	//return the first resource, if there are any at all
 	}
 
@@ -475,7 +475,7 @@ public class RDFUtilities
 	*/
 	public static RDFResource getResourceByType(final RDF rdf, final URI typeURI)
 	{
-		final Iterator resourceIterator=getResourcesByType(rdf, typeURI).iterator();	//get an iterator to matching resources
+		final Iterator<RDFResource> resourceIterator=getResourcesByType(rdf, typeURI).iterator();	//get an iterator to matching resources
 		return resourceIterator.hasNext() ? (RDFResource)resourceIterator.next() : null;	//return the first resource, if there are any at all
 	}
 

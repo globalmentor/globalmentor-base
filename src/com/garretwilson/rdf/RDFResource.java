@@ -20,14 +20,6 @@ public interface RDFResource extends RDFObject, Resource, Cloneable	//TODO fix, 
 	*/
 	public void setReferenceURI(final URI uri);
 
-	/**@return The XML namespace URI used in serialization, or <code>null</code>
-		if no namespace URI was used or there was no namespace.*/
-	public URI getNamespaceURI();
-
-	/**@return The XML local name used in serialization, or <code>null</code>
-		if no namespace URI and local name was used.*/
-	public String getLocalName();
-
 	/**@return The RDF data model with which this resource is associated, or
 		<code>null</code> if this resource is not associated with a data model.
 	*/
@@ -298,6 +290,16 @@ public interface RDFResource extends RDFObject, Resource, Cloneable	//TODO fix, 
 	@return The added property value.
 	*/
 	public RDFObject setProperty(final URI propertyNamespaceURI, final String propertyLocalName, final RDFObject value);
+
+	/**Sets a property by first removing all such properties and then adding
+		a new property. If no value is given, all such properties are removed.
+	@param propertyURI The reference URI of the property resource.
+	@param value A property value&mdash;the object of an RDF statement&mdash;or
+		<code>null</code> if all such properties should be removed with nothing
+		to replace them.
+	@return The added property value.
+	*/
+	public RDFObject setProperty(final URI propertyURI, final RDFObject value);
 
 	/**Sets a plain literal property from a string by removing all property values
 		for the given property and creating a new <code>RDFPropertyValuePair</code>

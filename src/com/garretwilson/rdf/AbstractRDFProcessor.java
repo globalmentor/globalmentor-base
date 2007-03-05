@@ -7,6 +7,7 @@ import com.garretwilson.lang.JavaConstants;
 import com.garretwilson.model.DefaultResource;
 import com.garretwilson.model.Resource;
 import static com.garretwilson.rdf.RDFConstants.*;
+import static com.garretwilson.rdf.RDFUtilities.*;
 import com.garretwilson.util.Debug;
 
 /**Base class for RDF processors.
@@ -299,8 +300,8 @@ public abstract class AbstractRDFProcessor
 						continue;	//go to the next statement---we even though this is a type statement, there's no type value we can use
 					}
 						//if the type value has a separate namespace URI and local name we can use for creating a resource from a factory
-					final URI typeNamespaceURI=RDFXMLifier.getNamespaceURI(typeValueRDFResource);	//see if we can get a namespace URI for the type
-					final String typeLocalName=RDFXMLifier.getLocalName(typeValueRDFResource);	//see if we can get a local name for the type
+					final URI typeNamespaceURI=getNamespaceURI(typeValueRDFResource.getReferenceURI());	//see if we can get a namespace URI for the type
+					final String typeLocalName=getLocalName(typeValueRDFResource.getReferenceURI());	//see if we can get a local name for the type
 					if(typeNamespaceURI!=null && typeLocalName!=null)	//if we have both a type and local name
 					{
 							//try to create a resource using the appropriate resource factory, creating a default resource if no factory could generate one 
