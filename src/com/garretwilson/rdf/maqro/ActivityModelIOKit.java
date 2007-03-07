@@ -103,7 +103,7 @@ public class ActivityModelIOKit extends AbstractIOKit<ResourceModel<Activity>>
 	public static void write(final Activity activity, final OutputStream outputStream) throws IOException
 	{
 			//create an XML document containing the activity TODO see about using a common RDFXMLifier
-		final Document document=new RDFXMLifier().createDocument(activity, new XMLDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
+		final Document document=new RDFXMLGenerator().createDocument(activity, new XMLDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
 		final XMLSerializer xmlSerializer=new XMLSerializer(true);  //create a formatted serializer
 		xmlSerializer.serialize(document, outputStream);	//serialize the document to the output stream
 	}

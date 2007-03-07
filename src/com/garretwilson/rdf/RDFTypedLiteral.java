@@ -50,7 +50,7 @@ public class RDFTypedLiteral<T> extends RDFLiteral
 	{
 		if(object instanceof RDFTypedLiteral)	//if we're being compared with another typed literal
 		{
-			final RDFTypedLiteral typedLiteral=(RDFTypedLiteral)object;	//cast the object to a typed literal
+			final RDFTypedLiteral<?> typedLiteral=(RDFTypedLiteral<?>)object;	//cast the object to a typed literal
 			return getDatatypeURI().equals(typedLiteral.getDatatypeURI())	//compare datatype URIs
 					&& getValue().equals(typedLiteral.getValue()); //compare values
 		}

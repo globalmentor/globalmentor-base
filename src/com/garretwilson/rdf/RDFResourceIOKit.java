@@ -139,11 +139,11 @@ public class RDFResourceIOKit<R extends RDFResource> extends AbstractIOKit<R>
 
 	/**@return An XML serializer appropriately configured for storing the RDF XML.
 	<p>Registered namespace prefixes are registered with the XMLifier.</p>
-	@see RDFXMLifier#registerNamespacePrefix
+	@see RDFXMLGenerator#registerNamespacePrefix
 	*/
-	protected RDFXMLifier getRDFXMLifier()
+	protected RDFXMLGenerator getRDFXMLifier()
 	{
-		final RDFXMLifier rdfXMLifier=new RDFXMLifier();	//create an object to convert the RDF data model to an XML data model
+		final RDFXMLGenerator rdfXMLifier=new RDFXMLGenerator();	//create an object to convert the RDF data model to an XML data model
 		for(final Map.Entry<URI, String> namespacePrefixEntry:namespacePrefixMap.entrySet())	//look through all namespace URIs and prefixes
 		{
 			final URI namespaceURI=namespacePrefixEntry.getKey();	//get the namespace URI

@@ -1,7 +1,5 @@
 package com.garretwilson.lang;
 
-import java.beans.Introspector;
-
 import static com.garretwilson.lang.StringBuilderUtilities.*;
 import static com.garretwilson.lang.JavaConstants.*;
 

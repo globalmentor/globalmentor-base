@@ -99,11 +99,11 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	
 	/**@return An XML serializer appropriately configured for storing the RDF XML.
 	<p>Registered namespace prefixes are registered with the XMLifier.</p>
-	@see RDFXMLifier#registerNamespacePrefix
+	@see RDFXMLGenerator#registerNamespacePrefix
 	*/
-	protected RDFXMLifier getRDFXMLifier()
+	protected RDFXMLGenerator getRDFXMLifier()
 	{
-		final RDFXMLifier rdfXMLifier=new RDFXMLifier();	//create an object to convert the RDF data model to an XML data model
+		final RDFXMLGenerator rdfXMLifier=new RDFXMLGenerator();	//create an object to convert the RDF data model to an XML data model
 		final Iterator namespacePrefixEntryIterator=namespacePrefixMap.entrySet().iterator();	//get an iterator to look through all namespace URIs and prefixes
 		while(namespacePrefixEntryIterator.hasNext())	//while there are more prefixes
 		{

@@ -190,7 +190,7 @@ public class PLOOPProcessor
 			final String literalLexicalForm=rdfLiteral.getLexicalForm();	//get the lexical form of the typed literal
 			if(rdfLiteral instanceof RDFTypedLiteral)	//if this is a typed literal
 			{
-				final RDFTypedLiteral rdfTypedLiteral=(RDFTypedLiteral)rdfLiteral;	//cast the literal to a typed literal
+				final RDFTypedLiteral<?> rdfTypedLiteral=(RDFTypedLiteral<?>)rdfLiteral;	//cast the literal to a typed literal
 				final URI datatypeURI=rdfTypedLiteral.getDatatypeURI();	//get the datatype URI
 				if(JAVA_SCHEME.equals(datatypeURI.getScheme()))	//if the datatype is a Java type
 				{
@@ -218,7 +218,7 @@ public class PLOOPProcessor
 		else if(rdfObject instanceof RDFListResource)	//if the object is a list
 		{
 			final RDFListResource rdfListResource=(RDFListResource)rdfObject;	//cast the object to a list
-			final List<Object> list=new ArrayList<Object>(rdfListResource.size());	//create a new list of the correct size
+			final List<Object> list=new ArrayList<Object>(rdfListResource.size());	//create a new list of the correct size TODO eventually create a list but later check to see if the setter will accept a collection
 			for(final RDFResource rdfListItem:rdfListResource)	//for each RDF resource in the list
 			{
 				list.add(getObject(rdfListItem));	//get or create an object from this RDF list item and add it to our list
@@ -266,7 +266,7 @@ public class PLOOPProcessor
 					}
 				}
 //TODO del when works				readOnlyProperties.add(new PropertyDescription(RDFUtilities.createReferenceURI(GUISE_PROPERTY_NAMESPACE_URI, "session"), GuiseSession.class, getSession()));	//artificially popuplate the read-only property with a session TODO refactor this to allow such variables to be specfified in a general way
-				final Constructor[] constructors=valueClass.getConstructors();	//get all available constructors
+				final Constructor<?>[] constructors=valueClass.getConstructors();	//get all available constructors
 				
 					//see if there is an rdf:value
 				final RDFLiteral valuePropertyLiteral=getValue(resource);	//get the literal value of the rdf:value property, if there is one
@@ -275,7 +275,7 @@ public class PLOOPProcessor
 //TODO del if not wanted					final String[] valueTokens=valuePropertyLiteral.toString().split("[ ,:'_-]");	//split the value into tokens TODO use a constant
 					final String[] valueTokens=valuePropertyLiteral.toString().split(",");	//split the value into tokens TODO use a constant
 					final int parameterCount=valueTokens.length;	//see how many parameters to expect
-					for(final Constructor constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
+					for(final Constructor<?> constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
 					{
 						final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
 						if(parameterTypes.length==parameterCount)	//if this constructor has the correct number of parameters
@@ -329,7 +329,7 @@ public class PLOOPProcessor
 				else	//if there is no rdf:value literal property value
 				{
 					int maxParameterCount=0;	//we'll determine the maximum number of parameters available
-					for(final Constructor constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
+					for(final Constructor<?> constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
 					{
 						final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
 						final int parameterCount=parameterTypes.length;	//see how how many parameters this constructor has
@@ -341,7 +341,7 @@ public class PLOOPProcessor
 	//			TODO del Debug.trace("ready to create object of type", valueClassName, "with constructors with max parameters", maxParameterCount);
 					for(int parameterCount=0; parameterCount<=maxParameterCount; ++parameterCount)	//find a constructor with the least number of parameters, starting with the default constructor, until we exhaust the available constructors
 					{
-						for(final Constructor constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
+						for(final Constructor<?> constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
 						{
 							final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
 							if(parameterTypes.length==parameterCount)	//if this constructor has the correct number of parameters

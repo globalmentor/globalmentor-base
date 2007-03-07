@@ -2,10 +2,10 @@ package com.garretwilson.lang;
 
 import java.io.*;
 import java.lang.reflect.*;
-import java.net.URI;
-import java.net.URL;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.*;
 
 import javax.mail.internet.*;
 
@@ -29,6 +29,21 @@ import static com.garretwilson.net.URIUtilities.createURI;
 */
 public class ClassUtilities
 {
+	
+	/**The getter prefix "get".*/
+	public final static String GET_GETTER_PREFIX="get";
+
+	/**The getter prefix "is".*/
+	public final static String IS_GETTER_PREFIX="is";
+
+	/**The getter prefix "set".*/
+	public final static String SET_SETTER_PREFIX="set";
+
+	/**The pattern recognizing a getter method name: "get" or "is" followed by any other characters (assuming they are Java characters), with the prefix in matching group 1 and the property name in matching group 2.*/
+	public final static Pattern GETTER_METHOD_NAME_PATTERN=Pattern.compile("("+GET_GETTER_PREFIX+'|'+IS_GETTER_PREFIX+")(.+)");
+
+	/**The pattern recognizing a setter method name: "set" followed by any other characters (assuming they are Java characters), with the prefix in matching group 1 and the property name in matching group 2.*/
+	public final static Pattern SETTER_METHOD_NAME_PATTERN=Pattern.compile("("+SET_SETTER_PREFIX+")(.+)");
 
 	/**This class cannot be publicly instantiated.*/
 	private ClassUtilities() {}
@@ -77,7 +92,7 @@ public class ClassUtilities
 		<li>The caller's class loader is not the same as or an ancestor of the class loader for the current class and invocation of <code>{@link SecurityManager#checkPackageAccess s.checkPackageAccess()}</code> denies access to the package of this class.</li>
 	</ul>
 	*/
-	public static <T> Constructor<T> getCompatibleConstructor(final Class<T> objectClass, final Class ... parameterTypes) throws SecurityException
+	public static <T> Constructor<T> getCompatibleConstructor(final Class<T> objectClass, final Class<?> ... parameterTypes) throws SecurityException
 	{
 		Constructor<T> constructor=getConstructor(objectClass, parameterTypes);	//see if we can find an exact constructor
 		if(constructor==null)	//if there is no exact constructor
@@ -133,7 +148,7 @@ public class ClassUtilities
 	
 	
   /**Finds a defined constructor of a class.
-	This method differs from {@link Class#getConstructor(Class[])} in that if no matching constructor is found, <code>null</code> is returned rather than an exception being thrown.
+	This method differs from {@link Class#getConstructor(Class[])} in that if no matching constructor is found, <code>null</code> is returned rather than a {@link NoSuchMethodException} being thrown.
 	@param objectClass The class for which the constructor should be found.
 	@param parameterTypes The constructor parameters.
 	@return The <code>Method</code> object of the public constructor that matches the specified <code>parameterTypes</code>, or <code>null</code> if no such constructor exists.
@@ -143,7 +158,7 @@ public class ClassUtilities
 		<li>The caller's class loader is not the same as or an ancestor of the class loader for the current class and invocation of <code>{@link SecurityManager#checkPackageAccess s.checkPackageAccess()}</code> denies access to the package of this class.</li>
 	</ul>
 	*/
-  public static <T> Constructor<T> getConstructor(final Class<T> objectClass, final Class ... parameterTypes) throws SecurityException
+  public static <T> Constructor<T> getConstructor(final Class<T> objectClass, final Class<?> ... parameterTypes) throws SecurityException
   {
   	try
 		{
@@ -157,7 +172,7 @@ public class ClassUtilities
 
 	/**Convenience function to locate and return the public default constructor of
 		a particular class. This differs from <code>Class.getConstructor()</code> in
-		that this method returns <code>null</code> instead of throwing an exception
+		that this method returns <code>null</code> instead of throwing a {@link NoSuchMethodException}
 		if the given constructor is not found.
 		<p>An equivalent call with more exception-handling overhead would be to
 		enclose <code>objectClass.getConstructor(new Class()[])</code> in a
@@ -168,12 +183,13 @@ public class ClassUtilities
 	@exception SecurityException Thrown if access to the information is denied.
 	@see Class#getConstructors
 	*/
-	public static Constructor getPublicDefaultConstructor(final Class objectClass) throws SecurityException
+	@SuppressWarnings("unchecked")	//all the constructors of the class should be constructors of the class type, even if the API doesn't indicate that for arrays
+	public static <T> Constructor<T> getPublicDefaultConstructor(final Class<T> objectClass) throws SecurityException
 	{
-		final Constructor[] constructors=objectClass.getConstructors(); //look at each constructor
+		final Constructor<T>[] constructors=objectClass.getConstructors(); //look at each constructor
 		for(int i=constructors.length-1; i>=0; --i) //look at each constructor
 		{
-			final Constructor constructor=constructors[i];  //get a reference to this constructor
+			final Constructor<T> constructor=constructors[i];  //get a reference to this constructor
 				//if this constructor has no parameters and is public
 			if(constructor.getParameterTypes().length==0 && Modifier.isPublic(constructor.getModifiers()))
 				return constructor; //we found the default constructor
@@ -181,36 +197,145 @@ public class ClassUtilities
 		return null;  //show that we could not find a default constructor
 	}
 
+	/**Returns a <code>Method</code> object that reflects the specified public member method of the class or interface represented by this <code>Class</code> object.
+	This method differs from {@link Class#getMethod(String, Class...)} in that if no matching method is found, <code>null</code> is returned rather than a {@link NoSuchMethodException} being thrown.
+	@param objectClass The class for which the method should be found.
+	@param name The name of the method.
+	@param parameterTypes The list of parameters.
+	@return The <code>Method</code> object that matches the specified <code>name</code> and <code>parameterTypes</code>, or <code>null</code> if a matching method is not found or if the name is is "&lt;init&gt;"or "&lt;clinit&gt;".
+	@exception NullPointerException if <code>name</code> is <code>null</code>
+	@exception  SecurityException If a security manager, <i>s</i>, is present and any of the following conditions is met:
+	<ul>
+		<li>invocation of <code>{@link SecurityManager#checkMemberAccess s.checkMemberAccess(this, Member.PUBLIC)}</code> deniesaccess to the method</li>
+		<li> the caller's class loader is not the same as or an ancestor of the class loader for the current class and invocation of <code>{@link SecurityManager#checkPackageAccess s.checkPackageAccess()}</code> denies access to the package of this class</li>
+	</ul>
+	@since JDK1.1
+	*/
+  public static Method getMethod(final Class<?> objectClass, final String name, final Class<?> ... parameterTypes) throws SecurityException
+  {
+  	try
+		{
+			return objectClass.getMethod(name, parameterTypes);	//ask the class for the method
+		}
+  	catch(final NoSuchMethodException noSuchMethodException)	//if the method isn't found
+		{
+  		return null;	//indicate that the method couldn't be found
+		}	  	
+  }
+
 	/**Returns the getter method of a given class.
+	This method differs from {@link Class#getMethod(String, Class...)} in that if no matching method is found, <code>null</code> is returned rather than a {@link NoSuchMethodException} being thrown.
 	@param objectClass The class for which a getter method should be returned.
 	@param propertyName The property name, such as "propertyName".
-	@return The method with the name "get<var>PropertyName</var>".
-	@throws NoSuchMethodException if a matching method is not found or if the name is "<init>"or "<clinit>".
+	@return The method with the name "get<var>PropertyName</var>", or <code>null</code> if such a method was not found.
 	*/
-	public static Method getGetterMethod(final Class objectClass, final String propertyName) throws NoSuchMethodException
+	public static Method getGetterMethod(final Class<?> objectClass, final String propertyName)
 	{
-		return objectClass.getMethod(getGetterMethodName(propertyName));	//return the getter method, if there is one
+		return getMethod(objectClass, getGetterMethodName(propertyName));	//return the getter method, if there is one
 	}
 
 	/**Returns the setter method of a given class.
+	This method differs from {@link Class#getMethod(String, Class...)} in that if no matching method is found, <code>null</code> is returned rather than a {@link NoSuchMethodException} being thrown.
 	@param objectClass The class for which a setter method should be returned.
 	@param propertyName The property name, such as "propertyName".
 	@param valueClass The type of property value to be set. 
-	@return The method with the name "set<var>PropertyName</var>" and the given value class as a parameter type.
-	@throws NoSuchMethodException if a matching method is not found or if the name is "<init>"or "<clinit>".
+	@return The method with the name "set<var>PropertyName</var>" and the given value class as a parameter type, or <code>null</code> if such a method was not found.
 	*/
-	public static Method getSetterMethod(final Class objectClass, final String propertyName, final Class valueClass) throws NoSuchMethodException
+	public static Method getSetterMethod(final Class<?> objectClass, final String propertyName, final Class<?> valueClass)
 	{
-		return objectClass.getMethod(getSetterMethodName(propertyName), valueClass);	//return the setter method, if there is one
+		return getMethod(objectClass, getSetterMethodName(propertyName), valueClass);	//return the setter method, if there is one
 	}
 
+	/**Returns a setter method compatible with a given value type, i.e. that could be used if the value is cast to the setter's parameter type.
+	@param objectClass The class for which a setter method should be returned.
+	@param propertyName The property name, such as "propertyName".
+	@param valueClass The type of property value to be set. 
+	@return The method with the name "set<var>PropertyName</var>" and a single parameter assignment-compatible with the given value class, or <code>null</code> if such a method was not found.
+	*/
+	public static Method getCompatibleSetterMethod(final Class<?> objectClass, final String propertyName, final Class<?> valueClass)
+	{
+		final String setterMethodName=getSetterMethodName(propertyName);	//get the setter name to look for
+		for(final Method method:objectClass.getMethods())	//look at each object method
+		{
+			if(method.getName().equals(setterMethodName))	//if this has the setter name
+			{
+				final Class<?>[] parameterTypes=method.getParameterTypes();	//get the parameter types for this method
+				if(parameterTypes.length==1)	//if this setter has one parameter
+				{
+					final Class<?> parameterType=parameterTypes[0];	//get the single parameter type
+					if(parameterType.isAssignableFrom(valueClass))	//if we can assign the value class to the parameter type
+					{
+						return method;	//return this method
+					}
+				}
+			}
+		}
+		return null;	//indicate that we couldn't find a compatible method
+	}
+
+	/**Determines if the given method is a getter method.
+	@param method The method to check
+	@return <code>true</code> if the method has a return type but no parameters, and the name of the method is in the form "get<var>PropertyName</var>" or "is<var>PropertyName</var>".
+	*/
+	public static boolean isGetterMethod(final Method method)
+	{
+		return isGetterMethodName(method.getName()) && method.getReturnType()!=null && method.getParameterTypes().length==0;	//see if the method has a getter name with a return type and no parameters
+	}
+
+	/**Determines if the given method name is that of a getter method.
+	@param methodName The method name, such as "getPropertyName" or "isPropertyName".
+	@return <code>true</code> if the name of the method is in the form "get<var>PropertyName</var>" or "is<var>PropertyName</var>".
+	*/
+	public static boolean isGetterMethodName(final String methodName)
+	{
+		return GETTER_METHOD_NAME_PATTERN.matcher(methodName).matches();	//see if the method name matches the getter method name pattern
+	}
+
+	/**Determines if the given method is a setter method.
+	@param method The method name to check
+	@return <code>true</code> if the method has no return type and a single parameter, and the name of the method is in the form "set<var>PropertyName</var>".
+	*/
+	public static boolean isSetterMethod(final Method method)
+	{
+		return isSetterMethodName(method.getName()) && method.getReturnType()==null && method.getParameterTypes().length==1;	//see if the method has a setter name with no return type and a single parameter		
+	}
+
+	/**Determines if the given method name is that of a setter method.
+	@param methodName The method name, such as "setPropertyName".
+	@return <code>true</code> if the name of the method is in the form "set<var>PropertyName</var>".
+	*/
+	public static boolean isSetterMethodName(final String methodName)
+	{
+		return SETTER_METHOD_NAME_PATTERN.matcher(methodName).matches();	//see if the method name matches the setter method name pattern
+	}
+
+	/**Determines the property name of the given getter method name.
+	@param methodName The method name, such as "getPropertyName" or "isPropertyName".
+	@return The property name in the form <var>propertyName</var>, or <code>null</code> if the name of the method is not in the form "get<var>PropertyName</var>" or "is<var>PropertyName</var>".
+	*/
+	public static String getGetterPropertyName(final String methodName)
+	{
+		final Matcher matcher=GETTER_METHOD_NAME_PATTERN.matcher(methodName);	//match the method name against the getter method name pattern
+		return matcher.matches() ? JavaUtilities.getVariableName(matcher.group(2)) : null;	//if there is a match, return the variable name of the matching group; otherwise return null
+	}
+
+	/**Determines the property name of the given getter method name.
+	@param methodName The method name, such as "setPropertyName".
+	@return The property name in the form <var>propertyName</var>, or <code>null</code> if the name of the method is not in the form "set<var>PropertyName</var>".
+	*/
+	public static String getSetterPropertyName(final String methodName)
+	{
+		final Matcher matcher=SETTER_METHOD_NAME_PATTERN.matcher(methodName);	//match the method name against the setter method name pattern
+		return matcher.matches() ? JavaUtilities.getVariableName(matcher.group(2)) : null;	//if there is a match, return the variable name of the matching group; otherwise return null
+	}
+	
 	/**The name of the getter method corresponding to the given property.
 	@param propertyName The property name, such as "propertyName".
 	@return The name of the getter method in the form "get<var>PropertyName</var>".
 	*/
 	public static String getGetterMethodName(final String propertyName)
 	{
-		return "get"+getProperName(propertyName);	//return "getPropertyName" TODO use a constant
+		return GET_GETTER_PREFIX+getProperName(propertyName);	//return "getPropertyName"
 	}
 
 	/**The name of the setter method corresponding to the given property.
@@ -219,7 +344,7 @@ public class ClassUtilities
 	*/
 	public static String getSetterMethodName(final String propertyName)
 	{
-		return "set"+getProperName(propertyName);	//return "setPropertyName" TODO use a constant
+		return SET_SETTER_PREFIX+getProperName(propertyName);	//return "setPropertyName"
 	}
 
 	/**Creates a property name by appending the property local name to the full class name.
@@ -228,7 +353,7 @@ public class ClassUtilities
 	@return A full class name plus property name.
 	@see #getFullName(Package, String)
 	*/
-	public static String getPropertyName(final Class objectClass, final String localName)
+	public static String getPropertyName(final Class<?> objectClass, final String localName)
 	{
 		return objectClass.getName()+OBJECT_PREDICATE_SEPARATOR+localName;	//return the class name plus the local name separated by a package separator
 	}
@@ -243,7 +368,7 @@ public class ClassUtilities
 		local name.
 	@see #getFullName(Package, String)
 	*/
-	public static String getFullName(final Class objectClass, final String localName)
+	public static String getFullName(final Class<?> objectClass, final String localName)
 	{
 		return getFullName(objectClass.getPackage(), localName);	//return the package plus the name separated by a package separator
 	}
@@ -267,7 +392,7 @@ public class ClassUtilities
 	@return The local name of the class within its package.
 	@see #getSimpleName
 	*/
-	public static String getLocalName(final Class objectClass)
+	public static String getLocalName(final Class<?> objectClass)
 	{
 			//return the class name, with everything before the last package separator removed
 		return removeBeforeLast(objectClass.getName(), PACKAGE_SEPARATOR);
@@ -282,7 +407,7 @@ public class ClassUtilities
 		its enclosing class, if any.
 	@see #getLocalName
 	*/
-	public static String getSimpleName(final Class objectClass)
+	public static String getSimpleName(final Class<?> objectClass)
 	{
 			//return the local name, with everything before the last internal class separator removed
 		return removeBeforeLast(getLocalName(objectClass), INTERNAL_CLASS_SEPARATOR);
@@ -294,7 +419,7 @@ public class ClassUtilities
 	@see #getSimpleName(Class)
 	@see JavaUtilities#getVariableName(String)
 	*/
-	public static String getVariableName(final Class objectClass)
+	public static String getVariableName(final Class<?> objectClass)
 	{
 		return JavaUtilities.getVariableName(getSimpleName(objectClass));	//get the variable name form of the simple name of the class
 	}

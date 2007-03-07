@@ -131,7 +131,7 @@ public class XPackageUtilities
 		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, XPACKAGE_NAMESPACE_PREFIX), XPACKAGE_NAMESPACE_URI.toString());
 		  //add the XLink namespace declaration prefix, xmlns:xlink
 		descriptionElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, XLinkConstants.XLINK_NAMESPACE_PREFIX), XLinkConstants.XLINK_NAMESPACE_URI.toString());
-		final Element rdfElement=RDFXMLifier.createRDFElement(document);  //create an <rdf:RDF> element
+		final Element rdfElement=RDFXMLGenerator.createRDFElement(document);  //create an <rdf:RDF> element
 		descriptionElement.appendChild(rdfElement);	//add the RDF element to the document
 		return document;  //return the document we created
 	}
@@ -142,9 +142,9 @@ public class XPackageUtilities
 		properties from the XLink namespace as XML attributes, for example.
 	@return An object for creating an XML tree from RDF data.
 	*/
-	public static RDFXMLifier createRDFXMLifier()
+	public static RDFXMLGenerator createRDFXMLifier()
 	{
-		final RDFXMLifier rdfXMLifier=new RDFXMLifier(false);  //create a new RDF XMLifier that isn't compact
+		final RDFXMLGenerator rdfXMLifier=new RDFXMLGenerator(false);  //create a new RDF XMLifier that isn't compact
 		  //show that XLink properties should be serialized as attributes
 		rdfXMLifier.addLiteralAttributeSerializationNamespaceURI(XLinkConstants.XLINK_NAMESPACE_URI);
 		return rdfXMLifier; //return the XMLifier we constructed

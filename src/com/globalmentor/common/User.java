@@ -20,6 +20,6 @@ public interface User<I> extends IDable<I>, Principal
 	public String getFullName();
 
 	/**@return The password of the user.*/
-	public String getPassword();
+	public char[] getPassword();
 
 }

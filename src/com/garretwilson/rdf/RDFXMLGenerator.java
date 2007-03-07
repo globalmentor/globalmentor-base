@@ -24,7 +24,7 @@ import org.w3c.dom.*;
 TODO fix bug that doesn't serialize property value resources with no properties
 @author Garret Wilson
 */
-public class RDFXMLifier	//TODO why don't we keep the DOM implementation around at the class level?
+public class RDFXMLGenerator
 {
 
 //TODO why aren't we using real URIs here?
@@ -190,7 +190,7 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 */
 
 	/**Default constructor that creates a compact XMLifier.*/
-	public RDFXMLifier()
+	public RDFXMLGenerator()
 	{
 		this(true); //construct a compact XMLifier
 	}
@@ -201,7 +201,7 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 		elements instead of attributes.
 	@see #setLiteralAttributeSerialization
 	*/
-	public RDFXMLifier(final boolean compact)
+	public RDFXMLGenerator(final boolean compact)
 	{
 		namespacePrefixMap=XMLSerializer.createNamespacePrefixMap();  //create a map of default XML namespace prefixes
 		serializedResourceSet=new IdentityHashSet<RDFResource>();	//create a map that will determine whether resources have been serialized, based upon the identity of resources
@@ -415,10 +415,10 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 	protected void addProperties(final Document document, final Element element, final RDFResource resource)
 	{
 		RDFResource resourceType=getType(resource); //get the type of the resource G***do we want this in the general routine? we probably have to have it
-		final Iterator propertyIterator=resource.getPropertyIterator(); //get an iterator to all the element properties
+		final Iterator<RDFPropertyValuePair> propertyIterator=resource.getPropertyIterator(); //get an iterator to all the element properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
-			final RDFPropertyValuePair rdfPropertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next property name/value pair
+			final RDFPropertyValuePair rdfPropertyValuePair=propertyIterator.next(); //get the next property name/value pair
 		  final RDFResource propertyResource=rdfPropertyValuePair.getProperty();  //get the property predicate
 			final RDFObject propertyValue=rdfPropertyValuePair.getPropertyValue();  //get the property value
 				//if this property is not a type property we already used for creating the element name
@@ -526,10 +526,10 @@ public class RDFXMLifier	//TODO why don't we keep the DOM implementation around 
 						&& valueResource.getPropertyCount()>0)	//if this resource has at least one property 
 				{
 					boolean serializeSubPropertyLiteralAttributes=true; //we'll see if all the subproperties are plain literals without language indications; if so, we'll just add them as attributes
-					final Iterator propertyIterator=valueResource.getPropertyIterator(); //get an iterator to all the element properties
+					final Iterator<RDFPropertyValuePair> propertyIterator=valueResource.getPropertyIterator(); //get an iterator to all the element properties
 					while(propertyIterator.hasNext()) //while there are more properties
 					{
-						final RDFPropertyValuePair subPropertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next property name/value pair
+						final RDFPropertyValuePair subPropertyValuePair=propertyIterator.next(); //get the next property name/value pair
 						final RDFResource subPropertyResource=subPropertyValuePair.getProperty();  //get the property resource
 						final RDFObject subPropertyValue=subPropertyValuePair.getPropertyValue();  //get the property value
 						final URI subPropertyResourceURI=subPropertyResource.getReferenceURI();	//get the URI of the subproperty

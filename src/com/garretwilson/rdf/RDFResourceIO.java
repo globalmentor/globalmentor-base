@@ -156,7 +156,7 @@ public class RDFResourceIO<T extends RDFResource> implements IO<T>
 		{
 			final DocumentBuilder documentBuilder=createDocumentBuilder(true);	//create a new namespace-aware document builder
 			//create an XML document containing the resource TODO see about using a common RDFXMLifier
-			final Document document=new RDFXMLifier().createDocument(resource, documentBuilder.getDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
+			final Document document=new RDFXMLGenerator().createDocument(resource, documentBuilder.getDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
 			final XMLSerializer xmlSerializer=new XMLSerializer(true);  //create a formatted serializer
 			xmlSerializer.serialize(document, outputStream);	//serialize the document to the output stream
 		}

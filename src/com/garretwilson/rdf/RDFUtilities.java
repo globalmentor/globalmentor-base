@@ -14,6 +14,8 @@ import com.garretwilson.rdf.xmlschema.StringLiteral;
 import com.garretwilson.rdf.xmlschema.URILiteral;
 
 import static com.garretwilson.rdf.RDFConstants.*;
+import static com.garretwilson.rdf.RDFUtilities.getLocalName;
+import static com.garretwilson.rdf.RDFUtilities.getNamespaceURI;
 
 import com.garretwilson.text.W3CDateFormat;
 import com.garretwilson.text.xml.XMLDOMImplementation;
@@ -211,19 +213,6 @@ public class RDFUtilities
 		is associated with the given resource, a new resource will be created and
 		returned.
 	@param contextResource A resource which may be associated with an RDF data model
-	@param referenceURI The reference URI of the resource to retrieve.
-	@return A resource with the given reference URI.
-	*/
-	public static RDFResource locateResource(final RDFResource contextResource, final URI referenceURI)
-	{
-		return locateResource(contextResource, referenceURI, null, null);	//locate a resource without knowing its type
-	}
-
-	/**Locates and returns an existing resource or creates a new resource 
-		from the data model associated with the given resource. If no data model
-		is associated with the given resource, a new resource will be created and
-		returned.
-	@param contextResource A resource which may be associated with an RDF data model
 	@param namespaceURI The XML namespace URI used in the serialization.
 	@param localName The XML local name used in the serialization.
 	@return A resource with a reference URI corresponding to the given namespace
@@ -231,7 +220,7 @@ public class RDFUtilities
 	*/
 	public static RDFResource locateResource(final RDFResource contextResource, final URI namespaceURI, final String localName)
 	{
-		return locateResource(contextResource, RDFUtilities.createReferenceURI(namespaceURI, localName), namespaceURI, localName);	//locate a resource, constructing a reference URI from the given namespace URI and local name
+		return locateResource(contextResource, RDFUtilities.createReferenceURI(namespaceURI, localName));	//locate a resource, constructing a reference URI from the given namespace URI and local name
 	}
 
 	/**Locates and returns an existing resource or creates a new resource 
@@ -240,33 +229,11 @@ public class RDFUtilities
 		returned.
 	@param contextResource A resource which may be associated with an RDF data model
 	@param referenceURI The reference URI of the resource to retrieve.
-	@param namespaceURI The XML namespace URI used in the serialization, or
-		<code>null</code> if the namespace URI is not known.
-	@param localName The XML local name used in the serialization, or
-		<code>null</code> if the local name is not known.
-	@return A resource with a reference URI corresponding to the given namespace
-		URI and local name.
-	*/
-	protected static RDFResource locateResource(final RDFResource contextResource, final URI referenceURI, final URI namespaceURI, final String localName)
-	{
-		return locateTypedResource(contextResource, referenceURI, namespaceURI, localName, null, null);	//locate a resource, constructing a reference URI from the given namespace URI and local name
-	}
-
-	/**Locates and returns an existing resource or creates a new resource 
-		from the data model associated with the given resource. If no data model
-		is associated with the given resource, a new resource will be created and
-		returned.
-	@param contextResource A resource which may be associated with an RDF data model
-	@param referenceURI The reference URI of the resource to retrieve.
-	@param typeNamespaceURI The XML namespace used in the serialization of the
-		type URI, or <code>null</code> if the type is not known.
-	@param typeLocalName The XML local name used in the serialization of the type
-		URI, or <code>null</code> if the type is not known.
 	@return A resource with the given reference URI.
 	*/
-	public static RDFResource locateTypedResource(final RDFResource contextResource, final URI referenceURI, final URI typeNamespaceURI, final String typeLocalName)
+	public static RDFResource locateResource(final RDFResource contextResource, final URI referenceURI)
 	{
-		return locateTypedResource(contextResource, referenceURI, null, null, typeNamespaceURI, typeLocalName);	//locate a resource with no namespace URI or local name
+		return locateTypedResource(contextResource, referenceURI, null);	//locate a resource without knowing its type
 	}
 
 	/**Locates and returns an existing resource or creates a new resource 
@@ -275,10 +242,21 @@ public class RDFUtilities
 		returned.
 	@param contextResource A resource which may be associated with an RDF data model
 	@param referenceURI The reference URI of the new resource.
-	@param namespaceURI The XML namespace URI used in the serialization, or
-		<code>null</code> if the namespace URI is not known.
-	@param localName The XML local name used in the serialization, or
-		<code>null</code> if the local name is not known.
+	@param typeURI The URI of the type, or <code>null</code> if the type is not known.
+	@return A new resource, optionally with the given type, created from the
+		given resource's RDF data model if possible.
+	*/
+	public static RDFResource locateTypedResource(final RDFResource contextResource, final URI referenceURI, final URI typeURI)
+	{
+		return locateTypedResource(contextResource, referenceURI, typeURI!=null ? getNamespaceURI(typeURI) : null, typeURI!=null ? getLocalName(typeURI) : null);	//locate a typed resource after extracting the type namespace URI and local name
+	}
+
+	/**Locates and returns an existing resource or creates a new resource 
+		from the data model associated with the given resource. If no data model
+		is associated with the given resource, a new resource will be created and
+		returned.
+	@param contextResource A resource which may be associated with an RDF data model
+	@param referenceURI The reference URI of the new resource.
 	@param typeNamespaceURI The XML namespace used in the serialization of the
 		type URI, or <code>null</code> if the type is not known.
 	@param typeLocalName The XML local name used in the serialization of the type
@@ -286,13 +264,13 @@ public class RDFUtilities
 	@return A new resource, optionally with the given type, created from the
 		given resource's RDF data model if possible.
 	*/
-	static RDFResource locateTypedResource(final RDFResource contextResource, final URI referenceURI, final URI namespaceURI, final String localName, final URI typeNamespaceURI, final String typeLocalName)	//TODO remove some of these parameters are no longer needed after namespaces and local names are no longer stored
+	public static RDFResource locateTypedResource(final RDFResource contextResource, final URI referenceURI, final URI typeNamespaceURI, final String typeLocalName)
 	{
 		final RDF rdf=contextResource.getRDF();	//get the RDF data model of the given resource
 		if(rdf!=null)	//if we know which RDF data model to use
 		{
 				//locate the resource within the RDF data model 
-			return rdf.locateTypedResource(referenceURI, namespaceURI, localName, typeNamespaceURI, typeLocalName);
+			return rdf.locateTypedResource(referenceURI, typeNamespaceURI, typeLocalName);
 		}
 		else	//if there is no known data model
 		{
@@ -813,7 +791,7 @@ public class RDFUtilities
 	public static String toString(final RDF rdf)
 	{
 		final ByteArrayOutputStream outputStream=new ByteArrayOutputStream(); //create an output stream of bytes
-		final RDFXMLifier rdfXMLifier=new RDFXMLifier();  //create an object to turn the RDF into XML
+		final RDFXMLGenerator rdfXMLifier=new RDFXMLGenerator();  //create an object to turn the RDF into XML
 /*G***setup namespace prefixes if we can
 				//setup the Mentoract namespace prefixes
 		rdfXMLifier.getNamespacePrefixMap().put(MENTORACT_PROTOCOL_NAMESPACE_URI, MENTORACT_PROTOCOL_DEFAULT_PREFIX);
@@ -833,7 +811,7 @@ public class RDFUtilities
 	public static String toString(final RDFResource resource)
 	{
 		final ByteArrayOutputStream outputStream=new ByteArrayOutputStream(); //create an output stream of bytes
-		final RDFXMLifier rdfXMLifier=new RDFXMLifier();  //create an object to turn the RDF into XML
+		final RDFXMLGenerator rdfXMLifier=new RDFXMLGenerator();  //create an object to turn the RDF into XML
 /*G***setup namespace prefixes if we can
 				//setup the Mentoract namespace prefixes
 		rdfXMLifier.getNamespacePrefixMap().put(MENTORACT_PROTOCOL_NAMESPACE_URI, MENTORACT_PROTOCOL_DEFAULT_PREFIX);

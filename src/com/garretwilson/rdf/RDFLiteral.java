@@ -7,7 +7,7 @@ import com.garretwilson.util.LocaleText;
 /**Represents an RDF literal, either plain or typed.
 @author Garret Wilson
 */
-public abstract class RDFLiteral implements RDFObject, Comparable
+public abstract class RDFLiteral implements RDFObject, Comparable<RDFLiteral>
 {
 
 	/**@return The lexical form, a Unicode string in Normal Form C.*/
@@ -74,7 +74,7 @@ public abstract class RDFLiteral implements RDFObject, Comparable
 	<p>This version determines order based the lexical form of the literal,
 		using the appropriate collator returned by
 		<code>getCollator(RDFLiteral)</code>.</p>
-	@param object The object with which to compare the object. This must be
+	@param literal The object with which to compare the object. This must be
 		another <code>RDFLiteral</code> object.
 	@return A negative integer, zero, or a positive integer if the first resource
 		lexical form is less than, equal to, or greater than the lexical form of
@@ -83,9 +83,8 @@ public abstract class RDFLiteral implements RDFObject, Comparable
 		<code>RDFLiteral</code>.
 	@see #getCollator(RDFLiteral)
 	*/
-	public int compareTo(Object object) throws ClassCastException
+	public int compareTo(final RDFLiteral literal) throws ClassCastException
 	{
-		final RDFLiteral literal=(RDFLiteral)object;	//cast the object to a literal
 		final Collator collator=getCollator(literal);	//get a collator with which to compare the literals
 		return collator.compare(getLexicalForm(), literal.getLexicalForm());	//compare the lexical forms of the two literals 
 	}

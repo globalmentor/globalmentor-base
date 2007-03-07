@@ -693,7 +693,7 @@ for some reason, this method as listed is crucial for determining if two resourc
 */
 		if(getReferenceURI()!=null || value==null)	//if we have a reference URI and/or no value
 		{
-			stringBuilder.append(new RDFXMLifier().getLabel(getReferenceURI()));	//start with the default string TODO fix with a common RDFXMLifier
+			stringBuilder.append(new RDFXMLGenerator().getLabel(getReferenceURI()));	//start with the default string TODO fix with a common RDFXMLifier
 //G***testing			stringBuffer.append(super.toString());	//start with the default string
 		}
 		if(value!=null)	//if we have a value
