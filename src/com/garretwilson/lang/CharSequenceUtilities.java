@@ -244,10 +244,6 @@ public class CharSequenceUtilities
 	All characters are first encoded using UTF-8.
 	Every invalid character is converted to its Unicode hex equivalent and prefixed with the given escape character.
 	Characters are assumed to be valid unless specified otherwise.
-	<p>As an example, the URI encoding rules in
-		<a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
-		"Uniform Resource Identifiers (URI): Generic Syntax" would use
-		<code>escapeHex(charSequence, <var>validCharacters</var>, null, '%', 2);</code>.</p>
 	@param charSequence The data to escape.
 	@param validCharacters The characters that should not be escaped and all others should be escaped, or <code>null</code> if characters should not be matched against valid characters.
 	@param invalidCharacters The characters that, if they appear, should be escaped, or <code>null</code> if characters should not be matched against invalid characters.
@@ -255,9 +251,8 @@ public class CharSequenceUtilities
 	@param length The number of characters to use for the hex representation.
 	@return A string containing the escaped data.
 	@exception IllegalArgumentException if neither valid nor invalid characters are given.
-	@see <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>
 	*/
-	public static String escapeHex(final CharSequence charSequence, final String validCharacters, final String invalidCharacters, final char escapeChar, final int length)
+	public static String escapeHex(final CharSequence charSequence, final String validCharacters, final String invalidCharacters, final char escapeChar, final int length)	//TODO del if not needed; more specialized processing is needed for URIs, such as UTF-8 conversion
 	{
 		try
 		{
@@ -290,16 +285,12 @@ public class CharSequenceUtilities
 	/**Decodes the escaped characters in the character iterator by
 		converting the hex value after each occurrence of the escape
 		character to the corresponding Unicode character. 
-	<p>For example, to decode a URI according to the URI encoding rules
-		in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
-		"Uniform Resource Identifiers (URI): Generic Syntax", one would
-		use <code>unescapeHex(charSequence, '%', 2)</code>.</p>
 	@param charSequence The data to unescape.
 	@param escapeChar The character that prefixes the hex representation.
 	@param length The number of characters used for the hex representation.
 	@return A string containing the unescaped data.
 	*/
-	public static String unescapeHex(final CharSequence charSequence, final char escapeChar, final int length)
+	public static String unescapeHex(final CharSequence charSequence, final char escapeChar, final int length)	//TODO del if not needed; more specialized processing is needed for URIs, such as UTF-8 conversion
 	{
 		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to hold the result
 		for(int i=0; i<charSequence.length(); ++i)	//look at each character in the sequence

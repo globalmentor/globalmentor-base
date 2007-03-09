@@ -6,8 +6,10 @@ import java.util.*;
 
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
+import static com.garretwilson.text.CharacterEncodingConstants.*;
 import com.garretwilson.text.FormatUtilities;
 import com.garretwilson.text.SyntaxException;
+import com.garretwilson.text.unicode.UnicodeCharacter;
 import com.garretwilson.util.*;
 
 import static com.garretwilson.lang.CharSequenceUtilities.*;
@@ -43,6 +45,63 @@ public class URIUtilities
 		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), path, uri.getQuery(), uri.getFragment());
 	}
 
+	
+	/**Returns the name of the resource at the given path, which will be the name of the last path component.
+	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
+	As examples, "/path/name.ext" will return "name.ext", "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
+	An empty name is never returned; <code>null</code> will be returned instead. 
+	@param path The path, which should be encoded if {@value URIConstants#PATH_SEPARATOR} characters are present within a path component.
+	@return The name of the last last path component, or <code>null</code> if no last path component exists (i.e. the path is "/" or "").
+	@exception NullPointerException if the given path is <code>null</code>.
+	*/
+	public static String getName(final String path)
+	{
+		final int length=path.length();	//get the length of the path
+		if(length>0)	//if there are path characters
+		{
+			int endIndex=length;	//start at the end of the path (endIndex will always be one position after the ending character)
+			if(path.charAt(endIndex-1)==PATH_SEPARATOR)	//if the path ends with a path separator
+			{
+				--endIndex;	//skip the ending path separator
+			}
+			final int beginIndex=path.lastIndexOf(PATH_SEPARATOR, endIndex-1)+1;	//get the index after the previous separator; if there are no previous separators, this will correctly yield index 0
+			if(endIndex-beginIndex>1)	//if there are characters to collect (there must be more than one position difference in the start and end positions, because the end position is the index after the last character)
+			{
+				return path.substring(beginIndex, endIndex);	//return the name we found
+			}
+		}
+		return null;	//indicate there were no name characters
+	}
+	
+	/**Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component.
+	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
+	As examples, "/path/name.ext" will return "name.ext", "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
+	An empty name is never returned; <code>null</code> will be returned instead. 
+	@param URI The URI the path of which will be examined.
+	@return The raw name of the last last path component, or <code>null</code> if the URI has no path or there is no last path component exists (i.e. the path is "/" or "").
+	@exception NullPointerException if the given URI is <code>null</code>.
+	*/
+	public static String getRawName(final URI uri)
+	{
+		final String rawPath=uri.getRawPath();	//get the raw path of the URI
+		return rawPath!=null ? getName(rawPath) : null;	//if we have a raw path, return the name
+	}
+	
+	/**Returns the decoded name of the resource at the given URI's path, which will be the decoded name of the last path component.
+	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
+	As examples, "/path/name.ext" will return "name.ext", "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
+	An empty name is never returned; <code>null</code> will be returned instead.
+	The path name is first extracted from the URI's raw path and then decoded so that encoded {@value URIConstants#PATH_SEPARATOR} characters will not prevent correct parsing. 
+	@param URI The URI the path of which will be examined.
+	@return The name of the last last path component, or <code>null</code> if the URI has no path or there is no last path component exists (i.e. the path is "/" or "").
+	@exception NullPointerException if the given URI is <code>null</code>.
+	*/
+	public static String getName(final URI uri)
+	{
+		final String rawName=getRawName(uri);	//get the raw name of the URI
+		return rawName!=null ? decode(rawName) : null;	//if there is a raw name, decode and return it
+	}
+	
 	/**Creates a new URI identical to the supplied URI with no query or fragment.
 	@param uri The URI from which to remove the query and fragment, if any.
 	@return A new URI with no query or fragment.
@@ -471,7 +530,7 @@ public class URIUtilities
 	/**Retrieves the file name of the URI.
 	@param uri The URI for which to return a file name.
 	@return The name of the file in the URI.
-	@see #getFile
+	@see #getFile(URI)
 	*/
 	public static String getFileName(final URI uri)
 	{
@@ -533,8 +592,8 @@ public class URIUtilities
 	@param nid The namespace identifier.
 	@param nss The namespace-specific string.
 	@return A URN based upon the given parameters.
-	@see http://www.ietf.org/rfc/rfc2141.txt
-	@throws  IllegalArgumentException if the resulting string violates RFC&nbsp;2396.
+	@see <a href="http://www.ietf.org/rfc/rfc2141.txt">RFC 2141</a>
+	@throws IllegalArgumentException if the resulting string violates RFC&nbsp;2396.
 	*/
 	public static URI createURN(final String nid, final String nss)
 	{
@@ -970,7 +1029,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	*/
 	public static String encode(final String uri)
 	{
-		return escapeHex(uri, NORMAL_CHARS, null, ESCAPE_CHAR, 2);	//escape according to URI encoding rules		
+		return escapeHex(uri, NORMAL_CHARS, null, ESCAPE_CHAR, 2);	//escape according to URI encoding rules TODO fix to handle i18n characters		
 	}
 
 	/**Decodes the escaped ('%') characters in the character iterator
@@ -978,12 +1037,61 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
 		"Uniform Resource Identifiers (URI): Generic Syntax".
 	@param uri The data to URI-decode.
-	@return A string containing the unescaped data.
+	@return A string containing the encoded URI data.
+	@exception IllegalArgumentException if the given URI string contains a character greater than U+00FF.
+	@exception IllegalArgumentException if a given escape character {@value URIConstants#ESCAPE_CHAR} is not followed by a two-digit escape sequence.
 	@see URIConstants#ESCAPE_CHAR
 	*/
 	public static String decode(final String uri)
 	{
-		return unescapeHex(uri, ESCAPE_CHAR, 2);	//unescape according to URI encoding rules
+//TODO del		return unescapeHex(uri, ESCAPE_CHAR, 2);	//unescape according to URI encoding rules
+		final int length=uri.length();	//get the length of the URI string
+		final byte[] decodedBytes=new byte[length];	//create an array of byte to hold the UTF-8 data
+		int byteArrayIndex=0;	//start at the first position in the byte array
+		for(int i=0; i<length; ++i)	//look at each character in the URI
+		{
+			final char c=uri.charAt(i);	//get a reference to this character in the URI
+				//if this is the beginning of an escaped sequence
+//			, and there's room for enough hex characters after it (the last test is lenient, throwing no exception if the escape character doesn't actually encode anything)
+			final byte b;	//we'll determine what byte goes at this position
+			if(c==ESCAPE_CHAR)
+			{
+				if(i<length-2)	//if there's room for enough hex characters after it
+				{
+					final String escapeSequence=uri.substring(i+1, i+3);	//get the two hex characters in the escape sequence							
+					try
+					{
+						b=(byte)Integer.parseInt(escapeSequence, 16);	//convert the escape sequence to a single integer value and add it to the buffer
+						i+=2;	//skip the escape sequence (we'll go to the last character, and we'll be advanced one character when we go back to the start of the loop)
+					}
+					catch(NumberFormatException numberFormatException)	//if the characters weren't really hex characters
+					{
+						throw new IllegalArgumentException("Invalid escape sequence "+escapeSequence);
+					}
+				}
+				else	//if there is no room for an escape sequence at the end of the string
+				{
+					throw new IllegalArgumentException("Invalid escape sequence "+uri.substring(i+1));					
+				}
+			}
+			else	//if this is not an escaped character
+			{
+				if(c>0xff)	//if this character is larger than a byte, the URI was not encoded correctly
+				{
+					throw new IllegalArgumentException("Invalid encoded URI character "+UnicodeCharacter.getCodePointString(c));
+				}
+				b=(byte)c;	//add this character to the result with no change
+			}
+			decodedBytes[byteArrayIndex++]=b;	//add the byte to the buffer and keep going
+		}
+		try
+		{
+			return new String(decodedBytes, 0, byteArrayIndex, UTF_8);	//consider the bytes as a series of UTF-8 encoded characters.
+		}
+		catch(final UnsupportedEncodingException unsupportedEncodingException)	//UTF-8 should always be supported
+		{
+			throw new AssertionError(unsupportedEncodingException);
+		}
 	}
 
 		//variables for fixing a JDK URI.resolve() bug
