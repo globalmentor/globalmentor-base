@@ -12,7 +12,7 @@ public class XMLObjectDecoder
 {
 
 	/**A map of object factories, keyed to namespace URI.*/
-	private final Map xmlObjectFactoryMap=new HashMap();
+	private final Map xmlObjectFactoryMap=new HashMap();	//TODO change these to URIs eventually, if this code is even useful anymore
 
 		/**Registers an object factory to be used to create objects encoded from
 		  elements in the specified namespace. If an object factory is already

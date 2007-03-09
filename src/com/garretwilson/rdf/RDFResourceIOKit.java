@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import com.garretwilson.io.*;
-import com.garretwilson.model.*;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XMLSerializer;
@@ -31,7 +30,7 @@ public class RDFResourceIOKit<R extends RDFResource> extends AbstractIOKit<R>
 			to be serialized.</p> 
 		@param namespaceURI The XML namespace.
 		@param prefix The serialization prefix to use with the given namespace.
-		@see #getRDFXMLifier()
+		@see #getRDFXMLGenerator()
 		@see #store()
 		*/
 		public void registerNamespacePrefix(final URI namespaceURI, final String prefix)
@@ -138,19 +137,19 @@ public class RDFResourceIOKit<R extends RDFResource> extends AbstractIOKit<R>
 	}
 
 	/**@return An XML serializer appropriately configured for storing the RDF XML.
-	<p>Registered namespace prefixes are registered with the XMLifier.</p>
+	<p>Registered namespace prefixes are registered with the {@link RDFXMLGenerator}.</p>
 	@see RDFXMLGenerator#registerNamespacePrefix
 	*/
-	protected RDFXMLGenerator getRDFXMLifier()
+	protected RDFXMLGenerator getRDFXMLGenerator()
 	{
-		final RDFXMLGenerator rdfXMLifier=new RDFXMLGenerator();	//create an object to convert the RDF data model to an XML data model
+		final RDFXMLGenerator rdfXMLGenerator=new RDFXMLGenerator();	//create an object to convert the RDF data model to an XML data model
 		for(final Map.Entry<URI, String> namespacePrefixEntry:namespacePrefixMap.entrySet())	//look through all namespace URIs and prefixes
 		{
 			final URI namespaceURI=namespacePrefixEntry.getKey();	//get the namespace URI
 			final String namespacePrefix=namespacePrefixEntry.getValue();	//get the namespace prefix
-			rdfXMLifier.registerNamespacePrefix(namespaceURI.toString(), namespacePrefix);	//register this prefix for the this namespace
+			rdfXMLGenerator.registerNamespacePrefix(namespaceURI, namespacePrefix);	//register this prefix for the this namespace
 		}
-		return rdfXMLifier;	//return the XMLifier we created
+		return rdfXMLGenerator;	//return the XMLifier we created
 	}
 	
 	/**@return An XML serializer appropriately configured for storing the RDF XML.*/
@@ -177,12 +176,12 @@ public class RDFResourceIOKit<R extends RDFResource> extends AbstractIOKit<R>
 		try
 		{
 			final RDF rdf=new RDF(baseURI);  //create a new RDF data model, showing the base URI
-			final Iterator resourceFactoryEntryIterator=resourceFactoryMap.entrySet().iterator();	//get an iterator to look through all resource factories
+			final Iterator<Map.Entry<URI, RDFResourceFactory>> resourceFactoryEntryIterator=resourceFactoryMap.entrySet().iterator();	//get an iterator to look through all resource factories
 			while(resourceFactoryEntryIterator.hasNext())	//while there are more resource factories
 			{
-				final Map.Entry resourceFactoryEntry=(Map.Entry)resourceFactoryEntryIterator.next();	//get the next entry
-				final URI typeNamespaceURI=(URI)resourceFactoryEntry.getKey();	//get the type namespace URI
-				final RDFResourceFactory resourceFactory=(RDFResourceFactory)resourceFactoryEntry.getValue();	//get the resource factory associated with this type
+				final Map.Entry<URI, RDFResourceFactory> resourceFactoryEntry=resourceFactoryEntryIterator.next();	//get the next entry
+				final URI typeNamespaceURI=resourceFactoryEntry.getKey();	//get the type namespace URI
+				final RDFResourceFactory resourceFactory=resourceFactoryEntry.getValue();	//get the resource factory associated with this type
 				rdf.registerResourceFactory(typeNamespaceURI, resourceFactory);	//register this resource factory for this type namespace
 			}
 			final XMLProcessor xmlProcessor=getXMLProcessor();	//get the XML processor
@@ -212,7 +211,7 @@ public class RDFResourceIOKit<R extends RDFResource> extends AbstractIOKit<R>
 	public void save(final R resource, final OutputStream outputStream) throws IOException
 	{
 			//create an XML document containing the resource
-		final Document document=getRDFXMLifier().createDocument((RDFResource)resource, new XMLDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
+		final Document document=getRDFXMLGenerator().createDocument((RDFResource)resource, new XMLDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
 		getXMLSerializer().serialize(document, outputStream);	//serialize the document to the output stream
 	}
 

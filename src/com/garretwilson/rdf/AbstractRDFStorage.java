@@ -3,8 +3,8 @@ package com.garretwilson.rdf;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
 import com.garretwilson.io.*;
-import com.garretwilson.rdf.*;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import com.garretwilson.text.xml.XMLProcessor;
@@ -29,39 +29,31 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 		/**@return The location where the RDF should be stored.*/
 		public URI getStorageURI() {return storageURI;}
 
-	/**The map of prefixes, keyed by namespace URIs.*/
-	protected final Map namespacePrefixMap=new HashMap();
+		/**The map of prefixes, keyed by namespace URIs.*/
+		private final Map<URI, String> namespaceURIPrefixMap=new HashMap<URI, String>();
 
-		/**@return The map of prefixes, keyed by namespace URI.*/
-		protected Map getNamespacePrefixMap() {return namespacePrefixMap;}
-		
-		/**Registers the given prefix to be used with the given namespace URI.
-			If a prefix is already registered with the given namespace, it is
-			replaced with this prefix.
-		<p>Registered namespace prefixes will be registered with the created RDF
-			XMLifier, and also added to the document element of the XML document
-			to be serialized.</p> 
-		@param namespaceURI The XML namespace.
-		@param prefix The serialization prefix to use with the given namespace.
-		@see #getRDFXMLifier()
-		@see #store()
-		*/
-		public void registerNamespacePrefix(final URI namespaceURI, final String prefix)
-		{
-			namespacePrefixMap.put(namespaceURI, prefix);	//store the prefix in the map, keyed to the URI
-		}
+			/**Registers the given prefix to be used with the given namespace URI.
+				If a prefix is already registered with the given namespace, it is
+				replaced with this prefix.
+			@param namespaceURI The XML namespace URI.
+			@param prefix The serialization prefix to use with the given namespace.
+			*/
+			public void registerNamespacePrefix(final URI namespaceURI, final String prefix)
+			{
+				namespaceURIPrefixMap.put(namespaceURI, prefix);	//store the prefix in the map, keyed to the URI
+			}
 
-		/**Unregisters the prefix for the given namespace URI.
-			If no prefix is registered for the given namespace, no action occurs.
-		@param namespaceURI The XML namespace.
-		*/
-		public void unregisterNamespacePrefix(final URI namespaceURI, final String prefix)
-		{
-			namespacePrefixMap.remove(namespaceURI);	//remove whatever prefix is registered with this namespace, if any
-		}
+			/**Unregisters the prefix for the given namespace URI.
+				If no prefix is registered for the given namespace, no action occurs.
+			@param namespaceURI The XML namespace URI.
+			*/
+			public void unregisterNamespacePrefix(final String namespaceURI, final String prefix)
+			{
+				namespaceURIPrefixMap.remove(namespaceURI);	//remove whatever prefix is registered with this namespace, if any
+			}
 
 	/**A map of resource factories, keyed to namespace URI.*/
-	private final Map resourceFactoryMap=new HashMap();
+	private final Map<URI, RDFResourceFactory> resourceFactoryMap=new HashMap<URI, RDFResourceFactory>();
 
 		/**Registers a resource factory to be used to create resources with a type
 			from the specified namespace. If a resource factory is already registered
@@ -98,21 +90,21 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	}
 	
 	/**@return An XML serializer appropriately configured for storing the RDF XML.
-	<p>Registered namespace prefixes are registered with the XMLifier.</p>
-	@see RDFXMLGenerator#registerNamespacePrefix
+	<p>Registered namespace prefixes are registered with the {@link RDFXMLGenerator}.</p>
+	@see RDFXMLGenerator#registerNamespacePrefix(URI, String)
 	*/
-	protected RDFXMLGenerator getRDFXMLifier()
+	protected RDFXMLGenerator getRDFXMLGenerator()
 	{
-		final RDFXMLGenerator rdfXMLifier=new RDFXMLGenerator();	//create an object to convert the RDF data model to an XML data model
-		final Iterator namespacePrefixEntryIterator=namespacePrefixMap.entrySet().iterator();	//get an iterator to look through all namespace URIs and prefixes
-		while(namespacePrefixEntryIterator.hasNext())	//while there are more prefixes
+		final RDFXMLGenerator rdfXMLGenerator=new RDFXMLGenerator();	//create an object to convert the RDF data model to an XML data model
+		final Iterator<Map.Entry<URI, String>> namespaceURIPrefixEntryIterator=namespaceURIPrefixMap.entrySet().iterator();	//get an iterator to look through all namespace URIs and prefixes
+		while(namespaceURIPrefixEntryIterator.hasNext())	//while there are more prefixes
 		{
-			final Map.Entry namespacePrefixEntry=(Map.Entry)namespacePrefixEntryIterator.next();	//get the next entry
-			final URI namespaceURI=(URI)namespacePrefixEntry.getKey();	//get the namespace URI
-			final String namespacePrefix=(String)namespacePrefixEntry.getValue();	//get the namespace prefix
-			rdfXMLifier.registerNamespacePrefix(namespaceURI.toString(), namespacePrefix);	//register this prefix for the this namespace
+			final Map.Entry<URI, String> namespaceURIPrefixEntry=namespaceURIPrefixEntryIterator.next();	//get the next entry
+			final URI namespaceURI=namespaceURIPrefixEntry.getKey();	//get the namespace URI
+			final String namespacePrefix=namespaceURIPrefixEntry.getValue();	//get the namespace prefix
+			rdfXMLGenerator.registerNamespacePrefix(namespaceURI, namespacePrefix);	//register this prefix for the this namespace
 		}
-		return rdfXMLifier;	//return the XMLifier we created
+		return rdfXMLGenerator;	//return the XMLifier we created
 	}
 	
 	/**@return An XML serializer appropriately configured for storing the RDF XML.*/
@@ -130,17 +122,17 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	/**@return An RDF processor appropriately configured for processing RDF
 		stored in an XML data model.
 	<p>Registered resource factories are registered with the RDF data model.</p>
-	@see RDF#registerResourceFactory
+	@see RDF#registerResourceFactory(URI, RDFResourceFactory)
 	*/
 	protected RDFXMLProcessor getRDFXMLProcessor()
 	{
 		final RDF rdf=new RDF();	//create a new RDF data model
-		final Iterator resourceFactoryEntryIterator=resourceFactoryMap.entrySet().iterator();	//get an iterator to look through all resource factories
+		final Iterator<Map.Entry<URI, RDFResourceFactory>> resourceFactoryEntryIterator=resourceFactoryMap.entrySet().iterator();	//get an iterator to look through all resource factories
 		while(resourceFactoryEntryIterator.hasNext())	//while there are more resource factories
 		{
-			final Map.Entry resourceFactoryEntry=(Map.Entry)resourceFactoryEntryIterator.next();	//get the next entry
-			final URI typeNamespaceURI=(URI)resourceFactoryEntry.getKey();	//get the type namespace URI
-			final RDFResourceFactory resourceFactory=(RDFResourceFactory)resourceFactoryEntry.getValue();	//get the resource factory associated with this type
+			final Map.Entry<URI, RDFResourceFactory> resourceFactoryEntry=resourceFactoryEntryIterator.next();	//get the next entry
+			final URI typeNamespaceURI=resourceFactoryEntry.getKey();	//get the type namespace URI
+			final RDFResourceFactory resourceFactory=resourceFactoryEntry.getValue();	//get the resource factory associated with this type
 			rdf.registerResourceFactory(typeNamespaceURI, resourceFactory);	//register this resource factory for this type namespace
 		}
 		return new RDFXMLProcessor(rdf);	//create an RDF XML processor, using the RDF data model we created and configured
@@ -164,15 +156,15 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	{
 		final RDF rdf=getRDF();	//get the RDF data model representing the data
 			//create an XML document from the RDF
-		final Document document=getRDFXMLifier().createDocument(rdf, new XMLDOMImplementation());  //G***try to make this XML parser agnostic
+		final Document document=getRDFXMLGenerator().createDocument(rdf, new XMLDOMImplementation());  //G***try to make this XML parser agnostic
 			//make sure all the registered namespaces are declared on the document element just to make things look nice in the serialization
 		final Element documentElement=document.getDocumentElement();	//get the XML document element
-		final Iterator namespacePrefixEntryIterator=namespacePrefixMap.entrySet().iterator();	//get an iterator to look through all namespace URIs and prefixes
-		while(namespacePrefixEntryIterator.hasNext())	//while there are more prefixes
+		final Iterator<Map.Entry<URI, String>> namespaceURIPrefixEntryIterator=namespaceURIPrefixMap.entrySet().iterator();	//get an iterator to look through all namespace URIs and prefixes
+		while(namespaceURIPrefixEntryIterator.hasNext())	//while there are more prefixes
 		{
-			final Map.Entry namespacePrefixEntry=(Map.Entry)namespacePrefixEntryIterator.next();	//get the next entry
-			final URI namespaceURI=(URI)namespacePrefixEntry.getKey();	//get the namespace URI
-			final String namespacePrefix=(String)namespacePrefixEntry.getValue();	//get the namespace prefix
+			final Map.Entry<URI, String> namespaceURIPrefixEntry=namespaceURIPrefixEntryIterator.next();	//get the next entry
+			final URI namespaceURI=namespaceURIPrefixEntry.getKey();	//get the namespace URI
+			final String namespacePrefix=namespaceURIPrefixEntry.getValue();	//get the namespace prefix
 				//make sure this xmlns:prefix attribute is declared
 			XMLNamespaceProcessor.ensureNamespaceDeclaration(document.getDocumentElement(), namespacePrefix, namespaceURI.toString());
 		}

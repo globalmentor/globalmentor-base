@@ -44,7 +44,7 @@ public class JavaUtilities
 			return comparable1==null ? -1 : 1;  //the null object is lower
 	}
 
-	/**Constructs a proper name from the given name by capitalizing the first letter of the name
+	/**Constructs a proper name from the given name by capitalizing the first letter of the name.
 	@param name The name to convert to a proper name.
 	@return A proper name appropriate for the given name.
 	@see #getVariableName(String)

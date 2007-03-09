@@ -539,13 +539,18 @@ public class PLOOPProcessor
 			final Class<?> propertyValueType=propertyValue.getClass();	//get the type of the value
 			final String variableName=getLocalName(propertyURI);	//get the local name of the property
 //		TODO del 	Debug.trace("looking at property name:", variableName);
+/*TODO fix
 			final String setterMethodName=getSetterMethodName(variableName);	//get the setter method name based upon the variable name
 //		TODO del Debug.trace("setter: ", setterMethodName);
-				//try to find a compatible setter method
+Debug.trace("setter: ", setterMethodName);
+*/
+				//try to find a compatible setter method; get the variable name from each supposed setter in case the setter has multiple capital letters, such as setID()
 			final Method[] methods=objectClass.getMethods();	//get all the class methods
 			for(final Method method:methods)	//for each method
 			{
-				if(method.getName().equals(setterMethodName))	//if this has the setter name
+//TODO del Debug.trace("looking at method:", method.getName());
+//TODO del when works				if(method.getName().equals(setterMethodName))	//if this has the setter name
+				if(variableName.equals(getSetterPropertyName(method.getName())))	//if we could consider this method a setter for the variable we have 
 				{
 //				TODO del Debug.trace("found setter", setterMethodName);
 					final Class<?>[] parameterTypes=method.getParameterTypes();	//get the parameter types for this method
@@ -564,11 +569,13 @@ public class PLOOPProcessor
 				}
 			}
 				//if no setter could be found, try to find a getter method to verify this is a property that can be set
-			final String getterMethodName=getGetterMethodName(variableName);	//get the getter method name based upon the variable name
+				//get the variable name from each supposed getter in case the getter has multiple capital letters, such as getID()
+//TODO del when works			final String getterMethodName=getGetterMethodName(variableName);	//get the getter method name based upon the variable name
 //TODO del Debug.trace("getter: ", getterMethodName);
 			for(final Method method:methods)	//for each method
 			{
-				if(method.getName().equals(getterMethodName) && method.getParameterTypes().length==0)	//if this has the getter name and no parameters
+//TODO del when works				if(method.getName().equals(getterMethodName) && method.getParameterTypes().length==0)	//if this has the getter name and no parameters
+				if(variableName.equals(getGetterPropertyName(method.getName())))	//if we could consider this method a getter for the variable we have 
 				{
 					final Class<?> returnType=method.getReturnType();	//get the return type of the getter
 //				TODO del Debug.trace("found getter", getterMethodName, "for class", objectClass, "with return type", returnType);
