@@ -6,7 +6,10 @@ import java.util.*;
 
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
+import com.garretwilson.lang.IntegerUtilities;
+
 import static com.garretwilson.text.CharacterEncodingConstants.*;
+
 import com.garretwilson.text.FormatUtilities;
 import com.garretwilson.text.SyntaxException;
 import com.garretwilson.text.unicode.UnicodeCharacter;
@@ -452,6 +455,40 @@ public class URIUtilities
 	{
 		final String scheme=uri.getScheme();	//get the URI scheme
 		return HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme);	//see if the scheme is "http" or "https"
+	}
+
+	/**Checks to see if a given path is only a path and not a URI with a scheme and/or authority.
+	If the given string is not a path, an exception is thrown.
+	@param path The string version of a path to determine if it.
+	@return The given path.
+	@exception NullPointerException if the given path is <code>null</code>.
+	@exception IllegalArgumentException if the given string is not a path.
+	@see #isPath(String)
+	*/
+	public static String checkPath(final String path) throws IllegalArgumentException
+	{
+		if(!isPath(path))	//if the string is not a path
+		{
+			throw new IllegalArgumentException("The given string "+path+" is not a valid sole path.");
+		}
+		return path;	//return the path
+	}
+
+	/**Checks to see if a given path is only a relative path and not a URI with a scheme and/or authority.
+	If the given string is not a relative path, an exception is thrown.
+	@param path The string version of a path to determine if it.
+	@return The given relative path.
+	@exception NullPointerException if the given path is <code>null</code>.
+	@exception IllegalArgumentException if the given string is not a path or the path is not relative.
+	@see #isPath(String)
+	*/
+	public static String checkRelativePath(final String path) throws IllegalArgumentException
+	{
+		if(isAbsolutePath(checkPath(path)))	//check the path; if it is a path but it is absolute
+		{
+			throw new IllegalArgumentException("The given path "+path+" is not relative.");
+		}
+		return path;	//return the relative path
 	}
 
 	/**Determines if a given path is only a path and not a URI with a scheme and/or authority.
@@ -1017,19 +1054,62 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 */
 
-
-	/**Encodes the URI reserved characters in the string,
-		using '%' as an escape character, according to the URI encoding rules 
-		in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
-		"Uniform Resource Identifiers (URI): Generic Syntax".
-	@param uri The data to URI-encode.
+	/**Encodes the URI reserved characters in the string, using '%' as an escape character, according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
+	All characters not considered {@link URIConstants#NORMAL_CHARS} are encoded.
+	The escape character {@link URIConstants#ESCAPE_CHAR} will always be encoded.
+	@param string The data to URI-encode.
 	@return A string containing the escaped data.
 	@see URIConstants#ESCAPE_CHAR
 	@see URIConstants#NORMAL_CHARS
 	*/
-	public static String encode(final String uri)
+	public static String encode(final String string)
 	{
-		return escapeHex(uri, NORMAL_CHARS, null, ESCAPE_CHAR, 2);	//escape according to URI encoding rules TODO fix to handle i18n characters		
+		return encode(string, null, null);	//encode the string with no extra valid or invalid characters
+	}
+
+
+	/**Encodes the URI reserved characters in the string, using '%' as an escape character, according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
+	All characters not considered {@link URIConstants#NORMAL_CHARS} are encoded.
+	The escape character {@link URIConstants#ESCAPE_CHAR} will always be encoded.
+	@param string The data to URI-encode.
+	@param extraValidCharacters Characters to be categorically not , or <code>null</code> if no extra valid characters are given.
+	@param extraInvalidCharacters Characters to be categorically encoded, or <code>null</code> if no extra invalid characters are given.
+	@return A string containing the escaped data.
+	@see URIConstants#ESCAPE_CHAR
+	@see URIConstants#NORMAL_CHARS
+	*/
+	public static String encode(final String string, final String extraValidCharacters, final String extraInvalidCharacters)
+	{
+		final String validCharacters=extraInvalidCharacters!=null ? NORMAL_CHARS+extraInvalidCharacters : NORMAL_CHARS;	//if extra valid characters were given, add them to our string
+		final String invalidCharacters=extraInvalidCharacters!=null ? extraInvalidCharacters+ESCAPE_CHAR : String.valueOf(ESCAPE_CHAR);	//if extra invalid characters were given, make note of them, but always consider the escape character invalid
+		final StringBuilder stringBuilder=new StringBuilder(string);	//put the string in a string builder so that we can work with it; although inserting encoded sequences may seem inefficient, it should be noted that filling a string buffer with the entire string is more efficient than doing it one character at a time, that characters needed encoding are generally uncommon, and that any copying of the string characters during insertion is done via a native method, which should happen very quickly
+		for(int characterIndex=stringBuilder.length()-1; characterIndex>=0; --characterIndex)	//work backwords; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
+		{
+			final char c=stringBuilder.charAt(characterIndex);	//get the current character
+			final boolean encode=c==ESCAPE_CHAR	//always encode the escape character
+			|| (validCharacters!=null && validCharacters.indexOf(c)<0)	//encode if there is a list of valid characters and this character is not one of them
+			|| (invalidCharacters!=null && invalidCharacters.indexOf(c)>=0);	//encode if there is a list of invalid characters and this character is one of them
+			if(encode)	//if we should encode this character
+			{
+				try
+				{
+					final byte[] bytes=String.valueOf(c).getBytes(UTF_8);	//convert this character to a sequence of UTF-8 bytes
+					final int byteCount=bytes.length;	//find out how many bytes there are
+					final StringBuilder encodeStringBuilder=new StringBuilder(byteCount*3);	//create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
+					for(int byteIndex=0; byteIndex<byteCount; ++byteIndex)	//look at each byte
+					{
+						encodeStringBuilder.append(ESCAPE_CHAR);	//&
+						encodeStringBuilder.append(IntegerUtilities.toHexString(bytes[byteIndex], 2).toUpperCase());	//HH
+						stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString());	//replace the character with its encoding
+					}
+				}
+				catch(final UnsupportedEncodingException unsupportedEncodingException)	//the JVM should always know how to convert a string to UTF-8
+				{
+					throw new AssertionError(unsupportedEncodingException);
+				}
+			}
+		}
+		return stringBuilder.toString();	//return the encoded version of the string
 	}
 
 	/**Decodes the escaped ('%') characters in the character iterator
