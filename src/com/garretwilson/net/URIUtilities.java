@@ -38,11 +38,12 @@ public class URIUtilities
 	}
 
 	/**Creates a new URI identical to the supplied URI with a different path.
+	This method expects the path to be unencoded---raw (encoded) parameters will be re-encoded, resulting in corruption.
 	@param uri The URI to change.
-	@param path The unescaped path.
+	@param path The unescaped path, or <code>null</code> if there should be no path.
 	@return A new URI with the new path information.
 	*/
-	public static URI changePath(final URI uri, final String path)	//TODO check all references to this method to make sure escaped/unescaped semantics are followed
+	public static URI changePath(final URI uri, final String path)
 	{
 			//construct an identical URI except for the supplied path
 		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), path, uri.getQuery(), uri.getFragment());
@@ -933,13 +934,9 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 				&& uri.getScheme()==null && uri.getUserInfo()==null && uri.getPath()==null && uri.getQuery()==null && uri.getFragment()==null;
 	}
 
-	/**Creates a URL from a URI. If a valid URL cannot be
-		formed, <code>null</code> is returned.
-	@param uri The URI to convert to a URL, or <code>null</code>
-		if no URI is available (in which case <code>null</code> will
-		be returned).
-	@return The URL form of the URI, or <code>null</code>
-		if the URI cannot be converted to a valid URL. 
+	/**Creates a URL from a URI. If a valid URL cannot be formed, <code>null</code> is returned.
+	@param uri The URI to convert to a URL, or <code>null</code> if no URI is available (in which case <code>null</code> will be returned).
+	@return The URL form of the URI, or <code>null</code> if the URI cannot be converted to a valid URL. 
 	*/ 
 	public static URL toValidURL(final URI uri)
 	{
@@ -975,6 +972,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	/**Returns a URI constructed from the given parts, any of which can be <code>null</code>.
 	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>	will be thrown, created from the <code>URISyntaxException</code>.</p>
 	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
+	<p>This method expects all of its arguments to be unencoded---raw (encoded) parameters will be re-encoded, resulting in corruption.</p>
 	@param scheme The name of the URI scheme.
 	@param ssp The scheme-specific part; illegal characters will be quoted.
 	@exception IllegalArgumentException if the a URI cannot be constructed from the given strings.
@@ -987,6 +985,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	/**Returns a URI constructed from the given parts, any of which can be <code>null</code>.
 	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>	will be thrown, created from the <code>URISyntaxException</code>.</p>
 	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
+	<p>This method expects all of its arguments to be unencoded---raw (encoded) parameters will be re-encoded, resulting in corruption.</p>
 	@param scheme The name of the URI scheme.
 	@param ssp The scheme-specific part; illegal characters will be quoted.
 	@param fragment The fragment at the end of the URI.
@@ -1004,13 +1003,10 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		}	
 	}
 
-	/**Returns a URI constructed from the given parts, any of
-		which can be <code>null</code>.
-	<p>If the URI is not syntactically correct, an
-		<code>IllegalArgumentException</code>	will be thrown, created from the
-		<code>URISyntaxException</code>.</p>
-	<p>This method should normally only be used when the format
-		of the string is known to be a syntactically correct URI.</p>
+	/**Returns a URI constructed from the given parts, any of which can be <code>null</code>.
+	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>	will be thrown, created from the <code>URISyntaxException</code>.</p>
+	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
+	<p>This method expects all of its arguments to be unencoded---raw (encoded) parameters will be re-encoded, resulting in corruption.</p>
 	@param scheme The name of the URI scheme.
 	@param userInfo The user information.
 	@param host The host information.
@@ -1018,9 +1014,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	@param path The path, correctly encoded.
 	@param query The URI query.
 	@param fragment The fragment at the end of the URI.
-	@exception IllegalArgumentException Thrown if the a URI cannot be constructed
-		from the given strings.
-	@see URI#create
+	@exception IllegalArgumentException Thrown if the a URI cannot be constructed from the given strings.
 	*/
 	public static URI createURI(final String scheme, final String userInfo, final String host, final int port, final String path, final String query, final String fragment) throws IllegalArgumentException
 	{
