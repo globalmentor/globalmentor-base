@@ -595,6 +595,7 @@ Debug.trace("setter: ", setterMethodName);
 	If the object is already of the correct type, no action occurs.
 	Strings can be converted to the following types of objects:
 	<ul>
+		<li><code>char[]</code></li>
 		<li><code>boolean</code></li>
 		<li>{@link Boolean}</li>
 		<li>{@link Class}</li>
@@ -611,7 +612,7 @@ Debug.trace("setter: ", setterMethodName);
 		<li>{@link RGBColor}</li>
 		<li>{@link URI}</li>
 	</ul>
-	@param object The object to convert
+	@param object The object to convert.
 	@param requiredType The required type of the object.
 	@return The object as the required type, or <code>null</code> if the object cannot be converted to the required type.
 	@exception ClassNotFoundException if the required type is {@link Class} and the indicated class cannot be found.
@@ -629,7 +630,11 @@ Debug.trace("setter: ", setterMethodName);
 			if(object instanceof String)	//if the object is a string, see if we can convert it to the correct type
 			{
 				final String stringObject=(String)object;	//cast the value to a string
-				if(Enum.class.isAssignableFrom(requiredType))	//if the required type is an enumeration
+				if(requiredType.isArray() && Character.TYPE.equals(requiredType.getComponentType()))	//if the required type is a character array
+				{
+					return stringObject.toCharArray();	//return the string as a character array
+				}
+				else if(Enum.class.isAssignableFrom(requiredType))	//if the required type is an enumeration
 				{
 //TODO del Debug.trace("Creating enum of type", requiredType);
 					return Enum.valueOf((Class<? extends Enum>)requiredType, stringObject);	//TODO check for an IllegalArgumentException here

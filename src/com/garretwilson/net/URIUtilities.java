@@ -546,7 +546,7 @@ public class URIUtilities
 		return endsWith(uri.toString(), PATH_SEPARATOR) ? getParentLevel(uri) : getCurrentLevel(uri);	//if the path ends with a slash, get the parent level; otherwise, get the current level
 	}
 
-	/**Determines the canonical root URI a URI.
+	/**Determines the canonical root URI of a URI.
 	@param uri The URI to examine.
 	@return A URI representing the URI with no path and no query or fragment.
 	*/

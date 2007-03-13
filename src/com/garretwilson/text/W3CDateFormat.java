@@ -3,10 +3,8 @@ package com.garretwilson.text;
 import java.text.*;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import static com.garretwilson.lang.CharSequenceUtilities.*;
-import static com.garretwilson.util.TimeZoneConstants.GMT_ID;
 
 /**Class for formatting dates and times according to the W3C Note, 
 	"Date and Time Formats",
@@ -69,6 +67,12 @@ public class W3CDateFormat extends SimpleDateFormat
 		/**@return The style to use for formatting.*/
 		protected Style getStyle() {return style;}
 
+	/**Default constructor specifying a full {@link Style#DATE_TIME} format.*/
+	public W3CDateFormat()
+	{
+		this(Style.DATE_TIME);	//construct a full date and time date format
+	}
+
 	/**Constructs a W3C date and time formatter using the given style.
 	@param style One of the styles defined by this class
 	*/
@@ -117,7 +121,7 @@ public class W3CDateFormat extends SimpleDateFormat
    * pattern character 'z'.
    * @return the formatted date/time string.
    */
-	public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition)
+	public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition)	//TODO comment; use contants
 	{
 		final StringBuffer stringBuffer=super.format(date, toAppendTo, fieldPosition);	//do the default formatting
 		if(stringBuffer.length()>=5)
@@ -131,7 +135,7 @@ public class W3CDateFormat extends SimpleDateFormat
 				}
 				else
 				{
-					stringBuffer.insert(stringBuffer.length()-2, ":");
+					stringBuffer.insert(stringBuffer.length()-2, ":");	//RFC 822 fixup TODO add comments
 				}
 			}
 		}
@@ -158,7 +162,7 @@ public class W3CDateFormat extends SimpleDateFormat
    *
    * @return      A Date, or null if the input could not be parsed
    */
-	public Date parse(String source, ParsePosition pos)
+	public Date parse(String source, ParsePosition pos)	//TODO comment; use contants
 	{
 		String revised=source;
 		if(source.length()>0)
@@ -169,7 +173,7 @@ public class W3CDateFormat extends SimpleDateFormat
 			}
 			else if(source.length()>=3)	//TODO do more checks
 			{
-				if(source.charAt(source.length()-3)==':')
+				if(source.charAt(source.length()-3)==':')	//RFC 822 fixup TODO add comments
 				{
 					revised=new StringBuilder(source).deleteCharAt(source.length()-3).toString();
 				}
