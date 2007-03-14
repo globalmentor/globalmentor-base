@@ -7,9 +7,9 @@ import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
 import com.garretwilson.text.xml.XMLConstants;
+import com.garretwilson.text.xml.XMLNamespacePrefixManager;
 import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.util.CollectionUtilities;
 import com.garretwilson.util.Debug;
 import com.garretwilson.util.IdentityHashSet;
@@ -27,29 +27,26 @@ import org.w3c.dom.*;
 public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property value resources with no properties
 {
 
-	/**The map of XML serialization prefixes, keyed to namespacee.
-	We must use strings internally to be compatible with the XML serializer, as XML serializations may have namespaces (such as "DAV:") that aren't technically URIs.
-	These methods only allow actual URIs to be registered, however, although theoretically the map could be initialized by the XML serializer with a non-URI namesapce.
-	*/
-	private final Map<String, String> namespacePrefixMap;
+	/**Create a new XML namespace prefix manager.*/
+	private final XMLNamespacePrefixManager xmlNamespacePrefixManager=new XMLNamespacePrefixManager();
 
 		/**Registers the given XML serialization prefix to be used with the given namespace URI.
 		If a prefix is already registered with the given namespace, it is replaced with this prefix.
-		@param namespaceURI The namespace URI.
+		@param namespaceURI The namespace URI to register.
 		@param prefix The XML serialization prefix to use with the given namespace.
 		*/
 		public void registerNamespacePrefix(final URI namespaceURI, final String prefix)
 		{
-			namespacePrefixMap.put(namespaceURI.toString(), prefix);	//store the prefix in the map, keyed to the URI
+			xmlNamespacePrefixManager.registerNamespacePrefix(namespaceURI.toString(), prefix);	//store the prefix in the map, keyed to the URI
 		}
 
 		/**Unregisters the XML serialization prefix for the given namespace URI.
 		If no prefix is registered for the given namespace, no action occurs.
-		@param namespaceURI The namespace URI.
+		@param namespaceURI The namespace URI to unregister.
 		*/
-		public void unregisterNamespacePrefix(final URI namespaceURI, final String prefix)
+		public void unregisterNamespacePrefix(final URI namespaceURI)
 		{
-			namespacePrefixMap.remove(namespaceURI.toString());	//remove whatever prefix is registered with this namespace, if any
+			xmlNamespacePrefixManager.unregisterNamespacePrefix(namespaceURI.toString());	//remove whatever prefix is registered with this namespace, if any
 		}
 
 	/**The set of resources that have been serialized, using identity rather 
@@ -203,7 +200,6 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 	*/
 	public RDFXMLGenerator(final boolean compact)
 	{
-		namespacePrefixMap=XMLSerializer.createNamespacePrefixMap();  //create a map of default XML namespace prefixes
 //TODO del		namespacePrefixMap=new HashMap<String, String>();  //create a map for consistency until it's initialized
 		serializedResourceSet=new IdentityHashSet<RDFResource>();	//create a map that will determine whether resources have been serialized, based upon the identity of resources
 		resourceReferenceMap=new IdentityHashMap<RDFResource, Set<RDFResource>>();	//create a map of sets of referring resources for each referant resource, using identity rather than equality for equivalence
@@ -358,7 +354,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 			final URI resourceTypeURI=resourceType.getReferenceURI();	//get the URI of the type
 			final URI namespaceURI=getNamespaceURI(resourceTypeURI);	//get the type's namespace URI
 //TODO important: check for namespace URI null
-			final String prefix=XMLSerializer.getNamespacePrefix(namespacePrefixMap, namespaceURI.toString());  //get the prefix for use with this namespace
+			final String prefix=xmlNamespacePrefixManager.getNamespacePrefix(namespaceURI.toString());  //get the prefix for use with this namespace
 			final String qualifiedName=XMLUtilities.createQualifiedName(prefix, getLocalName(resourceTypeURI));  //create a qualified name for the element
 				//TODO check for null on local name
 			resourceElement=document.createElementNS(namespaceURI.toString(), qualifiedName);  //create an element from the resource type
@@ -457,7 +453,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 				}
 				if(serializeLiteralAttribute)  //if we should use an attribute for serializing this property value
 				{
-					final String prefix=XMLSerializer.getNamespacePrefix(namespacePrefixMap, propertyNamespaceURI.toString());  //get the prefix for use with this namespace
+					final String prefix=xmlNamespacePrefixManager.getNamespacePrefix(propertyNamespaceURI.toString());  //get the prefix for use with this namespace
 					final String qualifiedName=XMLUtilities.createQualifiedName(prefix, getLocalName(propertyResource.getReferenceURI()));  //create a qualified name for the attribute
 						//TODO check for null on local name
 						//store the property as an attribute
@@ -492,7 +488,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		final URI propertyResourceURI=propertyResource.getReferenceURI();	//get the URI of the property
 		final URI namespaceURI=getNamespaceURI(propertyResourceURI); //get the namespace URI of the property
 //TODO important: check the namespace URI for null
-		final String prefix=XMLSerializer.getNamespacePrefix(namespacePrefixMap, namespaceURI.toString());  //get the prefix for use with this namespace
+		final String prefix=xmlNamespacePrefixManager.getNamespacePrefix(namespaceURI.toString());  //get the prefix for use with this namespace
 		String localName=getLocalName(propertyResourceURI); //get the local name of the property
 			//TODO check for null on local name
 		if(RDF_NAMESPACE_URI.equals(namespaceURI))  //if this is the RDF namespace
@@ -679,21 +675,19 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		{
 				//TODO right now we iterate through the namespaces each time; there might be a better way to do this
 			final String resourceURIString=resourceURI.toString();	//get a string version of the resource URI to use in comparisons
-			final Iterator<String> namespaceIterator=namespacePrefixMap.keySet().iterator(); //get an iterator to the namespace URIs
-			while(namespaceIterator.hasNext())  //while there are more namespaces
+			for(final String registeredNamespace:xmlNamespacePrefixManager.getRegisteredNamespaces())	//for all the registered namespaces
 			{
-				final String registeredNamespaceURI=namespaceIterator.next();  //get this namespace
-				if(resourceURIString.startsWith(registeredNamespaceURI)) //if this reference URI is in this namespace
+				if(resourceURIString.startsWith(registeredNamespace)) //if this reference URI is in this namespace
 				{
-				  namespaceURI=URI.create(registeredNamespaceURI);  //we'll use the registered namespace URI
-				  localName=resourceURIString.substring(registeredNamespaceURI.length()); //remove the namespace URI from the front of the reference URI to get the local name
+				  namespaceURI=URI.create(registeredNamespace);  //we'll use the registered namespace URI
+				  localName=resourceURIString.substring(registeredNamespace.length()); //remove the namespace from the front of the reference URI to get the local name
 				}
 			}
 		}
 		if(namespaceURI!=null && localName!=null) //if we've determined a namespace URI and a local name
 		{
 				//get the prefix from the to be used for this namespace, but don't generate a new prefix if we don't recognize it
-			final String prefix=XMLSerializer.getNamespacePrefix(namespacePrefixMap, namespaceURI.toString(), false);
+			final String prefix=xmlNamespacePrefixManager.getNamespacePrefix(namespaceURI.toString(), false);
 			if(prefix!=null)	//if we know a prefix for this namespace URI
 			{
 				if(RDF_NAMESPACE_URI.equals(namespaceURI))  //if this is the RDF namespace
