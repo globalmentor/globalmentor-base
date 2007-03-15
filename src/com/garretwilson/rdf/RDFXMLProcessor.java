@@ -425,7 +425,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		of the added statement.
 	@exception URISyntaxException Thrown if an RDF URI is syntactically incorrect.
 	*/
-	protected Resource processProperty(final Resource resource, final Element element, final int memberCount) throws URISyntaxException
+	public Resource processProperty(final Resource resource, final Element element, final int memberCount) throws URISyntaxException
 	{
 		final URI elementNamespaceURI=element.getNamespaceURI()!=null ? new URI(element.getNamespaceURI()) : null; //get the element's namespace, or null if there is no namespace URI
 		final String elementLocalName=element.getLocalName(); //get the element's local name
