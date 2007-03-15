@@ -183,8 +183,16 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 	}
 */
 
-	/**The map of prefixes, keyed by namespace URI strings; this map is used with the {@link XMLSerializer} when producing XML.*/
-//TODO del	private Map<String, String> namespacePrefixMap;
+	/**Whether lists are serialized in compact form, if possible.*/
+	private boolean compactRDFListSerialization=true;
+
+		/**@return <code>true</code> if lists are serialized in compact form, if possible.*/
+		public boolean isCompactRDFListSerialization() {return literalAttributeSerialization;}
+
+		/**Sets whether lists are serialized in compact form.
+		@param compactRDFListSerialization <code>true</code> if lists are serialized in compact form, if possible.
+		*/
+		public void setCompactRDFListSerialization(final boolean compactRDFListSerialization) {this.compactRDFListSerialization=compactRDFListSerialization;}
 
 	/**Default constructor that creates a compact XMLifier.*/
 	public RDFXMLGenerator()
@@ -213,17 +221,10 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 	protected void initialize()
 	{
 		reset();	//reset the generator
-/*TODO del
-		namespacePrefixMap=XMLSerializer.createNamespacePrefixMap();  //create a map of default XML namespace prefixes
-		for(Map.Entry<URI, String> namespaceURIPrefixEntry:namespaceURIPrefixMap.entrySet())	//for each entry in our namespace URI prefix map
-		{
-			namespacePrefixMap.put(namespaceURIPrefixEntry.getKey().toString(), namespaceURIPrefixEntry.getValue());	//transfer the namespace/prefix pair to the namespace prefix map
-		}
-*/
 	}
 
 	/**Releases memory by clearing all internal maps and sets of resources.*/ 
-	protected void reset()
+	public void reset()
 	{
 		serializedResourceSet.clear();	//show that we've not serialized any resources
 		resourceReferenceMap.clear();	//clear all our references to resources
@@ -344,11 +345,11 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 	@param resource The resource for which an element should be created.
 	@return The XML element that represents the given RDF resource.
 	*/
-	protected Element createResourceElement(final Document document, final RDFResource resource)
+	public Element createResourceElement(final Document document, final RDFResource resource)
 	{
 		final URI referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
 		final Element resourceElement;  //we'll store here the element that we create
-		RDFResource resourceType=getType(resource); //get the type of the resource
+		final RDFResource resourceType=getType(resource); //get the type of the resource
 		if(resourceType!=null)   //if this resource has a type that we can use for the element name
 		{
 			final URI resourceTypeURI=resourceType.getReferenceURI();	//get the URI of the type
@@ -386,7 +387,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		if(!isSerialized(resource))	//if we haven't serialized this resource, yet
 		{
 			setSerialized(resource, true);	//show that we've serialized this resource (do this before adding properties, just in case there are circular references)
-			addProperties(document, resourceElement, resource);  //add all the properties of the resource to the resource element
+			addProperties(document, resourceElement, resource, resourceType);  //add all the properties of the resource to the resource element
 		}
 		return resourceElement; //return the resource element we created
 	}
@@ -418,53 +419,62 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		}
 	}
 
+	/**Adds all properties of the resource to the given element.
+	@param document The document to be used as an element factory.
+	@param element The XML element to which the properties should be added
+	@param resource The resource the properties of which should be added to the DOM tree, either as elements or attributes.
+	@param resourceType The main resource type which was used when serializing the element, or <code>null</code> if no main resource type was used.
+	*/
+	public void addProperties(final Document document, final Element element, final RDFResource resource, final RDFResource resourceType)
+	{
+		for(final RDFPropertyValuePair propertyValuePair:resource.getProperties())	//for each resource property
+		{
+				//if this property is not a type property we already used for creating the element name
+		  if(!(TYPE_PROPERTY_REFERENCE_URI.equals(propertyValuePair.getProperty().getReferenceURI()) && propertyValuePair.equals(resourceType)))
+			{
+		  	addProperty(document, element, propertyValuePair);	//create a representation for this property
+			}
+		}
+	}
 
 	/**Adds all properties of the resource to the given element.
 	@param document The document to be used as an element factory.
 	@param element The XML element to which the properties should be added
-	@param resource The resource the properties of which should be added to the
-		DOM tree, either as elements or attributes.
+	@param propertyValuePair The property to be added to the DOM tree, either as an element or as an attributes.
+	@return The XML child element used to represent the given property, or <code>null</code> if an XML attribute was used to represent the given property.
 	*/
-	protected void addProperties(final Document document, final Element element, final RDFResource resource)
+	public Element addProperty(final Document document, final Element element, final RDFPropertyValuePair propertyValuePair)
 	{
-		RDFResource resourceType=getType(resource); //get the type of the resource G***do we want this in the general routine? we probably have to have it
-		final Iterator<RDFPropertyValuePair> propertyIterator=resource.getPropertyIterator(); //get an iterator to all the element properties
-		while(propertyIterator.hasNext()) //while there are more properties
+	  final RDFResource propertyResource=propertyValuePair.getProperty();  //get the property predicate
+		final RDFObject propertyValue=propertyValuePair.getPropertyValue();  //get the property value
+		final URI propertyNamespaceURI=getNamespaceURI(propertyResource.getReferenceURI()); //get the namespace URI of the property
+		assert propertyNamespaceURI!=null : "Missing preperty namespace.";	//TODO add real error handling here
+		boolean serializeLiteralAttribute=false; //start out by assuming we won't serialize as an attribute
+		  //see if we should use an attribute to serialize a plain literal TODO add support for typed literals
+		if(propertyValue instanceof RDFPlainLiteral)	//if this is a plain literal
 		{
-			final RDFPropertyValuePair rdfPropertyValuePair=propertyIterator.next(); //get the next property name/value pair
-		  final RDFResource propertyResource=rdfPropertyValuePair.getProperty();  //get the property predicate
-			final RDFObject propertyValue=rdfPropertyValuePair.getPropertyValue();  //get the property value
-				//if this property is not a type property we already used for creating the element name
-		  if(!(TYPE_PROPERTY_REFERENCE_URI.equals(propertyResource.getReferenceURI()) && propertyValue.equals(resourceType)))
+				//if we should serialize all literal property values as attributes, or if we should serialize literal property values from this namespace 
+			if(isLiteralAttributeSerialization() || isLiteralAttributeSerializationNamespaceURI(propertyNamespaceURI))
 			{
-				final URI propertyNamespaceURI=getNamespaceURI(propertyResource.getReferenceURI()); //get the namespace URI of the property
-				assert propertyNamespaceURI!=null : "Missing preperty namespace.";	//TODO add real error handling here
-				boolean serializeLiteralAttribute=false; //start out by assuming we won't serialize as an attribute
-				  //see if we should use an attribute to serialize a plain literal TODO add support for typed literals
-				if(propertyValue instanceof RDFPlainLiteral)	//if this is a plain literal
-				{
-						//if we should serialize all literal property values as attributes, or if we should serialize literal property values from this namespace 
-					if(isLiteralAttributeSerialization() || isLiteralAttributeSerializationNamespaceURI(propertyNamespaceURI))
-					{
-						final RDFPlainLiteral plainLiteral=(RDFPlainLiteral)propertyValue;	//cast the value to a plain literal
-						if(plainLiteral.getLanguage()==null)	//if there is no language definition
-							serializeLiteralAttribute=true;  //show that we should use an attribute for serialization
-					}
-				}
-				if(serializeLiteralAttribute)  //if we should use an attribute for serializing this property value
-				{
-					final String prefix=xmlNamespacePrefixManager.getNamespacePrefix(propertyNamespaceURI.toString());  //get the prefix for use with this namespace
-					final String qualifiedName=XMLUtilities.createQualifiedName(prefix, getLocalName(propertyResource.getReferenceURI()));  //create a qualified name for the attribute
-						//TODO check for null on local name
-						//store the property as an attribute
-				  element.setAttributeNS(propertyNamespaceURI.toString(), qualifiedName, ((RDFLiteral)propertyValue).getLexicalForm());
-				}
-				else  //if the value is a resource or we don't know the property's namespace URI and local name G***add more logic here later to automatically determine the namespace
-				{
-					final Element propertyElement=createPropertyElement(document, propertyResource, propertyValue); //create a property element
-					element.appendChild(propertyElement); //append the property element we created
-				}
+				final RDFPlainLiteral plainLiteral=(RDFPlainLiteral)propertyValue;	//cast the value to a plain literal
+				if(plainLiteral.getLanguage()==null)	//if there is no language definition
+					serializeLiteralAttribute=true;  //show that we should use an attribute for serialization
 			}
+		}
+		if(serializeLiteralAttribute)  //if we should use an attribute for serializing this property value
+		{
+			final String prefix=xmlNamespacePrefixManager.getNamespacePrefix(propertyNamespaceURI.toString());  //get the prefix for use with this namespace
+			final String qualifiedName=XMLUtilities.createQualifiedName(prefix, getLocalName(propertyResource.getReferenceURI()));  //create a qualified name for the attribute
+				//TODO check for null on local name
+				//store the property as an attribute
+		  element.setAttributeNS(propertyNamespaceURI.toString(), qualifiedName, ((RDFLiteral)propertyValue).getLexicalForm());
+		  return null;	//indicate that we didn't use an element to represent the property
+		}
+		else  //if the value is a resource or we don't know the property's namespace URI and local name G***add more logic here later to automatically determine the namespace
+		{
+			final Element propertyElement=createPropertyElement(document, propertyResource, propertyValue); //create a property element
+			element.appendChild(propertyElement); //append the property element we created
+			return propertyElement;	//return the element we used to represent the property
 		}
 	}
 
@@ -500,7 +510,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		final Element propertyElement=document.createElementNS(namespaceURI.toString(), qualifiedName);  //create an element from the property resource
 		if(propertyValue instanceof RDFResource) //if the property value is a resource
 		{
-			if(propertyValue instanceof RDFListResource)	//if this is a list G***maybe make sure it's a normal list, first, before creating the compact form
+			if(propertyValue instanceof RDFListResource && isCompactRDFListSerialization())	//if this is a list and we should serialize lists in compact form TODO maybe make sure it's a normal list, first, before creating the compact form
 			{
 					//set the rdf:parseType attribute to "Collection" TODO eventually get our prefix from a prefix rather than hard-coding RDF, maybe
 				propertyElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX.toString(), ATTRIBUTE_PARSE_TYPE), COLLECTION_PARSE_TYPE);
@@ -570,7 +580,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 					if(serializeSubPropertyLiteralAttributes)  //if all subproperties are literals, then just add them as attributes
 					{
 						setSerialized(valueResource, true);	//show that we've serialized this resource (do this before adding properties, just in case there are circular references)
-					  addProperties(document, propertyElement, valueResource);  //add all the properties of the value resource to the element representing the property
+					  addProperties(document, propertyElement, valueResource, getType(valueResource));  //add all the properties of the value resource to the element representing the property TODO check getType(); is it correct? do we even need it logically in this context?
 					}
 					else  //if not all subproperties of the anonymous element are literals, add the value resource as a subelement of the property element
 				  {

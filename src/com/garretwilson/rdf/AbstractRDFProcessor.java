@@ -166,6 +166,12 @@ public abstract class AbstractRDFProcessor
 		return Collections.unmodifiableSet(statementSet).iterator();  //create an unmodifiable list set the statement set and return an iterator to it
 	}
 
+	/**Clear all collected RDF statements.*/
+	public void clearStatements()
+	{
+		statementSet.clear();	//clear the set of statements
+	}
+
 	/**Default constructor.*/
 	public AbstractRDFProcessor()
 	{
@@ -184,7 +190,7 @@ public abstract class AbstractRDFProcessor
 		such as associations between resource proxies and RDF resources.
 		The set of statements is left undisturbed.
 	*/
-	protected void reset()
+	public void reset()
 	{
 		referenceURIResourceProxyMap.clear();	//clear our map of resource proxies keyed to reference URIs
 		nodeIDResourceProxyMap.clear();	//clear our map of resource proxies keyed to node IDs
@@ -197,7 +203,7 @@ public abstract class AbstractRDFProcessor
 		resources, using any provided types in other statements if possible.
 	@see #ResourceProxy
 	*/
-	protected void createResources()
+	public void createResources()
 	{
 		createResources(null);	//create resources without keeping track of any resource in particular
 	}
@@ -210,9 +216,9 @@ public abstract class AbstractRDFProcessor
 		or <code>null</code> if no specific resource should be returned.
 	@return The created resource from the given resource proxy, or the given resource itself if the resource is already an RDF resource.
 	@exception IllegalArgumentException if a resource was given that is not one of the resources in the list of RDF statements.
-	@see #ResourceProxy
+	@see ResourceProxy
 	*/
-	protected RDFResource createResources(final Resource resource)	//TODO maybe check to make sure any RDFResource passed to us is really one of the ones in the list of statements
+	public RDFResource createResources(final Resource resource)	//TODO maybe check to make sure any RDFResource passed to us is really one of the ones in the list of statements
 	{
 		RDFResource rdfResource=resource instanceof RDFResource ? (RDFResource)resource : null;	//if the given resource is already an RDF resource, there's nothing to unproxy
 		final Iterator<Statement> statementIterator=getStatementIterator();	//get an iterator to statements
@@ -321,7 +327,7 @@ public abstract class AbstractRDFProcessor
 	/**Processes all statements by creating associations between resources that
 		reflect the assertions contained in the statements.
 	*/
-	protected void processStatements()
+	public void processStatements()
 	{
 		final Iterator statementIterator=getStatementIterator();	//get an iterator to statements
 		while(statementIterator.hasNext())	//while there are more statements

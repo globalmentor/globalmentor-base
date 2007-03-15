@@ -538,45 +538,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			else  //if there is no reference URI or node ID, there is either a normal property description below, or a literal
 			{
 				//G***we should make sure there are no attributes
-				Element childElement=null; //show that we haven't found any child elements, yet
-					//parse the child elements
-				final NodeList childNodeList=element.getChildNodes(); //get a list of child nodes
-				for(int i=0; i<childNodeList.getLength(); ++i)  //look at each child node
-				{
-					final Node childNode=childNodeList.item(i); //get a reference to this child node
-					if(childNode.getNodeType()==Node.ELEMENT_NODE) //if this is an element
-					{
-						if(childElement==null)  //if we haven't already found a child element
-						{
-							childElement=(Element)childNode;  //cast the child node to an element
-						}
-						else if(childElement!=null)  //if we've already found a child element
-						{
-							Debug.warn("Only one property value allowed for "+propertyResource); //G***fix with real error handling
-						}
-					}
-				}
-				if(childElement!=null)  //if we found a child element for the property value
-				{
-					propertyValue=processResource(childElement); //process the child element as an RDF resource, the value of the property in this case
-				}
-				else  //if we didn't find any child elements, the content is a literal
-				{
-					final String childText=XMLUtilities.getText(element, true);	//retrieve the child text
-					final String datatype=getRDFAttribute(element, ATTRIBUTE_DATATYPE); //get the datatype, if there is one TODO check elsewhere to make sure a datatype isn't given for non-literal content
-					if(datatype!=null)	//if a datatype is present
-					{
-						propertyValue=getRDF().createTypedLiteral(childText, new URI(datatype));	//create a typed literal from the typed literal text
-					}
-					else	//if a datatype is not present, this is a plain literal
-					{
-							//get the xml:lang language tag, if there is one
-						final String languageTag=XMLUtilities.getDefinedAttributeNS(element, XMLConstants.XML_NAMESPACE_URI.toString(), XMLConstants.ATTRIBUTE_LANG);
-							//create a locale for the language if there is a language tag
-						final Locale languageLocale=languageTag!=null ? LocaleUtilities.createLocale(languageTag) : null;
-						propertyValue=new RDFPlainLiteral(childText, languageLocale);  //create a literal from the element's text, noting the specified language if any
-					}
-				}
+				propertyValue=processPropertyValueContents(element);	//process the contents of the element as a normal property value
 			}
 		}
 		if(propertyValue instanceof Resource)	//if we found a resource for the property value
@@ -594,6 +556,55 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			throw new AssertionError("Logical error: expected resource or literal for object, somehow created "+propertyValue.getClass());
 		}
 		return propertyResource;	//return the resource that represents the property we processed
+	}
+
+	/**Processes the contents of a property element as normal property contents.
+	Nodes that are not elements are not capable of determining RDF typed literal datatypes and language tags
+	@param propertyNode The node the contents of which represents the property value.
+	@return An object representing the property value, such as an {@link RDFLiteral} or a {@link Resource} (which may be a proxy resource).
+	@exception URISyntaxException Thrown if an RDF URI is syntactically incorrect.
+	*/
+	public Object processPropertyValueContents(final Node propertyNode) throws URISyntaxException
+	{
+		Element childElement=null; //show that we haven't found any child elements, yet
+			//parse the child elements
+		final NodeList childNodeList=propertyNode.getChildNodes(); //get a list of child nodes
+		for(int i=0; i<childNodeList.getLength(); ++i)  //look at each child node
+		{
+			final Node childNode=childNodeList.item(i); //get a reference to this child node
+			if(childNode.getNodeType()==Node.ELEMENT_NODE) //if this is an element
+			{
+				if(childElement==null)  //if we haven't already found a child element
+				{
+					childElement=(Element)childNode;  //cast the child node to an element
+				}
+				else if(childElement!=null)  //if we've already found a child element
+				{
+					Debug.warn("Only one property value allowed for property element "+propertyNode.getNodeName()); //TODO with real error handling
+				}
+			}
+		}
+		if(childElement!=null)  //if we found a child element for the property value
+		{
+			return processResource(childElement); //process the child element as an RDF resource, the value of the property in this case
+		}
+		else  //if we didn't find any child elements, the content is a literal
+		{
+			final String childText=XMLUtilities.getText(propertyNode, true);	//retrieve the child text
+			final String datatype=propertyNode instanceof Element ? getRDFAttribute((Element)propertyNode, ATTRIBUTE_DATATYPE) : null; //get the datatype, if there is one TODO check elsewhere to make sure a datatype isn't given for non-literal content
+			if(datatype!=null)	//if a datatype is present
+			{
+				return getRDF().createTypedLiteral(childText, new URI(datatype));	//create a typed literal from the typed literal text
+			}
+			else	//if a datatype is not present, this is a plain literal
+			{
+					//get the xml:lang language tag, if there is one
+				final String languageTag=propertyNode instanceof Element ? XMLUtilities.getDefinedAttributeNS((Element)propertyNode, XMLConstants.XML_NAMESPACE_URI.toString(), XMLConstants.ATTRIBUTE_LANG) : null;
+					//create a locale for the language if there is a language tag
+				final Locale languageLocale=languageTag!=null ? LocaleUtilities.createLocale(languageTag) : null;
+				return new RDFPlainLiteral(childText, languageLocale);  //create a literal from the element's text, noting the specified language if any
+			}
+		}
 	}
 
 	/**Determines if an element attribute is an RDF attribute, recognizing
