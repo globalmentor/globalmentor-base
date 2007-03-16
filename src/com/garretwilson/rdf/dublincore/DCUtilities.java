@@ -204,13 +204,13 @@ public class DCUtilities extends RDFUtilities implements DCConstants
 		}
 	}
 
-	/**Returns the value of the first <code>dc:title</code> property.
+	/**Returns the value of the first <code>dc:title</code> property as a literal.
 	@param resource The resource the property of which should be located.
-	@return The value of the first <code>dc:title</code> property, or <code>null</code> if no such property exists.
+	@return The value of the first <code>dc:title</code> property, or <code>null</code> if no such property exists as a literal.
 	*/
-	public static RDFObject getTitle(final RDFResource resource)
+	public static RDFLiteral getTitle(final RDFResource resource)
 	{
-		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME);
+		return asLiteral(resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME));
 	}
 
 	/**Set the <code>dc:title</code> property of the resource.
