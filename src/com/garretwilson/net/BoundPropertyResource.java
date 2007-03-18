@@ -1,12 +1,14 @@
-package com.garretwilson.model;
+package com.garretwilson.net;
 
 import java.net.URI;
 
-/**Represents the default implementation of a resource.
+import com.garretwilson.beans.BoundPropertyObject;
+
+/**Represents the default implementation of a resource that recognizes bound properties.
 This class provides compare functionality that sorts according to the reference URI, if available.
 @author Garret Wilson
 */
-public class DefaultResource implements Resource, Comparable<Resource>
+public class BoundPropertyResource extends BoundPropertyObject implements Resource, Comparable<Resource>
 {
 
 	/**The resource identifier URI, or <code>null</code> if the identifier is not known.*/
@@ -24,7 +26,7 @@ public class DefaultResource implements Resource, Comparable<Resource>
 //TODO del when not needed	public URI getID() {return getReferenceURI();}
 
 	/**Default constructor that allows the reference URI to be set later.*/
-	protected DefaultResource()
+	protected BoundPropertyResource()
 	{
 		this(null);	//construct the class without a reference URI
 //G***del		referenceURI=null; //set the reference URI to null for now
@@ -33,7 +35,7 @@ public class DefaultResource implements Resource, Comparable<Resource>
 	/**Constructs a resource with a reference URI.
 	@param referenceURI The reference URI for the new resource.
 	*/
-	protected DefaultResource(final URI referenceURI)
+	protected BoundPropertyResource(final URI referenceURI)
 	{
 		this.referenceURI=referenceURI; //set the reference URI
 	}

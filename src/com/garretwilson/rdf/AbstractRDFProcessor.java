@@ -4,8 +4,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 import com.garretwilson.lang.JavaConstants;
-import com.garretwilson.model.DefaultResource;
-import com.garretwilson.model.Resource;
+import com.garretwilson.net.DefaultResource;
+import com.garretwilson.net.Resource;
+
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import com.garretwilson.util.Debug;

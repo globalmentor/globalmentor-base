@@ -6,7 +6,7 @@ import java.net.*;
 import javax.swing.*;
 
 import com.garretwilson.lang.ObjectUtilities;
-import com.garretwilson.model.Resource;
+import com.garretwilson.net.Resource;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.rdf.xmlschema.BooleanLiteral;

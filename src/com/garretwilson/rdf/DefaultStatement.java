@@ -1,7 +1,7 @@
 package com.garretwilson.rdf;
 
 import com.garretwilson.lang.ObjectUtilities;
-import com.garretwilson.model.Resource;
+import com.garretwilson.net.Resource;
 
 /**A default implementation of a statement in an RDF data model.
 @author Garret Wilson

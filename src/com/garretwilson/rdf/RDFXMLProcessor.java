@@ -3,8 +3,8 @@ package com.garretwilson.rdf;
 import java.net.*;
 import java.util.*;
 
-import com.garretwilson.model.Resource;
 import com.garretwilson.net.*;
+
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
 import com.garretwilson.text.xml.XMLBase;

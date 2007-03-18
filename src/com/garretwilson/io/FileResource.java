@@ -6,7 +6,8 @@ import static java.util.Collections.*;
 import java.util.List;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
-import com.garretwilson.model.DefaultResource;
+
+import com.garretwilson.net.DefaultResource;
 
 /**A resource accessible by a file.
 The file may or may not have the same URI as the resource.

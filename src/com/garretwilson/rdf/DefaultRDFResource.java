@@ -5,6 +5,8 @@ import java.net.URI;
 import java.util.*;
 
 import com.garretwilson.model.*;
+import com.garretwilson.net.BoundPropertyResource;
+
 import static com.garretwilson.rdf.RDFUtilities.*;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
 

@@ -48,14 +48,12 @@ public class URIUtilities
 			//construct an identical URI except for the supplied path
 		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), path, uri.getQuery(), uri.getFragment());
 	}
-
 	
 	/**Returns the name of the resource at the given path, which will be the name of the last path component.
 	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
 	As examples, "/path/name.ext" will return "name.ext", "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
-	An empty name is never returned; <code>null</code> will be returned instead. 
 	@param path The path, which should be encoded if {@value URIConstants#PATH_SEPARATOR} characters are present within a path component.
-	@return The name of the last last path component, or <code>null</code> if no last path component exists (i.e. the path is "/" or "").
+	@return The name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
 	@exception NullPointerException if the given path is <code>null</code>.
 	*/
 	public static String getName(final String path)
@@ -74,15 +72,14 @@ public class URIUtilities
 				return path.substring(beginIndex, endIndex);	//return the name we found
 			}
 		}
-		return null;	//indicate there were no name characters
+		return path;	//the path (either "" or "/") is already its name
 	}
 	
 	/**Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component.
 	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
 	As examples, "/path/name.ext" will return "name.ext", "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
-	An empty name is never returned; <code>null</code> will be returned instead. 
 	@param URI The URI the path of which will be examined.
-	@return The raw name of the last last path component, or <code>null</code> if the URI has no path or there is no last path component exists (i.e. the path is "/" or "").
+	@return The name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static String getRawName(final URI uri)
@@ -97,7 +94,7 @@ public class URIUtilities
 	An empty name is never returned; <code>null</code> will be returned instead.
 	The path name is first extracted from the URI's raw path and then decoded so that encoded {@value URIConstants#PATH_SEPARATOR} characters will not prevent correct parsing. 
 	@param URI The URI the path of which will be examined.
-	@return The name of the last last path component, or <code>null</code> if the URI has no path or there is no last path component exists (i.e. the path is "/" or "").
+	@return The name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static String getName(final URI uri)

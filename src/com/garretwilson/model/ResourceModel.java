@@ -2,6 +2,8 @@ package com.garretwilson.model;
 
 import java.net.URI;
 import com.garretwilson.io.*;
+import com.garretwilson.net.Resource;
+
 import static com.garretwilson.lang.ClassUtilities.*;
 
 /**A model of a resource.

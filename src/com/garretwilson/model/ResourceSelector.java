@@ -3,6 +3,7 @@ package com.garretwilson.model;
 import java.io.IOException;
 import java.net.URI;
 import com.garretwilson.io.URIAccessible;
+import com.garretwilson.net.Resource;
 import com.garretwilson.util.prefs.Preferenceable;
 
 /**An interface to an object that allows resources to be selected for input or output.

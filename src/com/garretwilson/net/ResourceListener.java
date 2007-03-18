@@ -1,4 +1,4 @@
-package com.garretwilson.model;
+package com.garretwilson.net;
 
 import java.util.EventListener;
 
