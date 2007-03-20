@@ -693,10 +693,17 @@ for some reason, this method as listed is crucial for determining if two resourc
 			value=asLiteral(getTitle(this));	//get the title and use it if it is a literal
 		}
 */
-		if(getReferenceURI()!=null || value==null)	//if we have a reference URI and/or no value
+		final URI referenceURI=getReferenceURI();	//get the reference URI
+		if(referenceURI!=null || value==null)	//if we have a reference URI and/or no value
 		{
-			stringBuilder.append(new RDFXMLGenerator().getLabel(getReferenceURI()));	//start with the default string TODO fix with a common RDFXMLifier
-//G***testing			stringBuffer.append(super.toString());	//start with the default string
+			if(referenceURI!=null)	//if we have a reference URI
+			{
+				stringBuilder.append(new RDFXMLGenerator().getLabel(getReferenceURI()));	//start with the default string TODO fix with a common RDFXMLifier
+			}
+			else	//if we have no reference URI
+			{
+				stringBuilder.append(super.toString());	//start with the default string				
+			}
 		}
 		if(value!=null)	//if we have a value
 		{

@@ -5,6 +5,8 @@ import java.net.URI;
 import java.util.*;
 
 import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.util.Debug;
+
 import static com.garretwilson.rdf.RDFConstants.*;
 
 /**Represents an RDF list resource.
@@ -853,6 +855,13 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 		/**@return <code>true</code> if the iterator has more elements.*/
 		public boolean hasNext()
 		{
+			
+			//TODO important: fix hasNext() to check for the existence of a first, or this will cause next() to return null!
+			
+/*TODO del			
+Debug.trace("next list", nextList);
+Debug.trace("NIL:", NIL_RESOURCE_URI, "nextList URI", nextList.getReferenceURI());
+*/
 				//we have a next list element if there is a next list node and it's not the nil resource
 			return nextList!=null && !RDFUtilities.isNil(nextList);			
 		}
@@ -862,9 +871,19 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 		*/
 		public RDFResource next()
 		{
+/*TODO del
+Debug.trace("ready to get next for list", nextList, "property count", nextList.getPropertyCount());
+for(final RDFPropertyValuePair property:nextList.getProperties())
+{
+Debug.trace("property:", property);
+}
+Debug.trace("ready to check next for list", nextList, "property count", nextList.getPropertyCount());
+*/
 			if(hasNext())	//if we have a next element
 			{
+//TODO del Debug.trace("we have next; getting next by getFirst()");
 				final RDFResource nextResource=getFirst(nextList);	//get the element represented by the list
+//TODO del Debug.trace("next resource:", nextResource);
 				nextList=getRest(nextList);	//show which list (if any) holds the rest of the list elements
 				return nextResource;	//return the resource element we found 
 			}

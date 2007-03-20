@@ -430,7 +430,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		for(final RDFPropertyValuePair propertyValuePair:resource.getProperties())	//for each resource property
 		{
 				//if this property is not a type property we already used for creating the element name
-		  if(!(TYPE_PROPERTY_REFERENCE_URI.equals(propertyValuePair.getProperty().getReferenceURI()) && propertyValuePair.equals(resourceType)))
+		  if(!(TYPE_PROPERTY_REFERENCE_URI.equals(propertyValuePair.getProperty().getReferenceURI()) && propertyValuePair.getPropertyValue().equals(resourceType)))
 			{
 		  	addProperty(document, element, propertyValuePair);	//create a representation for this property
 			}
@@ -549,6 +549,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 						&& valueResource.getPropertyCount()>0)	//if this resource has at least one property 
 				{
 					boolean serializeSubPropertyLiteralAttributes=true; //we'll see if all the subproperties are plain literals without language indications; if so, we'll just add them as attributes
+//TODO del Debug.trace("ready to look at all property value properties");
 					final Iterator<RDFPropertyValuePair> propertyIterator=valueResource.getPropertyIterator(); //get an iterator to all the element properties
 					while(propertyIterator.hasNext()) //while there are more properties
 					{

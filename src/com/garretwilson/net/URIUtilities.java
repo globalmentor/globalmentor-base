@@ -628,11 +628,24 @@ public class URIUtilities
 	@param nss The namespace-specific string.
 	@return A URN based upon the given parameters.
 	@see <a href="http://www.ietf.org/rfc/rfc2141.txt">RFC 2141</a>
-	@throws IllegalArgumentException if the resulting string violates RFC&nbsp;2396.
+	@throws IllegalArgumentException if the resulting string violates RFC 2396.
 	*/
 	public static URI createURN(final String nid, final String nss)
 	{
 		return URI.create(URN_SCHEME+SCHEME_SEPARATOR+nid+SCHEME_SEPARATOR+nss);	//construct and return the URN
+	}
+
+	/**Creates a <code>mailto</code> URI in the form <code>mailto:<var>username</var>@<var>domain</var></code>.
+	The username and domain will be URI-encoded.
+	@param username The mail username.
+	@param domain The mail domain.
+	@return A <code>mailto</code> URI based upon the given parameters.
+	@see <a href="http://www.ietf.org/rfc/rfc2368.txt">RFC 2368</a>
+	@exception NullPointerException if the given username and/or domain is <code>null</code>.
+	*/
+	public static URI createMailtoURI(final String username, final String domain)
+	{
+		return URI.create(MAILTO_SCHEME+SCHEME_SEPARATOR+encode(username)+MAILTO_USERNAME_DOMAIN_SEPARATOR+encode(domain));	//construct and return the mailto URI
 	}
 
 	/**Creates a URI from the given URI string relative to the given context object.

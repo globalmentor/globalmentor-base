@@ -143,7 +143,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		processing.
 	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
-	protected void processRDFIslands(final Element element) throws URISyntaxException
+	protected RDF processRDFIslands(final Element element) throws URISyntaxException
 	{
 		if(RDF_NAMESPACE_URI.toString().equals(element.getNamespaceURI()) //if this element is in the RDF namespace G***fix better
 			  && ELEMENT_RDF.equals(element.getLocalName())) //if this element indicates that the children are RDF
@@ -170,6 +170,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 				}
 			}
 		}
+		return getRDF();  //return the RDF data collected		
 	}
 
 	/**Processes the given element as representing an RDF resource.
@@ -213,6 +214,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		}
 		else	//if there is no reference URI
 		{
+		//TODO del Debug.trace("there is no reference URI; getting proxy");
 			resource=getResourceProxy(nodeIDValue!=null ? nodeIDValue : generateNodeID());	//retrieve or create a resource proxy from the node ID, generating our own node ID if there was none given			
 		}
 			//if this is not an <rdf:Description> element, the element name gives its type, so add that type to the resource
@@ -220,6 +222,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		{
 			final RDFResource typeProperty=getRDF().locateResource(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //get an rdf:type resource
 			final RDFResource typePropertyValue=getRDF().locateResource(elementNamespaceURI, elementLocalName);	//locate the resource representing the type value
+		//TODO del Debug.trace("adding type statement for the resource, with type property", typeProperty, "and type property value", typePropertyValue);
 				//add a statement in the form, {resource proxy, rdf:type resource, type value resource}
 			addStatement(new DefaultStatement(resource, typeProperty, typePropertyValue));
 		}
@@ -245,8 +248,11 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		else	//if an express type isn't given as the element name
 		{
 */
+//TODO del Debug.trace("ready to process attribute properties");
 		processAttributeProperties(resource, element, DESCRIPTION_CONTEXT);  //parse the attributes for the resource description
+	//TODO del Debug.trace("ready to process child element properties");
 		processChildElementProperties(resource, element);	//parse the child elements as properties
+	//TODO del Debug.trace("ready to return property value resource", resource, "type", resource.getClass());
 		return resource;  //return the resource or resource proxy we created
 	}
 
@@ -509,6 +515,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		}
 		else	//by default assume that we're parsing a resource as the property value
 		{
+		//TODO del Debug.trace("we must be parsing a resource as the property value");
 			final String referenceURIValue=getRDFAttribute(element, ATTRIBUTE_RESOURCE); //get the reference URI of the referenced resource, if there is one
 			final String nodeIDValue=getRDFAttribute(element, ATTRIBUTE_NODE_ID);	//get the node ID attribute value, if there is one
 			assert referenceURIValue==null || nodeIDValue==null : "Resource cannot have both reference URI "+referenceURIValue+" and node ID "+nodeIDValue+"."; //TODO change to an actual RDF error
@@ -537,12 +544,14 @@ Debug.trace("processing attribute from value: ", attributeValue);
 */
 			else  //if there is no reference URI or node ID, there is either a normal property description below, or a literal
 			{
+			//TODO del Debug.trace("seems to be a normal property description; ready to process its contents");
 				//G***we should make sure there are no attributes
 				propertyValue=processPropertyValueContents(element);	//process the contents of the element as a normal property value
 			}
 		}
 		if(propertyValue instanceof Resource)	//if we found a resource for the property value
 		{
+		//TODO del Debug.trace("we found a resource property value:", propertyValue, "of type", propertyValue.getClass(), "creating a statement for subject resource", resource);
 				//add a statement in the form, {resource/resource proxy, property resource, resource/resource proxy value}
 			addStatement(new DefaultStatement(resource, propertyResource, (Resource)propertyValue));
 		}
@@ -586,6 +595,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		}
 		if(childElement!=null)  //if we found a child element for the property value
 		{
+		//TODO del Debug.trace("found child element; ready to process as resource");
 			return processResource(childElement); //process the child element as an RDF resource, the value of the property in this case
 		}
 		else  //if we didn't find any child elements, the content is a literal
