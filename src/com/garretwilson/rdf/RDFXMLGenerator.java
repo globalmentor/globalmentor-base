@@ -187,7 +187,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 	private boolean compactRDFListSerialization=true;
 
 		/**@return <code>true</code> if lists are serialized in compact form, if possible.*/
-		public boolean isCompactRDFListSerialization() {return literalAttributeSerialization;}
+		public boolean isCompactRDFListSerialization() {return compactRDFListSerialization;}
 
 		/**Sets whether lists are serialized in compact form.
 		@param compactRDFListSerialization <code>true</code> if lists are serialized in compact form, if possible.
@@ -490,7 +490,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 	*/  //G***del rdf if we don't need
 	protected Element createPropertyElement(final Document document, final RDFResource propertyResource, final RDFObject propertyValue)
 	{
-//G***del Debug.trace("creating property element for property: ", propertyResource);  //G***del
+Debug.trace("creating property element for property: ", propertyResource);
 //G***del		final URI namespaceURI; //we'll store here the namespace URI of the property element
 		final String qualifiedName; //we'll store here the qualified name of the property element
 			//if we know the namespace URI and local name of the property
@@ -510,8 +510,10 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		final Element propertyElement=document.createElementNS(namespaceURI.toString(), qualifiedName);  //create an element from the property resource
 		if(propertyValue instanceof RDFResource) //if the property value is a resource
 		{
+Debug.trace("property value is a resource:", propertyValue, "compact RDF list?", isCompactRDFListSerialization());
 			if(propertyValue instanceof RDFListResource && isCompactRDFListSerialization())	//if this is a list and we should serialize lists in compact form TODO maybe make sure it's a normal list, first, before creating the compact form
 			{
+Debug.trace("ready to serialize compact list");
 					//set the rdf:parseType attribute to "Collection" TODO eventually get our prefix from a prefix rather than hard-coding RDF, maybe
 				propertyElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(RDF_NAMESPACE_PREFIX.toString(), ATTRIBUTE_PARSE_TYPE), COLLECTION_PARSE_TYPE);
 				final RDFListResource propertyListResource=(RDFListResource)propertyValue;	//cast the resource to a list

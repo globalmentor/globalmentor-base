@@ -693,21 +693,35 @@ for some reason, this method as listed is crucial for determining if two resourc
 			value=asLiteral(getTitle(this));	//get the title and use it if it is a literal
 		}
 */
+		final RDFXMLGenerator rdfXMLGenerator=new RDFXMLGenerator();	//create a new RDF XML generator TODO use a common instance
 		final URI referenceURI=getReferenceURI();	//get the reference URI
 		if(referenceURI!=null || value==null)	//if we have a reference URI and/or no value
 		{
 			if(referenceURI!=null)	//if we have a reference URI
 			{
-				stringBuilder.append(new RDFXMLGenerator().getLabel(getReferenceURI()));	//start with the default string TODO fix with a common RDFXMLifier
+				stringBuilder.append(rdfXMLGenerator.getLabel(getReferenceURI()));	//start with the default string
 			}
 			else	//if we have no reference URI
 			{
 				stringBuilder.append(super.toString());	//start with the default string				
 			}
 		}
+		final RDFResource type=getType(this);	//get this resource's type
+		if(type!=null)	//if there is a type
+		{
+			final URI typeURI=type.getReferenceURI();	//get the type URI
+			if(typeURI!=null)	//if there is a type given
+			{
+				if(stringBuilder.length()>0)	//if we added something to the string builder already
+				{
+					stringBuilder.append(' ');	//separate the other information and the type
+				}
+				stringBuilder.append('(').append(rdfXMLGenerator.getLabel(typeURI)).append(')'); //append "(type)"
+			}
+		}
 		if(value!=null)	//if we have a value
 		{
-			if(stringBuilder.length()>0)	//if we added something to the string buffer already
+			if(stringBuilder.length()>0)	//if we added something to the string builder already
 			{
 				stringBuilder.append(':').append(' ');	//separate the other information and the value
 			}

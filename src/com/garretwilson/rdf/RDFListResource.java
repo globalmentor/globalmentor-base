@@ -8,6 +8,8 @@ import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.util.Debug;
 
 import static com.garretwilson.rdf.RDFConstants.*;
+import static com.garretwilson.rdf.RDFUtilities.*;
+
 
 /**Represents an RDF list resource.
 <p>Manipulating an RDF list resource using its convenience methods may add
@@ -141,7 +143,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 	@param rdf The RDF data model to use as a factory for creating properties.
 	@param collection The collection with which to populate the list.
 	*/
-	public static RDFListResource create(final RDF rdf, final Collection collection)
+	public static RDFListResource create(final RDF rdf, final Collection<RDFResource> collection)
 	{
 		return create(rdf, (URI)null, collection);	//create and return a list with an anonymous reference URI
 	}
@@ -152,21 +154,20 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 	@param collection The collection with which to populate the list, each
 		element of which is a <code>RDFResource</code>.
 	*/
-	public static RDFListResource create(final RDF rdf, final URI newReferenceURI, final Collection collection)
+	public static RDFListResource create(final RDF rdf, final URI newReferenceURI, final Collection<RDFResource> collection)
 	{
 			//TODO now that we've removed the requirement of passing an RDF data model, maybe this can be optimized---or maybe removed altogether
 //G***del		final RDFResource nil=rdf.locateResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//get the nil resource
 		final RDFListResource listResource;	//we'll create a list resource for the collection 
-		if(collection.size()>0)	//if there are elements in the collection
+		if(!collection.isEmpty())	//if there are elements in the collection
 		{
-			final Iterator resourceIterator=collection.iterator();	//get an iterator to the elements of the collection
-				//G***maybe throw an illegal argument exception if the elements in the collection are not resources
-			listResource=new RDFListResource(rdf, (RDFResource)resourceIterator.next());	//get the first resource in the collection
+			final Iterator<RDFResource> resourceIterator=collection.iterator();	//get an iterator to the elements of the collection
+			listResource=new RDFListResource(rdf, resourceIterator.next());	//get the first resource in the collection
 			RDFListResource list=listResource;	//we'll keep adding to the list as we go along
 			while(resourceIterator.hasNext())	//while there are more elements in the collection
 			{
 				
-				final RDFListResource nextList=new RDFListResource(rdf, (RDFResource)resourceIterator.next());	//get the next resource in the collection
+				final RDFListResource nextList=new RDFListResource(rdf, resourceIterator.next());	//get the next resource in the collection
 				setRest(list, nextList);	//add the next list to this one
 				list=nextList;	//we'll use the next list the next time around 
 			}
@@ -184,13 +185,10 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 	@param resource The list resource for which the first element will be returned.
 	@return The first element of the list, or <code>null</code> if the resource
 		has no first element specified.
-	@exception ClassCastException Thrown if the first element property value is
-		not a <code>RDFResource</code> (such as a <code>RDFLiteral</code>), which would
-		indicate that an incorrect value has been stored for the property.
 	*/
-	public static RDFResource getFirst(final RDFResource resource) throws ClassCastException
+	public static RDFResource getFirst(final RDFResource resource)
 	{
-		return (RDFResource)resource.getPropertyValue(RDF_NAMESPACE_URI, FIRST_PROPERTY_NAME); //return the first element property
+		return asResource(resource.getPropertyValue(RDF_NAMESPACE_URI, FIRST_PROPERTY_NAME)); //return the first element property
 	}
 
 	/**Retrieves the first element of this list. If this resource has more than one
@@ -198,11 +196,8 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 		values will be returned.
 	@return The first element of this list, or <code>null</code> if there is
 		no first element specified.
-	@exception ClassCastException Thrown if the first element property value is
-		not a <code>RDFResource</code> (such as a <code>RDFLiteral</code>), which would
-		indicate that an incorrect value has been stored for the property.
 	*/
-	public RDFResource getFirst() throws ClassCastException
+	public RDFResource getFirst()
 	{
 		return getFirst(this); //return the first element property
 	}
@@ -213,13 +208,10 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 	@param resource The list resource for which the rest property will be returned.
 	@return The resource representing the rest of the list, or <code>null</code> if
 		the resource has no rest of the list specified.
-	@exception ClassCastException Thrown if the rest property value is
-		not a <code>RDFResource</code> (such as a <code>RDFLiteral</code>), which would
-		indicate that an incorrect value has been stored for the property.
 	*/
-	public static RDFResource getRest(final RDFResource resource) throws ClassCastException
+	public static RDFResource getRest(final RDFResource resource)
 	{
-		return (RDFResource)resource.getPropertyValue(RDF_NAMESPACE_URI, REST_PROPERTY_NAME); //return the rest property
+		return asResource(resource.getPropertyValue(RDF_NAMESPACE_URI, REST_PROPERTY_NAME)); //return the rest property
 	}
 
 	/**Retrieves the rest of this list, which is usually another list.
@@ -227,11 +219,8 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 		it is undefined which of those property values will be returned.
 	@return The resource representing the rest of the list, or <code>null</code> if
 		this resource has no rest of the list specified.
-	@exception ClassCastException Thrown if the rest property value is
-		not a <code>RDFResource</code> (such as a <code>RDFLiteral</code>), which would
-		indicate that an incorrect value has been stored for the property.
 	*/
-	public RDFResource getRest() throws ClassCastException
+	public RDFResource getRest()
 	{
 		return getRest(this); //return the rest property
 	}
@@ -326,8 +315,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 	/**Determines if this list contains the specified element.
 	@param object The element whose presence in this list is to be tested.
 	@return <code>true</code> if this list contains the specified element
-	@exception ClassCastException Thrown if the specified element is not an
-		<code>RDFObject</code>.
+	@exception ClassCastException Thrown if the specified element is not an {@link RDFObject}.
 	@see #indexOf(Object)
 	*/
 	public boolean contains(final Object object)
@@ -392,7 +380,8 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 	 is not a supertype of the runtime type of every element in this list.
 	@exception NullPointerException if the specified array is <code>null</code>.
 	*/
-	public <T> T[] toArray(T[] array)	//G***what's the problem with this signature?
+	@SuppressWarnings("unchecked")
+	public <T> T[] toArray(T[] array)
 	{
 		final int size=size();	//get our size
 		if(array.length<size)	//if the given array is not large enough
@@ -400,7 +389,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 			array=(T[])Array.newInstance(array.getClass().getComponentType(), size);	//create a new array
 		}
 		int i=0;	//this will index into the array we're filling
-		final Iterator<RDFResource> iterator=iterator();	//get an iterator to the elements G***why is this cast needed
+		final Iterator<RDFResource> iterator=iterator();	//get an iterator to the elements
 		while(iterator.hasNext())	//while there are more elements
 		{
 			try
@@ -855,15 +844,9 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 		/**@return <code>true</code> if the iterator has more elements.*/
 		public boolean hasNext()
 		{
-			
-			//TODO important: fix hasNext() to check for the existence of a first, or this will cause next() to return null!
-			
-/*TODO del			
-Debug.trace("next list", nextList);
-Debug.trace("NIL:", NIL_RESOURCE_URI, "nextList URI", nextList.getReferenceURI());
-*/
-				//we have a next list element if there is a next list node and it's not the nil resource
-			return nextList!=null && !RDFUtilities.isNil(nextList);			
+				//we have a next list element if there is a next list node and it's not the nil resource;
+				//make sure it has a next element as well, in case the list is corrupt, as that is what the next() method will use
+			return nextList!=null && !RDFUtilities.isNil(nextList) && getFirst(nextList)!=null;			
 		}
 
 		/**@return The next element in the iteration.
@@ -871,26 +854,16 @@ Debug.trace("NIL:", NIL_RESOURCE_URI, "nextList URI", nextList.getReferenceURI()
 		*/
 		public RDFResource next()
 		{
-/*TODO del
-Debug.trace("ready to get next for list", nextList, "property count", nextList.getPropertyCount());
-for(final RDFPropertyValuePair property:nextList.getProperties())
-{
-Debug.trace("property:", property);
-}
-Debug.trace("ready to check next for list", nextList, "property count", nextList.getPropertyCount());
-*/
-			if(hasNext())	//if we have a next element
+			if(nextList!=null && !RDFUtilities.isNil(nextList))	//if we have a next list that isn't the nil resource
 			{
-//TODO del Debug.trace("we have next; getting next by getFirst()");
 				final RDFResource nextResource=getFirst(nextList);	//get the element represented by the list
-//TODO del Debug.trace("next resource:", nextResource);
-				nextList=getRest(nextList);	//show which list (if any) holds the rest of the list elements
-				return nextResource;	//return the resource element we found 
+				if(nextResource!=null)	//if there is a next resource
+				{
+					nextList=getRest(nextList);	//show which list (if any) holds the rest of the list elements
+					return nextResource;	//return the resource element we found
+				}
 			}
-			else	//if there is no next element
-			{
-				throw new NoSuchElementException();	//show that there are no more elements
-			}
+			throw new NoSuchElementException();	//show that there are no more elements
 		}
 
 		/**Removes from the underlying collection the last element returned by the

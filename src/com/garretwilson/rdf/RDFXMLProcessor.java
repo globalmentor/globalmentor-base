@@ -3,8 +3,8 @@ package com.garretwilson.rdf;
 import java.net.*;
 import java.util.*;
 
+import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
-
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
 import com.garretwilson.text.xml.XMLBase;
@@ -31,16 +31,48 @@ import org.w3c.dom.*;
 public class RDFXMLProcessor extends AbstractRDFProcessor
 {
 
-	//constants for parseAttributeProperties()
+	/**Specifies a requirement for the presence of the RDF namespace in order for an RDF attribute to be recognized.
+	@author Garret Wilson
+	*/
+	public enum NamespaceRequirement
+	{
+		/**Only the RDF namespace is accepted for an RDF attribute to be recognized.*/
+		RDF,
+		
+		/**The RDF namespace or the <code>null</code> namespace is accepted for an RDF attribute.
+		The <code>null</code> namespace is only accepted for attributes if the parent element is in the RDF namespace.
+		*/
+		RDF_OR_NULL,
+		
+		/**Any namespace is accepted for an RDF attribute.
+		This is useful, for example, as a stop-gap measure for systems that corrupt attribute namespaces, such as Apache httpd 2.2.3 mod_dav.
+		This setting is dangerous, however, as any RDF properties stored as attributes with the same local name as an RDF attribute (e.g. <code>about</code> and <code>first</code> are essentially ignored).
+		*/
+		ANY
+	};
+
+	//constants for parseAttributeProperties() TODO convert to enum values
 	/**An attribute in the context of a resource description (<code>&lt;rdf:Description&gt;</code>).*/
 	protected static final int DESCRIPTION_CONTEXT=1;
 	/**An attribute in the context of a resource reference (<code>reference="&hellip;"</code>).*/
 	protected static final int REFERENCE_CONTEXT=2;
 	/**An attribute in the context of a property reference with only attributes and no children.*/
 	protected static final int EMPTY_PROPERTY_CONTEXT=3;
-	/**An attribute in the context of a reference short form (<code>parse=Type"Resource"</code>).*/
+	/**An attribute in the context of a reference short form (<code>parseType="Resource"</code>).*/
 	protected static final int PROPERTY_AND_NODE_CONTEXT=4;
 
+	/**Whether and which namespace is required for an RDF attribute to be recognized as such.*/
+	private NamespaceRequirement rdfAttributeNamespaceRequirement=NamespaceRequirement.RDF_OR_NULL;
+	
+		/**@return Whether and which namespace is required for an RDF attribute to be recognized as such.*/
+		public NamespaceRequirement getRDFAttributeNamespaceRequirement() {return rdfAttributeNamespaceRequirement;}
+	
+		/**Sets whether and which namespace is required for an RDF attribute to be recognized as such.
+		@param namespaceRequirement Whether and which namespace is required for an RDF attribute to be recognized as such.
+		@exception NullPointerException if the given namespace requirement is <code>null</code>.
+		*/
+		public void setRDFAttributeNamespaceRequirement(final NamespaceRequirement namespaceRequirement) {this.rdfAttributeNamespaceRequirement=checkInstance(namespaceRequirement, "Namespace requirement cannot be null.");}
+	
 	/**Default constructor.*/
 	public RDFXMLProcessor()
 	{
@@ -630,9 +662,20 @@ Debug.trace("processing attribute from value: ", attributeValue);
 	{
 		if(rdfAttributeLocalName.equals(attributeLocalName))	//if the attribute has the correct local name
 		{
-			if(RDF_NAMESPACE_URI.equals(attributeNamespaceURI) || (attributeNamespaceURI==null && RDF_NAMESPACE_URI.equals(elementNamespaceURI)))
+			if(RDF_NAMESPACE_URI.equals(attributeNamespaceURI))	//if the attribute is in the RDF namespace
 			{
 				return true;	//show that this is the expected RDF attribute
+			}
+			switch(getRDFAttributeNamespaceRequirement())	//see if the RDF attribute namespace is required
+			{
+				case RDF_OR_NULL:
+					 if(attributeNamespaceURI==null && RDF_NAMESPACE_URI.equals(elementNamespaceURI))	//accept the null namespace if the element is in the RDF namespace
+					 {
+						 return true;
+					 }
+					 break;
+				case ANY:
+					return true;	//the namespace doesn't matter
 			}
 		}
 		return false;	//show that this attribute is not the RDF attribute expected
@@ -645,7 +688,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		attribute, as each call could produce another warning.
 	@param element The element being checked for attributes.
 	@param attributeLocalName The local name of the RDF attribute to check for.
-	@return The specified RDF attribute.
+	@return The specified RDF attribute, or <code>null</code> if no such attribute was found.
 	*/
 	protected String getRDFAttribute(final Element element, final String attributeLocalName)
 	{
@@ -653,13 +696,27 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		{
 		  return element.getAttributeNS(RDF_NAMESPACE_URI.toString(), attributeLocalName); //get the prefixed attribute value
 		}
-		else if(element.getNamespaceURI()!=null && element.getNamespaceURI().equals(RDF_NAMESPACE_URI.toString()) && element.hasAttributeNS(null, attributeLocalName)) //if there is a non-prefixed attribute value
+		switch(getRDFAttributeNamespaceRequirement())	//see if the RDF attribute namespace is required
 		{
-			Debug.warn("Non-prefixed rdf:"+attributeLocalName+" attribute deprecated."); //G***put in a real warning
-		  return element.getAttributeNS(null, attributeLocalName); //return the non-prefixed attribute value
+			case RDF_OR_NULL:
+				if(RDF_NAMESPACE_URI.toString().equals(element.getNamespaceURI()) && element.hasAttributeNS(null, attributeLocalName)) //if there is a non-prefixed attribute value
+				{
+					Debug.warn("Non-prefixed rdf:"+attributeLocalName+" attribute deprecated."); //G***put in a real warning
+				  return element.getAttributeNS(null, attributeLocalName); //return the non-prefixed attribute value					
+				}
+			case ANY:
+				final NamedNodeMap attributes=element.getAttributes();	//get the attributes
+				for(int i=attributes.getLength()-1; i>=0; --i)	//look at all the attributes
+				{
+					final Node attribute=attributes.item(i);	//get this attribute
+					if(attributeLocalName.equals(attribute.getLocalName()))	//if this attribute has the correct local name
+					{
+						return attribute.getNodeValue();	//return the value of the attribute
+					}
+				}
+				break;
 		}
-		else  //if neither attribute is available
-			return null;  //show that the RDF attribute is not available
+		return null;  //show that the RDF attribute is not available
 	}
 
 }
