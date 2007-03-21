@@ -8,11 +8,11 @@ import java.net.URI;
 public abstract class TypedRDFResource extends DefaultRDFResource
 {
 
-	/**@return The namespace URI of the ontology defining the default type of this resource.*/
-	public abstract URI getDefaultTypeNamespaceURI();
+	/**@return The namespace URI of the ontology defining the default type of this resource; used for adding the initial type property.*/
+	protected abstract URI getDefaultTypeNamespaceURI();
 
-	/**@return The local name of the default type of this resource.*/
-	public abstract String getDefaultTypeName();
+	/**@return The local name of the default type of this resource; used for adding the initial type property.*/
+	protected abstract String getDefaultTypeName();
 
 	/**Default constructor that creates a resource without a reference URI.*/
 	public TypedRDFResource()

@@ -34,22 +34,16 @@ public class RDFSequenceResource extends RDFContainerResource implements Compara
 		super(rdf, newReferenceURI); //construct the parent class
 	}
 
-	/**Adds a property by creating a <code>NameValuePair</code> from the given
-		property and value. For each property, this resource serves as the subject
-		of an RDF statement with the property as the predicate and the value as
-		the object.
-		<p>Note that the property is not simply a property URI &mdash; it is a
-		resource that is identified by the property URI.</p>
-		<p>If an equivalent property already exists, no action is taken.</p>
-		<p>This version ensures that properties are sorted after being added to
-		the resource.</p>
+	/**Adds a property by creating a {@link RDFPropertyValuePair} from the given property and value.
+	If an equivalent property already exists, no action is taken.
+	This version ensures that properties are sorted after being added to the resource.
 	@param property A property resource; the predicate of an RDF statement.
 	@param value A property value; the object of an RDF statement.
 	@return The added property value.
 	*/
-	public RDFObject addProperty(final RDFResource property, final RDFObject value)
+	public <T extends RDFObject> T addProperty(final RDFResource property, final T value)
 	{
-		final RDFObject rdfObject=super.addProperty(property, value); //add this property normally
+		final T rdfObject=super.addProperty(property, value); //add this property normally
 		Collections.sort(propertyList, this); //sort the items by the number contained in the names
 		return rdfObject; //return the value we added
 	}

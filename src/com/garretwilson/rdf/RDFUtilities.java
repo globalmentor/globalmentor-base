@@ -30,84 +30,31 @@ import org.w3c.dom.*;
 public class RDFUtilities
 {
 
-	/**The start of a reference URI from the rdf:li element qualified
-		name (i.e. "rdfNamespaceURI#li_"), which we'll use to check for items
+	/**The start of a reference URI from the rdf:li element qualified name (i.e. "rdfNamespaceURI#li_"), which we'll use to check for items
 	*/
 	protected final static String RDF_LI_REFERENCE_PREFIX=createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX).toString();
 
-	/**Sets a typed literal property from lexical form and datatype URI by
-		creating a <code>RDFPropertyValuePair</code> from the given property and
-		value. This is a convenience method that allows specification
-		of the property resource through a namespace URI and a local name.
-		For each property, this resource serves as the subject of an RDF statement
-		with the property as the predicate and the value, stored as a literal, as
-		the object.
-		<p>Note that the property is not simply a property URI &mdash; it is a
-		resource that is identified by the property URI.</p>
-		<p>If an equivalent property already exists, no action is taken.</p>
+	/**Adds a <code>rdf:type</code> property to the resource.
+	<p>If an equivalent property already exists, no action is taken.</p>
 	@param resource The resource to which the type should be added.
-	@param propertyNamespaceURI The XML namespace URI used in the serialization
-		of the property resource that is the predicate of an RDF statement.
-	@param propertyLocalName The XML local name used in the serialization of the
-		property resource that is the predicate of an RDF statement.
-	@param lexicalForm The lexical form of the literal value that will be stored
-		in a <code>RDFTypedLiteral</code> created from the RDF data model.
-	@param datatypeURI The reference URI identifying the datatype of this literal.
+	@param typeURI The URI of the type to add.
 	@return The added property value.
 	*/
-/*G***del if we don't want or need this method
-	public static RDFTypedLiteral addProperty(final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final String lexicalForm, final URI datatypeURI)
+	public static RDFResource addType(final RDFResource resource, final URI typeURI)
 	{
-		return (RDFTypedLiteral)resource.addProperty(locateResource(resource, propertyNamespaceURI, propertyLocalName), rdf.createTypedLiteral(lexicalForm, datatypeURI)); //create a property from the namespace URI and local name, create a new typed literal value, and add the property
-	}
-*/
-
-	/**Adds a language tag based upon a given locale using a literal to represent
-		a language identifier according as defined in
-		<a href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>,
-		"Tags for the Identification of Languages".
-	@param rdf The RDF data model.
-	@param resource The resource to which the value should be added.
-	@param propertyNamespaceURI The XML namespace URI used in the serialization
-		of the property resource that is the predicate of an RDF statement.
-	@param propertyLocalName The XML local name used in the serialization of the
-		property resource that is the predicate of an RDF statement.
-	@param language A locale the language tag of which will be stored in a
-		<code>RDFLiteral</code>; the object of an RDF statement.
-	@return The added property value.
-	*/
-/*G***del if not needed
-	public static RDFLiteral addProperty(final RDF rdf, final RDFResource resource, final URI propertyNamespaceURI, final String propertyLocalName, final Locale language)
-	{
-		return addProperty(rdf, resource, propertyNamespaceURI, propertyLocalName, LocaleUtilities.getLanguageTag(language)); //store the language tag as a literal
-	}
-*/
-
-	/**Adds an <code>rdf:type</code> property to the resource.
-		<p>If an equivalent property already exists, no action is taken.</p>
-	@param resource The resource to which the type should be added.
-	@param value A type property value; the object of an RDF statement.
-	@return The added property value.
-	*/
-	public static RDFObject addType(final RDFResource resource, final RDFObject value)
-	{
-		return resource.addProperty(locateTypeProperty(resource), value);  //add the value to the resource as a type
+		return resource.addProperty(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME, locateResource(resource, typeURI));  //get a resource from the type URI and add it as a type
 	}
 
 	/**Adds an <code>rdf:type</code> property to the resource.
-		This is a convenience method that allows specification
-		of the property value resource through a namespace URI and a local name.
-		<p>If an equivalent property already exists, no action is taken.</p>
+	If an equivalent property already exists, no action is taken.
 	@param resource The resource to which the type should be added.
-	@param valueNamespaceURI The XML namespace URI used in the serialization
-		of the property value resource that is the object of an RDF statement.
-	@param valueLocalName The XML local name used in the serialization of the
-		property value resource that is the object of an RDF statement.
+	@param typeNamespaceURI The namespace URI used  of the property value resource that is the object of an RDF statement.
+	@param typeLocalName The local name of the property value resource that is the object of an RDF statement.
 	@return The added property value.
 	*/
-	public static RDFObject addType(final RDFResource resource, final URI valueNamespaceURI, final String valueLocalName)
+	public static RDFResource addType(final RDFResource resource, final URI typeNamespaceURI, final String typeLocalName)
 	{
-		return addType(resource, locateResource(resource, valueNamespaceURI, valueLocalName));  //get a resource from the namespace and local name and add it as a type
+		return addType(resource, createReferenceURI(typeNamespaceURI, typeLocalName));  //create a type URI and add that type
 	}
 
 	/**Determines if the RDF object is a list and, if so, casts the object 
@@ -220,7 +167,7 @@ public class RDFUtilities
 	*/
 	public static RDFResource locateResource(final RDFResource contextResource, final URI namespaceURI, final String localName)
 	{
-		return locateResource(contextResource, RDFUtilities.createReferenceURI(namespaceURI, localName));	//locate a resource, constructing a reference URI from the given namespace URI and local name
+		return locateResource(contextResource, createReferenceURI(namespaceURI, localName));	//locate a resource, constructing a reference URI from the given namespace URI and local name
 	}
 
 	/**Locates and returns an existing resource or creates a new resource 
@@ -277,7 +224,7 @@ public class RDFUtilities
 			final RDFResource resource=new DefaultRDFResource(referenceURI);  //create a new resource from the given reference URI
 			if(typeNamespaceURI!=null && typeLocalName!=null)	//if we were given a type
 			{
-				RDFUtilities.addType(resource, typeNamespaceURI, typeLocalName); //add the type property
+				addType(resource, typeNamespaceURI, typeLocalName); //add the type property
 			}
 			return resource;	//return the resource we created			
 		}
@@ -397,7 +344,7 @@ public class RDFUtilities
 	{
 
 
-		RDFUtilities.createReferenceURI()
+		createReferenceURI()
 
 		final String namespaceURI=resource.getNamespaceURI(); //get the resource namespace URI, if it has one
 		final String localName=resource.getLocalName(); //get the resource's local name
@@ -442,7 +389,7 @@ public class RDFUtilities
 	*/
 	public static Iterable<RDFResource> getResourcesByType(final RDF rdf, final URI typeNamespaceURI, final String typeLocalName)
 	{
-		return getResourcesByType(rdf, RDFUtilities.createReferenceURI(typeNamespaceURI, typeLocalName)); //gather the resources with a type property of the URI from the given namespace and local name
+		return getResourcesByType(rdf, createReferenceURI(typeNamespaceURI, typeLocalName)); //gather the resources with a type property of the URI from the given namespace and local name
 	}
 
 	/**Retrieves a resource from an RDF data model that is of the requested type.
@@ -515,7 +462,7 @@ public class RDFUtilities
 /*G***del if not needed
 	public static String getTypeLabel(final RDF rdf, final RDFResource resource) throws ClassCastException
 	{
-		final RDFResource type=RDFUtilities.getType(resource);  //get the type of the resource
+		final RDFResource type=getType(resource);  //get the type of the resource
 		return type!=null ? getLabel(rdf, type) : null; //return the label of the type, if there is a type
 		if(type!=null)  //if this object has a type
 		{
@@ -625,7 +572,7 @@ public class RDFUtilities
 	*/
 	public static boolean isType(final RDFResource resource, final URI typeNamespaceURI, final String typeLocalName)
 	{
-		return resource.hasPropertyResourceValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME, RDFUtilities.createReferenceURI(typeNamespaceURI, typeLocalName)); //determine if the resource has a type property of the URI from the given namespace and local name
+		return resource.hasPropertyResourceValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME, createReferenceURI(typeNamespaceURI, typeLocalName)); //determine if the resource has a type property of the URI from the given namespace and local name
 	}
 
 	/**Retreives a nil list resource from the data model, or creates one and
@@ -706,7 +653,7 @@ public class RDFUtilities
 		{
 			return referenceURI.toString();	//return the reference URI
 		}
-		final RDFLiteral valueLiteral=RDFUtilities.getValue(resource);	//get the rdfs:value property, if any
+		final RDFLiteral valueLiteral=getValue(resource);	//get the rdfs:value property, if any
 		if(valueLiteral!=null)	//if a rdfs:value property was provided
 		{
 			return valueLiteral.getLexicalForm();	//return the rdfs:value property's lexical form

@@ -3,6 +3,7 @@ package com.garretwilson.rdf;
 import java.net.URI;
 import java.util.*;
 import static com.garretwilson.rdf.RDFConstants.*;
+import static com.garretwilson.rdf.RDFUtilities.*;
 import com.garretwilson.util.*;
 
 /**Represents an RDF resource that is a container, such as a bag or a sequence.
@@ -40,7 +41,7 @@ public abstract class RDFContainerResource extends TypedRDFResource
 		{
 			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
 				//if this property reference URI begins with rdf:_
-		  if(RDFUtilities.isContainerMemberPropertyReference(propertyValuePair.getProperty().getReferenceURI()))
+		  if(isContainerMemberPropertyReference(propertyValuePair.getProperty().getReferenceURI()))
 				itemPropertyList.add(propertyValuePair);  //add this property and value to the list
 		}
 		return itemPropertyList;  //return the list of name/value pairs
@@ -118,10 +119,10 @@ Debug.trace("sorted value is: ", propertyValuePair.getValue()); //G***del
 		{
 			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
 			final URI propertyReferenceURI=propertyValuePair.getProperty().getReferenceURI();  //get the reference URI of the property
-		  if(RDFUtilities.isContainerMemberPropertyReference(propertyReferenceURI))  //if this property name begins with rdf:_
+		  if(isContainerMemberPropertyReference(propertyReferenceURI))  //if this property name begins with rdf:_
 			{
 					//get the current number by removing the start of the URI up to and including "#_"
-				final String numberString=propertyReferenceURI.toString().substring(RDFUtilities.RDF_LI_REFERENCE_PREFIX.length());	//G***fix better
+				final String numberString=propertyReferenceURI.toString().substring(RDF_LI_REFERENCE_PREFIX.length());	//G***fix better
 				try
 				{
 				  final int number=Integer.parseInt(numberString);  //parse the integer from the string
@@ -144,17 +145,17 @@ Debug.trace("sorted value is: ", propertyValuePair.getValue()); //G***del
 		{
 			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
 			final URI propertyReferenceURI=propertyValuePair.getProperty().getReferenceURI();  //get the reference URI of the property
-			if(RDFUtilities.isContainerMemberPropertyReference(propertyReferenceURI))  //if this property name begins with rdf:_
+			if(isContainerMemberPropertyReference(propertyReferenceURI))  //if this property name begins with rdf:_
 			{
 					//get the current number by removing the start of the URI up to and including "#_"
-				final String numberString=propertyReferenceURI.toString().substring(RDFUtilities.RDF_LI_REFERENCE_PREFIX.length());
+				final String numberString=propertyReferenceURI.toString().substring(RDF_LI_REFERENCE_PREFIX.length());
 				try
 				{
 				  final int number=Integer.parseInt(numberString);  //parse the integer from the string
 					if(number>=minNumber) //if this number is within our range
 					{
 						  //create a new property pair with a new number in the property
-						final RDFPropertyValuePair newProperty=new RDFPropertyValuePair(getMemberProperty(number+delta), propertyValuePair.getPropertyValue());
+						final RDFPropertyValuePair newProperty=new RDFPropertyValuePair(locateResource(this, getMemberPropertyURI(number+delta)), propertyValuePair.getPropertyValue());
 						propertyIterator.set(newProperty);  //change this property
 					}
 				}
@@ -163,34 +164,32 @@ Debug.trace("sorted value is: ", propertyValuePair.getValue()); //G***del
 		}
 	}
 
-	/**Adds an item to the container as an <code>&lt;rdf:li</code> property, using
-		the next available item number.
+	/**Adds an item to the container as an <code>&lt;rdf:li</code> property, using the next available item number.
 	@param propertyValue The item to add to the container.
 	*/
-	public void add(final RDFObject propertyValue) //G***should we replace all this with "member" instead of "item"?
+	public <T extends RDFObject> T add(final T propertyValue) //G***should we replace all this with "member" instead of "item"?
 	{
-		add(propertyValue, getNextItemNumber()); //store the item at the next available number
+		return add(propertyValue, getNextItemNumber()); //store the item at the next available number
 	}
 
-	/**Adds an item to the container as an <code>&lt;rdf:li</code> property, using
-		the given item number.
+	/**Adds an item to the container as an <code>&lt;rdf:li</code> property, using the given item number.
 	@param propertyValue The item to add to the container.
 	@param number The number to give to the item.
 	*/
-	public void add(final RDFObject propertyValue, final int number) //G***should we replace all this with "member" instead of "item"?
+	public <T extends RDFObject> T add(final T propertyValue, final int number)
 	{
 		changeNumbers(number, 1); //increment by one any members that have this number or higher
-		addProperty(getMemberProperty(number), propertyValue); //add the property and value to the resource
+		return addProperty(getMemberPropertyURI(number), propertyValue); //add the property and value to the resource
 	}
 
-	/**Determines the property to use for a member with the given number.
+	/**Determines the property URI to use for a member with the given number.
 	@param number The number of a member.
 	@return The URI of the property representing this numbered member.
 	*/
-	protected RDFResource getMemberProperty(final int number)
+	protected URI getMemberPropertyURI(final int number)
 	{
 		final String propertyLocalName=CONTAINER_MEMBER_PREFIX+number;  //create a local name for the number
-		return RDFUtilities.locateResource(this, RDF_NAMESPACE_URI, propertyLocalName); //use the URI containing the number as the property
+		return createReferenceURI(RDF_NAMESPACE_URI, propertyLocalName); //use the URI containing the number as the property
 	}
 
 }

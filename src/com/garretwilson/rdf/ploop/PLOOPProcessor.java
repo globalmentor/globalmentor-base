@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Pattern;
 
+import com.garretwilson.net.Resource;
 import com.garretwilson.rdf.*;
 import com.garretwilson.util.*;
 import com.guiseframework.style.RGBColor;
@@ -38,7 +39,8 @@ import com.guiseframework.style.RGBColor;
 	<li>{@link RGBColor}</li>
 	<li>{@link URI}</li>
 </ul>
-<p>This class is thread safe.</p>
+<p>This processor recognizes the {@link Resource} type; when this class is present with a single URI parameter constructor, that constructor will take precedence using the <code>rdf:about</code> resource reference URI value.</p>
+<p>This processor also recognizes the {@link RDFResource} type and will transfer all non-ploop properties when an instance is encountered.</p>
 @author Garret Wilson
 */
 public class PLOOPProcessor
@@ -255,17 +257,7 @@ public class PLOOPProcessor
 			{
 				final Class<?> valueClass=Class.forName(valueClassName);	//load the class
 				final Map<URI, PropertyDescription> propertyDescriptionMap=getPropertyDescriptionMap(valueClass, resource);	//get the property descriptions from the resource description
-				final List<PropertyDescription> readOnlyProperties=new ArrayList<PropertyDescription>(propertyDescriptionMap.size());	//the set of read-only properties, which we may use in the constructor
-				for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
-				{
-//TODO del Debug.trace("to determine read-only properties, looking at property description for", propertyDescription.getPropertyURI());
-					if(propertyDescription.getSetter()==null)	//if there is no setter for this property, it is a read-only property; save it in case we can use it for the constructor
-					{
-//TODO del Debug.trace("this is a read-only property");
-						readOnlyProperties.add(propertyDescription);	//add this property ot the list of read-only properties
-					}
-				}
-//TODO del when works				readOnlyProperties.add(new PropertyDescription(RDFUtilities.createReferenceURI(GUISE_PROPERTY_NAMESPACE_URI, "session"), GuiseSession.class, getSession()));	//artificially popuplate the read-only property with a session TODO refactor this to allow such variables to be specfified in a general way
+
 				final Constructor<?>[] constructors=valueClass.getConstructors();	//get all available constructors
 				
 					//see if there is an rdf:value
@@ -328,6 +320,42 @@ public class PLOOPProcessor
 				}
 				else	//if there is no rdf:value literal property value
 				{
+						//see if this is a Resource with a single URI parameter constructor
+					if(Resource.class.isAssignableFrom(valueClass))	//if the value class is a Resource, see if we can
+					{
+						final Constructor<?> constructor=getCompatibleConstructor(valueClass, URI.class);	//see if there is a single URI parameter constructor
+						if(constructor!=null)	//if there is a single URI parameter constructor for the Resource
+						{
+							try
+							{
+								final Object object=constructor.newInstance(resource.getReferenceURI());	//invoke the constructor with the resource reference URI
+								initializeObject(object, resource, propertyDescriptionMap);	//initialize the object with the properties
+								return object;	//return the constructed and initialized object
+							}
+							catch(final InstantiationException instantiationException)
+							{
+								throw new IllegalArgumentException(instantiationException);
+							}
+							catch(final IllegalAccessException illegalAccessException)
+							{
+								throw new IllegalArgumentException(illegalAccessException);
+							}							
+						}
+					}
+						//for all non-Resource types
+					final List<PropertyDescription> readOnlyProperties=new ArrayList<PropertyDescription>(propertyDescriptionMap.size());	//the set of read-only properties, which we may use in the constructor
+					for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
+					{
+	//TODO del Debug.trace("to determine read-only properties, looking at property description for", propertyDescription.getPropertyURI());
+						if(propertyDescription.getSetter()==null)	//if there is no setter for this property, it is a read-only property; save it in case we can use it for the constructor
+						{
+	//TODO del Debug.trace("this is a read-only property");
+							readOnlyProperties.add(propertyDescription);	//add this property ot the list of read-only properties
+						}
+					}
+	//TODO del when works				readOnlyProperties.add(new PropertyDescription(RDFUtilities.createReferenceURI(GUISE_PROPERTY_NAMESPACE_URI, "session"), GuiseSession.class, getSession()));	//artificially popuplate the read-only property with a session TODO refactor this to allow such variables to be specfified in a general way
+					
+					
 					int maxParameterCount=0;	//we'll determine the maximum number of parameters available
 					for(final Constructor<?> constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
 					{
@@ -426,6 +454,7 @@ public class PLOOPProcessor
 
 	/**Initializes an object based upon the given description.
 	The object being initialized will be stored locally keyed to the resource description for later lookup.
+	This implementation also recognizes the {@link RDFResource} type and will transfer all non-ploop properties when an instance is encountered.
 	@param object The object to initialize.
 	@param resource The description for the object.
 	@exception ClassNotFoundException if a class was specified and the indicated class cannot be found.
@@ -440,9 +469,10 @@ public class PLOOPProcessor
 
 	/**Initializes an object based upon the given URI and property descriptions.
 	The object being initialized will be stored locally keyed to the resource description for later lookup.
+	This implementation also recognizes the {@link RDFResource} type and will transfer all non-ploop properties when an instance is encountered.
 	@param object The object to initialize.
 	@param resource The description for the object.
-	@param propertyDescriptionMap The property descriptions fo initializing the object.
+	@param propertyDescriptionMap The property descriptions for initializing the object.
 	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
 	*/
 	protected void initializeObject(final Object object, final RDFResource resource, final Map<URI, PropertyDescription> propertyDescriptionMap) throws InvocationTargetException
@@ -490,6 +520,18 @@ public class PLOOPProcessor
 				{
 					Debug.error(e);
 				}											
+			}
+		}
+		if(object instanceof RDFResource)	//if the object is an RDF resource, add any non-PLOOP properties to the new RDF resource
+		{
+			for(final RDFPropertyValuePair rdfPropertyValuePair:resource.getProperties())	//for each property of the source resource
+			{
+				final RDFResource property=rdfPropertyValuePair.getProperty();	//get the property
+				final URI propertyURI=property.getReferenceURI();	//get the property URI
+				if(!PLOOP_PROPERTY_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//if this isn't a PLOOP property
+				{
+					((RDFResource)object).addProperty(propertyURI, rdfPropertyValuePair.getValue());	//add this property and value to the created RDF resource TODO see if we can transfer the owner RDF instance when we transfer the value
+				}
 			}
 		}
 		resourceObjectMap.put(resource, object);	//associate the initialized object with its resource description
