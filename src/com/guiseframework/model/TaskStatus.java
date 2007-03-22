@@ -23,4 +23,7 @@ public enum TaskStatus
 	
 	/**The task has been completed.*/
 	COMPLETE;
+
+	/**The resource key format pattern for each task status glyph.*/
+	public final static String GLYPH_RESOURCE_KEY_FORMAT_PATTERN="theme.task.status.{0}.glyph";
 }

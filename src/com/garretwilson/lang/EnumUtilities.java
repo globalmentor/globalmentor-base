@@ -32,9 +32,10 @@ public class EnumUtilities
 	@return A string representing the enum instance in a style appropriate for use as a resource key.
 	@see Enum#name()
 	*/
-	public static String getResourceKey(final Enum<?> e)
+/*TODO del if not needed; moved to Guise
+	public static String getResourceKeyName(final Enum<?> e)
 	{
 		return e.name().toLowerCase().replace('_', '.');	//convert the name to lowercase and replace underscores with periods
 	}
-
+*/
 }
