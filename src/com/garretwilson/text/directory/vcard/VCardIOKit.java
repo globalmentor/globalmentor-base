@@ -5,6 +5,7 @@ import java.net.*;
 import com.garretwilson.io.*;
 import com.garretwilson.text.CharacterEncodingConstants;
 import com.garretwilson.text.directory.*;
+import static com.garretwilson.text.directory.vcard.VCardConstants.*;
 
 /**Class for loading and saving a a vCard <code>text/directory</code>
 	profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>,
@@ -62,7 +63,7 @@ public class VCardIOKit extends AbstractIOKit<VCard>
 	public VCard load(final InputStream inputStream, final URI baseURI) throws IOException
 	{
 		final DirectoryProcessor directoryProcessor=new DirectoryProcessor();	//create a new directory processor
-		directoryProcessor.registerProfile(VCardProfile.VCARD_PROFILE_NAME, VCARD_PROFILE);	//register the vCard profile with the vCard processor
+		directoryProcessor.registerProfile(VCARD_PROFILE_NAME, VCARD_PROFILE);	//register the vCard profile with the vCard processor
 		final Reader reader=new InputStreamReader(inputStream, CharacterEncodingConstants.UTF_8);	//assume the vCard is stored in UTF-8
 		final Directory directory=directoryProcessor.processDirectory(reader, baseURI);	//process the directory
 //G***del Debug.trace("parsed directory: ", directory);
@@ -98,7 +99,7 @@ public class VCardIOKit extends AbstractIOKit<VCard>
 	{
 		final ContentLine[] contentLines=VCardProfile.createContentLines(vcard);	//create content lines from the vCard
 		final DirectorySerializer directorySerializer=new DirectorySerializer();	//create a new directory serializer
-		directorySerializer.registerProfile(VCardProfile.VCARD_PROFILE_NAME, VCARD_PROFILE);	//register the vCard profile with the vCard serializer
+		directorySerializer.registerProfile(VCARD_PROFILE_NAME, VCARD_PROFILE);	//register the vCard profile with the vCard serializer
 		final Writer writer=new OutputStreamWriter(outputStream, CharacterEncodingConstants.UTF_8);	//write the vCard using UTF-8
 		directorySerializer.serializeContentLines(contentLines, writer);	//serialize the content lines of the vCard G***maybe allow the serializer to find a profile and convert to content lines automatically
 		writer.flush();	//flush all our output, because the calling class will close the input stream, not the writer we created		

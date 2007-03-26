@@ -2,6 +2,8 @@ package com.garretwilson.text.directory;
 
 import java.util.*;
 
+import com.garretwilson.util.NameValuePair;
+
 /**Class that knows how to give profile-specific information for types within
 	a profile of a <code>text/directory</code> as defined in 
 	<a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
@@ -25,7 +27,7 @@ public interface Profile
 	@return The value type of the content line, or <code>null</code> if the
 		value type cannot be determined.
 	*/	
-	public String getValueType(final String profile, final String group, final String name, final List paramList);
+	public String getValueType(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList);
 
 	/**Creates a directory from the given content lines.
 	Unrecognized or unusable content lines within the directory object will be

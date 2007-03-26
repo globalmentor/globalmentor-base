@@ -3,6 +3,8 @@ package com.garretwilson.text.directory;
 import java.io.*;
 import java.util.*;
 
+import com.garretwilson.util.NameValuePair;
+
 /**Class that knows how to serialize values provided in
 	the lines of a <code>text/directory</code> as defined in 
 	<a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
@@ -31,6 +33,6 @@ public interface ValueSerializer
 	@exception IOException Thrown if there is an error writing to the directory.
 	@see NameValuePair
 	*/	
-	public boolean serializeValue(final String profile, final String group, final String name, final List paramList, final Object value, final String valueType, final Writer writer) throws IOException;
+	public boolean serializeValue(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList, final Object value, final String valueType, final Writer writer) throws IOException;
 	
 }

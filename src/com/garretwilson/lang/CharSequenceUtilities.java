@@ -688,6 +688,22 @@ public class CharSequenceUtilities
 		return charSequence instanceof StringBuilder ? (StringBuilder)charSequence : new StringBuilder(charSequence);	//only create a new string builder if we need to
 	}
 */
+
+	/**Converts an array of character sequences to an array of strings.
+	@param <T> The character sequence type.
+	@param charSequenceArray The character sequence array to convert to a string array.
+	@return An array of strings resulting from converting each characters sequence invoking {@link CharSequence#toString()}.
+	@exception NullPointerException if the given character sequence array is <code>null</code> or if one or more of its elements is <code>null</code>.
+	*/
+	public static <T> String[] toStringArray(final T[] charSequenceArray)
+	{
+		final String[] stringArray=new String[charSequenceArray.length];	//create a new array of strings
+		for(int i=stringArray.length-1; i>=0; --i)	//for each char sequence
+		{
+			stringArray[i]=charSequenceArray[i].toString();	//convert the char sequence to a string and store it in the array
+		}
+		return stringArray;	//return the array of strings
+	}
 	
 	/**Trims the right side of the string beginning at the first occurrence of the
 		given character. If the character sequence does not contain the trim

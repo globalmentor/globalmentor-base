@@ -1,6 +1,8 @@
 package com.garretwilson.text.directory;
 
 import java.util.*;
+
+import static com.garretwilson.text.directory.DirectoryConstants.*;
 import com.garretwilson.util.*;
 
 /**A line in a directory of type <code>text/directory</code> as defined in
@@ -8,7 +10,7 @@ import com.garretwilson.util.*;
 	"A MIME Content-Type for Directory Information".
 @author Garret Wilson
 */
-public class ContentLine extends NameValuePair implements DirectoryConstants
+public class ContentLine extends NameValuePair<String, Object>
 {
 
 	/**The profile of this content line, or <code>null</code> if there is no profile.*/
@@ -33,21 +35,15 @@ public class ContentLine extends NameValuePair implements DirectoryConstants
 		*/
 		public void setGroup(final String group) {this.group=group;}
 	
-	/**@return The type name of this content line as a string.
-	Convenience method for <code>getName()</code>.
-	@see NameValuePair#getName
-	*/
-	public String getTypeName() {return (String)getName();}
-			
 	/**The list of parameters.*/
-	private final List paramList;
+	private final List<NameValuePair<String, String>> paramList;
 
 		/**@return The list of parameters, each item of which is a
 			<code>NameValuePair</code> with a name of type <code>String</code> and a
-			value of type <code>Object</code>.
+			value of type <code>String</code>.
 		@see NameValuePair
 		*/
-		public List getParamList() {return paramList;}
+		public List<NameValuePair<String, String>> getParamList() {return paramList;}
 
 	/**Creates a directory content line with a name and value.
 	@param name The name of the information.
@@ -73,10 +69,10 @@ public class ContentLine extends NameValuePair implements DirectoryConstants
 	@param name The name of the information.
 	@param paramList The list of parameters, each item of which is a
 		<code>NameValuePair</code> with a name of type <code>String</code> and a
-		value of type <code>Object</code>.
+		value of type <code>String</code>.
 	@param value The value of the information.
 	*/
-	public ContentLine(final String group, final String name, final List paramList, final Object value)
+	public ContentLine(final String group, final String name, final List<NameValuePair<String, String>> paramList, final Object value)
 	{
 		this(null, group, name, paramList, value);	//create a content line with no profile
 	}
@@ -90,7 +86,7 @@ public class ContentLine extends NameValuePair implements DirectoryConstants
 	*/
 	public ContentLine(final String profile, final String group, final String name, final Object value)
 	{
-		this(profile, group, name, new ArrayList(), value);	//create a content line with an empty param list
+		this(profile, group, name, new ArrayList<NameValuePair<String, String>>(), value);	//create a content line with an empty param list
 	}
 	
 	/**Creates a directory content line with a profile, group, name, parameter list, and value.
@@ -100,10 +96,10 @@ public class ContentLine extends NameValuePair implements DirectoryConstants
 	@param name The name of the information.
 	@param paramList The list of parameters, each item of which is a
 		<code>NameValuePair</code> with a name of type <code>String</code> and a
-		value of type <code>Object</code>.
+		value of type <code>String</code>.
 	@param value The value of the information.
 	*/
-	public ContentLine(final String profile, final String group, final String name, final List paramList, final Object value)
+	public ContentLine(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList, final Object value)
 	{
 		super(name, value);	//construct the parent class
 		this.profile=profile;	//save the profile
@@ -125,27 +121,25 @@ public class ContentLine extends NameValuePair implements DirectoryConstants
 	/**@return A string representation of this content line.*/
 	public String toString()
 	{
-		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer to use in constructing the string
+		final StringBuilder stringBuilder=new StringBuilder();	//create a string builder to use in constructing the string
 		if(getProfile()!=null)	//if there's a profile
 		{
-			stringBuffer.append('[').append(getProfile()).append(']').append(' ');	//append the profile
+			stringBuilder.append('[').append(getProfile()).append(']').append(' ');	//append the profile
 		}
 		if(getGroup()!=null)	//if there's a group
 		{
-			stringBuffer.append(getGroup()).append(GROUP_NAME_SEPARATOR_CHAR);	//append the group
+			stringBuilder.append(getGroup()).append(GROUP_NAME_SEPARATOR_CHAR);	//append the group
 		}
-		stringBuffer.append(getTypeName());	//append the type name
+		stringBuilder.append(getName());	//append the type name
 		if(getParamList().size()>0)	//if there are parameters
 		{
-			final Iterator paramIterator=getParamList().iterator();	//get an iterator to the parameters
-			while(paramIterator.hasNext())	//while there are more parameters
+			for(final NameValuePair<String, String> parameter:getParamList())	//for each parameter
 			{
-				final NameValuePair param=(NameValuePair)paramIterator.next();	//get the next parameter name/value pair
 					//append the parameter name and value
-				stringBuffer.append(PARAM_SEPARATOR_CHAR).append(param.getName().toString()).append(PARAM_NAME_VALUE_SEPARATOR_CHAR).append(param.getValue().toString());
+				stringBuilder.append(PARAM_SEPARATOR_CHAR).append(parameter.getName()).append(PARAM_NAME_VALUE_SEPARATOR_CHAR).append(parameter.getValue());
 			}
 		}
-		stringBuffer.append(NAME_VALUE_SEPARATOR_CHAR).append(getValue().toString());	//append the value
-		return stringBuffer.toString();	//return the string we constructed
+		stringBuilder.append(NAME_VALUE_SEPARATOR_CHAR).append(getValue().toString());	//append the value
+		return stringBuilder.toString();	//return the string we constructed
 	}
 }

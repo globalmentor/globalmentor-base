@@ -1,6 +1,13 @@
 package com.garretwilson.text.directory;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
+
+import static com.garretwilson.text.ABNF.CRLF;
+import static com.garretwilson.text.directory.DirectoryConstants.*;
+
+import com.garretwilson.lang.StringBuilderUtilities;
 import com.garretwilson.util.*;
 
 /**Utilities for working with directories of type <code>text/directory</code> as
@@ -9,7 +16,7 @@ import com.garretwilson.util.*;
 	"A MIME Content-Type for Directory Information".
 @author Garret Wilson
 */
-public class DirectoryUtilities implements DirectoryConstants
+public class DirectoryUtilities
 {
 	/**Creates a directory content line from locale text.
 	@param profile The profile of this content line, or <code>null</code> if
@@ -49,10 +56,43 @@ public class DirectoryUtilities implements DirectoryConstants
 	@param value The content line value.
 	@return An object representing the text and locale of the value
 	*/
-	public static LocaleText createLocaleTextValue(final List paramList, final Object value)
+	public static LocaleText createLocaleTextValue(final List<NameValuePair<String, String>> paramList, final Object value)
 	{
 		final Locale locale=getLanguageParamValue(paramList);	//get the locale
 		return new LocaleText(value.toString(), locale);	//create and return the locale text
+	}
+
+	/**The characters that must be escaped in text: CR, LF, '\\', and ','. (Note that CRLF runs should first be replaced with a single LF to prevent duplicate linefeeds.*/
+	protected final static char[] TEXT_MATCH_CHARS=new char[]{LF, TEXT_ESCAPE_CHAR, VALUE_SEPARATOR_CHAR, CR};
+
+	/**The strings to replace the characters to be escaped in text.*/
+	protected final static String[] TEXT_REPLACEMENT_STRINGS=new String[]{TEXT_ESCAPE_STRING+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR, TEXT_ESCAPE_STRING+TEXT_ESCAPE_CHAR, TEXT_ESCAPE_STRING+VALUE_SEPARATOR_CHAR, TEXT_ESCAPE_STRING+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR};
+
+	/**Encodes a text value.
+	<p>CR, LF, and CRLF will be be converted to "\\n"; and '\\' and ',' will be escaped with '\\'.</p>
+	@param text The text value to encode.
+	@return The encoded text value.
+	*/	
+	public static String encodeTextValue(final String text)
+	{
+		final StringBuilder stringBuilder=new StringBuilder(text);	//create a string buffer to use for escaping values
+		StringBuilderUtilities.replace(stringBuilder, CRLF, "\n");	//replace every occurrence of CRLF with "\n" (there may still be lone CRs or LFs); this will get replaced with "\\n" in the next step
+		StringBuilderUtilities.replace(stringBuilder, TEXT_MATCH_CHARS, TEXT_REPLACEMENT_STRINGS);	//replace characters with their escaped versions
+		return stringBuilder.toString();	//return the resulting string
+	}
+
+	/**Decodes a text value.
+	<p>"\\n" will be converted to CRLF; "\\," will be converted to ',', and "\\\\" will be converted to '\'.</p>
+	@param text The text value to decode.
+	@return The decoded text value.
+	*/	
+	public static String decodeTextValue(final String text)
+	{
+		final StringBuilder stringBuilder=new StringBuilder(text);	//create a string buffer to use for escaping values
+		StringBuilderUtilities.replace(stringBuilder, TEXT_ESCAPE_STRING+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR, CRLF);	//replace an escaped linefeed with CRLF
+		StringBuilderUtilities.replace(stringBuilder, TEXT_ESCAPE_STRING+TEXT_ESCAPE_CHAR, String.valueOf(TEXT_ESCAPE_CHAR));	//replace an escaped backslash with '\\'
+		StringBuilderUtilities.replace(stringBuilder, TEXT_ESCAPE_STRING+VALUE_SEPARATOR_CHAR, String.valueOf(VALUE_SEPARATOR_CHAR));	//replace an escaped comma with ','
+		return stringBuilder.toString();	//return the resulting string
 	}
 
 	/**Retrieves the value of the first language parameter as a <code>Locale</code>.
@@ -62,7 +102,7 @@ public class DirectoryUtilities implements DirectoryConstants
 	@return A locale representing the given language, or <code>null</code> if
 		no language is indicated.
 	*/
-	public static Locale getLanguageParamValue(final List paramList)
+	public static Locale getLanguageParamValue(final List<NameValuePair<String, String>> paramList)
 	{
 		final String languageValue=getParamValue(paramList, LANGUAGE_PARAM_NAME);	//get the first language parameter
 		return languageValue!=null && languageValue.trim().length()>0	//if there is a language and it isn't just whitespace 
@@ -79,15 +119,13 @@ public class DirectoryUtilities implements DirectoryConstants
 	@return The value of the first matching parameter, or <code>null</code> if
 		there is no matching parameter. 
 	*/
-	public static String getParamValue(final List paramList, final String paramName)
+	public static String getParamValue(final List<NameValuePair<String, String>> paramList, final String paramName)
 	{
-		final Iterator paramIterator=paramList.iterator();	//get an iterator to the parameters
-		while(paramIterator.hasNext())	//while there are more parameters
+		for(final NameValuePair<String, String> parameter:paramList)	//for each parameter
 		{
-			final NameValuePair parameter=(NameValuePair)paramIterator.next();	//get the next parameter name/value pair
 			if(paramName.equals(parameter.getName()))	//if this is the correct parameter
 			{
-				return (String)parameter.getValue();	//return the parameter value
+				return parameter.getValue();	//return the parameter value
 			}
 		}
 		return null;	//show that we could not find a matching parameter
@@ -101,19 +139,17 @@ public class DirectoryUtilities implements DirectoryConstants
 		available parameters in a case insensitive way.
 	@return The values of all matching parameters. 
 	*/
-	public static String[] getParamValues(final List paramList, final String paramName)
+	public static String[] getParamValues(final List<NameValuePair<String, String>> paramList, final String paramName)
 	{
-		final List paramValueList=new ArrayList(paramList.size());	//create a list to hold parameters, knowing we won't need room for more parameters than the we were given
-		final Iterator paramIterator=paramList.iterator();	//get an iterator to the parameters
-		while(paramIterator.hasNext())	//while there are more parameters
+		final List<String> paramValueList=new ArrayList<String>(paramList.size());	//create a list to hold parameter values, knowing we won't need room for more parameters than the we were given
+		for(final NameValuePair<String, String> parameter:paramList)	//for each parameter
 		{
-			final NameValuePair parameter=(NameValuePair)paramIterator.next();	//get the next parameter name/value pair
 			if(paramName.equals(parameter.getName()))	//if this is the correct parameter
 			{
-				paramValueList.add((String)parameter.getValue());	//return the parameter value
+				paramValueList.add(parameter.getValue());	//add the parameter value
 			}
 		}
-		return (String[])paramValueList.toArray(new String[paramValueList.size()]);	//return an array version of the list of values
+		return paramValueList.toArray(new String[paramValueList.size()]);	//return an array version of the list of values
 	}
 
 	/**An iterator to stop through all parameters with a given name.*/
@@ -133,12 +169,12 @@ public class DirectoryUtilities implements DirectoryConstants
 	@param paramName The name of the parameter, which will be matched against
 		available parameters in a case insensitive way.
 	*/
-	public static void removeParams(final List paramList, final String paramName)
+	public static void removeParams(final List<NameValuePair<String, String>> paramList, final String paramName)
 	{
-		final Iterator paramIterator=paramList.iterator();	//get an iterator to the parameters
+		final Iterator<NameValuePair<String, String>> paramIterator=paramList.iterator();	//get an iterator to the parameters
 		while(paramIterator.hasNext())	//while there are more parameters
 		{
-			final NameValuePair parameter=(NameValuePair)paramIterator.next();	//get the next parameter name/value pair
+			final NameValuePair<String, String> parameter=paramIterator.next();	//get the next parameter name/value pair
 			if(paramName.equals(parameter.getName()))	//if this is the correct parameter
 			{
 				paramIterator.remove();	//remove this parameter
@@ -152,7 +188,7 @@ public class DirectoryUtilities implements DirectoryConstants
 		value of type <code>String</code>.
 	@param locale The value to give to the language parameter. 
 	*/
-	public static void setLanguageParamValue(final List paramList, final Locale locale)
+	public static void setLanguageParamValue(final List<NameValuePair<String, String>> paramList, final Locale locale)
 	{
 		setParamValue(paramList, LANGUAGE_PARAM_NAME, LocaleUtilities.getLanguageTag(locale));	//store the language tag representation of the locale as the value of the language parameter 
 	}
@@ -168,7 +204,7 @@ public class DirectoryUtilities implements DirectoryConstants
 	@see #removeParams
 	@see #addParam
 	*/
-	public static void setParamValue(final List paramList, final String paramName, final String paramValue)
+	public static void setParamValue(final List<NameValuePair<String, String>> paramList, final String paramName, final String paramValue)
 	{
 		removeParams(paramList, paramName);	//remove all parameters with the given name
 		addParam(paramList, paramName, paramValue);	//add the param name and value
@@ -182,9 +218,9 @@ public class DirectoryUtilities implements DirectoryConstants
 		available parameters in a case insensitive way.
 	@param paramValue The value to give to the added parameter. 
 	*/
-	public static void addParam(final List paramList, final String paramName, final String paramValue)
+	public static void addParam(final List<NameValuePair<String, String>> paramList, final String paramName, final String paramValue)
 	{
-		paramList.add(new NameValuePair(paramName, paramValue));	//create a name value pair with the given name and value
+		paramList.add(new NameValuePair<String, String>(paramName, paramValue));	//create a name value pair with the given name and value
 	}
 
 }

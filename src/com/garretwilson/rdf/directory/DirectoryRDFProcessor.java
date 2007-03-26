@@ -9,6 +9,7 @@ import com.garretwilson.io.*;
 import com.garretwilson.net.URLUtilities;
 import com.garretwilson.rdf.*;
 import com.garretwilson.text.directory.*;
+import static com.garretwilson.text.directory.DirectoryConstants.*;
 import com.garretwilson.util.*;
 
 /**Class that is able to construct an RDF data model from a directory of type
@@ -17,7 +18,7 @@ import com.garretwilson.util.*;
 	"A MIME Content-Type for Directory Information".
 @author Garret Wilson
 */
-public class DirectoryRDFProcessor extends AbstractRDFProcessor implements DirectoryConstants, com.garretwilson.text.directory.DirectoryConstants
+public class DirectoryRDFProcessor extends AbstractRDFProcessor
 {
 	/**The profile for the predefined types.*/
 	private final PredefinedRDFProfile predefinedProfile=new PredefinedRDFProfile();		
@@ -119,7 +120,7 @@ public class DirectoryRDFProcessor extends AbstractRDFProcessor implements Direc
 	@return The RDF data model resulting from this processing and any previous
 		processing.
 	*/
-	public RDF process(final RDFResource resource, final Directory directory)
+	public RDF process(final RDFResource resource, final com.garretwilson.text.directory.Directory directory)
 	{
 		final RDF rdf=getRDF(); //get the RDF data model we're using
 		final Iterator contentLineIterator=directory.getContentLineList().iterator();	//get an iterator to all the content lines of the directory
@@ -146,11 +147,11 @@ public class DirectoryRDFProcessor extends AbstractRDFProcessor implements Direc
 				{
 					if(profile!=null)	//if there is a profile for this profile name
 					{
-						valueType=profile.getValueType(contentLine.getProfile(), contentLine.getGroup(), contentLine.getTypeName(), contentLine.getParamList());	//ask this profile's value factory for the value type
+						valueType=profile.getValueType(contentLine.getProfile(), contentLine.getGroup(), contentLine.getName(), contentLine.getParamList());	//ask this profile's value factory for the value type
 					}
 					if(valueType==null && profile!=getPredefinedProfile())	//if we still don't know the type, and we didn't already check the predefined profile 
 					{
-						valueType=getPredefinedProfile().getValueType(contentLine.getProfile(), contentLine.getGroup(), contentLine.getTypeName(), contentLine.getParamList());	//ask the predefined profile for the value type
+						valueType=getPredefinedProfile().getValueType(contentLine.getProfile(), contentLine.getGroup(), contentLine.getName(), contentLine.getParamList());	//ask the predefined profile for the value type
 					}
 				}
 					//try to create a property value from the profile

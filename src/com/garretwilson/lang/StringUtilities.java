@@ -5,6 +5,7 @@ import java.util.List;
 import static com.garretwilson.lang.CharacterUtilities.*;
 import static com.garretwilson.lang.StringBuilderUtilities.*;
 import com.garretwilson.text.*;
+import static com.garretwilson.util.ArrayUtilities.*;
 import com.garretwilson.util.Debug;
 
 import static com.garretwilson.text.CharacterConstants.*;
@@ -42,7 +43,7 @@ public class StringUtilities
 	*/
 	public static String[] createArray(final String string)
 	{
-		return string!=null ? new String[]{string} : new String[]{};	//return an array containing the string, or an empty array if the string is null
+		return string!=null ? new String[]{string} : EMPTY_STRING_ARRAY;	//return an array containing the string, or an empty array if the string is null
 	}
 	
 	/**Searches a string in reverse and returns the last index of any character
@@ -850,10 +851,12 @@ end;
 	@param list The list of strings.
 	@return An array containing the strings in the list.
 	*/
+/*TODO del if not needed with new JDK 5.0 methods
 	public static String[] toStringArray(final List list)
 	{
 		return (String[])list.toArray(new String[list.size()]);	//create a string array of the correct size and put the contents of the list in the array
 	}
+*/
 
 	/**Trims the right side of the string beginning at the last occurrence of
 		removeChar. If removeChar does not exist in the string, no information is removed.

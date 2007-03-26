@@ -2,13 +2,16 @@ package com.garretwilson.text.directory;
 
 import java.io.*;
 
+import static com.garretwilson.text.directory.DirectoryConstants.*;
+
+
 /**Reader that folds lines of type <code>text/directory</code> as defined
 	"RFC 2425: A MIME Content-Type for Directory Information".
 <p>Line folding is performed by adding a CRLF+SP after each run of 75
 	characters, the length recommended by RFC 2425.</p>
 @author Garret Wilson
 */
-public class LineFoldWriter extends Writer implements DirectoryConstants
+public class LineFoldWriter extends Writer
 {
 
 	/**The underlying writer that will actually write the data.*/
@@ -17,7 +20,7 @@ public class LineFoldWriter extends Writer implements DirectoryConstants
 	/**The length of the current line; the number of characters already written.*/
 	protected int lineLength=0;
 
-	/*Constructor that specifies another writer.
+	/**Constructor that specifies another writer.
 	@param writer The writer to which directory data will be written.
 	*/
 	public LineFoldWriter(final Writer writer)

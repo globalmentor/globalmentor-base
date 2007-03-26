@@ -4,7 +4,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import com.garretwilson.io.*;
-import com.garretwilson.lang.*;
+import static com.garretwilson.text.directory.DirectoryConstants.*;
+import static com.garretwilson.text.directory.DirectoryUtilities.*;
 import com.garretwilson.util.*;
 
 /**Profile for predefined types of a <code>text/directory</code> as defined in 
@@ -26,7 +27,7 @@ import com.garretwilson.util.*;
 @see BOOLEAN_VALUE_TYPE
 @see FLOAT_VALUE_TYPE
 */
-public class PredefinedProfile extends AbstractProfile implements ValueFactory, ValueSerializer, DirectoryConstants
+public class PredefinedProfile extends AbstractProfile implements ValueFactory, ValueSerializer
 {
 
 	/**Default constructor.*/	
@@ -87,7 +88,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	@see FLOAT_VALUE_TYPE
 	@see Double
 	*/
-	public Object[] createValues(final String profile, final String group, final String name, final List paramList, final String valueType, final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public Object[] createValues(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList, final String valueType, final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
 		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//text
 		{
@@ -112,10 +113,10 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
-	public static LocaleText[] processTextValueList(final LineUnfoldParseReader reader, final List paramList) throws IOException, ParseIOException
+	public static LocaleText[] processTextValueList(final LineUnfoldParseReader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
 	{
-		final Locale locale=DirectoryUtilities.getLanguageParamValue(paramList);	//get the language, if any
-		final List localeTextList=new ArrayList();	//create a new list to hold the locale text objects we find
+		final Locale locale=getLanguageParamValue(paramList);	//get the language, if any
+		final List<LocaleText> localeTextList=new ArrayList<LocaleText>();	//create a new list to hold the locale text objects we find
 		char delimiter;	//we'll store the last delimiter peeked		
 		do
 		{
@@ -128,7 +129,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		}
 		while(delimiter==VALUE_SEPARATOR_CHAR);	//keep getting strings while we are still running into value separators
 		reader.resetPeek();	//reset peeking
-		return LocaleText.toLocaleTextArray(localeTextList);	//convert the list of locale text objects to an array and return the array
+		return localeTextList.toArray(new LocaleText[localeTextList.size()]);	//convert the list of locale text objects to an array and return the array
 	}
 
 	/**The delimiters that can divide a text value: '\\' ',' and CR.*/
@@ -145,12 +146,12 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	*/
 	public static String processTextValue(final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
-		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer to hold whatever string we're processing
+		final StringBuilder stringBuilder=new StringBuilder();	//create a string builder to hold whatever string we're processing
 		char delimiter;	//we'll store the last delimiter peeked		
 		do	
 		{
 //		G***del Debug.trace("string buffer so far: ", stringBuffer);	//G***del			
-			stringBuffer.append(reader.readStringUntilChar(TEXT_VALUE_DELIMITER_CHARS));	//read all undelimited characters until we find a delimiter
+			stringBuilder.append(reader.readStringUntilChar(TEXT_VALUE_DELIMITER_CHARS));	//read all undelimited characters until we find a delimiter
 			delimiter=reader.peekChar();	//see what the delimiter will be
 			switch(delimiter)	//see which delimiter we found
 			{
@@ -162,11 +163,11 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 						{
 							case TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR:	//"\n"
 							case TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR:	//"\N"
-								stringBuffer.append('\n');	//append a single newline character
+								stringBuilder.append('\n');	//append a single newline character
 								break;
 							case '\\':
 							case ',':
-								stringBuffer.append(escapedChar);	//escaped backslashes and commas get appended normally
+								stringBuilder.append(escapedChar);	//escaped backslashes and commas get appended normally
 								break;
 							default:	//if something else was escaped, we don't recognize it
 								throw new ParseUnexpectedDataException("\\,"+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR+TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR, escapedChar, reader);	//show that we didn't expect this character here				
@@ -184,7 +185,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		//G***check the text value
 		reader.resetPeek();	//reset peeking
 //	G***del Debug.trace("returning string: ", stringBuffer);	//G***del			
-		return stringBuffer.toString();	//return the string we've collected so far
+		return stringBuilder.toString();	//return the string we've collected so far
 	}
 
 	/**Processes the value for the URI value types.
@@ -240,7 +241,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	@exception IOException Thrown if there is an error writing to the directory.
 	@see NameValuePair
 	*/	
-	public boolean serializeValue(final String profile, final String group, final String name, final List paramList, final Object value, final String valueType, final Writer writer) throws IOException
+	public boolean serializeValue(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList, final Object value, final String valueType, final Writer writer) throws IOException
 	{
 		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//text
 		{
@@ -256,25 +257,15 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		return false;	//show that we can't serialize the value
 	}
 
-	/**The characters that must be escaped in text: '\n', '\\', and ','.*/
-	protected final static char[] TEXT_MATCH_CHARS=new char[]{'\n', '\\', ','};
-
-	/**The strings to replace the characters to be escaped in text.*/
-	protected final static String[] TEXT_REPLACEMENT_STRINGS=new String[]{"\\n", "\\\\", "\\,"};
-
 	/**Serializes a text value.
-	<p>CR, LF, and CRLF will be be converted to "\n", and 
-		and '\\' and ',' will be escaped with '\\'.</p>
+	<p>CR, LF, and CRLF will be be converted to "\\n"; and '\\' and ',' will be escaped with '\\'.</p>
 	@param text The text value to serialize.
 	@param writer The writer to which the directory information should be written.
 	@exception IOException Thrown if there is an error writing to the directory.
 	*/	
 	public void serializeTextValue(final String text, final Writer writer) throws IOException
 	{
-		final StringBuffer stringBuffer=new StringBuffer(text);	//create a string buffer to use for escaping values
-		StringBufferUtilities.replace(stringBuffer, CRLF, "\\n");	//replace every occurrence of CRLF with "\n" (there may still be lone CRs or LFs
-		StringBufferUtilities.replace(stringBuffer, TEXT_MATCH_CHARS, TEXT_REPLACEMENT_STRINGS);	//replace characters with their escaped versions
-		writer.write(stringBuffer.toString());	//write the resulting string
+		writer.write(encodeTextValue(text));	//write the encoded string
 	}
 
 	/**Creates a directory from the given content lines.
@@ -291,7 +282,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		for(int i=0; i<contentLines.length; ++i)	//look at each content line
 		{
 			final ContentLine contentLine=contentLines[i];	//get a reference to this content line
-			final String typeName=contentLine.getTypeName();	//get this content line's type name
+			final String typeName=contentLine.getName();	//get this content line's type name
 			if(NAME_TYPE.equalsIgnoreCase(typeName))	//if this is NAME
 			{
 				if(directory.getDisplayName()==null)	//if the directory does not yet have a display name

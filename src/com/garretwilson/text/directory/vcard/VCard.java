@@ -16,10 +16,10 @@ public class VCard extends Directory
 {
 	
 	/**The list of content lines that represent unrecognized and/or unprocessed information.*/
-	private final List contentLineList=new ArrayList();
+	private final List<ContentLine> contentLineList=new ArrayList<ContentLine>();
 
 		/**@return The list of content lines that represent unrecognized and/or unprocessed information.*/
-		public List getContentLineList() {return contentLineList;}
+		public List<ContentLine> getContentLineList() {return contentLineList;}
 
 			//identification types
 
@@ -46,12 +46,12 @@ public class VCard extends Directory
 		public void setName(final Name n) {name=n;}
 
 	/**The list of text corresponding to the nickname of the object the vCard represents.*/
-	private final List nicknameList=new ArrayList();
+	private final List<LocaleText> nicknameList=new ArrayList<LocaleText>();
 
 		/**@return The list of text corresponding to the nickname of the object the
 			vCard represents.
 		*/
-		public List getNicknameList() {return nicknameList;}
+		public List<LocaleText> getNicknameList() {return nicknameList;}
 
 		/**Sets the text corresponding to the nickname of the object the vCard represents.
 		@param nicknames The nicknames.
@@ -67,17 +67,17 @@ public class VCard extends Directory
 			//delivery addressing types
 
 	/**The list of componentized delivery addresses for the vCard object.*/
-	private final List addressList=new ArrayList();
+	private final List<Address> addressList=new ArrayList<Address>();
 
 		/**@return The list of componentized delivery addresses for the vCard object.
 		@see Address
 		*/
-		public List getAddressList() {return addressList;}
+		public List<Address> getAddressList() {return addressList;}
 
 		/**@return An array of the delivery addresses for the vCard object.*/
 		public Address[] getAddresses()
 		{
-			return (Address[])getAddressList().toArray(new Address[getAddressList().size()]);	//return an array version of the address list
+			return getAddressList().toArray(new Address[getAddressList().size()]);	//return an array version of the address list
 		}
 
 		/**Sets the components of the delivery addresss for the vCard object.
@@ -90,17 +90,17 @@ public class VCard extends Directory
 		}
 
 	/**The list of formatted text corresponding to delivery addresses of the object the vCard represents.*/
-	private final List labelList=new ArrayList();
+	private final List<Label> labelList=new ArrayList<Label>();
 
 		/**@return The list of formatted text corresponding to delivery addresses of the
 			object the vCard represents.
 		*/
-		public List getLabelList() {return labelList;}
+		public List<Label> getLabelList() {return labelList;}
 
 		/**@return An array of the delivery address labels for the vCard object.*/
 		public Label[] getLabels()
 		{
-			return (Label[])getLabelList().toArray(new Label[getLabelList().size()]);	//return an array version of the label list
+			return getLabelList().toArray(new Label[getLabelList().size()]);	//return an array version of the label list
 		}
 
 		/**Sets the formatted text corresponding to delivery addresses of the
@@ -116,13 +116,13 @@ public class VCard extends Directory
 			//telecommunications addressing types
 
 	/**The list of telephone numbers for telephony communication with the object the vCard represents.*/
-	private final List telephoneList=new ArrayList();
+	private final List<Telephone> telephoneList=new ArrayList<Telephone>();
 
 		/**@return The list of telephone numbers for telephony communication with the
 			object the vCard represents.
 		@see Telephone
 		*/
-		public List getTelephoneList() {return telephoneList;}
+		public List<Telephone> getTelephoneList() {return telephoneList;}
 
 		/**Sets the telephone numbers for telephony communication with the
 			object the vCard represents.
@@ -135,13 +135,13 @@ public class VCard extends Directory
 		}
 
 	/**The list of electronic mail addresses for communication with the object the vCard represents.*/
-	private final List emailList=new ArrayList();
+	private final List<Email> emailList=new ArrayList<Email>();
 
 		/**@return The list of electronic mail addresses for communication with the
 			object the vCard represents.
 		@see Email
 		*/
-		public List getEmailList() {return emailList;}
+		public List<Email> getEmailList() {return emailList;}
 
 		/**Sets the electronic mail addresses for communication with the object
 			the vCard represents.
@@ -218,10 +218,10 @@ public class VCard extends Directory
 			//explanatory types
 
 	/**The list of application category information about the vCard.*/
-	private final List categoryList=new ArrayList();
+	private final List<LocaleText> categoryList=new ArrayList<LocaleText>();
 
 		/**@return The list of application category information about the vCard.*/
-		public List getCategoryList() {return categoryList;}
+		public List<LocaleText> getCategoryList() {return categoryList;}
 
 		/**Adds the application category information about the vCard.
 		@param categories The array of categories to add.

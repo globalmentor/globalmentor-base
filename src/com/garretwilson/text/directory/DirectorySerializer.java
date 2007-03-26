@@ -2,15 +2,7 @@ package com.garretwilson.text.directory;
 
 import java.io.*;
 import java.util.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-//G***del if we don't need import java.text.MessageFormat;
-import org.w3c.dom.DOMException;
-import com.garretwilson.io.*;
-import com.garretwilson.net.URLUtilities;
-import com.garretwilson.text.CharacterEncoding;
-import com.garretwilson.text.xml.schema.*;
-//G***del import com.garretwilson.util.StringManipulator;
+import static com.garretwilson.text.directory.DirectoryConstants.*;
 import com.garretwilson.util.*;
 
 /**Class that can serialize a directory of type <code>text/directory</code> as
@@ -21,7 +13,7 @@ import com.garretwilson.util.*;
 @see Profile
 @see PredefinedProfile
 */
-public class DirectorySerializer implements DirectoryConstants
+public class DirectorySerializer
 {
 	
 	/**The profile for the predefined types.*/
@@ -31,7 +23,7 @@ public class DirectorySerializer implements DirectoryConstants
 		protected PredefinedProfile getPredefinedProfile() {return predefinedProfile;}
 		
 	/**A map of profiles keyed to the lowercase version of the profile name.*/
-	private final Map profileMap=new HashMap();	
+	private final Map<String, Profile> profileMap=new HashMap<String, Profile>();	
 
 		/**Registers a profile.
 		@param profileName The name of the profile.
@@ -51,11 +43,11 @@ public class DirectorySerializer implements DirectoryConstants
 		*/ 
 		protected Profile getProfile(final String profileName)
 		{
-			return profileName!=null ? (Profile)profileMap.get(profileName.toLowerCase()) : getPredefinedProfile();	//get the profile keyed to the lowercase version of the profile name, or return the predefined profile if null was passed
+			return profileName!=null ? profileMap.get(profileName.toLowerCase()) : getPredefinedProfile();	//get the profile keyed to the lowercase version of the profile name, or return the predefined profile if null was passed
 		}
 		
 	/**A map of value serializers keyed to the lowercase version of the value type.*/
-	final Map valueSerializerMap=new HashMap();	
+	final Map<String, ValueSerializer> valueSerializerMap=new HashMap<String, ValueSerializer>();	
 
 		/**Registers a value serializer by value type.
 		@param valueType The value type for which this value serializer can serialize values.
@@ -73,7 +65,7 @@ public class DirectorySerializer implements DirectoryConstants
 		*/ 
 		protected ValueSerializer getValueSerializer(final String valueType)
 		{
-			return (ValueSerializer)valueSerializerMap.get(valueType.toLowerCase());	//get the value serializer keyed to the lowercase version of this value type
+			return valueSerializerMap.get(valueType.toLowerCase());	//get the value serializer keyed to the lowercase version of this value type
 		}
 		
 	/**The profile last encountered in a "profile:" type content line.*/
@@ -85,7 +77,7 @@ public class DirectorySerializer implements DirectoryConstants
 	/**The stack of profiles encountered in a "begin:"/"end:" blocks;
 		created before processing and released afterwards.
 	*/
-	private LinkedList profileStack=null;
+	private LinkedList<String> profileStack=null;
 		
 		/**Sets the profile to be used for subsequent content lines.
 		If in the middle of a profile "begin:"/"end:" block, the profile of that
@@ -101,7 +93,6 @@ public class DirectorySerializer implements DirectoryConstants
 		/**@return The current profile, either the last set profile, the profile of
 			the current "begin:"/"end:" block, or <code>null</code> if there is no
 			profile, in that order.
-		@return String
 		*/
 		protected String getProfile()
 		{
@@ -111,7 +102,7 @@ public class DirectorySerializer implements DirectoryConstants
 			}
 			else if(profileStack.size()>0)	//if we're in a profile "begin:"/"end:" block
 			{
-				return (String)profileStack.getLast();	//return the profile of the current block
+				return profileStack.getLast();	//return the profile of the current block
 			}
 			else	//if no profile is set, and we're not in a profile "begin:"/"end:" block
 			{
@@ -175,7 +166,7 @@ public class DirectorySerializer implements DirectoryConstants
 	*/
 	protected void serializeContentLines(final ContentLine[] contentLines, final LineFoldWriter writer) throws IOException
 	{
-		profileStack=new LinkedList();	//create a new profile stack
+		profileStack=new LinkedList<String>();	//create a new profile stack
 		defaultProfile=null;	//show that there is no default profile
 		useDefaultProfile=false;	//don't use the default profile
 		for(int i=0; i<contentLines.length; ++i)	//look at each content line
@@ -219,10 +210,10 @@ public class DirectorySerializer implements DirectoryConstants
 			writer.write(group);	//write the group
 			writer.write(GROUP_NAME_SEPARATOR_CHAR);	//write the group name separator
 		}
-		final String typeName=contentLine.getTypeName();	//get the type name of the line
+		final String typeName=contentLine.getName();	//get the type name of the line
 //G***del Debug.trace("Serializing content line for type name: ", typeName);
 		writer.write(typeName);	//write the type name
-		final List paramList=contentLine.getParamList();	//get the list of parameters
+		final List<NameValuePair<String, String>> paramList=contentLine.getParamList();	//get the list of parameters
 		if(paramList.size()>0)	//if there are parameters
 		{
 			serializeParameters(paramList, writer);	//serialize the parameters
@@ -304,22 +295,21 @@ public class DirectorySerializer implements DirectoryConstants
 	@param writer The writer to which the lines of the directory should be serialized.
 	@exception IOException Thrown if there is an error writing to the directory.
 	*/
-	protected void serializeParameters(final List paramList, final Writer writer) throws IOException
+	protected void serializeParameters(final List<NameValuePair<String, String>> paramList, final Writer writer) throws IOException
 	{
-		final List paramRemainingList=new ArrayList(paramList);	//create a list of remaining parameters
+		final List<NameValuePair<String, String>> paramRemainingList=new ArrayList<NameValuePair<String, String>>(paramList);	//create a list of remaining parameters
 		while(paramRemainingList.size()>0)	//while there are parameters remaining
 		{
 					//get all parameter values for parameters that have the same name as the first parameter
-			final String firstParamName=(String)((NameValuePair)paramRemainingList.get(0)).getName();	//get the name of the first parameter, and see if there are other parameters with the same name
-			final List valueList=new ArrayList();	//create a list in which to place all param values of params that have the same name as the first remaining param
-			final Iterator paramIterator=paramRemainingList.iterator();	//get an iterator to the parameters
+			final String firstParamName=paramRemainingList.get(0).getName();	//get the name of the first parameter, and see if there are other parameters with the same name
+			final List<String> valueList=new ArrayList<String>();	//create a list in which to place all param values of params that have the same name as the first remaining param
+			final Iterator<NameValuePair<String, String>> paramIterator=paramRemainingList.iterator();	//get an iterator to the parameters
 			while(paramIterator.hasNext())	//while there are remaining parameters
 			{
-				final NameValuePair param=(NameValuePair)paramIterator.next();	//get the first parameter (there will always be at least one, because we checked the size first)
-				final String paramName=(String)param.getName();	//get the parameter name
-				if(paramName.equalsIgnoreCase(firstParamName))	//if this parameter has the same name as the first parameter
+				final NameValuePair<String, String> param=paramIterator.next();	//get the first parameter (there will always be at least one, because we checked the size first)
+				if(param.getName().equalsIgnoreCase(firstParamName))	//if this parameter has the same name as the first parameter
 				{
-					valueList.add((String)param.getValue());	//add the parameter value to the list
+					valueList.add(param.getValue());	//add the parameter value to the list
 					paramIterator.remove();	//remove this parameter from the remaining parameter list
 				}
 			}
@@ -327,10 +317,10 @@ public class DirectorySerializer implements DirectoryConstants
 			writer.write(PARAM_SEPARATOR_CHAR);	//write the parameter separator ';'
 			writer.write(firstParamName);	//write the parameter name
 			writer.write(PARAM_NAME_VALUE_SEPARATOR_CHAR);	//write the parameter name-value separator '='
-			final Iterator valueIterator=valueList.iterator();	//get an iterator to the values
+			final Iterator<String> valueIterator=valueList.iterator();	//get an iterator to the values
 			while(valueIterator.hasNext())	//while there are more values
 			{
-				writer.write((String)valueIterator.next());	//write the next value
+				writer.write(valueIterator.next());	//write the next value
 				if(valueIterator.hasNext())	//if there is another value
 				{
 					writer.write(PARAM_VALUE_SEPARATOR_CHAR);	//write the separator between param values ','

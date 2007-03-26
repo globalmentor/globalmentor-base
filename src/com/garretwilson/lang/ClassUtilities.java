@@ -186,7 +186,7 @@ public class ClassUtilities
 	@SuppressWarnings("unchecked")	//all the constructors of the class should be constructors of the class type, even if the API doesn't indicate that for arrays
 	public static <T> Constructor<T> getPublicDefaultConstructor(final Class<T> objectClass) throws SecurityException
 	{
-		final Constructor<T>[] constructors=objectClass.getConstructors(); //look at each constructor
+		final Constructor<T>[] constructors=(Constructor<T>[])objectClass.getConstructors(); //look at each constructor
 		for(int i=constructors.length-1; i>=0; --i) //look at each constructor
 		{
 			final Constructor<T> constructor=constructors[i];  //get a reference to this constructor

@@ -2,15 +2,9 @@ package com.garretwilson.text.directory;
 
 import java.io.*;
 import java.util.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-//G***del if we don't need import java.text.MessageFormat;
-import org.w3c.dom.DOMException;
 import com.garretwilson.io.*;
-import com.garretwilson.net.URLUtilities;
-import com.garretwilson.text.CharacterEncoding;
-import com.garretwilson.text.xml.schema.*;
-//G***del import com.garretwilson.util.StringManipulator;
+import static com.garretwilson.text.ABNF.*;
+import static com.garretwilson.text.directory.DirectoryConstants.*;
 import com.garretwilson.util.*;
 
 /**Class that can process a directory of type <code>text/directory</code> as
@@ -28,7 +22,7 @@ import com.garretwilson.util.*;
 @see Profile
 @see PredefinedProfile
 */
-public class DirectoryProcessor implements DirectoryConstants
+public class DirectoryProcessor
 {
 	
 	/**The profile for the predefined types.*/
@@ -38,7 +32,7 @@ public class DirectoryProcessor implements DirectoryConstants
 		protected PredefinedProfile getPredefinedProfile() {return predefinedProfile;}
 		
 	/**A map of profiles keyed to the lowercase version of the profile name.*/
-	private final Map profileMap=new HashMap();	
+	private final Map<String, Profile> profileMap=new HashMap<String, Profile>();	
 
 		/**Registers a profile.
 		@param profileName The name of the profile.
@@ -58,11 +52,11 @@ public class DirectoryProcessor implements DirectoryConstants
 		*/ 
 		protected Profile getProfile(final String profileName)
 		{
-			return profileName!=null ? (Profile)profileMap.get(profileName.toLowerCase()) : getPredefinedProfile();	//get the profile keyed to the lowercase version of the profile name, or return the predefined profile if null was passed
+			return profileName!=null ? profileMap.get(profileName.toLowerCase()) : getPredefinedProfile();	//get the profile keyed to the lowercase version of the profile name, or return the predefined profile if null was passed
 		}
 		
 	/**A map of value factories keyed to the lowercase version of the value type.*/
-	private final Map valueFactoryMap=new HashMap();	
+	private final Map<String, ValueFactory> valueFactoryMap=new HashMap<String, ValueFactory>();	
 
 		/**Registers a value factory by value type.
 		@param valueType The value type for which this value factory can create values.
@@ -80,7 +74,7 @@ public class DirectoryProcessor implements DirectoryConstants
 		*/ 
 		protected ValueFactory getValueFactory(final String valueType)
 		{
-			return (ValueFactory)valueFactoryMap.get(valueType.toLowerCase());	//get the value factory keyed to the lowercase version of this value type
+			return valueFactoryMap.get(valueType.toLowerCase());	//get the value factory keyed to the lowercase version of this value type
 		}
 		
 	/**The profile last encountered in a "profile:" type content line.*/
@@ -92,7 +86,7 @@ public class DirectoryProcessor implements DirectoryConstants
 	/**The stack of profiles encountered in a "begin:"/"end:" blocks;
 		created before processing and released afterwards.
 	*/
-	private LinkedList profileStack=null;
+	private LinkedList<String> profileStack=null;
 		
 		/**Sets the profile to be used for subsequent content lines.
 		If in the middle of a profile "begin:"/"end:" block, the profile of that
@@ -108,7 +102,6 @@ public class DirectoryProcessor implements DirectoryConstants
 		/**@return The current profile, either the last set profile, the profile of
 			the current "begin:"/"end:" block, or <code>null</code> if there is no
 			profile, in that order.
-		@return String
 		*/
 		protected String getProfile()
 		{
@@ -118,7 +111,7 @@ public class DirectoryProcessor implements DirectoryConstants
 			}
 			else if(profileStack.size()>0)	//if we're in a profile "begin:"/"end:" block
 			{
-				return (String)profileStack.getLast();	//return the profile of the current block
+				return profileStack.getLast();	//return the profile of the current block
 			}
 			else	//if no profile is set, and we're not in a profile "begin:"/"end:" block
 			{
@@ -200,7 +193,7 @@ public class DirectoryProcessor implements DirectoryConstants
 	*/
 	public Directory processDirectory(final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
-		final Set checkedProfileNameSet=new HashSet();	//create a set to store the profile names we check
+		final Set<String> checkedProfileNameSet=new HashSet<String>();	//create a set to store the profile names we check
 		final ContentLine[] contentLines=processContentLines(reader);	//process the content lines
 		for(int i=0; i<contentLines.length; ++i)	//look at each content line
 		{
@@ -231,10 +224,10 @@ public class DirectoryProcessor implements DirectoryConstants
 	*/
 	public ContentLine[] processContentLines(final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
-		profileStack=new LinkedList();	//create a new profile stack
+		profileStack=new LinkedList<String>();	//create a new profile stack
 		defaultProfile=null;	//show that there is no default profile
 		useDefaultProfile=false;	//don't use the default profile
-		final List contentLineList=new ArrayList();	//create an array in which to told the content lines
+		final List<ContentLine> contentLineList=new ArrayList<ContentLine>();	//create an array in which to told the content lines
 		while(!reader.isEOF())	//while we haven't reached the end of the file
 		{		
 			final ContentLine[] contentLines=processContentLine(reader);	//process one or more lines of contents, all of which should have the same type
@@ -244,7 +237,7 @@ public class DirectoryProcessor implements DirectoryConstants
 				{
 					final ContentLine contentLine=contentLines[i];	//get a reference to this content line
 //G***del Debug.trace("just processed content line: ", contentLine);	//G***del
-					final String typeName=contentLine.getTypeName();	//get the type
+					final String typeName=contentLine.getName();	//get the type
 /*G***del when works
 					if(NAME_TYPE.equalsIgnoreCase(typeName))	//if this is NAME
 					{
@@ -275,7 +268,7 @@ public class DirectoryProcessor implements DirectoryConstants
 							final String oldProfile=popProfile();	//pop the profile from the stack
 							//G***make sure the old profile is what we expect
 						}
-						catch(NoSuchElementException noSuchElementException)	//if there are no more profiles on the stack
+						catch(final NoSuchElementException noSuchElementException)	//if there are no more profiles on the stack
 						{
 							throw new ParseIOException("Profile \""+profile+"\" END without BEGIN.", reader);	//throw an error indicating that there was no beginning to the profile
 						}
@@ -305,7 +298,7 @@ public class DirectoryProcessor implements DirectoryConstants
 		String profile=getProfile();	//get the current profile, if there is one
 		String group=null;	//we'll store the group here
 		String name=null;	//we'll store the name here
-		List paramList=null;	//we'll store parameters here, if we have any
+		List<NameValuePair<String, String>> paramList=null;	//we'll store parameters here, if we have any
 		String token=reader.readStringUntilCharEOF(CONTENT_LINE_DELIMITER_CHARS);	//read the next line token; don't throw an exception if the end of the file is reached, because this could be an empty line
 		if(reader.isEOF())	//if we reached the end of the file
 		{
@@ -341,7 +334,7 @@ public class DirectoryProcessor implements DirectoryConstants
 				}
 				else	//if there were no parameters
 				{
-					paramList=new ArrayList();	//create an empty list, since we didn't read any parameters
+					paramList=new ArrayList<NameValuePair<String, String>>();	//create an empty list, since we didn't read any parameters
 				}
 //		G***del Debug.trace("ready to process value");
 				final Object[] values=processValue(profile, group, name, paramList, reader);	//process the value and get an object that represents the object
@@ -349,7 +342,7 @@ public class DirectoryProcessor implements DirectoryConstants
 				final ContentLine[] contentLines=new ContentLine[values.length];	//create an array of content lines that we'll fill with new content lines
 				for(int i=0; i<values.length; ++i)	//look at each value
 				{
-					contentLines[i]=new ContentLine(profile, group, name, new ArrayList(paramList), values[i]);	//create a content line with this value, making a copy of the parameter list
+					contentLines[i]=new ContentLine(profile, group, name, new ArrayList<NameValuePair<String, String>>(paramList), values[i]);	//create a content line with this value, making a copy of the parameter list
 				}
 				return contentLines; //return the array of content lines we created and filled
 			case CR:	//if we just read a carriage return
@@ -387,9 +380,9 @@ public class DirectoryProcessor implements DirectoryConstants
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	@see NameValuePair
 	*/
-	public List processParameters(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public List<NameValuePair<String, String>> processParameters(final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
-		final List paramList=new ArrayList();	//create a list of parameters
+		final List<NameValuePair<String, String>> paramList=new ArrayList<NameValuePair<String, String>>();	//create a list of parameters
 		char nextCharacter;	//we'll store the last peeked delimiter here each time in the loop
 		do	//read each parameter
 		{
@@ -397,7 +390,7 @@ public class DirectoryProcessor implements DirectoryConstants
 			final String paramName=reader.readStringUntilChar(PARAM_NAME_VALUE_SEPARATOR_CHAR);	//get the parameter name, which is everything up to the ':' characters
 //		G***del Debug.trace("found param name: ", paramName);
 			//G***check the param name for validity
-			final List paramValueList=new ArrayList();	//create a list to hold the parameter values
+			final List<String> paramValueList=new ArrayList<String>();	//create a list to hold the parameter values
 			do	//read the parameter value(s)
 			{
 				reader.skip(1);	//skip the delimiter that got us here
@@ -413,7 +406,7 @@ public class DirectoryProcessor implements DirectoryConstants
 				}
 //			G***del Debug.trace("found param value: ", paramValue);
 				//G***check the parameter value, here
-				paramList.add(new NameValuePair(paramName, paramValue));	//add this name/value pair to our list of parameters
+				paramList.add(new NameValuePair<String, String>(paramName, paramValue));	//add this name/value pair to our list of parameters
 				nextCharacter=reader.peekChar();	//see what delimiter will come next
 			}
 			while(nextCharacter==PARAM_VALUE_SEPARATOR_CHAR);	//keep getting parameter values while there are more parameter value separators
@@ -461,7 +454,7 @@ public class DirectoryProcessor implements DirectoryConstants
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	@see NameValuePair
 	*/
-	protected Object[] processValue(final String profileName, final String group, final String name, final List paramList, final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	protected Object[] processValue(final String profileName, final String group, final String name, final List<NameValuePair<String, String>> paramList, final LineUnfoldParseReader reader) throws IOException, ParseIOException
 	{
 		Object[] objects=null;	//start out by assuming we can't process the value
 		final Profile profile=getProfile(profileName);	//see if we have a profile registered with this profile name

@@ -3,6 +3,7 @@ package com.garretwilson.text.directory;
 import java.io.*;
 import java.util.*;
 import com.garretwilson.io.*;
+import com.garretwilson.util.NameValuePair;
 
 /**Class that knows how to create objects to represent values provided in
 	the lines of a <code>text/directory</code> as defined in 
@@ -33,6 +34,6 @@ public interface ValueFactory
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	@see NameValuePair
 	*/	
-	public Object[] createValues(final String profile, final String group, final String name, final List paramList, final String valueType, final LineUnfoldParseReader reader) throws IOException, ParseIOException;
+	public Object[] createValues(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList, final String valueType, final LineUnfoldParseReader reader) throws IOException, ParseIOException;
 	
 }

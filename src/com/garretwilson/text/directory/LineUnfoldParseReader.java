@@ -2,16 +2,18 @@ package com.garretwilson.text.directory;
 
 import java.io.Reader;
 import java.io.IOException;
+
 import com.garretwilson.io.ParseReader;
+import static com.garretwilson.text.directory.DirectoryConstants.*;
 
 /**Reader that unfolds lines of type <code>text/directory</code> as defined
 	"RFC 2425: A MIME Content-Type for Directory Information".
 @author Garret Wilson
 */
-public class LineUnfoldParseReader extends ParseReader implements DirectoryConstants
+public class LineUnfoldParseReader extends ParseReader
 {
 
-	/*Constructor that specifies another reader.
+	/**Constructor that specifies another reader.
 	@param reader The reader that contains the directory data.
 	*/
 	public LineUnfoldParseReader(final Reader reader)
@@ -19,7 +21,7 @@ public class LineUnfoldParseReader extends ParseReader implements DirectoryConst
 		super(reader);	//construct the base class
 	}
 
-	/*Constructor that specifies another reader and a name.
+	/**Constructor that specifies another reader and a name.
 	@param reader The reader that contains the directory data.
 	@param name The name of the reader.
 	*/
@@ -38,7 +40,7 @@ public class LineUnfoldParseReader extends ParseReader implements DirectoryConst
 		super(inString, name);	//construct the base class
 	}
 
-	/*Constructor to create a reader from another
+	/**Constructor to create a reader from another
 		reader, along with several characters that have already been read.
 		<code>prereadCharacters</code> must be less than or equal to the length of
 		the buffer.
@@ -52,7 +54,7 @@ public class LineUnfoldParseReader extends ParseReader implements DirectoryConst
 		super(inReader, prereadCharacters);	//allow the super class to do the constructing
 	}
 
-	/*Constructor to create a reader from another
+	/**Constructor to create a reader from another
 		reader, along with a source object.
 		<code>prereadCharacters</code> must be less than or equal to the length of
 		the buffer.
@@ -67,7 +69,7 @@ public class LineUnfoldParseReader extends ParseReader implements DirectoryConst
 		super(inReader, sourceObject);	//allow the super class to do the constructing
 	}
 
-	/*Constructor to create an a reader from another
+	/**Constructor to create an a reader from another
 		reader, along with several characters that have already been read and a source
 		object.
 		<code>prereadCharacters</code> must be less than or equal to the length of

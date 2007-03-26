@@ -2,6 +2,8 @@ package com.garretwilson.text.directory;
 
 import java.util.*;
 
+import com.garretwilson.util.NameValuePair;
+
 /**Abstract profile for predefined types of a <code>text/directory</code> as 
 	defined in <a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
 	"A MIME Content-Type for Directory Information".
@@ -11,7 +13,7 @@ public abstract class AbstractProfile implements Profile
 {
 
 	/**A map of value type strings keyed to supported type name strings.*/
-	private final Map typeNameValueTypeMap=new HashMap();
+	private final Map<String, String> typeNameValueTypeMap=new HashMap<String, String>();
 
 		/**Registers a value type keyed to the lowercase version of a type name.
 		@param typeName The type name for which a value type should be retrieved.
@@ -45,7 +47,7 @@ public abstract class AbstractProfile implements Profile
 		value type cannot be determined.
 	@see #getValueType(String)
 	*/	
-	public String getValueType(final String profile, final String group, final String name, final List paramList)
+	public String getValueType(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList)
 	{
 		return getValueType(name);	//return whatever value type we have associated with this type name, if any
 	}

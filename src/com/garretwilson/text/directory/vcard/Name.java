@@ -1,14 +1,18 @@
 package com.garretwilson.text.directory.vcard;
 
 import java.util.*;
-import com.garretwilson.lang.*;
+
+import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.text.FormatUtilities.*;
+
+import com.garretwilson.util.DefaultLocaleable;
 
 /**An object representing the "N" type of a vCard <code>text/directory</code>
 	profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>,
 	"vCard MIME Directory Profile".
 @author Garret Wilson
 */
-public class Name	//TODO probably make a LocaleObject that can be used as a basis for all these classes
+public class Name extends DefaultLocaleable
 {
 
 	/**The family names.*/
@@ -22,13 +26,9 @@ public class Name	//TODO probably make a LocaleObject that can be used as a basi
 		
 		/**Sets the family names.
 		@param familyNames The family names.
+		@exception NullPointerException if the provided family names is <code>null</code>.
 		*/
-		public void setFamilyNames(final String[] familyNames) {this.familyNames=familyNames;}
-		
-		/**Sets the family name.
-		@param familyName The family name, or <code>null</code> for no family name.
-		*/
-		public void setFamilyName(final String familyName) {setFamilyNames(StringUtilities.createArray(familyName));}
+		public void setFamilyNames(final String... familyNames) {this.familyNames=checkInstance(familyNames, "Family names cannot be null.");}
 		
 	/**The given names.*/
 	private String[] givenNames;
@@ -41,13 +41,9 @@ public class Name	//TODO probably make a LocaleObject that can be used as a basi
 		
 		/**Sets the given names.
 		@param givenNames The given names.
+		@exception NullPointerException if the provided given names is <code>null</code>.
 		*/
-		public void setGivenNames(final String[] givenNames) {this.givenNames=givenNames;}
-		
-		/**Sets the given name.
-		@param givenName The given name, or <code>null</code> for no given name.
-		*/
-		public void setGivenName(final String givenName) {setGivenNames(StringUtilities.createArray(givenName));}
+		public void setGivenNames(final String... givenNames) {this.givenNames=checkInstance(givenNames, "Given names cannot be null.");}
 		
 	/**The additional names.*/
 	private String[] additionalNames;
@@ -60,14 +56,10 @@ public class Name	//TODO probably make a LocaleObject that can be used as a basi
 
 		/**Sets the additional names.
 		@param additionalNames The additional names.
+		@exception NullPointerException if the provided additional names is <code>null</code>.
 		*/
-		public void setAdditionalNames(final String[] additionalNames) {this.additionalNames=additionalNames;}
+		public void setAdditionalNames(final String... additionalNames) {this.additionalNames=checkInstance(additionalNames, "Additional names cannot be null");}
 		
-		/**Sets the additional name.
-		@param additionalName The additional name, or <code>null</code> for no additional name.
-		*/
-		public void setAdditionalName(final String additionalName) {setAdditionalNames(StringUtilities.createArray(additionalName));}
-
 	/**The honorific prefixes.*/
 	private String[] honorificPrefixes;
 
@@ -79,14 +71,10 @@ public class Name	//TODO probably make a LocaleObject that can be used as a basi
 
 		/**Sets the honorific prefixes.
 		@param honorificPrefixes The honorific prefixes.
+		@exception NullPointerException if the provided honorific prefixes is <code>null</code>.
 		*/
-		public void setHonorificPrefixes(final String[] honorificPrefixes) {this.honorificPrefixes=honorificPrefixes;}
-		
-		/**Sets the honorific prefixes.
-		@param honorificPrefix The honorific prefix, or <code>null</code> for no honorific prefix.
-		*/
-		public void setHonorificPrefix(final String honorificPrefix) {setFamilyNames(StringUtilities.createArray(honorificPrefix));}
-	
+		public void setHonorificPrefixes(final String... honorificPrefixes) {this.honorificPrefixes=checkInstance(honorificPrefixes, "Honorific prefixes cannot be null.");}
+
 	/**The honorific suffixes.*/
 	private String[] honorificSuffixes;
 
@@ -98,30 +86,10 @@ public class Name	//TODO probably make a LocaleObject that can be used as a basi
 		
 		/**Sets the honorific suffixes.
 		@param honorificSuffixes The honorific suffixes.
+		@exception NullPointerException if the provided honorific suffixes is <code>null</code>.
 		*/
-		public void setHonorificSuffixes(final String[] honorificSuffixes) {this.honorificSuffixes=honorificSuffixes;}
+		public void setHonorificSuffixes(final String... honorificSuffixes) {this.honorificSuffixes=checkInstance(honorificSuffixes, "Honorific suffixes cannot be null.");}
 		
-		/**Sets the honorific suffixes.
-		@param honorificSuffix The honorific suffix, or <code>null</code> for no honorific suffix.
-		*/
-		public void setHonorificSuffix(final String honorificSuffix) {setFamilyNames(StringUtilities.createArray(honorificSuffix));}
-
-	/**The locale that represents the language of the text, or <code>null</code>
-		if no language is indicated.
-	*/
-	private Locale locale;
-
-		/**@return The locale that represents the language of the text, or
-			<code>null</code> if no language is indicated.
-		*/
-		public Locale getLocale() {return locale;}
-
-		/**Sets the language used by the text.
-		@param locale The locale that represents the language of the text, or
-			<code>null</code> if no language should be indicated.
-		*/
-		public void setLocale(final Locale locale) {this.locale=locale;}
-
 	/**Name constructor.
 	@param familyNames The family names.
 	@param givenNames The given names.
@@ -159,17 +127,16 @@ public class Name	//TODO probably make a LocaleObject that can be used as a basi
 	@param additionalNames The additional names.
 	@param honorificPrefix The honorific prefixes.
 	@param honorificSuffixes The honorific suffixes.
-	@param locale The locale that represents the language of the text, or
-		<code>null</code> if no language should be indicated.
+	@param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
 	*/
 	public Name(final String[] familyNames, final String[] givenNames, final String[] additionalNames, final String[] honorificPrefixes, final String[] honorificSuffixes, final Locale locale)
 	{
+		super(locale);	//construct the parent class
 		setFamilyNames(familyNames);	//set the names
 		setGivenNames(givenNames);
 		setAdditionalNames(additionalNames);
 		setHonorificPrefixes(honorificPrefixes);
 		setHonorificSuffixes(honorificSuffixes);
-		setLocale(locale);		
 	}
 
 	/**Single constructor.
@@ -214,61 +181,33 @@ public class Name	//TODO probably make a LocaleObject that can be used as a basi
 	*/
 	public Name(final String familyName, final String givenName, final String additionalName, final String honorificPrefix, final String honorificSuffix, final Locale locale)
 	{
-		setFamilyName(familyName);	//set the names
-		setGivenName(givenName);
-		setAdditionalName(additionalName);
-		setHonorificPrefix(honorificPrefix);
-		setHonorificSuffix(honorificSuffix);
-		setLocale(locale);		
+		super(locale);	//construct the parent class
+		setFamilyNames(familyName);	//set the names
+		setGivenNames(givenName);
+		setAdditionalNames(additionalName);
+		setHonorificPrefixes(honorificPrefix);
+		setHonorificSuffixes(honorificSuffix);
 	}
-
-	/**@return A string representation of the name suitable for sorting.*/
-/*G***del if not needed
-	public String toSortString()
-	{
-		final StringBuffer stringBuffer=new StringBuffer();	//create a new string buffer to hold the string we'll construct
-
-		StringBufferUtilities.append(stringBuffer, familyNames, '/');	//append the family names, separated by a slash
-
-
-		StringBufferUtilities.append(stringBuffer, honorificPrefixes, ',');	//append the honorific prefixes, separated by a comma
-		if(honorificPrefixes.length>0 && (givenNames.length>0 || additionalNames.length>0 || familyNames.length>0 || honorificSuffixes.length>0))	//if we added information and there is more information following
-			stringBuffer.append(' ');	//append a space
-		StringBufferUtilities.append(stringBuffer, givenNames, '/');	//append the given names, separated by a slash
-		if(givenNames.length>0 && (additionalNames.length>0 || familyNames.length>0 || honorificSuffixes.length>0))	//if we added information and there is more information following
-			stringBuffer.append(' ');	//append a space
-		StringBufferUtilities.append(stringBuffer, additionalNames, ", ");	//append the additional names, separated by a comma
-		if(additionalNames.length>0 && (familyNames.length>0 || honorificSuffixes.length>0))	//if we added information and there is more information following
-			stringBuffer.append(' ');	//append a space
-		StringBufferUtilities.append(stringBuffer, familyNames, '/');	//append the family names, separated by a slash
-		if(stringBuffer.length()>0 && honorificSuffixes.length>0)	//if we have any content before the suffixes, and there are suffixes
-			stringBuffer.append(',');		//add a comma before the suffixes
-		if(familyNames.length>0 && (honorificSuffixes.length>0))	//if we added information and there is more information following
-			stringBuffer.append(' ');	//append a space
-		StringBufferUtilities.append(stringBuffer, honorificSuffixes, ", ");	//append the honorific suffixes, separated by a comma
-		return stringBuffer.toString();	//return the string we constructed
-	}
-*/
 
 	/**@return A string representation of the name.*/
 	public String toString()
 	{
-		final StringBuffer stringBuffer=new StringBuffer();	//create a new string buffer to hold the string we'll construct
-		StringBufferUtilities.append(stringBuffer, honorificPrefixes, ',');	//append the honorific prefixes, separated by a comma
+		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to hold the string we'll construct
+		formatList(stringBuilder, ',', honorificPrefixes);	//append the honorific prefixes, separated by a comma
 		if(honorificPrefixes.length>0 && (givenNames.length>0 || additionalNames.length>0 || familyNames.length>0 || honorificSuffixes.length>0))	//if we added information and there is more information following
-			stringBuffer.append(' ');	//append a space
-		StringBufferUtilities.append(stringBuffer, givenNames, '/');	//append the given names, separated by a slash
+			stringBuilder.append(' ');	//append a space
+		formatList(stringBuilder, '/', givenNames);	//append the given names, separated by a slash
 		if(givenNames.length>0 && (additionalNames.length>0 || familyNames.length>0 || honorificSuffixes.length>0))	//if we added information and there is more information following
-			stringBuffer.append(' ');	//append a space
-		StringBufferUtilities.append(stringBuffer, additionalNames, ", ");	//append the additional names, separated by a comma
+			stringBuilder.append(' ');	//append a space
+		formatList(stringBuilder, ", ", (Object[])additionalNames);	//append the additional names, separated by a comma
 		if(additionalNames.length>0 && (familyNames.length>0 || honorificSuffixes.length>0))	//if we added information and there is more information following
-			stringBuffer.append(' ');	//append a space
-		StringBufferUtilities.append(stringBuffer, familyNames, '/');	//append the family names, separated by a slash
-		if(stringBuffer.length()>0 && honorificSuffixes.length>0)	//if we have any content before the suffixes, and there are suffixes
-			stringBuffer.append(',');		//add a comma before the suffixes
+			stringBuilder.append(' ');	//append a space
+		formatList(stringBuilder, '/', familyNames);	//append the family names, separated by a slash
+		if(stringBuilder.length()>0 && honorificSuffixes.length>0)	//if we have any content before the suffixes, and there are suffixes
+			stringBuilder.append(',');		//add a comma before the suffixes
 		if(familyNames.length>0 && (honorificSuffixes.length>0))	//if we added information and there is more information following
-			stringBuffer.append(' ');	//append a space
-		StringBufferUtilities.append(stringBuffer, honorificSuffixes, ", ");	//append the honorific suffixes, separated by a comma
-		return stringBuffer.toString();	//return the string we constructed
+			stringBuilder.append(' ');	//append a space
+		formatList(stringBuilder, ", ", (Object[])honorificSuffixes);	//append the honorific suffixes, separated by a comma
+		return stringBuilder.toString();	//return the string we constructed
 	}
 }

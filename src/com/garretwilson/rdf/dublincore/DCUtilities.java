@@ -185,7 +185,7 @@ public class DCUtilities extends RDFUtilities implements DCConstants
 		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_DESCRIPTION_PROPERTY_NAME);
 	}
 
-	/**Returns the value of the first <code>dc:Language</code> property.
+	/**Returns the value of the first <code>dc:language</code> property.
 	@param resource The resource the property of which should be located.
 	@return The value of the first <code>dc:language</code> property, or
 		<code>null</code> if no such property exists or the property value does

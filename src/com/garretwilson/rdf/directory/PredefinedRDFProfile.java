@@ -7,6 +7,7 @@ import com.garretwilson.io.*;
 import com.garretwilson.net.URLUtilities;
 import com.garretwilson.rdf.*;
 import com.garretwilson.text.directory.*;
+import static com.garretwilson.text.directory.DirectoryConstants.*;
 import com.garretwilson.util.*;
 
 /**RDF factory for the predefined types of a directory of type
@@ -15,11 +16,11 @@ import com.garretwilson.util.*;
 	"A MIME Content-Type for Directory Information".
 @author Garret Wilson
 */
-public class PredefinedRDFProfile extends PredefinedProfile implements DirectoryConstants, com.garretwilson.text.directory.DirectoryConstants, RDFPropertyFactory, RDFPropertyValueFactory
+public class PredefinedRDFProfile extends PredefinedProfile implements RDFPropertyFactory, RDFPropertyValueFactory
 {
 
 	/**A map of property URIs keyed to supported type name strings.*/
-	private final Map typeNamePropertyURIMap=new HashMap();
+	private final Map<String, URI> typeNamePropertyURIMap=new HashMap<String, URI>();
 
 		/**Registers a property URI keyed to the lowercase version of a type name.
 		@param typeName The type name for which a property URIshould be associated.
@@ -37,15 +38,15 @@ public class PredefinedRDFProfile extends PredefinedProfile implements Directory
 		*/
 		protected URI getPropertyURI(final String typeName)
 		{
-			return (URI)typeNamePropertyURIMap.get(typeName.toLowerCase());	//get whatever property URI we have associated with this type name, if any
+			return typeNamePropertyURIMap.get(typeName.toLowerCase());	//get whatever property URI we have associated with this type name, if any
 		}
 
 	/**Default constructor.*/
 	public PredefinedRDFProfile()
 	{
 			//register property URIs for the predefined types
-		registerPropertyURI(SOURCE_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, SOURCE_TYPE.toLowerCase()));	//SOURCE		
-		registerPropertyURI(NAME_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, NAME_TYPE.toLowerCase()));	//NAME
+		registerPropertyURI(SOURCE_TYPE, RDFUtilities.createReferenceURI(Directory.DIRECTORY_NAMESPACE_URI, SOURCE_TYPE.toLowerCase()));	//SOURCE		
+		registerPropertyURI(NAME_TYPE, RDFUtilities.createReferenceURI(Directory.DIRECTORY_NAMESPACE_URI, NAME_TYPE.toLowerCase()));	//NAME
 	//G***del		registerPropertyURI(PROFILE_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, PROFILE_TYPE.toLowerCase()));	//PROFILE		
 	//G***del		registerPropertyURI(BEGIN_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, BEGIN_TYPE.toLowerCase()));	//BEGIN
 	//G***del		registerPropertyURI(END_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, END_TYPE.toLowerCase()));	//END		
@@ -61,7 +62,7 @@ public class PredefinedRDFProfile extends PredefinedProfile implements Directory
 	*/
 	public RDFResource createProperty(final RDF rdf, final ContentLine contentLine)
 	{
-		final URI propertyURI=getPropertyURI(contentLine.getTypeName());	//get whatever property URI we have associated with this type name, if any
+		final URI propertyURI=getPropertyURI(contentLine.getName());	//get whatever property URI we have associated with this type name, if any
 		return propertyURI!=null ? rdf.locateResource(propertyURI) : null;	//if we have a property URI, return a resource for it from the RDF data model
 	}	
 
