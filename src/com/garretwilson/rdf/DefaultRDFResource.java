@@ -670,7 +670,7 @@ for some reason, this method as listed is crucial for determining if two resourc
 	public String toString()
 	{
 		final StringBuilder stringBuilder=new StringBuilder();	//create a string buffer in which to construct a string representation
-		final RDFLiteral value=getValue(this);	//get the value property, if any
+		final RDFLiteral value=asLiteral(getValue(this));	//get the value property, if any
 /*TODO del if not wanted
 		if(value==null)	//if there is no value, try to get the dc:title
 		{

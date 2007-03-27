@@ -52,11 +52,11 @@ public class Directory
 		{
 			//TODO add RDFResource language processing
 			final RDFResource rdfResource=(RDFResource)rdfObject;	//get the object as a resource
-			final RDFLiteral value=getValue(rdfResource);	//get the value of the resource
-			if(value!=null)	//if there is a literal value
+			final RDFObject value=getValue(rdfResource);	//get the value of the resource
+			if(value instanceof RDFLiteral)	//if there is a literal value
 			{
 				final Locale language=rdfObject instanceof RDFPlainLiteral ? ((RDFPlainLiteral)rdfObject).getLanguage() : null;	//save the language if this is a plain literal
-				return new LocaleText(value.getLexicalForm(), language!=null ? language : getLanguage(rdfResource));	//use the lexical form of the value as the text; if no xml:lang was specified, see if the main resource had directory:language defined
+				return new LocaleText(((RDFLiteral)value).getLexicalForm(), language!=null ? language : getLanguage(rdfResource));	//use the lexical form of the value as the text; if no xml:lang was specified, see if the main resource had directory:language defined
 			}
 		}
 		else	//if the object is not a literal or a resource

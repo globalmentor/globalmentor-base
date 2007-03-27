@@ -261,11 +261,11 @@ public class PLOOPProcessor
 				final Constructor<?>[] constructors=valueClass.getConstructors();	//get all available constructors
 				
 					//see if there is an rdf:value
-				final RDFLiteral valuePropertyLiteral=getValue(resource);	//get the literal value of the rdf:value property, if there is one
-				if(valuePropertyLiteral!=null)	//if there is is a literal property value for rdf:value
+				final RDFObject valuePropertyObject=getValue(resource);	//get the value of the rdf:value property, if there is one
+				if(valuePropertyObject instanceof RDFLiteral)	//if there is is a literal property value for rdf:value
 				{
 //TODO del if not wanted					final String[] valueTokens=valuePropertyLiteral.toString().split("[ ,:'_-]");	//split the value into tokens TODO use a constant
-					final String[] valueTokens=valuePropertyLiteral.toString().split(",");	//split the value into tokens TODO use a constant
+					final String[] valueTokens=((RDFLiteral)valuePropertyObject).getLexicalForm().split(",");	//split the value into tokens TODO use a constant
 					final int parameterCount=valueTokens.length;	//see how many parameters to expect
 					for(final Constructor<?> constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
 					{
@@ -316,7 +316,7 @@ public class PLOOPProcessor
 							}
 						}
 					}
-					throw new IllegalArgumentException("Value class "+valueClassName+" does not have a constructor appropriate for the specified rdf:value: "+valuePropertyLiteral.toString());
+					throw new IllegalArgumentException("Value class "+valueClassName+" does not have a constructor appropriate for the specified rdf:value: "+valuePropertyObject.toString());
 				}
 				else	//if there is no rdf:value literal property value
 				{

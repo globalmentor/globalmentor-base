@@ -485,16 +485,14 @@ public class RDFUtilities
 	}
 */
 
-	/**Retrieves the literal value of the resource. If this resource has more than
-		one property of <code>rdf:value</code>, it is undefined which of these
-		property values will be returned.
+	/**Retrieves the value of the resource.
+	If this resource has more than one property of <code>rdf:value</code>, it is undefined which of these property values will be returned.
 	@param resource The resource the value of which will be returned.
-	@return The value of the resource, or <code>null</code> if there is no value
-		or the value is not a literal.
+	@return The value of the resource, or <code>null</code> if there is no value.
 	*/
-	public static RDFLiteral getValue(final RDFResource resource)
+	public static RDFObject getValue(final RDFResource resource)
 	{
-		return asLiteral(resource.getPropertyValue(RDF_NAMESPACE_URI, VALUE_PROPERTY_NAME)); //get the value of the value property only if it is a literal
+		return resource.getPropertyValue(RDF_NAMESPACE_URI, VALUE_PROPERTY_NAME); //get the value of the value property
 	}
 
 	/**Replaces all <code>rdf:value</code> properties of the resource with a new
@@ -653,10 +651,10 @@ public class RDFUtilities
 		{
 			return referenceURI.toString();	//return the reference URI
 		}
-		final RDFLiteral valueLiteral=getValue(resource);	//get the rdfs:value property, if any
-		if(valueLiteral!=null)	//if a rdfs:value property was provided
+		final RDFObject valueLiteral=getValue(resource);	//get the rdfs:value property, if any
+		if(valueLiteral instanceof RDFLiteral)	//if a literal rdfs:value property was provided
 		{
-			return valueLiteral.getLexicalForm();	//return the rdfs:value property's lexical form
+			return ((RDFLiteral)valueLiteral).getLexicalForm();	//return the rdfs:value property's lexical form
 		}
 		return resource.toString();	//there's nothing else to do but return the resource's string value
 	}
