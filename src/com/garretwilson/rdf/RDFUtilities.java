@@ -669,7 +669,7 @@ public class RDFUtilities
 	@return The namespace URI of the reference URI, or <code>null</code> if the
 		namespace URI could not be determined.
 	*/
-	public static URI getNamespaceURI(final URI referenceURI)
+	public static URI getNamespaceURI(final URI referenceURI)	//TODO del in favor of RDFName.createRDFName()
 	{
 			//TODO do something special for certain namespaces such as for XLink that do not follow the rules
 		final String referenceURIString=referenceURI.toString();	//get a string version of the reference URI
@@ -704,7 +704,7 @@ public class RDFUtilities
 	@return The local name of the reference URI, or <code>null</code> if a local
 		name could not be determined.
 	 */
-	public static String getLocalName(final URI referenceURI)
+	public static String getLocalName(final URI referenceURI)	//TODO del in favor of RDFName.createRDFName()
 	{
 			//TODO do something special for certain namespaces such as for XLink that do not follow the rules
 		final String referenceURIString=referenceURI.toString();	//get a string version of the reference URI

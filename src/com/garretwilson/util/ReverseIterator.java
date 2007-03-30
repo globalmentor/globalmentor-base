@@ -1,11 +1,13 @@
 package com.garretwilson.util;
 
-import static com.garretwilson.lang.ObjectUtilities.checkInstance;
-
 import java.util.*;
 
+import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.util.CollectionUtilities.*;
+
 /**An iterator that wraps an existing list iterator and provides its elements in reverse order.
-In most use cases, the decorated list iterator should already be at the end of the list.
+The list list iterator will be placed at the end of the list. 
+For added efficiency, the decorated list iterator should already be at the end of the list.
 @author Garret Wilson
 */
 public class ReverseIterator<E> implements Iterator<E>
@@ -14,14 +16,42 @@ public class ReverseIterator<E> implements Iterator<E>
 	/**The list iterator this class decorates.*/
 	protected final ListIterator<E> listIterator;
 
+	/**Iterable constructor.
+	A temporary collection will be created and filled with the contents of the given iterable unless the given iterable is a {@link List}.
+	@param iterable The iterable this iterator should decorate.
+	@exception NullPointerException if the given iterable is <code>null</code>.
+	*/
+	public ReverseIterator(final Iterable<E> iterable)
+	{
+		this(toEndListIterator(iterable));	//get a list iterator to the end of the iterable 
+	}
+
 	/**List iterator constructor.
-	In most use cases, the decorated list iterator should already be at the end of the list.
+	The list list iterator will be placed at the end of the list. 
+	For added efficiency, the decorated list iterator should already be at the end of the list.
 	@param listIterator The list iterator this iterator should decorate.
 	@exception NullPointerException if the given iterator is <code>null</code>.
 	*/
 	public ReverseIterator(final ListIterator<E> listIterator)
 	{
 		this.listIterator=checkInstance(listIterator, "Iterator cannot be null");	//save the iterator
+		while(listIterator.hasNext())	//while the list iterator isn't at the end of the lsit
+		{
+			listIterator.next();	//advance to the end of the list
+		}
+	}
+
+	/**Returns a list iterator to the given iterable.
+	The list iterator will be placed at the end of the elements for efficiency.
+	If the given iterable is not a {@link List}, a temporary list will be created and filled with the contents of the given iterable.
+	@param <T> The type of elements contained in the iterable.
+	@param iterable The iterable to elements.
+	@return A list iterator to the elements of the given iterable, pointing to the end of the list.
+	 */
+	protected static <T> ListIterator<T> toEndListIterator(final Iterable<T> iterable)
+	{
+		final List<T> list=toList(iterable);	//if the iterable isn't already a list, create a new list will the contents of the iterable
+		return list.listIterator(list.size());	//return a list iterator at the end of the list
 	}
 
 	/**Returns <code>true</code> if the iteration has more elements.
@@ -37,22 +67,12 @@ public class ReverseIterator<E> implements Iterator<E>
 	*/
 	public E next() {return listIterator.previous();}
 
-	/**
-	 * 
-	 * Removes from the underlying collection the last element returned by the
-	 * iterator (optional operation).  This method can be called only once per
-	 * call to <tt>next</tt>.  The behavior of an iterator is unspecified if
-	 * the underlying collection is modified while the iteration is in
-	 * progress in any way other than by calling this method.
-	 *
-	 * @exception UnsupportedOperationException if the <tt>remove</tt>
-	 *		  operation is not supported by this Iterator.
-     
-	 * @exception IllegalStateException if the <tt>next</tt> method has not
-	 *		  yet been called, or the <tt>remove</tt> method has already
-	 *		  been called after the last call to the <tt>next</tt>
-	 *		  method.
-	 */
+	/**Removes from the underlying collection the last element returned by the iterator (optional operation). 
+	This implementation delegates to the decorated iterator's {@link ListIterator#remove()} method.
+	@exception UnsupportedOperationException if the {@link #remove()} operation is not supported by this iterator.
+	@exception IllegalStateException if the {@link #next()} method has not yet been called,
+	or the {@link #remove()} method has already been called after the last call to the {@link #next()} method.
+	*/
 	public void remove() {listIterator.remove();}
 
 }

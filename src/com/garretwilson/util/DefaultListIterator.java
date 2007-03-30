@@ -114,7 +114,7 @@ public class DefaultListIterator<E> implements ListIterator<E>
 	*/
 	public void remove()
 	{
-		if(lastIndex>0)	//if there is a last index
+		if(lastIndex>=0)	//if there is a last index
 		{
 			list.remove(lastIndex);	//remove the item at the last index
 			lastIndex=-1;	//there is no longer a last index
@@ -138,7 +138,7 @@ public class DefaultListIterator<E> implements ListIterator<E>
 	 */
 	public void set(final E object)
 	{
-		if(lastIndex>0)	//if there is a last index
+		if(lastIndex>=0)	//if there is a last index
 		{
 			list.set(lastIndex, object);	//set the item at the last index
 		}

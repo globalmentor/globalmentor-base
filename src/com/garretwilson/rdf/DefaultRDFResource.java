@@ -683,7 +683,7 @@ for some reason, this method as listed is crucial for determining if two resourc
 		{
 			if(referenceURI!=null)	//if we have a reference URI
 			{
-				stringBuilder.append(rdfXMLGenerator.getLabel(getReferenceURI()));	//start with the default string
+				stringBuilder.append(rdfXMLGenerator.getLabel(referenceURI));	//start with the default string
 			}
 			else	//if we have no reference URI
 			{
