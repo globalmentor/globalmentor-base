@@ -64,7 +64,7 @@ public class Card extends Directory
 	@param name The name information to set.
 	@exception NullPointerException if the given resource and/or name is <code>null</code>.
 	*/
-	public void setName(final RDFResource resource, final Name name)
+	public static void setName(final RDFResource resource, final Name name)
 	{
 		checkInstance(name, "Name cannot be null.");
 		final RDFResource nResource=locateTypedResource(resource, null, CARD_NAMESPACE_URI, N_TYPE_NAME);	//create the card:N resource
@@ -106,6 +106,7 @@ public class Card extends Directory
 				}
 			}
 		}
+		resource.setProperty(CARD_NAMESPACE_URI, N_PROPERTY_NAME, nResource);	//set the name property with the name resource we constructed
 	}
 
 	/**The property URIs for the name components.*/
@@ -123,7 +124,7 @@ public class Card extends Directory
 	@return The name information, or <code>null</code> if there is no <code>card:n</code> property or the property value is not an {@link RDFResource}.
 	@exception NullPointerException if the given resource and/or name is <code>null</code>.
 	*/
-	public Name getName(final RDFResource resource)
+	public static Name getName(final RDFResource resource)
 	{
 		final RDFResource nResource=asResource(resource.getPropertyValue(CARD_NAMESPACE_URI, N_PROPERTY_NAME));	//get the name preperty value as a resource
 		if(nResource!=null)	//if there is a name resource

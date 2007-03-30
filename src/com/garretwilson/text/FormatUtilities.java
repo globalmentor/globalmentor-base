@@ -74,11 +74,14 @@ public class FormatUtilities
 	*/
 	public static <T> StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final T... items)
 	{
-		for(final T item:items)	//for each item
+		if(items.length>0)	//if there are items
 		{
-			stringBuilder.append(item).append(delimiter);	//append the item and the delimiter
+			for(final T item:items)	//for each item
+			{
+				stringBuilder.append(item).append(delimiter);	//append the item and the delimiter
+			}
+			deleteLastChar(stringBuilder);	//remove the last delimiter
 		}
-		deleteLastChar(stringBuilder);	//remove the last delimiter
 		return stringBuilder;	//return the string builder we used
 	}
 

@@ -162,9 +162,15 @@ public class StringBuilderUtilities
 
 	/**Deletes the last character of a string builder.
 	@param stringBuilder The string builder to modify.
+	@exception IllegalArgumentException if the given string builder has no characters.
 	*/
 	public static void deleteLastChar(final StringBuilder stringBuilder)
 	{
+		final int length=stringBuilder.length();	//get the length of the string builder
+		if(length==0)	//if there are no characters to delete
+		{
+			throw new IllegalArgumentException("Cannot delete last character of empty string builder.");
+		}
 		stringBuilder.deleteCharAt(stringBuilder.length()-1);	//remove the last character
 	}
 
