@@ -11,6 +11,7 @@ import com.garretwilson.rdf.RDFListResource;
 import com.garretwilson.rdf.RDFLiteral;
 import com.garretwilson.rdf.RDFObject;
 import com.garretwilson.rdf.RDFResource;
+import com.garretwilson.rdf.RDFUtilities;
 import com.garretwilson.rdf.directory.Directory;
 
 import static com.garretwilson.rdf.rdfs.RDFSUtilities.*;
@@ -43,18 +44,25 @@ public class Card extends Directory
 	public final static String N_TYPE_NAME=N_TYPE;
 
 		//card property names
-	/**Specifies the family name component of the name of the object the card represents. The local name of <code>card:familyName</code>.*/
-	public final static String FAMILY_NAME_PROPERTY_NAME="familyName";
-	/**Specifies the given name component of the name of the object the card represents. The local name of <code>card:givenName</code>.*/
-	public final static String GIVEN_NAME_PROPERTY_NAME="givenName";
-	/**Specifies additional name component of the name of the object the card represents. The local name of <code>card:additionalName</code>.*/
-	public final static String ADDITIONAL_NAME_PROPERTY_NAME="additionalName";
-	/**Specifies the honorific prefix component of the name of the object the card represents. The local name of <code>card:honorificPrefix</code>.*/
-	public final static String HONORIFIC_PREFIX_PROPERTY_NAME="honorificPrefix";
-	/**Specifies the honorific suffix component of the name of the object the card represents. The local name of <code>card:honorificSuffixes</code>.*/
-	public final static String HONORIFIC_SUFFIX_PROPERTY_NAME="honorificSuffix";
+
+	/**Specifies the electronic mail address for communication with the object the card represents. The local name of <code>card:email</code>.*/
+	public final static String EMAIL_PROPERTY_NAME=getVariableName(EMAIL_TYPE);
+
+	/**Specifies the formatted text corresponding to the name of the object the card represents. The local name of <code>card:fn</code>.*/
+	public final static String FN_PROPERTY_NAME=getVariableName(FN_TYPE);
+
 	/**Specifies the components of the name of the object the card represents. The local name of <code>card:n</code>.*/
 	public final static String N_PROPERTY_NAME=getVariableName(N_TYPE);
+		/**Specifies the family name component of the name of the object the card represents. The local name of <code>card:familyName</code>.*/
+		public final static String FAMILY_NAME_PROPERTY_NAME="familyName";
+		/**Specifies the given name component of the name of the object the card represents. The local name of <code>card:givenName</code>.*/
+		public final static String GIVEN_NAME_PROPERTY_NAME="givenName";
+		/**Specifies additional name component of the name of the object the card represents. The local name of <code>card:additionalName</code>.*/
+		public final static String ADDITIONAL_NAME_PROPERTY_NAME="additionalName";
+		/**Specifies the honorific prefix component of the name of the object the card represents. The local name of <code>card:honorificPrefix</code>.*/
+		public final static String HONORIFIC_PREFIX_PROPERTY_NAME="honorificPrefix";
+		/**Specifies the honorific suffix component of the name of the object the card represents. The local name of <code>card:honorificSuffixes</code>.*/
+		public final static String HONORIFIC_SUFFIX_PROPERTY_NAME="honorificSuffix";
 
 	/**The number of components of the card N type.*/
 //TODO del if not needed	private final static int N_COMPONENT_COUNT=5;
@@ -145,6 +153,31 @@ public class Card extends Directory
 		}
 	}
 
+	/**Determines a formatted name for the given resource.
+	The formatted name is determined in this order:
+	<ol>
+		<li>The lexical form of the literal value of the <code>card:fn</code> property, if available.</li>
+		<li>A formatted string derived from the value of the <code>card:n</code> property, if available.</li>
+		<li>The label of the resource as determined by {@link RDFUtilities#getDisplayLabel(RDFResource)}.
+	</ol>
+	@param resource The resource for which a formatted name should be determined.
+	@return The best possible formatted name string for the resource.
+	@exception NullPointerException if the given resource is <code>null</code>.
+	*/
+	public static String getFormattedName(final RDFResource resource)
+	{
+		final RDFObject fnObject=resource.getPropertyValue(CARD_NAMESPACE_URI, FN_PROPERTY_NAME);	//get the card:fn value
+		if(fnObject instanceof RDFLiteral)	//if the object is a literal
+		{
+			return ((RDFLiteral)fnObject).getLexicalForm();	//return the lexical form of the literal card:fn value
+		}
+		final Name name=getName(resource);	//otherwise, see if the resource has a name specified
+		if(name!=null)	//if there is a name specified
+		{
+			return name.toString();	//format the name and return it
+		}
+		return getDisplayLabel(resource);	//if all else fails, just return a label for the resource
+	}
 
 	/**Creates an array of associates between property URIs and elements of a given name.
 	@param name The name

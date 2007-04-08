@@ -1246,6 +1246,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	@param baseURI The assumed base URI.
 	@param uri The URI which may be relative to the given base URI.
 	@return <code>true</code> if the given URI can be made relative to the given base URI resulting in a non-absolute form.
+	@exception NullPointerException if the given base URI and/or URI is <code>null</code>.
 	*/
 	public static boolean isChild(final URI baseURI, final URI uri)
 	{

@@ -866,17 +866,13 @@ public class RDFListResource extends TypedRDFResource implements List<RDFResourc
 			throw new NoSuchElementException();	//show that there are no more elements
 		}
 
-		/**Removes from the underlying collection the last element returned by the
-			iterator (optional operation).  This method can be called only once per
-			call to <code>next</code>.  The behavior of an iterator is unspecified if
-			the underlying collection is modified while the iteration is in
-			progress in any way other than by calling this method.
-		@exception UnsupportedOperationException Thrown if the <code>remove</code>
-			operation is not supported by this Iterator.
-		@exception IllegalStateException Thrown if the <code>next</code> method has not
-			yet been called, or the <code>remove</code> method has already
-			been called after the last call to the <code>next</code>
-			method.
+		/**Removes from the underlying collection the last element returned by the iterator.
+		This method can be called only once per call to {@link #next()}. 
+		The behavior of an iterator is unspecified if the underlying collection is modified while the iteration is in progress in any way other than by calling this method.
+		This implementation always throws an {@link UnsupportedOperationException}.
+		@exception UnsupportedOperationException Thrown if the {@link #remove()} operation is not supported by this Iterator.
+		@exception IllegalStateException Thrown if the {@link #next()} method has not yet been called,
+			or the {@link #remove()} method has already been called after the last call to the {@link #next()} method.
 		*/
 		public void remove()
 		{

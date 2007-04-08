@@ -78,7 +78,6 @@ public class InputStreamUtilities
 	*/
 	public static byte[] getBytes(final InputStream inputStream, final long offset, final int length) throws IOException
 	{
-Debug.trace("ready to get bytes", length);
 		if(offset<0)	//if a negative offset is requested
 		{
 			throw new IllegalArgumentException("Offset cannot be negative.");
