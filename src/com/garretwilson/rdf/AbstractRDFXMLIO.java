@@ -2,13 +2,10 @@ package com.garretwilson.rdf;
 
 import java.io.*;
 import java.net.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.parsers.*;
-
-import com.garretwilson.io.IO;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 
@@ -22,7 +19,7 @@ import org.xml.sax.SAXException;
 @param <T> The type to read and write.
 @author Garret Wilson
 */
-public abstract class AbstractRDFXMLIO<T> implements IO<T>
+public abstract class AbstractRDFXMLIO<T> implements RDFIO<T>
 {
 
 	/**The class representing the type of object being loaded and saved.*/
@@ -106,18 +103,42 @@ public abstract class AbstractRDFXMLIO<T> implements IO<T>
 		return XMLUtilities.createDocumentBuilder(true);	//create a document builder that understands namespaces
 	}
 
+	/**Reads a resource from an input stream.
+	This version delegates to {@link #read(RDF, InputStream, URI)} using {@link #createRDF(URI)} to create a new RDF instance.
+	@param inputStream The input stream from which to read the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The resource read from the input stream.
+	@exception NullPointerException if the given input stream is <code>null</code>.
+	@exception IOException if there is an error reading the data.
+	@exception ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
+	*/ 
+	public final T read(final InputStream inputStream, final URI baseURI) throws IOException
+	{
+		return read(createRDF(baseURI), inputStream, baseURI);	//create a new RDF data model, showing the base URI, and read and return the object
+	}
+
+	/**Reads a resource from an input stream using an existing RDF instance.
+	@param rdf The RDF instance to use in creating new resources.
+	@param inputStream The input stream from which to read the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The resource read from the input stream.
+	@exception NullPointerException if the given RDF instance and/or input stream is <code>null</code>.
+	@exception IOException if there is an error reading the data.
+	@exception ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
+	*/ 
+	public abstract T read(final RDF rdf, final InputStream inputStream, final URI baseURI) throws IOException;
+
 	/**Reads RDF data from an input stream.
-	This method creates an RDF instance using {@link #createRDF(URI)}.
+	@param rdf The RDF instance to use in creating new resources.
 	@param inputStream The input stream from which to read the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The RDF instance representing the data read.
 	@exception IOException if there is an error reading the data.
 	*/ 
-	protected RDF readRDF(final InputStream inputStream, final URI baseURI) throws IOException
+	protected RDF readRDF(final RDF rdf, final InputStream inputStream, final URI baseURI) throws IOException
 	{
 		try
 		{
-			final RDF rdf=createRDF(baseURI);  //create a new RDF data model, showing the base URI
 			final DocumentBuilder documentBuilder=createDocumentBuilder();	//create a new namespace-aware document builder
 			final Document document=documentBuilder.parse(inputStream);	//parse the input stream
 			document.normalize(); //normalize the document

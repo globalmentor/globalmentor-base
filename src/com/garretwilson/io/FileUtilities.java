@@ -8,7 +8,10 @@ import static java.util.Collections.*;
 
 import javax.mail.internet.ContentType;
 import com.garretwilson.lang.*;
+import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
+import com.garretwilson.rdf.RDF;
+import com.garretwilson.rdf.RDFIO;
 import com.garretwilson.util.Debug;
 
 import static com.garretwilson.io.FileConstants.*;
@@ -129,31 +132,37 @@ public class FileUtilities
 		final int separatorIndex=getExtensionSeparatorIndex(filename); //see if we can find the extension separator
 		return separatorIndex>=0 ? filename.substring(separatorIndex+1) : null;	//if we found a separator, return everything after it 
 	}
-
-	/**Changes the extension of a file and returns a new file with the new
-		extension. If the file does not currently have an extension, one will be
-		added. If the file has no path or name, the same file will be returned.
+	
+	/**Changes the name of a file and returns a new file with the new name.
+	@param file The file to examine.
+	@param name The new name of the file.
+	@return The file with the new name.
+	@exception NullPointerException if the given file and/or name is <code>null</code>.
+	*/
+	public static File changeName(final File file, final String name)
+	{
+		final String path=file.getPath();	//get the file path
+		final int pathLength=path.length();	//get the length of the path
+		final String filename=file.getName();  //get the name of the file
+		final int filenameLength=filename.length();	//get the length of the filename
+		assert path.substring(pathLength).equals(filename) : "Expected last part of path to be filename.";	//the filename should always be the last part of the path, even if the file was originally crecated with an ending slash for a directory
+		return new File(path.substring(0, pathLength-filenameLength)+checkInstance(name, "Name cannot be null."));
+	}
+	
+	/**Changes the extension of a file and returns a new file with the new extension.
+	If the file does not currently have an extension, one will be added.
 	@param file The file to examine.
 	@param extension The extension to set, or <code>null</code> if the extension should be removed.
 	@return The file with the new extension.
 	*/
 	public static File changeExtension(final File file, final String extension)
 	{
-		final String filename=file.getName();  //get the name of the file
-		if(filename.length()!=0)  //if we found a filename
-		{
-			return new File(file.getParent(), changeExtension(filename, extension));  //return a file based on the name with the new extension
-		}
-		else  //if there is no filename
-		{
-			return file;  //return the unmodified file
-		}
+		return changeName(file, changeExtension(file.getName(), extension));  //return a file based on the name with the new extension
 	}
 
-	/**Changes the extension of a filename and returns a new filename with the new
-		extension. If the filename does not currently have an extension, one will be
-		added. If the filename has no path or name, the same filename will be returned.
-	@param filename The file to examine.
+	/**Changes the extension of a filename and returns a new filename with the new extension.
+	If the filename does not currently have an extension, one will be added.
+	@param filename The filename to examine.
 	@param extension The extension to set, or <code>null</code> if the extension should be removed.
 	@return The filename with the new extension.
 	*/
@@ -613,7 +622,27 @@ public class FileUtilities
 			bufferedInputStream.close();	//always close the input stream
 		}
 	}
-	
+
+	/**Reads an object from a file using the given RDF I/O support.
+	@param file The file from which to read.
+	@param rdf The RDF instance to use in creating new resources.
+	@param io The I/O support for reading the object.
+	@return The object read from the file.
+	@throws IOException if there is an error reading the data.
+	*/ 
+	public static <T> T read(final File file, final RDF rdf, final RDFIO<T> io) throws IOException
+	{
+		final InputStream bufferedInputStream=new BufferedInputStream(new FileInputStream(file));	//create a buffered input stream to the file
+		try
+		{
+			return io.read(rdf, bufferedInputStream, file.toURI());	//read the object, using the given RDF instance and determining the base URI from the file
+		}
+		finally
+		{
+			bufferedInputStream.close();	//always close the input stream
+		}
+	}
+
 	/**Writes an object to a file using the given I/O support.
 	@param file The file to which to write.
 	@param object The object to write to the given file.
@@ -762,6 +791,7 @@ Debug.trace("Canonical file: "+canonicalFilePath);
 	}
 */
 
+	
 	
 	/**Sorts a list of files in ascending order by modified time and secondly by file name.
 	This method caches file information so that each file is accessed only once.

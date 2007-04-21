@@ -12,7 +12,7 @@ Custom classes can be added using {@link #registerResourceFactory(URI, RDFResour
 @param <T> The type to read and write.
 @author Garret Wilson
 */
-public class RDFResourceIO<T extends RDFResource> extends AbstractRDFXMLIO<T>
+public class TypedRDFResourceIO<T extends RDFResource> extends AbstractRDFXMLIO<T>
 {
 
 	/**The namespace of the RDF resource supported.*/
@@ -34,7 +34,7 @@ public class RDFResourceIO<T extends RDFResource> extends AbstractRDFXMLIO<T>
 	@param resourceNamespaceURI The namespace of the RDF resource supported.
 	@exception NullPointerException if the given class and/or namespace URI is <code>null</code>.
 	*/
-	public RDFResourceIO(final Class<T> resourceClass, final URI resourceNamespaceURI)
+	public TypedRDFResourceIO(final Class<T> resourceClass, final URI resourceNamespaceURI)
 	{
 		this(resourceClass, resourceNamespaceURI, getLocalName(resourceClass), new DefaultRDFResourceFactory(resourceClass.getPackage()));	//construct the class with a default resource factory
 	}
@@ -45,7 +45,7 @@ public class RDFResourceIO<T extends RDFResource> extends AbstractRDFXMLIO<T>
 	@param resourceClassName The class name of the RDF resource supported.
 	@exception NullPointerException if the given class, namespace URI, and/or class name is <code>null</code>.
 	*/
-	public RDFResourceIO(final Class<T> resourceClass, final URI resourceNamespaceURI, final String resourceClassName)
+	public TypedRDFResourceIO(final Class<T> resourceClass, final URI resourceNamespaceURI, final String resourceClassName)
 	{
 		super(resourceClass);	//construct the parent class
 		this.resourceNamespaceURI=checkInstance(resourceNamespaceURI, "Resource namespace URI must be provided.");
@@ -59,22 +59,24 @@ public class RDFResourceIO<T extends RDFResource> extends AbstractRDFXMLIO<T>
 	@param resouceFactory The resource factory to register with the given namespace.
 	@exception NullPointerException if the given class, namespace URI, class name, and/or resource factory is <code>null</code>.
 	*/
-	public RDFResourceIO(final Class<T> resourceClass, final URI resourceNamespaceURI, final String resourceClassName, final RDFResourceFactory resourceFactory)
+	public TypedRDFResourceIO(final Class<T> resourceClass, final URI resourceNamespaceURI, final String resourceClassName, final RDFResourceFactory resourceFactory)
 	{
 		this(resourceClass, resourceNamespaceURI, resourceClassName);	//construct the class
 		registerResourceFactory(resourceNamespaceURI, checkInstance(resourceFactory, "Resource factory cannot be null."));  //register the factory for the given namespace
 	}
 
-	/**Reads a resource from an input stream.
+	/**Reads a resource from an input stream using an existing RDF instance.
+	@param rdf The RDF instance to use in creating new resources.
 	@param inputStream The input stream from which to read the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The resource read from the input stream.
+	@exception NullPointerException if the given RDF instance and/or input stream is <code>null</code>.
 	@exception IOException if there is an error reading the data.
 	@exception ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
 	*/ 
-	public T read(final InputStream inputStream, final URI baseURI) throws IOException
+	public T read(final RDF rdf, final InputStream inputStream, final URI baseURI) throws IOException
 	{
-		final RDF rdf=readRDF(inputStream, baseURI);	//read RDF from the input stream
+		readRDF(rdf, inputStream, baseURI);	//read RDF from the input stream
 		final RDFResource resource=getResourceByType(rdf, getResourceNamespaceURI(), getResourceClassName());	//load the correct resource
 		if(resource==null)	//if there is no resource
 		{
