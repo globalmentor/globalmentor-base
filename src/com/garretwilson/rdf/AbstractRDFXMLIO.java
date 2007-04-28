@@ -185,7 +185,7 @@ public abstract class AbstractRDFXMLIO<T> implements RDFIO<T>
 		try
 		{
 			final DocumentBuilder documentBuilder=createDocumentBuilder();	//create a new document builder appropriate for writing RDF
-			final RDFXMLGenerator rdfXMLGenerator=new RDFXMLGenerator();	//create a new RDF XML generator
+			final RDFXMLGenerator rdfXMLGenerator=new RDFXMLGenerator(baseURI);	//create a new RDF XML generator
 			for(Map.Entry<URI, String> namespaceURIPrefixEntry:namespaceURIPrefixMap.entrySet())	//for each entry in our namespace URI prefix map
 			{
 				rdfXMLGenerator.registerNamespacePrefix(namespaceURIPrefixEntry.getKey(), namespaceURIPrefixEntry.getValue());	//transfer the namespace/prefix pair to the generator

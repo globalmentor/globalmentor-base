@@ -962,7 +962,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 
 	/**Returns a URI constructed from a given URI and a fragment identifier.
-	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>	will be thrown.
+	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>will be thrown.
 	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
 	<p>If no URI is provided, a URI is created from the fragment itself.</p>
 	@param uri The URI to which to add a fragement identifier, or <code>null</code> if a URI chould be created from just the fragment.

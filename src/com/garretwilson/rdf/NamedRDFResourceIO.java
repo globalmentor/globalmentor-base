@@ -7,8 +7,10 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 
 /**Class for saving and loading a RDF resource by its reference URI.
 Whenever an RDF instance is read, a resource will be retrieved using the given reference URI, resolved against the given base URI if one is available.
+Resolution of a URI against the base URI is performed according to <a href="http://www.w3.org/TR/2003/PR-rdf-syntax-grammar-20031215/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>.
 @param <T> The type to read and write.
 @author Garret Wilson
+@see RDFXMLProcessor#resolveURI(URI, URI)
 */
 public class NamedRDFResourceIO<T extends RDFResource> extends AbstractRDFXMLIO<T>
 {
@@ -44,11 +46,11 @@ public class NamedRDFResourceIO<T extends RDFResource> extends AbstractRDFXMLIO<
 	{
 		readRDF(rdf, inputStream, baseURI);	//read RDF from the input stream
 		final URI resourceURI=getResourceURI();	//get the URI of the resource to return
-		final URI resolvedResourceURI=baseURI!=null ? baseURI.resolve(resourceURI) : resourceURI;	//resolve the resource URI if possible
+		final URI resolvedResourceURI=baseURI!=null ? RDFXMLProcessor.resolveURI(baseURI, resourceURI) : resourceURI;	//resolve the resource URI if possible
 		final RDFResource resource=rdf.getResource(resolvedResourceURI);	//look for a resource with the given URI
 		if(resource==null)	//if there is no resource
 		{
-			throw new IOException("No resource found with class name "+resolvedResourceURI+".");
+			throw new IOException("No resource found with URI "+resolvedResourceURI+".");
 		}
 		return getObjectClass().cast(resource);	//cast the resource to the correct type and return it
 	}

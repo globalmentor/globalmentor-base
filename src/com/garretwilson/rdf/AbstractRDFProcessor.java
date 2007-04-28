@@ -44,13 +44,16 @@ public abstract class AbstractRDFProcessor
 		/**@return The RDF data model being constructed by the RDF processor.*/
 		public RDF getRDF() {return rdf;}
 
-		/**Sets the RDF data model, resets the statement list, and updates the base URI to that of the RDF.
+//TODO del when works		/**Sets the RDF data model, resets the statement list, and updates the base URI to that of the RDF.
+
+		/**Sets the RDF data model.
+		The list of statements is reset.
 		@param newRDF The RDF data model to use.
 		*/
 		public void setRDF(final RDF newRDF)
 		{
 			rdf=newRDF; //set the RDF data model
-			setBaseURI(rdf.getBaseURI());	//use the same base URI
+//TODO del when works			setBaseURI(rdf.getBaseURI());	//use the same base URI
 			statementSet.clear();  //clear the set of statements
 		}
 

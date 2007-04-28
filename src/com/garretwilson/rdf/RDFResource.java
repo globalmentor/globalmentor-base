@@ -238,7 +238,13 @@ public interface RDFResource extends RDFObject, Resource, Cloneable	//TODO fix, 
 	@return The number of properties removed.
 	*/
 	public int removeProperties(final URI namespaceURI, final String localName);
-	
+
+	/**Removes all properties with the given namespace URIs.
+	@param propertyNamespaceURIs The namespace URIs of the properties to be removed.
+	@return The number of properties removed.
+	*/
+	public int removeNamespaceProperties(final URI... propertyNamespaceURIs);
+
 	/**Sets a property by removing all property values for the given property and creating a new {@link RDFPropertyValuePair} from the given property URI and value.
 	If no value is given, all such properties are removed.
 	@param propertyURI The reference URI of a property resource; the predicate of an RDF statement.

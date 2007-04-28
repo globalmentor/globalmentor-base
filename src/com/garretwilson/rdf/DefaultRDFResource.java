@@ -4,17 +4,15 @@ import java.lang.ref.*;
 import java.net.URI;
 import java.util.*;
 
-import com.garretwilson.model.*;
 import com.garretwilson.net.BoundPropertyResource;
 
 import static com.garretwilson.rdf.RDFUtilities.*;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
+import com.garretwilson.util.ArrayUtilities;
 
 /**Represents the default implementation of an RDF resource.
-<p>This class provides compare functionality that sorts according to the reference
-	URI.</p>
-<p>This resource keeps a weak reference to the data model that created it, if
-	any.</p> 
+<p>This class provides compare functionality that sorts according to the reference URI.</p>
+<p>This resource keeps a weak reference to the data model that created it, if any.</p>
 @author Garret Wilson
 */
 public class DefaultRDFResource extends BoundPropertyResource implements RDFResource, Cloneable
@@ -396,6 +394,29 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		return removeProperties(createReferenceURI(namespaceURI, localName)); //remove the property, combining the namespace URI and the local name for the reference URI
 	}
 
+	/**Removes all properties with the given namespace URIs.
+	@param propertyNamespaceURIs The namespace URIs of the properties to be removed.
+	@return The number of properties removed.
+	*/
+	public int removeNamespaceProperties(final URI... propertyNamespaceURIs)
+	{
+		int propertiesRemovedCount=0;	//we haven't removed any properties, yet
+		final Iterator<RDFPropertyValuePair> propertyIterator=getPropertyIterator();  //get an iterator to look at the properties
+		while(propertyIterator.hasNext()) //while there are more properties
+		{
+			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
+			final URI propertyURI=propertyValuePair.getProperty().getReferenceURI();	//get the property URI
+			final URI namespaceURI=getNamespaceURI(propertyURI);	//get the namespace of this property (we don't verify that this property has a URI, but this problem will go away when the API starts handling properties as simple URIs)
+			if(ArrayUtilities.contains(propertyNamespaceURIs, namespaceURI))	//if this is one of the namespaces to remove
+			{
+				propertyIterator.remove();	//remove this property
+				firePropertyChange(propertyURI.toString(), propertyValuePair.getValue(), null);	//fire a property change event with the old property value
+				++propertiesRemovedCount;	//show that we removed another property
+			}
+		}
+		return propertiesRemovedCount;	//return the number of properties we removed
+	}
+
 	/**Sets a property by removing all property values for the given property and creating a new {@link RDFPropertyValuePair} from the given property URI and value.
 	If no value is given, all such properties are removed.
 	@param propertyURI The reference URI of a property resource; the predicate of an RDF statement.
@@ -516,7 +537,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	*/
 	public DefaultRDFResource(final URI referenceURI)
 	{
-		this(null, referenceURI);	//construct the class with no data model
+		this((RDF)null, referenceURI);	//construct the class with no data model
 	}
 
 	/**Constructs a resource from a data model.
@@ -551,7 +572,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	}
 
 	/**Constructs a resource with a reference URI from a data model.
-	@param rdf The data model with which this resource should be associated.
+	@param rdf The data model with which this resource should be associated, or <code>null</code> if this resource should not be associated with any RDF data model.
 	@param referenceURI The reference URI for the new resource.
 	@see RDF#createResource
 	*/
@@ -560,7 +581,35 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		super(referenceURI);  //construct the parent class with the reference URI
 		setRDF(rdf);	//associate the resource with the given RDF data model, if any
 	}
-	
+
+	/**Copy constructor.
+	The new resource will use the same reference URI, if any, as the old.
+	The new resource will use the same RDF data model, if any, of the given resource.
+	All properties will be copied from the given resource to the new one.
+	@param rdfResource The RDF resource from which resources should be copied.
+	@exception NullPointerException if the given resource is <code>null</code>.
+	*/
+	public DefaultRDFResource(final RDFResource rdfResource)
+	{
+		this(rdfResource, rdfResource.getReferenceURI());	//create the resource using the existing resource's reference URI
+	}
+
+	/**Copy constructor with a specified reference URI.
+	The new resource will use the same RDF data model, if any, of the given resource.
+	All properties will be copied from the given resource to the new one.
+	@param rdfResource The RDF resource from which resources should be copied.
+	@param referenceURI The reference URI for the new resource.
+	@exception NullPointerException if the given resource is <code>null</code>.
+	*/
+	public DefaultRDFResource(final RDFResource rdfResource, final URI referenceURI)
+	{
+		this(rdfResource.getRDF(), referenceURI);	//create the resource with the data model and reference URI of the given reference URI
+		for(final RDFPropertyValuePair rdfPropertyValuePair:rdfResource.getProperties())	//for each property
+		{
+			addProperty(rdfPropertyValuePair.getName().getReferenceURI(), rdfPropertyValuePair.getValue());	//add this property
+		}
+	}
+
 	/**Constructs a resource with a reference URI and optional type URI from a data model.
 	@param rdf The data model with which this resource should be associated.
 	@param referenceURI The reference URI for the new resource, or <code>null</code> if the resource should have no reference URI.

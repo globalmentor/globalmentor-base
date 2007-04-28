@@ -25,6 +25,12 @@ import org.w3c.dom.*;
 public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property value resources with no properties
 {
 
+	/**The base URI of the RDF data model, or <code>null</code> if the base URI is unknown.*/
+	private final URI baseURI;
+	
+		/**@return The base URI of the RDF data model, or <code>null</code> if the base URI is unknown.*/
+		public URI getBaseURI() {return baseURI;}
+
 	/**Create a new XML namespace prefix manager.*/
 	private final XMLNamespacePrefixManager xmlNamespacePrefixManager;
 
@@ -192,6 +198,17 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		*/
 		public void setCompactRDFListSerialization(final boolean compactRDFListSerialization) {this.compactRDFListSerialization=compactRDFListSerialization;}
 
+	/**Whether URI references are relativized to the base URI if possible.*/
+	private boolean uriReferencesRelativized=true;
+
+		/**@return <code>true</code> if URI references are relativized to the base URI if possible..*/
+		public boolean isURIReferencesRelativized() {return uriReferencesRelativized;}
+
+		/**Sets whether URI references are relativized to the base URI if possible..
+		@param uriReferencesRelativized <code>true</code> if URI references should be relativized to the base URI if possible.
+		*/
+		public void setURIReferencesRelativized(final boolean uriReferencesRelativized) {this.uriReferencesRelativized=uriReferencesRelativized;}
+
 	/**Default constructor that creates a compact XMLifier.*/
 	public RDFXMLGenerator()
 	{
@@ -209,12 +226,31 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		setLiteralAttributeSerialization(compact);  //if we should be compact, show literals as attributes
 	}
 
-	/**XML namespace prefix manager constructor with compact serialization.
+	/**XML namespace prefix manager constructor with no base URI and compact serialization.
 	@param xmlNamespacePrefixManager The object managing XML namespaces and prefixes.
 	@excepion NullPointerException if the given XML namespace prefix manager is <code>null</code>.
 	*/
 	public RDFXMLGenerator(final XMLNamespacePrefixManager xmlNamespacePrefixManager)
 	{
+		this(null, xmlNamespacePrefixManager);	//create the class with no base URI
+	}
+
+	/**Base URI constructor with compact serialization.
+	@param baseURI The base URI of the RDF data model, or <code>null</code> if the base URI is unknown.
+	*/
+	public RDFXMLGenerator(final URI baseURI)
+	{
+		this(baseURI, new XMLNamespacePrefixManager());	//construct the class with a default XML namespace prefix manager
+	}
+
+	/**Base URI and XML namespace prefix manager constructor with compact serialization.
+	@param baseURI The base URI of the RDF data model, or <code>null</code> if the base URI is unknown.
+	@param xmlNamespacePrefixManager The object managing XML namespaces and prefixes.
+	@excepion NullPointerException if the given XML namespace prefix manager is <code>null</code>.
+	*/
+	public RDFXMLGenerator(final URI baseURI, final XMLNamespacePrefixManager xmlNamespacePrefixManager)
+	{
+		this.baseURI=baseURI;	//save the base URI
 		this.xmlNamespacePrefixManager=checkInstance(xmlNamespacePrefixManager, "XML namespace prefix manager cannot be null.");
 		serializedResourceSet=new IdentityHashSet<RDFResource>();	//create a map that will determine whether resources have been serialized, based upon the identity of resources
 		resourceReferenceMap=new IdentityHashMap<RDFResource, Set<RDFResource>>();	//create a map of sets of referring resources for each referant resource, using identity rather than equality for equivalence
@@ -235,7 +271,6 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		serializedResourceSet.clear();	//show that we've not serialized any resources
 		resourceReferenceMap.clear();	//clear all our references to resources
 		nodeIDMap.clear();	//clear our map of node IDs
-//TODO del		namespacePrefixMap.clear();	//cler the map of prefixes
 	}
 
 	/**Creates a default RDF XML document.
@@ -353,7 +388,6 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 	*/
 	public Element createResourceElement(final Document document, final RDFResource resource)
 	{
-		final URI referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
 		final Element resourceElement;  //we'll store here the element that we create
 		final RDFResource resourceType=getType(resource); //get the type of the resource
 		if(resourceType!=null)   //if this resource has a type that we can use for the element name
@@ -371,12 +405,23 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 			final String qualifiedName=createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION);  //create a qualified name for the element
 		  resourceElement=document.createElementNS(RDF_NAMESPACE_URI.toString(), qualifiedName); //create an rdf:Description element
 		}
+		final URI referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
 		if(referenceURI!=null)  //if this resource has a reference URI (i.e. it isn't a blank node)
 		{
+			final URI serializationReferenceURI;	//we'll relativize the URI if possible
+			if(isURIReferencesRelativized())	//if we should relativize URI references
+			{
+				final URI baseURI=getBaseURI();	//get the base URI, if any
+				serializationReferenceURI=baseURI!=null ? baseURI.relativize(referenceURI) : referenceURI;	//if there is a base URI, relativize this resource's URI against the base URI
+			}
+			else	//if we shouldn't relativize URI references
+			{
+				serializationReferenceURI=referenceURI;	//use the full reference URI as the serialization URI
+			}
 				//set the rdf:about attribute to the reference URI
 			final String aboutAttributeQualifiedName=createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_ABOUT);  //create a qualified name for reference URI
 				//add the rdf:about attribute with the value set to the reference URI of the resource
-			resourceElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), aboutAttributeQualifiedName, referenceURI.toString());
+			resourceElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), aboutAttributeQualifiedName, serializationReferenceURI.toString());
 		}
 		else	//if this resource has no reference URI, we'll have to give it a node ID if any other resources reference it
 		{

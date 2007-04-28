@@ -4,7 +4,11 @@ import java.net.*;
 import java.util.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
+
+import static com.garretwilson.lang.CharSequenceUtilities.*;
 import com.garretwilson.net.*;
+import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
 import com.garretwilson.text.xml.XMLBase;
@@ -227,7 +231,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		{
 //G***del Debug.trace("found reference URI: ", referenceURIValue);  //G***del
 //G***del				//G***we need to normalize the reference URI
-			referenceURI=XMLBase.resolveURI(new URI(referenceURIValue), element, getBaseURI());  //resolve the reference URI to the base URI
+			referenceURI=resolveURI(element, new URI(referenceURIValue));  //resolve the reference URI to the base URI
 		}
 		else if(anchorID!=null)  //if there is an anchor ID
 		{
@@ -557,7 +561,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				final ResourceProxy resourceProxy;	//we'll create a stand-in object for the resource
 				if(referenceURIValue!=null)	//if we have a reference URI for the resouce
 				{
-					final URI referenceURI=XMLBase.resolveURI(referenceURIValue, element, getBaseURI());  //resolve the reference URI to the base URI
+					final URI referenceURI=resolveURI(element, new URI(referenceURIValue));  //resolve the reference URI to the base URI
 					propertyValue=getResourceProxy(referenceURI);	//create a resource proxy from the reference URI, or use one already available for the reference URI
 				}
 				else	//if there is no reference URI
@@ -717,6 +721,44 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				break;
 		}
 		return null;  //show that the RDF attribute is not available
+	}
+
+	/**Creates a URI by resolving the given URI relative to the base URI of the provided element, taking into account the given base URI of the document.
+	URIs are resolved according to RDF/XML processing rules.
+	@param element The element for which a base URI should be determined.
+	@param uri The URI to resolve.
+	@return A URI resolved to the in-scope base URI of the given element.
+	@exception NullPointerException if the given element and/or URI is <code>null</code>. 
+	@exception URISyntaxException Thrown if the constructed URI is invalid.
+	@see XBase
+	@see #resolveURI(URI, URI)
+	*/
+	protected URI resolveURI(final Element element, final URI uri) throws URISyntaxException
+	{
+		final URI baseURI=XMLBase.getBaseURI(element, getBaseURI());  //get the base URI of the element		  
+		return baseURI!=null ? resolveURI(baseURI, uri) : uri;	//resolve the given URI to the base URI we determine
+	}
+
+	/**Resolves a URI against a base URI according to RDF/XML processing rules.
+	Significantly, the emptry string are appended to the given base URI.
+	@param baseURI The in-scope base URI against which the URI should be resolved.
+	@param uri The URI to resolve.
+	@return A URI resolved to the given base URI according to RDF/XML processing rules.
+	@exception NullPointerException if the given element and/or URI is <code>null</code>. 
+	@see <a href="http://www.w3.org/TR/2003/PR-rdf-syntax-grammar-20031215/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
+	 */
+	public static URI resolveURI(final URI baseURI, final URI uri)
+	{
+		checkInstance(baseURI, "Base URI cannot be null.");
+		if(isPathURI(uri))	//if the given URI is only a path
+		{
+			final String path=uri.getPath();	//get the path of the URI
+			if(path.length()==0)	//if this URI is ""
+			{
+				return baseURI;	//return the base URI
+			}
+		}
+		return baseURI.resolve(uri);	//resolve the URI against the base URI normally
 	}
 
 }
