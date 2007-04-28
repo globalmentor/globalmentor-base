@@ -1,4 +1,4 @@
-package com.garretwilson.rdf.directory.card;
+package com.garretwilson.rdf.directory.vcard;
 
 import java.net.URI;
 import java.util.Locale;
@@ -27,7 +27,6 @@ import com.garretwilson.util.NameValuePair;
 import static com.garretwilson.text.directory.vcard.VCardConstants.*;
 
 /**An ontology to represent a vCard <code>text/directory</code> profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>, "vCard MIME Directory Profile".
-This implementation was created taking advice from <a href="http://www.w3.org/TR/vcard-rdf">Representing vCard Objects in RDF/XML</a>.
 @author Garret Wilson
 */
 public class Card extends Directory
