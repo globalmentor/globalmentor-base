@@ -95,7 +95,9 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		for(final RDFPropertyValuePair propertyValuePair:propertyList)  //for each property
 		{
 		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
+		  {
 				return propertyValuePair.getPropertyValue(); //return the value of the property as an RDF object
+		  }
 		}
 		return null;  //show that we couldn't find such a property
 	}
