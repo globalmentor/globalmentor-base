@@ -78,10 +78,16 @@ public class ThreadedQueue implements Runnable, ObjectProcessor
 	*/
 	protected void finalize() throws Throwable
 	{
-		final Thread thread=processThread;  //get the processing thread
-		processThread=null; //set the processing thread to null to notify the thread to stop
-		thread.interrupt();   //interrupt the thread in case it's waiting on new messages; when it awakes, it will process the remaining messages, see that the process thread is set to null, and end
-		super.finalize(); //do the default finalizing
+		try
+		{
+			final Thread thread=processThread;  //get the processing thread
+			processThread=null; //set the processing thread to null to notify the thread to stop
+			thread.interrupt();   //interrupt the thread in case it's waiting on new messages; when it awakes, it will process the remaining messages, see that the process thread is set to null, and end
+		}
+		finally
+		{
+			super.finalize(); //always do the default finalizing
+		}
 	}
 
 	/**Causes this queue to begin processing its contents, if any, in a separate

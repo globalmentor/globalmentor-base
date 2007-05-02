@@ -216,12 +216,18 @@ public class AsynchronousWriter extends Writer
   }
 
 	/**Cleans up the asynchronous writer by ensuring that the writer is closed and thereby the consumer thread is ended.
-	@exception  IOException  if an I/O error occurs.
 	@see #close()
 	*/
-	protected void finalize() throws IOException
+	protected void finalize() throws Throwable
 	{
-		close();	//flush and close the writer, if it isn't closed already
+		try
+		{
+			close();	//flush and close the writer, if it isn't closed already
+		}
+		finally
+		{
+			super.finalize();	//always call the parent version
+		}			
 	}
 
 	/**The consumer runnable that writes data to the underlying writer.

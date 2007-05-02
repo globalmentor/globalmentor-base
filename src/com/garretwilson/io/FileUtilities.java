@@ -1,14 +1,14 @@
 package com.garretwilson.io;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URI;
+import java.net.*;
 import java.util.*;
 import static java.util.Collections.*;
 
 import javax.mail.internet.ContentType;
 import com.garretwilson.lang.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
+
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.RDF;
 import com.garretwilson.rdf.RDFIO;
@@ -16,8 +16,6 @@ import com.garretwilson.util.Debug;
 
 import static com.garretwilson.io.FileConstants.*;
 import static com.garretwilson.io.InputStreamUtilities.*;
-import static com.garretwilson.io.OutputStreamUtilities.*;
-import static com.garretwilson.lang.CharacterUtilities.*;
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.IntegerUtilities.*;
 import static com.garretwilson.lang.SystemUtilities.*;
@@ -57,7 +55,71 @@ public class FileUtilities
 	{
 		return new StringBuilder(filename).append(EXTENSION_SEPARATOR).append(extension).toString();  //add the requested extension and return the new filename
 	}
+
+	/**Creates a temporary file in the standard temporary directory with automatic deletion on JVM exit.
+	This convenience method provides more intuitive parameters than {@link File#createTempFile(String, String)}.
+	@param baseName The base filename to be used in generating the filename.
+	@param extension The extension to use for the temporary file, or <code>null</code> if a default extension should be used.
+	@return A new temporary file.
+	@exception NullPointerException if the given base name and/or extension is <code>null</code>.
+	@exception IllegalArgumentException if the base name is the empty string.
+	@exception IOException if there is a problem creating the temporary file.
+	@see File#createTempFile(String, String)
+	@see File#deleteOnExit()
+	*/
+	public static File createTempFile(final String baseName, final String extension) throws IOException
+	{
+		return createTempFile(baseName, extension, true);	//create a temporary file that is automatically scheduled for deletion
+	}
+
+	/**Creates a temporary file in the standard temporary directory with optional automatic deletion.
+	This convenience method provides more intuitive parameters than {@link File#createTempFile(String, String)}.
+	@param baseName The base filename to be used in generating the filename.
+	@param extension The extension to use for the temporary file, or <code>null</code> if a default extension should be used.
+	@param deleteOnExit Whether the file should be deleted when the JVM exits.
+	@return A new temporary file.
+	@exception NullPointerException if the given base name and/or extension is <code>null</code>.
+	@exception IllegalArgumentException if the base name is the empty string.
+	@exception IOException if there is a problem creating the temporary file.
+	@see File#createTempFile(String, String)
+	@see File#deleteOnExit()
+	*/
+	public static File createTempFile(final String baseName, final String extension, final boolean deleteOnExit) throws IOException
+	{
+		return createTempFile(baseName, extension, null, deleteOnExit);	//create a temp file using the standard temporary directory
+	}
 	
+	/**Creates a temporary file in a given directory with optional automatic deletion.
+	This convenience method provides more intuitive parameters than {@link File#createTempFile(String, String, File)}.
+	@param baseName The base filename to be used in generating the filename.
+	@param extension The extension to use for the temporary file, or <code>null</code> if a default extension should be used.
+	@param directory The directory in which the file is to be created, or <code>null</code> if the default temporary-file directory is to be used.
+	@param deleteOnExit Whether the file should be deleted when the JVM exits.
+	@return A new temporary file.
+	@exception NullPointerException if the given base name and/or extension is <code>null</code>.
+	@exception IllegalArgumentException if the base name is the empty string.
+	@exception IOException if there is a problem creating the temporary file.
+	@see File#createTempFile(String, String, File)
+	@see File#deleteOnExit()
+	*/
+	public static File createTempFile(String baseName, final String extension, final File directory, final boolean deleteOnExit) throws IOException
+	{
+		if(checkInstance(baseName, "Base name cannot be null.").length()==0)	//if the base name is empty
+		{
+			throw new IllegalArgumentException("Base name cannot be the empty string.");
+		}
+		if(baseName.length()<3)	//if the base name is under three characters long (the temp file creation API requires at least three characters)
+		{
+			baseName=baseName+"-temp";	//pad the base name to meet the requirements of File.createTempFile()
+		}
+		final File tempFile=File.createTempFile(baseName, new StringBuilder().append(EXTENSION_SEPARATOR).append(extension).toString(), directory);	//create a temporary file in the given directory, if any
+		if(deleteOnExit)	//if the file should be deleted on JVM exit
+		{
+			tempFile.deleteOnExit();	//tell the file it should be deleted when the JVM exits
+		}
+		return tempFile;	//return the temporary file
+	}
+
 	/**Creates a new file, throwing an exception if unsuccessful.
 	@param file The file to create.
 	@exception IOException Thrown if there is an error creating the file.
@@ -604,6 +666,26 @@ public class FileUtilities
 		}		
 	}
 
+	/**Loads the contents of a file into an array of bytes. The file is closed after the operation.
+	@param file The file from which to read.
+	@return An array of bytes from the input stream.
+	@exception IOException Thrown if there is an error loading the bytes.
+	@see InputStreamUtilities#getBytes
+	@see #write
+	*/
+	public static byte[] readBytes(final File file) throws IOException
+	{
+		final InputStream fileInputStream=new FileInputStream(file);  //create an input stream to the file
+		try
+		{
+			return getBytes(fileInputStream);  //convert the file to an array of bytes
+		}
+		finally
+		{
+			fileInputStream.close();  //always close the file input stream
+		}
+	}
+
 	/**Reads an object from a file using the given I/O support.
 	@param file The file from which to read.
 	@param io The I/O support for reading the object.
@@ -662,24 +744,23 @@ public class FileUtilities
 		}
 	}
 
-	/**Loads the contents of a file into an array of bytes. The file is closed
-		after the operation.
-	@param file The file from which to read.
-	@return An array of bytes from the input stream.
+	/**Stores an array of bytes in a file. The file is closed after the operation.
+	@param file The file in which the bytes should be stored.
+	@param bytes The bytes to store in the file.
 	@exception IOException Thrown if there is an error loading the bytes.
-	@see InputStreamUtilities#getBytes
-	@see #write
+	@see #readBytes(File)
 	*/
-	public static byte[] readBytes(final File file) throws IOException
+	public static void write(final File file, final byte[] bytes) throws IOException
 	{
-		final InputStream fileInputStream=new FileInputStream(file);  //create an input stream to the file
+		final OutputStream fileOutputStream=new BufferedOutputStream(new FileOutputStream(file));  //create a buffered output stream to the file
 		try
 		{
-			return getBytes(fileInputStream);  //convert the file to an array of bytes
+		  fileOutputStream.write(bytes);  //write the bytes to the file
+			fileOutputStream.flush(); //flush all our data to the file
 		}
 		finally
 		{
-			fileInputStream.close();  //always close the file input stream
+			fileOutputStream.close();  //always close the file output stream
 		}
 	}
 
@@ -830,19 +911,17 @@ Debug.trace("Canonical file: "+canonicalFilePath);
 				});
 	}
 
-	/**Stores an array of bytes in a file. The file is closed after the operation.
-	@param file The file in which the bytes should be stored.
-	@param bytes The bytes to store in the file.
-	@exception IOException Thrown if there is an error loading the bytes.
-	@see #readBytes
+	/**Stores the contents of an input stream in a file.
+	@param inputStream The source of the file contents.
+	@param file The destination of the file contents.
+	@exception IOException Thrown if there is an error copying the information.
 	*/
-	public static void write(final File file, final byte[] bytes) throws IOException
+	public static void copy(final InputStream inputStream, final File file) throws IOException
 	{
-		final OutputStream fileOutputStream=new BufferedOutputStream(new FileOutputStream(file));  //create a buffered output stream to the file
+		final OutputStream fileOutputStream=new BufferedOutputStream(new FileOutputStream(file)); //created a buffered output stream to the file
 		try
 		{
-		  fileOutputStream.write(bytes);  //write the bytes to the file
-			fileOutputStream.flush(); //flush all our data to the file
+			OutputStreamUtilities.copy(inputStream, fileOutputStream);  //copy the contents of the input stream to the output stream
 		}
 		finally
 		{
@@ -855,7 +934,7 @@ Debug.trace("Canonical file: "+canonicalFilePath);
 	@param outputStream The destination of the file contents.
 	@exception IOException Thrown if there is an error copying the file.
 	*/
-	public static void write(final File file, final OutputStream outputStream) throws IOException
+	public static void copy(final File file, final OutputStream outputStream) throws IOException
 	{
 		final InputStream fileInputStream=new BufferedInputStream(new FileInputStream(file)); //created a buffered input stream to the file
 		try

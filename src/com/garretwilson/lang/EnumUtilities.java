@@ -25,17 +25,31 @@ public class EnumUtilities
 		return set;	//return the set we created and populated
 	}
 
-	/**Returns a form of the enum name appropriate for a resource key.
-	The name is converted to lowercaes and all underscore characters ('_') are replaced by a period ('.').
-	For example, <code>FILE_NOT_FOUND</code> would produce <code>file.not.found</code>.
-	@param e The enum instance to convert to a resource key.
-	@return A string representing the enum instance in a style appropriate for use as a resource key.
+	/**Returns a form of the enum name appropriate for serialization.
+	The name is converted to lowercaes and all underscore characters ('_') are replaced by hyphens ('-').
+	For example, <code>FILE_NOT_FOUND</code> would produce <code>file-not-found</code>.
+	@param e The enum instance to convert to a serialization form.
+	@return A string representing the enum instance in a style appropriate for use in serialization.
 	@see Enum#name()
 	*/
-/*TODO del if not needed; moved to Guise
-	public static String getResourceKeyName(final Enum<?> e)
+	public static <E extends Enum<E>> String getSerializationName(final E e)
 	{
-		return e.name().toLowerCase().replace('_', '.');	//convert the name to lowercase and replace underscores with periods
+		return e.name().toLowerCase().replace('_', '-');	//convert the name to lowercase and replace underscores with hyphens
 	}
-*/
+
+	/**Returns the appropriate enum that has been serialized.
+	The name is converted to uppercase and all hypen characters ('-') are replaced by underscores ('_') in order to determine the original enum name.
+	For example, <code>file-not-found</code> would produce <code>FILE_NOT_FOUND</code>.
+	This method assumes that the original enum name does not contain lowercase letters.
+	@param enumType The class object of the enum type from which to return an enum.
+	@param serializationName The serialization form of the name of the enum to return.
+	@return The enum constant of the specified enum type with the specified serialization name.
+	@throws NullPointerException if the enum type and/or the serialization name is <code>null</code>.
+	@throws IllegalArgumentException if the specified enum type has no constant with the specified serialization name, or the specified class object does not represent an enum type.
+	@see Enum#valueOf(Class, String)
+	*/
+	public static <E extends Enum<E>> E getSerializedEnum(final Class<E> enumType, final String serializationName)
+	{
+		return Enum.valueOf(enumType, serializationName.replace('-', '_').toUpperCase());	//convert the the enum name back to its original form and try to retrieve a corresponding enum
+	}
 }

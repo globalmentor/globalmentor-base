@@ -3,6 +3,8 @@ package com.garretwilson.awt.geom;
 import java.awt.*;
 import java.awt.geom.*;
 
+import com.garretwilson.util.Debug;
+
 /**Utilities that work with geometrical coordinates.
 @author Garret Wilson
 */
@@ -15,6 +17,39 @@ public class GeometryUtilities
 	{
 	}
 
+	/**Constrains the given inner dimension within the given outer dimension by scaling the inner dimension so that no part lies outside the outer dimension.
+	@param dimension The inner dimension to be constrained.
+	@param constrainingDimension The outer constraining dimension.
+	@return A dimension representing the constrained dimension.
+	 */
+	public static Dimension constrain(final Dimension dimension, final Dimension constrainingDimension)
+	{
+		final int width=dimension.width;
+		final int height=dimension.height;
+		final int constrainingWidth=constrainingDimension.width;
+		final int constrainingHeight=constrainingDimension.height;
+		if(width<=constrainingWidth && height<=constrainingHeight)	//if nothing needs to be constrained
+		{
+			return dimension;	//return the dimension unchanged
+		}
+		final double relation=(double)width/height;	//determine the relationship of the sides
+Debug.trace("relation of sides is:", relation);
+		int newWidth, newHeight;
+		newHeight=(int)(constrainingWidth*relation);	//get the matching height for a constrained width
+		if(newHeight<=constrainingHeight)	//if the height has been constrained
+		{
+			newWidth=constrainingWidth;	//constrain the width to the edges
+			Debug.trace("trying to constrain width to", newWidth, "height to ", newHeight);
+		}
+		else	//if the height needs to be constrained
+		{
+			newWidth=(int)(constrainingHeight/relation);	//get the matching width for a constrained height
+			newHeight=constrainingHeight;	//constrain the height to the edges
+Debug.trace("that didn't work; trying to constrain width to", newWidth, "height to ", newHeight);
+		}
+		return new Dimension(newWidth, newHeight);	//return the new constrained dimensions
+	}
+	
 	/**Calculates the center point of the shape.
 	@param shape A shape the center of which to return.
 	@return The point representing the center of the rectangular bounding area of
@@ -38,4 +73,5 @@ public class GeometryUtilities
 	{
 		return new Point(x+(width/2), y+(height/2));  //create a point in the center of the bounding area
 	}
+
 }

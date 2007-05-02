@@ -44,5 +44,10 @@ public abstract class AbstractHashObject
 	{
 		return getClass().isInstance(object) && Arrays.equals(objects, ((AbstractHashObject)object).objects);	//see if the object is of this class and our objects are equal to its objects
 	}
-	
+
+	/**@return A string representation of this hash object.*/
+	public String toString()
+	{
+		return ArrayUtilities.toString(objects);	//convert the objects to strings
+	}
 }
