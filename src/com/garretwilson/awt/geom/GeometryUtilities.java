@@ -1,9 +1,6 @@
 package com.garretwilson.awt.geom;
 
 import java.awt.*;
-import java.awt.geom.*;
-
-import com.garretwilson.util.Debug;
 
 /**Utilities that work with geometrical coordinates.
 @author Garret Wilson
@@ -33,19 +30,19 @@ public class GeometryUtilities
 			return dimension;	//return the dimension unchanged
 		}
 		final double relation=(double)width/height;	//determine the relationship of the sides
-Debug.trace("relation of sides is:", relation);
+//TODO del Debug.trace("relation of sides is:", relation);
 		int newWidth, newHeight;
-		newHeight=(int)(constrainingWidth*relation);	//get the matching height for a constrained width
+		newHeight=(int)(constrainingWidth/relation);	//get the matching height for a constrained width
+//TODO del Debug.trace("trying to constrain width to", constrainingWidth, "height to ", newHeight);
 		if(newHeight<=constrainingHeight)	//if the height has been constrained
 		{
 			newWidth=constrainingWidth;	//constrain the width to the edges
-			Debug.trace("trying to constrain width to", newWidth, "height to ", newHeight);
 		}
 		else	//if the height needs to be constrained
 		{
-			newWidth=(int)(constrainingHeight/relation);	//get the matching width for a constrained height
+			newWidth=(int)(constrainingHeight*relation);	//get the matching width for a constrained height
 			newHeight=constrainingHeight;	//constrain the height to the edges
-Debug.trace("that didn't work; trying to constrain width to", newWidth, "height to ", newHeight);
+//TODO del Debug.trace("that didn't work; trying to constrain width to", newWidth, "height to ", newHeight);
 		}
 		return new Dimension(newWidth, newHeight);	//return the new constrained dimensions
 	}

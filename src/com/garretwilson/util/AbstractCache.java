@@ -10,7 +10,7 @@ Fetching by default does not occur synchronously.
 @param <V> The type of value stored in the cache.
 @author Garret Wilson
 */
-public abstract class AbstractCache<K, V>
+public abstract class AbstractCache<K, V, I extends AbstractCache.CachedInfo<V>>
 {
 
 	/**Whether fetching new values is synchronous.*/
@@ -43,15 +43,15 @@ public abstract class AbstractCache<K, V>
 	protected final ReadWriteLock cacheLock=new ReentrantReadWriteLock();
 
 	/**The soft value map containing cached values. This map is made thread-safe through the use of {@link #cacheLock}.*/
-	protected final Map<K, CachedValue> cacheMap=new SoftValueHashMap<K, CachedValue>();
+	protected final Map<K, I> cacheMap=new SoftValueHashMap<K, I>();
 
 	/**Constructor.
 	@param fetchSynchronous Whether fetches for new values should occur synchronously.
 	@param expiration The length of time, in milliseconds, to keep cached information.
 	*/
-	public AbstractCache(final boolean fetchSynchornous, final long expiration)
+	public AbstractCache(final boolean fetchSynchronous, final long expiration)
 	{
-		this.fetchSynchronous=fetchSynchornous;
+		this.fetchSynchronous=fetchSynchronous;
 		this.expiration=expiration;
 	}
 	
@@ -60,21 +60,20 @@ public abstract class AbstractCache<K, V>
 	@param key The key to use in looking up the cached value.
 	@return The cached value.
 	@exception IOException if there was an error fetching the value from the backing store.
-	{@link #isStale(Object, long)}
-	@see #fetch()
+	@see #isStale(Object, com.garretwilson.util.AbstractCache.CachedInfo)
+	@see #fetch(Object)
 	*/
 	public V get(final K key) throws IOException
 	{
 		cacheLock.readLock().lock();	//lock the cache for reading
 		try
 		{
-			CachedValue cachedValue=cacheMap.get(key);	//get cached value from the map
-			if(cachedValue!=null)	//if we have a cached value
+			final I cachedInfo=cacheMap.get(key);	//get cached value from the map
+			if(cachedInfo!=null)	//if we have a cached value
 			{
-				final V value=cachedValue.getValue();	//get the value that is cached
-				if(!isStale(value, System.currentTimeMillis()-cachedValue.getCreatedTime()))	//there is a cached value that isn't stale
+				if(!isStale(key, cachedInfo))	//if the cached value isn't stale
 				{
-					return value;	//return the value that was cached
+					return cachedInfo.getValue();	//return the value that was cached
 				}
 			}
 		}
@@ -82,6 +81,21 @@ public abstract class AbstractCache<K, V>
 		{
 			cacheLock.readLock().unlock();	//always release the read lock
 		}
+/*TODO fix; there seems to be no way to know if someone is still using the file
+		if(cachedValue!=null)	//if we had cached a value
+		{
+			cacheLock.writeLock().lock();	//lock the cache for writing
+			try
+			{
+				cacheMap.remove(key);	//remove the cached information
+			}
+			finally
+			{
+				cacheLock.writeLock().unlock();	//always release the write lock
+			}		
+			discard(key, cachedValue);	//discard the cached information, which we can do separately now that 
+		}
+*/
 		final boolean isFetchSynchronous=true;	//TODO get this from somewhere
 		if(isFetchSynchronous)	//if cache fetching should be synchronous
 		{
@@ -89,12 +103,12 @@ public abstract class AbstractCache<K, V>
 		}
 		try
 		{
-			final V value=fetch(key);	//fetch a new value for the key
+			final I newCachedInfo=fetch(key);	//fetch new cached info for the key
 			cacheLock.writeLock().lock();	//lock the cache for writing
 			try
 			{
-				cacheMap.put(key, new CachedValue(value));	//cache the value
-				return value;	//return the value we fetched
+				cacheMap.put(key, newCachedInfo);	//cache the information
+				return newCachedInfo.getValue();	//return the value we fetched
 			}
 			finally
 			{
@@ -111,47 +125,59 @@ public abstract class AbstractCache<K, V>
 	}
 
 	/**Determines if a given cached value is stale.
-	This version checks to see if the given age is greater than {@link #getExpiration()}.
-	@param value The value currently cached.
-	@param age The amount of time the information has been cached, in milliseconds.
+	This version checks to see if the age of the cached information is greater than {@link #getExpiration()}.
+	@param key The key for the cached information.
+	@param cachedInfo The information that is cached.
 	@return <code>true</code> if the cached information has become stale.
+	@exception IOException if there was an error fetching the value from the backing store.
+	@see CachedInfo#getCachedTime()
 	*/
-	public boolean isStale(final V value, final long age)
+	public boolean isStale(final K key, final I cachedInfo) throws IOException
 	{
-		return age>getExpiration();	//if the age is greater than the expiration time, the information is stale
+		return System.currentTimeMillis()-cachedInfo.getCachedTime()>getExpiration();	//if the age is greater than the expiration time, the information is stale
+	}
+
+	/**Performs any operations that need to be done when cached information is discarded (for example, if the cached information is stale).
+	This version does nothing.
+	@param key The key for the cached information.
+	@param cachedInfo The information that is cached.
+	@exception IOException if there was an error discarding the cached information.
+	*/
+	public void discard(final K key, final I cachedInfo) throws IOException
+	{
 	}
 
 	/**Fetches data from the backing store.
 	@param key The key describing the value to fetch.
-	@return A new value from backing store.
+	@return New information to cache.
 	@exception IOException if there was an error fetching the value from the backing store.
 	*/
-	public abstract V fetch(final K key) throws IOException;
+	public abstract I fetch(final K key) throws IOException;
 
 	/**Class for storing a value along with its expiration information.
+	@param <V> The type of value stored in the cache.
 	@author Garret Wilson
 	*/
-	protected class CachedValue
+	public static class CachedInfo<VV>
 	{
-	
 		/**The time the cached information was created.*/
-		private final long createdTime;
+		private final long cachedTime;
 	
 			/**@return The time the cached information was created.*/
-			public long getCreatedTime() {return createdTime;}
+			public long getCachedTime() {return cachedTime;}
 
 		/**The value being stored.*/
-		private final V value;
+		private final VV value;
 
 			/**@return The value being stored.*/
-			public V getValue() {return value;}
+			public VV getValue() {return value;}
 
 		/**Value constructor.
 		@param value The value to store.
 		*/
-		public CachedValue(final V value)
+		public CachedInfo(final VV value)
 		{
-			createdTime=System.currentTimeMillis();	//record the time this information was created
+			cachedTime=System.currentTimeMillis();	//record the time this information was created
 			this.value=value;	//save the value
 		}
 	}
