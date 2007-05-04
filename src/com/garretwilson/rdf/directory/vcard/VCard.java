@@ -7,6 +7,10 @@ import static com.garretwilson.lang.JavaUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 
 import static com.garretwilson.lang.CharSequenceUtilities.*;
+
+import static com.garretwilson.net.URIConstants.*;
+
+import com.garretwilson.net.URIConstants;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.directory.Directory;
 
@@ -191,4 +195,19 @@ public class VCard extends Directory
 	}
 */
 
+	/**Sets the email of a resource using the vCard {@value #EMAIL_PROPERTY_NAME} property.
+	@param resource The resource the email of which to set.
+	@param emailURI The URI expressing the email to set.
+	@return The resource value used to represent the email.
+	@exception NullPointerException if the given resource and/or email URI is <code>null</code>.
+	@exception IllegalArgumentException if the given email URI does not have a scheme of {@value URIConstants#MAILTO_SCHEME}.
+	*/
+	public static RDFResource setEmail(final RDFResource resource, final URI emailURI)
+	{
+		if(!checkInstance(emailURI, "Email URI cannot be null.").getScheme().equals(MAILTO_SCHEME))	//if the email doesn't have the mailto URI scheme
+		{
+			throw new IllegalArgumentException("Email URI "+emailURI+" does not have the "+MAILTO_SCHEME+" scheme.");
+		}
+		return resource.addProperty(VCARD_NAMESPACE_URI, EMAIL_PROPERTY_NAME, locateResource(resource, emailURI));	//add a new resource with the email as the URI
+	}
 }
