@@ -65,10 +65,11 @@ public abstract class AbstractCache<K, V, I extends AbstractCache.CachedInfo<V>>
 	*/
 	public V get(final K key) throws IOException
 	{
+		final I cachedInfo;
 		cacheLock.readLock().lock();	//lock the cache for reading
 		try
 		{
-			final I cachedInfo=cacheMap.get(key);	//get cached value from the map
+			cachedInfo=cacheMap.get(key);	//get cached value from the map
 			if(cachedInfo!=null)	//if we have a cached value
 			{
 				if(!isStale(key, cachedInfo))	//if the cached value isn't stale
@@ -81,21 +82,10 @@ public abstract class AbstractCache<K, V, I extends AbstractCache.CachedInfo<V>>
 		{
 			cacheLock.readLock().unlock();	//always release the read lock
 		}
-/*TODO fix; there seems to be no way to know if someone is still using the file
-		if(cachedValue!=null)	//if we had cached a value
+		if(cachedInfo!=null)	//if we had cached a value
 		{
-			cacheLock.writeLock().lock();	//lock the cache for writing
-			try
-			{
-				cacheMap.remove(key);	//remove the cached information
-			}
-			finally
-			{
-				cacheLock.writeLock().unlock();	//always release the write lock
-			}		
-			discard(key, cachedValue);	//discard the cached information, which we can do separately now that 
+			uncache(key);	//uncache the information (a benign race condition here could have us remove new valid data that has just come in, but that has a low probability and would only result in an extra cache miss in the future)
 		}
-*/
 		final boolean isFetchSynchronous=true;	//TODO get this from somewhere
 		if(isFetchSynchronous)	//if cache fetching should be synchronous
 		{
@@ -122,6 +112,27 @@ public abstract class AbstractCache<K, V, I extends AbstractCache.CachedInfo<V>>
 				fetchLock.unlock();	//always release the fetch lock
 			}
 		}
+	}
+
+	/**Removes a value from the cache.
+	@param key The key to use in looking up the cached value.
+	@return The previously cached value, even if stale, or <code>null</code> if there was no cached value.
+	@exception IOException if there was an error removing the value from the cache.
+	*/
+	public V uncache(final K key) throws IOException
+	{
+		final I cachedInfo;
+		cacheLock.writeLock().lock();	//lock the cache for writing
+		try
+		{
+			cachedInfo=cacheMap.remove(key);	//remove the cached information
+		}
+		finally
+		{
+			cacheLock.writeLock().unlock();	//always release the write lock
+		}
+//fix; there seems to be no way to know if someone is still using the file		discard(key, cachedValue);	//discard the cached information, which we can do separately now that
+		return cachedInfo!=null ? cachedInfo.getValue() : null;	//if there was cached info, returned the cached value
 	}
 
 	/**Determines if a given cached value is stale.
