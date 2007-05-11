@@ -457,7 +457,7 @@ public class URIUtilities
 
 	/**Checks to see if a given path is only a path and not a URI with a scheme and/or authority.
 	If the given string is not a path, an exception is thrown.
-	@param path The string version of a path to determine if it.
+	@param path The string version of a path to determine if it is indeed only a path.
 	@return The given path.
 	@exception NullPointerException if the given path is <code>null</code>.
 	@exception IllegalArgumentException if the given string is not a path.
@@ -474,7 +474,7 @@ public class URIUtilities
 
 	/**Checks to see if a given path is only a relative path and not a URI with a scheme and/or authority.
 	If the given string is not a relative path, an exception is thrown.
-	@param path The string version of a path to determine if it.
+	@param path The string version of a path to determine if it is indeed only a relative path.
 	@return The given relative path.
 	@exception NullPointerException if the given path is <code>null</code>.
 	@exception IllegalArgumentException if the given string is not a path or the path is not relative.
@@ -499,6 +499,23 @@ public class URIUtilities
 	{
 		final URI pathURI=URI.create(checkInstance(path, "Path cannot be null"));	//create a URI from the given path
 		return isPathURI(pathURI);	//indicate whether the constructed URI represents a path
+	}
+
+	/**Checks to see if a given URI is only a path and not a URI with a scheme and/or authority.
+	If the given URI is not a path, an exception is thrown.
+	@param uri The URI to check to for path status.
+	@return The given path URI.
+	@exception NullPointerException if the given path URI is <code>null</code>.
+	@exception IllegalArgumentException if the given URI is not a path.
+	@see #isPath(String)
+	*/
+	public static URI checkPathURI(final URI pathURI)
+	{
+		if(!isPathURI(pathURI))	//if the string is not a path
+		{
+			throw new IllegalArgumentException("The given string "+pathURI+" is not a valid sole path URI.");
+		}
+		return pathURI;	//return the path URI
 	}
 
 	/**Determines if a given URI contains only a path and does not have a scheme and/or authority.

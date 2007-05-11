@@ -6,6 +6,9 @@ package com.guiseframework.model;
 public enum TaskState
 {
 
+	/**The task is preparing to begin.*/
+	INITIALIZE,
+
 	/**The task has been started but is incomplete.*/
 	INCOMPLETE,
 
