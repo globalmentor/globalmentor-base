@@ -172,7 +172,22 @@ public class FileUtilities
 			throw new IOException("Unable to delete "+file);	//throw an exception G***i18n
 		}
 	}
-	
+
+	/**Returns the filename from a file path string in a cross-platform manner.
+	This is useful to determine the filename if the file platform is not known.
+	The characters after the last file path separator are returned.
+	If there is no file path separator, the entire string is returned.
+	@param filePath The file path.
+	@return The filename after the last file path separator.
+	@exception NullPointerException if the given file path is <code>null</code>.
+	@see FileConstants#FILE_PATH_SEPARATOR_CHARACTERS
+	*/
+	public static String getFilename(final String filePath)	//TODO fix for Unix filenames; perhaps pass a system identification enum value
+	{
+		final int pathSeparatorIndex=charLastIndexOf(filePath, FILE_PATH_SEPARATOR_CHARACTERS);	//see if there are any file path separator characters (unfortunately, this will strip away any backslash found in a Unix filename if the entire path was sent, but it's better to have a too-short filename in a rare case than one that includes the full Windows path)
+		return pathSeparatorIndex>=0 ? filePath.substring(pathSeparatorIndex+1) : filePath;	//if there is a path separator, remove everything but what comes after the last path separator
+	}
+
 	/**Extracts the extension from a file.
 	@param file The file to examine.
 	@return The extension of the file (not including '.'), or <code>null</code> if
