@@ -153,7 +153,7 @@ public abstract class OutputStreamDecorator<O extends OutputStream> extends Outp
 	@see #beforeClose()
 	@see #afterClose()
 	*/
-  public void close() throws IOException
+  public synchronized void close() throws IOException	//this method is synchronized so that the colsing operation can complete without being bothered by other threads 
 	{
   	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
   	if(outputStream!=null)	//if we still have an output stream to decorate
