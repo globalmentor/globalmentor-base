@@ -48,10 +48,32 @@ public class URIUtilities
 			//construct an identical URI except for the supplied path
 		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), path, uri.getQuery(), uri.getFragment());
 	}
-	
+
+	/**Creates a new URI identical to the supplied URI with a different raw path.
+	@param uri The URI to change.
+	@param rawPath The raw, escaped path, or <code>null</code> if there should be no path.
+	@return A new URI with the new raw path information.
+	@exception NullPointerException if the given URI and/or path is <code>null</code>.
+	@exception IllegalArgumentException if the given path results in an invalid URI.
+	*/
+	public static URI changeRawPath(final URI uri, final String rawPath)
+	{
+		final String oldRawPath=uri.getRawPath();	//get the old raw path of the URI
+		if((oldRawPath==null || oldRawPath.length()==0) && (rawPath==null || rawPath.length()==0))	//if an empty path is being replaced by an empty path
+		{
+			return uri;	//the URI remains unchanged
+		}
+		final String uriString=uri.toString();	//create a string form of the URI
+		assert oldRawPath==null || uriString.endsWith(oldRawPath) : "URI unexpectedly did not end with its raw path.";
+		final StringBuilder uriStringBuilder=new StringBuilder();	//create a new string builder for modifying the URI
+		uriStringBuilder.append(oldRawPath!=null && oldRawPath.length()>0 ? uriString.substring(0, uriString.length()-oldRawPath.length()) : uriString);	//if there is a raw path, only add the URI part that comes before the path
+		uriStringBuilder.append(rawPath);	//append the raw path to the string builder
+		return URI.create(uriStringBuilder.toString());	//return a new URI from the string builder
+	}
+
 	/**Returns the name of the resource at the given path, which will be the name of the last path component.
 	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
-	As examples, "/path/name.ext" will return "name.ext", "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
+	As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
 	@param path The path, which should be encoded if {@value URIConstants#PATH_SEPARATOR} characters are present within a path component.
 	@return The name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
 	@exception NullPointerException if the given path is <code>null</code>.
@@ -67,17 +89,18 @@ public class URIUtilities
 				--endIndex;	//skip the ending path separator
 			}
 			final int beginIndex=path.lastIndexOf(PATH_SEPARATOR, endIndex-1)+1;	//get the index after the previous separator; if there are no previous separators, this will correctly yield index 0
-			if(endIndex-beginIndex>1)	//if there are characters to collect (there must be more than one position difference in the start and end positions, because the end position is the index after the last character)
+			if(endIndex-beginIndex>1)	//if there are characters to collect (if not, this is the root path, "/") (there must be more than one position difference in the start and end positions, because the end position is the index after the last character)
 			{
 				return path.substring(beginIndex, endIndex);	//return the name we found
 			}
+			assert ROOT_PATH.equals(path) : "Path unexpectedly not the root path.";
 		}
 		return path;	//the path (either "" or "/") is already its name
 	}
 	
 	/**Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component.
 	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
-	As examples, "/path/name.ext" will return "name.ext", "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
+	As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
 	@param URI The URI the path of which will be examined.
 	@return The name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
 	@exception NullPointerException if the given URI is <code>null</code>.
@@ -90,7 +113,7 @@ public class URIUtilities
 	
 	/**Returns the decoded name of the resource at the given URI's path, which will be the decoded name of the last path component.
 	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
-	As examples, "/path/name.ext" will return "name.ext", "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
+	As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
 	An empty name is never returned; <code>null</code> will be returned instead.
 	The path name is first extracted from the URI's raw path and then decoded so that encoded {@value URIConstants#PATH_SEPARATOR} characters will not prevent correct parsing. 
 	@param URI The URI the path of which will be examined.
@@ -102,7 +125,83 @@ public class URIUtilities
 		final String rawName=getRawName(uri);	//get the raw name of the URI
 		return rawName!=null ? decode(rawName) : null;	//if there is a raw name, decode and return it
 	}
-	
+
+	/**Changes the name of the path of the given URI to the given name.
+	If the path is a collection (i.e. it ends with slash), the name is the last component before the last slash.
+	As examples, "/path/name.ext" and "name.ext" will change "name.ext". "/path/", "path/", and "path" will all change "path".
+	"" with return "name" and "/" will return "/name/"
+	@param path The path, which should be encoded if {@value URIConstants#PATH_SEPARATOR} characters are present.
+	@param name The new name of the path.
+	@return A new path with the name changed to the given name.
+	@exception NullPointerException if the given path and/or name is <code>null</code>.
+	@see #getName(String)
+	*/
+	public static String changeName(final String path, final String name)
+	{
+		checkInstance(name, "Name cannot be null.");	//TODO check to see if the name has illegal characters
+		final int length=checkInstance(path, "Path cannot be null.").length();	//get the length of the path
+		if(length==0)	//if there are no characters
+		{
+			return name;	//the empty path becomes the name itself
+		}
+		int endIndex=length;	//start at the end of the path (endIndex will always be one position after the ending character)
+		if(path.charAt(endIndex-1)==PATH_SEPARATOR)	//if the path ends with a path separator
+		{
+			--endIndex;	//skip the ending path separator
+		}
+		final int beginIndex=path.lastIndexOf(PATH_SEPARATOR, endIndex-1)+1;	//get the index after the previous separator; if there are no previous separators, this will correctly yield index 0
+		final StringBuilder pathStringBuilder=new StringBuilder(path);	//create a new string builder from the given path
+		if(endIndex-beginIndex>1)	//if there are characters to collect (there must be more than one position difference in the start and end positions, because the end position is the index after the last character)
+		{
+			pathStringBuilder.replace(beginIndex, endIndex, name);	//replace the found name with the new name
+		}
+		else	//if there are no characters to collect, this must be the root path ("/")
+		{
+			assert ROOT_PATH.equals(path) : "Path unexpectedly not the root path.";
+			pathStringBuilder.append(name).append(PATH_SEPARATOR);	//append "name/" to the root path to yield "/name/"
+		}
+		return pathStringBuilder.toString();	//return the new path we determined
+	}
+
+	/**Changes the raw name of the path of the given URI to the given raw name.
+	If the path is a collection (i.e. it ends with slash), the name is the last component before the last slash.
+	As examples, "/path/name.ext" and "name.ext" will change "name.ext". "/path/", "path/", and "path" will all change "path".
+	"" with return "name" and "/" will return "/name/"
+	@param uri The URI the raw name of which to change.
+	@param rawName The new raw name of the URI.
+	@return A new URI with the raw name changed to the given raw name.
+	@exception NullPointerException if the given URI and/or name is <code>null</code>.
+	@exception IllegalArgumentException if the given URI has no path.
+	@see #getRawName(URI)
+	*/
+	public static URI changeRawName(final URI uri, final String rawName)
+	{
+		final String rawPath=checkInstance(uri, "URI cannot be null").getRawPath();	//get the raw path
+		if(rawPath==null)	//if the URI has no path
+		{
+			throw new IllegalArgumentException("URI "+uri+" has no path.");
+		}
+		final String newRawPath=changeName(rawPath, rawName);	//change the name to the given name
+		return changeRawPath(uri, newRawPath);	//change the URI's raw path to the new raw path
+	}
+
+	/**Changes the name of the path of the given URI to the given name.
+	If the path is a collection (i.e. it ends with slash), the name is the last component before the last slash.
+	As examples, "/path/name.ext" and "name.ext" will change "name.ext". "/path/", "path/", and "path" will all change "path".
+	"" with return "name" and "/" will return "/name/"
+	@param uri The URI the name of which to change.
+	@param name The new unencoded name of the URI, which will be encoded.
+	@return A new URI with the name changed to the given name.
+	@exception NullPointerException if the given URI and/or name is <code>null</code>.
+	@exception IllegalArgumentException if the given URI has no path.
+	@see #encode(String)
+	@see #getName(URI)
+	*/
+	public static URI changeName(final URI uri, final String name)
+	{
+		return changeRawName(uri, encode(name));	//encode the name and change the name of the URI's path
+	}
+
 	/**Creates a new URI identical to the supplied URI with no query or fragment.
 	@param uri The URI from which to remove the query and fragment, if any.
 	@return A new URI with no query or fragment.
