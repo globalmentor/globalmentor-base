@@ -40,7 +40,7 @@ import com.guiseframework.style.RGBColor;
 	<li>{@link URI}</li>
 </ul>
 <p>This processor recognizes the {@link Resource} type; when this class is present with a single URI parameter constructor, that constructor will take precedence using the <code>rdf:about</code> resource reference URI value.</p>
-<p>This processor also recognizes the {@link RDFResource} type and will transfer all non-ploop properties when an instance is encountered.</p>
+<p>This processor also recognizes the {@link RDFResource} type and will transfer all non-PLOOP properties when an instance is encountered.</p>
 @author Garret Wilson
 */
 public class PLOOPProcessor
@@ -266,52 +266,70 @@ public class PLOOPProcessor
 				{
 //TODO del if not wanted					final String[] valueTokens=valuePropertyLiteral.toString().split("[ ,:'_-]");	//split the value into tokens TODO use a constant
 					final String[] valueTokens=((RDFLiteral)valuePropertyObject).getLexicalForm().split(",");	//split the value into tokens TODO use a constant
+//TODO del					Constructor<?> constructor=null;	//try to find a constructor
 					final int parameterCount=valueTokens.length;	//see how many parameters to expect
-					for(final Constructor<?> constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
+					final Class<?>[] strictParameterTypes=ArrayUtilities.createArray(String.class.getClass(), String.class);	//create an array of string classes of the appropriate type so that we can check for a strictly-matching constructor TODO document that string constructors take precedent
+					final Constructor<?> strictConstructor=getCompatibleConstructor(valueClass, strictParameterTypes);	//try to find a constructor that strictly matches
+					if(strictConstructor!=null)	//if we found a strictly-matching constructor
 					{
-						final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
-						if(parameterTypes.length==parameterCount)	//if this constructor has the correct number of parameters
+						try
 						{
-//						TODO del Debug.trace("Looking at constructor with parameter count:", parameterCount);
-							boolean foundArguments=true;	//start out by assuming the parameters match
-							final Object[] arguments=new Object[parameterCount];	//create an array sufficient for the arguments
-							for(int parameterIndex=0; parameterIndex<parameterCount && foundArguments; ++parameterIndex)	//for each parameter, as long we we have matching parameters
-							{
-								final Class<?> parameterType=parameterTypes[parameterIndex];	//get this parameter type
-//							TODO del Debug.trace("Parameter", parameterIndex, "type: ", parameterType);
-								final Object argument=convertObject(valueTokens[parameterIndex], parameterType);	//convert the object to the correct type
-								if(argument!=null)	//if we successfully converted this constructor argument
-								{
-									arguments[parameterIndex]=argument;	//store the argument
-								}
-								else	//if we couldn't convert this constructor argument
-								{
-									foundArguments=false;	//show that we couldn't convert this argument
-									break;	//stop looking at this constructor
-								}								
-							}
-							if(foundArguments)	//if we found a constructor for which we have arguments
-							{
-								try
-								{
 //								TODO del Debug.trace("found constructor with the following arguments:", ArrayUtilities.toString(arguments));
-									final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
-									initializeObject(object, resource, propertyDescriptionMap);	//initialize the object with the properties
-									return object;	//return the constructed and initialized object
-								}
-/*TODO del; we're now allowing more arguments than just the session
-								catch(final IllegalArgumentException illegalArgumentException)	//our Guise session should always work OK---and we shouldn't get this exception for the default constructor
+							final Object object=strictConstructor.newInstance((Object[])valueTokens);	//invoke the constructor with the value tokens as-is
+							initializeObject(object, resource, propertyDescriptionMap);	//initialize the object with the properties
+							return object;	//return the constructed and initialized object
+						}
+						catch(final InstantiationException instantiationException)	//TODO move all of these exception checks
+						{
+							throw new IllegalArgumentException(instantiationException);
+						}
+						catch(final IllegalAccessException illegalAccessException)
+						{
+							throw new IllegalArgumentException(illegalAccessException);
+						}						
+					}
+					else	//if we didn't find a strictly-matching constructor, see if we can do conversions
+					{
+						for(final Constructor<?> constructor:constructors)	//look at each constructor to find one with the correct number of parameters
+						{
+							final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
+							if(parameterTypes.length==parameterCount)	//if this constructor has the correct number of parameters
+							{
+	//						TODO del Debug.trace("Looking at constructor with parameter count:", parameterCount);
+								boolean foundArguments=true;	//start out by assuming the parameters match
+								final Object[] arguments=new Object[parameterCount];	//create an array sufficient for the arguments
+								for(int parameterIndex=0; parameterIndex<parameterCount && foundArguments; ++parameterIndex)	//for each parameter, as long we we have matching parameters
 								{
-									throw new AssertionError(illegalArgumentException);
+									final Class<?> parameterType=parameterTypes[parameterIndex];	//get this parameter type
+	//							TODO del Debug.trace("Parameter", parameterIndex, "type: ", parameterType);
+									final Object argument=convertObject(valueTokens[parameterIndex], parameterType);	//convert the object to the correct type
+									if(argument!=null)	//if we successfully converted this constructor argument
+									{
+										arguments[parameterIndex]=argument;	//store the argument
+									}
+									else	//if we couldn't convert this constructor argument
+									{
+										foundArguments=false;	//show that we couldn't convert this argument
+										break;	//stop looking at this constructor
+									}								
 								}
-*/
-								catch(final InstantiationException instantiationException)
+								if(foundArguments)	//if we found a constructor for which we have arguments
 								{
-									throw new IllegalArgumentException(instantiationException);
-								}
-								catch(final IllegalAccessException illegalAccessException)
-								{
-									throw new IllegalArgumentException(illegalAccessException);
+									try
+									{
+	//								TODO del Debug.trace("found constructor with the following arguments:", ArrayUtilities.toString(arguments));
+										final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
+										initializeObject(object, resource, propertyDescriptionMap);	//initialize the object with the properties
+										return object;	//return the constructed and initialized object
+									}
+									catch(final InstantiationException instantiationException)
+									{
+										throw new IllegalArgumentException(instantiationException);
+									}
+									catch(final IllegalAccessException illegalAccessException)
+									{
+										throw new IllegalArgumentException(illegalAccessException);
+									}
 								}
 							}
 						}
@@ -350,14 +368,14 @@ public class PLOOPProcessor
 						if(propertyDescription.getSetter()==null)	//if there is no setter for this property, it is a read-only property; save it in case we can use it for the constructor
 						{
 	//TODO del Debug.trace("this is a read-only property");
-							readOnlyProperties.add(propertyDescription);	//add this property ot the list of read-only properties
+							readOnlyProperties.add(propertyDescription);	//add this property to the list of read-only properties
 						}
 					}
-	//TODO del when works				readOnlyProperties.add(new PropertyDescription(RDFUtilities.createReferenceURI(GUISE_PROPERTY_NAMESPACE_URI, "session"), GuiseSession.class, getSession()));	//artificially popuplate the read-only property with a session TODO refactor this to allow such variables to be specfified in a general way
+	//TODO del when works				readOnlyProperties.add(new PropertyDescription(RDFUtilities.createReferenceURI(GUISE_PROPERTY_NAMESPACE_URI, "session"), GuiseSession.class, getSession()));	//artificially populate the read-only property with a session TODO refactor this to allow such variables to be specfified in a general way
 					
 					
 					int maxParameterCount=0;	//we'll determine the maximum number of parameters available
-					for(final Constructor<?> constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
+					for(final Constructor<?> constructor:constructors)	//look at each constructor to find one with the correct number of parameters
 					{
 						final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
 						final int parameterCount=parameterTypes.length;	//see how how many parameters this constructor has
@@ -369,7 +387,7 @@ public class PLOOPProcessor
 	//			TODO del Debug.trace("ready to create object of type", valueClassName, "with constructors with max parameters", maxParameterCount);
 					for(int parameterCount=0; parameterCount<=maxParameterCount; ++parameterCount)	//find a constructor with the least number of parameters, starting with the default constructor, until we exhaust the available constructors
 					{
-						for(final Constructor<?> constructor:constructors)	//look at each constuctor to find one with the correct number of parameters
+						for(final Constructor<?> constructor:constructors)	//look at each constructor to find one with the correct number of parameters
 						{
 							final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
 							if(parameterTypes.length==parameterCount)	//if this constructor has the correct number of parameters
@@ -454,7 +472,7 @@ public class PLOOPProcessor
 
 	/**Initializes an object based upon the given description.
 	The object being initialized will be stored locally keyed to the resource description for later lookup.
-	This implementation also recognizes the {@link RDFResource} type and will transfer all non-ploop properties when an instance is encountered.
+	This implementation also recognizes the {@link RDFResource} type and will transfer all non-PLOOP properties when an instance is encountered.
 	@param object The object to initialize.
 	@param resource The description for the object.
 	@exception ClassNotFoundException if a class was specified and the indicated class cannot be found.
@@ -469,7 +487,7 @@ public class PLOOPProcessor
 
 	/**Initializes an object based upon the given URI and property descriptions.
 	The object being initialized will be stored locally keyed to the resource description for later lookup.
-	This implementation also recognizes the {@link RDFResource} type and will transfer all non-ploop properties when an instance is encountered.
+	This implementation also recognizes the {@link RDFResource} type and will transfer all non-PLOOP properties when an instance is encountered.
 	@param object The object to initialize.
 	@param resource The description for the object.
 	@param propertyDescriptionMap The property descriptions for initializing the object.
@@ -477,34 +495,11 @@ public class PLOOPProcessor
 	*/
 	protected void initializeObject(final Object object, final RDFResource resource, final Map<URI, PropertyDescription> propertyDescriptionMap) throws InvocationTargetException
 	{
-/*TODO del functionality and remove from PLOOP
-		final String nameProperty=getNameProperty();	//get the property to use when storing a name
-		if(nameProperty!=null)	//if object naming is supported
-		{
-			if(referenceURI!=null)	//if a reference URI was given
-			{
-				final String name=referenceURI.getFragment();	//get the decoded fragment, which will serve as the object name
-				if(name!=null)	//if a name was specified in the fragment
-				{
-					try
-					{
-						final Method nameSetterMethod=getSetterMethod(object.getClass(), nameProperty, String.class);	//see if there is a setNameProperty(String) method
-						nameSetterMethod.invoke(object, name);	//call object.setNameProperty(String)
-					}
-					catch(final NoSuchMethodException noSuchMethodException)	//if there is no name property setter method, just ignore this and continue
-					{
-					}
-					catch(final IllegalAccessException illegalAccessException)
-					{
-						throw new IllegalArgumentException(illegalAccessException);	//TODO improve
-					}
-				}
-			}
-		}
-*/
+Debug.trace("ready to initialize object; will look at values");
 		for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
 		{
 			final Method setter=propertyDescription.getSetter();	//get the setter method for this property
+Debug.trace("looking at value; has setter", setter);
 			if(setter!=null)	//if there is a setter for this property
 			{
 				try
@@ -553,6 +548,7 @@ public class PLOOPProcessor
 		{
 			final RDFPropertyValuePair property=propertyIterator.next();	//get the next property
 //TODO del Debug.trace("filling property description map; looking at property", property.getProperty().getReferenceURI());
+Debug.trace("filling property description map; looking at property", property.getProperty().getReferenceURI());
 			final PropertyDescription propertyDescription=getPropertyDescription(objectClass, property);	//get a description for this property
 			if(propertyDescription!=null)	//if this was a recognized property
 			{
@@ -581,6 +577,7 @@ public class PLOOPProcessor
 			final Class<?> propertyValueType=propertyValue.getClass();	//get the type of the value
 			final String variableName=getLocalName(propertyURI);	//get the local name of the property
 //		TODO del 	Debug.trace("looking at property name:", variableName);
+Debug.trace("looking at property name:", variableName);
 /*TODO fix
 			final String setterMethodName=getSetterMethodName(variableName);	//get the setter method name based upon the variable name
 //		TODO del Debug.trace("setter: ", setterMethodName);
@@ -591,20 +588,23 @@ Debug.trace("setter: ", setterMethodName);
 			for(final Method method:methods)	//for each method
 			{
 //TODO del Debug.trace("looking at method:", method.getName());
+Debug.trace("looking at method:", method.getName());
 //TODO del when works				if(method.getName().equals(setterMethodName))	//if this has the setter name
 				if(variableName.equals(getSetterPropertyName(method.getName())))	//if we could consider this method a setter for the variable we have 
 				{
-//				TODO del Debug.trace("found setter", setterMethodName);
+Debug.trace("found setter", variableName);
 					final Class<?>[] parameterTypes=method.getParameterTypes();	//get the parameter types for this method
 					if(parameterTypes.length==1)	//if this setter has one parameter
 					{
 //					TODO del Debug.trace("this setter has one param");
+Debug.trace("this setter has one param");
 						final Class<?> parameterType=parameterTypes[0];	//get the single parameter type
 							//TODO don't convert the object if this is a typed literal; instead, accept whatever type was given
 						final Object value=convertObject(propertyValue, parameterType);	//convert the object to the correct type
 						if(value!=null)	//if we found a parameter to use for this method
 						{
 //TODO del							Debug.trace("property value has correct type for setter:", parameterType, "property value:", value);
+Debug.trace("property value has correct type for setter:", parameterType, "property value:", value);
 							return new PropertyDescription(propertyURI, parameterType, value, method);	//return a description of this property with the method and parameter
 						}
 					}
@@ -669,62 +669,70 @@ Debug.trace("setter: ", setterMethodName);
 		}
 		else	//if we expect for another object type
 		{
-			if(object instanceof String)	//if the object is a string, see if we can convert it to the correct type
+//TODO del			try
 			{
-				final String stringObject=(String)object;	//cast the value to a string
-				if(requiredType.isArray() && Character.TYPE.equals(requiredType.getComponentType()))	//if the required type is a character array
+				if(object instanceof String)	//if the object is a string, see if we can convert it to the correct type
 				{
-					return stringObject.toCharArray();	//return the string as a character array
+					final String stringObject=(String)object;	//cast the value to a string
+					if(requiredType.isArray() && Character.TYPE.equals(requiredType.getComponentType()))	//if the required type is a character array
+					{
+						return stringObject.toCharArray();	//return the string as a character array
+					}
+					else if(Enum.class.isAssignableFrom(requiredType))	//if the required type is an enumeration
+					{
+	//TODO del Debug.trace("Creating enum of type", requiredType);
+						return Enum.valueOf((Class<? extends Enum>)requiredType, stringObject);	//TODO check for an IllegalArgumentException here
+					}
+					else if(Class.class.isAssignableFrom(requiredType))	//if the required type is Class
+					{
+						return Class.forName(stringObject);	//load the given class
+					}
+					else if(Boolean.TYPE.equals(requiredType) || Boolean.class.isAssignableFrom(requiredType))	//if the required type is boolean or Boolean
+					{
+						return Boolean.valueOf(stringObject);	//create a Boolean from the object
+					}
+					else if(Double.TYPE.equals(requiredType) || Double.class.isAssignableFrom(requiredType))	//if the required type is double or Double
+					{
+						return Double.valueOf(stringObject);	//create a Double from the object
+					}
+					else if(Integer.TYPE.equals(requiredType) || Integer.class.isAssignableFrom(requiredType))	//if the required type is int or Integer
+					{
+						return Integer.valueOf(stringObject);	//create an Integer from the object
+					}
+	/*TODO del
+					else if(Locale.class.isAssignableFrom(requiredType))	//if the required type is Locale 
+					{
+						return createLocale(stringObject);	//construct a Locale from the object, accepting the RFC 1766 syntax as well as the Java syntax
+					}
+	*/
+					else if(Long.TYPE.equals(requiredType) || Long.class.isAssignableFrom(requiredType))	//if the required type is long or Long 
+					{
+						return Long.valueOf(stringObject);	//create a Long from the object
+					}
+					else if(Float.TYPE.equals(requiredType) || Float.class.isAssignableFrom(requiredType))	//if the required type is float or Float
+					{
+						return Float.valueOf(stringObject);	//create a Float from the object
+					}
+					else if(Pattern.class.isAssignableFrom(requiredType))	//if the required type is Pattern
+					{
+						return Pattern.compile(stringObject);	//compile a pattern from the string
+					}
+					else if(RGBColor.class.isAssignableFrom(requiredType))	//if the required type is RGBColor TODO probably delete this; most setters take Color, not RGBColor, so this is practically useless
+					{
+						return RGBColor.valueOf(stringObject);	//compile an RGB color from the string
+					}
+					else if(URI.class.isAssignableFrom(requiredType))	//if the required type is URI TODO maybe change to using the string constructor
+					{
+						return URI.create(stringObject);	//create a URI from the string
+					}
+					//TODO check for a string-compatible constructor
 				}
-				else if(Enum.class.isAssignableFrom(requiredType))	//if the required type is an enumeration
-				{
-//TODO del Debug.trace("Creating enum of type", requiredType);
-					return Enum.valueOf((Class<? extends Enum>)requiredType, stringObject);	//TODO check for an IllegalArgumentException here
-				}
-				else if(Class.class.isAssignableFrom(requiredType))	//if the required type is Class
-				{
-					return Class.forName(stringObject);	//load the given class
-				}
-				else if(Boolean.TYPE.equals(requiredType) || Boolean.class.isAssignableFrom(requiredType))	//if the required type is boolean or Boolean
-				{
-					return Boolean.valueOf(stringObject);	//create a Boolean from the object
-				}
-				else if(Double.TYPE.equals(requiredType) || Double.class.isAssignableFrom(requiredType))	//if the required type is double or Double
-				{
-					return Double.valueOf(stringObject);	//create a Double from the object
-				}
-				else if(Integer.TYPE.equals(requiredType) || Integer.class.isAssignableFrom(requiredType))	//if the required type is int or Integer
-				{
-					return Integer.valueOf(stringObject);	//create an Integer from the object
-				}
-/*TODO del
-				else if(Locale.class.isAssignableFrom(requiredType))	//if the required type is Locale 
-				{
-					return createLocale(stringObject);	//construct a Locale from the object, accepting the RFC 1766 syntax as well as the Java syntax
-				}
-*/
-				else if(Long.TYPE.equals(requiredType) || Long.class.isAssignableFrom(requiredType))	//if the required type is long or Long 
-				{
-					return Long.valueOf(stringObject);	//create a Long from the object
-				}
-				else if(Float.TYPE.equals(requiredType) || Float.class.isAssignableFrom(requiredType))	//if the required type is float or Float
-				{
-					return Float.valueOf(stringObject);	//create a Float from the object
-				}
-				else if(Pattern.class.isAssignableFrom(requiredType))	//if the required type is Pattern
-				{
-					return Pattern.compile(stringObject);	//compile a pattern from the string
-				}
-				else if(RGBColor.class.isAssignableFrom(requiredType))	//if the required type is RGBColor
-				{
-					return RGBColor.valueOf(stringObject);	//compile an RGB color from the string
-				}
-				else if(URI.class.isAssignableFrom(requiredType))	//if the required type is URI TODO maybe change to using the string constructor
-				{
-					return URI.create(stringObject);	//create a URI from the string
-				}
-				//TODO check for a string-compatible constructor
 			}
+/*TODO bring back if we decide to use; the problem with this is that it lets actual mistakes go unnoticed
+			catch(final IllegalArgumentException illegalArgumentException)	//if we couldn't convert the object, ignore the error and return null to indicate that we couldn't do a conversion
+			{
+			}
+*/
 		}
 		return null;	//indicate we couldn't get an object of the correct type
 	}

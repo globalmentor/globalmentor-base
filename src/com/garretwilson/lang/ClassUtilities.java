@@ -424,22 +424,38 @@ public class ClassUtilities
 		return JavaUtilities.getVariableName(getSimpleName(objectClass));	//get the variable name form of the simple name of the class
 	}
 
+	/**Determines all super classes and interfaces of the given class, including the given class itself.
+	@param objectClass The class for which super classes and interfaces should be found.
+	@param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
+	@return The set of all super classes and implemented interfaces.
+	*/
+	public static Set<Class<?>> getAncestorClasses(final Class<?> objectClass, final Class<?> rootClass)
+	{
+		return getAncestorClasses(objectClass, rootClass, true, true, true, true);	//get ancestor classes, including super classes, abstract classes, and interfaces
+	}
+
 	/**Determines all super classes and interfaces of the given class.
 	@param objectClass The class for which super classes and interfaces should be found.
 	@param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
+	@param includeThisClasses Whether the object class itself should be returned.
 	@param includeSuperClasses Whether super classes should be returned.
 	@param includeAbstract Whether abstract classes should be returned.
 	@param includeInterfaces Whether implemented interfaces should be returned.
 	@return The set of all super classes and implemented interfaces.
 	*/
-	public static Set<Class<?>> getClasses(final Class<?> objectClass, final Class<?> rootClass, final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces)
+	public static Set<Class<?>> getAncestorClasses(final Class<?> objectClass, final Class<?> rootClass, final boolean includeThisClass, final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces)
 	{
 		final Set<Class<?>> classes=new HashSet<Class<?>>();	//create a new set of classes
-		getClasses(objectClass, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classes);	//get all the classes
+		if(includeThisClass)	//if we should include this class
+		{
+			classes.add(objectClass);	//add this class
+		}
+		getAncestorClasses(objectClass, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classes);	//get all the classes
 		return classes;	//return the classes we retrieved
 	}
 
-	/**Determines all super classes and interfaces of the given class.
+	/**Determines super classes and interfaces of the given class.
+	The returned set will not include the given object class.
 	@param objectClass The class for which super classes and interfaces should be found.
 	@param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
 	@param includeSuperClasses Whether super classes should be returned.
@@ -447,7 +463,7 @@ public class ClassUtilities
 	@param includeInterfaces Whether implemented interfaces should be returned.
 	@param classes The set of classes to which the super classes and implemented interfaces should be added.
 	*/
-	protected static void getClasses(final Class<?> objectClass, final Class<?> rootClass, final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces, final Set<Class<?>> classes)
+	protected static void getAncestorClasses(final Class<?> objectClass, final Class<?> rootClass, final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces, final Set<Class<?>> classes)
 	{
 		if(includeSuperClasses)	//if super classes should be included
 		{
@@ -460,7 +476,7 @@ public class ClassUtilities
 					{
 						classes.add(superClass);	//add the super class to the set
 					}
-					getClasses(superClass, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classes);	//get all the classes of the super class
+					getAncestorClasses(superClass, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classes);	//get all the classes of the super class
 				}
 			}
 		}
@@ -472,7 +488,7 @@ public class ClassUtilities
 				if(rootClass==null || rootClass.isAssignableFrom(classInterface))	//if this interface extends the root class
 				{
 					classes.add(classInterface);	//add the interface to the set
-					getClasses(classInterface, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classes);	//get all the classes of the interface
+					getAncestorClasses(classInterface, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classes);	//get all the classes of the interface
 				}
 			}
 		}

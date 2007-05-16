@@ -5,7 +5,7 @@ import java.net.URI;
 /**An RDF resource that by default adds an <code>rdf:type</code> property upon creation. 
 @author Garret Wilson
 */
-public abstract class TypedRDFResource extends DefaultRDFResource
+public abstract class TypedRDFResource extends DefaultRDFResource	//TODO improve hierarchy to allow ClassTypedRDFResource to descend from this class
 {
 
 	/**@return The namespace URI of the ontology defining the default type of this resource; used for adding the initial type property.*/

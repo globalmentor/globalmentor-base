@@ -2,28 +2,15 @@ package com.garretwilson.rdf;
 
 import java.net.URI;
 
-import com.garretwilson.lang.ClassUtilities;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.ClassUtilities.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 
 /**An RDF resource that by default adds an <code>rdf:type</code> property upon creation.
 By default the type name will be set to the local name of the class. 
 @author Garret Wilson
 */
-public abstract class ClassTypedRDFResource extends TypedRDFResource
+public abstract class ClassTypedRDFResource extends DefaultRDFResource
 {
-
-	/**The namespace URI of the ontology defining the default type of this resource; used for adding the initial type property.*/
-	private final URI defaultTypeNamespaceURI;
-
-		/**@return The namespace URI of the ontology defining the default type of this resource; used for adding the initial type property.*/
-		protected URI getDefaultTypeNamespaceURI() {return defaultTypeNamespaceURI;}
-
-	/**Returns the local name used to add the initial type property.
-	This version returns the local name of the class.
-	@return The local name of the default type of this resource; used for adding the initial type property.
-	*/
-	protected String getDefaultTypeName() {return ClassUtilities.getLocalName(getClass());}
 
 	/**Constructs a resource with a reference URI.
 	@param referenceURI The reference URI for the new resource.
@@ -67,7 +54,7 @@ public abstract class ClassTypedRDFResource extends TypedRDFResource
 	public ClassTypedRDFResource(final RDF rdf, final URI referenceURI, final URI typeNamespaceURI)
 	{
 		super(rdf, referenceURI);  //construct the parent class
-		this.defaultTypeNamespaceURI=checkInstance(typeNamespaceURI, "Type namespace URI cannot be null.");
+		addType(this, typeNamespaceURI, getLocalName(getClass()));	//add the default type based upon the given type namespace URI and the class name
 	}
 
 }
