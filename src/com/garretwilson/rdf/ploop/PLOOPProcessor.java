@@ -234,9 +234,11 @@ public class PLOOPProcessor
 //TODO del Debug.trace("Creating object for RDF object", RDFUtilities.toString(resource));
 			String valueClassName=null;	//we'll try to find a Java class name part of the type
 //			RDFResource typeResource=null;	//we'll try to find a java: type
+			int typeCount=0;	//keep track of the number of types
 			final Iterator<RDFObject> typeIterator=getTypes(resource).iterator();	//get an iterator to all the resource types
 			while(valueClassName==null && typeIterator.hasNext())	//while we haven't found a type URI and there are other types left
 			{
+				++typeCount;	//indicate that we found another type
 				final RDFObject typeResource=typeIterator.next();	//get the next type
 				if(typeResource instanceof RDFResource)	//if the type is an RDF resource (it always should be)
 				{
@@ -249,6 +251,14 @@ public class PLOOPProcessor
 			}
 			if(valueClassName==null)	//if we don't know the type of the resource
 			{
+				if(typeCount==0)	//if there were no types indicated, assume this is a proxy for the real value in the rdf:value property TODO document
+				{
+					final RDFObject valuePropertyObject=getValue(resource);	//get the value of the rdf:value property, if there is one
+					if(valuePropertyObject!=null)	//if there is a value specified
+					{
+						return createObject(valuePropertyObject);	//retrieve a value from the value
+					}
+				}
 				throw new IllegalArgumentException("Value resource "+resource+" missing type information.");
 				//TODO this will also happen if an rdf:nodeID has been used that doesn't reference anything, so maybe indicate that possibility in the error message
 			}
