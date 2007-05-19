@@ -34,12 +34,36 @@ Debug.trace("final value: "+(float)(Math.round(a*multiplier)/multiplier));  //G*
 	/**Returns the greater of two <code>short</code> values
 	@param a An argument.
 	@param b Another argument.
-	@return  the larger of <code>a</code> and <code>b</code>.
+	@return The larger of <var>a</var> and <var>b</var>.
 	@see Math#max(int, int)
 	*/
 	public static short max(final short a, final short b)
 	{
 		return a>=b ? a : b;	//return the greater of a and b
+	}
+
+	/**Returns the greatest of three <code>double</code> values
+	@param a An argument.
+	@param b Another argument.
+	@param c Yet another argument.
+	@return The greatest of <var>a</var>, <var>b</var>, and <var>c</var>.
+	@see Math#max(double, double)
+	*/
+	public static double max(final double a, final double b, final double c)
+	{
+		return Math.max(Math.max(a, b), c);	//return the greates of a, b, and c
+	}
+
+	/**Returns the least of three <code>double</code> values
+	@param a An argument.
+	@param b Another argument.
+	@param c Yet another argument.
+	@return The least of <var>a</var>, <var>b</var>, and <var>c</var>.
+	@see Math#min(double, double)
+	*/
+	public static double min(final double a, final double b, final double c)
+	{
+		return Math.min(Math.min(a, b), c);	//return the least of a, b, and c
 	}
 
 }

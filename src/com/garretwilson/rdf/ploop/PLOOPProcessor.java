@@ -16,7 +16,8 @@ import java.util.regex.Pattern;
 import com.garretwilson.net.Resource;
 import com.garretwilson.rdf.*;
 import com.garretwilson.util.*;
-import com.guiseframework.style.RGBColor;
+import com.guiseframework.style.AbstractColor;
+import com.guiseframework.style.Color;
 
 /**Processes PLOOP objects from an RDF data model.
 <p>This is a stateful processor and may only be used for one RDF data model instance.</p>
@@ -36,7 +37,7 @@ import com.guiseframework.style.RGBColor;
 	<li><code>long</code></li>
 	<li>{@link Long}</li>
 	<li>{@link Pattern}</li>
-	<li>{@link RGBColor}</li>
+	<li>{@link Color}</li>
 	<li>{@link URI}</li>
 </ul>
 <p>This processor recognizes the {@link Resource} type; when this class is present with a single URI parameter constructor, that constructor will take precedence using the <code>rdf:about</code> resource reference URI value.</p>
@@ -495,11 +496,9 @@ public class PLOOPProcessor
 	*/
 	protected void initializeObject(final Object object, final RDFResource resource, final Map<URI, PropertyDescription> propertyDescriptionMap) throws InvocationTargetException
 	{
-Debug.trace("ready to initialize object; will look at values");
 		for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
 		{
 			final Method setter=propertyDescription.getSetter();	//get the setter method for this property
-Debug.trace("looking at value; has setter", setter);
 			if(setter!=null)	//if there is a setter for this property
 			{
 				try
@@ -548,7 +547,6 @@ Debug.trace("looking at value; has setter", setter);
 		{
 			final RDFPropertyValuePair property=propertyIterator.next();	//get the next property
 //TODO del Debug.trace("filling property description map; looking at property", property.getProperty().getReferenceURI());
-Debug.trace("filling property description map; looking at property", property.getProperty().getReferenceURI());
 			final PropertyDescription propertyDescription=getPropertyDescription(objectClass, property);	//get a description for this property
 			if(propertyDescription!=null)	//if this was a recognized property
 			{
@@ -577,7 +575,6 @@ Debug.trace("filling property description map; looking at property", property.ge
 			final Class<?> propertyValueType=propertyValue.getClass();	//get the type of the value
 			final String variableName=getLocalName(propertyURI);	//get the local name of the property
 //		TODO del 	Debug.trace("looking at property name:", variableName);
-Debug.trace("looking at property name:", variableName);
 /*TODO fix
 			final String setterMethodName=getSetterMethodName(variableName);	//get the setter method name based upon the variable name
 //		TODO del Debug.trace("setter: ", setterMethodName);
@@ -588,23 +585,20 @@ Debug.trace("setter: ", setterMethodName);
 			for(final Method method:methods)	//for each method
 			{
 //TODO del Debug.trace("looking at method:", method.getName());
-Debug.trace("looking at method:", method.getName());
 //TODO del when works				if(method.getName().equals(setterMethodName))	//if this has the setter name
 				if(variableName.equals(getSetterPropertyName(method.getName())))	//if we could consider this method a setter for the variable we have 
 				{
-Debug.trace("found setter", variableName);
+//Debug.trace("found setter", variableName);
 					final Class<?>[] parameterTypes=method.getParameterTypes();	//get the parameter types for this method
 					if(parameterTypes.length==1)	//if this setter has one parameter
 					{
 //					TODO del Debug.trace("this setter has one param");
-Debug.trace("this setter has one param");
 						final Class<?> parameterType=parameterTypes[0];	//get the single parameter type
 							//TODO don't convert the object if this is a typed literal; instead, accept whatever type was given
 						final Object value=convertObject(propertyValue, parameterType);	//convert the object to the correct type
 						if(value!=null)	//if we found a parameter to use for this method
 						{
 //TODO del							Debug.trace("property value has correct type for setter:", parameterType, "property value:", value);
-Debug.trace("property value has correct type for setter:", parameterType, "property value:", value);
 							return new PropertyDescription(propertyURI, parameterType, value, method);	//return a description of this property with the method and parameter
 						}
 					}
@@ -651,7 +645,7 @@ Debug.trace("property value has correct type for setter:", parameterType, "prope
 		<li><code>long</code></li>
 		<li>{@link Long}</li>
 		<li>{@link Pattern}</li>
-		<li>{@link RGBColor}</li>
+		<li>{@link Color}</li>
 		<li>{@link URI}</li>
 	</ul>
 	@param object The object to convert.
@@ -717,9 +711,9 @@ Debug.trace("property value has correct type for setter:", parameterType, "prope
 					{
 						return Pattern.compile(stringObject);	//compile a pattern from the string
 					}
-					else if(RGBColor.class.isAssignableFrom(requiredType))	//if the required type is RGBColor TODO probably delete this; most setters take Color, not RGBColor, so this is practically useless
+					else if(Color.class.isAssignableFrom(requiredType))	//if the required type is Color
 					{
-						return RGBColor.valueOf(stringObject);	//compile an RGB color from the string
+						return AbstractColor.valueOf(stringObject);	//compile a color from the string
 					}
 					else if(URI.class.isAssignableFrom(requiredType))	//if the required type is URI TODO maybe change to using the string constructor
 					{
