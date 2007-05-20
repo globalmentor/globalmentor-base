@@ -13,6 +13,7 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Pattern;
 
+import static com.garretwilson.lang.EnumUtilities.*;
 import com.garretwilson.net.Resource;
 import com.garretwilson.rdf.*;
 import com.garretwilson.util.*;
@@ -685,7 +686,8 @@ Debug.trace("setter: ", setterMethodName);
 					else if(Enum.class.isAssignableFrom(requiredType))	//if the required type is an enumeration
 					{
 	//TODO del Debug.trace("Creating enum of type", requiredType);
-						return Enum.valueOf((Class<? extends Enum>)requiredType, stringObject);	//TODO check for an IllegalArgumentException here
+								//TODO document serialized enum form
+						return getSerializedEnum((Class<? extends Enum>)requiredType, stringObject);	//get the enum from its serialized form TODO check for an IllegalArgumentException here
 					}
 					else if(Class.class.isAssignableFrom(requiredType))	//if the required type is Class
 					{
