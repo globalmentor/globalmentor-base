@@ -223,15 +223,40 @@ public class ClassUtilities
 		}	  	
   }
 
-	/**Returns the getter method of a given class.
+	/**Returns the "get" getter method of a given class.
 	This method differs from {@link Class#getMethod(String, Class...)} in that if no matching method is found, <code>null</code> is returned rather than a {@link NoSuchMethodException} being thrown.
 	@param objectClass The class for which a getter method should be returned.
 	@param propertyName The property name, such as "propertyName".
 	@return The method with the name "get<var>PropertyName</var>", or <code>null</code> if such a method was not found.
 	*/
+	public static Method getGetPropertyMethod(final Class<?> objectClass, final String propertyName)
+	{
+		return getMethod(objectClass, getGetPropertyMethodName(propertyName));	//return the getter method, if there is one
+	}
+
+	/**Returns the "is" getter method of a given class.
+	This method differs from {@link Class#getMethod(String, Class...)} in that if no matching method is found, <code>null</code> is returned rather than a {@link NoSuchMethodException} being thrown.
+	@param objectClass The class for which a getter method should be returned.
+	@param propertyName The property name, such as "propertyName".
+	@return The method with the name "is<var>PropertyName</var>" having a {@link Boolean#TYPE} return type, or <code>null</code> if such a method was not found.
+	*/
+	public static Method getIsPropertyMethod(final Class<?> objectClass, final String propertyName)
+	{
+		final Method method=getMethod(objectClass, getIsPropertyMethodName(propertyName));	//get the getter method, if there is one
+		return method!=null && Boolean.TYPE.equals(method.getReturnType()) ? method : null;	//if there is such a method, make sure it returns a boolean
+	}
+
+	/**Returns the getter method of a given class.
+	This method first looks for a method with the name "get<var>PropertyName</var>", and then with the name "is<var>PropertyName</var>" having a {@link Boolean#TYPE} return type.
+	This method differs from {@link Class#getMethod(String, Class...)} in that if no matching method is found, <code>null</code> is returned rather than a {@link NoSuchMethodException} being thrown.
+	@param objectClass The class for which a getter method should be returned.
+	@param propertyName The property name, such as "propertyName".
+	@return The method with the name "get<var>PropertyName</var>", or the name "is<var>PropertyName</var>" having a {@link Boolean#TYPE}; or <code>null</code> if such a method was not found.
+	*/
 	public static Method getGetterMethod(final Class<?> objectClass, final String propertyName)
 	{
-		return getMethod(objectClass, getGetterMethodName(propertyName));	//return the getter method, if there is one
+		final Method getPropertyMethod=getMethod(objectClass, getGetPropertyMethodName(propertyName));	//get the getProperty method, if there is one
+		return getPropertyMethod!=null ? getPropertyMethod : getIsPropertyMethod(objectClass, propertyName);	//if there is no getProperty method, check for a boolean isProperty method
 	}
 
 	/**Returns the setter method of a given class.
@@ -243,7 +268,7 @@ public class ClassUtilities
 	*/
 	public static Method getSetterMethod(final Class<?> objectClass, final String propertyName, final Class<?> valueClass)
 	{
-		return getMethod(objectClass, getSetterMethodName(propertyName), valueClass);	//return the setter method, if there is one
+		return getMethod(objectClass, getSetPropertyMethodName(propertyName), valueClass);	//return the setter method, if there is one
 	}
 
 	/**Returns a setter method compatible with a given value type, i.e. that could be used if the value is cast to the setter's parameter type.
@@ -254,7 +279,7 @@ public class ClassUtilities
 	*/
 	public static Method getCompatibleSetterMethod(final Class<?> objectClass, final String propertyName, final Class<?> valueClass)
 	{
-		final String setterMethodName=getSetterMethodName(propertyName);	//get the setter name to look for
+		final String setterMethodName=getSetPropertyMethodName(propertyName);	//get the setter name to look for
 		for(final Method method:objectClass.getMethods())	//look at each object method
 		{
 			if(method.getName().equals(setterMethodName))	//if this has the setter name
@@ -329,20 +354,29 @@ public class ClassUtilities
 		return matcher.matches() ? JavaUtilities.getVariableName(matcher.group(2)) : null;	//if there is a match, return the variable name of the matching group; otherwise return null
 	}
 	
-	/**The name of the getter method corresponding to the given property.
+	/**The name of the "get" getter method corresponding to the given property.
 	@param propertyName The property name, such as "propertyName".
 	@return The name of the getter method in the form "get<var>PropertyName</var>".
 	*/
-	public static String getGetterMethodName(final String propertyName)
+	public static String getGetPropertyMethodName(final String propertyName)
 	{
 		return GET_GETTER_PREFIX+getProperName(propertyName);	//return "getPropertyName"
 	}
 
-	/**The name of the setter method corresponding to the given property.
+	/**The name of the "is" getter method corresponding to the given property.
+	@param propertyName The property name, such as "propertyName".
+	@return The name of the getter method in the form "is<var>PropertyName</var>".
+	*/
+	public static String getIsPropertyMethodName(final String propertyName)
+	{
+		return IS_GETTER_PREFIX+getProperName(propertyName);	//return "isPropertyName"
+	}
+
+	/**The name of the "set" setter method corresponding to the given property.
 	@param propertyName The property name, such as "propertyName".
 	@return The name of the setter method in the form "set<var>PropertyName</var>".
 	*/
-	public static String getSetterMethodName(final String propertyName)
+	public static String getSetPropertyMethodName(final String propertyName)
 	{
 		return SET_SETTER_PREFIX+getProperName(propertyName);	//return "setPropertyName"
 	}

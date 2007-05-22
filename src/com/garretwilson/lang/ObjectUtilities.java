@@ -1,5 +1,10 @@
 package com.garretwilson.lang;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import static com.garretwilson.lang.ClassUtilities.*;
+
 /**Various utilities to manipulate Java objects.
 @author Garret Wilson
 */
@@ -119,6 +124,30 @@ public class ObjectUtilities
 	{
 			//if the first object isn't null, compare it to the second; otherwise, see if the second object is null as well
 		return object1!=null ? object1.equals(object2) : object2==null;
+	}
+
+	/**Returns the property of an object based upon a given property name.
+	A property getter in the form "get<var>PropertyName</var>" takes precedence over a property getter in the form "is<var>PropertyName</var>" having a {@link Boolean#TYPE}. 
+	@param object The object the property of which to retrieve.
+	@param propertyName The name of the property to retrieve.
+	@return The value of the given property.
+	@exception NullPointerException if the given object is <code>null</code>.
+	@exception NoSuchMethodException if the given object has no method with the name "get<var>PropertyName</var>", or the name "is<var>PropertyName</var>" having a {@link Boolean#TYPE}.
+	@exception IllegalAccessException if the getter method enforces Java language access control and the getter method is inaccessible.
+	@exception InvocationTargetException if the getter method throws an exception.
+	@exception ExceptionInInitializerError if the initialization provoked by the getter method fails.
+	*/
+	public static Object getProperty(final Object object, final String propertyName) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException
+	{
+		final Method getterMethod=getGetterMethod(object.getClass(), propertyName);	//get the getter property, if there is one
+		if(getterMethod!=null)	//if there is a getter method
+		{
+			return getterMethod.invoke(object);	//invoke the getter method and return the value
+		}
+		else	//if there is no getter method
+		{
+			throw new NoSuchMethodException("Object with class "+object.getClass()+" has no getter method for property "+propertyName);
+		}
 	}
 
 	/**Generates a hash code based upon a series of objects.
