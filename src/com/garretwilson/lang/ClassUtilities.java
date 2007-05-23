@@ -460,6 +460,15 @@ public class ClassUtilities
 
 	/**Determines all super classes and interfaces of the given class, including the given class itself.
 	@param objectClass The class for which super classes and interfaces should be found.
+	@return The set of all super classes and implemented interfaces.
+	*/
+	public static Set<Class<?>> getAncestorClasses(final Class<?> objectClass)
+	{
+		return getAncestorClasses(objectClass, null);	//get all classes and interfaces
+	}
+
+	/**Determines all super classes and interfaces of the given class, including the given class itself, up to the given class.
+	@param objectClass The class for which super classes and interfaces should be found.
 	@param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
 	@return The set of all super classes and implemented interfaces.
 	*/
