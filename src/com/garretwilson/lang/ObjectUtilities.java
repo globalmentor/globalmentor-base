@@ -153,18 +153,32 @@ public class ObjectUtilities
 	/**Generates a hash code based upon a series of objects.
 	This method is based upon the algorithm explained in <cite>Effective Java</cite> (2001) by Joshua Bloch (pp. 38-39) as well as the hash code generation of the Java runtime library.
 	Any or all objects can be <code>null</code>.
+	This methods delegates to {@link #hashCode(int, Object...)} with a seed value of 17. 
 	@param objects The objects to be used in generating a hash code.
 	@return A hash code taking into account the given objects.
+	@exception NullPointerException if the given array of objects is <code>null</code>.
 	*/
 	public static int hashCode(final Object... objects)
 	{
-		int result=17;	//start with the seed value
+		return hashCode(17, objects);	//generate a hash code with a particular seed
+	}
+
+	/**Generates a hash code based upon a seed and a series of objects.
+	This method is based upon the algorithm explained in <cite>Effective Java</cite> (2001) by Joshua Bloch (pp. 38-39) as well as the hash code generation of the Java runtime library.
+	Any or all objects can be <code>null</code>.
+	@param seed The seed with which to start.
+	@param objects The objects to be used in generating a hash code.
+	@return A hash code starting with the given seed and taking into account the given objects.
+	@exception NullPointerException if the given array of objects is <code>null</code>.
+	*/
+	public static int hashCode(int seed, final Object... objects)
+	{
 		for(final Object object:objects)	//for each object
 		{
 			final int hashCode=object!=null ? object.hashCode() : 0;	//get the object's hash code, or zero if the object is null
-			result=37*result+hashCode;	//multiply by 37 and add the hash code of this object
+			seed=37*seed+hashCode;	//multiply by 37 and add the hash code of this object
 		}
-		return result;	//return the entire result
+		return seed;	//return the entire result
 	}
 
 	/**Returns the string representation of the object or "null".
