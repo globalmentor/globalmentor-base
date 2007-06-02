@@ -6,7 +6,7 @@ import java.util.concurrent.locks.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 
 /**A thread-safe map decorator that allows many readers but only one writer to access a map at a time.
-For operations that iterate over live map data, read or write lock should be acquired before the call to acquire the data and held until the data is consumed.
+For operations that iterate over live map data, a read or write lock should be acquired before the call to acquire the data and held until the data is consumed.
 @param <K> The type of key used in the map.
 @param <V> The type of value stored in the map.
 @author Garret Wilson
@@ -19,7 +19,7 @@ public class ReadWriteLockMapDecorator<K, V> implements ReadWriteLockMap<K, V>
 	/**The lock for controlling access to the map.*/
 	private final ReadWriteLock lock;
 
-	/**@return the lock used for reading.*/
+	/**@return The lock used for reading.*/
 	public Lock readLock() {return lock.readLock();}
 
 	/**@return The lock used for writing.*/
