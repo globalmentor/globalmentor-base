@@ -153,6 +153,7 @@ public class ObjectUtilities
 	/**Generates a hash code based upon a series of objects.
 	This method is based upon the algorithm explained in <cite>Effective Java</cite> (2001) by Joshua Bloch (pp. 38-39) as well as the hash code generation of the Java runtime library.
 	Any or all objects can be <code>null</code>.
+	Arrays are deeply traversed.
 	This methods delegates to {@link #hashCode(int, Object...)} with a seed value of 17. 
 	@param objects The objects to be used in generating a hash code.
 	@return A hash code taking into account the given objects.
@@ -166,6 +167,7 @@ public class ObjectUtilities
 	/**Generates a hash code based upon a seed and a series of objects.
 	This method is based upon the algorithm explained in <cite>Effective Java</cite> (2001) by Joshua Bloch (pp. 38-39) as well as the hash code generation of the Java runtime library.
 	Any or all objects can be <code>null</code>.
+	Arrays are deeply traversed.
 	@param seed The seed with which to start.
 	@param objects The objects to be used in generating a hash code.
 	@return A hash code starting with the given seed and taking into account the given objects.
@@ -175,7 +177,7 @@ public class ObjectUtilities
 	{
 		for(final Object object:objects)	//for each object
 		{
-			final int hashCode=object!=null ? object.hashCode() : 0;	//get the object's hash code, or zero if the object is null
+			final int hashCode=object!=null ? (object.getClass().isArray() ? hashCode((Object[])object) : object.hashCode()) : 0;	//get the object's hash code, or zero if the object is null
 			seed=37*seed+hashCode;	//multiply by 37 and add the hash code of this object
 		}
 		return seed;	//return the entire result
