@@ -86,7 +86,7 @@ public class PLOOPProcessor
 		<dt>{@link RDFResource}</dt> <dd>Returns an object based upon the <code>java:</code> type information.
 	</dl>
 	If the RDF object is a resource for which an object has already been created, the existing object will be returned.
-	Otherwise the object is created using {@link #createObject(RDFObject)} and a reference to the created object is stored for later retrieval inside {@link #initializeObject(Object, RDFResource, Map)}.
+	Otherwise the object is created using {@link #createObject(RDFObject)} and a reference to the created object is stored for later retrieval inside {@link #setObjectProperties(Object, RDFResource, Map)}.
 	@param rdfObject The RDF object describing the Java object to be created.
 	@return A created and initialized object according to the given RDF description. 
  	@exception IllegalArgumentException if the given RDF object is a resource that does not specify Java type information.
@@ -109,7 +109,7 @@ public class PLOOPProcessor
 	/**Retrieves objects representing the given RDF instance.
 	Objects for all Java typed resources will be returned. This is a convenient way to ensure all Java classes described by an RDF instance have been created.
 	If the RDF object is a resource for which an object has already been created, the existing object will be returned.
-	Otherwise the object is created using {@link #createObject(RDFObject)} and a reference to the created object is stored for later retrieval inside {@link #initializeObject(Object, RDFResource, Map)}.
+	Otherwise the object is created using {@link #createObject(RDFObject)} and a reference to the created object is stored for later retrieval inside {@link #setObjectProperties(Object, RDFResource, Map)}.
 	@param rdf The RDF instance describing the Java objects to be created.
 	@return A list of created and initialized objects according to the given RDF description. 
  	@exception IllegalArgumentException if the given RDF object is a resource that does not specify Java type information.
@@ -184,6 +184,7 @@ public class PLOOPProcessor
  	@exception IllegalArgumentException if the given RDF object indicates a Java class that has no appropriate constructor.
  	@exception IllegalArgumentException if the given RDF object indicates a Java class that is an interface or an abstract class.
  	@exception IllegalArgumentException if the given RDF object indicates a Java class the constructor of which is not accessible.
+	@exception IllegalStateException If a particular property could not be accessed.
 	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
 	*/
 	protected Object createObject(final RDFObject rdfObject) throws InvocationTargetException
@@ -288,7 +289,7 @@ public class PLOOPProcessor
 						{
 //								TODO del Debug.trace("found constructor with the following arguments:", ArrayUtilities.toString(arguments));
 							final Object object=strictConstructor.newInstance((Object[])valueTokens);	//invoke the constructor with the value tokens as-is
-							initializeObject(object, resource, propertyDescriptionMap);	//initialize the object with the properties
+							setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
 							return object;	//return the constructed and initialized object
 						}
 						catch(final InstantiationException instantiationException)	//TODO move all of these exception checks
@@ -331,7 +332,7 @@ public class PLOOPProcessor
 									{
 	//								TODO del Debug.trace("found constructor with the following arguments:", ArrayUtilities.toString(arguments));
 										final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
-										initializeObject(object, resource, propertyDescriptionMap);	//initialize the object with the properties
+										setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
 										return object;	//return the constructed and initialized object
 									}
 									catch(final InstantiationException instantiationException)
@@ -359,7 +360,7 @@ public class PLOOPProcessor
 							try
 							{
 								final Object object=constructor.newInstance(resource.getReferenceURI());	//invoke the constructor with the resource reference URI
-								initializeObject(object, resource, propertyDescriptionMap);	//initialize the object with the properties
+								setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
 								return object;	//return the constructed and initialized object
 							}
 							catch(final InstantiationException instantiationException)
@@ -447,7 +448,7 @@ public class PLOOPProcessor
 									{
 	//								TODO del Debug.trace("found constructor with the following arguments:", ArrayUtilities.toString(arguments));
 										final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
-										initializeObject(object, resource, propertyDescriptionMap);	//initialize the object with the properties
+										setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
 										return object;	//return the constructed and initialized object
 									}
 	/*TODO del; we're now allowing more arguments than just the session
@@ -487,14 +488,15 @@ public class PLOOPProcessor
 	This implementation also recognizes the {@link RDFResource} type and will transfer all non-PLOOP properties when an instance is encountered.
 	@param object The object to initialize.
 	@param resource The description for the object.
-	@exception ClassNotFoundException if a class was specified and the indicated class cannot be found.
+	@exception IllegalArgumentException if a particular value is not an appropriate argument for the corresponding property.
+	@exception IllegalStateException If a particular property could not be accessed.
 	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
-	@see #initializeObject(Object, Map)
+	@see #setObjectProperties(Object, Map)
 	*/
-	public void initializeObject(final Object object, final RDFResource resource) throws ClassNotFoundException, InvocationTargetException
+	public void setObjectProperties(final Object object, final RDFResource resource) throws InvocationTargetException
 	{
 		final Map<URI, PropertyDescription> propertyDescriptionMap=getPropertyDescriptionMap(object.getClass(), resource);	//get property descriptions from the resource description
-		initializeObject(object, resource, propertyDescriptionMap);	//initialize the object from the property descriptions
+		setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object from the property descriptions
 	}
 
 	/**Initializes an object based upon the given URI and property descriptions.
@@ -503,28 +505,18 @@ public class PLOOPProcessor
 	@param object The object to initialize.
 	@param resource The description for the object.
 	@param propertyDescriptionMap The property descriptions for initializing the object.
+	@exception IllegalArgumentException if a particular value is not an appropriate argument for the corresponding property.
+	@exception IllegalStateException If a particular property could not be accessed.
 	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
 	*/
-	protected void initializeObject(final Object object, final RDFResource resource, final Map<URI, PropertyDescription> propertyDescriptionMap) throws InvocationTargetException
+	protected void setObjectProperties(final Object object, final RDFResource resource, final Map<URI, PropertyDescription> propertyDescriptionMap) throws InvocationTargetException
 	{
 		for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
 		{
 			final Method setter=propertyDescription.getSetter();	//get the setter method for this property
 			if(setter!=null)	//if there is a setter for this property
 			{
-				try
-				{
-					setter.invoke(object, propertyDescription.getValue());	//invoke the setter
-				} catch (IllegalArgumentException e)
-				{
-					Debug.error(e);
-				} catch (IllegalAccessException e)
-				{
-					Debug.error(e);
-				} catch (InvocationTargetException e)
-				{
-					Debug.error(e);
-				}											
+				setObjectProperty(object, setter, propertyDescription.getValue());	//set the value for the property
 			}
 		}
 		if(object instanceof RDFResource)	//if the object is an RDF resource, add any non-PLOOP properties to the new RDF resource
@@ -541,16 +533,69 @@ public class PLOOPProcessor
 		}
 		resourceObjectMap.put(resource, object);	//associate the initialized object with its resource description
 	}
+
+	/**Sets the property of an object based upon the stored property value in a given resource description.
+	If the given resource has no such property, no action will occur.
+	@param object The object to initialize.
+	@param resource The description for the object.
+	@param propertyName The name of the property to set.
+	@return <code>true</code> if the given resource description contained a corresponding property and that property was used to update the given object.
+	@exception NullPointerException if the given object, resource, and/or property name is <code>null</code>.
+ 	@exception IllegalArgumentException if the object has no setter method for the given property.
+	@exception IllegalArgumentException if the particular value is not an appropriate argument for the given property.
+	@exception IllegalStateException If the given property could not be accessed.
+	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
+	*/
+	public boolean setObjectProperty(final Object object, final RDFResource resource, final String propertyName) throws InvocationTargetException
+	{
+		final URI propertyURI=createReferenceURI(PLOOP_PROPERTY_NAMESPACE_URI, propertyName);	//create a property URI for the given property
+		final RDFObject propertyValueRDFObject=resource.getPropertyValue(propertyURI);	//get the property value
+		if(propertyValueRDFObject==null)	//if there is no such value
+		{
+			return false;	//indicate that there is no such property description
+		}
+		final PropertyDescription propertyDescription=getPropertyDescription(object.getClass(), propertyURI, propertyValueRDFObject);	//get the property description
+		if(propertyDescription!=null)	//if we found a property description
+		{
+			final Method setterMethod=propertyDescription.getSetter();	//get the setter
+			if(setterMethod!=null)	//if there is a setter method
+			{
+				setObjectProperty(object, setterMethod, propertyDescription.getValue());	//set the property
+				return true;	//indicate that we set the property successfully
+			}
+		}
+		throw new IllegalArgumentException("Object "+object+" has no property "+propertyName);
+	}
+	
+	/**Sets the property of an object using the given setter method and value.
+	@param object The object to initialize.
+	@param setterMethod The method to use in setting the object property.
+	@param value The value to set.
+	@exception NullPointerException if the given object and/or setter method is <code>null</code>.
+	@exception IllegalArgumentException if the given value is not an appropriate argument for the given property.
+	@exception IllegalStateException If the given property could not be accessed.
+	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
+	*/
+	public static void setObjectProperty(final Object object, final Method setterMethod, final Object value) throws InvocationTargetException
+	{
+		try
+		{
+			setterMethod.invoke(object, value);	//invoke the setter on the object
+		}
+		catch(final IllegalAccessException illegalAccessException)	//if we can't access this setter
+		{
+			throw new IllegalStateException(illegalAccessException);
+		}
+	}
 	
 	/**Constructs a map of property descriptions for a class.
 	If there are duplicate properties, only one will be stored.
 	@param objectClass The class of the object to be constructed.
 	@param resource The description fo the object.
 	@return A map of property descriptions keyed to property URIs.
-	@exception ClassNotFoundException if a class was specified and the indicated class cannot be found.
 	@exception InvocationTargetException if the given RDF object indicates a Java class the constructor of which throws an exception.
 	*/
-	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final RDFResource resource) throws ClassNotFoundException, InvocationTargetException
+	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final RDFResource resource) throws InvocationTargetException
 	{
 		final Map<URI, PropertyDescription> propertyDescriptionMap=new HashMap<URI, PropertyDescription>(resource.getPropertyCount());	//create a map to hold property descriptions, with a least enough capacity to hold descriptions for all properties
 		final Iterator<RDFPropertyValuePair> propertyIterator=resource.getPropertyIterator();	//get an iterator to the resource properties
@@ -572,72 +617,83 @@ public class PLOOPProcessor
 	@param objectClass The class of the object to be constructed.
 	@param property The RDF property/value pair potentially representing a Guise object property.
 	@return A description of the property, or <code>null</code> if the property is not recognized.
-	@exception ClassNotFoundException if a class was specified and the indicated class cannot be found.
 	*/
-	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, final RDFPropertyValuePair property) throws ClassNotFoundException, InvocationTargetException
+	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, final RDFPropertyValuePair property) throws InvocationTargetException
 	{
 //TODO del		final RDFObject propertyValue=property.getValue();	//get the property value
 		final URI propertyURI=property.getName().getReferenceURI();	//get the URI of the property
 //TODO del Debug.trace("looking at property:", propertyURI);
 		if(PLOOP_PROPERTY_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//if this is a PLOOP property
 		{
-			final RDFObject propertyValueRDFObject=property.getValue();	//get the property value
-			final Object propertyValue=getObject(propertyValueRDFObject);	//get the appropriate value for the property TODO get the type and save it somewhere, because this may return null
-			final Class<?> propertyValueType=propertyValue.getClass();	//get the type of the value
-			final String variableName=getLocalName(propertyURI);	//get the local name of the property
+			return getPropertyDescription(objectClass, propertyURI, property.getValue());	//return the property description from the property URI and the property value
+		}
+		return null;	//indicate that we don't recognize this property
+	}
+
+	/**Gets a description of a property of the object based upon the given RDF property/value pair.
+	The returned property description will indicate a method if the property is settable.
+	@param objectClass The class of the object to be updated.
+	@param propertyURI The URI of the RDF property potentially representing a Guise object property.
+	@param propertyValueRDFObject The value of the RDF property potentially representing a Guise object property.
+	@return A description of the property, or <code>null</code> if the property is not recognized.
+	*/
+	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, final URI propertyURI, final RDFObject propertyValueRDFObject) throws InvocationTargetException
+	{
+		final Object propertyValue=getObject(propertyValueRDFObject);	//get the appropriate value for the property TODO get the type and save it somewhere, because this may return null
+		final Class<?> propertyValueType=propertyValue.getClass();	//get the type of the value
+		final String variableName=getLocalName(propertyURI);	//get the local name of the property
 //		TODO del 	Debug.trace("looking at property name:", variableName);
 /*TODO fix
 			final String setterMethodName=getSetterMethodName(variableName);	//get the setter method name based upon the variable name
 //		TODO del Debug.trace("setter: ", setterMethodName);
 Debug.trace("setter: ", setterMethodName);
 */
-				//try to find a compatible setter method; get the variable name from each supposed setter in case the setter has multiple capital letters, such as setID()
-			final Method[] methods=objectClass.getMethods();	//get all the class methods
-			for(final Method method:methods)	//for each method
-			{
+			//try to find a compatible setter method; get the variable name from each supposed setter in case the setter has multiple capital letters, such as setID()
+		final Method[] methods=objectClass.getMethods();	//get all the class methods
+		for(final Method method:methods)	//for each method
+		{
 //TODO del Debug.trace("looking at method:", method.getName());
 //TODO del when works				if(method.getName().equals(setterMethodName))	//if this has the setter name
-				if(variableName.equals(getSetterPropertyName(method.getName())))	//if we could consider this method a setter for the variable we have 
-				{
+			if(variableName.equals(getSetterPropertyName(method.getName())))	//if we could consider this method a setter for the variable we have 
+			{
 //Debug.trace("found setter", variableName);
-					final Class<?>[] parameterTypes=method.getParameterTypes();	//get the parameter types for this method
-					if(parameterTypes.length==1)	//if this setter has one parameter
-					{
+				final Class<?>[] parameterTypes=method.getParameterTypes();	//get the parameter types for this method
+				if(parameterTypes.length==1)	//if this setter has one parameter
+				{
 //					TODO del Debug.trace("this setter has one param");
-						final Class<?> parameterType=parameterTypes[0];	//get the single parameter type
-							//TODO don't convert the object if this is a typed literal; instead, accept whatever type was given
-						final Object value=convertObject(propertyValue, parameterType);	//convert the object to the correct type
-						if(value!=null)	//if we found a parameter to use for this method
-						{
+					final Class<?> parameterType=parameterTypes[0];	//get the single parameter type
+						//TODO don't convert the object if this is a typed literal; instead, accept whatever type was given
+					final Object value=convertObject(propertyValue, parameterType);	//convert the object to the correct type
+					if(value!=null)	//if we found a parameter to use for this method
+					{
 //TODO del							Debug.trace("property value has correct type for setter:", parameterType, "property value:", value);
-							return new PropertyDescription(propertyURI, parameterType, value, method);	//return a description of this property with the method and parameter
-						}
+						return new PropertyDescription(propertyURI, parameterType, value, method);	//return a description of this property with the method and parameter
 					}
 				}
 			}
-				//if no setter could be found, try to find a getter method to verify this is a property that can be set
-				//get the variable name from each supposed getter in case the getter has multiple capital letters, such as getID()
+		}
+			//if no setter could be found, try to find a getter method to verify this is a property that can be set
+			//get the variable name from each supposed getter in case the getter has multiple capital letters, such as getID()
 //TODO del when works			final String getterMethodName=getGetterMethodName(variableName);	//get the getter method name based upon the variable name
 //TODO del Debug.trace("getter: ", getterMethodName);
-			for(final Method method:methods)	//for each method
-			{
+		for(final Method method:methods)	//for each method
+		{
 //TODO del when works				if(method.getName().equals(getterMethodName) && method.getParameterTypes().length==0)	//if this has the getter name and no parameters
-				if(variableName.equals(getGetterPropertyName(method.getName())))	//if we could consider this method a getter for the variable we have 
-				{
-					final Class<?> returnType=method.getReturnType();	//get the return type of the getter
+			if(variableName.equals(getGetterPropertyName(method.getName())))	//if we could consider this method a getter for the variable we have 
+			{
+				final Class<?> returnType=method.getReturnType();	//get the return type of the getter
 //				TODO del Debug.trace("found getter", getterMethodName, "for class", objectClass, "with return type", returnType);
-					final Object value=convertObject(propertyValue, returnType);	//convert the object to the getter return type, if we can
-					if(value!=null)	//if we can convert the property value to the getter return type
-					{
+				final Object value=convertObject(propertyValue, returnType);	//convert the object to the getter return type, if we can
+				if(value!=null)	//if we can convert the property value to the getter return type
+				{
 //TODO del						Debug.trace("property value has correct type for getter:", returnType, "property value:", value);
-						return new PropertyDescription(propertyURI, value!=null ? value.getClass() : returnType, value);	//return a description of this property with just the value TODO see why covariant return types aren't working correctly; for now, we'll just get the value type directly
-					}
+					return new PropertyDescription(propertyURI, value!=null ? value.getClass() : returnType, value);	//return a description of this property with just the value TODO see why covariant return types aren't working correctly; for now, we'll just get the value type directly
 				}
 			}
 		}
 		return null;	//indicate that we don't recognize this property
 	}
-	
+
 	/**Converts an object to the correct type.
 	If the object is already of the correct type, no action occurs.
 	Strings can be converted to the following types of objects:
@@ -662,9 +718,9 @@ Debug.trace("setter: ", setterMethodName);
 	@param object The object to convert.
 	@param requiredType The required type of the object.
 	@return The object as the required type, or <code>null</code> if the object cannot be converted to the required type.
-	@exception ClassNotFoundException if the required type is {@link Class} and the indicated class cannot be found.
+	@exception IllegalArgumentException if the given object should be able to be converted to the required type but something about its state, format, or contents prevented the conversion.
 	*/
-	protected Object convertObject(final Object object, final Class<?> requiredType) throws ClassNotFoundException	//TODO search for a string contructor or a static valueOf() method
+	protected Object convertObject(final Object object, final Class<?> requiredType)	//TODO search for a string contructor or a static valueOf() method
 	{
 		final Class<?> objectType=object.getClass();	//get the type of the object
 		if(requiredType.isAssignableFrom(objectType))	//if we expect this type (this algorithm could be improved to first try to find an exact match and then find a convertible match)
@@ -691,7 +747,14 @@ Debug.trace("setter: ", setterMethodName);
 					}
 					else if(Class.class.isAssignableFrom(requiredType))	//if the required type is Class
 					{
-						return Class.forName(stringObject);	//load the given class
+						try
+						{
+							return Class.forName(stringObject);	//load the given class
+						}
+						catch(final ClassNotFoundException classNotFoundException)	//if we couldn't find the class
+						{
+							throw new IllegalArgumentException(classNotFoundException);
+						}
 					}
 					else if(Boolean.TYPE.equals(requiredType) || Boolean.class.isAssignableFrom(requiredType))	//if the required type is boolean or Boolean
 					{

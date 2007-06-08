@@ -498,35 +498,33 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 	{
 	  final RDFResource propertyResource=propertyValuePair.getProperty();  //get the property predicate
 		final RDFObject propertyValue=propertyValuePair.getPropertyValue();  //get the property value
-		final URI propertyNamespaceURI=getNamespaceURI(propertyResource.getReferenceURI()); //get the namespace URI of the property
-		assert propertyNamespaceURI!=null : "Unable to find namespace of property "+propertyResource.getReferenceURI();	//TODO add real error handling here
-		boolean serializeLiteralAttribute=false; //start out by assuming we won't serialize as an attribute
-		  //see if we should use an attribute to serialize a plain literal TODO add support for typed literals
-		if(propertyValue instanceof RDFPlainLiteral)	//if this is a plain literal
+		final URI propertyResourceURI=propertyResource.getReferenceURI();	//get the property resource URI
+		final URI propertyNamespaceURI=getNamespaceURI(propertyResourceURI); //get the namespace URI of the property
+		assert propertyNamespaceURI!=null : "Unable to find namespace of property "+propertyResourceURI;	//TODO add real error handling here
+		if(propertyValue instanceof RDFPlainLiteral)	//if this is a plain literal, see if we can serialize it as an attribute	TODO add support for typed literals
 		{
 				//if we should serialize all literal property values as attributes, or if we should serialize literal property values from this namespace 
 			if(isLiteralAttributeSerialization() || isLiteralAttributeSerializationNamespaceURI(propertyNamespaceURI))
 			{
 				final RDFPlainLiteral plainLiteral=(RDFPlainLiteral)propertyValue;	//cast the value to a plain literal
 				if(plainLiteral.getLanguage()==null)	//if there is no language definition
-					serializeLiteralAttribute=true;  //show that we should use an attribute for serialization
+				{
+					final String prefix=xmlNamespacePrefixManager.getNamespacePrefix(propertyNamespaceURI.toString());  //get the prefix for use with this namespace
+					final String localName=getLocalName(propertyResourceURI);	//get the local name of the property
+					//TODO check for null on local name
+					if(!element.hasAttributeNS(propertyNamespaceURI.toString(), localName))	//if we don't already have this attribute (otherwise, we'll have to use a child element after all
+					{
+						final String qualifiedName=createQualifiedName(prefix, localName);  //create a qualified name for the attribute
+							//store the property as an attribute
+					  element.setAttributeNS(propertyNamespaceURI.toString(), qualifiedName, ((RDFLiteral)propertyValue).getLexicalForm());
+					  return null;	//indicate that we didn't use an element to represent the property
+					}
+				}
 			}
 		}
-		if(serializeLiteralAttribute)  //if we should use an attribute for serializing this property value
-		{
-			final String prefix=xmlNamespacePrefixManager.getNamespacePrefix(propertyNamespaceURI.toString());  //get the prefix for use with this namespace
-			final String qualifiedName=createQualifiedName(prefix, getLocalName(propertyResource.getReferenceURI()));  //create a qualified name for the attribute
-				//TODO check for null on local name
-				//store the property as an attribute
-		  element.setAttributeNS(propertyNamespaceURI.toString(), qualifiedName, ((RDFLiteral)propertyValue).getLexicalForm());
-		  return null;	//indicate that we didn't use an element to represent the property
-		}
-		else  //if the value is a resource or we don't know the property's namespace URI and local name G***add more logic here later to automatically determine the namespace
-		{
-			final Element propertyElement=createPropertyElement(document, propertyResource, propertyValue); //create a property element
-			element.appendChild(propertyElement); //append the property element we created
-			return propertyElement;	//return the element we used to represent the property
-		}
+		final Element propertyElement=createPropertyElement(document, propertyResource, propertyValue); //create a property element
+		element.appendChild(propertyElement); //append the property element we created
+		return propertyElement;	//return the element we used to represent the property
 	}
 
 	/**Creates an XML element to represent the given property.

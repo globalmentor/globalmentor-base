@@ -126,20 +126,18 @@ public class RDFUtilities
 		return null;	//indicate that the object didn't contain a valid URI
 	}
 	
-	/**Creates a resource reference URI from an XML namespace URI (which may be
-		<code>null</code> and an XML local name.
-	@param namespaceURI The XML namespace URI used in the serialization.
-	@param localName The XML local name used in the serialization.
+	/**Creates a resource reference URI from an RDF namespace URI and an RDF local name.
+	@param namespaceURI The RDF namespace URI used in the serialization.
+	@param localName The RDF local name used in the serialization.
 	@return An RDF reference URI constructed from the given namespace and local name.
-//G***del if not needed	@exception URISyntaxException Thrown if a valid URI cannot be created from the given namespace and local name.
+	@exception NullPointerException if the given namespace URI and/or local name is <code>null</code>.
 	*/
 	public static URI createReferenceURI(final URI namespaceURI, final String localName) //G***del if not needed throws URISyntaxException	//TODO del if not needed with QualifiedName.createReferenceURI
 	{
 			//TODO check for local names that aren't valid URI characters---see QualifiedName.createReferenceURI
 		final StringBuilder stringBuilder=new StringBuilder();  //create a string builder to hold the resource URI
-		if(namespaceURI!=null)  //if there is a namespace URI	//G***is this right?
-		  stringBuilder.append(namespaceURI);  //append the namespace URI
-		stringBuilder.append(localName); //append the local name
+	  stringBuilder.append(checkInstance(namespaceURI, "Namespace URI cannot be null."));  //append the namespace URI
+		stringBuilder.append(checkInstance(localName, "Local name cannot be null.")); //append the local name
 		return URI.create(stringBuilder.toString()); //return a URI from the the string we constructed; if somehow concatenating the strings does not create a valid URI, a runtime exception will be thrown
 	}
 
