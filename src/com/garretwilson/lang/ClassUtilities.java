@@ -4,25 +4,25 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
 import java.util.*;
+import static java.util.Collections.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.*;
 
 import javax.mail.internet.*;
 
-import com.garretwilson.util.Debug;
-
 import static com.garretwilson.net.URLUtilities.*;
+import static com.garretwilson.io.ContentTypeConstants.APPLICATION;
+import static com.garretwilson.io.ContentTypeConstants.X_JAVA_OBJECT;
 import static com.garretwilson.io.FileConstants.*;
 import static com.garretwilson.io.FileUtilities.*;
 import static com.garretwilson.io.OutputStreamUtilities.*;
-
-import static com.garretwilson.io.ContentTypeConstants.APPLICATION;
-import static com.garretwilson.io.ContentTypeConstants.X_JAVA_OBJECT;
 import static com.garretwilson.lang.JavaConstants.*;
 import static com.garretwilson.lang.JavaUtilities.*;
 import static com.garretwilson.lang.StringUtilities.*;
 import static com.garretwilson.net.URIConstants.JAVA_SCHEME;
 import static com.garretwilson.net.URIUtilities.createURI;
+import com.garretwilson.util.NameValuePair;
+import com.garretwilson.util.Debug;
 
 /**Utilities for manipulating Java classes.
 @author Garret Wilson
@@ -458,68 +458,138 @@ public class ClassUtilities
 		return JavaUtilities.getVariableName(getSimpleName(objectClass));	//get the variable name form of the simple name of the class
 	}
 
+	/**A comparator that sorts ancestor classes primarily in terms of height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.*/
+	public final static Comparator<NameValuePair<Class<?>, Integer>> CONCRETE_CLASS_HEIGHT_COMPARATOR=new Comparator<NameValuePair<Class<?>,Integer>>()
+			{
+				/**Compares two classes based upon the classes and their height or distance from a particular class.
+				Comparing is performed primarily in terms of height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.
+				@param classHeight1 The first class paired with its distance from a descendant class.
+				@param classHeight2 The second class paired with its distance from a descendant class.
+				@return The result of comparing the two classes.
+				*/
+				public int compare(final NameValuePair<Class<?>, Integer> classHeight1, final NameValuePair<Class<?>, Integer> classHeight2)
+				{
+					int result=classHeight1.getValue().intValue()-classHeight2.getValue().intValue();	//get the differences in heights
+					if(result==0)	//if both classes are at the same height
+					{
+						final Class<?> class1=classHeight1.getClass();	//get the classes
+						final Class<?> class2=classHeight2.getClass();
+						if(class1.equals(class2))	//if this is the same class
+						{
+							return 0;	//the two are equal
+						}
+						final boolean isClass1Interface=class1.isInterface();	//see if the classes are interfaces
+						final boolean isClass2Interface=class2.isInterface();
+						if(isClass1Interface!=isClass2Interface)	//if one is an interface and the other isn't
+						{
+							return isClass1Interface ? 1 : -1;	//the interface gets the higher ordering
+						}
+						final boolean isClass1Abstract=Modifier.isAbstract(class1.getModifiers());	//see if the classes are abstract
+						final boolean isClass2Abstract=Modifier.isAbstract(class2.getModifiers());
+						if(isClass1Abstract!=isClass2Abstract)	//if one is abstract and the other isn't
+						{
+							return isClass1Abstract ? 1 : -1;	//the abstract class gets the higher ordering
+						}
+						result=class1.getName().compareTo(class2.getName());	//compare class names
+					}
+					return result;	//return whatever result we found
+				};
+			};
+
 	/**Determines all super classes and interfaces of the given class, including the given class itself.
+	Classes will be sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.
 	@param objectClass The class for which super classes and interfaces should be found.
 	@return The set of all super classes and implemented interfaces.
+	@exception NullPointerException if the given object class is <code>null</code>.
+	@see #CONCRETE_CLASS_HEIGHT_COMPARATOR
 	*/
-	public static Set<Class<?>> getAncestorClasses(final Class<?> objectClass)
+	public static List<Class<?>> getAncestorClasses(final Class<?> objectClass)
 	{
-		return getAncestorClasses(objectClass, null);	//get all classes and interfaces
+		return getAncestorClasses(objectClass, Object.class);	//get all classes and interfaces
 	}
 
-	/**Determines all super classes and interfaces of the given class, including the given class itself, up to the given class.
+	/**Determines all super classes and interfaces of the given class, including the given class itself, up to the given class, in no guaranteed order.
+	Classes will be sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.
+	@param <R> The type of root class.
 	@param objectClass The class for which super classes and interfaces should be found.
 	@param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
 	@return The set of all super classes and implemented interfaces.
+	@exception NullPointerException if the given object class and/or root class is <code>null</code>.
+	@see #CONCRETE_CLASS_HEIGHT_COMPARATOR
 	*/
-	public static Set<Class<?>> getAncestorClasses(final Class<?> objectClass, final Class<?> rootClass)
+	public static <R> List<Class<? extends R>> getAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass)
 	{
-		return getAncestorClasses(objectClass, rootClass, true, true, true, true);	//get ancestor classes, including super classes, abstract classes, and interfaces
+		return getAncestorClasses(objectClass, rootClass, true, true, true, true, (Comparator<NameValuePair<Class<? extends R>, Integer>>)(Object)CONCRETE_CLASS_HEIGHT_COMPARATOR);	//get ancestor classes, including super classes, abstract classes, and interfaces TODO check cast
 	}
 
 	/**Determines all super classes and interfaces of the given class.
+	If a comparator is given, the classes and interfaces will be sorted based upon that comparator, using the farthest distance from the given class when sorting.
+	@param <R> The type of root class.
 	@param objectClass The class for which super classes and interfaces should be found.
-	@param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
+	@param rootClass The root class or interface to retrieve.
 	@param includeThisClasses Whether the object class itself should be returned.
 	@param includeSuperClasses Whether super classes should be returned.
 	@param includeAbstract Whether abstract classes should be returned.
 	@param includeInterfaces Whether implemented interfaces should be returned.
+	@param comparator The strategy for sorting the returned classes, or <code>null</code> if the order of classes is not important.
+	@exception NullPointerException if the given object class and/or root class is <code>null</code>.
 	@return The set of all super classes and implemented interfaces.
 	*/
-	public static Set<Class<?>> getAncestorClasses(final Class<?> objectClass, final Class<?> rootClass, final boolean includeThisClass, final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces)
+	public static <R> List<Class<? extends R>> getAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass, final boolean includeThisClass, final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces, final Comparator<NameValuePair<Class<? extends R>, Integer>> comparator)
 	{
-		final Set<Class<?>> classes=new HashSet<Class<?>>();	//create a new set of classes
-		if(includeThisClass)	//if we should include this class
+		final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap=new HashMap<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>>();	//create a new map of class/height pairs
+		if(includeThisClass && rootClass.isAssignableFrom(objectClass))	//if we should include this class
 		{
-			classes.add(objectClass);	//add this class
+			addClass(objectClass.asSubclass(rootClass), 0, classHeightMap);	//add this class to the map at height 0
 		}
-		getAncestorClasses(objectClass, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classes);	//get all the classes
-		return classes;	//return the classes we retrieved
+		getAncestorClasses(objectClass, 1, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classHeightMap);	//get all the classes, starting one level above the class
+		final List<Class<? extends R>> classList;	//we'll create a list to hold the classes
+		if(comparator!=null)	//if a comparator was given
+		{
+			classList=new ArrayList<Class<? extends R>>(classHeightMap.size());	//create a list to hold the classes
+			final List<NameValuePair<Class<? extends R>, Integer>> classHeightList=new ArrayList<NameValuePair<Class<? extends R>,Integer>>(classHeightMap.values());	//get all the class/height pairs
+			if(comparator!=null)	//if a comparator was given
+			{
+				sort(classHeightList, comparator);	//sort the list using the comparator
+			}
+			for(final NameValuePair<Class<? extends R>, Integer> classHeight:classHeightList)	//for each class height in the list
+			{
+				classList.add(classHeight.getName());	//add this class to the list
+			}
+		}
+		else	//if no comparator was given
+		{
+			classList=new ArrayList<Class<? extends R>>(classHeightMap.keySet());	//create a list from the set of keys			
+		}
+		return classList;	//return the list of classes
 	}
 
 	/**Determines super classes and interfaces of the given class.
 	The returned set will not include the given object class.
+	@param <R> The type of root class.
 	@param objectClass The class for which super classes and interfaces should be found.
-	@param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
+	@param height The zero-based distance towards the root away from the original class.
+	@param rootClass The root class or interface to retrieve.
 	@param includeSuperClasses Whether super classes should be returned.
 	@param includeAbstract Whether abstract classes should be returned.
 	@param includeInterfaces Whether implemented interfaces should be returned.
-	@param classes The set of classes to which the super classes and implemented interfaces should be added.
+	@param classHeightMap The map of class/height pairs keyed to the class.
 	*/
-	protected static void getAncestorClasses(final Class<?> objectClass, final Class<?> rootClass, final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces, final Set<Class<?>> classes)
+	protected static <R> void getAncestorClasses(final Class<? extends R> objectClass, final int height, final Class<R> rootClass, final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces, final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap)
 	{
 		if(includeSuperClasses)	//if super classes should be included
 		{
 			final Class<?> superClass=objectClass.getSuperclass();	//get the super class
 			if(superClass!=null)	//if there is a super class
 			{
-				if(rootClass==null || rootClass.isAssignableFrom(superClass))	//if the super class extends or implements the root class
+				if(rootClass.isAssignableFrom(superClass))	//if the super class extends or implements the root class
 				{
+					final Class<? extends R> superExtendsRootClass=superClass.asSubclass(rootClass);	//get the version of the super class that extends the root class
 					if(includeAbstract || !Modifier.isAbstract(superClass.getModifiers()))	// make sure we should include abstract classes if this is an abstract class
 					{
-						classes.add(superClass);	//add the super class to the set
+						addClass(superExtendsRootClass, height, classHeightMap);	//add the super class to the map
 					}
-					getAncestorClasses(superClass, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classes);	//get all the classes of the super class
+					getAncestorClasses(superExtendsRootClass, height+1, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classHeightMap);	//get all the classes of the super class
 				}
 			}
 		}
@@ -527,13 +597,29 @@ public class ClassUtilities
 		{
 			for(final Class<?> classInterface:objectClass.getInterfaces())	//look at each implemented interface
 			{
-
-				if(rootClass==null || rootClass.isAssignableFrom(classInterface))	//if this interface extends the root class
+				if(rootClass.isAssignableFrom(classInterface))	//if this interface extends the root class
 				{
-					classes.add(classInterface);	//add the interface to the set
-					getAncestorClasses(classInterface, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classes);	//get all the classes of the interface
+					final Class<? extends R> interfaceExtendsRootClass=classInterface.asSubclass(rootClass);	//get the version of the interface that extends the root class
+					addClass(interfaceExtendsRootClass, height, classHeightMap);	//add the interface to the map
+					getAncestorClasses(interfaceExtendsRootClass, height+1, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classHeightMap);	//get all the classes of the interface
 				}
 			}
+		}
+	}
+
+	/**Adds a class to a map of class lists, removing any classes that were listed in any lists of lower heights.
+	@param <R> The type of root class.
+	@param objectClass The class to add.
+	@param height The zero-based distance towards the root away from the original class.
+	@param classHeightMap The map of class/height pairs keyed to the class.
+	@exception NullPointerException if the given object class is <code>null</code>.
+	*/
+	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap)
+	{
+		final NameValuePair<Class<? extends R>, Integer> oldClassHeight=classHeightMap.get(objectClass);	//get the old height
+		if(oldClassHeight==null || oldClassHeight.getValue().intValue()<height)	//if there was no old height, or the old height is not as large as the new height
+		{
+			classHeightMap.put(objectClass, new NameValuePair<Class<? extends R>, Integer>(objectClass, height));	//update the height for the class
 		}
 	}
 
