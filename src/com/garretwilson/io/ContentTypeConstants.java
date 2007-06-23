@@ -82,14 +82,12 @@ public class ContentTypeConstants
 	public final static String X_BITMAP_SUBTYPE=EXTENSION_PREFIX+"bitmap";
 
 		//video media types
-	/**An MPEG video.*/
+	/**An MPEG video, as wel as MPEG 2 layer 3 (MP3) audio with audio/mpeg; see <a href="http://www.rfc-editor.org/rfc/rfc3003.txt">RFC 3003</a>.*/
 	public final static String MPEG_SUBTYPE="mpeg";
 
 		//audio media types
 	/**Single channel audio encoded using 8-bit ISDN mu-law [PCM] at a sample rate of 8000 Hz.*/
 	public final static String BASIC_SUBTYPE="basic";
-	/**MPEG 2 layer 3 (MP3); see <a href="http://www.rfc-editor.org/rfc/rfc3003.txt">RFC 3003</a>.*/
-//G***fix	public final static String AUDIO_MPEG=AUDIO+DIVIDER+MPEG;
 	/**Microsoft Windows Wave audio format.*/
 	public final static String X_WAV_SUBTYPE=EXTENSION_PREFIX+"wav";
 

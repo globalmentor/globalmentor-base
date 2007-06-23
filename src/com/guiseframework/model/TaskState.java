@@ -33,10 +33,10 @@ public enum TaskState
 	/**The task has been completed.*/
 	COMPLETE;
 
-	/**The resource key template for each task state label.*/
-	private final static StringTemplate LABEL_RESOURCE_KEY_TEMPLATE=new StringTemplate("theme.task.state.", StringTemplate.STRING_PARAMETER, ".label");
-	/**The resource key template for each task state glyph.*/
-	private final static StringTemplate GLYPH_RESOURCE_KEY_TEMPLATE=new StringTemplate("theme.task.state.", StringTemplate.STRING_PARAMETER, ".glyph");
+	/**The resource key template for each label.*/
+	private final static StringTemplate LABEL_RESOURCE_KEY_TEMPLATE=new StringTemplate("task.state.", StringTemplate.STRING_PARAMETER, ".label");
+	/**The resource key template for each glyph.*/
+	private final static StringTemplate GLYPH_RESOURCE_KEY_TEMPLATE=new StringTemplate("task.state.", StringTemplate.STRING_PARAMETER, ".glyph");
 
 	/**@return A resource reference representing a label for no task state.*/
 	public static String getNoLabel()
