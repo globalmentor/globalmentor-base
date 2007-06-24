@@ -1187,7 +1187,6 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		return encode(string, null, null);	//encode the string with no extra valid or invalid characters
 	}
 
-
 	/**Encodes the URI reserved characters in the string, using '%' as an escape character, according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
 	All characters not considered {@link URIConstants#NORMAL_CHARS} are encoded.
 	The escape character {@link URIConstants#ESCAPE_CHAR} will always be encoded.

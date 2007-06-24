@@ -1,5 +1,7 @@
 package com.garretwilson.lang;
 
+import static com.garretwilson.lang.CharSequenceUtilities.*;
+
 /**Various methods that manipulate <code>StringBuilder</code> objects. These
 	methods are fast relative to their <code>StringUtilities</code>
 	counterparts, because the <code>StringBuilder</code> objects on which they
@@ -53,6 +55,17 @@ public class StringBuilderUtilities
 		return stringBuilder;	//return the string builder object
 	}
 
+	/**Returns a string builder version of the given characters sequence.
+	If the given character sequence is already a string builder, it is returned;
+	otherwise, a new string builder will be created from the contents of the character sequence.
+	@param charSequence The character sequence for which a string builder should be returned.
+	@return A string builder with the contents of the given character sequence.
+	*/
+	public static StringBuilder asStringBuilder(final CharSequence charSequence)
+	{
+		return charSequence instanceof StringBuilder ? (StringBuilder)charSequence : new StringBuilder(charSequence);	//return a new or existing string builder
+	}
+	
 	/**Removes all the content of a string builder.
 	@param stringBuilder The string builder the content of which should be cleared.
 	@return The string builder after all content is removed.
@@ -174,6 +187,28 @@ public class StringBuilderUtilities
 		stringBuilder.deleteCharAt(stringBuilder.length()-1);	//remove the last character
 	}
 
+	/**Unescapes a value int a string builder using the provided escape character.
+	Every instance of the escape character will be removed if followed by another character and the subsequent character will be ignored. 
+	@param stringBuilder The string builder to unescape.
+	@return The string builder with the unescaped content.
+	@exception NullPointerException if the given string builder is <code>null</code>.
+	@exception IllegalArgumentException if the string builder ends with the given escape character.
+	*/
+	public static StringBuilder unescape(final StringBuilder stringBuilder, final char escapeChar)
+	{
+		if(endsWith(stringBuilder, escapeChar))	//if the string builder ends with the escape character (check now so that we don't have to check with each match)
+		{
+			throw new IllegalArgumentException("String builder  must not end with the escape character.");			
+		}		
+		int matchIndex=indexOf(stringBuilder, escapeChar, 0);	//find the first match character
+		while(matchIndex>=0)	//while there are more matches of the escape character (we know that this isn't the last character in the string, because we already checked to make sure the string doesn't end with the escape character)
+		{
+			stringBuilder.deleteCharAt(matchIndex);	//delete the escape character
+			matchIndex=indexOf(stringBuilder, escapeChar, matchIndex+1);	//find the next match character, ignoring the following character which is now at the current match position
+		};
+		return stringBuilder;	//return the string builder
+	}
+	
 	/**Returns the index of the first ocurrence of the given character in the string buffer.
 	@param stringBuilder The string buffer to search.
 	@param c The character to look for.
