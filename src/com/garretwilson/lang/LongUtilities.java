@@ -9,6 +9,16 @@ public class LongUtilities
 	/**This class cannot be publicly instantiated.*/
 	private LongUtilities() {}
 
+	/**Returns a hash code for a long value.
+	This implementation returns the same value used by {@link Long#hashCode()}.
+	@param value The value for which a hash code should be returned.
+	@return The hash code of the long value.
+	*/
+	public static int hashCode(final long value)
+	{
+		return (int)(value^(value>>>32));
+	}
+
 	/**Converts a long into a hex string with the specified number of digits.
 	@param value The value to convert.
 	@param length The number of digits the returned string should have.

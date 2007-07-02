@@ -98,8 +98,7 @@ public class ObjectUtilities
 	@param <T> The type of object to check for.
 	@param object The object to examine.
 	@param instanceClass The class of which the object may be an instance.
-	@return The object if it is an instance of the given class, otherwise
-		<code>null</code>.
+	@return The object if it is an instance of the given class, otherwise <code>null</code>.
 	 */
 	public static <T> T asInstance(final Object object, final Class<T> instanceClass)
 	{

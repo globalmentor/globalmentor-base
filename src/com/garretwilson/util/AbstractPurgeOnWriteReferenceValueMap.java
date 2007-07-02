@@ -509,10 +509,11 @@ public abstract class AbstractPurgeOnWriteReferenceValueMap<K, V, R extends Refe
 
   protected void purgeExcept(final R exceptReference)
   {
-  	R reference=(R)referenceQueue.poll();
+  	R reference=(R)referenceQueue.poll();	//see if there are any references ready for purging
   	while(reference!=null && reference!=exceptReference)
   	{
-  		map.remove(reference.getKey());	//remove this value from the underlying map		
+  		map.remove(reference.getKey());	//remove this value from the underlying map
+    	reference=(R)referenceQueue.poll();	//see if there are any other references to purge
   	}
   }
   
