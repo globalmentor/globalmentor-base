@@ -17,7 +17,7 @@ import static com.garretwilson.lang.EnumUtilities.*;
 import com.garretwilson.net.Resource;
 import com.garretwilson.rdf.*;
 import com.garretwilson.util.*;
-import com.guiseframework.style.AbstractColor;
+import com.guiseframework.style.AbstractModeledColor;
 import com.guiseframework.style.Color;
 
 /**Processes PLOOP objects from an RDF data model.
@@ -788,7 +788,7 @@ Debug.trace("setter: ", setterMethodName);
 					}
 					else if(Color.class.isAssignableFrom(requiredType))	//if the required type is Color
 					{
-						return AbstractColor.valueOf(stringObject);	//compile a color from the string
+						return AbstractModeledColor.valueOf(stringObject);	//compile a color from the string
 					}
 					else if(URI.class.isAssignableFrom(requiredType))	//if the required type is URI TODO maybe change to using the string constructor
 					{
