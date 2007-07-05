@@ -19,6 +19,7 @@ import static com.garretwilson.io.InputStreamUtilities.*;
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.IntegerUtilities.*;
 import static com.garretwilson.lang.SystemUtilities.*;
+import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 
 /**Various utilities for examining files.
@@ -189,18 +190,17 @@ public class FileUtilities
 	}
 
 	/**Extracts the extension from a file.
+	Anything after the last path character ('/' or '\\') is ignored.
 	@param file The file to examine.
-	@return The extension of the file (not including '.'), or <code>null</code> if
-		no extension is present.
+	@return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
 	*/
 	public static String getExtension(final File file)
 	{
-//G***del when works		final String filename=file.getName();  //get the name of the file
 		return getExtension(file.getName());  //return the extension of the filename
 	}
 
 	/**Extracts the extension from a filename or path.
-	Anything after the last path character ('/') is ignored.
+	Anything after the last path character ('/' or '\\') is ignored.
 	@param filename The filename to examine.
 	@return The extension of the file (not including '.'), or <code>null</code> if no extension is present.
 	*/
@@ -292,7 +292,7 @@ public class FileUtilities
 	}
 
 	/**Determines the index of a file extension separator character ('.').
-	Anything after the last path character ('/') is ignored.
+	Anything after the last path character ('/' or '\\') is ignored.
 	@param path The filename or path to examine.
 	@return The index of the extension separator character ('.'), or -1 if no extension is present.
 	*/
@@ -301,7 +301,7 @@ public class FileUtilities
 		final int separatorIndex=path.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
 		if(separatorIndex>=0)  //if we found a separator
 		{
-			if(path.indexOf(PATH_SEPARATOR, separatorIndex+1)<0)	//if there is no slash after after the extension separator
+			if(charIndexOf(path, FILE_PATH_SEPARATOR_CHARACTERS, separatorIndex+1)<0)	//if there is no slash after after the extension separator
 			{
 				return separatorIndex;	//return the index of the extension separator
 			}				
@@ -374,7 +374,7 @@ public class FileUtilities
 					//get the relative path of the file and put a path separator on the
 					//  front of it to represent the local root directory
 //TODO fix this to work with the new URI relativize
-				return String.valueOf(FileConstants.PATH_SEPARATOR)+
+				return "/"+
 						URLUtilities.getRelativePath(rootDirectory.toURL(), file.toURL());
 			}
 			catch(MalformedURLException malformedURLException)  //if a URL was malformed
@@ -385,7 +385,7 @@ public class FileUtilities
 		}
 		else  //if we were not given a root directory
 		{
-			return file.getPath().replace('\\', FileConstants.PATH_SEPARATOR);  //return the normal file path with the correct path separator G***use a constant here
+			return file.getPath().replace('\\', '/');  //return the normal file path with the correct path separator G***use a constant here
 		}
 	}
 
