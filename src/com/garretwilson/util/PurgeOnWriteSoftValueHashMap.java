@@ -5,7 +5,7 @@ import java.util.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 
-/**A map that uses soft references to store map valuess.
+/**A map that uses soft references to store map values.
 Values are only purged when map write operations occur.
 <code>null</code> values are not supported.
 @param <K> The type of key.

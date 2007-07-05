@@ -1,7 +1,6 @@
 package com.garretwilson.util;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.locks.*;
 
 /**An abstract cache that requires a subclass implementing data retrieval methods.
@@ -39,11 +38,8 @@ public abstract class AbstractCache<K, V, I extends AbstractCache.CachedInfo<V>>
 	/**The lock forcing synchronous fetching if enabled.*/
 	protected final Lock fetchLock=new ReentrantLock();
 
-	/**The lock controlling access to the cache.*/
-	protected final ReadWriteLock cacheLock=new ReentrantReadWriteLock();
-
-	/**The soft value map containing cached values. This map is made thread-safe through the use of {@link #cacheLock}.*/
-	protected final Map<K, I> cacheMap=new SoftValueHashMap<K, I>();
+	/**The read/write lock soft value map containing cached values.*/
+	protected final ReadWriteLockMap<K, I> cacheMap=new DecoratorReadWriteLockMap<K, I>(new PurgeOnWriteSoftValueHashMap<K, I>());
 
 	/**Constructor.
 	@param fetchSynchronous Whether fetches for new values should occur synchronously.
@@ -66,21 +62,13 @@ public abstract class AbstractCache<K, V, I extends AbstractCache.CachedInfo<V>>
 	public V get(final K key) throws IOException
 	{
 		final I cachedInfo;
-		cacheLock.readLock().lock();	//lock the cache for reading
-		try
+		cachedInfo=cacheMap.get(key);	//get cached value from the map
+		if(cachedInfo!=null)	//if we have a cached value
 		{
-			cachedInfo=cacheMap.get(key);	//get cached value from the map
-			if(cachedInfo!=null)	//if we have a cached value
+			if(!isStale(key, cachedInfo))	//if the cached value isn't stale
 			{
-				if(!isStale(key, cachedInfo))	//if the cached value isn't stale
-				{
-					return cachedInfo.getValue();	//return the value that was cached
-				}
+				return cachedInfo.getValue();	//return the value that was cached
 			}
-		}
-		finally
-		{
-			cacheLock.readLock().unlock();	//always release the read lock
 		}
 		if(cachedInfo!=null)	//if we had cached a value
 		{
@@ -94,16 +82,8 @@ public abstract class AbstractCache<K, V, I extends AbstractCache.CachedInfo<V>>
 		try
 		{
 			final I newCachedInfo=fetch(key);	//fetch new cached info for the key
-			cacheLock.writeLock().lock();	//lock the cache for writing
-			try
-			{
-				cacheMap.put(key, newCachedInfo);	//cache the information
-				return newCachedInfo.getValue();	//return the value we fetched
-			}
-			finally
-			{
-				cacheLock.writeLock().unlock();	//always release the write lock
-			}		
+			cacheMap.put(key, newCachedInfo);	//cache the information
+			return newCachedInfo.getValue();	//return the value we fetched
 		}
 		finally
 		{
@@ -122,16 +102,8 @@ public abstract class AbstractCache<K, V, I extends AbstractCache.CachedInfo<V>>
 	public V uncache(final K key) throws IOException
 	{
 		final I cachedInfo;
-		cacheLock.writeLock().lock();	//lock the cache for writing
-		try
-		{
-			cachedInfo=cacheMap.remove(key);	//remove the cached information
-		}
-		finally
-		{
-			cacheLock.writeLock().unlock();	//always release the write lock
-		}
-//fix; there seems to be no way to know if someone is still using the file		discard(key, cachedValue);	//discard the cached information, which we can do separately now that
+		cachedInfo=cacheMap.remove(key);	//remove the cached information
+//TODO fix; there seems to be no way to know if someone is still using the file		discard(key, cachedValue);	//discard the cached information, which we can do separately now that
 		return cachedInfo!=null ? cachedInfo.getValue() : null;	//if there was cached info, returned the cached value
 	}
 

@@ -7,7 +7,7 @@ import static java.util.Collections.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 
 /**A map that uses references to store map values.
-Values are only purged when map write operations occur.
+Cleared references are only purged when map write operations occur.
 <code>null</code> values are not supported.
 @param <K> The type of key.
 @param <V> The type of value.
@@ -17,8 +17,13 @@ Values are only purged when map write operations occur.
 public abstract class AbstractPurgeOnWriteReferenceValueMap<K, V, R extends Reference<V> & AbstractPurgeOnWriteReferenceValueMap.Keyed<K>> implements Map<K, V>
 {
 
+	/**The decorated map.*/
 	private final Map<K, R> map;
 
+	/**Decorated map constructor.
+	@param map The map being decorated.
+	@exception NullPointerException if the given map is <code>null</code>.
+	*/
 	public AbstractPurgeOnWriteReferenceValueMap(final Map<K, R> map)
 	{
 		this.map=checkInstance(map, "Map cannot be null.");
@@ -526,6 +531,9 @@ public abstract class AbstractPurgeOnWriteReferenceValueMap<K, V, R extends Refe
 	*/
   protected abstract R createReference(final K key, final V value, final ReferenceQueue<V> referenceQueue);
 
+  /**An object that remembers the key associated with it.
+  @author Garret Wilson
+  */
   protected interface Keyed<K>
   {
   	/**@return They key with which the referent value was associated.*/
