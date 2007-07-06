@@ -283,11 +283,31 @@ public class URIUtilities
 		return query.toString();	//return the query string we constructed
 	}
 
+	/**Constructs a query string for a URI and appends it to the query of the given URI, if any.
+	@param uri The existing URI.
+	@param params The name-value pairs representing the query parameters.
+	@return A URI representing the URI with the appended query parameters.
+	@exception NullPointerException if the given URI and/or params is <code>null</code>.
+	*/
+	public static URI appendQueryParameters(final URI uri, final NameValuePair<String, String>... params)
+	{
+		if(params.length>0)	//if there are parameters
+		{
+			final StringBuilder stringBuilder=new StringBuilder(uri.toString());	//create a string builder from the URI
+			stringBuilder.append(uri.getRawQuery()!=null ? QUERY_NAME_VALUE_PAIR_DELIMITER : QUERY_SEPARATOR);	//if there already is a query, separate the new parameters from the existing ones; otherwise, add the query introduction character
+			stringBuilder.append(constructQueryParameters(params));	//add the new query parameters
+			return URI.create(stringBuilder.toString());	//return the new URI
+		}
+		else	//if there are no parameters
+		{
+			return uri;	//reuturn the URI as-is
+		}
+	}
+
 	/**Constructs a query string for a URI and appends it to the given query, if any.
 	@param query The existing query paramters, or <code>null</code> or the empty string if there is no query.
 	@param params The name-value pairs representing the query parameters.
-	@return A string representing the query with the appended parameters, or the empty string if
-		there was no query and there were no parameters.
+	@return A string representing the query with the appended parameters, or the empty string if there was no query and there were no parameters.
 	*/
 	public static String appendQueryParameters(final String query, final NameValuePair<String, String>... params)
 	{
@@ -605,6 +625,7 @@ public class URIUtilities
 	@param uri The URI to check to for path status.
 	@return The given path URI.
 	@exception NullPointerException if the given path URI is <code>null</code>.
+	@exception IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
 	@exception IllegalArgumentException if the given URI is not a path.
 	@see #isPath(String)
 	*/
