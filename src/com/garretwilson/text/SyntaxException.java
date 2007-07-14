@@ -1,7 +1,7 @@
 package com.garretwilson.text;
 
+
 /**Generic checked exception thrown to indicate that a string could not be parsed.
-Allows convenient indication of optional cause exception as well as optional indication of a reason message.
 @author Garret Wilson
 */
 public class SyntaxException extends Exception
@@ -13,85 +13,92 @@ public class SyntaxException extends Exception
 		/**@return The input string.*/
 		public String getInput() {return input;}
 		
-	/**The index into the input string of the position at which the parse error
-		occurred, or -1 if the position is not known.
-	*/
+	/**The index into the input string of the position at which the parse error occurred, or -1 if the position is not known.*/
 	private final int index;
 
-		/**@return The index into the input string of the position at which the parse error
-			occurred, or -1 if the position is not known.
-		*/
+		/**@return The index into the input string of the position at which the parse error occurred, or -1 if the position is not known.*/
 		public int getIndex() {return index;}
 
-	/**Constructs a syntax exception from an input string and a reason.
+	/**Input string constructor with a default message.
 	@param input The input string.
-	@param reason An explanation of why the input string could not be parsed.
+	@exception NullPointerException if the given input string is <code>null</code>.
 	*/
-	public SyntaxException(final String input, final String reason)
+	public SyntaxException(final String input)
 	{
-		this(input, reason, -1);	//construct the class with an unknown index
+		this(input, (String)null);	//construct the class for a default message
 	}
 
-	/**Constructs a syntax exception from an input string, a reason, and an index.
+	/**Input string and message constructor.
+	A message will be constructed including the given message, if any, or the given message of the cause, if any.
 	@param input The input string.
-	@param reason An explanation of why the input string could not be parsed.
-	@param index The index into the input string of the position at which the
-		parse error occurred, or -1 if the position is not known.
+	@param message An explanation of why the input string could not be parsed, or <code>null</code> if a default message should be used.
+	@exception NullPointerException if the given input string is <code>null</code>.
 	*/
-	public SyntaxException(final String input, final String reason, final int index)
+	public SyntaxException(final String input, final String message)
 	{
-		this(input, reason, index, null);	//construct the exception with no cause
+		this(input, -1, message);	//construct the class with an unknown index
 	}
 
-	/**Constructs a syntax exception from an existing exception.
+	/**Input string and index constructor with a default message.
 	@param input The input string.
-	@param reason An explanation of why the input string could not be parsed.
+	@param index The index into the input string of the position at which the parse error occurred, or -1 if the position is not known.
+	@exception NullPointerException if the given input string is <code>null</code>.
+	@exception IllegalArgumentException if the given index is less than -1.
+	*/
+	public SyntaxException(final String input, final int index)
+	{
+		this(input, index, (String)null);	//construct the class for a default message
+	}
+
+	/**Input string, index, and message constructor.
+	A message will be constructed including the given message, if any, or the given message of the cause, if any.
+	@param input The input string.
+	@param index The index into the input string of the position at which the parse error occurred, or -1 if the position is not known.
+	@param message An explanation of why the input string could not be parsed, or <code>null</code> if a default message should be used.
+	@exception NullPointerException if the given input string is <code>null</code>.
+	@exception IllegalArgumentException if the given index is less than -1.
+	*/
+	public SyntaxException(final String input, final int index, final String message)
+	{
+		this(input, index, message, null);	//construct the exception with no cause
+	}
+
+	/**Input and existing exception constructor.
+	@param input The input string.
 	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
+	@exception NullPointerException if the given input string is <code>null</code>.
 	*/
 	public SyntaxException(final String input, final Throwable cause)
 	{
-		this(input, null, -1, cause);	//construct the class with an unknown reason and index
+		this(input, -1, null, cause);	//construct the class with an unknown message and index
 	}
 
-	/**Constructs a syntax exception from an input string, a reason, and an index.
-	A reason and/or a cause must be provided.
+	/**Input string, index, and cause constructor with a default message.
 	@param input The input string.
-	@param reason An explanation of why the input string could not be parsed.
-	@param index The index into the input string of the position at which the
-		parse error occurred, or -1 if the position is not known.
+	@param index The index into the input string of the position at which the parse error occurred, or -1 if the position is not known.
 	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
+	@exception NullPointerException if the given input string is <code>null</code>.
+	@exception IllegalArgumentException if the given index is less than -1.
 	*/
-	protected SyntaxException(final String input, final String reason, final int index, final Throwable cause)
+	protected SyntaxException(final String input, final int index, final Throwable cause)
 	{
-		super(reason!=null ? reason : cause.getMessage(), cause);	//construct the parent class with the reason and the cause
-		if(input==null)	//if no input was provided
-			throw new NullPointerException("Missing input string.");	//indicate that we only received null
-		if(index<-1)	//if the index is less than negative one, the "unknown index" value
-			throw new IllegalArgumentException();	//report the error
+		this(input, index, null, cause);	//construct the class for a default message		
+	}
+
+	/**Input string, index, message, and cause constructor.
+	A message will be constructed including the given message, if any, or the given message of the cause, if any.
+	@param input The input string.
+	@param index The index into the input string of the position at which the parse error occurred, or -1 if the position is not known.
+	@param message An explanation of why the input string could not be parsed, or <code>null</code> if a default message should be used.
+	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
+	@exception NullPointerException if the given input string is <code>null</code>.
+	@exception IllegalArgumentException if the given index is less than -1.
+	*/
+	protected SyntaxException(final String input, final int index, final String message, final Throwable cause)
+	{
+		super(ArgumentParseException.createMessage(input, index, message!=null ? message : (cause!=null && cause.getMessage()!=null ? cause.getMessage() : null)), cause);	//construct the parent class with the message and the cause
 		this.input=input;	//save the input
 		this.index=index;	//save the index		
 	}
 
-	/**@return An explanation of why the input string could not be parsed.*/
-	public String getReason()
-	{
-		return super.getMessage();	//return the reason, which we stored in the super class message (don't call this version of getMessage(), because this version calls getReason() and would result in infinite recursion)
-	}
-	
-	/**@return A string explaining the syntax exception, in the form of
-		"<em>reason</em>: <em>input</em> at index <em>index</em>".
-	*/ 
-	public String getMessage()
-	{
-		final StringBuilder stringBuilder=new StringBuilder(this.getReason());	//create a string builder with the reason
-		if(getInput()!=null && getInput().length()>0)	//if we know the input
-		{
-			stringBuilder.append(':').append(' ').append(getInput());	//append the input
-		}
-		if(getIndex()>=0)	//if we know the index
-		{
-			stringBuilder.append(" at index ").append(getIndex());	//append the index
-		}
-		return stringBuilder.toString();	//return the constructed message
-	}
 }

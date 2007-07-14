@@ -330,14 +330,18 @@ public class CharSequenceUtilities
 	}
 
 	/**Determines the first index of the given character.
+	If the character sequence is a {@link String}, this method delegates to {@link String#indexOf(int, int)}.
 	@param charSequence The character sequence to check.
 	@param character The character to search for.
 	@param index The first index to examine.
-	@return The index of the first occurrence of the given character, or -1 if
-		the character was not found.
+	@return The index of the first occurrence of the given character, or -1 if the character was not found.
 	*/
 	public static int indexOf(final CharSequence charSequence, final char character, final int index)
 	{
+		if(charSequence instanceof String)	//if the character sequence is a string
+		{
+			return ((String)charSequence).indexOf(character, index);	//delegate to the String version, which is much more efficient
+		}
 		final int length=charSequence.length();
 		for(int i=index; i<length; ++i)	//look at each character
 		{
