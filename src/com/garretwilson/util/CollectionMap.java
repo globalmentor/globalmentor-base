@@ -3,7 +3,7 @@ package com.garretwilson.util;
 import java.util.Collection;
 import java.util.Map;
 
-/**A map that stores a collection of values for each key, with special methods for retrieving single values.
+/**A map that stores a collection of values for each key, using a pair of read and write locks to access its data, with special methods for retrieving single values.
 @param <K> The type of key used in the map.
 @param <V> The type of value stored in each collection in the map.
 @param <C> The type of collection in which to store values in the map.

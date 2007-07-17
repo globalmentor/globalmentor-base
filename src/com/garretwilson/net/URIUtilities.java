@@ -40,35 +40,54 @@ public class URIUtilities
 	/**Creates a new URI identical to the supplied URI with a different path.
 	This method expects the path to be unencoded---raw (encoded) parameters will be re-encoded, resulting in corruption.
 	@param uri The URI to change.
-	@param path The unescaped path, or <code>null</code> if there should be no path.
+	@param newPath The unescaped path, or <code>null</code> if there should be no path.
 	@return A new URI with the new path information.
 	*/
-	public static URI changePath(final URI uri, final String path)
+	public static URI changePath(final URI uri, final String newPath)
 	{
 			//construct an identical URI except for the supplied path
-		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), path, uri.getQuery(), uri.getFragment());
+		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), newPath, uri.getQuery(), uri.getFragment());
 	}
 
 	/**Creates a new URI identical to the supplied URI with a different raw path.
 	@param uri The URI to change.
-	@param rawPath The raw, escaped path, or <code>null</code> if there should be no path.
+	@param newRawPath The raw, escaped path, or <code>null</code> if there should be no path.
 	@return A new URI with the new raw path information.
 	@exception NullPointerException if the given URI and/or path is <code>null</code>.
 	@exception IllegalArgumentException if the given path results in an invalid URI.
 	*/
-	public static URI changeRawPath(final URI uri, final String rawPath)
+	public static URI changeRawPath(final URI uri, final String newRawPath)
 	{
 		final String oldRawPath=uri.getRawPath();	//get the old raw path of the URI
-		if((oldRawPath==null || oldRawPath.length()==0) && (rawPath==null || rawPath.length()==0))	//if an empty path is being replaced by an empty path
+		if((oldRawPath==null || oldRawPath.length()==0) && (newRawPath==null || newRawPath.length()==0))	//if an empty path is being replaced by an empty path
 		{
 			return uri;	//the URI remains unchanged
 		}
+		final StringBuilder oldSuffixStringBuilder=new StringBuilder();	//create string builders for getting the before and after suffixes
+		final StringBuilder newSuffixStringBuilder=new StringBuilder();
+		if(oldRawPath!=null)	//if there is an old raw path
+		{
+			oldSuffixStringBuilder.append(oldRawPath);	//include the old raw path in the old suffix
+		}
+		if(newRawPath!=null)	//if there is a new raw path
+		{
+			newSuffixStringBuilder.append(newRawPath);	//include the new raw path in the new suffix
+		}
+		final String rawQuery=uri.getRawQuery();	//get the raw query, if any
+		if(rawQuery!=null)	//if there is a raw query
+		{
+			oldSuffixStringBuilder.append(QUERY_SEPARATOR).append(rawQuery);	//include the raw query
+			newSuffixStringBuilder.append(QUERY_SEPARATOR).append(rawQuery);
+		}
+		final String rawFragment=uri.getRawFragment();	//get the raw fragment, if any
+		if(rawFragment!=null)	//if there is a raw fragment
+		{
+			oldSuffixStringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment);	//include the raw fragment
+			newSuffixStringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment);
+		}
 		final String uriString=uri.toString();	//create a string form of the URI
-		assert oldRawPath==null || uriString.endsWith(oldRawPath) : "URI unexpectedly did not end with its raw path.";
-		final StringBuilder uriStringBuilder=new StringBuilder();	//create a new string builder for modifying the URI
-		uriStringBuilder.append(oldRawPath!=null && oldRawPath.length()>0 ? uriString.substring(0, uriString.length()-oldRawPath.length()) : uriString);	//if there is a raw path, only add the URI part that comes before the path
-		uriStringBuilder.append(rawPath);	//append the raw path to the string builder
-		return URI.create(uriStringBuilder.toString());	//return a new URI from the string builder
+		assert oldRawPath==null || uriString.endsWith(oldSuffixStringBuilder.toString()) : "URI unexpectedly did not end with its constructed suffix.";
+		return URI.create(uriString.substring(0, uriString.length()-oldSuffixStringBuilder.length())+newSuffixStringBuilder.toString());	//create a new URI after replacing the old suffix with the new
 	}
 
 	/**Returns the name of the resource at the given path, which will be the name of the last path component.
