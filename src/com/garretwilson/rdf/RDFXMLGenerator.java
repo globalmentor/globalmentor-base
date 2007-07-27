@@ -563,9 +563,13 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 					//set the rdf:parseType attribute to "Collection" TODO eventually get our prefix from a prefix rather than hard-coding RDF, maybe
 				propertyElement.setAttributeNS(RDF_NAMESPACE_URI.toString(), createQualifiedName(RDF_NAMESPACE_PREFIX.toString(), ATTRIBUTE_PARSE_TYPE), COLLECTION_PARSE_TYPE);
 				final RDFListResource propertyListResource=(RDFListResource)propertyValue;	//cast the resource to a list
-				final Iterator<RDFResource> iterator=propertyListResource.iterator();	//get an iterator to look at the list elements
+				final Iterator<RDFObject> iterator=propertyListResource.iterator();	//get an iterator to look at the list elements
 				while(iterator.hasNext())	//while there are more elements
 				{
+					
+						//TODO important: fix; individual elements can be literals
+					
+					
 					final RDFResource elementResource=(RDFResource)iterator.next();	//get the next element of the list
 					final Element elementResourceElement=createResourceElement(document, elementResource); //create an element from this list element resource
 					propertyElement.appendChild(elementResourceElement); //add the list element resource element resource to the property element

@@ -87,11 +87,11 @@ public class MAQROXHTMLifier
 			final Element olElement=document.createElementNS(XHTML_NAMESPACE_URI.toString(), ELEMENT_OL);	//<ol>
 			element.appendChild(olElement);	//add the list
 			final Group group=(Group)interaction;	//get the interaction as a group
-			for(final RDFResource resource:group.getInteractions())	//look at all the interactions in the group
+			for(final RDFObject object:group.getInteractions())	//look at all the interactions in the group
 			{
-				if(resource instanceof Interaction)	//if this is an interaction
+				if(object instanceof Interaction)	//if this is an interaction
 				{
-					final Interaction subInteraction=(Interaction)resource;	//get the resource as an interaction
+					final Interaction subInteraction=(Interaction)object;	//get the resource as an interaction
 					final Outcome subOutcome=outcome.getOutcome(subInteraction);	//get the matching
 					if(subOutcome!=null)	//if there is an outcome for this interaction
 					{

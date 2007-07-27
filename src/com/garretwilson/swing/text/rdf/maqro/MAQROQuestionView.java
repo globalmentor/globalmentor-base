@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.text.*;
 
 import com.garretwilson.io.URIAccessible;
+import com.garretwilson.rdf.RDFObject;
 import com.garretwilson.rdf.RDFResource;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
@@ -66,7 +67,7 @@ public class MAQROQuestionView extends XMLComponentBlockView implements Outcomab
 		{
 			throw new IllegalArgumentException("Element does not represent a question");
 		}
-		final List<RDFResource> hintList=question.getHints();	//get the question hints
+		final List<RDFObject> hintList=question.getHints();	//get the question hints
 		if(hintList!=null && hintList.size()>0	//if there are hints
 				&& (activityView==null || activityView.getActivity().isAllowHint()))	//and if there is no associated activity, or the activity allows hints
 		{

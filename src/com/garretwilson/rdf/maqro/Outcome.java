@@ -73,7 +73,7 @@ public class Outcome extends TypedRDFResource
 	*/
 	public Outcome getOutcome(final Interaction interaction)
 	{
-		for(final RDFResource resource:getOutcomes())	//look at each outcome
+		for(final RDFObject resource:getOutcomes())	//look at each outcome
 		{
 			if(resource instanceof Outcome)	//if this is an outcome
 			{

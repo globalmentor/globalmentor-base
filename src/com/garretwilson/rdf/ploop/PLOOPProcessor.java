@@ -224,7 +224,7 @@ public class PLOOPProcessor
 		{
 			final RDFListResource rdfListResource=(RDFListResource)rdfObject;	//cast the object to a list
 			final List<Object> list=new ArrayList<Object>(rdfListResource.size());	//create a new list of the correct size TODO eventually create a list but later check to see if the setter will accept a collection
-			for(final RDFResource rdfListItem:rdfListResource)	//for each RDF resource in the list
+			for(final RDFObject rdfListItem:rdfListResource)	//for each RDF resource in the list
 			{
 				list.add(getObject(rdfListItem));	//get or create an object from this RDF list item and add it to our list
 			}

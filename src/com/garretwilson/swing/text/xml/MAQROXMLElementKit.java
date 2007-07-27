@@ -114,10 +114,10 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 	{
 		final MutableAttributeSet attributeSet=createAttributeSet(activity, baseURI);	//create and fill an attribute set based upon the RDF resource
 		elementSpecList.add(new DefaultStyledDocument.ElementSpec(attributeSet, DefaultStyledDocument.ElementSpec.StartTagType));	//create the beginning of a Swing element to model this resource
-		final List<RDFResource> interactions=activity.getInteractions();	//get the activity interactions
+		final List<RDFObject> interactions=activity.getInteractions();	//get the activity interactions
 		if(interactions!=null)	//if there are choices
 		{
-			for(final RDFResource interaction:interactions)	//for each interaction
+			for(final RDFObject interaction:interactions)	//for each interaction
 			{
 				if(interaction instanceof Question)	//if this interaction is a question
 				{
@@ -155,12 +155,12 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 		{
 			appendElementSpecList(elementSpecList, query, baseURI);	//append element specs for the query dialogue
 		}
-		final List<RDFResource> choices=question.getChoices();	//get the question choices
+		final List<RDFObject> choices=question.getChoices();	//get the question choices
 		if(choices!=null)	//if there are choices
 		{
 			final MutableAttributeSet choicesAttributeSet=getDefaultXMLElementKit().createAttributeSet(MAQRO_NAMESPACE_URI, CHOICES_PROPERTY_NAME);	//create and fill an attribute set for the choices property
 			elementSpecList.add(new DefaultStyledDocument.ElementSpec(choicesAttributeSet, DefaultStyledDocument.ElementSpec.StartTagType));	//create the beginning of a Swing element to model this resource
-			for(final RDFResource choice:choices)	//for each choice
+			for(final RDFObject choice:choices)	//for each choice
 			{
 				if(choice instanceof Dialogue)	//if this choice is dialogue
 				{

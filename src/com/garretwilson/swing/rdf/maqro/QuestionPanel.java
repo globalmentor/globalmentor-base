@@ -45,7 +45,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 	private final ListPanel<Dialogue> hintPanel;
 
 	/**The list of hints for this question.*/
-	private final ListListModel<RDFResource> hintList;
+	private final ListListModel<RDFObject> hintList;
 
 	private final JList explanationSwingList;
 	private final ListPanel<Dialogue> explanationPanel;
@@ -71,7 +71,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 		super(model, false);	//construct the parent class without initializing the panel
 		setSupportedModelViews(DEFAULT_SUPPORTED_MODEL_VIEWS);	//set the model views we support
 		setDefaultDataView(DEFAULT_DEFAULT_MODEL_VIEW);	//set the default data view
-		hintList=new ListListModel<RDFResource>(new ArrayList<RDFResource>());	//create a list in which to store the hints
+		hintList=new ListListModel<RDFObject>(new ArrayList<RDFObject>());	//create a list in which to store the hints
 		hintSwingList=new JList(hintList);
 		hintPanel=new ListPanel<Dialogue>(hintSwingList, new HintEditStrategy());
 		explanationList=new ListListModel<RDFResource>(new ArrayList<RDFResource>());	//create a list in which to store the explanations
@@ -192,7 +192,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 				if(question!=null)	//if there is a question
 				{			
 					hintList.clear();	//clear the list of hints
-					final List<RDFResource> questionHintList=question.getHints();	//get the hints of the question
+					final List<RDFObject> questionHintList=question.getHints();	//get the hints of the question
 					if(questionHintList!=null)	//if the question has hints
 					{
 						hintList.addAll(questionHintList);	//add the hints to the list 
@@ -344,7 +344,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			choicesRadioButton=new JRadioButton();
 			mutuallyExclusiveCheckBox=new JCheckBox();
 			requireAllCheckBox=new JCheckBox();
-			choiceList=new JList(new ListListModel<RDFResource>(new RDFListResource(RDFConstants.NIL_RESOURCE_URI)));	//create a default empty list for the choices
+			choiceList=new JList(new ListListModel<RDFObject>(new RDFListResource()));	//create a default empty list for the choices
 			choicePanel=new ListPanel<Dialogue>(choiceList, new ChoiceEditStrategy());
 			expectRadioButton=new JRadioButton();
 			answerPanel=new AnswerPanel();

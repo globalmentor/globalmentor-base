@@ -218,7 +218,7 @@ public class XPackageUtilities
 		version of the specified href, or <code>null</code> if there is no match.
 	@see #getLocationHRef
 	*/
-	public static RDFResource getItemByLocationHRef(final List<RDFResource> list, final URI baseURI, final String href)	//G***should we put this in RDFListResource?
+	public static RDFResource getItemByLocationHRef(final List<RDFObject> list, final URI baseURI, final String href)	//G***should we put this in RDFListResource?
 	{
 		try
 		{
@@ -244,27 +244,31 @@ public class XPackageUtilities
 		<code>null</code> if there is no match.
 	@see #getLocationHRef
 	*/
-	public static RDFResource getItemByLocationHRef(final List<RDFResource> list, final URI baseURI, final URI uri)	//G***should we put this in RDFListResource?
+	public static RDFResource getItemByLocationHRef(final List<RDFObject> list, final URI baseURI, final URI uri)	//G***should we put this in RDFListResource?
 	{
 Debug.trace("looking for resource that matches URI: ", uri);  //G***del
 Debug.trace("working from base URI: ", baseURI);  //G***del
-		for(final RDFResource item:list)	//look at each resource in the list
+		for(final RDFObject item:list)	//look at each resource in the list
 		{
-Debug.trace("looking at resource: ", item); //G***del
-		  final String itemHRef=getLocationHRef(item);  //get the item's href G***later add something that can look at all the locations rather than just the first one
-Debug.trace("has href: ", itemHRef); //G***del
-			if(itemHRef!=null)  //if there is an href
+			if(item instanceof RDFResource)	//if this is a resource
 			{
-				try
+				final RDFResource resource=(RDFResource)item;	//get the resource
+Debug.trace("looking at resource: ", resource); //G***del
+			  final String itemHRef=getLocationHRef(resource);  //get the item's href G***later add something that can look at all the locations rather than just the first one
+	Debug.trace("has href: ", itemHRef); //G***del
+				if(itemHRef!=null)  //if there is an href
 				{
-					final URI itemURI=URIUtilities.createURI(baseURI, itemHRef);	//create a URI based upon the base URI and the item's location
-Debug.trace("comparing with URI: ", itemURI); //G***del
-					if(uri.equals(itemURI)) //if the URLs match
-						return item;  //return the item
-				}
-				catch(URISyntaxException uriSyntaxException)	//if there is an error creating the URI
-				{
-					Debug.warn(uriSyntaxException);	//warn about the error, but keep searching
+					try
+					{
+						final URI itemURI=URIUtilities.createURI(baseURI, itemHRef);	//create a URI based upon the base URI and the item's location
+	Debug.trace("comparing with URI: ", itemURI); //G***del
+						if(uri.equals(itemURI)) //if the URLs match
+							return resource;  //return the item
+					}
+					catch(URISyntaxException uriSyntaxException)	//if there is an error creating the URI
+					{
+						Debug.warn(uriSyntaxException);	//warn about the error, but keep searching
+					}
 				}
 			}
 		}

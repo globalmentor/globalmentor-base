@@ -215,9 +215,9 @@ Debug.trace("property value: ", propertyValue); //G***del
 		if(spine!=null)  //if the publication has a spine
 		{
 			final Element spineElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_SPINE); //create the spine element
-			for(final RDFResource item:spine)	//for each item in the spine
+			for(final RDFObject item:spine)	//for each item in the spine
 			{
-				spineElement.appendChild(generateItemRefElement(document, item, publication.getReferenceURI()));  //generate an item element and add it to the spine element
+				spineElement.appendChild(generateItemRefElement(document, (RDFResource)item, publication.getReferenceURI()));  //generate an item element and add it to the spine element
 			}
 		}
 		if(publication.getGuideList().size()>0) //if there are guides

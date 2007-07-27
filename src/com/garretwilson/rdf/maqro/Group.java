@@ -33,7 +33,7 @@ public class Group extends Interaction
 	}
 
 	/**@return The list of interactions for this group, or <code>null</code> if there is no list of interactions or the value is not a list.*/
-	public List<RDFResource> getInteractions()	//TODO we're forced to return List instead of RDFListResource because of DictionaryActivity; see how we can get around this---this may be a holdover from some obsolete code
+	public List<RDFObject> getInteractions()	//TODO we're forced to return List instead of RDFListResource because of DictionaryActivity; see how we can get around this---this may be a holdover from some obsolete code
 	{
 		return asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME));	//get the maqro:interactions property value as a list	
 	}
@@ -51,7 +51,7 @@ public class Group extends Interaction
 	*/
 	public void addInteraction(final Interaction interaction)
 	{
-		List<RDFResource> interactionList=getInteractions();	//get the list of interactions
+		List<RDFObject> interactionList=getInteractions();	//get the list of interactions
 		if(interactionList==null)	//if we have no list
 		{
 				//create a new list resource containing the added interaction 
@@ -68,7 +68,7 @@ public class Group extends Interaction
 	*/
 	public void removeInteraction(final Interaction interaction)
 	{
-		List<RDFResource> interactionList=getInteractions();	//get the list of interactions
+		List<RDFObject> interactionList=getInteractions();	//get the list of interactions
 		if(interactionList!=null)	//if we have a list
 		{
 			interactionList.remove(interaction);	//remove the interaction from the list

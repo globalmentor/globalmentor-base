@@ -143,7 +143,7 @@ public class ActivityPanel extends RDFPanel<Activity, ResourceModel<Activity>>
 		{
 			model.getResource().setInteractions(new RDFListResource());	//set a default list of interactions
 		}
-		final ListModel interactionListModel=new ListListModel<RDFResource>(model.getResource().getInteractions());	//create a new list model from the interaction list G***this will change when we have nested groups, as it will be difficult to keep both the sequence and the list in synch; we may want to switch to load/save on view change
+		final ListModel interactionListModel=new ListListModel<RDFObject>(model.getResource().getInteractions());	//create a new list model from the interaction list G***this will change when we have nested groups, as it will be difficult to keep both the sequence and the list in synch; we may want to switch to load/save on view change
 		interactionSequencePanel.setListModel(interactionListModel);	//put the interaction list model in the sequence panel
 		interactionListComponent.setModel(interactionListModel);	//put the interaction list model in the interaction list component in the interaction list view G***make sure changing the model here keeps everything else in synch
 	}

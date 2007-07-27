@@ -81,9 +81,9 @@ public class Directory
 		{
 			final RDFListResource rdfList=(RDFListResource)rdfObject;	//get the object as a list
 			final List<LocaleText> texts=new ArrayList<LocaleText>(rdfList.size());	//create a list of locale texts
-			for(final RDFResource rdfResource:rdfList)	//for each list element
+			for(final RDFObject item:rdfList)	//for each list element
 			{
-				final LocaleText text=getText(rdfResource);	//get this text
+				final LocaleText text=getText(item);	//get this text
 				if(text!=null)	//if this resource represents text
 				{
 					texts.add(text);	//add this text to the list
