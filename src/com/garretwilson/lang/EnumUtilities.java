@@ -14,6 +14,7 @@ public class EnumUtilities
 	@param enumClass The enum class.
 	@param enumElements The elements to be contained in the set.
 	@return A set of enums containing the given enum values.
+	@exception NullPointerException if the given enum class and/or enum elements is <code>null</code>.
 	*/
 	public static <E extends Enum<E>> EnumSet<E> createEnumSet(final Class<E> enumClass, final E... enumElements)
 	{
