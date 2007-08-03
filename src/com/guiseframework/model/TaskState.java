@@ -44,7 +44,7 @@ public enum TaskState
 		return createStringResourceReference(LABEL_RESOURCE_KEY_TEMPLATE.apply(""));	//get the label representing no value
 	}
 
-	/**@return The resource reference for the task state label.*/
+	/**@return The resource reference for the label.*/
 	public String getLabel()
 	{
 		return createStringResourceReference(LABEL_RESOURCE_KEY_TEMPLATE.apply(getResourceKeyName(this)));	//create a resource reference using the resource key name of this enum value
@@ -56,7 +56,7 @@ public enum TaskState
 		return createURIResourceReference(GLYPH_RESOURCE_KEY_TEMPLATE.apply(""));	//get the glyph representing no value
 	}
 
-	/**@return The resource reference for the task state glyph.*/
+	/**@return The resource reference for the glyph.*/
 	public URI getGlyph()
 	{
 		return createURIResourceReference(GLYPH_RESOURCE_KEY_TEMPLATE.apply(getResourceKeyName(this)));	//create a resource reference using the resource key name of this enum value

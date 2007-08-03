@@ -9,6 +9,7 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 /**An RDF resource factory that can create Java classes within a certain package based upon the type local name.
 The class of the resource to be created should have a reference URI constructor accepting <code>null</code>.
 The class of the resource to be created must have a reference URI constructor or a default constructor.
+This class is thread safe.
 @author Garret Wilson
 */
 public class DefaultRDFResourceFactory implements RDFResourceFactory
