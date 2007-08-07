@@ -1,5 +1,7 @@
 package com.garretwilson.text;
 
+import java.util.regex.Pattern;
+
 /**Named constants representing several often-used characters. In most cases, names are derived from Unicode 3.0 names.
 @author Garret Wilson
 */
@@ -212,6 +214,12 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	These include whitespace, control characters, and formatting characters.
 	*/
 	public final static String TRIM_CHARS=WHITESPACE_CHARS+CONTROL_CHARS+FORMAT_CHARS;
+
+	/**A regular expression pattern for the class of trim characters.
+	@see #TRIM_CHARS
+	*/
+	public final static Pattern TRIM_PATTERN=Pattern.compile("["+TRIM_CHARS+"]");
+	
 	/**Characters used in Roman numbers.*/
 //G***del	public final static String ROMAN_NUMERAL_CHARS="IVXCLM";  //G***make sure this is exhaustive
 
@@ -292,6 +300,11 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 
 	/**Characters that separate words.*/
 	public final static String WORD_DELIMITER_CHARS=WHITESPACE_CHARS+PUNCTUATION_CHARS;	//G***this needs fixed
+
+	/**A regular expression pattern for the class of word delimiter characters.
+	@see #WORD_DELIMITER_CHARS
+	*/
+//TODO fix; these characters must be escaped, or this Pattern.toString() will run into an endless loop!	public final static Pattern WORD_DELIMITER_PATTERN=Pattern.compile("["+WORD_DELIMITER_CHARS+"]");
 
 	/**Characters that allow words to wrap.*/
 	public final static String WORD_WRAP_CHARS=WHITESPACE_CHARS+"-/";	//G***use constants
