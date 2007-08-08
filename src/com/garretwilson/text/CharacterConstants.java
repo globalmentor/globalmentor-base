@@ -2,6 +2,8 @@ package com.garretwilson.text;
 
 import java.util.regex.Pattern;
 
+import static com.garretwilson.text.RegularExpression.*;
+
 /**Named constants representing several often-used characters. In most cases, names are derived from Unicode 3.0 names.
 @author Garret Wilson
 */
@@ -218,7 +220,18 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	/**A regular expression pattern for the class of trim characters.
 	@see #TRIM_CHARS
 	*/
-	public final static Pattern TRIM_PATTERN=Pattern.compile("["+TRIM_CHARS+"]");
+//TODO del if not needed	public final static Pattern TRIM_PATTERN=Pattern.compile("["+TRIM_CHARS+"]");
+
+	/**Characters that delimit a list separated by trim characters, commas, and/or semicolons.
+	@see #TRIM_CHARS
+	*/
+	public final static String LIST_DELIMITER_CHARS=TRIM_CHARS+",;";
+
+	/**A regular expression character class pattern for the class of list delimiter characters.
+	@see #LIST_DELIMITER_CHARS
+	*/
+//TODO del if not needed	public final static Pattern LIST_DELIMITER_CLASS_PATTERN=Pattern.compile(createCharacterClass(LIST_DELIMITER_CHARS));
+
 	
 	/**Characters used in Roman numbers.*/
 //G***del	public final static String ROMAN_NUMERAL_CHARS="IVXCLM";  //G***make sure this is exhaustive
