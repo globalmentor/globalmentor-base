@@ -3,7 +3,7 @@ package com.garretwilson.net;
 import java.net.URI;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
-import static com.garretwilson.net.URIConstants.ROOT_PATH;
+import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 
 /**Represents the path of a hierarchical URI with the same encoding requirements as URIs in general.
@@ -71,5 +71,23 @@ public class URIPath
 	public String toString()
 	{
 		return uri.getRawPath();	//return the raw path from the local URI
+	}
+
+	/**Encodes the given string so that it is a valid URI path according <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
+	@param path The path to URI-encode.
+	@return A string containing the escaped data.
+	*/
+	public static String encode(final String path)
+	{
+		return uriEncode(path, PATH_CHARACTERS);	//encode all non-path characters
+	}
+
+	/**Encodes the given string so that it is a valid URI path segment according <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
+	@param pathSegment The path segment to URI-encode.
+	@return A string containing the escaped data.
+	*/
+	public static String encodeSegment(final String pathSegment)
+	{
+		return uriEncode(pathSegment, PATH_SEGMENT_CHARACTERS);	//encode all non-path segment characters
 	}
 }
