@@ -302,6 +302,20 @@ public class URIUtilities
 		return query.toString();	//return the query string we constructed
 	}
 
+	/**Appends a query string to a URI.
+	@param uri The existing URI.
+	@param rawQuery The encoded query information, without a beginning query separator.
+	@return A URI representing the URI with the appended query parameters.
+	@exception NullPointerException if the given URI and/or query is <code>null</code>.
+	*/
+	public static URI appendRawQuery(final URI uri, final String rawQuery)
+	{
+		final StringBuilder stringBuilder=new StringBuilder(uri.toString());	//create a string builder from the URI
+		stringBuilder.append(uri.getRawQuery()!=null ? QUERY_NAME_VALUE_PAIR_DELIMITER : QUERY_SEPARATOR);	//if there already is a query, separate the new parameters from the existing ones; otherwise, add the query introduction character
+		stringBuilder.append(checkInstance(rawQuery, "Query cannot be null."));	//add the new query information
+		return URI.create(stringBuilder.toString());	//return the new URI
+	}
+
 	/**Constructs a query string for a URI and appends it to the query of the given URI, if any.
 	@param uri The existing URI.
 	@param params The name-value pairs representing the query parameters.
@@ -312,10 +326,7 @@ public class URIUtilities
 	{
 		if(params.length>0)	//if there are parameters
 		{
-			final StringBuilder stringBuilder=new StringBuilder(uri.toString());	//create a string builder from the URI
-			stringBuilder.append(uri.getRawQuery()!=null ? QUERY_NAME_VALUE_PAIR_DELIMITER : QUERY_SEPARATOR);	//if there already is a query, separate the new parameters from the existing ones; otherwise, add the query introduction character
-			stringBuilder.append(constructQueryParameters(params));	//add the new query parameters
-			return URI.create(stringBuilder.toString());	//return the new URI
+			return appendRawQuery(uri, constructQueryParameters(params));	//add the new query parameters and return the resulting URI
 		}
 		else	//if there are no parameters
 		{
@@ -693,10 +704,11 @@ public class URIUtilities
 	@return A URI representing the parent collection of a hierarchical
 		URI; if the URI ends in '/', equivalent to resolving the path ".." to the URI;
 		if the URI does not end in '/', equivalent to resolving the path "." to the URI.	
+	@exception IllegalArgumentException if the URI does not have a path component.
 	*/
 	public static URI getParentURI(final URI uri)
 	{
-		return endsWith(uri.toString(), PATH_SEPARATOR) ? getParentLevel(uri) : getCurrentLevel(uri);	//if the path ends with a slash, get the parent level; otherwise, get the current level
+		return isCollectionURI(uri) ? getParentLevel(uri) : getCurrentLevel(uri);	//if the path ends with a slash, get the parent level; otherwise, get the current level
 	}
 
 	/**Determines the canonical root URI of a URI.
@@ -1051,23 +1063,30 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		return absolutePath.substring(ROOT_PATH.length());	//remove the beginning root path indicator
 	}
 
-	/**Determines whether the path of the URI is a canonical container path.
-	@param uri The URI the path of which to examine.
+	/**Determines whether the URI represents a canonical collection.
+	@param uri The URI the raw path of which to examine.
 	@return <code>true</code> if the path of the given URI ends with a slash ('/').
-	@see #isContainerPath(String)
+	@exception IllegalArgumentException if the URI does not have a path component.
+	@see #isCollectionPath(String)
 	*/
-	public static boolean isContainerPath(final URI uri)
+	public static boolean isCollectionURI(final URI uri)
 	{
-		return isContainerPath(uri.getRawPath());	//see if the path ends with '/' (use the raw path in case the last character is an encoded slash)		
+		final String rawPath=uri.getRawPath();	//get the URI's raw path (use the raw path in case the last character is an encoded slash)
+		if(rawPath==null)	//if there is no raw path
+		{
+			throw new IllegalArgumentException("URI "+uri+" has no path component.");
+		}
+		return isCollectionPath(rawPath);	//see if the path ends with '/' (use the raw path in case the last character is an encoded slash)		
 	}
 
-	/**Determines whether the given path is a canonical container path.
-	@param path The path to examine.
+	/**Determines whether the given path is a canonical collection path.
+	@param rawPath The raw path to examine.
 	@return <code>true</code> if the path ends with a slash ('/').
+	@exception NullPointerException if the given path is null.
 	*/
-	public static boolean isContainerPath(final String path)
+	public static boolean isCollectionPath(final String rawPath)
 	{
-		return endsWith(path, PATH_SEPARATOR);	//see if the path ends with '/'		
+		return endsWith(rawPath, PATH_SEPARATOR);	//see if the path ends with '/'		
 	}
 
 	/**Determines whether the path of the URI (which may or may not be absolute) is absolute.
