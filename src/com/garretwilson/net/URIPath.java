@@ -80,6 +80,7 @@ public class URIPath
 	public static String encode(final String path)
 	{
 		return uriEncode(path, PATH_CHARACTERS);	//encode all non-path characters
+		//TODO important: encode "." and ".."
 	}
 
 	/**Encodes the given string so that it is a valid URI path segment according <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
@@ -89,5 +90,6 @@ public class URIPath
 	public static String encodeSegment(final String pathSegment)
 	{
 		return uriEncode(pathSegment, PATH_SEGMENT_CHARACTERS);	//encode all non-path segment characters
+		//TODO important: encode "." and ".."
 	}
 }
