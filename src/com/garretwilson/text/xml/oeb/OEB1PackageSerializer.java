@@ -7,7 +7,6 @@ import javax.mail.internet.ContentType;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import com.garretwilson.rdf.dublincore.DCConstants;
-import com.garretwilson.rdf.xpackage.MIMEOntologyUtilities;
 import com.garretwilson.rdf.xpackage.XPackageUtilities;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
 
@@ -16,6 +15,8 @@ import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.util.*;
+import com.globalmentor.marmot.Marmot;
+
 import org.w3c.dom.*;
 
 /**Serializes an OEB 1.x publication package.
@@ -251,7 +252,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 		  itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_HREF, href);		  //set the href
 //G***maybe assert that there is a media type, here
 		}
-		final ContentType mediaType=MIMEOntologyUtilities.getMediaType(oebItem);  //get the item's media type
+		final ContentType mediaType=Marmot.getMediaType(oebItem);  //get the item's media type
 		if(mediaType!=null) //if the item has a media type
 		{
 		  itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE, mediaType.toString());		  //set the media type

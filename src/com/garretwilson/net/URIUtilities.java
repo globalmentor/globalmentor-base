@@ -655,7 +655,7 @@ public class URIUtilities
 	@param uri The URI to check to for path status.
 	@return The given path URI.
 	@exception NullPointerException if the given path URI is <code>null</code>.
-	@exception IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
+	@exception IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute) and/or authority.
 	@exception IllegalArgumentException if the given URI is not a path.
 	@see #isPath(String)
 	*/
@@ -1082,7 +1082,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	/**Determines whether the given path is a canonical collection path.
 	@param rawPath The raw path to examine.
 	@return <code>true</code> if the path ends with a slash ('/').
-	@exception NullPointerException if the given path is null.
+	@exception NullPointerException if the given path is <code>null</code>.
 	*/
 	public static boolean isCollectionPath(final String rawPath)
 	{

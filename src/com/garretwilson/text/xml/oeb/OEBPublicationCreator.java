@@ -2,7 +2,6 @@ package com.garretwilson.text.xml.oeb;
 
 import java.io.*;
 import java.net.*;
-import java.net.URI;	//G***del when other URI is removed
 import java.text.MessageFormat;
 import java.util.*;
 import javax.mail.internet.ContentType;
@@ -17,6 +16,8 @@ import com.garretwilson.text.*;
 import com.garretwilson.text.xml.*;
 import com.garretwilson.text.xml.xhtml.*;
 import com.garretwilson.util.*;
+import com.globalmentor.marmot.Marmot;
+
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
@@ -1152,7 +1153,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 								oebItem=getRDF().locateResource(itemURI);
 //G***del								oebItem=new OEBItem(publication, itemID, hrefRelativePath, mediaType);
 								XPackageUtilities.addLocation(oebItem, hrefRelativePath);  //add the relative href to the item
-								MIMEOntologyUtilities.addContentType(oebItem, mediaType); //add the content type we determined
+								Marmot.addContentType(oebItem, mediaType); //add the content type we determined
 								XPackageUtilities.getManifest(publication).add(oebItem); //add the item to the publication's manifest
 								  //if this is an OEB document, and we should add it to the spine
 								if(shouldAddToSpine && mediaType.match(OEB10_DOCUMENT_MEDIA_TYPE))

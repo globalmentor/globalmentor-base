@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import static com.garretwilson.lang.EnumUtilities.*;
 import com.garretwilson.net.Resource;
+import com.garretwilson.net.URIPath;
 import com.garretwilson.rdf.*;
 import com.garretwilson.util.*;
 import com.guiseframework.style.AbstractModeledColor;
@@ -40,6 +41,7 @@ import com.guiseframework.style.Color;
 	<li>{@link Pattern}</li>
 	<li>{@link Color}</li>
 	<li>{@link URI}</li>
+	<li>{@link URIPath}</li>
 </ul>
 <p>This processor recognizes the {@link Resource} type; when this class is present with a single URI parameter constructor, that constructor will take precedence using the <code>rdf:about</code> resource reference URI value.</p>
 <p>This processor also recognizes the {@link RDFResource} type and will transfer all non-PLOOP properties when an instance is encountered.</p>
@@ -714,6 +716,7 @@ Debug.trace("setter: ", setterMethodName);
 		<li>{@link Pattern}</li>
 		<li>{@link Color}</li>
 		<li>{@link URI}</li>
+		<li>{@link URIPath}</li>
 	</ul>
 	@param object The object to convert.
 	@param requiredType The required type of the object.
@@ -793,6 +796,10 @@ Debug.trace("setter: ", setterMethodName);
 					else if(URI.class.isAssignableFrom(requiredType))	//if the required type is URI TODO maybe change to using the string constructor
 					{
 						return URI.create(stringObject);	//create a URI from the string
+					}
+					else if(URIPath.class.isAssignableFrom(requiredType))	//if the required type is URIPath
+					{
+						return new URIPath(stringObject);	//create a URI path from the string
 					}
 					//TODO check for a string-compatible constructor
 				}

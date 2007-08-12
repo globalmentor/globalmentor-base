@@ -19,6 +19,8 @@ import com.garretwilson.text.xml.xpath.XPathConstants;
 
 import static com.garretwilson.text.xml.oeb.OEBConstants.*;
 import com.garretwilson.util.*;
+import com.globalmentor.marmot.Marmot;
+
 import org.w3c.dom.*;
 
 /**Class which parses an input stream containing an OEB publication.
@@ -311,7 +313,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 				//create an RDF resource for the item with a type of rdf:resource
 			final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null)); //G***fix the reference URI
 //G***del when not needed		  final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null), XPackageConstants.XPACKAGE_NAMESPACE_URI, XPackageConstants.RESOURCE_TYPE_NAME); //G***fix the reference URI
-			MIMEOntologyUtilities.addContentType(itemResource, itemMediaType); //add the item's content type
+			Marmot.addContentType(itemResource, itemMediaType); //add the item's content type
 		  addLocation(itemResource, itemHRef); //add the item's href
 		  manifestResource.add(itemResource);  //add the item to the manifest
 /*G***fix fallbacks
