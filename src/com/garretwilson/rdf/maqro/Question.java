@@ -67,7 +67,7 @@ public class Question extends Interaction
 	}
 
 	/**@return The <code>maqro:evaluations</code> list of evaluations for this question, or <code>null</code> if there is no list of evaluations or the value is not a list.*/
-	public RDFListResource getEvaluations()
+	public RDFListResource<?> getEvaluations()
 	{
 		return asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, EVALUATIONS_PROPERTY_NAME));	//get the maqro:evaluations property value as a list	
 	}

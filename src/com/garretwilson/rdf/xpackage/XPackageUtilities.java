@@ -413,9 +413,9 @@ Debug.trace("looking at resource: ", resource); //G***del
 	@return The manifest of the resource, or <code>null</code> if no manifest
 		property exists or the manifest is not a list resource.
 	*/
-	public static RDFListResource getManifest(final RDFResource resource)
+	public static RDFListResource<RDFResource> getManifest(final RDFResource resource)
 	{
-		return asListResource(resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME)); //return the manifest as a list resource
+		return (RDFListResource<RDFResource>)asListResource(resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME)); //return the manifest as a list resource
 	}
 
 }

@@ -224,7 +224,7 @@ public class PLOOPProcessor
 		}
 		else if(rdfObject instanceof RDFListResource)	//if the object is a list
 		{
-			final RDFListResource rdfListResource=(RDFListResource)rdfObject;	//cast the object to a list
+			final RDFListResource<?> rdfListResource=(RDFListResource<?>)rdfObject;	//cast the object to a list
 			final List<Object> list=new ArrayList<Object>(rdfListResource.size());	//create a new list of the correct size TODO eventually create a list but later check to see if the setter will accept a collection
 			for(final RDFObject rdfListItem:rdfListResource)	//for each RDF resource in the list
 			{

@@ -35,7 +35,7 @@ public class Group extends Interaction
 	/**@return The list of interactions for this group, or <code>null</code> if there is no list of interactions or the value is not a list.*/
 	public List<RDFObject> getInteractions()	//TODO we're forced to return List instead of RDFListResource because of DictionaryActivity; see how we can get around this---this may be a holdover from some obsolete code
 	{
-		return asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME));	//get the maqro:interactions property value as a list	
+		return (List<RDFObject>)asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME));	//get the maqro:interactions property value as a list	
 	}
 
 	/**Sets the list of interactions for this group.

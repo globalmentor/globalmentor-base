@@ -22,4 +22,15 @@ public interface RDFIO<T> extends IO<T>
 	*/ 
 	public T read(final RDF rdf, final InputStream inputStream, final URI baseURI) throws IOException;
 
+	/**Registers a resource factory to be used to create resources with a type from the specified namespace. If a resource factory is already registered for this namespace, it will be replaced.
+	@param typeNamespaceURI The namespace of the resource type for which this factory should be used to create objects.
+	@param factory The resource factory that will be used to create resources of types from this namespace.
+	*/
+	public void registerResourceFactory(final URI typeNamespaceURI, final RDFResourceFactory factory);
+
+	/**Removes the resource factory being used to create resources with a type from the specified namespace. If there is no resource factory registered for this namespace, no action will be taken.
+	@param typeNamespaceURI The namespace of the resource type for which this factory should be used to create objects.
+	*/
+	public void unregisterResourceFactory(final URI typeNamespaceURI);
+
 }

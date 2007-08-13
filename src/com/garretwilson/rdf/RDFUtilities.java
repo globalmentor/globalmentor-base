@@ -63,7 +63,7 @@ public class RDFUtilities
 	@return The RDF object as a list, or <code>null</code> if the object is
 		not a list or the object is <code>null</code>.
 	*/
-	public static RDFListResource asListResource(final RDFObject rdfObject)
+	public static RDFListResource<?> asListResource(final RDFObject rdfObject)
 	{
 		return asInstance(rdfObject, RDFListResource.class);	//cast the object to a list if we can
 	}

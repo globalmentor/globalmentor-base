@@ -16,9 +16,10 @@ import static com.garretwilson.rdf.RDFUtilities.*;
 	that produced this list resource. Similarly, multiple resources may be
 	created to represent the nil resource, the special immutable resource defined
 	by RDF.</p>
+@param <E> The type of elements contained in the list.
 @author Garret Wilson
 */
-public class RDFListResource extends TypedRDFResource implements List<RDFObject> //G***del, Comparator
+public class RDFListResource<E extends RDFObject> extends TypedRDFResource implements List<E> //G***del, Comparator
 {
 
 	/**@return The namespace URI of the ontology defining the default type of this resource.*/
@@ -54,7 +55,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 		The rest of the list is set to the RDF nil resource.
 	@param first The first and only element of the list.
 	*/
-	public RDFListResource(final RDFObject first)
+	public RDFListResource(final E first)
 	{
 		this((URI)null, first);	//create a list with no other elements
 	}
@@ -72,7 +73,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@param rdf The RDF data model to use as a factory for creating properties.
 	@param first The first and only element of the list.
 	*/
-	public RDFListResource(final RDF rdf, final RDFObject first)
+	public RDFListResource(final RDF rdf, final E first)
 	{
 		this(rdf, (URI)null, first);	//create a list with no other elements
 	}
@@ -82,9 +83,9 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@param newReferenceURI The reference URI for the new resource.
 	@param first The first and only element of the list.
 	*/
-	public RDFListResource(final URI newReferenceURI, final RDFObject first)
+	public RDFListResource(final URI newReferenceURI, final E first)
 	{
-		this(newReferenceURI, first, new RDFListResource(NIL_RESOURCE_URI));	//create a list with no other elements
+		this(newReferenceURI, first, new RDFListResource<E>(NIL_RESOURCE_URI));	//create a list with no other elements
 	}
 
 	/**Constructs an RDF list resource with a single element.
@@ -93,9 +94,9 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@param newReferenceURI The reference URI for the new resource.
 	@param first The first and only element of the list.
 	*/
-	public RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFObject first)
+	public RDFListResource(final RDF rdf, final URI newReferenceURI, final E first)
 	{
-		this(rdf, newReferenceURI, first, new RDFListResource(rdf, NIL_RESOURCE_URI));	//create a list with no other elements
+		this(rdf, newReferenceURI, first, new RDFListResource<E>(rdf, NIL_RESOURCE_URI));	//create a list with no other elements
 	}
 
 	/**Constructs an anonymous RDF list resource with a current element and the
@@ -105,7 +106,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@param rest The list resource representing the rest of the list, or <code>null</code>
 		if no rest should be specified.
 	*/
-	public RDFListResource(final RDF rdf, final RDFObject first, final RDFResource rest)
+	public RDFListResource(final RDF rdf, final E first, final RDFResource rest)
 	{
 		this(rdf, (URI)null, first, rest); //construct a list with an anonymous reference URI
 	}
@@ -116,7 +117,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@param rest The list resource representing the rest of the list, or <code>null</code>
 		if no rest should be specified.
 	*/
-	public RDFListResource(final URI newReferenceURI, final RDFObject first, final RDFResource rest)
+	public RDFListResource(final URI newReferenceURI, final E first, final RDFResource rest)
 	{
 		this(null, newReferenceURI, first, rest);	//construct the list with no RDF data model
 	}
@@ -129,7 +130,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@param rest The list resource representing the rest of the list, or <code>null</code>
 		if no rest should be specified.
 	*/
-	protected RDFListResource(final RDF rdf, final URI newReferenceURI, final RDFObject first, final RDFResource rest)
+	protected RDFListResource(final RDF rdf, final URI newReferenceURI, final E first, final RDFResource rest)
 	{
 		super(rdf, newReferenceURI); //construct the list with the reference URI and namespace URI and local name information
 		if(first!=null)	//if there is a first element
@@ -142,7 +143,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@param rdf The RDF data model to use as a factory for creating properties.
 	@param collection The collection with which to populate the list.
 	*/
-	public static RDFListResource create(final RDF rdf, final Collection<? extends RDFObject> collection)
+	public static <T extends RDFObject> RDFListResource<T> create(final RDF rdf, final Collection<? extends T> collection)
 	{
 		return create(rdf, (URI)null, collection);	//create and return a list with an anonymous reference URI
 	}
@@ -153,27 +154,27 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@param collection The collection with which to populate the list, each
 		element of which is an {@link RDFObject}.
 	*/
-	public static RDFListResource create(final RDF rdf, final URI newReferenceURI, final Collection<? extends RDFObject> collection)
+	public static <T extends RDFObject> RDFListResource<T> create(final RDF rdf, final URI newReferenceURI, final Collection<? extends T> collection)
 	{
 			//TODO now that we've removed the requirement of passing an RDF data model, maybe this can be optimized---or maybe removed altogether
 //G***del		final RDFResource nil=rdf.locateResource(RDF_NAMESPACE_URI, NIL_RESOURCE_LOCAL_NAME);	//get the nil resource
-		final RDFListResource listResource;	//we'll create a list resource for the collection 
+		final RDFListResource<T> listResource;	//we'll create a list resource for the collection 
 		if(!collection.isEmpty())	//if there are elements in the collection
 		{
-			final Iterator<? extends RDFObject> resourceIterator=collection.iterator();	//get an iterator to the elements of the collection
-			listResource=new RDFListResource(rdf, resourceIterator.next());	//get the first resource in the collection
-			RDFListResource list=listResource;	//we'll keep adding to the list as we go along
+			final Iterator<? extends T> resourceIterator=collection.iterator();	//get an iterator to the elements of the collection
+			listResource=new RDFListResource<T>(rdf, resourceIterator.next());	//get the first resource in the collection
+			RDFListResource<T> list=listResource;	//we'll keep adding to the list as we go along
 			while(resourceIterator.hasNext())	//while there are more elements in the collection
 			{
 				
-				final RDFListResource nextList=new RDFListResource(rdf, resourceIterator.next());	//get the next resource in the collection
+				final RDFListResource<T> nextList=new RDFListResource<T>(rdf, resourceIterator.next());	//get the next resource in the collection
 				setRest(list, nextList);	//add the next list to this one
 				list=nextList;	//we'll use the next list the next time around 
 			}
 		}
 		else	//if the collection is empty
 		{
-			listResource=new RDFListResource(rdf, NIL_RESOURCE_URI);	//use the nil list
+			listResource=new RDFListResource<T>(rdf, NIL_RESOURCE_URI);	//use the nil list
 		}
 		return listResource;	//return whichever list resource we created or used
 	}
@@ -185,9 +186,9 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@return The first element of the list, or <code>null</code> if the resource
 		has no first element specified.
 	*/
-	public static RDFObject getFirst(final RDFResource resource)
+	public static <T extends RDFObject> T getFirst(final RDFResource resource)
 	{
-		return resource.getPropertyValue(RDF_NAMESPACE_URI, FIRST_PROPERTY_NAME); //return the first element property
+		return (T)resource.getPropertyValue(RDF_NAMESPACE_URI, FIRST_PROPERTY_NAME); //return the first element property
 	}
 
 	/**Retrieves the first element of this list. If this resource has more than one
@@ -196,7 +197,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@return The first element of this list, or <code>null</code> if there is
 		no first element specified.
 	*/
-	public RDFObject getFirst()
+	public E getFirst()
 	{
 		return getFirst(this); //return the first element property
 	}
@@ -230,7 +231,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@param value The first element of the list, or <code>null</code> if the
 		element should be removed.
 	*/
-	public static void setFirst(final RDFResource resource, final RDFObject value)
+	public static <T extends RDFObject> void setFirst(final RDFResource resource, final T value)
 	{
 		if(value!=null)	//if there is a value
 		{
@@ -247,7 +248,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@param value The first element of the list, or <code>null</code> if the
 		element should be removed.
 	*/
-	public void setFirst(final RDFObject value)
+	public void setFirst(final E value)
 	{
 		setFirst(this, value); //set the first value
 	}
@@ -283,9 +284,9 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	}
 
 	/**@return A new instance of an RDF list resource representing the nil resource.*/
-	protected RDFListResource createNil()
+	protected RDFListResource<E> createNil()
 	{
-		return new RDFListResource(getRDF(), NIL_RESOURCE_URI);	//create a nil list resource
+		return new RDFListResource<E>(getRDF(), NIL_RESOURCE_URI);	//create a nil list resource
 	}
 
 	/**Returns the number of elements in this list.  If this list contains more
@@ -323,7 +324,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	}
 
 	/**@return An iterator over the elements in this list in proper sequence.*/
-	public Iterator<RDFObject> iterator()
+	public Iterator<E> iterator()
 	{
 		return new RDFListIterator();	//create a new iterator over all the list elements
 	}
@@ -335,7 +336,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	 * @return a list iterator of the elements in this list (in proper
 	 * 	       sequence).
 	 */
-	public ListIterator<RDFObject> listIterator()
+	public ListIterator<E> listIterator()
 	{
 		return null;	//TODO implement listIterator(), and have iterator() call this
 	}
@@ -355,7 +356,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 *         &lt; 0 || index &gt; size()).
 	 */
-	public ListIterator<RDFObject> listIterator(int index)
+	public ListIterator<E> listIterator(int index)
 	{
 		return null;	//TODO implement listIterator(), and have iterator() call this
 	}
@@ -363,7 +364,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	/**@return an array containing all of the elements in this collection.*/
 	public Object[] toArray()
 	{
-		return toArray(new RDFObject[size()]);	//create a new array of RDF objects, store the elements in it, and return the array
+		return toArray(new RDFObject[size()]);	//create a new array of RDF objects, store the elements in it, and return the array TODO is this correct? check
 	}
 
 	/**Returns an array containing all of the elements in this list. 
@@ -388,7 +389,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 			array=(T[])Array.newInstance(array.getClass().getComponentType(), size);	//create a new array
 		}
 		int i=0;	//this will index into the array we're filling
-		final Iterator<RDFObject> iterator=iterator();	//get an iterator to the elements
+		final Iterator<E> iterator=iterator();	//get an iterator to the elements
 		while(iterator.hasNext())	//while there are more elements
 		{
 			try
@@ -406,7 +407,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 		return array;	//return the array we filled
 	}
 
-	/**Returns the first contained <code>RDFResource</code> with the specified
+	/**Returns the first contained resource with the specified
 	 	reference URI.
 	@param referenceURI The reference URI of the resource to retrieve.
 	@return The first contained resource with the given reference URI, or
@@ -441,7 +442,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 		(<var>index</var>&lt;0 || <var>index</var>&gt;=size()).
 	@see RDFObject
 	*/
-	public RDFObject get(int index)
+	public E get(int index)
 	{
 		int currentIndex=0;	//start out on the first index
 		RDFResource list=this;	//start with this list resource
@@ -469,7 +470,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@exception IndexOutOfBoundsException Thrown if the index is out of range
 		(index &lt; 0 || index &gt;= size()).
 	*/
-	public RDFObject set(final int index, final RDFObject object)
+	public E set(final int index, final E object)
 	{
 		int currentIndex=0;	//start out on the first index
 		RDFResource list=this;	//start with this list resource, which guarantees that the list will not be null the first time around
@@ -477,7 +478,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 		{
 			if(currentIndex==index)	///if this is the correct index
 			{
-				final RDFObject oldFirst=getFirst(list);	//get the current first of the list
+				final E oldFirst=getFirst(list);	//get the current first of the list
 				setFirst(list, object);	//set this element as the value of this node
 				return oldFirst;	//return the element that was previously at this index  
 			}
@@ -496,7 +497,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@exception IllegalArgumentException Thrown some aspect of this element
 		prevents it from being added to this collection.
 	*/
-	public boolean add(final RDFObject object)
+	public boolean add(final E object)
 	{
 		add(size(), object);	//add the object to the end of the list
 		return true;	//show that we modified the list
@@ -517,7 +518,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 		<code>(index &le; 0 || index &gt; size())</code>.
 	@see #create(RDF, URI, RDFObject, RDFResource)
 	*/
-	public void add(final int index, final RDFObject object)
+	public void add(final int index, final E object)
 	{
 		int currentIndex=0;	//start out on the first index
 		RDFResource list=this;	//start with this list resource, which guarantees that the list will not be null the first time around
@@ -526,11 +527,11 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 			if(currentIndex==index)	///if this is the correct index
 			{
 				final URI oldReferenceURI=list.getReferenceURI();	//get the old reference URI of this list element (which might even be the nil URI)
-				final RDFObject oldFirst=getFirst(list);	//get the current first of the list
+				final E oldFirst=getFirst(list);	//get the current first of the list
 				final RDFResource oldRest=getRest(list);	//get the current rest of the list
 				list.setReferenceURI(null);	//effectively change the current node into an anonymous node
 				setFirst(list, object);	//set this element as the value of this node
-				setRest(list, new RDFListResource(oldReferenceURI, oldFirst, oldRest));	//create a new element that mimics the old one, and add it as the rest of the list
+				setRest(list, new RDFListResource<E>(oldReferenceURI, oldFirst, oldRest));	//create a new element that mimics the old one, and add it as the rest of the list
 				return;	//we've inserted the element, so there's nothing more to do here 
 			}
 			if(!RDFUtilities.isNil(list))	//if we're not at the last element
@@ -556,13 +557,13 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	*/
 	public boolean remove(final Object object)
 	{
-		final RDFObject rdfObject=(RDFObject)object;	//cast the object to an RDF object to make sure it's the correct type
+//TODO del		final RDFObject rdfObject=(RDFObject)object;	//cast the object to an RDF object to make sure it's the correct type
 		RDFResource list=this;	//start with this list resource
 		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			final RDFObject first=getFirst(list);	//get the first object
 			final RDFResource rest=getRest(list);	//get the rest of the list
-			if(ObjectUtilities.equals(rdfObject, first))	//if this node contains the correct object
+			if(ObjectUtilities.equals(object, first))	//if this node contains the correct object
 			{
 				setFirst(list, getFirst(rest));	//transfer the element of the next node to this node
 				setRest(list, getRest(rest));	//transfer the rest of the next node to this node					
@@ -583,13 +584,13 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	@exception IndexOutOfBoundsException Thrown if the index is out of range
 		(index &lt; 0 || index &gt;= size()).
 	*/
-	public RDFObject remove(final int index)
+	public E remove(final int index)
 	{
 		int currentIndex=0;	//start out on the first index
 		RDFResource list=this;	//start with this list resource
 		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
 		{
-			final RDFObject first=getFirst(list);	//get the first object
+			final E first=getFirst(list);	//get the first object
 			final RDFResource rest=getRest(list);	//get the rest of the list
 			if(currentIndex==index)	///if this is the correct index
 			{
@@ -640,10 +641,10 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 		collection prevents it from being added to this list.
 	@see #add(Object)
 	*/
-	public boolean addAll(final Collection<? extends RDFObject> collection)
+	public boolean addAll(final Collection<? extends E> collection)
 	{
 		boolean modified=false;	//we haven't modified the list, yet
-    for(RDFObject resource:collection)   //look at each resource in the collection
+    for(E resource:collection)   //look at each resource in the collection
 		{
 			if(add(resource))	//add the next element to our list; if the operation modified the list
 			{
@@ -683,7 +684,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	 * @throws IndexOutOfBoundsException if the index is out of range (index
 	 *		  &lt; 0 || index &gt; size()).
 	 */
-	public boolean addAll(final int index, final Collection<? extends RDFObject> collection)	//TODO implement addAll(int, Collection)
+	public boolean addAll(final int index, final Collection<? extends E> collection)	//TODO implement addAll(int, Collection)
 	{
 		throw new UnsupportedOperationException("RDFListResource does not yet support addAll(int, Collection)");		
 	}
@@ -740,12 +741,12 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	public int indexOf(final Object object)
 	{
 		int index=0;	//start out on the first index
-		final RDFObject rdfObject=(RDFObject)object;	//cast the object to an RDF object to make sure it's the correct type
+//TODO del		final RDFObject rdfObject=(RDFObject)object;	//cast the object to an RDF object to make sure it's the correct type
 		RDFResource list=this;	//start with this list resource
 		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			final RDFObject first=getFirst(list);	//get the first object
-			if(ObjectUtilities.equals(rdfObject, first))	//if the objects are equal (taking into account nulls)
+			if(ObjectUtilities.equals(object, first))	//if the objects are equal (taking into account nulls)
 			{
 				return index;	//show the index at which we found the object 
 			}
@@ -767,12 +768,12 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	{
 		int lastIndexOf=-1;	//start off not knowing the last index of the object
 		int index=0;	//start out on the first index
-		final RDFObject rdfObject=(RDFObject)object;	//cast the object to an RDF object to make sure it's the correct type
+//TODO del		final RDFObject rdfObject=(RDFObject)object;	//cast the object to an RDF object to make sure it's the correct type
 		RDFResource list=this;	//start with this list resource
 		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			final RDFObject first=getFirst(list);	//get the first object
-			if(ObjectUtilities.equals(rdfObject, first))	//if the objects are equal (taking into account nulls)
+			if(ObjectUtilities.equals(object, first))	//if the objects are equal (taking into account nulls)
 			{
 				lastIndexOf=index;	//keep track of the last index at which we found the object 
 			}
@@ -824,7 +825,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	 * @throws IndexOutOfBoundsException for an illegal endpoint index value
 	 *     (fromIndex &lt; 0 || toIndex &gt; size || fromIndex &gt; toIndex).
 	 */
-	public List<RDFObject> subList(final int fromIndex, final int toIndex)
+	public List<E> subList(final int fromIndex, final int toIndex)
 	{
 		return null;	//TODO implement subList()
 	}
@@ -832,7 +833,7 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 	/**An iterator that allows iteration over the the elements in the list resource.
 	<p>This implementation does not support <code>remove()</code>.</p>
 	*/
-	protected class RDFListIterator implements Iterator<RDFObject>
+	protected class RDFListIterator implements Iterator<E>
 	{
 		/**The next list resource in the list.*/
 		protected RDFResource nextList;
@@ -854,11 +855,11 @@ public class RDFListResource extends TypedRDFResource implements List<RDFObject>
 		/**@return The next element in the iteration.
 		@exception NoSuchElementException iteration has no more elements.
 		*/
-		public RDFObject next()
+		public E next()
 		{
 			if(nextList!=null && !RDFUtilities.isNil(nextList))	//if we have a next list that isn't the nil resource
 			{
-				final RDFObject nextResource=getFirst(nextList);	//get the element represented by the list
+				final E nextResource=getFirst(nextList);	//get the element represented by the list
 				if(nextResource!=null)	//if there is a next resource
 				{
 					nextList=getRest(nextList);	//show which list (if any) holds the rest of the list elements

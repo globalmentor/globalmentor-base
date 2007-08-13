@@ -46,9 +46,9 @@ public class Binding extends TypedRDFResource
 	@return The spine of the resource, or <code>null</code> if no manifest
 		property exists or the manifest is not a list resource.
 	*/
-	public RDFListResource getSpine()
+	public RDFListResource<RDFResource> getSpine()
 	{
-		return asListResource(getPropertyValue(XEB_NAMESPACE_URI, SPINE_PROPERTY_NAME)); //return the spine as a list resource
+		return (RDFListResource<RDFResource>)asListResource(getPropertyValue(XEB_NAMESPACE_URI, SPINE_PROPERTY_NAME)); //return the spine as a list resource
 	}
 
 }

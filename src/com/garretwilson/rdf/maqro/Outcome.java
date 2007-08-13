@@ -60,7 +60,7 @@ public class Outcome extends TypedRDFResource
 	/**@return The list of outcomes for this interaction's contained interactions,
 		or <code>null</code> if there is no list of outcomes or the value is not a list.
 	*/
-	public RDFListResource getOutcomes()
+	public RDFListResource<?> getOutcomes()
 	{
 		return RDFUtilities.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, OUTCOMES_PROPERTY_NAME));	//get the maqro:outcomes property value as a list	
 	}

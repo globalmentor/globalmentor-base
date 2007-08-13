@@ -79,7 +79,7 @@ public class Directory
 		checkInstance(rdfObject, "RDF object cannot be null.");
 		if(rdfObject instanceof RDFListResource)	//if the object is a list
 		{
-			final RDFListResource rdfList=(RDFListResource)rdfObject;	//get the object as a list
+			final RDFListResource<?> rdfList=(RDFListResource<?>)rdfObject;	//get the object as a list
 			final List<LocaleText> texts=new ArrayList<LocaleText>(rdfList.size());	//create a list of locale texts
 			for(final RDFObject item:rdfList)	//for each list element
 			{
