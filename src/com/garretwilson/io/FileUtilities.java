@@ -3,6 +3,7 @@ package com.garretwilson.io;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
 import static java.util.Collections.*;
 
 import javax.mail.internet.ContentType;
@@ -12,8 +13,8 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.RDF;
 import com.garretwilson.rdf.RDFIO;
-import com.garretwilson.util.Debug;
 
+import static com.garretwilson.io.ContentTypeConstants.*;
 import static com.garretwilson.io.FileConstants.*;
 import static com.garretwilson.io.InputStreamUtilities.*;
 import static com.garretwilson.lang.CharSequenceUtilities.*;
@@ -28,6 +29,51 @@ import static com.garretwilson.net.URIUtilities.*;
 public class FileUtilities
 {
 
+	/**A singleton read-only map of lowercase file extensions and the corresponding content types they represent.*/
+	public final static Map<String, ContentType> FILE_EXTENSION_CONTENT_TYPE_MAP;
+
+	static
+	{
+		final Map<String, ContentType> tempFileExtensionContentTypeMap=new HashMap<String, ContentType>();	//create a new hash map in which to store extensions, and add the default extensions
+		tempFileExtensionContentTypeMap.put("asi", new ContentType(APPLICATION, "x-qti-assessment", null));
+		tempFileExtensionContentTypeMap.put(AU_EXTENSION, new ContentType(AUDIO, BASIC_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(BMP_EXTENSION, new ContentType(IMAGE, X_BITMAP_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(CLASS_EXTENSION, new ContentType(APPLICATION, JAVA_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(CSS_EXTENSION, new ContentType(TEXT, CSS_SUBTYPE, null));	//text/css
+		tempFileExtensionContentTypeMap.put(DICTO_EXTENSION, new ContentType(APPLICATION, X_DICTO_RDF_XML_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(DOC_EXTENSION, new ContentType(APPLICATION, MSWORD_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(GIF_EXTENSION, new ContentType(IMAGE, GIF_SUBTYPE, null));	//image/gif
+		tempFileExtensionContentTypeMap.put(HTM_EXTENSION, new ContentType(TEXT, HTML_SUBTYPE, null));	//TODO make sure changing this to text/html doesn't cause other methods to fail; nevertheless, we can't assume all .html files are XHTML (i.e. valid XML)
+		tempFileExtensionContentTypeMap.put(HTML_EXTENSION, new ContentType(TEXT, HTML_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(ICAL_EXTENSION, new ContentType(TEXT, CALENDAR_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(JAVA_EXTENSION, new ContentType(TEXT, JAVA_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(JPEG_EXTENSION, new ContentType(IMAGE, JPEG_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(JPG_EXTENSION, new ContentType(IMAGE, JPEG_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(JS_EXTENSION, new ContentType(TEXT, JAVASCRIPT_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put("marmox", new ContentType(APPLICATION, "x-marmox-page+rdf+xml", null));
+		tempFileExtensionContentTypeMap.put(MAQRO_EXTENSION, new ContentType(APPLICATION, X_MAQRO_RDF_XML_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(MP3_EXTENSION, new ContentType(AUDIO, MPEG_SUBTYPE, null));	//RFC 3003
+		tempFileExtensionContentTypeMap.put(MPEG_EXTENSION, new ContentType(VIDEO, MPEG_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(MPG_EXTENSION, new ContentType(VIDEO, MPEG_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(OGG_EXTENSION, new ContentType(APPLICATION, OGG_SUBTYPE, null));	//application/ogg (RFC 3534)
+		tempFileExtensionContentTypeMap.put(OEB_ZIP_EXTENSION, new ContentType(APPLICATION, X_OEB_PUBLICATION_ZIP_SUBTYPE, null));	//oebzip
+		tempFileExtensionContentTypeMap.put(OEB1_PACKAGE_EXTENSION, new ContentType(APPLICATION, X_OEB1_PACKAGE_XML_SUBTYPE, null));	//opf
+		tempFileExtensionContentTypeMap.put(PDF_EXTENSION, new ContentType(APPLICATION, PDF_SUBTYPE, null));	//pdf
+		tempFileExtensionContentTypeMap.put(PNG_EXTENSION, new ContentType(IMAGE, PNG_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(QRO_EXTENSION, new ContentType(APPLICATION, X_QRO_RDF_XML_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put("qti", new ContentType(APPLICATION, "x-qti", null)); //G***use a constant here
+		tempFileExtensionContentTypeMap.put(RAR_EXTENSION, new ContentType(APPLICATION, X_RAR_COMPRESSED_SUBTYPTE, null));
+		tempFileExtensionContentTypeMap.put(TIF_EXTENSION, new ContentType(IMAGE, TIFF_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(TIFF_EXTENSION, new ContentType(IMAGE, TIFF_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(TXT_EXTENSION, new ContentType(TEXT, PLAIN_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, new ContentType(TEXT, DIRECTORY_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(WAV_EXTENSION, new ContentType(AUDIO, X_WAV_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(XEB_EXTENSION, new ContentType(APPLICATION, X_XEBOOK_RDF_XML_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(XEB_ZIP_EXTENSION, new ContentType(APPLICATION, X_XEBOOK_RDF_XML_ZIP_SUBTYPE, null));	//oebzip
+		tempFileExtensionContentTypeMap.put(ZIP_EXTENSION, new ContentType(APPLICATION, ZIP_SUBTYPE, null));
+		FILE_EXTENSION_CONTENT_TYPE_MAP=unmodifiableMap(tempFileExtensionContentTypeMap);	//store read-only access to the map		
+	}
+
 	/**This class cannot be publicly instantiated.*/
   private FileUtilities()
 	{
@@ -37,7 +83,7 @@ public class FileUtilities
 		the new extension.
 		The filename is not checked to see if it currently has an extension.
 	@param file The file to which to add an extension.
-	@param extension The extension to set
+	@param extension The extension to add.
 	@return The file with the new extension.
 	*/
 	public static File addExtension(final File file, final String extension)
@@ -45,16 +91,16 @@ public class FileUtilities
 		return new File(addExtension(file.getPath(), extension));	//add an extension to the path and create and return a new file with that 
 	}
 	
-	/**Adds the given extension to a filename and returns the new filename with
-		the new extension.
-		The filename is not checked to see if it currently has an extension.
+	/**Adds the given extension to a filename and returns the new filename with the new extension.
+	The filename is not checked to see if it currently has an extension.
 	@param filename The filename to which to add an extension.
-	@param extension The extension to set
+	@param extension The extension to add.
 	@return The filename with the new extension.
+	@exception NullPointerException if the given extension is <code>null</code>.
 	*/
 	public static String addExtension(final String filename, final String extension)
 	{
-		return new StringBuilder(filename).append(EXTENSION_SEPARATOR).append(extension).toString();  //add the requested extension and return the new filename
+		return new StringBuilder(filename).append(EXTENSION_SEPARATOR).append(checkInstance(extension, "Extension cannot be null")).toString();  //add the requested extension and return the new filename
 	}
 
 	/**Creates a temporary file in the standard temporary directory with automatic deletion on JVM exit.
@@ -209,7 +255,17 @@ public class FileUtilities
 		final int separatorIndex=getExtensionSeparatorIndex(filename); //see if we can find the extension separator
 		return separatorIndex>=0 ? filename.substring(separatorIndex+1) : null;	//if we found a separator, return everything after it 
 	}
-	
+
+	/**Returns the media type for the specified file extension.
+	The file extension is first converted to lowercase before an attempt is made to look up a media type.
+	@param fileExtension The file extension, without the '.', or <code>null</code> if there is no extension.
+	@return The default media type for the file extension, or <code>null</code> if no known media type is associated with this file extension.
+	*/
+	public static ContentType getExtensionContentType(final String fileExtension)
+	{
+		return FILE_EXTENSION_CONTENT_TYPE_MAP.get(fileExtension!=null ? fileExtension.toLowerCase() : null);	//see if the file extension exists as a key in the file extension map
+	}
+
 	/**Changes the name of a file and returns a new file with the new name.
 	@param file The file to examine.
 	@param name The new name of the file.
@@ -312,14 +368,13 @@ public class FileUtilities
 	/**Returns the media type for the specified file based on its extension.
 	@param file The file for which to return a media type.
 	@return The default media type for the file's extension, or <code>null</code>
-		if no known media type is associated with this file's extension, or if this
-		file has no extension.
-	@see ContentTypeUtilities#getMediaType(String)
+		if no known media type is associated with this file's extension.
+	@see FileUtilities#getExtensionContentType(String)
 	*/
-	public static ContentType getMediaType(final File file)
+	public static ContentType getContentType(final File file)
 	{
 		final String extension=getExtension(file);  //get the file's extension
-		return extension!=null ? ContentTypeUtilities.getMediaType(extension) : null; //return the media type based on the file's extension, if there is one
+		return getExtensionContentType(extension); //return the media type based on the file's extension
 	}
 
 	/**Returns the appropriate URI for a directory, whether or not the directory
@@ -348,12 +403,12 @@ public class FileUtilities
 	@return The default media type for the filename's extension, or <code>null</code>
 		if no known media type is associated with this file's extension or if the
 		filename has no extension.
-	@see ContentTypeUtilities#getMediaType(String)
+	@see FileUtilities#getExtensionContentType(String)
 	*/
 	public static ContentType getMediaType(final String filename)
 	{
 		final String extension=getExtension(filename);  //get the file's extension
-		return extension!=null ? ContentTypeUtilities.getMediaType(extension) : null; //return the media type based on the filename's extension, if there is one
+		return extension!=null ? FileUtilities.getExtensionContentType(extension) : null; //return the media type based on the filename's extension, if there is one
 	}
 
 	/**Determines the path of the file relative to a root directory. Backslashes

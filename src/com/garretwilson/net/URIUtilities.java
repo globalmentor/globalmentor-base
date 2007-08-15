@@ -15,6 +15,7 @@ import com.garretwilson.text.SyntaxException;
 import com.garretwilson.text.unicode.UnicodeCharacter;
 import com.garretwilson.util.*;
 
+import static com.garretwilson.io.FileConstants.EXTENSION_SEPARATOR;
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
@@ -108,7 +109,7 @@ public class URIUtilities
 				--endIndex;	//skip the ending path separator
 			}
 			final int beginIndex=path.lastIndexOf(PATH_SEPARATOR, endIndex-1)+1;	//get the index after the previous separator; if there are no previous separators, this will correctly yield index 0
-			if(endIndex-beginIndex>1)	//if there are characters to collect (if not, this is the root path, "/") (there must be more than one position difference in the start and end positions, because the end position is the index after the last character)
+			if(endIndex-beginIndex>0)	//if there are characters to collect (if not, this is the root path, "/")
 			{
 				return path.substring(beginIndex, endIndex);	//return the name we found
 			}
@@ -116,7 +117,7 @@ public class URIUtilities
 		}
 		return path;	//the path (either "" or "/") is already its name
 	}
-	
+
 	/**Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component.
 	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
 	As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
@@ -219,6 +220,69 @@ public class URIUtilities
 	public static URI changeName(final URI uri, final String name)
 	{
 		return changeRawName(uri, URIPath.encodeSegment(name));	//encode the name and change the name of the URI's path
+	}
+
+	/**Adds the given extension to a name and returns the new name with the new extension.
+	The name is not checked to see if it currently has an extension.
+	@param name The name to which to add an extension.
+	@param extension The extension to add.
+	@return The name with the new extension.
+	@exception NullPointerException if the given extension is <code>null</code>.
+	*/
+	public static String addNameExtension(final String name, final String extension)
+	{
+		return new StringBuilder(name).append(EXTENSION_SEPARATOR).append(checkInstance(extension, "Extension cannot be null")).toString();  //add the requested extension and return the new filename
+	}
+
+	/**Extracts the extension from a name.
+	@param name The URI name to examine.
+	@return The extension of the name (not including '.'), or <code>null</code> if no extension is present.
+	*/
+	public static String getNameExtension(final String name)
+	{
+		final int separatorIndex=name.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
+		return separatorIndex>=0 ? name.substring(separatorIndex+1) : null;	//if we found a separator, return everything after it 
+	}
+
+	/**Changes the extension of a name and returns a new name with the new extension.
+	If the name does not currently have an extension, one will be added.
+	@param name The name to examine.
+	@param extension The extension to set, or <code>null</code> if the extension should be removed.
+	@return The name with the new extension.
+	*/
+	public static String changeNameExtension(String name, final String extension)
+	{
+		final int separatorIndex=name.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator
+		if(separatorIndex>=0)  //if we found a separator
+		{
+			name=name.substring(0, separatorIndex); //remove the extension
+		}
+		if(extension!=null)	//if an extension was given
+		{
+			name=addNameExtension(name, extension);	//add the requested extension
+		}
+		return name;	//return the new filename
+	}
+
+	/**Adds the extension, if any, of a name and returns the new name.
+	This is a convenience method that delegates to {@link #addNameExtension(String, String)} if a non-<code>null</code> extension is given.
+	@param name The name to examine.
+	@param extension The extension to add, or <code>null</code> if no extension should be added.
+	@return The name with the new extension, if any.
+	*/
+	public static String setNameExtension(final String name, final String extension)
+	{
+		return extension!=null ? addNameExtension(name, extension) : name;	//if an extension was given, add it; otherwise, return the name unmodified
+	}
+
+	/**Removes the extension, if any, of a name and returns a new name with no extension.
+	This is a convenience method that delegates to {@link #changeNameExtension(String, String)}.
+	@param name The name to examine.
+	@return The name with no extension.
+	*/
+	public static String removeNameExtension(final String name)
+	{
+		return changeNameExtension(name, null);	//replace the extension with nothing
 	}
 
 	/**Creates a new URI identical to the supplied URI with no query or fragment.
@@ -720,36 +784,17 @@ public class URIUtilities
 		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
 	}
 
-	/**Retrieves a <code>File</code> representing the file of the URI.
-	@param uri The URI for which to return a file.
-	@return A <code>File</code> object representing the file path of the URI with no query string, or <code>null</code> if there is no path.
+	/**Returns the content type for the specified URI based on its name extension.
+	@param uri The URI for which to return a content type.
+	@return The default content type for the URI's name extension, or <code>null</code> if no known content type is associated with this URI's extension.
+	@see FileUtilities#getExtensionContentType(String)
+	@see #getRawName(URI)
+	@see #getNameExtension(String)
 	*/
-	public static File getFile(final URI uri)
+	public static ContentType getContentType(final URI uri)
 	{
-		final String path=uri.getPath();	//get the path of the URI
-		return path!=null ? new File(uri.getPath()) : null; //create a new File from the URI path, if there is one
-	}
-
-	/**Retrieves the file name of the URI.
-	@param uri The URI for which to return a file name.
-	@return The name of the file in the URI.
-	@see #getFile(URI)
-	*/
-	public static String getFileName(final URI uri)
-	{
-		return getFile(uri).getName();  //return the name of the file we construct from the URI
-	}
-
-	/**Returns the media type for the specified URI based on its file extension.
-	@param uri The URI for which to return a media type.
-	@return The default media type for the URI's file extension, or <code>null</code>
-		if no known media type is associated with this URI's extension.
-	@see ContentTypeUtilities#getMediaType
-	*/
-	public static ContentType getMediaType(final URI uri)
-	{
-		final File file=getFile(uri);	//get the file from the URI
-		return file!=null ? ContentTypeUtilities.getMediaType(FileUtilities.getExtension(file)) : null; //return the media type based on the extension of the URI filename, if there is one
+		final String rawPath=uri.getRawPath();	//get the raw path
+		return rawPath!=null ? FileUtilities.getExtensionContentType(getNameExtension(getRawName(uri))) : null; //return the content type based on the extension of the URI name, if there is one
 	}
 
 	/**Normalizes the given path by resolving the '.' and '..' path segments.
@@ -1000,7 +1045,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 //G***del that was input to the new, redirected URL
 
 	    if (redirect) {
-		String loc = conn.getHeaderField("Location");
+		String loc = conn.getHeaderField("L4ocation");
 		if (loc.startsWith("http", 0)) {
 		    page = new URL(loc);
 		} else {
