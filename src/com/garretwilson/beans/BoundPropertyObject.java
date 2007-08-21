@@ -238,7 +238,7 @@ public class BoundPropertyObject implements PropertyBindable
 	{
 		if(oldValue!=newValue)	//if the values are different
 		{
-			firePropertyChange(propertyName, new Integer(oldValue), new Integer(newValue));	//convert the primitive values to objects and fire the event
+			firePropertyChange(propertyName, Integer.valueOf(oldValue), Integer.valueOf(newValue));	//convert the primitive values to objects and fire the event
 		}
 	}
 

@@ -41,6 +41,21 @@ public class IntegerUtilities
 		return value;	//return the value, which has been determined to be within the range
   }
 
+	/**Checks to make sure that a given value is not smaller than the given minimum.
+	@param value The value to check.
+	@param rangeMin The minimum range value, inclusive.
+	@exception IllegalArgumentException if the value is less than the range minimum.
+	@return The given value.
+	*/
+	public static int checkMinimum(final int value, final int rangeMin)
+	{
+		if(value<rangeMin)	//if the value not within the range
+		{
+			throw new IllegalArgumentException("Value "+value+" cannot be less than "+rangeMin);
+		}
+		return value;	//return the value, which has been determined to be within the range
+  }
+
 	/**Compares an integer object with the value of a literal integer.
 	@param integerObject The object that supposedly holds an integer.
 	@param integer The literal integer value to compare to the integer object.

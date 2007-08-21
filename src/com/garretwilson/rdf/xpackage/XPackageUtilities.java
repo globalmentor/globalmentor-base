@@ -15,6 +15,8 @@ import com.garretwilson.rdf.xmlschema.URILiteral;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.xpackage.XPackageConstants.*;
 import com.garretwilson.util.Debug;
+import com.globalmentor.marmot.Marmot;
+
 import org.w3c.dom.*;
 
 import java.net.URI;	//G***del when other URI is removed
@@ -98,17 +100,8 @@ public class XPackageUtilities
 		  //create a manifest resource from the data model
 		final RDFListResource manifestResource=new RDFListResource(resource.getRDF());
 			//add a manifest to the resource
-		resource.addProperty(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME, manifestResource);
+		resource.addProperty(XPACKAGE_NAMESPACE_URI, Marmot.CONTENTS_PROPERTY_NAME, manifestResource);
 		return manifestResource;  //return the manifest resource we created
-	}
-
-	/**Set the <code>&lt;xpackage:manifest&gt;</code> property of the resource.
-	@param resource The resource for which a property should be set.
-	@param manifestResource The manifest resource, an <code>&lt;rdf:List&gt;</code>.
-	*/
-	public static void setManifest(final RDFResource resource, final RDFListResource manifestResource)
-	{
-		resource.setProperty(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME, manifestResource);	//set the manifest of the resource
 	}
 
 	/**Creates a default XPackage package description document.
@@ -191,7 +184,7 @@ public class XPackageUtilities
 	*/
 	public static RDFResource getManifestItem(final RDFResource resource, final URI referenceURI)
 	{
-		final RDFListResource manifest=getManifest(resource);  //get the manifest of this resource
+		final RDFListResource manifest=Marmot.getContents(resource);  //get the manifest of this resource
 		if(manifest!=null)  //if this resource has a manifest
 		{
 			final Iterator itemIterator=manifest.iterator();  //get an iterator to look through the items
@@ -290,7 +283,7 @@ Debug.trace("looking at resource: ", resource); //G***del
 	*/
 	public static RDFResource getManifestItemByLocationHRef(final RDFResource resource, final URI baseURI, final String href)
 	{
-		final RDFListResource manifest=getManifest(resource);  //get the manifest of this resource
+		final RDFListResource manifest=Marmot.getContents(resource);  //get the manifest of this resource
 		if(manifest!=null)  //if this resource has a manifest
 		{
 			return getItemByLocationHRef(manifest, baseURI, href);  //get an item in the manifest that matches the given location
@@ -315,7 +308,7 @@ Debug.trace("looking at resource: ", resource); //G***del
 	*/
 	public static RDFResource getManifestItemByLocationHRef(final RDFResource resource, final URI baseURI, final URI uri)
 	{
-		final RDFListResource manifest=getManifest(resource);  //get the manifest of this resource
+		final RDFListResource manifest=Marmot.getContents(resource);  //get the manifest of this resource
 		if(manifest!=null)  //if this resource has a manifest
 		{
 			return getItemByLocationHRef(manifest, baseURI, uri);  //get an item in the manifest that matches the given location
@@ -404,18 +397,6 @@ Debug.trace("looking at resource: ", resource); //G***del
 		}
 		else  //if there is no location
 			return null;  //show that there is no location
-	}
-
-	/**Retrieves the manifest of the resource. If this resource has more than one
-		property of <code>xpackage:manifest</code>, it is undefined which of those
-		property values will be returned.
-	@param resource The resource the manifest of which will be returned.
-	@return The manifest of the resource, or <code>null</code> if no manifest
-		property exists or the manifest is not a list resource.
-	*/
-	public static RDFListResource<RDFResource> getManifest(final RDFResource resource)
-	{
-		return (RDFListResource<RDFResource>)asListResource(resource.getPropertyValue(XPACKAGE_NAMESPACE_URI, MANIFEST_PROPERTY_NAME)); //return the manifest as a list resource
 	}
 
 }

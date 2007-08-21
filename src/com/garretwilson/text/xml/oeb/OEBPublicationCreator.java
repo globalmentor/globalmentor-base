@@ -1154,7 +1154,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 //G***del								oebItem=new OEBItem(publication, itemID, hrefRelativePath, mediaType);
 								XPackageUtilities.addLocation(oebItem, hrefRelativePath);  //add the relative href to the item
 								Marmot.addContentType(oebItem, mediaType); //add the content type we determined
-								XPackageUtilities.getManifest(publication).add(oebItem); //add the item to the publication's manifest
+								Marmot.getContents(publication).add(oebItem); //add the item to the publication's manifest
 								  //if this is an OEB document, and we should add it to the spine
 								if(shouldAddToSpine && mediaType.match(OEB10_DOCUMENT_MEDIA_TYPE))
 								{
