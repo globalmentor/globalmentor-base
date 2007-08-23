@@ -58,7 +58,7 @@ public class BoundPropertyObject implements PropertyBindable
 
 		/**@return A property change listener to repeat copies of events received, using this component as the source.*/ 
 		protected synchronized PropertyChangeListener getRepeatPropertyChangeListener()	//TODO update to work with PropertyValueChangeEvent
-		{
+		{	//TODO synchronize on something else
 			if(repeatPropertyChangeListener==null)	//if we have not yet created the repeater property change listener
 			{
 				repeatPropertyChangeListener=new PropertyChangeListener()	//create a listener to listen for a changing property value
@@ -78,7 +78,7 @@ public class BoundPropertyObject implements PropertyBindable
 	private PropertyChangeListener forwardPropertyChangeListener=null;
 
 		/**@return A lazily-created property change listener to forward along events received unmodified.*/ 
-		protected synchronized PropertyChangeListener getForwardPropertyChangeListener()
+		protected synchronized PropertyChangeListener getForwardPropertyChangeListener()	//TODO synchronize on something else
 		{
 			if(forwardPropertyChangeListener==null)	//if we have not yet created the forward property change listener
 			{
@@ -98,7 +98,7 @@ public class BoundPropertyObject implements PropertyBindable
 
 		/**@return A vetoable change listener to repeat copies of events received, using this component as the source.*/ 
 		protected synchronized VetoableChangeListener getRepeatVetoableChangeListener()	//TODO update to work with PropertyValueChangeEvent
-		{
+		{	//TODO synchronize on something else
 			if(repeatVetoableChangeListener==null)	//if we have not yet created the repeater vetoable change listener
 			{
 				repeatVetoableChangeListener=new VetoableChangeListener()	//create a listener to listen for a changing property value
