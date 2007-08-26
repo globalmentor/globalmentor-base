@@ -55,15 +55,20 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		ANY
 	};
 
-	//constants for parseAttributeProperties() TODO convert to enum values
-	/**An attribute in the context of a resource description (<code>&lt;rdf:Description&gt;</code>).*/
-	protected static final int DESCRIPTION_CONTEXT=1;
-	/**An attribute in the context of a resource reference (<code>reference="&hellip;"</code>).*/
-	protected static final int REFERENCE_CONTEXT=2;
-	/**An attribute in the context of a property reference with only attributes and no children.*/
-	protected static final int EMPTY_PROPERTY_CONTEXT=3;
-	/**An attribute in the context of a reference short form (<code>parseType="Resource"</code>).*/
-	protected static final int PROPERTY_AND_NODE_CONTEXT=4;
+	/**Values for parsing attribute properties.
+	@author Garret Wilson
+	*/
+	protected enum AttributePropertyContext
+	{
+		/**An attribute in the context of a resource description (<code>&lt;rdf:Description&gt;</code>).*/
+		DESCRIPTION,
+		/**An attribute in the context of a resource reference (<code>reference="&hellip;"</code>).*/
+		REFERENCE,
+		/**An attribute in the context of a property reference with only attributes and no children.*/
+		EMPTY_PROPERTY,
+		/**An attribute in the context of a reference short form (<code>parseType="Resource"</code>).*/
+		PROPERTY_AND_NODE;
+	}
 
 	/**Whether and which namespace is required for an RDF attribute to be recognized as such.*/
 	private NamespaceRequirement rdfAttributeNamespaceRequirement=NamespaceRequirement.RDF_OR_NULL;
@@ -285,7 +290,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		{
 */
 //TODO del Debug.trace("ready to process attribute properties");
-		processAttributeProperties(resource, element, DESCRIPTION_CONTEXT);  //parse the attributes for the resource description
+		processAttributeProperties(resource, element, AttributePropertyContext.DESCRIPTION);  //parse the attributes for the resource description
 	//TODO del Debug.trace("ready to process child element properties");
 		processChildElementProperties(resource, element);	//parse the child elements as properties
 	//TODO del Debug.trace("ready to return property value resource", resource, "type", resource.getClass());
@@ -326,16 +331,14 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		properties should be added.
 	@param element The element that contains the attributes to be considered
 		properties.
-	@param context The context, <code>DESCRIPTION_CONTEXT</code>,
-		<code>REFERENCE_CONTEXT</code>, <code>PROPERTY_AND_NODE_CONTEXT</code>,
-		or <code>EMPTY_PROPERTY_CONTEXT</code>, describing whether the attributes
-		are part of a resource description, a resource reference, or a reference to
-		a blank node resource in short form, or the creation of a blank node from
-		an empty property element, respectively.
+	@param context Whether the attributes are part of a resource description, a resource reference,
+		a reference to a blank node resource in short form, or the creation of a blank node from
+		an empty property element.
 	@exception URISyntaxException Thrown if an RDF URI is syntactically incorrect.
 	*/
-	protected void processAttributeProperties(final Resource resource, final Element element, final int context) throws URISyntaxException
+	protected void processAttributeProperties(final Resource resource, final Element element, final AttributePropertyContext context) throws URISyntaxException
 	{
+			//TODO make sure we make sure there is no reference or node ID attributes for AttributePropertyContext.EMPTY_PROPERTY
 		final URI elementNamespaceURI=element.getNamespaceURI()!=null ? new URI(element.getNamespaceURI()) : null; //get the element's namespace, or null if there is no namespace URI
 		final NamedNodeMap attributeNodeMap=element.getAttributes();  //get a map of the attributes
 		for(int i=attributeNodeMap.getLength()-1; i>=0; --i)  //look at each of the attributes
@@ -366,12 +369,11 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			{
 				switch(context)	//only allow this attribute in certain contexts
 				{
-					case REFERENCE_CONTEXT:	//rdf:about isn't allowed in a reference
-					case EMPTY_PROPERTY_CONTEXT:	//rdf:about isn't allowed in an empty property element
-					case PROPERTY_AND_NODE_CONTEXT: 	//rdf:about isn't allowed in parseType="Resource"
-						Debug.error("rdf:about attribute is not allowed in a resource reference."); //TODO fix with real exceptions
-						return;
-					case DESCRIPTION_CONTEXT:	//ignore rdf:about in descriptions
+					case REFERENCE:	//rdf:about isn't allowed in a reference
+					case EMPTY_PROPERTY:	//rdf:about isn't allowed in an empty property element
+					case PROPERTY_AND_NODE: 	//rdf:about isn't allowed in parseType="Resource"
+						throw new IllegalStateException("rdf:about attribute is not allowed in a resource reference."); //TODO fix with real exceptions
+					case DESCRIPTION:	//ignore rdf:about in descriptions
 					default:
 						continue;
 				}
@@ -381,12 +383,11 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			{
 				switch(context)	//only allow this attribute in certain contexts
 				{
-					case REFERENCE_CONTEXT:	//rdf:ID isn't allowed in a reference
-					case EMPTY_PROPERTY_CONTEXT:	//rdf:ID isn't allowed in an empty property element
-					case PROPERTY_AND_NODE_CONTEXT: 	//rdf:ID isn't allowed in parseType="Resource"
-						Debug.error("rdf:ID attribute is not allowed in a resource reference."); //TODO fix with real exceptions
-						return;
-					case DESCRIPTION_CONTEXT:	//ignore rdf:ID in descriptions
+					case REFERENCE:	//rdf:ID isn't allowed in a reference
+					case EMPTY_PROPERTY:	//rdf:ID isn't allowed in an empty property element
+					case PROPERTY_AND_NODE: 	//rdf:ID isn't allowed in parseType="Resource"
+						throw new IllegalStateException("rdf:ID attribute is not allowed in a resource reference."); //TODO fix with real exceptions
+					case DESCRIPTION:	//ignore rdf:ID in descriptions
 					default:
 						continue;
 				}
@@ -396,12 +397,11 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			{
 				switch(context)	//only allow this attribute in certain contexts
 				{
-					case PROPERTY_AND_NODE_CONTEXT: 	//rdf:nodeID isn't allowed in parseType="Resource" G***make sure this is correct
-						Debug.error("rdf:nodeID attribute is not allowed in blank node reference short form."); //TODO fix with real exceptions
-						return;
-					case REFERENCE_CONTEXT:	//ignore rdf:nodeID in references
-					case EMPTY_PROPERTY_CONTEXT:	//ignore rdf:nodeID in empty property elements G***make sure this is correct
-					case DESCRIPTION_CONTEXT:	//ignore rdf:nodeID in descriptions
+					case PROPERTY_AND_NODE: 	//rdf:nodeID isn't allowed in parseType="Resource" G***make sure this is correct
+						throw new IllegalStateException("rdf:nodeID attribute is not allowed in blank node reference short form."); //TODO fix with real exceptions
+					case REFERENCE:	//ignore rdf:nodeID in references
+					case EMPTY_PROPERTY:	//ignore rdf:nodeID in empty property elements G***make sure this is correct
+					case DESCRIPTION:	//ignore rdf:nodeID in descriptions
 					default:
 						continue;
 				}
@@ -411,12 +411,11 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			{
 				switch(context)	//only allow this attribute in certain contexts
 				{
-					case DESCRIPTION_CONTEXT:	//rdf:parseType isn't allowed in a description
-					case REFERENCE_CONTEXT:	//rdf:parseType isn't allowed in references
-					case EMPTY_PROPERTY_CONTEXT:	//rdf:parseType isn't allowed in an empty property element
-						Debug.error("rdf:parseType attribute is not allowed in a resource description."); //TODO fix with real exceptions
-						return;
-					case PROPERTY_AND_NODE_CONTEXT: 	//ignore rdf:parseType in the property-and-node context (that's the attribute that defined this context, after all)
+					case DESCRIPTION:	//rdf:parseType isn't allowed in a description
+					case REFERENCE:	//rdf:parseType isn't allowed in references
+					case EMPTY_PROPERTY:	//rdf:parseType isn't allowed in an empty property element
+						throw new IllegalStateException("rdf:parseType attribute is not allowed in a resource description."); //TODO fix with real exceptions
+					case PROPERTY_AND_NODE: 	//ignore rdf:parseType in the property-and-node context (that's the attribute that defined this context, after all)
 					default:
 						continue;
 				}
@@ -426,12 +425,11 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			{
 				switch(context)	//only allow this attribute in certain contexts
 				{
-					case DESCRIPTION_CONTEXT:	//rdf:resource isn't allowed in descriptions
-					case EMPTY_PROPERTY_CONTEXT:	//rdf:resource isn't allowed in an empty property element
-					case PROPERTY_AND_NODE_CONTEXT: 	//rdf:ID isn't allowed in parseType="Resource"
-						Debug.error("rdf:resource attribute is not allowed in a resource reference."); //TODO fix with real exceptions
-						return;
-					case REFERENCE_CONTEXT:	//rdf:resource isn't allowed in a reference
+					case DESCRIPTION:	//rdf:resource isn't allowed in descriptions
+					case EMPTY_PROPERTY:	//rdf:resource isn't allowed in an empty property element
+					case PROPERTY_AND_NODE: 	//rdf:ID isn't allowed in parseType="Resource"
+						throw new IllegalStateException("rdf:resource attribute is not allowed in a resource reference."); //TODO fix with real exceptions
+					case REFERENCE:	//rdf:resource isn't allowed in a reference
 					default:
 						continue;
 				}
@@ -440,10 +438,9 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			{
 				switch(context)	//only allow this attribute in certain contexts
 				{
-					case REFERENCE_CONTEXT:	//normal attributes are allowed for a normal reference
-					case PROPERTY_AND_NODE_CONTEXT: 	//normal attributes isn't allowed in the parseType="Resource" context
-						Debug.error(attribute.getName()+" attribute is not allowed in a property-and-node context."); //TODO fix with real exceptions
-						return;
+					case REFERENCE:	//normal attributes are allowed for a normal reference
+					case PROPERTY_AND_NODE: 	//normal attributes isn't allowed in the parseType="Resource" context
+						throw new IllegalStateException(attribute.getName()+" attribute is not allowed in a property-and-node context."); //TODO fix with real exceptions
 					default:
 						{
 							final RDFResource property=getRDF().locateResource(attributeNamespaceURI, attributeLocalName);	//locate a resource for this attribute property
@@ -471,8 +468,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 	{
 		final URI elementNamespaceURI=element.getNamespaceURI()!=null ? new URI(element.getNamespaceURI()) : null; //get the element's namespace, or null if there is no namespace URI
 		final String elementLocalName=element.getLocalName(); //get the element's local name
-//G***del Debug.trace("processing property with XML element namespace: ", elementNamespaceURI); //G***del
-//G***del Debug.trace("processing property with XML local name: ", elementLocalName); //G***del
+//Debug.trace("processing property with XML element namespace: ", elementNamespaceURI, "local name", elementLocalName);
 		final String propertyLocalName;	//if this is an rdf:li property, we'll convert it to rdf_X, where X represents the member count plus one	
 		if(RDF_NAMESPACE_URI.equals(elementNamespaceURI) && LI_PROPERTY_REFERENCE_URI.equals(elementLocalName)) //if this is an rdf:li property
 		{
@@ -537,7 +533,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		else if(RESOURCE_PARSE_TYPE.equals(parseType))	//if this is a resource as a property-and-node
 		{
 			propertyValue=getResourceProxy(generateNodeID());	//retrieve or create a new resource proxy with our own generated node ID, as the node is completely anonymous			
-			processAttributeProperties((Resource)propertyValue, element, PROPERTY_AND_NODE_CONTEXT);  //parse the property attributes, which will simply create errors if there are any unexpected attributes
+			processAttributeProperties((Resource)propertyValue, element, AttributePropertyContext.PROPERTY_AND_NODE);  //parse the property attributes, which will simply create errors if there are any unexpected attributes
 			processChildElementProperties((Resource)propertyValue, element);	//parse the child elements as properties
 		}
 		else if(LITERAL_PARSE_TYPE.equals(parseType))	//if this is an XMLLiteral
@@ -551,11 +547,12 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		}
 		else	//by default assume that we're parsing a resource as the property value
 		{
-		//TODO del Debug.trace("we must be parsing a resource as the property value");
+//Debug.trace("we must be parsing a resource as the property value");
 			final String referenceURIValue=getRDFAttribute(element, ATTRIBUTE_RESOURCE); //get the reference URI of the referenced resource, if there is one
 			final String nodeIDValue=getRDFAttribute(element, ATTRIBUTE_NODE_ID);	//get the node ID attribute value, if there is one
 			assert referenceURIValue==null || nodeIDValue==null : "Resource cannot have both reference URI "+referenceURIValue+" and node ID "+nodeIDValue+"."; //TODO change to an actual RDF error
 	//G***del Debug.trace("RDF attribute: ", referenceURIValue);  //G***del
+//Debug.trace("element child count:", element.getChildNodes().getLength());
 			if(referenceURIValue!=null || nodeIDValue!=null) //if there is a reference URI or a node ID, this is a reference to another node
 			{
 				final ResourceProxy resourceProxy;	//we'll create a stand-in object for the resource
@@ -568,17 +565,15 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				{
 					propertyValue=getResourceProxy(nodeIDValue!=null ? nodeIDValue : generateNodeID());	//retrieve or create a resource proxy from the node ID, generating our own node ID if there was none given			
 				}
-				processAttributeProperties((Resource)propertyValue, element, REFERENCE_CONTEXT);  //parse the property attributes, assigning them to the property value
+//Debug.trace("ready to process attributes");
+				processAttributeProperties((Resource)propertyValue, element, AttributePropertyContext.REFERENCE);  //parse the property attributes, assigning them to the property value
 			}
-/*TODO verify; this was apparently incorrect, as an element with no child nodes represents a property value of an empty string literal; blank nodes must have a resource URI or node ID designation; see RDF/XML Syntax Specification (Revised) 2.11
-			else if(element.getChildNodes().getLength()==0) //if there are no child elements, this is a blank node
+			else if(element.getChildNodes().getLength()==0 && element.getAttributes().getLength()!=0) //if there are no child elements but there are attributes, this is a blank node
 			{
-//G***make sure this works when we implement node IDs			  final RDFResource propertyValueResource=getRDF().locateResource(getRDF().createAnonymousReferenceURI());  //get or create a resource from a generated anonymous reference URI
 				propertyValue=getResourceProxy(generateNodeID());	//retrieve or create a new resource proxy with our own generated node ID, as the node is completely anonymous			
-				processAttributeProperties((Resource)propertyValue, element, EMPTY_PROPERTY_CONTEXT);  //parse the property attributes, assigning them to the property value
+				processAttributeProperties((Resource)propertyValue, element, AttributePropertyContext.EMPTY_PROPERTY);  //parse the property attributes, assigning them to the property value
 			}
-*/
-			else  //if there is no reference URI or node ID, there is either a normal property description below, or a literal
+			else  //if there is no reference URI or node ID, and there are children, there is either a normal property description below, or a literal
 			{
 			//TODO del Debug.trace("seems to be a normal property description; ready to process its contents");
 				//G***we should make sure there are no attributes

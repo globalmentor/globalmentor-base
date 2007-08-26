@@ -7,6 +7,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.URIConstants;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
@@ -14,13 +16,9 @@ import com.garretwilson.rdf.xmlschema.StringLiteral;
 import com.garretwilson.rdf.xmlschema.URILiteral;
 
 import static com.garretwilson.rdf.RDFConstants.*;
-import static com.garretwilson.rdf.RDFUtilities.getLocalName;
-import static com.garretwilson.rdf.RDFUtilities.getNamespaceURI;
 
 import com.garretwilson.text.W3CDateFormat;
-import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.util.Debug;
 
 import org.w3c.dom.*;
 
@@ -740,9 +738,15 @@ public class RDFUtilities
 		rdfXMLifier.getNamespacePrefixMap().put(MENTORACT_PROTOCOL_NAMESPACE_URI, MENTORACT_PROTOCOL_DEFAULT_PREFIX);
 		rdfXMLifier.getNamespacePrefixMap().put(MentoractResourceURIConstants.MENTORACT_RESOURCE_NAMESPACE_URI, MentoractResourceURIConstants.MENTORACT_RESOURCE_DEFAULT_PREFIX);
 */
-			//create an XML document from the RDF
-		final Document document=rdfXMLifier.createDocument(rdf, new XMLDOMImplementation());  //G***try to make this XML parser agnostic
-		return XMLUtilities.toString(document); //convert the XML document to a string and return it
+		try
+		{
+			final Document document=rdfXMLifier.createDocument(rdf, XMLUtilities.createDocumentBuilder(true).getDOMImplementation());  //create an XML document from the RDF
+			return XMLUtilities.toString(document); //convert the XML document to a string and return it
+		}
+		catch(final ParserConfigurationException parserConfigurationException)	//we should always support a namespace-aware DOM implementation
+		{
+			throw new AssertionError(parserConfigurationException);
+		}			
 	}
 
 	/**Converts an RDF resource to an XML string. If an error occurs converting
@@ -760,9 +764,16 @@ public class RDFUtilities
 		rdfXMLifier.getNamespacePrefixMap().put(MENTORACT_PROTOCOL_NAMESPACE_URI, MENTORACT_PROTOCOL_DEFAULT_PREFIX);
 		rdfXMLifier.getNamespacePrefixMap().put(MentoractResourceURIConstants.MENTORACT_RESOURCE_NAMESPACE_URI, MentoractResourceURIConstants.MENTORACT_RESOURCE_DEFAULT_PREFIX);
 */
-			//create an XML document from the RDF
-		final Document document=rdfXMLifier.createDocument(resource, new XMLDOMImplementation());  //G***try to make this XML parser agnostic
-		return XMLUtilities.toString(document); //convert the XML document to a string and return it
+			
+		try
+		{
+			final Document document=rdfXMLifier.createDocument(resource, XMLUtilities.createDocumentBuilder(true).getDOMImplementation());  //create an XML document from the RDF
+			return XMLUtilities.toString(document); //convert the XML document to a string and return it
+		}
+		catch(final ParserConfigurationException parserConfigurationException)	//we should always support a namespace-aware DOM implementation
+		{
+			throw new AssertionError(parserConfigurationException);
+		}			
 	}
 
 }

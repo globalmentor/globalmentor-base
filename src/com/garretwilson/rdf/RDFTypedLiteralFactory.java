@@ -14,9 +14,9 @@ public interface RDFTypedLiteralFactory
 		datatype reference URI
 	@param lexicalForm The lexical form of the resource.
 	@param datatypeURI The datatype reference URI of the datatype.
-	@return A typed literal containing a value object mapped from the given
-		lexical form and datatype
+	@return A typed literal containing a value object mapped from the given lexical form and datatype
+	@exception IllegalArgumentException if the given lexical form is not in the correct format to be interpreted as the given type.
 	*/
-	public RDFTypedLiteral createTypedLiteral(final String lexicalForm, final URI datatypeURI);
+	public RDFTypedLiteral<?> createTypedLiteral(final String lexicalForm, final URI datatypeURI);
 
 }

@@ -12,8 +12,7 @@ import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 public class XMLSchemaTypedLiteralFactory implements RDFTypedLiteralFactory 
 {
 
-	/**Creates a typed literal from the provided lexical form based upon the
-		datatype reference URI.
+	/**Creates a typed literal from the provided lexical form based upon the datatype reference URI.
 	<p>This implementation supports the following XML Schema data types, creating
 		the indicated RDF typed literal classes:</p>
 	<dl>
@@ -21,10 +20,10 @@ public class XMLSchemaTypedLiteralFactory implements RDFTypedLiteralFactory
 	</dl>
 	@param lexicalForm The lexical form of the resource.
 	@param datatypeURI The datatype reference URI of the datatype.
-	@return A typed literal containing a value object mapped from the given
-		lexical form and datatype
+	@return A typed literal containing a value object mapped from the given lexical form and datatype
+	@exception IllegalArgumentException if the given lexical form is not in the correct format to be interpreted as the given type.
 	*/
-	public RDFTypedLiteral createTypedLiteral(final String lexicalForm, final URI datatypeURI)
+	public RDFTypedLiteral<?> createTypedLiteral(final String lexicalForm, final URI datatypeURI)
 	{
 		if(BASE64_BINARY_DATATYPE_URI.equals(datatypeURI))	//base64-encoded binary
 		{
