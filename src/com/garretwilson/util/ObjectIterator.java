@@ -3,13 +3,13 @@ package com.garretwilson.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-/**An iterator to a single object.
+/**An iterable and iterator to a single object.
 This implementation allows <code>null</code> values.
 This implementation does not allow removal, as removing has no meaning in this context.
 @param <E> The type of elements in this iterator
 @author Garret Wilson
 */
-public class ObjectIterator<E> implements Iterator<E>
+public class ObjectIterator<E> implements Iterator<E>, Iterable<E>
 {
 	/**The single object being iterated.*/
 	private E object;
@@ -54,4 +54,10 @@ public class ObjectIterator<E> implements Iterator<E>
 	{
 		throw new UnsupportedOperationException("This iterator does not support removing the object.");
 	}
+
+	/**Returns an iterator over the single element.
+	This implementation returns <code>this<code>.
+	@return This iterator.
+	*/
+  public Iterator<E> iterator() {return this;}
 }

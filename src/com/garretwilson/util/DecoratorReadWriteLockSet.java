@@ -8,7 +8,7 @@ For operations that iterate over live collection data, a read or write lock shou
 @param <E> The type of elements in the set.
 @author Garret Wilson
 */
-public class ReadWriteLockSetDecorator<E> extends ReadWriteLockCollectionDecorator<E> implements ReadWriteLockSet<E>
+public class DecoratorReadWriteLockSet<E> extends DecoratorReadWriteLockCollection<E> implements ReadWriteLockSet<E>
 {
 	/**@return The set this class decorates.*/
 	protected Set<E> getCollection() {return (Set<E>)super.getCollection();}
@@ -17,7 +17,7 @@ public class ReadWriteLockSetDecorator<E> extends ReadWriteLockCollectionDecorat
 	@param set The set this set should decorate.
 	@exception NullPointerException if the provided set is <code>null</code>.
 	*/
-	public ReadWriteLockSetDecorator(final Set<E> set)
+	public DecoratorReadWriteLockSet(final Set<E> set)
 	{
 		this(set, new ReentrantReadWriteLock());	//create the set with a default lock
 	}
@@ -27,7 +27,7 @@ public class ReadWriteLockSetDecorator<E> extends ReadWriteLockCollectionDecorat
 	@param lock The lock for controlling access to the set.
 	@exception NullPointerException if the provided set and/or lock is <code>null</code>.
 	*/
-	public ReadWriteLockSetDecorator(final Set<E> set, final ReadWriteLock lock)
+	public DecoratorReadWriteLockSet(final Set<E> set, final ReadWriteLock lock)
 	{
 		super(set, lock);	//construct the parent class
 	}

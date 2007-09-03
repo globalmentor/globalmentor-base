@@ -39,6 +39,14 @@ public class SynchronizedCollectionMapDecorator<K, V, C extends Collection<V>> e
 		this.collectionMap=checkInstance(collectionMap, "Collection map cannot be null");	//save the collection map
 	}
 
+	/**Retrieves the collection of values associated with the given key.
+	If no collection of values is associated with the key, one will be created and added to the map.
+	@param key The key in the map.
+	@return The collection associated with the given key
+	@see #createCollection()
+	*/
+	public C getCollection(final K key) {synchronized(mutex) {return collectionMap.getCollection(key);}}
+
 	/**Adds a value to the collection of values associated with the key.
 	If no collection of values is associated with the key, one will be created and added to the map.
 	@param key The key in the map.

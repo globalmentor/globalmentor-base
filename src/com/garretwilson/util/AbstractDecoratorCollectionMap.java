@@ -2,6 +2,8 @@ package com.garretwilson.util;
 
 import java.util.*;
 
+import static com.garretwilson.util.IteratorUtilities.*;
+
 /**An abstract collection map that decorates an existing map.
 Child classes must implements {@link #createCollection()} and return the appropriate type of collection.
 @param <K> The type of map key.
@@ -25,16 +27,11 @@ public abstract class AbstractDecoratorCollectionMap<K, V, C extends Collection<
 	If no collection of values is associated with the key, one will be created and added to the map.
 	@param key The key in the map.
 	@param value The value to store in the collection.
+	@see #getCollection(Object)
 	*/
 	public void addItem(final K key, final V value)
 	{
-		C collection=get(key);	//get the collection of objects for the key
-		if(collection==null)	//if there is yet no collection for this key
-		{
-			collection=createCollection();	//create a new collection
-			put(key, collection);	//store the collection in the map
-		}
-		collection.add(value);	//add this value to the collection
+		getCollection(key).add(value);	//add this value to the collection
 	}
 
 	/**Retrieves the first value from the collection of values, if any, associated with the key.
@@ -54,7 +51,24 @@ public abstract class AbstractDecoratorCollectionMap<K, V, C extends Collection<
 	public Iterable<V> getItems(final K key)
 	{
 		final C collection=get(key);	//get the collection of objects for the key
-		return collection!=null ? collection : new EmptyIterable<V>();	//return the collection or an empty iterable if there is no collection for this key
+		return collection!=null ? collection : (Iterable<V>)EMPTY_ITERABLE;	//return the collection or an empty iterable if there is no collection for this key
+	}
+
+	/**Retrieves the collection of values associated with the given key.
+	If no collection of values is associated with the key, one will be created and added to the map.
+	@param key The key in the map.
+	@return The collection associated with the given key
+	@see #createCollection()
+	*/
+	public C getCollection(final K key)
+	{
+		C collection=get(key);	//get the collection of objects for the key
+		if(collection==null)	//if there is yet no collection for this key
+		{
+			collection=createCollection();	//create a new collection
+			put(key, collection);	//store the collection in the map
+		}
+		return collection;	//return the collection
 	}
 
 	/**Creates a collection in which to store values.*/

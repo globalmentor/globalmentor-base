@@ -11,6 +11,15 @@ import java.util.Map;
 */
 public interface CollectionMap<K, V, C extends Collection<V>> extends Map<K, C> 
 {
+
+	/**Retrieves the collection of values associated with the given key.
+	If no collection of values is associated with the key, one will be created and added to the map.
+	@param key The key in the map.
+	@return The collection associated with the given key
+	@see #createCollection()
+	*/
+	public C getCollection(final K key);
+	
 	/**Adds a value to the collection of values associated with the key.
 	If no collection of values is associated with the key, one will be created and added to the map.
 	@param key The key in the map.
@@ -21,6 +30,7 @@ public interface CollectionMap<K, V, C extends Collection<V>> extends Map<K, C>
 	/**Retrieves the first value from the collection of values, if any, associated with the key.
 	@param key The key in the map.
 	@return The first value in the collection, or <code>null</code> if there is no collection associated with the key or no values in the collection.
+	@see #getCollection(Object)
 	*/
 	public V getItem(final K key);
 

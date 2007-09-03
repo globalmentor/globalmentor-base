@@ -5,7 +5,7 @@ import java.util.*;
 
 import com.garretwilson.net.Resource;
 
-/**Represents the an RDF resource connected in an RDF graph.
+/**Represents an RDF resource connected in an RDF graph.
 @author Garret Wilson
 @see DefaultRDFResource
 */

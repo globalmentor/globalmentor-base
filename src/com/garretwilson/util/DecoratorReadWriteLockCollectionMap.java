@@ -38,10 +38,35 @@ public class DecoratorReadWriteLockCollectionMap<K, V, C extends Collection<V>> 
 		this.collectionMap=checkInstance(collectionMap, "Collection map cannot be null");	//save the collection map
 	}
 
+	/**Retrieves the collection of values associated with the given key.
+	If no collection of values is associated with the key, one will be created and added to the map.
+	@param key The key in the map.
+	@return The collection associated with the given key
+	@see #createCollection()
+	*/
+	public C getCollection(final K key)
+	{
+		C collection=get(key);	//get the collection of objects for the key, which will be performed with a read lock
+		if(collection==null)	//if there is yet no collection for this key
+		{
+			writeLock().lock();	//get a write lock
+			try
+			{
+				collection=collectionMap.getCollection(key);	//ask the collection map for the collection, which may create and add a collection
+			}
+			finally
+			{
+				writeLock().unlock();	//always release the write lock
+			}
+		}
+		return collection;	//return the collection
+	}
+
 	/**Adds a value to the collection of values associated with the key.
 	If no collection of values is associated with the key, one will be created and added to the map.
 	@param key The key in the map.
 	@param value The value to store in the collection.
+	@see #getCollection(Object)
 	*/
 	public void addItem(final K key, final V value) {writeLock().lock(); try{collectionMap.addItem(key, value);} finally{writeLock().unlock();}} 
 

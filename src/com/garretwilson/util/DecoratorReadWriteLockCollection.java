@@ -10,7 +10,7 @@ For operations that iterate over live collection data, a read or write lock shou
 @param <E> The type of elements in the collection.
 @author Garret Wilson
 */
-public class ReadWriteLockCollectionDecorator<E> implements ReadWriteLockCollection<E>
+public class DecoratorReadWriteLockCollection<E> implements ReadWriteLockCollection<E>
 {
 	/**The collection this class decorates.*/
 	private final Collection<E> collection;
@@ -31,7 +31,7 @@ public class ReadWriteLockCollectionDecorator<E> implements ReadWriteLockCollect
 	@param collection The collection this collection should decorate.
 	@exception NullPointerException if the provided collection is <code>null</code>.
 	*/
-	public ReadWriteLockCollectionDecorator(final Collection<E> collection)
+	public DecoratorReadWriteLockCollection(final Collection<E> collection)
 	{
 		this(collection, new ReentrantReadWriteLock());	//create the collection with a default lock
 	}
@@ -41,7 +41,7 @@ public class ReadWriteLockCollectionDecorator<E> implements ReadWriteLockCollect
 	@param lock The lock for controlling access to the collection.
 	@exception NullPointerException if the provided collection and/or lock is <code>null</code>.
 	*/
-	public ReadWriteLockCollectionDecorator(final Collection<E> collection, final ReadWriteLock lock)
+	public DecoratorReadWriteLockCollection(final Collection<E> collection, final ReadWriteLock lock)
 	{
 		this.collection=checkInstance(collection, "Collection cannot be null");	//save the collection
 		this.lock=checkInstance(lock, "Lock cannot be null");	//save the lock
