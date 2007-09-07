@@ -17,7 +17,7 @@ public class ArrayListHashMap<K, V> extends AbstractDecoratorCollectionMap<K, V,
 	/**Creates a collection in which to store values.
 	This version returns an {@link ArrayList}.
 	*/
-	protected List<V> createCollection()
+	public List<V> createCollection()
 	{
 		return new ArrayList<V>();
 	}

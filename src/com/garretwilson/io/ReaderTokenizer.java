@@ -20,9 +20,9 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 {
 
 	/**The default delimiter characters: whitespace.
-	@see CharacterConstants#WHITESPACE_CHARS
+	@see CharacterConstants#TRIM_CHARS
 	*/
-	protected final static String DEFAULT_DELIMITERS=WHITESPACE_CHARS;
+	protected final static String DEFAULT_DELIMITERS=TRIM_CHARS;
 
 	/**The default beginning group characters: "([{".*/
 	protected final static String DEFAULT_GROUP_BEGINS="([{";

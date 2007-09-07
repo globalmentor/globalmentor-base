@@ -19,7 +19,10 @@ public interface CollectionMap<K, V, C extends Collection<V>> extends Map<K, C>
 	@see #createCollection()
 	*/
 	public C getCollection(final K key);
-	
+
+	/**Creates a collection in which to store values.*/
+	public C createCollection();
+
 	/**Adds a value to the collection of values associated with the key.
 	If no collection of values is associated with the key, one will be created and added to the map.
 	@param key The key in the map.

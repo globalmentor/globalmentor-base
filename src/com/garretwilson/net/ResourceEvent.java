@@ -127,7 +127,7 @@ public class ResourceEvent extends EventObject
 	*/
 	public ResourceEvent(final Object source, final Resource oldParentResource, final URI oldResourceURI, final Resource parentResource, final Resource resource)
 	{
-		this(source, oldParentResource!=null ? oldParentResource.getReferenceURI() : null, oldParentResource, oldResourceURI, null, parentResource!=null ? parentResource.getReferenceURI() : null, parentResource, resource.getReferenceURI(), resource);	//construct the class with a resource and a reference URI, along with the old parent and the old reference URI
+		this(source, oldParentResource!=null ? oldParentResource.getURI() : null, oldParentResource, oldResourceURI, null, parentResource!=null ? parentResource.getURI() : null, parentResource, resource.getURI(), resource);	//construct the class with a resource and a reference URI, along with the old parent and the old reference URI
 	}
 	
 	/**Constructor that specifies parent, old, and current resources.

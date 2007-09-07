@@ -17,7 +17,7 @@ public class HashSetHashMap<K, V> extends AbstractDecoratorCollectionMap<K, V, S
 	/**Creates a collection in which to store values.
 	This version returns an {@link HashSet}.
 	*/
-	protected Set<V> createCollection()
+	public Set<V> createCollection()
 	{
 		return new HashSet<V>();
 	}

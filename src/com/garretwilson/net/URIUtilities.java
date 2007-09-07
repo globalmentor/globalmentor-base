@@ -19,6 +19,7 @@ import static com.garretwilson.io.FileConstants.EXTENSION_SEPARATOR;
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
+import static com.garretwilson.net.URIUtilities.uriEncode;
 
 /**Various URI manipulating functions for working with URIs as defined in
 	<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
@@ -27,6 +28,9 @@ import static com.garretwilson.net.URIConstants.*;
 */
 public class URIUtilities
 {
+
+	/**The shared static empty array of URIs.*/
+	public final static URI[] EMPTY_URI_ARRAY=new URI[]{};
 
 	/**Creates a string of type <code>text/uri-list</code> as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>, "URI Resolution Services Necessary for URN Resolution".
 	@param uris The URIs to include in the list.
@@ -214,7 +218,7 @@ public class URIUtilities
 	@return A new URI with the name changed to the given name.
 	@exception NullPointerException if the given URI and/or name is <code>null</code>.
 	@exception IllegalArgumentException if the given URI has no path.
-	@see #encode(String)
+	@see URIPath#encodeSegment(String)
 	@see #getName(URI)
 	*/
 	public static URI changeName(final URI uri, final String name)
@@ -1181,6 +1185,26 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		}
 	}
 
+	/**Resolved a relative URI against a base URI.
+	This method correctly resolves fragment URIs against opaque base URIs.
+	@param baseURI The URI against which the child URI should be resolved.
+	@param childURI The URI to resolve against the base URI.
+	@return The child URI resolved against the base URI.
+	@exception NullPointerException if the base URI and/or the child URI is <code>null</code>.
+	*/
+	public static URI resolve(final URI baseURI, final URI childURI)
+	{
+		if(baseURI.isOpaque())	//if the base URI is opaque, do special processing
+		{
+			final String childURIString=childURI.toString();	//get the child URI as a string
+			if(startsWith(childURIString, FRAGMENT_SEPARATOR))	//if the child URI is a fragment
+			{
+				return URI.create(removeFragment(baseURI).toString()+childURIString);	//remove the fragment, if any, from the base URI, and append the fragment
+			}
+		}
+		return baseURI.resolve(childURI);	//resolve the child URI against the base normally
+	}
+	
 	/**Returns a URI constructed from a given URI and a fragment identifier.
 	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>will be thrown.
 	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
@@ -1197,6 +1221,26 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 			return uri.resolve(fragmentSuffix);	//resolve the fragment against the URI
 		else	//if there is no URI
 			return URI.create(fragmentSuffix);	//create a URI from the fragment suffix itself 
+	}
+
+	/**Returns a URI with its fragment, if any, removed.
+	@param uri The URI from which a fragment should be removed.
+	@return The URI with the fragment, if any, removed.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	*/
+	public static URI removeFragment(final URI uri)
+	{
+		final String fragment=uri.getRawFragment();	//get the raw fragment, if any
+		if(fragment!=null)	//if there is a fragment
+		{
+			final String uriString=uri.toString();	//get the string representation of the URI
+			assert uriString.endsWith(new StringBuilder().append(FRAGMENT_SEPARATOR).append(fragment).toString());
+			return URI.create(uri.toString().substring(0, uriString.length()-fragment.length()-1));	//create a URI without the fragment separator and the fragment
+		}
+		else	//if there is no fragment
+		{
+			return checkInstance(uri, "URI cannot be null.");	//return the original URI
+		}
 	}
 
 	/**Returns a URI constructed from the given parts, any of which can be <code>null</code>.
@@ -1278,6 +1322,15 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 */
 
+	/**Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
+	@param string The data to URI-encode.
+	@return A string containing the escaped data.
+	*/
+	public static String encodeURI(final String string)	//TODO probably rename to encode() once we convert all the other references to the deprecated encode() methods
+	{
+		return uriEncode(string, UNRESERVED_CHARS);	//encode all non-unreserved characters
+	}
+
 	/**Encodes the URI reserved characters in the string, using '%' as an escape character, according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
 	All characters not considered {@link URIConstants#NORMAL_CHARS} are encoded.
 	The escape character {@link URIConstants#ESCAPE_CHAR} will always be encoded.
@@ -1358,7 +1411,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 					final StringBuilder encodeStringBuilder=new StringBuilder(byteCount*3);	//create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
 					for(int byteIndex=0; byteIndex<byteCount; ++byteIndex)	//look at each byte
 					{
-						encodeStringBuilder.append(ESCAPE_CHAR);	//&
+						encodeStringBuilder.append(ESCAPE_CHAR);	//%
 						encodeStringBuilder.append(IntegerUtilities.toHexString(bytes[byteIndex], 2).toUpperCase());	//HH
 						stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString());	//replace the character with its encoding
 					}

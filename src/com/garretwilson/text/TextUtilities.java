@@ -278,12 +278,12 @@ preface
 	{
 //G***del Debug.trace("checking text for page break: ", text);  //G***del
 //G***del Debug.trace("is just * and -: "+StringUtilities.isAllChars(text, "*-"));  //G***del
-//G***del Debug.trace("stripped of punctuation and whitespace: ", StringUtilities.trim(text, PUNCTUATION_CHARS+WHITESPACE_CHARS));  //G***del
+//G***del Debug.trace("stripped of punctuation and whitespace: ", StringUtilities.trim(text, PUNCTUATION_CHARS+TRIM_CHARS));  //G***del
 		  //if the string is only made up of asterisks and hyphens
 		if(text.length()>2 && isAllChars(text, "*-_"+EM_DASH_CHAR+EN_DASH_CHAR))  //G***use constants
 			return true;  //this is a page break heading
 				//if this line contains "page" surrounded by only punctuation
-		else if("page".equalsIgnoreCase(StringUtilities.trim(text, PUNCTUATION_CHARS+WHITESPACE_CHARS)))
+		else if("page".equalsIgnoreCase(StringUtilities.trim(text, PUNCTUATION_CHARS+TRIM_CHARS)))
 			return true;  //this is a page break indication
 		else  //if this is not a page break heading
 			return false; //show that we don't think this is a page break heading
@@ -304,7 +304,7 @@ preface
 		final String[] pageStrings=new String[]{"p", "P", "pg", "Pg", "PG", "page", "Page", "PAGE"};
 		int pageCount=0;  //the number of times we find a representation for "page" on the line
 		int numberCount=0;  //the number of times we find a representation of a number
-		final String pageNumberDelimiters=WHITESPACE_CHARS+"-*.[]<>";  //these characters separate the page numbers
+		final String pageNumberDelimiters=TRIM_CHARS+"-*.[]<>";  //these characters separate the page numbers
 		final StringTokenizer stringTokenizer=new StringTokenizer(text, pageNumberDelimiters);  //tokenize the page number
 		while(stringTokenizer.hasMoreTokens())  //while there are more tokens
 		{
@@ -585,13 +585,13 @@ preface
 	public static boolean isQuoted(final String string)
 	{
 		  //get the index of the first non-whitespace character
-		final int firstCharIndex=CharSequenceUtilities.notCharIndexOf(string, WHITESPACE_CHARS);
+		final int firstCharIndex=CharSequenceUtilities.notCharIndexOf(string, TRIM_CHARS);
 		if(firstCharIndex>=0) //if there is a first character (which also means there's a last character
 		{
 			if(LEFT_QUOTE_CHARS.indexOf(string.charAt(firstCharIndex))>=0) //if the line starts with a quote character
 				return true; //show that we found a quote
 				//get the index of the last non-whitespace character (we don't need to make sure it's valid--if there's a first character, there's a last character)
-			final int lastCharIndex=CharSequenceUtilities.notCharLastIndexOf(string, WHITESPACE_CHARS);
+			final int lastCharIndex=CharSequenceUtilities.notCharLastIndexOf(string, TRIM_CHARS);
 			if(RIGHT_QUOTE_CHARS.indexOf(string.charAt(lastCharIndex))>=0) //if the line ends with a quote character
 				return true; //show that we found a quote
 		}

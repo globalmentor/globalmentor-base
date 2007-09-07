@@ -140,7 +140,7 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	//Resource
 
 	/**@return The resource identifier URI, or <code>null</code> if the identifier is not known.*/
-	public URI getReferenceURI()
+	public URI getURI()
 	{
 		return URI.create(MAILTO_SCHEME+SCHEME_SEPARATOR+toString());	//construct and return the mailto URI
 	}

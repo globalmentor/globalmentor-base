@@ -131,9 +131,9 @@ public class RDFSequenceResource extends RDFContainerResource implements Compara
 //G***del Debug.trace("length: ", RDF_LI_REFERENCE_URI_PREFIX_LENGTH);  //G***del
 //G***del		Debug.trace("comparation for li: ", RDF_LI_REFERENCE_URI+CONTAINER_MEMBER_PREFIX);  //G***del
 		  //get the reference URIs of the two properties
-		final URI typeURI1=((RDFResource)((NameValuePair)object1).getName()).getReferenceURI();
+		final URI typeURI1=((RDFResource)((NameValuePair)object1).getName()).getURI();
 //G***del Debug.trace("type URI1: ", typeURI1); //G***del
-		final URI typeURI2=((RDFResource)((NameValuePair)object2).getName()).getReferenceURI();
+		final URI typeURI2=((RDFResource)((NameValuePair)object2).getName()).getURI();
 //G***del Debug.trace("type URI2: ", typeURI2); //G***del
 //G***fix for better checking		if(typeURI1.startsWith(CONTAINER_MEMBER_PREFIX) && typeURI2.startsWith(CONTAINER_MEMBER_PREFIX))  //if
 

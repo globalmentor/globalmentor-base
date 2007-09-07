@@ -133,7 +133,7 @@ public class PLOOPProcessor
 				final RDFObject typeResource=typeIterator.next();	//get the next type
 				if(typeResource instanceof RDFResource)	//if the type is an RDF resource (it always should be)
 				{
-					final URI typeURI=((RDFResource)typeResource).getReferenceURI();	//get the type URI
+					final URI typeURI=((RDFResource)typeResource).getURI();	//get the type URI
 					if(JAVA_SCHEME.equals(typeURI.getScheme()))	//if the type is a Java type
 					{
 						hasJavaType=true;	//show that this resource has a Java type
@@ -246,7 +246,7 @@ public class PLOOPProcessor
 				final RDFObject typeResource=typeIterator.next();	//get the next type
 				if(typeResource instanceof RDFResource)	//if the type is an RDF resource (it always should be)
 				{
-					final URI typeURI=((RDFResource)typeResource).getReferenceURI();	//get the type URI
+					final URI typeURI=((RDFResource)typeResource).getURI();	//get the type URI
 					if(JAVA_SCHEME.equals(typeURI.getScheme()))	//if the type is a Java type
 					{
 						valueClassName=typeURI.getSchemeSpecificPart();	//get the class name part of the type
@@ -361,7 +361,7 @@ public class PLOOPProcessor
 						{
 							try
 							{
-								final Object object=constructor.newInstance(resource.getReferenceURI());	//invoke the constructor with the resource reference URI
+								final Object object=constructor.newInstance(resource.getURI());	//invoke the constructor with the resource reference URI
 								setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
 								return object;	//return the constructed and initialized object
 							}
@@ -526,7 +526,7 @@ public class PLOOPProcessor
 			for(final RDFPropertyValuePair rdfPropertyValuePair:resource.getProperties())	//for each property of the source resource
 			{
 				final RDFResource property=rdfPropertyValuePair.getProperty();	//get the property
-				final URI propertyURI=property.getReferenceURI();	//get the property URI
+				final URI propertyURI=property.getURI();	//get the property URI
 				if(!PLOOP_PROPERTY_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//if this isn't a PLOOP property
 				{
 					((RDFResource)object).addProperty(propertyURI, rdfPropertyValuePair.getValue());	//add this property and value to the created RDF resource TODO see if we can transfer the owner RDF instance when we transfer the value
@@ -623,7 +623,7 @@ public class PLOOPProcessor
 	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, final RDFPropertyValuePair property) throws InvocationTargetException
 	{
 //TODO del		final RDFObject propertyValue=property.getValue();	//get the property value
-		final URI propertyURI=property.getName().getReferenceURI();	//get the URI of the property
+		final URI propertyURI=property.getName().getURI();	//get the URI of the property
 //TODO del Debug.trace("looking at property:", propertyURI);
 		if(PLOOP_PROPERTY_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//if this is a PLOOP property
 		{

@@ -543,7 +543,7 @@ public class RDFUtilities
 	*/
 	public static boolean isNil(final RDFResource listResource)
 	{
-		return listResource!=null && NIL_RESOURCE_URI.equals(listResource.getReferenceURI());	//see if the resource has the nil URI 
+		return listResource!=null && NIL_RESOURCE_URI.equals(listResource.getURI());	//see if the resource has the nil URI 
 	}
 
 	/**Determines whether a given resource is of a particular type.
@@ -642,7 +642,7 @@ public class RDFUtilities
 		{
 			return labelLiteral.getLexicalForm();	//return the rdfs:label property's lexical form
 		}
-		final URI referenceURI=resource.getReferenceURI();	//get the resource's reference URI
+		final URI referenceURI=resource.getURI();	//get the resource's reference URI
 		if(referenceURI!=null)	//if the resource has a reference URI
 		{
 			return referenceURI.toString();	//return the reference URI

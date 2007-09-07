@@ -169,7 +169,6 @@ public final class URIPath
 		return object instanceof URIPath && uri.equals(((URIPath)object).uri);	//see if the object is a URI path with the same URI
 	}
 
-
 	/**Encodes the given string so that it is a valid URI path according <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
 	@param path The path to URI-encode.
 	@return A string containing the escaped data.

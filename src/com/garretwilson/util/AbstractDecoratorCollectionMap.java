@@ -70,7 +70,4 @@ public abstract class AbstractDecoratorCollectionMap<K, V, C extends Collection<
 		}
 		return collection;	//return the collection
 	}
-
-	/**Creates a collection in which to store values.*/
-	protected abstract C createCollection();
 }

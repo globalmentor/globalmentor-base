@@ -82,14 +82,14 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 			final NameValuePair property=(NameValuePair)propertyIterator.next();  //get the property
 			final RDFResource propertyResource=(RDFResource)property.getName();  //get the property resource
 Debug.trace("looking at publication property: ", propertyResource); //G***del
-			final URI propertyNamespaceURI=getNamespaceURI(propertyResource.getReferenceURI());	//get the namespace of hte property
+			final URI propertyNamespaceURI=getNamespaceURI(propertyResource.getURI());	//get the namespace of hte property
 				//TODO check for null in both the namespace URI and local name
 Debug.trace("property namespace URI: ", propertyNamespaceURI); //G***del
 				//if this is a Dublin Core property
 			if(DCMI11_ELEMENTS_NAMESPACE_URI.equals(propertyNamespaceURI)
 				  || DCMI10_ELEMENTS_NAMESPACE_URI.equals(propertyNamespaceURI))
 			{
-				final String propertyLocalName=getLocalName(propertyResource.getReferenceURI()); //get the  local name of the property
+				final String propertyLocalName=getLocalName(propertyResource.getURI()); //get the  local name of the property
 Debug.trace("property local name: ", propertyLocalName); //G***del
 				final Object propertyValueObject=property.getValue(); //get the property value
 				if(propertyValueObject instanceof RDFLiteral)  //if the value is a literal
@@ -208,7 +208,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 			while(itemIterator.hasNext()) //while there are more items in the manifest
 			{
 			  final RDFResource oebItem=(RDFResource)itemIterator.next(); //get the next OEB item
-			  manifestElement.appendChild(generateItemElement(document, oebItem, publication.getReferenceURI()));  //generate an item element and add it to the manifest element
+			  manifestElement.appendChild(generateItemElement(document, oebItem, publication.getURI()));  //generate an item element and add it to the manifest element
 		  }
 		}
 		  //package/spine
@@ -218,7 +218,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 			final Element spineElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_SPINE); //create the spine element
 			for(final RDFObject item:spine)	//for each item in the spine
 			{
-				spineElement.appendChild(generateItemRefElement(document, (RDFResource)item, publication.getReferenceURI()));  //generate an item element and add it to the spine element
+				spineElement.appendChild(generateItemRefElement(document, (RDFResource)item, publication.getURI()));  //generate an item element and add it to the spine element
 			}
 		}
 		if(publication.getGuideList().size()>0) //if there are guides
@@ -245,7 +245,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 	public static Element generateItemElement(final Document document, final RDFResource oebItem, final URI publicationURI)
 	{
 		final Element itemElement=document.createElementNS(OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_MANIFEST_ITEM);  //create an OEB item element
-		itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_ID, createItemID(oebItem.getReferenceURI().toString(), publicationURI));		  //set the ID
+		itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_ID, createItemID(oebItem.getURI().toString(), publicationURI));		  //set the ID
 		final String href=XPackageUtilities.getLocationHRef(oebItem); //get the item's href
 		if(href!=null)  //if the item has an href
 		{
@@ -275,7 +275,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 	public static Element generateItemRefElement(final Document document, final RDFResource oebItem, final URI publicationURI)
 	{
 		final Element itemrefElement=document.createElementNS(OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_SPINE_ITEMREF);  //create an OEB itemref element
-		itemrefElement.setAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF, createItemID(oebItem.getReferenceURI().toString(), publicationURI));		  //set the ID
+		itemrefElement.setAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF, createItemID(oebItem.getURI().toString(), publicationURI));		  //set the ID
 		return itemrefElement; //return the element for the OEB itemref
 	}
 

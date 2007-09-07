@@ -94,7 +94,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	{
 		for(final RDFPropertyValuePair propertyValuePair:propertyList)  //for each property
 		{
-		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
+		  if(propertyURI.equals(propertyValuePair.getProperty().getURI()))  //if this resource is that identified by the property URI
 		  {
 				return propertyValuePair.getPropertyValue(); //return the value of the property as an RDF object
 		  }
@@ -137,7 +137,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		final List<T> propertyValueList=new ArrayList<T>(); //create a list in which to store the property values
 		for(final RDFPropertyValuePair propertyValuePair:propertyList)  //for each property
 		{
-		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
+		  if(propertyURI.equals(propertyValuePair.getProperty().getURI()))  //if this resource is that identified by the property URI
 			{
 				final RDFObject propertyValue=propertyValuePair.getPropertyValue();	//get the property value
 				if(valueType.isInstance(propertyValue))	//if the property is of the correct type
@@ -186,12 +186,12 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	{
 		for(final RDFPropertyValuePair propertyValuePair:propertyList)  //for each property
 		{
-		  if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
+		  if(propertyURI.equals(propertyValuePair.getProperty().getURI()))  //if this resource is that identified by the property URI
 			{
 				if(propertyValuePair.getPropertyValue() instanceof RDFResource)	//if the value is a resource
 				{
 					//if the resource value has the correct reference URI
-					if(propertyValueURI.equals(((RDFResource)propertyValuePair.getPropertyValue()).getReferenceURI())) 
+					if(propertyValueURI.equals(((RDFResource)propertyValuePair.getPropertyValue()).getURI())) 
 						return true;
 				}
 			}
@@ -225,7 +225,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		if(!propertyList.contains(propertyValuePair)) //if there is not already this property with this value
 		{
 			propertyList.add(propertyValuePair);  //add the property and value to the list
-			firePropertyChange(property.getReferenceURI().toString(), null, value);	//fire a property change event with the new property value
+			firePropertyChange(property.getURI().toString(), null, value);	//fire a property change event with the new property value
 		}
 		return value; //return the value we added		
 	}
@@ -338,7 +338,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
-			if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
+			if(propertyURI.equals(propertyValuePair.getProperty().getURI()))  //if this resource is that identified by the property URI
 			{
 				if(propertyValue.equals(propertyValuePair.getValue()))	//if the value matches
 				{
@@ -374,7 +374,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
-			if(propertyURI.equals(propertyValuePair.getProperty().getReferenceURI()))  //if this resource is that identified by the property URI
+			if(propertyURI.equals(propertyValuePair.getProperty().getURI()))  //if this resource is that identified by the property URI
 			{
 				propertyIterator.remove();	//remove this property
 				firePropertyChange(propertyURI.toString(), propertyValuePair.getValue(), null);	//fire a property change event with the old property value
@@ -407,7 +407,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
-			final URI propertyURI=propertyValuePair.getProperty().getReferenceURI();	//get the property URI
+			final URI propertyURI=propertyValuePair.getProperty().getURI();	//get the property URI
 			final URI namespaceURI=getNamespaceURI(propertyURI);	//get the namespace of this property (we don't verify that this property has a URI, but this problem will go away when the API starts handling properties as simple URIs)
 			if(ArrayUtilities.contains(propertyNamespaceURIs, namespaceURI))	//if this is one of the namespaces to remove
 			{
@@ -593,7 +593,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	*/
 	public DefaultRDFResource(final RDFResource rdfResource)
 	{
-		this(rdfResource, rdfResource.getReferenceURI());	//create the resource using the existing resource's reference URI
+		this(rdfResource, rdfResource.getURI());	//create the resource using the existing resource's reference URI
 	}
 
 	/**Copy constructor with a specified reference URI.
@@ -608,7 +608,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 		this(rdfResource.getRDF(), referenceURI);	//create the resource with the data model and reference URI of the given reference URI
 		for(final RDFPropertyValuePair rdfPropertyValuePair:rdfResource.getProperties())	//for each property
 		{
-			addProperty(rdfPropertyValuePair.getName().getReferenceURI(), rdfPropertyValuePair.getValue());	//add this property
+			addProperty(rdfPropertyValuePair.getName().getURI(), rdfPropertyValuePair.getValue());	//add this property
 		}
 	}
 
@@ -640,7 +640,7 @@ for some reason, this method as listed is crucial for determining if two resourc
 */ 
 	public int hashCode()
 	{
-		return getReferenceURI()!=null ? super.hashCode() : getPropertyCount();	//return the normal hash code if we have a reference URI, or the number of properties if we have no reference URI 
+		return getURI()!=null ? super.hashCode() : getPropertyCount();	//return the normal hash code if we have a reference URI, or the number of properties if we have no reference URI 
 	}
 
 	/**If this resource has a reference URI, compares using the superclass
@@ -655,7 +655,7 @@ for some reason, this method as listed is crucial for determining if two resourc
 	*/
 	public boolean equals(final Object object)
 	{
-		if(getReferenceURI()==null && object instanceof RDFResource)	//if we don't have a reference URI, and the other object is an RDF resource
+		if(getURI()==null && object instanceof RDFResource)	//if we don't have a reference URI, and the other object is an RDF resource
 		{
 			//TODO compare all properties; right now, we only compare rdf:value so that other code will work
 			final RDFResource rdfResource=(RDFResource)object;	//cast the other object to an RDF resource
@@ -729,7 +729,7 @@ for some reason, this method as listed is crucial for determining if two resourc
 		}
 */
 		final RDFXMLGenerator rdfXMLGenerator=new RDFXMLGenerator();	//create a new RDF XML generator TODO use a common instance
-		final URI referenceURI=getReferenceURI();	//get the reference URI
+		final URI referenceURI=getURI();	//get the reference URI
 		if(referenceURI!=null || value==null)	//if we have a reference URI and/or no value
 		{
 			if(referenceURI!=null)	//if we have a reference URI
@@ -744,7 +744,7 @@ for some reason, this method as listed is crucial for determining if two resourc
 		final RDFResource type=getType(this);	//get this resource's type
 		if(type!=null)	//if there is a type
 		{
-			final URI typeURI=type.getReferenceURI();	//get the type URI
+			final URI typeURI=type.getURI();	//get the type URI
 			if(typeURI!=null)	//if there is a type given
 			{
 				if(stringBuilder.length()>0)	//if we added something to the string builder already

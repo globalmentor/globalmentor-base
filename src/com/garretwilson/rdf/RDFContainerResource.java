@@ -41,7 +41,7 @@ public abstract class RDFContainerResource extends TypedRDFResource
 		{
 			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
 				//if this property reference URI begins with rdf:_
-		  if(isContainerMemberPropertyReference(propertyValuePair.getProperty().getReferenceURI()))
+		  if(isContainerMemberPropertyReference(propertyValuePair.getProperty().getURI()))
 				itemPropertyList.add(propertyValuePair);  //add this property and value to the list
 		}
 		return itemPropertyList;  //return the list of name/value pairs
@@ -118,7 +118,7 @@ Debug.trace("sorted value is: ", propertyValuePair.getValue()); //G***del
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
-			final URI propertyReferenceURI=propertyValuePair.getProperty().getReferenceURI();  //get the reference URI of the property
+			final URI propertyReferenceURI=propertyValuePair.getProperty().getURI();  //get the reference URI of the property
 		  if(isContainerMemberPropertyReference(propertyReferenceURI))  //if this property name begins with rdf:_
 			{
 					//get the current number by removing the start of the URI up to and including "#_"
@@ -144,7 +144,7 @@ Debug.trace("sorted value is: ", propertyValuePair.getValue()); //G***del
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final RDFPropertyValuePair propertyValuePair=(RDFPropertyValuePair)propertyIterator.next(); //get the next name/value pair
-			final URI propertyReferenceURI=propertyValuePair.getProperty().getReferenceURI();  //get the reference URI of the property
+			final URI propertyReferenceURI=propertyValuePair.getProperty().getURI();  //get the reference URI of the property
 			if(isContainerMemberPropertyReference(propertyReferenceURI))  //if this property name begins with rdf:_
 			{
 					//get the current number by removing the start of the URI up to and including "#_"

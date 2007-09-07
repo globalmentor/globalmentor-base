@@ -21,7 +21,7 @@ public class RDFName extends DefaultResource implements IDable<URI>
 		public URI getNamespaceURI() {return namespaceURI;}
 
 		/**@return The unique identifier of the object.*/
-		public URI getID() {return getReferenceURI();}
+		public URI getID() {return getURI();}
 
 	/**The local name.*/
 	private final String localName;

@@ -47,6 +47,11 @@ public class SynchronizedCollectionMapDecorator<K, V, C extends Collection<V>> e
 	*/
 	public C getCollection(final K key) {synchronized(mutex) {return collectionMap.getCollection(key);}}
 
+	/**Creates a collection in which to store values.
+	This implementation is not synchronized.
+	*/
+	public C createCollection() {return collectionMap.createCollection();}
+
 	/**Adds a value to the collection of values associated with the key.
 	If no collection of values is associated with the key, one will be created and added to the map.
 	@param key The key in the map.

@@ -80,8 +80,8 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 	protected MutableAttributeSet createAttributeSet(final RDFResource resource, final URI baseURI)
 	{
 		final RDFResource type=getType(resource);	//get the resource type
-		final URI namespaceURI=type!=null ? getNamespaceURI(type.getReferenceURI()) : null;	//get the namespace of the resource
-		final String localName=type!=null ? getLocalName(type.getReferenceURI()) : null;	//get the local name of the resource
+		final URI namespaceURI=type!=null ? getNamespaceURI(type.getURI()) : null;	//get the namespace of the resource
+		final String localName=type!=null ? getLocalName(type.getURI()) : null;	//get the local name of the resource
 		final MutableAttributeSet attributeSet=namespaceURI!=null && localName!=null	//if we could find both a type namespace and a type local name
 				? getDefaultXMLElementKit().createAttributeSet(namespaceURI, localName)	//create an attribute set with the given namespace and local name
 				: new SimpleAttributeSet();	//if type information isn't available, create a new default attribute set for this element

@@ -293,7 +293,7 @@ public abstract class AbstractRDFProcessor
 				final Statement statement=statementIterator.next();	//get the next statement
 					//if this is a statement in the form, {resource proxy, rdf:type, XXX}
 				if(statement.getSubject().equals(resourceProxy)	//if this statement has this resource proxy as its subject
-						&& TYPE_PROPERTY_REFERENCE_URI.equals(statement.getPredicate().getReferenceURI()))	//if this statement has a predicate of rdf:type
+						&& TYPE_PROPERTY_REFERENCE_URI.equals(statement.getPredicate().getURI()))	//if this statement has a predicate of rdf:type
 				{
 					final RDFResource typeValueRDFResource;	//we'll find a resource to use as the type value
 					final Object typeValueResource=statement.getObject();	//get the type value, which may be a resource or a literal
@@ -310,18 +310,18 @@ public abstract class AbstractRDFProcessor
 						continue;	//go to the next statement---we even though this is a type statement, there's no type value we can use
 					}
 						//if the type value has a separate namespace URI and local name we can use for creating a resource from a factory
-					final URI typeNamespaceURI=getNamespaceURI(typeValueRDFResource.getReferenceURI());	//see if we can get a namespace URI for the type
-					final String typeLocalName=getLocalName(typeValueRDFResource.getReferenceURI());	//see if we can get a local name for the type
+					final URI typeNamespaceURI=getNamespaceURI(typeValueRDFResource.getURI());	//see if we can get a namespace URI for the type
+					final String typeLocalName=getLocalName(typeValueRDFResource.getURI());	//see if we can get a local name for the type
 					if(typeNamespaceURI!=null && typeLocalName!=null)	//if we have both a type and local name
 					{
 							//try to create a resource using the appropriate resource factory, creating a default resource if no factory could generate one 
-						resource=getRDF().createTypedResource(resourceProxy.getReferenceURI(), typeNamespaceURI, typeLocalName);
+						resource=getRDF().createTypedResource(resourceProxy.getURI(), typeNamespaceURI, typeLocalName);
 					}
 				}
 			}
 			if(resource==null)	//if we couldn't create a resource from a statement that provided the type
 			{
-				resource=getRDF().createResource(resourceProxy.getReferenceURI());	//create a default resource from the proxy
+				resource=getRDF().createResource(resourceProxy.getURI());	//create a default resource from the proxy
 			}
 			putProxiedRDFResource(resourceProxy, resource);	//associate the resource with the resource proxy so we won't have to go through all this the next time 
 		}
@@ -404,12 +404,12 @@ public abstract class AbstractRDFProcessor
 		}
 
 		/**@return A hash code value for the resource proxy.
-		@see DefaultRDFResource#getReferenceURI()
+		@see DefaultRDFResource#getURI()
 		@see #getNodeID()
 		*/
 		public int hashCode()
 		{
-			if(getReferenceURI()!=null)	//if we have a reference URI
+			if(getURI()!=null)	//if we have a reference URI
 			{
 				return super.hashCode();	//return the default hash code
 			}
@@ -428,7 +428,7 @@ public abstract class AbstractRDFProcessor
 		*/
 		public boolean equals(final Object object)
 		{
-			if(getReferenceURI()!=null)	//if we have a reference URI
+			if(getURI()!=null)	//if we have a reference URI
 			{
 				return super.equals(object);	//compare using the default resouce functionality
 			}
@@ -450,7 +450,7 @@ public abstract class AbstractRDFProcessor
 		*/
 		public String toString()
 		{
-			return getReferenceURI()!=null ? super.toString() : getNodeID();	//return the reference URI, if available; otherwise, return the node ID
+			return getURI()!=null ? super.toString() : getNodeID();	//return the reference URI, if available; otherwise, return the node ID
 		}
 
 	}

@@ -36,8 +36,8 @@ public class RDFSLabelComparator implements Comparator
 		{
 //TODO fix comparator sorting for no labels; use inherent resource comparison, once that's fixed
 		//G***fix		final Resource otherResource=(Resource)object;	//cast the object to a resource
-			if(resource1.getReferenceURI()!=null && resource2.getReferenceURI()!=null)	//if both resources have reference URIs				
-				return resource1.getReferenceURI().compareTo(resource2.getReferenceURI()); //compare reference URIs
+			if(resource1.getURI()!=null && resource2.getURI()!=null)	//if both resources have reference URIs				
+				return resource1.getURI().compareTo(resource2.getURI()); //compare reference URIs
 			else	//if one of the two resources doesn't have a reference URI
 				return resource1.hashCode()-resource2.hashCode();	//make an arbitrary comparison G***fix; maybe allow comparison if the objects are Comparable, even if they aren't RDFResources
 		}

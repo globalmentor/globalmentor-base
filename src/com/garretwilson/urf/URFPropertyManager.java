@@ -4,9 +4,8 @@ import java.net.URI;
 import java.util.*;
 import java.util.concurrent.locks.*;
 
+import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.util.*;
-import com.garretwilson.util.ObjectIterator;
-
 import static com.garretwilson.util.IteratorUtilities.*;
 
 /**Manages URF properties.
@@ -16,7 +15,7 @@ public class URFPropertyManager implements ReadWriteLock
 {
 
 	/**The decorated read write lock.*/
-	private final ReadWriteLock readWriteLock=new ReentrantReadWriteLock();
+	private final ReadWriteLock readWriteLock;
 
 	/**Returns the lock used for reading.
 	@return the lock used for reading.
@@ -37,6 +36,15 @@ public class URFPropertyManager implements ReadWriteLock
 	/**@return The number of properties this resource has.*/
 //	public int getPropertyCount() {return properties.size();}
 
+
+	/**Read write lock constructor.
+	@param readWriteLock The lock for controlling access to the properties.
+	@exception NullPointerException if the given lock is <code>null</code>.
+	*/
+	public URFPropertyManager(final ReadWriteLock readWriteLock)
+	{
+		this.readWriteLock=checkInstance(readWriteLock, "Read write lock cannot be null.");
+	}
 
 	protected URFValueContext getPropertyValueContext(final URI propertyURI, final URFResource propertyValue)
 	{
@@ -128,12 +136,23 @@ public class URFPropertyManager implements ReadWriteLock
 					return;	//don't add the property value; it's already there
 				}
 			}
-			valueContextList.add(new URFValueContext(propertyValue));	//add a new value context
+			valueContextList.add(new URFValueContext(readWriteLock, propertyValue));	//add a new value context
 		}
 		finally
 		{
 			writeLock().unlock();	//release the write lock
 		}
+	}
+
+	/**Sets a property value for the property with the given URI.
+	@param propertyURI The URI of the property of the value to set.
+	@param propertyValue The value to set for the given property.
+	*/
+	public void setPropertyValue(final URI propertyURI, final URFResource propertyValue)
+	{
+		final List<URFValueContext> valueContextList=propertyValuesMap.createCollection();	//create a list of value contexts to hold the new value
+		valueContextList.add(new URFValueContext(readWriteLock, propertyValue));	//add a new value context
+		propertyValuesMap.put(propertyURI, valueContextList);	//change the value
 	}
 
 	/**Adds a contextual property value for the contextual property with the given URI, in the context of a given property and value.
@@ -153,6 +172,30 @@ public class URFPropertyManager implements ReadWriteLock
 			if(valueContext!=null)	//if there is a value context
 			{
 				valueContext.addPropertyValue(contextualPropertyURI, contextualPropertyValue);	//get the contextual property value
+			}
+		}
+		finally
+		{
+			writeLock().unlock();	//release the write lock
+		}
+	}
+
+	/**Sets a contextual property value for the contextual property with the given URI, in the context of a given property and value.
+	If the given context property and value do not exists, no action occurs.
+	@param contextPropertyURI The URI of the context property of the value to set.
+	@param contextPropertyValue The context value of the property value to set.
+	@param contextualPropertyURI The URI of the property of the contextual value to set.
+	@param contextualPropertyValue The value to set for the given contextual property.
+	*/
+	public void setContextPropertyValue(final URI contextPropertyURI, final URFResource contextPropertyValue, final URI contextualPropertyURI, final URFResource contextualPropertyValue)
+	{
+		writeLock().lock();	//get a write lock
+		try
+		{
+			final URFValueContext valueContext=getPropertyValueContext(contextPropertyURI, contextPropertyValue);	//get the value context, if any
+			if(valueContext!=null)	//if there is a value context
+			{
+				valueContext.setPropertyValue(contextualPropertyURI, contextualPropertyValue);	//set the contextual property value
 			}
 		}
 		finally

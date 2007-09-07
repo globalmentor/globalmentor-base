@@ -520,7 +520,7 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 		publication.setRDF(rdf);	//set the publication's RDF data model
 		rdf.addResource(publication);	//add the resource to the RDF data model
 			//store the publication reference URI as a Dublin Core identifier property
-		DCUtilities.addIdentifier(publication, publication.getReferenceURI().toString());
+		DCUtilities.addIdentifier(publication, publication.getURI().toString());
 //G***del when works		RDFUtilities.addProperty(getRDF(), publication, DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, publication.getReferenceURI());
 
 
@@ -1131,7 +1131,7 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 						String hrefRelativePath; //we'll set the relative path, if we can find it
 						hrefRelativePath=URLUtilities.getRelativePath(contextURL, url);  //try to create a relative path for the reference G***why do we need to do this yet again?
 	Debug.trace("href relative path: ", hrefRelativePath);  //G***de
-						final URI itemURI=createURI(publication.getReferenceURI(), hrefRelativePath);  //create an ID from the relative path
+						final URI itemURI=createURI(publication.getURI(), hrefRelativePath);  //create an ID from the relative path
 //G***del						final String itemID=XMLUtilities.createName(hrefRelativePath);  //create an ID from the relative path
 						if(XPackageUtilities.getManifestItem(publication, itemURI)==null)  //if there isn't an item already in the manifest with this ID G***this could in some strange circumstances prevent two different paths from being stored, if the slash conversion to underline matches a filename with underlines in the same locations
 						{

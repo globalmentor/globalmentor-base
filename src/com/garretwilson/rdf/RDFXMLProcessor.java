@@ -316,7 +316,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 			{
 				final Resource property=processProperty(resource, (Element)childNode, memberCount);  //parse the element representing an RDF property
 					//if this is an rdf:_X property (originally serialized as rdf:li)
-				if(RDFUtilities.isContainerMemberPropertyReference(property.getReferenceURI()))
+				if(RDFUtilities.isContainerMemberPropertyReference(property.getURI()))
 				{
 					++memberCount;  //show that we have another member
 				}

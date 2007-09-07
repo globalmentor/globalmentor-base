@@ -150,7 +150,7 @@ public class AnswerPanel extends ContentPanel
 			{
 				final RDFTypedLiteral answerTypedLiteral=(RDFTypedLiteral)answerValue;	//get the typed literal form of the answer value
 				final URI datatypeURI=answerTypedLiteral.getDatatypeURI();	//get the typed literal datatype
-				if(datatypeURI.equals(expectation.getReferenceURI()))	//if this answer has a datatype that we expect
+				if(datatypeURI.equals(expectation.getURI()))	//if this answer has a datatype that we expect
 				{
 					if(answerTypedLiteral instanceof BooleanLiteral)	//if this is a boolean literal
 					{
@@ -220,7 +220,7 @@ public class AnswerPanel extends ContentPanel
 		}
 		else if(typeObject instanceof Resource)	//if a normal resource was passed
 		{
-			return getTypeRDFResource(((Resource)typeObject).getReferenceURI());	//get the type resource from the resource reference URI
+			return getTypeRDFResource(((Resource)typeObject).getURI());	//get the type resource from the resource reference URI
 		}
 		else if(typeObject instanceof URI)	//if a URI was passed
 		{
@@ -254,7 +254,7 @@ public class AnswerPanel extends ContentPanel
 	{
 		if(type!=null)	//if a type was given
 		{
-			if(XMLSchemaConstants.BOOLEAN_DATATYPE_URI.equals(type.getReferenceURI()))	//if this is the boolean type
+			if(XMLSchemaConstants.BOOLEAN_DATATYPE_URI.equals(type.getURI()))	//if this is the boolean type
 			{
 				return new BooleanPanel(BooleanPanel.HORIZONTAL);	//use a boolean panel for the content component
 			}

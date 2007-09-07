@@ -53,7 +53,7 @@ public class ResourceModel<R extends Resource> extends URIAccessibleModel
 	*/
 	public ResourceModel(final R resource)
 	{
-		this(resource, resource!=null ? resource.getReferenceURI() : (URI)null);
+		this(resource, resource!=null ? resource.getURI() : (URI)null);
 	}
 
 	/**Base URI constructor.
@@ -155,7 +155,7 @@ public class ResourceModel<R extends Resource> extends URIAccessibleModel
 	*/
 	public ResourceModel(final R resource, final URIInputStreamable uriInputStreamable, final URIOutputStreamable uriOutputStreamable)
 	{
-		this(resource, resource!=null ? resource.getReferenceURI() : (URI)null, uriInputStreamable, uriOutputStreamable);
+		this(resource, resource!=null ? resource.getURI() : (URI)null, uriInputStreamable, uriOutputStreamable);
 	}
 
 	/**Full constructor.

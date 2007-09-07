@@ -392,7 +392,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		final RDFResource resourceType=getType(resource); //get the type of the resource
 		if(resourceType!=null)   //if this resource has a type that we can use for the element name
 		{
-			final URI resourceTypeURI=resourceType.getReferenceURI();	//get the URI of the type
+			final URI resourceTypeURI=resourceType.getURI();	//get the URI of the type
 			final URI namespaceURI=getNamespaceURI(resourceTypeURI);	//get the type's namespace URI
 			assert namespaceURI!=null : "Unable to find namespace of type "+resourceTypeURI;	//TODO add real error handling here
 			final String prefix=xmlNamespacePrefixManager.getNamespacePrefix(namespaceURI.toString());  //get the prefix for use with this namespace
@@ -405,7 +405,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 			final String qualifiedName=createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION);  //create a qualified name for the element
 		  resourceElement=document.createElementNS(RDF_NAMESPACE_URI.toString(), qualifiedName); //create an rdf:Description element
 		}
-		final URI referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
+		final URI referenceURI=resource.getURI(); //get the reference URI of the resource
 		if(referenceURI!=null)  //if this resource has a reference URI (i.e. it isn't a blank node)
 		{
 			final URI serializationReferenceURI;	//we'll relativize the URI if possible
@@ -453,7 +453,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 	*/
 	protected void setReference(final Element element, final RDFResource resource)
 	{
-		final URI referenceURI=resource.getReferenceURI(); //get the reference URI of the resource
+		final URI referenceURI=resource.getURI(); //get the reference URI of the resource
 		if(referenceURI!=null)	//if the resource has a reference URI, reference the reference URI using rdf:resource
 		{
 			final String resourceAttributeQualifiedName=createQualifiedName(RDF_NAMESPACE_PREFIX, ATTRIBUTE_RESOURCE);  //create a qualified name for the link attribute
@@ -481,7 +481,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		for(final RDFPropertyValuePair propertyValuePair:resource.getProperties())	//for each resource property
 		{
 				//if this property is not a type property we already used for creating the element name
-		  if(!(TYPE_PROPERTY_REFERENCE_URI.equals(propertyValuePair.getProperty().getReferenceURI()) && propertyValuePair.getPropertyValue().equals(resourceType)))
+		  if(!(TYPE_PROPERTY_REFERENCE_URI.equals(propertyValuePair.getProperty().getURI()) && propertyValuePair.getPropertyValue().equals(resourceType)))
 			{
 		  	addProperty(document, element, propertyValuePair);	//create a representation for this property
 			}
@@ -498,7 +498,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 	{
 	  final RDFResource propertyResource=propertyValuePair.getProperty();  //get the property predicate
 		final RDFObject propertyValue=propertyValuePair.getPropertyValue();  //get the property value
-		final URI propertyResourceURI=propertyResource.getReferenceURI();	//get the property resource URI
+		final URI propertyResourceURI=propertyResource.getURI();	//get the property resource URI
 		final URI propertyNamespaceURI=getNamespaceURI(propertyResourceURI); //get the namespace URI of the property
 		assert propertyNamespaceURI!=null : "Unable to find namespace of property "+propertyResourceURI;	//TODO add real error handling here
 		if(propertyValue instanceof RDFPlainLiteral)	//if this is a plain literal, see if we can serialize it as an attribute	TODO add support for typed literals
@@ -543,7 +543,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		final String qualifiedName; //we'll store here the qualified name of the property element
 			//if we know the namespace URI and local name of the property
 				  //TODO replace all this code with the new utility method getLabel(RDFResource)
-		final URI propertyResourceURI=propertyResource.getReferenceURI();	//get the URI of the property
+		final URI propertyResourceURI=propertyResource.getURI();	//get the URI of the property
 		final URI namespaceURI=getNamespaceURI(propertyResourceURI); //get the namespace URI of the property
 		assert namespaceURI!=null : "Unable to find namespace of property "+propertyResourceURI;	//TODO add real error handling here
 		final String prefix=xmlNamespacePrefixManager.getNamespacePrefix(namespaceURI.toString());  //get the prefix for use with this namespace
@@ -608,7 +608,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 						final RDFPropertyValuePair subPropertyValuePair=propertyIterator.next(); //get the next property name/value pair
 						final RDFResource subPropertyResource=subPropertyValuePair.getProperty();  //get the property resource
 						final RDFObject subPropertyValue=subPropertyValuePair.getPropertyValue();  //get the property value
-						final URI subPropertyResourceURI=subPropertyResource.getReferenceURI();	//get the URI of the subproperty
+						final URI subPropertyResourceURI=subPropertyResource.getURI();	//get the URI of the subproperty
 					  final URI subPropertyNamespaceURI=getNamespaceURI(subPropertyResourceURI); //get the namespace URI of the property
 						assert subPropertyNamespaceURI!=null : "Unable to find namespace of subproperty "+subPropertyResourceURI;	//TODO add real error handling here
 								//if this value is not a plain literal, or the plain literal has a language indication, we can't store it in an attribute

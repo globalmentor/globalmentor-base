@@ -62,6 +62,9 @@ public class DecoratorReadWriteLockCollectionMap<K, V, C extends Collection<V>> 
 		return collection;	//return the collection
 	}
 
+	/**Creates a collection in which to store values.*/
+	public C createCollection() {return collectionMap.createCollection();}
+
 	/**Adds a value to the collection of values associated with the key.
 	If no collection of values is associated with the key, one will be created and added to the map.
 	@param key The key in the map.

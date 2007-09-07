@@ -191,7 +191,7 @@ public class XPackageUtilities
 			while(itemIterator.hasNext()) //while there are more items
 			{
 				final RDFResource item=(RDFResource)itemIterator.next();  //get the next item
-				if(referenceURI.equals(item.getReferenceURI())) //if this item has the correct reference URI
+				if(referenceURI.equals(item.getURI())) //if this item has the correct reference URI
 					return item;  //return the item we found
 			}
 		}

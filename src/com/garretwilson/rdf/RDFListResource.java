@@ -424,7 +424,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 			if(object instanceof RDFResource)
 			{
 				final RDFResource resource=(RDFResource)object;	//get the resource
-				if(uri.equals(resource.getReferenceURI()))	//if this resource has the correct reference URI
+				if(uri.equals(resource.getURI()))	//if this resource has the correct reference URI
 				{
 					return resource;	//return the resource
 				}
@@ -526,7 +526,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		{
 			if(currentIndex==index)	///if this is the correct index
 			{
-				final URI oldReferenceURI=list.getReferenceURI();	//get the old reference URI of this list element (which might even be the nil URI)
+				final URI oldReferenceURI=list.getURI();	//get the old reference URI of this list element (which might even be the nil URI)
 				final E oldFirst=getFirst(list);	//get the current first of the list
 				final RDFResource oldRest=getRest(list);	//get the current rest of the list
 				list.setReferenceURI(null);	//effectively change the current node into an anonymous node
@@ -569,7 +569,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 				setRest(list, getRest(rest));	//transfer the rest of the next node to this node					
 				if(RDFUtilities.isNil(rest))	//if the rest of the list is the nil list, the empty list
 				{
-					list.setReferenceURI(rest.getReferenceURI());	//effectively change the current node into the empty list
+					list.setReferenceURI(rest.getURI());	//effectively change the current node into the empty list
 				}
 				return true;	//we've removed the current value by taking over the value of the next node and removing the next node from our list
 			}
@@ -598,7 +598,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 				setRest(list, getRest(rest));	//transfer the rest of the next node to this node					
 				if(RDFUtilities.isNil(rest))	//if the rest of the list is the nil list, the empty list
 				{
-					list.setReferenceURI(rest.getReferenceURI());	//effectively change the current node into the empty list
+					list.setReferenceURI(rest.getURI());	//effectively change the current node into the empty list
 				}
 				return first;	//we've removed the current value; return the old first value
 			}

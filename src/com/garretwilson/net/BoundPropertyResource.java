@@ -15,7 +15,7 @@ public class BoundPropertyResource extends BoundPropertyObject implements Resour
 	private URI referenceURI;
 
 		/**@return The resource identifier URI, or <code>null</code> if the identifier is not known.*/
-		public URI getReferenceURI() {return referenceURI;}
+		public URI getURI() {return referenceURI;}
 
 		/**Sets the reference URI of the resource.
 		@param uri The new reference URI, or <code>null</code> if the identifier is not known.
@@ -44,16 +44,16 @@ public class BoundPropertyResource extends BoundPropertyObject implements Resour
 	If neither object has a reference URI, the default identity comparison is performed.
 	@param object The object with which to compare this  resource.
 	@return <code>true<code> if this resource equals that specified in <code>object</code>.
-	@see #getReferenceURI()
+	@see #getURI()
 	*/
 	public boolean equals(final Object object)
 	{
 		if(object instanceof Resource)	//if we're being compared with another resource
 		{
-			final URI referenceURI=getReferenceURI();	//get the reference URI
+			final URI referenceURI=getURI();	//get the reference URI
 			if(referenceURI!=null)	//if this resource has a reference URI
 			{
-				return referenceURI.equals(((Resource)object).getReferenceURI());	//compare reference URIs
+				return referenceURI.equals(((Resource)object).getURI());	//compare reference URIs
 			}
 			else	//if this resource has no reference URI
 			{
@@ -71,7 +71,7 @@ public class BoundPropertyResource extends BoundPropertyObject implements Resour
 	{
 			//return the hash code of the reference URI unless there is no reference ID;
 			//  in that case, return the default hash code
-		return getReferenceURI()!=null ? getReferenceURI().hashCode() : super.hashCode();
+		return getURI()!=null ? getURI().hashCode() : super.hashCode();
 	}
 
 	/**Compares this object to another object.
@@ -85,9 +85,9 @@ public class BoundPropertyResource extends BoundPropertyObject implements Resour
 	*/
 	public int compareTo(final Resource resource)	//TODO comparing different things may result in circular comparisons
 	{
-		if(getReferenceURI()!=null && resource.getReferenceURI()!=null)	//if both resources have reference URIs
+		if(getURI()!=null && resource.getURI()!=null)	//if both resources have reference URIs
 		{
-			return getReferenceURI().compareTo(resource.getReferenceURI()); //compare reference URIs
+			return getURI().compareTo(resource.getURI()); //compare reference URIs
 		}
 		else	//if one of the two resources doesn't have a reference URI
 			return toString().compareTo(resource.toString());	//compare strings
@@ -100,6 +100,6 @@ public class BoundPropertyResource extends BoundPropertyObject implements Resour
 	*/
 	public String toString()
 	{
-		return getReferenceURI()!=null ? getReferenceURI().toString() : super.toString();	//return the reference URI, if available
+		return getURI()!=null ? getURI().toString() : super.toString();	//return the reference URI, if available
 	}
 }

@@ -1,9 +1,5 @@
 package com.garretwilson.text;
 
-import java.util.regex.Pattern;
-
-import static com.garretwilson.text.RegularExpression.*;
-
 /**Named constants representing several often-used characters. In most cases, names are derived from Unicode 3.0 names.
 @author Garret Wilson
 */
@@ -21,6 +17,14 @@ public class CharacterConstants
 	public final static char FORM_FEED_CHAR=0x000C;
 	/**A carriage return.*/
 	public final static char CARRIAGE_RETURN_CHAR=0x000D;
+	/**The information separator four character.*/
+	public final static char INFORMATION_SEPARATOR_FOUR_CHAR=0x001C;
+	/**The information separator three character.*/
+	public final static char INFORMATION_SEPARATOR_THREE_CHAR=0x001D;
+	/**The information separator two character.*/
+	public final static char INFORMATION_SEPARATOR_TWO_CHAR=0x001E;
+	/**The information separator one character.*/
+	public final static char INFORMATION_SEPARATOR_ONE_CHAR=0x001F;
 	/**A unit separator character.*/
 	public final static char UNIT_SEPARATOR_CHAR=0x001F;
 	/**A space character.*/
@@ -53,6 +57,8 @@ public class CharacterConstants
 	public final static char GRAVE_ACCENT_CHAR=0x0060;
 	/**A tilde character (007E;TILDE;Sm;0;ON;;;;;N;;;;;).*/
 	public final static char TILDE_CHAR=0x007E;	
+	/**A next line (NEL) control character.*/
+	public final static char NEXT_LINE_CHAR=0x0085;
 	/**A start of string control character.*/
 	public final static char START_OF_STRING_CHAR=0x0098;
 	/**A string terminator control character.*/
@@ -133,6 +139,8 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	public final static char BULLET_CHAR=0x2022;
 	/**Unicode horizontal ellipsis.*/
 	public final static char HORIZONTAL_ELLIPSIS_CHAR=0x2026;
+	/**A paragraph separator character.*/
+	public final static char PARAGRAPH_SEPARATOR_CHAR=0x2029;
 	/**A left-pointing single guillemet character.*/
 	public final static char SINGLE_LEFT_POINTING_ANGLE_QUOTATION_MARK_CHAR=0x2039;
 	/**A right-pointing single guillemet character.*/
@@ -182,26 +190,28 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 		(char)0x0090+(char)0x0091+(char)0x0092+(char)0x0093+(char)0x0094+(char)0x0095+(char)0x0096+(char)0x0097+
 		(char)0x0098+(char)0x0099+(char)0x009A+(char)0x009B+(char)0x009C+(char)0x009D+(char)0x009E+(char)0x009F;
 
-	/**Characters considered to be whitespace for purposes of tokenization.
-		The therefore include the <code>NO_BREAK_SPACE_CHAR</code>, 0x00A0.
-		G***finish this to include things found in java.lang.Character.isWhiteSpace()
-		G***does this need to be compatible with the Unicode whitespace characters? Unicode makes a distinction between ws, b, etc.
-	*/	//TODO fix for Unicode; fix all the uses of this string; it should *not* have no-break-space character in it, and it should not have control characters
-			//TODO most of the calling methods probably want to use TRIM_CHARS
-	public final static String WHITESPACE_CHARS=CONTROL_CHARS+
-		  SPACE_CHAR+
-			NO_BREAK_SPACE_CHAR;
-/*G***del
-		  HORIZONTAL_TABULATION_CHAR+
-			LINE_FEED_CHAR+
-			VERTICAL_TABULATION_CHAR+
-		  FORM_FEED_CHAR+
-		  CARRIAGE_RETURN_CHAR+
-			UNIT_SEPARATOR_CHAR+
-			FORM_FEED_CHAR+
-			SPACE_CHAR+
-			NO_BREAK_SPACE_CHAR*/;
+	/**Unicode paragraph separator characters.*/
+	public final static String PARAGRAPH_SEPARATOR_CHARS=""+LINE_FEED_CHAR+CARRIAGE_RETURN_CHAR+INFORMATION_SEPARATOR_FOUR_CHAR+INFORMATION_SEPARATOR_THREE_CHAR+INFORMATION_SEPARATOR_TWO_CHAR+NEXT_LINE_CHAR+PARAGRAPH_SEPARATOR_CHAR;
 
+	/**Unicode segment separator characters.*/
+	public final static String SEGMENT_SEPARATOR_CHARS=""+HORIZONTAL_TABULATION_CHAR+VERTICAL_TABULATION_CHAR+INFORMATION_SEPARATOR_ONE_CHAR;
+
+	/**Unicode whitespace characters.*/
+	public final static String WHITESPACE_CHARS=""+HORIZONTAL_TABULATION_CHAR+LINE_FEED_CHAR+VERTICAL_TABULATION_CHAR+FORM_FEED_CHAR+CARRIAGE_RETURN_CHAR+SPACE_CHAR;
+/*TODO add
+			  * U0085 NEL
+			  * U00A0 NBSP
+			  * U1680 OGHAM SPACE MARK
+			  * U180E MONGOLIAN VOWEL SEPARATOR
+			  * U2000-U200A (different sorts of spaces)
+			  * U2028 LSP
+			  * U2029 PSP
+			  * U202F NARROW NBSP
+			  * U205F MEDIUM MATHEMATICAL SPACE
+			  * U3000 IDEOGRAPHIC SPACE
+*/
+			
+			
 	/**Unicode formatting characters; Unicode characters marked with "Cf",
 		such as <code>WORD_JOINER</code>.
 	*/
