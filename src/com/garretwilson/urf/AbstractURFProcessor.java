@@ -5,11 +5,12 @@ import java.util.*;
 import static java.util.Collections.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
+
+import com.garretwilson.io.ParseIOException;
 import com.garretwilson.net.DefaultResource;
 import com.garretwilson.net.Resource;
 import static com.garretwilson.urf.URF.*;
 
-import com.garretwilson.util.CollectionUtilities;
 import com.garretwilson.util.Debug;
 import com.garretwilson.util.IdentityHashSet;
 
@@ -76,25 +77,41 @@ public abstract class AbstractURFProcessor
 	/**The map of resource proxies keyed to labels.*/
 	private final Map<String, ResourceProxy> labelResourceProxyMap=new HashMap<String, ResourceProxy>();
 
-		/**Retrieves a resource proxy to represent a resource with the given label and URIs.
+		/**Retrieves a resource proxy to represent a resource with the given URI.
 		If such a proxy already exists, it will be returned; otherwise, a new one will be created.
-		@param label The label used to identify the resource, or <code>null</code> if no label is known.
-		@param resourceURIs The URIs, if any, of the resource the proxy should represent.
+		If no URI is given, a new resource proxy will be created and returned.
+		@param resourceURI The URIs of the resource the proxy should represent, or <code>null</code> if a resource URI is not known.
 		@return A resource proxy to represent the identified resource.
-		@exception NullPointerException if one of the given resource URIs is <code>null</code>.
 		*/
-		protected ResourceProxy getResourceProxy(final String label, final URI... resourceURIs)
+		protected ResourceProxy getResourceProxy(final URI resourceURI) throws ParseIOException
 		{
-Debug.trace("getting proxy for label", label, "resource URIs", Arrays.toString(resourceURIs));
+			return getResourceProxy(null, resourceURI);	//get a resource proxy with no label
+		}
+
+		/**Retrieves a resource proxy to represent a resource with the given label and/or URI.
+		If such a proxy already exists, it will be returned; otherwise, a new one will be created.
+		If neither a label nor a URI is given, a new resource proxy will be created and returned.
+		@param label The label used to identify the resource, or <code>null</code> if no label is known.
+		@param resourceURI The URIs of the resource the proxy should represent, or <code>null</code> if a resource URI is not known.
+		@return A resource proxy to represent the identified resource.
+		@exception ParseIOException if the same label has been used resources with different URIs.
+		*/
+		protected ResourceProxy getResourceProxy(final String label, final URI resourceURI) throws ParseIOException
+		{
+Debug.trace("getting proxy for label", label, "resource URI", resourceURI);
 			final Set<ResourceProxy> equivalentResourceProxies=new IdentityHashSet<ResourceProxy>();	//create a set in which to store the resource proxies
-			ResourceProxy resourceProxy=labelResourceProxyMap.get(label);	//see if there is a proxy associated with the label
-			if(resourceProxy!=null)	//if there is a label resource proxy
+			if(label!=null)	//if we were given a label
 			{
-				equivalentResourceProxies.add(resourceProxy);	//add this resource proxy
+				final ResourceProxy resourceProxy=labelResourceProxyMap.get(label);	//see if there is a proxy associated with the label
+				if(resourceProxy!=null)	//if there is a label resource proxy
+				{
+Debug.trace("found existing resource proxy for label", label, resourceProxy);
+					equivalentResourceProxies.add(resourceProxy);	//add this resource proxy
+				}
 			}
-			for(final URI resourceURI:resourceURIs)	//for each resource URI
+			if(resourceURI!=null)	//if we were given a URI
 			{
-				resourceProxy=uriResourceProxyMap.get(checkInstance(resourceURI, "Resource URI cannot be null."));	//see if there is a proxy associated with the URI
+				final ResourceProxy resourceProxy=uriResourceProxyMap.get(resourceURI);	//see if there is a resource proxy associated with the URI
 				if(resourceProxy!=null)	//if there is a URI resource proxy
 				{
 					equivalentResourceProxies.add(resourceProxy);	//add this resource proxy
@@ -103,7 +120,7 @@ Debug.trace("getting proxy for label", label, "resource URIs", Arrays.toString(r
 //Debug.trace("got initial proxies");
 			if(equivalentResourceProxies.isEmpty())	//if we found no resource proxies
 			{
-				equivalentResourceProxies.add(new ResourceProxy());	//put a new resource proxy in the map
+				equivalentResourceProxies.add(new ResourceProxy(resourceURI));	//put a new resource proxy in the map, using the given resource URI if any
 			}
 			else	//if there is at least one resource proxy
 			{
@@ -114,26 +131,39 @@ Debug.trace("getting proxy for label", label, "resource URIs", Arrays.toString(r
 				}
 			}
 //Debug.trace("ready to infom proxies; we have", equivalentResourceProxies.size());
+			URI equivalentURI=resourceURI;	//if no URI was passed, see if one of the resource proxies has a URI
 			for(final ResourceProxy equivalentResourceProxy:equivalentResourceProxies)	//for each equivalent resource proxy
 			{
 //Debug.trace("informing proxy:", equivalentResourceProxy.getURI());
 				equivalentResourceProxy.getEquivalentResourceProxies().addAll(equivalentResourceProxies);	//make sure each equivalent resource proxy knows about all the others
-				addAll(equivalentResourceProxy.getEquivalentURIs(), resourceURIs);	//make sure all the equivalent proxies know about all the resource URIs TODO does this take into consideration all the URIs? shouldn't we gather all the URIs from all the resource proxies first? 
+				if(equivalentURI==null)	//if we don't know of any URI, yet,
+				{
+					equivalentURI=equivalentResourceProxy.getURI();	//get the URI of this resource proxy, in case it knows of a resource URI
+				}
 			}
-			for(final ResourceProxy equivalentResourceProxy:equivalentResourceProxies)	//for each equivalent resource proxy
+			if(equivalentURI!=null)	//if we know of a resource URI, make sure all the equivalent resource proxies know about that URI
 			{
-//Debug.trace("double-checking proxy:", equivalentResourceProxy.getURI());
+				//Debug.trace("double-checking proxy:", equivalentResourceProxy.getURI());
+				for(final ResourceProxy equivalentResourceProxy:equivalentResourceProxies)	//for each equivalent resource proxy
+				{
+					final URI existingURI=equivalentResourceProxy.getURI();	//see what URI this resource proxy has
+					if(existingURI!=null && !equivalentURI.equals(existingURI))	//if this equivalent resource proxy has a different URI
+					{
+						throw new ParseIOException("Two resources with the same label have different URIs: "+equivalentURI+" and "+existingURI);
+					}
+					equivalentResourceProxy.setURI(equivalentURI);	//make sure this resource knows about the URI
+				}
 			}
 //Debug.trace("ready to return proxies");
-			resourceProxy=equivalentResourceProxies.iterator().next();	//get one of (any of) the equivalent resource proxies
+			final ResourceProxy resourceProxy=equivalentResourceProxies.iterator().next();	//get one of (any of) the equivalent resource proxies
 //Debug.trace("we'll return proxy with URI:", resourceProxy.getURI());
 			if(label!=null)	//if a label was given
 			{
 				labelResourceProxyMap.put(label, resourceProxy);	//associate the resource proxy with the label
 			}
-			for(final URI resourceURI:resourceURIs)	//for each given resource URI
+			if(equivalentURI!=null)	//if we know of a URI
 			{
-				uriResourceProxyMap.put(resourceURI, resourceProxy);	//associate this proxy with the given URI
+				uriResourceProxyMap.put(equivalentURI, resourceProxy);	//associate this proxy with the URI
 			}
 			return equivalentResourceProxies.iterator().next();	//return one of (any of) the equivalent resource proxies
 		}
@@ -302,6 +332,7 @@ Debug.trace("getting proxy for label", label, "resource URIs", Arrays.toString(r
 	*/
 	protected URFResource unproxyURFResource(final ResourceProxy resourceProxy)
 	{
+		final URI resourceURI=resourceProxy.getURI();	//get the URI, if any, to use for the resource
 		URFResource resource=null;	//we'll see if we alrady have an unproxied resource
 		for(final ResourceProxy equiavalentResourceProxy:resourceProxy.getEquivalentResourceProxies())	//for each equivalent resource proxy
 		{
@@ -314,8 +345,6 @@ Debug.trace("getting proxy for label", label, "resource URIs", Arrays.toString(r
 		if(resource==null)	//if we have no such resource, create one; first, look for an appropriate type
 		{
 			final URF urf=getURF();	//get the URF data model
-			final Set<URI> equivalentURIs=resourceProxy.getEquivalentURIs();	//get the equivalent URIs for this resource proxy
-			final URI resourceURI=!equivalentURIs.isEmpty() ? equivalentURIs.iterator().next() : null;	//use any of the URIs, if there are any
 			for(final Assertion assertion:getAssertions())	//for each assertion
 			{
 					//if this is an assertion in the form, {resource proxy, urf:type, XXX}
@@ -396,24 +425,11 @@ Debug.trace("getting proxy for label", label, "resource URIs", Arrays.toString(r
 			/**@return The set of all resource proxies, including this one, to which this resource proxy is equivalent.*/
 			public Set<ResourceProxy> getEquivalentResourceProxies() {return equivalentResourceProxies;}
 
-		/**The URIs this resource proxy knows about.*/
-		private final Set<URI> equivalentURIs=new HashSet<URI>();
-
-			/**@return The URIs this resource proxy knows about.*/
-			public Set<URI> getEquivalentURIs() {return equivalentURIs;}
-
-		/**@return The resource URI, or <code>null</code> if the identifier is not known.*/
-		public URI getURI()
-		{
-//TODO del Debug.trace("getting URI; has equivalent URIs:", CollectionUtilities.toString(equivalentURIs, ','));
-			return !equivalentURIs.isEmpty() ? equivalentURIs.iterator().next() : null;
-			
-		}	//TODO fix; testing
-
-		/**Default constructor.
+		/**URI constructor.
+		@param uri The URI for the new resource.
 		This resource proxy will be added to the set of resource proxies.
 		*/
-		private ResourceProxy()
+		protected ResourceProxy(final URI uri)
 		{
 			getEquivalentResourceProxies().add(this);	//add ourselves to the set of equivalent resource proxies
 		}

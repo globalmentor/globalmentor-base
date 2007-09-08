@@ -27,9 +27,9 @@ public class TURF
 	public final static char PROPERTIES_END='}';
 
 	/**The delimiter that begins URI references.*/
-	public final static char REFERENCE_BEGIN='(';
+	public final static char REFERENCE_BEGIN='«';
 	/**The delimiter that ends URI references.*/
-	public final static char REFERENCE_END=')';
+	public final static char REFERENCE_END='»';
 
 	/**The delimiter that begins sequences.*/
 	public final static char SEQUENCE_BEGIN='|';
@@ -37,9 +37,9 @@ public class TURF
 	public final static char SEQUENCE_END=SEQUENCE_BEGIN;
 
 	/**The delimiter that begins type declarations.*/
-	public final static char TYPE_BEGIN='«';
+	public final static char TYPE_BEGIN='(';
 	/**The delimiter that ends type declarations.*/
-	public final static char TYPE_END='»';
+	public final static char TYPE_END=')';
 
 	/**The delimiter that begins URI shorthand declarations.*/
 	public final static char URI_BEGIN='<';

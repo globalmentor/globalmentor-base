@@ -33,12 +33,20 @@ public class URF
 	public final static String URF_NAMESPACE_PREFIX="URF";
 	/**The URI to the URF namespace.*/
 	public final static URI URF_NAMESPACE_URI=URI.create("http://urf.name/urf");
+	/**The URI to the URF index namespace.*/
+	public final static URI URF_INDEX_NAMESPACE_URI=URI.create("urn:urf:index");
+	/**The base to the URF lexical namespace.*/
+	private final static String URF_LEX_NAMESPACE_BASE="urn:urf:lex:";
 	/**The base URI to the URF lexical namespace.*/
-	public final static URI URF_LEX_NAMESPACE_BASE_URI=URI.create("urn:urf:lex:");
+	public final static URI URF_LEX_NAMESPACE_BASE_URI=URI.create(URF_LEX_NAMESPACE_BASE);
 	
 		//URF classes 
+	/**The URI of the <code>(&lt;:urf:#Array&gt;)</code> class.*/ 
+	public final static URI ARRAY_CLASS_URI=URF_NAMESPACE_URI.resolve("#Array");
 	/**The URI of the <code>(&lt;:urf:#Boolean&gt;)</code> class.*/ 
 	public final static URI BOOLEAN_CLASS_URI=URF_NAMESPACE_URI.resolve("#Boolean");
+	/**The URI of the <code>(&lt;:urf:#Number&gt;)</code> class.*/ 
+	public final static URI NUMBER_CLASS_URI=URF_NAMESPACE_URI.resolve("#Number");
 	/**The URI of the <code>(&lt;:urf:#URI&gt;)</code> class.*/ 
 	public final static URI URI_CLASS_URI=URF_NAMESPACE_URI.resolve("#URI");
 		//URF properties
@@ -58,6 +66,41 @@ public class URF
 		public final static URI BOOLEAN_TRUE_URI=createLexicalURI(BOOLEAN_CLASS_URI, BOOLEAN_TRUE_LEXICAL_FORM);
 	/**The URI lexical namespace URI.*/
 	public final static URI URI_NAMESPACE_URI=createLexicalNamespaceURI(URI_CLASS_URI);
+
+	/**Creates a URI in the array namespace for the given index.
+	@param index The index for which the index URI should be created.
+	@return A URI in the index namespace for the specified index
+	*/
+	public static URI createIndexURI(final long index)
+	{
+		return resolveFragment(URF_INDEX_NAMESPACE_URI, Long.toString(index));	//create a string from the index and resolve it as a fragment to the index URI
+	}
+
+	/**Determines whether the given URI is in a lexical namespace.
+	@param uri The URI to check for being in a lexical namespace
+	@return <code>true</code> if the URI is the URI of a lexical namespace or is in a lexical namespace.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	*/
+	public static boolean isLexicalNamespaceURI(final URI uri)
+	{
+		return uri.toString().startsWith(URF_LEX_NAMESPACE_BASE);	//see if this URI starts with the lexical namespace base URI
+	}
+
+	/**Retrieves the type URI of a URI in a lexical namespace.
+	@param uri The URI of a lexical namspace or a URI in a lexical namespace.
+	@return The type URI of the lexical namespace.
+	@exception IllegalArgumentException if the given URI is not in a lexical namespace.
+	@exception IllegalArgumentException if the given URI's lexical namespace URI does not have a correctly encoded type URI.
+	*/
+	public static URI getLexicalNamespaceTypeURI(final URI uri)
+	{
+		final String lexicalNamespaceURIString=removeFragment(uri).toString();	//remove the URI's fragment
+		if(!lexicalNamespaceURIString.startsWith(URF_LEX_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
+		{
+			throw new IllegalArgumentException("URI "+uri+" is not a lexical namespace URI or a URI in a lexical namespace.");
+		}
+		return URI.create(decode(lexicalNamespaceURIString.substring(URF_LEX_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
+	}
 
 	/**Creates a lexical namespace URI for the given resource type.
 	@param typeURI The URI of the type of the resource.

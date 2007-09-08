@@ -13,10 +13,8 @@ import com.garretwilson.net.*;
 import static com.garretwilson.net.URIUtilities.*;
 
 import com.garretwilson.text.CharacterConstants;
-import com.garretwilson.text.CharacterConstants.*;
 import static com.garretwilson.util.ArrayUtilities.*;
 
-import com.garretwilson.util.CollectionUtilities;
 import com.garretwilson.util.Debug;
 
 import static com.garretwilson.urf.URF.*;
@@ -92,120 +90,117 @@ public class TURFProcessor extends AbstractURFProcessor
 	*/
 	public Resource parseResource(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
+Debug.trace("ready to parse resource");
 		final URF urf=getURF();	//get the URF data model
 		String label=null;	//the label of the resource, if any
-		final List<URI> resourceURIs=new ArrayList<URI>();	//the URIs of the resource, if any
+		URI resourceURI=null;	//the URI of the resource, if any
 		final List<Resource> types=new ArrayList<Resource>();	//the types, if any
-//TODO del if not needed		boolean hasProperties=false;	//whether a properties declaration is present
-//TODO del		final Resource resource;	//we'll create an URF resource or a proxy and store it here
-		DescriptionComponent lastDescriptionComponent=null;	//keep track of the last description component we found
-		boolean finished=false;	//we'll see when we should be finished
+		Resource[] arrayElements=null;	//if we find an array, we'll store the elements here so that we can add them to the resource later
+		boolean foundComponent=false;	//we'll keep track of whether at least one description component was present
 		int c=peek(reader);	//peek the next character
-		while(c>=0)	//while we haven't reached the end of the file
+		if(c==LABEL_BEGIN)	//check for a label
 		{
-Debug.trace("ready to check component character", (char)c);
-			switch(c)	//check the current character
-			{
-				case LABEL_BEGIN:
-					lastDescriptionComponent=checkDescriptionComponent(lastDescriptionComponent, DescriptionComponent.LABEL);	//indicate which component we're parsing
-Debug.trace("this is the beginning of a label");
-					label=parseLabel(reader);	//parse the label
-					break;
-				case REFERENCE_BEGIN:
-					lastDescriptionComponent=checkDescriptionComponent(lastDescriptionComponent, DescriptionComponent.REFERENCE);	//indicate which component we're parsing
-Debug.trace("found start of reference; ready to parse resources");
-					check(reader, REFERENCE_BEGIN);	//read the beginning reference character
-					final Resource[] referenceResources=parseResourceList(reader, baseURI, REFERENCE_END);	//parse the resources serving as references
-Debug.trace("just parsed reference resources", Arrays.toString(referenceResources));
-						//TODO save the reference resources and process them outside the loop, because then the types will be available
-					for(final Resource referenceResource:referenceResources)	//look at each reference resource
-					{
-						resourceURIs.add(asURI(referenceResource));	//get the URI this resource represents
-					}
-Debug.trace("ready to check reference end");
-					check(reader, REFERENCE_END);	//read the ending reference delimiter
-Debug.trace("checked reference end, next character", peek(reader));
-					break;
-				case BOOLEAN_FALSE_BEGIN:	//false
-					lastDescriptionComponent=checkDescriptionComponent(lastDescriptionComponent, DescriptionComponent.REFERENCE);	//indicate which component we're parsing
-					check(reader, BOOLEAN_FALSE_LEXICAL_FORM);	//make sure this is really "false"
-					resourceURIs.add(BOOLEAN_FALSE_URI);	//create a URI for the resource
-					types.add(getResourceProxy(null, URI_CLASS_URI));	//add a proxy to the Boolean class
-					break;
-				case BOOLEAN_TRUE_BEGIN:	//true
-					lastDescriptionComponent=checkDescriptionComponent(lastDescriptionComponent, DescriptionComponent.REFERENCE);	//indicate which component we're parsing
-					check(reader, BOOLEAN_TRUE_LEXICAL_FORM);	//make sure this is really "true"
-					resourceURIs.add(BOOLEAN_TRUE_URI);	//create a URI for the resource
-					types.add(getResourceProxy(null, URI_CLASS_URI));	//add a proxy to the Boolean class
-					break;
-				case URI_BEGIN:
-					lastDescriptionComponent=checkDescriptionComponent(lastDescriptionComponent, DescriptionComponent.REFERENCE);	//indicate which component we're parsing
-Debug.trace("ready to parse URI");
-					final URI uri=parseURI(reader, baseURI);	//parse the URI
-Debug.trace("found URI", uri);
-					resourceURIs.add(createLexicalURI(URI_CLASS_URI, uri.toString()));	//create a URI for the resource
-//Debug.trace("resourceURI", resourceURI, "ready to add URI class type");
-					types.add(getResourceProxy(null, URI_CLASS_URI));	//add a proxy to the URI class
-					//TODO add the correct type resource
-					break;
-				case TYPE_BEGIN:
-					lastDescriptionComponent=checkDescriptionComponent(lastDescriptionComponent, DescriptionComponent.TYPE);	//indicate which component we're parsing
-Debug.trace("found start of types; ready to parse type resources");
-/*TODO del
-if(c=='^')
-{
-	Debug.trace("found start of types; next character", (char)reader.read(), (char)reader.read());
-}
-*/
-//Debug.trace("found start of types; ready to parse type resources; next character is", (char)peek(reader));
-					check(reader, TYPE_BEGIN);	//read the beginning type character
-					final Resource[] typeResources=parseResourceList(reader, baseURI, TYPE_END);	//parse the resources serving as types
-Debug.trace("just parsed type resources", Arrays.toString(typeResources));
-					addAll(types, typeResources);	//add all the types we found
-					check(reader, TYPE_END);	//read the ending type delimiter
-					break;
-				case PROPERTIES_BEGIN:
-					lastDescriptionComponent=checkDescriptionComponent(lastDescriptionComponent, DescriptionComponent.PROPERTIES);	//indicate which component we're parsing
-//					reader.reset();	//reset to the last mark, which was set right before the character we found
-					finished=true;	//don't do any processing; we'll break out of the read loop and read the properties 
-					break;
-				default:	//if we don't recognize the character
-					Debug.trace("we'll reset and consider ourselves finished because we found character", (char)c);
-//					reader.reset();	//reset to the last mark, which was set right before the character we found
-					finished=true;	//break out of the look, as we didn't recognize the next character
-					break;		//assume we've parsed all of the resource
-			}
-			if(!finished)	//if we're not finished with the resource components
-			{
-Debug.trace("between components, ready to skip separators, with next character", (char)peek(reader));
-				c=skipSeparators(reader);	//skip separators and peek the next character
-Debug.trace("between components, read character", (char)c);
-			}
-			else	//if we have no more components to parse
-			{
-				break;	//breat out of the loop
-			}
+Debug.trace("ready to parse label");
+			foundComponent=true;	//indicate that at least one description component is present
+			label=parseLabel(reader);	//parse the label
+Debug.trace("label:", label);
+			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
-		if(lastDescriptionComponent==null)	//if we didn't find any resource components
+		switch(c)	//check for a reference or a short form
+		{
+			case REFERENCE_BEGIN:
+Debug.trace("found reference beginning");
+				foundComponent=true;	//indicate that at least one description component is present
+				resourceURI=parseURI(reader, baseURI, REFERENCE_BEGIN, REFERENCE_END);	//parse the resource URI
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				break;
+			case ARRAY_BEGIN:
+				foundComponent=true;	//indicate that at least one description component is present
+				types.add(getResourceProxy(ARRAY_CLASS_URI));	//add a proxy to the array type
+				check(reader, ARRAY_BEGIN);	//read the beginning array delimiter
+				arrayElements=parseResourceList(reader, baseURI, ARRAY_END);	//parse the resources serving as array elements; we'll actually add them to the resource after creating the resource proxy
+				check(reader, ARRAY_END);	//read the ending array delimiter
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				break;
+			case BOOLEAN_FALSE_BEGIN:	//false
+				foundComponent=true;	//indicate that at least one description component is present
+				check(reader, BOOLEAN_FALSE_LEXICAL_FORM);	//make sure this is really "false"
+				resourceURI=BOOLEAN_FALSE_URI;	//create a URI for the resource
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				break;
+			case BOOLEAN_TRUE_BEGIN:	//true
+				foundComponent=true;	//indicate that at least one description component is present
+				check(reader, BOOLEAN_TRUE_LEXICAL_FORM);	//make sure this is really "true"
+				resourceURI=BOOLEAN_TRUE_URI;	//create a URI for the resource
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				break;
+			case '-':	//number
+			case '0':
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
+				foundComponent=true;	//indicate that at least one description component is present
+				final Number number=parseNumber(reader);	//parse the number
+				resourceURI=createLexicalURI(NUMBER_CLASS_URI, number.toString());	//create a URI for the resource
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				break;
+			case URI_BEGIN:
+				foundComponent=true;	//indicate that at least one description component is present
+				final URI uri=parseURI(reader, baseURI, URI_BEGIN, URI_END);	//parse the URI
+				resourceURI=createLexicalURI(URI_CLASS_URI, uri.toString());	//create a URI for the resource
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				break;
+		}
+		if(resourceURI!=null && isLexicalNamespaceURI(resourceURI))	//if there is a resource URI that is in a lexical namespace
+		{
+			types.add(getResourceProxy(getLexicalNamespaceTypeURI(resourceURI)));	//add a proxy to the lexical namespace type
+		}		
+		if(c==TYPE_BEGIN)	//check for a type
+		{
+			foundComponent=true;	//indicate that at least one description component is present
+			check(reader, TYPE_BEGIN);	//read the beginning type delimiter
+			final Resource[] typeResources=parseResourceList(reader, baseURI, TYPE_END);	//parse the resources serving as types
+			addAll(types, typeResources);	//add all the types we found
+			check(reader, TYPE_END);	//read the ending type delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
+		}
+		if(!foundComponent && c!=PROPERTIES_BEGIN)	//if there were no description components so far, and we don't see any properties coming up
 		{
 			checkReaderEnd(c);	//make sure we're not at the end of the reader
 			throw new ParseIOException("Expected resource; found character: "+(char)c);	//TODO improve with source throwable
 		}
-Debug.trace("ready to get resource proxy for label", label, "resource URI", CollectionUtilities.toString(resourceURIs, '.'));
-		final ResourceProxy resourceProxy=getResourceProxy(label, resourceURIs.toArray(new URI[resourceURIs.size()]));	//get a resource proxy from the reference URI, or use one already available for the reference URI
+Debug.trace("ready to get resource proxy for label", label, "resource URI", resourceURI);
+		final ResourceProxy resourceProxy=getResourceProxy(label, resourceURI);	//get a resource proxy from the label and/or reference URI, or use one already available for the reference URI
 Debug.trace("type count", types.size());
 		if(!types.isEmpty())	//if we have at least one type
 		{
-			final Resource typePropertyResource=getResourceProxy(null, TYPE_PROPERTY_URI);	//get a proxy to the type property resource
+			final Resource typePropertyResource=getResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
 			for(final Resource type:types)	//for each type
 			{
 				addAssertion(new Assertion(resourceProxy, typePropertyResource, type));	//assert this type
 			}
 		}
-		if(lastDescriptionComponent==DescriptionComponent.PROPERTIES)	//if we should parse properties
+		if(arrayElements!=null)	//if this is an array, asset the elements of the array now that we've created the array resource proxy
+		{
+			long index=0;	//start with the first index
+				//TODO make sure there are not too many array elements
+			for(final Resource arrayElement:arrayElements)	//for each array element
+			{
+				addAssertion(new Assertion(resourceProxy, getResourceProxy(createIndexURI(index)), arrayElement));	//assert add the element at this index of the resource
+				++index;	//go to the next index
+			}
+		}
+		if(c==PROPERTIES_BEGIN)	//check for properties
 		{
 			parseProperties(reader, baseURI, resourceProxy);	//parse the resource properties
 		}
+Debug.trace("ready to return resource proxy with URI", resourceProxy.getURI());
 		return resourceProxy;	//return the resource proxy we created
 	}
 
@@ -278,37 +273,94 @@ Debug.trace("after resource, peeked", (char)c);
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current label is completely parsed.
 	*/
-	public String parseLabel(final Reader reader) throws IOException, ParseIOException
+	public static String parseLabel(final Reader reader) throws IOException, ParseIOException
 	{
-		check(reader, LABEL_BEGIN);	//read the beginning label character
+		check(reader, LABEL_BEGIN);	//read the beginning label delimiter
 		final String label=reachAfter(reader, LABEL_END);	//read the label
 		//TODO make sure this is a valid label
 		return label;	//return the label we read
 	}
 
-	/**Parses a URI surrounded by URI delimiters.
+	/**Parses a number.
+	The current position must be that of the first number character.
+	The new position will be that immediately after the last number character.
+	@param reader The reader the contents of which to be parsed.
+	@return The number parsed from the reader.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters before the current number is completely parsed.
+	*/
+	public static Number parseNumber(final Reader reader) throws IOException, ParseIOException
+	{
+		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to use when reading the number
+		int c=peek(reader);	//peek the first character
+		if(c=='-')	//if the number starts with a minus sign
+		{
+			stringBuilder.append(check(reader, '-'));	//append the character
+		}
+		stringBuilder.append(check(reader, '0', '9'));	//there should be at least one digit
+		stringBuilder.append(read(reader, '0', '9')); //read all remaining digits
+		c=peek(reader);	//peek the next character
+		if(c>=0)	//if we're not at the end of the reader
+		{
+			boolean hasFraction=false;	//we don't have a fraction yet
+			boolean hasExponent=false;	//we don't have an exponent yet
+			if(c=='.')	//if this is a floating point number
+			{
+				hasFraction=true;	//we found a fraction
+				stringBuilder.append(check(reader, '.'));	//read and append the beginning decimal point
+				stringBuilder.append(check(reader, '0', '9'));	//there should be at least one digit
+				stringBuilder.append(read(reader, '0', '9')); //read all remaining digits
+				c=peek(reader);	//peek the next character
+			}
+			if(c=='e')	//if this is an exponent
+			{
+				hasExponent=true;	//we found an exponent
+				stringBuilder.append(check(reader, 'e'));	//read and append the exponent character
+				c=peek(reader);	//peek the next character
+				if(c=='-' || c=='+')	//if the exponent starts with a sign
+				{
+					stringBuilder.append(readCharacter(reader));	//append the sign					
+				}
+				stringBuilder.append(check(reader, '0', '9'));	//there should be at least one digit
+				stringBuilder.append(read(reader, '0', '9')); //read all remaining digits
+			}
+			if(hasFraction || hasExponent)	//if there was a fraction or exponent
+			{
+				return Double.valueOf(Double.parseDouble(stringBuilder.toString()));	//parse a double and return it
+			}
+		}
+		return Integer.valueOf(Integer.parseInt(stringBuilder.toString()));	//parse an integer and return it 
+	}
+
+	/**Parses a URI surrounded by specified URI delimiters.
 	The current position must be that of the first URI delimiter character.
 	The new position will be that immediately after the last URI delimiter character.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param uriBegin The beginning URI delimiter.
+	@param uriEnd The ending URI delimiter.
 	@return The label parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current URI is completely parsed.
 	*/
-	public URI parseURI(final Reader reader, final URI baseURI) throws IOException, ParseIOException
+	public URI parseURI(final Reader reader, final URI baseURI, final char uriBegin, final char uriEnd) throws IOException, ParseIOException
 	{
-		check(reader, URI_BEGIN);	//read the beginning URI character
+		check(reader, uriBegin);	//read the beginning URI delimiter
 		final URI localBaseURI;	//we'll store the local base URI, if there is one
 		if(indexOf(URI_RESOURCE_BEGINS, peek(reader))>=0)	//if the URI begins with another URI
 		{
+Debug.trace("the next character is a resource", (char)peek(reader));
 			localBaseURI=asURI(parseResource(reader, baseURI));
+Debug.trace("got local base URI", localBaseURI);
 		}
 		else	//if the URI doesn't start with another URI
 		{
 			localBaseURI=null;	//there is no local base URI
 		}
-		final String uriString=reachAfter(reader, URI_END);	//read the rest of the URI
+		final String uriString=reachAfter(reader, uriEnd);	//read the rest of the URI
+Debug.trace("got URI string", uriString);
 		try
 		{
 			URI uri=new URI(uriString);	//crate a URI from the string
@@ -327,7 +379,7 @@ Debug.trace("after resource, peeked", (char)c);
 			throw new ParseIOException("Invalid URI: "+uriSyntaxException.getInput());
 		}
 	}
-
+	
 	/**Determines the URI represented by the given resource.
 	@param resource The resource which is expected to represent a URI.
 	@exception ParseIOException if the given resource has no URI or the URI does not represent a URI.
@@ -365,19 +417,17 @@ Debug.trace("after resource, peeked", (char)c);
 	*/
 	public void parseProperties(final Reader reader, final URI baseURI, final Resource subject) throws IOException, ParseIOException
 	{
-		check(reader, PROPERTIES_BEGIN);	//read the beginning properties delimiter character
+		final URF urf=getURF();	//get the URF data model
+		check(reader, PROPERTIES_BEGIN);	//read the beginning properties delimiter
 		int c=skipSeparators(reader);	//skip separators and peek the next character
 		while(c!=PROPERTIES_END)	//while we haven't reached the end of the properties
 		{			
 			final Resource predicate=parseResource(reader, baseURI);	//parse the predicate resource
 			skipSeparators(reader);	//skip separators
 			final char propertyValueDelimiter=check(reader, PROPERTY_VALUE_DELIMITERS);	//read the next character and make sure it's a property-value delimiter
-			Resource object;	//we'll use this to store one or more objects
+			final Resource object;	//we'll use this to store the object, if there is just one object
 			switch(skipSeparators(reader))	//skip separators and see what the next character will be
 			{
-				case ARRAY_BEGIN:	//array short form
-						//TODO finish
-					break;
 				case SEQUENCE_BEGIN:	//sequence short form
 						//TODO finish
 					break;

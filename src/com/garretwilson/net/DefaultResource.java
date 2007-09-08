@@ -10,35 +10,31 @@ public class DefaultResource implements Resource, Comparable<Resource>
 {
 
 	/**The resource identifier URI, or <code>null</code> if the identifier is not known.*/
-	private URI referenceURI;
+	private URI uri;
 
 		/**@return The resource identifier URI, or <code>null</code> if the identifier is not known.*/
-		public URI getURI() {return referenceURI;}
+		public URI getURI() {return uri;}
 
-		/**Sets the reference URI of the resource.
-		@param uri The new reference URI, or <code>null</code> if the identifier is not known.
+		/**Sets the URI of the resource.
+		@param uri The new URI, or <code>null</code> if the identifier is not known.
 		*/
-		public void setReferenceURI(final URI uri) {referenceURI=uri;}
+		public void setURI(final URI uri) {this.uri=uri;}
 
-	/**@return The unique identifier of the object.*/
-//TODO del when not needed	public URI getID() {return getReferenceURI();}
-
-	/**Default constructor that allows the reference URI to be set later.*/
+	/**Default constructor that allows the URI to be set later.*/
 	protected DefaultResource()
 	{
-		this(null);	//construct the class without a reference URI
-//G***del		referenceURI=null; //set the reference URI to null for now
+		this(null);	//construct the class without a URI
 	}
 
-	/**Constructs a resource with a reference URI.
-	@param referenceURI The reference URI for the new resource.
+	/**URI constructor.
+	@param uri The URI for the new resource.
 	*/
-	protected DefaultResource(final URI referenceURI)
+	protected DefaultResource(final URI uri)
 	{
-		this.referenceURI=referenceURI; //set the reference URI
+		this.uri=uri; //set the reference URI
 	}
 
-	/**Compares the resource reference URIs.
+	/**Compares the resource URIs.
 	If neither object has a reference URI, the default identity comparison is performed.
 	@param object The object with which to compare this  resource.
 	@return <code>true<code> if this resource equals that specified in <code>object</code>.
@@ -48,10 +44,10 @@ public class DefaultResource implements Resource, Comparable<Resource>
 	{
 		if(object instanceof Resource)	//if we're being compared with another resource
 		{
-			final URI referenceURI=getURI();	//get the reference URI
-			if(referenceURI!=null)	//if this resource has a reference URI
+			final URI uri=getURI();	//get the reference URI
+			if(uri!=null)	//if this resource has a reference URI
 			{
-				return referenceURI.equals(((Resource)object).getURI());	//compare reference URIs
+				return uri.equals(((Resource)object).getURI());	//compare reference URIs
 			}
 			else	//if this resource has no reference URI
 			{

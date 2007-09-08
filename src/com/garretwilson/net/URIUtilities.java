@@ -1210,17 +1210,15 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
 	<p>If no URI is provided, a URI is created from the fragment itself.</p>
 	@param uri The URI to which to add a fragement identifier, or <code>null</code> if a URI chould be created from just the fragment.
-	@param fragment The fragment to add to the end of the URI.
+	@param fragment The raw, encoded fragment to add to the end of the URI.
 	@exception IllegalArgumentException if the a URI cannot be constructed from the given information.
 	@see URI#create(String)
 	*/
 	public static URI resolveFragment(final URI uri, final String fragment) throws IllegalArgumentException
 	{
 		final String fragmentSuffix=new StringBuilder().append(FRAGMENT_SEPARATOR).append(fragment).toString();	//create a suffix that includes the fragment separator and the fragment
-		if(uri!=null)	//if there is a URI
-			return uri.resolve(fragmentSuffix);	//resolve the fragment against the URI
-		else	//if there is no URI
-			return URI.create(fragmentSuffix);	//create a URI from the fragment suffix itself 
+		final URI fragmentURI=URI.create(fragmentSuffix);	//create a URI from the fragment
+		return uri!=null ? resolve(uri, fragmentURI) : fragmentURI;	//if a URI was given, resolve the fragment against the URI; otherwise, just return the fragment suffix itself 
 	}
 
 	/**Returns a URI with its fragment, if any, removed.
