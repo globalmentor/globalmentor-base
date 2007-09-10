@@ -9,11 +9,13 @@ public class CharacterConstants
 	public final static char NULL_CHAR=0x0000;
 	/**A horizontal tab.*/
 	public final static char HORIZONTAL_TABULATION_CHAR=0x0009;
-	/**A linefeed.*/
+	/**A line feed (LF).*/
 	public final static char LINE_FEED_CHAR=0x000A;
 	/**A vertical tab.*/
 	public final static char VERTICAL_TABULATION_CHAR=0x000B;
-	/**A formfeed.*/
+	/**A backspace.*/
+	public final static char BACKSPACE_CHAR=0x0008;
+	/**A form feed (FF).*/
 	public final static char FORM_FEED_CHAR=0x000C;
 	/**A carriage return.*/
 	public final static char CARRIAGE_RETURN_CHAR=0x000D;

@@ -7,13 +7,10 @@ import java.util.*;
 import static java.util.Collections.*;
 
 import static com.garretwilson.io.ReaderParser.*;
-
 import com.garretwilson.io.ParseIOException;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIUtilities.*;
-
-import com.garretwilson.text.CharacterConstants;
-import static com.garretwilson.util.ArrayUtilities.*;
+import static com.garretwilson.text.CharacterConstants.*;
 
 import com.garretwilson.util.Debug;
 
@@ -63,7 +60,7 @@ public class TURFProcessor extends AbstractURFProcessor
 	public void process(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
 		skipSeparators(reader);	//skip separators
-		parseResourceList(reader, baseURI, CharacterConstants.NULL_CHAR);	//parse as list of resources
+		parseResourceList(reader, baseURI, NULL_CHAR);	//parse as list of resources
 	}
 
 	/**Skips over TURF separator characters in a reader.
@@ -122,35 +119,25 @@ Debug.trace("found reference beginning");
 				check(reader, ARRAY_END);	//read the ending array delimiter
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
-			case BOOLEAN_FALSE_BEGIN:	//false
+			case BOOLEAN_BEGIN:	//boolean
 				foundComponent=true;	//indicate that at least one description component is present
-				check(reader, BOOLEAN_FALSE_LEXICAL_FORM);	//make sure this is really "false"
-				resourceURI=BOOLEAN_FALSE_URI;	//create a URI for the resource
+				final boolean b=parseBoolean(reader);	//parse the boolean
+				resourceURI=createLexicalURI(NUMBER_CLASS_URI, Boolean.toString(b));	//create a URI for the resource
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
-			case BOOLEAN_TRUE_BEGIN:	//true
-				foundComponent=true;	//indicate that at least one description component is present
-				check(reader, BOOLEAN_TRUE_LEXICAL_FORM);	//make sure this is really "true"
-				resourceURI=BOOLEAN_TRUE_URI;	//create a URI for the resource
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				break;
-			case '-':	//number
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
+			case NUMBER_BEGIN:	//number
 				foundComponent=true;	//indicate that at least one description component is present
 				final Number number=parseNumber(reader);	//parse the number
 				resourceURI=createLexicalURI(NUMBER_CLASS_URI, number.toString());	//create a URI for the resource
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
-			case URI_BEGIN:
+			case STRING_BEGIN:	//string
+				foundComponent=true;	//indicate that at least one description component is present
+				final String string=parseString(reader, STRING_BEGIN, STRING_END);	//parse the string
+				resourceURI=createLexicalURI(STRING_CLASS_URI, string);	//create a URI for the string
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				break;
+			case URI_BEGIN:	//URI
 				foundComponent=true;	//indicate that at least one description component is present
 				final URI uri=parseURI(reader, baseURI, URI_BEGIN, URI_END);	//parse the URI
 				resourceURI=createLexicalURI(URI_CLASS_URI, uri.toString());	//create a URI for the resource
@@ -281,9 +268,41 @@ Debug.trace("after resource, peeked", (char)c);
 		return label;	//return the label we read
 	}
 
-	/**Parses a number.
-	The current position must be that of the first number character.
-	The new position will be that immediately after the last number character.
+	/**Parses a boolean surrounded by boolean delimiters.
+	The current position must be that of the first boolean delimiter character.
+	The new position will be that immediately after the last boolean delimiter character.
+	@param reader The reader the contents of which to be parsed.
+	@return The boolean parsed from the reader.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the boolean is not syntactically correct or if the reader has no more characters before the current boolean is completely parsed.
+	*/
+	public static boolean parseBoolean(final Reader reader) throws IOException, ParseIOException
+	{
+		check(reader, BOOLEAN_BEGIN);	//read the beginning boolean delimiter
+		final boolean b;	//we'll store the boolean here
+		int c=peek(reader);	//peek the next character
+		switch(c)	//see what the next character is
+		{
+			case BOOLEAN_FALSE_BEGIN:	//false
+				check(reader, BOOLEAN_FALSE_LEXICAL_FORM);	//make sure this is really false
+				b=false;	//store the boolean value
+				break;
+			case BOOLEAN_TRUE_BEGIN:	//true
+				check(reader, BOOLEAN_TRUE_LEXICAL_FORM);	//make sure this is really true
+				b=false;	//store the boolean value
+				break;
+			default:	//if we don't recognize the start of the boolean lexical form
+				checkReaderEnd(c);	//make sure we're not at the end of the reader
+				throw new ParseIOException("Unrecognized start of boolean: "+(char)c);
+		}
+		check(reader, BOOLEAN_END);	//read the ending boolean delimiter
+		return b;	//return the boolean we read
+	}
+
+	/**Parses a number surrounded by number delimiters.
+	The current position must be that of the first number delimiter character.
+	The new position will be that immediately after the last number delimiter character.
 	@param reader The reader the contents of which to be parsed.
 	@return The number parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
@@ -292,6 +311,7 @@ Debug.trace("after resource, peeked", (char)c);
 	*/
 	public static Number parseNumber(final Reader reader) throws IOException, ParseIOException
 	{
+		check(reader, NUMBER_BEGIN);	//read the beginning number delimiter
 		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to use when reading the number
 		int c=peek(reader);	//peek the first character
 		if(c=='-')	//if the number starts with a minus sign
@@ -330,7 +350,66 @@ Debug.trace("after resource, peeked", (char)c);
 				return Double.valueOf(Double.parseDouble(stringBuilder.toString()));	//parse a double and return it
 			}
 		}
+		check(reader, NUMBER_END);	//read the ending number delimiter
+			//TODO check for a number format error
 		return Integer.valueOf(Integer.parseInt(stringBuilder.toString()));	//parse an integer and return it 
+	}
+
+	/**Parses a string surrounded by string delimiters.
+	The current position must be that of the first string delimiter character.
+	The new position will be that immediately after the string number delimiter character.
+	@param reader The reader the contents of which to be parsed.
+	@param stringBegin The beginning string delimiter.
+	@param stringEnd The ending string delimiter.
+	@return The string parsed from the reader.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the string is not escaped correctly or reader has no more characters before the current string is completely parsed.
+	*/
+	public static String parseString(final Reader reader, final char stringBegin, final char stringEnd) throws IOException, ParseIOException
+	{
+		check(reader, stringBegin);	//read the beginning string delimiter
+		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to use when reading the string
+		char c=readCharacter(reader);	//read a character
+		while(c!=stringEnd)	//keep reading character until we reach the end of the string
+		{
+			if(c==STRING_ESCAPE)	//if this is an escape character
+			{
+				c=readCharacter(reader);	//read another a character
+				switch(c)	//see what the next character
+				{
+					case ESCAPED_BACKSPACE:	//b backspace
+						c=BACKSPACE_CHAR;	//use the character that was escaped
+						break;
+					case ESCAPED_FORM_FEED:	//f form feed
+						c=FORM_FEED_CHAR;	//use the character that was escaped
+						break;
+					case ESCAPED_LINE_FEED:	//n line feed
+						c=LINE_FEED_CHAR;	//use the character that was escaped
+						break;
+					case ESCAPED_CARRIAGE_RETURN:	//r carriage return
+						c=CARRIAGE_RETURN_CHAR;	//use the character that was escaped
+						break;
+					case ESCAPED_TAB:	//t tab	
+						c=HORIZONTAL_TABULATION_CHAR;	//use the character that was escaped
+						break;
+					case ESCAPED_UNICODE:	//u Unicode
+						final String unicodeString=readString(reader, 4);	//read the four Unicode code point hex characters
+							//TODO make sure the Unicode sequence is lowercase
+						c=(char)Integer.parseInt(unicodeString, 16);	//parse the hex characters and use the resulting code point
+						break;
+					default:	//if another character was escaped
+						if(c!=stringBegin && c!=stringEnd)	//if this is not the delimiter that was escaped
+						{
+							throw new ParseIOException("Unknown escaped character: "+c);
+						}
+						break;
+				}
+			}
+			stringBuilder.append(c);	//append the character to the string we are constructing
+			c=readCharacter(reader);	//read another a character
+		}
+		return stringBuilder.toString();	//return the string we constructed
 	}
 
 	/**Parses a URI surrounded by specified URI delimiters.
@@ -348,25 +427,38 @@ Debug.trace("after resource, peeked", (char)c);
 	public URI parseURI(final Reader reader, final URI baseURI, final char uriBegin, final char uriEnd) throws IOException, ParseIOException
 	{
 		check(reader, uriBegin);	//read the beginning URI delimiter
-		final URI localBaseURI;	//we'll store the local base URI, if there is one
-		if(indexOf(URI_RESOURCE_BEGINS, peek(reader))>=0)	//if the URI begins with another URI
+		int c=peek(reader);	//peek the next character
+		final String lexicalForm;	//the lexical form, if any
+		if(c==STRING_BEGIN)	//check for a string
 		{
-Debug.trace("the next character is a resource", (char)peek(reader));
-			localBaseURI=asURI(parseResource(reader, baseURI));
-Debug.trace("got local base URI", localBaseURI);
+			lexicalForm=parseString(reader, STRING_BEGIN,	STRING_END);	//parse the string
+			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
-		else	//if the URI doesn't start with another URI
+		else	//if no string was encountered
 		{
-			localBaseURI=null;	//there is no local base URI
+			lexicalForm=null;	//show that there is no string
 		}
-		final String uriString=reachAfter(reader, uriEnd);	//read the rest of the URI
-Debug.trace("got URI string", uriString);
+		final String label;	//the label reference, if any
+		if(c==LABEL_BEGIN)	//check for a label
+		{
+			label=parseLabel(reader);	//parse the label
+			c=skipSeparators(reader);	//skip separators and peek the next character
+		}
+		else	//if no label was encountered
+		{
+			label=null;	//show that there is no label
+		}
 		try
 		{
-			URI uri=new URI(uriString);	//crate a URI from the string
-			if(localBaseURI!=null)	//if we have a local base URI
+			URI uri=new URI(reachAfter(reader, uriEnd));	//read the rest of the URI
+			if(label!=null)	//if we have a label, dereference that as a base URI and resolve this URI against it
 			{
-				uri=resolve(localBaseURI, uri);	//resolve the URI against the local base URI
+				final URI localBaseURI=asURI(getResourceProxy(label));	//get a resource proxy for the label and use it as a URI
+				uri=resolve(localBaseURI, uri);	//resolve the URI against the local base URI				
+			}
+			if(lexicalForm!=null)	//if we have a lexical form, use the existing URI as a type and create a lexical URI
+			{
+				uri=createLexicalURI(uri, lexicalForm);	//create a lexical URI using the lexical form and the type URI
 			}
 			if(baseURI!=null)	//if there is a base URI
 			{

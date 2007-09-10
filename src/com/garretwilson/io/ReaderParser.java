@@ -3,8 +3,8 @@ package com.garretwilson.io;
 import java.io.*;
 import java.util.Arrays;
 
+import static com.garretwilson.lang.IntegerUtilities.*;
 import static com.garretwilson.util.ArrayUtilities.*;
-
 import com.garretwilson.util.Debug;
 
 /**Parsing methods that work on a {@link Reader}.
@@ -103,7 +103,7 @@ public class ReaderParser
 
 	/**Reads a character, throwing an error if the end of the reader was reached.
 	@param reader The reader the contents of which to be parsed.
-	@return The character be returned the reader's {@link Reader#read()} operation.
+	@return The character returned from the reader's {@link Reader#read()} operation.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters.
@@ -113,6 +113,26 @@ public class ReaderParser
 		final int c=reader.read();	//read the next character
 		checkReaderEnd(c);	//make sure we're not at the end of the reader
 		return (char)c;	//return the character read
+	}
+
+	/**Reads a given number of characters, throwing an error if the end of the reader was reached.
+	@param reader The reader the contents of which to be parsed.
+	@param count The number of characters to read.
+	@return The string representing the characters returned from the reader's {@link Reader#read()} operation.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IllegalArgumentException if the given count is less than zero.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters.
+	*/
+	public static String readString(final Reader reader, final int count) throws IOException, ParseIOException
+	{
+		checkMinimum(count, 0);	//make sure the count isn't negative
+		final char[] characters=new char[count];	//create a new buffer
+		if(reader.read(characters)!=count)	//read the characters; if all the character weren't read
+		{
+			throw new ParseIOException("End of data.");			
+		}
+		return new String(characters);	//return a new string from the characters read 
 	}
 
 	/**Reads a character and, if a character was read (i.e. the reader is not out of data), resets the reader as if the character were not read.

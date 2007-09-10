@@ -77,6 +77,17 @@ public abstract class AbstractURFProcessor
 	/**The map of resource proxies keyed to labels.*/
 	private final Map<String, ResourceProxy> labelResourceProxyMap=new HashMap<String, ResourceProxy>();
 
+		/**Retrieves a resource proxy to represent a resource with the given label.
+		If such a proxy already exists, it will be returned; otherwise, a new one will be created.
+		If no label is given, a new resource proxy will be created and returned.
+		@param label The label used to identify the resource, or <code>null</code> if no label is known.
+		@return A resource proxy to represent the identified resource.
+		*/
+		protected ResourceProxy getResourceProxy(final String label) throws ParseIOException
+		{
+			return getResourceProxy(label, null);	//get a resource proxy with no URI			
+		}
+
 		/**Retrieves a resource proxy to represent a resource with the given URI.
 		If such a proxy already exists, it will be returned; otherwise, a new one will be created.
 		If no URI is given, a new resource proxy will be created and returned.
