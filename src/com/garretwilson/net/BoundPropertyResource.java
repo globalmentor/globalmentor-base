@@ -1,5 +1,7 @@
 package com.garretwilson.net;
 
+import static com.garretwilson.text.CharacterConstants.*;
+
 import java.net.URI;
 
 import com.garretwilson.beans.BoundPropertyObject;
@@ -94,12 +96,12 @@ public class BoundPropertyResource extends BoundPropertyObject implements Resour
 	}
 
 	/**Returns a string representation of the resource.
-	<p>This version returns the reference URI if there is one; otherwise, the
-		default string representation of the object is returned.</p>
+	This version returns the URI, if there is one, between double angle quotation marks; otherwise the default string representation of the object is returned.
 	@return A string representation of the resource.
 	*/
 	public String toString()
 	{
-		return getURI()!=null ? getURI().toString() : super.toString();	//return the reference URI, if available
+		final URI uri=getURI();	//get the URI, if any
+		return uri!=null ? new StringBuilder().append(LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).append(uri.toString()).append(RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).toString() : super.toString();	//return the URI, if available
 	}
 }

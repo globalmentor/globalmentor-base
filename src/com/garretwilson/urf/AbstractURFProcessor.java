@@ -7,12 +7,15 @@ import static java.util.Collections.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 
 import com.garretwilson.io.ParseIOException;
+import com.garretwilson.lang.ObjectUtilities;
 import com.garretwilson.net.DefaultResource;
 import com.garretwilson.net.Resource;
 import static com.garretwilson.urf.URF.*;
 
+import static com.garretwilson.text.FormatUtilities.*;
 import com.garretwilson.util.Debug;
 import com.garretwilson.util.IdentityHashSet;
+import com.garretwilson.util.NameValuePair;
 
 /**Base class for URF processors.
 Each instance of an URF processor maintains an internal URF data model throughout its lifetime that is continually updated with every new URF processing that occurs.
@@ -291,6 +294,7 @@ Debug.trace("found existing resource proxy for label", label, resourceProxy);
 	*/
 	public URFResource createResources(final Resource resource)	//TODO maybe check to make sure any URFResource passed to us is really one of the ones in the list of statements
 	{
+			//TODO don't forget to go through all the resource proxies that were not used in any assertions
 		URFResource urfResource=resource instanceof URFResource ? (URFResource)resource : null;	//if the given resource is already an URF resource, there's nothing to unproxy
 		for(final Assertion assertion:getAssertions())	//for each assertion
 		{
@@ -327,6 +331,38 @@ Debug.trace("found existing resource proxy for label", label, resourceProxy);
 					urfResource=objectURFResource;	//show that we now have an URF resource for the proxy
 				}
 			}
+			final NameValuePair<Resource, Resource>[] scopeChain=assertion.getScopeChain();	//get the assertion scope chain
+			for(int i=scopeChain.length-1; i>=0; --i)	//for each property value pair in the scope chain
+			{
+				final NameValuePair<Resource, Resource> scopePair=scopeChain[i];	//get this scope property value pair
+				boolean replace=false;	//we'll determine if we need to replace this scope property/value pair
+				Resource scopeProperty=scopePair.getName();	//get the property of this element of the scope chain
+				if(scopeProperty instanceof ResourceProxy)	//if this scope property is just a proxy
+				{
+					replace=true;	//indicate that we'll need to replace the scope pair
+					final URFResource scopePropertyURFResource=unproxyURFResource((ResourceProxy)scopeProperty);	//unproxy the resource by either retrieving an already-created resource or creating a new one
+					if(scopeProperty==resource)	//if the scope property value is the resource we are supposed to keep track of
+					{
+						urfResource=scopePropertyURFResource;	//show that we now have an URF resource for the proxy
+					}
+					scopeProperty=scopePropertyURFResource;	//update the scope property
+				}
+				Resource scopePropertyValue=scopePair.getValue();	//get the property value of this element of the scope chain
+				if(scopePropertyValue instanceof ResourceProxy)	//if this scope property value is just a proxy
+				{
+					replace=true;	//indicate that we'll need to replace the scope pair
+					final URFResource scopePropertyValueURFResource=unproxyURFResource((ResourceProxy)scopePropertyValue);	//unproxy the resource by either retrieving an already-created resource or creating a new one
+					if(scopePropertyValue==resource)	//if the scope property value is the resource we are supposed to keep track of
+					{
+						urfResource=scopePropertyValueURFResource;	//show that we now have an URF resource for the proxy
+					}
+					scopePropertyValue=scopePropertyValueURFResource;	//update the scope property value
+				}
+				if(replace)	//if we should replace the scope pair
+				{
+					scopeChain[i]=new NameValuePair<Resource, Resource>(scopeProperty, scopePropertyValue);	//update the scopy property and scope property value to the unproxied URF resource versions
+				}
+			}
 		}
 		if(resource!=null && urfResource==null)	//if we were unable to find a suitable URF resource for a valid given resource, the given resource proxy must have not been in the list of assertions
 		{
@@ -359,10 +395,10 @@ Debug.trace("found existing resource proxy for label", label, resourceProxy);
 			for(final Assertion assertion:getAssertions())	//for each assertion
 			{
 					//if this is an assertion in the form, {resource proxy, urf:type, XXX}
-				if(assertion.getSubject().equals(resourceProxy)	//if this assertion has this resource proxy as its subject
-						&& TYPE_PROPERTY_URI.equals(assertion.getPredicate().getURI()))	//if this assertion has a predicate of urf:type
+				if(assertion.getSubject().equals(resourceProxy)	//if this assertion has this resource proxy as its subject,
+						&& TYPE_PROPERTY_URI.equals(assertion.getPredicate().getURI())	//and this assertion has a predicate of urf:type,
+						&& assertion.getScopeChain().length==0)	//and this is not a scoped property	
 				{
-						//TODO check for a contextual property
 					final URFResource typeValueURFResource;	//we'll find a resource to use as the type value
 					final Resource typeValueResource=assertion.getObject();	//get the type value
 					if(typeValueResource instanceof URFResource)	//if the type value is already an URF resource
@@ -397,29 +433,47 @@ Debug.trace("found existing resource proxy for label", label, resourceProxy);
 		return resource;	//return the resource that was either already the target of the proxy, or that we created and associated with the proxy
 	}
 
-	/**Processes all assertions by creating associations between resources that reflect the assertions contained in the assertions.*/
+	/**Processes all assertions by creating associations between resources that reflect the assertions contained in the assertions.
+	All resources should first have been created using {@link #createResources()} or in equivalent method.
+	@exception IllegalStateException if a resource that has not been unproxied is encountered in an assertion.
+	@exception IllegalStateException if an element on some scope chain that does not exist is reached.
+	*/
 	public void processAssertions()
 	{
 //TODO del Debug.trace("ready to process assertions");
 		for(final Assertion assertion:getAssertions())	//for each assertion
 		{
 		//TODO del Debug.trace("here's a assertion:", assertion);
-			final Resource subject=assertion.getSubject();	//get the assertion subject
-			final Resource predicate=assertion.getPredicate();	//get the assertion predicate
-			final Resource object=assertion.getObject();	//get the assertion object
-				//if the subject, predicate, and object of the assertion are URF resources
-			if(subject instanceof URFResource && predicate instanceof URFResource && object instanceof URFResource)
+			try
 			{
-				final URFResource urfSubject=(URFResource)subject;	//cast the subject to an URF resource
-				final URFResource urfPredicate=(URFResource)predicate;	//cast the predicate to an URF resource
-				final URFResource urfObject=(URFResource)object;	//cast the object to an URF resource
-//TODO fix to recognize contextual properties
-				final URI predicateURI=urfPredicate.getURI();	//get the predicate URI
-				if(predicateURI!=null)	//if there is a predicate URI TODO do we want to allow anonymous predicates?
+				final URFResource subject=(URFResource)assertion.getSubject();	//get the assertion subject as an URF resource
+				final URFResource predicate=(URFResource)assertion.getPredicate();	//get the assertion predicate as an URF resource
+				final URFResource object=(URFResource)assertion.getObject();	//get the assertion object as an URF resource
+				final URI predicateURI=predicate.getURI();	//get the predicate URI
+				if(predicateURI!=null)	//if there is a predicate URI TODO do we want to allow anonymous predicates? if not, add an IllegalStateException
 				{
+					URFScope scope=subject;	//we'll determine which scope to use; start with the subject
+					for(final NameValuePair<Resource, Resource> scopePair:assertion.getScopeChain())	//look at each property value pair (if any) on the scope chain
+					{
+						final URFResource scopeProperty=(URFResource)scopePair.getName();	//get the scope property
+						final URFResource scopePropertyValue=(URFResource)scopePair.getValue();	//get the scope value
+						final URI scopePropertyURI=scopeProperty.getURI();	//get the scope property URI
+						if(scopePropertyURI!=null)	//if there is a scope property URI TODO do we want to allow anonymous predicates? if not, add an IllegalStateException
+						{
+							scope=scope.getScope(scopePropertyURI, scopePropertyValue);	//get the next scope in the chain
+							if(scope==null)	//if we couldn't find the appropriate scope
+							{
+								throw new IllegalStateException("Could not find scope: "+scopePair);	//indicate that a scope could not be found
+							}
+						}
+					}
 					//TODO del Debug.trace("ready to add predicate to subject:", urfSubject);
-					urfSubject.addPropertyValue(urfPredicate.getURI(), urfObject);	//process this assertion by adding the predicate and object to the subject as a property
+					scope.addPropertyValue(predicateURI, object);	//process this assertion by adding the predicate and object to the scope as a property
 				}
+			}
+			catch(final ClassCastException classCastException)	//if we have trouble casting a resource to an URF resource, a resource hasn't been unproxied
+			{
+				throw new IllegalStateException("Resource has not yet been unproxied for assertion.", classCastException);
 			}
 		}		
 	}
@@ -452,6 +506,12 @@ Debug.trace("found existing resource proxy for label", label, resourceProxy);
 	*/
 	public static class Assertion
 	{
+
+		/**The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value.*/
+		private final NameValuePair<Resource, Resource>[] scopeChain;
+
+			/**@return The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value.*/
+			public NameValuePair<Resource, Resource>[] getScopeChain() {return scopeChain;}
 
 		/**The assertion subject.*/
 		private Resource subject;
@@ -493,46 +553,26 @@ Debug.trace("found existing resource proxy for label", label, resourceProxy);
 		@param subject The subject of the assertion.
 		@param predicate The predicate of the assertion.
 		@param object The object of the assertion.
-		@exception NullPointerException if the given subject, predicate, and/or object is <code>null</code>.
+		@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value.
+		@exception NullPointerException if the given subject, predicate, object, and/or scope chain is <code>null</code>.
 		*/
-		public Assertion(final Resource subject, final Resource predicate, final Resource object)
+		public Assertion(final Resource subject, final Resource predicate, final Resource object, final NameValuePair<Resource, Resource>... scopeChain)
 		{
 			setSubject(subject); //set the subject
 			setPredicate(predicate); //set the predicate
 			setObject(object); //set the object
+			this.scopeChain=checkInstance(scopeChain, "Scope chain cannot be null.");
 		}
-
-//TODO fix and improve all this
 		
-		/**@return A hash code value for the assertion.
-		@see #getSubject()
-		@see #getPredicate()
-		@see #getObject()
-		*/
+		/**@return A hash code value for the assertion.*/
 		public int hashCode()
 		{
-			final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer to store string versions of the parts of the assertion
-			final Resource subject=getSubject();	//get the subject
-			if(subject!=null)	//if there is a subject
-			{
-				stringBuffer.append(subject);	//append the subject
-			}
-			final Resource predicate=getPredicate();	//get the predictae
-			if(getPredicate()!=null)	//if there is a predicate
-			{
-				stringBuffer.append(predicate);	//append the predicate
-			}
-			final Object object=getObject();	//get the object
-			if(object!=null)	//if there is an object
-			{
-				stringBuffer.append(object);	//append the object
-			}
-			return stringBuffer.toString().hashCode();	//return the hash code of all three parts of the assertion as a string (StringBuffer apparently doesn't provide a specialized hashCode() implementation)
+			return ObjectUtilities.hashCode(getSubject(), getPredicate(), getObject(), getScopeChain());	//hash and return the subject, predicate, object, and scope chain
 		}
 
 		/**Compares assertions based upon subject, predicate, and object.
 		@param object The object with which to compare this assertion; should be another assertion.
-		@return <code>true<code> if the subjects, predicates, and objects of the two assertions are equal.
+		@return <code>true<code> if the subjects, predicates, objects, and scope chains of the two assertions are equal.
 		*/
 		public boolean equals(final Object object)
 		{
@@ -541,23 +581,18 @@ Debug.trace("found existing resource proxy for label", label, resourceProxy);
 				final Assertion assertion2=(Assertion)object;	//cast the object to a assertion
 				return getSubject().equals(assertion2.getSubject())	//compare subjects
 						&& getPredicate().equals(assertion2.getPredicate())	//compare predicates
-						&& getObject().equals(assertion2.getObject());	//compare objects
+						&& getObject().equals(assertion2.getObject())	//compare objects
+						&& Arrays.equals(getScopeChain(), assertion2.getScopeChain());	//compare scope chains
 			}
 			return false;	//show that the assertions do not match
 		}
 
-		/**@return A string representation of the assertion in the form:
-		"{subject, predicate, object}".
-		*/
+		/**@return A string representation of the assertion in the form: "{<var>subject</var>, <var>predicate</var>, <var>object</var>}".*/
 		public String toString()
 		{
 			final StringBuilder stringBuilder=new StringBuilder(); //create a new string builder
 			stringBuilder.append('{');
-			stringBuilder.append('[').append(getSubject()).append(']');
-			stringBuilder.append(',').append(' ');
-			stringBuilder.append('[').append(getPredicate()).append(']');
-			stringBuilder.append(',').append(' ');
-			stringBuilder.append('[').append(getObject()).append(']');  //[resource]
+			formatList(stringBuilder, ',', getSubject(), getPredicate(), getObject());
 			stringBuilder.append('}');
 			return stringBuilder.toString(); //return the string we just constructed
 		}

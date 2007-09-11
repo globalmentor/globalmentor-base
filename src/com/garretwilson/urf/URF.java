@@ -45,8 +45,12 @@ public class URF
 	public final static URI ARRAY_CLASS_URI=URF_NAMESPACE_URI.resolve("#Array");
 	/**The URI of the <code>(&lt;:urf:#Boolean&gt;)</code> class.*/ 
 	public final static URI BOOLEAN_CLASS_URI=URF_NAMESPACE_URI.resolve("#Boolean");
+	/**The URI of the <code>(&lt;:urf:#Integer&gt;)</code> class.*/ 
+	public final static URI INTEGER_CLASS_URI=URF_NAMESPACE_URI.resolve("#Integer");
 	/**The URI of the <code>(&lt;:urf:#Number&gt;)</code> class.*/ 
 	public final static URI NUMBER_CLASS_URI=URF_NAMESPACE_URI.resolve("#Number");
+	/**The URI of the <code>(&lt;:urf:#Real&gt;)</code> class.*/ 
+	public final static URI REAL_CLASS_URI=URF_NAMESPACE_URI.resolve("#Real");
 	/**The URI of the <code>(&lt;:urf:#String&gt;)</code> class.*/ 
 	public final static URI STRING_CLASS_URI=URF_NAMESPACE_URI.resolve("#String");
 	/**The URI of the <code>(&lt;:urf:#URI&gt;)</code> class.*/ 

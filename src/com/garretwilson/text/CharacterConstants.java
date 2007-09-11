@@ -151,6 +151,10 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	public final static char TRADE_MARK_SIGN_CHAR=0x2122;
 	/**Infinity symbol (221E;INFINITY;Sm;0;ON;;;;;N;;;;;).*/
 	public final static char INFINITY_CHAR=0x2122;
+	/**A left-pointing angle bracket character (2329;LEFT-POINTING ANGLE BRACKET;Ps;0;ON;3008;;;;Y;BRA;;;;).*/
+	public final static char LEFT_POINTING_ANGLE_BRACKET=0x2329;
+	/**A right-pointing angle bracket character (232A;RIGHT-POINTING ANGLE BRACKET;Pe;0;ON;3009;;;;Y;KET;;;;).*/
+	public final static char RIGHT_POINTING_ANGLE_BRACKET=0x232A;
 	/**A reversed double prime quotation mark.*/
 	public final static char REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR=0x301D;
 	/**A double prime quotation mark.*/

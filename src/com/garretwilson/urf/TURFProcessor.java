@@ -2,6 +2,8 @@ package com.garretwilson.urf;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.*;
 import java.util.*;
 import static java.util.Collections.*;
@@ -9,10 +11,12 @@ import static java.util.Collections.*;
 import static com.garretwilson.io.ReaderParser.*;
 import com.garretwilson.io.ParseIOException;
 import com.garretwilson.net.*;
+
 import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
 
 import com.garretwilson.util.Debug;
+import com.garretwilson.util.NameValuePair;
 
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
@@ -60,7 +64,18 @@ public class TURFProcessor extends AbstractURFProcessor
 	public void process(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
 		skipSeparators(reader);	//skip separators
-		parseResourceList(reader, baseURI, NULL_CHAR);	//parse as list of resources
+		final Resource[] resources=parseResourceList(reader, baseURI, NULL_CHAR);	//parse as list of resources
+		final URFResource resource=createResources(resources.length>0 ? resources[resources.length-1] : null);	//create all resources
+		processAssertions();	//process the collected assertions
+if(resource!=null)	//TODO del; testing
+{
+	for(final Assertion assertion:getAssertions())	//look at the assertions
+	{
+		Debug.trace("assertion:", assertion);
+	}
+	Debug.trace("last resource:", resource);
+	Debug.trace("last resource property count:", resource.getPropertyCount());
+}
 	}
 
 	/**Skips over TURF separator characters in a reader.
@@ -87,6 +102,24 @@ public class TURFProcessor extends AbstractURFProcessor
 	*/
 	public Resource parseResource(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
+		return parseResource(reader, baseURI, null, null, null);	//parse a resource with no scope
+	}
+
+	/**Parses a single optionally scoped resource and returns a proxy to the resource.
+	The current position must be that of a separator or that of the first character of the first resource in the list.
+	The new position will be that of the first non-separator character after the resources or the end of the reader.
+	@param reader The reader the contents of which to be parsed.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param scopeBase The base resource of the current scope, or <code>null</code> if there is no current scope.
+	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
+	@param scopePredicate The predicate of the new element to be added to the scope chain, or <code>null</code> if there is no current scope.
+	@return The resource parsed from the reader.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters before the current resource is completely parsed.
+	*/
+	protected Resource parseResource(final Reader reader, final URI baseURI, final Resource scopeBase, final List<NameValuePair<Resource, Resource>> scopeChain, final Resource scopePredicate) throws IOException, ParseIOException
+	{
 Debug.trace("ready to parse resource");
 		final URF urf=getURF();	//get the URF data model
 		String label=null;	//the label of the resource, if any
@@ -111,7 +144,7 @@ Debug.trace("found reference beginning");
 				resourceURI=parseURI(reader, baseURI, REFERENCE_BEGIN, REFERENCE_END);	//parse the resource URI
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
-			case ARRAY_BEGIN:
+			case ARRAY_BEGIN:	//array
 				foundComponent=true;	//indicate that at least one description component is present
 				types.add(getResourceProxy(ARRAY_CLASS_URI));	//add a proxy to the array type
 				check(reader, ARRAY_BEGIN);	//read the beginning array delimiter
@@ -122,13 +155,20 @@ Debug.trace("found reference beginning");
 			case BOOLEAN_BEGIN:	//boolean
 				foundComponent=true;	//indicate that at least one description component is present
 				final boolean b=parseBoolean(reader);	//parse the boolean
-				resourceURI=createLexicalURI(NUMBER_CLASS_URI, Boolean.toString(b));	//create a URI for the resource
+				resourceURI=createLexicalURI(BOOLEAN_CLASS_URI, Boolean.toString(b));	//create a URI for the resource
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 			case NUMBER_BEGIN:	//number
 				foundComponent=true;	//indicate that at least one description component is present
 				final Number number=parseNumber(reader);	//parse the number
-				resourceURI=createLexicalURI(NUMBER_CLASS_URI, number.toString());	//create a URI for the resource
+				if(number instanceof Integer || number instanceof Long || number instanceof BigInteger)	//if this is an integer
+				{
+					resourceURI=createLexicalURI(INTEGER_CLASS_URI, number.toString());	//create an integer URI for the resource
+				}
+				else if(number instanceof Float || number instanceof Double || number instanceof BigDecimal)	//if this is an real
+				{
+					resourceURI=createLexicalURI(REAL_CLASS_URI, number.toString());	//create a real URI for the resource
+				}
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 			case STRING_BEGIN:	//string
@@ -185,11 +225,59 @@ Debug.trace("type count", types.size());
 		}
 		if(c==PROPERTIES_BEGIN)	//check for properties
 		{
-			parseProperties(reader, baseURI, resourceProxy);	//parse the resource properties
+//TODO del			parseProperties(reader, baseURI, resourceProxy);	//parse the resource properties
+			check(reader, PROPERTIES_BEGIN);	//read the beginning properties delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
+			while(c!=PROPERTIES_END)	//while we haven't reached the end of the properties
+			{			
+				final Resource predicate=parseResource(reader, baseURI);	//parse the predicate resource
+				skipSeparators(reader);	//skip separators
+				final char propertyValueDelimiter=check(reader, PROPERTY_VALUE_DELIMITERS);	//read the next character and make sure it's a property-value delimiter
+				final Resource object;	//we'll use this to store the object, if there is just one object
+				switch(skipSeparators(reader))	//skip separators and see what the next character will be
+				{
+					case SEQUENCE_BEGIN:	//sequence short form
+							//TODO finish
+						break;
+					default:	//assume everything else is a normal resource object
+						switch(propertyValueDelimiter)	//see what sort of assignment this is
+						{
+							case PROPERTY_VALUE_CONTEXT_DELIMITER:	//scoped property assignment
+								if(scopePredicate!=null)	//if there is a scope predicate
+								{
+									final List<NameValuePair<Resource, Resource>> newScopeChain=new ArrayList<NameValuePair<Resource,Resource>>();	//create a new scope chain
+									if(scopeChain!=null)	//if there is already a scope chain
+									{
+										newScopeChain.addAll(scopeChain);	//add the current scope chain
+									}
+									newScopeChain.add(new NameValuePair<Resource, Resource>(scopePredicate, resourceProxy));	//add another element to the scope chain
+									final Resource newScopeBase=scopeBase!=null ? scopeBase : resourceProxy;	//if we're just starting the scope chain, use the subject resource as the base
+									object=parseResource(reader, baseURI, newScopeBase, newScopeChain, predicate);	//parse the object with the new scope and new predicate
+									addAssertion(new Assertion(newScopeBase, predicate, object, newScopeChain.toArray(new NameValuePair[newScopeChain.size()])));	//assert the assertion with the new scope
+									break;
+								}									
+							case PROPERTY_VALUE_DELIMITER:	//property assignment
+								object=parseResource(reader, baseURI);	//parse the object with no scope
+								addAssertion(new Assertion(resourceProxy, predicate, object));	//assert the assertion with no scope
+								break;
+							default:
+								throw new AssertionError("Unrecognized property-value delimiter: "+propertyValueDelimiter);	//we already checked this character, so we shouldn't get an unknown delimiter here
+						}
+				}
+				c=skipSeparators(reader);	//skip separators and peek the next character
+	Debug.trace("after property-value pair, peeked", (char)c);
+				if(c==LIST_DELIMITER)	//if this is a list delimiter
+				{
+					check(reader, LIST_DELIMITER);	//skip the list delimiter
+					c=skipSeparators(reader);	//skip separators and peek the next character
+				}
+			}			
+			check(reader, PROPERTIES_END);	//read the ending properties delimiter
 		}
 Debug.trace("ready to return resource proxy with URI", resourceProxy.getURI());
 		return resourceProxy;	//return the resource proxy we created
 	}
+
 
 	/**Checks that the description component can be changed to the new description component while parsing a resource description.
 	This method ensures that description components come in the correct order and are not repeated.
@@ -347,6 +435,7 @@ Debug.trace("after resource, peeked", (char)c);
 			}
 			if(hasFraction || hasExponent)	//if there was a fraction or exponent
 			{
+					//TODO check for a number format error
 				return Double.valueOf(Double.parseDouble(stringBuilder.toString()));	//parse a double and return it
 			}
 		}
@@ -495,57 +584,6 @@ Debug.trace("after resource, peeked", (char)c);
 		{
 			throw new ParseIOException("Resource "+resource+" not a URI");
 		}
-	}
-
-	/**Parses properties surrounded by property delimiters.
-	The current position must be that of the first property delimiter character.
-	The new position will be that immediately after the last property delimiter character.
-	@param reader The reader the contents of which to be parsed.
-	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param subject The resource to serve as the subject for the parsed properties.
-	@exception NullPointerException if the given reader and/or subject resource is <code>null</code>.
-	@exception IOException if there is an error reading from the reader.
-	@exception ParseIOException if the reader has no more characters before the current properties are completely parsed.
-	*/
-	public void parseProperties(final Reader reader, final URI baseURI, final Resource subject) throws IOException, ParseIOException
-	{
-		final URF urf=getURF();	//get the URF data model
-		check(reader, PROPERTIES_BEGIN);	//read the beginning properties delimiter
-		int c=skipSeparators(reader);	//skip separators and peek the next character
-		while(c!=PROPERTIES_END)	//while we haven't reached the end of the properties
-		{			
-			final Resource predicate=parseResource(reader, baseURI);	//parse the predicate resource
-			skipSeparators(reader);	//skip separators
-			final char propertyValueDelimiter=check(reader, PROPERTY_VALUE_DELIMITERS);	//read the next character and make sure it's a property-value delimiter
-			final Resource object;	//we'll use this to store the object, if there is just one object
-			switch(skipSeparators(reader))	//skip separators and see what the next character will be
-			{
-				case SEQUENCE_BEGIN:	//sequence short form
-						//TODO finish
-					break;
-				default:	//assume everything else is a normal resource object
-					object=parseResource(reader, baseURI);	//parse the object
-					switch(propertyValueDelimiter)	//see what sort of assignment this is
-					{
-						case PROPERTY_VALUE_DELIMITER:	//property assignment
-							addAssertion(new Assertion(subject, predicate, object));	//assert the assertion
-							break;
-						case PROPERTY_VALUE_CONTEXT_DELIMITER:	//contextual property assignment
-							//TODO finish
-							break;
-						default:
-							throw new AssertionError("Unrecognized property-value delimiter: "+propertyValueDelimiter);	//we already checked this character, so we shouldn't get an unknown delimiter here
-					}
-			}
-			c=skipSeparators(reader);	//skip separators and peek the next character
-Debug.trace("after property-value pair, peeked", (char)c);
-			if(c==LIST_DELIMITER)	//if this is a list delimiter
-			{
-				check(reader, LIST_DELIMITER);	//skip the list delimiter
-				c=skipSeparators(reader);	//skip separators and peek the next character
-			}
-		}			
-		check(reader, PROPERTIES_END);	//read the ending properties delimiter
 	}
 
 }

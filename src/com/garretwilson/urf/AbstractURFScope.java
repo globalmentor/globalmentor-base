@@ -4,28 +4,20 @@ import java.net.URI;
 import java.util.*;
 import java.util.concurrent.locks.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.util.*;
 import static com.garretwilson.util.IteratorUtilities.*;
 
-/**Manages URF properties.
+/**Abstract implementation of a scope of URF properties.
 @author Garret Wilson
 */
-public class URFPropertyManager implements ReadWriteLock
+public abstract class AbstractURFScope extends ReadWriteLockDecorator implements URFScope
 {
 
-	/**The decorated read write lock.*/
-	private final ReadWriteLock readWriteLock;
+	/**The parent scope of this scope, or <code>null</code> if this scope has no parent scope.*/
+	private final URFScope parentScope;
 
-	/**Returns the lock used for reading.
-	@return the lock used for reading.
-	*/
-	public Lock readLock() {return readWriteLock.readLock();}
-
-	/**Returns the lock used for writing.
-	@return the lock used for writing.
-	*/
-	public Lock writeLock() {return readWriteLock.writeLock();}
+		/**@return The parent scope of this scope, or <code>null</code> if this scope has no parent scope.*/
+		public URFScope getParentScope() {return parentScope;}
 
 	/**The map of property value contexts keyed to property URIs.*/
 	private CollectionMap<URI, URFValueContext, List<URFValueContext>> propertyValuesMap=new DecoratorReadWriteLockCollectionMap<URI, URFValueContext, List<URFValueContext>>(new ArrayListHashMap<URI, URFValueContext>(), this);
@@ -36,56 +28,74 @@ public class URFPropertyManager implements ReadWriteLock
 	/**@return The number of properties this resource has.*/
 //	public int getPropertyCount() {return properties.size();}
 
-
-	/**Read write lock constructor.
+	/**Read write lock and parent scope constructor.
 	@param readWriteLock The lock for controlling access to the properties.
+	@param parentScope The parent scope of this scope, or <code>null</code> if this scope has no parent scope.
 	@exception NullPointerException if the given lock is <code>null</code>.
 	*/
-	public URFPropertyManager(final ReadWriteLock readWriteLock)
+	public AbstractURFScope(final ReadWriteLock readWriteLock, final URFScope parentScope)
 	{
-		this.readWriteLock=checkInstance(readWriteLock, "Read write lock cannot be null.");
+		super(readWriteLock);	//construct the parent class
+		this.parentScope=parentScope;	//save the parent scope
 	}
 
-	protected URFValueContext getPropertyValueContext(final URI propertyURI, final URFResource propertyValue)
+	/**Retrieves the scope of a given property and value of this scope.
+	@param propertyURI The URI of the property the scope of which to retrieve.
+	@param propertyValue The value of the property the scope of which to retrieve.
+	@return The scope of the given property and value, or <code>null</code> if no such property and value exists.
+	*/
+	public URFScope getScope(final URI propertyURI, final URFResource propertyValue)
 	{
 		readLock().lock();	//get a read lock
 		try
 		{
-			final List<URFValueContext> valueContextList=propertyValuesMap.getCollection(propertyURI);	//get the list of value contexts
-			for(final URFValueContext valueContext:valueContextList)	//look at each value context
+			final List<URFValueContext> valueContextList=propertyValuesMap.get(propertyURI);	//get the list of value contexts
+			if(valueContextList!=null)	//if there is a value context for this property URI
 			{
-				if(propertyValue.equals(valueContext.getValue()))	//if we already have a context with this value
+				for(final URFValueContext valueContext:valueContextList)	//look at each value context
 				{
-					return valueContext;	//return this property value context
+					if(propertyValue.equals(valueContext.getValue()))	//if we already have a context with this value
+					{
+						return valueContext.getScope();	//return this property value context
+					}
 				}
 			}
-			return null;
-/*TODO del
-			final URFValueContext valueContext=new URFValueContext(propertyValue);	//create a new value context
-			valueContextList.add(valueContext);	//add the new value context
-			return valueContext;	//return the new value context
-*/
+			return null;	//if we didn't find the given property and value, there is no such context
 		}
 		finally
 		{
-			readLock().unlock();	//release the read lock
+			readLock().unlock();	//always release the read lock
 		}
 	}
 
+	/**@return Whether this scope has properties.*/
+	public boolean hasProperties() {return !propertyValuesMap.isEmpty();}
+
+	/**@return The number of properties this scope has.*/
+	public int getPropertyCount() {return propertyValuesMap.size();}
+
 	/**Retrieves the first value of the property with the given URI.
-	All contextually ordered properties will be returned in their correct order before any non-ordered properties.
+	All ordered properties will be returned in their correct order before any non-ordered properties.
 	Unordered properties will be returned in an arbitrary order. 
 	@param propertyURI The URI of the property for which a value should be returned.
 	@return The first value of the property with the given URI, or <code>null</code> if there is no such property.
 	*/
 	public URFResource getPropertyValue(final URI propertyURI)
 	{
-		final List<URFValueContext> valueContextList=propertyValuesMap.getCollection(propertyURI);	//get the list of value contexts
-		return valueContextList!=null && !valueContextList.isEmpty() ? valueContextList.get(0).getValue() : null;	//if there is a non-empty context list, return the first one
+		readLock().lock();	//get a read lock
+		try
+		{
+			final List<URFValueContext> valueContextList=propertyValuesMap.get(propertyURI);	//get the list of value contexts, if any
+			return valueContextList!=null && !valueContextList.isEmpty() ? valueContextList.get(0).getValue() : null;	//if there is a non-empty context list, return the first one
+		}
+		finally
+		{
+			readLock().unlock();	//always release the read lock
+		}
 	}
 
 	/**Retrieves an iterable to the values of the property with the given URI.
-	All contextually ordered properties will be returned in their correct order before any non-ordered properties.
+	All ordered properties will be returned in their correct order before any non-ordered properties.
 	Unordered properties will be returned in an arbitrary order. 
 	@param propertyURI The URI of the property for which values should be returned.
 	@return An iterable to all values of the property with the given URI.
@@ -95,7 +105,7 @@ public class URFPropertyManager implements ReadWriteLock
 		readLock().lock();	//get a read lock
 		try
 		{
-			final List<URFValueContext> valueContextList=propertyValuesMap.getCollection(propertyURI);	//get the list of value contexts
+			final List<URFValueContext> valueContextList=propertyValuesMap.get(propertyURI);	//get the list of value contexts
 			if(valueContextList!=null && !valueContextList.isEmpty())	//if there is a non-empty context list
 			{
 				if(valueContextList.size()==1)	//if there is only one value
@@ -114,7 +124,7 @@ public class URFPropertyManager implements ReadWriteLock
 		}
 		finally
 		{
-			readLock().unlock();	//release the read lock
+			readLock().unlock();	//always release the read lock
 		}
 	}
 
@@ -136,11 +146,11 @@ public class URFPropertyManager implements ReadWriteLock
 					return;	//don't add the property value; it's already there
 				}
 			}
-			valueContextList.add(new URFValueContext(readWriteLock, propertyValue));	//add a new value context
+			valueContextList.add(new URFValueContext(this, propertyValue, new ChildURFScope()));	//add a new value context
 		}
 		finally
 		{
-			writeLock().unlock();	//release the write lock
+			writeLock().unlock();	//always release the write lock
 		}
 	}
 
@@ -151,57 +161,22 @@ public class URFPropertyManager implements ReadWriteLock
 	public void setPropertyValue(final URI propertyURI, final URFResource propertyValue)
 	{
 		final List<URFValueContext> valueContextList=propertyValuesMap.createCollection();	//create a list of value contexts to hold the new value
-		valueContextList.add(new URFValueContext(readWriteLock, propertyValue));	//add a new value context
+		valueContextList.add(new URFValueContext(this, propertyValue, new ChildURFScope()));	//add a new value context
 		propertyValuesMap.put(propertyURI, valueContextList);	//change the value
 	}
 
-	/**Adds a contextual property value for the contextual property with the given URI, in the context of a given property and value.
-	If the given context property and value do not exists, no action occurs.
-	If the given contextual property and value already exists, no action occurs.
-	@param contextPropertyURI The URI of the context property of the value to add.
-	@param contextPropertyValue The context value of the property value to add.
-	@param contextualPropertyURI The URI of the property of the contextual value to add.
-	@param contextualPropertyValue The value to add for the given contextual property.
+	/**Implementation of a child URF scope subordinate to another URF scope.
+	@author Garret Wilson
 	*/
-	public void addContextPropertyValue(final URI contextPropertyURI, final URFResource contextPropertyValue, final URI contextualPropertyURI, final URFResource contextualPropertyValue)
+	private class ChildURFScope extends AbstractURFScope
 	{
-		writeLock().lock();	//get a write lock
-		try
-		{
-			final URFValueContext valueContext=getPropertyValueContext(contextPropertyURI, contextPropertyValue);	//get the value context, if any
-			if(valueContext!=null)	//if there is a value context
-			{
-				valueContext.addPropertyValue(contextualPropertyURI, contextualPropertyValue);	//get the contextual property value
-			}
-		}
-		finally
-		{
-			writeLock().unlock();	//release the write lock
-		}
-	}
 
-	/**Sets a contextual property value for the contextual property with the given URI, in the context of a given property and value.
-	If the given context property and value do not exists, no action occurs.
-	@param contextPropertyURI The URI of the context property of the value to set.
-	@param contextPropertyValue The context value of the property value to set.
-	@param contextualPropertyURI The URI of the property of the contextual value to set.
-	@param contextualPropertyValue The value to set for the given contextual property.
-	*/
-	public void setContextPropertyValue(final URI contextPropertyURI, final URFResource contextPropertyValue, final URI contextualPropertyURI, final URFResource contextualPropertyValue)
-	{
-		writeLock().lock();	//get a write lock
-		try
+		/**Default constructor.*/
+		public ChildURFScope()
 		{
-			final URFValueContext valueContext=getPropertyValueContext(contextPropertyURI, contextPropertyValue);	//get the value context, if any
-			if(valueContext!=null)	//if there is a value context
-			{
-				valueContext.setPropertyValue(contextualPropertyURI, contextualPropertyValue);	//set the contextual property value
-			}
+			super(AbstractURFScope.this, AbstractURFScope.this);	//construct the parent class, using the parent scope for locking
 		}
-		finally
-		{
-			writeLock().unlock();	//release the write lock
-		}
+		
 	}
 
 	/**A list iterator that can iterate over property values.
@@ -256,13 +231,13 @@ public class URFPropertyManager implements ReadWriteLock
 		/**Inserts an element at the given position in the list.
 		@param index The list index
 		@param item The item representing the element to be inserted at the specified position.
-	@exception UnsupportedOperationException if the {@link #add(Object)} operation is not supported by this list iterator.
+		@exception UnsupportedOperationException if the {@link #add(Object)} operation is not supported by this list iterator.
 		@exception IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt; <code>size()</code>).
 		*/
 		protected void addItem(final int index, final URFResource item)
 		{
 			throw new UnsupportedOperationException("Adding a value is not supported by this iterator.");
 		}
-
 	}
+
 }

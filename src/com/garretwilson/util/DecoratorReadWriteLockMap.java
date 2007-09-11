@@ -11,19 +11,10 @@ For operations that iterate over live map data, a read or write lock should be a
 @param <V> The type of value stored in the map.
 @author Garret Wilson
 */
-public class DecoratorReadWriteLockMap<K, V> implements ReadWriteLockMap<K, V>
+public class DecoratorReadWriteLockMap<K, V> extends ReadWriteLockDecorator implements ReadWriteLockMap<K, V>
 {
 	/**The map this class decorates.*/
 	protected final Map<K, V> map;
-
-	/**The lock for controlling access to the map.*/
-	private final ReadWriteLock lock;
-
-	/**@return The lock used for reading.*/
-	public Lock readLock() {return lock.readLock();}
-
-	/**@return The lock used for writing.*/
-	public Lock writeLock() {return lock.writeLock();}
 
 	/**Map constructor with a default reentrant read/write lock.
 	@param map The map this map should decorate.
@@ -41,8 +32,8 @@ public class DecoratorReadWriteLockMap<K, V> implements ReadWriteLockMap<K, V>
 	*/
 	public DecoratorReadWriteLockMap(final Map<K, V> map, final ReadWriteLock lock)
 	{
+		super(lock);	//construct the parent class
 		this.map=checkInstance(map, "Map cannot be null");	//save the map
-		this.lock=checkInstance(lock, "Lock cannot be null");	//save the lock
 	}
 
   /**
