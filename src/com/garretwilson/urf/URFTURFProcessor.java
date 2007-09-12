@@ -2,6 +2,7 @@ package com.garretwilson.urf;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.*;
@@ -35,11 +36,11 @@ import static com.garretwilson.urf.TURF.*;
 	TODO If a property from a non-RDF namespace has (for example) a "resource" attribute (i.e. a property with no namespace), property resources are not correctly created and can cause endless loops when trying to analyze the namespace
 @author Garret Wilson
 */
-public class TURFProcessor extends AbstractURFProcessor
+public class URFTURFProcessor extends AbstractURFProcessor
 {
 
 	/**Default constructor.*/
-	public TURFProcessor()
+	public URFTURFProcessor()
 	{
 		this(new URF());  //create an URF data model to use
 	}
@@ -47,7 +48,7 @@ public class TURFProcessor extends AbstractURFProcessor
 	/**Constructor that specifies an existing data model to continue filling.
 	@param urf The RDF data model to use.
 	*/
-	public TURFProcessor(final URF urf)
+	public URFTURFProcessor(final URF urf)
 	{
 		super(urf);  //construct the parent class
 	}
@@ -75,6 +76,10 @@ if(resource!=null)	//TODO del; testing
 	}
 	Debug.trace("last resource:", resource);
 	Debug.trace("last resource property count:", resource.getPropertyCount());
+	final URFTURFGenerator turfGenerator=new URFTURFGenerator();
+	final StringWriter writer=new StringWriter();
+	turfGenerator.generate(writer, resource);
+	Debug.trace("last resource TURF:", writer.toString());
 }
 	}
 
@@ -242,7 +247,7 @@ Debug.trace("type count", types.size());
 					default:	//assume everything else is a normal resource object
 						switch(propertyValueDelimiter)	//see what sort of assignment this is
 						{
-							case PROPERTY_VALUE_CONTEXT_DELIMITER:	//scoped property assignment
+							case SCOPED_PROPERTY_VALUE_DELIMITER:	//scoped property assignment
 								if(scopePredicate!=null)	//if there is a scope predicate
 								{
 									final List<NameValuePair<Resource, Resource>> newScopeChain=new ArrayList<NameValuePair<Resource,Resource>>();	//create a new scope chain
@@ -467,6 +472,8 @@ Debug.trace("after resource, peeked", (char)c);
 				c=readCharacter(reader);	//read another a character
 				switch(c)	//see what the next character
 				{
+					case STRING_ESCAPE:	//escape character
+						break;	//use the escaped escape character unmodified
 					case ESCAPED_BACKSPACE:	//b backspace
 						c=BACKSPACE_CHAR;	//use the character that was escaped
 						break;

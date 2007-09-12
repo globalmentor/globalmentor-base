@@ -25,6 +25,12 @@ public interface URFScope extends ReadWriteLock
 	/**@return The number of properties this scope has.*/
 	public int getPropertyCount();
 
+	/**Retrieves an iterable to all property URIs.
+	Any deletions made to the returned iterable will result in all corresponding properties being removed.
+	@return An iterable to all property URIs.
+	*/
+	public Iterable<URI> getPropertyURIs();
+
 	/**Retrieves the first value of the property with the given URI.
 	All ordered properties will be returned in their correct order before any non-ordered properties.
 	Unordered properties will be returned in an arbitrary order. 

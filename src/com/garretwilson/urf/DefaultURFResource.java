@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.concurrent.locks.*;
 
 import com.garretwilson.net.BoundPropertyResource;
-import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.urf.URF.*;
 
 /**The default implementation of an URF resource.
 This class provides compare functionality that sorts according to the resource URI.
@@ -59,6 +59,12 @@ public class DefaultURFResource extends BoundPropertyResource implements URFReso
 	/**@return The number of properties this scope has.*/
 	public int getPropertyCount() {return scope.getPropertyCount();}
 
+	/**Retrieves an iterable to all property URIs.
+	Any deletions made to the returned iterable will result in all corresponding properties being removed.
+	@return An iterable to all property URIs.
+	*/
+	public Iterable<URI> getPropertyURIs() {return scope.getPropertyURIs();}
+
 	/**Retrieves the first value of the property with the given URI.
 	All ordered properties will be returned in their correct order before any non-ordered properties.
 	Unordered properties will be returned in an arbitrary order. 
@@ -88,4 +94,12 @@ public class DefaultURFResource extends BoundPropertyResource implements URFReso
 	*/
 	public void setPropertyValue(final URI propertyURI, final URFResource propertyValue) {scope.setPropertyValue(propertyURI, propertyValue);}
 
+	/**Retrieves the types declared for this resource, if any.
+	@return An iterable to all types declared for this resource.
+	@see URF#TYPE_PROPERTY_URI
+	*/
+	public Iterable<URFResource> getTypes()
+	{
+		return getPropertyValues(TYPE_PROPERTY_URI);	//return all the type property values
+	}
 }

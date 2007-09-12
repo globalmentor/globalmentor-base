@@ -81,11 +81,11 @@ public class TURF
 	/**The character that separates properties and assigned values.*/
 	public final static char PROPERTY_VALUE_DELIMITER='=';
 
-	/**The character that separates properties and contextual values.*/
-	public final static char PROPERTY_VALUE_CONTEXT_DELIMITER='~';
+	/**The character that separates scoped properties and values.*/
+	public final static char SCOPED_PROPERTY_VALUE_DELIMITER='~';
 
 	/**The characters that can separate properties from values.*/
-	public final static char[] PROPERTY_VALUE_DELIMITERS=new char[]{PROPERTY_VALUE_DELIMITER, PROPERTY_VALUE_CONTEXT_DELIMITER};
+	public final static char[] PROPERTY_VALUE_DELIMITERS=new char[]{PROPERTY_VALUE_DELIMITER, SCOPED_PROPERTY_VALUE_DELIMITER};
 
 	/**Characters that mark the end of a resource.*/
 //TODO del if not needed	public final static char[] RESOURCE_DELIMITERS=new char[]{LIST_DELIMITER, PROPERTY_VALUE_DELIMITER};

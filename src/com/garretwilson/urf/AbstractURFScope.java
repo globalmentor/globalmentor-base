@@ -74,6 +74,51 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	/**@return The number of properties this scope has.*/
 	public int getPropertyCount() {return propertyValuesMap.size();}
 
+	/**Retrieves an iterable to all property URIs.
+	Any deletions made to the returned iterable will result in all corresponding properties being removed.
+	@return An iterable to all property URIs.
+	*/
+	public Iterable<URI> getPropertyURIs()
+	{
+		return propertyValuesMap.keySet();	//return the set of keys, which are property URIs
+	}
+	
+	/**Retrieves an iterable to all properties.
+	All ordered properties will be returned in their correct order before any non-ordered properties.
+	Unordered properties will be returned in an arbitrary order. 
+	@param propertyURI The URI of the property for which values should be returned.
+	@return An iterable to all values of the property with the given URI.
+	*/
+/*TODO fix
+	public Iterable<URFResource> getPropertyValues(final URI propertyURI)
+	{
+		readLock().lock();	//get a read lock
+		try
+		{
+			final List<URFValueContext> valueContextList=propertyValuesMap.get(propertyURI);	//get the list of value contexts
+			if(valueContextList!=null && !valueContextList.isEmpty())	//if there is a non-empty context list
+			{
+				if(valueContextList.size()==1)	//if there is only one value
+				{
+					return new ObjectIterator<URFResource>(valueContextList.get(0).getValue());	//return the first value
+				}
+				else	//if there is more than one value
+				{
+					return new Iterable<URFResource>()	//return a new iterable that will return an iterator to the values
+							{
+								public Iterator<URFResource> iterator(){return new PropertyValueIterator(valueContextList);}
+							};
+				}
+			}
+			return emptyIterable();	//there is either no context list or no values in the list, so return an empty iterable
+		}
+		finally
+		{
+			readLock().unlock();	//always release the read lock
+		}
+	}
+*/
+
 	/**Retrieves the first value of the property with the given URI.
 	All ordered properties will be returned in their correct order before any non-ordered properties.
 	Unordered properties will be returned in an arbitrary order. 
@@ -176,7 +221,18 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		{
 			super(AbstractURFScope.this, AbstractURFScope.this);	//construct the parent class, using the parent scope for locking
 		}
-		
+
+		/**Sets a property value for the property with the given URI.
+		@param propertyURI The URI of the property of the value to set.
+		@param propertyValue The value to set for the given property.
+		*/
+/*TODO fix this sort of thing to initiate a resort if an index or an order was changed
+		public void setPropertyValue(final URI propertyURI, final URFResource propertyValue)
+		{
+			
+		}
+*/
+
 	}
 
 	/**A list iterator that can iterate over property values.
