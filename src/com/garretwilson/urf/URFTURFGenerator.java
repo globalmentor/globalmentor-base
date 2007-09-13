@@ -9,13 +9,16 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 
 import com.garretwilson.lang.IntegerUtilities;
 import com.garretwilson.net.NamespacePrefixManager;
+import com.garretwilson.net.Resource;
 import com.garretwilson.rdf.RDFResource;
 
 import static com.garretwilson.text.CharacterConstants.*;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
 
+import com.garretwilson.util.Debug;
 import com.garretwilson.util.IdentityHashSet;
+import com.garretwilson.util.NameValuePair;
 
 /**Generates TURF from URF.
 @author Garret Wilson
@@ -200,9 +203,24 @@ public class URFTURFGenerator
 		resourceLabelMap.clear();	//clear our map of node IDs
 	}
 
-
+	/*
+	@param scopeSubject The base resource of the current scope, or <code>null</code> if the current resource is not in an object context.
+	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
+	@param scopePredicate The predicate for which the new resource is a value, or <code>null</code> if the current resource is not in an object context.
+*/
 	public Writer generate(final Writer writer, final URFResource resource) throws IOException
 	{
+		return generate(writer, null, null, resource);
+	}
+
+	/*
+	@param scopeSubject The base resource of the current scope, or <code>null</code> if the current resource is not in an object context.
+	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
+	@param scopePredicate The predicate for which the new resource is a value, or <code>null</code> if the current resource is not in an object context.
+*/
+	public Writer generate(final Writer writer, final URFScope scopeSubject, final URI scopePredicateURI, final URFResource resource) throws IOException
+	{
+Debug.trace("generating resource with scope", scopeSubject, "predicate URI", scopePredicateURI, "and resource", resource);
 		boolean generatedComponent=false;	//we haven't generated any components, yet
 		URI lexicalTypeURI=null;	//the lexical namespace type URI, if any
 //TODO del		URI shortTypeURI=null;	//the short form type URI, if any, that has been generated separate from any properties declaration
@@ -252,7 +270,7 @@ public class URFTURFGenerator
 				{
 					writer.write(TYPE_BEGIN);	//start the type declaration
 				}
-				generate(writer, type);	//write the type
+				generate(writer, resource, TYPE_PROPERTY_URI, type);	//write the type
 				++shortTypeCount;	//show that we've got another short type
 			}
 		}
@@ -262,35 +280,19 @@ public class URFTURFGenerator
 			generatedComponent=true;	//indicate that we generated a component			
 		}
 			//properties
-		boolean startedProperties=false;	//keep track of whether we have started properties
-		int propertyCount=0;	//keep track of how many properties we've generated
-		for(final URI propertyURI:resource.getPropertyURIs())	//look at each property URI
+		int propertyCount=0;	//start with no properties being generating
+		propertyCount=generateProperties(writer, resource, PROPERTY_VALUE_DELIMITER, propertyCount, false);	//generate properties
+		if(scopeSubject!=null && scopePredicateURI!=null)
 		{
-			if(!TYPE_PROPERTY_URI.equals(propertyURI))	//if this isn't a type (we already generated the types in short form)
+			final URFScope scope=scopeSubject.getScope(scopePredicateURI, resource);
+			if(scope==null)
 			{
-				for(final URFResource propertyValue:resource.getPropertyValues(propertyURI))	//look at each property value
-				{
-					if(!startedProperties)	//if we haven't yet started the properties section
-					{
-						writeNewLine(writer);
-						writer.write(PROPERTIES_BEGIN);	//start the properties declaration
-						indent();	//indent the properties
-						writeNewLine(writer);
-						startedProperties=true;	//show that we've started the properties
-					}
-					if(propertyCount>0)	//if we've already generated a property
-					{
-						writer.append(LIST_DELIMITER);	//separate the properties
-						writeNewLine(writer);
-		}
-					writeReference(writer, propertyURI);	//generate the reference URI of the property
-					writer.append(PROPERTY_VALUE_DELIMITER);	//=
-					generate(writer, propertyValue);	//generate the property value
-					++propertyCount;	//show that we generated another property
-				}
+				throw new IllegalArgumentException("No scope for given subject "+scopeSubject+" and predicate URI "+scopePredicateURI);
 			}
+			propertyCount=generateProperties(writer, scope, SCOPED_PROPERTY_VALUE_DELIMITER, propertyCount, false);	//generate scoped properties
 		}
-		if(startedProperties)	//if we started the properties section
+		
+		if(propertyCount>0)	//if we started the properties section
 		{
 			unindent();
 			writeNewLine(writer);
@@ -303,13 +305,53 @@ public class URFTURFGenerator
 		return writer;	//return the writer
 	}
 
+	/**Generates the properties, if any, of a given scope.
+	@param writer The writer used for generating the information.
+	@param scope The scope the properties of which should be generated.
+	@param propertyValueDelimiter The delimiter to use to separate properties and values.
+	@param propertyCount the number of properties already generated; used to determine whether a new properties section should be generated.
+	@param generateTypes Whether type properties should be generated.
+	@return The new total number of properties generated, including the properties already generated before this method was called.
+	@exception NullPointerException if the given writer and/or scope is <code>null</code>. 
+	@exception IOException if there was an error writing to the writer.
+	*/
+	public int generateProperties(final Writer writer, final URFScope scope, final char propertyValueDelimiter, int propertyCount, final boolean generateTypes) throws IOException
+	{
+		for(final URI propertyURI:scope.getPropertyURIs())	//look at each property URI
+		{
+			if(generateTypes || !TYPE_PROPERTY_URI.equals(propertyURI))	//if we should generate types or this isn't a type
+			{
+				for(final URFResource propertyValue:scope.getPropertyValues(propertyURI))	//look at each property value
+				{
+					if(propertyCount>0)	//if we've already generated a property
+					{
+						writer.append(LIST_DELIMITER);	//separate the properties
+						writeNewLine(writer);
+					}
+					else	//if we haven't yet started the properties section
+					{
+						writeNewLine(writer);
+						writer.write(PROPERTIES_BEGIN);	//start the properties declaration
+						indent();	//indent the properties
+						writeNewLine(writer);
+					}
+					writeReference(writer, propertyURI);	//generate the reference URI of the property
+					writer.append(propertyValueDelimiter);	//=/~
+					generate(writer, scope, propertyURI, propertyValue);	//generate the property value
+					++propertyCount;	//show that we generated another property
+				}
+			}
+		}
+		return propertyCount;	//return the new property count
+	}
+
 	/**Writes a reference to a resource with the given URI.
 	@param writer The writer used for generating the information.
 	@param uri The URI of the resource.
 	@exception NullPointerException if the given writer and/or URI is <code>null</code>. 
 	@exception IOException if there was an error writing to the writer.
 	*/
-	public void writeReference(final Writer writer, final URI uri) throws IOException
+	public static void writeReference(final Writer writer, final URI uri) throws IOException
 	{
 		writer.append(REFERENCE_BEGIN).append(uri.toString()).append(REFERENCE_END);	//write the reference URI
 	}

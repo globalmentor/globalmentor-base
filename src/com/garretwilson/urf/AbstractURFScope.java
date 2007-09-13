@@ -20,7 +20,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		public URFScope getParentScope() {return parentScope;}
 
 	/**The map of property value contexts keyed to property URIs.*/
-	private CollectionMap<URI, URFValueContext, List<URFValueContext>> propertyValuesMap=new DecoratorReadWriteLockCollectionMap<URI, URFValueContext, List<URFValueContext>>(new ArrayListHashMap<URI, URFValueContext>(), this);
+	private CollectionMap<URI, URFValueContext, List<URFValueContext>> propertURIValueContextsMap=new DecoratorReadWriteLockCollectionMap<URI, URFValueContext, List<URFValueContext>>(new ArrayListHashMap<URI, URFValueContext>(), this);
 
 	/**@return Whether this property has resources.*/
 //	public boolean hasProperties() {return !properties.isEmpty();}
@@ -49,7 +49,9 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		readLock().lock();	//get a read lock
 		try
 		{
-			final List<URFValueContext> valueContextList=propertyValuesMap.get(propertyURI);	//get the list of value contexts
+Debug.trace("checking for scope", propertyURI, propertyValue);
+			final List<URFValueContext> valueContextList=propertURIValueContextsMap.get(propertyURI);	//get the list of value contexts
+Debug.trace("got value context list for", propertyURI, valueContextList);
 			if(valueContextList!=null)	//if there is a value context for this property URI
 			{
 				for(final URFValueContext valueContext:valueContextList)	//look at each value context
@@ -69,10 +71,10 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	}
 
 	/**@return Whether this scope has properties.*/
-	public boolean hasProperties() {return !propertyValuesMap.isEmpty();}
+	public boolean hasProperties() {return !propertURIValueContextsMap.isEmpty();}
 
 	/**@return The number of properties this scope has.*/
-	public int getPropertyCount() {return propertyValuesMap.size();}
+	public int getPropertyCount() {return propertURIValueContextsMap.size();}
 
 	/**Retrieves an iterable to all property URIs.
 	Any deletions made to the returned iterable will result in all corresponding properties being removed.
@@ -80,7 +82,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public Iterable<URI> getPropertyURIs()
 	{
-		return propertyValuesMap.keySet();	//return the set of keys, which are property URIs
+		return propertURIValueContextsMap.keySet();	//return the set of keys, which are property URIs
 	}
 	
 	/**Retrieves an iterable to all properties.
@@ -130,7 +132,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		readLock().lock();	//get a read lock
 		try
 		{
-			final List<URFValueContext> valueContextList=propertyValuesMap.get(propertyURI);	//get the list of value contexts, if any
+			final List<URFValueContext> valueContextList=propertURIValueContextsMap.get(propertyURI);	//get the list of value contexts, if any
 			return valueContextList!=null && !valueContextList.isEmpty() ? valueContextList.get(0).getValue() : null;	//if there is a non-empty context list, return the first one
 		}
 		finally
@@ -150,7 +152,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		readLock().lock();	//get a read lock
 		try
 		{
-			final List<URFValueContext> valueContextList=propertyValuesMap.get(propertyURI);	//get the list of value contexts
+			final List<URFValueContext> valueContextList=propertURIValueContextsMap.get(propertyURI);	//get the list of value contexts
 			if(valueContextList!=null && !valueContextList.isEmpty())	//if there is a non-empty context list
 			{
 				if(valueContextList.size()==1)	//if there is only one value
@@ -183,7 +185,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		writeLock().lock();	//get a write lock
 		try
 		{
-			final List<URFValueContext> valueContextList=propertyValuesMap.getCollection(propertyURI);	//get the list of value contexts
+			final List<URFValueContext> valueContextList=propertURIValueContextsMap.getCollection(propertyURI);	//get the list of value contexts
 			for(final URFValueContext valueContext:valueContextList)	//look at each value context
 			{
 				if(propertyValue.equals(valueContext.getValue()))	//if we already have a context with this value
@@ -205,9 +207,9 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public void setPropertyValue(final URI propertyURI, final URFResource propertyValue)
 	{
-		final List<URFValueContext> valueContextList=propertyValuesMap.createCollection();	//create a list of value contexts to hold the new value
+		final List<URFValueContext> valueContextList=propertURIValueContextsMap.createCollection();	//create a list of value contexts to hold the new value
 		valueContextList.add(new URFValueContext(this, propertyValue, new ChildURFScope()));	//add a new value context
-		propertyValuesMap.put(propertyURI, valueContextList);	//change the value
+		propertURIValueContextsMap.put(propertyURI, valueContextList);	//change the value
 	}
 
 	/**Implementation of a child URF scope subordinate to another URF scope.

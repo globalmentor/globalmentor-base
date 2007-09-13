@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.*;
 import java.util.*;
+
 import static java.util.Collections.*;
 
 import static com.garretwilson.io.ReaderParser.*;
@@ -21,6 +22,7 @@ import com.garretwilson.util.NameValuePair;
 
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
+import static com.garretwilson.util.ArrayUtilities.indexOf;
 
 /**Class that is able to construct an RDF data model from an XML-based
 	RDF serialization. Each instance of an RDF processor maintains an internal
@@ -107,7 +109,7 @@ if(resource!=null)	//TODO del; testing
 	*/
 	public Resource parseResource(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
-		return parseResource(reader, baseURI, null, null, null);	//parse a resource with no scope
+		return parseResource(reader, baseURI, null, null, null, null);	//parse a resource with no scope or context URI
 	}
 
 	/**Parses a single optionally scoped resource and returns a proxy to the resource.
@@ -115,17 +117,18 @@ if(resource!=null)	//TODO del; testing
 	The new position will be that of the first non-separator character after the resources or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param scopeBase The base resource of the current scope, or <code>null</code> if there is no current scope.
+	@param scopeBase The base resource of the current scope, or <code>null</code> if the current resource is not in an object context.
 	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
-	@param scopePredicate The predicate of the new element to be added to the scope chain, or <code>null</code> if there is no current scope.
+	@param scopePredicate The predicate for which the new resource is a value, or <code>null</code> if the current resource is not in an object context.
+	@param contextURI The URI serving as contexts in case the default namespace need to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@return The resource parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current resource is completely parsed.
 	*/
-	protected Resource parseResource(final Reader reader, final URI baseURI, final Resource scopeBase, final List<NameValuePair<Resource, Resource>> scopeChain, final Resource scopePredicate) throws IOException, ParseIOException
+	protected Resource parseResource(final Reader reader, final URI baseURI, final Resource scopeBase, final List<NameValuePair<Resource, Resource>> scopeChain, final Resource scopePredicate, final URI contextURI) throws IOException, ParseIOException
 	{
-Debug.trace("ready to parse resource");
+//Debug.trace("ready to parse resource");
 		final URF urf=getURF();	//get the URF data model
 		String label=null;	//the label of the resource, if any
 		URI resourceURI=null;	//the URI of the resource, if any
@@ -135,16 +138,16 @@ Debug.trace("ready to parse resource");
 		int c=peek(reader);	//peek the next character
 		if(c==LABEL_BEGIN)	//check for a label
 		{
-Debug.trace("ready to parse label");
+//Debug.trace("ready to parse label");
 			foundComponent=true;	//indicate that at least one description component is present
 			label=parseLabel(reader);	//parse the label
-Debug.trace("label:", label);
+//Debug.trace("label:", label);
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
 		switch(c)	//check for a reference or a short form
 		{
 			case REFERENCE_BEGIN:
-Debug.trace("found reference beginning");
+//Debug.trace("found reference beginning");
 				foundComponent=true;	//indicate that at least one description component is present
 				resourceURI=parseURI(reader, baseURI, REFERENCE_BEGIN, REFERENCE_END);	//parse the resource URI
 				c=skipSeparators(reader);	//skip separators and peek the next character
@@ -153,7 +156,7 @@ Debug.trace("found reference beginning");
 				foundComponent=true;	//indicate that at least one description component is present
 				types.add(getResourceProxy(ARRAY_CLASS_URI));	//add a proxy to the array type
 				check(reader, ARRAY_BEGIN);	//read the beginning array delimiter
-				arrayElements=parseResourceList(reader, baseURI, ARRAY_END);	//parse the resources serving as array elements; we'll actually add them to the resource after creating the resource proxy
+				arrayElements=parseResourceList(reader, baseURI, ARRAY_END);	//parse the resources serving as array elements; we'll actually add them to the resource after creating the resource proxy TODO fix scoped properties; currently scoped propoerties will be unscoped because we provide no context for parsing the array children
 				check(reader, ARRAY_END);	//read the ending array delimiter
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
@@ -188,6 +191,38 @@ Debug.trace("found reference beginning");
 				resourceURI=createLexicalURI(URI_CLASS_URI, uri.toString());	//create a URI for the resource
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
+			default:	//if there was some other character, see if it's a name
+				if(isNameCharacter(c))	//if this is a name character
+				{
+					final NameValuePair<String, String> name=parseName(reader);	//parse the name
+					final URI namespaceURI;	//we'll determine the namespace URI
+					final String prefix=name.getName();	//get the name prefix
+					final String localName=name.getValue();	//get the name local name
+					if(prefix!=null)	//if there is a prefix, see to which namespace URI it refers
+					{
+						namespaceURI=asURI(getResourceProxy(prefix));	//get a resource proxy for the prefix and use it as a URI
+						if(namespaceURI.getRawFragment()!=null)	//if the supposed namespace URI has a fragment (namespaces can't have fragments)
+						{
+							throw new ParseIOException("Prefix "+namespaceURI+" references invalid namespace "+namespaceURI);
+						}
+					}
+					else	//if there is no prefix, get the default namespace for this context
+					{
+/*TODO del when works
+						final Resource contextResource=scopePredicate!=null ? scopePredicate : scopeBase;	//get the context resource
+						final URI contextURI=contextResource!=null ? contextResource.getURI() : null;	//get the context URI's namespace
+*/
+						if(contextURI==null)	//if no context is available
+						{
+							throw new ParseIOException("Local name "+localName+" has no context for namespace determination.");							
+						}
+						namespaceURI=removeFragment(contextURI);	//remove the fragment to get the namespace
+					}
+					foundComponent=true;	//indicate that at least one description component is present
+					resourceURI=resolveFragment(namespaceURI, encodeURI(localName));	//encode the local name and use it as the fragment for the namespace
+					c=skipSeparators(reader);	//skip separators and peek the next character
+				}
+				break;
 		}
 		if(resourceURI!=null && isLexicalNamespaceURI(resourceURI))	//if there is a resource URI that is in a lexical namespace
 		{
@@ -207,9 +242,9 @@ Debug.trace("found reference beginning");
 			checkReaderEnd(c);	//make sure we're not at the end of the reader
 			throw new ParseIOException("Expected resource; found character: "+(char)c);	//TODO improve with source throwable
 		}
-Debug.trace("ready to get resource proxy for label", label, "resource URI", resourceURI);
+//Debug.trace("ready to get resource proxy for label", label, "resource URI", resourceURI);
 		final ResourceProxy resourceProxy=getResourceProxy(label, resourceURI);	//get a resource proxy from the label and/or reference URI, or use one already available for the reference URI
-Debug.trace("type count", types.size());
+//Debug.trace("type count", types.size());
 		if(!types.isEmpty())	//if we have at least one type
 		{
 			final Resource typePropertyResource=getResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
@@ -235,19 +270,25 @@ Debug.trace("type count", types.size());
 			c=skipSeparators(reader);	//skip separators and peek the next character
 			while(c!=PROPERTIES_END)	//while we haven't reached the end of the properties
 			{			
-				final Resource predicate=parseResource(reader, baseURI);	//parse the predicate resource
+				final Resource predicate=parseResource(reader, baseURI, null, null, null, !types.isEmpty() ? types.get(0).getURI() : null);	//parse the predicate resource, indicating the type (if any) as the context URI
 				skipSeparators(reader);	//skip separators
 				final char propertyValueDelimiter=check(reader, PROPERTY_VALUE_DELIMITERS);	//read the next character and make sure it's a property-value delimiter
 				final Resource object;	//we'll use this to store the object, if there is just one object
 				switch(skipSeparators(reader))	//skip separators and see what the next character will be
 				{
 					case SEQUENCE_BEGIN:	//sequence short form
-							//TODO finish
+/*TODO fix
+						types.add(getResourceProxy(ARRAY_CLASS_URI));	//add a proxy to the array type
+						check(reader, SEQUENCE_BEGIN);	//read the beginning sequence delimiter
+						final Resource[] sequenceElements=parseResourceList(reader, baseURI, SEQUENCE_END);	//parse the resources serving as sequence elements
+						check(reader, SEQUENCE_END);	//read the sequence array delimiter
+*/
 						break;
 					default:	//assume everything else is a normal resource object
 						switch(propertyValueDelimiter)	//see what sort of assignment this is
 						{
 							case SCOPED_PROPERTY_VALUE_DELIMITER:	//scoped property assignment
+//Debug.trace("found scoped property", predicate);
 								if(scopePredicate!=null)	//if there is a scope predicate
 								{
 									final List<NameValuePair<Resource, Resource>> newScopeChain=new ArrayList<NameValuePair<Resource,Resource>>();	//create a new scope chain
@@ -256,13 +297,15 @@ Debug.trace("type count", types.size());
 										newScopeChain.addAll(scopeChain);	//add the current scope chain
 									}
 									newScopeChain.add(new NameValuePair<Resource, Resource>(scopePredicate, resourceProxy));	//add another element to the scope chain
+//Debug.trace("current scope base:", scopeBase);
 									final Resource newScopeBase=scopeBase!=null ? scopeBase : resourceProxy;	//if we're just starting the scope chain, use the subject resource as the base
-									object=parseResource(reader, baseURI, newScopeBase, newScopeChain, predicate);	//parse the object with the new scope and new predicate
+									object=parseResource(reader, baseURI, newScopeBase, newScopeChain, predicate, predicate.getURI());	//parse the object with the new scope and new predicate
 									addAssertion(new Assertion(newScopeBase, predicate, object, newScopeChain.toArray(new NameValuePair[newScopeChain.size()])));	//assert the assertion with the new scope
+//Debug.trace("finished adding scoped base", newScopeBase, "scoped property", predicate, "with value", object);
 									break;
 								}									
 							case PROPERTY_VALUE_DELIMITER:	//property assignment
-								object=parseResource(reader, baseURI);	//parse the object with no scope
+								object=parseResource(reader, baseURI, resourceProxy, null, predicate, predicate.getURI());	//parse the object with no scope, but give a scope predicate in case a scope is formed for the value
 								addAssertion(new Assertion(resourceProxy, predicate, object));	//assert the assertion with no scope
 								break;
 							default:
@@ -270,7 +313,7 @@ Debug.trace("type count", types.size());
 						}
 				}
 				c=skipSeparators(reader);	//skip separators and peek the next character
-	Debug.trace("after property-value pair, peeked", (char)c);
+	//Debug.trace("after property-value pair, peeked", (char)c);
 				if(c==LIST_DELIMITER)	//if this is a list delimiter
 				{
 					check(reader, LIST_DELIMITER);	//skip the list delimiter
@@ -279,28 +322,9 @@ Debug.trace("type count", types.size());
 			}			
 			check(reader, PROPERTIES_END);	//read the ending properties delimiter
 		}
-Debug.trace("ready to return resource proxy with URI", resourceProxy.getURI());
+//Debug.trace("ready to return resource proxy with URI", resourceProxy.getURI());
 		return resourceProxy;	//return the resource proxy we created
 	}
-
-
-	/**Checks that the description component can be changed to the new description component while parsing a resource description.
-	This method ensures that description components come in the correct order and are not repeated.
-	@param oldDescriptionComponent The last description component, or <code>null</code> if no description component has been parsed.
-	@param newDescriptionComponent The new description component ready to be parsed.
-	@return The new description component, if it is a valid component to parse in this context.
-	@exception NullPointerException if the new description component is <code>null</code>.
-	@exception ParseIOException if the given description component is being repeated or appears out of order.
-	*/
-	protected static DescriptionComponent checkDescriptionComponent(final DescriptionComponent oldDescriptionComponent, final DescriptionComponent newDescriptionComponent) throws ParseIOException
-	{
-		if(oldDescriptionComponent!=null && oldDescriptionComponent.ordinal()>=newDescriptionComponent.ordinal())	//if we've already reached or passed the old description component
-		{
-			throw new ParseIOException("Resource description component "+newDescriptionComponent+" cannot be repeated or appear out of order.");
-		}
-		return newDescriptionComponent;	//the new description component passed the tests; return it
-	}
-
 
 	/**Parses a list of resources.
 	The current position must be that of a separator or that of the first character of the first resource in the list.
@@ -318,7 +342,7 @@ Debug.trace("ready to return resource proxy with URI", resourceProxy.getURI());
 //Debug.trace("ready to parse resource list for end", end);
 		final List<Resource> resourceList=new ArrayList<Resource>();	//create a new list in which to place the resources
 		int c=skipSeparators(reader);	//skip separators and peek the next character
-Debug.trace("peeked", (char)c);
+//Debug.trace("peeked", (char)c);
 //TODO del if not needed		if(indexOf(RESOURCE_BEGINS, c)<0 && c!=LIST_DELIMITER)	//if this is not the beginning of a resource, return (but don't return for the list delimiter, which is an error
 //TODO del		while(c>=0 &&)	//while we are not out of data
 //TODO del if not needed		while(indexOf(RESOURCE_BEGINS, c)>=0)	//while there is another resource to parse
@@ -326,10 +350,10 @@ Debug.trace("peeked", (char)c);
 		while(c>=0 && c!=end)	//while the end of the data has not been reached and there is another resource to parse
 		{
 			final Resource resource=parseResource(reader, baseURI);	//parse another resource
-Debug.trace("parsed resource from list", resource);
+//Debug.trace("parsed resource from list", resource);
 			resourceList.add(resource);	//parse another resource and add it to the list
 			c=skipSeparators(reader);	//skip separators and peek the next character
-Debug.trace("after resource, peeked", (char)c);
+//Debug.trace("after resource, peeked", (char)c);
 			if(c==LIST_DELIMITER)	//if this is a list delimiter
 			{
 				check(reader, LIST_DELIMITER);	//skip the list delimiter
@@ -351,14 +375,78 @@ Debug.trace("after resource, peeked", (char)c);
 	@return The label parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
-	@exception ParseIOException if the reader has no more characters before the current label is completely parsed.
+	@exception ParseIOException if one of the label characters is not a name character, or the reader has no more characters before the current label is completely parsed.
 	*/
 	public static String parseLabel(final Reader reader) throws IOException, ParseIOException
 	{
 		check(reader, LABEL_BEGIN);	//read the beginning label delimiter
-		final String label=reachAfter(reader, LABEL_END);	//read the label
-		//TODO make sure this is a valid label
+		final String label=parseNameSegment(reader);	//read the label
+		check(reader, LABEL_END);	//read the ending label delimiter
 		return label;	//return the label we read
+	}
+
+	/**Parses a name composed of name characters preceded by an optional prefix.
+	The current position must be that of the first name character.
+	The new position will be that immediately after the last name character.
+	@param reader The reader the contents of which to be parsed.
+	@return The name parsed from the reader, with the name of the name-value pair indicating the prefix or <code>null</code>, and the value representing the local name.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if thare are no name characters.
+	*/
+	public static NameValuePair<String, String> parseName(final Reader reader) throws IOException, ParseIOException
+	{
+		final String nameSegment=parseNameSegment(reader);	//parse a name segment
+		final String prefix, localName;	//we'll determine a prefix and a local name
+		if(confirm(reader, NAME_PREFIX_DELIMITER))	//if there is a name prefix delimiter
+		{
+			prefix=nameSegment;	//the first name segment is the prefix
+			localName=parseNameSegment(reader);	//the following name segment is the local name
+		}
+		else	//if there is no name prefix delimiter
+		{
+			prefix=null;	//there is no prefix
+			localName=nameSegment;	//the name segment is the local name
+		}
+		return new NameValuePair<String, String>(prefix, localName);	//return the prefix, if any, and the local name
+	}
+
+	/**Parses a segment of a name composed only of name characters.
+	The current position must be that of the first name character.
+	The new position will be that immediately after the last name character.
+	@param reader The reader the contents of which to be parsed.
+	@return The name parsed from the reader.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if thare are no name characters.
+	*/
+	public static String parseNameSegment(final Reader reader) throws IOException, ParseIOException
+	{
+		final StringBuilder stringBuilder=new StringBuilder();	//create a string builder for reading the name segment
+		int c;	//the character read
+		while(true)
+		{
+			reader.mark(1);	//mark our current position
+			c=reader.read();	//read another character
+			if(isNameCharacter(c))	//if this is a name character
+			{
+				stringBuilder.append((char)c);	//append the character
+			}
+			else	//if this is not a name character
+			{
+				break;	//stop gathering name characters
+			}
+		}
+		if(stringBuilder.length()==0)	//if we didn't read any characters
+		{
+			checkReaderEnd(c);	//make sure we're not at the end of the reader
+			throw new ParseIOException("Expected name character; found "+(char)c+".");			
+		}
+		if(c>=0)	//if we didn't reach the end of the stream
+		{
+			reader.reset();	//reset to the last mark, which was set right before the non-name character we found
+		}
+		return stringBuilder.toString();	//return the name segment we read
 	}
 
 	/**Parses a boolean surrounded by boolean delimiters.
@@ -383,7 +471,7 @@ Debug.trace("after resource, peeked", (char)c);
 				break;
 			case BOOLEAN_TRUE_BEGIN:	//true
 				check(reader, BOOLEAN_TRUE_LEXICAL_FORM);	//make sure this is really true
-				b=false;	//store the boolean value
+				b=true;	//store the boolean value
 				break;
 			default:	//if we don't recognize the start of the boolean lexical form
 				checkReaderEnd(c);	//make sure we're not at the end of the reader

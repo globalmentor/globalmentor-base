@@ -101,6 +101,30 @@ public class ReaderParser
 		}
 	}
 
+	/**Reads a character and, if a character does not match the given character, resets the reader as if the character were not read.
+	@param reader The reader the contents of which to be parsed.
+	@param character The expected character.
+	@return <code>true</code> if the given character was read, or <code>false</code> if the next character is not the expected character and was therefore replaced if the end of the reader was not reached.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	*/
+	public static boolean confirm(final Reader reader, final char character) throws IOException, ParseIOException
+	{
+//Debug.trace("ready to peek");
+		reader.mark(1);	//mark our current position
+		final int c=reader.read();	//get the current character
+//Debug.trace("peek-read char", c);
+		if(c==character)	//if the expected character was read
+		{
+			return true;	//indicate that the character was the one expected
+		}
+		else	//if the character was not the one expected
+		{
+			reader.reset();	//reset to the last mark, which was set right before the character we found
+			return false;	//indicate that another character was encountered or the end of the reader was reached
+		}
+	}
+
 	/**Reads a character, throwing an error if the end of the reader was reached.
 	@param reader The reader the contents of which to be parsed.
 	@return The character returned from the reader's {@link Reader#read()} operation.

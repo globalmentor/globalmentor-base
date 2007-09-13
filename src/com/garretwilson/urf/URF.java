@@ -34,9 +34,9 @@ public class URF
 	/**The URI to the URF namespace.*/
 	public final static URI URF_NAMESPACE_URI=URI.create("http://urf.name/urf");
 	/**The URI to the URF index namespace.*/
-	public final static URI URF_INDEX_NAMESPACE_URI=URI.create("urn:urf:index");
+//TODO del when not needed	public final static URI URF_INDEX_NAMESPACE_URI=URI.create("urn:urf:index");
 	/**The base to the URF lexical namespace.*/
-	private final static String URF_LEX_NAMESPACE_BASE="urn:urf:lex:";
+	private final static String URF_LEX_NAMESPACE_BASE="urn:urf:lex:";	//TODO switch to new data:lexis lexical namespaces
 	/**The base URI to the URF lexical namespace.*/
 	public final static URI URF_LEX_NAMESPACE_BASE_URI=URI.create(URF_LEX_NAMESPACE_BASE);
 	
@@ -79,7 +79,8 @@ public class URF
 	*/
 	public static URI createIndexURI(final long index)
 	{
-		return resolveFragment(URF_INDEX_NAMESPACE_URI, Long.toString(index));	//create a string from the index and resolve it as a fragment to the index URI
+		return createLexicalURI(INTEGER_CLASS_URI, Long.toString(index));	//create an integer URI from the index
+//TODO del when works		return resolveFragment(URF_INDEX_NAMESPACE_URI, Long.toString(index));	//create a string from the index and resolve it as a fragment to the index URI
 	}
 
 	/**Determines whether the given URI is in a lexical namespace.

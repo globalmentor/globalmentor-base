@@ -51,7 +51,7 @@ public class DefaultURFResource extends BoundPropertyResource implements URFReso
 	@param propertyValue The value of the property the scope of which to retrieve.
 	@return The scope of the given property and value, or <code>null</code> if no such property and value exists.
 	*/
-	public URFScope getScope(final URI propertyURI, final URFResource propertyValue) {return scope.getParentScope();}
+	public URFScope getScope(final URI propertyURI, final URFResource propertyValue) {return scope.getScope(propertyURI, propertyValue);}
 
 	/**@return Whether this scope has properties.*/
 	public boolean hasProperties() {return scope.hasProperties();}

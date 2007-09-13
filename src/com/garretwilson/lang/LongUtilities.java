@@ -31,4 +31,11 @@ public class LongUtilities
 		return StringUtilities.makeStringLength(Long.toHexString(value), length, '0', 0);
 	}
 
+	/**Compares two longs for order.
+	@return a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+	*/
+	public static int compare(final long l1, final long l2)
+	{
+		return l1<l2 ? -1 : (l1>l2 ? 1 : 0);	//perform the comparison manually, because subtracting longs and returning an integer can result in overflow
+	}
 }
