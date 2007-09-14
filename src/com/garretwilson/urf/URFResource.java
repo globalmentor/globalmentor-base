@@ -1,5 +1,7 @@
 package com.garretwilson.urf;
 
+import java.net.URI;
+
 import com.garretwilson.net.Resource;
 
 /**An URF resource.
@@ -14,4 +16,10 @@ public interface URFResource extends Resource, URFScope
 	*/
 	public Iterable<URFResource> getTypes();
 
+	/**Determines whether this resource has a type with the given URI.
+	@param typeURI The URI of the type for which to search.
+	@return <code>true</code> if this resource has a type with the given URI.
+	@see URF#TYPE_PROPERTY_URI
+	*/
+	public boolean hasType(final URI typeURI);
 }

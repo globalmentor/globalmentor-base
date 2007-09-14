@@ -9,6 +9,9 @@ import java.util.concurrent.locks.ReadWriteLock;
 public interface URFScope extends ReadWriteLock
 {
 
+	/**@return The order in which this scope was created; useful as a unique ID when sorting.*/
+	public long getCreationOrder();
+
 	/**@return The parent scope of this scope, or <code>null</code> if this scope has no parent scope.*/
 	public URFScope getParentScope();
 
@@ -20,10 +23,15 @@ public interface URFScope extends ReadWriteLock
 	public URFScope getScope(final URI propertyURI, final URFResource propertyValue);
 
 	/**@return Whether this scope has properties.*/
-	public boolean hasProperties();
+//TODO fix; this doesn't count overall properties	public boolean hasProperties();
 
 	/**@return The number of properties this scope has.*/
-	public int getPropertyCount();
+//TODO fix; this doesn't count overall properties	public int getPropertyCount();
+
+	/**Returns an iterable to the properties of this scope.
+	@return An iterable to all available properties.
+	*/
+	public Iterable<URFProperty> getProperties();
 
 	/**Retrieves an iterable to all property URIs.
 	Any deletions made to the returned iterable will result in all corresponding properties being removed.
@@ -47,6 +55,21 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public Iterable<URFResource> getPropertyValues(final URI propertyURI);
 
+	/**Determines whether there exists a property with the given property URI and the given property value.
+	@param propertyURI The URI of the property of the value to check.
+	@param propertyValue The value to match for the given property.
+	@return <code>true</code> if a property exists with the given property URI and property value.
+	*/
+	public boolean hasPropertyValue(final URI propertyURI, final URFResource propertyValue);
+
+	/**Determines whether there exists a property with the given property URI and the given property value URI.
+	@param propertyURI The URI of the property of the value to check.
+	@param propertyValueURI The value URI to match for the given property.
+	@return <code>true</code> if a property exists with the given property URI and property value URI.
+	@exception NullPointerException if the given property URI and/or property value URI is <code>null</code>.
+	*/
+	public boolean hasPropertyValueURI(final URI propertyURI, final URI propertyValueURI);
+
 	/**Adds a property value for the property with the given URI.
 	If the given property and value already exists, no action occurs.
 	@param propertyURI The URI of the property of the value to add.
@@ -60,4 +83,9 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public void setPropertyValue(final URI propertyURI, final URFResource propertyValue);
 
+	/**Retrieves the order of this scope.
+	The order is considered to be the number value of the property with URI {@value URF#ORDER_PROPERTY_URI}.
+	@return The order of this scope, or <code>null</code> if no order is indicated or the order is not a number.
+	*/
+	public Number getOrder();
 }

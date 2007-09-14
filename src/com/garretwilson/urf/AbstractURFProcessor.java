@@ -233,8 +233,8 @@ public abstract class AbstractURFProcessor
 	/**The atomic variable used to generate assertion orders.*/
 	private final AtomicLong assertionOrder=new AtomicLong(0);
 
-		/**Generates a new assertion order unique to this processor.
-		@return A new assertion order unique to this processor.
+		/**Generates a new assertion order unique to this JVM.
+		@return A new assertion order unique to this JVM.
 		*/
 		protected long generateAssertionOrder()
 		{

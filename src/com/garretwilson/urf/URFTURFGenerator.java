@@ -224,34 +224,18 @@ Debug.trace("generating resource with scope", scopeSubject, "predicate URI", sco
 		boolean generatedComponent=false;	//we haven't generated any components, yet
 		URI lexicalTypeURI=null;	//the lexical namespace type URI, if any
 //TODO del		URI shortTypeURI=null;	//the short form type URI, if any, that has been generated separate from any properties declaration
+		final boolean isArray=resource.hasType(ARRAY_CLASS_URI);	//see if this is an array
+//TODO del		URI arrayTypeURI=null;	//the array type URI, if any (functions like a boolean flag that allows us to easily compare URIs)
 			//reference
 		final URI uri=resource.getURI();	//get the resource URI
 		if(uri!=null)
 		{
+Debug.trace("got resource URI:", uri);
 			if(isLexicalNamespaceURI(uri))	//if this URI is in a lexical namespace
 			{
 				lexicalTypeURI=getLexicalNamespaceTypeURI(uri);	//get the lexical type of the URI so that we don't generate it again
-				if(BOOLEAN_CLASS_URI.equals(lexicalTypeURI))	//boolean
-				{
-					writer.append(BOOLEAN_BEGIN).append(uri.getFragment()).append(BOOLEAN_END);	//write the boolean short form
-				}
-				else if(INTEGER_CLASS_URI.equals(lexicalTypeURI) || REAL_CLASS_URI.equals(lexicalTypeURI))	//integer or real
-				{
-					writer.append(NUMBER_BEGIN).append(uri.getFragment()).append(NUMBER_END);	//write the number short form
-				}
-				else if(STRING_CLASS_URI.equals(lexicalTypeURI))	//if this is a string
-				{
-					writeString(writer, uri.getFragment(), STRING_BEGIN, STRING_END);	//write the string short form
-				}
-				else	//if this is not a short-form lexical namespace
-				{
-					writeReference(writer, uri);	//generate the reference URI normally
-				}
 			}
-			else	//for all other resources
-			{
-				writeReference(writer, uri);	//generate the reference URI
-			}
+			writeReference(writer, uri);	//write a reference for the resource
 			generatedComponent=true;	//indicate that we generated a component
 		}
 			//type
@@ -278,6 +262,14 @@ Debug.trace("generating resource with scope", scopeSubject, "predicate URI", sco
 		{
 			writer.write(TYPE_END);	//end the type declaration
 			generatedComponent=true;	//indicate that we generated a component			
+		}
+			//array
+		if(isArray)
+		{
+/*TODO add a scope.getNamespaceProperties() method to only get integers; start the array on another line if there are elements; otherwise, put the array on the same line
+			writer.write(ARRAY_BEGIN);	//start the array
+			writer.write(ARRAY_END);	//start the array
+*/
 		}
 			//properties
 		int propertyCount=0;	//start with no properties being generating
@@ -317,41 +309,75 @@ Debug.trace("generating resource with scope", scopeSubject, "predicate URI", sco
 	*/
 	public int generateProperties(final Writer writer, final URFScope scope, final char propertyValueDelimiter, int propertyCount, final boolean generateTypes) throws IOException
 	{
-		for(final URI propertyURI:scope.getPropertyURIs())	//look at each property URI
+		for(final URFProperty property:scope.getProperties())	//look at each property
 		{
+			final URI propertyURI=property.getPropertyURI();	//get the property URI
 			if(generateTypes || !TYPE_PROPERTY_URI.equals(propertyURI))	//if we should generate types or this isn't a type
 			{
-				for(final URFResource propertyValue:scope.getPropertyValues(propertyURI))	//look at each property value
+				if(propertyCount>0)	//if we've already generated a property
 				{
-					if(propertyCount>0)	//if we've already generated a property
-					{
-						writer.append(LIST_DELIMITER);	//separate the properties
-						writeNewLine(writer);
-					}
-					else	//if we haven't yet started the properties section
-					{
-						writeNewLine(writer);
-						writer.write(PROPERTIES_BEGIN);	//start the properties declaration
-						indent();	//indent the properties
-						writeNewLine(writer);
-					}
-					writeReference(writer, propertyURI);	//generate the reference URI of the property
-					writer.append(propertyValueDelimiter);	//=/~
-					generate(writer, scope, propertyURI, propertyValue);	//generate the property value
-					++propertyCount;	//show that we generated another property
+					writer.append(LIST_DELIMITER);	//separate the properties
+					writeNewLine(writer);
 				}
+				else	//if we haven't yet started the properties section
+				{
+					writeNewLine(writer);
+					writer.write(PROPERTIES_BEGIN);	//start the properties declaration
+					indent();	//indent the properties
+					writeNewLine(writer);
+				}
+				writeReference(writer, propertyURI);	//generate the reference of the property
+				writer.append(propertyValueDelimiter);	//=/~
+				generate(writer, scope, propertyURI, property.getValue());	//generate the property value
+				++propertyCount;	//show that we generated another property
 			}
 		}
 		return propertyCount;	//return the new property count
 	}
 
 	/**Writes a reference to a resource with the given URI.
+	A short form will be used if appropriate.
 	@param writer The writer used for generating the information.
 	@param uri The URI of the resource.
 	@exception NullPointerException if the given writer and/or URI is <code>null</code>. 
 	@exception IOException if there was an error writing to the writer.
 	*/
 	public static void writeReference(final Writer writer, final URI uri) throws IOException
+	{
+		if(isLexicalNamespaceURI(uri))	//if this URI is in a lexical namespace
+		{
+			final URI lexicalTypeURI=getLexicalNamespaceTypeURI(uri);	//get the lexical type of the URI so that we don't generate it again
+Debug.trace("lexical resource with type:", lexicalTypeURI);
+			if(BOOLEAN_CLASS_URI.equals(lexicalTypeURI))	//boolean
+			{
+				writer.append(BOOLEAN_BEGIN).append(uri.getFragment()).append(BOOLEAN_END);	//write the boolean short form
+			}
+			else if(INTEGER_CLASS_URI.equals(lexicalTypeURI) || REAL_CLASS_URI.equals(lexicalTypeURI))	//integer or real
+			{
+				writer.append(NUMBER_BEGIN).append(uri.getFragment()).append(NUMBER_END);	//write the number short form
+			}
+			else if(STRING_CLASS_URI.equals(lexicalTypeURI))	//if this is a string
+			{
+				writeString(writer, uri.getFragment(), STRING_BEGIN, STRING_END);	//write the string short form
+			}
+			else	//if this is not a short-form lexical namespace
+			{
+				writeURIReference(writer, uri);	//generate the URI reference normally
+			}
+		}
+		else	//for all other resources
+		{
+			writeURIReference(writer, uri);	//generate the URI reference
+		}		
+	}
+
+	/**Writes a URI reference to a resource with the given URI.
+	@param writer The writer used for generating the information.
+	@param uri The URI of the resource.
+	@exception NullPointerException if the given writer and/or URI is <code>null</code>. 
+	@exception IOException if there was an error writing to the writer.
+	*/
+	public static void writeURIReference(final Writer writer, final URI uri) throws IOException
 	{
 		writer.append(REFERENCE_BEGIN).append(uri.toString()).append(REFERENCE_END);	//write the reference URI
 	}
@@ -365,7 +391,7 @@ Debug.trace("generating resource with scope", scopeSubject, "predicate URI", sco
 	@exception NullPointerException if the given writer and/or string is <code>null</code>. 
 	@exception IOException if there was an error writing to the writer.
 	*/
-	public void writeString(final Writer writer, final String string, final char stringBegin, final char stringEnd) throws IOException
+	public static void writeString(final Writer writer, final String string, final char stringBegin, final char stringEnd) throws IOException
 	{
 		writer.write(stringBegin);	//write the string beginning delimiter
 		final int length=string.length();	//get the length of the string

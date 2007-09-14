@@ -22,7 +22,6 @@ import com.garretwilson.util.NameValuePair;
 
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
-import static com.garretwilson.util.ArrayUtilities.indexOf;
 
 /**Class that is able to construct an RDF data model from an XML-based
 	RDF serialization. Each instance of an RDF processor maintains an internal
@@ -77,7 +76,7 @@ if(resource!=null)	//TODO del; testing
 		Debug.trace("assertion:", assertion);
 	}
 	Debug.trace("last resource:", resource);
-	Debug.trace("last resource property count:", resource.getPropertyCount());
+//TODO fix	Debug.trace("last resource property count:", resource.getPropertyCount());
 	final URFTURFGenerator turfGenerator=new URFTURFGenerator();
 	final StringWriter writer=new StringWriter();
 	turfGenerator.generate(writer, resource);
@@ -133,7 +132,7 @@ if(resource!=null)	//TODO del; testing
 		String label=null;	//the label of the resource, if any
 		URI resourceURI=null;	//the URI of the resource, if any
 		final List<Resource> types=new ArrayList<Resource>();	//the types, if any
-		Resource[] arrayElements=null;	//if we find an array, we'll store the elements here so that we can add them to the resource later
+//TODO del if not needed		Resource[] arrayElements=null;	//if we find an array, we'll store the elements here so that we can add them to the resource later
 		boolean foundComponent=false;	//we'll keep track of whether at least one description component was present
 		int c=peek(reader);	//peek the next character
 		if(c==LABEL_BEGIN)	//check for a label
@@ -152,6 +151,7 @@ if(resource!=null)	//TODO del; testing
 				resourceURI=parseURI(reader, baseURI, REFERENCE_BEGIN, REFERENCE_END);	//parse the resource URI
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
+/*TODO del when works
 			case ARRAY_BEGIN:	//array
 				foundComponent=true;	//indicate that at least one description component is present
 				types.add(getResourceProxy(ARRAY_CLASS_URI));	//add a proxy to the array type
@@ -160,6 +160,7 @@ if(resource!=null)	//TODO del; testing
 				check(reader, ARRAY_END);	//read the ending array delimiter
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
+*/
 			case BOOLEAN_BEGIN:	//boolean
 				foundComponent=true;	//indicate that at least one description component is present
 				final boolean b=parseBoolean(reader);	//parse the boolean
@@ -200,7 +201,7 @@ if(resource!=null)	//TODO del; testing
 					final String localName=name.getValue();	//get the name local name
 					if(prefix!=null)	//if there is a prefix, see to which namespace URI it refers
 					{
-						namespaceURI=asURI(getResourceProxy(prefix));	//get a resource proxy for the prefix and use it as a URI
+						namespaceURI=toURI(getResourceProxy(prefix));	//get a resource proxy for the prefix and use it as a URI
 						if(namespaceURI.getRawFragment()!=null)	//if the supposed namespace URI has a fragment (namespaces can't have fragments)
 						{
 							throw new ParseIOException("Prefix "+namespaceURI+" references invalid namespace "+namespaceURI);
@@ -237,6 +238,11 @@ if(resource!=null)	//TODO del; testing
 			check(reader, TYPE_END);	//read the ending type delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
+		if(c==ARRAY_BEGIN)	//check for the array short form
+		{
+			foundComponent=true;	//indicate that at least one description component is present
+			types.add(getResourceProxy(ARRAY_CLASS_URI));	//add a proxy to the array type, but don't read the array, yet; we'll do that after creating the resource proxy
+		}		
 		if(!foundComponent && c!=PROPERTIES_BEGIN)	//if there were no description components so far, and we don't see any properties coming up
 		{
 			checkReaderEnd(c);	//make sure we're not at the end of the reader
@@ -253,7 +259,22 @@ if(resource!=null)	//TODO del; testing
 				addAssertion(new Assertion(resourceProxy, typePropertyResource, type));	//assert this type
 			}
 		}
-		if(arrayElements!=null)	//if this is an array, asset the elements of the array now that we've created the array resource proxy
+		if(c==ARRAY_BEGIN)	//if an array is next
+		{
+			check(reader, ARRAY_BEGIN);	//read the beginning array delimiter
+			final Resource[] arrayElements=parseResourceList(reader, baseURI, ARRAY_END);	//parse the resources serving as array elements; we'll actually add them to the resource after creating the resource proxy TODO fix scoped properties; currently scoped propoerties will be unscoped because we provide no context for parsing the array children
+			long index=0;	//start with the first index
+				//TODO make sure there are not too many array elements
+			for(final Resource arrayElement:arrayElements)	//for each array element
+			{
+				addAssertion(new Assertion(resourceProxy, getResourceProxy(createIndexURI(index)), arrayElement));	//assert add the element at this index of the resource
+				++index;	//go to the next index
+			}
+			check(reader, ARRAY_END);	//read the ending array delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
+		}		
+/*TODO del if not needed
+		if(arrayElements!=null)	//if this is an array, assert the elements of the array now that we've created the array resource proxy
 		{
 			long index=0;	//start with the first index
 				//TODO make sure there are not too many array elements
@@ -263,6 +284,7 @@ if(resource!=null)	//TODO del; testing
 				++index;	//go to the next index
 			}
 		}
+*/
 		if(c==PROPERTIES_BEGIN)	//check for properties
 		{
 //TODO del			parseProperties(reader, baseURI, resourceProxy);	//parse the resource properties
@@ -637,7 +659,7 @@ if(resource!=null)	//TODO del; testing
 			URI uri=new URI(reachAfter(reader, uriEnd));	//read the rest of the URI
 			if(label!=null)	//if we have a label, dereference that as a base URI and resolve this URI against it
 			{
-				final URI localBaseURI=asURI(getResourceProxy(label));	//get a resource proxy for the label and use it as a URI
+				final URI localBaseURI=toURI(getResourceProxy(label));	//get a resource proxy for the label and use it as a URI
 				uri=resolve(localBaseURI, uri);	//resolve the URI against the local base URI				
 			}
 			if(lexicalForm!=null)	//if we have a lexical form, use the existing URI as a type and create a lexical URI
@@ -660,24 +682,20 @@ if(resource!=null)	//TODO del; testing
 	@param resource The resource which is expected to represent a URI.
 	@exception ParseIOException if the given resource has no URI or the URI does not represent a URI.
 	*/
-	protected static URI asURI(final Resource resource) throws ParseIOException
+	protected static URI toURI(final Resource resource) throws ParseIOException
 	{
-		final URI resourceURI=resource.getURI();	//get the resource URI
-		final String resourceURIFragment=resourceURI!=null && removeFragment(resourceURI).equals(URI_NAMESPACE_URI) ? resourceURI.getFragment() : null;	//get the fragment, if any
-		if(resourceURIFragment!=null)	//if this is a URI resource fragment
+		try
 		{
-			try
+			final URI uri=asURI(resource);	//get the resource as a URI
+			if(uri==null)	//if this isn't a URI
 			{
-				return new URI(decode(resourceURIFragment));	//get the URI from the fragment TODO allow multiple resource URIs
+				throw new ParseIOException("Resource "+resource+" is not a URI.");	//TODO pass along the old exception
 			}
-			catch(final URISyntaxException uriSyntaxException)	//if the fragment wasn't a valid URI
-			{
-				throw new ParseIOException("URI resource URI fragment "+resourceURIFragment+" not a valid URI");
-			}
+			return uri;	//return the URI
 		}
-		else	//if there is no fragment or this is not a URI namespace
+		catch(final IllegalArgumentException illegalArgumentException)	//if the URI wasn't in correct form
 		{
-			throw new ParseIOException("Resource "+resource+" not a URI");
+			throw new ParseIOException("Resource "+resource+" is not a valid URI.");	//TODO pass along the old exception
 		}
 	}
 

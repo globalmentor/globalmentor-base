@@ -1,13 +1,19 @@
 package com.garretwilson.urf;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+
 import static java.util.Collections.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.urf.URF.URI_NAMESPACE_URI;
 
+import com.garretwilson.io.ParseIOException;
+import com.garretwilson.net.Resource;
 import com.garretwilson.util.*;
 
 /**An URF data model.
@@ -36,27 +42,29 @@ public class URF
 	/**The URI to the URF index namespace.*/
 //TODO del when not needed	public final static URI URF_INDEX_NAMESPACE_URI=URI.create("urn:urf:index");
 	/**The base to the URF lexical namespace.*/
-	private final static String URF_LEX_NAMESPACE_BASE="urn:urf:lex:";	//TODO switch to new data:lexis lexical namespaces
+	private final static String URF_LEX_NAMESPACE_BASE="data:lexis/";
 	/**The base URI to the URF lexical namespace.*/
 	public final static URI URF_LEX_NAMESPACE_BASE_URI=URI.create(URF_LEX_NAMESPACE_BASE);
 	
 		//URF classes 
-	/**The URI of the <code>(&lt;:urf:#Array&gt;)</code> class.*/ 
+	/**The URI of the URF <code>Array</code> class.*/ 
 	public final static URI ARRAY_CLASS_URI=URF_NAMESPACE_URI.resolve("#Array");
-	/**The URI of the <code>(&lt;:urf:#Boolean&gt;)</code> class.*/ 
+	/**The URI of the URF <code>Boolean)</code> class.*/ 
 	public final static URI BOOLEAN_CLASS_URI=URF_NAMESPACE_URI.resolve("#Boolean");
-	/**The URI of the <code>(&lt;:urf:#Integer&gt;)</code> class.*/ 
+	/**The URI of the URF <code>Integer</code> class.*/ 
 	public final static URI INTEGER_CLASS_URI=URF_NAMESPACE_URI.resolve("#Integer");
-	/**The URI of the <code>(&lt;:urf:#Number&gt;)</code> class.*/ 
+	/**The URI of the URF <code>Number</code> class.*/ 
 	public final static URI NUMBER_CLASS_URI=URF_NAMESPACE_URI.resolve("#Number");
-	/**The URI of the <code>(&lt;:urf:#Real&gt;)</code> class.*/ 
+	/**The URI of the URF <code>Real</code> class.*/ 
 	public final static URI REAL_CLASS_URI=URF_NAMESPACE_URI.resolve("#Real");
-	/**The URI of the <code>(&lt;:urf:#String&gt;)</code> class.*/ 
+	/**The URI of the URF <code>String</code> class.*/ 
 	public final static URI STRING_CLASS_URI=URF_NAMESPACE_URI.resolve("#String");
-	/**The URI of the <code>(&lt;:urf:#URI&gt;)</code> class.*/ 
+	/**The URI of the URF <code>URI</code> class.*/ 
 	public final static URI URI_CLASS_URI=URF_NAMESPACE_URI.resolve("#URI");
 		//URF properties
-	/**The URI of the <code>(&lt;:urf:#type&gt;)</code> property.*/ 
+	/**The URI of the URF <code>order</code> property.*/ 
+	public final static URI ORDER_PROPERTY_URI=URF_NAMESPACE_URI.resolve("#order");
+	/**The URI of the URF <code>type</code> property.*/ 
 	public final static URI TYPE_PROPERTY_URI=URF_NAMESPACE_URI.resolve("#type");
 
 		//URF lexical namespaces
@@ -70,8 +78,52 @@ public class URF
 		public final static URI BOOLEAN_FALSE_URI=createLexicalURI(BOOLEAN_CLASS_URI, BOOLEAN_FALSE_LEXICAL_FORM);
 		/**The URI of the boolean value <code>true</code>.*/
 		public final static URI BOOLEAN_TRUE_URI=createLexicalURI(BOOLEAN_CLASS_URI, BOOLEAN_TRUE_LEXICAL_FORM);
+	/**The integer lexical namespace URI.*/
+	public final static URI INTEGER_NAMESPACE_URI=createLexicalNamespaceURI(INTEGER_CLASS_URI);
+	/**The real lexical namespace URI.*/
+	public final static URI REAL_NAMESPACE_URI=createLexicalNamespaceURI(REAL_CLASS_URI);
 	/**The URI lexical namespace URI.*/
 	public final static URI URI_NAMESPACE_URI=createLexicalNamespaceURI(URI_CLASS_URI);
+
+	/**The atomic variable used to generate scope creation orders.*/
+	private final static AtomicLong scopeCreationOrder=new AtomicLong(0);
+
+		/**Generates a new scope creation order unique to this JVM.
+		@return A new scope creation order unique to this JVM.
+		*/
+		public static long generateScopeCreationOrder()
+		{
+			return scopeCreationOrder.getAndDecrement();	//atomically get the next counter value
+		}	
+
+	/**Retrieves the namespace from the given URI.
+	The namespace is the URI with no fragment.
+	If the URI has no fragment, the URI is returned unmodified.
+	@param uri The URI from which a namespace should be retrieved.
+	@return The namespace represented by the given URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	*/
+	public static URI getNamespaceURI(final URI uri)
+	{
+		return removeFragment(uri);	//remove the fragment, if any, from the URI		
+	}
+
+	/**Retrieves the local name from the given URI.
+	The local name is the decoded fragment of the URI
+	@param uri The URI from which a local name should be retrieved.
+	@return The decoded local name represented by the given URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@exception IllegalArgumentException if the given URI has no fragment.
+	*/
+	public static String getLocalName(final URI uri)
+	{
+		final String localName=uri.getFragment();	//get the URI's fragment
+		if(localName==null)	//if there is no local name
+		{
+			throw new IllegalArgumentException("URI "+uri+" has no local name.");
+		}
+		return localName;	//return the local name we found		
+	}
 
 	/**Creates a URI in the array namespace for the given index.
 	@param index The index for which the index URI should be created.
@@ -128,6 +180,78 @@ public class URF
 	public static URI createLexicalURI(final URI typeURI, final String lexicalForm)
 	{
 		return URI.create(URF_LEX_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString())+FRAGMENT_SEPARATOR+encodeURI(lexicalForm));	//encode the type, append it to the lexical namespace base URI, and append the fragment of the encoded lexical form
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	/**Determines the number represented by the given resource.
+	@param resource The resource which is expected to represent a number, or <code>null</code>.
+	@return The number represented by the given resource, or <code>null</code> if the resource does not represent a number.
+	@exception IllegalArgumentException if the given resource represents a number that does not have the correct syntax.
+	*/
+	public static Number asNumber(final Resource resource)
+	{
+		return resource!=null ? asNumber(resource.getURI()) : null;	//if a resource was given, see if its URI represents a URI
+	}
+
+	/**Determines the number represented by the given URI.
+	@param resourceURI The URI which is expected to represent a number, or <code>null</code>.
+	@return The number represented by the given URI, or <code>null</code> if the URI does not represent a number.
+	@exception IllegalArgumentException if the given URI represents a number that does not have the correct syntax.
+	@see #INTEGER_CLASS_URI
+	@see #INTEGER_NAMESPACE_URI
+	@see #REAL_CLASS_URI
+	@see #REAL_NAMESPACE_URI
+	*/
+	public static Number asNumber(final URI resourceURI)
+	{
+		if(resourceURI!=null)	//if a URI was given
+		{
+			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace of the URI
+			if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//if this is an integer
+			{
+				return Long.parseLong(getLocalName(resourceURI));	//parse a long from the local name
+			}
+			else if(REAL_NAMESPACE_URI.equals(namespaceURI))	//if this is an real
+			{
+				return Double.parseDouble(getLocalName(resourceURI));	//parse a double from the local name
+			}
+		}
+		return null;	//no number could be found
+	}
+	
+	/**Determines the URI represented by the given resource.
+	@param resource The resource which is expected to represent a URI, or <code>null</code>.
+	@return The URI represented by the given resource, or <code>null</code> if the resource does not represent a URI.
+	@exception IllegalArgumentException if the given resource represents a URI that does not have the correct syntax.
+	*/
+	public static URI asURI(final Resource resource)
+	{
+		return resource!=null ? asURI(resource.getURI()) : null;	//if a resource was given, see if its URI represents a URI
+	}
+
+	/**Determines the URI represented by the given URI.
+	@param resourceURI The URI which is expected to represent a URI, or <code>null</code>.
+	@return The URI represented by the given URI, or <code>null</code> if the URI does not represent a URI.
+	@exception IllegalArgumentException if the given URI represents a URI that does not have the correct syntax.
+	@see #URI_CLASS_URI
+	@see #URI_NAMESPACE_URI
+	*/
+	public static URI asURI(final URI resourceURI)
+	{
+		if(resourceURI!=null && URI_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if this is a URI
+		{
+			return URI.create(getLocalName(resourceURI));	//create a URI from the local name
+		}
+		else	//if this is not a URI URI
+		{
+			return null;	//no URI could be found
+		}
 	}
 
 	/**A map of resource factories, keyed to namespace URIs.*/
