@@ -108,6 +108,28 @@ public class URFTURFGenerator
 		*/
 		public void setFormatted(final boolean formatted) {this.formatted=formatted;}
 
+	/**Whether types are generated as short forms.*/
+	private boolean shortTypesGenerated=true;
+
+		/**@return Whether types are generated as short forms.*/
+		public boolean isShortTypesGenerated() {return shortTypesGenerated;}
+
+		/**Sets whether types should be generated as short forms.
+		@param shortTypesGenerated Whether types should be generated as short forms.
+		*/
+		public void setShortTypesGenerated(final boolean shortTypesGenerated) {this.shortTypesGenerated=shortTypesGenerated;}
+
+	/**Whether arrays are generated as short forms.*/
+	private boolean shortArraysGenerated=true;
+
+		/**@return Whether arrays are generated as short forms.*/
+		public boolean isShortArraysGenerated() {return shortArraysGenerated;}
+
+		/**Sets whether arrays should be generated as short forms.
+		@param shortArraysGenerated Whether arrays should be generated as short forms.
+		*/
+		public void setShortArraysGenerated(final boolean shortArraysGenerated) {this.shortArraysGenerated=shortArraysGenerated;}
+
 	/**The zero-based level of text indentation.*/
 	private int indentLevel=0;
 
@@ -210,22 +232,22 @@ public class URFTURFGenerator
 */
 	public Writer generate(final Writer writer, final URFResource resource) throws IOException
 	{
-		return generate(writer, null, null, resource);
+		return generate(writer, null, null, resource, false);
 	}
 
 	/*
 	@param scopeSubject The base resource of the current scope, or <code>null</code> if the current resource is not in an object context.
 	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
 	@param scopePredicate The predicate for which the new resource is a value, or <code>null</code> if the current resource is not in an object context.
+	@param inSequence Whether the resource being generated is in a sequence and its scoped order properties should therefore not be generated.
 */
-	public Writer generate(final Writer writer, final URFScope scopeSubject, final URI scopePredicateURI, final URFResource resource) throws IOException
+	public Writer generate(final Writer writer, final URFScope scopeSubject, final URI scopePredicateURI, final URFResource resource, final boolean inSequence) throws IOException
 	{
 Debug.trace("generating resource with scope", scopeSubject, "predicate URI", scopePredicateURI, "and resource", resource);
 		boolean generatedComponent=false;	//we haven't generated any components, yet
 		URI lexicalTypeURI=null;	//the lexical namespace type URI, if any
-//TODO del		URI shortTypeURI=null;	//the short form type URI, if any, that has been generated separate from any properties declaration
-		final boolean isArray=resource.hasType(ARRAY_CLASS_URI);	//see if this is an array
-//TODO del		URI arrayTypeURI=null;	//the array type URI, if any (functions like a boolean flag that allows us to easily compare URIs)
+		final boolean isArrayShortForm=isShortArraysGenerated() && resource.hasType(ARRAY_CLASS_URI);	//see if this is an array to be generated in short form
+		final boolean isShortTypesGenerated=isShortTypesGenerated();	//see if we should generate types in the short form
 			//reference
 		final URI uri=resource.getURI();	//get the resource URI
 		if(uri!=null)
@@ -239,13 +261,20 @@ Debug.trace("got resource URI:", uri);
 			generatedComponent=true;	//indicate that we generated a component
 		}
 			//type
-		boolean startedTypes=false;	//keep track of whether we have started types
-		int shortTypeCount=0;	//keep track of how many short-form types we've generated
-		for(final URFResource type:resource.getTypes())	//look at each type
+		if(isShortTypesGenerated)	//if we should generate type short forms
 		{
-			final URI typeURI=type.getURI();	//get the URI of this type
-			if(typeURI==null || !typeURI.equals(lexicalTypeURI))	//if this type doesn't have a URI, or it's not the same URI included in the lexical namespace type URI, if any
+			int shortTypeCount=0;	//keep track of how many short-form types we've generated
+			for(final URFResource type:resource.getTypes())	//look at each type
 			{
+				final URI typeURI=type.getURI();	//get the URI of this type
+				if(type!=null)	//if a type was given
+				{
+					if(typeURI.equals(lexicalTypeURI)	//if this is the same type URI as the URI included in the lexical namespace type URI, if any
+							|| (isArrayShortForm && ARRAY_CLASS_URI.equals(typeURI)))	//or if we're using an array short form and this is the array type
+					{
+						continue;	//skip this type
+					}
+				}
 				if(shortTypeCount>0)	//if we've already generated a type
 				{
 					writer.append(LIST_DELIMITER);	//separate the types
@@ -254,36 +283,59 @@ Debug.trace("got resource URI:", uri);
 				{
 					writer.write(TYPE_BEGIN);	//start the type declaration
 				}
-				generate(writer, resource, TYPE_PROPERTY_URI, type);	//write the type
+				generate(writer, resource, TYPE_PROPERTY_URI, type, false);	//write the type
 				++shortTypeCount;	//show that we've got another short type
 			}
-		}
-		if(shortTypeCount>0)	//if we generated any short form types
-		{
-			writer.write(TYPE_END);	//end the type declaration
-			generatedComponent=true;	//indicate that we generated a component			
+			if(shortTypeCount>0)	//if we generated any short form types
+			{
+				writer.write(TYPE_END);	//end the type declaration
+				generatedComponent=true;	//indicate that we generated a component			
+			}
 		}
 			//array
-		if(isArray)
+		if(isArrayShortForm)	//if we should generate an array short form
 		{
-/*TODO add a scope.getNamespaceProperties() method to only get integers; start the array on another line if there are elements; otherwise, put the array on the same line
-			writer.write(ARRAY_BEGIN);	//start the array
-			writer.write(ARRAY_END);	//start the array
-*/
+			final Iterator<URFProperty> elementPropertyIterator=resource.getNamespaceProperties(INTEGER_NAMESPACE_URI).iterator();	//get an iterator to all the integer properties
+			if(elementPropertyIterator.hasNext())	//if there are array elements
+			{
+				writeNewLine(writer);
+				writer.write(ARRAY_BEGIN);	//start the array
+				indent();	//indent the array
+				writeNewLine(writer);
+				int elementCount=0;	//keep track of how many elements we have
+				while(elementPropertyIterator.hasNext())	//while there are elements
+				{
+					final URFProperty elementProperty=elementPropertyIterator.next();	//get the next element property
+					if(elementCount>0)	//if we've already generated an element
+					{
+						writer.append(LIST_DELIMITER);	//separate the properties
+						writeNewLine(writer);
+					}
+					generate(writer, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false);	//generate the element
+					++elementCount;	//show that we generated another array element
+				}
+				unindent();
+				writeNewLine(writer);
+				writer.write(ARRAY_END);	//end the array
+			}
+			else	//if there are no elements in the array
+			{
+				writer.append(ARRAY_BEGIN).append(ARRAY_END);	//show the empty array on the same line
+			}
+			generatedComponent=true;	//indicate that we generated a component			
 		}
 			//properties
 		int propertyCount=0;	//start with no properties being generating
-		propertyCount=generateProperties(writer, resource, PROPERTY_VALUE_DELIMITER, propertyCount, false);	//generate properties
-		if(scopeSubject!=null && scopePredicateURI!=null)
+		propertyCount=generateProperties(writer, resource, PROPERTY_VALUE_DELIMITER, propertyCount, !isShortTypesGenerated, !isArrayShortForm, true);	//generate properties
+		if(scopeSubject!=null && scopePredicateURI!=null)	//if this resource is the value of a property
 		{
-			final URFScope scope=scopeSubject.getScope(scopePredicateURI, resource);
-			if(scope==null)
+			final URFScope scope=scopeSubject.getScope(scopePredicateURI, resource);	//get the scope for this value
+			if(scope==null)	//if there is no such scope
 			{
 				throw new IllegalArgumentException("No scope for given subject "+scopeSubject+" and predicate URI "+scopePredicateURI);
 			}
-			propertyCount=generateProperties(writer, scope, SCOPED_PROPERTY_VALUE_DELIMITER, propertyCount, false);	//generate scoped properties
+			propertyCount=generateProperties(writer, scope, SCOPED_PROPERTY_VALUE_DELIMITER, propertyCount, !isShortTypesGenerated, !isArrayShortForm, !inSequence);	//generate scoped properties, suppressing generation of scoped order if we are in a sequence
 		}
-		
 		if(propertyCount>0)	//if we started the properties section
 		{
 			unindent();
@@ -303,16 +355,40 @@ Debug.trace("got resource URI:", uri);
 	@param propertyValueDelimiter The delimiter to use to separate properties and values.
 	@param propertyCount the number of properties already generated; used to determine whether a new properties section should be generated.
 	@param generateTypes Whether type properties should be generated.
+	@param generateIntegers Whether properties in the integer namespace should be generated.
+	@param generateOrder Whether the order property should be generated.
 	@return The new total number of properties generated, including the properties already generated before this method was called.
 	@exception NullPointerException if the given writer and/or scope is <code>null</code>. 
 	@exception IOException if there was an error writing to the writer.
 	*/
-	public int generateProperties(final Writer writer, final URFScope scope, final char propertyValueDelimiter, int propertyCount, final boolean generateTypes) throws IOException
+	protected int generateProperties(final Writer writer, final URFScope scope, final char propertyValueDelimiter, int propertyCount, final boolean generateTypes, final boolean generateIntegers, final boolean generateOrder) throws IOException
 	{
+
+		URI sequencePropertyURI=null;	//this will indicate when we're in the middle of a sequence for a particular property
+		
 		for(final URFProperty property:scope.getProperties())	//look at each property
 		{
+			final URFResource value=property.getValue();	//get the property value
+			final URI valueURI=value.getURI();	//get the URI of the value, if any
 			final URI propertyURI=property.getPropertyURI();	//get the property URI
-			if(generateTypes || !TYPE_PROPERTY_URI.equals(propertyURI))	//if we should generate types or this isn't a type
+			if((!generateTypes && TYPE_PROPERTY_URI.equals(propertyURI))	//if we shouldn't generate types and this is a type
+				|| (!generateIntegers && valueURI!=null && INTEGER_NAMESPACE_URI.equals(getNamespaceURI(valueURI)))	//or if we shouldn't generate integers and this is an integer value
+				|| (!generateOrder && ORDER_PROPERTY_URI.equals(propertyURI)))	//or if we shouldn't generate order and this is an order property
+			{
+				continue;	//skip this property
+			}
+				//that this implementatoin automatically sorts scoped ordered properties with the ordered properties ahead of non-ordered properties
+				//allows this algorithm to ignore actual sequence values and rest assured that a property will not contain two incompatible sequences separated by non-ordered properties
+			if(sequencePropertyURI!=null)	//if we're in the middle of a sequence, see if we should end it
+			{
+				if(!sequencePropertyURI.equals(propertyURI)	//we're changing to another property
+						|| property.getScope().getOrder()==null)	//or if we're still looking at the same property but we no longer have a scoped order
+				{
+					writer.write(SEQUENCE_END);	//end the sequence for this property
+					sequencePropertyURI=null;	//indicate that we are no longer in a sequence for a property					
+				}
+			}
+			if(sequencePropertyURI==null)	//if we're not in the middle of a sequence
 			{
 				if(propertyCount>0)	//if we've already generated a property
 				{
@@ -328,9 +404,23 @@ Debug.trace("got resource URI:", uri);
 				}
 				writeReference(writer, propertyURI);	//generate the reference of the property
 				writer.append(propertyValueDelimiter);	//=/~
-				generate(writer, scope, propertyURI, property.getValue());	//generate the property value
-				++propertyCount;	//show that we generated another property
+				if(property.getScope().getOrder()!=null)	//if this property has a sequence
+				{
+					writer.write(SEQUENCE_BEGIN);	//start a sequence for this property
+					sequencePropertyURI=propertyURI;	//indicate that we should have a sequence for this property
+					generate(writer, scope, propertyURI, value, true);	//generate the property value, indicating that the value is an element in a sequence
+				}
+				else	//if this property has no sequence
+				{
+					generate(writer, scope, propertyURI, value, false);	//generate the property value normally
+				}
 			}
+			else	//if we are still in the middle of a sequence
+			{
+				writer.append(LIST_DELIMITER);	//separate the values in the sequence
+				generate(writer, scope, propertyURI, value, true);	//generate the property value, indicating that the value is an element in a sequence
+			}
+			++propertyCount;	//show that we generated another property
 		}
 		return propertyCount;	//return the new property count
 	}

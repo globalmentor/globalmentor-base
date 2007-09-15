@@ -310,7 +310,7 @@ public class ReaderParser
 			{
 				if(stringBuilder!=null)	//if a string builder was given
 				{
-					stringBuilder.append(c);	//save the character to be sent back
+					stringBuilder.append((char)c);	//save the character to be sent back
 				}
 				skip=true;	//indicate that we should skip this character
 			}
@@ -379,7 +379,7 @@ public class ReaderParser
 					{
 						if(stringBuilder!=null)	//if a string builder was given
 						{
-							stringBuilder.append(c);	//save the character to be sent back
+							stringBuilder.append((char)c);	//save the character to be sent back
 						}
 						skip=true;	//indicate that we should skip this character
 					}

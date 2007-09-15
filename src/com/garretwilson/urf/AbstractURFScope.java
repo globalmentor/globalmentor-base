@@ -167,6 +167,26 @@ Debug.trace("got value context list for", propertyURI, valueContextList);
 		return propertyIterable;	//return the constant iterable to properties
 	}
 
+	/**Returns an iterable to the properties of this scope within a particular namespace.
+	@param namespaceURI The URI of the namespace of the properties to be returned.
+	@return An iterable to all available properties.
+	@exception NullPointerException if the given namespace URI is <code>null</code>.
+	*/
+	public Iterable<URFProperty> getNamespaceProperties(final URI namespaceURI)
+	{
+		checkInstance(namespaceURI, "Namespace URI cannot be null.");
+		return new Iterable<URFProperty>()	//return a new iterable over only the properties in the given namespace
+		{
+			/**Returns an iterator over all this scope's properties.
+			@return An iterator to all available properties.
+			*/
+		  public Iterator<URFProperty> iterator()
+		  {
+		  	return new PropertyIterator(namespaceURI);	//create and return a new property iterator
+		  }
+		};		
+	}
+
 	/**Retrieves an iterable to all property URIs.
 	Any deletions made to the returned iterable will result in all corresponding properties being removed.
 	@return An iterable to all property URIs.
@@ -471,12 +491,18 @@ Debug.trace("got value context list for", propertyURI, valueContextList);
 
 	}
 
-	/**An iterator that can iterate over all properties of this scope.
+	/**An iterator that can iterate over all properties of this scope, or only those with a given namespace.
 	This iterator does not support property removal.
 	@author Garret Wilson
 	*/
 	private class PropertyIterator implements Iterator<URFProperty>
 	{
+
+		/**The URI of the namespace of the properties to be returned, or <code>null</code> if all properties should be returned.*/
+		private final URI namespaceURI;
+
+			/**@return The URI of the namespace of the properties to be returned, or <code>null</code> if all properties should be returned.*/
+//TODO del			public URI getNamespaceURI() {return namespaceURI;}
 
 		/**The iterator to property URIs.*/
 		private final Iterator<URI> propertyURIIterator;
@@ -487,9 +513,18 @@ Debug.trace("got value context list for", propertyURI, valueContextList);
 		/**The iterator to value contexts for a single property URI.*/
 		private Iterator<URFValueContext> valueContextIterator=null;
 		
-		/**Default constructor.*/
+		/**Default constructor to iterate over all properties.*/
 		public PropertyIterator()
 		{
+			this(null);	//construct the class, iterating over all namespaces
+		}
+
+		/**Namespace URI constructor.
+		@param namespaceURI The URI of the namespace of the properties to be returned, or <code>null</code> if all properties should be returned.
+		*/
+		public PropertyIterator(final URI namespaceURI)
+		{
+			this.namespaceURI=namespaceURI;	//save the namespace URI
 			this.propertyURIIterator=propertURIValueContextsMap.keySet().iterator();	//get an iterator to all the property URIs
 			prime();	//prime the iterator
 		}
@@ -503,8 +538,11 @@ Debug.trace("got value context list for", propertyURI, valueContextList);
 			while((valueContextIterator==null || !valueContextIterator.hasNext()) && propertyURIIterator.hasNext())	//while we don't have a value context iterator ready and there are more property URIs
 			{
 				propertyURI=propertyURIIterator.next();	//get the next property URI
-				final List<URFValueContext> valueContextList=propertURIValueContextsMap.get(propertyURI);	//get the list of value contexts for this property
-				valueContextIterator=valueContextList!=null ? valueContextList.iterator() : null;	//get an iterator to the value context list, if there is one
+				if(namespaceURI==null || namespaceURI.equals(getNamespaceURI(propertyURI)))	//only use values for this property URI if we're using all namespaces or this property is in the correct namespace
+				{
+					final List<URFValueContext> valueContextList=propertURIValueContextsMap.get(propertyURI);	//get the list of value contexts for this property
+					valueContextIterator=valueContextList!=null ? valueContextList.iterator() : null;	//get an iterator to the value context list, if there is one
+				}
 			}
 		}
 

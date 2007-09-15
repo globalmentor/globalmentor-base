@@ -42,9 +42,9 @@ public class URF
 	/**The URI to the URF index namespace.*/
 //TODO del when not needed	public final static URI URF_INDEX_NAMESPACE_URI=URI.create("urn:urf:index");
 	/**The base to the URF lexical namespace.*/
-	private final static String URF_LEX_NAMESPACE_BASE="data:lexis/";
+	private final static String URF_LEXICAL_NAMESPACE_BASE="info:lexis/";
 	/**The base URI to the URF lexical namespace.*/
-	public final static URI URF_LEX_NAMESPACE_BASE_URI=URI.create(URF_LEX_NAMESPACE_BASE);
+	public final static URI URF_LEXICAL_NAMESPACE_BASE_URI=URI.create(URF_LEXICAL_NAMESPACE_BASE);
 	
 		//URF classes 
 	/**The URI of the URF <code>Array</code> class.*/ 
@@ -142,7 +142,7 @@ public class URF
 	*/
 	public static boolean isLexicalNamespaceURI(final URI uri)
 	{
-		return uri.toString().startsWith(URF_LEX_NAMESPACE_BASE);	//see if this URI starts with the lexical namespace base URI
+		return uri.toString().startsWith(URF_LEXICAL_NAMESPACE_BASE);	//see if this URI starts with the lexical namespace base URI
 	}
 
 	/**Retrieves the type URI of a URI in a lexical namespace.
@@ -154,11 +154,11 @@ public class URF
 	public static URI getLexicalNamespaceTypeURI(final URI uri)
 	{
 		final String lexicalNamespaceURIString=removeFragment(uri).toString();	//remove the URI's fragment
-		if(!lexicalNamespaceURIString.startsWith(URF_LEX_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
+		if(!lexicalNamespaceURIString.startsWith(URF_LEXICAL_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
 		{
 			throw new IllegalArgumentException("URI "+uri+" is not a lexical namespace URI or a URI in a lexical namespace.");
 		}
-		return URI.create(decode(lexicalNamespaceURIString.substring(URF_LEX_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
+		return URI.create(decode(lexicalNamespaceURIString.substring(URF_LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
 	}
 
 	/**Creates a lexical namespace URI for the given resource type.
@@ -168,7 +168,7 @@ public class URF
 	*/
 	public static URI createLexicalNamespaceURI(final URI typeURI)
 	{
-		return URI.create(URF_LEX_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString()));	//encode the type and append it to the lexical namespace base URI
+		return URI.create(URF_LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString()));	//encode the type and append it to the lexical namespace base URI
 	}
 
 	/**Creates a URI in a lexical namespace for the given resource type and lexical form.
@@ -179,7 +179,7 @@ public class URF
 	*/
 	public static URI createLexicalURI(final URI typeURI, final String lexicalForm)
 	{
-		return URI.create(URF_LEX_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString())+FRAGMENT_SEPARATOR+encodeURI(lexicalForm));	//encode the type, append it to the lexical namespace base URI, and append the fragment of the encoded lexical form
+		return URI.create(URF_LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString())+FRAGMENT_SEPARATOR+encodeURI(lexicalForm));	//encode the type, append it to the lexical namespace base URI, and append the fragment of the encoded lexical form
 	}
 
 	

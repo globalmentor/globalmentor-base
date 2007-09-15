@@ -33,6 +33,13 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public Iterable<URFProperty> getProperties();
 
+	/**Returns an iterable to the properties of this scope within a particular namespace.
+	@param namespaceURI The URI of the namespace of the properties to be returned.
+	@return An iterable to all available properties.
+	@exception NullPointerException if the given namespace URI is <code>null</code>.
+	*/
+	public Iterable<URFProperty> getNamespaceProperties(final URI namespaceURI);
+
 	/**Retrieves an iterable to all property URIs.
 	Any deletions made to the returned iterable will result in all corresponding properties being removed.
 	@return An iterable to all property URIs.
