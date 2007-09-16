@@ -9,16 +9,14 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 
 import com.garretwilson.lang.IntegerUtilities;
 import com.garretwilson.net.NamespacePrefixManager;
-import com.garretwilson.net.Resource;
-import com.garretwilson.rdf.RDFResource;
+import static com.garretwilson.net.URIConstants.*;
+import static com.garretwilson.net.URIUtilities.encodeURI;
 
 import static com.garretwilson.text.CharacterConstants.*;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
-
 import com.garretwilson.util.Debug;
 import com.garretwilson.util.IdentityHashSet;
-import com.garretwilson.util.NameValuePair;
 
 /**Generates TURF from URF.
 @author Garret Wilson
@@ -40,6 +38,14 @@ public class URFTURFGenerator
 
 	/**The set of resources that have been generated, using identity rather than equality for equivalence, as required be generation.*/
 	private final Set<URFResource> generatedResourceSet;
+
+		/**Determines the number of resources that have been generated.
+		@return The number of resources that have been generated.
+		*/
+		protected final int getGeneratedResourceCount()
+		{
+			return generatedResourceSet.size();	//return the size of the generated resource set
+		}
 
 		/**Determines if the given resource has been generated.
 		@param resource The resource to check.
@@ -67,31 +73,51 @@ public class URFTURFGenerator
 		}
 
 	/**A map that associates, for each resource, a set of all resources that reference the that resource, using identity rather than equality for equivalence.*/
-	private final Map<URFResource, Set<URFResource>> resourceReferenceMap;
+//TODO fix if needed	private final Map<URFResource, Set<URFResource>> resourceReferenceMap;
 
 		/**Returns the set of resources that reference this resource as already calculated.
 		@param resource The resource for which references should be returned.
 		@return A set of all references to the resource that have been gathered at an earlier time, or <code>null</code> if no references have been gathered for the given resource.
 		*/
-		protected Set<URFResource> getReferenceSet(final RDFResource resource)	//TODO change to a set map to get rid of the null case
+/*TODO fix if needed
+		protected Set<URFResource> getReferenceSet(final URFResource resource)	//TODO change to a set map to get rid of the null case
 		{
 			return resourceReferenceMap.get(resource);	//get the set of references, if any, associated with the resource
 		}
+*/
 
 	/**A map of label strings keyed to the resource they represent, using identity rather than equality for equivalence for comparing resources.*/
 	private final Map<URFResource, String> resourceLabelMap;
 
-		/**Retrieves a label appropriate for the given resource.
-		If the resource has already been assigned a label, it will be returned; otherwise, a new label will be generated.
-		@param resource The resource for which a node ID should be returned.
-		@return A label to represent the given resource
+		/**Retrieves the label associated with the given resource.
+		@param resource The resource for which a label should be returned.
+		@return A label to represent the given resource, or <code>null</code> if no label has been associated with the given resource.
 		*/
 		protected String getLabel(final URFResource resource)
 		{
-			String label=resourceLabelMap.get(resource);	//get a label for the given resource
+			return resourceLabelMap.get(resource);	//get a label, if any, for the given resource
+		} 
+
+		/**Retrieves a label appropriate for the given resource, creating one if necessary.
+		If the resource has already been assigned a label, it will be returned; otherwise, a new label will be generated.
+		For namespace URI resources, a namespace prefix will be generated as the label.
+		@param resource The resource for which a label should be returned.
+		@return A label to represent the given resource.
+		*/
+		protected String locateLabel(final URFResource resource)
+		{
+			String label=getLabel(resource);	//get a label, if any, for the given resource
 			if(label==null)	//if there is no label for this resource
 			{
-				label="resource"+generatedResourceSet.size()+1;	//generate a label for the resource, based upon the number of resources already generated
+				final URI uri=asURI(resource);	//get the resource as a URI if possible
+				if(uri!=null && getLocalName(uri)==null)	//if the resource is a namespace URI
+				{
+					label=getNamespacePrefixManager().getNamespacePrefix(uri);	//get a namespace prefix for the URI
+				}
+				else	//if this is not a namespace URI
+				{				
+					label="resource"+generatedResourceSet.size()+1;	//generate a label for the resource, based upon the number of resources already generated
+				}
 				resourceLabelMap.put(resource, label);	//associate the label with the resource
 			}
 			return label;	//return the retrieved or generated label
@@ -205,7 +231,7 @@ public class URFTURFGenerator
 		this.formatted=formatted;
 		this.namespacePrefixManager=checkInstance(namespacePrefixManager, "Namespace prefix manager cannot be null.");
 		generatedResourceSet=new IdentityHashSet<URFResource>();	//create a map that will determine whether resources have been generated, based upon the identity of resources
-		resourceReferenceMap=new IdentityHashMap<URFResource, Set<URFResource>>();	//create a map of sets of referring resources for each referant resource, using identity rather than equality for equivalence
+//TODO fix if needed		resourceReferenceMap=new IdentityHashMap<URFResource, Set<URFResource>>();	//create a map of sets of referring resources for each referant resource, using identity rather than equality for equivalence
 		resourceLabelMap=new IdentityHashMap<URFResource, String>();	//create a map of node IDs keyed to resources, using identity rather than equality to determine associated resource
 	}
 
@@ -221,41 +247,182 @@ public class URFTURFGenerator
 	public void reset()
 	{
 		generatedResourceSet.clear();	//show that we've not generated any resources
-		resourceReferenceMap.clear();	//clear all our references to resources
+	//TODO fix if needed		resourceReferenceMap.clear();	//clear all our references to resources
 		resourceLabelMap.clear();	//clear our map of node IDs
 	}
 
-	/*
-	@param scopeSubject The base resource of the current scope, or <code>null</code> if the current resource is not in an object context.
-	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
-	@param scopePredicate The predicate for which the new resource is a value, or <code>null</code> if the current resource is not in an object context.
-*/
+	/**Generates a single resource.
+	@param writer The writer used for generating the information.
+	@param resource The resource to generate.
+	*/
+/*TODO fix
 	public Writer generate(final Writer writer, final URFResource resource) throws IOException
 	{
-		return generate(writer, null, null, resource, false);
+		final URF urf=new URF();	//create a new URF data model
+		urf.addResource(resource);	//add the resource to the data model
+		return generate(writer, urf, resource);	//
+	}
+*/
+
+	/**Generates a single resource that is part of a data model.
+	@param writer The writer used for generating the information.
+	@param resource The resource to generate.
+	*/
+/*TODO fix
+	public Writer generate(final Writer writer, final URF urf, final URFResource resource) throws IOException
+	{
+		return writer;	//return the writer
+	}
+*/
+
+	/**Generates all the resources within a given data model.
+	@param writer The writer used for generating the information.
+	@param urf The data model of which resources should be generated.
+	@return The writer.
+	*/
+	public Writer generateResources(final Writer writer, final URF urf) throws IOException
+	{
+		return generateResources(writer, urf, null);	//generate all URF resources with no particular resource as the primary resource
 	}
 
-	/*
-	@param scopeSubject The base resource of the current scope, or <code>null</code> if the current resource is not in an object context.
-	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
-	@param scopePredicate The predicate for which the new resource is a value, or <code>null</code> if the current resource is not in an object context.
-	@param inSequence Whether the resource being generated is in a sequence and its scoped order properties should therefore not be generated.
-*/
-	public Writer generate(final Writer writer, final URFScope scopeSubject, final URI scopePredicateURI, final URFResource resource, final boolean inSequence) throws IOException
+	/**Generates all the resources related to a given resource.
+	@param writer The writer used for generating the information.
+	@param primaryResource The main resource which should appear first or immediately after namespace descriptions
+	@return The writer.
+	*/
+	public Writer generateResources(final Writer writer, final URFResource resource) throws IOException
 	{
-Debug.trace("generating resource with scope", scopeSubject, "predicate URI", scopePredicateURI, "and resource", resource);
+		final URF urf=new URF();	//create a new URF data model
+		urf.addResource(resource);	//add the resource to the data model
+		return generateResources(writer, urf, resource);	//generate all resources related to the given resource
+	}
+
+	/**Generates all the resources within a given data model, indicating an optional resource that should appear first or immediately after namespace descriptions.
+	@param writer The writer used for generating the information.
+	@param urf The data model of which resources should be generated.
+	@param primaryResource The main resource which should appear first or immediately after namespace descriptions, or <code>null</code> if there is no primary resource.
+	@return The writer.
+	*/
+	public Writer generateResources(final Writer writer, final URF urf, final URFResource primaryResource) throws IOException
+	{
+			//gather namespace URIs used
+		final Map<URI, Boolean> namespaceURIMultipleMap=new HashMap<URI, Boolean>();	//create a hash map with namespace URI keys to keep track if a namespace is used multiple times
+		for(final URI resourceURI:urf.getResourceURIs())	//look at each resource URI
+		{
+			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace URI of this resource URI
+			if(namespaceURI!=null && !isLexicalNamespaceURI(namespaceURI))	//if this resource URI has a namespace that isn't a lexical namespace (URIs in lexical namespaces have their own short forms)
+			{
+				final Boolean hasMultipleReferences=namespaceURIMultipleMap.get(namespaceURI);	//see whether there are multiple references to this namespace
+				if(hasMultipleReferences==null)	//if we haven't seen this namespace URI before
+				{
+					namespaceURIMultipleMap.put(namespaceURI, Boolean.FALSE);	//show that we've seen this namespace URI, but there are not yet multiple references
+				}
+				else if(hasMultipleReferences.booleanValue()==false)	//if we've only seen this namespace URI once
+				{
+					namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times
+				}
+			}
+		}
+			//generate beginning labeled namespace URIs
+		for(final Map.Entry<URI, Boolean> namespaceURIMultipleEntry:namespaceURIMultipleMap.entrySet())	//for each namespace URI entry
+		{
+			if(Boolean.TRUE.equals(namespaceURIMultipleEntry.getValue()))	//if this namespace URI is used more than one time
+			{
+				final URI namespaceURI=namespaceURIMultipleEntry.getKey();	//get the namespace URI
+				final URFResource namespaceURIResource=urf.locateResource(createLexicalURI(URI_CLASS_URI, namespaceURI.toString()));	//look up a resource for the namespace URI itself
+				locateLabel(namespaceURIResource);	//make sure there is a label for the given resource
+				generateRootResource(writer, namespaceURIResource);	//generate the namespace resource
+			}
+		}
+			//generate the primary resource
+		if(primaryResource!=null)	//if there is a primary resource to generate
+		{
+			generateRootResource(writer, primaryResource);	//generate the primary resource
+		}
+		for(final URFResource resource:urf.getRootResources())	//iterate over all the root resources
+		{
+			if(!isGenerated(resource))	//if this resource has not yet been generated
+			{
+				generateRootResource(writer, resource);	//generate this root resource
+			}
+		}
+		return writer;	//return the writer
+	}
+
+	/**Generates a single top-level resource, prepending a list delimiter if appropriate.
+	The resource is noted as having been generated.
+	@param writer The writer used for generating the information.
+	@param resource The resource to generate.
+	@return The writer.
+	*/
+	protected Writer generateRootResource(final Writer writer, final URFResource resource) throws IOException
+	{
+		if(getGeneratedResourceCount()>0)	//if we've already generated a least one resource
+		{
+			writer.write(LIST_DELIMITER);	//write a list delimiter
+			writeNewLine(writer);	//go to the next line
+		}
+		return generateResource(writer, resource);	//generate the resource
+	}
+
+	/**Generates a single resource.
+	The resource is noted as having been generated.
+	@param writer The writer used for generating the information.
+	@param resource The resource to generate.
+	@return The writer.
+	*/
+	protected Writer generateResource(final Writer writer, final URFResource resource) throws IOException
+	{
+		return generateResource(writer, null, null, resource, false);	//generate the single resource
+	}
+
+	/**Generates a single resource.
+	The resource is noted as having been generated.
+	@param writer The writer used for generating the information.
+	@param scopeSubject The scope to which the property and resource belongs, or <code>null</code> if the current resource is not in an object context.
+	@param scopePredicateURI The predicate for which the resource is a value, or <code>null</code> if the current resource is not in an object context.
+	@param resource The resource to generate.
+	@param inSequence Whether the resource being generated is in a sequence and its scoped order properties should therefore not be generated.
+	@return The writer.
+	*/
+	protected Writer generateResource(final Writer writer, final URFScope scopeSubject, final URI scopePredicateURI, final URFResource resource, final boolean inSequence) throws IOException
+	{
+		final boolean isGenerated=isGenerated(resource);	//see if this resource has already been generated
+		if(!isGenerated)	//if the resource hasn't been generated, yet
+		{
+			setGenerated(resource, true);	//note that the resource has been generated so that any recursive references won't regenerate the entire resoure again
+		}
+//Debug.trace("generating resource with scope", scopeSubject, "predicate URI", scopePredicateURI, "and resource", resource);
 		boolean generatedComponent=false;	//we haven't generated any components, yet
 		URI lexicalTypeURI=null;	//the lexical namespace type URI, if any
 		final boolean isArrayShortForm=isShortArraysGenerated() && resource.hasType(ARRAY_CLASS_URI);	//see if this is an array to be generated in short form
 		final boolean isShortTypesGenerated=isShortTypesGenerated();	//see if we should generate types in the short form
+		String label=getLabel(resource);	//see if there is a label for this resource
+/*TODO fix
+		if(label!=null)
+		{
+			if(isGenerated && uri!=null)
+			{
+				label=null;
+			}
+		}
+		if(label==null)	//if there is no label for this resource
+		{
+			if(there are references to this resource && !isGenerated)
+		}
+*/
+		if(label!=null)	//if there is a label
+		{
+			writeLabel(writer, label);	//write the label
+		}
 			//reference
 		final URI uri=resource.getURI();	//get the resource URI
 		if(uri!=null)
 		{
-Debug.trace("got resource URI:", uri);
-			if(isLexicalNamespaceURI(uri))	//if this URI is in a lexical namespace
+//Debug.trace("got resource URI:", uri);
+			if(isLexicalURI(uri))	//if this URI is in a lexical namespace
 			{
-				lexicalTypeURI=getLexicalNamespaceTypeURI(uri);	//get the lexical type of the URI so that we don't generate it again
+				lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI so that we don't generate it again
 			}
 			writeReference(writer, uri);	//write a reference for the resource
 			generatedComponent=true;	//indicate that we generated a component
@@ -283,7 +450,7 @@ Debug.trace("got resource URI:", uri);
 				{
 					writer.write(TYPE_BEGIN);	//start the type declaration
 				}
-				generate(writer, resource, TYPE_PROPERTY_URI, type, false);	//write the type
+				generateResource(writer, resource, TYPE_PROPERTY_URI, type, false);	//write the type
 				++shortTypeCount;	//show that we've got another short type
 			}
 			if(shortTypeCount>0)	//if we generated any short form types
@@ -311,7 +478,7 @@ Debug.trace("got resource URI:", uri);
 						writer.append(LIST_DELIMITER);	//separate the properties
 						writeNewLine(writer);
 					}
-					generate(writer, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false);	//generate the element
+					generateResource(writer, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false);	//generate the element
 					++elementCount;	//show that we generated another array element
 				}
 				unindent();
@@ -363,9 +530,7 @@ Debug.trace("got resource URI:", uri);
 	*/
 	protected int generateProperties(final Writer writer, final URFScope scope, final char propertyValueDelimiter, int propertyCount, final boolean generateTypes, final boolean generateIntegers, final boolean generateOrder) throws IOException
 	{
-
 		URI sequencePropertyURI=null;	//this will indicate when we're in the middle of a sequence for a particular property
-		
 		for(final URFProperty property:scope.getProperties())	//look at each property
 		{
 			final URFResource value=property.getValue();	//get the property value
@@ -408,57 +573,87 @@ Debug.trace("got resource URI:", uri);
 				{
 					writer.write(SEQUENCE_BEGIN);	//start a sequence for this property
 					sequencePropertyURI=propertyURI;	//indicate that we should have a sequence for this property
-					generate(writer, scope, propertyURI, value, true);	//generate the property value, indicating that the value is an element in a sequence
+					generateResource(writer, scope, propertyURI, value, true);	//generate the property value, indicating that the value is an element in a sequence
 				}
 				else	//if this property has no sequence
 				{
-					generate(writer, scope, propertyURI, value, false);	//generate the property value normally
+					generateResource(writer, scope, propertyURI, value, false);	//generate the property value normally
 				}
 			}
 			else	//if we are still in the middle of a sequence
 			{
 				writer.append(LIST_DELIMITER);	//separate the values in the sequence
-				generate(writer, scope, propertyURI, value, true);	//generate the property value, indicating that the value is an element in a sequence
+				generateResource(writer, scope, propertyURI, value, true);	//generate the property value, indicating that the value is an element in a sequence
 			}
 			++propertyCount;	//show that we generated another property
 		}
 		return propertyCount;	//return the new property count
 	}
 
+	/**Writes a label with appropriate delimiters.
+	@param writer The writer used for generating the information.
+	@param label The label to write.
+	@exception NullPointerException if the given writer and/or label is <code>null</code>. 
+	@exception IOException if there was an error writing to the writer.
+	*/
+	public static void writeLabel(final Writer writer, final String label) throws IOException
+	{
+		writer.append(LABEL_BEGIN).append(checkInstance(label, "Label cannot be null.")).append(LABEL_END);	//write the label
+	}
+
 	/**Writes a reference to a resource with the given URI.
-	A short form will be used if appropriate.
+	A name reference or short form will be used if appropriate.
 	@param writer The writer used for generating the information.
 	@param uri The URI of the resource.
 	@exception NullPointerException if the given writer and/or URI is <code>null</code>. 
 	@exception IOException if there was an error writing to the writer.
+	@see #writeURIReference(Writer, URI)
 	*/
-	public static void writeReference(final Writer writer, final URI uri) throws IOException
+	public void writeReference(final Writer writer, final URI uri) throws IOException
 	{
-		if(isLexicalNamespaceURI(uri))	//if this URI is in a lexical namespace
+//Debug.trace("ready to write reference for URI", uri);
+		if(isLexicalURI(uri))	//if this URI is in a lexical namespace
 		{
-			final URI lexicalTypeURI=getLexicalNamespaceTypeURI(uri);	//get the lexical type of the URI so that we don't generate it again
-Debug.trace("lexical resource with type:", lexicalTypeURI);
+//Debug.trace("is lexical URI");
+			final URI lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI so that we don't generate it again
+//Debug.trace("is lexical URI with lexical type", lexicalTypeURI);
+			final String lexicalForm=getLocalName(uri);	//get the lexical form of the lexical type
+			assert lexicalForm!=null : "A lexical namespace URI should always have a lexical form.";
+//Debug.trace("lexical resource with type:", lexicalTypeURI);
 			if(BOOLEAN_CLASS_URI.equals(lexicalTypeURI))	//boolean
 			{
-				writer.append(BOOLEAN_BEGIN).append(uri.getFragment()).append(BOOLEAN_END);	//write the boolean short form
+				writer.append(BOOLEAN_BEGIN).append(lexicalForm).append(BOOLEAN_END);	//write the boolean short form
+				return;
 			}
 			else if(INTEGER_CLASS_URI.equals(lexicalTypeURI) || REAL_CLASS_URI.equals(lexicalTypeURI))	//integer or real
 			{
-				writer.append(NUMBER_BEGIN).append(uri.getFragment()).append(NUMBER_END);	//write the number short form
+				writer.append(NUMBER_BEGIN).append(lexicalForm).append(NUMBER_END);	//write the number short form
+				return;
 			}
 			else if(STRING_CLASS_URI.equals(lexicalTypeURI))	//if this is a string
 			{
-				writeString(writer, uri.getFragment(), STRING_BEGIN, STRING_END);	//write the string short form
+				writeString(writer, lexicalForm);	//write the string short form
+				return;
 			}
-			else	//if this is not a short-form lexical namespace
+			else if(URI_CLASS_URI.equals(lexicalTypeURI))	//if this is a URI
 			{
-				writeURIReference(writer, uri);	//generate the URI reference normally
+				writeString(writer, lexicalForm, URI_BEGIN, URI_END);	//write the URI short form
+				return;
 			}
 		}
-		else	//for all other resources
+		final URI namespaceURI=getNamespaceURI(uri);	//see if the URI has a namespace
+		if(namespaceURI!=null)	//if there is a namespace
 		{
-			writeURIReference(writer, uri);	//generate the URI reference
-		}		
+			final String prefix=getNamespacePrefixManager().get(namespaceURI);	//see if we have a prefix for this namespace
+			if(prefix!=null)	//if we have a prefix
+			{
+				final String localName=getLocalName(uri);	//get the local name of the URI
+				assert localName!=null : "If a URI has a namespace, it should have a local name as well.";
+				writer.append(prefix).append(NAME_PREFIX_DELIMITER).append(localName);	//prefix:localName
+				return;
+			}
+		}
+		writeURIReference(writer, uri);	//generate the URI reference normally by default
 	}
 
 	/**Writes a URI reference to a resource with the given URI.
@@ -467,12 +662,53 @@ Debug.trace("lexical resource with type:", lexicalTypeURI);
 	@exception NullPointerException if the given writer and/or URI is <code>null</code>. 
 	@exception IOException if there was an error writing to the writer.
 	*/
-	public static void writeURIReference(final Writer writer, final URI uri) throws IOException
+	public void writeURIReference(final Writer writer, URI uri) throws IOException
 	{
-		writer.append(REFERENCE_BEGIN).append(uri.toString()).append(REFERENCE_END);	//write the reference URI
+		writer.write(REFERENCE_BEGIN);	//start the URI reference
+		if(isLexicalURI(uri))	//if this URI is in a lexical namespace
+		{
+//Debug.trace("is lexical URI");
+			final URI lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI
+//Debug.trace("is lexical URI with lexical type", lexicalTypeURI);
+			final String lexicalForm=getLocalName(uri);	//get the lexical form of the lexical type
+			assert lexicalForm!=null : "A lexical namespace URI should always have a lexical form.";
+			writeString(writer, lexicalForm);	//write the string lexical form
+			uri=lexicalTypeURI;	//the lexical type is now the URI to write
+		}
+		final URI baseURI=getBaseURI();	//get the base URI
+		if(baseURI!=null)	//if there is a base URI
+		{
+			uri=baseURI.relativize(uri);	//relativize the URI to the base URI if possible TODO check for labeled URIs
+		}
+		final URI namespaceURI=getNamespaceURI(uri);	//see if the URI has a namespace
+		if(namespaceURI!=null)	//if there is a namespace
+		{
+			final String prefix=getNamespacePrefixManager().get(namespaceURI);	//see if we have a prefix for this namespace
+			if(prefix!=null)	//if we have a prefix
+			{
+				final String localName=getLocalName(uri);	//get the local name of the URI
+				assert localName!=null : "If a URI has a namespace, it should have a local name as well.";
+				writeLabel(writer, prefix);	//write the prefix as a label
+				uri=URI.create(new StringBuilder().append(FRAGMENT_SEPARATOR).append(encodeURI(localName)).toString());	//use the encoded fragment as the remaining URI
+			}
+		}
+		writer.write(uri.toString());	//write the relative URI
+		writer.write(REFERENCE_END);	//end the URI reference
 	}
 
-	/**Writes a string surrounded by string delimiters.
+	/**Writes a string surrounded by the string short form delimiters.
+	The usual reserved string characters, along with the string delimiters, will be escaped.
+	@param writer The writer used for generating the information.
+	@param string The string to write.
+	@exception NullPointerException if the given writer and/or string is <code>null</code>. 
+	@exception IOException if there was an error writing to the writer.
+	*/
+	public static void writeString(final Writer writer, final String string) throws IOException
+	{
+		writeString(writer, string, STRING_BEGIN, STRING_END);	//write the string using the string short form delimiters
+	}
+
+	/**Writes a string surrounded by specified string delimiters.
 	The usual reserved string characters, along with the string delimiters, will be escaped.
 	@param writer The writer used for generating the information.
 	@param string The string to write.

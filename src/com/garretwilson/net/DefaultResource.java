@@ -96,7 +96,7 @@ public class DefaultResource implements Resource, Comparable<Resource>
 	public String toString()
 	{
 		final URI uri=getURI();	//get the URI, if any
-		return uri!=null ? new StringBuilder().append(LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).append(uri.toString()).append(RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).toString() : super.toString();	//return the URI, if available
+		return uri!=null ? new StringBuilder().append(LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).append(uri).append(RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).toString() : super.toString();	//return the URI, if available
 	}
 
 }

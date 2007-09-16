@@ -59,11 +59,12 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	The new position will be that of the first non-separator character after the resource or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The URF data model.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if a resource in the list is missing, or if the reader has no more characters before a resource in the list is completely parsed.
 	*/
-	public void process(final Reader reader, final URI baseURI) throws IOException, ParseIOException
+	public URF process(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
 		skipSeparators(reader);	//skip separators
 		final Resource[] resources=parseResourceList(reader, baseURI, NULL_CHAR);	//parse as list of resources
@@ -75,13 +76,8 @@ if(resource!=null)	//TODO del; testing
 	{
 		Debug.trace("assertion:", assertion);
 	}
-	Debug.trace("last resource:", resource);
-//TODO fix	Debug.trace("last resource property count:", resource.getPropertyCount());
-	final URFTURFGenerator turfGenerator=new URFTURFGenerator();
-	final StringWriter writer=new StringWriter();
-	turfGenerator.generate(writer, resource);
-	Debug.trace("last resource TURF:", writer.toString());
 }
+		return getURF();	//return the URF data model
 	}
 
 	/**Skips over TURF separator characters in a reader.
@@ -227,9 +223,9 @@ if(resource!=null)	//TODO del; testing
 				}
 				break;
 		}
-		if(resourceURI!=null && isLexicalNamespaceURI(resourceURI))	//if there is a resource URI that is in a lexical namespace
+		if(resourceURI!=null && isLexicalURI(resourceURI))	//if there is a resource URI that is in a lexical namespace
 		{
-			types.add(getResourceProxy(getLexicalNamespaceTypeURI(resourceURI)));	//add a proxy to the lexical namespace type
+			types.add(getResourceProxy(getLexicalTypeURI(resourceURI)));	//add a proxy to the lexical type
 		}		
 		if(c==TYPE_BEGIN)	//check for a type TODO see if there is any way we can specify the context subject/predicate when parsing the type, in case the type in here has scoped properties (highly unlikely---maybe forbid this in the spec)
 		{

@@ -14,6 +14,7 @@ import static com.garretwilson.urf.URF.URI_NAMESPACE_URI;
 
 import com.garretwilson.io.ParseIOException;
 import com.garretwilson.net.Resource;
+import com.garretwilson.rdf.RDFResource;
 import com.garretwilson.util.*;
 
 /**An URF data model.
@@ -36,13 +37,13 @@ public class URF
 {
 
 	/**The recommended prefix to the URF namespace.*/
-	public final static String URF_NAMESPACE_PREFIX="URF";
+	public final static String URF_NAMESPACE_PREFIX="urf";
 	/**The URI to the URF namespace.*/
 	public final static URI URF_NAMESPACE_URI=URI.create("http://urf.name/urf");
 	/**The URI to the URF index namespace.*/
 //TODO del when not needed	public final static URI URF_INDEX_NAMESPACE_URI=URI.create("urn:urf:index");
 	/**The base to the URF lexical namespace.*/
-	private final static String URF_LEXICAL_NAMESPACE_BASE="info:lexis/";
+	private final static String URF_LEXICAL_NAMESPACE_BASE="info:lexical/";
 	/**The base URI to the URF lexical namespace.*/
 	public final static URI URF_LEXICAL_NAMESPACE_BASE_URI=URI.create(URF_LEXICAL_NAMESPACE_BASE);
 	
@@ -98,31 +99,25 @@ public class URF
 
 	/**Retrieves the namespace from the given URI.
 	The namespace is the URI with no fragment.
-	If the URI has no fragment, the URI is returned unmodified.
+	If the URI has no fragment, it is considered to have no local name and therefore no namespace, as the URI is the namespace URI itself.
 	@param uri The URI from which a namespace should be retrieved.
-	@return The namespace represented by the given URI.
+	@return The namespace represented by the given URI, or <code>null</code> if the URI has no fragment and therefore is not in a namespace.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static URI getNamespaceURI(final URI uri)
 	{
-		return removeFragment(uri);	//remove the fragment, if any, from the URI		
+		return uri.getFragment()!=null ? removeFragment(uri) : null;	//if there is a fragment, remove it; otherwise, report that there is no namespace		
 	}
 
 	/**Retrieves the local name from the given URI.
 	The local name is the decoded fragment of the URI
 	@param uri The URI from which a local name should be retrieved.
-	@return The decoded local name represented by the given URI.
+	@return The decoded local name represented by the given URI, or <code>null</code> if the given URI has no local name.
 	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the given URI has no fragment.
 	*/
 	public static String getLocalName(final URI uri)
 	{
-		final String localName=uri.getFragment();	//get the URI's fragment
-		if(localName==null)	//if there is no local name
-		{
-			throw new IllegalArgumentException("URI "+uri+" has no local name.");
-		}
-		return localName;	//return the local name we found		
+		return uri.getFragment();	//get the URI's fragment
 	}
 
 	/**Creates a URI in the array namespace for the given index.
@@ -136,31 +131,87 @@ public class URF
 	}
 
 	/**Determines whether the given URI is in a lexical namespace.
-	@param uri The URI to check for being in a lexical namespace
-	@return <code>true</code> if the URI is the URI of a lexical namespace or is in a lexical namespace.
+	This method returns <code>false</code> for lexical namespaces themselves (i.e. a lexical namespace URI with no fragment).
+	@param uri The URI to check for being in a lexical namespace.
+	@return <code>true</code> if the URI is is in a lexical namespace.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@see #isLexicalNamespaceURI(URI)
+	*/
+	public static boolean isLexicalURI(final URI uri)
+	{
+		final URI namespaceURI=getNamespaceURI(uri);	//get the namespace of the URI, if any
+		return namespaceURI!=null && isLexicalNamespaceURI(namespaceURI);	//see if there is a namespace URI that is a lexical namespace URI
+	}
+
+	/**Determines whether the given URI is in a lexical namespace with the given type.
+	This method returns <code>false</code> for lexical namespaces themselves (i.e. a lexical namespace URI with no fragment).
+	@param uri The URI to check for being in a lexical namespace with the given lexical type
+	@param lexicalTypeURI The URI of the type of the resource.
+	@return <code>true</code> if the URI is is in a lexical namespace with the given lexical type.
+	@exception NullPointerException if the given URI and/or lexical type URI is <code>null</code>.
+	@see #isLexicalURI(URI)
+	@see #isLexicalTypeURI(URI)
+	*/
+	public static boolean isLexicalTypeURI(final URI uri, final URI lexicalTypeURI)
+	{
+		return isLexicalURI(uri) && lexicalTypeURI.equals(getLexicalTypeURI(lexicalTypeURI));	//see if the URI is a lexical URI with the given lexical type
+	}
+	
+	/**Determines whether the given URI the URI of a lexical namespace.
+	This method returns <code>false</code> for URIs that are not namespaces (i.e. URIs with local names).
+	@param uri The URI to check for being that of a lexical namespace
+	@return <code>true</code> if the URI is that of a lexical namespace.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static boolean isLexicalNamespaceURI(final URI uri)
 	{
-		return uri.toString().startsWith(URF_LEXICAL_NAMESPACE_BASE);	//see if this URI starts with the lexical namespace base URI
+		return getLocalName(uri)==null && uri.toString().startsWith(URF_LEXICAL_NAMESPACE_BASE);	//see if this is a namespace URI that starts with the lexical namespace base URI
 	}
 
 	/**Retrieves the type URI of a URI in a lexical namespace.
-	@param uri The URI of a lexical namspace or a URI in a lexical namespace.
-	@return The type URI of the lexical namespace.
+	This method throws an exception for lexical namespaces themselves (i.e. a lexical namespace URI with no fragment).
+	@param lexicalURI A URI URI in a lexical namespace.
+	@return The type URI of the namespace of the lexical URI.
 	@exception IllegalArgumentException if the given URI is not in a lexical namespace.
 	@exception IllegalArgumentException if the given URI's lexical namespace URI does not have a correctly encoded type URI.
+	@see #getLexicalNamespaceTypeURI(URI)
 	*/
-	public static URI getLexicalNamespaceTypeURI(final URI uri)
+	public static URI getLexicalTypeURI(final URI lexicalURI)
 	{
-		final String lexicalNamespaceURIString=removeFragment(uri).toString();	//remove the URI's fragment
+		final URI namespaceURI=getNamespaceURI(lexicalURI);	//get the namespace of the URI
+		if(namespaceURI==null)	//if this URI has no namespace
+		{
+			throw new IllegalArgumentException("URI "+lexicalURI+" is not in any namespace.");
+		}
+		final String lexicalNamespaceURIString=namespaceURI.toString();	//get the string version of the namespace URI
 		if(!lexicalNamespaceURIString.startsWith(URF_LEXICAL_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
 		{
-			throw new IllegalArgumentException("URI "+uri+" is not a lexical namespace URI or a URI in a lexical namespace.");
+			throw new IllegalArgumentException("URI "+lexicalURI+" is not a lexical namespace URI or a URI in a lexical namespace.");
 		}
 		return URI.create(decode(lexicalNamespaceURIString.substring(URF_LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
 	}
 
+	/**Retrieves the type URI of a lexical namespace URI.
+	This method throws an exception if the given URI has a local name.
+	@param namespaceURI The URI of a lexical namespace.
+	@return The type URI of the lexical namespace.
+	@exception IllegalArgumentException if the given URI is not a lexical namespace.
+	@exception IllegalArgumentException if the given URI's lexical namespace URI does not have a correctly encoded type URI.
+	*/
+	public static URI getLexicalNamespaceTypeURI(final URI namespaceURI)
+	{
+		if(getLocalName(namespaceURI)!=null)	//if the given URI has a local name
+		{
+			throw new IllegalArgumentException("URI "+namespaceURI+" is not a namespace URI.");			
+		}
+		final String lexicalNamespaceURIString=namespaceURI.toString();	//get the string version of the namespace URI
+		if(!lexicalNamespaceURIString.startsWith(URF_LEXICAL_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
+		{
+			throw new IllegalArgumentException("URI "+namespaceURI+" is not a lexical namespace URI.");
+		}
+		return URI.create(decode(lexicalNamespaceURIString.substring(URF_LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
+	}
+	
 	/**Creates a lexical namespace URI for the given resource type.
 	@param typeURI The URI of the type of the resource.
 	@return The lexical namespace for the specified type.
@@ -182,13 +233,6 @@ public class URF
 		return URI.create(URF_LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString())+FRAGMENT_SEPARATOR+encodeURI(lexicalForm));	//encode the type, append it to the lexical namespace base URI, and append the fragment of the encoded lexical form
 	}
 
-	
-	
-	
-	
-	
-	
-	
 	/**Determines the number represented by the given resource.
 	@param resource The resource which is expected to represent a number, or <code>null</code>.
 	@return The number represented by the given resource, or <code>null</code> if the resource does not represent a number.
@@ -212,14 +256,18 @@ public class URF
 	{
 		if(resourceURI!=null)	//if a URI was given
 		{
-			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace of the URI
-			if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//if this is an integer
+			final String localName=getLocalName(resourceURI);	//retrieve the URI local name, if any
+			if(localName!=null)	//if there is a local name
 			{
-				return Long.parseLong(getLocalName(resourceURI));	//parse a long from the local name
-			}
-			else if(REAL_NAMESPACE_URI.equals(namespaceURI))	//if this is an real
-			{
-				return Double.parseDouble(getLocalName(resourceURI));	//parse a double from the local name
+				final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace of the URI
+				if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//if this is an integer
+				{
+					return Long.parseLong(localName);	//parse a long from the local name
+				}
+				else if(REAL_NAMESPACE_URI.equals(namespaceURI))	//if this is an real
+				{
+					return Double.parseDouble(localName);	//parse a double from the local name
+				}
 			}
 		}
 		return null;	//no number could be found
@@ -244,14 +292,18 @@ public class URF
 	*/
 	public static URI asURI(final URI resourceURI)
 	{
-		if(resourceURI!=null && URI_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if this is a URI
+		if(resourceURI!=null)	//if a URI was given
 		{
-			return URI.create(getLocalName(resourceURI));	//create a URI from the local name
+			final String localName=getLocalName(resourceURI);	//retrieve the URI local name, if any
+			if(localName!=null)	//if there is a local name
+			{
+				if(URI_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if this is a URI
+				{
+					return URI.create(localName);	//create a URI from the local name
+				}
+			}
 		}
-		else	//if this is not a URI URI
-		{
-			return null;	//no URI could be found
-		}
+		return null;	//no URI could be found
 	}
 
 	/**A map of resource factories, keyed to namespace URIs.*/
@@ -291,19 +343,43 @@ public class URF
 	/**The map of all identified resources, keyed to resource URIs.*/
 	private final Map<URI, URFResource> resourceMap=new HashMap<URI, URFResource>();
 
+	/**@return A read-only set of the URIs of all named resources in this data model.*/
+	public Set<URI> getResourceURIs()
+	{
+		return unmodifiableSet(resourceMap.keySet());	//return the set of keys to the resource map
+	}
+	
 	/**Adds a resource to the data model.
-	If the resource is already in the model, no action occurs. 
+	All property value resources are recursively added to the model.
 	@param resource The resource to add.
+	@exception NullPointerException if the given resource is <code>null</code>.
 	*/
 	public void addResource(final URFResource resource)
 	{
-//G***del Debug.trace("putting resource with URI: ", resource.getReferenceURI());
-//G***del Debug.traceStack(); //G***del
+		addResource(resource, new IdentityHashSet<URFResource>());	//add this resource, using an identity hash map to determine which resources have been added
+	}
 
-		resourceSet.add(resource);	//add the resource to our set
-		final URI resourceURI=resource.getURI();	//get the resource's URI, if any
-		if(resourceURI!=null)	//if this is not an anonymous resource
-			resourceMap.put(resourceURI, resource);  //store the resource in the map
+	/**Adds a resource to the data model if it hasn't been added already.
+	All property value resources are recursively added to the model.
+	If the resource
+	@param resource The resource to add.
+	@param addedResources The set of resources added to the set to prevent infinite recursion in self-connected graphs.
+	@exception NullPointerException if the given resource and or added resources set is <code>null</code>.
+	*/
+	protected void addResource(final URFResource resource, final Set<URFResource> addedResources)
+	{
+		if(!addedResources.contains(resource))	//if we haven't already added this resource
+		{
+			resourceSet.add(resource);	//add the resource to our set
+			final URI resourceURI=resource.getURI();	//get the resource's URI, if any
+			if(resourceURI!=null)	//if this is not an anonymous resource
+				resourceMap.put(resourceURI, resource);  //store the resource in the map
+			addedResources.add(resource);	//indicate that we added this resource
+			for(final URFProperty property:resource.getProperties())	//for each property
+			{
+				addResource(property.getValue());	//add this property value resource
+			}
+		}
 	}
 
 	/**Retrieves an identified resource from the data model using its URI.
@@ -330,24 +406,21 @@ public class URF
 		return unmodifiableSet(resourceSet); //return an unmodifiable iterable to the set of all resources
 	}
 
-	/**@return A read-only iterable of resources appropriate for appearing at the root of a hierarchy.*/
-/*TODO del if not needed
+	/**@return A read-only iterable of resources appropriate for appearing at the root of a hierarchy, such as a TURF or XMURF representation.*/
 	public Iterable<URFResource> getRootResources()
 	{
 		return getRootResources(null);	//return an unsorted iterable to the root resources 
 	}
-*/
-
-	/**Returns a read-only iterable of resources appropriate for appearing at the root of a hierarchy.
+	
+	/**Returns a read-only iterable of resources appropriate for appearing at the root of a hierarchy, such as a TURF or XMURF representation.
 	The resources are sorted using the optional comparator.
-	@param comparator The object that determines how the resources will be sorted, 	or <code>null</code> if the resources should not be sorted.
+	@param comparator The object that determines how the resources will be sorted, or <code>null</code> if the resources should not be sorted.
 	@return A read-only iterable of root resources sorted by the optional comparator.
 	*/
-/*TODO del if not needed
 	public Iterable<URFResource> getRootResources(final Comparator<URFResource> comparator)
 	{
 			//create a set in which to place the root resources, making the set sorted if we have a comparator
-///TODO fix		final Set<RDFResource> rootResourceSet=comparator!=null ? (Set<RDFResource>)new TreeSet<RDFResource>(comparator) : (Set<RDFResource>)new HashSet<RDFResource>();	 		
+	///TODO fix		final Set<RDFResource> rootResourceSet=comparator!=null ? (Set<RDFResource>)new TreeSet<RDFResource>(comparator) : (Set<RDFResource>)new HashSet<RDFResource>();	 		
 		final Set<URFResource> rootResourceSet=new HashSet<URFResource>();	//TODO fix comparing once we decide what type of comparator to use---should it include just resources, or all RDF objects?
 		for(final URFResource resource:getResources())	//look at all resouces
 		{
@@ -358,36 +431,47 @@ public class URF
 		}
 		return unmodifiableCollection(rootResourceSet); //return an unmodifiable set of root resources
 	}
-*/
 
 	/**Determines if the given resource is appropriate for appearing at the root of a hierarchy.
-	<p>This should be determined, among other things, by whether the resource in question is a property and whether or not there are references to the resource.
-	This implementation considers root resources to be those that have a URI and have at least one property, along with those that have labels.</p> 
+	This should be determined, among other things, by whether the resource in question is a property and whether or not there are references to the resource.
+	This implementation considers root resources to be those that have a URI and have at least one property, along with those that have labels. 
 	@param resource The resource which might be a root resource.
 	@return <code>true</code> if this resource is one of the resources that should be presented at the root of a hierarchy.
 	*/
-/*TODO del if not needed
 	public boolean isRootResource(final URFResource resource)
 	{
-		final URI referenceURI=resource.getURI(); //get the resource URI
-		final RDFLiteral label=RDFSUtilities.getLabel(resource);	//see if this resource has a label
+//Debug.trace("is root resource?", resource);
+		final URI referenceURI=resource.getURI(); //get the resource URI, if any
+//Debug.trace("referenceURI:", referenceURI);
+//TODO fix		final RDFLiteral label=RDFSUtilities.getLabel(resource);	//see if this resource has a label
 //TODO eventually we'll probably have to determine if something is actually a property---i.e. this doesn't work: if(resource.getReferenceURI()!=null || resource.getPropertyCount()>0)	//only show resources that have URIs or have properties, thereby not showing property resources and literals at the root
-			//if this is not a blank node and this resource actually has properties (even properties such as type identifiers are resources, but they don't have properties)
-		return (referenceURI!=null && resource.getPropertyCount()>0)
-					|| label!=null;	//if a resource is labeled, it's probably important enough to show at the top of the hierarchy as well 
-		
-	}
+/*TODO fix
+final Iterator<URFProperty> propertyIterator=resource.getProperties().iterator();
+if(referenceURI!=null && propertyIterator.hasNext())
+{
+	Debug.trace("property:", propertyIterator.next());
+}
 */
+
+//TODO fix to check if resources witih lexical URIs have more types than their lexical type; fix properties routines to remove property value context list from the map if all property value contexts are removed
+//TODO fix property isEmpty() and property count methods		
+			//if this is not an anonymous resource and this resource actually has properties
+		return (referenceURI!=null && resource.getProperties().iterator().hasNext());	//TODO fix; this is very inefficient
+//TODO fix		return (referenceURI!=null && resource.getPropertyCount()>0)
+//TODO fix					|| label!=null;	//if a resource is labeled, it's probably important enough to show at the top of the hierarchy as well 
+	}
 
 	/**Retreives a resource from the data model based upon a URI.
 	If no such resource exists, or no resource URI was given, a resource will be created and added to the data model.
+	If the given resource URI is in a lexical namespace, its lexical type will be used.
 	@param resourceURI The URI of the resource to retrieve, or <code>null</code> if the resource should have no URI.
 	@return A resource with the given URI.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public URFResource locateResource(final URI resourceURI)
 	{
-		return locateResource(resourceURI, null);	//locate a resource without knowing its type
+		final URI lexicalTypeURI=isLexicalURI(resourceURI) ? getLexicalTypeURI(resourceURI) : null;	//get the lexical type, if we can
+		return locateResource(resourceURI, lexicalTypeURI);	//locate a resource with whatever type we determined, if any
 	}
 
 	/**Retrieves a resource from the data model based upon the URI of the resource and an optional type URI.

@@ -132,9 +132,9 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		readLock().lock();	//get a read lock
 		try
 		{
-Debug.trace("checking for scope", propertyURI, propertyValue);
+//Debug.trace("checking for scope", propertyURI, propertyValue);
 			final List<URFValueContext> valueContextList=propertURIValueContextsMap.get(propertyURI);	//get the list of value contexts
-Debug.trace("got value context list for", propertyURI, valueContextList);
+//Debug.trace("got value context list for", propertyURI, valueContextList);
 			if(valueContextList!=null)	//if there is a value context for this property URI
 			{
 				for(final URFValueContext valueContext:valueContextList)	//look at each value context
