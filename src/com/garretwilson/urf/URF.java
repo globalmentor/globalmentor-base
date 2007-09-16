@@ -11,8 +11,11 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.urf.URF.URI_NAMESPACE_URI;
+import static com.garretwilson.urf.URF.asNumber;
 
 import com.garretwilson.io.ParseIOException;
+import com.garretwilson.lang.LongUtilities;
+import com.garretwilson.lang.NumberUtilities;
 import com.garretwilson.net.Resource;
 import com.garretwilson.rdf.RDFResource;
 import com.garretwilson.util.*;
@@ -306,6 +309,28 @@ public class URF
 		return null;	//no URI could be found
 	}
 
+	/**Comparator for sorting resources in by their property counts, from few to many.*/
+	public final static Comparator<URFResource> RESOURCE_PROPERTY_COUNT_COMPARATOR=new Comparator<URFResource>()
+			{
+		
+				/**Compares its two arguments for order.
+				Returns a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+				This implementation compares by property count.
+				@param resource1 The first object to be compared.
+				@param resource2 The second object to be compared.
+				@return A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+				*/
+				public int compare(final URFResource resource1, final URFResource resource2)
+				{
+					int result=LongUtilities.compare(resource1.getPropertyCount(), resource2.getPropertyCount());	//compare property counts
+					if(result==0)	//if property counts are the same
+					{
+						result=LongUtilities.compare(resource1.getCreationOrder(), resource2.getCreationOrder());	//compare creation order
+					}
+					return result;	//return the result of the comparison
+				}
+			};
+	
 	/**A map of resource factories, keyed to namespace URIs.*/
 	private final Map<URI, URFResourceFactory> namespaceURIResourceFactoryMap=new HashMap<URI, URFResourceFactory>();
 
@@ -354,7 +379,7 @@ public class URF
 	@param resource The resource to add.
 	@exception NullPointerException if the given resource is <code>null</code>.
 	*/
-	public void addResource(final URFResource resource)
+	public void addResource(final URFResource resource)	//TODO fix to add scoped resource values
 	{
 		addResource(resource, new IdentityHashSet<URFResource>());	//add this resource, using an identity hash map to determine which resources have been added
 	}
@@ -365,6 +390,7 @@ public class URF
 	@param resource The resource to add.
 	@param addedResources The set of resources added to the set to prevent infinite recursion in self-connected graphs.
 	@exception NullPointerException if the given resource and or added resources set is <code>null</code>.
+	@see #addPropertyValues(URFScope, Set)
 	*/
 	protected void addResource(final URFResource resource, final Set<URFResource> addedResources)
 	{
@@ -375,10 +401,22 @@ public class URF
 			if(resourceURI!=null)	//if this is not an anonymous resource
 				resourceMap.put(resourceURI, resource);  //store the resource in the map
 			addedResources.add(resource);	//indicate that we added this resource
-			for(final URFProperty property:resource.getProperties())	//for each property
-			{
-				addResource(property.getValue());	//add this property value resource
-			}
+			addPropertyValues(resource, addedResources);	//add all property values from the resource recursively
+		}
+	}
+
+	/**Adds all the property values of a particular scope to the data model if they hasn't been added already.
+	The property values of each property value's scope are also recursively added to the model.
+	@param scope The scope the property values of which to add.
+	@param addedResources The set of resources added to the set to prevent infinite recursion in self-connected graphs.
+	@exception NullPointerException if the given resource and or added resources set is <code>null</code>.
+	*/
+	protected void addPropertyValues(final URFScope scope, final Set<URFResource> addedResources)
+	{
+		for(final URFProperty property:scope.getProperties())	//for each property in the scope
+		{
+			addResource(property.getValue());	//add this property value resource
+			addPropertyValues(property.getScope(), addedResources);	//add all property values from the property-value's scope recursively
 		}
 	}
 
@@ -400,23 +438,43 @@ public class URF
 		return resourceSet.size();  //return the size of the resource set
 	}
 
-	/**@return A read-only iterable of resources.*/
+	/**Returns a read-only iterable of all resources in the data model.
+	@return A read-only iterable of resources in the data model.
+	*/
 	public Iterable<URFResource> getResources()
 	{
 		return unmodifiableSet(resourceSet); //return an unmodifiable iterable to the set of all resources
 	}
 
+	/**Returns a read-only iterable of all resources in the data model, sorted by the given comparator.
+	@param comparator The object that determines how the resources will be sorted.
+	@return A read-only iterable of resources in the data model.
+	@exception NullPointerException if the given comparator is <code>null</code>.
+	*/
+/*TODO del
+	public Iterable<URFResource> getResources(final Comparator<URFResource> comparator)
+	{
+		final List<URFResource> resourceList=new ArrayList<URFResource>(resourceSet);	//create a list of all the resources
+		sort(resourceList, comparator)
+		
+		return unmodifiableSet(resourceSet); //return an unmodifiable iterable to the set of all resources
+	}
+*/
+
 	/**@return A read-only iterable of resources appropriate for appearing at the root of a hierarchy, such as a TURF or XMURF representation.*/
+/*TODO del if not needed
 	public Iterable<URFResource> getRootResources()
 	{
 		return getRootResources(null);	//return an unsorted iterable to the root resources 
 	}
+*/
 	
 	/**Returns a read-only iterable of resources appropriate for appearing at the root of a hierarchy, such as a TURF or XMURF representation.
 	The resources are sorted using the optional comparator.
 	@param comparator The object that determines how the resources will be sorted, or <code>null</code> if the resources should not be sorted.
 	@return A read-only iterable of root resources sorted by the optional comparator.
 	*/
+/*TODO del
 	public Iterable<URFResource> getRootResources(final Comparator<URFResource> comparator)
 	{
 			//create a set in which to place the root resources, making the set sorted if we have a comparator
@@ -431,6 +489,7 @@ public class URF
 		}
 		return unmodifiableCollection(rootResourceSet); //return an unmodifiable set of root resources
 	}
+*/
 
 	/**Determines if the given resource is appropriate for appearing at the root of a hierarchy.
 	This should be determined, among other things, by whether the resource in question is a property and whether or not there are references to the resource.
@@ -438,13 +497,18 @@ public class URF
 	@param resource The resource which might be a root resource.
 	@return <code>true</code> if this resource is one of the resources that should be presented at the root of a hierarchy.
 	*/
+/*TODO del
 	public boolean isRootResource(final URFResource resource)
 	{
+		if(resource)
+
 //Debug.trace("is root resource?", resource);
 		final URI referenceURI=resource.getURI(); //get the resource URI, if any
+		
 //Debug.trace("referenceURI:", referenceURI);
 //TODO fix		final RDFLiteral label=RDFSUtilities.getLabel(resource);	//see if this resource has a label
 //TODO eventually we'll probably have to determine if something is actually a property---i.e. this doesn't work: if(resource.getReferenceURI()!=null || resource.getPropertyCount()>0)	//only show resources that have URIs or have properties, thereby not showing property resources and literals at the root
+*/
 /*TODO fix
 final Iterator<URFProperty> propertyIterator=resource.getProperties().iterator();
 if(referenceURI!=null && propertyIterator.hasNext())
@@ -452,7 +516,7 @@ if(referenceURI!=null && propertyIterator.hasNext())
 	Debug.trace("property:", propertyIterator.next());
 }
 */
-
+/*TODO del
 //TODO fix to check if resources witih lexical URIs have more types than their lexical type; fix properties routines to remove property value context list from the map if all property value contexts are removed
 //TODO fix property isEmpty() and property count methods		
 			//if this is not an anonymous resource and this resource actually has properties
@@ -460,6 +524,7 @@ if(referenceURI!=null && propertyIterator.hasNext())
 //TODO fix		return (referenceURI!=null && resource.getPropertyCount()>0)
 //TODO fix					|| label!=null;	//if a resource is labeled, it's probably important enough to show at the top of the hierarchy as well 
 	}
+*/
 
 	/**Retreives a resource from the data model based upon a URI.
 	If no such resource exists, or no resource URI was given, a resource will be created and added to the data model.
@@ -653,122 +718,45 @@ if(referenceURI!=null && propertyIterator.hasNext())
 	{
 	}
 
-	/**Looks at all the resources in the RDF data model and recursively gathers
-		which resources reference which other resources.
-	<p>Circular references are correctly handled.</p>
-	@return A map that associates, for each resource, a set of all resources that
-		reference the that resource. Both the map and the associated set use
-		identity rather than equality to store resources, as some resources may
-		be anonymous.
+	/**Looks at all the scopes in the URF data model and recursively gathers which scopes reference which other resources.
+	Circular references are correctly handled.
+	The returned map and the associated sets use identity rather than equality to store resources, as some resources may be anonymous.
+	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource.
+	@return The map of resources and associated referring scopes.
 	*/
-/*TODO fix
-	public Map<RDFResource, Set<RDFResource>> getReferences()
+	public CollectionMap<URFResource, URFScope, Set<URFScope>> getReferences()
 	{
-		final Map<RDFResource, Set<RDFResource>> referenceMap=new IdentityHashMap<RDFResource, Set<RDFResource>>();	//create a new map in which to store reference sets
-		return getReferences(referenceMap);	//gather all reference sets, place them in the reference map, and return the map
-		
-	}
-*/
-
-	/**Looks at all the resources in the RDF data model and recursively gathers
-		which resources reference which other resources.
-	<p>Circular references are correctly handled.</p>
-	@param referenceMap A map that associates, for each resource, a set of all
-		resources that reference the that resource.
-	@return The map of resources and associated referring resources. The
-		associated set will use identity rather than equality to store resources,
-		as some resources may be anonymous.
-	*/
-/*TODO fix
-	public Map<RDFResource, Set<RDFResource>> getReferences(final Map<RDFResource, Set<RDFResource>> referenceMap)
-	{
-		final Set<RDFResource> referringResourceSet=new IdentityHashSet<RDFResource>();	//create a set of referring resources to prevent endless following of circular references
-		for(final RDFResource resource:getResources())	//for each resource in this data model
+		final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap=new IdentityHashSetMap<URFResource, URFScope>(new IdentityHashMap<URFResource, Set<URFScope>>());	//create a new map in which to store reference sets
+		final Set<URFScope> referrerScopeSet=new IdentityHashSet<URFScope>();	//create a set of referring scopes to prevent circular references
+		for(final URFResource resource:getResources())	//for each resource in this data model
 		{
-			getReferences(resource, referenceMap, referringResourceSet);	//gather all references to this resource
+			getReferences(resource, referenceMap, referrerScopeSet);	//gather all references to this resource
 		}
 		return referenceMap;	//return the map we populated
 	}
-*/
 
-	/**Looks at the resources and all its properties and recursively gathers
-		which resources reference which other resources.
-	<p>Circular references are correctly handled.</p>
-	@param resource The resource for which references should be gathered for the
-		resource and all resources that are property values of this resource's
-		properties, and so on.
-	@return A map that associates, for each resource, a set of all resources that
-		reference the that resource. Both the map and the associated set use
-		identity rather than equality to store resources, as some resources may
-		be anonymous.
+	/**Looks at the scope and all its properties and recursively gathers which scopes reference which other resources.
+	Circular references are correctly handled.
+	The returned map and the associated sets use identity rather than equality to store resources, as some resources may be anonymous.
+	@param scope The scope for which references should be gathered for the scope and all child scopes and resources that are property values of this resource's properties, and so on.
+	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
+	@param referrerScopeSet The set of referrers the properties and scopes of which have been traversed, the checking of which prevents circular reference problems.
+	@return The map of resources and associated referring scopes.
 	*/
-/*TODO fix
-	public static Map<RDFResource, Set<RDFResource>> getReferences(final RDFResource resource)
+	protected CollectionMap<URFResource, URFScope, Set<URFScope>> getReferences(final URFScope scope, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final Set<URFScope> referrerScopeSet)
 	{
-		return getReferences(resource, new IdentityHashMap<RDFResource, Set<RDFResource>>());	//create a new identity hash map and use it to retrieve references to the given resources
-	}
-*/
-
-	/**Looks at the resources and all its properties and recursively gathers
-		which resources reference which other resources.
-	<p>Circular references are correctly handled.</p>
-	@param resource The resource for which references should be gathered for the
-		resource and all resources that are property values of this resource's
-		properties, and so on.
-	@param referenceMap A map that associates, for each resource, a set of all
-		resources that reference the that resource.
-	@return The map of resources and associated referring resources. The
-		associated set will use identity rather than equality to store resources,
-		as some resources may be anonymous.
-	*/
-/*TODO fix
-	public static Map<RDFResource, Set<RDFResource>> getReferences(final RDFResource resource, final Map<RDFResource, Set<RDFResource>> referenceMap)
-	{
-		return getReferences(resource, referenceMap, new IdentityHashSet<RDFResource>());	//gather references, showing that we haven't looked at any referring resources, yet
-	}
-*/
-
-	/**Looks at the resources and all its properties and recursively gathers
-		which resources reference which other resources.
-	<p>Circular references are correctly handled.</p>
-	@param resource The resource for which references should be gathered for the
-		resource and all resources that are property values of this resource's
-		properties, and so on.
-	@param referenceMap A map that associates, for each resource, a set of all
-		resources that reference the that resource.
-	@param referrerResourceSet The set of referrers the properties of which have
-		been traversed, the checking of which prevents circular reference problems.
-	@return The map of resources and associated referring resources. The
-		associated set will use identity rather than equality to store resources,
-		as some resources may be anonymous.
-	*/
-/*TODO fix
-	protected static Map<RDFResource, Set<RDFResource>> getReferences(final RDFResource resource, final Map<RDFResource, Set<RDFResource>> referenceMap, final Set<RDFResource> referrerResourceSet)
-	{
-		if(!referrerResourceSet.contains(resource))	//if we haven't checked this resource before
+		if(!referrerScopeSet.contains(scope))	//if we haven't checked this scope before
 		{
-			referrerResourceSet.add(resource);	//show that we've now checked this resource (in case one of the resource's own properties or subproperties reference this resource)
-			final Iterator propertyIterator=resource.getPropertyIterator();	//get an iterator to this resource's properties
-			while(propertyIterator.hasNext())	//while there are more properties
+			referrerScopeSet.add(scope);	//show that we've now checked this scope (in case one of the scope's own properties, subproperties, or child scopes reference this resource)
+			for(final URFProperty property:scope.getProperties())	//for each property in the scope
 			{
-				final RDFPropertyValuePair property=(RDFPropertyValuePair)propertyIterator.next();	//get the next property
-				final RDFObject valueObject=property.getPropertyValue();	//get the value of the property
-				if(valueObject instanceof RDFResource)	//if the value is a resource
-				{
-					final RDFResource valueResource=(RDFResource)valueObject;	//cast the object value to a resource
-					Set<RDFResource> referenceSet=referenceMap.get(valueResource);	//get the set of references to the object resource
-					if(referenceSet==null)	//if this is the first reference we've gathered for the object resource
-					{
-						referenceSet=new IdentityHashSet<RDFResource>();	//create a new set to keep track of references to the object resource
-						referenceMap.put(valueResource, referenceSet);	//store the set in the map, keyed to the object resource
-					}
-					referenceSet.add(resource);	//show that this resource is another referrer to the object resource of this property
-					getReferences(valueResource, referenceMap, referrerResourceSet);	//gather resources to the object resource
-				}
+				final URFResource value=property.getValue();	//get the property value
+				referenceMap.addItem(value, scope);	//note that this scope references this value
+				getReferences(value, referenceMap, referrerScopeSet);	//get all references that the value makes
+				getReferences(property.getScope(), referenceMap, referrerScopeSet);	//get all references that the scope makes
 			}
 		}
 		return referenceMap;	//return the map that was provided, which now holds sets of references to resources
 	}
-*/
 
 }

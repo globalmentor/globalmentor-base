@@ -2,28 +2,28 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-/**An decorator map that stores an {@link ArrayList} of values for each key, with special methods for retrieving single values.
+/**An decorator map that stores an {@link IdentityHashSet} of values for each key, with special methods for retrieving single values.
 @param <K> The type of map key.
 @param <V> The type of map value.
 @author Garret Wilson
 */
-public class ArrayListMap<K, V> extends AbstractDecoratorCollectionMap<K, V, List<V>>
+public class IdentityHashSetMap<K, V> extends AbstractDecoratorCollectionMap<K, V, Set<V>>
 {
 
 	/**Map constructor.
 	@param map The map this map should decorate.
 	@exception NullPointerException if the provided map is <code>null</code>.
 	*/
-	public ArrayListMap(final Map<K, List<V>> map)
+	public IdentityHashSetMap(final Map<K, Set<V>> map)
 	{
 		super(map);	//construct the parent class
 	}
 
 	/**Creates a collection in which to store values.
-	This version returns an {@link ArrayList}.
+	This version returns an {@link IdentityHashSet}.
 	*/
-	public List<V> createCollection()
+	public Set<V> createCollection()
 	{
-		return new ArrayList<V>();
+		return new IdentityHashSet<V>();
 	}
 }

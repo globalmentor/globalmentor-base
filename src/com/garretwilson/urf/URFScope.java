@@ -23,10 +23,10 @@ public interface URFScope extends ReadWriteLock
 	public URFScope getScope(final URI propertyURI, final URFResource propertyValue);
 
 	/**@return Whether this scope has properties.*/
-//TODO fix; this doesn't count overall properties	public boolean hasProperties();
+	public boolean hasProperties();
 
 	/**@return The number of properties this scope has.*/
-//TODO fix; this doesn't count overall properties	public int getPropertyCount();
+	public long getPropertyCount();
 
 	/**Returns an iterable to the properties of this scope.
 	@return An iterable to all available properties.
