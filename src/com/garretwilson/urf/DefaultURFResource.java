@@ -3,11 +3,11 @@ package com.garretwilson.urf;
 import java.net.URI;
 import java.util.concurrent.locks.*;
 
+import com.garretwilson.lang.LongUtilities;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
 
 /**The default implementation of an URF resource.
-This class provides compare functionality that sorts according to the resource URI.
 @author Garret Wilson
 */
 public class DefaultURFResource extends AbstractURFScope implements URFResource	//TODO fix, Cloneable
@@ -25,8 +25,8 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 		this(null);	//create a resource without a URI
 	}
 
-	/**Constructs a resource with a URI.
-	@param uri The URI for the resource.
+	/**URI constructor.
+	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
 	*/
 	public DefaultURFResource(final URI uri)
 	{
@@ -53,8 +53,40 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 		return hasPropertyValueURI(TYPE_PROPERTY_URI, typeURI);	//check for the given type URI
 	}
 
-//TODO add hash and equals() methods
-	
+	/**@return A hashcode value composed from the reference URI, if available.*/
+	public int hashCode()
+	{
+		final URI uri=getURI();	//get the resource URI
+		return uri!=null ? uri.hashCode() : LongUtilities.hashCode(getCreationOrder());	//return the URI hash code, or the creation order hash code if there is no URI available
+	}
+
+	/**Compares this resource with another for equality.
+	If this object has a URI and the other object is an URF resource with a URI, the URIs are compared.
+	Otherwise, the default identity comparison is performed.
+	@param object The object with which to compare this resource.
+	@return <code>true<code> if the other object is the same resource or an URF resource the same non-<code>null</code> URI.
+	@see #getURI()
+	*/
+	public boolean equals(final Object object)
+	{
+		if(object instanceof URFResource)	//if we're being compared with another URFresource
+		{
+			final URI uri=getURI();	//get the reference URI
+			if(uri!=null)	//if this resource has a reference URI
+			{
+				return uri.equals(((URFResource)object).getURI());	//compare reference URIs
+			}
+			else	//if this resource has no reference URI
+			{
+				return super.equals(object);	//compare normally
+			}
+		}
+		else	//if the object is not an URF resource
+		{
+			return false;	//we can't compare this object to a non-resource object
+		}
+	}
+
 	/**Returns a string representation of the resource.
 	This version returns the URI, if there is one, between TURF URI reference delimiters; otherwise the default string representation of the object is returned.
 	@return A string representation of the resource.

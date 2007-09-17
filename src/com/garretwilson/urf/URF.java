@@ -1,39 +1,28 @@
 package com.garretwilson.urf;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
-
 import static java.util.Collections.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
-import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.net.URIUtilities.*;
-import static com.garretwilson.urf.URF.URI_NAMESPACE_URI;
-import static com.garretwilson.urf.URF.asNumber;
 
 import com.garretwilson.io.ParseIOException;
 import com.garretwilson.lang.LongUtilities;
-import com.garretwilson.lang.NumberUtilities;
 import com.garretwilson.net.Resource;
-import com.garretwilson.rdf.RDFResource;
+import static com.garretwilson.net.URIConstants.*;
+import static com.garretwilson.net.URIUtilities.*;
 import com.garretwilson.util.*;
 
 /**An URF data model.
-<p>The data model should be used to create resources, as it keeps a list of
-	registered resource factories based upon resource type namespaces.</p>
-<p>The RDF data model itself is a resource factory for the default RDF resources
-	such as bags, but registering a resource factory for the RDF namespace will
-	override this default behavior.</p>
-<p>The RDF data model itself is a typed literal factory for the default RDF
-	datatypes (currently XMLLiteral), but registering a resource factory for the
-	RDF namespace will override this default behavior.</p>
-<p>The RDF data model by default registers a factories that handle the following
-	datatype namespaces:</p>
-<dl>
-	<dt>XML Schema</dt> <dd>http://www.w3.org/2001/XMLSchema</dd>
-</dl>
+This data model keeps track of all resources that are being created as a linked group, such as parsed from a TURF interchange document,
+and are thought of as a separate universe of descriptions.
+<p>Copyright © 2007 GlobalMentor, Inc.
+This source code can be freely used for any purpose, as long as the following conditions are met.
+Any object code derived from this source code must include the following text to users using along with other "about" notifications:
+"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>.
+Written by Garret Wilson <http://www.garretwilson.com/>."
+Any redistribution of source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
 public class URF 
@@ -43,8 +32,6 @@ public class URF
 	public final static String URF_NAMESPACE_PREFIX="urf";
 	/**The URI to the URF namespace.*/
 	public final static URI URF_NAMESPACE_URI=URI.create("http://urf.name/urf");
-	/**The URI to the URF index namespace.*/
-//TODO del when not needed	public final static URI URF_INDEX_NAMESPACE_URI=URI.create("urn:urf:index");
 	/**The base to the URF lexical namespace.*/
 	private final static String URF_LEXICAL_NAMESPACE_BASE="info:lexical/";
 	/**The base URI to the URF lexical namespace.*/
@@ -97,30 +84,99 @@ public class URF
 		*/
 		public static long generateScopeCreationOrder()
 		{
-			return scopeCreationOrder.getAndDecrement();	//atomically get the next counter value
-		}	
+			return scopeCreationOrder.getAndIncrement();	//atomically get the next counter value
+		}
+
+	/**Creates a resource URI from a given namespace URI and a local name.
+	If the namespace URI is a hierarchical URI that ends with a path separator, the local name is encoded and appended to the URI.
+	Otherwise, the local name is encoded and added as a fragment.
+	@param namespaceURI The URI of the namespace.
+	@param localName The unencoded local name of the resource.
+	@return A URI constructed from the given namespace URI and local name.
+	@exception NullPointerException if the given namespace URI and/or local name is <code>null</code>.
+	@exception IllegalArgumentException if the given namespace URI has a fragment.
+	*/
+	public static URI createURI(final URI namespaceURI, final String localName)
+	{
+//Debug.trace("creating URI from namespace", namespaceURI, "and local name", localName);
+		if(namespaceURI.getRawFragment()!=null)	//if the supposed namespace URI has a fragment (namespaces can't have fragments)
+		{
+			throw new IllegalArgumentException("Invalid namespace URI: "+namespaceURI);
+		}
+		final String namespaceURIString=namespaceURI.toString();	//get the string form of the namespace
+//Debug.trace("namespace URI string", namespaceURIString);
+
+		final String encodedLocalName=encodeURI(localName);	//encode the local name
+//Debug.trace("encoded local name", encodedLocalName);
+
+		final int namespaceURIStringLength=namespaceURIString.length();	//get the length of the namespace URI string
+		if(namespaceURIStringLength>0 && namespaceURIString.charAt(namespaceURIStringLength-1)==PATH_SEPARATOR)	//if the string ends with a path separator
+		{
+//Debug.trace("ready to append local name");
+			return URI.create(namespaceURIString+encodedLocalName);	//append the encoded name to the URI
+		}
+		else	//if the string ends with any other character
+		{
+//Debug.trace("ready to add local name as fragment");
+			return resolveFragment(namespaceURI, encodedLocalName);	//add the local name as a fragment
+		}
+	}
 
 	/**Retrieves the namespace from the given URI.
-	The namespace is the URI with no fragment.
-	If the URI has no fragment, it is considered to have no local name and therefore no namespace, as the URI is the namespace URI itself.
+	The namespace is the URI with no fragment, if there is a fragment; or the parent collection of a hierarchical URI that is not itself a collection.
+	If the URI has no fragment or no non-collection name, it is considered to have no local name and therefore no namespace, as the URI is the namespace URI itself.
 	@param uri The URI from which a namespace should be retrieved.
 	@return The namespace represented by the given URI, or <code>null</code> if the URI has no fragment and therefore is not in a namespace.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static URI getNamespaceURI(final URI uri)
 	{
-		return uri.getFragment()!=null ? removeFragment(uri) : null;	//if there is a fragment, remove it; otherwise, report that there is no namespace		
+		if(uri.getRawFragment()!=null)	//if the URI has a fragment
+		{
+			return removeFragment(uri);	//remove the fragment to get the namespace
+		}
+		else	//check for a path-based namespace
+		{
+			final String rawPath=uri.getRawPath();	//get the raw path
+			if(rawPath!=null)	//if there is a raw path
+			{
+				final int rawPathLength=rawPath.length();	//get the length of the raw path
+				if(rawPathLength>0 && rawPath.charAt(rawPathLength-1)!=PATH_SEPARATOR)	//if there is a raw path that isn't a collection
+				{
+					return getCurrentLevel(uri);	//return the base level of the URI without the local name
+				}
+			}
+		}
+		return null;	//indicate that this URI has no namespace
 	}
 
 	/**Retrieves the local name from the given URI.
-	The local name is the decoded fragment of the URI
+	The local name is the decoded fragment of the URI, if there is a fragment; or the decoded name of a hierarchical URI that is not a collection.
+	If the URI has no fragment or no non-collection name, it is considered to have no local name.
 	@param uri The URI from which a local name should be retrieved.
 	@return The decoded local name represented by the given URI, or <code>null</code> if the given URI has no local name.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static String getLocalName(final URI uri)
 	{
-		return uri.getFragment();	//get the URI's fragment
+		final String fragment=uri.getFragment();	//get the URI fragment
+		if(fragment!=null)	//if there is a fragment
+		{
+			return fragment;	//return the fragment
+		}
+		else	//if there is no fragment
+		{
+			final String rawPath=uri.getRawPath();	//get the raw path
+			if(rawPath!=null)	//if there is a raw path
+			{
+				final int rawPathLength=rawPath.length();	//get the length of the raw path
+				if(rawPathLength>0 && rawPath.charAt(rawPathLength-1)!=PATH_SEPARATOR)	//if there is a raw path that isn't a collection
+				{
+					return getName(rawPath);	//return the name from the raw path
+				}
+			}
+		}
+		return null;	//indicate that this URI has no local name
 	}
 
 	/**Creates a URI in the array namespace for the given index.
@@ -130,7 +186,6 @@ public class URF
 	public static URI createIndexURI(final long index)
 	{
 		return createLexicalURI(INTEGER_CLASS_URI, Long.toString(index));	//create an integer URI from the index
-//TODO del when works		return resolveFragment(URF_INDEX_NAMESPACE_URI, Long.toString(index));	//create a string from the index and resolve it as a fragment to the index URI
 	}
 
 	/**Determines whether the given URI is in a lexical namespace.
@@ -427,8 +482,6 @@ public class URF
 	*/
 	public URFResource getResource(final URI resourceURI)
 	{
-//G***del Debug.trace("getting resource with URI: ", resourceURI);
-//G***del Debug.traceStack(); //G***del
 		return resourceMap.get(checkInstance(resourceURI, "Resource URI cannot be null.")); //retrieve the resource
 	}
 
@@ -445,86 +498,6 @@ public class URF
 	{
 		return unmodifiableSet(resourceSet); //return an unmodifiable iterable to the set of all resources
 	}
-
-	/**Returns a read-only iterable of all resources in the data model, sorted by the given comparator.
-	@param comparator The object that determines how the resources will be sorted.
-	@return A read-only iterable of resources in the data model.
-	@exception NullPointerException if the given comparator is <code>null</code>.
-	*/
-/*TODO del
-	public Iterable<URFResource> getResources(final Comparator<URFResource> comparator)
-	{
-		final List<URFResource> resourceList=new ArrayList<URFResource>(resourceSet);	//create a list of all the resources
-		sort(resourceList, comparator)
-		
-		return unmodifiableSet(resourceSet); //return an unmodifiable iterable to the set of all resources
-	}
-*/
-
-	/**@return A read-only iterable of resources appropriate for appearing at the root of a hierarchy, such as a TURF or XMURF representation.*/
-/*TODO del if not needed
-	public Iterable<URFResource> getRootResources()
-	{
-		return getRootResources(null);	//return an unsorted iterable to the root resources 
-	}
-*/
-	
-	/**Returns a read-only iterable of resources appropriate for appearing at the root of a hierarchy, such as a TURF or XMURF representation.
-	The resources are sorted using the optional comparator.
-	@param comparator The object that determines how the resources will be sorted, or <code>null</code> if the resources should not be sorted.
-	@return A read-only iterable of root resources sorted by the optional comparator.
-	*/
-/*TODO del
-	public Iterable<URFResource> getRootResources(final Comparator<URFResource> comparator)
-	{
-			//create a set in which to place the root resources, making the set sorted if we have a comparator
-	///TODO fix		final Set<RDFResource> rootResourceSet=comparator!=null ? (Set<RDFResource>)new TreeSet<RDFResource>(comparator) : (Set<RDFResource>)new HashSet<RDFResource>();	 		
-		final Set<URFResource> rootResourceSet=new HashSet<URFResource>();	//TODO fix comparing once we decide what type of comparator to use---should it include just resources, or all RDF objects?
-		for(final URFResource resource:getResources())	//look at all resouces
-		{
-			if(isRootResource(resource))	//if this is a root resource
-			{
-				rootResourceSet.add(resource);	//add the resource to the set of root resources
-			}
-		}
-		return unmodifiableCollection(rootResourceSet); //return an unmodifiable set of root resources
-	}
-*/
-
-	/**Determines if the given resource is appropriate for appearing at the root of a hierarchy.
-	This should be determined, among other things, by whether the resource in question is a property and whether or not there are references to the resource.
-	This implementation considers root resources to be those that have a URI and have at least one property, along with those that have labels. 
-	@param resource The resource which might be a root resource.
-	@return <code>true</code> if this resource is one of the resources that should be presented at the root of a hierarchy.
-	*/
-/*TODO del
-	public boolean isRootResource(final URFResource resource)
-	{
-		if(resource)
-
-//Debug.trace("is root resource?", resource);
-		final URI referenceURI=resource.getURI(); //get the resource URI, if any
-		
-//Debug.trace("referenceURI:", referenceURI);
-//TODO fix		final RDFLiteral label=RDFSUtilities.getLabel(resource);	//see if this resource has a label
-//TODO eventually we'll probably have to determine if something is actually a property---i.e. this doesn't work: if(resource.getReferenceURI()!=null || resource.getPropertyCount()>0)	//only show resources that have URIs or have properties, thereby not showing property resources and literals at the root
-*/
-/*TODO fix
-final Iterator<URFProperty> propertyIterator=resource.getProperties().iterator();
-if(referenceURI!=null && propertyIterator.hasNext())
-{
-	Debug.trace("property:", propertyIterator.next());
-}
-*/
-/*TODO del
-//TODO fix to check if resources witih lexical URIs have more types than their lexical type; fix properties routines to remove property value context list from the map if all property value contexts are removed
-//TODO fix property isEmpty() and property count methods		
-			//if this is not an anonymous resource and this resource actually has properties
-		return (referenceURI!=null && resource.getProperties().iterator().hasNext());	//TODO fix; this is very inefficient
-//TODO fix		return (referenceURI!=null && resource.getPropertyCount()>0)
-//TODO fix					|| label!=null;	//if a resource is labeled, it's probably important enough to show at the top of the hierarchy as well 
-	}
-*/
 
 	/**Retreives a resource from the data model based upon a URI.
 	If no such resource exists, or no resource URI was given, a resource will be created and added to the data model.
@@ -587,10 +560,10 @@ if(referenceURI!=null && propertyIterator.hasNext())
 		URFResource resource=null; //start by assuming that no factory is registered for this type namespace, or the registered factory can't create a resource
 		if(typeURI!=null)	//if we know the type
 		{
-			final String typeLocalName=typeURI.getFragment();	//get the local name of the type
+			final String typeLocalName=getLocalName(typeURI);	//get the local name of the type
 			if(typeLocalName!=null)	//if there is a local name
 			{
-				final URI typeNamespaceURI=removeFragment(typeURI);	//get the namespace URI
+				final URI typeNamespaceURI=getNamespaceURI(typeURI);	//get the namespace URI
 				final URFResourceFactory resourceFactory=getResourceFactory(typeNamespaceURI); //get a resource factory for this namespace
 				if(resourceFactory!=null) //if we have a factory
 				{
@@ -618,100 +591,6 @@ if(referenceURI!=null && propertyIterator.hasNext())
 		}
 		return resource;  //return the resource we created
 	}
-
-	/**Attempts to create a resource with the provided reference URI
-	The given type URI will be used to attempt to locate a resource factory to create the resource.
-	<p>The created resource, if any, will be added to this RDF data model, but
-		no type will be added to the resource.</p>
-	<p>This method knows how to create the following RDF-defined resources:</p>
-	<ul>
-		<li>Reference URI <code>rdf:nil</code> (<code>RDFListResource</code>)</li>
-		<li>Type <code>rdf:Alt</code>  (<code>RDFAltResource</code>)</li>
-		<li>Type <code>rdf:Bag</code>  (<code>RDFBagResource</code>)</li>
-		<li>Type <code>rdf:Seq</code>  (<code>RDFSequenceResource</code>)</li>
-	</ul>
-	@param referenceURI The reference URI of the resource to create, or
-		<code>null</code> if the resource created should be represented by a blank node.
-	@param typeURI The URI of the type, or <code>null</code> if the type is not known.
-	@return The resource created with this reference URI, or <code>null</code>
-		if the resource could not be created from a resource factory or a suitable
-		resource factory could not be found.
-	*/
-/*TODO fix
-	public RDFResource createTypedResourceFromFactory(final URI referenceURI, final URI typeURI)
-	{
-		return createTypedResourceFromFactory(referenceURI, typeURI!=null ? getNamespaceURI(typeURI) : null, typeURI!=null ? getLocalName(typeURI) : null);	//create a typed resource after breaking out the namespace URI and the local name of the type
-	}
-*/
-
-	/**Attempts to create a resource with the provided reference URI
-		The given type namespace URI and type local name will be used to
-		attempt to locate a resource factory to create the resource.
-	<p>The created resource, if any, will be added to this RDF data model, but
-		no type will be added to the resource.</p>
-	<p>This method knows how to create the following RDF-defined resources:</p>
-	<ul>
-		<li>Reference URI <code>rdf:nil</code> (<code>RDFListResource</code>)</li>
-		<li>Type <code>rdf:Alt</code>  (<code>RDFAltResource</code>)</li>
-		<li>Type <code>rdf:Bag</code>  (<code>RDFBagResource</code>)</li>
-		<li>Type <code>rdf:Seq</code>  (<code>RDFSequenceResource</code>)</li>
-	</ul>
-	@param referenceURI The reference URI of the resource to create, or
-		<code>null</code> if the resource created should be represented by a blank node.
-	@param typeNamespaceURI The XML namespace used in the serialization of the
-		type URI, or <code>null</code> if the type is not known.
-	@param typeLocalName The XML local name used in the serialization of the type
-		URI, or <code>null</code> if the type is not known.
-	@return The resource created with this reference URI, or <code>null</code>
-		if the resource could not be created from a resource factory or a suitable
-		resource factory could not be found.
-	*/
-/*TODO fix
-	public RDFResource createTypedResourceFromFactory(final URI referenceURI, final URI typeNamespaceURI, final String typeLocalName)
-	{
-		RDFResource resource=null; //start by assuming that no factory is registered for this type namespace, or the registered factory can't create a resource
-		final RDFResourceFactory resourceFactory=getResourceFactory(typeNamespaceURI); //get a resource factory for this namespace
-		if(resourceFactory!=null) //if we have a factory
-		{
-			resource=resourceFactory.createResource(referenceURI, typeNamespaceURI, typeLocalName); //try to create a resource from this factory
-		}
-		if(resource==null)  //if we haven't created a resource, see if this is an RDF resource
-		{
-			if(NIL_RESOURCE_URI.equals(referenceURI))	//if we are creating the nil resource
-			{
-				resource=new RDFListResource(this, NIL_RESOURCE_URI);	//create the nil resource with the special RDF nil URI
-			}
-			else if(RDF_NAMESPACE_URI.equals(typeNamespaceURI)) //if this resource is an RDF resource
-			{
-				if(ALT_CLASS_NAME.equals(typeLocalName)) //<rdf:Alt>
-				{
-					//G***fix for alt
-				}
-				else if(BAG_CLASS_NAME.equals(typeLocalName))  //<rdf:Bag>
-				{
-					resource=new RDFBagResource(this, referenceURI);  //create a bag resource
-				}
-				else if(SEQ_CLASS_NAME.equals(typeLocalName))  //<rdf:Seq>
-				{
-					resource=new RDFSequenceResource(this, referenceURI);  //create a sequence resource
-				}
-				else if(LIST_CLASS_NAME.equals(typeLocalName))  //<rdf:Seq>
-				{
-					resource=new RDFListResource(this, referenceURI);  //create a list resource
-				}
-			}
-		}
-		if(resource!=null)  //if we found a resource
-		{
-			if(resource.getRDF()!=this)	//if a resource was created that isn't associated with this data model
-			{
-				resource.setRDF(this);	//associate the resource with this data model TODO create an import() method that will recursively set the data models of the resource and all properties and property values
-			}
-			addResource(resource);  //store the resource in the data model
-		}
-		return resource;  //return the resource we created
-	}
-*/
 
 	/**Default constructor.*/
 	public URF()

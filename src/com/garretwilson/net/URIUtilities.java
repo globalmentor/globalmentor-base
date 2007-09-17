@@ -19,6 +19,7 @@ import static com.garretwilson.io.FileConstants.EXTENSION_SEPARATOR;
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
+import static com.garretwilson.net.URIUtilities.isPathURI;
 import static com.garretwilson.net.URIUtilities.uriEncode;
 
 /**Various URI manipulating functions for working with URIs as defined in
@@ -718,7 +719,7 @@ public class URIUtilities
 		return isPathURI(pathURI);	//indicate whether the constructed URI represents a path
 	}
 
-	/**Checks to see if a given URI is only a path and not a URI with a scheme and/or authority.
+	/**Checks to see if a given URI is only a path and not a URI with a scheme, authority, and/or fragment.
 	If the given URI is not a path, an exception is thrown.
 	@param uri The URI to check to for path status.
 	@return The given path URI.
@@ -736,7 +737,7 @@ public class URIUtilities
 		return pathURI;	//return the path URI
 	}
 
-	/**Determines if a given URI contains only a path and does not have a scheme and/or authority.
+	/**Determines if a given URI contains only a path and does not have a scheme, authority, and/or fragment.
 	@param uri The URI to check to for path status.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	@return <code>true</code> if the URI has a path and does not specifiy a scheme (i.e. the URI is not absolute) or authority.
@@ -744,7 +745,7 @@ public class URIUtilities
 	public static boolean isPathURI(final URI uri)
 	{
 		checkInstance(uri, "URI cannot be null");
-		return uri.getScheme()==null && uri.getRawAuthority()==null && uri.getPath()!=null;	//see if there is no scheme, no authority, and a path
+		return uri.getScheme()==null && uri.getRawAuthority()==null && uri.getPath()!=null && uri.getRawFragment()==null;	//see if there is no scheme, no authority, a path, and no fragment
 	}
 
 	/**Determines the current level of a hierarchical URI.
@@ -759,8 +760,7 @@ public class URIUtilities
 
 	/**Determines the parent level of a hierarchical URI.
 	@param uri The URI to examine.
-	@return A URI representing the parent hierarchical level of a hierarchical
-		URI; equivalent to resolving the path ".." to the URI.	
+	@return A URI representing the parent hierarchical level of a hierarchical URI; equivalent to resolving the path ".." to the URI.	
 	*/
 	public static URI getParentLevel(final URI uri)
 	{
@@ -1185,12 +1185,14 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		}
 	}
 
-	/**Resolved a relative URI against a base URI.
+	/**Resolved a relative URI against a base URI with added functionality.
+	The emptry string is appended to the given base URI with no fragment.
 	This method correctly resolves fragment URIs against opaque base URIs.
 	@param baseURI The URI against which the child URI should be resolved.
 	@param childURI The URI to resolve against the base URI.
 	@return The child URI resolved against the base URI.
 	@exception NullPointerException if the base URI and/or the child URI is <code>null</code>.
+	@see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	*/
 	public static URI resolve(final URI baseURI, final URI childURI)
 	{
@@ -1200,6 +1202,14 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 			if(startsWith(childURIString, FRAGMENT_SEPARATOR))	//if the child URI is a fragment
 			{
 				return URI.create(removeFragment(baseURI).toString()+childURIString);	//remove the fragment, if any, from the base URI, and append the fragment
+			}
+		}
+		if(isPathURI(childURI))	//if the given URI is only a path (with no fragment)
+		{
+			final String rawPath=childURI.getRawPath();	//get the raw path of the URI
+			if(rawPath.length()==0)	//if this URI is ""
+			{
+				return removeFragment(baseURI);	//return the base URI with no fragment
 			}
 		}
 		return baseURI.resolve(childURI);	//resolve the child URI against the base normally

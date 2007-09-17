@@ -90,9 +90,6 @@ public class TURF
 	/**The characters that can separate properties from values.*/
 	public final static char[] PROPERTY_VALUE_DELIMITERS=new char[]{PROPERTY_VALUE_DELIMITER, SCOPED_PROPERTY_VALUE_DELIMITER};
 
-	/**Characters which which a resource can begin.*/
-//TODO del if not needed	public final static char[] RESOURCE_BEGINS=new char[]{LABEL_BEGIN, PROPERTIES_BEGIN, REFERENCE_BEGIN, TYPE_BEGIN, URI_BEGIN};	//TODO complete
-
 	/**Characters which which a URI resource can begin.*/
 	public final static char[] URI_RESOURCE_BEGINS=new char[]{URI_BEGIN, LABEL_BEGIN, REFERENCE_BEGIN};
 
@@ -110,4 +107,5 @@ public class TURF
 	{
 		return Character.isLetterOrDigit(c) || c=='_';	//see if this is a letter, digit, or an underscore TODO use a constant
 	}
+
 }

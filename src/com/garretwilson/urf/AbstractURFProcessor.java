@@ -55,29 +55,6 @@ public abstract class AbstractURFProcessor
 			assertions.clear();  //clear the set of assertions
 		}
 
-	/**The base URI of the URF being processed, or <code>null</code> if no base URI was specified.*/
-//TODO fix	private URI baseURI=URI.create("base:/");	//TODO use a constant
-
-		/**Sets the base URI for the RDF being processed.
-		@param newBaseURI The base URI of the RDF being processed, or <code>null</code> if no base URI was specified.
-		*/
-/*TODO fix
-		public void setBaseURI(final URI newBaseURI)
-		{
-			baseURI=newBaseURI; //set the base URI
-		}
-*/
-
-		/**@return The base URI of the RDF being processed, or "online:" if no
-			base URI is known.
-		*/
-/*TODO fix
-		public URI getBaseURI()
-		{
-			return baseURI!=null ? baseURI : URI.create("online:/");	//return the base URI if we know it	//TODO use a constant
-		}
-*/
-
 	/**The map of resource proxies keyed to URIs.*/
 	private final Map<URI, ResourceProxy> uriResourceProxyMap=new HashMap<URI, ResourceProxy>();
 
@@ -238,7 +215,7 @@ public abstract class AbstractURFProcessor
 		*/
 		protected long generateAssertionOrder()
 		{
-			return assertionOrder.getAndDecrement();	//atomically get the next counter value
+			return assertionOrder.getAndIncrement();	//atomically get the next counter value
 		}	
 
 	/**The set of all assertions used to create the resources.*/
@@ -409,30 +386,34 @@ public abstract class AbstractURFProcessor
 			final URF urf=getURF();	//get the URF data model
 			for(final Assertion assertion:getAssertions())	//for each assertion
 			{
+				final Resource subject=assertion.getSubject();	//get the assertion subject
 					//if this is an assertion in the form, {resource proxy, urf:type, XXX}
-				if(assertion.getSubject().equals(resourceProxy)	//if this assertion has this resource proxy as its subject,
+				if(subject.equals(resourceProxy)	//if this assertion has this resource proxy as its subject,
 						&& TYPE_PROPERTY_URI.equals(assertion.getPredicate().getURI())	//and this assertion has a predicate of urf:type,
-						&& assertion.getScopeChain().length==0)	//and this is not a scoped property	
+						&& assertion.getScopeChain().length==0)	//and this is not a scoped property
 				{
-					final URFResource typeValueURFResource;	//we'll find a resource to use as the type value
 					final Resource typeValueResource=assertion.getObject();	//get the type value
-					if(typeValueResource instanceof URFResource)	//if the type value is already an URF resource
+					if(typeValueResource!=subject)	//if the resource doesn't have itself for the type (otherwise, that would cause recursive unproxying) TODO improve to detect circular types; check URIs as wel
 					{
-						typeValueURFResource=(URFResource)typeValueResource;	//use the type value already in place
-					}
-					else if(typeValueResource instanceof ResourceProxy)	//if the type value is only resource proxy
-					{
-						typeValueURFResource=unproxyURFResource((ResourceProxy)typeValueResource);	//unproxy the type value (note that this will not replace the proxy in the assertion, but it will create the resource and associate it with the proxy so that when it does come time to replace the proxy, it will already be there)
-					}
-					else	//if we don't recognize the value
-					{
-						throw new AssertionError("Unrecognized assertion object type: "+typeValueResource.getClass());
-					}
-					final URI typeURI=typeValueURFResource.getURI();	//get the type URI
-					if(typeURI!=null)	//if we know the type value
-					{
-						resource=urf.locateResource(resourceURI, typeURI);	//create this typed resource
-						break;	//stop looking at assertions
+						final URFResource typeValueURFResource;	//we'll find a resource to use as the type value
+						if(typeValueResource instanceof URFResource)	//if the type value is already an URF resource
+						{
+							typeValueURFResource=(URFResource)typeValueResource;	//use the type value already in place
+						}
+						else if(typeValueResource instanceof ResourceProxy)	//if the type value is only resource proxy
+						{
+							typeValueURFResource=unproxyURFResource((ResourceProxy)typeValueResource);	//unproxy the type value (note that this will not replace the proxy in the assertion, but it will create the resource and associate it with the proxy so that when it does come time to replace the proxy, it will already be there)
+						}
+						else	//if we don't recognize the value
+						{
+							throw new AssertionError("Unrecognized assertion object type: "+typeValueResource.getClass());
+						}
+						final URI typeURI=typeValueURFResource.getURI();	//get the type URI
+						if(typeURI!=null)	//if we know the type value
+						{
+							resource=urf.locateResource(resourceURI, typeURI);	//create this typed resource
+							break;	//stop looking at assertions
+						}
 					}
 				}
 			}
@@ -468,12 +449,6 @@ public abstract class AbstractURFProcessor
 				if(predicateURI!=null)	//if there is a predicate URI TODO do we want to allow anonymous predicates? if not, add an IllegalStateException
 				{
 					URFScope scope=subject;	//we'll determine which scope to use; start with the subject
-					
-					if(assertion.getScopeChain().length>0)
-					{
-						Debug.trace("this assertion is scoped");
-					}
-					
 					for(final NameValuePair<Resource, Resource> scopePair:assertion.getScopeChain())	//look at each property value pair (if any) on the scope chain
 					{
 						final URFResource scopeProperty=(URFResource)scopePair.getName();	//get the scope property

@@ -735,7 +735,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 	}
 
 	/**Resolves a URI against a base URI according to RDF/XML processing rules.
-	Significantly, the emptry string are appended to the given base URI.
+	Significantly, the emptry string is appended to the given base URI.
 	@param baseURI The in-scope base URI against which the URI should be resolved.
 	@param uri The URI to resolve.
 	@return A URI resolved to the given base URI according to RDF/XML processing rules.

@@ -113,19 +113,43 @@ public class URFTURFGenerator
 			String label=getLabel(resource);	//get a label, if any, for the given resource
 			if(label==null)	//if there is no label for this resource
 			{
+/*TODO del when works
 				final URI uri=asURI(resource);	//get the resource as a URI if possible
 				if(uri!=null && getLocalName(uri)==null)	//if the resource is a namespace URI
 				{
 					label=getNamespacePrefixManager().getNamespacePrefix(uri);	//get a namespace prefix for the URI
 				}
 				else	//if this is not a namespace URI
-				{				
+				{
+*/
 					label=generateLabel();	//generate a label for the resource
-				}
+//TODO del when works				}
 				resourceLabelMap.put(resource, label);	//associate the label with the resource
 			}
 			return label;	//return the retrieved or generated label
 		} 
+
+		/**Retrieves a label appropriate for the given namespace URI resource, creating one if necessary.
+		If the resource has already been assigned a label, it will be returned; otherwise, a new label will be generated.
+		@param resource The resource for which a label should be returned.
+		@return A label to represent the given namespace URI resource.
+		@exception IllegalArgumentException if the given resource is not a URI.
+		*/
+		protected String determineNamespaceURILabel(final URFResource resource)
+		{
+			final URI uri=asURI(resource);	//get the resource as a URI if possible
+			if(uri==null)	//if the resource is not a URI
+			{
+				throw new IllegalArgumentException("Resource "+resource+" is not a URI.");
+			}
+			String label=getLabel(resource);	//get a label, if any, for the given resource
+			if(label==null)	//if there is no label for this resource
+			{
+				label=getNamespacePrefixManager().getNamespacePrefix(uri);	//get a namespace prefix for the URI
+				resourceLabelMap.put(resource, label);	//associate the label with the resource
+			}
+			return label;	//return the retrieved or generated label
+		}
 
 	/**Whether output is formatted.*/
 	private boolean formatted;
@@ -329,12 +353,12 @@ public class URFTURFGenerator
 			//generate beginning labeled namespace URIs
 		for(final Map.Entry<URI, Boolean> namespaceURIMultipleEntry:namespaceURIMultipleMap.entrySet())	//for each namespace URI entry
 		{
-			if(Boolean.TRUE.equals(namespaceURIMultipleEntry.getValue()))	//if this namespace URI is used more than one time
+			final URI namespaceURI=namespaceURIMultipleEntry.getKey();	//get the namespace URI
+			if(Boolean.TRUE.equals(namespaceURIMultipleEntry.getValue()) || getNamespacePrefixManager().isRecognized(namespaceURI))	//if this namespace URI is used more than one time, or if this is a namespace URI we specifically know is a namespace URI
 			{
-				final URI namespaceURI=namespaceURIMultipleEntry.getKey();	//get the namespace URI
 				final URFResource namespaceURIResource=urf.locateResource(createLexicalURI(URI_CLASS_URI, namespaceURI.toString()));	//look up a resource for the namespace URI itself
-				determineLabel(namespaceURIResource);	//make sure there is a label for the given resource
-				generateRootResource(writer, urf, referenceMap, namespaceURIResource);	//generate the namespace resource
+				determineNamespaceURILabel(namespaceURIResource);	//make sure there is a label for the namespace URI
+				generateRootResource(writer, urf, referenceMap, namespaceURIResource);	//generate the namespace URI resource
 			}
 		}
 			//generate the primary resource
@@ -746,7 +770,7 @@ public class URFTURFGenerator
 				final String localName=getLocalName(uri);	//get the local name of the URI
 				assert localName!=null : "If a URI has a namespace, it should have a local name as well.";
 				writeLabel(writer, prefix);	//write the prefix as a label
-				uri=URI.create(new StringBuilder().append(FRAGMENT_SEPARATOR).append(encodeURI(localName)).toString());	//use the encoded fragment as the remaining URI
+				uri=URI.create(new StringBuilder().append(FRAGMENT_SEPARATOR).append(encodeURI(localName)).toString());	//use the encoded fragment as the remaining URI TODO fix to work with hierarchical namespaces
 			}
 		}
 		writer.write(uri.toString());	//write the relative URI
