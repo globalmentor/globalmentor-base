@@ -2,23 +2,16 @@ package com.garretwilson.urf;
 
 import java.net.URI;
 import java.util.*;
+import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static java.util.Collections.*;
-
-import static com.garretwilson.lang.ObjectUtilities.*;
-
 import com.garretwilson.io.ParseIOException;
-import com.garretwilson.lang.LongUtilities;
-import com.garretwilson.lang.ObjectUtilities;
-import com.garretwilson.net.DefaultResource;
-import com.garretwilson.net.Resource;
-import static com.garretwilson.urf.URF.*;
-
+import com.garretwilson.lang.*;
+import static com.garretwilson.lang.ObjectUtilities.*;
+import com.garretwilson.net.*;
 import static com.garretwilson.text.FormatUtilities.*;
-import com.garretwilson.util.Debug;
-import com.garretwilson.util.IdentityHashSet;
-import com.garretwilson.util.NameValuePair;
+import static com.garretwilson.urf.URF.*;
+import com.garretwilson.util.*;
 
 /**Base class for URF processors.
 Each instance of an URF processor maintains an internal URF data model throughout its lifetime that is continually updated with every new URF processing that occurs.
@@ -196,17 +189,6 @@ public abstract class AbstractURFProcessor
 			proxiedURFResourceMap.put(resourceProxy, resource);	//store the resource keyed to the resource proxy
 		}
 
-	/**The next number to use when generating node IDs.*/
-//TODO fix	private long nextNodeIDTag=1;
-
-	/**@return A unique node ID appropriate for a new node.*/
-/*TODO fix
-	protected String generateNodeID()
-	{
-		return AbstractURFProcessor.class.getName()+JavaConstants.PACKAGE_SEPARATOR+"nodeID"+(nextNodeIDTag++);	//use the next node ID tag and increments TODO use a constant
-	}
-*/
-
 	/**The atomic variable used to generate assertion orders.*/
 	private final AtomicLong assertionOrder=new AtomicLong(0);
 
@@ -381,9 +363,10 @@ public abstract class AbstractURFProcessor
 				break;	//we already have an unproxied resource
 			}
 		}
-		if(resource==null)	//if we have no such resource, create one; first, look for an appropriate type
+		if(resource==null)	//if we have no such resource, create one; first, look for appropriate types
 		{
-			final URF urf=getURF();	//get the URF data model
+//TODO del if not needed			final List<URFResource> types=new ArrayList<URFResource>();	//create a list to hold the types
+			final List<URI> typeURIs=new ArrayList<URI>();	//create a list to hold the type URIs
 			for(final Assertion assertion:getAssertions())	//for each assertion
 			{
 				final Resource subject=assertion.getSubject();	//get the assertion subject
@@ -408,19 +391,20 @@ public abstract class AbstractURFProcessor
 						{
 							throw new AssertionError("Unrecognized assertion object type: "+typeValueResource.getClass());
 						}
+						typeURIs.add(typeValueURFResource.getURI());	//add this type to our list
+/*TODO del when works
 						final URI typeURI=typeValueURFResource.getURI();	//get the type URI
 						if(typeURI!=null)	//if we know the type value
 						{
 							resource=urf.locateResource(resourceURI, typeURI);	//create this typed resource
 							break;	//stop looking at assertions
 						}
+*/
 					}
 				}
 			}
-			if(resource==null)	//if we couldn't create a resource from an assertion that provided the type
-			{
-				resource=urf.locateResource(resourceURI);	//locate a default resource
-			}
+			final URF urf=getURF();	//get the URF data model
+			resource=urf.locateResource(resourceURI, typeURIs.toArray(new URI[typeURIs.size()]));	//locate a resource for the given URI and type URIs, if any
 		}
 		for(final ResourceProxy equiavalentResourceProxy:resourceProxy.getEquivalentResourceProxies())	//for each equivalent resource proxy
 		{

@@ -123,7 +123,7 @@ public abstract class AbstractTURFIO<T> extends NamespacePrefixManager implement
 	*/ 
 	protected URF readURF(final URF urf, final InputStream inputStream, final URI baseURI) throws IOException
 	{
-		final Reader reader=new BOMInputStreamReader(inputStream, UTF_8);	//created a reader from the input stream, defaulting to UTF-8 if not specified
+		final Reader reader=new BufferedReader(new BOMInputStreamReader(new BufferedInputStream(inputStream), UTF_8));	//created a reader from the input stream, defaulting to UTF-8 if not specified
 		final URFTURFProcessor turfProcessor=new URFTURFProcessor(urf);	//create a new TURF processor
 		return turfProcessor.process(reader, baseURI);	//process the TURF and return the URF
 	}

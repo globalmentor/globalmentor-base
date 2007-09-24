@@ -2,6 +2,8 @@ package com.garretwilson.urf;
 
 import java.util.*;
 import java.lang.reflect.Array;
+import java.net.URI;
+
 import static java.lang.System.*;
 
 import com.garretwilson.lang.IntegerUtilities;
@@ -20,6 +22,20 @@ This implementation does not supoprt <code>null</code> values.
 */
 public class URFArrayResource<E extends URFResource> extends DefaultURFResource implements List<E>
 {
+
+	/**Default constructor with no URI.*/
+	public URFArrayResource()
+	{
+		this(null);	//create a resource without a URI
+	}
+
+	/**URI constructor.
+	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
+	*/
+	public URFArrayResource(final URI uri)
+	{
+		super(uri, ARRAY_CLASS_URI);	//construct the parent class, specifying that this is an array
+	}
 
 	/**Retrieves the length of the array.
 	The length is defined as the first zero-based index for which there is no element.
@@ -667,40 +683,17 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 
   // View
 
-  /**
-   * Returns a view of the portion of this list between the specified
-   * <tt>fromIndex</tt>, inclusive, and <tt>toIndex</tt>, exclusive.  (If
-   * <tt>fromIndex</tt> and <tt>toIndex</tt> are equal, the returned list is
-   * empty.)  The returned list is backed by this list, so non-structural
-   * changes in the returned list are reflected in this list, and vice-versa.
-   * The returned list supports all of the optional list operations supported
-   * by this list.<p>
-   *
-   * This method eliminates the need for explicit range operations (of
-   * the sort that commonly exist for arrays).   Any operation that expects
-   * a list can be used as a range operation by passing a subList view
-   * instead of a whole list.  For example, the following idiom
-   * removes a range of elements from a list:
-   * <pre>
-   *      list.subList(from, to).clear();
-   * </pre>
-   * Similar idioms may be constructed for <tt>indexOf</tt> and
-   * <tt>lastIndexOf</tt>, and all of the algorithms in the
-   * <tt>Collections</tt> class can be applied to a subList.<p>
-   *
-   * The semantics of the list returned by this method become undefined if
-   * the backing list (i.e., this list) is <i>structurally modified</i> in
-   * any way other than via the returned list.  (Structural modifications are
-   * those that change the size of this list, or otherwise perturb it in such
-   * a fashion that iterations in progress may yield incorrect results.)
-   *
-   * @param fromIndex low endpoint (inclusive) of the subList
-   * @param toIndex high endpoint (exclusive) of the subList
-   * @return a view of the specified range within this list
-   * @throws IndexOutOfBoundsException for an illegal endpoint index value
-   *         (<tt>fromIndex &lt; 0 || toIndex &gt; size ||
-   *         fromIndex &gt; toIndex</tt>)
-   */
+	/**Returns a view of the portion of this list between the specified <var>fromIndex</var>, inclusive, and <var>toIndex</var>, exclusive.
+	(If <var>fromIndex</var> and <var>toIndex</var> are equal, the returned list is empty.)
+	The returned list is backed by this list, so non-structural changes in the returned list are reflected in this list, and vice-versa.
+	The returned list supports all of the optional list operations supported by this list.<p>
+	The semantics of the list returned by this method become undefined if the backing list (i.e., this list) is <dfn>structurally modified</dfn> in
+  any way other than via the returned list.
+	@param fromIndex The low endpoint (inclusive) of the sub-list
+	@param toIndex The high endpoint (exclusive) of the sub-list.
+	@return A view of the specified range within this list.
+	@throws IndexOutOfBoundsException for an illegal endpoint index value (<var>fromIndex &lt; 0 || toIndex &gt; size || fromIndex &gt; toIndex</var>).
+	*/
 	public List<E> subList(int fromIndex, int toIndex)
 	{
 		throw new UnsupportedOperationException("URF arrays do not yet support sublists.");	//TODO implement

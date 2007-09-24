@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.concurrent.locks.*;
 
 import com.garretwilson.lang.LongUtilities;
+
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
 
@@ -22,13 +23,23 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 	/**Default constructor with no URI.*/
 	public DefaultURFResource()
 	{
-		this(null);	//create a resource without a URI
+		this(null, NO_RESOURCES);	//create a resource without a URI or types
 	}
 
-	/**URI constructor.
+	/**URI and type URIs constructor.
 	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
+	@param typeURIs The URIs of the types, if any, to add to the resource.
 	*/
-	public DefaultURFResource(final URI uri)
+	public DefaultURFResource(final URI uri, final URI... typeURIs)
+	{
+		this(uri, createResources(typeURIs));	//create resources for the types and construct this class
+	}
+
+	/**URI and types constructor.
+	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
+	@param types The types of the resource, if any.
+	*/
+	private DefaultURFResource(final URI uri, final URFResource... types)
 	{
 		super(new ReentrantReadWriteLock(), null);	//construct the parent class using a default lock and no parent scope
 		this.uri=uri;	//save the URI, if any
@@ -48,9 +59,39 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 	@return <code>true</code> if this resource has a type with the given URI.
 	@see URF#TYPE_PROPERTY_URI
 	*/
-	public boolean hasType(final URI typeURI)
+	public boolean hasTypeURI(final URI typeURI)
 	{
 		return hasPropertyValueURI(TYPE_PROPERTY_URI, typeURI);	//check for the given type URI
+	}
+
+	/**Adds a type.
+	@param type The type to add.
+	*/
+	public void addType(final URFResource type)
+	{
+		addPropertyValue(TYPE_PROPERTY_URI, type);	//add the given resource as a type
+	}
+
+	/**Creates default resources from the given URIs.
+	@param uris The URIs, each of which may be <code>null</code>, of the resources to create.
+	@return An array of default resources with the given URIs.
+	*/
+	protected final static URFResource[] createResources(final URI... uris)
+	{
+		final int uriCount=uris.length;	//find out how many URIs there are
+		if(uriCount>0)	//if there is at least one URI
+		{
+			final URFResource[] resources=new URFResource[uriCount];	//create a new array of resources
+			for(int i=0; i<uriCount; ++i)	//for each URI
+			{
+				resources[i]=new DefaultURFResource(uris[i], NO_RESOURCES);	//create a new default resource
+			}
+			return resources;	//return the resources we created
+		}
+		else	//if there are no URIs given
+		{
+			return NO_RESOURCES;	//return the pre-fabricated resource array
+		}
 	}
 
 	/**@return A hashcode value composed from the reference URI, if available.*/
@@ -96,4 +137,5 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 		final URI uri=getURI();	//get the URI, if any
 		return uri!=null ? new StringBuilder().append(REFERENCE_BEGIN).append(uri).append(REFERENCE_END).toString() : super.toString();	//return the URI, if available
 	}
+
 }

@@ -4,26 +4,19 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.URI;
 import java.util.*;
+import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static java.util.Collections.*;
-
 import static com.garretwilson.lang.ObjectUtilities.*;
-
 import com.garretwilson.lang.IntegerUtilities;
 import com.garretwilson.net.NamespacePrefixManager;
 import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.net.URIUtilities.encodeURI;
-
+import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
-
+import com.garretwilson.util.*;
 import static com.garretwilson.util.CollectionUtilities.*;
-
-import com.garretwilson.util.CollectionMap;
-import com.garretwilson.util.Debug;
-import com.garretwilson.util.IdentityHashSet;
 
 /**Generates TURF from URF.
 @author Garret Wilson
@@ -43,7 +36,7 @@ public class URFTURFGenerator
 		/**@return The namespace prefix manager.*/
 		public NamespacePrefixManager getNamespacePrefixManager() {return namespacePrefixManager;}
 
-	/**The set of resources that have been generated, using identity rather than equality for equivalence, as required be generation.*/
+	/**The set of resources that have been generated, using identity rather than equality for equivalence, as required by generation.*/
 	private final Set<URFResource> generatedResourceSet;
 
 		/**Determines the number of resources that have been generated.
@@ -258,8 +251,8 @@ public class URFTURFGenerator
 		this.baseURI=baseURI;
 		this.formatted=formatted;
 		this.namespacePrefixManager=checkInstance(namespacePrefixManager, "Namespace prefix manager cannot be null.");
-		generatedResourceSet=new IdentityHashSet<URFResource>();	//create a map that will determine whether resources have been generated, based upon the identity of resources
-		resourceLabelMap=new IdentityHashMap<URFResource, String>();	//create a map of node IDs keyed to resources, using identity rather than equality to determine associated resource
+		generatedResourceSet=new HashSet<URFResource>();	//create a map that will determine whether resources have been generated, based upon the identity of resources
+		resourceLabelMap=new HashMap<URFResource, String>();	//create a map of node IDs keyed to resources, using identity rather than equality to determine associated resource
 	}
 
 	/**Initializes the generator by resetting values and initializing the namespace prefixes.
@@ -277,50 +270,33 @@ public class URFTURFGenerator
 		resourceLabelMap.clear();	//clear our map of node IDs
 	}
 
-	/**Generates a single resource.
-	@param writer The writer used for generating the information.
-	@param resource The resource to generate.
-	*/
-/*TODO fix
-	public Writer generate(final Writer writer, final URFResource resource) throws IOException
-	{
-		final URF urf=new URF();	//create a new URF data model
-		urf.addResource(resource);	//add the resource to the data model
-		return generate(writer, urf, resource);	//
-	}
-*/
-
-	/**Generates a single resource that is part of a data model.
-	@param writer The writer used for generating the information.
-	@param resource The resource to generate.
-	*/
-/*TODO fix
-	public Writer generate(final Writer writer, final URF urf, final URFResource resource) throws IOException
-	{
-		return writer;	//return the writer
-	}
-*/
-
 	/**Generates all the resources within a given data model.
 	@param writer The writer used for generating the information.
 	@param urf The data model of which resources should be generated.
 	@return The writer.
+	@exception NullPointerException if the given writer and/or URF data model is <code>null</code>. 
+	@exception IOException if there is an error writing to the writer.
 	*/
 	public Writer generateResources(final Writer writer, final URF urf) throws IOException
 	{
 		return generateResources(writer, urf, null);	//generate all URF resources with no particular resource as the primary resource
 	}
 
-	/**Generates all the resources related to a given resource.
+	/**Generates the given resources and all related resources.
 	@param writer The writer used for generating the information.
-	@param primaryResource The main resource which should appear first or immediately after namespace descriptions
+	@param resources The resources to generate, with the first resource, if any, being the resource to appear first or immediately after namespace descriptions
 	@return The writer.
+	@exception NullPointerException if the given writer and/or resources is <code>null</code>. 
+	@exception IOException if there is an error writing to the writer.
 	*/
-	public Writer generateResources(final Writer writer, final URFResource resource) throws IOException
+	public Writer generateResources(final Writer writer, final URFResource... resources) throws IOException
 	{
 		final URF urf=new URF();	//create a new URF data model
-		urf.addResource(resource);	//add the resource to the data model
-		return generateResources(writer, urf, resource);	//generate all resources related to the given resource
+		for(final URFResource resource:resources)	//for each given resource
+		{
+			urf.addResource(resource);	//add the resource to the data model
+		}
+		return generateResources(writer, urf, resources.length>0 ? resources[0] : null);	//generate all resources related to the given resources
 	}
 
 	/**Generates all the resources within a given data model, indicating an optional resource that should appear first or immediately after namespace descriptions.
@@ -328,6 +304,8 @@ public class URFTURFGenerator
 	@param urf The data model of which resources should be generated.
 	@param primaryResource The main resource which should appear first or immediately after namespace descriptions, or <code>null</code> if there is no primary resource.
 	@return The writer.
+	@exception NullPointerException if the given writer and/or URF data model is <code>null</code>. 
+	@exception IOException if there is an error writing to the writer.
 	*/
 	public Writer generateResources(final Writer writer, final URF urf, final URFResource primaryResource) throws IOException
 	{
@@ -386,6 +364,8 @@ public class URFTURFGenerator
 	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
 	@param resource The resource to generate.
 	@return The writer.
+	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>. 
+	@exception IOException if there is an error writing to the writer.
 	*/
 	protected Writer generateRootResource(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFResource resource) throws IOException
 	{
@@ -404,6 +384,8 @@ public class URFTURFGenerator
 	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
 	@param resource The resource to generate.
 	@return The writer.
+	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>. 
+	@exception IOException if there is an error writing to the writer.
 	*/
 	protected Writer generateResource(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFResource resource) throws IOException
 	{
@@ -420,6 +402,8 @@ public class URFTURFGenerator
 	@param resource The resource to generate.
 	@param inSequence Whether the resource being generated is in a sequence and its scoped order properties should therefore not be generated.
 	@return The writer.
+	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>. 
+	@exception IOException if there is an error writing to the writer.
 	*/
 	protected Writer generateResource(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope scopeSubject, final URI scopePredicateURI, final URFResource resource, final boolean inSequence) throws IOException
 	{
@@ -431,7 +415,7 @@ public class URFTURFGenerator
 //Debug.trace("generating resource with scope", scopeSubject, "predicate URI", scopePredicateURI, "and resource", resource);
 		boolean generatedComponent=false;	//we haven't generated any components, yet
 		URI lexicalTypeURI=null;	//the lexical namespace type URI, if any
-		final boolean isArrayShortForm=isShortArraysGenerated() && resource.hasType(ARRAY_CLASS_URI);	//see if this is an array to be generated in short form
+		final boolean isArrayShortForm=isShortArraysGenerated() && resource.hasTypeURI(ARRAY_CLASS_URI);	//see if this is an array to be generated in short form
 		final boolean isShortTypesGenerated=isShortTypesGenerated();	//see if we should generate types in the short form
 		final URI uri=resource.getURI();	//get the resource URI
 		String label=getLabel(resource);	//see if there is a label for this resource
@@ -474,7 +458,7 @@ public class URFTURFGenerator
 			for(final URFResource type:resource.getTypes())	//look at each type
 			{
 				final URI typeURI=type.getURI();	//get the URI of this type
-				if(type!=null)	//if a type was given
+				if(typeURI!=null)	//if the given type has a URI
 				{
 					if(typeURI.equals(lexicalTypeURI)	//if this is the same type URI as the URI included in the lexical namespace type URI, if any
 							|| (isArrayShortForm && ARRAY_CLASS_URI.equals(typeURI)))	//or if we're using an array short form and this is the array type
@@ -568,7 +552,7 @@ public class URFTURFGenerator
 	@param generateIntegers Whether properties in the integer namespace should be generated.
 	@param generateOrder Whether the order property should be generated.
 	@return The new total number of properties generated, including the properties already generated before this method was called.
-	@exception NullPointerException if the given writer and/or scope is <code>null</code>. 
+	@exception NullPointerException if the given writer, URF data model, reference map, and/or scope is <code>null</code>. 
 	@exception IOException if there was an error writing to the writer.
 	*/
 	protected int generateProperties(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope scope, final char propertyValueDelimiter, int propertyCount, final boolean generateTypes, final boolean generateIntegers, final boolean generateOrder) throws IOException
@@ -577,13 +561,13 @@ public class URFTURFGenerator
 		for(final URFProperty property:scope.getProperties())	//look at each property
 		{
 			final URFResource value=property.getValue();	//get the property value
-			final URI valueURI=value.getURI();	//get the URI of the value, if any
 			final URI propertyURI=property.getPropertyURI();	//get the property URI
 			if((!generateTypes && TYPE_PROPERTY_URI.equals(propertyURI))	//if we shouldn't generate types and this is a type
-				|| (!generateIntegers && valueURI!=null && INTEGER_NAMESPACE_URI.equals(getNamespaceURI(valueURI)))	//or if we shouldn't generate integers and this is an integer value
+				|| (!generateIntegers && propertyURI!=null && INTEGER_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//or if we shouldn't generate integers and this property is an integer
 				|| (!generateOrder && ORDER_PROPERTY_URI.equals(propertyURI)))	//or if we shouldn't generate order and this is an order property
 			{
 				markReferenceGenerated(urf, propertyURI);	//mark that this property was generated unless it has some other quality needed to be generated separately
+				final URI valueURI=value.getURI();	//get the URI of the value, if any
 				if(valueURI!=null)	//if there is a value URI
 				{
 					markReferenceGenerated(urf, valueURI);	//mark that the value was generated unless it has some other quality needed to be generated separately
@@ -723,7 +707,7 @@ public class URFTURFGenerator
 						return;	//we shouldn't mark this resource as generated
 					}
 					final URI lexicalTypeURI=getLexicalTypeURI(resourceURI);	//find out the lexical type of the URI
-					if(!resource.hasType(lexicalTypeURI))	//if there is another type besides the lexical type, don't mark the resource as generated; otherwise, the type is redundance
+					if(!resource.hasTypeURI(lexicalTypeURI))	//if there is another type besides the lexical type, don't mark the resource as generated; otherwise, the type is redundance
 					{
 						return;	//we shouldn't mark this resource as generated						
 					}

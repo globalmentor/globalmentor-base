@@ -213,7 +213,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 					foundComponent=true;	//indicate that at least one description component is present
 					try
 					{
-						resourceURI=createURI(namespaceURI, localName);	//create the resource URI from the namespace URI and local name
+						resourceURI=createResourceURI(namespaceURI, localName);	//create the resource URI from the namespace URI and local name
 //Debug.trace("from namespace", namespaceURI, "and local name", localName, "formed URI", resourceURI);
 					}
 					catch(final IllegalArgumentException illegalArgumentException)	//if the given namespace is not valid
@@ -265,7 +265,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			c=skipSeparators(reader);	//skip separators and peek the next character
 			while(c>=0 && c!=SEQUENCE_END)	//while the end of the sequence has not been reached and there is another resource to parse
 			{
-				final Resource indexPredicate=getResourceProxy(createIndexURI(index));	//get the index property for specifying the index of each value
+				final Resource indexPredicate=getResourceProxy(createIntegerURI(index));	//get the index property for specifying the index of each value
 				final Resource element=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), indexPredicate, indexPredicate.getURI());	//parse the array element, giving a scope chain predicate in case a scope is formed for the value
 				addAssertion(new Assertion(resourceProxy, indexPredicate, element));	//assert the assertion that the element is an index of the array; there is no scope with an array short form
 				++index;	//go to the next index

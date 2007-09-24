@@ -1,15 +1,18 @@
 package com.garretwilson.urf;
 
+import java.io.*;
 import java.net.URI;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 import static java.util.Collections.*;
+import java.util.concurrent.atomic.AtomicLong;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import javax.mail.internet.ContentType;
 
-import com.garretwilson.io.ParseIOException;
 import com.garretwilson.lang.LongUtilities;
+import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.io.ContentTypeUtilities.*;
 import com.garretwilson.net.Resource;
+import com.garretwilson.net.URIConstants;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 import com.garretwilson.util.*;
@@ -17,6 +20,7 @@ import com.garretwilson.util.*;
 /**An URF data model.
 This data model keeps track of all resources that are being created as a linked group, such as parsed from a TURF interchange document,
 and are thought of as a separate universe of descriptions.
+This implementation registers the resource factory {@link URF#DEFAULT_URF_RESOURCE_FACTORY} for the URF namespace URI {@value URF#URF_NAMESPACE_URI}.
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:
@@ -39,24 +43,26 @@ public class URF
 	
 		//URF classes 
 	/**The URI of the URF <code>Array</code> class.*/ 
-	public final static URI ARRAY_CLASS_URI=URF_NAMESPACE_URI.resolve("#Array");
+	public final static URI ARRAY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Array");
 	/**The URI of the URF <code>Boolean)</code> class.*/ 
-	public final static URI BOOLEAN_CLASS_URI=URF_NAMESPACE_URI.resolve("#Boolean");
+	public final static URI BOOLEAN_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Boolean");
 	/**The URI of the URF <code>Integer</code> class.*/ 
-	public final static URI INTEGER_CLASS_URI=URF_NAMESPACE_URI.resolve("#Integer");
+	public final static URI INTEGER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Integer");
 	/**The URI of the URF <code>Number</code> class.*/ 
-	public final static URI NUMBER_CLASS_URI=URF_NAMESPACE_URI.resolve("#Number");
+	public final static URI NUMBER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Number");
 	/**The URI of the URF <code>Real</code> class.*/ 
-	public final static URI REAL_CLASS_URI=URF_NAMESPACE_URI.resolve("#Real");
+	public final static URI REAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Real");
 	/**The URI of the URF <code>String</code> class.*/ 
-	public final static URI STRING_CLASS_URI=URF_NAMESPACE_URI.resolve("#String");
+	public final static URI STRING_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "String");
 	/**The URI of the URF <code>URI</code> class.*/ 
-	public final static URI URI_CLASS_URI=URF_NAMESPACE_URI.resolve("#URI");
+	public final static URI URI_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "URI");
 		//URF properties
+	/**The name of a resource, which may differ from that indicated by the URI, if any.*/
+	public final static URI NAME_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "name");
 	/**The URI of the URF <code>order</code> property.*/ 
-	public final static URI ORDER_PROPERTY_URI=URF_NAMESPACE_URI.resolve("#order");
+	public final static URI ORDER_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "order");
 	/**The URI of the URF <code>type</code> property.*/ 
-	public final static URI TYPE_PROPERTY_URI=URF_NAMESPACE_URI.resolve("#type");
+	public final static URI TYPE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "type");
 
 		//URF lexical namespaces
 	/**The Boolean lexical namespace URI.*/
@@ -71,11 +77,20 @@ public class URF
 		public final static URI BOOLEAN_TRUE_URI=createLexicalURI(BOOLEAN_CLASS_URI, BOOLEAN_TRUE_LEXICAL_FORM);
 	/**The integer lexical namespace URI.*/
 	public final static URI INTEGER_NAMESPACE_URI=createLexicalNamespaceURI(INTEGER_CLASS_URI);
+		/**The URI of the integer value <code>0</code>.*/
+		public final static URI INTEGER_0_URI=createLexicalURI(INTEGER_CLASS_URI, Long.toString(0));
 	/**The real lexical namespace URI.*/
 	public final static URI REAL_NAMESPACE_URI=createLexicalNamespaceURI(REAL_CLASS_URI);
+	/**The string lexical namespace URI.*/
+	public final static URI STRING_NAMESPACE_URI=createLexicalNamespaceURI(STRING_CLASS_URI);
+		/**The URI of the empty string "".*/
+		public final static URI EMPTY_STRING_URI=createLexicalURI(STRING_CLASS_URI, "");
 	/**The URI lexical namespace URI.*/
 	public final static URI URI_NAMESPACE_URI=createLexicalNamespaceURI(URI_CLASS_URI);
 
+	/**The shared empty array of resources.*/
+	public final static URFResource[] NO_RESOURCES=new URFResource[0];
+	
 	/**The atomic variable used to generate scope creation orders.*/
 	private final static AtomicLong scopeCreationOrder=new AtomicLong(0);
 
@@ -96,7 +111,7 @@ public class URF
 	@exception NullPointerException if the given namespace URI and/or local name is <code>null</code>.
 	@exception IllegalArgumentException if the given namespace URI has a fragment.
 	*/
-	public static URI createURI(final URI namespaceURI, final String localName)
+	public static URI createResourceURI(final URI namespaceURI, final String localName)
 	{
 //Debug.trace("creating URI from namespace", namespaceURI, "and local name", localName);
 		if(namespaceURI.getRawFragment()!=null)	//if the supposed namespace URI has a fragment (namespaces can't have fragments)
@@ -177,15 +192,6 @@ public class URF
 			}
 		}
 		return null;	//indicate that this URI has no local name
-	}
-
-	/**Creates a URI in the array namespace for the given index.
-	@param index The index for which the index URI should be created.
-	@return A URI in the index namespace for the specified index
-	*/
-	public static URI createIndexURI(final long index)
-	{
-		return createLexicalURI(INTEGER_CLASS_URI, Long.toString(index));	//create an integer URI from the index
 	}
 
 	/**Determines whether the given URI is in a lexical namespace.
@@ -291,6 +297,77 @@ public class URF
 		return URI.create(URF_LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString())+FRAGMENT_SEPARATOR+encodeURI(lexicalForm));	//encode the type, append it to the lexical namespace base URI, and append the fragment of the encoded lexical form
 	}
 
+	/**Creates a URI to represent an URF string.
+	@param string The string value to represent.
+	@return A URI representing the given URF string.
+	@see #STRING_CLASS_URI
+	*/
+	public static URI createStringURI(final String string)
+	{
+		return string.isEmpty() ? EMPTY_STRING_URI : createLexicalURI(STRING_CLASS_URI, string);	//create a string URI, using the pre-made empty string URI if we can
+	};
+
+	/**Creates a URI to represent an URF integer.
+	@param integer The integer value to represent.
+	@return A URI representing the given URF integer.
+	@see #INTEGER_CLASS_URI
+	*/
+	public static URI createIntegerURI(final long integer)
+	{
+		return integer==0 ? INTEGER_0_URI : createLexicalURI(INTEGER_CLASS_URI, Long.toString(integer));	//create an integer URI, using the pre-made zero integer URI if we can
+	};
+
+	/**Returns an array containing the URIs of the given resources.
+	@param resources The resources of which URIs should be returned.
+	@return The URIs of the given resources.
+	@exception NullPointerException if one of the given resources is <code>null</code>.
+	*/
+	public URI[] getURIs(final URFResource... resources)
+	{
+		final int resourceCount=resources.length;	//find out how many resources there are
+		final URI[] uris=new URI[resourceCount];	//create a URI array of appropriate length
+		for(int i=0; i<resourceCount; ++i)	//for each resource
+		{
+			uris[i]=resources[i].getURI();	//get this resource's URI
+		}
+		return uris;	//return the resource URIs
+	}
+
+	/**Determines the array object, if any, represented by the given resource.
+	@param resource The resource which is expected to represent an array, or <code>null</code>.
+	@return The array object represented by the given resource, or <code>null</code> if the resource is not an instance of {@link URFArrayResource}.
+	*/
+	public static <T extends URFResource> URFArrayResource<T> asArrayInstance(final Resource resource)
+	{
+		return resource instanceof URFArrayResource ? (URFArrayResource<T>)resource : null;	//if an array was given, return it with the requested generic type
+	}
+
+	/**Determines the Internet media type represented by the given resource.
+	@param resource The resource which is expected to represent an Internet media type, or <code>null</code>.
+	@return The Internet media type represented by the given resource, or <code>null</code> if the resource does not represent an Internet media type.
+	@exception IllegalArgumentException if the given resource represents an Internet media type that does not have the correct syntax.
+	*/
+	public static ContentType asMediaType(final Resource resource)
+	{
+		return resource!=null ? asMediaType(resource.getURI()) : null;	//if a resource was given, see if its URI represents an Internet media type
+	}
+
+	/**Determines the Internet media type represented by the given URI.
+	@param resourceURI The URI which is expected to represent an Internet media type, or <code>null</code>.
+	@return The Internet media type represented by the given URI, or <code>null</code> if the URI is not an <code>info:media/</code> URI.
+	@exception IllegalArgumentException if the given URI represents a URI that does not have the correct syntax.
+	@see URIConstants#INFO_SCHEME
+	@see URIConstants#INFO_SCHEME_MEDIA_NAMESPACE
+	*/
+	public static ContentType asMediaType(final URI resourceURI)
+	{
+		if(resourceURI!=null && isInfoNamespace(resourceURI, INFO_SCHEME_MEDIA_NAMESPACE))	//if an info:/media URI was given
+		{
+			return createContentType(getInfoRawIdentifier(resourceURI));	//create and return a content type from the identifier of the info URI
+		}
+		return null;	//no URI could be found
+	}
+
 	/**Determines the number represented by the given resource.
 	@param resource The resource which is expected to represent a number, or <code>null</code>.
 	@return The number represented by the given resource, or <code>null</code> if the resource does not represent a number.
@@ -330,7 +407,36 @@ public class URF
 		}
 		return null;	//no number could be found
 	}
-	
+
+	/**Determines the string represented by the given resource.
+	@param resource The resource which is expected to represent a string, or <code>null</code>.
+	@return The string represented by the given resource, or <code>null</code> if the resource does not represent a string.
+	@exception IllegalArgumentException if the given resource represents a string that does not have the correct syntax.
+	*/
+	public static String asString(final Resource resource)
+	{
+		return resource!=null ? asString(resource.getURI()) : null;	//if a resource was given, see if its URI represents a string
+	}
+
+	/**Determines the string represented by the given URI.
+	@param resourceURI The URI which is expected to represent a string, or <code>null</code>.
+	@return The string represented by the given URI, or <code>null</code> if the URI does not represent a string.
+	@exception IllegalArgumentException if the given URI represents a string that does not have the correct syntax.
+	@see #STRING_CLASS_URI
+	@see #STRING_NAMESPACE_URI
+	*/
+	public static String asString(final URI resourceURI)
+	{
+		if(resourceURI!=null)	//if a URI was given
+		{
+			if(STRING_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if this is a string
+			{
+				return getLocalName(resourceURI);	//return the local name, which is the string value
+			}
+		}
+		return null;	//no string could be found
+	}
+
 	/**Determines the URI represented by the given resource.
 	@param resource The resource which is expected to represent a URI, or <code>null</code>.
 	@return The URI represented by the given resource, or <code>null</code> if the resource does not represent a URI.
@@ -352,16 +458,50 @@ public class URF
 	{
 		if(resourceURI!=null)	//if a URI was given
 		{
-			final String localName=getLocalName(resourceURI);	//retrieve the URI local name, if any
-			if(localName!=null)	//if there is a local name
+			if(URI_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if this is a URI
 			{
-				if(URI_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if this is a URI
-				{
-					return URI.create(localName);	//create a URI from the local name
-				}
+				return URI.create(getLocalName(resourceURI));	//create a URI from the local name
 			}
 		}
 		return null;	//no URI could be found
+	}
+
+	
+	
+	/**Converts an URF data model to a string for debugging purposes.
+	@param urf The URF data model to represent as a string.
+	@return A string representation of the URF data model.
+	 */
+	public static String toString(final URF urf)
+	{
+		final StringWriter stringWriter=new StringWriter();	//create a new string writer
+		try
+		{
+			new URFTURFGenerator().generateResources(stringWriter, urf);	//generate TURF from the URF
+		}
+		catch(final IOException ioException)	//there should never be a problem writing to a string writer
+		{
+			throw new AssertionError(ioException);
+		}
+		return stringWriter.toString();	//return the generated string contents
+	}
+	
+	/**Converts an URF resource to a string for debugging purposes.
+	@param resource The RDF resource to represent as a string.
+	@return A string representation of the URF resource.
+	*/
+	public static String toString(final URFResource resource)
+	{
+		final StringWriter stringWriter=new StringWriter();	//create a new string writer
+		try
+		{
+			new URFTURFGenerator().generateResources(stringWriter, resource);	//generate TURF from the resource
+		}
+		catch(final IOException ioException)	//there should never be a problem writing to a string writer
+		{
+			throw new AssertionError(ioException);
+		}
+		return stringWriter.toString();	//return the generated string contents
 	}
 
 	/**Comparator for sorting resources in by their property counts, from few to many.*/
@@ -499,8 +639,14 @@ public class URF
 		return unmodifiableSet(resourceSet); //return an unmodifiable iterable to the set of all resources
 	}
 
+	/**Default constructor.*/
+	public URF()
+	{
+		registerResourceFactory(URF_NAMESPACE_URI, DEFAULT_URF_RESOURCE_FACTORY);	//register the default URF resource factory with the URF namespace
+	}
+
 	/**Retreives a resource from the data model based upon a URI.
-	If no such resource exists, or no resource URI was given, a resource will be created and added to the data model.
+	If no such resource exists, a resource will be created and added to the data model.
 	If the given resource URI is in a lexical namespace, its lexical type will be used.
 	@param resourceURI The URI of the resource to retrieve, or <code>null</code> if the resource should have no URI.
 	@return A resource with the given URI.
@@ -512,20 +658,20 @@ public class URF
 		return locateResource(resourceURI, lexicalTypeURI);	//locate a resource with whatever type we determined, if any
 	}
 
-	/**Retrieves a resource from the data model based upon the URI of the resource and an optional type URI.
+	/**Retrieves a resource from the data model based upon the URI of the resource and optional type URIs.
 	If no such resource exists, or no resource URI was given, a resource will be created and added to the data model.
-	The given type URI, if any, will be used to locate a resource factory to create the resource, and that type URI will be added as a type property.
+	The given type URIs, if any, will be used to locate a resource factory to create the resource, and that type URI may be added as a type property.
 	If the resource already exists, no checks are performed to ensure that the existing resource is of the requested type.
 	@param resourceURI The URI of the resource to retrieve, or <code>null</code> if the resource should have no URI.
-	@param typeURI The URI of the type, or <code>null</code> if the type is not known.
+	@param typeURIs The URIs of the known types.
 	@return A resource with the given URI.
 	*/
-	public URFResource locateResource(final URI resourceURI, final URI typeURI)
+	public URFResource locateResource(final URI resourceURI, final URI... typeURIs)
 	{
 		URFResource resource=resourceURI!=null ? getResource(resourceURI) : null;  //retrieve a resource from the data model if a resource URI was given
 		if(resource==null)  //if no such resource exists
 		{
-			resource=createResource(resourceURI, typeURI);  //create a new resource of the given type from the given URI and store the resource in the data model
+			resource=createResource(resourceURI, typeURIs);  //create a new resource of the given types from the given URI and store the resource in the data model
 		}
 		return resource;  //return the resource we either found or created
 	}
@@ -535,67 +681,81 @@ public class URF
 	*/
 	public URFResource createResource()
 	{
-		return createResource(null);  //create a resource with no URI URI
+		return createResource(null);  //create a resource with no URI
 	}
 
-	/**Creates a general resource with the specified URI and stores it in this data model.
-	@param resourceURI The URI of the resource to create, or <code>null</code> if the resource created should be anonymous.
-	@return A resource with the given URI.
-	*/
-	public URFResource createResource(final URI resourceURI)
-	{
-		return createResource(resourceURI, null);	//create and return a resource without a type
-	}
-
-	/**Creates a resource with the provided URI and type URI.
-	The given type URI will be used to attempt to locate a resource factory to create the resource.
-	A type property with the given type URI will be added to the resource.
+	/**Creates a resource with the given URI and type URIs.
+	The given type URIs will be used to attempt to find a resource factory to create the resource.
+	The returned resource will have no properties, which implies that no type will be indicated for the resource.
 	The created resource will be stored in this data model.
-	@param resourceURI The URI of the resource to create, or <code>null</code> if the resource created should be anonymous.
-	@param typeURI The URI of the type, or <code>null</code> if the type is not known.
+	@param resourceURI The URI of the resource to create, or <code>null</code> if the created resource created have no URI.
+	@param typeURIs The URIs of the known types.
 	@return The resource created with this URI, with the given type added if a type was given.
+	@see #DEFAULT_RESOURCE_FACTORY
+	@see URFResourceFactory#createResource(URI, URI)
 	*/
-	public URFResource createResource(final URI resourceURI, final URI typeURI)
+	public URFResource createResource(final URI resourceURI, final URI... typeURIs)
 	{
-		URFResource resource=null; //start by assuming that no factory is registered for this type namespace, or the registered factory can't create a resource
-		if(typeURI!=null)	//if we know the type
+		URFResourceFactory selectedResourceFactory=DEFAULT_RESOURCE_FACTORY;	//we'll try to find a matching resource factory; if we can't, we'll use the default resource factory
+		URI selectedTypeURI=null;	//we'll remember the type URI used for finding the resource factory		
+		for(final URI typeURI:typeURIs)	//for each type URI
 		{
-			final String typeLocalName=getLocalName(typeURI);	//get the local name of the type
-			if(typeLocalName!=null)	//if there is a local name
+			final URI typeNamespaceURI=getNamespaceURI(typeURI);	//try to get the namespace of this type
+			if(typeNamespaceURI!=null)	//if this type URI is in a namespace
 			{
-				final URI typeNamespaceURI=getNamespaceURI(typeURI);	//get the namespace URI
 				final URFResourceFactory resourceFactory=getResourceFactory(typeNamespaceURI); //get a resource factory for this namespace
-				if(resourceFactory!=null) //if we have a factory
+				if(resourceFactory!=null) //if we have a resource factory for this namespace
 				{
-					resource=resourceFactory.createResource(resourceURI, typeURI); //try to create a resource from this factory
+					selectedResourceFactory=resourceFactory;	//note the resource factory
+					selectedTypeURI=typeURI;	//note the type URI
 				}
-/*TODO del if not needed
-				if(resource==null)  //if we haven't created a resource, see if this is an RDF resource
-				{
-					if(NIL_RESOURCE_URI.equals(referenceURI))	//if we are creating the nil resource
-					{
-						resource=new RDFListResource(this, NIL_RESOURCE_URI);	//create the nil resource with the special RDF nil URI
-					}
-				}
-*/
 			}
 		}
-		if(resource==null)  //if we didn't create a resource from a factory
-		{
-		  resource=new DefaultURFResource(resourceURI);  //create a new resource from the given URI
-			addResource(resource);  //store the resource in the data model
-		}
-		if(typeURI!=null)	//if we were given a type
-		{
-//TODO fix			RDFUtilities.addType(resource, typeNamespaceURI, typeLocalName); //add the type property
-		}
+		final URFResource resource=selectedResourceFactory.createResource(resourceURI, selectedTypeURI);	//create a resource from the resource factory, using the selected type URI, if any
+		resource.removeProperties();	//remove any properties that the resource factory may have added
+		addResource(resource);  //store the resource in the data model
 		return resource;  //return the resource we created
 	}
 
-	/**Default constructor.*/
-	public URF()
+	/**Retrieves a resource factory for a resource with the given URI and types.
+	If no suitable resource factory can be found, the default resource factory will be returned.
+	@param resourceURI The URI of the resource to be created, or <code>null</code> if the created resource should have no URI.
+	@param types The known types.
+	@return A resource factory to create a resource with the given URI and indicated types.
+	@see #DEFAULT_RESOURCE_FACTORY
+	*/
+/*TODO del if not needed
+	public URFResourceFactory getResourceFactory(final URI resourceURI, final URFResource... types)
 	{
+		return getResourceFactory(resourceURI, getURIs(types));	//get a resource factory using the type URIs
 	}
+*/
+
+	/**Retrieves a resource factory for a resource with the given URI and type URIs.
+	If no suitable resource factory can be found, the default resource factory will be returned.
+	@param resourceURI The URI of the resource to be created, or <code>null</code> if the resource should not have a URI.
+	@param typeURIs The URIs of the known types.
+	@return A resource factory to create a resource with the given URI and indicated types.
+	@see #DEFAULT_RESOURCE_FACTORY
+	*/
+/*TODO del if not needed
+	public URFResourceFactory getResourceFactory(final URI resourceURI, final URI... typeURIs)
+	{
+		for(final URI typeURI:typeURIs)	//for each type URI
+		{
+			final URI typeNamespaceURI=getNamespaceURI(typeURI);	//try to get the namespace of this type
+			if(typeNamespaceURI!=null)	//if this type URI is in a namespace
+			{
+				final URFResourceFactory resourceFactory=getResourceFactory(typeNamespaceURI); //get a resource factory for this namespace
+				if(resourceFactory!=null) //if we have a resource factory for this namespace
+				{
+					return resourceFactory;	//return the resource factory
+				}
+			}
+		}
+		return DEFAULT_RESOURCE_FACTORY;	//if no resource factory could be found, return the default resource factory
+	}
+*/
 
 	/**Looks at all the scopes in the URF data model and recursively gathers which scopes reference which other resources.
 	Circular references are correctly handled.
@@ -637,5 +797,48 @@ public class URF
 		}
 		return referenceMap;	//return the map that was provided, which now holds sets of references to resources
 	}
+
+	/**The shared resource factory for default resources.
+	@see DefaultURFResource
+	*/
+	public final static URFResourceFactory DEFAULT_RESOURCE_FACTORY=new DefaultURFResourceFactory();
+
+	/**The default resource factory for the URF ontology.
+	This resource factory can create the following types of resource objects:
+	<ul>
+		<li>{@link String}</li>
+		<li>{@link URFArrayResource}</li>
+	</ul>
+	*/
+	public final static URFResourceFactory DEFAULT_URF_RESOURCE_FACTORY=new DefaultURFResourceFactory()
+			{
+				/**Creates a resource with the provided URI based upon the type URI, if any.
+				If a type URI is provided, a corresponding type property value may be added to the resource before it is returned.
+				@param resourceURI The URI of the resource to create, or <code>null</code> if the resource created should be anonymous.
+				@param typeURI The URI of the resource type, or <code>null</code> if the type is not known.
+				@return The resource created with this URI.
+				@exception IllegalArgumentException if a lexical resource URI was given with a different type URI than the specified type URI.
+				*/
+				public URFResource createResource(final URI resourceURI, final URI typeURI)
+				{
+					if(resourceURI!=null && isLexicalURI(resourceURI))	//if we have a lexical resource URI
+					{
+						final URI lexicalTypeURI=getLexicalTypeURI(resourceURI);	//get the lexical type of the resource URI
+						if(!lexicalTypeURI.equals(typeURI))	//if the given type doesn't equal the lexical type
+						{
+							throw new IllegalArgumentException("Specified type URI "+typeURI+" doesn't match type URI "+lexicalTypeURI+" of given lexical URI "+resourceURI);
+						}
+						if(STRING_CLASS_URI.equals(typeURI))	//string
+						{
+							return new DefaultURFValueResource<String>(resourceURI, getLocalName(resourceURI));	//create a string resource from the lexical form
+						}
+					}
+					if(ARRAY_CLASS_URI.equals(typeURI))	//if this is an array
+					{
+						return new URFArrayResource<URFResource>(resourceURI);	//create a new array
+					}
+					return super.createResource(resourceURI, typeURI);	//if we don't recognize the type, create a default resource
+				}
+			};
 
 }

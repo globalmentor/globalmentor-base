@@ -19,8 +19,6 @@ import static com.garretwilson.io.FileConstants.EXTENSION_SEPARATOR;
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.net.URIUtilities.isPathURI;
-import static com.garretwilson.net.URIUtilities.uriEncode;
 
 /**Various URI manipulating functions for working with URIs as defined in
 	<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
@@ -41,6 +39,83 @@ public class URIUtilities
 	public static String createURIList(final URI... uris)
 	{
 		return FormatUtilities.formatList(new StringBuilder(), "\r\n", (Object[])uris).toString();	//create the URI list
+	}
+
+	/**Verifies that the given URI has the indicated scheme.
+	@param uri The URI to check.
+	@param scheme The scheme to match for the URI.
+	@return The given URI.
+	@exception NullPointerException if the given URI and/or scheme is <code>null</code>.
+	@exception IllegalArgumentException if the scheme of the given URI does not match the given scheme.
+	*/
+	public final static URI checkScheme(final URI uri, final String scheme)
+	{
+		if(!scheme.equals(uri.getScheme()))	//if the URI's scheme doesn't match the given scheme
+		{
+			throw new IllegalArgumentException("Scheme of URI "+uri+" must be "+scheme);
+		}
+		return uri;	//return the URI
+	}
+
+	/**Verifies that the given URI is an {@value URIConstants#INFO_SCHEME} scheme URI with the given namespace.
+	@param uri The URI to check.
+	@param infoNamespace The info namespace to match for the URI.
+	@return The given URI.
+	@exception NullPointerException if the given URI and/or info namespace is <code>null</code>.
+	@exception IllegalArgumentException if the scheme of the given URI is not {@value URIConstants#INFO_SCHEME} and/or the info namespace does not match the given info namespace.
+	*/
+	public final static URI checkInfoNamespace(final URI uri, final String infoNamespace)
+	{
+		if(!checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart().startsWith(infoNamespace+INFO_SCHEME_NAMESPACE_DELIMITER))	//check for the info scheme; if the scheme-specific part is not what was expected
+		{
+			throw new IllegalArgumentException("Info namespace of URI "+uri+" must be "+infoNamespace);
+		}
+		return uri;	//return the URI
+	}
+
+	/**Determines the info namespace of the given {@value URIConstants#INFO_SCHEME} scheme URI.
+	@param uri The URI from which the info namespace should be retrieved.
+	@return The info namespace of the given info URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@exception IllegalArgumentException if the given URI is not a valid {@value URIConstants#INFO_SCHEME} scheme URI.
+	*/
+	public final static String getInfoNamespace(final URI uri)
+	{
+		final String ssp=checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart();	//get the raw scheme-specific part after checking to make sure this is an info URI
+		final int namespaceDelimiterIndex=ssp.indexOf(INFO_SCHEME_NAMESPACE_DELIMITER);	//get the index of the info URI namespace delimiter
+		if(namespaceDelimiterIndex<1)	//if there is no namespace delimiter, or there are no namespace characters
+		{
+			throw new IllegalArgumentException("info URI "+uri+" missing delimited namespace.");
+		}
+		return ssp.substring(0, namespaceDelimiterIndex);	//return the namespace
+	}
+
+	/**Determines the info indentifier of the given {@value URIConstants#INFO_SCHEME} scheme URI.
+	@param uri The URI from which the info identifier should be retrieved.
+	@return The raw, unencoded info identifier of the given info URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@exception IllegalArgumentException if the given URI is not a valid {@value URIConstants#INFO_SCHEME} scheme URI.
+	*/
+	public final static String getInfoRawIdentifier(final URI uri)
+	{
+		final String ssp=checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart();	//get the raw scheme-specific part after checking to make sure this is an info URI
+		final int namespaceDelimiterIndex=ssp.indexOf(INFO_SCHEME_NAMESPACE_DELIMITER);	//get the index of the info URI namespace delimiter
+		if(namespaceDelimiterIndex<1)	//if there is no namespace delimiter, or there are no namespace characters
+		{
+			throw new IllegalArgumentException("info URI "+uri+" missing delimited namespace.");
+		}
+		return ssp.substring(namespaceDelimiterIndex+1);	//return the identifier (the part after the namespace and delimiter)
+	}
+
+	/**Determines whether the given URI is an {@value URIConstants#INFO_SCHEME} scheme URI with the given namespace.
+	@param uri The URI to check.
+	@param infoNamespace The info namespace to match for the URI.
+	@return The <code>true</code> if the given URI has a scheme of {@value URIConstants#INFO_SCHEME} and has the indicated info namespace.
+	@exception NullPointerException if the given URI and/or info namespace is <code>null</code>.
+	*/
+	public final static boolean isInfoNamespace(final URI uri, final String infoNamespace)
+	{
+		return INFO_SCHEME.equals(uri.getScheme()) && uri.getRawSchemeSpecificPart().startsWith(infoNamespace+INFO_SCHEME_NAMESPACE_DELIMITER);	//check for the info scheme and the info namespace
 	}
 
 	/**Creates a new URI identical to the supplied URI with a different path.
@@ -834,11 +909,13 @@ public class URIUtilities
 	@param url The URL to convert to a URI. The URL should already be properly encoded.
 	@return The URI form of the URL.
 	@exception URISyntaxException Thrown if the URL could not be converted to a URI.
-	*/ 
+	*/
+/*TODO del
 	public static URI createURI(final URL url) throws URISyntaxException
 	{
 		return new URI(url.toString());	//assuming the URL is already escaped, create a new URI from the string representation of the URL
 	}
+*/
 
 	/**Creates a URN in the form <code>urn:<var>nid</var>:nss</code>.
 	@param nid The namespace identifier.
@@ -852,7 +929,44 @@ public class URIUtilities
 		return URI.create(URN_SCHEME+SCHEME_SEPARATOR+nid+SCHEME_SEPARATOR+nss);	//construct and return the URN
 	}
 
-	/**Creates a <code>mailto</code> URI in the form <code>mailto:<var>username</var>@<var>domain</var></code>.
+	/**Creates an {@value URIConstants#INFO_SCHEME} URI with the given info namespace and identifier.
+	@param namespace The info namespace.
+	@param identifier The raw, encoded info identifier.
+	@return An info URI based upon the given parameters.
+	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
+	@exception NullPointerException if the given namespace and/or identifier is <code>null</code>.
+	*/
+	public static URI createInfoURI(final String namespace, final String identifier)
+	{
+		return URI.create(INFO_SCHEME+SCHEME_SEPARATOR+checkInstance(namespace, "Namespace cannot be null.")+INFO_SCHEME_NAMESPACE_DELIMITER+identifier);	//construct and return the info URI
+	}
+
+	/**Creates an {@value URIConstants#INFO_SCHEME} URI with a {@value URIConstants#INFO_SCHEME_MEDIA_NAMESPACE} namespace
+	in the form <code>info:media/<var>topLevelType</var>/<var>subType</var></code>.
+	@param primaryType The Internet media type primary type.
+	@param subType The Internet media type subtype.
+	@return A <code>info:media/</code> URI based upon the given parameters.
+	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
+	@exception NullPointerException if the given primary type and/or subtype is <code>null</code>.
+	*/
+	public static URI createInfoMediaURI(final String primaryType, final String subType)
+	{
+		return createInfoURI(INFO_SCHEME_MEDIA_NAMESPACE, URIPath.encodeSegment(primaryType)+PATH_SEPARATOR+URIPath.encodeSegment(subType));	//create a new info:media/ URI
+	}
+
+	/**Creates an {@value URIConstants#INFO_SCHEME} URI with a {@value URIConstants#INFO_SCHEME_MEDIA_NAMESPACE} namespace
+	in the form <code>info:media/<var>topLevelType</var>/<var>subType</var></code>.
+	@param contentType The content type to use in creating the <code>info:media/</code> URI.
+	@return A <code>info:media/</code> URI based upon the given parameters.
+	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
+	@exception NullPointerException if the given content type is <code>null</code>.
+	*/
+	public static URI createInfoMediaURI(final ContentType contentType)
+	{
+		return createInfoMediaURI(contentType.getPrimaryType(), contentType.getSubType());	//construct and return an info media URI from the given content type's primary type and subtype
+	}
+
+	/**Creates a {@value URIConstants#MAILTO_SCHEME} URI in the form <code>mailto:<var>username</var>@<var>domain</var></code>.
 	The username and domain will be URI-encoded.
 	@param username The mail username.
 	@param domain The mail domain.
@@ -886,7 +1000,7 @@ public class URIUtilities
 		}
 		else if(contextObject instanceof URL)	//if the context is a URL
 		{
-			return createURI(((URL)contextObject));	//convert the URL to a URI and use it as a context
+			return ((URL)contextObject).toURI().resolve(string);	//convert the URL to a URI and use it as a context
 		}
 		else if(contextObject instanceof File)	//if the context object is a file
 		{

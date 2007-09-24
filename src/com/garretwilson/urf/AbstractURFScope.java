@@ -8,7 +8,6 @@ import java.util.concurrent.locks.*;
 
 import com.garretwilson.lang.LongUtilities;
 import com.garretwilson.lang.NumberUtilities;
-
 import static com.garretwilson.lang.ObjectUtilities.*;
 
 import com.garretwilson.util.*;
@@ -168,6 +167,17 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 			return propertyCount;	//return the property count
 		}
 
+		/**Returns the number of properties in the given namespace.
+		@param namespaceURI
+		@return
+		*/
+/*TODO fix if needed
+		public long getNamespacePropertyCount(final URI namespaceURI)
+		{
+			
+		}
+*/
+
 	/**Returns an iterable to the properties of this scope.
 	@return An iterable to all available properties.
 	*/
@@ -210,6 +220,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	Unordered properties will be returned in an arbitrary order. 
 	@param propertyURI The URI of the property for which a value should be returned.
 	@return The first value of the property with the given URI, or <code>null</code> if there is no such property.
+	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
 	public URFResource getPropertyValue(final URI propertyURI)
 	{
@@ -230,6 +241,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	Unordered properties will be returned in an arbitrary order. 
 	@param propertyURI The URI of the property for which values should be returned.
 	@return An iterable to all values of the property with the given URI.
+	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
 	public Iterable<URFResource> getPropertyValues(final URI propertyURI)
 	{
@@ -259,22 +271,45 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		}
 	}
 
+	/**Determines whether there exists a property with the given property URI.
+	@param propertyURI The URI of the property to check.
+	@return <code>true</code> if a property exists with the given property URI.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public boolean hasProperty(final URI propertyURI)
+	{
+		readLock().lock();	//get a read lock
+		try
+		{
+			final List<URFValueContext> valueContextList=propertURIValueContextsMap.get(propertyURI);	//get the list of value contexts, if there is one
+			return valueContextList!=null && !valueContextList.isEmpty();	//this property exists if there is a non-empty list of value contexts
+		}
+		finally
+		{
+			readLock().unlock();	//always release the read lock
+		}
+	}
+
 	/**Determines whether there exists a property with the given property URI and the given property value.
 	@param propertyURI The URI of the property of the value to check.
 	@param propertyValue The value to match for the given property.
 	@return <code>true</code> if a property exists with the given property URI and property value.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
 	*/
 	public boolean hasPropertyValue(final URI propertyURI, final URFResource propertyValue)
 	{
 		readLock().lock();	//get a read lock
 		try
 		{
-			final List<URFValueContext> valueContextList=propertURIValueContextsMap.getCollection(propertyURI);	//get the list of value contexts
-			for(final URFValueContext valueContext:valueContextList)	//look at each value context
+			final List<URFValueContext> valueContextList=propertURIValueContextsMap.get(propertyURI);	//get the list of value contexts, if there is one
+			if(valueContextList!=null)	//if there is a list of property values
 			{
-				if(propertyValue.equals(valueContext.getValue()))	//if we have a context with this value
+				for(final URFValueContext valueContext:valueContextList)	//look at each value context
 				{
-					return true;	//indicate that we found a matching property value
+					if(propertyValue.equals(valueContext.getValue()))	//if we have a context with this value
+					{
+						return true;	//indicate that we found a matching property value
+					}
 				}
 			}
 			return false;	//indicate that the given property value could not be found
@@ -319,6 +354,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	If the given property and value already exists, no action occurs.
 	@param propertyURI The URI of the property of the value to add.
 	@param propertyValue The value to add for the given property.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
 	*/
 	public void addPropertyValue(final URI propertyURI, final URFResource propertyValue)
 	{
@@ -342,20 +378,103 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		}
 	}
 
-	/**Sets a property value for the property with the given URI.
+	/**Sets a property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.
-	@param propertyValue The value to set for the given property.
+	@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.
+	@return The old property value, or <code>null</code> if there was no property value previously.
+	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
-	public void setPropertyValue(final URI propertyURI, final URFResource propertyValue)
+	public URFResource setPropertyValue(final URI propertyURI, final URFResource propertyValue)
 	{
-		final List<URFValueContext> valueContextList=propertURIValueContextsMap.createCollection();	//create a list of value contexts to hold the new value
-		valueContextList.add(new URFValueContext(this, propertyValue, new ChildURFScope(propertyURI)));	//add a new value context
-		final List<URFValueContext> oldValueContextList=propertURIValueContextsMap.put(propertyURI, valueContextList);	//change the list of context values, noting the old list of values, if any
-		++propertyCount;	//note that another property has been added
-		if(oldValueContextList!=null)	//if there were values before for this property URI
+		final List<URFValueContext> oldValueContextList;	//we'll keep track of the old list of values, if any, so as to keep track of the number of properties
+		if(propertyValue!=null)	//if a property value was given
+		{
+			final List<URFValueContext> valueContextList=propertURIValueContextsMap.createCollection();	//create a list of value contexts to hold the new value
+			valueContextList.add(new URFValueContext(this, propertyValue, new ChildURFScope(propertyURI)));	//add a new value context
+			oldValueContextList=propertURIValueContextsMap.put(propertyURI, valueContextList);	//change the list of context values, noting the old list of values, if any
+			++propertyCount;	//note that another property has been added
+		}
+		else	//if no property value was given
+		{
+			oldValueContextList=propertURIValueContextsMap.remove(propertyURI);	//remove the old list of values, if any
+		}
+		if(oldValueContextList!=null)	//if there were values before this operation
 		{
 			propertyCount-=oldValueContextList.size();	//note the properties that were removed
+			if(!oldValueContextList.isEmpty())	//if the old list isn't empty
+			{
+				return oldValueContextList.get(0).getValue();	//return its first value
+			}
 		}
+		return null;	//indicate that there was no previous property value
+	}
+
+	/**Sets a string property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
+	@param propertyURI The URI of the property of the value to set.
+	@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.
+	@return The old property value, or <code>null</code> if there was no property value previously.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public URFResource setPropertyValue(final URI propertyURI, final String propertyValue)
+	{
+		return setPropertyValue(propertyURI, DefaultURFResourceFactory.createResource(propertyValue));	//set the property value with a string
+	}
+
+	/**Removes all properties of this scope.
+	@return The number of properties removed.
+	*/
+	public long removeProperties()
+	{
+		long removedPropertyCount=0;	//we haven't removed any properties, yet
+		writeLock().lock();	//get a write lock
+		try
+		{
+			final Iterator<Map.Entry<URI, List<URFValueContext>>> propertyURIValueContextListEntryIterator=propertURIValueContextsMap.entrySet().iterator();	//get an iterator to the property map entries
+			while(propertyURIValueContextListEntryIterator.hasNext())	//while there are more property map entries TODO consolidate code with namespace version
+			{
+				final Map.Entry<URI, List<URFValueContext>> propertyURIValueContextListEntry=propertyURIValueContextListEntryIterator.next();	//get the next property map entry
+				final int valueCount=propertyURIValueContextListEntry.getValue().size();	//see how many values we're going to remove
+				propertyURIValueContextListEntryIterator.remove();	//remove all the values for this property
+				propertyCount-=valueCount;	//update our total number of properties
+				removedPropertyCount+=valueCount;	//show that we removed more properties
+			}
+			return removedPropertyCount;	//return the number of properties we removed
+		}
+		finally
+		{
+			writeLock().unlock();	//always release the write lock
+		}					
+	}
+
+	/**Removes all properties of this scope within a particular namespace.
+	@param namespaceURI The URI of the namespace of the properties to be removed.
+	@return The number of properties removed.
+	@exception NullPointerException if the given namespace URI is <code>null</code>.
+	*/
+	public long removeNamespaceProperties(final URI namespaceURI)
+	{
+		long removedPropertyCount=0;	//we haven't removed any properties, yet
+		writeLock().lock();	//get a write lock
+		try
+		{
+			final Iterator<Map.Entry<URI, List<URFValueContext>>> propertyURIValueContextListEntryIterator=propertURIValueContextsMap.entrySet().iterator();	//get an iterator to the property map entries
+			while(propertyURIValueContextListEntryIterator.hasNext())	//while there are more property map entries
+			{
+				final Map.Entry<URI, List<URFValueContext>> propertyURIValueContextListEntry=propertyURIValueContextListEntryIterator.next();	//get the next property map entry
+				if(namespaceURI.equals(getNamespaceURI(propertyURIValueContextListEntry.getKey())))	//if this property is in the requested namesapce
+				{
+					final int valueCount=propertyURIValueContextListEntry.getValue().size();	//see how many values we're going to remove
+					propertyURIValueContextListEntryIterator.remove();	//remove all the values for this property
+					propertyCount-=valueCount;	//update our total number of properties
+					removedPropertyCount+=valueCount;	//show that we removed more properties
+				}
+			}
+			return removedPropertyCount;	//return the number of properties we removed
+		}
+		finally
+		{
+			writeLock().unlock();	//always release the write lock
+		}			
 	}
 
 	/**Retrieves the order of this scope.
@@ -395,6 +514,8 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		This version resorts the value orders for the parent scope if this method changes a scoped order.
 		@param propertyURI The URI of the property of the value to add.
 		@param propertyValue The value to add for the given property.
+		@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+		@exception IllegalStateException if this method is called after this scope is no longer available.
 		*/
 		public void addPropertyValue(final URI propertyURI, final URFResource propertyValue)
 		{
@@ -418,18 +539,20 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 			}
 		}
 
-		/**Sets a property value for the property with the given URI.
+		/**Sets a property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 		This version resorts the value orders for the parent scope if this method changes a scoped order.
 		@param propertyURI The URI of the property of the value to set.
-		@param propertyValue The value to set for the given property.
+		@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.
+		@return The old property value, or <code>null</code> if there was no property value previously.
+		@exception NullPointerException if the given property URI is <code>null</code>.
 		@exception IllegalStateException if this method is called after this scope is no longer available.
 		*/
-		public void setPropertyValue(final URI propertyURI, final URFResource propertyValue)
+		public URFResource setPropertyValue(final URI propertyURI, final URFResource propertyValue)
 		{
 			writeLock().lock();	//get a write lock
 			try
 			{
-				super.setPropertyValue(propertyURI, propertyValue);	//set the property value normally
+				final URFResource oldValue=super.setPropertyValue(propertyURI, propertyValue);	//set the property value normally, saving the old value
 				if(ORDER_PROPERTY_URI.equals(propertyURI))	//if the scoped order changed, resort the value orders for the parent scope
 				{
 					final List<URFValueContext> valueContextList=AbstractURFScope.this.propertURIValueContextsMap.get(getPropertyURI());	//get the list of value contexts from the parent scope
@@ -439,6 +562,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 					}
 					sort(valueContextList, VALUE_CONTEXT_COMPARATOR);	//re-sort the values based upon the new scoped order
 				}
+				return oldValue;	//return the old value
 			}
 			finally
 			{
@@ -446,6 +570,35 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 			}			
 		}
 
+		/**Removes all properties of this scope within a particular namespace
+		This version resorts the value orders for the parent scope if this method changes a scoped order.
+		@param namespaceURI The URI of the namespace of the properties to be removed.
+		@return The number of properties removed.
+		@exception NullPointerException if the given namespace URI is <code>null</code>.
+		@exception IllegalStateException if this method is called after this scope is no longer available.
+		*/
+		public long removeNamespaceProperties(final URI namespaceURI)
+		{
+			writeLock().lock();	//get a write lock
+			try
+			{
+				final long removedPropertyCount=super.removeNamespaceProperties(namespaceURI);	//remove the namespaced properties normally, saving the number of properties removed
+				if(URF_NAMESPACE_URI.equals(namespaceURI))	//if all the URF properties were removed, the scoped order might have changed, resort the value orders for the parent scope
+				{
+					final List<URFValueContext> valueContextList=AbstractURFScope.this.propertURIValueContextsMap.get(getPropertyURI());	//get the list of value contexts from the parent scope TODO combine common code
+					if(valueContextList==null)	//if there is no value context for that property, this scope must be being used after the property was removed
+					{
+						throw new IllegalStateException("Scope for property URI "+getPropertyURI()+" being used after property value was changed.");
+					}
+					sort(valueContextList, VALUE_CONTEXT_COMPARATOR);	//re-sort the values based upon the new scoped order
+				}
+				return removedPropertyCount;	//return the number of properties we removed
+			}
+			finally
+			{
+				writeLock().unlock();	//always release the write lock
+			}			
+		}
 	}
 
 	/**An iterator that can iterate over all properties of this scope, or only those with a given namespace.
@@ -457,9 +610,6 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 
 		/**The URI of the namespace of the properties to be returned, or <code>null</code> if all properties should be returned.*/
 		private final URI namespaceURI;
-
-			/**@return The URI of the namespace of the properties to be returned, or <code>null</code> if all properties should be returned.*/
-//TODO del			public URI getNamespaceURI() {return namespaceURI;}
 
 		/**The iterator to property URIs.*/
 		private final Iterator<URI> propertyURIIterator;

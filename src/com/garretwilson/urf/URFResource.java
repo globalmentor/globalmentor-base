@@ -21,5 +21,5 @@ public interface URFResource extends Resource, URFScope
 	@return <code>true</code> if this resource has a type with the given URI.
 	@see URF#TYPE_PROPERTY_URI
 	*/
-	public boolean hasType(final URI typeURI);
+	public boolean hasTypeURI(final URI typeURI);
 }
