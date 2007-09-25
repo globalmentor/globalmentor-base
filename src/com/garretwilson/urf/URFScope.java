@@ -28,42 +28,6 @@ public interface URFScope extends ReadWriteLock
 	/**@return The number of properties this scope has.*/
 	public long getPropertyCount();
 
-	/**Returns an iterable to the properties of this scope.
-	@return An iterable to all available properties.
-	*/
-	public Iterable<URFProperty> getProperties();
-
-	/**Returns an iterable to the properties of this scope within a particular namespace.
-	@param namespaceURI The URI of the namespace of the properties to be returned.
-	@return An iterable to all available properties.
-	@exception NullPointerException if the given namespace URI is <code>null</code>.
-	*/
-	public Iterable<URFProperty> getNamespaceProperties(final URI namespaceURI);
-
-	/**Retrieves an iterable to all property URIs.
-	Any deletions made to the returned iterable will result in all corresponding properties being removed.
-	@return An iterable to all property URIs.
-	*/
-	public Iterable<URI> getPropertyURIs();
-
-	/**Retrieves the first value of the property with the given URI.
-	All ordered properties will be returned in their correct order before any non-ordered properties.
-	Unordered properties will be returned in an arbitrary order. 
-	@param propertyURI The URI of the property for which a value should be returned.
-	@return The first value of the property with the given URI, or <code>null</code> if there is no such property.
-	@exception NullPointerException if the given property URI is <code>null</code>.
-	*/
-	public URFResource getPropertyValue(final URI propertyURI);
-
-	/**Retrieves an iterable to the values of the property with the given URI.
-	All ordered properties will be returned in their correct order before any non-ordered properties.
-	Unordered properties will be returned in an arbitrary order. 
-	@param propertyURI The URI of the property for which values should be returned.
-	@return An iterable to all values of the property with the given URI.
-	@exception NullPointerException if the given property URI is <code>null</code>.
-	*/
-	public Iterable<URFResource> getPropertyValues(final URI propertyURI);
-
 	/**Determines whether there exists a property with the given property URI.
 	@param propertyURI The URI of the property to check.
 	@return <code>true</code> if a property exists with the given property URI.
@@ -87,13 +51,68 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public boolean hasPropertyValueURI(final URI propertyURI, final URI propertyValueURI);
 
+	/**Returns an iterable to the properties of this scope.
+	@return An iterable to all available properties.
+	*/
+	public Iterable<URFProperty> getProperties();
+
+	/**Returns an iterable to the properties of this scope within a particular namespace.
+	@param namespaceURI The URI of the namespace of the properties to be returned.
+	@return An iterable to all available properties.
+	@exception NullPointerException if the given namespace URI is <code>null</code>.
+	*/
+	public Iterable<URFProperty> getNamespaceProperties(final URI namespaceURI);
+
+	/**Retrieves an iterable to all property URIs.
+	Any deletions made to the returned iterable will result in all corresponding properties being removed.
+	@return An iterable to all property URIs.
+	*/
+	public Iterable<URI> getPropertyURIs();
+
+	/**Retrieves the first value context of the property with the given URI.
+	All ordered properties will be returned in their correct order before any non-ordered properties.
+	Unordered properties will be returned in an arbitrary order. 
+	@param propertyURI The URI of the property for which a value context should be returned.
+	@return The first value context of the property with the given URI, or <code>null</code> if there is no such property.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public URFValueContext getPropertyValueContext(final URI propertyURI);
+
+	/**Retrieves an iterable to the value contexts of the property with the given URI.
+	All ordered properties will be returned in their correct order before any non-ordered properties.
+	Unordered properties will be returned in an arbitrary order. 
+	@param propertyURI The URI of the property for which value contexts should be returned.
+	@return An iterable to all value contexts of the property with the given URI.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public Iterable<URFValueContext> getPropertyValueContexts(final URI propertyURI);
+
+	/**Retrieves the first value of the property with the given URI.
+	All ordered properties will be returned in their correct order before any non-ordered properties.
+	Unordered properties will be returned in an arbitrary order. 
+	@param propertyURI The URI of the property for which a value should be returned.
+	@return The first value of the property with the given URI, or <code>null</code> if there is no such property.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public URFResource getPropertyValue(final URI propertyURI);
+
+	/**Retrieves an iterable to the values of the property with the given URI.
+	All ordered properties will be returned in their correct order before any non-ordered properties.
+	Unordered properties will be returned in an arbitrary order. 
+	@param propertyURI The URI of the property for which values should be returned.
+	@return An iterable to all values of the property with the given URI.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public Iterable<URFResource> getPropertyValues(final URI propertyURI);
+
 	/**Adds a property value for the property with the given URI.
 	If the given property and value already exists, no action occurs.
 	@param propertyURI The URI of the property of the value to add.
 	@param propertyValue The value to add for the given property.
+	@return The context of the added value.
 	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
 	*/
-	public void addPropertyValue(final URI propertyURI, final URFResource propertyValue);
+	public URFValueContext addPropertyValue(final URI propertyURI, final URFResource propertyValue);
 
 	/**Sets a property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.

@@ -8,6 +8,9 @@ import static com.garretwilson.text.CharacterConstants.*;
 public class TURF
 {
 
+	/**The character that marks the end of a series of resources encoded in TURF.*/
+//TODO del if not wanted	public final static char TURF_END=';';
+
 	/**Unicode whitespace characters.*/
 	public final static char[] SEPARATORS=(PARAGRAPH_SEPARATOR_CHARS+SEGMENT_SEPARATOR_CHARS+WHITESPACE_CHARS).toCharArray();
 

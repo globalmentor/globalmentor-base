@@ -16,11 +16,16 @@ import com.garretwilson.net.URIConstants;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 import com.garretwilson.util.*;
+import com.garretwilson.urf.content.*;
 
 /**An URF data model.
 This data model keeps track of all resources that are being created as a linked group, such as parsed from a TURF interchange document,
 and are thought of as a separate universe of descriptions.
-This implementation registers the resource factory {@link URF#DEFAULT_URF_RESOURCE_FACTORY} for the URF namespace URI {@value URF#URF_NAMESPACE_URI}.
+This implementation by default registers the following namespace factories for the following namespaces:
+<dl>
+	<dt>{@value #URF_NAMESPACE_URI}</dt> <dd>{@link #DEFAULT_URF_RESOURCE_FACTORY}</dd>
+	<dt>{@value Content#CONTENT_NAMESPACE_URI}</dt> <dd>{@link Content#DEFAULT_CONTENT_RESOURCE_FACTORY}</dd>
+</dl>
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:
@@ -52,6 +57,8 @@ public class URF
 	public final static URI NUMBER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Number");
 	/**The URI of the URF <code>Real</code> class.*/ 
 	public final static URI REAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Real");
+	/**The URI of the URF <code>Resource</code> class.*/ 
+	public final static URI RESOURCE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Resource");
 	/**The URI of the URF <code>String</code> class.*/ 
 	public final static URI STRING_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "String");
 	/**The URI of the URF <code>URI</code> class.*/ 
@@ -643,6 +650,7 @@ public class URF
 	public URF()
 	{
 		registerResourceFactory(URF_NAMESPACE_URI, DEFAULT_URF_RESOURCE_FACTORY);	//register the default URF resource factory with the URF namespace
+		registerResourceFactory(Content.CONTENT_NAMESPACE_URI, Content.DEFAULT_CONTENT_RESOURCE_FACTORY);	//register the default content resource factory with the content namespace
 	}
 
 	/**Retreives a resource from the data model based upon a URI.
@@ -804,11 +812,11 @@ public class URF
 	public final static URFResourceFactory DEFAULT_RESOURCE_FACTORY=new DefaultURFResourceFactory();
 
 	/**The default resource factory for the URF ontology.
-	This resource factory can create the following types of resource objects:
-	<ul>
-		<li>{@link String}</li>
-		<li>{@link URFArrayResource}</li>
-	</ul>
+	This resource factory can create the following types of resource objects for the given types:
+	<dl>
+		<dt>{@value #STRING_NAMESPACE_URI}</dt> <dd>{@link String}</dd>
+		<dt>{@value #ARRAY_CLASS_URI}</dt> <dd>{@link URFArrayResource}</dd>
+	</dl>
 	*/
 	public final static URFResourceFactory DEFAULT_URF_RESOURCE_FACTORY=new DefaultURFResourceFactory()
 			{

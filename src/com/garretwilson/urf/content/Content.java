@@ -7,6 +7,7 @@ import javax.mail.internet.ContentType;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 import com.garretwilson.urf.*;
+
 import static com.garretwilson.urf.URF.*;
 
 /**The URF content ontology.
@@ -20,6 +21,9 @@ public class Content
 	/**The URI to the URF content namespace.*/
 	public final static URI CONTENT_NAMESPACE_URI=URI.create("http://urf.name/content");
 
+		//URF classes 
+	/**The URI of the content <code>Resource</code> class.*/ 
+	public final static URI RESOURCE_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "Resource");
 		//URF content property names
 	/**The actual content, such as bytes or a string, of a resource.*/
 	public final static URI CONTENT_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "content");
@@ -34,28 +38,28 @@ public class Content
 
 	/**Returns the declared content type of the resource.
 	@param resource The resource for which the content type should be returned.
-	@return This resource's content type declaration, or <code>null</code> if this rule has no <code>content:type</code> property specified.
+	@return This resource's content type declaration, or <code>null</code> if the resource has no <code>content:type</code> property specified.
 	*/
-	public static URFResource getType(final URFResource resource)
+	public static URFResource getContentType(final URFResource resource)
 	{
 		return resource.getPropertyValue(TYPE_PROPERTY_URI);	//return the content type
 	}
 
 	/**Returns the declared content type of the resource as an Internet media type.
 	@param resource The resource for which the content type should be returned.
-	@return This resource's content type declaration as a media type, or <code>null</code> if this rule has no <code>content:type</code> property specified
+	@return This resource's content type declaration as a media type, or <code>null</code> if the resource has no <code>content:type</code> property specified
 		or the content type was not a resource with an Internet media type <code>info:media/</code> URI.
 	*/
-	public static ContentType getMediaType(final URFResource resource)
+	public static ContentType getContentMediaType(final URFResource resource)
 	{
-		return asMediaType(getType(resource));	//return the content type, if any, as a media type
+		return asMediaType(getContentType(resource));	//return the content type, if any, as a media type
 	}
 
 	/**Sets the content type property of the resource.
 	@param resource The resource for which the content type property should be set.
 	@param mediaType The resource that specifies the Internet media type, or <code>null</code> if there should be no content type.
 	*/
-	public static void setType(final URFResource resource, final URFResource mediaType)
+	public static void setContentType(final URFResource resource, final URFResource mediaType)
 	{
 		resource.setPropertyValue(TYPE_PROPERTY_URI, mediaType);	//set the content type
 	}
@@ -65,9 +69,9 @@ public class Content
 	@param mediaTypeURI The URI of the Internet media type, or <code>null</code> if there should be no content type.
 	@exception IllegalArgumentException if the URI of any given media type URI is does not have an <code>info:media/</code> namespace.
 	*/
-	public static void setType(final URFResource resource, final URI mediaTypeURI)
+	public static void setContentType(final URFResource resource, final URI mediaTypeURI)
 	{
-		setType(resource, mediaTypeURI!=null ? new DefaultURFResource(checkInfoNamespace(mediaTypeURI, INFO_SCHEME_MEDIA_NAMESPACE)) : null);	//if a media type URI was given, check for the info:media/ namespace and create a default resource
+		setContentType(resource, mediaTypeURI!=null ? new DefaultURFResource(checkInfoNamespace(mediaTypeURI, INFO_SCHEME_MEDIA_NAMESPACE)) : null);	//if a media type URI was given, check for the info:media/ namespace and create a default resource
 	}
 
 	/**Sets the content type property of the resource.
@@ -76,7 +80,7 @@ public class Content
 	*/
 	public static void setContentType(final URFResource resource, final ContentType contentType)
 	{
-		setType(resource, createInfoMediaURI(contentType));	//create an info:media/ URI from the given content type and set the resource's content type
+		setContentType(resource, createInfoMediaURI(contentType));	//create an info:media/ URI from the given content type and set the resource's content type
 	}
 
 	/**Retrieves the array of child resources of the resource.
@@ -101,9 +105,9 @@ public class Content
 	@param resource The resource for which the content should be returned.
 	@return This resource's string content declaration, or <code>null</code> if the resource has no <code>content:content</code> property specified or the content is not a string.
 	*/
-	public static String getStringContent(final URFResource resource) throws ClassCastException
+	public static String getStringContent(final URFResource resource)
 	{
-		return asString(resource.getPropertyValue(CONTENT_PROPERTY_URI));	//return the content:content value
+		return asString(resource.getPropertyValue(CONTENT_PROPERTY_URI));	//return the content as a string
 	}
 
 	/**Sets this resource's content declaration with a text string.
@@ -115,4 +119,28 @@ public class Content
 		resource.setPropertyValue(CONTENT_NAMESPACE_URI, content);	//set the content:content property
 	}
 
+	/**The default resource factory for the content ontology.
+	This resource factory can create the following types of resource objects for the given types:
+	<dl>
+		<dt>{@value #RESOURCE_CLASS_URI}</dt> <dd>{@link ContentResource}</dd>
+	</dl>
+	*/
+	public final static URFResourceFactory DEFAULT_CONTENT_RESOURCE_FACTORY=new DefaultURFResourceFactory()
+			{
+				/**Creates a resource with the provided URI based upon the type URI, if any.
+				If a type URI is provided, a corresponding type property value may be added to the resource before it is returned.
+				@param resourceURI The URI of the resource to create, or <code>null</code> if the resource created should be anonymous.
+				@param typeURI The URI of the resource type, or <code>null</code> if the type is not known.
+				@return The resource created with this URI.
+				@exception IllegalArgumentException if a lexical resource URI was given with a different type URI than the specified type URI.
+				*/
+				public URFResource createResource(final URI resourceURI, final URI typeURI)
+				{
+					if(RESOURCE_CLASS_URI.equals(typeURI))	//if this is a content resource
+					{
+						return new ContentResource(resourceURI);	//create a new content resource
+					}
+					return super.createResource(resourceURI, typeURI);	//if we don't recognize the type, create a default resource
+				}
+			};
 }
