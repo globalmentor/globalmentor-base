@@ -15,11 +15,26 @@ The reader must support marking.
 public class ReaderParser
 {
 
+	/**Checks that reader has no more data.
+	@param reader The reader the contents of which to be parsed.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader is not at the end of data.
+	*/
+	public static void checkReaderEnd(final Reader reader) throws IOException, ParseIOException
+	{
+		final int c=reader.read();	//get the current character
+		if(c>=0)	//if this character is valid (the reader is not out of data)
+		{
+			throw new ParseIOException("Expected end of data; found "+(char)c+".");
+		}
+	}
+
 	/**Checks that a read character does not represent the end of the reader's data.
 	@param c The character returned from a reader's {@link Reader#read()} operation.
 	@exception ParseIOException if the given character represents the end of the reader's data.
 	*/
-	public static void checkReaderEnd(final int c) throws ParseIOException
+	public static void checkReaderNotEnd(final int c) throws ParseIOException
 	{
 		if(c<0)	//if this returned character represents the end of the reader's data
 		{
@@ -40,7 +55,7 @@ public class ReaderParser
 		final int c=reader.read();	//get the current character
 		if(c!=character)	//if this character does not match what we expected
 		{
-			checkReaderEnd(c);	//make sure we're not at the end of the reader
+			checkReaderNotEnd(c);	//make sure we're not at the end of the reader
 			throw new ParseIOException("Expected "+(char)character+"; found "+(char)c+".");
 		}
 		return (char)c;	//return the character read
@@ -60,7 +75,7 @@ public class ReaderParser
 		final int c=reader.read();	//get the current character
 		if(c<lowerBound || c>upperBound)	//if this character is not in the range
 		{
-			checkReaderEnd(c);	//make sure we're not at the end of the reader
+			checkReaderNotEnd(c);	//make sure we're not at the end of the reader
 			throw new ParseIOException("Expected character from "+(char)lowerBound+" to "+(char)upperBound+"; found "+(char)c+".");
 		}
 		return (char)c;	//return the character read
@@ -79,7 +94,7 @@ public class ReaderParser
 		final int c=reader.read();	//get the current character
 		if(indexOf(characters, c)<0)	//if this character does not match one of the expected characters
 		{
-			checkReaderEnd(c);	//make sure we're not at the end of the reader
+			checkReaderNotEnd(c);	//make sure we're not at the end of the reader
 			throw new ParseIOException("Expected one of "+Arrays.toString(characters)+"; found "+(char)c+".");
 		}
 		return (char)c;	//return the character read
@@ -135,7 +150,7 @@ public class ReaderParser
 	public static char readCharacter(final Reader reader) throws IOException, ParseIOException
 	{
 		final int c=reader.read();	//read the next character
-		checkReaderEnd(c);	//make sure we're not at the end of the reader
+		checkReaderNotEnd(c);	//make sure we're not at the end of the reader
 		return (char)c;	//return the character read
 	}
 
@@ -159,6 +174,23 @@ public class ReaderParser
 		return new String(characters);	//return a new string from the characters read 
 	}
 
+	/**Skips all characters in a reader until the given delimiter is passed.
+	The new position will be immediately after that of the given character.
+	@param reader The reader the contents of which to be parsed.
+	@param character The character to pass.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters.
+	*/
+	public static void pass(final Reader reader, final char character) throws IOException
+	{
+		int c;	//the character read
+		while((c=reader.read())!=character)	//keep reading until we find the character
+		{
+			checkReaderNotEnd(c);	//make sure we're not at the end of the reader
+		}
+	}
+	
 	/**Reads a character and, if a character was read (i.e. the reader is not out of data), resets the reader as if the character were not read.
 	@param reader The reader the contents of which to be parsed.
 	@return The next character that will be returned the reader's {@link Reader#read()} operation, or <code>-1</code> if the end of the reader has been reached.
@@ -194,7 +226,7 @@ public class ReaderParser
 		{
 			reader.mark(1);	//mark our current position
 			c=reader.read();	//read another character
-			checkReaderEnd(c);	//make sure we're not at the end of the reader
+			checkReaderNotEnd(c);	//make sure we're not at the end of the reader
 			if(c==character)	//if we've reached the character
 			{
 				break;	//stop searching for the character
@@ -223,7 +255,7 @@ public class ReaderParser
 		while(true)
 		{
 			c=reader.read();	//read another character
-			checkReaderEnd(c);	//make sure we're not at the end of the reader
+			checkReaderNotEnd(c);	//make sure we're not at the end of the reader
 			if(c==character)	//if we've reached the character
 			{
 				break;	//stop searching for the character
@@ -266,7 +298,7 @@ public class ReaderParser
 		skip(reader, characters, stringBuilder);	//read the characters
 		return stringBuilder.toString();	//return the collected characters
 	}
-	
+
 	/**Skips over characters in a reader that lie within a given range.
 	The new position will either be the first character not in the range or the end of the reader.
 	@param reader The reader the contents of which to be parsed.

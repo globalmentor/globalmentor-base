@@ -36,7 +36,7 @@ public class URFTURFGenerator
 		/**@return The namespace prefix manager.*/
 		public NamespacePrefixManager getNamespacePrefixManager() {return namespacePrefixManager;}
 
-	/**The set of resources that have been generated, using identity rather than equality for equivalence, as required by generation.*/
+	/**The set of resources that have been generated.*/
 	private final Set<URFResource> generatedResourceSet;
 
 		/**Determines the number of resources that have been generated.
@@ -72,7 +72,7 @@ public class URFTURFGenerator
 			} 
 		}
 
-	/**A map of label strings keyed to the resource they represent, using identity rather than equality for equivalence for comparing resources.*/
+	/**A map of label strings keyed to the resource they represent.*/
 	private final Map<URFResource, String> resourceLabelMap;
 
 	/**The atomic variable used to generate labels.*/
@@ -251,8 +251,8 @@ public class URFTURFGenerator
 		this.baseURI=baseURI;
 		this.formatted=formatted;
 		this.namespacePrefixManager=checkInstance(namespacePrefixManager, "Namespace prefix manager cannot be null.");
-		generatedResourceSet=new HashSet<URFResource>();	//create a map that will determine whether resources have been generated, based upon the identity of resources
-		resourceLabelMap=new HashMap<URFResource, String>();	//create a map of node IDs keyed to resources, using identity rather than equality to determine associated resource
+		generatedResourceSet=new HashSet<URFResource>();	//create a map that will determine whether resources have been generated
+		resourceLabelMap=new HashMap<URFResource, String>();	//create a map of node IDs keyed to resources
 	}
 
 	/**Initializes the generator by resetting values and initializing the namespace prefixes.

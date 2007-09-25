@@ -40,9 +40,8 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		super(urf);  //construct the parent class
 	}
 
-	/**Parses a resources.
-	The current position must that of the first character of the first resource in the list.
-	The new position will be that of the first non-separator character after the resource or the end of the reader.
+	/**Parses all resources and then processes the resulting URF instance.
+	The new position will be the end of the reader; any data appearing after the resources are considered syntax errors.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The URF data model.
@@ -53,6 +52,23 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	public URF process(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
 		skipSeparators(reader);	//skip separators
+		processResources(reader, baseURI);	//process resources
+		checkReaderEnd(reader);	//make sure we're at the end of data
+		return getURF();	//return the URF data model
+	}
+
+	/**Parses a list of resources resources and then processes the resulting URF instance.
+	The current position must that of the first character of the first resource in the list.
+	The new position will be that of the first non-separator character after the resource or the end of the reader.
+	@param reader The reader the contents of which to be parsed.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The URF data model.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if a resource in the list is missing, or if the reader has no more characters before a resource in the list is completely parsed.
+	*/
+	public URF processResources(final Reader reader, final URI baseURI) throws IOException, ParseIOException
+	{
 		final Resource[] resources=parseResourceList(reader, baseURI, NULL_CHAR);	//parse as list of resources
 /*TODO del
 for(final Assertion assertion:getAssertions())	//look at the assertions
@@ -71,7 +87,8 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		return getURF();	//return the URF data model
 	}
 
-	/**Skips over TURF separator characters in a reader.
+	/**Skips over TURF separators in a reader.
+	This method skips all separator characters {@link TURF#SEPARATORS}, as well as any comments.
 	The new position will either be the that of the first non-separator character or the end of the input stream.
 	@param reader The reader the contents of which to be parsed.
 	@return The next character that will be returned the reader's {@link Reader#read()} operation, or <code>-1</code> if the end of the reader has been reached.
@@ -80,7 +97,13 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	*/
 	protected static int skipSeparators(final Reader reader) throws IOException
 	{
-		return skip(reader, SEPARATORS);	//skip all separators
+		int c;	//we'll store the next non-separator character here so that it can be returned
+		while((c=skip(reader, SEPARATORS))==COMMENT_BEGIN)	//skip all separators; if the start of a comment was encountered
+		{
+			check(reader, COMMENT_END);	//read the beginning comment delimiter
+			pass(reader, COMMENT_END);	//skip past the end of the comment; we'll then skip all separator characters and see if another comment starts
+		}
+		return c;	//return the last character read
 	}
 
 	/**Parses a single resource and returns a proxy to the resource.
@@ -244,7 +267,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		}		
 		if(!foundComponent && c!=PROPERTIES_BEGIN)	//if there were no description components so far, and we don't see any properties coming up
 		{
-			checkReaderEnd(c);	//make sure we're not at the end of the reader
+			checkReaderNotEnd(c);	//make sure we're not at the end of the reader
 			throw new ParseIOException("Expected resource; found character: "+(char)c);	//TODO improve with source throwable
 		}
 //Debug.trace("ready to get resource proxy for label", label, "resource URI", resourceURI);
@@ -472,7 +495,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		}
 		if(stringBuilder.length()==0)	//if we didn't read any characters
 		{
-			checkReaderEnd(c);	//make sure we're not at the end of the reader
+			checkReaderNotEnd(c);	//make sure we're not at the end of the reader
 			throw new ParseIOException("Expected name character; found "+(char)c+".");			
 		}
 		if(c>=0)	//if we didn't reach the end of the stream
@@ -507,7 +530,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				b=true;	//store the boolean value
 				break;
 			default:	//if we don't recognize the start of the boolean lexical form
-				checkReaderEnd(c);	//make sure we're not at the end of the reader
+				checkReaderNotEnd(c);	//make sure we're not at the end of the reader
 				throw new ParseIOException("Unrecognized start of boolean: "+(char)c);
 		}
 		check(reader, BOOLEAN_END);	//read the ending boolean delimiter

@@ -32,6 +32,11 @@ public class TURF
 	/**The delimiter that ends character shorthand declarations.*/
 	public final static char CHARACTER_END=CHARACTER_BEGIN;
 
+	/**The delimiter that begins comments.*/
+	public final static char COMMENT_BEGIN='*';
+	/**The delimiter that ends comments.*/
+	public final static char COMMENT_END=COMMENT_BEGIN;
+
 	/**The delimiter that begins labels.*/
 	public final static char LABEL_BEGIN='|';
 	/**The delimiter that ends labels.*/
@@ -108,7 +113,7 @@ public class TURF
 	*/
 	public final static boolean isNameCharacter(final int c)
 	{
-		return Character.isLetterOrDigit(c) || c=='_';	//see if this is a letter, digit, or an underscore TODO use a constant
+		return Character.isLetterOrDigit(c) || c=='_' || c=='.';	//see if this is a letter, digit, an underscore, or a period TODO use constants
 	}
 
 }
