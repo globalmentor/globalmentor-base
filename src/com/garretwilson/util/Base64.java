@@ -65,6 +65,9 @@ package com.garretwilson.util;
  * @author Robert Harder
  * @author rob@iharder.net
  * @version 2.2.1
+ * 
+ * This version has additions marked with GDW.
+ * @author Garret Wilson
  */
 public class Base64
 {
@@ -918,8 +921,9 @@ public class Base64
             }   // end if: white space, equals sign or better
             else
             {
-                System.err.println( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );
-                return null;
+//                System.err.println( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );
+//                return null;
+              throw new IllegalArgumentException( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );	//GDW
             }   // end else: 
         }   // each input character
                                    

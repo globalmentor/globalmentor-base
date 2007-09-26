@@ -10,11 +10,11 @@ import static com.garretwilson.io.ReaderParser.*;
 import com.garretwilson.io.ParseIOException;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.text.CharacterEncodingConstants.*;
 import static com.garretwilson.text.CharacterConstants.*;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
-import com.garretwilson.util.Debug;
-import com.garretwilson.util.NameValuePair;
+import com.garretwilson.util.*;
 
 /**Constructs an URF data instance from a TURF representation.
 The TURF processor maintains an internal URF DF data model throughout its lifetime that is continually updated with every new URF processing that occurs.
@@ -173,6 +173,12 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 */
+			case BINARY_BEGIN:	//binary
+				foundComponent=true;	//indicate that at least one description component is present
+				final byte[] binary=parseBinary(reader);	//parse the binary data
+				resourceURI=createBinaryURI(binary);	//create a URI for the resource
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				break;
 			case BOOLEAN_BEGIN:	//boolean
 				foundComponent=true;	//indicate that at least one description component is present
 				final boolean b=parseBoolean(reader);	//parse the boolean
@@ -499,6 +505,30 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		return stringBuilder.toString();	//return the name segment we read
 	}
 
+	/**Parses binary data surrounded by binary delimiters.
+	The current position must be that of the first binary delimiter character.
+	The new position will be that immediately after the last binary delimiter character.
+	@param reader The reader the contents of which to be parsed.
+	@return The binary data parsed from the reader.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters before the current URI is completely parsed.
+	@exception ParseIOException if the binary data is not correctly encoded base64url data with no linebreaks or if the reader has no more characters before the current binary data is completely parsed.
+	*/
+	public byte[] parseBinary(final Reader reader) throws IOException, ParseIOException
+	{
+		check(reader, BINARY_BEGIN);	//read the beginning binary delimiter
+		final String base64urlString=reachAfter(reader, BINARY_END);	//read the rest of the binary data
+		try
+		{
+			return Base64.decode(base64urlString.getBytes(UTF_8), 0, base64urlString.length(), Base64.URL_SAFE&Base64.DONT_BREAK_LINES);	//decode and return the data
+		}
+		catch(final IllegalArgumentException illegalArgumentException)	//if the string was not valid base64url-encoded data
+		{
+			throw new ParseIOException(reader, illegalArgumentException);
+		}
+	}
+
 	/**Parses a boolean surrounded by boolean delimiters.
 	The current position must be that of the first boolean delimiter character.
 	The new position will be that immediately after the last boolean delimiter character.
@@ -659,7 +689,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param uriBegin The beginning URI delimiter.
 	@param uriEnd The ending URI delimiter.
-	@return The label parsed from the reader.
+	@return The URI parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current URI is completely parsed.
@@ -706,7 +736,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			}
 			return uri;	//return the resulting URI
 		}
-		catch(final URISyntaxException uriSyntaxException)	//one of the string was not a valid URI
+		catch(final URISyntaxException uriSyntaxException)	//if one of the strings was not a valid URI
 		{
 			throw new ParseIOException(reader, uriSyntaxException);
 		}

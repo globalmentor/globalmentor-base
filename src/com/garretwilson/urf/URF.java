@@ -8,15 +8,16 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.mail.internet.ContentType;
 
+import static com.garretwilson.io.ContentTypeUtilities.*;
 import static com.garretwilson.lang.BooleanUtilities.*;
 import static com.garretwilson.lang.CharacterUtilities.*;
 import com.garretwilson.lang.LongUtilities;
 import static com.garretwilson.lang.ObjectUtilities.*;
-import static com.garretwilson.io.ContentTypeUtilities.*;
-import com.garretwilson.net.Resource;
+import com.garretwilson.net.*;
 import com.garretwilson.net.URIConstants;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.text.CharacterEncodingConstants.*;
 import com.garretwilson.urf.content.*;
 import com.garretwilson.util.*;
 
@@ -51,6 +52,8 @@ public class URF
 		//URF classes 
 	/**The URI of the URF <code>Array</code> class.*/ 
 	public final static URI ARRAY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Array");
+	/**The URI of the URF <code>Binary</code> class.*/ 
+	public final static URI BINARY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Binary");
 	/**The URI of the URF <code>Boolean</code> class.*/ 
 	public final static URI BOOLEAN_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Boolean");
 	/**The URI of the URF <code>Character</code> class.*/ 
@@ -76,11 +79,13 @@ public class URF
 	public final static URI TYPE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "type");
 
 		//URF lexical namespaces
-	/**The Boolean lexical namespace URI.*/
+	/**The binary lexical namespace URI.*/
+	public final static URI BINARY_NAMESPACE_URI=createLexicalNamespaceURI(BINARY_CLASS_URI);
+	/**The boolean lexical namespace URI.*/
 	public final static URI BOOLEAN_NAMESPACE_URI=createLexicalNamespaceURI(BOOLEAN_CLASS_URI);
-		/**The lexical form of the Boolean value <code>false</code>.*/
+		/**The lexical form of the boolean value <code>false</code>.*/
 		public final static String BOOLEAN_FALSE_LEXICAL_FORM=Boolean.FALSE.toString();
-		/**The lexical form of the Boolean value <code>true</code>.*/
+		/**The lexical form of the boolean value <code>true</code>.*/
 		public final static String BOOLEAN_TRUE_LEXICAL_FORM=Boolean.TRUE.toString();
 		/**The URI of the boolean value <code>false</code>.*/
 		public final static URI BOOLEAN_FALSE_URI=createLexicalURI(BOOLEAN_CLASS_URI, BOOLEAN_FALSE_LEXICAL_FORM);
@@ -310,15 +315,27 @@ public class URF
 		return URI.create(URF_LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString())+FRAGMENT_SEPARATOR+encodeURI(lexicalForm));	//encode the type, append it to the lexical namespace base URI, and append the fragment of the encoded lexical form
 	}
 
+	/**Creates a URI to represent URF binary data.
+	@param binary The binary value to represent.
+	@return A URI representing the given URF binary data.
+	@exception NullPointerException if the given binary data is <code>null</code>.
+	@see #BINARY_CLASS_URI
+	*/
+	public static URI createBinaryURI(final byte[] binary)
+	{
+		return createLexicalURI(BINARY_CLASS_URI, Base64.encodeBytes(binary, Base64.URL_SAFE&Base64.DONT_BREAK_LINES));	//encode the binary data and create a URI from base64url form
+	}
+
 	/**Creates a URI to represent an URF string.
 	@param string The string value to represent.
 	@return A URI representing the given URF string.
+	@exception NullPointerException if the given string is <code>null</code>.
 	@see #STRING_CLASS_URI
 	*/
 	public static URI createStringURI(final String string)
 	{
 		return string.isEmpty() ? EMPTY_STRING_URI : createLexicalURI(STRING_CLASS_URI, string);	//create a string URI, using the pre-made empty string URI if we can
-	};
+	}
 
 	/**Creates a URI to represent an URF integer.
 	@param integer The integer value to represent.
@@ -328,7 +345,7 @@ public class URF
 	public static URI createIntegerURI(final long integer)
 	{
 		return integer==0 ? INTEGER_0_URI : createLexicalURI(INTEGER_CLASS_URI, Long.toString(integer));	//create an integer URI, using the pre-made zero integer URI if we can
-	};
+	}
 
 	/**Returns an array containing the URIs of the given resources.
 	@param resources The resources of which URIs should be returned.
@@ -354,6 +371,40 @@ public class URF
 	public static <T extends URFResource> URFArrayResource<T> asArrayInstance(final Resource resource)
 	{
 		return resource instanceof URFArrayResource ? (URFArrayResource<T>)resource : null;	//if an array was given, return it with the requested generic type
+	}
+
+	/**Determines the binary data represented by the given resource.
+	@param resource The resource which is expected to represent binary data, or <code>null</code>.
+	@return The binary data represented by the given resource, or <code>null</code> if the resource does not represent binary data.
+	@exception IllegalArgumentException if the given resource represents binary data that does not have the correct syntax.
+	*/
+	public static byte[] asBinary(final Resource resource)
+	{
+		return resource!=null ? asBinary(resource.getURI()) : null;	//if a resource was given, see if its URI represents binary data
+	}
+
+	/**Determines the binary data represented by the given URI.
+	@param resourceURI The URI which is expected to represent binary data , or <code>null</code>.
+	@return The binary data represented by the given URI, or <code>null</code> if the URI does not represent binary data.
+	@exception IllegalArgumentException if the given URI represents binary data that does not have the correct syntax.
+	@see #BINARY_CLASS_URI
+	@see #BINARY_NAMESPACE_URI
+	*/
+	public static byte[] asBinary(final URI resourceURI)
+	{
+		if(resourceURI!=null && BINARY_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a binary URI was given
+		{
+			final String base64urlString=getLocalName(resourceURI);	//get the base64url-encoded binary data from the local name
+			try
+			{
+				return Base64.decode(base64urlString.getBytes(UTF_8), 0, base64urlString.length(), Base64.URL_SAFE&Base64.DONT_BREAK_LINES);	//decode and return the data
+			}
+			catch(final UnsupportedEncodingException unsupportedEncodingException)	//the UTF-8 encoding should always be supported
+			{
+				throw new AssertionError(unsupportedEncodingException);
+			}
+		}
+		return null;	//no boolean could be found
 	}
 
 	/**Determines the boolean represented by the given resource.
@@ -918,7 +969,11 @@ public class URF
 						{
 							throw new IllegalArgumentException("Specified type URI "+typeURI+" doesn't match type URI "+lexicalTypeURI+" of given lexical URI "+resourceURI);
 						}
-						if(BOOLEAN_CLASS_URI.equals(typeURI))	//boolean
+						if(BINARY_CLASS_URI.equals(typeURI))	//binary
+						{
+							return new DefaultURFValueResource<byte[]>(resourceURI, asBinary(resourceURI));	//create a binary value resource
+						}
+						else if(BOOLEAN_CLASS_URI.equals(typeURI))	//boolean
 						{
 							return new DefaultURFValueResource<Boolean>(resourceURI, asBoolean(resourceURI));	//create a boolean value resource
 						}

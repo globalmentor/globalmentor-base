@@ -22,10 +22,15 @@ public class TURF
 	/**The delimiter that ends arrays.*/
 	public final static char ARRAY_END=']';
 
+	/**The delimiter that begins binary shorthand declarations.*/
+	public final static char BINARY_BEGIN='%';
+	/**The delimiter that ends binary shorthand declarations.*/
+	public final static char BINARY_END=BINARY_BEGIN;
+
 	/**The delimiter that begins boolean shorthand declarations.*/
 	public final static char BOOLEAN_BEGIN='!';
 	/**The delimiter that ends boolean shorthand declarations.*/
-	public final static char BOOLEAN_END='!';
+	public final static char BOOLEAN_END=BOOLEAN_BEGIN;
 
 	/**The delimiter that begins character shorthand declarations.*/
 	public final static char CHARACTER_BEGIN='\'';

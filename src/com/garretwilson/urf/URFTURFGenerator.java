@@ -648,7 +648,12 @@ public class URFTURFGenerator
 			final String lexicalForm=getLocalName(uri);	//get the lexical form of the lexical type
 			assert lexicalForm!=null : "A lexical namespace URI should always have a lexical form.";
 //Debug.trace("lexical resource with type:", lexicalTypeURI);
-			if(BOOLEAN_CLASS_URI.equals(lexicalTypeURI))	//boolean
+			if(BINARY_CLASS_URI.equals(lexicalTypeURI))	//binary
+			{
+				writer.append(BINARY_BEGIN).append(lexicalForm).append(BINARY_END);	//write the binary short form
+				return;
+			}
+			else if(BOOLEAN_CLASS_URI.equals(lexicalTypeURI))	//boolean
 			{
 				writer.append(BOOLEAN_BEGIN).append(lexicalForm).append(BOOLEAN_END);	//write the boolean short form
 				return;
