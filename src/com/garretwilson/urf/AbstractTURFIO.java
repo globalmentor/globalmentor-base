@@ -14,7 +14,7 @@ import static com.garretwilson.text.CharacterEncodingConstants.*;
 @param <T> The type to read and write.
 @author Garret Wilson
 */
-public abstract class AbstractTURFIO<T> extends NamespacePrefixManager implements URFIO<T>
+public abstract class AbstractTURFIO<T extends URFResource> extends NamespacePrefixManager implements URFIO<T>
 {
 
 	/**The class representing the type of object being loaded and saved.*/
@@ -121,9 +121,13 @@ public abstract class AbstractTURFIO<T> extends NamespacePrefixManager implement
 	@return The URF instance representing the data read.
 	@exception IOException if there is an error reading the data.
 	*/ 
-	protected URF readURF(final URF urf, final InputStream inputStream, final URI baseURI) throws IOException
+	protected URF readURF(final URF urf, InputStream inputStream, final URI baseURI) throws IOException
 	{
-		final Reader reader=new BufferedReader(new BOMInputStreamReader(new BufferedInputStream(inputStream), UTF_8));	//created a reader from the input stream, defaulting to UTF-8 if not specified
+		if(!inputStream.markSupported())	//if the input stream doesn't support marking
+		{
+			inputStream=new BufferedInputStream(inputStream);	//buffer the input stream to allow marking
+		}
+		final Reader reader=new LineNumberReader(new BOMInputStreamReader(inputStream, UTF_8));	//created a reader from the input stream, defaulting to UTF-8 if not specified
 		final URFTURFProcessor turfProcessor=new URFTURFProcessor(urf);	//create a new TURF processor
 		return turfProcessor.process(reader, baseURI);	//process the TURF and return the URF
 	}

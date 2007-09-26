@@ -1,108 +1,336 @@
 package com.garretwilson.io;
 
 import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.Reader;
 
-/**General exception class for all parsing errors.
-Used by com.garretwilson.io.ParseReader.
-@see IOException
+/**Exception class for parsing errors that occur during I/O.
 @see ParseReader
 */
 public class ParseIOException extends IOException
 {
-	/**The index of the line on which the error occurred.
-	@see #charIndex
-	*/
-	private long lineIndex;
+	/**The index of the line on which the error occurred, or -1 if the line index is not known.*/
+	private final long lineIndex;
 
-		/**@return The index of the line on which the error occurred.
-		@see #getCharIndex
+		/**@return The index of the line on which the error occurred, or -1 if the line index is not known..
+		@see #getCharIndex()
 		*/
 		public long getLineIndex() {return lineIndex;}
 
-		/**Sets the index of the line on which the error occurred.
-		@param lineIndex The new line index.
-		@see #setCharIndex
-		*/
-		public void setLineIndex(final long lineIndex) {this.lineIndex=lineIndex;}
-
-	/**The index of the character at which the error occurred on the current line.
+	/**The index of the character at which the error occurred on the current line, or -1 if the character index is not known..
 	@see #lineIndex
 	*/
-	private long charIndex;
+	private final long charIndex;
 
-		/**@return The index of the character at which the error occurred on the current line.
-		@see #getLineIndex
+		/**@return The index of the character at which the error occurred on the current line, or -1 if the character index is not known..
+		@see #getLineIndex()
 		*/
 		public long getCharIndex()	{return charIndex;}
 
-		/**Sets the index of the character at which the error occurred on the current line.
-		@param charIndex The new character index.
-		@see #setLineIndex
-		*/
-		public void setCharIndex(final long charIndex) {this.charIndex=charIndex;}
-
-	/**The name of the source of this exception, such as a filename.*/
+	/**The name of the source of this exception, such as a filename, or <code>null</code> if not known.*/
 	private String sourceName="";
 
-		/**@return The name of the source of this exception, such as a filename.*/
+		/**@return The name of the source of this exception, such as a filename, or <code>null</code> if not known.*/
 		public String getSourceName() {return sourceName;}
 
-		/**Sets the name of the source of this exception, such as a filename.
-		@param sourceName The new name of the sourceof the exception.
-		*/
-		public void setSourceName(final String sourceName) {this.sourceName=sourceName;}
-
-	/**Default constructor for a generic parsing error.*/
-	public ParseIOException()
-	{
-		super();
-	}
-
-	/**Constructor for a generic parsing error, along with a message.
-	@param s The error message.
+	/**Message constructor with no cause.
+	@param message The error message, or <code>null</code> if there is no error message.
 	*/
-	public ParseIOException(String s)
+	public ParseIOException(final String message)
 	{
-		super(s);
+		this(message, (Throwable)null, -1, -1);	//construct the class with no cause or location
 	}
 
-	/**Constructor for a generic parsing error with error location specified.
-	@param lineIndex The index of the line in which the error occurred.
-	@param charIndex The index of the character at which the error occurred on the current line.
-	@param sourceName The name of the source of the data (perhaps a filename).
+	/**Cause constructor.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
 	*/
-	public ParseIOException(final long lineIndex, final long charIndex, final String sourceName)
+	public ParseIOException(final Throwable cause)
 	{
-		super(sourceName+':'+lineIndex+':'+charIndex);
-		setLineIndex(lineIndex);	//set the line index
-		setCharIndex(charIndex);	//set the character index
-		setSourceName(sourceName);	//set the source name
+		this(null, cause, -1, -1);	//construct the class with no given message or location
 	}
 
-	/**Constructor for a generic parsing error with error message from a parse reader.
-	@param s The error message.
-	@param parseReader The parse reader the data of which is the source of the error.
+	/**Message and cause constructor.
+	@param message The error message, or <code>null</code> if there is no error message.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
 	*/
-	public ParseIOException(String s, final ParseReader parseReader)
+	public ParseIOException(final String message, final Throwable cause)
 	{
-		this(s, parseReader.getLineIndex(), parseReader.getCharIndex(), parseReader.getName());	//construct the class with values from the parse reader
+		this(message, cause, -1, -1);	//construct the class with no location known
 	}
 
-	/**Constructor for a generic parsing error with error message and error location specified.
-	@param s The error message.
-	@param lineIndex The index of the line in which the error occurred.
-	@param charIndex The index of the character at which the error occurred on the current line.
-	@param sourceName The name of the source of the data (perhaps a filename).
+	/**Message, cause, and source constructor.
+	@param message The error message, or <code>null</code> if there is no error message.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
+	@param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
 	*/
-	public ParseIOException(String s, final long lineIndex, final long charIndex, final String sourceName)
+	public ParseIOException(final String message, final Throwable cause, final String sourceName)
 	{
-		super(sourceName+':'+lineIndex+':'+charIndex+": "+s);
-		setLineIndex(lineIndex);	//set the line index
-		setCharIndex(charIndex);	//set the character index
-		setSourceName(sourceName);	//set the source name
+		this(message, cause, sourceName, -1, -1);	//construct the class with no location known
+	}
+	
+	/**Message, source, and location constructor with no cause.
+	@param message The error message, or <code>null</code> if there is no error message.
+	@param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
+	@param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	@param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
+	*/
+	public ParseIOException(final String message, final String sourceName, final long lineIndex, final long charIndex)
+	{
+		this(message, null, sourceName, lineIndex, charIndex);	//construct the class with no cause
 	}
 
-	//G***make this print Unicode codes for characters which may not be displayable.
+	/**Cause, source, and location constructor.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
+	@param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
+	@param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	@param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
+	*/
+	public ParseIOException(final Throwable cause, final String sourceName, final long lineIndex, final long charIndex)
+	{
+		this(null, cause, sourceName, lineIndex, charIndex);	//construct the class with no given message
+	}
+		
+	/**Reader and message constructor with no cause.
+	This constructor will attempt to determine the location from the reader.
+	@param reader The reader from which the error occurred.
+	@param message The error message, or <code>null</code> if there is no error message.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@see LineNumberReader
+	@see ParseReader
+	*/
+	public ParseIOException(final Reader reader, final String message)
+	{
+		this(reader, message, (Throwable)null);	//construct the class with no cause
+	}
+
+	/**Reader, and cause constructor.
+	This constructor will attempt to determine the location from the reader.
+	@param reader The reader from which the error occurred.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@see LineNumberReader
+	@see ParseReader
+	*/
+	public ParseIOException(final Reader reader, final Throwable cause)
+	{
+		this(reader, null, cause);	//construct the class with no given message		
+	}
+
+	/**Reader, message, and cause constructor.
+	This constructor will attempt to determine the location from the reader.
+	@param reader The reader from which the error occurred.
+	@param message The error message, or <code>null</code> if there is no error message.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@see LineNumberReader
+	@see ParseReader
+	*/
+	public ParseIOException(final Reader reader, final String message, final Throwable cause)
+	{
+		this(message, cause, getLineIndex(reader), getCharacterIndex(reader));	//construct the class after attempting to get the line and character indexes from the reader
+	}
+	
+	/**Message and location constructor with no cause.
+	@param message The error message, or <code>null</code> if there is no error message.
+	@param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	@param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
+	*/
+	public ParseIOException(final String message, final long lineIndex, final long charIndex)
+	{
+		this(message, (Throwable)null, lineIndex, charIndex);	//construct the class with no cause
+	}
+
+	/**Cause and location constructor.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
+	@param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	@param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
+	*/
+	public ParseIOException(final Throwable cause, final long lineIndex, final long charIndex)
+	{
+		this(null, cause, lineIndex, charIndex);	//construct the class with no given message
+	}
+
+	/**Message, cause, and location constructor.
+	@param message The error message, or <code>null</code> if there is no error message.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
+	@param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	@param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
+	*/
+	public ParseIOException(final String message, final Throwable cause, final long lineIndex, final long charIndex)
+	{
+		this(message, cause, null, lineIndex, charIndex);	//construct the class with no source
+	}
+
+	/**Reader, message, and source constructor with no cause.
+	This constructor will attempt to determine the location from the reader.
+	@param reader The reader from which the error occurred.
+	@param message The error message, or <code>null</code> if there is no error message.
+	@param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
+	@param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	@param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@see LineNumberReader
+	@see ParseReader
+	*/
+	public ParseIOException(final Reader reader, final String message, final String sourceName)
+	{
+		this(reader, message, null, sourceName);	//construct the class with no cause
+	}
+
+	/**Reader, cause, and source constructor.
+	This constructor will attempt to determine the location from the reader.
+	@param reader The reader from which the error occurred.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
+	@param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
+	@param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	@param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@see LineNumberReader
+	@see ParseReader
+	*/
+	public ParseIOException(final Reader reader, final Throwable cause, final String sourceName)
+	{
+		this(reader, null, cause, sourceName);	//construct the class with no given message		
+	}
+
+	/**Reader, message, cause, and source constructor.
+	This constructor will attempt to determine the location from the reader.
+	@param reader The reader from which the error occurred.
+	@param message The error message, or <code>null</code> if there is no error message.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
+	@param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
+	@param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	@param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@see LineNumberReader
+	@see ParseReader
+	*/
+	public ParseIOException(final Reader reader, final String message, final Throwable cause, final String sourceName)
+	{
+		this(message, cause, sourceName, getLineIndex(reader), getCharacterIndex(reader));	//construct the class after attempting to get the line and character indexes from the reader
+	}
+
+	/**Message and source constructor with no cause.
+	@param message The error message, or <code>null</code> if there is no error message.
+	@param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
+	*/
+	public ParseIOException(final String message, final String sourceName)
+	{
+		this(message, null, sourceName, -1, -1);	//construct the class with no cause or location
+	}
+
+	/**Cause and source constructor.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
+	@param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
+	*/
+	public ParseIOException(final Throwable cause, final String sourceName)
+	{
+		this(null, cause, sourceName, -1, -1);	//construct the class with no given message or location
+	}
+
+	/**Message, cause, source, and location constructor.
+	@param message The error message, or <code>null</code> if there is no error message.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
+	@param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
+	@param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	@param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
+	*/
+	public ParseIOException(final String message, final Throwable cause, final String sourceName, final long lineIndex, final long charIndex)
+	{
+		super(createMessage(message, cause, sourceName, lineIndex, charIndex), cause);	//construct the parent class
+		this.lineIndex=lineIndex;
+		this.charIndex=charIndex;
+		this.sourceName=sourceName;
+	}
+
+	/**Creates a message for the exception.
+	@param message The error message, or <code>null</code> if there is no error message.
+	@param cause The cause of the error, or <code>null</code> if there is no cause.
+	@param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
+	@param lineIndex The index of the line in which the error occurred, or -1 if not known.
+	@param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
+	*/
+	protected static String createMessage(String message, final Throwable cause, final String sourceName, final long lineIndex, final long charIndex)
+	{
+		if(message==null && cause!=null)	//if there is no message, but there is a cause
+		{
+			message=cause.getMessage();	//use the cause message
+		}
+		final StringBuilder stringBuilder=new StringBuilder();	//create a string builder
+		if(message!=null)	//if there is a message
+		{
+			stringBuilder.append(message);	//add the message
+		}
+		if(sourceName!=null || lineIndex>=0 || charIndex>=0)	//if there is a source name or a location known
+		{
+			if(stringBuilder.length()>0)	//if there are already characters in the string builder
+			{
+				stringBuilder.append(' ');	//add a separator
+			}
+			stringBuilder.append('(');	//(
+			if(sourceName!=null)	//if there is a source name
+			{
+				stringBuilder.append(sourceName);	//append the source name
+			}
+			if(lineIndex>=0)	//if there is a line index
+			{
+				if(sourceName!=null && !sourceName.isEmpty())	//if there is a source name
+				{
+					stringBuilder.append(' ');	//add a separator
+				}
+				stringBuilder.append(lineIndex+1);	//append the line number
+				if(charIndex>=0)	//if there is a character index
+				{
+					stringBuilder.append(':').append(charIndex+1);	//append the character number after a delimiter
+				}
+			}
+			stringBuilder.append(')');	//)
+		}
+		return stringBuilder.length()>0 ? stringBuilder.toString() : null;	//if there are no characters, return null
+	}
+
+	/**Determines the line index of the given reader if possible.
+	@param reader The reader from which the line index should be determined.
+	@return The line index, or <code>null</code> if the line index could not be determined.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@see LineNumberReader
+	@see ParseReader
+	*/
+	protected static long getLineIndex(final Reader reader)
+	{
+		if(reader instanceof LineNumberReader)	//if this is a line number readre
+		{
+			return ((LineNumberReader)reader).getLineNumber();	//the line number is really the line index
+		}
+		else if(reader instanceof ParseReader)	//if this is a parse reader
+		{
+			return ((ParseReader)reader).getLineIndex();	//it knows the line index
+		}
+		else	//if we don't recognize the reader type
+		{
+			return -1;	//we can't find a line index
+		}
+	}
+
+	/**Determines the character index of the given reader if possible.
+	@param reader The reader from which the character index should be determined.
+	@return The character index, or <code>null</code> if the character index could not be determined.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@see ParseReader
+	*/
+	protected static long getCharacterIndex(final Reader reader)
+	{
+		if(reader instanceof ParseReader)	//if this is a parse reader
+		{
+			return ((ParseReader)reader).getCharIndex();	//it knows the character index
+		}
+		else	//if we don't recognize the reader type
+		{
+			return -1;	//we can't find a character index
+		}
+	}
+
+	//TODO make this print Unicode codes for characters which may not be displayable.
 	/**Converts a list of delimiter characters to a string with the characters in a list, each in a single quote.
 	Whitespace characters besides space are displayed in their escaped form.
 	@param delimiterChars A string with the delimiter characters to be converted to a string.
@@ -139,7 +367,7 @@ public class ParseIOException extends IOException
 	/**Converts an array of strings to a message with the strings separated by commas.
 	@param stringArray An array of strings to be converted to a string.
 	*/
-	//G***convert the characters in these strings so that whitespace gets converted to characters
+	//TODO convert the characters in these strings so that whitespace gets converted to characters
 	static public String convertStringsToMessage(final String[] stringArray)
 	{
 		String messageString="";	//this string will receive the message to return
@@ -155,4 +383,3 @@ public class ParseIOException extends IOException
 	}
 
 }
-

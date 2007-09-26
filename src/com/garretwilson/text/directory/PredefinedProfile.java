@@ -204,9 +204,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		}
 		catch(URISyntaxException uriSyntaxException)	//if the URI was not syntactically correct
 		{
-			final ParseIOException parseIOException=new ParseIOException(uriSyntaxException.getMessage(), reader);	//create an I/O parse exception from the URI syntax exception
-			parseIOException.initCause(uriSyntaxException);	//show what caused this exception
-			throw parseIOException;	//throw the I/O parse exceptoin
+			throw new ParseIOException(reader, uriSyntaxException);
 		}
 	}
 

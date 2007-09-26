@@ -76,7 +76,7 @@ public class ParseUnexpectedDataException extends ParseIOException
 		super("Unexpected character: found "+
 				convertDelimitersToMessage(String.valueOf(foundChar))+
 				".",
-				lineIndex, charIndex, sourceName);	//G***Int
+				sourceName, lineIndex, charIndex);	//G***Int
 		setFoundCharacter(foundChar);	//save the character found
 	}
 
@@ -105,7 +105,7 @@ public class ParseUnexpectedDataException extends ParseIOException
 				" found "+
 				convertDelimitersToMessage(String.valueOf(foundChar))+
 				".",
-				lineIndex, charIndex, sourceName);	//G***Int
+				sourceName, lineIndex, charIndex);	//G***Int
 		setExpectedCharacters(String.valueOf(expectedChar));	//save the expected character
 		setFoundCharacter(foundChar);	//save the character found
 	}
@@ -135,7 +135,7 @@ public class ParseUnexpectedDataException extends ParseIOException
 				" found "+
 				convertDelimitersToMessage(String.valueOf(foundChar))+
 				".",
-				lineIndex, charIndex, sourceName);	//G***Int
+				sourceName, lineIndex, charIndex);	//G***Int
 		setExpectedCharacters(expectedChars);	//save the expected characters
 		setFoundCharacter(foundChar);	//save the character found
 	}
@@ -154,7 +154,7 @@ public class ParseUnexpectedDataException extends ParseIOException
 				" found "+
 				convertStringsToMessage(new String[]{foundString})+
 				".",
-				lineIndex, charIndex, sourceName);	//G***Int
+				sourceName, lineIndex, charIndex);	//G***Int
 		setExpectedStrings(expectedStrings);	//save the expected strings
 		setFoundString(foundString);	//save the string found
 	}

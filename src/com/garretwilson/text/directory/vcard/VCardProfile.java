@@ -398,9 +398,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		}
 		catch(final ArgumentSyntaxException syntaxException)	//if the telephone number was not syntactically correct
 		{
-			final ParseIOException parseIOException=new ParseIOException(syntaxException.getMessage(), reader);	//create an I/O parse exception from the telephone number syntax exception
-			parseIOException.initCause(syntaxException);	//show what caused this exception
-			throw parseIOException;	//throw the I/O parse exceptoin
+			throw new ParseIOException(reader, syntaxException);	//create an I/O parse exception from the telephone number syntax exception
 		}
 	}
 

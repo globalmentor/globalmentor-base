@@ -826,6 +826,14 @@ public class URFTURFGenerator
 					escaped=true;	//show that we should escape the character
 					c=ESCAPED_TAB;	//use \t for tab
 					break;
+				case START_OF_STRING_CHAR:	//start of string
+					escaped=true;	//show that we should escape the character
+					c=ESCAPED_START_OF_STRING;	//use \“ for start of string
+					break;
+				case STRING_TERMINATOR_CHAR:	//string terminator
+					escaped=true;	//show that we should escape the character
+					c=ESCAPED_STRING_TERMINATOR;	//use \” for string terminator
+					break;
 				default:
 					if(c==stringBegin || c==stringEnd)	//if this is one of the string delimiters
 					{

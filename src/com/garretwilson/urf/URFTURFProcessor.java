@@ -213,24 +213,18 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 					final String localName=name.getValue();	//get the name local name
 					if(prefix!=null)	//if there is a prefix, see to which namespace URI it refers
 					{
-						namespaceURI=toURI(getResourceProxy(prefix));	//get a resource proxy for the prefix and use it as a URI
-/*TODO del when works
-						if(namespaceURI.getRawFragment()!=null)	//if the supposed namespace URI has a fragment (namespaces can't have fragments)
-						{
-							throw new ParseIOException("Prefix "+prefix+" references invalid namespace "+namespaceURI);
-						}
-*/
+						namespaceURI=toURI(reader, getResourceProxy(prefix));	//get a resource proxy for the prefix and use it as a URI
 					}
 					else	//if there is no prefix, get the default namespace for this context
 					{
 						if(contextURI==null)	//if no context is available
 						{
-							throw new ParseIOException("Local name "+localName+" has no context for namespace determination.");							
+							throw new ParseIOException(reader, "Local name "+localName+" has no context for namespace determination.");
 						}
 						namespaceURI=getNamespaceURI(contextURI);	//get the namespace URI from the context URI
 						if(namespaceURI==null)	//if no namespace is available
 						{
-							throw new ParseIOException("Context URI "+contextURI+" has no namespace.");							
+							throw new ParseIOException(reader, "Context URI "+contextURI+" has no namespace.");
 						}
 					}
 					foundComponent=true;	//indicate that at least one description component is present
@@ -241,7 +235,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 					}
 					catch(final IllegalArgumentException illegalArgumentException)	//if the given namespace is not valid
 					{
-						throw new ParseIOException("Prefix "+prefix+" references invalid namespace "+namespaceURI);						
+						throw new ParseIOException(reader, "Prefix "+prefix+" references invalid namespace "+namespaceURI);
 					}
 					c=skipSeparators(reader);	//skip separators and peek the next character
 				}
@@ -267,8 +261,8 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		}		
 		if(!foundComponent && c!=PROPERTIES_BEGIN)	//if there were no description components so far, and we don't see any properties coming up
 		{
-			checkReaderNotEnd(c);	//make sure we're not at the end of the reader
-			throw new ParseIOException("Expected resource; found character: "+(char)c);	//TODO improve with source throwable
+			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
+			throw new ParseIOException(reader, "Expected resource; found character: "+(char)c);
 		}
 //Debug.trace("ready to get resource proxy for label", label, "resource URI", resourceURI);
 		final ResourceProxy resourceProxy=getResourceProxy(label, resourceURI);	//get a resource proxy from the label and/or reference URI, or use one already available for the reference URI
@@ -495,8 +489,8 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		}
 		if(stringBuilder.length()==0)	//if we didn't read any characters
 		{
-			checkReaderNotEnd(c);	//make sure we're not at the end of the reader
-			throw new ParseIOException("Expected name character; found "+(char)c+".");			
+			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
+			throw new ParseIOException(reader, "Expected name character; found "+(char)c+".");
 		}
 		if(c>=0)	//if we didn't reach the end of the stream
 		{
@@ -530,8 +524,8 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				b=true;	//store the boolean value
 				break;
 			default:	//if we don't recognize the start of the boolean lexical form
-				checkReaderNotEnd(c);	//make sure we're not at the end of the reader
-				throw new ParseIOException("Unrecognized start of boolean: "+(char)c);
+				checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
+				throw new ParseIOException(reader, "Unrecognized start of boolean: "+(char)c);
 		}
 		check(reader, BOOLEAN_END);	//read the ending boolean delimiter
 		return b;	//return the boolean we read
@@ -630,8 +624,14 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 					case ESCAPED_CARRIAGE_RETURN:	//r carriage return
 						c=CARRIAGE_RETURN_CHAR;	//use the character that was escaped
 						break;
-					case ESCAPED_TAB:	//t tab	
+					case ESCAPED_TAB:	//t tab
 						c=HORIZONTAL_TABULATION_CHAR;	//use the character that was escaped
+						break;
+					case ESCAPED_START_OF_STRING:	//“ start of string
+						c=START_OF_STRING_CHAR;	//use the character that was escaped
+						break;
+					case ESCAPED_STRING_TERMINATOR:	//” string terminator
+						c=STRING_TERMINATOR_CHAR;	//use the character that was escaped
 						break;
 					case ESCAPED_UNICODE:	//u Unicode
 						final String unicodeString=readString(reader, 4);	//read the four Unicode code point hex characters
@@ -641,7 +641,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 					default:	//if another character was escaped
 						if(c!=stringBegin && c!=stringEnd)	//if this is not the delimiter that was escaped
 						{
-							throw new ParseIOException("Unknown escaped character: "+c);
+							throw new ParseIOException(reader, "Unknown escaped character: "+c);
 						}
 						break;
 				}
@@ -693,7 +693,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			URI uri=new URI(reachAfter(reader, uriEnd));	//read the rest of the URI
 			if(label!=null)	//if we have a label, dereference that as a base URI and resolve this URI against it
 			{
-				final URI localBaseURI=toURI(getResourceProxy(label));	//get a resource proxy for the label and use it as a URI
+				final URI localBaseURI=toURI(reader, getResourceProxy(label));	//get a resource proxy for the label and use it as a URI
 				uri=resolve(localBaseURI, uri);	//resolve the URI against the local base URI				
 			}
 			if(lexicalForm!=null)	//if we have a lexical form, use the existing URI as a type and create a lexical URI
@@ -708,28 +708,29 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		}
 		catch(final URISyntaxException uriSyntaxException)	//one of the string was not a valid URI
 		{
-			throw new ParseIOException("Invalid URI: "+uriSyntaxException.getInput());
+			throw new ParseIOException(reader, uriSyntaxException);
 		}
 	}
-	
+
 	/**Determines the URI represented by the given resource.
+	@param reader The reader the contents of which to be parsed.
 	@param resource The resource which is expected to represent a URI.
 	@exception ParseIOException if the given resource has no URI or the URI does not represent a URI.
 	*/
-	protected static URI toURI(final Resource resource) throws ParseIOException
+	protected static URI toURI(final Reader reader, final Resource resource) throws ParseIOException
 	{
 		try
 		{
 			final URI uri=asURI(resource);	//get the resource as a URI
 			if(uri==null)	//if this isn't a URI
 			{
-				throw new ParseIOException("Resource "+resource+" is not a URI.");	//TODO pass along the old exception
+				throw new ParseIOException(reader, "Resource "+resource+" is not a URI.");
 			}
 			return uri;	//return the URI
 		}
 		catch(final IllegalArgumentException illegalArgumentException)	//if the URI wasn't in correct form
 		{
-			throw new ParseIOException("Resource "+resource+" is not a valid URI.");	//TODO pass along the old exception
+			throw new ParseIOException(reader, "Resource "+resource+" is not a valid URI.", illegalArgumentException);
 		}
 	}
 

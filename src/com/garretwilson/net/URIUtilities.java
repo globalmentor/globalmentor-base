@@ -1500,8 +1500,8 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 					{
 						encodeStringBuilder.append(ESCAPE_CHAR);	//&
 						encodeStringBuilder.append(IntegerUtilities.toHexString(bytes[byteIndex], 2).toUpperCase());	//HH
-						stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString());	//replace the character with its encoding
 					}
+					stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString());	//replace the character with its encoding
 				}
 				catch(final UnsupportedEncodingException unsupportedEncodingException)	//the JVM should always know how to convert a string to UTF-8
 				{
@@ -1535,8 +1535,8 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 					{
 						encodeStringBuilder.append(ESCAPE_CHAR);	//%
 						encodeStringBuilder.append(IntegerUtilities.toHexString(bytes[byteIndex], 2).toUpperCase());	//HH
-						stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString());	//replace the character with its encoding
 					}
+					stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString());	//replace the character with its encoding
 				}
 				catch(final UnsupportedEncodingException unsupportedEncodingException)	//the JVM should always know how to convert a string to UTF-8
 				{

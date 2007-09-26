@@ -7,14 +7,14 @@ public class CharacterConstants
 {
 	/**The character with Unicode code point zero.*/
 	public final static char NULL_CHAR=0x0000;
+	/**A backspace.*/
+	public final static char BACKSPACE_CHAR=0x0008;
 	/**A horizontal tab.*/
 	public final static char HORIZONTAL_TABULATION_CHAR=0x0009;
 	/**A line feed (LF).*/
 	public final static char LINE_FEED_CHAR=0x000A;
 	/**A vertical tab.*/
 	public final static char VERTICAL_TABULATION_CHAR=0x000B;
-	/**A backspace.*/
-	public final static char BACKSPACE_CHAR=0x0008;
 	/**A form feed (FF).*/
 	public final static char FORM_FEED_CHAR=0x000C;
 	/**A carriage return.*/

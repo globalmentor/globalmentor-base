@@ -24,7 +24,7 @@ public class ParseEOFException extends ParseIOException
 	*/
 	public ParseEOFException(final long lineIndex, final long charIndex, final String sourceName)
 	{
-		super("Unexpected end of file.", lineIndex, charIndex, sourceName);
+		super("Unexpected end of file.", sourceName, lineIndex, charIndex);
 	}
 
 	/**Constructs an EOF exception with an error message, a line index, a character
@@ -36,7 +36,7 @@ public class ParseEOFException extends ParseIOException
 	*/
 	public ParseEOFException(final String s, final long lineIndex, final long charIndex, final String sourceName)
 	{
-		super(s, lineIndex, charIndex, sourceName);
+		super(s, sourceName, lineIndex, charIndex);
 	}
 }
 

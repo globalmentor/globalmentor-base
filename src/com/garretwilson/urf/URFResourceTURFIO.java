@@ -22,7 +22,7 @@ public class URFResourceTURFIO<T extends URFResource> extends AbstractTURFIO<T>
 		public URI getResourceURI() {return resourceURI;}
 
 	/**Class and URI constructor.
-	@param resourceClass The class representing the type of resource expected from the RDF instance.
+	@param resourceClass The class representing the type of resource expected from the URF instance.
 	@param resourceURI The unresolved URI of the resource supported..
 	@exception NullPointerException if the given class and/or resource URI is <code>null</code>.
 	*/
@@ -63,7 +63,7 @@ public class URFResourceTURFIO<T extends URFResource> extends AbstractTURFIO<T>
 	*/
 	public void write(final OutputStream outputStream, final URI baseURI, final T resource) throws IOException
 	{
-		writeURFResource(outputStream, baseURI, resource);	//write the RDF resource as-is
+		writeURFResource(outputStream, baseURI, resource);	//write the URF resource as-is
 	}
 
 }

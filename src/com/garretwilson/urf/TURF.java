@@ -74,6 +74,8 @@ public class TURF
 		public final static char ESCAPED_LINE_FEED='n';	//n line feed
 		public final static char ESCAPED_CARRIAGE_RETURN='r';	//r carriage return
 		public final static char ESCAPED_TAB='t';	//t tab	
+		public final static char ESCAPED_START_OF_STRING=LEFT_DOUBLE_QUOTATION_MARK_CHAR;	//“ start of string	
+		public final static char ESCAPED_STRING_TERMINATOR=RIGHT_DOUBLE_QUOTATION_MARK_CHAR;	//” string terminator	
 		public final static char ESCAPED_UNICODE='u';	//u Unicode	
 		
 	/**The delimiter that begins type declarations.*/

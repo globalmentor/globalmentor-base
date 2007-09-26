@@ -57,6 +57,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 	/**Determines whether this resource has a type with the given URI.
 	@param typeURI The URI of the type for which to search.
 	@return <code>true</code> if this resource has a type with the given URI.
+	@exception NullPointerException if the given type URI is <code>null</code>.
 	@see URF#TYPE_PROPERTY_URI
 	*/
 	public boolean hasTypeURI(final URI typeURI)

@@ -270,7 +270,7 @@ public class DirectoryProcessor
 						}
 						catch(final NoSuchElementException noSuchElementException)	//if there are no more profiles on the stack
 						{
-							throw new ParseIOException("Profile \""+profile+"\" END without BEGIN.", reader);	//throw an error indicating that there was no beginning to the profile
+							throw new ParseIOException(reader, "Profile \""+profile+"\" END without BEGIN.");	//throw an error indicating that there was no beginning to the profile
 						}
 					}
 					contentLineList.add(contentLine);	//add this content line to the list of content lines

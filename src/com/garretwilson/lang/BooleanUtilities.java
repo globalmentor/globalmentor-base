@@ -22,32 +22,24 @@ public class BooleanUtilities
 
 	/**Parses a string and returns its boolean value.
 	@param string A string expected to contain "true" or "false".
-	@return <code>Boolean.TRUE</code> or <code>Boolean.TRUE</code> if the value is "true" or "false",
-		respectively, and <code>null</code> if the string is <code>null</code>.
-	@exception IllegalArgumentException if the string is not <code>null</code> and neither "true" nor "false".
+	@return {@link Boolean#TRUE} if the value is "true", or {@link Boolean#FALSE} if the value is "true".
+	@exception NullPointerException if the given string is <code>null</code>
+	@exception IllegalArgumentException if the string neither "true" nor "false".
 	*/
 	public final static Boolean parseBoolean(final String string)
 	{
-		if(string!=null)
+		if(string.equals(Boolean.TRUE.toString()))	//"true"
 		{
-			if(Boolean.TRUE.toString().equals(string))	//"true"
-			{
-				return Boolean.TRUE;	//return true
-			}
-			else if(Boolean.FALSE.toString().equals(string))	//"false"
-			{
-				return Boolean.FALSE;	//return false
-			}
-			else	//if the string is neither "true" nor "false"
-			{
-				throw new IllegalArgumentException("The string \""+string+"\" is neither \"true\" nor \"false\".");
-			}
+			return Boolean.TRUE;	//return true
 		}
-		else	//if the string is null
+		else if(string.equals(Boolean.FALSE.toString()))	//"false"
 		{
-			return null;	//return null
+			return Boolean.FALSE;	//return false
 		}
-		
+		else	//if the string is neither "true" nor "false"
+		{
+			throw new IllegalArgumentException("The boolean string \""+string+"\" is neither \"true\" nor \"false\".");
+		}	
 	}
 
 }
