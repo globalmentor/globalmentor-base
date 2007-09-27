@@ -12,10 +12,10 @@ import com.garretwilson.util.DefaultListIterator;
 import static com.garretwilson.urf.URF.*;
 
 /**An URF array resource that allows convenient indexed access to its elements.
-The {@link List}-related methods consider the list elements to be the first of each sequential integer property starting with zero.
-For example, if an array had properties with indexes #0#, #1#, #1#, #2#, #4#, the second object with index #1# would be ignored,
-as would index #4#. {@link List} modification methods will remove duplicate integer properties.
-The {@link #clear()} method will remove all integer properties, even non-sequential ones.
+The {@link List}-related methods consider the list elements to be the first of each sequential ordinal property starting with zero.
+For example, if an array had properties with indexes º0, º1, º1, º2, º4, the second object with index º1 would be ignored,
+as would index º4. {@link List} modification methods will remove duplicate ordinal properties.
+The {@link #clear()} method will remove all ordinal properties, even non-sequential ones.
 This implementation does not supoprt <code>null</code> values.
 @param <E> The type of element stored in the array.
 @author Garret Wilson
@@ -39,7 +39,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 
 	/**Retrieves the length of the array.
 	The length is defined as the first zero-based index for which there is no element.
-	This implementation traverses of all integer properties.
+	This implementation traverses of all ordinal properties.
 	@return The length of the array.
 	*/
 	public long getLength()
@@ -48,9 +48,9 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		readLock().lock();	//get a read lock
 		try
 		{
-			for(final URFProperty integerProperty:getNamespaceProperties(INTEGER_NAMESPACE_URI))	//look at all the integer properties; if there are duplicate integer properties, we'll ignore them
+			for(final URFProperty ordinalProperty:getNamespaceProperties(ORDINAL_NAMESPACE_URI))	//look at all the ordinal properties; if there are duplicate ordinal properties, we'll ignore them
 			{
-				final long index=Long.parseLong(getLocalName(integerProperty.getPropertyURI()));	//get the index
+				final long index=Long.parseLong(getLocalName(ordinalProperty.getPropertyURI()));	//get the index
 				if(index==length)	//if we found this index
 				{
 					++length;	//show that we found another element
@@ -84,7 +84,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	*/
 	public final boolean isEmpty()
 	{
-		return !hasProperty(INTEGER_0_URI);	//if the array has no zero index, by definition it is empty (its length is zero)
+		return !hasProperty(ORDINAL_0_URI);	//if the array has no zero index, by definition it is empty (its length is zero)
 	}
 
 	/**Returns if this list contains the specified element.
@@ -134,7 +134,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 			final Object[] array=new Object[size];	//create a new array of the correct size
 			for(int i=0; i<size; ++i)	//for each index
 			{
-				array[i]=getPropertyValue(createIntegerURI(i));	//store this element in the array
+				array[i]=getPropertyValue(createOrdinalURI(i));	//store this element in the array
 			}
 			return array;	//return the array
 		}
@@ -165,7 +165,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		{
 			do	//start out assuming that the array is large enough; don't find our size ahead of time, because that's time consuming and we'll have to do it eventually anyway
 			{
-				final URFResource propertyValue=getPropertyValue(createIntegerURI(index));	//get the value at the current index
+				final URFResource propertyValue=getPropertyValue(createOrdinalURI(index));	//get the value at the current index
 				if(propertyValue==null)	//if we've reached the end of the list
 				{
 					break;	//copying
@@ -294,7 +294,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 			for(final E item:collection)	//for each item in the collection
 			{
 				checkInstance(item, "URF arrays do not support null elements.");
-				setPropertyValue(createIntegerURI(index), item);	//add this item at the current index
+				setPropertyValue(createOrdinalURI(index), item);	//add this item at the current index
 				++index;	//go to the next index for the next item
 			}
 			return index>size;	//if the index is greater than the size, we added at least one element and therefore modified the list
@@ -328,8 +328,8 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 			for(final E element:collection)	//for each element in the collection
 			{
 				checkInstance(element, "URF arrays do not support null elements.");
-				final E oldElement=(E)setPropertyValue(createIntegerURI(newIndex), element);	//replace the element at this index with the element from the collection
-				setPropertyValue(createIntegerURI(newIndex+collectionSize), element);	//shift the old element up in the list past the added elements from the collection
+				final E oldElement=(E)setPropertyValue(createOrdinalURI(newIndex), element);	//replace the element at this index with the element from the collection
+				setPropertyValue(createOrdinalURI(newIndex+collectionSize), element);	//shift the old element up in the list past the added elements from the collection
 			}
 			return collectionSize>0;	//if the collection wasn't empty, we modified the list
 		}
@@ -386,7 +386,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 			final int size=size();	//get the size of this list; this is an expensive operation to do up front, but at least it doesn't involve any list modification, which would shift elements and be even more expensive
 			for(int i=size()-1; i>=0; --i)	//get the size of this list; this is an expensive operation to do up front, but at least it doesn't involve any list modification, which would shift elements and be even more expensive; working backwards will cause shifting possibly to be less wasteful, and will not require index compensations
 			{
-				final URFResource propertyValue=getPropertyValue(createIntegerURI(i));	//get the value at the current index
+				final URFResource propertyValue=getPropertyValue(createOrdinalURI(i));	//get the value at the current index
 				if(!collection.contains(propertyValue))	//if this value isn't contained in the collection
 				{
 					remove(i);	//remove the item at this index; shifting won't disturb our iteration, as we're working backwards
@@ -406,7 +406,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	*/
 	public void clear()
 	{
-		removeNamespaceProperties(INTEGER_NAMESPACE_URI);	//remove all integer properties
+		removeNamespaceProperties(ORDINAL_NAMESPACE_URI);	//remove all ordinal properties
 	}
 
   // Comparison and hashing
@@ -428,14 +428,14 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
   		{
 	  		for(final Object item2:list)	//for each object in the other list
 	  		{
-	  			final URFResource item1=getPropertyValue(createIntegerURI(index));	//get the value at the given index in this list
+	  			final URFResource item1=getPropertyValue(createOrdinalURI(index));	//get the value at the given index in this list
 	  			if(item1==null || !item1.equals(item2))	//if these elements aren't the same (TODO use a better routine to compare nulls once URF is given nulls)
 	  			{
 	  				return false;	//the lists aren't equal
 	  			}
 	  			++index;	//go to the next index in this list
 	  		}
-	  		if(getPropertyValue(createIntegerURI(index))!=null)	//if the lists are the same size, the next index in this list should be null
+	  		if(getPropertyValue(createOrdinalURI(index))!=null)	//if the lists are the same size, the next index in this list should be null
 	  		{
   				return false;	//the lists aren't equal; this list is longer than the other	  			
 	  		}
@@ -475,7 +475,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		{
 			do
 			{
-				final URFResource propertyValue=getPropertyValue(createIntegerURI(index));	//get the value at the current index
+				final URFResource propertyValue=getPropertyValue(createOrdinalURI(index));	//get the value at the current index
 				if(propertyValue==null)	//if we've reached the end of the list
 				{
 					break;	//stop hashing
@@ -505,7 +505,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		readLock().lock();	//get a read lock
 		try
 		{
-			return (E)getPropertyValue(createIntegerURI(checkIndexBounds(index, false)));	//return the element at the given index after checking the index
+			return (E)getPropertyValue(createOrdinalURI(checkIndexBounds(index, false)));	//return the element at the given index after checking the index
 		}
 		finally
 		{
@@ -523,7 +523,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	*/
 	public E set(final int index, E element)
 	{
-		return (E)setPropertyValue(createIntegerURI(checkIndexBounds(index, false)), element);	//check the index, set the value, and return the old value
+		return (E)setPropertyValue(createOrdinalURI(checkIndexBounds(index, false)), element);	//check the index, set the value, and return the old value
 	}
 
 	/**Inserts the specified element at the specified position in this list.
@@ -541,7 +541,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 			checkIndexBounds(index, true);	//check the index, allowing the size() index
 			do
 			{
-				element=(E)setPropertyValue(createIntegerURI(index), element);	//replace the element at this index and see what used to be at that index
+				element=(E)setPropertyValue(createOrdinalURI(index), element);	//replace the element at this index and see what used to be at that index
 				++index;	//the old element, if any, will be shifted up one index
 			}
 			while(element!=null);	//keep shifting upwards until we replace a null element (which is one more than the end of the list)
@@ -569,7 +569,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 			E element=null;	//start off with a null, which will be the new value of the last index
 			for(int i=size-1; i>=index; --i)	//start with the last index and work our way down to the requested index
 			{
-				element=(E)setPropertyValue(createIntegerURI(i), element);	//replace the current index with the last element we replaced, and update our record of the last element
+				element=(E)setPropertyValue(createOrdinalURI(i), element);	//replace the current index with the last element we replaced, and update our record of the last element
 			}
 			return element;	//the last element replaced will be the old value of the requested index
 		}
@@ -596,7 +596,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		{
 			do
 			{
-				final URFResource propertyValue=getPropertyValue(createIntegerURI(index));	//get the value at the current index
+				final URFResource propertyValue=getPropertyValue(createOrdinalURI(index));	//get the value at the current index
 				if(propertyValue==null)	//if we've reached the end of the list
 				{
 					break;	//stop looking
@@ -631,7 +631,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		{
 			do
 			{
-				final URFResource propertyValue=getPropertyValue(createIntegerURI(index));	//get the value at the current index
+				final URFResource propertyValue=getPropertyValue(createOrdinalURI(index));	//get the value at the current index
 				if(propertyValue==null)	//if we've reached the end of the list
 				{
 					break;	//stop looking
@@ -717,7 +717,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		{
 			for(int i=allowSize ? index : index-1; i>=0; --i)	//make sure there are no missing indexes up to and including this value (or one less than the value, if we should allow the size index); if so, this index is out of bounds
 			{
-				if(!hasProperty(createIntegerURI(index)))	//if there is no such index
+				if(!hasProperty(createOrdinalURI(index)))	//if there is no such index
 				{
 					throw new IndexOutOfBoundsException("Index out of bounds: "+index);
 				}

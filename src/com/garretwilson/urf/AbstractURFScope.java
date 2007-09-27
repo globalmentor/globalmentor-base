@@ -296,7 +296,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 
 	/**Retrieves the first value context of the property with the given URI.
 	All ordered properties will be returned in their correct order before any non-ordered properties.
-	Unordered properties will be returned in an arbitrary order. 
+	Unordered properties will be returned in an arbitrary order.
 	@param propertyURI The URI of the property for which a value context should be returned.
 	@return The first value context of the property with the given URI, or <code>null</code> if there is no such property.
 	@exception NullPointerException if the given property URI is <code>null</code>.
@@ -317,7 +317,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 
 	/**Retrieves an iterable to the value contexts of the property with the given URI.
 	All ordered properties will be returned in their correct order before any non-ordered properties.
-	Unordered properties will be returned in an arbitrary order. 
+	Unordered properties will be returned in an arbitrary order.
 	@param propertyURI The URI of the property for which value contexts should be returned.
 	@return An iterable to all value contexts of the property with the given URI.
 	@exception NullPointerException if the given property URI is <code>null</code>.
@@ -338,7 +338,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 
 	/**Retrieves the first value of the property with the given URI.
 	All ordered properties will be returned in their correct order before any non-ordered properties.
-	Unordered properties will be returned in an arbitrary order. 
+	Unordered properties will be returned in an arbitrary order.
 	@param propertyURI The URI of the property for which a value should be returned.
 	@return The first value of the property with the given URI, or <code>null</code> if there is no such property.
 	@exception NullPointerException if the given property URI is <code>null</code>.
@@ -359,13 +359,29 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 
 	/**Retrieves an iterable to the values of the property with the given URI.
 	All ordered properties will be returned in their correct order before any non-ordered properties.
-	Unordered properties will be returned in an arbitrary order. 
+	Unordered properties will be returned in an arbitrary order.
 	@param propertyURI The URI of the property for which values should be returned.
 	@return An iterable to all values of the property with the given URI.
 	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
 	public Iterable<URFResource> getPropertyValues(final URI propertyURI)
 	{
+		return getPropertyValues(propertyURI, URFResource.class);	//iterate over all the values (which are already guaranteed to be URF resources)
+	}
+
+	/**Retrieves an iterable to the values of a given type of the property with the given URI.
+	All values of the property with the given URI that are not of the specified type will be ignored.
+	All ordered properties will be returned in their correct order before any non-ordered properties.
+	Unordered properties will be returned in an arbitrary order.
+	@param <V> The type of values to be returned.
+	@param propertyURI The URI of the property for which values should be returned.
+	@param valueClass The class indicating the type of values to be returned in the iterator.
+	@return An iterable to all values of the given type of the property with the given URI.
+	@exception NullPointerException if the given property URI and/or value class is <code>null</code>.
+	*/
+	public <V extends URFResource> Iterable<V> getPropertyValues(final URI propertyURI, final Class<V> valueClass)
+	{
+		checkInstance(valueClass, "Value class cannot be null.");	//make sure the value class isn't null up front; it may be a while before we use it
 		readLock().lock();	//get a read lock
 		try
 		{
@@ -374,13 +390,17 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 			{
 				if(valueContextList.size()==1)	//if there is only one value
 				{
-					return new ObjectIterator<URFResource>(valueContextList.get(0).getValue());	//return the first value
+					final URFResource value=valueContextList.get(0).getValue();	//get the sole value
+					if(valueClass.isInstance(value))	//if the value is of the correct type
+					{
+						return new ObjectIterator<V>(valueClass.cast(valueContextList.get(0).getValue()));	//return an iterator to the first value, cast to the correct type						
+					}
 				}
 				else	//if there is more than one value
 				{
-					return new Iterable<URFResource>()	//return a new iterable that will return an iterator to the values
+					return new Iterable<V>()	//return a new iterable that will return an iterator to the values of the correct type
 							{
-								public Iterator<URFResource> iterator(){return new PropertyValueIterator(valueContextList);}
+								public Iterator<V> iterator(){return new PropertyValueIterator<V>(valueContextList, valueClass);}	//iterate over the values of the requested type
 							};
 				}
 			}
@@ -462,7 +482,18 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final String propertyValue)
 	{
-		return setPropertyValue(propertyURI, DefaultURFResourceFactory.createResource(propertyValue));	//set the property value with a string
+		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createResource(propertyValue));	//set the property value with a string
+	}
+
+	/**Sets a URI property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
+	@param propertyURI The URI of the property of the value to set.
+	@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.
+	@return The old property value, or <code>null</code> if there was no property value previously.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public URFResource setPropertyValue(final URI propertyURI, final URI propertyValue)
+	{
+		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createResource(propertyValue));	//set the property value with a string
 	}
 
 	/**Removes all properties of this scope.
@@ -731,29 +762,38 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 
 	/**A list iterator that can iterate over values of a single property URI.
 	This iterator does not support setting or adding values.
+	@param <V> The type of values to be returned.
 	@author Garret Wilson
 	*/
-	private class PropertyValueIterator extends AbstractListIterator<URFResource, URFValueContext>
+	private class PropertyValueIterator<V extends URFResource> extends AbstractListIterator<V, URFValueContext>
 	{
 
-		/**List constructor starting at the first index.
+		/**The class indicating the type of values to be returned in the iterator.*/
+		private final Class<V> valueClass;
+
+			/**@return The class indicating the type of values to be returned in the iterator.*/
+			public Class<V> getValueClass() {return valueClass;}
+
+		/**List and value class constructor starting at the first index.
 		@param list The list over which to iterate.
-		@exception NullPointerException if the given list is <code>null</code>.
+		@param valueClass The class indicating the type of values to be returned in the iterator.
+		@exception NullPointerException if the given list and/or value class is <code>null</code>.
 		*/
-		public PropertyValueIterator(final List<URFValueContext> list)
+		public PropertyValueIterator(final List<URFValueContext> list, final Class<V> valueClass)
 		{
-			this(list, 0);	//construct the class with a next index of the first available index
+			super(list);	//construct the parent class
+			this.valueClass=checkInstance(valueClass, "Value class cannot be null.");
 		}
 
-		/**List and index constructor.
-		@param list The list over which to iterate.
-		@param index The index of first value to be returned from the list iterator (by a call to the {@link #next()} method).
-		@exception NullPointerException if the given list is <code>null</code>.
-		@exception IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt; <code>size()</code>).
+		/**Determines whether the item at the given index should be included.
+		This version only includes values that are instances of the value class.
+		@param index The index of the item to check.
+		@return <code>true</code> if the item at the given index should be included in the iteration, else <code>false</code> if it should be ignored.
+		@see #getValueClass()
 		*/
-		public PropertyValueIterator(final List<URFValueContext> list, final int index)
+		protected boolean isIncluded(final int index)
 		{
-			super(list, index);	//construct the parent class
+			return getValueClass().isInstance(getList().get(index).getValue());	//determine if the item at this index is an instance of the value class
 		}
 
 		/**Removes from the list the last element that was returned by {@link #next()} or {@link #previous()}.
@@ -772,9 +812,9 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		@return An item representing the element at the given index in the list
 		@exception IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt;= <code>size()</code>).
 		*/
-		protected URFResource getItem(final int index)
+		protected V getItem(final int index)
 		{
-			return getList().get(index).getValue();	//return the value from the context
+			return getValueClass().cast(getList().get(index).getValue());	//return the value from the context
 		}
 
 		/**Sets the element at the given position in the list.
@@ -784,7 +824,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		@exception UnsupportedOperationException if the {@link #set(Object)} operation is not supported by this list iterator.
 		@exception IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt;= <code>size()</code>).
 		*/
-		protected URFResource setItem(final int index, final URFResource item)
+		protected V setItem(final int index, final URFResource item)
 		{
 			throw new UnsupportedOperationException("Setting a value is not supported by this iterator.");
 		}

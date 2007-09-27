@@ -6,6 +6,8 @@ import static com.garretwilson.lang.IntegerUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 
 /**A default list iterator that can iterate over a given list.
+The iterator provides a way to return only a subset of list items by overriding the {@link #isIncluded(int)} method.
+The results of this iterator are undefined if the underlying list is modified.
 @param <I> The type of item returned by the iterator, which may or may not be the type of element contained in the list.
 @param <E> The type of element contained in the list.
 @author Garret Wilson
@@ -19,8 +21,11 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 		/**@return The list over which to iterate.*/
 		protected final List<E> getList() {return list;}
 
-	/**The next index to iterate.*/
+	/**The next index to iterate, or {@link List#size()} if there is no next item.*/
 	private int nextIndex;
+
+	/**The previous index to iterate, or -1 if there is no previous item.*/
+	private int previousIndex;
 
 	/**The last index iterated in time, or -1 if no index has been retrieved.
 	This is not the same as the previous index in relation to the current index.
@@ -45,8 +50,51 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 	public AbstractListIterator(final List<E> list, final int index)
 	{
 		this.list=checkInstance(list, "List cannot be null.");
-		this.nextIndex=checkIndexBounds(index, 0, list.size()+1);	//allow for the next index being the actual size of the list
+		final int size=list.size();	//get the size of the list
+		nextIndex=checkIndexBounds(index, 0, size);	//make sure the next index is within the list or at the size of the list 
+		if(nextIndex<size && !isIncluded(index))	//if the next index is on a non-included index
+		{
+			nextIndex=getNextIncludedIndex(nextIndex);	//advance to the next included index
+		}
+		previousIndex=getPreviousIncludedIndex(nextIndex);	//calculate the previous index
 	}
+
+	/**Determines the next index to be included after the given index.
+	@param index The index, which may be -1, before the next index to be included.
+	@return The index of the next item to be included after the given index, or {@link List#size()} if there is no next index.
+	@see #isIncluded(int)
+	*/
+	protected int getNextIncludedIndex(int index)
+	{
+		final int size=list.size();	//get the size of the list
+		do
+		{
+			++index;	//advance to the next index
+		}
+		while(index<size && !isIncluded(index));	//keep advancing until we find an included index or we run out of indexes
+		return index;	//return the new next index
+	}
+
+	/**Determines the previous index to be included before the given index.
+	@param index The index, which may be {@link List#size()}, after the previous index to be included.
+	@return The index of the previous item to be included before the given index, or -1 if there is no previous index.
+	@see #isIncluded(int)
+	*/
+	protected int getPreviousIncludedIndex(int index)
+	{
+		do
+		{
+			--index;	//go to the previous index
+		}
+		while(index>=0 && !isIncluded(index));	//keep retreating until we find an included index or we run out of indexes
+		return index;	//return the new previous index
+	}
+
+	/**Determines whether the item at the given index should be included.
+	@param index The index of the item to check.
+	@return <code>true</code> if the item at the given index should be included in the iteration, else <code>false</code> if it should be ignored.
+	*/
+	protected abstract boolean isIncluded(final int index);
 
 	/**@return <code>true</code> if the list iterator has more elements when traversing the list in the forward direction.*/
 	public boolean hasNext()
@@ -64,19 +112,20 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 		{
 			final I item=getItem(nextIndex);	//get the item at the next index
 			lastIndex=nextIndex;	//show the last index used
-			++nextIndex;	//the next index will be one more
+			previousIndex=lastIndex;	//the last index will also become our previous index
+			nextIndex=getNextIncludedIndex(nextIndex);	//find the next index
 			return item;	//return the next item
 		}
 		else	//if we have no next item
 		{
-			throw new NoSuchElementException("No element at index "+nextIndex);
+			throw new NoSuchElementException("No next element available.");
 		}
 	}
 
 	/**@return <code>true</code> if the list iterator has more elements when traversing the list in the reverse direction.*/
 	public boolean hasPrevious()
 	{
-		return nextIndex>0;	//return whether the next index is above the first index
+		return previousIndex>=0;	//return whether the previous index is valid
 	}
 
 	/**Returns the previous element in the list.
@@ -87,14 +136,15 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 	{
 		if(hasPrevious())	//if we have a previous item
 		{
-			--nextIndex;	//move the next index back one
-			final I item=getItem(nextIndex);	//get the item at the new next index, which is the previous item to where we were
-			lastIndex=nextIndex;	//show the last index used
+			final I item=getItem(previousIndex);	//get the item at the previous index
+			lastIndex=previousIndex;	//show the last index used
+			nextIndex=lastIndex;	//the last index will also become our nextindex
+			previousIndex=getPreviousIncludedIndex(nextIndex);	//find the previous index
 			return item;	//return the previous item
 		}
 		else	//if we have no previous item
 		{
-			throw new NoSuchElementException("No element at index "+(nextIndex-1));
+			throw new NoSuchElementException("No previous element available.");
 		}			
 	}
 
@@ -107,7 +157,7 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 	/**@return The index of the element that would be returned by a subsequent call to {@link #previous()}, or -1 if list iterator is at beginning of list.*/ 
 	public int previousIndex()
 	{
-		return nextIndex-1;	//return the previous index
+		return previousIndex;	//return the previous index
 	}
 
 	/**Removes from the list the last element that was returned by {@link #next()} or {@link #previous()}.
@@ -119,11 +169,16 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 		if(lastIndex>=0)	//if there is a last index
 		{
 			list.remove(lastIndex);	//remove the item at the last index
-			lastIndex=-1;	//there is no longer a last index
-			if(nextIndex>lastIndex)	//if this affects the next index
+			if(previousIndex==lastIndex)	//if the previous index was removed
 			{
 				--nextIndex;	//back up the next index by one
+				previousIndex=getPreviousIncludedIndex(nextIndex);	//recalculate the previous index
 			}
+			else if(nextIndex==lastIndex)	//if the next index was removed
+			{
+				nextIndex=getNextIncludedIndex(previousIndex);	//recalculate the next index; the previous index, which is before the next index, should not be affected
+			}
+			lastIndex=-1;	//there is no longer a last index
 		}
 		else	//if there is no last index
 		{
@@ -144,6 +199,14 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 		if(lastIndex>=0)	//if there is a last index
 		{
 			setItem(lastIndex, object);	//set the item at the last index
+			if(previousIndex==lastIndex)	//if the previous index was changed
+			{
+				previousIndex=getPreviousIncludedIndex(nextIndex);	//recalculate the previous index to ensure that the item is included
+			}
+			else if(nextIndex==lastIndex)	//if the next index was removed
+			{
+				nextIndex=getNextIncludedIndex(previousIndex);	//recalculate the next index to ensure that the item is included
+			}
 		}
 		else	//if there is no last index
 		{
@@ -157,7 +220,7 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 	(If the list contains no elements, the new element becomes the sole element on the list.)
 	The new element is inserted before the implicit cursor: a subsequent
 	call to {@link #next()} would be unaffected, and a subsequent call to {@link #previous()} would return the new element. 
-	(This call increases by one the value that would be returned by a call to {@link #nextIndex()} {@link #previousIndex()}.)
+	(This call increases by one the value that would be returned by a call to {@link #nextIndex()} or {@link #previousIndex()}.)
 	@param object The element to insert.
 	@exception UnsupportedOperationException if the {@link #add(Object)} operation is not supported by this list iterator.
 	@exception ClassCastException if the class of the specified element prevents it from being added to this list.
@@ -167,6 +230,7 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 	{
 		addItem(nextIndex, object);	//add the object at the next position in the list
 		++nextIndex;	//adjust the next index
+		previousIndex=getPreviousIncludedIndex(nextIndex);	//recalculate the previous index to ensure that the item is included
 		lastIndex=-1;	//there is no longer a last index, so remove() and set() will not be allowed to work
 	}
 

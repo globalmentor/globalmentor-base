@@ -19,6 +19,21 @@ public class LongUtilities
 		return (int)(value^(value>>>32));
 	}
 
+	/**Checks to make sure that a given value is not smaller than the given minimum.
+	@param value The value to check.
+	@param rangeMin The minimum range value, inclusive.
+	@exception IllegalArgumentException if the value is less than the range minimum.
+	@return The given value.
+	*/
+	public static long checkMinimum(final long value, final long rangeMin)
+	{
+		if(value<rangeMin)	//if the value not within the range
+		{
+			throw new IllegalArgumentException("Value "+value+" cannot be less than "+rangeMin);
+		}
+		return value;	//return the value, which has been determined to be within the range
+  }
+
 	/**Converts a long into a hex string with the specified number of digits.
 	@param value The value to convert.
 	@param length The number of digits the returned string should have.

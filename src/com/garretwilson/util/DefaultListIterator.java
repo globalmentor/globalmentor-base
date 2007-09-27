@@ -29,6 +29,16 @@ public class DefaultListIterator<E> extends AbstractListIterator<E, E>
 		super(list, index);	//construct the parent class
 	}
 
+	/**Determines whether the item at the given index should be included.
+	This version includes all indexes.
+	@param index The index of the item to check.
+	@return <code>true</code> if the item at the given index should be included in the iteration, else <code>false</code> if it should be ignored.
+	*/
+	protected boolean isIncluded(final int index)
+	{
+		return true;	//default to allowing all indexes
+	}
+
 	/**Retrieves an item representing the element at the given position in the list.
 	@param index The list index
 	@return An item representing the element at the given index in the list

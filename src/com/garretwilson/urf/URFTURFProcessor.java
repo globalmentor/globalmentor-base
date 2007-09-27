@@ -187,7 +187,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				break;
 			case NUMBER_BEGIN:	//number
 				foundComponent=true;	//indicate that at least one description component is present
-				final Number number=parseNumber(reader);	//parse the number
+				final Number number=parseNumber(reader, NUMBER_BEGIN, true, true, true);	//parse the number, allowing negative, decimal, and exponents
 				if(number instanceof Integer || number instanceof Long || number instanceof BigInteger)	//if this is an integer
 				{
 					resourceURI=createLexicalURI(INTEGER_CLASS_URI, number.toString());	//create an integer URI for the resource
@@ -196,6 +196,16 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				{
 					resourceURI=createLexicalURI(REAL_CLASS_URI, number.toString());	//create a real URI for the resource
 				}
+				else	//if we don't recognize the number type
+				{
+					throw new AssertionError("Unrecognized number type produced: "+number.getClass());
+				}
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				break;
+			case ORDINAL_BEGIN:	//number
+				foundComponent=true;	//indicate that at least one description component is present
+				final Number ordinal=parseNumber(reader, ORDINAL_BEGIN, false, false, false);	//parse the number, only allowing positive integers (which should produce an integer object)
+				resourceURI=createOrdinalURI(ordinal.longValue());	//create an ordinal URI for the resource
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 			case STRING_BEGIN:	//string
@@ -288,7 +298,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			c=skipSeparators(reader);	//skip separators and peek the next character
 			while(c>=0 && c!=SEQUENCE_END)	//while the end of the sequence has not been reached and there is another resource to parse
 			{
-				final Resource indexPredicate=getResourceProxy(createIntegerURI(index));	//get the index property for specifying the index of each value
+				final Resource indexPredicate=getResourceProxy(createOrdinalURI(index));	//get the ordinal property for specifying the index of each value
 				final Resource element=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), indexPredicate, indexPredicate.getURI());	//parse the array element, giving a scope chain predicate in case a scope is formed for the value
 				addAssertion(new Assertion(resourceProxy, indexPredicate, element));	//assert the assertion that the element is an index of the array; there is no scope with an array short form
 				++index;	//go to the next index
@@ -327,7 +337,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 						{
 							final Resource sequenceObject=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, predicate.getURI());	//parse the object, giving a scope chain predicate in case a scope is formed for the value
 							addAssertion(new Assertion(resourceProxy, predicate, sequenceObject));	//assert the assertion with no scope
-							final Resource orderObject=getResourceProxy(createLexicalURI(INTEGER_CLASS_URI, Long.toString(order)));	//get a proxy to the order value
+							final Resource orderObject=getResourceProxy(createIntegerURI(order));	//get a proxy to the order value
 							final Resource newScopeBase=scopeBase!=null ? scopeBase : resourceProxy;	//if we don't have a scope base, use the subject resource as the base
 							final ArrayList<NameValuePair<Resource, Resource>> newScopeChain=scopeChain!=null ? (ArrayList<NameValuePair<Resource, Resource>>)scopeChain.clone() : new ArrayList<NameValuePair<Resource,Resource>>();	//clone the scope chain or create a new one if needed
 							newScopeChain.add(new NameValuePair<Resource, Resource>(predicate, sequenceObject));	//add another element to the scope chain for this new sequence object we parsed
@@ -530,8 +540,8 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	}
 
 	/**Parses a boolean surrounded by boolean delimiters.
-	The current position must be that of the first boolean delimiter character.
-	The new position will be that immediately after the last boolean delimiter character.
+	The current position must be that of the beginning boolean delimiter character.
+	The new position will be that immediately after the last boolean character.
 	@param reader The reader the contents of which to be parsed.
 	@return The boolean parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
@@ -557,36 +567,44 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
 				throw new ParseIOException(reader, "Unrecognized start of boolean: "+(char)c);
 		}
-		check(reader, BOOLEAN_END);	//read the ending boolean delimiter
 		return b;	//return the boolean we read
 	}
 
-	/**Parses a number surrounded by number delimiters.
-	The current position must be that of the first number delimiter character.
-	The new position will be that immediately after the last number delimiter character.
+	/**Parses a number beginning with a number delimiter.
+	The current position must be that of the beginning number delimiter character.
+	The new position will be that immediately after the last number character.
+	This implementation returns a {@link Long} for all values with no decimal or exponent, and a {@link Double} for all other values.
 	@param reader The reader the contents of which to be parsed.
+	@param numberBegin The beginning number delimiter.
+	@param allowMinus Whether the number allows an optional introductory minus sign.
+	@param allowDecimal Whether the number allows an optional decimal part.
+	@param allowExponent Whether the number allows an optional exponent part.
 	@return The number parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current number is completely parsed.
 	*/
-	public static Number parseNumber(final Reader reader) throws IOException, ParseIOException
+	public static Number parseNumber(final Reader reader, final char numberBegin, final boolean allowMinus, final boolean allowDecimal, final boolean allowExponent) throws IOException, ParseIOException
 	{
-		check(reader, NUMBER_BEGIN);	//read the beginning number delimiter
+		boolean hasFraction=false;	//we don't have a fraction yet
+		boolean hasExponent=false;	//we don't have an exponent yet
+		check(reader, numberBegin);	//read the beginning number delimiter
+		int c;	//we'll use this to keep track of the next character
 		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to use when reading the number
-		int c=peek(reader);	//peek the first character
-		if(c=='-')	//if the number starts with a minus sign
+		if(allowMinus)	//if we should allow the minus sign
 		{
-			stringBuilder.append(check(reader, '-'));	//append the character
+			c=peek(reader);	//peek the first character
+			if(c=='-')	//if the number starts with a minus sign
+			{
+				stringBuilder.append(check(reader, '-'));	//append the character
+			}
 		}
 		stringBuilder.append(check(reader, '0', '9'));	//there should be at least one digit
 		stringBuilder.append(read(reader, '0', '9')); //read all remaining digits
 		c=peek(reader);	//peek the next character
 		if(c>=0)	//if we're not at the end of the reader
 		{
-			boolean hasFraction=false;	//we don't have a fraction yet
-			boolean hasExponent=false;	//we don't have an exponent yet
-			if(c=='.')	//if this is a floating point number
+			if(allowDecimal && c=='.')	//if we should allow a decimal part and this is a floating point number
 			{
 				hasFraction=true;	//we found a fraction
 				stringBuilder.append(check(reader, '.'));	//read and append the beginning decimal point
@@ -594,7 +612,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				stringBuilder.append(read(reader, '0', '9')); //read all remaining digits
 				c=peek(reader);	//peek the next character
 			}
-			if(c=='e')	//if this is an exponent
+			if(allowExponent && c=='e')	//if we should allow an exponent part and this is an exponent
 			{
 				hasExponent=true;	//we found an exponent
 				stringBuilder.append(check(reader, 'e'));	//read and append the exponent character
@@ -606,15 +624,22 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				stringBuilder.append(check(reader, '0', '9'));	//there should be at least one digit
 				stringBuilder.append(read(reader, '0', '9')); //read all remaining digits
 			}
+		}
+		try
+		{
 			if(hasFraction || hasExponent)	//if there was a fraction or exponent
 			{
-					//TODO check for a number format error
 				return Double.valueOf(Double.parseDouble(stringBuilder.toString()));	//parse a double and return it
 			}
+			else	//if there is no fraction or exponent
+			{
+				return Long.valueOf(Long.parseLong(stringBuilder.toString()));	//parse a long and return it
+			}
 		}
-		check(reader, NUMBER_END);	//read the ending number delimiter
-			//TODO check for a number format error
-		return Integer.valueOf(Integer.parseInt(stringBuilder.toString()));	//parse an integer and return it 
+		catch(final NumberFormatException numberFormatException)	//if the number was not syntactically correct
+		{
+			throw new ParseIOException(reader, numberFormatException);
+		}
 	}
 
 	/**Parses a string surrounded by string delimiters.

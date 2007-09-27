@@ -49,7 +49,7 @@ public class URF
 	/**The base URI to the URF lexical namespace.*/
 	public final static URI URF_LEXICAL_NAMESPACE_BASE_URI=URI.create(URF_LEXICAL_NAMESPACE_BASE);
 	
-		//URF classes 
+		//classes 
 	/**The URI of the URF <code>Array</code> class.*/ 
 	public final static URI ARRAY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Array");
 	/**The URI of the URF <code>Binary</code> class.*/ 
@@ -62,6 +62,8 @@ public class URF
 	public final static URI INTEGER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Integer");
 	/**The URI of the URF <code>Number</code> class.*/ 
 	public final static URI NUMBER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Number");
+	/**The URI of the URF <code>Ordinal</code> class.*/ 
+	public final static URI ORDINAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Ordinal");
 	/**The URI of the URF <code>Real</code> class.*/ 
 	public final static URI REAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Real");
 	/**The URI of the URF <code>Resource</code> class.*/ 
@@ -70,7 +72,7 @@ public class URF
 	public final static URI STRING_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "String");
 	/**The URI of the URF <code>URI</code> class.*/ 
 	public final static URI URI_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "URI");
-		//URF properties
+		//properties
 	/**The name of a resource, which may differ from that indicated by the URI, if any.*/
 	public final static URI NAME_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "name");
 	/**The URI of the URF <code>order</code> property.*/ 
@@ -78,7 +80,7 @@ public class URF
 	/**The URI of the URF <code>type</code> property.*/ 
 	public final static URI TYPE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "type");
 
-		//URF lexical namespaces
+		//lexical namespaces
 	/**The binary lexical namespace URI.*/
 	public final static URI BINARY_NAMESPACE_URI=createLexicalNamespaceURI(BINARY_CLASS_URI);
 	/**The boolean lexical namespace URI.*/
@@ -97,6 +99,10 @@ public class URF
 	public final static URI INTEGER_NAMESPACE_URI=createLexicalNamespaceURI(INTEGER_CLASS_URI);
 		/**The URI of the integer value <code>0</code>.*/
 		public final static URI INTEGER_0_URI=createLexicalURI(INTEGER_CLASS_URI, Long.toString(0));
+	/**The ordinal lexical namespace URI.*/
+	public final static URI ORDINAL_NAMESPACE_URI=createLexicalNamespaceURI(ORDINAL_CLASS_URI);
+		/**The URI of the ordinal value <code>0</code>.*/
+		public final static URI ORDINAL_0_URI=createLexicalURI(ORDINAL_CLASS_URI, Long.toString(0));
 	/**The real lexical namespace URI.*/
 	public final static URI REAL_NAMESPACE_URI=createLexicalNamespaceURI(REAL_CLASS_URI);
 	/**The string lexical namespace URI.*/
@@ -347,6 +353,17 @@ public class URF
 		return integer==0 ? INTEGER_0_URI : createLexicalURI(INTEGER_CLASS_URI, Long.toString(integer));	//create an integer URI, using the pre-made zero integer URI if we can
 	}
 
+	/**Creates a URI to represent an URF ordinal.
+	@param ordinal The ordinal value to represent.
+	@return A URI representing the given URF ordinal.
+	@exception IllegalArgumentException if the given ordinal is negative.
+	@see #ORDINAL_CLASS_URI
+	*/
+	public static URI createOrdinalURI(final long ordinal)
+	{
+		return ordinal==0 ? ORDINAL_0_URI : createLexicalURI(ORDINAL_CLASS_URI, Long.toString(LongUtilities.checkMinimum(ordinal, 0)));	//create an ordinal URI, using the pre-made zero ordinal URI if we can and making sure that the value is not less than zero
+	}
+
 	/**Returns an array containing the URIs of the given resources.
 	@param resources The resources of which URIs should be returned.
 	@return The URIs of the given resources.
@@ -501,6 +518,8 @@ public class URF
 	@exception IllegalArgumentException if the given URI represents a number that does not have the correct syntax.
 	@see #INTEGER_CLASS_URI
 	@see #INTEGER_NAMESPACE_URI
+	@see #ORDINAL_CLASS_URI
+	@see #ORDINAL_NAMESPACE_URI
 	@see #REAL_CLASS_URI
 	@see #REAL_NAMESPACE_URI
 	*/
@@ -514,11 +533,15 @@ public class URF
 				final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace of the URI
 				if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//if this is an integer
 				{
-					return Long.parseLong(localName);	//parse a long from the local name
+					return Long.valueOf(Long.parseLong(localName));	//parse a long from the local name
+				}
+				else if(ORDINAL_NAMESPACE_URI.equals(namespaceURI))	//if this is an ordinal
+				{
+					return Long.valueOf(Long.parseLong(localName));	//parse a long from the local name
 				}
 				else if(REAL_NAMESPACE_URI.equals(namespaceURI))	//if this is an real
 				{
-					return Double.parseDouble(localName);	//parse a double from the local name
+					return Double.valueOf(Double.parseDouble(localName));	//parse a double from the local name
 				}
 			}
 		}
@@ -536,9 +559,25 @@ public class URF
 	{
 		if(resourceURI!=null && INTEGER_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if an integer URI was given
 		{
-			return Long.parseLong(getLocalName(resourceURI));	//parse a long from the local name
+			return Long.valueOf(Long.parseLong(getLocalName(resourceURI)));	//parse a long from the local name
 		}
 		return null;	//no integer could be found
+	}
+
+	/**Determines the ordinal represented by the given URI.
+	@param resourceURI The URI which is expected to represent an ordinal, or <code>null</code>.
+	@return The ordinal represented by the given URI, or <code>null</code> if the URI does not represent an ordinal.
+	@exception IllegalArgumentException if the given URI represents an ordinal that does not have the correct syntax.
+	@see #ORDINAL_CLASS_URI
+	@see #ORDINAL_NAMESPACE_URI
+	*/
+	public static Long asOrdinal(final URI resourceURI)
+	{
+		if(resourceURI!=null && ORDINAL_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if an ordinal URI was given
+		{
+			return Long.valueOf(Long.parseLong(getLocalName(resourceURI)));	//parse a long from the local name
+		}
+		return null;	//no ordinal could be found
 	}
 
 	/**Determines the real represented by the given URI.
@@ -946,12 +985,13 @@ public class URF
 		<dt>{@value #ARRAY_CLASS_URI}</dt> <dd>{@link URFArrayResource}</dd>
 		<dt>{@value #BOOLEAN_NAMESPACE_URI}</dt> <dd>{@link Boolean}</dd>
 		<dt>{@value #INTEGER_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
+		<dt>{@value #ORDINAL_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
 		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Real}</dd>
 		<dt>{@value #STRING_NAMESPACE_URI}</dt> <dd>{@link String}</dd>
 		<dt>{@value #URI_NAMESPACE_URI}</dt> <dd>{@link URI}</dd>
 	</dl>
 	*/
-	public final static URFResourceFactory DEFAULT_URF_RESOURCE_FACTORY=new DefaultURFResourceFactory()
+	public final static DefaultURFResourceFactory DEFAULT_URF_RESOURCE_FACTORY=new DefaultURFResourceFactory()
 			{
 				/**Creates a resource with the provided URI based upon the type URI, if any.
 				If a type URI is provided, a corresponding type property value may be added to the resource before it is returned.
@@ -984,6 +1024,10 @@ public class URF
 						else if(INTEGER_CLASS_URI.equals(typeURI))	//integer
 						{
 							return new DefaultURFValueResource<Long>(resourceURI, asInteger(resourceURI));	//create a long value resource
+						}
+						else if(ORDINAL_CLASS_URI.equals(typeURI))	//ordinal
+						{
+							return new DefaultURFValueResource<Long>(resourceURI, asOrdinal(resourceURI));	//create a long value resource
 						}
 						else if(REAL_CLASS_URI.equals(typeURI))	//real
 						{

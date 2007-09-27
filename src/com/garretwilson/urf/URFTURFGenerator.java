@@ -487,7 +487,7 @@ public class URFTURFGenerator
 		if(isArrayShortForm)	//if we should generate an array short form
 		{
 			markReferenceGenerated(urf, ARRAY_CLASS_URI);	//mark that the array type was generated unless it has some other quality needed to be generated separately
-			final Iterator<URFProperty> elementPropertyIterator=resource.getNamespaceProperties(INTEGER_NAMESPACE_URI).iterator();	//get an iterator to all the integer properties
+			final Iterator<URFProperty> elementPropertyIterator=resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator();	//get an iterator to all the ordinal properties
 			if(elementPropertyIterator.hasNext())	//if there are array elements
 			{
 				writeNewLine(writer);
@@ -549,13 +549,13 @@ public class URFTURFGenerator
 	@param propertyValueDelimiter The delimiter to use to separate properties and values.
 	@param propertyCount the number of properties already generated; used to determine whether a new properties section should be generated.
 	@param generateTypes Whether type properties should be generated.
-	@param generateIntegers Whether properties in the integer namespace should be generated.
+	@param generateOrdinals Whether properties in the ordinal namespace should be generated.
 	@param generateOrder Whether the order property should be generated.
 	@return The new total number of properties generated, including the properties already generated before this method was called.
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or scope is <code>null</code>. 
 	@exception IOException if there was an error writing to the writer.
 	*/
-	protected int generateProperties(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope scope, final char propertyValueDelimiter, int propertyCount, final boolean generateTypes, final boolean generateIntegers, final boolean generateOrder) throws IOException
+	protected int generateProperties(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope scope, final char propertyValueDelimiter, int propertyCount, final boolean generateTypes, final boolean generateOrdinals, final boolean generateOrder) throws IOException
 	{
 		URI sequencePropertyURI=null;	//this will indicate when we're in the middle of a sequence for a particular property
 		for(final URFProperty property:scope.getProperties())	//look at each property
@@ -563,7 +563,7 @@ public class URFTURFGenerator
 			final URFResource value=property.getValue();	//get the property value
 			final URI propertyURI=property.getPropertyURI();	//get the property URI
 			if((!generateTypes && TYPE_PROPERTY_URI.equals(propertyURI))	//if we shouldn't generate types and this is a type
-				|| (!generateIntegers && propertyURI!=null && INTEGER_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//or if we shouldn't generate integers and this property is an integer
+				|| (!generateOrdinals && propertyURI!=null && ORDINAL_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//or if we shouldn't generate ordinals and this property is an ordinal
 				|| (!generateOrder && ORDER_PROPERTY_URI.equals(propertyURI)))	//or if we shouldn't generate order and this is an order property
 			{
 				markReferenceGenerated(urf, propertyURI);	//mark that this property was generated unless it has some other quality needed to be generated separately
@@ -655,19 +655,31 @@ public class URFTURFGenerator
 			}
 			else if(BOOLEAN_CLASS_URI.equals(lexicalTypeURI))	//boolean
 			{
-				writer.append(BOOLEAN_BEGIN).append(lexicalForm).append(BOOLEAN_END);	//write the boolean short form
+				writer.append(BOOLEAN_BEGIN).append(lexicalForm);	//write the boolean short form
+				return;
+			}
+			else if(CHARACTER_CLASS_URI.equals(lexicalTypeURI))	//character
+			{
+				writer.append(CHARACTER_BEGIN).append(lexicalForm).append(CHARACTER_END);	//write the character short form
 				return;
 			}
 			else if(INTEGER_CLASS_URI.equals(lexicalTypeURI) || REAL_CLASS_URI.equals(lexicalTypeURI))	//integer or real
 			{
-				writer.append(NUMBER_BEGIN).append(lexicalForm).append(NUMBER_END);	//write the number short form
+				writer.append(NUMBER_BEGIN).append(lexicalForm);	//write the number short form
 				return;
 			}
+			else if(ORDINAL_CLASS_URI.equals(lexicalTypeURI))	//ordinal
+			{
+				writer.append(ORDINAL_BEGIN).append(lexicalForm);	//write the ordinal short form
+				return;
+			}
+			//TODO fix regular expression
 			else if(STRING_CLASS_URI.equals(lexicalTypeURI))	//if this is a string
 			{
 				writeString(writer, lexicalForm);	//write the string short form
 				return;
 			}
+			//TODO fix timestamp
 			else if(URI_CLASS_URI.equals(lexicalTypeURI))	//if this is a URI
 			{
 				writeString(writer, lexicalForm, URI_BEGIN, URI_END);	//write the URI short form

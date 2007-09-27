@@ -8,9 +8,6 @@ import static com.garretwilson.text.CharacterConstants.*;
 public class TURF
 {
 
-	/**The character that marks the end of a series of resources encoded in TURF.*/
-//TODO del if not wanted	public final static char TURF_END=';';
-
 	/**Unicode whitespace characters.*/
 	public final static char[] SEPARATORS=(PARAGRAPH_SEPARATOR_CHARS+SEGMENT_SEPARATOR_CHARS+WHITESPACE_CHARS).toCharArray();
 
@@ -28,9 +25,7 @@ public class TURF
 	public final static char BINARY_END=BINARY_BEGIN;
 
 	/**The delimiter that begins boolean shorthand declarations.*/
-	public final static char BOOLEAN_BEGIN='!';
-	/**The delimiter that ends boolean shorthand declarations.*/
-	public final static char BOOLEAN_END=BOOLEAN_BEGIN;
+	public final static char BOOLEAN_BEGIN='&';
 
 	/**The delimiter that begins character shorthand declarations.*/
 	public final static char CHARACTER_BEGIN='\'';
@@ -49,8 +44,9 @@ public class TURF
 
 	/**The delimiter that begins number shorthand declarations.*/
 	public final static char NUMBER_BEGIN='#';
-	/**The delimiter that ends URI shorthand declarations.*/
-	public final static char NUMBER_END=NUMBER_BEGIN;
+
+	/**The delimiter that begins ordinal shorthand declarations.*/
+	public final static char ORDINAL_BEGIN='º';
 
 	/**The delimiter that begins property declarations.*/
 	public final static char PROPERTIES_BEGIN='{';

@@ -6,7 +6,7 @@ import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.urf.URF.*;
 
 /**A default factory to create default resources.
-This factory also has static methods to create default resources of several lexical types.
+This factory also has convenience methods to create default resources of several lexical types.
 @author Garret Wilson
 */
 public class DefaultURFResourceFactory implements URFResourceFactory
@@ -26,23 +26,36 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 
 	/**Creates a default resource with a URI in a lexical namespace for the given resource type and lexical form.
 	The indicated type is added as one of the resource's type property.
+	This method delegates to {@link #createResource(URI, URI)}.
 	@param typeURI The URI of the type of the resource.
 	@param lexicalForm The canonical lexical form of the resource.
 	@return A resource with the URI in the lexical namespace for the specified type based upon its lexical form.
 	@exception NullPointerException if the given type URI and/or lexical form is <code>null</code>.
 	*/
-	public final static URFResource createLexicalResource(final URI typeURI, final String lexicalForm)
+	public URFResource createLexicalResource(final URI typeURI, final String lexicalForm)
 	{
-		return new DefaultURFResource(createLexicalURI(typeURI, lexicalForm), typeURI);	//create a new resource from the appropriate lexical URI and add the indicated type
+		return createResource(createLexicalURI(typeURI, lexicalForm), typeURI);	//create a new resource from the appropriate lexical URI and add the indicated type
 	}
 
 	/**Creates a default string resource with its type added as a type property.
+	This method delegates to {@link #createLexicalResource(URI, String)}.
 	@param string The string for which a default resource should be created.
 	@return A default string resource with the appropriate type property added.
 	@exception NullPointerException if the given string is <code>null</code>.
 	*/
-	public final static URFResource createResource(final String string)
+	public URFResource createResource(final String string)
 	{
 		return createLexicalResource(STRING_CLASS_URI, string);	//create and return a default string resource
+	}
+
+	/**Creates a default URI resource with its type added as a type property.
+	This method delegates to {@link #createLexicalResource(URI, String)}.
+	@param uri The URI for which a default resource should be created.
+	@return A default URI resource with the appropriate type property added.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	*/
+	public URFResource createResource(final URI uri)
+	{
+		return createLexicalResource(URI_CLASS_URI, uri.toString());	//create and return a default URI resource
 	}
 }

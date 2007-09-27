@@ -21,10 +21,10 @@ public class Content
 	/**The URI to the URF content namespace.*/
 	public final static URI CONTENT_NAMESPACE_URI=URI.create("http://urf.name/content");
 
-		//URF classes 
+		//classes 
 	/**The URI of the content <code>Resource</code> class.*/ 
 	public final static URI RESOURCE_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "Resource");
-		//URF content property names
+		//properties
 	/**The actual content, such as bytes or a string, of a resource.*/
 	public final static URI CONTENT_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "content");
 	/**The array of child resources contained by a resource such as a collection or package.*/
