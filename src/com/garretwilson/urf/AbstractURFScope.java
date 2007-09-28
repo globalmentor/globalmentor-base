@@ -2,14 +2,11 @@ package com.garretwilson.urf;
 
 import java.net.URI;
 import java.util.*;
-
 import static java.util.Collections.*;
 import java.util.concurrent.locks.*;
 
-import com.garretwilson.lang.LongUtilities;
-import com.garretwilson.lang.NumberUtilities;
+import com.garretwilson.lang.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
-
 import com.garretwilson.util.*;
 import static com.garretwilson.util.IteratorUtilities.*;
 import static com.garretwilson.urf.URF.*;
@@ -105,7 +102,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 				*/
 			  public Iterator<URFProperty> iterator()
 			  {
-			  	return new PropertyIterator();	//create and return a new property iterator
+			  	return new PropertyIterator();	//create and return a new property iterator over all properties
 			  }
 			};
 
@@ -179,6 +176,31 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		{
 			final List<URFValueContext> valueContextList=propertURIValueContextsMap.get(propertyURI);	//get the list of value contexts, if there is one
 			return valueContextList!=null && !valueContextList.isEmpty();	//this property exists if there is a non-empty list of value contexts
+		}
+		finally
+		{
+			readLock().unlock();	//always release the read lock
+		}
+	}
+
+	/**Determines whether there exists a property within the given namespace.
+	@param namesapceURI The URI of the namespace of the property to check.
+	@return <code>true</code> if a property exists in the given namespace.
+	@exception NullPointerException if the given namespace URI is <code>null</code>.
+	*/
+	public boolean hasNamespaceProperty(final URI namespaceURI)
+	{
+		readLock().lock();	//get a read lock
+		try
+		{
+			for(final Map.Entry<URI, List<URFValueContext>> propertyURIValueContextListEntry:propertURIValueContextsMap.entrySet())	//for each property map entry
+			{
+				if(namespaceURI.equals(getNamespaceURI(propertyURIValueContextListEntry.getKey())) && !propertyURIValueContextListEntry.getValue().isEmpty())	//if this property is in the requested namespace and there is at least one value
+				{
+					return true;	//indicate that we've found a property value in the given namespace
+				}
+			}
+			return false;	//indicate that no properties in the given namespace could be found
 		}
 		finally
 		{
@@ -265,9 +287,27 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		return propertyIterable;	//return the constant iterable to properties
 	}
 
+	/**Returns an iterable to the properties of this scope with the given property URI.
+	@param propertyURI The URI of the properties to be returned.
+	@return An iterable to all available properties with the given property URI.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public Iterable<URFProperty> getProperties(final URI propertyURI)
+	{
+		checkInstance(propertyURI, "Property URI cannot be null.");
+		return new Iterable<URFProperty>()	//return a new iterable over only the properties with the given property URI
+		{
+			/**@return An iterator to all requested properties.*/
+		  public Iterator<URFProperty> iterator()
+		  {
+		  	return new PropertyIterator(null, propertyURI);	//create and return a new property iterator over all properties with the given property URI
+		  }
+		};
+	}
+
 	/**Returns an iterable to the properties of this scope within a particular namespace.
 	@param namespaceURI The URI of the namespace of the properties to be returned.
-	@return An iterable to all available properties.
+	@return An iterable to all available properties within the given namespace.
 	@exception NullPointerException if the given namespace URI is <code>null</code>.
 	*/
 	public Iterable<URFProperty> getNamespaceProperties(final URI namespaceURI)
@@ -275,14 +315,12 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		checkInstance(namespaceURI, "Namespace URI cannot be null.");
 		return new Iterable<URFProperty>()	//return a new iterable over only the properties in the given namespace
 		{
-			/**Returns an iterator over all this scope's properties.
-			@return An iterator to all available properties.
-			*/
+			/**@return An iterator to all requested properties.*/
 		  public Iterator<URFProperty> iterator()
 		  {
-		  	return new PropertyIterator(namespaceURI);	//create and return a new property iterator
+		  	return new PropertyIterator(namespaceURI);	//create and return a new property iterator over all properties in the given namespace
 		  }
-		};		
+		};
 	}
 
 	/**Retrieves an iterable to all property URIs.
@@ -530,7 +568,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 			while(propertyURIValueContextListEntryIterator.hasNext())	//while there are more property map entries
 			{
 				final Map.Entry<URI, List<URFValueContext>> propertyURIValueContextListEntry=propertyURIValueContextListEntryIterator.next();	//get the next property map entry
-				if(namespaceURI.equals(getNamespaceURI(propertyURIValueContextListEntry.getKey())))	//if this property is in the requested namesapce
+				if(namespaceURI.equals(getNamespaceURI(propertyURIValueContextListEntry.getKey())))	//if this property is in the requested namespace
 				{
 					final int valueCount=propertyURIValueContextListEntry.getValue().size();	//see how many values we're going to remove
 					propertyURIValueContextListEntryIterator.remove();	//remove all the values for this property
@@ -672,7 +710,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		}
 	}
 
-	/**An iterator that can iterate over all properties of this scope, or only those with a given namespace.
+	/**An iterator that can iterate over all properties of this scope, only those with a given namespace, or only those with a given property URI.
 	This iterator does not support property removal.
 	@author Garret Wilson
 	*/
@@ -694,17 +732,46 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		/**Default constructor to iterate over all properties.*/
 		public PropertyIterator()
 		{
-			this(null);	//construct the class, iterating over all namespaces
+			this(null);	//construct the class, iterating over all namespaces and properties
 		}
 
-		/**Namespace URI constructor.
+		/**Namespace constructor.
 		@param namespaceURI The URI of the namespace of the properties to be returned, or <code>null</code> if all properties should be returned.
 		*/
 		public PropertyIterator(final URI namespaceURI)
 		{
+			this(namespaceURI, (Set<URI>)null);	//construct the class, iterating over all property URIs in the given namespace, if any
+		}
+
+		/**Namespace and single property URI constructor.
+		@param namespaceURI The URI of the namespace of the properties to be returned, or <code>null</code> if all properties should be returned.
+		@param propertyURI The URI of a specific property to be returned if it is in the given namespace, if any.
+		@exception NullPointerException if the given property URI is <code>null</code>.
+		*/
+		public PropertyIterator(final URI namespaceURI, final URI propertyURI)
+		{
+			this(namespaceURI, new ObjectIterator<URI>(checkInstance(propertyURI, "Property URI cannot be null.")));
+		}
+
+		/**Namespace and property URIs constructor.
+		@param namespaceURI The URI of the namespace of the properties to be returned, or <code>null</code> if all properties should be returned.
+		@param propertyURIs The URIs of the specific properties to be returned, or <code>null</code> if all properties should be returned.
+		*/
+		public PropertyIterator(final URI namespaceURI, final Set<URI> propertyURIs)
+		{
+			this(namespaceURI, propertyURIs!=null ? propertyURIs.iterator() : propertURIValueContextsMap.keySet().iterator());	//construct the class using an iterator to all available property URIs if none were given
+		}
+
+		/**Namespace and property URI iterator constructor.
+		@param namespaceURI The URI of the namespace of the properties to be returned, or <code>null</code> if all properties should be returned.
+		@param propertyURIIterator The iterator to the URIs of the specific properties to be returned.
+		@exception NullPointerException if the given property URI iterator is <code>null</code>.
+		*/
+		protected PropertyIterator(final URI namespaceURI, final Iterator<URI> propertyURIIterator)
+		{
 			this.namespaceURI=namespaceURI;	//save the namespace URI
-			this.propertyURIIterator=propertURIValueContextsMap.keySet().iterator();	//get an iterator to all the property URIs
-			prime();	//prime the iterator
+			this.propertyURIIterator=propertyURIIterator;	//save the property URI iterator
+			prime();	//prime this iterator
 		}
 
 		/**Primes the iterator by ensuring that, as long as there are property URIs available from the property URI iterator,

@@ -163,16 +163,6 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				resourceURI=parseURI(reader, baseURI, REFERENCE_BEGIN, REFERENCE_END);	//parse the resource URI
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
-/*TODO del when works
-			case ARRAY_BEGIN:	//array
-				foundComponent=true;	//indicate that at least one description component is present
-				types.add(getResourceProxy(ARRAY_CLASS_URI));	//add a proxy to the array type
-				check(reader, ARRAY_BEGIN);	//read the beginning array delimiter
-				arrayElements=parseResourceList(reader, baseURI, ARRAY_END);	//parse the resources serving as array elements; we'll actually add them to the resource after creating the resource proxy TODO fix scoped properties; currently scoped propoerties will be unscoped because we provide no context for parsing the array children
-				check(reader, ARRAY_END);	//read the ending array delimiter
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				break;
-*/
 			case BINARY_BEGIN:	//binary
 				foundComponent=true;	//indicate that at least one description component is present
 				final byte[] binary=parseBinary(reader);	//parse the binary data
@@ -270,11 +260,23 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			check(reader, TYPE_END);	//read the ending type delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
+			//make sure we know about the type if possible by checking for the array short form of the set short form
 		if(c==ARRAY_BEGIN)	//check for the array short form
 		{
 			foundComponent=true;	//indicate that at least one description component is present
-			types.add(getResourceProxy(ARRAY_CLASS_URI));	//add a proxy to the array type, but don't read the array, yet; we'll do that after creating the resource proxy
-		}		
+			if(types.isEmpty())	//if no types have been specified
+			{
+				types.add(getResourceProxy(ARRAY_CLASS_URI));	//add a proxy to the array type, but don't read the array, yet; we'll do that after creating the resource proxy
+			}
+		}
+		else if(c==SET_BEGIN)	//check for the set short form
+		{
+			foundComponent=true;	//indicate that at least one description component is present
+			if(types.isEmpty())	//if no types have been specified
+			{
+				types.add(getResourceProxy(SET_CLASS_URI));	//add a proxy to the set type, but don't read the set, yet; we'll do that after creating the resource proxy
+			}
+		}
 		if(!foundComponent && c!=PROPERTIES_BEGIN)	//if there were no description components so far, and we don't see any properties coming up
 		{
 			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
@@ -314,6 +316,29 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				}
 			}
 			check(reader, ARRAY_END);	//read the ending array delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
+		}		
+		if(c==SET_BEGIN)	//if a set is next
+		{
+			check(reader, SET_BEGIN);	//read the beginning set delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
+			final Resource elementPredicate=getResourceProxy(ELEMENT_PROPERTY_URI);	//get the element property resource proxy
+			while(c>=0 && c!=SEQUENCE_END)	//while the end of the sequence has not been reached and there is another resource to parse
+			{
+				final Resource element=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), elementPredicate, elementPredicate.getURI());	//parse the set element, giving a scope chain predicate in case a scope is formed for the value
+				addAssertion(new Assertion(resourceProxy, elementPredicate, element));	//assert the assertion that the element is an element of the set; there is no scope with a set short form
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				if(c==LIST_DELIMITER)	//if this is a list delimiter
+				{
+					check(reader, LIST_DELIMITER);	//skip the list delimiter
+					c=skipSeparators(reader);	//skip separators and peek the next character
+				}
+				else	//if there's anything besides a list delimiter, we've reached the end of the list
+				{
+					break;	//stop parsing the list
+				}
+			}
+			check(reader, SET_END);	//read the ending set delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}		
 		if(c==PROPERTIES_BEGIN)	//check for properties

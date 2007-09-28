@@ -35,6 +35,13 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public boolean hasProperty(final URI propertyURI);
 
+	/**Determines whether there exists a property within the given namespace.
+	@param namesapceURI The URI of the namespace of the property to check.
+	@return <code>true</code> if a property exists in the given namespace.
+	@exception NullPointerException if the given namespace URI is <code>null</code>.
+	*/
+	public boolean hasNamespaceProperty(final URI namespaceURI);
+
 	/**Determines whether there exists a property with the given property URI and the given property value.
 	@param propertyURI The URI of the property of the value to check.
 	@param propertyValue The value to match for the given property.
@@ -56,9 +63,16 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public Iterable<URFProperty> getProperties();
 
+	/**Returns an iterable to the properties of this scope with the given property URI.
+	@param propertyURI The URI of the properties to be returned.
+	@return An iterable to all available properties with the given property URI.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public Iterable<URFProperty> getProperties(final URI propertyURI);
+
 	/**Returns an iterable to the properties of this scope within a particular namespace.
 	@param namespaceURI The URI of the namespace of the properties to be returned.
-	@return An iterable to all available properties.
+	@return An iterable to all available properties within the given namespace.
 	@exception NullPointerException if the given namespace URI is <code>null</code>.
 	*/
 	public Iterable<URFProperty> getNamespaceProperties(final URI namespaceURI);

@@ -68,16 +68,20 @@ public class URF
 	public final static URI REAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Real");
 	/**The URI of the URF <code>Resource</code> class.*/ 
 	public final static URI RESOURCE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Resource");
+	/**The URI of the URF <code>Set</code> class.*/ 
+	public final static URI SET_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Set");
 	/**The URI of the URF <code>String</code> class.*/ 
 	public final static URI STRING_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "String");
 	/**The URI of the URF <code>URI</code> class.*/ 
 	public final static URI URI_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "URI");
 		//properties
+	/**The URI of the property indicating an element of a container such as a set.*/ 
+	public final static URI ELEMENT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "element");
 	/**The name of a resource, which may differ from that indicated by the URI, if any.*/
 	public final static URI NAME_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "name");
-	/**The URI of the URF <code>order</code> property.*/ 
+	/**The URI of the URF order property.*/ 
 	public final static URI ORDER_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "order");
-	/**The URI of the URF <code>type</code> property.*/ 
+	/**The URI of the URF type property.*/ 
 	public final static URI TYPE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "type");
 
 		//lexical namespaces

@@ -177,6 +177,17 @@ public class URFTURFGenerator
 		*/
 		public void setShortArraysGenerated(final boolean shortArraysGenerated) {this.shortArraysGenerated=shortArraysGenerated;}
 
+	/**Whether sets are generated as short forms.*/
+	private boolean shortSetsGenerated=true;
+
+		/**@return Whether sets are generated as short forms.*/
+		public boolean isShortSetsGenerated() {return shortSetsGenerated;}
+
+		/**Sets whether sets should be generated as short forms.
+		@param shortSetsGenerated Whether sets should be generated as short forms.
+		*/
+		public void setShortSetsGenerated(final boolean shortSetsGenerated) {this.shortSetsGenerated=shortSetsGenerated;}
+
 	/**The zero-based level of text indentation.*/
 	private int indentLevel=0;
 
@@ -415,8 +426,11 @@ public class URFTURFGenerator
 //Debug.trace("generating resource with scope", scopeSubject, "predicate URI", scopePredicateURI, "and resource", resource);
 		boolean generatedComponent=false;	//we haven't generated any components, yet
 		URI lexicalTypeURI=null;	//the lexical namespace type URI, if any
-		final boolean isArrayShortForm=isShortArraysGenerated() && resource.hasTypeURI(ARRAY_CLASS_URI);	//see if this is an array to be generated in short form
 		final boolean isShortTypesGenerated=isShortTypesGenerated();	//see if we should generate types in the short form
+		final boolean isArray=resource.hasTypeURI(ARRAY_CLASS_URI);	//see if this resource is an array
+		boolean isArrayShortForm=isShortArraysGenerated() && (isArray || resource.hasNamespaceProperty(ORDINAL_NAMESPACE_URI));	//generate an array short form if this is an array or it has properties in the ordinal namespace
+		final boolean isSet=resource.hasTypeURI(SET_CLASS_URI);	//see if this resource is a set
+		boolean isSetShortForm=isShortSetsGenerated() && (isSet || resource.hasProperty(ELEMENT_PROPERTY_URI));	//generate a set short form if this is an array or it has properties in the element namespace
 		final URI uri=resource.getURI();	//get the resource URI
 		String label=getLabel(resource);	//see if there is a label for this resource
 		if(label==null && uri==null && !isGenerated)	//if there is no label or URI for this resource and the resource hasn't yet been generated
@@ -451,17 +465,24 @@ public class URFTURFGenerator
 			}
 		}
 			//type
+		long shortTypeCount=0;	//keep track of how many short-form types we've generated, if any
 		if(isShortTypesGenerated)	//if we should generate type short forms
 		{
 			markReferenceGenerated(urf, TYPE_PROPERTY_URI);	//mark that the type property was generated unless it has some other quality needed to be generated separately
-			int shortTypeCount=0;	//keep track of how many short-form types we've generated
 			for(final URFResource type:resource.getTypes())	//look at each type
 			{
 				final URI typeURI=type.getURI();	//get the URI of this type
 				if(typeURI!=null)	//if the given type has a URI
 				{
-					if(typeURI.equals(lexicalTypeURI)	//if this is the same type URI as the URI included in the lexical namespace type URI, if any
-							|| (isArrayShortForm && ARRAY_CLASS_URI.equals(typeURI)))	//or if we're using an array short form and this is the array type
+					if(typeURI.equals(lexicalTypeURI))	//if this is the same type URI as the URI included in the lexical namespace type URI, if any
+					{
+						continue;	//skip this type
+					}
+					else if(isArrayShortForm && ARRAY_CLASS_URI.equals(typeURI))	//or if we're using an array short form and this is the array type
+					{
+						continue;	//skip this type
+					}
+					else if(isSetShortForm && SET_CLASS_URI.equals(typeURI))	//or if we're using a set short form and this is the set type
 					{
 						continue;	//skip this type
 					}
@@ -486,39 +507,34 @@ public class URFTURFGenerator
 			//array
 		if(isArrayShortForm)	//if we should generate an array short form
 		{
-			markReferenceGenerated(urf, ARRAY_CLASS_URI);	//mark that the array type was generated unless it has some other quality needed to be generated separately
-			final Iterator<URFProperty> elementPropertyIterator=resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator();	//get an iterator to all the ordinal properties
-			if(elementPropertyIterator.hasNext())	//if there are array elements
+			if(lexicalTypeURI==null && shortTypeCount==0 && !isArray)	//if there have been no non-array types indicated, and this is not really an array
 			{
-				writeNewLine(writer);
-				writer.write(ARRAY_BEGIN);	//start the array
-				indent();	//indent the array
-				writeNewLine(writer);
-				int elementCount=0;	//keep track of how many elements we have
-				while(elementPropertyIterator.hasNext())	//while there are elements
-				{
-					final URFProperty elementProperty=elementPropertyIterator.next();	//get the next element property
-					if(elementCount>0)	//if we've already generated an element
-					{
-						writer.append(LIST_DELIMITER);	//separate the properties
-						writeNewLine(writer);
-					}
-					generateResource(writer, urf, referenceMap, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false);	//generate the element
-					++elementCount;	//show that we generated another array element
-				}
-				unindent();
-				writeNewLine(writer);
-				writer.write(ARRAY_END);	//end the array
+				isArrayShortForm=false;	//change our minds about showing the array short form; otherwise, it would introduce an array type where none was specified
 			}
-			else	//if there are no elements in the array
+			else	//if we're still a go for generating an array short form, do it
 			{
-				writer.append(ARRAY_BEGIN).append(ARRAY_END);	//show the empty array on the same line
+				markReferenceGenerated(urf, ARRAY_CLASS_URI);	//mark that the array type was generated unless it has some other quality needed to be generated separately
+				generateCollection(writer, urf, referenceMap, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), ARRAY_BEGIN, ARRAY_END);	//generate all the values of ordinal properties in the array
+				generatedComponent=true;	//indicate that we generated a component
 			}
-			generatedComponent=true;	//indicate that we generated a component			
+		}
+			//set
+		if(isSetShortForm)	//if we should generate a set short form
+		{
+			if(lexicalTypeURI==null && shortTypeCount==0 && !isArrayShortForm && !isSet)	//if there have been no non-set types indicated, and this is not really a set
+			{
+				isSetShortForm=false;	//change our minds about showing the set short form; otherwise, it would introduce a set type where none was specified
+			}
+			else	//if we're still a go for generating an array short form, do it
+			{
+				markReferenceGenerated(urf, SET_CLASS_URI);	//mark that the set type was generated unless it has some other quality needed to be generated separately
+				generateCollection(writer, urf, referenceMap, resource.getProperties(ELEMENT_PROPERTY_URI).iterator(), SET_BEGIN, SET_END);	//generate all the values of element properties in the array
+				generatedComponent=true;	//indicate that we generated a component
+			}
 		}
 			//properties
 		int propertyCount=0;	//start with no properties being generating
-		propertyCount=generateProperties(writer, urf, referenceMap, resource, PROPERTY_VALUE_DELIMITER, propertyCount, !isShortTypesGenerated, !isArrayShortForm, true);	//generate properties
+		propertyCount=generateProperties(writer, urf, referenceMap, resource, PROPERTY_VALUE_DELIMITER, propertyCount, !isShortTypesGenerated, !isArrayShortForm, !isSetShortForm, true);	//generate properties
 		if(scopeSubject!=null && scopePredicateURI!=null)	//if this resource is the value of a property
 		{
 			final URFScope scope=scopeSubject.getScope(scopePredicateURI, resource);	//get the scope for this value
@@ -526,7 +542,7 @@ public class URFTURFGenerator
 			{
 				throw new IllegalArgumentException("No scope for given subject "+scopeSubject+" and predicate URI "+scopePredicateURI);
 			}
-			propertyCount=generateProperties(writer, urf, referenceMap, scope, SCOPED_PROPERTY_VALUE_DELIMITER, propertyCount, !isShortTypesGenerated, !isArrayShortForm, !inSequence);	//generate scoped properties, suppressing generation of scoped order if we are in a sequence
+			propertyCount=generateProperties(writer, urf, referenceMap, scope, SCOPED_PROPERTY_VALUE_DELIMITER, propertyCount, true, true, true, !inSequence);	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence
 		}
 		if(propertyCount>0)	//if we started the properties section
 		{
@@ -541,6 +557,49 @@ public class URFTURFGenerator
 		return writer;	//return the writer
 	}
 
+	
+	/**Generates the elements of an array or set.
+	@param writer The writer used for generating the information.
+	@param urf The URF data model.
+	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
+	@param elementPropertyIterator An iterator to the elements of the resource.
+	@param collectionBegin The beginning delimiter of the collection.
+	@param collectionEnd The end delimiter of the collection.
+	@return The writer.
+	@exception NullPointerException if the given writer, URF data model, reference map, and/or element property iterator is <code>null</code>. 
+	@exception IOException if there is an error writing to the writer.
+	*/
+	protected Writer generateCollection(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final Iterator<URFProperty> elementPropertyIterator, final char collectionBegin, final char collectionEnd) throws IOException
+	{
+		if(elementPropertyIterator.hasNext())	//if there are elements in the collection
+		{
+			writeNewLine(writer);
+			writer.write(collectionBegin);	//start the collection
+			indent();	//indent the array
+			writeNewLine(writer);
+			int elementCount=0;	//keep track of how many elements we have
+			while(elementPropertyIterator.hasNext())	//while there are elements
+			{
+				final URFProperty elementProperty=elementPropertyIterator.next();	//get the next element property
+				if(elementCount>0)	//if we've already generated an element
+				{
+					writer.append(LIST_DELIMITER);	//separate the properties
+					writeNewLine(writer);
+				}
+				generateResource(writer, urf, referenceMap, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false);	//generate the element
+				++elementCount;	//show that we generated another array element
+			}
+			unindent();
+			writeNewLine(writer);
+			writer.write(collectionEnd);	//end the collection
+		}
+		else	//if there are no elements in the collection
+		{
+			writer.append(collectionBegin).append(collectionEnd);	//show the empty collection on the same line
+		}
+		return writer;	//return the writer		
+	}
+
 	/**Generates the properties, if any, of a given scope, without property section delimiters.
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
@@ -550,12 +609,13 @@ public class URFTURFGenerator
 	@param propertyCount the number of properties already generated; used to determine whether a new properties section should be generated.
 	@param generateTypes Whether type properties should be generated.
 	@param generateOrdinals Whether properties in the ordinal namespace should be generated.
+	@param generateElements Whether the element property should be generated.
 	@param generateOrder Whether the order property should be generated.
 	@return The new total number of properties generated, including the properties already generated before this method was called.
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or scope is <code>null</code>. 
 	@exception IOException if there was an error writing to the writer.
 	*/
-	protected int generateProperties(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope scope, final char propertyValueDelimiter, int propertyCount, final boolean generateTypes, final boolean generateOrdinals, final boolean generateOrder) throws IOException
+	protected int generateProperties(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope scope, final char propertyValueDelimiter, int propertyCount, final boolean generateTypes, final boolean generateOrdinals, final boolean generateElements, final boolean generateOrder) throws IOException
 	{
 		URI sequencePropertyURI=null;	//this will indicate when we're in the middle of a sequence for a particular property
 		for(final URFProperty property:scope.getProperties())	//look at each property
@@ -564,6 +624,7 @@ public class URFTURFGenerator
 			final URI propertyURI=property.getPropertyURI();	//get the property URI
 			if((!generateTypes && TYPE_PROPERTY_URI.equals(propertyURI))	//if we shouldn't generate types and this is a type
 				|| (!generateOrdinals && propertyURI!=null && ORDINAL_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//or if we shouldn't generate ordinals and this property is an ordinal
+				|| (!generateElements && propertyURI!=null && ELEMENT_PROPERTY_URI.equals(propertyURI))	//or if we shouldn't generate elements and this property is an element property
 				|| (!generateOrder && ORDER_PROPERTY_URI.equals(propertyURI)))	//or if we shouldn't generate order and this is an order property
 			{
 				markReferenceGenerated(urf, propertyURI);	//mark that this property was generated unless it has some other quality needed to be generated separately
@@ -594,7 +655,6 @@ public class URFTURFGenerator
 				}
 				else	//if we haven't yet started the properties section
 				{
-					writeNewLine(writer);
 					writer.write(PROPERTIES_BEGIN);	//start the properties declaration
 					indent();	//indent the properties
 					writeNewLine(writer);
