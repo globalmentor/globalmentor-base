@@ -6,19 +6,16 @@ import java.util.*;
 
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
+import static com.garretwilson.io.FileConstants.EXTENSION_SEPARATOR;
+import static com.garretwilson.lang.CharSequenceUtilities.*;
 import com.garretwilson.lang.IntegerUtilities;
-
+import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
-
 import com.garretwilson.text.FormatUtilities;
 import com.garretwilson.text.SyntaxException;
 import com.garretwilson.text.unicode.UnicodeCharacter;
 import com.garretwilson.util.*;
-
-import static com.garretwilson.io.FileConstants.EXTENSION_SEPARATOR;
-import static com.garretwilson.lang.CharSequenceUtilities.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
-import static com.garretwilson.net.URIConstants.*;
 
 /**Various URI manipulating functions for working with URIs as defined in
 	<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
@@ -91,6 +88,17 @@ public class URIUtilities
 	}
 
 	/**Determines the info indentifier of the given {@value URIConstants#INFO_SCHEME} scheme URI.
+	@param uri The URI from which the info identifier should be retrieved.
+	@return The decoded info identifier of the given info URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@exception IllegalArgumentException if the given URI is not a valid {@value URIConstants#INFO_SCHEME} scheme URI.
+	*/
+	public final static String getInfoIdentifier(final URI uri)
+	{
+		return decode(getInfoRawIdentifier(uri));	//decode the raw identifier of the info URI
+	}
+
+	/**Determines the raw, unencoded info indentifier of the given {@value URIConstants#INFO_SCHEME} scheme URI.
 	@param uri The URI from which the info identifier should be retrieved.
 	@return The raw, unencoded info identifier of the given info URI.
 	@exception NullPointerException if the given URI is <code>null</code>.
@@ -929,41 +937,38 @@ public class URIUtilities
 		return URI.create(URN_SCHEME+SCHEME_SEPARATOR+nid+SCHEME_SEPARATOR+nss);	//construct and return the URN
 	}
 
-	/**Creates an {@value URIConstants#INFO_SCHEME} URI with the given info namespace and identifier.
+	/**Creates an {@value URIConstants#INFO_SCHEME} URI with the given info namespace and identifier with no fragment.
 	@param namespace The info namespace.
-	@param identifier The raw, encoded info identifier.
+	@param rawIdentifier The raw, encoded info identifier.
 	@return An info URI based upon the given parameters.
 	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
 	@exception NullPointerException if the given namespace and/or identifier is <code>null</code>.
+	@exception IllegalArgumentException if the given namespace, and/or identifier result in an invalid URI.
 	*/
-	public static URI createInfoURI(final String namespace, final String identifier)
+	public static URI createInfoURI(final String namespace, final String rawIdentifier)
 	{
-		return URI.create(INFO_SCHEME+SCHEME_SEPARATOR+checkInstance(namespace, "Namespace cannot be null.")+INFO_SCHEME_NAMESPACE_DELIMITER+identifier);	//construct and return the info URI
+		return createInfoURI(namespace, rawIdentifier, null);	//create an info URI with no fragment
 	}
 
-	/**Creates an {@value URIConstants#INFO_SCHEME} URI with a {@value URIConstants#INFO_SCHEME_MEDIA_NAMESPACE} namespace
-	in the form <code>info:media/<var>topLevelType</var>/<var>subType</var></code>.
-	@param primaryType The Internet media type primary type.
-	@param subType The Internet media type subtype.
-	@return A <code>info:media/</code> URI based upon the given parameters.
+	/**Creates an {@value URIConstants#INFO_SCHEME} URI with the given info namespace, identifier, and optional fragment.
+	@param namespace The info namespace.
+	@param rawIdentifier The raw, encoded info identifier.
+	@param rawFragment The raw, encoded fragment, or <code>null</code> if there should be no fragment
+	@return An info URI based upon the given parameters.
 	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
-	@exception NullPointerException if the given primary type and/or subtype is <code>null</code>.
+	@exception NullPointerException if the given namespace and/or identifier is <code>null</code>.
+	@exception IllegalArgumentException if the given namespace, identifier, and/or fragment result in an invalid URI.
 	*/
-	public static URI createInfoMediaURI(final String primaryType, final String subType)
+	public static URI createInfoURI(final String namespace, final String rawIdentifier, final String rawFragment)
 	{
-		return createInfoURI(INFO_SCHEME_MEDIA_NAMESPACE, URIPath.encodeSegment(primaryType)+PATH_SEPARATOR+URIPath.encodeSegment(subType));	//create a new info:media/ URI
-	}
-
-	/**Creates an {@value URIConstants#INFO_SCHEME} URI with a {@value URIConstants#INFO_SCHEME_MEDIA_NAMESPACE} namespace
-	in the form <code>info:media/<var>topLevelType</var>/<var>subType</var></code>.
-	@param contentType The content type to use in creating the <code>info:media/</code> URI.
-	@return A <code>info:media/</code> URI based upon the given parameters.
-	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
-	@exception NullPointerException if the given content type is <code>null</code>.
-	*/
-	public static URI createInfoMediaURI(final ContentType contentType)
-	{
-		return createInfoMediaURI(contentType.getPrimaryType(), contentType.getSubType());	//construct and return an info media URI from the given content type's primary type and subtype
+		final StringBuilder stringBuilder=new StringBuilder();	//create a string builder
+		stringBuilder.append(INFO_SCHEME).append(SCHEME_SEPARATOR).append(checkInstance(namespace, "Namespace cannot be null.")).append(INFO_SCHEME_NAMESPACE_DELIMITER);	//info:namespace/
+		stringBuilder.append(rawIdentifier);	//identifier
+		if(rawFragment!=null)	//if there is a fragment
+		{
+			stringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment);	//#fragment
+		}
+		return URI.create(stringBuilder.toString());	//construct and return an info URI from the string builder
 	}
 
 	/**Creates a {@value URIConstants#MAILTO_SCHEME} URI in the form <code>mailto:<var>username</var>@<var>domain</var></code>.

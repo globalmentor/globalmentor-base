@@ -8,13 +8,13 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.mail.internet.ContentType;
 
-import static com.garretwilson.io.ContentTypeUtilities.*;
+import com.garretwilson.io.ContentTypeUtilities;
 import static com.garretwilson.lang.BooleanUtilities.*;
 import static com.garretwilson.lang.CharacterUtilities.*;
+import com.garretwilson.lang.ClassUtilities;
 import com.garretwilson.lang.LongUtilities;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
-import com.garretwilson.net.URIConstants;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
@@ -380,6 +380,65 @@ public class URF
 		return uris;	//return the resource URIs
 	}
 
+	/**Determines an object to represent the given URI, if possible 
+	This method cna return objects for the resources in the following namespaces:
+	<dl>
+		<dt>{@value #BINARY_NAMESPACE_URI}</dt> <dd><code>byte[]</code></dd>
+		<dt>{@value #BOOLEAN_NAMESPACE_URI}</dt> <dd>{@link Boolean}</dd>
+		<dt>{@value #INTEGER_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
+		<dt>{@value #ORDINAL_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
+		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Real}</dd>
+		<dt>{@value #STRING_NAMESPACE_URI}</dt> <dd>{@link String}</dd>
+		<dt>{@value #URI_NAMESPACE_URI}</dt> <dd>{@link URI}</dd>
+	</dl>
+	@param resourceURI The URI to represent as an object, or <code>null</code>.
+	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
+	@exception IllegalArgumentException if the given URI represents an object but does not have the correct syntax for that object.
+	*/
+	public static Object asObject(final URI resourceURI)
+	{
+		if(resourceURI!=null)	//if a resource URI was given
+		{
+			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the URI namespace
+			if(namespaceURI!=null)	//if this URI has a namespace
+			{
+				if(BINARY_NAMESPACE_URI.equals(namespaceURI))	//binary
+				{
+					return asBinary(resourceURI);	//return an array of bytes
+				}
+				else if(BOOLEAN_NAMESPACE_URI.equals(namespaceURI))	//boolean
+				{
+					return asBoolean(resourceURI);	//return a boolean
+				}
+				else if(CHARACTER_NAMESPACE_URI.equals(namespaceURI))	//character
+				{
+					return asCharacter(resourceURI);	//create a character value resource
+				}
+				else if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//integer
+				{
+					return asInteger(resourceURI);	//create a long value resource
+				}
+				else if(ORDINAL_NAMESPACE_URI.equals(namespaceURI))	//ordinal
+				{
+					return asOrdinal(resourceURI);	//create a long value resource
+				}
+				else if(REAL_NAMESPACE_URI.equals(namespaceURI))	//real
+				{
+					return asReal(resourceURI);	//create a double value resource
+				}
+				else if(STRING_NAMESPACE_URI.equals(namespaceURI))	//string
+				{
+					return asString(resourceURI);	//create a string value resource
+				}
+				else if(URI_NAMESPACE_URI.equals(namespaceURI))	//URI
+				{
+					return asURI(resourceURI);	//create a URI value resource
+				}
+			}
+		}
+		return null;	//we can't represent this URI as an object
+	}
+	
 	/**Determines the array object, if any, represented by the given resource.
 	@param resource The resource which is expected to represent an array, or <code>null</code>.
 	@return The array object represented by the given resource, or <code>null</code> if the resource is not an instance of {@link URFArrayResource}.
@@ -401,7 +460,7 @@ public class URF
 	}
 
 	/**Determines the binary data represented by the given URI.
-	@param resourceURI The URI which is expected to represent binary data , or <code>null</code>.
+	@param resourceURI The URI which is expected to represent binary data, or <code>null</code>.
 	@return The binary data represented by the given URI, or <code>null</code> if the URI does not represent binary data.
 	@exception IllegalArgumentException if the given URI represents binary data that does not have the correct syntax.
 	@see #BINARY_CLASS_URI
@@ -476,30 +535,29 @@ public class URF
 		return null;	//no boolean could be found
 	}
 
+	/**Determines the Java class represented by the given resource.
+	A resource represents a Java class if it has a valid <code>info:java/</code> URI with class identifier fragment.
+	@param resource The resource which is expected to represent a Java class, or <code>null</code>.
+	@return The Java class represented by the given resource, or <code>null</code> if the resource does not represent a Java class.
+	@exception IllegalArgumentException if the given resource represents a Java class that does not have the correct syntax.
+	@exception ClassNotFoundException if the class represented by the given resource could not be found.
+	@see ClassUtilities#asClass(URI)
+	*/
+	public static Class<?> asClass(final Resource resource) throws ClassNotFoundException
+	{
+		return resource!=null ? ClassUtilities.asClass(resource.getURI()) : null;	//if a resource was given, see if its URI represents a Java class
+	}
+	
 	/**Determines the Internet media type represented by the given resource.
+	A resource represents an Internet media type if it has a valid <code>info:media/</code> URI.
 	@param resource The resource which is expected to represent an Internet media type, or <code>null</code>.
 	@return The Internet media type represented by the given resource, or <code>null</code> if the resource does not represent an Internet media type.
 	@exception IllegalArgumentException if the given resource represents an Internet media type that does not have the correct syntax.
+	@see ContentTypeUtilities#asMediaType(URI)
 	*/
 	public static ContentType asMediaType(final Resource resource)
 	{
-		return resource!=null ? asMediaType(resource.getURI()) : null;	//if a resource was given, see if its URI represents an Internet media type
-	}
-
-	/**Determines the Internet media type represented by the given URI.
-	@param resourceURI The URI which is expected to represent an Internet media type, or <code>null</code>.
-	@return The Internet media type represented by the given URI, or <code>null</code> if the URI is not an <code>info:media/</code> URI.
-	@exception IllegalArgumentException if the given URI represents a URI that does not have the correct syntax.
-	@see URIConstants#INFO_SCHEME
-	@see URIConstants#INFO_SCHEME_MEDIA_NAMESPACE
-	*/
-	public static ContentType asMediaType(final URI resourceURI)
-	{
-		if(resourceURI!=null && isInfoNamespace(resourceURI, INFO_SCHEME_MEDIA_NAMESPACE))	//if an info:/media URI was given
-		{
-			return createContentType(getInfoRawIdentifier(resourceURI));	//create and return a content type from the identifier of the info URI
-		}
-		return null;	//no URI could be found
+		return resource!=null ? ContentTypeUtilities.asMediaType(resource.getURI()) : null;	//if a resource was given, see if its URI represents an Internet media type
 	}
 
 	/**Determines the number represented by the given resource.
@@ -982,14 +1040,10 @@ public class URF
 	/**The default resource factory for the URF ontology.
 	This resource factory can create the following types of resource objects for the given types:
 	<dl>
+		<dt>Object returned by URF#asObject(URI)</dt> <dd>{@link DefaultURFValueResource}</dd>
 		<dt>{@value #ARRAY_CLASS_URI}</dt> <dd>{@link URFArrayResource}</dd>
-		<dt>{@value #BOOLEAN_NAMESPACE_URI}</dt> <dd>{@link Boolean}</dd>
-		<dt>{@value #INTEGER_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
-		<dt>{@value #ORDINAL_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
-		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Real}</dd>
-		<dt>{@value #STRING_NAMESPACE_URI}</dt> <dd>{@link String}</dd>
-		<dt>{@value #URI_NAMESPACE_URI}</dt> <dd>{@link URI}</dd>
 	</dl>
+	@see URF#asObject(URI)
 	*/
 	public final static DefaultURFResourceFactory DEFAULT_URF_RESOURCE_FACTORY=new DefaultURFResourceFactory()
 			{
@@ -999,6 +1053,7 @@ public class URF
 				@param typeURI The URI of the resource type, or <code>null</code> if the type is not known.
 				@return The resource created with this URI.
 				@exception IllegalArgumentException if a lexical resource URI was given with a different type URI than the specified type URI.
+				@see URF#asObject(URI)
 				*/
 				public URFResource createResource(final URI resourceURI, final URI typeURI)
 				{
@@ -1009,37 +1064,10 @@ public class URF
 						{
 							throw new IllegalArgumentException("Specified type URI "+typeURI+" doesn't match type URI "+lexicalTypeURI+" of given lexical URI "+resourceURI);
 						}
-						if(BINARY_CLASS_URI.equals(typeURI))	//binary
+						final Object object=asObject(resourceURI);	//try to get an object for the resource URI
+						if(object!=null)	//if we found an object to represent the URI
 						{
-							return new DefaultURFValueResource<byte[]>(resourceURI, asBinary(resourceURI));	//create a binary value resource
-						}
-						else if(BOOLEAN_CLASS_URI.equals(typeURI))	//boolean
-						{
-							return new DefaultURFValueResource<Boolean>(resourceURI, asBoolean(resourceURI));	//create a boolean value resource
-						}
-						else if(CHARACTER_CLASS_URI.equals(typeURI))	//character
-						{
-							return new DefaultURFValueResource<Character>(resourceURI, asCharacter(resourceURI));	//create a character value resource
-						}
-						else if(INTEGER_CLASS_URI.equals(typeURI))	//integer
-						{
-							return new DefaultURFValueResource<Long>(resourceURI, asInteger(resourceURI));	//create a long value resource
-						}
-						else if(ORDINAL_CLASS_URI.equals(typeURI))	//ordinal
-						{
-							return new DefaultURFValueResource<Long>(resourceURI, asOrdinal(resourceURI));	//create a long value resource
-						}
-						else if(REAL_CLASS_URI.equals(typeURI))	//real
-						{
-							return new DefaultURFValueResource<Double>(resourceURI, asReal(resourceURI));	//create a double value resource
-						}
-						else if(STRING_CLASS_URI.equals(typeURI))	//string
-						{
-							return new DefaultURFValueResource<String>(resourceURI, asString(resourceURI));	//create a string value resource
-						}
-						else if(URI_CLASS_URI.equals(typeURI))	//URI
-						{
-							return new DefaultURFValueResource<URI>(resourceURI, asURI(resourceURI));	//create a URI value resource
+							return new DefaultURFValueResource<Object>(resourceURI, object);	//create a value resource to represent the object
 						}
 					}
 					if(ARRAY_CLASS_URI.equals(typeURI))	//if this is an array

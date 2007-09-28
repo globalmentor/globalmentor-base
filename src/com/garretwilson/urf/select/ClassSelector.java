@@ -2,6 +2,9 @@ package com.garretwilson.urf.select;
 
 import java.net.URI;
 
+import static com.garretwilson.urf.URF.*;
+import static com.garretwilson.urf.select.Select.*;
+
 /**A selector that selects an object based upon its runtime class (as opposed to its URF resource type).
 This implementation lazily caches any selected class, so that any later updates to the selected class will not be reflected in {@link #getSelectClass()}.
 @author Garret Wilson
@@ -27,20 +30,18 @@ public class ClassSelector extends AbstractSelector
 	}
 
 	/**Returns the select class identified by this selector.
+	This implementation permanently caches locally any select class.
+	The property value is expected to be a resource with a <code>info:java/</code> URI.
 	@return This selector's class designation, or <code>null</code> if this rule has no <code>select:selectClass</code> property that is a Java class.
 	@exception ClassNotFoundException if the class identified by the <code>select:selectClass</code> property cannot be found.
 	*/
 	public Class<?> getSelectClass() throws ClassNotFoundException
 	{
-/*TODO fix with info:java/ URIs
 		if(selectClass==null)	//if we haven't cached a select class (or there has never been a select class found); the race condition here is benign
 		{
-			final RDFLiteral classLiteral=(RDFLiteral)getPropertyValue(THEME_NAMESPACE_URI, CLASS_PROPERTY_NAME);	//get the literal value
-			selectClass=classLiteral!=null ? Class.forName(classLiteral.getLexicalForm()) : null;	//if there is a class literal, try to get a class by that name
+			selectClass=asClass(getPropertyValue(SELECT_CLASS_PROPERTY_URI));	//get the select:selectClass property as a Java class
 		}
 		return selectClass;	//return the class, if any
-*/
-		throw new UnsupportedOperationException("TODO: implement getSelectClass()");
 	}
 
 	/**Determines if this selector selects a given object.

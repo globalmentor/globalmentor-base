@@ -11,18 +11,17 @@ import java.util.regex.*;
 import javax.mail.internet.*;
 
 import static com.garretwilson.net.URLUtilities.*;
-import static com.garretwilson.io.ContentTypeConstants.APPLICATION;
-import static com.garretwilson.io.ContentTypeConstants.X_JAVA_OBJECT;
+import static com.garretwilson.io.ContentTypeConstants.*;
 import static com.garretwilson.io.FileConstants.*;
 import static com.garretwilson.io.FileUtilities.*;
 import static com.garretwilson.io.OutputStreamUtilities.*;
 import static com.garretwilson.lang.JavaConstants.*;
 import static com.garretwilson.lang.JavaUtilities.*;
 import static com.garretwilson.lang.StringUtilities.*;
-import static com.garretwilson.net.URIConstants.JAVA_SCHEME;
-import static com.garretwilson.net.URIUtilities.createURI;
+import com.garretwilson.net.URIConstants;
+import static com.garretwilson.net.URIUtilities.*;
+import com.garretwilson.net.URIPath;
 import com.garretwilson.util.NameValuePair;
-import com.garretwilson.util.Debug;
 
 /**Utilities for manipulating Java classes.
 @author Garret Wilson
@@ -48,6 +47,42 @@ public class ClassUtilities
 	/**This class cannot be publicly instantiated.*/
 	private ClassUtilities() {}
 
+	/**Determines the Internet media type represented by the given URI.
+	A URI represents a Java class if it is a valid <code>info:java/</code> URI with class identifier fragment.
+	@param resourceURI The URI which is expected to represent a Java class, or <code>null</code>.
+	@return The Java class represented by the given URI, or <code>null</code> if the URI is not an <code>info:java/</code> URI.
+	@exception IllegalArgumentException if the given URI represents a Java class that does not have the correct syntax.
+	@exception ClassNotFoundException if the class represented by the given URI could not be found.
+	@see URIConstants#INFO_SCHEME
+	@see URIConstants#INFO_SCHEME_JAVA_NAMESPACE
+	*/
+	public static Class<?> asClass(final URI resourceURI) throws ClassNotFoundException
+	{
+		if(resourceURI!=null && isInfoNamespace(resourceURI, INFO_SCHEME_MEDIA_NAMESPACE))	//if an info:java/ URI was given
+		{
+			final String classLocalName=resourceURI.getFragment();	//get the class name
+			if(classLocalName!=null)	//if there is a class nam
+			{
+				final String packagePath=getInfoIdentifier(resourceURI);	//get the package path
+				return Class.forName(packagePath.replace(PATH_SEPARATOR, PACKAGE_SEPARATOR)+PACKAGE_SEPARATOR+classLocalName);	//consruct the class name and load the class
+			}
+		}
+		return null;	//no class could be found
+	}
+
+	/**Creates an {@value URIConstants#INFO_SCHEME} URI with a {@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE} namespace
+	in the form <code>info:java/<var>com</var>/<var>example</var>/<var>package</var>#<var>Class</var></code>.
+	@param objectClass The class to use in creating the <code>info:java/</code> URI.
+	@return A <code>info:java/</code> URI based upon the given parameters.
+	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
+	@exception NullPointerException if the given class is <code>null</code>.
+	*/
+	public static URI createInfoJavaURI(final Class<?> objectClass)
+	{
+		final String packagePath=URIPath.encodeSegment(objectClass.getPackage().getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the package path by replacing the package separators with path separators after encoding
+		return createInfoURI(INFO_SCHEME_JAVA_NAMESPACE, packagePath, URIPath.encode(getLocalName(objectClass)));	//create a new info:java/ URI with the class local name as the fragment
+	}
+
 	/**Returns a content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
 	@param objectClass The class for which a content type should be returned.
 	@return A content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
@@ -68,15 +103,6 @@ public class ClassUtilities
 			throw new AssertionError(parseException);
 		}
 */
-	}
-
-	/**Returns a URI identifying the given class in the form <code>java:<var>package.Class</var></code>.
-	@param objectClass The class for which a URI should be returned.
-	@return A URI identifying the given class in the form <code>java:<var>package.Class</var></code>.
-	*/
-	public static URI getURI(final Class<?> objectClass)
-	{
-		return createURI(JAVA_SCHEME, objectClass.getName());	//return a Java URI with the class name
 	}
 
 	/**Returns a constructor of a class that is compatible with the given parameter types.

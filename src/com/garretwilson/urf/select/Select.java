@@ -18,7 +18,9 @@ public class Select
 		//properties
 	/**Specifies the selector to select one or more resources.*/
 	public final static URI SELECT_PROPERTY_URI=createResourceURI(SELECT_NAMESPACE_URI, "select");
-	/**Specifies the URI of a URI selector.*/
+	/**Specifies the selected class of a class selector.*/
+	public final static URI SELECT_CLASS_PROPERTY_URI=createResourceURI(SELECT_NAMESPACE_URI, "selectClass");
+	/**Specifies the selected URI of a URI selector.*/
 	public final static URI SELECT_URI_PROPERTY_URI=createResourceURI(SELECT_NAMESPACE_URI, "selectURI");
 
 }

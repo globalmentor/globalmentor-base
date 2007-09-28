@@ -4,10 +4,10 @@ import java.net.URI;
 
 import javax.mail.internet.ContentType;
 
+import static com.garretwilson.io.ContentTypeUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 import com.garretwilson.urf.*;
-
 import static com.garretwilson.urf.URF.*;
 
 /**The URF content ontology.
