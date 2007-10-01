@@ -85,18 +85,18 @@ public class Content
 
 	/**Retrieves the array of child resources of the resource.
 	@param resource The resource the contents of which will be returned.
-	@return The contents of the resource, or <code>null</code> if no <code>content:contents</code> property exists or the value is not an instance of {@link URFArrayResource}.
+	@return The contents of the resource, or <code>null</code> if no <code>content:contents</code> property exists or the value is not an instance of {@link URFListResource}.
 	*/
-	public static URFArrayResource<URFResource> getContents(final URFResource resource)
+	public static URFListResource<URFResource> getContents(final URFResource resource)
 	{
-		return asArrayInstance(resource.getPropertyValue(CONTENTS_PROPERTY_URI)); //return the contents, if any
+		return asListInstance(resource.getPropertyValue(CONTENTS_PROPERTY_URI)); //return the contents, if any
 	}
 
 	/**Set the contents property of the resource.
 	@param resource The resource for which the array of contents should be set.
 	@param contents The array of contents, or <code>null</code> if there should be no contents.
 	*/
-	public static void setContents(final URFResource resource, final URFArrayResource<?> contents)
+	public static void setContents(final URFResource resource, final URFListResource<?> contents)
 	{
 		resource.setPropertyValue(CONTENT_PROPERTY_URI, contents);	//set the contents of the resource
 	}

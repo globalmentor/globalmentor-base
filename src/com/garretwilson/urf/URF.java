@@ -50,8 +50,8 @@ public class URF
 	public final static URI URF_LEXICAL_NAMESPACE_BASE_URI=URI.create(URF_LEXICAL_NAMESPACE_BASE);
 	
 		//classes 
-	/**The URI of the URF <code>Array</code> class.*/ 
-	public final static URI ARRAY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Array");
+	/**The URI of the URF <code>List</code> class.*/ 
+	public final static URI LIST_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "List");
 	/**The URI of the URF <code>Binary</code> class.*/ 
 	public final static URI BINARY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Binary");
 	/**The URI of the URF <code>Boolean</code> class.*/ 
@@ -60,6 +60,8 @@ public class URF
 	public final static URI CHARACTER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Character");
 	/**The URI of the URF <code>Integer</code> class.*/ 
 	public final static URI INTEGER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Integer");
+	/**The URI of the URF <code>Map</code> class.*/ 
+	public final static URI MAP_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Map");
 	/**The URI of the URF <code>Number</code> class.*/ 
 	public final static URI NUMBER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Number");
 	/**The URI of the URF <code>Ordinal</code> class.*/ 
@@ -384,8 +386,29 @@ public class URF
 		return uris;	//return the resource URIs
 	}
 
-	/**Determines an object to represent the given URI, if possible 
-	This method cna return objects for the resources in the following namespaces:
+	/**Determines the list object, if any, represented by the given resource.
+	@param resource The resource which is expected to represent a list, or <code>null</code>.
+	@return The list object represented by the given resource, or <code>null</code> if the resource is not an instance of {@link URFListResource}.
+	*/
+	@SuppressWarnings("unchecked")	//we must trust that they asked for the correct generic type; a class cast exception will be thrown later if the incorrect generic type was requested
+	public static <T extends URFResource> URFListResource<T> asListInstance(final Resource resource)
+	{
+		return resource instanceof URFListResource ? (URFListResource<T>)resource : null;	//if a list was given, return it with the requested generic type
+	}
+
+	/**Determines the Java object represented by the given resource based solely upon its URI.
+	@param resource The resource which is expected to represent a Java object, or <code>null</code>.
+	@return The object represented by the given resource, or <code>null</code> if the resource does not represent a known object based upon its URI.
+	@exception IllegalArgumentException if the given resource represents an object but does not have the correct syntax for that object.
+	@see #asObject(URI)
+	*/
+	public static Object asObject(final Resource resource)
+	{
+		return resource!=null ? asObject(resource.getURI()) : null;	//if a resource was given, see if its URI represents an object
+	}
+
+	/**Determines the Java object to represent the given URI, if possible 
+	This method can return objects for the resources in the following namespaces:
 	<dl>
 		<dt>{@value #BINARY_NAMESPACE_URI}</dt> <dd><code>byte[]</code></dd>
 		<dt>{@value #BOOLEAN_NAMESPACE_URI}</dt> <dd>{@link Boolean}</dd>
@@ -395,7 +418,7 @@ public class URF
 		<dt>{@value #STRING_NAMESPACE_URI}</dt> <dd>{@link String}</dd>
 		<dt>{@value #URI_NAMESPACE_URI}</dt> <dd>{@link URI}</dd>
 	</dl>
-	@param resourceURI The URI to represent as an object, or <code>null</code>.
+	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
 	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
 	@exception IllegalArgumentException if the given URI represents an object but does not have the correct syntax for that object.
 	*/
@@ -442,21 +465,12 @@ public class URF
 		}
 		return null;	//we can't represent this URI as an object
 	}
-	
-	/**Determines the array object, if any, represented by the given resource.
-	@param resource The resource which is expected to represent an array, or <code>null</code>.
-	@return The array object represented by the given resource, or <code>null</code> if the resource is not an instance of {@link URFArrayResource}.
-	*/
-	@SuppressWarnings("unchecked")	//we must trust that they asked for the correct generic type; a class cast exception will be thrown later if the incorrect generic type was requested
-	public static <T extends URFResource> URFArrayResource<T> asArrayInstance(final Resource resource)
-	{
-		return resource instanceof URFArrayResource ? (URFArrayResource<T>)resource : null;	//if an array was given, return it with the requested generic type
-	}
 
 	/**Determines the binary data represented by the given resource.
 	@param resource The resource which is expected to represent binary data, or <code>null</code>.
 	@return The binary data represented by the given resource, or <code>null</code> if the resource does not represent binary data.
 	@exception IllegalArgumentException if the given resource represents binary data that does not have the correct syntax.
+	@see #asBinary(URI)
 	*/
 	public static byte[] asBinary(final Resource resource)
 	{
@@ -491,6 +505,7 @@ public class URF
 	@param resource The resource which is expected to represent a boolean, or <code>null</code>.
 	@return The boolean represented by the given resource, or <code>null</code> if the resource does not represent a boolean.
 	@exception IllegalArgumentException if the given resource represents a boolean that does not have the correct syntax.
+	@see #asBoolean(URI)
 	*/
 	public static Boolean asBoolean(final Resource resource)
 	{
@@ -517,6 +532,7 @@ public class URF
 	@param resource The resource which is expected to represent a character, or <code>null</code>.
 	@return The character represented by the given resource, or <code>null</code> if the resource does not represent a character.
 	@exception IllegalArgumentException if the given resource represents a character that does not have the correct syntax.
+	@see #asCharacter(URI)
 	*/
 	public static Character asCharacter(final Resource resource)
 	{
@@ -568,6 +584,7 @@ public class URF
 	@param resource The resource which is expected to represent a number, or <code>null</code>.
 	@return The number represented by the given resource, or <code>null</code> if the resource does not represent a number.
 	@exception IllegalArgumentException if the given resource represents a number that does not have the correct syntax.
+	@see #asNumber(URI)
 	*/
 	public static Number asNumber(final Resource resource)
 	{
@@ -662,6 +679,7 @@ public class URF
 	@param resource The resource which is expected to represent a string, or <code>null</code>.
 	@return The string represented by the given resource, or <code>null</code> if the resource does not represent a string.
 	@exception IllegalArgumentException if the given resource represents a string that does not have the correct syntax.
+	@see #asString(URI)
 	*/
 	public static String asString(final Resource resource)
 	{
@@ -688,6 +706,7 @@ public class URF
 	@param resource The resource which is expected to represent a URI, or <code>null</code>.
 	@return The URI represented by the given resource, or <code>null</code> if the resource does not represent a URI.
 	@exception IllegalArgumentException if the given resource represents a URI that does not have the correct syntax.
+	@see #asURI(URI)
 	*/
 	public static URI asURI(final Resource resource)
 	{
@@ -1045,7 +1064,7 @@ public class URF
 	This resource factory can create the following types of resource objects for the given types:
 	<dl>
 		<dt>Object returned by URF#asObject(URI)</dt> <dd>{@link DefaultURFValueResource}</dd>
-		<dt>{@value #ARRAY_CLASS_URI}</dt> <dd>{@link URFArrayResource}</dd>
+		<dt>{@value #LIST_CLASS_URI}</dt> <dd>{@link URFListResource}</dd>
 	</dl>
 	@see URF#asObject(URI)
 	*/
@@ -1074,9 +1093,13 @@ public class URF
 							return new DefaultURFValueResource<Object>(resourceURI, object);	//create a value resource to represent the object
 						}
 					}
-					if(ARRAY_CLASS_URI.equals(typeURI))	//if this is an array
+					if(LIST_CLASS_URI.equals(typeURI))	//if this is a list
 					{
-						return new URFArrayResource<URFResource>(resourceURI);	//create a new array
+						return new URFListResource<URFResource>(resourceURI);	//create a new list
+					}
+					else if(SET_CLASS_URI.equals(typeURI))	//if this is a set
+					{
+						return new URFSetResource<URFResource>(resourceURI);	//create a new set
 					}
 					return super.createResource(resourceURI, typeURI);	//if we don't recognize the type, create a default resource
 				}

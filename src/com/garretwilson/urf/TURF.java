@@ -121,7 +121,7 @@ public class TURF
 	*/
 	public final static boolean isNameCharacter(final int c)
 	{
-		return Character.isLetterOrDigit(c) || c=='_' || c=='.';	//see if this is a letter, digit, an underscore, or a period TODO use constants
+		return Character.isLetterOrDigit(c) || Character.getType(c)==Character.CONNECTOR_PUNCTUATION;	//see if this is a letter, digit, or a connector
 	}
 
 }

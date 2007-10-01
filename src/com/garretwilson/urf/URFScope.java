@@ -42,6 +42,13 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public boolean hasNamespaceProperty(final URI namespaceURI);
 
+	/**Determines the number of values there exists for a property with the given property URI.
+	@param propertyURI The URI of the property to count.
+	@return The number of values of the property with the given property URI.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public long getPropertyValueCount(final URI propertyURI);
+
 	/**Determines whether there exists a property with the given property URI and the given property value.
 	@param propertyURI The URI of the property of the value to check.
 	@param propertyValue The value to match for the given property.
@@ -114,7 +121,7 @@ public interface URFScope extends ReadWriteLock
 	All ordered properties will be returned in their correct order before any non-ordered properties.
 	Unordered properties will be returned in an arbitrary order.
 	@param propertyURI The URI of the property for which values should be returned.
-	@return An iterable to all values of the property with the given URI.
+	@return A live iterable to all values of the property with the given URI.
 	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
 	public Iterable<URFResource> getPropertyValues(final URI propertyURI);
@@ -126,7 +133,7 @@ public interface URFScope extends ReadWriteLock
 	@param <V> The type of values to be returned.
 	@param propertyURI The URI of the property for which values should be returned.
 	@param valueClass The class indicating the type of values to be returned in the iterator.
-	@return An iterable to all values of the given type of the property with the given URI.
+	@return A live iterable to all values of the given type of the property with the given URI.
 	@exception NullPointerException if the given property URI and/or value class is <code>null</code>.
 	*/
 	public <V extends URFResource> Iterable<V> getPropertyValues(final URI propertyURI, final Class<V> valueClass);
@@ -135,10 +142,10 @@ public interface URFScope extends ReadWriteLock
 	If the given property and value already exists, no action occurs.
 	@param propertyURI The URI of the property of the value to add.
 	@param propertyValue The value to add for the given property.
-	@return The context of the added value.
+	@return <code>true</code> if the value was added for the indicated property, or <code>false</code> if the property and value already existed.
 	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
 	*/
-	public URFValueContext addPropertyValue(final URI propertyURI, final URFResource propertyValue);
+	public boolean addPropertyValue(final URI propertyURI, final URFResource propertyValue);
 
 	/**Sets a property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.
@@ -169,12 +176,28 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public long removeProperties();
 
+	/**Removes all property values for a given property URI.
+	@param propertyURI The URI of the property the values of which to remove.
+	@return The number of properties removed.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public long removeProperties(final URI propertyURI);
+
 	/**Removes all properties of this scope within a particular namespace.
 	@param namespaceURI The URI of the namespace of the properties to be removed.
 	@return The number of properties removed.
 	@exception NullPointerException if the given namespace URI is <code>null</code>.
 	*/
 	public long removeNamespaceProperties(final URI namespaceURI);
+
+	/**Removes a given property value for the property with the given URI.
+	If the given property and value do not exist, no action occurs.
+	@param propertyURI The URI of the property of the value to remove.
+	@param propertyValue The value to remove for the given property.
+	@return <code>true</code> if the value was removed from the indicated property, else <code>false</code> if the property and value did not exist.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	*/
+	public boolean removePropertyValue(final URI propertyURI, final URFResource propertyValue);
 
 	/**Retrieves the order of this scope.
 	The order is considered to be the number value of the property with URI {@value URF#ORDER_PROPERTY_URI}.

@@ -70,9 +70,9 @@ public class ContentResource extends DefaultURFResource
 	}
 
 	/**Retrieves the array of child resources of the resource.
-	@return The contents of the resource, or <code>null</code> if no <code>content:contents</code> property exists or the value is not an instance of {@link URFArrayResource}.
+	@return The contents of the resource, or <code>null</code> if no <code>content:contents</code> property exists or the value is not an instance of {@link URFListResource}.
 	*/
-	public URFArrayResource<URFResource> getContents()
+	public URFListResource<URFResource> getContents()
 	{
 		return Content.getContents(this); //return the contents, if any
 	}
@@ -80,7 +80,7 @@ public class ContentResource extends DefaultURFResource
 	/**Set the contents property of the resource.
 	@param contents The array of contents, or <code>null</code> if there should be no contents.
 	*/
-	public void setContents(final URFArrayResource<?> contents)
+	public void setContents(final URFListResource<?> contents)
 	{
 		Content.setContents(this, contents);	//set the contents of the resource
 	}

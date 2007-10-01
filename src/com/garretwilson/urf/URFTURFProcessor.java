@@ -266,7 +266,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			foundComponent=true;	//indicate that at least one description component is present
 			if(types.isEmpty())	//if no types have been specified
 			{
-				types.add(getResourceProxy(ARRAY_CLASS_URI));	//add a proxy to the array type, but don't read the array, yet; we'll do that after creating the resource proxy
+				types.add(getResourceProxy(LIST_CLASS_URI));	//add a proxy to the array type, but don't read the array, yet; we'll do that after creating the resource proxy
 			}
 		}
 		else if(c==SET_BEGIN)	//check for the set short form

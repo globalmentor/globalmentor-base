@@ -427,7 +427,7 @@ public class URFTURFGenerator
 		boolean generatedComponent=false;	//we haven't generated any components, yet
 		URI lexicalTypeURI=null;	//the lexical namespace type URI, if any
 		final boolean isShortTypesGenerated=isShortTypesGenerated();	//see if we should generate types in the short form
-		final boolean isArray=resource.hasTypeURI(ARRAY_CLASS_URI);	//see if this resource is an array
+		final boolean isArray=resource.hasTypeURI(LIST_CLASS_URI);	//see if this resource is an array
 		boolean isArrayShortForm=isShortArraysGenerated() && (isArray || resource.hasNamespaceProperty(ORDINAL_NAMESPACE_URI));	//generate an array short form if this is an array or it has properties in the ordinal namespace
 		final boolean isSet=resource.hasTypeURI(SET_CLASS_URI);	//see if this resource is a set
 		boolean isSetShortForm=isShortSetsGenerated() && (isSet || resource.hasProperty(ELEMENT_PROPERTY_URI));	//generate a set short form if this is an array or it has properties in the element namespace
@@ -478,7 +478,7 @@ public class URFTURFGenerator
 					{
 						continue;	//skip this type
 					}
-					else if(isArrayShortForm && ARRAY_CLASS_URI.equals(typeURI))	//or if we're using an array short form and this is the array type
+					else if(isArrayShortForm && LIST_CLASS_URI.equals(typeURI))	//or if we're using an array short form and this is the array type
 					{
 						continue;	//skip this type
 					}
@@ -513,7 +513,7 @@ public class URFTURFGenerator
 			}
 			else	//if we're still a go for generating an array short form, do it
 			{
-				markReferenceGenerated(urf, ARRAY_CLASS_URI);	//mark that the array type was generated unless it has some other quality needed to be generated separately
+				markReferenceGenerated(urf, LIST_CLASS_URI);	//mark that the array type was generated unless it has some other quality needed to be generated separately
 				generateCollection(writer, urf, referenceMap, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), ARRAY_BEGIN, ARRAY_END);	//generate all the values of ordinal properties in the array
 				generatedComponent=true;	//indicate that we generated a component
 			}

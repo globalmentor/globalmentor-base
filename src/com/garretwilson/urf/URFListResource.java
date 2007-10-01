@@ -3,7 +3,6 @@ package com.garretwilson.urf;
 import java.util.*;
 import java.lang.reflect.Array;
 import java.net.URI;
-
 import static java.lang.System.*;
 
 import com.garretwilson.lang.IntegerUtilities;
@@ -11,20 +10,20 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.util.DefaultListIterator;
 import static com.garretwilson.urf.URF.*;
 
-/**An URF array resource that allows convenient indexed access to its elements.
+/**An URF list resource that allows convenient indexed access to its elements.
 The {@link List}-related methods consider the list elements to be the first of each sequential ordinal property starting with zero.
-For example, if an array had properties with indexes º0, º1, º1, º2, º4, the second object with index º1 would be ignored,
+For example, if a list had properties with indexes º0, º1, º1, º2, º4, the second object with index º1 would be ignored,
 as would index º4. {@link List} modification methods will remove duplicate ordinal properties.
 The {@link #clear()} method will remove all ordinal properties, even non-sequential ones.
 This implementation does not supoprt <code>null</code> values.
-@param <E> The type of element stored in the array.
+@param <E> The type of element stored in the list.
 @author Garret Wilson
 */
-public class URFArrayResource<E extends URFResource> extends DefaultURFResource implements List<E>
+public class URFListResource<E extends URFResource> extends DefaultURFResource implements List<E>
 {
 
 	/**Default constructor with no URI.*/
-	public URFArrayResource()
+	public URFListResource()
 	{
 		this(null);	//create a resource without a URI
 	}
@@ -32,15 +31,15 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	/**URI constructor.
 	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
 	*/
-	public URFArrayResource(final URI uri)
+	public URFListResource(final URI uri)
 	{
-		super(uri, ARRAY_CLASS_URI);	//construct the parent class, specifying that this is an array
+		super(uri, LIST_CLASS_URI);	//construct the parent class, specifying that this is a list
 	}
 
-	/**Retrieves the length of the array.
+	/**Retrieves the length of the list.
 	The length is defined as the first zero-based index for which there is no element.
 	This implementation traverses of all ordinal properties.
-	@return The length of the array.
+	@return The length of the list.
 	*/
 	public long getLength()
 	{
@@ -75,7 +74,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	*/
 	public int size()
 	{
-		final long length=getLength();	//get the length of the array
+		final long length=getLength();	//get the length of the list
 		return length<Integer.MAX_VALUE ? (int)length : Integer.MAX_VALUE;	//return the value, with a ceiling of Integer.MAX_VALUE
 	}
 
@@ -84,17 +83,18 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	*/
 	public final boolean isEmpty()
 	{
-		return !hasProperty(ORDINAL_0_URI);	//if the array has no zero index, by definition it is empty (its length is zero)
+		return !hasProperty(ORDINAL_0_URI);	//if the list has no zero index, by definition it is empty (its length is zero)
 	}
 
 	/**Returns if this list contains the specified element.
 	@param object The element whose presence in this list is to be tested.
-	@return <tt>true</tt> if this list contains the specified element
-	@throws NullPointerException if the specified element is <code>null</code> and this list does not permit null elements.
+	@return <code>true</code> if this list contains the specified element
+	@throws ClassCastException if the type of the specified element is incompatible with this list.
+	@throws NullPointerException if the specified element is <code>null</code> and this list does not permit <code>null</code> elements.
 	*/
 	public boolean contains(final Object object)
 	{
-		checkInstance(object, "URF arrays do not support null elements.");
+		checkInstance((URFResource)object, "URF lists do not support null elements.");
 		readLock().lock();	//get a read lock
 		try
 		{
@@ -170,7 +170,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 				{
 					break;	//copying
 				}
-				if(index>=length)	//if we run our of array indexes
+				if(index>=length)	//if we run out of array indexes
 				{
 					final int size=size();	//we'll have to actually calculate our size now
 					final T[] newArray=(T[])Array.newInstance(array.getClass().getComponentType(), size);	//create a new array with the correct size
@@ -179,9 +179,9 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 					length=size;	//replace the length with the new length
 				}
 				++index;	//go to the next index
-			}			
+			}
 			while(index<=Integer.MAX_VALUE);	//keep copying until we run out of integers
-			if(index<length-1)	//if we haven't copied something into the last element of hte array
+			if(index<length-1)	//if we haven't copied something into the last element of the array
 			{
 				array[(int)index]=null;	//show that we didn't use all the available array indexes by setting the next index to null
 			}
@@ -190,7 +190,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		finally
 		{
 			readLock().unlock();	//always release the read lock
-		}		
+		}
 	}
 
   // Modification Operations
@@ -198,12 +198,13 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
   /**Appends the specified element to the end of this list.
 	@param element Element to be appended to this list.
 	@return <code>true</code> (as specified by {@link Collection#add}).
+	@throws ClassCastException if the class of the specified element prevents it from being added to this list.
 	@throws NullPointerException if the specified element is <code>null</code> and this list does not permit <code>null</code> elements.
 	@throws IllegalArgumentException if some property of this element prevents it from being added to this list.
 	*/
 	public boolean add(final E element)
 	{
-		checkInstance(element, "URF arrays do not support null elements.");
+		checkInstance((URFResource)element, "URF lists do not support null elements.");
 		writeLock().lock();	//get a write lock
 		try
 		{
@@ -213,30 +214,31 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		{
 			writeLock().unlock();	//always release the write lock
 		}
-		return true;	//this method always modifies the array
+		return true;	//this method always modifies the list
 	}
 
 	/**Removes the first occurrence of the specified element from this list, if it is present.
 	If this list does not contain the element, it is unchanged.
 	@param object Element to be removed from this list, if present.
 	@return <code>true</code> if this list contained the specified element.
+	@throws ClassCastException if the type of the specified element is incompatible with this list.
 	@throws NullPointerException if the specified element is <code>null</code> and this list does not permit <code>null</code> elements.
 	*/
 	public boolean remove(final Object object)
 	{
-		checkInstance(object, "URF arrays do not support null elements.");
+		checkInstance((URFResource)object, "URF lists do not support null elements.");
 		writeLock().lock();	//get a write lock
 		try
 		{
 			final int index=indexOf(object);	//get the index of the object
-			if(index>=0)	//if the object is in the array
+			if(index>=0)	//if the object is in the list
 			{
 				remove(index);	//remove the object from the index
-				return true;	//indicate that the array was modified
+				return true;	//indicate that the list was modified
 			}
 			else	//if we couldn't find the object
 			{
-				return false;	//we left the array untouched
+				return false;	//we left the list untouched
 			}
 		}
 		finally
@@ -251,6 +253,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	/**Returns <code>true</code> if this list contains all of the elements of the specified collection.
 	@param collection The collection to be checked for containment in this list.
 	@return <code>true</code> if this list contains all of the elements of the specified collection.
+	@throws ClassCastException if the types of one or more elements in the specified collection are incompatible with this list.
 	@throws NullPointerException if the specified collection contains one or more <code>null</code> elements and this list does not permit <code>null</code> elements,
 	or if the specified collection is <code>null</code>.
 	@see #contains(Object)
@@ -262,7 +265,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		{
 			for(final Object object:collection)	//look at each item in the collection
 			{
-				if(!contains(object))	//if we don't contain this object
+				if(!contains((URFResource)object))	//if we don't contain this object
 				{
 					return false;	//indicate that we don't contain all the items
 				}
@@ -272,7 +275,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		finally
 		{
 			readLock().unlock();	//always release the read lock
-		}			
+		}
 	}
 
 	/**Appends all of the elements in the specified collection to the end of this list,
@@ -280,6 +283,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	The behavior of this operation is undefined if the specified collection is modified while the operation is in progress.
 	@param collectiono The collection containing elements to be added to this list.
 	@return <code>true</code> if this list changed as a result of the call.
+	@throws ClassCastException if the class of an element of the specified collection prevents it from being added to this list.
 	@throws NullPointerException if the specified collection contains one or more <code>null</code> elements and this list does not permit <code>null</code> elements,
 		or if the specified collection is <code>null</code>
 	@see #add(Object)
@@ -293,7 +297,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 			long index=size;	//we'll start adding elements at the end
 			for(final E item:collection)	//for each item in the collection
 			{
-				checkInstance(item, "URF arrays do not support null elements.");
+				checkInstance((URFResource)item, "URF lists do not support null elements.");
 				setPropertyValue(createOrdinalURI(index), item);	//add this item at the current index
 				++index;	//go to the next index for the next item
 			}
@@ -312,6 +316,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	@param index The index at which to insert the first element from the specified collection.
 	@param c The collection containing elements to be added to this list.
 	@return <code>true</code> if this list changed as a result of the call.
+	@throws ClassCastException if the class of an element of the specified collection prevents it from being added to this list.
 	@throws NullPointerException if the specified collection contains one or more <code>null</code> elements and this list does not permit <code>null</code> elements,
 		or if the specified collection is <code>null</code>.
 	@throws IndexOutOfBoundsException if the index is out of range (<code>index &lt; 0 || index &gt; size()</code>).
@@ -327,7 +332,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 			long newIndex=index;	//start at the given index
 			for(final E element:collection)	//for each element in the collection
 			{
-				checkInstance(element, "URF arrays do not support null elements.");
+				checkInstance((URFResource)element, "URF lists do not support null elements.");
 				final E oldElement=(E)setPropertyValue(createOrdinalURI(newIndex), element);	//replace the element at this index with the element from the collection
 				setPropertyValue(createOrdinalURI(newIndex+collectionSize), element);	//shift the old element up in the list past the added elements from the collection
 			}
@@ -336,12 +341,13 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		finally
 		{
 			writeLock().unlock();	//always release the write lock
-		}		
+		}
 	}
 
 	/**Removes from this list all of its elements that are contained in the specified collection.
  	@param collection The collection containing elements to be removed from this list.
 	@return <code>true</code> if this list changed as a result of the call.
+	@throws ClassCastException if the class of an element of this list is incompatible with the specified collection.
 	@throws NullPointerException if this list contains a <code>null</code> element and the specified collection does not permit <code>null</code> elements,
 		or if the specified collection is <code>null</code>.
 	@see #remove(Object)
@@ -365,14 +371,15 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		finally
 		{
 			writeLock().unlock();	//always release the write lock
-		}		
+		}
 	}
 
 	/**Retains only the elements in this list that are contained in the specified collection.
 	In other words, removes from this list all the elements that are not contained in the specified collection.
 	@param collection The collection containing elements to be retained in this list.
 	@return <code>true</code> if this list changed as a result of the call.
-	@throws NullPointerException if this list contains a <code>null</code> element and the specified collection does not permit null elements,
+	@throws ClassCastException if the class of an element of this list is incompatible with the specified collection.
+	@throws NullPointerException if this list contains a <code>null</code> element and the specified collection does not permit <code>null</code> elements,
 		or if the specified collection is <code>null</code>.
 	@see #remove(Object)
 	@see #contains(Object)
@@ -398,7 +405,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		finally
 		{
 			writeLock().unlock();	//always release the write lock
-		}		
+		}
 	}
 
 	/**Removes all of the elements from this list.
@@ -482,7 +489,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 				}
 				hashCode=31*hashCode+propertyValue.hashCode();	//update the hash code, as per the list contract
 				++index;	//go to the next index
-			}			
+			}
 			while(index<=Integer.MAX_VALUE);	//keep looking until we run out of integers
 			return hashCode;	//return the calculated hash code
 		}
@@ -517,7 +524,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	@param index The index of the element to replace.
 	@param element The element to be stored at the specified position
 	@return The element previously at the specified position.
-	@throws ClassCastException if the class of the specified element prevents it from being added to this list
+	@throws ClassCastException if the class of the specified element prevents it from being added to this list.
 	@throws NullPointerException if the specified element is <code>null</code> and this list does not permit <code>null</code> elements.
 	@throws IndexOutOfBoundsException if the index is out of range (<code>index &lt; 0 || index &gt;= size()</code>).
 	*/
@@ -530,6 +537,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	Shifts the element currently at that position (if any) and any subsequent elements to the right (adds one to their indices).
 	@param index The index at which the specified element is to be inserted.
 	@param element The element to be inserted.
+	@throws ClassCastException if the class of the specified element prevents it from being added to this list.
 	@throws NullPointerException if the specified element is <code>null</code> and this list does not permit <code>null</code> elements.
 	@throws IndexOutOfBoundsException if the index is out of range (<code>index &lt; 0 || index &gt; size()</code>)
 	*/
@@ -564,7 +572,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		writeLock().lock();	//get a write lock
 		try
 		{
-			final int size=size();	//find the size of the array
+			final int size=size();	//find the size of the list
 			IntegerUtilities.checkIndexBounds(index, 0, size);	//make sure the index is within the correct bounds (we don't need to use our local routine because we've already calculated the size
 			E element=null;	//start off with a null, which will be the new value of the last index
 			for(int i=size-1; i>=index; --i)	//start with the last index and work our way down to the requested index
@@ -585,11 +593,12 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	/**Returns the index of the first occurrence of the specified element in this list, or -1 if this list does not contain the element.
 	@param object The element to search for.
 	@return The index of the first occurrence of the specified element in this list, or -1 if this list does not contain the element.
+	@throws ClassCastException if the type of the specified element is incompatible with this list.
 	@throws NullPointerException if the specified element is <code>null</code> and this list does not permit <code>null</code> elements.
 	*/
 	public int indexOf(final Object object)
 	{
-		checkInstance(object, "URF arrays do not support null elements.");
+		checkInstance((URFResource)object, "URF lists do not support null elements.");
 		long index=0;	//keep track of our index
 		readLock().lock();	//get a read lock
 		try
@@ -606,24 +615,25 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 					return (int)index;	//return the index
 				}
 				++index;	//go to the next index
-			}			
+			}
 			while(index<=Integer.MAX_VALUE);	//keep looking until we run out of integers
 			return -1;	//indicate that we didn't find the value
 		}
 		finally
 		{
 			readLock().unlock();	//always release the read lock
-		}		
+		}
 	}
 
 	/**Returns the index of the last occurrence of the specified element in this list, or -1 if this list does not contain the element.
 	@param object The element to search for.
 	@return The index of the last occurrence of the specified element in this list, or -1 if this list does not contain the element.
+	@throws ClassCastException if the type of the specified element is incompatible with this list.
 	@throws NullPointerException if the specified element is <code>null</code> and this list does not permit <code>null</code> elements.
 	*/
 	public int lastIndexOf(final Object object)
 	{
-		checkInstance(object, "URF arrays do not support null elements.");
+		checkInstance((URFResource)object, "URF lists do not support null elements.");
 		long index=0;	//keep track of our index
 		int lastIndex=-1;	//we'll update the last index with the last known index of a matching value
 		readLock().lock();	//get a read lock
@@ -641,7 +651,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 					lastIndex=(int)index;	//note this index and keep looking
 				}
 				++index;	//go to the next index
-			}			
+			}
 			while(index<=Integer.MAX_VALUE);	//keep looking until we run out of integers
 			return lastIndex;	//return the last known index, if any
 		}
@@ -678,7 +688,7 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 		finally
 		{
 			readLock().unlock();	//always release the read lock
-		}		
+		}
 	}
 
   // View
@@ -696,10 +706,10 @@ public class URFArrayResource<E extends URFResource> extends DefaultURFResource 
 	*/
 	public List<E> subList(int fromIndex, int toIndex)
 	{
-		throw new UnsupportedOperationException("URF arrays do not yet support sublists.");	//TODO implement
+		throw new UnsupportedOperationException("URF lists do not yet support sublists.");	//TODO implement
 	}
 
-	/**Checks the given index to ensure that it is not below zero or at/above the size of the array.
+	/**Checks the given index to ensure that it is not below zero or at/above the size of the list.
 	@param index The index to check.
 	@param allowSize <code>false</code> if the given index itself should be checked, or <code>true</code> if only the previous indexes should be checked.
 	@return The valid index.
