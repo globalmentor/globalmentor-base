@@ -45,6 +45,48 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 		this.uri=uri;	//save the URI, if any
 	}
 
+	/**Copy constructor.
+	The new resource will use the same URI, if any, as the old.
+	All properties will be copied from the given resource to the new one.
+	@param resource The URF resource from which resources should be copied.
+	@exception NullPointerException if the given resource is <code>null</code>.
+	*/
+	public DefaultURFResource(final URFResource resource)
+	{
+		this(resource, resource.getURI());	//create the resource using the existing resource's URI
+	}
+
+	/**Copy constructor with a specified URI.
+	All properties will be copied from the given resource to the new one.
+	@param resource The RDF resource from which resources should be copied.
+	@param uri The URI for the new resource.
+	@exception NullPointerException if the given resource is <code>null</code>.
+	*/
+	public DefaultURFResource(final URFResource resource, final URI uri)
+	{
+		this(uri, NO_RESOURCES);	//create the resource with the given URI
+		writeLock().lock();	//get a write lock on this resource
+		try
+		{
+			readLock().lock();	//get a read lock on the other resource
+			try
+			{
+				for(final URFProperty property:resource.getProperties())	//for each property in the other resource
+				{
+					addPropertyValue(property.getPropertyURI(), property.getValue());	//add this property TODO add scoped properties
+				}
+			}
+			finally
+			{
+				readLock().unlock();	//always release the read lock
+			}
+		}
+		finally
+		{
+			writeLock().unlock();	//always release the write lock
+		}
+	}
+
 	/**Retrieves the types declared for this resource, if any.
 	@return An iterable to all types declared for this resource.
 	@see URF#TYPE_PROPERTY_URI

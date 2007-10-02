@@ -84,7 +84,7 @@ public class TypedURFResourceTURFIO<T extends URFResource> extends AbstractTURFI
 	public T read(final URF urf, final InputStream inputStream, final URI baseURI) throws IOException
 	{
 		readURF(urf, inputStream, baseURI);	//read URF from the input stream
-		final URFResource resource=urf.getResourceByType(getResourceTypeURI());	//load the correct resource
+		final URFResource resource=urf.getResourceByTypeURI(getResourceTypeURI());	//load the correct resource
 		if(resource==null)	//if there is no resource
 		{
 			throw new IOException("No resource found in namespace "+getResourceNamespaceURI()+" with class name "+getResourceClassName()+".");	//G***i18n

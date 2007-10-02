@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.*;
 import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.*;
 
 import javax.mail.internet.ContentType;
 
@@ -15,9 +16,12 @@ import com.garretwilson.lang.ClassUtilities;
 import com.garretwilson.lang.LongUtilities;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
+
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
+
+import com.garretwilson.text.RegularExpression;
 import com.garretwilson.urf.content.*;
 import com.garretwilson.util.*;
 
@@ -68,6 +72,8 @@ public class URF
 	public final static URI ORDINAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Ordinal");
 	/**The URI of the URF <code>Real</code> class.*/ 
 	public final static URI REAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Real");
+	/**The URI of the URF <code>RegularExpression</code> class.*/ 
+	public final static URI REGULAR_EXPRESSION_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "RegularExpression");
 	/**The URI of the URF <code>Resource</code> class.*/ 
 	public final static URI RESOURCE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Resource");
 	/**The URI of the URF <code>Set</code> class.*/ 
@@ -111,6 +117,8 @@ public class URF
 		public final static URI ORDINAL_0_URI=createLexicalURI(ORDINAL_CLASS_URI, Long.toString(0));
 	/**The real lexical namespace URI.*/
 	public final static URI REAL_NAMESPACE_URI=createLexicalNamespaceURI(REAL_CLASS_URI);
+	/**The regular expression lexical namespace URI.*/
+	public final static URI REGULAR_EXPRESSION_NAMESPACE_URI=createLexicalNamespaceURI(REGULAR_EXPRESSION_CLASS_URI);
 	/**The string lexical namespace URI.*/
 	public final static URI STRING_NAMESPACE_URI=createLexicalNamespaceURI(STRING_CLASS_URI);
 		/**The URI of the empty string "".*/
@@ -415,17 +423,48 @@ public class URF
 		<dt>{@value #INTEGER_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
 		<dt>{@value #ORDINAL_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
 		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Real}</dd>
+		<dt>{@value #REGULAR_EXPRESSION_NAMESPACE_URI}</dt> <dd>{@link RegularExpression}</dd>
 		<dt>{@value #STRING_NAMESPACE_URI}</dt> <dd>{@link String}</dd>
 		<dt>{@value #URI_NAMESPACE_URI}</dt> <dd>{@link URI}</dd>
+	</dl>
+	This method can return objects for the resources in the following {@value URIConstants#INFO_SCHEME} namespaces:
+	<dl>
+		<dt>{@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE}</dt> <dd>{@link Class}</dd>
+		<dt>{@value URIConstants#INFO_SCHEME_LANG_NAMESPACE}</dt> <dd>{@link Locale}</dd>
+		<dt>{@value URIConstants#INFO_SCHEME_MEDIA_NAMESPACE}</dt> <dd>{@link ContentType}</dd>
 	</dl>
 	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
 	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
 	@exception IllegalArgumentException if the given URI represents an object but does not have the correct syntax for that object.
+	@exception ClassNotFoundException if the class represented by the given resource could not be found.
 	*/
 	public static Object asObject(final URI resourceURI)
 	{
 		if(resourceURI!=null)	//if a resource URI was given
 		{
+			if(INFO_SCHEME.equals(resourceURI.getScheme()))	//if this is an info URI
+			{
+				final String infoNamespace=getInfoNamespace(resourceURI);	//get the info namespace
+				if(INFO_SCHEME_JAVA_NAMESPACE.equals(infoNamespace))	//java
+				{
+					try
+					{
+						return ClassUtilities.asClass(resourceURI);	//return a class
+					}
+					catch(final ClassNotFoundException classNotFoundException)
+					{
+						throw new IllegalArgumentException(classNotFoundException);
+					}
+				}
+				if(INFO_SCHEME_LANG_NAMESPACE.equals(infoNamespace))	//lang
+				{
+					return LocaleUtilities.asLocale(resourceURI);	//return a locale
+				}
+				else if(INFO_SCHEME_MEDIA_NAMESPACE.equals(infoNamespace))	//media
+				{
+					return ContentTypeUtilities.asMediaType(resourceURI);	//return a content type
+				}
+			}
 			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the URI namespace
 			if(namespaceURI!=null)	//if this URI has a namespace
 			{
@@ -439,27 +478,31 @@ public class URF
 				}
 				else if(CHARACTER_NAMESPACE_URI.equals(namespaceURI))	//character
 				{
-					return asCharacter(resourceURI);	//create a character value resource
+					return asCharacter(resourceURI);	//return a character
 				}
 				else if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//integer
 				{
-					return asInteger(resourceURI);	//create a long value resource
+					return asInteger(resourceURI);	//return a long
 				}
 				else if(ORDINAL_NAMESPACE_URI.equals(namespaceURI))	//ordinal
 				{
-					return asOrdinal(resourceURI);	//create a long value resource
+					return asOrdinal(resourceURI);	//return a long
 				}
 				else if(REAL_NAMESPACE_URI.equals(namespaceURI))	//real
 				{
-					return asReal(resourceURI);	//create a double value resource
+					return asReal(resourceURI);	//return a real
+				}
+				else if(REGULAR_EXPRESSION_NAMESPACE_URI.equals(namespaceURI))	//regular expression
+				{
+					return asPattern(resourceURI);	//return a pattern
 				}
 				else if(STRING_NAMESPACE_URI.equals(namespaceURI))	//string
 				{
-					return asString(resourceURI);	//create a string value resource
+					return asString(resourceURI);	//return a string
 				}
 				else if(URI_NAMESPACE_URI.equals(namespaceURI))	//URI
 				{
-					return asURI(resourceURI);	//create a URI value resource
+					return asURI(resourceURI);	//return a URI
 				}
 			}
 		}
@@ -567,7 +610,20 @@ public class URF
 	{
 		return resource!=null ? ClassUtilities.asClass(resource.getURI()) : null;	//if a resource was given, see if its URI represents a Java class
 	}
-	
+
+	/**Determines the locale represented by the given resource.
+	A resource represents a locale if it has a valid <code>info:lang/</code> URI.
+	@param resource The resource which is expected to represent a locale, or <code>null</code>.
+	@return The locale represented by the given resource, or <code>null</code> if the resource does not represent a locale.
+	@exception IllegalArgumentException if the given resource represents a locale that does not have the correct syntax,
+		such as if the language tag has more than three components.
+	@see LocaleUtilities#asLocale(URI)
+	*/
+	public static Locale asLocale(final Resource resource)
+	{
+		return resource!=null ? LocaleUtilities.asLocale(resource.getURI()) : null;	//if a resource was given, see if its URI represents a locale
+	}
+
 	/**Determines the Internet media type represented by the given resource.
 	A resource represents an Internet media type if it has a valid <code>info:media/</code> URI.
 	@param resource The resource which is expected to represent an Internet media type, or <code>null</code>.
@@ -658,6 +714,42 @@ public class URF
 		}
 		return null;	//no ordinal could be found
 	}
+
+	/**Determines the pattern represented by the given resource.
+	A URI represents a pattern if it is a valid regular expression lexical URI.
+	@param resource The resource which is expected to represent a pattern, or <code>null</code>.
+	@return The pattern represented by the given resource, or <code>null</code> if the resource does not represent a pattern.
+	@exception IllegalArgumentException if the given resource represents a pattern that does not have the correct syntax.
+	@see #asPattern(URI)
+	*/
+	public static Pattern asPattern(final Resource resource)
+	{
+		return resource!=null ? asPattern(resource.getURI()) : null;	//if a resource was given, see if its URI represents a pattern
+	}
+
+	/**Determines the pattern represented by the given URI.
+	A resource represents a pattern if it has a valid regular expression lexical URI.
+	@param resourceURI The URI which is expected to represent a pattern, or <code>null</code>.
+	@return The pattern represented by the given URI, or <code>null</code> if the URI does not represent a pattern.
+	@exception IllegalArgumentException if the given URI represents a pattern that does not have the correct syntax.
+	@see #REGULAR_EXPRESSION_CLASS_URI
+	@see #REGULAR_EXPRESSION_NAMESPACE_URI
+	*/
+	public static Pattern asPattern(final URI resourceURI)
+	{
+		if(resourceURI!=null && REGULAR_EXPRESSION_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a regular expression URI was given
+		{
+			try
+			{
+				return Pattern.compile(getLocalName(resourceURI));	//create a pattern from the local name
+			}
+			catch(final PatternSyntaxException patternSyntaxException)
+			{
+				throw new IllegalArgumentException(patternSyntaxException);
+			}
+		}
+		return null;	//no URI could be found
+	}	
 
 	/**Determines the real represented by the given URI.
 	@param resourceURI The URI which is expected to represent a real, or <code>null</code>.
@@ -905,7 +997,7 @@ public class URF
 	@return A resource of the requested type, or <code>null</code> if there are no resourcees with the specified type.
 	@exception NullPointerException if the given type URI is <code>null</code>.
 	*/
-	public URFResource getResourceByType(final URI typeURI)
+	public URFResource getResourceByTypeURI(final URI typeURI)
 	{
 		for(final URFResource resource:getResources())  //for each resource in this data model
 		{
@@ -922,7 +1014,7 @@ public class URF
 	@return A read-only iterable of resources that are of the requested type.
 	@exception NullPointerException if the given type URI is <code>null</code>.
 	*/
-	public Iterable<URFResource> getResourcesByType(final URI typeURI)
+	public Iterable<URFResource> getResourcesByTypeURI(final URI typeURI)
 	{
 		final List<URFResource> resourceList=new ArrayList<URFResource>();  //create a list in which to store the resources; because we iterate a set, the gathered resources are ensured not to be duplicated, so storing them in a list is faster then storing them in another set
 		for(final URFResource resource:getResources())  //for each resource in this data model

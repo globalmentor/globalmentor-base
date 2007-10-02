@@ -53,6 +53,11 @@ public class TURF
 	/**The delimiter that ends property declarations.*/
 	public final static char PROPERTIES_END=';';
 
+	/**The delimiter that begins regular expressions.*/
+	public final static char REGULAR_EXPRESSION_BEGIN='/';
+	/**The delimiter that ends regular expressions.*/
+	public final static char REGULAR_EXPRESSION_END=REGULAR_EXPRESSION_BEGIN;
+
 	/**The delimiter that begins URI references.*/
 	public final static char REFERENCE_BEGIN='«';
 	/**The delimiter that ends URI references.*/

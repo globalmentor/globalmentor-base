@@ -14,7 +14,7 @@ import static com.garretwilson.text.CharacterEncodingConstants.*;
 @param <T> The type to read and write.
 @author Garret Wilson
 */
-public abstract class AbstractTURFIO<T extends URFResource> extends NamespacePrefixManager implements URFIO<T>
+public abstract class AbstractTURFIO<T> extends NamespacePrefixManager implements URFIO<T>
 {
 
 	/**The class representing the type of object being loaded and saved.*/
@@ -120,8 +120,21 @@ public abstract class AbstractTURFIO<T extends URFResource> extends NamespacePre
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The URF instance representing the data read.
 	@exception IOException if there is an error reading the data.
+	@see #readTURF(URF, InputStream, URI)
 	*/ 
 	protected URF readURF(final URF urf, InputStream inputStream, final URI baseURI) throws IOException
+	{
+		return readTURF(urf, inputStream, baseURI);	//read the turf
+	}
+
+	/**Reads URF data from a TURF input stream.
+	@param urf The URF instance to use in creating new resources.
+	@param inputStream The input stream from which to read the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The URF instance representing the data read.
+	@exception IOException if there is an error reading the data.
+	*/ 
+	public static URF readTURF(final URF urf, InputStream inputStream, final URI baseURI) throws IOException
 	{
 		if(!inputStream.markSupported())	//if the input stream doesn't support marking
 		{
@@ -138,12 +151,38 @@ public abstract class AbstractTURFIO<T extends URFResource> extends NamespacePre
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param resource The resource to write to the given output stream.
 	@throws IOException Thrown if there is an error writing the data.
+	@see #writeTURFResource(OutputStream, URI, URFResource, NamespacePrefixManager)
 	*/
 	protected void writeURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource) throws IOException
 	{
+		writeTURFResource(outputStream, baseURI, resource, this);	//write TURF, using this object as the namespace prefix manager
+	}
+
+	/**Writes an URF resource to a TURF output stream.
+	@param outputStream The output stream to which to write the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param resource The resource to write to the given output stream.
+	@excepion NullPointerException if the given output stream and/or resource is <code>null</code>.
+	@throws IOException Thrown if there is an error writing the data.
+	*/
+	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource) throws IOException
+	{
+		writeTURFResource(outputStream, baseURI, resource, new NamespacePrefixManager());	//write TURF with a default namespace prefix manager
+	}
+
+	/**Writes an URF resource to a TURF output stream.
+	@param outputStream The output stream to which to write the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param resource The resource to write to the given output stream.
+	@param namespacePrefixManager The manager of namespaces and prefixes.
+	@excepion NullPointerException if the given output stream, resource, and/or namespace prefix manager is <code>null</code>.
+	@throws IOException Thrown if there is an error writing the data.
+	*/
+	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource, final NamespacePrefixManager namespacePrefixManager) throws IOException
+	{
 		outputStream.write(BOM_UTF_8);	//write the UTF-8 byte order mark
 		final Writer writer=new OutputStreamWriter(outputStream, UTF_8);	//create a writer for writing in UTF-8
-		final URFTURFGenerator turfGenerator=new URFTURFGenerator(baseURI, true, this);	//create a new TURF generator, using this object as the namespace prefix manager
+		final URFTURFGenerator turfGenerator=new URFTURFGenerator(baseURI, true, namespacePrefixManager);	//create a new TURF generator, using the given namespace prefix manager
 		turfGenerator.generateResources(writer, resource);	//generate the resource to the writer
 	}
 

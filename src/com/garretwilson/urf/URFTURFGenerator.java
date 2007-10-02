@@ -733,7 +733,11 @@ public class URFTURFGenerator
 				writer.append(ORDINAL_BEGIN).append(lexicalForm);	//write the ordinal short form
 				return;
 			}
-			//TODO fix regular expression
+			else if(REGULAR_EXPRESSION_CLASS_URI.equals(lexicalTypeURI))	//if this is a regular expression
+			{
+				writeRegularExpression(writer, lexicalForm);	//write the regular expression short form
+				return;
+			}
 			else if(STRING_CLASS_URI.equals(lexicalTypeURI))	//if this is a string
 			{
 				writeString(writer, lexicalForm);	//write the string short form
@@ -742,7 +746,7 @@ public class URFTURFGenerator
 			//TODO fix timestamp
 			else if(URI_CLASS_URI.equals(lexicalTypeURI))	//if this is a URI
 			{
-				writeString(writer, lexicalForm, URI_BEGIN, URI_END);	//write the URI short form
+				writeURI(writer, lexicalForm);	//write the URI short form
 				return;
 			}
 		}
@@ -849,20 +853,50 @@ public class URFTURFGenerator
 		writer.append(LABEL_BEGIN).append(checkInstance(label, "Label cannot be null.")).append(LABEL_END);	//write the label
 	}
 
+	/**Writes a regular expression surrounded by the regular expression short form delimiters.
+	The usual reserved string characters, along with the regular expression delimiters, will be escaped.
+	@param writer The writer used for generating the information.
+	@param regularExpression The regular expression to write.
+	@exception NullPointerException if the given writer and/or regular expression is <code>null</code>. 
+	@exception IOException if there was an error writing to the writer.
+	@see TURF#REGULAR_EXPRESSION_BEGIN
+	@see TURF#REGULAR_EXPRESSION_END
+	*/
+	public static void writeRegularExpression(final Writer writer, final String regularExpression) throws IOException
+	{
+		writeString(writer, regularExpression, REGULAR_EXPRESSION_BEGIN, REGULAR_EXPRESSION_END);	//write the regular expression using the regular expression short form delimiters
+	}
+
 	/**Writes a string surrounded by the string short form delimiters.
 	The usual reserved string characters, along with the string delimiters, will be escaped.
 	@param writer The writer used for generating the information.
 	@param string The string to write.
 	@exception NullPointerException if the given writer and/or string is <code>null</code>. 
 	@exception IOException if there was an error writing to the writer.
+	@see TURF#STRING_BEGIN
+	@see TURF#STRING_END
 	*/
 	public static void writeString(final Writer writer, final String string) throws IOException
 	{
 		writeString(writer, string, STRING_BEGIN, STRING_END);	//write the string using the string short form delimiters
 	}
 
+	/**Writes a URI surrounded by the URI short form delimiters.
+	The usual reserved string characters, along with the URI delimiters, will be escaped.
+	@param writer The writer used for generating the information.
+	@param uri The URI to write.
+	@exception NullPointerException if the given writer and/or URI is <code>null</code>. 
+	@exception IOException if there was an error writing to the writer.
+	@see TURF#URI_BEGIN
+	@see TURF#URI_END
+	*/
+	public static void writeURI(final Writer writer, final String uri) throws IOException
+	{
+		writeString(writer, uri, URI_BEGIN, URI_END);	//write the URI using the URI short form delimiters
+	}
+
 	/**Writes a string surrounded by specified string delimiters.
-	The usual reserved string characters, along with the string delimiters, will be escaped.
+	The usual reserved string characters, along with the given delimiters, will be escaped.
 	@param writer The writer used for generating the information.
 	@param string The string to write.
 	@param stringBegin The beginning string delimiter.

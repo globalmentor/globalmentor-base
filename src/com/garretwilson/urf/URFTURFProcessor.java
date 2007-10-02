@@ -198,6 +198,12 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				resourceURI=createOrdinalURI(ordinal.longValue());	//create an ordinal URI for the resource
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
+			case REGULAR_EXPRESSION_BEGIN:	//regular expression
+				foundComponent=true;	//indicate that at least one description component is present
+				final String regularExpressionString=parseString(reader, REGULAR_EXPRESSION_BEGIN, REGULAR_EXPRESSION_END);	//parse the regular expression string
+				resourceURI=createLexicalURI(REGULAR_EXPRESSION_CLASS_URI, regularExpressionString);	//create a URI for the regular expression
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				break;
 			case STRING_BEGIN:	//string
 				foundComponent=true;	//indicate that at least one description component is present
 				final String string=parseString(reader, STRING_BEGIN, STRING_END);	//parse the string

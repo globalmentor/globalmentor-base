@@ -9,7 +9,7 @@ import com.garretwilson.io.IO;
 @param <T> The type to read and write.
 @author Garret Wilson
 */
-public interface URFIO<T extends URFResource> extends IO<T>
+public interface URFIO<T> extends IO<T>
 {
 
 	/**Reads a resource from an input stream using an existing URF instance.

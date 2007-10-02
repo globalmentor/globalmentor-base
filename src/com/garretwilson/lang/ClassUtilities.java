@@ -58,7 +58,7 @@ public class ClassUtilities
 	*/
 	public static Class<?> asClass(final URI resourceURI) throws ClassNotFoundException
 	{
-		if(resourceURI!=null && isInfoNamespace(resourceURI, INFO_SCHEME_MEDIA_NAMESPACE))	//if an info:java/ URI was given
+		if(resourceURI!=null && isInfoNamespace(resourceURI, INFO_SCHEME_JAVA_NAMESPACE))	//if an info:java/ URI was given
 		{
 			final String classLocalName=resourceURI.getFragment();	//get the class name
 			if(classLocalName!=null)	//if there is a class nam
@@ -70,10 +70,23 @@ public class ClassUtilities
 		return null;	//no class could be found
 	}
 
-	/**Creates an {@value URIConstants#INFO_SCHEME} URI with a {@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE} namespace
+	/**Creates an {@value URIConstants#INFO_SCHEME} URI for a Java package using a {@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE} namespace
+	in the form <code>info:java/<var>com</var>/<var>example</var>/<var>package</var></code>.
+	@param objectPackage The class to use in creating the <code>info:java/</code> URI.
+	@return A <code>info:java/</code> URI based upon the given package.
+	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
+	@exception NullPointerException if the given package is <code>null</code>.
+	*/
+	public static URI createInfoJavaURI(final Package objectPackage)
+	{
+		final String packagePath=URIPath.encodeSegment(objectPackage.getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the package path by replacing the package separators with path separators after encoding
+		return createInfoURI(INFO_SCHEME_JAVA_NAMESPACE, packagePath);	//create a new info:java/ URI with no fragment
+	}
+
+	/**Creates an {@value URIConstants#INFO_SCHEME} URI for a Java class using a {@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE} namespace
 	in the form <code>info:java/<var>com</var>/<var>example</var>/<var>package</var>#<var>Class</var></code>.
 	@param objectClass The class to use in creating the <code>info:java/</code> URI.
-	@return A <code>info:java/</code> URI based upon the given parameters.
+	@return A <code>info:java/</code> URI based upon the given class.
 	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
 	@exception NullPointerException if the given class is <code>null</code>.
 	*/
