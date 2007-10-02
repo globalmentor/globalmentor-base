@@ -605,7 +605,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	*/
 	public DefaultRDFResource(final RDFResource rdfResource, final URI referenceURI)
 	{
-		this(rdfResource.getRDF(), referenceURI);	//create the resource with the data model and reference URI of the given reference URI
+		this(rdfResource.getRDF(), referenceURI);	//create the resource with the data model and given reference URI
 		for(final RDFPropertyValuePair rdfPropertyValuePair:rdfResource.getProperties())	//for each property
 		{
 			addProperty(rdfPropertyValuePair.getName().getURI(), rdfPropertyValuePair.getValue());	//add this property
