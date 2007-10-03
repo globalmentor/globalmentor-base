@@ -117,6 +117,8 @@ public class URF
 		public final static URI ORDINAL_0_URI=createLexicalURI(ORDINAL_CLASS_URI, Long.toString(0));
 	/**The real lexical namespace URI.*/
 	public final static URI REAL_NAMESPACE_URI=createLexicalNamespaceURI(REAL_CLASS_URI);
+		/**The URI of the real value <code>0.0</code>.*/
+		public final static URI REAL_0_URI=createLexicalURI(REAL_CLASS_URI, Double.toString(0));
 	/**The regular expression lexical namespace URI.*/
 	public final static URI REGULAR_EXPRESSION_NAMESPACE_URI=createLexicalNamespaceURI(REGULAR_EXPRESSION_CLASS_URI);
 	/**The string lexical namespace URI.*/
@@ -346,6 +348,26 @@ public class URF
 		return createLexicalURI(BINARY_CLASS_URI, Base64.encodeBytes(binary, Base64.URL_SAFE&Base64.DONT_BREAK_LINES));	//encode the binary data and create a URI from base64url form
 	}
 
+	/**Creates a URI to represent an URF boolean.
+	@param b The boolean value to represent.
+	@return A URI representing the given URF boolean.
+	@see #BOOLEAN_CLASS_URI
+	*/
+	public static URI createBooleanURI(final boolean b)
+	{
+		return b ? BOOLEAN_TRUE_URI : BOOLEAN_FALSE_URI;	//return the pre-made boolean true or false URI as appropriate
+	}
+
+	/**Creates a URI to represent an URF character.
+	@param c The charactervalue to represent.
+	@return A URI representing the given URF character.
+	@see #CHARACTER_CLASS_URI
+	*/
+	public static URI createCharacterURI(final char c)
+	{
+		return createLexicalURI(CHARACTER_CLASS_URI, String.valueOf(c));	//create a character URI
+	}
+
 	/**Creates a URI to represent an URF string.
 	@param string The string value to represent.
 	@return A URI representing the given URF string.
@@ -378,12 +400,44 @@ public class URF
 		return ordinal==0 ? ORDINAL_0_URI : createLexicalURI(ORDINAL_CLASS_URI, Long.toString(LongUtilities.checkMinimum(ordinal, 0)));	//create an ordinal URI, using the pre-made zero ordinal URI if we can and making sure that the value is not less than zero
 	}
 
+	/**Creates a URI to represent an URF real.
+	@param real The real value to represent.
+	@return A URI representing the given URF real.
+	@see #REAL_CLASS_URI
+	*/
+	public static URI createRealURI(final double real)
+	{
+		return real==0.0 ? REAL_0_URI : createLexicalURI(REAL_CLASS_URI, Double.toString(real));	//create a real URI, using the pre-made zero real URI if we can
+	}
+
+	/**Creates a URI to represent an URF regular expression.
+	@param pattern The regular expression value to represent.
+	@return A URI representing the given URF regular expression.
+	@exception NullPointerException if the given pattern is <code>null</code>.
+	@see #REGULAR_EXPRESSION_CLASS_URI
+	*/
+	public static URI createRegularExpressionURI(final Pattern pattern)
+	{
+		return createLexicalURI(REGULAR_EXPRESSION_CLASS_URI, pattern.toString());	//create a regular expression URI
+	}
+
+	/**Creates a URI to represent an URF URI.
+	@param uri The URI value to represent.
+	@return A URI representing the given URF URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@see #URI_CLASS_URI
+	*/
+	public static URI createURIURI(final URI uri)
+	{
+		return createLexicalURI(URI_CLASS_URI, uri.toString());	//create a URI URI
+	}
+
 	/**Returns an array containing the URIs of the given resources.
 	@param resources The resources of which URIs should be returned.
 	@return The URIs of the given resources.
 	@exception NullPointerException if one of the given resources is <code>null</code>.
 	*/
-	public URI[] getURIs(final URFResource... resources)
+	public static URI[] getURIs(final URFResource... resources)
 	{
 		final int resourceCount=resources.length;	//find out how many resources there are
 		final URI[] uris=new URI[resourceCount];	//create a URI array of appropriate length
@@ -394,14 +448,113 @@ public class URF
 		return uris;	//return the resource URIs
 	}
 
-	/**Determines the list object, if any, represented by the given resource.
-	@param resource The resource which is expected to represent a list, or <code>null</code>.
-	@return The list object represented by the given resource, or <code>null</code> if the resource is not an instance of {@link URFListResource}.
+	/**Determines the resource URI to represent the given Java object, if possible 
+	This method can return resource URIs in the given namespaces for the following types of objects:
+	<dl>
+		<dt><code>byte[]</code></dt> <dd>{@value #BINARY_NAMESPACE_URI}</dd>
+		<dt>{@link Boolean}</dt> <dd>{@value #BOOLEAN_NAMESPACE_URI}</dd>
+		<dt>{@link Character}</dt> <dd>{@value #CHARACTER_NAMESPACE_URI}</dd>
+		<dt>{@link Integer}</dt> <dd>{@value #INTEGER_NAMESPACE_URI}</dd>
+		<dt>{@link Double}</dt> <dd>{@value #REAL_NAMESPACE_URI}</dd>
+		<dt>{@link Float}</dt> <dd>{@value #REAL_NAMESPACE_URI}</dd>
+		<dt>{@link Long}</dt> <dd>{@value #INTEGER_NAMESPACE_URI}</dd>
+		<dt>{@link Pattern}</dt> <dd>{@value #REGULAR_EXPRESSION_NAMESPACE_URI}</dd>
+		<dt>{@link String}</dt> <dd>{@value #STRING_NAMESPACE_URI}</dd>
+		<dt>{@link URI}</dt> <dd>{@value #URI_NAMESPACE_URI}</dd>
+	</dl>
+	This method can return resource URis in the following {@value URIConstants#INFO_SCHEME} namespace for objects of the following types:
+	<dl>
+		<dt>{@link Class}</dt> <dd>{@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE}</dd>
+		<dt>{@link ContentType}</dt> <dd>{@value URIConstants#INFO_SCHEME_MEDIA_NAMESPACE}</dd>
+		<dt>{@link Locale}</dt> <dd>{@value URIConstants#INFO_SCHEME_LANG_NAMESPACE}</dd>
+	</dl>
+	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
+//TODO del	@param typeClass The class of the requested type, which must be either the class of the given object, an assignable class,
+//TODO del		or the class of a type to which the object can be converted.
+	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
+	@exception IllegalArgumentException if the given URI represents an object but does not have the correct syntax for that object.
+	@exception ClassNotFoundException if the class represented by the given resource could not be found.
+	*/
+	public static URI asResourceURI(final Object object)
+	{
+		if(object!=null)	//if an object was given
+		{
+				//lexical URIs
+			if(object instanceof byte[])//if this is an byte array
+			{
+				return createBinaryURI((byte[])object);	//return a binary URI
+			}
+			else if(object instanceof Boolean)	//if this is a boolean
+			{
+				return createBooleanURI(((Boolean)object).booleanValue());	//return a boolean URI
+			}
+			else if(object instanceof Character)	//if this is a character
+			{
+				return createCharacterURI(((Character)object).charValue());	//return a character URI
+			}
+			else if(object instanceof Integer)	//if this is an integer
+			{
+				return createIntegerURI(((Integer)object).longValue());	//return an integer URI
+			}
+			else if(object instanceof Double)	//if this is a double
+			{
+				return createRealURI(((Double)object).doubleValue());	//return a real URI
+			}
+			else if(object instanceof Float)	//if this is a float
+			{
+				return createRealURI(((Float)object).doubleValue());	//return a real URI
+			}
+			else if(object instanceof Long)	//if this is a long
+			{
+				return createIntegerURI(((Long)object).longValue());	//return an integer URI
+			}
+			else if(object instanceof Pattern)	//if this is a pattern
+			{
+				return createRegularExpressionURI(((Pattern)object));	//return a regular expression URI
+			}
+			else if(object instanceof String)	//if this is a string
+			{
+				return createStringURI(((String)object));	//return a string URI
+			}
+			else if(object instanceof URI)	//if this is a URI
+			{
+				return createURIURI(((URI)object));	//return a URI URI
+			}
+				//info URIs
+			else if(object instanceof Class)	//if this is a class
+			{
+				return ClassUtilities.createInfoJavaURI((Class<?>)object);	//create an info:java/ class URI TODO fix for Java packages
+			}
+			else if(object instanceof ContentType)	//if this is a content type
+			{
+				ContentTypeUtilities.createInfoMediaURI((ContentType)object);	//create an info:media/ URI
+			}
+			else if(object instanceof Locale)	//if this is a locale
+			{
+				LocaleUtilities.createInfoLangURI((Locale)object);	//create an info:lang/ URI
+			}
+		}
+		return null;	//we can't represent this object as a resource URI
+	}
+
+	/**Determines the URF list object, if any, represented by the given resource.
+	@param resource The resource which is expected to represent an URF list, or <code>null</code>.
+	@return The URF list object represented by the given resource, or <code>null</code> if the resource is not an instance of {@link URFListResource}.
 	*/
 	@SuppressWarnings("unchecked")	//we must trust that they asked for the correct generic type; a class cast exception will be thrown later if the incorrect generic type was requested
 	public static <T extends URFResource> URFListResource<T> asListInstance(final Resource resource)
 	{
 		return resource instanceof URFListResource ? (URFListResource<T>)resource : null;	//if a list was given, return it with the requested generic type
+	}
+
+	/**Determines the URF set object, if any, represented by the given resource.
+	@param resource The resource which is expected to represent an URF set, or <code>null</code>.
+	@return The URF set object represented by the given resource, or <code>null</code> if the resource is not an instance of {@link URFSetResource}.
+	*/
+	@SuppressWarnings("unchecked")	//we must trust that they asked for the correct generic type; a class cast exception will be thrown later if the incorrect generic type was requested
+	public static <T extends URFResource> URFSetResource<T> asSetInstance(final Resource resource)
+	{
+		return resource instanceof URFSetResource ? (URFSetResource<T>)resource : null;	//if a set was given, return it with the requested generic type
 	}
 
 	/**Determines the Java object represented by the given resource based solely upon its URI.
@@ -420,6 +573,7 @@ public class URF
 	<dl>
 		<dt>{@value #BINARY_NAMESPACE_URI}</dt> <dd><code>byte[]</code></dd>
 		<dt>{@value #BOOLEAN_NAMESPACE_URI}</dt> <dd>{@link Boolean}</dd>
+		<dt>{@value #CHARACTER_NAMESPACE_URI}</dt> <dd>{@link Character}</dd>
 		<dt>{@value #INTEGER_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
 		<dt>{@value #ORDINAL_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
 		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Real}</dd>

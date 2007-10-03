@@ -13,8 +13,10 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIUtilities.*;
+
 import com.garretwilson.urf.*;
 import static com.garretwilson.urf.URF.*;
+import static com.garretwilson.urf.ploop.PLOOP.*;
 
 import com.guiseframework.style.AbstractModeledColor;
 import com.guiseframework.style.Color;
@@ -87,7 +89,6 @@ public class PLOOPProcessor
 		for(final URFResource resource:urf.getResources())	//for each resource
 		{
 			boolean hasJavaType=false;	//we'll see if this resource has a Java type
-
 			final Iterator<URFResource> typeIterator=resource.getTypes().iterator();	//get an iterator to the types
 			while(!hasJavaType && typeIterator.hasNext())	//while we haven't found a Java type and there are other types left
 			{
@@ -384,8 +385,7 @@ public class PLOOPProcessor
 	*/
 	public boolean setObjectProperty(final Object object, final URFResource resource, final String propertyName) throws InvocationTargetException
 	{
-		final URI namespaceURI=createInfoJavaURI(object.getClass().getPackage());	//the URI of the object's class package will be the namespace of the object's class
-		final URI propertyURI=createResourceURI(namespaceURI, propertyName);	//create a property URI for the given property
+		final URI propertyURI=getPropertyURI(object, propertyName);	//get the property URI for the given property of the object
 		final URFResource propertyValue=resource.getPropertyValue(propertyURI);	//get the value for this property
 //TODO fix to support null values		if(propertyValue==null && !resource.hasProperty(propertyURI))	//if the resource does not have a value for the property
 		if(propertyValue==null && !resource.hasProperty(propertyURI))	//if the resource does not have a value for the property
