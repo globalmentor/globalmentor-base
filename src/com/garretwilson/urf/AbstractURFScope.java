@@ -477,6 +477,30 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		}
 	}
 
+	/**Adds a string property value for the property with the given URI.
+	If the given property and value already exists, no action occurs.
+	@param propertyURI The URI of the property of the value to add.
+	@param propertyValue The value to add for the given property.
+	@return <code>true</code> if the value was added for the indicated property, else <code>false</code> if the property and value already existed.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	*/
+	public boolean addPropertyValue(final URI propertyURI, final String propertyValue)
+	{
+		return addPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createStringResource(propertyValue));	//create a resource add the property value
+	}
+
+	/**Adds a URI property value for the property with the given URI.
+	If the given property and value already exists, no action occurs.
+	@param propertyURI The URI of the property of the value to add.
+	@param propertyValue The value to add for the given property.
+	@return <code>true</code> if the value was added for the indicated property, else <code>false</code> if the property and value already existed.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	*/
+	public boolean addPropertyValue(final URI propertyURI, final URI propertyValue)
+	{
+		return addPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createURIResource(propertyValue));	//create a resource add the property value
+	}
+
 	/**Sets a property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.
 	@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.
@@ -516,7 +540,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final String propertyValue)
 	{
-		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createResource(propertyValue));	//set the property value with a string
+		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createStringResource(propertyValue));	//create a resource and set the property value
 	}
 
 	/**Sets a URI property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
@@ -527,7 +551,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final URI propertyValue)
 	{
-		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createResource(propertyValue));	//set the property value with a string
+		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createURIResource(propertyValue));	//create a resource and set the property value
 	}
 
 	/**Removes all properties of this scope.
@@ -965,6 +989,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		{
 			super(list);	//construct the parent class
 			this.valueClass=checkInstance(valueClass, "Value class cannot be null.");
+			updateIncludedIndexes();	//initialize the iterator
 		}
 
 		/**Determines whether the item at the given index should be included.

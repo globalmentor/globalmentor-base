@@ -4,16 +4,16 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import javax.mail.internet.ContentType;
-import com.garretwilson.lang.*;
-import com.garretwilson.text.*;
-import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.util.*;
 
 import static com.garretwilson.io.ContentTypeConstants.*;
+import com.garretwilson.lang.*;
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
+import com.garretwilson.text.xml.XMLUtilities;
 import static com.garretwilson.text.xml.XMLUtilities.*;
+import com.garretwilson.util.*;
+import static com.garretwilson.util.ArrayUtilities.*;
 
 /**Utilities for working with the semantics of text, as opposed to the syntax
 	of strings.
@@ -644,5 +644,31 @@ preface
 		return new String(bytes, newEncoding);  //create a string from the bytes using the new encoding
 //G***fix		G***check exception
 	}
+
+	/**Escapes a given string by inserting an escape character before every restricted character, including any occurrence of the given escape character.
+	@param charSequence The data to URI-encode.
+	@param restricted The characters to be escaped; should not include the escape character.
+	@param escape The character used to escape the restricted characters.
+	@return A string containing the escaped data.
+	@exception NullPointerException if the given character sequence is <code>null</code>.
+	*/
+	public static String escape(final CharSequence charSequence, final char[] restricted, final char escape)
+	{
+		if(!contains(charSequence, restricted))	//if there are no restricted characters in the string (assuming that most strings won't need to be escaped, it's less expensive to check up-front before we start allocating and copying)
+		{
+			return charSequence.toString();	//the string doesn't need to be escaped
+		}
+		final StringBuilder stringBuilder=new StringBuilder(charSequence);	//put the string in a string builder so that we can work with it; although inserting encoded sequences may seem inefficient, it should be noted that filling a string buffer with the entire string is more efficient than doing it one character at a time, that characters needed encoding are generally uncommon, and that any copying of the string characters during insertion is done via a native method, which should happen very quickly
+		for(int characterIndex=stringBuilder.length()-1; characterIndex>=0; --characterIndex)	//work backwords; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
+		{
+			final char c=stringBuilder.charAt(characterIndex);	//get the current character
+			if(c==escape || contains(restricted, c))	//if we should encode this character (always encode the escape character)
+			{
+				stringBuilder.insert(characterIndex, escape);	//insert the escape character
+			}
+		}
+		return stringBuilder.toString();	//return the encoded version of the string
+	}
+
 
 }

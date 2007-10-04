@@ -27,6 +27,7 @@ public class DefaultListIterator<E> extends AbstractListIterator<E, E>
 	public DefaultListIterator(final List<E> list, final int index)
 	{
 		super(list, index);	//construct the parent class
+		updateIncludedIndexes();	//initialize the iterator
 	}
 
 	/**Determines whether the item at the given index should be included.

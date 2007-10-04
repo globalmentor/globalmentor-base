@@ -65,6 +65,7 @@ public class FileUtilities
 		tempFileExtensionContentTypeMap.put(RAR_EXTENSION, new ContentType(APPLICATION, X_RAR_COMPRESSED_SUBTYPTE, null));
 		tempFileExtensionContentTypeMap.put(TIF_EXTENSION, new ContentType(IMAGE, TIFF_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(TIFF_EXTENSION, new ContentType(IMAGE, TIFF_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(TURF_EXTENSION, new ContentType(APPLICATION, TURF_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(TXT_EXTENSION, new ContentType(TEXT, PLAIN_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, new ContentType(TEXT, DIRECTORY_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(WAV_EXTENSION, new ContentType(AUDIO, X_WAV_SUBTYPE, null));

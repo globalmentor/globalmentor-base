@@ -8,6 +8,7 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 /**A default list iterator that can iterate over a given list.
 The iterator provides a way to return only a subset of list items by overriding the {@link #isIncluded(int)} method.
 The results of this iterator are undefined if the underlying list is modified.
+Every concrete subclass must call {@link #updateIncludedIndexes()} after superclass initialization has taken place.
 @param <I> The type of item returned by the iterator, which may or may not be the type of element contained in the list.
 @param <E> The type of element contained in the list.
 @author Garret Wilson
@@ -52,11 +53,18 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 		this.list=checkInstance(list, "List cannot be null.");
 		final int size=list.size();	//get the size of the list
 		nextIndex=checkIndexBounds(index, 0, size);	//make sure the next index is within the list or at the size of the list 
-		if(nextIndex<size && !isIncluded(index))	//if the next index is on a non-included index
+	}
+
+	/**Ensures that the current next and previous indexes are included.
+	This method must be called whenever the indexes need to be recalculated, such as after the iterator is initialized.
+	*/
+	protected void updateIncludedIndexes()
+	{
+		if(nextIndex<list.size() && !isIncluded(nextIndex))	//if the next index is on a non-included index
 		{
 			nextIndex=getNextIncludedIndex(nextIndex);	//advance to the next included index
 		}
-		previousIndex=getPreviousIncludedIndex(nextIndex);	//calculate the previous index
+		previousIndex=getPreviousIncludedIndex(nextIndex);	//calculate the previous index		
 	}
 
 	/**Determines the next index to be included after the given index.

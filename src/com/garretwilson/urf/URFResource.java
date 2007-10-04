@@ -23,4 +23,14 @@ public interface URFResource extends Resource, URFScope
 	@see URF#TYPE_PROPERTY_URI
 	*/
 	public boolean hasTypeURI(final URI typeURI);
+
+	/**Adds a type.
+	@param type The type to add.
+	*/
+	public void addType(final URFResource type);
+
+	/**Adds a type by the type URI.
+	@param typeURI The URI of the type to add.
+	*/
+	public void addTypeURI(final URI typeURI);
 }

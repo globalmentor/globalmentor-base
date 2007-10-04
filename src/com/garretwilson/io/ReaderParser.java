@@ -92,9 +92,9 @@ public class ReaderParser
 	public static char check(final Reader reader, final char[] characters) throws IOException, ParseIOException
 	{
 		final int c=reader.read();	//get the current character
-		if(indexOf(characters, c)<0)	//if this character does not match one of the expected characters
+		checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
+		if(indexOf(characters, (char)c)<0)	//if this character does not match one of the expected characters
 		{
-			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
 			throw new ParseIOException(reader, "Expected one of "+Arrays.toString(characters)+"; found "+(char)c+".");
 		}
 		return (char)c;	//return the character read

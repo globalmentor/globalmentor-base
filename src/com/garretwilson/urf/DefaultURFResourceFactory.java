@@ -43,7 +43,7 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 	@return A default string resource with the appropriate type property added.
 	@exception NullPointerException if the given string is <code>null</code>.
 	*/
-	public URFResource createResource(final String string)
+	public URFResource createStringResource(final String string)
 	{
 		return createLexicalResource(STRING_CLASS_URI, string);	//create and return a default string resource
 	}
@@ -54,7 +54,7 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 	@return A default URI resource with the appropriate type property added.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
-	public URFResource createResource(final URI uri)
+	public URFResource createURIResource(final URI uri)
 	{
 		return createLexicalResource(URI_CLASS_URI, uri.toString());	//create and return a default URI resource
 	}

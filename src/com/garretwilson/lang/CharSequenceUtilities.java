@@ -1,10 +1,11 @@
 package com.garretwilson.lang;
 
+import java.io.UnsupportedEncodingException;
+
 import static com.garretwilson.lang.CharacterUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
-
-import java.io.UnsupportedEncodingException;
+import com.garretwilson.util.ArrayUtilities;
 
 /**Various text manipulating functions. These methods work on
 	objects that implement the <code>CharacterSequence</code> interface.
@@ -29,10 +30,10 @@ public class CharSequenceUtilities
 	}
 
 	/**Searches a character sequence and returns the first index of any character
-		in the specified string, starting at <code>fromIndex</code>.
+		in the specified string, starting at <var>fromIndex</var>.
 	@param charSequence The character sequence to be searched.
 	@param charString The string of characters to check.
-	@param fromIndex The index to search from
+	@param fromIndex The index to search from.
 	@return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
 	*/
 	public static int charIndexOf(final CharSequence charSequence, final String charString, final int fromIndex)
@@ -46,7 +47,7 @@ public class CharSequenceUtilities
 	}
 
 	/**Searches a character sequence in reverse and returns the last index of any
-		character, starting from <code>fromIndex</code>.
+		character, starting from <var>fromIndex</var>.
 	@param charSequence The character sequence to be searched.
 	@param charString The string of characters to check.
 	@return The index of the last occurrence of one of the supplied characters, or
@@ -58,10 +59,10 @@ public class CharSequenceUtilities
 	}
 
 	/**Searches a character sequence in reverse and returns the last index of any
-		character in the specified string, starting from <code>fromIndex</code>.
+		character in the specified string, starting from <var>fromIndex</var>.
 	@param charSequence The character sequence to be searched.
 	@param charString The string of characters to check.
-	@param fromIndex The index to search from
+	@param fromIndex The index to search from.
 	@return The index of the last occurrence of one of the supplied characters, or
 		-1 if none were found.
 	*/
@@ -100,6 +101,16 @@ public class CharSequenceUtilities
 	public static boolean contains(final CharSequence charSequence, final char character)
 	{
 		return indexOf(charSequence, character)>=0;	//see if the given character is in the character sequence
+	}
+
+	/**Determines if a character sequence contains any of the given characters.
+	@param charSequence The character sequence to be searched.
+	@param characters The characters to check.
+	@return <code>true</code> if the given character sequence contains one of the given characters.
+	*/
+	public static boolean contains(final CharSequence charSequence, final char[] characters)
+	{
+		return indexOf(charSequence, characters)>=0;	//see if any of the given characters are in the character sequence
 	}
 
 	/**Determines if a character sequence contains any of the given characters.
@@ -352,7 +363,33 @@ public class CharSequenceUtilities
 		}
 		return -1;	//show that we couldn't find the character
 	}
-
+	
+	/**Searches a character sequence and returns the first index of any character in the specified array, starting at the beginning.
+	@param charSequence The character sequence to be searched.
+	@param characters The characters to check.
+	@return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
+	*/
+	public static int indexOf(final CharSequence charSequence, final char[] characters)
+	{
+		return indexOf(charSequence, characters, 0);	//look of the characters, starting at the beginning of the string
+	}
+	
+	/**Searches a character sequence and returns the first index of any character in the specified array, starting at <var>fromIndex</var>.
+	@param charSequence The character sequence to be searched.
+	@param characters The characters to check.
+	@param fromIndex The index to search from.
+	@return The index of the first occurrence of one of the supplied characters, or -1 if none were found.
+	*/
+	public static int indexOf(final CharSequence charSequence, final char[] characters, final int fromIndex)
+	{
+		for(int i=fromIndex; i<charSequence.length(); ++i)	//look at each character in the sequence
+		{
+			if(ArrayUtilities.contains(characters, charSequence.charAt(i)))	//if this character is in our character string
+				return i;	//return the index we're at
+		}
+		return -1;	//if we make it to here, we didn't find any of the characters
+	}
+	
 	/**Searches a character sequence and returns the first index of any character
 		<em>not</em> in the specified string, starting from the beginning.
 	@param charSequence The character sequence to be searched.
@@ -366,10 +403,10 @@ public class CharSequenceUtilities
 	}
 
 	/**Searches a character sequence and returns the first index of any character
-		<em>not</em> in the specified string, starting at <code>fromIndex</code>.
+		<em>not</em> in the specified string, starting at <var>fromIndex</var>.
 	@param charSequence  The character sequence to be searched.
 	@param notCharString The string of characters to check.
-	@param fromIndex The index to search from
+	@param fromIndex The index to search from.
 	@return The index of the first occurrence of one of the supplied characters,
 		or -1 if none were found.
 	*/
@@ -396,10 +433,10 @@ public class CharSequenceUtilities
 	}
 
 	/**Searches a character sequence and returns the last index of any character
-		<em>not</em> in the specified string, starting at <code>fromIndex</code>.
+		<em>not</em> in the specified string, starting at <var>fromIndex</var>.
 	@param charSequence The character sequence to be searched.
 	@param notCharString The string of characters to check.
-	@param fromIndex The index to search from
+	@param fromIndex The index to search from.
 	@return The index of the last occurrence of one of the supplied characters,
 		or -1 if none were found.
 	*/

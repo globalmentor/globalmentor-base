@@ -612,6 +612,7 @@ public class URF
 				}
 				if(INFO_SCHEME_LANG_NAMESPACE.equals(infoNamespace))	//lang
 				{
+Debug.trace("this resource is in the info lang namespace", resourceURI);
 					return LocaleUtilities.asLocale(resourceURI);	//return a locale
 				}
 				else if(INFO_SCHEME_MEDIA_NAMESPACE.equals(infoNamespace))	//media

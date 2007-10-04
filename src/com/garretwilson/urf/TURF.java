@@ -12,13 +12,8 @@ public class TURF
 	public final static char[] SEPARATORS=(PARAGRAPH_SEPARATOR_CHARS+SEGMENT_SEPARATOR_CHARS+WHITESPACE_CHARS).toCharArray();
 
 	/**The delimiters used to a name prefix.*/
-	public final static char NAME_PREFIX_DELIMITER='·';
+	public final static char NAME_PREFIX_DELIMITER='.';
 	
-	/**The delimiter that begins arrays.*/
-	public final static char ARRAY_BEGIN='[';
-	/**The delimiter that ends arrays.*/
-	public final static char ARRAY_END=']';
-
 	/**The delimiter that begins binary shorthand declarations.*/
 	public final static char BINARY_BEGIN='%';
 	/**The delimiter that ends binary shorthand declarations.*/
@@ -41,6 +36,11 @@ public class TURF
 	public final static char LABEL_BEGIN='|';
 	/**The delimiter that ends labels.*/
 	public final static char LABEL_END=LABEL_BEGIN;
+
+	/**The delimiter that begins lists.*/
+	public final static char LIST_BEGIN='[';
+	/**The delimiter that ends lists.*/
+	public final static char LIST_END=']';
 
 	/**The delimiter that begins number shorthand declarations.*/
 	public final static char NUMBER_BEGIN='#';

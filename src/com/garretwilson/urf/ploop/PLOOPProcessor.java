@@ -15,6 +15,9 @@ import com.garretwilson.net.*;
 import static com.garretwilson.net.URIUtilities.*;
 
 import com.garretwilson.urf.*;
+import com.garretwilson.util.CollectionUtilities;
+import com.garretwilson.util.Debug;
+
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.ploop.PLOOP.*;
 
@@ -153,12 +156,18 @@ public class PLOOPProcessor
 	{
 		if(resource instanceof URFListResource)	//if the object is an URF array
 		{
+System.out.println("ready to create a PLOOP list");
+Debug.trace("ready to create a PLOOP list");
 			final URFListResource<?> urfListResource=(URFListResource<?>)resource;	//cast the object to a list
 				//TODO maybe get a read lock on the list
 			final List<Object> list=new ArrayList<Object>();	//create a new list TODO eventually create a list but later check to see if the setter will accept a collection
 			for(final URFResource urfListElement:urfListResource)	//for each URF resource in the list
 			{
-				list.add(getObject(urfListElement));	//get or create an object from this URF list element and add it to our list
+				final Object object=getObject(urfListElement);
+System.out.println("converted list element "+urfListElement+" to "+object);
+Debug.trace("converted list element", urfListElement, "to", object);
+				list.add(object);	//get or create an object from this URF list element and add it to our list
+//TODO bring back				list.add(getObject(urfListElement));	//get or create an object from this URF list element and add it to our list
 			}
 			return list;	//return the list of objects we created
 		}
@@ -221,10 +230,10 @@ public class PLOOPProcessor
 				final List<PropertyDescription> readOnlyProperties=new ArrayList<PropertyDescription>(propertyDescriptionMap.size());	//the set of read-only properties, which we may use in the constructor
 				for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
 				{
-	//TODO del Debug.trace("to determine read-only properties, looking at property description for", propertyDescription.getPropertyURI());
+Debug.trace("to determine read-only properties, looking at property description for", propertyDescription);
 					if(propertyDescription.getSetter()==null)	//if there is no setter for this property, it is a read-only property; save it in case we can use it for the constructor
 					{
-	//TODO del Debug.trace("this is a read-only property");
+Debug.trace("this is a read-only property");
 						readOnlyProperties.add(propertyDescription);	//add this property to the list of read-only properties
 					}
 				}
@@ -248,20 +257,20 @@ public class PLOOPProcessor
 						final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
 						if(parameterTypes.length==parameterCount)	//if this constructor has the correct number of parameters
 						{
-	//						TODO del Debug.trace("Looking at constructor with parameter count:", parameterCount);
+Debug.trace("Looking at constructor with parameter count:", parameterCount);
 							boolean foundArguments=true;	//start out by assuming the parameters match
 							final Object[] arguments=new Object[parameterCount];	//create an array sufficient for the arguments
 							for(int parameterIndex=0; parameterIndex<parameterCount && foundArguments; ++parameterIndex)	//for each parameter, as long we we have matching parameters
 							{
 								final Class<?> parameterType=parameterTypes[parameterIndex];	//get this parameter type
-	//							TODO del Debug.trace("Parameter", parameterIndex, "type: ", parameterType);
+Debug.trace("Parameter", parameterIndex, "type: ", parameterType);
 								boolean foundArgument=false;	//we'll try to find an argument
 								for(final PropertyDescription propertyDescription:readOnlyProperties)	//look at all the properties to find one for this parameter
 								{
-	//								TODO del Debug.trace("checking read-only property:", propertyDescription.getPropertyClass());
+Debug.trace("checking to see if this is read-only property value class:", propertyDescription.getPropertyClass());
 									if(parameterType.isAssignableFrom(propertyDescription.getPropertyClass()))	//if this read-only property will work for this parameter
 									{
-	//									TODO del Debug.trace("matches!");
+Debug.trace("matches!");
 										arguments[parameterIndex]=propertyDescription.getValue();	//use this read-only property in the constructor
 										foundArgument=true;	//show that we found an argument
 										break;	//stop looking for the argument
@@ -306,7 +315,7 @@ public class PLOOPProcessor
 						}
 					}
 				}
-				throw new IllegalArgumentException("Value class "+valueClass+" does not have a constructor appropriate for the available read-only properties.");
+				throw new IllegalArgumentException("Value class "+valueClass+" does not have a constructor appropriate for the available read-only properties: "+CollectionUtilities.toString(readOnlyProperties));
 			}
 			else	//if we don't know the value class, try to create a simple object from the resource
 			{
@@ -431,18 +440,24 @@ public class PLOOPProcessor
 	@param objectClass The class of the object to be constructed.
 	@param resource The description fo the object.
 	@return A map of property descriptions keyed to property URIs.
+	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
 	*/
-	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URFResource resource)
+	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URFResource resource) throws InvocationTargetException
 	{
+Debug.trace("ready to get property description map");
 		final URI namespaceURI=createInfoJavaURI(objectClass.getPackage());	//the URI of the object's class package will be the namespace of the object's class
+Debug.trace("namespace URI", namespaceURI);
 		final Map<URI, PropertyDescription> propertyDescriptionMap=new HashMap<URI, PropertyDescription>((int)resource.getPropertyCount());	//create a map to hold property descriptions, with a least enough capacity to hold descriptions for all properties
 		for(final URFProperty property:resource.getProperties())	//for each resource property
 		{
 			final URI propertyURI=property.getPropertyURI();	//get the property URI
+Debug.trace("property URI", propertyURI, "with namespace", getNamespaceURI(propertyURI));
 			if(namespaceURI.equals(getNamespaceURI(propertyURI)))	//if this property is in the class's package namespace
 			{
-				final String propertyName=getLocalName(property.getPropertyURI());	//get the local name of the property						
+				final String propertyName=getLocalName(property.getPropertyURI());	//get the local name of the property
+Debug.trace("property name", propertyName);
 				final PropertyDescription propertyDescription=getPropertyDescription(objectClass, propertyName, property.getValue());	//get a description for this property
+Debug.trace("got property description:", propertyDescription);
 				if(propertyDescription!=null)	//if this was a recognized property
 				{
 					propertyDescriptionMap.put(propertyURI, propertyDescription);	//store this property description in the map
@@ -478,13 +493,15 @@ public class PLOOPProcessor
 	@param objectClass The class of the object to be updated.
 	@param propertyName The name of the property potentially representing an object property.
 //TODO del	@param propertyURI The URI of the URF property potentially representing a Guise object property.
-	@param propertyValue The value of the URF property potentially representing a object property.
+	@param propertyValueResource The value of the URF property potentially representing a object property.
 	@return A description of the property, or <code>null</code> if the property is not recognized.
 	@exception NullPointerException if the given object class and/or property name is <code>null</code>.
+	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
 	*/
-	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, /*TODO del final URI propertyURI, */final String propertyName, final URFResource propertyValue)
+	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, /*TODO del final URI propertyURI, */final String propertyName, final URFResource propertyValueResource) throws InvocationTargetException
 	{
-//TODO del 		final Object propertyValue=getObject(propertyValue);	//get the appropriate value for the property TODO get the type and save it somewhere, because this may return null
+Debug.trace("ready to get property description for property", propertyName, "with resource value", propertyValueResource);
+		Object propertyValue=getObject(propertyValueResource);	//get the appropriate value for the property TODO get the type and save it somewhere, because this may return null
 		final Class<?> propertyValueType=propertyValue.getClass();	//get the type of the value
 //TODO del		final String variableName=getLocalName(propertyURI);	//get the local name of the property
 //		TODO del 	Debug.trace("looking at property name:", variableName);
@@ -497,21 +514,21 @@ Debug.trace("setter: ", setterMethodName);
 		final Method[] methods=objectClass.getMethods();	//get all the class methods
 		for(final Method method:methods)	//for each method
 		{
-//TODO del Debug.trace("looking at method:", method.getName());
+Debug.trace("looking at method:", method.getName());
 //TODO del when works				if(method.getName().equals(setterMethodName))	//if this has the setter name
 			if(propertyName.equals(getSetterPropertyName(method.getName())))	//if we could consider this method a setter for the variable we have 
 			{
-//Debug.trace("found setter", variableName);
+Debug.trace("found setter", propertyName);
 				final Class<?>[] parameterTypes=method.getParameterTypes();	//get the parameter types for this method
 				if(parameterTypes.length==1)	//if this setter has one parameter
 				{
-//					TODO del Debug.trace("this setter has one param");
+Debug.trace("this setter has one param");
 					final Class<?> parameterType=parameterTypes[0];	//get the single parameter type
 						//TODO don't convert the object if this is a typed literal; instead, accept whatever type was given
 					final Object value=convertObject(propertyValue, parameterType);	//convert the object to the correct type
 					if(value!=null)	//if we found a parameter to use for this method
 					{
-//TODO del							Debug.trace("property value has correct type for setter:", parameterType, "property value:", value);
+Debug.trace("property value has correct type for setter:", parameterType, "property value:", value);
 						return new PropertyDescription(parameterType, value, method);	//return a description of this property with the method and parameter
 					}
 				}
@@ -521,14 +538,16 @@ Debug.trace("setter: ", setterMethodName);
 			//get the variable name from each supposed getter in case the getter has multiple capital letters, such as getID()
 //TODO del when works			final String getterMethodName=getGetterMethodName(variableName);	//get the getter method name based upon the variable name
 //TODO del Debug.trace("getter: ", getterMethodName);
+Debug.trace("to verify read-only property", propertyName, "look for a getter");
 		for(final Method method:methods)	//for each method
 		{
 //TODO del when works				if(method.getName().equals(getterMethodName) && method.getParameterTypes().length==0)	//if this has the getter name and no parameters
 			if(propertyName.equals(getGetterPropertyName(method.getName())))	//if we could consider this method a getter for the variable we have 
 			{
 				final Class<?> returnType=method.getReturnType();	//get the return type of the getter
-//				TODO del Debug.trace("found getter", getterMethodName, "for class", objectClass, "with return type", returnType);
+Debug.trace("found getter", propertyName, "for class", objectClass, "with return type", returnType);
 				final Object value=convertObject(propertyValue, returnType);	//convert the object to the getter return type, if we can
+Debug.trace("converted", propertyValue, "to", value);
 				if(value!=null)	//if we can convert the property value to the getter return type
 				{
 //TODO del						Debug.trace("property value has correct type for getter:", returnType, "property value:", value);
@@ -703,7 +722,19 @@ Debug.trace("setter: ", setterMethodName);
 			this.setter=setter;
 			this.value=value;
 		}
-		
+
+		/**@return A string representation of this property description.*/
+		public String toString()
+		{
+			final StringBuilder stringBuilder=new StringBuilder();	//create a string builder for constructing the string
+			final Object value=getValue();	//get this property's value
+			if(value!=null)	//if there is a value
+			{
+				stringBuilder.append(value).append(' ');	//show a string representation of the value
+			}
+			stringBuilder.append('(').append(getPropertyClass()).append(')');	//(propertyClass)
+			return stringBuilder.toString();	//return the string we constructed
+		}
 	}
 
 }

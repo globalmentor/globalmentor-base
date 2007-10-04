@@ -266,13 +266,13 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			check(reader, TYPE_END);	//read the ending type delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
-			//make sure we know about the type if possible by checking for the array short form of the set short form
-		if(c==ARRAY_BEGIN)	//check for the array short form
+			//make sure we know about the type if possible by checking for the list short form of the set short form
+		if(c==LIST_BEGIN)	//check for the list short form
 		{
 			foundComponent=true;	//indicate that at least one description component is present
 			if(types.isEmpty())	//if no types have been specified
 			{
-				types.add(getResourceProxy(LIST_CLASS_URI));	//add a proxy to the array type, but don't read the array, yet; we'll do that after creating the resource proxy
+				types.add(getResourceProxy(LIST_CLASS_URI));	//add a proxy to the list type, but don't read the list, yet; we'll do that after creating the resource proxy
 			}
 		}
 		else if(c==SET_BEGIN)	//check for the set short form
@@ -299,16 +299,16 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				addAssertion(new Assertion(resourceProxy, typePropertyResource, type));	//assert this type
 			}
 		}
-		if(c==ARRAY_BEGIN)	//if an array is next
+		if(c==LIST_BEGIN)	//if a list is next
 		{
 			long index=0;	//start out with an index of zero
-			check(reader, ARRAY_BEGIN);	//read the beginning array delimiter
+			check(reader, LIST_BEGIN);	//read the beginning list delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 			while(c>=0 && c!=SEQUENCE_END)	//while the end of the sequence has not been reached and there is another resource to parse
 			{
 				final Resource indexPredicate=getResourceProxy(createOrdinalURI(index));	//get the ordinal property for specifying the index of each value
-				final Resource element=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), indexPredicate, indexPredicate.getURI());	//parse the array element, giving a scope chain predicate in case a scope is formed for the value
-				addAssertion(new Assertion(resourceProxy, indexPredicate, element));	//assert the assertion that the element is an index of the array; there is no scope with an array short form
+				final Resource element=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), indexPredicate, indexPredicate.getURI());	//parse the list element, giving a scope chain predicate in case a scope is formed for the value
+				addAssertion(new Assertion(resourceProxy, indexPredicate, element));	//assert the assertion that the element is an index of the list; there is no scope with an list short form
 				++index;	//go to the next index
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				if(c==LIST_DELIMITER)	//if this is a list delimiter
@@ -321,7 +321,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 					break;	//stop parsing the list
 				}
 			}
-			check(reader, ARRAY_END);	//read the ending array delimiter
+			check(reader, LIST_END);	//read the ending list delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}		
 		if(c==SET_BEGIN)	//if a set is next

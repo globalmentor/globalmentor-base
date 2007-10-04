@@ -115,6 +115,14 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 		addPropertyValue(TYPE_PROPERTY_URI, type);	//add the given resource as a type
 	}
 
+	/**Adds a type by the type URI.
+	@param typeURI The URI of the type to add.
+	*/
+	public void addTypeURI(final URI typeURI)
+	{
+		addPropertyValue(TYPE_PROPERTY_URI, typeURI);	//add the given resource as a type
+	}
+
 	/**Creates default resources from the given URIs.
 	@param uris The URIs, each of which may be <code>null</code>, of the resources to create.
 	@return An array of default resources with the given URIs.

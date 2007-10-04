@@ -22,7 +22,7 @@ public class Content
 	public final static URI CONTENT_NAMESPACE_URI=URI.create("http://urf.name/content");
 
 		//classes 
-	/**The URI of the content <code>Resource</code> class.*/ 
+	/**The URI of the content <code>Resource</code> class.*/
 	public final static URI RESOURCE_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "Resource");
 		//properties
 	/**The actual content, such as bytes or a string, of a resource.*/

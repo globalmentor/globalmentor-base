@@ -514,7 +514,7 @@ public class URFTURFGenerator
 			else	//if we're still a go for generating an array short form, do it
 			{
 				markReferenceGenerated(urf, LIST_CLASS_URI);	//mark that the array type was generated unless it has some other quality needed to be generated separately
-				generateCollection(writer, urf, referenceMap, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), ARRAY_BEGIN, ARRAY_END);	//generate all the values of ordinal properties in the array
+				generateCollection(writer, urf, referenceMap, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), LIST_BEGIN, LIST_END);	//generate all the values of ordinal properties in the array
 				generatedComponent=true;	//indicate that we generated a component
 			}
 		}
