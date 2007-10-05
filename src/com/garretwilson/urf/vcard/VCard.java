@@ -4,32 +4,14 @@ import java.net.URI;
 import java.util.Locale;
 
 import static com.garretwilson.lang.JavaUtilities.*;
-import static com.garretwilson.lang.ObjectUtilities.checkInstance;
-
+import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.URIConstants;
 import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.rdf.RDFUtilities.asResource;
-import static com.garretwilson.rdf.RDFUtilities.createReferenceURI;
-import static com.garretwilson.rdf.RDFUtilities.getDisplayLabel;
-import static com.garretwilson.rdf.RDFUtilities.locateResource;
-import static com.garretwilson.rdf.RDFUtilities.locateTypedResource;
-import static com.garretwilson.rdf.RDFUtilities.setValue;
 import static com.garretwilson.text.directory.vcard.VCardConstants.*;
-
-import com.garretwilson.rdf.RDFListResource;
-import com.garretwilson.rdf.RDFLiteral;
-import com.garretwilson.rdf.RDFObject;
-import com.garretwilson.rdf.RDFResource;
-import com.garretwilson.rdf.RDFUtilities;
 import com.garretwilson.text.directory.vcard.Name;
-import com.garretwilson.urf.DefaultURFResource;
-import com.garretwilson.urf.URFResource;
-import static com.garretwilson.urf.dcmi.DCMI.*;
-import com.garretwilson.util.NameValuePair;
-
+import com.garretwilson.urf.*;
 import static com.garretwilson.urf.URF.*;
-import static com.garretwilson.util.ArrayUtilities.EMPTY_STRING_ARRAY;
-import static com.garretwilson.util.ArrayUtilities.toStringArray;
+import static com.garretwilson.urf.dcmi.DCMI.*;
 
 /**The URF ontology to represent a vCard <code>text/directory</code> profile as defined in
 	<a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>, "vCard MIME Directory Profile".
@@ -80,76 +62,31 @@ public class VCard
 		{
 			setLanguage(nResource, locale);	//set the vcard:N directory:language property
 		}
-			//create an array of the properties and values to store
-		final NameValuePair<URI, String[]>[] propertyValuesPairs=(NameValuePair<URI, String[]>[])new NameValuePair[]
-        {
-					new NameValuePair<URI, String[]>(FAMILY_NAME_PROPERTY_URI, name.getFamilyNames()),
-					new NameValuePair<URI, String[]>(GIVEN_NAME_PROPERTY_URI, name.getGivenNames()),
-					new NameValuePair<URI, String[]>(ADDITIONAL_NAME_PROPERTY_URI, name.getAdditionalNames()),
-					new NameValuePair<URI, String[]>(HONORIFIC_PREFIX_PROPERTY_URI, name.getHonorificPrefixes()),
-					new NameValuePair<URI, String[]>(HONORIFIC_SUFFIX_PROPERTY_URI, name.getHonorificSuffixes())
-        };
-		for(final NameValuePair<URI, String[]> propertyValuesPair:propertyValuesPairs)	//for all the property value pairs
-		{
-			final URI propertyURI=propertyValuesPair.getName();	//get the property URI
-			final String[] values=propertyValuesPair.getValue();	//get the string values
-			final int valueCount=values.length;	//see how many values there are
-			if(values.length>0)	//if there is at least one value
-			{
-				
-				
-				
-//TODO add sequence support to URF API
-				
-				if(valueCount==1)	//if there is only one value
-				{
-					nResource.setPropertyValue(propertyURI, values[0]);	//set the first value as the single value
-				}
-				else	//if there is more than one value
-				{
-					final RDFListResource valueListResource=new RDFListResource(nResource.getRDF());	//create a new list
-					for(final String value:values)	//for each value
-					{
-						final RDFResource valueResource=locateResource(valueListResource, null);	//create a blank node
-						setValue(valueResource, value);	//set the value of the value resource
-						valueListResource.add(valueResource);	//add the value resource to the list resource
-					}
-					nResource.setProperty(propertyURI, valueListResource);	//set the list of values as the property value
-				}
-			}
-		}
-		resource.setProperty(VCARD_NAMESPACE_URI, N_PROPERTY_NAME, nResource);	//set the name property with the name resource we constructed
+		nResource.setOrderedPropertyValues(FAMILY_NAME_PROPERTY_URI, name.getFamilyNames());	//set the family names
+		nResource.setOrderedPropertyValues(GIVEN_NAME_PROPERTY_URI, name.getGivenNames());	//set the given names
+		nResource.setOrderedPropertyValues(ADDITIONAL_NAME_PROPERTY_URI, name.getAdditionalNames());	//set the additional names
+		nResource.setOrderedPropertyValues(HONORIFIC_PREFIX_PROPERTY_URI, name.getHonorificPrefixes());	//set the honorific prefixes
+		nResource.setOrderedPropertyValues(HONORIFIC_SUFFIX_PROPERTY_URI, name.getHonorificSuffixes());	//set the honorific suffixes
+		resource.setPropertyValue(N_PROPERTY_URI, nResource);	//set the name property with the name resource we constructed
 	}
 
-	/**The property URIs for the name components.*/
-	private final static URI[] N_COMPONENT_PROPERTY_URIS=new URI[]
-			{
-				createReferenceURI(VCARD_NAMESPACE_URI, FAMILY_NAME_PROPERTY_NAME),
-				createReferenceURI(VCARD_NAMESPACE_URI, GIVEN_NAME_PROPERTY_NAME),
-				createReferenceURI(VCARD_NAMESPACE_URI, ADDITIONAL_NAME_PROPERTY_NAME),
-				createReferenceURI(VCARD_NAMESPACE_URI, HONORIFIC_PREFIX_PROPERTY_NAME),
-				createReferenceURI(VCARD_NAMESPACE_URI, HONORIFIC_SUFFIX_PROPERTY_NAME)
-		  };
-	
-	/**Retrieves the {@link #N_PROPERTY_NAME} name information from a resource.
+	/**Retrieves the «{@link #N_PROPERTY_URI}» name information from a resource.
 	@param resource The resource the name of which should be retrieved.
-	@return The name information, or <code>null</code> if there is no <code>vcard:n</code> property or the property value is not an {@link RDFResource}.
+	@return The name information, or <code>null</code> if there is no «{@link #N_PROPERTY_URI}» property or the property value is not an {@link URFResource}.
 	@exception NullPointerException if the given resource and/or name is <code>null</code>.
 	*/
-	public static Name getName(final RDFResource resource)
+	public static Name getName(final URFResource resource)
 	{
-		final RDFResource nResource=asResource(resource.getPropertyValue(VCARD_NAMESPACE_URI, N_PROPERTY_NAME));	//get the name preperty value as a resource
+		final URFResource nResource=resource.getPropertyValue(N_PROPERTY_URI);	//get the name property value as a resource
 		if(nResource!=null)	//if there is a name resource
 		{
 			final Locale language=getLanguage(resource);	//get the language specification, if there is one
-			final String[][] nameComponentValues=new String[N_COMPONENT_PROPERTY_URIS.length][];	//create arrays of string arrays
-			for(int i=nameComponentValues.length-1; i>=0; --i)	//for each name component 
-			{
-				final RDFObject nComponentObject=nResource.getPropertyValue(N_COMPONENT_PROPERTY_URIS[i]);	//get this name component
-					//if there is a name component, convert it to one or more LocaleText objects and then convert that to a string; otherwise, use an empty string array
-				nameComponentValues[i]=nComponentObject!=null ? toStringArray(getTexts(nComponentObject)) : EMPTY_STRING_ARRAY;
-			}			
-			return new Name(nameComponentValues[0], nameComponentValues[1], nameComponentValues[2], nameComponentValues[3], nameComponentValues[4], language);	//return a new name from the values we read
+			final String[] familyNames=asStrings(nResource.getPropertyValues(FAMILY_NAME_PROPERTY_URI));	//get the family names
+			final String[] givenNames=asStrings(nResource.getPropertyValues(GIVEN_NAME_PROPERTY_URI));	//get the given names
+			final String[] additionalNames=asStrings(nResource.getPropertyValues(ADDITIONAL_NAME_PROPERTY_URI));	//get the additional names
+			final String[] honorificPrefixes=asStrings(nResource.getPropertyValues(HONORIFIC_PREFIX_PROPERTY_URI));	//get the honorifix prefixes
+			final String[] honorificSuffixes=asStrings(nResource.getPropertyValues(HONORIFIC_SUFFIX_PROPERTY_URI));	//get the honorifix suffixes
+			return new Name(familyNames, givenNames, additionalNames, honorificPrefixes, honorificSuffixes, language);	//return a new name from the values we read
 		}
 		else	//if there is no name resource
 		{
@@ -160,32 +97,33 @@ public class VCard
 	/**Determines a formatted name for the given resource.
 	The formatted name is determined in this order:
 	<ol>
-		<li>The lexical form of the literal value of the <code>vcard:fn</code> property, if available.</li>
-		<li>A formatted string derived from the value of the <code>vcard:n</code> property, if available.</li>
-		<li>The label of the resource as determined by {@link RDFUtilities#getDisplayLabel(RDFResource)}.
+		<li>The lexical form of the literal value of the «{@link #FN_PROPERTY_URI}», if available.</li>
+		<li>A formatted string derived from the value of the «{@link #N_PROPERTY_URI}» property, if available.</li>
+		<li>The label of the resource as determined by {@link URFResource#getLabel()}.
 	</ol>
 	@param resource The resource for which a formatted name should be determined.
 	@return The best possible formatted name string for the resource.
 	@exception NullPointerException if the given resource is <code>null</code>.
 	*/
-	public static String getFormattedName(final RDFResource resource)
+	public static String getFormattedName(final URFResource resource)
 	{
-		final RDFObject fnObject=resource.getPropertyValue(VCARD_NAMESPACE_URI, FN_PROPERTY_NAME);	//get the vcard:fn value
-		if(fnObject instanceof RDFLiteral)	//if the object is a literal
+		String formattedName=asString(resource.getPropertyValue(FN_PROPERTY_URI));	//get the vcard.fn value
+		if(formattedName==null)	//if there was no vcard.vn property value
 		{
-			return ((RDFLiteral)fnObject).getLexicalForm();	//return the lexical form of the literal vcard:fn value
+			final Name name=getName(resource);	//see if the resource has a name specified
+			if(name!=null)	//if there is a name specified
+			{
+				formattedName=name.toString();	//format the name
+			}
+			else	//if no name was specified
+			{
+				formattedName=resource.getLabel();	//use the resource's label
+			}
 		}
-		final Name name=getName(resource);	//otherwise, see if the resource has a name specified
-		if(name!=null)	//if there is a name specified
-		{
-			return name.toString();	//format the name and return it
-		}
-		return getDisplayLabel(resource);	//if all else fails, just return a label for the resource
+		return formattedName;	//return whatever formatted name we determined
 	}
 
-		
-		
-	/**Sets the email of a resource using the vCard {@value #EMAIL_PROPERTY_URI} property.
+	/**Sets the email of a resource using the vCard «{@value #EMAIL_PROPERTY_URI}» property.
 	@param resource The resource the email of which to set.
 	@param emailURI The URI expressing the email to set.
 	@exception NullPointerException if the given resource and/or email URI is <code>null</code>.

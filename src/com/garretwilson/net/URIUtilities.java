@@ -756,6 +756,23 @@ public class URIUtilities
 		return HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme);	//see if the scheme is "http" or "https"
 	}
 
+	/**Checks to see if a given URI is absolute.
+	If the given URI is not absolute, an exception is thrown.
+	@param uri The URI to check to see if it is absolute.
+	@return The given absolute URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@exception IllegalArgumentException if the given URI is not absolute.
+	@see URI#isAbsolute()
+	*/
+	public static URI checkAbsolute(final URI uri) throws IllegalArgumentException
+	{
+		if(!uri.isAbsolute())	//if the given URI is not absolute
+		{
+			throw new IllegalArgumentException("The given URI "+uri+" is not absolute.");
+		}
+		return uri;	//return the absolute URI
+	}
+
 	/**Checks to see if a given path is only a path and not a URI with a scheme and/or authority.
 	If the given string is not a path, an exception is thrown.
 	@param path The string version of a path to determine if it is indeed only a path.

@@ -477,6 +477,18 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		}
 	}
 
+	/**Adds an integer property value for the property with the given URI.
+	If the given property and value already exists, no action occurs.
+	@param propertyURI The URI of the property of the value to add.
+	@param propertyValue The value to add for the given property.
+	@return <code>true</code> if the value was added for the indicated property, else <code>false</code> if the property and value already existed.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	*/
+	public boolean addPropertyValue(final URI propertyURI, final long propertyValue)
+	{
+		return addPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createIntegerResource(propertyValue));	//create a resource add the property value
+	}
+
 	/**Adds a string property value for the property with the given URI.
 	If the given property and value already exists, no action occurs.
 	@param propertyURI The URI of the property of the value to add.
@@ -509,27 +521,36 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final URFResource propertyValue)
 	{
-		final List<URFValueContext> oldValueContextList;	//we'll keep track of the old list of values, if any, so as to keep track of the number of properties
-		if(propertyValue!=null)	//if a property value was given
+		writeLock().lock();	//get a write lock
+		try
 		{
-			final List<URFValueContext> valueContextList=propertURIValueContextsMap.createCollection();	//create a list of value contexts to hold the new value
-			valueContextList.add(new DefaultURFValueContext(this, propertyValue, new ChildURFScope(propertyURI)));	//add a new value context
-			oldValueContextList=propertURIValueContextsMap.put(propertyURI, valueContextList);	//change the list of context values, noting the old list of values, if any
-			++propertyCount;	//note that another property has been added
-		}
-		else	//if no property value was given
-		{
-			oldValueContextList=propertURIValueContextsMap.remove(propertyURI);	//remove the old list of values, if any
-		}
-		if(oldValueContextList!=null)	//if there were values before this operation
-		{
-			propertyCount-=oldValueContextList.size();	//note the properties that were removed
-			if(!oldValueContextList.isEmpty())	//if the old list isn't empty
+			final List<URFValueContext> valueContextList=propertURIValueContextsMap.getCollection(propertyURI);	//get the list of value contexts for this property, creating one if necessary
+			final int oldPropertyValueCount=valueContextList.size();	//see how many values there currently are
+			final URFResource oldPropertyValue=oldPropertyValueCount>0 ? valueContextList.get(0).getValue() : null;	//retrieve the old property value, if any
+			valueContextList.clear();	//clear the context list; we'll be potentially adding replacements
+			propertyCount-=oldPropertyValueCount;	//note that we've removed properties
+			if(propertyValue!=null)	//if a property value was given
 			{
-				return oldValueContextList.get(0).getValue();	//return its first value
+				valueContextList.add(new DefaultURFValueContext(this, propertyValue, new ChildURFScope(propertyURI)));	//add a new value context
+				++propertyCount;	//note that another property has been added
 			}
+			return oldPropertyValue;	//return the old property value, if any
 		}
-		return null;	//indicate that there was no previous property value
+		finally
+		{
+			writeLock().unlock();	//always release the write lock
+		}		
+	}
+
+	/**Sets an integer property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
+	@param propertyURI The URI of the property of the value to set.
+	@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.
+	@return The old property value, or <code>null</code> if there was no property value previously.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public URFResource setPropertyValue(final URI propertyURI, final long propertyValue)
+	{
+		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createIntegerResource(propertyValue));	//create a resource and set the property value
 	}
 
 	/**Sets a string property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
@@ -552,6 +573,208 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	public URFResource setPropertyValue(final URI propertyURI, final URI propertyValue)
 	{
 		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createURIResource(propertyValue));	//create a resource and set the property value
+	}
+
+	/**Sets values for the property with the given URI by removing all properties with the given URI and adding the given property values.
+	Duplicate property values are ignored.
+	@param propertyURI The URI of the property of the value to set.
+	@param ordered Whether each added property value should be given a contextual order.
+	@param propertyValues The values to set for the given property.
+	@return The old property values.
+	@exception NullPointerException if the given property URI and/or property values is <code>null</code>.
+	*/
+	public URFResource[] setPropertyValues(final URI propertyURI, final URFResource... propertyValues)
+	{
+		return setPropertyValues(propertyURI, false, propertyValues);	//set unordered property values
+	}
+
+	/**Sets integer values for the property with the given URI by removing all properties with the given URI and adding the given property values.
+	Duplicate property values are ignored.
+	@param propertyURI The URI of the property of the value to set.
+	@param ordered Whether each added property value should be given a contextual order.
+	@param propertyValues The values to set for the given property.
+	@return The old property values.
+	@exception NullPointerException if the given property URI and/or property values is <code>null</code>.
+	*/
+	public URFResource[] setPropertyValues(final URI propertyURI, final long... propertyValues)
+	{
+		final int propertyValueCount=propertyValues.length;	//find the number of properties
+		final URFResource[] propertyValueResources=new URFResource[propertyValueCount];	//create an array of resource property values
+		for(int i=0; i<propertyValueCount; ++i)	//for each property value
+		{
+			propertyValueResources[i]=DEFAULT_URF_RESOURCE_FACTORY.createIntegerResource(propertyValues[i]);	//create a resource for this value
+		}
+		return setPropertyValues(propertyURI, propertyValueResources);	//set the property values
+	}
+
+	/**Sets string values for the property with the given URI by removing all properties with the given URI and adding the given property values.
+	Duplicate property values are ignored.
+	@param propertyURI The URI of the property of the value to set.
+	@param ordered Whether each added property value should be given a contextual order.
+	@param propertyValues The values to set for the given property.
+	@return The old property values.
+	@exception NullPointerException if the given property URI and/or property values is <code>null</code>.
+	*/
+	public URFResource[] setPropertyValues(final URI propertyURI, final String... propertyValues)
+	{
+		final int propertyValueCount=propertyValues.length;	//find the number of properties
+		final URFResource[] propertyValueResources=new URFResource[propertyValueCount];	//create an array of resource property values
+		for(int i=0; i<propertyValueCount; ++i)	//for each property value
+		{
+			propertyValueResources[i]=DEFAULT_URF_RESOURCE_FACTORY.createStringResource(propertyValues[i]);	//create a resource for this value
+		}
+		return setPropertyValues(propertyURI, propertyValueResources);	//set the property values
+	}
+
+	/**Sets URI values for the property with the given URI by removing all properties with the given URI and adding the given property values.
+	Duplicate property values are ignored.
+	@param propertyURI The URI of the property of the value to set.
+	@param ordered Whether each added property value should be given a contextual order.
+	@param propertyValues The values to set for the given property.
+	@return The old property values.
+	@exception NullPointerException if the given property URI and/or property values is <code>null</code>.
+	*/
+	public URFResource[] setPropertyValues(final URI propertyURI, final URI... propertyValues)
+	{
+		final int propertyValueCount=propertyValues.length;	//find the number of properties
+		final URFResource[] propertyValueResources=new URFResource[propertyValueCount];	//create an array of resource property values
+		for(int i=0; i<propertyValueCount; ++i)	//for each property value
+		{
+			propertyValueResources[i]=DEFAULT_URF_RESOURCE_FACTORY.createURIResource(propertyValues[i]);	//create a resource for this value
+		}
+		return setPropertyValues(propertyURI, propertyValueResources);	//set the property values
+	}
+
+	/**Sets ordered values for the property with the given URI by removing all properties with the given URI and adding the given property values.
+	Duplicate property values are ignored.
+	@param propertyURI The URI of the property of the value to set.
+	@param ordered Whether each added property value should be given a contextual order.
+	@param propertyValues The values to set for the given property.
+	@return The old property values.
+	@exception NullPointerException if the given property URI and/or property values is <code>null</code>.
+	*/
+	public URFResource[] setOrderedPropertyValues(final URI propertyURI, final URFResource... propertyValues)
+	{
+		return setPropertyValues(propertyURI, true, propertyValues);	//set ordered property values
+	}
+
+	/**Sets ordered integer values for the property with the given URI by removing all properties with the given URI and adding the given property values.
+	Duplicate property values are ignored.
+	@param propertyURI The URI of the property of the value to set.
+	@param ordered Whether each added property value should be given a contextual order.
+	@param propertyValues The values to set for the given property.
+	@return The old property values.
+	@exception NullPointerException if the given property URI and/or property values is <code>null</code>.
+	*/
+	public URFResource[] setOrderedPropertyValues(final URI propertyURI, final long... propertyValues)
+	{
+		final int propertyValueCount=propertyValues.length;	//find the number of properties
+		final URFResource[] propertyValueResources=new URFResource[propertyValueCount];	//create an array of resource property values
+		for(int i=0; i<propertyValueCount; ++i)	//for each property value
+		{
+			propertyValueResources[i]=DEFAULT_URF_RESOURCE_FACTORY.createIntegerResource(propertyValues[i]);	//create a resource for this value
+		}
+		return setOrderedPropertyValues(propertyURI, propertyValueResources);	//set the property values
+	}
+
+	/**Sets ordered string values for the property with the given URI by removing all properties with the given URI and adding the given property values.
+	Duplicate property values are ignored.
+	@param propertyURI The URI of the property of the value to set.
+	@param ordered Whether each added property value should be given a contextual order.
+	@param propertyValues The values to set for the given property.
+	@return The old property values.
+	@exception NullPointerException if the given property URI and/or property values is <code>null</code>.
+	*/
+	public URFResource[] setOrderedPropertyValues(final URI propertyURI, final String... propertyValues)
+	{
+		final int propertyValueCount=propertyValues.length;	//find the number of properties
+		final URFResource[] propertyValueResources=new URFResource[propertyValueCount];	//create an array of resource property values
+		for(int i=0; i<propertyValueCount; ++i)	//for each property value
+		{
+			propertyValueResources[i]=DEFAULT_URF_RESOURCE_FACTORY.createStringResource(propertyValues[i]);	//create a resource for this value
+		}
+		return setOrderedPropertyValues(propertyURI, propertyValueResources);	//set the property values
+	}
+
+	/**Sets ordered URI values for the property with the given URI by removing all properties with the given URI and adding the given property values.
+	Duplicate property values are ignored.
+	@param propertyURI The URI of the property of the value to set.
+	@param ordered Whether each added property value should be given a contextual order.
+	@param propertyValues The values to set for the given property.
+	@return The old property values.
+	@exception NullPointerException if the given property URI and/or property values is <code>null</code>.
+	*/
+	public URFResource[] setOrderedPropertyValues(final URI propertyURI, final URI... propertyValues)
+	{
+		final int propertyValueCount=propertyValues.length;	//find the number of properties
+		final URFResource[] propertyValueResources=new URFResource[propertyValueCount];	//create an array of resource property values
+		for(int i=0; i<propertyValueCount; ++i)	//for each property value
+		{
+			propertyValueResources[i]=DEFAULT_URF_RESOURCE_FACTORY.createURIResource(propertyValues[i]);	//create a resource for this value
+		}
+		return setOrderedPropertyValues(propertyURI, propertyValueResources);	//set the property values
+	}
+
+	/**Sets values for the property with the given URI by removing all properties with the given URI and adding the given property values.
+	Duplicate property values are ignored.
+	@param propertyURI The URI of the property of the value to set.
+	@param ordered Whether each added property value should be given a contextual order.
+	@param propertyValues The values to set for the given property.
+	@return The old property values.
+	@exception NullPointerException if the given property URI and/or property values is <code>null</code>.
+	*/
+	protected URFResource[] setPropertyValues(final URI propertyURI, final boolean ordered, final URFResource... propertyValues)
+	{
+		final int propertyValueCount=propertyValues.length;	//find how how many property values were given
+		writeLock().lock();	//get a write lock
+		try
+		{
+			final List<URFValueContext> valueContextList=propertURIValueContextsMap.getCollection(propertyURI);	//get the list of value contexts for this property, creating one if necessary
+			final int oldPropertyValueCount=valueContextList.size();	//see how many values there currently are
+			final URFResource[] oldPropertyValues;	//we'll collect the values previously present for this property
+			if(oldPropertyValueCount>0)	//if there are old values
+			{
+				oldPropertyValues=new URFResource[oldPropertyValueCount];	//create a new array of old values
+				int oldPropertyValueIndex=0;	//keep track of the old property value index
+				for(final URFValueContext oldPropertyValue:valueContextList)	//for each old property value
+				{
+					oldPropertyValues[oldPropertyValueIndex++]=oldPropertyValue.getValue();	//retrieve this old value and go to the next index
+				}
+				valueContextList.clear();	//clear the context list; we'll be potentially adding replacements
+			}
+			else	//if there were no property value contexts before
+			{
+				oldPropertyValues=NO_RESOURCES;	//there were no resources; use the existing empty array instead of creating a new one
+			}
+			int order=0;	//start with the first order
+			for(final URFResource propertyValue:propertyValues)	//for each new property value
+			{
+				boolean addPropertyValue=true;	//start out assuming we'll add this property value
+				for(final URFValueContext valueContext:valueContextList)	//look at all the existing value contexts to make sure this one doesn't exist
+				{
+					if(valueContext.getValue().equals(propertyValue))	//if this property value already exists in the list
+					{
+						addPropertyValue=false;	//don't add this property value
+						break;	//stop looking for duplicates
+					}
+				}
+				if(addPropertyValue)	//if we should add this property value
+				{
+					final URFScope valueScope=new ChildURFScope(propertyURI);	//create a new child scope for the value
+					if(ordered)	//if these properties are ordered
+					{
+						valueScope.setPropertyValue(ORDER_PROPERTY_URI, order++);	//set the scoped order and increment the order variable
+					}
+					valueContextList.add(new DefaultURFValueContext(this, propertyValue, valueScope));	//add a new value context with the optional scoped order
+				}
+			}			
+			propertyCount=propertyCount-oldPropertyValueCount+propertyValues.length;	//note that properties have been removed and/or added
+			return oldPropertyValues;	//return the old property values
+		}
+		finally
+		{
+			writeLock().unlock();	//always release the write lock
+		}		
 	}
 
 	/**Removes all properties of this scope.

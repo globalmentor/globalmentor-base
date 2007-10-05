@@ -6,17 +6,19 @@ import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.select.Select.*;
 
 /**A selector that selects an object based upon its runtime class (as opposed to its URF resource type).
+This is a convenience class; identical functionality may be obtained by using an {@link ObjectPropertySelector} with a property name of "class"
+and a {@link URISelector} subselector specifying the class's URI.
 This implementation lazily caches any selected class, so that any later updates to the selected class will not be reflected in {@link #getSelectClass()}.
 @author Garret Wilson
 */
-public class ClassSelector extends AbstractSelector
+public class ObjectClassSelector extends AbstractSelector
 {
 
 	/**The lazily-cached select class.*/
 	private Class<?> selectClass=null;
 
 	/**Default constructor.*/
-	public ClassSelector()
+	public ObjectClassSelector()
 	{
 		this(null);	//construct the class with no URI
 	}
@@ -24,7 +26,7 @@ public class ClassSelector extends AbstractSelector
 	/**URI constructor.
 	@param uri The URI for the new resource.
 	*/
-	public ClassSelector(final URI uri)
+	public ObjectClassSelector(final URI uri)
 	{
 		super(uri);  //construct the parent class
 	}

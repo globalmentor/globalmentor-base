@@ -3,6 +3,7 @@ package com.garretwilson.urf;
 import java.io.*;
 import java.net.URI;
 import java.util.*;
+
 import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.*;
@@ -54,42 +55,42 @@ public class URF
 	public final static URI URF_LEXICAL_NAMESPACE_BASE_URI=URI.create(URF_LEXICAL_NAMESPACE_BASE);
 	
 		//classes 
-	/**The URI of the URF <code>List</code> class.*/ 
+	/**The URI of the URF <code>List</code> class.*/
 	public final static URI LIST_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "List");
-	/**The URI of the URF <code>Binary</code> class.*/ 
+	/**The URI of the URF <code>Binary</code> class.*/
 	public final static URI BINARY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Binary");
-	/**The URI of the URF <code>Boolean</code> class.*/ 
+	/**The URI of the URF <code>Boolean</code> class.*/
 	public final static URI BOOLEAN_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Boolean");
-	/**The URI of the URF <code>Character</code> class.*/ 
+	/**The URI of the URF <code>Character</code> class.*/
 	public final static URI CHARACTER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Character");
-	/**The URI of the URF <code>Integer</code> class.*/ 
+	/**The URI of the URF <code>Integer</code> class.*/
 	public final static URI INTEGER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Integer");
-	/**The URI of the URF <code>Map</code> class.*/ 
+	/**The URI of the URF <code>Map</code> class.*/
 	public final static URI MAP_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Map");
-	/**The URI of the URF <code>Number</code> class.*/ 
+	/**The URI of the URF <code>Number</code> class.*/
 	public final static URI NUMBER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Number");
-	/**The URI of the URF <code>Ordinal</code> class.*/ 
+	/**The URI of the URF <code>Ordinal</code> class.*/
 	public final static URI ORDINAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Ordinal");
-	/**The URI of the URF <code>Real</code> class.*/ 
+	/**The URI of the URF <code>Real</code> class.*/
 	public final static URI REAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Real");
-	/**The URI of the URF <code>RegularExpression</code> class.*/ 
+	/**The URI of the URF <code>RegularExpression</code> class.*/
 	public final static URI REGULAR_EXPRESSION_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "RegularExpression");
-	/**The URI of the URF <code>Resource</code> class.*/ 
+	/**The URI of the URF <code>Resource</code> class.*/
 	public final static URI RESOURCE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Resource");
-	/**The URI of the URF <code>Set</code> class.*/ 
+	/**The URI of the URF <code>Set</code> class.*/
 	public final static URI SET_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Set");
-	/**The URI of the URF <code>String</code> class.*/ 
+	/**The URI of the URF <code>String</code> class.*/
 	public final static URI STRING_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "String");
-	/**The URI of the URF <code>URI</code> class.*/ 
+	/**The URI of the URF <code>URI</code> class.*/
 	public final static URI URI_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "URI");
 		//properties
-	/**The URI of the property indicating an element of a container such as a set.*/ 
+	/**The URI of the property indicating an element of a container such as a set.*/
 	public final static URI ELEMENT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "element");
 	/**The name of a resource, which may differ from that indicated by the URI, if any.*/
 	public final static URI NAME_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "name");
-	/**The URI of the URF order property.*/ 
+	/**The URI of the URF order property.*/
 	public final static URI ORDER_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "order");
-	/**The URI of the URF type property.*/ 
+	/**The URI of the URF type property.*/
 	public final static URI TYPE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "type");
 
 		//lexical namespaces
@@ -331,10 +332,11 @@ public class URF
 	@param lexicalForm The canonical lexical form of the resource.
 	@return A URI in the lexical namespace for the specified type of a resource based upon its lexical form.
 	@exception NullPointerException if the given type URI and/or lexical form is <code>null</code>.
+	@exception IllegalArgumentException if the given type URI is not absolute.
 	*/
 	public static URI createLexicalURI(final URI typeURI, final String lexicalForm)
 	{
-		return URI.create(URF_LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString())+FRAGMENT_SEPARATOR+encodeURI(lexicalForm));	//encode the type, append it to the lexical namespace base URI, and append the fragment of the encoded lexical form
+		return URI.create(URF_LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(checkAbsolute(typeURI).toString())+FRAGMENT_SEPARATOR+encodeURI(lexicalForm));	//encode the type, append it to the lexical namespace base URI, and append the fragment of the encoded lexical form
 	}
 
 	/**Creates a URI to represent URF binary data.
@@ -770,8 +772,7 @@ Debug.trace("this resource is in the info lang namespace", resourceURI);
 	A resource represents a locale if it has a valid <code>info:lang/</code> URI.
 	@param resource The resource which is expected to represent a locale, or <code>null</code>.
 	@return The locale represented by the given resource, or <code>null</code> if the resource does not represent a locale.
-	@exception IllegalArgumentException if the given resource represents a locale that does not have the correct syntax,
-		such as if the language tag has more than three components.
+	@exception IllegalArgumentException if the given resource represents a locale that does not have the correct syntax, such as if the language tag has more than three components.
 	@see LocaleUtilities#asLocale(URI)
 	*/
 	public static Locale asLocale(final Resource resource)
@@ -836,6 +837,45 @@ Debug.trace("this resource is in the info lang namespace", resourceURI);
 			}
 		}
 		return null;	//no number could be found
+	}
+
+	/**Determines the integers represented by the resources returned from the given resource iterator.
+	Non-integer resources will be ignored.
+	@param resources The resources which are expected to represent integers.
+	@return The integers represented by the resources returned by the given iterable.
+	@exception NullPointerException if the given resources is <code>null</code>.
+	@exception IllegalArgumentException if one of the resources represents an integer that does not have the correct syntax.
+	@see #asInteger(Resource)
+	*/
+	public static long[] asIntegers(final Iterable<? extends Resource> resources)
+	{
+		final List<Long> list=new ArrayList<Long>();	//create a list in which to store the iterator contents
+		for(final Resource resource:resources)	//for each resource
+		{
+			final Long integer=asInteger(resource);	//get this resource as an integer
+			if(integer!=null)	//if this is a integer
+			{
+				list.add(integer);	//add this integer to the list
+			}
+		}
+		final int count=list.size();	//find out how many integers there are
+		final long[] integers=new long[count];	//create an array to hold the integers
+		for(int i=0; i<count; ++i)	//for each integer
+		{
+			integers[i]=list.get(i).longValue();	//get this integer
+		}
+		return integers;	//return the array
+	}
+
+	/**Determines the integer represented by the given resource.
+	@param resource The resource which is expected to represent an integer, or <code>null</code>.
+	@return The integer represented by the given resource, or <code>null</code> if the resource does not represent an integer.
+	@exception IllegalArgumentException if the given resource represents an integer that does not have the correct syntax.
+	@see #asInteger(URI)
+	*/
+	public static Long asInteger(final Resource resource)
+	{
+		return resource!=null ? asInteger(resource.getURI()) : null;	//if a resource was given, see if its URI represents a integer
 	}
 
 	/**Determines the integer represented by the given URI.
@@ -906,6 +946,17 @@ Debug.trace("this resource is in the info lang namespace", resourceURI);
 		return null;	//no URI could be found
 	}	
 
+	/**Determines the real represented by the given resource.
+	@param resource The resource which is expected to represent a real, or <code>null</code>.
+	@return The real represented by the given resource, or <code>null</code> if the resource does not represent a real.
+	@exception IllegalArgumentException if the given resource represents a real that does not have the correct syntax.
+	@see #asReal(URI)
+	*/
+	public static Double asreal(final Resource resource)
+	{
+		return resource!=null ? asReal(resource.getURI()) : null;	//if a resource was given, see if its URI represents a real
+	}
+
 	/**Determines the real represented by the given URI.
 	@param resourceURI The URI which is expected to represent a real, or <code>null</code>.
 	@return The real represented by the given URI, or <code>null</code> if the URI does not represent a real.
@@ -920,6 +971,28 @@ Debug.trace("this resource is in the info lang namespace", resourceURI);
 			return Double.parseDouble(getLocalName(resourceURI));	//parse a double from the local name
 		}
 		return null;	//no real could be found
+	}
+
+	/**Determines the strings represented by the resources returned from the given resource iterator.
+	Non-string resources will be ignored.
+	@param resources The resources which are expected to represent strings.
+	@return The strings represented by the resources returned by the given iterable.
+	@exception NullPointerException if the given resources is <code>null</code>.
+	@exception IllegalArgumentException if one of the resources represents a string that does not have the correct syntax.
+	@see #asString(Resource)
+	*/
+	public static String[] asStrings(final Iterable<? extends Resource> resources)
+	{
+		final List<String> list=new ArrayList<String>();	//create a list in which to store the iterator contents
+		for(final Resource resource:resources)	//for each resource
+		{
+			final String string=asString(resource);	//get this resource as a string
+			if(string!=null)	//if this is a string
+			{
+				list.add(string);	//add this string to the list
+			}
+		}
+		return list.toArray(new String[list.size()]);	//return the list as an array
 	}
 
 	/**Determines the string represented by the given resource.
@@ -947,6 +1020,28 @@ Debug.trace("this resource is in the info lang namespace", resourceURI);
 			return getLocalName(resourceURI);	//return the local name, which is the string value
 		}
 		return null;	//no string could be found
+	}
+
+	/**Determines the URIs represented by the resources returned from the given resource iterator.
+	Non-URI resources will be ignored.
+	@param resources The resources which are expected to represent URIs.
+	@return The URIs represented by the resources returned by the given iterable.
+	@exception NullPointerException if the given resources is <code>null</code>.
+	@exception IllegalArgumentException if one of the resources represents a URI that does not have the correct syntax.
+	@see #asURI(Resource)
+	*/
+	public static URI[] asURIs(final Iterable<? extends Resource> resources)
+	{
+		final List<URI> list=new ArrayList<URI>();	//create a list in which to store the iterator contents
+		for(final Resource resource:resources)	//for each resource
+		{
+			final URI uri=asURI(resource);	//get this resource as a URI
+			if(uri!=null)	//if this is a URI
+			{
+				list.add(uri);	//add this URI to the list
+			}
+		}
+		return list.toArray(new URI[list.size()]);	//return the list as an array
 	}
 
 	/**Determines the URI represented by the given resource.

@@ -51,8 +51,28 @@ public abstract class AbstractURFProcessor
 	/**The map of resource proxies keyed to URIs.*/
 	private final Map<URI, ResourceProxy> uriResourceProxyMap=new HashMap<URI, ResourceProxy>();
 
+		/**Retrieves the resource proxy that represents a resource with the given URI.
+		@param resourceURI The URI of the resource the proxy should represent.
+		@return The resource proxy used to represent the identified resource, or <code>null</code> if there is no resource proxy for the given URI.
+		@exception NullPointerException if the given resource URI is <code>null</code>.
+		*/
+		protected ResourceProxy getResourceProxy(final URI resourceURI) throws ParseIOException
+		{
+			return uriResourceProxyMap.get(checkInstance(resourceURI, "Resource URI cannot be null."));	//look up the resource proxy			
+		}
+
 	/**The map of resource proxies keyed to labels.*/
 	private final Map<String, ResourceProxy> labelResourceProxyMap=new HashMap<String, ResourceProxy>();
+
+		/**Retrieves the resource proxy that represents a resource with the given label.
+		@param label The label used to identify the resource.
+		@return The resource proxy used to represent the identified resource with the given label, or <code>null</code> if there is no resource proxy for the given label.
+		@exception NullPointerException if the given label is <code>null</code>.
+		*/
+		protected ResourceProxy getResourceProxy(final String label) throws ParseIOException
+		{
+			return labelResourceProxyMap.get(checkInstance(label, "Label cannot be null."));	//look up the resource proxy			
+		}
 
 		/**Retrieves a resource proxy to represent a resource with the given label.
 		If such a proxy already exists, it will be returned; otherwise, a new one will be created.
@@ -60,20 +80,20 @@ public abstract class AbstractURFProcessor
 		@param label The label used to identify the resource, or <code>null</code> if no label is known.
 		@return A resource proxy to represent the identified resource.
 		*/
-		protected ResourceProxy getResourceProxy(final String label) throws ParseIOException
+		protected ResourceProxy determineResourceProxy(final String label) throws ParseIOException
 		{
-			return getResourceProxy(label, null);	//get a resource proxy with no URI			
+			return determineResourceProxy(label, null);	//get a resource proxy with no URI			
 		}
 
 		/**Retrieves a resource proxy to represent a resource with the given URI.
 		If such a proxy already exists, it will be returned; otherwise, a new one will be created.
 		If no URI is given, a new resource proxy will be created and returned.
-		@param resourceURI The URIs of the resource the proxy should represent, or <code>null</code> if a resource URI is not known.
+		@param resourceURI The URI of the resource the proxy should represent, or <code>null</code> if a resource URI is not known.
 		@return A resource proxy to represent the identified resource.
 		*/
-		protected ResourceProxy getResourceProxy(final URI resourceURI) throws ParseIOException
+		protected ResourceProxy determineResourceProxy(final URI resourceURI) throws ParseIOException
 		{
-			return getResourceProxy(null, resourceURI);	//get a resource proxy with no label
+			return determineResourceProxy(null, resourceURI);	//get a resource proxy with no label
 		}
 
 		/**Retrieves a resource proxy to represent a resource with the given label and/or URI.
@@ -84,7 +104,7 @@ public abstract class AbstractURFProcessor
 		@return A resource proxy to represent the identified resource.
 		@exception ParseIOException if the same label has been used resources with different URIs.
 		*/
-		protected ResourceProxy getResourceProxy(final String label, final URI resourceURI) throws ParseIOException
+		protected ResourceProxy determineResourceProxy(final String label, final URI resourceURI) throws ParseIOException
 		{
 //Debug.trace("getting proxy for label", label, "resource URI", resourceURI);
 			final Set<ResourceProxy> equivalentResourceProxies=new IdentityHashSet<ResourceProxy>();	//create a set in which to store the resource proxies

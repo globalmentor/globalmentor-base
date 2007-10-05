@@ -4,9 +4,9 @@ import java.net.URI;
 import java.util.concurrent.locks.*;
 
 import com.garretwilson.lang.LongUtilities;
-
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
+import static com.garretwilson.urf.dcmi.DCMI.getTitle;
 
 /**The default implementation of an URF resource.
 @author Garret Wilson
@@ -85,6 +85,41 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 		{
 			writeLock().unlock();	//always release the write lock
 		}
+	}
+
+	/**Determines a string value to use for representation.
+	This implementation determines the label in the following sequence:
+	<ol>
+		<li>The string value of any literal «{@value DCMI#TITLE_PROPERTY_URI}» property.</li>
+		<li>The lexical form of any resource with a URI in a lexical namespace.</li>
+		<li>The reference URI.</li>
+		<li>The Java string representation of the resource as given by its <code>toString()</code> method.</li>
+	</ol>
+	@return A string label to use for representation of the resource.
+	*/
+	public String getLabel()
+	{
+		String label=getTitle(this);	//see if there is a dc.title
+		if(label==null)	//if there is no title
+		{
+			final URI uri=getURI();	//get the resource URI
+			if(uri!=null)	//if this resource has a URI
+			{
+				if(isLexicalNamespaceURI(uri))	//if the URI is in a lexical namespace
+				{
+					label=getLocalName(uri);	//get the local name of the URI, which will be the lexical form
+				}
+				else	//if the URI is not in a lexical namespace
+				{
+					label=uri.toString();	//use the string form of the URI as-is
+				}
+			}
+			else	//if there is no URI
+			{
+				label=toString();	//use the Java string form of the resource as a last resort
+			}
+		}
+		return label;	//return the label
 	}
 
 	/**Retrieves the types declared for this resource, if any.

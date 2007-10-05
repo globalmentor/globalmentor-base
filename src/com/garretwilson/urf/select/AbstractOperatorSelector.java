@@ -27,7 +27,7 @@ public abstract class AbstractOperatorSelector extends AbstractSelector implemen
 	/**@return This operator selector's select declarations.*/
 	public Iterable<Selector> getSelects()
 	{
-		return getPropertyValues(SELECT_PROPERTY_URI, Selector.class);	//return the select:select values
+		return getPropertyValues(SELECT_PROPERTY_URI, Selector.class);	//return the select.select values
 	}
 
 	/**Adds a selector to this operator selector.

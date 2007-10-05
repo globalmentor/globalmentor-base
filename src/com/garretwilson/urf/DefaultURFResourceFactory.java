@@ -37,6 +37,17 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 		return createResource(createLexicalURI(typeURI, lexicalForm), typeURI);	//create a new resource from the appropriate lexical URI and add the indicated type
 	}
 
+	/**Creates a default integer resource with its type added as a type property.
+	This method delegates to {@link #createLexicalResource(URI, String)}.
+	@param integer The integer for which a default resource should be created.
+	@return A default integer resource with the appropriate type property added.
+	@exception NullPointerException if the given integer is <code>null</code>.
+	*/
+	public URFResource createIntegerResource(final Long integer)
+	{
+		return createLexicalResource(INTEGER_CLASS_URI, Long.toString(integer));	//create and return a default integer resource
+	}
+
 	/**Creates a default string resource with its type added as a type property.
 	This method delegates to {@link #createLexicalResource(URI, String)}.
 	@param string The string for which a default resource should be created.

@@ -128,7 +128,7 @@ public class VCard extends Directory
 	*/
 	public static Name getName(final RDFResource resource)
 	{
-		final RDFResource nResource=asResource(resource.getPropertyValue(VCARD_NAMESPACE_URI, N_PROPERTY_NAME));	//get the name preperty value as a resource
+		final RDFResource nResource=asResource(resource.getPropertyValue(VCARD_NAMESPACE_URI, N_PROPERTY_NAME));	//get the name property value as a resource
 		if(nResource!=null)	//if there is a name resource
 		{
 			final Locale language=getLanguage(resource);	//get the language specification, if there is one
