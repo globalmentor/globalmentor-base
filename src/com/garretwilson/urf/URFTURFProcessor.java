@@ -127,7 +127,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	The new position will be that of the first non-separator character after the resources or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param contextURI The URI serving as contexts in case the default namespace need to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
+	@param contextURI The URI serving as context in case the default namespace needs to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@return The resource parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
@@ -148,7 +148,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	@param scopeBase The base resource of the current scope, or <code>null</code> if the current resource is not in an object context.
 	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
 	@param scopePredicate The predicate for which the new resource is a value, or <code>null</code> if the current resource is not in an object context.
-	@param contextURI The URI serving as contexts in case the default namespace need to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
+	@param contextURI The URI serving as context in case the default namespace needs to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@return The resource parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
@@ -288,7 +288,11 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			check(reader, TYPE_END);	//read the ending type delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
-			//make sure we know about the type if possible by checking for the list short form of the set short form
+//Debug.trace("ready to get resource proxy for label", label, "resource URI", resourceURI);
+		final ResourceProxy resourceProxy=determineResourceProxy(label, resourceURI);	//get a resource proxy from the label and/or reference URI, or use one already available for the reference URI
+//Debug.trace("type count", types.size());
+/*TODO del if not needed
+		//make sure we know about the type if possible by checking for the list short form of the set short form
 		if(c==LIST_BEGIN)	//check for the list short form
 		{
 			foundComponent=true;	//indicate that at least one description component is present
@@ -310,9 +314,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
 			throw new ParseIOException(reader, "Expected resource; found character: "+(char)c);
 		}
-//Debug.trace("ready to get resource proxy for label", label, "resource URI", resourceURI);
-		final ResourceProxy resourceProxy=determineResourceProxy(label, resourceURI);	//get a resource proxy from the label and/or reference URI, or use one already available for the reference URI
-//Debug.trace("type count", types.size());
+*/		
 		if(!types.isEmpty())	//if we have at least one type
 		{
 			final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
@@ -320,54 +322,6 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			{
 				addAssertion(new Assertion(resourceProxy, typePropertyResource, type));	//assert this type
 			}
-		}
-		if(c==LIST_BEGIN)	//if a list is next
-		{
-			long index=0;	//start out with an index of zero
-			check(reader, LIST_BEGIN);	//read the beginning list delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
-			while(c>=0 && c!=SEQUENCE_END)	//while the end of the sequence has not been reached and there is another resource to parse
-			{
-				final Resource indexPredicate=determineResourceProxy(createOrdinalURI(index));	//get the ordinal property for specifying the index of each value
-				final Resource element=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), indexPredicate, indexPredicate.getURI());	//parse the list element, giving a scope chain predicate in case a scope is formed for the value
-				addAssertion(new Assertion(resourceProxy, indexPredicate, element));	//assert the assertion that the element is an index of the list; there is no scope with an list short form
-				++index;	//go to the next index
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				if(c==LIST_DELIMITER)	//if this is a list delimiter
-				{
-					check(reader, LIST_DELIMITER);	//skip the list delimiter
-					c=skipSeparators(reader);	//skip separators and peek the next character
-				}
-				else	//if there's anything besides a list delimiter, we've reached the end of the list
-				{
-					break;	//stop parsing the list
-				}
-			}
-			check(reader, LIST_END);	//read the ending list delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
-		}
-		if(c==SET_BEGIN)	//if a set is next
-		{
-			check(reader, SET_BEGIN);	//read the beginning set delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
-			final Resource elementPredicate=determineResourceProxy(ELEMENT_PROPERTY_URI);	//get the element property resource proxy
-			while(c>=0 && c!=SEQUENCE_END)	//while the end of the sequence has not been reached and there is another resource to parse
-			{
-				final Resource element=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), elementPredicate, elementPredicate.getURI());	//parse the set element, giving a scope chain predicate in case a scope is formed for the value
-				addAssertion(new Assertion(resourceProxy, elementPredicate, element));	//assert the assertion that the element is an element of the set; there is no scope with a set short form
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				if(c==LIST_DELIMITER)	//if this is a list delimiter
-				{
-					check(reader, LIST_DELIMITER);	//skip the list delimiter
-					c=skipSeparators(reader);	//skip separators and peek the next character
-				}
-				else	//if there's anything besides a list delimiter, we've reached the end of the list
-				{
-					break;	//stop parsing the list
-				}
-			}
-			check(reader, SET_END);	//read the ending set delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
 		if(c==PROPERTIES_BEGIN)	//check for properties
 		{
@@ -390,6 +344,10 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 						{
 							final Resource sequenceObject=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, predicate.getURI());	//parse the object, giving a scope chain predicate in case a scope is formed for the value
 							addAssertion(new Assertion(resourceProxy, predicate, sequenceObject));	//assert the assertion with no scope
+							if(TYPE_PROPERTY_URI.equals(predicate.getURI()))	//if this was a type declaration
+							{
+								types.add(sequenceObject);	//make a note of this type
+							}
 							final Resource orderObject=determineResourceProxy(createIntegerURI(order));	//get a proxy to the order value
 							final Resource newScopeBase=scopeBase!=null ? scopeBase : resourceProxy;	//if we don't have a scope base, use the subject resource as the base
 							final ArrayList<NameValuePair<Resource, Resource>> newScopeChain=scopeChain!=null ? (ArrayList<NameValuePair<Resource, Resource>>)scopeChain.clone() : new ArrayList<NameValuePair<Resource,Resource>>();	//clone the scope chain or create a new one if needed
@@ -427,6 +385,10 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 							case PROPERTY_VALUE_DELIMITER:	//property assignment
 								object=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, predicate.getURI());	//parse the object, giving a scope chain predicate in case a scope is formed for the value
 								addAssertion(new Assertion(resourceProxy, predicate, object));	//assert the assertion with no scope
+								if(TYPE_PROPERTY_URI.equals(predicate.getURI()))	//if this was a type declaration
+								{
+									types.add(object);	//make a note of this type
+								}
 								break;
 							default:
 								throw new AssertionError("Unrecognized property-value delimiter: "+propertyValueDelimiter);	//we already checked this character, so we shouldn't get an unknown delimiter here
@@ -441,6 +403,69 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				}
 			}
 			check(reader, PROPERTIES_END);	//read the ending properties delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
+		}
+		if(c==LIST_BEGIN)	//if a list is next
+		{
+			if(types.isEmpty())	//if no types have been specified
+			{
+				final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
+				final Resource listType=determineResourceProxy(LIST_CLASS_URI);	//get a proxy to the list type
+				types.add(listType);	//add a proxy to the list type
+				addAssertion(new Assertion(resourceProxy, typePropertyResource, listType));	//assert the list type
+			}
+			long index=0;	//start out with an index of zero
+			check(reader, LIST_BEGIN);	//read the beginning list delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
+			while(c>=0 && c!=LIST_END)	//while the end of the list has not been reached and there is another resource to parse
+			{
+				final Resource indexPredicate=determineResourceProxy(createOrdinalURI(index));	//get the ordinal property for specifying the index of each value
+				final Resource element=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), indexPredicate, indexPredicate.getURI());	//parse the list element, giving a scope chain predicate in case a scope is formed for the value
+				addAssertion(new Assertion(resourceProxy, indexPredicate, element));	//assert the assertion that the element is an index of the list; there is no scope with an list short form
+				++index;	//go to the next index
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				if(c==LIST_DELIMITER)	//if this is a list delimiter
+				{
+					check(reader, LIST_DELIMITER);	//skip the list delimiter
+					c=skipSeparators(reader);	//skip separators and peek the next character
+				}
+				else	//if there's anything besides a list delimiter, we've reached the end of the list
+				{
+					break;	//stop parsing the list
+				}
+			}
+			check(reader, LIST_END);	//read the ending list delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
+		}
+		if(c==SET_BEGIN)	//if a set is next
+		{
+			if(types.isEmpty())	//if no types have been specified
+			{
+				final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
+				final Resource setType=determineResourceProxy(SET_CLASS_URI);	//get a proxy to the set type
+				types.add(setType);	//add a proxy to the set type
+				addAssertion(new Assertion(resourceProxy, typePropertyResource, setType));	//assert the set type
+			}
+			check(reader, SET_BEGIN);	//read the beginning set delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
+			final Resource elementPredicate=determineResourceProxy(ELEMENT_PROPERTY_URI);	//get the element property resource proxy
+			while(c>=0 && c!=SET_END)	//while the end of the sequence has not been reached and there is another resource to parse
+			{
+				final Resource element=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), elementPredicate, elementPredicate.getURI());	//parse the set element, giving a scope chain predicate in case a scope is formed for the value
+				addAssertion(new Assertion(resourceProxy, elementPredicate, element));	//assert the assertion that the element is an element of the set; there is no scope with a set short form
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				if(c==LIST_DELIMITER)	//if this is a list delimiter
+				{
+					check(reader, LIST_DELIMITER);	//skip the list delimiter
+					c=skipSeparators(reader);	//skip separators and peek the next character
+				}
+				else	//if there's anything besides a list delimiter, we've reached the end of the list
+				{
+					break;	//stop parsing the list
+				}
+			}
+			check(reader, SET_END);	//read the ending set delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
 //Debug.trace("ready to return resource proxy with URI", resourceProxy.getURI());
 		return resourceProxy;	//return the resource proxy we created
@@ -468,7 +493,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param end The character that marks the end of the list.
-	@param contextURI The URI serving as contexts in case the default namespace need to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
+	@param contextURI The URI serving as context in case the default namespace needs to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@return The resource parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
