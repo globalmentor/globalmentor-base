@@ -26,11 +26,11 @@ public class UnionSelector extends AbstractOperatorSelector
 	This version returns the logical union of its subselectors.
 	@param resource The object to test for a match, or <code>null</code> if there is no object.
 	@return <code>true</code> if this selector selects the given resource.
-	@see #getSelects()
+	@see #getSelectors()
 	*/
 	public boolean selects(final Object object)
 	{
-		for(final Selector selector:getSelects())	//for each subselector
+		for(final Selector selector:getSelectors())	//for each subselector
 		{
 			if(selector.selects(object))	//if the subselector selects the object
 			{

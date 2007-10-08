@@ -21,7 +21,7 @@ public class Content
 	/**The URI to the URF content namespace.*/
 	public final static URI CONTENT_NAMESPACE_URI=URI.create("http://urf.name/content");
 
-		//classes 
+		//classes
 	/**The URI of the content <code>Resource</code> class.*/
 	public final static URI RESOURCE_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "Resource");
 		//properties
@@ -31,8 +31,8 @@ public class Content
 	public final static URI CONTENTS_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "contents");
 	/**The time when a resource was last modified.*/
 	public final static URI MODIFIED_TIME_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "modifiedTime");
-	/**The size of a resource.*/
-	public final static URI SIZE_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "size");
+	/**The size of the contents of the resource. For <code>urf.Binary</code> content, this indicates the number of bytes. For <code>urf.String</code> content, this indicates the number of characters.*/
+	public final static URI LENGTH_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "length");
 	/**The Internet media type of a resource.*/
 	public final static URI TYPE_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "type");
 

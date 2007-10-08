@@ -24,17 +24,17 @@ public abstract class AbstractOperatorSelector extends AbstractSelector implemen
 		super(uri);  //construct the parent class
 	}
 
-	/**@return This operator selector's select declarations.*/
-	public Iterable<Selector> getSelects()
+	/**@return This operator selector's selector declarations.*/
+	public Iterable<Selector> getSelectors()
 	{
-		return getPropertyValues(SELECT_PROPERTY_URI, Selector.class);	//return the select.select values
+		return getPropertyValues(SELECTOR_PROPERTY_URI, Selector.class);	//return the select.select values
 	}
 
 	/**Adds a selector to this operator selector.
 	@param selector The selector to add.
 	*/
-	public void addSelect(final Selector selector)
+	public void addSelector(final Selector selector)
 	{
-		addPropertyValue(SELECT_PROPERTY_URI, selector);	//add the given selector
+		addPropertyValue(SELECTOR_PROPERTY_URI, selector);	//add the given selector
 	}
 }

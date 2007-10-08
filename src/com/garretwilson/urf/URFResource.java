@@ -10,10 +10,16 @@ import com.garretwilson.net.Resource;
 public interface URFResource extends Resource, URFScope
 {
 
-	/**Determines a string value to use for representation.
-	@return A string label to use for representation of the resource.
+	/**Returns the string value of the «{@value URF#LABEL_PROPERTY_URI}» property.
+	@return The string value of the label property, or <code>null</code> if there is no such property or the property value is not a string.
 	*/
 	public String getLabel();
+
+	/**Determines a string value to use for representation.
+	This method may take into account the current properties of the resource in order to provide the best possible string representation.
+	@return A string label to use for representation of the resource.
+	*/
+	public String determineLabel();
 
 	/**Retrieves the types declared for this resource, if any.
 	@return An iterable to all types declared for this resource.

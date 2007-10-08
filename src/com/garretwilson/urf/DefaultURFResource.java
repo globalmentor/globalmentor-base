@@ -87,17 +87,28 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 		}
 	}
 
+	/**Returns the string value of the «{@value URF#LABEL_PROPERTY_URI}» property.
+	@return The string value of the label property, or <code>null</code> if there is no such property or the property value is not a string.
+	*/
+	public String getLabel()
+	{
+		return asString(getPropertyValue(LABEL_PROPERTY_URI));
+	}
+
 	/**Determines a string value to use for representation.
+	This method may take into account the current properties of the resource in order to provide the best possible string representation.
 	This implementation determines the label in the following sequence:
 	<ol>
+		<li>The string value of any literal «{@value URF#LABEL_PROPERTY_URI}» property.</li>
 		<li>The string value of any literal «{@value DCMI#TITLE_PROPERTY_URI}» property.</li>
 		<li>The lexical form of any resource with a URI in a lexical namespace.</li>
 		<li>The reference URI.</li>
 		<li>The Java string representation of the resource as given by its <code>toString()</code> method.</li>
 	</ol>
 	@return A string label to use for representation of the resource.
+	@see #getLabel()
 	*/
-	public String getLabel()
+	public String determineLabel()
 	{
 		String label=getTitle(this);	//see if there is a dc.title
 		if(label==null)	//if there is no title

@@ -24,6 +24,7 @@ import static com.garretwilson.text.CharacterEncodingConstants.*;
 
 import com.garretwilson.text.RegularExpression;
 import com.garretwilson.urf.content.*;
+import com.garretwilson.urf.select.Select;
 import com.garretwilson.util.*;
 
 /**An URF data model.
@@ -86,7 +87,9 @@ public class URF
 		//properties
 	/**The URI of the property indicating an element of a container such as a set.*/
 	public final static URI ELEMENT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "element");
-	/**The name of a resource, which may differ from that indicated by the URI, if any.*/
+	/**aAshort name meant for human consumption which is perhaps more appropriate than display of the class or property name but perhaps less complete than a full title.*/
+	public final static URI LABEL_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "label");
+	/**The name of a resource meant for machine processing, which may differ from that indicated by the URI, if any.*/
 	public final static URI NAME_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "name");
 	/**The URI of the URF order property.*/
 	public final static URI ORDER_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "order");
@@ -614,7 +617,6 @@ public class URF
 				}
 				if(INFO_SCHEME_LANG_NAMESPACE.equals(infoNamespace))	//lang
 				{
-Debug.trace("this resource is in the info lang namespace", resourceURI);
 					return LocaleUtilities.asLocale(resourceURI);	//return a locale
 				}
 				else if(INFO_SCHEME_MEDIA_NAMESPACE.equals(infoNamespace))	//media
@@ -1282,6 +1284,7 @@ Debug.trace("this resource is in the info lang namespace", resourceURI);
 	{
 		registerResourceFactory(URF_NAMESPACE_URI, DEFAULT_URF_RESOURCE_FACTORY);	//register the default URF resource factory with the URF namespace
 		registerResourceFactory(Content.CONTENT_NAMESPACE_URI, Content.DEFAULT_CONTENT_RESOURCE_FACTORY);	//register the default content resource factory with the content namespace
+		registerResourceFactory(Select.SELECT_NAMESPACE_URI, new JavaURFResourceFactory(Select.class.getPackage()));	//instantiate select classes for select resources
 	}
 
 	/**Retreives a resource from the data model based upon a URI.

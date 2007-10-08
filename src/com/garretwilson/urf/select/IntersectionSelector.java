@@ -26,12 +26,12 @@ public class IntersectionSelector extends AbstractOperatorSelector
 	This version returns the logical intersection of its subselectors, or <code>false</code> if there are no subselectors.
 	@param object The object to test for a match, or <code>null</code> if there is no object.
 	@return <code>true</code> if this selector selects the given object.
-	@see #getSelects()
+	@see #getSelectors()
 	*/
 	public boolean selects(final Object object)
 	{
 		boolean selects=false;	//there has to be at least one subselector before this selector can select anything
-		for(final Selector selector:getSelects())	//for each subselector
+		for(final Selector selector:getSelectors())	//for each subselector
 		{
 			selects=selector.selects(object);	//see if the subselector selects the object
 			if(!selects)	//if any subselector doesn't select the object

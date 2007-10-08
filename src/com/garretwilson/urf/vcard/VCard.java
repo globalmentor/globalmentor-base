@@ -99,7 +99,7 @@ public class VCard
 	<ol>
 		<li>The lexical form of the literal value of the «{@link #FN_PROPERTY_URI}», if available.</li>
 		<li>A formatted string derived from the value of the «{@link #N_PROPERTY_URI}» property, if available.</li>
-		<li>The label of the resource as determined by {@link URFResource#getLabel()}.
+		<li>The label of the resource as determined by {@link URFResource#determineLabel()}.
 	</ol>
 	@param resource The resource for which a formatted name should be determined.
 	@return The best possible formatted name string for the resource.
@@ -117,7 +117,7 @@ public class VCard
 			}
 			else	//if no name was specified
 			{
-				formattedName=resource.getLabel();	//use the resource's label
+				formattedName=resource.determineLabel();	//use the resource's label
 			}
 		}
 		return formattedName;	//return whatever formatted name we determined
