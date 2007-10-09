@@ -31,7 +31,7 @@ import com.guiseframework.style.Color;
 <p>This processor also recognizes the {@link URFResource} type and will transfer all non-PLOOP properties when an instance is encountered.</p>
 @author Garret Wilson
 */
-public class PLOOPProcessor
+public class PLOOPURFProcessor
 {
 	
 	/**The default arguments that can be used in calling class constructors.*/
@@ -46,7 +46,7 @@ public class PLOOPProcessor
 	/**Default arguments constructor.
 	@param defaultConstructorArguments The objects that can be used as default arguments in class constructors.
 	*/
-	public PLOOPProcessor(final Object... defaultConstructorArguments)
+	public PLOOPURFProcessor(final Object... defaultConstructorArguments)
 	{
 		addAll(this.defaultConstructorArguments, defaultConstructorArguments);	//add all the given default constructor arguments to our set of default constructor arguments
 	}

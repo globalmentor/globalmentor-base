@@ -2,11 +2,8 @@ package com.garretwilson.urf;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.garretwilson.io.BOMInputStreamReader;
-import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.NamespacePrefixManager;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
 
@@ -14,56 +11,8 @@ import static com.garretwilson.text.CharacterEncodingConstants.*;
 @param <T> The type to read and write.
 @author Garret Wilson
 */
-public abstract class AbstractTURFIO<T> extends NamespacePrefixManager implements URFIO<T>
+public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 {
-
-	/**The class representing the type of object being loaded and saved.*/
-	private final Class<T> objectClass;
-
-		/**@return The class representing the type of object being loaded and saved.*/
-		public Class<T> getObjectClass() {return objectClass;}
-
-	/**A map of resource factories, keyed to namespace URI.*/
-	private final Map<URI, URFResourceFactory> resourceFactoryMap=new ConcurrentHashMap<URI, URFResourceFactory>();
-
-		/**Registers a resource factory to be used to create resources with a type from the specified namespace. If a resource factory is already registered for this namespace, it will be replaced.
-		@param typeNamespaceURI The namespace of the resource type for which this factory should be used to create objects.
-		@param factory The resource factory that will be used to create resources of types from this namespace.
-		*/
-		public void registerResourceFactory(final URI typeNamespaceURI, final URFResourceFactory factory)
-		{
-			resourceFactoryMap.put(typeNamespaceURI, factory);
-		}
-
-		/**Removes the resource factory being used to create resources with a type from the specified namespace. If there is no resource factory registered for this namespace, no action will be taken.
-		@param typeNamespaceURI The namespace of the resource type for which this factory should be used to create objects.
-		*/
-		public void unregisterResourceFactory(final URI typeNamespaceURI)
-		{
-			resourceFactoryMap.remove(typeNamespaceURI);
-		}
-
-	/**The map of XML serialization prefixes, keyed by namespace URIs.*/
-	private final Map<URI, String> namespaceURIPrefixMap=new HashMap<URI, String>();
-
-		/**Registers the given XML serialization prefix to be used with the given namespace URI.
-		If a prefix is already registered with the given namespace, it is replaced with this prefix.
-		@param namespaceURI The namespace URI.
-		@param prefix The XML serialization prefix to use with the given namespace.
-		*/
-		public void registerNamespacePrefix(final URI namespaceURI, final String prefix)
-		{
-			namespaceURIPrefixMap.put(namespaceURI, prefix);	//store the prefix in the map, keyed to the URI
-		}
-
-		/**Unregisters the XML serialization prefix for the given namespace URI.
-		If no prefix is registered for the given namespace, no action occurs.
-		@param namespaceURI The namespace URI.
-		*/
-		public void unregisterNamespacePrefix(final String namespaceURI, final String prefix)
-		{
-			namespaceURIPrefixMap.remove(namespaceURI);	//remove whatever prefix is registered with this namespace, if any
-		}
 
 	/**Class constructor.
 	@param objectClass The class representing the type of object being loaded and saved.
@@ -71,47 +20,8 @@ public abstract class AbstractTURFIO<T> extends NamespacePrefixManager implement
 	*/
 	public AbstractTURFIO(final Class<T> objectClass)
 	{
-		this.objectClass=checkInstance(objectClass, "Object class must be provided.");
+		super(objectClass);	//construct the parent class
 	}
-
-	/**Creates an URF instance for use in reading URF data.
-	This version creates a default URF instance and then registers known resource factories.
-	@return An URF instance appropriate for populating with data read from some source.
-	*/
-	protected URF createURF()
-	{
-		final URF urf=new URF();  //create a new URF data model
-		for(final Map.Entry<URI, URFResourceFactory> resourceFactoryEntry:resourceFactoryMap.entrySet())	//for each registered resource factory
-		{
-			urf.registerResourceFactory(resourceFactoryEntry.getKey(), resourceFactoryEntry.getValue());  //register the factory with the URF data model				
-		}
-		return urf;	//return the URF with registered resource factories
-	}
-
-	/**Reads a resource from an input stream.
-	This version delegates to {@link #read(URF, InputStream, URI)} using {@link #createURF()} to create a new RDF instance.
-	@param inputStream The input stream from which to read the data.
-	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@return The resource read from the input stream.
-	@exception NullPointerException if the given input stream is <code>null</code>.
-	@exception IOException if there is an error reading the data.
-	@exception ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
-	*/ 
-	public final T read(final InputStream inputStream, final URI baseURI) throws IOException
-	{
-		return read(createURF(), inputStream, baseURI);	//create a new URF data model, showing the base URI, and read and return the object
-	}
-
-	/**Reads a resource from an input stream using an existing URF instance.
-	@param urf The URF instance to use in creating new resources.
-	@param inputStream The input stream from which to read the data.
-	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@return The resource read from the input stream.
-	@exception NullPointerException if the given URF instance and/or input stream is <code>null</code>.
-	@exception IOException if there is an error reading the data.
-	@exception ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
-	*/ 
-	public abstract T read(final URF urf, final InputStream inputStream, final URI baseURI) throws IOException;
 
 	/**Reads URF data from an input stream.
 	This implementation reads TURF.
@@ -147,12 +57,24 @@ public abstract class AbstractTURFIO<T> extends NamespacePrefixManager implement
 	*/ 
 	public static URF readTURF(final URF urf, InputStream inputStream, final URI baseURI) throws IOException
 	{
+		return readTURF(new URFTURFProcessor(urf), inputStream, baseURI);	//create a new URF processor and process the data
+	}
+
+	/**Reads URF data from a TURF input stream using an existing URF processor.
+	@param urfProcessor The URF processor for processing the data.
+	@param inputStream The input stream from which to read the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The URF instance representing the data read.
+	@exception IOException if there is an error reading the data.
+	*/ 
+	public static URF readTURF(final URFTURFProcessor urfProcessor, InputStream inputStream, final URI baseURI) throws IOException
+	{
 		if(!inputStream.markSupported())	//if the input stream doesn't support marking
 		{
 			inputStream=new BufferedInputStream(inputStream);	//buffer the input stream to allow marking
 		}
 		final Reader reader=new LineNumberReader(new BOMInputStreamReader(inputStream, UTF_8));	//created a reader from the input stream, defaulting to UTF-8 if not specified
-		return readTURF(urf, reader, baseURI);	//read the TURF from the reader
+		return readTURF(urfProcessor, reader, baseURI);	//read the TURF from the reader
 	}
 
 	/**Reads URF data from a TURF reader using a default URF data model.
@@ -177,8 +99,20 @@ public abstract class AbstractTURFIO<T> extends NamespacePrefixManager implement
 	*/ 
 	public static URF readTURF(final URF urf, final Reader reader, final URI baseURI) throws IOException
 	{
-		final URFTURFProcessor turfProcessor=new URFTURFProcessor(urf);	//create a new TURF processor
-		return turfProcessor.process(reader, baseURI);	//process the TURF and return the URF
+		return readTURF(new URFTURFProcessor(urf), reader, baseURI);	//create a new URF processor and process the data
+	}
+
+	/**Reads URF data from a TURF reader using an existing URF processor.
+	The given reader must support marking.
+	@param urfProcessor The URF processor for processing the data.
+	@param reader The reader from which to read the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The URF instance representing the data read.
+	@exception IOException if the reader does not suppport marking, or there is an error reading the data.
+	*/ 
+	public static URF readTURF(final URFTURFProcessor urfProcessor, final Reader reader, final URI baseURI) throws IOException
+	{
+		return urfProcessor.process(reader, baseURI);	//process the TURF and return the URF
 	}
 
 	/**Writes an URF resource to an output stream.
@@ -206,6 +140,18 @@ public abstract class AbstractTURFIO<T> extends NamespacePrefixManager implement
 		writeTURFResource(outputStream, baseURI, resource, new NamespacePrefixManager());	//write TURF with a default namespace prefix manager
 	}
 
+	/**Writes an URF instance to a TURF output stream.
+	@param outputStream The output stream to which to write the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param urf The URF instance to write to the given output stream.
+	@excepion NullPointerException if the given output stream, and/or URF instance is <code>null</code>.
+	@throws IOException Thrown if there is an error writing the data.
+	*/
+	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf) throws IOException
+	{
+		writeTURF(outputStream, baseURI, urf, new NamespacePrefixManager());	//write TURF with a default namespace prefix manager
+	}
+
 	/**Writes an URF resource to a TURF output stream.
 	@param outputStream The output stream to which to write the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
@@ -220,6 +166,22 @@ public abstract class AbstractTURFIO<T> extends NamespacePrefixManager implement
 		final Writer writer=new OutputStreamWriter(outputStream, UTF_8);	//create a writer for writing in UTF-8
 		final URFTURFGenerator turfGenerator=new URFTURFGenerator(baseURI, true, namespacePrefixManager);	//create a new TURF generator, using the given namespace prefix manager
 		turfGenerator.generateResources(writer, resource);	//generate the resource to the writer
+	}
+
+	/**Writes an URF instance to a TURF output stream.
+	@param outputStream The output stream to which to write the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param urf The URF instance to write to the given output stream.
+	@param namespacePrefixManager The manager of namespaces and prefixes.
+	@excepion NullPointerException if the given output stream, URF instance, and/or namespace prefix manager is <code>null</code>.
+	@throws IOException Thrown if there is an error writing the data.
+	*/
+	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf, final NamespacePrefixManager namespacePrefixManager) throws IOException
+	{
+		outputStream.write(BOM_UTF_8);	//write the UTF-8 byte order mark
+		final Writer writer=new OutputStreamWriter(outputStream, UTF_8);	//create a writer for writing in UTF-8
+		final URFTURFGenerator turfGenerator=new URFTURFGenerator(baseURI, true, namespacePrefixManager);	//create a new TURF generator, using the given namespace prefix manager
+		turfGenerator.generateResources(writer, urf);	//generate the URF resources to the writer
 	}
 
 }

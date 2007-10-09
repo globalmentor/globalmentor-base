@@ -34,7 +34,7 @@ public class PLOOPTURFIO<T> extends AbstractTURFIO<T>
 	public T read(final URF urf, final InputStream inputStream, final URI baseURI) throws IOException
 	{
 		readURF(urf, inputStream, baseURI);	//read URF from the input stream
-		final PLOOPProcessor ploopProcessor=new PLOOPProcessor();	//create a new PLOOP processor
+		final PLOOPURFProcessor ploopProcessor=new PLOOPURFProcessor();	//create a new PLOOP processor
 		final T object;
 		try
 		{

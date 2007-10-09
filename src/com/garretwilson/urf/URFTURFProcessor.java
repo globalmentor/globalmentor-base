@@ -33,7 +33,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	}
 
 	/**Constructor that specifies an existing data model to continue filling.
-	@param urf The RDF data model to use.
+	@param urf The URF data model to use.
 	*/
 	public URFTURFProcessor(final URF urf)
 	{
@@ -69,6 +69,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	public URF processResources(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
+		reset();	//make sure we don't have temporary data left over from last time
 		final Resource[] resources=parseResourceList(reader, baseURI, NULL_CHAR);	//parse as list of resources
 /*TODO del
 for(final Assertion assertion:getAssertions())	//look at the assertions
@@ -85,6 +86,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		{
 			throw new ParseIOException(reader, illegalArgumentException);			
 		}
+		reset();	//release all our references temporary resource proxies
 		return getURF();	//return the URF data model
 	}
 
@@ -135,7 +137,14 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	*/
 	public Resource parseResource(final Reader reader, final URI baseURI, final URI contextURI) throws IOException, ParseIOException
 	{
-		return parseResource(reader, baseURI, null, null, null, contextURI);	//parse a resource with no scope or context URI
+		try
+		{
+			return parseResource(reader, baseURI, null, null, null, contextURI);	//parse a resource with no scope
+		}
+		catch(final DataException dataException)
+		{
+			throw new ParseIOException(reader, dataException);
+		}
 	}
 
 	/**Parses a single optionally scoped resource and returns a proxy to the resource.
@@ -153,8 +162,9 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current resource is completely parsed.
+	@exception DataException if there was an error with information being processed.
 	*/
-	protected Resource parseResource(final Reader reader, final URI baseURI, final Resource scopeBase, final ArrayList<NameValuePair<Resource, Resource>> scopeChain, final Resource scopePredicate, final URI contextURI) throws IOException, ParseIOException
+	protected Resource parseResource(final Reader reader, final URI baseURI, final Resource scopeBase, final ArrayList<NameValuePair<Resource, Resource>> scopeChain, final Resource scopePredicate, final URI contextURI) throws IOException, ParseIOException, DataException
 	{
 //Debug.trace("ready to parse resource");
 		final URF urf=getURF();	//get the URF data model
@@ -252,7 +262,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 						final Resource namespaceURIResource=getResourceProxy(prefix);	//lookup up the resource indicating the namespace
 						if(namespaceURIResource==null)	//if there is no resource yet defined for the namespace URI
 						{
-							throw new ParseIOException(reader, "No namespace URI resource defined for prefix "+prefix+".");
+							throw new DataException("No namespace URI resource defined for prefix "+prefix+".");
 						}
 						namespaceURI=toURI(reader, namespaceURIResource);	//determine the namespace URI from the namespace URI resource
 					}
@@ -260,12 +270,12 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 					{
 						if(contextURI==null)	//if no context is available
 						{
-							throw new ParseIOException(reader, "Local name "+localName+" has no context for namespace determination.");
+							throw new DataException("Local name "+localName+" has no context for namespace determination.");
 						}
 						namespaceURI=getNamespaceURI(contextURI);	//get the namespace URI from the context URI
 						if(namespaceURI==null)	//if no namespace is available
 						{
-							throw new ParseIOException(reader, "Context URI "+contextURI+" has no namespace.");
+							throw new DataException("Context URI "+contextURI+" has no namespace.");
 						}
 					}
 					foundComponent=true;	//indicate that at least one description component is present
@@ -276,7 +286,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 					}
 					catch(final IllegalArgumentException illegalArgumentException)	//if the given namespace is not valid
 					{
-						throw new ParseIOException(reader, "Prefix "+prefix+" references invalid namespace "+namespaceURI);
+						throw new DataException("Prefix "+prefix+" references invalid namespace "+namespaceURI);
 					}
 					c=skipSeparators(reader);	//skip separators and peek the next character
 				}
@@ -297,31 +307,6 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		}
 //Debug.trace("ready to get resource proxy for label", label, "resource URI", resourceURI);
 		final ResourceProxy resourceProxy=determineResourceProxy(label, resourceURI);	//get a resource proxy from the label and/or reference URI, or use one already available for the reference URI
-//Debug.trace("type count", types.size());
-/*TODO del if not needed
-		//make sure we know about the type if possible by checking for the list short form of the set short form
-		if(c==LIST_BEGIN)	//check for the list short form
-		{
-			foundComponent=true;	//indicate that at least one description component is present
-			if(types.isEmpty())	//if no types have been specified
-			{
-				types.add(determineResourceProxy(LIST_CLASS_URI));	//add a proxy to the list type, but don't read the list, yet; we'll do that after creating the resource proxy
-			}
-		}
-		else if(c==SET_BEGIN)	//check for the set short form
-		{
-			foundComponent=true;	//indicate that at least one description component is present
-			if(types.isEmpty())	//if no types have been specified
-			{
-				types.add(determineResourceProxy(SET_CLASS_URI));	//add a proxy to the set type, but don't read the set, yet; we'll do that after creating the resource proxy
-			}
-		}
-		if(!foundComponent && c!=PROPERTIES_BEGIN)	//if there were no description components so far, and we don't see any properties coming up
-		{
-			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
-			throw new ParseIOException(reader, "Expected resource; found character: "+(char)c);
-		}
-*/		
 		if(!types.isEmpty())	//if we have at least one type
 		{
 			final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
@@ -639,9 +624,9 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current URI is completely parsed.
-	@exception ParseIOException if the binary data is not correctly encoded base64url data with no linebreaks or if the reader has no more characters before the current binary data is completely parsed.
+	@exception DataException if the binary data is not correctly encoded base64url data with no linebreaks or if the reader has no more characters before the current binary data is completely parsed.
 	*/
-	public byte[] parseBinary(final Reader reader) throws IOException, ParseIOException
+	public byte[] parseBinary(final Reader reader) throws IOException, ParseIOException, DataException
 	{
 		check(reader, BINARY_BEGIN);	//read the beginning binary delimiter
 		final String base64urlString=reachAfter(reader, BINARY_END);	//read the rest of the binary data
@@ -651,7 +636,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		}
 		catch(final IllegalArgumentException illegalArgumentException)	//if the string was not valid base64url-encoded data
 		{
-			throw new ParseIOException(reader, illegalArgumentException);
+			throw new DataException(illegalArgumentException);
 		}
 	}
 
@@ -699,8 +684,9 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current number is completely parsed.
+	@exception DataException if the number is not of the correct format.
 	*/
-	public static Number parseNumber(final Reader reader, final char numberBegin, final boolean allowMinus, final boolean allowDecimal, final boolean allowExponent) throws IOException, ParseIOException
+	public static Number parseNumber(final Reader reader, final char numberBegin, final boolean allowMinus, final boolean allowDecimal, final boolean allowExponent) throws IOException, ParseIOException, DataException
 	{
 		boolean hasFraction=false;	//we don't have a fraction yet
 		boolean hasExponent=false;	//we don't have an exponent yet
@@ -754,7 +740,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		}
 		catch(final NumberFormatException numberFormatException)	//if the number was not syntactically correct
 		{
-			throw new ParseIOException(reader, numberFormatException);
+			throw new DataException(numberFormatException);
 		}
 	}
 
@@ -834,8 +820,9 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current URI is completely parsed.
+	@exception DataException if the URI is not of the correct format.
 	*/
-	public URI parseURI(final Reader reader, final URI baseURI, final char uriBegin, final char uriEnd) throws IOException, ParseIOException
+	public URI parseURI(final Reader reader, final URI baseURI, final char uriBegin, final char uriEnd) throws IOException, ParseIOException, DataException
 	{
 		check(reader, uriBegin);	//read the beginning URI delimiter
 		int c=peek(reader);	//peek the next character
@@ -867,7 +854,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				final Resource baseURIResource=getResourceProxy(label);	//lookup up the resource indicating the base URI
 				if(baseURIResource==null)	//if there is no resource yet defined for the base URI
 				{
-					throw new ParseIOException(reader, "No base URI resource defined for label "+label+".");
+					throw new DataException("No base URI resource defined for label "+label+".");
 				}
 				final URI localBaseURI=toURI(reader, baseURIResource);	//determine the base URI from the base URI resource
 				uri=resolve(localBaseURI, uri);	//resolve the URI against the local base URI
@@ -884,33 +871,33 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		}
 		catch(final IllegalArgumentException illegalArgumentException)	//if we couldn't create a correct lexical URI
 		{
-			throw new ParseIOException(reader, illegalArgumentException);
+			throw new DataException(illegalArgumentException);
 		}
 		catch(final URISyntaxException uriSyntaxException)	//if one of the strings was not a valid URI
 		{
-			throw new ParseIOException(reader, uriSyntaxException);
+			throw new DataException(uriSyntaxException);
 		}
 	}
 
 	/**Determines the URI represented by the given resource.
 	@param reader The reader the contents of which to be parsed.
 	@param resource The resource which is expected to represent a URI.
-	@exception ParseIOException if the given resource has no URI or the URI does not represent a URI.
+	@exception DataException if the given resource has no URI or the URI does not represent a URI.
 	*/
-	protected static URI toURI(final Reader reader, final Resource resource) throws ParseIOException
+	protected static URI toURI(final Reader reader, final Resource resource) throws DataException
 	{
 		try
 		{
 			final URI uri=asURI(resource);	//get the resource as a URI
 			if(uri==null)	//if this isn't a URI
 			{
-				throw new ParseIOException(reader, "Resource "+resource+" is not a URI.");
+				throw new DataException("Resource "+resource+" is not a URI.");
 			}
 			return uri;	//return the URI
 		}
 		catch(final IllegalArgumentException illegalArgumentException)	//if the URI wasn't in correct form
 		{
-			throw new ParseIOException(reader, "Resource "+resource+" is not a valid URI.", illegalArgumentException);
+			throw new DataException("Resource "+resource+" is not a valid URI.", illegalArgumentException);
 		}
 	}
 

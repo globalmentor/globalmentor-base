@@ -12,19 +12,14 @@ public class PLOOP
 {
 
 	/**The recommended prefix to the PLOOP namespace.*/
-//TODO bring back	public final static String PLOOP_NAMESPACE_PREFIX="ploop";
+//TODO del	public final static String PLOOP_NAMESPACE_PREFIX="ploop";
 	/**The URI to the PLOOP namespace.*/
-//TODO bring back	public final static URI PLOOP_NAMESPACE_URI=URI.create("http://ploop.org/namespaces/ploop");
-
-	/**The recommended prefix to the PLOOP ontology namespace.*/
-	public final static String PLOOP_NAMESPACE_PREFIX="ploop";
-	/**The URI to the PLOOP namespace.*/
-	public final static URI PLOOP_NAMESPACE_URI=URI.create("http://ploop.org/namespaces/ploop#");
+//TODO del	public final static URI PLOOP_NAMESPACE_URI=URI.create("http://ploop.org/namespaces/ploop");
 
 	/**The recommended prefix to the PLOOP property ontology namespace.*/
-	public final static String PLOOP_PROPERTY_NAMESPACE_PREFIX="property";
+//TODO del	public final static String PLOOP_PROPERTY_NAMESPACE_PREFIX="property";
 	/**The URI to the PLOOP property ontology namespace.*/
-	public final static URI PLOOP_PROPERTY_NAMESPACE_URI=URI.create("http://ploop.org/namespaces/property#");
+//TODO del	public final static URI PLOOP_PROPERTY_NAMESPACE_URI=URI.create("http://ploop.org/namespaces/property#");
 
 	/**Determines the URF property URI for a property of a given object.
 	@param object The object for which a property URI should be determined.

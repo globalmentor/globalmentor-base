@@ -1,6 +1,5 @@
 package com.garretwilson.text;
 
-
 /**Generic checked exception thrown to indicate that a string could not be parsed.
 @author Garret Wilson
 */
