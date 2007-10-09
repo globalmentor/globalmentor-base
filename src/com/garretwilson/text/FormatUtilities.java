@@ -80,7 +80,7 @@ public class FormatUtilities
 			{
 				stringBuilder.append(item).append(delimiter);	//append the item and the delimiter
 			}
-			deleteLastChar(stringBuilder);	//remove the last delimiter
+			deleteEnd(stringBuilder);	//remove the last delimiter
 		}
 		return stringBuilder;	//return the string builder we used
 	}
@@ -223,7 +223,7 @@ public class FormatUtilities
 				}
 				stringBuilder.append(delimiter);	//append a delimiter
 			}
-			deleteLastChar(stringBuilder);	//remove the last delimiter
+			deleteEnd(stringBuilder);	//remove the last delimiter
 		}
 		return stringBuilder;	//return the string builder we used
 	}

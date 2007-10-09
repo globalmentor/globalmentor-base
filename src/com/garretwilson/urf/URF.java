@@ -82,6 +82,8 @@ public class URF
 	public final static URI SET_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Set");
 	/**The URI of the URF <code>String</code> class.*/
 	public final static URI STRING_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "String");
+	/**The URI of the URF <code>Timestamp</code> class.*/
+	public final static URI TIMESTAMP_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Timestamp");
 	/**The URI of the URF <code>URI</code> class.*/
 	public final static URI URI_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "URI");
 		//properties
@@ -129,6 +131,8 @@ public class URF
 	public final static URI STRING_NAMESPACE_URI=createLexicalNamespaceURI(STRING_CLASS_URI);
 		/**The URI of the empty string "".*/
 		public final static URI EMPTY_STRING_URI=createLexicalURI(STRING_CLASS_URI, "");
+	/**The timestamp lexical namespace URI.*/
+	public final static URI TIMESTAMP_NAMESPACE_URI=createLexicalNamespaceURI(TIMESTAMP_CLASS_URI);
 	/**The URI lexical namespace URI.*/
 	public final static URI URI_NAMESPACE_URI=createLexicalNamespaceURI(URI_CLASS_URI);
 

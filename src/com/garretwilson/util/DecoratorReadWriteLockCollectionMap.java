@@ -65,6 +65,18 @@ public class DecoratorReadWriteLockCollectionMap<K, V, C extends Collection<V>> 
 	/**Creates a collection in which to store values.*/
 	public C createCollection() {return collectionMap.createCollection();}
 
+	/**Retrieves whether there are items in a collection associated with the key.
+	@param key The key in the map.
+	@return <code>true</code> if there is at least one item associated with the key.
+	*/
+	public boolean hasItems(final K key) {readLock().lock(); try{return collectionMap.hasItems(key);} finally{readLock().unlock();}}
+
+	/**Retrieves the number of values in the collection, if any, associated with the key.
+	@param key The key in the map.
+	@return The number of items associated with the key.
+	*/
+	public int getItemCount(final K key) {readLock().lock(); try{return collectionMap.getItemCount(key);} finally{readLock().unlock();}}
+
 	/**Adds a value to the collection of values associated with the key.
 	If no collection of values is associated with the key, one will be created and added to the map.
 	@param key The key in the map.

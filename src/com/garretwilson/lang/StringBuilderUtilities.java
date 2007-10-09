@@ -175,16 +175,24 @@ public class StringBuilderUtilities
 
 	/**Deletes the last character of a string builder.
 	@param stringBuilder The string builder to modify.
-	@exception IllegalArgumentException if the given string builder has no characters.
+	@exception NullPointerException if the given string builder is <code>null</code>.
+	@exception StringIndexOutOfBoundsException if the given string builder has no characters.
 	*/
-	public static void deleteLastChar(final StringBuilder stringBuilder)
+	public static void deleteEnd(final StringBuilder stringBuilder)
+	{
+		stringBuilder.deleteCharAt(stringBuilder.length()-1);	//remove the last character
+	}
+
+	/**Deletes the last characters of a string builder.
+	@param stringBuilder The string builder to modify.
+	@param count The number of characters to delete.
+	@exception IllegalArgumentException if the given string builder has insuficient characters.
+	@exception StringIndexOutOfBoundsException if the given string builder is <code>null</code>.
+	*/
+	public static void deleteEnd(final StringBuilder stringBuilder, final int count)
 	{
 		final int length=stringBuilder.length();	//get the length of the string builder
-		if(length==0)	//if there are no characters to delete
-		{
-			throw new IllegalArgumentException("Cannot delete last character of empty string builder.");
-		}
-		stringBuilder.deleteCharAt(stringBuilder.length()-1);	//remove the last character
+		stringBuilder.delete(length-count, length);	//remove the last character
 	}
 
 	/**Unescapes a value int a string builder using the provided escape character.

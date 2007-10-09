@@ -23,6 +23,26 @@ public abstract class AbstractDecoratorCollectionMap<K, V, C extends Collection<
 		super(map);	//construct the parent class
 	}
 
+	/**Retrieves whether there are items in a collection associated with the key.
+	@param key The key in the map.
+	@return <code>true</code> if there is at least one item associated with the key.
+	*/
+	public boolean hasItems(final K key)
+	{
+		final C collection=get(key);	//get the collection of objects for the key, if any
+		return collection!=null ? !collection.isEmpty() : false;	//if there is no collection, there are no items
+	}
+
+	/**Retrieves the number of values in the collection, if any, associated with the key.
+	@param key The key in the map.
+	@return The number of items associated with the key.
+	*/
+	public int getItemCount(final K key)
+	{
+		final C collection=get(key);	//get the collection of objects for the key, if any
+		return collection!=null ? collection.size() : 0;	//return the size of the item collection, if there is one
+	}
+
 	/**Adds a value to the collection of values associated with the key.
 	If no collection of values is associated with the key, one will be created and added to the map.
 	@param key The key in the map.
@@ -40,7 +60,7 @@ public abstract class AbstractDecoratorCollectionMap<K, V, C extends Collection<
 	*/
 	public V getItem(final K key)
 	{
-		final C collection=get(key);	//get the collection of objects for the key
+		final C collection=get(key);	//get the collection of objects for the key, if any
 		return collection!=null && !collection.isEmpty() ? collection.iterator().next() : null;	//return the first object in the collection, if there is a non-empty collection
 	}
 

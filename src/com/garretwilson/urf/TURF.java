@@ -88,7 +88,12 @@ public class TURF
 		public final static char ESCAPED_START_OF_STRING=LEFT_DOUBLE_QUOTATION_MARK_CHAR;	//“ start of string	
 		public final static char ESCAPED_STRING_TERMINATOR=RIGHT_DOUBLE_QUOTATION_MARK_CHAR;	//” string terminator	
 		public final static char ESCAPED_UNICODE='u';	//u Unicode	
-		
+
+	/**The delimiter that begins timestamps.*/
+	public final static char TIMESTAMP_BEGIN='@';
+	/**The delimiter that ends timestamps.*/
+	public final static char TIMESTAMP_END=TIMESTAMP_BEGIN;
+
 	/**The delimiter that begins type declarations.*/
 	public final static char TYPE_BEGIN='(';
 	/**The delimiter that ends type declarations.*/

@@ -1,8 +1,8 @@
 package com.garretwilson.net;
 
-import static com.garretwilson.text.CharacterConstants.*;
-
 import java.net.URI;
+
+import static com.garretwilson.text.CharacterConstants.*;
 
 /**Represents the default implementation of a resource.
 This class provides compare functionality that sorts according to the reference URI, if available.
@@ -87,6 +87,17 @@ public class DefaultResource implements Resource, Comparable<Resource>
 		}
 		else	//if one of the two resources doesn't have a reference URI
 			return toString().compareTo(resource.toString());	//compare strings
+	}
+
+	/**Returns a reference string representation of the given resource.
+	This version returns the URI, if there is one, between double angle quotation marks; otherwise, an ID using the resource's hash code is used.
+	@param resource The resource for which a reference string should be returned.
+	@return A reference string representation of the resource.
+	*/
+	public static String toString(final Resource resource)
+	{
+		final URI uri=resource.getURI();	//get the URI, if any
+		return uri!=null ? new StringBuilder().append(LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).append(uri).append(RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR).toString() : "resource"+Integer.toHexString(resource.hashCode());	//return the URI, if available
 	}
 
 	/**Returns a string representation of the resource.

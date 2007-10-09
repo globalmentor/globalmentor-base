@@ -227,6 +227,13 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				resourceURI=createLexicalURI(STRING_CLASS_URI, string);	//create a URI for the string
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
+			case TIMESTAMP_BEGIN:	//timestamp
+				foundComponent=true;	//indicate that at least one description component is present
+				check(reader, TIMESTAMP_END);	//read the beginning timestamp delimiter
+				final String timestamp=reachAfter(reader, TIMESTAMP_END);	//read everything up to the timestamp ending delimiter and then skip that delimiter
+				resourceURI=createLexicalURI(TIMESTAMP_CLASS_URI, timestamp);	//create a URI for the timestamp
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				break;
 			case URI_BEGIN:	//URI
 				foundComponent=true;	//indicate that at least one description component is present
 				final URI uri=parseURI(reader, baseURI, URI_BEGIN, URI_END);	//parse the URI
@@ -349,8 +356,22 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 								types.add(sequenceObject);	//make a note of this type
 							}
 							final Resource orderObject=determineResourceProxy(createIntegerURI(order));	//get a proxy to the order value
-							final Resource newScopeBase=scopeBase!=null ? scopeBase : resourceProxy;	//if we don't have a scope base, use the subject resource as the base
-							final ArrayList<NameValuePair<Resource, Resource>> newScopeChain=scopeChain!=null ? (ArrayList<NameValuePair<Resource, Resource>>)scopeChain.clone() : new ArrayList<NameValuePair<Resource,Resource>>();	//clone the scope chain or create a new one if needed
+
+							final Resource newScopeBase;	//we'll determine a new scope base
+							final ArrayList<NameValuePair<Resource, Resource>> newScopeChain;	//we'll determine a new scope chain
+							switch(propertyValueDelimiter)	//see what sort of assignment this is
+							{
+								case PROPERTY_VALUE_DELIMITER:	//property assignment
+									newScopeBase=resourceProxy;	//the resource will be the start of a new scope
+									newScopeChain=new ArrayList<NameValuePair<Resource,Resource>>();	//start a new scope chains
+									break;
+								case SCOPED_PROPERTY_VALUE_DELIMITER:	//scoped property assignment
+									newScopeBase=scopeBase!=null ? scopeBase : resourceProxy;	//if we don't have a scope base, use the subject resource as the base
+									newScopeChain=scopeChain!=null ? (ArrayList<NameValuePair<Resource, Resource>>)scopeChain.clone() : new ArrayList<NameValuePair<Resource,Resource>>();	//clone the scope chain or create a new one if needed
+									break;
+								default:
+									throw new AssertionError("Unrecognized property-value delimiter: "+propertyValueDelimiter);	//we already checked this character, so we shouldn't get an unknown delimiter here
+							}
 							newScopeChain.add(new NameValuePair<Resource, Resource>(predicate, sequenceObject));	//add another element to the scope chain for this new sequence object we parsed
 							addAssertion(new Assertion(newScopeBase, orderPredicate, orderObject, newScopeChain.toArray(new NameValuePair[newScopeChain.size()])));	//assert the scoped order assertion
 							++order;	//increaes the order for next time
@@ -370,6 +391,14 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 					default:	//assume everything else is a normal resource object
 						switch(propertyValueDelimiter)	//see what sort of assignment this is
 						{
+							case PROPERTY_VALUE_DELIMITER:	//property assignment
+								object=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, predicate.getURI());	//parse the object, giving a scope chain predicate in case a scope is formed for the value
+								addAssertion(new Assertion(resourceProxy, predicate, object));	//assert the assertion with no scope
+								if(TYPE_PROPERTY_URI.equals(predicate.getURI()))	//if this was a type declaration
+								{
+									types.add(object);	//make a note of this type
+								}
+								break;
 							case SCOPED_PROPERTY_VALUE_DELIMITER:	//scoped property assignment
 //Debug.trace("found scoped property", predicate);
 								if(scopeBase!=null && scopeChain!=null && scopePredicate!=null)	//if we are in the scope of some subject and predicate
@@ -382,14 +411,6 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 //Debug.trace("finished adding scoped base", newScopeBase, "scoped property", predicate, "with value", object);
 									break;
 								}
-							case PROPERTY_VALUE_DELIMITER:	//property assignment
-								object=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, predicate.getURI());	//parse the object, giving a scope chain predicate in case a scope is formed for the value
-								addAssertion(new Assertion(resourceProxy, predicate, object));	//assert the assertion with no scope
-								if(TYPE_PROPERTY_URI.equals(predicate.getURI()))	//if this was a type declaration
-								{
-									types.add(object);	//make a note of this type
-								}
-								break;
 							default:
 								throw new AssertionError("Unrecognized property-value delimiter: "+propertyValueDelimiter);	//we already checked this character, so we shouldn't get an unknown delimiter here
 						}

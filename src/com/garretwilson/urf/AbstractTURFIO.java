@@ -127,6 +127,17 @@ public abstract class AbstractTURFIO<T> extends NamespacePrefixManager implement
 		return readTURF(urf, inputStream, baseURI);	//read the turf
 	}
 
+	/**Reads URF data from a TURF input stream using a default URF data model.
+	@param inputStream The input stream from which to read the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The URF instance representing the data read.
+	@exception IOException if there is an error reading the data.
+	*/ 
+	public static URF readTURF(final InputStream inputStream, final URI baseURI) throws IOException
+	{
+		return readTURF(new URF(), inputStream, baseURI);	//read TURF using a default URF data model
+	}
+
 	/**Reads URF data from a TURF input stream.
 	@param urf The URF instance to use in creating new resources.
 	@param inputStream The input stream from which to read the data.
@@ -141,6 +152,31 @@ public abstract class AbstractTURFIO<T> extends NamespacePrefixManager implement
 			inputStream=new BufferedInputStream(inputStream);	//buffer the input stream to allow marking
 		}
 		final Reader reader=new LineNumberReader(new BOMInputStreamReader(inputStream, UTF_8));	//created a reader from the input stream, defaulting to UTF-8 if not specified
+		return readTURF(urf, reader, baseURI);	//read the TURF from the reader
+	}
+
+	/**Reads URF data from a TURF reader using a default URF data model.
+	The given reader must support marking.
+	@param reader The reader from which to read the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The URF instance representing the data read.
+	@exception IOException if the reader does not suppport marking, or there is an error reading the data.
+	*/ 
+	public static URF readTURF(final Reader reader, final URI baseURI) throws IOException
+	{
+		return readTURF(new URF(), reader, baseURI);	//read TURF using a default URF data model		
+	}
+
+	/**Reads URF data from a TURF reader.
+	The given reader must support marking.
+	@param urf The URF instance to use in creating new resources.
+	@param reader The reader from which to read the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The URF instance representing the data read.
+	@exception IOException if the reader does not suppport marking, or there is an error reading the data.
+	*/ 
+	public static URF readTURF(final URF urf, final Reader reader, final URI baseURI) throws IOException
+	{
 		final URFTURFProcessor turfProcessor=new URFTURFProcessor(urf);	//create a new TURF processor
 		return turfProcessor.process(reader, baseURI);	//process the TURF and return the URF
 	}

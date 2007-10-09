@@ -369,7 +369,14 @@ public class URFTURFGenerator
 		final List<URFResource> resourceList=new ArrayList<URFResource>();	//create a list of resources
 		addAll(resourceList, urf.getResources());	//add all the resources in the data model to the list
 		sort(resourceList, reverseOrder(RESOURCE_PROPERTY_COUNT_COMPARATOR));	//sort the resources in reverse order of their number of properties, so that we'll have a bigger chance of inlining resources
-		for(final URFResource resource:resourceList)	//iterate over all the resources
+		for(final URFResource resource:resourceList)	//iterate over all the resources, generating only those with no references (i.e. root resources)
+		{
+			if(!isGenerated(resource) && !referenceMap.hasItems(resource))	//if this resource has not yet been generated and it has no references to it
+			{
+				generateRootResource(writer, urf, referenceMap, resource);	//generate this root resource
+			}
+		}
+		for(final URFResource resource:resourceList)	//iterate over all the remaining resources, generating any that have not yet been generated
 		{
 			if(!isGenerated(resource))	//if this resource has not yet been generated
 			{

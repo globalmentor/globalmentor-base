@@ -9,7 +9,6 @@ import com.garretwilson.io.ParseIOException;
 import com.garretwilson.lang.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
-import static com.garretwilson.text.FormatUtilities.*;
 import static com.garretwilson.urf.URF.*;
 import com.garretwilson.util.*;
 
@@ -443,7 +442,7 @@ public abstract class AbstractURFProcessor
 //TODO del Debug.trace("ready to process assertions");
 		for(final Assertion assertion:getAssertions())	//for each assertion
 		{
-//Debug.trace("-----> here's a assertion:", assertion);
+//Debug.trace("-----> processing assertion:", assertion);
 			try
 			{
 				final URFResource subject=(URFResource)assertion.getSubject();	//get the assertion subject as an URF resource
@@ -612,13 +611,27 @@ public abstract class AbstractURFProcessor
     	return result;	//return the result of the comparison
     }
 
-		/**@return A string representation of the assertion in the form: "{<var>subject</var>, <var>predicate</var>, <var>object</var>}".*/
+		/**@return A string representation of the assertion in the form: "{<var>subject</var>; <var>scope</var>, <var>scope</var>...; <var>predicate</var>; <var>object</var>}".*/
 		public String toString()
 		{
 			final StringBuilder stringBuilder=new StringBuilder(); //create a new string builder
-			stringBuilder.append('{');
-			formatList(stringBuilder, ',', getSubject(), getPredicate(), getObject());
-			stringBuilder.append('}');
+			stringBuilder.append('{').append(DefaultResource.toString(getSubject())).append(';').append(' ');	//{subject;
+			int scopeCount=0;	//keep track of the number of scopes
+			for(final NameValuePair<Resource, Resource> scope:getScopeChain())	//for each scope in the scope chain
+			{
+				if(scopeCount>0)	//if this isn't the first scope
+				{
+					stringBuilder.append(',').append(' ');	//separate scopes
+				}
+				stringBuilder.append(DefaultResource.toString(scope.getName())).append('=').append(DefaultResource.toString(scope.getValue()));	//property=value
+				++scopeCount;	//indicate we appended another scope
+			}
+			if(scopeCount>0)	//if there were scopes
+			{
+				stringBuilder.append(';').append(' ');	//end scopes
+			}
+			stringBuilder.append(DefaultResource.toString(getPredicate())).append(';').append(' ');	//predicate;
+			stringBuilder.append(DefaultResource.toString(getObject())).append('}');	//object}
 			return stringBuilder.toString(); //return the string we just constructed
 		}
 
