@@ -36,7 +36,7 @@ public interface URFScope extends ReadWriteLock
 	public boolean hasProperty(final URI propertyURI);
 
 	/**Determines whether there exists a property within the given namespace.
-	@param namesapceURI The URI of the namespace of the property to check.
+	@param namespaceURI The URI of the namespace of the property to check.
 	@return <code>true</code> if a property exists in the given namespace.
 	@exception NullPointerException if the given namespace URI is <code>null</code>.
 	*/
@@ -116,6 +116,15 @@ public interface URFScope extends ReadWriteLock
 	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
 	public URFResource getPropertyValue(final URI propertyURI);
+
+	/**Retrieves the URI of the first value of the property with the given URI.
+	All ordered properties will be returned in their correct order before any non-ordered properties.
+	Unordered properties will be returned in an arbitrary order.
+	@param propertyURI The URI of the property for which the URI of a value should be returned.
+	@return The URI of the first value of the property with the given URI, or <code>null</code> if there is no such property or the first property value has no URI.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public URI getPropertyValueURI(final URI propertyURI);
 
 	/**Retrieves an iterable to the values of the property with the given URI.
 	All ordered properties will be returned in their correct order before any non-ordered properties.

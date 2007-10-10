@@ -12,7 +12,7 @@ import static com.garretwilson.urf.URF.*;
 @author Garret Wilson
 @see URF#ELEMENT_PROPERTY_URI
 */
-public class URFSetResource<E extends URFResource> extends DefaultURFResource implements Set<E>
+public class URFSetResource<E extends URFResource> extends DefaultURFResource implements URFCollectionResource<E>, Set<E>
 {
 
 	/**Default constructor with no URI.*/

@@ -19,7 +19,7 @@ This implementation does not supoprt <code>null</code> values.
 @param <E> The type of element stored in the list.
 @author Garret Wilson
 */
-public class URFListResource<E extends URFResource> extends DefaultURFResource implements List<E>
+public class URFListResource<E extends URFResource> extends DefaultURFResource implements URFCollectionResource<E>, List<E>
 {
 
 	/**Default constructor with no URI.*/

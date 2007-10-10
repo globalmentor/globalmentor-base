@@ -153,6 +153,24 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 		return hasPropertyValueURI(TYPE_PROPERTY_URI, typeURI);	//check for the given type URI
 	}
 
+	/**Retrieves the first type declared for this resource, if any.
+	@return The first type declared for this resource, or <code>null</code> if no types are declared for this resource.
+	@see URF#TYPE_PROPERTY_URI
+	*/
+	public URFResource getType()
+	{
+		return getPropertyValue(TYPE_PROPERTY_URI);	//return the first type
+	}
+
+	/**Retrieves the URI of the first type declared for this resource, if any.
+	@return The URI of the first type declared for this resource, or <code>null</code> if no types are declared for this resource or the first type has no URI.
+	@see URF#TYPE_PROPERTY_URI
+	*/
+	public URI getTypeURI()
+	{
+		return getPropertyValueURI(TYPE_PROPERTY_URI);	//return the URI of the first type
+	}
+
 	/**Adds a type.
 	@param type The type to add.
 	*/
@@ -166,7 +184,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 	*/
 	public void addTypeURI(final URI typeURI)
 	{
-		addPropertyValue(TYPE_PROPERTY_URI, typeURI);	//add the given resource as a type
+		addPropertyValue(TYPE_PROPERTY_URI, typeURI);	//add a type resource for the given type URI
 	}
 
 	/**Creates default resources from the given URIs.

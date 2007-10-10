@@ -125,7 +125,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 			if(label==null)  //if there is still no label for this namespace, check for a Java package URI
 			{
 				final String name=getName(namespaceURI);	//get the name identified by the URI (the last URI path sequence)
-				if(isLabel(name) && !containsValue(name))	//if the name is a valid label that we haven't yet used
+				if(name!=null && isLabel(name) && !containsValue(name))	//if the name is a valid label that we haven't yet used
 				{
 					label=name;	//use the name as the label
 				}

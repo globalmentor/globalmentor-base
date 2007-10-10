@@ -35,6 +35,18 @@ public interface URFResource extends Resource, URFScope
 	*/
 	public boolean hasTypeURI(final URI typeURI);
 
+	/**Retrieves the first type declared for this resource, if any.
+	@return The first type declared for this resource, or <code>null</code> if no types are declared for this resource.
+	@see URF#TYPE_PROPERTY_URI
+	*/
+	public URFResource getType();
+
+	/**Retrieves the URI of the first type declared for this resource, if any.
+	@return The URI of the first type declared for this resource, or <code>null</code> if no types are declared for this resource or the first type has no URI.
+	@see URF#TYPE_PROPERTY_URI
+	*/
+	public URI getTypeURI();
+
 	/**Adds a type.
 	@param type The type to add.
 	*/

@@ -210,10 +210,10 @@ public class URIUtilities
 	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
 	As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
 	@param URI The URI the path of which will be examined.
-	@return The name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
+	@return The name of the last last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code> if the URI has no path.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
-	public static String getRawName(final URI uri)
+	public static String getRawName(final URI uri)	//TODO important: update all references to check for null
 	{
 		final String rawPath=uri.getRawPath();	//get the raw path of the URI
 		return rawPath!=null ? getName(rawPath) : null;	//if we have a raw path, return the name
@@ -225,10 +225,10 @@ public class URIUtilities
 	An empty name is never returned; <code>null</code> will be returned instead.
 	The path name is first extracted from the URI's raw path and then decoded so that encoded {@value URIConstants#PATH_SEPARATOR} characters will not prevent correct parsing. 
 	@param URI The URI the path of which will be examined.
-	@return The name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
+	@return The name of the last last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code> if the URI has no path.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
-	public static String getName(final URI uri)
+	public static String getName(final URI uri)	//TODO important: update all references to check for null
 	{
 		final String rawName=getRawName(uri);	//get the raw name of the URI
 		return rawName!=null ? decode(rawName) : null;	//if there is a raw name, decode and return it

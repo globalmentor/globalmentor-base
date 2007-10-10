@@ -478,6 +478,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		final URI propertyURI;	//if this is an rdf:li property, we'll convert it to an URF ordinal resource using the member count plus one as the ordinal	
 		if(RDF_NAMESPACE_URI.equals(elementNamespaceURI) && LI_PROPERTY_NAME.equals(elementLocalName)) //if this is an rdf:li property
 		{
+				//TODO create an element property instead of an ordinal property if this is a set
 			propertyURI=createOrdinalURI(memberCount+1); //create an ordinal of the member count plus one
 		}
 		else	//if this is *not* an rdf:li property, it's a normal property
@@ -495,6 +496,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			final Resource listType=determineResourceProxy(LIST_CLASS_URI);	//get a proxy to the list type
 			addAssertion(new Assertion(propertyValue, typePropertyResource, listType));	//assert the list type on the list
 				//parse the child elements
+			int elementIndex=0;	//keep track of the list element index, which doesn't necessarily correspond with the XML child node index
 			final NodeList childNodeList=element.getChildNodes(); //get a list of child nodes
 			for(int i=0; i<childNodeList.getLength(); ++i)  //look at each child node
 			{
@@ -502,7 +504,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 				if(childNode.getNodeType()==Node.ELEMENT_NODE) //if this is an element
 				{
 					final Resource elementValue=processResource((Element)childNode, baseURI); //process the child element as an RDF resource
-					final Resource indexPredicate=determineResourceProxy(createOrdinalURI(i));	//get the ordinal property for specifying the index of each value
+					final Resource indexPredicate=determineResourceProxy(createOrdinalURI(elementIndex++));	//get the ordinal property for specifying the index of each value, and go to the next element index
 					addAssertion(new Assertion(propertyValue, indexPredicate, elementValue));	//assert the assertion that the element is an index of the list
 				}
 			}

@@ -565,6 +565,18 @@ public class ClassUtilities
 		return getAncestorClasses(objectClass, Object.class);	//get all classes and interfaces
 	}
 
+	/**Determines all super classes and interfaces of the given class, excluding the given class itself.
+	Classes will be sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.
+	@param objectClass The class for which super classes and interfaces should be found.
+	@return The set of all super classes and implemented interfaces.
+	@exception NullPointerException if the given object class is <code>null</code>.
+	@see #CONCRETE_CLASS_HEIGHT_COMPARATOR
+	*/
+	public static List<Class<?>> getProperAncestorClasses(final Class<?> objectClass)
+	{
+		return getProperAncestorClasses(objectClass, Object.class);	//get all classes and interfaces
+	}
+
 	/**Determines all super classes and interfaces of the given class, including the given class itself, up to the given class, in no guaranteed order.
 	Classes will be sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.
 	@param <R> The type of root class.
@@ -577,6 +589,20 @@ public class ClassUtilities
 	public static <R> List<Class<? extends R>> getAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass)
 	{
 		return getAncestorClasses(objectClass, rootClass, true, true, true, true, (Comparator<NameValuePair<Class<? extends R>, Integer>>)(Object)CONCRETE_CLASS_HEIGHT_COMPARATOR);	//get ancestor classes, including super classes, abstract classes, and interfaces TODO check cast
+	}
+
+	/**Determines all super classes and interfaces of the given class, excluding the given class itself, up to the given class, in no guaranteed order.
+	Classes will be sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.
+	@param <R> The type of root class.
+	@param objectClass The class for which super classes and interfaces should be found.
+	@param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
+	@return The set of all super classes and implemented interfaces.
+	@exception NullPointerException if the given object class and/or root class is <code>null</code>.
+	@see #CONCRETE_CLASS_HEIGHT_COMPARATOR
+	*/
+	public static <R> List<Class<? extends R>> getProperAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass)
+	{
+		return getAncestorClasses(objectClass, rootClass, false, true, true, true, (Comparator<NameValuePair<Class<? extends R>, Integer>>)(Object)CONCRETE_CLASS_HEIGHT_COMPARATOR);	//get ancestor classes, including super classes, abstract classes, and interfaces TODO check cast
 	}
 
 	/**Determines all super classes and interfaces of the given class.

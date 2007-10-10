@@ -46,6 +46,9 @@ Any redistribution of source code must include these comments unmodified.</p>
 public class URF 
 {
 
+	/**The name of URF.*/
+	public final static String URF_NAME="URF";
+	
 	/**The recommended label for the URF namespace.*/
 //TODO del	public final static String URF_NAMESPACE_LABEL="urf";
 	/**The URI to the URF namespace.*/
@@ -1182,7 +1185,7 @@ public class URF
 	@param resource The resource to add.
 	@exception NullPointerException if the given resource is <code>null</code>.
 	*/
-	public void addResource(final URFResource resource)	//TODO fix to add scoped resource values
+	public void addResource(final URFResource resource)
 	{
 		addResource(resource, new IdentityHashSet<URFResource>());	//add this resource, using an identity hash map to determine which resources have been added
 	}
@@ -1233,6 +1236,12 @@ public class URF
 		return resourceMap.get(checkInstance(resourceURI, "Resource URI cannot be null.")); //retrieve the resource
 	}
 
+	/**@return Whether this data model contains resources.*/
+	public boolean hasResources()
+	{
+		return !resourceSet.isEmpty();  //whether the resource set is not empty
+	}
+
 	/**@return The number of resources in this data model.*/
 	public int getResourceCount()
 	{
@@ -1245,6 +1254,24 @@ public class URF
 	public Iterable<URFResource> getResources()
 	{
 		return unmodifiableSet(resourceSet); //return an unmodifiable iterable to the set of all resources
+	}
+
+	/**Returns the root resouces in this data model; that is, the resources which have no references to them.
+	@return A read-only iterable of the root resources in this data model.
+	 */ 
+	public Iterable<URFResource> getRootResources()
+	{
+		final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap=getReferences();	//get a map of sets of all references to each resource
+		final Iterator<Map.Entry<URFResource, Set<URFScope>>> resourceScopeReferencesEntryIterator=referenceMap.entrySet().iterator();	//get an iterator to all the entries of the reference map
+		while(resourceScopeReferencesEntryIterator.hasNext())	//while there are more entries
+		{
+			final Map.Entry<URFResource, Set<URFScope>> resourceScopeReferencesEntry=resourceScopeReferencesEntryIterator.next();	//get the next entry
+			if(!resourceScopeReferencesEntry.getValue().isEmpty())	//if there are references for this resource
+			{
+				resourceScopeReferencesEntryIterator.remove();	//remove this non-root resource from the reference map
+			}
+		}
+		return unmodifiableSet(referenceMap.keySet()); //return an unmodifiable iterable to the set of all remaining resources in the reference map: the root resource which have no references
 	}
 
 	/**Retrieves the first encountered resource in the data model that is of the requested type.
@@ -1393,8 +1420,18 @@ public class URF
 		if(!referrerScopeSet.contains(scope))	//if we haven't checked this scope before
 		{
 			referrerScopeSet.add(scope);	//show that we've now checked this scope (in case one of the scope's own properties, subproperties, or child scopes reference this resource)
+			if(scope instanceof URFResource)	//if the scope that we're checking is a resource
+			{
+				referenceMap.getCollection((URFResource)scope);	//make sure that there is a reference collection for the resources; otherwise, if there were no references to this resource, it would not appear in the reference map				
+			}
 			for(final URFProperty property:scope.getProperties())	//for each property in the scope
 			{
+				final URI propertyURI=property.getPropertyURI();	//get the property URI
+				final URFResource propertyResource=getResource(propertyURI);	//see if there is a resource in this data model corresponding to the given property
+				if(propertyResource!=null)	//if we know the property resource
+				{
+					referenceMap.addItem(propertyResource, scope);	//note that this scope references this property TODO clarify that "reference" includes properties and values of a scope
+				}
 				final URFResource value=property.getValue();	//get the property value
 				referenceMap.addItem(value, scope);	//note that this scope references this value
 				getReferences(value, referenceMap, referrerScopeSet);	//get all references that the value makes
@@ -1402,6 +1439,15 @@ public class URF
 			}
 		}
 		return referenceMap;	//return the map that was provided, which now holds sets of references to resources
+	}
+
+	/**Returns a string representation of this data model.
+	This implementation returns {@value #URF_NAME}.
+	@return A string representation of this data model.
+	*/
+	public String toString()
+	{
+		return URF_NAME;	//return "URF"
 	}
 
 	/**The shared resource factory for default resources.
