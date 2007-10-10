@@ -6,13 +6,12 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
-import com.garretwilson.net.NamespacePrefixManager;
 
 /**Base functionality for loading and saving URF information.
 @param <T> The type to read and write.
 @author Garret Wilson
 */
-public abstract class AbstractURFIO<T> extends NamespacePrefixManager implements URFIO<T>
+public abstract class AbstractURFIO<T> extends TURFNamespaceLabelManager implements URFIO<T>
 {
 
 	/**The class representing the type of object being loaded and saved.*/

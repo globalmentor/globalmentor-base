@@ -70,6 +70,24 @@ public class ClassUtilities
 		return null;	//no class could be found
 	}
 
+	/**Determines whether the given URI is a <code>info:java/</code> URI for a Java package.
+	@param uri The URI to check for a Java package.
+	@return <code>true</code> if the given URI is a <code>info:java/</code> URI for a Java package.
+	*/
+	public static boolean isInfoJavaPackageURI(final URI uri)
+	{
+		return isInfoNamespace(uri, INFO_SCHEME_JAVA_NAMESPACE) && uri.getFragment()==null;	//see if this is an info:java/ URI with no fragment
+	}
+
+	/**Determines whether the given URI is a <code>info:java/</code> URI for a Java class.
+	@param uri The URI to check for a Java class.
+	@return <code>true</code> if the given URI is a <code>info:java/</code> URI for a Java class.
+	*/
+	public static boolean isInfoJavaClassURI(final URI uri)
+	{
+		return isInfoNamespace(uri, INFO_SCHEME_JAVA_NAMESPACE) && uri.getFragment()!=null;	//see if this is an info:java/ URI with a fragment
+	}
+
 	/**Creates an {@value URIConstants#INFO_SCHEME} URI for a Java package using a {@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE} namespace
 	in the form <code>info:java/<var>com</var>/<var>example</var>/<var>package</var></code>.
 	@param objectPackage The class to use in creating the <code>info:java/</code> URI.

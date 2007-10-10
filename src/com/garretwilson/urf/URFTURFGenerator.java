@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.lang.IntegerUtilities;
-import com.garretwilson.net.NamespacePrefixManager;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
@@ -31,10 +30,10 @@ public class URFTURFGenerator
 		public URI getBaseURI() {return baseURI;}
 
 	/**The namespace prefix manager.*/
-	private final NamespacePrefixManager namespacePrefixManager;
+	private final TURFNamespaceLabelManager namespacePrefixManager;
 
 		/**@return The namespace prefix manager.*/
-		public NamespacePrefixManager getNamespacePrefixManager() {return namespacePrefixManager;}
+		public TURFNamespaceLabelManager getNamespacePrefixManager() {return namespacePrefixManager;}
 
 	/**The set of resources that have been generated.*/
 	private final Set<URFResource> generatedResourceSet;
@@ -138,7 +137,7 @@ public class URFTURFGenerator
 			String label=getLabel(resource);	//get a label, if any, for the given resource
 			if(label==null)	//if there is no label for this resource
 			{
-				label=getNamespacePrefixManager().getNamespacePrefix(uri);	//get a namespace prefix for the URI
+				label=getNamespacePrefixManager().getNamespaceLabel(uri);	//get a namespace prefix for the URI
 				resourceLabelMap.put(resource, label);	//associate the label with the resource
 			}
 			return label;	//return the retrieved or generated label
@@ -259,7 +258,7 @@ public class URFTURFGenerator
 	*/
 	public URFTURFGenerator(final URI baseURI, final boolean formatted)
 	{
-		this(baseURI, formatted, new NamespacePrefixManager());	//create the class with a default namespace prefix manager
+		this(baseURI, formatted, new TURFNamespaceLabelManager());	//create the class with a default namespace prefix manager
 	}
 
 	/**Base URI, formatted, and namespace prefix manager constructor.
@@ -268,7 +267,7 @@ public class URFTURFGenerator
 	@param namespacePrefixManager The manager of namespaces and prefixes.
 	@excepion NullPointerException if the given namespace prefix manager is <code>null</code>.
 	*/
-	public URFTURFGenerator(final URI baseURI, final boolean formatted, final NamespacePrefixManager namespacePrefixManager)
+	public URFTURFGenerator(final URI baseURI, final boolean formatted, final TURFNamespaceLabelManager namespacePrefixManager)
 	{
 		this.baseURI=baseURI;
 		this.formatted=formatted;

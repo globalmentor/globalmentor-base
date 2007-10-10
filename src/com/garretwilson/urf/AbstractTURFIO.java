@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.*;
 
 import com.garretwilson.io.BOMInputStreamReader;
-import com.garretwilson.net.NamespacePrefixManager;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
 
 /**Base functionality for loading and saving information stored in TURF.
@@ -121,7 +120,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param resource The resource to write to the given output stream.
 	@throws IOException Thrown if there is an error writing the data.
-	@see #writeTURFResource(OutputStream, URI, URFResource, NamespacePrefixManager)
+	@see #writeTURFResource(OutputStream, URI, URFResource, TURFNamespaceLabelManager)
 	*/
 	protected void writeURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource) throws IOException
 	{
@@ -137,7 +136,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	*/
 	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource) throws IOException
 	{
-		writeTURFResource(outputStream, baseURI, resource, new NamespacePrefixManager());	//write TURF with a default namespace prefix manager
+		writeTURFResource(outputStream, baseURI, resource, new TURFNamespaceLabelManager());	//write TURF with a default namespace prefix manager
 	}
 
 	/**Writes an URF instance to a TURF output stream.
@@ -149,7 +148,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	*/
 	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf) throws IOException
 	{
-		writeTURF(outputStream, baseURI, urf, new NamespacePrefixManager());	//write TURF with a default namespace prefix manager
+		writeTURF(outputStream, baseURI, urf, new TURFNamespaceLabelManager());	//write TURF with a default namespace prefix manager
 	}
 
 	/**Writes an URF resource to a TURF output stream.
@@ -160,7 +159,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@excepion NullPointerException if the given output stream, resource, and/or namespace prefix manager is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
-	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource, final NamespacePrefixManager namespacePrefixManager) throws IOException
+	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException
 	{
 		outputStream.write(BOM_UTF_8);	//write the UTF-8 byte order mark
 		final Writer writer=new OutputStreamWriter(outputStream, UTF_8);	//create a writer for writing in UTF-8
@@ -176,7 +175,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@excepion NullPointerException if the given output stream, URF instance, and/or namespace prefix manager is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
-	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf, final NamespacePrefixManager namespacePrefixManager) throws IOException
+	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException
 	{
 		outputStream.write(BOM_UTF_8);	//write the UTF-8 byte order mark
 		final Writer writer=new OutputStreamWriter(outputStream, UTF_8);	//create a writer for writing in UTF-8

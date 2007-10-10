@@ -20,8 +20,6 @@ import static com.garretwilson.urf.dcmi.DCMI.*;
 public class VCard
 {
 
-	/**The recommended prefix to the VCard namespace.*/
-	public final static String VCARD_NAMESPACE_PREFIX="vcard";
 	/**The URI to the VCard namespace.*/
 	public final static URI VCARD_NAMESPACE_URI=URI.create("http://urf.name/vcard");
 	

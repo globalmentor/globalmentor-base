@@ -850,8 +850,7 @@ public class URIUtilities
 
 	/**Determines the current level of a hierarchical URI.
 	@param uri The URI to examine.
-	@return A URI representing the current hierarchical level of a hierarchical
-		URI; equivalent to resolving the path "." to the URI.	
+	@return A URI representing the current hierarchical level of a hierarchical URI; equivalent to resolving the path "." to the URI.	
 	*/
 	public static URI getCurrentLevel(final URI uri)
 	{

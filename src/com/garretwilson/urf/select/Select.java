@@ -10,8 +10,6 @@ import static com.garretwilson.urf.URF.*;
 public class Select
 {
 
-	/**The recommended prefix to the URF select namespace.*/
-	public final static String SELECT_NAMESPACE_PREFIX="select";
 	/**The URI to the URF select namespace.*/
 	public final static URI SELECT_NAMESPACE_URI=URI.create("http://urf.name/select");
 

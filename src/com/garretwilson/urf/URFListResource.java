@@ -725,7 +725,7 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 		readLock().lock();	//get a read lock
 		try
 		{
-			for(int i=allowSize ? index : index-1; i>=0; --i)	//make sure there are no missing indexes up to and including this value (or one less than the value, if we should allow the size index); if so, this index is out of bounds
+			for(int i=allowSize ? index-1 : index; i>=0; --i)	//make sure there are no missing indexes up to and including this value (or one less than the value, if we should allow the size index); if so, this index is out of bounds
 			{
 				if(!hasProperty(createOrdinalURI(index)))	//if there is no such index
 				{

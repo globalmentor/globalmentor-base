@@ -626,6 +626,7 @@ public abstract class AbstractURFProcessor
 		{
 			final StringBuilder stringBuilder=new StringBuilder(); //create a new string builder
 			stringBuilder.append('{').append(DefaultResource.toString(getSubject())).append(';').append(' ');	//{subject;
+			stringBuilder.append('(');	//begin scopes
 			int scopeCount=0;	//keep track of the number of scopes
 			for(final NameValuePair<Resource, Resource> scope:getScopeChain())	//for each scope in the scope chain
 			{
@@ -636,10 +637,7 @@ public abstract class AbstractURFProcessor
 				stringBuilder.append(DefaultResource.toString(scope.getName())).append('=').append(DefaultResource.toString(scope.getValue()));	//property=value
 				++scopeCount;	//indicate we appended another scope
 			}
-			if(scopeCount>0)	//if there were scopes
-			{
-				stringBuilder.append(';').append(' ');	//end scopes
-			}
+			stringBuilder.append(')').append(';').append(' ');	//end scopes
 			stringBuilder.append(DefaultResource.toString(getPredicate())).append(';').append(' ');	//predicate;
 			stringBuilder.append(DefaultResource.toString(getObject())).append('}');	//object}
 			return stringBuilder.toString(); //return the string we just constructed

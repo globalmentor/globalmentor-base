@@ -16,8 +16,6 @@ import static com.garretwilson.urf.URF.*;
 public class Content
 {
 
-	/**The recommended prefix to the URF content namespace.*/
-	public final static String CONTENT_NAMESPACE_PREFIX="content";
 	/**The URI to the URF content namespace.*/
 	public final static URI CONTENT_NAMESPACE_URI=URI.create("http://urf.name/content");
 

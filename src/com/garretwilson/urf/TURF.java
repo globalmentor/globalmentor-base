@@ -134,4 +134,26 @@ public class TURF
 		return Character.isLetterOrDigit(c) || Character.getType(c)==Character.CONNECTOR_PUNCTUATION;	//see if this is a letter, digit, or a connector
 	}
 
+	/**Determines if the given string is a valid TURF name.
+	@param string The string to check.
+	@return <code>true</code> if the string is a valid TURF name.
+	@exception NullPointerException if the given string is <code>null</code>.
+	@see #isNameCharacter(int)
+	*/
+	public final static boolean isName(final String string)
+	{
+		if(string.isEmpty())	//if the string is empty
+		{
+			return false;	//empty strings are not valid names
+		}
+		for(int i=string.length()-1; i>=0; --i)	//for each character
+		{
+			if(!isNameCharacter(string.charAt(i)))	//if this is not a name character
+			{
+				return false;	//this is not a name
+			}
+		}
+		return true;	//this string passed all the tests
+	}
+
 }

@@ -470,7 +470,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		final String elementLocalName=element.getLocalName(); //get the element's local name
 //Debug.trace("processing property with XML element namespace: ", elementNamespaceURI, "local name", elementLocalName);
 		final String propertyLocalName;	//if this is an rdf:li property, we'll convert it to rdf_X, where X represents the member count plus one	
-		if(RDF_NAMESPACE_URI.equals(elementNamespaceURI) && LI_PROPERTY_REFERENCE_URI.equals(elementLocalName)) //if this is an rdf:li property
+		if(RDF_NAMESPACE_URI.equals(elementNamespaceURI) && LI_PROPERTY_NAME.equals(elementLocalName)) //if this is an rdf:li property
 		{
 			propertyLocalName=CONTAINER_MEMBER_PREFIX+(memberCount+1); //create a local name in the form "_X", where X is the member count plus one
 		}

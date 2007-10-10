@@ -46,8 +46,8 @@ Any redistribution of source code must include these comments unmodified.</p>
 public class URF 
 {
 
-	/**The recommended prefix to the URF namespace.*/
-	public final static String URF_NAMESPACE_PREFIX="urf";
+	/**The recommended label for the URF namespace.*/
+//TODO del	public final static String URF_NAMESPACE_LABEL="urf";
 	/**The URI to the URF namespace.*/
 	public final static URI URF_NAMESPACE_URI=URI.create("http://urf.name/urf");
 	/**The base to the URF lexical namespace.*/
@@ -266,7 +266,7 @@ public class URF
 	*/
 	public static boolean isLexicalTypeURI(final URI uri, final URI lexicalTypeURI)
 	{
-		return isLexicalURI(uri) && lexicalTypeURI.equals(getLexicalTypeURI(lexicalTypeURI));	//see if the URI is a lexical URI with the given lexical type
+		return isLexicalURI(uri) && lexicalTypeURI.equals(getLexicalTypeURI(uri));	//see if the URI is a lexical URI with the given lexical type
 	}
 	
 	/**Determines whether the given URI the URI of a lexical namespace.
@@ -298,7 +298,7 @@ public class URF
 		final String lexicalNamespaceURIString=namespaceURI.toString();	//get the string version of the namespace URI
 		if(!lexicalNamespaceURIString.startsWith(URF_LEXICAL_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
 		{
-			throw new IllegalArgumentException("URI "+lexicalURI+" is not a lexical namespace URI or a URI in a lexical namespace.");
+			throw new IllegalArgumentException("URI "+lexicalURI+" is not a URI in a lexical namespace.");
 		}
 		return URI.create(decode(lexicalNamespaceURIString.substring(URF_LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
 	}
