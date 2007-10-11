@@ -18,6 +18,7 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 	@param resourceURI The URI of the resource to create, or <code>null</code> if the resource created should be anonymous.
 	@param typeURI The URI of the resource type, or <code>null</code> if the type is not known.
 	@return The resource created with this URI.
+	@exception IllegalArgumentException if a resource could not be created based upon the given criteria.
 	*/
 	public URFResource createResource(final URI resourceURI, final URI typeURI)
 	{

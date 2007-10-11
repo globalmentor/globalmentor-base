@@ -50,7 +50,8 @@ public class JavaURFResourceFactory extends DefaultURFResourceFactory
 	@param typeURI The URI of the resource type, or <code>null</code> if the type is not known.
 	@return The resource created with this URI.
 	@exception IllegalArgumentException if the Java class indicated by the given type URI is not a subclass of {@link URFResource}.
-	@exception IllegalStateException if the corresponding Java class could not be found, or there was an error instantiating the corresponding Java class.
+	@exception IllegalArgumentException if the corresponding Java class could not be found.
+	@exception IllegalStateException if there was an error instantiating the corresponding Java class.
 	*/
 	public URFResource createResource(final URI resourceURI, final URI typeURI)
 	{
@@ -66,7 +67,7 @@ public class JavaURFResourceFactory extends DefaultURFResourceFactory
 					final Class<?> resourceClass=Class.forName(className);	//get the class for the resource
 					if(!URFResource.class.isAssignableFrom(resourceClass))	//if this is not an URF resource class
 					{
-						throw new IllegalArgumentException("The type URI "+typeURI+" does not indicate an URFResoure subclass in package "+packageName);
+						throw new IllegalArgumentException("The type URI "+typeURI+" does not indicate an URFResource subclass in package "+packageName);
 					}
 					Object resource;	//we'll create the resource and store it here
 					try
@@ -101,7 +102,7 @@ public class JavaURFResourceFactory extends DefaultURFResourceFactory
 				}
 				catch(final ClassNotFoundException classNotFoundException)
 				{
-					throw new IllegalStateException(classNotFoundException);
+					throw new IllegalArgumentException(classNotFoundException);
 				}
 			}
 		}

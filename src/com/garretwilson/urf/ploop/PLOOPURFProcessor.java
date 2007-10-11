@@ -203,6 +203,7 @@ public class PLOOPURFProcessor
 			if(valueClass!=null)	//if we know the value class, try to constructd a Java object
 			{
 				final Map<URI, PropertyDescription> propertyDescriptionMap=getPropertyDescriptionMap(valueClass, resource);	//get the property descriptions from the resource description
+//Debug.trace("for value class", valueClass, "got property description map of size", propertyDescriptionMap.size());
 				final Constructor<?>[] constructors=valueClass.getConstructors();	//get all available constructors
 				if(resource.hasProperty(INIT_PROPERTY_URI))	//if this resource has any init properties indicating constructor arguments
 				{
@@ -284,8 +285,10 @@ public class PLOOPURFProcessor
 					final List<PropertyDescription> readOnlyProperties=new ArrayList<PropertyDescription>(propertyDescriptionMap.size());	//the set of read-only properties, which we may use in the constructor
 					for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
 					{
+//Debug.trace("property description", propertyDescription, "has setter", propertyDescription.getSetter());
 						if(propertyDescription.getSetter()==null)	//if there is no setter for this property, it is a read-only property; save it in case we can use it for the constructor
 						{
+//Debug.trace("for value class", valueClass, "found read-only property", propertyDescription);
 							readOnlyProperties.add(propertyDescription);	//add this property to the list of read-only properties
 						}
 					}

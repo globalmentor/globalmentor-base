@@ -421,14 +421,6 @@ public abstract class AbstractURFProcessor
 							throw new AssertionError("Unrecognized assertion object type: "+typeValueResource.getClass());
 						}
 						typeURIs.add(typeValueURFResource.getURI());	//add this type to our list
-/*TODO del when works
-						final URI typeURI=typeValueURFResource.getURI();	//get the type URI
-						if(typeURI!=null)	//if we know the type value
-						{
-							resource=urf.locateResource(resourceURI, typeURI);	//create this typed resource
-							break;	//stop looking at assertions
-						}
-*/
 					}
 				}
 			}

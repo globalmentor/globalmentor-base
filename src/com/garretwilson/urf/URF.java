@@ -34,6 +34,7 @@ This implementation by default registers the following namespace factories for t
 <dl>
 	<dt>{@value #URF_NAMESPACE_URI}</dt> <dd>{@link #DEFAULT_URF_RESOURCE_FACTORY}</dd>
 	<dt>{@value Content#CONTENT_NAMESPACE_URI}</dt> <dd>{@link Content#DEFAULT_CONTENT_RESOURCE_FACTORY}</dd>
+	<dt>{@value Select#SELECT_NAMESPACE_URI}</dt> <dd>{@link JavaURFResourceFactory} for {@link Select#getClass()}</dd>
 </dl>
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
@@ -205,8 +206,7 @@ public class URF
 		}
 		else	//check for a path-based namespace
 		{
-			final String rawPath=uri.getRawPath();	//get the raw path
-//TODO fix			final String rawPath=uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath();	//get the raw path, using the scheme-specific part of any info URI
+			final String rawPath=uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath();	//get the raw path, using the scheme-specific part of any info URI
 			if(rawPath!=null)	//if there is a raw path
 			{
 				final int rawPathLength=rawPath.length();	//get the length of the raw path
@@ -235,8 +235,7 @@ public class URF
 		}
 		else	//if there is no fragment
 		{
-			final String rawPath=uri.getRawPath();	//get the raw path
-//TODO fix			final String rawPath=uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath();	//get the raw path, using the scheme-specific part of any info URI
+			final String rawPath=uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath();	//get the raw path, using the scheme-specific part of any info URI
 			if(rawPath!=null)	//if there is a raw path
 			{
 				final int rawPathLength=rawPath.length();	//get the length of the raw path
@@ -277,14 +276,14 @@ public class URF
 	}
 	
 	/**Determines whether the given URI the URI of a lexical namespace.
-	This method returns <code>false</code> for URIs that are not namespaces (i.e. URIs with local names).
+	This method returns <code>false</code> for lexical URIs that have fragments
 	@param uri The URI to check for being that of a lexical namespace
 	@return <code>true</code> if the URI is that of a lexical namespace.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static boolean isLexicalNamespaceURI(final URI uri)
 	{
-		return getLocalName(uri)==null && uri.toString().startsWith(URF_LEXICAL_NAMESPACE_BASE);	//see if this is a namespace URI that starts with the lexical namespace base URI
+		return uri.getFragment()==null && uri.toString().startsWith(URF_LEXICAL_NAMESPACE_BASE);	//see if this is URI without a fragment that starts with the lexical namespace base URI
 	}
 
 	/**Retrieves the type URI of a URI in a lexical namespace.
@@ -311,7 +310,7 @@ public class URF
 	}
 
 	/**Retrieves the type URI of a lexical namespace URI.
-	This method throws an exception if the given URI has a local name.
+	This method throws an exception if the given URI has a fragment.
 	@param namespaceURI The URI of a lexical namespace.
 	@return The type URI of the lexical namespace.
 	@exception IllegalArgumentException if the given URI is not a lexical namespace.
@@ -319,7 +318,7 @@ public class URF
 	*/
 	public static URI getLexicalNamespaceTypeURI(final URI namespaceURI)
 	{
-		if(getLocalName(namespaceURI)!=null)	//if the given URI has a local name
+		if(namespaceURI.getFragment()!=null)	//if the given URI has a local name
 		{
 			throw new IllegalArgumentException("URI "+namespaceURI+" is not a namespace URI.");			
 		}
@@ -1328,6 +1327,7 @@ public class URF
 	@param resourceURI The URI of the resource to retrieve, or <code>null</code> if the resource should have no URI.
 	@return A resource with the given URI.
 	@exception NullPointerException if the given URI is <code>null</code>.
+	@exception IllegalArgumentException if a resource could not be created based upon the given criteria.
 	*/
 	public URFResource locateResource(final URI resourceURI)
 	{
@@ -1341,6 +1341,7 @@ public class URF
 	If the resource already exists, no checks are performed to ensure that the existing resource is of the requested type.
 	@param resourceURI The URI of the resource to retrieve, or <code>null</code> if the resource should have no URI.
 	@param typeURIs The URIs of the known types.
+	@exception IllegalArgumentException if a resource could not be created based upon the given criteria.
 	@return A resource with the given URI.
 	*/
 	public URFResource locateResource(final URI resourceURI, final URI... typeURIs)
@@ -1368,21 +1369,26 @@ public class URF
 	@param resourceURI The URI of the resource to create, or <code>null</code> if the created resource created have no URI.
 	@param typeURIs The URIs of the known types.
 	@return The resource created with this URI, with the given type added if a type was given.
+	@exception IllegalArgumentException if a resource could not be created based upon the given criteria.
 	@see #DEFAULT_RESOURCE_FACTORY
 	@see URFResourceFactory#createResource(URI, URI)
 	*/
 	public URFResource createResource(final URI resourceURI, final URI... typeURIs)
 	{
+//Debug.trace("ready to create resource", resourceURI);
 		URFResourceFactory selectedResourceFactory=DEFAULT_RESOURCE_FACTORY;	//we'll try to find a matching resource factory; if we can't, we'll use the default resource factory
 		URI selectedTypeURI=null;	//we'll remember the type URI used for finding the resource factory		
 		for(final URI typeURI:typeURIs)	//for each type URI
 		{
+//Debug.trace("looking at type URI", typeURI);
 			final URI typeNamespaceURI=getNamespaceURI(typeURI);	//try to get the namespace of this type
 			if(typeNamespaceURI!=null)	//if this type URI is in a namespace
 			{
+//Debug.trace("looking at type namespace URI", typeNamespaceURI);
 				final URFResourceFactory resourceFactory=getResourceFactory(typeNamespaceURI); //get a resource factory for this namespace
 				if(resourceFactory!=null) //if we have a resource factory for this namespace
 				{
+//Debug.trace("found resource factory", resourceFactory);
 					selectedResourceFactory=resourceFactory;	//note the resource factory
 					selectedTypeURI=typeURI;	//note the type URI
 				}
@@ -1464,6 +1470,7 @@ public class URF
 	<dl>
 		<dt>Object returned by URF#asObject(URI)</dt> <dd>{@link DefaultURFValueResource}</dd>
 		<dt>{@value #LIST_CLASS_URI}</dt> <dd>{@link URFListResource}</dd>
+		<dt>{@value #SET_CLASS_URI}</dt> <dd>{@link URFSetResource}</dd>
 	</dl>
 	@see URF#asObject(URI)
 	*/
@@ -1479,6 +1486,7 @@ public class URF
 				*/
 				public URFResource createResource(final URI resourceURI, final URI typeURI)
 				{
+/*TODO del; remove ValueResource hierarchy altogether
 					if(resourceURI!=null && isLexicalURI(resourceURI))	//if we have a lexical resource URI
 					{
 						final URI lexicalTypeURI=getLexicalTypeURI(resourceURI);	//get the lexical type of the resource URI
@@ -1492,6 +1500,7 @@ public class URF
 							return new DefaultURFValueResource<Object>(resourceURI, object);	//create a value resource to represent the object
 						}
 					}
+*/
 					if(LIST_CLASS_URI.equals(typeURI))	//if this is a list
 					{
 						return new URFListResource<URFResource>(resourceURI);	//create a new list

@@ -247,13 +247,14 @@ public class URIUtilities
 	/**Returns the raw name of the resource at the given URI's path, which will be the raw name of the last path component.
 	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
 	As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
+	This method correctly handles {@value URIConstants#INFO_SCHEME} URIs.
 	@param URI The URI the path of which will be examined.
 	@return The name of the last last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code> if the URI has no path.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static String getRawName(final URI uri)	//TODO important: update all references to check for null
 	{
-		final String rawPath=uri.getRawPath();	//get the raw path of the URI
+		final String rawPath=uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath();	//get the raw path, using the scheme-specific part of any info URI
 		return rawPath!=null ? getName(rawPath) : null;	//if we have a raw path, return the name
 	}
 	
@@ -262,6 +263,7 @@ public class URIUtilities
 	As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
 	An empty name is never returned; <code>null</code> will be returned instead.
 	The path name is first extracted from the URI's raw path and then decoded so that encoded {@value URIConstants#PATH_SEPARATOR} characters will not prevent correct parsing. 
+	This method correctly handles {@value URIConstants#INFO_SCHEME} URIs.
 	@param URI The URI the path of which will be examined.
 	@return The name of the last last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code> if the URI has no path.
 	@exception NullPointerException if the given URI is <code>null</code>.
@@ -313,6 +315,7 @@ public class URIUtilities
 	If the path is a collection (i.e. it ends with slash), the name is the last component before the last slash.
 	As examples, "/path/name.ext" and "name.ext" will change "name.ext". "/path/", "path/", and "path" will all change "path".
 	"" with return "name" and "/" will return "/name/"
+	This method correctly handles {@value URIConstants#INFO_SCHEME} URIs.
 	@param uri The URI the raw name of which to change.
 	@param rawName The new raw name of the URI.
 	@return A new URI with the raw name changed to the given raw name.
@@ -322,19 +325,29 @@ public class URIUtilities
 	*/
 	public static URI changeRawName(final URI uri, final String rawName)
 	{
-		final String rawPath=checkInstance(uri, "URI cannot be null").getRawPath();	//get the raw path
-		if(rawPath==null)	//if the URI has no path
+		if(uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()))	//if this is an info URI
 		{
-			throw new IllegalArgumentException("URI "+uri+" has no path.");
+			final String rawSSP=uri.getRawSchemeSpecificPart();	//get the raw scheme-specific part
+			final String newRawSSP=changeName(rawSSP, rawName);	//change the name to the given name
+			return changeSchemeSpecificPart(uri, newRawSSP);	//change the URI's scheme-specific part to the new scheme-specific part			
 		}
-		final String newRawPath=changeName(rawPath, rawName);	//change the name to the given name
-		return changeRawPath(uri, newRawPath);	//change the URI's raw path to the new raw path
+		else	//if this is not an info URI
+		{
+			final String rawPath=checkInstance(uri, "URI cannot be null").getRawPath();	//get the raw path
+			if(rawPath==null)	//if the URI has no path
+			{
+				throw new IllegalArgumentException("URI "+uri+" has no path.");
+			}
+			final String newRawPath=changeName(rawPath, rawName);	//change the name to the given name
+			return changeRawPath(uri, newRawPath);	//change the URI's raw path to the new raw path
+		}
 	}
 
 	/**Changes the name of the path of the given URI to the given name.
 	If the path is a collection (i.e. it ends with slash), the name is the last component before the last slash.
 	As examples, "/path/name.ext" and "name.ext" will change "name.ext". "/path/", "path/", and "path" will all change "path".
 	"" with return "name" and "/" will return "/name/"
+	This method correctly handles {@value URIConstants#INFO_SCHEME} URIs.
 	@param uri The URI the name of which to change.
 	@param name The new unencoded name of the URI, which will be encoded.
 	@return A new URI with the name changed to the given name.
@@ -1299,6 +1312,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 
 	/**Determines whether the URI represents a canonical collection.
+	This method correctly handles {@value URIConstants#INFO_SCHEME} URIs.
 	@param uri The URI the raw path of which to examine.
 	@return <code>true</code> if the path of the given URI ends with a slash ('/').
 	@exception IllegalArgumentException if the URI does not have a path component.
@@ -1306,7 +1320,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	*/
 	public static boolean isCollectionURI(final URI uri)
 	{
-		final String rawPath=uri.getRawPath();	//get the URI's raw path (use the raw path in case the last character is an encoded slash)
+		final String rawPath=uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath();	//get the raw path, using the scheme-specific part of any info URI (use the raw path in case the last character is an encoded slash)
 		if(rawPath==null)	//if there is no raw path
 		{
 			throw new IllegalArgumentException("URI "+uri+" has no path component.");

@@ -332,7 +332,16 @@ public class URFTURFGenerator
 				final Boolean hasMultipleReferences=namespaceURIMultipleMap.get(namespaceURI);	//see whether there are multiple references to this namespace
 				if(hasMultipleReferences==null)	//if we haven't seen this namespace URI before
 				{
-					namespaceURIMultipleMap.put(namespaceURI, Boolean.FALSE);	//show that we've seen this namespace URI, but there are not yet multiple references
+					final URFResource resource=urf.getResource(resourceURI);	//get the resource corresponding to this resource URI
+					assert referenceMap.containsKey(resource) : "Reference map should contain a reference to every resource for which a resource URI is returned by the data model.";
+					if(resource!=null && referenceMap.getItemCount(resource)>1)	//if this resource is referenced multiple times in the data model, 
+					{
+						namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//the namespace of this resource will be used multiple times (once for each time this resource appears, at least)
+					}					
+					else	//if this resource is only referenced once
+					{
+						namespaceURIMultipleMap.put(namespaceURI, Boolean.FALSE);	//show that we've seen this namespace URI, but there are not yet multiple references
+					}
 				}
 				else if(hasMultipleReferences.booleanValue()==false)	//if we've only seen this namespace URI once
 				{
@@ -347,7 +356,7 @@ public class URFTURFGenerator
 			if(Boolean.TRUE.equals(namespaceURIMultipleEntry.getValue()) || getNamespaceLabelManager().isRecognized(namespaceURI))	//if this namespace URI is used more than one time, or if this is a namespace URI we specifically know is a namespace URI
 			{
 				final URFResource namespaceURIResource=urf.locateResource(createLexicalURI(URI_CLASS_URI, namespaceURI.toString()));	//look up a resource for the namespace URI itself
-				determineNamespaceURILabel(namespaceURIResource);	//make sure there is a label for the namespace URI
+				final String label=determineNamespaceURILabel(namespaceURIResource);	//make sure there is a label for the namespace URI
 				generateRootResource(writer, urf, referenceMap, namespaceURIResource);	//generate the namespace URI resource
 			}
 		}
@@ -512,7 +521,7 @@ if(isList || isSet)
 		boolean isListShortForm=isShortListsGenerated() && (isList || (resource.hasNamespaceProperty(ORDINAL_NAMESPACE_URI) && !hasNonListNonSetType));	//generate a list short form if this is a list or it has properties in the ordinal namespace (but only if there are no other types; it would introduce a list type where none was specified)
 		boolean isSetShortForm=isShortSetsGenerated() && (isSet || (resource.hasProperty(ELEMENT_PROPERTY_URI) && (!hasNonSetType || (isListShortForm && !hasNonListNonSetType))));	//generate a set short form if this is a set or it has properties in the element namespace (but only if there are no other types; it would introduce a set type where none was specified)
 */
-		URI propertyContextURI=null;	//we'll find the first type URI and use it for a context URI for properties
+		URI typeContextURI=null;	//we'll find the first type URI and use it for a context URI for init, properties, lists elements, and sets
 			//type
 		final boolean isShortTypesGenerated=isShortTypesGenerated();	//see if we should generate types in the short form
 		if(isShortTypesGenerated)	//if we should generate type short forms
@@ -544,9 +553,9 @@ if(isList || isSet)
 				else	//if we haven't yet started the properties section
 				{
 					writer.write(TYPES_BEGIN);	//start the type declaration
-					propertyContextURI=typeURI;	//use this first type URI as the context URI for properties
+					typeContextURI=typeURI;	//use this first type URI as the context URI for properties
 				}
-				generateResource(writer, urf, referenceMap, resource, TYPE_PROPERTY_URI, type, false, null);	//write the type; don't allow namespace inheritance of name references
+				generateResource(writer, urf, referenceMap, resource, TYPE_PROPERTY_URI, type, true, contextURI);	//write the type; allow namespace inheritance of name references, and don't generate scoped orders
 				++shortTypeCount;	//show that we've got another short type
 			}
 			if(shortTypeCount>0)	//if we generated any short form types
@@ -555,39 +564,10 @@ if(isList || isSet)
 				generatedComponent=true;	//indicate that we generated a component
 			}
 		}
-/*TODO del when works
-			//list
-		if(isListShortForm)	//if we should generate a list short form
-		{
-			if(lexicalTypeURI==null && shortTypeCount==0 && !isList)	//if there have been no non-list types indicated, and this is not really a list
-			{
-				isListShortForm=false;	//change our minds about showing the list short form; otherwise, it would introduce a list type where none was specified
-			}
-			else	//if we're still a go for generating a list short form, do it
-			{
-				markReferenceGenerated(urf, LIST_CLASS_URI);	//mark that the list type was generated unless it has some other quality needed to be generated separately
-				generateCollection(writer, urf, referenceMap, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), LIST_BEGIN, LIST_END);	//generate all the values of ordinal properties in the list
-				generatedComponent=true;	//indicate that we generated a component
-			}
-		}
-			//set
-		if(isSetShortForm)	//if we should generate a set short form
-		{
-			if(lexicalTypeURI==null && shortTypeCount==0 && !isListShortForm && !isSet)	//if there have been no non-set types indicated, and this is not really a set
-			{
-				isSetShortForm=false;	//change our minds about showing the set short form; otherwise, it would introduce a set type where none was specified
-			}
-			else	//if we're still a go for generating a set short form, do it
-			{
-				markReferenceGenerated(urf, SET_CLASS_URI);	//mark that the set type was generated unless it has some other quality needed to be generated separately
-				generateCollection(writer, urf, referenceMap, resource.getProperties(ELEMENT_PROPERTY_URI).iterator(), SET_BEGIN, SET_END);	//generate all the values of element properties in the set
-				generatedComponent=true;	//indicate that we generated a component
-			}
-		}
-*/
+			//TODO implement init short form
 			//properties
 		int propertyCount=0;	//start with no properties being generating
-		propertyCount=generateProperties(writer, urf, referenceMap, resource, PROPERTY_VALUE_DELIMITER, propertyCount, !isShortTypesGenerated, !isListShortForm, !isSetShortForm, true, propertyContextURI);	//generate properties
+		propertyCount=generateProperties(writer, urf, referenceMap, resource, PROPERTY_VALUE_DELIMITER, propertyCount, !isShortTypesGenerated, !isListShortForm, !isSetShortForm, true, typeContextURI);	//generate properties
 		if(scopeSubject!=null && scopePredicateURI!=null)	//if this resource is the value of a property
 		{
 			final URFScope scope=scopeSubject.getScope(scopePredicateURI, resource);	//get the scope for this value
@@ -595,7 +575,7 @@ if(isList || isSet)
 			{
 				throw new IllegalArgumentException("No scope for given subject "+scopeSubject+" and predicate URI "+scopePredicateURI);
 			}
-			propertyCount=generateProperties(writer, urf, referenceMap, scope, SCOPED_PROPERTY_VALUE_DELIMITER, propertyCount, true, true, true, !inSequence, propertyContextURI);	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence
+			propertyCount=generateProperties(writer, urf, referenceMap, scope, SCOPED_PROPERTY_VALUE_DELIMITER, propertyCount, true, true, true, !inSequence, typeContextURI);	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence
 		}
 		if(propertyCount>0)	//if we started the properties section
 		{
@@ -611,13 +591,13 @@ if(isList || isSet)
 		if(isListShortForm)	//if we should generate a list short form
 		{
 			markReferenceGenerated(urf, LIST_CLASS_URI);	//mark that the list type was generated unless it has some other quality needed to be generated separately
-			generateCollection(writer, urf, referenceMap, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), LIST_BEGIN, LIST_END);	//generate all the values of ordinal properties in the list
+			generateCollection(writer, urf, referenceMap, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), typeContextURI, LIST_BEGIN, LIST_END);	//generate all the values of ordinal properties in the list
 		}
 			//set
 		if(isSetShortForm)	//if we should generate a set short form
 		{
 			markReferenceGenerated(urf, SET_CLASS_URI);	//mark that the set type was generated unless it has some other quality needed to be generated separately
-			generateCollection(writer, urf, referenceMap, resource.getProperties(ELEMENT_PROPERTY_URI).iterator(), SET_BEGIN, SET_END);	//generate all the values of element properties in the set
+			generateCollection(writer, urf, referenceMap, resource.getProperties(ELEMENT_PROPERTY_URI).iterator(), typeContextURI, SET_BEGIN, SET_END);	//generate all the values of element properties in the set
 		}
 		return writer;	//return the writer
 	}
@@ -628,13 +608,14 @@ if(isList || isSet)
 	@param urf The URF data model.
 	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
 	@param elementPropertyIterator An iterator to the elements of the resource.
+	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context; for a collection, this should be the subject resource of the elements.
 	@param collectionBegin The beginning delimiter of the collection.
 	@param collectionEnd The end delimiter of the collection.
 	@return The writer.
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or element property iterator is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	protected Writer generateCollection(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final Iterator<URFProperty> elementPropertyIterator, final char collectionBegin, final char collectionEnd) throws IOException
+	protected Writer generateCollection(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final Iterator<URFProperty> elementPropertyIterator, final URI contextURI, final char collectionBegin, final char collectionEnd) throws IOException
 	{
 		if(elementPropertyIterator.hasNext())	//if there are elements in the collection
 		{
@@ -652,7 +633,7 @@ if(isList || isSet)
 					writer.append(LIST_DELIMITER);	//separate the properties
 					writeNewLine(writer);
 				}
-				generateResource(writer, urf, referenceMap, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false, elementPropertyURI);	//generate the element; each element value is an object of the element predicate, so use the element property URI as the context
+				generateResource(writer, urf, referenceMap, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false, contextURI);	//generate the element; each element value is an object of the element predicate, so use the element property URI as the context
 				++elementCount;	//show that we generated another list element
 			}
 			unindent();
