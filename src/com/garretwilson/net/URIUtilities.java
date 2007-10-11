@@ -142,13 +142,14 @@ public class URIUtilities
 	@param uri The URI to change.
 	@param newRawPath The raw, escaped path, or <code>null</code> if there should be no path.
 	@return A new URI with the new raw path information.
-	@exception NullPointerException if the given URI and/or path is <code>null</code>.
+	@exception NullPointerException if the given URI is <code>null</code>.
 	@exception IllegalArgumentException if the given path results in an invalid URI.
 	*/
 	public static URI changeRawPath(final URI uri, final String newRawPath)
 	{
 		final String oldRawPath=uri.getRawPath();	//get the old raw path of the URI
-		if((oldRawPath==null || oldRawPath.length()==0) && (newRawPath==null || newRawPath.length()==0))	//if an empty path is being replaced by an empty path
+		if(((oldRawPath==null || oldRawPath.length()==0) && (newRawPath==null || newRawPath.length()==0))	//if an empty path is being replaced by an empty path	
+				|| oldRawPath.equals(newRawPath))	//or the paths are the same
 		{
 			return uri;	//the URI remains unchanged
 		}
@@ -177,6 +178,43 @@ public class URIUtilities
 		final String uriString=uri.toString();	//create a string form of the URI
 		assert oldRawPath==null || uriString.endsWith(oldSuffixStringBuilder.toString()) : "URI unexpectedly did not end with its constructed suffix.";
 		return URI.create(uriString.substring(0, uriString.length()-oldSuffixStringBuilder.length())+newSuffixStringBuilder.toString());	//create a new URI after replacing the old suffix with the new
+	}
+
+	/**Creates a new URI identical to the supplied URI with a different scheme-specific part.
+	This method expects the scheme-specific part to be unencoded---raw (encoded) parameters will be re-encoded, resulting in corruption.
+	@param uri The URI to change.
+	@param newSSP The unescaped scheme-specific part.
+	@return A new URI with the new scheme-specific part.
+	@exception NullPointerException if the given URI and/or scheme-specific part is <code>null</code>.
+	*/
+	public static URI changeSchemeSpecificPart(final URI uri, final String newSSP)
+	{
+			//construct an identical URI except for the supplied path
+		return createURI(uri.getScheme(), newSSP, uri.getFragment());
+	}
+
+	/**Creates a new URI identical to the supplied URI with a different raw scheme-specific part.
+	@param uri The URI to change.
+	@param newRawSSP The raw, escaped scheme-specific part, or <code>null</code> if there should be no scheme-specific part.
+	@return A new URI with the new raw scheme-specific part information.
+	@exception NullPointerException if the given URI and/or scheme-specific part is <code>null</code>.
+	@exception IllegalArgumentException if the given scheme-specific part results in an invalid URI.
+	*/
+	public static URI changeRawSchemeSpecificPart(final URI uri, final String newRawSSP)
+	{
+		final String oldRawSSP=uri.getRawSchemeSpecificPart();	//get the old raw scheme-specific part of the URI
+		if(oldRawSSP.equals(newRawSSP))	//if the scheme-specific part is the same
+		{
+			return uri;	//the URI remains unchanged
+		}
+		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder
+		stringBuilder.append(uri.getScheme()).append(SCHEME_SEPARATOR).append(newRawSSP);	//append the scheme and the scheme-specific part
+		final String rawFragment=uri.getRawFragment();	//get the raw fragment, if any
+		if(rawFragment!=null)	//if there is a raw fragment
+		{
+			stringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment);	//include the raw fragment
+		}
+		return URI.create(stringBuilder.toString());	//create a URI from the constructed string
 	}
 
 	/**Returns the name of the resource at the given path, which will be the name of the last path component.
@@ -849,11 +887,24 @@ public class URIUtilities
 	}
 
 	/**Determines the current level of a hierarchical URI.
+	This method correctly handles {@value URIConstants#INFO_SCHEME} URIs.
 	@param uri The URI to examine.
 	@return A URI representing the current hierarchical level of a hierarchical URI; equivalent to resolving the path "." to the URI.	
 	*/
 	public static URI getCurrentLevel(final URI uri)
 	{
+		if(uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()))	//if this is an info URI (check for opaqueness first, because most URIs will not be opaque)
+		{
+			final String rawSSP=uri.getRawSchemeSpecificPart();	//get the scheme-specific part of the info URI
+			final int length=rawSSP.length();	//get the length of the string
+			final int lastPathSeparatorIndex=rawSSP.lastIndexOf(PATH_SEPARATOR);	//get the index of the last path separator
+			if(lastPathSeparatorIndex==length-1)	//if the path separator is the last character in the scheme-specific part
+			{
+				return uri;	//the URI is already at its current level
+			}
+			final String newRawSSP=lastPathSeparatorIndex>=0 ? rawSSP.substring(0, lastPathSeparatorIndex+1) : "";	//the new scheme-specific part is everything up to and including the last path separator character, or the empty string if there is no path separator
+			return changeRawSchemeSpecificPart(uri, newRawSSP);	//change the scheme-specific part of the URI
+		}
 		return uri.resolve(CURRENT_LEVEL_PATH_SEGMENT);	//resolve the URI to "."
 	}
 
@@ -861,7 +912,7 @@ public class URIUtilities
 	@param uri The URI to examine.
 	@return A URI representing the parent hierarchical level of a hierarchical URI; equivalent to resolving the path ".." to the URI.	
 	*/
-	public static URI getParentLevel(final URI uri)
+	public static URI getParentLevel(final URI uri)	//TODO fix to work with info URIs
 	{
 		return uri.resolve(PARENT_LEVEL_PATH_SEGMENT);	//resolve the URI to ".."
 	}

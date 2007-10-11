@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.*;
 
 import com.garretwilson.urf.*;
+import com.garretwilson.util.DataException;
 
 /**Class for loading and saving a type of Java object to and from a TURF instance.
 @param <T> The type to read and write.
@@ -39,6 +40,10 @@ public class PLOOPTURFIO<T> extends AbstractTURFIO<T>
 		try
 		{
 			object=ploopProcessor.getObject(urf, getObjectClass());	//create and retrieve the object from the RDF instance
+		}
+		catch(final DataException dataException)	//if the data was incorrect
+		{
+			throw (IOException)new IOException(dataException.getMessage()).initCause(dataException);	//convert the exception into an IO exception			
 		}
 		catch(final InvocationTargetException invocationTargetException)	//if a Java contructor threw an exception
 		{

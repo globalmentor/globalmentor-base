@@ -92,7 +92,9 @@ public class URF
 		//properties
 	/**The URI of the property indicating an element of a container such as a set.*/
 	public final static URI ELEMENT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "element");
-	/**aAshort name meant for human consumption which is perhaps more appropriate than display of the class or property name but perhaps less complete than a full title.*/
+	/**An initialization argument to be used in resource construction.*/
+	public final static URI INIT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "init");
+	/**A short name meant for human consumption which is perhaps more appropriate than display of the class or property name but perhaps less complete than a full title.*/
 	public final static URI LABEL_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "label");
 	/**The name of a resource meant for machine processing, which may differ from that indicated by the URI, if any.*/
 	public final static URI NAME_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "name");
@@ -204,6 +206,7 @@ public class URF
 		else	//check for a path-based namespace
 		{
 			final String rawPath=uri.getRawPath();	//get the raw path
+//TODO fix			final String rawPath=uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath();	//get the raw path, using the scheme-specific part of any info URI
 			if(rawPath!=null)	//if there is a raw path
 			{
 				final int rawPathLength=rawPath.length();	//get the length of the raw path
@@ -233,6 +236,7 @@ public class URF
 		else	//if there is no fragment
 		{
 			final String rawPath=uri.getRawPath();	//get the raw path
+//TODO fix			final String rawPath=uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath();	//get the raw path, using the scheme-specific part of any info URI
 			if(rawPath!=null)	//if there is a raw path
 			{
 				final int rawPathLength=rawPath.length();	//get the length of the raw path

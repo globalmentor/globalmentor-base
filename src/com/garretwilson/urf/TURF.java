@@ -45,6 +45,11 @@ public class TURF
 	/**The delimiter that begins number shorthand declarations.*/
 	public final static char NUMBER_BEGIN='#';
 
+	/**The delimiter that begins init declarations.*/
+	public final static char INITS_BEGIN='¡';
+	/**The delimiter that ends init declarations.*/
+	public final static char INITS_END='!';
+
 	/**The delimiter that begins ordinal shorthand declarations.*/
 	public final static char ORDINAL_BEGIN='º';
 
@@ -95,9 +100,9 @@ public class TURF
 	public final static char TIMESTAMP_END=TIMESTAMP_BEGIN;
 
 	/**The delimiter that begins type declarations.*/
-	public final static char TYPE_BEGIN='(';
+	public final static char TYPES_BEGIN='(';
 	/**The delimiter that ends type declarations.*/
-	public final static char TYPE_END=')';
+	public final static char TYPES_END=')';
 
 	/**The delimiter that begins URI shorthand declarations.*/
 	public final static char URI_BEGIN='<';

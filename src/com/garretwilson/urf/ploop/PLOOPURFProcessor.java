@@ -16,6 +16,7 @@ import static com.garretwilson.net.URIUtilities.*;
 
 import com.garretwilson.urf.*;
 import com.garretwilson.util.CollectionUtilities;
+import com.garretwilson.util.DataException;
 import com.garretwilson.util.Debug;
 
 import static com.garretwilson.urf.URF.*;
@@ -56,14 +57,15 @@ public class PLOOPURFProcessor
 	Otherwise the object is created using {@link #createObject(URFResource)} and a reference to the created object is stored for later retrieval inside {@link #setObjectProperties(Object, URFResource, Map)}.
 	@param resource The resource describing the Java object to be created.
 	@return A created and initialized object according to the given resource description. 
- 	@exception IllegalArgumentException if a given resource does not specify Java type information.
- 	@exception IllegalArgumentException if a given resource is a Java-typed resource the class of which cannot be found.
- 	@exception IllegalArgumentException if a given resource indicates a Java class that has no appropriate constructor.
- 	@exception IllegalArgumentException if a given resource indicates a Java class that is an interface or an abstract class.
- 	@exception IllegalArgumentException if a given resource indicates a Java class the constructor of which is not accessible.
-	@exception InvocationTargetException if a given resource indicates a Java class the constructor of which throws an exception.
+	@exception NullPointerException if the given resource is <code>null</code>.
+ 	@exception DataException if a resource does not specify Java type information.
+ 	@exception DataException if a resource is a Java-typed resource the class of which cannot be found.
+ 	@exception DataException if a resource indicates a Java class that has no appropriate constructor.
+ 	@exception DataException if a resource indicates a Java class that is an interface or an abstract class.
+ 	@exception DataException if a resource indicates a Java class the constructor of which is not accessible.
+	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
 	*/
-	public Object getObject(final URFResource resource) throws InvocationTargetException
+	public Object getObject(final URFResource resource) throws DataException, InvocationTargetException
 	{
 		Object object=resourceObjectMap.get(resource);	//look up an existing object if the description, if any
 		if(object==null)	//if we don't have an object already
@@ -79,14 +81,15 @@ public class PLOOPURFProcessor
 	Otherwise the object is created using {@link #createObject(URFResource)} and a reference to the created object is stored for later retrieval inside {@link #setObjectProperties(Object, URFResource, Map)}.
 	@param urf The URF instance describing the Java objects to be created.
 	@return A list of created and initialized objects according to the given URF instance. 
- 	@exception IllegalArgumentException if a given resource does not specify Java type information.
- 	@exception IllegalArgumentException if a given resource is a Java-typed resource the class of which cannot be found.
- 	@exception IllegalArgumentException if a given resource indicates a Java class that has no appropriate constructor.
- 	@exception IllegalArgumentException if a given resource indicates a Java class that is an interface or an abstract class.
- 	@exception IllegalArgumentException if a given resource indicates a Java class the constructor of which is not accessible.
-	@exception InvocationTargetException if a given resource indicates a Java class the constructor of which throws an exception.
+	@exception NullPointerException if the given URF data model is <code>null</code>.
+ 	@exception DataException if a resource does not specify Java type information.
+ 	@exception DataException if a resource is a Java-typed resource the class of which cannot be found.
+ 	@exception DataException if a resource indicates a Java class that has no appropriate constructor.
+ 	@exception DataException if a resource indicates a Java class that is an interface or an abstract class.
+ 	@exception DataException if a resource indicates a Java class the constructor of which is not accessible.
+	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
 	*/
-	public List<Object> getObjects(final URF urf) throws InvocationTargetException
+	public List<Object> getObjects(final URF urf) throws DataException, InvocationTargetException
 	{
 		final List<Object> objects=new ArrayList<Object>();	//create a new list of objects
 		for(final URFResource resource:urf.getResources())	//for each resource
@@ -114,14 +117,15 @@ public class PLOOPURFProcessor
 	@param urf The URF instance describing the Java objects to be created.
 	@param type The type of object to return.
 	@return A created and initialized object according to the given URF description of the first object of the given type, or <code>null</code> if no object of the given type is described in the URF instance. 
- 	@exception IllegalArgumentException if a given resource does not specify Java type information.
- 	@exception IllegalArgumentException if a given resource is a Java-typed resource the class of which cannot be found.
- 	@exception IllegalArgumentException if a given resource indicates a Java class that has no appropriate constructor.
- 	@exception IllegalArgumentException if a given resource indicates a Java class that is an interface or an abstract class.
- 	@exception IllegalArgumentException if a given resource indicates a Java class the constructor of which is not accessible.
-	@exception InvocationTargetException if a given resource indicates a Java class the constructor of which throws an exception.
+	@exception NullPointerException if the given URF data model and/or type is <code>null</code>.
+ 	@exception DataException if a resource does not specify Java type information.
+ 	@exception DataException if a resource is a Java-typed resource the class of which cannot be found.
+ 	@exception DataException if a resource indicates a Java class that has no appropriate constructor.
+ 	@exception DataException if a resource indicates a Java class that is an interface or an abstract class.
+ 	@exception DataException if a resource indicates a Java class the constructor of which is not accessible.
+	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
 	*/
-	public <T> T getObject(final URF urf, final Class<T> type) throws InvocationTargetException
+	public <T> T getObject(final URF urf, final Class<T> type) throws DataException, InvocationTargetException
 	{
 		for(final Object object:getObjects(urf))	//get all objects and look at each one of them
 		{
@@ -140,19 +144,20 @@ public class PLOOPURFProcessor
 		<li>If the resource specifies a Java type, the indicated Java class is instantiated and initialized from the resource description.</li>
 		<li>If the resource otherwise indicates a value that can be represented by a Java object (such as an integer), such an object will be returned.</li>
 	</ul>
-	If the resource does not meet any of the above criteria, an {@link IllegalArgumentException} is thrown.
+	If the resource does not meet any of the above criteria, a {@link DataException} is thrown.
 	@param urfResource The URF resource describing the Java object to be created.
-	@return A created and initialized object according to the given resource description. 
- 	@exception IllegalArgumentException if the given resource does not specify Java type information.
- 	@exception IllegalArgumentException if the given resource is a Java-typed resource the class of which cannot be found.
- 	@exception IllegalArgumentException if the given resource indicates a Java class that has no appropriate constructor.
- 	@exception IllegalArgumentException if the given resourceindicates a Java class that is an interface or an abstract class.
- 	@exception IllegalArgumentException if the given resourceindicates a Java class the constructor of which is not accessible.
-	@exception IllegalStateException If a particular property could not be accessed.
+	@return A created and initialized object according to the given resource description.
+	@exception NullPointerException if the given resource is <code>null</code>. 
+ 	@exception DataException if the given resource does not specify Java type information.
+ 	@exception DataException if the given resource is a Java-typed resource the class of which cannot be found.
+ 	@exception DataException if the given resource indicates a Java class that has no appropriate constructor.
+ 	@exception DataException if the given resourceindicates a Java class that is an interface or an abstract class.
+ 	@exception DataException if the given resourceindicates a Java class the constructor of which is not accessible.
+	@exception DataException If a particular property could not be accessed.
 	@exception InvocationTargetException if the given resource indicates a Java class the constructor of which throws an exception.
 	@see #convertObject(Object, Class)
 	*/
-	protected Object createObject(final URFResource resource) throws InvocationTargetException
+	protected Object createObject(final URFResource resource) throws DataException, InvocationTargetException
 	{
 		if(resource instanceof URFListResource)	//if the object is an URF array
 		{
@@ -190,7 +195,7 @@ public class PLOOPURFProcessor
 				}
 				catch(final ClassNotFoundException classNotFoundException)
 				{
-					throw new IllegalArgumentException(classNotFoundException);
+					throw new DataException(classNotFoundException);
 				}
 			}
 //		TODO del Debug.trace("Loading class", valueClassName);
@@ -199,28 +204,27 @@ public class PLOOPURFProcessor
 			{
 				final Map<URI, PropertyDescription> propertyDescriptionMap=getPropertyDescriptionMap(valueClass, resource);	//get the property descriptions from the resource description
 				final Constructor<?>[] constructors=valueClass.getConstructors();	//get all available constructors
-
-				if(resource.hasNamespaceProperty(ORDINAL_NAMESPACE_URI))	//if this resource has any ordinal properties (which will be considered constructor parameters as this is not a list resource)
+				if(resource.hasProperty(INIT_PROPERTY_URI))	//if this resource has any init properties indicating constructor arguments
 				{
-					final List<Object> parameters=new ArrayList<Object>();	//create a new list to hold the parameters
-					for(final URFProperty parameterProperty:resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI))	//look at all the ordinal properties
+					final List<Object> inits=new ArrayList<Object>();	//create a new list to hold the arguments
+					for(final URFProperty parameterProperty:resource.getProperties(INIT_PROPERTY_URI))	//look at all the init properties
 					{
-						parameters.add(getObject(parameterProperty.getValue()));	//get an object for this parameter
+						inits.add(getObject(parameterProperty.getValue()));	//get an object for this init
 					}
-					final int parameterCount=parameters.size();	//see how many init parameters there are
+					final int argumentCount=inits.size();	//see how many init arguments there are
 					for(final Constructor<?> constructor:constructors)	//look at each constructor to find one with the correct number of parameters
 					{
 						final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
-						if(parameterTypes.length==parameterCount)	//if this constructor has the correct number of parameters
+						if(parameterTypes.length==argumentCount)	//if this constructor has the correct number of parameters
 						{
-//							TODO del Debug.trace("Looking at constructor with parameter count:", parameterCount);
+//							TODO del Debug.trace("Looking at constructor with parameter count:", argumentCount);
 							boolean foundArguments=true;	//start out by assuming the parameters match
-							final Object[] arguments=new Object[parameterCount];	//create an array sufficient for the arguments
-							for(int parameterIndex=0; parameterIndex<parameterCount && foundArguments; ++parameterIndex)	//for each parameter, as long we we have matching parameters
+							final Object[] arguments=new Object[argumentCount];	//create an array sufficient for the arguments
+							for(int parameterIndex=0; parameterIndex<argumentCount && foundArguments; ++parameterIndex)	//for each parameter, as long we we have matching parameters
 							{
 								final Class<?> parameterType=parameterTypes[parameterIndex];	//get this parameter type
 //								TODO del Debug.trace("Parameter", parameterIndex, "type: ", parameterType);
-								final Object argument=convertObject(parameters.get(parameterIndex), parameterType);	//convert the object to the correct type
+								final Object argument=convertObject(inits.get(parameterIndex), parameterType);	//convert the init to the correct type
 								if(argument!=null)	//if we successfully converted this constructor argument
 								{
 									arguments[parameterIndex]=argument;	//store the argument
@@ -242,16 +246,16 @@ public class PLOOPURFProcessor
 								}
 								catch(final InstantiationException instantiationException)
 								{
-									throw new IllegalArgumentException(instantiationException);
+									throw new DataException(instantiationException);
 								}
 								catch(final IllegalAccessException illegalAccessException)
 								{
-									throw new IllegalArgumentException(illegalAccessException);
+									throw new DataException(illegalAccessException);
 								}
 							}
 						}
 					}
-					throw new IllegalArgumentException("Value class "+valueClass+" does not have a constructor appropriate for the specified init parameters.");
+					throw new DataException("Value class "+valueClass+" does not have a constructor appropriate for the specified init parameters.");
 				}
 				else	//if there are no urf.init properties
 				{
@@ -268,11 +272,11 @@ public class PLOOPURFProcessor
 							}
 							catch(final InstantiationException instantiationException)
 							{
-								throw new IllegalArgumentException(instantiationException);
+								throw new DataException(instantiationException);
 							}
 							catch(final IllegalAccessException illegalAccessException)
 							{
-								throw new IllegalArgumentException(illegalAccessException);
+								throw new DataException(illegalAccessException);
 							}							
 						}
 					}
@@ -347,17 +351,17 @@ public class PLOOPURFProcessor
 									}
 									catch(final InstantiationException instantiationException)
 									{
-										throw new IllegalArgumentException(instantiationException);
+										throw new DataException(instantiationException);
 									}
 									catch(final IllegalAccessException illegalAccessException)
 									{
-										throw new IllegalArgumentException(illegalAccessException);
+										throw new DataException(illegalAccessException);
 									}
 								}
 							}
 						}
 					}
-					throw new IllegalArgumentException("Value class "+valueClass+" does not have a constructor appropriate for the available read-only properties: "+CollectionUtilities.toString(readOnlyProperties));
+					throw new DataException("Value class "+valueClass+" does not have a constructor appropriate for the available read-only properties: "+CollectionUtilities.toString(readOnlyProperties));
 				}
 			}
 			else	//if we don't know the value class, try to create a simple object from the resource
@@ -365,7 +369,7 @@ public class PLOOPURFProcessor
 				final Object object=asObject(resource);	//see if we can turn the resource into a simple object
 				if(object==null)	//if we couldn't turn the resource into an object
 				{
-					throw new IllegalArgumentException("Value resource "+resource+" missing type information.");
+					throw new DataException("Value resource "+resource+" missing type information.");
 				}
 				return object;	//return the simple object we found
 			}
@@ -377,12 +381,13 @@ public class PLOOPURFProcessor
 	This implementation also recognizes the {@link URFResource} type and will transfer all non-PLOOP properties when an instance is encountered.
 	@param object The object to initialize.
 	@param resource The description for the object.
-	@exception IllegalArgumentException if a particular value is not an appropriate argument for the corresponding property.
-	@exception IllegalStateException If a particular property could not be accessed.
-	@exception InvocationTargetException if the given resource indicates a Java class the constructor of which throws an exception.
+	@exception NullPointerException if the given object and/or resource is <code>null</code>.
+	@exception DataException if a particular value is not an appropriate argument for the corresponding property.
+	@exception DataException If a particular property could not be accessed.
+	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
 	@see #setObjectProperties(Object, Map)
 	*/
-	public void setObjectProperties(final Object object, final URFResource resource) throws InvocationTargetException
+	public void setObjectProperties(final Object object, final URFResource resource) throws DataException, InvocationTargetException
 	{
 		final Map<URI, PropertyDescription> propertyDescriptionMap=getPropertyDescriptionMap(object.getClass(), resource);	//get property descriptions from the resource description
 		setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object from the property descriptions
@@ -394,12 +399,14 @@ public class PLOOPURFProcessor
 	@param object The object to initialize.
 	@param resource The description for the object.
 	@param propertyNamespaceURI The namespace URI of the properties to enumerate.
-	@exception IllegalArgumentException if a particular value is not an appropriate argument for the corresponding property.
-	@exception IllegalStateException If a particular property could not be accessed.
-	@exception InvocationTargetException if the given resource indicates a Java class the constructor of which throws an exception.
+	@exception NullPointerException if the given object, resource, and/or namespace URI is <code>null</code>.
+ 	@exception DataException if a resource is a Java-typed resource the class of which cannot be found.
+	@exception DataException if a particular value is not an appropriate argument for the corresponding property.
+	@exception DataException If a particular property could not be accessed.
+	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
 	@see #setObjectProperties(Object, Map)
 	*/
-	public void setObjectProperties(final Object object, final URFResource resource, final URI propertyNamespaceURI) throws InvocationTargetException
+	public void setObjectProperties(final Object object, final URFResource resource, final URI propertyNamespaceURI) throws DataException, InvocationTargetException
 	{
 		final Map<URI, PropertyDescription> propertyDescriptionMap=getPropertyDescriptionMap(object.getClass(), resource, propertyNamespaceURI);	//get property descriptions from the resource description
 		setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object from the property descriptions
@@ -411,11 +418,13 @@ public class PLOOPURFProcessor
 	@param object The object to initialize.
 	@param resource The description for the object.
 	@param propertyDescriptionMap The property descriptions for initializing the object.
-	@exception IllegalArgumentException if a particular value is not an appropriate argument for the corresponding property.
-	@exception IllegalStateException If a particular property could not be accessed.
-	@exception InvocationTargetException if the given resource indicates a Java class the constructor of which throws an exception.
+	@exception NullPointerException if the given object, resource, and/or property description map is <code>null</code>.
+ 	@exception DataException if a resource is a Java-typed resource the class of which cannot be found.
+	@exception DataException if a particular value is not an appropriate argument for the corresponding property.
+	@exception DataException If a particular property could not be accessed.
+	@exception InvocationTargetException a resource indicates a Java class the constructor of which throws an exception.
 	*/
-	protected void setObjectProperties(final Object object, final URFResource resource, final Map<URI, PropertyDescription> propertyDescriptionMap) throws InvocationTargetException
+	protected void setObjectProperties(final Object object, final URFResource resource, final Map<URI, PropertyDescription> propertyDescriptionMap) throws DataException, InvocationTargetException
 	{
 //TODO del		for(final Map.Entry<URI, PropertyDescription> propertyDescription:propertyDescriptionMap.entrySet())	//for each property description entry
 		for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
@@ -447,12 +456,13 @@ public class PLOOPURFProcessor
 	@param propertyName The name of the property to set.
 	@return <code>true</code> if the given resource description contained a corresponding property and that property was used to update the given object.
 	@exception NullPointerException if the given object, resource, and/or property name is <code>null</code>.
- 	@exception IllegalArgumentException if the object has no setter method for the given property.
-	@exception IllegalArgumentException if the particular value is not an appropriate argument for the given property.
-	@exception IllegalStateException If the given property could not be accessed.
+ 	@exception DataException if a resource is a Java-typed resource the class of which cannot be found.
+ 	@exception DataException if the object has no setter method for the given property.
+	@exception DataException if the particular value is not an appropriate argument for the given property.
+	@exception DataException If the given property could not be accessed.
 	@exception InvocationTargetException if the given resource indicates a Java class the constructor of which throws an exception.
 	*/
-	public boolean setObjectProperty(final Object object, final URFResource resource, final String propertyName) throws InvocationTargetException
+	public boolean setObjectProperty(final Object object, final URFResource resource, final String propertyName) throws DataException, InvocationTargetException
 	{
 		final URI propertyURI=getPropertyURI(object, propertyName);	//get the property URI for the given property of the object
 		final URFResource propertyValue=resource.getPropertyValue(propertyURI);	//get the value for this property
@@ -471,7 +481,7 @@ public class PLOOPURFProcessor
 				return true;	//indicate that we set the property successfully
 			}
 		}
-		throw new IllegalArgumentException("Object "+object+" has no property "+propertyName);
+		throw new DataException("Object "+object+" has no property "+propertyName);
 	}
 
 	/**Sets the property of an object using the given setter method and value.
@@ -479,11 +489,11 @@ public class PLOOPURFProcessor
 	@param setterMethod The method to use in setting the object property.
 	@param value The value to set.
 	@exception NullPointerException if the given object and/or setter method is <code>null</code>.
-	@exception IllegalArgumentException if the given value is not an appropriate argument for the given property.
-	@exception IllegalStateException If the given property could not be accessed.
+	@exception DataException if the given value is not an appropriate argument for the given property.
+	@exception DataException If the given property could not be accessed.
 	@exception InvocationTargetException if the given Java property method throws an exception.
 	*/
-	public static void setObjectProperty(final Object object, final Method setterMethod, final Object value) throws InvocationTargetException
+	public static void setObjectProperty(final Object object, final Method setterMethod, final Object value) throws DataException, InvocationTargetException
 	{
 		try
 		{
@@ -491,7 +501,7 @@ public class PLOOPURFProcessor
 		}
 		catch(final IllegalAccessException illegalAccessException)	//if we can't access this setter
 		{
-			throw new IllegalStateException(illegalAccessException);
+			throw new DataException(illegalAccessException);
 		}
 	}
 
@@ -500,9 +510,14 @@ public class PLOOPURFProcessor
 	@param objectClass The class of the object to be constructed.
 	@param resource The description fo the object.
 	@return A map of property descriptions keyed to property URIs.
+ 	@exception DataException if a resource does not specify Java type information.
+ 	@exception DataException if a resource is a Java-typed resource the class of which cannot be found.
+ 	@exception DataException if a resource indicates a Java class that has no appropriate constructor.
+ 	@exception DataException if a resource indicates a Java class that is an interface or an abstract class.
+ 	@exception DataException if a resource indicates a Java class the constructor of which is not accessible.
 	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
 	*/
-	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URFResource resource) throws InvocationTargetException
+	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URFResource resource) throws DataException, InvocationTargetException
 	{
 		return getPropertyDescriptionMap(objectClass, resource, createInfoJavaURI(objectClass.getPackage()));	//get a property description map using the class namespace
 	}
@@ -513,9 +528,15 @@ public class PLOOPURFProcessor
 	@param resource The description fo the object.
 	@param propertyNamespaceURI The namespace URI of the properties to enumerate.
 	@return A map of property descriptions keyed to property URIs.
+	@exception NullPointerException if the given object class, resource, and/or property namespace URI is <code>null</code>.
+ 	@exception DataException if a resource does not specify Java type information.
+ 	@exception DataException if a resource is a Java-typed resource the class of which cannot be found.
+ 	@exception DataException if a resource indicates a Java class that has no appropriate constructor.
+ 	@exception DataException if a resource indicates a Java class that is an interface or an abstract class.
+ 	@exception DataException if a resource indicates a Java class the constructor of which is not accessible.
 	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
 	*/
-	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URFResource resource, final URI propertyNamespaceURI) throws InvocationTargetException
+	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URFResource resource, final URI propertyNamespaceURI) throws DataException, InvocationTargetException
 	{
 		final Map<URI, PropertyDescription> propertyDescriptionMap=new HashMap<URI, PropertyDescription>((int)resource.getPropertyCount());	//create a map to hold property descriptions, with a least enough capacity to hold descriptions for all properties
 		for(final URFProperty property:resource.getProperties())	//for each resource property
@@ -534,25 +555,6 @@ public class PLOOPURFProcessor
 		return propertyDescriptionMap;	//return the property description map
 	}
 	
-	/**Gets a description of a property of the object based upon the given URF property.
-	The returned property description will indicate a method if the property is settable.
-	@param objectClass The class of the object to be constructed.
-	@param property The URF property pair potentially representing an object property.
-	@return A description of the property, or <code>null</code> if the property is not recognized.
-	*/
-/*TODO del
-	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, final URFProperty property)
-	{
-		final URI propertyURI=property.propertyURI());	//get the URI of the property
-//TODO del Debug.trace("looking at property:", propertyURI);
-		if(PLOOP_PROPERTY_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//if this is a PLOOP property
-		{
-			return getPropertyDescription(objectClass, propertyURI, property.getValue());	//return the property description from the property URI and the property value
-		}
-		return null;	//indicate that we don't recognize this property
-	}
-*/
-
 	/**Gets a description of a property of the object based upon the given property name and value.
 	An URF property is considered to be a PLOOP property the property is in the namespace indicatd by the class package
 	and there the class has either a getter or setter for the URF property's local name.
@@ -563,9 +565,14 @@ public class PLOOPURFProcessor
 	@param propertyValueResource The value of the URF property potentially representing a object property.
 	@return A description of the property, or <code>null</code> if the property is not recognized.
 	@exception NullPointerException if the given object class and/or property name is <code>null</code>.
+ 	@exception DataException if a resource does not specify Java type information.
+ 	@exception DataException if a resource is a Java-typed resource the class of which cannot be found.
+ 	@exception DataException if a resource indicates a Java class that has no appropriate constructor.
+ 	@exception DataException if a resource indicates a Java class that is an interface or an abstract class.
+ 	@exception DataException if a resource indicates a Java class the constructor of which is not accessible.
 	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
 	*/
-	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, /*TODO del final URI propertyURI, */final String propertyName, final URFResource propertyValueResource) throws InvocationTargetException
+	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, /*TODO del final URI propertyURI, */final String propertyName, final URFResource propertyValueResource) throws DataException, InvocationTargetException
 	{
 //Debug.trace("ready to get property description for property", propertyName, "with resource value", propertyValueResource);
 		Object propertyValue=getObject(propertyValueResource);	//get the appropriate value for the property TODO get the type and save it somewhere, because this may return null
@@ -637,10 +644,10 @@ Debug.trace("setter: ", setterMethodName);
 	@param object The object to convert.
 	@param requiredType The required type of the object.
 	@return The object as the required type, or <code>null</code> if the object cannot be converted to the required type.
-	@exception IllegalArgumentException if the given object should be able to be converted to the required type but something about its state, format, or contents prevented the conversion.
 	@exception NullPointerException if the given object is <code>null</code>.
+	@exception DataException if the given object should be able to be converted to the required type but something about its state, format, or contents prevented the conversion.
 	*/
-	protected Object convertObject(final Object object, final Class<?> requiredType)	//TODO search for a string contructor or a static valueOf() method
+	protected Object convertObject(final Object object, final Class<?> requiredType) throws DataException	//TODO search for a string contructor or a static valueOf() method
 	{
 		final Class<?> objectType=object.getClass();	//get the type of the object
 		if(requiredType.isAssignableFrom(objectType))	//if we expect this type (this algorithm could be improved to first try to find an exact match and then find a convertible match)
@@ -650,85 +657,73 @@ Debug.trace("setter: ", setterMethodName);
 		}
 		else	//if we expect for another object type
 		{
-			if(object instanceof Boolean)	//if the object is a Boolean
+			try
 			{
-				if(Boolean.TYPE.equals(requiredType))	//if the required type is boolean (we already checked for Boolean when we checked to see if the types were the same)
+				if(object instanceof Boolean)	//if the object is a Boolean
 				{
-					return object;	//return the Boolean object
-				}
-			}
-			else if(object instanceof Character)	//if the object is a Character
-			{
-				if(Character.TYPE.equals(requiredType))	//if the required type is char (we already checked for Character when we checked to see if the types were the same)
-				{
-					return object;	//return the Character object
-				}
-			}
-			else if(object instanceof Number)	//if the object is a Number
-			{
-				if(Long.TYPE.equals(requiredType) || Long.class.isAssignableFrom(requiredType))	//if the required type is long or Long 
-				{
-					return object instanceof Long ? object : Long.valueOf(((Number)object).longValue());	//return a Long version of the object
-				}
-				else if(Integer.TYPE.equals(requiredType) || Integer.class.isAssignableFrom(requiredType))	//if the required type is integer or integer 
-				{
-					return object instanceof Integer ? object : Integer.valueOf(((Number)object).intValue());	//return an Integer version of the object
-				}
-				else if(Double.TYPE.equals(requiredType) || Double.class.isAssignableFrom(requiredType))	//if the required type is double or Double
-				{
-					return object instanceof Double ? object : Double.valueOf(((Number)object).doubleValue());	//return a Double version of the object
-				}
-				else if(Float.TYPE.equals(requiredType) || Float.class.isAssignableFrom(requiredType))	//if the required type is float or Float
-				{
-					return object instanceof Double ? object : Float.valueOf(((Number)object).floatValue());	//return a Float version of the object
-				}
-				//TODO add BigInteger and BigDecimal types
-			}
-			else if(object instanceof String)	//if the object is a string, see if we can convert it to the correct type
-			{
-				final String stringObject=(String)object;	//cast the value to a String
-				if(requiredType.isArray() && Character.TYPE.equals(requiredType.getComponentType()))	//if the required type is a character array
-				{
-					return stringObject.toCharArray();	//return the string as a character array
-				}
-				else if(Color.class.isAssignableFrom(requiredType))	//if the required type is Color
-				{
-					return AbstractModeledColor.valueOf(stringObject);	//compile a color from the string
-				}
-				else if(Enum.class.isAssignableFrom(requiredType))	//if the required type is an enumeration
-				{
-//Debug.trace("Creating enum of type", requiredType);
-							//TODO document serialized enum form
-					return getSerializedEnum((Class<? extends Enum>)requiredType, stringObject);	//get the enum from its serialized form TODO check for an IllegalArgumentException here
-				}
-/*TODO del if we can
-				else if(Class.class.isAssignableFrom(requiredType))	//if the required type is Class
-				{
-					try
+					if(Boolean.TYPE.equals(requiredType))	//if the required type is boolean (we already checked for Boolean when we checked to see if the types were the same)
 					{
-						return Class.forName(stringObject);	//load the given class
-					}
-					catch(final ClassNotFoundException classNotFoundException)	//if we couldn't find the class
-					{
-						throw new IllegalArgumentException(classNotFoundException);
+						return object;	//return the Boolean object
 					}
 				}
-*/
-/*TODO del
-				else if(Locale.class.isAssignableFrom(requiredType))	//if the required type is Locale 
+				else if(object instanceof Character)	//if the object is a Character
 				{
-					return createLocale(stringObject);	//construct a Locale from the object, accepting the RFC 1766 syntax as well as the Java syntax
+					if(Character.TYPE.equals(requiredType))	//if the required type is char (we already checked for Character when we checked to see if the types were the same)
+					{
+						return object;	//return the Character object
+					}
 				}
-*/
-				else if(Pattern.class.isAssignableFrom(requiredType))	//if the required type is Pattern
+				else if(object instanceof Number)	//if the object is a Number
 				{
-					return Pattern.compile(stringObject);	//compile a pattern from the string
+					if(Long.TYPE.equals(requiredType) || Long.class.isAssignableFrom(requiredType))	//if the required type is long or Long 
+					{
+						return object instanceof Long ? object : Long.valueOf(((Number)object).longValue());	//return a Long version of the object
+					}
+					else if(Integer.TYPE.equals(requiredType) || Integer.class.isAssignableFrom(requiredType))	//if the required type is integer or integer 
+					{
+						return object instanceof Integer ? object : Integer.valueOf(((Number)object).intValue());	//return an Integer version of the object
+					}
+					else if(Double.TYPE.equals(requiredType) || Double.class.isAssignableFrom(requiredType))	//if the required type is double or Double
+					{
+						return object instanceof Double ? object : Double.valueOf(((Number)object).doubleValue());	//return a Double version of the object
+					}
+					else if(Float.TYPE.equals(requiredType) || Float.class.isAssignableFrom(requiredType))	//if the required type is float or Float
+					{
+						return object instanceof Double ? object : Float.valueOf(((Number)object).floatValue());	//return a Float version of the object
+					}
+					//TODO add BigInteger and BigDecimal types
 				}
-				else if(URIPath.class.isAssignableFrom(requiredType))	//if the required type is URIPath
+				else if(object instanceof String)	//if the object is a string, see if we can convert it to the correct type
 				{
-					return new URIPath(stringObject);	//create a URI path from the string
+					final String stringObject=(String)object;	//cast the value to a String
+					if(requiredType.isArray() && Character.TYPE.equals(requiredType.getComponentType()))	//if the required type is a character array
+					{
+						return stringObject.toCharArray();	//return the string as a character array
+					}
+					else if(Color.class.isAssignableFrom(requiredType))	//if the required type is Color
+					{
+						return AbstractModeledColor.valueOf(stringObject);	//compile a color from the string
+					}
+					else if(Enum.class.isAssignableFrom(requiredType))	//if the required type is an enumeration
+					{
+	//Debug.trace("Creating enum of type", requiredType);
+								//TODO document serialized enum form
+						return getSerializedEnum((Class<? extends Enum>)requiredType, stringObject);	//get the enum from its serialized form
+					}
+					else if(Pattern.class.isAssignableFrom(requiredType))	//if the required type is Pattern
+					{
+						return Pattern.compile(stringObject);	//compile a pattern from the string
+					}
+					else if(URIPath.class.isAssignableFrom(requiredType))	//if the required type is URIPath
+					{
+						return new URIPath(stringObject);	//create a URI path from the string
+					}
+					//TODO check for a string-compatible constructor
 				}
-				//TODO check for a string-compatible constructor
+			}
+			catch(final IllegalArgumentException illegalArgumentException)	//if there was a conversion error
+			{
+				throw new DataException(illegalArgumentException);	//throw a data error
 			}
 		}
 		return null;	//indicate we couldn't get an object of the correct type

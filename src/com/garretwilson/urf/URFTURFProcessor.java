@@ -4,7 +4,6 @@ import java.io.*;
 import java.math.*;
 import java.net.*;
 import java.util.*;
-import static java.util.Collections.*;
 
 import static com.garretwilson.io.ReaderParser.*;
 import com.garretwilson.io.ParseIOException;
@@ -70,7 +69,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	public URF processResources(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
 		reset();	//make sure we don't have temporary data left over from last time
-		final Resource[] resources=parseResourceList(reader, baseURI, NULL_CHAR);	//parse as list of resources
+		final List<Resource> resources=parseResourceList(reader, baseURI, NULL_CHAR);	//parse the list of resources, with no particular end of list indicated
 /*TODO del
 for(final Assertion assertion:getAssertions())	//look at the assertions
 {
@@ -79,12 +78,12 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 */
 		try
 		{
-			final URFResource resource=createResources(resources.length>0 ? resources[resources.length-1] : null);	//create all resources
+			createResources();	//create all resources
 			processAssertions();	//process the collected assertions
 		}
 		catch(final IllegalArgumentException illegalArgumentException)	//if something was wrong with one of the resources
 		{
-			throw new ParseIOException(reader, illegalArgumentException);			
+			throw new ParseIOException(reader, illegalArgumentException);
 		}
 		reset();	//release all our references temporary resource proxies
 		return getURF();	//return the URF data model
@@ -170,7 +169,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		final URF urf=getURF();	//get the URF data model
 		String label=null;	//the label of the resource, if any
 		URI resourceURI=null;	//the URI of the resource, if any
-		final List<Resource> types=new ArrayList<Resource>();	//the types, if any
+		final List<Resource> types=new ArrayList<Resource>();	//we'll keep track of all the types we find
 //TODO del if not needed		Resource[] arrayElements=null;	//if we find an array, we'll store the elements here so that we can add them to the resource later
 		boolean foundComponent=false;	//we'll keep track of whether at least one description component was present
 		int c=peek(reader);	//peek the next character
@@ -292,28 +291,31 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				}
 				break;
 		}
+		final Resource resource=determineResourceProxy(label, resourceURI);	//get a resource proxy from the label and/or reference URI, or use one already available for the reference URI
+		final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
 		if(resourceURI!=null && isLexicalURI(resourceURI))	//if there is a resource URI that is in a lexical namespace
 		{
-			types.add(determineResourceProxy(getLexicalTypeURI(resourceURI)));	//add a proxy to the lexical type
+			final Resource lexicalType=determineResourceProxy(getLexicalTypeURI(resourceURI));	//get a proxy to the lexical type
+			types.add(lexicalType);	//add the lexical type to our list of types
+			addAssertion(new Assertion(resource, typePropertyResource, lexicalType));	//assert the lexical type
 		}
-		if(c==TYPE_BEGIN)	//check for a type TODO see if there is any way we can specify the context subject/predicate when parsing the type, in case the type in here has scoped properties (highly unlikely---maybe forbid this in the spec)
+		if(c==TYPES_BEGIN)	//check for types
 		{
 			foundComponent=true;	//indicate that at least one description component is present
-			check(reader, TYPE_BEGIN);	//read the beginning type delimiter
-			final Resource[] typeResources=parseResourceList(reader, baseURI, TYPE_END, contextURI);	//parse the resources serving as types, providing the context URI, if any
-			addAll(types, typeResources);	//add all the types we found
-			check(reader, TYPE_END);	//read the ending type delimiter
+			check(reader, TYPES_BEGIN);	//read the beginning type delimiter
+			types.addAll(parseSequence(reader, baseURI, scopeBase, scopeChain, resource, typePropertyResource, false, TYPES_END));	//parse the sequence of types, if any, and add them to our list of types
+			check(reader, TYPES_END);	//read the ending type delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
-//Debug.trace("ready to get resource proxy for label", label, "resource URI", resourceURI);
-		final ResourceProxy resourceProxy=determineResourceProxy(label, resourceURI);	//get a resource proxy from the label and/or reference URI, or use one already available for the reference URI
-		if(!types.isEmpty())	//if we have at least one type
+
+		if(c==INITS_BEGIN)	//check for inits
 		{
-			final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
-			for(final Resource type:types)	//for each type
-			{
-				addAssertion(new Assertion(resourceProxy, typePropertyResource, type));	//assert this type
-			}
+			foundComponent=true;	//indicate that at least one description component is present
+			final Resource initPropertyResource=determineResourceProxy(INIT_PROPERTY_URI);	//get a proxy to the init property resource
+			check(reader, INITS_BEGIN);	//read the beginning init delimiter
+			parseSequence(reader, baseURI, scopeBase, scopeChain, resource, initPropertyResource, false, INITS_END);	//parse the sequence of inits, if any
+			check(reader, INITS_END);	//read the ending init delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
 		if(c==PROPERTIES_BEGIN)	//check for properties
 		{
@@ -328,48 +330,12 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 				switch(skipSeparators(reader))	//skip separators and see what the next character will be
 				{
 					case SEQUENCE_BEGIN:	//sequence short form
-						final Resource orderPredicate=determineResourceProxy(ORDER_PROPERTY_URI);	//get the order property for specifying scoped order for each value
-						long order=0;	//start out with an order of zero
 						check(reader, SEQUENCE_BEGIN);	//read the beginning sequence delimiter
-						c=skipSeparators(reader);	//skip separators and peek the next character
-						while(c>=0 && c!=SEQUENCE_END)	//while the end of the sequence has not been reached and there is another resource to parse
+						final boolean scoped=propertyValueDelimiter==SCOPED_PROPERTY_VALUE_DELIMITER;	//see if this is a scoped sequence
+						final List<Resource> sequenceResources=parseSequence(reader, baseURI, scopeBase, scopeChain, resource, predicate, scoped, SEQUENCE_END);	//parse the sequence of resources
+						if(!scoped && TYPE_PROPERTY_URI.equals(predicate.getURI()))	//if this was a sequence of types
 						{
-							final Resource sequenceObject=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, predicate.getURI());	//parse the object, giving a scope chain predicate in case a scope is formed for the value
-							addAssertion(new Assertion(resourceProxy, predicate, sequenceObject));	//assert the assertion with no scope
-							if(TYPE_PROPERTY_URI.equals(predicate.getURI()))	//if this was a type declaration
-							{
-								types.add(sequenceObject);	//make a note of this type
-							}
-							final Resource orderObject=determineResourceProxy(createIntegerURI(order));	//get a proxy to the order value
-
-							final Resource newScopeBase;	//we'll determine a new scope base
-							final ArrayList<NameValuePair<Resource, Resource>> newScopeChain;	//we'll determine a new scope chain
-							switch(propertyValueDelimiter)	//see what sort of assignment this is
-							{
-								case PROPERTY_VALUE_DELIMITER:	//property assignment
-									newScopeBase=resourceProxy;	//the resource will be the start of a new scope
-									newScopeChain=new ArrayList<NameValuePair<Resource,Resource>>();	//start a new scope chains
-									break;
-								case SCOPED_PROPERTY_VALUE_DELIMITER:	//scoped property assignment
-									newScopeBase=scopeBase!=null ? scopeBase : resourceProxy;	//if we don't have a scope base, use the subject resource as the base
-									newScopeChain=scopeChain!=null ? (ArrayList<NameValuePair<Resource, Resource>>)scopeChain.clone() : new ArrayList<NameValuePair<Resource,Resource>>();	//clone the scope chain or create a new one if needed
-									break;
-								default:
-									throw new AssertionError("Unrecognized property-value delimiter: "+propertyValueDelimiter);	//we already checked this character, so we shouldn't get an unknown delimiter here
-							}
-							newScopeChain.add(new NameValuePair<Resource, Resource>(predicate, sequenceObject));	//add another element to the scope chain for this new sequence object we parsed
-							addAssertion(new Assertion(newScopeBase, orderPredicate, orderObject, newScopeChain.toArray(new NameValuePair[newScopeChain.size()])));	//assert the scoped order assertion
-							++order;	//increaes the order for next time
-							c=skipSeparators(reader);	//skip separators and peek the next character
-							if(c==LIST_DELIMITER)	//if this is a list delimiter
-							{
-								check(reader, LIST_DELIMITER);	//skip the list delimiter
-								c=skipSeparators(reader);	//skip separators and peek the next character
-							}
-							else	//if there's anything besides a list delimiter, we've reached the end of the list
-							{
-								break;	//stop parsing the list
-							}
+							types.addAll(sequenceResources);	//add all the resources in the sequence as types
 						}
 						check(reader, SEQUENCE_END);	//read the ending sequence delimiter
 						break;
@@ -377,8 +343,8 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 						switch(propertyValueDelimiter)	//see what sort of assignment this is
 						{
 							case PROPERTY_VALUE_DELIMITER:	//property assignment
-								object=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, predicate.getURI());	//parse the object, giving a scope chain predicate in case a scope is formed for the value
-								addAssertion(new Assertion(resourceProxy, predicate, object));	//assert the assertion with no scope
+								object=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, predicate.getURI());	//parse the object, giving a scope chain predicate in case a scope is formed for the value
+								addAssertion(new Assertion(resource, predicate, object));	//assert the assertion with no scope
 								if(TYPE_PROPERTY_URI.equals(predicate.getURI()))	//if this was a type declaration
 								{
 									types.add(object);	//make a note of this type
@@ -389,7 +355,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 								if(scopeBase!=null && scopeChain!=null && scopePredicate!=null)	//if we are in the scope of some subject and predicate
 								{
 									final ArrayList<NameValuePair<Resource, Resource>> newScopeChain=(ArrayList<NameValuePair<Resource, Resource>>)scopeChain.clone();	//clone the scope chain
-									newScopeChain.add(new NameValuePair<Resource, Resource>(scopePredicate, resourceProxy));	//add another element to the scope chain
+									newScopeChain.add(new NameValuePair<Resource, Resource>(scopePredicate, resource));	//add another element to the scope chain
 //Debug.trace("current scope base:", scopeBase);
 									object=parseResource(reader, baseURI, scopeBase, newScopeChain, predicate, predicate.getURI());	//parse the object with the new scope and new predicate
 									addAssertion(new Assertion(scopeBase, predicate, object, newScopeChain.toArray(new NameValuePair[newScopeChain.size()])));	//assert the assertion with the new scope
@@ -415,10 +381,9 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		{
 			if(types.isEmpty())	//if no types have been specified
 			{
-				final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
 				final Resource listType=determineResourceProxy(LIST_CLASS_URI);	//get a proxy to the list type
 				types.add(listType);	//add a proxy to the list type
-				addAssertion(new Assertion(resourceProxy, typePropertyResource, listType));	//assert the list type
+				addAssertion(new Assertion(resource, typePropertyResource, listType));	//assert the list type
 			}
 			long index=0;	//start out with an index of zero
 			check(reader, LIST_BEGIN);	//read the beginning list delimiter
@@ -426,8 +391,8 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			while(c>=0 && c!=LIST_END)	//while the end of the list has not been reached and there is another resource to parse
 			{
 				final Resource indexPredicate=determineResourceProxy(createOrdinalURI(index));	//get the ordinal property for specifying the index of each value
-				final Resource element=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), indexPredicate, indexPredicate.getURI());	//parse the list element, giving a scope chain predicate in case a scope is formed for the value
-				addAssertion(new Assertion(resourceProxy, indexPredicate, element));	//assert the assertion that the element is an index of the list; there is no scope with an list short form
+				final Resource element=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), indexPredicate, indexPredicate.getURI());	//parse the list element, giving a scope chain predicate in case a scope is formed for the value
+				addAssertion(new Assertion(resource, indexPredicate, element));	//assert the assertion that the element is an index of the list; there is no scope with an list short form
 				++index;	//go to the next index
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				if(c==LIST_DELIMITER)	//if this is a list delimiter
@@ -447,18 +412,17 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 		{
 			if(types.isEmpty())	//if no types have been specified
 			{
-				final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
 				final Resource setType=determineResourceProxy(SET_CLASS_URI);	//get a proxy to the set type
 				types.add(setType);	//add a proxy to the set type
-				addAssertion(new Assertion(resourceProxy, typePropertyResource, setType));	//assert the set type
+				addAssertion(new Assertion(resource, typePropertyResource, setType));	//assert the set type
 			}
 			check(reader, SET_BEGIN);	//read the beginning set delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 			final Resource elementPredicate=determineResourceProxy(ELEMENT_PROPERTY_URI);	//get the element property resource proxy
 			while(c>=0 && c!=SET_END)	//while the end of the sequence has not been reached and there is another resource to parse
 			{
-				final Resource element=parseResource(reader, baseURI, resourceProxy, new ArrayList<NameValuePair<Resource,Resource>>(), elementPredicate, elementPredicate.getURI());	//parse the set element, giving a scope chain predicate in case a scope is formed for the value
-				addAssertion(new Assertion(resourceProxy, elementPredicate, element));	//assert the assertion that the element is an element of the set; there is no scope with a set short form
+				final Resource element=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), elementPredicate, elementPredicate.getURI());	//parse the set element, giving a scope chain predicate in case a scope is formed for the value
+				addAssertion(new Assertion(resource, elementPredicate, element));	//assert the assertion that the element is an element of the set; there is no scope with a set short form
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				if(c==LIST_DELIMITER)	//if this is a list delimiter
 				{
@@ -474,7 +438,67 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
 //Debug.trace("ready to return resource proxy with URI", resourceProxy.getURI());
-		return resourceProxy;	//return the resource proxy we created
+		return resource;	//return the resource proxy we created
+	}
+
+	/**Parses a sequence of resources and assigns them to the subject resource with scoped orders.
+	The current position must be that of a separator or that of the first character of the first resource in the sequence.
+	The new position will be that of the first non-separator character after the sequence of resources or the end of the reader.
+	For every resource that is being parsed as the object of a subject and predicate, the scope base, scope chain, and scope predicate must all be non-<code>null</code>.
+	Whenever the scope chain is lengthened it must first be cloned so that the local version will not be modified during recursion.
+	@param reader The reader the contents of which to be parsed.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param scopeBase The base resource of the current scope, or <code>null</code> if the current resource is not in an object context.
+	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
+	@param subject The subject resource to which the sequence values will be added.
+	@param predicate The predicate to use in adding sequence value.
+	@param scoped Whether each predicate is scoped.
+	@param sequenceEnd The character that marks the end of the sequence.
+	@return The resources in the list parsed from the reader.
+	@exception NullPointerException if the given reader, subject, and/or predicate is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters before the current resource is completely parsed.
+	@exception DataException if there was an error with information being processed.
+	*/
+	protected List<Resource> parseSequence(final Reader reader, final URI baseURI, final Resource scopeBase, final ArrayList<NameValuePair<Resource, Resource>> scopeChain, final Resource subject, final Resource predicate, final boolean scoped, final char sequenceEnd) throws IOException, ParseIOException, DataException
+	{
+		final List<Resource> resourceList=new ArrayList<Resource>();	//create a new list in which to place the resources
+		final Resource orderPredicate=determineResourceProxy(ORDER_PROPERTY_URI);	//get the order property for specifying scoped order for each value
+		long order=0;	//start out with an order of zero
+		int c=skipSeparators(reader);	//skip separators and peek the next character
+		while(c>=0 && c!=sequenceEnd)	//while the end of the sequence has not been reached and there is another resource to parse
+		{
+			final Resource sequenceObject=parseResource(reader, baseURI, subject, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, predicate.getURI());	//parse the object, giving a scope chain predicate in case a scope is formed for the value
+			addAssertion(new Assertion(subject, predicate, sequenceObject));	//assert the assertion with no scope
+			resourceList.add(sequenceObject);	//add the sequence object to the list of resources
+			final Resource orderObject=determineResourceProxy(createIntegerURI(order));	//get a proxy to the order value
+			final Resource newScopeBase;	//we'll determine a new scope base
+			final ArrayList<NameValuePair<Resource, Resource>> newScopeChain;	//we'll determine a new scope chain
+			if(scoped)	//if this is a scoped property assignment
+			{
+				newScopeBase=scopeBase!=null ? scopeBase : subject;	//if we don't have a scope base, use the subject resource as the base
+				newScopeChain=scopeChain!=null ? (ArrayList<NameValuePair<Resource, Resource>>)scopeChain.clone() : new ArrayList<NameValuePair<Resource,Resource>>();	//clone the scope chain or create a new one if needed
+			}
+			else	//if this is a normal property assignment
+			{
+				newScopeBase=subject;	//the resource will be the start of a new scope
+				newScopeChain=new ArrayList<NameValuePair<Resource,Resource>>();	//start a new scope chains
+			}
+			newScopeChain.add(new NameValuePair<Resource, Resource>(predicate, sequenceObject));	//add another element to the scope chain for this new sequence object we parsed
+			addAssertion(new Assertion(newScopeBase, orderPredicate, orderObject, newScopeChain.toArray(new NameValuePair[newScopeChain.size()])));	//assert the scoped order assertion
+			++order;	//increaes the order for next time
+			c=skipSeparators(reader);	//skip separators and peek the next character
+			if(c==LIST_DELIMITER)	//if this is a list delimiter
+			{
+				check(reader, LIST_DELIMITER);	//skip the list delimiter
+				c=skipSeparators(reader);	//skip separators and peek the next character
+			}
+			else	//if there's anything besides a list delimiter, we've reached the end of the list
+			{
+				break;	//stop parsing the list
+			}
+		}
+		return resourceList;	//return the parsed resources
 	}
 
 	/**Parses a list of resources with no context.
@@ -482,15 +506,15 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	The new position will be that of the first non-separator character after the list of resources or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param end The character that marks the end of the list.
-	@return The resource parsed from the reader.
+	@param listEnd The character that marks the end of the list.
+	@return The resources in the list parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if a resource in the list is missing, or if the reader has no more characters before a resource in the list is completely parsed.
 	*/
-	public Resource[] parseResourceList(final Reader reader, final URI baseURI, final char end) throws IOException, ParseIOException
+	public List<Resource> parseResourceList(final Reader reader, final URI baseURI, final char listEnd) throws IOException, ParseIOException
 	{
-		return parseResourceList(reader, baseURI, end, null);	//parse the list with no context
+		return parseResourceList(reader, baseURI, listEnd, null);	//parse the list with no context
 	}
 
 	/**Parses a list of resources.
@@ -498,14 +522,14 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 	The new position will be that of the first non-separator character after the list of resources or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param end The character that marks the end of the list.
+	@param listEnd The character that marks the end of the list.
 	@param contextURI The URI serving as context in case the default namespace needs to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
-	@return The resource parsed from the reader.
+	@return The resources in the list parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if a resource in the list is missing, or if the reader has no more characters before a resource in the list is completely parsed.
 	*/
-	public Resource[] parseResourceList(final Reader reader, final URI baseURI, final char end, final URI contextURI) throws IOException, ParseIOException
+	public List<Resource> parseResourceList(final Reader reader, final URI baseURI, final char listEnd, final URI contextURI) throws IOException, ParseIOException
 	{
 		final List<Resource> resourceList=new ArrayList<Resource>();	//create a new list in which to place the resources
 		int c=skipSeparators(reader);	//skip separators and peek the next character
@@ -514,11 +538,11 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 //TODO del		while(c>=0 &&)	//while we are not out of data
 //TODO del if not needed		while(indexOf(RESOURCE_BEGINS, c)>=0)	//while there is another resource to parse
 //TODO del		while(indexOf(RESOURCE_BEGINS, c)>=0)	//while there is another resource to parse
-		while(c>=0 && c!=end)	//while the end of the data has not been reached and there is another resource to parse
+		while(c>=0 && c!=listEnd)	//while the end of the data has not been reached and there is another resource to parse
 		{
 			final Resource resource=parseResource(reader, baseURI, contextURI);	//parse another resource, providing the context URI, if any
 //Debug.trace("parsed resource from list", resource);
-			resourceList.add(resource);	//parse another resource and add it to the list
+			resourceList.add(resource);	//add the resource to the list of resources
 			c=skipSeparators(reader);	//skip separators and peek the next character
 //Debug.trace("after resource, peeked", (char)c);
 			if(c==LIST_DELIMITER)	//if this is a list delimiter
@@ -532,7 +556,7 @@ for(final Assertion assertion:getAssertions())	//look at the assertions
 			}
 		}
 //Debug.trace("ready to return list of resources for end", end, "next character", (char)peek(reader));
-		return resourceList.toArray(new Resource[resourceList.size()]);	//return the parsed resources
+		return resourceList;	//return the parsed resources
 	}
 
 	/**Parses a label surrounded by label delimiters.

@@ -543,7 +543,7 @@ if(isList || isSet)
 				}
 				else	//if we haven't yet started the properties section
 				{
-					writer.write(TYPE_BEGIN);	//start the type declaration
+					writer.write(TYPES_BEGIN);	//start the type declaration
 					propertyContextURI=typeURI;	//use this first type URI as the context URI for properties
 				}
 				generateResource(writer, urf, referenceMap, resource, TYPE_PROPERTY_URI, type, false, null);	//write the type; don't allow namespace inheritance of name references
@@ -551,7 +551,7 @@ if(isList || isSet)
 			}
 			if(shortTypeCount>0)	//if we generated any short form types
 			{
-				writer.write(TYPE_END);	//end the type declaration
+				writer.write(TYPES_END);	//end the type declaration
 				generatedComponent=true;	//indicate that we generated a component
 			}
 		}
