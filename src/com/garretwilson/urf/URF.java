@@ -3,7 +3,6 @@ package com.garretwilson.urf;
 import java.io.*;
 import java.net.URI;
 import java.util.*;
-
 import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.*;
@@ -17,7 +16,6 @@ import com.garretwilson.lang.ClassUtilities;
 import com.garretwilson.lang.LongUtilities;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
-
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
@@ -39,9 +37,9 @@ This implementation by default registers the following namespace factories for t
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:
-"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>.
-Written by Garret Wilson <http://www.garretwilson.com/>."
-Any redistribution of source code must include these comments unmodified.</p>
+"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing
+written by Garret Wilson <http://www.garretwilson.com/> and Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>."
+Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
 public class URF 
@@ -50,8 +48,6 @@ public class URF
 	/**The name of URF.*/
 	public final static String URF_NAME="URF";
 	
-	/**The recommended label for the URF namespace.*/
-//TODO del	public final static String URF_NAMESPACE_LABEL="urf";
 	/**The URI to the URF namespace.*/
 	public final static URI URF_NAMESPACE_URI=URI.create("http://urf.name/urf");
 	/**The base to the URF lexical namespace.*/
@@ -167,26 +163,19 @@ public class URF
 	*/
 	public static URI createResourceURI(final URI namespaceURI, final String localName)
 	{
-//Debug.trace("creating URI from namespace", namespaceURI, "and local name", localName);
 		if(namespaceURI.getRawFragment()!=null)	//if the supposed namespace URI has a fragment (namespaces can't have fragments)
 		{
 			throw new IllegalArgumentException("Invalid namespace URI: "+namespaceURI);
 		}
 		final String namespaceURIString=namespaceURI.toString();	//get the string form of the namespace
-//Debug.trace("namespace URI string", namespaceURIString);
-
 		final String encodedLocalName=encodeURI(localName);	//encode the local name
-//Debug.trace("encoded local name", encodedLocalName);
-
 		final int namespaceURIStringLength=namespaceURIString.length();	//get the length of the namespace URI string
 		if(namespaceURIStringLength>0 && namespaceURIString.charAt(namespaceURIStringLength-1)==PATH_SEPARATOR)	//if the string ends with a path separator
 		{
-//Debug.trace("ready to append local name");
 			return URI.create(namespaceURIString+encodedLocalName);	//append the encoded name to the URI
 		}
 		else	//if the string ends with any other character
 		{
-//Debug.trace("ready to add local name as fragment");
 			return resolveFragment(namespaceURI, encodedLocalName);	//add the local name as a fragment
 		}
 	}
@@ -484,8 +473,6 @@ public class URF
 		<dt>{@link Locale}</dt> <dd>{@value URIConstants#INFO_SCHEME_LANG_NAMESPACE}</dd>
 	</dl>
 	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
-//TODO del	@param typeClass The class of the requested type, which must be either the class of the given object, an assignable class,
-//TODO del		or the class of a type to which the object can be converted.
 	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
 	@exception IllegalArgumentException if the given URI represents an object but does not have the correct syntax for that object.
 	@exception ClassNotFoundException if the class represented by the given resource could not be found.
@@ -1102,7 +1089,7 @@ public class URF
 	}
 	
 	/**Converts an URF resource to a string for debugging purposes.
-	@param resource The RDF resource to represent as a string.
+	@param resource The URF resource to represent as a string.
 	@return A string representation of the URF resource.
 	*/
 	public static String toString(final URFResource resource)
@@ -1375,20 +1362,16 @@ public class URF
 	*/
 	public URFResource createResource(final URI resourceURI, final URI... typeURIs)
 	{
-//Debug.trace("ready to create resource", resourceURI);
 		URFResourceFactory selectedResourceFactory=DEFAULT_RESOURCE_FACTORY;	//we'll try to find a matching resource factory; if we can't, we'll use the default resource factory
 		URI selectedTypeURI=null;	//we'll remember the type URI used for finding the resource factory		
 		for(final URI typeURI:typeURIs)	//for each type URI
 		{
-//Debug.trace("looking at type URI", typeURI);
 			final URI typeNamespaceURI=getNamespaceURI(typeURI);	//try to get the namespace of this type
 			if(typeNamespaceURI!=null)	//if this type URI is in a namespace
 			{
-//Debug.trace("looking at type namespace URI", typeNamespaceURI);
 				final URFResourceFactory resourceFactory=getResourceFactory(typeNamespaceURI); //get a resource factory for this namespace
 				if(resourceFactory!=null) //if we have a resource factory for this namespace
 				{
-//Debug.trace("found resource factory", resourceFactory);
 					selectedResourceFactory=resourceFactory;	//note the resource factory
 					selectedTypeURI=typeURI;	//note the type URI
 				}
@@ -1403,6 +1386,7 @@ public class URF
 	/**Looks at all the scopes in the URF data model and recursively gathers which scopes reference which other resources.
 	Circular references are correctly handled.
 	The returned map and the associated sets use identity rather than equality to store resources, as some resources may be anonymous.
+	This method considers "reference" to include the relationship of a scope to a property and of a scope to a value.
 	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource.
 	@return The map of resources and associated referring scopes.
 	*/
@@ -1420,6 +1404,7 @@ public class URF
 	/**Looks at the scope and all its properties and recursively gathers which scopes reference which other resources.
 	Circular references are correctly handled.
 	The returned map and the associated sets use identity rather than equality to store resources, as some resources may be anonymous.
+	This method considers "reference" to include the relationship of a scope to a property and of a scope to a value.
 	@param scope The scope for which references should be gathered for the scope and all child scopes and resources that are property values of this resource's properties, and so on.
 	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
 	@param referrerScopeSet The set of referrers the properties and scopes of which have been traversed, the checking of which prevents circular reference problems.
@@ -1440,7 +1425,7 @@ public class URF
 				final URFResource propertyResource=getResource(propertyURI);	//see if there is a resource in this data model corresponding to the given property
 				if(propertyResource!=null)	//if we know the property resource
 				{
-					referenceMap.addItem(propertyResource, scope);	//note that this scope references this property TODO clarify that "reference" includes properties and values of a scope
+					referenceMap.addItem(propertyResource, scope);	//note that this scope references this property
 				}
 				final URFResource value=property.getValue();	//get the property value
 				referenceMap.addItem(value, scope);	//note that this scope references this value
@@ -1468,11 +1453,9 @@ public class URF
 	/**The default resource factory for the URF ontology.
 	This resource factory can create the following types of resource objects for the given types:
 	<dl>
-		<dt>Object returned by URF#asObject(URI)</dt> <dd>{@link DefaultURFValueResource}</dd>
 		<dt>{@value #LIST_CLASS_URI}</dt> <dd>{@link URFListResource}</dd>
 		<dt>{@value #SET_CLASS_URI}</dt> <dd>{@link URFSetResource}</dd>
 	</dl>
-	@see URF#asObject(URI)
 	*/
 	public final static DefaultURFResourceFactory DEFAULT_URF_RESOURCE_FACTORY=new DefaultURFResourceFactory()
 			{
@@ -1486,21 +1469,6 @@ public class URF
 				*/
 				public URFResource createResource(final URI resourceURI, final URI typeURI)
 				{
-/*TODO del; remove ValueResource hierarchy altogether
-					if(resourceURI!=null && isLexicalURI(resourceURI))	//if we have a lexical resource URI
-					{
-						final URI lexicalTypeURI=getLexicalTypeURI(resourceURI);	//get the lexical type of the resource URI
-						if(!lexicalTypeURI.equals(typeURI))	//if the given type doesn't equal the lexical type
-						{
-							throw new IllegalArgumentException("Specified type URI "+typeURI+" doesn't match type URI "+lexicalTypeURI+" of given lexical URI "+resourceURI);
-						}
-						final Object object=asObject(resourceURI);	//try to get an object for the resource URI
-						if(object!=null)	//if we found an object to represent the URI
-						{
-							return new DefaultURFValueResource<Object>(resourceURI, object);	//create a value resource to represent the object
-						}
-					}
-*/
 					if(LIST_CLASS_URI.equals(typeURI))	//if this is a list
 					{
 						return new URFListResource<URFResource>(resourceURI);	//create a new list

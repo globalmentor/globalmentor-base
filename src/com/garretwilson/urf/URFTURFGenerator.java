@@ -1,8 +1,6 @@
 package com.garretwilson.urf;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.net.URI;
 import java.util.*;
 import static java.util.Collections.*;
@@ -19,6 +17,12 @@ import com.garretwilson.util.*;
 import static com.garretwilson.util.CollectionUtilities.*;
 
 /**Generates TURF from URF.
+<p>Copyright © 2007 GlobalMentor, Inc.
+This source code can be freely used for any purpose, as long as the following conditions are met.
+Any object code derived from this source code must include the following text to users using along with other "about" notifications:
+"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing
+written by Garret Wilson <http://www.garretwilson.com/> and Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>."
+Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
 public class URFTURFGenerator
@@ -253,7 +257,7 @@ public class URFTURFGenerator
 	}
 
 	/**Base URI, formatted, and namespace labek manager constructor.
-	@param baseURI The base URI of the RDF data model, or <code>null</code> if the base URI is unknown.
+	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
 	@param formatted Whether output is formatted.
 	@param namespaceLabelManager The manager of namespaces and labels.
 	@excepion NullPointerException if the given namespace label manager is <code>null</code>.
@@ -441,15 +445,8 @@ public class URFTURFGenerator
 		{
 			setGenerated(resource, true);	//note that the resource has been generated so that any recursive references won't regenerate the entire resoure again
 		}
-//Debug.trace("generating resource with scope", scopeSubject, "predicate URI", scopePredicateURI, "and resource", resource);
 		boolean generatedComponent=false;	//we haven't generated any components, yet
 		URI lexicalTypeURI=null;	//the lexical namespace type URI, if any
-/*TODO del
-		final boolean isList=resource.hasTypeURI(LIST_CLASS_URI);	//see if this resource is a list
-		boolean isListShortForm=isShortListsGenerated() && (isList || resource.hasNamespaceProperty(ORDINAL_NAMESPACE_URI));	//generate a list short form if this is a list or it has properties in the ordinal namespace
-		final boolean isSet=resource.hasTypeURI(SET_CLASS_URI);	//see if this resource is a set
-		boolean isSetShortForm=isShortSetsGenerated() && (isSet || resource.hasProperty(ELEMENT_PROPERTY_URI));	//generate a set short form if this is a set or it has properties in the element namespace
-*/
 		final URI uri=resource.getURI();	//get the resource URI
 		String label=getLabel(resource);	//see if there is a label for this resource
 		if(label==null && uri==null && !isGenerated)	//if there is no label or URI for this resource and the resource hasn't yet been generated
@@ -471,7 +468,6 @@ public class URFTURFGenerator
 			//reference
 		if(uri!=null)
 		{
-//Debug.trace("got resource URI:", uri);
 			if(isLexicalURI(uri))	//if this URI is in a lexical namespace
 			{
 				lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI so that we don't generate it again
@@ -508,19 +504,8 @@ public class URFTURFGenerator
 				}
 			}
 		}
-/*TODO del
-if(isList || isSet)
-{
-	
-	Debug.trace("is list", isList, "is set", isSet, "hasNonListNonSetType", hasNonListNonSetType, "hasNonSetType", hasNonSetType);
-}
-*/
 		boolean isListShortForm=isShortListsGenerated() && (isList || (resource.hasNamespaceProperty(ORDINAL_NAMESPACE_URI) && hasNonListType));	//generate a list short form if this is a list or it has properties in the ordinal namespace (but only if there is some other type already present; otherwise, it would introduce a list type where none was specified)
 		boolean isSetShortForm=isShortSetsGenerated() && (isSet || (resource.hasProperty(ELEMENT_PROPERTY_URI) && (hasNonSetType || isListShortForm)));	//generate a set short form if this is a set or it has properties in the element namespace (but only if there is some other type; otherwise, it would introduce a set type where none was specified)
-/*TODO del
-		boolean isListShortForm=isShortListsGenerated() && (isList || (resource.hasNamespaceProperty(ORDINAL_NAMESPACE_URI) && !hasNonListNonSetType));	//generate a list short form if this is a list or it has properties in the ordinal namespace (but only if there are no other types; it would introduce a list type where none was specified)
-		boolean isSetShortForm=isShortSetsGenerated() && (isSet || (resource.hasProperty(ELEMENT_PROPERTY_URI) && (!hasNonSetType || (isListShortForm && !hasNonListNonSetType))));	//generate a set short form if this is a set or it has properties in the element namespace (but only if there are no other types; it would introduce a set type where none was specified)
-*/
 		URI typeContextURI=null;	//we'll find the first type URI and use it for a context URI for init, properties, lists elements, and sets
 			//type
 		final boolean isShortTypesGenerated=isShortTypesGenerated();	//see if we should generate types in the short form
@@ -794,16 +779,12 @@ if(isList || isSet)
 	*/
 	public static URI generateReference(final Writer writer, final URI uri, final URI contextURI, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI) throws IOException
 	{
-//Debug.trace("ready to write reference for URI", uri);
 		URI lexicalTypeURI=null;	//keep track of whether a lexical type URI was generated
 		if(isLexicalURI(uri))	//if this URI is in a lexical namespace
 		{
-//Debug.trace("is lexical URI");
 			lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI so that we don't generate it again
-//Debug.trace("is lexical URI with lexical type", lexicalTypeURI);
 			final String lexicalForm=getLocalName(uri);	//get the lexical form of the lexical type
 			assert lexicalForm!=null : "A lexical namespace URI should always have a lexical form.";
-//Debug.trace("lexical resource with type:", lexicalTypeURI);
 			if(BINARY_CLASS_URI.equals(lexicalTypeURI))	//binary
 			{
 				writer.append(BINARY_BEGIN).append(lexicalForm).append(BINARY_END);	//write the binary short form
@@ -892,9 +873,7 @@ if(isList || isSet)
 		writer.write(REFERENCE_BEGIN);	//start the URI reference
 		if(isLexicalURI(uri))	//if this URI is in a lexical namespace
 		{
-//Debug.trace("is lexical URI");
 			final URI lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI
-//Debug.trace("is lexical URI with lexical type", lexicalTypeURI);
 			final String lexicalForm=getLocalName(uri);	//get the lexical form of the lexical type
 			assert lexicalForm!=null : "A lexical namespace URI should always have a lexical form.";
 			writeString(writer, lexicalForm);	//write the string lexical form

@@ -9,6 +9,12 @@ import static com.garretwilson.urf.select.Select.*;
 This is a convenience class; identical functionality may be obtained by using an {@link ObjectPropertySelector} with a property name of "class"
 and a {@link URISelector} subselector specifying the class's URI.
 This implementation lazily caches any selected class, so that any later updates to the selected class will not be reflected in {@link #getSelectClass()}.
+<p>Copyright © 2007 GlobalMentor, Inc.
+This source code can be freely used for any purpose, as long as the following conditions are met.
+Any object code derived from this source code must include the following text to users using along with other "about" notifications:
+"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing
+written by Garret Wilson <http://www.garretwilson.com/> and Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>."
+Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
 public class ObjectClassSelector extends AbstractSelector

@@ -12,6 +12,12 @@ import static com.garretwilson.util.IteratorUtilities.*;
 import static com.garretwilson.urf.URF.*;
 
 /**Abstract implementation of a scope of URF properties.
+<p>Copyright © 2007 GlobalMentor, Inc.
+This source code can be freely used for any purpose, as long as the following conditions are met.
+Any object code derived from this source code must include the following text to users using along with other "about" notifications:
+"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing
+written by Garret Wilson <http://www.garretwilson.com/> and Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>."
+Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
 public abstract class AbstractURFScope extends ReadWriteLockDecorator implements URFScope
@@ -127,9 +133,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		readLock().lock();	//get a read lock
 		try
 		{
-//Debug.trace("checking for scope", propertyURI, propertyValue);
 			final List<URFValueContext> valueContextList=propertyURIValueContextsMap.get(propertyURI);	//get the list of value contexts
-//Debug.trace("got value context list for", propertyURI, valueContextList);
 			if(valueContextList!=null)	//if there is a value context for this property URI
 			{
 				for(final URFValueContext valueContext:valueContextList)	//look at each value context

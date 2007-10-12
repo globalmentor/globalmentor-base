@@ -8,6 +8,12 @@ import com.garretwilson.urf.*;
 import com.garretwilson.util.DataException;
 
 /**Class for loading and saving a type of Java object to and from a TURF instance.
+<p>Copyright © 2007 GlobalMentor, Inc.
+This source code can be freely used for any purpose, as long as the following conditions are met.
+Any object code derived from this source code must include the following text to users using along with other "about" notifications:
+"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing
+written by Garret Wilson <http://www.garretwilson.com/> and Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>."
+Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @param <T> The type to read and write.
 @author Garret Wilson
 */
@@ -39,15 +45,15 @@ public class PLOOPTURFIO<T> extends AbstractTURFIO<T>
 		final T object;
 		try
 		{
-			object=ploopProcessor.getObject(urf, getObjectClass());	//create and retrieve the object from the RDF instance
+			object=ploopProcessor.getObject(urf, getObjectClass());	//create and retrieve the object using the URF instance
 		}
 		catch(final DataException dataException)	//if the data was incorrect
 		{
-			throw (IOException)new IOException(dataException.getMessage()).initCause(dataException);	//convert the exception into an IO exception			
+			throw new IOException(dataException);			
 		}
 		catch(final InvocationTargetException invocationTargetException)	//if a Java contructor threw an exception
 		{
-			throw (IOException)new IOException(invocationTargetException.getMessage()).initCause(invocationTargetException);	//convert the exception into an IO exception			
+			throw new IOException(invocationTargetException);			
 		}
 		if(object==null)	//if there is no resource
 		{
@@ -64,19 +70,17 @@ public class PLOOPTURFIO<T> extends AbstractTURFIO<T>
 	*/
 	public void write(final OutputStream outputStream, final URI baseURI, final T object) throws IOException
 	{
-/*TODO convert to URF
-		final PLOOPRDFGenerator rdfGenerator=new PLOOPRDFGenerator();	//create a new PLOOP RDF generator
-		final RDFResource resource;
+		final PLOOPURFGenerator urfGenerator=new PLOOPURFGenerator();	//create a new PLOOP URF generator
+		final URFResource resource;
 		try
 		{
-			resource=rdfGenerator.generateRDFResource(object);	//generate the RDF resource
+			resource=urfGenerator.generateURFResource(object);	//generate the URF resource
 		}
 		catch(final InvocationTargetException invocationTargetException)	//if a Java contructor throw an exception
 		{
-			throw (IOException)new IOException(invocationTargetException.getMessage()).initCause(invocationTargetException);	//convert the exception into an IO exception			
+			throw new IOException(invocationTargetException);			
 		}
-		writeRDFResource(outputStream, baseURI, resource);	//write the generated RDF resource
-*/
+		writeTURFResource(outputStream, baseURI, resource);	//write the generated URF resource
 	}
 
 }

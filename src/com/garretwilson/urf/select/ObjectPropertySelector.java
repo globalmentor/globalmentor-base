@@ -9,6 +9,12 @@ import static com.garretwilson.urf.select.Select.*;
 
 /**A selector that selects an object based upon a runtime property value (as opposed to an URF property value).
 The property specified by this selector is used to retrieve a property value from the given object and compare it with the specified selector in this class.
+<p>Copyright © 2007 GlobalMentor, Inc.
+This source code can be freely used for any purpose, as long as the following conditions are met.
+Any object code derived from this source code must include the following text to users using along with other "about" notifications:
+"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing
+written by Garret Wilson <http://www.garretwilson.com/> and Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>."
+Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
 public class ObjectPropertySelector extends AbstractSelector

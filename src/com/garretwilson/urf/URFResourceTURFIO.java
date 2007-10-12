@@ -9,6 +9,12 @@ import static com.garretwilson.net.URIUtilities.*;
 /**Class for saving and loading an URF resource by its reference URI.
 Whenever an URF instance is read, a resource will be retrieved using the given URI, resolved against the given base URI if one is available.
 Resolution of a URI against the base URI is performed according to TURF resolution rules.
+<p>Copyright © 2007 GlobalMentor, Inc.
+This source code can be freely used for any purpose, as long as the following conditions are met.
+Any object code derived from this source code must include the following text to users using along with other "about" notifications:
+"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing
+written by Garret Wilson <http://www.garretwilson.com/> and Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>."
+Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @param <T> The type to read and write.
 @author Garret Wilson
 */

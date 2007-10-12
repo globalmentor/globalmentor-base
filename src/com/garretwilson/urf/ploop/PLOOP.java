@@ -6,20 +6,16 @@ import static com.garretwilson.lang.ClassUtilities.*;
 import static com.garretwilson.urf.URF.*;
 
 /**General PLOOP definitions.
+<p>Copyright © 2007 GlobalMentor, Inc.
+This source code can be freely used for any purpose, as long as the following conditions are met.
+Any object code derived from this source code must include the following text to users using along with other "about" notifications:
+"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing
+written by Garret Wilson <http://www.garretwilson.com/> and Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>."
+Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
 public class PLOOP
 {
-
-	/**The recommended prefix to the PLOOP namespace.*/
-//TODO del	public final static String PLOOP_NAMESPACE_PREFIX="ploop";
-	/**The URI to the PLOOP namespace.*/
-//TODO del	public final static URI PLOOP_NAMESPACE_URI=URI.create("http://ploop.org/namespaces/ploop");
-
-	/**The recommended prefix to the PLOOP property ontology namespace.*/
-//TODO del	public final static String PLOOP_PROPERTY_NAMESPACE_PREFIX="property";
-	/**The URI to the PLOOP property ontology namespace.*/
-//TODO del	public final static URI PLOOP_PROPERTY_NAMESPACE_URI=URI.create("http://ploop.org/namespaces/property#");
 
 	/**Determines the URF property URI for a property of a given object.
 	@param object The object for which a property URI should be determined.

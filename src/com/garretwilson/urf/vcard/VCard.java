@@ -15,6 +15,12 @@ import static com.garretwilson.urf.dcmi.DCMI.*;
 
 /**The URF ontology to represent a vCard <code>text/directory</code> profile as defined in
 	<a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>, "vCard MIME Directory Profile".
+<p>Copyright © 2007 GlobalMentor, Inc.
+This source code can be freely used for any purpose, as long as the following conditions are met.
+Any object code derived from this source code must include the following text to users using along with other "about" notifications:
+"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing
+written by Garret Wilson <http://www.garretwilson.com/> and Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>."
+Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
 public class VCard
@@ -54,7 +60,7 @@ public class VCard
 	public static void setName(final URFResource resource, final Name name)
 	{
 		checkInstance(name, "Name cannot be null.");
-		final URFResource nResource=new DefaultURFResource(null, N_CLASS_URI);	//create the vcard.N resource
+		final URFResource nResource=new DefaultURFResource((URI)null, N_CLASS_URI);	//create the vcard.N resource
 		final Locale locale=name.getLocale();	//get the name locale, if any
 		if(locale!=null)	//if there is a locale
 		{

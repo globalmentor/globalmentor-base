@@ -15,9 +15,7 @@ import com.garretwilson.net.*;
 import static com.garretwilson.net.URIUtilities.*;
 
 import com.garretwilson.urf.*;
-import com.garretwilson.util.CollectionUtilities;
-import com.garretwilson.util.DataException;
-import com.garretwilson.util.Debug;
+import com.garretwilson.util.*;
 
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.ploop.PLOOP.*;
@@ -30,6 +28,12 @@ import com.guiseframework.style.Color;
 <p>This processor is not thread safe.</p>
 <p>This processor recognizes the {@link Resource} type; when this class is present with a single URI parameter constructor, that constructor will take precedence using the resource URI value.</p>
 <p>This processor also recognizes the {@link URFResource} type and will transfer all non-PLOOP properties when an instance is encountered.</p>
+<p>Copyright © 2007 GlobalMentor, Inc.
+This source code can be freely used for any purpose, as long as the following conditions are met.
+Any object code derived from this source code must include the following text to users using along with other "about" notifications:
+"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing
+written by Garret Wilson <http://www.garretwilson.com/> and Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>."
+Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
 public class PLOOPURFProcessor
@@ -174,7 +178,7 @@ public class PLOOPURFProcessor
 		{
 			final URFSetResource<?> urfSetResource=(URFSetResource<?>)resource;	//cast the object to a set
 				//TODO maybe get a read lock on the set
-			final Set<Object> set=new HashSet<Object>();	//create a new set TODO eventually create a list but later check to see if the setter will accept a collection
+			final Set<Object> set=new HashSet<Object>();	//create a new set TODO eventually create a set but later check to see if the setter will accept a collection
 			for(final URFResource urfSetElement:urfSetResource)	//for each URF resource in the set
 			{
 				set.add(getObject(urfSetElement));	//get or create an object from this URF set element and add it to our set
@@ -183,7 +187,6 @@ public class PLOOPURFProcessor
 		}
 		else	//if this is another type of resource, check the types for a Java type
 		{
-//TODO del Debug.trace("Creating object for URF object", URFUtilities.toString(resource));
 			Class<?> valueClass=null;	//we'll try to find a Java class from one of the types
 			final Iterator<URFResource> typeIterator=resource.getTypes().iterator();	//get an iterator to the types
 			while(valueClass==null && typeIterator.hasNext())	//while we haven't found a value class and we're not out of types
@@ -198,12 +201,9 @@ public class PLOOPURFProcessor
 					throw new DataException(classNotFoundException);
 				}
 			}
-//		TODO del Debug.trace("Loading class", valueClassName);
-//TODO del			final Object value;	//we'll determine the value by invoking the constructor
 			if(valueClass!=null)	//if we know the value class, try to constructd a Java object
 			{
 				final Map<URI, PropertyDescription> propertyDescriptionMap=getPropertyDescriptionMap(valueClass, resource);	//get the property descriptions from the resource description
-//Debug.trace("for value class", valueClass, "got property description map of size", propertyDescriptionMap.size());
 				final Constructor<?>[] constructors=valueClass.getConstructors();	//get all available constructors
 				if(resource.hasProperty(INIT_PROPERTY_URI))	//if this resource has any init properties indicating constructor arguments
 				{
@@ -218,13 +218,11 @@ public class PLOOPURFProcessor
 						final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
 						if(parameterTypes.length==argumentCount)	//if this constructor has the correct number of parameters
 						{
-//							TODO del Debug.trace("Looking at constructor with parameter count:", argumentCount);
 							boolean foundArguments=true;	//start out by assuming the parameters match
 							final Object[] arguments=new Object[argumentCount];	//create an array sufficient for the arguments
 							for(int parameterIndex=0; parameterIndex<argumentCount && foundArguments; ++parameterIndex)	//for each parameter, as long we we have matching parameters
 							{
 								final Class<?> parameterType=parameterTypes[parameterIndex];	//get this parameter type
-//								TODO del Debug.trace("Parameter", parameterIndex, "type: ", parameterType);
 								final Object argument=convertObject(inits.get(parameterIndex), parameterType);	//convert the init to the correct type
 								if(argument!=null)	//if we successfully converted this constructor argument
 								{
@@ -240,7 +238,6 @@ public class PLOOPURFProcessor
 							{
 								try
 								{
-//									TODO del Debug.trace("found constructor with the following arguments:", ArrayUtilities.toString(arguments));
 									final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
 									setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
 									return object;	//return the constructed and initialized object
@@ -285,10 +282,8 @@ public class PLOOPURFProcessor
 					final List<PropertyDescription> readOnlyProperties=new ArrayList<PropertyDescription>(propertyDescriptionMap.size());	//the set of read-only properties, which we may use in the constructor
 					for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
 					{
-//Debug.trace("property description", propertyDescription, "has setter", propertyDescription.getSetter());
 						if(propertyDescription.getSetter()==null)	//if there is no setter for this property, it is a read-only property; save it in case we can use it for the constructor
 						{
-//Debug.trace("for value class", valueClass, "found read-only property", propertyDescription);
 							readOnlyProperties.add(propertyDescription);	//add this property to the list of read-only properties
 						}
 					}
@@ -302,7 +297,6 @@ public class PLOOPURFProcessor
 							maxParameterCount=parameterCount;	//update the maximum parameter count
 						}
 					}
-		//			TODO del Debug.trace("ready to create object of type", valueClassName, "with constructors with max parameters", maxParameterCount);
 					for(int parameterCount=0; parameterCount<=maxParameterCount; ++parameterCount)	//find a constructor with the least number of parameters, starting with the default constructor, until we exhaust the available constructors
 					{
 						for(final Constructor<?> constructor:constructors)	//look at each constructor to find one with the correct number of parameters
@@ -331,7 +325,6 @@ public class PLOOPURFProcessor
 										{
 											if(parameterType.isAssignableFrom(defaultConstructorArgument.getClass()))	//if this default property argument will work for this parameter
 											{
-		//										TODO del Debug.trace("matches!");
 												arguments[parameterIndex]=defaultConstructorArgument;	//use this default constructor argument in the constructor
 												foundArgument=true;	//show that we found an argument
 												break;	//stop looking for the argument
@@ -347,7 +340,6 @@ public class PLOOPURFProcessor
 								{
 									try
 									{
-		//								TODO del Debug.trace("found constructor with the following arguments:", ArrayUtilities.toString(arguments));
 										final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
 										setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
 										return object;	//return the constructed and initialized object
@@ -429,7 +421,6 @@ public class PLOOPURFProcessor
 	*/
 	protected void setObjectProperties(final Object object, final URFResource resource, final Map<URI, PropertyDescription> propertyDescriptionMap) throws DataException, InvocationTargetException
 	{
-//TODO del		for(final Map.Entry<URI, PropertyDescription> propertyDescription:propertyDescriptionMap.entrySet())	//for each property description entry
 		for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
 		{
 			final Method setter=propertyDescription.getSetter();	//get the setter method for this property
@@ -564,7 +555,6 @@ public class PLOOPURFProcessor
 	The returned property description will indicate a setter method if the property is settable.
 	@param objectClass The class of the object to be updated.
 	@param propertyName The name of the property potentially representing an object property.
-//TODO del	@param propertyURI The URI of the URF property potentially representing a Guise object property.
 	@param propertyValueResource The value of the URF property potentially representing a object property.
 	@return A description of the property, or <code>null</code> if the property is not recognized.
 	@exception NullPointerException if the given object class and/or property name is <code>null</code>.
@@ -575,37 +565,23 @@ public class PLOOPURFProcessor
  	@exception DataException if a resource indicates a Java class the constructor of which is not accessible.
 	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
 	*/
-	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, /*TODO del final URI propertyURI, */final String propertyName, final URFResource propertyValueResource) throws DataException, InvocationTargetException
+	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, final String propertyName, final URFResource propertyValueResource) throws DataException, InvocationTargetException
 	{
-//Debug.trace("ready to get property description for property", propertyName, "with resource value", propertyValueResource);
 		Object propertyValue=getObject(propertyValueResource);	//get the appropriate value for the property TODO get the type and save it somewhere, because this may return null
 		final Class<?> propertyValueType=propertyValue.getClass();	//get the type of the value
-//TODO del		final String variableName=getLocalName(propertyURI);	//get the local name of the property
-//		TODO del 	Debug.trace("looking at property name:", variableName);
-/*TODO fix
-			final String setterMethodName=getSetterMethodName(variableName);	//get the setter method name based upon the variable name
-//		TODO del Debug.trace("setter: ", setterMethodName);
-Debug.trace("setter: ", setterMethodName);
-*/
 			//try to find a compatible setter method; get the variable name from each supposed setter in case the setter has multiple capital letters, such as setID()
 		final Method[] methods=objectClass.getMethods();	//get all the class methods
 		for(final Method method:methods)	//for each method
 		{
-//Debug.trace("looking at method:", method.getName());
-//TODO del when works				if(method.getName().equals(setterMethodName))	//if this has the setter name
 			if(propertyName.equals(getSetterPropertyName(method.getName())))	//if we could consider this method a setter for the variable we have 
 			{
-//Debug.trace("found setter", propertyName);
 				final Class<?>[] parameterTypes=method.getParameterTypes();	//get the parameter types for this method
 				if(parameterTypes.length==1)	//if this setter has one parameter
 				{
-//Debug.trace("this setter has one param");
 					final Class<?> parameterType=parameterTypes[0];	//get the single parameter type
-						//TODO don't convert the object if this is a typed literal; instead, accept whatever type was given
 					final Object value=convertObject(propertyValue, parameterType);	//convert the object to the correct type
 					if(value!=null)	//if we found a parameter to use for this method
 					{
-//Debug.trace("property value has correct type for setter:", parameterType, "property value:", value);
 						return new PropertyDescription(parameterType, value, method);	//return a description of this property with the method and parameter
 					}
 				}
@@ -613,21 +589,14 @@ Debug.trace("setter: ", setterMethodName);
 		}
 			//if no setter could be found, try to find a getter method to verify this is a property that can be set
 			//get the variable name from each supposed getter in case the getter has multiple capital letters, such as getID()
-//TODO del when works			final String getterMethodName=getGetterMethodName(variableName);	//get the getter method name based upon the variable name
-//TODO del Debug.trace("getter: ", getterMethodName);
-//Debug.trace("to verify read-only property", propertyName, "look for a getter");
 		for(final Method method:methods)	//for each method
 		{
-//TODO del when works				if(method.getName().equals(getterMethodName) && method.getParameterTypes().length==0)	//if this has the getter name and no parameters
 			if(propertyName.equals(getGetterPropertyName(method.getName())))	//if we could consider this method a getter for the variable we have 
 			{
 				final Class<?> returnType=method.getReturnType();	//get the return type of the getter
-//Debug.trace("found getter", propertyName, "for class", objectClass, "with return type", returnType);
 				final Object value=convertObject(propertyValue, returnType);	//convert the object to the getter return type, if we can
-//Debug.trace("converted", propertyValue, "to", value);
 				if(value!=null)	//if we can convert the property value to the getter return type
 				{
-//TODO del						Debug.trace("property value has correct type for getter:", returnType, "property value:", value);
 					return new PropertyDescription(value!=null ? value.getClass() : returnType, value);	//return a description of this property with just the value TODO see why covariant return types aren't working correctly; for now, we'll just get the value type directly
 				}
 			}
@@ -655,7 +624,6 @@ Debug.trace("setter: ", setterMethodName);
 		final Class<?> objectType=object.getClass();	//get the type of the object
 		if(requiredType.isAssignableFrom(objectType))	//if we expect this type (this algorithm could be improved to first try to find an exact match and then find a convertible match)
 		{
-//TODO del			Debug.trace("object has correct type:", requiredType);
 			return object;	//use the object as-is
 		}
 		else	//if we expect for another object type
@@ -709,8 +677,6 @@ Debug.trace("setter: ", setterMethodName);
 					}
 					else if(Enum.class.isAssignableFrom(requiredType))	//if the required type is an enumeration
 					{
-	//Debug.trace("Creating enum of type", requiredType);
-								//TODO document serialized enum form
 						return getSerializedEnum((Class<? extends Enum>)requiredType, stringObject);	//get the enum from its serialized form
 					}
 					else if(Pattern.class.isAssignableFrom(requiredType))	//if the required type is Pattern
@@ -721,7 +687,6 @@ Debug.trace("setter: ", setterMethodName);
 					{
 						return new URIPath(stringObject);	//create a URI path from the string
 					}
-					//TODO check for a string-compatible constructor
 				}
 			}
 			catch(final IllegalArgumentException illegalArgumentException)	//if there was a conversion error
@@ -738,12 +703,6 @@ Debug.trace("setter: ", setterMethodName);
 	 */
 	protected static class PropertyDescription
 	{
-
-		/**The URI identifying the property.*/
-//TODO del		private final URI propertyURI;	//TODO probably remove this
-
-			/**@return The URI identifying the property.*/
-//TODO del			public URI getPropertyURI() {return propertyURI;}
 
 		/**The class representing the property type.*/
 		private final Class<?> propertyClass;
@@ -764,14 +723,13 @@ Debug.trace("setter: ", setterMethodName);
 			public Method getSetter() {return setter;}
 
 		/**Value constructor.
-//TODO del		@param propertyURI The URI identifying the property.
 		@param propertyClass The class representing the property type.
 		@param value The property value.
 		@exception NullPointerException if the given property URI and/or property class is <code>null</code>.
 		*/
-		public PropertyDescription(/*TODO del final URI propertyURI, */final Class<?> propertyClass, final Object value)
+		public PropertyDescription(final Class<?> propertyClass, final Object value)
 		{
-			this(/*TODO del propertyURI, */propertyClass, value, null);	//construct the class with no setter
+			this(propertyClass, value, null);	//construct the class with no setter
 		}
 
 		/**Setter and value constructor.
@@ -780,9 +738,8 @@ Debug.trace("setter: ", setterMethodName);
 		@param value The property value.
 		@exception NullPointerException if the given property URI and/or property class is <code>null</code>.
 		*/
-		public PropertyDescription(/*TODO del final URI propertyURI, */final Class<?> propertyClass, final Object value, final Method setter)
+		public PropertyDescription(final Class<?> propertyClass, final Object value, final Method setter)
 		{
-//TODO del			this.propertyURI=checkInstance(propertyURI, "Property URI cannot be null.");
 			this.propertyClass=checkInstance(propertyClass, "Property class cannot be null.");
 			this.setter=setter;
 			this.value=value;

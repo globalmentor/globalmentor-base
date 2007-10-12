@@ -9,9 +9,15 @@ import static com.garretwilson.urf.TURF.*;
 import static com.garretwilson.urf.dcmi.DCMI.getTitle;
 
 /**The default implementation of an URF resource.
+<p>Copyright © 2007 GlobalMentor, Inc.
+This source code can be freely used for any purpose, as long as the following conditions are met.
+Any object code derived from this source code must include the following text to users using along with other "about" notifications:
+"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing
+written by Garret Wilson <http://www.garretwilson.com/> and Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>."
+Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
-public class DefaultURFResource extends AbstractURFScope implements URFResource	//TODO fix, Cloneable
+public class DefaultURFResource extends AbstractURFScope implements URFResource
 {
 
 	/**The URI, or <code>null</code> if there is no URI.*/
@@ -58,7 +64,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource	
 
 	/**Copy constructor with a specified URI.
 	All properties will be copied from the given resource to the new one.
-	@param resource The RDF resource from which resources should be copied.
+	@param resource The URF resource from which resources should be copied.
 	@param uri The URI for the new resource.
 	@exception NullPointerException if the given resource is <code>null</code>.
 	*/
