@@ -182,7 +182,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		{
 			case REFERENCE_BEGIN:
 				foundComponent=true;	//indicate that at least one description component is present
-				resourceURI=parseURI(reader, baseURI, REFERENCE_BEGIN, REFERENCE_END);	//parse the resource URI
+				resourceURI=parseURI(reader, baseURI, contextURI, REFERENCE_BEGIN, REFERENCE_END);	//parse the resource URI
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 			case BINARY_BEGIN:	//binary
@@ -241,7 +241,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				break;
 			case URI_BEGIN:	//URI
 				foundComponent=true;	//indicate that at least one description component is present
-				final URI uri=parseURI(reader, baseURI, URI_BEGIN, URI_END);	//parse the URI
+				final URI uri=parseURI(reader, baseURI, contextURI, URI_BEGIN, URI_END);	//parse the URI
 				resourceURI=createLexicalURI(URI_CLASS_URI, uri.toString());	//create a URI for the resource
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
@@ -849,8 +849,10 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	/**Parses a URI surrounded by specified URI delimiters.
 	The current position must be that of the first URI delimiter character.
 	The new position will be that immediately after the last URI delimiter character.
+	The URI is resolved to the base URI, if any
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param contextURI The URI serving as context in case the default namespace needs to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@param uriBegin The beginning URI delimiter.
 	@param uriEnd The ending URI delimiter.
 	@return The URI parsed from the reader.
@@ -859,52 +861,35 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	@exception ParseIOException if the reader has no more characters before the current URI is completely parsed.
 	@exception DataException if the URI is not of the correct format.
 	*/
-	public URI parseURI(final Reader reader, final URI baseURI, final char uriBegin, final char uriEnd) throws IOException, ParseIOException, DataException
+	public URI parseURI(final Reader reader, final URI baseURI, final URI contextURI, final char uriBegin, final char uriEnd) throws IOException, ParseIOException, DataException
 	{
 		check(reader, uriBegin);	//read the beginning URI delimiter
 		int c=peek(reader);	//peek the next character
 		final String lexicalForm;	//the lexical form, if any
-		if(c==STRING_BEGIN)	//check for a string
-		{
-			lexicalForm=parseString(reader, STRING_BEGIN,	STRING_END);	//parse the string
-			c=skipSeparators(reader);	//skip separators and peek the next character
-		}
-		else	//if no string was encountered
-		{
-			lexicalForm=null;	//show that there is no string
-		}
-		final String label;	//the label reference, if any
-		if(c==LABEL_BEGIN)	//check for a label
-		{
-			label=parseLabel(reader);	//parse the label
-			c=skipSeparators(reader);	//skip separators and peek the next character
-		}
-		else	//if no label was encountered
-		{
-			label=null;	//show that there is no label
-		}
+		final URI uri;	//we'll store the unresolve URI here
 		try
 		{
-			URI uri=new URI(reachAfter(reader, uriEnd));	//read the rest of the URI
-			if(label!=null)	//if we have a label, dereference that as a base URI and resolve this URI against it
+			if(c==STRING_BEGIN)	//check for a string
 			{
-				final Resource baseURIResource=getResourceProxy(label);	//lookup up the resource indicating the base URI
-				if(baseURIResource==null)	//if there is no resource yet defined for the base URI
+				lexicalForm=parseString(reader, STRING_BEGIN,	STRING_END);	//parse the string
+				skipSeparators(reader);	//skip separators
+				check(reader, TYPES_BEGIN);	//read the beginning type delimiter, which must appear next
+				skipSeparators(reader);	//skip separators
+				final Resource type=parseResource(reader, baseURI, null, null, null, contextURI);	//parse the type resource, indicating the context so that name short forms may be used
+				final URI typeURI=type.getURI();	//get the URI of the type
+				if(typeURI==null)	//if no type URI was provided
 				{
-					throw new DataException("No base URI resource defined for label "+label+".");
+					throw new DataException("Lexical form \""+lexicalForm+"\" provided no type URI.");
 				}
-				final URI localBaseURI=toURI(reader, baseURIResource);	//determine the base URI from the base URI resource
-				uri=resolve(localBaseURI, uri);	//resolve the URI against the local base URI
+				check(reader, TYPES_END);	//read the ending type delimiter
+				skipSeparators(reader);	//skip separators and peek the next character
+				check(reader, uriEnd);	//read the ending URI delimiter
+				uri=createLexicalURI(typeURI, lexicalForm);	//create a lexical URI using the lexical form and the type URI
 			}
-			if(lexicalForm!=null)	//if we have a lexical form, use the existing URI as a type and create a lexical URI
+			else	//if no string was encountered
 			{
-				uri=createLexicalURI(uri, lexicalForm);	//create a lexical URI using the lexical form and the type URI
+				uri=new URI(reachAfter(reader, uriEnd));	//read the rest of the URI normally
 			}
-			if(baseURI!=null)	//if there is a base URI
-			{
-				uri=resolve(baseURI, uri);	//resolve the URI against the base URI
-			}
-			return uri;	//return the resulting URI
 		}
 		catch(final IllegalArgumentException illegalArgumentException)	//if we couldn't create a correct lexical URI
 		{
@@ -914,6 +899,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		{
 			throw new DataException(uriSyntaxException);
 		}
+		return baseURI!=null ? resolve(baseURI, uri) : uri;	//return the URI, resolved against the base URI if there is a base URI
 	}
 
 	/**Determines the URI represented by the given resource.

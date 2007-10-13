@@ -729,12 +729,12 @@ public class URFTURFGenerator
 	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@exception NullPointerException if the given writer and/or URI is <code>null</code>.
 	@exception IOException if there was an error writing to the writer.
-	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI)
+	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
 	@see #markReferenceGenerated(URF, URI)
 	*/
 	public void generateReference(final Writer writer, final URF urf, final URI uri, final URI contextURI) throws IOException
 	{
-		final URI lexicalTypeURI=generateReference(writer, uri, isInheritedNamespacePrefixesSuppressed() ? contextURI : null, namespaceLabelManager, baseURI);	//generate a reference, keeping track of the lexical type URI generated, if any
+		final URI lexicalTypeURI=generateReference(writer, uri, namespaceLabelManager, baseURI, isInheritedNamespacePrefixesSuppressed() ? contextURI : null);	//generate a reference, keeping track of the lexical type URI generated, if any
 		if(lexicalTypeURI!=null)	//if a lexical URI was generated
 		{
 			markReferenceGenerated(urf, lexicalTypeURI);	//mark that this lexical type was generated unless it has some other quality needed to be generated separately
@@ -744,19 +744,19 @@ public class URFTURFGenerator
 	/**Creates and returns a reference string to a resource with the given URI.
 	A name reference or short form will be used if appropriate.
 	@param uri The URI of the resource.
-	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context and/or namespace prefixes should not be suppressed; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
 	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
+	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context and/or namespace prefixes should not be suppressed; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@return A string reference to the resource with the given URI.
 	@exception NullPointerException if the given URI and/or namespace label manager is <code>null</code>.
-	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI)
+	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
 	*/
-	public static String createReferenceString(final URI uri, final URI contextURI, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI)
+	public static String createReferenceString(final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final URI contextURI)
 	{
 		final StringWriter stringWriter=new StringWriter();	//create a new string writer for generating the reference
 		try
 		{
-			generateReference(stringWriter, uri, contextURI, namespaceLabelManager, baseURI);	//generate a reference into the string writer
+			generateReference(stringWriter, uri, namespaceLabelManager, baseURI, contextURI);	//generate a reference into the string writer
 		}
 		catch(final IOException ioException)	//we should never get an I/O exception writing to a string writer
 		{
@@ -769,15 +769,15 @@ public class URFTURFGenerator
 	A name reference or short form will be used if appropriate.
 	@param writer The writer used for generating the information.
 	@param uri The URI of the resource.
-	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context and/or namespace prefixes should not be suppressed; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
 	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
+	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context and/or namespace prefixes should not be suppressed; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@return The lexical type URI, if a reference to a lexical URI was generated, or <code>null</code> if no lexical resource URI reference was generated.
 	@exception NullPointerException if the given writer URI, and/or namespace label manager is <code>null</code>.
 	@exception IOException if there was an error writing to the writer.
-	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI)
+	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
 	*/
-	public static URI generateReference(final Writer writer, final URI uri, final URI contextURI, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI) throws IOException
+	public static URI generateReference(final Writer writer, final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final URI contextURI) throws IOException
 	{
 		URI lexicalTypeURI=null;	//keep track of whether a lexical type URI was generated
 		if(isLexicalURI(uri))	//if this URI is in a lexical namespace
@@ -844,7 +844,7 @@ public class URFTURFGenerator
 				return lexicalTypeURI;	//return the lexical type URI, if any
 			}
 		}
-		generateURIReference(writer, uri, namespaceLabelManager, baseURI);	//generate the URI reference normally by default
+		generateURIReference(writer, uri, namespaceLabelManager, baseURI, contextURI);	//generate the URI reference normally by default
 		return lexicalTypeURI;	//return the lexical type URI, if any
 	}
 
@@ -857,7 +857,7 @@ public class URFTURFGenerator
 	*/
 	public void generateURIReference(final Writer writer, URI uri) throws IOException
 	{
-		generateURIReference(writer, uri, getNamespaceLabelManager(), getBaseURI());	//generate the URI reference using our own namespace label manager and base URI
+		generateURIReference(writer, uri, getNamespaceLabelManager(), getBaseURI(), null);	//generate the URI reference using our own namespace label manager and base URI with no context
 	}
 	
 	/**Writes a URI reference to a resource with the given URI.
@@ -865,10 +865,11 @@ public class URFTURFGenerator
 	@param uri The URI of the resource.
 	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
 	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
+	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@exception NullPointerException if the given writer, URI, and/or namespace label manager is <code>null</code>.
 	@exception IOException if there was an error writing to the writer.
 	*/
-	public static void generateURIReference(final Writer writer, URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI) throws IOException
+	public static void generateURIReference(final Writer writer, URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final URI contextURI) throws IOException
 	{
 		writer.write(REFERENCE_BEGIN);	//start the URI reference
 		if(isLexicalURI(uri))	//if this URI is in a lexical namespace
@@ -877,30 +878,21 @@ public class URFTURFGenerator
 			final String lexicalForm=getLocalName(uri);	//get the lexical form of the lexical type
 			assert lexicalForm!=null : "A lexical namespace URI should always have a lexical form.";
 			writeString(writer, lexicalForm);	//write the string lexical form
-			uri=lexicalTypeURI;	//the lexical type is now the URI to write
+			writer.write(TYPES_BEGIN);	//start a type declaration
+			generateReference(writer, lexicalTypeURI, namespaceLabelManager, baseURI, contextURI);	//generate a reference to the lexical type
+			writer.write(TYPES_END);	//end the type declaration
 		}
-		if(baseURI!=null)	//if there is a base URI
+		else	//if this URI is not in a lexical namespace
 		{
-			uri=baseURI.relativize(uri);	//relativize the URI to the base URI if possible TODO check for labeled URIs
-		}
-		final URI namespaceURI=getNamespaceURI(uri);	//see if the URI has a namespace
-		if(namespaceURI!=null)	//if there is a namespace
-		{
-			final String prefix=namespaceLabelManager.get(namespaceURI);	//see if we have a prefix for this namespace
-			if(prefix!=null)	//if we have a prefix
+			if(baseURI!=null)	//if there is a base URI
 			{
-				final String localName=getLocalName(uri);	//get the local name of the URI
-				assert localName!=null : "If a URI has a namespace, it should have a local name as well.";
-				writeLabel(writer, prefix);	//write the prefix as a label
-				uri=URI.create(new StringBuilder().append(FRAGMENT_SEPARATOR).append(encodeURI(localName)).toString());	//use the encoded fragment as the remaining URI TODO fix to work with hierarchical namespaces
+				uri=baseURI.relativize(uri);	//relativize the URI to the base URI if possible
 			}
+			writer.write(uri.toString());	//write the relative URI
 		}
-		writer.write(uri.toString());	//write the relative URI
 		writer.write(REFERENCE_END);	//end the URI reference
 	}
-	
-	
-	
+
 	/**Marks a reference as generated if appropriate.
 	If a reference is to a resource with no properties, or the reference is a lexical URI and there is only a single type of the lexical type,
 	there will be no need to generate the resource in full form, so it will be marked as generated.
