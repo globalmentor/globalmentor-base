@@ -174,6 +174,37 @@ public class ReaderParser
 		return new String(characters);	//return a new string from the characters read 
 	}
 
+	/**Reads a given number of characters, throwing an error if the end of the reader was reached
+	or if a character in the string does not match a character in the given range.
+	@param reader The reader the contents of which to be parsed.
+	@param count The number of characters to read.
+	@param lowerBound The lowest character in the range.
+	@param upperBound The highest character in the range.	
+	@return The string representing the characters returned from the reader's {@link Reader#read()} operation.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IllegalArgumentException if the given count is less than zero.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if a character in the string does not fall within the given range or if the reader has no more characters.
+	*/
+	public static String readStringCheck(final Reader reader, final int count, final char lowerBound, final char upperBound) throws IOException, ParseIOException
+	{
+		checkMinimum(count, 0);	//make sure the count isn't negative
+		final char[] characters=new char[count];	//create a new buffer
+		if(reader.read(characters)!=count)	//read the characters; if all the character weren't read
+		{
+			throw new ParseIOException(reader, "End of data.");			
+		}
+		for(int i=0; i<count; ++i)	//look at each character
+		{
+			final char c=characters[i];	//look at this character
+			if(c<lowerBound || c>upperBound)	//if this character is not in the range
+			{
+				throw new ParseIOException(reader, "Expected character from "+(char)lowerBound+" to "+(char)upperBound+"; found "+(char)c+".");
+			}
+		}
+		return new String(characters);	//return a new string from the characters read 
+	}
+
 	/**Skips all characters in a reader until the given delimiter is passed.
 	The new position will be immediately after that of the given character.
 	@param reader The reader the contents of which to be parsed.

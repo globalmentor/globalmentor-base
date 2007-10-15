@@ -8,6 +8,7 @@ import static java.util.Collections.*;
 
 import com.garretwilson.io.ParseIOException;
 import static com.garretwilson.io.ReaderParser.*;
+
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
@@ -187,62 +188,116 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				break;
 			case BINARY_BEGIN:	//binary
 				foundComponent=true;	//indicate that at least one description component is present
-				final byte[] binary=parseBinary(reader);	//parse the binary data
-				resourceURI=createBinaryURI(binary);	//create a URI for the resource
+				{
+					final byte[] binary=parseBinary(reader);	//parse the binary data
+					resourceURI=createBinaryURI(binary);	//create a URI for the resource
+				}
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 			case BOOLEAN_BEGIN:	//boolean
 				foundComponent=true;	//indicate that at least one description component is present
-				final boolean b=parseBoolean(reader);	//parse the boolean
-				resourceURI=createLexicalURI(BOOLEAN_CLASS_URI, Boolean.toString(b));	//create a URI for the resource
+				{
+					final boolean b=parseBoolean(reader);	//parse the boolean
+					resourceURI=createLexicalURI(BOOLEAN_CLASS_URI, Boolean.toString(b));	//create a URI for the resource
+				}
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 			case NUMBER_BEGIN:	//number
 				foundComponent=true;	//indicate that at least one description component is present
-				final Number number=parseNumber(reader, NUMBER_BEGIN, true, true, true);	//parse the number, allowing negative, decimal, and exponents
-				if(number instanceof Integer || number instanceof Long || number instanceof BigInteger)	//if this is an integer
 				{
-					resourceURI=createLexicalURI(INTEGER_CLASS_URI, number.toString());	//create an integer URI for the resource
-				}
-				else if(number instanceof Float || number instanceof Double || number instanceof BigDecimal)	//if this is an real
-				{
-					resourceURI=createLexicalURI(REAL_CLASS_URI, number.toString());	//create a real URI for the resource
-				}
-				else	//if we don't recognize the number type
-				{
-					throw new AssertionError("Unrecognized number type produced: "+number.getClass());
+					final Number number=parseNumber(reader, NUMBER_BEGIN, true, true, true);	//parse the number, allowing negative, decimal, and exponents
+					final URI lexicalTypeURI;	//determine which type of number this is
+					if(number instanceof Integer || number instanceof Long || number instanceof BigInteger)	//if this is an integer
+					{
+						lexicalTypeURI=INTEGER_CLASS_URI;	//we'll create an integer URI for the resource
+					}
+					else if(number instanceof Float || number instanceof Double || number instanceof BigDecimal)	//if this is an real
+					{
+						lexicalTypeURI=REAL_CLASS_URI;	//create a real URI for the resource
+					}
+					else	//if we don't recognize the number type
+					{
+						throw new AssertionError("Unrecognized number type produced: "+number.getClass());
+					}
+					resourceURI=createLexicalURI(lexicalTypeURI, number.toString());	//create a URI for the resource
 				}
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 			case ORDINAL_BEGIN:	//number
 				foundComponent=true;	//indicate that at least one description component is present
-				final Number ordinal=parseNumber(reader, ORDINAL_BEGIN, false, false, false);	//parse the number, only allowing positive integers (which should produce an integer object)
-				resourceURI=createOrdinalURI(ordinal.longValue());	//create an ordinal URI for the resource
+				{
+					final Number ordinal=parseNumber(reader, ORDINAL_BEGIN, false, false, false);	//parse the number, only allowing positive integers (which should produce an integer object)
+					resourceURI=createOrdinalURI(ordinal.longValue());	//create an ordinal URI for the resource
+				}
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 			case REGULAR_EXPRESSION_BEGIN:	//regular expression
 				foundComponent=true;	//indicate that at least one description component is present
-				final String regularExpressionString=parseString(reader, REGULAR_EXPRESSION_BEGIN, REGULAR_EXPRESSION_END);	//parse the regular expression string
-				resourceURI=createLexicalURI(REGULAR_EXPRESSION_CLASS_URI, regularExpressionString);	//create a URI for the regular expression
+				{
+					final String regularExpressionString=parseString(reader, REGULAR_EXPRESSION_BEGIN, REGULAR_EXPRESSION_END);	//parse the regular expression string
+					resourceURI=createLexicalURI(REGULAR_EXPRESSION_CLASS_URI, regularExpressionString);	//create a URI for the regular expression
+				}
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 			case STRING_BEGIN:	//string
 				foundComponent=true;	//indicate that at least one description component is present
-				final String string=parseString(reader, STRING_BEGIN, STRING_END);	//parse the string
-				resourceURI=createLexicalURI(STRING_CLASS_URI, string);	//create a URI for the string
+				{
+					final String string=parseString(reader, STRING_BEGIN, STRING_END);	//parse the string
+					resourceURI=createLexicalURI(STRING_CLASS_URI, string);	//create a URI for the string
+				}
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
-			case TIMESTAMP_BEGIN:	//timestamp
+			case TEMPORAL_BEGIN:	//temporal TODO add full temporal type support; this implementation does not do full syntax checking
 				foundComponent=true;	//indicate that at least one description component is present
-				check(reader, TIMESTAMP_END);	//read the beginning timestamp delimiter
-				final String timestamp=reachAfter(reader, TIMESTAMP_END);	//read everything up to the timestamp ending delimiter and then skip that delimiter
-				resourceURI=createLexicalURI(TIMESTAMP_CLASS_URI, timestamp);	//create a URI for the timestamp
+				{
+					check(reader, TEMPORAL_BEGIN);	//read the beginning temporal delimiter
+					final String lexicalForm=reachAfter(reader, TEMPORAL_END);	//read everything up to the temporal ending delimiter and then skip that delimiter
+					final URI lexicalTypeURI;	//determine which type of number this is
+					if(lexicalForm.length()>0)	//if there is at least one character
+					{
+						final char firstChar=lexicalForm.charAt(0);	//get the first character
+						if(firstChar==DURATION_LEXICAL_FORM_BEGIN)	//if this temporal starts with a duration delimiter
+						{
+							lexicalTypeURI=DURATION_CLASS_URI;	//this is a duration
+						}
+						else if(firstChar=='+' || firstChar=='-')	//if this is the start of an offset
+						{
+							lexicalTypeURI=UTC_OFFSET_CLASS_URI;	//this is a UTC-Offset
+						}
+						else if(lexicalForm.indexOf('-')>0)	//if some date representation is included
+						{
+							if(lexicalForm.indexOf('T')>0)	//if time is also included
+							{
+								lexicalTypeURI=DATE_TIME_CLASS_URI;	//this is a DateTime
+							}
+							else	//if no time is included
+							{
+								lexicalTypeURI=DATE_CLASS_URI;	//this is merely a Date
+							}
+						}
+						else if(lexicalForm.indexOf(':')>0)	//if some time representation is included
+						{
+							lexicalTypeURI=TIME_CLASS_URI;	//this is a Time
+						}
+						else	//if no recognized delimiters were found
+						{
+							throw new DataException("Unrecognized temporal lexical form: "+lexicalForm+".");
+						}
+					}
+					else	//if the temporal lexical form was empty
+					{
+						throw new DataException("Temporal lexical form cannot be the empty string.");
+					}
+					resourceURI=createLexicalURI(TEMPORAL_CLASS_URI, lexicalForm);	//create a URI for the temporal
+				}
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 			case URI_BEGIN:	//URI
 				foundComponent=true;	//indicate that at least one description component is present
-				final URI uri=parseURI(reader, baseURI, contextURI, URI_BEGIN, URI_END);	//parse the URI
-				resourceURI=createLexicalURI(URI_CLASS_URI, uri.toString());	//create a URI for the resource
+				{
+					final URI uri=parseURI(reader, baseURI, contextURI, URI_BEGIN, URI_END);	//parse the URI
+					resourceURI=createLexicalURI(URI_CLASS_URI, uri.toString());	//create a URI for the resource
+				}
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 			default:	//if there was some other character, see if it's a name
@@ -791,8 +846,9 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the string is not escaped correctly or reader has no more characters before the current string is completely parsed.
+	@exception DataException if the string is not of the correct format.
 	*/
-	public static String parseString(final Reader reader, final char stringBegin, final char stringEnd) throws IOException, ParseIOException
+	public static String parseString(final Reader reader, final char stringBegin, final char stringEnd) throws IOException, ParseIOException, DataException
 	{
 		check(reader, stringBegin);	//read the beginning string delimiter
 		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to use when reading the string
@@ -828,14 +884,29 @@ public class URFTURFProcessor extends AbstractURFProcessor
 						c=STRING_TERMINATOR_CHAR;	//use the character that was escaped
 						break;
 					case ESCAPED_UNICODE:	//u Unicode
-						final String unicodeString=readString(reader, 4);	//read the four Unicode code point hex characters
-							//TODO make sure the Unicode sequence is lowercase
-						c=(char)Integer.parseInt(unicodeString, 16);	//parse the hex characters and use the resulting code point
+						{
+							final String unicodeString=readString(reader, 4);	//read the four Unicode code point hex characters
+							final int unicodeStringLength=unicodeString.length();	//get the length of the Unicode string
+							for(int i=0; i<unicodeStringLength; ++i)	//look at the characters to make sure they are not lowercase
+							try
+							{
+								final char hex=unicodeString.charAt(i);	//get this hex character
+								if(hex>='A' || hex<='F')	//if this is an uppercase hex character
+								{
+									throw new DataException("Uppercase escape Unicode character not allowed: "+hex);
+								}
+								c=(char)Integer.parseInt(unicodeString, 16);	//parse the hex characters and use the resulting code point
+							}
+							catch(final NumberFormatException numberFormatException)	//if the hex integer was not in the correct format
+							{
+								throw new DataException(numberFormatException);
+							}
+						}
 						break;
 					default:	//if another character was escaped
 						if(c!=stringBegin && c!=stringEnd)	//if this is not the delimiter that was escaped
 						{
-							throw new ParseIOException(reader, "Unknown escaped character: "+c);
+							throw new DataException("Unknown escaped character: "+(char)c);
 						}
 						break;
 				}

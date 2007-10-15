@@ -64,6 +64,12 @@ public class URF
 	public final static URI BOOLEAN_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Boolean");
 	/**The URI of the URF <code>Character</code> class.*/
 	public final static URI CHARACTER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Character");
+	/**The URI of the URF <code>Date</code> class.*/
+	public final static URI DATE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Date");
+	/**The URI of the URF <code>DateTime</code> class.*/
+	public final static URI DATE_TIME_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "DateTime");
+	/**The URI of the URF <code>Duration</code> class.*/
+	public final static URI DURATION_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Duration");
 	/**The URI of the URF <code>Integer</code> class.*/
 	public final static URI INTEGER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Integer");
 	/**The URI of the URF <code>Map</code> class.*/
@@ -82,8 +88,12 @@ public class URF
 	public final static URI SET_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Set");
 	/**The URI of the URF <code>String</code> class.*/
 	public final static URI STRING_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "String");
-	/**The URI of the URF <code>Timestamp</code> class.*/
-	public final static URI TIMESTAMP_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Timestamp");
+	/**The URI of the URF <code>Temporal</code> class.*/
+	public final static URI TEMPORAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Temporal");
+	/**The URI of the URF <code>Time</code> class.*/
+	public final static URI TIME_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Time");
+	/**The URI of the URF <code>UTCOffset</code> class.*/
+	public final static URI UTC_OFFSET_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "UTCOffset");
 	/**The URI of the URF <code>URI</code> class.*/
 	public final static URI URI_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "URI");
 		//properties
@@ -115,6 +125,14 @@ public class URF
 		public final static URI BOOLEAN_TRUE_URI=createLexicalURI(BOOLEAN_CLASS_URI, BOOLEAN_TRUE_LEXICAL_FORM);
 	/**The character lexical namespace URI.*/
 	public final static URI CHARACTER_NAMESPACE_URI=createLexicalNamespaceURI(CHARACTER_CLASS_URI);
+	/**The date lexical namespace URI.*/
+	public final static URI DATE_NAMESPACE_URI=createLexicalNamespaceURI(DATE_CLASS_URI);
+	/**The date time lexical namespace URI.*/
+	public final static URI DATE_TIME_NAMESPACE_URI=createLexicalNamespaceURI(DATE_TIME_CLASS_URI);
+	/**The duration lexical namespace URI.*/
+	public final static URI DURATION_NAMESPACE_URI=createLexicalNamespaceURI(DURATION_CLASS_URI);
+		/**The delimiter that marks the beginning of a duration lexical form.*/
+		public final static char DURATION_LEXICAL_FORM_BEGIN='P';
 	/**The integer lexical namespace URI.*/
 	public final static URI INTEGER_NAMESPACE_URI=createLexicalNamespaceURI(INTEGER_CLASS_URI);
 		/**The URI of the integer value <code>0</code>.*/
@@ -133,10 +151,12 @@ public class URF
 	public final static URI STRING_NAMESPACE_URI=createLexicalNamespaceURI(STRING_CLASS_URI);
 		/**The URI of the empty string "".*/
 		public final static URI EMPTY_STRING_URI=createLexicalURI(STRING_CLASS_URI, "");
-	/**The timestamp lexical namespace URI.*/
-	public final static URI TIMESTAMP_NAMESPACE_URI=createLexicalNamespaceURI(TIMESTAMP_CLASS_URI);
+	/**The time lexical namespace URI.*/
+	public final static URI TIME_NAMESPACE_URI=createLexicalNamespaceURI(TIME_CLASS_URI);
 	/**The URI lexical namespace URI.*/
 	public final static URI URI_NAMESPACE_URI=createLexicalNamespaceURI(URI_CLASS_URI);
+	/**The UTC offset lexical namespace URI.*/
+	public final static URI UTC_OFFSET_NAMESPACE_URI=createLexicalNamespaceURI(UTC_OFFSET_CLASS_URI);
 
 	/**The shared empty array of resources.*/
 	public final static URFResource[] NO_RESOURCES=new URFResource[0];

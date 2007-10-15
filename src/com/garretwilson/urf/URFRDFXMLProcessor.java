@@ -46,12 +46,12 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 	{
 		/**Only the RDF namespace is accepted for an RDF attribute to be recognized.*/
 		RDF,
-		
+
 		/**The RDF namespace or the <code>null</code> namespace is accepted for an RDF attribute.
 		The <code>null</code> namespace is only accepted for attributes if the parent element is in the RDF namespace.
 		*/
 		RDF_OR_NULL,
-		
+
 		/**Any namespace is accepted for an RDF attribute.
 		This is useful, for example, as a stop-gap measure for systems that corrupt attribute namespaces, such as Apache httpd 2.2.3 mod_dav.
 		This setting is dangerous, however, as any RDF properties stored as attributes with the same local name as an RDF attribute (e.g. <code>about</code> and <code>first</code> are essentially ignored).
@@ -76,16 +76,16 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 
 	/**Whether and which namespace is required for an RDF attribute to be recognized as such.*/
 	private NamespaceRequirement rdfAttributeNamespaceRequirement=NamespaceRequirement.RDF_OR_NULL;
-	
+
 		/**@return Whether and which namespace is required for an RDF attribute to be recognized as such.*/
 		public NamespaceRequirement getRDFAttributeNamespaceRequirement() {return rdfAttributeNamespaceRequirement;}
-	
+
 		/**Sets whether and which namespace is required for an RDF attribute to be recognized as such.
 		@param namespaceRequirement Whether and which namespace is required for an RDF attribute to be recognized as such.
 		@exception NullPointerException if the given namespace requirement is <code>null</code>.
 		*/
 		public void setRDFAttributeNamespaceRequirement(final NamespaceRequirement namespaceRequirement) {this.rdfAttributeNamespaceRequirement=checkInstance(namespaceRequirement, "Namespace requirement cannot be null.");}
-	
+
 	/**Default constructor.*/
 	public URFRDFXMLProcessor()
 	{
@@ -130,7 +130,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		}
 		catch(final IllegalArgumentException illegalArgumentException)	//if something was wrong with one of the resources
 		{
-			throw new DataException(illegalArgumentException);			
+			throw new DataException(illegalArgumentException);
 		}
 		reset();	//release all our references temporary resource proxies
 		return getURF();  //return the URF data collected
@@ -155,7 +155,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		}
 		catch(final IllegalArgumentException illegalArgumentException)	//if something was wrong with one of the resources
 		{
-			throw new DataException(illegalArgumentException);			
+			throw new DataException(illegalArgumentException);
 		}
 		reset();	//release all our references temporary resource proxies
 		return urfResource;  //return the URF resource the element represents
@@ -195,7 +195,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 				}
 			}
 		}
-		return getURF();  //return the RDF data collected		
+		return getURF();  //return the RDF data collected
 	}
 
 	/**Processes the given element as representing an RDF resource.
@@ -259,26 +259,31 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			throw new DataException(uriSyntaxException);
 		}
 		final Resource resource=determineResourceProxy(nodeID, resourceURI);	//get a resource proxy from the URI and/or node ID
-			//if this is not an <rdf:Description> element, the element name gives its type, so add that type to the resource
-		if(!RDF_NAMESPACE_URI.equals(elementNamespaceURI) || !ELEMENT_DESCRIPTION.equals(elementLocalName)) 
+		final URI typeURI;	//determine the URI of the shorthand type URI, if possible
+		if(RDF_NAMESPACE_URI.equals(elementNamespaceURI) && ELEMENT_DESCRIPTION.equals(elementLocalName))	//if this is an <rdf:Description> element
+		{
+			typeURI=null;	//there is no type short form
+		}
+		else	//if this is not an <rdf:Description> element, the element name gives its type, so add that type to the resource
 		{
 			final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
-			final URI typeURI=getResourceURI(RDFUtilities.createReferenceURI(elementNamespaceURI, elementLocalName));	//create a type URI and get the equivalent URF URI
+			typeURI=getResourceURI(RDFUtilities.createReferenceURI(elementNamespaceURI, elementLocalName));	//create a type URI and get the equivalent URF URI
 			final Resource typePropertyValue=determineResourceProxy(typeURI);	//locate the resource representing the type value
 			addAssertion(new Assertion(resource, typePropertyResource, typePropertyValue));	//assert this type
 		}
 		processAttributeProperties(resource, element, AttributePropertyContext.DESCRIPTION, baseURI);  //parse the attributes for the resource description
-		processChildElementProperties(resource, element, baseURI);	//parse the child elements as properties
+		processChildElementProperties(resource, typeURI, element, baseURI);	//parse the child elements as properties
 		return resource;  //return the resource or resource proxy we created
 	}
 
 	/**Parses the child elements of the given element and assign them as properties to the given resource.
 	@param resource The object that represents the resource to which child element properties should be added.
+	@param typeURI The URI representing the type of the resource, if it is already known, or <code>null</code> if no type is known.
 	@param element The element that contains the attributes to be considered properties.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@exception DataException Thrown if there was an error processing the RDF/XML.
 	*/
-	protected void processChildElementProperties(final Resource resource, final Element element, final URI baseURI) throws DataException
+	protected void processChildElementProperties(final Resource resource, final URI typeURI, final Element element, final URI baseURI) throws DataException
 	{
 		int memberCount=0; //show that we haven't found any container members, yet
 		final NodeList childNodeList=element.getChildNodes(); //get a list of child nodes
@@ -287,7 +292,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			final Node childNode=childNodeList.item(i); //get a reference to this child node
 			if(childNode.getNodeType()==Node.ELEMENT_NODE) //if this is an element
 			{
-				final Resource property=processProperty(resource, (Element)childNode, memberCount, baseURI);  //parse the element representing an RDF property
+				final Resource property=processProperty(resource, typeURI, (Element)childNode, memberCount, baseURI);  //parse the element representing an RDF property
 				final URI propertyURI=property.getURI();	//get the property URI
 				if(propertyURI!=null && isLexicalTypeURI(propertyURI, ORDINAL_CLASS_URI))	//if this is an ordinal property (originally serialized as rdf:li)
 				{
@@ -325,7 +330,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			for(int i=attributeNodeMap.getLength()-1; i>=0; --i)  //look at each of the attributes
 			{
 				final Attr attribute=(Attr)attributeNodeMap.item(i);  //get a reference to this attribute
-				
+
 				final String attributeLocalName=attribute.getLocalName(); //get the attribute's local name
 				final URI attributeNamespaceURI; //we'll determine the namespace URI from the attribute
 				final String attributeNamespaceString=attribute.getNamespaceURI();	//get the attribute's namespace string
@@ -448,13 +453,14 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 	/**Processes the given element as representing an RDF property.
 	The property and value(s) will be asserted for the given resource.
 	@param resource The resource to which the property should be added.
+	@param typeURI The URI representing the type of the resource, if it is already known, or <code>null</code> if no type is known.
 	@param element The XML element that represents the RDF property.
 	@param memberCount The number of container member items (represented by <code>rdf:li</code>) the resource already contains.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The resource that represents the processed property, the predicate of the added statement.
 	@exception DataException Thrown if there was an error processing the RDF/XML.
 	*/
-	public Resource processProperty(final Resource resource, final Element element, final int memberCount, final URI baseURI) throws DataException
+	public Resource processProperty(final Resource resource, final URI typeURI, final Element element, final int memberCount, final URI baseURI) throws DataException
 	{
 		final String elementLocalName=element.getLocalName(); //get the element's local name
 		final URI elementNamespaceURI; //we'll determine the namespace URI from the element
@@ -474,11 +480,17 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		{
 			throw new DataException("Element "+elementLocalName+" has no namespace URI.");
 		}
-		final URI propertyURI;	//if this is an rdf:li property, we'll convert it to an URF ordinal resource using the member count plus one as the ordinal	
+		final URI propertyURI;	//if this is an rdf:li property, we'll convert it to an URF ordinal resource using the member count plus one as the ordinal
 		if(RDF_NAMESPACE_URI.equals(elementNamespaceURI) && LI_PROPERTY_NAME.equals(elementLocalName)) //if this is an rdf:li property
 		{
-				//TODO create an element property instead of an ordinal property if this is a set
-			propertyURI=createOrdinalURI(memberCount+1); //create an ordinal of the member count plus one
+			if(SET_CLASS_URI.equals(typeURI))	//if this is a set
+			{
+				propertyURI=ELEMENT_PROPERTY_URI;	//use the urf.element property
+			}
+			else	//if this is some other container type
+			{
+				propertyURI=createOrdinalURI(memberCount+1); //create an ordinal of the member count plus one
+			}
 		}
 		else	//if this is *not* an rdf:li property, it's a normal property
 		{
@@ -510,9 +522,9 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		}
 		else if(RESOURCE_PARSE_TYPE.equals(parseType))	//if this is a resource as a property-and-node
 		{
-			propertyValue=createResourceProxy();	//retrieve or create a new resource proxy for an anonymous node			
+			propertyValue=createResourceProxy();	//retrieve or create a new resource proxy for an anonymous node
 			processAttributeProperties(propertyValue, element, AttributePropertyContext.PROPERTY_AND_NODE, baseURI);  //parse the property attributes, which will simply create errors if there are any unexpected attributes
-			processChildElementProperties(propertyValue, element, baseURI);	//parse the child elements as properties
+			processChildElementProperties(propertyValue, null, element, baseURI);	//parse the child elements as properties; there is no type short form
 		}
 		else if(LITERAL_PARSE_TYPE.equals(parseType))	//if this is an XMLLiteral
 		{
@@ -532,14 +544,14 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			final String nodeID=getRDFAttribute(element, ATTRIBUTE_NODE_ID);	//get the node ID attribute value, if there is one
 			if(resourceURIString!=null && nodeID!=null)	//if both a URI and a node ID were given
 			{
-				throw new DataException("Resource cannot have both URI "+resourceURIString+" and node ID "+nodeID+".");				
+				throw new DataException("Resource cannot have both URI "+resourceURIString+" and node ID "+nodeID+".");
 			}
 			if(resourceURIString!=null || nodeID!=null) //if there is a URI or a node ID, this is a reference to another node
 			{
 				try
 				{
 					final URI resourceURI=resourceURIString!=null ? getResourceURI(resolveURI(element, baseURI, new URI(resourceURIString))) : null;  //if there is a URI, resolve it to the base URI and get the URF equivalent
-					propertyValue=determineResourceProxy(nodeID, resourceURI);	//retrieve or create a resource proxy from the node ID and/or URI			
+					propertyValue=determineResourceProxy(nodeID, resourceURI);	//retrieve or create a resource proxy from the node ID and/or URI
 					processAttributeProperties(propertyValue, element, AttributePropertyContext.REFERENCE, baseURI);  //parse the property attributes, assigning them to the property value
 				}
 				catch(final URISyntaxException uriSyntaxException)	//if a URI was not syntactically correct
@@ -549,7 +561,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			}
 			else if(element.getChildNodes().getLength()==0 && element.getAttributes().getLength()!=0) //if there are no child elements but there are attributes, this is a blank node
 			{
-				propertyValue=createResourceProxy();	//create a new anonymous resource proxy			
+				propertyValue=createResourceProxy();	//create a new anonymous resource proxy
 				processAttributeProperties(propertyValue, element, AttributePropertyContext.EMPTY_PROPERTY, baseURI);  //parse the property attributes, assigning them to the property value
 			}
 			else  //if there is no URI or node ID, and there are children, there is either a normal property description below, or a literal
@@ -634,7 +646,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 	}
 
 	/**Determines if an element attribute is an RDF attribute, recognizing either prefixed or non-prefixed attributes.
-	@param rdfAttributeLocalName The RDF attribute name to check for. 
+	@param rdfAttributeLocalName The RDF attribute name to check for.
 	@param elementNamespaceURI The namespace of the element to which the attribute belongs.
 	@param attributeNamespaceURI namespace of the RDF attribute.
 	@param attributeLocalName The local name of the RDF attribute.
@@ -662,7 +674,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		}
 		return false;	//show that this attribute is not the RDF attribute expected
 	}
-	
+
 	/**Retrieves an RDF attribute from an element, if it exists, recognizing either prefixed or non-prefixed attributes. If the non-prefixed form is used, a warning is generated.
 	It is assumed that this method will only be called once for a particular attribute, as each call could produce another warning.
 	@param element The element being checked for attributes.
@@ -698,7 +710,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		return null;  //show that the RDF attribute is not available
 	}
 
-	
+
 	/**The map of URF resource URIs keyed to RDF resource URIs.*/
 	private final static Map<URI, URI> rdfResourceURIURFURFResourceURIMap;
 
@@ -712,7 +724,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		tempRDFResourceURIURFResourceURIMap.put(TYPE_PROPERTY_REFERENCE_URI, TYPE_PROPERTY_URI);
 		rdfResourceURIURFURFResourceURIMap=unmodifiableMap(tempRDFResourceURIURFResourceURIMap);
 	}
-	
+
 	/**Determines an URF resource URI from the given URF resource URI.
 	The following conversions are made:
 	<dl>
@@ -731,7 +743,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		URI resourceURI=rdfResourceURIURFURFResourceURIMap.get(rdfResourceURI);	//see if we know an equivalent URF resource URI
 		return resourceURI!=null ? resourceURI : rdfResourceURI;	//if we don't know an equivalent URF resource URI, just return the RDF resource URI
 	}
-	
+
 	/**The map of URF lexical types keyed to RDF datatype URIs.*/
 	private final static Map<URI, URI> datatypeURILexicalTypeURIMap;
 
@@ -741,32 +753,39 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		tempDatatypeURILexicalTypeURIMap.put(BASE64_BINARY_DATATYPE_URI, BINARY_CLASS_URI);	//fill the  map
 		tempDatatypeURILexicalTypeURIMap.put(BOOLEAN_DATATYPE_URI, BOOLEAN_CLASS_URI);
 		tempDatatypeURILexicalTypeURIMap.put(BYTE_DATATYPE_URI, INTEGER_CLASS_URI);
-			//TODO add timestamp equivalent of datetime datatype
+		tempDatatypeURILexicalTypeURIMap.put(DATE_DATATYPE_URI, DATE_CLASS_URI);
+		tempDatatypeURILexicalTypeURIMap.put(DATE_TIME_DATATYPE_URI, DATE_TIME_CLASS_URI);
 		tempDatatypeURILexicalTypeURIMap.put(DECIMAL_DATATYPE_URI, REAL_CLASS_URI);
 		tempDatatypeURILexicalTypeURIMap.put(DOUBLE_DATATYPE_URI, REAL_CLASS_URI);
+		tempDatatypeURILexicalTypeURIMap.put(DURATION_DATATYPE_URI, DURATION_CLASS_URI);
 		tempDatatypeURILexicalTypeURIMap.put(FLOAT_DATATYPE_URI, REAL_CLASS_URI);
 		tempDatatypeURILexicalTypeURIMap.put(INT_DATATYPE_URI, INTEGER_CLASS_URI);
 		tempDatatypeURILexicalTypeURIMap.put(INTEGER_DATATYPE_URI, INTEGER_CLASS_URI);
 		tempDatatypeURILexicalTypeURIMap.put(LONG_DATATYPE_URI, INTEGER_CLASS_URI);
 		tempDatatypeURILexicalTypeURIMap.put(SHORT_DATATYPE_URI, INTEGER_CLASS_URI);
 		tempDatatypeURILexicalTypeURIMap.put(STRING_DATATYPE_URI, STRING_CLASS_URI);
+		tempDatatypeURILexicalTypeURIMap.put(TIME_DATATYPE_URI, TIME_CLASS_URI);
 		tempDatatypeURILexicalTypeURIMap.put(URI_DATATYPE_URI, URI_CLASS_URI);
 		datatypeURILexicalTypeURIMap=unmodifiableMap(tempDatatypeURILexicalTypeURIMap);
 	}
-	
+
 	/**Determines an URF lexical type URI from the given RDF datatype URI.
 	The following conversions are made:
 	<dl>
 		<dt>{@value XMLSchemaContants#BASE64_BINARY_DATATYPE_URI}</dt> <dd>{@value URF#BINARY_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#BOOLEAN_DATATYPE_URI}</dt> <dd>{@value URF#BOOLEAN_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#BYTE_DATATYPE_URI}</dt> <dd>{@value URF#INTEGER_CLASS_URI}</dd>
+		<dt>{@value XMLSchemaContants#DATE_DATATYPE_URI}</dt> <dd>{@value URF#DATE_CLASS_URI}</dd>
+		<dt>{@value XMLSchemaContants#DATE_TIME_DATATYPE_URI}</dt> <dd>{@value URF#DATE_TIME_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#DECIMAL_DATATYPE_URI}</dt> <dd>{@value URF#REAL_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#DOUBLE_DATATYPE_URI}</dt> <dd>{@value URF#REAL_CLASS_URI}</dd>
+		<dt>{@value XMLSchemaContants#DURATION_DATATYPE_URI}</dt> <dd>{@value URF#DURATION_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#FLOAT_DATATYPE_URI}</dt> <dd>{@value URF#REAL_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#INT_DATATYPE_URI}</dt> <dd>{@value URF#INTEGER_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#INTEGER_DATATYPE_URI}</dt> <dd>{@value URF#INTEGER_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#LONG_DATATYPE_URI}</dt> <dd>{@value URF#INTEGER_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#SHORT_DATATYPE_URI}</dt> <dd>{@value URF#INTEGER_CLASS_URI}</dd>
+		<dt>{@value XMLSchemaContants#TIME_DATATYPE_URI}</dt> <dd>{@value URF#TIME_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#STRING_DATATYPE_URI}</dt> <dd>{@value URF#STRING_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#URI_DATATYPE_URI}</dt> <dd>{@value URF#URI_CLASS_URI}</dd>
 	</dl>
@@ -786,14 +805,14 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param uri The URI to resolve.
 	@return A URI resolved to the in-scope base URI of the given element.
-	@exception NullPointerException if the given element and/or URI is <code>null</code>. 
+	@exception NullPointerException if the given element and/or URI is <code>null</code>.
 	@exception URISyntaxException Thrown if the constructed URI is invalid.
 	@see XBase
 	@see #resolveURI(URI, URI)
 	*/
 	protected static URI resolveURI(final Element element, URI baseURI, final URI uri) throws URISyntaxException
 	{
-		baseURI=XMLBase.getBaseURI(element, baseURI);  //get the base URI of the element		  
+		baseURI=XMLBase.getBaseURI(element, baseURI);  //get the base URI of the element
 		return baseURI!=null ? resolveURI(baseURI, uri) : uri;	//resolve the given URI to the base URI we determine
 	}
 
@@ -802,7 +821,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 	@param baseURI The in-scope base URI against which the URI should be resolved.
 	@param uri The URI to resolve.
 	@return A URI resolved to the given base URI according to RDF/XML processing rules.
-	@exception NullPointerException if the given element and/or URI is <code>null</code>. 
+	@exception NullPointerException if the given element and/or URI is <code>null</code>.
 	@see <a href="http://www.w3.org/TR/2003/PR-rdf-syntax-grammar-20031215/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	 */
 	public static URI resolveURI(final URI baseURI, final URI uri)

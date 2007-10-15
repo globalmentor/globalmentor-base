@@ -42,12 +42,12 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	{
 		/**Only the RDF namespace is accepted for an RDF attribute to be recognized.*/
 		RDF,
-		
+
 		/**The RDF namespace or the <code>null</code> namespace is accepted for an RDF attribute.
 		The <code>null</code> namespace is only accepted for attributes if the parent element is in the RDF namespace.
 		*/
 		RDF_OR_NULL,
-		
+
 		/**Any namespace is accepted for an RDF attribute.
 		This is useful, for example, as a stop-gap measure for systems that corrupt attribute namespaces, such as Apache httpd 2.2.3 mod_dav.
 		This setting is dangerous, however, as any RDF properties stored as attributes with the same local name as an RDF attribute (e.g. <code>about</code> and <code>first</code> are essentially ignored).
@@ -72,16 +72,16 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 
 	/**Whether and which namespace is required for an RDF attribute to be recognized as such.*/
 	private NamespaceRequirement rdfAttributeNamespaceRequirement=NamespaceRequirement.RDF_OR_NULL;
-	
+
 		/**@return Whether and which namespace is required for an RDF attribute to be recognized as such.*/
 		public NamespaceRequirement getRDFAttributeNamespaceRequirement() {return rdfAttributeNamespaceRequirement;}
-	
+
 		/**Sets whether and which namespace is required for an RDF attribute to be recognized as such.
 		@param namespaceRequirement Whether and which namespace is required for an RDF attribute to be recognized as such.
 		@exception NullPointerException if the given namespace requirement is <code>null</code>.
 		*/
 		public void setRDFAttributeNamespaceRequirement(final NamespaceRequirement namespaceRequirement) {this.rdfAttributeNamespaceRequirement=checkInstance(namespaceRequirement, "Namespace requirement cannot be null.");}
-	
+
 	/**Default constructor.*/
 	public RDFXMLProcessor()
 	{
@@ -137,7 +137,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	public RDF processRDF(final Element element, final URI baseURI) throws URISyntaxException
 	{
 		setBaseURI(baseURI);  //set the base URI
-		return processRDF(element);	//process the element 
+		return processRDF(element);	//process the element
 	}
 
 	/**Processes RDF serialized in an XML document. Searches the given element
@@ -211,7 +211,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 				}
 			}
 		}
-		return getRDF();  //return the RDF data collected		
+		return getRDF();  //return the RDF data collected
 	}
 
 	/**Processes the given element as representing an RDF resource.
@@ -256,10 +256,10 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		else	//if there is no reference URI
 		{
 		//TODO del Debug.trace("there is no reference URI; getting proxy");
-			resource=getResourceProxy(nodeIDValue!=null ? nodeIDValue : generateNodeID());	//retrieve or create a resource proxy from the node ID, generating our own node ID if there was none given			
+			resource=getResourceProxy(nodeIDValue!=null ? nodeIDValue : generateNodeID());	//retrieve or create a resource proxy from the node ID, generating our own node ID if there was none given
 		}
 			//if this is not an <rdf:Description> element, the element name gives its type, so add that type to the resource
-		if(!RDF_NAMESPACE_URI.equals(elementNamespaceURI) || !ELEMENT_DESCRIPTION.equals(elementLocalName)) 
+		if(!RDF_NAMESPACE_URI.equals(elementNamespaceURI) || !ELEMENT_DESCRIPTION.equals(elementLocalName))
 		{
 			final RDFResource typeProperty=getRDF().locateResource(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //get an rdf:type resource
 			final RDFResource typePropertyValue=getRDF().locateResource(elementNamespaceURI, elementLocalName);	//locate the resource representing the type value
@@ -269,7 +269,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		}
 /*G***maybe later allow some way to show preferences for types, in case multiple types are given that all have resource factories, but that may not be necessary; if not, delete
 			//if this is not an <rdf:Description> element, the element name gives its type, so we can go ahead and create the resource
-		if(!RDF_NAMESPACE_URI.equals(elementNamespaceURI) || !ELEMENT_DESCRIPTION.equals(elementLocalName)) 
+		if(!RDF_NAMESPACE_URI.equals(elementNamespaceURI) || !ELEMENT_DESCRIPTION.equals(elementLocalName))
 		{
 			  //get or create a new resource with the given reference URI and type;
 				//  this allows a resource factory to create the appropriate type of
@@ -278,7 +278,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 
 
 				//G***this next line is necessary if we create the resource now but a later reference tries to link to it
-			putProxiedRDFResource(resourceProxy, resource);	//associate the resource with the resource proxy so we won't have to go through all this the next time 
+			putProxiedRDFResource(resourceProxy, resource);	//associate the resource with the resource proxy so we won't have to go through all this the next time
 
 
 			final RDFResource typeProperty=getRDF().locateResource(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //get an rdf:type resource
@@ -444,7 +444,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 					default:
 						{
 							final RDFResource property=getRDF().locateResource(attributeNamespaceURI, attributeLocalName);	//locate a resource for this attribute property
-							final RDFLiteral objectLiteral=new RDFPlainLiteral(attributeValue);	//create a literal for the object							
+							final RDFLiteral objectLiteral=new RDFPlainLiteral(attributeValue);	//create a literal for the object
 								//add a statement in the form, {resource, property, object literal}
 							addStatement(new DefaultStatement(resource, property, objectLiteral));
 						}
@@ -469,7 +469,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		final URI elementNamespaceURI=element.getNamespaceURI()!=null ? new URI(element.getNamespaceURI()) : null; //get the element's namespace, or null if there is no namespace URI
 		final String elementLocalName=element.getLocalName(); //get the element's local name
 //Debug.trace("processing property with XML element namespace: ", elementNamespaceURI, "local name", elementLocalName);
-		final String propertyLocalName;	//if this is an rdf:li property, we'll convert it to rdf_X, where X represents the member count plus one	
+		final String propertyLocalName;	//if this is an rdf:li property, we'll convert it to rdf_X, where X represents the member count plus one
 		if(RDF_NAMESPACE_URI.equals(elementNamespaceURI) && LI_PROPERTY_NAME.equals(elementLocalName)) //if this is an rdf:li property
 		{
 			propertyLocalName=CONTAINER_MEMBER_PREFIX+(memberCount+1); //create a local name in the form "_X", where X is the member count plus one
@@ -515,7 +515,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 					lastItemListResource=listResource;	//save this list resource for the next time around, in case there are other list items
 				}
 			}
-			final RDFListResource nilListResource=new RDFListResource(NIL_RESOURCE_URI);	//create a list resource representing the rdf:nil resource; don't use an existing rdf:nil list resource, because the reference URI may need to change when the list is modified				
+			final RDFListResource nilListResource=new RDFListResource(NIL_RESOURCE_URI);	//create a list resource representing the rdf:nil resource; don't use an existing rdf:nil list resource, because the reference URI may need to change when the list is modified
 				//add a statement in the form, {nil list, rdf:type, rdf:list}
 			addStatement(new DefaultStatement(nilListResource, typeProperty, listClassResource));
 			if(lastItemListResource!=null)	//if there was a last item
@@ -532,7 +532,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		}
 		else if(RESOURCE_PARSE_TYPE.equals(parseType))	//if this is a resource as a property-and-node
 		{
-			propertyValue=getResourceProxy(generateNodeID());	//retrieve or create a new resource proxy with our own generated node ID, as the node is completely anonymous			
+			propertyValue=getResourceProxy(generateNodeID());	//retrieve or create a new resource proxy with our own generated node ID, as the node is completely anonymous
 			processAttributeProperties((Resource)propertyValue, element, AttributePropertyContext.PROPERTY_AND_NODE);  //parse the property attributes, which will simply create errors if there are any unexpected attributes
 			processChildElementProperties((Resource)propertyValue, element);	//parse the child elements as properties
 		}
@@ -563,14 +563,14 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				}
 				else	//if there is no reference URI
 				{
-					propertyValue=getResourceProxy(nodeIDValue!=null ? nodeIDValue : generateNodeID());	//retrieve or create a resource proxy from the node ID, generating our own node ID if there was none given			
+					propertyValue=getResourceProxy(nodeIDValue!=null ? nodeIDValue : generateNodeID());	//retrieve or create a resource proxy from the node ID, generating our own node ID if there was none given
 				}
 //Debug.trace("ready to process attributes");
 				processAttributeProperties((Resource)propertyValue, element, AttributePropertyContext.REFERENCE);  //parse the property attributes, assigning them to the property value
 			}
 			else if(element.getChildNodes().getLength()==0 && element.getAttributes().getLength()!=0) //if there are no child elements but there are attributes, this is a blank node
 			{
-				propertyValue=getResourceProxy(generateNodeID());	//retrieve or create a new resource proxy with our own generated node ID, as the node is completely anonymous			
+				propertyValue=getResourceProxy(generateNodeID());	//retrieve or create a new resource proxy with our own generated node ID, as the node is completely anonymous
 				processAttributeProperties((Resource)propertyValue, element, AttributePropertyContext.EMPTY_PROPERTY);  //parse the property attributes, assigning them to the property value
 			}
 			else  //if there is no reference URI or node ID, and there are children, there is either a normal property description below, or a literal
@@ -650,7 +650,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 
 	/**Determines if an element attribute is an RDF attribute, recognizing
 		either prefixed or non-prefixed attributes.
-	@param rdfAttributeLocalName The RDF attribute name to check for. 
+	@param rdfAttributeLocalName The RDF attribute name to check for.
 	@param elementNamespaceURI The namespace of the element to which the
 		attribute belongs.
 	@param attributeNamespaceURI namespace of the RDF attribute.
@@ -701,7 +701,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 				if(RDF_NAMESPACE_URI.toString().equals(element.getNamespaceURI()) && element.hasAttributeNS(null, attributeLocalName)) //if there is a non-prefixed attribute value
 				{
 					Debug.warn("Non-prefixed rdf:"+attributeLocalName+" attribute deprecated."); //G***put in a real warning
-				  return element.getAttributeNS(null, attributeLocalName); //return the non-prefixed attribute value					
+				  return element.getAttributeNS(null, attributeLocalName); //return the non-prefixed attribute value
 				}
 			case ANY:
 				final NamedNodeMap attributes=element.getAttributes();	//get the attributes
@@ -723,14 +723,14 @@ Debug.trace("processing attribute from value: ", attributeValue);
 	@param element The element for which a base URI should be determined.
 	@param uri The URI to resolve.
 	@return A URI resolved to the in-scope base URI of the given element.
-	@exception NullPointerException if the given element and/or URI is <code>null</code>. 
+	@exception NullPointerException if the given element and/or URI is <code>null</code>.
 	@exception URISyntaxException Thrown if the constructed URI is invalid.
 	@see XBase
 	@see #resolveURI(URI, URI)
 	*/
 	protected URI resolveURI(final Element element, final URI uri) throws URISyntaxException
 	{
-		final URI baseURI=XMLBase.getBaseURI(element, getBaseURI());  //get the base URI of the element		  
+		final URI baseURI=XMLBase.getBaseURI(element, getBaseURI());  //get the base URI of the element
 		return baseURI!=null ? resolveURI(baseURI, uri) : uri;	//resolve the given URI to the base URI we determine
 	}
 
@@ -739,7 +739,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 	@param baseURI The in-scope base URI against which the URI should be resolved.
 	@param uri The URI to resolve.
 	@return A URI resolved to the given base URI according to RDF/XML processing rules.
-	@exception NullPointerException if the given element and/or URI is <code>null</code>. 
+	@exception NullPointerException if the given element and/or URI is <code>null</code>.
 	@see <a href="http://www.w3.org/TR/2003/PR-rdf-syntax-grammar-20031215/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	 */
 	public static URI resolveURI(final URI baseURI, final URI uri)

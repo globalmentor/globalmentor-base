@@ -8,8 +8,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.lang.IntegerUtilities;
-import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.text.CharacterConstants.*;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
@@ -338,10 +336,10 @@ public class URFTURFGenerator
 				{
 					final URFResource resource=urf.getResource(resourceURI);	//get the resource corresponding to this resource URI
 					assert referenceMap.containsKey(resource) : "Reference map should contain a reference to every resource for which a resource URI is returned by the data model.";
-					if(resource!=null && referenceMap.getItemCount(resource)>1)	//if this resource is referenced multiple times in the data model, 
+					if(resource!=null && referenceMap.getItemCount(resource)>1)	//if this resource is referenced multiple times in the data model,
 					{
 						namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//the namespace of this resource will be used multiple times (once for each time this resource appears, at least)
-					}					
+					}
 					else	//if this resource is only referenced once
 					{
 						namespaceURIMultipleMap.put(namespaceURI, Boolean.FALSE);	//show that we've seen this namespace URI, but there are not yet multiple references
@@ -800,6 +798,21 @@ public class URFTURFGenerator
 				writer.append(CHARACTER_BEGIN).append(lexicalForm).append(CHARACTER_END);	//write the character short form
 				return lexicalTypeURI;
 			}
+			else if(DATE_CLASS_URI.equals(lexicalTypeURI))	//if this is a date
+			{
+				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
+				return lexicalTypeURI;
+			}
+			else if(DATE_TIME_CLASS_URI.equals(lexicalTypeURI))	//if this is a date time
+			{
+				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
+				return lexicalTypeURI;
+			}
+			else if(DURATION_CLASS_URI.equals(lexicalTypeURI))	//if this is a duration
+			{
+				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
+				return lexicalTypeURI;
+			}
 			else if(INTEGER_CLASS_URI.equals(lexicalTypeURI) || REAL_CLASS_URI.equals(lexicalTypeURI))	//integer or real
 			{
 				writer.append(NUMBER_BEGIN).append(lexicalForm);	//write the number short form
@@ -820,10 +833,19 @@ public class URFTURFGenerator
 				writeString(writer, lexicalForm);	//write the string short form
 				return lexicalTypeURI;
 			}
-			//TODO fix timestamp
+			else if(TIME_CLASS_URI.equals(lexicalTypeURI))	//if this is a time
+			{
+				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
+				return lexicalTypeURI;
+			}
 			else if(URI_CLASS_URI.equals(lexicalTypeURI))	//if this is a URI
 			{
 				writeURI(writer, lexicalForm);	//write the URI short form
+				return lexicalTypeURI;
+			}
+			else if(UTC_OFFSET_CLASS_URI.equals(lexicalTypeURI))	//if this is a UTC offset
+			{
+				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
 				return lexicalTypeURI;
 			}
 		}
@@ -838,7 +860,7 @@ public class URFTURFGenerator
 				assert localName!=null : "If a URI has a namespace, it should have a local name as well.";
 				if(prefix!=null)	//if there is a prefix
 				{
-					writer.append(prefix).append(NAME_PREFIX_DELIMITER);	//prefix.					
+					writer.append(prefix).append(NAME_PREFIX_DELIMITER);	//prefix.
 				}
 				writer.append(localName);	//prefix.localName
 				return lexicalTypeURI;	//return the lexical type URI, if any
@@ -859,7 +881,7 @@ public class URFTURFGenerator
 	{
 		generateURIReference(writer, uri, getNamespaceLabelManager(), getBaseURI(), null);	//generate the URI reference using our own namespace label manager and base URI with no context
 	}
-	
+
 	/**Writes a URI reference to a resource with the given URI.
 	@param writer The writer used for generating the information.
 	@param uri The URI of the resource.
