@@ -12,7 +12,6 @@ import com.garretwilson.assess.qti.QTIConstants;
 import com.garretwilson.net.http.webdav.ApacheWebDAVConstants;
 import com.garretwilson.rdf.RDFConstants;
 import com.garretwilson.rdf.dicto.DictoConstants;
-import com.garretwilson.rdf.directory.vcard.VCard;
 import com.garretwilson.rdf.dublincore.DCConstants;
 import com.garretwilson.rdf.foaf.FOAF;
 import com.garretwilson.rdf.maqro.MAQROConstants;
@@ -25,6 +24,10 @@ import com.garretwilson.text.xml.oeb.OEBConstants;
 import com.garretwilson.text.xml.schema.XMLSchemaConstants;
 import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 import com.garretwilson.text.xml.xlink.XLinkConstants;
+import com.garretwilson.urf.URF;
+import com.garretwilson.urf.content.Content;
+import com.garretwilson.urf.select.Select;
+import com.garretwilson.urf.vcard.VCard;
 import com.garretwilson.util.MapDecorator;
 
 /**Map managing namespace URIs and labels for serialization.
@@ -35,16 +38,31 @@ Mapping labels to the <code>null</code> namespace or to the <code>null</code> la
 public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, String>
 {
 
+	/**The set of known namespace URIs.*/
+	public final static Set<URI> KNOWN_NAMESPACE_URI_SET;
+
+	static	//add the default namespaces
+	{
+		final Set<URI> tempKnownNamespaceSet=new HashSet<URI>();	//create a temporary set to fill
+		tempKnownNamespaceSet.add(ApacheWebDAVConstants.APACHE_WEBDAV_PROPERTY_NAMESPACE_URI);	//Apache WebDAV properties
+		tempKnownNamespaceSet.add(URI.create("http://example.com/example"));	//example
+		tempKnownNamespaceSet.add(FOAF.FOAF_NAMESPACE_URI);	//FOAF
+		tempKnownNamespaceSet.add(URF.URF_NAMESPACE_URI);	//URF
+		tempKnownNamespaceSet.add(Content.CONTENT_NAMESPACE_URI);	//URF Content
+		tempKnownNamespaceSet.add(Select.SELECT_PROPERTY_NAME_PROPERTY_URI);	//URF Select
+		tempKnownNamespaceSet.add(VCard.VCARD_NAMESPACE_URI);	//URF VCard
+		KNOWN_NAMESPACE_URI_SET=unmodifiableSet(tempKnownNamespaceSet);	//store a static read-only set
+	}
+
 	/**The default map of namespace-label mappaings.*/
-	private final static Map<URI, String> DEFAULT_NAMESPACE_URI_LABEL_MAP;
+	public final static Map<URI, String> DEFAULT_NAMESPACE_URI_LABEL_MAP;
 
 	static	//add the default labels
 	{
 		final Map<URI, String> tempNamespaceURILabelMap=new HashMap<URI, String>();	//create a temporary map to fill
-		tempNamespaceURILabelMap.put(ApacheWebDAVConstants.APACHE_WEBDAV_PROPERTY_NAMESPACE_URI, ApacheWebDAVConstants.APACHE_WEBDAV_PROPERTY_NAMESPACE_PREFIX); //Apache WebDAV properties
+			//add default labels for special namespace URIs
 		tempNamespaceURILabelMap.put(DictoConstants.DICTO_NAMESPACE_URI, DictoConstants.DICTO_NAMESPACE_PREFIX); //Dicto
 		tempNamespaceURILabelMap.put(DCConstants.DCMI11_ELEMENTS_NAMESPACE_URI, DCConstants.DCMI_ELEMENTS_NAMESPACE_PREFIX); //Dublin Core
-		tempNamespaceURILabelMap.put(URI.create("http://example.com/example"), "example"); //example
 		tempNamespaceURILabelMap.put(FOAF.FOAF_NAMESPACE_URI, FOAF.FOAF_NAMESPACE_PREFIX); //FOAF
 		tempNamespaceURILabelMap.put(MAQROConstants.MAQRO_NAMESPACE_URI, MAQROConstants.MAQRO_NAMESPACE_PREFIX); //MAQRO
 		tempNamespaceURILabelMap.put(OEBConstants.OEB1_DOCUMENT_NAMESPACE_URI, OEBConstants.OEB1_DOCUMENT_NAMESPACE_PREFIX); //OEB 1
@@ -55,7 +73,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		tempNamespaceURILabelMap.put(RDFConstants.RDF_NAMESPACE_URI, RDFConstants.RDF_NAMESPACE_PREFIX); //RDF
 		tempNamespaceURILabelMap.put(RDFSConstants.RDFS_NAMESPACE_URI, RDFSConstants.RDFS_NAMESPACE_PREFIX); //RDFS
 //G***add SOAP
-		tempNamespaceURILabelMap.put(VCard.VCARD_NAMESPACE_URI, VCard.VCARD_NAMESPACE_PREFIX); //vCard
+//TODO del		tempNamespaceURILabelMap.put(VCard.VCARD_NAMESPACE_URI, VCard.VCARD_NAMESPACE_PREFIX); //vCard
 		tempNamespaceURILabelMap.put(VersionConstants.VERSION_NAMESPACE_URI, VersionConstants.VERSION_NAMESPACE_PREFIX); //version
 		tempNamespaceURILabelMap.put(XMLSchemaConstants.XML_SCHEMA_NAMESPACE_URI, XMLSchemaConstants.XML_SCHEMA_NAMESPACE_PREFIX); //XML Schema
 		tempNamespaceURILabelMap.put(XHTMLConstants.XHTML_NAMESPACE_URI, XHTMLConstants.XHTML_NAMESPACE_PREFIX); //XHTML
@@ -68,6 +86,13 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 //TODO del		tempNamespaceURIPrefixMap.put(FileOntologyConstants.FILE_ONTOLOGY_NAMESPACE_URI, FileOntologyConstants.FILE_ONTOLOGY_NAMESPACE_PREFIX); //XPackage file ontology
 //TODO add XPackage Unicode ontology
 //TODO del		tempNamespaceURIPrefixMap.put(MIMEOntologyConstants.MIME_ONTOLOGY_NAMESPACE_URI, MIMEOntologyConstants.MIME_ONTOLOGY_NAMESPACE_PREFIX); //XPackage MIME ontology
+		for(final URI knownNamespaceURI:KNOWN_NAMESPACE_URI_SET)	//for each known namespace
+		{
+			if(!tempNamespaceURILabelMap.containsKey(knownNamespaceURI))	//if we haven't added a special namespace label for this namespace
+			{
+				tempNamespaceURILabelMap.put(knownNamespaceURI, getName(knownNamespaceURI));	//use the name of this known namespace as its label
+			}
+		}
 		DEFAULT_NAMESPACE_URI_LABEL_MAP=unmodifiableMap(tempNamespaceURILabelMap);	//store a static read-only map
 	}
 
@@ -122,7 +147,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		if(label==null && !containsKey(namespaceURI))	//if we didn't find a label because the namespace wasn't registered, generate a label
 		{
 			label=DEFAULT_NAMESPACE_URI_LABEL_MAP.get(namespaceURI);	//look up the namespace in the map of default label mappings
-			if(label==null)  //if there is still no label for this namespace, check for a Java package URI
+			if(label==null)  //if there is still no label for this namespace, get the name of the URI
 			{
 				final String name=getName(namespaceURI);	//get the name identified by the URI (the last URI path sequence)
 				if(name!=null && isLabel(name) && !containsValue(name))	//if the name is a valid label that we haven't yet used

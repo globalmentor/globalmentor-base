@@ -27,15 +27,8 @@ public class RDFXMLLiteral extends RDFTypedLiteral<DocumentFragment>
 	*/
 	public String getLexicalForm()
 	{
-		try
-		{
-			final XMLSerializer xmlSerializer=new XMLSerializer(false);	//create an unformatted XML serializer
-			return xmlSerializer.serialize(getValue());	//serialize the document fragment into a string and return that string
-		}
-		catch(IOException ioException)	//if there are any IO errors (this should never happen)
-		{
-			throw new AssertionError(ioException);
-		}
+		final XMLSerializer xmlSerializer=new XMLSerializer(false);	//create an unformatted XML serializer
+		return xmlSerializer.serialize(getValue());	//serialize the document fragment into a string and return that string
 	}
 
 	/**@return A locale-aware representation of the literal's lexical form, indicating any locale information available.*/

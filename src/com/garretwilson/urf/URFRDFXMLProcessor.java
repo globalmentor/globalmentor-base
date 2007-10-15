@@ -5,6 +5,7 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
+import static com.garretwilson.io.ContentTypeUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIUtilities.*;
@@ -12,9 +13,11 @@ import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
 import com.garretwilson.text.xml.*;
+import static com.garretwilson.text.xml.XMLConstants.*;
 import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.dcmi.DCMI.LANGUAGE_PROPERTY_URI;
+import com.garretwilson.urf.content.Content;
 import com.garretwilson.util.*;
 import static com.garretwilson.util.LocaleUtilities.*;
 
@@ -345,12 +348,12 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 				final String attributePrefix=attribute.getPrefix(); //get the attribute's prefix
 			  final String attributeValue=attribute.getValue(); //get the attribute's value
 					//ignore attributes with the "xmlns" prefix or in the xmlns namespace
-				if(XMLConstants.XMLNS_NAMESPACE_PREFIX.equals(attributePrefix) || XMLConstants.XMLNS_NAMESPACE_URI.equals(attributeNamespaceURI))
+				if(XMLNS_NAMESPACE_PREFIX.equals(attributePrefix) || XMLNS_NAMESPACE_URI.equals(attributeNamespaceURI))
 				{
 					continue;
 				}
 					//process attributes with the "xml" prefix (or in the xml namespace) specially
-				else if(XMLConstants.XML_NAMESPACE_PREFIX.equals(attributePrefix) || XMLConstants.XML_NAMESPACE_URI.equals(attributeNamespaceURI))
+				else if(XML_NAMESPACE_PREFIX.equals(attributePrefix) || XML_NAMESPACE_URI.equals(attributeNamespaceURI))
 				{
 						//TODO add support for xml:lang
 					continue;
@@ -528,14 +531,24 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		}
 		else if(LITERAL_PARSE_TYPE.equals(parseType))	//if this is an XMLLiteral
 		{
-			throw new UnsupportedOperationException("XMLLiteral not yet supported in URF");
-/*TODO fix
-			//TODO process the attributes to make sure there are no unexpected attributes
 			final Document document=XMLUtilities.createDocument(element);	//create a new document from a copy of the given element
-			//G***do we want to ensure namespace declarations?
 			final Element documentElement=document.getDocumentElement();	//get a reference to the document element
-			final DocumentFragment documentFragment=XMLUtilities.extractChildren(documentElement);	//extract the children of the document element to a document fragment TODO important probably reset the owner document, so that this won't keep the entire original document tree around
-			propertyValue=new RDFXMLLiteral(documentFragment);	//create an XML literal containing the document fragment, which now contains a copy of the information of the XML tree below the given element
+			final DocumentFragment documentFragment=XMLUtilities.extractChildren(documentElement);	//extract the children of the document element to a document fragment
+			final String xmlContent=new XMLSerializer(false).serializeContent(documentFragment);	//serialize the element content
+			propertyValue=determineResourceProxy(createStringURI(xmlContent));	//get a proxy to the serialized XML contents
+			final NameValuePair<Resource, Resource>[] scopeChain=new NameValuePair[]{new NameValuePair<Resource, Resource>(propertyResource, propertyValue)};	//create a scope chain consisting of the property literal value assignment			
+			final Resource contentTypePropertyResource=determineResourceProxy(Content.TYPE_PROPERTY_URI);	//get a proxy to the content.type property resource
+			final Resource contentTypeValueResource=determineResourceProxy(createInfoMediaURI(XML_EXTERNAL_PARSED_ENTITY_CONTENT_TYPE));	//get a proxy to the text/xml-external-parsed-entity media type
+			addAssertion(new Assertion(resource, contentTypePropertyResource, contentTypeValueResource, scopeChain));	//assert the content type within this property's scope
+/*alternate rdf:XMLLiteral representation using an anonymous value resource
+			propertyValue=createResourceProxy();	//the property value will be an anonymous resource with string contents and a content type of text/xml-external-parsed-entity
+			final String xmlContent=new XMLSerializer(false).serializeContent(element);	//serialize the element content
+			final Resource contentPropertyResource=determineResourceProxy(Content.CONTENT_PROPERTY_URI);	//get a proxy to the content.content property resource
+			final Resource contentValueResource=determineResourceProxy(createStringURI(xmlContent));	//get a proxy to the serialized XML contents
+			addAssertion(new Assertion(propertyValue, contentPropertyResource, contentValueResource));	//assert the XML content on the anonymous resource
+			final Resource contentTypePropertyResource=determineResourceProxy(Content.TYPE_PROPERTY_URI);	//get a proxy to the content.type property resource
+			final Resource contentTypeValueResource=determineResourceProxy(createInfoMediaURI(XML_EXTERNAL_PARSED_ENTITY_CONTENT_TYPE));	//get a proxy to the text/xml-external-parsed-entity media type
+			addAssertion(new Assertion(propertyValue, contentTypePropertyResource, contentTypeValueResource));	//assert the XML content type on the anonymous resource
 */
 		}
 		else	//by default assume that we're parsing a resource as the property value
@@ -629,7 +642,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			{
 				lexicalTypeURI=STRING_CLASS_URI;	//RDF plain literals are strings
 					//get the xml:lang language tag, if there is one
-				languageTag=propertyNode instanceof Element ? XMLUtilities.getDefinedAttributeNS((Element)propertyNode, XMLConstants.XML_NAMESPACE_URI.toString(), XMLConstants.ATTRIBUTE_LANG) : null;
+				languageTag=propertyNode instanceof Element ? XMLUtilities.getDefinedAttributeNS((Element)propertyNode, XML_NAMESPACE_URI.toString(), ATTRIBUTE_LANG) : null;
 			}
 			final URI valueURI=createLexicalURI(lexicalTypeURI, childText);	//create a URI for the value
 			final Resource valueResource=determineResourceProxy(valueURI);	//determine the value resource from the value URI

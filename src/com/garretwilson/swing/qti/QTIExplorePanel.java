@@ -2,7 +2,6 @@ package com.garretwilson.swing.qti;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 import java.util.*;
 import javax.mail.internet.ContentType;
 import javax.swing.*;
@@ -289,17 +288,9 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 		if(xmlDocument!=null) //if we have XML from the selected object
 		{
 			//setup the source view
-			try
-			{
-				final String qtiXMLString=xmlSerializer.serialize(xmlDocument.getDocumentElement());	//serialize the document element to a string
-				sourceTextArea.setText(qtiXMLString); //put the QTI XML source in the preview window
-				sourceTextArea.setCaretPosition(0);  //scroll to the top of the text
-			}
-			catch(IOException ioException)
-			{
-				sourceTextArea.setText(ioException.getMessage()); //show the error message in the soure text area
-				Debug.warn(ioException); //create a warning regarding the error
-			}
+			final String qtiXMLString=xmlSerializer.serialize(xmlDocument.getDocumentElement());	//serialize the document element to a string
+			sourceTextArea.setText(qtiXMLString); //put the QTI XML source in the preview window
+			sourceTextArea.setCaretPosition(0);  //scroll to the top of the text
 			//setup the preview view
 
 
