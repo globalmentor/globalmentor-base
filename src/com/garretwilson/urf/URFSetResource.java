@@ -70,7 +70,7 @@ public class URFSetResource<E extends URFResource> extends DefaultURFResource im
 	*/
 	public Iterator<E> iterator()
 	{
-		return (Iterator<E>)getPropertyValues(ELEMENT_PROPERTY_URI);	//return an iterator to property values
+		return (Iterator<E>)getPropertyValues(ELEMENT_PROPERTY_URI).iterator();	//return an iterator to property values
 	}
 
 	/**Returns an array containing all of the elements in this set in the same order they would be iterated.

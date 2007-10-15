@@ -9,21 +9,21 @@ import java.util.regex.*;
 
 import javax.mail.internet.ContentType;
 
-import com.garretwilson.io.ContentTypeUtilities;
 import static com.garretwilson.lang.BooleanUtilities.*;
 import static com.garretwilson.lang.CharacterUtilities.*;
 import com.garretwilson.lang.ClassUtilities;
 import com.garretwilson.lang.LongUtilities;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
+
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
-
 import com.garretwilson.text.RegularExpression;
 import com.garretwilson.urf.content.*;
 import com.garretwilson.urf.select.Select;
 import com.garretwilson.util.*;
+import static com.garretwilson.util.LocaleUtilities.*;
 
 /**An URF data model.
 This data model keeps track of all resources that are being created as a linked group, such as parsed from a TURF interchange document,
@@ -51,7 +51,7 @@ public class URF
 	/**The URI to the URF namespace.*/
 	public final static URI URF_NAMESPACE_URI=URI.create("http://urf.name/urf");
 	/**The base to the URF lexical namespace.*/
-	private final static String URF_LEXICAL_NAMESPACE_BASE="info:lexical/";
+	private final static String URF_LEXICAL_NAMESPACE_BASE="http://urf.name/lexical/";
 	/**The base URI to the URF lexical namespace.*/
 	public final static URI URF_LEXICAL_NAMESPACE_BASE_URI=URI.create(URF_LEXICAL_NAMESPACE_BASE);
 	
@@ -72,6 +72,8 @@ public class URF
 	public final static URI DURATION_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Duration");
 	/**The URI of the URF <code>Integer</code> class.*/
 	public final static URI INTEGER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Integer");
+	/**The URI of the URF <code>Language</code> class.*/
+	public final static URI LANGUAGE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Language");
 	/**The URI of the URF <code>Map</code> class.*/
 	public final static URI MAP_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Map");
 	/**The URI of the URF <code>Number</code> class.*/
@@ -137,6 +139,8 @@ public class URF
 	public final static URI INTEGER_NAMESPACE_URI=createLexicalNamespaceURI(INTEGER_CLASS_URI);
 		/**The URI of the integer value <code>0</code>.*/
 		public final static URI INTEGER_0_URI=createLexicalURI(INTEGER_CLASS_URI, Long.toString(0));
+	/**The language lexical namespace URI.*/
+	public final static URI LANGUAGE_NAMESPACE_URI=createLexicalNamespaceURI(LANGUAGE_CLASS_URI);
 	/**The ordinal lexical namespace URI.*/
 	public final static URI ORDINAL_NAMESPACE_URI=createLexicalNamespaceURI(ORDINAL_CLASS_URI);
 		/**The URI of the ordinal value <code>0</code>.*/
@@ -413,6 +417,17 @@ public class URF
 		return integer==0 ? INTEGER_0_URI : createLexicalURI(INTEGER_CLASS_URI, Long.toString(integer));	//create an integer URI, using the pre-made zero integer URI if we can
 	}
 
+	/**Creates a URI to represent an URF language.
+	@param language The language to represent.
+	@return A URI representing the given URF language.
+	@exception NullPointerException if the given language is <code>null</code>.
+	@see #LANGUAGE_CLASS_URI
+	*/
+	public static URI createLanguageURI(final Locale language)
+	{
+		return createLexicalURI(LANGUAGE_CLASS_URI, getLanguageTag(language));	//create a language URI
+	}
+
 	/**Creates a URI to represent an URF ordinal.
 	@param ordinal The ordinal value to represent.
 	@return A URI representing the given URF ordinal.
@@ -478,9 +493,11 @@ public class URF
 		<dt><code>byte[]</code></dt> <dd>{@value #BINARY_NAMESPACE_URI}</dd>
 		<dt>{@link Boolean}</dt> <dd>{@value #BOOLEAN_NAMESPACE_URI}</dd>
 		<dt>{@link Character}</dt> <dd>{@value #CHARACTER_NAMESPACE_URI}</dd>
+		<dt>{@link ContentType}</dt> <dd>{@value Content#MEDIA_TYPE_NAMESPACE_URI}</dd>
 		<dt>{@link Integer}</dt> <dd>{@value #INTEGER_NAMESPACE_URI}</dd>
 		<dt>{@link Double}</dt> <dd>{@value #REAL_NAMESPACE_URI}</dd>
 		<dt>{@link Float}</dt> <dd>{@value #REAL_NAMESPACE_URI}</dd>
+		<dt>{@link Locale}</dt> <dd>{@value #LANGUAGE_NAMESPACE_URI}</dd>
 		<dt>{@link Long}</dt> <dd>{@value #INTEGER_NAMESPACE_URI}</dd>
 		<dt>{@link Pattern}</dt> <dd>{@value #REGULAR_EXPRESSION_NAMESPACE_URI}</dd>
 		<dt>{@link String}</dt> <dd>{@value #STRING_NAMESPACE_URI}</dd>
@@ -489,8 +506,6 @@ public class URF
 	This method can return resource URis in the following {@value URIConstants#INFO_SCHEME} namespace for objects of the following types:
 	<dl>
 		<dt>{@link Class}</dt> <dd>{@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE}</dd>
-		<dt>{@link ContentType}</dt> <dd>{@value URIConstants#INFO_SCHEME_MEDIA_NAMESPACE}</dd>
-		<dt>{@link Locale}</dt> <dd>{@value URIConstants#INFO_SCHEME_LANG_NAMESPACE}</dd>
 	</dl>
 	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
 	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
@@ -514,6 +529,10 @@ public class URF
 			{
 				return createCharacterURI(((Character)object).charValue());	//return a character URI
 			}
+			else if(object instanceof ContentType)	//if this is a content type
+			{
+				return Content.createMediaTypeURI(((ContentType)object));	//return a media type URI
+			}
 			else if(object instanceof Integer)	//if this is an integer
 			{
 				return createIntegerURI(((Integer)object).longValue());	//return an integer URI
@@ -529,6 +548,10 @@ public class URF
 			else if(object instanceof Long)	//if this is a long
 			{
 				return createIntegerURI(((Long)object).longValue());	//return an integer URI
+			}
+			else if(object instanceof Locale)	//if this is a locale
+			{
+				return createLanguageURI(((Locale)object));	//return a language URI
 			}
 			else if(object instanceof Pattern)	//if this is a pattern
 			{
@@ -546,14 +569,6 @@ public class URF
 			else if(object instanceof Class)	//if this is a class
 			{
 				return ClassUtilities.createInfoJavaURI((Class<?>)object);	//create an info:java/ class URI TODO fix for Java packages
-			}
-			else if(object instanceof ContentType)	//if this is a content type
-			{
-				ContentTypeUtilities.createInfoMediaURI((ContentType)object);	//create an info:media/ URI
-			}
-			else if(object instanceof Locale)	//if this is a locale
-			{
-				LocaleUtilities.createInfoLangURI((Locale)object);	//create an info:lang/ URI
 			}
 		}
 		return null;	//we can't represent this object as a resource URI
@@ -597,17 +612,17 @@ public class URF
 		<dt>{@value #BOOLEAN_NAMESPACE_URI}</dt> <dd>{@link Boolean}</dd>
 		<dt>{@value #CHARACTER_NAMESPACE_URI}</dt> <dd>{@link Character}</dd>
 		<dt>{@value #INTEGER_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
+		<dt>{@value #LANGUAGE_NAMESPACE_URI}</dt> <dd>{@link Locale}</dd>
+		<dt>{@value Content#MEDIA_TYPE_NAMESPACE_URI}</dt> <dd>{@link ContentType}</dd>
 		<dt>{@value #ORDINAL_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
 		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Real}</dd>
 		<dt>{@value #REGULAR_EXPRESSION_NAMESPACE_URI}</dt> <dd>{@link RegularExpression}</dd>
 		<dt>{@value #STRING_NAMESPACE_URI}</dt> <dd>{@link String}</dd>
 		<dt>{@value #URI_NAMESPACE_URI}</dt> <dd>{@link URI}</dd>
 	</dl>
-	This method can return objects for the resources in the following {@value URIConstants#INFO_SCHEME} namespaces:
+	This method can return objects for the resources with URIs of the he following schemes:
 	<dl>
-		<dt>{@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE}</dt> <dd>{@link Class}</dd>
-		<dt>{@value URIConstants#INFO_SCHEME_LANG_NAMESPACE}</dt> <dd>{@link Locale}</dd>
-		<dt>{@value URIConstants#INFO_SCHEME_MEDIA_NAMESPACE}</dt> <dd>{@link ContentType}</dd>
+		<dt>{@value URIConstants#JAVA_SCHEME}</dt> <dd>{@link Class}</dd>
 	</dl>
 	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
 	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
@@ -618,29 +633,17 @@ public class URF
 	{
 		if(resourceURI!=null)	//if a resource URI was given
 		{
-			if(INFO_SCHEME.equals(resourceURI.getScheme()))	//if this is an info URI
+			if(JAVA_SCHEME.equals(resourceURI.getScheme()))	//if this is a Java URI
 			{
-				final String infoNamespace=getInfoNamespace(resourceURI);	//get the info namespace
-				if(INFO_SCHEME_JAVA_NAMESPACE.equals(infoNamespace))	//java
+				try
 				{
-					try
-					{
-						return ClassUtilities.asClass(resourceURI);	//return a class
-					}
-					catch(final ClassNotFoundException classNotFoundException)
-					{
-						throw new IllegalArgumentException(classNotFoundException);
-					}
+					return ClassUtilities.asClass(resourceURI);	//return a class
 				}
-				if(INFO_SCHEME_LANG_NAMESPACE.equals(infoNamespace))	//lang
+				catch(final ClassNotFoundException classNotFoundException)
 				{
-					return LocaleUtilities.asLocale(resourceURI);	//return a locale
+					throw new IllegalArgumentException(classNotFoundException);
 				}
-				else if(INFO_SCHEME_MEDIA_NAMESPACE.equals(infoNamespace))	//media
-				{
-					return ContentTypeUtilities.asMediaType(resourceURI);	//return a content type
-				}
-			}
+		}
 			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the URI namespace
 			if(namespaceURI!=null)	//if this URI has a namespace
 			{
@@ -659,6 +662,14 @@ public class URF
 				else if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//integer
 				{
 					return asInteger(resourceURI);	//return a long
+				}
+				else if(LANGUAGE_NAMESPACE_URI.equals(namespaceURI))	//language
+				{
+					return asLanguage(resourceURI);	//return a language
+				}
+				else if(Content.MEDIA_TYPE_NAMESPACE_URI.equals(namespaceURI))	//media type
+				{
+					return Content.asMediaType(resourceURI);	//return a media type
 				}
 				else if(ORDINAL_NAMESPACE_URI.equals(namespaceURI))	//ordinal
 				{
@@ -775,7 +786,8 @@ public class URF
 	}
 
 	/**Determines the Java class represented by the given resource.
-	A resource represents a Java class if it has a valid <code>info:java/</code> URI with class identifier fragment.
+	A resource represents a Java class if it has a {@value URIConstants#JAVA_SCHEME} scheme URI
+	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.	
 	@param resource The resource which is expected to represent a Java class, or <code>null</code>.
 	@return The Java class represented by the given resource, or <code>null</code> if the resource does not represent a Java class.
 	@exception IllegalArgumentException if the given resource represents a Java class that does not have the correct syntax.
@@ -785,30 +797,6 @@ public class URF
 	public static Class<?> asClass(final Resource resource) throws ClassNotFoundException
 	{
 		return resource!=null ? ClassUtilities.asClass(resource.getURI()) : null;	//if a resource was given, see if its URI represents a Java class
-	}
-
-	/**Determines the locale represented by the given resource.
-	A resource represents a locale if it has a valid <code>info:lang/</code> URI.
-	@param resource The resource which is expected to represent a locale, or <code>null</code>.
-	@return The locale represented by the given resource, or <code>null</code> if the resource does not represent a locale.
-	@exception IllegalArgumentException if the given resource represents a locale that does not have the correct syntax, such as if the language tag has more than three components.
-	@see LocaleUtilities#asLocale(URI)
-	*/
-	public static Locale asLocale(final Resource resource)
-	{
-		return resource!=null ? LocaleUtilities.asLocale(resource.getURI()) : null;	//if a resource was given, see if its URI represents a locale
-	}
-
-	/**Determines the Internet media type represented by the given resource.
-	A resource represents an Internet media type if it has a valid <code>info:media/</code> URI.
-	@param resource The resource which is expected to represent an Internet media type, or <code>null</code>.
-	@return The Internet media type represented by the given resource, or <code>null</code> if the resource does not represent an Internet media type.
-	@exception IllegalArgumentException if the given resource represents an Internet media type that does not have the correct syntax.
-	@see ContentTypeUtilities#asMediaType(URI)
-	*/
-	public static ContentType asMediaType(final Resource resource)
-	{
-		return resource!=null ? ContentTypeUtilities.asMediaType(resource.getURI()) : null;	//if a resource was given, see if its URI represents an Internet media type
 	}
 
 	/**Determines the number represented by the given resource.
@@ -913,6 +901,33 @@ public class URF
 		return null;	//no integer could be found
 	}
 
+	/**Determines the language represented by the given resource.
+	@param resource The resource which is expected to represent a language, or <code>null</code>.
+	@return The language represented by the given resource, or <code>null</code> if the resource does not represent a language.
+	@exception IllegalArgumentException if the given resource represents a language that does not have the correct syntax.
+	@see #asLanguage(URI)
+	*/
+	public static Locale asLanguage(final Resource resource)
+	{
+		return resource!=null ? asLanguage(resource.getURI()) : null;	//if a resource was given, see if its URI represents a language
+	}
+
+	/**Determines the language represented by the given URI.
+	@param resourceURI The URI which is expected to represent a language, or <code>null</code>.
+	@return The language represented by the given URI, or <code>null</code> if the URI does not represent a language.
+	@exception IllegalArgumentException if the given URI represents a language that does not have the correct syntax.
+	@see #LANGUAGE_CLASS_URI
+	@see #LANGUAGE_NAMESPACE_URI
+	*/
+	public static Locale asLanguage(final URI resourceURI)
+	{
+		if(resourceURI!=null && LANGUAGE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a language URI was given
+		{
+			return createLocale(getLocalName(resourceURI));	//create a locale from the local name
+		}
+		return null;	//no language could be found
+	}
+
 	/**Determines the ordinal represented by the given URI.
 	@param resourceURI The URI which is expected to represent an ordinal, or <code>null</code>.
 	@return The ordinal represented by the given URI, or <code>null</code> if the URI does not represent an ordinal.
@@ -962,7 +977,7 @@ public class URF
 				throw new IllegalArgumentException(patternSyntaxException);
 			}
 		}
-		return null;	//no URI could be found
+		return null;	//no pattern could be found
 	}	
 
 	/**Determines the real represented by the given resource.

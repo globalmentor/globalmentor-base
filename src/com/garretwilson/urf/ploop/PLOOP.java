@@ -25,7 +25,7 @@ public class PLOOP
 	*/
 	public static URI getPropertyURI(final Object object, final String propertyName)
 	{
-		final URI namespaceURI=createInfoJavaURI(object.getClass().getPackage());	//the URI of the object's class package will be the namespace of the object's class
+		final URI namespaceURI=createJavaURI(object.getClass().getPackage());	//the URI of the object's class package will be the namespace of the object's class
 		return createResourceURI(namespaceURI, propertyName);	//create and return a property URI for the given property
 	}
 

@@ -1,9 +1,16 @@
 package com.garretwilson.urf;
 
 import java.net.URI;
+import java.util.Locale;
+
+import javax.mail.internet.ContentType;
+
+import com.garretwilson.io.ContentTypeUtilities;
+import com.garretwilson.urf.content.Content;
 
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.urf.URF.*;
+import static com.garretwilson.util.LocaleUtilities.*;
 
 /**A default factory to create default resources.
 This factory also has convenience methods to create default resources of several lexical types.
@@ -53,6 +60,28 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 	public URFResource createIntegerResource(final Long integer)
 	{
 		return createLexicalResource(INTEGER_CLASS_URI, Long.toString(integer));	//create and return a default integer resource
+	}
+
+	/**Creates a default language resource with its type added as a type property.
+	This method delegates to {@link #createLexicalResource(URI, String)}.
+	@param language The language for which a default resource should be created.
+	@return A default language resource with the appropriate type property added.
+	@exception NullPointerException if the given language is <code>null</code>.
+	*/
+	public URFResource createLanguageResource(final Locale language)
+	{
+		return createLexicalResource(LANGUAGE_CLASS_URI, getLanguageTag(language));	//create and return a default language resource
+	}
+
+	/**Creates a default media type resource with its type added as a type property.
+	This method delegates to {@link #createLexicalResource(URI, String)}.
+	@param mediaType The media type for which a default resource should be created.
+	@return A default media type resource with the appropriate type property added.
+	@exception NullPointerException if the given media type is <code>null</code>.
+	*/
+	public URFResource createMediaTypeResource(final ContentType mediaType)
+	{
+		return createLexicalResource(Content.MEDIA_TYPE_CLASS_URI, ContentTypeUtilities.toString(mediaType.getPrimaryType(), mediaType.getSubType()));	//create and return a default media type resource
 	}
 
 	/**Creates a default string resource with its type added as a type property.

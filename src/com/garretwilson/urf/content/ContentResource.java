@@ -51,23 +51,6 @@ public class ContentResource extends DefaultURFResource
 	}
 
 	/**Sets the content type property of the resource.
-	@param mediaType The resource that specifies the Internet media type, or <code>null</code> if there should be no content type.
-	*/
-	public void setContentType(final URFResource mediaType)
-	{
-		Content.setContentType(this, mediaType);	//set the content type
-	}
-
-	/**Sets the content type property of the resource.
-	@param mediaTypeURI The URI of the Internet media type, or <code>null</code> if there should be no content type.
-	@exception IllegalArgumentException if the URI of any given media type URI is does not have an <code>info:media/</code> namespace.
-	*/
-	public void setContentType(final URI mediaTypeURI)
-	{
-		Content.setContentType(this, mediaTypeURI);	//set the media type URI
-	}
-
-	/**Sets the content type property of the resource.
 	@param contentType The object that specifies the content type, or <code>null</code> if there should be no content type.
 	*/
 	public void setContentType(final ContentType contentType)

@@ -5,8 +5,8 @@ import java.net.URI;
 import javax.mail.internet.ContentType;
 
 import static com.garretwilson.io.ContentTypeUtilities.*;
-import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.net.URIUtilities.*;
+import com.garretwilson.io.ContentTypeUtilities;
+import com.garretwilson.net.Resource;
 import com.garretwilson.urf.*;
 import static com.garretwilson.urf.URF.*;
 
@@ -26,6 +26,8 @@ public class Content
 	public final static URI CONTENT_NAMESPACE_URI=URI.create("http://urf.name/content");
 
 		//classes
+	/**The URI of the content <code>MediaType</code> class.*/
+	public final static URI MEDIA_TYPE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "MediaType");
 	/**The URI of the content <code>Resource</code> class.*/
 	public final static URI RESOURCE_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "Resource");
 		//properties
@@ -39,6 +41,48 @@ public class Content
 	public final static URI LENGTH_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "length");
 	/**The Internet media type of a resource.*/
 	public final static URI TYPE_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "type");
+
+		//lexical namespaces
+	/**The media type lexical namespace URI.*/
+	public final static URI MEDIA_TYPE_NAMESPACE_URI=createLexicalNamespaceURI(MEDIA_TYPE_CLASS_URI);
+
+	/**Creates a URI to represent a content media type.
+	@param mediaType The media type represent.
+	@return A URI representing the given content media type.
+	@exception NullPointerException if the given media type is <code>null</code>.
+	@see #MEDIA_TYPE_CLASS_URI
+	*/
+	public static URI createMediaTypeURI(final ContentType mediaType)
+	{
+		return createLexicalURI(MEDIA_TYPE_CLASS_URI, ContentTypeUtilities.toString(mediaType.getBaseType(), mediaType.getSubType()));	//create a media type URI
+	}
+
+	/**Determines the media type represented by the given resource.
+	@param resource The resource which is expected to represent a media type, or <code>null</code>.
+	@return The media type represented by the given resource, or <code>null</code> if the resource does not represent a media type.
+	@exception IllegalArgumentException if the given resource represents a media type that does not have the correct syntax.
+	@see #asMediaType(URI)
+	*/
+	public static ContentType asMediaType(final Resource resource)
+	{
+		return resource!=null ? asMediaType(resource.getURI()) : null;	//if a resource was given, see if its URI represents a media type
+	}
+
+	/**Determines the media type represented by the given URI.
+	@param resourceURI The URI which is expected to represent a media type, or <code>null</code>.
+	@return The media type represented by the given URI, or <code>null</code> if the URI does not represent a media type.
+	@exception IllegalArgumentException if the given URI represents a media type that does not have the correct syntax.
+	@see #MEDIA_TYPE_CLASS_URI
+	@see #MEDIA_TYPE_NAMESPACE_URI
+	*/
+	public static ContentType asMediaType(final URI resourceURI)
+	{
+		if(resourceURI!=null && MEDIA_TYPE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a media type URI was given
+		{
+			createContentType(getLocalName(resourceURI));	//create a media type from the local name
+		}
+		return null;	//no media type could be found
+	}
 
 	/**Returns the declared content type of the resource.
 	@param resource The resource for which the content type should be returned.
@@ -61,31 +105,12 @@ public class Content
 
 	/**Sets the content type property of the resource.
 	@param resource The resource for which the content type property should be set.
-	@param mediaType The resource that specifies the Internet media type, or <code>null</code> if there should be no content type.
-	*/
-	public static void setContentType(final URFResource resource, final URFResource mediaType)
-	{
-		resource.setPropertyValue(TYPE_PROPERTY_URI, mediaType);	//set the content type
-	}
-
-	/**Sets the content type property of the resource.
-	@param resource The resource for which the content type property should be set.
-	@param mediaTypeURI The URI of the Internet media type, or <code>null</code> if there should be no content type.
-	@exception IllegalArgumentException if the URI of any given media type URI is does not have an <code>info:media/</code> namespace.
-	*/
-	public static void setContentType(final URFResource resource, final URI mediaTypeURI)
-	{
-		setContentType(resource, mediaTypeURI!=null ? new DefaultURFResource(checkInfoNamespace(mediaTypeURI, INFO_SCHEME_MEDIA_NAMESPACE)) : null);	//if a media type URI was given, check for the info:media/ namespace and create a default resource
-	}
-
-	/**Sets the content type property of the resource.
-	@param resource The resource for which the content type property should be set.
 	@param contentType The object that specifies the content type, or <code>null</code> if there should be no content type.
 	*/
 	public static void setContentType(final URFResource resource, final ContentType contentType)
 	{
-		setContentType(resource, createInfoMediaURI(contentType));	//create an info:media/ URI from the given content type and set the resource's content type
-	}
+		resource.setPropertyValue(TYPE_PROPERTY_URI, DEFAULT_URF_RESOURCE_FACTORY.createMediaTypeResource(contentType));	//create a media type resource and set the resource's content type
+}
 
 	/**Retrieves the array of child resources of the resource.
 	@param resource The resource the contents of which will be returned.

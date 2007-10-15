@@ -47,7 +47,7 @@ public class ClassUtilities
 	/**This class cannot be publicly instantiated.*/
 	private ClassUtilities() {}
 
-	/**Determines the Internet media type represented by the given URI.
+	/**Determines the Java class represented by the given URI.
 	A URI represents a Java class if it is a valid <code>info:java/</code> URI with class identifier fragment.
 	@param resourceURI The URI which is expected to represent a Java class, or <code>null</code>.
 	@return The Java class represented by the given URI, or <code>null</code> if the URI is not an <code>info:java/</code> URI.
@@ -56,6 +56,7 @@ public class ClassUtilities
 	@see URIConstants#INFO_SCHEME
 	@see URIConstants#INFO_SCHEME_JAVA_NAMESPACE
 	*/
+/*TODO del
 	public static Class<?> asClass(final URI resourceURI) throws ClassNotFoundException
 	{
 		if(resourceURI!=null && isInfoNamespace(resourceURI, INFO_SCHEME_JAVA_NAMESPACE))	//if an info:java/ URI was given
@@ -69,49 +70,115 @@ public class ClassUtilities
 		}
 		return null;	//no class could be found
 	}
+*/
+
+	/**Determines the Java class represented by the given URI.
+	A URI represents a Java class if it has a {@value URIConstants#JAVA_SCHEME} scheme
+	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.	
+	@param resourceURI The URI which is expected to represent a Java class, or <code>null</code>.
+	@return The Java class represented by the given URI, or <code>null</code> if the URI is not a <code>java:</code> URI.
+	@exception IllegalArgumentException if the given URI represents a Java class that does not have the correct syntax.
+	@exception ClassNotFoundException if the class represented by the given URI could not be found.
+	@see URIConstants#JAVA_SCHEME
+	*/
+	public static Class<?> asClass(final URI resourceURI) throws ClassNotFoundException
+	{
+		if(resourceURI!=null && JAVA_SCHEME.equals(resourceURI.getScheme()))	//if an java: URI was given
+		{
+			final String classPath=resourceURI.getRawPath();	//get the path to the class
+			if(classPath!=null)	//if there is a path
+			{
+				if(classPath.startsWith(ROOT_PATH))	//if the path is absolute
+				{
+					return Class.forName(decode(classPath.substring(ROOT_PATH.length()).replace(PATH_SEPARATOR, PACKAGE_SEPARATOR)));	//skip the root path delimiter, replace path separators with package separators, and decode the string before trying to load the class
+				}
+				else	//if the path is not absolute
+				{
+					throw new IllegalArgumentException("Java URI "+resourceURI+" does not have an absolute path.");
+				}				
+			}
+			else	//if there is no path
+			{
+				throw new IllegalArgumentException("Java URI "+resourceURI+" missing path.");
+			}
+		}
+		return null;	//no class could be found
+	}
 
 	/**Determines whether the given URI is a <code>info:java/</code> URI for a Java package.
 	@param uri The URI to check for a Java package.
 	@return <code>true</code> if the given URI is a <code>info:java/</code> URI for a Java package.
 	*/
+/*TODO del
 	public static boolean isInfoJavaPackageURI(final URI uri)
 	{
 		return isInfoNamespace(uri, INFO_SCHEME_JAVA_NAMESPACE) && uri.getFragment()==null;	//see if this is an info:java/ URI with no fragment
 	}
+*/
 
 	/**Determines whether the given URI is a <code>info:java/</code> URI for a Java class.
 	@param uri The URI to check for a Java class.
 	@return <code>true</code> if the given URI is a <code>info:java/</code> URI for a Java class.
 	*/
+/*TODO del
 	public static boolean isInfoJavaClassURI(final URI uri)
 	{
 		return isInfoNamespace(uri, INFO_SCHEME_JAVA_NAMESPACE) && uri.getFragment()!=null;	//see if this is an info:java/ URI with a fragment
 	}
+*/
 
-	/**Creates an {@value URIConstants#INFO_SCHEME} URI for a Java package using a {@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE} namespace
+	/**Creates an {@value URIConstants#INFO_SCHEME} URI for a Java package using a {@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE} namespace.
 	in the form <code>info:java/<var>com</var>/<var>example</var>/<var>package</var></code>.
-	@param objectPackage The class to use in creating the <code>info:java/</code> URI.
+	@param objectPackage The package to use in creating the <code>info:java/</code> URI.
 	@return A <code>info:java/</code> URI based upon the given package.
 	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
 	@exception NullPointerException if the given package is <code>null</code>.
 	*/
+/*TODO fix
 	public static URI createInfoJavaURI(final Package objectPackage)
 	{
 		final String packagePath=URIPath.encodeSegment(objectPackage.getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the package path by replacing the package separators with path separators after encoding
 		return createInfoURI(INFO_SCHEME_JAVA_NAMESPACE, packagePath);	//create a new info:java/ URI with no fragment
 	}
+*/
 
-	/**Creates an {@value URIConstants#INFO_SCHEME} URI for a Java class using a {@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE} namespace
+	/**Creates an {@value URIConstants#INFO_SCHEME} URI for a Java class using a {@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE} namespace.
 	in the form <code>info:java/<var>com</var>/<var>example</var>/<var>package</var>#<var>Class</var></code>.
 	@param objectClass The class to use in creating the <code>info:java/</code> URI.
 	@return A <code>info:java/</code> URI based upon the given class.
 	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
 	@exception NullPointerException if the given class is <code>null</code>.
 	*/
+/*TODO del
 	public static URI createInfoJavaURI(final Class<?> objectClass)
 	{
 		final String packagePath=URIPath.encodeSegment(objectClass.getPackage().getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the package path by replacing the package separators with path separators after encoding
 		return createInfoURI(INFO_SCHEME_JAVA_NAMESPACE, packagePath, URIPath.encode(getLocalName(objectClass)));	//create a new info:java/ URI with the class local name as the fragment
+	}
+*/
+
+	/**Creates a Java URI for a Java package using the {@value URIConstants#JAVA_SCHEME} scheme
+	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/</code>.
+	@param objectPackage The package to use in creating the <code>java:</code> URI.
+	@return A <code>java:</code> URI based upon the given class.
+	@exception NullPointerException if the given class is <code>null</code>.
+	*/
+	public static URI createJavaURI(final Package objectPackage)
+	{
+		final String packagePath=URIPath.encodeSegment(objectPackage.getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the package path by replacing the package separators with path separators after encoding
+		return URI.create(JAVA_SCHEME+SCHEME_SEPARATOR+ROOT_PATH+packagePath+PATH_SEPARATOR);	//create and return a new Java URI for the package
+	}
+
+	/**Creates a Java URI for a Java class using the {@value URIConstants#JAVA_SCHEME} scheme
+	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.
+	@param objectClass The class to use in creating the <code>java:</code> URI.
+	@return A <code>java:</code> URI based upon the given class.
+	@exception NullPointerException if the given class is <code>null</code>.
+	*/
+	public static URI createInfoJavaURI(final Class<?> objectClass)
+	{
+		final String classPath=URIPath.encodeSegment(objectClass.getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the class path by replacing the package separators with path separators after encoding
+		return URI.create(JAVA_SCHEME+SCHEME_SEPARATOR+ROOT_PATH+classPath);	//create and return a new Java URI for the class
 	}
 
 	/**Returns a content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.

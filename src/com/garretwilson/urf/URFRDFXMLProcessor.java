@@ -5,7 +5,6 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-import static com.garretwilson.io.ContentTypeUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIUtilities.*;
@@ -538,7 +537,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			propertyValue=determineResourceProxy(createStringURI(xmlContent));	//get a proxy to the serialized XML contents
 			final NameValuePair<Resource, Resource>[] scopeChain=new NameValuePair[]{new NameValuePair<Resource, Resource>(propertyResource, propertyValue)};	//create a scope chain consisting of the property literal value assignment			
 			final Resource contentTypePropertyResource=determineResourceProxy(Content.TYPE_PROPERTY_URI);	//get a proxy to the content.type property resource
-			final Resource contentTypeValueResource=determineResourceProxy(createInfoMediaURI(XML_EXTERNAL_PARSED_ENTITY_CONTENT_TYPE));	//get a proxy to the text/xml-external-parsed-entity media type
+			final Resource contentTypeValueResource=determineResourceProxy(Content.createMediaTypeURI(XML_EXTERNAL_PARSED_ENTITY_CONTENT_TYPE));	//get a proxy to the text/xml-external-parsed-entity media type
 			addAssertion(new Assertion(resource, contentTypePropertyResource, contentTypeValueResource, scopeChain));	//assert the content type within this property's scope
 /*alternate rdf:XMLLiteral representation using an anonymous value resource
 			propertyValue=createResourceProxy();	//the property value will be an anonymous resource with string contents and a content type of text/xml-external-parsed-entity
@@ -651,7 +650,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 				final Locale locale=createLocale(languageTag);	//create a locale from the language tag
 				final NameValuePair<Resource, Resource>[] scopeChain=new NameValuePair[]{new NameValuePair<Resource, Resource>(propertyResource, valueResource)};	//create a scope chain consisting of the property literal value assignment
 				final Resource languagePropertyResource=determineResourceProxy(LANGUAGE_PROPERTY_URI);	//get a proxy to the dc.language property resource
-				final Resource languageValueResource=determineResourceProxy(createInfoLangURI(locale));	//get a resource proxy for the language value
+				final Resource languageValueResource=determineResourceProxy(createLanguageURI(locale));	//get a resource proxy for the language value
 				addAssertion(new Assertion(resource, languagePropertyResource, languageValueResource, scopeChain));	//assert the language tag within this property's scope
 			}
 			return valueResource;	//return the value we calculated

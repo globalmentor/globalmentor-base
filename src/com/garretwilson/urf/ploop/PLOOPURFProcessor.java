@@ -12,13 +12,10 @@ import static com.garretwilson.lang.EnumUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
 import com.garretwilson.net.*;
-import static com.garretwilson.net.URIUtilities.*;
-
 import com.garretwilson.urf.*;
-import com.garretwilson.util.*;
-
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.ploop.PLOOP.*;
+import com.garretwilson.util.*;
 
 import com.guiseframework.style.AbstractModeledColor;
 import com.guiseframework.style.Color;
@@ -103,7 +100,7 @@ public class PLOOPURFProcessor
 			while(!hasJavaType && typeIterator.hasNext())	//while we haven't found a Java type and there are other types left
 			{
 				final URI typeURI=typeIterator.next().getURI();	//get the next type URI
-				if(typeURI!=null && isInfoNamespace(typeURI, INFO_SCHEME_JAVA_NAMESPACE))	//if this is an info:java/ URI
+				if(typeURI!=null && JAVA_SCHEME.equals(typeURI.getScheme()))	//if this is an a java: URI
 				{
 					hasJavaType=true;	//show that this resource has a Java type					
 				}
@@ -364,7 +361,7 @@ public class PLOOPURFProcessor
 				final Object object=asObject(resource);	//see if we can turn the resource into a simple object
 				if(object==null)	//if we couldn't turn the resource into an object
 				{
-					throw new DataException("Value resource "+resource+" missing type information.");
+					throw new DataException("Value resource missing type information: "+URF.toString(resource));
 				}
 				return object;	//return the simple object we found
 			}
@@ -513,7 +510,7 @@ public class PLOOPURFProcessor
 	*/
 	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URFResource resource) throws DataException, InvocationTargetException
 	{
-		return getPropertyDescriptionMap(objectClass, resource, createInfoJavaURI(objectClass.getPackage()));	//get a property description map using the class namespace
+		return getPropertyDescriptionMap(objectClass, resource, createJavaURI(objectClass.getPackage()));	//get a property description map using the class namespace
 	}
 
 	/**Constructs a map of property descriptions for a class based upon a resource description.
