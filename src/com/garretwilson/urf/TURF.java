@@ -6,8 +6,8 @@ import static com.garretwilson.text.CharacterConstants.*;
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:
-"Uniform Resource Framework (URF) <http://www.urf.name/> specification and processing
-written by Garret Wilson <http://www.garretwilson.com/> and Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>."
+"Uniform Resource Framework (URF) &lt;http://www.urf.name/&gt; specification and processing
+written by Garret Wilson &lt;http://www.garretwilson.com/&gt; and Copyright © 2007 GlobalMentor, Inc. &lt;http://www.globalmentor.com/&gt;."
 Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
@@ -52,12 +52,12 @@ public class TURF
 	public final static char NUMBER_BEGIN='#';
 
 	/**The delimiter that begins init declarations.*/
-	public final static char INITS_BEGIN='¡';
+	public final static char INITS_BEGIN='\u00A1';	//¡
 	/**The delimiter that ends init declarations.*/
 	public final static char INITS_END='!';
 
 	/**The delimiter that begins ordinal shorthand declarations.*/
-	public final static char ORDINAL_BEGIN='º';
+	public final static char ORDINAL_BEGIN='\u00BA';	//º
 
 	/**The delimiter that begins property declarations.*/
 	public final static char PROPERTIES_BEGIN=':';
@@ -70,9 +70,9 @@ public class TURF
 	public final static char REGULAR_EXPRESSION_END=REGULAR_EXPRESSION_BEGIN;
 
 	/**The delimiter that begins URI references.*/
-	public final static char REFERENCE_BEGIN='«';
+	public final static char REFERENCE_BEGIN='\u00AB';	//«
 	/**The delimiter that ends URI references.*/
-	public final static char REFERENCE_END='»';
+	public final static char REFERENCE_END='\u00BB';	//»
 
 	/**The delimiter that begins sets.*/
 	public final static char SET_BEGIN='{';
