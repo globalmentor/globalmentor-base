@@ -247,49 +247,9 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				}
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
-			case TEMPORAL_BEGIN:	//temporal TODO add full temporal type support; this implementation does not do full syntax checking
+			case TEMPORAL_BEGIN:	//temporal
 				foundComponent=true;	//indicate that at least one description component is present
-				{
-					check(reader, TEMPORAL_BEGIN);	//read the beginning temporal delimiter
-					final String lexicalForm=reachAfter(reader, TEMPORAL_END);	//read everything up to the temporal ending delimiter and then skip that delimiter
-					final URI lexicalTypeURI;	//determine which type of number this is
-					if(lexicalForm.length()>0)	//if there is at least one character
-					{
-						final char firstChar=lexicalForm.charAt(0);	//get the first character
-						if(firstChar==DURATION_LEXICAL_FORM_BEGIN)	//if this temporal starts with a duration delimiter
-						{
-							lexicalTypeURI=DURATION_CLASS_URI;	//this is a duration
-						}
-						else if(firstChar=='+' || firstChar=='-')	//if this is the start of an offset
-						{
-							lexicalTypeURI=UTC_OFFSET_CLASS_URI;	//this is a UTC-Offset
-						}
-						else if(lexicalForm.indexOf('-')>0)	//if some date representation is included
-						{
-							if(lexicalForm.indexOf('T')>0)	//if time is also included
-							{
-								lexicalTypeURI=DATE_TIME_CLASS_URI;	//this is a DateTime
-							}
-							else	//if no time is included
-							{
-								lexicalTypeURI=DATE_CLASS_URI;	//this is merely a Date
-							}
-						}
-						else if(lexicalForm.indexOf(':')>0)	//if some time representation is included
-						{
-							lexicalTypeURI=TIME_CLASS_URI;	//this is a Time
-						}
-						else	//if no recognized delimiters were found
-						{
-							throw new DataException("Unrecognized temporal lexical form: "+lexicalForm+".");
-						}
-					}
-					else	//if the temporal lexical form was empty
-					{
-						throw new DataException("Temporal lexical form cannot be the empty string.");
-					}
-					resourceURI=createLexicalURI(TEMPORAL_CLASS_URI, lexicalForm);	//create a URI for the temporal
-				}
+				resourceURI=parseTemporal(reader);	//parse the temporal
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
 			case URI_BEGIN:	//URI
@@ -793,30 +753,27 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				stringBuilder.append(check(reader, '-'));	//append the character
 			}
 		}
-		stringBuilder.append(check(reader, '0', '9'));	//there should be at least one digit
-		stringBuilder.append(read(reader, '0', '9')); //read all remaining digits
+		stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
 		c=peek(reader);	//peek the next character
 		if(c>=0)	//if we're not at the end of the reader
 		{
-			if(allowDecimal && c=='.')	//if we should allow a decimal part and this is a floating point number
+			if(allowDecimal && c==DECIMAL_DELIMITER)	//if we should allow a decimal part and this is a floating point number
 			{
 				hasFraction=true;	//we found a fraction
-				stringBuilder.append(check(reader, '.'));	//read and append the beginning decimal point
-				stringBuilder.append(check(reader, '0', '9'));	//there should be at least one digit
-				stringBuilder.append(read(reader, '0', '9')); //read all remaining digits
+				stringBuilder.append(check(reader, DECIMAL_DELIMITER));	//read and append the beginning decimal point
+				stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
 				c=peek(reader);	//peek the next character
 			}
-			if(allowExponent && c=='e')	//if we should allow an exponent part and this is an exponent
+			if(allowExponent && c==EXPONENT_DELIMITER)	//if we should allow an exponent part and this is an exponent
 			{
 				hasExponent=true;	//we found an exponent
-				stringBuilder.append(check(reader, 'e'));	//read and append the exponent character
+				stringBuilder.append(check(reader, EXPONENT_DELIMITER));	//read and append the exponent character
 				c=peek(reader);	//peek the next character
 				if(c=='-' || c=='+')	//if the exponent starts with a sign
 				{
 					stringBuilder.append(readCharacter(reader));	//append the sign
 				}
-				stringBuilder.append(check(reader, '0', '9'));	//there should be at least one digit
-				stringBuilder.append(read(reader, '0', '9')); //read all remaining digits
+				stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
 			}
 		}
 		try
@@ -834,6 +791,140 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		{
 			throw new DataException(numberFormatException);
 		}
+	}
+
+	/**Parses a temporal beginning with the temporal delimiter.
+	The current position must be that of the beginning temporal delimiter character.
+	The new position will be that immediately after the last temporal character.
+	@param reader The reader the contents of which to be parsed.
+	@return The URI of the temporal parsed from the reader.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters before the current temporal is completely parsed.
+	@exception DataException if the temporal is not of the correct format.
+	*/
+	public static URI parseTemporal(final Reader reader) throws IOException, ParseIOException, DataException
+	{
+		check(reader, TEMPORAL_BEGIN);	//read the beginning temporal delimiter
+		int c;	//we'll use this to keep track of the next character
+		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to use when reading the temporal
+		final URI lexicalTypeURI;	//determine which type of temporal this is
+		c=peek(reader);	//peek the first character
+		if(c==DURATION_LEXICAL_FORM_BEGIN)	//if this temporal starts with a duration delimiter
+		{
+			lexicalTypeURI=DURATION_CLASS_URI;	//this is a duration
+			stringBuilder.append(check(reader, DURATION_LEXICAL_FORM_BEGIN));	//read and add the delimiter
+			boolean hasComponent=false;	//we'll see if the duration has some component
+			c=peek(reader);	//peek the next character
+			if(c!=TIME_BEGIN)	//if this is not the beginning of a time
+			{
+				hasComponent=true;	//indicate that there is some duration component
+					//years
+				stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
+				stringBuilder.append(check(reader, DURATION_YEARS_DELIMITER));	//read and add the delimiter
+					//months
+				stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
+				stringBuilder.append(check(reader, DURATION_MONTHS_DELIMITER));	//read and add the delimiter
+					//days
+				stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
+				stringBuilder.append(check(reader, DURATION_DAYS_DELIMITER));	//read and add the delimiter
+				c=peek(reader);	//peek the next character
+			}
+			if(c==TIME_BEGIN)	//if this is the beginning of a time
+			{
+				hasComponent=true;	//indicate that there is some duration component
+				stringBuilder.append(check(reader, TIME_BEGIN));	//read and append the time delimiter
+					//hours
+				stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
+				stringBuilder.append(check(reader, DURATION_HOURS_DELIMITER));	//read and add the delimiter
+					//minutes
+				stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
+				stringBuilder.append(check(reader, DURATION_MINUTES_DELIMITER));	//read and add the delimiter
+					//seconds
+				stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
+				c=peek(reader);	//peek the next character
+				if(c==DECIMAL_DELIMITER)	//if this is a decimal delimiter
+				{
+					stringBuilder.append(check(reader, DECIMAL_DELIMITER));	//read and append the time delimiter
+					stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
+				}
+				stringBuilder.append(check(reader, DURATION_SECONDS_DELIMITER));	//read and add the delimiter
+			}
+			if(!hasComponent)	//if there is no duration component
+			{
+				throw new DataException("Duration cannot be empty.");
+			}
+		}
+		else if(c=='+' || c=='-')	//if this is the start of an offset
+		{
+			lexicalTypeURI=UTC_OFFSET_CLASS_URI;	//this is a UTC-Offset
+			stringBuilder.append(check(reader, (char)c));	//read and add the delimiter
+			stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read two digits
+			stringBuilder.append(check(reader, TIME_DELIMITER));	//read and add the time delimiter
+			stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read two digits
+		}
+		else	//this is a date, a time, or a date time
+		{
+			String dateTimeStart=readMinimum(reader, 1, '0', '9'); //read all digits; there should be at least one
+			final int dateTimeStartLength=dateTimeStart.length();	//get the length of the date time start
+			final boolean hasTime;	//determine if there is a time
+			if(dateTimeStartLength==4)	//we've started a date
+			{
+				stringBuilder.append(dateTimeStart); //append the beginning date time characters
+				stringBuilder.append(check(reader, DATE_DELIMITER));	//read and add the date delimiter
+				stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read the month
+				stringBuilder.append(check(reader, DATE_DELIMITER));	//read and add the date delimiter
+				stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read the day
+				c=peek(reader);	//peek the next character
+				if(c==TIME_BEGIN)	//if this is the beginning of a time
+				{
+					lexicalTypeURI=DATE_TIME_CLASS_URI;	//this is a date time
+					stringBuilder.append(check(reader, TIME_BEGIN));	//read and append the time delimiter
+					dateTimeStart=readStringCheck(reader, 2, '0', '9'); //read the hour, and then let the time code take over
+					hasTime=true;	//we still have time to parse
+				}
+				else	//if this is only a date
+				{
+					lexicalTypeURI=DATE_CLASS_URI;	//this is a date
+					hasTime=false;	//there is no time to parse
+				}					
+			}
+			else	//if we didn't start a date
+			{
+				if(dateTimeStartLength==2)	//if we're starting a time
+				{
+					lexicalTypeURI=TIME_CLASS_URI;	//this is a time
+					hasTime=true;	//we need to parse the time
+				}
+				else	//if this is neither the start of a date nor the start of a time
+				{
+					throw new DataException("Incorrect start of a date, time, or date time: "+dateTimeStart);
+				}
+			}
+			if(hasTime)	//if we need to parse time
+			{
+				stringBuilder.append(dateTimeStart); //append the beginning date time characters
+				stringBuilder.append(check(reader, TIME_DELIMITER));	//read and add the time delimiter
+				stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read the minutes
+				stringBuilder.append(check(reader, TIME_DELIMITER));	//read and add the time delimiter
+				stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read the seconds
+				c=peek(reader);	//peek the next character
+				if(c==DECIMAL_DELIMITER)	//if this is a decimal delimiter
+				{
+					stringBuilder.append(check(reader, DECIMAL_DELIMITER));	//read and append the time delimiter
+					stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all subseconds
+				}
+				c=peek(reader);	//peek the next character
+				if(c=='+' || c=='-')	//if this is the start of an offset
+				{
+					stringBuilder.append(check(reader, (char)c));	//read and add the delimiter
+					stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read two digits
+					stringBuilder.append(check(reader, TIME_DELIMITER));	//read and add the time delimiter
+					stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read two digits
+				}
+			}
+		}
+		return createLexicalURI(lexicalTypeURI, stringBuilder.toString());	//create and return a URI for the temporal
 	}
 
 	/**Parses a string surrounded by string delimiters.

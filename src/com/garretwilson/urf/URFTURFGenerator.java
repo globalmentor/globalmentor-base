@@ -800,17 +800,17 @@ public class URFTURFGenerator
 			}
 			else if(DATE_CLASS_URI.equals(lexicalTypeURI))	//if this is a date
 			{
-				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
+				writer.append(TEMPORAL_BEGIN).append(lexicalForm);	//write a temporal short form
 				return lexicalTypeURI;
 			}
 			else if(DATE_TIME_CLASS_URI.equals(lexicalTypeURI))	//if this is a date time
 			{
-				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
+				writer.append(TEMPORAL_BEGIN).append(lexicalForm);	//write a temporal short form
 				return lexicalTypeURI;
 			}
 			else if(DURATION_CLASS_URI.equals(lexicalTypeURI))	//if this is a duration
 			{
-				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
+				writer.append(TEMPORAL_BEGIN).append(lexicalForm);	//write a temporal short form
 				return lexicalTypeURI;
 			}
 			else if(INTEGER_CLASS_URI.equals(lexicalTypeURI) || REAL_CLASS_URI.equals(lexicalTypeURI))	//integer or real
@@ -835,7 +835,7 @@ public class URFTURFGenerator
 			}
 			else if(TIME_CLASS_URI.equals(lexicalTypeURI))	//if this is a time
 			{
-				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
+				writer.append(TEMPORAL_BEGIN).append(lexicalForm);	//write a temporal short form
 				return lexicalTypeURI;
 			}
 			else if(URI_CLASS_URI.equals(lexicalTypeURI))	//if this is a URI
@@ -845,7 +845,7 @@ public class URFTURFGenerator
 			}
 			else if(UTC_OFFSET_CLASS_URI.equals(lexicalTypeURI))	//if this is a UTC offset
 			{
-				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
+				writer.append(TEMPORAL_BEGIN).append(lexicalForm);	//write a temporal short form
 				return lexicalTypeURI;
 			}
 		}

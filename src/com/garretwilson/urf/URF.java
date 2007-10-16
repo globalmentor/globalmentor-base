@@ -135,6 +135,18 @@ public class URF
 	public final static URI DURATION_NAMESPACE_URI=createLexicalNamespaceURI(DURATION_CLASS_URI);
 		/**The delimiter that marks the beginning of a duration lexical form.*/
 		public final static char DURATION_LEXICAL_FORM_BEGIN='P';
+		/**The delimiter that indicates a duration year.*/
+		public final static char DURATION_YEARS_DELIMITER='Y';
+		/**The delimiter that indicates a duration month.*/
+		public final static char DURATION_MONTHS_DELIMITER='M';
+		/**The delimiter that indicates a duration day.*/
+		public final static char DURATION_DAYS_DELIMITER='D';
+		/**The delimiter that indicates a duration hour.*/
+		public final static char DURATION_HOURS_DELIMITER='H';
+		/**The delimiter that indicates a duration minute.*/
+		public final static char DURATION_MINUTES_DELIMITER='M';
+		/**The delimiter that indicates a duration second.*/
+		public final static char DURATION_SECONDS_DELIMITER='S';
 	/**The integer lexical namespace URI.*/
 	public final static URI INTEGER_NAMESPACE_URI=createLexicalNamespaceURI(INTEGER_CLASS_URI);
 		/**The URI of the integer value <code>0</code>.*/
@@ -162,6 +174,18 @@ public class URF
 	/**The UTC offset lexical namespace URI.*/
 	public final static URI UTC_OFFSET_NAMESPACE_URI=createLexicalNamespaceURI(UTC_OFFSET_CLASS_URI);
 
+		//general lexical delimiters
+	/**The delimiter for decimal separation of numbers and times.*/
+	public final static char DECIMAL_DELIMITER='.';
+	/**The delimiter for exponent separation of numbers.*/
+	public final static char EXPONENT_DELIMITER='e';
+	/**The delimiter that introduces a time component in a temporal.*/
+	public final static char TIME_BEGIN='T';
+	/**The delimiter that separates year components in a temporal.*/
+	public final static char DATE_DELIMITER='-';
+	/**The delimiter that separates time components in a temporal.*/
+	public final static char TIME_DELIMITER=':';
+	
 	/**The shared empty array of resources.*/
 	public final static URFResource[] NO_RESOURCES=new URFResource[0];
 	
@@ -503,9 +527,10 @@ public class URF
 		<dt>{@link String}</dt> <dd>{@value #STRING_NAMESPACE_URI}</dd>
 		<dt>{@link URI}</dt> <dd>{@value #URI_NAMESPACE_URI}</dd>
 	</dl>
-	This method can return resource URis in the following {@value URIConstants#INFO_SCHEME} namespace for objects of the following types:
+	This method can return resource URIs using the following schemes for objects of the following types:
 	<dl>
-		<dt>{@link Class}</dt> <dd>{@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE}</dd>
+		<dt>{@link Class}</dt> <dd>{@value URIConstants#JAVA_SCHEME}</dd>
+		<dt>{@link Package}</dt> <dd>{@value URIConstants#JAVA_SCHEME}</dd>
 	</dl>
 	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
 	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
@@ -565,10 +590,14 @@ public class URF
 			{
 				return createURIURI(((URI)object));	//return a URI URI
 			}
-				//info URIs
+				//other schemes
 			else if(object instanceof Class)	//if this is a class
 			{
-				return ClassUtilities.createInfoJavaURI((Class<?>)object);	//create an info:java/ class URI TODO fix for Java packages
+				return ClassUtilities.createJavaURI((Class<?>)object);	//create a java: URI for a class
+			}
+			else if(object instanceof Package)	//if this is a package
+			{
+				return ClassUtilities.createJavaURI((Package)object);	//create a java: URI for a package
 			}
 		}
 		return null;	//we can't represent this object as a resource URI

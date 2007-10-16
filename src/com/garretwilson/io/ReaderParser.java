@@ -314,7 +314,29 @@ public class ReaderParser
 		skip(reader, lowerBound, upperBound, stringBuilder);	//read the characters
 		return stringBuilder.toString();	//return the collected characters
 	}
-	
+
+	/**Reads at least a minimum number of characters in a reader that lie within a given range.
+	The new position will either be the first character not in the range or the end of the reader.
+	@param reader The reader the contents of which to be parsed.
+	@param minimumCount The minimum number of characters to read. 
+	@param lowerBound The lowest character in the range.
+	@param upperBound The highest character in the range.	
+	@return The characters that were read.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	*/
+	public static String readMinimum(final Reader reader, int minimumCount, final char lowerBound, final char upperBound) throws IOException
+	{
+		final StringBuilder stringBuilder=new StringBuilder();	//create a string builder
+		while(minimumCount>0)	//while we should read a minimum count of characters
+		{
+			stringBuilder.append(check(reader, lowerBound, upperBound));	//check another character and append it to the string builder
+			--minimumCount;	//note that we have more minimum characters to read
+		}
+		skip(reader, lowerBound, upperBound, stringBuilder);	//read the remaining characters
+		return stringBuilder.toString();	//return the collected characters
+	}
+
 	/**Reads all characters in a reader that appear within a given array.
 	The new position will either be the first character not in the array or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
@@ -369,7 +391,7 @@ public class ReaderParser
 				return c;	//stop skipping and return without resetting the reader to the mark
 			}
 //Debug.trace("trying to skip character", (char)c);
-			if(c>=lowerBound && c<upperBound)	//if the character is within the range of characters, we'll skip it
+			if(c>=lowerBound && c<=upperBound)	//if the character is within the range of characters, we'll skip it
 			{
 				if(stringBuilder!=null)	//if a string builder was given
 				{
@@ -434,7 +456,7 @@ public class ReaderParser
 				return c;	//stop skipping and return without resetting the reader to the mark
 			}
 //Debug.trace("trying to skip character", (char)c);
-			if(c>=lowerBound && c<upperBound)	//if the character is within the range of characters, make sure it's one of the characters
+			if(c>=lowerBound && c<=upperBound)	//if the character is within the range of characters, make sure it's one of the characters
 			{
 				for(int i=characters.length-1; i>=0 && !skip; --i)	//look at each characters to skip
 				{

@@ -155,7 +155,7 @@ public class PLOOPURFGenerator
 			final boolean isObjectResource=object instanceof Resource;	//see if the object is a resource
 			resourceURI=isObjectResource ? ((Resource)object).getURI() : null;	//get the URI of the object, if it is a resource
 			final Class<?> objectClass=object.getClass();	//get the object type
-			final URI typeURI=createInfoJavaURI(objectClass);	//get a URI to represent the class
+			final URI typeURI=createJavaURI(objectClass);	//get a URI to represent the class
 			resource=urf.locateResource(resourceURI, typeURI);	//locate and create if needed a new resource
 			final Set<URI> ploopPropertyURIs=new HashSet<URI>();	//create a set of property URIs that we used for PLOOP
 			final Method[] methods=objectClass.getMethods();	//get all the methods of the object

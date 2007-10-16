@@ -175,7 +175,7 @@ public class ClassUtilities
 	@return A <code>java:</code> URI based upon the given class.
 	@exception NullPointerException if the given class is <code>null</code>.
 	*/
-	public static URI createInfoJavaURI(final Class<?> objectClass)
+	public static URI createJavaURI(final Class<?> objectClass)
 	{
 		final String classPath=URIPath.encodeSegment(objectClass.getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the class path by replacing the package separators with path separators after encoding
 		return URI.create(JAVA_SCHEME+SCHEME_SEPARATOR+ROOT_PATH+classPath);	//create and return a new Java URI for the class

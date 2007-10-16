@@ -102,8 +102,6 @@ public class TURF
 
 	/**The delimiter that begins temporal declarations.*/
 	public final static char TEMPORAL_BEGIN='@';
-	/**The delimiter that ends temporal declaration.*/
-	public final static char TEMPORAL_END=TEMPORAL_BEGIN;
 
 	/**The delimiter that begins type declarations.*/
 	public final static char TYPES_BEGIN='(';
