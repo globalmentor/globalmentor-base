@@ -48,20 +48,43 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	}
 
 	/**Parses all resources and then processes the resulting URF instance.
-	The new position will be the end of the reader; any data appearing after the resources are considered syntax errors.
+	The TURF may be surrounded by a TURF container, which must come at the beginning of the data.
+	If a TURF container is present, the new position will be that of the first character after the TURF container. 
+	If a TURF container is not present, the new position will be the end of the reader,
+	and any data appearing after the resources will be considered a syntax error.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@return The URF data model.
+	@return A list of the top-level resources parsed.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if a resource in the list is missing, or if the reader has no more characters before a resource in the list is completely parsed.
 	*/
-	public URF process(final Reader reader, final URI baseURI) throws IOException, ParseIOException
+	public List<URFResource> process(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
+		final boolean hasContainer;
+		int c=peek(reader);	//peek the next character
+		if(c==TURF_CONTAINER_DELIMITER)	//check for a TURF container
+		{
+			hasContainer=true;	//there's a container
+			check(reader, TURF_SIGNATURE);	//verify the TURF signature
+			skipSeparators(reader);	//skip separators
+			check(reader, LIST_BEGIN);	//read the beginning container list delimiter
+		}
+		else	//if no container was detected
+		{
+			hasContainer=false;	//there is no container
+		}
 		skipSeparators(reader);	//skip separators
-		processResources(reader, baseURI);	//process resources
-		checkReaderEnd(reader);	//make sure we're at the end of data
-		return getURF();	//return the URF data model
+		final List<URFResource> urfResourceList=processResources(reader, baseURI, hasContainer ? LIST_END : NULL_CHAR);	//process resources, indicating the end of the container character if appropriate
+		if(hasContainer)	//if there was a container
+		{
+			check(reader, LIST_END);	//read the ending container list delimiter
+		}
+		else	//if there was no container
+		{
+			checkReaderEnd(reader);	//make sure we're at the end of data
+		}
+		return urfResourceList;	//return the URF resources parsed
 	}
 
 	/**Parses a list of resources resources and then processes the resulting URF instance.
@@ -69,26 +92,48 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	The new position will be that of the first non-separator character after the resource or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@return The URF data model.
+	@return A list of the top-level resources parsed.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if a resource in the list is missing, or if the reader has no more characters before a resource in the list is completely parsed.
 	*/
-	public URF processResources(final Reader reader, final URI baseURI) throws IOException, ParseIOException
+	public List<URFResource> processResources(final Reader reader, final URI baseURI) throws IOException, ParseIOException
+	{
+		return processResources(reader, baseURI, NULL_CHAR);	//parse the resources, with no particular end of list indicated
+	}
+
+	/**Parses a list of resources resources and then processes the resulting URF instance.
+	The current position must that of the first character of the first resource in the list.
+	The new position will be that of the first non-separator character after the resource or the end of the reader.
+	@param reader The reader the contents of which to be parsed.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param listEnd The character that marks the end of the list.
+	@return A list of the top-level resources parsed.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if a resource in the list is missing, or if the reader has no more characters before a resource in the list is completely parsed.
+	*/
+	protected List<URFResource> processResources(final Reader reader, final URI baseURI, final char listEnd) throws IOException, ParseIOException
 	{
 		reset();	//make sure we don't have temporary data left over from last time
-		final List<Resource> resources=parseResourceList(reader, baseURI, NULL_CHAR);	//parse the list of resources, with no particular end of list indicated
+		final List<Resource> resources=parseResourceList(reader, baseURI, listEnd);	//parse the list of resources
+		final List<URFResource> urfResources;	//we'll create a separate list of the URF resources corresponding to the resource proxies
 		try
 		{
 			createResources();	//create all resources
 			processAssertions();	//process the collected assertions
+			urfResources=new ArrayList<URFResource>(resources.size());	//create a new list to hold URF resources
+			for(final Resource resource:resources)	//for each resource
+			{
+				urfResources.add(resource instanceof URFResource ? (URFResource)resource : unproxyURFResource((ResourceProxy)resource));	//add this resource, unproxying it if we need to
+			}
 		}
 		catch(final IllegalArgumentException illegalArgumentException)	//if something was wrong with one of the resources
 		{
 			throw new ParseIOException(reader, illegalArgumentException);
 		}
 		reset();	//release all our references temporary resource proxies
-		return getURF();	//return the URF data model
+		return urfResources;	//return the list of URF resources
 	}
 
 	/**Skips over TURF separators in a reader.

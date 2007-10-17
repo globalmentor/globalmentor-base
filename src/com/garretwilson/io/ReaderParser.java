@@ -103,17 +103,19 @@ public class ReaderParser
 	/**Checks that the current and subsequent characters matches a specified character sequence.
 	@param reader The reader the contents of which to be parsed.
 	@param match The character sequence with which the current characters should be checked.
+	@return The character sequence that was checked.
 	@exception NullPointerException if the given reader and/or match character sequence is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the current character in the reader does not match the specified character sequence or if the reader has no more characters.
 	*/
-	public static void check(final Reader reader, final CharSequence match) throws IOException, ParseIOException
+	public static CharSequence check(final Reader reader, final CharSequence match) throws IOException, ParseIOException
 	{
 		final int matchLength=match.length();	//get the length to match
 		for(int i=0; i<matchLength; ++i)	//for each match index
 		{
 			check(reader, match.charAt(i));	//compare the current character with the match character
 		}
+		return match;	//return the matched character sequence
 	}
 
 	/**Reads a character and, if a character does not match the given character, resets the reader as if the character were not read.

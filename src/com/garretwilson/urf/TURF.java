@@ -1,6 +1,7 @@
 package com.garretwilson.urf;
 
 import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.urf.URF.URF_NAME;
 
 /**Constants relating to the text serialization of URF, TURF.
 <p>Copyright © 2007 GlobalMentor, Inc.
@@ -16,6 +17,12 @@ public class TURF
 
 	/**Unicode whitespace characters.*/
 	public final static char[] SEPARATORS=(PARAGRAPH_SEPARATOR_CHARS+SEGMENT_SEPARATOR_CHARS+WHITESPACE_CHARS).toCharArray();
+
+	/**The delimiter marking the beginning of the optional TURF container.*/
+	public final static char TURF_CONTAINER_DELIMITER='^';
+
+	/**The "magic number" marker indicating the beginning of TURF content.*/
+	public final static String TURF_SIGNATURE=new StringBuilder().append(TURF_CONTAINER_DELIMITER).append(URF_NAME).toString();
 
 	/**The delimiters used to a name prefix.*/
 	public final static char NAME_PREFIX_DELIMITER='.';

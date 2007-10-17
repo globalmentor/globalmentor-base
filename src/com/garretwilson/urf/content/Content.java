@@ -5,7 +5,6 @@ import java.net.URI;
 import javax.mail.internet.ContentType;
 
 import static com.garretwilson.io.ContentTypeUtilities.*;
-import com.garretwilson.io.ContentTypeUtilities;
 import com.garretwilson.net.Resource;
 import com.garretwilson.urf.*;
 import static com.garretwilson.urf.URF.*;
@@ -54,7 +53,7 @@ public class Content
 	*/
 	public static URI createMediaTypeURI(final ContentType mediaType)
 	{
-		return createLexicalURI(MEDIA_TYPE_CLASS_URI, ContentTypeUtilities.toString(mediaType.getBaseType(), mediaType.getSubType()));	//create a media type URI
+		return createLexicalURI(MEDIA_TYPE_CLASS_URI, mediaType.getBaseType());	//create a media type URI
 	}
 
 	/**Determines the media type represented by the given resource.

@@ -117,7 +117,8 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	*/ 
 	public static URF readTURF(final URFTURFProcessor urfProcessor, final Reader reader, final URI baseURI) throws IOException
 	{
-		return urfProcessor.process(reader, baseURI);	//process the TURF and return the URF
+		urfProcessor.process(reader, baseURI);	//process the TURF
+		return urfProcessor.getURF();	//return the URF
 	}
 
 	/**Writes an URF resource to an output stream.
