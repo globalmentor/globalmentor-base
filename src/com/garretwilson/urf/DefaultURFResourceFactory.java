@@ -4,12 +4,10 @@ import java.net.URI;
 import java.util.Locale;
 
 import javax.mail.internet.ContentType;
-
 import com.garretwilson.io.ContentTypeUtilities;
-import com.garretwilson.urf.content.Content;
-
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.urf.URF.*;
+import com.garretwilson.urf.content.Content;
 import static com.garretwilson.util.LocaleUtilities.*;
 
 /**A default factory to create default resources.
@@ -60,6 +58,17 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 	public URFResource createIntegerResource(final Long integer)
 	{
 		return createLexicalResource(INTEGER_CLASS_URI, Long.toString(integer));	//create and return a default integer resource
+	}
+
+	/**Creates a default date time resource with its type added as a type property.
+	This method delegates to {@link #createLexicalResource(URI, String)}.
+	@param dateTime The date time for which a default resource should be created.
+	@return A default date time resource with the appropriate type property added.
+	@exception NullPointerException if the given date time is <code>null</code>.
+	*/
+	public URFResource createDateTimeResource(final URFDateTime dateTime)
+	{
+		return createLexicalResource(DATE_TIME_CLASS_URI, dateTime.toString());	//create and return a default date time resource
 	}
 
 	/**Creates a default language resource with its type added as a type property.

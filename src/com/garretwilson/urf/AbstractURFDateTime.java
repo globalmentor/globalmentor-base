@@ -2,6 +2,10 @@ package com.garretwilson.urf;
 
 import java.util.*;
 
+import com.garretwilson.lang.IntegerUtilities;
+import static com.garretwilson.lang.IntegerUtilities.*;
+import static com.garretwilson.urf.URF.*;
+
 /**The abstract base type for <code>urf.Date</code> and <code>urf.DateTime</code> types.
 If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally in terms of UTC.
 <p>Copyright © 2007 GlobalMentor, Inc.
@@ -33,57 +37,65 @@ public abstract class AbstractURFDateTime extends Date implements URFTemporal
 		/**@return The day.*/
 		public final int getDay() {return day;}
 
-	/**The hours.*/
-	private final int hours;
+	/**The time, or <code>null</code> if there is a date with no time (not even midnight)*/
+	private final URFTime time;
 
-		/**@return The hours.*/
-		public final int getHours() {return hours;}
+		/**@return The time, or <code>null</code> if there is a date with no time (not even midnight)*/
+		public URFTime getURFTime() {return time;}
 
-	/**The minutes.*/
-	private final int minutes;
-
-		/**@return The minutes.*/
-		public final int getMinutes() {return minutes;}
-
-	/**The seconds.*/
-	private final int seconds;
-
-		/**@return The seconds.*/
-		public final int getSeconds() {return seconds;}
-
-	/**The microseconds.*/
-	private final int microseconds;
-
-		/**@return The microseconds.*/
-		public final int getMicroseconds() {return microseconds;}
-
-	/**The UTC offset, or <code>null</code> if no UTC offset is known.*/
-	private final URFUTCOffset utcOffset;
-
-		/**@return The UTC offset, or <code>null</code> if no UTC offset is known.*/
-		public URFUTCOffset getUTCOffset() {return utcOffset;}
-
-	/**Full Constructor.
+	/**Date components and time constructor.
 	@param year The year, 0-9999.
 	@param month The month, 1-12.
 	@param day The day, 1-31.
-	@param hours The hours, 0-23.
-	@param minutes The minutes, 0-59.
-	@param seconds The seconds, 0-59.
-	@param microseconds The microseconds, 0-999999
-	@param utcOffset The UTC offset, or <code>null</code> if no UTC offset is known.
+	@param time The time, or <code>null</code> if there is a date with no time (not even midnight).
+	@exception IllegalArgumentException if one of the given arguments is outside the allowed range.
 	*/
-	protected AbstractURFDateTime(final int year, final int month, final int day, final int hours, final int minutes, final int seconds, final int microseconds, final URFUTCOffset utcOffset)	//TODO validate the ranges, or at least the minimum bounds
+	protected AbstractURFDateTime(final int year, final int month, final int day, final URFTime time)
 	{
-		super(URFTemporalComponents.createCalendar(year, month, day, hours, minutes, seconds, microseconds, utcOffset).getTimeInMillis());	//construct the parent class with the time in milleconds the given information represents
-		this.year=year;	//save the given information
-		this.month=month;
-		this.day=day;
-		this.hours=hours;
-		this.minutes=minutes;
-		this.seconds=seconds;
-		this.microseconds=microseconds;
-		this.utcOffset=utcOffset;
+		super(URFTemporalComponents.createCalendar(year, month, day, time!=null ? time : URFTime.MIDNIGHT_UTC, Locale.ENGLISH).getTimeInMillis());	//construct the parent class with the time in milleconds the given information represents, using midnight UTC if no time was given; the locale shouldn't matter for just determining the time in milliseconds, so use a locale that is likely to be available
+		this.year=checkRange(year, 0, 9999);
+		this.month=checkRange(month, 1, 12);
+		this.day=checkRange(day, 1, 31);
+		this.time=time;
+	}
+
+	/**Appends the canonical lexical representation of this date time to a string builder in the form "YYYY-MM-DDThh:mm:ss[.s+]+/-hh:mm".
+	@param stringBuild The string builder to which the lexical representation will be appended.
+	@return The string builder.
+	*/
+	public StringBuilder append(final StringBuilder stringBuilder)
+	{
+		stringBuilder.append(IntegerUtilities.toString(getYear(), 10, 4));	//append the year, using four digits
+		stringBuilder.append(DATE_DELIMITER);	//append the date delimiter
+		stringBuilder.append(IntegerUtilities.toString(getMonth(), 10, 2));	//append the month, using two digits
+		stringBuilder.append(DATE_DELIMITER);	//append the date delimiter
+		stringBuilder.append(IntegerUtilities.toString(getDay(), 10, 2));	//append the day, using two digits
+		final URFTime time=getURFTime();	//get the time, if any
+		if(time!=null)	//if there is a time
+		{
+			stringBuilder.append(TIME_BEGIN);	//indicate that the time is beginning
+			time.append(stringBuilder);	//append the time
+		}
+		return stringBuilder;	//return the string builder				
+	}
+
+	/**Returns a calendar representing this date and time.
+	If this object has no time information, midnight UTC will be assumed.
+	@param locale The locale for which a calendar should be returned.
+	@return A calendar representing this date time in the given locale.
+	@exception NullPointerException if the given locale is <code>null</code>.
+	*/
+	public Calendar toCalendar(final Locale locale)
+	{
+		return URFTemporalComponents.createCalendar(getYear(), getMonth(), getDay(), getURFTime(), locale);
+	}
+	
+	/**Returns the canonical lexical representation of this date time in the form "YYYY-MM-DDThh:mm:ss[.s+]+/-hh:mm".
+	@return The canonical lexical representation of this date time.
+	*/
+	public String toString()
+	{
+		return append(new StringBuilder()).toString();	//append the lexical representation to a new string builder and return the resulting string
 	}
 
 }

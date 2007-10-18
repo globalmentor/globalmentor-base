@@ -11,8 +11,8 @@ import com.garretwilson.lang.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 
 import com.garretwilson.net.*;
-import com.garretwilson.rdf.RDF;
-import com.garretwilson.rdf.RDFIO;
+import com.garretwilson.rdf.*;
+import com.garretwilson.urf.*;
 
 import static com.garretwilson.io.ContentTypeConstants.*;
 import static com.garretwilson.io.FileConstants.*;
@@ -790,6 +790,26 @@ public class FileUtilities
 		try
 		{
 			return io.read(rdf, bufferedInputStream, file.toURI());	//read the object, using the given RDF instance and determining the base URI from the file
+		}
+		finally
+		{
+			bufferedInputStream.close();	//always close the input stream
+		}
+	}
+
+	/**Reads an object from a file using the given URF I/O support.
+	@param file The file from which to read.
+	@param urf The URF instance to use in creating new resources.
+	@param io The I/O support for reading the object.
+	@return The object read from the file.
+	@throws IOException if there is an error reading the data.
+	*/ 
+	public static <T> T read(final File file, final URF urf, final URFIO<T> io) throws IOException
+	{
+		final InputStream bufferedInputStream=new BufferedInputStream(new FileInputStream(file));	//create a buffered input stream to the file
+		try
+		{
+			return io.read(urf, bufferedInputStream, file.toURI());	//read the object, using the given URF instance and determining the base URI from the file
 		}
 		finally
 		{

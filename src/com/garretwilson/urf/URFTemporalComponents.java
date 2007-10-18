@@ -6,9 +6,9 @@ import java.util.*;
 import static java.util.Calendar.*;
 
 import com.garretwilson.io.ParseIOException;
-import com.garretwilson.lang.IntegerUtilities;
-
 import static com.garretwilson.io.ReaderParser.*;
+import static com.garretwilson.lang.IntegerUtilities.*;
+import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.lang.StringUtilities.*;
 import com.garretwilson.text.SyntaxException;
 import static com.garretwilson.util.TimeZoneConstants.*;
@@ -132,12 +132,34 @@ public class URFTemporalComponents
 		this.utcOffsetMinutes=0;
 	}
 
+	/**Returns the temporal components as an URF time.
+	@return A time object representing the time and optional UTC offset.
+	*/
+	public URFTime toTime()
+	{
+		return new URFTime(hours, minutes, seconds, microseconds, asUTCOffset());	//construct a time from the components
+	}
+
 	/**Returns the temporal components as UTC offset information.
 	@return A UTC offset object representing the UTC offset components, or <code>null</code> if UTC offset components are not represented.
 	*/
 	public URFUTCOffset asUTCOffset()
 	{
-		return utcOffsetMinutes>=0 ? (utcOffsetHours==0 && utcOffsetMinutes==0 ? URFUTCOffset.UTC_OFFSET_UTC : new URFUTCOffset(utcOffsetHours, utcOffsetMinutes)) : null;	//if we have UTC offset information, return a new UTC offset, using the shared zero offset instance if possible
+		return utcOffsetMinutes>=0 ? (utcOffsetHours==0 && utcOffsetMinutes==0 ? URFUTCOffset.UTC : new URFUTCOffset(utcOffsetHours, utcOffsetMinutes)) : null;	//if we have UTC offset information, return a new UTC offset, using the shared zero offset instance if possible
+	}
+
+	/**Creates a calendar representing the given temporal component information in the given locale.
+	@param year The year, 0-9999.
+	@param month The month, 1-12.
+	@param day The day, 1-31.
+	@param time The time.
+	@param locale The locale for the calendar.
+	@exception NullPointerException if the given time and/or locale is <code>null</code>.
+	@exception IllegalArgumentException if one of the given arguments is outside the allowed range.
+	*/
+	public static Calendar createCalendar(final int year, final int month, final int day, final URFTime time, final Locale locale)
+	{
+		return createCalendar(year, month, day, time.getHours(), time.getMinutes(), time.getSeconds(), time.getMicroseconds(), time.getUTCOffset(), locale);	//create a calendar using the time components
 	}
 
 	/**Creates a calendar representing the given temporal component information.
@@ -149,13 +171,16 @@ public class URFTemporalComponents
 	@param seconds The seconds, 0-59.
 	@param microseconds The microseconds, 0-999999
 	@param utcOffset The UTC offset, or <code>null</code> if no UTC offset is known.
+	@param locale The locale for the calendar.
+	@xception NullPointerException if the given locale is <code>null</code>.
+	@exception IllegalArgumentException if one of the given arguments is outside the allowed range.
 	*/
-	public static Calendar createCalendar(final int year, final int month, final int day, final int hours, final int minutes, final int seconds, final int microseconds, final URFUTCOffset utcOffset)
+	public static Calendar createCalendar(final int year, final int month, final int day, final int hours, final int minutes, final int seconds, final int microseconds, final URFUTCOffset utcOffset, final Locale locale)
 	{
-		final Calendar calendar=new GregorianCalendar(utcOffset!=null ? utcOffset.toTimeZone() : URFUTCOffset.TimeZone_GMT);	//get Gregorian calendar using the time zone from the UTC offset, defaulting to a GMT time zone
+		final Calendar calendar=new GregorianCalendar(utcOffset!=null ? utcOffset.toTimeZone() : URFUTCOffset.GMT, checkInstance(locale, "Locale cannot be null."));	//get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
 		calendar.clear();	//clear the calendar
-		calendar.set(year, month, day, hours, minutes, seconds);	//set the calendar's date and the time
-		calendar.set(MILLISECOND, microseconds/1000);	//set the calendar's milliseconds, converting the microseconds to milliseconds
+		calendar.set(checkRange(year, 0, 9999), checkRange(month, 1, 12), checkRange(day, 1, 31), checkRange(hours, 0, 23), checkRange(minutes, 0, 59), checkRange(seconds, 0, 59));	//set the calendar's date and the time
+		calendar.set(MILLISECOND, checkRange(microseconds, 0, 999999)/1000);	//set the calendar's milliseconds, converting the microseconds to milliseconds
 		return calendar;	//return the calendar we created
 	}
 

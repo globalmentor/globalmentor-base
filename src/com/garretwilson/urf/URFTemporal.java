@@ -12,4 +12,15 @@ Any redistribution of this source code or derived source code must include these
 public interface URFTemporal
 {
 
+	/**Appends the canonical lexical representation of this temporal.
+	@param stringBuild The string builder to which the lexical representation will be appended.
+	@return The string builder.
+	*/
+	public StringBuilder append(final StringBuilder stringBuilder);
+
+	/**Returns the canonical lexical representation of this temporal
+	@return The canonical lexical representation of this temporal.
+	*/
+	public String toString();
+
 }

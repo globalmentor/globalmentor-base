@@ -3,7 +3,6 @@ package com.garretwilson.urf.content;
 import java.net.URI;
 
 import javax.mail.internet.ContentType;
-
 import static com.garretwilson.io.ContentTypeUtilities.*;
 import com.garretwilson.net.Resource;
 import com.garretwilson.urf.*;
@@ -25,17 +24,23 @@ public class Content
 	public final static URI CONTENT_NAMESPACE_URI=URI.create("http://urf.name/content");
 
 		//classes
+	/**A resource, such as a package or folder, that contains other resources.*/
+//TODO del	public final static URI COLLECTION_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "Collection");;
+	/**The URI of the content <code>ContentResource</code> class.*/
+	public final static URI CONTENT_RESOURCE_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "ContentResource");
 	/**The URI of the content <code>MediaType</code> class.*/
 	public final static URI MEDIA_TYPE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "MediaType");
-	/**The URI of the content <code>Resource</code> class.*/
-	public final static URI RESOURCE_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "Resource");
 		//properties
+	/**The date and time when a resource was last accessed.*/
+	public final static URI ACCESSED_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "accessed");
+	/**The date and time when a resource was created.*/
+	public final static URI CREATED_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "created");
 	/**The actual content, such as bytes or a string, of a resource.*/
 	public final static URI CONTENT_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "content");
 	/**The array of child resources contained by a resource such as a collection or package.*/
 	public final static URI CONTENTS_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "contents");
-	/**The time when a resource was last modified.*/
-	public final static URI MODIFIED_TIME_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "modifiedTime");
+	/**The date and time when a resource was last modified.*/
+	public final static URI MODIFIED_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "modified");
 	/**The size of the contents of the resource. For <code>urf.Binary</code> content, this indicates the number of bytes. For <code>urf.String</code> content, this indicates the number of characters.*/
 	public final static URI LENGTH_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "length");
 	/**The Internet media type of a resource.*/
@@ -83,55 +88,10 @@ public class Content
 		return null;	//no media type could be found
 	}
 
-	/**Returns the declared content type of the resource.
-	@param resource The resource for which the content type should be returned.
-	@return This resource's content type declaration, or <code>null</code> if the resource has no <code>content:type</code> property specified.
-	*/
-	public static URFResource getContentType(final URFResource resource)
-	{
-		return resource.getPropertyValue(TYPE_PROPERTY_URI);	//return the content type
-	}
-
-	/**Returns the declared content type of the resource as an Internet media type.
-	@param resource The resource for which the content type should be returned.
-	@return This resource's content type declaration as a media type, or <code>null</code> if the resource has no <code>content:type</code> property specified
-		or the content type was not a resource with an Internet media type <code>info:media/</code> URI.
-	*/
-	public static ContentType getContentMediaType(final URFResource resource)
-	{
-		return asMediaType(getContentType(resource));	//return the content type, if any, as a media type
-	}
-
-	/**Sets the content type property of the resource.
-	@param resource The resource for which the content type property should be set.
-	@param contentType The object that specifies the content type, or <code>null</code> if there should be no content type.
-	*/
-	public static void setContentType(final URFResource resource, final ContentType contentType)
-	{
-		resource.setPropertyValue(TYPE_PROPERTY_URI, DEFAULT_URF_RESOURCE_FACTORY.createMediaTypeResource(contentType));	//create a media type resource and set the resource's content type
-}
-
-	/**Retrieves the array of child resources of the resource.
-	@param resource The resource the contents of which will be returned.
-	@return The contents of the resource, or <code>null</code> if no <code>content:contents</code> property exists or the value is not an instance of {@link URFListResource}.
-	*/
-	public static URFListResource<URFResource> getContents(final URFResource resource)
-	{
-		return asListInstance(resource.getPropertyValue(CONTENTS_PROPERTY_URI)); //return the contents, if any
-	}
-
-	/**Set the contents property of the resource.
-	@param resource The resource for which the array of contents should be set.
-	@param contents The array of contents, or <code>null</code> if there should be no contents.
-	*/
-	public static void setContents(final URFResource resource, final URFListResource<?> contents)
-	{
-		resource.setPropertyValue(CONTENT_PROPERTY_URI, contents);	//set the contents of the resource
-	}
-
 	/**Returns the actual string content of the resource.
 	@param resource The resource for which the content should be returned.
 	@return This resource's string content declaration, or <code>null</code> if the resource has no <code>content:content</code> property specified or the content is not a string.
+	@see #CONTENT_PROPERTY_URI
 	*/
 	public static String getStringContent(final URFResource resource)
 	{
@@ -141,16 +101,109 @@ public class Content
 	/**Sets this resource's content declaration with a text string.
 	@param resource The resource for which the content property should be set.
 	@param content This resource's content declaration, or <code>null</code> if the resource should have no <code>content:content</code> property.
+	@see #CONTENT_PROPERTY_URI
 	*/
 	public static void setContent(final URFResource resource, final String content)
 	{
-		resource.setPropertyValue(CONTENT_NAMESPACE_URI, content);	//set the content:content property
+		resource.setPropertyValue(CONTENT_PROPERTY_URI, content);	//set the content:content property
+	}
+
+	/**Retrieves the collection of child resources of the resource.
+	@param resource The resource the contents of which will be returned.
+	@return The contents of the resource, or <code>null</code> if no <code>content.contents</code> property exists or the value is not an instance of {@link URFCollectionResource}.
+	@see #CONTENTS_PROPERTY_URI
+	*/
+	public static <T extends URFResource> URFCollectionResource<T> getContents(final URFResource resource)
+	{
+		return asCollectionInstance(resource.getPropertyValue(CONTENTS_PROPERTY_URI)); //return the contents, if any
+	}
+
+	/**Set the contents property of the resource.
+	@param resource The resource for which the collection of contents should be set.
+	@param contents The collection of contents, or <code>null</code> if there should be no contents.
+	@see #CONTENTS_PROPERTY_URI
+	*/
+	public static void setContents(final URFResource resource, final URFCollectionResource<?> contents)
+	{
+		resource.setPropertyValue(CONTENTS_PROPERTY_URI, contents);	//set the contents of the resource
+	}
+
+	/**Returns the modified date time.
+	@param resource The resource for which the modified date time should be returned.
+	@return The modified date time of the resource, or <code>null</code> if there is no modified date time or the property does not contain an urf.DateTime.
+	@see #MODIFIED_PROPERTY_URI
+	*/
+	public static URFDateTime getModified(final URFResource resource)
+	{
+		return asDateTime(resource.getPropertyValue(MODIFIED_PROPERTY_URI));	//return the modified timestamp as a date time
+	}
+
+	/**Sets the modified property of the resource
+	@param resource The resource the modified date and time to set.
+	@param dateTime The new modified date and time.
+	@see #MODIFIED_PROPERTY_URI
+	*/
+	public static void setModified(final URFResource resource, final URFDateTime dateTime)
+	{
+		resource.setPropertyValue(MODIFIED_PROPERTY_URI, dateTime);	//create a date time resource and set the resource's modified timestamp
+	}
+
+	/**Returns the length of the resource contents.
+	@param resource The resource for which a content length should be returned.
+	@return The size of the resource, or <code>-1</code> if the size could not be determined or the value was not an integer.
+	@see #LENGTH_PROPERTY_URI
+	*/ 
+	public static long getContentLength(final URFResource resource)
+	{
+		final Long length=asInteger(resource.getPropertyValue(LENGTH_PROPERTY_URI));	//return the length as an integer
+		return length!=null ? length.longValue() : -1;	//return the size, or -1 if we couldn't find the size
+	}
+
+	/**Sets the length of the resource contents.
+	@param resource The resource for which the size should be set.
+	@param length The content length.
+	@see #LENGTH_PROPERTY_URI
+	*/
+	public static void setContentLength(final URFResource resource, final long length) 
+	{
+		resource.setPropertyValue(LENGTH_PROPERTY_URI, length); //set the length
+	}
+
+	/**Returns the declared content type of the resource.
+	@param resource The resource for which the content type should be returned.
+	@return This resource's content type declaration, or <code>null</code> if the resource has no <code>content.type</code> property specified.
+	@see #TYPE_PROPERTY_URI
+	*/
+	public static URFResource getContentType(final URFResource resource)
+	{
+		return resource.getPropertyValue(TYPE_PROPERTY_URI);	//return the content type
+	}
+
+	/**Returns the declared content type of the resource as an Internet media type.
+	@param resource The resource for which the content type should be returned.
+	@return This resource's content type declaration as a media type, or <code>null</code> if the resource has no <code>content.type</code> property specified
+		or the content type was not a resource with an Internet media type URI.
+	@see #TYPE_PROPERTY_URI
+	*/
+	public static ContentType getContentMediaType(final URFResource resource)
+	{
+		return asMediaType(getContentType(resource));	//return the content type, if any, as a media type
+	}
+
+	/**Sets the content type property of the resource.
+	@param resource The resource for which the content type property should be set.
+	@param contentType The object that specifies the content type, or <code>null</code> if there should be no content type.
+	@see #TYPE_PROPERTY_URI
+	*/
+	public static void setContentType(final URFResource resource, final ContentType contentType)
+	{
+		resource.setPropertyValue(TYPE_PROPERTY_URI, DEFAULT_URF_RESOURCE_FACTORY.createMediaTypeResource(contentType));	//create a media type resource and set the resource's content type
 	}
 
 	/**The default resource factory for the content ontology.
 	This resource factory can create the following types of resource objects for the given types:
 	<dl>
-		<dt>{@value #RESOURCE_CLASS_URI}</dt> <dd>{@link ContentResource}</dd>
+		<dt>{@value #CONTENT_RESOURCE_CLASS_URI}</dt> <dd>{@link ContentResource}</dd>
 	</dl>
 	*/
 	public final static URFResourceFactory DEFAULT_CONTENT_RESOURCE_FACTORY=new DefaultURFResourceFactory()
@@ -164,7 +217,7 @@ public class Content
 				*/
 				public URFResource createResource(final URI resourceURI, final URI typeURI)
 				{
-					if(RESOURCE_CLASS_URI.equals(typeURI))	//if this is a content resource
+					if(CONTENT_RESOURCE_CLASS_URI.equals(typeURI))	//if this is a content resource
 					{
 						return new ContentResource(resourceURI);	//create a new content resource
 					}

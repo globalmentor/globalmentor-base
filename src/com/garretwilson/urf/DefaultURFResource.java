@@ -26,6 +26,11 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 		/**@return The URI, or <code>null</code> if there is no URI.*/
 		public URI getURI() {return uri;}
 
+		/**Sets the URI.
+		@param uri The new URI, or <code>null</code> if there is no URI.
+		*/
+		protected void setURI(final URI uri) {this.uri=uri;}
+
 	/**Default constructor with no URI.*/
 	public DefaultURFResource()
 	{

@@ -427,8 +427,8 @@ public class URFTURFGenerator
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
 	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
-	@param scopeSubject The scope to which the property and resource belongs, or <code>null</code> if the current resource is not in an object context.
-	@param scopePredicateURI The predicate for which the resource is a value, or <code>null</code> if the current resource is not in an object context.
+	@param subjectScope The scope to which the property and resource belongs, or <code>null</code> if the current resource is not in an object context.
+	@param scopePropertyURI The predicate for which the resource is a value, or <code>null</code> if the current resource is not in an object context.
 	@param resource The resource to generate.
 	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@param inSequence Whether the resource being generated is in a sequence and its scoped order properties should therefore not be generated.
@@ -436,7 +436,7 @@ public class URFTURFGenerator
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	protected Writer generateResource(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope scopeSubject, final URI scopePredicateURI, final URFResource resource, final boolean inSequence, final URI contextURI) throws IOException
+	protected Writer generateResource(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope subjectScope, final URI scopePropertyURI, final URFResource resource, final boolean inSequence, final URI contextURI) throws IOException
 	{
 		final boolean isGenerated=isGenerated(resource);	//see if this resource has already been generated
 		if(!isGenerated)	//if the resource hasn't been generated, yet
@@ -450,7 +450,7 @@ public class URFTURFGenerator
 		if(label==null && uri==null && !isGenerated)	//if there is no label or URI for this resource and the resource hasn't yet been generated
 		{
 			final Set<URFScope> referringScopes=referenceMap.get(resource);	//see how many scopes reference this resource
-			if(referringScopes!=null && !referringScopes.isEmpty() && !(referringScopes.size()==1 && referringScopes.iterator().next()==scopeSubject))	//if there are multiple referring scopes, or just a single referring scope that isn't the scope subject in this context
+			if(referringScopes!=null && !referringScopes.isEmpty() && !(referringScopes.size()==1 && referringScopes.iterator().next()==subjectScope))	//if there are multiple referring scopes, or just a single referring scope that isn't the scope subject in this context
 			{
 				label=determineLabel(resource);	//locate a label for this resource, because it has references
 			}
@@ -551,12 +551,12 @@ public class URFTURFGenerator
 			//properties
 		int propertyCount=0;	//start with no properties being generating
 		propertyCount=generateProperties(writer, urf, referenceMap, resource, PROPERTY_VALUE_DELIMITER, propertyCount, !isShortTypesGenerated, !isListShortForm, !isSetShortForm, true, typeContextURI);	//generate properties
-		if(scopeSubject!=null && scopePredicateURI!=null)	//if this resource is the value of a property
+		if(subjectScope!=null && scopePropertyURI!=null)	//if this resource is the value of a property
 		{
-			final URFScope scope=scopeSubject.getScope(scopePredicateURI, resource);	//get the scope for this value
+			final URFScope scope=subjectScope.getScope(scopePropertyURI, resource);	//get the scope for this value
 			if(scope==null)	//if there is no such scope
 			{
-				throw new IllegalArgumentException("No scope for given subject "+scopeSubject+" and predicate URI "+scopePredicateURI);
+				throw new IllegalArgumentException("No scope for given subject "+subjectScope+" and predicate URI "+scopePropertyURI);
 			}
 			propertyCount=generateProperties(writer, urf, referenceMap, scope, SCOPED_PROPERTY_VALUE_DELIMITER, propertyCount, true, true, true, !inSequence, typeContextURI);	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence
 		}

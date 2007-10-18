@@ -140,6 +140,16 @@ public class TURF
 	/**The beginning delimiter of the lexical form of the Boolean value <code>true</code>.*/
 	public final static char BOOLEAN_TRUE_BEGIN='t';
 
+	/**Determines if the given character is a TURF name begin character.
+	A name begin character is a Unicode letter.
+	@param c The character to check.
+	@return <code>true</code> if the character is a TURF name begin character.
+	*/
+	public final static boolean isNameBeginCharacter(final int c)
+	{
+		return Character.isLetter(c);	//see if this is a letter
+	}
+
 	/**Determines if the given character is a TURF name character.
 	A name character is a Unicode letter, number, or underscore.
 	@param c The character to check.
@@ -154,15 +164,17 @@ public class TURF
 	@param string The string to check.
 	@return <code>true</code> if the string is a valid TURF name.
 	@exception NullPointerException if the given string is <code>null</code>.
+	@see #isNameBeginCharacter(int)
 	@see #isNameCharacter(int)
 	*/
 	public final static boolean isName(final String string)
 	{
-		if(string.isEmpty())	//if the string is empty
+		final int length=string.length();	//get the length of the string
+		if(length<1 || !isNameBeginCharacter(0))	//if the string is empty or it doesn't start with a name beginning character
 		{
-			return false;	//empty strings are not valid names
+			return false;	//empty strings and string starting with non-name-begin characters are not valid names
 		}
-		for(int i=string.length()-1; i>=0; --i)	//for each character
+		for(int i=1; i<length; ++i)	//for each character, skipping the first because we already checked it
 		{
 			if(!isNameCharacter(string.charAt(i)))	//if this is not a name character
 			{

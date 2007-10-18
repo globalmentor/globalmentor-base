@@ -179,6 +179,8 @@ public class URF
 	public final static char DECIMAL_DELIMITER='.';
 	/**The delimiter for exponent separation of numbers.*/
 	public final static char EXPONENT_DELIMITER='e';
+	/**The signs of a number.*/
+	public final static char[] SIGNS={'-', '+'};
 	/**The delimiter that introduces a time component in a temporal.*/
 	public final static char TIME_BEGIN='T';
 	/**The delimiter that separates year components in a temporal.*/
@@ -420,6 +422,17 @@ public class URF
 		return createLexicalURI(CHARACTER_CLASS_URI, String.valueOf(c));	//create a character URI
 	}
 
+	/**Creates a URI to represent an URF date time.
+	@param dateTime The date time to represent.
+	@return A URI representing the given URF date time.
+	@exception NullPointerException if the given date time is <code>null</code>.
+	@see #DATE_TIME_CLASS_URI
+	*/
+	public static URI createDateTimeURI(final Date dateTime)
+	{
+		return createLexicalURI(DATE_TIME_CLASS_URI, URFDateFormat.format(dateTime, URFDateFormat.Style.DATE_TIME));	//create a date time URI
+	}
+
 	/**Creates a URI to represent an URF string.
 	@param string The string value to represent.
 	@return A URI representing the given URF string.
@@ -601,6 +614,16 @@ public class URF
 			}
 		}
 		return null;	//we can't represent this object as a resource URI
+	}
+
+	/**Determines the URF collection object, if any, represented by the given resource.
+	@param resource The resource which is expected to represent an URF collection, or <code>null</code>.
+	@return The URF collection object represented by the given resource, or <code>null</code> if the resource is not an instance of {@link URFCollectionResource}.
+	*/
+	@SuppressWarnings("unchecked")	//we must trust that they asked for the correct generic type; a class cast exception will be thrown later if the incorrect generic type was requested
+	public static <T extends URFResource> URFCollectionResource<T> asCollectionInstance(final Resource resource)
+	{
+		return resource instanceof URFCollectionResource ? (URFCollectionResource<T>)resource : null;	//if a collection was given, return it with the requested generic type
 	}
 
 	/**Determines the URF list object, if any, represented by the given resource.
@@ -828,6 +851,33 @@ public class URF
 		return resource!=null ? ClassUtilities.asClass(resource.getURI()) : null;	//if a resource was given, see if its URI represents a Java class
 	}
 
+	/**Determines the date time represented by the given resource.
+	@param resource The resource which is expected to represent a date time, or <code>null</code>.
+	@return The date time represented by the given resource, or <code>null</code> if the resource does not represent a date time.
+	@exception IllegalArgumentException if the given resource represents a date time that does not have the correct syntax.
+	@see #asDateTime(URI)
+	*/
+	public static URFDateTime asDateTime(final Resource resource)
+	{
+		return resource!=null ? asDateTime(resource.getURI()) : null;	//if a resource was given, see if its URI represents a date time
+	}
+
+	/**Determines the date time represented by the given URI.
+	@param resourceURI The URI which is expected to represent a date time, or <code>null</code>.
+	@return The date time represented by the given URI, or <code>null</code> if the URI does not represent a date time.
+	@exception IllegalArgumentException if the given URI represents a date time that does not have the correct syntax.
+	@see #DATE_TIME_CLASS_URI
+	@see #DATE_TIME_NAMESPACE_URI
+	*/
+	public static URFDateTime asDateTime(final URI resourceURI)
+	{
+		if(resourceURI!=null && DATE_TIME_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a date time URI was given
+		{
+			return URFDateTime.valueOf(getLocalName(resourceURI));	//create a date time from the local name
+		}
+		return null;	//no pattern could be found
+	}	
+	
 	/**Determines the number represented by the given resource.
 	@param resource The resource which is expected to represent a number, or <code>null</code>.
 	@return The number represented by the given resource, or <code>null</code> if the resource does not represent a number.

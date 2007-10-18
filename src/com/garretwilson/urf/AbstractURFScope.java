@@ -494,6 +494,18 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		}
 	}
 
+	/**Adds a date time property value for the property with the given URI.
+	If the given property and value already exists, no action occurs.
+	@param propertyURI The URI of the property of the value to add.
+	@param propertyValue The value to add for the given property.
+	@return <code>true</code> if the value was added for the indicated property, else <code>false</code> if the property and value already existed.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	*/
+	public boolean addPropertyValue(final URI propertyURI, final URFDateTime propertyValue)
+	{
+		return addPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createDateTimeResource(propertyValue));	//create a resource add the property value
+	}
+
 	/**Adds an integer property value for the property with the given URI.
 	If the given property and value already exists, no action occurs.
 	@param propertyURI The URI of the property of the value to add.
@@ -576,6 +588,17 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		{
 			writeLock().unlock();	//always release the write lock
 		}
+	}
+
+	/**Sets a date time property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
+	@param propertyURI The URI of the property of the value to set.
+	@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.
+	@return The old property value, or <code>null</code> if there was no property value previously.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public URFResource setPropertyValue(final URI propertyURI, final URFDateTime propertyValue)
+	{
+		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createDateTimeResource(propertyValue));	//create a resource and set the property value
 	}
 
 	/**Sets an integer property value for the property with the given URI by removing all properties with the given URI and adding the given property value.

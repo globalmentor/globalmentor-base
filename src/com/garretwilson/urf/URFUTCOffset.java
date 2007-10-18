@@ -21,10 +21,10 @@ public class URFUTCOffset implements URFTemporal
 {
 
 	/**The shared UTC offset representing Coordinated Universal Time (UTC), +00:00.*/
-	public final static URFUTCOffset UTC_OFFSET_UTC=new URFUTCOffset(0, 0);
+	public final static URFUTCOffset UTC=new URFUTCOffset(0, 0);
 
 	/**The shared time zone representing Greenwich Mean Time (GMT).*/
-	public final static TimeZone TimeZone_GMT=TimeZone.getTimeZone(GMT_ID);
+	public final static TimeZone GMT=TimeZone.getTimeZone(GMT_ID);
 
 	/**The offset hours.*/
 	private final int hours;
@@ -92,7 +92,7 @@ public class URFUTCOffset implements URFTemporal
 	@param stringBuild The string builder to which the lexical representation will be appended.
 	@return The string builder.
 	*/
-	public final StringBuilder append(final StringBuilder stringBuilder)
+	public StringBuilder append(final StringBuilder stringBuilder)
 	{
 		if(hours>=0)	//if the hours are not negative
 		{
@@ -104,10 +104,10 @@ public class URFUTCOffset implements URFTemporal
 		return stringBuilder;	//return the string builder
 	}
 
-	/**Returns the canonical lexical representation of this UTC offset.
-	@return The canonical lexical representation of this UTC offset in the form "+/-hh:mm".
+	/**Returns the canonical lexical representation of this UTC offset in the form "+/-hh:mm".
+	@return The canonical lexical representation of this UTC offset.
 	*/
-	public final String toString()
+	public String toString()
 	{
 		return append(new StringBuilder()).toString();	//append the lexical representation to a new string builder and return the resulting string
 	}

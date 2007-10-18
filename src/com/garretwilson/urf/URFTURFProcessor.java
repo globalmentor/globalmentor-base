@@ -305,10 +305,10 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				}
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				break;
-			default:	//if there was some other character, see if it's a name
-				if(isNameCharacter(c))	//if this is a name character
+			default:	//if there was some other character, see if it's a name reference
+				if(isNameBeginCharacter(c))	//if this is a name begin character
 				{
-					final NameValuePair<String, String> name=parseName(reader);	//parse the name
+					final NameValuePair<String, String> name=parseNameReference(reader);	//parse the name reference
 					final URI namespaceURI;	//we'll determine the namespace URI
 					final String prefix=name.getName();	//get the name prefix
 					final String localName=name.getValue();	//get the name local name
@@ -644,28 +644,28 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	public static String parseLabel(final Reader reader) throws IOException, ParseIOException
 	{
 		check(reader, LABEL_BEGIN);	//read the beginning label delimiter
-		final String label=parseNameSegment(reader);	//read the label
+		final String label=parseName(reader);	//read the label
 		check(reader, LABEL_END);	//read the ending label delimiter
 		return label;	//return the label we read
 	}
 
-	/**Parses a name composed of name characters preceded by an optional prefix.
+	/**Parses a name reference composed of name characters preceded by an optional prefix.
 	The current position must be that of the first name character.
 	The new position will be that immediately after the last name character.
 	@param reader The reader the contents of which to be parsed.
-	@return The name parsed from the reader, with the name of the name-value pair indicating the prefix or <code>null</code>, and the value representing the local name.
+	@return The name reference parsed from the reader, with the name of the name-value pair indicating the prefix or <code>null</code>, and the value representing the local name.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if thare are no name characters.
 	*/
-	public static NameValuePair<String, String> parseName(final Reader reader) throws IOException, ParseIOException
+	public static NameValuePair<String, String> parseNameReference(final Reader reader) throws IOException, ParseIOException
 	{
-		final String nameSegment=parseNameSegment(reader);	//parse a name segment
+		final String nameSegment=parseName(reader);	//parse a name segment
 		final String prefix, localName;	//we'll determine a prefix and a local name
 		if(confirm(reader, NAME_PREFIX_DELIMITER))	//if there is a name prefix delimiter
 		{
 			prefix=nameSegment;	//the first name segment is the prefix
-			localName=parseNameSegment(reader);	//the following name segment is the local name
+			localName=parseName(reader);	//the following name segment is the local name
 		}
 		else	//if there is no name prefix delimiter
 		{
@@ -675,7 +675,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		return new NameValuePair<String, String>(prefix, localName);	//return the prefix, if any, and the local name
 	}
 
-	/**Parses a segment of a name composed only of name characters.
+	/**Parses a name composed of a name beginning character followed by zero or more name characters.
 	The current position must be that of the first name character.
 	The new position will be that immediately after the last name character.
 	@param reader The reader the contents of which to be parsed.
@@ -683,11 +683,18 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if thare are no name characters.
+	@see TURF#isNameBeginCharacter(int)
+	@see TURF#isNameCharacter(int)
 	*/
-	public static String parseNameSegment(final Reader reader) throws IOException, ParseIOException
+	public static String parseName(final Reader reader) throws IOException, ParseIOException
 	{
 		final StringBuilder stringBuilder=new StringBuilder();	//create a string builder for reading the name segment
-		int c;	//the character read
+		int c=reader.read();	//read the first name character
+		if(!isNameBeginCharacter(c))	//if the name doesn't start with a name character
+		{
+			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
+			throw new ParseIOException(reader, "Expected name begin character; found "+(char)c+".");
+		}
 		while(true)
 		{
 			reader.mark(1);	//mark our current position
@@ -700,11 +707,6 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			{
 				break;	//stop gathering name characters
 			}
-		}
-		if(stringBuilder.length()==0)	//if we didn't read any characters
-		{
-			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
-			throw new ParseIOException(reader, "Expected name character; found "+(char)c+".");
 		}
 		if(c>=0)	//if we didn't reach the end of the stream
 		{
@@ -900,9 +902,9 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				throw new DataException("Duration cannot be empty.");
 			}
 		}
-		else if(c=='+' || c=='-')	//if this is the start of an offset
+		else if(c=='+' || c=='-')	//if this is the start of a UTC offset
 		{
-			lexicalTypeURI=UTC_OFFSET_CLASS_URI;	//this is a UTC-Offset
+			lexicalTypeURI=UTC_OFFSET_CLASS_URI;	//this is a UTC offset
 			stringBuilder.append(check(reader, (char)c));	//read and add the delimiter
 			stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read two digits
 			stringBuilder.append(check(reader, TIME_DELIMITER));	//read and add the time delimiter
@@ -960,7 +962,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 					stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all subseconds
 				}
 				c=peek(reader);	//peek the next character
-				if(c=='+' || c=='-')	//if this is the start of an offset
+				if(c=='+' || c=='-')	//if this is the start of a UTC offset
 				{
 					stringBuilder.append(check(reader, (char)c));	//read and add the delimiter
 					stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read two digits

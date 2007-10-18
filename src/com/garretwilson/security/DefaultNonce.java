@@ -93,26 +93,26 @@ public class DefaultNonce implements Nonce
 					}
 					else	//if there is no value
 					{
-						throw new SyntaxException(string, "Missing value.");
+						throw new SyntaxException("Missing value.", string);
 					}
 				}
 				else	//if there is no time
 				{
-					throw new SyntaxException(string, "Missing time.");
+					throw new SyntaxException("Missing time.", string);
 				}
 			}
 			else	//if there is no key
 			{
-				throw new SyntaxException(string, "Missing key.");
+				throw new SyntaxException("Missing key.", string);
 			}
 		}
 		catch(final NumberFormatException numberFormatException)	//if one of the numbers couldn't be parsed
 		{
-			throw new SyntaxException(string, numberFormatException);	//indicate that the string couldn't be parsed
+			throw new SyntaxException(numberFormatException, string);	//indicate that the string couldn't be parsed
 		}
 		catch(final IllegalArgumentException illegalArgumentException)	//if one of the parameters were incorrect
 		{
-			throw new SyntaxException(string, illegalArgumentException);	//indicate that the string couldn't be parsed
+			throw new SyntaxException(illegalArgumentException, string);	//indicate that the string couldn't be parsed
 		}
 	}
 

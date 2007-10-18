@@ -5,6 +5,7 @@ import java.net.URI;
 import javax.mail.internet.ContentType;
 
 import com.garretwilson.urf.*;
+
 import static com.garretwilson.urf.content.Content.*;
 
 /**A general resource that holds content in its description through the {@value Content#CONTENT_PROPERTY_URI} property.
@@ -30,11 +31,11 @@ public class ContentResource extends DefaultURFResource
 	*/
 	public ContentResource(final URI uri)
 	{
-		super(uri, RESOURCE_CLASS_URI);	//construct the parent class, specifying the type
+		super(uri, CONTENT_RESOURCE_CLASS_URI);	//construct the parent class, specifying the type
 	}
 
 	/**Returns the declared content type of the resource.
-	@return This resource's content type declaration, or <code>null</code> if the resource has no <code>content:type</code> property specified.
+	@return This resource's content type declaration, or <code>null</code> if the resource has no <code>content.type</code> property specified.
 	*/
 	public URFResource getContentType()
 	{
@@ -42,8 +43,8 @@ public class ContentResource extends DefaultURFResource
 	}
 
 	/**Returns the declared content type of the resource as an Internet media type.
-	@return This resource's content type declaration as a media type, or <code>null</code> if the resource has no <code>content:type</code> property specified
-		or the content type was not a resource with an Internet media type <code>info:media/</code> URI.
+	@return This resource's content type declaration as a media type, or <code>null</code> if the resource has no <code>content.type</code> property specified
+		or the content type was not a resource with an Internet media type URI.
 	*/
 	public ContentType getContentMediaType()
 	{
@@ -58,24 +59,24 @@ public class ContentResource extends DefaultURFResource
 		Content.setContentType(this, contentType);	//set the content type
 	}
 
-	/**Retrieves the array of child resources of the resource.
-	@return The contents of the resource, or <code>null</code> if no <code>content:contents</code> property exists or the value is not an instance of {@link URFListResource}.
+	/**Retrieves the collection of child resources of the resource.
+	@return The contents of the resource, or <code>null</code> if no <code>content.contents</code> property exists or the value is not an instance of {@link URFCollectionResource}.
 	*/
-	public URFListResource<URFResource> getContents()
+	public <T extends URFResource> URFCollectionResource<T> getContents()
 	{
 		return Content.getContents(this); //return the contents, if any
 	}
 
 	/**Set the contents property of the resource.
-	@param contents The array of contents, or <code>null</code> if there should be no contents.
+	@param contents The collection of contents, or <code>null</code> if there should be no contents.
 	*/
-	public void setContents(final URFListResource<?> contents)
+	public void setContents(final URFCollectionResource<?> contents)
 	{
 		Content.setContents(this, contents);	//set the contents of the resource
 	}
 
 	/**Returns the actual string content of the resource.
-	@return This resource's string content declaration, or <code>null</code> if the resource has no <code>content:content</code> property specified or the content is not a string.
+	@return This resource's string content declaration, or <code>null</code> if the resource has no <code>content.content</code> property specified or the content is not a string.
 	*/
 	public String getStringContent()
 	{
@@ -83,10 +84,10 @@ public class ContentResource extends DefaultURFResource
 	}
 
 	/**Sets this resource's content declaration with a text string.
-	@param content This resource's content declaration, or <code>null</code> if the resource should have no <code>content:content</code> property.
+	@param content This resource's content declaration, or <code>null</code> if the resource should have no <code>content.content</code> property.
 	*/
 	public void setContent(final String content)
 	{
-		Content.setContent(this, content);	//set the content:content property
+		Content.setContent(this, content);	//set the content.content property
 	}
 }

@@ -644,6 +644,21 @@ public class StringBuilderUtilities
 		return stringBuilder;  //return the resulting string buffer
 	}
 
+	/**Trims the specified delimiter from the end of the string buffer.
+	@param stringBuilder The characters to be processed.
+	@param delimiter The delimiter character.
+	@return The trimmed string buffer.
+	*/
+	public static StringBuilder trimEnd(final StringBuilder stringBuilder, final char delimiter)
+	{
+		int endIndex;
+		final int length=stringBuilder.length(); //get the length of the original string
+		for(endIndex=length; endIndex>0 && stringBuilder.charAt(endIndex-1)==delimiter; --endIndex);	//find the last non-delimiter in the string buffer
+		if(endIndex<length)  //if we should trim the end
+		  stringBuilder.delete(endIndex, length);  //remove the end of the buffer
+		return stringBuilder;  //return the resulting string buffer
+	}
+
 	/**Trims the specified delimiters from the end of the string buffer.
 	@param stringBuilder The characters to be processed.
 	@param delimiters The string containing delimiter characters.

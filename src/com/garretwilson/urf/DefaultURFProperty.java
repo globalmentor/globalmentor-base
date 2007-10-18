@@ -2,6 +2,7 @@ package com.garretwilson.urf;
 
 import java.net.URI;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.garretwilson.lang.ObjectUtilities;
 import static com.garretwilson.lang.ObjectUtilities.*;
@@ -18,10 +19,10 @@ Any redistribution of this source code or derived source code must include these
 public class DefaultURFProperty extends DefaultURFValueContext implements URFProperty
 {
 
-	/**The scope to which the property belongs.*/
+	/**The scope to which the property belongs, or <code>null</code> if this is a property definition not attached to any scope.*/
 	private final URFScope subjectScope;
 
-		/**@return The scope to which the property belongs.*/
+		/**@return The scope to which the property belongs, or <code>null</code> if this is a property definition not attached to any scope.*/
 		public URFScope getSubjectScope() {return subjectScope;}
 
 	/**The URI of the property.*/
@@ -30,18 +31,75 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 		/**@return The URI of the property.*/
 		public URI getPropertyURI() {return propertyURI;}
 
-	/**Subject scope, property URI, value, and scope constructor.
+	/**Property URI and value constructor with no subject scope, a default lock, and a default scope
+	@param propertyURI The property URI.
+	@param value The property value.
+	@exception NullPointerException if the given property URI, and/or value is <code>null</code>.
+	*/
+	public DefaultURFProperty(final URI propertyURI, final URFResource value)
+	{
+		this(new ReentrantReadWriteLock(), propertyURI, value);	//construct the class with a default lock
+	}
+
+	/**Read write lock, property URI and value constructor with no subject scope and a default scope.
 	@param readWriteLock The lock for controlling access to the properties.
+	@param propertyURI The property URI.
+	@param value The property value.
+	@exception NullPointerException if the given lock, property URI, and/or value is <code>null</code>.
+	*/
+	public DefaultURFProperty(final ReadWriteLock readWriteLock, final URI propertyURI, final URFResource value)
+	{
+		this(readWriteLock, propertyURI, value, new DefaultURFScope(readWriteLock));	//construct the class with no subject scope		
+	}
+
+	/**Property URI, value, and scope constructor with no subject scope and a default lock.
+	@param propertyURI The property URI.
+	@param value The property value.
+	@param scope The property-value scope
+	@exception NullPointerException if the given property URI, value, and/or scope is <code>null</code>.
+	*/
+	public DefaultURFProperty(final URI propertyURI, final URFResource value, final URFScope scope)
+	{
+		this(new ReentrantReadWriteLock(), propertyURI, value, scope);	//construct the class with a default lock
+	}
+
+	/**Read write lock, property URI, value, and scope constructor with no subject scope.
+	@param readWriteLock The lock for controlling access to the properties.
+	@param propertyURI The property URI.
+	@param value The property value.
+	@param scope The property-value scope
+	@exception NullPointerException if the given subject scope, property URI, value, and/or scope is <code>null</code>.
+	*/
+	public DefaultURFProperty(final ReadWriteLock readWriteLock, final URI propertyURI, final URFResource value, final URFScope scope)
+	{
+		this(readWriteLock, null, propertyURI, value, scope);	//construct the class with no subject scope		
+	}
+
+	/**Subject scope, property URI, value, and scope constructor.
+	The subject scope lock will be used for controlling access to the value.
 	@param subjectScope The scope to which the property belongs.
 	@param propertyURI The property URI.
 	@param value The property value.
 	@param scope The property-value scope
 	@exception NullPointerException if the given subject scope, property URI, value, and/or scope is <code>null</code>.
 	*/
-	public DefaultURFProperty(final ReadWriteLock readWriteLock, final URFScope subjectScope, final URI propertyURI, final URFResource value, final URFScope scope)
+	public DefaultURFProperty(final URFScope subjectScope, final URI propertyURI, final URFResource value, final URFScope scope)
+	{
+		this(subjectScope, checkInstance(subjectScope, "Subject scope cannot be null."), propertyURI, value, scope);	//construct the class, using the subject scope for locking
+	}
+
+	/**Read write lock, Subject scope, property URI, value, and scope constructor.
+	@param readWriteLock The lock for controlling access to the value.
+	@param subjectScope The scope to which the property belongs, or <code>null</code> if this is a property definition not attached to any scope.
+	@param propertyURI The property URI.
+	@param value The property value.
+	@param scope The property-value scope
+	@exception NullPointerException if the given lock, property URI, value, and/or scope is <code>null</code>.
+	*/
+	protected DefaultURFProperty(final ReadWriteLock readWriteLock, final URFScope subjectScope, final URI propertyURI, final URFResource value, final URFScope scope)
 	{
 		super(readWriteLock, value, scope);	//construct the parent class
-		this.subjectScope=checkInstance(subjectScope, "Subject scope cannot be null.");
+		this.subjectScope=subjectScope;
 		this.propertyURI=checkInstance(propertyURI, "Property URI cannot be null.");
 	}
 

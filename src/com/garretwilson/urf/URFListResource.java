@@ -31,7 +31,7 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 	/**Default constructor with no URI.*/
 	public URFListResource()
 	{
-		this(null);	//create a resource without a URI
+		this((URI)null);	//create a resource without a URI
 	}
 
 	/**URI constructor.
@@ -40,6 +40,28 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 	public URFListResource(final URI uri)
 	{
 		super(uri, LIST_CLASS_URI);	//construct the parent class, specifying that this is a list
+	}
+
+	/**Collection constructor with no URI.
+	The elements of the specified collection will be added to this list in the order they are returned by the collection's iterator.
+	@param collection The collection whose elements are to be placed into this list.
+	@exception NullPointerException if the specified collection is <code>null</code>.
+	*/
+	public URFListResource(final Collection<? extends E> collection)
+	{
+		this(null, collection);	//construct the class with no URI
+	}
+
+	/**URI and collection constructor.
+	The elements of the specified collection will be added to this list in the order they are returned by the collection's iterator.
+	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
+	@param collection The collection whose elements are to be placed into this list.
+	@exception NullPointerException if the specified collection is <code>null</code>.
+	*/
+	public URFListResource(final URI uri, final Collection<? extends E> collection)
+	{
+		this(uri);	//construct the class with the URI
+		addAll(collection);	//add all the collection elements to the list
 	}
 
 	/**Retrieves the length of the list.
@@ -62,7 +84,7 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 				}
 				else if(index>length)	//if the index is more than the length, we've skipped an index
 				{
-					break;	//stop enumerating the indexes 
+					break;	//stop enumerating the indexes
 				}
 			}
 			return length;	//return the count of all subsequent indexes starting at zero
@@ -450,7 +472,7 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 	  		}
 	  		if(getPropertyValue(createOrdinalURI(index))!=null)	//if the lists are the same size, the next index in this list should be null
 	  		{
-  				return false;	//the lists aren't equal; this list is longer than the other	  			
+  				return false;	//the lists aren't equal; this list is longer than the other
 	  		}
 	  		return true;	//both lists were the same size and all objects matched
   		}
@@ -590,7 +612,7 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 		finally
 		{
 			writeLock().unlock();	//always release the write lock
-		}	
+		}
 	}
 
 

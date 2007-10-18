@@ -5,34 +5,119 @@ package com.garretwilson.text;
 */
 public class ArgumentSyntaxException extends IllegalArgumentException
 {
-	/**Constructs a new exception with no detail message.*/
-	public ArgumentSyntaxException()
-	{
-		super();
-	}
+	
+	/**The input, or <code>null</code> if the input is not known.*/
+	private final String input; 
 
-	/**Constructs a new exception with the specified detail message. 
-	@param message The detail message.
+		/**@return The input, or <code>null</code> if the input is not known.*/
+		public String getInput() {return input;}
+		
+	/**The index into the input of the position at which the error occurred, or -1 if the position is not known.*/
+	private final int index;
+
+		/**@return The index into the input of the position at which the error occurred, or -1 if the position is not known.*/
+		public int getIndex() {return index;}
+
+	/**Message constructor.
+	@param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
 	*/
 	public ArgumentSyntaxException(final String message)
 	{
-		super(message);
+		this(message, (Throwable)null);	//construct the class with no cause
 	}
-
-	/**Constructs a new exception with the specified detail message and cause.
-	@param message The detail message (which is saved for later retrieval by the {@link Throwable#getMessage()} method).
-	@param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method), or <code>null</code> if the cause is nonexistent or unknown.
+	
+	/**Message, cause, input, and index constructor.
+	A message will be constructed including the given message, if any, or the given message of the cause, if any.
+	@param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
+	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
 	*/
 	public ArgumentSyntaxException(final String message, final Throwable cause)
 	{
-		super(message, cause);
-	}
- 
-	/**Constructs a new exception with the specified cause and a detail message of <code>(cause==null ? null : cause.toString())</code>.
-	@param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method), or <code>null</code> if the cause is nonexistent or unknown.
+		this(message, cause, null);	//construct the class with no input
+	}	
+	
+	/**Message, cause, and input constructor.
+	A message will be constructed including the given message, if any, or the given message of the cause, if any.
+	@param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
+	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
+	@param input The input, or <code>null</code> if the input is not known.
+	*/
+	public ArgumentSyntaxException(final String message, final Throwable cause, final String input)
+	{
+		this(message, cause, input, -1);	//construct the class with an unknown input
+	}	
+
+	/**input and index constructor.
+	@param input The input, or <code>null</code> if the input is not known.
+	@param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
+	@exception IllegalArgumentException if the given index is less than -1.
+	*/
+	public ArgumentSyntaxException(final String input, final int index)
+	{
+		this((String)null, input, index);	//construct the class with no message
+	}	
+
+	/**Message and input constructor.
+	@param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
+	@param input The input, or <code>null</code> if the input is not known.
+	*/
+	public ArgumentSyntaxException(final String message, final String input)
+	{
+		this(message, input, -1);	//construct the class with an unknown index
+	}	
+
+	/**Message, input, and index constructor.
+	@param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
+	@param input The input, or <code>null</code> if the input is not known.
+	@param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
+	@exception IllegalArgumentException if the given index is less than -1.
+	*/
+	public ArgumentSyntaxException(final String message, final String input, final int index)
+	{
+		this(message, null, input, index);	//construct the class with no cause
+	}	
+
+	/**Cause constructor.
+	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
 	*/
 	public ArgumentSyntaxException(final Throwable cause)
 	{
-		super(cause);
+		this(cause, null);	//construct the class with no input
+	}	
+
+	/**Cause and input constructor.
+	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
+	@param input The input, or <code>null</code> if the input is not known.
+	*/
+	public ArgumentSyntaxException(final Throwable cause, final String input)
+	{
+		this(cause, input, -1);	//construct the class with an unknown index
+	}	
+
+	/**Cause, input, and index constructor.
+	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
+	@param input The input, or <code>null</code> if the input is not known.
+	@param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
+	@exception IllegalArgumentException if the given index is less than -1.
+	*/
+	public ArgumentSyntaxException(final Throwable cause, final String input, final int index)
+	{
+		this(null, cause, input, index);	//construct the class with no message
+	}	
+	
+	/**Message, cause, input, and index constructor.
+	A message will be constructed including the given message, if any, or the given message of the cause, if any.
+	@param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
+	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
+	@param input The input, or <code>null</code> if the input is not known.
+	@param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
+	@exception IllegalArgumentException if the given index is less than -1.
+	*/
+	public ArgumentSyntaxException(final String message, final Throwable cause, final String input, final int index)
+	{
+		super(SyntaxException.createMessage(message, cause, input, index), cause);	//construct the parent class with the message and the cause
+		this.input=input;	//save the input, if any
+		this.index=index;	//save the index		
 	}
+
 }

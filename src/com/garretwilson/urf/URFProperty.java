@@ -14,7 +14,7 @@ Any redistribution of this source code or derived source code must include these
 public interface URFProperty extends URFValueContext
 {
 
-	/**@return The scope to which the property belongs.*/
+	/**@return The scope to which the property belongs, or <code>null</code> if this is a property definition not attached to any scope.*/
 	public URFScope getSubjectScope();
 
 	/**@return The URI of the property.*/

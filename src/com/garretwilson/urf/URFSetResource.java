@@ -24,7 +24,7 @@ public class URFSetResource<E extends URFResource> extends DefaultURFResource im
 	/**Default constructor with no URI.*/
 	public URFSetResource()
 	{
-		this(null);	//create a resource without a URI
+		this((URI)null);	//create a resource without a URI
 	}
 
 	/**URI constructor.
@@ -33,6 +33,28 @@ public class URFSetResource<E extends URFResource> extends DefaultURFResource im
 	public URFSetResource(final URI uri)
 	{
 		super(uri, LIST_CLASS_URI);	//construct the parent class, specifying that this is a list
+	}
+
+	/**Collection constructor with no URI.
+	The elements of the specified collection will be added to this set in the order they are returned by the collection's iterator.
+	@param collection The collection whose elements are to be placed into this set.
+	@exception NullPointerException if the specified collection is <code>null</code>.
+	*/
+	public URFSetResource(final Collection<? extends E> collection)
+	{
+		this(null, collection);	//construct the class with no URI
+	}
+
+	/**URI and collection constructor.
+	The elements of the specified collection will be added to this set in the order they are returned by the collection's iterator.
+	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
+	@param collection The collection whose elements are to be placed into this set.
+	@exception NullPointerException if the specified collection is <code>null</code>.
+	*/
+	public URFSetResource(final URI uri, final Collection<? extends E> collection)
+	{
+		this(uri);	//construct the class with the URI
+		addAll(collection);	//add all the collection elements to the set
 	}
 
 	/**Returns the number of elements in this set (its cardinality).
@@ -94,7 +116,7 @@ public class URFSetResource<E extends URFResource> extends DefaultURFResource im
 		finally
 		{
 			readLock().unlock();	//always release the read lock
-		}		
+		}
 	}
 
 	/**Returns an array containing all of the elements in this set; the runtime type of the returned array is that of the specified array.
