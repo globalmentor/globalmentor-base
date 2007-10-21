@@ -16,16 +16,35 @@ Any redistribution of this source code or derived source code must include these
 public interface URFResource extends Resource, URFScope
 {
 
-	/**Returns the string value of the «{@value URF#LABEL_PROPERTY_URI}» property.
+	/**Returns the label of this resource, if any.
 	@return The string value of the label property, or <code>null</code> if there is no such property or the property value is not a string.
+	@see URF#LABEL_PROPERTY_URI
 	*/
 	public String getLabel();
+
+	/**Set the label of this resource.
+	@param label The new label, or <code>null</code> if there should be no label.
+	@see URF#LABEL_PROPERTY_URI
+	*/
+	public void setLabel(final String label);
 
 	/**Determines a string value to use for representation.
 	This method may take into account the current properties of the resource in order to provide the best possible string representation.
 	@return A string label to use for representation of the resource.
 	*/
 	public String determineLabel();
+
+	/**Returns the name of this resource, if any.
+	@return The string value of the name property, or <code>null</code> if there is no such property or the property value is not a string.
+	@see URF#NAME_PROPERTY_URI
+	*/
+	public String getName();
+
+	/**Set the name of this resource.
+	@param name The new name, or <code>null</code> if there should be no name.
+	@see URF#NAME_PROPERTY_URI
+	*/
+	public void setName(final String name);
 
 	/**Retrieves the types declared for this resource, if any.
 	@return An iterable to all types declared for this resource.

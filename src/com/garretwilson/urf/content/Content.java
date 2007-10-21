@@ -88,6 +88,26 @@ public class Content
 		return null;	//no media type could be found
 	}
 
+	/**Returns the accessed date time.
+	@param resource The resource for which the accessed date time should be returned.
+	@return The accessed date time of the resource, or <code>null</code> if there is no accessed date time or the property does not contain an <code>urf.DateTime</code>.
+	@see #ACCESSED_PROPERTY_URI
+	*/
+	public static URFDateTime getAccessed(final URFResource resource)
+	{
+		return asDateTime(resource.getPropertyValue(ACCESSED_PROPERTY_URI));	//return the accessed timestamp as a date time
+	}
+
+	/**Sets the accessed property of the resource
+	@param resource The resource the accessed date and time to set.
+	@param dateTime The new accessed date and time.
+	@see #ACCESSED_PROPERTY_URI
+	*/
+	public static void setAccessed(final URFResource resource, final URFDateTime dateTime)
+	{
+		resource.setPropertyValue(ACCESSED_PROPERTY_URI, dateTime);	//create a date time resource and set the resource's accessed timestamp
+	}
+	
 	/**Returns the actual string content of the resource.
 	@param resource The resource for which the content should be returned.
 	@return This resource's string content declaration, or <code>null</code> if the resource has no <code>content:content</code> property specified or the content is not a string.
@@ -128,9 +148,29 @@ public class Content
 		resource.setPropertyValue(CONTENTS_PROPERTY_URI, contents);	//set the contents of the resource
 	}
 
+	/**Returns the created date time.
+	@param resource The resource for which the created date time should be returned.
+	@return The created date time of the resource, or <code>null</code> if there is no created date time or the property does not contain an <code>urf.DateTime</code>.
+	@see #CREATED_PROPERTY_URI
+	*/
+	public static URFDateTime getCreated(final URFResource resource)
+	{
+		return asDateTime(resource.getPropertyValue(CREATED_PROPERTY_URI));	//return the created timestamp as a date time
+	}
+
+	/**Sets the created property of the resource
+	@param resource The resource the created date and time to set.
+	@param dateTime The new created date and time.
+	@see #CREATED_PROPERTY_URI
+	*/
+	public static void setCreated(final URFResource resource, final URFDateTime dateTime)
+	{
+		resource.setPropertyValue(CREATED_PROPERTY_URI, dateTime);	//create a date time resource and set the resource's modified timestamp
+	}
+	
 	/**Returns the modified date time.
 	@param resource The resource for which the modified date time should be returned.
-	@return The modified date time of the resource, or <code>null</code> if there is no modified date time or the property does not contain an urf.DateTime.
+	@return The modified date time of the resource, or <code>null</code> if there is no modified date time or the property does not contain an <code>urf.DateTime</code>.
 	@see #MODIFIED_PROPERTY_URI
 	*/
 	public static URFDateTime getModified(final URFResource resource)
@@ -169,25 +209,15 @@ public class Content
 		resource.setPropertyValue(LENGTH_PROPERTY_URI, length); //set the length
 	}
 
-	/**Returns the declared content type of the resource.
-	@param resource The resource for which the content type should be returned.
-	@return This resource's content type declaration, or <code>null</code> if the resource has no <code>content.type</code> property specified.
-	@see #TYPE_PROPERTY_URI
-	*/
-	public static URFResource getContentType(final URFResource resource)
-	{
-		return resource.getPropertyValue(TYPE_PROPERTY_URI);	//return the content type
-	}
-
 	/**Returns the declared content type of the resource as an Internet media type.
 	@param resource The resource for which the content type should be returned.
 	@return This resource's content type declaration as a media type, or <code>null</code> if the resource has no <code>content.type</code> property specified
 		or the content type was not a resource with an Internet media type URI.
 	@see #TYPE_PROPERTY_URI
 	*/
-	public static ContentType getContentMediaType(final URFResource resource)
+	public static ContentType getContentType(final URFResource resource)
 	{
-		return asMediaType(getContentType(resource));	//return the content type, if any, as a media type
+		return asMediaType(resource.getPropertyValue(TYPE_PROPERTY_URI));	//return the content type, if any, as a media type
 	}
 
 	/**Sets the content type property of the resource.

@@ -1105,7 +1105,8 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 //G***make sure this works; see why we originally had to re-relativize this to the publication URL
 //G***del	Debug.trace("publicationHRef: ", publicationHRef);  //G***del
 				//get the path of the file relative to the publication
-		  oebItem=XPackageUtilities.getManifestItemByLocationHRef(publication, contextURL.toURI(), href);
+		  oebItem=null;	//TODO fix with URF
+//TODO fix with URF		  oebItem=XPackageUtilities.getManifestItemByLocationHRef(publication, contextURL.toURI(), href);
 //G***del			oebItem=publication.getManifestItemByHRef(publicationHRef); //see if this item is already in the manifest
 			if(oebItem==null) //if this item is not already in the manifest
 			{
@@ -1133,7 +1134,8 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 	Debug.trace("href relative path: ", hrefRelativePath);  //G***de
 						final URI itemURI=createURI(publication.getURI(), hrefRelativePath);  //create an ID from the relative path
 //G***del						final String itemID=XMLUtilities.createName(hrefRelativePath);  //create an ID from the relative path
-						if(XPackageUtilities.getManifestItem(publication, itemURI)==null)  //if there isn't an item already in the manifest with this ID G***this could in some strange circumstances prevent two different paths from being stored, if the slash conversion to underline matches a filename with underlines in the same locations
+//TODO fix with URF						if(XPackageUtilities.getManifestItem(publication, itemURI)==null)  //if there isn't an item already in the manifest with this ID G***this could in some strange circumstances prevent two different paths from being stored, if the slash conversion to underline matches a filename with underlines in the same locations
+						if(true)	//TODO fix with URF
 						{
 	Debug.trace("no manifest items with URI: ", itemURI);
 //G***fix										final File srcFile=new File(src); //create a file object to represent the image source
@@ -1153,8 +1155,10 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 								oebItem=getRDF().locateResource(itemURI);
 //G***del								oebItem=new OEBItem(publication, itemID, hrefRelativePath, mediaType);
 								XPackageUtilities.addLocation(oebItem, hrefRelativePath);  //add the relative href to the item
+/*TODO fix with URF
 								Marmot.addContentType(oebItem, mediaType); //add the content type we determined
 								Marmot.getContents(publication).add(oebItem); //add the item to the publication's manifest
+*/
 								  //if this is an OEB document, and we should add it to the spine
 								if(shouldAddToSpine && mediaType.match(OEB10_DOCUMENT_MEDIA_TYPE))
 								{

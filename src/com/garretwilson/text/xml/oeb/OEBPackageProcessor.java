@@ -299,7 +299,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 		}
 //G***fix fallbacks		final Map fallbackMap=new HashMap();  //create a map to be used for storing references to fallbacks
 		  //add a manifest to the publication
-		final RDFListResource manifestResource=addManifest(publicationResource);
+//TODO fix with URF		final RDFListResource manifestResource=addManifest(publicationResource);
 		//XPath: /manifest/item
 		final List<Node> manifestElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
 			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST+
@@ -313,9 +313,9 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 				//create an RDF resource for the item with a type of rdf:resource
 			final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null)); //G***fix the reference URI
 //G***del when not needed		  final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null), XPackageConstants.XPACKAGE_NAMESPACE_URI, XPackageConstants.RESOURCE_TYPE_NAME); //G***fix the reference URI
-			Marmot.addContentType(itemResource, itemMediaType); //add the item's content type
+//TODO fix with URF content			Marmot.addContentType(itemResource, itemMediaType); //add the item's content type
 		  addLocation(itemResource, itemHRef); //add the item's href
-		  manifestResource.add(itemResource);  //add the item to the manifest
+//TODO fix with URF		  manifestResource.add(itemResource);  //add the item to the manifest
 /*G***fix fallbacks
 			if(itemElement.hasAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_FALLBACK)) //if the element has a fallback attribute
 				fallbackMap.put(oebItem, itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_FALLBACK)); //put the fallback ID in the map, keyed to the item
@@ -354,11 +354,13 @@ Debug.trace("looking at spine element: ", i);
 Debug.trace("idref: ", itemIDRef);
 			final URI itemReferenceURI=new URI(URIConstants.URN_SCHEME, "local:"+itemIDRef, null);  //G***fix the reference URI
 Debug.trace("item reference URI: ", itemReferenceURI);
+/*TODO fix with URF
 			final RDFResource itemResource=manifestResource.getResourceByReferenceURI(itemReferenceURI);	//get the referenced item from the manifest
 Debug.trace("item resource: ", RDFUtilities.toString(itemResource));
 			assert itemResource!=null : "Missing spine element: "+itemIDRef; //TODO fix with a real error message
 Debug.trace("adding item to organization");
 			spine.add(itemResource);	//add this item to the spine
+*/
 		}
 		publicationResource.setSpine(spine);	//add the spine to the resource
 

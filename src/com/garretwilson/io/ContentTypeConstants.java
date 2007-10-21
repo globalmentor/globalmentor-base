@@ -42,8 +42,10 @@ public class ContentTypeConstants
 	public final static String XML_EXTERNAL_PARSED_ENTITY_SUBTYPE_SUFFIX="xml-external-parsed-entity";
 	/**The suffix for RDF application types.*/
 	public final static String RDF_XML_SUBTYPE_SUFFIX="rdf"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
-	/**The suffix for TURF application.*/
+	/**The suffix for TURF application types.*/
 	public final static String TURF_SUBTYPE_SUFFIX="turf";
+	/**The suffix for URF TURF application types.*/
+	public final static String URF_TURF_SUBTYPE_SUFFIX="urf"+SUBTYPE_SUFFIX_DELIMITER_CHAR+TURF_SUBTYPE_SUFFIX;
 	/**The suffix for zip application types.*/
 	public final static String ZIP_SUBTYPE_SUFFIX="zip";
 

@@ -1,7 +1,6 @@
 package com.garretwilson.urf.select;
 
 import java.net.URI;
-import java.util.Iterator;
 
 /**A selector that selects an object based upon the negation of a subselector.
 <p>Copyright © 2007 GlobalMentor, Inc.
@@ -37,10 +36,10 @@ public class NegationSelector extends AbstractOperatorSelector
 	*/
 	public boolean selects(final Object object)
 	{
-		final Iterator<Selector> selectIterator=getSelectors().iterator();	//get an iterator to the the selectors
-		if(selectIterator.hasNext())	//if there is a selector
+		final Selector selector=getSelector();	//get the selector
+		if(selector!=null)	//if there is a selector
 		{
-			return !selectIterator.next().selects(object);	//return the negation of its selection
+			return !selector.selects(object);	//return the negation of its selection
 		}
 		return false;	//if there is no subselector, there is no selection
 	}

@@ -34,12 +34,14 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 		this((URI)null);	//create a resource without a URI
 	}
 
-	/**URI constructor.
+	/**URI and type URIs constructor.
+	If no types are specified, the type {@value URF#LIST_CLASS_URI} will be added.
 	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
+	@param typeURIs The URIs of the types, if any, to add to the resource.
 	*/
-	public URFListResource(final URI uri)
+	public URFListResource(final URI uri, final URI... typeURIs)
 	{
-		super(uri, LIST_CLASS_URI);	//construct the parent class, specifying that this is a list
+		super(uri, typeURIs.length>0 ? typeURIs : new URI[]{LIST_CLASS_URI});	//construct the parent class, specifying the list class if there are no types given
 	}
 
 	/**Collection constructor with no URI.
@@ -766,6 +768,18 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 		{
 			readLock().unlock();	//always release the read lock
 		}
+	}
+
+	/**Converts the given collection to an URF list resource.
+	If the collection is already a list resource, the collection is returned;
+	otherwise, a new new list resource with the contents of the collection is returned. 
+	@param <T> The type of elements contained in the collection. 
+	@param collection The collection to convert to a list resource.
+	@return A list resource representing the contents of the given collection.
+	*/
+	public static <T extends URFResource> URFListResource<T> toListResource(final Collection<T> collection)
+	{
+		return collection instanceof URFListResource ? (URFListResource<T>)collection : new URFListResource<T>(collection);	//if the collection is already a list resource, return the collection as a list resource; otherwise create a new list resource with the contents of the collection
 	}
 
 }

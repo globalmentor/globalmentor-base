@@ -36,6 +36,7 @@ public class ObjectPropertySelector extends AbstractSelector
 
 	/**Returns the name of the property identified by this selector.
 	@return This selector's property name designation, or <code>null</code> if this selector has no <code>selectPropertyName</code> property with a string value.
+	@see Select#SELECT_PROPERTY_NAME_PROPERTY_URI
 	*/
 	public String getSelectPropertyName()
 	{
@@ -44,14 +45,15 @@ public class ObjectPropertySelector extends AbstractSelector
 
 	/**Sets the property name identified by this selector.
 	@param selectPropertyName The name of the property to be selected.
+	@see Select#SELECT_PROPERTY_NAME_PROPERTY_URI
 	*/
 	public void setSelectPropertyName(final String selectPropertyName)
 	{
 		setPropertyValue(SELECT_PROPERTY_NAME_PROPERTY_URI, selectPropertyName);	//set the given select property name
 	}
 
-	/**@return This selector's select declaration, or <code>null</code> if this rule has no <code>select.select</code> property or the value is not a {@link Selector}.*/
-	public Selector getSelect() throws ClassCastException
+	/**@return This selector first select declaration, or <code>null</code> if this rule has no selector property or the value is not a {@link Selector}.*/
+	public Selector getSelector()
 	{
 		return asInstance(getPropertyValue(SELECTOR_PROPERTY_URI), Selector.class);	//return the select.select value
 	}
@@ -62,7 +64,7 @@ public class ObjectPropertySelector extends AbstractSelector
 	@return <code>true</code> if this selector selects the given object.
 	@exception IllegalStateException if this selector doesn't specify a selected property or the specified property cannot be accessed or throws an exception.
 	@see #getSelectPropertyName()
-	@see #getSelect()
+	@see #getSelector()
 	*/
 	public boolean selects(final Object object)
 	{
@@ -71,7 +73,7 @@ public class ObjectPropertySelector extends AbstractSelector
 			final String propertyName=getSelectPropertyName();	//get the property name
 			if(propertyName!=null)	//if a property name was given
 			{
-				final Selector selector=getSelect();	//get the subselector
+				final Selector selector=getSelector();	//get the subselector
 				if(selector!=null)	//if a selector was given
 				{
 					final Object propertyValue;

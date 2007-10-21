@@ -200,6 +200,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 			}
 		}
 		  //package/manifest
+/*TODO fix
 		final RDFListResource manifest=Marmot.getContents(publication); //get the manifest
 		if(manifest!=null)  //if the publication has a manifest
 		{
@@ -211,6 +212,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 			  manifestElement.appendChild(generateItemElement(document, oebItem, publication.getURI()));  //generate an item element and add it to the manifest element
 		  }
 		}
+*/
 		  //package/spine
 		final RDFListResource<?> spine=publication.getSpine(); //get the spine
 		if(spine!=null)  //if the publication has a spine
@@ -252,11 +254,13 @@ Debug.trace("property value: ", propertyValue); //G***del
 		  itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_HREF, href);		  //set the href
 //G***maybe assert that there is a media type, here
 		}
+/*TODO fix
 		final ContentType mediaType=Marmot.getMediaType(oebItem);  //get the item's media type
 		if(mediaType!=null) //if the item has a media type
 		{
 		  itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE, mediaType.toString());		  //set the media type
 		}
+*/
 /**G***fix
 		final OEBItem fallbackItem=oebItem.getFallback(); //get the fallback item
 		if(fallbackItem!=null)  //if there is a fallback item

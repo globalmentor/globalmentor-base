@@ -2,6 +2,7 @@ package com.garretwilson.urf.select;
 
 import java.net.URI;
 
+import static com.garretwilson.lang.ObjectUtilities.asInstance;
 import static com.garretwilson.urf.select.Select.*;
 
 /**An abstract selector that works as an operator on the results of other selections.
@@ -28,6 +29,12 @@ public abstract class AbstractOperatorSelector extends AbstractSelector implemen
 	public AbstractOperatorSelector(final URI uri)
 	{
 		super(uri);  //construct the parent class
+	}
+
+	/**@return This selector first select declaration, or <code>null</code> if this rule has no selector property or the value is not a {@link Selector}.*/
+	public Selector getSelector()
+	{
+		return asInstance(getPropertyValue(SELECTOR_PROPERTY_URI), Selector.class);	//return the select.select value
 	}
 
 	/**@return This operator selector's selector declarations.*/

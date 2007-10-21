@@ -91,19 +91,6 @@ public class XPackageUtilities
 		return addLocation(resource, href);	//add the location to the resource
 	}
 
-	/**Adds an <code>&lt;xpackage:manifest&gt;</code> property to the resource.
-	@param resource The resource to which a property should be added.
-	@return The new manifest resource, an <code>&lt;rdf:List&gt;</code>.
-	*/
-	public static RDFListResource addManifest(final RDFResource resource)	//G***do we even need these addXXX() methods, now?
-	{
-		  //create a manifest resource from the data model
-		final RDFListResource manifestResource=new RDFListResource(resource.getRDF());
-			//add a manifest to the resource
-		resource.addProperty(XPACKAGE_NAMESPACE_URI, Marmot.CONTENTS_PROPERTY_NAME, manifestResource);
-		return manifestResource;  //return the manifest resource we created
-	}
-
 	/**Creates a default XPackage package description document.
 	@param domImplementation The DOM implementation to use.
 	@return A newly created default XPackage package description document with an
@@ -182,6 +169,7 @@ public class XPackageUtilities
 	@return The manifest item with the given reference URI, or <code>null</code>
 		if there is no match.
 	*/
+/*TODO del all XPackage stuff
 	public static RDFResource getManifestItem(final RDFResource resource, final URI referenceURI)
 	{
 		final RDFListResource manifest=Marmot.getContents(resource);  //get the manifest of this resource
@@ -197,6 +185,7 @@ public class XPackageUtilities
 		}
 		return null;  //show that we couldn't find a matching item resource
 	}
+*/
 
 	/**Returns an item resource in the given RDF list that has a matching
 		xpackage:location with an xlink:href that matches the requested href,
@@ -281,6 +270,7 @@ Debug.trace("looking at resource: ", resource); //G***del
 		version of the specified href, or <code>null</code> if there is no match.
 	@see #getLocationHRef
 	*/
+/*TODO del
 	public static RDFResource getManifestItemByLocationHRef(final RDFResource resource, final URI baseURI, final String href)
 	{
 		final RDFListResource manifest=Marmot.getContents(resource);  //get the manifest of this resource
@@ -293,6 +283,7 @@ Debug.trace("looking at resource: ", resource); //G***del
 			return null;  //show that we couldn't find a matching item resource
 		}
 	}
+*/
 
 	/**Returns an item resource in the manifest of the given resource, if present,
 		that has a matching xpackage:location with an xlink:href that matches the requested URI,
@@ -306,6 +297,7 @@ Debug.trace("looking at resource: ", resource); //G***del
 		<code>null</code> if there is no match.
 	@see #getLocationHRef
 	*/
+/*TODO del
 	public static RDFResource getManifestItemByLocationHRef(final RDFResource resource, final URI baseURI, final URI uri)
 	{
 		final RDFListResource manifest=Marmot.getContents(resource);  //get the manifest of this resource
@@ -318,6 +310,7 @@ Debug.trace("looking at resource: ", resource); //G***del
 			return null;  //show that we couldn't find a matching item resource
 		}
 	}
+*/
 
 	/**Returns an item resource in the given RDF container that has a matching
 		xpackage:location with an xlink:href that matches the requested URI,

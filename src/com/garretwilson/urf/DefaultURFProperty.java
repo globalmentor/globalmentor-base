@@ -1,11 +1,11 @@
 package com.garretwilson.urf;
 
 import java.net.URI;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.*;
 
 import com.garretwilson.lang.ObjectUtilities;
 import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.urf.URF.DEFAULT_URF_RESOURCE_FACTORY;
 
 /**Default implementation of an encapsulation of a parent scope, property URI, value, and the associated property-value scope.
 <p>Copyright © 2007 GlobalMentor, Inc.
@@ -41,6 +41,16 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 		this(new ReentrantReadWriteLock(), propertyURI, value);	//construct the class with a default lock
 	}
 
+	/**Property URI and string value constructor with no subject scope, a default lock, and a default scope
+	@param propertyURI The property URI.
+	@param value The property value.
+	@exception NullPointerException if the given property URI, and/or value is <code>null</code>.
+	*/
+	public DefaultURFProperty(final URI propertyURI, final String value)
+	{
+		this(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createStringResource(value));	//construct the class with a resource created from the value
+	}
+
 	/**Read write lock, property URI and value constructor with no subject scope and a default scope.
 	@param readWriteLock The lock for controlling access to the properties.
 	@param propertyURI The property URI.
@@ -49,7 +59,7 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	*/
 	public DefaultURFProperty(final ReadWriteLock readWriteLock, final URI propertyURI, final URFResource value)
 	{
-		this(readWriteLock, propertyURI, value, new DefaultURFScope(readWriteLock));	//construct the class with no subject scope		
+		this(readWriteLock, propertyURI, value, new DefaultURFScope(readWriteLock));	//construct the class with no subject scope
 	}
 
 	/**Property URI, value, and scope constructor with no subject scope and a default lock.
@@ -72,7 +82,7 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	*/
 	public DefaultURFProperty(final ReadWriteLock readWriteLock, final URI propertyURI, final URFResource value, final URFScope scope)
 	{
-		this(readWriteLock, null, propertyURI, value, scope);	//construct the class with no subject scope		
+		this(readWriteLock, null, propertyURI, value, scope);	//construct the class with no subject scope
 	}
 
 	/**Subject scope, property URI, value, and scope constructor.

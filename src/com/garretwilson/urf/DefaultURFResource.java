@@ -98,20 +98,30 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 		}
 	}
 
-	/**Returns the string value of the «{@value URF#LABEL_PROPERTY_URI}» property.
+	/**Returns the label of this resource, if any.
 	@return The string value of the label property, or <code>null</code> if there is no such property or the property value is not a string.
+	@see URF#LABEL_PROPERTY_URI
 	*/
 	public String getLabel()
 	{
 		return asString(getPropertyValue(LABEL_PROPERTY_URI));
 	}
 
+	/**Set the label of this resource.
+	@param label The new label, or <code>null</code> if there should be no label.
+	@see URF#LABEL_PROPERTY_URI
+	*/
+	public void setLabel(final String label)
+	{
+		setPropertyValue(LABEL_PROPERTY_URI, label);
+	}
+
 	/**Determines a string value to use for representation.
 	This method may take into account the current properties of the resource in order to provide the best possible string representation.
 	This implementation determines the label in the following sequence:
 	<ol>
-		<li>The string value of any literal «{@value URF#LABEL_PROPERTY_URI}» property.</li>
-		<li>The string value of any literal «{@value DCMI#TITLE_PROPERTY_URI}» property.</li>
+		<li>The string value of any «{@value URF#LABEL_PROPERTY_URI}» property.</li>
+		<li>The string value of any «{@value DCMI#TITLE_PROPERTY_URI}» property.</li>
 		<li>The lexical form of any resource with a URI in a lexical namespace.</li>
 		<li>The reference URI.</li>
 		<li>The Java string representation of the resource as given by its <code>toString()</code> method.</li>
@@ -121,27 +131,49 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 	*/
 	public String determineLabel()
 	{
-		String label=getTitle(this);	//see if there is a dc.title
-		if(label==null)	//if there is no title
+		String label=getLabel();	//see if there is an urf.label
+		if(label==null)	//if there is no label
 		{
-			final URI uri=getURI();	//get the resource URI
-			if(uri!=null)	//if this resource has a URI
+			label=getTitle(this);	//see if there is a dc.title
+			if(label==null)	//if there is no title
 			{
-				if(isLexicalNamespaceURI(uri))	//if the URI is in a lexical namespace
+				final URI uri=getURI();	//get the resource URI
+				if(uri!=null)	//if this resource has a URI
 				{
-					label=getLocalName(uri);	//get the local name of the URI, which will be the lexical form
+					if(isLexicalNamespaceURI(uri))	//if the URI is in a lexical namespace
+					{
+						label=getLocalName(uri);	//get the local name of the URI, which will be the lexical form
+					}
+					else	//if the URI is not in a lexical namespace
+					{
+						label=uri.toString();	//use the string form of the URI as-is
+					}
 				}
-				else	//if the URI is not in a lexical namespace
+				else	//if there is no URI
 				{
-					label=uri.toString();	//use the string form of the URI as-is
+					label=toString();	//use the Java string form of the resource as a last resort
 				}
-			}
-			else	//if there is no URI
-			{
-				label=toString();	//use the Java string form of the resource as a last resort
 			}
 		}
 		return label;	//return the label
+	}
+
+	/**Returns the name of this resource, if any.
+	@return The string value of the name property, or <code>null</code> if there is no such property or the property value is not a string.
+	@see URF#NAME_PROPERTY_URI
+	*/
+	public String getName()
+	{
+		return asString(getPropertyValue(NAME_PROPERTY_URI));
+	}
+
+	/**Set the name of this resource.
+	@param name The new name, or <code>null</code> if there should be no name.
+	@see URF#NAME_PROPERTY_URI
+	*/
+	public void setName(final String name)
+	{
+		setPropertyValue(NAME_PROPERTY_URI, name);
 	}
 
 	/**Retrieves the types declared for this resource, if any.

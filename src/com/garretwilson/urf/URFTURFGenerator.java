@@ -285,6 +285,7 @@ public class URFTURFGenerator
 	}
 
 	/**Generates all the resources within a given data model.
+	A TURF container will be generated to contain the generated resources.
 	@param writer The writer used for generating the information.
 	@param urf The data model of which resources should be generated.
 	@return The writer.
@@ -293,10 +294,24 @@ public class URFTURFGenerator
 	*/
 	public Writer generateResources(final Writer writer, final URF urf) throws IOException
 	{
-		return generateResources(writer, urf, null);	//generate all URF resources with no particular resource as the primary resource
+		return generateResources(writer, urf, true);	//generate the resources, indicating that a container should be generated
+	}
+
+	/**Generates all the resources within a given data model.
+	@param writer The writer used for generating the information.
+	@param urf The data model of which resources should be generated.
+	@param generateContainer Whether a TURF container should be generated to hold the generated resources, if any.
+	@return The writer.
+	@exception NullPointerException if the given writer and/or URF data model is <code>null</code>.
+	@exception IOException if there is an error writing to the writer.
+	*/
+	public Writer generateResources(final Writer writer, final URF urf, final boolean generateContainer) throws IOException
+	{
+		return generateResources(writer, urf, generateContainer, null);	//generate all URF resources with no particular resource as the primary resource
 	}
 
 	/**Generates the given resources and all related resources.
+	A TURF container will be generated to contain the generated resources.
 	@param writer The writer used for generating the information.
 	@param resources The resources to generate, with the first resource, if any, being the resource to appear first or immediately after namespace descriptions
 	@return The writer.
@@ -305,15 +320,67 @@ public class URFTURFGenerator
 	*/
 	public Writer generateResources(final Writer writer, final URFResource... resources) throws IOException
 	{
+		return generateResources(writer, true, resources);	//generate the resources, indicating that a container should be generated
+	}
+
+	/**Generates the given resources and all related resources.
+	@param writer The writer used for generating the information.
+	@param generateContainer Whether a TURF container should be generated to hold the generated resources, if any.
+	@param resources The resources to generate, with the first resource, if any, being the resource to appear first or immediately after namespace descriptions
+	@return The writer.
+	@exception NullPointerException if the given writer and/or resources is <code>null</code>.
+	@exception IOException if there is an error writing to the writer.
+	*/
+	public Writer generateResources(final Writer writer, final boolean generateContainer, final URFResource... resources) throws IOException
+	{
 		final URF urf=new URF();	//create a new URF data model
 		for(final URFResource resource:resources)	//for each given resource
 		{
 			urf.addResource(resource);	//add the resource to the data model
 		}
-		return generateResources(writer, urf, resources.length>0 ? resources[0] : null);	//generate all resources related to the given resources
+		return generateResources(writer, urf, generateContainer, resources.length>0 ? resources[0] : null);	//generate all resources related to the given resources
+	}
+
+
+
+	/**Generates the given resources and all related resources.
+	A TURF container will be generated to contain the generated resources.
+	@param writer The writer used for generating the information.
+	@param resources The resources to generate, with the first resource, if any, being the resource to appear first or immediately after namespace descriptions
+	@return The writer.
+	@exception NullPointerException if the given writer and/or resources is <code>null</code>.
+	@exception IOException if there is an error writing to the writer.
+	*/
+	public Writer generateResources(final Writer writer, final Iterable<URFResource> resources) throws IOException
+	{
+		return generateResources(writer, true, resources);	//generate the resources, indicating that a container should be generated
+	}
+
+	/**Generates the given resources and all related resources.
+	@param writer The writer used for generating the information.
+	@param generateContainer Whether a TURF container should be generated to hold the generated resources, if any.
+	@param resources The resources to generate, with the first resource, if any, being the resource to appear first or immediately after namespace descriptions
+	@return The writer.
+	@exception NullPointerException if the given writer and/or resources is <code>null</code>.
+	@exception IOException if there is an error writing to the writer.
+	*/
+	public Writer generateResources(final Writer writer, final boolean generateContainer, final Iterable<URFResource> resources) throws IOException
+	{
+		final URF urf=new URF();	//create a new URF data model
+		URFResource firstResource=null;	//we'll note the first resource, if any
+		for(final URFResource resource:resources)	//for each given resource
+		{
+			urf.addResource(resource);	//add the resource to the data model
+			if(firstResource==null)	//if we haven't yet found the first resource
+			{
+				firstResource=resource;	//this is the first resource
+			}
+		}
+		return generateResources(writer, urf, generateContainer, firstResource);	//generate all resources related to the given resources
 	}
 
 	/**Generates all the resources within a given data model, indicating an optional resource that should appear first or immediately after namespace descriptions.
+	A TURF container will be generated to contain the generated resources.
 	@param writer The writer used for generating the information.
 	@param urf The data model of which resources should be generated.
 	@param primaryResource The main resource which should appear first or immediately after namespace descriptions, or <code>null</code> if there is no primary resource.
@@ -323,6 +390,26 @@ public class URFTURFGenerator
 	*/
 	public Writer generateResources(final Writer writer, final URF urf, final URFResource primaryResource) throws IOException
 	{
+		return generateResources(writer, urf, true, primaryResource);	//generate the resources, indicating that a container should be generated
+	}
+
+	/**Generates all the resources within a given data model, indicating an optional resource that should appear first or immediately after namespace descriptions.
+	@param writer The writer used for generating the information.
+	@param urf The data model of which resources should be generated.
+	@param generateContainer Whether a TURF container should be generated to hold the generated resources, if any.
+	@param primaryResource The main resource which should appear first or immediately after namespace descriptions, or <code>null</code> if there is no primary resource.
+	@return The writer.
+	@exception NullPointerException if the given writer and/or URF data model is <code>null</code>.
+	@exception IOException if there is an error writing to the writer.
+	*/
+	public Writer generateResources(final Writer writer, final URF urf, final boolean generateContainer, final URFResource primaryResource) throws IOException
+	{
+		if(generateContainer)	//if we should generate a container
+		{
+			writer.write(TURF_SIGNATURE);	//write the TURF signature
+			writeNewLine(writer);
+			writer.write(LIST_BEGIN);	//start the container
+		}
 		final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap=urf.getReferences();	//get a map of sets of all references to each resource
 			//gather namespace URIs used
 		final Map<URI, Boolean> namespaceURIMultipleMap=new HashMap<URI, Boolean>();	//create a hash map with namespace URI keys to keep track if a namespace is used multiple times
@@ -383,6 +470,10 @@ public class URFTURFGenerator
 			{
 				generateRootResource(writer, urf, referenceMap, resource);	//generate this root resource
 			}
+		}
+		if(generateContainer)	//if we are generating a container
+		{
+			writer.write(LIST_END);	//end the container
 		}
 		return writer;	//return the writer
 	}

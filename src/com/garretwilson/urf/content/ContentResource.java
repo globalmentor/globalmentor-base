@@ -34,25 +34,19 @@ public class ContentResource extends DefaultURFResource
 		super(uri, CONTENT_RESOURCE_CLASS_URI);	//construct the parent class, specifying the type
 	}
 
-	/**Returns the declared content type of the resource.
-	@return This resource's content type declaration, or <code>null</code> if the resource has no <code>content.type</code> property specified.
-	*/
-	public URFResource getContentType()
-	{
-		return Content.getContentType(this);	//return the content type
-	}
-
 	/**Returns the declared content type of the resource as an Internet media type.
 	@return This resource's content type declaration as a media type, or <code>null</code> if the resource has no <code>content.type</code> property specified
 		or the content type was not a resource with an Internet media type URI.
+	@see Content#TYPE_PROPERTY_URI
 	*/
-	public ContentType getContentMediaType()
+	public ContentType getContentType()
 	{
-		return Content.getContentMediaType(this);	//return the content type, if any, as a media type
+		return Content.getContentType(this);	//return the content type, if any
 	}
 
 	/**Sets the content type property of the resource.
 	@param contentType The object that specifies the content type, or <code>null</code> if there should be no content type.
+	@see Content#TYPE_PROPERTY_URI
 	*/
 	public void setContentType(final ContentType contentType)
 	{
@@ -61,6 +55,7 @@ public class ContentResource extends DefaultURFResource
 
 	/**Retrieves the collection of child resources of the resource.
 	@return The contents of the resource, or <code>null</code> if no <code>content.contents</code> property exists or the value is not an instance of {@link URFCollectionResource}.
+	@see Content#CONTENTS_PROPERTY_URI
 	*/
 	public <T extends URFResource> URFCollectionResource<T> getContents()
 	{
@@ -69,6 +64,7 @@ public class ContentResource extends DefaultURFResource
 
 	/**Set the contents property of the resource.
 	@param contents The collection of contents, or <code>null</code> if there should be no contents.
+	@see Content#CONTENTS_PROPERTY_URI
 	*/
 	public void setContents(final URFCollectionResource<?> contents)
 	{

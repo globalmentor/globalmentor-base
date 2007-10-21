@@ -1443,7 +1443,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		{
 			final String uriString=uri.toString();	//get the string representation of the URI
 			assert uriString.endsWith(new StringBuilder().append(FRAGMENT_SEPARATOR).append(fragment).toString());
-			return URI.create(uri.toString().substring(0, uriString.length()-fragment.length()-1));	//create a URI without the fragment separator and the fragment
+			return URI.create(uriString.substring(0, uriString.length()-fragment.length()-1));	//create a URI without the fragment separator and the fragment
 		}
 		else	//if there is no fragment
 		{

@@ -27,12 +27,14 @@ public class URFSetResource<E extends URFResource> extends DefaultURFResource im
 		this((URI)null);	//create a resource without a URI
 	}
 
-	/**URI constructor.
+	/**URI and type URIs constructor.
+	If no types are specified, the type {@value URF#SET_CLASS_URI} will be added.
 	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
+	@param typeURIs The URIs of the types, if any, to add to the resource.
 	*/
-	public URFSetResource(final URI uri)
+	public URFSetResource(final URI uri, final URI... typeURIs)
 	{
-		super(uri, LIST_CLASS_URI);	//construct the parent class, specifying that this is a list
+		super(uri, typeURIs.length>0 ? typeURIs : new URI[]{SET_CLASS_URI});	//construct the parent class, specifying the set class if there are no types given
 	}
 
 	/**Collection constructor with no URI.
@@ -383,4 +385,17 @@ public class URFSetResource<E extends URFResource> extends DefaultURFResource im
 			readLock().unlock();	//always release the read lock
 		}
 	}
+
+	/**Converts the given collection to an URF set resource.
+	If the collection is already a set resource, the collection is returned;
+	otherwise, a new new set resource with the contents of the collection is returned. 
+	@param <T> The type of elements contained in the collection. 
+	@param collection The collection to convert to a set resource.
+	@return A set resource representing the contents of the given collection.
+	*/
+	public static <T extends URFResource> URFSetResource<T> toSetResource(final Collection<T> collection)
+	{
+		return collection instanceof URFSetResource ? (URFSetResource<T>)collection : new URFSetResource<T>(collection);	//if the collection is already a set resource, return the collection as a set resource; otherwise create a new set resource with the contents of the collection
+	}
+
 }
