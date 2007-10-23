@@ -1472,7 +1472,6 @@ public class URF
 	*/
 	public URFResource createResource(final URI resourceURI, final URI... typeURIs)
 	{
-Debug.trace("Ready to create resource", resourceURI, "with type URIs", typeURIs);
 		URFResourceFactory selectedResourceFactory=DEFAULT_RESOURCE_FACTORY;	//we'll try to find a matching resource factory; if we can't, we'll use the default resource factory
 		URI selectedTypeURI=null;	//we'll remember the type URI used for finding the resource factory		
 		for(final URI typeURI:typeURIs)	//for each type URI

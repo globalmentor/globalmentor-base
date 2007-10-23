@@ -7,6 +7,7 @@ import static java.util.Calendar.*;
 
 import com.garretwilson.io.ParseIOException;
 import static com.garretwilson.io.ReaderParser.*;
+
 import com.garretwilson.iso.ISO8601;
 import static com.garretwilson.iso.ISO8601.*;
 import static com.garretwilson.lang.IntegerUtilities.*;
@@ -323,17 +324,21 @@ public class URFTemporalComponents
 			}
 			else	//if we should at least allow a UTC offset
 			{
-				final int sign=peek(reader);	//peek the next character
-				if(sign=='+' || sign=='-')	//if this is the start of a UTC offset
+				final int utcOffsetDelimiter=peek(reader);	//peek the next character
+				if(utcOffsetDelimiter=='+' || utcOffsetDelimiter=='-')	//if this is the start of a UTC offset
 				{
+					check(reader, (char)utcOffsetDelimiter);	//read the delimiter
 					final StringBuilder utcOffsetStringBuilder=new StringBuilder(3);	//create a new string builder for just enough room for a sign and the offset hours
-					utcOffsetStringBuilder.append(sign);	//append the sign to the string
+					if(utcOffsetDelimiter=='-')	//if this was the negative sign (don't append the positive sign, because Integer.parseInt doesn't allow it)
+					{
+						utcOffsetStringBuilder.append(utcOffsetDelimiter);	//append the negative sign
+					}
 					utcOffsetStringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read the UTC offset hours
 					utcOffsetHours=Integer.parseInt(utcOffsetStringBuilder.toString());	//parse the UTC offset hours
 					check(reader, TIME_DELIMITER);	//check the time delimiter
 					utcOffsetMinutes=Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the UTC offset minutes
 				}
-				else if(allowTimestampFormat && sign==UTC_DESIGNATOR)	//if we allow the UTC designator, and this character is the UTC designator
+				else if(allowTimestampFormat && utcOffsetDelimiter==UTC_DESIGNATOR)	//if we allow the UTC designator, and this character is the UTC designator
 				{
 					check(reader, UTC_DESIGNATOR);	//read the UTC designator
 					utcOffsetHours=0;	//Zulu time is equivalent to +00:00
@@ -344,7 +349,7 @@ public class URFTemporalComponents
 					if(!hasDate && !hasTime)	//if neither a date nor a time were requested, require a UTC offset
 					{
 						checkReaderEnd(reader);	//make sure we're not at the end of the reader
-						throw new ParseIOException(reader, "Expected one of "+Arrays.toString(SIGNS)+"; found "+(char)sign+".");
+						throw new ParseIOException(reader, "Expected one of "+Arrays.toString(SIGNS)+"; found "+(char)utcOffsetDelimiter+".");
 					}
 					utcOffsetHours=-1;	//set the UTC offset values to invalid
 					utcOffsetMinutes=-1;

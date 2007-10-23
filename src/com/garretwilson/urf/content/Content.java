@@ -6,6 +6,7 @@ import javax.mail.internet.ContentType;
 import static com.garretwilson.io.ContentTypeUtilities.*;
 import com.garretwilson.net.Resource;
 import com.garretwilson.urf.*;
+
 import static com.garretwilson.urf.URF.*;
 
 /**The URF content ontology.
@@ -29,7 +30,7 @@ public class Content
 	/**The URI of the content <code>ContentResource</code> class.*/
 	public final static URI CONTENT_RESOURCE_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "ContentResource");
 	/**The URI of the content <code>MediaType</code> class.*/
-	public final static URI MEDIA_TYPE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "MediaType");
+	public final static URI MEDIA_TYPE_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "MediaType");
 		//properties
 	/**The date and time when a resource was last accessed.*/
 	public final static URI ACCESSED_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "accessed");
@@ -83,7 +84,7 @@ public class Content
 	{
 		if(resourceURI!=null && MEDIA_TYPE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a media type URI was given
 		{
-			createContentType(getLocalName(resourceURI));	//create a media type from the local name
+			return createContentType(getLocalName(resourceURI));	//create a media type from the local name
 		}
 		return null;	//no media type could be found
 	}
