@@ -797,7 +797,7 @@ public class FileUtilities
 		}
 	}
 
-	/**Reads an object from a file using the given URF I/O support.
+	/**Reads an object from a file using the given URF I/O support, with the URI of the file as the base URI.
 	@param file The file from which to read.
 	@param urf The URF instance to use in creating new resources.
 	@param io The I/O support for reading the object.
@@ -806,10 +806,23 @@ public class FileUtilities
 	*/ 
 	public static <T> T read(final File file, final URF urf, final URFIO<T> io) throws IOException
 	{
+		return read(file, urf, file.toURI(), io);	//read from the file, using the file URI as the base URI
+	}
+
+	/**Reads an object from a file using the given URF I/O support.
+	@param file The file from which to read.
+	@param urf The URF instance to use in creating new resources.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param io The I/O support for reading the object.
+	@return The object read from the file.
+	@throws IOException if there is an error reading the data.
+	*/ 
+	public static <T> T read(final File file, final URF urf, final URI baseURI, final URFIO<T> io) throws IOException
+	{
 		final InputStream bufferedInputStream=new BufferedInputStream(new FileInputStream(file));	//create a buffered input stream to the file
 		try
 		{
-			return io.read(urf, bufferedInputStream, file.toURI());	//read the object, using the given URF instance and determining the base URI from the file
+			return io.read(urf, bufferedInputStream, baseURI);	//read the object, using the given URF instance
 		}
 		finally
 		{
@@ -817,7 +830,7 @@ public class FileUtilities
 		}
 	}
 
-	/**Writes an object to a file using the given I/O support.
+	/**Writes an object to a file using the given I/O support, with the URI of the file as the base URI.
 	@param file The file to which to write.
 	@param object The object to write to the given file.
 	@param io The I/O support for writing the object.
@@ -825,10 +838,22 @@ public class FileUtilities
 	*/
 	public static <T> void write(final File file, final T object, final IO<T> io) throws IOException
 	{
+		write(file, file.toURI(), object, io);	//write to the file, using the file URI as the base URI
+	}
+
+	/**Writes an object to a file using the given I/O support.
+	@param file The file to which to write.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param object The object to write to the given file.
+	@param io The I/O support for writing the object.
+	@throws IOException if there is an error writing the data.
+	*/
+	public static <T> void write(final File file, final URI baseURI, final T object, final IO<T> io) throws IOException
+	{
 		final OutputStream bufferedOutputStream=new BufferedOutputStream(new FileOutputStream(file));//create a buffered output stream to the file
 		try
 		{
-			io.write(bufferedOutputStream, file.toURI(), object);	//write the object, determining the base URI from the file
+			io.write(bufferedOutputStream, baseURI, object);	//write the object, determining the base URI from the file
 		}
 		finally
 		{
