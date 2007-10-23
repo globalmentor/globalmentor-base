@@ -37,7 +37,7 @@ public class URFDateTime extends AbstractURFDateTime
 	@param hours The hours, 0-23.
 	@param minutes The minutes, 0-59.
 	@param seconds The seconds, 0-60 (allowing leap-seconds; see ISO 8601:2004(E) 4.2.1).
-	@param microseconds The microseconds, 0-999999
+	@param microseconds The microseconds, 0-999999.
 	@param utcOffset The UTC offset, or <code>null</code> if no UTC offset is known.
 	@exception IllegalArgumentException if one of the given arguments is outside the allowed range.
 	*/

@@ -77,7 +77,7 @@ public interface URFResource extends Resource, URFScope
 	*/
 	public void addType(final URFResource type);
 
-	/**Adds a type by the type URI.
+	/**Adds a type specified by the type URI.
 	@param typeURI The URI of the type to add.
 	*/
 	public void addTypeURI(final URI typeURI);

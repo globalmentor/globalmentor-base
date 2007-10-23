@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.concurrent.locks.*;
 
 import com.garretwilson.lang.LongUtilities;
+import static com.garretwilson.lang.ObjectUtilities.*;
+import com.garretwilson.net.URIUtilities;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
 import static com.garretwilson.urf.dcmi.DCMI.getTitle;
@@ -34,26 +36,22 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 	/**Default constructor with no URI.*/
 	public DefaultURFResource()
 	{
-		this(null, NO_RESOURCES);	//create a resource without a URI or types
+		this((URI)null);	//create a resource without a URI or types
 	}
 
 	/**URI and type URIs constructor.
 	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
 	@param typeURIs The URIs of the types, if any, to add to the resource.
+	@exception NullPointerException if one or more of the given type URIs is <code>null</code>.
 	*/
 	public DefaultURFResource(final URI uri, final URI... typeURIs)
 	{
-		this(uri, createResources(typeURIs));	//create resources for the types and construct this class
-	}
-
-	/**URI and types constructor.
-	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
-	@param types The types of the resource, if any.
-	*/
-	private DefaultURFResource(final URI uri, final URFResource... types)
-	{
 		super(new ReentrantReadWriteLock(), null);	//construct the parent class using a default lock and no parent scope
 		this.uri=uri;	//save the URI, if any
+		for(final URI typeURI:typeURIs)	//for each type URI
+		{
+			addTypeURI(checkInstance(typeURI, "Type URI cannot be null."));	//add a type for this URI
+		}
 	}
 
 	/**Copy constructor.
@@ -75,7 +73,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 	*/
 	public DefaultURFResource(final URFResource resource, final URI uri)
 	{
-		this(uri, NO_RESOURCES);	//create the resource with the given URI
+		this(uri);	//create the resource with the given URI
 		writeLock().lock();	//get a write lock on this resource
 		try
 		{
@@ -123,6 +121,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 		<li>The string value of any «{@value URF#LABEL_PROPERTY_URI}» property.</li>
 		<li>The string value of any «{@value DCMI#TITLE_PROPERTY_URI}» property.</li>
 		<li>The lexical form of any resource with a URI in a lexical namespace.</li>
+		<li>The decoded last past segment of a hierarchical URI.</li>
 		<li>The reference URI.</li>
 		<li>The Java string representation of the resource as given by its <code>toString()</code> method.</li>
 	</ol>
@@ -146,7 +145,11 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 					}
 					else	//if the URI is not in a lexical namespace
 					{
-						label=uri.toString();	//use the string form of the URI as-is
+						label=URIUtilities.getName(uri);	//get the name of the URI, if any
+						if(label==null)	//if no name could be determined from the URI
+						{
+							label=uri.toString();	//use the string form of the URI as-is
+						}
 					}
 				}
 				else	//if there is no URI
@@ -222,34 +225,12 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 		addPropertyValue(TYPE_PROPERTY_URI, type);	//add the given resource as a type
 	}
 
-	/**Adds a type by the type URI.
+	/**Adds a type specified by the type URI.
 	@param typeURI The URI of the type to add.
 	*/
 	public void addTypeURI(final URI typeURI)
 	{
-		addPropertyValue(TYPE_PROPERTY_URI, typeURI);	//add a type resource for the given type URI
-	}
-
-	/**Creates default resources from the given URIs.
-	@param uris The URIs, each of which may be <code>null</code>, of the resources to create.
-	@return An array of default resources with the given URIs.
-	*/
-	protected final static URFResource[] createResources(final URI... uris)
-	{
-		final int uriCount=uris.length;	//find out how many URIs there are
-		if(uriCount>0)	//if there is at least one URI
-		{
-			final URFResource[] resources=new URFResource[uriCount];	//create a new array of resources
-			for(int i=0; i<uriCount; ++i)	//for each URI
-			{
-				resources[i]=new DefaultURFResource(uris[i], NO_RESOURCES);	//create a new default resource
-			}
-			return resources;	//return the resources we created
-		}
-		else	//if there are no URIs given
-		{
-			return NO_RESOURCES;	//return the pre-fabricated resource array
-		}
+		addPropertyValue(TYPE_PROPERTY_URI, new DefaultURFResource(typeURI));	//add a type resource for the given type URI
 	}
 
 	/**@return A hashcode value composed from the reference URI, if available.*/

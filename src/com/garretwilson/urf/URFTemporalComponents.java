@@ -14,7 +14,6 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.lang.StringUtilities.*;
 import com.garretwilson.text.SyntaxException;
 import static com.garretwilson.util.TimeZoneConstants.*;
-
 import static com.garretwilson.urf.URF.*;
 
 /**A lightweight structure for transferring components of URF temporal types.
@@ -29,46 +28,46 @@ Any redistribution of this source code or derived source code must include these
 public class URFTemporalComponents
 {
 
-	/**The year, or -1 if there is no year specified.*/
+	/**The year (0-9999), or -1 if there is no year specified.*/
 	private final int year;
 
-		/**@return The year, or -1 if there is no year specified.*/
+		/**@return The year (0-9999), or -1 if there is no year specified.*/
 		public final int getYear() {return year;}
 
-	/**The month, or -1 if there is no month specified.*/
+	/**The month (1-12), or -1 if there is no month specified.*/
 	private final int month;
 
-		/**@return The month, or -1 if there is no month specified.*/
+		/**@return The month (1-12), or -1 if there is no month specified.*/
 		public final int getMonth() {return month;}
 
-	/**The day, or -1 if there is no day specified.*/
+	/**The day (1-31), or -1 if there is no day specified.*/
 	private final int day;
 
-		/**@return The day, or -1 if there is no day specified.*/
+		/**@return The day (1-31), or -1 if there is no day specified.*/
 		public final int getDay() {return day;}
 
-	/**The hours, or -1 if there is no hours specified.*/
+	/**The hours (0-23), or -1 if there is no hours specified.*/
 	private final int hours;
 
-		/**@return The hours, or -1 if there is no hours specified.*/
+		/**@return The hours (0-23), or -1 if there is no hours specified.*/
 		public final int getHours() {return hours;}
 
-	/**The minutes, or -1 if there is no minutes specified.*/
+	/**The minutes (0-59), or -1 if there is no minutes specified.*/
 	private final int minutes;
 
-		/**@return The minutes, or -1 if there is no minutes specified.*/
+		/**@return The minutes (0-59), or -1 if there is no minutes specified.*/
 		public final int getMinutes() {return minutes;}
 
-	/**The seconds, or -1 if there is no seconds specified.*/
+	/**The seconds (0-60, allowing leap-seconds; see ISO 8601:2004(E) 4.2.1), or -1 if there is no seconds specified.*/
 	private final int seconds;
 
-		/**@return The seconds, or -1 if there is no seconds specified.*/
+		/**@return The seconds (0-60, allowing leap-seconds; see ISO 8601:2004(E) 4.2.1), or -1 if there is no seconds specified.*/
 		public final int getSeconds() {return seconds;}
 
-	/**The microseconds, or -1 if there is no microseconds specified.*/
+	/**The microseconds (0-999999), or -1 if there is no microseconds specified.*/
 	private final int microseconds;
 
-		/**@return The microseconds, or -1 if there is no microseconds specified.*/
+		/**@return The microseconds (0-999999), or -1 if there is no microseconds specified.*/
 		public final int getMicroseconds() {return microseconds;}
 
 	/**The UTC offset hours.*/
@@ -84,13 +83,13 @@ public class URFTemporalComponents
 		public final int getUTCOffsetMinutes() {return utcOffsetMinutes;}
 
 	/**Full constructor.
-	@param year The year, or -1 if there is no year specified.
-	@param month The month, or -1 if there is no month specified.
-	@param day The day, or -1 if there is no day specified.
-	@param hours The hours , or -1 if there is no hours specified.
-	@param minutes The minutes, or -1 if there is no minutes specified.
-	@param seconds The seconds, or -1 if there is no seconds specified.
-	@param microseconds The microseconds, or -1 if there is no microseconds specified.
+	@param year The year (0-9999), or -1 if there is no year specified.
+	@param month The month (1-12), or -1 if there is no month specified.
+	@param day The day (1-31), or -1 if there is no day specified.
+	@param hours The hours (0-23), or -1 if there is no hours specified.
+	@param minutes The minutes (0-59), or -1 if there is no minutes specified.
+	@param seconds The seconds (0-60, allowing leap-seconds; see ISO 8601:2004(E) 4.2.1), or -1 if there is no seconds specified.
+	@param microseconds The microseconds (0-999999), or -1 if there is no microseconds specified.
 	@param utcOffsetHours The UTC offset hours.
 	@param utcOffsetMinutes The UTC offset minutes, or -1 if there is no UTC offset hours or minutes specified.
 	*/
@@ -124,7 +123,7 @@ public class URFTemporalComponents
 		final Calendar calendar=new GregorianCalendar(TimeZone.getTimeZone(GMT_ID));	//create a new Gregorian calendar for the UTC time zone
 		calendar.setTimeInMillis(time);	//set the time of the calendar to the given time
 		this.year=calendar.get(YEAR);	//get the components from the calendar
-		this.month=calendar.get(MONTH);
+		this.month=calendar.get(MONTH)+1;	//compensate for Calendar's zero-based month
 		this.day=calendar.get(DAY_OF_MONTH);
 		this.hours=calendar.get(HOUR_OF_DAY);
 		this.minutes=calendar.get(MINUTE);
@@ -181,7 +180,7 @@ public class URFTemporalComponents
 	{
 		final Calendar calendar=new GregorianCalendar(utcOffset!=null ? utcOffset.toTimeZone() : URFUTCOffset.GMT, checkInstance(locale, "Locale cannot be null."));	//get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
 		calendar.clear();	//clear the calendar
-		calendar.set(checkRange(year, 0, 9999), checkRange(month, 1, 12), checkRange(day, 1, 31), checkRange(hours, 0, 23), checkRange(minutes, 0, 59), checkRange(seconds, 0, 60));	//set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1)
+		calendar.set(checkRange(year, 0, 9999), checkRange(month, 1, 12)-1, checkRange(day, 1, 31), checkRange(hours, 0, 23), checkRange(minutes, 0, 59), checkRange(seconds, 0, 60));	//set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
 		calendar.set(MILLISECOND, checkRange(microseconds, 0, 999999)/1000);	//set the calendar's milliseconds, converting the microseconds to milliseconds
 		return calendar;	//return the calendar we created
 	}

@@ -63,7 +63,7 @@ public abstract class AbstractURFProcessor
 		*/
 		protected ResourceProxy getResourceProxy(final URI resourceURI) throws DataException
 		{
-			return uriResourceProxyMap.get(checkInstance(resourceURI, "Resource URI cannot be null."));	//look up the resource proxy			
+			return uriResourceProxyMap.get(checkInstance(resourceURI, "Resource URI cannot be null."));	//look up the resource proxy
 		}
 
 	/**The map of resource proxies keyed to labels.*/
@@ -85,7 +85,7 @@ public abstract class AbstractURFProcessor
 		*/
 		protected ResourceProxy getResourceProxy(final String label) throws DataException
 		{
-			return labelResourceProxyMap.get(checkInstance(label, "Label cannot be null."));	//look up the resource proxy			
+			return labelResourceProxyMap.get(checkInstance(label, "Label cannot be null."));	//look up the resource proxy
 		}
 
 		/**Retrieves a resource proxy to represent a resource with the given label.
@@ -96,7 +96,7 @@ public abstract class AbstractURFProcessor
 		*/
 		protected ResourceProxy determineResourceProxy(final String label) throws DataException
 		{
-			return determineResourceProxy(label, null);	//get a resource proxy with no URI			
+			return determineResourceProxy(label, null);	//get a resource proxy with no URI
 		}
 
 		/**Retrieves a resource proxy to represent a resource with the given URI.
@@ -197,8 +197,8 @@ public abstract class AbstractURFProcessor
 			}
 		}
 	}
-		
-	/**The map of URF resources keyed to resource proxies.*/ 
+
+	/**The map of URF resources keyed to resource proxies.*/
 	private final Map<ResourceProxy, URFResource> proxiedURFResourceMap=new HashMap<ResourceProxy, URFResource>();
 
 		/**Retrieves a resource associated with the given resource proxy, if any.
@@ -228,7 +228,7 @@ public abstract class AbstractURFProcessor
 		protected long generateAssertionOrder()
 		{
 			return assertionOrder.getAndIncrement();	//atomically get the next counter value
-		}	
+		}
 
 	/**The set of all assertions used to create the resources.*/
 	private final Set<Assertion> assertions=new TreeSet<Assertion>();
@@ -472,13 +472,13 @@ public abstract class AbstractURFProcessor
 			{
 				throw new IllegalStateException("Resource has not yet been unproxied for assertion.", classCastException);
 			}
-		}		
+		}
 	}
 
-	/**A class which represents an URF resource and that will eventually be replaced with an URF resource. 
+	/**A class which represents an URF resource and that will eventually be replaced with an URF resource.
 	@author Garret Wilson
 	*/
-	protected static class ResourceProxy extends DefaultResource 
+	protected static class ResourceProxy extends DefaultResource
 	{
 
 		/**The set of all resource proxies, including this one, to which this resource proxy is equivalent.*/
@@ -567,7 +567,7 @@ public abstract class AbstractURFProcessor
 			setObject(object); //set the object
 			this.scopeChain=checkInstance(scopeChain, "Scope chain cannot be null.");
 		}
-		
+
 		/**@return A hash code value for the assertion.*/
 		public int hashCode()
 		{
