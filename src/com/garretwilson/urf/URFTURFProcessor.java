@@ -8,7 +8,7 @@ import static java.util.Collections.*;
 
 import com.garretwilson.io.ParseIOException;
 import static com.garretwilson.io.ReaderParser.*;
-
+import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
@@ -695,19 +695,13 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
 			throw new ParseIOException(reader, "Expected name begin character; found "+(char)c+".");
 		}
-		while(true)
+		do
 		{
+			stringBuilder.append((char)c);	//append the character
 			reader.mark(1);	//mark our current position
 			c=reader.read();	//read another character
-			if(isNameCharacter(c))	//if this is a name character
-			{
-				stringBuilder.append((char)c);	//append the character
-			}
-			else	//if this is not a name character
-			{
-				break;	//stop gathering name characters
-			}
 		}
+		while(isNameCharacter(c));	//keep reading and appending until we reach a non-name character
 		if(c>=0)	//if we didn't reach the end of the stream
 		{
 			reader.reset();	//reset to the last mark, which was set right before the non-name character we found

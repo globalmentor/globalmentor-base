@@ -36,7 +36,7 @@ public class URFDateTime extends AbstractURFDateTime
 	@param day The day, 1-31.
 	@param hours The hours, 0-23.
 	@param minutes The minutes, 0-59.
-	@param seconds The seconds, 0-59.
+	@param seconds The seconds, 0-60 (allowing leap-seconds; see ISO 8601:2004(E) 4.2.1).
 	@param microseconds The microseconds, 0-999999
 	@param utcOffset The UTC offset, or <code>null</code> if no UTC offset is known.
 	@exception IllegalArgumentException if one of the given arguments is outside the allowed range.
@@ -82,7 +82,30 @@ public class URFDateTime extends AbstractURFDateTime
 	{
 		try
 		{
-			return new URFDateTime(URFTemporalComponents.parseDateTime(string, true, true));	//parse temporal components for both the date and the time and use that to create a new date time object
+			return new URFDateTime(URFTemporalComponents.parseDateTimeUTCOffset(string, true, true));	//parse temporal components for both the date and the time and use that to create a new date time object
+		}
+		catch(final SyntaxException syntaxException)	//if the syntax of the string was not correct
+		{
+			throw new ArgumentSyntaxException(syntaxException);
+		}
+	}
+
+	/**Returns an URF date time object holding the value of the specified string.
+	The looser RFC 3339 Internet timestamp format is allowed, which is used in "W3C Date and Time Formats"
+	as well as portions of WebDAV.
+	@param string The string to be parsed as a date time.
+	@return An URF date time object represented by the string.
+	@exception NullPointerException if the given string is <code>null</code>
+	@exception ArgumentSyntaxException if the given string does not have the correct syntax.
+	@see <a href="http://www.ietf.org/rfc/rfc3339.txt">RFC 3339</a>
+	@see <a href="http://www.ietf.org/rfc/rfc2518.txt">RFC 2518</a>
+	@see <a href="http://www.w3.org/TR/NOTE-datetime">W3C Date and Time Formats</a>
+	*/
+	public static URFDateTime valueOfTimestamp(final String string) throws ArgumentSyntaxException
+	{
+		try
+		{
+			return new URFDateTime(URFTemporalComponents.parseDateTimeUTCOffset(string, true, true, true));	//parse temporal components for both the date and the time, allowing RFC 3339 format, and use that to create a new date time object
 		}
 		catch(final SyntaxException syntaxException)	//if the syntax of the string was not correct
 		{

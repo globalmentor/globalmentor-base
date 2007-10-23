@@ -181,12 +181,6 @@ public class URF
 	public final static char EXPONENT_DELIMITER='e';
 	/**The signs of a number.*/
 	public final static char[] SIGNS={'-', '+'};
-	/**The delimiter that introduces a time component in a temporal.*/
-	public final static char TIME_BEGIN='T';
-	/**The delimiter that separates year components in a temporal.*/
-	public final static char DATE_DELIMITER='-';
-	/**The delimiter that separates time components in a temporal.*/
-	public final static char TIME_DELIMITER=':';
 	
 	/**The shared empty array of resources.*/
 	public final static URFResource[] NO_RESOURCES=new URFResource[0];
@@ -1432,8 +1426,8 @@ public class URF
 	*/
 	public URFResource locateResource(final URI resourceURI)
 	{
-		final URI lexicalTypeURI=isLexicalURI(resourceURI) ? getLexicalTypeURI(resourceURI) : null;	//get the lexical type, if we can
-		return locateResource(resourceURI, lexicalTypeURI);	//locate a resource with whatever type we determined, if any
+		final URI[] typeURIs=isLexicalURI(resourceURI) ? new URI[]{getLexicalTypeURI(resourceURI)} : NO_URIS;	//get the lexical type, if we can
+		return locateResource(resourceURI, typeURIs);	//locate a resource with whatever type we determined, if any
 	}
 
 	/**Retrieves a resource from the data model based upon the URI of the resource and optional type URIs.
@@ -1442,6 +1436,7 @@ public class URF
 	If the resource already exists, no checks are performed to ensure that the existing resource is of the requested type.
 	@param resourceURI The URI of the resource to retrieve, or <code>null</code> if the resource should have no URI.
 	@param typeURIs The URIs of the known types.
+	@exception NullPointerException if any of the given type URIs is <code>null</code>.
 	@exception IllegalArgumentException if a resource could not be created based upon the given criteria.
 	@return A resource with the given URI.
 	*/
@@ -1470,6 +1465,7 @@ public class URF
 	@param resourceURI The URI of the resource to create, or <code>null</code> if the created resource created have no URI.
 	@param typeURIs The URIs of the known types.
 	@return The resource created with this URI, with the given type added if a type was given.
+	@exception NullPointerException if any of the given type URIs is <code>null</code>.
 	@exception IllegalArgumentException if a resource could not be created based upon the given criteria.
 	@see #DEFAULT_RESOURCE_FACTORY
 	@see URFResourceFactory#createResource(URI, URI)

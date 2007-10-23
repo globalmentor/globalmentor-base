@@ -2,6 +2,7 @@ package com.garretwilson.urf;
 
 import java.util.Date;
 
+import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.lang.IntegerUtilities;
 import static com.garretwilson.lang.IntegerUtilities.*;
 import static com.garretwilson.lang.StringBuilderUtilities.*;
@@ -59,7 +60,7 @@ public class URFTime implements URFTemporal
 	@param day The day, 1-31.
 	@param hours The hours, 0-23.
 	@param minutes The minutes, 0-59.
-	@param seconds The seconds, 0-59.
+	@param seconds The seconds, 0-60 (allowing leap-seconds; see ISO 8601:2004(E) 4.2.1).
 	@param microseconds The microseconds, 0-999999
 	@param utcOffset The UTC offset, or <code>null</code> if no UTC offset is known.
 	@exception IllegalArgumentException if one of the given arguments is outside the allowed range.
@@ -68,7 +69,7 @@ public class URFTime implements URFTemporal
 	{
 		this.hours=checkRange(hours, 0, 23);
 		this.minutes=checkRange(minutes, 0, 59);
-		this.seconds=checkRange(seconds, 0, 59);
+		this.seconds=checkRange(seconds, 0, 60);	//allow leap-seconds (see ISO 8601:2004(E) 4.2.1)
 		this.microseconds=checkRange(microseconds, 0, 999999);
 		this.utcOffset=utcOffset;
 	}
@@ -111,7 +112,7 @@ public class URFTime implements URFTemporal
 	{
 		try
 		{
-			return new URFTime(URFTemporalComponents.parseDateTime(string, false, true));	//parse temporal components with only a time and use that to create a new time object
+			return new URFTime(URFTemporalComponents.parseDateTimeUTCOffset(string, false, true));	//parse temporal components with only a time and use that to create a new time object
 		}
 		catch(final SyntaxException syntaxException)	//if the syntax of the string was not correct
 		{

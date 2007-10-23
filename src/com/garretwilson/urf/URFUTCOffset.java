@@ -2,10 +2,10 @@ package com.garretwilson.urf;
 
 import java.util.TimeZone;
 
+import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.lang.IntegerUtilities;
 import static com.garretwilson.lang.IntegerUtilities.*;
 import com.garretwilson.text.*;
-import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.util.TimeZoneConstants.*;
 
 /**The class representing an <code>urf.UTCOffset</code> type.
@@ -59,7 +59,7 @@ public class URFUTCOffset implements URFTemporal
 	{
 		try
 		{
-			final URFTemporalComponents temporalComponents=URFTemporalComponents.parseDateTime(string, false, false);	//parse temporal components for only the UTC offset
+			final URFTemporalComponents temporalComponents=URFTemporalComponents.parseDateTimeUTCOffset(string, false, false);	//parse temporal components for only the UTC offset
 			return temporalComponents.asUTCOffset();	//return the UTC offset from the temporal components
 		}
 		catch(final SyntaxException syntaxException)	//if the syntax of the string was not correct

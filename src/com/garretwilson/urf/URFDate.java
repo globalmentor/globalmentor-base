@@ -67,7 +67,7 @@ public class URFDate extends AbstractURFDateTime
 	{
 		try
 		{
-			return new URFDate(URFTemporalComponents.parseDateTime(string, true, false));	//parse temporal components with only a date and use that to create a new date object
+			return new URFDate(URFTemporalComponents.parseDateTimeUTCOffset(string, true, false));	//parse temporal components with only a date and use that to create a new date object
 		}
 		catch(final SyntaxException syntaxException)	//if the syntax of the string was not correct
 		{

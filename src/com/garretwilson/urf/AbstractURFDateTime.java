@@ -2,9 +2,9 @@ package com.garretwilson.urf;
 
 import java.util.*;
 
+import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.lang.IntegerUtilities;
 import static com.garretwilson.lang.IntegerUtilities.*;
-import static com.garretwilson.urf.URF.*;
 
 /**The abstract base type for <code>urf.Date</code> and <code>urf.DateTime</code> types.
 If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally in terms of UTC.
