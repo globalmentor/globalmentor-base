@@ -77,7 +77,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 		writeLock().lock();	//get a write lock on this resource
 		try
 		{
-			readLock().lock();	//get a read lock on the other resource
+			resource.readLock().lock();	//get a read lock on the other resource
 			try
 			{
 				for(final URFProperty property:resource.getProperties())	//for each property in the other resource
@@ -87,7 +87,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 			}
 			finally
 			{
-				readLock().unlock();	//always release the read lock
+				resource.readLock().unlock();	//always release the read lock
 			}
 		}
 		finally
@@ -139,7 +139,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 				final URI uri=getURI();	//get the resource URI
 				if(uri!=null)	//if this resource has a URI
 				{
-					if(isLexicalNamespaceURI(uri))	//if the URI is in a lexical namespace
+					if(isLexicalURI(uri))	//if the URI is a lexical URI
 					{
 						label=getLocalName(uri);	//get the local name of the URI, which will be the lexical form
 					}
@@ -273,8 +273,11 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 	*/
 	public String toString()
 	{
+		return determineLabel();
+/*TODO bring back
 		final URI uri=getURI();	//get the URI, if any
 		return uri!=null ? new StringBuilder().append(REFERENCE_BEGIN).append(uri).append(REFERENCE_END).toString() : super.toString();	//return the URI, if available
+*/
 	}
 
 }

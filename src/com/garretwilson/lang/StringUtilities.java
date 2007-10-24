@@ -698,7 +698,8 @@ end;
 	@param len The requested length.
 	@param ch The character to be added to the string, if needed.
 	@param pos The position at which to insert or delete characters, or -1 if the end should be used.
-	@return A string with the correct length.*/
+	@return A string with the correct length.
+	*/
 	public static String makeStringLength(final String inString, final int len, final char ch, int pos)	//TODO refactor this into a StringBuilderUtilities method
 	{
 		final int originalLength=inString.length();	//get the length of the original string
@@ -709,8 +710,10 @@ end;
 		else	//if the string isn't the correct length already
 		{
 			final StringBuilder stringBuilder=new StringBuilder(inString);	//create a new string builder with the contents of the existing string
-			if(pos==-1 && pos>originalLength)	//if they want to insert/delete characters at the end of the string (or if they supplied an incorrect position) TODO don't be so lenient here---throw an exception, as this probably reflects an error somewhere else in the code
+			if(pos==-1)	//if they want to insert/delete characters at the end of the string
+			{
 				pos=originalLength;	//find that position
+			}
 			if(originalLength>len)	//if the string is too long
 			{
 				final int removeCount=originalLength-len;	//find out how many characters to remove
