@@ -5,9 +5,7 @@ import java.net.URI;
 import java.util.*;
 
 import static com.garretwilson.lang.ClassUtilities.*;
-import static com.garretwilson.lang.EnumUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
-import com.garretwilson.lang.EnumUtilities;
 import com.garretwilson.net.*;
 import com.garretwilson.urf.*;
 import static com.garretwilson.urf.URF.*;
@@ -139,10 +137,6 @@ public class PLOOPURFGenerator
 			{
 				object=((Color)object).asRGB().toString();	//use the RGB string representation of the color
 			}
-			else if(object instanceof Enum)	//if the object is an enum, serialize it using special serialization rules
-			{
-				object=getSerializationName((Enum)object);	//use the serialization name of the object
-			}
 			else if(object instanceof URIPath)	//if the required type is URIPath
 			{
 				object=object.toString();	//use the string form of the URI path
@@ -169,6 +163,7 @@ public class PLOOPURFGenerator
 					{						
 						final Method setterMethod=getCompatibleSetterMethod(objectClass, getterPropertyName, propertyType);	//get a corresponding setter method
 						boolean useProperty=setterMethod!=null;	//start off assuming we won't use this property unless there is a corresponding setter
+/*TODO fix to add constructor values as urf.inits, or remove this part altogether
 						if(!useProperty)	//if we think we shouldn't use the property, check to see if the property is needed for construction
 						{
 							if(getPublicDefaultConstructor(objectClass)==null)	//if the class doesn't have a public default constructor
@@ -194,6 +189,7 @@ public class PLOOPURFGenerator
 							}
 						}
 //TODO add feature, and add to PLOOPProcessor						if(setterMethod==null)	//if there is no compatible setter method, see if there is an get-iterable/set-collection correspondence
+*/
 						if(useProperty)	//if we decided that we should use this property
 						{
 							setURFResourceProperty(resource, object, getterPropertyName, method);	//set this property of the resource

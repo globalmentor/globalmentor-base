@@ -8,7 +8,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Pattern;
 
 import static com.garretwilson.lang.ClassUtilities.*;
-import static com.garretwilson.lang.EnumUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
 import com.garretwilson.net.*;
@@ -16,6 +15,7 @@ import com.garretwilson.urf.*;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.ploop.PLOOP.*;
 import com.garretwilson.util.*;
+import static com.garretwilson.util.ArrayUtilities.*;
 
 import com.guiseframework.style.AbstractModeledColor;
 import com.guiseframework.style.Color;
@@ -182,8 +182,13 @@ public class PLOOPURFProcessor
 			}
 			return set;	//return the set of objects we created
 		}
-		else	//if this is another type of resource, check the types for a Java type
+		else	//if this is another type of resource, see if we can create an object for it
 		{
+			final Object simpleObject=asObject(resource);	//see if we can turn the resource into a simple object (do this first, because it may be an enum)
+			if(simpleObject!=null)	//if we know what type of object it is
+			{
+				return simpleObject;	//return the object
+			}
 			Class<?> valueClass=null;	//we'll try to find a Java class from one of the types
 			final Iterator<URFResource> typeIterator=resource.getTypes().iterator();	//get an iterator to the types
 			while(valueClass==null && typeIterator.hasNext())	//while we haven't found a value class and we're not out of types
@@ -198,9 +203,11 @@ public class PLOOPURFProcessor
 					throw new DataException(classNotFoundException);
 				}
 			}
-			if(valueClass!=null)	//if we know the value class, try to constructd a Java object
+			if(valueClass!=null)	//if we know the value class, try to construct a Java object
 			{
 				final Map<URI, PropertyDescription> propertyDescriptionMap=getPropertyDescriptionMap(valueClass, resource);	//get the property descriptions from the resource description
+				Constructor<?> constructor=null;	//we'll store an appropriate constructor here
+				Object[] arguments=null;	//we'll keep track of the arguments here
 				final Constructor<?>[] constructors=valueClass.getConstructors();	//get all available constructors
 				if(resource.hasProperty(INIT_PROPERTY_URI))	//if this resource has any init properties indicating constructor arguments
 				{
@@ -210,14 +217,14 @@ public class PLOOPURFProcessor
 						inits.add(getObject(parameterProperty.getValue()));	//get an object for this init
 					}
 					final int argumentCount=inits.size();	//see how many init arguments there are
-					for(final Constructor<?> constructor:constructors)	//look at each constructor to find one with the correct number of parameters
+					for(final Constructor<?> candidateConstructor:constructors)	//look at each constructor to find one with the correct number of parameters
 					{
-						final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
+						final Class<?>[] parameterTypes=candidateConstructor.getParameterTypes();	//get the parameter types for this constructor
 						if(parameterTypes.length==argumentCount)	//if this constructor has the correct number of parameters
 						{
-							boolean foundArguments=true;	//start out by assuming the parameters match
-							final Object[] arguments=new Object[argumentCount];	//create an array sufficient for the arguments
-							for(int parameterIndex=0; parameterIndex<argumentCount && foundArguments; ++parameterIndex)	//for each parameter, as long we we have matching parameters
+//							boolean foundArguments=true;	//start out by assuming the parameters match
+							arguments=new Object[argumentCount];	//create an array sufficient for the arguments
+							for(int parameterIndex=0; parameterIndex<argumentCount; ++parameterIndex)	//for each parameter, as long we we have matching parameters
 							{
 								final Class<?> parameterType=parameterTypes[parameterIndex];	//get this parameter type
 								final Object argument=convertObject(inits.get(parameterIndex), parameterType);	//convert the init to the correct type
@@ -227,143 +234,67 @@ public class PLOOPURFProcessor
 								}
 								else	//if we couldn't convert this constructor argument
 								{
-									foundArguments=false;	//show that we couldn't convert this argument
+									arguments=null;	//these arguments won't work
 									break;	//stop looking at this constructor
 								}								
 							}
-							if(foundArguments)	//if we found a constructor for which we have arguments
-							{
-								try
-								{
-									final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
-									setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
-									return object;	//return the constructed and initialized object
-								}
-								catch(final InstantiationException instantiationException)
-								{
-									throw new DataException(instantiationException);
-								}
-								catch(final IllegalAccessException illegalAccessException)
-								{
-									throw new DataException(illegalAccessException);
-								}
-							}
+						}
+						if(arguments!=null)	//if these arguments worked
+						{
+							constructor=candidateConstructor;	//use this constructor
+							break;	//stop looking for a matching constructor
 						}
 					}
-					throw new DataException("Value class "+valueClass+" does not have a constructor appropriate for the specified init parameters.");
+					if(constructor==null)	//if we didn't find an appropriate constructor
+					{
+						throw new DataException("Value class "+valueClass+" does not have a constructor appropriate for the specified init parameters.");
+					}
 				}
 				else	//if there are no urf.init properties
 				{
-					if(Resource.class.isAssignableFrom(valueClass))	//if the value class is a Resource, see if we can create it with a single URI
+					if(Resource.class.isAssignableFrom(valueClass))	//if the value class is a Resource, see if we can create it with a single URI TODO probably remove check and allow any single URI contructor, even for non-resources
 					{
-						final Constructor<?> constructor=getCompatibleConstructor(valueClass, URI.class);	//see if there is a single URI parameter constructor
+						constructor=getCompatibleConstructor(valueClass, URI.class);	//see if there is a single URI parameter constructor
 						if(constructor!=null)	//if there is a single URI parameter constructor for the Resource
 						{
-							try
-							{
-								final Object object=constructor.newInstance(resource.getURI());	//invoke the constructor with the resource URI
-								setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
-								return object;	//return the constructed and initialized object
-							}
-							catch(final InstantiationException instantiationException)
-							{
-								throw new DataException(instantiationException);
-							}
-							catch(final IllegalAccessException illegalAccessException)
-							{
-								throw new DataException(illegalAccessException);
-							}							
+							arguments=new Object[]{resource.getURI()};	//the resource URI will be constructor argument
 						}
 					}
-						//for all non-Resource types
-					final List<PropertyDescription> readOnlyProperties=new ArrayList<PropertyDescription>(propertyDescriptionMap.size());	//the set of read-only properties, which we may use in the constructor
-					for(final PropertyDescription propertyDescription:propertyDescriptionMap.values())	//for each property description
+					if(constructor==null)	//if we still don't have a constructor
 					{
-						if(propertyDescription.getSetter()==null)	//if there is no setter for this property, it is a read-only property; save it in case we can use it for the constructor
+						constructor=getPublicDefaultConstructor(valueClass);	//see if there's a default constructor
+						if(constructor!=null)	//if there is a default constructor
 						{
-							readOnlyProperties.add(propertyDescription);	//add this property to the list of read-only properties
+							arguments=EMPTY_OBJECT_ARRAY;	//the default constructor has no arguments
 						}
 					}
-					int maxParameterCount=0;	//we'll determine the maximum number of parameters available
-					for(final Constructor<?> constructor:constructors)	//look at each constructor to find one with the correct number of parameters
+				}
+				if(constructor!=null)	//if we found a constructor
+				{
+					assert arguments!=null : "Found constructor but missing arguments.";
+					try
 					{
-						final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
-						final int parameterCount=parameterTypes.length;	//see how how many parameters this constructor has
-						if(parameterCount>maxParameterCount)	//if this parameter count is more than we know about
-						{
-							maxParameterCount=parameterCount;	//update the maximum parameter count
-						}
+						final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
+						setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
+						return object;	//return the constructed and initialized object
 					}
-					for(int parameterCount=0; parameterCount<=maxParameterCount; ++parameterCount)	//find a constructor with the least number of parameters, starting with the default constructor, until we exhaust the available constructors
+					catch(final InstantiationException instantiationException)
 					{
-						for(final Constructor<?> constructor:constructors)	//look at each constructor to find one with the correct number of parameters
-						{
-							final Class<?>[] parameterTypes=constructor.getParameterTypes();	//get the parameter types for this constructor
-							if(parameterTypes.length==parameterCount)	//if this constructor has the correct number of parameters
-							{
-								boolean foundArguments=true;	//start out by assuming the parameters match
-								final Object[] arguments=new Object[parameterCount];	//create an array sufficient for the arguments
-								for(int parameterIndex=0; parameterIndex<parameterCount && foundArguments; ++parameterIndex)	//for each parameter, as long we we have matching parameters
-								{
-									final Class<?> parameterType=parameterTypes[parameterIndex];	//get this parameter type
-									boolean foundArgument=false;	//we'll try to find an argument
-									for(final PropertyDescription propertyDescription:readOnlyProperties)	//look at all the properties to find one for this parameter
-									{
-										if(parameterType.isAssignableFrom(propertyDescription.getPropertyClass()))	//if this read-only property will work for this parameter
-										{
-											arguments[parameterIndex]=propertyDescription.getValue();	//use this read-only property in the constructor
-											foundArgument=true;	//show that we found an argument
-											break;	//stop looking for the argument
-										}
-									}
-									if(!foundArgument)	//if there is no read-only property for this constructor argument, check the default arguments
-									{
-										for(final Object defaultConstructorArgument:getDefaultConstructorArguments())	//for each default constructor argument
-										{
-											if(parameterType.isAssignableFrom(defaultConstructorArgument.getClass()))	//if this default property argument will work for this parameter
-											{
-												arguments[parameterIndex]=defaultConstructorArgument;	//use this default constructor argument in the constructor
-												foundArgument=true;	//show that we found an argument
-												break;	//stop looking for the argument
-											}
-										}									
-									}
-									if(!foundArgument)	//if we couldn't find an argument for this parameter
-									{
-										foundArguments=false;	//indicate that parameters don't match for this constructor
-									}
-								}
-								if(foundArguments)	//if we found a constructor for which we have arguments
-								{
-									try
-									{
-										final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
-										setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
-										return object;	//return the constructed and initialized object
-									}
-									catch(final InstantiationException instantiationException)
-									{
-										throw new DataException(instantiationException);
-									}
-									catch(final IllegalAccessException illegalAccessException)
-									{
-										throw new DataException(illegalAccessException);
-									}
-								}
-							}
-						}
+						throw new DataException(instantiationException);
 					}
-					throw new DataException("Value class "+valueClass+" does not have a constructor appropriate for the available read-only properties: "+CollectionUtilities.toString(readOnlyProperties));
+					catch(final IllegalAccessException illegalAccessException)
+					{
+						throw new DataException(illegalAccessException);
+					}
+				}
+				else	//if we didn't find a constructor
+				{
+					throw new DataException("Value class "+valueClass+" does not have an appropriate constructor.");						
 				}
 			}
-			else	//if we don't know the value class, try to create a simple object from the resource
+			else	//if we don't know the value class
 			{
-				final Object object=asObject(resource);	//see if we can turn the resource into a simple object
-				if(object==null)	//if we couldn't turn the resource into an object
-				{
-					throw new DataException("Value resource missing type information: "+URF.toString(resource));
-				}
-				return object;	//return the simple object we found
+				throw new DataException("Value resource missing type information: "+URF.toString(resource));
 			}
 		}
 	}
@@ -671,10 +602,6 @@ public class PLOOPURFProcessor
 					else if(Color.class.isAssignableFrom(requiredType))	//if the required type is Color
 					{
 						return AbstractModeledColor.valueOf(stringObject);	//compile a color from the string
-					}
-					else if(Enum.class.isAssignableFrom(requiredType))	//if the required type is an enumeration
-					{
-						return getSerializedEnum((Class<? extends Enum>)requiredType, stringObject);	//get the enum from its serialized form
 					}
 					else if(Pattern.class.isAssignableFrom(requiredType))	//if the required type is Pattern
 					{

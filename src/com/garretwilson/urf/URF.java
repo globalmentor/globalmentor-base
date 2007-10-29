@@ -3,6 +3,7 @@ package com.garretwilson.urf;
 import java.io.*;
 import java.net.URI;
 import java.util.*;
+
 import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.*;
@@ -539,6 +540,10 @@ public class URF
 		<dt>{@link Class}</dt> <dd>{@value URIConstants#JAVA_SCHEME}</dd>
 		<dt>{@link Package}</dt> <dd>{@value URIConstants#JAVA_SCHEME}</dd>
 	</dl>
+	This method can return lexical resource URIs with lexical type URIs using the following schemes for objects of the following types:
+	<dl>
+		<dt>{@link Class} subclass of {@link Enum}</dt> <dd>{@value URIConstants#JAVA_SCHEME}</dd>
+	</dl>
 	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
 	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
 	@exception IllegalArgumentException if the given URI represents an object but does not have the correct syntax for that object.
@@ -572,6 +577,10 @@ public class URF
 			else if(object instanceof Double)	//if this is a double
 			{
 				return createRealURI(((Double)object).doubleValue());	//return a real URI
+			}
+			else if(object instanceof Enum)	//if this is an enum
+			{
+				return createLexicalURI(ClassUtilities.createJavaURI(object.getClass()), ((Enum<?>)object).name());	//return a lexical URI using the enum class as the lexical type and the name of the enum as the local name
 			}
 			else if(object instanceof Float)	//if this is a float
 			{
@@ -666,9 +675,13 @@ public class URF
 		<dt>{@value #STRING_NAMESPACE_URI}</dt> <dd>{@link String}</dd>
 		<dt>{@value #URI_NAMESPACE_URI}</dt> <dd>{@link URI}</dd>
 	</dl>
-	This method can return objects for the resources with URIs of the he following schemes:
+	This method can return objects for the resources with URIs of the following schemes:
 	<dl>
 		<dt>{@value URIConstants#JAVA_SCHEME}</dt> <dd>{@link Class}</dd>
+	</dl>
+	This method can return objects for the resources with lexical URIs with lexical type URIs of the following schemes:
+	<dl>
+		<dt>{@value URIConstants#JAVA_SCHEME} indicating subclass of {@link Enum}</dt> <dd>{@link Enum}</dd>
 	</dl>
 	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
 	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
@@ -689,7 +702,23 @@ public class URF
 				{
 					throw new IllegalArgumentException(classNotFoundException);
 				}
-		}
+			}
+			else if(isLexicalURI(resourceURI))	//if the resource URI is a lexical URI
+			{
+				final URI lexicalTypeURI=getLexicalTypeURI(resourceURI);	//get the lexical type
+				try
+				{
+					final Class<?> lexicalClass=ClassUtilities.asClass(lexicalTypeURI);	//see if this is lexical type represents a Java class
+					if(lexicalClass!=null && Enum.class.isAssignableFrom(lexicalClass))	//if the lexical type is an enum
+					{
+						return Enum.valueOf((Class<? extends Enum>)lexicalClass, getLocalName(resourceURI));	//create an enum using the given lexical type and enum value
+					}
+				}
+				catch(final ClassNotFoundException classNotFoundException)
+				{
+					throw new IllegalArgumentException(classNotFoundException);
+				}
+			}				
 			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the URI namespace
 			if(namespaceURI!=null)	//if this URI has a namespace
 			{

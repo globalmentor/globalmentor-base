@@ -53,4 +53,5 @@ public class EnumUtilities
 	{
 		return Enum.valueOf(enumType, serializationName.replace('-', '_').toUpperCase());	//convert the the enum name back to its original form and try to retrieve a corresponding enum
 	}
+
 }
