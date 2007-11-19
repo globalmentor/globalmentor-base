@@ -114,28 +114,6 @@ public class URFTURFGenerator
 			return label;	//return the retrieved or generated label
 		}
 
-		/**Retrieves a label appropriate for the given namespace URI resource, creating one if necessary.
-		If the resource has already been assigned a label, it will be returned; otherwise, a new label will be generated.
-		@param namespaceURIResource The namespace URI resource for which a label should be returned.
-		@return A label to represent the given namespace URI resource.
-		@exception IllegalArgumentException if the given resource does not represent a URI.
-		*/
-		protected String determineNamespaceURILabel(final URFResource namespaceURIResource)
-		{
-			final URI uri=asURI(namespaceURIResource);	//get the resource as a URI if possible
-			if(uri==null)	//if the resource is not a URI
-			{
-				throw new IllegalArgumentException("Resource "+namespaceURIResource+" is not a URI.");
-			}
-			String label=getLabel(namespaceURIResource);	//get a label, if any, for the given resource
-			if(label==null)	//if there is no label for this resource
-			{
-				label=getNamespaceLabelManager().getNamespaceLabel(uri);	//get a namespace label for the URI
-				resourceLabelMap.put(namespaceURIResource, label);	//associate the label with the resource
-			}
-			return label;	//return the retrieved or generated label
-		}
-
 	/**Whether output is formatted.*/
 	private boolean formatted;
 
@@ -168,6 +146,39 @@ public class URFTURFGenerator
 		@param shortTypesGenerated Whether types should be generated as short forms.
 		*/
 		public void setShortTypesGenerated(final boolean shortTypesGenerated) {this.shortTypesGenerated=shortTypesGenerated;}
+
+	/**Whether inits are generated as short forms.*/
+	private boolean shortInitsGenerated=true;
+
+		/**@return Whether inits are generated as short forms.*/
+		public boolean isShortInitsGenerated() {return shortInitsGenerated;}
+
+		/**Sets whether inits should be generated as short forms.
+		@param shortInitsGenerated Whether inits should be generated as short forms.
+		*/
+		public void setShortInitsGenerated(final boolean shortInitsGenerated) {this.shortInitsGenerated=shortInitsGenerated;}
+
+	/**Whether communities are generated as short forms.*/
+	private boolean shortCommunitiesGenerated=true;
+
+		/**@return Whether communities are generated as short forms.*/
+		public boolean isShortCommunitiesGenerated() {return shortCommunitiesGenerated;}
+
+		/**Sets whether communities should be generated as short forms.
+		@param shortCommunitiesGenerated Whether communities should be generated as short forms.
+		*/
+		public void setShortCommunitiesGenerated(final boolean shortCommunitiesGenerated) {this.shortCommunitiesGenerated=shortCommunitiesGenerated;}
+
+	/**Whether propositions are generated as short forms.*/
+	private boolean shortPropositionsGenerated=true;
+
+		/**@return Whether propositions are generated as short forms.*/
+		public boolean isShortPropositionsGenerated() {return shortPropositionsGenerated;}
+
+		/**Sets whether propositions should be generated as short forms.
+		@param shortPropositionsGenerated Whether propositions should be generated as short forms.
+		*/
+		public void setShortPropositionsGenerated(final boolean shortPropositionsGenerated) {this.shortPropositionsGenerated=shortPropositionsGenerated;}
 
 	/**Whether lists are generated as short forms.*/
 	private boolean shortListsGenerated=true;
@@ -300,20 +311,20 @@ public class URFTURFGenerator
 	/**Generates all the resources within a given data model.
 	@param writer The writer used for generating the information.
 	@param urf The data model of which resources should be generated.
-	@param generateContainer Whether a TURF container should be generated to hold the generated resources, if any.
+	@param generateSignature Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
 	@return The writer.
 	@exception NullPointerException if the given writer and/or URF data model is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	public Writer generateResources(final Writer writer, final URF urf, final boolean generateContainer) throws IOException
+	public Writer generateResources(final Writer writer, final URF urf, final boolean generateSignature) throws IOException
 	{
-		return generateResources(writer, urf, generateContainer, null);	//generate all URF resources with no particular resource as the primary resource
+		return generateResources(writer, urf, generateSignature, null);	//generate all URF resources with no particular resource as the primary resource
 	}
 
 	/**Generates the given resources and all related resources.
 	A TURF container will be generated to contain the generated resources.
 	@param writer The writer used for generating the information.
-	@param resources The resources to generate, with the first resource, if any, being the resource to appear first or immediately after namespace descriptions
+	@param resources The resources to generate, with the first resource, if any, being the resource to appear first.
 	@return The writer.
 	@exception NullPointerException if the given writer and/or resources is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
@@ -325,28 +336,26 @@ public class URFTURFGenerator
 
 	/**Generates the given resources and all related resources.
 	@param writer The writer used for generating the information.
-	@param generateContainer Whether a TURF container should be generated to hold the generated resources, if any.
-	@param resources The resources to generate, with the first resource, if any, being the resource to appear first or immediately after namespace descriptions
+	@param generateSignature Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
+	@param resources The resources to generate, with the first resource, if any, being the resource to appear first.
 	@return The writer.
 	@exception NullPointerException if the given writer and/or resources is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	public Writer generateResources(final Writer writer, final boolean generateContainer, final URFResource... resources) throws IOException
+	public Writer generateResources(final Writer writer, final boolean generateSignature, final URFResource... resources) throws IOException
 	{
 		final URF urf=new URF();	//create a new URF data model
 		for(final URFResource resource:resources)	//for each given resource
 		{
 			urf.addResource(resource);	//add the resource to the data model
 		}
-		return generateResources(writer, urf, generateContainer, resources.length>0 ? resources[0] : null);	//generate all resources related to the given resources
+		return generateResources(writer, urf, generateSignature, resources.length>0 ? resources[0] : null);	//generate all resources related to the given resources
 	}
-
-
 
 	/**Generates the given resources and all related resources.
 	A TURF container will be generated to contain the generated resources.
 	@param writer The writer used for generating the information.
-	@param resources The resources to generate, with the first resource, if any, being the resource to appear first or immediately after namespace descriptions
+	@param resources The resources to generate, with the first resource, if any, being the resource to appear first.
 	@return The writer.
 	@exception NullPointerException if the given writer and/or resources is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
@@ -358,13 +367,13 @@ public class URFTURFGenerator
 
 	/**Generates the given resources and all related resources.
 	@param writer The writer used for generating the information.
-	@param generateContainer Whether a TURF container should be generated to hold the generated resources, if any.
-	@param resources The resources to generate, with the first resource, if any, being the resource to appear first or immediately after namespace descriptions
+	@param generateSignature Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
+	@param resources The resources to generate, with the first resource, if any, being the resource to appear first.
 	@return The writer.
 	@exception NullPointerException if the given writer and/or resources is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	public Writer generateResources(final Writer writer, final boolean generateContainer, final Iterable<URFResource> resources) throws IOException
+	public Writer generateResources(final Writer writer, final boolean generateSignature, final Iterable<URFResource> resources) throws IOException
 	{
 		final URF urf=new URF();	//create a new URF data model
 		URFResource firstResource=null;	//we'll note the first resource, if any
@@ -376,14 +385,14 @@ public class URFTURFGenerator
 				firstResource=resource;	//this is the first resource
 			}
 		}
-		return generateResources(writer, urf, generateContainer, firstResource);	//generate all resources related to the given resources
+		return generateResources(writer, urf, generateSignature, firstResource);	//generate all resources related to the given resources
 	}
 
-	/**Generates all the resources within a given data model, indicating an optional resource that should appear first or immediately after namespace descriptions.
+	/**Generates all the resources within a given data model, indicating an optional resource that should appear first.
 	A TURF container will be generated to contain the generated resources.
 	@param writer The writer used for generating the information.
 	@param urf The data model of which resources should be generated.
-	@param primaryResource The main resource which should appear first or immediately after namespace descriptions, or <code>null</code> if there is no primary resource.
+	@param primaryResource The main resource which should appear first, or <code>null</code> if there is no primary resource.
 	@return The writer.
 	@exception NullPointerException if the given writer and/or URF data model is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
@@ -393,61 +402,85 @@ public class URFTURFGenerator
 		return generateResources(writer, urf, true, primaryResource);	//generate the resources, indicating that a container should be generated
 	}
 
-	/**Generates all the resources within a given data model, indicating an optional resource that should appear first or immediately after namespace descriptions.
+	/**Generates all the resources within a given data model, indicating an optional resource that should appear first.
 	@param writer The writer used for generating the information.
 	@param urf The data model of which resources should be generated.
-	@param generateContainer Whether a TURF container should be generated to hold the generated resources, if any.
-	@param primaryResource The main resource which should appear first or immediately after namespace descriptions, or <code>null</code> if there is no primary resource.
+	@param generateSignature Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
+	@param primaryResource The main resource which should appear first, or <code>null</code> if there is no primary resource.
 	@return The writer.
 	@exception NullPointerException if the given writer and/or URF data model is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	public Writer generateResources(final Writer writer, final URF urf, final boolean generateContainer, final URFResource primaryResource) throws IOException
+	public Writer generateResources(final Writer writer, final URF urf, final boolean generateSignature, final URFResource primaryResource) throws IOException
 	{
-		if(generateContainer)	//if we should generate a container
+		final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap=urf.getReferences();	//get a map of sets of all references to each resource
+		if(generateSignature)	//if we should generate a signature
 		{
 			writer.write(TURF_SIGNATURE);	//write the TURF signature
+				//gather namespace URIs used
+			final Map<URI, Boolean> namespaceURIMultipleMap=new HashMap<URI, Boolean>();	//create a hash map with namespace URI keys to keep track if a namespace is used multiple times
+			for(final URI resourceURI:urf.getResourceURIs())	//look at each resource URI
+			{
+				
+				final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace URI of this resource URI
+				if(namespaceURI!=null && !isLexicalNamespaceURI(namespaceURI))	//if this resource URI has a namespace that isn't a lexical namespace (URIs in lexical namespaces have their own short forms)
+				{
+					final Boolean hasMultipleReferences=namespaceURIMultipleMap.get(namespaceURI);	//see whether there are multiple references to this namespace
+					if(hasMultipleReferences==null)	//if we haven't seen this namespace URI before
+					{
+						final URFResource resource=urf.getResource(resourceURI);	//get the resource corresponding to this resource URI
+						assert referenceMap.containsKey(resource) : "Reference map should contain a reference to every resource for which a resource URI is returned by the data model.";
+						if(resource!=null && referenceMap.getItemCount(resource)>1)	//if this resource is referenced multiple times in the data model,
+						{
+							namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//the namespace of this resource will be used multiple times (once for each time this resource appears, at least)
+						}
+						else	//if this resource is only referenced once
+						{
+							namespaceURIMultipleMap.put(namespaceURI, Boolean.FALSE);	//show that we've seen this namespace URI, but there are not yet multiple references
+						}
+					}
+					else if(hasMultipleReferences.booleanValue()==false)	//if we've only seen this namespace URI once
+					{
+						namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times
+					}
+				}
+			}			
+			boolean startedPreamble=false;	//we'll keep track of whether we started a TURF preamble
+				//generate beginning labeled namespace URIs
+			final TURFNamespaceLabelManager namespaceLabelManager=getNamespaceLabelManager();	//get the namespace prefix manager
+			for(final Map.Entry<URI, Boolean> namespaceURIMultipleEntry:namespaceURIMultipleMap.entrySet())	//for each namespace URI entry
+			{
+				final URI namespaceURI=namespaceURIMultipleEntry.getKey();	//get the namespace URI
+				if(Boolean.TRUE.equals(namespaceURIMultipleEntry.getValue()) || namespaceLabelManager.isRecognized(namespaceURI))	//if this namespace URI is used more than one time, or if this is a namespace URI we specifically know is a namespace URI
+				{
+					if(startedPreamble)	//if we already started the preamble
+					{
+						writer.write(LIST_DELIMITER);	//write a list delimiter						
+					}
+					else	//if we haven't started the preamble, yet
+					{
+						writeNewLine(writer);	//go to the next line						
+						writer.write(PREAMBLE_BEGIN);	//start the preamble
+						indent();	//indent the properties
+						startedPreamble=true;	//show that we've started the properties
+					}
+					writeNewLine(writer);	//go to the next line
+					final String prefix=namespaceLabelManager.getNamespaceLabel(namespaceURI);	//get a namespace label for the URI
+					writeString(writer, prefix);	//write the prefix
+					writer.write(PROPERTY_VALUE_DELIMITER);	//write the property-value delimiter
+					writeURI(writer, namespaceURI);	//write the URI
+				}
+			}
+			if(startedPreamble)	//if we have a preamble
+			{
+				unindent();
+				writeNewLine(writer);
+				writer.write(PREAMBLE_END);	//end the preamble
+			}
 			writeNewLine(writer);
-			writer.write(LIST_BEGIN);	//start the container
-		}
-		final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap=urf.getReferences();	//get a map of sets of all references to each resource
-			//gather namespace URIs used
-		final Map<URI, Boolean> namespaceURIMultipleMap=new HashMap<URI, Boolean>();	//create a hash map with namespace URI keys to keep track if a namespace is used multiple times
-		for(final URI resourceURI:urf.getResourceURIs())	//look at each resource URI
-		{
-			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace URI of this resource URI
-			if(namespaceURI!=null && !isLexicalNamespaceURI(namespaceURI))	//if this resource URI has a namespace that isn't a lexical namespace (URIs in lexical namespaces have their own short forms)
-			{
-				final Boolean hasMultipleReferences=namespaceURIMultipleMap.get(namespaceURI);	//see whether there are multiple references to this namespace
-				if(hasMultipleReferences==null)	//if we haven't seen this namespace URI before
-				{
-					final URFResource resource=urf.getResource(resourceURI);	//get the resource corresponding to this resource URI
-					assert referenceMap.containsKey(resource) : "Reference map should contain a reference to every resource for which a resource URI is returned by the data model.";
-					if(resource!=null && referenceMap.getItemCount(resource)>1)	//if this resource is referenced multiple times in the data model,
-					{
-						namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//the namespace of this resource will be used multiple times (once for each time this resource appears, at least)
-					}
-					else	//if this resource is only referenced once
-					{
-						namespaceURIMultipleMap.put(namespaceURI, Boolean.FALSE);	//show that we've seen this namespace URI, but there are not yet multiple references
-					}
-				}
-				else if(hasMultipleReferences.booleanValue()==false)	//if we've only seen this namespace URI once
-				{
-					namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times
-				}
-			}
-		}
-			//generate beginning labeled namespace URIs
-		for(final Map.Entry<URI, Boolean> namespaceURIMultipleEntry:namespaceURIMultipleMap.entrySet())	//for each namespace URI entry
-		{
-			final URI namespaceURI=namespaceURIMultipleEntry.getKey();	//get the namespace URI
-			if(Boolean.TRUE.equals(namespaceURIMultipleEntry.getValue()) || getNamespaceLabelManager().isRecognized(namespaceURI))	//if this namespace URI is used more than one time, or if this is a namespace URI we specifically know is a namespace URI
-			{
-				final URFResource namespaceURIResource=urf.locateResource(createLexicalURI(URI_CLASS_URI, namespaceURI.toString()));	//look up a resource for the namespace URI itself
-				final String label=determineNamespaceURILabel(namespaceURIResource);	//make sure there is a label for the namespace URI
-				generateRootResource(writer, urf, referenceMap, namespaceURIResource);	//generate the namespace URI resource
-			}
+			writer.write(COMMUNITY_BEGIN);	//start the instance community
+			indent();	//indent the resources
+			writeNewLine(writer);
 		}
 			//generate the primary resource
 		if(primaryResource!=null)	//if there is a primary resource to generate
@@ -471,9 +504,11 @@ public class URFTURFGenerator
 				generateRootResource(writer, urf, referenceMap, resource);	//generate this root resource
 			}
 		}
-		if(generateContainer)	//if we are generating a container
+		if(generateSignature)	//if we generated a signature
 		{
-			writer.write(LIST_END);	//end the container
+			unindent();
+			writeNewLine(writer);
+			writer.write(COMMUNITY_END);	//end the instance community
 		}
 		return writer;	//return the writer
 	}
@@ -513,6 +548,24 @@ public class URFTURFGenerator
 		return generateResource(writer, urf, referenceMap, null, null, resource, false, null);	//generate the single resource; there is no context URI
 	}
 
+	/**Generates a single resource with no default namespace URI.
+	The resource is noted as having been generated.
+	@param writer The writer used for generating the information.
+	@param urf The URF data model.
+	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
+	@param subjectScope The scope to which the property and resource belongs, or <code>null</code> if the current resource is not in an object context.
+	@param scopePropertyURI The predicate for which the resource is a value, or <code>null</code> if the current resource is not in an object context.
+	@param resource The resource to generate.
+	@param inSequence Whether the resource being generated is in a sequence and its scoped order properties should therefore not be generated.
+	@return The writer.
+	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>.
+	@exception IOException if there is an error writing to the writer.
+	*/
+	protected Writer generateResource(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope subjectScope, final URI scopePropertyURI, final URFResource resource, final boolean inSequence) throws IOException
+	{
+		return generateResource(writer, urf, referenceMap, subjectScope, scopePropertyURI, resource, inSequence, null);	//generate the resource with no default namespace URI
+	}
+
 	/**Generates a single resource.
 	The resource is noted as having been generated.
 	@param writer The writer used for generating the information.
@@ -521,13 +574,13 @@ public class URFTURFGenerator
 	@param subjectScope The scope to which the property and resource belongs, or <code>null</code> if the current resource is not in an object context.
 	@param scopePropertyURI The predicate for which the resource is a value, or <code>null</code> if the current resource is not in an object context.
 	@param resource The resource to generate.
-	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@param inSequence Whether the resource being generated is in a sequence and its scoped order properties should therefore not be generated.
+	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is available; for properties, this is the URI of the first type short form.
 	@return The writer.
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	protected Writer generateResource(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope subjectScope, final URI scopePropertyURI, final URFResource resource, final boolean inSequence, final URI contextURI) throws IOException
+	protected Writer generateResource(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope subjectScope, final URI scopePropertyURI, final URFResource resource, final boolean inSequence, final URI defaultNamespaceURI) throws IOException
 	{
 		final boolean isGenerated=isGenerated(resource);	//see if this resource has already been generated
 		if(!isGenerated)	//if the resource hasn't been generated, yet
@@ -549,25 +602,37 @@ public class URFTURFGenerator
 		if(label!=null)	//if there is a label
 		{
 			writeLabel(writer, label);	//write the label
-			if(isGenerated)	//if we've already generated this resource, there's no reason to generate it again---the label will suffice
-			{
-				return writer;	//there's no need to generate the resource again, because the label is representing it
-			}
 		}
 			//reference
-		if(uri!=null)
+		if(uri!=null && (!isGenerated || label==null))	//if there is a URI (don't show the URI if the resource is already generated and we already generated a label here)
 		{
 			if(isLexicalURI(uri))	//if this URI is in a lexical namespace
 			{
 				lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI so that we don't generate it again
 			}
-			generateReference(writer, urf, uri, contextURI);	//write a reference for the resource
+			generateReference(writer, urf, uri, defaultNamespaceURI);	//write a reference for the resource
 			generatedComponent=true;	//indicate that we generated a component
-			if(isGenerated)	//if we've already generated this resource, there's no reason to generate it again---the reference will suffice
-			{
-				return writer;	//there's no need to generate the resource again, because the reference is representing it
-			}
 		}
+		
+		if(isGenerated)	//if we've already generated this resource, see if there are any scoped properties before leaving
+		{
+			if(subjectScope!=null && scopePropertyURI!=null)	//if this resource is the value of a property
+			{
+				final URFScope scope=subjectScope.getScope(scopePropertyURI, resource);	//get the scope for this value
+				if(scope==null)	//if there is no such scope
+				{
+					throw new IllegalArgumentException("No scope for given subject "+subjectScope+" and predicate URI "+scopePropertyURI);
+				}
+				if(generateProperties(writer, urf, referenceMap, scope, true, 0, true, true, true, true, true, !inSequence, null)>0)	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence; if we generated any scoped properties
+				{
+					unindent();
+					writeNewLine(writer);
+					writer.write(PROPERTIES_END);	//end the properties declaration
+				}
+			}				
+			return writer;	//there's no need to generate the resource again; we've already generated a label or a URI to represent it			
+		}
+		boolean isProposition=false;	//we'll see if this is a proposition
 		boolean isList=false;	//we'll see if this is a list
 		boolean hasNonListType=lexicalTypeURI!=null && !LIST_CLASS_URI.equals(lexicalTypeURI);	//we'll see if there is a type that is not a list
 		boolean isSet=false;	//we'll see if this is a set
@@ -575,10 +640,16 @@ public class URFTURFGenerator
 		for(final URFResource type:resource.getTypes())	//look through all the types to determine
 		{
 			final URI typeURI=type.getURI();	//get the type URI
-			if(SET_CLASS_URI.equals(typeURI))	//if this is the set type
+			if(PROPOSITION_CLASS_URI.equals(typeURI))	//if this is the proposition type
+			{
+				isProposition=true;	//this is a prosition
+				hasNonListType=true;	//there is a non-set type
+				hasNonSetType=true;	//there is a non-set type
+			}
+			else if(SET_CLASS_URI.equals(typeURI))	//if this is the set type
 			{
 				isSet=true;	//this is a set
-				hasNonListType=true;	//there is a non-set type
+				hasNonListType=true;	//there is a non-list type
 			}
 			else	//if this is not a set type
 			{
@@ -593,21 +664,55 @@ public class URFTURFGenerator
 				}
 			}
 		}
-		boolean isListShortForm=isShortListsGenerated() && (isList || (resource.hasNamespaceProperty(ORDINAL_NAMESPACE_URI) && hasNonListType));	//generate a list short form if this is a list or it has properties in the ordinal namespace (but only if there is some other type already present; otherwise, it would introduce a list type where none was specified)
-		boolean isSetShortForm=isShortSetsGenerated() && (isSet || (resource.hasProperty(ELEMENT_PROPERTY_URI) && (hasNonSetType || isListShortForm)));	//generate a set short form if this is a set or it has properties in the element namespace (but only if there is some other type; otherwise, it would introduce a set type where none was specified)
-		URI typeContextURI=null;	//we'll find the first type URI and use it for a context URI for init, properties, lists elements, and sets
+		final URFResource subject;	//the subject property value, if this is a proposition
+		final URFResource predicate;	//the predicate property value, if this is a proposition
+		final URFResource object;	//the object property value, if this is a proposition
+		boolean isPropositionShortForm=isShortPropositionsGenerated() && isProposition;	//generate a proposition short form if this is a proposition
+		if(isPropositionShortForm)	//if we think this is a proposition short form, make sure there is a subject, predicate, and object
+		{
+			subject=resource.getPropertyValue(SUBJECT_PROPERTY_URI);	//get the subject
+			predicate=resource.getPropertyValue(PREDICATE_PROPERTY_URI);	//get the predicate
+			object=resource.getPropertyValue(OBJECT_PROPERTY_URI);	//get the object
+			if(subject==null || predicate==null || object==null)	//if we are missing the subject, predicate, or object
+			{
+				isPropositionShortForm=false;	//we can't do a proposition short form
+			}
+		}
+		else	//if this is not a proposition short form
+		{
+			subject=predicate=object=null;	//we don't need to get subject, predicate, and object values now
+		}
+		final boolean isListShortForm=isShortListsGenerated() && (isList || (resource.hasNamespaceProperty(ORDINAL_NAMESPACE_URI) && hasNonListType));	//generate a list short form if this is a list or it has properties in the ordinal namespace (but only if there is some other type already present; otherwise, it would introduce a list type where none was specified)
+		final boolean isSetShortForm=isShortSetsGenerated() && (isSet || (resource.hasProperty(ELEMENT_PROPERTY_URI) && (hasNonSetType || isListShortForm)));	//generate a set short form if this is a set or it has properties in the element namespace (but only if there is some other type; otherwise, it would introduce a set type where none was specified)
+		URI typeDefaultNamespaceURI=null;	//we'll find the first type URI and use it as a default namespace URI for properties
 			//type
 		final boolean isShortTypesGenerated=isShortTypesGenerated();	//see if we should generate types in the short form
 		if(isShortTypesGenerated)	//if we should generate type short forms
 		{
 			long shortTypeCount=0;	//keep track of how many short-form types we've generated, if any
 			markReferenceGenerated(urf, TYPE_PROPERTY_URI);	//mark that the type property was generated unless it has some other quality needed to be generated separately
-			for(final URFResource type:resource.getTypes())	//look at each type
+			for(final URFProperty typeProperty:resource.getProperties(TYPE_PROPERTY_URI))	//look at each type
 			{
+				final URFScope propertyScope=typeProperty.getScope();	//get the scope of this property
+				final URFResource order=propertyScope.getPropertyValue(ORDER_PROPERTY_URI);	//get the scoped order, if any
+				if(order!=null)	//if this type has an order
+				{
+					markReferenceGenerated(urf, ORDER_PROPERTY_URI);	//mark that the order property was generated unless it has some other quality needed to be generated separately
+					final URI orderURI=order.getURI();	//get the URI of the order
+					if(orderURI!=null)	//if there is an order URI
+					{
+						markReferenceGenerated(urf, orderURI);	//mark that this order was generated unless it has some other quality needed to be generated separately
+					}
+				}				
+				final URFResource type=typeProperty.getValue();	//get the type value
 				final URI typeURI=type.getURI();	//get the URI of this type
 				if(typeURI!=null)	//if the given type has a URI
 				{
 					if(typeURI.equals(lexicalTypeURI))	//if this is the same type URI as the URI included in the lexical namespace type URI, if any
+					{
+						continue;	//skip this type
+					}
+					else if(isPropositionShortForm && PROPOSITION_CLASS_URI.equals(typeURI))	//if we're using a proposition short form and this is the proposition type, skip the type
 					{
 						continue;	//skip this type
 					}
@@ -627,9 +732,9 @@ public class URFTURFGenerator
 				else	//if we haven't yet started the properties section
 				{
 					writer.write(TYPES_BEGIN);	//start the type declaration
-					typeContextURI=typeURI;	//use this first type URI as the context URI for properties
+					typeDefaultNamespaceURI=typeURI;	//use this first type URI as the default namespace URI for properties
 				}
-				generateResource(writer, urf, referenceMap, resource, TYPE_PROPERTY_URI, type, true, contextURI);	//write the type; allow namespace inheritance of name references, and don't generate scoped orders
+				generateResource(writer, urf, referenceMap, resource, TYPE_PROPERTY_URI, type, true);	//write the type; don't generate scoped orders
 				++shortTypeCount;	//show that we've got another short type
 			}
 			if(shortTypeCount>0)	//if we generated any short form types
@@ -638,10 +743,18 @@ public class URFTURFGenerator
 				generatedComponent=true;	//indicate that we generated a component
 			}
 		}
-			//TODO implement init short form
+			//inits
+		final URFListResource<?> inits=resource.getInits();	//get the inits, if any
+		final boolean isShortInitsGenerated=inits!=null && isShortInitsGenerated() && resource.getPropertyValueCount(INITS_PROPERTY_URI)==1;	//only produce short-form inits if there is only one inits list and short inits are generated
+		if(isShortInitsGenerated)	//if we should use the inits short form
+		{
+			markReferenceGenerated(urf, INITS_PROPERTY_URI);	//mark that the inits property was generated unless it has some other quality needed to be generated separately
+			setGenerated(inits, true);	//note that the inits list has been generated TODO make sure the inits list has no other properties that need to be generated
+			generateCollection(writer, urf, referenceMap, inits.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), INITS_BEGIN, INITS_END, false);	//generate all the values of ordinal properties in the inits list on the same line
+		}
 			//properties
 		int propertyCount=0;	//start with no properties being generating
-		propertyCount=generateProperties(writer, urf, referenceMap, resource, PROPERTY_VALUE_DELIMITER, propertyCount, !isShortTypesGenerated, !isListShortForm, !isSetShortForm, true, typeContextURI);	//generate properties
+		propertyCount=generateProperties(writer, urf, referenceMap, resource, false, propertyCount, !isShortTypesGenerated, !isShortInitsGenerated, !isPropositionShortForm, !isListShortForm, !isSetShortForm, true, typeDefaultNamespaceURI);	//generate properties
 		if(subjectScope!=null && scopePropertyURI!=null)	//if this resource is the value of a property
 		{
 			final URFScope scope=subjectScope.getScope(scopePropertyURI, resource);	//get the scope for this value
@@ -649,7 +762,7 @@ public class URFTURFGenerator
 			{
 				throw new IllegalArgumentException("No scope for given subject "+subjectScope+" and predicate URI "+scopePropertyURI);
 			}
-			propertyCount=generateProperties(writer, urf, referenceMap, scope, SCOPED_PROPERTY_VALUE_DELIMITER, propertyCount, true, true, true, !inSequence, typeContextURI);	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence
+			propertyCount=generateProperties(writer, urf, referenceMap, scope, true, propertyCount, true, true, true, true, true, !inSequence, typeDefaultNamespaceURI);	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence
 		}
 		if(propertyCount>0)	//if we started the properties section
 		{
@@ -657,46 +770,68 @@ public class URFTURFGenerator
 			writeNewLine(writer);
 			writer.write(PROPERTIES_END);	//end the properties declaration
 		}
-		else if(!generatedComponent && !isListShortForm && !isSetShortForm)	//if we haven't generated any components, and there will be no list and/or set short form, have a properties section even if it's empty
+		else if(!generatedComponent && !isPropositionShortForm && !isListShortForm && !isSetShortForm)	//if we haven't generated any components, and there will be no proposition, list, and/or set short form, have a properties section even if it's empty
 		{
 			writer.append(PROPERTIES_BEGIN).append(PROPERTIES_END);	//write an empty properties declaration
+		}
+			//TODO implement community short form
+			//proposition
+		if(isPropositionShortForm)	//if we should generate a proposition short form
+		{
+			assert subject!=null && predicate!=null && object!=null : "Because this is a proposition short form, we should have already made sure the subject, predicate, and object are all non-null.";
+			markReferenceGenerated(urf, PROPOSITION_CLASS_URI);	//mark that the proposition type was generated unless it has some other quality needed to be generated separately
+			writer.write(PROPOSITION_BEGIN);	//start the proposition
+			markReferenceGenerated(urf, SUBJECT_PROPERTY_URI);	//mark that the subject property was generated unless it has some other quality needed to be generated separately
+			generateResource(writer, urf, referenceMap, resource, SUBJECT_PROPERTY_URI, subject, false);	//generate the subject
+			writer.append(LIST_DELIMITER);	//separate the properties
+			markReferenceGenerated(urf, PREDICATE_PROPERTY_URI);	//mark that the predicate property was generated unless it has some other quality needed to be generated separately
+			generateResource(writer, urf, referenceMap, resource, PREDICATE_PROPERTY_URI, predicate, false);	//generate the predicate
+			writer.append(LIST_DELIMITER);	//separate the properties
+			markReferenceGenerated(urf, OBJECT_PROPERTY_URI);	//mark that the object property was generated unless it has some other quality needed to be generated separately
+			generateResource(writer, urf, referenceMap, resource, OBJECT_PROPERTY_URI, object, false);	//generate the object
+			writer.write(PROPOSITION_END);	//end the proposition
 		}
 			//list
 		if(isListShortForm)	//if we should generate a list short form
 		{
 			markReferenceGenerated(urf, LIST_CLASS_URI);	//mark that the list type was generated unless it has some other quality needed to be generated separately
-			generateCollection(writer, urf, referenceMap, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), typeContextURI, LIST_BEGIN, LIST_END);	//generate all the values of ordinal properties in the list
+			generateCollection(writer, urf, referenceMap, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), LIST_BEGIN, LIST_END, true);	//generate all the values of ordinal properties in the list, using multiple lines if there are elements
 		}
 			//set
 		if(isSetShortForm)	//if we should generate a set short form
 		{
 			markReferenceGenerated(urf, SET_CLASS_URI);	//mark that the set type was generated unless it has some other quality needed to be generated separately
-			generateCollection(writer, urf, referenceMap, resource.getProperties(ELEMENT_PROPERTY_URI).iterator(), typeContextURI, SET_BEGIN, SET_END);	//generate all the values of element properties in the set
+			generateCollection(writer, urf, referenceMap, resource.getProperties(ELEMENT_PROPERTY_URI).iterator(), SET_BEGIN, SET_END, true);	//generate all the values of element properties in the set, using multiple lines if there are elements
 		}
 		return writer;	//return the writer
 	}
-
 
 	/**Generates the elements of a list or set.
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
 	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
 	@param elementPropertyIterator An iterator to the elements of the resource.
-	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context; for a collection, this should be the subject resource of the elements.
 	@param collectionBegin The beginning delimiter of the collection.
 	@param collectionEnd The end delimiter of the collection.
+	@param multipleLines Whether multiple lines should be used if elements are present.
 	@return The writer.
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or element property iterator is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	protected Writer generateCollection(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final Iterator<URFProperty> elementPropertyIterator, final URI contextURI, final char collectionBegin, final char collectionEnd) throws IOException
+	protected Writer generateCollection(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final Iterator<URFProperty> elementPropertyIterator, final char collectionBegin, final char collectionEnd, final boolean multipleLines) throws IOException
 	{
 		if(elementPropertyIterator.hasNext())	//if there are elements in the collection
 		{
-			writeNewLine(writer);
+			if(multipleLines)	//if we should generate multiple lines
+			{
+				writeNewLine(writer);
+			}
 			writer.write(collectionBegin);	//start the collection
-			indent();	//indent the collection
-			writeNewLine(writer);
+			if(multipleLines)	//if we should generate multiple lines
+			{
+				indent();	//indent the collection
+				writeNewLine(writer);
+			}
 			int elementCount=0;	//keep track of how many elements we have
 			while(elementPropertyIterator.hasNext())	//while there are elements
 			{
@@ -705,13 +840,19 @@ public class URFTURFGenerator
 				if(elementCount>0)	//if we've already generated an element
 				{
 					writer.append(LIST_DELIMITER);	//separate the properties
-					writeNewLine(writer);
+					if(multipleLines)	//if we should generate multiple lines
+					{
+						writeNewLine(writer);
+					}
 				}
-				generateResource(writer, urf, referenceMap, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false, contextURI);	//generate the element; each element value is an object of the element predicate, so use the element property URI as the context
+				generateResource(writer, urf, referenceMap, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false);	//generate the element; each element value is an object of the element predicate, so use the element property URI as the context
 				++elementCount;	//show that we generated another list element
 			}
-			unindent();
-			writeNewLine(writer);
+			if(multipleLines)	//if we should generate multiple lines
+			{
+				unindent();
+				writeNewLine(writer);
+			}
 			writer.write(collectionEnd);	//end the collection
 		}
 		else	//if there are no elements in the collection
@@ -721,23 +862,26 @@ public class URFTURFGenerator
 		return writer;	//return the writer
 	}
 
-	/**Generates the properties, if any, of a given scope, without property section delimiters.
+	/**Generates the properties, if any, of a given scope.
+	The beginning property section delimiter will be added if needed, but no ending property section delimiter will be generated.
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
 	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
 	@param scope The scope the properties of which should be generated.
-	@param propertyValueDelimiter The delimiter to use to separate properties and values.
+	@param scoped Whether the given properties are scoped.
 	@param propertyCount the number of properties already generated; used to determine whether a new properties section should be generated.
 	@param generateTypes Whether type properties should be generated.
+	@param generateInits Whether inits properties should be generated.
+	@param generateProposition Whether proposition-related properties (subject, predicate, and object) should be generated.
 	@param generateOrdinals Whether properties in the ordinal namespace should be generated.
 	@param generateElements Whether the element property should be generated.
-	@param generateOrder Whether the order property should be generated.
-	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
+	@param generateOrder Whether the order property should be generated; if order properties are not generated, their values will be marked at generated if they have no other properties needed to be generated.
+	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is available; for properties, this is the URI of the first type short form.
 	@return The new total number of properties generated, including the properties already generated before this method was called.
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or scope is <code>null</code>.
 	@exception IOException if there was an error writing to the writer.
 	*/
-	protected int generateProperties(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope scope, final char propertyValueDelimiter, int propertyCount, final boolean generateTypes, final boolean generateOrdinals, final boolean generateElements, final boolean generateOrder, final URI contextURI) throws IOException
+	protected int generateProperties(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope scope, final boolean scoped, int propertyCount, final boolean generateTypes, final boolean generateInits, final boolean generateProposition, final boolean generateOrdinals, final boolean generateElements, final boolean generateOrder, final URI defaultNamespaceURI) throws IOException
 	{
 		URI sequencePropertyURI=null;	//this will indicate when we're in the middle of a sequence for a particular property
 		for(final URFProperty property:scope.getProperties())	//look at each property
@@ -745,15 +889,20 @@ public class URFTURFGenerator
 			final URFResource value=property.getValue();	//get the property value
 			final URI propertyURI=property.getPropertyURI();	//get the property URI
 			if((!generateTypes && TYPE_PROPERTY_URI.equals(propertyURI))	//if we shouldn't generate types and this is a type
+				|| (!generateInits && INITS_PROPERTY_URI.equals(propertyURI))	//or if we shouldn't generate inits and this is an inits list
+				|| (!generateProposition && (SUBJECT_PROPERTY_URI.equals(propertyURI) || PREDICATE_PROPERTY_URI.equals(propertyURI) || OBJECT_PROPERTY_URI.equals(propertyURI)))	//or if we shouldn't generate proposition properties and this property is a subject, predicate, or object
 				|| (!generateOrdinals && propertyURI!=null && ORDINAL_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//or if we shouldn't generate ordinals and this property is an ordinal
 				|| (!generateElements && propertyURI!=null && ELEMENT_PROPERTY_URI.equals(propertyURI))	//or if we shouldn't generate elements and this property is an element property
 				|| (!generateOrder && ORDER_PROPERTY_URI.equals(propertyURI)))	//or if we shouldn't generate order and this is an order property
 			{
 				markReferenceGenerated(urf, propertyURI);	//mark that this property was generated unless it has some other quality needed to be generated separately
-				final URI valueURI=value.getURI();	//get the URI of the value, if any
-				if(valueURI!=null)	//if there is a value URI
+				if(!generateOrder && ORDER_PROPERTY_URI.equals(propertyURI))	//if this was the order property
 				{
-					markReferenceGenerated(urf, valueURI);	//mark that the value was generated unless it has some other quality needed to be generated separately
+					final URI valueURI=value.getURI();	//get the URI of the value, if any
+					if(valueURI!=null)	//if there is a value URI
+					{
+						markReferenceGenerated(urf, valueURI);	//mark that the value was generated unless it has some other quality needed to be generated separately
+					}
 				}
 				continue;	//skip this property
 			}
@@ -781,9 +930,13 @@ public class URFTURFGenerator
 					indent();	//indent the properties
 					writeNewLine(writer);
 				}
-				generateReference(writer, urf, propertyURI, contextURI);	//generate the reference of the property
+				generateReference(writer, urf, propertyURI, defaultNamespaceURI);	//generate the reference of the property
 				markReferenceGenerated(urf, propertyURI);	//mark that this property was generated unless it has some other quality needed to be generated separately
-				writer.append(propertyValueDelimiter);	//=/~
+				if(scoped)	//if this is a scoped property
+				{
+					writer.append(SCOPE_DELIMITER);	//`
+				}
+				writer.append(PROPERTY_VALUE_DELIMITER);	//=
 				if(property.getScope().getOrder()!=null)	//if this property has a sequence
 				{
 					writer.write(SEQUENCE_BEGIN);	//start a sequence for this property
@@ -814,15 +967,44 @@ public class URFTURFGenerator
 	No prefix will be determined if one is not already available for the namespace URI, if any, of the given resource URI.
 	@param uri The URI of the resource.
 	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
-	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
-	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context and/or namespace prefixes should not be suppressed; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@return A string reference to the resource with the given URI.
 	@exception NullPointerException if the given URI and/or namespace label manager is <code>null</code>.
 	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
 	*/
-	public static String createReferenceString(final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final URI contextURI)
+	public static String createReferenceString(final URI uri, final TURFNamespaceLabelManager namespaceLabelManager)
 	{
-		return createReferenceString(uri, namespaceLabelManager, baseURI, contextURI, false);	//create a reference string without generating any prefixes
+		return createReferenceString(uri, namespaceLabelManager, null);	//create a reference string with no base URI		
+	}
+
+	/**Creates and returns a reference string to a resource with the given URI.
+	A name reference or short form will be used if appropriate.
+	No prefix will be determined if one is not already available for the namespace URI, if any, of the given resource URI.
+	@param uri The URI of the resource.
+	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
+	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
+	@return A string reference to the resource with the given URI.
+	@exception NullPointerException if the given URI and/or namespace label manager is <code>null</code>.
+	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
+	*/
+	public static String createReferenceString(final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI)
+	{
+		return createReferenceString(uri, namespaceLabelManager, baseURI, null);	//create a reference string with no namespace URI
+	}
+
+	/**Creates and returns a reference string to a resource with the given URI.
+	A name reference or short form will be used if appropriate.
+	No prefix will be determined if one is not already available for the namespace URI, if any, of the given resource URI.
+	@param uri The URI of the resource.
+	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
+	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
+	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is available; for properties, this is the URI of the first type short form.
+	@return A string reference to the resource with the given URI.
+	@exception NullPointerException if the given URI and/or namespace label manager is <code>null</code>.
+	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
+	*/
+	public static String createReferenceString(final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final URI defaultNamespaceURI)
+	{
+		return createReferenceString(uri, namespaceLabelManager, baseURI, defaultNamespaceURI, false);	//create a reference string without generating any prefixes
 	}
 
 	/**Creates and returns a reference string to a resource with the given URI.
@@ -830,18 +1012,18 @@ public class URFTURFGenerator
 	@param uri The URI of the resource.
 	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
 	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
-	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context and/or namespace prefixes should not be suppressed; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
+	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is available; for properties, this is the URI of the first type short form.
 	@param determinePrefix <code>true</code> if a prefix should be determined if one is not available for the namespace URI, if any, of the given resource URI.
 	@return A string reference to the resource with the given URI.
 	@exception NullPointerException if the given URI and/or namespace label manager is <code>null</code>.
 	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
 	*/
-	public static String createReferenceString(final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final URI contextURI, final boolean determinePrefix)
+	public static String createReferenceString(final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final URI defaultNamespaceURI, final boolean determinePrefix)
 	{
 		final StringWriter stringWriter=new StringWriter();	//create a new string writer for generating the reference
 		try
 		{
-			generateReference(stringWriter, uri, namespaceLabelManager, baseURI, contextURI, determinePrefix);	//generate a reference into the string writer
+			generateReference(stringWriter, uri, namespaceLabelManager, baseURI, defaultNamespaceURI, determinePrefix);	//generate a reference into the string writer
 		}
 		catch(final IOException ioException)	//we should never get an I/O exception writing to a string writer
 		{
@@ -857,15 +1039,15 @@ public class URFTURFGenerator
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
 	@param uri The URI of the resource.
-	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
+	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is available; for properties, this is the URI of the first type short form.
 	@exception NullPointerException if the given writer and/or URI is <code>null</code>.
 	@exception IOException if there was an error writing to the writer.
 	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
 	@see #markReferenceGenerated(URF, URI)
 	*/
-	public void generateReference(final Writer writer, final URF urf, final URI uri, final URI contextURI) throws IOException
+	public void generateReference(final Writer writer, final URF urf, final URI uri, final URI defaultNamespaceURI) throws IOException
 	{
-		final URI lexicalTypeURI=generateReference(writer, uri, namespaceLabelManager, baseURI, isInheritedNamespacePrefixesSuppressed() ? contextURI : null, false);	//generate a reference, keeping track of the lexical type URI generated, if any
+		final URI lexicalTypeURI=generateReference(writer, uri, namespaceLabelManager, baseURI, isInheritedNamespacePrefixesSuppressed() ? defaultNamespaceURI : null, false);	//generate a reference, keeping track of the lexical type URI generated, if any
 		if(lexicalTypeURI!=null)	//if a lexical URI was generated
 		{
 			markReferenceGenerated(urf, lexicalTypeURI);	//mark that this lexical type was generated unless it has some other quality needed to be generated separately
@@ -878,14 +1060,14 @@ public class URFTURFGenerator
 	@param uri The URI of the resource.
 	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
 	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
-	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context and/or namespace prefixes should not be suppressed; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
+	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is available; for properties, this is the URI of the first type short form.
 	@param determinePrefix <code>true</code> if a prefix should be determined if one is not available for the namespace URI, if any, of the given resource URI.
 	@return The lexical type URI, if a reference to a lexical URI was generated, or <code>null</code> if no lexical resource URI reference was generated.
 	@exception NullPointerException if the given writer URI, and/or namespace label manager is <code>null</code>.
 	@exception IOException if there was an error writing to the writer.
 	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
 	*/
-	public static URI generateReference(final Writer writer, final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final URI contextURI, final boolean determinePrefix) throws IOException
+	public static URI generateReference(final Writer writer, final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final URI defaultNamespaceURI, final boolean determinePrefix) throws IOException
 	{
 		URI lexicalTypeURI=null;	//keep track of whether a lexical type URI was generated
 		if(isLexicalURI(uri))	//if this URI is in a lexical namespace
@@ -962,7 +1144,7 @@ public class URFTURFGenerator
 		final URI namespaceURI=getNamespaceURI(uri);	//see if the URI has a namespace
 		if(namespaceURI!=null)	//if there is a namespace
 		{
-			final boolean suppressPrefix=contextURI!=null && namespaceURI.equals(getNamespaceURI(contextURI));	//if we should suppress prefixes for inherited namespaces, see if this context URI has the same namespace as this reference
+			final boolean suppressPrefix=namespaceURI.equals(defaultNamespaceURI);	//we could suppress the prefixe if the namespace is the same as the default namespace
 			final String prefix=suppressPrefix ? null : (determinePrefix ? namespaceLabelManager.getNamespaceLabel(namespaceURI) : namespaceLabelManager.get(namespaceURI));	//see if we have a prefix for this namespace, but only if we shouldn't suppress prefixes
 			if(prefix!=null || suppressPrefix)	//if we have a prefix, or we're suppressing this prefix
 			{
@@ -976,7 +1158,7 @@ public class URFTURFGenerator
 				return lexicalTypeURI;	//return the lexical type URI, if any
 			}
 		}
-		generateURIReference(writer, uri, namespaceLabelManager, baseURI, contextURI, determinePrefix);	//generate the URI reference normally by default
+		generateURIReference(writer, uri, namespaceLabelManager, baseURI, determinePrefix);	//generate the URI reference normally by default
 		return lexicalTypeURI;	//return the lexical type URI, if any
 	}
 
@@ -990,7 +1172,7 @@ public class URFTURFGenerator
 	*/
 	public void generateURIReference(final Writer writer, URI uri) throws IOException
 	{
-		generateURIReference(writer, uri, getNamespaceLabelManager(), getBaseURI(), null, false);	//generate the URI reference using our own namespace label manager and base URI with no context
+		generateURIReference(writer, uri, getNamespaceLabelManager(), getBaseURI(), false);	//generate the URI reference using our own namespace label manager and base URI
 	}
 
 	/**Writes a URI reference to a resource with the given URI.
@@ -998,12 +1180,11 @@ public class URFTURFGenerator
 	@param uri The URI of the resource.
 	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
 	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
-	@param contextURI The URI serving as context so that a default namespace can be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@param determinePrefix <code>true</code> if a prefix should be determined if one is not available for the namespace URI, if any, of the given resource URI.
 	@exception NullPointerException if the given writer, URI, and/or namespace label manager is <code>null</code>.
 	@exception IOException if there was an error writing to the writer.
 	*/
-	public static void generateURIReference(final Writer writer, URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final URI contextURI, final boolean determinePrefix) throws IOException
+	public static void generateURIReference(final Writer writer, URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final boolean determinePrefix) throws IOException
 	{
 		writer.write(REFERENCE_BEGIN);	//start the URI reference
 		if(isLexicalURI(uri))	//if this URI is in a lexical namespace
@@ -1013,7 +1194,7 @@ public class URFTURFGenerator
 			assert lexicalForm!=null : "A lexical namespace URI should always have a lexical form.";
 			writeString(writer, lexicalForm);	//write the string lexical form
 			writer.write(TYPES_BEGIN);	//start a type declaration
-			generateReference(writer, lexicalTypeURI, namespaceLabelManager, baseURI, contextURI, determinePrefix);	//generate a reference to the lexical type, determining a new prefix if needed
+			generateReference(writer, lexicalTypeURI, namespaceLabelManager, baseURI, null, determinePrefix);	//generate a reference to the lexical type, determining a new prefix if needed
 			writer.write(TYPES_END);	//end the type declaration
 		}
 		else	//if this URI is not in a lexical namespace
@@ -1033,6 +1214,7 @@ public class URFTURFGenerator
 	This method is useful for marking property URI references as generated if they do not need to stand on their own.
 	@param urf The URF data model.
 	@param resourceURI The URI of the generated reference.
+	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	protected void markReferenceGenerated(final URF urf, final URI resourceURI)
 	{
@@ -1076,7 +1258,7 @@ public class URFTURFGenerator
 	}
 
 	/**Writes a regular expression surrounded by the regular expression short form delimiters.
-	The usual reserved string characters, along with the regular expression delimiters, will be escaped.
+	The usual reserved string characters, along with the regular expression delimiter, will be escaped.
 	@param writer The writer used for generating the information.
 	@param regularExpression The regular expression to write.
 	@exception NullPointerException if the given writer and/or regular expression is <code>null</code>.
@@ -1090,7 +1272,7 @@ public class URFTURFGenerator
 	}
 
 	/**Writes a string surrounded by the string short form delimiters.
-	The usual reserved string characters, along with the string delimiters, will be escaped.
+	The usual reserved string characters, along with the string delimiter, will be escaped.
 	@param writer The writer used for generating the information.
 	@param string The string to write.
 	@exception NullPointerException if the given writer and/or string is <code>null</code>.
@@ -1104,7 +1286,19 @@ public class URFTURFGenerator
 	}
 
 	/**Writes a URI surrounded by the URI short form delimiters.
-	The usual reserved string characters, along with the URI delimiters, will be escaped.
+	@param writer The writer used for generating the information.
+	@param uri The URI to write.
+	@exception NullPointerException if the given writer and/or URI is <code>null</code>.
+	@exception IOException if there was an error writing to the writer.
+	@see TURF#URI_BEGIN
+	@see TURF#URI_END
+	*/
+	public static void writeURI(final Writer writer, final URI uri) throws IOException
+	{
+		writeURI(writer, uri.toString());	//write the string form of the URI
+	}
+
+	/**Writes a URI surrounded by the URI short form delimiters.
 	@param writer The writer used for generating the information.
 	@param uri The URI to write.
 	@exception NullPointerException if the given writer and/or URI is <code>null</code>.
@@ -1114,11 +1308,11 @@ public class URFTURFGenerator
 	*/
 	public static void writeURI(final Writer writer, final String uri) throws IOException
 	{
-		writeString(writer, uri, URI_BEGIN, URI_END);	//write the URI using the URI short form delimiters
+		writer.append(URI_BEGIN).append(uri).append(URI_END);	//write a URI short form
 	}
 
 	/**Writes a string surrounded by specified string delimiters.
-	The usual reserved string characters, along with the given delimiters, will be escaped.
+	The usual reserved string characters, along with the string end delimiter, will be escaped.
 	@param writer The writer used for generating the information.
 	@param string The string to write.
 	@param stringBegin The beginning string delimiter.
@@ -1161,14 +1355,14 @@ public class URFTURFGenerator
 					break;
 				case START_OF_STRING_CHAR:	//start of string
 					escaped=true;	//show that we should escape the character
-					c=ESCAPED_START_OF_STRING;	//use \“ for start of string
+					c=ESCAPED_START_OF_STRING;	//use \left double quotation mark for start of string
 					break;
 				case STRING_TERMINATOR_CHAR:	//string terminator
 					escaped=true;	//show that we should escape the character
-					c=ESCAPED_STRING_TERMINATOR;	//use \” for string terminator
+					c=ESCAPED_STRING_TERMINATOR;	//use \right double quotation mark for string terminator
 					break;
 				default:
-					if(c==stringBegin || c==stringEnd)	//if this is one of the string delimiters
+					if(c==stringEnd)	//if this is one of the string ending delimiter
 					{
 						escaped=true;	//show that we should escape the character
 					}

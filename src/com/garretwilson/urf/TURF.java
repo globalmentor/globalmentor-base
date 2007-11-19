@@ -1,9 +1,13 @@
 package com.garretwilson.urf;
 
+import java.net.URI;
+import java.util.*;
+
 import static com.garretwilson.text.CharacterConstants.*;
-import static com.garretwilson.urf.URF.URF_NAME;
 
 /**Constants relating to the text serialization of URF, TURF.
+This class also provides state regarding the processing of an URF instance in TURF,
+in particular associating string prefixes to namespace URIs.
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:
@@ -12,28 +16,22 @@ written by Garret Wilson &lt;http://www.garretwilson.com/&gt; and Copyright © 2
 Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
-public class TURF
+public class TURF extends HashMap<String, URI>
 {
 
 	/**Unicode whitespace characters.*/
 	public final static char[] SEPARATORS=(PARAGRAPH_SEPARATOR_CHARS+SEGMENT_SEPARATOR_CHARS+WHITESPACE_CHARS).toCharArray();
 
-	/**The delimiter marking the beginning of the optional TURF container.*/
-	public final static char TURF_CONTAINER_DELIMITER='^';
-
-	/**The "magic number" marker indicating the beginning of TURF content.*/
-	public final static String TURF_SIGNATURE=new StringBuilder().append(TURF_CONTAINER_DELIMITER).append(URF_NAME).toString();
-
 	/**The delimiters used to a name prefix.*/
 	public final static char NAME_PREFIX_DELIMITER='.';
-	
+
 	/**The delimiter that begins binary shorthand declarations.*/
 	public final static char BINARY_BEGIN='%';
 	/**The delimiter that ends binary shorthand declarations.*/
 	public final static char BINARY_END=BINARY_BEGIN;
 
 	/**The delimiter that begins boolean shorthand declarations.*/
-	public final static char BOOLEAN_BEGIN='&';
+	public final static char BOOLEAN_BEGIN='*';
 
 	/**The delimiter that begins character shorthand declarations.*/
 	public final static char CHARACTER_BEGIN='\'';
@@ -41,9 +39,14 @@ public class TURF
 	public final static char CHARACTER_END=CHARACTER_BEGIN;
 
 	/**The delimiter that begins comments.*/
-	public final static char COMMENT_BEGIN='*';
+	public final static char COMMENT_BEGIN='\u2020';	//dagger
 	/**The delimiter that ends comments.*/
-	public final static char COMMENT_END=COMMENT_BEGIN;
+	public final static char COMMENT_END='\u2021';	//double dagger
+
+	/**The delimiter that begins community short forms.*/
+	public final static char COMMUNITY_BEGIN='\u00A4';	//currency symbol
+	/**The delimiter that ends community short forms.*/
+	public final static char COMMUNITY_END='.';
 
 	/**The delimiter that begins labels.*/
 	public final static char LABEL_BEGIN='|';
@@ -70,6 +73,11 @@ public class TURF
 	public final static char PROPERTIES_BEGIN=':';
 	/**The delimiter that ends property declarations.*/
 	public final static char PROPERTIES_END=';';
+
+	/**The delimiter that begins proposition short forms.*/
+	public final static char PROPOSITION_BEGIN=LEFT_DOUBLE_QUOTATION_MARK_CHAR;
+	/**The delimiter that ends proposition short forms.*/
+	public final static char PROPOSITION_END=RIGHT_DOUBLE_QUOTATION_MARK_CHAR;
 
 	/**The delimiter that begins regular expressions.*/
 	public final static char REGULAR_EXPRESSION_BEGIN='/';
@@ -102,10 +110,10 @@ public class TURF
 		public final static char ESCAPED_FORM_FEED='f';	//f form feed
 		public final static char ESCAPED_LINE_FEED='n';	//n line feed
 		public final static char ESCAPED_CARRIAGE_RETURN='r';	//r carriage return
-		public final static char ESCAPED_TAB='t';	//t tab	
-		public final static char ESCAPED_START_OF_STRING=LEFT_DOUBLE_QUOTATION_MARK_CHAR;	//“ start of string	
-		public final static char ESCAPED_STRING_TERMINATOR=RIGHT_DOUBLE_QUOTATION_MARK_CHAR;	//” string terminator	
-		public final static char ESCAPED_UNICODE='u';	//u Unicode	
+		public final static char ESCAPED_TAB='t';	//t tab
+		public final static char ESCAPED_START_OF_STRING=LEFT_DOUBLE_QUOTATION_MARK_CHAR;	//left double quotation mark start of string
+		public final static char ESCAPED_STRING_TERMINATOR=RIGHT_DOUBLE_QUOTATION_MARK_CHAR;	//right double quotation mark string terminator
+		public final static char ESCAPED_UNICODE='u';	//u Unicode
 
 	/**The delimiter that begins temporal declarations.*/
 	public final static char TEMPORAL_BEGIN='@';
@@ -123,14 +131,11 @@ public class TURF
 	/**The character that separates items in a list.*/
 	public final static char LIST_DELIMITER=',';
 
+	/**The character that indicates the beginning of a new scope.*/
+	public final static char SCOPE_DELIMITER='`';
+
 	/**The character that separates properties and assigned values.*/
 	public final static char PROPERTY_VALUE_DELIMITER='=';
-
-	/**The character that separates scoped properties and values.*/
-	public final static char SCOPED_PROPERTY_VALUE_DELIMITER='~';
-
-	/**The characters that can separate properties from values.*/
-	public final static char[] PROPERTY_VALUE_DELIMITERS=new char[]{PROPERTY_VALUE_DELIMITER, SCOPED_PROPERTY_VALUE_DELIMITER};
 
 	/**Characters which which a URI resource can begin.*/
 	public final static char[] URI_RESOURCE_BEGINS=new char[]{URI_BEGIN, LABEL_BEGIN, REFERENCE_BEGIN};
@@ -139,6 +144,14 @@ public class TURF
 	public final static char BOOLEAN_FALSE_BEGIN='f';
 	/**The beginning delimiter of the lexical form of the Boolean value <code>true</code>.*/
 	public final static char BOOLEAN_TRUE_BEGIN='t';
+
+	/**The "magic number" marker indicating the beginning of TURF content.*/
+	public final static String TURF_SIGNATURE="`URF";
+
+	/**The delimiter that begins the TURF preamble.*/
+	public final static char PREAMBLE_BEGIN='$';
+	/**The delimiter that ends the TURF preamble.*/
+	public final static char PREAMBLE_END=PREAMBLE_BEGIN;
 
 	/**Determines if the given character is a TURF name begin character.
 	A name begin character is a Unicode letter.
@@ -170,7 +183,7 @@ public class TURF
 	public final static boolean isName(final String string)
 	{
 		final int length=string.length();	//get the length of the string
-		if(length<1 || !isNameBeginCharacter(0))	//if the string is empty or it doesn't start with a name beginning character
+		if(length<1 || !isNameBeginCharacter(string.codePointAt(0)))	//if the string is empty or it doesn't start with a name beginning character
 		{
 			return false;	//empty strings and string starting with non-name-begin characters are not valid names
 		}
@@ -183,5 +196,4 @@ public class TURF
 		}
 		return true;	//this string passed all the tests
 	}
-
 }

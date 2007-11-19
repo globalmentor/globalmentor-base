@@ -1435,19 +1435,48 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	@param uri The URI from which a fragment should be removed.
 	@return The URI with the fragment, if any, removed.
 	@exception NullPointerException if the given URI is <code>null</code>.
+	@see #replaceRawFragment(URI, String)
 	*/
 	public static URI removeFragment(final URI uri)
 	{
-		final String fragment=uri.getRawFragment();	//get the raw fragment, if any
-		if(fragment!=null)	//if there is a fragment
+		return replaceRawFragment(uri, null);	//replace the raw fragment, if any, with nothing
+	}
+
+	/**Returns a URI with its fragment, if any, replaced.
+	@param uri The URI from which a fragment should be removed.
+	@param newRawFragment The new encoded fragment, or <code>null</code> if the URI should have no fragment.
+	@return The URI with the fragment, if any, removed and replaced with the given raw fragment, if any.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	*/
+	public static URI replaceRawFragment(final URI uri, final String newRawFragment)
+	{
+		final String oldRawFragment=uri.getRawFragment();	//get the raw fragment, if any
+		if(oldRawFragment!=null)	//if there is currently a fragment
 		{
-			final String uriString=uri.toString();	//get the string representation of the URI
-			assert uriString.endsWith(new StringBuilder().append(FRAGMENT_SEPARATOR).append(fragment).toString());
-			return URI.create(uriString.substring(0, uriString.length()-fragment.length()-1));	//create a URI without the fragment separator and the fragment
+			final int oldRawFragmentLength=oldRawFragment.length();	//get theh length of the current raw fragment
+			final StringBuilder uriStringBuilder=new StringBuilder(uri.toString());	//get the string representation of the URI
+			final int uriLength=uriStringBuilder.length();	//get the length of the URI
+			assert uriStringBuilder.toString().endsWith(new StringBuilder().append(FRAGMENT_SEPARATOR).append(oldRawFragment).toString());
+			if(newRawFragment!=null)	//if a new raw fragment was given
+			{
+				uriStringBuilder.replace(uriLength-oldRawFragmentLength, uriLength, newRawFragment);	//replace the old fragment with the new one
+			}
+			else	//if no new raw fragment was given
+			{
+				uriStringBuilder.delete(uriLength-oldRawFragmentLength-1, uriLength);	//delete the entire fragment
+			}
+			return URI.create(uriStringBuilder.toString());	//create a URI from the new URI string
 		}
 		else	//if there is no fragment
 		{
-			return checkInstance(uri, "URI cannot be null.");	//return the original URI
+			if(newRawFragment!=null)	//if a new raw fragment was given
+			{
+				return URI.create(uri.toString()+FRAGMENT_SEPARATOR+newRawFragment);	//append the new raw fragment
+			}
+			else	//if no new raw fragment was given
+			{
+				return checkInstance(uri, "URI cannot be null.");	//return the original URI
+			}
 		}
 	}
 

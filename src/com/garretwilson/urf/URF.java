@@ -11,12 +11,12 @@ import java.util.regex.*;
 import javax.mail.internet.ContentType;
 
 import static com.garretwilson.lang.BooleanUtilities.*;
+import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.CharacterUtilities.*;
 import com.garretwilson.lang.ClassUtilities;
 import com.garretwilson.lang.LongUtilities;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
-
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIUtilities.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
@@ -57,14 +57,14 @@ public class URF
 	public final static URI URF_LEXICAL_NAMESPACE_BASE_URI=URI.create(URF_LEXICAL_NAMESPACE_BASE);
 	
 		//classes 
-	/**The URI of the URF <code>List</code> class.*/
-	public final static URI LIST_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "List");
 	/**The URI of the URF <code>Binary</code> class.*/
 	public final static URI BINARY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Binary");
 	/**The URI of the URF <code>Boolean</code> class.*/
 	public final static URI BOOLEAN_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Boolean");
 	/**The URI of the URF <code>Character</code> class.*/
 	public final static URI CHARACTER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Character");
+	/**The URI of the URF <code>Community</code> class.*/
+	public final static URI COMMUNITY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Community");
 	/**The URI of the URF <code>Date</code> class.*/
 	public final static URI DATE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Date");
 	/**The URI of the URF <code>DateTime</code> class.*/
@@ -75,12 +75,16 @@ public class URF
 	public final static URI INTEGER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Integer");
 	/**The URI of the URF <code>Language</code> class.*/
 	public final static URI LANGUAGE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Language");
+	/**The URI of the URF <code>List</code> class.*/
+	public final static URI LIST_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "List");
 	/**The URI of the URF <code>Map</code> class.*/
 	public final static URI MAP_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Map");
 	/**The URI of the URF <code>Number</code> class.*/
 	public final static URI NUMBER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Number");
 	/**The URI of the URF <code>Ordinal</code> class.*/
 	public final static URI ORDINAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Ordinal");
+	/**The URI of the URF <code>Proposition</code> class.*/
+	public final static URI PROPOSITION_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Proposition");
 	/**The URI of the URF <code>Real</code> class.*/
 	public final static URI REAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Real");
 	/**The URI of the URF <code>RegularExpression</code> class.*/
@@ -99,17 +103,24 @@ public class URF
 	public final static URI UTC_OFFSET_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "UTCOffset");
 	/**The URI of the URF <code>URI</code> class.*/
 	public final static URI URI_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "URI");
+
 		//properties
 	/**The URI of the property indicating an element of a container such as a set.*/
 	public final static URI ELEMENT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "element");
-	/**An initialization argument to be used in resource construction.*/
-	public final static URI INIT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "init");
+	/**A list of initialization arguments to be used in resource construction.*/
+	public final static URI INITS_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "inits");
 	/**A short name meant for human consumption which is perhaps more appropriate than display of the class or property name but perhaps less complete than a full title.*/
 	public final static URI LABEL_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "label");
 	/**The name of a resource meant for machine processing, which may differ from that indicated by the URI, if any.*/
 	public final static URI NAME_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "name");
+	/**The URI of the URF object property.*/
+	public final static URI OBJECT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "object");
 	/**The URI of the URF order property.*/
 	public final static URI ORDER_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "order");
+	/**The URI of the URF predicate property.*/
+	public final static URI PREDICATE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "predicate");
+	/**The URI of the URF subject property.*/
+	public final static URI SUBJECT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "subject");
 	/**The URI of the URF type property.*/
 	public final static URI TYPE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "type");
 
@@ -198,88 +209,116 @@ public class URF
 		}
 
 	/**Creates a resource URI from a given namespace URI and a local name.
-	If the namespace URI is a hierarchical URI that ends with a path separator, the local name is encoded and appended to the URI.
-	Otherwise, the local name is encoded and added as a fragment.
+	If the namespace URI has no fragment and is a hierarchical URI that ends with a path separator, the local name is encoded and appended to the URI.
+	If the namespace URI has no fragment and is not a hierarchical URI or does not end with a path separator, the local name is encoded and added as a fragment.
+	If the namespace URI has a fragment that does not end in a path separator, a path separator followed by the encoded local name is appended to the fragment.
 	@param namespaceURI The URI of the namespace.
 	@param localName The unencoded local name of the resource.
 	@return A URI constructed from the given namespace URI and local name.
 	@exception NullPointerException if the given namespace URI and/or local name is <code>null</code>.
-	@exception IllegalArgumentException if the given namespace URI has a fragment.
+	@exception IllegalArgumentException if the given namespace URI has a fragment that ends with a path separator.
 	*/
 	public static URI createResourceURI(final URI namespaceURI, final String localName)
 	{
-		if(namespaceURI.getRawFragment()!=null)	//if the supposed namespace URI has a fragment (namespaces can't have fragments)
-		{
-			throw new IllegalArgumentException("Invalid namespace URI: "+namespaceURI);
-		}
-		final String namespaceURIString=namespaceURI.toString();	//get the string form of the namespace
 		final String encodedLocalName=encodeURI(localName);	//encode the local name
-		final int namespaceURIStringLength=namespaceURIString.length();	//get the length of the namespace URI string
-		if(namespaceURIStringLength>0 && namespaceURIString.charAt(namespaceURIStringLength-1)==PATH_SEPARATOR)	//if the string ends with a path separator
+		final String rawFragment=namespaceURI.getRawFragment();	//get the namespace URI fragment, if any
+		if(rawFragment!=null)	//if there is a fragment
 		{
-			return URI.create(namespaceURIString+encodedLocalName);	//append the encoded name to the URI
+			if(endsWith(rawFragment, PATH_SEPARATOR))	//if the raw fragment ends with a path separator
+			{
+				throw new IllegalArgumentException("Invalid namespace URI: "+namespaceURI);				
+			}
+			return replaceRawFragment(namespaceURI, rawFragment+PATH_SEPARATOR+encodedLocalName);	//append the encoded local name to the fragment after a path separator
 		}
-		else	//if the string ends with any other character
+		else	//if there is no fragment
 		{
-			return resolveFragment(namespaceURI, encodedLocalName);	//add the local name as a fragment
+			final String namespaceURIString=namespaceURI.toString();	//get the string form of the namespace
+			final int namespaceURIStringLength=namespaceURIString.length();	//get the length of the namespace URI string
+			if(endsWith(namespaceURIString, PATH_SEPARATOR))	//if the string ends with a path separator
+			{
+				return URI.create(namespaceURIString+encodedLocalName);	//append the encoded name to the URI
+			}
+			else	//if the string ends with any other character
+			{
+				return resolveFragment(namespaceURI, encodedLocalName);	//add the local name as a fragment
+			}
 		}
 	}
 
 	/**Retrieves the namespace from the given URI.
-	The namespace is the URI with no fragment, if there is a fragment; or the parent collection of a hierarchical URI that is not itself a collection.
-	If the URI has no fragment or no non-collection name, it is considered to have no local name and therefore no namespace, as the URI is the namespace URI itself.
+	If the URI has a fragment that does not end with a path separator,
+	the namespace URI is the URI with the last path separator and following characters of the fragment removed,
+	or the URI with no fragment if the fragment does not contain a path separator.
+	If the URI has no fragment and is a hierarchical URI that does not end with a path separator, the namespace URI is the parent collection.
 	@param uri The URI from which a namespace should be retrieved.
-	@return The namespace represented by the given URI, or <code>null</code> if the URI has no fragment and therefore is not in a namespace.
+	@return The namespace represented by the given URI, or <code>null</code> if the URI has no fragment and ends with a path separator, or if the URI has a fragment that ends with a path separator.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static URI getNamespaceURI(final URI uri)
 	{
-		if(uri.getRawFragment()!=null)	//if the URI has a fragment
+		final String rawFragment=uri.getRawFragment();	//get the URI fragment, if any
+		if(rawFragment!=null)	//if the URI has a fragment
 		{
-			return removeFragment(uri);	//remove the fragment to get the namespace
-		}
-		else	//check for a path-based namespace
-		{
-			final String rawPath=uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath();	//get the raw path, using the scheme-specific part of any info URI
-			if(rawPath!=null)	//if there is a raw path
+			final int lastRawFragmentPathSeparatorIndex=rawFragment.lastIndexOf(PATH_SEPARATOR);	//see if the raw fragment has a path separator
+			if(lastRawFragmentPathSeparatorIndex>=0)	//if there is a path separator in the fragment
 			{
-				final int rawPathLength=rawPath.length();	//get the length of the raw path
-				if(rawPathLength>0 && rawPath.charAt(rawPathLength-1)!=PATH_SEPARATOR)	//if there is a raw path that isn't a collection
+				if(lastRawFragmentPathSeparatorIndex!=rawFragment.length()-1)	//if the path separator is not the last character in the fragment
 				{
-					return getCurrentLevel(uri);	//return the base level of the URI without the local name
+					return replaceRawFragment(uri, rawFragment.substring(0, lastRawFragmentPathSeparatorIndex));	//remove the last path separator and everything after it from the fragment
 				}
+			}
+			else	//if the fragment has no path separator
+			{
+				return removeFragment(uri);	//remove the fragment to get the namespace
+			}
+		}
+		else	//if there is no fragment, check for a path-based namespace
+		{
+			final String rawPath=uri.getRawPath();	//get the raw path
+			if(rawPath!=null && !endsWith(rawPath, PATH_SEPARATOR))	//if there is a raw path that isn't a collection
+			{
+				return getCurrentLevel(uri);	//return the base level of the URI without the local name
 			}
 		}
 		return null;	//indicate that this URI has no namespace
 	}
 
 	/**Retrieves the local name from the given URI.
-	The local name is the decoded fragment of the URI, if there is a fragment; or the decoded name of a hierarchical URI that is not a collection.
-	If the URI has no fragment or no non-collection name, it is considered to have no local name.
-	@param uri The URI from which a local name should be retrieved.
-	@return The decoded local name represented by the given URI, or <code>null</code> if the given URI has no local name.
+	If the URI has a fragment that does not end with a path separator,
+	the local name consists of the decoded characters following the last path separator of the fragment,
+	or the the decoded fragment if the fragment does not contain a path separator.
+	If the URI has no fragment and is a hierarchical URI that does not end with a path separator, the local name is the decoded last path segment of the URI.
+	@param uri The URI from which a namespace should be retrieved.
+	@return The namespace represented by the given URI, or <code>null</code> if the URI has no fragment and ends with a path separator, or if the URI has a fragment that ends with a path separator.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static String getLocalName(final URI uri)
 	{
-		final String fragment=uri.getFragment();	//get the URI fragment
-		if(fragment!=null)	//if there is a fragment
+		final String rawFragment=uri.getRawFragment();	//get the URI fragment, if any
+		if(rawFragment!=null)	//if the URI has a fragment
 		{
-			return fragment;	//return the fragment
-		}
-		else	//if there is no fragment
-		{
-			final String rawPath=uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath();	//get the raw path, using the scheme-specific part of any info URI
-			if(rawPath!=null)	//if there is a raw path
+			final int lastRawFragmentPathSeparatorIndex=rawFragment.lastIndexOf(PATH_SEPARATOR);	//see if the raw fragment has a path separator
+			if(lastRawFragmentPathSeparatorIndex>=0)	//if there is a path separator in the fragment
 			{
-				final int rawPathLength=rawPath.length();	//get the length of the raw path
-				if(rawPathLength>0 && rawPath.charAt(rawPathLength-1)!=PATH_SEPARATOR)	//if there is a raw path that isn't a collection
+				if(lastRawFragmentPathSeparatorIndex!=rawFragment.length()-1)	//if the path separator is not the last character in the fragment
 				{
-					return getName(rawPath);	//return the name from the raw path
+					return decode(rawFragment.substring(lastRawFragmentPathSeparatorIndex+1));	//the local name is determined by decoding the characters after the last path separator
 				}
 			}
+			else	//if the fragment has no path separator
+			{
+				return decode(rawFragment);	//the local name name is the decoded fragment
+			}
 		}
-		return null;	//indicate that this URI has no local name
+		else	//if there is no fragment, check for a path-based namespace
+		{
+			final String rawPath=uri.getRawPath();	//get the raw path
+			if(rawPath!=null && !endsWith(rawPath, PATH_SEPARATOR))	//if there is a raw path that isn't a collection
+			{
+				return getName(rawPath);	//return the name from the raw path
+			}
+		}
+		return null;	//indicate that this URI has no namespace
 	}
 
 	/**Determines whether the given URI is in a lexical namespace.
@@ -1351,6 +1390,16 @@ public class URF
 			addResource(property.getValue());	//add this property value resource
 			addPropertyValues(property.getScope(), addedResources);	//add all property values from the property-value's scope recursively
 		}
+	}
+
+	/**Determines whether a resource exists in the data model.
+	@param resourceURI The URI of the resource for which to check.
+	@return <code>true</code> if a resource with the given URI exists in the data model.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	*/
+	public boolean containsResource(final URI resourceURI)
+	{
+		return resourceMap.containsKey(checkInstance(resourceURI, "Resource URI cannot be null.")); //determine whether the resource exists
 	}
 
 	/**Retrieves an identified resource from the data model using its URI.

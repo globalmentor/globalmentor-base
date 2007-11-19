@@ -209,25 +209,20 @@ public class PLOOPURFProcessor
 				Constructor<?> constructor=null;	//we'll store an appropriate constructor here
 				Object[] arguments=null;	//we'll keep track of the arguments here
 				final Constructor<?>[] constructors=valueClass.getConstructors();	//get all available constructors
-				if(resource.hasProperty(INIT_PROPERTY_URI))	//if this resource has any init properties indicating constructor arguments
+				final URFListResource<?> inits=resource.getInits();	//get the list of inits of the resource, if any
+				if(inits!=null)	//if inits were specified
 				{
-					final List<Object> inits=new ArrayList<Object>();	//create a new list to hold the arguments
-					for(final URFProperty parameterProperty:resource.getProperties(INIT_PROPERTY_URI))	//look at all the init properties
-					{
-						inits.add(getObject(parameterProperty.getValue()));	//get an object for this init
-					}
 					final int argumentCount=inits.size();	//see how many init arguments there are
 					for(final Constructor<?> candidateConstructor:constructors)	//look at each constructor to find one with the correct number of parameters
 					{
 						final Class<?>[] parameterTypes=candidateConstructor.getParameterTypes();	//get the parameter types for this constructor
 						if(parameterTypes.length==argumentCount)	//if this constructor has the correct number of parameters
 						{
-//							boolean foundArguments=true;	//start out by assuming the parameters match
 							arguments=new Object[argumentCount];	//create an array sufficient for the arguments
 							for(int parameterIndex=0; parameterIndex<argumentCount; ++parameterIndex)	//for each parameter, as long we we have matching parameters
 							{
 								final Class<?> parameterType=parameterTypes[parameterIndex];	//get this parameter type
-								final Object argument=convertObject(inits.get(parameterIndex), parameterType);	//convert the init to the correct type
+								final Object argument=convertObject(getObject(inits.get(parameterIndex)), parameterType);	//get an object from the init and covert it to the correct type
 								if(argument!=null)	//if we successfully converted this constructor argument
 								{
 									arguments[parameterIndex]=argument;	//store the argument
@@ -247,10 +242,10 @@ public class PLOOPURFProcessor
 					}
 					if(constructor==null)	//if we didn't find an appropriate constructor
 					{
-						throw new DataException("Value class "+valueClass+" does not have a constructor appropriate for the specified init parameters.");
+						throw new DataException("Value class "+valueClass+" does not have a constructor appropriate for the specified init parameters: "+CollectionUtilities.toString(inits));
 					}
 				}
-				else	//if there are no urf.init properties
+				else	//if there is no urf.inits properties
 				{
 					if(Resource.class.isAssignableFrom(valueClass))	//if the value class is a Resource, see if we can create it with a single URI TODO probably remove check and allow any single URI contructor, even for non-resources
 					{
@@ -441,7 +436,7 @@ public class PLOOPURFProcessor
 	*/
 	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URFResource resource) throws DataException, InvocationTargetException
 	{
-		return getPropertyDescriptionMap(objectClass, resource, createJavaURI(objectClass.getPackage()));	//get a property description map using the class namespace
+		return getPropertyDescriptionMap(objectClass, resource, createJavaURI(objectClass));	//get a property description map using the class namespace
 	}
 
 	/**Constructs a map of property descriptions for a class based upon a resource description.

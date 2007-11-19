@@ -39,19 +39,19 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 {
 
 	/**The set of known namespace URIs.*/
-	public final static Set<URI> KNOWN_NAMESPACE_URI_SET;
+	public final static Set<URI> KNOWN_NAMESPACE_URIS;
 
 	static	//add the default namespaces
 	{
-		final Set<URI> tempKnownNamespaceSet=new HashSet<URI>();	//create a temporary set to fill
-		tempKnownNamespaceSet.add(ApacheWebDAVConstants.APACHE_WEBDAV_PROPERTY_NAMESPACE_URI);	//Apache WebDAV properties
-		tempKnownNamespaceSet.add(URI.create("http://example.com/example"));	//example
-		tempKnownNamespaceSet.add(FOAF.FOAF_NAMESPACE_URI);	//FOAF
-		tempKnownNamespaceSet.add(URF.URF_NAMESPACE_URI);	//URF
-		tempKnownNamespaceSet.add(Content.CONTENT_NAMESPACE_URI);	//URF Content
-		tempKnownNamespaceSet.add(Select.SELECT_PROPERTY_NAME_PROPERTY_URI);	//URF Select
-		tempKnownNamespaceSet.add(VCard.VCARD_NAMESPACE_URI);	//URF VCard
-		KNOWN_NAMESPACE_URI_SET=unmodifiableSet(tempKnownNamespaceSet);	//store a static read-only set
+		final Set<URI> knownNamespaceURIs=new HashSet<URI>();	//create a temporary set to fill
+		knownNamespaceURIs.add(ApacheWebDAVConstants.APACHE_WEBDAV_PROPERTY_NAMESPACE_URI);	//Apache WebDAV properties
+		knownNamespaceURIs.add(URI.create("http://example.com/example"));	//example
+		knownNamespaceURIs.add(FOAF.FOAF_NAMESPACE_URI);	//FOAF
+		knownNamespaceURIs.add(URF.URF_NAMESPACE_URI);	//URF
+		knownNamespaceURIs.add(Content.CONTENT_NAMESPACE_URI);	//URF Content
+		knownNamespaceURIs.add(Select.SELECT_PROPERTY_NAME_PROPERTY_URI);	//URF Select
+		knownNamespaceURIs.add(VCard.VCARD_NAMESPACE_URI);	//URF VCard
+		KNOWN_NAMESPACE_URIS=unmodifiableSet(knownNamespaceURIs);	//store a static read-only set
 	}
 
 	/**The default map of namespace-label mappaings.*/
@@ -86,7 +86,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 //TODO del		tempNamespaceURIPrefixMap.put(FileOntologyConstants.FILE_ONTOLOGY_NAMESPACE_URI, FileOntologyConstants.FILE_ONTOLOGY_NAMESPACE_PREFIX); //XPackage file ontology
 //TODO add XPackage Unicode ontology
 //TODO del		tempNamespaceURIPrefixMap.put(MIMEOntologyConstants.MIME_ONTOLOGY_NAMESPACE_URI, MIMEOntologyConstants.MIME_ONTOLOGY_NAMESPACE_PREFIX); //XPackage MIME ontology
-		for(final URI knownNamespaceURI:KNOWN_NAMESPACE_URI_SET)	//for each known namespace
+		for(final URI knownNamespaceURI:KNOWN_NAMESPACE_URIS)	//for each known namespace
 		{
 			if(!tempNamespaceURILabelMap.containsKey(knownNamespaceURI))	//if we haven't added a special namespace label for this namespace
 			{
@@ -154,7 +154,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 				{
 					label=name;	//use the name as the label
 				}
-				if(label==null)	//if we didn't find a Java package namespace label
+				if(label==null)	//if we didn't find a label from the URI name
 				{
 					label=generateLabel(); //generate a unique namespace label
 				}

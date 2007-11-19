@@ -48,9 +48,8 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	}
 
 	/**Parses all resources and then processes the resulting URF instance.
-	The TURF may be surrounded by a TURF container, which must come at the beginning of the data.
-	If a TURF container is present, the new position will be that of the first character after the TURF container. 
-	If a TURF container is not present, the new position will be the end of the reader,
+	The current position must be that of the TURF signature, {@value TURF#TURF_SIGNATURE}}.
+	The new position will be the end of the reader,
 	and any data appearing after the resources will be considered a syntax error.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
@@ -61,29 +60,59 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	public List<URFResource> process(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
-		final boolean hasContainer;
-		int c=peek(reader);	//peek the next character
-		if(c==TURF_CONTAINER_DELIMITER)	//check for a TURF container
+		final TURF turf=new TURF();	//create new TURF
+		check(reader, TURF_SIGNATURE);	//read the TURF signature
+		int c=skipSeparators(reader);	//skip separators
+		if(c==PREAMBLE_BEGIN)	//check for a TURF preamble
 		{
-			hasContainer=true;	//there's a container
-			check(reader, TURF_SIGNATURE);	//verify the TURF signature
-			skipSeparators(reader);	//skip separators
-			check(reader, LIST_BEGIN);	//read the beginning container list delimiter
+			check(reader, PREAMBLE_BEGIN);	//read the beginnign preamble delimiter			
+			c=skipSeparators(reader);	//skip separators and peek the next character
+			if(c!=PREAMBLE_END)	//if this is not an empty preamble
+			{
+				try
+				{
+					while(c>=0)	//while the end of the data has not been reached
+					{
+						final URI namespacePrefixResourceURI=parseReference(reader, baseURI);	//parse a reference to the namespace prefix
+						final String namespacePrefix=asString(namespacePrefixResourceURI);	//get the namespace prefix
+						if(namespacePrefix==null)	//if there is no namespace prefix
+						{
+							throw new DataException("Expected namespace prefix reference"+(namespacePrefixResourceURI!=null ? "; found: "+namespacePrefixResourceURI : "."));
+						}
+						skipSeparators(reader);	//skip separators
+						check(reader, PROPERTY_VALUE_DELIMITER);	//read the property value delimiter
+						skipSeparators(reader);	//skip separators
+						final URI namespaceURIResourceURI=parseReference(reader, baseURI);	//parse a reference to the namespace URI
+						final URI namespaceURI=asURI(namespaceURIResourceURI);	//get the namespace URI
+						if(namespaceURI==null)	//if there is no namespace URI
+						{
+							throw new DataException("Expected namespace URI; found reference: "+namespaceURIResourceURI);
+						}
+						turf.put(namespacePrefix, namespaceURI);	//store the TURF namespace prefix association
+						c=skipSeparators(reader);	//skip separators and peek the next character
+						if(c==LIST_DELIMITER)	//if this is a list delimiter
+						{
+							check(reader, LIST_DELIMITER);	//skip the list delimiter
+							c=skipSeparators(reader);	//skip separators and peek the next character
+						}
+						else	//if there's anything besides a list delimiter, we've reached the end of the properties
+						{
+							break;	//stop parsing the list
+						}
+					}
+				}
+				catch(final DataException dataException)
+				{
+					throw new ParseIOException(reader, dataException);
+				}
+			}
+			check(reader, PREAMBLE_END);	//read the ending preamble delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
-		else	//if no container was detected
-		{
-			hasContainer=false;	//there is no container
-		}
+		check(reader, COMMUNITY_BEGIN);	//read the beginning instance community delimiter
 		skipSeparators(reader);	//skip separators
-		final List<URFResource> urfResourceList=processResources(reader, baseURI, hasContainer ? LIST_END : NULL_CHAR);	//process resources, indicating the end of the container character if appropriate
-		if(hasContainer)	//if there was a container
-		{
-			check(reader, LIST_END);	//read the ending container list delimiter
-		}
-		else	//if there was no container
-		{
-			checkReaderEnd(reader);	//make sure we're at the end of data
-		}
+		final List<URFResource> urfResourceList=processResources(reader, baseURI, COMMUNITY_END, turf);	//process resources, indicating the end of the instance community
+		check(reader, COMMUNITY_END);	//read the ending community delimiter
 		return urfResourceList;	//return the URF resources parsed
 	}
 
@@ -99,7 +128,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	public List<URFResource> processResources(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
-		return processResources(reader, baseURI, NULL_CHAR);	//parse the resources, with no particular end of list indicated
+		return processResources(reader, baseURI, NULL_CHAR, new TURF());	//parse the resources, with no particular end of list indicated
 	}
 
 	/**Parses a list of resources resources and then processes the resulting URF instance.
@@ -108,15 +137,16 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param listEnd The character that marks the end of the list.
+	@param turf Information regarding the TURF instance being processed.
 	@return A list of the top-level resources parsed.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if a resource in the list is missing, or if the reader has no more characters before a resource in the list is completely parsed.
 	*/
-	protected List<URFResource> processResources(final Reader reader, final URI baseURI, final char listEnd) throws IOException, ParseIOException
+	protected List<URFResource> processResources(final Reader reader, final URI baseURI, final char listEnd, final TURF turf) throws IOException, ParseIOException
 	{
 		reset();	//make sure we don't have temporary data left over from last time
-		final List<Resource> resources=parseResourceList(reader, baseURI, listEnd);	//parse the list of resources
+		final List<Resource> resources=parseResourceList(reader, baseURI, listEnd, turf);	//parse the list of resources
 		final List<URFResource> urfResources;	//we'll create a separate list of the URF resources corresponding to the resource proxies
 		try
 		{
@@ -149,15 +179,15 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		int c;	//we'll store the next non-separator character here so that it can be returned
 		while((c=skip(reader, SEPARATORS))==COMMENT_BEGIN)	//skip all separators; if the start of a comment was encountered
 		{
-			check(reader, COMMENT_END);	//read the beginning comment delimiter
+			check(reader, COMMENT_BEGIN);	//read the beginning comment delimiter
 			pass(reader, COMMENT_END);	//skip past the end of the comment; we'll then skip all separator characters and see if another comment starts
 		}
 		return c;	//return the last character read
 	}
 
 	/**Parses a single resource and returns a proxy to the resource.
-	The current position must be that of a separator or that of the first character of the first resource in the list.
-	The new position will be that of the first non-separator character after the resources or the end of the reader.
+	The current position must be that of the first character of the resource.
+	The new position will be that of the first non-separator character after the resource or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The resource parsed from the reader.
@@ -167,25 +197,26 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	public Resource parseResource(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
-		return parseResource(reader, baseURI, null);	//parse a resource with no context URI
+		return parseResource(reader, baseURI, null, new TURF());	//parse a resource with no context URI or namespace prefixes
 	}
 
 	/**Parses a single resource and returns a proxy to the resource.
-	The current position must be that of a separator or that of the first character of the first resource in the list.
-	The new position will be that of the first non-separator character after the resources or the end of the reader.
+	The current position must be that of the first character of the resource.
+	The new position will be that of the first non-separator character after the resource or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param contextURI The URI serving as context in case the default namespace needs to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
+	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is allowed; for properties, this is the URI of the first type short form.
+	@param turf Information regarding the TURF instance being processed.
 	@return The resource parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current resource is completely parsed.
 	*/
-	public Resource parseResource(final Reader reader, final URI baseURI, final URI contextURI) throws IOException, ParseIOException
+	public Resource parseResource(final Reader reader, final URI baseURI, final URI defaultNamespaceURI, final TURF turf) throws IOException, ParseIOException
 	{
 		try
 		{
-			return parseResource(reader, baseURI, null, null, null, contextURI);	//parse a resource with no scope
+			return parseResource(reader, baseURI, null, null, null, defaultNamespaceURI, turf);	//parse a resource with no scope
 		}
 		catch(final DataException dataException)
 		{
@@ -193,9 +224,9 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		}
 	}
 
-	/**Parses a single optionally scoped resource and returns a proxy to the resource.
-	The current position must be that of a separator or that of the first character of the first resource in the list.
-	The new position will be that of the first non-separator character after the resources or the end of the reader.
+	/**Parses a single optionally scoped resource with no default namespace URI and returns a proxy to the resource.
+	The current position must be that of the first character of the resource.
+	The new position will be that of the first non-separator character after the resource or the end of the reader.
 	For every resource that is being parsed as the object of a subject and predicate, the scope base, scope chain, and scope predicate must all be non-<code>null</code>.
 	Whenever the scope chain is lengthened it must first be cloned so that the local version will not be modified during recursion.
 	@param reader The reader the contents of which to be parsed.
@@ -203,18 +234,40 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	@param scopeBase The base resource of the current scope, or <code>null</code> if the current resource is not in an object context.
 	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
 	@param scopePredicate The predicate for which the new resource is a value, or <code>null</code> if the current resource is not in an object context.
-	@param contextURI The URI serving as context in case the default namespace needs to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
+	@param turf Information regarding the TURF instance being processed.
 	@return The resource parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current resource is completely parsed.
 	@exception DataException if there was an error with information being processed.
 	*/
-	protected Resource parseResource(final Reader reader, final URI baseURI, final Resource scopeBase, final ArrayList<NameValuePair<Resource, Resource>> scopeChain, final Resource scopePredicate, final URI contextURI) throws IOException, ParseIOException, DataException
+	protected Resource parseResource(final Reader reader, final URI baseURI, final Resource scopeBase, final ArrayList<NameValuePair<Resource, Resource>> scopeChain, final Resource scopePredicate, final TURF turf) throws IOException, ParseIOException, DataException
+	{
+		return parseResource(reader, baseURI, scopeBase, scopeChain, scopePredicate, null, turf);	//parse the resource with no default namespace URI
+	}
+
+	/**Parses a single optionally scoped resource and returns a proxy to the resource.
+	The current position must be that of the first character of the resource.
+	The new position will be that of the first non-separator character after the resource or the end of the reader.
+	For every resource that is being parsed as the object of a subject and predicate, the scope base, scope chain, and scope predicate must all be non-<code>null</code>.
+	Whenever the scope chain is lengthened it must first be cloned so that the local version will not be modified during recursion.
+	@param reader The reader the contents of which to be parsed.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param scopeBase The base resource of the current scope, or <code>null</code> if the current resource is not in an object context.
+	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
+	@param scopePredicate The predicate for which the new resource is a value, or <code>null</code> if the current resource is not in an object context.
+	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is allowed; for properties, this is the URI of the first type short form.
+	@param turf Information regarding the TURF instance being processed.
+	@return The resource parsed from the reader.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters before the current resource is completely parsed.
+	@exception DataException if there was an error with information being processed.
+	*/
+	protected Resource parseResource(final Reader reader, final URI baseURI, final Resource scopeBase, final ArrayList<NameValuePair<Resource, Resource>> scopeChain, final Resource scopePredicate, final URI defaultNamespaceURI, final TURF turf) throws IOException, ParseIOException, DataException
 	{
 		final URF urf=getURF();	//get the URF data model
 		String label=null;	//the label of the resource, if any
-		URI resourceURI=null;	//the URI of the resource, if any
 		final List<Resource> types=new ArrayList<Resource>();	//we'll keep track of all the types we find
 		boolean foundComponent=false;	//we'll keep track of whether at least one description component was present
 		int c=peek(reader);	//peek the next character
@@ -224,127 +277,11 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			label=parseLabel(reader);	//parse the label
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
-		switch(c)	//check for a reference or a short form
+		final URI resourceURI=parseReference(reader, baseURI, defaultNamespaceURI, turf);	//parse a reference to the resource, if any
+		if(resourceURI!=null)	//if we parsed a reference
 		{
-			case REFERENCE_BEGIN:
-				foundComponent=true;	//indicate that at least one description component is present
-				resourceURI=parseURI(reader, baseURI, contextURI, REFERENCE_BEGIN, REFERENCE_END);	//parse the resource URI
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				break;
-			case BINARY_BEGIN:	//binary
-				foundComponent=true;	//indicate that at least one description component is present
-				{
-					final byte[] binary=parseBinary(reader);	//parse the binary data
-					resourceURI=createBinaryURI(binary);	//create a URI for the resource
-				}
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				break;
-			case BOOLEAN_BEGIN:	//boolean
-				foundComponent=true;	//indicate that at least one description component is present
-				{
-					final boolean b=parseBoolean(reader);	//parse the boolean
-					resourceURI=createLexicalURI(BOOLEAN_CLASS_URI, Boolean.toString(b));	//create a URI for the resource
-				}
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				break;
-			case NUMBER_BEGIN:	//number
-				foundComponent=true;	//indicate that at least one description component is present
-				{
-					final Number number=parseNumber(reader, NUMBER_BEGIN, true, true, true);	//parse the number, allowing negative, decimal, and exponents
-					final URI lexicalTypeURI;	//determine which type of number this is
-					if(number instanceof Integer || number instanceof Long || number instanceof BigInteger)	//if this is an integer
-					{
-						lexicalTypeURI=INTEGER_CLASS_URI;	//we'll create an integer URI for the resource
-					}
-					else if(number instanceof Float || number instanceof Double || number instanceof BigDecimal)	//if this is an real
-					{
-						lexicalTypeURI=REAL_CLASS_URI;	//create a real URI for the resource
-					}
-					else	//if we don't recognize the number type
-					{
-						throw new AssertionError("Unrecognized number type produced: "+number.getClass());
-					}
-					resourceURI=createLexicalURI(lexicalTypeURI, number.toString());	//create a URI for the resource
-				}
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				break;
-			case ORDINAL_BEGIN:	//number
-				foundComponent=true;	//indicate that at least one description component is present
-				{
-					final Number ordinal=parseNumber(reader, ORDINAL_BEGIN, false, false, false);	//parse the number, only allowing positive integers (which should produce an integer object)
-					resourceURI=createOrdinalURI(ordinal.longValue());	//create an ordinal URI for the resource
-				}
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				break;
-			case REGULAR_EXPRESSION_BEGIN:	//regular expression
-				foundComponent=true;	//indicate that at least one description component is present
-				{
-					final String regularExpressionString=parseString(reader, REGULAR_EXPRESSION_BEGIN, REGULAR_EXPRESSION_END);	//parse the regular expression string
-					resourceURI=createLexicalURI(REGULAR_EXPRESSION_CLASS_URI, regularExpressionString);	//create a URI for the regular expression
-				}
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				break;
-			case STRING_BEGIN:	//string
-				foundComponent=true;	//indicate that at least one description component is present
-				{
-					final String string=parseString(reader, STRING_BEGIN, STRING_END);	//parse the string
-					resourceURI=createLexicalURI(STRING_CLASS_URI, string);	//create a URI for the string
-				}
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				break;
-			case TEMPORAL_BEGIN:	//temporal
-				foundComponent=true;	//indicate that at least one description component is present
-				resourceURI=parseTemporal(reader);	//parse the temporal
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				break;
-			case URI_BEGIN:	//URI
-				foundComponent=true;	//indicate that at least one description component is present
-				{
-					final URI uri=parseURI(reader, baseURI, contextURI, URI_BEGIN, URI_END);	//parse the URI
-					resourceURI=createLexicalURI(URI_CLASS_URI, uri.toString());	//create a URI for the resource
-				}
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				break;
-			default:	//if there was some other character, see if it's a name reference
-				if(isNameBeginCharacter(c))	//if this is a name begin character
-				{
-					final NameValuePair<String, String> name=parseNameReference(reader);	//parse the name reference
-					final URI namespaceURI;	//we'll determine the namespace URI
-					final String prefix=name.getName();	//get the name prefix
-					final String localName=name.getValue();	//get the name local name
-					if(prefix!=null)	//if there is a prefix, see to which namespace URI it refers
-					{
-						final Resource namespaceURIResource=getResourceProxy(prefix);	//lookup up the resource indicating the namespace
-						if(namespaceURIResource==null)	//if there is no resource yet defined for the namespace URI
-						{
-							throw new DataException("No namespace URI resource defined for prefix "+prefix+".");
-						}
-						namespaceURI=toURI(reader, namespaceURIResource);	//determine the namespace URI from the namespace URI resource
-					}
-					else	//if there is no prefix, get the default namespace for this context
-					{
-						if(contextURI==null)	//if no context is available
-						{
-							throw new DataException("Local name "+localName+" has no context for namespace determination.");
-						}
-						namespaceURI=getNamespaceURI(contextURI);	//get the namespace URI from the context URI
-						if(namespaceURI==null)	//if no namespace is available
-						{
-							throw new DataException("Context URI "+contextURI+" has no namespace.");
-						}
-					}
-					foundComponent=true;	//indicate that at least one description component is present
-					try
-					{
-						resourceURI=createResourceURI(namespaceURI, localName);	//create the resource URI from the namespace URI and local name
-					}
-					catch(final IllegalArgumentException illegalArgumentException)	//if the given namespace is not valid
-					{
-						throw new DataException("Prefix "+prefix+" references invalid namespace "+namespaceURI);
-					}
-					c=skipSeparators(reader);	//skip separators and peek the next character
-				}
-				break;
+			foundComponent=true;	//indicate that at least one description component is present
+			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
 		final Resource resource=determineResourceProxy(label, resourceURI);	//get a resource proxy from the label and/or reference URI, or use one already available for the reference URI
 		final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
@@ -358,17 +295,21 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		{
 			foundComponent=true;	//indicate that at least one description component is present
 			check(reader, TYPES_BEGIN);	//read the beginning type delimiter
-			types.addAll(parseSequence(reader, baseURI, contextURI, scopeBase, scopeChain, resource, typePropertyResource, false, TYPES_END));	//parse the sequence of types, if any, and add them to our list of types
+			types.addAll(parseSequence(reader, baseURI, defaultNamespaceURI, scopeBase, scopeChain, resource, typePropertyResource, false, TYPES_END, turf));	//parse the sequence of types, if any, and add them to our list of types
 			check(reader, TYPES_END);	//read the ending type delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
-		final URI typeContextURI=!types.isEmpty() ? types.get(0).getURI() : null;	//the first type, if any, will determine the context for properties and list/set short forms
+		final URI typeURI=!types.isEmpty() ? types.get(0).getURI() : null;	//the first type, if any, will determine the default namespace for properties and list/set short forms
 		if(c==INITS_BEGIN)	//check for inits
 		{
 			foundComponent=true;	//indicate that at least one description component is present
-			final Resource initPropertyResource=determineResourceProxy(INIT_PROPERTY_URI);	//get a proxy to the init property resource
 			check(reader, INITS_BEGIN);	//read the beginning init delimiter
-			parseSequence(reader, baseURI, typeContextURI, scopeBase, scopeChain, resource, initPropertyResource, false, INITS_END);	//parse the sequence of inits, if any
+			final Resource initPropertyResource=determineResourceProxy(INITS_PROPERTY_URI);	//get a proxy to the init property resource
+			final Resource listResource=createResourceProxy();	//create a proxy for the list resource
+			addAssertion(new Assertion(resource, initPropertyResource, listResource));	//assert the list for the inits property
+			final Resource listType=determineResourceProxy(LIST_CLASS_URI);	//get a proxy to the list type
+			addAssertion(new Assertion(listResource, typePropertyResource, listType));	//assert the list type for the list
+			parseListContents(reader, baseURI, listResource, INITS_END, turf);	//parse the init elements
 			check(reader, INITS_END);	//read the ending init delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
@@ -381,46 +322,61 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			{
 				while(c>=0)	//while the end of the data has not been reached
 				{
-					final Resource predicate=parseResource(reader, baseURI, null, null, null, typeContextURI);	//parse the predicate resource, indicating the type (if any) as the context URI
+					final Resource predicate=parseResource(reader, baseURI, null, null, null, typeURI, turf);	//parse the predicate resource, providing the typeURI (if any) as a default namespace URI
 					final URI predicateURI=predicate.getURI();	//get the predicate URI
-					skipSeparators(reader);	//skip separators
-					final char propertyValueDelimiter=check(reader, PROPERTY_VALUE_DELIMITERS);	//read the next character and make sure it's a property-value delimiter
-					final Resource object;	//we'll use this to store the object, if there is just one object
-					switch(skipSeparators(reader))	//skip separators and see what the next character will be
+					c=skipSeparators(reader);	//skip separators
+					if(c==LABEL_BEGIN)	//if this is the beginning of a property reification
 					{
-						case SEQUENCE_BEGIN:	//sequence short form
-							check(reader, SEQUENCE_BEGIN);	//read the beginning sequence delimiter
-							final boolean scoped=propertyValueDelimiter==SCOPED_PROPERTY_VALUE_DELIMITER;	//see if this is a scoped sequence
-							final List<Resource> sequenceResources=parseSequence(reader, baseURI, predicateURI, scopeBase, scopeChain, resource, predicate, scoped, SEQUENCE_END);	//parse the sequence of resources
-							if(!scoped && TYPE_PROPERTY_URI.equals(predicateURI))	//if this was a sequence of types
+						throw new DataException("Property reification not yet supported.");	//TODO implement property reification
+					}
+					final boolean scoped;	//we'll determine if this is a scoped property
+					if(c==SCOPE_DELIMITER)	//if this is the beginning of a scoped property
+					{
+						scoped=true;	//this is a scoped property
+						check(reader, SCOPE_DELIMITER);	//read the scope begin character
+						c=skipSeparators(reader);	//skip separators
+					}
+					else	//if there is no scope indicator
+					{
+						scoped=false;	//this is not a scoped property
+					}
+					check(reader, PROPERTY_VALUE_DELIMITER);	//read the property value delimiter
+					final Resource object;	//we'll use this to store the object, if there is just one object
+					if(skipSeparators(reader)==SEQUENCE_BEGIN)	//skip separators and see what the next character will be; if this is the beginning of a sequence
+					{
+						check(reader, SEQUENCE_BEGIN);	//read the beginning sequence delimiter
+						final List<Resource> sequenceResources=parseSequence(reader, baseURI, predicateURI, scopeBase, scopeChain, resource, predicate, scoped, SEQUENCE_END, turf);	//parse the sequence of resources
+						if(!scoped && TYPE_PROPERTY_URI.equals(predicateURI))	//if this was a sequence of types
+						{
+							types.addAll(sequenceResources);	//add all the resources in the sequence as types
+						}
+						check(reader, SEQUENCE_END);	//read the ending sequence delimiter
+					}
+					else	//assume everything else is a normal resource object
+					{
+						if(scoped)	//if this is a scoped property
+						{
+							if(scopeBase!=null && scopeChain!=null && scopePredicate!=null)	//if we are in the scope of some subject and predicate
 							{
-								types.addAll(sequenceResources);	//add all the resources in the sequence as types
+								final ArrayList<NameValuePair<Resource, Resource>> newScopeChain=(ArrayList<NameValuePair<Resource, Resource>>)scopeChain.clone();	//clone the scope chain
+								newScopeChain.add(new NameValuePair<Resource, Resource>(scopePredicate, resource));	//add another element to the scope chain
+								object=parseResource(reader, baseURI, scopeBase, newScopeChain, predicate, turf);	//parse the object with the new scope and new predicate
+								addAssertion(new Assertion(scopeBase, predicate, object, newScopeChain.toArray(new NameValuePair[newScopeChain.size()])));	//assert the assertion with the new scope
 							}
-							check(reader, SEQUENCE_END);	//read the ending sequence delimiter
-							break;
-						default:	//assume everything else is a normal resource object
-							switch(propertyValueDelimiter)	//see what sort of assignment this is
+							else	//if there is no scope
 							{
-								case PROPERTY_VALUE_DELIMITER:	//property assignment
-									object=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, predicateURI);	//parse the object, giving a scope chain predicate in case a scope is formed for the value
-									addAssertion(new Assertion(resource, predicate, object));	//assert the assertion with no scope
-									if(TYPE_PROPERTY_URI.equals(predicateURI))	//if this was a type declaration
-									{
-										types.add(object);	//make a note of this type
-									}
-									break;
-								case SCOPED_PROPERTY_VALUE_DELIMITER:	//scoped property assignment
-									if(scopeBase!=null && scopeChain!=null && scopePredicate!=null)	//if we are in the scope of some subject and predicate
-									{
-										final ArrayList<NameValuePair<Resource, Resource>> newScopeChain=(ArrayList<NameValuePair<Resource, Resource>>)scopeChain.clone();	//clone the scope chain
-										newScopeChain.add(new NameValuePair<Resource, Resource>(scopePredicate, resource));	//add another element to the scope chain
-										object=parseResource(reader, baseURI, scopeBase, newScopeChain, predicate, predicateURI);	//parse the object with the new scope and new predicate
-										addAssertion(new Assertion(scopeBase, predicate, object, newScopeChain.toArray(new NameValuePair[newScopeChain.size()])));	//assert the assertion with the new scope
-										break;
-									}
-								default:
-									throw new AssertionError("Unrecognized property-value delimiter: "+propertyValueDelimiter);	//we already checked this character, so we shouldn't get an unknown delimiter here
+								throw new DataException("No parent scope available for scoped property.");
 							}
+						}
+						else	//if this is not a scoped property
+						{
+							object=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, turf);	//parse the object, giving a scope chain and predicate in case a scope is formed for the value
+							addAssertion(new Assertion(resource, predicate, object));	//assert the assertion with no scope
+							if(TYPE_PROPERTY_URI.equals(predicateURI))	//if this was a type declaration
+							{
+								types.add(object);	//make a note of this type
+							}
+						}
 					}
 					c=skipSeparators(reader);	//skip separators and peek the next character
 					if(c==LIST_DELIMITER)	//if this is a list delimiter
@@ -437,6 +393,41 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			check(reader, PROPERTIES_END);	//read the ending properties delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
+		if(c==COMMUNITY_BEGIN)	//if a community is next
+		{
+			throw new DataException("Community short form not yet supported.");	//TODO implement community short form
+		}
+		if(c==PROPOSITION_BEGIN)	//if a proposition is next
+		{
+			foundComponent=true;	//indicate that at least one description component is present
+			if(types.isEmpty())	//if no types have been specified
+			{
+				final Resource propositionType=determineResourceProxy(PROPOSITION_CLASS_URI);	//get a proxy to the proposition type
+				types.add(propositionType);	//add a proxy to the proposition type
+				addAssertion(new Assertion(resource, typePropertyResource, propositionType));	//assert the proposition type
+			}
+			long index=0;	//start out with an index of zero
+			check(reader, PROPOSITION_BEGIN);	//read the beginning proposition delimiter
+			skipSeparators(reader);	//skip separators
+			final Resource subjectPredicate=determineResourceProxy(SUBJECT_PROPERTY_URI);	//get the subject predicate
+			final Resource subject=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), subjectPredicate, turf);	//parse the subject, giving a scope chain and predicate in case a scope is formed for the value
+			addAssertion(new Assertion(resource, subjectPredicate, subject));	//assert the proposition subject
+			skipSeparators(reader);	//skip separators
+			check(reader, LIST_DELIMITER);	//read the list delimiter
+			skipSeparators(reader);	//skip separators
+			final Resource predicatePredicate=determineResourceProxy(PREDICATE_PROPERTY_URI);	//get the predicate predicate
+			final Resource predicate=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), predicatePredicate, turf);	//parse the predicate, giving a scope chain and predicate in case a scope is formed for the value
+			addAssertion(new Assertion(resource, predicatePredicate, predicate));	//assert the proposition predicate
+			skipSeparators(reader);	//skip separators
+			check(reader, LIST_DELIMITER);	//read the list delimiter
+			skipSeparators(reader);	//skip separators
+			final Resource objectPredicate=determineResourceProxy(OBJECT_PROPERTY_URI);	//get the object predicate
+			final Resource object=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), objectPredicate, turf);	//parse the object, giving a scope chain and predicate in case a scope is formed for the value
+			addAssertion(new Assertion(resource, objectPredicate, object));	//assert the proposition object
+			skipSeparators(reader);	//skip separators
+			check(reader, PROPOSITION_END);	//read the ending proposition delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
+		}
 		if(c==LIST_BEGIN)	//if a list is next
 		{
 			foundComponent=true;	//indicate that at least one description component is present
@@ -446,29 +437,8 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				types.add(listType);	//add a proxy to the list type
 				addAssertion(new Assertion(resource, typePropertyResource, listType));	//assert the list type
 			}
-			long index=0;	//start out with an index of zero
 			check(reader, LIST_BEGIN);	//read the beginning list delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
-			if(c!=LIST_END)	//if this is not an empty list
-			{
-				while(c>=0)	//while the end of the data has not been reached
-				{
-					final Resource indexPredicate=determineResourceProxy(createOrdinalURI(index));	//get the ordinal property for specifying the index of each value
-					final Resource element=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), indexPredicate, typeContextURI);	//parse the list element, giving a scope chain predicate in case a scope is formed for the value
-					addAssertion(new Assertion(resource, indexPredicate, element));	//assert the assertion that the element is an index of the list; there is no scope with an list short form
-					++index;	//go to the next index
-					c=skipSeparators(reader);	//skip separators and peek the next character
-					if(c==LIST_DELIMITER)	//if this is a list delimiter
-					{
-						check(reader, LIST_DELIMITER);	//skip the list delimiter
-						c=skipSeparators(reader);	//skip separators and peek the next character
-					}
-					else	//if there's anything besides a list delimiter, we've reached the end of the list
-					{
-						break;	//stop parsing the list
-					}
-				}
-			}
+			parseListContents(reader, baseURI, resource, LIST_END, turf);	//parse the list elements
 			check(reader, LIST_END);	//read the ending list delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
@@ -488,7 +458,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				final Resource elementPredicate=determineResourceProxy(ELEMENT_PROPERTY_URI);	//get the element property resource proxy
 				while(c>=0)	//while the end of the data has not been reached
 				{
-					final Resource element=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), elementPredicate, typeContextURI);	//parse the set element, giving a scope chain predicate in case a scope is formed for the value
+					final Resource element=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), elementPredicate, turf);	//parse the set element, giving a scope chain and predicate in case a scope is formed for the value
 					addAssertion(new Assertion(resource, elementPredicate, element));	//assert the assertion that the element is an element of the set; there is no scope with a set short form
 					c=skipSeparators(reader);	//skip separators and peek the next character
 					if(c==LIST_DELIMITER)	//if this is a list delimiter
@@ -513,6 +483,47 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		return resource;	//return the resource proxy we created
 	}
 
+	/**Parses a list of resources and adds the resources to the given resource as indexed property values.
+	The current position must be that of a separator or that of the first character of the first resource in the list.
+	The new position will be that of the first non-separator character after the resources or the end of the reader.
+	@param reader The reader the contents of which to be parsed.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param listResource The subject resource to which the list element resources will be added.
+	@param listEnd The character that marks the end of the list.
+	@param turf Information regarding the TURF instance being processed.
+	@return The list resource the contents of which were parsed from the reader.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters before the current resource is completely parsed.
+	@exception DataException if there was an error with information being processed.
+	*/
+	protected Resource parseListContents(final Reader reader, final URI baseURI, final Resource listResource, final char listEnd, final TURF turf) throws IOException, ParseIOException, DataException
+	{
+		long index=0;	//start out with an index of zero
+		int c=skipSeparators(reader);	//skip separators and peek the next character
+		if(c!=listEnd)	//if this is not an empty list
+		{
+			while(c>=0)	//while the end of the data has not been reached
+			{
+				final Resource indexPredicate=determineResourceProxy(createOrdinalURI(index));	//get the ordinal property for specifying the index of each value
+				final Resource element=parseResource(reader, baseURI, listResource, new ArrayList<NameValuePair<Resource,Resource>>(), indexPredicate, turf);	//parse the list element, giving a scope chain and predicate in case a scope is formed for the value
+				addAssertion(new Assertion(listResource, indexPredicate, element));	//assert the assertion that the element is an index of the list; there is no scope with an list short form
+				++index;	//go to the next index
+				c=skipSeparators(reader);	//skip separators and peek the next character
+				if(c==LIST_DELIMITER)	//if this is a list delimiter
+				{
+					check(reader, LIST_DELIMITER);	//skip the list delimiter
+					c=skipSeparators(reader);	//skip separators and peek the next character
+				}
+				else	//if there's anything besides a list delimiter, we've reached the end of the list
+				{
+					break;	//stop parsing the list
+				}
+			}
+		}
+		return listResource;	//return the list resource
+	}
+	
 	/**Parses a sequence of resources and assigns them to the subject resource with scoped orders.
 	The current position must be that of a separator or that of the first character of the first resource in the sequence.
 	The new position will be that of the first non-separator character after the sequence of resources or the end of the reader.
@@ -520,20 +531,21 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	Whenever the scope chain is lengthened it must first be cloned so that the local version will not be modified during recursion.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param contextURI The URI serving as context in case the default namespace needs to be determined, or <code>null</code> if there is no context.
+	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is allowed; for properties, this is the URI of the first type short form.
 	@param scopeBase The base resource of the current scope, or <code>null</code> if the current resource is not in an object context.
 	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
 	@param subject The subject resource to which the sequence values will be added.
 	@param predicate The predicate to use in adding sequence value.
 	@param scoped Whether each predicate is scoped.
 	@param sequenceEnd The character that marks the end of the sequence.
+	@param turf Information regarding the TURF instance being processed.
 	@return The resources in the list parsed from the reader.
 	@exception NullPointerException if the given reader, subject, and/or predicate is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current resource is completely parsed.
 	@exception DataException if there was an error with information being processed.
 	*/
-	protected List<Resource> parseSequence(final Reader reader, final URI baseURI, final URI contextURI, final Resource scopeBase, final ArrayList<NameValuePair<Resource, Resource>> scopeChain, final Resource subject, final Resource predicate, final boolean scoped, final char sequenceEnd) throws IOException, ParseIOException, DataException
+	protected List<Resource> parseSequence(final Reader reader, final URI baseURI, final URI defaultNamespaceURI, final Resource scopeBase, final ArrayList<NameValuePair<Resource, Resource>> scopeChain, final Resource subject, final Resource predicate, final boolean scoped, final char sequenceEnd, final TURF turf) throws IOException, ParseIOException, DataException
 	{
 		final Resource orderPredicate=determineResourceProxy(ORDER_PROPERTY_URI);	//get the order property for specifying scoped order for each value
 		long order=0;	//start out with an order of zero
@@ -543,7 +555,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			final List<Resource> resourceList=new ArrayList<Resource>();	//create a new list in which to place the resources
 			while(c>=0)	//while the end of the sequence has not been reached
 			{
-				final Resource sequenceObject=parseResource(reader, baseURI, subject, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, contextURI);	//parse the object, giving a scope chain predicate in case a scope is formed for the value
+				final Resource sequenceObject=parseResource(reader, baseURI, subject, new ArrayList<NameValuePair<Resource,Resource>>(), predicate, turf);	//parse the object, giving a scope chain and predicate in case a scope is formed for the value
 				addAssertion(new Assertion(subject, predicate, sequenceObject));	//assert the assertion with no scope
 				resourceList.add(sequenceObject);	//add the sequence object to the list of resources
 				final Resource orderObject=determineResourceProxy(createIntegerURI(order));	//get a proxy to the order value
@@ -578,35 +590,19 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		return emptyList();	//the sequence is empty; return an empty list
 	}
 
-	/**Parses a list of resources with no context.
-	The current position must be that of a separator or that of the first character of the first resource in the list.
-	The new position will be that of the first non-separator character after the list of resources or the end of the reader.
-	@param reader The reader the contents of which to be parsed.
-	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param listEnd The character that marks the end of the list.
-	@return The resources in the list parsed from the reader.
-	@exception NullPointerException if the given reader is <code>null</code>.
-	@exception IOException if there is an error reading from the reader.
-	@exception ParseIOException if a resource in the list is missing, or if the reader has no more characters before a resource in the list is completely parsed.
-	*/
-	public List<Resource> parseResourceList(final Reader reader, final URI baseURI, final char listEnd) throws IOException, ParseIOException
-	{
-		return parseResourceList(reader, baseURI, null, listEnd);	//parse the list with no context
-	}
-
 	/**Parses a list of resources.
 	The current position must be that of a separator or that of the first character of the first resource in the list.
 	The new position will be that of the first non-separator character after the list of resources or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param contextURI The URI serving as context in case the default namespace needs to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@param listEnd The character that marks the end of the list.
+	@param turf Information regarding the TURF instance being processed.
 	@return The resources in the list parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if a resource in the list is missing, or if the reader has no more characters before a resource in the list is completely parsed.
 	*/
-	public List<Resource> parseResourceList(final Reader reader, final URI baseURI, final URI contextURI, final char listEnd) throws IOException, ParseIOException
+	public List<Resource> parseResourceList(final Reader reader, final URI baseURI, final char listEnd, final TURF turf) throws IOException, ParseIOException
 	{
 		int c=skipSeparators(reader);	//skip separators and peek the next character
 		if(c!=listEnd)	//if this is not an empty list
@@ -614,7 +610,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			final List<Resource> resourceList=new ArrayList<Resource>();	//create a new list in which to place the resources
 			while(c>=0)	//while the end of the data has not been reached
 			{
-				final Resource resource=parseResource(reader, baseURI, contextURI);	//parse another resource, providing the context URI, if any
+				final Resource resource=parseResource(reader, baseURI, null, turf);	//parse another resource
 				resourceList.add(resource);	//add the resource to the list of resources
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				if(c==LIST_DELIMITER)	//if this is a list delimiter
@@ -649,6 +645,138 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		return label;	//return the label we read
 	}
 
+	/**Parses a reference to a resource and returns the URI the reference represents, if any.
+	For references, the current position must be that of the first character of the reference.
+	If a reference was parsed, the new position will be that of the first non-separator character after the reference or the end of the reader.
+	If no reference was encountered, the new position will be the same as the old position.
+	@param reader The reader the contents of which to be parsed.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The reference parsed from the reader, or <code>null</code> if there is no reference at the current position.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters before the current reference is completely parsed.
+	@exception DataException if there was an error with information being processed.
+	*/
+	protected URI parseReference(final Reader reader, final URI baseURI) throws IOException, ParseIOException, DataException
+	{
+		return parseReference(reader, baseURI, null, new TURF());	//parse a reference with no context URI or namespace prefixes
+	}
+
+	/**Parses a reference to a resource and returns the URI the reference represents, if any.
+	For references, the current position must be that of the first character of the reference.
+	If a reference was parsed, the new position will be that of the first non-separator character after the reference or the end of the reader.
+	If no reference was encountered, the new position will be the same as the old position.
+	@param reader The reader the contents of which to be parsed.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is allowed; for properties, this is the URI of the first type short form.
+	@param turf Information regarding the TURF instance being processed.
+	@return The reference parsed from the reader, or <code>null</code> if there is no reference at the current position.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters before the current reference is completely parsed.
+	@exception DataException if there was an error with information being processed.
+	*/
+	protected URI parseReference(final Reader reader, final URI baseURI, final URI defaultNamespaceURI, final TURF turf) throws IOException, ParseIOException, DataException
+	{
+		final int c=peek(reader);	//peek the next character
+		switch(c)	//check for a reference or a short form
+		{
+			case REFERENCE_BEGIN:
+				return parseURI(reader, baseURI, REFERENCE_BEGIN, REFERENCE_END, turf);	//parse the resource URI
+			case BINARY_BEGIN:	//binary
+				{
+					final byte[] binary=parseBinary(reader);	//parse the binary data
+					return createBinaryURI(binary);	//create a URI for the resource
+				}
+			case BOOLEAN_BEGIN:	//boolean
+				{
+					final boolean b=parseBoolean(reader);	//parse the boolean
+					return createLexicalURI(BOOLEAN_CLASS_URI, Boolean.toString(b));	//create a URI for the resource
+				}
+			case NUMBER_BEGIN:	//number
+				{
+					final Number number=parseNumber(reader, NUMBER_BEGIN, true, true, true);	//parse the number, allowing negative, decimal, and exponents
+					final URI lexicalTypeURI;	//determine which type of number this is
+					if(number instanceof Integer || number instanceof Long || number instanceof BigInteger)	//if this is an integer
+					{
+						lexicalTypeURI=INTEGER_CLASS_URI;	//we'll create an integer URI for the resource
+					}
+					else if(number instanceof Float || number instanceof Double || number instanceof BigDecimal)	//if this is an real
+					{
+						lexicalTypeURI=REAL_CLASS_URI;	//create a real URI for the resource
+					}
+					else	//if we don't recognize the number type
+					{
+						throw new AssertionError("Unrecognized number type produced: "+number.getClass());
+					}
+					return createLexicalURI(lexicalTypeURI, number.toString());	//create a URI for the resource
+				}
+			case ORDINAL_BEGIN:	//number
+				{
+					final Number ordinal=parseNumber(reader, ORDINAL_BEGIN, false, false, false);	//parse the number, only allowing positive integers (which should produce an integer object)
+					return createOrdinalURI(ordinal.longValue());	//create an ordinal URI for the resource
+				}
+			case REGULAR_EXPRESSION_BEGIN:	//regular expression
+				{
+					final String regularExpressionString=parseString(reader, REGULAR_EXPRESSION_BEGIN, REGULAR_EXPRESSION_END);	//parse the regular expression string
+					return createLexicalURI(REGULAR_EXPRESSION_CLASS_URI, regularExpressionString);	//create a URI for the regular expression
+				}
+			case STRING_BEGIN:	//string
+				{
+					final String string=parseString(reader, STRING_BEGIN, STRING_END);	//parse the string
+					return createLexicalURI(STRING_CLASS_URI, string);	//create a URI for the string
+				}
+			case TEMPORAL_BEGIN:	//temporal
+				return parseTemporal(reader);	//parse the temporal
+			case URI_BEGIN:	//URI
+				{
+					final URI uri=parseURI(reader, baseURI, URI_BEGIN, URI_END, turf);	//parse the URI
+					return createLexicalURI(URI_CLASS_URI, uri.toString());	//create a URI for the resource
+				}
+			default:	//if there was some other character, see if it's a name reference
+				if(isNameBeginCharacter(c))	//if this is a name begin character
+				{
+					final NameValuePair<String, String> name=parseNameReference(reader);	//parse the name reference
+					final URI namespaceURI;	//we'll determine the namespace URI
+					final String prefix=name.getName();	//get the name prefix
+					final String localName=name.getValue();	//get the name local name
+					if(prefix!=null)	//if there is a prefix, see to which namespace URI it refers
+					{
+						namespaceURI=turf.get(prefix);	//lookup up the namespace URI from the prefix
+						if(namespaceURI==null)	//if there is no namespace URI defined for this prefix
+						{
+							throw new DataException("No namespace URI defined for prefix "+prefix+".");
+						}
+					}
+					else	//if there is no prefix, get the default namespace for this context
+					{
+						if(defaultNamespaceURI==null)	//if no default namespace is available
+						{
+							throw new DataException("Local name "+localName+" has no context for default namespace determination.");
+						}
+						namespaceURI=defaultNamespaceURI;	//use the default namespace URI
+					}
+					try
+					{
+						return createResourceURI(namespaceURI, localName);	//create the resource URI from the namespace URI and local name
+					}
+					catch(final IllegalArgumentException illegalArgumentException)	//if the given namespace is not valid
+					{
+						if(prefix!=null)	//if a prefix was given
+						{
+							throw new DataException("Prefix "+prefix+" for local name "+localName+" references invalid namespace "+namespaceURI);
+						}
+						else	//if no prefix was given
+						{
+							throw new DataException("URI "+namespaceURI+" is not a valid default namespace URI for local name "+localName);						
+						}
+					}
+				}
+				break;
+		}
+		return null;	//indicate that there is no resource reference at the current position
+	}
+	
 	/**Parses a name reference composed of name characters preceded by an optional prefix.
 	The current position must be that of the first name character.
 	The new position will be that immediately after the last name character.
@@ -719,7 +847,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	@exception ParseIOException if the reader has no more characters before the current URI is completely parsed.
 	@exception DataException if the binary data is not correctly encoded base64url data with no linebreaks or if the reader has no more characters before the current binary data is completely parsed.
 	*/
-	public byte[] parseBinary(final Reader reader) throws IOException, ParseIOException, DataException
+	public static byte[] parseBinary(final Reader reader) throws IOException, ParseIOException, DataException
 	{
 		check(reader, BINARY_BEGIN);	//read the beginning binary delimiter
 		final String base64urlString=reachAfter(reader, BINARY_END);	//read the rest of the binary data
@@ -1009,10 +1137,10 @@ public class URFTURFProcessor extends AbstractURFProcessor
 					case ESCAPED_TAB:	//t tab
 						c=HORIZONTAL_TABULATION_CHAR;	//use the character that was escaped
 						break;
-					case ESCAPED_START_OF_STRING:	//“ start of string
+					case ESCAPED_START_OF_STRING:	//left double quotation mark start of string
 						c=START_OF_STRING_CHAR;	//use the character that was escaped
 						break;
-					case ESCAPED_STRING_TERMINATOR:	//” string terminator
+					case ESCAPED_STRING_TERMINATOR:	//right double quotation mark string terminator
 						c=STRING_TERMINATOR_CHAR;	//use the character that was escaped
 						break;
 					case ESCAPED_UNICODE:	//u Unicode
@@ -1055,16 +1183,16 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	The URI is resolved to the base URI, if any
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param contextURI The URI serving as context in case the default namespace needs to be determined, or <code>null</code> if there is no context; for properties, this is the URI of the first type short form; for objects, this is the URI of the predicate resource.
 	@param uriBegin The beginning URI delimiter.
 	@param uriEnd The ending URI delimiter.
+	@param turf Information regarding the TURF instance being processed.
 	@return The URI parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current URI is completely parsed.
 	@exception DataException if the URI is not of the correct format.
 	*/
-	public URI parseURI(final Reader reader, final URI baseURI, final URI contextURI, final char uriBegin, final char uriEnd) throws IOException, ParseIOException, DataException
+	public URI parseURI(final Reader reader, final URI baseURI, final char uriBegin, final char uriEnd, final TURF turf) throws IOException, ParseIOException, DataException
 	{
 		check(reader, uriBegin);	//read the beginning URI delimiter
 		int c=peek(reader);	//peek the next character
@@ -1078,7 +1206,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				skipSeparators(reader);	//skip separators
 				check(reader, TYPES_BEGIN);	//read the beginning type delimiter, which must appear next
 				skipSeparators(reader);	//skip separators
-				final Resource type=parseResource(reader, baseURI, null, null, null, contextURI);	//parse the type resource, indicating the context so that name short forms may be used
+				final Resource type=parseResource(reader, baseURI, null, null, null, turf);	//parse the type resource
 				final URI typeURI=type.getURI();	//get the URI of the type
 				if(typeURI==null)	//if no type URI was provided
 				{
@@ -1103,28 +1231,6 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			throw new DataException(uriSyntaxException);
 		}
 		return baseURI!=null ? resolve(baseURI, uri) : uri;	//return the URI, resolved against the base URI if there is a base URI
-	}
-
-	/**Determines the URI represented by the given resource.
-	@param reader The reader the contents of which to be parsed.
-	@param resource The resource which is expected to represent a URI.
-	@exception DataException if the given resource has no URI or the URI does not represent a URI.
-	*/
-	protected static URI toURI(final Reader reader, final Resource resource) throws DataException
-	{
-		try
-		{
-			final URI uri=asURI(resource);	//get the resource as a URI
-			if(uri==null)	//if this isn't a URI
-			{
-				throw new DataException("Resource "+resource+" is not a URI.");
-			}
-			return uri;	//return the URI
-		}
-		catch(final IllegalArgumentException illegalArgumentException)	//if the URI wasn't in correct form
-		{
-			throw new DataException("Resource "+resource+" is not a valid URI.", illegalArgumentException);
-		}
 	}
 
 }

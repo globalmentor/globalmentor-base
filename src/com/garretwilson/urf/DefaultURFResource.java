@@ -96,6 +96,15 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 		}
 	}
 
+	/**Retrieves the first list of inits declared for this resource, if any.
+	@return The first list of inits declared for this resource, or <code>null</code> if no inits list is declared for this resource.
+	@see URF#INITS_PROPERTY_URI
+	*/
+	public URFListResource<?> getInits()
+	{
+		return asListInstance(getPropertyValue(INITS_PROPERTY_URI));	//return the first inits list
+	}
+
 	/**Returns the label of this resource, if any.
 	@return The string value of the label property, or <code>null</code> if there is no such property or the property value is not a string.
 	@see URF#LABEL_PROPERTY_URI
