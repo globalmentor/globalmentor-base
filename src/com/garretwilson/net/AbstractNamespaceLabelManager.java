@@ -6,9 +6,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.Collections.*;
 
-import static com.garretwilson.net.URIUtilities.*;
-
 import com.garretwilson.assess.qti.QTIConstants;
+import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.net.URIUtilities.*;
 import com.garretwilson.net.http.webdav.ApacheWebDAVConstants;
 import com.garretwilson.rdf.RDFConstants;
 import com.garretwilson.rdf.dicto.DictoConstants;
@@ -49,7 +49,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		knownNamespaceURIs.add(FOAF.FOAF_NAMESPACE_URI);	//FOAF
 		knownNamespaceURIs.add(URF.URF_NAMESPACE_URI);	//URF
 		knownNamespaceURIs.add(Content.CONTENT_NAMESPACE_URI);	//URF Content
-		knownNamespaceURIs.add(Select.SELECT_PROPERTY_NAME_PROPERTY_URI);	//URF Select
+		knownNamespaceURIs.add(Select.SELECT_NAMESPACE_URI);	//URF Select
 		knownNamespaceURIs.add(VCard.VCARD_NAMESPACE_URI);	//URF VCard
 		KNOWN_NAMESPACE_URIS=unmodifiableSet(knownNamespaceURIs);	//store a static read-only set
 	}
@@ -131,6 +131,24 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	public boolean isRecognized(final URI namespaceURI)
 	{
 		return containsKey(namespaceURI) || DEFAULT_NAMESPACE_URI_LABEL_MAP.containsKey(namespaceURI);	//return whether this map or the default namespace map recognizes the given namespace URI
+	}
+
+	/**Adds a namespace URI and associates it with a default label.
+	@param namespaceURI The namespace URI to add.
+	@return <code>true</code> if the namespace was not previously known.
+	@excepion NullPointerException if the given namespace URI is <code>null</code>.
+	*/
+	public boolean addNamespaceURI(final URI namespaceURI)
+	{
+		if(!containsKey(checkInstance(namespaceURI, "Namespace URI cannot be null.")))	//if we don't know about this namespace
+		{
+			put(namespaceURI, getNamespaceLabel(namespaceURI));	//get a label for this namespace
+			return true;	//indicate that this is a new namespace
+		}
+		else	//if we already know about this namespace
+		{
+			return false;	//indicate that we already know about this namespace
+		}
 	}
 
 	/**Retrieves the label to use for the given namespace.
