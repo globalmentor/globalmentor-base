@@ -80,7 +80,7 @@ public class PLOOPTURFIO<T> extends AbstractTURFIO<T>
 		{
 			throw new IOException(invocationTargetException);			
 		}
-		writeTURFResource(outputStream, baseURI, resource);	//write the generated URF resource
+		writeURFResource(outputStream, baseURI, resource);	//write the generated URF resource
 	}
 
 }

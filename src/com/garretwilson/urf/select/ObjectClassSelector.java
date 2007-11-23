@@ -39,9 +39,10 @@ public class ObjectClassSelector extends AbstractSelector
 
 	/**Returns the select class identified by this selector.
 	This implementation permanently caches locally any select class.
-	The property value is expected to be a resource with a <code>info:java/</code> URI.
-	@return This selector's class designation, or <code>null</code> if this rule has no <code>select:selectClass</code> property that is a Java class.
-	@exception ClassNotFoundException if the class identified by the <code>select:selectClass</code> property cannot be found.
+	The property value is expected to be a resource with a Java URI.
+	@return This selector's class designation, or <code>null</code> if this rule has no <code>selectClass</code> property that is a Java class.
+	@exception ClassNotFoundException if the class identified by the <code>selectClass</code> property cannot be found.
+	@see Select#SELECT_CLASS_PROPERTY_URI
 	*/
 	public Class<?> getSelectClass() throws ClassNotFoundException
 	{
@@ -74,7 +75,7 @@ public class ObjectClassSelector extends AbstractSelector
 			}
 			else
 			{
-				throw new IllegalStateException("Class selector missing class selection property.");
+				throw new IllegalStateException("Object class selector missing class selection property.");
 			}
 			return true;	//the object passed all the tests
 		}

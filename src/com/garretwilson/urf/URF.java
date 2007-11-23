@@ -24,6 +24,7 @@ import com.garretwilson.text.RegularExpression;
 import com.garretwilson.urf.content.*;
 import com.garretwilson.urf.select.Select;
 import com.garretwilson.util.*;
+import static com.garretwilson.util.CollectionUtilities.*;
 import static com.garretwilson.util.LocaleUtilities.*;
 
 /**An URF data model.
@@ -1340,12 +1341,29 @@ public class URF
 	/**The map of all identified resources, keyed to resource URIs.*/
 	private final Map<URI, URFResource> resourceMap=new HashMap<URI, URFResource>();
 
-	/**@return A read-only set of the URIs of all named resources in this data model.*/
+	/**@return A read-only set of the URIs of all named resources in this data model.
+	@see #getResourceURIReferences()
+	*/
 	public Set<URI> getResourceURIs()
 	{
 		return unmodifiableSet(resourceMap.keySet());	//return the set of keys to the resource map
 	}
-	
+
+	/**@return A read-only set of the URIs of all named resources in this data model, as well as all the URIs of resource properties.
+	@see #getResourceURIs()
+	*/
+	public Set<URI> getResourceURIReferences()
+	{
+		final Set<URI> resourceURIReferences=new HashSet<URI>();	//get the set of resource URIs
+		for(final URFResource resource:resourceMap.values())	//look at each named resource
+		{
+			assert resource.getURI()!=null : "Resource with no URI found in the named resource map.";
+			resourceURIReferences.add(resource.getURI());	//add the URI of this resource
+			addAll(resourceURIReferences, resource.getPropertyURIs());	//add all the URIs of the resource's properties
+		}
+		return unmodifiableSet(resourceURIReferences);	//return the set of all URI references
+	}
+
 	/**Adds a resource to the data model.
 	All property value resources are recursively added to the model.
 	@param resource The resource to add.

@@ -31,13 +31,18 @@ public abstract class AbstractOperatorSelector extends AbstractSelector implemen
 		super(uri);  //construct the parent class
 	}
 
-	/**@return This selector first select declaration, or <code>null</code> if this rule has no selector property or the value is not a {@link Selector}.*/
+	/**Returns the selector identified by this selector.
+	@return This selector's first select declaration, or <code>null</code> if this rule has no <code>selector</code> property or the value is not a {@link Selector}.
+	@see Select#SELECTOR_PROPERTY_URI
+	*/
 	public Selector getSelector()
 	{
 		return asInstance(getPropertyValue(SELECTOR_PROPERTY_URI), Selector.class);	//return the select.select value
 	}
 
-	/**@return This operator selector's selector declarations.*/
+	/**@return This operator selector's selector declarations.
+	@see Select#SELECTOR_PROPERTY_URI
+	*/
 	public Iterable<Selector> getSelectors()
 	{
 		return getPropertyValues(SELECTOR_PROPERTY_URI, Selector.class);	//return the select.select values
@@ -45,6 +50,7 @@ public abstract class AbstractOperatorSelector extends AbstractSelector implemen
 
 	/**Adds a selector to this operator selector.
 	@param selector The selector to add.
+	@see Select#SELECTOR_PROPERTY_URI
 	*/
 	public void addSelector(final Selector selector)
 	{

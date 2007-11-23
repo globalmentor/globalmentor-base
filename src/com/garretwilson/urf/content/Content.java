@@ -111,7 +111,7 @@ public class Content
 	
 	/**Returns the actual string content of the resource.
 	@param resource The resource for which the content should be returned.
-	@return This resource's string content declaration, or <code>null</code> if the resource has no <code>content:content</code> property specified or the content is not a string.
+	@return This resource's string content declaration, or <code>null</code> if the resource has no <code>content</code> property specified or the content is not a string.
 	@see #CONTENT_PROPERTY_URI
 	*/
 	public static String getStringContent(final URFResource resource)
@@ -121,17 +121,17 @@ public class Content
 
 	/**Sets this resource's content declaration with a text string.
 	@param resource The resource for which the content property should be set.
-	@param content This resource's content declaration, or <code>null</code> if the resource should have no <code>content:content</code> property.
+	@param content This resource's content declaration, or <code>null</code> if the resource should have no <code>content</code> property.
 	@see #CONTENT_PROPERTY_URI
 	*/
 	public static void setContent(final URFResource resource, final String content)
 	{
-		resource.setPropertyValue(CONTENT_PROPERTY_URI, content);	//set the content:content property
+		resource.setPropertyValue(CONTENT_PROPERTY_URI, content);	//set the content property
 	}
 
 	/**Retrieves the collection of child resources of the resource.
 	@param resource The resource the contents of which will be returned.
-	@return The contents of the resource, or <code>null</code> if no <code>content.contents</code> property exists or the value is not an instance of {@link URFCollectionResource}.
+	@return The contents of the resource, or <code>null</code> if no <code>contents</code> property exists or the value is not an instance of {@link URFCollectionResource}.
 	@see #CONTENTS_PROPERTY_URI
 	*/
 	public static <T extends URFResource> URFCollectionResource<T> getContents(final URFResource resource)
@@ -212,7 +212,7 @@ public class Content
 
 	/**Returns the declared content type of the resource as an Internet media type.
 	@param resource The resource for which the content type should be returned.
-	@return This resource's content type declaration as a media type, or <code>null</code> if the resource has no <code>content.type</code> property specified
+	@return This resource's content type declaration as a media type, or <code>null</code> if the resource has no <code>type</code> property specified
 		or the content type was not a resource with an Internet media type URI.
 	@see #TYPE_PROPERTY_URI
 	*/

@@ -35,7 +35,8 @@ public class URISelector extends AbstractSelector
 	}
 
 	/**Returns the URI identified by this selector.
-	@return This selector's URI designation, or <code>null</code> if this selector has no <code>select:selectURI</code> property with a URI value.
+	@return This selector's URI designation, or <code>null</code> if this selector has no <code>selectURI</code> property with a URI value.
+	@see Select#SELECT_URI_PROPERTY_URI
 	*/
 	public URI getSelectURI()
 	{
@@ -44,7 +45,8 @@ public class URISelector extends AbstractSelector
 
 	/**Sets the URI identified by this selector.
 	@param selectURI The URI to be selected.
-*/
+	@see Select#SELECT_URI_PROPERTY_URI
+	*/
 	public void setSelectURI(final URI selectURI)
 	{
 		setPropertyValue(SELECT_URI_PROPERTY_URI, selectURI);	//set the given select URI

@@ -31,7 +31,7 @@ public class TURF extends HashMap<String, URI>
 	public final static char BINARY_END=BINARY_BEGIN;
 
 	/**The delimiter that begins boolean shorthand declarations.*/
-	public final static char BOOLEAN_BEGIN='*';
+	public final static char BOOLEAN_BEGIN='_';
 
 	/**The delimiter that begins character shorthand declarations.*/
 	public final static char CHARACTER_BEGIN='\'';
@@ -149,7 +149,7 @@ public class TURF extends HashMap<String, URI>
 	public final static String TURF_SIGNATURE="`URF";
 
 	/**The delimiter that begins the TURF preamble.*/
-	public final static char PREAMBLE_BEGIN='$';
+	public final static char PREAMBLE_BEGIN='*';
 	/**The delimiter that ends the TURF preamble.*/
 	public final static char PREAMBLE_END=PREAMBLE_BEGIN;
 

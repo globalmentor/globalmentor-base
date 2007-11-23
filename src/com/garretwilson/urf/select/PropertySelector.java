@@ -61,10 +61,13 @@ public class PropertySelector extends AbstractSelector
 		setPropertyValue(SELECT_PROPERTY_PROPERTY_URI, selectProperty);	//set the given select property
 	}
 
-	/**@return This selector first select declaration, or <code>null</code> if this rule has no selector property or the value is not a {@link Selector}.*/
+	/**Returns the selector identified by this selector.
+	@return This selector's first select declaration, or <code>null</code> if this rule has no <code>selector</code> property or the value is not a {@link Selector}.
+	@see Select#SELECTOR_PROPERTY_URI
+	*/
 	public Selector getSelector()
 	{
-		return asInstance(getPropertyValue(SELECTOR_PROPERTY_URI), Selector.class);	//return the select.select value
+		return asInstance(getPropertyValue(SELECTOR_PROPERTY_URI), Selector.class);	//return the selector value
 	}
 
 	/**Determines if this selector selects a given object.

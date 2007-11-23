@@ -289,7 +289,7 @@ public class URFTURFGenerator
 	}
 
 	/**Releases memory by clearing all internal maps and sets of resources.*/
-	public void reset()
+	protected void reset()
 	{
 		generatedResourceSet.clear();	//show that we've not generated any resources
 		resourceLabelMap.clear();	//clear our map of node IDs
@@ -367,13 +367,13 @@ public class URFTURFGenerator
 
 	/**Generates the given resources and all related resources.
 	@param writer The writer used for generating the information.
-	@param generateSignature Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
+	@param generateContainer Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
 	@param resources The resources to generate, with the first resource, if any, being the resource to appear first.
 	@return The writer.
 	@exception NullPointerException if the given writer and/or resources is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	public Writer generateResources(final Writer writer, final boolean generateSignature, final Iterable<URFResource> resources) throws IOException
+	public Writer generateResources(final Writer writer, final boolean generateContainer, final Iterable<URFResource> resources) throws IOException
 	{
 		final URF urf=new URF();	//create a new URF data model
 		URFResource firstResource=null;	//we'll note the first resource, if any
@@ -385,7 +385,7 @@ public class URFTURFGenerator
 				firstResource=resource;	//this is the first resource
 			}
 		}
-		return generateResources(writer, urf, generateSignature, firstResource);	//generate all resources related to the given resources
+		return generateResources(writer, urf, generateContainer, firstResource);	//generate all resources related to the given resources
 	}
 
 	/**Generates all the resources within a given data model, indicating an optional resource that should appear first.
@@ -413,15 +413,15 @@ public class URFTURFGenerator
 	*/
 	public Writer generateResources(final Writer writer, final URF urf, final boolean generateSignature, final URFResource primaryResource) throws IOException
 	{
+		initialize();	//initialize the generator
 		final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap=urf.getReferences();	//get a map of sets of all references to each resource
 		if(generateSignature)	//if we should generate a signature
 		{
 			writer.write(TURF_SIGNATURE);	//write the TURF signature
 				//gather namespace URIs used
 			final Map<URI, Boolean> namespaceURIMultipleMap=new HashMap<URI, Boolean>();	//create a hash map with namespace URI keys to keep track if a namespace is used multiple times
-			for(final URI resourceURI:urf.getResourceURIs())	//look at each resource URI
+			for(final URI resourceURI:urf.getResourceURIReferences())	//look at each resource URI, including property URIs
 			{
-				
 				final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace URI of this resource URI
 				if(namespaceURI!=null && !isLexicalNamespaceURI(namespaceURI))	//if this resource URI has a namespace that isn't a lexical namespace (URIs in lexical namespaces have their own short forms)
 				{
@@ -444,7 +444,7 @@ public class URFTURFGenerator
 						namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times
 					}
 				}
-			}			
+			}
 			boolean startedPreamble=false;	//we'll keep track of whether we started a TURF preamble
 				//generate beginning labeled namespace URIs
 			final TURFNamespaceLabelManager namespaceLabelManager=getNamespaceLabelManager();	//get the namespace prefix manager
@@ -455,11 +455,11 @@ public class URFTURFGenerator
 				{
 					if(startedPreamble)	//if we already started the preamble
 					{
-						writer.write(LIST_DELIMITER);	//write a list delimiter						
+						writer.write(LIST_DELIMITER);	//write a list delimiter
 					}
 					else	//if we haven't started the preamble, yet
 					{
-						writeNewLine(writer);	//go to the next line						
+						writeNewLine(writer);	//go to the next line
 						writer.write(PREAMBLE_BEGIN);	//start the preamble
 						indent();	//indent the properties
 						startedPreamble=true;	//show that we've started the properties
@@ -492,7 +492,7 @@ public class URFTURFGenerator
 		sort(resourceList, reverseOrder(RESOURCE_PROPERTY_COUNT_COMPARATOR));	//sort the resources in reverse order of their number of properties, so that we'll have a bigger chance of inlining resources
 		for(final URFResource resource:resourceList)	//iterate over all the resources, generating only those with no references (i.e. root resources)
 		{
-			if(!isGenerated(resource) && !referenceMap.hasItems(resource))	//if this resource has not yet been generated and it has no references to it
+			if(!isGenerated(resource) && !referenceMap.hasItems(resource))	//if this resource has not yet been generated and the resource has no references to it
 			{
 				generateRootResource(writer, urf, referenceMap, resource);	//generate this root resource
 			}
@@ -510,6 +510,7 @@ public class URFTURFGenerator
 			writeNewLine(writer);
 			writer.write(COMMUNITY_END);	//end the instance community
 		}
+		reset();	//reset the generator to conserve memory
 		return writer;	//return the writer
 	}
 
@@ -613,7 +614,7 @@ public class URFTURFGenerator
 			generateReference(writer, urf, uri, defaultNamespaceURI);	//write a reference for the resource
 			generatedComponent=true;	//indicate that we generated a component
 		}
-		
+
 		if(isGenerated)	//if we've already generated this resource, see if there are any scoped properties before leaving
 		{
 			if(subjectScope!=null && scopePropertyURI!=null)	//if this resource is the value of a property
@@ -629,8 +630,8 @@ public class URFTURFGenerator
 					writeNewLine(writer);
 					writer.write(PROPERTIES_END);	//end the properties declaration
 				}
-			}				
-			return writer;	//there's no need to generate the resource again; we've already generated a label or a URI to represent it			
+			}
+			return writer;	//there's no need to generate the resource again; we've already generated a label or a URI to represent it
 		}
 		boolean isProposition=false;	//we'll see if this is a proposition
 		boolean isList=false;	//we'll see if this is a list
@@ -703,7 +704,7 @@ public class URFTURFGenerator
 					{
 						markReferenceGenerated(urf, orderURI);	//mark that this order was generated unless it has some other quality needed to be generated separately
 					}
-				}				
+				}
 				final URFResource type=typeProperty.getValue();	//get the type value
 				final URI typeURI=type.getURI();	//get the URI of this type
 				if(typeURI!=null)	//if the given type has a URI
@@ -973,7 +974,7 @@ public class URFTURFGenerator
 	*/
 	public static String createReferenceString(final URI uri, final TURFNamespaceLabelManager namespaceLabelManager)
 	{
-		return createReferenceString(uri, namespaceLabelManager, null);	//create a reference string with no base URI		
+		return createReferenceString(uri, namespaceLabelManager, null);	//create a reference string with no base URI
 	}
 
 	/**Creates and returns a reference string to a resource with the given URI.

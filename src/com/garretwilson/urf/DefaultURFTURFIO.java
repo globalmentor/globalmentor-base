@@ -43,7 +43,7 @@ public class DefaultURFTURFIO extends AbstractTURFIO<URF>
 	*/
 	public void write(final OutputStream outputStream, final URI baseURI, final URF urf) throws IOException
 	{
-		writeTURF(outputStream, baseURI, urf);	//write the URF resources
+		writeURF(outputStream, baseURI, urf);	//write the URF resources
 	}
 
 }
