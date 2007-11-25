@@ -419,9 +419,18 @@ public class URFTURFGenerator
 		{
 			writer.write(TURF_SIGNATURE);	//write the TURF signature
 				//gather namespace URIs used
+			final boolean isShortTypesGenerated=isShortTypesGenerated();	//see if short types are generated
 			final Map<URI, Boolean> namespaceURIMultipleMap=new HashMap<URI, Boolean>();	//create a hash map with namespace URI keys to keep track if a namespace is used multiple times
 			for(final URI resourceURI:urf.getResourceURIReferences())	//look at each resource URI, including property URIs
 			{
+				if(isShortTypesGenerated && TYPE_PROPERTY_URI.equals(resourceURI))	//if we're generating short types and this is the type URI
+				{
+					continue;	//ignore the type property URI, as it will never show up in normal circumstances
+				}
+				else if(SHORT_REFERENCE_CLASS_URIS.contains(resourceURI))	//if this is a type that will receive a short form
+				{
+					continue;	//ignore the class URI, as it will never show up in normal circumstances
+				}
 				final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace URI of this resource URI
 				if(namespaceURI!=null && !isLexicalNamespaceURI(namespaceURI))	//if this resource URI has a namespace that isn't a lexical namespace (URIs in lexical namespaces have their own short forms)
 				{

@@ -40,15 +40,37 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 
 	/**Returns the key that represents the given value. 
 	@param value The value whose associated key is to be returned.
-	@return The key to which this map reverse maps the specified value, or
-		<code>null</code> if the map contains no reverse mapping for this value.
-	@exception ClassCastException Thrown if the key is of an inappropriate type
-		for this map (optional).
-	@exception NullPointerException Thrown if the value is <code>null</code> and
-		this map does not not permit <code>null</code> keys (optional).
+	@return The key to which this map reverse maps the specified value, or <code>null</code> if the map contains no reverse mapping for this value.
+	@exception ClassCastException Thrown if the value is of an inappropriate type for this map (optional).
+	@exception NullPointerException Thrown if the value is <code>null</code> and this map does not not permit <code>null</code> values (optional).
 	@see #containsValue(Object)
 	*/
 	public K getKey(final V value) {readLock().lock(); try{return reverseMap.get(value);} finally{readLock().unlock();}}	//return the key keyed to the given value in the key map
+
+	/**Removes the mapping for a value from this map if it is present.
+	@param value The value whose mapping is to be removed from the map.
+	@return The previous key associated with the value, or <code>null</code> if there was no mapping for the value.
+	@exception UnsupportedOperationException if the remove operation is not supported by this map
+	@exception ClassCastException if the value is of an inappropriate type for this map (optional).
+	@exception NullPointerException if the specified value is <code>null</code> and this map does not permit <code>null</code> values (optional).
+	*/
+	public K removeValue(final V value)
+	{
+		writeLock().lock();	//get a lock for writing
+		try
+		{
+			final K oldKey=reverseMap.remove(value);	//remove the value from the reverse map
+			if(oldKey!=null)	//if there was a key associated with the value
+			{
+				super.remove(oldKey);	//remove the old key from the map; call the superclass version so that we won't try to remove values from the reverse map again
+			}
+			return oldKey;	//return the old key, if any
+		}
+		finally
+		{
+			writeLock().unlock();	//always release the write lock
+		}
+	}
 
 	/**Returns <code>true</code> if this map maps a key to the specified value.
 	<p>This version uses an internal reverse map to provide faster lookups than
@@ -78,6 +100,31 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 			final V oldValue=super.put(key, value);	//store the value in the map, keyed to the key
 			reverseMap.put(value, key);	//store the key in the key map, keyed to the value
 			return oldValue;	//return the old value previously mapped to the key, if any
+		}
+		finally
+		{
+			writeLock().unlock();	//always release the write lock
+		}
+	}
+
+	/**Removes the mapping for this key from this map if it is present.
+	@param key The key whose mapping is to be removed from the map.
+	@return The previous value associated with specified key, or <code>null</code> if there was no mapping for key.
+	@exception ClassCastException if the key is of an inappropriate type for this map (optional).
+	@exception NullPointerException if the key is <code>null</code> and this map does not permit <code>null</code> keys (optional).
+	@exception UnsupportedOperationException if the remove method is not supported by this map.
+	*/
+	public V remove(final Object key)
+	{
+		writeLock().lock();	//get a lock for writing
+		try
+		{
+			final V oldValue=super.remove(key);	//remove the key
+			if(oldValue!=null)	//if there was a value associated with the key
+			{
+				reverseMap.remove(oldValue);	//remove the old value from the reverse map
+			}
+			return oldValue;	//return the old value, if any
 		}
 		finally
 		{

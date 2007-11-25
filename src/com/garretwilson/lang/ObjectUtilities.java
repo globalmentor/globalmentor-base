@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static com.garretwilson.lang.ClassUtilities.*;
+import static com.garretwilson.lang.JavaConstants.*;
 
 /**Various utilities to manipulate Java objects.
 @author Garret Wilson
@@ -182,14 +183,14 @@ public class ObjectUtilities
 		return seed;	//return the entire result
 	}
 
-	/**Returns the string representation of the object or "null".
+	/**Returns the string representation of the object or {@value JavaConstants#NULL}.
 	@param object An object to be represented by a string.
-	@return The string representation of the object or "null" if the object is
+	@return The string representation of the object or {@value JavaConstants#NULL} if the object is
 		<code>null</code>.
 	*/
 	public final static String toString(final Object object)
 	{
-		return object!=null ? object.toString() : "null"; //return the object's string representation or "null" G***use a constant here
+		return object!=null ? object.toString() : NULL; //return the object's string representation or "null"
 	}
 
 }

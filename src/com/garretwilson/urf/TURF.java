@@ -2,8 +2,10 @@ package com.garretwilson.urf;
 
 import java.net.URI;
 import java.util.*;
+import static java.util.Collections.*;
 
 import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.urf.URF.*;
 
 /**Constants relating to the text serialization of URF, TURF.
 This class also provides state regarding the processing of an URF instance in TURF,
@@ -152,6 +154,20 @@ public class TURF extends HashMap<String, URI>
 	public final static char PREAMBLE_BEGIN='*';
 	/**The delimiter that ends the TURF preamble.*/
 	public final static char PREAMBLE_END=PREAMBLE_BEGIN;
+
+	/**The set of all URF class URIs that have short reference forms.*/
+	public final static Set<URI> SHORT_REFERENCE_CLASS_URIS;
+
+	static
+	{
+		final Set<URI> shortReferenceClassURIs=new HashSet<URI>();	//create a new set of URIs
+		addAll(shortReferenceClassURIs,	//add the URIs all the classes that have reference short forms
+				BINARY_CLASS_URI, BOOLEAN_CLASS_URI, CHARACTER_CLASS_URI, DATE_CLASS_URI,
+				DATE_TIME_CLASS_URI, DURATION_CLASS_URI, INTEGER_CLASS_URI, LANGUAGE_CLASS_URI,
+				ORDINAL_CLASS_URI, REAL_CLASS_URI, REGULAR_EXPRESSION_CLASS_URI, STRING_CLASS_URI,
+				TIME_CLASS_URI, UTC_OFFSET_CLASS_URI, URI_CLASS_URI);
+		SHORT_REFERENCE_CLASS_URIS=unmodifiableSet(shortReferenceClassURIs);	//save an unmodifiable version of the set
+	}
 
 	/**Determines if the given character is a TURF name begin character.
 	A name begin character is a Unicode letter.
