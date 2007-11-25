@@ -21,7 +21,7 @@ public class GenericPropertyChangeEvent<V> extends PropertyChangeEvent implement
 		*/
 		public Object getTarget() {return target;}
 
-	/**Source  and property name constructor with old and new values.
+	/**Source and property name constructor with old and new values.
 	The target will be set to be the same as the given source.
 	@param source The bean that fired the event.
 	@param propertyName The programmatic name of the property that was changed.

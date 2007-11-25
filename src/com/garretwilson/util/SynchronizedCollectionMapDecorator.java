@@ -83,4 +83,12 @@ public class SynchronizedCollectionMapDecorator<K, V, C extends Collection<V>> e
 	*/
 	public Iterable<V> getItems(final K key) {synchronized(mutex) {return collectionMap.getItems(key);}}
 	
+	/**Removes the first occurence of the given value from the collection of values, if any, associated with the key.
+	If all items from the collection are removed, the collection itself is removed from the map.
+	@param key The key in the map.
+	@param value The item to be removed from the collection, if present.
+	@return <code>true</code> if an item was removed as a result of this call.
+	*/
+	public boolean removeItem(final K key, final V value) {synchronized(mutex) {return collectionMap.removeItem(key, value);}}
+
 }

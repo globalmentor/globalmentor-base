@@ -23,6 +23,23 @@ public abstract class AbstractDecoratorCollectionMap<K, V, C extends Collection<
 		super(map);	//construct the parent class
 	}
 
+	/**Retrieves the collection of values associated with the given key.
+	If no collection of values is associated with the key, one will be created and added to the map.
+	@param key The key in the map.
+	@return The collection associated with the given key
+	@see #createCollection()
+	*/
+	public C getCollection(final K key)
+	{
+		C collection=get(key);	//get the collection of objects for the key
+		if(collection==null)	//if there is yet no collection for this key
+		{
+			collection=createCollection();	//create a new collection
+			put(key, collection);	//store the collection in the map
+		}
+		return collection;	//return the collection
+	}
+
 	/**Retrieves whether there are items in a collection associated with the key.
 	@param key The key in the map.
 	@return <code>true</code> if there is at least one item associated with the key.
@@ -68,26 +85,39 @@ public abstract class AbstractDecoratorCollectionMap<K, V, C extends Collection<
 	@param key The key in the map.
 	@return An object that will iterate all items, if any, associated with the given key.
 	*/
+	@SuppressWarnings("unchecked")
 	public Iterable<V> getItems(final K key)
 	{
 		final C collection=get(key);	//get the collection of objects for the key
 		return collection!=null ? collection : (Iterable<V>)EMPTY_ITERABLE;	//return the collection or an empty iterable if there is no collection for this key
 	}
 
-	/**Retrieves the collection of values associated with the given key.
-	If no collection of values is associated with the key, one will be created and added to the map.
+	/**Removes the first occurence of the given value from the collection of values, if any, associated with the key.
+	If all items from the collection are removed, the collection itself is removed from the map.
 	@param key The key in the map.
-	@return The collection associated with the given key
-	@see #createCollection()
+	@param value The item to be removed from the collection, if present.
+	@return <code>true</code> if an item was removed as a result of this call.
 	*/
-	public C getCollection(final K key)
+	public boolean removeItem(final K key, final V value)
 	{
-		C collection=get(key);	//get the collection of objects for the key
-		if(collection==null)	//if there is yet no collection for this key
+		final C collection=get(key);	//get the collection of objects for the key, if any
+		final boolean removed;	//we'll determined if the item was removed
+		if(collection!=null)	//if there is a collection associated with this key
 		{
-			collection=createCollection();	//create a new collection
-			put(key, collection);	//store the collection in the map
+			removed=collection.remove(value);	//try to remove the item from the collection
+			if(removed)	//if we removed something
+			{
+				if(collection.isEmpty())	//if the collection no longer has any values
+				{
+					remove(key);	//remove the entire collection from the map
+				}
+			}
 		}
-		return collection;	//return the collection
+		else	//if there is no collection associated with this key
+		{
+			removed=false;	//there is nothing to remove
+		}
+		return removed;	//return whether we removed an item
 	}
+
 }
