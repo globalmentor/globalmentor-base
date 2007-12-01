@@ -71,8 +71,7 @@ public abstract class AbstractPostponedEvent<L extends EventListener, E extends 
 			for(final L listener:eventListenerManager.getListeners(getListenerKey()))	//for each registered event listeners
 			{
 				fireEvent(listener, event);	//dispatch the event
-			}
-			
+			}			
 		}
 	}
 

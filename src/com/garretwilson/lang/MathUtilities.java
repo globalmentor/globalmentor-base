@@ -1,6 +1,8 @@
 package com.garretwilson.lang;
 
 import java.lang.Math;
+import java.util.Collection;
+
 import com.garretwilson.util.Debug;
 
 /**Utilities for working with math.
@@ -66,4 +68,32 @@ Debug.trace("final value: "+(float)(Math.round(a*multiplier)/multiplier));  //G*
 		return Math.min(Math.min(a, b), c);	//return the least of a, b, and c
 	}
 
+	/**Determines the lowest integer from a collection of integers.
+	@param integers The collection of integers.
+	@return The minimum of the given integers, or the {@link Integer#MAX_VALUE} if there are no integers.
+	@exception NullPointerException if the given collection is <code>null</code> or one of its elements is <code>null</code>.
+	*/
+	public static int min(final Collection<? extends Integer> integers)
+	{
+		return min(integers, Integer.MAX_VALUE);	//return the minimum of the integers with the largest integer as the max
+	}
+
+	/**Determines the lowest integer from a collection of integers with a given maximum.
+	@param integers The collection of integers.
+	@param max The maximum value this method can return.
+	@return The minimum of the given integers, or the given maximum if there are no integers.
+	@exception NullPointerException if the given collection is <code>null</code> or one of its elements is <code>null</code>.
+	*/
+	public static int min(final Collection<? extends Integer> integers, int max)
+	{
+		for(final Integer integer:integers)	//for each integer
+		{
+			final int intValue=integer.intValue();	//get the int value
+			if(intValue<max)	//if this is a lower value
+			{
+				max=intValue;	//lower the max value
+			}
+		}
+		return max;	//return the new updated max value
+	}
 }

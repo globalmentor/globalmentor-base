@@ -369,108 +369,108 @@ public abstract class AbstractPurgeOnWriteReferenceValueMap<K, V, R extends Refe
   	}
   	
   	
-  /**
- * Returns the key corresponding to this entry.
- *
- * @return the key corresponding to this entry.
-       * @throws IllegalStateException implementations may, but are not
-       *         required to, throw this exception if the entry has been
-       *         removed from the backing map
- */
-  public K getKey() {return referenceEntry.getKey();};
-
-  	/**
- * Returns the value corresponding to this entry.  If the mapping
- * has been removed from the backing map (by the iterator's
- * <tt>remove</tt> operation), the results of this call are undefined.
- *
- * @return the value corresponding to this entry.
-       * @throws IllegalStateException implementations may, but are not
-       *         required to, throw this exception if the entry has been
-       *         removed from the backing map
- */
-  public V getValue()
-  {
-  	final R reference=referenceEntry.getValue();	//get the reference if there is one
-  	return reference!=null ? reference.get() : null;	//if there is a reference, return the referenced object
-  }
-
-  	/**
- * Replaces the value corresponding to this entry with the specified
- * value (optional operation).  (Writes through to the map.)  The
- * behavior of this call is undefined if the mapping has already been
- * removed from the map (by the iterator's <tt>remove</tt> operation).
- *
- * @param value new value to be stored in this entry.
- * @return old value corresponding to the entry.
-       * 
- * @throws UnsupportedOperationException if the <tt>put</tt> operation
- *	      is not supported by the backing map.
- * @throws ClassCastException if the class of the specified value
- * 	      prevents it from being stored in the backing map.
- * @throws    IllegalArgumentException if some aspect of this value
- *	      prevents it from being stored in the backing map.
- * @throws NullPointerException if the backing map does not permit
- *	      <tt>null</tt> values, and the specified value is
- *	      <tt>null</tt>.
-       * @throws IllegalStateException implementations may, but are not
-       *         required to, throw this exception if the entry has been
-       *         removed from the backing map
-       */
-  public V setValue(V value)
-  {
-  	final R reference=referenceEntry.setValue(createReference(getKey(), value, referenceQueue));	//create a reference and set the value
-  	if(reference!=null)	//if there was a reference
-  	{
-    	final V oldValue=reference!=null ? reference.get() : null;	//get the old value, if any
-  		reference.enqueue();	//add the reference to the queue for purging
-  		purgeExcept(reference);	//purge all references except the one we just removed
-  		return oldValue;	//return the old value
-  	}
-  	else	//if there was no reference
-  	{
-  		purge();	//purge everything
-  		return null;	//indicate that there was no previous value  		
-  	}
-  }
-
-/**
- * Compares the specified object with this entry for equality.
- * Returns <tt>true</tt> if the given object is also a map entry and
- * the two entries represent the same mapping.  More formally, two
- * entries <tt>e1</tt> and <tt>e2</tt> represent the same mapping
- * if<pre>
-       *     (e1.getKey()==null ?
-       *      e2.getKey()==null : e1.getKey().equals(e2.getKey()))  &&
-       *     (e1.getValue()==null ?
-       *      e2.getValue()==null : e1.getValue().equals(e2.getValue()))
-       * </pre>
- * This ensures that the <tt>equals</tt> method works properly across
- * different implementations of the <tt>Map.Entry</tt> interface.
- *
- * @param o object to be compared for equality with this map entry.
- * @return <tt>true</tt> if the specified object is equal to this map
- *         entry.
-       */
-  public boolean equals(Object o) {return referenceEntry.equals(o);}
-
-/**
- * Returns the hash code value for this map entry.  The hash code
- * of a map entry <tt>e</tt> is defined to be: <pre>
- *     (e.getKey()==null   ? 0 : e.getKey().hashCode()) ^
- *     (e.getValue()==null ? 0 : e.getValue().hashCode())
-       * </pre>
- * This ensures that <tt>e1.equals(e2)</tt> implies that
- * <tt>e1.hashCode()==e2.hashCode()</tt> for any two Entries
- * <tt>e1</tt> and <tt>e2</tt>, as required by the general
- * contract of <tt>Object.hashCode</tt>.
- *
- * @return the hash code value for this map entry.
- * @see Object#hashCode()
- * @see Object#equals(Object)
- * @see #equals(Object)
- */
-  public int hashCode() {return referenceEntry.hashCode();}
+	  /**
+	 * Returns the key corresponding to this entry.
+	 *
+	 * @return the key corresponding to this entry.
+	       * @throws IllegalStateException implementations may, but are not
+	       *         required to, throw this exception if the entry has been
+	       *         removed from the backing map
+	 */
+	  public K getKey() {return referenceEntry.getKey();};
+	
+	  	/**
+	 * Returns the value corresponding to this entry.  If the mapping
+	 * has been removed from the backing map (by the iterator's
+	 * <tt>remove</tt> operation), the results of this call are undefined.
+	 *
+	 * @return the value corresponding to this entry.
+	       * @throws IllegalStateException implementations may, but are not
+	       *         required to, throw this exception if the entry has been
+	       *         removed from the backing map
+	 */
+	  public V getValue()
+	  {
+	  	final R reference=referenceEntry.getValue();	//get the reference if there is one
+	  	return reference!=null ? reference.get() : null;	//if there is a reference, return the referenced object
+	  }
+	
+	  	/**
+	 * Replaces the value corresponding to this entry with the specified
+	 * value (optional operation).  (Writes through to the map.)  The
+	 * behavior of this call is undefined if the mapping has already been
+	 * removed from the map (by the iterator's <tt>remove</tt> operation).
+	 *
+	 * @param value new value to be stored in this entry.
+	 * @return old value corresponding to the entry.
+	       * 
+	 * @throws UnsupportedOperationException if the <tt>put</tt> operation
+	 *	      is not supported by the backing map.
+	 * @throws ClassCastException if the class of the specified value
+	 * 	      prevents it from being stored in the backing map.
+	 * @throws    IllegalArgumentException if some aspect of this value
+	 *	      prevents it from being stored in the backing map.
+	 * @throws NullPointerException if the backing map does not permit
+	 *	      <tt>null</tt> values, and the specified value is
+	 *	      <tt>null</tt>.
+	       * @throws IllegalStateException implementations may, but are not
+	       *         required to, throw this exception if the entry has been
+	       *         removed from the backing map
+	       */
+	  public V setValue(V value)
+	  {
+	  	final R reference=referenceEntry.setValue(createReference(getKey(), value, referenceQueue));	//create a reference and set the value
+	  	if(reference!=null)	//if there was a reference
+	  	{
+	    	final V oldValue=reference!=null ? reference.get() : null;	//get the old value, if any
+	  		reference.enqueue();	//add the reference to the queue for purging
+	  		purgeExcept(reference);	//purge all references except the one we just removed
+	  		return oldValue;	//return the old value
+	  	}
+	  	else	//if there was no reference
+	  	{
+	  		purge();	//purge everything
+	  		return null;	//indicate that there was no previous value  		
+	  	}
+	  }
+	
+	/**
+	 * Compares the specified object with this entry for equality.
+	 * Returns <tt>true</tt> if the given object is also a map entry and
+	 * the two entries represent the same mapping.  More formally, two
+	 * entries <tt>e1</tt> and <tt>e2</tt> represent the same mapping
+	 * if<pre>
+	       *     (e1.getKey()==null ?
+	       *      e2.getKey()==null : e1.getKey().equals(e2.getKey()))  &&
+	       *     (e1.getValue()==null ?
+	       *      e2.getValue()==null : e1.getValue().equals(e2.getValue()))
+	       * </pre>
+	 * This ensures that the <tt>equals</tt> method works properly across
+	 * different implementations of the <tt>Map.Entry</tt> interface.
+	 *
+	 * @param o object to be compared for equality with this map entry.
+	 * @return <tt>true</tt> if the specified object is equal to this map
+	 *         entry.
+	       */
+	  public boolean equals(Object o) {return referenceEntry.equals(o);}
+	
+	/**
+	 * Returns the hash code value for this map entry.  The hash code
+	 * of a map entry <tt>e</tt> is defined to be: <pre>
+	 *     (e.getKey()==null   ? 0 : e.getKey().hashCode()) ^
+	 *     (e.getValue()==null ? 0 : e.getValue().hashCode())
+	       * </pre>
+	 * This ensures that <tt>e1.equals(e2)</tt> implies that
+	 * <tt>e1.hashCode()==e2.hashCode()</tt> for any two Entries
+	 * <tt>e1</tt> and <tt>e2</tt>, as required by the general
+	 * contract of <tt>Object.hashCode</tt>.
+	 *
+	 * @return the hash code value for this map entry.
+	 * @see Object#hashCode()
+	 * @see Object#equals(Object)
+	 * @see #equals(Object)
+	 */
+	  public int hashCode() {return referenceEntry.hashCode();}
   }
 
   // Comparison and hashing
@@ -507,12 +507,17 @@ public abstract class AbstractPurgeOnWriteReferenceValueMap<K, V, R extends Refe
 
   private final ReferenceQueue<V> referenceQueue=new ReferenceQueue<V>();
 
+  /**Purges all enqueued references.*/
   public void purge()
   {
   	purgeExcept(null);
   }
 
-  protected void purgeExcept(final R exceptReference)
+  /**Purges all enqueued references except for the given reference.
+  @param exceptReference The reference not to purge, or <code>null</code> if all enqueued references should be purged.
+  */
+  @SuppressWarnings("unchecked")
+	protected void purgeExcept(final R exceptReference)
   {
   	R reference=(R)referenceQueue.poll();	//see if there are any references ready for purging
   	while(reference!=null && reference!=exceptReference)

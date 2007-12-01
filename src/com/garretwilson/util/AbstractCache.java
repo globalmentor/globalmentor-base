@@ -2,9 +2,11 @@ package com.garretwilson.util;
 
 import java.io.IOException;
 import java.util.*;
+import static java.util.Collections.*;
 import java.util.concurrent.locks.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.util.CollectionUtilities.*;
 
 /**An abstract cache that requires a subclass implementing data retrieval methods.
 @param <K> The type of key used to lookup data in the cache.
@@ -152,21 +154,31 @@ public abstract class AbstractCache<K, V, I extends AbstractCache.CachedInfo<V>>
 			final I newCachedInfo=fetch(key);	//fetch new cached info for the key
 			cacheMap.put(key, newCachedInfo);	//cache the information
 			final V value=newCachedInfo.getValue();	//get the value we fetched
+			final Collection<CacheFetchListener<K, V>> cacheFetchListeners;	//we'll determine the cache fetch listeners; do this outside the read lock, in case a listener wants to remove itself from the list
 			cacheFetchListenerMap.readLock().lock();	//get a read lock on the listeners
 			try
 			{
 				if(cacheFetchListenerMap.hasItems(key))	//if there are listeners for this key (this is expensive to look up the collection twice, but less expensive than creating an event and iterators; this assumes that most of the time there will be no listeners)
 				{
-					final CacheFetchEvent<K, V> cacheFetchEvent=new CacheFetchEvent<K, V>(this, key, value);	//create an event to send to the listeners
-					for(final CacheFetchListener<K, V> listener:cacheFetchListenerMap.getItems(key))	//for each listener wanting to know when data is fetched for this key
-					{
-						listener.fetched(cacheFetchEvent);	//inform the listener that the data was fetched
-					}
+					cacheFetchListeners=new ArrayList<CacheFetchListener<K, V>>();	//create a list of listeners
+					addAll(cacheFetchListeners, cacheFetchListenerMap.getItems(key));	//add the listeners to our list
+				}
+				else	//if there are no listeners
+				{
+					cacheFetchListeners=emptyList();	//use an empty list
 				}
 			}
 			finally
 			{
 				cacheFetchListenerMap.readLock().unlock();	//always release the read lock				
+			}
+			if(!cacheFetchListeners.isEmpty())	//if there are cache fetch listeners
+			{
+				final CacheFetchEvent<K, V> cacheFetchEvent=new CacheFetchEvent<K, V>(this, key, value);	//create an event to send to the listeners
+				for(final CacheFetchListener<K, V> listener:cacheFetchListeners)	//for each listener wanting to know when data is fetched for this key
+				{
+					listener.fetched(cacheFetchEvent);	//inform the listener that the data was fetched
+				}
 			}
 			return value;	//return the value we fetched
 		}
