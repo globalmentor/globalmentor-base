@@ -135,11 +135,11 @@ public class VCard
 	*/
 	public static void setEmail(final URFResource resource, final URI emailURI)
 	{
-		if(emailURI.getScheme().equals(MAILTO_SCHEME))	//if the email doesn't have the mailto URI scheme
+		if(!MAILTO_SCHEME.equals(emailURI.getScheme()))	//if the email doesn't have the mailto URI scheme
 		{
 			throw new IllegalArgumentException("Email URI "+emailURI+" does not have the "+MAILTO_SCHEME+" scheme.");
 		}
-		resource.setPropertyValue(VCARD_NAMESPACE_URI, emailURI);	//set the email using the given email URI
+		resource.setPropertyValue(EMAIL_PROPERTY_URI, emailURI);	//set the email using the given email URI
 	}
 
 }
