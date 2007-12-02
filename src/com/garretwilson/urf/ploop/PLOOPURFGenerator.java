@@ -8,6 +8,7 @@ import static com.garretwilson.lang.ClassUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
 import com.garretwilson.urf.*;
+
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.ploop.PLOOP.*;
 
@@ -114,7 +115,7 @@ public class PLOOPURFGenerator
 				final URFListResource<URFResource> listResource=new URFListResource<URFResource>();	//create a new URF list resource
 				for(final Object listItem:(List<?>)object)	//for each item in the list
 				{
-					final URFResource listItemResource=generateURFResource(listItem);	//generate an URF resource from the property value
+					final URFResource listItemResource=generateURFResource(listItem);	//generate an URF resource from the property value TODO add support for null
 					listResource.add(listItemResource);	//add the list item URF resource to the list URF resource
 				}
 				return listResource;	//return the list resource
@@ -124,7 +125,7 @@ public class PLOOPURFGenerator
 				final URFSetResource<URFResource> setResource=new URFSetResource<URFResource>();	//create a new URF set resource
 				for(final Object setElement:(Set<?>)object)	//for each element in the set
 				{
-					final URFResource setElementResource=generateURFResource(setElement);	//generate an URF resource from the set element
+					final URFResource setElementResource=generateURFResource(setElement);	//generate an URF resource from the set element TODO add support for null
 					setResource.add(setElementResource);	//add the set element URF resource to the set URF resource
 				}
 				return setResource;	//return the list resource
@@ -221,6 +222,7 @@ public class PLOOPURFGenerator
 	@param resource The URF resource representing the given object.
 	@param object The object for which a property should be stored in the URF resource.
 	@param propertyName The name of the property to set.
+	@return The URF property value that was added, or <code>null</code> if no URF property value was added because there was no object property value.
 	@exception NullPointerException if the given resource, object, and/or property name is <code>null</code>.
  	@exception IllegalArgumentException if the object has no getter method for the given property.
  	@exception IllegalArgumentException if one of the properties of the given object is not accessible.
@@ -241,7 +243,7 @@ public class PLOOPURFGenerator
 	@param object The object for which a property should be stored in the URF resource.
 	@param propertyName The name of the property to set.
 	@param getterMethod The method to invoke to retrieve the property value from the object.
-	@return The URF property value that was added.
+	@return The URF property value that was added, or <code>null</code> if no URF property value was added because there was no object property value.
 	@exception NullPointerException if the given resource, object, property name, and/or getter method is <code>null</code>.
  	@exception IllegalArgumentException if one of the properties of the given object is not accessible.
 	@exception InvocationTargetException if one of the properties of the given object throws an exception.
@@ -258,9 +260,16 @@ public class PLOOPURFGenerator
 		{
 			throw new IllegalArgumentException(illegalAccessException);
 		}
-		final URFResource propertyValueResource=generateURFResource(propertyValueObject, propertyType);	//generate an URF object from the property value
-		final URI propertyURI=getPropertyURI(object, propertyName);	//get the property URI for the given property of the object
-		return resource.setPropertyValue(propertyURI, propertyValueResource);	//set this property of the URF resource
+		if(propertyValueObject!=null)	//if there is a value
+		{
+			final URFResource propertyValueResource=generateURFResource(propertyValueObject, propertyType);	//generate an URF object from the property value
+			final URI propertyURI=getPropertyURI(object, propertyName);	//get the property URI for the given property of the object
+			return resource.setPropertyValue(propertyURI, propertyValueResource);	//set this property of the URF resource
+		}
+		else	//if there is no value
+		{
+			return null;	//indicate that no URF property value was added
+		}
 	}
 
 }
