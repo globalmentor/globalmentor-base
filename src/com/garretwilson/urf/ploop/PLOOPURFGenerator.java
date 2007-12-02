@@ -152,6 +152,7 @@ public class PLOOPURFGenerator
 			final Class<?> objectClass=object.getClass();	//get the object type
 			final URI typeURI=createJavaURI(objectClass);	//get a URI to represent the class
 			resource=urf.locateResource(resourceURI, typeURI);	//locate and create if needed a new resource
+			resource.addTypeURI(typeURI);	//add the type URI
 			final Set<URI> ploopPropertyURIs=new HashSet<URI>();	//create a set of property URIs that we used for PLOOP
 			final Method[] methods=objectClass.getMethods();	//get all the methods of the object
 			for(final Method method:methods)	//look at each method; TODO fix; change to look through all the setters first; we'll use all the getters, because a read-only property still may be used for constructing the object
