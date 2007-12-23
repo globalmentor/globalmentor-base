@@ -247,7 +247,7 @@ public class PLOOPURFProcessor
 				}
 				else	//if there is no urf.inits properties
 				{
-					if(Resource.class.isAssignableFrom(valueClass))	//if the value class is a Resource, see if we can create it with a single URI TODO probably remove check and allow any single URI contructor, even for non-resources
+					if(Resource.class.isAssignableFrom(valueClass))	//if the value class is a Resource, see if we can create it with a single URI
 					{
 						constructor=getCompatibleConstructor(valueClass, URI.class);	//see if there is a single URI parameter constructor
 						if(constructor!=null)	//if there is a single URI parameter constructor for the Resource

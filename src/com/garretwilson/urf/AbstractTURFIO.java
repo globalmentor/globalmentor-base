@@ -20,6 +20,17 @@ Any redistribution of this source code or derived source code must include these
 public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 {
 
+	/**Whether a byte order mark (BOM) is written.*/
+	private boolean bomWritten=true;
+
+		/**@return Whether a byte order mark (BOM) is written.*/
+		public boolean isBOMWritten() {return bomWritten;}
+
+		/**Whether a byte order mark (BOM) is written.
+		@param bomWritten Whether a byte order mark (BOM) is written.
+		*/
+		public void setBOMWritten(final boolean bomWritten) {this.bomWritten=bomWritten;}
+
 	/**Whether output is formatted.*/
 	private boolean formatted=true;
 
@@ -142,7 +153,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	*/
 	protected void writeURF(final OutputStream outputStream, final URI baseURI, final URF urf) throws IOException
 	{
-		writeTURF(outputStream, baseURI, urf, isFormatted(), this);	//write TURF, using this object as the namespace prefix manager
+		writeTURF(outputStream, baseURI, urf, isBOMWritten(), isFormatted(), this);	//write TURF, using this object as the namespace prefix manager
 	}
 
 	/**Writes a resource to an output stream.
@@ -155,7 +166,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	*/
 	protected void writeURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource) throws IOException
 	{
-		writeTURFResource(outputStream, baseURI, resource, isFormatted(), this);	//write TURF, using this object as the namespace prefix manager
+		writeTURFResource(outputStream, baseURI, resource, isBOMWritten(), isFormatted(), this);	//write TURF, using this object as the namespace prefix manager
 	}
 
 	/**Writes a a formatted URF resource to a TURF output stream.
@@ -186,29 +197,31 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@param outputStream The output stream to which to write the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param resource The resource to write to the given output stream.
+	@param bomWritten Whether a byte order mark (BOM) is written.
 	@param formatted Whether output is formatted.
 	@excepion NullPointerException if the given output stream and/or resource is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
-	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource, final boolean formatted) throws IOException
+	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource, final boolean bomWritten, final boolean formatted) throws IOException
 	{
-		writeTURFResource(outputStream, baseURI, resource, formatted, new TURFNamespaceLabelManager());	//write TURF with a default namespace prefix manager
+		writeTURFResource(outputStream, baseURI, resource, bomWritten, formatted, new TURFNamespaceLabelManager());	//write TURF with a default namespace prefix manager
 	}
 
 	/**Writes an URF instance to a TURF output stream.
 	@param outputStream The output stream to which to write the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param urf The URF instance to write to the given output stream.
+	@param bomWritten Whether a byte order mark (BOM) is written.
 	@param formatted Whether output is formatted.
 	@excepion NullPointerException if the given output stream, and/or URF instance is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
-	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf, final boolean formatted) throws IOException
+	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf, final boolean bomWritten, final boolean formatted) throws IOException
 	{
-		writeTURF(outputStream, baseURI, urf, formatted, new TURFNamespaceLabelManager());	//write TURF with a default namespace prefix manager
+		writeTURF(outputStream, baseURI, urf, bomWritten, formatted, new TURFNamespaceLabelManager());	//write TURF with a default namespace prefix manager
 	}
 
-	/**Writes a formatted URF resource to a TURF output stream.
+	/**Writes a formatted URF resource to a TURF output stream with a beginning BOM.
 	@param outputStream The output stream to which to write the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param resource The resource to write to the given output stream.
@@ -218,21 +231,25 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	*/
 	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException
 	{
-		writeTURFResource(outputStream, baseURI, resource, true, namespacePrefixManager);	//write the resource with formatted output
+		writeTURFResource(outputStream, baseURI, resource, true, true, namespacePrefixManager);	//write the resource with formatted output
 	}
 
 	/**Writes an URF resource to a TURF output stream.
 	@param outputStream The output stream to which to write the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param resource The resource to write to the given output stream.
+	@param bomWritten Whether a byte order mark (BOM) is written.
 	@param formatted Whether output is formatted.
 	@param namespacePrefixManager The manager of namespaces and prefixes.
 	@excepion NullPointerException if the given output stream, resource, and/or namespace prefix manager is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
-	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource, final boolean formatted, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException
+	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource, final boolean bomWritten, final boolean formatted, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException
 	{
-		outputStream.write(BOM_UTF_8);	//write the UTF-8 byte order mark
+		if(bomWritten)	//if we should write a BOM
+		{
+			outputStream.write(BOM_UTF_8);	//write the UTF-8 byte order mark
+		}
 		final Writer writer=new OutputStreamWriter(outputStream, UTF_8);	//create a writer for writing in UTF-8
 		final URFTURFGenerator turfGenerator=new URFTURFGenerator(baseURI, formatted, namespacePrefixManager);	//create a new TURF generator, using the given namespace prefix manager
 		turfGenerator.generateResources(writer, resource);	//generate the resource to the writer
@@ -249,21 +266,25 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	*/
 	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException
 	{
-		writeTURF(outputStream, baseURI, urf, true, namespacePrefixManager);	//write the URF with formatted output
+		writeTURF(outputStream, baseURI, urf, true, true, namespacePrefixManager);	//write the URF with formatted output
 	}
 
 	/**Writes an URF instance to a TURF output stream.
 	@param outputStream The output stream to which to write the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param urf The URF instance to write to the given output stream.
+	@param bomWritten Whether a byte order mark (BOM) is written.
 	@param formatted Whether output is formatted.
 	@param namespacePrefixManager The manager of namespaces and prefixes.
 	@excepion NullPointerException if the given output stream, URF instance, and/or namespace prefix manager is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
-	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf, final boolean formatted, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException
+	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf, final boolean bomWritten, final boolean formatted, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException
 	{
-		outputStream.write(BOM_UTF_8);	//write the UTF-8 byte order mark
+		if(bomWritten)	//if we should write a BOM
+		{
+			outputStream.write(BOM_UTF_8);	//write the UTF-8 byte order mark
+		}
 		final Writer writer=new OutputStreamWriter(outputStream, UTF_8);	//create a writer for writing in UTF-8
 		final URFTURFGenerator turfGenerator=new URFTURFGenerator(baseURI, formatted, namespacePrefixManager);	//create a new TURF generator, using the given namespace prefix manager
 		turfGenerator.generateResources(writer, urf);	//generate the URF resources to the writer

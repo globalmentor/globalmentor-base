@@ -12,7 +12,7 @@ import com.garretwilson.iso.ISO8601;
 import static com.garretwilson.iso.ISO8601.*;
 import static com.garretwilson.lang.IntegerUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
-import static com.garretwilson.lang.StringUtilities.*;
+import static com.garretwilson.lang.Strings.*;
 import com.garretwilson.text.SyntaxException;
 import static com.garretwilson.util.TimeZoneConstants.*;
 import static com.garretwilson.urf.URF.*;

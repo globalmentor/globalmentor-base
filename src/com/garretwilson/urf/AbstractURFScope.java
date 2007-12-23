@@ -343,6 +343,37 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		return propertyURIValueContextsMap.keySet();	//return the set of keys, which are property URIs
 	}
 
+	/**Retrieves the property with the given URI and value.
+	@param propertyURI The URI of the property.
+	@param propertyValue The value of the property.
+	@return The scope property with the given URI and value, or <code>null</code> if no such property and value exists.
+	*/
+/*TODO del
+	public URFProperty getProperty(final URI propertyURI, final URFResource propertyValue)
+	{
+		readLock().lock();	//get a read lock
+		try
+		{
+			final List<URFValueContext> valueContextList=propertyURIValueContextsMap.get(propertyURI);	//get the list of value contexts
+			if(valueContextList!=null)	//if there is a value context for this property URI
+			{
+				for(final URFValueContext valueContext:valueContextList)	//look at each value context
+				{
+					if(propertyValue.equals(valueContext.getValue()))	//if we already have a context with this value
+					{
+						return valueContext.getScope();	//return this property value context
+					}
+				}
+			}
+			return null;	//if we didn't find the given property and value, there is no such context
+		}
+		finally
+		{
+			readLock().unlock();	//always release the read lock
+		}
+	}
+*/
+
 	/**Retrieves the first value context of the property with the given URI.
 	All ordered properties will be returned in their correct order before any non-ordered properties.
 	Unordered properties will be returned in an arbitrary order.
@@ -463,6 +494,50 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		}
 	}
 
+	/**Adds a property and its scoped properties recursively.
+	If the given property and value already exists, the scoped properties, if any, will still be added recursively if they don't exist.
+	@param property The property to add.
+	@return <code>true</code> if the property was added, else <code>false</code> if the property URI and value already existed.
+	@exception NullPointerException if the given property is <code>null</code>.
+	*/
+	public boolean addProperty(final URFProperty property)
+	{
+		writeLock().lock();	//get a write lock
+		try
+		{
+			final URI propertyURI=property.getPropertyURI();	//get the property URI
+			final URFResource propertyValue=property.getValue();	//get the property value
+			URFValueContext propertyValueContext=null;	//we'll try to find a value context for a matching value
+			boolean propertyAdded=false;	//we'll see if we add a property
+			final List<URFValueContext> valueContextList=propertyURIValueContextsMap.getCollection(propertyURI);	//get the list of value contexts
+			for(final URFValueContext valueContext:valueContextList)	//look at each value context
+			{
+				if(propertyValue.equals(valueContext.getValue()))	//if we already have a context with this value
+				{
+					propertyValueContext=valueContext;	//don't add the property value; it's already there
+					break;	//stop looking for a matching value context
+				}
+			}
+			if(propertyValueContext==null)	//if there is no existing property value context
+			{
+				propertyValueContext=new DefaultURFValueContext(this, propertyValue, new ChildURFScope(propertyURI));	//create a new value context
+				valueContextList.add(propertyValueContext);	//add a new value context
+				++propertyCount;	//note that another property has been added
+				propertyAdded=true;	//we added a property
+			}
+			final URFScope propertyValueScope=propertyValueContext.getScope();	//get the scope to which we'll add scoped properties
+			for(final URFProperty scopedProperty:property.getScope().getProperties())	//for each scoped property given to us
+			{
+				propertyValueScope.addProperty(scopedProperty);	//add the scoped property to the existing property scope
+			}
+			return propertyAdded;	//indicate whether we added a new property value context
+		}
+		finally
+		{
+			writeLock().unlock();	//always release the write lock
+		}
+	}
+
 	/**Adds a property value for the property with the given URI.
 	If the given property and value already exists, no action occurs.
 	@param propertyURI The URI of the property of the value to add.
@@ -541,7 +616,39 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	{
 		return addPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createURIResource(propertyValue));	//create a resource add the property value
 	}
-
+	
+	/**Sets a value and its scoped properties recursively by removing all properties with the URI of the given property and adding the given property value and scoped properties recursively.
+	@param property The property to set.
+	@return The old property value, or <code>null</code> if there was no property value previously.
+	@exception NullPointerException if the given property is <code>null</code>.
+	*/
+	public URFResource setProperty(final URFProperty property)
+	{
+		writeLock().lock();	//get a write lock
+		try
+		{
+			final URI propertyURI=property.getPropertyURI();	//get the property URI
+			final List<URFValueContext> valueContextList=propertyURIValueContextsMap.getCollection(propertyURI);	//get the list of value contexts for this property, creating one if necessary
+			final int oldPropertyValueCount=valueContextList.size();	//see how many values there currently are
+			final URFResource oldPropertyValue=oldPropertyValueCount>0 ? valueContextList.get(0).getValue() : null;	//retrieve the old property value, if any
+			propertyCount-=oldPropertyValueCount;	//all its contents, if any, will be removed
+			valueContextList.clear();	//always clear the context list if we have one
+			final URFScope propertyValueScope=new ChildURFScope(propertyURI);	//create a scope for the new property
+			final URFValueContext valueContest=new DefaultURFValueContext(this, property.getValue(), propertyValueScope);	//create a new value context for the value
+			valueContextList.add(valueContest);	//add the new value context
+			++propertyCount;	//note that another property has been added
+			for(final URFProperty scopedProperty:property.getScope().getProperties())	//for each scoped property given to us
+			{
+				propertyValueScope.addProperty(scopedProperty);	//add the scoped property to the new property scope
+			}
+			return oldPropertyValue;	//return the old property value, if any
+		}
+		finally
+		{
+			writeLock().unlock();	//always release the write lock
+		}
+	}
+	
 	/**Sets a property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.
 	@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.

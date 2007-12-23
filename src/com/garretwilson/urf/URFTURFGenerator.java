@@ -454,7 +454,7 @@ public class URFTURFGenerator
 					}
 				}
 			}
-			boolean startedPreamble=false;	//we'll keep track of whether we started a TURF preamble
+			boolean startedProperties=false;	//we'll keep track of whether we started a TURF preamble
 				//generate beginning labeled namespace URIs
 			final TURFNamespaceLabelManager namespaceLabelManager=getNamespaceLabelManager();	//get the namespace prefix manager
 			for(final Map.Entry<URI, Boolean> namespaceURIMultipleEntry:namespaceURIMultipleMap.entrySet())	//for each namespace URI entry
@@ -462,29 +462,29 @@ public class URFTURFGenerator
 				final URI namespaceURI=namespaceURIMultipleEntry.getKey();	//get the namespace URI
 				if(Boolean.TRUE.equals(namespaceURIMultipleEntry.getValue()) || namespaceLabelManager.isRecognized(namespaceURI))	//if this namespace URI is used more than one time, or if this is a namespace URI we specifically know is a namespace URI
 				{
-					if(startedPreamble)	//if we already started the preamble
+					if(startedProperties)	//if we already started the preamble
 					{
 						writer.write(LIST_DELIMITER);	//write a list delimiter
 					}
-					else	//if we haven't started the preamble, yet
+					else	//if we haven't started the properties, yet
 					{
-						writeNewLine(writer);	//go to the next line
-						writer.write(PREAMBLE_BEGIN);	//start the preamble
+						writer.write(PROPERTIES_BEGIN);	//start the properties
 						indent();	//indent the properties
-						startedPreamble=true;	//show that we've started the properties
+						writeNewLine(writer);	//go to the next line
+						startedProperties=true;	//show that we've started the properties
 					}
 					writeNewLine(writer);	//go to the next line
 					final String prefix=namespaceLabelManager.getNamespaceLabel(namespaceURI);	//get a namespace label for the URI
 					writeString(writer, prefix);	//write the prefix
-					writer.write(PROPERTY_VALUE_DELIMITER);	//write the property-value delimiter
+					writer.write(NAMESPACE_ASSOCIATION_DELIMITER);	//write the property-value delimiter
 					writeURI(writer, namespaceURI);	//write the URI
 				}
 			}
-			if(startedPreamble)	//if we have a preamble
+			if(startedProperties)	//if we have a preamble
 			{
 				unindent();
 				writeNewLine(writer);
-				writer.write(PREAMBLE_END);	//end the preamble
+				writer.write(PROPERTIES_END);	//end the properties
 			}
 			writeNewLine(writer);
 			writer.write(COMMUNITY_BEGIN);	//start the instance community
@@ -1092,7 +1092,7 @@ public class URFTURFGenerator
 			}
 			else if(BOOLEAN_CLASS_URI.equals(lexicalTypeURI))	//boolean
 			{
-				writer.append(BOOLEAN_BEGIN).append(lexicalForm);	//write the boolean short form
+				writer.append(BOOLEAN_BEGIN).append(lexicalForm).append(BOOLEAN_END);	//write the boolean short form
 				return lexicalTypeURI;
 			}
 			else if(CHARACTER_CLASS_URI.equals(lexicalTypeURI))	//character
@@ -1100,29 +1100,21 @@ public class URFTURFGenerator
 				writer.append(CHARACTER_BEGIN).append(lexicalForm).append(CHARACTER_END);	//write the character short form
 				return lexicalTypeURI;
 			}
-			else if(DATE_CLASS_URI.equals(lexicalTypeURI))	//if this is a date
+			else if(DATE_CLASS_URI.equals(lexicalTypeURI) || DATE_TIME_CLASS_URI.equals(lexicalTypeURI)
+					|| DURATION_CLASS_URI.equals(lexicalTypeURI) || TIME_CLASS_URI.equals(lexicalTypeURI)
+					|| UTC_OFFSET_CLASS_URI.equals(lexicalTypeURI))	//if this is a temporal
 			{
-				writer.append(TEMPORAL_BEGIN).append(lexicalForm);	//write a temporal short form
-				return lexicalTypeURI;
-			}
-			else if(DATE_TIME_CLASS_URI.equals(lexicalTypeURI))	//if this is a date time
-			{
-				writer.append(TEMPORAL_BEGIN).append(lexicalForm);	//write a temporal short form
-				return lexicalTypeURI;
-			}
-			else if(DURATION_CLASS_URI.equals(lexicalTypeURI))	//if this is a duration
-			{
-				writer.append(TEMPORAL_BEGIN).append(lexicalForm);	//write a temporal short form
+				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
 				return lexicalTypeURI;
 			}
 			else if(INTEGER_CLASS_URI.equals(lexicalTypeURI) || REAL_CLASS_URI.equals(lexicalTypeURI))	//integer or real
 			{
-				writer.append(NUMBER_BEGIN).append(lexicalForm);	//write the number short form
+				writer.append(NUMBER_BEGIN).append(lexicalForm).append(NUMBER_END);	//write the number short form
 				return lexicalTypeURI;
 			}
 			else if(ORDINAL_CLASS_URI.equals(lexicalTypeURI))	//ordinal
 			{
-				writer.append(ORDINAL_BEGIN).append(lexicalForm);	//write the ordinal short form
+				writer.append(ORDINAL_BEGIN).append(lexicalForm).append(ORDINAL_END);	//write the ordinal short form
 				return lexicalTypeURI;
 			}
 			else if(REGULAR_EXPRESSION_CLASS_URI.equals(lexicalTypeURI))	//if this is a regular expression
@@ -1135,19 +1127,9 @@ public class URFTURFGenerator
 				writeString(writer, lexicalForm);	//write the string short form
 				return lexicalTypeURI;
 			}
-			else if(TIME_CLASS_URI.equals(lexicalTypeURI))	//if this is a time
-			{
-				writer.append(TEMPORAL_BEGIN).append(lexicalForm);	//write a temporal short form
-				return lexicalTypeURI;
-			}
 			else if(URI_CLASS_URI.equals(lexicalTypeURI))	//if this is a URI
 			{
 				writeURI(writer, lexicalForm);	//write the URI short form
-				return lexicalTypeURI;
-			}
-			else if(UTC_OFFSET_CLASS_URI.equals(lexicalTypeURI))	//if this is a UTC offset
-			{
-				writer.append(TEMPORAL_BEGIN).append(lexicalForm);	//write a temporal short form
 				return lexicalTypeURI;
 			}
 		}
@@ -1202,10 +1184,10 @@ public class URFTURFGenerator
 			final URI lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI
 			final String lexicalForm=getLocalName(uri);	//get the lexical form of the lexical type
 			assert lexicalForm!=null : "A lexical namespace URI should always have a lexical form.";
-			writeString(writer, lexicalForm);	//write the string lexical form
 			writer.write(TYPES_BEGIN);	//start a type declaration
 			generateReference(writer, lexicalTypeURI, namespaceLabelManager, baseURI, null, determinePrefix);	//generate a reference to the lexical type, determining a new prefix if needed
 			writer.write(TYPES_END);	//end the type declaration
+			writeString(writer, lexicalForm);	//write the string lexical form
 		}
 		else	//if this URI is not in a lexical namespace
 		{

@@ -18,7 +18,7 @@ written by Garret Wilson &lt;http://www.garretwilson.com/&gt; and Copyright © 2
 Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
-public class TURF extends HashMap<String, URI>
+public class TURF
 {
 
 	/**Unicode whitespace characters.*/
@@ -33,7 +33,9 @@ public class TURF extends HashMap<String, URI>
 	public final static char BINARY_END=BINARY_BEGIN;
 
 	/**The delimiter that begins boolean shorthand declarations.*/
-	public final static char BOOLEAN_BEGIN='_';
+	public final static char BOOLEAN_BEGIN='*';
+	/**The delimiter that ends boolean shorthand declarations.*/
+	public final static char BOOLEAN_END=BOOLEAN_BEGIN;
 
 	/**The delimiter that begins character shorthand declarations.*/
 	public final static char CHARACTER_BEGIN='\'';
@@ -62,6 +64,8 @@ public class TURF extends HashMap<String, URI>
 
 	/**The delimiter that begins number shorthand declarations.*/
 	public final static char NUMBER_BEGIN='#';
+	/**The delimiter that ends number shorthand declarations.*/
+	public final static char NUMBER_END=NUMBER_BEGIN;
 
 	/**The delimiter that begins init declarations.*/
 	public final static char INITS_BEGIN='\u00A1';	//¡
@@ -70,6 +74,8 @@ public class TURF extends HashMap<String, URI>
 
 	/**The delimiter that begins ordinal shorthand declarations.*/
 	public final static char ORDINAL_BEGIN='\u00BA';	//º
+	/**The delimiter that ends ordinal shorthand declarations.*/
+	public final static char ORDINAL_END=ORDINAL_BEGIN;
 
 	/**The delimiter that begins property declarations.*/
 	public final static char PROPERTIES_BEGIN=':';
@@ -119,6 +125,8 @@ public class TURF extends HashMap<String, URI>
 
 	/**The delimiter that begins temporal declarations.*/
 	public final static char TEMPORAL_BEGIN='@';
+	/**The delimiter that ends temporal declarations.*/
+	public final static char TEMPORAL_END=TEMPORAL_BEGIN;
 
 	/**The delimiter that begins type declarations.*/
 	public final static char TYPES_BEGIN='(';
@@ -136,6 +144,9 @@ public class TURF extends HashMap<String, URI>
 	/**The character that indicates the beginning of a new scope.*/
 	public final static char SCOPE_DELIMITER='`';
 
+	/**The character associates namespaces URIs with prefixes.*/
+	public final static char NAMESPACE_ASSOCIATION_DELIMITER='~';
+	
 	/**The character that separates properties and assigned values.*/
 	public final static char PROPERTY_VALUE_DELIMITER='=';
 
@@ -149,11 +160,6 @@ public class TURF extends HashMap<String, URI>
 
 	/**The "magic number" marker indicating the beginning of TURF content.*/
 	public final static String TURF_SIGNATURE="`URF";
-
-	/**The delimiter that begins the TURF preamble.*/
-	public final static char PREAMBLE_BEGIN='*';
-	/**The delimiter that ends the TURF preamble.*/
-	public final static char PREAMBLE_END=PREAMBLE_BEGIN;
 
 	/**The set of all URF class URIs that have short reference forms.*/
 	public final static Set<URI> SHORT_REFERENCE_CLASS_URIS;

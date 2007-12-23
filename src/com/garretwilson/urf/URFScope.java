@@ -153,6 +153,14 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public <V extends URFResource> Iterable<V> getPropertyValues(final URI propertyURI, final Class<V> valueClass);
 
+	/**Adds a property and its scoped properties recursively.
+	If the given property and value already exists, the scoped properties, if any, will still be added recursively if they don't exist.
+	@param property The property to add.
+	@return <code>true</code> if the property was added, else <code>false</code> if the property URI and value already existed.
+	@exception NullPointerException if the given property is <code>null</code>.
+	*/
+	public boolean addProperty(final URFProperty property);
+
 	/**Adds a property value for the property with the given URI.
 	If the given property and value already exists, no action occurs.
 	@param propertyURI The URI of the property of the value to add.
@@ -197,6 +205,13 @@ public interface URFScope extends ReadWriteLock
 	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
 	*/
 	public boolean addPropertyValue(final URI propertyURI, final URI propertyValue);
+
+	/**Sets a value and its scoped properties recursively by removing all properties with the URI of the given property and adding the given property value and scoped properties recursively.
+	@param property The property to set.
+	@return The old property value, or <code>null</code> if there was no property value previously.
+	@exception NullPointerException if the given property is <code>null</code>.
+	*/
+	public URFResource setProperty(final URFProperty property);
 
 	/**Sets a date time property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.
