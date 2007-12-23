@@ -82,7 +82,7 @@ public class URLUtilities implements URLConstants	//G***del, InputStreamLocator
 	*/
 	public static ContentType getMediaType(final URL url)
 	{
-		return FileUtilities.getExtensionContentType(FileUtilities.getExtension(getFile(url))); //return the media type based on the extension of the URL filename
+		return Files.getExtensionContentType(Files.getExtension(getFile(url))); //return the media type based on the extension of the URL filename
 	}
 
 	/**Creates a URL from the given filename relative to the given context object.

@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 */
-import com.garretwilson.lang.StringUtilities;
+import com.garretwilson.lang.Strings;
 import com.garretwilson.util.DebugDisplay;
 
 /**Interface for displaying debug information using the AWT.

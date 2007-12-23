@@ -954,14 +954,14 @@ public class URIUtilities
 	/**Returns the content type for the specified URI based on its name extension.
 	@param uri The URI for which to return a content type.
 	@return The default content type for the URI's name extension, or <code>null</code> if no known content type is associated with this URI's extension.
-	@see FileUtilities#getExtensionContentType(String)
+	@see Files#getExtensionContentType(String)
 	@see #getRawName(URI)
 	@see #getNameExtension(String)
 	*/
 	public static ContentType getContentType(final URI uri)
 	{
 		final String rawPath=uri.getRawPath();	//get the raw path
-		return rawPath!=null ? FileUtilities.getExtensionContentType(getNameExtension(getRawName(uri))) : null; //return the content type based on the extension of the URI name, if there is one
+		return rawPath!=null ? Files.getExtensionContentType(getNameExtension(getRawName(uri))) : null; //return the content type based on the extension of the URI name, if there is one
 	}
 
 	/**Normalizes the given path by resolving the '.' and '..' path segments.

@@ -54,7 +54,7 @@ public class Address implements AddressConstants
 		/**Sets the extended address.
 		@param extendedAddress The extended address, or <code>null</code> for no extended address.
 		*/
-		public void setExtendedAddress(final String extendedAddress) {setExtendedAddresses(StringUtilities.createArray(extendedAddress));}
+		public void setExtendedAddress(final String extendedAddress) {setExtendedAddresses(Strings.createArray(extendedAddress));}
 
 	/**The street addresses.*/
 	private String[] streetAddresses;
@@ -73,7 +73,7 @@ public class Address implements AddressConstants
 		/**Sets the street address.
 		@param streetAddress The street address, or <code>null</code> for no street address.
 		*/
-		public void setStreetAddress(final String streetAddress) {setStreetAddresses(StringUtilities.createArray(streetAddress));}
+		public void setStreetAddress(final String streetAddress) {setStreetAddresses(Strings.createArray(streetAddress));}
 
 	/**The locality (e.g. city).*/
 	private String locality;

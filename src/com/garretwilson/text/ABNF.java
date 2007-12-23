@@ -1,6 +1,6 @@
 package com.garretwilson.text;
 
-import static com.garretwilson.lang.StringUtilities.*;
+import static com.garretwilson.lang.Strings.*;
 
 /**Definitions for augmented BNF as defined by
 <a href="http://www.ietf.org/rfc/rfc2234.txt">RFC 2234</a>, "Augmented BNF for Syntax Specifications: ABNF".

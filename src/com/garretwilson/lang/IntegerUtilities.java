@@ -204,7 +204,7 @@ public class IntegerUtilities
   public static String toString(final int value, final int radix, final int length)
   {
 	  //convert the integer to a string, then make the string the correct length by padding the beginning with zeros
-		return StringUtilities.makeStringLength(Integer.toString(value, radix), length, '0', 0);
+		return Strings.makeStringLength(Integer.toString(value, radix), length, '0', 0);
   }
 
 	/**Converts an integer into a hex string with the specified number of digits.
@@ -216,7 +216,7 @@ public class IntegerUtilities
 	public static String toHexString(final int value, final int length)
 	{
 		  //convert the integer to hex, then make the string the correct length by padding the beginning with zeros
-		return StringUtilities.makeStringLength(Integer.toHexString(value), length, '0', 0);
+		return Strings.makeStringLength(Integer.toHexString(value), length, '0', 0);
 	}
 
 	/**Creates an array of primitive values from the given array of objects.

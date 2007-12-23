@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.lang.InstantiationException;
 import java.lang.reflect.*;
-import com.garretwilson.io.FileUtilities;
+import com.garretwilson.io.Files;
 import com.garretwilson.lang.ClassUtilities;
 import com.garretwilson.lang.IntegerUtilities;
 import com.garretwilson.lang.JavaUtilities;
@@ -584,12 +584,12 @@ Debug.trace("using element: ", element.getNodeName());  //G***del
 		an exception.
 	@exception NoSuchMethodException Thrown if an initialization method, if
 		needed, could not be found for the class.
-	@see FileUtilities#checkExists
+	@see Files#checkExists
 	*/
 	public static Object retrieve(final File file, final Class type, final boolean useBackup) throws FileNotFoundException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
 	{
 		if(useBackup) //if we should use a backup file if the file doesn't exist
-			FileUtilities.checkExists(file);  //see if we can use a backup file if the file doesn't exist
+			Files.checkExists(file);  //see if we can use a backup file if the file doesn't exist
 		final InputStream inputStream=new BufferedInputStream(new FileInputStream(file));  //create a buffered input stream for the file
 		try
 		{
@@ -625,8 +625,8 @@ Debug.trace("using element: ", element.getNodeName());  //G***del
 	public static void store(final Object object, final File file, final boolean createBackup) throws FileNotFoundException, IOException
 	{
 Debug.trace("Storing in file: ", file); //G***del
-		final File tempFile=FileUtilities.getTempFile(file);  //get a temporary file to write to
-		final File backupFile=createBackup ? FileUtilities.getBackupFile(file) : null;  //get a backup file, if we should create a backup, or null if we shouldn't
+		final File tempFile=Files.getTempFile(file);  //get a temporary file to write to
+		final File backupFile=createBackup ? Files.getBackupFile(file) : null;  //get a backup file, if we should create a backup, or null if we shouldn't
 		final OutputStream outputStream=new BufferedOutputStream(new FileOutputStream(tempFile)); //create a buffered output stream to the temporary file
 		try
 		{
@@ -636,7 +636,7 @@ Debug.trace("Storing in file: ", file); //G***del
 		{
 			outputStream.close(); //always close the output stream
 		}
-		FileUtilities.moveFile(tempFile, file, backupFile); //move the temp file to the normal file, creating a backup if necessary
+		Files.moveFile(tempFile, file, backupFile); //move the temp file to the normal file, creating a backup if necessary
 	}
 
 	/**Constructs an instance of the specified class from the information stored

@@ -26,7 +26,7 @@ import static com.garretwilson.net.URIUtilities.*;
 /**Various utilities for examining files.
 @author Garret Wilson
 */
-public class FileUtilities
+public class Files
 {
 
 	/**A singleton read-only map of lowercase file extensions and the corresponding content types they represent.*/
@@ -76,7 +76,7 @@ public class FileUtilities
 	}
 
 	/**This class cannot be publicly instantiated.*/
-  private FileUtilities()
+  private Files()
 	{
 	}
 
@@ -370,7 +370,7 @@ public class FileUtilities
 	@param file The file for which to return a media type.
 	@return The default media type for the file's extension, or <code>null</code>
 		if no known media type is associated with this file's extension.
-	@see FileUtilities#getExtensionContentType(String)
+	@see Files#getExtensionContentType(String)
 	*/
 	public static ContentType getContentType(final File file)
 	{
@@ -404,12 +404,12 @@ public class FileUtilities
 	@return The default media type for the filename's extension, or <code>null</code>
 		if no known media type is associated with this file's extension or if the
 		filename has no extension.
-	@see FileUtilities#getExtensionContentType(String)
+	@see Files#getExtensionContentType(String)
 	*/
 	public static ContentType getMediaType(final String filename)
 	{
 		final String extension=getExtension(filename);  //get the file's extension
-		return extension!=null ? FileUtilities.getExtensionContentType(extension) : null; //return the media type based on the filename's extension, if there is one
+		return extension!=null ? Files.getExtensionContentType(extension) : null; //return the media type based on the filename's extension, if there is one
 	}
 
 	/**Determines the path of the file relative to a root directory. Backslashes
@@ -853,7 +853,7 @@ public class FileUtilities
 		final OutputStream bufferedOutputStream=new BufferedOutputStream(new FileOutputStream(file));//create a buffered output stream to the file
 		try
 		{
-			io.write(bufferedOutputStream, baseURI, object);	//write the object, determining the base URI from the file
+			io.write(bufferedOutputStream, baseURI, object);	//write the object
 		}
 		finally
 		{

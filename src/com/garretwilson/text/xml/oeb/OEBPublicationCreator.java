@@ -643,12 +643,12 @@ Debug.trace("text URL ref: ", textURL.getRef()); //G***del
 		if(getOutputDir()!=null) //if an output directory was specified
 		{
 				//store the file in the output directory G***use a constant
-			oebDocumentFile=FileUtilities.changeExtension(new File(getOutputDir(), URLUtilities.getFileName(textURL)), "html");
+			oebDocumentFile=Files.changeExtension(new File(getOutputDir(), URLUtilities.getFileName(textURL)), "html");
 		}
 		else  //if an output directory was not specified
 		{
 			//G***make sure a file: protocol was specified
-			oebDocumentFile=FileUtilities.changeExtension(URLUtilities.getFile(textURL), "html");  //create a file from the URL G***use a constant
+			oebDocumentFile=Files.changeExtension(URLUtilities.getFile(textURL), "html");  //create a file from the URL G***use a constant
 		}
 Debug.trace("using file for document: ", oebDocumentFile);
 		  //G***testing
@@ -1546,7 +1546,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 					//get the class attribute, if it's defined
 				final String elementClass=element.getAttributeNS(null, "class");
 					//see if this is a significant heading
-				final boolean isSignificant=StringUtilities.indexOfIgnoreCase(elementClass, "significant")>=0;  //G***use a constant
+				final boolean isSignificant=Strings.indexOfIgnoreCase(elementClass, "significant")>=0;  //G***use a constant
 				final String text=XMLUtilities.getText(element, true).trim(); //get the text of the element
 				final boolean hasLetterOrDigit=CharSequenceUtilities.containsLetterOrDigit(text);  //see if the text has a letter or digit
 				final int headingType=getHeadingType(text); //see what type of heading this is
@@ -1564,11 +1564,11 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 						//create an href to the element within the document
 					final String href=URLUtilities.getFileName(getContextURL())+'#'+id; //G***pass the href; do something better than getContextURL(); use a constant for '#'
 						//get the text of this element, collapsing all whitespace into single spaces
-					final String elementText=StringUtilities.collapseEveryChar(XMLUtilities.getText(element, true), WHITESPACE_CHARS, " ");
+					final String elementText=Strings.collapseEveryChar(XMLUtilities.getText(element, true), WHITESPACE_CHARS, " ");
 						//making sure it's not too long
-					final String shortText=StringUtilities.truncate(elementText, 32);  //G***use a constant
+					final String shortText=Strings.truncate(elementText, 32);  //G***use a constant
 						//remove everything but the first line and trim it
-					final String line=StringUtilities.truncateChar(shortText, EOL_CHARS).trim();
+					final String line=Strings.truncateChar(shortText, EOL_CHARS).trim();
 						//if we removed part of the string, indicate as much
 					final String title=line.length()==elementText.length() ? line : line+"..."; //G***use a constant; should we use a real ellipsis?
 					final String guideType; //we'll decide what type of guide this is, based upon whether this is a heading
@@ -1615,7 +1615,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 	protected URL useTemplate(final URL templateURL) throws IOException
 	{
 		final String filename=getContextURL()!=null //if we have a context URL, get the filename
-				? FileUtilities.removeExtension(URLUtilities.getFileName(getContextURL()))
+				? Files.removeExtension(URLUtilities.getFileName(getContextURL()))
 				: null;
 		  //the title (replacement parameter {0})
 		final String title=getTitle()!=null
@@ -1652,7 +1652,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 			formattedTemplateFile=URLUtilities.getFile(URLUtilities.createURL(getContextURL(), templateFilename));
 		}
 			//write the resulting file
-		FileUtilities.write(formattedTemplateFile, formattedString.getBytes(CharacterEncodingConstants.UTF_8));
+		Files.write(formattedTemplateFile, formattedString.getBytes(CharacterEncodingConstants.UTF_8));
 		return formattedTemplateFile.toURL(); //return a URL to the resulting file
 	}
 
@@ -1711,9 +1711,9 @@ Debug.trace("getting normal title");  //G***del
 //G***del if not needed				final int lineCount=new StringTokenizer(text, EOL_CHARS).countTokens(); //see how many lines there are
 Debug.trace("looking at text: ", text);  //G***del
 				  //Michael Hart shouldn't be in the title, or even near it (e.g. Project Gutenberg plboss10.txt)
-				if(StringUtilities.indexOfIgnoreCase(text, "Michael S. Hart")<0 //G*** these are last-minute hacks specifically for plboss10.txt
-				  && StringUtilities.indexOfIgnoreCase(text, "405 West")<0
-				  && StringUtilities.indexOfIgnoreCase(text, "Urbana, IL")<0)
+				if(Strings.indexOfIgnoreCase(text, "Michael S. Hart")<0 //G*** these are last-minute hacks specifically for plboss10.txt
+				  && Strings.indexOfIgnoreCase(text, "405 West")<0
+				  && Strings.indexOfIgnoreCase(text, "Urbana, IL")<0)
 				{
 						//if the text is in uppercase or if it's a title, assume it's the book title if it has at least one letter in it
 	//G***fix				if(StringUtilities.isUpperCase(text) || TextUtilities.getHeadingType(text)!=TextUtilities.NO_HEADING) //G***probably put this routine in some common area
@@ -1723,11 +1723,11 @@ Debug.trace("looking at text: ", text);  //G***del
 	Debug.trace("This is a title: ", text);  //G***del
 						String title=text;  //G***fix, tidy
 							//if this sting starts with "by" and has a period in it, we'll assume it's really an author name (although this test is precarious) (e.g. jjknd10.txt)
-						if(!StringUtilities.startsWithIgnoreCase(title.trim(), "by") || title.indexOf('.')<0)
+						if(!Strings.startsWithIgnoreCase(title.trim(), "by") || title.indexOf('.')<0)
 						{
 		//G***del System.out.println("looking at title: "+title);
 									//see if "version" appears with a space after it (e.g. not "second version" as in bible11.txt)
-							final int versionIndex=StringUtilities.indexOfIgnoreCase(title, "version "); //G***testing
+							final int versionIndex=Strings.indexOfIgnoreCase(title, "version "); //G***testing
 		//G***del System.out.println("version index: "+versionIndex);
 							if(versionIndex>=0)
 								title=title.substring(0, versionIndex); //G***testing
@@ -1744,7 +1744,7 @@ Debug.trace("looking at text: ", text);  //G***del
 						}
 					}
 				}
-				int byIndex=StringUtilities.indexOfIgnoreCase(text, BY);  //see if "by" is in this string
+				int byIndex=Strings.indexOfIgnoreCase(text, BY);  //see if "by" is in this string
 				while(byIndex>0)  //if we found "by" and it's not at the first of the line
 				{
 Debug.trace("found by index: ", byIndex); //G***del
@@ -1754,17 +1754,17 @@ Debug.trace("found by index: ", byIndex); //G***del
 					{
 Debug.trace("found by in text: ", text);  //G***del
 							//make sure this isn't "donated by", "scanned by", etc. G***this is duplicated in getTitle() and getAuthor(); combine
-						if((StringUtilities.indexOfIgnoreCase(text, "donated")<0 || StringUtilities.indexOfIgnoreCase(text, "donated")>byIndex)  //G***use constants
-								&& (StringUtilities.indexOfIgnoreCase(text, "contributed")<0 || StringUtilities.indexOfIgnoreCase(text, "contributed")>byIndex)
-								&& (StringUtilities.indexOfIgnoreCase(text, "created")<0 || StringUtilities.indexOfIgnoreCase(text, "created")>byIndex)
-								&& (StringUtilities.indexOfIgnoreCase(text, "contributed")<0 || StringUtilities.indexOfIgnoreCase(text, "contributed")>byIndex)
-								&& (StringUtilities.indexOfIgnoreCase(text, "created")<0 || StringUtilities.indexOfIgnoreCase(text, "created")>byIndex)
-								&& (StringUtilities.indexOfIgnoreCase(text, "delimited")<0 || StringUtilities.indexOfIgnoreCase(text, "delimited")>byIndex)
-								&& (StringUtilities.indexOfIgnoreCase(text, "etext")<0 || StringUtilities.indexOfIgnoreCase(text, "etext")>byIndex)
-								&& (StringUtilities.indexOfIgnoreCase(text, "prepared")<0 || StringUtilities.indexOfIgnoreCase(text, "prepared")>byIndex)
-								&& (StringUtilities.indexOfIgnoreCase(text, "proofread")<0 || StringUtilities.indexOfIgnoreCase(text, "proofread")>byIndex)
-								&& (StringUtilities.indexOfIgnoreCase(text, "scanned")<0 || StringUtilities.indexOfIgnoreCase(text, "scanned")>byIndex)
-								&& (StringUtilities.indexOfIgnoreCase(text, "typed in")<0 || StringUtilities.indexOfIgnoreCase(text, "typed in")>byIndex))
+						if((Strings.indexOfIgnoreCase(text, "donated")<0 || Strings.indexOfIgnoreCase(text, "donated")>byIndex)  //G***use constants
+								&& (Strings.indexOfIgnoreCase(text, "contributed")<0 || Strings.indexOfIgnoreCase(text, "contributed")>byIndex)
+								&& (Strings.indexOfIgnoreCase(text, "created")<0 || Strings.indexOfIgnoreCase(text, "created")>byIndex)
+								&& (Strings.indexOfIgnoreCase(text, "contributed")<0 || Strings.indexOfIgnoreCase(text, "contributed")>byIndex)
+								&& (Strings.indexOfIgnoreCase(text, "created")<0 || Strings.indexOfIgnoreCase(text, "created")>byIndex)
+								&& (Strings.indexOfIgnoreCase(text, "delimited")<0 || Strings.indexOfIgnoreCase(text, "delimited")>byIndex)
+								&& (Strings.indexOfIgnoreCase(text, "etext")<0 || Strings.indexOfIgnoreCase(text, "etext")>byIndex)
+								&& (Strings.indexOfIgnoreCase(text, "prepared")<0 || Strings.indexOfIgnoreCase(text, "prepared")>byIndex)
+								&& (Strings.indexOfIgnoreCase(text, "proofread")<0 || Strings.indexOfIgnoreCase(text, "proofread")>byIndex)
+								&& (Strings.indexOfIgnoreCase(text, "scanned")<0 || Strings.indexOfIgnoreCase(text, "scanned")>byIndex)
+								&& (Strings.indexOfIgnoreCase(text, "typed in")<0 || Strings.indexOfIgnoreCase(text, "typed in")>byIndex))
 						{
 								//get the title and trim it of certain delimiters, and then collapse the whitespace
 							final String title=PGUtilities.tidyTitle(text.substring(0, byIndex));  //G***use a common method, not in PGUtilities
@@ -1772,7 +1772,7 @@ Debug.trace("found by in text: ", text);  //G***del
 								return title; //assume that's the title
 						}
 					}
-					byIndex=StringUtilities.indexOfIgnoreCase(text, BY, byIndex+BY.length());  //keep searching after the occurrence
+					byIndex=Strings.indexOfIgnoreCase(text, BY, byIndex+BY.length());  //keep searching after the occurrence
 				}
 //G***del					//if we didn't find "XXX by XXX"
 			}
@@ -1811,7 +1811,7 @@ Debug.trace("checking next line author: ", author);
 						return author; //assume that's the author
 				}
 //G***del				int byIndex=PGUtilities.getByIndex(text);  //see if "by" is in this string G***use a common routine somewhere else
-				int byIndex=StringUtilities.indexOfIgnoreCase(text, BY);  //see if "by" is in this string
+				int byIndex=Strings.indexOfIgnoreCase(text, BY);  //see if "by" is in this string
 				while(byIndex>=0)  //if we found "by"
 				{
 Debug.trace("byIndex: "+byIndex);
@@ -1844,7 +1844,7 @@ Debug.trace("checking to see if this is an acceptable by");  //G***del
 							{
 								final String word=UNACCEPTABLE_BY_PREFIXES[phraseWordIndex];  //get this word
 									//find the first time this word apears before "by"
-								final int wordIndex=StringUtilities.lastIndexOfIgnoreCase(text, word, byIndex-1);
+								final int wordIndex=Strings.lastIndexOfIgnoreCase(text, word, byIndex-1);
 								if(wordIndex>=0)  //if the word appears before "by"
 								{
 										//for "etext", we don't care if "etext by" appears as long as it is "Project Gutenberg etext by" (e.g. jjstg10.txt), not "etext by"
@@ -1879,17 +1879,17 @@ Debug.trace("unacceptable because of: ", word); //G***del
 	Debug.trace("got author text: ", authorText); //G***del
 								if(CharSequenceUtilities.charIndexOf(authorText, EOL_CHARS)<0 //if everything's on a single line
 												//or if the other lines are just numbers and hyphens (hack for hrlnd10.txt)
-										|| CharSequenceUtilities.charIndexOf(StringUtilities.trim(authorText, WHITESPACE_CHARS+"0123456789-"), EOL_CHARS)<0)
+										|| CharSequenceUtilities.charIndexOf(Strings.trim(authorText, WHITESPACE_CHARS+"0123456789-"), EOL_CHARS)<0)
 								{
 										//get the author and trim it of certain delimiters, and then collapse the whitespace
 									final String author=PGUtilities.tidyAuthor(authorText);  //G***use a common method, not in PGUtilities
 									if(isTitleOrAuthor(author)  //if we have valid author text
-											&& !StringUtilities.startsWithIgnoreCase(author, "author")  //if this wasn't "by author" G***use a constant
-											&& !StringUtilities.startsWithIgnoreCase(author, "the author")  //if this wasn't "by the author" G***use a constant
-											&& !StringUtilities.startsWithIgnoreCase(author, "his wife")  //if this wasn't "by his wife" (e.g. slanr10.txt) G***use a constant
-											&& !StringUtilities.startsWithIgnoreCase(author, "electronic")  //if this wasn't "by electronic mail" G***use a constant
-											&& !StringUtilities.startsWithIgnoreCase(author, "email")  //if this wasn't "by email" G***use a constant
-											&& !StringUtilities.startsWithIgnoreCase(author, "e-mail"))  //if this wasn't "by e-mail" G***use a constant
+											&& !Strings.startsWithIgnoreCase(author, "author")  //if this wasn't "by author" G***use a constant
+											&& !Strings.startsWithIgnoreCase(author, "the author")  //if this wasn't "by the author" G***use a constant
+											&& !Strings.startsWithIgnoreCase(author, "his wife")  //if this wasn't "by his wife" (e.g. slanr10.txt) G***use a constant
+											&& !Strings.startsWithIgnoreCase(author, "electronic")  //if this wasn't "by electronic mail" G***use a constant
+											&& !Strings.startsWithIgnoreCase(author, "email")  //if this wasn't "by email" G***use a constant
+											&& !Strings.startsWithIgnoreCase(author, "e-mail"))  //if this wasn't "by e-mail" G***use a constant
 									{
 	Debug.trace("is author: ", authorText); //G***del
 										return author; //assume that's the author
@@ -1903,7 +1903,7 @@ Debug.trace("unacceptable because of: ", word); //G***del
 							}
 						}
 					}
-					byIndex=StringUtilities.indexOfIgnoreCase(text, BY, byIndex+BY.length());  //keep searching after the occurrence
+					byIndex=Strings.indexOfIgnoreCase(text, BY, byIndex+BY.length());  //keep searching after the occurrence
 				}
 /*G***del; not needed
 				final String trimmedText=StringUtilities.trim(text, "*"); //trim the text of asterisks
@@ -1929,7 +1929,7 @@ Debug.trace("unacceptable because of: ", word); //G***del
 		if(string.length()==0 || string.length()>=128)
 			return false; //this isn't valid
 				//if the word "copyright" appears in the string
-		if(StringUtilities.indexOfIgnoreCase(string, "copyright")>=0) //G***use a constant
+		if(Strings.indexOfIgnoreCase(string, "copyright")>=0) //G***use a constant
 			return false; //this isn't valid
 				//if the string only has punctuation G***should we eventually add dependent punctuation to the general punctuation string?
 		if(!CharSequenceUtilities.containsLetterOrDigit(string)) //if there are no letters or digits in the string

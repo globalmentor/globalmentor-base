@@ -177,7 +177,7 @@ preface
 */
 				else
 				{
-					final String line=StringUtilities.removeAfterFirstChar(text, EOL_CHARS);  //get the first line of text
+					final String line=Strings.removeAfterFirstChar(text, EOL_CHARS);  //get the first line of text
 						//see if this is one of the fixed hierarchical headings
 					if(isTitleHeading(line))  //if this is a title heading
 					{
@@ -283,7 +283,7 @@ preface
 		if(text.length()>2 && isAllChars(text, "*-_"+EM_DASH_CHAR+EN_DASH_CHAR))  //G***use constants
 			return true;  //this is a page break heading
 				//if this line contains "page" surrounded by only punctuation
-		else if("page".equalsIgnoreCase(StringUtilities.trim(text, PUNCTUATION_CHARS+TRIM_CHARS)))
+		else if("page".equalsIgnoreCase(Strings.trim(text, PUNCTUATION_CHARS+TRIM_CHARS)))
 			return true;  //this is a page break indication
 		else  //if this is not a page break heading
 			return false; //show that we don't think this is a page break heading
@@ -437,7 +437,7 @@ preface
 	*/
 	protected static boolean containsTitleLabel(final String text, final String label)
 	{
-		final int labelIndex=StringUtilities.indexOfIgnoreCase(text, label);  //see if the label appears in the text
+		final int labelIndex=Strings.indexOfIgnoreCase(text, label);  //see if the label appears in the text
 		if(labelIndex>=0) //if the label appears in any case
 		{
 			if(Character.isUpperCase(text.charAt(labelIndex)))  //if the first character of the label is uppercase

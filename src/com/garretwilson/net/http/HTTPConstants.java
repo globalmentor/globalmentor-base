@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
-import static com.garretwilson.lang.StringUtilities.*;
+import static com.garretwilson.lang.Strings.*;
 import static com.garretwilson.text.CharacterConstants.*;
 
 /**Constants relating to the HyperText Transfer Protocol (HTTP) as defined by

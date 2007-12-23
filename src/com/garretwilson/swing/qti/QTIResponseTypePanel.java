@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import com.garretwilson.lang.CharSequenceUtilities;
-import com.garretwilson.lang.StringUtilities;
+import com.garretwilson.lang.Strings;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.util.*;

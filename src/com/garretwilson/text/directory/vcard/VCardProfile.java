@@ -784,7 +784,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	public static void serializeStructuredTextFieldValue(final String text, final Writer writer) throws IOException
 	{
 			//replace characters with their escaped versions and write the resulting string
-		writer.write(StringUtilities.replace(text, STRUCTURED_TEXT_MATCH_CHARS, STRUCTURED_TEXT_REPLACEMENT_STRINGS));
+		writer.write(Strings.replace(text, STRUCTURED_TEXT_MATCH_CHARS, STRUCTURED_TEXT_REPLACEMENT_STRINGS));
 	}
 
 	/**Creates a directory from the given content lines.

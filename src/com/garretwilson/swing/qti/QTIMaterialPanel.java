@@ -7,7 +7,7 @@ import java.net.*;
 import java.util.*;
 import javax.swing.*;
 //*G**del if not needed import com.garretwilson.awt.ComponentUtilities;
-import com.garretwilson.io.FileUtilities;
+import com.garretwilson.io.Files;
 import com.garretwilson.net.URLConstants;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;

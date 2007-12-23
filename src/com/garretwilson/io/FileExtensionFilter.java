@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 import static java.util.Collections.*;
 
-import static com.garretwilson.io.FileUtilities.*;
+import static com.garretwilson.io.Files.*;
 
 /**A class that can filter files based upon extension.
 @author Garret Wilson

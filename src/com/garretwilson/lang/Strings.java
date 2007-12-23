@@ -1,14 +1,15 @@
 package com.garretwilson.lang;
 
 import java.io.*;
-import java.util.List;
+import java.net.URI;
 import static com.garretwilson.lang.CharacterUtilities.*;
-import static com.garretwilson.lang.StringBuilderUtilities.*;
+
+import com.garretwilson.io.IO;
 import com.garretwilson.text.*;
 import static com.garretwilson.util.ArrayUtilities.*;
-import com.garretwilson.util.Debug;
 
 import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.CharacterEncodingConstants.*;
 
 /**Various text manipulating functions. These methods work on
 	<code>String</code> objects, which are immutable heavyweight objects that must
@@ -18,9 +19,9 @@ import static com.garretwilson.text.CharacterConstants.*;
 @see StringBufferUtilities
 @author Garret Wilson
 */
-public class StringUtilities 
+public class Strings 
 {
-	//TODO move most of the methods that reference CharSeqUtilities to that class
+	//TODO move most of the methods that reference CharSequenceUtilities to that class
 
 /*G***del
 	public final static String WHITESPACE_STRING="\001\002\003\004\005\006\007\010\011\012\013\014\015\016\017\020\021\022\023\024\025\026\027\030\031\032\033\034\035\036\037\040";
@@ -1389,6 +1390,40 @@ end;
 			lineBeginIndex=lineEndIndex;	//start looking at the next line
 		}
 		return outStringBuffer.toString();	//return the string from the we constructed
+	}
+
+	/**Writes an object to a string using the given I/O support, converting bytes to a string using the {@value CharacterEncodingConstants#UTF_8} encoding.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param object The object to write to a string.
+	@param io The I/O support for writing the object.
+	@throws IOException if there is an error writing the data.
+	@throws UnsupportedEncodingException if the {@value CharacterEncodingConstants#UTF_8} character encoding is not supported.
+	*/
+	public static <T> String write(final URI baseURI, final T object, final IO<T> io) throws IOException
+	{
+		return write(baseURI, object, io, UTF_8);	//write and convert to a string using UTF_8
+	}
+
+	/**Writes an object to a string using the given I/O support.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param object The object to write to a string.
+	@param io The I/O support for writing the object.
+	@param encoding The encoding with which to interpret the written bytes.
+	@throws IOException if there is an error writing the data.
+	@throws UnsupportedEncodingException if the named character encoding is not supported.
+	*/
+	public static <T> String write(final URI baseURI, final T object, final IO<T> io, final String encoding) throws IOException
+	{
+		final ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();	//create a new byte array output stream
+		try
+		{
+			io.write(byteArrayOutputStream, baseURI, object);	//write the object, determining the base URI from the file
+		}
+		finally
+		{
+			byteArrayOutputStream.close();	//always close the output stream
+		}
+		return byteArrayOutputStream.toString(encoding);	//convert the byte array to a string using the given encoding
 	}
 
 }

@@ -85,8 +85,8 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 		final File storageFile=new File(getStorageURI());	//get the file to represent the URI
 		if(isBackupUsed())	//if backup files are used
 		{
-			final File backupFile=FileUtilities.getBackupFile(storageFile);  //get the expected backup file
-			return FileUtilities.checkExists(storageFile, backupFile);	//check to see if the file exists; if not, try to use the backup file instead
+			final File backupFile=Files.getBackupFile(storageFile);  //get the expected backup file
+			return Files.checkExists(storageFile, backupFile);	//check to see if the file exists; if not, try to use the backup file instead
 		}
 		else	//if backup file use is not enabled
 		{
@@ -109,12 +109,12 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 		final File directory=storageFile.getParentFile();	//get the directory of the file
 		if(!directory.exists() || !directory.isDirectory())	//if the directory doesn't exist as a directory
 		{
-			FileUtilities.mkdirs(directory);	//create the directory
+			Files.mkdirs(directory);	//create the directory
 		}
-		final File tempFile=FileUtilities.getTempFile(storageFile);  //get a temporary file to write to
-		final File backupFile=isBackupUsed() ? FileUtilities.getBackupFile(storageFile) : null;  //get a backup file, if we should create a backup, or null if we shouldn't
+		final File tempFile=Files.getTempFile(storageFile);  //get a temporary file to write to
+		final File backupFile=isBackupUsed() ? Files.getBackupFile(storageFile) : null;  //get a backup file, if we should create a backup, or null if we shouldn't
 		store(document, tempFile.toURI());	//store the document in the temporary file
-		FileUtilities.moveFile(tempFile, storageFile, backupFile); //move the temp file to the normal file, creating a backup if necessary
+		Files.moveFile(tempFile, storageFile, backupFile); //move the temp file to the normal file, creating a backup if necessary
 	}
 
 	/**Retrieves the information from RDF stored at the given URI.
@@ -129,8 +129,8 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 		if(isBackupUsed())	//if backup files are used
 		{
 			final File storageFile=new File(uri);	//get the file to represent the URI
-			final File backupFile=FileUtilities.getBackupFile(storageFile);  //get the expected backup file G***can't we just remove this parameter and use the default?
-			FileUtilities.checkExists(storageFile, backupFile);	//check to see if the file exists; if not, try to use the backup file instead
+			final File backupFile=Files.getBackupFile(storageFile);  //get the expected backup file G***can't we just remove this parameter and use the default?
+			Files.checkExists(storageFile, backupFile);	//check to see if the file exists; if not, try to use the backup file instead
 		}
 		super.retrieve(uri);	//attempt to retrieve the file normally		
 	}	

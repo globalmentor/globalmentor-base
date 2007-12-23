@@ -8,7 +8,7 @@ import static com.garretwilson.lang.CharSequenceUtilities.*;
 	operate can be modified within the object instead of forcing a new object to
 	be created. These methods furthermore modify the specified
 	<code>StringBuilder</code> object rather than returning a new object.
-@see StringUtilities
+@see Strings
 @author Garret Wilson
 */
 public class StringBuilderUtilities

@@ -2,7 +2,7 @@ package com.garretwilson.lang;
 
 import java.io.File;
 
-import static com.garretwilson.lang.StringUtilities.*;
+import static com.garretwilson.lang.Strings.*;
 import static com.garretwilson.lang.SystemConstants.*;
 
 /**Utilities for working with system-specific attributes.
