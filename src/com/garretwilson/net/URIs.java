@@ -132,11 +132,13 @@ public class URIs
 	@param newPath The unescaped path, or <code>null</code> if there should be no path.
 	@return A new URI with the new path information.
 	*/
+/*TODO del; use raw version
 	public static URI changePath(final URI uri, final String newPath)
 	{
 			//construct an identical URI except for the supplied path
 		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), newPath, uri.getQuery(), uri.getFragment());
 	}
+*/
 
 	/**Creates a new URI identical to the supplied URI with a different raw path.
 	@param uri The URI to change.
@@ -147,6 +149,8 @@ public class URIs
 	*/
 	public static URI changeRawPath(final URI uri, final String newRawPath)
 	{
+		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), newRawPath, uri.getRawQuery(), uri.getRawFragment());	//construct an identical URI except with a different raw path
+/*TODO del when works
 		final String oldRawPath=uri.getRawPath();	//get the old raw path of the URI
 		if(((oldRawPath==null || oldRawPath.length()==0) && (newRawPath==null || newRawPath.length()==0))	//if an empty path is being replaced by an empty path	
 				|| oldRawPath.equals(newRawPath))	//or the paths are the same
@@ -178,6 +182,19 @@ public class URIs
 		final String uriString=uri.toString();	//create a string form of the URI
 		assert oldRawPath==null || uriString.endsWith(oldSuffixStringBuilder.toString()) : "URI unexpectedly did not end with its constructed suffix.";
 		return URI.create(uriString.substring(0, uriString.length()-oldSuffixStringBuilder.length())+newSuffixStringBuilder.toString());	//create a new URI after replacing the old suffix with the new
+*/
+	}
+
+	/**Creates a new URI identical to the supplied URI with a different host.
+	@param uri The URI to change.
+	@param newHost The new host information.
+	@return A new URI with the new host information.
+	@throws NullPointerException if the given URI and/or new host is <code>null</code>.
+	@throws IllegalArgumentException if the given URI has no host or if the given host results in an invalid URI.
+	*/
+	public static URI changeHost(final URI uri, final String newHost)
+	{
+		return createURI(uri.getScheme(), uri.getRawUserInfo(), checkInstance(newHost, "Host cannot be null."), uri.getPort(), uri.getRawPath(), uri.getRawQuery(), uri.getRawFragment());	//construct an identical URI except with a different host
 	}
 
 	/**Creates a new URI identical to the supplied URI with a different scheme-specific part.
@@ -187,11 +204,13 @@ public class URIs
 	@return A new URI with the new scheme-specific part.
 	@exception NullPointerException if the given URI and/or scheme-specific part is <code>null</code>.
 	*/
+/*TODO del; use raw version
 	public static URI changeSchemeSpecificPart(final URI uri, final String newSSP)
 	{
-			//construct an identical URI except for the supplied path
+			//construct an identical URI except for the supplied scheme-specific part
 		return createURI(uri.getScheme(), newSSP, uri.getFragment());
 	}
+*/
 
 	/**Creates a new URI identical to the supplied URI with a different raw scheme-specific part.
 	@param uri The URI to change.
@@ -339,7 +358,7 @@ public class URIs
 		{
 			final String rawSSP=uri.getRawSchemeSpecificPart();	//get the raw scheme-specific part
 			final String newRawSSP=changeName(rawSSP, rawName);	//change the name to the given name
-			return changeSchemeSpecificPart(uri, newRawSSP);	//change the URI's scheme-specific part to the new scheme-specific part			
+			return changeRawSchemeSpecificPart(uri, newRawSSP);	//change the URI's scheme-specific part to the new scheme-specific part			
 		}
 		else	//if this is not an info URI
 		{
@@ -438,9 +457,9 @@ public class URIs
 	@param uri The URI from which to remove the query and fragment, if any.
 	@return A new URI with no query or fragment.
 	*/
-	public static URI getPlainURI(final URI uri)	//TODO change all references to raw access, and change create() to use raw inputs
+	public static URI getPlainURI(final URI uri)
 	{
-		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), null, null);	//construct an identical URI except with no query or fragment
+		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), uri.getRawPath(), null, null);	//construct an identical URI except with no query or fragment
 	}
 
 	/**Constructs an absolute path from the given elements in the form:
@@ -958,7 +977,7 @@ public class URIs
 	*/
 	public static URI getRootURI(final URI uri)
 	{
-		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
+		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
 	}
 
 	/**Returns the content type for the specified URI based on its name extension.
@@ -1491,83 +1510,97 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 
 	/**Returns a URI constructed from the given parts, any of which can be <code>null</code>.
-	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>	will be thrown, created from the <code>URISyntaxException</code>.</p>
 	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
-	<p>This method expects all of its arguments to be unencoded---raw (encoded) parameters will be re-encoded, resulting in corruption.</p>
 	@param scheme The name of the URI scheme.
-	@param ssp The scheme-specific part; illegal characters will be quoted.
+	@param rawSchemeSpecificPart The raw, encoded scheme-specific part, or <code>null</code> if there is no scheme-specific part.
 	@exception IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	*/
-	public static URI createURI(final String scheme, final String ssp) throws IllegalArgumentException
+	public static URI createURI(final String scheme, final String rawSchemeSpecificPart) throws IllegalArgumentException
 	{
-		return createURI(scheme, ssp, null);	//create a URI with no fragment
+		return createURI(scheme, rawSchemeSpecificPart, null);	//create a URI with no fragment
 	}
 
 	/**Returns a URI constructed from the given parts, any of which can be <code>null</code>.
-	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>	will be thrown, created from the <code>URISyntaxException</code>.</p>
 	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
-	<p>This method expects all of its arguments to be unencoded---raw (encoded) parameters will be re-encoded, resulting in corruption.</p>
 	@param scheme The name of the URI scheme.
-	@param ssp The scheme-specific part; illegal characters will be quoted.
-	@param fragment The fragment at the end of the URI.
+	@param rawSchemeSpecificPart The raw, encoded scheme-specific part, or <code>null</code> if there is no scheme-specific part.
+	@param rawFragment The raw, encoded fragment at the end of the URI, or <code>null</code> if there is no fragment.
 	@exception IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	*/
-	public static URI createURI(final String scheme, final String ssp, final String fragment) throws IllegalArgumentException
+	public static URI createURI(final String scheme, final String rawSchemeSpecificPart, final String rawFragment) throws IllegalArgumentException
 	{
-		try
+		final StringBuilder stringBuilder=new StringBuilder();	//we'll use this to construct the URI
+		if(scheme!=null)	//if there is a scheme
 		{
-			return new URI(scheme, ssp, fragment);	//create and return a new URI
+			stringBuilder.append(scheme).append(SCHEME_SEPARATOR);	//append the scheme and its separator
 		}
-		catch(URISyntaxException uriSyntaxException)
+		if(rawSchemeSpecificPart!=null)	//if there is a scheme-specific part
 		{
-			throw new IllegalArgumentException(uriSyntaxException);	//create a new illegal argument exception from the URI syntax exception and rethrow it
-		}	
+			stringBuilder.append(rawSchemeSpecificPart);	//append the scheme-specific part
+		}
+		if(rawFragment!=null)	//if there is a fragment
+		{
+			stringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment);	//append the fragment
+		}
+		return URI.create(stringBuilder.toString());	//create and return a new URI
 	}
 
 	/**Returns a URI constructed from the given parts, any of which can be <code>null</code>.
-	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>	will be thrown, created from the <code>URISyntaxException</code>.</p>
 	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
-	<p>This method expects all of its arguments to be unencoded---raw (encoded) parameters will be re-encoded, resulting in corruption.</p>
 	@param scheme The name of the URI scheme.
-	@param userInfo The user information.
-	@param host The host information.
+	@param rawUserInfo The raw, encoded user information, or <code>null</code> if there is no user information.
+	@param host The host information, or <code>null</code> if there is no host.
 	@param port The port number, or -1 for no defined port.
-	@param path The path, correctly encoded.
-	@param query The URI query.
-	@param fragment The fragment at the end of the URI.
-	@exception IllegalArgumentException Thrown if the a URI cannot be constructed from the given strings.
+	@param rawPath The raw, encoded path, or <code>null</code> if there is no path.
+	@param rawQuery The raw, encoded URI query, or <code>null</code> if there is no query.
+	@param rawFragment The raw, encoded fragment at the end of the URI, or <code>null</code> if there is no fragment.
+	@exception IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	*/
-	public static URI createURI(final String scheme, final String userInfo, final String host, final int port, final String path, final String query, final String fragment) throws IllegalArgumentException
+	public static URI createURI(final String scheme, final String rawUserInfo, final String host, final int port, final String rawPath, final String rawQuery, final String rawFragment) throws IllegalArgumentException
 	{
-		try
+		final StringBuilder stringBuilder=new StringBuilder();	//we'll use this to construct the URI
+		if(scheme!=null)	//if there is a scheme
 		{
-			return new URI(scheme, userInfo, host, port, path, query, fragment);	//create and return a new URI
+			stringBuilder.append(scheme).append(SCHEME_SEPARATOR);	//append the scheme and its separator
 		}
-		catch(URISyntaxException uriSyntaxException)	//if the given information is not correct URI syntax
+		if(host!=null)	//if there is authority information
 		{
-			throw new IllegalArgumentException(uriSyntaxException);	//create a new illegal argument exception from the URI syntax exception and rethrow it
-		}	
+			stringBuilder.append(AUTHORITY_PREFIX);	//append the authority prefix
+			if(rawUserInfo!=null)	//if there is user information
+			{
+				stringBuilder.append(rawUserInfo).append(USER_INFO_SEPARATOR);	//append the user information
+			}
+			stringBuilder.append(host);	//append the host
+			if(port>=0)	//if there is a port
+			{
+				stringBuilder.append(PORT_SEPARATOR).append(port);	//append the port
+			}
+		}
+		else	//if there is no host
+		{
+			if(rawUserInfo!=null)	//if user information was given
+			{
+				throw new IllegalArgumentException("URI cannot have user info without a host.");
+			}
+			if(port>=0)	//if a port was given
+			{
+				throw new IllegalArgumentException("URI cannot have a port without a host.");
+			}
+		}
+		if(rawPath!=null)	//if there is a path
+		{
+			stringBuilder.append(rawPath);	//append the path
+		}
+		if(rawQuery!=null)	//if there is a query
+		{
+			stringBuilder.append(QUERY_SEPARATOR).append(rawQuery);	//append the query
+		}
+		if(rawFragment!=null)	//if there is a fragment
+		{
+			stringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment);	//append the fragment
+		}
+		return URI.create(stringBuilder.toString());	//create and return a new URI
 	}
-
-	/**Stores the contents of a URL in an output stream.
-	@param url The URL to copy.
-	@param outputStream The destination of the URL contents.
-	@exception IOException Thrown if there is an error copying the URL.
-	*/
-/*G***fix
-	public static void write(final URL url, final OutputStream outputStream) throws IOException
-	{
-		final InputStream fileInputStream=new BufferedInputStream(url.openConnection().getInputStream()); //created a buffered input stream to the URL
-		try
-		{
-			OutputStreamUtilities.write(fileInputStream, outputStream);  //copy the contents of the input stream to the output stream
-		}
-		finally
-		{
-			fileInputStream.close();  //always close the file input stream
-		}
-	}
-*/
 
 	/**Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
 	@param string The data to URI-encode.
