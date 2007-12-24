@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
-import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.net.URIs.*;
 
 /**Class for saving and loading an URF resource by its reference URI.
 Whenever an URF instance is read, a resource will be retrieved using the given URI, resolved against the given base URI if one is available.

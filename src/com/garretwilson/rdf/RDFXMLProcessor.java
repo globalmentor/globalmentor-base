@@ -7,7 +7,7 @@ import static com.garretwilson.lang.ObjectUtilities.*;
 
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import com.garretwilson.net.*;
-import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.net.URIs.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;

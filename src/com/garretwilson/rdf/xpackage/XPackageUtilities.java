@@ -204,7 +204,7 @@ public class XPackageUtilities
 	{
 		try
 		{
-		  final URI absoluteURI=URIUtilities.createURI(baseURI, href);	//create a URI based upon the base URI and the given file location
+		  final URI absoluteURI=URIs.createURI(baseURI, href);	//create a URI based upon the base URI and the given file location
 			return getItemByLocationHRef(list, baseURI, absoluteURI);	//look up the item based upon the URI we formed
 		}
 		catch(URISyntaxException uriSyntaxException)	//if there is an error with the URI
@@ -242,7 +242,7 @@ Debug.trace("looking at resource: ", resource); //G***del
 				{
 					try
 					{
-						final URI itemURI=URIUtilities.createURI(baseURI, itemHRef);	//create a URI based upon the base URI and the item's location
+						final URI itemURI=URIs.createURI(baseURI, itemHRef);	//create a URI based upon the base URI and the item's location
 	Debug.trace("comparing with URI: ", itemURI); //G***del
 						if(uri.equals(itemURI)) //if the URLs match
 							return resource;  //return the item

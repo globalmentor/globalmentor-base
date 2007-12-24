@@ -8,7 +8,7 @@ import static java.util.Collections.*;
 
 import com.garretwilson.assess.qti.QTIConstants;
 import static com.garretwilson.lang.ObjectUtilities.*;
-import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.net.URIs.*;
 import com.garretwilson.net.http.webdav.ApacheWebDAVConstants;
 import com.garretwilson.rdf.RDFConstants;
 import com.garretwilson.rdf.dicto.DictoConstants;

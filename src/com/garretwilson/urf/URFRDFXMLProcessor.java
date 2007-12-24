@@ -7,7 +7,7 @@ import static java.util.Collections.*;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
-import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.net.URIs.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;

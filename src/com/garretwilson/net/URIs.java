@@ -22,7 +22,7 @@ import com.garretwilson.util.*;
 	"Uniform Resource Identifiers (URI): Generic Syntax".
 @see java.net.URI
 */
-public class URIUtilities
+public class URIs
 {
 
 	/**The shared static empty array of URIs.*/
@@ -215,6 +215,16 @@ public class URIUtilities
 			stringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment);	//include the raw fragment
 		}
 		return URI.create(stringBuilder.toString());	//create a URI from the constructed string
+	}
+
+	/**Returns a path object to represent the path of the URI.
+	@param uri The URI for which a path object should be returned.
+	@return An object representing the path, or <code>null</code> if the URI has no path.
+	*/
+	public static URIPath getPath(final URI uri)
+	{
+		final String rawPath=uri.getRawPath();	//get the raw path of the URI
+		return rawPath!=null ? new URIPath(rawPath) : null;	//return a path object if there is a path
 	}
 
 	/**Returns the name of the resource at the given path, which will be the name of the last path component.

@@ -21,7 +21,7 @@ import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.IntegerUtilities.*;
 import static com.garretwilson.lang.SystemUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.net.URIs.*;
 
 /**Various utilities for examining files.
 @author Garret Wilson

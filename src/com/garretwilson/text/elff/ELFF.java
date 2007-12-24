@@ -13,7 +13,7 @@ import static com.garretwilson.util.TimeZoneConstants.*;
 import static com.garretwilson.lang.StringBuilderUtilities.*;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.net.URIs.*;
 import static com.garretwilson.util.MapUtilities.*;
 
 /**Access to a log in the Extended Log File Format (ELFF).

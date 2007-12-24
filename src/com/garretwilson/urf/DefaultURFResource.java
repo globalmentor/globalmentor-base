@@ -5,7 +5,7 @@ import java.util.concurrent.locks.*;
 
 import com.garretwilson.lang.LongUtilities;
 import static com.garretwilson.lang.ObjectUtilities.*;
-import com.garretwilson.net.URIUtilities;
+import com.garretwilson.net.URIs;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
 import static com.garretwilson.urf.dcmi.DCMI.getTitle;
@@ -154,7 +154,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 					}
 					else	//if the URI is not in a lexical namespace
 					{
-						label=URIUtilities.getName(uri);	//get the name of the URI, if any
+						label=URIs.getName(uri);	//get the name of the URI, if any
 						if(label==null)	//if no name could be determined from the URI
 						{
 							label=uri.toString();	//use the string form of the URI as-is

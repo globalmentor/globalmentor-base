@@ -4,7 +4,7 @@ import java.net.URI;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.net.URIs.*;
 
 /**Represents the path of a hierarchical URI with the same encoding requirements as URIs in general.
 @author Garret Wilson
@@ -87,6 +87,15 @@ public final class URIPath
 			throw new IllegalArgumentException("The path "+this+" is not relative.");
 		}
 		return this;	//return this path
+	}
+
+	/**Normalizes the path by removing all <code>.</code> and <code>..</code> segments.
+	@return A URI path equivalent to this URI path, but in normal form.
+	*/
+	public URIPath normalize()
+	{
+		final URI normalizedURI=uri.normalize();	//normalize the URI
+		return normalizedURI==uri ? this : new URIPath(normalizedURI);	//if the URI was already normalized and we got back the same URI, we're already normalized
 	}
 
 	/**Relativizes the given path against this path.

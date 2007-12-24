@@ -18,7 +18,7 @@ import com.garretwilson.lang.LongUtilities;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.net.URIs.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
 import com.garretwilson.text.RegularExpression;
 import com.garretwilson.urf.content.*;

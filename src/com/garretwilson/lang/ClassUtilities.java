@@ -19,7 +19,7 @@ import static com.garretwilson.lang.JavaConstants.*;
 import static com.garretwilson.lang.JavaUtilities.*;
 import static com.garretwilson.lang.Strings.*;
 import com.garretwilson.net.URIConstants;
-import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.net.URIs.*;
 import com.garretwilson.net.URIPath;
 import com.garretwilson.util.NameValuePair;
 

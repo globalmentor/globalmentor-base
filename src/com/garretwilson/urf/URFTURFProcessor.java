@@ -10,7 +10,7 @@ import com.garretwilson.io.ParseIOException;
 import static com.garretwilson.io.ReaderParser.*;
 import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.net.*;
-import static com.garretwilson.net.URIUtilities.*;
+import static com.garretwilson.net.URIs.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
 import static com.garretwilson.text.CharacterConstants.*;
 import static com.garretwilson.urf.URF.*;

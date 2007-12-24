@@ -189,7 +189,7 @@ Debug.trace("storing zip entry under: ", getURI(zipEntry)); //G***del
 	@return A URI representing the specified file.
 	@exception IllegalArgumentException if the given string violates RFC&nbsp;2396.
 	@see #getZipFileURI
-	@see URIUtilities
+	@see URIs
 	*/
 	public URI getURI(final String href)
 	{
