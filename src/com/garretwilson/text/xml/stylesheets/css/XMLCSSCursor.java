@@ -37,7 +37,7 @@ public enum XMLCSSCursor
 	TEXT,
 	/**Indicates that the program is busy and the user should wait. Often rendered as a watch or hourglass.*/
 	WAIT,
-	/**A progress indicator. The program is performing some processing, but is different from {@link #WAIT} in that the user may still interact with the program. Often rendered as a spinning beach ball, or an arrow with a watch or hourglass.
+	/**A progress indicator. The program is performing some processing, but is different from {@link #WAIT} in that the user may still interact with the program. Often rendered as a spinning beach ball, or an arrow with a watch or hourglass.*/
 	PROGRESS,
 	/**Help is available for the object under the cursor. Often rendered as a question mark or a balloon.*/
 	HELP;
