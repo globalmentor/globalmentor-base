@@ -577,6 +577,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				}
 				newScopeChain.add(new NameValuePair<Resource, Resource>(predicate, sequenceObject));	//add another element to the scope chain for this new sequence object we parsed
 				addAssertion(new Assertion(newScopeBase, orderPredicate, orderObject, newScopeChain.toArray(new NameValuePair[newScopeChain.size()])));	//assert the scoped order assertion
+				//TODO assert that the order is an integer
 				++order;	//increaes the order for next time
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				if(c==LIST_DELIMITER)	//if this is a list delimiter

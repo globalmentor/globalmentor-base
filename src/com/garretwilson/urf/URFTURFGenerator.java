@@ -470,7 +470,6 @@ public class URFTURFGenerator
 					{
 						writer.write(PROPERTIES_BEGIN);	//start the properties
 						indent();	//indent the properties
-						writeNewLine(writer);	//go to the next line
 						startedProperties=true;	//show that we've started the properties
 					}
 					writeNewLine(writer);	//go to the next line
@@ -912,6 +911,7 @@ public class URFTURFGenerator
 					if(valueURI!=null)	//if there is a value URI
 					{
 						markReferenceGenerated(urf, valueURI);	//mark that the value was generated unless it has some other quality needed to be generated separately
+						markReferenceGenerated(urf, INTEGER_CLASS_URI);	//the order value should be an integer; mark that the integer class was generated unless it has some other quality needed to be generated separately
 					}
 				}
 				continue;	//skip this property
