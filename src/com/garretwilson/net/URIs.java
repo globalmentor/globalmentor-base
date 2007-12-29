@@ -294,7 +294,7 @@ public class URIs
 	The path name is first extracted from the URI's raw path and then decoded so that encoded {@value URIConstants#PATH_SEPARATOR} characters will not prevent correct parsing. 
 	This method correctly handles {@value URIConstants#INFO_SCHEME} URIs.
 	@param URI The URI the path of which will be examined.
-	@return The name of the last last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code> if the URI has no path.
+	@return The name of the last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code> if the URI has no path.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static String getName(final URI uri)	//TODO important: update all references to check for null
