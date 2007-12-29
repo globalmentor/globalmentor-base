@@ -10,7 +10,7 @@ import javax.swing.*;
 import com.garretwilson.io.ContentTypeConstants;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
-import com.garretwilson.text.CharacterConstants;
+import com.garretwilson.text.Characters;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.*;
 import com.garretwilson.text.xml.xlink.*;
@@ -166,7 +166,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 							{
 								XMLUtilities.appendElement(ddElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(),
 										XHTMLConstants.ELEMENT_EM, transliteration.toString());	//show the entry transliteration TODO add xml:lang to all of these terms
-								XMLUtilities.appendText(ddElement, CharacterConstants.SPACE_CHAR);	//add a space
+								XMLUtilities.appendText(ddElement, Characters.SPACE_CHAR);	//add a space
 							}
 							if(entry instanceof Word)	//if this is a word
 							{
@@ -189,21 +189,21 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 										XMLUtilities.appendText(ddElement, gender.toString());	//add the gender TODO add xml:lang to all of these terms
 									}
 									XMLUtilities.appendText(ddElement, ')');	//add a right parenthesis
-									XMLUtilities.appendText(ddElement, CharacterConstants.SPACE_CHAR);	//add a space
+									XMLUtilities.appendText(ddElement, Characters.SPACE_CHAR);	//add a space
 								}
 							}
 							final RDFPlainLiteral translation=entry.getTranslation();	//get the entry translation
 							if(translation!=null)	//if there is a translation
 							{
 								XMLUtilities.appendText(ddElement, translation.toString());	//show the translation
-								XMLUtilities.appendText(ddElement, CharacterConstants.SPACE_CHAR);	//add a space
+								XMLUtilities.appendText(ddElement, Characters.SPACE_CHAR);	//add a space
 							}
 							final RDFPlainLiteral definition=entry.getDefinition();	//get the entry definition
 							if(definition!=null)	//if there is a definition
 							{
-								XMLUtilities.appendText(ddElement, CharacterConstants.EM_DASH_CHAR);	//add an em-dash
+								XMLUtilities.appendText(ddElement, Characters.EM_DASH_CHAR);	//add an em-dash
 								XMLUtilities.appendText(ddElement, definition.toString());	//show the definition
-								XMLUtilities.appendText(ddElement, CharacterConstants.SPACE_CHAR);	//add a space
+								XMLUtilities.appendText(ddElement, Characters.SPACE_CHAR);	//add a space
 							}
 						}
 					}

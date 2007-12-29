@@ -21,7 +21,7 @@ import com.globalmentor.marmot.Marmot;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
-import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.Characters.*;
 
 /**Creates an OEB publication by gathering all source files from a directory.
 	If the tidy option is turned on, each document in the manifest will be loaded,

@@ -5,7 +5,7 @@ import java.io.*;
 import static com.garretwilson.csv.CSVConstants.*;
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.StringBuilderUtilities.*;
-import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.Characters.*;
 
 /**Serializes Comma Separated Value (CSV) information
 @author Garret Wilson

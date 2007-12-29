@@ -303,12 +303,12 @@ public class URF
 			{
 				if(lastRawFragmentPathSeparatorIndex!=rawFragment.length()-1)	//if the path separator is not the last character in the fragment
 				{
-					return decode(rawFragment.substring(lastRawFragmentPathSeparatorIndex+1));	//the local name is determined by decoding the characters after the last path separator
+					return uriDecode(rawFragment.substring(lastRawFragmentPathSeparatorIndex+1));	//the local name is determined by decoding the characters after the last path separator
 				}
 			}
 			else	//if the fragment has no path separator
 			{
-				return decode(rawFragment);	//the local name name is the decoded fragment
+				return uriDecode(rawFragment);	//the local name name is the decoded fragment
 			}
 		}
 		else	//if there is no fragment, check for a path-based namespace
@@ -380,7 +380,7 @@ public class URF
 		{
 			throw new IllegalArgumentException("URI "+lexicalURI+" is not a URI in a lexical namespace.");
 		}
-		return URI.create(decode(lexicalNamespaceURIString.substring(URF_LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
+		return URI.create(uriDecode(lexicalNamespaceURIString.substring(URF_LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
 	}
 
 	/**Retrieves the type URI of a lexical namespace URI.
@@ -401,7 +401,7 @@ public class URF
 		{
 			throw new IllegalArgumentException("URI "+namespaceURI+" is not a lexical namespace URI.");
 		}
-		return URI.create(decode(lexicalNamespaceURIString.substring(URF_LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
+		return URI.create(uriDecode(lexicalNamespaceURIString.substring(URF_LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
 	}
 	
 	/**Creates a lexical namespace URI for the given resource type.

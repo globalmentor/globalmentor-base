@@ -90,7 +90,7 @@ public class ClassUtilities
 			{
 				if(classPath.startsWith(ROOT_PATH))	//if the path is absolute
 				{
-					return Class.forName(decode(classPath.substring(ROOT_PATH.length()).replace(PATH_SEPARATOR, PACKAGE_SEPARATOR)));	//skip the root path delimiter, replace path separators with package separators, and decode the string before trying to load the class
+					return Class.forName(uriDecode(classPath.substring(ROOT_PATH.length()).replace(PATH_SEPARATOR, PACKAGE_SEPARATOR)));	//skip the root path delimiter, replace path separators with package separators, and decode the string before trying to load the class
 				}
 				else	//if the path is not absolute
 				{

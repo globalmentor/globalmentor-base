@@ -9,7 +9,7 @@ import static java.util.Collections.*;
 import com.garretwilson.assess.qti.QTIConstants;
 import static com.garretwilson.lang.ObjectUtilities.*;
 import static com.garretwilson.net.URIs.*;
-import com.garretwilson.net.http.webdav.ApacheWebDAVConstants;
+import com.garretwilson.net.http.webdav.ApacheWebDAV;
 import com.garretwilson.rdf.RDFConstants;
 import com.garretwilson.rdf.dicto.DictoConstants;
 import com.garretwilson.rdf.dublincore.DCConstants;
@@ -44,7 +44,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	static	//add the default namespaces
 	{
 		final Set<URI> knownNamespaceURIs=new HashSet<URI>();	//create a temporary set to fill
-		knownNamespaceURIs.add(ApacheWebDAVConstants.APACHE_WEBDAV_PROPERTY_NAMESPACE_URI);	//Apache WebDAV properties
+		knownNamespaceURIs.add(ApacheWebDAV.APACHE_WEBDAV_PROPERTY_NAMESPACE_URI);	//Apache WebDAV properties
 		knownNamespaceURIs.add(URI.create("http://example.com/example"));	//example
 		knownNamespaceURIs.add(FOAF.FOAF_NAMESPACE_URI);	//FOAF
 		knownNamespaceURIs.add(URF.URF_NAMESPACE_URI);	//URF

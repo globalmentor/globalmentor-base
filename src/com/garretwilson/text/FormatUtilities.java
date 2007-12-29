@@ -5,7 +5,7 @@ import static java.util.Collections.*;
 
 import com.garretwilson.lang.IntegerUtilities;
 import static com.garretwilson.lang.StringBuilderUtilities.*;
-import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.Characters.*;
 
 import com.garretwilson.util.NameValuePair;
 
@@ -99,11 +99,11 @@ public class FormatUtilities
 
 	/**Appends the string representations of the given ints separated by a delimiter character.
 	@param stringBuilder The string builder into which the result should be placed.
-	@param delimiter The separator character to be inserted between the int strings, or {@link CharacterConstants#NULL_CHAR} (Unicode code point 0) if no delimiter should be used. 
+	@param delimiter The separator character to be inserted between the int strings, or {@link Characters#NULL_CHAR} (Unicode code point 0) if no delimiter should be used. 
 	@param items The items to be formatted.
 	@return The string builder containing the new information.
 	@see Integer#toString(int)
-	@see CharacterConstants#NULL_CHAR
+	@see Characters#NULL_CHAR
 	*/
 	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final int... items)
 	{
@@ -121,11 +121,11 @@ public class FormatUtilities
 
 	/**Appends the string representations of the given longs separated by a delimiter character.
 	@param stringBuilder The string builder into which the result should be placed.
-	@param delimiter The separator character to be inserted between the int strings, or {@link CharacterConstants#NULL_CHAR} (Unicode code point 0) if no delimiter should be used. 
+	@param delimiter The separator character to be inserted between the int strings, or {@link Characters#NULL_CHAR} (Unicode code point 0) if no delimiter should be used. 
 	@param items The items to be formatted.
 	@return The string builder containing the new information.
 	@see Integer#toString(int)
-	@see CharacterConstants#NULL_CHAR
+	@see Characters#NULL_CHAR
 	*/
 	public static StringBuilder formatList(final StringBuilder stringBuilder, final char delimiter, final long... items)
 	{

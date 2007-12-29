@@ -8,7 +8,7 @@ import com.garretwilson.io.IO;
 import com.garretwilson.text.*;
 import static com.garretwilson.util.ArrayUtilities.*;
 
-import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.Characters.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
 
 /**Various text manipulating functions. These methods work on

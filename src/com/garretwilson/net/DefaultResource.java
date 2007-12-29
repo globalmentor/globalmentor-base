@@ -2,7 +2,7 @@ package com.garretwilson.net;
 
 import java.net.URI;
 
-import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.Characters.*;
 
 /**Represents the default implementation of a resource.
 This class provides compare functionality that sorts according to the reference URI, if available.

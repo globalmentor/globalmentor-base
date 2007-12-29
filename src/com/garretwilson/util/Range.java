@@ -1,7 +1,7 @@
 package com.garretwilson.util;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
-import static com.garretwilson.text.CharacterConstants.INFINITY_CHAR;
+import static com.garretwilson.text.Characters.INFINITY_CHAR;
 
 import com.garretwilson.lang.ObjectUtilities;
 

@@ -4,11 +4,11 @@ import java.io.Reader;
 import java.io.IOException;
 import java.util.*;
 
-import com.garretwilson.text.CharacterConstants;
+import com.garretwilson.text.Characters;
 import com.garretwilson.text.SyntaxException;
 import com.garretwilson.util.Debug;
 
-import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.Characters.*;
 
 /**Tokenizes input from a reader, recognizing groups.
 All text within a group will be ignored when delimiting tokens, except that group delimiters are checked for matching.
@@ -20,7 +20,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 {
 
 	/**The default delimiter characters: whitespace.
-	@see CharacterConstants#TRIM_CHARS
+	@see Characters#TRIM_CHARS
 	*/
 	protected final static String DEFAULT_DELIMITERS=TRIM_CHARS;
 
@@ -193,20 +193,20 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	}
 
 	/**The last delimiter encountered, which introduced the current token.*/
-	private char lastDelimiter=CharacterConstants.NULL_CHAR;
+	private char lastDelimiter=Characters.NULL_CHAR;
 
 		/**Returns the last delimiter encountered, which introduced the current token.
-		If no last delimiter has been encountered, {@link CharacterConstants#NULL_CHAR} is returned.
+		If no last delimiter has been encountered, {@link Characters#NULL_CHAR} is returned.
 		@return The last delimiter encountered.
 		@see #getDelimiters()
 		*/
 		public char getLastDelimiter() {return lastDelimiter;}
 
 	/**The current delimiter encountered, which delimits the current token.*/
-	private char delimiter=CharacterConstants.NULL_CHAR;
+	private char delimiter=Characters.NULL_CHAR;
 
 		/**Returns the current delimiter encountered, which delimits the current token.
-		If no delimiters have been encountered, or the end of the reader was reached, {@link CharacterConstants#NULL_CHAR} is returned.
+		If no delimiters have been encountered, or the end of the reader was reached, {@link Characters#NULL_CHAR} is returned.
 		@return The current delimiter encountered.
 		@see #getDelimiters()
 		*/

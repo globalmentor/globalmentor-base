@@ -1,6 +1,6 @@
 package com.garretwilson.net;
 
-import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.Characters.*;
 
 import java.net.URI;
 

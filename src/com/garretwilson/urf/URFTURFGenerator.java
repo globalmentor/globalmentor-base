@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static com.garretwilson.lang.ObjectUtilities.*;
 import com.garretwilson.lang.IntegerUtilities;
-import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.Characters.*;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
 import com.garretwilson.util.*;

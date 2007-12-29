@@ -95,7 +95,7 @@ public class URIs
 	*/
 	public final static String getInfoIdentifier(final URI uri)
 	{
-		return decode(getInfoRawIdentifier(uri));	//decode the raw identifier of the info URI
+		return uriDecode(getInfoRawIdentifier(uri));	//decode the raw identifier of the info URI
 	}
 
 	/**Determines the raw, unencoded info indentifier of the given {@value URIConstants#INFO_SCHEME} scheme URI.
@@ -300,7 +300,7 @@ public class URIs
 	public static String getName(final URI uri)	//TODO important: update all references to check for null
 	{
 		final String rawName=getRawName(uri);	//get the raw name of the URI
-		return rawName!=null ? decode(rawName) : null;	//if there is a raw name, decode and return it
+		return rawName!=null ? uriDecode(rawName) : null;	//if there is a raw name, decode and return it
 	}
 
 	/**Changes the name of the path of the given URI to the given name.
@@ -793,8 +793,8 @@ public class URIs
 				final String value;	//we'll get the parameter value
 				if(nameValue.length>0)	//if there was at least one token
 				{
-					name=decode(nameValue[0]);	//the first token is the name
-					value=nameValue.length>1 ? decode(nameValue[1]) : "";	//use the empty string for the value if no value was provided
+					name=uriDecode(nameValue[0]);	//the first token is the name
+					value=nameValue.length>1 ? uriDecode(nameValue[1]) : "";	//use the empty string for the value if no value was provided
 				}
 				else	//if there wasn't at least one token
 				{
@@ -1602,15 +1602,6 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		return URI.create(stringBuilder.toString());	//create and return a new URI
 	}
 
-	/**Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
-	@param string The data to URI-encode.
-	@return A string containing the escaped data.
-	*/
-	public static String encodeURI(final String string)	//TODO probably rename to encode() once we convert all the other references to the deprecated encode() methods
-	{
-		return uriEncode(string, UNRESERVED_CHARS);	//encode all non-unreserved characters
-	}
-
 	/**Encodes the URI reserved characters in the string, using '%' as an escape character, according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
 	All characters not considered {@link URIConstants#NORMAL_CHARS} are encoded.
 	The escape character {@link URIConstants#ESCAPE_CHAR} will always be encoded.
@@ -1670,7 +1661,50 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		return stringBuilder.toString();	//return the encoded version of the string
 	}
 
-	/**Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
+	/**Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax"
+	using the URI escape character, {@value URIConstants#ESCAPE_CHAR}.
+	@param uri The URI to URI-encode.
+	@return A string containing the escaped data.
+	@see URIConstants#ESCAPE_CHAR
+	*/
+	public static String encodeURI(final URI uri)
+	{
+		return encodeURI(uri.toString());	//encode the string version of the URI
+	}
+
+	/**Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
+	@param uri The URI to URI-encode.
+	@parm escapeChar The escape character to use, which will always be escaped.
+	@return A string containing the escaped data.
+	*/
+	public static String encodeURI(final URI uri, final char escapeChar)
+	{
+		return encodeURI(uri.toString(), escapeChar);	//encode all string version of the URI
+	}
+
+	/**Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax"
+	using the URI escape character, {@value URIConstants#ESCAPE_CHAR}.
+	@param string The data to URI-encode.
+	@return A string containing the escaped data.
+	@see URIConstants#ESCAPE_CHAR
+	*/
+	public static String encodeURI(final String string)
+	{
+		return encodeURI(string, ESCAPE_CHAR);	//encode the URI using the standard escape character
+	}
+
+	/**Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
+	@param string The data to URI-encode.
+	@parm escapeChar The escape character to use, which will always be escaped.
+	@return A string containing the escaped data.
+	*/
+	public static String encodeURI(final String string, final char escapeChar)
+	{
+		return uriEncode(string, UNRESERVED_CHARS, escapeChar);	//encode all non-unreserved characters
+	}
+
+	/**Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax"
+	using the URI escape character, {@value URIConstants#ESCAPE_CHAR}.
 	@param string The data to URI-encode.
 	@param validCharacters Characters that should not be encoded; all other characters will be encoded.
 	@return A string containing the escaped data.
@@ -1678,11 +1712,22 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	*/
 	static String uriEncode(final String string, final String validCharacters)
 	{
+		return uriEncode(string, validCharacters, ESCAPE_CHAR);	//encode the string with the normal escape character
+	}
+
+	/**Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
+	@param string The data to URI-encode.
+	@param validCharacters Characters that should not be encoded; all other characters will be encoded.
+	@parm escapeChar The escape character to use, which will always be escaped.
+	@return A string containing the escaped data.
+	*/
+	static String uriEncode(final String string, final String validCharacters, final char escapeChar)
+	{
 		final StringBuilder stringBuilder=new StringBuilder(string);	//put the string in a string builder so that we can work with it; although inserting encoded sequences may seem inefficient, it should be noted that filling a string buffer with the entire string is more efficient than doing it one character at a time, that characters needed encoding are generally uncommon, and that any copying of the string characters during insertion is done via a native method, which should happen very quickly
 		for(int characterIndex=stringBuilder.length()-1; characterIndex>=0; --characterIndex)	//work backwords; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
 		{
 			final char c=stringBuilder.charAt(characterIndex);	//get the current character
-			if(c==ESCAPE_CHAR || validCharacters.indexOf(c)<0)	//if we should encode this character (always encode the escape character)
+			if(c==escapeChar || validCharacters.indexOf(c)<0)	//if we should encode this character (always encode the escape character)
 			{
 				try
 				{
@@ -1691,7 +1736,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 					final StringBuilder encodeStringBuilder=new StringBuilder(byteCount*3);	//create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
 					for(int byteIndex=0; byteIndex<byteCount; ++byteIndex)	//look at each byte
 					{
-						encodeStringBuilder.append(ESCAPE_CHAR);	//%
+						encodeStringBuilder.append(escapeChar);	//escape character
 						encodeStringBuilder.append(IntegerUtilities.toHexString(bytes[byteIndex], 2).toUpperCase());	//HH
 					}
 					stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString());	//replace the character with its encoding
@@ -1705,29 +1750,40 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		return stringBuilder.toString();	//return the encoded version of the string
 	}
 
+	/**Decodes the escaped characters in the character iterator according to the URI encoding rules in
+		<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax",
+		using the URI escape character, {@value URIConstants#ESCAPE_CHAR}.
+	@param uri The data to URI-decode.
+	@return A string containing the encoded URI data.
+	@exception IllegalArgumentException if the given URI string contains a character greater than U+00FF.
+	@exception IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
+	@see URIConstants#ESCAPE_CHAR
+	*/
+	public static String uriDecode(final String uri)
+	{
+		return uriDecode(uri, ESCAPE_CHAR);	//decode the string using the standard URI escape character
+	}
+
 	/**Decodes the escaped ('%') characters in the character iterator
 		according to the URI encoding rules in
 		<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
 		"Uniform Resource Identifiers (URI): Generic Syntax".
 	@param uri The data to URI-decode.
+	@parm escapeChar The escape character.
 	@return A string containing the encoded URI data.
 	@exception IllegalArgumentException if the given URI string contains a character greater than U+00FF.
-	@exception IllegalArgumentException if a given escape character {@value URIConstants#ESCAPE_CHAR} is not followed by a two-digit escape sequence.
-	@see URIConstants#ESCAPE_CHAR
+	@exception IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
 	*/
-	public static String decode(final String uri)
+	public static String uriDecode(final String uri, final char escapeChar)
 	{
-//TODO del		return unescapeHex(uri, ESCAPE_CHAR, 2);	//unescape according to URI encoding rules
 		final int length=uri.length();	//get the length of the URI string
 		final byte[] decodedBytes=new byte[length];	//create an array of byte to hold the UTF-8 data
 		int byteArrayIndex=0;	//start at the first position in the byte array
 		for(int i=0; i<length; ++i)	//look at each character in the URI
 		{
 			final char c=uri.charAt(i);	//get a reference to this character in the URI
-				//if this is the beginning of an escaped sequence
-//			, and there's room for enough hex characters after it (the last test is lenient, throwing no exception if the escape character doesn't actually encode anything)
 			final byte b;	//we'll determine what byte goes at this position
-			if(c==ESCAPE_CHAR)
+			if(c==escapeChar)	//if this is the beginning of an escaped sequence
 			{
 				if(i<length-2)	//if there's room for enough hex characters after it
 				{

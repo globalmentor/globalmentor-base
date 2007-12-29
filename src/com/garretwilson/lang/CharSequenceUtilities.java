@@ -3,7 +3,7 @@ package com.garretwilson.lang;
 import java.io.UnsupportedEncodingException;
 
 import static com.garretwilson.lang.CharacterUtilities.*;
-import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.Characters.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
 import com.garretwilson.util.ArrayUtilities;
 
@@ -155,7 +155,7 @@ public class CharSequenceUtilities
 	/**Determines if a character sequence contains whitespace.
 	@param charSequence The character sequence to be searched.
 	@return <code>true</code> if the given character sequence contains whitespace.
-	@see CharacterConstants#WHITESPACE_CHARS
+	@see Characters#WHITESPACE_CHARS
 	*/
 	public static boolean containsWhitespace(final CharSequence charSequence)
 	{

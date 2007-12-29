@@ -12,7 +12,7 @@ import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIs.*;
 import static com.garretwilson.text.CharacterEncodingConstants.*;
-import static com.garretwilson.text.CharacterConstants.*;
+import static com.garretwilson.text.Characters.*;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;
 import com.garretwilson.util.*;
