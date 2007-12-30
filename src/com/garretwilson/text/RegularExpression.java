@@ -24,10 +24,21 @@ public class RegularExpression
 	@param characters The characters to be included in the character class.
 	@return The new character class including the given characters.
 	@exception NullPointerException if the given characters is <code>null</code>.
+	@see #escapePatternString(String)
 	*/
 	public static String createCharacterClass(final char[] characters)
 	{
-		return new StringBuilder().append(CHARACTER_CLASS_BEGIN).append(escape(new String(characters), RESTRICTED, ESCAPE)).append(CHARACTER_CLASS_END).toString();	//escape the characters and surround them with character class characters
+		return new StringBuilder().append(CHARACTER_CLASS_BEGIN).append(escapePatternString(new String(characters))).append(CHARACTER_CLASS_END).toString();	//escape the characters and surround them with character class characters
 	}
 
+	/**Escapes restricted characters meant to appear in a pattern.
+	@param patternString The string to apear in a pattern.
+	@return The pattern string with restricted characters escaped.
+	@see #RESTRICTED
+	@see #ESCAPE
+	*/
+	public static String escapePatternString(final String patternString)
+	{
+		return escape(patternString, RESTRICTED, ESCAPE);	//escape the string
+	}
 }
