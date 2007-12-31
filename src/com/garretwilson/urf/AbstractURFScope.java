@@ -12,6 +12,8 @@ import static com.garretwilson.util.IteratorUtilities.*;
 import static com.garretwilson.urf.URF.*;
 
 /**Abstract implementation of a scope of URF properties.
+This implementation maintains a map of URF value context lists representing property values, each keyed to the URI of the corresponding URI.
+The value context lists are not allowed to be empty; once all values of a particular property is removed, the entire list is removed from the map. 
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:
@@ -152,19 +154,27 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		}
 	}
 
-	/**The number of properties.*/
-	private long propertyCount=0;
+	/**The number of property values.*/
+	private long propertyValueCount=0;
 
 		/**@return Whether this scope has properties.*/
 		public boolean hasProperties()
 		{
-			return propertyCount>0;	//return whether there are properties
+			return propertyValueCount>0;	//return whether there are properties
 		}
 
-		/**@return The number of properties this scope has.*/
+		/**Determines the number of distinct properties that have at least one value.
+		@return The number of propertis this scope has.
+		*/
 		public long getPropertyCount()
 		{
-			return propertyCount;	//return the property count
+			return propertyURIValueContextsMap.size();	//return the number of mappings in the property-value context list map
+		}
+
+		/**@return The number of property values this scope has.*/
+		public long getPropertyValueCount()
+		{
+			return propertyValueCount;	//return the property value count
 		}
 
 	/**Determines whether there exists a property with the given property URI.
@@ -178,7 +188,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		try
 		{
 			final List<URFValueContext> valueContextList=propertyURIValueContextsMap.get(propertyURI);	//get the list of value contexts, if there is one
-			return valueContextList!=null && !valueContextList.isEmpty();	//this property exists if there is a non-empty list of value contexts
+			return valueContextList!=null && !valueContextList.isEmpty();	//this property exists if there is a non-empty list of value contexts TODO remove all the isEmpty() checks, or change them to assertions 
 		}
 		finally
 		{
@@ -522,7 +532,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 			{
 				propertyValueContext=new DefaultURFValueContext(this, propertyValue, new ChildURFScope(propertyURI));	//create a new value context
 				valueContextList.add(propertyValueContext);	//add a new value context
-				++propertyCount;	//note that another property has been added
+				++propertyValueCount;	//note that another property has been added
 				propertyAdded=true;	//we added a property
 			}
 			final URFScope propertyValueScope=propertyValueContext.getScope();	//get the scope to which we'll add scoped properties
@@ -560,7 +570,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 			}
 			final URFValueContext valueContext=new DefaultURFValueContext(this, propertyValue, new ChildURFScope(propertyURI));	//create a new value context
 			valueContextList.add(valueContext);	//add a new value context
-			++propertyCount;	//note that another property has been added
+			++propertyValueCount;	//note that another property has been added
 			return true;	//indicate that we added a new property value context
 		}
 		finally
@@ -631,12 +641,12 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 			final List<URFValueContext> valueContextList=propertyURIValueContextsMap.getCollection(propertyURI);	//get the list of value contexts for this property, creating one if necessary
 			final int oldPropertyValueCount=valueContextList.size();	//see how many values there currently are
 			final URFResource oldPropertyValue=oldPropertyValueCount>0 ? valueContextList.get(0).getValue() : null;	//retrieve the old property value, if any
-			propertyCount-=oldPropertyValueCount;	//all its contents, if any, will be removed
+			propertyValueCount-=oldPropertyValueCount;	//all its contents, if any, will be removed
 			valueContextList.clear();	//always clear the context list if we have one
 			final URFScope propertyValueScope=new ChildURFScope(propertyURI);	//create a scope for the new property
 			final URFValueContext valueContest=new DefaultURFValueContext(this, property.getValue(), propertyValueScope);	//create a new value context for the value
 			valueContextList.add(valueContest);	//add the new value context
-			++propertyCount;	//note that another property has been added
+			++propertyValueCount;	//note that another property has been added
 			for(final URFProperty scopedProperty:property.getScope().getProperties())	//for each scoped property given to us
 			{
 				propertyValueScope.addProperty(scopedProperty);	//add the scoped property to the new property scope
@@ -673,12 +683,12 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 			{
 				final int oldPropertyValueCount=valueContextList.size();	//see how many values there currently are
 				final URFResource oldPropertyValue=oldPropertyValueCount>0 ? valueContextList.get(0).getValue() : null;	//retrieve the old property value, if any
-				propertyCount-=oldPropertyValueCount;	//all its contents, if any, will be removed
+				propertyValueCount-=oldPropertyValueCount;	//all its contents, if any, will be removed
 				if(propertyValue!=null)	//if we have a property value to add
 				{
 					valueContextList.clear();	//always clear the context list if we have one
 					valueContextList.add(new DefaultURFValueContext(this, propertyValue, new ChildURFScope(propertyURI)));	//add a new value context
-					++propertyCount;	//note that another property has been added
+					++propertyValueCount;	//note that another property has been added
 				}
 				else	//if we have no properties to add
 				{
@@ -891,7 +901,6 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	protected URFResource[] setPropertyValues(final URI propertyURI, final boolean ordered, final URFResource... propertyValues)
 	{
-		final int propertyValueCount=propertyValues.length;	//find how how many property values were given
 		writeLock().lock();	//get a write lock
 		try
 		{
@@ -934,7 +943,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 					valueContextList.add(new DefaultURFValueContext(this, propertyValue, valueScope));	//add a new value context with the optional scoped order
 				}
 			}
-			propertyCount=propertyCount-oldPropertyValueCount+propertyValues.length;	//note that properties have been removed and/or added
+			propertyValueCount=propertyValueCount-oldPropertyValueCount+propertyValues.length;	//note that properties have been removed and/or added
 			return oldPropertyValues;	//return the old property values
 		}
 		finally
@@ -951,9 +960,9 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		writeLock().lock();	//get a write lock
 		try
 		{
-			final long removedPropertyCount=propertyCount;	//get the number of properties before removal
+			final long removedPropertyCount=propertyValueCount;	//get the number of properties before removal
 			propertyURIValueContextsMap.clear();	//remove all property value contexts for all property URIs
-			propertyCount=0;	//indicate that there are no properties
+			propertyValueCount=0;	//indicate that there are no properties
 			return removedPropertyCount;	//return the number of properties we removed
 		}
 		finally
@@ -964,17 +973,17 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 
 	/**Removes all property values for a given property URI.
 	@param propertyURI The URI of the property the values of which to remove.
-	@return The number of properties removed.
+	@return The number of property values removed.
 	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
-	public long removeProperties(final URI propertyURI)
+	public long removePropertyValues(final URI propertyURI)
 	{
 		writeLock().lock();	//get a write lock
 		try
 		{
 			final List<URFValueContext> removedValueContextList=propertyURIValueContextsMap.remove(propertyURI);	//remove the list of value contexts, if any
 			final int removedValueCount=removedValueContextList!=null ? removedValueContextList.size() : 0;	//find out how many property values were removed
-			propertyCount-=removedValueCount;	//note that we removed property values
+			propertyValueCount-=removedValueCount;	//note that we removed property values
 			return removedValueCount;	//return the number of values removed
 		}
 		finally
@@ -985,10 +994,10 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 
 	/**Removes all properties of this scope within a particular namespace.
 	@param namespaceURI The URI of the namespace of the properties to be removed.
-	@return The number of properties removed.
+	@return The number of property values removed.
 	@exception NullPointerException if the given namespace URI is <code>null</code>.
 	*/
-	public long removeNamespaceProperties(final URI namespaceURI)
+	public long removeNamespacePropertyValues(final URI namespaceURI)
 	{
 		long removedPropertyCount=0;	//we haven't removed any properties, yet
 		writeLock().lock();	//get a write lock
@@ -1002,7 +1011,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 				{
 					final int valueCount=propertyURIValueContextListEntry.getValue().size();	//see how many values we're going to remove
 					propertyURIValueContextListEntryIterator.remove();	//remove all the values for this property
-					propertyCount-=valueCount;	//update our total number of properties
+					propertyValueCount-=valueCount;	//update our total number of properties
 					removedPropertyCount+=valueCount;	//show that we removed more properties
 				}
 			}
@@ -1036,7 +1045,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 					if(propertyValue.equals(valueContext.getValue()))	//if this is the value context to remove
 					{
 						valueContextIterator.remove();	//remove this value context
-						--propertyCount;	//indicate that we removed a value
+						--propertyValueCount;	//indicate that we removed a value
 						return true;	//indicate that we found and removed the value
 					}
 				}
@@ -1147,12 +1156,12 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		@exception IllegalStateException if this method is called after this scope is no longer available.
 		@see #resortOrder()
 		*/
-		public long removeProperties(final URI propertyURI)
+		public long removePropertyValues(final URI propertyURI)
 		{
 			writeLock().lock();	//get a write lock
 			try
 			{
-				final long removedPropertyCount=super.removeProperties(propertyURI);	//remove the properties normally, saving the number of properties removed
+				final long removedPropertyCount=super.removePropertyValues(propertyURI);	//remove the properties normally, saving the number of properties removed
 				if(removedPropertyCount>0 && ORDER_PROPERTY_URI.equals(propertyURI))	//if an order property was removed
 				{
 					resortOrder();	//resort the values of the parent scope
@@ -1173,12 +1182,12 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		@exception IllegalStateException if this method is called after this scope is no longer available.
 		@see #resortOrder()
 		*/
-		public long removeNamespaceProperties(final URI namespaceURI)
+		public long removeNamespacePropertyValues(final URI namespaceURI)
 		{
 			writeLock().lock();	//get a write lock
 			try
 			{
-				final long removedPropertyCount=super.removeNamespaceProperties(namespaceURI);	//remove the namespaced properties normally, saving the number of properties removed
+				final long removedPropertyCount=super.removeNamespacePropertyValues(namespaceURI);	//remove the namespaced properties normally, saving the number of properties removed
 				if(removedPropertyCount>0 && URF_NAMESPACE_URI.equals(namespaceURI))	//if all the URF properties were removed, the scoped order might have changed
 				{
 					resortOrder();	//resort the values of the parent scope
@@ -1404,7 +1413,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		public void remove()
 		{
 			super.remove();	//do the default removal
-			--propertyCount;	//note that a property has been removed
+			--propertyValueCount;	//note that a property has been removed
 		}
 
 		/**Retrieves an item representing the element at the given position in the list.

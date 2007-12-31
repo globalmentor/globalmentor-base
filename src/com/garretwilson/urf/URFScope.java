@@ -31,8 +31,13 @@ public interface URFScope extends ReadWriteLock
 	/**@return Whether this scope has properties.*/
 	public boolean hasProperties();
 
-	/**@return The number of properties this scope has.*/
+	/**Determines the number of distinct properties that have at least one value.
+	@return The number of propertis this scope has.
+	*/
 	public long getPropertyCount();
+
+	/**@return The number of property values this scope has.*/
+	public long getPropertyValueCount();
 
 	/**Determines whether there exists a property with the given property URI.
 	@param propertyURI The URI of the property to check.
@@ -340,17 +345,17 @@ public interface URFScope extends ReadWriteLock
 
 	/**Removes all property values for a given property URI.
 	@param propertyURI The URI of the property the values of which to remove.
-	@return The number of properties removed.
+	@return The number of property values removed.
 	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
-	public long removeProperties(final URI propertyURI);
+	public long removePropertyValues(final URI propertyURI);
 
 	/**Removes all properties of this scope within a particular namespace.
 	@param namespaceURI The URI of the namespace of the properties to be removed.
-	@return The number of properties removed.
+	@return The number of property values removed.
 	@exception NullPointerException if the given namespace URI is <code>null</code>.
 	*/
-	public long removeNamespaceProperties(final URI namespaceURI);
+	public long removeNamespacePropertyValues(final URI namespaceURI);
 
 	/**Removes a given property value for the property with the given URI.
 	If the given property and value do not exist, no action occurs.

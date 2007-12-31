@@ -101,7 +101,7 @@ public class PLOOPURFGenerator
 	@param preferredType The type of object that should be generated.
 	@return The generated URF resouce to represent the provided object.
 	@exception NullPointerException if the given preferred type is <code>null</code>.
- 	@exception IllegalArgumentException if one of the properties of the given object is not accessible.
+ 	@exception IllegalArgumentException if one of the properties of the given object is not accessible or invalid.
 	@exception InvocationTargetException if one of the properties of the given object throws an exception.
 	*/
 	public URFResource generateURFResource(Object object, final Class<?> preferredType) throws InvocationTargetException
@@ -128,7 +128,24 @@ public class PLOOPURFGenerator
 					final URFResource setElementResource=generateURFResource(setElement);	//generate an URF resource from the set element TODO add support for null
 					setResource.add(setElementResource);	//add the set element URF resource to the set URF resource
 				}
-				return setResource;	//return the list resource
+				return setResource;	//return the set resource
+			}
+			else if(object instanceof Map && Map.class.isAssignableFrom(preferredType))	//if a map was requested
+			{
+				final URFMapResource<URI, URFResource> mapResource=new URFMapResource<URI, URFResource>();	//create a new URF map resource
+				for(final Map.Entry<?, ?> mapEntry:((Map<?, ?>)object).entrySet())	//for each entry in the map
+				{
+					final Object mapEntryKey=mapEntry.getKey();	//get the entry key
+					final URFResource mapEntryKeyResource=generateURFResource(mapEntryKey);	//generate an URF resource from the entry key TODO add support for null
+					final URI keyURI=mapEntryKeyResource.getURI();	//get the URI of the key
+					if(keyURI!=null)	//if the map key could not be converted to a resource with a URI, this implementation does not support it
+					{
+						throw new IllegalArgumentException("Map key "+mapEntryKey+" cannot be converted to an URF resource with a URI.");
+					}
+					final URFResource mapEntryValueResource=generateURFResource(mapEntry.getValue());	//generate an URF resource from the entry value TODO add support for null
+					mapResource.put(keyURI, mapEntryValueResource);	//store the mapping in the URF map resource
+				}
+				return mapResource;	//return the map resource
 			}
 			else if(object instanceof char[])	//if the object is a character array
 			{

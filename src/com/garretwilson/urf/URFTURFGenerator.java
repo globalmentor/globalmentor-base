@@ -1216,7 +1216,7 @@ public class URFTURFGenerator
 			resource.readLock().lock();	//lock the resource for reading
 			try
 			{
-				final long propertyCount=resource.getPropertyCount();	//find out how many properties the resource has
+				final long propertyCount=resource.getPropertyValueCount();	//find out how many properties the resource has
 				if(propertyCount>0)	//if there is more than one property, make sure it's not just a type of a lexical URI
 				{
 					if(propertyCount!=1 || !isLexicalURI(resourceURI))	//if there's not just one property, or this is not a lexical URI

@@ -142,6 +142,7 @@ public class PLOOPURFProcessor
 	<ol>
 		<li>If the resource is an {@link URFListResource}, a new {@link List} containing converted list element objects will be returned.</li>
 		<li>If the resource is an {@link URFSetResource}, a new {@link Set} containing converted set element objects will be returned.</li>
+		<li>If the resource is an {@link URFMapResource}, a new {@link Map} containing the converted property URIs and converted value objects will be returned.</li>
 		<li>If the resource specifies a Java type, the indicated Java class is instantiated and initialized from the resource description.</li>
 		<li>If the resource otherwise indicates a value that can be represented by a Java object (such as an integer), such an object will be returned.</li>
 	</ul>
@@ -163,24 +164,63 @@ public class PLOOPURFProcessor
 		if(resource instanceof URFListResource)	//if the object is an URF array
 		{
 			final URFListResource<?> urfListResource=(URFListResource<?>)resource;	//cast the object to a list
-				//TODO maybe get a read lock on the list
 			final List<Object> list=new ArrayList<Object>();	//create a new list TODO eventually create a list but later check to see if the setter will accept a collection
-			for(final URFResource urfListElement:urfListResource)	//for each URF resource in the list
+			urfListResource.readLock().lock();	//get a read lock
+			try
 			{
-				list.add(getObject(urfListElement));	//get or create an object from this URF list element and add it to our list
+				for(final URFResource urfListElement:urfListResource)	//for each URF resource in the list
+				{
+					list.add(getObject(urfListElement));	//get or create an object from this URF list element and add it to our list
+				}
+			}
+			finally
+			{
+				urfListResource.readLock().unlock();	//always release the read lock
 			}
 			return list;	//return the list of objects we created
 		}
 		else if(resource instanceof URFSetResource)	//if the object is an URF set
 		{
 			final URFSetResource<?> urfSetResource=(URFSetResource<?>)resource;	//cast the object to a set
-				//TODO maybe get a read lock on the set
 			final Set<Object> set=new HashSet<Object>();	//create a new set TODO eventually create a set but later check to see if the setter will accept a collection
-			for(final URFResource urfSetElement:urfSetResource)	//for each URF resource in the set
+			urfSetResource.readLock().lock();	//get a read lock
+			try
 			{
-				set.add(getObject(urfSetElement));	//get or create an object from this URF set element and add it to our set
+				for(final URFResource urfSetElement:urfSetResource)	//for each URF resource in the set
+				{
+					set.add(getObject(urfSetElement));	//get or create an object from this URF set element and add it to our set
+				}
+			}
+			finally
+			{
+				urfSetResource.readLock().unlock();	//always release the read lock
 			}
 			return set;	//return the set of objects we created
+		}
+		else if(resource instanceof URFMapResource)	//if the object is an URF map
+		{
+			final URFMapResource<?, ?> urfMapResource=(URFMapResource<?, ?>)resource;	//cast the object to a map
+			final Map<Object, Object> map=new HashMap<Object, Object>();	//create a new map
+			urfMapResource.readLock().lock();	//get a read lock
+			try
+			{
+				for(final Map.Entry<? extends URI, ? extends URFResource> mapEntry:urfMapResource.entrySet())	//for each map entry in the URF map
+				{
+					final URI mapEntryKey=mapEntry.getKey();	//get the property URI
+					final Object keyObject=asObject(mapEntryKey);	//try to convert the property URI key to an object
+					if(keyObject==null)	//if the property URI could not be converted to an object
+					{
+						throw new DataException("Map entry key "+mapEntryKey+" could not be converted to an object.");
+					}
+					final Object valueObject=getObject(mapEntry.getValue());	//get or create an object from the URF resource value
+					map.put(keyObject, valueObject);	//store the converted objects in the map 
+				}
+			}
+			finally
+			{
+				urfMapResource.readLock().unlock();	//always release the read lock
+			}
+			return map;	//return the map of objects we created
 		}
 		else	//if this is another type of resource, see if we can create an object for it
 		{
@@ -455,7 +495,7 @@ public class PLOOPURFProcessor
 	*/
 	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URFResource resource, final URI propertyNamespaceURI) throws DataException, InvocationTargetException
 	{
-		final Map<URI, PropertyDescription> propertyDescriptionMap=new HashMap<URI, PropertyDescription>((int)resource.getPropertyCount());	//create a map to hold property descriptions, with a least enough capacity to hold descriptions for all properties
+		final Map<URI, PropertyDescription> propertyDescriptionMap=new HashMap<URI, PropertyDescription>((int)resource.getPropertyValueCount());	//create a map to hold property descriptions, with a least enough capacity to hold descriptions for all properties
 		for(final URFProperty property:resource.getProperties())	//for each resource property
 		{
 			final URI propertyURI=property.getPropertyURI();	//get the property URI

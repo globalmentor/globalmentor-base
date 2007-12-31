@@ -443,7 +443,7 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 	*/
 	public void clear()
 	{
-		removeNamespaceProperties(ORDINAL_NAMESPACE_URI);	//remove all ordinal properties
+		removeNamespacePropertyValues(ORDINAL_NAMESPACE_URI);	//remove all ordinal properties
 	}
 
   // Comparison and hashing
@@ -456,6 +456,10 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 	*/
   public boolean equals(final Object object)
   {
+  	if(object==this)	//if we're being compared to ourselves
+  	{
+  		return true;	//this object always equals itself
+  	}
   	if(object instanceof List)	//if the object is a list
   	{
   		final List<?> list=(List<?>)object;	//get the object as a list
@@ -772,7 +776,7 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 
 	/**Converts the given collection to an URF list resource.
 	If the collection is already a list resource, the collection is returned;
-	otherwise, a new new list resource with the contents of the collection is returned. 
+	otherwise, a new list resource with the contents of the collection is returned. 
 	@param <T> The type of elements contained in the collection. 
 	@param collection The collection to convert to a list resource.
 	@return A list resource representing the contents of the given collection.

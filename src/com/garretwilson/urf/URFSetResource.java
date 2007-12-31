@@ -319,7 +319,7 @@ public class URFSetResource<E extends URFResource> extends DefaultURFResource im
 	*/
 	public void clear()
 	{
-		removeProperties(ELEMENT_PROPERTY_URI);	//remove all the elements
+		removePropertyValues(ELEMENT_PROPERTY_URI);	//remove all the elements
 	}
 
   // Comparison and hashing
@@ -332,6 +332,10 @@ public class URFSetResource<E extends URFResource> extends DefaultURFResource im
 	*/
   public boolean equals(final Object object)
   {
+  	if(object==this)	//if we're being compared to ourselves
+  	{
+  		return true;	//this object always equals itself
+  	}
   	if(object instanceof Set)	//if the object is a set
   	{
   		final Set<?> set=(Set<?>)object;	//cast the object to a set
@@ -388,7 +392,7 @@ public class URFSetResource<E extends URFResource> extends DefaultURFResource im
 
 	/**Converts the given collection to an URF set resource.
 	If the collection is already a set resource, the collection is returned;
-	otherwise, a new new set resource with the contents of the collection is returned. 
+	otherwise, a new set resource with the contents of the collection is returned. 
 	@param <T> The type of elements contained in the collection. 
 	@param collection The collection to convert to a set resource.
 	@return A set resource representing the contents of the given collection.

@@ -689,6 +689,16 @@ public class URF
 		return resource instanceof URFSetResource ? (URFSetResource<T>)resource : null;	//if a set was given, return it with the requested generic type
 	}
 
+	/**Determines the URF map object, if any, represented by the given resource.
+	@param resource The resource which is expected to represent an URF map, or <code>null</code>.
+	@return The URF map object represented by the given resource, or <code>null</code> if the resource is not an instance of {@link URFMapResource}.
+	*/
+	@SuppressWarnings("unchecked")	//we must trust that they asked for the correct generic type; a class cast exception will be thrown later if the incorrect generic type was requested
+	public static <K extends URI, V extends URFResource> URFMapResource<K, V> asMapInstance(final Resource resource)
+	{
+		return resource instanceof URFMapResource ? (URFMapResource<K, V>)resource : null;	//if a map was given, return it with the requested generic type
+	}
+
 	/**Determines the Java object represented by the given resource based solely upon its URI.
 	@param resource The resource which is expected to represent a Java object, or <code>null</code>.
 	@return The object represented by the given resource, or <code>null</code> if the resource does not represent a known object based upon its URI.
@@ -1295,7 +1305,7 @@ public class URF
 				*/
 				public int compare(final URFResource resource1, final URFResource resource2)
 				{
-					int result=LongUtilities.compare(resource1.getPropertyCount(), resource2.getPropertyCount());	//compare property counts
+					int result=LongUtilities.compare(resource1.getPropertyValueCount(), resource2.getPropertyValueCount());	//compare property counts
 					if(result==0)	//if property counts are the same
 					{
 						result=LongUtilities.compare(resource1.getCreationOrder(), resource2.getCreationOrder());	//compare creation order
@@ -1661,6 +1671,7 @@ public class URF
 	<dl>
 		<dt>{@value #LIST_CLASS_URI}</dt> <dd>{@link URFListResource}</dd>
 		<dt>{@value #SET_CLASS_URI}</dt> <dd>{@link URFSetResource}</dd>
+		<dt>{@value #MAP_CLASS_URI}</dt> <dd>{@link URFMapResource}</dd>
 	</dl>
 	*/
 	public final static DefaultURFResourceFactory DEFAULT_URF_RESOURCE_FACTORY=new DefaultURFResourceFactory()
@@ -1682,6 +1693,10 @@ public class URF
 					else if(SET_CLASS_URI.equals(typeURI))	//if this is a set
 					{
 						return new URFSetResource<URFResource>(resourceURI);	//create a new set
+					}
+					else if(MAP_CLASS_URI.equals(typeURI))	//if this is a map
+					{
+						return new URFMapResource<URI, URFResource>(resourceURI);	//create a new map
 					}
 					return super.createResource(resourceURI, typeURI);	//if we don't recognize the type, create a default resource
 				}
