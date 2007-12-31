@@ -2,7 +2,7 @@ package com.garretwilson.util;
 
 import java.util.concurrent.BlockingQueue;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**A runnable consumer that takes elements from a blocking queue and consume them.
 Normally this consumer is run in a separate thread so that consuming can occur asynchronously.

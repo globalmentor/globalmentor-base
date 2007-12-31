@@ -2,7 +2,7 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**A resource bundle backed by a hash map.
 @author Garret Wilson

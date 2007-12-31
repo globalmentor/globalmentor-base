@@ -9,10 +9,10 @@ import javax.mail.internet.ContentType;
 import javax.swing.*;
 import javax.swing.text.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 import static com.garretwilson.io.ContentTypeConstants.*;
-import com.garretwilson.io.ContentTypeUtilities;
+import com.garretwilson.io.ContentTypes;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.rdf.maqro.*;

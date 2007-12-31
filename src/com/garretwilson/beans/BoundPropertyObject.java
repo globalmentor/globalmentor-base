@@ -2,7 +2,7 @@ package com.garretwilson.beans;
 
 import java.beans.*;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 
 /**An object that automatically supports bound and constrained properties.
 <p>Property change support is only created when needed; if no property change
@@ -220,7 +220,7 @@ public class BoundPropertyObject implements PropertyBindable
 	{
 		if(hasPropertyChangeListeners(propertyName)) //if we have listeners registered for this property
 		{
-			if(!ObjectUtilities.equals(oldValue, newValue))	//if the values are different
+			if(!Objects.equals(oldValue, newValue))	//if the values are different
 			{					
 				firePropertyChange(new GenericPropertyChangeEvent<V>(this, propertyName, oldValue, newValue));	//create and fire a genericized subclass of a property change event
 			}
@@ -378,7 +378,7 @@ public class BoundPropertyObject implements PropertyBindable
 	{
 		if(hasVetoableChangeListeners(propertyName)) //if we have listeners registered for this property
 		{
-			if(!ObjectUtilities.equals(oldValue, newValue))	//if the values are different
+			if(!Objects.equals(oldValue, newValue))	//if the values are different
 			{					
 				fireVetoableChange(new GenericPropertyChangeEvent<V>(this, propertyName, oldValue, newValue));	//create and fire a genericized subclass of a property change event
 			}

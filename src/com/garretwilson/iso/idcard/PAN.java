@@ -1,16 +1,16 @@
 package com.garretwilson.iso.idcard;
 
 import static com.garretwilson.lang.CharSequenceUtilities.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.lang.CharacterUtilities.*;
 
 import com.garretwilson.lang.IntegerUtilities;
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 import com.garretwilson.math.Luhn;
 import com.garretwilson.text.ArgumentSyntaxException;
 
 /**Primary Account Number (PAN) of an identification card as defined in ISO/IEC 7812-1:2000(E),
-	"Identification cards — Identification of issuers — Part 1: Numbering system".
+	"Identification cards ï¿½ Identification of issuers ï¿½ Part 1: Numbering system".
 @see <a href="http://en.wikipedia.org/wiki/ISO_7812">Wikipedia: ISO 7812</a>
 @author Garret Wilson
 */
@@ -164,7 +164,7 @@ public class PAN implements Comparable<PAN>
 		this.individualAccountID=Integer.parseInt(iaiString);	//save the individual account identification
 		this.checkDigit=checkDigit-'0';	//save the check digit value
 		this.value=Long.parseLong(toString());	//save the long value of the PAN
-		this.hashCode=ObjectUtilities.hashCode(getIIN(), getIndividualAccountID());	//a PAN is uniquely identified by its IIN and IAI
+		this.hashCode=Objects.hashCode(getIIN(), getIndividualAccountID());	//a PAN is uniquely identified by its IIN and IAI
 	}
 
 	/**@return A hash code representing this object.*/

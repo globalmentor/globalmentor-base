@@ -3,9 +3,9 @@ package com.garretwilson.net;
 import java.net.URI;
 import java.util.regex.*;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.net.URIConstants.*;
 import com.garretwilson.text.ArgumentSyntaxException;
 
@@ -91,7 +91,7 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	/**@return A hash code representing this object.*/
 	public int hashCode()
 	{
-		return ObjectUtilities.hashCode(getLocalPart(), getDomain());	//return a hash code for the local part and domain
+		return Objects.hashCode(getLocalPart(), getDomain());	//return a hash code for the local part and domain
 	}
 
 	/**Determines if this object is equivalent to another object.

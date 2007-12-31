@@ -2,7 +2,7 @@ package com.garretwilson.text.directory.vcard;
 
 import java.util.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.text.FormatUtilities.*;
 
 import com.garretwilson.util.DefaultLocaleable;

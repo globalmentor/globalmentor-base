@@ -1,6 +1,6 @@
 package com.garretwilson.rdf.xmlschema;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 import com.garretwilson.util.Base64;
@@ -43,7 +43,7 @@ public class Base64BinaryLiteral extends RDFTypedLiteral<byte[]>
 	*/
 	public static Base64BinaryLiteral asBase64BinaryLiteral(final RDFObject rdfObject)
 	{
-		return ObjectUtilities.asInstance(rdfObject, Base64BinaryLiteral.class);	//cast the object to an integer literal if we can
+		return Objects.asInstance(rdfObject, Base64BinaryLiteral.class);	//cast the object to an integer literal if we can
 	}
 
 	/**Determines if the RDF object is a base64-encoded binary literal and, if so, 

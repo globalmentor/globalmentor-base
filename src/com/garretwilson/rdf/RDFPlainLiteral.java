@@ -3,7 +3,7 @@ package com.garretwilson.rdf;
 import java.text.Collator;
 import java.util.Locale;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.util.LocaleText;
 
 /**Represents a plain RDF literal.

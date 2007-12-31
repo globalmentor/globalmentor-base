@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.Locale;
 
 import static com.garretwilson.lang.JavaUtilities.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 import static com.garretwilson.net.URIConstants.*;
 

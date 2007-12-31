@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.parsers.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;

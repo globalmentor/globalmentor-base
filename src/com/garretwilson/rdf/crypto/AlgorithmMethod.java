@@ -3,7 +3,7 @@ package com.garretwilson.rdf.crypto;
 import java.net.URI;
 import java.util.Iterator;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 import com.garretwilson.rdf.*;
 
 /**A general Crypto method, such as a digest or encryption method.

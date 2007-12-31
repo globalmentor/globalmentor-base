@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static java.util.Collections.*;
 
 import com.garretwilson.assess.qti.QTIConstants;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.net.URIs.*;
 import com.garretwilson.net.http.webdav.ApacheWebDAV;
 import com.garretwilson.rdf.RDFConstants;

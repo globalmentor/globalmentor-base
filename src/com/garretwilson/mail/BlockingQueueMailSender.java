@@ -7,7 +7,7 @@ import javax.mail.*;
 import com.garretwilson.util.AbstractRunnableBlockingQueueConsumer;
 import com.garretwilson.util.Debug;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**A consumer that takes mail messages from a blocking queue and sends them.
 The given transport connection is opened and closed as needed.

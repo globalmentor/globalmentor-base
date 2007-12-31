@@ -6,7 +6,8 @@ import java.lang.ref.SoftReference;
 import java.util.*;
 
 import static com.garretwilson.lang.CharSequenceUtilities.*;
-import com.garretwilson.text.CharacterEncodingConstants;
+
+import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.util.Debug;
 
 /**Accesses Unicode named character blocks.
@@ -69,7 +70,7 @@ public class UnicodeBlocks
 			//get an input stream to our Unicode data resource file
 		final InputStream inputStream=UnicodeData.class.getResourceAsStream(BLOCKS_FILENAME);
 			//buffer the input stream and turn it into an ASCII reader
-		return new InputStreamReader(new BufferedInputStream(inputStream), CharacterEncodingConstants.ISO_8859_1);
+		return new InputStreamReader(new BufferedInputStream(inputStream), CharacterEncoding.ISO_8859_1);
 	}
 
 	/**Loads a set of Unicode blocks from the Unicode blocks resource text file.

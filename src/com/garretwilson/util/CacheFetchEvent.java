@@ -1,6 +1,6 @@
 package com.garretwilson.util;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 import java.util.EventObject;
 

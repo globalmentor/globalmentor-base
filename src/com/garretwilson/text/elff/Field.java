@@ -1,6 +1,6 @@
 package com.garretwilson.text.elff;
 
-import static com.garretwilson.lang.ObjectUtilities.checkInstance;
+import static com.garretwilson.lang.Objects.checkInstance;
 
 import java.util.Date;
 

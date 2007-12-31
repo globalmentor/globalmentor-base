@@ -1,9 +1,9 @@
 package com.garretwilson.util;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.text.Characters.INFINITY_CHAR;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 
 /**Represents a range of comparable values.
 @author Garret Wilson
@@ -46,7 +46,7 @@ public class Range<T extends Comparable<T>> implements Comparable<Range<T>>
 	/**@return A unique hash code for the bounds of this range.*/
 	public int hashCode()
 	{
-		return ObjectUtilities.hashCode(getLowerBound(), getUpperBound());	//return a hash code composed of the bounds, if any
+		return Objects.hashCode(getLowerBound(), getUpperBound());	//return a hash code composed of the bounds, if any
 	}
 
 	/**Determins if this object is equal to another object.
@@ -57,7 +57,7 @@ public class Range<T extends Comparable<T>> implements Comparable<Range<T>>
 		if(object instanceof Range)	//if the object is a range
 		{
 			final Range<?> range=(Range<?>)object;	//get the object as a range
-			return ObjectUtilities.equals(getLowerBound(), range.getLowerBound()) && ObjectUtilities.equals(getUpperBound(), range.getUpperBound());	//compare bounds
+			return Objects.equals(getLowerBound(), range.getLowerBound()) && Objects.equals(getUpperBound(), range.getUpperBound());	//compare bounds
 		}
 		else	//if the object is not a range
 		{

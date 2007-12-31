@@ -5,8 +5,7 @@ import java.io.*;
 import javax.xml.parsers.ParserConfigurationException;
 
 import static com.garretwilson.rdf.RDFConstants.*;
-
-import static com.garretwilson.text.CharacterEncodingConstants.*;
+import static com.garretwilson.text.CharacterEncoding.*;
 import com.garretwilson.text.xml.*;
 
 import org.w3c.dom.*;

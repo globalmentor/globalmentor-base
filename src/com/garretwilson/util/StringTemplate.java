@@ -1,6 +1,6 @@
 package com.garretwilson.util;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**An efficient class for creating templates which can be repeatedly applied with string arguments.
 Non-string parameter components will be added to the string using their {@link Object#toString()} methods.

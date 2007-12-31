@@ -2,7 +2,7 @@ package com.garretwilson.awt.event;
 
 import java.awt.*;
 import java.awt.event.*;
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 
 /**Adapter that modifies a component when the mouse rolls over the component.
 	Usually the action is simply highlighting the component in a different color.
@@ -63,7 +63,7 @@ public class RolloverMouseAdapter extends MouseAdapter
 		{
 			final Color foregroundColor=component.getForeground();  //get the current foreground color
 			  //if we still have the old foreground color, and the color is still the rollover color (don't do anything if they've changed the color during the rollover)
-			if(oldForegroundColor!=null && ObjectUtilities.equals(component.getForeground(), getRolloverColor()))
+			if(oldForegroundColor!=null && Objects.equals(component.getForeground(), getRolloverColor()))
 			{
 				component.setForeground(oldForegroundColor);  //set the foreground color back to the way it was
 			}

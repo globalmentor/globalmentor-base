@@ -1632,7 +1632,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 			  ? "projectgutenbergheader.html" //point to the header we created G***use a constant
 				: URLUtilities.getFileName(getContextURL());  //otherwise, just point to the main content G***does this method always work?
 		  //read the template as a string, assuming UTF-8 encoding
-		final String templateString=URLUtilities.readString(templateURL, CharacterEncodingConstants.UTF_8);
+		final String templateString=URLUtilities.readString(templateURL, CharacterEncoding.UTF_8);
 			//store the title and author in the preface, making sure all the content is valid for XML content
 	  final String formattedString=MessageFormat.format(templateString,
 			  new Object[]{
@@ -1652,7 +1652,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 			formattedTemplateFile=URLUtilities.getFile(URLUtilities.createURL(getContextURL(), templateFilename));
 		}
 			//write the resulting file
-		Files.write(formattedTemplateFile, formattedString.getBytes(CharacterEncodingConstants.UTF_8));
+		Files.write(formattedTemplateFile, formattedString.getBytes(CharacterEncoding.UTF_8));
 		return formattedTemplateFile.toURL(); //return a URL to the resulting file
 	}
 

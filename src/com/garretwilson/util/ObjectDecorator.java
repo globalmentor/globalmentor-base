@@ -1,6 +1,6 @@
 package com.garretwilson.util;
 
-import static com.garretwilson.lang.ObjectUtilities.checkInstance;
+import static com.garretwilson.lang.Objects.checkInstance;
 
 /**An object that decorates another object, preserving the {@link Object#hashCode()} and {@link Object#equals(Object)} of the decorated object.
 Equality is only supported for exact top-level types.

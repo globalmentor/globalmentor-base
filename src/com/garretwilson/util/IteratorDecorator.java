@@ -1,7 +1,7 @@
 package com.garretwilson.util;
 
 import java.util.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**An iterator that wraps an existing iterator, providing access through the <code>Iterator</code> interface.
 @author Garret Wilson

@@ -16,7 +16,6 @@ import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.swing.text.xml.qti.QTIViewFactory;
 import com.garretwilson.swing.tree.*;
 import com.garretwilson.swing.qti.tree.*;
-import static com.garretwilson.text.CharacterEncodingConstants.*;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.assess.qti.*;

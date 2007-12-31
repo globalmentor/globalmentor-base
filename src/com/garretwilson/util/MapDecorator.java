@@ -2,7 +2,7 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**A map that wraps an existing map, providing access through the <code>Map</code> interface.
 @param <K> The type of map key.

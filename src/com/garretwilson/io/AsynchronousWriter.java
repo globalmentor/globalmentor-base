@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.util.ArrayUtilities.*;
 
 /**Writer that queues information and writes the information to the underlying writer asynchronously.

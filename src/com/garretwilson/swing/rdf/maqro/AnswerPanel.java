@@ -5,7 +5,7 @@ import java.awt.event.*;
 import java.net.*;
 import javax.swing.*;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 import com.garretwilson.net.Resource;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.maqro.*;
@@ -105,7 +105,7 @@ public class AnswerPanel extends ContentPanel
 	*/
 	public void setExpectation(final Resource expectedType)
 	{
-		if(!ObjectUtilities.equals(expectedType, typeComboBox.getSelectedItem()))	//if the combo box doesn't already have this item selected (this prevents the modification status from being changed when we really haven't modified anything)
+		if(!Objects.equals(expectedType, typeComboBox.getSelectedItem()))	//if the combo box doesn't already have this item selected (this prevents the modification status from being changed when we really haven't modified anything)
 		{
 			typeComboBox.setSelectedItem(expectedType);	//show the expected type in the combo box
 		}

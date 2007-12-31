@@ -1,6 +1,6 @@
 package com.garretwilson.rdf.xmlschema;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 

@@ -4,7 +4,7 @@ import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.*;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 import com.garretwilson.util.Debug;
 
 import static com.garretwilson.rdf.RDFConstants.*;
@@ -563,7 +563,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		{
 			final RDFObject first=getFirst(list);	//get the first object
 			final RDFResource rest=getRest(list);	//get the rest of the list
-			if(ObjectUtilities.equals(object, first))	//if this node contains the correct object
+			if(Objects.equals(object, first))	//if this node contains the correct object
 			{
 				setFirst(list, getFirst(rest));	//transfer the element of the next node to this node
 				setRest(list, getRest(rest));	//transfer the rest of the next node to this node					
@@ -746,7 +746,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			final RDFObject first=getFirst(list);	//get the first object
-			if(ObjectUtilities.equals(object, first))	//if the objects are equal (taking into account nulls)
+			if(Objects.equals(object, first))	//if the objects are equal (taking into account nulls)
 			{
 				return index;	//show the index at which we found the object 
 			}
@@ -773,7 +773,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			final RDFObject first=getFirst(list);	//get the first object
-			if(ObjectUtilities.equals(object, first))	//if the objects are equal (taking into account nulls)
+			if(Objects.equals(object, first))	//if the objects are equal (taking into account nulls)
 			{
 				lastIndexOf=index;	//keep track of the last index at which we found the object 
 			}

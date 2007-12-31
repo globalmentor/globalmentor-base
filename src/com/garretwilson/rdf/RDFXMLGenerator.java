@@ -3,7 +3,7 @@ package com.garretwilson.rdf;
 import java.net.URI;
 import java.util.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;

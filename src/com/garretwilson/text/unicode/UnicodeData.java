@@ -6,7 +6,8 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.StringTokenizer;
 import com.garretwilson.lang.IntegerUtilities;
-import com.garretwilson.text.CharacterEncodingConstants;
+import com.garretwilson.text.CharacterEncoding;
+
 import static com.garretwilson.text.unicode.UnicodeConstants.*;
 import static com.garretwilson.text.unicode.UnicodeBlocks.*;
 import com.garretwilson.util.Debug;
@@ -151,7 +152,7 @@ public class UnicodeData
 			//get an input stream to our Unicode data resource file
 		final InputStream inputStream=UnicodeData.class.getResourceAsStream(UNICODE_DATA_FILENAME);
 			//buffer the input stream and turn it into an ASCII reader
-		return new InputStreamReader(new BufferedInputStream(inputStream), CharacterEncodingConstants.ISO_8859_1);
+		return new InputStreamReader(new BufferedInputStream(inputStream), CharacterEncoding.ISO_8859_1);
 	}
 
 	/**Loads the list of Unicode characters from the Unicode data resource text file.

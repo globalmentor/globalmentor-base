@@ -5,7 +5,7 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.concurrent.locks.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.util.CollectionUtilities.*;
 
 /**An abstract cache that requires a subclass implementing data retrieval methods.

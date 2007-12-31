@@ -2,7 +2,7 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**A collection map that wraps an existing collection map, providing access through the {@link CollectionMap} interface.
 All map access is synchronized on the provided synchronization object.

@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 
 import static com.garretwilson.lang.ClassUtilities.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 
 /**Class for loading and saving a particular type of RDF resource.

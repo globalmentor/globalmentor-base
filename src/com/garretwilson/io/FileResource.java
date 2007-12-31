@@ -5,7 +5,7 @@ import java.net.URI;
 import static java.util.Collections.*;
 import java.util.List;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 import com.garretwilson.net.DefaultResource;
 

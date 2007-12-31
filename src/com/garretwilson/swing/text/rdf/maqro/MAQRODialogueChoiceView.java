@@ -2,7 +2,7 @@ package com.garretwilson.swing.text.rdf.maqro;
 
 import javax.swing.*;
 import javax.swing.text.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 
 import com.garretwilson.rdf.RDFResource;

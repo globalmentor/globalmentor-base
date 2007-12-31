@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 import java.util.Formatter;
 import java.util.Locale;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.lang.SystemUtilities.*;
 
 /**A print stream that writes to a given writer.

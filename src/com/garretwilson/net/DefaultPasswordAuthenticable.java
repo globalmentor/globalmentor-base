@@ -3,7 +3,7 @@ package com.garretwilson.net;
 import java.net.PasswordAuthentication;
 import java.net.URI;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**A default class for providing a username and password.
 A single {@link PasswordAuthentication} instance is stored and provided when requested.

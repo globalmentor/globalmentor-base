@@ -2,7 +2,7 @@ package com.garretwilson.io;
 
 import java.io.*;
 
-import static com.garretwilson.lang.ObjectUtilities.checkInstance;
+import static com.garretwilson.lang.Objects.checkInstance;
 
 /**Abstract class that wraps an existing writer.
 All versions of {@link Writer} methods delegate to the decorated writer.

@@ -2,8 +2,8 @@ package com.garretwilson.util;
 
 import java.util.Arrays;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
-import com.garretwilson.lang.ObjectUtilities;
+import static com.garretwilson.lang.Objects.*;
+import com.garretwilson.lang.Objects;
 
 /**An object that produces a hash for {@link Object#hashCode()} and implements equality checking for {@link Object#equals(Object)} based upon given objects.
 Equality is only supported for exact top-level types.
@@ -30,7 +30,7 @@ public abstract class AbstractHashObject
 	*/
 	public int hashCode()
 	{
-		return ObjectUtilities.hashCode(objects);	//return the hash code of the objects
+		return Objects.hashCode(objects);	//return the hash code of the objects
 	}
 	
 	/**Determines if this object equals another object.

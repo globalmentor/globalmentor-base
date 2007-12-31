@@ -1,6 +1,6 @@
 package com.garretwilson.rdf;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 import com.garretwilson.net.Resource;
 
 /**A default implementation of a statement in an RDF data model.
@@ -104,9 +104,9 @@ public class DefaultStatement implements Statement
 		if(object instanceof Statement)	//if the other object is a statement
 		{
 			final Statement statement2=(Statement)object;	//cast the object to a statement
-			return ObjectUtilities.equals(getSubject(), statement2.getSubject())	//compare subjects
-					&& ObjectUtilities.equals(getPredicate(), statement2.getPredicate())	//compare predicates
-					&& ObjectUtilities.equals(getObject(), statement2.getObject());	//compare objects
+			return Objects.equals(getSubject(), statement2.getSubject())	//compare subjects
+					&& Objects.equals(getPredicate(), statement2.getPredicate())	//compare predicates
+					&& Objects.equals(getObject(), statement2.getObject());	//compare objects
 		}
 		return false;	//show that the statements do not match
 	}

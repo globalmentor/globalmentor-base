@@ -3,8 +3,8 @@ package com.garretwilson.io;
 import java.io.*;
 
 import static com.garretwilson.io.InputStreamUtilities.*;
-import static com.garretwilson.text.CharacterEncodingConstants.*;
 import com.garretwilson.text.CharacterEncoding;
+import static com.garretwilson.text.CharacterEncoding.*;
 
 /**A reader that attempts to autodetect the character encoding of an input stream from the beginning byte order mark (BOM).
 <p>The input stream must be at its beginning and must support marking and resetting.</p>
@@ -33,7 +33,7 @@ public class BOMInputStreamReader extends InputStreamReader	//TODO create a vers
 	*/
 	public BOMInputStreamReader(final InputStream inputStream, final String defaultCharsetName) throws IOException, UnsupportedEncodingException
 	{
-		super(inputStream, getBOMEncoding(inputStream, new CharacterEncoding(defaultCharsetName)).getEncoding());	//construct an input stream reader, guessing the encoding from the BOM if we can
+		super(inputStream, getBOMEncoding(inputStream, new CharacterEncoding(defaultCharsetName)).toString());	//construct an input stream reader, guessing the encoding from the BOM if we can
 	}
 
 }

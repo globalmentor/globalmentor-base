@@ -1,6 +1,6 @@
 package com.garretwilson.util;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 
 /**An object that decorates another object, preserving the {@link Object#hashCode()} and {@link Object#equals(Object)} of the decorated object.
 Equality is only supported for exact top-level types.
@@ -48,7 +48,7 @@ public abstract class AbstractObjectDecorator<T>
 	*/
 	public boolean equals(final Object object)
 	{
-		return getClass().isInstance(object) && ObjectUtilities.equals(getObject(), ((ObjectDecorator<?>)object).getObject());	//see if the object is of this class and our decorated object is equal to its decorated object
+		return getClass().isInstance(object) && Objects.equals(getObject(), ((ObjectDecorator<?>)object).getObject());	//see if the object is of this class and our decorated object is equal to its decorated object
 	}
 	
 	/**Returns a string representation of the object.

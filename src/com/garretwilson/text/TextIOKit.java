@@ -69,8 +69,8 @@ public class TextIOKit extends AbstractIOKit<StringBuilder>
 	public void save(final StringBuilder model, final OutputStream outputStream) throws IOException
 	{
 		//TODO create a BOMWriter that does both steps
-		outputStream.write(CharacterEncodingConstants.BOM_UTF_8);	//write the UTF-8 byte order mark
-		final Writer writer=new OutputStreamWriter(outputStream, CharacterEncodingConstants.UTF_8);	//create a UTF-8 writer
+		outputStream.write(CharacterEncoding.BOM_UTF_8);	//write the UTF-8 byte order mark
+		final Writer writer=new OutputStreamWriter(outputStream, CharacterEncoding.UTF_8);	//create a UTF-8 writer
 		writer.write(model.toString());	//write the text to the writer
 		writer.flush();	//flush the data to the output stream
 	}

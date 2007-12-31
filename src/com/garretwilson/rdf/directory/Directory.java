@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.*;
 
 import static com.garretwilson.lang.JavaUtilities.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.rdf.*;
 
 import static com.garretwilson.rdf.rdfs.RDFSUtilities.*;

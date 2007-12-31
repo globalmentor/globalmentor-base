@@ -3,9 +3,9 @@ package com.garretwilson.security;
 import java.io.UnsupportedEncodingException;
 import java.security.*;
 
-import static com.garretwilson.lang.CharacterUtilities.*;
 import com.garretwilson.text.CharacterEncoding;
-import static com.garretwilson.text.CharacterEncodingConstants.*;
+import static com.garretwilson.text.CharacterEncoding.*;
+import static com.garretwilson.lang.CharacterUtilities.*;
 
 /**Utility methods for working with message digests.
 @author Garret Wilson
@@ -63,7 +63,7 @@ public class MessageDigestUtilities
 	*/
 	public static byte[] digest(final MessageDigest messageDigest, final CharacterEncoding encoding, final char[] characters) throws UnsupportedEncodingException
 	{
-		final byte[] bytes=toByteArray(characters, encoding.getEncoding());	//convert the characters to bytes
+		final byte[] bytes=toByteArray(characters, encoding.toString());	//convert the characters to bytes
 		return messageDigest.digest(bytes);	//calculate and return the digest
 	}
 
@@ -141,7 +141,7 @@ public class MessageDigestUtilities
 	*/
 	public static MessageDigest update(final MessageDigest messageDigest, final CharacterEncoding encoding, final char[] characters) throws UnsupportedEncodingException
 	{
-		final byte[] bytes=toByteArray(characters, encoding.getEncoding());	//convert the characters to bytes
+		final byte[] bytes=toByteArray(characters, encoding.toString());	//convert the characters to bytes
 		messageDigest.update(bytes);	//update the digest
 		return messageDigest;	//return the message digest
 	}	

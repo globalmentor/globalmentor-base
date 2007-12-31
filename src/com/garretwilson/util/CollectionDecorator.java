@@ -2,7 +2,7 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**A collection that wraps an existing collection, providing access through the <code>Collection</code> interface.
 @param <E> The type of element contained in the collection.

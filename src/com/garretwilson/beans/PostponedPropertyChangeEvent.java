@@ -2,7 +2,7 @@ package com.garretwilson.beans;
 
 import java.beans.*;
 import com.garretwilson.event.PostponedEvent;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**Encapsulation of a property change event and its associated property change support, queued for later firing.
 @author Garret Wilson

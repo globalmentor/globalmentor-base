@@ -2,7 +2,7 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.util.CollectionUtilities.*;
 
 /**An iterator that wraps an existing list iterator and provides its elements in reverse order.

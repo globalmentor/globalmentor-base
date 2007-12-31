@@ -3,7 +3,7 @@ package com.garretwilson.util;
 import java.lang.ref.*;
 import java.util.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**A map that uses soft references to store map values.
 Values are only purged when map write operations occur.

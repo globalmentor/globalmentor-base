@@ -1,7 +1,7 @@
 package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;

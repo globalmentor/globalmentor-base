@@ -9,10 +9,10 @@ import static com.garretwilson.lang.JavaConstants.*;
 /**Various utilities to manipulate Java objects.
 @author Garret Wilson
 */
-public class ObjectUtilities
+public class Objects
 {
 	/**This class cannot be publicly instantiated.*/
-	private ObjectUtilities() {}
+	private Objects() {}
 
 	/**Checks to see if a given variable is an instance of any object, and throws a {@link NullPointerException} if the variable is <code>null</code>.
 	@param <T> The type of variable to check.
@@ -106,19 +106,19 @@ public class ObjectUtilities
 		return instanceClass.isInstance(object) ? instanceClass.cast(object) : null;	//cast and return the object if it is an instance of the class, otherwise null
 	}
 
-	/**Compares two object to make sure that the objects are equal, or the
+	/**Compares two objects to make sure that the objects are equal, or the
 		objects are both set to <code>null</code>. If the first object is not
 		<code>null</code>, it is compared to the second using the first object's
-		<code>equal()</code> method.
+		{@link Object#equals(Object)} method.
 		This is a convenience method to compare two objects using the
-		<code>equals()</code> method when it's not known if one of the objects
+		{@link Object#equals(Object)} method when it's not known if one of the objects
 		is <code>null</code>.
 	@param object1 The first object to compare.
 	@param object2 The second object to compare.
 	@return <code>true</code> if the objects are equal according to the first
-		object's <code>equal()</code> method or if both objects are
+		object's {@link Object#equals(Object)} method or if both objects are
 		<code>null</code>.
-	@see Object#equals
+	@see Object#equals(Object)
 	*/
 	public final static boolean equals(final Object object1, final Object object2)
 	{

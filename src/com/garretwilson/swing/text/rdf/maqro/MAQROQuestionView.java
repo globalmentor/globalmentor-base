@@ -1,6 +1,6 @@
 package com.garretwilson.swing.text.rdf.maqro;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
 
 import java.awt.Container;

@@ -2,7 +2,7 @@ package com.garretwilson.net;
 
 import java.net.URI;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
 

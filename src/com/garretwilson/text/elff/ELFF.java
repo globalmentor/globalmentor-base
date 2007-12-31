@@ -11,7 +11,7 @@ import com.garretwilson.util.NameValuePair;
 import static com.garretwilson.util.TimeZoneConstants.*;
 
 import static com.garretwilson.lang.StringBuilderUtilities.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
 import static com.garretwilson.util.MapUtilities.*;

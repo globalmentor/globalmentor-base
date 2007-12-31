@@ -1,6 +1,6 @@
 package com.garretwilson.rdf.xmlschema;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;

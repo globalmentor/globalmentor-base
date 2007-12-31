@@ -3,7 +3,7 @@ package com.garretwilson.rdf;
 import java.net.*;
 import java.util.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 import static com.garretwilson.lang.CharSequenceUtilities.*;
 import com.garretwilson.net.*;

@@ -8,7 +8,7 @@ import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import com.garretwilson.rdf.dublincore.DCConstants;
 import com.garretwilson.rdf.xpackage.XPackageUtilities;
-import static com.garretwilson.text.CharacterEncodingConstants.*;
+import static com.garretwilson.text.CharacterEncoding.*;
 
 import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.text.xml.XMLConstants;

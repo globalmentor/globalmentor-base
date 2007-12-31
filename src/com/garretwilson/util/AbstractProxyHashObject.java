@@ -1,8 +1,8 @@
 package com.garretwilson.util;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 
 /**An object that delegates generation of a hash code and determination of equality to other objects.
 This class is useful for creating keys used in hash tables, for example.
@@ -33,7 +33,7 @@ public abstract class AbstractProxyHashObject
 	*/
 	public int hashCode()
 	{
-		return ObjectUtilities.hashCode(proxiedObjects);	//calculate a hash code from the proxied objects
+		return Objects.hashCode(proxiedObjects);	//calculate a hash code from the proxied objects
 	}
 
 	/**Indicates whether some other object is "equal to" this one.

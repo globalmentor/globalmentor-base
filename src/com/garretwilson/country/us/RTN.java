@@ -1,7 +1,7 @@
 package com.garretwilson.country.us;
 
 import static com.garretwilson.lang.IntegerUtilities.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

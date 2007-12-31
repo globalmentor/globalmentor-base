@@ -1,6 +1,6 @@
 package com.garretwilson.util;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 
 /**A convenience container for a name and a value.
 	Name/value pairs are sorted first by name, then by value, assuming both
@@ -33,7 +33,7 @@ public class NameValuePair<N, V> extends DefaultNamedObject<N> implements IDable
 	/**@return A hash code value for the object.*/
 	public int hashCode()
 	{
-		return ObjectUtilities.hashCode(getName(), getValue());	//calculate a hash code from the name and value
+		return Objects.hashCode(getName(), getValue());	//calculate a hash code from the name and value
 	}
 
 	/**Determines if the given object is another name value pair with the same name and value.
@@ -47,8 +47,8 @@ public class NameValuePair<N, V> extends DefaultNamedObject<N> implements IDable
 		if(object instanceof NameValuePair)	//if we're being compared with another name/value pair
 		{
 		    //compare the names and values, taking into account that one or the other may be null
-			return ObjectUtilities.equals(getName(), ((NameValuePair)object).getName())
-					&& ObjectUtilities.equals(getValue(), ((NameValuePair)object).getValue());
+			return Objects.equals(getName(), ((NameValuePair)object).getName())
+					&& Objects.equals(getValue(), ((NameValuePair)object).getValue());
 		}
 		else	//if we're being compared with anything else
 		{

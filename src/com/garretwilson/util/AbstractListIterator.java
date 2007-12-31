@@ -3,7 +3,7 @@ package com.garretwilson.util;
 import java.util.*;
 
 import static com.garretwilson.lang.IntegerUtilities.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**A default list iterator that can iterate over a given list.
 The iterator provides a way to return only a subset of list items by overriding the {@link #isIncluded(int)} method.

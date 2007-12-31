@@ -9,7 +9,7 @@ import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.net.URIConstants;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
 import com.garretwilson.rdf.xmlschema.StringLiteral;

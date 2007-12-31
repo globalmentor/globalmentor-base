@@ -8,7 +8,7 @@ import static java.util.Collections.*;
 
 import javax.mail.internet.ContentType;
 import com.garretwilson.lang.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;

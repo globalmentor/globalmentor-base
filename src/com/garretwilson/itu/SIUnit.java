@@ -4,7 +4,7 @@ import java.math.*;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 
 /**A unit of the International System of Units codified by ISO 30 and related units.
 For consistency this enum considers the unit for mass to be "gram" rather than "kilogram".

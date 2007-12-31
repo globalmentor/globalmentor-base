@@ -6,10 +6,10 @@ import static com.garretwilson.lang.CharacterUtilities.*;
 
 import com.garretwilson.io.IO;
 import com.garretwilson.text.*;
+
 import static com.garretwilson.util.ArrayUtilities.*;
 
 import static com.garretwilson.text.Characters.*;
-import static com.garretwilson.text.CharacterEncodingConstants.*;
 
 /**Various text manipulating functions. These methods work on
 	<code>String</code> objects, which are immutable heavyweight objects that must
@@ -122,25 +122,25 @@ public class Strings
 		return StringBufferUtilities.append(new StringBuffer(), objects, separator).toString();	//append the objects to a string buffer and return the string
 	}
 	
-	/**Compares two strings to make sure that the strings are equal ignoring
-		case, , or the strings are both set to <code>null</code>. If the first
-		string is not <code>null</code>, it is compared to the second using the
-		first strings's <code>equalIgnoreCase()</code> method.
+	/**Compares two strings to make sure that the strings are equal without regard to case,
+		or that the strings are both set to <code>null</code>. If the first string is not
+		<code>null</code>, it is compared to the second using the first string's
+		{@link String#equalsIgnoreCase(String)} method.
 		This is a convenience method to compare two strings using the
-		<code>equalsIgnoreCase()</code> method when it's not known if one of the
-		strings is <code>null</code>.
+		{@link String#equalsIgnoreCase(String)} method when it's not known if one of the strings
+		is <code>null</code>.
 	@param string1 The first string to compare.
 	@param string2 The second string to compare.
-	@return <code>true</code> if the string are equal according to the first
-		strings's <code>equalIgnoreCase()</code> method or if both strings are
+	@return <code>true</code> if the strings are equal according to the first
+		string's {@link String#equalsIgnoreCase(String)} method or if both strings are
 		<code>null</code>.
-	@see String#equalsIgnoreCase(java.lang.String)
+	@see String#equalsIgnoreCase(String)
 	*/
 	public final static boolean equalsIgnoreCase(final String string1, final String string2)
 	{
 			//if the first string isn't null, compare it to the second; otherwise, see if the second string is null as well
 		return string1!=null ? string1.equalsIgnoreCase(string2) : string2==null;
-	}	
+	}
 
 	/**Extracts the string which comes after the given character. If the character
 		does not exist in the string, the
@@ -175,7 +175,7 @@ public class Strings
 	*/
 	public static byte[] getASCIIZBytes(final String string, final int length) throws UnsupportedEncodingException
 	{
-		return getASCIIZBytes(string, length, CharacterEncodingConstants.UTF_8);  //return the bytes, encoded using UTF-8
+		return getASCIIZBytes(string, length, CharacterEncoding.UTF_8);  //return the bytes, encoded using UTF-8
 	}
 
 	/**Creates an array of bytes of the specified length and stores the bytes
@@ -1392,16 +1392,16 @@ end;
 		return outStringBuffer.toString();	//return the string from the we constructed
 	}
 
-	/**Writes an object to a string using the given I/O support, converting bytes to a string using the {@value CharacterEncodingConstants#UTF_8} encoding.
+	/**Writes an object to a string using the given I/O support, converting bytes to a string using the {@value CharacterEncoding#UTF_8} encoding.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param object The object to write to a string.
 	@param io The I/O support for writing the object.
 	@throws IOException if there is an error writing the data.
-	@throws UnsupportedEncodingException if the {@value CharacterEncodingConstants#UTF_8} character encoding is not supported.
+	@throws UnsupportedEncodingException if the {@value CharacterEncoding#UTF_8} character encoding is not supported.
 	*/
 	public static <T> String write(final URI baseURI, final T object, final IO<T> io) throws IOException
 	{
-		return write(baseURI, object, io, UTF_8);	//write and convert to a string using UTF_8
+		return write(baseURI, object, io, CharacterEncoding.UTF_8);	//write and convert to a string using UTF_8
 	}
 
 	/**Writes an object to a string using the given I/O support.
