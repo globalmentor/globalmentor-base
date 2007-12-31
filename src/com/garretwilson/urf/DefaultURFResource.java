@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.concurrent.locks.*;
 
 import com.garretwilson.lang.LongUtilities;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.net.URIs;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.TURF.*;

@@ -8,7 +8,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Pattern;
 
 import static com.garretwilson.lang.ClassUtilities.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.net.URIConstants.*;
 import com.garretwilson.net.*;
 import com.garretwilson.urf.*;

@@ -3,7 +3,7 @@ package com.garretwilson.urf;
 import java.net.URI;
 import java.util.concurrent.locks.ReadWriteLock;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.util.ReadWriteLockDecorator;
 
 /**Default implementatioon of An URF value with its scope.

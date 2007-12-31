@@ -3,7 +3,7 @@ package com.garretwilson.urf.select;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.urf.URF.*;
 import static com.garretwilson.urf.select.Select.*;
 

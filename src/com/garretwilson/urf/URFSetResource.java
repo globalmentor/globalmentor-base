@@ -4,7 +4,7 @@ import java.util.*;
 import java.lang.reflect.Array;
 import java.net.URI;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.urf.URF.*;
 
 /**An URF set resource that allows convenient access to its elements.

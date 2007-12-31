@@ -4,9 +4,10 @@ import java.net.URI;
 import java.util.Locale;
 
 import javax.mail.internet.ContentType;
-import com.garretwilson.io.ContentTypeUtilities;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.urf.URF.*;
+
+import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.urf.content.Content;
 import static com.garretwilson.util.LocaleUtilities.*;
 
@@ -49,6 +50,17 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 		return createResource(createLexicalURI(typeURI, lexicalForm), typeURI);	//create a new resource from the appropriate lexical URI and add the indicated type
 	}
 
+	/**Creates a default character encoding resource with its type added as a type property.
+	This method delegates to {@link #createLexicalResource(URI, String)}.
+	@param characterEncoding The character encoding for which a default resource should be created.
+	@return A default characer encoding resource with the appropriate type property added.
+	@exception NullPointerException if the given character encoding is <code>null</code>.
+	*/
+	public URFResource createCharacterEncodingResource(final CharacterEncoding characterEncoding)
+	{
+		return createLexicalResource(Content.CHARACTER_ENCODING_CLASS_URI, characterEncoding.toString());	//create and return a default character encoding resource
+	}
+
 	/**Creates a default integer resource with its type added as a type property.
 	This method delegates to {@link #createLexicalResource(URI, String)}.
 	@param integer The integer for which a default resource should be created.
@@ -87,10 +99,11 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 	@param mediaType The media type for which a default resource should be created.
 	@return A default media type resource with the appropriate type property added.
 	@exception NullPointerException if the given media type is <code>null</code>.
+	@see ContentType#getBaseType()
 	*/
 	public URFResource createMediaTypeResource(final ContentType mediaType)
 	{
-		return createLexicalResource(Content.MEDIA_TYPE_CLASS_URI, ContentTypeUtilities.toString(mediaType.getPrimaryType(), mediaType.getSubType()));	//create and return a default media type resource
+		return createLexicalResource(Content.MEDIA_TYPE_CLASS_URI, mediaType.getBaseType());	//create and return a default media type resource from the media type base type
 	}
 
 	/**Creates a default string resource with its type added as a type property.

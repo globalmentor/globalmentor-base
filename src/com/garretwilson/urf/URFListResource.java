@@ -6,7 +6,7 @@ import java.net.URI;
 import static java.lang.System.*;
 
 import com.garretwilson.lang.IntegerUtilities;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.util.DefaultListIterator;
 import static com.garretwilson.urf.URF.*;
 

@@ -4,7 +4,7 @@ import java.lang.reflect.*;
 import java.net.URI;
 
 import static com.garretwilson.lang.JavaConstants.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.urf.URF.*;
 
 /**An URF resource factory that can create Java classes within a certain package based upon the type local name.

@@ -2,7 +2,7 @@ package com.garretwilson.urf.select;
 
 import java.net.URI;
 
-import static com.garretwilson.lang.ObjectUtilities.asInstance;
+import static com.garretwilson.lang.Objects.asInstance;
 import static com.garretwilson.urf.select.Select.*;
 
 /**An abstract selector that works as an operator on the results of other selections.

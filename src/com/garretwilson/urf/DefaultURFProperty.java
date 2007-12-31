@@ -3,8 +3,8 @@ package com.garretwilson.urf;
 import java.net.URI;
 import java.util.concurrent.locks.*;
 
-import com.garretwilson.lang.ObjectUtilities;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import com.garretwilson.lang.Objects;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.urf.URF.DEFAULT_URF_RESOURCE_FACTORY;
 
 /**Default implementation of an encapsulation of a parent scope, property URI, value, and the associated property-value scope.
@@ -116,7 +116,7 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	/**@return A hash code value for the object.*/
 	public int hashCode()
 	{
-		return ObjectUtilities.hashCode(getSubjectScope(), getPropertyURI(), getValue(), getScope());	//calculate a hash code from the resource, property URI, value, and scope
+		return Objects.hashCode(getSubjectScope(), getPropertyURI(), getValue(), getScope());	//calculate a hash code from the resource, property URI, value, and scope
 	}
 
 	/**Determines if the given object is URF property with the same property URI, value, and scope.

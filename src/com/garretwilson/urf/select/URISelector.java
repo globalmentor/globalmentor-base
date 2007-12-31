@@ -2,7 +2,7 @@ package com.garretwilson.urf.select;
 
 import java.net.URI;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 import com.garretwilson.net.Resource;
 
 import static com.garretwilson.urf.URF.*;
@@ -61,6 +61,6 @@ public class URISelector extends AbstractSelector
 	*/
 	public boolean selects(final Object object)
 	{
-		return object instanceof Resource && ObjectUtilities.equals(getSelectURI(), ((Resource)object).getURI());	//if the object is a resource, compare the resource's URI with the select URI, if any
+		return object instanceof Resource && Objects.equals(getSelectURI(), ((Resource)object).getURI());	//if the object is a resource, compare the resource's URI with the select URI, if any
 	}
 }

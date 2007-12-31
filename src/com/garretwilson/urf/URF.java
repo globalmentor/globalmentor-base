@@ -15,11 +15,12 @@ import static com.garretwilson.lang.CharSequenceUtilities.*;
 import static com.garretwilson.lang.CharacterUtilities.*;
 import com.garretwilson.lang.ClassUtilities;
 import com.garretwilson.lang.LongUtilities;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
-import static com.garretwilson.text.CharacterEncodingConstants.*;
+
+import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.text.RegularExpression;
 import com.garretwilson.urf.content.*;
 import com.garretwilson.urf.select.Select;
@@ -565,6 +566,7 @@ public class URF
 		<dt><code>byte[]</code></dt> <dd>{@value #BINARY_NAMESPACE_URI}</dd>
 		<dt>{@link Boolean}</dt> <dd>{@value #BOOLEAN_NAMESPACE_URI}</dd>
 		<dt>{@link Character}</dt> <dd>{@value #CHARACTER_NAMESPACE_URI}</dd>
+		<dt>{@link CharacterEncoding}</dt> <dd>{@value Content#CHARACTER_ENCODING_NAMESPACE_URI}</dd>
 		<dt>{@link ContentType}</dt> <dd>{@value Content#MEDIA_TYPE_NAMESPACE_URI}</dd>
 		<dt>{@link Integer}</dt> <dd>{@value #INTEGER_NAMESPACE_URI}</dd>
 		<dt>{@link Double}</dt> <dd>{@value #REAL_NAMESPACE_URI}</dd>
@@ -605,6 +607,10 @@ public class URF
 			else if(object instanceof Character)	//if this is a character
 			{
 				return createCharacterURI(((Character)object).charValue());	//return a character URI
+			}
+			else if(object instanceof CharacterEncoding)	//if this is a character encoding
+			{
+				return Content.createCharacterEncodingURI(((CharacterEncoding)object));	//return a character encoding URI
 			}
 			else if(object instanceof ContentType)	//if this is a content type
 			{
@@ -718,6 +724,7 @@ public class URF
 		<dt>{@value #CHARACTER_NAMESPACE_URI}</dt> <dd>{@link Character}</dd>
 		<dt>{@value #INTEGER_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
 		<dt>{@value #LANGUAGE_NAMESPACE_URI}</dt> <dd>{@link Locale}</dd>
+		<dt>{@value Content#CHARACTER_ENCODING_NAMESPACE_URI}</dt> <dd>{@link CharacterEncoding}</dd>
 		<dt>{@value Content#MEDIA_TYPE_NAMESPACE_URI}</dt> <dd>{@link ContentType}</dd>
 		<dt>{@value #ORDINAL_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
 		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Real}</dd>
@@ -784,6 +791,10 @@ public class URF
 				{
 					return asCharacter(resourceURI);	//return a character
 				}
+				else if(Content.CHARACTER_ENCODING_NAMESPACE_URI.equals(namespaceURI))	//character encoding
+				{
+					return Content.asCharacterEncoding(resourceURI);	//return a character encoding
+				}
 				else if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//integer
 				{
 					return asInteger(resourceURI);	//return a long
@@ -846,7 +857,7 @@ public class URF
 			final String base64urlString=getLocalName(resourceURI);	//get the base64url-encoded binary data from the local name
 			try
 			{
-				return Base64.decode(base64urlString.getBytes(UTF_8), 0, base64urlString.length(), Base64.URL_SAFE&Base64.DONT_BREAK_LINES);	//decode and return the data
+				return Base64.decode(base64urlString.getBytes(CharacterEncoding.UTF_8), 0, base64urlString.length(), Base64.URL_SAFE&Base64.DONT_BREAK_LINES);	//decode and return the data
 			}
 			catch(final UnsupportedEncodingException unsupportedEncodingException)	//the UTF-8 encoding should always be supported
 			{

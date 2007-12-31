@@ -3,7 +3,7 @@ package com.garretwilson.urf;
 import java.io.*;
 import java.net.*;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.net.URIs.*;
 
 /**Class for saving and loading an URF resource by its reference URI.

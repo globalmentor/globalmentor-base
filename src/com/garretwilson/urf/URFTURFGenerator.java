@@ -6,7 +6,7 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.lang.IntegerUtilities;
 import static com.garretwilson.text.Characters.*;
 import static com.garretwilson.urf.URF.*;

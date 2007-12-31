@@ -4,7 +4,7 @@ import java.util.*;
 import java.net.URI;
 import static java.util.Collections.*;
 
-import com.garretwilson.lang.ObjectUtilities;
+import com.garretwilson.lang.Objects;
 import static com.garretwilson.util.CollectionUtilities.*;
 
 import static com.garretwilson.urf.URF.*;
@@ -353,7 +353,7 @@ public class URFMapResource<K extends URI, V extends URFResource> extends Defaul
 			{
 				if(!TYPE_PROPERTY_URI.equals(propertyURI))	//if this is not the type property
 				{
-					hashCode+=ObjectUtilities.hashCode(propertyURI, getPropertyValue(propertyURI));	//add the property-value hash code to our total
+					hashCode+=Objects.hashCode(propertyURI, getPropertyValue(propertyURI));	//add the property-value hash code to our total
 				}
 			}
 			return hashCode;	//return the calculated hash code

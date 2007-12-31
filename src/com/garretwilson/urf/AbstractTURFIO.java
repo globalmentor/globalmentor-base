@@ -4,8 +4,7 @@ import java.io.*;
 import java.net.*;
 
 import com.garretwilson.io.BOMInputStreamReader;
-
-import static com.garretwilson.text.CharacterEncodingConstants.*;
+import static com.garretwilson.text.CharacterEncoding.*;
 
 /**Base functionality for loading and saving information stored in TURF.
 <p>Copyright © 2007 GlobalMentor, Inc.

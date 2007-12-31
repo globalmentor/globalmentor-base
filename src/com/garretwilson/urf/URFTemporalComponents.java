@@ -11,7 +11,7 @@ import static com.garretwilson.io.ReaderParser.*;
 import com.garretwilson.iso.ISO8601;
 import static com.garretwilson.iso.ISO8601.*;
 import static com.garretwilson.lang.IntegerUtilities.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.lang.Strings.*;
 import com.garretwilson.text.SyntaxException;
 import static com.garretwilson.util.TimeZoneConstants.*;

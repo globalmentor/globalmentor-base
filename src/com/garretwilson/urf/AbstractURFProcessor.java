@@ -6,7 +6,7 @@ import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.garretwilson.lang.*;
-import static com.garretwilson.lang.ObjectUtilities.*;
+import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.urf.URF.*;
 import com.garretwilson.util.*;
@@ -571,7 +571,7 @@ public abstract class AbstractURFProcessor
 		/**@return A hash code value for the assertion.*/
 		public int hashCode()
 		{
-			return ObjectUtilities.hashCode(getSubject(), getPredicate(), getObject(), getScopeChain());	//hash and return the subject, predicate, object, and scope chain
+			return Objects.hashCode(getSubject(), getPredicate(), getObject(), getScopeChain());	//hash and return the subject, predicate, object, and scope chain
 		}
 
 		/**Compares assertions based upon subject, predicate, and object.
