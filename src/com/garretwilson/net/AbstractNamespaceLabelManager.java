@@ -24,11 +24,11 @@ import com.garretwilson.text.xml.oeb.OEBConstants;
 import com.garretwilson.text.xml.schema.XMLSchemaConstants;
 import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 import com.garretwilson.text.xml.xlink.XLinkConstants;
-import com.garretwilson.urf.URF;
-import com.garretwilson.urf.content.Content;
-import com.garretwilson.urf.select.Select;
-import com.garretwilson.urf.vcard.VCard;
 import com.garretwilson.util.MapDecorator;
+import com.globalmentor.urf.URF;
+import com.globalmentor.urf.content.Content;
+import com.globalmentor.urf.select.Select;
+import com.globalmentor.urf.vcard.VCard;
 
 /**Map managing namespace URIs and labels for serialization.
 Mapping labels to the <code>null</code> namespace or to the <code>null</code> label is allowed.

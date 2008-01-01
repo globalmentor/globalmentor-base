@@ -12,7 +12,7 @@ import static com.garretwilson.lang.Objects.*;
 
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
-import com.garretwilson.urf.*;
+import com.globalmentor.urf.*;
 
 import static com.garretwilson.io.ContentTypeConstants.*;
 import static com.garretwilson.io.FileConstants.*;
