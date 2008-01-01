@@ -1,5 +1,7 @@
 package com.garretwilson.io;
 
+import java.net.URLConnection;
+
 /**Constant values related to MIME media types, as originally defined in
 	<a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>,
 	"MIME Part 2: Media Types".
@@ -28,6 +30,8 @@ public class ContentTypeConstants
 		//composite top-level media types
 	public final static String MULTIPART="multipart";
 	public final static String MESSAGE="message";
+	/**The pseudo top-level type used by Java {@link URLConnection} to indicate unknown content by <code>content/unknown</code>.*/
+	public final static String CONTENT="content";
 
 	/**The separator character that begins a non-standard extension type.*/
 	public final static String EXTENSION_PREFIX="x-";
@@ -147,4 +151,7 @@ public class ContentTypeConstants
 	/**Submitted form data; see <a href="http://www.rfc-editor.org/rfc/rfc1867.txt">RFC 1867</a>.*/
 	public final static String FORM_DATA_SUBTYPE="form-data";
 
+		//content media types
+	/**The pseudo subtype used by Java {@link URLConnection} to indicate unknown content by <code>content/unknown</code>.*/
+	public final static String UNKNOWN_SUBTYPE="unknown";
 }
