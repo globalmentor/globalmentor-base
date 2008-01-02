@@ -3,11 +3,12 @@ package com.garretwilson.net;
 import java.net.URI;
 import java.util.regex.*;
 
-import com.garretwilson.lang.Objects;
 
-import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.net.URIConstants.*;
+import static com.globalmentor.java.Objects.*;
+
 import com.garretwilson.text.ArgumentSyntaxException;
+import com.globalmentor.java.Objects;
 
 /**The encapsulation of an email address in the form specified by <a href="http://www.ietf.org/rfc/rfc2822.txt">RFC 2822, "Internet Message Format"</a>.
 @author Garret Wilson

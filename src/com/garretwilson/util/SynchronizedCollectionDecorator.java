@@ -2,7 +2,7 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**A collection that wraps an existing collection, providing access through the <code>Collection</code> interface.
 All collection access is synchronized on the provided synchronization object.

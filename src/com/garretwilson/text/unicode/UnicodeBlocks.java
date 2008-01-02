@@ -5,7 +5,7 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.*;
 
-import static com.garretwilson.lang.CharSequenceUtilities.*;
+import static com.globalmentor.java.CharSequenceUtilities.*;
 
 import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.util.Debug;

@@ -5,11 +5,12 @@ import java.util.*;
 import javax.activation.*;
 import javax.xml.soap.*;
 import com.garretwilson.activation.ByteArrayDataSource;
-import com.garretwilson.lang.*;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.util.Debug;
+import com.globalmentor.java.*;
+
 import org.w3c.dom.*;
 
 /**Convenience functions for working with JAXM SOAP objects.

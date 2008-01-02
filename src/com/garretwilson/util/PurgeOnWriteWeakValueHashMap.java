@@ -3,7 +3,7 @@ package com.garretwilson.util;
 import java.lang.ref.*;
 import java.util.*;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**A map that uses weak references to store map values.
 Values are only purged when map write operations occur.

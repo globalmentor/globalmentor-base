@@ -5,11 +5,11 @@ import java.lang.ref.*;
 import java.net.*;
 import java.util.*;
 import com.garretwilson.io.*;
-import com.garretwilson.lang.*;
 import com.garretwilson.text.ArgumentSyntaxException;
 import com.garretwilson.text.directory.*;
 import static com.garretwilson.text.directory.vcard.VCardConstants.*;
 import com.garretwilson.util.*;
+import com.globalmentor.java.*;
 
 /**Class that can create values for the "VCARD" profile of a
 	<code>text/directory</code>as defined in

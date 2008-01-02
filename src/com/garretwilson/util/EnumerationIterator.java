@@ -2,7 +2,7 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**An iterator backed by an enumeration. An enumeration adapter.
 This class also serves as an enumeration decorator by implementing the {@link Enumeration} interface.

@@ -1,4 +1,4 @@
-package com.garretwilson.lang;
+package com.globalmentor.java;
 
 /**Utilities for manipulating long objects.
 @author Garret Wilson

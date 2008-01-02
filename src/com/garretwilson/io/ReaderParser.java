@@ -3,8 +3,8 @@ package com.garretwilson.io;
 import java.io.*;
 import java.util.Arrays;
 
-import static com.garretwilson.lang.IntegerUtilities.*;
 import static com.garretwilson.util.ArrayUtilities.*;
+import static com.globalmentor.java.IntegerUtilities.*;
 
 /**Parsing methods that work on a {@link Reader}.
 The reader must support marking.

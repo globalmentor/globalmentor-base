@@ -3,13 +3,14 @@ package com.garretwilson.rdf.directory;
 import java.net.URI;
 import java.util.*;
 
-import static com.garretwilson.lang.JavaUtilities.*;
-import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.rdf.*;
 
 import static com.garretwilson.rdf.rdfs.RDFSUtilities.*;
 import static com.garretwilson.text.directory.DirectoryConstants.*;
 import static com.garretwilson.util.LocaleUtilities.*;
+import static com.globalmentor.java.JavaUtilities.*;
+import static com.globalmentor.java.Objects.*;
+
 import com.garretwilson.util.LocaleText;
 
 /**Constants used in RDF processing of a directory of type

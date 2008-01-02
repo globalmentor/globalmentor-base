@@ -3,8 +3,10 @@ package com.globalmentor.urf;
 import java.util.*;
 
 import static com.garretwilson.iso.ISO8601.*;
-import com.garretwilson.lang.IntegerUtilities;
-import static com.garretwilson.lang.IntegerUtilities.*;
+
+import com.globalmentor.java.IntegerUtilities;
+
+import static com.globalmentor.java.IntegerUtilities.*;
 
 /**The abstract base type for <code>urf.Date</code> and <code>urf.DateTime</code> types.
 If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally in terms of UTC.

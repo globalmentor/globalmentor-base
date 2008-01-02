@@ -1,4 +1,4 @@
-package com.garretwilson.lang;
+package com.globalmentor.java;
 
 /**Utilities for manipulating integer objects.
 @author Garret Wilson

@@ -1,8 +1,7 @@
-package com.garretwilson.lang;
+package com.globalmentor.java;
 
 import java.io.*;
 import java.net.URI;
-import static com.garretwilson.lang.CharacterUtilities.*;
 
 import com.garretwilson.io.IO;
 import com.garretwilson.text.*;
@@ -10,6 +9,7 @@ import com.garretwilson.text.*;
 import static com.garretwilson.util.ArrayUtilities.*;
 
 import static com.garretwilson.text.Characters.*;
+import static com.globalmentor.java.CharacterUtilities.*;
 
 /**Various text manipulating functions. These methods work on
 	<code>String</code> objects, which are immutable heavyweight objects that must

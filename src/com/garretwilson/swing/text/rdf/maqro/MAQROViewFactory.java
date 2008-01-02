@@ -9,7 +9,6 @@ import javax.mail.internet.ContentType;
 import javax.swing.*;
 import javax.swing.text.*;
 
-import static com.garretwilson.lang.Objects.*;
 
 import static com.garretwilson.io.ContentTypeConstants.*;
 import com.garretwilson.io.ContentTypes;
@@ -29,6 +28,7 @@ import com.garretwilson.util.Debug;
 import com.globalmentor.mentoract.activity.maqro.MAQROActivityEngine;
 
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
+import static com.globalmentor.java.Objects.*;
 
 /**Creates views for MAQRO elements.
 @author Garret Wilson

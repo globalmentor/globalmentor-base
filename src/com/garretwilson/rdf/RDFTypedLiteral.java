@@ -2,7 +2,7 @@ package com.garretwilson.rdf;
 
 import java.net.URI;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**The base class for all RDF typed literals.
 @param <T> The type of object the literal represents.

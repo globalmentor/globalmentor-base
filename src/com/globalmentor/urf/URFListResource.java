@@ -5,10 +5,10 @@ import java.lang.reflect.Array;
 import java.net.URI;
 import static java.lang.System.*;
 
-import com.garretwilson.lang.IntegerUtilities;
-import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.util.DefaultListIterator;
+import com.globalmentor.java.IntegerUtilities;
 
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 
 /**An URF list resource that allows convenient indexed access to its elements.

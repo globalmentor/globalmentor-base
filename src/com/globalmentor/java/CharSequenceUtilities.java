@@ -1,10 +1,11 @@
-package com.garretwilson.lang;
+package com.globalmentor.java;
 
 import java.io.UnsupportedEncodingException;
 
-import static com.garretwilson.lang.CharacterUtilities.*;
 import static com.garretwilson.text.Characters.*;
 import static com.garretwilson.text.CharacterEncoding.*;
+import static com.globalmentor.java.CharacterUtilities.*;
+
 import com.garretwilson.util.ArrayUtilities;
 
 /**Various text manipulating functions. These methods work on

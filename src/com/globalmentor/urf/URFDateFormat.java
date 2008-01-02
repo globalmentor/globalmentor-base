@@ -4,8 +4,8 @@ import java.text.*;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.iso.ISO8601.*;
+import static com.globalmentor.java.Objects.*;
 
 /**Date format class for formatting dates, times, date times, and UTC offsets according to their URF lexical forms.
 <p>Copyright © 2007 GlobalMentor, Inc.

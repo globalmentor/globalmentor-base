@@ -5,7 +5,6 @@ import java.awt.event.*;
 import java.net.*;
 import javax.swing.*;
 
-import com.garretwilson.lang.Objects;
 import com.garretwilson.net.Resource;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.maqro.*;
@@ -13,6 +12,7 @@ import com.garretwilson.rdf.xmlschema.BooleanLiteral;
 import com.garretwilson.swing.*;
 import com.garretwilson.text.xml.schema.XMLSchemaConstants;
 import com.garretwilson.util.Debug;
+import com.globalmentor.java.Objects;
 
 /**Panel for editing the answer of a MAQRO question.
 @author Garret Wilson

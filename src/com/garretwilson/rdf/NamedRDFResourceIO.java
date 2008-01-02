@@ -3,7 +3,7 @@ package com.garretwilson.rdf;
 import java.io.*;
 import java.net.*;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**Class for saving and loading a RDF resource by its reference URI.
 Whenever an RDF instance is read, a resource will be retrieved using the given reference URI, resolved against the given base URI if one is available.

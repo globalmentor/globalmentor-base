@@ -1,6 +1,7 @@
 package com.garretwilson.model;
 
-import static com.garretwilson.lang.ClassUtilities.*;
+import static com.globalmentor.java.ClassUtilities.*;
+
 import com.garretwilson.util.Modifiable;
 
 /**Indicates that an implementing class is a data model.

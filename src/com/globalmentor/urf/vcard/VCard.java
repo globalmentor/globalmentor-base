@@ -3,14 +3,14 @@ package com.globalmentor.urf.vcard;
 import java.net.URI;
 import java.util.Locale;
 
-import static com.garretwilson.lang.JavaUtilities.*;
-import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.net.URIConstants;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.text.directory.vcard.VCardConstants.*;
 import com.garretwilson.text.directory.vcard.Name;
 import com.globalmentor.urf.*;
 
+import static com.globalmentor.java.JavaUtilities.*;
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.dcmi.DCMI.*;
 

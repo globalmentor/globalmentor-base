@@ -3,7 +3,6 @@ package com.garretwilson.rdf;
 import java.net.URI;
 import java.util.*;
 
-import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
@@ -11,6 +10,8 @@ import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLNamespacePrefixManager;
 import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import static com.garretwilson.text.xml.XMLUtilities.*;
+import static com.globalmentor.java.Objects.*;
+
 import com.garretwilson.util.*;
 import org.w3c.dom.*;
 

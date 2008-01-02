@@ -2,9 +2,9 @@ package com.garretwilson.net;
 
 import java.net.URI;
 
-import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
+import static com.globalmentor.java.Objects.*;
 
 /**Represents the path of a hierarchical URI with the same encoding requirements as URIs in general.
 @author Garret Wilson

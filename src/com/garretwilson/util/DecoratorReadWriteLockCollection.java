@@ -3,7 +3,7 @@ package com.garretwilson.util;
 import java.util.*;
 import java.util.concurrent.locks.*;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**A thread-safe collection decorator that allows many readers but only one writer to access a collection at a time.
 For operations that iterate over live collection data, a read or write lock should be acquired before the call to acquire the data and held until the data is consumed.

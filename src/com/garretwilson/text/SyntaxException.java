@@ -1,6 +1,7 @@
 package com.garretwilson.text;
 
-import static com.garretwilson.lang.IntegerUtilities.*;
+import static com.globalmentor.java.IntegerUtilities.*;
+
 import com.garretwilson.util.DataException;
 
 /**Generic checked exception thrown to indicate that input contains a syntax error.

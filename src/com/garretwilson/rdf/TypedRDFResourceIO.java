@@ -3,9 +3,9 @@ package com.garretwilson.rdf;
 import java.io.*;
 import java.net.*;
 
-import static com.garretwilson.lang.ClassUtilities.*;
-import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
+import static com.globalmentor.java.ClassUtilities.*;
+import static com.globalmentor.java.Objects.*;
 
 /**Class for loading and saving a particular type of RDF resource.
 Custom classes can be added using {@link #registerResourceFactory(URI, RDFResourceFactory)}.

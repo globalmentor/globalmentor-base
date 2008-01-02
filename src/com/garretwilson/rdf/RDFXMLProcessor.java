@@ -3,14 +3,15 @@ package com.garretwilson.rdf;
 import java.net.*;
 import java.util.*;
 
-import static com.garretwilson.lang.Objects.*;
 
-import static com.garretwilson.lang.CharSequenceUtilities.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIs.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
+import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.Objects.*;
+
 import com.garretwilson.text.xml.XMLBase;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.XMLConstants;

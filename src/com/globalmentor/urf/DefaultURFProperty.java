@@ -3,8 +3,9 @@ package com.globalmentor.urf;
 import java.net.URI;
 import java.util.concurrent.locks.*;
 
-import com.garretwilson.lang.Objects;
-import static com.garretwilson.lang.Objects.*;
+import com.globalmentor.java.Objects;
+
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.DEFAULT_URF_RESOURCE_FACTORY;
 
 /**Default implementation of an encapsulation of a parent scope, property URI, value, and the associated property-value scope.

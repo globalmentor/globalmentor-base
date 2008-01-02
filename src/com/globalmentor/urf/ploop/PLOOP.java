@@ -2,7 +2,7 @@ package com.globalmentor.urf.ploop;
 
 import java.net.URI;
 
-import static com.garretwilson.lang.ClassUtilities.*;
+import static com.globalmentor.java.ClassUtilities.*;
 import static com.globalmentor.urf.URF.*;
 
 /**General PLOOP definitions.

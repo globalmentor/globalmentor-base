@@ -1,8 +1,8 @@
 package com.garretwilson.rdf.xmlschema;
 
-import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
+import static com.globalmentor.java.Objects.*;
 
 /**An RDF typed literal that represents an XML Schema string.
 @author Garret Wilson

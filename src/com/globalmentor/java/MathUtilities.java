@@ -1,4 +1,4 @@
-package com.garretwilson.lang;
+package com.globalmentor.java;
 
 import java.lang.Math;
 import java.util.Collection;

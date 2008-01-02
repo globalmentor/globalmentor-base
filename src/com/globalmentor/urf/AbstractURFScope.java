@@ -5,10 +5,11 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.concurrent.locks.*;
 
-import com.garretwilson.lang.*;
-import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.util.*;
+import com.globalmentor.java.*;
+
 import static com.garretwilson.util.IteratorUtilities.*;
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 
 /**Abstract implementation of a scope of URF properties.

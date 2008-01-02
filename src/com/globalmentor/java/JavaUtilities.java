@@ -1,7 +1,7 @@
-package com.garretwilson.lang;
+package com.globalmentor.java;
 
-import static com.garretwilson.lang.StringBuilderUtilities.*;
-import static com.garretwilson.lang.JavaConstants.*;
+import static com.globalmentor.java.JavaConstants.*;
+import static com.globalmentor.java.StringBuilderUtilities.*;
 
 /**Various utilities to assist programming with language-specific Java features.
 @author Garret Wilson

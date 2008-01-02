@@ -1,6 +1,6 @@
 package com.garretwilson.model;
 
-import com.garretwilson.lang.JavaConstants;
+import com.globalmentor.java.JavaConstants;
 
 /**Indicates an object allows multiple views to an underlying data model.
 <p>Bound properties:</p>

@@ -2,7 +2,7 @@ package com.garretwilson.beans;
 
 import java.beans.*;
 
-import com.garretwilson.lang.Objects;
+import com.globalmentor.java.Objects;
 
 /**An object that automatically supports bound and constrained properties.
 <p>Property change support is only created when needed; if no property change

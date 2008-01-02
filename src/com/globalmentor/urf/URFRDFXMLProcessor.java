@@ -5,7 +5,6 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIs.*;
 import com.garretwilson.rdf.*;
@@ -18,6 +17,7 @@ import com.garretwilson.util.*;
 import com.globalmentor.urf.content.Content;
 
 import static com.garretwilson.util.LocaleUtilities.*;
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.dcmi.DCMI.LANGUAGE_PROPERTY_URI;
 

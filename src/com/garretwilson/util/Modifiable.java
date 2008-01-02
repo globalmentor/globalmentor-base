@@ -1,6 +1,6 @@
 package com.garretwilson.util;
 
-import static com.garretwilson.lang.ClassUtilities.*;
+import static com.globalmentor.java.ClassUtilities.*;
 
 /**Indicates the object not only can be modified, it can keep track of whether it has been modified.
 @author Garret Wilson

@@ -1,13 +1,13 @@
 package com.garretwilson.iso.idcard;
 
-import static com.garretwilson.lang.CharSequenceUtilities.*;
-import static com.garretwilson.lang.Objects.*;
-import static com.garretwilson.lang.CharacterUtilities.*;
+import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.CharacterUtilities.*;
+import static com.globalmentor.java.Objects.*;
 
-import com.garretwilson.lang.IntegerUtilities;
-import com.garretwilson.lang.Objects;
 import com.garretwilson.math.Luhn;
 import com.garretwilson.text.ArgumentSyntaxException;
+import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Objects;
 
 /**Primary Account Number (PAN) of an identification card as defined in ISO/IEC 7812-1:2000(E),
 	"Identification cards � Identification of issuers � Part 1: Numbering system".

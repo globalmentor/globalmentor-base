@@ -1,6 +1,6 @@
 package com.garretwilson.util;
 
-import com.garretwilson.lang.Objects;
+import com.globalmentor.java.Objects;
 
 /**A convenience container for a name and a value.
 	Name/value pairs are sorted first by name, then by value, assuming both

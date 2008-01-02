@@ -3,9 +3,9 @@ package com.garretwilson.csv;
 import java.io.*;
 
 import static com.garretwilson.csv.CSVConstants.*;
-import static com.garretwilson.lang.CharSequenceUtilities.*;
-import static com.garretwilson.lang.StringBuilderUtilities.*;
 import static com.garretwilson.text.Characters.*;
+import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.StringBuilderUtilities.*;
 
 /**Serializes Comma Separated Value (CSV) information
 @author Garret Wilson

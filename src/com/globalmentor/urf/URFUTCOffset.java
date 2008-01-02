@@ -3,10 +3,11 @@ package com.globalmentor.urf;
 import java.util.TimeZone;
 
 import static com.garretwilson.iso.ISO8601.*;
-import com.garretwilson.lang.IntegerUtilities;
-import static com.garretwilson.lang.IntegerUtilities.*;
 import com.garretwilson.text.*;
+import com.globalmentor.java.IntegerUtilities;
+
 import static com.garretwilson.util.TimeZoneConstants.*;
+import static com.globalmentor.java.IntegerUtilities.*;
 
 /**The class representing an <code>urf.UTCOffset</code> type.
 <p>Copyright © 2007 GlobalMentor, Inc.

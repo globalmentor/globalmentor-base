@@ -3,11 +3,11 @@ package com.globalmentor.urf;
 import java.util.Date;
 
 import static com.garretwilson.iso.ISO8601.*;
-import com.garretwilson.lang.IntegerUtilities;
-import static com.garretwilson.lang.IntegerUtilities.*;
-import static com.garretwilson.lang.StringBuilderUtilities.*;
 import com.garretwilson.text.*;
+import com.globalmentor.java.IntegerUtilities;
 
+import static com.globalmentor.java.IntegerUtilities.*;
+import static com.globalmentor.java.StringBuilderUtilities.*;
 import static com.globalmentor.urf.URF.*;
 
 /**The class representing an <code>urf.Time</code> type.

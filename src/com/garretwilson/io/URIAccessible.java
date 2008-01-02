@@ -1,7 +1,8 @@
 package com.garretwilson.io;
 
 import java.net.URI;
-import com.garretwilson.lang.JavaConstants;
+
+import com.globalmentor.java.JavaConstants;
 
 /**Indicates an object that allow access to resources by providing input and
 	output streams and indicating a base URI from which relative URIs should be

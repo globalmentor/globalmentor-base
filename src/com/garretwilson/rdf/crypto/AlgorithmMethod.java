@@ -3,8 +3,8 @@ package com.garretwilson.rdf.crypto;
 import java.net.URI;
 import java.util.Iterator;
 
-import com.garretwilson.lang.Objects;
 import com.garretwilson.rdf.*;
+import com.globalmentor.java.Objects;
 
 /**A general Crypto method, such as a digest or encryption method.
 @author Garret Wilson

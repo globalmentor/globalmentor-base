@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 //G***del import javax.swing.text.*;
 import javax.swing.tree.*;
-import com.garretwilson.lang.BooleanUtilities;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.text.ViewUtilities;
@@ -20,6 +19,8 @@ import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.util.*;
+import com.globalmentor.java.BooleanUtilities;
+
 import org.w3c.dom.*;
 
 /**Panel for exploring a QTI data model in a tree+panel view.

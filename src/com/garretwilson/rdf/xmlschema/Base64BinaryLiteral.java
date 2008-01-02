@@ -1,9 +1,9 @@
 package com.garretwilson.rdf.xmlschema;
 
-import com.garretwilson.lang.Objects;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 import com.garretwilson.util.Base64;
+import com.globalmentor.java.Objects;
 
 /**An RDF literal that represents an XML Schema base64-encoded binary value.
 @author Garret Wilson

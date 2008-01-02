@@ -2,8 +2,8 @@ package com.globalmentor.urf.select;
 
 import java.net.URI;
 
-import com.garretwilson.lang.Objects;
 import com.garretwilson.net.Resource;
+import com.globalmentor.java.Objects;
 
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.select.Select.*;

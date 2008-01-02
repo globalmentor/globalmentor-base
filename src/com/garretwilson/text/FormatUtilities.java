@@ -3,11 +3,11 @@ package com.garretwilson.text;
 import java.util.*;
 import static java.util.Collections.*;
 
-import com.garretwilson.lang.IntegerUtilities;
-import static com.garretwilson.lang.StringBuilderUtilities.*;
 import static com.garretwilson.text.Characters.*;
+import static com.globalmentor.java.StringBuilderUtilities.*;
 
 import com.garretwilson.util.NameValuePair;
+import com.globalmentor.java.IntegerUtilities;
 
 /**Utilities for formatting text.
 @author Garret Wilson

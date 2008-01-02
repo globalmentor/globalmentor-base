@@ -1,10 +1,11 @@
 package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
-import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
+import static com.globalmentor.java.Objects.*;
+
 import com.garretwilson.rdf.xmlschema.NumberLiteral;
 
 /**The result of a score evalution.

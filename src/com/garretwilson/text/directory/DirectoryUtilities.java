@@ -7,8 +7,8 @@ import java.util.*;
 import static com.garretwilson.text.ABNF.CRLF;
 import static com.garretwilson.text.directory.DirectoryConstants.*;
 
-import com.garretwilson.lang.StringBuilderUtilities;
 import com.garretwilson.util.*;
+import com.globalmentor.java.StringBuilderUtilities;
 
 /**Utilities for working with directories of type <code>text/directory</code> as
 	defined in 

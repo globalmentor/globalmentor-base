@@ -2,13 +2,13 @@ package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
 
-import com.garretwilson.lang.Objects;
 import com.garretwilson.rdf.*;
 
 import static com.garretwilson.rdf.RDFUtilities.asListResource;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 
 import com.garretwilson.rdf.xmlschema.IntegerLiteral;
+import com.globalmentor.java.Objects;
 
 /**Class representing a MAQRO question.
 @author Garret Wilson

@@ -7,21 +7,21 @@ import java.util.*;
 import static java.util.Collections.*;
 
 import javax.mail.internet.ContentType;
-import com.garretwilson.lang.*;
-import static com.garretwilson.lang.Objects.*;
 
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
+import com.globalmentor.java.*;
 import com.globalmentor.urf.*;
 
 import static com.garretwilson.io.ContentTypeConstants.*;
 import static com.garretwilson.io.FileConstants.*;
 import static com.garretwilson.io.InputStreamUtilities.*;
-import static com.garretwilson.lang.CharSequenceUtilities.*;
-import static com.garretwilson.lang.IntegerUtilities.*;
-import static com.garretwilson.lang.SystemUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
+import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.IntegerUtilities.*;
+import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.java.SystemUtilities.*;
 
 /**Various utilities for examining files.
 @author Garret Wilson

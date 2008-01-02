@@ -1,9 +1,10 @@
 package com.garretwilson.text.xml;
 
 import java.util.*;
-import com.garretwilson.lang.ClassUtilities;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.util.Debug;
+import com.globalmentor.java.ClassUtilities;
+
 import org.w3c.dom.*;
 
 /**An XML factory to create XML document and element from objects.

@@ -10,12 +10,6 @@ import java.util.regex.*;
 
 import javax.mail.internet.ContentType;
 
-import static com.garretwilson.lang.BooleanUtilities.*;
-import static com.garretwilson.lang.CharSequenceUtilities.*;
-import static com.garretwilson.lang.CharacterUtilities.*;
-import com.garretwilson.lang.ClassUtilities;
-import com.garretwilson.lang.LongUtilities;
-import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
@@ -23,11 +17,17 @@ import static com.garretwilson.net.URIs.*;
 import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.text.RegularExpression;
 import com.garretwilson.util.*;
+import com.globalmentor.java.ClassUtilities;
+import com.globalmentor.java.LongUtilities;
 import com.globalmentor.urf.content.*;
 import com.globalmentor.urf.select.Select;
 
 import static com.garretwilson.util.CollectionUtilities.*;
 import static com.garretwilson.util.LocaleUtilities.*;
+import static com.globalmentor.java.BooleanUtilities.*;
+import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.CharacterUtilities.*;
+import static com.globalmentor.java.Objects.*;
 
 /**An URF data model.
 This data model keeps track of all resources that are being created as a linked group, such as parsed from a TURF interchange document,

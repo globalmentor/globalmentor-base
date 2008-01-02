@@ -1,7 +1,8 @@
 package com.garretwilson.io;
 
 import java.io.*;
-import static com.garretwilson.lang.Objects.*;
+
+import static com.globalmentor.java.Objects.*;
 
 /**Wraps an existing output stream.
 The decorated output stream is released when this stream is closed.

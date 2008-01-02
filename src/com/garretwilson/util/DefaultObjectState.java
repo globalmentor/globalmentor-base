@@ -1,7 +1,8 @@
 package com.garretwilson.util;
 
 import java.util.*;
-import static com.garretwilson.lang.Objects.*;
+
+import static com.globalmentor.java.Objects.*;
 
 /**A default implementation of object state information.
 <p>Each property changed using <code>setProperty</code> will fire a

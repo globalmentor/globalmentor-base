@@ -5,13 +5,13 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.garretwilson.lang.*;
-import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.net.*;
 
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 
 import com.garretwilson.util.*;
+import com.globalmentor.java.*;
 
 /**Base class for URF processors.
 Each instance of an URF processor maintains an internal URF data model throughout its lifetime that is continually updated with every new URF processing that occurs.

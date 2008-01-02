@@ -1,4 +1,4 @@
-package com.garretwilson.lang;
+package com.globalmentor.java;
 
 /**Various methods that manipulate <code>StringBuffer</code> objects. These
 	methods are fast relative to their <code>StringUtilities</code>

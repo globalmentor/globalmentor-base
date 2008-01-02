@@ -10,8 +10,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 */
-import com.garretwilson.lang.Strings;
 import com.garretwilson.util.DebugDisplay;
+import com.globalmentor.java.Strings;
 
 /**Interface for displaying debug information using the AWT.
 @author Garret Wilson

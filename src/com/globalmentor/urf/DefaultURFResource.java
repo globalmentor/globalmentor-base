@@ -3,10 +3,10 @@ package com.globalmentor.urf;
 import java.net.URI;
 import java.util.concurrent.locks.*;
 
-import com.garretwilson.lang.LongUtilities;
-import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.net.URIs;
+import com.globalmentor.java.LongUtilities;
 
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.TURF.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.dcmi.DCMI.getTitle;

@@ -1,12 +1,12 @@
 package com.garretwilson.rdf.xmlschema;
 
-import static com.garretwilson.lang.Objects.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import com.garretwilson.rdf.*;
 import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
+import static com.globalmentor.java.Objects.*;
 
 /**An RDF literal that represents an XML Schema URI.
 @author Garret Wilson

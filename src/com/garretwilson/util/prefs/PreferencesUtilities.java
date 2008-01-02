@@ -2,8 +2,9 @@ package com.garretwilson.util.prefs;
 
 import java.util.prefs.Preferences;
 
-import com.garretwilson.lang.ClassUtilities;
-import static com.garretwilson.lang.JavaConstants.*;
+import com.globalmentor.java.ClassUtilities;
+
+import static com.globalmentor.java.JavaConstants.*;
 
 /**Utilities methods for working with preferences.
 @author Garret Wilson

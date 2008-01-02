@@ -1,10 +1,10 @@
-package com.garretwilson.lang;
+package com.globalmentor.java;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static com.garretwilson.lang.ClassUtilities.*;
-import static com.garretwilson.lang.JavaConstants.*;
+import static com.globalmentor.java.ClassUtilities.*;
+import static com.globalmentor.java.JavaConstants.*;
 
 /**Various utilities to manipulate Java objects.
 @author Garret Wilson

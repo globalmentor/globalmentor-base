@@ -1,4 +1,4 @@
-package com.garretwilson.lang;
+package com.globalmentor.java;
 
 import java.io.*;
 import java.lang.reflect.*;
@@ -15,11 +15,12 @@ import static com.garretwilson.io.ContentTypeConstants.*;
 import static com.garretwilson.io.FileConstants.*;
 import static com.garretwilson.io.Files.*;
 import static com.garretwilson.io.OutputStreamUtilities.*;
-import static com.garretwilson.lang.JavaConstants.*;
-import static com.garretwilson.lang.JavaUtilities.*;
-import static com.garretwilson.lang.Strings.*;
 import com.garretwilson.net.URIConstants;
 import static com.garretwilson.net.URIs.*;
+import static com.globalmentor.java.JavaConstants.*;
+import static com.globalmentor.java.JavaUtilities.*;
+import static com.globalmentor.java.Strings.*;
+
 import com.garretwilson.net.URIPath;
 import com.garretwilson.util.NameValuePair;
 

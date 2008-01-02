@@ -1,9 +1,9 @@
 package com.garretwilson.text;
 
-import static com.garretwilson.lang.CharSequenceUtilities.*;
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.Objects.*;
 
-import com.garretwilson.lang.Objects;
+import com.globalmentor.java.Objects;
 
 /**Represents a character encoding and related information.
 @author Garret Wilson

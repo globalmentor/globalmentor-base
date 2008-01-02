@@ -1,15 +1,15 @@
 package com.garretwilson.country.us;
 
-import static com.garretwilson.lang.IntegerUtilities.*;
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.IntegerUtilities.*;
+import static com.globalmentor.java.Objects.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.garretwilson.lang.IntegerUtilities;
-import com.garretwilson.lang.Objects;
 import com.garretwilson.text.ArgumentSyntaxException;
 import com.garretwilson.util.Debug;
+import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Objects;
 
 /**Encapsulation of a United States Social Security Number (SSN).
 <p>A Social Security Number is a nine-digit number composed a of three groups:</p>

@@ -1,6 +1,6 @@
 package com.globalmentor.urf;
 
-import static com.garretwilson.lang.Objects.checkInstance;
+import static com.globalmentor.java.Objects.checkInstance;
 
 import java.util.concurrent.locks.*;
 

@@ -4,8 +4,8 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
-import static com.garretwilson.lang.Strings.*;
 import static com.garretwilson.text.Characters.*;
+import static com.globalmentor.java.Strings.*;
 
 /**Constants relating to the HyperText Transfer Protocol (HTTP) as defined by
 <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>,	"Hypertext Transfer Protocol -- HTTP/1.1".

@@ -2,7 +2,8 @@ package com.garretwilson.rdf.xmlschema;
 
 import java.net.URI;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
+
 import com.garretwilson.rdf.*;
 
 /**An RDF literal that represents an abstract number object.

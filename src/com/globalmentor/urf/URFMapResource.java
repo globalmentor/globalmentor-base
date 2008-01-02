@@ -4,7 +4,8 @@ import java.util.*;
 import java.net.URI;
 import static java.util.Collections.*;
 
-import com.garretwilson.lang.Objects;
+import com.globalmentor.java.Objects;
+
 import static com.garretwilson.util.CollectionUtilities.*;
 
 import static com.globalmentor.urf.URF.*;

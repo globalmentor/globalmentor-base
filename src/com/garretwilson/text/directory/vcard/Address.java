@@ -1,7 +1,8 @@
 package com.garretwilson.text.directory.vcard;
 
 import java.util.*;
-import com.garretwilson.lang.*;
+
+import com.globalmentor.java.*;
 
 /**An object representing the "ADR" type of a vCard <code>text/directory</code>
 	profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>,

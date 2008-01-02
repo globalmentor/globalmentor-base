@@ -2,8 +2,9 @@ package com.garretwilson.util;
 
 import java.util.Arrays;
 
-import static com.garretwilson.lang.Objects.*;
-import com.garretwilson.lang.Objects;
+import static com.globalmentor.java.Objects.*;
+
+import com.globalmentor.java.Objects;
 
 /**An object that produces a hash for {@link Object#hashCode()} and implements equality checking for {@link Object#equals(Object)} based upon given objects.
 Equality is only supported for exact top-level types.

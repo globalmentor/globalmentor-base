@@ -1,6 +1,6 @@
 package com.garretwilson.util;
 
-import com.garretwilson.lang.Objects;
+import com.globalmentor.java.Objects;
 
 /**An object that decorates another object, preserving the {@link Object#hashCode()} and {@link Object#equals(Object)} of the decorated object.
 Equality is only supported for exact top-level types.

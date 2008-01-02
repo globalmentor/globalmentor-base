@@ -6,7 +6,6 @@ import java.text.MessageFormat;
 import java.util.*;
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
-import com.garretwilson.lang.*;
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.*;
@@ -16,6 +15,7 @@ import com.garretwilson.text.*;
 import com.garretwilson.text.xml.*;
 import com.garretwilson.text.xml.xhtml.*;
 import com.garretwilson.util.*;
+import com.globalmentor.java.*;
 import com.globalmentor.marmot.Marmot;
 
 import org.w3c.dom.*;

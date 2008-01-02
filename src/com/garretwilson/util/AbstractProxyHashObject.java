@@ -1,8 +1,8 @@
 package com.garretwilson.util;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
-import com.garretwilson.lang.Objects;
+import com.globalmentor.java.Objects;
 
 /**An object that delegates generation of a hash code and determination of equality to other objects.
 This class is useful for creating keys used in hash tables, for example.

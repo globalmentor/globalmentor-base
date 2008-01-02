@@ -1,6 +1,6 @@
-package com.garretwilson.lang;
+package com.globalmentor.java;
 
-import static com.garretwilson.lang.CharSequenceUtilities.*;
+import static com.globalmentor.java.CharSequenceUtilities.*;
 
 /**Various methods that manipulate <code>StringBuilder</code> objects. These
 	methods are fast relative to their <code>StringUtilities</code>

@@ -4,7 +4,7 @@ import java.lang.ref.*;
 import java.util.*;
 import static java.util.Collections.*;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**A map that uses references to store map values.
 Cleared references are only purged when map write operations occur.

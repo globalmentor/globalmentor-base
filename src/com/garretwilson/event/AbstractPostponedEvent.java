@@ -3,7 +3,7 @@ package com.garretwilson.event;
 import java.util.*;
 import com.garretwilson.event.PostponedEvent;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**Abstract implementation of an event and the means to fire it at a later time.
 @param <L> The type of listener that listens for the events.

@@ -5,8 +5,8 @@ import java.nio.charset.Charset;
 import java.util.Formatter;
 import java.util.Locale;
 
-import static com.garretwilson.lang.Objects.*;
-import static com.garretwilson.lang.SystemUtilities.*;
+import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.java.SystemUtilities.*;
 
 /**A print stream that writes to a given writer.
 This print stream writer assumes that all bytes written to it are characters encoded in the platform default character encoding.

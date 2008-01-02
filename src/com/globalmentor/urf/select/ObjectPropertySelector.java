@@ -3,7 +3,7 @@ package com.globalmentor.urf.select;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.select.Select.*;
 

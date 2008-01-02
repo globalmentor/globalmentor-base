@@ -3,11 +3,11 @@ package com.garretwilson.swing.qti;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import com.garretwilson.lang.CharSequenceUtilities;
-import com.garretwilson.lang.Strings;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.util.*;
+import com.globalmentor.java.CharSequenceUtilities;
+import com.globalmentor.java.Strings;
 
 /**Allows a response type to be selected.
 @author Garret Wilson

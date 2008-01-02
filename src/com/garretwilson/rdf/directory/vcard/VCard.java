@@ -3,8 +3,6 @@ package com.garretwilson.rdf.directory.vcard;
 import java.net.URI;
 import java.util.Locale;
 
-import static com.garretwilson.lang.JavaUtilities.*;
-import static com.garretwilson.lang.Objects.*;
 
 import static com.garretwilson.net.URIConstants.*;
 
@@ -20,6 +18,8 @@ import static com.garretwilson.util.ArrayUtilities.*;
 import com.garretwilson.util.NameValuePair;
 
 import static com.garretwilson.text.directory.vcard.VCardConstants.*;
+import static com.globalmentor.java.JavaUtilities.*;
+import static com.globalmentor.java.Objects.*;
 
 /**An ontology to represent a vCard <code>text/directory</code> profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>, "vCard MIME Directory Profile".
 @author Garret Wilson

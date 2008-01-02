@@ -2,7 +2,7 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**A map that wraps an existing map, providing access through the {@link Map} interface.
 All map access is synchronized on the provided synchronization object.

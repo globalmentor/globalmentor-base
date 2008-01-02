@@ -2,7 +2,8 @@ package com.garretwilson.awt.event;
 
 import java.awt.*;
 import java.awt.event.*;
-import com.garretwilson.lang.Objects;
+
+import com.globalmentor.java.Objects;
 
 /**Adapter that modifies a component when the mouse rolls over the component.
 	Usually the action is simply highlighting the component in a different color.

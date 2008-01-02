@@ -1,9 +1,9 @@
 package com.garretwilson.rdf.crypto;
 
 import java.net.URI;
-import com.garretwilson.lang.Objects;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.xmlschema.Base64BinaryLiteral;
+import com.globalmentor.java.Objects;
 
 /**Crypto digest information.
 @author Garret Wilson

@@ -4,7 +4,7 @@ import java.text.*;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.garretwilson.lang.CharSequenceUtilities.*;
+import static com.globalmentor.java.CharSequenceUtilities.*;
 
 /**Class for formatting dates and times according to the W3C Note, 
 	"Date and Time Formats",

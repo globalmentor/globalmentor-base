@@ -5,11 +5,11 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.util.*;
-import com.garretwilson.lang.BooleanUtilities;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.ActionList;
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.util.*;
+import com.globalmentor.java.BooleanUtilities;
 
 /**Provides a visual editing environment for a type of QTI rendering.
 @author Garret Wilson

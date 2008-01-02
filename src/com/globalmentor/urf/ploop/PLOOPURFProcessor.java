@@ -7,12 +7,12 @@ import static java.util.Collections.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Pattern;
 
-import static com.garretwilson.lang.ClassUtilities.*;
-import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.net.URIConstants.*;
 import com.garretwilson.net.*;
 import com.garretwilson.util.*;
 import static com.garretwilson.util.ArrayUtilities.*;
+import static com.globalmentor.java.ClassUtilities.*;
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.ploop.PLOOP.*;
 

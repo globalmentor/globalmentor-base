@@ -1,9 +1,9 @@
 package com.garretwilson.util;
 
-import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.text.Characters.INFINITY_CHAR;
+import static com.globalmentor.java.Objects.*;
 
-import com.garretwilson.lang.Objects;
+import com.globalmentor.java.Objects;
 
 /**Represents a range of comparable values.
 @author Garret Wilson

@@ -1,6 +1,6 @@
 package com.garretwilson.beans;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 import java.beans.PropertyChangeEvent;
 

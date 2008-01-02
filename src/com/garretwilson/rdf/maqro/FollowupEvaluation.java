@@ -2,9 +2,9 @@ package com.garretwilson.rdf.maqro;
 
 import java.net.URI;
 
-import static com.garretwilson.lang.Objects.*;
 
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
+import static com.globalmentor.java.Objects.*;
 
 /**Class representing an evaluation to determine a followup.
 @author Garret Wilson

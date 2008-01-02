@@ -7,14 +7,14 @@ import java.util.List;
 import java.lang.InstantiationException;
 import java.lang.reflect.*;
 import com.garretwilson.io.Files;
-import com.garretwilson.lang.ClassUtilities;
-import com.garretwilson.lang.IntegerUtilities;
-import com.garretwilson.lang.JavaUtilities;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xpath.XPath;
+import com.globalmentor.java.ClassUtilities;
+import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.JavaUtilities;
 
 import org.w3c.dom.*;
 

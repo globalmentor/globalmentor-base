@@ -2,7 +2,7 @@ package com.garretwilson.util;
 
 import java.util.concurrent.locks.*;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**A read/write lock that decorates another read/write lock.
 @author Garret Wilson

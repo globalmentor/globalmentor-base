@@ -2,7 +2,7 @@ package com.garretwilson.util;
 
 import java.util.Map;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**A map that also allows lookup of the map keys keyed to the values by decorating two maps. 
 @param <K> The type of map key.

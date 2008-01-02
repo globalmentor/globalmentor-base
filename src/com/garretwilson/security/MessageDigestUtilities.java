@@ -5,7 +5,7 @@ import java.security.*;
 
 import com.garretwilson.text.CharacterEncoding;
 import static com.garretwilson.text.CharacterEncoding.*;
-import static com.garretwilson.lang.CharacterUtilities.*;
+import static com.globalmentor.java.CharacterUtilities.*;
 
 /**Utility methods for working with message digests.
 @author Garret Wilson

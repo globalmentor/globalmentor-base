@@ -2,7 +2,6 @@ package com.garretwilson.swing.text.rdf.maqro;
 
 import javax.swing.*;
 import javax.swing.text.*;
-import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 
 import com.garretwilson.rdf.RDFResource;
@@ -13,6 +12,7 @@ import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
 
 import com.garretwilson.swing.text.xml.*;
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
+import static com.globalmentor.java.Objects.*;
 
 /**Displays a MAQRO choice as dialogue.
 TODO fix	The toggle button's action command will be set to the ident of the response label.

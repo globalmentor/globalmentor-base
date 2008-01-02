@@ -1,9 +1,9 @@
-package com.garretwilson.lang;
+package com.globalmentor.java;
 
 import java.io.File;
 
-import static com.garretwilson.lang.Strings.*;
-import static com.garretwilson.lang.SystemConstants.*;
+import static com.globalmentor.java.Strings.*;
+import static com.globalmentor.java.SystemConstants.*;
 
 /**Utilities for working with system-specific attributes.
 @author Garret Wilson

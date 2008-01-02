@@ -2,10 +2,10 @@ package com.globalmentor.urf.select;
 
 import java.net.URI;
 
-import static com.garretwilson.lang.Objects.*;
 
 import com.globalmentor.urf.URFResource;
 
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.select.Select.*;
 
 /**A selector that selects an object based upon a property value.

@@ -3,8 +3,8 @@ package com.globalmentor.urf;
 import java.io.*;
 import java.net.*;
 
-import static com.garretwilson.lang.ClassUtilities.*;
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.ClassUtilities.*;
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 
 /**Class for loading and saving a particular type of URF resource.

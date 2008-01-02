@@ -2,8 +2,8 @@ package com.garretwilson.util;
 
 import java.util.*;
 
-import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.util.CollectionUtilities.*;
+import static com.globalmentor.java.Objects.*;
 
 /**An iterator that wraps an existing list iterator and provides its elements in reverse order.
 The list list iterator will be placed at the end of the list. 

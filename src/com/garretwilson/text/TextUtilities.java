@@ -6,14 +6,15 @@ import java.util.*;
 import javax.mail.internet.ContentType;
 
 import static com.garretwilson.io.ContentTypeConstants.*;
-import com.garretwilson.lang.*;
-import static com.garretwilson.lang.CharSequenceUtilities.*;
-import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.text.Characters.*;
 import com.garretwilson.text.xml.XMLUtilities;
 import static com.garretwilson.text.xml.XMLUtilities.*;
 import com.garretwilson.util.*;
+import com.globalmentor.java.*;
+
 import static com.garretwilson.util.ArrayUtilities.*;
+import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.Objects.*;
 
 /**Utilities for working with the semantics of text, as opposed to the syntax
 	of strings.

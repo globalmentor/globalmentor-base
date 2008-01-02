@@ -8,7 +8,7 @@ import com.garretwilson.net.http.HTTPForbiddenException;
 import com.garretwilson.net.http.HTTPNotFoundException;
 import com.garretwilson.net.http.HTTPPreconditionFailedException;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**A class for resource-related I/O errors, agnostic of the I/O protocol being used.
 In most case a subclass more specific to the error should be used.

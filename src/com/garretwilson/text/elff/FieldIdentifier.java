@@ -1,6 +1,6 @@
 package com.garretwilson.text.elff;
 
-import static com.garretwilson.lang.Objects.*;
+import static com.globalmentor.java.Objects.*;
 
 /**A field identifier of an individual field in an entry of the Extended Log File Format (ELFF).
 @author Garret Wilson

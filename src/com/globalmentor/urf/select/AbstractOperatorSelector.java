@@ -2,7 +2,7 @@ package com.globalmentor.urf.select;
 
 import java.net.URI;
 
-import static com.garretwilson.lang.Objects.asInstance;
+import static com.globalmentor.java.Objects.asInstance;
 import static com.globalmentor.urf.select.Select.*;
 
 /**An abstract selector that works as an operator on the results of other selections.

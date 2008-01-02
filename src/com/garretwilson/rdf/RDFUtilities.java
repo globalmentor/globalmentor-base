@@ -9,13 +9,13 @@ import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import static com.garretwilson.lang.Objects.*;
 import com.garretwilson.net.URIConstants;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
 import com.garretwilson.rdf.xmlschema.StringLiteral;
 import com.garretwilson.rdf.xmlschema.URILiteral;
 
 import static com.garretwilson.rdf.RDFConstants.*;
+import static com.globalmentor.java.Objects.*;
 
 import com.garretwilson.text.W3CDateFormat;
 import com.garretwilson.text.xml.XMLUtilities;

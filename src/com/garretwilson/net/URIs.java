@@ -7,15 +7,16 @@ import java.util.*;
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.*;
 import static com.garretwilson.io.FileConstants.EXTENSION_SEPARATOR;
-import static com.garretwilson.lang.CharSequenceUtilities.*;
-import com.garretwilson.lang.IntegerUtilities;
-import static com.garretwilson.lang.Objects.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.text.CharacterEncoding.*;
+import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.Objects.*;
+
 import com.garretwilson.text.FormatUtilities;
 import com.garretwilson.text.SyntaxException;
 import com.garretwilson.text.unicode.UnicodeCharacter;
 import com.garretwilson.util.*;
+import com.globalmentor.java.IntegerUtilities;
 
 /**Various URI manipulating functions for working with URIs as defined in
 	<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,

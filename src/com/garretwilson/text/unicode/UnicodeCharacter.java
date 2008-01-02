@@ -1,6 +1,7 @@
 package com.garretwilson.text.unicode;
 
-import com.garretwilson.lang.IntegerUtilities;
+import com.globalmentor.java.IntegerUtilities;
+
 import static com.garretwilson.text.unicode.UnicodeConstants.*;
 
 /**Represents a character in the Unicode database.
