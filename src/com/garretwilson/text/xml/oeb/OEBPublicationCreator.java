@@ -1548,7 +1548,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 					//see if this is a significant heading
 				final boolean isSignificant=Strings.indexOfIgnoreCase(elementClass, "significant")>=0;  //G***use a constant
 				final String text=XMLUtilities.getText(element, true).trim(); //get the text of the element
-				final boolean hasLetterOrDigit=CharSequenceUtilities.containsLetterOrDigit(text);  //see if the text has a letter or digit
+				final boolean hasLetterOrDigit=CharSequences.containsLetterOrDigit(text);  //see if the text has a letter or digit
 				final int headingType=getHeadingType(text); //see what type of heading this is
 					//make sure there is a letter or digit in the text
 					//if this heading is marked as significant, or if we know that it's significant based upon its heading level
@@ -1717,8 +1717,8 @@ Debug.trace("looking at text: ", text);  //G***del
 				{
 						//if the text is in uppercase or if it's a title, assume it's the book title if it has at least one letter in it
 	//G***fix				if(StringUtilities.isUpperCase(text) || TextUtilities.getHeadingType(text)!=TextUtilities.NO_HEADING) //G***probably put this routine in some common area
-					if(CharSequenceUtilities.containsLetter(text) &&
-							(CharSequenceUtilities.isUpperCase(text) || isTitleHeading(text))) //G***probably put this routine in some common area
+					if(CharSequences.containsLetter(text) &&
+							(CharSequences.isUpperCase(text) || isTitleHeading(text))) //G***probably put this routine in some common area
 					{
 	Debug.trace("This is a title: ", text);  //G***del
 						String title=text;  //G***fix, tidy
@@ -1848,10 +1848,10 @@ Debug.trace("checking to see if this is an acceptable by");  //G***del
 								if(wordIndex>=0)  //if the word appears before "by"
 								{
 										//for "etext", we don't care if "etext by" appears as long as it is "Project Gutenberg etext by" (e.g. jjstg10.txt), not "etext by"
-									if(!"etext".equals(word) || CharSequenceUtilities.charIndexOf(text, "Project Gutenberg")<byIndex)
+									if(!"etext".equals(word) || CharSequences.charIndexOf(text, "Project Gutenberg")<byIndex)
 									{
 											//if there is just whitespace between the word and "by" (e.g. "donated by"), this is unacceptable
-										if(CharSequenceUtilities.notCharIndexOf(text, WHITESPACE_CHARS, wordIndex+word.length())>=byIndex)
+										if(CharSequences.notCharIndexOf(text, WHITESPACE_CHARS, wordIndex+word.length())>=byIndex)
 										{
 Debug.trace("unacceptable because of: ", word); //G***del
 											isAcceptableBy=false; //don't accept this phrase
@@ -1877,9 +1877,9 @@ Debug.trace("unacceptable because of: ", word); //G***del
 */
 								final String authorText=text.substring(byIndex+BY.length());  //get everything after "by"
 	Debug.trace("got author text: ", authorText); //G***del
-								if(CharSequenceUtilities.charIndexOf(authorText, EOL_CHARS)<0 //if everything's on a single line
+								if(CharSequences.charIndexOf(authorText, EOL_CHARS)<0 //if everything's on a single line
 												//or if the other lines are just numbers and hyphens (hack for hrlnd10.txt)
-										|| CharSequenceUtilities.charIndexOf(Strings.trim(authorText, WHITESPACE_CHARS+"0123456789-"), EOL_CHARS)<0)
+										|| CharSequences.charIndexOf(Strings.trim(authorText, WHITESPACE_CHARS+"0123456789-"), EOL_CHARS)<0)
 								{
 										//get the author and trim it of certain delimiters, and then collapse the whitespace
 									final String author=PGUtilities.tidyAuthor(authorText);  //G***use a common method, not in PGUtilities
@@ -1932,7 +1932,7 @@ Debug.trace("unacceptable because of: ", word); //G***del
 		if(Strings.indexOfIgnoreCase(string, "copyright")>=0) //G***use a constant
 			return false; //this isn't valid
 				//if the string only has punctuation G***should we eventually add dependent punctuation to the general punctuation string?
-		if(!CharSequenceUtilities.containsLetterOrDigit(string)) //if there are no letters or digits in the string
+		if(!CharSequences.containsLetterOrDigit(string)) //if there are no letters or digits in the string
 			return false; //this isn't valie
 		return true;  //the string passed all our tests
 	}

@@ -1,13 +1,13 @@
 package com.garretwilson.country.us;
 
-import static com.globalmentor.java.IntegerUtilities.*;
+import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.garretwilson.text.ArgumentSyntaxException;
-import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Integers;
 
 /**An ABA Routing Transit Number (RTN) that identifies financial institutions within the United States.
 <p>A RTN is is a nine-digit number.</p>
@@ -126,7 +126,7 @@ public class RTN
 	*/
 	public RTN(final int rtn) throws ArgumentSyntaxException
 	{
-		this(IntegerUtilities.toString(checkRange(rtn, 1, 999999999), 10, LENGTH));	//create a string from the RTN value
+		this(Integers.toString(checkRange(rtn, 1, 999999999), 10, LENGTH));	//create a string from the RTN value
 	}
 		
 	/**Character sequence constructor.
@@ -197,7 +197,7 @@ public class RTN
 	*/
 	public String toString()
 	{
-		return IntegerUtilities.toString(getValue(), 10, LENGTH);	//create a string from the RTN value
+		return Integers.toString(getValue(), 10, LENGTH);	//create a string from the RTN value
 	}
 
 }

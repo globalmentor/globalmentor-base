@@ -9,7 +9,7 @@ import static com.garretwilson.net.URIs.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
-import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.garretwilson.text.xml.XMLBase;

@@ -1,6 +1,6 @@
 package com.garretwilson.text.unicode;
 
-import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Integers;
 
 import static com.garretwilson.text.unicode.UnicodeConstants.*;
 
@@ -291,7 +291,7 @@ public class UnicodeCharacter implements Comparable<UnicodeCharacter>
 	{
 		final StringBuilder stringBuilder=new StringBuilder("U+");	//create a string buffer
 			//append the code value, using six digits if needed
-		stringBuilder.append(IntegerUtilities.toHexString(codeValue, codeValue<=0xFFFF ? 4 : 6).toUpperCase());
+		stringBuilder.append(Integers.toHexString(codeValue, codeValue<=0xFFFF ? 4 : 6).toUpperCase());
 		return stringBuilder.toString();	//return the string we constructed		
 	}
 

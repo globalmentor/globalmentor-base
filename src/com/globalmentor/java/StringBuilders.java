@@ -1,17 +1,24 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
-import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.CharSequences.*;
 
 /**Various methods that manipulate <code>StringBuilder</code> objects. These
-	methods are fast relative to their <code>StringUtilities</code>
-	counterparts, because the <code>StringBuilder</code> objects on which they
+	methods are fast relative to their {@link Strings}
+	counterparts, because the {@link StringBuilder} objects on which they
 	operate can be modified within the object instead of forcing a new object to
 	be created. These methods furthermore modify the specified
-	<code>StringBuilder</code> object rather than returning a new object.
-@see Strings
+	{@link StringBuilder} object rather than returning a new object.
 @author Garret Wilson
+@see Strings
 */
-public class StringBuilderUtilities
+public class StringBuilders
 {
 
 	/**Concatenates the string representations of the objects in the array by appending them to the string buffer.
@@ -309,7 +316,7 @@ public class StringBuilderUtilities
 	*/
 	public static StringBuilder removeFirstCharLength(final StringBuilder stringBuilder, final String delimiters)
 	{
-		final int index=CharSequenceUtilities.charIndexOf(stringBuilder, delimiters);  //find the first occurence of the delimiters
+		final int index=CharSequences.charIndexOf(stringBuilder, delimiters);  //find the first occurence of the delimiters
 		if(index>=0)  //if one of the delimiters was found
 			stringBuilder.delete(index, stringBuilder.length());  //remove everything after and including the character
 		return stringBuilder;  //return the string buffer

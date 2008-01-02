@@ -1,15 +1,22 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
-/**Various methods that manipulate <code>StringBuffer</code> objects. These
-	methods are fast relative to their <code>StringUtilities</code>
-	counterparts, because the <code>StringBuffer</code> objects on which they
+/**Various methods that manipulate {@link StringBuffer} objects. These
+	methods are fast relative to their {@link Strings}
+	counterparts, because the {@link StringBuffer} objects on which they
 	operate can be modified within the object instead of forcing a new object to
 	be created. These methods furthermore modify the specified
-	<code>StringBuffer</code> object rather than returning a new object.
-@see Strings
+	{@link StringBuffer} object rather than returning a new object.
 @author Garret Wilson
+@see Strings
 */
-public class StringBufferUtilities	//TODO eventually remove this class in favor of StringBuilderUtilities
+public class StringBuffers
 {
 
 	/**Concatenates the string representations of the objects
@@ -19,7 +26,6 @@ public class StringBufferUtilities	//TODO eventually remove this class in favor 
 	@return A concatenation of string representations of all objects in the
 		array.
 	@see Object#toString
-	@return The string buffer containing the new information.
 	*/
 	public static StringBuffer append(final StringBuffer stringBuffer, final Object[] objects)
 	{
@@ -36,7 +42,6 @@ public class StringBufferUtilities	//TODO eventually remove this class in favor 
 	@return A concatenation of string representations of all objects in the
 		array, separted by the separator character.
 	@see Object#toString
-	@return The string buffer containing the new information.
 	*/
 	public static StringBuffer append(final StringBuffer stringBuffer, final Object[] objects, final char separator)
 	{
@@ -53,7 +58,6 @@ public class StringBufferUtilities	//TODO eventually remove this class in favor 
 	@return A concatenation of string representations of all objects in the
 		array, separted by the separator.
 	@see Object#toString
-	@return The string buffer containing the new information.
 	*/
 	public static StringBuffer append(final StringBuffer stringBuffer, final Object[] objects, final String separator)
 	{
@@ -73,28 +77,28 @@ public class StringBufferUtilities	//TODO eventually remove this class in favor 
 	*/
 	public static void collapse(final StringBuffer stringBuffer, final String collapseChars, final String replaceString)
 	{
-//G***del Debug.trace("ready to collapse: ", stringBuffer); //G***del
-//G***shouldn't we trim the string, first? no, probably not
+//TODO del Debug.trace("ready to collapse: ", stringBuffer); //TODO del
+//TODO shouldn't we trim the string, first? no, probably not
 		final int replaceLength=replaceString.length(); //find the length of the replacement string
 		int nextIndex=0;	//start at the beginning of the string
 		while(nextIndex<stringBuffer.length())	//keep going until we reach the end of the string buffer
 		{
-//G***del System.out.println(outString.length());	//G***del
-//G***del Debug.trace("checking index: ", nextIndex); //G***del
-//G***del Debug.trace("checking character: "+(int)stringBuffer.charAt(nextIndex)+" "+stringBuffer.charAt(nextIndex)); //G***del
+//TODO del System.out.println(outString.length());	//TODO del
+//TODO del Debug.trace("checking index: ", nextIndex); //TODO del
+//TODO del Debug.trace("checking character: "+(int)stringBuffer.charAt(nextIndex)+" "+stringBuffer.charAt(nextIndex)); //TODO del
 			if(collapseChars.indexOf(stringBuffer.charAt(nextIndex))>=0)	//if this character is one of our remove characters
 			{
-//G***del Debug.trace("found collapse character at index: ", nextIndex);  //G***del
+//TODO del Debug.trace("found collapse character at index: ", nextIndex);  //TODO del
 				int removeEnd=nextIndex+1;	//start looking at the next character to see how long this run is
 				while(removeEnd<stringBuffer.length() && collapseChars.indexOf(stringBuffer.charAt(removeEnd))>=0)	//while we still have more characters, and the characters we're finding are characters to remove
 					++removeEnd;
-//G***del				final int removeLength=removeEnd-nextIndex;	//find out how many characters to remove
-//G***del System.out.println("Ready to remove stuff from: "+StringManipulator.replace(outString, '\n', "\\n"));	//G***del
-//G***del				replace(stringBuffer, nextIndex, removeLength, replaceString);	//replace our characters with the given string
-//G***del Debug.trace("after collapse: ", stringBuffer); //G***del
+//TODO del				final int removeLength=removeEnd-nextIndex;	//find out how many characters to remove
+//TODO del System.out.println("Ready to remove stuff from: "+StringManipulator.replace(outString, '\n', "\\n"));	//TODO del
+//TODO del				replace(stringBuffer, nextIndex, removeLength, replaceString);	//replace our characters with the given string
+//TODO del Debug.trace("after collapse: ", stringBuffer); //TODO del
 				stringBuffer.replace(nextIndex, removeEnd, replaceString);	//replace our characters with the given string
 				nextIndex+=replaceLength; //move to the position after the replacement string
-//G***del System.out.println("New out string: "+StringManipulator.replace(outString, '\n', "\\n"));	//G***del
+//TODO del System.out.println("New out string: "+StringManipulator.replace(outString, '\n', "\\n"));	//TODO del
 			}
 			else  //if this is not a character to replace
 				++nextIndex;	//look at the next character in the string
@@ -170,7 +174,7 @@ public class StringBufferUtilities	//TODO eventually remove this class in favor 
 	*/
 	public static StringBuffer removeFirstCharLength(final StringBuffer stringBuffer, final String delimiters)
 	{
-		final int index=CharSequenceUtilities.charIndexOf(stringBuffer, delimiters);  //find the first occurence of the delimiters
+		final int index=CharSequences.charIndexOf(stringBuffer, delimiters);  //find the first occurence of the delimiters
 		if(index>=0)  //if one of the delimiters was found
 			stringBuffer.delete(index, stringBuffer.length());  //remove everything after and including the character
 		return stringBuffer;  //return the string buffer
@@ -223,7 +227,7 @@ public class StringBufferUtilities	//TODO eventually remove this class in favor 
 	{
 		int replacementCount=0; //show that we have not yet made any replacements
 		final int conversionTableLength=conversionTable.length; //find out how many characters we recognize
-//G***del		final int stringBufferLength=stringBuffer.length(); //find out how many characters there are to convert
+//TODO del		final int stringBufferLength=stringBuffer.length(); //find out how many characters there are to convert
 		for(int i=stringBuffer.length()-1; i>=0; --i) //look at each character in the string buffer
 		{
 			final char c=stringBuffer.charAt(i);  //get the code of the character candidate for replacement
@@ -467,14 +471,14 @@ public class StringBufferUtilities	//TODO eventually remove this class in favor 
 	*/
 	public static StringBuffer trim(final StringBuffer stringBuffer, final String delimiters)
 	{
-//G***del System.out.println("trimming: "+stringBuffer);  //G***del
+//TODO del System.out.println("trimming: "+stringBuffer);  //TODO del
 		int beginIndex, endIndex;
 		final int length=stringBuffer.length(); //get the length of the original string
 		for(beginIndex=0; beginIndex<length && delimiters.indexOf(stringBuffer.charAt(beginIndex))>=0; ++beginIndex);	//find the first non-delimiter in the string buffer
 		for(endIndex=length; endIndex>beginIndex && delimiters.indexOf(stringBuffer.charAt(endIndex-1))>=0; --endIndex);	//find the last non-delimiter in the string buffer
 		if(endIndex<length)  //if we should trim the end
 		  stringBuffer.delete(endIndex, length);  //remove the end of the buffer
-//G***del System.out.println("begin index: "+beginIndex); //G***del
+//TODO del System.out.println("begin index: "+beginIndex); //TODO del
 		if(beginIndex>0)  //if we should trim the beginning
 		  stringBuffer.delete(0, beginIndex); //remove the beginning of the buffer
 		return stringBuffer;  //return the resulting string buffer
@@ -485,9 +489,9 @@ public class StringBufferUtilities	//TODO eventually remove this class in favor 
 	@param delimiters The string containing delimiter characters.
 	@return The trimmed string buffer.
 	*/
-	public static StringBuffer trimEnd(final StringBuffer stringBuffer, final String delimiters)  //G***later call this method from trim()
+	public static StringBuffer trimEnd(final StringBuffer stringBuffer, final String delimiters)  //TODO later call this method from trim()
 	{
-//G***del System.out.println("trimming: "+stringBuffer);  //G***del
+//TODO del System.out.println("trimming: "+stringBuffer);  //TODO del
 		int endIndex;
 		final int length=stringBuffer.length(); //get the length of the original string
 		for(endIndex=length; endIndex>0 && delimiters.indexOf(stringBuffer.charAt(endIndex-1))>=0; --endIndex);	//find the last non-delimiter in the string buffer

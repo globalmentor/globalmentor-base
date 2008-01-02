@@ -6,7 +6,7 @@ import java.util.*;
 
 import com.garretwilson.net.*;
 
-import static com.globalmentor.java.ClassUtilities.*;
+import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.ploop.PLOOP.*;
@@ -61,7 +61,7 @@ public class PLOOPURFGenerator
 	<dl>
 		<dt><code>char[]</code></dt> <dd>{@value URF#STRING_NAMESPACE_URI} using {@link String#String(char[])}</dd>
 		<dt>{@link Color}</dt> <dd>{@value URF#STRING_NAMESPACE_URI} using {@link Color#asRGB()} {@link RGBColor#toString()}</dd>
-		<dt>{@link Enum}</dt> <dd>{@value URF#STRING_NAMESPACE_URI} using {@link EnumUtilities#getSerializationName(Enum)}</dd>
+		<dt>{@link Enum}</dt> <dd>{@value URF#STRING_NAMESPACE_URI} using {@link Enums#getSerializationName(Enum)}</dd>
 		<dt>{@link URIPath}</dt> <dd>{@value URF#STRING_NAMESPACE_URI} using {@link URIPath#toString()}</dd>
 	</dl>
 	@param object The object for which an URF resource should be generated.
@@ -94,7 +94,7 @@ public class PLOOPURFGenerator
 	<dl>
 		<dt><code>char[]</code></dt> <dd>{@value URF#STRING_NAMESPACE_URI} using {@link String#String(char[])}</dd>
 		<dt>{@link Color}</dt> <dd>{@value URF#STRING_NAMESPACE_URI} using {@link Color#asRGB()} {@link RGBColor#toString()}</dd>
-		<dt>{@link Enum}</dt> <dd>{@value URF#STRING_NAMESPACE_URI} using {@link EnumUtilities#getSerializationName(Enum)}</dd>
+		<dt>{@link Enum}</dt> <dd>{@value URF#STRING_NAMESPACE_URI} using {@link Enums#getSerializationName(Enum)}</dd>
 		<dt>{@link URIPath}</dt> <dd>{@value URF#STRING_NAMESPACE_URI} using {@link URIPath#toString()}</dd>
 	</dl>
 	@param object The object for which an URF resource should be generated.

@@ -1,3 +1,10 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
 import java.lang.reflect.UndeclaredThrowableException;
@@ -5,7 +12,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 /**Utility methods for threads.
 @author Garret Wilson
 */
-public class ThreadUtilities
+public class Threads
 {
 
 	/**Joins a thread, ignoring any interruptions.

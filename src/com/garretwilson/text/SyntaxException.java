@@ -1,6 +1,6 @@
 package com.garretwilson.text;
 
-import static com.globalmentor.java.IntegerUtilities.*;
+import static com.globalmentor.java.Integers.*;
 
 import com.garretwilson.util.DataException;
 

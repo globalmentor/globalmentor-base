@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 
 import static com.garretwilson.rdf.RDFUtilities.*;
-import static com.globalmentor.java.ClassUtilities.*;
+import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Objects.*;
 
 /**Class for loading and saving a particular type of RDF resource.

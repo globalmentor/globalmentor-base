@@ -18,8 +18,8 @@ import static com.garretwilson.io.FileConstants.*;
 import static com.garretwilson.io.InputStreamUtilities.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
-import static com.globalmentor.java.CharSequenceUtilities.*;
-import static com.globalmentor.java.IntegerUtilities.*;
+import static com.globalmentor.java.CharSequences.*;
+import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.SystemUtilities.*;
 
@@ -345,7 +345,7 @@ public class Files
 	{
 		final int separatorIndex=getExtensionSeparatorIndex(path); //see if we can find the extension separator
 		final int insertionIndex=separatorIndex>=0 ? separatorIndex : path.length();	//insert the characters before the extension or, if there is no extension, at the end of the string
-		return StringBuilderUtilities.insert(new StringBuilder(path), insertionIndex, charSequence).toString();	//create a new string builder, insert the characters, and return the new string
+		return StringBuilders.insert(new StringBuilder(path), insertionIndex, charSequence).toString();	//create a new string builder, insert the characters, and return the new string
 	}
 
 	/**Determines the index of a file extension separator character ('.').
@@ -602,7 +602,7 @@ public class Files
 	@return The string modified to be a filename.
 	@see FileConstants#RESERVED_CHARACTERS
 	@see FileConstants#ESCAPE_CHARACTER
-	@see CharSequenceUtilities#escapeHex
+	@see CharSequences#escapeHex
 	@see #isFilename
 	*/
 	public static String encodeCrossPlatformFilename(final String filename)
@@ -620,7 +620,7 @@ public class Files
 	@return The string modified to be a filename.
 	@see FileConstants#RESERVED_CHARACTERS
 	@see FileConstants#ESCAPE_CHARACTER
-	@see CharSequenceUtilities#escapeHex
+	@see CharSequences#escapeHex
 	@see #isFilename
 	*/
 	public static String encodeFilename(final String filename)
@@ -643,7 +643,7 @@ public class Files
 	@return The string modified to be a filename.
 	@see FileConstants#RESERVED_CHARACTERS
 	@see FileConstants#ESCAPE_CHARACTER
-	@see CharSequenceUtilities#escapeHex
+	@see CharSequences#escapeHex
 	@see #isFilename
 	*/
 	public static String encodeFilename(final String filename, final String reservedCharacters, final String reservedFinalCharacters)
@@ -680,7 +680,7 @@ public class Files
 	@return The filename string decoded back to a normal string.
 	@see FileConstants#RESERVED_CHARACTERS
 	@see FileConstants#ESCAPE_CHARACTER
-	@see CharSequenceUtilities#unescapeHex
+	@see CharSequences#unescapeHex
 	*/
 	public static String decodeFilename(final String filename)
 	{

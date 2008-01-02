@@ -1,31 +1,46 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
-import static com.globalmentor.java.JavaConstants.*;
-import static com.globalmentor.java.StringBuilderUtilities.*;
+import static com.globalmentor.java.StringBuilders.*;
 
 /**Various utilities to assist programming with language-specific Java features.
 @author Garret Wilson
 */
-public class JavaUtilities
+public class Java
 {
 
+	/**The string representing the null keyword.*/
+	public final static String NULL_KEYWORD="null";
+
+	/**The character used to separate internal classes in Java class names.*/
+	public final static char INTERNAL_CLASS_SEPARATOR='$';
+
+	/**The character used to separate packages in Java class names.*/
+	public final static char PACKAGE_SEPARATOR='.';
+
+	/**The character used to separate an object and its predicate in an expression.*/
+	public final static char OBJECT_PREDICATE_SEPARATOR='.';
+	
+	/**The system property name that represents whether internationalization
+		is turned on.
+	@see javax.swing.text.DefaultStyledDocument
+	*/
+	public final static String I18N_PROPERTY_NAME="i18n";
+
 	/**This class cannot be publicly instantiated.*/
-	private JavaUtilities() {}
-
-//G***del	public static Object ensureSafeCast(
-
-/*G***del if can't use
-	public final static assertArgumentInstanceOf(final Object argument1, final Object argument2) throws IllegalArgumentException
-	{
-		instanceof
-		if(!applicationPanel instanceof TextApplicationPanel)	//if this isn't the correct type of application panel
-			throw new IllegalArgumentException("Expected "+TextApplicationPanel.)
-*/
+	private Java() {}
 
 	/**Compares one object with another, taking into account that one or both
 		objects may be <code>null</code>. If one object is <code>null</code> but
 		the other is not, the <code>null</code> object is considered to be less
 		than the non-<code>null</code> object.
+	@param <T> The type of object being compared.
 	@param comparable1 The first object to compare.
 	@param comparable2 The second object to compare.
 	@return A negative integer, zero, or a positive integer if the first object
@@ -34,7 +49,7 @@ public class JavaUtilities
 		non-<code>null</code> value.
 	@see Comparable#compareTo
 	*/
-	public final static int compareTo(final Comparable comparable1, final Comparable comparable2)
+	public final static <T extends Comparable<T>> int compareTo(final T comparable1, final T comparable2)
 	{
 		if(comparable1!=null && comparable2!=null) //if both objects are non-null
 			return comparable1.compareTo(comparable2); //compare the objects
@@ -86,7 +101,7 @@ public class JavaUtilities
 	}
 
 	/**Illagal variable characters to be replaced when creating a valid variable name.*/
-	private final static String ILLEGAL_VARIABLE_NAME_CHARACTERS=""+PACKAGE_SEPARATOR+INTERNAL_CLASS_SEPARATOR;
+	private final static String ILLEGAL_VARIABLE_NAME_CHARACTERS=""+Java.PACKAGE_SEPARATOR+Java.INTERNAL_CLASS_SEPARATOR;
 
 	/**Creates a safe Java variable name by replacing all illegal
 	 	characters with the underscore ('_') character.

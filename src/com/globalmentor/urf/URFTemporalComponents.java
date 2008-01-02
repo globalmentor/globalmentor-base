@@ -12,7 +12,7 @@ import com.garretwilson.iso.ISO8601;
 import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.text.SyntaxException;
 import static com.garretwilson.util.TimeZoneConstants.*;
-import static com.globalmentor.java.IntegerUtilities.*;
+import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.urf.URF.*;

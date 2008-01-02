@@ -1,14 +1,19 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
 import java.lang.Math;
 import java.util.Collection;
 
-import com.garretwilson.util.Debug;
-
 /**Utilities for working with math.
 @author Garret Wilson
 */
-public class MathUtilities
+public class Maths
 {
 
 	/**Rounds a value with a particular precision of a specified digit. A position
@@ -22,14 +27,7 @@ public class MathUtilities
 	*/
 	public final static float round(float a, final int position)
 	{
-//G***del Debug.trace("rounding value: "+a+" at position: "+position);  //G***del
 		final double multiplier=Math.pow(10, -position); //raise 10 to the power of the negative position to get the multiplier
-/*G***del
-Debug.trace("multiplier: "+multiplier);  //G***del
-Debug.trace("value times multiplier: "+a*multiplier);  //G***del
-Debug.trace("value times multiplier rounded: "+Math.round(a*multiplier));  //G***del
-Debug.trace("final value: "+(float)(Math.round(a*multiplier)/multiplier));  //G***del
-*/
 		return (float)(Math.round(a*multiplier)/multiplier); //multiply by the multiplier, round, then divide by the multiplier
 	}
 

@@ -112,7 +112,7 @@ if(Debug.isDebug());  //G***del
 	{
 		final SOAPFault soapFault=soapBody.addFault();  //create a SOAP fault
 		  //create a fault code by combining the generic fault code with the exception class local name
-		final String faultCode=genericFaultCode+'.'+ClassUtilities.getLocalName(exception.getClass());  //G***use a constant here
+		final String faultCode=genericFaultCode+'.'+Classes.getLocalName(exception.getClass());  //G***use a constant here
 		soapFault.setFaultCode(faultCode);  //set the fault code
 		soapFault.setFaultString(exception.getMessage()); //set the fault string to the exception message
 		return soapFault; //return the fault we created

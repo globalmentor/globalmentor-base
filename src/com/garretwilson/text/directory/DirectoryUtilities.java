@@ -8,7 +8,7 @@ import static com.garretwilson.text.ABNF.CRLF;
 import static com.garretwilson.text.directory.DirectoryConstants.*;
 
 import com.garretwilson.util.*;
-import com.globalmentor.java.StringBuilderUtilities;
+import com.globalmentor.java.StringBuilders;
 
 /**Utilities for working with directories of type <code>text/directory</code> as
 	defined in 
@@ -76,8 +76,8 @@ public class DirectoryUtilities
 	public static String encodeTextValue(final String text)
 	{
 		final StringBuilder stringBuilder=new StringBuilder(text);	//create a string buffer to use for escaping values
-		StringBuilderUtilities.replace(stringBuilder, CRLF, "\n");	//replace every occurrence of CRLF with "\n" (there may still be lone CRs or LFs); this will get replaced with "\\n" in the next step
-		StringBuilderUtilities.replace(stringBuilder, TEXT_MATCH_CHARS, TEXT_REPLACEMENT_STRINGS);	//replace characters with their escaped versions
+		StringBuilders.replace(stringBuilder, CRLF, "\n");	//replace every occurrence of CRLF with "\n" (there may still be lone CRs or LFs); this will get replaced with "\\n" in the next step
+		StringBuilders.replace(stringBuilder, TEXT_MATCH_CHARS, TEXT_REPLACEMENT_STRINGS);	//replace characters with their escaped versions
 		return stringBuilder.toString();	//return the resulting string
 	}
 
@@ -89,9 +89,9 @@ public class DirectoryUtilities
 	public static String decodeTextValue(final String text)
 	{
 		final StringBuilder stringBuilder=new StringBuilder(text);	//create a string buffer to use for escaping values
-		StringBuilderUtilities.replace(stringBuilder, TEXT_ESCAPE_STRING+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR, CRLF);	//replace an escaped linefeed with CRLF
-		StringBuilderUtilities.replace(stringBuilder, TEXT_ESCAPE_STRING+TEXT_ESCAPE_CHAR, String.valueOf(TEXT_ESCAPE_CHAR));	//replace an escaped backslash with '\\'
-		StringBuilderUtilities.replace(stringBuilder, TEXT_ESCAPE_STRING+VALUE_SEPARATOR_CHAR, String.valueOf(VALUE_SEPARATOR_CHAR));	//replace an escaped comma with ','
+		StringBuilders.replace(stringBuilder, TEXT_ESCAPE_STRING+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR, CRLF);	//replace an escaped linefeed with CRLF
+		StringBuilders.replace(stringBuilder, TEXT_ESCAPE_STRING+TEXT_ESCAPE_CHAR, String.valueOf(TEXT_ESCAPE_CHAR));	//replace an escaped backslash with '\\'
+		StringBuilders.replace(stringBuilder, TEXT_ESCAPE_STRING+VALUE_SEPARATOR_CHAR, String.valueOf(VALUE_SEPARATOR_CHAR));	//replace an escaped comma with ','
 		return stringBuilder.toString();	//return the resulting string
 	}
 

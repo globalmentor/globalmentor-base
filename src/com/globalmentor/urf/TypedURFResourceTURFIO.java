@@ -3,7 +3,7 @@ package com.globalmentor.urf;
 import java.io.*;
 import java.net.*;
 
-import static com.globalmentor.java.ClassUtilities.*;
+import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 

@@ -4,10 +4,10 @@ import java.util.TimeZone;
 
 import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.text.*;
-import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Integers;
 
 import static com.garretwilson.util.TimeZoneConstants.*;
-import static com.globalmentor.java.IntegerUtilities.*;
+import static com.globalmentor.java.Integers.*;
 
 /**The class representing an <code>urf.UTCOffset</code> type.
 <p>Copyright © 2007 GlobalMentor, Inc.
@@ -84,7 +84,7 @@ public class URFUTCOffset implements URFTemporal
 			}
 			timeZoneIDStringBuilder.append(Integer.toString(hours));	//append the offset hours
 			timeZoneIDStringBuilder.append(TIME_DELIMITER);	//append ':'
-			timeZoneIDStringBuilder.append(IntegerUtilities.toString(minutes, 10, 2));	//append the offset minutes, using two digits
+			timeZoneIDStringBuilder.append(Integers.toString(minutes, 10, 2));	//append the offset minutes, using two digits
 		}
 		return TimeZone.getTimeZone(timeZoneIDStringBuilder.toString());	//look up the time zone and return it
 	}
@@ -99,9 +99,9 @@ public class URFUTCOffset implements URFTemporal
 		{
 			stringBuilder.append('+');	//show that this is a positive offset
 		}
-		stringBuilder.append(IntegerUtilities.toString(hours, 10, 2));	//append the offset hours, using two digits
+		stringBuilder.append(Integers.toString(hours, 10, 2));	//append the offset hours, using two digits
 		stringBuilder.append(TIME_DELIMITER);	//append ':'
-		stringBuilder.append(IntegerUtilities.toString(minutes, 10, 2));	//append the offset minutes, using two digits
+		stringBuilder.append(Integers.toString(minutes, 10, 2));	//append the offset minutes, using two digits
 		return stringBuilder;	//return the string builder
 	}
 

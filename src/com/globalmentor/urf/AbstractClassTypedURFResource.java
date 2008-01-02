@@ -2,7 +2,7 @@ package com.globalmentor.urf;
 
 import java.net.URI;
 
-import static com.globalmentor.java.ClassUtilities.*;
+import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.urf.URF.*;
 
 /**An URF resource that automatically adds an <code>urf:type</code> property of the local name of its Java class.

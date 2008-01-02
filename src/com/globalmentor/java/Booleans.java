@@ -1,18 +1,25 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
 /**Utilities for manipulating boolean objects.
 @author Garret Wilson
 */
-public class BooleanUtilities
+public class Booleans
 {
 
 	/**This class cannot be publicly instantiated.*/
-	private BooleanUtilities() {}
+	private Booleans() {}
 
 	/**Returns the boolean value of the object, if the object is an instance of
-		<code>Boolean</code>.
+		{@link Boolean}.
 	@param booleanObject The object for which a boolean value should be returned.
-	@return <code>true</code> if the object is an instance of <code>Boolean</code>
+	@return <code>true</code> if the object is an instance of {@link Boolean}
 		and contains the value <code>true</code>, else <code>false</code>.
 	*/
 	public final static boolean booleanValue(final Object booleanObject)

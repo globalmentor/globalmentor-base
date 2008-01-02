@@ -605,7 +605,7 @@ public abstract class AbstractURFProcessor
     	int result=getScopeChain().length-assertion.getScopeChain().length;	//compare scope chain lengths
     	if(result==0)	//if scope chain lengths are equal
     	{
-    		result=LongUtilities.compare(getOrder(), assertion.getOrder());	//compare orders
+    		result=Longs.compare(getOrder(), assertion.getOrder());	//compare orders
     	}
     	return result;	//return the result of the comparison
     }

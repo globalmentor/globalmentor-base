@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static com.garretwilson.text.Characters.*;
 import com.garretwilson.util.*;
-import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Integers;
 
 import static com.garretwilson.util.CollectionUtilities.*;
 import static com.globalmentor.java.Objects.*;
@@ -1368,7 +1368,7 @@ public class URFTURFGenerator
 			}
 			else if(Character.isISOControl(c))	//if this is a control character
 			{
-				writer.append(STRING_ESCAPE).append(ESCAPED_UNICODE).append(IntegerUtilities.toHexString(c, 4));	//append a Unicode escaped version of the character
+				writer.append(STRING_ESCAPE).append(ESCAPED_UNICODE).append(Integers.toHexString(c, 4));	//append a Unicode escaped version of the character
 			}
 			else	//if this character is not escaped and not a control character
 			{

@@ -3,7 +3,7 @@ package com.garretwilson.text.xml;
 import java.util.*;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.util.Debug;
-import com.globalmentor.java.ClassUtilities;
+import com.globalmentor.java.Classes;
 
 import org.w3c.dom.*;
 

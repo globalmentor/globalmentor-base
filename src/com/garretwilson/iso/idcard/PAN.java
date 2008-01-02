@@ -1,12 +1,12 @@
 package com.garretwilson.iso.idcard;
 
-import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.CharacterUtilities.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.garretwilson.math.Luhn;
 import com.garretwilson.text.ArgumentSyntaxException;
-import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Integers;
 import com.globalmentor.java.Objects;
 
 /**Primary Account Number (PAN) of an identification card as defined in ISO/IEC 7812-1:2000(E),
@@ -42,7 +42,7 @@ public class PAN implements Comparable<PAN>
 		public int getIIN() {return iin;}
 
 		/**@return The six-digit Issuer Identification Number (IIN) string beginning with the single-digit Major Industry Identifier (MII) character.*/
-		public String getIINString() {return IntegerUtilities.toString(getIIN(), 10, IIN_LENGTH);}
+		public String getIINString() {return Integers.toString(getIIN(), 10, IIN_LENGTH);}
 
 	/**The original length of the individual acount identification.*/
 	private final int individualAccountIDLength;
@@ -54,7 +54,7 @@ public class PAN implements Comparable<PAN>
 		public int getIndividualAccountID() {return individualAccountID;}
 
 		/**@return The individual account identification string, with a maximum of {@value #MAX_IAD_LENGTH} digits.*/
-		public String getIndividualAccountIDString() {return IntegerUtilities.toString(getIndividualAccountID(), 10, individualAccountIDLength);}
+		public String getIndividualAccountIDString() {return Integers.toString(getIndividualAccountID(), 10, individualAccountIDLength);}
 
 	/**The check digit value for the number.*/
 	private final int checkDigit;

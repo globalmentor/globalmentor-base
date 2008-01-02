@@ -18,7 +18,7 @@ import static com.garretwilson.util.ArrayUtilities.*;
 import com.garretwilson.util.NameValuePair;
 
 import static com.garretwilson.text.directory.vcard.VCardConstants.*;
-import static com.globalmentor.java.JavaUtilities.*;
+import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
 
 /**An ontology to represent a vCard <code>text/directory</code> profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>, "vCard MIME Directory Profile".

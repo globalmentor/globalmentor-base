@@ -327,10 +327,10 @@ public class Address implements AddressConstants
 			stringBuffer.append("PO Box ").append(postOfficeBox);	//append the post office box G***i18n
 		if(postOfficeBox!=null && (extendedAddresses.length>0 || streetAddresses.length>0 || locality!=null || region!=null || postalCode!=null ||countryName!=null))	//if we added information and there is more information following
 			stringBuffer.append('\n');	//append a newline
-		StringBufferUtilities.append(stringBuffer, extendedAddresses, '\n');	//append the extended addresses, separated by a newline
+		StringBuffers.append(stringBuffer, extendedAddresses, '\n');	//append the extended addresses, separated by a newline
 		if(extendedAddresses.length>0 && (streetAddresses.length>0 || locality!=null || region!=null || postalCode!=null ||countryName!=null))	//if we added information and there is more information following
 			stringBuffer.append('\n');	//append a newline
-		StringBufferUtilities.append(stringBuffer, streetAddresses, '\n');	//append the street addresses, separated by a newline
+		StringBuffers.append(stringBuffer, streetAddresses, '\n');	//append the street addresses, separated by a newline
 		if(streetAddresses.length>0 && (locality!=null || region!=null || postalCode!=null ||countryName!=null))	//if we added information and there is more information following
 			stringBuffer.append('\n');	//append a newline
 		if(locality!=null)	//if there is a locality

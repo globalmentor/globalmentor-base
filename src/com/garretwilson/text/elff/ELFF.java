@@ -14,7 +14,7 @@ import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
 import static com.garretwilson.util.MapUtilities.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.java.StringBuilderUtilities.*;
+import static com.globalmentor.java.StringBuilders.*;
 
 /**Access to a log in the Extended Log File Format (ELFF).
 This class is thread-safe and can be used to concurrently generate log information.

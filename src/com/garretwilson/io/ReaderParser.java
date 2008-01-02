@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Arrays;
 
 import static com.garretwilson.util.ArrayUtilities.*;
-import static com.globalmentor.java.IntegerUtilities.*;
+import static com.globalmentor.java.Integers.*;
 
 /**Parsing methods that work on a {@link Reader}.
 The reader must support marking.

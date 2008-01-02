@@ -1,13 +1,20 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
 /**Utilities for manipulating integer objects.
 @author Garret Wilson
 */
-public class IntegerUtilities
+public class Integers
 {
 
 	/**This class cannot be publicly instantiated.*/
-	private IntegerUtilities() {}
+	private Integers() {}
 
 	/**Checks to make sure that a given index is within the given range.
 	@param index The index to check.
@@ -68,20 +75,6 @@ public class IntegerUtilities
 		return integerObject instanceof Integer ? ((Integer)integerObject).intValue()==integer : false;
 	}
 
-	/**Determines whether a given value has given bits set.
-	@param value The value to test.
-	@param bits The value that has the given bits to testcapabilities that may be included, one or more
-		<code>XXX_CAPABILITY</code> constants, ORed together.
-	@return <code>true</code> if and only if the specified included capabilities
-		are all included in the full capabilities.
-	*/
-/*G***del; having a function that does this may outweigh the benefit of using bits to begin with
-	public static boolean isBitsSet(final long value, final long bits)
-	{
-		return (capabilities&includedCapabilities)==includedCapabilities;
-	}
-*/
-
 	/**Parses an integer value in the given string. If the string contains a
 		decimal point followed by zeros (a double representation of an integer
 		value), this method correctly returns the integer value without throwing
@@ -92,11 +85,11 @@ public class IntegerUtilities
 	@return The integer value represented by the string.
 	@exception NumberFormatException Thrown if the string does not contain a
 		parsable integer.
-	@see Integer@parseInt
+	@see Integer#parseInt(String)
 	*/
 	public static int parseIntValue(String string) throws NumberFormatException
 	{
-		final int decimalIndex=string.indexOf('.'); //see if there is a decimal point in the string G***use a constant
+		final int decimalIndex=string.indexOf('.'); //see if there is a decimal point in the string TODO use a constant
 		if(decimalIndex>=0) //if there is a decimal point
 		{
 			try
@@ -157,9 +150,9 @@ public class IntegerUtilities
 	@return The 1-based order of the string, or <code>-1</code> if the string does
 		not contain a valid ordinal value.
 	*/
-	public static int parseOrdinalValue(final String ordinal) //G***the name of this should probably be changed
+	public static int parseOrdinalValue(final String ordinal) //TODO the name of this should probably be changed
 	{
-			//G***add more complex parsing routines for the ordinals past 10
+			//TODO add more complex parsing routines for the ordinals past 10
 		final String[] ordinals=new String[]{"first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh"};
 		for(int i=0; i<ordinals.length; ++i)  //look at each of the ordinals
 		{
@@ -176,9 +169,9 @@ public class IntegerUtilities
 	@return The number contained of the string, or <code>-1</code> if the string
 		does not contain a valid text number.
 	*/
-	public static int parseNumberTextValue(final String numberText) //G***the name of this should probably be changed; G***i18n
+	public static int parseNumberTextValue(final String numberText) //TODO the name of this should probably be changed; TODO i18n
 	{
-			//G***add more complex parsing routines for numbers past 30; i18n;
+			//TODO add more complex parsing routines for numbers past 30; i18n;
 		final String[] numbers=new String[]
 			  {
 				  "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",

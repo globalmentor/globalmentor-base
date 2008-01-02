@@ -1,6 +1,6 @@
 package com.garretwilson.text;
 
-import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.globalmentor.java.Objects;

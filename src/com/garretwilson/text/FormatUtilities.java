@@ -4,10 +4,10 @@ import java.util.*;
 import static java.util.Collections.*;
 
 import static com.garretwilson.text.Characters.*;
-import static com.globalmentor.java.StringBuilderUtilities.*;
+import static com.globalmentor.java.StringBuilders.*;
 
 import com.garretwilson.util.NameValuePair;
-import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Integers;
 
 /**Utilities for formatting text.
 @author Garret Wilson
@@ -38,7 +38,7 @@ public class FormatUtilities
 	{
 		for(final byte b:bytes)	//for each byte
 		{
-		  stringBuilder.append(IntegerUtilities.toHexString(b, 2));  //convert the byte to a two-character hex string and add it to our string buffer TODO make more efficient			
+		  stringBuilder.append(Integers.toHexString(b, 2));  //convert the byte to a two-character hex string and add it to our string buffer TODO make more efficient			
 		}
 		return stringBuilder;	//return the string builder we used
 	}

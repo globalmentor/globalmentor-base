@@ -1,13 +1,20 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
 /**Utilities for manipulating long objects.
 @author Garret Wilson
 */
-public class LongUtilities
+public class Longs
 {
 
 	/**This class cannot be publicly instantiated.*/
-	private LongUtilities() {}
+	private Longs() {}
 
 	/**Returns a hash code for a long value.
 	This implementation returns the same value used by {@link Long#hashCode()}.

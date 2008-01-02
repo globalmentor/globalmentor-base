@@ -1,10 +1,6 @@
 package com.garretwilson.util.prefs;
 
-import java.util.prefs.Preferences;
-
-import com.globalmentor.java.ClassUtilities;
-
-import static com.globalmentor.java.JavaConstants.*;
+import com.globalmentor.java.Classes;
 
 /**Utilities methods for working with preferences.
 @author Garret Wilson
@@ -25,7 +21,7 @@ public class PreferencesUtilities
 	public final static String getPreferenceName(final Class<?> c, final String name)
 	{
 			//use the lowercase local name of the class, because uppercase letters get a '/' character inserted 
-		return ClassUtilities.getLocalName(c).toLowerCase()+'.'+name;	//return the lowercase version of the classname with the name appended, separated by a period
+		return Classes.getLocalName(c).toLowerCase()+'.'+name;	//return the lowercase version of the classname with the name appended, separated by a period
 	}
 
 	/**Returns the preference node from the calling user's preference tree

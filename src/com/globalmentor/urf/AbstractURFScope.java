@@ -57,7 +57,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 					final Number number2=asNumber(propertyURI2);	//see if the second property is a number
 					if(number1!=null || number2!=null)	//if one of them is a number
 					{
-						return NumberUtilities.sort(number1, number2);	//sort the objects
+						return Numbers.sort(number1, number2);	//sort the objects
 					}
 					else	//if neither is a number
 					{
@@ -93,11 +93,11 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 					final Number order2=valueContext2.getScope().getOrder();	//get the scoped order of the second context
 					if(order1!=null || order2!=null)	//if one of the contexts has a scoped order
 					{
-						return NumberUtilities.sort(order1, order2);	//sort the scoped orders
+						return Numbers.sort(order1, order2);	//sort the scoped orders
 					}
 					else	//if neither context has a scoped order
 					{
-						return LongUtilities.compare(valueContext1.getValue().getCreationOrder(), valueContext2.getValue().getCreationOrder());	//compare value creation orders TODO improve to do more advanced sorting
+						return Longs.compare(valueContext1.getValue().getCreationOrder(), valueContext2.getValue().getCreationOrder());	//compare value creation orders TODO improve to do more advanced sorting
 					}
 				}
 			};

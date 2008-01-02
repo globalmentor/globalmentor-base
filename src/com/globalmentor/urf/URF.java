@@ -17,15 +17,15 @@ import static com.garretwilson.net.URIs.*;
 import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.text.RegularExpression;
 import com.garretwilson.util.*;
-import com.globalmentor.java.ClassUtilities;
-import com.globalmentor.java.LongUtilities;
+import com.globalmentor.java.Classes;
+import com.globalmentor.java.Longs;
 import com.globalmentor.urf.content.*;
 import com.globalmentor.urf.select.Select;
 
 import static com.garretwilson.util.CollectionUtilities.*;
 import static com.garretwilson.util.LocaleUtilities.*;
-import static com.globalmentor.java.BooleanUtilities.*;
-import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.Booleans.*;
+import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.CharacterUtilities.*;
 import static com.globalmentor.java.Objects.*;
 
@@ -510,7 +510,7 @@ public class URF
 	*/
 	public static URI createOrdinalURI(final long ordinal)
 	{
-		return ordinal==0 ? ORDINAL_0_URI : createLexicalURI(ORDINAL_CLASS_URI, Long.toString(LongUtilities.checkMinimum(ordinal, 0)));	//create an ordinal URI, using the pre-made zero ordinal URI if we can and making sure that the value is not less than zero
+		return ordinal==0 ? ORDINAL_0_URI : createLexicalURI(ORDINAL_CLASS_URI, Long.toString(Longs.checkMinimum(ordinal, 0)));	//create an ordinal URI, using the pre-made zero ordinal URI if we can and making sure that the value is not less than zero
 	}
 
 	/**Creates a URI to represent an URF real.
@@ -627,7 +627,7 @@ public class URF
 			}
 			else if(object instanceof Enum)	//if this is an enum
 			{
-				return createLexicalURI(ClassUtilities.createJavaURI(object.getClass()), ((Enum<?>)object).name());	//return a lexical URI using the enum class as the lexical type and the name of the enum as the local name
+				return createLexicalURI(Classes.createJavaURI(object.getClass()), ((Enum<?>)object).name());	//return a lexical URI using the enum class as the lexical type and the name of the enum as the local name
 			}
 			else if(object instanceof Float)	//if this is a float
 			{
@@ -656,11 +656,11 @@ public class URF
 				//other schemes
 			else if(object instanceof Class)	//if this is a class
 			{
-				return ClassUtilities.createJavaURI((Class<?>)object);	//create a java: URI for a class
+				return Classes.createJavaURI((Class<?>)object);	//create a java: URI for a class
 			}
 			else if(object instanceof Package)	//if this is a package
 			{
-				return ClassUtilities.createJavaURI((Package)object);	//create a java: URI for a package
+				return Classes.createJavaURI((Package)object);	//create a java: URI for a package
 			}
 		}
 		return null;	//we can't represent this object as a resource URI
@@ -754,7 +754,7 @@ public class URF
 			{
 				try
 				{
-					return ClassUtilities.asClass(resourceURI);	//return a class
+					return Classes.asClass(resourceURI);	//return a class
 				}
 				catch(final ClassNotFoundException classNotFoundException)
 				{
@@ -766,7 +766,7 @@ public class URF
 				final URI lexicalTypeURI=getLexicalTypeURI(resourceURI);	//get the lexical type
 				try
 				{
-					final Class<?> lexicalClass=ClassUtilities.asClass(lexicalTypeURI);	//see if this is lexical type represents a Java class
+					final Class<?> lexicalClass=Classes.asClass(lexicalTypeURI);	//see if this is lexical type represents a Java class
 					if(lexicalClass!=null && Enum.class.isAssignableFrom(lexicalClass))	//if the lexical type is an enum
 					{
 						return Enum.valueOf((Class<? extends Enum>)lexicalClass, getLocalName(resourceURI));	//create an enum using the given lexical type and enum value
@@ -929,11 +929,11 @@ public class URF
 	@return The Java class represented by the given resource, or <code>null</code> if the resource does not represent a Java class.
 	@exception IllegalArgumentException if the given resource represents a Java class that does not have the correct syntax.
 	@exception ClassNotFoundException if the class represented by the given resource could not be found.
-	@see ClassUtilities#asClass(URI)
+	@see Classes#asClass(URI)
 	*/
 	public static Class<?> asClass(final Resource resource) throws ClassNotFoundException
 	{
-		return resource!=null ? ClassUtilities.asClass(resource.getURI()) : null;	//if a resource was given, see if its URI represents a Java class
+		return resource!=null ? Classes.asClass(resource.getURI()) : null;	//if a resource was given, see if its URI represents a Java class
 	}
 
 	/**Determines the date time represented by the given resource.
@@ -1317,10 +1317,10 @@ public class URF
 				*/
 				public int compare(final URFResource resource1, final URFResource resource2)
 				{
-					int result=LongUtilities.compare(resource1.getPropertyValueCount(), resource2.getPropertyValueCount());	//compare property counts
+					int result=Longs.compare(resource1.getPropertyValueCount(), resource2.getPropertyValueCount());	//compare property counts
 					if(result==0)	//if property counts are the same
 					{
-						result=LongUtilities.compare(resource1.getCreationOrder(), resource2.getCreationOrder());	//compare creation order
+						result=Longs.compare(resource1.getCreationOrder(), resource2.getCreationOrder());	//compare creation order
 					}
 					return result;	//return the result of the comparison
 				}

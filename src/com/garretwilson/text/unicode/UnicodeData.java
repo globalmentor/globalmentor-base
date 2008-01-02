@@ -10,7 +10,7 @@ import com.garretwilson.text.CharacterEncoding;
 import static com.garretwilson.text.unicode.UnicodeConstants.*;
 import static com.garretwilson.text.unicode.UnicodeBlocks.*;
 import com.garretwilson.util.Debug;
-import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Integers;
 
 /**Represents the Unicode data in the file <code>UnicodeData.txt</code>.
 <p>This class expects the Unicode data file to exist in the same package as
@@ -431,7 +431,7 @@ public class UnicodeData
 		final StringBuffer stringBuffer=new StringBuffer();	//create a string buffer
 		final int codeValue=unicodeCharacter.getCodeValue();	//get the code value
 			//append the code value, using six digits if needed
-		stringBuffer.append(IntegerUtilities.toHexString(codeValue, codeValue<=0xFFFF ? 4 : 6).toUpperCase());
+		stringBuffer.append(Integers.toHexString(codeValue, codeValue<=0xFFFF ? 4 : 6).toUpperCase());
 		stringBuffer.append(FIELD_DELIMITER);	//separate the fields
 		stringBuffer.append(unicodeCharacter.getCharacterName());	//append the character name
 		stringBuffer.append(FIELD_DELIMITER);	//separate the fields
@@ -445,7 +445,7 @@ public class UnicodeData
 			stringBuffer.append(unicodeCharacter.getCharacterDecompositionTag()+MAPPING_DELIMITER);	//append the decomposition tag
 		for(int i=0; i<unicodeCharacter.getCharacterDecompositionMappings().length(); ++i)	//look at each of the decomposition mappings
 		{
-			stringBuffer.append(IntegerUtilities.toHexString(unicodeCharacter.getCharacterDecompositionMappings().charAt(i), 4).toUpperCase());	//append the hex code for this decomposition mapping
+			stringBuffer.append(Integers.toHexString(unicodeCharacter.getCharacterDecompositionMappings().charAt(i), 4).toUpperCase());	//append the hex code for this decomposition mapping
 			if(i<unicodeCharacter.getCharacterDecompositionMappings().length()-1)	//if this isn't the last mapping
 				stringBuffer.append(MAPPING_DELIMITER);	//append the decomposition tag mapping delimiter to separate the mappings
 		}
@@ -471,13 +471,13 @@ public class UnicodeData
 		stringBuffer.append(unicodeCharacter.getISO10646Comment());	//append the ISO 10646 comment, if present
 		stringBuffer.append(FIELD_DELIMITER);	//separate the fields
 		if(unicodeCharacter.getUppercaseMapping()!=0)	//if there is an uppercase mapping
-			stringBuffer.append(IntegerUtilities.toHexString(unicodeCharacter.getUppercaseMapping(), 4).toUpperCase());	//append the uppercase mapping
+			stringBuffer.append(Integers.toHexString(unicodeCharacter.getUppercaseMapping(), 4).toUpperCase());	//append the uppercase mapping
 		stringBuffer.append(FIELD_DELIMITER);	//separate the fields
 		if(unicodeCharacter.getLowercaseMapping()!=0)	//if there is an lowercase mapping
-			stringBuffer.append(IntegerUtilities.toHexString(unicodeCharacter.getLowercaseMapping(), 4).toUpperCase());	//append the lowercase mapping
+			stringBuffer.append(Integers.toHexString(unicodeCharacter.getLowercaseMapping(), 4).toUpperCase());	//append the lowercase mapping
 		stringBuffer.append(FIELD_DELIMITER);	//separate the fields
 		if(unicodeCharacter.getTitlecaseMapping()!=0)	//if there is an titlecase mapping
-			stringBuffer.append(IntegerUtilities.toHexString(unicodeCharacter.getTitlecaseMapping(), 4).toUpperCase());	//append the titlecase mapping
+			stringBuffer.append(Integers.toHexString(unicodeCharacter.getTitlecaseMapping(), 4).toUpperCase());	//append the titlecase mapping
 		return stringBuffer.toString();	//convert the buffer to a string and return it
 	}
 

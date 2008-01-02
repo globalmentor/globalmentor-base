@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.concurrent.locks.*;
 
 import com.garretwilson.net.URIs;
-import com.globalmentor.java.LongUtilities;
+import com.globalmentor.java.Longs;
 
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.TURF.*;
@@ -247,7 +247,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 	public int hashCode()
 	{
 		final URI uri=getURI();	//get the resource URI
-		return uri!=null ? uri.hashCode() : LongUtilities.hashCode(getCreationOrder());	//return the URI hash code, or the creation order hash code if there is no URI available
+		return uri!=null ? uri.hashCode() : Longs.hashCode(getCreationOrder());	//return the URI hash code, or the creation order hash code if there is no URI available
 	}
 
 	/**Compares this resource with another for equality.

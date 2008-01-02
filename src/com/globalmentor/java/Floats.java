@@ -1,9 +1,16 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
 /**Utilities for manipulating float objects.
 @author Garret Wilson
 */
-public class FloatUtilities
+public class Floats
 {
 
 	/**Checks to make sure that a given value is within the given range.

@@ -9,14 +9,14 @@ import com.garretwilson.io.*;
 import static com.garretwilson.io.FileConstants.EXTENSION_SEPARATOR;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.text.CharacterEncoding.*;
-import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.garretwilson.text.FormatUtilities;
 import com.garretwilson.text.SyntaxException;
 import com.garretwilson.text.unicode.UnicodeCharacter;
 import com.garretwilson.util.*;
-import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Integers;
 
 /**Various URI manipulating functions for working with URIs as defined in
 	<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
@@ -1649,7 +1649,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 					for(int byteIndex=0; byteIndex<byteCount; ++byteIndex)	//look at each byte
 					{
 						encodeStringBuilder.append(ESCAPE_CHAR);	//&
-						encodeStringBuilder.append(IntegerUtilities.toHexString(bytes[byteIndex], 2).toUpperCase());	//HH
+						encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], 2).toUpperCase());	//HH
 					}
 					stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString());	//replace the character with its encoding
 				}
@@ -1738,7 +1738,7 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 					for(int byteIndex=0; byteIndex<byteCount; ++byteIndex)	//look at each byte
 					{
 						encodeStringBuilder.append(escapeChar);	//escape character
-						encodeStringBuilder.append(IntegerUtilities.toHexString(bytes[byteIndex], 2).toUpperCase());	//HH
+						encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], 2).toUpperCase());	//HH
 					}
 					stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString());	//replace the character with its encoding
 				}

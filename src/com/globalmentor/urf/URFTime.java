@@ -4,10 +4,10 @@ import java.util.Date;
 
 import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.text.*;
-import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Integers;
 
-import static com.globalmentor.java.IntegerUtilities.*;
-import static com.globalmentor.java.StringBuilderUtilities.*;
+import static com.globalmentor.java.Integers.*;
+import static com.globalmentor.java.StringBuilders.*;
 import static com.globalmentor.urf.URF.*;
 
 /**The class representing an <code>urf.Time</code> type.
@@ -127,11 +127,11 @@ public class URFTime implements URFTemporal
 	*/
 	public StringBuilder append(final StringBuilder stringBuilder)
 	{
-		stringBuilder.append(IntegerUtilities.toString(getHours(), 10, 2));	//append the hours, using two digits
+		stringBuilder.append(Integers.toString(getHours(), 10, 2));	//append the hours, using two digits
 		stringBuilder.append(TIME_DELIMITER);	//append ':'
-		stringBuilder.append(IntegerUtilities.toString(getMinutes(), 10, 2));	//append the minutes, using two digits
+		stringBuilder.append(Integers.toString(getMinutes(), 10, 2));	//append the minutes, using two digits
 		stringBuilder.append(TIME_DELIMITER);	//append ':'
-		stringBuilder.append(IntegerUtilities.toString(getSeconds(), 10, 2));	//append the seconds, using two digits
+		stringBuilder.append(Integers.toString(getSeconds(), 10, 2));	//append the seconds, using two digits
 		final int microseconds=getMicroseconds();	//get the microseconds
 		if(microseconds>0)	//if microseconds are given
 		{

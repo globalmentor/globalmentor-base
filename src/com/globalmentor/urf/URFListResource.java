@@ -6,7 +6,7 @@ import java.net.URI;
 import static java.lang.System.*;
 
 import com.garretwilson.util.DefaultListIterator;
-import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Integers;
 
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
@@ -359,7 +359,7 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 		try
 		{
 			final int size=size();	//get the size of this list
-			IntegerUtilities.checkIndexBounds(index, 0, size);	//check the bounds of the index
+			Integers.checkIndexBounds(index, 0, size);	//check the bounds of the index
 			long newIndex=index;	//start at the given index
 			for(final E element:collection)	//for each element in the collection
 			{
@@ -608,7 +608,7 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 		try
 		{
 			final int size=size();	//find the size of the list
-			IntegerUtilities.checkIndexBounds(index, 0, size);	//make sure the index is within the correct bounds (we don't need to use our local routine because we've already calculated the size
+			Integers.checkIndexBounds(index, 0, size);	//make sure the index is within the correct bounds (we don't need to use our local routine because we've already calculated the size
 			E element=null;	//start off with a null, which will be the new value of the last index
 			for(int i=size-1; i>=index; --i)	//start with the last index and work our way down to the requested index
 			{

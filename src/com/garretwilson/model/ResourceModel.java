@@ -4,7 +4,7 @@ import java.net.URI;
 import com.garretwilson.io.*;
 import com.garretwilson.net.Resource;
 
-import static com.globalmentor.java.ClassUtilities.*;
+import static com.globalmentor.java.Classes.*;
 
 /**A model of a resource.
 <p>Bound properties:</p>

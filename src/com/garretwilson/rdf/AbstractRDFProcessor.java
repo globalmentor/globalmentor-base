@@ -9,7 +9,7 @@ import com.garretwilson.net.Resource;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import com.garretwilson.util.Debug;
-import com.globalmentor.java.JavaConstants;
+import com.globalmentor.java.Java;
 
 /**Base class for RDF processors.
 	Each instance of an RDF processor maintains an internal
@@ -148,7 +148,7 @@ public abstract class AbstractRDFProcessor
 	/**@return A unique node ID appropriate for a new node.*/
 	protected String generateNodeID()
 	{
-		return AbstractRDFProcessor.class.getName()+JavaConstants.PACKAGE_SEPARATOR+"nodeID"+(nextNodeIDTag++);	//use the next node ID tag and increments TODO use a constant
+		return AbstractRDFProcessor.class.getName()+Java.PACKAGE_SEPARATOR+"nodeID"+(nextNodeIDTag++);	//use the next node ID tag and increments TODO use a constant
 	}
 
 	/**The set of all statements used to create the resources.*/

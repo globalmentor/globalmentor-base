@@ -12,9 +12,9 @@ import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xpath.XPath;
-import com.globalmentor.java.ClassUtilities;
-import com.globalmentor.java.IntegerUtilities;
-import com.globalmentor.java.JavaUtilities;
+import com.globalmentor.java.Classes;
+import com.globalmentor.java.Integers;
+import com.globalmentor.java.Java;
 
 import org.w3c.dom.*;
 
@@ -409,7 +409,7 @@ Debug.trace("using element: ", element.getNodeName());  //G***del
 						{
 							if(shouldStoreProperty(objectClass, propertyName, returnType)) //see if we should store this property
 						  {
-								final String storageName=JavaUtilities.getVariableName(propertyName); //get the name of the attribute or element
+								final String storageName=Java.getVariableName(propertyName); //get the name of the attribute or element
 /*G***del when works
 							if(!returnType.isArray())  //if this is not an array, make sure there is a corresponding setXXX() method
 							{
@@ -744,7 +744,7 @@ Debug.trace("Created object: ", object);  //G***del
 				final String attributeValue=attribute.getValue(); //get the attribute value
 Debug.trace("looking at attribute: ", attributeName); //G***del
 Debug.trace("attribute has value: ", attributeValue); //G***del
-				final String properName=JavaUtilities.getProperName(attributeName); //convert the attribute name into a name appropriate for getXXX() or setXXX()
+				final String properName=Java.getProperName(attributeName); //convert the attribute name into a name appropriate for getXXX() or setXXX()
 				final String methodName=SET+properName; //the accessor method is "set" plus the proper name (e.g. setStatus())
 Debug.trace("looking for method name: ", methodName);
 				for(int methodIndex=objectMethods.length-1; methodIndex>=0; --methodIndex)  //look at each method
@@ -805,7 +805,7 @@ Debug.trace("checking parameters");
 					final Element childElement=(Element)childNode;  //cast the node to an element
 					final String elementName=childElement.getLocalName(); //get the element name
 Debug.trace("looking at child element: ", elementName); //G***del
-					final String properName=JavaUtilities.getProperName(elementName); //convert the element name into a name appropriate for getXXX() or setXXX()
+					final String properName=Java.getProperName(elementName); //convert the element name into a name appropriate for getXXX() or setXXX()
 					final String methodName=SET+properName; //the accessor method is "set" plus the proper name (e.g. setStatus())
 Debug.trace("looking for method name: ", methodName);
 					for(int methodIndex=objectMethods.length-1; methodIndex>=0; --methodIndex)  //look at each method
@@ -1055,7 +1055,7 @@ Debug.trace("Initialized object: ", object);  //G***del
 	*/
 	protected static Object getProperty(final Element element, final String propertyName, final Class propertyType) throws InstantiationException
 	{
-		final String storageName=JavaUtilities.getVariableName(propertyName); //get the name of the attribute or element
+		final String storageName=Java.getVariableName(propertyName); //get the name of the attribute or element
 		final String attributeValue=XMLUtilities.getDefinedAttributeNS(element, null, storageName); //get the attribute value if it is defined
 		if(attributeValue!=null)  //if the attribute is defined
 		{
@@ -1073,7 +1073,7 @@ Debug.trace("Initialized object: ", object);  //G***del
 		they store, after the name of the object has been processed as above.
 	@param objectClass The class for which a storage name should be generated.
 	@return The name to use for storage, such as for the name of an XML element.
-	@see ClassUtilities#getSimpleName
+	@see Classes#getSimpleName
 	*/
 	protected static String getStorageName(final Class objectClass)
 	{
@@ -1087,7 +1087,7 @@ Debug.trace("Initialized object: ", object);  //G***del
 			return stringBuffer.toString(); //return the storage name we constructed
 		}
 		else  //if this isn't an array object, the element name will be the decapitalized version of the simple class name
-			return JavaUtilities.getVariableName(ClassUtilities.getSimpleName(objectClass));  //get the decapiatlized version of the simple class name
+			return Java.getVariableName(Classes.getSimpleName(objectClass));  //get the decapiatlized version of the simple class name
 	}
 
 	/**Finds or constructs an object of the specified type that represents the
@@ -1123,7 +1123,7 @@ Debug.trace("Initialized object: ", object);  //G***del
 					//  must use Dimension.setSize(int, int) instead of
 					//  Dimension.setSize(double, double) because the latter does not
 					//  work in the JDK1.3.
-				return new Integer(IntegerUtilities.parseIntValue(value));
+				return new Integer(Integers.parseIntValue(value));
 //G***del when works				return Integer.valueOf(value);	//create an integer with the correct value
 			}
 			else if(type.equals(Long.TYPE))	//if the set method accepts a long
@@ -1197,7 +1197,7 @@ Debug.trace("Initialized object: ", object);  //G***del
 		return objectType.isArray() //if this is an array
 			  //or if return type has a public default constructor,
 				//  meaning we can reconstruct it (this correctly leaves out getClass()),
-			|| ClassUtilities.getPublicDefaultConstructor(objectType)!=null
+			|| Classes.getPublicDefaultConstructor(objectType)!=null
 		  || objectType.equals(java.awt.Color.class); //or if this is a Color
 	}
 

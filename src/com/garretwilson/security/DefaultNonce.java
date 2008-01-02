@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 import static com.garretwilson.text.FormatUtilities.*;
 
 import com.garretwilson.text.SyntaxException;
-import com.globalmentor.java.CharSequenceUtilities;
+import com.globalmentor.java.CharSequences;
 
 /**A nonce that uses the current time, the date, a secret key, and a random number.
 This implementation stores information in the form:
@@ -61,7 +61,7 @@ public class DefaultNonce implements Nonce
 	*/
 	protected DefaultNonce(final String privateKey, final Date time, final long value) throws IllegalArgumentException
 	{
-		if(CharSequenceUtilities.contains(privateKey, DELIMITER))	//if the private key contains the delimiter
+		if(CharSequences.contains(privateKey, DELIMITER))	//if the private key contains the delimiter
 		{
 			throw new IllegalArgumentException("Private key \""+privateKey+"\" contains delimiter \'"+DELIMITER+"\'.");
 		}

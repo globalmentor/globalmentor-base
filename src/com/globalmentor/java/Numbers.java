@@ -1,3 +1,10 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
 import java.math.BigDecimal;
@@ -5,8 +12,13 @@ import java.math.BigDecimal;
 /**Utilities for manipulating numbers.
 @author Garret Wilson
 */
-public class NumberUtilities
+public class Numbers
 {
+
+	/**The double value representing 1/3.*/
+	public final static double ONE_THIRD_DOUBLE=1.0d/3.0d;
+	/**The double value representing 2/3.*/
+	public final static double TWO_THIRDS_DOUBLE=2.0d/3.0d;
 
 	/**Determines if the given number is a non-integer decimal type: {@link Float}, {@link Double}, or {@link BigDecimal}.
 	@param number The number to examine.
@@ -44,7 +56,7 @@ public class NumberUtilities
 		}
 		else if((number1 instanceof Integer || number1 instanceof Long) && (number2 instanceof Integer || number2 instanceof Long))	//if both are integer types
 		{
-			return LongUtilities.compare(number1.longValue(), number2.longValue());	//compare long values
+			return Longs.compare(number1.longValue(), number2.longValue());	//compare long values
 		}
 		else	//for all other cases TODO add support for big types
 		{

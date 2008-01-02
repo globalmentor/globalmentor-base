@@ -1,3 +1,10 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
 import java.util.EnumSet;
@@ -5,7 +12,7 @@ import java.util.EnumSet;
 /**Utilities for working with enums.
 @author Garret Wilson
 */
-public class EnumUtilities
+public class Enums
 {
 
 	/**Creates a set of enums using varargs.

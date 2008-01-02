@@ -1,10 +1,17 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static com.globalmentor.java.ClassUtilities.*;
-import static com.globalmentor.java.JavaConstants.*;
+import static com.globalmentor.java.Classes.*;
+import static com.globalmentor.java.Java.*;
 
 /**Various utilities to manipulate Java objects.
 @author Garret Wilson
@@ -183,14 +190,14 @@ public class Objects
 		return seed;	//return the entire result
 	}
 
-	/**Returns the string representation of the object or {@value JavaConstants#NULL}.
+	/**Returns the string representation of the object or {@value Java#NULL_KEYWORD}.
 	@param object An object to be represented by a string.
-	@return The string representation of the object or {@value JavaConstants#NULL} if the object is
+	@return The string representation of the object or {@value Java#NULL_KEYWORD} if the object is
 		<code>null</code>.
 	*/
 	public final static String toString(final Object object)
 	{
-		return object!=null ? object.toString() : NULL; //return the object's string representation or "null"
+		return object!=null ? object.toString() : NULL_KEYWORD; //return the object's string representation or "null"
 	}
 
 }

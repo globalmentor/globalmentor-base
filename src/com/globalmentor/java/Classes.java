@@ -1,3 +1,10 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
 import java.io.*;
@@ -17,8 +24,8 @@ import static com.garretwilson.io.Files.*;
 import static com.garretwilson.io.OutputStreamUtilities.*;
 import com.garretwilson.net.URIConstants;
 import static com.garretwilson.net.URIs.*;
-import static com.globalmentor.java.JavaConstants.*;
-import static com.globalmentor.java.JavaUtilities.*;
+
+import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
 
 import com.garretwilson.net.URIPath;
@@ -27,7 +34,7 @@ import com.garretwilson.util.NameValuePair;
 /**Utilities for manipulating Java classes.
 @author Garret Wilson
 */
-public class ClassUtilities
+public class Classes
 {
 	
 	/**The getter prefix "get".*/
@@ -46,7 +53,7 @@ public class ClassUtilities
 	public final static Pattern SETTER_METHOD_NAME_PATTERN=Pattern.compile("("+SET_SETTER_PREFIX+")(.+)");
 
 	/**This class cannot be publicly instantiated.*/
-	private ClassUtilities() {}
+	private Classes() {}
 
 	/**Determines the Java class represented by the given URI.
 	A URI represents a Java class if it has a {@value URIConstants#JAVA_SCHEME} scheme
@@ -379,7 +386,7 @@ public class ClassUtilities
 	public static String getGetterPropertyName(final String methodName)
 	{
 		final Matcher matcher=GETTER_METHOD_NAME_PATTERN.matcher(methodName);	//match the method name against the getter method name pattern
-		return matcher.matches() ? JavaUtilities.getVariableName(matcher.group(2)) : null;	//if there is a match, return the variable name of the matching group; otherwise return null
+		return matcher.matches() ? Java.getVariableName(matcher.group(2)) : null;	//if there is a match, return the variable name of the matching group; otherwise return null
 	}
 
 	/**Determines the property name of the given getter method name.
@@ -389,7 +396,7 @@ public class ClassUtilities
 	public static String getSetterPropertyName(final String methodName)
 	{
 		final Matcher matcher=SETTER_METHOD_NAME_PATTERN.matcher(methodName);	//match the method name against the setter method name pattern
-		return matcher.matches() ? JavaUtilities.getVariableName(matcher.group(2)) : null;	//if there is a match, return the variable name of the matching group; otherwise return null
+		return matcher.matches() ? Java.getVariableName(matcher.group(2)) : null;	//if there is a match, return the variable name of the matching group; otherwise return null
 	}
 	
 	/**The name of the "get" getter method corresponding to the given property.
@@ -489,11 +496,11 @@ public class ClassUtilities
 	@param objectClass The class for which a variable name should be returned.
 	@return A variable name appropriate for the class.
 	@see #getSimpleName(Class)
-	@see JavaUtilities#getVariableName(String)
+	@see Java#getVariableName(String)
 	*/
 	public static String getVariableName(final Class<?> objectClass)
 	{
-		return JavaUtilities.getVariableName(getSimpleName(objectClass));	//get the variable name form of the simple name of the class
+		return Java.getVariableName(getSimpleName(objectClass));	//get the variable name form of the simple name of the class
 	}
 
 	/**A comparator that sorts ancestor classes primarily in terms of height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.*/

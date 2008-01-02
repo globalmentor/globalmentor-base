@@ -1,3 +1,10 @@
+/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * All Rights Reserved.
+ * 
+ * Use is subject to the BSD-style license at
+ * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+ */
+
 package com.globalmentor.java;
 
 import java.io.UnsupportedEncodingException;
@@ -9,14 +16,14 @@ import static com.globalmentor.java.CharacterUtilities.*;
 import com.garretwilson.util.ArrayUtilities;
 
 /**Various text manipulating functions. These methods work on
-	objects that implement the <code>CharacterSequence</code> interface.
+	objects that implement the {@link CharSequence} interface.
 	To avoid creation of new strings, some of these methods should
-	be avoided in favor of their corresponding <code>StringBufferUtilities</code>
-	methods, which operate on <code>StringBuffer</code> objects.
-@see StringBufferUtilities
+	be avoided in favor of their corresponding {@link StringBuilders}
+	methods, which operate on {@link StringBuilder} objects.
+@see StringBuilders
 @author Garret Wilson
 */
-public class CharSequenceUtilities
+public class CharSequences
 {
 
 	/**Searches a character sequence and returns the first index of any character
@@ -181,26 +188,6 @@ public class CharSequenceUtilities
 		return count;	//return the total count
 	}
 
-	/**Counts the number of occurences of any one of given characters in a character sequence.
-	@param charSequence The character sequence to examine.
-	@param characters The scharacter to count.
-	@return The number of occurences of the characters in the character sequence.
-	*/
-/*TODO fix
-	public static int count(final CharSequence charSequence, final char character)
-	{
-		int count=0;	//start out without knowing any occurrences
-		for(int i=charSequence.length()-1; i>=0; --i)	//look at each character
-		{
-			if(charSequence.charAt(i)==character)	//if this character matches the given characters
-			{
-				++count;	//show that we found one more occurence characters
-			}
-		}
-		return count;	//return the total count
-	}
-*/
-
 	/**Determines if the character sequence ends with the given character.
 	@param charSequence The character sequence to examine.
 	@param character The character to compare.
@@ -279,7 +266,7 @@ public class CharSequenceUtilities
 				if(encode)	//if this a character to escape
 				{
 						//append the escape character, along with a two-digit representation of the character value
-					stringBuilder.append(escapeChar).append(IntegerUtilities.toHexString(c, length).toUpperCase());
+					stringBuilder.append(escapeChar).append(Integers.toHexString(c, length).toUpperCase());
 				}
 				else	//if this is not a character to escape
 				{
@@ -718,18 +705,6 @@ public class CharSequenceUtilities
 			//see if the character sequence has at least one character, and the first character matches our character
 		return charSequence.length()>0 && characters.indexOf(charSequence.charAt(0))>=0;
 	}
-
-	/**Returns a string builder with the given character sequence content.
-	If the given character sequence is a string builder, it will be returned; otherwise, a setring builder will be created.
-	@param charSequence The character sequence containing the content for a string builder.
-	@return given The character sequence, if it is a string builder, or a new string builder created from the character sequence.
-	*/
-/*TODO del; this may be dangerous if a calling method doesn't realize the character sequence will be modified when this is used to change a passed character sequence
-	public static StringBuilder toStringBuilder(final CharSequence charSequence)
-	{
-		return charSequence instanceof StringBuilder ? (StringBuilder)charSequence : new StringBuilder(charSequence);	//only create a new string builder if we need to
-	}
-*/
 
 	/**Trims the right side of the string beginning at the first occurrence of the
 		given character. If the character sequence does not contain the trim

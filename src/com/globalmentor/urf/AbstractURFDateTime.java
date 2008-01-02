@@ -4,9 +4,9 @@ import java.util.*;
 
 import static com.garretwilson.iso.ISO8601.*;
 
-import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Integers;
 
-import static com.globalmentor.java.IntegerUtilities.*;
+import static com.globalmentor.java.Integers.*;
 
 /**The abstract base type for <code>urf.Date</code> and <code>urf.DateTime</code> types.
 If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally in terms of UTC.
@@ -67,11 +67,11 @@ public abstract class AbstractURFDateTime extends Date implements URFTemporal
 	*/
 	public StringBuilder append(final StringBuilder stringBuilder)
 	{
-		stringBuilder.append(IntegerUtilities.toString(getYear(), 10, 4));	//append the year, using four digits
+		stringBuilder.append(Integers.toString(getYear(), 10, 4));	//append the year, using four digits
 		stringBuilder.append(DATE_DELIMITER);	//append the date delimiter
-		stringBuilder.append(IntegerUtilities.toString(getMonth(), 10, 2));	//append the month, using two digits
+		stringBuilder.append(Integers.toString(getMonth(), 10, 2));	//append the month, using two digits
 		stringBuilder.append(DATE_DELIMITER);	//append the date delimiter
-		stringBuilder.append(IntegerUtilities.toString(getDay(), 10, 2));	//append the day, using two digits
+		stringBuilder.append(Integers.toString(getDay(), 10, 2));	//append the day, using two digits
 		final URFTime time=getURFTime();	//get the time, if any
 		if(time!=null)	//if there is a time
 		{

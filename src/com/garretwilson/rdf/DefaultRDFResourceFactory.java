@@ -3,7 +3,7 @@ package com.garretwilson.rdf;
 import java.lang.reflect.*;
 import java.net.URI;
 
-import static com.globalmentor.java.JavaConstants.*;
+import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
 
 /**An RDF resource factory that can create Java classes within a certain package based upon the type local name.

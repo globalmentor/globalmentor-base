@@ -13,7 +13,7 @@ import com.garretwilson.util.*;
 import com.globalmentor.java.*;
 
 import static com.garretwilson.util.ArrayUtilities.*;
-import static com.globalmentor.java.CharSequenceUtilities.*;
+import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 
 /**Utilities for working with the semantics of text, as opposed to the syntax
@@ -298,7 +298,7 @@ preface
 	*/
 	public static boolean isPageNumber(final String text) //G***put this in some common routine in a common package
 	{
-		if(CharSequenceUtilities.charIndexOf(text, EOL_CHARS)>0)  //if the text is not on a single line
+		if(CharSequences.charIndexOf(text, EOL_CHARS)>0)  //if the text is not on a single line
 			return false; //this isn't a page number
 //G***del Debug.trace("checking page number: ", text);  //G***del
 		/**The strings that count as page indications.*/
@@ -524,7 +524,7 @@ preface
 	protected static int getSectionNumber(final String text, final String sectionLabel)
 	{
 //G***del Debug.trace("checking chapter heading text: ", text); //G***del
-		final int eolIndex=CharSequenceUtilities.charIndexOf(text, EOL_CHARS);  //find the end of the line
+		final int eolIndex=CharSequences.charIndexOf(text, EOL_CHARS);  //find the end of the line
 		final String line=text.substring(0, eolIndex>=0 ? eolIndex : text.length());  //get the text up to our delimiter, if there is one
 		if(isQuoted(line))  //if this line is quoted
 		  return -1; //quoted strings are not headings
@@ -551,7 +551,7 @@ preface
 					}
 					else  //see if this is a number string
 					{
-						final int number=IntegerUtilities.parseNumberTextValue(numberString); //see if this is a number in text
+						final int number=Integers.parseNumberTextValue(numberString); //see if this is a number in text
 						if(number>=0) //if the string has a valid number
 							return number;  //return the number
 					}
@@ -561,7 +561,7 @@ preface
 			{
 				if(firstToken.equalsIgnoreCase("the") && tokenizer.hasMoreTokens()) //if this is the word "the"
 					firstToken=tokenizer.nextToken(); //skip any beginning "the"
-				final int order=IntegerUtilities.parseOrdinalValue(firstToken);  //see if this is an order
+				final int order=Integers.parseOrdinalValue(firstToken);  //see if this is an order
 				if(order>=0)  //if this token is a valid order
 				{
 					if(tokenizer.hasMoreTokens()) //if there is another token
@@ -586,13 +586,13 @@ preface
 	public static boolean isQuoted(final String string)
 	{
 		  //get the index of the first non-whitespace character
-		final int firstCharIndex=CharSequenceUtilities.notCharIndexOf(string, TRIM_CHARS);
+		final int firstCharIndex=CharSequences.notCharIndexOf(string, TRIM_CHARS);
 		if(firstCharIndex>=0) //if there is a first character (which also means there's a last character
 		{
 			if(LEFT_QUOTE_CHARS.indexOf(string.charAt(firstCharIndex))>=0) //if the line starts with a quote character
 				return true; //show that we found a quote
 				//get the index of the last non-whitespace character (we don't need to make sure it's valid--if there's a first character, there's a last character)
-			final int lastCharIndex=CharSequenceUtilities.notCharLastIndexOf(string, TRIM_CHARS);
+			final int lastCharIndex=CharSequences.notCharLastIndexOf(string, TRIM_CHARS);
 			if(RIGHT_QUOTE_CHARS.indexOf(string.charAt(lastCharIndex))>=0) //if the line ends with a quote character
 				return true; //show that we found a quote
 		}

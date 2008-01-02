@@ -1,6 +1,6 @@
 package com.garretwilson.country.us;
 
-import static com.globalmentor.java.IntegerUtilities.*;
+import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
 
 import java.util.regex.Matcher;
@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import com.garretwilson.text.ArgumentSyntaxException;
 import com.garretwilson.util.Debug;
-import com.globalmentor.java.IntegerUtilities;
+import com.globalmentor.java.Integers;
 import com.globalmentor.java.Objects;
 
 /**Encapsulation of a United States Social Security Number (SSN).
@@ -51,7 +51,7 @@ public class SSN
 		public int getAreaNumber() {return areaNumber;}
 
 		/**@return The three-digit area number string.*/
-		public String getAreaNumberString() {return IntegerUtilities.toString(getAreaNumber(), 10, AREA_NUMBER_LENGTH);}
+		public String getAreaNumberString() {return Integers.toString(getAreaNumber(), 10, AREA_NUMBER_LENGTH);}
 
 	/**The group number.*/
 	private final int groupNumber;
@@ -60,7 +60,7 @@ public class SSN
 		public int getGroupNumber() {return groupNumber;}
 
 		/**@return The two-digit group number string.*/
-		public String getGroupNumberString() {return IntegerUtilities.toString(getGroupNumber(), 10, GROUP_NUMBER_LENGTH);}
+		public String getGroupNumberString() {return Integers.toString(getGroupNumber(), 10, GROUP_NUMBER_LENGTH);}
 
 	/**The serial number.*/
 	private final int serialNumber;
@@ -69,7 +69,7 @@ public class SSN
 		public int getSerialNumber() {return serialNumber;}
 
 		/**@return The four-digit serial number string.*/
-		public String getSerialNumberString() {return IntegerUtilities.toString(getSerialNumber(), 10, SERIAL_NUMBER_LENGTH);}
+		public String getSerialNumberString() {return Integers.toString(getSerialNumber(), 10, SERIAL_NUMBER_LENGTH);}
 
 	/**The value of the social security number.*/
 	private final int value;
@@ -86,7 +86,7 @@ public class SSN
 	*/
 	public SSN(final int ssn) throws ArgumentSyntaxException
 	{
-		this(IntegerUtilities.toString(checkRange(ssn, 0, 999999999), 10, AREA_NUMBER_LENGTH+GROUP_NUMBER_LENGTH+SERIAL_NUMBER_LENGTH));	//create a string from the SSN value
+		this(Integers.toString(checkRange(ssn, 0, 999999999), 10, AREA_NUMBER_LENGTH+GROUP_NUMBER_LENGTH+SERIAL_NUMBER_LENGTH));	//create a string from the SSN value
 	}
 		
 	/**Character sequence constructor.

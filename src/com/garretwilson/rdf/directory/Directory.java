@@ -8,7 +8,7 @@ import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.rdfs.RDFSUtilities.*;
 import static com.garretwilson.text.directory.DirectoryConstants.*;
 import static com.garretwilson.util.LocaleUtilities.*;
-import static com.globalmentor.java.JavaUtilities.*;
+import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.garretwilson.util.LocaleText;

@@ -1,6 +1,6 @@
 package com.garretwilson.model;
 
-import com.globalmentor.java.JavaConstants;
+import com.globalmentor.java.Java;
 
 /**Indicates an object allows multiple views to an underlying data model.
 <p>Bound properties:</p>
@@ -14,7 +14,7 @@ public interface ModelViewable
 {
 
 	/**The name of the bound view property.*/
-	public final static String MODEL_VIEW_PROPERTY=ModelViewable.class.getName()+JavaConstants.PACKAGE_SEPARATOR+"modelView";
+	public final static String MODEL_VIEW_PROPERTY=ModelViewable.class.getName()+Java.PACKAGE_SEPARATOR+"modelView";
 
 	/**Represents no view of the data. This should only be used for error
 		conditions and when the data is not being viewed.
