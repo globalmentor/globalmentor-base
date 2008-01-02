@@ -48,31 +48,6 @@ public class ClassUtilities
 	private ClassUtilities() {}
 
 	/**Determines the Java class represented by the given URI.
-	A URI represents a Java class if it is a valid <code>info:java/</code> URI with class identifier fragment.
-	@param resourceURI The URI which is expected to represent a Java class, or <code>null</code>.
-	@return The Java class represented by the given URI, or <code>null</code> if the URI is not an <code>info:java/</code> URI.
-	@exception IllegalArgumentException if the given URI represents a Java class that does not have the correct syntax.
-	@exception ClassNotFoundException if the class represented by the given URI could not be found.
-	@see URIConstants#INFO_SCHEME
-	@see URIConstants#INFO_SCHEME_JAVA_NAMESPACE
-	*/
-/*TODO del
-	public static Class<?> asClass(final URI resourceURI) throws ClassNotFoundException
-	{
-		if(resourceURI!=null && isInfoNamespace(resourceURI, INFO_SCHEME_JAVA_NAMESPACE))	//if an info:java/ URI was given
-		{
-			final String classLocalName=resourceURI.getFragment();	//get the class name
-			if(classLocalName!=null)	//if there is a class nam
-			{
-				final String packagePath=getInfoIdentifier(resourceURI);	//get the package path
-				return Class.forName(packagePath.replace(PATH_SEPARATOR, PACKAGE_SEPARATOR)+PACKAGE_SEPARATOR+classLocalName);	//consruct the class name and load the class
-			}
-		}
-		return null;	//no class could be found
-	}
-*/
-
-	/**Determines the Java class represented by the given URI.
 	A URI represents a Java class if it has a {@value URIConstants#JAVA_SCHEME} scheme
 	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.	
 	@param resourceURI The URI which is expected to represent a Java class, or <code>null</code>.
@@ -105,58 +80,6 @@ public class ClassUtilities
 		return null;	//no class could be found
 	}
 
-	/**Determines whether the given URI is a <code>info:java/</code> URI for a Java package.
-	@param uri The URI to check for a Java package.
-	@return <code>true</code> if the given URI is a <code>info:java/</code> URI for a Java package.
-	*/
-/*TODO del
-	public static boolean isInfoJavaPackageURI(final URI uri)
-	{
-		return isInfoNamespace(uri, INFO_SCHEME_JAVA_NAMESPACE) && uri.getFragment()==null;	//see if this is an info:java/ URI with no fragment
-	}
-*/
-
-	/**Determines whether the given URI is a <code>info:java/</code> URI for a Java class.
-	@param uri The URI to check for a Java class.
-	@return <code>true</code> if the given URI is a <code>info:java/</code> URI for a Java class.
-	*/
-/*TODO del
-	public static boolean isInfoJavaClassURI(final URI uri)
-	{
-		return isInfoNamespace(uri, INFO_SCHEME_JAVA_NAMESPACE) && uri.getFragment()!=null;	//see if this is an info:java/ URI with a fragment
-	}
-*/
-
-	/**Creates an {@value URIConstants#INFO_SCHEME} URI for a Java package using a {@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE} namespace.
-	in the form <code>info:java/<var>com</var>/<var>example</var>/<var>package</var></code>.
-	@param objectPackage The package to use in creating the <code>info:java/</code> URI.
-	@return A <code>info:java/</code> URI based upon the given package.
-	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
-	@exception NullPointerException if the given package is <code>null</code>.
-	*/
-/*TODO fix
-	public static URI createInfoJavaURI(final Package objectPackage)
-	{
-		final String packagePath=URIPath.encodeSegment(objectPackage.getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the package path by replacing the package separators with path separators after encoding
-		return createInfoURI(INFO_SCHEME_JAVA_NAMESPACE, packagePath);	//create a new info:java/ URI with no fragment
-	}
-*/
-
-	/**Creates an {@value URIConstants#INFO_SCHEME} URI for a Java class using a {@value URIConstants#INFO_SCHEME_JAVA_NAMESPACE} namespace.
-	in the form <code>info:java/<var>com</var>/<var>example</var>/<var>package</var>#<var>Class</var></code>.
-	@param objectClass The class to use in creating the <code>info:java/</code> URI.
-	@return A <code>info:java/</code> URI based upon the given class.
-	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
-	@exception NullPointerException if the given class is <code>null</code>.
-	*/
-/*TODO del
-	public static URI createInfoJavaURI(final Class<?> objectClass)
-	{
-		final String packagePath=URIPath.encodeSegment(objectClass.getPackage().getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the package path by replacing the package separators with path separators after encoding
-		return createInfoURI(INFO_SCHEME_JAVA_NAMESPACE, packagePath, URIPath.encode(getLocalName(objectClass)));	//create a new info:java/ URI with the class local name as the fragment
-	}
-*/
-
 	/**Creates a Java URI for a Java package using the {@value URIConstants#JAVA_SCHEME} scheme
 	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/</code>.
 	@param objectPackage The package to use in creating the <code>java:</code> URI.
@@ -188,19 +111,9 @@ public class ClassUtilities
 	*/
 	public static ContentType getObjectContentType(final Class<?> objectClass)
 	{
-//TODO del		try
-		{
-			final ParameterList parameterList=new ParameterList();	//create a new parameter list
-			parameterList.set("class", objectClass.getName());	//TODO testing
-			return new ContentType(APPLICATION, X_JAVA_OBJECT, parameterList);	//create a content type appropriate for this object class TODO use a constant
-//TODO fix and del			return new ContentType(APPLICATION, X_JAVA_OBJECT, new ParameterList("x-class=\""+objectClass.getName()+"\""));	//create a content type appropriate for this object class TODO use a constant
-		}
-/*TODO del when works
-		catch(final ParseException parseException)	//there should never be a parse exception, as we construct the content type from parameters with known syntax
-		{
-			throw new AssertionError(parseException);
-		}
-*/
+		final ParameterList parameterList=new ParameterList();	//create a new parameter list
+		parameterList.set("class", objectClass.getName());	//TODO testing
+		return new ContentType(APPLICATION, X_JAVA_OBJECT, parameterList);	//create a content type appropriate for this object class TODO use a constant
 	}
 
 	/**Returns a constructor of a class that is compatible with the given parameter types.
@@ -685,12 +598,13 @@ public class ClassUtilities
 	@exception NullPointerException if the given object class and/or root class is <code>null</code>.
 	@return The set of all super classes and implemented interfaces.
 	*/
+	@SuppressWarnings("unchecked")	//casts, along with not-type-specific addClass() method, required for compiling with Sun JDK 1.6.0_03-b05; not required for Eclipse 3.4M3
 	public static <R> List<Class<? extends R>> getAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass, final boolean includeThisClass, final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces, final Comparator<NameValuePair<Class<? extends R>, Integer>> comparator)
 	{
 		final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap=new HashMap<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>>();	//create a new map of class/height pairs
 		if(includeThisClass && rootClass.isAssignableFrom(objectClass))	//if we should include this class
 		{
-			addClass(objectClass.asSubclass(rootClass), 0, classHeightMap);	//add this class to the map at height 0
+			addClass(objectClass.asSubclass(rootClass), 0, (Map<Class<?>, NameValuePair<Class<?>, Integer>>)(Object)classHeightMap);	//add this class to the map at height 0
 		}
 		getAncestorClasses(objectClass, 1, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classHeightMap);	//get all the classes, starting one level above the class
 		final List<Class<? extends R>> classList;	//we'll create a list to hold the classes
@@ -725,6 +639,7 @@ public class ClassUtilities
 	@param includeInterfaces Whether implemented interfaces should be returned.
 	@param classHeightMap The map of class/height pairs keyed to the class.
 	*/
+	@SuppressWarnings("unchecked")	//casts, along with not-type-specific addClass() method, required for compiling with Sun JDK 1.6.0_03-b05; not required for Eclipse 3.4M3
 	protected static <R> void getAncestorClasses(final Class<? extends R> objectClass, final int height, final Class<R> rootClass, final boolean includeSuperClasses, final boolean includeAbstract, final boolean includeInterfaces, final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap)
 	{
 		if(includeSuperClasses)	//if super classes should be included
@@ -737,7 +652,7 @@ public class ClassUtilities
 					final Class<? extends R> superExtendsRootClass=superClass.asSubclass(rootClass);	//get the version of the super class that extends the root class
 					if(includeAbstract || !Modifier.isAbstract(superClass.getModifiers()))	// make sure we should include abstract classes if this is an abstract class
 					{
-						addClass(superExtendsRootClass, height, classHeightMap);	//add the super class to the map
+						addClass(superExtendsRootClass, height, (Map<Class<?>, NameValuePair<Class<?>, Integer>>)(Object)classHeightMap);	//add the super class to the map
 					}
 					getAncestorClasses(superExtendsRootClass, height+1, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classHeightMap);	//get all the classes of the super class
 				}
@@ -750,7 +665,7 @@ public class ClassUtilities
 				if(rootClass.isAssignableFrom(classInterface))	//if this interface extends the root class
 				{
 					final Class<? extends R> interfaceExtendsRootClass=classInterface.asSubclass(rootClass);	//get the version of the interface that extends the root class
-					addClass(interfaceExtendsRootClass, height, classHeightMap);	//add the interface to the map
+					addClass(interfaceExtendsRootClass, height, (Map<Class<?>, NameValuePair<Class<?>, Integer>>)(Object)classHeightMap);	//add the interface to the map
 					getAncestorClasses(interfaceExtendsRootClass, height+1, rootClass, includeSuperClasses, includeAbstract, includeInterfaces, classHeightMap);	//get all the classes of the interface
 				}
 			}
@@ -764,12 +679,13 @@ public class ClassUtilities
 	@param classHeightMap The map of class/height pairs keyed to the class.
 	@exception NullPointerException if the given object class is <code>null</code>.
 	*/
-	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap)
+	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<?>, NameValuePair<Class<?>, Integer>> classHeightMap)
+//preferred signature, which works on Eclipse 3.4M3 but not on Sun JDK 1.6.0_03-b05:	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap)
 	{
-		final NameValuePair<Class<? extends R>, Integer> oldClassHeight=classHeightMap.get(objectClass);	//get the old height
+		final NameValuePair<Class<?>, Integer> oldClassHeight=classHeightMap.get(objectClass);	//get the old height
 		if(oldClassHeight==null || oldClassHeight.getValue().intValue()<height)	//if there was no old height, or the old height is not as large as the new height
 		{
-			classHeightMap.put(objectClass, new NameValuePair<Class<? extends R>, Integer>(objectClass, height));	//update the height for the class
+			classHeightMap.put(objectClass, new NameValuePair<Class<?>, Integer>(objectClass, height));	//update the height for the class
 		}
 	}
 

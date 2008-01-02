@@ -197,9 +197,10 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	@return The first element of this list, or <code>null</code> if there is
 		no first element specified.
 	*/
+	@SuppressWarnings("unchecked")	//cast needed so that Sun JDK 1.6.0_03-b05 will know which type we want; not required for Eclipse 3.4M3
 	public E getFirst()
 	{
-		return getFirst(this); //return the first element property
+		return (E)getFirst(this); //return the first element property
 	}
 
 	/**Retrieves the rest of the list, which is usually another list.
@@ -442,6 +443,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		(<var>index</var>&lt;0 || <var>index</var>&gt;=size()).
 	@see RDFObject
 	*/
+	@SuppressWarnings("unchecked")	//cast needed so that Sun JDK 1.6.0_03-b05 will know which type we want; not required for Eclipse 3.4M3
 	public E get(int index)
 	{
 		int currentIndex=0;	//start out on the first index
@@ -450,7 +452,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		{
 			if(currentIndex==index)	///if this is the correct index
 			{
-				return getFirst(list);	//return the element at this index
+				return (E)getFirst(list);	//return the element at this index
 			}
 			list=getRest(list);	//look at the rest of the list
 			++currentIndex;	//go to the next index
@@ -470,6 +472,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	@exception IndexOutOfBoundsException Thrown if the index is out of range
 		(index &lt; 0 || index &gt;= size()).
 	*/
+	@SuppressWarnings("unchecked")	//cast needed so that Sun JDK 1.6.0_03-b05 will know which type we want; not required for Eclipse 3.4M3
 	public E set(final int index, final E object)
 	{
 		int currentIndex=0;	//start out on the first index
@@ -478,7 +481,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		{
 			if(currentIndex==index)	///if this is the correct index
 			{
-				final E oldFirst=getFirst(list);	//get the current first of the list
+				final E oldFirst=(E)getFirst(list);	//get the current first of the list
 				setFirst(list, object);	//set this element as the value of this node
 				return oldFirst;	//return the element that was previously at this index  
 			}
@@ -518,6 +521,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		<code>(index &le; 0 || index &gt; size())</code>.
 	@see #create(RDF, URI, RDFObject, RDFResource)
 	*/
+	@SuppressWarnings("unchecked")	//cast needed so that Sun JDK 1.6.0_03-b05 will know which type we want; not required for Eclipse 3.4M3
 	public void add(final int index, final E object)
 	{
 		int currentIndex=0;	//start out on the first index
@@ -527,7 +531,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 			if(currentIndex==index)	///if this is the correct index
 			{
 				final URI oldReferenceURI=list.getURI();	//get the old reference URI of this list element (which might even be the nil URI)
-				final E oldFirst=getFirst(list);	//get the current first of the list
+				final E oldFirst=(E)getFirst(list);	//get the current first of the list
 				final RDFResource oldRest=getRest(list);	//get the current rest of the list
 				list.setReferenceURI(null);	//effectively change the current node into an anonymous node
 				setFirst(list, object);	//set this element as the value of this node
@@ -584,13 +588,14 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	@exception IndexOutOfBoundsException Thrown if the index is out of range
 		(index &lt; 0 || index &gt;= size()).
 	*/
+	@SuppressWarnings("unchecked")	//cast needed so that Sun JDK 1.6.0_03-b05 will know which type we want; not required for Eclipse 3.4M3
 	public E remove(final int index)
 	{
 		int currentIndex=0;	//start out on the first index
 		RDFResource list=this;	//start with this list resource
 		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
 		{
-			final E first=getFirst(list);	//get the first object
+			final E first=(E)getFirst(list);	//get the first object
 			final RDFResource rest=getRest(list);	//get the rest of the list
 			if(currentIndex==index)	///if this is the correct index
 			{
@@ -855,11 +860,12 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		/**@return The next element in the iteration.
 		@exception NoSuchElementException iteration has no more elements.
 		*/
+		@SuppressWarnings("unchecked")	//cast needed so that Sun JDK 1.6.0_03-b05 will know which type we want; not required for Eclipse 3.4M3
 		public E next()
 		{
 			if(nextList!=null && !RDFUtilities.isNil(nextList))	//if we have a next list that isn't the nil resource
 			{
-				final E nextResource=getFirst(nextList);	//get the element represented by the list
+				final E nextResource=(E)getFirst(nextList);	//get the element represented by the list
 				if(nextResource!=null)	//if there is a next resource
 				{
 					nextList=getRest(nextList);	//show which list (if any) holds the rest of the list elements

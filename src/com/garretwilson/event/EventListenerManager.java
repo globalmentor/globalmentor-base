@@ -1,7 +1,8 @@
 package com.garretwilson.event;
 
 import java.util.*;
-import static java.util.Collections.*;
+
+import static com.garretwilson.util.IteratorUtilities.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**Class that stores and retrieves event listeners, facilitating the creation
@@ -141,7 +142,7 @@ public class EventListenerManager	//TODO fix to not use WeakHashSet, which isn't
 		{
 			listenerSet=listenerSetMap!=null ? (Set<T>)listenerSetMap.get(key) : null;	//get the set of listeners associated with this key; we will have only stored subclasses of the class keyed to the given key
 		}
-		return listenerSet!=null ? listenerSet : (Iterable<T>)emptySet();	//if there is a set of listeners associated with this key, return the set (unsynchronized read access to the set is safe); otherwise, return an empty set 
+		return listenerSet!=null ? listenerSet : (Iterable<T>)EMPTY_ITERABLE;	//if there is a set of listeners associated with this key, return the set (unsynchronized read access to the set is safe); otherwise, return an empty set 
 	}
 
 }
