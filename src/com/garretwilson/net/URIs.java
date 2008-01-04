@@ -26,6 +26,9 @@ import com.globalmentor.java.Integers;
 public class URIs
 {
 
+	/**The path scheme identifier for representing relative and absolute URI paths.*/
+	public final static String PATH_SCHEME="path";
+
 	/**The shared static empty array of URIs.*/
 	public final static URI[] EMPTY_URI_ARRAY=new URI[]{};
 
