@@ -718,7 +718,7 @@ public class URF
 	}
 
 	/**Determines the Java object to represent the given URI, if possible 
-	This method can return objects for the resources in the following namespaces:
+	This method can return objects for the URIs in the following namespaces:
 	<dl>
 		<dt>{@value #BINARY_NAMESPACE_URI}</dt> <dd><code>byte[]</code></dd>
 		<dt>{@value #BOOLEAN_NAMESPACE_URI}</dt> <dd>{@link Boolean}</dd>
@@ -736,6 +736,7 @@ public class URF
 	This method can return objects for the resources with URIs of the following schemes:
 	<dl>
 		<dt>{@value URIConstants#JAVA_SCHEME}</dt> <dd>{@link Class}</dd>
+		<dt>{@value URIs#PATH_SCHEME}</dt> <dd>{@link URIPath}</dd>
 	</dl>
 	This method can return objects for the resources with lexical URIs with lexical type URIs of the following schemes:
 	<dl>
@@ -750,7 +751,8 @@ public class URF
 	{
 		if(resourceURI!=null)	//if a resource URI was given
 		{
-			if(JAVA_SCHEME.equals(resourceURI.getScheme()))	//if this is a Java URI
+			final String resourceURIScheme=resourceURI.getScheme();	//get the resource URI scheme, if any
+			if(JAVA_SCHEME.equals(resourceURIScheme))	//if this is a Java URI
 			{
 				try
 				{
@@ -760,6 +762,10 @@ public class URF
 				{
 					throw new IllegalArgumentException(classNotFoundException);
 				}
+			}
+			else if(PATH_SCHEME.equals(resourceURIScheme))	//if this is a path
+			{
+				return asURIPath(resourceURI);	//return a URI path
 			}
 			else if(isLexicalURI(resourceURI))	//if the resource URI is a lexical URI
 			{
@@ -1265,6 +1271,35 @@ public class URF
 		if(resourceURI!=null && URI_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a URI URI was given
 		{
 			return URI.create(getLocalName(resourceURI));	//create a URI from the local name
+		}
+		return null;	//no URI could be found
+	}
+
+	
+	/**Determines the URI path represented by the given resource.
+	A resource represents a URI path if it is has a URI with the {@value URIs#PATH_SCHEME} scheme.
+	@param resource The resource which is expected to represent a URI path, or <code>null</code>.
+	@return The URI path represented by the given resource, or <code>null</code> if the resource does not represent a URI path.
+	@exception IllegalArgumentException if the given resource represents a URI path that does not have the correct syntax.
+	@see #asURIPath(URI)
+	*/
+	public static URIPath asURIPath(final Resource resource)
+	{
+		return resource!=null ? asURIPath(resource.getURI()) : null;	//if a resource was given, see if its URI represents a URI path
+	}
+
+	/**Determines the URI path represented by the given URI.
+	A URI represents a URI path if it is has the {@value URIs#PATH_SCHEME} scheme.
+	@param resourceURI The URI which is expected to represent a URI path, or <code>null</code>.
+	@return The URI path represented by the given URI, or <code>null</code> if the URI does not represent a URI path.
+	@exception IllegalArgumentException if the given URI represents a URI path that does not have the correct syntax.
+	@see URIs#PATH_SCHEME
+	*/
+	public static URIPath asURIPath(final URI resourceURI)
+	{
+		if(resourceURI!=null && PATH_SCHEME.equals(resourceURI.getScheme()))	//if a URI path URI was given
+		{
+			return getPathURIPath(resourceURI);	//return a URIPath from the resource URI path
 		}
 		return null;	//no URI could be found
 	}

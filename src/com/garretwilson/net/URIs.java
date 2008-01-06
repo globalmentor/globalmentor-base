@@ -102,9 +102,9 @@ public class URIs
 		return uriDecode(getInfoRawIdentifier(uri));	//decode the raw identifier of the info URI
 	}
 
-	/**Determines the raw, unencoded info indentifier of the given {@value URIConstants#INFO_SCHEME} scheme URI.
+	/**Determines the raw, encoded info indentifier of the given {@value URIConstants#INFO_SCHEME} scheme URI.
 	@param uri The URI from which the info identifier should be retrieved.
-	@return The raw, unencoded info identifier of the given info URI.
+	@return The raw, encoded info identifier of the given info URI.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	@exception IllegalArgumentException if the given URI is not a valid {@value URIConstants#INFO_SCHEME} scheme URI.
 	*/
@@ -130,19 +130,41 @@ public class URIs
 		return INFO_SCHEME.equals(uri.getScheme()) && uri.getRawSchemeSpecificPart().startsWith(infoNamespace+INFO_SCHEME_NAMESPACE_DELIMITER);	//check for the info scheme and the info namespace
 	}
 
-	/**Creates a new URI identical to the supplied URI with a different path.
-	This method expects the path to be unencoded---raw (encoded) parameters will be re-encoded, resulting in corruption.
-	@param uri The URI to change.
-	@param newPath The unescaped path, or <code>null</code> if there should be no path.
-	@return A new URI with the new path information.
+	
+	/**Determines the raw, encoded path of the given {@value #PATH_SCHEME} scheme URI.
+	The path will never be <code>null</code>; the empty relative path <code>path:</code> will return the empty string.
+	Any query or fragment is ignored.
+	This method is needed because the {@link URI#getRawPath()} method does not recognize relative paths for the {@value #PATH_SCHEME} scheme.
+	@param uri The path URI from which the path should be retrieved.
+	@return The raw, encoded path of the given path URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@exception IllegalArgumentException if the given URI is not a valid {@value #PATH_SCHEME} scheme URI.
 	*/
-/*TODO del; use raw version
-	public static URI changePath(final URI uri, final String newPath)
+	public final static String getPathRawPath(final URI uri)
 	{
-			//construct an identical URI except for the supplied path
-		return createURI(uri.getScheme(), uri.getUserInfo(), uri.getHost(), uri.getPort(), newPath, uri.getQuery(), uri.getFragment());
+		String rawPath=checkScheme(uri, PATH_SCHEME).getRawPath();	//get the raw path of the URI, ensuring that it is a "path:" URI
+		if(rawPath==null)	//if Java sees no path, it must be a relative path; extract it manually
+		{
+			rawPath=uri.getRawSchemeSpecificPart();	//the raw path is the scheme-specific part
+			final int queryStart=rawPath.indexOf(QUERY_SEPARATOR);	//see if this URI has a query (the scheme-specific part will not include the fragment, if any
+			if(queryStart>=0)	//if a query is present
+			{
+				rawPath=rawPath.substring(0, queryStart);	//remove the query
+			}
+		}
+		return rawPath;	//return the raw path
 	}
-*/
+
+	/**Returns the path of the given {@value #PATH_SCHEME} scheme URI as a {@link URIPath}.
+	@param uri The path URI from which the path should be retrieved.
+	@return A URI path object representing the path of the given path URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@exception IllegalArgumentException if the given URI is not a valid {@value #PATH_SCHEME} scheme URI.
+	*/
+	public final static URIPath getPathURIPath(final URI uri)
+	{
+		return new URIPath(getPathRawPath(uri));	//get the raw path and create a URIPath from that
+	}
 
 	/**Creates a new URI identical to the supplied URI with a different raw path.
 	@param uri The URI to change.
@@ -154,39 +176,6 @@ public class URIs
 	public static URI changeRawPath(final URI uri, final String newRawPath)
 	{
 		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), newRawPath, uri.getRawQuery(), uri.getRawFragment());	//construct an identical URI except with a different raw path
-/*TODO del when works
-		final String oldRawPath=uri.getRawPath();	//get the old raw path of the URI
-		if(((oldRawPath==null || oldRawPath.length()==0) && (newRawPath==null || newRawPath.length()==0))	//if an empty path is being replaced by an empty path	
-				|| oldRawPath.equals(newRawPath))	//or the paths are the same
-		{
-			return uri;	//the URI remains unchanged
-		}
-		final StringBuilder oldSuffixStringBuilder=new StringBuilder();	//create string builders for getting the before and after suffixes
-		final StringBuilder newSuffixStringBuilder=new StringBuilder();
-		if(oldRawPath!=null)	//if there is an old raw path
-		{
-			oldSuffixStringBuilder.append(oldRawPath);	//include the old raw path in the old suffix
-		}
-		if(newRawPath!=null)	//if there is a new raw path
-		{
-			newSuffixStringBuilder.append(newRawPath);	//include the new raw path in the new suffix
-		}
-		final String rawQuery=uri.getRawQuery();	//get the raw query, if any
-		if(rawQuery!=null)	//if there is a raw query
-		{
-			oldSuffixStringBuilder.append(QUERY_SEPARATOR).append(rawQuery);	//include the raw query
-			newSuffixStringBuilder.append(QUERY_SEPARATOR).append(rawQuery);
-		}
-		final String rawFragment=uri.getRawFragment();	//get the raw fragment, if any
-		if(rawFragment!=null)	//if there is a raw fragment
-		{
-			oldSuffixStringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment);	//include the raw fragment
-			newSuffixStringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment);
-		}
-		final String uriString=uri.toString();	//create a string form of the URI
-		assert oldRawPath==null || uriString.endsWith(oldSuffixStringBuilder.toString()) : "URI unexpectedly did not end with its constructed suffix.";
-		return URI.create(uriString.substring(0, uriString.length()-oldSuffixStringBuilder.length())+newSuffixStringBuilder.toString());	//create a new URI after replacing the old suffix with the new
-*/
 	}
 
 	/**Creates a new URI identical to the supplied URI with a different host.
@@ -200,21 +189,6 @@ public class URIs
 	{
 		return createURI(uri.getScheme(), uri.getRawUserInfo(), checkInstance(newHost, "Host cannot be null."), uri.getPort(), uri.getRawPath(), uri.getRawQuery(), uri.getRawFragment());	//construct an identical URI except with a different host
 	}
-
-	/**Creates a new URI identical to the supplied URI with a different scheme-specific part.
-	This method expects the scheme-specific part to be unencoded---raw (encoded) parameters will be re-encoded, resulting in corruption.
-	@param uri The URI to change.
-	@param newSSP The unescaped scheme-specific part.
-	@return A new URI with the new scheme-specific part.
-	@exception NullPointerException if the given URI and/or scheme-specific part is <code>null</code>.
-	*/
-/*TODO del; use raw version
-	public static URI changeSchemeSpecificPart(final URI uri, final String newSSP)
-	{
-			//construct an identical URI except for the supplied scheme-specific part
-		return createURI(uri.getScheme(), newSSP, uri.getFragment());
-	}
-*/
 
 	/**Creates a new URI identical to the supplied URI with a different raw scheme-specific part.
 	@param uri The URI to change.
@@ -903,12 +877,12 @@ public class URIs
 		return isPathURI(pathURI);	//indicate whether the constructed URI represents a path
 	}
 
-	/**Checks to see if a given URI is only a path and not a URI with a scheme, authority, and/or fragment.
+	/**Checks to see if a given URI is only a path and not a URI with a scheme, authority, query, and/or fragment.
 	If the given URI is not a path, an exception is thrown.
 	@param uri The URI to check to for path status.
 	@return The given path URI.
 	@exception NullPointerException if the given path URI is <code>null</code>.
-	@exception IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute) and/or authority.
+	@exception IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
 	@exception IllegalArgumentException if the given URI is not a path.
 	@see #isPath(String)
 	*/
@@ -916,29 +890,30 @@ public class URIs
 	{
 		if(!isPathURI(pathURI))	//if the string is not a path
 		{
-			throw new IllegalArgumentException("The given string "+pathURI+" is not a valid sole path URI.");
+			throw new IllegalArgumentException("The given URI "+pathURI+" is not a valid sole path URI.");
 		}
 		return pathURI;	//return the path URI
 	}
 
-	/**Determines if a given URI contains only a path and does not have a scheme, authority, and/or fragment.
+	/**Determines if a given URI contains only a path and does not have a scheme, authority, query, and/or fragment.
 	@param uri The URI to check to for path status.
 	@exception NullPointerException if the given URI is <code>null</code>.
-	@return <code>true</code> if the URI has a path and does not specifiy a scheme (i.e. the URI is not absolute) or authority.
+	@return <code>true</code> if the URI has a path and does not specifiy a scheme (i.e. the URI is not absolute), authority, query, or fragment.
 	*/
 	public static boolean isPathURI(final URI uri)
 	{
 		checkInstance(uri, "URI cannot be null");
-		return uri.getScheme()==null && uri.getRawAuthority()==null && uri.getPath()!=null && uri.getRawFragment()==null;	//see if there is no scheme, no authority, a path, and no fragment
+		return uri.getScheme()==null && uri.getRawAuthority()==null && uri.getPath()!=null && uri.getRawQuery()==null && uri.getRawFragment()==null;	//see if there is no scheme, no authority, a path, no query, and no fragment
 	}
 
 	/**Determines the current level of a hierarchical URI.
-	This method correctly handles {@value URIConstants#INFO_SCHEME} URIs.
+	This is equivalent to resolving the path {@value URIConstants#CURRENT_LEVEL_PATH_SEGMENT} to the URI.
 	@param uri The URI to examine.
-	@return A URI representing the current hierarchical level of a hierarchical URI; equivalent to resolving the path "." to the URI.	
+	@return A URI representing the current hierarchical level of a hierarchical URI.	
 	*/
 	public static URI getCurrentLevel(final URI uri)
 	{
+/*TODO del; info URIs no longer supported
 		if(uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()))	//if this is an info URI (check for opaqueness first, because most URIs will not be opaque)
 		{
 			final String rawSSP=uri.getRawSchemeSpecificPart();	//get the scheme-specific part of the info URI
@@ -951,14 +926,16 @@ public class URIs
 			final String newRawSSP=lastPathSeparatorIndex>=0 ? rawSSP.substring(0, lastPathSeparatorIndex+1) : "";	//the new scheme-specific part is everything up to and including the last path separator character, or the empty string if there is no path separator
 			return changeRawSchemeSpecificPart(uri, newRawSSP);	//change the scheme-specific part of the URI
 		}
+*/
 		return uri.resolve(CURRENT_LEVEL_PATH_SEGMENT);	//resolve the URI to "."
 	}
 
 	/**Determines the parent level of a hierarchical URI.
+	This is equivalent to resolving the path {@value URIConstants#PARENT_LEVEL_PATH_SEGMENT} to the URI.
 	@param uri The URI to examine.
-	@return A URI representing the parent hierarchical level of a hierarchical URI; equivalent to resolving the path ".." to the URI.	
+	@return A URI representing the parent hierarchical level of a hierarchical URI.	
 	*/
-	public static URI getParentLevel(final URI uri)	//TODO fix to work with info URIs
+	public static URI getParentLevel(final URI uri)
 	{
 		return uri.resolve(PARENT_LEVEL_PATH_SEGMENT);	//resolve the URI to ".."
 	}
@@ -1447,7 +1424,18 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 		}
 		return baseURI.resolve(childURI);	//resolve the child URI against the base normally
 	}
-	
+
+	/**Resolves a URI path against a base URI.
+	@param baseURI The base URI against which the path should be resolved.
+	@param path The path to resolve against the base URI.
+	@return A URI that represents the path resolved against the base URI.
+	@exception NullPointerException if the given base URI and/or path is <code>null</code>.
+	*/
+	public static URI resolve(final URI baseURI, final URIPath path)
+	{
+		return baseURI.resolve(path.toURI());	//resolve the path as a URI against the base URI
+	}
+
 	/**Returns a URI constructed from a given URI and a fragment identifier.
 	<p>If the URI is not syntactically correct, an <code>IllegalArgumentException</code>will be thrown.
 	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>

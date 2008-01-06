@@ -37,6 +37,7 @@ public final class URIPath
 	@param path The raw, encoded path information.
 	@exception NullPointerException if the given path is <code>null</code>.
 	@exception IllegalArgumentException if the given string violates URI RFC 2396.
+	@exception IllegalArgumentException if the provided path specifies a URI authority, query, and/or fragment.
 	*/
 	public URIPath(final String path)
 	{
@@ -46,7 +47,7 @@ public final class URIPath
 	/**Creates a URI path from the raw path of the given path URI.
 	@param pathURI The URI that represents a path.
 	@exception NullPointerException if the given path URI is <code>null</code>.
-	@exception IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute) and/or authority.
+	@exception IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
 	@exception IllegalArgumentException if the given URI is not a path.
 	*/
 	public URIPath(final URI pathURI)
@@ -62,14 +63,6 @@ public final class URIPath
 		return uri.getRawPath().startsWith(ROOT_PATH);	//see if the path begins with '/'		
 	}
 
-	/**Determines whether the path is a canonical collection path.
-	@return <code>true</code> if the path ends with a slash ('/').
-	*/
-	public boolean isCollection()
-	{
-		return isCollectionPath(uri.getRawPath());	//see if the raw path is a collection path		
-	}
-
 	/**Checks to see if the path is absolute.
 	If the path is not absolute, an exception is thrown.
 	@return This path.
@@ -83,6 +76,37 @@ public final class URIPath
 			throw new IllegalArgumentException("The path "+this+" is not absolute.");
 		}
 		return this;	//return this path
+	}
+
+	/**Determines whether the path is a canonical collection path.
+	@return <code>true</code> if the path ends with a slash ('/').
+	*/
+	public boolean isCollection()
+	{
+		return isCollectionPath(uri.getRawPath());	//see if the raw path is a collection path		
+	}
+
+	/**Checks to see if the path represents a collection.
+	If the path does not represent a collection, an exception is thrown.
+	@return This path.
+	@exception IllegalArgumentException if the path does not end with a slash ('/').
+	@see #isCollection()
+	*/
+	public URIPath checkCollection() throws IllegalArgumentException
+	{
+		if(!isCollection())	//if this path is not a collection
+		{
+			throw new IllegalArgumentException("The path "+this+" is not a collection.");
+		}
+		return this;	//return this path
+	}
+
+	/**Determines if this is an empty path.
+	@return <code>true</code> if this path is the empty path.
+	*/
+	public boolean isEmpty()
+	{
+		return uri.getRawPath().isEmpty();	//return whether the path is empty
 	}
 
 	/**Checks to see if the path is relative.
@@ -107,6 +131,27 @@ public final class URIPath
 	{
 		final URI normalizedURI=uri.normalize();	//normalize the URI
 		return normalizedURI==uri ? this : new URIPath(normalizedURI);	//if the URI was already normalized and we got back the same URI, we're already normalized
+	}
+
+
+	/**Determines the current level of this path.
+	This is equivalent to resolving the path {@value URIConstants#CURRENT_LEVEL_PATH_SEGMENT} to this path.
+	@return A path representing the current hierarchical level this path.	
+	*/
+	public URIPath getCurrentLevel()
+	{
+		final URI currentLevelURI=URIs.getCurrentLevel(uri);	//get the current level as a URI
+		return currentLevelURI.equals(uri) ? this : new URIPath(currentLevelURI);	//only create a new URI path if it's a different path than this one
+	}
+
+	/**Determines the parent level of this path.
+	This is equivalent to resolving the path {@value URIConstants#PARENT_LEVEL_PATH_SEGMENT} to this path.
+	@return A path representing the parent hierarchical level of a hierarchical URI; equivalent to resolving the path ".." to the URI.	
+	*/
+	public URIPath getParentLevel()
+	{
+		final URI parentLevelURI=URIs.getParentLevel(uri);	//get the parent level as a URI
+		return parentLevelURI.equals(uri) ? this : new URIPath(parentLevelURI);	//only create a new URI path if it's a different path than this one
 	}
 
 	/**Relativizes the given path against this path.
