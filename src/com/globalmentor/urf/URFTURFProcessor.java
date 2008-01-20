@@ -10,6 +10,7 @@ import com.garretwilson.io.ParseIOException;
 import static com.garretwilson.io.ReaderParser.*;
 import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.net.*;
+
 import static com.garretwilson.net.URIs.*;
 import static com.garretwilson.text.CharacterEncoding.*;
 import static com.garretwilson.text.Characters.*;
@@ -296,28 +297,49 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			types.add(lexicalType);	//add the lexical type to our list of types
 			addAssertion(new Assertion(resource, typePropertyResource, lexicalType));	//assert the lexical type
 		}
-		if(c==TYPES_BEGIN)	//check for types
+		while(c==TYPE_BEGIN)	//check for types
 		{
 			foundComponent=true;	//indicate that at least one description component is present
-			check(reader, TYPES_BEGIN);	//read the beginning type delimiter
-			types.addAll(parseSequence(reader, baseURI, defaultNamespaceURI, scopeBase, scopeChain, resource, typePropertyResource, false, TYPES_END, prefixNamespaceURIMap));	//parse the sequence of types, if any, and add them to our list of types
-			check(reader, TYPES_END);	//read the ending type delimiter
+			check(reader, TYPE_BEGIN);	//read the type delimiter
+			final URI typeURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse the type URI
+			final Resource typeResource=determineResourceProxy(typeURI);	//get a proxy to the type resource
+			addAssertion(new Assertion(resource, typePropertyResource, typeResource));	//assert the type
+			types.add(typeResource);	//add the type to our list of types
 			c=skipSeparators(reader);	//skip separators and peek the next character
+			if(c==SELECTOR_BEGIN)	//check for a selector
+			{
+				check(reader, SELECTOR_BEGIN);	//read the beginning selectordelimiter
+				final Resource selectorPropertyResource=determineResourceProxy(SELECTOR_PROPERTY_URI);	//get a proxy to the selector property resource
+				final Resource listResource=createResourceProxy();	//create a proxy for the list resource
+				addAssertion(new Assertion(resource, selectorPropertyResource, listResource, new NameValuePair<Resource, Resource>(typePropertyResource, typeResource)));	//assert the list value for the selector property as a scoped property of the type
+				final Resource listType=determineResourceProxy(LIST_CLASS_URI);	//get a proxy to the list type
+				addAssertion(new Assertion(listResource, typePropertyResource, listType));	//assert the list type for the list
+				parseListContents(reader, baseURI, listResource, SELECTOR_END, prefixNamespaceURIMap);	//parse the selector elements
+				check(reader, SELECTOR_END);	//read the ending selector delimiter
+				c=skipSeparators(reader);	//skip separators and peek the next character
+			}
 		}
-		final URI typeURI=!types.isEmpty() ? types.get(0).getURI() : null;	//the first type, if any, will determine the default namespace for properties and list/set short forms
-		if(c==INITS_BEGIN)	//check for inits
+		while(c==SUBCLASS_OF_BEGIN)	//check for subclass of
 		{
 			foundComponent=true;	//indicate that at least one description component is present
-			check(reader, INITS_BEGIN);	//read the beginning init delimiter
-			final Resource initPropertyResource=determineResourceProxy(INITS_PROPERTY_URI);	//get a proxy to the init property resource
-			final Resource listResource=createResourceProxy();	//create a proxy for the list resource
-			addAssertion(new Assertion(resource, initPropertyResource, listResource));	//assert the list for the inits property
-			final Resource listType=determineResourceProxy(LIST_CLASS_URI);	//get a proxy to the list type
-			addAssertion(new Assertion(listResource, typePropertyResource, listType));	//assert the list type for the list
-			parseListContents(reader, baseURI, listResource, INITS_END, prefixNamespaceURIMap);	//parse the init elements
-			check(reader, INITS_END);	//read the ending init delimiter
+			check(reader, SUBCLASS_OF_BEGIN);	//read the superclass delimiter
+			final Resource subclassOfPropertyResource=determineResourceProxy(SUBCLASS_OF_PROPERTY_URI);	//get a proxy to the superclass property resource
+			final URI subclassOfURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse the superclass URI
+			final Resource subclassOfResource=determineResourceProxy(subclassOfURI);	//get a proxy to the superclass resource
+			addAssertion(new Assertion(resource, subclassOfPropertyResource, subclassOfResource));	//assert the superclass
 			c=skipSeparators(reader);	//skip separators and peek the next character
-		}
+		}		
+		while(c==IMPLEMENTATION_OF_BEGIN)	//check for implementation of
+		{
+			foundComponent=true;	//indicate that at least one description component is present
+			check(reader, IMPLEMENTATION_OF_BEGIN);	//read the interface delimiter
+			final Resource implementationOfPropertyResource=determineResourceProxy(IMPLEMENTATION_OF_PROPERTY_URI);	//get a proxy to the interface property resource
+			final URI implementationOfURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse the interface URI
+			final Resource implementationOfResource=determineResourceProxy(implementationOfURI);	//get a proxy to the interface resource
+			addAssertion(new Assertion(resource, implementationOfPropertyResource, implementationOfResource));	//assert the interface
+			c=skipSeparators(reader);	//skip separators and peek the next character
+		}		
+		final URI typeURI=!types.isEmpty() ? types.get(0).getURI() : null;	//the first type, if any, will determine the default namespace for properties
 		if(c==PROPERTIES_BEGIN)	//check for properties
 		{
 			foundComponent=true;	//indicate that at least one description component is present
@@ -480,6 +502,48 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			check(reader, SET_END);	//read the ending set delimiter
 			c=skipSeparators(reader);	//skip separators and peek the next character
 		}
+		if(c==MAP_BEGIN)	//if a map is next
+		{
+			foundComponent=true;	//indicate that at least one description component is present
+			if(types.isEmpty())	//if no types have been specified
+			{
+				final Resource mapType=determineResourceProxy(MAP_CLASS_URI);	//get a proxy to the map type
+				types.add(mapType);	//add a proxy to the map type
+				addAssertion(new Assertion(resource, typePropertyResource, mapType));	//assert the map type
+			}
+			check(reader, MAP_BEGIN);	//read the beginning map delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
+			if(c!=MAP_END)	//if this is not an empty map
+			{
+				final Resource entryPredicate=determineResourceProxy(ENTRY_PROPERTY_URI);	//get the entry property resource proxy
+				final Resource mapEntryType=determineResourceProxy(MAP_ENTRY_CLASS_URI);	//get the map entry type resource proxy
+				final Resource keyPredicate=determineResourceProxy(KEY_PROPERTY_URI);	//get the key property resource proxy
+				final Resource valuePredicate=determineResourceProxy(VALUE_PROPERTY_URI);	//get the key property resource proxy
+				while(c>=0)	//while the end of the data has not been reached
+				{
+					final Resource mapEntryResource=createResourceProxy();	//create a proxy for the map entry resource
+					addAssertion(new Assertion(mapEntryResource, typePropertyResource, mapEntryType));	//assert the map entry type for the map entry
+					addAssertion(new Assertion(resource, entryPredicate, mapEntryResource));	//assert that the map entry is an entry
+					final Resource key=parseResource(reader, baseURI, mapEntryResource, new ArrayList<NameValuePair<Resource,Resource>>(), keyPredicate, prefixNamespaceURIMap);	//parse the key element, giving a scope chain and predicate in case a scope is formed for the value
+					addAssertion(new Assertion(mapEntryResource, keyPredicate, key));	//assert the key is a key of the map entry
+					check(reader, PROPERTY_VALUE_DELIMITER);	//read the property value delimiter
+					final Resource value=parseResource(reader, baseURI, mapEntryResource, new ArrayList<NameValuePair<Resource,Resource>>(), valuePredicate, prefixNamespaceURIMap);	//parse the value element, giving a scope chain and predicate in case a scope is formed for the value
+					addAssertion(new Assertion(mapEntryResource, valuePredicate, value));	//assert the value is a value of the map entry
+					c=skipSeparators(reader);	//skip separators and peek the next character
+					if(c==LIST_DELIMITER)	//if this is a list delimiter
+					{
+						check(reader, LIST_DELIMITER);	//skip the list delimiter
+						c=skipSeparators(reader);	//skip separators and peek the next character
+					}
+					else	//if there's anything besides a list delimiter, we've reached the end of the map
+					{
+						break;	//stop parsing the list
+					}
+				}
+			}
+			check(reader, MAP_END);	//read the ending map delimiter
+			c=skipSeparators(reader);	//skip separators and peek the next character
+		}
 		if(!foundComponent)	//if there were no description components
 		{
 			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
@@ -553,6 +617,8 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	protected List<Resource> parseSequence(final Reader reader, final URI baseURI, final URI defaultNamespaceURI, final Resource scopeBase, final ArrayList<NameValuePair<Resource, Resource>> scopeChain, final Resource subject, final Resource predicate, final boolean scoped, final char sequenceEnd, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
 	{
 		final Resource orderPredicate=determineResourceProxy(ORDER_PROPERTY_URI);	//get the order property for specifying scoped order for each value
+		final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
+		final Resource integerClassResource=determineResourceProxy(INTEGER_CLASS_URI);	//get a proxy to the integer class resource
 		long order=0;	//start out with an order of zero
 		int c=skipSeparators(reader);	//skip separators and peek the next character
 		if(c!=sequenceEnd)	//if this is not an empty list
@@ -578,7 +644,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				}
 				newScopeChain.add(new NameValuePair<Resource, Resource>(predicate, sequenceObject));	//add another element to the scope chain for this new sequence object we parsed
 				addAssertion(new Assertion(newScopeBase, orderPredicate, orderObject, newScopeChain.toArray(new NameValuePair[newScopeChain.size()])));	//assert the scoped order assertion
-				//TODO assert that the order is an integer
+				addAssertion(new Assertion(orderObject, typePropertyResource, integerClassResource));	//assert that the order is an integer
 				++order;	//increaes the order for next time
 				c=skipSeparators(reader);	//skip separators and peek the next character
 				if(c==LIST_DELIMITER)	//if this is a list delimiter
@@ -665,7 +731,25 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	protected URI parseReference(final Reader reader, final URI baseURI) throws IOException, ParseIOException, DataException
 	{
-		return parseReference(reader, baseURI, null, (Map<String, URI>)EMPTY_MAP);	//parse a reference with no context URI or namespace prefixes
+		return parseReference(reader, baseURI, (Map<String, URI>)EMPTY_MAP);	//parse a reference with no namespace prefixes
+	}
+
+	/**Parses a reference to a resource and returns the URI the reference represents, if any.
+	For references, the current position must be that of the first character of the reference.
+	If a reference was parsed, the new position will be that of the first non-separator character after the reference or the end of the reader.
+	If no reference was encountered, the new position will be the same as the old position.
+	@param reader The reader the contents of which to be parsed.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param prefixNamespaceURIMap The map of namespace URIs associated with prefixes; a new map containing the same information should be created if new namespaces should be added for a particular resource and it children.
+	@return The reference parsed from the reader, or <code>null</code> if there is no reference at the current position.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters before the current reference is completely parsed.
+	@exception DataException if there was an error with information being processed.
+	*/
+	protected URI parseReference(final Reader reader, final URI baseURI, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
+	{
+		return parseReference(reader, baseURI, null, prefixNamespaceURIMap);	//parse a reference with no default namespace URI
 	}
 
 	/**Parses a reference to a resource and returns the URI the reference represents, if any.
@@ -1211,9 +1295,9 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		final URI uri;	//we'll store the unresolve URI here
 		try
 		{
-			if(c==TYPES_BEGIN)	//if the URI begins with a type declaration
+			if(c==TYPE_BEGIN)	//if the URI begins with a type declaration
 			{
-				check(reader, TYPES_BEGIN);	//read the beginning type delimiter
+				check(reader, TYPE_BEGIN);	//read the type delimiter
 				skipSeparators(reader);	//skip separators
 				final Resource type=parseResource(reader, baseURI, null, null, null, prefixNamespaceURIMap);	//parse the type resource
 				final URI typeURI=type.getURI();	//get the URI of the type
@@ -1221,10 +1305,12 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				{
 					throw new DataException("Lexical URI provided no type URI.");
 				}
-				check(reader, TYPES_END);	//read the ending type delimiter
+				skipSeparators(reader);	//skip separators
+				check(reader, SELECTOR_BEGIN);	//read the beginning selector delimiter
 				skipSeparators(reader);	//skip separators
 				lexicalForm=parseString(reader, STRING_BEGIN,	STRING_END);	//parse the lexical form, which must appear next
 				skipSeparators(reader);	//skip separators
+				check(reader, SELECTOR_END);	//read the ending selector delimiter
 				check(reader, uriEnd);	//read the ending URI delimiter
 				uri=createLexicalURI(typeURI, lexicalForm);	//create a lexical URI using the lexical form and the type URI
 			}

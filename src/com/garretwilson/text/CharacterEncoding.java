@@ -43,10 +43,10 @@ public class CharacterEncoding
 	/**Whether a character encoding is little-endiand or big-endian.*/
 	public enum Endian{LE, BE};
 
-	/**The lowercase encoding family (UTF-8, UTF-16, or UCS-4).*/
+	/**The encoding family (UTF-8, UTF-16, or UCS-4).*/
 	private final String family;
 
-		/**@return The lowercase encoding family (UTF-8, UTF-16, or UCS-4).*/
+		/**@return The encoding family (UTF-8, UTF-16, or UCS-4).*/
 		public String getFamily() {return family;}
 
 	/**Whether the character encoding is little-endian or big-endian, or <code>null</code> if endianness is not specified.*/
@@ -69,11 +69,11 @@ public class CharacterEncoding
 	*/
 	public String toString()
 	{
-		final StringBuilder stringBuilder=new StringBuilder(getFamily());	//get the generic encoding type in lowercase
+		final StringBuilder stringBuilder=new StringBuilder(getFamily());	//get the generic encoding type
 		final Endian endian=getEndian();	//get the endianness
 		if(endian!=null)	//if endianness is specified
 		{
-			stringBuilder.append(endian.toString());	//add the endianness string in lowercase
+			stringBuilder.append(endian.toString());	//add the endianness string
 		}
 		return stringBuilder.toString();	//return the constructed encoding string
 	}
@@ -132,13 +132,13 @@ public class CharacterEncoding
 
 	/**Determines the family from a complete encoding name.
 	@param encoding The encoding string.
-	@return The lowercase family name, without specifying endianness.
+	@return The family name, without specifying endianness.
 	*/
 	public static String getFamily(final String encoding)
 	{
 		final Endian endian=getEndian(encoding);	//get the endianness of the encoding
 			//if endianness is specified, remove that part from the string
-		return endian!=null ? encoding.substring(0, encoding.length()-endian.toString().length()).toLowerCase() : encoding.toLowerCase();
+		return endian!=null ? encoding.substring(0, encoding.length()-endian.toString().length()) : encoding;
 	}
 
 	/**Determines the endianness of the given encoding.

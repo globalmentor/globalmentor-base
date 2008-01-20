@@ -2,6 +2,7 @@ package com.globalmentor.urf;
 
 import java.io.*;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.*;
 
 import static java.util.Collections.*;
@@ -10,20 +11,20 @@ import java.util.regex.*;
 
 import javax.mail.internet.ContentType;
 
+import static com.garretwilson.io.Charsets.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
-
-import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.text.RegularExpression;
 import com.garretwilson.util.*;
+import static com.garretwilson.util.CollectionUtilities.*;
+import static com.garretwilson.util.LocaleUtilities.*;
+
 import com.globalmentor.java.Classes;
 import com.globalmentor.java.Longs;
 import com.globalmentor.urf.content.*;
 import com.globalmentor.urf.select.Select;
 
-import static com.garretwilson.util.CollectionUtilities.*;
-import static com.garretwilson.util.LocaleUtilities.*;
 import static com.globalmentor.java.Booleans.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.CharacterUtilities.*;
@@ -82,6 +83,8 @@ public class URF
 	public final static URI LIST_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "List");
 	/**The URI of the URF <code>Map</code> class.*/
 	public final static URI MAP_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Map");
+	/**The URI of the URF <code>MapEntry</code> class.*/
+	public final static URI MAP_ENTRY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "MapEntry");
 	/**The URI of the URF <code>Number</code> class.*/
 	public final static URI NUMBER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Number");
 	/**The URI of the URF <code>Ordinal</code> class.*/
@@ -110,8 +113,12 @@ public class URF
 		//properties
 	/**The URI of the property indicating an element of a container such as a set.*/
 	public final static URI ELEMENT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "element");
-	/**A list of initialization arguments to be used in resource construction.*/
-	public final static URI INITS_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "inits");
+	/**The URI of the property indicating an entry of a map.*/
+	public final static URI ENTRY_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "entry");
+	/**The interface implemented by a class.*/
+	public final static URI IMPLEMENTATION_OF_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "implementationOf");
+	/**The URI of the property indicating the key of a map entry.*/
+	public final static URI KEY_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "key");
 	/**A short name meant for human consumption which is perhaps more appropriate than display of the class or property name but perhaps less complete than a full title.*/
 	public final static URI LABEL_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "label");
 	/**The name of a resource meant for machine processing, which may differ from that indicated by the URI, if any.*/
@@ -122,10 +129,16 @@ public class URF
 	public final static URI ORDER_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "order");
 	/**The URI of the URF predicate property.*/
 	public final static URI PREDICATE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "predicate");
+	/**A list of resources to be used to select a resoruce of a particular type.*/
+	public final static URI SELECTOR_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "selector");
 	/**The URI of the URF subject property.*/
 	public final static URI SUBJECT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "subject");
+	/**The superclass extended by a class.*/
+	public final static URI SUBCLASS_OF_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "subclassOf");
 	/**The URI of the URF type property.*/
 	public final static URI TYPE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "type");
+	/**The URI of the property indicating the value of a map entry.*/
+	public final static URI VALUE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "value");
 
 		//lexical namespaces
 	/**The binary lexical namespace URI.*/
@@ -567,7 +580,7 @@ public class URF
 		<dt><code>byte[]</code></dt> <dd>{@value #BINARY_NAMESPACE_URI}</dd>
 		<dt>{@link Boolean}</dt> <dd>{@value #BOOLEAN_NAMESPACE_URI}</dd>
 		<dt>{@link Character}</dt> <dd>{@value #CHARACTER_NAMESPACE_URI}</dd>
-		<dt>{@link CharacterEncoding}</dt> <dd>{@value Content#CHARACTER_ENCODING_NAMESPACE_URI}</dd>
+		<dt>{@link Charset}</dt> <dd>{@value Content#CHARSET_NAMESPACE_URI}</dd>
 		<dt>{@link ContentType}</dt> <dd>{@value Content#MEDIA_TYPE_NAMESPACE_URI}</dd>
 		<dt>{@link Integer}</dt> <dd>{@value #INTEGER_NAMESPACE_URI}</dd>
 		<dt>{@link Double}</dt> <dd>{@value #REAL_NAMESPACE_URI}</dd>
@@ -609,9 +622,9 @@ public class URF
 			{
 				return createCharacterURI(((Character)object).charValue());	//return a character URI
 			}
-			else if(object instanceof CharacterEncoding)	//if this is a character encoding
+			else if(object instanceof Charset)	//if this is a charset
 			{
-				return Content.createCharacterEncodingURI(((CharacterEncoding)object));	//return a character encoding URI
+				return Content.createCharsetURI(((Charset)object));	//return a charset URI
 			}
 			else if(object instanceof ContentType)	//if this is a content type
 			{
@@ -701,9 +714,19 @@ public class URF
 	@return The URF map object represented by the given resource, or <code>null</code> if the resource is not an instance of {@link URFMapResource}.
 	*/
 	@SuppressWarnings("unchecked")	//we must trust that they asked for the correct generic type; a class cast exception will be thrown later if the incorrect generic type was requested
-	public static <K extends URI, V extends URFResource> URFMapResource<K, V> asMapInstance(final Resource resource)
+	public static <K extends URFResource, V extends URFResource> URFMapResource<K, V> asMapInstance(final Resource resource)
 	{
 		return resource instanceof URFMapResource ? (URFMapResource<K, V>)resource : null;	//if a map was given, return it with the requested generic type
+	}
+
+	/**Determines the URF map entry object, if any, represented by the given resource.
+	@param resource The resource which is expected to represent an URF map entry, or <code>null</code>.
+	@return The URF map entry object represented by the given resource, or <code>null</code> if the resource is not an instance of {@link URFMapEntryResource}.
+	*/
+	@SuppressWarnings("unchecked")	//we must trust that they asked for the correct generic type; a class cast exception will be thrown later if the incorrect generic type was requested
+	public static <K extends URFResource, V extends URFResource> URFMapEntryResource<K, V> asMapEntryInstance(final Resource resource)
+	{
+		return resource instanceof URFMapEntryResource ? (URFMapEntryResource<K, V>)resource : null;	//if a map entry was given, return it with the requested generic type
 	}
 
 	/**Determines the Java object represented by the given resource based solely upon its URI.
@@ -725,7 +748,7 @@ public class URF
 		<dt>{@value #CHARACTER_NAMESPACE_URI}</dt> <dd>{@link Character}</dd>
 		<dt>{@value #INTEGER_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
 		<dt>{@value #LANGUAGE_NAMESPACE_URI}</dt> <dd>{@link Locale}</dd>
-		<dt>{@value Content#CHARACTER_ENCODING_NAMESPACE_URI}</dt> <dd>{@link CharacterEncoding}</dd>
+		<dt>{@value Content#CHARSET_NAMESPACE_URI}</dt> <dd>{@link Charset}</dd>
 		<dt>{@value Content#MEDIA_TYPE_NAMESPACE_URI}</dt> <dd>{@link ContentType}</dd>
 		<dt>{@value #ORDINAL_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
 		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Real}</dd>
@@ -798,9 +821,9 @@ public class URF
 				{
 					return asCharacter(resourceURI);	//return a character
 				}
-				else if(Content.CHARACTER_ENCODING_NAMESPACE_URI.equals(namespaceURI))	//character encoding
+				else if(Content.CHARSET_NAMESPACE_URI.equals(namespaceURI))	//charset
 				{
-					return Content.asCharacterEncoding(resourceURI);	//return a character encoding
+					return Content.asCharset(resourceURI);	//return a charset
 				}
 				else if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//integer
 				{
@@ -862,14 +885,7 @@ public class URF
 		if(resourceURI!=null && BINARY_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a binary URI was given
 		{
 			final String base64urlString=getLocalName(resourceURI);	//get the base64url-encoded binary data from the local name
-			try
-			{
-				return Base64.decode(base64urlString.getBytes(CharacterEncoding.UTF_8), 0, base64urlString.length(), Base64.URL_SAFE&Base64.DONT_BREAK_LINES);	//decode and return the data
-			}
-			catch(final UnsupportedEncodingException unsupportedEncodingException)	//the UTF-8 encoding should always be supported
-			{
-				throw new AssertionError(unsupportedEncodingException);
-			}
+			return Base64.decode(base64urlString.getBytes(UTF_8_CHARSET), 0, base64urlString.length(), Base64.URL_SAFE&Base64.DONT_BREAK_LINES);	//decode and return the data
 		}
 		return null;	//no boolean could be found
 	}
@@ -1719,6 +1735,7 @@ public class URF
 		<dt>{@value #LIST_CLASS_URI}</dt> <dd>{@link URFListResource}</dd>
 		<dt>{@value #SET_CLASS_URI}</dt> <dd>{@link URFSetResource}</dd>
 		<dt>{@value #MAP_CLASS_URI}</dt> <dd>{@link URFMapResource}</dd>
+		<dt>{@value #MAP_ENTRY_CLASS_URI}</dt> <dd>{@link URFMapEntryResource}</dd>
 	</dl>
 	*/
 	public final static DefaultURFResourceFactory DEFAULT_URF_RESOURCE_FACTORY=new DefaultURFResourceFactory()
@@ -1743,7 +1760,11 @@ public class URF
 					}
 					else if(MAP_CLASS_URI.equals(typeURI))	//if this is a map
 					{
-						return new URFMapResource<URI, URFResource>(resourceURI);	//create a new map
+						return new URFMapResource<URFResource, URFResource>(resourceURI);	//create a new map
+					}
+					else if(MAP_ENTRY_CLASS_URI.equals(typeURI))	//if this is a map entry
+					{
+						return new URFMapEntryResource<URFResource, URFResource>(resourceURI);	//create a new map entry
 					}
 					return super.createResource(resourceURI, typeURI);	//if we don't recognize the type, create a default resource
 				}

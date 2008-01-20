@@ -132,18 +132,14 @@ public class PLOOPURFGenerator
 			}
 			else if(object instanceof Map && Map.class.isAssignableFrom(preferredType))	//if a map was requested
 			{
-				final URFMapResource<URI, URFResource> mapResource=new URFMapResource<URI, URFResource>();	//create a new URF map resource
+				final URFMapResource<URFResource, URFResource> mapResource=new URFMapResource<URFResource, URFResource>();	//create a new URF map resource
 				for(final Map.Entry<?, ?> mapEntry:((Map<?, ?>)object).entrySet())	//for each entry in the map
 				{
 					final Object mapEntryKey=mapEntry.getKey();	//get the entry key
 					final URFResource mapEntryKeyResource=generateURFResource(mapEntryKey);	//generate an URF resource from the entry key TODO add support for null
-					final URI keyURI=mapEntryKeyResource.getURI();	//get the URI of the key
-					if(keyURI!=null)	//if the map key could not be converted to a resource with a URI, this implementation does not support it
-					{
-						throw new IllegalArgumentException("Map key "+mapEntryKey+" cannot be converted to an URF resource with a URI.");
-					}
-					final URFResource mapEntryValueResource=generateURFResource(mapEntry.getValue());	//generate an URF resource from the entry value TODO add support for null
-					mapResource.put(keyURI, mapEntryValueResource);	//store the mapping in the URF map resource
+					final Object mapEntryValue=mapEntry.getValue();	//get the entry value
+					final URFResource mapEntryValueResource=generateURFResource(mapEntryValue);	//generate an URF resource from the entry value TODO add support for null
+					mapResource.put(mapEntryKeyResource, mapEntryValueResource);	//store the mapping in the URF map resource
 				}
 				return mapResource;	//return the map resource
 			}
@@ -182,7 +178,7 @@ public class PLOOPURFGenerator
 					{						
 						final Method setterMethod=getCompatibleSetterMethod(objectClass, getterPropertyName, propertyType);	//get a corresponding setter method
 						boolean useProperty=setterMethod!=null;	//start off assuming we won't use this property unless there is a corresponding setter
-/*TODO fix to add constructor values as urf.inits, or remove this part altogether
+/*TODO fix to add constructor values as urf.selector, or remove this part altogether
 						if(!useProperty)	//if we think we shouldn't use the property, check to see if the property is needed for construction
 						{
 							if(getPublicDefaultConstructor(objectClass)==null)	//if the class doesn't have a public default constructor
@@ -240,7 +236,6 @@ public class PLOOPURFGenerator
 	@param resource The URF resource representing the given object.
 	@param object The object for which a property should be stored in the URF resource.
 	@param propertyName The name of the property to set.
-	@return The URF property value that was added, or <code>null</code> if no URF property value was added because there was no object property value.
 	@exception NullPointerException if the given resource, object, and/or property name is <code>null</code>.
  	@exception IllegalArgumentException if the object has no getter method for the given property.
  	@exception IllegalArgumentException if one of the properties of the given object is not accessible.

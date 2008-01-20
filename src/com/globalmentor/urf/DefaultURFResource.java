@@ -7,7 +7,6 @@ import com.garretwilson.net.URIs;
 import com.globalmentor.java.Longs;
 
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.urf.TURF.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.dcmi.DCMI.getTitle;
 
@@ -95,15 +94,6 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 		{
 			writeLock().unlock();	//always release the write lock
 		}
-	}
-
-	/**Retrieves the first list of inits declared for this resource, if any.
-	@return The first list of inits declared for this resource, or <code>null</code> if no inits list is declared for this resource.
-	@see URF#INITS_PROPERTY_URI
-	*/
-	public URFListResource<?> getInits()
-	{
-		return asListInstance(getPropertyValue(INITS_PROPERTY_URI));	//return the first inits list
 	}
 
 	/**Returns the label of this resource, if any.

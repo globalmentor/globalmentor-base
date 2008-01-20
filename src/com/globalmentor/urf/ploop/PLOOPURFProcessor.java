@@ -35,7 +35,7 @@ Any redistribution of this source code or derived source code must include these
 */
 public class PLOOPURFProcessor
 {
-	
+
 	/**The default arguments that can be used in calling class constructors.*/
 	private final Set<Object> defaultConstructorArguments=new CopyOnWriteArraySet<Object>();
 
@@ -142,7 +142,7 @@ public class PLOOPURFProcessor
 	<ol>
 		<li>If the resource is an {@link URFListResource}, a new {@link List} containing converted list element objects will be returned.</li>
 		<li>If the resource is an {@link URFSetResource}, a new {@link Set} containing converted set element objects will be returned.</li>
-		<li>If the resource is an {@link URFMapResource}, a new {@link Map} containing the converted property URIs and converted value objects will be returned.</li>
+		<li>If the resource is an {@link URFMapResource}, a new {@link Map} containing the converted keys and converted value objects will be returned.</li>
 		<li>If the resource specifies a Java type, the indicated Java class is instantiated and initialized from the resource description.</li>
 		<li>If the resource otherwise indicates a value that can be represented by a Java object (such as an integer), such an object will be returned.</li>
 	</ul>
@@ -204,16 +204,9 @@ public class PLOOPURFProcessor
 			urfMapResource.readLock().lock();	//get a read lock
 			try
 			{
-				for(final Map.Entry<? extends URI, ? extends URFResource> mapEntry:urfMapResource.entrySet())	//for each map entry in the URF map
+				for(final Map.Entry<? extends URFResource, ? extends URFResource> mapEntry:urfMapResource.entrySet())	//for each map entry in the URF map
 				{
-					final URI mapEntryKey=mapEntry.getKey();	//get the property URI
-					final Object keyObject=asObject(mapEntryKey);	//try to convert the property URI key to an object
-					if(keyObject==null)	//if the property URI could not be converted to an object
-					{
-						throw new DataException("Map entry key "+mapEntryKey+" could not be converted to an object.");
-					}
-					final Object valueObject=getObject(mapEntry.getValue());	//get or create an object from the URF resource value
-					map.put(keyObject, valueObject);	//store the converted objects in the map 
+					map.put(getObject(mapEntry.getKey()), getObject(mapEntry.getValue()));	//get or create objects for the key and value, and store them in the map 
 				}
 			}
 			finally
@@ -230,10 +223,9 @@ public class PLOOPURFProcessor
 				return simpleObject;	//return the object
 			}
 			Class<?> valueClass=null;	//we'll try to find a Java class from one of the types
-			final Iterator<URFResource> typeIterator=resource.getTypes().iterator();	//get an iterator to the types
-			while(valueClass==null && typeIterator.hasNext())	//while we haven't found a value class and we're not out of types
+			for(final URFProperty typeProperty:resource.getProperties(TYPE_PROPERTY_URI))	//look at each type
 			{
-				final URFResource type=typeIterator.next();	//get the next type
+				final URFResource type=typeProperty.getValue();	//get this type
 				try
 				{
 					valueClass=asClass(type);	//try to get a class from the type
@@ -242,95 +234,92 @@ public class PLOOPURFProcessor
 				{
 					throw new DataException(classNotFoundException);
 				}
-			}
-			if(valueClass!=null)	//if we know the value class, try to construct a Java object
-			{
-				final Map<URI, PropertyDescription> propertyDescriptionMap=getPropertyDescriptionMap(valueClass, resource);	//get the property descriptions from the resource description
-				Constructor<?> constructor=null;	//we'll store an appropriate constructor here
-				Object[] arguments=null;	//we'll keep track of the arguments here
-				final Constructor<?>[] constructors=valueClass.getConstructors();	//get all available constructors
-				final URFListResource<?> inits=resource.getInits();	//get the list of inits of the resource, if any
-				if(inits!=null)	//if inits were specified
+				if(valueClass!=null)	//if we know the value class, try to construct a Java object
 				{
-					final int argumentCount=inits.size();	//see how many init arguments there are
-					for(final Constructor<?> candidateConstructor:constructors)	//look at each constructor to find one with the correct number of parameters
+					final Map<URI, PropertyDescription> propertyDescriptionMap=getPropertyDescriptionMap(valueClass, resource);	//get the property descriptions from the resource description
+					Constructor<?> constructor=null;	//we'll store an appropriate constructor here
+					Object[] arguments=null;	//we'll keep track of the arguments here
+					final Constructor<?>[] constructors=valueClass.getConstructors();	//get all available constructors
+					final URFListResource<?> selector=asListInstance(typeProperty.getScope().getPropertyValue(SELECTOR_PROPERTY_URI));	//get the selector list, if any
+					if(selector!=null)	//if a selector was specified
 					{
-						final Class<?>[] parameterTypes=candidateConstructor.getParameterTypes();	//get the parameter types for this constructor
-						if(parameterTypes.length==argumentCount)	//if this constructor has the correct number of parameters
+						final int argumentCount=selector.size();	//see how many selector arguments there are
+						for(final Constructor<?> candidateConstructor:constructors)	//look at each constructor to find one with the correct number of parameters
 						{
-							arguments=new Object[argumentCount];	//create an array sufficient for the arguments
-							for(int parameterIndex=0; parameterIndex<argumentCount; ++parameterIndex)	//for each parameter, as long we we have matching parameters
+							final Class<?>[] parameterTypes=candidateConstructor.getParameterTypes();	//get the parameter types for this constructor
+							if(parameterTypes.length==argumentCount)	//if this constructor has the correct number of parameters
 							{
-								final Class<?> parameterType=parameterTypes[parameterIndex];	//get this parameter type
-								final Object argument=convertObject(getObject(inits.get(parameterIndex)), parameterType);	//get an object from the init and covert it to the correct type
-								if(argument!=null)	//if we successfully converted this constructor argument
+								arguments=new Object[argumentCount];	//create an array sufficient for the arguments
+								for(int parameterIndex=0; parameterIndex<argumentCount; ++parameterIndex)	//for each parameter, as long we we have matching parameters
 								{
-									arguments[parameterIndex]=argument;	//store the argument
+									final Class<?> parameterType=parameterTypes[parameterIndex];	//get this parameter type
+									final Object argument=convertObject(getObject(selector.get(parameterIndex)), parameterType);	//get an object from the selector resource and covert it to the correct type
+									if(argument!=null)	//if we successfully converted this constructor argument
+									{
+										arguments[parameterIndex]=argument;	//store the argument
+									}
+									else	//if we couldn't convert this constructor argument
+									{
+										arguments=null;	//these arguments won't work
+										break;	//stop looking at this constructor
+									}								
 								}
-								else	//if we couldn't convert this constructor argument
-								{
-									arguments=null;	//these arguments won't work
-									break;	//stop looking at this constructor
-								}								
+							}
+							if(arguments!=null)	//if these arguments worked
+							{
+								constructor=candidateConstructor;	//use this constructor
+								break;	//stop looking for a matching constructor
 							}
 						}
-						if(arguments!=null)	//if these arguments worked
+						if(constructor==null)	//if we didn't find an appropriate constructor
 						{
-							constructor=candidateConstructor;	//use this constructor
-							break;	//stop looking for a matching constructor
+							throw new DataException("Value class "+valueClass+" does not have a constructor appropriate for the specified selector parameters: "+CollectionUtilities.toString(selector));
 						}
 					}
-					if(constructor==null)	//if we didn't find an appropriate constructor
+					else	//if there is no type selector
 					{
-						throw new DataException("Value class "+valueClass+" does not have a constructor appropriate for the specified init parameters: "+CollectionUtilities.toString(inits));
-					}
-				}
-				else	//if there is no urf.inits properties
-				{
-					if(Resource.class.isAssignableFrom(valueClass))	//if the value class is a Resource, see if we can create it with a single URI
-					{
-						constructor=getCompatibleConstructor(valueClass, URI.class);	//see if there is a single URI parameter constructor
-						if(constructor!=null)	//if there is a single URI parameter constructor for the Resource
+						if(Resource.class.isAssignableFrom(valueClass))	//if the value class is a Resource, see if we can create it with a single URI
 						{
-							arguments=new Object[]{resource.getURI()};	//the resource URI will be constructor argument
+							constructor=getCompatibleConstructor(valueClass, URI.class);	//see if there is a single URI parameter constructor
+							if(constructor!=null)	//if there is a single URI parameter constructor for the Resource
+							{
+								arguments=new Object[]{resource.getURI()};	//the resource URI will be constructor argument
+							}
+						}
+						if(constructor==null)	//if we still don't have a constructor
+						{
+							constructor=getPublicDefaultConstructor(valueClass);	//see if there's a default constructor
+							if(constructor!=null)	//if there is a default constructor
+							{
+								arguments=EMPTY_OBJECT_ARRAY;	//the default constructor has no arguments
+							}
 						}
 					}
-					if(constructor==null)	//if we still don't have a constructor
+					if(constructor!=null)	//if we found a constructor
 					{
-						constructor=getPublicDefaultConstructor(valueClass);	//see if there's a default constructor
-						if(constructor!=null)	//if there is a default constructor
+						assert arguments!=null : "Found constructor but missing arguments.";
+						try
 						{
-							arguments=EMPTY_OBJECT_ARRAY;	//the default constructor has no arguments
+							final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
+							setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
+							return object;	//return the constructed and initialized object
+						}
+						catch(final InstantiationException instantiationException)
+						{
+							throw new DataException(instantiationException);
+						}
+						catch(final IllegalAccessException illegalAccessException)
+						{
+							throw new DataException(illegalAccessException);
 						}
 					}
-				}
-				if(constructor!=null)	//if we found a constructor
-				{
-					assert arguments!=null : "Found constructor but missing arguments.";
-					try
+					else	//if we didn't find a constructor
 					{
-						final Object object=constructor.newInstance(arguments);	//invoke the constructor with the arguments
-						setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object with the properties
-						return object;	//return the constructed and initialized object
+						throw new DataException("Value class "+valueClass+" does not have an appropriate constructor.");						
 					}
-					catch(final InstantiationException instantiationException)
-					{
-						throw new DataException(instantiationException);
-					}
-					catch(final IllegalAccessException illegalAccessException)
-					{
-						throw new DataException(illegalAccessException);
-					}
-				}
-				else	//if we didn't find a constructor
-				{
-					throw new DataException("Value class "+valueClass+" does not have an appropriate constructor.");						
 				}
 			}
-			else	//if we don't know the value class
-			{
-				throw new DataException("Value resource missing type information: "+URF.toString(resource));
-			}
+			throw new DataException("Value resource missing type information: "+URF.toString(resource));
 		}
 	}
 

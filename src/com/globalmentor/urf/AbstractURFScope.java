@@ -1361,7 +1361,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 
 		/**Removes from the underlying collection the last element returned by the iterator.
 		This implementation does not support removal, and will always throw an {@link UnsupportedOperationException}.
-		@exception UnsupportedOperationException if the <tt>remove</tt> operation is not supported by this iterator.
+		@exception UnsupportedOperationException if the remove operation is not supported by this iterator.
 		*/
 		public void remove()
 		{

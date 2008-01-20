@@ -1,16 +1,16 @@
 package com.globalmentor.urf;
 
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.Locale;
 
 import javax.mail.internet.ContentType;
+
 import static com.garretwilson.net.URIConstants.*;
-
-import com.garretwilson.text.CharacterEncoding;
-import com.globalmentor.urf.content.Content;
-
 import static com.garretwilson.util.LocaleUtilities.*;
+
 import static com.globalmentor.urf.URF.*;
+import com.globalmentor.urf.content.Content;
 
 /**A default factory to create default resources.
 This factory also has convenience methods to create default resources of several lexical types.
@@ -51,15 +51,15 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 		return createResource(createLexicalURI(typeURI, lexicalForm), typeURI);	//create a new resource from the appropriate lexical URI and add the indicated type
 	}
 
-	/**Creates a default character encoding resource with its type added as a type property.
+	/**Creates a default charset resource with its type added as a type property.
 	This method delegates to {@link #createLexicalResource(URI, String)}.
-	@param characterEncoding The character encoding for which a default resource should be created.
-	@return A default characer encoding resource with the appropriate type property added.
-	@exception NullPointerException if the given character encoding is <code>null</code>.
+	@param charset The charset for which a default resource should be created.
+	@return A default charset resource with the appropriate type property added.
+	@exception NullPointerException if the given charset is <code>null</code>.
 	*/
-	public URFResource createCharacterEncodingResource(final CharacterEncoding characterEncoding)
+	public URFResource createCharsetResource(final Charset charset)
 	{
-		return createLexicalResource(Content.CHARACTER_ENCODING_CLASS_URI, characterEncoding.toString());	//create and return a default character encoding resource
+		return createLexicalResource(Content.CHARSET_CLASS_URI, charset.name());	//create and return a default charset resource
 	}
 
 	/**Creates a default integer resource with its type added as a type property.

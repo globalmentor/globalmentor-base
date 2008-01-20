@@ -33,7 +33,7 @@ public class TURF
 	public final static char BINARY_END=BINARY_BEGIN;
 
 	/**The delimiter that begins boolean shorthand declarations.*/
-	public final static char BOOLEAN_BEGIN='*';
+	public final static char BOOLEAN_BEGIN='_';
 	/**The delimiter that ends boolean shorthand declarations.*/
 	public final static char BOOLEAN_END=BOOLEAN_BEGIN;
 
@@ -52,6 +52,9 @@ public class TURF
 	/**The delimiter that ends community short forms.*/
 	public final static char COMMUNITY_END='.';
 
+	/**The delimiter that begins an interface short form.*/
+	public final static char IMPLEMENTATION_OF_BEGIN='>';
+
 	/**The delimiter that begins labels.*/
 	public final static char LABEL_BEGIN='|';
 	/**The delimiter that ends labels.*/
@@ -62,15 +65,15 @@ public class TURF
 	/**The delimiter that ends lists.*/
 	public final static char LIST_END=']';
 
+	/**The delimiter that begins maps.*/
+	public final static char MAP_BEGIN='\u3014';	//left tortoise shell bracket
+	/**The delimiter that ends maps.*/
+	public final static char MAP_END='\u3015';	//right tortoise shell bracket
+
 	/**The delimiter that begins number shorthand declarations.*/
 	public final static char NUMBER_BEGIN='#';
 	/**The delimiter that ends number shorthand declarations.*/
 	public final static char NUMBER_END=NUMBER_BEGIN;
-
-	/**The delimiter that begins init declarations.*/
-	public final static char INITS_BEGIN='\u00A1';	//¡
-	/**The delimiter that ends init declarations.*/
-	public final static char INITS_END='!';
 
 	/**The delimiter that begins ordinal shorthand declarations.*/
 	public final static char ORDINAL_BEGIN='\u00BA';	//º
@@ -96,6 +99,11 @@ public class TURF
 	public final static char REFERENCE_BEGIN='\u00AB';	//«
 	/**The delimiter that ends URI references.*/
 	public final static char REFERENCE_END='\u00BB';	//»
+
+	/**The delimiter that begins selector declarations.*/
+	public final static char SELECTOR_BEGIN='(';
+	/**The delimiter that ends selector declarations.*/
+	public final static char SELECTOR_END=')';
 
 	/**The delimiter that begins sets.*/
 	public final static char SET_BEGIN='{';
@@ -123,16 +131,17 @@ public class TURF
 		public final static char ESCAPED_STRING_TERMINATOR=RIGHT_DOUBLE_QUOTATION_MARK_CHAR;	//right double quotation mark string terminator
 		public final static char ESCAPED_UNICODE='u';	//u Unicode
 
+	/**The delimiter that begins a superclass short form.*/
+	public final static char SUBCLASS_OF_BEGIN='^';
+
 	/**The delimiter that begins temporal declarations.*/
 	public final static char TEMPORAL_BEGIN='@';
 	/**The delimiter that ends temporal declarations.*/
 	public final static char TEMPORAL_END=TEMPORAL_BEGIN;
-
-	/**The delimiter that begins type declarations.*/
-	public final static char TYPES_BEGIN='(';
-	/**The delimiter that ends type declarations.*/
-	public final static char TYPES_END=')';
-
+	
+	/**The delimiter that begins a type short form.*/
+	public final static char TYPE_BEGIN='*';
+	
 	/**The delimiter that begins URI shorthand declarations.*/
 	public final static char URI_BEGIN='<';
 	/**The delimiter that ends URI shorthand declarations.*/

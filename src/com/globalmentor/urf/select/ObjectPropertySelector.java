@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.urf.URF.*;
+import static com.globalmentor.urf.URF.asString;
 import static com.globalmentor.urf.select.Select.*;
 
 /**A selector that selects an object based upon a runtime property value (as opposed to an URF property value).

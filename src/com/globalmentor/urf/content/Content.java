@@ -1,6 +1,7 @@
 package com.globalmentor.urf.content;
 
 import java.net.URI;
+import java.nio.charset.Charset;
 
 import javax.mail.internet.ContentType;
 
@@ -9,7 +10,6 @@ import static com.garretwilson.io.ContentTypeConstants.*;
 
 import com.garretwilson.io.ContentTypeConstants;
 import com.garretwilson.net.Resource;
-import com.garretwilson.text.CharacterEncoding;
 import com.globalmentor.urf.*;
 
 import static com.globalmentor.urf.URF.*;
@@ -30,8 +30,8 @@ public class Content
 	public final static URI CONTENT_NAMESPACE_URI=URI.create("http://urf.name/content");
 
 		//classes
-	/**The URI of the content <code>CharacterEncoding</code> class.*/
-	public final static URI CHARACTER_ENCODING_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "CharacterEncoding");
+	/**The URI of the content <code>Charset</code> class.*/
+	public final static URI CHARSET_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "Charset");
 	/**The URI of the content <code>ContentResource</code> class.*/
 	public final static URI CONTENT_RESOURCE_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "ContentResource");
 	/**The URI of the content <code>MediaType</code> class.*/
@@ -39,8 +39,8 @@ public class Content
 		//properties
 	/**The date and time when a resource was last accessed.*/
 	public final static URI ACCESSED_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "accessed");
-	/**The character encoding of a resource.*/
-	public final static URI CHARACTER_ENCODING_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "characterEncoding");
+	/**The charset of a resource.*/
+	public final static URI CHARSET_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "charset");
 	/**The date and time when a resource was created.*/
 	public final static URI CREATED_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "created");
 	/**The actual content, such as bytes or a string, of a resource.*/
@@ -55,20 +55,20 @@ public class Content
 	public final static URI TYPE_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "type");
 
 		//lexical namespaces
-	/**The character encoding lexical namespace URI.*/
-	public final static URI CHARACTER_ENCODING_NAMESPACE_URI=createLexicalNamespaceURI(CHARACTER_ENCODING_CLASS_URI);
+	/**The charset lexical namespace URI.*/
+	public final static URI CHARSET_NAMESPACE_URI=createLexicalNamespaceURI(CHARSET_CLASS_URI);
 	/**The media type lexical namespace URI.*/
 	public final static URI MEDIA_TYPE_NAMESPACE_URI=createLexicalNamespaceURI(MEDIA_TYPE_CLASS_URI);
 
-	/**Creates a URI to represent a content character encoding.
-	@param characterEncoding The character encoding to represent.
-	@return A URI representing the given content character encoding.
-	@exception NullPointerException if the given charcter encoding is <code>null</code>.
-	@see #CHARACTER_ENCODING_CLASS_URI
+	/**Creates a URI to represent a content charset.
+	@param charset The charset to represent.
+	@return A URI representing the given content charset.
+	@exception NullPointerException if the given charset is <code>null</code>.
+	@see #CHARSET_CLASS_URI
 	*/
-	public static URI createCharacterEncodingURI(final CharacterEncoding characterEncoding)
+	public static URI createCharsetURI(final Charset charset)
 	{
-		return createLexicalURI(CHARACTER_ENCODING_CLASS_URI, characterEncoding.toString());	//create a media type URI
+		return createLexicalURI(CHARSET_CLASS_URI, charset.name());	//create a charset URI
 	}
 
 	/**Creates a URI to represent a content media type.
@@ -82,31 +82,31 @@ public class Content
 		return createLexicalURI(MEDIA_TYPE_CLASS_URI, mediaType.getBaseType());	//create a media type URI
 	}
 
-	/**Determines the character encoding represented by the given resource.
-	@param resource The resource which is expected to represent a character encoding, or <code>null</code>.
-	@return The character encoding represented by the given resource, or <code>null</code> if the resource does not represent a character encoding.
-	@exception IllegalArgumentException if the given resource represents a character encoding that does not have the correct syntax.
-	@see #asCharacterEncoding(URI)
+	/**Determines the charset represented by the given resource.
+	@param resource The resource which is expected to represent a charset, or <code>null</code>.
+	@return The charset represented by the given resource, or <code>null</code> if the resource does not represent a charset.
+	@exception IllegalArgumentException if the given resource represents a charset that does not have the correct syntax.
+	@see #asCharset(URI)
 	*/
-	public static CharacterEncoding asCharacterEncoding(final Resource resource)
+	public static Charset asCharset(final Resource resource)
 	{
-		return resource!=null ? asCharacterEncoding(resource.getURI()) : null;	//if a resource was given, see if its URI represents a character encoding
+		return resource!=null ? asCharset(resource.getURI()) : null;	//if a resource was given, see if its URI represents a charset
 	}
 
-	/**Determines the character encoding represented by the given URI.
-	@param resourceURI The URI which is expected to represent a character encoding, or <code>null</code>.
-	@return The character encoding represented by the given URI, or <code>null</code> if the URI does not represent a character encoding.
-	@exception IllegalArgumentException if the given URI represents a character encoding that does not have the correct syntax.
-	@see #CHARACTER_ENCODING_CLASS_URI
-	@see #CHARACTER_ENCODING_NAMESPACE_URI
+	/**Determines the charset represented by the given URI.
+	@param resourceURI The URI which is expected to represent a charset, or <code>null</code>.
+	@return The charset represented by the given URI, or <code>null</code> if the URI does not represent a charset.
+	@exception IllegalArgumentException if the given URI represents a charset that does not have the correct syntax.
+	@see #CHARSET_CLASS_URI
+	@see #CHARSET_NAMESPACE_URI
 	*/
-	public static CharacterEncoding asCharacterEncoding(final URI resourceURI)
+	public static Charset asCharset(final URI resourceURI)
 	{
-		if(resourceURI!=null && CHARACTER_ENCODING_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a character encoding URI was given
+		if(resourceURI!=null && CHARSET_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a charset URI was given
 		{
-			return new CharacterEncoding(getLocalName(resourceURI));	//create a character encoding from the local name
+			return Charset.forName(getLocalName(resourceURI));	//get a charset from the local name
 		}
-		return null;	//no character encoding could be found
+		return null;	//no charset could be found
 	}
 	
 	/**Determines the media type represented by the given resource.
@@ -156,25 +156,25 @@ public class Content
 		resource.setPropertyValue(ACCESSED_PROPERTY_URI, dateTime);	//create a date time resource and set the resource's accessed timestamp
 	}
 
-	/**Returns the declared character encoding of the resource as a character encoding.
-	@param resource The resource for which the character encoding should be returned.
-	@return This resource's character encoding declaration as a character encoding, or <code>null</code> if the resource has no <code>characterEncoding</code> property specified
-		or the character encoding was not a resource with a character encoding URI.
-	@see #CHARACTER_ENCODING_PROPERTY_URI
+	/**Returns the declared charset of the resource as a charset.
+	@param resource The resource for which the charset should be returned.
+	@return This resource's charset declaration as a charset, or <code>null</code> if the resource has no <code>charset</code> property specified
+		or the charset was not a resource with a charset URI.
+	@see #CHARSET_PROPERTY_URI
 	*/
-	public static CharacterEncoding getCharacterEncoding(final URFResource resource)
+	public static Charset getCharset(final URFResource resource)
 	{
-		return asCharacterEncoding(resource.getPropertyValue(CHARACTER_ENCODING_PROPERTY_URI));	//return the character encoding, if any, as a character encoding
+		return asCharset(resource.getPropertyValue(CHARSET_PROPERTY_URI));	//return the charset, if any, as a charset
 	}
 
-	/**Sets the character encoding property of the resource.
-	@param resource The resource for which the characer encoding property should be set.
-	@param characterEncoding The object that specifies the character encoding, or <code>null</code> if there should be no character encoding.
-	@see #CHARACTER_ENCODING_PROPERTY_URI
+	/**Sets the charset property of the resource.
+	@param resource The resource for which the charset property should be set.
+	@param charset The object that specifies the charset, or <code>null</code> if there should be no charset.
+	@see #CHARSET_PROPERTY_URI
 	*/
-	public static void setCharacterEncoding(final URFResource resource, final CharacterEncoding characterEncoding)
+	public static void setCharset(final URFResource resource, final Charset charset)
 	{
-		resource.setPropertyValue(CHARACTER_ENCODING_PROPERTY_URI, DEFAULT_URF_RESOURCE_FACTORY.createCharacterEncodingResource(characterEncoding));	//create a character encoding resource and set the resource's character encoding
+		resource.setPropertyValue(CHARSET_PROPERTY_URI, DEFAULT_URF_RESOURCE_FACTORY.createCharsetResource(charset));	//create a charset resource and set the resource's charset
 	}
 	
 	/**Returns the actual string content of the resource.
@@ -294,7 +294,7 @@ public class Content
 	@return A content type object representing the media type and all relevant content-type information as parameters,
 		or <code>null</code> if the resource has no <code>type</code> property specified or the content type was not a resource with an Internet media type URI.
 	@see #getContentType(URFResource)
-	@see #getCharacterEncoding(URFResource)
+	@see #getCharset(URFResource)
 	@see ContentTypeConstants#CHARSET_PARAMETER
 	*/
 	public static ContentType getFullContentType(final URFResource resource)
@@ -302,10 +302,10 @@ public class Content
 		final ContentType contentType=getContentType(resource);	//get the content type, if any
 		if(contentType!=null)	//if a content type was indicated
 		{
-			final CharacterEncoding characterEncoding=getCharacterEncoding(resource);	//get the character encoding, if any
-			if(characterEncoding!=null)	//if a character encoding was specified
+			final Charset charset=getCharset(resource);	//get the charset, if any
+			if(charset!=null)	//if a charset was specified
 			{
-				contentType.setParameter(CHARSET_PARAMETER, characterEncoding.toString());	//add the character encoding as the value of the charset parameter
+				contentType.setParameter(CHARSET_PARAMETER, charset.name());	//add the charset as the value of the charset parameter
 			}
 		}
 		return contentType;	//return the full content type, if any, we constructed
