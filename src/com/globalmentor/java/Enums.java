@@ -9,6 +9,8 @@ package com.globalmentor.java;
 
 import java.util.EnumSet;
 
+import static com.globalmentor.java.Java.*;
+
 /**Utilities for working with enums.
 @author Garret Wilson
 */
@@ -61,4 +63,34 @@ public class Enums
 		return Enum.valueOf(enumType, serializationName.replace('-', '_').toUpperCase());	//convert the the enum name back to its original form and try to retrieve a corresponding enum
 	}
 
+	/**Returns an identifying string for the enum that includes the enum class and the enum name.
+	This ID is useful for resource keys, for example.
+	The ID will be in the form <code><var>com.example.EnumClass</var>.<var>NAME</var></code>.
+	@param e The enum instance for which to return an ID.
+	@exception NullPointerException if the given enum is <code>null</code>.
+	@see Classes#getPropertyName(Class, String)
+	@see Enum#getClass()
+	@see Enum#name()
+	*/
+	public static <E extends Enum<E>> String getPropertyName(final E e)
+	{
+		return getPropertyName(e, null);	//get an ID with no property
+	}
+
+	/**Returns an identifying string for the enum that includes the enum class, the enum name, and an optional property or aspect (such as "label" or "glyph").
+	This ID is useful for resource keys, for example.
+	The ID will be in the form <code><var>com.example.EnumClass</var>.<var>NAME</var>.<var>property</var></code>.
+	@param e The enum instance for which to return an ID.
+	@param property The name of the enum property, or <code>null</code> if no property is desired.
+	@return A string identification of the enum.
+	@exception NullPointerException if the given enum is <code>null</code>.
+	@see Classes#getPropertyName(Class, String)
+	@see Enum#getClass()
+	@see Enum#name()
+	*/
+	public static <E extends Enum<E>> String getPropertyName(final E e, final String property)
+	{
+		final String classPropertyName=Classes.getPropertyName(e.getClass(), e.name());	//com.example.EnumClass.NAME
+		return property!=null ? classPropertyName+OBJECT_PREDICATE_SEPARATOR+property : classPropertyName;	//if a property was given, append it
+	}
 }

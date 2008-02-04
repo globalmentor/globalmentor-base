@@ -154,7 +154,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 				}
 				else	//if there is no URI
 				{
-					label=toString();	//use the Java string form of the resource as a last resort
+					label=super.toString();	//use the Java string form of the resource as a last resort
 				}
 			}
 		}

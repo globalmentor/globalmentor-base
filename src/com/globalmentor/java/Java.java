@@ -24,7 +24,7 @@ public class Java
 	/**The character used to separate packages in Java class names.*/
 	public final static char PACKAGE_SEPARATOR='.';
 
-	/**The character used to separate an object and its predicate in an expression.*/
+	/**The character used to separate an object and its predicate in an identifier string.*/
 	public final static char OBJECT_PREDICATE_SEPARATOR='.';
 	
 	/**The system property name that represents whether internationalization

@@ -211,6 +211,9 @@ public final class URIPath
 	/**@return A path-only URI containing this URI path.*/
 	public URI toURI() {return uri;}
 
+	/**@return A URI containing this URI path in the {@value URIs#PATH_SCHEME} scheme.*/
+	public URI toPathURI() {return createURI(PATH_SCHEME, uri.getRawPath());}
+
 	/**@return A string representation of the raw, encoded path as it would appear in a URI.*/
 	public String toString()
 	{
