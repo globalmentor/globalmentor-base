@@ -39,15 +39,17 @@ public class URFTURFGenerator
 		/**@return The namespace label manager.*/
 		public TURFNamespaceLabelManager getNamespaceLabelManager() {return namespaceLabelManager;}
 
-	/**The set of resources that have been generated.*/
-	private final Set<URFResource> generatedResourceSet;
+	/**The set of URIs of named resources that have been generated; keep separate sets of named and non-named resources because some anonymous resource equals() methods may not use identity, which we need.*/
+	private final Set<URI> generatedResourceURISet;
+	/**The set of anonymous resources that have been generated.*/
+	private final Set<URFResource> generatedAnonymousResourceSet;
 
 		/**Determines the number of resources that have been generated.
 		@return The number of resources that have been generated.
 		*/
 		protected final int getGeneratedResourceCount()
 		{
-			return generatedResourceSet.size();	//return the size of the generated resource set
+			return generatedResourceURISet.size()+generatedAnonymousResourceSet.size();	//return the combined size of the generated resource sets
 		}
 
 		/**Determines if the given resource has been generated.
@@ -56,7 +58,8 @@ public class URFTURFGenerator
 		*/
 		protected final boolean isGenerated(final URFResource resource)
 		{
-			return generatedResourceSet.contains(resource);	//see if the resource is in our set
+			final URI resourceURI=resource.getURI();	//see if this resource has a URI
+			return resourceURI!=null ? generatedResourceURISet.contains(resourceURI) : generatedAnonymousResourceSet.contains(resource);	//see if the resource is in one of our sets
 		}
 
 		/**Sets the serialized status of a given resource.
@@ -65,13 +68,28 @@ public class URFTURFGenerator
 		*/
 		protected final void setGenerated(final URFResource resource, final boolean generated)
 		{
-			if(generated)	//if the resource has been generated
+			final URI resourceURI=resource.getURI();	//see if this resource has a URI
+			if(resourceURI!=null)	//if this resource has a URI
 			{
-				generatedResourceSet.add(resource);	//add the resource to the set of generated resources
+				if(generated)	//if the resource has been generated
+				{
+					generatedResourceURISet.add(resourceURI);	//add the resource URI to the set of generated resource URIs
+				}
+				else	//if the resource has not been generated
+				{
+					generatedResourceURISet.remove(resourceURI);	//remove the resource URI from the set of generated resources URIs
+				}
 			}
-			else	//if the resource has not been generated
+			else	//if this resource has no URI
 			{
-				generatedResourceSet.remove(resource);	//remove the resource from the set of generated resources
+				if(generated)	//if the resource has been generated
+				{
+					generatedAnonymousResourceSet.add(resource);	//add the resource to the set of generated resources
+				}
+				else	//if the resource has not been generated
+				{
+					generatedAnonymousResourceSet.remove(resource);	//remove the resource from the set of generated resources
+				}				
 			}
 		}
 
@@ -299,7 +317,8 @@ public class URFTURFGenerator
 		this.baseURI=baseURI;
 		this.formatted=formatted;
 		this.namespaceLabelManager=checkInstance(namespaceLabelManager, "Namespace label manager cannot be null.");
-		generatedResourceSet=new HashSet<URFResource>();	//create a map that will determine whether resources have been generated
+		generatedResourceURISet=new HashSet<URI>();	//create a map that will determine whether named resources have been generated
+		generatedAnonymousResourceSet=new IdentityHashSet<URFResource>();	//create a map that will determine whether anonymous resources have been generated, tracking them by identity
 		resourceLabelMap=new HashMap<URFResource, String>();	//create a map of node IDs keyed to resources
 	}
 
@@ -314,7 +333,8 @@ public class URFTURFGenerator
 	/**Releases memory by clearing all internal maps and sets of resources.*/
 	protected void reset()
 	{
-		generatedResourceSet.clear();	//show that we've not generated any resources
+		generatedResourceURISet.clear();	//show that we've not generated any resources
+		generatedAnonymousResourceSet.clear();	//show that we've not generated any resources
 		resourceLabelMap.clear();	//clear our map of node IDs
 	}
 
