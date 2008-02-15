@@ -1,6 +1,28 @@
-package com.garretwilson.text;
+/*
+ * Copyright © 2003-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-/**Named constants representing several often-used characters. In most cases, names are derived from Unicode 3.0 names.
+package com.globalmentor.java;
+
+import java.io.*;
+
+import com.garretwilson.text.CharacterEncoding;
+import com.garretwilson.text.RomanNumeralUtilities;
+
+/**Various utilities and constants for interacting with characters.
+In most cases, names of constants are derived from Unicode names.
 @author Garret Wilson
 */
 public class Characters
@@ -181,11 +203,6 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 
 	/**Unicode control characters (0x0000-0x001F, 0x007F-0x09F).*/
 	public final static String CONTROL_CHARS=""+
-/*G***del
-		"\000\001\002\003\004\005\006\007\010\011\012\013\014\015\016\017\020\021\022\023\024\025\026\027\030\031"+
-		"\127\128\129\130\131\132\133\134\135\136\137\138\139\140\141\142\143\144\145\146\147\148\149\150"+
-		"\151\152\153\154\155\156\\157\159\159";
-*/
 		(char)0x0000+(char)0x0001+(char)0x0002+(char)0x0003+(char)0x0004+(char)0x0005+(char)0x0006+(char)0x0007+
 		(char)0x0008+(char)0x0009+(char)0x000A+(char)0x000B+(char)0x000C+(char)0x000D+(char)0x000E+(char)0x000F+
 		(char)0x0010+(char)0x0011+(char)0x0012+(char)0x0013+(char)0x0014+(char)0x0015+(char)0x0016+(char)0x0017+
@@ -249,9 +266,6 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 //TODO del if not needed	public final static Pattern LIST_DELIMITER_CLASS_PATTERN=Pattern.compile(createCharacterClass(LIST_DELIMITER_CHARS));
 
 	
-	/**Characters used in Roman numbers.*/
-//G***del	public final static String ROMAN_NUMERAL_CHARS="IVXCLM";  //G***make sure this is exhaustive
-
 	/**Characters that could be considered the start of a quotation.*/
 	public final static String LEFT_QUOTE_CHARS=""+
 			QUOTATION_MARK_CHAR+
@@ -304,17 +318,17 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 			SINGLE_RIGHT_POINTING_ANGLE_QUOTATION_MARK_CHAR;
 
 	/**Characters used to punctuate phrases and sentences.*/
-	public final static String PHRASE_PUNCTUATION_CHARS=".,:;?!";	//G***use constants here
+	public final static String PHRASE_PUNCTUATION_CHARS=".,:;?!";	//TODO use constants here
 
 	/**Punctuation that expects a character to follow at some point.*/
 	public final static String DEPENDENT_PUNCTUATION_CHARS=""+
-		  COLON_CHAR+';'+COMMA_CHAR+HYPHEN_MINUS_CHAR+EM_DASH_CHAR+EN_DASH_CHAR/*G***del; this probably hurts more then helps+'='*/;  //G***use a constant
+		  COLON_CHAR+';'+COMMA_CHAR+HYPHEN_MINUS_CHAR+EM_DASH_CHAR+EN_DASH_CHAR;	//TODO use a constant
 
 	/**Left punctuation used to group characters.*/
-	public final static String LEFT_GROUP_PUNCTUATION_CHARS="([{<"; //G***use constants
+	public final static String LEFT_GROUP_PUNCTUATION_CHARS="([{<"; //TODO use constants
 
 	/**Right punctuation used to group characters.*/
-	public final static String RIGHT_GROUP_PUNCTUATION_CHARS=")]}>"; //G***use constants
+	public final static String RIGHT_GROUP_PUNCTUATION_CHARS=")]}>"; //TODO use constants
 
 	/**Punctuation used to group characters.*/
 	public final static String GROUP_PUNCTUATION_CHARS=LEFT_GROUP_PUNCTUATION_CHARS+RIGHT_GROUP_PUNCTUATION_CHARS;
@@ -328,7 +342,7 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 			HYPHEN_MINUS_CHAR+EM_DASH_CHAR+EN_DASH_CHAR;
 
 	/**Characters that separate words.*/
-	public final static String WORD_DELIMITER_CHARS=WHITESPACE_CHARS+PUNCTUATION_CHARS;	//G***this needs fixed
+	public final static String WORD_DELIMITER_CHARS=WHITESPACE_CHARS+PUNCTUATION_CHARS;	//TODO this needs fixed
 
 	/**A regular expression pattern for the class of word delimiter characters.
 	@see #WORD_DELIMITER_CHARS
@@ -336,6 +350,150 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 //TODO fix; these characters must be escaped, or this Pattern.toString() will run into an endless loop!	public final static Pattern WORD_DELIMITER_PATTERN=Pattern.compile("["+WORD_DELIMITER_CHARS+"]");
 
 	/**Characters that allow words to wrap.*/
-	public final static String WORD_WRAP_CHARS=WHITESPACE_CHARS+"-/";	//G***use constants
+	public final static String WORD_WRAP_CHARS=WHITESPACE_CHARS+"-/";	//TODO use constants
+
+	/**Sees if the specified character is in one of the specified ranges.
+	@param c The character to check.
+	@param ranges An array of character pair arrays, <em>in order</em>, the first of each pair specifying the bottom inclusive character of a range, the second of which specifying the top inclusive character of the range.
+	@return <code>true</code> if the character is in one of the ranges, else <code>false</code>.
+	*/
+	public static boolean isCharInRange(final char c, final char[][] ranges)	//TODO improve code by doing a binary search
+	{
+		final int rangeCount=ranges.length;	//find out how many ranges there are
+		for(int i=0; i<rangeCount; ++i)	//look at each range
+		{
+			final char[] range=ranges[i];	//get this range
+			if(c<range[0])	//if the character is lower than the lower bound, it's not in this range---and we've already checked previous ranges
+			{
+				return false;	//we've ran out of ranges that might work
+			}
+			else if(c<=range[1])	//if the character is greater than or equal to the lower bound, see if the character is lower than or equal to the upper bound
+			{
+				return true;	//the character is within range
+			}
+		}
+		return false;	//if we get here, this means our character is higher than any of the characters, meaning the character is higher than all the ranges
+	}
+
+	/**Determines whether a character is in the ASCII character range (0x00-0x80).
+	@param c The character to examine.
+	@return <code>true</code> if the character is an ASCII character.
+	*/
+	public static boolean isASCII(final char c)
+	{
+		return c>=0 && c<=0x80; //see if this character is between 0 and 128, inclusive
+	}
+
+	/**Determines whether a character is one of the digits '0'-'9'.
+	@param c The character to examine.
+	@return <code>true</code> if the character is an ISO_LATIN_1 digit.
+	*/
+	public final static boolean isLatinDigit(final char c)
+	{
+		return c>='0' && c<='9';  //see if the character falls in the range of the latin digits
+	}
+
+	/**Specifies whether or not a given character is a punctuation mark.
+	@param c Character to analyze.
+	@return <code>true</code> if the character is punctuation.
+	*/
+	public static boolean isPunctuation(final char c)
+	{
+		return PUNCTUATION_CHARS.indexOf(c)>=0;	//return true if we can find the character in the string of punctuation characters TODO update the list of punctuation characters
+	}
+
+	/**Determines whether a character is a Roman numeral.
+	@param c The character to examine.
+	@return <code>true</code> if the character is a Roman numeral.
+	*/
+	public static boolean isRomanNumeral(final char c)
+	{
+		return RomanNumeralUtilities.getValue(c)>=0;  //see if the character returns a valid Roman numeral value
+	}
+
+	/**Specifies whether or not a given character is whitespace.
+	@param c Character to analyze.
+	@return <code>true</code> if the character is whitespace.
+	*/
+	public static boolean isWhitespace(final char c)
+	{
+		return WHITESPACE_CHARS.indexOf(c)>=0;	//return true if we can find the character in the string of whitespace characters
+	}
+
+	/**Specifies whether or not a given character is a word delimiter, such as
+		whitespace or punctuation.
+	@param c Character to analyze.
+	@return <code>true</code> if the character allows word wrapping.
+	*/
+	public static boolean isWordDelimiter(final char c)
+	{
+		return WORD_DELIMITER_CHARS.indexOf(c)>=0;	//return true if we can find the character in the string of word delimiter characters
+	}
+
+	/**Specifies whether or not a given character allows a word wrap.
+	@param c Character to analyze.
+	@return <code>true</code> if the character allows word wrapping.
+	*/
+	public static boolean isWordWrap(final char c)
+	{
+		return WORD_WRAP_CHARS.indexOf(c)>=0;	//return true if we can find the character in the string of word wrap characters
+	}
+
+	/**Converts an array of characters to an array of bytes, using the UTF-8
+	character encoding.
+	@param characters The characters to convert to bytes.
+	@return An array of bytes representing the given characters in the UTF-8
+		encoding.
+	*/
+	public static byte[] toByteArray(final char[] characters)
+	{
+		try
+		{
+			return toByteArray(characters, CharacterEncoding.UTF_8);	//convert the characters using UTF-8
+		}
+		catch(UnsupportedEncodingException unsupportedEncodingException)	//all JVMs should support UTF-8
+		{
+			throw new AssertionError(unsupportedEncodingException);
+		}
+	}
+
+	/**Converts an array of characters to an array of bytes, using the given
+	character encoding.
+	@param characters The characters to convert to bytes.
+	@param encoding The encoding to use when converting characters to bytes.
+	@return An array of bytes representing the given characters in the specified
+		encoding.
+	@exception UnsupportedEncodingException if the given encoding is not supported.
+	*/
+	public static byte[] toByteArray(final char[] characters, final String encoding) throws UnsupportedEncodingException
+	{
+		final ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();	//create a byte array output stream
+		final Writer writer=new OutputStreamWriter(byteArrayOutputStream, encoding);	//create a writer for converting characters to bytes
+		try
+		{
+			writer.write(characters);	//write the characters to the writer in one batch (writing them individually would be extremely inefficient)
+			writer.flush();	//flush everything we've written to the byte output stream
+		}
+		catch(IOException ioException)		//we don't expect any errors
+		{
+			throw new AssertionError(ioException);
+		}
+		return byteArrayOutputStream.toByteArray();	//return the bytes we collected from the character conversion
+	}
+
+	/**Parses a string and returns its character value.
+	@param string A string expected to contain a single character.
+	@return The single character contained by the string.
+	@exception NullPointerException if the given string is <code>null</code>
+	@exception IllegalArgumentException if the string is not composed of a single character.
+	*/
+	public final static Character parseCharacter(final String string)
+	{
+		if(string.length()!=1)	//if this string isn't composed of a single character
+		{
+			throw new IllegalArgumentException("The string \""+string+"\" does not represent a single character.");
+		}
+		return Character.valueOf(string.charAt(0));	//return the first and only character in the string
+	}
 
 }

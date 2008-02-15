@@ -13,7 +13,7 @@ import com.garretwilson.net.*;
 
 import static com.garretwilson.net.URIs.*;
 import static com.garretwilson.text.CharacterEncoding.*;
-import static com.garretwilson.text.Characters.*;
+import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.urf.TURF.*;
 import static com.globalmentor.urf.URF.*;
 

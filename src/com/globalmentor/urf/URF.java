@@ -20,15 +20,14 @@ import com.garretwilson.util.*;
 import static com.garretwilson.util.CollectionUtilities.*;
 import static com.garretwilson.util.LocaleUtilities.*;
 
-import com.globalmentor.java.Classes;
-import com.globalmentor.java.Longs;
+import com.globalmentor.java.*;
+import static com.globalmentor.java.Booleans.*;
+import static com.globalmentor.java.Characters.*;
+import static com.globalmentor.java.CharSequences.*;
+import static com.globalmentor.java.Objects.*;
 import com.globalmentor.urf.content.*;
 import com.globalmentor.urf.select.Select;
 
-import static com.globalmentor.java.Booleans.*;
-import static com.globalmentor.java.CharSequences.*;
-import static com.globalmentor.java.CharacterUtilities.*;
-import static com.globalmentor.java.Objects.*;
 
 /**An URF data model.
 This data model keeps track of all resources that are being created as a linked group, such as parsed from a TURF interchange document,

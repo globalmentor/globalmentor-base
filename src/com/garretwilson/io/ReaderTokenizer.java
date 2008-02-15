@@ -4,11 +4,11 @@ import java.io.Reader;
 import java.io.IOException;
 import java.util.*;
 
-import com.garretwilson.text.Characters;
 import com.garretwilson.text.SyntaxException;
 import com.garretwilson.util.Debug;
+import com.globalmentor.java.Characters;
 
-import static com.garretwilson.text.Characters.*;
+import static com.globalmentor.java.Characters.*;
 
 /**Tokenizes input from a reader, recognizing groups.
 All text within a group will be ignored when delimiting tokens, except that group delimiters are checked for matching.

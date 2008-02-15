@@ -1,6 +1,6 @@
 package com.garretwilson.net;
 
-import static com.garretwilson.text.Characters.*;
+import static com.globalmentor.java.Characters.*;
 
 import java.net.URI;
 

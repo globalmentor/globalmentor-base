@@ -6,11 +6,11 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.garretwilson.text.Characters.*;
 import com.garretwilson.util.*;
 import com.globalmentor.java.Integers;
 
 import static com.garretwilson.util.CollectionUtilities.*;
+import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.TURF.*;
 import static com.globalmentor.urf.URF.*;

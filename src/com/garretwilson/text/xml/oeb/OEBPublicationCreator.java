@@ -21,7 +21,7 @@ import com.globalmentor.marmot.Marmot;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
-import static com.garretwilson.text.Characters.*;
+import static com.globalmentor.java.Characters.*;
 
 /**Creates an OEB publication by gathering all source files from a directory.
 	If the tidy option is turned on, each document in the manifest will be loaded,
@@ -1748,9 +1748,9 @@ Debug.trace("looking at text: ", text);  //G***del
 				while(byIndex>0)  //if we found "by" and it's not at the first of the line
 				{
 Debug.trace("found by index: ", byIndex); //G***del
-				  if(CharacterUtilities.isWhitespace(text.charAt(byIndex-1))  //and it's preceded by whitespace
+				  if(Characters.isWhitespace(text.charAt(byIndex-1))  //and it's preceded by whitespace
 							&& byIndex+BY.length()<text.length()  //and it's not at the end of the line
-							&& CharacterUtilities.isWhitespace(text.charAt(byIndex+BY.length())))  //and whitespace comes after it
+							&& Characters.isWhitespace(text.charAt(byIndex+BY.length())))  //and whitespace comes after it
 					{
 Debug.trace("found by in text: ", text);  //G***del
 							//make sure this isn't "donated by", "scanned by", etc. G***this is duplicated in getTitle() and getAuthor(); combine
@@ -1817,7 +1817,7 @@ Debug.trace("checking next line author: ", author);
 Debug.trace("byIndex: "+byIndex);
 //G***del System.out.println("is whitespace after: "+CharacterUtilities.isWhitespace(text.charAt(byIndex+BY.length())));
 						//and it's at the first of the line or preceded by whitespace
-				  if((byIndex==0 || CharacterUtilities.isWhitespace(text.charAt(byIndex-1)))
+				  if((byIndex==0 || Characters.isWhitespace(text.charAt(byIndex-1)))
 						&& (byIndex+BY.length()==text.length()
 							  || (byIndex+BY.length()<text.length()
 								&& Character.isWhitespace(text.charAt(byIndex+BY.length()))))) //if there is whitespace after "by"

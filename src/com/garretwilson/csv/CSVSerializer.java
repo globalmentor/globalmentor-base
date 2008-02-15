@@ -3,8 +3,8 @@ package com.garretwilson.csv;
 import java.io.*;
 
 import static com.garretwilson.csv.CSVConstants.*;
-import static com.garretwilson.text.Characters.*;
 import static com.globalmentor.java.CharSequences.*;
+import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.StringBuilders.*;
 
 /**Serializes Comma Separated Value (CSV) information

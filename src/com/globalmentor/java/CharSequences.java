@@ -1,17 +1,25 @@
-/* Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
- * All Rights Reserved.
- * 
- * Use is subject to the BSD-style license at
- * <https://svn.globalmentor.com/java/src/com/globalmentor/license.txt>.
+/*
+ * Copyright © 2003-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.globalmentor.java;
 
 import java.io.UnsupportedEncodingException;
 
-import static com.garretwilson.text.Characters.*;
 import static com.garretwilson.text.CharacterEncoding.*;
-import static com.globalmentor.java.CharacterUtilities.*;
+import static com.globalmentor.java.Characters.*;
 
 import com.garretwilson.util.ArrayUtilities;
 
@@ -442,7 +450,7 @@ public class CharSequences
 		character.
 	@param charSequence The character sequence to examine.
 	@param c The character that could make up the entire sequence.
-	@param <code>true</code> if there are no other characters but the specified
+	@return <code>true</code> if there are no other characters but the specified
 	  character, <code>false</code> if there are other characters or if the string
 		is the empty string.
 	*/
@@ -463,7 +471,7 @@ public class CharSequences
 	@param charSequence The character sequence to examine.
 	@param characters The characters that could make up the entire string, in any
 		order.
-	@param <code>true</code> if there are no other characters but the specified
+	@return <code>true</code> if there are no other characters but the specified
 	  characters, <code>false</code> if there are other characters or if the
 		character sequence is empty.
 	*/

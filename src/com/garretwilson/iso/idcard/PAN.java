@@ -1,11 +1,11 @@
 package com.garretwilson.iso.idcard;
 
 import static com.globalmentor.java.CharSequences.*;
-import static com.globalmentor.java.CharacterUtilities.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.garretwilson.math.Luhn;
 import com.garretwilson.text.ArgumentSyntaxException;
+import static com.globalmentor.java.Characters.*;
 import com.globalmentor.java.Integers;
 import com.globalmentor.java.Objects;
 

@@ -1,6 +1,6 @@
 package com.garretwilson.util;
 
-import static com.garretwilson.text.Characters.INFINITY_CHAR;
+import static com.globalmentor.java.Characters.INFINITY_CHAR;
 import static com.globalmentor.java.Objects.*;
 
 import com.globalmentor.java.Objects;

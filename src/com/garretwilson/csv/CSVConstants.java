@@ -1,6 +1,6 @@
 package com.garretwilson.csv;
 
-import static com.garretwilson.text.Characters.*;
+import static com.globalmentor.java.Characters.*;
 
 /**Constant values for Comma Separated Value (CSV) files.
 @author Garret Wilson

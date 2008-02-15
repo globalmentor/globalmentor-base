@@ -4,7 +4,7 @@ import java.net.URI;
 import java.util.*;
 import static java.util.Collections.*;
 
-import static com.garretwilson.text.Characters.*;
+import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.urf.URF.*;
 
 /**Constants relating to the text serialization of URF, TURF.
