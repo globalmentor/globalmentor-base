@@ -23,7 +23,7 @@ import com.garretwilson.rdf.xpackage.XPackageConstants;
 import com.garretwilson.text.xml.XMLConstants;
 import com.garretwilson.text.xml.oeb.OEBConstants;
 import com.garretwilson.text.xml.schema.XMLSchemaConstants;
-import com.garretwilson.text.xml.xhtml.XHTMLConstants;
+import com.garretwilson.text.xml.xhtml.XHTML;
 import com.garretwilson.text.xml.xlink.XLinkConstants;
 import com.garretwilson.util.MapDecorator;
 import com.globalmentor.urf.URF;
@@ -77,7 +77,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 //TODO del		tempNamespaceURILabelMap.put(VCard.VCARD_NAMESPACE_URI, VCard.VCARD_NAMESPACE_PREFIX); //vCard
 		tempNamespaceURILabelMap.put(VersionConstants.VERSION_NAMESPACE_URI, VersionConstants.VERSION_NAMESPACE_PREFIX); //version
 		tempNamespaceURILabelMap.put(XMLSchemaConstants.XML_SCHEMA_NAMESPACE_URI, XMLSchemaConstants.XML_SCHEMA_NAMESPACE_PREFIX); //XML Schema
-		tempNamespaceURILabelMap.put(XHTMLConstants.XHTML_NAMESPACE_URI, XHTMLConstants.XHTML_NAMESPACE_PREFIX); //XHTML
+		tempNamespaceURILabelMap.put(XHTML.XHTML_NAMESPACE_URI, XHTML.XHTML_NAMESPACE_PREFIX); //XHTML
 		tempNamespaceURILabelMap.put(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.XLINK_NAMESPACE_PREFIX); //XLink
 		tempNamespaceURILabelMap.put(XMLConstants.XML_NAMESPACE_URI, XMLConstants.XML_NAMESPACE_PREFIX); //XML
 		tempNamespaceURILabelMap.put(XMLConstants.XMLNS_NAMESPACE_URI, XMLConstants.XMLNS_NAMESPACE_PREFIX); //XML namespaces

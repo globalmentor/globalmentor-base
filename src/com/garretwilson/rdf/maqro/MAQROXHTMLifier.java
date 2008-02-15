@@ -5,7 +5,7 @@ import org.w3c.dom.*;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.xmlschema.*;
 import com.garretwilson.text.xml.XMLUtilities;
-import static com.garretwilson.text.xml.xhtml.XHTMLConstants.*;
+import static com.garretwilson.text.xml.xhtml.XHTML.*;
 
 /**Creates an XHTML tree representing MAQRO resources.
 @author Garret Wilson

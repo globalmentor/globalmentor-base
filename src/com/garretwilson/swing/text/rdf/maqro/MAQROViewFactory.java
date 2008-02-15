@@ -23,7 +23,7 @@ import com.garretwilson.swing.BasicOptionPane;
 import com.garretwilson.swing.XMLTextPane;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.text.xml.xhtml.XHTMLUtilities;
+import com.garretwilson.text.xml.xhtml.XHTML;
 import com.garretwilson.util.Debug;
 import com.globalmentor.mentoract.activity.maqro.MAQROActivityEngine;
 
@@ -219,9 +219,9 @@ public class MAQROViewFactory extends XMLViewFactory
 			  resultStringBuffer.append("</html>");
 */
 				final MAQROXHTMLifier maqroXHTMLifier=new MAQROXHTMLifier();	//create an object to create XHTML from a MAQRO outcome
-				final org.w3c.dom.Document document=XHTMLUtilities.createXHTMLDocument();	//create an XHTML document
+				final org.w3c.dom.Document document=XHTML.createXHTMLDocument();	//create an XHTML document
 					//create an element document from the outcome and append it to the XHTML body element
-				XHTMLUtilities.getBodyElement(document).appendChild(maqroXHTMLifier.createElement(document, outcome));
+				XHTML.getBodyElement(document).appendChild(maqroXHTMLifier.createElement(document, outcome));
 				final XMLTextPane outcomeTextPane=new XMLTextPane();	//TODO create a content type constructor
 				final ContentType contentType=new ContentType(APPLICATION, XHTML_XML_SUBTYPE, null);	//create an application/xhtml+xml content type
 				outcomeTextPane.setContentType(contentType.toString());	//set the content type to application/xhtml+xml

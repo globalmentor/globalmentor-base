@@ -21,6 +21,9 @@ Any redistribution of this source code or derived source code must include these
 public class TURF
 {
 
+	/**An extension for TURF resource names.*/
+	public final static String TURF_NAME_EXTENSION="turf";
+
 	/**Unicode whitespace characters.*/
 	public final static char[] SEPARATORS=(PARAGRAPH_SEPARATOR_CHARS+SEGMENT_SEPARATOR_CHARS+WHITESPACE_CHARS).toCharArray();
 
@@ -227,4 +230,5 @@ public class TURF
 		}
 		return true;	//this string passed all the tests
 	}
+
 }

@@ -11,8 +11,7 @@ import com.garretwilson.io.ContentTypeConstants;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.text.xml.xhtml.XHTMLConstants;
-import com.garretwilson.text.xml.xhtml.XHTMLUtilities;
+import com.garretwilson.text.xml.xhtml.XHTML;
 import com.garretwilson.model.ResourceModel;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.DCUtilities;
@@ -163,29 +162,29 @@ public class ActivityPanel extends RDFPanel<Activity, ResourceModel<Activity>>
 				final Activity activity=model.getResource();	//get the activity represented by the model
 				if(activity!=null)	//if we have an activity
 				{
-					final Document xhtmlDocument=XHTMLUtilities.createXHTMLDocument();	//create an XHTML document
-					final Element bodyElement=XHTMLUtilities.getBodyElement(xhtmlDocument);	//get the body element
+					final Document xhtmlDocument=XHTML.createXHTMLDocument();	//create an XHTML document
+					final Element bodyElement=XHTML.getBodyElement(xhtmlDocument);	//get the body element
 					assert bodyElement!=null : "Missing <body> element in default XHTML document.";
 						//set the title
 					final RDFLiteral title=RDFUtilities.asLiteral(DCUtilities.getTitle(activity));	//get the activity's title
 					if(title!=null)	//if there is a title
 					{
-						final Element h1Element=XMLUtilities.appendElement(bodyElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_H1, title.toString());	//G***i18n
+						final Element h1Element=XMLUtilities.appendElement(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_H1, title.toString());	//G***i18n
 					}
 					if(activity.getInteractions()!=null)	//if the activity has interactions
 					{
-						final Element olElement=XMLUtilities.appendElement(bodyElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_OL);
+						final Element olElement=XMLUtilities.appendElement(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_OL);
 						final Iterator interactionIterator=activity.getInteractions().iterator();	//get an iterator to look at all the activity interactions
 						while(interactionIterator.hasNext())	//while there are more interactions
 						{
 							final Interaction interaction=(Interaction)interactionIterator.next();	//get the next interaction
 							final Element interactionElement=createElement(xhtmlDocument, interaction);	//create an XML element from this interaction
-							final Element liElement=XMLUtilities.appendElement(olElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_LI);
+							final Element liElement=XMLUtilities.appendElement(olElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_LI);
 							liElement.appendChild(interactionElement);	//append this interaction element to the list item element
 						}
 					}
 						//show the XML in the book, specifying the base URI of the RDF data model
-					book.setXML(xhtmlDocument, model.getBaseURI(), XHTMLConstants.XHTML_CONTENT_TYPE);
+					book.setXML(xhtmlDocument, model.getBaseURI(), XHTML.XHTML_CONTENT_TYPE);
 				}
 				else	//if we don't have an activity
 				{
@@ -264,17 +263,17 @@ public class ActivityPanel extends RDFPanel<Activity, ResourceModel<Activity>>
 		if(interaction instanceof Question)	//if this is a question
 		{
 			final Question question=(Question)interaction;	//cast the interaction to a question
-			final Element questionElement=document.createElementNS(XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_DIV);	//create an element for the entire question
+			final Element questionElement=document.createElementNS(XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_DIV);	//create an element for the entire question
 			final Dialogue query=question.getQuery();	//get the question's query
 			if(query!=null)	//if we have a query
 			{
-				final Element queryElement=XMLUtilities.appendElement(questionElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_DIV);	//append an element for the query
+				final Element queryElement=XMLUtilities.appendElement(questionElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_DIV);	//append an element for the query
 				appendDialogue(document, queryElement, query);	//append the query
 			}
 			final RDFListResource choices=question.getChoices();	//get the list of choices
 			if(choices!=null)	//if there are choices
 			{
-				final Element olElement=XMLUtilities.appendElement(questionElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_OL);
+				final Element olElement=XMLUtilities.appendElement(questionElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_OL);
 				final Iterator choiceIterator=choices.iterator();	//get an iterator to the choices
 				while(choiceIterator.hasNext())	//while there are more choices
 				{
@@ -282,7 +281,7 @@ public class ActivityPanel extends RDFPanel<Activity, ResourceModel<Activity>>
 					if(choice instanceof Dialogue)	//if the choice is dialogue
 					{
 						final Dialogue choiceDialogue=(Dialogue)choice;	//cast the choice to dialogue
-						final Element choiceElement=XMLUtilities.appendElement(olElement, XHTMLConstants.XHTML_NAMESPACE_URI.toString(), XHTMLConstants.ELEMENT_LI);	//append an element for the choice
+						final Element choiceElement=XMLUtilities.appendElement(olElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_LI);	//append an element for the choice
 						appendDialogue(document, choiceElement, choiceDialogue);	//append the choice
 					}
 				}

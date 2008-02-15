@@ -676,9 +676,9 @@ Debug.trace("using file for document: ", oebDocumentFile);
 		if(pgHeaderFragment!=null)  //if we have a Project Gutenberg header, write it to its own file
 		{
 			final Document pgHeaderDocument=OEBUtilities.createOEB1Document(pgHeaderFragment);  //create a document from the header fragment
-		  final Element bodyElement=XHTMLUtilities.getBodyElement(pgHeaderDocument);  //get the body of the document
+		  final Element bodyElement=XHTML.getBodyElement(pgHeaderDocument);  //get the body of the document
 				//create a header element and add it to the body
-			final Element headerElement=XMLUtilities.createElement(pgHeaderDocument, bodyElement.getNamespaceURI(), XHTMLConstants.ELEMENT_H2, "Information from the Original Project Gutenberg EText");  //G***use a constant
+			final Element headerElement=XMLUtilities.createElement(pgHeaderDocument, bodyElement.getNamespaceURI(), XHTML.ELEMENT_H2, "Information from the Original Project Gutenberg EText");  //G***use a constant
 		  bodyElement.insertBefore(headerElement, bodyElement.getFirstChild()); //insert the header element as the first element in the body
 /*G***del
 		  final String pgHeaderDocumentFilename=FileUtilities.changeExtension(
@@ -1450,14 +1450,14 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 		while((node=nodeIterator.nextNode())!=null)  //while we haven't reached the last node
 		{
 		  final Element element=(Element)node;  //cast the node to an element; elements are all we asked for
-		  if(XHTMLUtilities.isLinkElement(element.getNamespaceURI(), element)) //if this is a link element G***pass the real XHTML namespace
+		  if(XHTML.isLinkElement(element.getNamespaceURI(), element)) //if this is a link element G***pass the real XHTML namespace
 			{
-				final String href=XHTMLUtilities.getLinkElementHRef(element.getNamespaceURI(), element);  //get the link element's href
+				final String href=XHTML.getLinkElementHRef(element.getNamespaceURI(), element);  //get the link element's href
 				if(href!=null)  //if the link has an href
 				{
 					if(href.length()>0 && href.charAt(0)==URLConstants.FRAGMENT_SEPARATOR_CHAR) //if this link is an internal reference
 					{
-					  XHTMLUtilities.setLinkElementHRef(element.getNamespaceURI(), element, externalHRef+href); //prepend the local reference with the external reference
+					  XHTML.setLinkElementHRef(element.getNamespaceURI(), element, externalHRef+href); //prepend the local reference with the external reference
 					}
 				}
 			}
@@ -1698,7 +1698,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 //G***del		String title=null;  //we'll try to find a title
 Debug.trace("getting normal title");  //G***del
 		final String BY="by"; //G***put elsewhere
-		final Element bodyElement=XHTMLUtilities.getBodyElement(xhtmlDocument);  //get the body of the document
+		final Element bodyElement=XHTML.getBodyElement(xhtmlDocument);  //get the body of the document
 		final NodeList childNodes=bodyElement.getChildNodes();  //get the list of child nodes
 		for(int i=0; i<25 && i<childNodes.getLength(); ++i) //look at each child node
 		{
@@ -1791,7 +1791,7 @@ Debug.trace("finding normal text author");  //G***del
 //G***del		final String pgAuthor=PGUtilities.getAuthor()
 		final String BY="by"; //G***put elsewhere
 		boolean nextLineIsAuthor=false; //something might make us think at some point that the next line is the author
-		final Element bodyElement=XHTMLUtilities.getBodyElement(xhtmlDocument);  //get the body of the document
+		final Element bodyElement=XHTML.getBodyElement(xhtmlDocument);  //get the body of the document
 		final NodeList childNodes=bodyElement.getChildNodes();  //get the list of child nodes
 		for(int i=0; i<20 && i<childNodes.getLength(); ++i) //look at each child node
 		{

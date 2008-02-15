@@ -10,6 +10,7 @@ import javax.mail.internet.ContentType;
 
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
+import com.garretwilson.text.xml.xhtml.XHTML;
 import com.globalmentor.java.*;
 import com.globalmentor.urf.*;
 
@@ -43,8 +44,9 @@ public class Files
 		tempFileExtensionContentTypeMap.put(DICTO_EXTENSION, new ContentType(APPLICATION, X_DICTO_RDF_XML_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(DOC_EXTENSION, new ContentType(APPLICATION, MSWORD_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(GIF_EXTENSION, new ContentType(IMAGE, GIF_SUBTYPE, null));	//image/gif
-		tempFileExtensionContentTypeMap.put(HTM_EXTENSION, new ContentType(TEXT, HTML_SUBTYPE, null));	//TODO make sure changing this to text/html doesn't cause other methods to fail; nevertheless, we can't assume all .html files are XHTML (i.e. valid XML)
-		tempFileExtensionContentTypeMap.put(HTML_EXTENSION, new ContentType(TEXT, HTML_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(XHTML.HTM_NAME_EXTENSION, XHTML.HTML_CONTENT_TYPE);	//TODO make sure changing this to text/html doesn't cause other methods to fail; nevertheless, we can't assume all .html files are XHTML (i.e. valid XML)
+		tempFileExtensionContentTypeMap.put(XHTML.HTML_NAME_EXTENSION, XHTML.HTML_CONTENT_TYPE);
+		tempFileExtensionContentTypeMap.put(XHTML.XHTML_NAME_EXTENSION, XHTML.XHTML_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put(ICAL_EXTENSION, new ContentType(TEXT, CALENDAR_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(JAVA_EXTENSION, new ContentType(TEXT, JAVA_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(JPEG_EXTENSION, new ContentType(IMAGE, JPEG_SUBTYPE, null));
@@ -65,7 +67,7 @@ public class Files
 		tempFileExtensionContentTypeMap.put(RAR_EXTENSION, new ContentType(APPLICATION, X_RAR_COMPRESSED_SUBTYPTE, null));
 		tempFileExtensionContentTypeMap.put(TIF_EXTENSION, new ContentType(IMAGE, TIFF_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(TIFF_EXTENSION, new ContentType(IMAGE, TIFF_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(TURF_EXTENSION, new ContentType(APPLICATION, TURF_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(TURF.TURF_NAME_EXTENSION, new ContentType(APPLICATION, TURF_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(TXT_EXTENSION, new ContentType(TEXT, PLAIN_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, new ContentType(TEXT, DIRECTORY_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(WAV_EXTENSION, new ContentType(AUDIO, X_WAV_SUBTYPE, null));

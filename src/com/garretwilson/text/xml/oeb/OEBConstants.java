@@ -3,12 +3,11 @@ package com.garretwilson.text.xml.oeb;
 import java.net.URI;
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.ContentTypeConstants;
-import com.garretwilson.text.xml.xhtml.XHTMLConstants;
 
 /**Several constants for OEB.
 @author Garret Wilson
 */
-public interface OEBConstants extends XHTMLConstants
+public interface OEBConstants
 {
 	/**The package name of the OEB XML classes.*/
 //TODO del	public final static String PACKAGE_NAME="com.garretwilson.text.xml.oeb";
