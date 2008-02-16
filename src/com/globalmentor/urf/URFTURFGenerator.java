@@ -516,7 +516,7 @@ public class URFTURFGenerator
 						startedProperties=true;	//show that we've started the properties
 					}
 					writeNewLine(writer);	//go to the next line
-					final String prefix=namespaceLabelManager.getNamespaceLabel(namespaceURI);	//get a namespace label for the URI
+					final String prefix=namespaceLabelManager.determineNamespaceLabel(namespaceURI);	//get a namespace label for the URI
 					writeString(writer, prefix);	//write the prefix
 					writer.write(NAMESPACE_ASSOCIATION_DELIMITER);	//write the property-value delimiter
 					writeURI(writer, namespaceURI);	//write the URI
@@ -1313,7 +1313,7 @@ public class URFTURFGenerator
 		if(namespaceURI!=null)	//if there is a namespace
 		{
 			final boolean suppressPrefix=namespaceURI.equals(defaultNamespaceURI);	//we could suppress the prefixe if the namespace is the same as the default namespace
-			final String prefix=suppressPrefix ? null : (determinePrefix ? namespaceLabelManager.getNamespaceLabel(namespaceURI) : namespaceLabelManager.get(namespaceURI));	//see if we have a prefix for this namespace, but only if we shouldn't suppress prefixes
+			final String prefix=suppressPrefix ? null : (determinePrefix ? namespaceLabelManager.determineNamespaceLabel(namespaceURI) : namespaceLabelManager.get(namespaceURI));	//see if we have a prefix for this namespace, but only if we shouldn't suppress prefixes
 			if(prefix!=null || suppressPrefix)	//if we have a prefix, or we're suppressing this prefix
 			{
 				final String localName=getLocalName(uri);	//get the local name of the URI

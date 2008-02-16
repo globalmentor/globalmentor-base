@@ -219,7 +219,7 @@ public class MAQROViewFactory extends XMLViewFactory
 			  resultStringBuffer.append("</html>");
 */
 				final MAQROXHTMLifier maqroXHTMLifier=new MAQROXHTMLifier();	//create an object to create XHTML from a MAQRO outcome
-				final org.w3c.dom.Document document=XHTML.createXHTMLDocument();	//create an XHTML document
+				final org.w3c.dom.Document document=XHTML.createXHTMLDocument("", true);	//create an XHTML document
 					//create an element document from the outcome and append it to the XHTML body element
 				XHTML.getBodyElement(document).appendChild(maqroXHTMLifier.createElement(document, outcome));
 				final XMLTextPane outcomeTextPane=new XMLTextPane();	//TODO create a content type constructor

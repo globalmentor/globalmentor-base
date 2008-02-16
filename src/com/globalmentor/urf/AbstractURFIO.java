@@ -46,28 +46,6 @@ public abstract class AbstractURFIO<T> extends TURFNamespaceLabelManager impleme
 			resourceFactoryMap.remove(typeNamespaceURI);
 		}
 
-	/**The map of XML serialization prefixes, keyed by namespace URIs.*/
-	private final Map<URI, String> namespaceURIPrefixMap=new HashMap<URI, String>();
-
-		/**Registers the given XML serialization prefix to be used with the given namespace URI.
-		If a prefix is already registered with the given namespace, it is replaced with this prefix.
-		@param namespaceURI The namespace URI.
-		@param prefix The XML serialization prefix to use with the given namespace.
-		*/
-		public void registerNamespacePrefix(final URI namespaceURI, final String prefix)
-		{
-			namespaceURIPrefixMap.put(namespaceURI, prefix);	//store the prefix in the map, keyed to the URI
-		}
-
-		/**Unregisters the XML serialization prefix for the given namespace URI.
-		If no prefix is registered for the given namespace, no action occurs.
-		@param namespaceURI The namespace URI.
-		*/
-		public void unregisterNamespacePrefix(final String namespaceURI, final String prefix)
-		{
-			namespaceURIPrefixMap.remove(namespaceURI);	//remove whatever prefix is registered with this namespace, if any
-		}
-
 	/**Class constructor.
 	@param objectClass The class representing the type of object being loaded and saved.
 	@exception NullPointerException if the given class is <code>null</code>.

@@ -11,7 +11,7 @@ import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
 import com.garretwilson.text.xml.*;
-import static com.garretwilson.text.xml.XMLConstants.*;
+import static com.garretwilson.text.xml.XML.*;
 import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 import com.garretwilson.util.*;
 import com.globalmentor.urf.content.Content;

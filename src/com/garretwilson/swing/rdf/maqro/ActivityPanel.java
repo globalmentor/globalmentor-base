@@ -162,7 +162,7 @@ public class ActivityPanel extends RDFPanel<Activity, ResourceModel<Activity>>
 				final Activity activity=model.getResource();	//get the activity represented by the model
 				if(activity!=null)	//if we have an activity
 				{
-					final Document xhtmlDocument=XHTML.createXHTMLDocument();	//create an XHTML document
+					final Document xhtmlDocument=XHTML.createXHTMLDocument("", true);	//create an XHTML document
 					final Element bodyElement=XHTML.getBodyElement(xhtmlDocument);	//get the body element
 					assert bodyElement!=null : "Missing <body> element in default XHTML document.";
 						//set the title

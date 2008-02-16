@@ -15,7 +15,7 @@ import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.swing.text.xml.qti.QTIViewFactory;
 import com.garretwilson.swing.tree.*;
 import com.garretwilson.swing.qti.tree.*;
-import com.garretwilson.text.xml.XMLConstants;
+import com.garretwilson.text.xml.XML;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.util.*;
@@ -325,7 +325,7 @@ Debug.trace("****setting XML");  //G***del
 
 //TODO use the XMLTextPane.setXML() version if we can
 						//G***testing for style application
-			((XMLEditorKit)xmlTextPane.getEditorKit()).setXML(xmlDocument, null, XMLConstants.XML_CONTENT_TYPE, swingDocument); //set the XML document in the text pane
+			((XMLEditorKit)xmlTextPane.getEditorKit()).setXML(xmlDocument, null, XML.XML_CONTENT_TYPE, swingDocument); //set the XML document in the text pane
 	//G***del Debug.trace("navigating");  //G***del
 					}
 				});

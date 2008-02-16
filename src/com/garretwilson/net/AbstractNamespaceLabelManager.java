@@ -20,7 +20,7 @@ import com.garretwilson.rdf.rdfs.RDFSConstants;
 import com.garretwilson.rdf.version.VersionConstants;
 import com.garretwilson.rdf.xeb.XEBConstants;
 import com.garretwilson.rdf.xpackage.XPackageConstants;
-import com.garretwilson.text.xml.XMLConstants;
+import com.garretwilson.text.xml.XML;
 import com.garretwilson.text.xml.oeb.OEBConstants;
 import com.garretwilson.text.xml.schema.XMLSchemaConstants;
 import com.garretwilson.text.xml.xhtml.XHTML;
@@ -79,8 +79,8 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		tempNamespaceURILabelMap.put(XMLSchemaConstants.XML_SCHEMA_NAMESPACE_URI, XMLSchemaConstants.XML_SCHEMA_NAMESPACE_PREFIX); //XML Schema
 		tempNamespaceURILabelMap.put(XHTML.XHTML_NAMESPACE_URI, XHTML.XHTML_NAMESPACE_PREFIX); //XHTML
 		tempNamespaceURILabelMap.put(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.XLINK_NAMESPACE_PREFIX); //XLink
-		tempNamespaceURILabelMap.put(XMLConstants.XML_NAMESPACE_URI, XMLConstants.XML_NAMESPACE_PREFIX); //XML
-		tempNamespaceURILabelMap.put(XMLConstants.XMLNS_NAMESPACE_URI, XMLConstants.XMLNS_NAMESPACE_PREFIX); //XML namespaces
+		tempNamespaceURILabelMap.put(XML.XML_NAMESPACE_URI, XML.XML_NAMESPACE_PREFIX); //XML
+		tempNamespaceURILabelMap.put(XML.XMLNS_NAMESPACE_URI, XML.XMLNS_NAMESPACE_PREFIX); //XML namespaces
 		tempNamespaceURILabelMap.put(XEBConstants.XEB_NAMESPACE_URI, XEBConstants.XEB_NAMESPACE_PREFIX); //XEbook
 		tempNamespaceURILabelMap.put(XPackageConstants.XPACKAGE_NAMESPACE_URI, XPackageConstants.XPACKAGE_NAMESPACE_PREFIX); //XPackage
 		tempNamespaceURILabelMap.put(XPackageConstants.XML_ONTOLOGY_NAMESPACE_URI, XPackageConstants.XML_ONTOLOGY_NAMESPACE_PREFIX); //XPackage XML ontology
@@ -143,7 +143,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	{
 		if(!containsKey(checkInstance(namespaceURI, "Namespace URI cannot be null.")))	//if we don't know about this namespace
 		{
-			put(namespaceURI, getNamespaceLabel(namespaceURI));	//get a label for this namespace
+			determineNamespaceLabel(namespaceURI);	//determine a label for this namespace
 			return true;	//indicate that this is a new namespace
 		}
 		else	//if we already know about this namespace
@@ -160,7 +160,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	@return A label for use with the given namespace, or <code>null</code> if the <code>null</code> label is assigned to the given namespace.
 	@see #isLabel(String)
 	*/
-	public String getNamespaceLabel(final URI namespaceURI)
+	public String determineNamespaceLabel(final URI namespaceURI)
 	{
 		String label=get(namespaceURI);  //get the label keyed by the namespace, if any
 		if(label==null && !containsKey(namespaceURI))	//if we didn't find a label because the namespace wasn't registered, generate a label

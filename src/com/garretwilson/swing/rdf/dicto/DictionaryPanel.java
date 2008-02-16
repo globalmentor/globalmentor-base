@@ -108,7 +108,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 				if(model.getResource()!=null)	//if we have a dictionary
 				{
 					final Dictionary dictionary=model.getResource();	//get the dictionary represented by the model
-					final Document xhtmlDocument=XHTML.createXHTMLDocument();	//create an XHTML document
+					final Document xhtmlDocument=XHTML.createXHTMLDocument("", true);	//create an XHTML document
 					final Element bodyElement=XHTML.getBodyElement(xhtmlDocument);	//get the body element
 					assert bodyElement!=null : "Missing <body> element in default XHTML document.";
 						//set the title

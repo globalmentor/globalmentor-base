@@ -14,7 +14,7 @@ import static com.globalmentor.java.Objects.*;
 
 import com.garretwilson.text.xml.XMLBase;
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.text.xml.XMLConstants;
+import com.garretwilson.text.xml.XML;
 import com.garretwilson.util.Debug;
 import com.garretwilson.util.LocaleUtilities;
 import org.w3c.dom.*;
@@ -355,12 +355,12 @@ Debug.trace("processing attribute from local name: ", attributeLocalName);
 Debug.trace("processing attribute from value: ", attributeValue);
 */
 				//ignore attributes with the "xmlns" prefix or in the xmlns namespace
-			if(XMLConstants.XMLNS_NAMESPACE_PREFIX.equals(attributePrefix) || XMLConstants.XMLNS_NAMESPACE_URI.equals(attributeNamespaceURI))
+			if(XML.XMLNS_NAMESPACE_PREFIX.equals(attributePrefix) || XML.XMLNS_NAMESPACE_URI.equals(attributeNamespaceURI))
 			{
 				continue;
 			}
 				//process attributes with the "xml" prefix (or in the xml namespace) specially
-			else if(XMLConstants.XML_NAMESPACE_PREFIX.equals(attributePrefix) || XMLConstants.XML_NAMESPACE_URI.equals(attributeNamespaceURI))
+			else if(XML.XML_NAMESPACE_PREFIX.equals(attributePrefix) || XML.XML_NAMESPACE_URI.equals(attributeNamespaceURI))
 			{
 					//TODO add support for xml:lang
 				continue;
@@ -641,7 +641,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			else	//if a datatype is not present, this is a plain literal
 			{
 					//get the xml:lang language tag, if there is one
-				final String languageTag=propertyNode instanceof Element ? XMLUtilities.getDefinedAttributeNS((Element)propertyNode, XMLConstants.XML_NAMESPACE_URI.toString(), XMLConstants.ATTRIBUTE_LANG) : null;
+				final String languageTag=propertyNode instanceof Element ? XMLUtilities.getDefinedAttributeNS((Element)propertyNode, XML.XML_NAMESPACE_URI.toString(), XML.ATTRIBUTE_LANG) : null;
 					//create a locale for the language if there is a language tag
 				final Locale languageLocale=languageTag!=null ? LocaleUtilities.createLocale(languageTag) : null;
 				return new RDFPlainLiteral(childText, languageLocale);  //create a literal from the element's text, noting the specified language if any

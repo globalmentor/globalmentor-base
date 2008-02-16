@@ -255,7 +255,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 		writer.flush();	//flush the accumulated bytes, since we're using the writer locally only
 	}
 
-	/**Writes an URF instance to a TURF output stream.
+	/**Writes an URF instance to a TURF output stream, formatted with a byte order mark (BOM).
 	@param outputStream The output stream to which to write the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param urf The URF instance to write to the given output stream.
@@ -265,7 +265,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	*/
 	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException
 	{
-		writeTURF(outputStream, baseURI, urf, true, true, namespacePrefixManager);	//write the URF with formatted output
+		writeTURF(outputStream, baseURI, urf, true, true, namespacePrefixManager);	//write the URF with formatted output and a BOM
 	}
 
 	/**Writes an URF instance to a TURF output stream.

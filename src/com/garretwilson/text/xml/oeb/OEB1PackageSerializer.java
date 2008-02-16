@@ -2,20 +2,18 @@ package com.garretwilson.text.xml.oeb;
 
 import java.io.*;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.*;
-import javax.mail.internet.ContentType;
+
+import static com.garretwilson.io.Charsets.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import com.garretwilson.rdf.dublincore.DCConstants;
 import com.garretwilson.rdf.xpackage.XPackageUtilities;
-import static com.garretwilson.text.CharacterEncoding.*;
-
-import com.garretwilson.text.CharacterEncoding;
-import com.garretwilson.text.xml.XMLConstants;
+import com.garretwilson.text.xml.XML;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.util.*;
-import com.globalmentor.marmot.Marmot;
 
 import org.w3c.dom.*;
 
@@ -39,7 +37,7 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 	*/
 	public static void serialize(final OEBPublication publication, final OutputStream outputStream) throws UnsupportedEncodingException, IOException
 	{
-		serialize(publication, outputStream, UTF_8_ENCODING);	//serialize the publication, defaulting to UTF-8
+		serialize(publication, outputStream, UTF_8_CHARSET);	//serialize the publication, defaulting to UTF-8
 	}
 
 	/**Serializes the package for the specified publication to the given output
@@ -47,16 +45,16 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 	Any byte order mark specified in the character encoding will be written to the stream.
 	@param publication The OEB publication to serialize.
 	@param outputStream The stream into which the document should be serialized.
-	@param encoding The encoding format to use when serializing.
+	@param charset The charset to use when serializing.
 	@exception IOException Thrown if an I/O error occurred.
 	@exception UnsupportedEncodingException Thrown if the specified encoding is not recognized.
 	*/
-	public static void serialize(final OEBPublication publication, final OutputStream outputStream, final CharacterEncoding encoding) throws IOException, UnsupportedEncodingException
+	public static void serialize(final OEBPublication publication, final OutputStream outputStream, final Charset charset) throws IOException, UnsupportedEncodingException
 	{
 		final Document packageDocument=generatePackage(publication); //generate an XML document representing the publication package
 		final Properties serializeOptions=new Properties(); //create properties for the serialization options
 		PropertyUtilities.setProperty(serializeOptions, XMLSerializer.FORMAT_OUTPUT_OPTION, true);  //show that we should format the output
-		new XMLSerializer(serializeOptions).serialize(packageDocument, outputStream, encoding);	//serialize the publication as a formatted XML document to the output stream G***do we really want to create the serializer each time?
+		new XMLSerializer(serializeOptions).serialize(packageDocument, outputStream, charset);	//serialize the publication as a formatted XML document to the output stream G***do we really want to create the serializer each time?
 	}
 
 	/**Creates an XML document representing an OEB publication package.
@@ -73,9 +71,9 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 			  //package/metadata/dc-metadata
 		final Element dcMetadataElement=XMLUtilities.appendElement(metadataElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA_DC_METADATA); //create the dc-metadata element
 			  //add the attribute, xmlns:dc="http://purl.org/dc/elements/1.0/"
-		dcMetadataElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, DCMI_ELEMENTS_NAMESPACE_PREFIX), DCMI10_ELEMENTS_NAMESPACE_URI.toString());
+		dcMetadataElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, DCMI_ELEMENTS_NAMESPACE_PREFIX), DCMI10_ELEMENTS_NAMESPACE_URI.toString());
 			  //add the attribute, xmlns:oebpackage="http://openebook.org/namespaces/oeb-package/1.0/"
-		dcMetadataElement.setAttributeNS(XMLConstants.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLConstants.XMLNS_NAMESPACE_PREFIX, OEB1_PACKAGE_NAMESPACE_PREFIX), OEB1_PACKAGE_NAMESPACE_URI.toString());
+		dcMetadataElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, OEB1_PACKAGE_NAMESPACE_PREFIX), OEB1_PACKAGE_NAMESPACE_URI.toString());
 		final Iterator propertyIterator=publication.getPropertyIterator();  //get an iterator to the publication's properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{

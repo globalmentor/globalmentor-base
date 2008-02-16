@@ -9,7 +9,7 @@ import com.globalmentor.java.Objects;
 @author Garret Wilson
 @see <a href="http://www.unicode.org/faq/utf_bom.html#BOM">Unicode Byte Order Mark (BOM) FAQ</a>
 */
-public class CharacterEncoding
+public class CharacterEncoding	//TODO remove BOM storage, and then replace class with java.nio.Charset
 {
 		//character encoding families
 	/**The eight-bit UTF-8 character encoding (to which the big-endian/little-endian byte order does not apply).*/
