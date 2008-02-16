@@ -6,9 +6,6 @@ import java.nio.charset.Charset;
 import javax.mail.internet.ContentType;
 
 import static com.garretwilson.io.ContentTypes.*;
-import static com.garretwilson.io.ContentTypeConstants.*;
-
-import com.garretwilson.io.ContentTypeConstants;
 import com.garretwilson.net.Resource;
 import com.globalmentor.urf.*;
 
@@ -295,7 +292,7 @@ public class Content
 		or <code>null</code> if the resource has no <code>type</code> property specified or the content type was not a resource with an Internet media type URI.
 	@see #getContentType(URFResource)
 	@see #getCharset(URFResource)
-	@see ContentTypeConstants#CHARSET_PARAMETER
+	@see ContentTypes#CHARSET_PARAMETER
 	*/
 	public static ContentType getFullContentType(final URFResource resource)
 	{

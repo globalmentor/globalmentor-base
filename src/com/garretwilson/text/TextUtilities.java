@@ -6,6 +6,8 @@ import java.util.*;
 import javax.mail.internet.ContentType;
 
 import static com.garretwilson.io.ContentTypeConstants.*;
+
+import com.garretwilson.io.ContentTypes;
 import com.garretwilson.text.xml.XMLUtilities;
 import static com.garretwilson.text.xml.XMLUtilities.*;
 import com.garretwilson.util.*;
@@ -619,7 +621,7 @@ preface
 	{
 		if(contentType!=null)	//if a content type is given
 		{
-			if(TEXT.equals(contentType.getPrimaryType()))	//if this is "text/*"
+			if(ContentTypes.TEXT_PRIMARY_TYPE.equals(contentType.getPrimaryType()))	//if this is "text/*"
 			{
 				return true;	//text/* is a text content type
 			}

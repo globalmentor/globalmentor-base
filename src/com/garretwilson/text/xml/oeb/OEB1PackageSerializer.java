@@ -67,9 +67,9 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 		//package
 		final Element packageElement=XMLUtilities.replaceDocumentElement(document, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_PACKAGE); //create the package element
 		  //package/metadata
-		final Element metadataElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA); //create the metadata element
+		final Element metadataElement=XMLUtilities.appendElementNS(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA); //create the metadata element
 			  //package/metadata/dc-metadata
-		final Element dcMetadataElement=XMLUtilities.appendElement(metadataElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA_DC_METADATA); //create the dc-metadata element
+		final Element dcMetadataElement=XMLUtilities.appendElementNS(metadataElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA_DC_METADATA); //create the dc-metadata element
 			  //add the attribute, xmlns:dc="http://purl.org/dc/elements/1.0/"
 		dcMetadataElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, DCMI_ELEMENTS_NAMESPACE_PREFIX), DCMI10_ELEMENTS_NAMESPACE_URI.toString());
 			  //add the attribute, xmlns:oebpackage="http://openebook.org/namespaces/oeb-package/1.0/"
@@ -99,61 +99,61 @@ Debug.trace("property value: ", propertyValue); //G***del
 					//<package><metadata><dc-metadata><dc:Title>
 					if(DC_TITLE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TITLE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Creator>
 					else if(DC_CREATOR_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CREATOR, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Subject>
 					else if(DC_SUBJECT_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SUBJECT, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Description>
 					else if(DC_DESCRIPTION_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DESCRIPTION, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Publisher>
 					else if(DC_PUBLISHER_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_PUBLISHER, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Contributor>
 					else if(DC_CONTRIBUTOR_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CONTRIBUTOR, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Date>
 					else if(DC_DATE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DATE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Type>
 					else if(DC_TYPE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TYPE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Format>
 					else if(DC_FORMAT_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_FORMAT, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Identifier>
 					else if(DC_IDENTIFIER_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						final Element dcIdentifierElement=XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						final Element dcIdentifierElement=XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_IDENTIFIER, propertyValue);  //add the OEBPPS 1.x DC metadata element
 								//if the package has not yet been assigned a unique identifier attribute
 						if(!packageElement.hasAttributeNS(null, PKG_ELEMENT_PACKAGE_ATTRIBUTE_UNIQUE_IDENTIFIER))
@@ -167,31 +167,31 @@ Debug.trace("property value: ", propertyValue); //G***del
 					//<package><metadata><dc-metadata><dc:Source>
 					else if(DC_SOURCE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SOURCE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Language>
 					else if(DC_LANGUAGE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_LANGUAGE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Relation>
 					else if(DC_RELATION_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RELATION, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Coverage>
 					else if(DC_COVERAGE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_COVERAGE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Rights>
 					else if(DC_RIGHTS_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElement(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RIGHTS, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 				}
@@ -215,7 +215,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 		final RDFListResource<?> spine=publication.getSpine(); //get the spine
 		if(spine!=null)  //if the publication has a spine
 		{
-			final Element spineElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_SPINE); //create the spine element
+			final Element spineElement=XMLUtilities.appendElementNS(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_SPINE); //create the spine element
 			for(final RDFObject item:spine)	//for each item in the spine
 			{
 				spineElement.appendChild(generateItemRefElement(document, (RDFResource)item, publication.getURI()));  //generate an item element and add it to the spine element
@@ -224,7 +224,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 		if(publication.getGuideList().size()>0) //if there are guides
 		{
 				//package/guide
-			final Element guideElement=XMLUtilities.appendElement(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_GUIDE); //create the guide element
+			final Element guideElement=XMLUtilities.appendElementNS(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_GUIDE); //create the guide element
 			final Iterator guideIterator=publication.getGuideList().iterator(); //get an iterator to iterate through the guides
 			while(guideIterator.hasNext()) //while there are more items in the guide
 			{

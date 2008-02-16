@@ -259,16 +259,16 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 		public void setRights(final String newRights) {rights=newRights;}
 
 	/**A static application/java media type for quick reference when comparing media types.*/
-	protected final static ContentType APPLICATION_JAVA_MEDIA_TYPE=new ContentType(ContentTypeConstants.APPLICATION, ContentTypeConstants.JAVA_SUBTYPE, null);
+	protected final static ContentType APPLICATION_JAVA_MEDIA_TYPE=new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, ContentTypeConstants.JAVA_SUBTYPE, null);
 
 	/**A static image/gif media type for quick reference when comparing media types.*/
-	protected final static ContentType IMAGE_GIF_MEDIA_TYPE=new ContentType(ContentTypeConstants.IMAGE, ContentTypeConstants.GIF_SUBTYPE, null);
+	protected final static ContentType IMAGE_GIF_MEDIA_TYPE=new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, ContentTypeConstants.GIF_SUBTYPE, null);
 
 	/**A static image/png media type for quick reference when comparing media types.*/
-	protected final static ContentType IMAGE_PNG_MEDIA_TYPE=new ContentType(ContentTypeConstants.IMAGE, ContentTypeConstants.PNG_SUBTYPE, null);
+	protected final static ContentType IMAGE_PNG_MEDIA_TYPE=new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, ContentTypeConstants.PNG_SUBTYPE, null);
 
 	/**A static text/html media type for quick reference when comparing media types.*/
-	protected final static ContentType APPLICATION_XHTML_XML_MEDIA_TYPE=new ContentType(ContentTypeConstants.APPLICATION, ContentTypeConstants.XHTML_XML_SUBTYPE, null);
+	protected final static ContentType APPLICATION_XHTML_XML_MEDIA_TYPE=new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, ContentTypeConstants.XHTML_XML_SUBTYPE, null);
 
 	/**Whether we should load and tidy each OEB document.*/
 	private boolean tidy=false;
@@ -678,7 +678,7 @@ Debug.trace("using file for document: ", oebDocumentFile);
 			final Document pgHeaderDocument=OEBUtilities.createOEB1Document(pgHeaderFragment);  //create a document from the header fragment
 		  final Element bodyElement=XHTML.getBodyElement(pgHeaderDocument);  //get the body of the document
 				//create a header element and add it to the body
-			final Element headerElement=XMLUtilities.createElement(pgHeaderDocument, bodyElement.getNamespaceURI(), XHTML.ELEMENT_H2, "Information from the Original Project Gutenberg EText");  //G***use a constant
+			final Element headerElement=XMLUtilities.createElementNS(pgHeaderDocument, bodyElement.getNamespaceURI(), XHTML.ELEMENT_H2, "Information from the Original Project Gutenberg EText");  //G***use a constant
 		  bodyElement.insertBefore(headerElement, bodyElement.getFirstChild()); //insert the header element as the first element in the body
 /*G***del
 		  final String pgHeaderDocumentFilename=FileUtilities.changeExtension(

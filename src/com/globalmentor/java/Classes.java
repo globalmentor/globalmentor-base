@@ -31,6 +31,8 @@ import static com.garretwilson.io.ContentTypeConstants.*;
 import static com.garretwilson.io.FileConstants.*;
 import static com.garretwilson.io.Files.*;
 import static com.garretwilson.io.OutputStreamUtilities.*;
+
+import com.garretwilson.io.ContentTypes;
 import com.garretwilson.net.URIConstants;
 import static com.garretwilson.net.URIs.*;
 
@@ -130,7 +132,7 @@ public class Classes
 	{
 		final ParameterList parameterList=new ParameterList();	//create a new parameter list
 		parameterList.set("class", objectClass.getName());	//TODO testing
-		return new ContentType(APPLICATION, X_JAVA_OBJECT, parameterList);	//create a content type appropriate for this object class TODO use a constant
+		return new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_JAVA_OBJECT, parameterList);	//create a content type appropriate for this object class TODO use a constant
 	}
 
 	/**Returns a constructor of a class that is compatible with the given parameter types.

@@ -223,7 +223,7 @@ public class MAQROViewFactory extends XMLViewFactory
 					//create an element document from the outcome and append it to the XHTML body element
 				XHTML.getBodyElement(document).appendChild(maqroXHTMLifier.createElement(document, outcome));
 				final XMLTextPane outcomeTextPane=new XMLTextPane();	//TODO create a content type constructor
-				final ContentType contentType=new ContentType(APPLICATION, XHTML_XML_SUBTYPE, null);	//create an application/xhtml+xml content type
+				final ContentType contentType=new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, XHTML_XML_SUBTYPE, null);	//create an application/xhtml+xml content type
 				outcomeTextPane.setContentType(contentType.toString());	//set the content type to application/xhtml+xml
 				outcomeTextPane.setXML(document, null, contentType);	//set the XML in the text pane
 				outcomeTextPane.setEditable(false);	//don't allow the text pane to be editable

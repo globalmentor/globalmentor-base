@@ -114,10 +114,10 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 						//set the title
 					final Locale dictionaryLanguage=dictionary.getDictionaryLanguage();	//get the language of the entries
 					final String languageTitle=dictionaryLanguage!=null ? dictionaryLanguage.getDisplayLanguage()+" " : "";	//get the language part of the title
-					final Element h1Element=XMLUtilities.appendElement(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_H1, languageTitle+"Dictionary");	//G***i18n
+					final Element h1Element=XMLUtilities.appendElementNS(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_H1, languageTitle+"Dictionary");	//G***i18n
 					if(dictionary.getEntries()!=null)	//if we have a dictionary and it has entries
 					{
-						final Element dlElement=XMLUtilities.appendElement(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_DL);
+						final Element dlElement=XMLUtilities.appendElementNS(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_DL);
 						final Iterator entryIterator=dictionary.getEntries().iterator();	//get an iterator to look at all the dictionary entries
 						while(entryIterator.hasNext())	//while there are more dictionary entries
 						{
@@ -149,7 +149,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 								}
 							}
 */
-							final Element dtElement=XMLUtilities.appendElement(dlElement, XHTML.XHTML_NAMESPACE_URI.toString(),
+							final Element dtElement=XMLUtilities.appendElementNS(dlElement, XHTML.XHTML_NAMESPACE_URI.toString(),
 									XHTML.ELEMENT_DT, orthography.toString());	//show the entry orthography TODO add xml:lang to all of these terms
 							if(resourcePronunciation!=null)	//if we have a pronunciation resource
 							{
@@ -159,12 +159,12 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 									XLinkUtilities.setXLink(dtElement, XLinkConstants.SIMPLE_TYPE, href);	//link the term to the linked pronunciation resource
 								}
 							}
-							final Element ddElement=XMLUtilities.appendElement(dlElement, XHTML.XHTML_NAMESPACE_URI.toString(),
+							final Element ddElement=XMLUtilities.appendElementNS(dlElement, XHTML.XHTML_NAMESPACE_URI.toString(),
 									XHTML.ELEMENT_DD);	//create the definition element
 							final RDFPlainLiteral transliteration=entry.getTransliteration();	//get the entry transliteration
 							if(transliteration!=null)	//if there is a transliteration
 							{
-								XMLUtilities.appendElement(ddElement, XHTML.XHTML_NAMESPACE_URI.toString(),
+								XMLUtilities.appendElementNS(ddElement, XHTML.XHTML_NAMESPACE_URI.toString(),
 										XHTML.ELEMENT_EM, transliteration.toString());	//show the entry transliteration TODO add xml:lang to all of these terms
 								XMLUtilities.appendText(ddElement, Characters.SPACE_CHAR);	//add a space
 							}

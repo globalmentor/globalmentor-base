@@ -3,6 +3,7 @@ package com.garretwilson.text.xml.oeb;
 import java.net.URI;
 import javax.mail.internet.ContentType;
 import com.garretwilson.io.ContentTypeConstants;
+import com.garretwilson.io.ContentTypes;
 
 /**Several constants for OEB.
 @author Garret Wilson
@@ -69,13 +70,13 @@ public interface OEBConstants
 			public final static String PKG_GUIDE_REFERENCE_ATTRIBUTE_HREF="href";
 
 	/**The media type of an OEB 1.0 package.*/
-	public final static ContentType OEB10_PACKAGE_MEDIA_TYPE=new ContentType(ContentTypeConstants.APPLICATION, ContentTypeConstants.X_OEB1_PACKAGE_XML_SUBTYPE, null);
+	public final static ContentType OEB10_PACKAGE_MEDIA_TYPE=new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, ContentTypeConstants.X_OEB1_PACKAGE_XML_SUBTYPE, null);
 
 		/**The media type of an OEB 1.0 document.*/
-	public final static ContentType OEB10_DOCUMENT_MEDIA_TYPE=new ContentType(ContentTypeConstants.TEXT, ContentTypeConstants.X_OEB1_DOCUMENT_SUBTYPE, null);
+	public final static ContentType OEB10_DOCUMENT_MEDIA_TYPE=new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, ContentTypeConstants.X_OEB1_DOCUMENT_SUBTYPE, null);
 
 		/**The media type of an OEB 1.0 CSS document.*/
-	public final static ContentType OEB10_CSS_MEDIA_TYPE=new ContentType(ContentTypeConstants.TEXT, ContentTypeConstants.X_OEB1_CSS_SUBTYPE, null);
+	public final static ContentType OEB10_CSS_MEDIA_TYPE=new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, ContentTypeConstants.X_OEB1_CSS_SUBTYPE, null);
 
 	/**The public ID for OEBPS 1.0.*/
 	public final static String OEB10_DOCUMENT_PUBLIC_ID="+//ISBN 0-9673008-1-9//DTD OEB 1.0 Document//EN";
