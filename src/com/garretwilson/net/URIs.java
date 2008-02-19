@@ -913,20 +913,6 @@ public class URIs
 	*/
 	public static URI getCurrentLevel(final URI uri)
 	{
-/*TODO del; info URIs no longer supported
-		if(uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()))	//if this is an info URI (check for opaqueness first, because most URIs will not be opaque)
-		{
-			final String rawSSP=uri.getRawSchemeSpecificPart();	//get the scheme-specific part of the info URI
-			final int length=rawSSP.length();	//get the length of the string
-			final int lastPathSeparatorIndex=rawSSP.lastIndexOf(PATH_SEPARATOR);	//get the index of the last path separator
-			if(lastPathSeparatorIndex==length-1)	//if the path separator is the last character in the scheme-specific part
-			{
-				return uri;	//the URI is already at its current level
-			}
-			final String newRawSSP=lastPathSeparatorIndex>=0 ? rawSSP.substring(0, lastPathSeparatorIndex+1) : "";	//the new scheme-specific part is everything up to and including the last path separator character, or the empty string if there is no path separator
-			return changeRawSchemeSpecificPart(uri, newRawSSP);	//change the scheme-specific part of the URI
-		}
-*/
 		return uri.resolve(CURRENT_LEVEL_PATH_SEGMENT);	//resolve the URI to "."
 	}
 
@@ -1322,20 +1308,15 @@ G***del The context URL must be a URL of a directory, ending with the directory 
 	}
 
 	/**Determines whether the URI represents a canonical collection.
-	This method correctly handles {@value URIConstants#INFO_SCHEME} URIs.
+	This method returns <code>false</code> for URIs with no path component.
 	@param uri The URI the raw path of which to examine.
-	@return <code>true</code> if the path of the given URI ends with a slash ('/').
-	@exception IllegalArgumentException if the URI does not have a path component.
+	@return <code>true</code> if the given URI has a path that ends with a slash ('/').
 	@see #isCollectionPath(String)
 	*/
 	public static boolean isCollectionURI(final URI uri)
 	{
-		final String rawPath=uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath();	//get the raw path, using the scheme-specific part of any info URI (use the raw path in case the last character is an encoded slash)
-		if(rawPath==null)	//if there is no raw path
-		{
-			throw new IllegalArgumentException("URI "+uri+" has no path component.");
-		}
-		return isCollectionPath(rawPath);	//see if the path ends with '/' (use the raw path in case the last character is an encoded slash)		
+		final String rawPath=uri.getRawPath();	//get the raw path (use the raw path in case the last character is an encoded slash)
+		return rawPath!=null ? isCollectionPath(rawPath) : false;	//see if the path ends with '/'		
 	}
 
 	/**Determines whether the given path is a canonical collection path.

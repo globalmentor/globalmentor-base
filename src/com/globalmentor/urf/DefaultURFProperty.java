@@ -3,8 +3,9 @@ package com.globalmentor.urf;
 import java.net.URI;
 import java.util.concurrent.locks.*;
 
-import com.globalmentor.java.Objects;
+import javax.mail.internet.ContentType;
 
+import com.globalmentor.java.Objects;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.DEFAULT_URF_RESOURCE_FACTORY;
 
@@ -41,7 +42,17 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	{
 		this(new ReentrantReadWriteLock(), propertyURI, value);	//construct the class with a default lock
 	}
-
+	
+	/**Property URI and media type value constructor with no subject scope, a default lock, and a default scope
+	@param propertyURI The property URI.
+	@param value The property value.
+	@exception NullPointerException if the given property URI, and/or value is <code>null</code>.
+	*/
+	public DefaultURFProperty(final URI propertyURI, final ContentType value)
+	{
+		this(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createMediaTypeResource(value));	//construct the class with a resource created from the value
+	}
+	
 	/**Property URI and string value constructor with no subject scope, a default lock, and a default scope
 	@param propertyURI The property URI.
 	@param value The property value.
