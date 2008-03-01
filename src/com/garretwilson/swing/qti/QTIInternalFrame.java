@@ -14,7 +14,7 @@ import com.garretwilson.swing.text.xml.XMLEditorKit;
 import com.garretwilson.text.CharacterEncoding; //G***move
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.text.xml.stylesheets.css.XMLCSSProcessor; //G***this goes somewhere else
-import com.garretwilson.util.*;
+import com.globalmentor.util.*;
 
 /**An internal frame for editing lists of questions. Contains the internal
 	item list data model.

@@ -9,8 +9,8 @@ import com.garretwilson.text.CharacterEncoding;
 
 import static com.garretwilson.text.unicode.UnicodeConstants.*;
 import static com.garretwilson.text.unicode.UnicodeBlocks.*;
-import com.garretwilson.util.Debug;
 import com.globalmentor.java.Integers;
+import com.globalmentor.util.Debug;
 
 /**Represents the Unicode data in the file <code>UnicodeData.txt</code>.
 <p>This class expects the Unicode data file to exist in the same package as

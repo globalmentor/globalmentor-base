@@ -11,11 +11,11 @@ import static com.garretwilson.io.ReaderParser.*;
 import com.garretwilson.iso.ISO8601;
 import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.text.SyntaxException;
-import static com.garretwilson.util.TimeZoneConstants.*;
 import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.urf.URF.*;
+import static com.globalmentor.util.TimeZones.*;
 
 /**A lightweight structure for transferring components of URF temporal types.
 <p>Copyright © 2007 GlobalMentor, Inc.

@@ -5,8 +5,8 @@ import java.net.URL;	//G***decide if we want a URL constructor or not
 //G***testing import com.garretwilson.io.TextReader;
 import com.garretwilson.io.BufferedPushbackReader;
 //G***del if we don't need import com.garretwilson.util.StringManipulator;
-import com.garretwilson.util.Debug;
 import com.globalmentor.java.*;
+import com.globalmentor.util.Debug;
 
 /**Class which provides methods for parsing data from a stream.*/
 public class ParseReader extends BufferedPushbackReader

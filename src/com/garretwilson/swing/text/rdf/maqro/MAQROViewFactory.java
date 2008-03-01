@@ -24,8 +24,8 @@ import com.garretwilson.swing.XMLTextPane;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.XHTML;
-import com.garretwilson.util.Debug;
 import com.globalmentor.mentoract.activity.maqro.MAQROActivityEngine;
+import com.globalmentor.util.Debug;
 
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
 import static com.globalmentor.java.Objects.*;

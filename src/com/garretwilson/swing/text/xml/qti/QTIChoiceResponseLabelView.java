@@ -9,7 +9,7 @@ import com.garretwilson.swing.text.StyleUtilities;
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.swing.text.xml.css.XMLCSSStyleUtilities;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
 
 /**Displays a QTI response label for a coice rendering, along with the
 	resulting material. The toggle button's action command will be set to the

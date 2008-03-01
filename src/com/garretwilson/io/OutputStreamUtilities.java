@@ -1,7 +1,8 @@
 package com.garretwilson.io;
 
 import java.io.*;
-import com.garretwilson.util.Debug;
+
+import com.globalmentor.util.Debug;
 
 /**Class to manipulate output streams.
 @author Garret Wilson

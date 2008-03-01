@@ -2,7 +2,8 @@ package com.garretwilson.text.xml;
 
 import java.util.*;
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
+
 import org.w3c.dom.*;
 
 /**An object factory to create objects from XML elements.

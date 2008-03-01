@@ -11,7 +11,7 @@ import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.draw.*;
 import com.garretwilson.assess.qti.*;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
 
 /**Provides a visual editing environment for a QTI hotspot rendering.
 @author Garret Wilson

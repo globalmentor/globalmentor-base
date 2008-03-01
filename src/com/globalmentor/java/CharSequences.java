@@ -1,5 +1,5 @@
 /*
- * Copyright © 2003-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.io.UnsupportedEncodingException;
 import static com.garretwilson.text.CharacterEncoding.*;
 import static com.globalmentor.java.Characters.*;
 
-import com.garretwilson.util.ArrayUtilities;
+import com.globalmentor.util.Arrays;
 
 /**Various text manipulating functions. These methods work on
 	objects that implement the {@link CharSequence} interface.
@@ -380,7 +380,7 @@ public class CharSequences
 	{
 		for(int i=fromIndex; i<charSequence.length(); ++i)	//look at each character in the sequence
 		{
-			if(ArrayUtilities.contains(characters, charSequence.charAt(i)))	//if this character is in our character string
+			if(Arrays.contains(characters, charSequence.charAt(i)))	//if this character is in our character string
 				return i;	//return the index we're at
 		}
 		return -1;	//if we make it to here, we didn't find any of the characters

@@ -5,8 +5,8 @@ import java.lang.reflect.Array;
 import java.net.URI;
 import static java.lang.System.*;
 
-import com.garretwilson.util.DefaultListIterator;
 import com.globalmentor.java.Integers;
+import com.globalmentor.util.DefaultListIterator;
 
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;

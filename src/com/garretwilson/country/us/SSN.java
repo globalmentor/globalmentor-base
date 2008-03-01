@@ -7,9 +7,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.garretwilson.text.ArgumentSyntaxException;
-import com.garretwilson.util.Debug;
 import com.globalmentor.java.Integers;
 import com.globalmentor.java.Objects;
+import com.globalmentor.util.Debug;
 
 /**Encapsulation of a United States Social Security Number (SSN).
 <p>A Social Security Number is a nine-digit number composed a of three groups:</p>

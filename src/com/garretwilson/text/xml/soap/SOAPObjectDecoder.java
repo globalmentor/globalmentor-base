@@ -7,8 +7,9 @@ import com.garretwilson.io.InputStreamUtilities;
 import com.garretwilson.text.xml.XMLObjectDecoder;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.soap.SOAPUtilities;
-import com.garretwilson.util.BinaryObjectHolder;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.BinaryObjectHolder;
+import com.globalmentor.util.Debug;
+
 import org.w3c.dom.*;
 
 /**An object factory to create objects from SOAP messages.

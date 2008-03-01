@@ -10,10 +10,9 @@ import static com.garretwilson.io.ContentTypeConstants.*;
 import com.garretwilson.io.ContentTypes;
 import com.garretwilson.text.xml.XMLUtilities;
 import static com.garretwilson.text.xml.XMLUtilities.*;
-import com.garretwilson.util.*;
 import com.globalmentor.java.*;
+import com.globalmentor.util.Arrays;
 
-import static com.garretwilson.util.ArrayUtilities.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Objects.*;
@@ -233,7 +232,7 @@ preface
 					}
 					if(isSubHeading(line)) //if this is a normal subheading
 					{
-	Debug.trace("found subheading: ", line);  //G***del
+//TODO del	Debug.trace("found subheading: ", line);  //G***del
 	//G***del				  if(line.length()<256) //the line can't be more than a certain length G***use a constant
 						{
 								//find out how many lines there are G***testing
@@ -312,7 +311,7 @@ preface
 		while(stringTokenizer.hasMoreTokens())  //while there are more tokens
 		{
 			final String token=stringTokenizer.nextToken();  //get the next token
-			if(ArrayUtilities.indexOf(pageStrings, token)>=0)  //if this is a page indicator
+			if(Arrays.indexOf(pageStrings, token)>=0)  //if this is a page indicator
 			{
 				++pageCount;  //show we found another page indicator
 			}
@@ -428,7 +427,7 @@ preface
 		"de", "du", "des", //foreign prepositions thrown in for good measure (used in names, for instance)
 		"la", "le", "las", "les", "l", //foreign articles thrown in for good measure (used in names, for instance)
 		"s"}; //when a title shows possession, the 's' of "'s" will get tokenized as well
-		return ArrayUtilities.indexOf(exceptionWords, word)<0; //the word should be capitalized if it is not one of the exceptions
+		return Arrays.indexOf(exceptionWords, word)<0; //the word should be capitalized if it is not one of the exceptions
 	}
 
 	/**Determines if the given line contains a title label.
@@ -665,7 +664,7 @@ preface
 		for(int characterIndex=stringBuilder.length()-1; characterIndex>=0; --characterIndex)	//work backwords; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
 		{
 			final char c=stringBuilder.charAt(characterIndex);	//get the current character
-			if(c==escape || contains(restricted, c))	//if we should encode this character (always encode the escape character)
+			if(c==escape || Arrays.contains(restricted, c))	//if we should encode this character (always encode the escape character)
 			{
 				stringBuilder.insert(characterIndex, escape);	//insert the escape character
 			}

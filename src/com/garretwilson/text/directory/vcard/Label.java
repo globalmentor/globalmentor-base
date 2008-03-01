@@ -1,15 +1,15 @@
 package com.garretwilson.text.directory.vcard;
 
 import java.util.*;
-import com.garretwilson.util.*;
 import com.globalmentor.java.*;
+import com.globalmentor.util.*;
 
 /**An object representing the "LABEL" type of a vCard <code>text/directory</code>
 	profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>,
 	"vCard MIME Directory Profile".
 @author Garret Wilson
 */
-public class Label extends LocaleText implements AddressConstants
+public class Label extends LocaledText implements AddressConstants
 {
 
 	/**The delivery address type.*/
@@ -51,7 +51,7 @@ public class Label extends LocaleText implements AddressConstants
 		optional locale.
 	@exception NullPointerException Thrown if <code>localeText</code> is <code>null</code>.
 	*/
-	public Label(final LocaleText localeText) throws NullPointerException
+	public Label(final LocaledText localeText) throws NullPointerException
 	{
 		this(localeText, DEFAULT_ADDRESS_TYPE);	//construct a label with the default address type
 	}
@@ -87,7 +87,7 @@ public class Label extends LocaleText implements AddressConstants
 		<code>XXX_ADDRESS_TYPE</code> constants ORed together.
 	@exception NullPointerException Thrown if <code>localeText</code> is <code>null</code>.
 	*/
-	public Label(final LocaleText localeText, final int addressType) throws NullPointerException
+	public Label(final LocaledText localeText, final int addressType) throws NullPointerException
 	{
 		super(localeText);	//construct the locale text
 		this.addressType=addressType;	//save the address type

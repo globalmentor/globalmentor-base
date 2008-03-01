@@ -15,7 +15,7 @@ import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.BorderUtilities;
-import com.garretwilson.util.CollectionUtilities;
+import com.globalmentor.util.Collections;
 
 /**Panel for editing a MAQRO question.
 @author Garret Wilson

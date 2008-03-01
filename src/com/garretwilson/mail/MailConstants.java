@@ -1,6 +1,6 @@
 package com.garretwilson.mail;
 
-import com.garretwilson.util.StringTemplate;
+import com.globalmentor.util.StringTemplate;
 
 /**Constant values for mail.
 @author Garret Wilson

@@ -4,8 +4,8 @@ import java.util.concurrent.BlockingQueue;
 
 import javax.mail.*;
 
-import com.garretwilson.util.AbstractRunnableBlockingQueueConsumer;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.AbstractRunnableBlockingQueueConsumer;
+import com.globalmentor.util.Debug;
 
 import static com.globalmentor.java.Objects.*;
 

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URI;
 import com.garretwilson.io.URIAccessible;
 import com.garretwilson.net.Resource;
-import com.garretwilson.util.prefs.Preferenceable;
+import com.globalmentor.util.prefs.Preferenceable;
 
 /**An interface to an object that allows resources to be selected for input or output.
 @param <R> The type of resource being selected.

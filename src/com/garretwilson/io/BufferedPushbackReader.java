@@ -1,10 +1,8 @@
 package com.garretwilson.io;
 
 import java.io.*;
-import com.garretwilson.util.Debug;
-//G***del if we don't need import java.net.URL;
-//G***del if we don't need import java.net.MalformedURLException;
-//G***del if we don't need import com.garretwilson.util.StringManipulator;
+
+import com.globalmentor.util.Debug;
 
 /**Class for reading and decoding characters from bytes in an <code>InputStream</code>.
 Functions similar to <code>java.io.InputStreamReader</code> except that the class

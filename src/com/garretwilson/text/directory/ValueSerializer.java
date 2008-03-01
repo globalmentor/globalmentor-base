@@ -3,7 +3,7 @@ package com.garretwilson.text.directory;
 import java.io.*;
 import java.util.*;
 
-import com.garretwilson.util.NameValuePair;
+import com.globalmentor.util.NameValuePair;
 
 /**Class that knows how to serialize values provided in
 	the lines of a <code>text/directory</code> as defined in 

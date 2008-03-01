@@ -9,7 +9,7 @@ import com.garretwilson.awt.ImageUtilities;
 import com.garretwilson.swing.text.xml.XMLComponentImageView;
 import com.garretwilson.swing.text.xml.XMLStyleUtilities;
 import com.garretwilson.assess.qti.QTIConstants;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
 
 /**A view that displays an image, intended to support the QTI
 	<code>&lt;matimage&gt;</code> element.

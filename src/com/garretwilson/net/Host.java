@@ -1,12 +1,13 @@
 package com.garretwilson.net;
 
 import static com.garretwilson.net.URIConstants.PORT_SEPARATOR;
-import com.garretwilson.util.DefaultNamedObject;
+
+import com.globalmentor.util.DefaultComparableNamed;
 
 /**Encapsulates a host and an optional port.
 @author Garret Wilson
 */
-public class Host extends DefaultNamedObject<String>
+public class Host extends DefaultComparableNamed<String>
 {
 
 	/**The port of the host, or <code>-1</code> if no port is specified.*/

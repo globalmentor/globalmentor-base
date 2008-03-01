@@ -8,7 +8,7 @@ import com.garretwilson.net.BoundPropertyResource;
 
 import static com.garretwilson.rdf.RDFUtilities.*;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
-import com.garretwilson.util.ArrayUtilities;
+import com.globalmentor.util.Arrays;
 
 /**Represents the default implementation of an RDF resource.
 <p>This class provides compare functionality that sorts according to the reference URI.</p>
@@ -409,7 +409,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 			final RDFPropertyValuePair propertyValuePair=propertyIterator.next(); //get the next name/value pair
 			final URI propertyURI=propertyValuePair.getProperty().getURI();	//get the property URI
 			final URI namespaceURI=getNamespaceURI(propertyURI);	//get the namespace of this property (we don't verify that this property has a URI, but this problem will go away when the API starts handling properties as simple URIs)
-			if(ArrayUtilities.contains(propertyNamespaceURIs, namespaceURI))	//if this is one of the namespaces to remove
+			if(Arrays.contains(propertyNamespaceURIs, namespaceURI))	//if this is one of the namespaces to remove
 			{
 				propertyIterator.remove();	//remove this property
 				firePropertyChange(propertyURI.toString(), propertyValuePair.getValue(), null);	//fire a property change event with the old property value

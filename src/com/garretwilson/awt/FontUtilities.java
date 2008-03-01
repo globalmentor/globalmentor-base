@@ -3,7 +3,8 @@ package com.garretwilson.awt;
 import java.awt.*;
 import java.lang.ref.*;
 import java.util.*;
-import com.garretwilson.util.Debug;
+
+import com.globalmentor.util.Debug;
 
 /**Various routines for working with fonts. This class also keeps several static
 	maps of references to fonts for quick lookup that will be garbage-collected

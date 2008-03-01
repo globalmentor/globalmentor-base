@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import com.garretwilson.text.CharacterEncoding;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
 
 /**Class to manipulate input streams.*/
 public class InputStreamUtilities

@@ -4,8 +4,8 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.*;
 
-import com.garretwilson.util.DataException;
 import com.globalmentor.urf.*;
+import com.globalmentor.util.DataException;
 
 /**Class for loading and saving a type of Java object to and from a TURF instance.
 <p>Copyright © 2007 GlobalMentor, Inc.

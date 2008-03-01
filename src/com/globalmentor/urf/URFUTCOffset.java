@@ -6,8 +6,8 @@ import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.text.*;
 import com.globalmentor.java.Integers;
 
-import static com.garretwilson.util.TimeZoneConstants.*;
 import static com.globalmentor.java.Integers.*;
+import static com.globalmentor.util.TimeZones.*;
 
 /**The class representing an <code>urf.UTCOffset</code> type.
 <p>Copyright © 2007 GlobalMentor, Inc.

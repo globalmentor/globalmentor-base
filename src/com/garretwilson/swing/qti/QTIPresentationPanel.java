@@ -7,7 +7,7 @@ import java.util.*;
 import com.garretwilson.awt.WindowUtilities;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.assess.qti.*;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
 
 /**Provides a visual editing environment for QTI presentation.
 @author Garret Wilson

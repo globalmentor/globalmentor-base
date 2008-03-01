@@ -15,8 +15,8 @@ import static com.globalmentor.java.Objects.*;
 import com.garretwilson.text.FormatUtilities;
 import com.garretwilson.text.SyntaxException;
 import com.garretwilson.text.unicode.UnicodeCharacter;
-import com.garretwilson.util.*;
 import com.globalmentor.java.Integers;
+import com.globalmentor.util.*;
 
 /**Various URI manipulating functions for working with URIs as defined in
 	<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,

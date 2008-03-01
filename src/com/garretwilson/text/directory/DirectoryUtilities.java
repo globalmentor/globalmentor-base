@@ -7,8 +7,8 @@ import java.util.*;
 import static com.garretwilson.text.ABNF.CRLF;
 import static com.garretwilson.text.directory.DirectoryConstants.*;
 
-import com.garretwilson.util.*;
 import com.globalmentor.java.StringBuilders;
+import com.globalmentor.util.*;
 
 /**Utilities for working with directories of type <code>text/directory</code> as
 	defined in 
@@ -25,7 +25,7 @@ public class DirectoryUtilities
 	@param name The name of the information.
 	@param localeText The value of the information.
 	*/
-	public static ContentLine createContentLine(final String profile, final String group, final String name, final LocaleText localeText)
+	public static ContentLine createContentLine(final String profile, final String group, final String name, final LocaledText localeText)
 	{
 		return createContentLine(profile, group, name, localeText, localeText.getLocale());	//create and return a content line from the locale text and the locale
 	}
@@ -56,10 +56,10 @@ public class DirectoryUtilities
 	@param value The content line value.
 	@return An object representing the text and locale of the value
 	*/
-	public static LocaleText createLocaleTextValue(final List<NameValuePair<String, String>> paramList, final Object value)
+	public static LocaledText createLocaleTextValue(final List<NameValuePair<String, String>> paramList, final Object value)
 	{
 		final Locale locale=getLanguageParamValue(paramList);	//get the locale
-		return new LocaleText(value.toString(), locale);	//create and return the locale text
+		return new LocaledText(value.toString(), locale);	//create and return the locale text
 	}
 
 	/**The characters that must be escaped in text: CR, LF, '\\', and ','. (Note that CRLF runs should first be replaced with a single LF to prevent duplicate linefeeds.*/
@@ -106,7 +106,7 @@ public class DirectoryUtilities
 	{
 		final String languageValue=getParamValue(paramList, LANGUAGE_PARAM_NAME);	//get the first language parameter
 		return languageValue!=null && languageValue.trim().length()>0	//if there is a language and it isn't just whitespace 
-			? LocaleUtilities.createLocale(languageValue.trim())	//create a locale from the language value
+			? Locales.createLocale(languageValue.trim())	//create a locale from the language value
 			: null;	//show that there was no language
 	}
 	
@@ -190,7 +190,7 @@ public class DirectoryUtilities
 	*/
 	public static void setLanguageParamValue(final List<NameValuePair<String, String>> paramList, final Locale locale)
 	{
-		setParamValue(paramList, LANGUAGE_PARAM_NAME, LocaleUtilities.getLanguageTag(locale));	//store the language tag representation of the locale as the value of the language parameter 
+		setParamValue(paramList, LANGUAGE_PARAM_NAME, Locales.getLanguageTag(locale));	//store the language tag representation of the locale as the value of the language parameter 
 	}
 
 	/**Removes all parameters with the given name and adds a new

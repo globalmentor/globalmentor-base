@@ -8,8 +8,8 @@ import java.util.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.ActionList;
 import com.garretwilson.assess.qti.*;
-import com.garretwilson.util.*;
 import com.globalmentor.java.Booleans;
+import com.globalmentor.util.*;
 
 /**Provides a visual editing environment for a type of QTI rendering.
 @author Garret Wilson

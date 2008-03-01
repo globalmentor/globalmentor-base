@@ -1,7 +1,8 @@
 package com.garretwilson.awt;
 
 import java.awt.*;
-import com.garretwilson.util.*;
+
+import com.globalmentor.util.*;
 
 /**Utility methods for working with AWT containers.
 @author Garret Wilson

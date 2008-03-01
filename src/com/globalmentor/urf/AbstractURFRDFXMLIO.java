@@ -6,7 +6,7 @@ import java.net.*;
 import javax.xml.parsers.*;
 
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.util.DataException;
+import com.globalmentor.util.DataException;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

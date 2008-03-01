@@ -2,7 +2,7 @@ package com.garretwilson.text.directory;
 
 import java.util.*;
 
-import com.garretwilson.util.NameValuePair;
+import com.globalmentor.util.NameValuePair;
 
 /**Abstract profile for predefined types of a <code>text/directory</code> as 
 	defined in <a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,

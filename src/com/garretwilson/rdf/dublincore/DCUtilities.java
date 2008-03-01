@@ -5,7 +5,7 @@ import java.util.*;
 
 import com.garretwilson.text.*;
 import com.garretwilson.rdf.*;
-import com.garretwilson.util.*;
+import com.globalmentor.util.*;
 
 /**Utilities for working with Dublin Core stored in RDF.
 @author Garret Wilson
@@ -81,7 +81,7 @@ public class DCUtilities extends RDFUtilities implements DCConstants
 	public static RDFLiteral addLanguage(final RDFResource resource, final Locale locale)
 	{
 			//add the literal language tag for this locale
-		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, LocaleUtilities.getLanguageTag(locale));
+		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, Locales.getLanguageTag(locale));
 	}
 
 	/**Adds a <code>dc:publisher</code> property with the given value to the
@@ -196,7 +196,7 @@ public class DCUtilities extends RDFUtilities implements DCConstants
 		final RDFObject languageObject=resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME);
 		if(languageObject instanceof RDFLiteral)	//if this is a literal value
 		{
-			return LocaleUtilities.createLocale(((RDFLiteral)languageObject).getLexicalForm());	//create a locale from the literal's lexical form
+			return Locales.createLocale(((RDFLiteral)languageObject).getLexicalForm());	//create a locale from the literal's lexical form
 		}
 		else	//if there is no literal language tag
 		{
@@ -278,7 +278,7 @@ public class DCUtilities extends RDFUtilities implements DCConstants
 	public static RDFLiteral setLanguage(final RDFResource resource, final Locale locale)
 	{
 			//set the literal language tag for this locale
-		return resource.setProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, LocaleUtilities.getLanguageTag(locale));
+		return resource.setProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, Locales.getLanguageTag(locale));
 	}
 
 }

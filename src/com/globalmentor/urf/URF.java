@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
-
 import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.*;
@@ -16,18 +15,18 @@ import com.garretwilson.net.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
 import com.garretwilson.text.RegularExpression;
-import com.garretwilson.util.*;
-import static com.garretwilson.util.CollectionUtilities.*;
-import static com.garretwilson.util.LocaleUtilities.*;
 
 import com.globalmentor.java.*;
 import static com.globalmentor.java.Booleans.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.util.Collections.*;
+import static com.globalmentor.util.Locales.*;
+
 import com.globalmentor.urf.content.*;
 import com.globalmentor.urf.select.Select;
-
+import com.globalmentor.util.*;
 
 /**An URF data model.
 This data model keeps track of all resources that are being created as a linked group, such as parsed from a TURF interchange document,
@@ -1573,7 +1572,7 @@ public class URF
 				resourceList.add(resource); //add this resource to our list
 		  }
 		}
-		return Collections.unmodifiableList(resourceList);  //make the list read-only and return it
+		return unmodifiableList(resourceList);  //make the list read-only and return it
 	}
 
 	/**Default constructor.*/

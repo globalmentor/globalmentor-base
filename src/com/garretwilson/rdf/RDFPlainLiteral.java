@@ -5,7 +5,7 @@ import java.util.Locale;
 
 import static com.globalmentor.java.Objects.*;
 
-import com.garretwilson.util.LocaleText;
+import com.globalmentor.util.LocaledText;
 
 /**Represents a plain RDF literal.
 @author Garret Wilson
@@ -30,9 +30,9 @@ public class RDFPlainLiteral extends RDFLiteral
 		public Locale getLanguage() {return language;}
 
 	/**@return A locale-aware representation of the literal's lexical form, indicating any locale information available.*/
-	public LocaleText toLocaleText()
+	public LocaledText toLocaleText()
 	{
-		return new LocaleText(getLexicalForm(), getLanguage());	//return the text and the language 
+		return new LocaledText(getLexicalForm(), getLanguage());	//return the text and the language 
 	}
 
 	/**Constructs a plain literal with a lexical value.

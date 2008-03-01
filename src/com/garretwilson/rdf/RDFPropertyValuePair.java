@@ -1,6 +1,6 @@
 package com.garretwilson.rdf;
 
-import com.garretwilson.util.NameValuePair;
+import com.globalmentor.util.NameValuePair;
 
 /**An RDF property and its value.
 @author Garret Wilson

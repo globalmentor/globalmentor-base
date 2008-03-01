@@ -5,13 +5,11 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.garretwilson.net.*;
-
-import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.urf.URF.*;
-
-import com.garretwilson.util.*;
 import com.globalmentor.java.*;
+import static com.globalmentor.java.Objects.*;
+import com.garretwilson.net.*;
+import com.globalmentor.util.*;
+import static com.globalmentor.urf.URF.*;
 
 /**Base class for URF processors.
 Each instance of an URF processor maintains an internal URF data model throughout its lifetime that is continually updated with every new URF processing that occurs.
@@ -588,7 +586,7 @@ public abstract class AbstractURFProcessor
 				return getSubject().equals(assertion2.getSubject())	//compare subjects
 						&& getPredicate().equals(assertion2.getPredicate())	//compare predicates
 						&& getObject().equals(assertion2.getObject())	//compare objects
-						&& Arrays.equals(getScopeChain(), assertion2.getScopeChain());	//compare scope chains
+						&& java.util.Arrays.equals(getScopeChain(), assertion2.getScopeChain());	//compare scope chains
 			}
 			return false;	//show that the assertions do not match
 		}

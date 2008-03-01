@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.*;
 
 import com.garretwilson.text.SyntaxException;
-import com.garretwilson.util.Debug;
 import com.globalmentor.java.Characters;
+import com.globalmentor.util.Debug;
 
 import static com.globalmentor.java.Characters.*;
 

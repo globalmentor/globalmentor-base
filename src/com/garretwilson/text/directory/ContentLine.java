@@ -3,7 +3,8 @@ package com.garretwilson.text.directory;
 import java.util.*;
 
 import static com.garretwilson.text.directory.DirectoryConstants.*;
-import com.garretwilson.util.*;
+
+import com.globalmentor.util.*;
 
 /**A line in a directory of type <code>text/directory</code> as defined in
 	<a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,

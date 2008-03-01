@@ -3,7 +3,8 @@ package com.garretwilson.text.directory;
 import java.io.*;
 import java.util.*;
 import static com.garretwilson.text.directory.DirectoryConstants.*;
-import com.garretwilson.util.*;
+
+import com.globalmentor.util.*;
 
 /**Class that can serialize a directory of type <code>text/directory</code> as
 	defined in 
@@ -221,19 +222,19 @@ public class DirectorySerializer
 		writer.write(NAME_VALUE_SEPARATOR_CHAR);	//write the content line name-value separator
 		if(PROFILE_TYPE.equalsIgnoreCase(typeName))	//if this is PROFILE
 		{
-			final String profile=((LocaleText)contentLine.getValue()).getText();	//get the profile
+			final String profile=((LocaledText)contentLine.getValue()).getText();	//get the profile
 			contentLine.setProfile(profile);	//a profile type should have the same profile as the one it sets
 			setProfile(profile);	//set the profile to the new profile
 		}
 		else if(BEGIN_TYPE.equalsIgnoreCase(typeName))	//if this is BEGIN:xxx
 		{
-			final String profile=((LocaleText)contentLine.getValue()).getText();	//get the profile
+			final String profile=((LocaledText)contentLine.getValue()).getText();	//get the profile
 			contentLine.setProfile(profile);	//a beginning profile type should have the same profile as the one it sets
 			pushProfile(profile);	//push the new profile
 		}
 		else if(END_TYPE.equalsIgnoreCase(typeName))	//if this is END:xxx
 		{
-			final String profile=((LocaleText)contentLine.getValue()).getText();	//get the profile
+			final String profile=((LocaledText)contentLine.getValue()).getText();	//get the profile
 			contentLine.setProfile(profile);	//an ending profile type should have the same profile to which it refers
 			try
 			{

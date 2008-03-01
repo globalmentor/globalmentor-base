@@ -8,8 +8,8 @@ import com.garretwilson.net.Resource;
 
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
-import com.garretwilson.util.Debug;
 import com.globalmentor.java.Java;
+import com.globalmentor.util.Debug;
 
 /**Base class for RDF processors.
 	Each instance of an RDF processor maintains an internal

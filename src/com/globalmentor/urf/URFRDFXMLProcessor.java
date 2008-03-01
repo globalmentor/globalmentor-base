@@ -13,13 +13,13 @@ import static com.garretwilson.rdf.RDFXMLConstants.*;
 import com.garretwilson.text.xml.*;
 import static com.garretwilson.text.xml.XML.*;
 import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
-import com.garretwilson.util.*;
 import com.globalmentor.urf.content.Content;
+import com.globalmentor.util.*;
 
-import static com.garretwilson.util.LocaleUtilities.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.dcmi.DCMI.LANGUAGE_PROPERTY_URI;
+import static com.globalmentor.util.Locales.*;
 
 import org.w3c.dom.*;
 

@@ -9,14 +9,15 @@ import java.util.regex.Pattern;
 
 import static com.garretwilson.net.URIConstants.*;
 import com.garretwilson.net.*;
-import com.garretwilson.util.*;
-import static com.garretwilson.util.ArrayUtilities.*;
 import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.ploop.PLOOP.*;
-
+import static com.globalmentor.util.Arrays.*;
 import com.globalmentor.urf.*;
+import com.globalmentor.util.*;
+import com.globalmentor.util.Collections;
+
 import com.guiseframework.style.AbstractModeledColor;
 import com.guiseframework.style.Color;
 
@@ -273,7 +274,7 @@ public class PLOOPURFProcessor
 						}
 						if(constructor==null)	//if we didn't find an appropriate constructor
 						{
-							throw new DataException("Value class "+valueClass+" does not have a constructor appropriate for the specified selector parameters: "+CollectionUtilities.toString(selector));
+							throw new DataException("Value class "+valueClass+" does not have a constructor appropriate for the specified selector parameters: "+Collections.toString(selector));
 						}
 					}
 					else	//if there is no type selector

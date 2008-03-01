@@ -2,10 +2,10 @@ package com.garretwilson.iso.idcard;
 
 import java.util.*;
 
-import com.garretwilson.util.*;
+import com.globalmentor.util.*;
 
 /**An encapsulation of an ISO identity card, such as as defined in ISO/IEC 7812-1:2000(E),
-	"Identification cards — Identification of issuers — Part 1: Numbering system".
+	"Identification cards ï¿½ Identification of issuers ï¿½ Part 1: Numbering system".
 This implementation recognizes common types of ID cards, such as MasterCard and Visa credit cards, from the Primary Account Number (PAN).
 @author Garret Wilson
 */

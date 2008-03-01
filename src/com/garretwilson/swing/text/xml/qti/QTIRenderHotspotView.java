@@ -11,7 +11,7 @@ import com.garretwilson.swing.text.StyleUtilities;
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.assess.qti.*;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
 
 /**Represents a QTI hotspot rendering.
 @author Garret Wilson

@@ -9,7 +9,7 @@ import javax.swing.text.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.swing.text.xml.*;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
 
 //G***del class if not needed
 

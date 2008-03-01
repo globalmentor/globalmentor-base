@@ -6,7 +6,8 @@ import java.util.*;
 import com.garretwilson.io.*;
 import static com.garretwilson.text.directory.DirectoryConstants.*;
 import static com.garretwilson.text.directory.DirectoryUtilities.*;
-import com.garretwilson.util.*;
+
+import com.globalmentor.util.*;
 
 /**Profile for predefined types of a <code>text/directory</code> as defined in 
 	<a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
@@ -76,7 +77,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	@see URI_VALUE_TYPE
 	@see URI
 	@see TEXT_VALUE_TYPE
-	@see LocaleText
+	@see LocaledText
 	@see DATE_VALUE_TYPE
 	@see TIME_VALUE_TYPE
 	@see DATE_TIME_VALUE_TYPE
@@ -113,23 +114,23 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	@exception IOException Thrown if there is an error reading the directory.
 	@exception ParseIOException Thrown if there is a an error interpreting the directory.
 	*/
-	public static LocaleText[] processTextValueList(final LineUnfoldParseReader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
+	public static LocaledText[] processTextValueList(final LineUnfoldParseReader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
 	{
 		final Locale locale=getLanguageParamValue(paramList);	//get the language, if any
-		final List<LocaleText> localeTextList=new ArrayList<LocaleText>();	//create a new list to hold the locale text objects we find
+		final List<LocaledText> localeTextList=new ArrayList<LocaledText>();	//create a new list to hold the locale text objects we find
 		char delimiter;	//we'll store the last delimiter peeked		
 		do
 		{
 			reader.resetPeek();	//reset peeking
 			final String string=processTextValue(reader);	//read a string
 //		G***del Debug.trace("read text string: ", string);	//G***del
-			localeTextList.add(new LocaleText(string, locale));	//add the text to our list			
+			localeTextList.add(new LocaledText(string, locale));	//add the text to our list			
 			delimiter=reader.peekChar();	//see what character is next
 //		G***del Debug.trace("next delimiter: ", delimiter);	//G***del			
 		}
 		while(delimiter==VALUE_SEPARATOR_CHAR);	//keep getting strings while we are still running into value separators
 		reader.resetPeek();	//reset peeking
-		return localeTextList.toArray(new LocaleText[localeTextList.size()]);	//convert the list of locale text objects to an array and return the array
+		return localeTextList.toArray(new LocaledText[localeTextList.size()]);	//convert the list of locale text objects to an array and return the array
 	}
 
 	/**The delimiters that can divide a text value: '\\' ',' and CR.*/
@@ -243,7 +244,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	{
 		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//text
 		{
-			serializeTextValue(((LocaleText)value).getText(), writer);	//serialize the text
+			serializeTextValue(((LocaledText)value).getText(), writer);	//serialize the text
 //G***del			writer.write(((LocaleText)value).getText());	//serialize the text
 			return true;	//show that we serialized the value 
 		}
@@ -285,7 +286,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 			{
 				if(directory.getDisplayName()==null)	//if the directory does not yet have a display name
 				{
-					directory.setDisplayName((LocaleText)contentLine.getValue());	//set the directory display name
+					directory.setDisplayName((LocaledText)contentLine.getValue());	//set the directory display name
 					continue;	//don't process this content line further
 				}
 			}

@@ -14,7 +14,7 @@ import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.swing.text.xml.css.*; //G***del when component color update is moved
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.assess.qti.*;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
 
 /**Creates a view for a Question and Test Iterpoperability element.
 @author Garret Wilson

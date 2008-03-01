@@ -9,7 +9,8 @@ import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XMLSerializer;
-import com.garretwilson.util.*;
+import com.globalmentor.util.*;
+
 import org.w3c.dom.*;
 
 /**A modifiable object that knows how to store and retrieve itself as RDF.

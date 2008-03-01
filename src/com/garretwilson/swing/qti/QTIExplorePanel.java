@@ -18,8 +18,8 @@ import com.garretwilson.swing.qti.tree.*;
 import com.garretwilson.text.xml.XML;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.assess.qti.*;
-import com.garretwilson.util.*;
 import com.globalmentor.java.Booleans;
+import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
 
@@ -442,12 +442,12 @@ Debug.trace("asking new item"); //G***del
 					final Object parentObject=parentTreeNode.getUserObject(); //get the item's parent
 					if(parentObject instanceof Section) //if the item is in a section
 					{
-						ListUtilities.replace(((Section)parentObject).getItemList(), item, newItem);  //replace the item with the new item
+						Lists.replace(((Section)parentObject).getItemList(), item, newItem);  //replace the item with the new item
 						setModified(true);  //show that the data model has been modified
 					}
 					else if(parentObject instanceof QTI) //if the item is in QTI
 					{
-						ListUtilities.replace(((QTI)parentObject).getItemList(), item, newItem);  //replace the item with the new item
+						Lists.replace(((QTI)parentObject).getItemList(), item, newItem);  //replace the item with the new item
 						setModified(true);  //show that the data model has been modified
 					}
 					itemTreeNode.setUserObject(newItem);  //update the item being represented

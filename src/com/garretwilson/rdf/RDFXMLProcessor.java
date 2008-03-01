@@ -15,8 +15,9 @@ import static com.globalmentor.java.Objects.*;
 import com.garretwilson.text.xml.XMLBase;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.XML;
-import com.garretwilson.util.Debug;
-import com.garretwilson.util.LocaleUtilities;
+import com.globalmentor.util.Debug;
+import com.globalmentor.util.Locales;
+
 import org.w3c.dom.*;
 
 /**Class that is able to construct an RDF data model from an XML-based
@@ -643,7 +644,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 					//get the xml:lang language tag, if there is one
 				final String languageTag=propertyNode instanceof Element ? XMLUtilities.getDefinedAttributeNS((Element)propertyNode, XML.XML_NAMESPACE_URI.toString(), XML.ATTRIBUTE_LANG) : null;
 					//create a locale for the language if there is a language tag
-				final Locale languageLocale=languageTag!=null ? LocaleUtilities.createLocale(languageTag) : null;
+				final Locale languageLocale=languageTag!=null ? Locales.createLocale(languageTag) : null;
 				return new RDFPlainLiteral(childText, languageLocale);  //create a literal from the element's text, noting the specified language if any
 			}
 		}

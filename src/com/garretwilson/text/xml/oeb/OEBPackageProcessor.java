@@ -18,8 +18,8 @@ import com.garretwilson.text.xml.xpath.XPath;
 import com.garretwilson.text.xml.xpath.XPathConstants;
 
 import static com.garretwilson.text.xml.oeb.OEBConstants.*;
-import com.garretwilson.util.*;
 import com.globalmentor.marmot.Marmot;
+import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
 

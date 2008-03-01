@@ -5,13 +5,14 @@ import java.net.URI;
 import com.garretwilson.net.DefaultResource;
 import com.garretwilson.net.URIConstants;
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.util.IDable;
+import com.globalmentor.util.IDed;
+
 import static com.garretwilson.rdf.RDFUtilities.*;
 
 /**The name of an RDF entity, consisting of a namespace URI and a local name.
 @author Garret Wilson
 */
-public class RDFName extends DefaultResource implements IDable<URI>
+public class RDFName extends DefaultResource implements IDed<URI>
 {
 
 	/**The namespace URI.*/

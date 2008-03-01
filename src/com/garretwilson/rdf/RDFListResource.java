@@ -4,8 +4,8 @@ import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.*;
 
-import com.garretwilson.util.Debug;
 import com.globalmentor.java.Objects;
+import com.globalmentor.util.Debug;
 
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFUtilities.*;

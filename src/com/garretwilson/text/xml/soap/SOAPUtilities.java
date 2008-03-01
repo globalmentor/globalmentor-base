@@ -8,8 +8,8 @@ import com.garretwilson.activation.ByteArrayDataSource;
 import com.garretwilson.text.xml.XML;
 import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.util.Debug;
 import com.globalmentor.java.*;
+import com.globalmentor.util.Debug;
 
 import org.w3c.dom.*;
 

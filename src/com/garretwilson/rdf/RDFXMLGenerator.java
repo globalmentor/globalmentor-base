@@ -12,7 +12,9 @@ import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import static com.garretwilson.text.xml.XMLUtilities.*;
 import static com.globalmentor.java.Objects.*;
 
-import com.garretwilson.util.*;
+import com.globalmentor.util.*;
+import static com.globalmentor.util.Collections.*;
+
 import org.w3c.dom.*;
 
 /**Class that creates an XML representation of RDF through DOM.
@@ -598,7 +600,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 					//	3. the resource has at least one property
 					//if all the conditions are not met, we'll only reference the resource
 				if(!isSerialized(valueResource)	//if we haven't serialized the property value resource, yet
-						&& (referenceSet==null || !CollectionUtilities.containsInstance(referenceSet, RDFListResource.class))	//if this resource is not referenced by a list
+						&& (referenceSet==null || !containsInstance(referenceSet, RDFListResource.class))	//if this resource is not referenced by a list
 						&& valueResource.getPropertyCount()>0)	//if this resource has at least one property 
 				{
 					boolean serializeSubPropertyLiteralAttributes=true; //we'll see if all the subproperties are plain literals without language indications; if so, we'll just add them as attributes
@@ -671,7 +673,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 					final RDFPlainLiteral valuePlainLiteral=(RDFPlainLiteral)valueLiteral;	//cast the literal to a plain literal
 					if(valuePlainLiteral.getLanguage()!=null)	//if there is a language indication
 					{
-						final String languageTag=LocaleUtilities.getLanguageTag(valuePlainLiteral.getLanguage());	//create a language tag from the locale
+						final String languageTag=Locales.getLanguageTag(valuePlainLiteral.getLanguage());	//create a language tag from the locale
 							//store the language tag in the xml:lang attribute
 						propertyElement.setAttributeNS(XML.XML_NAMESPACE_URI.toString(), createQualifiedName(XML.XML_NAMESPACE_PREFIX, XML.ATTRIBUTE_LANG), languageTag);
 					}

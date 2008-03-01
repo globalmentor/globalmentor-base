@@ -14,9 +14,9 @@ import com.garretwilson.rdf.xpackage.*;
 import com.garretwilson.text.*;
 import com.garretwilson.text.xml.*;
 import com.garretwilson.text.xml.xhtml.*;
-import com.garretwilson.util.*;
 import com.globalmentor.java.*;
 import com.globalmentor.marmot.Marmot;
+import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
@@ -423,7 +423,7 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 		{
 			//clone the options and store them, or if null was passed just create default options
 			options=newOptions!=null ? (Properties)newOptions.clone() : new Properties();
-			setZip(PropertyUtilities.getBooleanProperty(options, ZIP_OPTION, ZIP_OPTION_DEFAULT));
+			setZip(PropertiesUtilities.getBooleanProperty(options, ZIP_OPTION, ZIP_OPTION_DEFAULT));
 			setPrefaceLocation(options.getProperty(PREFACE_LOCATION_OPTION, PREFACE_LOCATION_OPTION_DEFAULT));
 			setTitlePageLocation(options.getProperty(TITLE_PAGE_LOCATION_OPTION, TITLE_PAGE_LOCATION_OPTION_DEFAULT));
 			setPublisher(options.getProperty(PUBLISHER_OPTION, PUBLISHER_OPTION_DEFAULT));
@@ -604,7 +604,7 @@ Debug.trace("found PG header"); //G***del
 Debug.trace("description: ", getDescription()); //G***del
 				final String displayLanguage=PGUtilities.getLanguage(pgHeaderFragment);  //get the language
 Debug.trace("display language: ", displayLanguage); //G***del
-				languageLocale=LocaleUtilities.createDisplayLanguageLocale(displayLanguage); //get the locale for this language
+				languageLocale=Locales.createDisplayLanguageLocale(displayLanguage); //get the locale for this language
 Debug.trace("display locale: ", languageLocale); //G***del
 			}
 			PGUtilities.extractFooter(document);  //extract the Project Gutenberg footer, if it is available
@@ -1667,7 +1667,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 		try
 		{
 			final Properties serializeOptions=new Properties(); //create properties for the serialization options
-			PropertyUtilities.setProperty(serializeOptions, XMLSerializer.FORMAT_OUTPUT_OPTION, true);  //show that we should format the output
+			PropertiesUtilities.setProperty(serializeOptions, XMLSerializer.FORMAT_OUTPUT_OPTION, true);  //show that we should format the output
 			new XMLSerializer(serializeOptions).serialize(document, outputStream);	//serialize the document to the output stream using the default output encoding
 		}
 		finally

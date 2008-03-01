@@ -9,7 +9,8 @@ import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.rdf.*;
 import com.garretwilson.swing.*;
-import com.garretwilson.util.Modifiable;
+import com.globalmentor.util.Modifiable;
+
 import org.w3c.dom.*;
 
 /**A panel that contains a toolbar and a status. The panel uses a border layout,

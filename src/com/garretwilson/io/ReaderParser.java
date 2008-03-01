@@ -1,10 +1,10 @@
 package com.garretwilson.io;
 
 import java.io.*;
-import java.util.Arrays;
+import java.util.*;
 
-import static com.garretwilson.util.ArrayUtilities.*;
 import static com.globalmentor.java.Integers.*;
+import static com.globalmentor.util.Arrays.*;
 
 /**Parsing methods that work on a {@link Reader}.
 The reader must support marking.

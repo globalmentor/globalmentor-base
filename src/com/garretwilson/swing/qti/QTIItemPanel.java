@@ -5,7 +5,7 @@ import java.beans.*;
 import javax.swing.*;
 import java.util.*;
 import com.garretwilson.assess.qti.*;
-import com.garretwilson.util.*;
+import com.globalmentor.util.*;
 
 /**Provides a visual editing environment for a QTI item.
 @author Garret Wilson

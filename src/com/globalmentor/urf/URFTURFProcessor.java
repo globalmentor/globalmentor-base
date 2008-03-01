@@ -17,7 +17,7 @@ import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.urf.TURF.*;
 import static com.globalmentor.urf.URF.*;
 
-import com.garretwilson.util.*;
+import com.globalmentor.util.*;
 
 /**Constructs an URF data instance from a TURF representation.
 The TURF processor maintains an internal URF data model throughout its lifetime that is continually updated with every new URF processing that occurs.

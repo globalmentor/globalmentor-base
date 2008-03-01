@@ -12,7 +12,7 @@ import com.garretwilson.net.URLConstants;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.assess.qti.*;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
 
 /**Provides a visual editing environment for QTI material.
 @author Garret Wilson

@@ -8,7 +8,7 @@ import java.util.*;
 import static com.globalmentor.java.CharSequences.*;
 
 import com.garretwilson.text.CharacterEncoding;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
 
 /**Accesses Unicode named character blocks.
 The set iterator will return the blocks in sequential order.

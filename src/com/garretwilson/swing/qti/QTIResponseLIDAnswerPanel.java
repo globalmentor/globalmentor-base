@@ -6,7 +6,7 @@ import java.util.*;
 import java.awt.event.*;
 import com.garretwilson.swing.*;
 import com.garretwilson.assess.qti.*;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
 
 /**Allows input of the answer to a logical ID response type.
 @author Garret Wilson

@@ -17,7 +17,9 @@ import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.DCUtilities;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
-import static com.garretwilson.util.UUIDUtilities.*;
+
+import static com.globalmentor.util.UUIDs.*;
+
 import com.globalmentor.mentoract.activity.maqro.*;
 
 import org.w3c.dom.*;

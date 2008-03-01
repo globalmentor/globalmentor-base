@@ -5,9 +5,9 @@ import java.awt.event.*;
 import javax.swing.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.assess.qti.*;
-import com.garretwilson.util.*;
 import com.globalmentor.java.CharSequences;
 import com.globalmentor.java.Strings;
+import com.globalmentor.util.*;
 
 /**Allows a response type to be selected.
 @author Garret Wilson

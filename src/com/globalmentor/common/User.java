@@ -2,12 +2,12 @@ package com.globalmentor.common;
 
 import java.security.Principal;
 
-import com.garretwilson.util.IDable;
+import com.globalmentor.util.IDed;
 
 /**A representation of an individual.
 @author Garret Wilson
 */
-public interface User<I> extends IDable<I>, Principal
+public interface User<I> extends IDed<I>, Principal
 {
 
 	/**@return The first name of the user.*/

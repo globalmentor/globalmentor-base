@@ -7,9 +7,10 @@ import java.util.Locale;
 import javax.mail.internet.ContentType;
 
 import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.util.LocaleUtilities.*;
 
 import static com.globalmentor.urf.URF.*;
+import static com.globalmentor.util.Locales.*;
+
 import com.globalmentor.urf.content.Content;
 
 /**A default factory to create default resources.

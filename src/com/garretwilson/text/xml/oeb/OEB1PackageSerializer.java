@@ -13,7 +13,7 @@ import com.garretwilson.rdf.xpackage.XPackageUtilities;
 import com.garretwilson.text.xml.XML;
 import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.util.*;
+import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
 
@@ -53,7 +53,7 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 	{
 		final Document packageDocument=generatePackage(publication); //generate an XML document representing the publication package
 		final Properties serializeOptions=new Properties(); //create properties for the serialization options
-		PropertyUtilities.setProperty(serializeOptions, XMLSerializer.FORMAT_OUTPUT_OPTION, true);  //show that we should format the output
+		PropertiesUtilities.setProperty(serializeOptions, XMLSerializer.FORMAT_OUTPUT_OPTION, true);  //show that we should format the output
 		new XMLSerializer(serializeOptions).serialize(packageDocument, outputStream, charset);	//serialize the publication as a formatted XML document to the output stream G***do we really want to create the serializer each time?
 	}
 

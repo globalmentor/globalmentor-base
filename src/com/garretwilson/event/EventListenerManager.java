@@ -2,7 +2,8 @@ package com.garretwilson.event;
 
 import java.util.*;
 
-import static com.garretwilson.util.IteratorUtilities.*;
+import static com.globalmentor.util.Iterators.*;
+
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**Class that stores and retrieves event listeners, facilitating the creation

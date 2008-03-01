@@ -7,11 +7,11 @@ import com.garretwilson.rdf.*;
 
 import static com.garretwilson.rdf.rdfs.RDFSUtilities.*;
 import static com.garretwilson.text.directory.DirectoryConstants.*;
-import static com.garretwilson.util.LocaleUtilities.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.util.Locales.*;
 
-import com.garretwilson.util.LocaleText;
+import com.globalmentor.util.LocaledText;
 
 /**Constants used in RDF processing of a directory of type
 	<code>text/directory</code> as defined in 
@@ -41,13 +41,13 @@ public class Directory
 	@return An object representing the text and any language specification, or <code>null</code> if the object does not represent text.
 	@exception NullPointerException if the given RDF object is <code>null</code>.
 	*/
-	public static LocaleText getText(final RDFObject rdfObject)
+	public static LocaledText getText(final RDFObject rdfObject)
 	{
 		checkInstance(rdfObject, "RDF object cannot be null.");
 		if(rdfObject instanceof RDFLiteral)	//if the object is a literal
 		{
 			final Locale language=rdfObject instanceof RDFPlainLiteral ? ((RDFPlainLiteral)rdfObject).getLanguage() : null;	//save the language if this is a plain literal
-			return new LocaleText(((RDFLiteral)rdfObject).getLexicalForm(), language);	//use the lexical form as text
+			return new LocaledText(((RDFLiteral)rdfObject).getLexicalForm(), language);	//use the lexical form as text
 		}
 		else if(rdfObject instanceof RDFResource)	//if the object is a resource
 		{
@@ -57,7 +57,7 @@ public class Directory
 			if(value instanceof RDFLiteral)	//if there is a literal value
 			{
 				final Locale language=rdfObject instanceof RDFPlainLiteral ? ((RDFPlainLiteral)rdfObject).getLanguage() : null;	//save the language if this is a plain literal
-				return new LocaleText(((RDFLiteral)value).getLexicalForm(), language!=null ? language : getLanguage(rdfResource));	//use the lexical form of the value as the text; if no xml:lang was specified, see if the main resource had directory:language defined
+				return new LocaledText(((RDFLiteral)value).getLexicalForm(), language!=null ? language : getLanguage(rdfResource));	//use the lexical form of the value as the text; if no xml:lang was specified, see if the main resource had directory:language defined
 			}
 		}
 		else	//if the object is not a literal or a resource
@@ -75,26 +75,26 @@ public class Directory
 	@return An array of objects representing the text and any language specification.
 	@exception NullPointerException if the given RDF object is <code>null</code>.
 	*/
-	public static LocaleText[] getTexts(final RDFObject rdfObject)
+	public static LocaledText[] getTexts(final RDFObject rdfObject)
 	{
 		checkInstance(rdfObject, "RDF object cannot be null.");
 		if(rdfObject instanceof RDFListResource)	//if the object is a list
 		{
 			final RDFListResource<?> rdfList=(RDFListResource<?>)rdfObject;	//get the object as a list
-			final List<LocaleText> texts=new ArrayList<LocaleText>(rdfList.size());	//create a list of locale texts
+			final List<LocaledText> texts=new ArrayList<LocaledText>(rdfList.size());	//create a list of locale texts
 			for(final RDFObject item:rdfList)	//for each list element
 			{
-				final LocaleText text=getText(item);	//get this text
+				final LocaledText text=getText(item);	//get this text
 				if(text!=null)	//if this resource represents text
 				{
 					texts.add(text);	//add this text to the list
 				}
 			}
-			return texts.toArray(new LocaleText[texts.size()]);	//return the texts as an array
+			return texts.toArray(new LocaledText[texts.size()]);	//return the texts as an array
 		}
 		else	//for all other component types
 		{
-			return new LocaleText[]{getText(rdfObject)};	//get the text from the object normally and store it in an array of a single element
+			return new LocaledText[]{getText(rdfObject)};	//get the text from the object normally and store it in an array of a single element
 		}
 	}
 

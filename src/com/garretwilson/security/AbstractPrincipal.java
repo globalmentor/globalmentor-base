@@ -1,12 +1,13 @@
 package com.garretwilson.security;
 
 import java.security.Principal;
-import com.garretwilson.util.DefaultIDable;
+
+import com.globalmentor.util.DefaultIDed;
 
 /**An abstract implementation of a principal.
 @author Garret Wilson
 */
-public abstract class AbstractPrincipal extends DefaultIDable<String> implements Principal
+public abstract class AbstractPrincipal extends DefaultIDed<String> implements Principal
 {
 
   /**@return The name of user as a principal.

@@ -2,9 +2,11 @@ package com.garretwilson.rdf;
 
 import java.net.URI;
 import java.util.*;
+import static java.util.Collections.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
-import com.garretwilson.util.*;
+
+import com.globalmentor.util.*;
 
 /**Represents an RDF resource that is a container, such as a bag or a sequence.
 @author Garret Wilson
@@ -55,7 +57,7 @@ public abstract class RDFContainerResource extends TypedRDFResource
 	public Collection getItemCollection()
 	{
 		final List itemPropertyList=getItemProperties();  //get the <li> item properties
-		return Collections.unmodifiableCollection(getItemList(itemPropertyList));  //return the items values as an unmodifiable collection
+		return unmodifiableCollection(getItemList(itemPropertyList));  //return the items values as an unmodifiable collection
 	}
 
 	/**@return A read-only iterator to the items (specified by

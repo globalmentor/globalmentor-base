@@ -3,8 +3,9 @@ package com.garretwilson.swing.rdf.maqro;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.List;
+import java.util.Collections;
 import static java.util.Collections.*;
+import java.util.List;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.rdf.RDFListResource;
@@ -14,7 +15,7 @@ import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.BorderUtilities;
-import com.garretwilson.util.*;
+import com.globalmentor.util.*;
 
 /**Panel for editing a MAQRO activity selection.
 <p>This implementation does not support multiple selector filters of the same type.</p>
@@ -124,7 +125,7 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 					{
 						final CategoryFilter categoryFilter=(CategoryFilter)filter;	//cast the filter to a category filter
 							//TODO upgrade to generics
-						CollectionUtilities.addAll(categorySet, categoryFilter.getCategories());	//add all selector categories to our set of categories G***we should really create clones of these
+						Collections.addAll(categorySet, categoryFilter.getCategories());	//add all selector categories to our set of categories G***we should really create clones of these
 						break;	//this implementation only recognizes the first category filter
 					}
 				}

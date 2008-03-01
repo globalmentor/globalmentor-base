@@ -14,8 +14,8 @@ import com.garretwilson.rdf.xmlschema.URILiteral;
 
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.xpackage.XPackageConstants.*;
-import com.garretwilson.util.Debug;
 import com.globalmentor.marmot.Marmot;
+import com.globalmentor.util.Debug;
 
 import org.w3c.dom.*;
 

@@ -29,7 +29,7 @@ import com.garretwilson.text.xml.XMLReader;
 import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XMLDocument;
 import com.garretwilson.text.xml.stylesheets.css.XMLCSSProcessor;
-import com.garretwilson.util.Debug;
+import com.globalmentor.util.Debug;
 
 //G***del class when new XPackage stuff works
 

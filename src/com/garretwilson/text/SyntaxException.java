@@ -2,7 +2,7 @@ package com.garretwilson.text;
 
 import static com.globalmentor.java.Integers.*;
 
-import com.garretwilson.util.DataException;
+import com.globalmentor.util.DataException;
 
 /**Generic checked exception thrown to indicate that input contains a syntax error.
 @author Garret Wilson

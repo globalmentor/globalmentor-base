@@ -6,7 +6,7 @@ import com.garretwilson.io.*;
 
 /**Class for loading and saving text. Text is saved in the UTF-8 encoding.
 @author Garret Wilson
-@see LocaleText
+@see LocaledText
 */
 public class TextIOKit extends AbstractIOKit<StringBuilder>
 {
