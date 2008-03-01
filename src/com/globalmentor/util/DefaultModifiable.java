@@ -16,7 +16,7 @@
 
 package com.globalmentor.util;
 
-import com.garretwilson.beans.BoundPropertyObject;
+import com.globalmentor.beans.BoundPropertyObject;
 
 /**A default implementation of a modifiable object. The object defaults to not
 	having been modified.

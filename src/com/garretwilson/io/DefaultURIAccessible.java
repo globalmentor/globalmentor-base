@@ -7,9 +7,9 @@ import java.net.URI;
 
 import static com.garretwilson.net.URIConstants.*;
 
-import com.garretwilson.beans.BoundPropertyObject;
 import com.garretwilson.net.http.HTTPClient;
 import com.garretwilson.net.http.HTTPResource;
+import com.globalmentor.beans.BoundPropertyObject;
 import com.globalmentor.util.Debug;
 
 /**Default implementation of a class that allows access to resources by

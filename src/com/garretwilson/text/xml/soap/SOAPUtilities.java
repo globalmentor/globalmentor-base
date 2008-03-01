@@ -4,10 +4,10 @@ import java.io.*;
 import java.util.*;
 import javax.activation.*;
 import javax.xml.soap.*;
-import com.garretwilson.activation.ByteArrayDataSource;
 import com.garretwilson.text.xml.XML;
 import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import com.garretwilson.text.xml.XMLUtilities;
+import com.globalmentor.activation.ByteArrayDataSource;
 import com.globalmentor.java.*;
 import com.globalmentor.util.Debug;
 

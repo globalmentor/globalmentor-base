@@ -69,8 +69,6 @@ public class ContentTypeConstants	//TODO transfer these constants to specific re
 	public final static String X_WAV_SUBTYPE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"wav";
 
 		//application media types
-	/**A stream of bytes.*/
-	public final static String OCTET_STREAM_SUBTYPE="octet-stream";
 	/**A Dictionary Ontology (Dicto) dictionary.*/
 	public final static String X_DICTO_RDF_XML_SUBTYPE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"dicto"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A Java application.*/

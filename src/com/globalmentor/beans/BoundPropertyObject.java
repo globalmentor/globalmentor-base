@@ -1,4 +1,20 @@
-package com.garretwilson.beans;
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.globalmentor.beans;
 
 import java.beans.*;
 
@@ -67,7 +83,6 @@ public class BoundPropertyObject implements PropertyBindable
 									{
 										final PropertyChangeEvent repeatPropertyChangeEvent=new GenericPropertyChangeEvent<Object>(BoundPropertyObject.this, propertyChangeEvent);	//copy the property change event with this class as its source, but keeping the same target if present
 										firePropertyChange(repeatPropertyChangeEvent);	//fire the repeated property change event
-//TODO del when works										firePropertyChange(propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());	//repeat the property change event, indicating this component as the event source
 									}
 						};
 			}
@@ -97,7 +112,7 @@ public class BoundPropertyObject implements PropertyBindable
 	private VetoableChangeListener repeatVetoableChangeListener=null;
 
 		/**@return A vetoable change listener to repeat copies of events received, using this component as the source.*/ 
-		protected synchronized VetoableChangeListener getRepeatVetoableChangeListener()	//TODO update to work with PropertyValueChangeEvent
+		protected synchronized VetoableChangeListener getRepeatVetoableChangeListener()
 		{	//TODO synchronize on something else
 			if(repeatVetoableChangeListener==null)	//if we have not yet created the repeater vetoable change listener
 			{
@@ -107,7 +122,6 @@ public class BoundPropertyObject implements PropertyBindable
 									{
 										final PropertyChangeEvent repeatPropertyChangeEvent=new GenericPropertyChangeEvent<Object>(BoundPropertyObject.this, propertyChangeEvent);	//copy the property change event with this class as its source, but keeping the same target if present
 										fireVetoableChange(repeatPropertyChangeEvent);	//fire the repeated vetoable change event
-//TODO del when works										fireVetoableChange(propertyChangeEvent.getPropertyName(), propertyChangeEvent.getOldValue(), propertyChangeEvent.getNewValue());	//repeat the vetoable change event, indicating this component as the event source
 									}			
 						};
 			}

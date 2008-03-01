@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 /**Utilities for regular expression matchers.
 @author Garret Wilson
 */
-public class MatcherUtilities
+public class Matchers
 {
 
 	/**Returns an array of integer versions from the available groups of the given matcher.

@@ -4,7 +4,7 @@ import static com.globalmentor.java.Characters.*;
 
 import java.net.URI;
 
-import com.garretwilson.beans.BoundPropertyObject;
+import com.globalmentor.beans.BoundPropertyObject;
 
 /**Represents the default implementation of a resource that recognizes bound properties.
 This class provides compare functionality that sorts according to the reference URI, if available.

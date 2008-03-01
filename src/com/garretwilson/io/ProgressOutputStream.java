@@ -2,7 +2,7 @@ package com.garretwilson.io;
 
 import java.io.*;
 
-import com.garretwilson.event.*;
+import com.globalmentor.event.*;
 
 /**An output stream that provides progres events for bytes written.
 @author Garret Wilson
