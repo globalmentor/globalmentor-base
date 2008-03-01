@@ -5,12 +5,13 @@ import java.net.*;
 import java.util.Map;
 import java.util.Set;
 
-import com.garretwilson.io.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XMLSerializer;
+import com.globalmentor.io.*;
+
 import org.w3c.dom.Document;
 
 /**Class for loading and saving outcomes.

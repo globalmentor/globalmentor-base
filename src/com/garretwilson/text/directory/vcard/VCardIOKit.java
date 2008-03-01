@@ -2,9 +2,10 @@ package com.garretwilson.text.directory.vcard;
 
 import java.io.*;
 import java.net.*;
-import com.garretwilson.io.*;
 import com.garretwilson.text.CharacterEncoding;
 import com.garretwilson.text.directory.*;
+import com.globalmentor.io.*;
+
 import static com.garretwilson.text.directory.vcard.VCardConstants.*;
 
 /**Class for loading and saving a a vCard <code>text/directory</code>

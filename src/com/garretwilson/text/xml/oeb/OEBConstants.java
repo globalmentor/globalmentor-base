@@ -2,8 +2,9 @@ package com.garretwilson.text.xml.oeb;
 
 import java.net.URI;
 import javax.mail.internet.ContentType;
-import com.garretwilson.io.ContentTypeConstants;
-import com.garretwilson.io.ContentTypes;
+
+import com.globalmentor.io.ContentTypeConstants;
+import com.globalmentor.io.ContentTypes;
 
 /**Several constants for OEB.
 @author Garret Wilson

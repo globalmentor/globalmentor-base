@@ -2,7 +2,8 @@ package com.garretwilson.text;
 
 import java.io.*;
 import java.net.*;
-import com.garretwilson.io.*;
+
+import com.globalmentor.io.*;
 
 /**Class for loading and saving text. Text is saved in the UTF-8 encoding.
 @author Garret Wilson

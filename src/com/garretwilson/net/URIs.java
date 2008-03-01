@@ -5,16 +5,16 @@ import java.net.*;
 import java.util.*;
 
 import javax.mail.internet.ContentType;
-import com.garretwilson.io.*;
-import static com.garretwilson.io.FileConstants.EXTENSION_SEPARATOR;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.text.CharacterEncoding.*;
+import static com.globalmentor.io.FileConstants.EXTENSION_SEPARATOR;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.garretwilson.text.FormatUtilities;
 import com.garretwilson.text.SyntaxException;
 import com.garretwilson.text.unicode.UnicodeCharacter;
+import com.globalmentor.io.*;
 import com.globalmentor.java.Integers;
 import com.globalmentor.util.*;
 

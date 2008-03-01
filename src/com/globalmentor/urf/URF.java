@@ -10,13 +10,14 @@ import java.util.regex.*;
 
 import javax.mail.internet.ContentType;
 
-import static com.garretwilson.io.Charsets.*;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
 import com.garretwilson.text.RegularExpression;
 
 import com.globalmentor.java.*;
+
+import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.Booleans.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.CharSequences.*;

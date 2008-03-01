@@ -19,8 +19,8 @@ package com.globalmentor.java;
 import java.io.*;
 import java.net.URI;
 
-import com.garretwilson.io.IO;
 import com.garretwilson.text.*;
+import com.globalmentor.io.IO;
 
 
 import static com.globalmentor.java.Characters.*;

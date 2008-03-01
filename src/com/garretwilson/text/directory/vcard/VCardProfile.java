@@ -4,10 +4,11 @@ import java.io.*;
 import java.lang.ref.*;
 import java.net.*;
 import java.util.*;
-import com.garretwilson.io.*;
 import com.garretwilson.text.ArgumentSyntaxException;
 import com.garretwilson.text.directory.*;
 import static com.garretwilson.text.directory.vcard.VCardConstants.*;
+
+import com.globalmentor.io.*;
 import com.globalmentor.java.*;
 import com.globalmentor.util.*;
 

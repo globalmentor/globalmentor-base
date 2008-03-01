@@ -2,7 +2,8 @@ package com.garretwilson.model;
 
 import java.io.*;
 import java.net.URI;
-import com.garretwilson.io.URIAccessible;
+
+import com.globalmentor.io.URIAccessible;
 
 /**Represents an implementation for loading information into a view or
 	saving information from a view.

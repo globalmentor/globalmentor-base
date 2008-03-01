@@ -2,7 +2,8 @@ package com.garretwilson.text.directory;
 
 import java.io.*;
 import java.util.*;
-import com.garretwilson.io.*;
+
+import com.globalmentor.io.*;
 import com.globalmentor.util.NameValuePair;
 
 /**Class that knows how to create objects to represent values provided in

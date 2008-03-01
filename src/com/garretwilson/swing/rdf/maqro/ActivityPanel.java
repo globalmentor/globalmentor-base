@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.*;
 import javax.mail.internet.ContentType;
 import javax.swing.*;
-import com.garretwilson.io.ContentTypeConstants;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
 import com.garretwilson.text.xml.XMLUtilities;
@@ -20,6 +19,7 @@ import com.garretwilson.resources.icon.IconResources;
 
 import static com.globalmentor.util.UUIDs.*;
 
+import com.globalmentor.io.ContentTypeConstants;
 import com.globalmentor.mentoract.activity.maqro.*;
 
 import org.w3c.dom.*;

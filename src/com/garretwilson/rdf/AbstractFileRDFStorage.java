@@ -2,7 +2,9 @@ package com.garretwilson.rdf;
 
 import java.io.*;
 import java.net.*;
-import com.garretwilson.io.*;
+
+import com.globalmentor.io.*;
+
 import org.w3c.dom.*;
 
 /**A modifiable object that knows how to store and retrieve itself as RDF in a

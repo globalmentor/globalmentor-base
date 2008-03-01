@@ -3,10 +3,10 @@ package com.garretwilson.text.directory;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import com.garretwilson.io.*;
 import static com.garretwilson.text.directory.DirectoryConstants.*;
 import static com.garretwilson.text.directory.DirectoryUtilities.*;
 
+import com.globalmentor.io.*;
 import com.globalmentor.util.*;
 
 /**Profile for predefined types of a <code>text/directory</code> as defined in 

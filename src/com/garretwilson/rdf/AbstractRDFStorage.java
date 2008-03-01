@@ -4,11 +4,11 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import com.garretwilson.io.*;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLNamespaceProcessor;
 import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XMLSerializer;
+import com.globalmentor.io.*;
 import com.globalmentor.util.*;
 
 import org.w3c.dom.*;

@@ -5,12 +5,12 @@ import java.net.URI;
 import java.net.MalformedURLException;	//G***del when works
 import java.net.URISyntaxException;
 import java.util.*;
-import com.garretwilson.io.*;
 import com.garretwilson.net.URLUtilities;
 import com.garretwilson.rdf.*;
 import com.garretwilson.text.directory.*;
 import static com.garretwilson.text.directory.DirectoryConstants.*;
 
+import com.globalmentor.io.*;
 import com.globalmentor.util.*;
 
 /**Class that is able to construct an RDF data model from a directory of type

@@ -5,9 +5,10 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
 
-import static com.garretwilson.io.Charsets.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
+import static com.globalmentor.io.Charsets.*;
+
 import com.garretwilson.rdf.dublincore.DCConstants;
 import com.garretwilson.rdf.xpackage.XPackageUtilities;
 import com.garretwilson.text.xml.XML;

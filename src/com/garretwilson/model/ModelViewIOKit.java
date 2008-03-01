@@ -3,7 +3,7 @@ package com.garretwilson.model;
 import java.io.*;
 import java.net.URI;
 
-import com.garretwilson.io.IOKit;
+import com.globalmentor.io.IOKit;
 import com.globalmentor.util.Modifiable;
 
 /**An implementation for loading information into a view or

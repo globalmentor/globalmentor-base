@@ -2,10 +2,10 @@ package com.garretwilson.text.directory;
 
 import java.io.*;
 import java.util.*;
-import com.garretwilson.io.*;
 import static com.garretwilson.text.ABNF.*;
 import static com.garretwilson.text.directory.DirectoryConstants.*;
 
+import com.globalmentor.io.*;
 import com.globalmentor.util.*;
 
 /**Class that can process a directory of type <code>text/directory</code> as

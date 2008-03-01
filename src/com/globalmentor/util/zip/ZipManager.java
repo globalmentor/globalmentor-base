@@ -20,8 +20,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.zip.*;
-import com.garretwilson.io.*;
 import com.garretwilson.net.*;
+import com.globalmentor.io.*;
 
 /**Facilitates access to a zip file.
 	Keeps track of zip contents by zip entry name as a URI as if each zip entry

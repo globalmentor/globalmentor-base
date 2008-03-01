@@ -1,8 +1,8 @@
 package com.garretwilson.model;
 
 import java.net.URI;
-import com.garretwilson.io.*;
 import com.globalmentor.event.EventListenerManager;
+import com.globalmentor.io.*;
 
 /**A model that keeps track of a base URI and knows how to access input streams
 	based upon URIs.

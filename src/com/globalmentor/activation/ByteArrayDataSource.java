@@ -19,7 +19,7 @@ package com.globalmentor.activation;
 import java.io.*;
 import javax.activation.DataSource;
 
-import static com.garretwilson.io.ContentTypes.*;
+import static com.globalmentor.io.ContentTypes.*;
 import static com.globalmentor.java.Objects.*;
 
 /**A JavaBeans Activation Framework data source class that serves as a source of data from an array of bytes.

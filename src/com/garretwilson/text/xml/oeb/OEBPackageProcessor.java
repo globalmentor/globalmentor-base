@@ -5,7 +5,6 @@ import java.net.*;
 import java.util.List;
 
 import javax.mail.internet.ContentType;
-import com.garretwilson.io.ContentTypes;
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.dublincore.DCConstants.*;
@@ -18,6 +17,8 @@ import com.garretwilson.text.xml.xpath.XPath;
 import com.garretwilson.text.xml.xpath.XPathConstants;
 
 import static com.garretwilson.text.xml.oeb.OEBConstants.*;
+
+import com.globalmentor.io.ContentTypes;
 import com.globalmentor.marmot.Marmot;
 import com.globalmentor.util.*;
 

@@ -5,10 +5,10 @@ import java.nio.charset.Charset;
 
 import javax.mail.internet.ContentType;
 
-import static com.garretwilson.io.ContentTypes.*;
 import com.garretwilson.net.Resource;
 import com.globalmentor.urf.*;
 
+import static com.globalmentor.io.ContentTypes.*;
 import static com.globalmentor.urf.URF.*;
 
 /**The URF content ontology.

@@ -3,7 +3,8 @@ package com.globalmentor.urf;
 import java.io.*;
 import java.net.*;
 
-import com.garretwilson.io.BOMInputStreamReader;
+import com.globalmentor.io.BOMInputStreamReader;
+
 import static com.garretwilson.text.CharacterEncoding.*;
 
 /**Base functionality for loading and saving information stored in TURF.

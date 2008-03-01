@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.*;
 import javax.mail.internet.ContentType;
 import javax.swing.*;
-import com.garretwilson.io.ContentTypeConstants;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
 import com.garretwilson.text.xml.XMLUtilities;
@@ -21,6 +20,7 @@ import com.garretwilson.rdf.dublincore.DCUtilities;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.rdf.xpackage.XPackageUtilities;
 import com.garretwilson.resources.icon.IconResources;
+import com.globalmentor.io.ContentTypeConstants;
 import com.globalmentor.java.Characters;
 import com.globalmentor.marmot.resource.dicto.*;	//TODO GlobalMentor-specific items up to some other class if possible
 import com.globalmentor.mentoract.activity.maqro.MAQROActivityEngine;

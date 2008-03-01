@@ -3,7 +3,7 @@ package com.garretwilson.rdf;
 import java.io.*;
 import java.net.*;
 
-import com.garretwilson.io.IO;
+import com.globalmentor.io.IO;
 
 /**Support for reading or writing a particular type stored in RDF.
 @param <T> The type to read and write.

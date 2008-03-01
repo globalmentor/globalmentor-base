@@ -10,8 +10,6 @@ import javax.swing.*;
 import javax.swing.text.*;
 
 
-import static com.garretwilson.io.ContentTypeConstants.*;
-import com.garretwilson.io.ContentTypes;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import com.garretwilson.rdf.maqro.*;
@@ -24,10 +22,12 @@ import com.garretwilson.swing.XMLTextPane;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.xhtml.XHTML;
+import com.globalmentor.io.ContentTypes;
 import com.globalmentor.mentoract.activity.maqro.MAQROActivityEngine;
 import com.globalmentor.util.Debug;
 
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
+import static com.globalmentor.io.ContentTypeConstants.*;
 import static com.globalmentor.java.Objects.*;
 
 /**Creates views for MAQRO elements.

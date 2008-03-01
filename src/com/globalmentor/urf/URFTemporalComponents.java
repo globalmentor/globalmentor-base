@@ -5,12 +5,13 @@ import java.util.*;
 
 import static java.util.Calendar.*;
 
-import com.garretwilson.io.ParseIOException;
-import static com.garretwilson.io.ReaderParser.*;
 
 import com.garretwilson.iso.ISO8601;
 import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.text.SyntaxException;
+import com.globalmentor.io.ParseIOException;
+
+import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.Strings.*;

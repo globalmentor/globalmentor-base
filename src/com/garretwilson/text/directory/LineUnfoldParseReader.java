@@ -3,7 +3,8 @@ package com.garretwilson.text.directory;
 import java.io.Reader;
 import java.io.IOException;
 
-import com.garretwilson.io.ParseReader;
+import com.globalmentor.io.ParseReader;
+
 import static com.garretwilson.text.directory.DirectoryConstants.*;
 
 /**Reader that unfolds lines of type <code>text/directory</code> as defined

@@ -14,13 +14,13 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.text.*;
 
-import com.garretwilson.io.URIAccessible;
 import com.garretwilson.rdf.RDFObject;
 import com.garretwilson.rdf.RDFResource;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
+import com.globalmentor.io.URIAccessible;
 import com.globalmentor.mentoract.activity.maqro.MAQROActivityPanel;
 
 /**View representing a MAQRO question.

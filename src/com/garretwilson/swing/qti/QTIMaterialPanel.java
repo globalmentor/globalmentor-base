@@ -7,11 +7,11 @@ import java.net.*;
 import java.util.*;
 import javax.swing.*;
 //*G**del if not needed import com.garretwilson.awt.ComponentUtilities;
-import com.garretwilson.io.Files;
 import com.garretwilson.net.URLConstants;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.assess.qti.*;
+import com.globalmentor.io.Files;
 import com.globalmentor.util.Debug;
 
 /**Provides a visual editing environment for QTI material.

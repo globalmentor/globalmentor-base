@@ -3,7 +3,8 @@ package com.garretwilson.net;
 import java.io.*;
 import java.net.*;
 import javax.mail.internet.ContentType;
-import com.garretwilson.io.*;
+
+import com.globalmentor.io.*;
 
 /**Various URL manipulating functions.
 @see java.net.URL
@@ -376,7 +377,7 @@ Debug.trace("file: ", new File(contextURL.getFile()).getName());  //G***del
 		final InputStream fileInputStream=new BufferedInputStream(url.openConnection().getInputStream()); //created a buffered input stream to the URL
 		try
 		{
-			OutputStreamUtilities.copy(fileInputStream, outputStream);  //copy the contents of the input stream to the output stream
+			InputStreamUtilities.copy(fileInputStream, outputStream);  //copy the contents of the input stream to the output stream
 		}
 		finally
 		{

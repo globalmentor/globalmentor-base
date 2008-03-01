@@ -3,7 +3,7 @@ package com.globalmentor.urf;
 import java.io.*;
 import java.net.*;
 
-import com.garretwilson.io.IO;
+import com.globalmentor.io.IO;
 
 /**Support for reading or writing a particular type stored in URF.
 <p>Copyright © 2007 GlobalMentor, Inc.

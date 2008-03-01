@@ -3,12 +3,12 @@ package com.garretwilson.rdf.directory;
 import java.io.*;
 import java.net.URI;
 import java.util.*;
-import com.garretwilson.io.*;
 import com.garretwilson.net.URLUtilities;
 import com.garretwilson.rdf.*;
 import com.garretwilson.text.directory.*;
 import static com.garretwilson.text.directory.DirectoryConstants.*;
 
+import com.globalmentor.io.*;
 import com.globalmentor.util.*;
 
 /**RDF factory for the predefined types of a directory of type

@@ -20,9 +20,9 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.regex.Pattern;
 
-import static com.garretwilson.io.Files.*;
 import static com.garretwilson.text.RegularExpression.*;
 
+import static com.globalmentor.io.Files.*;
 import static com.globalmentor.java.Objects.*;
 
 /**Utilities for manipulating Java locales.

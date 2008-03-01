@@ -5,14 +5,15 @@ import java.util.*;
 
 import javax.mail.internet.ContentType;
 
-import static com.garretwilson.io.ContentTypeConstants.*;
 
-import com.garretwilson.io.ContentTypes;
 import com.garretwilson.text.xml.XMLUtilities;
 import static com.garretwilson.text.xml.XMLUtilities.*;
+
+import com.globalmentor.io.ContentTypes;
 import com.globalmentor.java.*;
 import com.globalmentor.util.Arrays;
 
+import static com.globalmentor.io.ContentTypeConstants.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Objects.*;

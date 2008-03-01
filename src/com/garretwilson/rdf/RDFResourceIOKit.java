@@ -3,10 +3,11 @@ package com.garretwilson.rdf;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import com.garretwilson.io.*;
 import com.garretwilson.text.xml.XMLDOMImplementation;
 import com.garretwilson.text.xml.XMLProcessor;
 import com.garretwilson.text.xml.XMLSerializer;
+import com.globalmentor.io.*;
+
 import org.w3c.dom.Document;
 
 /**Class for loading and saving an RDF resource from an RDF+XML serialization.

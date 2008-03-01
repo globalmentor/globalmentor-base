@@ -20,6 +20,8 @@ import static com.globalmentor.java.Objects.*;
 
 import java.beans.PropertyChangeEvent;
 
+import com.globalmentor.event.TargetedEvent;
+
 /**A property value change event is a Java Beans property change event retrofitted to use generics to cast to proper value type.
 This event is also <dfn>targeted</dfn>, specifying an event target which may or may not be the same as the source object firing this event.
 @param <V> The type of property value.
