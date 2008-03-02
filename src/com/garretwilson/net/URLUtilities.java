@@ -311,14 +311,14 @@ Debug.trace("file: ", new File(contextURL.getFile()).getName());  //G***del
 	@param url The URL from which to read.
 	@return An array of bytes from the URL.
 	@exception IOException Thrown if there is an error loading the bytes.
-	@see InputStreamUtilities#getBytes
+	@see InputStreams#getBytes
 	*/
 	public static byte[] readBytes(final URL url) throws IOException
 	{
 		final InputStream urlInputStream=url.openConnection().getInputStream();  //create an input stream to the URL
 		try
 		{
-			return InputStreamUtilities.getBytes(urlInputStream);  //convert the URL to an array of bytes
+			return InputStreams.getBytes(urlInputStream);  //convert the URL to an array of bytes
 		}
 		finally
 		{
@@ -377,7 +377,7 @@ Debug.trace("file: ", new File(contextURL.getFile()).getName());  //G***del
 		final InputStream fileInputStream=new BufferedInputStream(url.openConnection().getInputStream()); //created a buffered input stream to the URL
 		try
 		{
-			InputStreamUtilities.copy(fileInputStream, outputStream);  //copy the contents of the input stream to the output stream
+			InputStreams.copy(fileInputStream, outputStream);  //copy the contents of the input stream to the output stream
 		}
 		finally
 		{

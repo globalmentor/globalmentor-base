@@ -21,7 +21,7 @@ import java.io.*;
 /**Class to manipulate output streams.
 @author Garret Wilson
 */
-public class OutputStreamUtilities
+public class OutputStreams
 {
 
 	/**Writes the given byte to the output stream the specified number of times.

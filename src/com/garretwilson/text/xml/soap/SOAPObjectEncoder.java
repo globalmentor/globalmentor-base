@@ -6,7 +6,7 @@ import javax.xml.soap.*;
 import com.garretwilson.text.xml.XMLObjectEncoder;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.soap.SOAPUtilities;
-import com.globalmentor.io.InputStreamUtilities;
+import com.globalmentor.io.InputStreams;
 import com.globalmentor.util.BinaryObjectHolder;
 import com.globalmentor.util.Debug;
 

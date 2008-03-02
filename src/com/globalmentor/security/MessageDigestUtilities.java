@@ -1,4 +1,20 @@
-package com.garretwilson.security;
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.globalmentor.security;
 
 import java.io.UnsupportedEncodingException;
 import java.security.*;
@@ -13,6 +29,11 @@ import static com.globalmentor.java.Characters.*;
 */
 public class MessageDigestUtilities
 {
+
+	/**The MD5 digest algorithm.*/
+	public final static String MD5_ALGORITHM="MD5";
+	/**The SHA digest algorithm.*/
+	public final static String SHA_ALGORITHM="SHA";	
 
 	/**Computes a digest for the given strings using the UTF-8 character encoding.
 	@param messageDigest The implementation of a message digest algorithm.
@@ -145,6 +166,6 @@ public class MessageDigestUtilities
 		final byte[] bytes=toByteArray(characters, encoding.toString());	//convert the characters to bytes
 		messageDigest.update(bytes);	//update the digest
 		return messageDigest;	//return the message digest
-	}	
-	
+	}
+
 }

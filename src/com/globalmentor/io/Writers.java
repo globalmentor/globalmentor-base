@@ -21,7 +21,7 @@ import java.io.*;
 /**Utility methods for writers.
 @author Garret Wilson
 */
-public class WriterUtilities
+public class Writers
 {
 
 	/**Copies the contents of a reader to a writer. Neither reader nor writer is closed after the operation.

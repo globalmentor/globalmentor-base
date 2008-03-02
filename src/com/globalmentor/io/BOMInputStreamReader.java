@@ -20,7 +20,7 @@ import java.io.*;
 
 import com.garretwilson.text.CharacterEncoding;
 import static com.garretwilson.text.CharacterEncoding.*;
-import static com.globalmentor.io.InputStreamUtilities.*;
+import static com.globalmentor.io.InputStreams.*;
 
 /**A reader that attempts to autodetect the character encoding of an input stream from the beginning byte order mark (BOM).
 <p>The input stream must be at its beginning and must support marking and resetting.</p>

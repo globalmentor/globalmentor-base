@@ -26,7 +26,7 @@ import com.garretwilson.text.CharacterEncoding;
 /**Class to manipulate input streams.
 @author Garret Wilson
 */
-public class InputStreamUtilities
+public class InputStreams
 {
 
 	/**The number of bytes to copy at a time from an input stream to an output stream.*/

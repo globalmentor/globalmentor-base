@@ -6,7 +6,7 @@ import javax.xml.soap.*;
 import com.garretwilson.text.xml.XMLObjectDecoder;
 import com.garretwilson.text.xml.XMLUtilities;
 import com.garretwilson.text.xml.soap.SOAPUtilities;
-import com.globalmentor.io.InputStreamUtilities;
+import com.globalmentor.io.InputStreams;
 import com.globalmentor.util.BinaryObjectHolder;
 import com.globalmentor.util.Debug;
 
@@ -75,7 +75,7 @@ Debug.trace("decoded SOAP message as DOM:");  //G***del all this; testing
 	//G***del Debug.trace("attachment part ID: ", id); //G***del
 						final InputStream attachmentInputStream=(InputStream)attachmentPart.getContent();  //get the content of the resource as an input stream
 	//G***close the attachment input stream
-						final byte[] bytes=InputStreamUtilities.getBytes(attachmentInputStream); //get the attachmentn from the stream as a sequence of bytes
+						final byte[] bytes=InputStreams.getBytes(attachmentInputStream); //get the attachmentn from the stream as a sequence of bytes
 						//G***do we need to close the attachment input stream?
 						binaryObjectHolder.getBinaryObjectMap().put(id, bytes);  //store the binary object bytes in the message, keyed to the ID
 						break;  //we've added all the attachments to the same binary object holder; stop looking for binary object holders

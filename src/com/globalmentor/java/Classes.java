@@ -34,13 +34,13 @@ import static com.garretwilson.net.URIs.*;
 import static com.globalmentor.io.ContentTypeConstants.*;
 import static com.globalmentor.io.FileConstants.*;
 import static com.globalmentor.io.Files.*;
-import static com.globalmentor.io.OutputStreamUtilities.*;
+import static com.globalmentor.io.OutputStreams.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
 
 import com.garretwilson.net.URIPath;
 import com.globalmentor.io.ContentTypes;
-import com.globalmentor.io.InputStreamUtilities;
+import com.globalmentor.io.InputStreams;
 import com.globalmentor.util.NameValuePair;
 
 /**Utilities for manipulating Java classes.
@@ -751,7 +751,7 @@ public class Classes
 					final OutputStream outputStream=new FileOutputStream(file);	//create an output stream to the file
 					try
 					{
-						InputStreamUtilities.copy(inputStream, outputStream);	//copy the resource input stream to the output stream to the temporary file
+						InputStreams.copy(inputStream, outputStream);	//copy the resource input stream to the output stream to the temporary file
 					}
 					finally
 					{

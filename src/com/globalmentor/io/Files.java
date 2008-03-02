@@ -34,7 +34,7 @@ import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
 import static com.globalmentor.io.ContentTypeConstants.*;
 import static com.globalmentor.io.FileConstants.*;
-import static com.globalmentor.io.InputStreamUtilities.*;
+import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
@@ -760,7 +760,7 @@ public class Files
 	@param file The file from which to read.
 	@return An array of bytes from the input stream.
 	@exception IOException Thrown if there is an error loading the bytes.
-	@see InputStreamUtilities#getBytes
+	@see InputStreams#getBytes
 	@see #write
 	*/
 	public static byte[] readBytes(final File file) throws IOException
@@ -1056,7 +1056,7 @@ Debug.trace("Canonical file: "+canonicalFilePath);
 		final OutputStream fileOutputStream=new BufferedOutputStream(new FileOutputStream(file)); //created a buffered output stream to the file
 		try
 		{
-			InputStreamUtilities.copy(inputStream, fileOutputStream);  //copy the contents of the input stream to the output stream
+			InputStreams.copy(inputStream, fileOutputStream);  //copy the contents of the input stream to the output stream
 		}
 		finally
 		{
@@ -1074,7 +1074,7 @@ Debug.trace("Canonical file: "+canonicalFilePath);
 		final InputStream fileInputStream=new BufferedInputStream(new FileInputStream(file)); //created a buffered input stream to the file
 		try
 		{
-			InputStreamUtilities.copy(fileInputStream, outputStream);  //copy the contents of the input stream to the output stream
+			InputStreams.copy(fileInputStream, outputStream);  //copy the contents of the input stream to the output stream
 		}
 		finally
 		{

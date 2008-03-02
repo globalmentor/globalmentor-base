@@ -55,8 +55,8 @@ public class TextIOKit extends AbstractIOKit<StringBuilder>
 	*/ 
 	public StringBuilder load(final InputStream inputStream, final URI baseURI) throws IOException
 	{
-		final CharacterEncoding encoding=InputStreamUtilities.getBOMEncoding(inputStream);	//try to sense from the byte order mark the encoding of the text
-		final byte[] bytes=InputStreamUtilities.getBytes(inputStream);	//get the bytes from the input stream
+		final CharacterEncoding encoding=InputStreams.getBOMEncoding(inputStream);	//try to sense from the byte order mark the encoding of the text
+		final byte[] bytes=InputStreams.getBytes(inputStream);	//get the bytes from the input stream
 		//use the character encoding we sensed to create a string, using a default encoding if we couldn't sense one from the byte order mark
 		final String string=encoding!=null ? new String(bytes, encoding.toString()) : new String(bytes);
 		return new StringBuilder(string);	//return a text model from the text we read
