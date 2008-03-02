@@ -27,7 +27,7 @@ import static com.globalmentor.java.Characters.*;
 /**Utility methods for working with message digests.
 @author Garret Wilson
 */
-public class MessageDigestUtilities
+public class MessageDigests
 {
 
 	/**The MD5 digest algorithm.*/
