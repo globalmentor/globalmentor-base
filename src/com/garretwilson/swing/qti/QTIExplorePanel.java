@@ -15,10 +15,10 @@ import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.swing.text.xml.qti.QTIViewFactory;
 import com.garretwilson.swing.tree.*;
 import com.garretwilson.swing.qti.tree.*;
-import com.garretwilson.text.xml.XML;
-import com.garretwilson.text.xml.XMLSerializer;
 import com.garretwilson.assess.qti.*;
 import com.globalmentor.java.Booleans;
+import com.globalmentor.text.xml.XML;
+import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.util.*;
 
 import org.w3c.dom.*;

@@ -9,8 +9,8 @@ import javax.xml.parsers.*;
 
 import static com.globalmentor.java.Objects.*;
 
-import com.garretwilson.text.xml.XMLSerializer;
-import com.garretwilson.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XMLSerializer;
+import com.globalmentor.text.xml.XMLUtilities;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

@@ -5,8 +5,8 @@ import java.net.*;
 import com.garretwilson.model.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.dicto.DictoConstants.*;
-import com.garretwilson.text.xml.XMLProcessor;
 import com.globalmentor.io.*;
+import com.globalmentor.text.xml.XMLProcessor;
 
 import org.w3c.dom.Document;
 

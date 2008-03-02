@@ -10,9 +10,9 @@ import static com.garretwilson.iso.ISO8601.*;
 import com.garretwilson.net.*;
 
 import static com.garretwilson.net.URIs.*;
-import static com.garretwilson.text.CharacterEncoding.*;
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.java.Characters.*;
+import static com.globalmentor.text.CharacterEncoding.*;
 import static com.globalmentor.urf.TURF.*;
 import static com.globalmentor.urf.URF.*;
 

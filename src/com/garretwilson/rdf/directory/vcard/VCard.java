@@ -12,13 +12,13 @@ import com.garretwilson.rdf.directory.Directory;
 
 import static com.garretwilson.rdf.rdfs.RDFSUtilities.*;
 
-import com.garretwilson.text.directory.vcard.Name;
 
+import com.globalmentor.text.directory.vcard.Name;
 import com.globalmentor.util.NameValuePair;
 
-import static com.garretwilson.text.directory.vcard.VCardConstants.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.text.directory.vcard.VCardConstants.*;
 import static com.globalmentor.util.Arrays.*;
 
 /**An ontology to represent a vCard <code>text/directory</code> profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>, "vCard MIME Directory Profile".

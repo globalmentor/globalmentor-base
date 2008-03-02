@@ -26,8 +26,9 @@ import javax.mail.internet.ContentType;
 
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
-import com.garretwilson.text.xml.xhtml.XHTML;
 import com.globalmentor.java.*;
+import com.globalmentor.text.TextUtilities;
+import com.globalmentor.text.xml.xhtml.XHTML;
 import com.globalmentor.urf.*;
 
 import static com.garretwilson.net.URIConstants.*;
@@ -84,7 +85,7 @@ public class Files
 		tempFileExtensionContentTypeMap.put(TIF_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(TIFF_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(TURF.TURF_NAME_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, TURF_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(TXT_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(TXT_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, TextUtilities.PLAIN_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, DIRECTORY_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(WAV_EXTENSION, new ContentType(ContentTypes.AUDIO_PRIMARY_TYPE, X_WAV_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(XEB_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_SUBTYPE, null));

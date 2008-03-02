@@ -4,7 +4,7 @@ import java.net.URI;
 
 import com.garretwilson.net.DefaultResource;
 import com.garretwilson.net.URIConstants;
-import com.garretwilson.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XMLUtilities;
 import com.globalmentor.util.IDed;
 
 import static com.garretwilson.rdf.RDFUtilities.*;

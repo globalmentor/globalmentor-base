@@ -18,9 +18,10 @@ package com.globalmentor.io;
 
 import java.io.*;
 
-import com.garretwilson.text.CharacterEncoding;
-import static com.garretwilson.text.CharacterEncoding.*;
+import com.globalmentor.text.CharacterEncoding;
+
 import static com.globalmentor.io.InputStreams.*;
+import static com.globalmentor.text.CharacterEncoding.*;
 
 /**A reader that attempts to autodetect the character encoding of an input stream from the beginning byte order mark (BOM).
 <p>The input stream must be at its beginning and must support marking and resetting.</p>

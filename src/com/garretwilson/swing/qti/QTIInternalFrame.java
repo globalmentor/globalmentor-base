@@ -11,9 +11,9 @@ import javax.swing.event.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.text.xml.XMLEditorKit;
-import com.garretwilson.text.CharacterEncoding; //G***move
 import com.garretwilson.assess.qti.*;
-import com.garretwilson.text.xml.stylesheets.css.XMLCSSProcessor; //G***this goes somewhere else
+import com.globalmentor.text.CharacterEncoding;
+import com.globalmentor.text.xml.stylesheets.css.XMLCSSProcessor;
 import com.globalmentor.util.*;
 
 /**An internal frame for editing lists of questions. Contains the internal

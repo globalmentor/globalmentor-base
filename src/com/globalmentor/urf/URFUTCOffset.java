@@ -3,8 +3,8 @@ package com.globalmentor.urf;
 import java.util.TimeZone;
 
 import static com.garretwilson.iso.ISO8601.*;
-import com.garretwilson.text.*;
 import com.globalmentor.java.Integers;
+import com.globalmentor.text.*;
 
 import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.util.TimeZones.*;

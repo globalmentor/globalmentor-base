@@ -22,8 +22,8 @@ import static com.globalmentor.java.Objects.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.garretwilson.text.ArgumentSyntaxException;
 import com.globalmentor.java.Integers;
+import com.globalmentor.text.ArgumentSyntaxException;
 
 /**Encapsulation of a United States Social Security Number (SSN).
 <p>A Social Security Number is a nine-digit number composed a of three groups:</p>

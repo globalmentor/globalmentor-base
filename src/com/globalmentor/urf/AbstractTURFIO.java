@@ -5,7 +5,7 @@ import java.net.*;
 
 import com.globalmentor.io.BOMInputStreamReader;
 
-import static com.garretwilson.text.CharacterEncoding.*;
+import static com.globalmentor.text.CharacterEncoding.*;
 
 /**Base functionality for loading and saving information stored in TURF.
 <p>Copyright © 2007 GlobalMentor, Inc.

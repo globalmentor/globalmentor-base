@@ -21,7 +21,7 @@ import java.io.*;
 import static java.lang.System.*;
 import java.util.*;
 
-import com.garretwilson.text.CharacterEncoding;
+import com.globalmentor.text.CharacterEncoding;
 
 /**Class to manipulate input streams.
 @author Garret Wilson

@@ -10,8 +10,8 @@ import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.rdf.xmlschema.BooleanLiteral;
 import com.garretwilson.swing.*;
-import com.garretwilson.text.xml.schema.XMLSchemaConstants;
 import com.globalmentor.java.Objects;
+import com.globalmentor.text.xml.schema.XMLSchemaConstants;
 import com.globalmentor.util.Debug;
 
 /**Panel for editing the answer of a MAQRO question.

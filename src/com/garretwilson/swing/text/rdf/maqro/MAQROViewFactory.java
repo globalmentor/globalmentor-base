@@ -20,10 +20,10 @@ import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
 import com.garretwilson.swing.BasicOptionPane;
 import com.garretwilson.swing.XMLTextPane;
 import com.garretwilson.swing.text.xml.*;
-import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.text.xml.xhtml.XHTML;
 import com.globalmentor.io.ContentTypes;
 import com.globalmentor.mentoract.activity.maqro.MAQROActivityEngine;
+import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.xhtml.XHTML;
 import com.globalmentor.util.Debug;
 
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;

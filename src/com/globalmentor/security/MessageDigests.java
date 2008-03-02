@@ -19,10 +19,10 @@ package com.globalmentor.security;
 import java.io.UnsupportedEncodingException;
 import java.security.*;
 
-import com.garretwilson.text.CharacterEncoding;
-import static com.garretwilson.text.CharacterEncoding.*;
+import com.globalmentor.text.CharacterEncoding;
 
 import static com.globalmentor.java.Characters.*;
+import static com.globalmentor.text.CharacterEncoding.*;
 
 /**Utility methods for working with message digests.
 @author Garret Wilson

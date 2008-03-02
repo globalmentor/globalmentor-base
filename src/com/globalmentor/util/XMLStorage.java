@@ -22,15 +22,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.lang.InstantiationException;
 import java.lang.reflect.*;
-import com.garretwilson.text.xml.XMLDOMImplementation;
-import com.garretwilson.text.xml.XMLProcessor;
-import com.garretwilson.text.xml.XMLSerializer;
-import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.text.xml.xpath.XPath;
 import com.globalmentor.io.Files;
 import com.globalmentor.java.Classes;
 import com.globalmentor.java.Integers;
 import com.globalmentor.java.Java;
+import com.globalmentor.text.xml.XMLDOMImplementation;
+import com.globalmentor.text.xml.XMLProcessor;
+import com.globalmentor.text.xml.XMLSerializer;
+import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.xpath.XPath;
 
 import org.w3c.dom.*;
 

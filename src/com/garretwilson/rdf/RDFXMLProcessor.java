@@ -12,9 +12,9 @@ import static com.garretwilson.rdf.RDFXMLConstants.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 
-import com.garretwilson.text.xml.XMLBase;
-import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.text.xml.XML;
+import com.globalmentor.text.xml.XML;
+import com.globalmentor.text.xml.XMLBase;
+import com.globalmentor.text.xml.XMLUtilities;
 import com.globalmentor.util.Debug;
 import com.globalmentor.util.Locales;
 

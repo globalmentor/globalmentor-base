@@ -5,7 +5,7 @@ import java.net.*;
 
 import javax.xml.parsers.*;
 
-import com.garretwilson.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XMLUtilities;
 import com.globalmentor.util.DataException;
 
 import org.w3c.dom.Document;

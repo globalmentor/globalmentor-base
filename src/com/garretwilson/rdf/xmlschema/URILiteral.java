@@ -5,8 +5,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import com.garretwilson.rdf.*;
-import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.text.xml.schema.XMLSchemaConstants.*;
 
 /**An RDF literal that represents an XML Schema URI.
 @author Garret Wilson

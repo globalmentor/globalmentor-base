@@ -6,16 +6,16 @@ import java.util.*;
 
 import javax.mail.internet.ContentType;
 import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.text.CharacterEncoding.*;
 import static com.globalmentor.io.FileConstants.EXTENSION_SEPARATOR;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.text.CharacterEncoding.*;
 
-import com.garretwilson.text.FormatUtilities;
-import com.garretwilson.text.SyntaxException;
-import com.garretwilson.text.unicode.UnicodeCharacter;
 import com.globalmentor.io.*;
 import com.globalmentor.java.Integers;
+import com.globalmentor.text.FormatUtilities;
+import com.globalmentor.text.SyntaxException;
+import com.globalmentor.text.unicode.UnicodeCharacter;
 import com.globalmentor.util.*;
 
 /**Various URI manipulating functions for working with URIs as defined in

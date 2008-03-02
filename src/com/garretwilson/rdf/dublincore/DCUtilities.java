@@ -3,8 +3,8 @@ package com.garretwilson.rdf.dublincore;
 import java.text.*;
 import java.util.*;
 
-import com.garretwilson.text.*;
 import com.garretwilson.rdf.*;
+import com.globalmentor.text.*;
 import com.globalmentor.util.*;
 
 /**Utilities for working with Dublin Core stored in RDF.

@@ -18,8 +18,8 @@ package com.globalmentor.java;
 
 import java.io.UnsupportedEncodingException;
 
-import static com.garretwilson.text.CharacterEncoding.*;
 import static com.globalmentor.java.Characters.*;
+import static com.globalmentor.text.CharacterEncoding.*;
 
 import com.globalmentor.util.Arrays;
 

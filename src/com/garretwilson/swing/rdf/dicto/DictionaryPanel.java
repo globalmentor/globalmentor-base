@@ -9,9 +9,6 @@ import javax.mail.internet.ContentType;
 import javax.swing.*;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
-import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.text.xml.xhtml.*;
-import com.garretwilson.text.xml.xlink.*;
 import com.garretwilson.model.ResourceModel;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dicto.*;
@@ -25,6 +22,10 @@ import com.globalmentor.java.Characters;
 import com.globalmentor.marmot.resource.dicto.*;	//TODO GlobalMentor-specific items up to some other class if possible
 import com.globalmentor.mentoract.activity.maqro.MAQROActivityEngine;
 import com.globalmentor.mentoract.activity.maqro.MAQROActivityPanel;
+import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.xhtml.*;
+import com.globalmentor.text.xml.xlink.*;
+
 import org.w3c.dom.*;
 
 /**A panel to view and edit a Dictionary Ontology (Dicto) dictionary.

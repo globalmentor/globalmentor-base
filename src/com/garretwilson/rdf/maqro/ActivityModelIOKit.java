@@ -5,10 +5,10 @@ import java.net.*;
 import com.garretwilson.model.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.maqro.MAQROConstants.*;
-import com.garretwilson.text.xml.XMLDOMImplementation;
-import com.garretwilson.text.xml.XMLProcessor;
-import com.garretwilson.text.xml.XMLSerializer;
 import com.globalmentor.io.*;
+import com.globalmentor.text.xml.XMLDOMImplementation;
+import com.globalmentor.text.xml.XMLProcessor;
+import com.globalmentor.text.xml.XMLSerializer;
 
 import org.w3c.dom.Document;
 

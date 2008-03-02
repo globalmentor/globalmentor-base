@@ -13,7 +13,6 @@ import javax.mail.internet.ContentType;
 import com.garretwilson.net.*;
 import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.net.URIs.*;
-import com.garretwilson.text.RegularExpression;
 
 import com.globalmentor.java.*;
 
@@ -25,6 +24,7 @@ import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.util.Collections.*;
 import static com.globalmentor.util.Locales.*;
 
+import com.globalmentor.text.RegularExpression;
 import com.globalmentor.urf.content.*;
 import com.globalmentor.urf.select.Select;
 import com.globalmentor.util.*;

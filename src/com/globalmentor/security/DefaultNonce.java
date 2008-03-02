@@ -20,10 +20,10 @@ import java.util.Date;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-import static com.garretwilson.text.FormatUtilities.*;
+import static com.globalmentor.text.FormatUtilities.*;
 
-import com.garretwilson.text.SyntaxException;
 import com.globalmentor.java.CharSequences;
+import com.globalmentor.text.SyntaxException;
 
 /**A nonce that uses the current time, the date, a secret key, and a random number.
 This implementation stores information in the form:

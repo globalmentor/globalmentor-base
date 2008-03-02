@@ -16,7 +16,7 @@
 
 package com.globalmentor.java;
 
-import com.garretwilson.text.FormatUtilities;
+import com.globalmentor.text.FormatUtilities;
 
 /**Utilities for manipulating bytes.
 @author Garret Wilson

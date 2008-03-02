@@ -6,13 +6,14 @@ import java.util.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
-import com.garretwilson.text.xml.XML;
-import com.garretwilson.text.xml.XMLNamespacePrefixManager;
-import com.garretwilson.text.xml.XMLNamespaceProcessor;
-import static com.garretwilson.text.xml.XMLUtilities.*;
 import static com.globalmentor.java.Objects.*;
 
+import com.globalmentor.text.xml.XML;
+import com.globalmentor.text.xml.XMLNamespacePrefixManager;
+import com.globalmentor.text.xml.XMLNamespaceProcessor;
 import com.globalmentor.util.*;
+
+import static com.globalmentor.text.xml.XMLUtilities.*;
 import static com.globalmentor.util.Collections.*;
 
 import org.w3c.dom.*;

@@ -5,12 +5,13 @@ import java.util.Locale;
 
 import com.garretwilson.net.URIConstants;
 import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.text.directory.vcard.VCardConstants.*;
-import com.garretwilson.text.directory.vcard.Name;
+
+import com.globalmentor.text.directory.vcard.Name;
 import com.globalmentor.urf.*;
 
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.text.directory.vcard.VCardConstants.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.dcmi.DCMI.*;
 

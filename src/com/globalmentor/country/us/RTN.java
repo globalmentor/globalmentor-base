@@ -22,8 +22,8 @@ import static com.globalmentor.java.Objects.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.garretwilson.text.ArgumentSyntaxException;
 import com.globalmentor.java.Integers;
+import com.globalmentor.text.ArgumentSyntaxException;
 
 /**An ABA Routing Transit Number (RTN) that identifies financial institutions within the United States.
 <p>A RTN is is a nine-digit number.</p>

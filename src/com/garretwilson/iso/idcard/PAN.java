@@ -4,10 +4,10 @@ import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.garretwilson.math.Luhn;
-import com.garretwilson.text.ArgumentSyntaxException;
 import static com.globalmentor.java.Characters.*;
 import com.globalmentor.java.Integers;
 import com.globalmentor.java.Objects;
+import com.globalmentor.text.ArgumentSyntaxException;
 
 /**Primary Account Number (PAN) of an identification card as defined in ISO/IEC 7812-1:2000(E),
 	"Identification cards � Identification of issuers � Part 1: Numbering system".

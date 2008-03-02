@@ -6,15 +6,15 @@ import java.util.List;
 
 import com.garretwilson.net.*;
 import static com.garretwilson.rdf.RDFConstants.*;
-import com.garretwilson.text.xml.XML;
-import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.text.xml.xlink.XLinkConstants;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.xmlschema.URILiteral;
 
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.xpackage.XPackageConstants.*;
 import com.globalmentor.marmot.Marmot;
+import com.globalmentor.text.xml.XML;
+import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.xlink.XLinkConstants;
 import com.globalmentor.util.Debug;
 
 import org.w3c.dom.*;

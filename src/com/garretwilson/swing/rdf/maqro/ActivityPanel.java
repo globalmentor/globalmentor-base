@@ -9,8 +9,6 @@ import javax.mail.internet.ContentType;
 import javax.swing.*;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
-import com.garretwilson.text.xml.XMLUtilities;
-import com.garretwilson.text.xml.xhtml.XHTML;
 import com.garretwilson.model.ResourceModel;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.DCUtilities;
@@ -21,6 +19,8 @@ import static com.globalmentor.util.UUIDs.*;
 
 import com.globalmentor.io.ContentTypeConstants;
 import com.globalmentor.mentoract.activity.maqro.*;
+import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.xhtml.XHTML;
 
 import org.w3c.dom.*;
 

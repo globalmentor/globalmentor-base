@@ -8,8 +8,8 @@ import static java.util.Calendar.*;
 
 import com.garretwilson.iso.ISO8601;
 import static com.garretwilson.iso.ISO8601.*;
-import com.garretwilson.text.SyntaxException;
 import com.globalmentor.io.ParseIOException;
+import com.globalmentor.text.SyntaxException;
 
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.java.Integers.*;

@@ -2,7 +2,7 @@ package com.globalmentor.urf;
 
 import java.util.Date;
 
-import com.garretwilson.text.*;
+import com.globalmentor.text.*;
 
 /**The class representing an <code>urf.DateTime</code> type.
 If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally in terms of UTC.

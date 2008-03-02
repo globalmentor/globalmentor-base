@@ -1,8 +1,8 @@
 package com.garretwilson.rdf.xmlschema;
 
 import com.garretwilson.rdf.*;
-import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.text.xml.schema.XMLSchemaConstants.*;
 
 /**An RDF literal that represents an XML Schema 32-bit float.
 @author Garret Wilson

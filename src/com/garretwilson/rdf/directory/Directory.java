@@ -6,9 +6,9 @@ import java.util.*;
 import com.garretwilson.rdf.*;
 
 import static com.garretwilson.rdf.rdfs.RDFSUtilities.*;
-import static com.garretwilson.text.directory.DirectoryConstants.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.text.directory.DirectoryConstants.*;
 import static com.globalmentor.util.Locales.*;
 
 import com.globalmentor.util.LocaledText;

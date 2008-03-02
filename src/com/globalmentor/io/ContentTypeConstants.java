@@ -50,7 +50,6 @@ public class ContentTypeConstants	//TODO transfer these constants to specific re
 	public final static String DIRECTORY_SUBTYPE="directory";
 	public final static String HTML_SUBTYPE="html";
 	public final static String JAVASCRIPT_SUBTYPE="javascript";
-	public final static String PLAIN_SUBTYPE="plain";
 	/**A <code>text/uri-list</code> content type as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>, "URI Resolution Services Necessary for URN Resolution".*/
 	public final static String URI_LIST_SUBTYPE="uri-list";
 	/**The wildcard subtype, matching any subtype.*/

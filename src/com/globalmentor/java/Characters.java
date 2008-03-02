@@ -18,8 +18,8 @@ package com.globalmentor.java;
 
 import java.io.*;
 
-import com.garretwilson.text.CharacterEncoding;
-import com.garretwilson.text.RomanNumeralUtilities;
+import com.globalmentor.text.CharacterEncoding;
+import com.globalmentor.text.RomanNumeralUtilities;
 
 /**Various utilities and constants for interacting with characters.
 In most cases, names of constants are derived from Unicode names.

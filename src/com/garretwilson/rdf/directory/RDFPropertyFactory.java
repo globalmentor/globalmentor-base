@@ -1,7 +1,7 @@
 package com.garretwilson.rdf.directory;
 
 import com.garretwilson.rdf.*;
-import com.garretwilson.text.directory.ContentLine;
+import com.globalmentor.text.directory.ContentLine;
 
 /**Class that can create an RDF property resource to represent a content lines
 	of a directory of type <code>text/directory</code> as

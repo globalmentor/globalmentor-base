@@ -17,8 +17,8 @@ import com.garretwilson.rdf.xmlschema.URILiteral;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.globalmentor.java.Objects.*;
 
-import com.garretwilson.text.W3CDateFormat;
-import com.garretwilson.text.xml.XMLUtilities;
+import com.globalmentor.text.W3CDateFormat;
+import com.globalmentor.text.xml.XMLUtilities;
 
 import org.w3c.dom.*;
 

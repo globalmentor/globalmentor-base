@@ -1,7 +1,9 @@
 package com.garretwilson.rdf.xmlschema;
 
 import com.garretwilson.rdf.*;
-import static com.garretwilson.text.xml.schema.XMLSchemaConstants.*;
+
+import static com.globalmentor.text.xml.schema.XMLSchemaConstants.*;
+
 import com.globalmentor.java.Objects;
 import com.globalmentor.util.Base64;
 
