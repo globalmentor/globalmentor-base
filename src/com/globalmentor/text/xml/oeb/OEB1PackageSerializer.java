@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.text.xml.oeb;
 
 import java.io.*;
@@ -9,9 +25,10 @@ import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.globalmentor.io.Charsets.*;
 
-import com.garretwilson.rdf.dublincore.DCConstants;
+import static com.garretwilson.rdf.dublincore.DCConstants.*;
 import com.garretwilson.rdf.xpackage.XPackageUtilities;
-import com.globalmentor.text.xml.XML;
+
+import static com.globalmentor.text.xml.oeb.OEB.*;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.text.xml.XMLUtilities;
 import com.globalmentor.util.*;
@@ -21,7 +38,7 @@ import org.w3c.dom.*;
 /**Serializes an OEB 1.x publication package.
 @author Garret Wilson
 */
-public class OEB1PackageSerializer implements OEBConstants, DCConstants
+public class OEB1PackageSerializer
 {
 
 	/**This class cannot be publicly instantiated.*/
@@ -55,7 +72,7 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 		final Document packageDocument=generatePackage(publication); //generate an XML document representing the publication package
 		final Properties serializeOptions=new Properties(); //create properties for the serialization options
 		PropertiesUtilities.setProperty(serializeOptions, XMLSerializer.FORMAT_OUTPUT_OPTION, true);  //show that we should format the output
-		new XMLSerializer(serializeOptions).serialize(packageDocument, outputStream, charset);	//serialize the publication as a formatted XML document to the output stream G***do we really want to create the serializer each time?
+		new XMLSerializer(serializeOptions).serialize(packageDocument, outputStream, charset);	//serialize the publication as a formatted XML document to the output stream TODO do we really want to create the serializer each time?
 	}
 
 	/**Creates an XML document representing an OEB publication package.
@@ -64,7 +81,7 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 	*/
 	public static Document generatePackage(final OEBPublication publication)
 	{
-		final Document document=OEBUtilities.createDefaultOEB1Package(); //create a package XML document
+		final Document document=OEB.createOEB1Package(); //create a package XML document
 		//package
 		final Element packageElement=XMLUtilities.replaceDocumentElement(document, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_PACKAGE); //create the package element
 		  //package/metadata
@@ -72,31 +89,26 @@ public class OEB1PackageSerializer implements OEBConstants, DCConstants
 			  //package/metadata/dc-metadata
 		final Element dcMetadataElement=XMLUtilities.appendElementNS(metadataElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA_DC_METADATA); //create the dc-metadata element
 			  //add the attribute, xmlns:dc="http://purl.org/dc/elements/1.0/"
-		dcMetadataElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, DCMI_ELEMENTS_NAMESPACE_PREFIX), DCMI10_ELEMENTS_NAMESPACE_URI.toString());
+		dcMetadataElement.setAttributeNS(XMLUtilities.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLUtilities.XMLNS_NAMESPACE_PREFIX, DCMI_ELEMENTS_NAMESPACE_PREFIX), DCMI10_ELEMENTS_NAMESPACE_URI.toString());
 			  //add the attribute, xmlns:oebpackage="http://openebook.org/namespaces/oeb-package/1.0/"
-		dcMetadataElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, OEB1_PACKAGE_NAMESPACE_PREFIX), OEB1_PACKAGE_NAMESPACE_URI.toString());
+		dcMetadataElement.setAttributeNS(XMLUtilities.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLUtilities.XMLNS_NAMESPACE_PREFIX, OEB1_PACKAGE_NAMESPACE_PREFIX), OEB1_PACKAGE_NAMESPACE_URI.toString());
 		final Iterator propertyIterator=publication.getPropertyIterator();  //get an iterator to the publication's properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
 			final NameValuePair property=(NameValuePair)propertyIterator.next();  //get the property
 			final RDFResource propertyResource=(RDFResource)property.getName();  //get the property resource
-Debug.trace("looking at publication property: ", propertyResource); //G***del
 			final URI propertyNamespaceURI=getNamespaceURI(propertyResource.getURI());	//get the namespace of hte property
 				//TODO check for null in both the namespace URI and local name
-Debug.trace("property namespace URI: ", propertyNamespaceURI); //G***del
 				//if this is a Dublin Core property
 			if(DCMI11_ELEMENTS_NAMESPACE_URI.equals(propertyNamespaceURI)
 				  || DCMI10_ELEMENTS_NAMESPACE_URI.equals(propertyNamespaceURI))
 			{
 				final String propertyLocalName=getLocalName(propertyResource.getURI()); //get the  local name of the property
-Debug.trace("property local name: ", propertyLocalName); //G***del
 				final Object propertyValueObject=property.getValue(); //get the property value
 				if(propertyValueObject instanceof RDFLiteral)  //if the value is a literal
 				{
 Debug.trace("property value is a literal"); //G**8del
 					final String propertyValue=((RDFLiteral)propertyValueObject).getLexicalForm(); //get the literal value of the property
-Debug.trace("property value: ", propertyValue); //G***del
-//G***del					Element dcElement=null; //we'll try to create an element for this Dublin Core property
 					//<package><metadata><dc-metadata><dc:Title>
 					if(DC_TITLE_PROPERTY_NAME.equals(propertyLocalName))
 					{
@@ -160,9 +172,9 @@ Debug.trace("property value: ", propertyValue); //G***del
 						if(!packageElement.hasAttributeNS(null, PKG_ELEMENT_PACKAGE_ATTRIBUTE_UNIQUE_IDENTIFIER))
 						{
 								//add the identifier value to the package element
-							packageElement.setAttributeNS(null, PKG_ELEMENT_PACKAGE_ATTRIBUTE_UNIQUE_IDENTIFIER, "packageID");  //G***use a constant
+							packageElement.setAttributeNS(null, PKG_ELEMENT_PACKAGE_ATTRIBUTE_UNIQUE_IDENTIFIER, "packageID");  //TODO use a constant
 						    //add the same identifier value to the dc:Identifier element
-							dcIdentifierElement.setAttributeNS(null, PKG_METADATA_DC_METADATA_DC_IDENTIFIER_ATTRIBUTE_ID, "packageID"); //G***use a constant
+							dcIdentifierElement.setAttributeNS(null, PKG_METADATA_DC_METADATA_DC_IDENTIFIER_ATTRIBUTE_ID, "packageID"); //TODO use a constant
 						}
 					}
 					//<package><metadata><dc-metadata><dc:Source>
@@ -251,7 +263,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 		if(href!=null)  //if the item has an href
 		{
 		  itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_HREF, href);		  //set the href
-//G***maybe assert that there is a media type, here
+//TODO maybe assert that there is a media type, here
 		}
 /*TODO fix
 		final ContentType mediaType=Marmot.getMediaType(oebItem);  //get the item's media type
@@ -260,7 +272,7 @@ Debug.trace("property value: ", propertyValue); //G***del
 		  itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE, mediaType.toString());		  //set the media type
 		}
 */
-/**G***fix
+/*TODO fix
 		final OEBItem fallbackItem=oebItem.getFallback(); //get the fallback item
 		if(fallbackItem!=null)  //if there is a fallback item
 			itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_FALLBACK, fallbackItem.getID()); //set the fallback attribute
@@ -318,13 +330,10 @@ Debug.trace("property value: ", propertyValue); //G***del
 				if(!XMLUtilities.isNameChar(stringBuffer.charAt(i)))  //if this is not a name character
 				{
 					final String prefix;  //we'll find out the prefix differently, depending on if the divider is a hash symbol
-					if(stringBuffer.charAt(i)=='#' && i>0) //if this is a fragment character that isn't the first characterG***use a constant
+					if(stringBuffer.charAt(i)=='#' && i>0) //if this is a fragment character that isn't the first characterTODO use a constant
 						prefix=stringBuffer.substring(0, i);  //the prefix is everything before the fragment character
 					else  //if this is some other sort of non-name character
 						prefix=stringBuffer.substring(0, i+1);  //use everything up to and including the character as a prefix
-//G***del Debug.trace("prefix: ", prefix);
-//G***del Debug.trace("publication URI: ", publicationURI);
-
 				  if(prefix.equals(publicationURI.toString())) //if the prefix is the publication URI
 						stringBuffer.delete(0, i+1);  //delete the entire prefix, including this character
 					break;  //stop looking for a non-nam character
@@ -335,47 +344,18 @@ Debug.trace("property value: ", propertyValue); //G***del
 			{
 				if(!XMLUtilities.isNameChar(stringBuffer.charAt(i)))  //if this is not a name character
 				{
-					stringBuffer.setCharAt(i, '_'); //replace the character with an underscore G***use a constant
+					stringBuffer.setCharAt(i, '_'); //replace the character with an underscore TODO use a constant
 				}
 			}
 				//if the first character isn't an XML character
 			if(stringBuffer.length()>0 && !XMLUtilities.isNameFirstChar(stringBuffer.charAt(0)))
 			{
-				stringBuffer.insert(0, 'x');  //prepend the string with 'x' G***use a constant
+				stringBuffer.insert(0, 'x');  //prepend the string with 'x' TODO use a constant
 			}
 			return stringBuffer.toString(); //return the string we manipulated
 		}
 		else  //if the identifier is already a name
 			return identifier;  //return the identifier as is
 	}
-
-	/**Creates an XML name by replacing every non-name character with an underscore
-		('_') character. If the first character of the string cannot begin an XML
-		name, it will be replaced with an 'x'. An empty string will receive
-		an 'x' as well.
-	@param string The string to be changed to an XML name.
-	@return The string modified to be an XML name..
-	*/
-/*G***del
-	static public String createName(final String string)
-	{
-		if(isName(string))  //if the string is already a name (we'll check all the characters, assuming that most of the time the strings will already be valid names, making this more efficient)
-		  return string;  //return the string, because it doesn't need to be converted
-		else  //if the string isn't a name already (we'll check all the characters, assuming that most of the time the strings will already be valid names, making this more efficient)
-		{
-			final StringBuffer stringBuffer=new StringBuffer(string); //create a string buffer from the string, so that we can modify it as necessary
-			if(stringBuffer.length()==0)  //if the string isn't long enough to be a name
-				stringBuffer.append(REPLACEMENT_FIRST_CHAR);  //put an 'x' in the first position
-			else if(!isNameFirstChar(stringBuffer.charAt(0))) //if the string does have at least one character, but it's not a valid first character for an XML name
-				stringBuffer.setCharAt(0, REPLACEMENT_FIRST_CHAR);  //replace the first character with an 'x'
-			for(int i=1; i<string.length(); ++i)  //look at each character in the string, except theh first (which we've already checked)
-			{
-				if(!isNameChar(stringBuffer.charAt(i)))  //if this character isn't a name character
-					stringBuffer.setCharAt(i, REPLACEMENT_CHAR);  //replace the character with an underscore
-			}
-			return stringBuffer.toString(); //return the string we constructed
-		}
-	}
-*/
 
 }

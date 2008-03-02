@@ -29,7 +29,7 @@ import com.globalmentor.util.NameValuePair;
 /**Utilities for formatting text.
 @author Garret Wilson
 */
-public class FormatUtilities
+public class TextFormatter
 {
 
 	/**Appends the string representations of the given objects separated by commas.

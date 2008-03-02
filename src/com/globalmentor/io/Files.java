@@ -27,7 +27,8 @@ import javax.mail.internet.ContentType;
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
 import com.globalmentor.java.*;
-import com.globalmentor.text.TextUtilities;
+import com.globalmentor.text.Text;
+import com.globalmentor.text.xml.oeb.OEB;
 import com.globalmentor.text.xml.xhtml.XHTML;
 import com.globalmentor.urf.*;
 
@@ -75,8 +76,8 @@ public class Files
 		tempFileExtensionContentTypeMap.put(MPEG_EXTENSION, new ContentType(ContentTypes.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(MPG_EXTENSION, new ContentType(ContentTypes.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(OGG_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, OGG_SUBTYPE, null));	//application/ogg (RFC 3534)
-		tempFileExtensionContentTypeMap.put(OEB_ZIP_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_OEB_PUBLICATION_ZIP_SUBTYPE, null));	//oebzip
-		tempFileExtensionContentTypeMap.put(OEB1_PACKAGE_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_OEB1_PACKAGE_XML_SUBTYPE, null));	//opf
+		tempFileExtensionContentTypeMap.put(OEB_ZIP_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, OEB.X_OEB_PUBLICATION_ZIP_SUBTYPE, null));	//oebzip
+		tempFileExtensionContentTypeMap.put(OEB1_PACKAGE_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, OEB.X_OEB1_PACKAGE_XML_SUBTYPE, null));	//opf
 		tempFileExtensionContentTypeMap.put(PDF_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, PDF_SUBTYPE, null));	//pdf
 		tempFileExtensionContentTypeMap.put(PNG_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, PNG_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(QRO_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_QRO_RDF_XML_SUBTYPE, null));
@@ -85,7 +86,7 @@ public class Files
 		tempFileExtensionContentTypeMap.put(TIF_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(TIFF_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(TURF.TURF_NAME_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, TURF_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(TXT_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, TextUtilities.PLAIN_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(TXT_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, Text.PLAIN_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, DIRECTORY_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(WAV_EXTENSION, new ContentType(ContentTypes.AUDIO_PRIMARY_TYPE, X_WAV_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(XEB_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_SUBTYPE, null));

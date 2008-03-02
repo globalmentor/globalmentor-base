@@ -12,7 +12,6 @@ import static com.garretwilson.rdf.RDFXMLConstants.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 
-import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.XMLBase;
 import com.globalmentor.text.xml.XMLUtilities;
 import com.globalmentor.util.Debug;
@@ -356,12 +355,12 @@ Debug.trace("processing attribute from local name: ", attributeLocalName);
 Debug.trace("processing attribute from value: ", attributeValue);
 */
 				//ignore attributes with the "xmlns" prefix or in the xmlns namespace
-			if(XML.XMLNS_NAMESPACE_PREFIX.equals(attributePrefix) || XML.XMLNS_NAMESPACE_URI.equals(attributeNamespaceURI))
+			if(XMLUtilities.XMLNS_NAMESPACE_PREFIX.equals(attributePrefix) || XMLUtilities.XMLNS_NAMESPACE_URI.equals(attributeNamespaceURI))
 			{
 				continue;
 			}
 				//process attributes with the "xml" prefix (or in the xml namespace) specially
-			else if(XML.XML_NAMESPACE_PREFIX.equals(attributePrefix) || XML.XML_NAMESPACE_URI.equals(attributeNamespaceURI))
+			else if(XMLUtilities.XML_NAMESPACE_PREFIX.equals(attributePrefix) || XMLUtilities.XML_NAMESPACE_URI.equals(attributeNamespaceURI))
 			{
 					//TODO add support for xml:lang
 				continue;
@@ -642,7 +641,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			else	//if a datatype is not present, this is a plain literal
 			{
 					//get the xml:lang language tag, if there is one
-				final String languageTag=propertyNode instanceof Element ? XMLUtilities.getDefinedAttributeNS((Element)propertyNode, XML.XML_NAMESPACE_URI.toString(), XML.ATTRIBUTE_LANG) : null;
+				final String languageTag=propertyNode instanceof Element ? XMLUtilities.getDefinedAttributeNS((Element)propertyNode, XMLUtilities.XML_NAMESPACE_URI.toString(), XMLUtilities.ATTRIBUTE_LANG) : null;
 					//create a locale for the language if there is a language tag
 				final Locale languageLocale=languageTag!=null ? Locales.createLocale(languageTag) : null;
 				return new RDFPlainLiteral(childText, languageLocale);  //create a literal from the element's text, noting the specified language if any

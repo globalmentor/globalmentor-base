@@ -1,32 +1,52 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.text.xml.oeb.css;
 
 import java.lang.ref.*;
 import java.util.*;
 
-import static com.globalmentor.text.xml.oeb.OEBConstants.*;
+import static com.globalmentor.io.ContentTypes.*;
+
+import static com.globalmentor.text.xml.oeb.OEB.*;
 import static com.globalmentor.text.xml.stylesheets.css.XMLCSSConstants.*;
 
-
-/**Utilities for working with OEB CSS. G***should this go inside the com.garretwilson.text.xml.oeb package? or com.garretwilson.text.xml.stylesheets.css.oeb?
+/**Utilities for working with OEB CSS.
 @author Garret Wilson
 */
-public class OEBCSSUtilities
+public class OEBCSS
 {
 
+	/**An OEB 1.0 CSS document.*/
+	public final static String X_OEB1_CSS_SUBTYPE=SUBTYPE_EXTENSION_PREFIX+"oeb1-css";
+
 	/**A reference to a set containing the OEB 1.0 CSS property names.*/
-	private static Reference oeb1CSSPropertySetReference=null;
+	private static Reference<Set<String>> oeb1CSSPropertySetReference=null;
 
 	/**Retrieves a set containing CSS property names. The set is cached using soft
 		references so that it can be garbage collected if  need be.
 	@return A read-only set containing the OEB 1.0 CSS property names.
 	*/
-	protected static Set getOEB1CSSPropertySet()
+	protected static Set<String> getOEB1CSSPropertySet()
 	{
 		//get the set currently being referenced, if we have a reference
-		Set oeb1CSSPropertySet=oeb1CSSPropertySetReference!=null ? (Set)oeb1CSSPropertySetReference.get() : null;
+		Set<String> oeb1CSSPropertySet=oeb1CSSPropertySetReference!=null ? oeb1CSSPropertySetReference.get() : null;
 		if(oeb1CSSPropertySet==null)  //if we don't have a set (we never had one, or it's been garbage collected)
 		{
-			oeb1CSSPropertySet=new HashSet(); //create a new hash set
+			oeb1CSSPropertySet=new HashSet<String>(); //create a new hash set
 			oeb1CSSPropertySet.add(CSS_PROP_BACKGROUND_COLOR);  //add the supported OEB CSS properties
 			oeb1CSSPropertySet.add(CSS_PROP_BORDER);
 			oeb1CSSPropertySet.add(CSS_PROP_CLEAR);
@@ -53,7 +73,7 @@ public class OEBCSSUtilities
 			oeb1CSSPropertySet.add(CSS_PROP_TEXT_DECORATION);
 			oeb1CSSPropertySet.add(OEB_CSS_PROP_OEB_COLUMN_NUMBER);
 			oeb1CSSPropertySet=Collections.unmodifiableSet(oeb1CSSPropertySet); //make the set read-only
-			oeb1CSSPropertySetReference=new SoftReference(oeb1CSSPropertySet);  //create a soft reference to the property set so that it can be used again
+			oeb1CSSPropertySetReference=new SoftReference<Set<String>>(oeb1CSSPropertySet);  //create a soft reference to the property set so that it can be used again
 		}
 		return oeb1CSSPropertySet;  //return the property set we either had already or that we created
 	}

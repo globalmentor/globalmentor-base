@@ -20,8 +20,8 @@ import com.garretwilson.rdf.rdfs.RDFSConstants;
 import com.garretwilson.rdf.version.VersionConstants;
 import com.garretwilson.rdf.xeb.XEBConstants;
 import com.garretwilson.rdf.xpackage.XPackageConstants;
-import com.globalmentor.text.xml.XML;
-import com.globalmentor.text.xml.oeb.OEBConstants;
+import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.oeb.OEB;
 import com.globalmentor.text.xml.schema.XMLSchemaConstants;
 import com.globalmentor.text.xml.xhtml.XHTML;
 import com.globalmentor.text.xml.xlink.XLinkConstants;
@@ -66,7 +66,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		tempNamespaceURILabelMap.put(DCConstants.DCMI11_ELEMENTS_NAMESPACE_URI, DCConstants.DCMI_ELEMENTS_NAMESPACE_PREFIX); //Dublin Core
 		tempNamespaceURILabelMap.put(FOAF.FOAF_NAMESPACE_URI, FOAF.FOAF_NAMESPACE_PREFIX); //FOAF
 		tempNamespaceURILabelMap.put(MAQROConstants.MAQRO_NAMESPACE_URI, MAQROConstants.MAQRO_NAMESPACE_PREFIX); //MAQRO
-		tempNamespaceURILabelMap.put(OEBConstants.OEB1_DOCUMENT_NAMESPACE_URI, OEBConstants.OEB1_DOCUMENT_NAMESPACE_PREFIX); //OEB 1
+		tempNamespaceURILabelMap.put(OEB.OEB1_DOCUMENT_NAMESPACE_URI, OEB.OEB1_DOCUMENT_NAMESPACE_PREFIX); //OEB 1
 		tempNamespaceURILabelMap.put(URI.create("http://globalmentor.com/namespaces/marmot#"), "marmot"); //Marmot TODO link to Marmot constants when Marmot is included in normal libraries
 		tempNamespaceURILabelMap.put(URI.create("http://marmox.net/namespaces/content#"), "content"); //Marmox content
 //TODO del		tempNamespaceURIPrefixMap.put(PLOOP.PLOOP_PROPERTY_NAMESPACE_URI, PLOOP.PLOOP_PROPERTY_NAMESPACE_PREFIX); //PLOOP property
@@ -79,8 +79,8 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		tempNamespaceURILabelMap.put(XMLSchemaConstants.XML_SCHEMA_NAMESPACE_URI, XMLSchemaConstants.XML_SCHEMA_NAMESPACE_PREFIX); //XML Schema
 		tempNamespaceURILabelMap.put(XHTML.XHTML_NAMESPACE_URI, XHTML.XHTML_NAMESPACE_PREFIX); //XHTML
 		tempNamespaceURILabelMap.put(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.XLINK_NAMESPACE_PREFIX); //XLink
-		tempNamespaceURILabelMap.put(XML.XML_NAMESPACE_URI, XML.XML_NAMESPACE_PREFIX); //XML
-		tempNamespaceURILabelMap.put(XML.XMLNS_NAMESPACE_URI, XML.XMLNS_NAMESPACE_PREFIX); //XML namespaces
+		tempNamespaceURILabelMap.put(XMLUtilities.XML_NAMESPACE_URI, XMLUtilities.XML_NAMESPACE_PREFIX); //XML
+		tempNamespaceURILabelMap.put(XMLUtilities.XMLNS_NAMESPACE_URI, XMLUtilities.XMLNS_NAMESPACE_PREFIX); //XML namespaces
 		tempNamespaceURILabelMap.put(XEBConstants.XEB_NAMESPACE_URI, XEBConstants.XEB_NAMESPACE_PREFIX); //XEbook
 		tempNamespaceURILabelMap.put(XPackageConstants.XPACKAGE_NAMESPACE_URI, XPackageConstants.XPACKAGE_NAMESPACE_PREFIX); //XPackage
 		tempNamespaceURILabelMap.put(XPackageConstants.XML_ONTOLOGY_NAMESPACE_URI, XPackageConstants.XML_ONTOLOGY_NAMESPACE_PREFIX); //XPackage XML ontology

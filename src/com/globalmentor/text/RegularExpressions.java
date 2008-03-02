@@ -16,12 +16,12 @@
 
 package com.globalmentor.text;
 
-import static com.globalmentor.text.TextUtilities.*;
+import static com.globalmentor.text.Text.*;
 
 /**Constants and utility methods for regular expression-related tasks.
 @author Garret Wilson
 */
-public class RegularExpression
+public class RegularExpressions
 {
 
 	/**The beginning character of a character class.*/

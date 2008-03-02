@@ -16,6 +16,8 @@
 
 package com.globalmentor.io;
 
+import com.globalmentor.text.xml.XMLUtilities;
+
 /**Constant values related to MIME media types, as originally defined in
 	<a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>,
 	"MIME Part 2: Media Types".
@@ -27,12 +29,9 @@ package com.globalmentor.io;
 public class ContentTypeConstants	//TODO transfer these constants to specific relevant classes and remove this class
 {
 		//subtype suffixes
-	/**The suffix for XML application types, as defined in <a href="http://www.ietf.org/rfc/rfc3023.txt">RFC 3023</a>, "XML Media Types".*/
-	public final static String XML_SUBTYPE_SUFFIX="xml";
-	/**The suffix for XML external parsed entity subtyes (not yet formally defined).*/
-	public final static String XML_EXTERNAL_PARSED_ENTITY_SUBTYPE_SUFFIX="xml-external-parsed-entity";
+
 	/**The suffix for RDF application types.*/
-	public final static String RDF_XML_SUBTYPE_SUFFIX="rdf"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
+	public final static String RDF_XML_SUBTYPE_SUFFIX="rdf"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XMLUtilities.XML_SUBTYPE_SUFFIX;
 	/**The suffix for TURF application types.*/
 	public final static String TURF_SUBTYPE_SUFFIX="turf";
 	/**The suffix for URF TURF application types.*/
@@ -40,10 +39,7 @@ public class ContentTypeConstants	//TODO transfer these constants to specific re
 	/**The suffix for zip application types.*/
 	public final static String ZIP_SUBTYPE_SUFFIX="zip";
 
-		//text media types
-	/**An OEB 1.0 document.*/
-	public final static String X_OEB1_CSS_SUBTYPE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"oeb1-css";
-	public final static String X_OEB1_DOCUMENT_SUBTYPE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"oeb1-document";
+	//text media types
 	public final static String CALENDAR_SUBTYPE="calendar";
 	/**A Cascading Style Sheet document.*/
 	public final static String CSS_SUBTYPE="css";
@@ -66,7 +62,7 @@ public class ContentTypeConstants	//TODO transfer these constants to specific re
 	/**A PNG image.*/
 	public final static String PNG_SUBTYPE="png";
 	/**An SVG image.*/
-	public final static String SVG_XML_SUBTYPE="svg"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
+	public final static String SVG_XML_SUBTYPE="svg"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XMLUtilities.XML_SUBTYPE_SUFFIX;
 	/**A TIFF image.*/
 	public final static String TIFF_SUBTYPE="tiff";
 	/**A bitmap image.*/
@@ -87,8 +83,6 @@ public class ContentTypeConstants	//TODO transfer these constants to specific re
 	public final static String X_DICTO_RDF_XML_SUBTYPE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"dicto"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A Java application.*/
 	public final static String JAVA_SUBTYPE="java";
-	/**A  MathML application.*/
-	public final static String MATHML_XML_SUBTYPE="mathml"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**A Java JNLP file.*/
 	public final static String X_JAVA_JNLP_FILE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"java-jnlp-file";
 	/**A Java object.*/
@@ -99,10 +93,6 @@ public class ContentTypeConstants	//TODO transfer these constants to specific re
 	public final static String X_QRO_RDF_XML_SUBTYPE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"qro"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A Microsoft Word document; see <a href="http://www.iana.org/assignments/media-types/application/msword">http://www.iana.org/assignments/media-types/application/msword</a>.*/
 	public final static String MSWORD_SUBTYPE="msword";
-	/**An OEB 1.x publication zip file.*/
-	public final static String X_OEB_PUBLICATION_ZIP_SUBTYPE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"oeb-publication"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+ZIP_SUBTYPE_SUFFIX;
-	/**An OEB 1.x package file.*/
-	public final static String X_OEB1_PACKAGE_XML_SUBTYPE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"oeb1-package"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 	/**An Ogg Vorbis file; see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>.*/
 	public final static String OGG_SUBTYPE="ogg";
 	/**An Adobe PDF file.*/
@@ -122,9 +112,9 @@ public class ContentTypeConstants	//TODO transfer these constants to specific re
 	/**An XEB book zip file, <code>x-xebook+rdf+xml+zip</code>.*/
 	public final static String X_XEBOOK_RDF_XML_ZIP_SUBTYPE=X_XEBOOK_RDF_XML_SUBTYPE+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+ZIP_SUBTYPE_SUFFIX;
 	/**An XHTML application.*/
-	public final static String XHTML_XML_SUBTYPE="xhtml"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
+	public final static String XHTML_XML_SUBTYPE="xhtml"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XMLUtilities.XML_SUBTYPE_SUFFIX;
 	/**An XHTML fragment (not yet formally defined).*/
-	public final static String XHTML_XML_EXTERNAL_PARSED_ENTITY_SUBTYPE="xhtml"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_EXTERNAL_PARSED_ENTITY_SUBTYPE_SUFFIX;
+	public final static String XHTML_XML_EXTERNAL_PARSED_ENTITY_SUBTYPE="xhtml"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XMLUtilities.XML_EXTERNAL_PARSED_ENTITY_SUBTYPE_SUFFIX;
 	/**A Zip file.*/
 	public final static String ZIP_SUBTYPE="zip";
 

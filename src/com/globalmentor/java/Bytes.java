@@ -16,7 +16,7 @@
 
 package com.globalmentor.java;
 
-import com.globalmentor.text.FormatUtilities;
+import com.globalmentor.text.TextFormatter;
 
 /**Utilities for manipulating bytes.
 @author Garret Wilson
@@ -38,7 +38,7 @@ public class Bytes
 	*/
 	public static String toHexString(final byte[] bytes)
 	{
-		return FormatUtilities.formatHex(new StringBuilder(), bytes).toString();	//format the hex into a string buffer and return the string version
+		return TextFormatter.formatHex(new StringBuilder(), bytes).toString();	//format the hex into a string buffer and return the string version
 	}
 
 }

@@ -32,7 +32,7 @@ import static com.globalmentor.text.xml.XMLUtilities.*;
 /**Constants and utilities for text.
 @author Garret Wilson
 */
-public class TextUtilities
+public class Text
 {
 
 	/**The MIME subtype of <code>text/plain</code>.*/

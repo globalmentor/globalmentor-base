@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.text.xml.oeb;
 
 import java.io.*;
@@ -8,13 +24,12 @@ import javax.mail.internet.ContentType;
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.*;
-import com.garretwilson.rdf.xeb.XEBUtilities;
 import com.garretwilson.rdf.xpackage.*;
 import com.globalmentor.io.*;
 import com.globalmentor.java.*;
-import com.globalmentor.marmot.Marmot;
 import com.globalmentor.text.*;
 import com.globalmentor.text.xml.*;
+import static com.globalmentor.text.xml.oeb.OEB.*;
 import com.globalmentor.text.xml.xhtml.*;
 import com.globalmentor.util.*;
 
@@ -39,21 +54,12 @@ import static com.globalmentor.java.Characters.*;
 			</ul>
 		</li>
 	</ul>
-//G***fix	with an option: Images are loaded and the width and height of their corresponding elements are updated.
+//TODO fix	with an option: Images are loaded and the width and height of their corresponding elements are updated.
 @author Garret Wilson
+@deprecated
 */
-public class OEBPublicationCreator extends TextUtilities implements OEBConstants, DCConstants	//TODO update this class to work with XEbook; this class may not even function properly anymore
+public class OEBPublicationCreator	//TODO update this class to work with XEbook; this class may not even function properly anymore
 {
-
-	/**The English string indicating that the author is not specified.*/
-//G***del	protected final static String AUTHOR_NOT_SPECIFIED="(author not specified)";  //G***i18n
-
-	/**A <code>File</code> specifying the output directory or <code>null</code>
-		to use the same directory as the source.*/
-//G***del if not needed	public final static String OUTPUT_DIR_OPTION="outputDir";
-
-//G***del		/**Default to .*/
-//G***del		public final static boolean NORMALIZE_STYLE_CLASSES_OPTION_DEFAULT=true;
 
 	/**Whether the resulting OEB files should be stored in a ZIP file.*/
 	public final static String ZIP_OPTION="zip";
@@ -73,24 +79,6 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 		/**Default to not including a title page.*/
 		public final static String TITLE_PAGE_LOCATION_OPTION_DEFAULT=null;
 
-	/**Whether only metadata should be gathered, rather than actual conversion.*/
-//G***del	public final static String METADATA_ONLY_OPTION="metadataOnly";
-
-		/**Default to not just gathering metadata.*/
-//G***del		public final static boolean METADATA_ONLYP_OPTION_DEFAULT=false;
-
-	/**The title of the work, if any.*/
-//G***del	public final static String TITLE_OPTION="title";
-
-		/**Default to not having a title.*/
-//G***del		public final static String TITLE_OPTION_DEFAULT=null;
-
-	/**The author of the work, if any.*/
-//G***del	public final static String AUTHOR_OPTION="author";
-
-		/**Default to not having an author.*/
-//G***del		public final static String AUTHOR_OPTION_DEFAULT=null;
-
 	/**The publisher option.*/
 	public final static String PUBLISHER_OPTION="publisher";
 
@@ -102,12 +90,6 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 
 		/**Default to not including a rights statement.*/
 		public final static String RIGHTS_OPTION_DEFAULT=null;
-
-	/**The ID prefix option.*/
-//G***del	public final static String ID_PREFIX_OPTION="idPrefix";
-
-		/**Default to a generic ID prefix.*/
-//G***del		public final static String ID_PREFIX_OPTION_DEFAULT="urn:file:";
 
 	/**The output directory.*/
 	private File outputDir=null;
@@ -153,21 +135,6 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 		@param newPrefaceURL The URL of the preface page.
 		*/
 		public void setPrefaceURL(final URL newPrefaceURL) {prefaceURL=newPrefaceURL;}
-
-/*G***del
-		final File oebDocumentFile; //we'll find out where to store the document
-//G***del Debug.trace("text URL file: ", filename);  //G***del
-		if(getOutputDir()!=null) //if an output directory was specified
-		{
-				//store the file in the output directory G***use a constant
-			oebDocumentFile=FileUtilities.changeExtension(new File(getOutputDir(), URLUtilities.getFileName(textURL)), "html");
-		}
-		else  //if an output directory was not specified
-		{
-			//G***make sure a file: protocol was specified
-			oebDocumentFile=FileUtilities.changeExtension(URLUtilities.getFile(textURL), "html");  //create a file from the URL G***use a constant
-		}
-*/
 
 	/**Whether this is a Project Gutenberg EText.*/
 	private boolean isProjectGutenbergEText=false;
@@ -342,10 +309,6 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 			if(rdf==null)  //if there is no RDF data model
 			{
 				rdf=new RDF();  //create new RDF
-/*TODO del if not needed
-				final OEBUtilities oebUtilities=new OEBUtilities(); //create a new OEB utility object
-				rdf.registerResourceFactory(OEB1_PACKAGE_NAMESPACE_URI, oebUtilities);  //register a factory for OEB 1.x package resources
-*/
 			}
 			return rdf;  //return the RDF data model
 		}
@@ -403,8 +366,8 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 			return xmlSerializer;  //return the XML serializer
 		}
 
-//G***probably eventuallly make this a non-static class so that a common XML processor can be used, instead of creating one in each function
-//G***note that this would also allow a tidy variable to be set, so that documents could be tidied and manifest items gathered in the same iteration, rather than loading documents twice
+//TODO probably eventually make this a non-static class so that a common XML processor can be used, instead of creating one in each function
+//TODO note that this would also allow a tidy variable to be set, so that documents could be tidied and manifest items gathered in the same iteration, rather than loading documents twice
 
 	/**The properties which govern how we behave.*/
 	protected Properties options;
@@ -428,8 +391,6 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 			setTitlePageLocation(options.getProperty(TITLE_PAGE_LOCATION_OPTION, TITLE_PAGE_LOCATION_OPTION_DEFAULT));
 			setPublisher(options.getProperty(PUBLISHER_OPTION, PUBLISHER_OPTION_DEFAULT));
 			setRights(options.getProperty(RIGHTS_OPTION, RIGHTS_OPTION_DEFAULT));
-//G***del			setIDPrefix(options.getProperty(ID_PREFIX_OPTION, RIGHTS_OPTION_DEFAULT));
-//G***del			setMetadataOnly(PropertyUtilities.getBooleanProperty(options, METADATA_ONLY_OPTION, METADATA_ONLY_OPTION_DEFAULT));
 		}
 
 		/**@return The options that govern the behavior of this class.*/
@@ -459,7 +420,7 @@ public class OEBPublicationCreator extends TextUtilities implements OEBConstants
 	*/
 	public OEBPublication createPublicationFromDirectory(final File directory) throws MalformedURLException, IOException
 	{
-/*G***fix new publication
+/*TODO fix new publication
 Debug.trace("OEBPublicationCreator.createPublication() directory: ", directory);
 		final File canonicalDirectory=directory.getCanonicalFile(); //convert the directory into a canonical directory (i.e. "c:\\temp\\.\\.\\." will be changed to "c:\\temp")
 			//create a new OEB publication using the directory as the publication URL; this will later be changed to the actual name of the OEB publication file
@@ -468,7 +429,7 @@ Debug.trace("OEBPublicationCreator.createPublication() directory: ", directory);
 		processManifestItems(publication);  //process the manifest items
 		return publication; //return the publication we created
 */
-		return null;  //G***fix
+		return null;  //TODO fix
 	}
 
 	/**Creates a publication with the given OEB file.
@@ -480,25 +441,25 @@ Debug.trace("OEBPublicationCreator.createPublication() directory: ", directory);
 	*/
 	public OEBPublication createPublicationFromOEBFile(final File oebFile) throws MalformedURLException, IOException
 	{
-/*G***fix new publication
+/*TODO fix new publication
 Debug.trace("OEBPublicationCreator.createPublication() file: ", oebFile);
 		final File canonicalDirectory=oebFile.getCanonicalFile(); //convert the directory into a canonical directory (i.e. "c:\\temp\\.\\.\\." will be changed to "c:\\temp")
 			//create a new OEB publication using the directory as the publication URL; this will later be changed to the actual name of the OEB publication file
 		final OEBPublication publication=new OEBPublication(canonicalDirectory.toURL());
-		final String fileRelativePath=oebFile.getName();  //get the filename of the OEB item G***probably later make this relative to the publication; now we're assuming it's in the same directory as the publication; probably add another parameter with the publication name, both here and above
+		final String fileRelativePath=oebFile.getName();  //get the filename of the OEB item TODO probably later make this relative to the publication; now we're assuming it's in the same directory as the publication; probably add another parameter with the publication name, both here and above
 		  //create an OEB item with no fallback for this document; use the URL for an ID, after converting it to an XML name
 	  final OEBItem oebItem=new OEBItem(publication, XMLUtilities.createName(fileRelativePath), fileRelativePath, OEB10_DOCUMENT_MEDIA_TYPE);
-		publication.putManifestItem(oebItem); //add the item to the publication's manifest G***change to gathering this manifest item
+		publication.putManifestItem(oebItem); //add the item to the publication's manifest TODO change to gathering this manifest item
 		publication.addSpineItem(oebItem);  //add the item to the spine
 		processManifestItems(publication);  //process the manifest items
-//G***maybe add		sortSpineItems(publication);  //sort the publication's spine
+//TODO maybe add		sortSpineItems(publication);  //sort the publication's spine
 		return publication; //return the publication we created
 */
-		return null;  //G***fix
+		return null;  //TODO fix
 	}
 
 	/**Creates a publication with the given OEB document.
-	  Optionally tidies each OEB document and gathers all references to files. G***why "optionally?"
+	  Optionally tidies each OEB document and gathers all references to files. TODO why "optionally?"
 	@param oebDocumentURL The URL to the OEB document which should be included
 		in the publication.
 	@param referenceURI The identifying URI of the publication.
@@ -506,13 +467,13 @@ Debug.trace("OEBPublicationCreator.createPublication() file: ", oebFile);
 		<code>null</code> if the default should be used.
 	@return A new publication constructed from the OEB document.
 	@exception MalformedURLException Thrown if there is an error creating a URL
-		from the directory. G***fix comment
+		from the directory. TODO fix comment
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	*/
 	public OEBPublication createPublicationFromOEBDocument(final URL oebDocumentURL, final URI referenceURI, final File outputDir) throws MalformedURLException, IOException
 	{
 		if(outputDir!=null) //if an output directory is specified
-			setOutputDir(outputDir.getCanonicalFile());  //set the output directory G***should we make sure this directory exists, and create it if  not?
+			setOutputDir(outputDir.getCanonicalFile());  //set the output directory TODO should we make sure this directory exists, and create it if  not?
 Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentURL);
 		final RDF rdf=getRDF();	//get the RDF data model
 			//create a new OEB publication using the OEB document URL as the publication URL; this will later be changed to the actual name of the OEB publication file
@@ -521,28 +482,14 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 		rdf.addResource(publication);	//add the resource to the RDF data model
 			//store the publication reference URI as a Dublin Core identifier property
 		DCUtilities.addIdentifier(publication, publication.getURI().toString());
-//G***del when works		RDFUtilities.addProperty(getRDF(), publication, DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, publication.getReferenceURI());
-
-
-//G***fix; moved to text converter		final RDFResource oebItem=gatherReference(publication, oebDocumentURL, oebDocumentURL.getFile(), OEB10_DOCUMENT_MEDIA_TYPE);  //add this document to the manifest
-/*G***fix
+//TODO del when works		RDFUtilities.addProperty(getRDF(), publication, DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, publication.getReferenceURI());
+//TODO fix; moved to text converter		final RDFResource oebItem=gatherReference(publication, oebDocumentURL, oebDocumentURL.getFile(), OEB10_DOCUMENT_MEDIA_TYPE);  //add this document to the manifest
+/*TODO fix
 		processManifestItems(publication);  //process the manifest items
 		sortSpineItems(publication);  //sort the publication's spine
 */
-Debug.trace("OEBPublicationCreator zip option: ", new Boolean(isZip())); //G***del
 		return publication; //return the publication we created
 	}
-
-
-
-
-
-
-
-
-
-
-
 
 	/**Creates a publication from the given text document. The resulting OEB
 		document is saved.
@@ -558,54 +505,40 @@ Debug.trace("OEBPublicationCreator zip option: ", new Boolean(isZip())); //G***d
 	@return A new publication constructed from the text document.
 	@exception URISyntaxException Thrown if an invalid reference was discovered.
 	@exception MalformedURLException Thrown if there is an error creating a URL
-		from the directory. G***fix comment
+		from the directory. TODO fix comment
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	*/
 	public OEBPublication createPublicationFromText(final URL textURL, URI referenceURI, final String encoding, final File outputDir) throws URISyntaxException, MalformedURLException, IOException
 	{
-Debug.trace("creating publication from text file: ", textURL);  //G***del
 		if(outputDir!=null) //if an output directory is specified
-			setOutputDir(outputDir.getCanonicalFile());  //set the output directory G***should we make sure this directory exists, and create it if  not?
-		final Document document=OEBUtilities.createDefaultOEB1Document();  //create a default OEB document
-Debug.trace("created default OEB document");  //G***del
-		final InputStream textInputStream=textURL.openConnection().getInputStream();		//connect to the URL and get an input stream G***check for proxying and such
+			setOutputDir(outputDir.getCanonicalFile());  //set the output directory TODO should we make sure this directory exists, and create it if  not?
+		final Document document=OEB.createDefaultOEB1Document();  //create a default OEB document
+		final InputStream textInputStream=textURL.openConnection().getInputStream();		//connect to the URL and get an input stream TODO check for proxying and such
 		try
 		{
-				//G***maybe use a shared XHTMLCreator
+				//TODO maybe use a shared XHTMLCreator
 		  new XHTMLCreator().createXHTMLFromText(document, textInputStream, encoding);  //convert the text to XHTML
 			document.normalize(); //normalize the document so that all the consecutive text regions will be combined
-//G***del Debug.trace("converted text to XHTML: ", XMLUtilities.toString(document));  //G***del
-			//G***del XMLUtilities.printTree(itemDocument, Debug.getOutput()); //G***testing
 		}
 		finally
 		{
 			textInputStream.close();  //always close the input stream
 		}
-Debug.trace("checking for PG"); //G***del
-//G***del		String title=null;  //assume we won't find a title
-//G***del		String author=null; //assume we won't find an author
-		Locale languageLocale=null; //assume we won't find a language G***fix to be consistent with title and author
+		Locale languageLocale=null; //assume we won't find a language TODO fix to be consistent with title and author
 		final DocumentFragment pgHeaderFragment;  //we'll attempt to find a Project Gutenberg header, if applicable
 		setProjectGutenbergEText(PGUtilities.isProjectGutenbergEText(document)); //see if this document is a Project Gutenberg EText
 		if(isProjectGutenbergEText()) //if this document is a Project Gutenberg EText
 		{
-Debug.trace("is PG EText"); //G***del
-//G***fix				new XHTMLTidier().tidy(document); //G***testing
+//TODO fix				new XHTMLTidier().tidy(document); //TODO testing
 			pgHeaderFragment=PGUtilities.extractHeader(document);  //extract the Project Gutenberg header
 			if(pgHeaderFragment!=null)  //if we found a header
 			{
-				referenceURI=URI.create(PGUtilities.getID(referenceURI.toString())); //convert this URI into a Project Gutenberg identifier by removing the version number G***fix better for URI
-Debug.trace("found PG header"); //G***del
+				referenceURI=URI.create(PGUtilities.getID(referenceURI.toString())); //convert this URI into a Project Gutenberg identifier by removing the version number TODO fix better for URI
 				setTitle(PGUtilities.getTitle(pgHeaderFragment));  //get the title
-//G***del					Debug.notify("Title: "+title);  //G***del
 				setAuthor(PGUtilities.getAuthor(pgHeaderFragment, getTitle()));  //get the author
-//G***del					Debug.notify("Author: "+author);  //G***del
 				setDescription(PGUtilities.getDescription(pgHeaderFragment));  //get the description
-Debug.trace("description: ", getDescription()); //G***del
 				final String displayLanguage=PGUtilities.getLanguage(pgHeaderFragment);  //get the language
-Debug.trace("display language: ", displayLanguage); //G***del
 				languageLocale=Locales.createDisplayLanguageLocale(displayLanguage); //get the locale for this language
-Debug.trace("display locale: ", languageLocale); //G***del
 			}
 			PGUtilities.extractFooter(document);  //extract the Project Gutenberg footer, if it is available
 		}
@@ -618,40 +551,29 @@ Debug.trace("display locale: ", languageLocale); //G***del
 		if(getAuthor()==null) //if we haven't found an author so far
 		  setAuthor(getAuthor(document)); //try to get the author from the text
 		setReferenceURI(referenceURI);  //save the reference URI in case we need it later
-
-
-
-
-//G***fix				new XHTMLTidier().tidy(document); //G***testing
+//TODO fix				new XHTMLTidier().tidy(document); //TODO testing
 
 	if(isTidy())  //if we should tidy
 	{
-				//G***eventually use the tidy() method, and remove the addStylesheetReferences() call which will then be unecessary
-		final XHTMLTidier xhtmlTidier=new XHTMLTidier(getOptions());  //create a new XHTML tidier G***use a common XHTML tidier
+				//TODO eventually use the tidy() method, and remove the addStylesheetReferences() call which will then be unecessary
+		final XHTMLTidier xhtmlTidier=new XHTMLTidier(getOptions());  //create a new XHTML tidier TODO use a common XHTML tidier
 		xhtmlTidier.setTitle(getTitle()); //tell the tidier the title, if we know it
-		xhtmlTidier.tidy(document/*G***fix, outputFile*/);  //tidy the document, specifying where any CSS file should be written to
+		xhtmlTidier.tidy(document/*TODO fix, outputFile*/);  //tidy the document, specifying where any CSS file should be written to
 	}
 
 		addStylesheetReferences(document);  //add any stylesheet references to the document
 		final File oebDocumentFile; //we'll find out where to store the document
-/*G***del
-Debug.trace("text URL: ", textURL); //G***del
-Debug.trace("text URL path: ", textURL.getPath()); //G***del
-Debug.trace("text URL ref: ", textURL.getRef()); //G***del
-*/
-//G***del Debug.trace("text URL file: ", filename);  //G***del
 		if(getOutputDir()!=null) //if an output directory was specified
 		{
-				//store the file in the output directory G***use a constant
-			oebDocumentFile=Files.changeExtension(new File(getOutputDir(), URLUtilities.getFileName(textURL)), "html");
+				//store the file in the output directory
+			oebDocumentFile=Files.changeExtension(new File(getOutputDir(), URLUtilities.getFileName(textURL)), "html");	//TODO use a constant
 		}
 		else  //if an output directory was not specified
 		{
-			//G***make sure a file: protocol was specified
-			oebDocumentFile=Files.changeExtension(URLUtilities.getFile(textURL), "html");  //create a file from the URL G***use a constant
+			//TODO make sure a file: protocol was specified
+			oebDocumentFile=Files.changeExtension(URLUtilities.getFile(textURL), "html");  //create a file from the URL TODO use a constant
 		}
-Debug.trace("using file for document: ", oebDocumentFile);
-		  //G***testing
+		  //TODO testing
 		setContextURL(oebDocumentFile.toURL()); //show that the location of the document will be the context URL
 			//create a publication from our new OEB document
 		final OEBPublication publication=createPublicationFromOEBDocument(oebDocumentFile.toURL(), referenceURI, getOutputDir());
@@ -664,10 +586,10 @@ Debug.trace("using file for document: ", oebDocumentFile);
 		if(languageLocale!=null) //if we have a language
 		  DCUtilities.addLanguage(publication, languageLocale); //add the language to the publication
 		DCUtilities.setDate(publication, new Date());  //add the current date and time
-		DCUtilities.addSource(publication, "file:"+URLUtilities.getFileName(textURL));  //add the text filename as the source G***use a constant
+		DCUtilities.addSource(publication, "file:"+URLUtilities.getFileName(textURL));  //add the text filename as the source TODO use a constant
 		if(isProjectGutenbergEText) //if we got this text from Project Gutenberg
 		{
-			DCUtilities.addContributor(publication, "Project Gutenberg");  //add Project Gutenberg as a contributor G***use a constant
+			DCUtilities.addContributor(publication, "Project Gutenberg");  //add Project Gutenberg as a contributor TODO use a constant
 		}
 		if(getPublisher()!=null)  //if we have a publisher
 		  DCUtilities.addPublisher(publication, getPublisher()); //add the publisher to the publication
@@ -675,17 +597,12 @@ Debug.trace("using file for document: ", oebDocumentFile);
 		  DCUtilities.addRights(publication, getRights()); //add the rights statement to the publication
 		if(pgHeaderFragment!=null)  //if we have a Project Gutenberg header, write it to its own file
 		{
-			final Document pgHeaderDocument=OEBUtilities.createOEB1Document(pgHeaderFragment);  //create a document from the header fragment
+			final Document pgHeaderDocument=OEB.createOEB1Document(pgHeaderFragment);  //create a document from the header fragment
 		  final Element bodyElement=XHTML.getBodyElement(pgHeaderDocument);  //get the body of the document
 				//create a header element and add it to the body
-			final Element headerElement=XMLUtilities.createElementNS(pgHeaderDocument, bodyElement.getNamespaceURI(), XHTML.ELEMENT_H2, "Information from the Original Project Gutenberg EText");  //G***use a constant
+			final Element headerElement=XMLUtilities.createElementNS(pgHeaderDocument, bodyElement.getNamespaceURI(), XHTML.ELEMENT_H2, "Information from the Original Project Gutenberg EText");  //TODO use a constant
 		  bodyElement.insertBefore(headerElement, bodyElement.getFirstChild()); //insert the header element as the first element in the body
-/*G***del
-		  final String pgHeaderDocumentFilename=FileUtilities.changeExtension(
-					new File(FileUtilities.removeExtension(URLUtilities.getFileName(textURL))+"-pgheader"),
-					"html").getName();  //create a filename for the header document, in the form "filename-pgheader.html" G***use constants here
-*/
-		  final String pgHeaderDocumentFilename="projectgutenbergheader.html";  //create a filename for the header document G***use constants here
+		  final String pgHeaderDocumentFilename="projectgutenbergheader.html";  //create a filename for the header document TODO use constants here
 			final File pgHeaderDocumentFile; //we'll find out where to store the header document
 			if(getOutputDir()!=null) //if an output directory was specified
 			{
@@ -694,7 +611,7 @@ Debug.trace("using file for document: ", oebDocumentFile);
 			}
 			else  //if an output directory was not specified
 			{
-				pgHeaderDocumentFile=new File(oebDocumentFile, pgHeaderDocumentFilename);  //create a file from the OEB file G***does this really work?
+				pgHeaderDocumentFile=new File(oebDocumentFile, pgHeaderDocumentFilename);  //create a file from the OEB file TODO does this really work?
 			}
 			write(pgHeaderDocument, pgHeaderDocumentFile); //write the header document
 				//add this document to the manifest without adding it to the spine
@@ -723,7 +640,7 @@ Debug.trace("using file for document: ", oebDocumentFile);
 		  publication.getSpine().add(0, titlePageResource);
 		}
 			//add the stylesheets to the publication
-		  //G***fix to gather the stylesheet references into the manifest automatically through gatherReferences()
+		  //TODO fix to gather the stylesheet references into the manifest automatically through gatherReferences()
 		final Iterator stylesheetReferenceIterator=styleSheetReferenceList.iterator();  //get an iterator to look through the stylesheet references
 		while(stylesheetReferenceIterator.hasNext())  //while there are more references
 		{
@@ -731,7 +648,6 @@ Debug.trace("using file for document: ", oebDocumentFile);
 				//add the stylesheet to the manifest without adding it to the spine
 		  gatherReference(publication, URLUtilities.createURL(getContextURL(), href), href, OEB10_CSS_MEDIA_TYPE, false);
 		}
-//G***del		if(isTidy()) //if we're tidying G***fix with some other type of test
 		gatherGuides(publication, document);  //gather guides from the document
 		write(document, oebDocumentFile); //write the document after we've done everything else, because we might need to modify it along the way
 		  //fix; tidy; make it work with createOEBPublication(), which will need it added back at some point
@@ -750,16 +666,14 @@ Debug.trace("using file for document: ", oebDocumentFile);
 	*/
 	protected void gatherManifestItems(final OEBPublication publication, final File directory) throws MalformedURLException, IOException
 	{
-/*G***fix new publication
+/*TODO fix new publication
 
 		final URL directoryURL=directory.toURL(); //create a URL from the directory, so that we can create a relative path for each file
-//G***del Debug.trace("Directory URL: "+directoryURL);
-//G***del		final URL directoryURL=directory.toURL(); //create a URL from the directory, so that we can create relative URLs from each file
 		final File[] fileList=directory.listFiles(new FileFilter()
 			  {
 */
 					/**@return <code>true</code> if the pathname ends in ".htm" or ".html".*/
-/*G***fix new publication
+/*TODO fix new publication
 					public boolean accept(File pathname)
 					{
 						return pathname.toString().endsWith(".htm") || pathname.toString().endsWith(".html");
@@ -771,12 +685,10 @@ Debug.trace("using file for document: ", oebDocumentFile);
 Debug.trace("looking at publication file: ", file);
 		  final URL fileURL=file.toURL(); //convert the file to a URL so that we can create a relative path with a correct href format
 		  final String fileRelativePath=URLUtilities.getRelativePath(directoryURL, fileURL);  //create a relative path for the file
-Debug.trace("Relative path: ", fileRelativePath);  //G***fix
-		  final MediaType mediaType=OEB10_DOCUMENT_MEDIA_TYPE;  //assume this is an OEB document G***remove this variable and use the value directly
+Debug.trace("Relative path: ", fileRelativePath);  //TODO fix
+		  final MediaType mediaType=OEB10_DOCUMENT_MEDIA_TYPE;  //assume this is an OEB document TODO remove this variable and use the value directly
 		  //create an OEB item with no fallback for this document; use the URL for an ID, after converting it to an XML name
-//G***del		  final OEBItem oebItem=new OEBItem(publication, XMLUtilities.createName(fileURL.toString()), fileURL.toString(), mediaType);
 		  final OEBItem oebItem=new OEBItem(publication, XMLUtilities.createName(fileRelativePath), fileRelativePath, mediaType);
-//G***del		  final OEBItem oebItem=new OEBItem(publication, XMLUtilities.createName(file.getName()), file.toString(), mediaType);
 			publication.putManifestItem(oebItem); //add the item to the publication's manifest
 			publication.addSpineItem(oebItem);  //add the item to the spine
 		}
@@ -794,24 +706,12 @@ Debug.trace("Relative path: ", fileRelativePath);  //G***fix
 	*/
 	protected void processManifestItems(final OEBPublication publication) throws MalformedURLException, IOException
 	{
-//G***del		final XMLProcessor xmlProcessor=getXMLProcessor();	//get the XML processor
-/*G***del
-		xmlProcessor.setTidy(isTidy()); //turn tidy on or off in our XML processor
-		if(isTidy())  //if tidy is turned on
-		{
-				//show that we should always use the OEB external ID
-			xmlProcessor.setTidyDocumentTypeExternalID(OEB101_DOCUMENT_PUBLIC_ID, OEB101_DOCUMENT_SYSTEM_ID);
-		}
-*/
-//G***del		final XMLSerializer xmlSerializer=getXMLSerializer();  //get the object to serialize XML
-
-/*G***fix new publication
+/*TODO fix new publication
 
 		{ //gather references and tidy the manifest items
 				//create a separate list of the items in the manifest, so that when adding items to the manifest we won't conflict with our iterator
 			final List manifestList=new ArrayList(publication.getManifestMap().values());
 			final Iterator manifestIterator=manifestList.iterator(); //get an iterator to iterate through the manifest items
-	//G***del when works		final Iterator manifestIterator=publication.getManifestMap().values().iterator(); //get an iterator to iterate through the manifest items
 			while(manifestIterator.hasNext()) //while there are more items in the manifest
 			{
 				final OEBItem oebItem=(OEBItem)manifestIterator.next(); //get the next OEB item
@@ -840,42 +740,38 @@ Debug.trace("Relative path: ", fileRelativePath);  //G***fix
 	*/
 	protected void processManifestItem(final OEBPublication publication, final OEBItem oebItem) throws MalformedURLException, IOException
 	{
-/*G***fix new publication
+/*TODO fix new publication
 		if(oebItem.getMediaType().equals(OEB10_DOCUMENT_MEDIA_TYPE)) //if this is an OEB document
 		{
 			final URL itemURL=oebItem.getURL(); //get the URL to the item
 Debug.trace("Looking at item URL: ", itemURL);
 Debug.trace("Output directory: ", getOutputDir());
-				  //G***un-indent
-				final File outputFile;  //we'll store here a reference to the file to write
-				final File outputDir=getOutputDir();  //get the output directory if one is specified
-				if(outputDir!=null) //if an output directory was specified
-				{
+			final File outputFile;  //we'll store here a reference to the file to write
+			final File outputDir=getOutputDir();  //get the output directory if one is specified
+			if(outputDir!=null) //if an output directory was specified
+			{
 Debug.trace("publication URL: ", publication.getPublicationURL());  //G***del
 Debug.trace("item URL: ", itemURL);  //G***del
-					final String fileRelativePath=URLUtilities.getRelativePath(publication.getPublicationURL(), itemURL); //get the file's relative path
+				final String fileRelativePath=URLUtilities.getRelativePath(publication.getPublicationURL(), itemURL); //get the file's relative path
 Debug.trace("File relative path: ", fileRelativePath);  //G***del
-				  outputFile=new File(outputDir, fileRelativePath); //the file will be relative to the original URL, yet in our output directory
-				}
-				else  //if an output directory was not specified
-				{
-				//G***what if we're not tidying; shouldn't we still gather references?
-					outputFile=new File(itemURL.getPath());  //create a file from the URL
-				}
-
-
+			  outputFile=new File(outputDir, fileRelativePath); //the file will be relative to the original URL, yet in our output directory
+			}
+			else  //if an output directory was not specified
+			{
+			//G***what if we're not tidying; shouldn't we still gather references?
+				outputFile=new File(itemURL.getPath());  //create a file from the URL
+			}
 			final InputStream itemInputStream=itemURL.openConnection().getInputStream();		//connect to the URL and get an input stream
 			Document itemDocument;  //we'll store the document here
 			try
 			{
 				itemDocument=getXMLProcessor().parseDocument(itemInputStream, itemURL);	//parse the document
-//G***del XMLUtilities.printTree(itemDocument, Debug.getOutput()); //G***testing
 			}
 			finally
 			{
 				itemInputStream.close();  //always close the input stream
 			}
-			//G***do a normalize() somewhere here
+			//TODO do a normalize() somewhere here
 			if(isTidy())  //if we should tidy this item
 			{
 				tidyDocument(publication, itemURL, itemDocument, outputFile); //tidy the document
@@ -901,40 +797,36 @@ Debug.trace("ready to gatherReferences() for item: ", oebItem.getHRef());
 	@param itemURL The URL of the item which provides a context for relative hrefs.
 	@param itemDocument The document to be searched for references. This object
 		should also implement the <code>DocumentTraversal</code> interface.
-//G***del if not needed	@param documentTraversal The interface for creating traversal objects.
-//G***del if not needed	@exception MalformedURLException Thrown if there is a problem creating a URL to a particular item.
-//G***del if not needed	@exception IOException Thrown if there is an error reading or writing to files.
 	@exception MalformedURLException Thrown if a an invalid reference is discovered.
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	@see DocumentTraversal
 	*/
-	protected void gatherReferences(final OEBPublication publication, final URL itemURL, final Document itemDocument) throws MalformedURLException, IOException //G***del if not needed throws MalformedURLException, IOException
+	protected void gatherReferences(final OEBPublication publication, final URL itemURL, final Document itemDocument) throws MalformedURLException, IOException
 	{
-/*G***fix new publication
-		//G***switch this new syntax back to XMLCSSProcessor
+/*TODO fix new publication
+		//TODO switch this new syntax back to XMLCSSProcessor
 		final Iterator styleSheetProcessingInstructionIterator=XMLUtilities.getNodesByName(itemDocument, Node.PROCESSING_INSTRUCTION_NODE, XMLStyleSheetConstants.XML_STYLESHEET_PROCESSING_INSTRUCTION, false).iterator();  //get a list of all the style processing instructions in the document
 		while(styleSheetProcessingInstructionIterator.hasNext())  //while there are more stylesheet references
 		{
-			final XMLProcessingInstruction styleSheetLink=(XMLProcessingInstruction)styleSheetProcessingInstructionIterator.next();	//get a reference to this child node G***just get a ProcessingInstruction and use an XMLUtility to get the value
-			final String type=styleSheetLink.getPseudoAttributeValue(XMLStyleSheetConstants.TYPE_ATTRIBUTE);	//get the value of the type attribute, if it is present G***use a ProcessingInstruction coupled with an XMLUtilities
-			final String href=styleSheetLink.getPseudoAttributeValue(XMLStyleSheetConstants.HREF_ATTRIBUTE);	//get the value of the href attribute, if it is present G***use a ProcessingInstruction coupled with an XMLUtilities
+			final XMLProcessingInstruction styleSheetLink=(XMLProcessingInstruction)styleSheetProcessingInstructionIterator.next();	//get a reference to this child node TODO just get a ProcessingInstruction and use an XMLUtility to get the value
+			final String type=styleSheetLink.getPseudoAttributeValue(XMLStyleSheetConstants.TYPE_ATTRIBUTE);	//get the value of the type attribute, if it is present TODO use a ProcessingInstruction coupled with an XMLUtilities
+			final String href=styleSheetLink.getPseudoAttributeValue(XMLStyleSheetConstants.HREF_ATTRIBUTE);	//get the value of the href attribute, if it is present TODO use a ProcessingInstruction coupled with an XMLUtilities
 			final MediaType mediaType=new MediaType(type);  //create a new media type from the type
-		  gatherReference(publication, itemURL, href, mediaType); //gather references for this stylesheet G*** change the href to be relative to the item document
+		  gatherReference(publication, itemURL, href, mediaType); //gather references for this stylesheet TODO change the href to be relative to the item document
 		}
 		final Element rootElement=itemDocument.getDocumentElement();  //get the root element
 		NodeIterator nodeIterator=((DocumentTraversal)itemDocument).createNodeIterator(rootElement, NodeFilter.SHOW_ELEMENT, null, false); //create a node walker to traverse over every node
 		Node node;
 		while((node=nodeIterator.nextNode())!=null)  //while we haven't reached the last node
 		{
-//G***del Debug.trace("Node: "+node.getNodeName()+" namespace URI: "+node.getNamespaceURI()); //G***testing
 		  final Element element=(Element)node;  //cast the node to an element; elements are all we asked for
-		  final String elementName=element.getNodeName(); //get the name of the element G***fix for namespaces
-//G***replace this next part with XHTMLUtilities.isApplet()
-		  if(XHTMLUtilities.isLinkElement(element.getNamespaceURI(), element)) //if this is a link element G***pass the real XHTML namespace
+		  final String elementName=element.getNodeName(); //get the name of the element TODO fix for namespaces
+//TODO replace this next part with XHTMLUtilities.isApplet()
+		  if(XHTMLUtilities.isLinkElement(element.getNamespaceURI(), element)) //if this is a link element TODO pass the real XHTML namespace
 			{
 				final String href=XHTMLUtilities.getLinkElementHRef(element.getNamespaceURI(), element);  //get the link element's href
 				if(href!=null)  //if the anchor has an href
-					gatherReference(publication, itemURL, href);  //gather references for this href G*** change the href to be relative to the item document
+					gatherReference(publication, itemURL, href);  //gather references for this href TODO change the href to be relative to the item document
 			}
 		  else if(elementName.equals(ELEMENT_OBJECT)) //if this is an object element
 			{
@@ -952,9 +844,9 @@ Debug.trace("determined media type: ", mediaType);
 						if(classID.length()!=0) //if there is a class ID attribute
 						{
 Debug.trace("found class ID: ", classID);
-								//G***put this code in a common location
-							final String javaPrefix="java:";  //the prefix the classid, as a URI, will probably have G***use a constant here
-							final String classPostfix=".class"; //the ending postfix the classid URI may have G***use a constant here
+								//TODO put this code in a common location
+							final String javaPrefix="java:";  //the prefix the classid, as a URI, will probably have TODO use a constant here
+							final String classPostfix=".class"; //the ending postfix the classid URI may have TODO use a constant here
 							String className=StringUtilities.trimBeginning(classID, javaPrefix);  //remove the "java:" prefix if present
 							className=StringUtilities.trimEnd(className, classPostfix);  //remove the ".class" postfix if present
 								//replace '.' with '/' and append ".class"
@@ -974,19 +866,18 @@ Debug.trace("found class ID: ", classID);
 				if(data.length()!=0)  //if the object has a data attribute
 				{
 					gatherReference(publication, itemURL, data, mediaType);  //gather references for this object, passing a media type if we found one
-//G***del					continue; //continue with the next item
 				}
 			}
 */
 
 
-/*G***fix
+/*TODO fix
 Debug.trace("preparing to gather info for element: "+element.getNodeName());
-			  //if this element represents an image G***fix for namespace; currently this takes any namespace
+			  //if this element represents an image TODO fix for namespace; currently this takes any namespace
 			if(XHTMLUtilities.isImageElement(element.getNamespaceURI(), element))
 			{
 Debug.trace("element is an image");
-					//get the reference to the image G***fix for namespace; currently this takes any namespace
+					//get the reference to the image TODO fix for namespace; currently this takes any namespace
 				final String href=XHTMLUtilities.getImageElementHRef(element.getNamespaceURI(), element);
 				if(href!=null)  //if there is a valid image reference
 				{
@@ -996,20 +887,18 @@ Debug.trace("element is an image");
 Debug.trace("OEBPublicationCreator tidying image: "+href);
 Debug.trace("Old image dimensions, width: "+element.getAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_WIDTH)+" height: "+element.getAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_HEIGHT));
 						final URL imageURL=publication.getURL(href);  //get the full URL to the image
-System.out.println("Loading image dimensions for: "+imageURL);  //G***del
 						final Toolkit toolkit=Toolkit.getDefaultToolkit(); //get the default toolkit
 						final Image image=toolkit.createImage(imageURL);  //load the image
 						Debug.assert(image!=null, "Couldn't load image at "+imageURL+".");
 						ImageUtilities.loadImage(image);  //make sure the image is loaded
-						element.setAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_WIDTH, String.valueOf(image.getWidth(null)));  //G***testing
-						element.setAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_HEIGHT, String.valueOf(image.getHeight(null)));  //G***testing
+						element.setAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_WIDTH, String.valueOf(image.getWidth(null)));  //TODO testing
+						element.setAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_HEIGHT, String.valueOf(image.getHeight(null)));  //TODO testing
 Debug.trace("New image dimensions, width: "+element.getAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_WIDTH)+" height: "+element.getAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_HEIGHT));
 				  }
 				}
 			}
-//G***del if not needed			continue; //continue with the next item
 */
-//G***fix		}
+//TODO fix		}
 	}
 
 
@@ -1022,7 +911,7 @@ Debug.trace("New image dimensions, width: "+element.getAttributeNS(null, ELEMENT
 	@return The item created to represent the reference or the item that already
 		appeared in the manifext, or <code>null</code> if the item was not added and
 		did not already appear in the manifest.
-G***fix outputDir
+TODO fix outputDir
 	@exception URISyntaxException Thrown if an invalid reference was discovered.
 	@exception MalformedURLException Thrown if a an invalid reference is discovered.
 	@exception IOException Thrown if there is an error reading or writing to a file.
@@ -1065,7 +954,7 @@ G***fix outputDir
 	@return The item created to represent the reference or the item that already
 		appeared in the manifext, or <code>null</code> if the item was not added and
 		did not already appear in the manifest.
-G***fix outputDir
+TODO fix outputDir
 	@exception URISyntaxException Thrown if an invalid reference was discovered.
 	@exception MalformedURLException Thrown if a an invalid reference is discovered.
 	@exception IOException Thrown if there is an error reading or writing to a file.
@@ -1095,65 +984,50 @@ G***fix outputDir
 	*/
 	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, ContentType mediaType, final boolean shouldAddToSpine) throws URISyntaxException, MalformedURLException, IOException
 	{
-Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 		RDFResource oebItem=null; //we'll try to gather a reference, and if we do we'll store the corresponding OEB item here
 		try
 		{
 				//get the path of the file relative to the publication
-//G***del		  final String publicationHRef=URLUtilities.getRelativePath(contextURL, URLUtilities.createURL(contextURL, href));
-//G***del		  final String publicationHRef=URLUtilities.getRelativePath(publication.getPublicationURL(), URLUtilities.createURL(contextURL, href));
-//G***make sure this works; see why we originally had to re-relativize this to the publication URL
-//G***del	Debug.trace("publicationHRef: ", publicationHRef);  //G***del
+//TODO make sure this works; see why we originally had to re-relativize this to the publication URL
 				//get the path of the file relative to the publication
 		  oebItem=null;	//TODO fix with URF
 //TODO fix with URF		  oebItem=XPackageUtilities.getManifestItemByLocationHRef(publication, contextURL.toURI(), href);
-//G***del			oebItem=publication.getManifestItemByHRef(publicationHRef); //see if this item is already in the manifest
 			if(oebItem==null) //if this item is not already in the manifest
 			{
-	Debug.trace("item not in manifest.");  //G***del
-//G***del				final URL url=URLUtilities.createURL(publication.getPublicationURL(), publicationHRef); //create a URL for the href, allowing for the href to be a relative path (although we don't yet know if it was) G***shouldn't we really use the URLUtilities here?
 				final URL url=URLUtilities.createURL(contextURL, href); //create a URL for the href, allowing for the href to be a relative path (although we don't yet know if it was)
-//G***del	Debug.trace("src URL: "+url+" relative to "+publication.getPublicationURL());
 	Debug.trace("src URL: "+url+" relative to "+contextURL);
-	//G***important fix		  if(URLConstants.FILE_PROTOCOL.equals(url.getProtocol()))  //if this is a local file being gathered into the manifest
+	//TODO important fix		  if(URLConstants.FILE_PROTOCOL.equals(url.getProtocol()))  //if this is a local file being gathered into the manifest
 				if(URLUtilities.exists(url))  //if a file exists at this URL
 				{
 					final File file=new File(url.getPath());  //create a file from the URL
-	Debug.trace("File exists? ", new Boolean(file.exists()));  //G***del
-	Debug.trace("Is directory? ", new Boolean(file.isDirectory()));  //G***del
 					final boolean protocolsMatch=contextURL.getProtocol().equals(url.getProtocol()); //see if the protocols match
-	Debug.trace("protocols match: ", new Boolean(protocolsMatch));  //G***del
 					final boolean hostsMatch=contextURL.getHost().equals(url.getHost()); //see if the hosts match
-	Debug.trace("hosts match: ", new Boolean(hostsMatch));  //G***del
 					final boolean isLocalFile=protocolsMatch && hostsMatch; //see if the file is a local file
-	//G***fix				if(file.exists() && !file.isDirectory())  //if the file exists, but it isn't a directory G***make sure this catches local file references
-					if(isLocalFile)  //if this is a local file G***important check
+	//TODO fix				if(file.exists() && !file.isDirectory())  //if the file exists, but it isn't a directory TODO make sure this catches local file references
+					if(isLocalFile)  //if this is a local file TODO important check
 					{
 						String hrefRelativePath; //we'll set the relative path, if we can find it
-						hrefRelativePath=URLUtilities.getRelativePath(contextURL, url);  //try to create a relative path for the reference G***why do we need to do this yet again?
-	Debug.trace("href relative path: ", hrefRelativePath);  //G***de
+						hrefRelativePath=URLUtilities.getRelativePath(contextURL, url);  //try to create a relative path for the reference TODO why do we need to do this yet again?
 						final URI itemURI=createURI(publication.getURI(), hrefRelativePath);  //create an ID from the relative path
-//G***del						final String itemID=XMLUtilities.createName(hrefRelativePath);  //create an ID from the relative path
-//TODO fix with URF						if(XPackageUtilities.getManifestItem(publication, itemURI)==null)  //if there isn't an item already in the manifest with this ID G***this could in some strange circumstances prevent two different paths from being stored, if the slash conversion to underline matches a filename with underlines in the same locations
+//TODO fix with URF						if(XPackageUtilities.getManifestItem(publication, itemURI)==null)  //if there isn't an item already in the manifest with this ID TODO this could in some strange circumstances prevent two different paths from being stored, if the slash conversion to underline matches a filename with underlines in the same locations
 						if(true)	//TODO fix with URF
 						{
 	Debug.trace("no manifest items with URI: ", itemURI);
-//G***fix										final File srcFile=new File(src); //create a file object to represent the image source
-//G***fix										final MediaType mediaType=FileUtilities.getMediaType(srcFile);  //try to see which of media type the image is
-//G***fix										Debug.assert(mediaType!=null, "\""+srcFile+"\" has unknown media type.");  //G***put in better error handling here
+//TODO fix										final File srcFile=new File(src); //create a file object to represent the image source
+//TODO fix										final MediaType mediaType=FileUtilities.getMediaType(srcFile);  //try to see which of media type the image is
+//TODO fix										Debug.assert(mediaType!=null, "\""+srcFile+"\" has unknown media type.");  //TODO put in better error handling here
 							if(mediaType==null) //if no media type is given
 							{
 								mediaType=URLUtilities.getMediaType(url);  //try to see which of media type the reference is by examining the URL
 								if(mediaType.match(APPLICATION_XHTML_XML_MEDIA_TYPE))  //if this is the "application/xhtml+xml" media type
 									mediaType=OEB10_DOCUMENT_MEDIA_TYPE;  //assume it's really the OEB document media type
 							}
-							assert mediaType!=null : "\""+url+"\" has unknown media type.";  //G***put in better error handling here
+							assert mediaType!=null : "\""+url+"\" has unknown media type.";  //TODO put in better error handling here
 							if(mediaType!=null) //if we have a media type
 							{
 	Debug.trace("found media type");
 									//create a new OEB item to go in the manifest to represent this object or link targe
 								oebItem=getRDF().locateResource(itemURI);
-//G***del								oebItem=new OEBItem(publication, itemID, hrefRelativePath, mediaType);
 								XPackageUtilities.addLocation(oebItem, hrefRelativePath);  //add the relative href to the item
 /*TODO fix with URF
 								Marmot.addContentType(oebItem, mediaType); //add the content type we determined
@@ -1174,29 +1048,26 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 	Debug.trace("original URL: ", url);
 									if(!outputURL.equals(url))  //if the output file isn't the same as the file we started with
 									{
-	Debug.trace("URLs are different");  //G***del
 										try
 										{
 												//make sure all subdirectories have been created
-											if(outputFile.getParentFile().exists() || outputFile.getParentFile().mkdirs())  //G***probably put this in a FileUtilities
+											if(outputFile.getParentFile().exists() || outputFile.getParentFile().mkdirs())  //TODO probably put this in a FileUtilities
 											{
-	Debug.trace("Created directories");  //G***del
 													//if we're tidying and this is an OEB document, it will be copied automatically;
 													//  otherwise, we'll need to copy it ourselves
 												if(!isTidy() || !mediaType.match(OEB10_DOCUMENT_MEDIA_TYPE))
 												{
-	Debug.trace("ready to copy file");  //G***del
 													NetworkUtilities.copy(url, outputFile); //copy the URL to the output directory
 												}
 											}
 										}
 										catch(IOException ioException)  //if we can't copy the source URL to the destination file
 										{
-											Debug.error(ioException); //G***fix
+											Debug.error(ioException); //TODO fix
 										}
 									}
 								}
-//G***fix								processManifestItem(publication, oebItem);  //process this manifest item
+//TODO fix								processManifestItem(publication, oebItem);  //process this manifest item
 							}
 						}
 					}
@@ -1209,15 +1080,15 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 		}
 		catch(MalformedURLException e)  //if there was an error creating a relative path, the URL is probably an absolute path
 		{
-				Debug.warn(e);  //G***fix
-			//we currently ignore files that are not stored locally G***what should we do with these?
+				Debug.warn(e);  //TODO fix
+			//we currently ignore files that are not stored locally TODO what should we do with these?
 		}
 		return oebItem; //return the item we found or created, or null if we did neither
 	}
 
 	/**Checks to make sure the given OEB item has a supported MIME type. If not,
 		a fallback item is searched for.
-		G***add capability to convert .gif to .png
+		TODO add capability to convert .gif to .png
 		Currently, the following items are checked:
 		<ul>
 		  <li>GIF files are given PNG fallback items of the same name, if such PNG
@@ -1225,11 +1096,10 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 		</ul>
 	@param publication The publication to which the item belongs.
 	@param oebItem The item being processed.
-//G***del if not needed	@exception MalformedURLException Thrown if a an invalid reference is discovered.
 	*/
-	protected void gatherFallbacks(final OEBPublication publication, final OEBItem oebItem) throws MalformedURLException //G***del if not needed throws MalformedURLException, IOException
+	protected void gatherFallbacks(final OEBPublication publication, final OEBItem oebItem) throws MalformedURLException
 	{
-/*G***fix new publication
+/*TODO fix new publication
 		final MediaType mediaType=oebItem.getMediaType(); //get the item's media type
 		if(IMAGE_GIF_MEDIA_TYPE.equals(mediaType))  //if this item is a GIF
 		{
@@ -1238,20 +1108,20 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 			  final URL itemURL=oebItem.getURL(); //get the URL to the item
 				if(URLConstants.FILE_PROTOCOL.equals(itemURL.getProtocol()))  //if this is a local file being gathered into the manifest
 				{
-//G***fix to see if the file exists					final File file=new File(url.getPath());  //create a file from the URL
+//TODO fix to see if the file exists					final File file=new File(url.getPath());  //create a file from the URL
 				  final File file=new File(itemURL.getPath());  //create a file from the URL
-					final File fallbackFile=FileUtilities.changeExtension(file, "png"); //create another file with a reference to a PNG file G***use a constant here
-				  if(!fallbackFile.exists())  //G***testing
-						Debug.notify("Fallback file does not exist: "+fallbackFile); //G***fix better with a warning
+					final File fallbackFile=FileUtilities.changeExtension(file, "png"); //create another file with a reference to a PNG file TODO use a constant here
+				  if(!fallbackFile.exists())  //TODO testing
+						Debug.notify("Fallback file does not exist: "+fallbackFile); //TODO fix better with a warning
 
 					final File hrefFile=new File(oebItem.getHRef());  //create a file from the href
-					final File fallbackHRefFile=FileUtilities.changeExtension(hrefFile, "png"); //create another href with a reference to a PNG file G***use a constant here
+					final File fallbackHRefFile=FileUtilities.changeExtension(hrefFile, "png"); //create another href with a reference to a PNG file TODO use a constant here
 					final String fallbackHRef=fallbackHRefFile.toString();  //convert the file to an href
 
-//G***fix or del						hrefRelativePath=URLUtilities.getRelativePath(publication.getPublicationURL(), url);  //try to create a relative path for the reference
-//G***fix or del						final String itemID=XMLUtilities.createName(hrefRelativePath);  //create an ID from the relative path
-//G***fix or del						if(publication.getManifestItemByID(itemID)==null)  //if there isn't an item already in the manifest with this ID G***this could in some strange circumstances prevent two different paths from being stored, if the slash conversion to underline matches a filename with underlines in the same locations
-//G***fix or del						{
+//TODO fix or del						hrefRelativePath=URLUtilities.getRelativePath(publication.getPublicationURL(), url);  //try to create a relative path for the reference
+//TODO fix or del						final String itemID=XMLUtilities.createName(hrefRelativePath);  //create an ID from the relative path
+//TODO fix or del						if(publication.getManifestItemByID(itemID)==null)  //if there isn't an item already in the manifest with this ID TODO this could in some strange circumstances prevent two different paths from being stored, if the slash conversion to underline matches a filename with underlines in the same locations
+//TODO fix or del						{
 						//create the fallback item
 					final OEBItem fallbackItem=new OEBItem(publication, XMLUtilities.createName(fallbackHRef), fallbackHRef, IMAGE_PNG_MEDIA_TYPE);
 					publication.putManifestItem(fallbackItem); //add the fallback item to the publication's manifest
@@ -1274,29 +1144,22 @@ Debug.trace("Here in gatherReference(), looking at href: ", href); //G***del
 	*/
 	protected void tidyDocument(final OEBPublication publication, final URL itemURL, final Document itemDocument, final File outputFile) throws IOException
 	{
-		final XHTMLTidier xhtmlTidier=new XHTMLTidier(getOptions());  //create a new XHTML tidier G***use a common XHTML tidier
+		final XHTMLTidier xhtmlTidier=new XHTMLTidier(getOptions());  //create a new XHTML tidier TODO use a common XHTML tidier
 		xhtmlTidier.setTitle(getTitle()); //tell the tidier the title, if we know it
 		xhtmlTidier.tidy(itemDocument, outputFile);  //tidy the document, specifying where any CSS file should be written to
 
-//G***use new convenience method to add stylesheet references
+//TODO use new convenience method to add stylesheet references
 
 		final Iterator stylesheetReferenceIterator=styleSheetReferenceList.iterator();  //get an iterator to look through the stylesheet references
 		while(stylesheetReferenceIterator.hasNext())  //while there are more references
 		{
 			final String href=(String)stylesheetReferenceIterator.next(); //get the next reference
-			XMLUtilities.addStyleSheetReference(itemDocument, href, OEB10_CSS_MEDIA_TYPE);  //add the stylesheet to the document G***eventually change to text/css
+			XMLUtilities.addStyleSheetReference(itemDocument, href, OEB10_CSS_MEDIA_TYPE);  //add the stylesheet to the document TODO eventually change to text/css
 		}
 
-		//G***see if we should extract the TOC or not
-		extractTOC(publication, itemURL, itemDocument, outputFile); //G***testing
-/*G***del
-		final File tocFile=new File(FileUtilities.changeExtension(outputFile, "toc.html").getCanonicalPath());  //create a file indicating a table of contents with an .html extension G***use a constant here
-		extractTOC(publication, itemDocument, tocFile); //G***testing
-*/
-
-
-Debug.trace("New tidy file: ", outputFile);  //G***del
-		final File backupFile=new File(outputFile.getParent(), outputFile.getName()+FileConstants.EXTENSION_SEPARATOR+"backup"); //create the backup file object G***use a constant here G***use a standard extension changing routine
+		//TODO see if we should extract the TOC or not
+		extractTOC(publication, itemURL, itemDocument, outputFile); //TODO testing
+		final File backupFile=new File(outputFile.getParent(), outputFile.getName()+FileConstants.EXTENSION_SEPARATOR+"backup"); //create the backup file object TRODO use a constant here TODO use a standard extension changing routine
 		if(backupFile.exists()) //if the  backup file exists
 			backupFile.delete();  //delete the backup file
 		if(!outputFile.exists() || outputFile.renameTo(backupFile)) //try to rename the file to a backup file; if we succeeded (or if the file didn't exist in the first place, meaning we're transferring the file from another location
@@ -1308,12 +1171,6 @@ Debug.trace("Ready to write file to: ", outputFile);
 				getXMLSerializer().serialize(itemDocument, outputStream);	//serialize the document to the output stream
 				outputStream.flush(); //flush the output stream
 			}
-/*G***del when works
-			catch(Exception e)
-			{
-				Debug.error(e); //G***del
-			}
-*/
 			finally
 			{
 				outputStream.close(); //close the stream we were writing to
@@ -1321,31 +1178,27 @@ Debug.trace("Ready to write file to: ", outputFile);
 		}
 	}
 
-	//G***comment
+	//TODO comment
 	protected void extractTOC(final OEBPublication publication, final URL itemURL, final Document itemDocument, final File itemFile) throws IOException
 	{
-/*G***fix new publication
+/*TODO fix new publication
 
-		final File tocFile=new File(FileUtilities.changeExtension(itemFile, "toc.html").getCanonicalPath());  //create a file indicating a table of contents with an .html extension G***use a constant here
+		final File tocFile=new File(FileUtilities.changeExtension(itemFile, "toc.html").getCanonicalPath());  //create a file indicating a table of contents with an .html extension TODO use a constant here
 
-Debug.trace("inside extracttoc with file: ", tocFile);  //G***del
-		final DocumentFragment tocDocumentFragment=extractElementsByClass(itemDocument, "MsoTo"); //extract any table of contents G***use a constant here
-			//G***make sure stylsheet references are carried over
+		final DocumentFragment tocDocumentFragment=extractElementsByClass(itemDocument, "MsoTo"); //extract any table of contents TODO use a constant here
+			//TODO make sure stylsheet references are carried over
 		if(tocDocumentFragment!=null)  //if we found a table of contents
 		{
 			final Document tocDocument=OEBUtilities.createDefaultOEB1Document();  //create a default OEB document
 			//get a reference to the body element
-			final Element bodyElement=(Element)XPath.getNode(tocDocument, XPath.LOCATION_STEP_SEPARATOR_CHAR+ELEMENT_BODY);  //G***what about namespaces?
+			final Element bodyElement=(Element)XPath.getNode(tocDocument, XPath.LOCATION_STEP_SEPARATOR_CHAR+ELEMENT_BODY);  //TODO what about namespaces?
 			Debug.assert(bodyElement!=null, "Missing body element");  //we should always have a body element starting out
 		  tocDocument.importNode(tocDocumentFragment, true); //import the entire table of contents document fragment
 			bodyElement.appendChild(tocDocumentFragment); //append the table of contents document fragment to the new document
-//G***del			XMLUtilities.printTree(tocDocument, System.out);  //G***testing
-//G***del			final File tocFile=new File(FileUtilities.changeExtension(outputFile, "css").getCanonicalPath());  //create a file with a .css extension G***use a constant here
 			XMLUtilities.appendText(bodyElement, "\n");	//append a newline to end the content of the body element
 			XMLUtilities.appendText(tocDocument.getDocumentElement(), "\n");	//append a newline to end the content of the html element
 
-		  convertInternalLinks(tocDocument, itemFile.getName());  //G***testing
-
+		  convertInternalLinks(tocDocument, itemFile.getName());  //TODO testing
 
 				//create an output file stream for writing the table of contents
 			final OutputStream tocOutputStream=new BufferedOutputStream(new FileOutputStream(tocFile));
@@ -1354,10 +1207,9 @@ Debug.trace("inside extracttoc with file: ", tocFile);  //G***del
 				getXMLSerializer().serialize(tocDocument, tocOutputStream);	//serialize the document to the output stream
 				tocOutputStream.flush(); //flush the output stream
 Debug.trace("Ready to gather reference for toc file: ", tocFile.getName());
-				final OEBItem tocItem=gatherReference(publication, itemURL, tocFile.getName(), OEB10_DOCUMENT_MEDIA_TYPE);  //G***fix; testing
-//G***del if not needed				publication.addSpineItem(0, tocItem);  //add the item to the first of the spine
+				final OEBItem tocItem=gatherReference(publication, itemURL, tocFile.getName(), OEB10_DOCUMENT_MEDIA_TYPE);  //TODO fix; testing
 				publication.addSpineItem(0, tocItem);  //add the item to the first of the spine
-				final OEBGuide tocGuide=new OEBGuide(OEBGuide.TOC, "Table of Contents", tocItem.getHRef()); //create a new guide for the table of contents G***i18n
+				final OEBGuide tocGuide=new OEBGuide(OEBGuide.TOC, "Table of Contents", tocItem.getHRef()); //create a new guide for the table of contents TODO i18n
 				publication.addGuide(0, tocGuide); //add this guide to the beginning of our list
 			}
 			finally
@@ -1379,14 +1231,13 @@ Debug.trace("Ready to gather reference for toc file: ", tocFile.getName());
 	*/
 	protected static DocumentFragment extractElementsByClass(final Document itemDocument, final String classSubstring)
 	{
-/*G***fix new publication
+/*TODO fix new publication
 		int startChildIndex=-1; //we don't yet know where we will start
 		int endChildIndex=-1; //we don't yet know where we will end
 		final Element rootElement;  //we'll find a root element from which to search
 		//get a reference to the body element
-		final Element bodyElement=(Element)XPath.getNode(itemDocument, XPath.LOCATION_STEP_SEPARATOR_CHAR+ELEMENT_BODY);  //G***what about namespaces?
-//G***del		Debug.assert(bodyElement!=null, "Missing body element");  //we should always have a body element starting out
-		  //G***see if this is really OEB/XHTML, and only get the body element if so
+		final Element bodyElement=(Element)XPath.getNode(itemDocument, XPath.LOCATION_STEP_SEPARATOR_CHAR+ELEMENT_BODY);  //TODO what about namespaces?
+		  //TODO see if this is really OEB/XHTML, and only get the body element if so
 		rootElement=bodyElement!=null ? bodyElement : itemDocument.getDocumentElement();  //use the body as the root, or if there is no body use the root element of the document
 		final NodeList childNodeList=rootElement.getChildNodes(); //get a list of child nodes
 		final int childCount=childNodeList.getLength(); //see how many child nodes there are
@@ -1398,10 +1249,8 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 			{
 				final Element childElement=(Element)childNode;  //get a reference to this element
 			  final String classAttributeValue=childElement.getAttributeNS(null, XHTMLConstants.ATTRIBUTE_CLASS);  //get the class attribute
-Debug.trace("looking at class attribute value: ", classAttributeValue); //G***del
 				if(StringUtilities.indexOfIgnoreCase(classAttributeValue, classSubstring)>=0) //if this contains the class substring in any case
 				{
-Debug.trace("found TOC class"); //G***del
 					if(startChildIndex<0)  //if we haven't yet found a starting index
 					{
 						startChildIndex=i; //show where we'll start the extraction
@@ -1421,13 +1270,12 @@ Debug.trace("found TOC class"); //G***del
 		{
 			if(endChildIndex<0) //if we didn't find the end of the extraction
 			  endChildIndex=childCount;  //we'll extract all the elements
-Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //G***del
-			return XMLUtilities.extractChildren(rootElement, startChildIndex, endChildIndex);  //extract and return the children G***what about the DOMException?
+			return XMLUtilities.extractChildren(rootElement, startChildIndex, endChildIndex);  //extract and return the children TODO what about the DOMException?
 		}
 		else  //if we didn't find anything to extract
 			return null;  //show that there's nothing to extract
 */
-		return null;  //G***fix
+		return null;  //TODO fix
 	}
 
 	/**Searches a document for all links that are internal (i.e. begin with '#')
@@ -1450,7 +1298,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 		while((node=nodeIterator.nextNode())!=null)  //while we haven't reached the last node
 		{
 		  final Element element=(Element)node;  //cast the node to an element; elements are all we asked for
-		  if(XHTML.isLinkElement(element.getNamespaceURI(), element)) //if this is a link element G***pass the real XHTML namespace
+		  if(XHTML.isLinkElement(element.getNamespaceURI(), element)) //if this is a link element TODO pass the real XHTML namespace
 			{
 				final String href=XHTML.getLinkElementHRef(element.getNamespaceURI(), element);  //get the link element's href
 				if(href!=null)  //if the link has an href
@@ -1470,7 +1318,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 	*/
 	protected static void sortSpineItems(final OEBPublication publication)
 	{
-/*G***fix
+/*TODO fix
 		Collections.sort(publication.getSpineList(), new Comparator() //sort the spine by item HRefs
 			  {
 			    public int compare(Object o1, Object o2) {return ((OEBItem)o1).getHRef().compareTo(((OEBItem)o2).getHRef());}
@@ -1487,7 +1335,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 		while(stylesheetReferenceIterator.hasNext())  //while there are more references
 		{
 			final String href=(String)stylesheetReferenceIterator.next(); //get the next reference
-			XMLUtilities.addStyleSheetReference(document, href, OEB10_CSS_MEDIA_TYPE);  //add the stylesheet to the document G***eventually change to text/css
+			XMLUtilities.addStyleSheetReference(document, href, OEB10_CSS_MEDIA_TYPE);  //add the stylesheet to the document TODO eventually change to text/css
 		}
 	}
 
@@ -1498,7 +1346,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 	*/
 	protected void gatherGuides(final OEBPublication publication, final Document document)
 	{
-				//G***should we gather the title and preface guides somewhere else?
+				//TODO should we gather the title and preface guides somewhere else?
 		try //gather the title page
 		{
 			final URL titlePageURL=getTitlePageURL(); //get the URL to the title page
@@ -1506,14 +1354,13 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 			{
 					//try to create a relative path for the reference
 				final String href=URLUtilities.getRelativePath(getContextURL(), titlePageURL);
-//G***del				final OEBGuide guide=new OEBGuide("title-page", getTitle()!=null ? getTitle()+" (Title Page)" : "Title Page", href); //G***use constants; i18n
-				final OEBGuide guide=new OEBGuide("title-page", "Title Page", href); //G***use constants; i18n
+				final OEBGuide guide=new OEBGuide("title-page", "Title Page", href); //TODO use constants; i18n
 				publication.addGuide(guide);  //add the guide
 			}
 		}
 		catch(MalformedURLException malformedURLException)
 		{
-			Debug.warn(malformedURLException);  //G***fix
+			Debug.warn(malformedURLException);  //TODO fix
 		}
 		try //gather the preface
 		{
@@ -1522,13 +1369,13 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 			{
 					//try to create a relative path for the reference
 				final String href=URLUtilities.getRelativePath(getContextURL(), prefaceURL);
-				final OEBGuide guide=new OEBGuide("preface", "Preface", href); //G***use constants; i18n
+				final OEBGuide guide=new OEBGuide("preface", "Preface", href); //TODO use constants; i18n
 				publication.addGuide(guide);  //add the guide
 			}
 		}
 		catch(MalformedURLException malformedURLException)
 		{
-			Debug.warn(malformedURLException);  //G***fix
+			Debug.warn(malformedURLException);  //TODO fix
 		}
 		int guideCount=0; //we'll keep track of the number of guides we have
 		final Element rootElement=document.getDocumentElement();  //get the root element
@@ -1536,17 +1383,16 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 		Node node;
 		while((node=nodeIterator.nextNode())!=null)  //while we haven't reached the last node
 		{
-//G***del Debug.trace("Node: "+node.getNodeName()+" namespace URI: "+node.getNamespaceURI()); //G***testing
 		  final Element element=(Element)node;  //cast the node to an element; elements are all we asked for
-		  final String elementName=element.getNodeName(); //get the name of the element G***fix for namespaces
-				//see if this is an HTML heading G***have some convenience method; use constants; fix for namespaces
-			final boolean isHTMLHeading=elementName.length()==2 && Character.toLowerCase(elementName.charAt(0))=='h';  //G***use a constant
+		  final String elementName=element.getNodeName(); //get the name of the element TODO fix for namespaces
+				//see if this is an HTML heading TODO have some convenience method; use constants; fix for namespaces
+			final boolean isHTMLHeading=elementName.length()==2 && Character.toLowerCase(elementName.charAt(0))=='h';  //TODO use a constant
 			if(isHTMLHeading) //if this is an HTML heading
 			{
 					//get the class attribute, if it's defined
 				final String elementClass=element.getAttributeNS(null, "class");
 					//see if this is a significant heading
-				final boolean isSignificant=Strings.indexOfIgnoreCase(elementClass, "significant")>=0;  //G***use a constant
+				final boolean isSignificant=Strings.indexOfIgnoreCase(elementClass, "significant")>=0;  //TODO use a constant
 				final String text=XMLUtilities.getText(element, true).trim(); //get the text of the element
 				final boolean hasLetterOrDigit=CharSequences.containsLetterOrDigit(text);  //see if the text has a letter or digit
 				final int headingType=Prose.getHeadingType(text); //see what type of heading this is
@@ -1555,46 +1401,46 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 				if(hasLetterOrDigit && (isSignificant || headingType<=Prose.MAX_SIGNIFICANT_HEADING))
 				{
 					++guideCount; //show that we'll add another guide
-					String id=XMLUtilities.getDefinedAttributeNS(element, null, "id");  //get the ID attribute G***use a constant
+					String id=XMLUtilities.getDefinedAttributeNS(element, null, "id");  //get the ID attribute TODO use a constant
 					if(id==null)  //if this heading doesn't have an ID attribute
 					{
-						id="guide"+guideCount;  //create an ID using this guide number G***use a constant
-						element.setAttributeNS(null, "id", id); //add the ID to the attribute G***use a constant
+						id="guide"+guideCount;  //create an ID using this guide number TODO use a constant
+						element.setAttributeNS(null, "id", id); //add the ID to the attribute TODO use a constant
 					}
 						//create an href to the element within the document
-					final String href=URLUtilities.getFileName(getContextURL())+'#'+id; //G***pass the href; do something better than getContextURL(); use a constant for '#'
+					final String href=URLUtilities.getFileName(getContextURL())+'#'+id; //TODO pass the href; do something better than getContextURL(); use a constant for '#'
 						//get the text of this element, collapsing all whitespace into single spaces
 					final String elementText=Strings.collapseEveryChar(XMLUtilities.getText(element, true), WHITESPACE_CHARS, " ");
 						//making sure it's not too long
-					final String shortText=Strings.truncate(elementText, 32);  //G***use a constant
+					final String shortText=Strings.truncate(elementText, 32);  //TODO use a constant
 						//remove everything but the first line and trim it
 					final String line=Strings.truncateChar(shortText, EOL_CHARS).trim();
 						//if we removed part of the string, indicate as much
-					final String title=line.length()==elementText.length() ? line : line+"..."; //G***use a constant; should we use a real ellipsis?
+					final String title=line.length()==elementText.length() ? line : line+"..."; //TODO use a constant; should we use a real ellipsis?
 					final String guideType; //we'll decide what type of guide this is, based upon whether this is a heading
 						//see what type of heading this is, and use the appropriate guide type, if possible
 					switch(Prose.getHeadingType(elementText))
 					{
 						case Prose.CONTENTS_HEADING:
-							guideType="toc";  //G***use a constant
+							guideType="toc";  //TODO use a constant
 							break;
 						case Prose.PREFACE_HEADING:
-							guideType="preface";  //G***use a constant
+							guideType="preface";  //TODO use a constant
 							break;
 						case Prose.FOREWORD_HEADING:
-							guideType="foreword";  //G***use a constant
+							guideType="foreword";  //TODO use a constant
 							break;
 						case Prose.BIBLIOGRAPHY_HEADING:
-							guideType="bibliography";  //G***use a constant
+							guideType="bibliography";  //TODO use a constant
 							break;
 						case Prose.GLOSSARY_HEADING:
-							guideType="glossary";  //G***use a constant
+							guideType="glossary";  //TODO use a constant
 							break;
 						case Prose.INDEX_HEADING:
-							guideType="index";  //G***use a constant
+							guideType="index";  //TODO use a constant
 							break;
 						default:  //for all other headings, make up a type string
-							guideType="other."+id;  //G***use a constant; i18n
+							guideType="other."+id;  //TODO use a constant; i18n
 							break;
 					}
 						//create a guide from the first line of this element
@@ -1622,15 +1468,15 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 				? getTitle()  //get the title if we can
 				: (filename!=null
 						? filename  //if not, use the filename if we can
-						: (getReferenceURI()!=null ? getReferenceURI().toString() : "(Untitled)"));  //lastly, use the reference URI G***use a constants
+						: (getReferenceURI()!=null ? getReferenceURI().toString() : "(Untitled)"));  //lastly, use the reference URI TODO use a constants
 		  //the author (replacement parameter {1})
 		final String author=getAuthor()!=null ? getAuthor() : "";
 		  //"by" (replacement parameter {2})
 		final String by=getAuthor()!=null ? "by" : "";
 		  //a URL to more information about the book (replacement parameter {3})
 		final String infoURL=isProjectGutenbergEText()  //if this is a Project Gutenberg work
-			  ? "projectgutenbergheader.html" //point to the header we created G***use a constant
-				: URLUtilities.getFileName(getContextURL());  //otherwise, just point to the main content G***does this method always work?
+			  ? "projectgutenbergheader.html" //point to the header we created TODO use a constant
+				: URLUtilities.getFileName(getContextURL());  //otherwise, just point to the main content TODO does this method always work?
 		  //read the template as a string, assuming UTF-8 encoding
 		final String templateString=URLUtilities.readString(templateURL, CharacterEncoding.UTF_8);
 			//store the title and author in the preface, making sure all the content is valid for XML content
@@ -1639,7 +1485,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 						  XMLUtilities.createValidContent(title),
 							XMLUtilities.createValidContent(author),
 							XMLUtilities.createValidContent(by),
-							XMLUtilities.createValidContent(infoURL)}); //G***use constants
+							XMLUtilities.createValidContent(infoURL)}); //TODO use constants
 	  final String templateFilename=URLUtilities.getFileName(templateURL);  //get the filename of the template
 		final File formattedTemplateFile; //we'll find out where to store the formatted template
 		if(getOutputDir()!=null) //if an output directory was specified
@@ -1648,7 +1494,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 		}
 		else  //if an output directory was not specified
 		{
-				//create a file from the context URL G***what if the context URL is not a file?
+				//create a file from the context URL TODO what if the context URL is not a file?
 			formattedTemplateFile=URLUtilities.getFile(URLUtilities.createURL(getContextURL(), templateFilename));
 		}
 			//write the resulting file
@@ -1684,8 +1530,7 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 	*/
 	public static URI createURI(final URI publicationURI, final String href)
 	{
-		return URI.create(publicationURI.toString()+URIConstants.FRAGMENT_SEPARATOR+href); //create a URI in the form publicationURI#href G***fix to check the runtime exception this might throw---and make sure spaces in the fragment won't hurt anything
-		//G***del final String itemID=XMLUtilities.createName(hrefRelativePath);  //create an ID from the relative path
+		return URI.create(publicationURI.toString()+URIConstants.FRAGMENT_SEPARATOR+href); //create a URI in the form publicationURI#href TODO fix to check the runtime exception this might throw---and make sure spaces in the fragment won't hurt anything
 	}
 
 	/**Tries to determine the title from the the first few elements of the
@@ -1695,66 +1540,50 @@ Debug.trace("Found TOC element to extract: ", endChildIndex-startChildIndex); //
 	*/
 	public static String getTitle(final Document xhtmlDocument)
 	{
-//G***del		String title=null;  //we'll try to find a title
-Debug.trace("getting normal title");  //G***del
-		final String BY="by"; //G***put elsewhere
+		final String BY="by"; //TODO put elsewhere
 		final Element bodyElement=XHTML.getBodyElement(xhtmlDocument);  //get the body of the document
 		final NodeList childNodes=bodyElement.getChildNodes();  //get the list of child nodes
 		for(int i=0; i<25 && i<childNodes.getLength(); ++i) //look at each child node
 		{
-//G***del			String lastTitle=null;  //we'll store here every title we find, in case we need it later
 			final Node childNode=childNodes.item(i);  //get this child node
 			if(childNode.getNodeType()==Node.ELEMENT_NODE)  //if this is an element
 			{
 				final Element childElement=(Element)childNode;  //get a reference to this element
 				final String text=XMLUtilities.getText(childElement, true).trim(); //get the trimmed text of the element
-//G***del if not needed				final int lineCount=new StringTokenizer(text, EOL_CHARS).countTokens(); //see how many lines there are
-Debug.trace("looking at text: ", text);  //G***del
 				  //Michael Hart shouldn't be in the title, or even near it (e.g. Project Gutenberg plboss10.txt)
-				if(Strings.indexOfIgnoreCase(text, "Michael S. Hart")<0 //G*** these are last-minute hacks specifically for plboss10.txt
+				if(Strings.indexOfIgnoreCase(text, "Michael S. Hart")<0 //TODO these are last-minute hacks specifically for plboss10.txt
 				  && Strings.indexOfIgnoreCase(text, "405 West")<0
 				  && Strings.indexOfIgnoreCase(text, "Urbana, IL")<0)
 				{
 						//if the text is in uppercase or if it's a title, assume it's the book title if it has at least one letter in it
-	//G***fix				if(StringUtilities.isUpperCase(text) || TextUtilities.getHeadingType(text)!=TextUtilities.NO_HEADING) //G***probably put this routine in some common area
+	//TODO fix				if(StringUtilities.isUpperCase(text) || TextUtilities.getHeadingType(text)!=TextUtilities.NO_HEADING) //TODO probably put this routine in some common area
 					if(CharSequences.containsLetter(text) &&
-							(CharSequences.isUpperCase(text) || Prose.isTitleHeading(text))) //G***probably put this routine in some common area
+							(CharSequences.isUpperCase(text) || Prose.isTitleHeading(text))) //TODO probably put this routine in some common area
 					{
-	Debug.trace("This is a title: ", text);  //G***del
-						String title=text;  //G***fix, tidy
+						String title=text;  //TODO fix, tidy
 							//if this sting starts with "by" and has a period in it, we'll assume it's really an author name (although this test is precarious) (e.g. jjknd10.txt)
 						if(!Strings.startsWithIgnoreCase(title.trim(), "by") || title.indexOf('.')<0)
 						{
-		//G***del System.out.println("looking at title: "+title);
 									//see if "version" appears with a space after it (e.g. not "second version" as in bible11.txt)
-							final int versionIndex=Strings.indexOfIgnoreCase(title, "version "); //G***testing
-		//G***del System.out.println("version index: "+versionIndex);
+							final int versionIndex=Strings.indexOfIgnoreCase(title, "version "); //TODO testing
 							if(versionIndex>=0)
-								title=title.substring(0, versionIndex); //G***testing
-		//G***del System.out.println("new title: "+title);
+								title=title.substring(0, versionIndex); //TODO testing
 								//trim the title of certain delimiters, and then collapse the whitespace
-							title=PGUtilities.tidyTitle(title);  //G***use a common method, not in PGUtilities
-		Debug.trace("after tidying: ", title);  //G***del
+							title=PGUtilities.tidyTitle(title);  //TODO use a common method, not in PGUtilities
 							if(isTitleOrAuthor(title)) //if we have valid title text
 								return title; //assume that's the title
-		/*G***del
-							else  //if this isn't a valid title
-								lastTitle=title;  //save it in
-		*/
 						}
 					}
 				}
 				int byIndex=Strings.indexOfIgnoreCase(text, BY);  //see if "by" is in this string
 				while(byIndex>0)  //if we found "by" and it's not at the first of the line
 				{
-Debug.trace("found by index: ", byIndex); //G***del
 				  if(Characters.isWhitespace(text.charAt(byIndex-1))  //and it's preceded by whitespace
 							&& byIndex+BY.length()<text.length()  //and it's not at the end of the line
 							&& Characters.isWhitespace(text.charAt(byIndex+BY.length())))  //and whitespace comes after it
 					{
-Debug.trace("found by in text: ", text);  //G***del
-							//make sure this isn't "donated by", "scanned by", etc. G***this is duplicated in getTitle() and getAuthor(); combine
-						if((Strings.indexOfIgnoreCase(text, "donated")<0 || Strings.indexOfIgnoreCase(text, "donated")>byIndex)  //G***use constants
+							//make sure this isn't "donated by", "scanned by", etc. TODO this is duplicated in getTitle() and getAuthor(); combine
+						if((Strings.indexOfIgnoreCase(text, "donated")<0 || Strings.indexOfIgnoreCase(text, "donated")>byIndex)  //TODO use constants
 								&& (Strings.indexOfIgnoreCase(text, "contributed")<0 || Strings.indexOfIgnoreCase(text, "contributed")>byIndex)
 								&& (Strings.indexOfIgnoreCase(text, "created")<0 || Strings.indexOfIgnoreCase(text, "created")>byIndex)
 								&& (Strings.indexOfIgnoreCase(text, "contributed")<0 || Strings.indexOfIgnoreCase(text, "contributed")>byIndex)
@@ -1767,14 +1596,13 @@ Debug.trace("found by in text: ", text);  //G***del
 								&& (Strings.indexOfIgnoreCase(text, "typed in")<0 || Strings.indexOfIgnoreCase(text, "typed in")>byIndex))
 						{
 								//get the title and trim it of certain delimiters, and then collapse the whitespace
-							final String title=PGUtilities.tidyTitle(text.substring(0, byIndex));  //G***use a common method, not in PGUtilities
+							final String title=PGUtilities.tidyTitle(text.substring(0, byIndex));  //TODO use a common method, not in PGUtilities
 							if(isTitleOrAuthor(title)) //if we have valid title text
 								return title; //assume that's the title
 						}
 					}
 					byIndex=Strings.indexOfIgnoreCase(text, BY, byIndex+BY.length());  //keep searching after the occurrence
 				}
-//G***del					//if we didn't find "XXX by XXX"
 			}
 		}
 		return null;  //we couldn't find a title
@@ -1787,9 +1615,7 @@ Debug.trace("found by in text: ", text);  //G***del
 	*/
 	public static String getAuthor(final Document xhtmlDocument)
 	{
-Debug.trace("finding normal text author");  //G***del
-//G***del		final String pgAuthor=PGUtilities.getAuthor()
-		final String BY="by"; //G***put elsewhere
+		final String BY="by"; //TODO put elsewhere
 		boolean nextLineIsAuthor=false; //something might make us think at some point that the next line is the author
 		final Element bodyElement=XHTML.getBodyElement(xhtmlDocument);  //get the body of the document
 		final NodeList childNodes=bodyElement.getChildNodes();  //get the list of child nodes
@@ -1805,39 +1631,30 @@ Debug.trace("looking for normal author in text: ", text);
 				{
 Debug.trace("we think this line is the author");
 						//get the author and trim it of certain delimiters, and then collapse the whitespace
-					final String author=PGUtilities.tidyAuthor(text);  //G***use a common method, not in PGUtilities
+					final String author=PGUtilities.tidyAuthor(text);  //TODO use a common method, not in PGUtilities
 Debug.trace("checking next line author: ", author);
 					if(isTitleOrAuthor(author)) //if we have valid author text
 						return author; //assume that's the author
 				}
-//G***del				int byIndex=PGUtilities.getByIndex(text);  //see if "by" is in this string G***use a common routine somewhere else
 				int byIndex=Strings.indexOfIgnoreCase(text, BY);  //see if "by" is in this string
 				while(byIndex>=0)  //if we found "by"
 				{
 Debug.trace("byIndex: "+byIndex);
-//G***del System.out.println("is whitespace after: "+CharacterUtilities.isWhitespace(text.charAt(byIndex+BY.length())));
 						//and it's at the first of the line or preceded by whitespace
 				  if((byIndex==0 || Characters.isWhitespace(text.charAt(byIndex-1)))
 						&& (byIndex+BY.length()==text.length()
 							  || (byIndex+BY.length()<text.length()
 								&& Character.isWhitespace(text.charAt(byIndex+BY.length()))))) //if there is whitespace after "by"
-/*G***del
-							&& byIndex+BY.length()<text.length()  //and it's not at the end of the line
-							&& CharacterUtilities.isWhitespace(text.charAt(byIndex+BY.length())))  //and whitespace comes after it
-*/
 					{
-Debug.trace("by is a word");  //G***del
 						if(BY.equalsIgnoreCase(text.trim()))  //if this is just "by" by itself
 						{
-Debug.trace("is by by itself: ", text); //G***del
 							nextLineIsAuthor=true;  //the next line is the author
 						}
 						else
 						{
-Debug.trace("checking to see if this is an acceptable by");  //G***del
 							boolean isAcceptableBy=true;  //assume this by is OK
 								//words that cannot appear before "by"
-							final String[] UNACCEPTABLE_BY_PREFIXES={"donated", "contributed", "created", //G***use constants
+							final String[] UNACCEPTABLE_BY_PREFIXES={"donated", "contributed", "created", //TODO use constants
 									"delimited", "etext", "prepared", "proofread", "scanned", "typed in",
 									"made available"};
 							for(int phraseWordIndex=UNACCEPTABLE_BY_PREFIXES.length-1; phraseWordIndex>=0; --phraseWordIndex) //look at each string
@@ -1853,7 +1670,6 @@ Debug.trace("checking to see if this is an acceptable by");  //G***del
 											//if there is just whitespace between the word and "by" (e.g. "donated by"), this is unacceptable
 										if(CharSequences.notCharIndexOf(text, WHITESPACE_CHARS, wordIndex+word.length())>=byIndex)
 										{
-Debug.trace("unacceptable because of: ", word); //G***del
 											isAcceptableBy=false; //don't accept this phrase
 											break;  //stop looking for an unacceptable phrase; we just found one
 										}
@@ -1862,41 +1678,25 @@ Debug.trace("unacceptable because of: ", word); //G***del
 							}
 							if(isAcceptableBy)  //if this "by" is acceptable
 							{
-/*G***del
-							//make sure this isn't "donated by", "scanned by", etc. G***this is duplicated in getTitle() and getAuthor(); combine
-						else if(StringUtilities.indexOfIgnoreCase(text, "donated")<0  //G***use constants
-								&& StringUtilities.indexOfIgnoreCase(text, "contributed")<0
-								&& StringUtilities.indexOfIgnoreCase(text, "created")<0
-								&& StringUtilities.indexOfIgnoreCase(text, "delimited")<0
-								&& StringUtilities.indexOfIgnoreCase(text, "etext")<byIndex-16  //G***hack for jjclk10.txt
-								&& StringUtilities.indexOfIgnoreCase(text, "prepared")<0
-								&& StringUtilities.indexOfIgnoreCase(text, "proofread")<0
-								&& StringUtilities.indexOfIgnoreCase(text, "scanned")<0
-								&& StringUtilities.indexOfIgnoreCase(text, "typed in")<0)
-						{
-*/
 								final String authorText=text.substring(byIndex+BY.length());  //get everything after "by"
-	Debug.trace("got author text: ", authorText); //G***del
 								if(CharSequences.charIndexOf(authorText, EOL_CHARS)<0 //if everything's on a single line
 												//or if the other lines are just numbers and hyphens (hack for hrlnd10.txt)
 										|| CharSequences.charIndexOf(Strings.trim(authorText, WHITESPACE_CHARS+"0123456789-"), EOL_CHARS)<0)
 								{
 										//get the author and trim it of certain delimiters, and then collapse the whitespace
-									final String author=PGUtilities.tidyAuthor(authorText);  //G***use a common method, not in PGUtilities
+									final String author=PGUtilities.tidyAuthor(authorText);  //TODO use a common method, not in PGUtilities
 									if(isTitleOrAuthor(author)  //if we have valid author text
-											&& !Strings.startsWithIgnoreCase(author, "author")  //if this wasn't "by author" G***use a constant
-											&& !Strings.startsWithIgnoreCase(author, "the author")  //if this wasn't "by the author" G***use a constant
-											&& !Strings.startsWithIgnoreCase(author, "his wife")  //if this wasn't "by his wife" (e.g. slanr10.txt) G***use a constant
-											&& !Strings.startsWithIgnoreCase(author, "electronic")  //if this wasn't "by electronic mail" G***use a constant
-											&& !Strings.startsWithIgnoreCase(author, "email")  //if this wasn't "by email" G***use a constant
-											&& !Strings.startsWithIgnoreCase(author, "e-mail"))  //if this wasn't "by e-mail" G***use a constant
+											&& !Strings.startsWithIgnoreCase(author, "author")  //if this wasn't "by author" TODO use a constant
+											&& !Strings.startsWithIgnoreCase(author, "the author")  //if this wasn't "by the author" TODO use a constant
+											&& !Strings.startsWithIgnoreCase(author, "his wife")  //if this wasn't "by his wife" (e.g. slanr10.txt) TODO use a constant
+											&& !Strings.startsWithIgnoreCase(author, "electronic")  //if this wasn't "by electronic mail" TODO use a constant
+											&& !Strings.startsWithIgnoreCase(author, "email")  //if this wasn't "by email" TODO use a constant
+											&& !Strings.startsWithIgnoreCase(author, "e-mail"))  //if this wasn't "by e-mail" TODO use a constant
 									{
-	Debug.trace("is author: ", authorText); //G***del
 										return author; //assume that's the author
 									}
-									else if(BY.equalsIgnoreCase(author))  //if this is just "by" by itself G***how did this ever work? we removed by already
+									else if(BY.equalsIgnoreCase(author))  //if this is just "by" by itself TODO how did this ever work? we removed by already
 									{
-	Debug.trace("is by by itself: ", authorText); //G***del
 										nextLineIsAuthor=true;  //the next line is the author
 									}
 								}
@@ -1905,14 +1705,6 @@ Debug.trace("unacceptable because of: ", word); //G***del
 					}
 					byIndex=Strings.indexOfIgnoreCase(text, BY, byIndex+BY.length());  //keep searching after the occurrence
 				}
-/*G***del; not needed
-				final String trimmedText=StringUtilities.trim(text, "*"); //trim the text of asterisks
-					//if this text starts with a Project Gutenberg indicator (last-minute addition for jjstg10.txt) G***it would be better not to have Project Gutenberg-specific checks in this class
-				if(StringUtilities.startsWithIgnoreCase(text, "Project Gutenberg etext of")==0)
-				{
-					final String author=
-				}
-*/
 			}
 		}
 		return null;  //we couldn't find an author
@@ -1924,14 +1716,13 @@ Debug.trace("unacceptable because of: ", word); //G***del
 	*/
 	protected static boolean isTitleOrAuthor(final String string)
 	{
-//G***del Debug.trace("is title or author? ", string);
 			//if the string doesn't have the correct number of characters (this was 64, but huxbr10.txt needs larger for "NOTE ON THE RESEMBLANCES AND DIFFERENCES IN THE STRUCTURE AND THE DEVELOPMENT OF THE BRAIN IN MAN AND APES")
 		if(string.length()==0 || string.length()>=128)
 			return false; //this isn't valid
 				//if the word "copyright" appears in the string
-		if(Strings.indexOfIgnoreCase(string, "copyright")>=0) //G***use a constant
+		if(Strings.indexOfIgnoreCase(string, "copyright")>=0) //TODO use a constant
 			return false; //this isn't valid
-				//if the string only has punctuation G***should we eventually add dependent punctuation to the general punctuation string?
+				//if the string only has punctuation TODO should we eventually add dependent punctuation to the general punctuation string?
 		if(!CharSequences.containsLetterOrDigit(string)) //if there are no letters or digits in the string
 			return false; //this isn't valie
 		return true;  //the string passed all our tests

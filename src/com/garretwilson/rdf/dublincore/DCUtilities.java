@@ -7,10 +7,12 @@ import com.garretwilson.rdf.*;
 import com.globalmentor.text.*;
 import com.globalmentor.util.*;
 
+import static com.garretwilson.rdf.dublincore.DCConstants.*;
+
 /**Utilities for working with Dublin Core stored in RDF.
 @author Garret Wilson
 */
-public class DCUtilities extends RDFUtilities implements DCConstants
+public class DCUtilities extends RDFUtilities
 {
 
 	/**Adds a <code>dc:creator</code> property with the given value to the

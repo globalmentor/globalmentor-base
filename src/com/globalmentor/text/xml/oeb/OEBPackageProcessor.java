@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.text.xml.oeb;
 
 import java.io.*;
@@ -8,14 +24,11 @@ import javax.mail.internet.ContentType;
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.dublincore.DCConstants.*;
-import com.garretwilson.rdf.xpackage.*;
-import static com.garretwilson.rdf.xeb.XEBUtilities.*;
 import static com.garretwilson.rdf.xpackage.XPackageUtilities.*;
 
-import static com.globalmentor.text.xml.oeb.OEBConstants.*;
+import static com.globalmentor.text.xml.oeb.OEB.*;
 
 import com.globalmentor.io.ContentTypes;
-import com.globalmentor.marmot.Marmot;
 import com.globalmentor.text.xml.XMLProcessor;
 import com.globalmentor.text.xml.XMLUtilities;
 import com.globalmentor.text.xml.xpath.XPath;
@@ -60,7 +73,7 @@ public class OEBPackageProcessor
 	@exception IOException Thrown if there is an error reading the package
 		information from the input stream.
 	*/
-	//G***add error reporting to this code
+	//TODO add error reporting to this code
 	public RDF read(final InputStream packageInputStream) throws IOException
 	{
 		return read(packageInputStream, null);  //read the package without knowing the URL
@@ -76,13 +89,10 @@ public class OEBPackageProcessor
 	@exception IOException Thrown if there is an error reading the package
 		information from the input stream.
 	*/
-	//G***add error reporting to this code
+	//TODO add error reporting to this code
 	public RDF read(final InputStream packageInputStream, final URI packageURI) throws IOException
 	{
 		final RDF rdf=new RDF();  //create a new RDF data model
-//TODO del		rdf.registerResourceFactory(OEB1_PACKAGE_NAMESPACE_URI, this);  //register ourselves as a factory for OEB 1.x package resources
-//TODO del		rdf.registerResourceFactory(OEB2_PACKAGE_NAMESPACE_URI, this);  //register ourselves as a factory for OEB 2.x package resources
-Debug.trace("reading package from URI: ", packageURI);  //G***del
 		final Document document=getXMLProcessor().parseDocument(packageInputStream, packageURI);	//parse the package description document
 		document.normalize(); //normalize the package description document
 		try
@@ -119,7 +129,7 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 	{
 		//<package>
 		final Element rootElement=oeb1PackageDocument.getDocumentElement();	//get the root of the package
-		URI publicationReferenceURI=new URI(URIConstants.URN_SCHEME, "local:anonymous:publication", null); //we'll try to find a URI for the publication; start by assuming we won't be successful G***use constants here
+		URI publicationReferenceURI=new URI(URIConstants.URN_SCHEME, "local:anonymous:publication", null); //we'll try to find a URI for the publication; start by assuming we won't be successful TODO use constants here
 		//get a list of all dc:Identifier elements
 		//XPath: /metadata/dc-metadata/dc:Identifier
 		final List<Node> dcIdentifierElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
@@ -134,7 +144,7 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 			final String scheme=dcIdentifierElement.getAttributeNS(null, PKG_METADATA_DC_METADATA_DC_IDENTIFIER_ATTRIBUTE_SCHEME).trim().toLowerCase();
 				//if the scheme indicates that the identifier is a URI, a URL, or a URN,
 				//  or if the identifier starts with "urn:", "http:", or "file:"
-			if(URIConstants.URI_SCHEME.equals(scheme) /*G***del || URIConstants.URL.equals(scheme)*/ || URIConstants.URN_SCHEME.equals(scheme)
+			if(URIConstants.URI_SCHEME.equals(scheme) || URIConstants.URN_SCHEME.equals(scheme)
 				  || dcIdentifierElementText.startsWith(URIConstants.URN_SCHEME+URIConstants.SCHEME_SEPARATOR)
 				  || dcIdentifierElementText.startsWith(URLConstants.HTTP_PROTOCOL+URIConstants.SCHEME_SEPARATOR)
 				  || dcIdentifierElementText.startsWith(URLConstants.FILE_PROTOCOL+URIConstants.SCHEME_SEPARATOR))
@@ -146,7 +156,6 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 			{
 				//create a URI in the form "urn:oeb:identifier"
 				publicationReferenceURI=new URI(URIConstants.URN_SCHEME, "oeb"+URIConstants.SCHEME_SEPARATOR+dcIdentifierElementText, null);
-//G***del when works				publicationReferenceURI=URIConstants.URN+URIConstants.SCHEME_SEPARATOR+"oeb"+URIConstants.SCHEME_SEPARATOR+dcIdentifierElementText;
 			}
 			else  //if this isn't a URI scheme, we'll create a URI from this identifier but keep looking for something better
 			{
@@ -157,7 +166,6 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 					{
 						//use the identifier text as-is, after trimming it, and preface it with "urn:"
 						publicationReferenceURI=new URI(URIConstants.URN_SCHEME, dcIdentifierElementText.trim(), null);
-//G***del when works						publicationReferenceURI=URIConstants.URN+URIConstants.SCHEME_SEPARATOR+dcIdentifierElementText.trim();
 					}
 					else  //if the scheme prefaces the identifier, but isn't in URI form
 					{
@@ -165,14 +173,12 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 						final String identifierText=dcIdentifierElementText.substring(scheme.length()).trim();
 						//create a URI in the form "urn:scheme:identifier"
 						publicationReferenceURI=new URI(URIConstants.URN_SCHEME, scheme+URIConstants.SCHEME_SEPARATOR+identifierText, null);
-//G***del when works						publicationReferenceURI=URIConstants.URN+URIConstants.SCHEME_SEPARATOR+scheme+URIConstants.SCHEME_SEPARATOR+identifierText;
 					}
 				}
 				else  //if the identifier doesn't start the scheme
 				{
 					//create a URI in the form "urn:scheme:identifier"
 					publicationReferenceURI=new URI(URIConstants.URN_SCHEME, scheme+URIConstants.SCHEME_SEPARATOR+dcIdentifierElementText.trim(), null);
-//G***del when works					publicationReferenceURI=URIConstants.URN+URIConstants.SCHEME_SEPARATOR+scheme+URIConstants.SCHEME_SEPARATOR+dcIdentifierElementText.trim();
 				}
 			}
 			//TODO add uuid scheme conversion
@@ -181,7 +187,6 @@ Debug.trace("reading package from URI: ", packageURI);  //G***del
 		final OEBPublication publicationResource=new OEBPublication(publicationReferenceURI);	//create a new OEB publication
 		publicationResource.setRDF(rdf);	//set the publication's RDF data model
 		rdf.addResource(publicationResource);	//add the resource to the RDF data model
-Debug.trace("converting OEB package, created publication resource: ", publicationResource.getClass().getName());  //G***del
 		//XPath: /metadata/dc-metadata/*
 		final List<Node> dcMetadataElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
 			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA+
@@ -201,7 +206,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 			//<package><metadata><dc-metadata><dc:Creator>
 			else if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CREATOR.equals(dcMetadataElementName))
 			{
-				  //G***currently we ignore the file-as and role attributes
+				  //TODO currently we ignore the file-as and role attributes
 				//store the creator as a property of the publication
 				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_CREATOR_PROPERTY_NAME, dcMetadataElementText);
 			}
@@ -255,7 +260,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 			  final String identifier;  //we'll determine the identifier format based upon the scheme
 				  //if the scheme indicates that the identifier is a URI, a URL, or a URN,
 					//  or if the metadata text already begins with the scheme
-				if(URIConstants.URI_SCHEME.equals(scheme) /*G***del || URIConstants.URL.equals(scheme)*/ || URIConstants.URN_SCHEME.equals(scheme)
+				if(URIConstants.URI_SCHEME.equals(scheme) || URIConstants.URN_SCHEME.equals(scheme)
 						|| (dcMetadataElementText.toLowerCase().startsWith(scheme)))
 				{
 				  identifier=dcMetadataElementText;  //we'll store only the identifier as a property of the publication
@@ -298,7 +303,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 				publicationResource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_RIGHTS_PROPERTY_NAME, dcMetadataElementText);
 			}
 		}
-//G***fix fallbacks		final Map fallbackMap=new HashMap();  //create a map to be used for storing references to fallbacks
+//TODO fix fallbacks		final Map fallbackMap=new HashMap();  //create a map to be used for storing references to fallbacks
 		  //add a manifest to the publication
 //TODO fix with URF		final RDFListResource manifestResource=addManifest(publicationResource);
 		//XPath: /manifest/item
@@ -312,17 +317,16 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 		  final String itemHRef=itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_HREF); //get the item href
 		  final ContentType itemMediaType=ContentTypes.createContentType(itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE));  //get the item's media type
 				//create an RDF resource for the item with a type of rdf:resource
-			final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null)); //G***fix the reference URI
-//G***del when not needed		  final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null), XPackageConstants.XPACKAGE_NAMESPACE_URI, XPackageConstants.RESOURCE_TYPE_NAME); //G***fix the reference URI
+			final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null)); //TODO fix the reference URI
 //TODO fix with URF content			Marmot.addContentType(itemResource, itemMediaType); //add the item's content type
 		  addLocation(itemResource, itemHRef); //add the item's href
 //TODO fix with URF		  manifestResource.add(itemResource);  //add the item to the manifest
-/*G***fix fallbacks
+/*TODO fix fallbacks
 			if(itemElement.hasAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_FALLBACK)) //if the element has a fallback attribute
 				fallbackMap.put(oebItem, itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_FALLBACK)); //put the fallback ID in the map, keyed to the item
 */
 		}
-/*G***fix fallbacks
+/*TODO fix fallbacks
 			//resolve all the fallbacks
 		final Iterator manifestIterator=getManifestMap().values().iterator(); //get an iterator to iterate through the manifest items
 		while(manifestIterator.hasNext()) //while there are more items in the manifest
@@ -332,7 +336,7 @@ Debug.trace("converting OEB package, created publication resource: ", publicatio
 			if(fallbackID!=null)  //if there is a fallback ID
 			{
 				final OEBItem fallbackItem=getManifestItemByID(fallbackID); //get the item the fallback ID references
-				Debug.assert(fallbackItem!=null, "Invalid fallback ID: "+fallbackID); //G***fix with a real error message
+				Debug.assert(fallbackItem!=null, "Invalid fallback ID: "+fallbackID); //TODO fix with a real error message
 				oebItem.setFallback(fallbackItem);  //set the resolved fallback item
 			}
 		}
@@ -350,10 +354,9 @@ Debug.trace("looking at spine elements");
 		{
 Debug.trace("looking at spine element: ", i);
 			final Element itemElement=(Element)spineElementList.get(i);	//get a reference to this item in the spine
-//G***del Debug.trace("Found spine element: "+itemElement.getAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF));	//G***del
 		  final String itemIDRef=itemElement.getAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF);  //get the item's idref value
 Debug.trace("idref: ", itemIDRef);
-			final URI itemReferenceURI=new URI(URIConstants.URN_SCHEME, "local:"+itemIDRef, null);  //G***fix the reference URI
+			final URI itemReferenceURI=new URI(URIConstants.URN_SCHEME, "local:"+itemIDRef, null);  //TODO fix the reference URI
 Debug.trace("item reference URI: ", itemReferenceURI);
 /*TODO fix with URF
 			final RDFResource itemResource=manifestResource.getResourceByReferenceURI(itemReferenceURI);	//get the referenced item from the manifest
@@ -365,7 +368,7 @@ Debug.trace("adding item to organization");
 		}
 		publicationResource.setSpine(spine);	//add the spine to the resource
 
-//G***fix with new navigation stuff
+//TODO fix with new navigation stuff
 		//XPath: /guide/reference
 		final List<Node> guideElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
 			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_GUIDE+
@@ -381,7 +384,6 @@ Debug.trace("found guide type: "+type+" title: "+title+" href: "+href);
 			final OEBGuide oebGuide=new OEBGuide(type, title, href); //create a new guide
 			publicationResource.addGuide(oebGuide); //add this guide to our list
 		}
-Debug.trace("converted OEB publication RDF: ", RDFUtilities.toString(rdf)); //G***del
 		return rdf; //return the RDF data model of the publication we created
 	}
 

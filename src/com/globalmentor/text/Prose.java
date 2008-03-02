@@ -486,7 +486,7 @@ public class Prose
 						}
 						else if(isRomanNumerals(numberString))  //if the section label is followed by a Roman numeral
 						{
-							return RomanNumeralUtilities.parseRomanNumerals(numberString);  //return the value of the Roman numerals TODO maybe modularize the Roman numeral routines better at some point
+							return RomanNumerals.parseRomanNumerals(numberString);  //return the value of the Roman numerals TODO maybe modularize the Roman numeral routines better at some point
 						}
 						else  //see if this is a number string
 						{

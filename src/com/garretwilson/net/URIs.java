@@ -13,7 +13,7 @@ import static com.globalmentor.text.CharacterEncoding.*;
 
 import com.globalmentor.io.*;
 import com.globalmentor.java.Integers;
-import com.globalmentor.text.FormatUtilities;
+import com.globalmentor.text.TextFormatter;
 import com.globalmentor.text.SyntaxException;
 import com.globalmentor.text.unicode.UnicodeCharacter;
 import com.globalmentor.util.*;
@@ -39,7 +39,7 @@ public class URIs
 	*/ 
 	public static String createURIList(final URI... uris)
 	{
-		return FormatUtilities.formatList(new StringBuilder(), "\r\n", (Object[])uris).toString();	//create the URI list
+		return TextFormatter.formatList(new StringBuilder(), "\r\n", (Object[])uris).toString();	//create the URI list
 	}
 
 	/**Verifies that the given URI has the indicated scheme.

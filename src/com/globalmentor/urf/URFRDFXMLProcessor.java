@@ -16,7 +16,7 @@ import com.globalmentor.urf.content.Content;
 import com.globalmentor.util.*;
 
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.text.xml.XML.*;
+import static com.globalmentor.text.xml.XMLUtilities.*;
 import static com.globalmentor.text.xml.schema.XMLSchemaConstants.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.dcmi.DCMI.LANGUAGE_PROPERTY_URI;
@@ -532,9 +532,9 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		}
 		else if(LITERAL_PARSE_TYPE.equals(parseType))	//if this is an XMLLiteral
 		{
-			final Document document=XMLUtilities.createDocument(element);	//create a new document from a copy of the given element
+			final Document document=createDocument(element);	//create a new document from a copy of the given element
 			final Element documentElement=document.getDocumentElement();	//get a reference to the document element
-			final DocumentFragment documentFragment=XMLUtilities.extractChildren(documentElement);	//extract the children of the document element to a document fragment
+			final DocumentFragment documentFragment=extractChildren(documentElement);	//extract the children of the document element to a document fragment
 			final String xmlContent=new XMLSerializer(false).serializeContent(documentFragment);	//serialize the element content
 			propertyValue=determineResourceProxy(createStringURI(xmlContent));	//get a proxy to the serialized XML contents
 			final NameValuePair<Resource, Resource>[] scopeChain=new NameValuePair[]{new NameValuePair<Resource, Resource>(propertyResource, propertyValue)};	//create a scope chain consisting of the property literal value assignment			
@@ -624,7 +624,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		}
 		else  //if we didn't find any child elements, the content is a literal
 		{
-			final String childText=XMLUtilities.getText(propertyNode, true);	//retrieve the child text
+			final String childText=getText(propertyNode, true);	//retrieve the child text
 			final String datatype=propertyNode instanceof Element ? getRDFAttribute((Element)propertyNode, ATTRIBUTE_DATATYPE) : null; //get the datatype, if there is one TODO check elsewhere to make sure a datatype isn't given for non-literal content
 			final URI lexicalTypeURI;	//all RDF literals belong in some URF lexical namespace; determine the type URI
 			String languageTag=null;		//there may be a language tag for RDF plain literals
@@ -643,7 +643,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			{
 				lexicalTypeURI=STRING_CLASS_URI;	//RDF plain literals are strings
 					//get the xml:lang language tag, if there is one
-				languageTag=propertyNode instanceof Element ? XMLUtilities.getDefinedAttributeNS((Element)propertyNode, XML_NAMESPACE_URI.toString(), ATTRIBUTE_LANG) : null;
+				languageTag=propertyNode instanceof Element ? getDefinedAttributeNS((Element)propertyNode, XML_NAMESPACE_URI.toString(), ATTRIBUTE_LANG) : null;
 			}
 			final URI valueURI=createLexicalURI(lexicalTypeURI, childText);	//create a URI for the value
 			final Resource valueResource=determineResourceProxy(valueURI);	//determine the value resource from the value URI

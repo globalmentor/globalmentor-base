@@ -1,9 +1,22 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.text.xml;
 
 import java.util.*;
-
-import com.globalmentor.text.xml.XMLUtilities;
-import com.globalmentor.util.Debug;
 
 import org.w3c.dom.*;
 
@@ -14,7 +27,7 @@ public class XMLObjectDecoder
 {
 
 	/**A map of object factories, keyed to namespace URI.*/
-	private final Map xmlObjectFactoryMap=new HashMap();	//TODO change these to URIs eventually, if this code is even useful anymore
+	private final Map<String, XMLObjectFactory> xmlObjectFactoryMap=new HashMap<String, XMLObjectFactory>();	//TODO change these to URIs eventually, if this code is even useful anymore
 
 		/**Registers an object factory to be used to create objects encoded from
 		  elements in the specified namespace. If an object factory is already
@@ -45,7 +58,7 @@ public class XMLObjectDecoder
 	@param document The XML document containing the encoded objects.
 	@return An array of object, each representing an XML element or
 		<code>null</code> if an XML element was not recognized.
-/G***add DOM exception here
+/TODO add DOM exception here
 	*/
 	public Object[] decode(final Document document)
 	{
@@ -66,14 +79,11 @@ public class XMLObjectDecoder
 	@param element The element from which an object should be created.
 	@return An object that represents this XML element, or <code>null</code>
 		if the element was not recognized.
-//G***fix	@exception SOAPException Thrown if there is an error accessing the SOAP body
-//G***fix		element.
+//TODO fix	@exception SOAPException Thrown if there is an error accessing the SOAP body element
 	*/
 	public Object decode(final Element element)
 	{
-Debug.trace("Decoding element: ", element.getNodeName()); //G***del
 		final String namespaceURI=element.getNamespaceURI();  //get the namespace of the element
-Debug.trace("element namespace: ", namespaceURI); //G***del
 		final XMLObjectFactory xmlObjectFactory=getXMLObjectFactory(namespaceURI);  //get a factory based on the namespace
 		if(xmlObjectFactory!=null)  //if we have a factory for creating elements from this namespace
 			return xmlObjectFactory.create(element);  //let the factory create an object from the element

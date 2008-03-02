@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 import static com.globalmentor.io.Files.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.text.RegularExpression.*;
+import static com.globalmentor.text.RegularExpressions.*;
 
 /**Utilities for manipulating Java locales.
 @author Garret Wilson

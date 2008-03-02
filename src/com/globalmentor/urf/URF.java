@@ -24,7 +24,7 @@ import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.util.Collections.*;
 import static com.globalmentor.util.Locales.*;
 
-import com.globalmentor.text.RegularExpression;
+import com.globalmentor.text.RegularExpressions;
 import com.globalmentor.urf.content.*;
 import com.globalmentor.urf.select.Select;
 import com.globalmentor.util.*;
@@ -751,7 +751,7 @@ public class URF
 		<dt>{@value Content#MEDIA_TYPE_NAMESPACE_URI}</dt> <dd>{@link ContentType}</dd>
 		<dt>{@value #ORDINAL_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
 		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Real}</dd>
-		<dt>{@value #REGULAR_EXPRESSION_NAMESPACE_URI}</dt> <dd>{@link RegularExpression}</dd>
+		<dt>{@value #REGULAR_EXPRESSION_NAMESPACE_URI}</dt> <dd>{@link RegularExpressions}</dd>
 		<dt>{@value #STRING_NAMESPACE_URI}</dt> <dd>{@link String}</dd>
 		<dt>{@value #URI_NAMESPACE_URI}</dt> <dd>{@link URI}</dd>
 	</dl>

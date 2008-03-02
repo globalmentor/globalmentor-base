@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.text.directory;
 
 import java.io.Reader;
@@ -135,21 +151,6 @@ public class LineUnfoldParseReader extends ParseReader
 		{
 			setFetchBufferIndex(getFetchBufferIndex()-moveDistance);	//move the fetch buffer index back the same amount as we moved the buffer end index
 		}
-
-//G***del		if(destIndex<getFetchBufferIndex())	//if we didn't process all data, this must not be the end of the data and we were expecting more G***is this necessary? didn't we already move the fetch buffer back a distance that was originally calculated as the difference between destIndex and the fetch buffer? 
-//G***del			setFetchBufferIndex(destIndex);	//show that we should fetch another buffer before processing the remaining character(s)
-/*G***del
-		final int moveDistance=bufferEndIndex-destIndex;	//find out how far to move the buffer pointers back
-		setBufferEndIndex(bufferEndIndex-moveDistance);	//show where the new end of the buffer is
-		setFetchBufferIndex(getFetchBufferIndex()-moveDistance);	//move the fetch buffer index back as well (this may get readjusted even more, below)
-			//G***wouldn't this entire section be better replaced with a simple if(destIndex<getFetchBufferIndex())?
-		if(buffer[destIndex-1]==CR_CHAR)	//if there's a CR at the end of the buffer, this means that we were not out of data but unsure of whether this was a CR/LF
-		{
-				//G***shouldn't this be if(destIndex<getFetchBufferIndex())?
-			if(destIndex>getFetchBufferIndex())	//if currently the fetch buffer is past that CR that we're not sure about
-				setFetchBufferIndex(destIndex);	//show that we should fetch another buffer before processing the CR
-		}
-*/
 	}
 
 }

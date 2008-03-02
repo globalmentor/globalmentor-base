@@ -6,8 +6,6 @@ import javax.activation.*;
 import javax.xml.soap.*;
 import com.globalmentor.activation.ByteArrayDataSource;
 import com.globalmentor.java.*;
-import com.globalmentor.text.xml.XML;
-import com.globalmentor.text.xml.XMLNamespaceProcessor;
 import com.globalmentor.text.xml.XMLUtilities;
 import com.globalmentor.util.Debug;
 
@@ -219,7 +217,7 @@ Debug.trace("SOAP attribute prefix: ", attributeName.getPrefix()!=null?attribute
 		try
 		{
 //G***del Debug.trace("creating SOAP element for element: ", element.getNodeName());  //G***del
-			XMLNamespaceProcessor.ensureNamespaceDeclarations(element); //make sure this element's namespaces are all declared
+			XMLUtilities.ensureNamespaceDeclarations(element); //make sure this element's namespaces are all declared
 				//create a SOAP element
 			final SOAPElement soapElement=parentSOAPElement.addChildElement(element.getLocalName(), element.getPrefix(), element.getNamespaceURI());
 			final NamedNodeMap attributeMap=element.getAttributes();  //get a map of DOM attributes
@@ -237,8 +235,8 @@ Debug.trace("DOM attribute value: ", attribute.getValue()); //G***del
 				  //the Spring 2002 XML pack has a SOAP RI that doesn't correctly
 					//  process attribute namespaces; add hacks to get around this
 				String namespaceURI=attribute.getNamespaceURI();  //get the namespace URI
-				if(XML.XMLNS_NAMESPACE_URI.toString().equals(attribute.getNamespaceURI()) //if this is the xmlns namespace (e.g. xmlns:xxx="")
-						|| XML.XMLNS_NAMESPACE_PREFIX.equals(attribute.getLocalName()) //or if this is the xmlns attribute being defined (e.g. xmlns="")
+				if(XMLUtilities.XMLNS_NAMESPACE_URI.toString().equals(attribute.getNamespaceURI()) //if this is the xmlns namespace (e.g. xmlns:xxx="")
+						|| XMLUtilities.XMLNS_NAMESPACE_PREFIX.equals(attribute.getLocalName()) //or if this is the xmlns attribute being defined (e.g. xmlns="")
 						|| attribute.getNamespaceURI()==null)  //if the attribute has no namespace at all
 				{
 					soapElement.addAttribute(soapEnvelope.createName(XMLUtilities.createQualifiedName(attribute.getPrefix(), attribute.getLocalName())), attribute.getValue());

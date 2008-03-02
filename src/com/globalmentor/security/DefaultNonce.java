@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-import static com.globalmentor.text.FormatUtilities.*;
+import static com.globalmentor.text.TextFormatter.*;
 
 import com.globalmentor.java.CharSequences;
 import com.globalmentor.text.SyntaxException;

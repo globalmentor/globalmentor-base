@@ -1,8 +1,23 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.text.xml;
 
 import java.util.*;
-import com.globalmentor.java.Classes;
-import com.globalmentor.text.xml.XMLUtilities;
+import static com.globalmentor.text.xml.XMLUtilities.*;
 import com.globalmentor.util.Debug;
 
 import org.w3c.dom.*;
@@ -14,7 +29,7 @@ public class XMLObjectEncoder
 {
 
 	/**A map of XML factories, keyed to class package names.*/
-	private final Map objectXMLFactoryMap=new HashMap();
+	private final Map<String, ObjectXMLFactory> objectXMLFactoryMap=new HashMap<String, ObjectXMLFactory>();
 
 		/**Registers an XML factory to be used to create elements encoded from
 		  objects in the specified package. If an XML factory is already
@@ -48,13 +63,10 @@ public class XMLObjectEncoder
 	*/
 	public Document encode(final Object object, final DOMImplementation domImplementation)
 	{
-//G***del Debug.trace("Creating document from XML objects");
 		final Document document=encode(new Object[]{object}, domImplementation);  //store the object in an array and encode it in an XML document, returning the document
-//G***del Debug.trace("getting object element");
 		  //get the first child element of the document element
 		final Element objectElement=(Element)document.getDocumentElement().getChildNodes().item(0);
-//G***del Debug.trace("creating XML document for object element: ", objectElement);
-		return XMLUtilities.createDocument(objectElement);  //create and return a new XML document from the object element
+		return createDocument(objectElement);  //create and return a new XML document from the object element
 	}
 
 	/**Encodes objects and stores them in an XML document as a child elements of
@@ -65,14 +77,13 @@ public class XMLObjectEncoder
 	*/
 	public Document encode(final Object[] objects, final DOMImplementation domImplementation)
 	{
-Debug.trace("ready to encode objects");
-		//create a dummy document in which to store the given message G***fix; use constants
-		final Document document=domImplementation.createDocument(null, "objects", null);  //G***use a constant here
-		final Element documentElement=document.getDocumentElement();	//G***use a constant here
+		//create a dummy document in which to store the given message TODO fix; use constants
+		final Document document=domImplementation.createDocument(null, "objects", null);  //TODO use a constant here
+		final Element documentElement=document.getDocumentElement();
 		for(int i=0; i<objects.length; ++i)  //look at each of the objects
 		{
 			final Element element=encode(objects[i], document); //encode this object to an element
-			if(element!=null) //if we were able to create an element G***fix error handling
+			if(element!=null) //if we were able to create an element TODO fix error handling
 		    documentElement.appendChild(element); //encode this object in an element and add it to the document
 		}
 		return document;  //return the document we created
@@ -85,16 +96,14 @@ Debug.trace("ready to encode objects");
 	*/
 	public Element encode(final Object object, final Document document)
 	{
-Debug.trace("ready to encode object to document");
-//G***bring back when SavaJe works		final String packageName=object.getClass().getPackage().getName();  //get the name of the object's package
 		final String packageName=object.getClass().getPackage().getName();  //get the name of the object's package
 		final ObjectXMLFactory objectXMLFactory=getObjectXMLFactory(packageName);  //get a factory based on the package name
 		if(objectXMLFactory!=null)  //if we have a factory for creating elements from this package
 			return objectXMLFactory.create(object, document);  //let the factory create an element from the object
 		else  //if we don't have an XML factory
 		{
-			Debug.warn("cannot find XML factory for package: "+packageName);  //G***fix
-			return null;  //show that we can't create an element G***fix
+			Debug.warn("cannot find XML factory for package: "+packageName);  //TODO fix
+			return null;  //show that we can't create an element TODO fix
 		}
 	}
 

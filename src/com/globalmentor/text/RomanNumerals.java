@@ -27,7 +27,7 @@ package com.globalmentor.text;
 @see <a href="http://java.oreilly.com/bite-size/java_0698.html">When in Rome....</a>
 @see <a href="http://www.damtp.cam.ac.uk/user/bp10004/cgi_roman.html">Roman numeral conversion</a>
 */
-public class RomanNumeralUtilities
+public class RomanNumerals
 {
 	/**The Roman numerals in lowercase.*/
 	private static final char[] LOWERCASE_ROMAN_NUMERALS={'i', 'v', 'x', 'l', 'c', 'd', 'm'};
@@ -38,7 +38,7 @@ public class RomanNumeralUtilities
 //TODO fix private static final int kLargestDigitIndex = kLowers.length / 2;
 
 	/**Default constructor.*/
-	public RomanNumeralUtilities()
+	public RomanNumerals()
 	{
 	}
 

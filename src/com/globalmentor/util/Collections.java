@@ -18,7 +18,7 @@ package com.globalmentor.util;
 
 import java.util.*;
 
-import static com.globalmentor.text.FormatUtilities.*;
+import static com.globalmentor.text.TextFormatter.*;
 
 /**Various utilities to be used with collections.
 @author Garret Wilson

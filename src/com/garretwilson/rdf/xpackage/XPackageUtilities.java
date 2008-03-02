@@ -12,7 +12,6 @@ import com.garretwilson.rdf.xmlschema.URILiteral;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.xpackage.XPackageConstants.*;
 import com.globalmentor.marmot.Marmot;
-import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.XMLUtilities;
 import com.globalmentor.text.xml.xlink.XLinkConstants;
 import com.globalmentor.util.Debug;
@@ -106,11 +105,11 @@ public class XPackageUtilities
 		  //get the xpackage:description element
 		final Element descriptionElement=document.getDocumentElement();
 		  //add the RDF namespace declaration prefix, xmlns:rdf
-		descriptionElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, RDF_NAMESPACE_PREFIX), RDF_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XMLUtilities.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLUtilities.XMLNS_NAMESPACE_PREFIX, RDF_NAMESPACE_PREFIX), RDF_NAMESPACE_URI.toString());
 		  //add the XPackage namespace declaration prefix, xmlns:xpackage
-		descriptionElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, XPACKAGE_NAMESPACE_PREFIX), XPACKAGE_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XMLUtilities.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLUtilities.XMLNS_NAMESPACE_PREFIX, XPACKAGE_NAMESPACE_PREFIX), XPACKAGE_NAMESPACE_URI.toString());
 		  //add the XLink namespace declaration prefix, xmlns:xlink
-		descriptionElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, XLinkConstants.XLINK_NAMESPACE_PREFIX), XLinkConstants.XLINK_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XMLUtilities.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLUtilities.XMLNS_NAMESPACE_PREFIX, XLinkConstants.XLINK_NAMESPACE_PREFIX), XLinkConstants.XLINK_NAMESPACE_URI.toString());
 		final Element rdfElement=RDFXMLGenerator.createRDFElement(document);  //create an <rdf:RDF> element
 		descriptionElement.appendChild(rdfElement);	//add the RDF element to the document
 		return document;  //return the document we created

@@ -19,7 +19,7 @@ package com.globalmentor.java;
 import java.io.*;
 
 import com.globalmentor.text.CharacterEncoding;
-import com.globalmentor.text.RomanNumeralUtilities;
+import com.globalmentor.text.RomanNumerals;
 
 /**Various utilities and constants for interacting with characters.
 In most cases, names of constants are derived from Unicode names.
@@ -408,7 +408,7 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	*/
 	public static boolean isRomanNumeral(final char c)
 	{
-		return RomanNumeralUtilities.getValue(c)>=0;  //see if the character returns a valid Roman numeral value
+		return RomanNumerals.getValue(c)>=0;  //see if the character returns a valid Roman numeral value
 	}
 
 	/**Specifies whether or not a given character is whitespace.
