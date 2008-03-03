@@ -18,17 +18,14 @@ package com.globalmentor.text.elff;
 
 import java.io.*;
 import java.net.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.globalmentor.util.NameValuePair;
-
-import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.net.URIs.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.StringBuilders.*;
+import static com.globalmentor.net.URIs.*;
+import com.globalmentor.util.NameValuePair;
 import static com.globalmentor.util.Maps.*;
 import static com.globalmentor.util.TimeZones.*;
 

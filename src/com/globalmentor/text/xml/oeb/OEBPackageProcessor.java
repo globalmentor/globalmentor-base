@@ -21,7 +21,6 @@ import java.net.*;
 import java.util.List;
 
 import javax.mail.internet.ContentType;
-import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.dublincore.DCConstants.*;
 import static com.garretwilson.rdf.xpackage.XPackageUtilities.*;
@@ -29,8 +28,8 @@ import static com.garretwilson.rdf.xpackage.XPackageUtilities.*;
 import static com.globalmentor.text.xml.oeb.OEB.*;
 
 import com.globalmentor.io.ContentTypes;
-import com.globalmentor.text.xml.XMLProcessor;
-import com.globalmentor.text.xml.XML;
+import static com.globalmentor.net.URIs.*;
+import com.globalmentor.text.xml.*;
 import com.globalmentor.text.xml.xpath.XPath;
 import com.globalmentor.util.*;
 
@@ -128,7 +127,7 @@ public class OEBPackageProcessor
 	{
 		//<package>
 		final Element rootElement=oeb1PackageDocument.getDocumentElement();	//get the root of the package
-		URI publicationReferenceURI=new URI(URIConstants.URN_SCHEME, "local:anonymous:publication", null); //we'll try to find a URI for the publication; start by assuming we won't be successful TODO use constants here
+		URI publicationReferenceURI=new URI(URN_SCHEME, "local:anonymous:publication", null); //we'll try to find a URI for the publication; start by assuming we won't be successful TODO use constants here
 		//get a list of all dc:Identifier elements
 		//XPath: /metadata/dc-metadata/dc:Identifier
 		final List<Node> dcIdentifierElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
@@ -143,10 +142,11 @@ public class OEBPackageProcessor
 			final String scheme=dcIdentifierElement.getAttributeNS(null, PKG_METADATA_DC_METADATA_DC_IDENTIFIER_ATTRIBUTE_SCHEME).trim().toLowerCase();
 				//if the scheme indicates that the identifier is a URI, a URL, or a URN,
 				//  or if the identifier starts with "urn:", "http:", or "file:"
-			if(URIConstants.URI_SCHEME.equals(scheme) || URIConstants.URN_SCHEME.equals(scheme)
-				  || dcIdentifierElementText.startsWith(URIConstants.URN_SCHEME+URIConstants.SCHEME_SEPARATOR)
-				  || dcIdentifierElementText.startsWith(URLConstants.HTTP_PROTOCOL+URIConstants.SCHEME_SEPARATOR)
-				  || dcIdentifierElementText.startsWith(URLConstants.FILE_PROTOCOL+URIConstants.SCHEME_SEPARATOR))
+			if("uri".equals(scheme) || URN_SCHEME.equals(scheme)	//TODO del "uri" scheme if not needed
+				  || dcIdentifierElementText.startsWith(URN_SCHEME+SCHEME_SEPARATOR)
+				  || dcIdentifierElementText.startsWith(HTTP_SCHEME+SCHEME_SEPARATOR)
+				  || dcIdentifierElementText.startsWith(HTTPS_SCHEME+SCHEME_SEPARATOR)
+				  || dcIdentifierElementText.startsWith(FILE_SCHEME+SCHEME_SEPARATOR))
 			{
 				publicationReferenceURI=new URI(dcIdentifierElementText);  //use the identifier as the publication resource reference URI
 				break;  //we found a URI; stop looking for another
@@ -154,30 +154,30 @@ public class OEBPackageProcessor
 		  else if(scheme.length()==0)  //if there is no scheme
 			{
 				//create a URI in the form "urn:oeb:identifier"
-				publicationReferenceURI=new URI(URIConstants.URN_SCHEME, "oeb"+URIConstants.SCHEME_SEPARATOR+dcIdentifierElementText, null);
+				publicationReferenceURI=new URI(URN_SCHEME, "oeb"+SCHEME_SEPARATOR+dcIdentifierElementText, null);
 			}
 			else  //if this isn't a URI scheme, we'll create a URI from this identifier but keep looking for something better
 			{
 				if((dcIdentifierElementText.toLowerCase().startsWith(scheme)))  //if the identifier starts with the scheme
 				{
 						//if the scheme is followed by a ":"
-					if(dcIdentifierElementText.length()>scheme.length() && dcIdentifierElementText.charAt(scheme.length())==URIConstants.SCHEME_SEPARATOR)
+					if(dcIdentifierElementText.length()>scheme.length() && dcIdentifierElementText.charAt(scheme.length())==SCHEME_SEPARATOR)
 					{
 						//use the identifier text as-is, after trimming it, and preface it with "urn:"
-						publicationReferenceURI=new URI(URIConstants.URN_SCHEME, dcIdentifierElementText.trim(), null);
+						publicationReferenceURI=new URI(URN_SCHEME, dcIdentifierElementText.trim(), null);
 					}
 					else  //if the scheme prefaces the identifier, but isn't in URI form
 					{
 						//remove the scheme from the beginning of the identifier
 						final String identifierText=dcIdentifierElementText.substring(scheme.length()).trim();
 						//create a URI in the form "urn:scheme:identifier"
-						publicationReferenceURI=new URI(URIConstants.URN_SCHEME, scheme+URIConstants.SCHEME_SEPARATOR+identifierText, null);
+						publicationReferenceURI=new URI(URN_SCHEME, scheme+SCHEME_SEPARATOR+identifierText, null);
 					}
 				}
 				else  //if the identifier doesn't start the scheme
 				{
 					//create a URI in the form "urn:scheme:identifier"
-					publicationReferenceURI=new URI(URIConstants.URN_SCHEME, scheme+URIConstants.SCHEME_SEPARATOR+dcIdentifierElementText.trim(), null);
+					publicationReferenceURI=new URI(URN_SCHEME, scheme+SCHEME_SEPARATOR+dcIdentifierElementText.trim(), null);
 				}
 			}
 			//TODO add uuid scheme conversion
@@ -259,7 +259,7 @@ public class OEBPackageProcessor
 			  final String identifier;  //we'll determine the identifier format based upon the scheme
 				  //if the scheme indicates that the identifier is a URI, a URL, or a URN,
 					//  or if the metadata text already begins with the scheme
-				if(URIConstants.URI_SCHEME.equals(scheme) || URIConstants.URN_SCHEME.equals(scheme)
+				if("uri".equals(scheme) || URN_SCHEME.equals(scheme)	//TODO del "uri" scheme if not needed
 						|| (dcMetadataElementText.toLowerCase().startsWith(scheme)))
 				{
 				  identifier=dcMetadataElementText;  //we'll store only the identifier as a property of the publication
@@ -316,7 +316,7 @@ public class OEBPackageProcessor
 		  final String itemHRef=itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_HREF); //get the item href
 		  final ContentType itemMediaType=ContentTypes.createContentType(itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE));  //get the item's media type
 				//create an RDF resource for the item with a type of rdf:resource
-			final RDFResource itemResource=rdf.createResource(new URI(URIConstants.URN_SCHEME, "local:"+itemID, null)); //TODO fix the reference URI
+			final RDFResource itemResource=rdf.createResource(new URI(URN_SCHEME, "local:"+itemID, null)); //TODO fix the reference URI
 //TODO fix with URF content			Marmot.addContentType(itemResource, itemMediaType); //add the item's content type
 		  addLocation(itemResource, itemHRef); //add the item's href
 //TODO fix with URF		  manifestResource.add(itemResource);  //add the item to the manifest
@@ -355,7 +355,7 @@ Debug.trace("looking at spine element: ", i);
 			final Element itemElement=(Element)spineElementList.get(i);	//get a reference to this item in the spine
 		  final String itemIDRef=itemElement.getAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF);  //get the item's idref value
 Debug.trace("idref: ", itemIDRef);
-			final URI itemReferenceURI=new URI(URIConstants.URN_SCHEME, "local:"+itemIDRef, null);  //TODO fix the reference URI
+			final URI itemReferenceURI=new URI(URN_SCHEME, "local:"+itemIDRef, null);  //TODO fix the reference URI
 Debug.trace("item reference URI: ", itemReferenceURI);
 /*TODO fix with URF
 			final RDFResource itemResource=manifestResource.getResourceByReferenceURI(itemReferenceURI);	//get the referenced item from the manifest

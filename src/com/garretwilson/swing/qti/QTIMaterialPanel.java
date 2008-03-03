@@ -6,13 +6,12 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import javax.swing.*;
-//*G**del if not needed import com.garretwilson.awt.ComponentUtilities;
-import com.garretwilson.net.URLConstants;
+
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.assess.qti.*;
-import com.globalmentor.io.Files;
-import com.globalmentor.util.Debug;
+
+import static com.globalmentor.net.URIs.*;
 
 /**Provides a visual editing environment for QTI material.
 @author Garret Wilson
@@ -147,7 +146,7 @@ public class QTIMaterialPanel extends JPanel
 			try
 			{
 				final URL imageURL=new URL(material.getImageURI()); //create a URL from the image reference
-				if(URLConstants.FILE_PROTOCOL.equals(imageURL.getProtocol())) //if this URL contains a file
+				if(FILE_SCHEME.equals(imageURL.getProtocol())) //if this URL contains a file
 				{
 					setImageFile(new File(imageURL.getPath())); //set the file to thta contained in the URL
 				}

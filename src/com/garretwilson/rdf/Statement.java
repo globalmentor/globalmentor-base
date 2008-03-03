@@ -1,6 +1,6 @@
 package com.garretwilson.rdf;
 
-import com.garretwilson.net.Resource;
+import com.globalmentor.net.Resource;
 
 /**Represents a statement in an RDF data model.
 @author Garret Wilson

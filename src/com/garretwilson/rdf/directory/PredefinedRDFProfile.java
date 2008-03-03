@@ -3,12 +3,12 @@ package com.garretwilson.rdf.directory;
 import java.io.*;
 import java.net.URI;
 import java.util.*;
-import com.garretwilson.net.URLUtilities;
 import com.garretwilson.rdf.*;
 
 import static com.globalmentor.text.directory.DirectoryConstants.*;
 
 import com.globalmentor.io.*;
+import com.globalmentor.net.URLUtilities;
 import com.globalmentor.text.directory.*;
 import com.globalmentor.util.*;
 

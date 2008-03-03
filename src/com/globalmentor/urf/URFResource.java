@@ -2,7 +2,7 @@ package com.globalmentor.urf;
 
 import java.net.URI;
 
-import com.garretwilson.net.Resource;
+import com.globalmentor.net.Resource;
 
 /**An URF resource.
 <p>Copyright © 2007 GlobalMentor, Inc.

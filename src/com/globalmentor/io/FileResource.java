@@ -23,7 +23,7 @@ import static java.util.Collections.*;
 
 import static com.globalmentor.java.Objects.*;
 
-import com.garretwilson.net.DefaultResource;
+import com.globalmentor.net.DefaultResource;
 
 /**A resource accessible by a file.
 The file may or may not have the same URI as the resource.

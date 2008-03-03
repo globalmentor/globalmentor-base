@@ -4,13 +4,13 @@ import java.lang.reflect.*;
 import java.net.URI;
 import java.util.*;
 
-import com.garretwilson.net.*;
 
 import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.ploop.PLOOP.*;
 
+import com.globalmentor.net.*;
 import com.globalmentor.urf.*;
 import com.guiseframework.style.Color;
 import com.guiseframework.style.RGBColor;

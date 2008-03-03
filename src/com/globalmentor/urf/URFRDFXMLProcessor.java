@@ -5,18 +5,18 @@ import java.util.*;
 
 import static java.util.Collections.*;
 
-import com.garretwilson.net.*;
-import static com.garretwilson.net.URIs.*;
 import com.garretwilson.rdf.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
 
+import com.globalmentor.net.*;
 import com.globalmentor.text.xml.*;
 import static com.globalmentor.text.xml.schema.XMLSchema.*;
 import com.globalmentor.urf.content.Content;
 import com.globalmentor.util.*;
 
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.text.xml.XML.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.dcmi.DCMI.LANGUAGE_PROPERTY_URI;

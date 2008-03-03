@@ -21,7 +21,7 @@ import java.io.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.StringBuilders.*;
-import static com.globalmentor.text.csv.CSVConstants.*;
+import static com.globalmentor.text.csv.CSV.*;
 
 /**Serializes Comma Separated Value (CSV) information
 @author Garret Wilson

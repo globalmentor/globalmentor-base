@@ -1,7 +1,7 @@
 package com.garretwilson.rdf;
 
-import com.garretwilson.net.Resource;
 import com.globalmentor.java.Objects;
+import com.globalmentor.net.Resource;
 
 /**A default implementation of a statement in an RDF data model.
 @author Garret Wilson

@@ -5,7 +5,7 @@ import java.nio.charset.Charset;
 
 import javax.mail.internet.ContentType;
 
-import com.garretwilson.net.Resource;
+import com.globalmentor.net.Resource;
 import com.globalmentor.urf.*;
 
 import static com.globalmentor.io.ContentTypes.*;

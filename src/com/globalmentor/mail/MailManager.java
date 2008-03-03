@@ -21,7 +21,7 @@ import java.util.concurrent.*;
 
 import javax.mail.*;
 
-import static com.globalmentor.mail.MailConstants.*;
+import static com.globalmentor.mail.Mail.*;
 
 /**A class for managing mail with asynchronous sending.
 @author Garret Wilson
@@ -54,7 +54,7 @@ public class MailManager
 		public Thread getSendThread() {return sendThread;}
 
 	/**Properties constructor.
-	The transport protocol should be specified in the {@value MailConstants#MAIL_TRANSPORT_PROTOCOL_PROPERTY} property.	
+	The transport protocol should be specified in the {@value Mail#MAIL_TRANSPORT_PROTOCOL_PROPERTY} property.	
 	Besides the default JavaMail properties, this implementation expects the mail authentication user to be specified in the <code>mail.<var>transport</var>.user</code> property
 	and the mail authentication password to be specified in the <code>mail.<var>transport</var>.password</code> property
 	@param properties The JavaMail properties used to initialize the mail session.

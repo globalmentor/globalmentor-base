@@ -3,14 +3,13 @@ package com.globalmentor.urf.vcard;
 import java.net.URI;
 import java.util.Locale;
 
-import com.garretwilson.net.URIConstants;
-import static com.garretwilson.net.URIConstants.*;
-
+import com.globalmentor.net.URIs;
 import com.globalmentor.text.directory.vcard.Name;
 import com.globalmentor.urf.*;
 
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.text.directory.vcard.VCardConstants.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.dcmi.DCMI.*;
@@ -133,7 +132,7 @@ public class VCard
 	@param resource The resource the email of which to set.
 	@param emailURI The URI expressing the email to set.
 	@exception NullPointerException if the given resource and/or email URI is <code>null</code>.
-	@exception IllegalArgumentException if the given email URI does not have a scheme of {@value URIConstants#MAILTO_SCHEME}.
+	@exception IllegalArgumentException if the given email URI does not have a scheme of {@value URIs#MAILTO_SCHEME}.
 	*/
 	public static void setEmail(final URFResource resource, final URI emailURI)
 	{

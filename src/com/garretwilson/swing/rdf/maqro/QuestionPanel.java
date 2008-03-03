@@ -9,12 +9,12 @@ import java.util.*;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.model.ResourceModel;
-import com.garretwilson.net.Resource;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.BorderUtilities;
+import com.globalmentor.net.Resource;
 import com.globalmentor.util.Collections;
 
 /**Panel for editing a MAQRO question.

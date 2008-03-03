@@ -6,8 +6,9 @@ import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.globalmentor.java.*;
+import com.globalmentor.net.*;
+
 import static com.globalmentor.java.Objects.*;
-import com.garretwilson.net.*;
 import com.globalmentor.util.*;
 import static com.globalmentor.urf.URF.*;
 

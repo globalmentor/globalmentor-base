@@ -3,7 +3,7 @@ package com.garretwilson.rdf;
 import java.net.URI;
 import java.util.*;
 
-import com.garretwilson.net.Resource;
+import com.globalmentor.net.Resource;
 
 /**Represents an RDF resource connected in an RDF graph.
 @author Garret Wilson

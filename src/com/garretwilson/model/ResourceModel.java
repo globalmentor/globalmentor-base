@@ -1,8 +1,8 @@
 package com.garretwilson.model;
 
 import java.net.URI;
-import com.garretwilson.net.Resource;
 import com.globalmentor.io.*;
+import com.globalmentor.net.Resource;
 
 import static com.globalmentor.java.Classes.*;
 

@@ -19,10 +19,9 @@ package com.globalmentor.io;
 import java.io.*;
 import java.net.URI;
 
-import static com.garretwilson.net.URIConstants.*;
-
-import com.garretwilson.net.http.*;
 import com.globalmentor.beans.BoundPropertyObject;
+import static com.globalmentor.net.URIs.*;
+import com.globalmentor.net.http.*;
 
 /**Default implementation of a class that allows access to resources by
 	providing input streams and indicating a base URI against which relative URIs

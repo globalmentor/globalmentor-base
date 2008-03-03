@@ -10,21 +10,17 @@ import java.util.regex.*;
 
 import javax.mail.internet.ContentType;
 
-import com.garretwilson.net.*;
-import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.net.URIs.*;
-
-import com.globalmentor.java.*;
-
 import static com.globalmentor.io.Charsets.*;
+import com.globalmentor.java.*;
 import static com.globalmentor.java.Booleans.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
+import com.globalmentor.net.*;
+import static com.globalmentor.net.URIs.*;
+import com.globalmentor.text.RegularExpressions;
 import static com.globalmentor.util.Collections.*;
 import static com.globalmentor.util.Locales.*;
-
-import com.globalmentor.text.RegularExpressions;
 import com.globalmentor.urf.content.*;
 import com.globalmentor.urf.select.Select;
 import com.globalmentor.util.*;
@@ -592,12 +588,12 @@ public class URF
 	</dl>
 	This method can return resource URIs using the following schemes for objects of the following types:
 	<dl>
-		<dt>{@link Class}</dt> <dd>{@value URIConstants#JAVA_SCHEME}</dd>
-		<dt>{@link Package}</dt> <dd>{@value URIConstants#JAVA_SCHEME}</dd>
+		<dt>{@link Class}</dt> <dd>{@value URIs#JAVA_SCHEME}</dd>
+		<dt>{@link Package}</dt> <dd>{@value URIs#JAVA_SCHEME}</dd>
 	</dl>
 	This method can return lexical resource URIs with lexical type URIs using the following schemes for objects of the following types:
 	<dl>
-		<dt>{@link Class} subclass of {@link Enum}</dt> <dd>{@value URIConstants#JAVA_SCHEME}</dd>
+		<dt>{@link Class} subclass of {@link Enum}</dt> <dd>{@value URIs#JAVA_SCHEME}</dd>
 	</dl>
 	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
 	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
@@ -757,12 +753,12 @@ public class URF
 	</dl>
 	This method can return objects for the resources with URIs of the following schemes:
 	<dl>
-		<dt>{@value URIConstants#JAVA_SCHEME}</dt> <dd>{@link Class}</dd>
+		<dt>{@value URIs#JAVA_SCHEME}</dt> <dd>{@link Class}</dd>
 		<dt>{@value URIs#PATH_SCHEME}</dt> <dd>{@link URIPath}</dd>
 	</dl>
 	This method can return objects for the resources with lexical URIs with lexical type URIs of the following schemes:
 	<dl>
-		<dt>{@value URIConstants#JAVA_SCHEME} indicating subclass of {@link Enum}</dt> <dd>{@link Enum}</dd>
+		<dt>{@value URIs#JAVA_SCHEME} indicating subclass of {@link Enum}</dt> <dd>{@link Enum}</dd>
 	</dl>
 	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
 	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
@@ -944,7 +940,7 @@ public class URF
 	}
 
 	/**Determines the Java class represented by the given resource.
-	A resource represents a Java class if it has a {@value URIConstants#JAVA_SCHEME} scheme URI
+	A resource represents a Java class if it has a {@value URIs#JAVA_SCHEME} scheme URI
 	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.	
 	@param resource The resource which is expected to represent a Java class, or <code>null</code>.
 	@return The Java class represented by the given resource, or <code>null</code> if the resource does not represent a Java class.

@@ -19,9 +19,8 @@ package com.globalmentor.util;
 import java.net.URI;
 import java.util.UUID;
 
-import static com.garretwilson.net.URIConstants.*;
-import static com.garretwilson.net.URIs.*;
 import static com.globalmentor.java.StringBuilders.*;
+import static com.globalmentor.net.URIs.*;
 
 /**Utilities for manipulating a universally unique identifier (UUID).
 @author Garret Wilson 

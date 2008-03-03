@@ -26,21 +26,18 @@ import java.util.regex.*;
 
 import javax.mail.internet.*;
 
-import static com.garretwilson.net.URLUtilities.*;
-
-import com.garretwilson.net.URIConstants;
-import static com.garretwilson.net.URIs.*;
-
 import static com.globalmentor.io.ContentTypeConstants.*;
 import static com.globalmentor.io.FileConstants.*;
 import static com.globalmentor.io.Files.*;
-import static com.globalmentor.io.OutputStreams.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
+import static com.globalmentor.net.URIs.*;
+import static com.globalmentor.net.URLUtilities.*;
 
-import com.garretwilson.net.URIPath;
 import com.globalmentor.io.ContentTypes;
 import com.globalmentor.io.InputStreams;
+import com.globalmentor.net.URIPath;
+import com.globalmentor.net.URIs;
 import com.globalmentor.util.NameValuePair;
 
 /**Utilities for manipulating Java classes.
@@ -68,13 +65,13 @@ public class Classes
 	private Classes() {}
 
 	/**Determines the Java class represented by the given URI.
-	A URI represents a Java class if it has a {@value URIConstants#JAVA_SCHEME} scheme
+	A URI represents a Java class if it has a {@value URIs#JAVA_SCHEME} scheme
 	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.	
 	@param resourceURI The URI which is expected to represent a Java class, or <code>null</code>.
 	@return The Java class represented by the given URI, or <code>null</code> if the URI is not a <code>java:</code> URI.
 	@exception IllegalArgumentException if the given URI represents a Java class that does not have the correct syntax.
 	@exception ClassNotFoundException if the class represented by the given URI could not be found.
-	@see URIConstants#JAVA_SCHEME
+	@see URIs#JAVA_SCHEME
 	*/
 	public static Class<?> asClass(final URI resourceURI) throws ClassNotFoundException
 	{
@@ -100,7 +97,7 @@ public class Classes
 		return null;	//no class could be found
 	}
 
-	/**Creates a Java URI for a Java package using the {@value URIConstants#JAVA_SCHEME} scheme
+	/**Creates a Java URI for a Java package using the {@value URIs#JAVA_SCHEME} scheme
 	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/</code>.
 	@param objectPackage The package to use in creating the <code>java:</code> URI.
 	@return A <code>java:</code> URI based upon the given class.
@@ -112,7 +109,7 @@ public class Classes
 		return URI.create(JAVA_SCHEME+SCHEME_SEPARATOR+ROOT_PATH+packagePath+PATH_SEPARATOR);	//create and return a new Java URI for the package
 	}
 
-	/**Creates a Java URI for a Java class using the {@value URIConstants#JAVA_SCHEME} scheme
+	/**Creates a Java URI for a Java class using the {@value URIs#JAVA_SCHEME} scheme
 	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.
 	@param objectClass The class to use in creating the <code>java:</code> URI.
 	@return A <code>java:</code> URI based upon the given class.

@@ -4,10 +4,10 @@ import java.lang.ref.*;
 import java.net.URI;
 import java.util.*;
 
-import com.garretwilson.net.BoundPropertyResource;
 
 import static com.garretwilson.rdf.RDFUtilities.*;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
+import com.globalmentor.net.BoundPropertyResource;
 import com.globalmentor.util.Arrays;
 
 /**Represents the default implementation of an RDF resource.

@@ -21,13 +21,15 @@ import java.net.*;
 import java.text.MessageFormat;
 import java.util.*;
 import javax.mail.internet.ContentType;
-import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.*;
 import com.garretwilson.rdf.xpackage.*;
 
 import com.globalmentor.io.*;
 import com.globalmentor.java.*;
+import static com.globalmentor.java.Characters.*;
+import com.globalmentor.net.*;
+import static com.globalmentor.net.URIs.*;
 import com.globalmentor.text.*;
 import com.globalmentor.text.xml.*;
 import static com.globalmentor.text.xml.xhtml.XHTML.*;
@@ -37,8 +39,6 @@ import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
-
-import static com.globalmentor.java.Characters.*;
 
 /**Creates an OEB publication by gathering all source files from a directory.
 	If the tidy option is turned on, each document in the manifest will be loaded,
@@ -1302,7 +1302,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 				final String href=getLinkElementHRef(element.getNamespaceURI(), element);  //get the link element's href
 				if(href!=null)  //if the link has an href
 				{
-					if(href.length()>0 && href.charAt(0)==URLConstants.FRAGMENT_SEPARATOR_CHAR) //if this link is an internal reference
+					if(href.length()>0 && href.charAt(0)==FRAGMENT_SEPARATOR) //if this link is an internal reference
 					{
 					  setLinkElementHRef(element.getNamespaceURI(), element, externalHRef+href); //prepend the local reference with the external reference
 					}
@@ -1529,7 +1529,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 	*/
 	public static URI createURI(final URI publicationURI, final String href)
 	{
-		return URI.create(publicationURI.toString()+URIConstants.FRAGMENT_SEPARATOR+href); //create a URI in the form publicationURI#href TODO fix to check the runtime exception this might throw---and make sure spaces in the fragment won't hurt anything
+		return URI.create(publicationURI.toString()+FRAGMENT_SEPARATOR+href); //create a URI in the form publicationURI#href TODO fix to check the runtime exception this might throw---and make sure spaces in the fragment won't hurt anything
 	}
 
 	/**Tries to determine the title from the the first few elements of the

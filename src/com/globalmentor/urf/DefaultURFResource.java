@@ -3,8 +3,8 @@ package com.globalmentor.urf;
 import java.net.URI;
 import java.util.concurrent.locks.*;
 
-import com.garretwilson.net.URIs;
 import com.globalmentor.java.Longs;
+import com.globalmentor.net.URIs;
 
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;

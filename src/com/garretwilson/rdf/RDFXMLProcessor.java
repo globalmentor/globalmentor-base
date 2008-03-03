@@ -3,19 +3,14 @@ package com.garretwilson.rdf;
 import java.net.*;
 import java.util.*;
 
-
-import com.garretwilson.net.*;
-import static com.garretwilson.net.URIs.*;
-import static com.garretwilson.net.URIConstants.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
-import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.net.URIs.*;
 
-import com.globalmentor.text.xml.XMLBase;
-import com.globalmentor.text.xml.XML;
-import com.globalmentor.util.Debug;
-import com.globalmentor.util.Locales;
+import com.globalmentor.net.*;
+import com.globalmentor.text.xml.*;
+import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
 
@@ -242,7 +237,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		else if(anchorID!=null)  //if there is an anchor ID
 		{
 //G***del Debug.trace("found anchor ID: ", anchorID);  //G***del
-			referenceURI=new URI(XMLBase.getBaseURI(element, getBaseURI()).toString()+URIConstants.FRAGMENT_SEPARATOR+anchorID);  //create a reference URI from the document base URI and the anchor ID	//G***make better with new URI methods
+			referenceURI=new URI(XMLBase.getBaseURI(element, getBaseURI()).toString()+FRAGMENT_SEPARATOR+anchorID);  //create a reference URI from the document base URI and the anchor ID	//G***make better with new URI methods
 		}
 		else  //if there is neither a resource ID nor an anchor ID
 		{

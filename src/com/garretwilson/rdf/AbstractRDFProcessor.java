@@ -3,12 +3,12 @@ package com.garretwilson.rdf;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import com.garretwilson.net.DefaultResource;
-import com.garretwilson.net.Resource;
 
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import com.globalmentor.java.Java;
+import com.globalmentor.net.DefaultResource;
+import com.globalmentor.net.Resource;
 import com.globalmentor.util.Debug;
 
 /**Base class for RDF processors.

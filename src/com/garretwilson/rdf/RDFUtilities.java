@@ -9,7 +9,6 @@ import java.util.*;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import com.garretwilson.net.URIConstants;
 import com.garretwilson.rdf.rdfs.RDFSUtilities;
 import com.garretwilson.rdf.xmlschema.StringLiteral;
 import com.garretwilson.rdf.xmlschema.URILiteral;
@@ -17,6 +16,7 @@ import com.garretwilson.rdf.xmlschema.URILiteral;
 import static com.garretwilson.rdf.RDFConstants.*;
 import static com.globalmentor.java.Objects.*;
 
+import com.globalmentor.net.URIs;
 import com.globalmentor.text.W3CDateFormat;
 import com.globalmentor.text.xml.XML;
 
@@ -672,7 +672,7 @@ public class RDFUtilities
 		for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
 		{
 			final char character=referenceURIString.charAt(i);	//get this character
-			if(!XML.isNameChar(character) && character!=URIConstants.ESCAPE_CHAR)	//if this is not a name character (but it isn't the URI escape character, either)
+			if(!XML.isNameChar(character) && character!=URIs.ESCAPE_CHAR)	//if this is not a name character (but it isn't the URI escape character, either)
 			{
 				return URI.create(referenceURIString.substring(0, i+1));	//create a URI using everything up to and including the last non-XML name character
 			}
@@ -707,7 +707,7 @@ public class RDFUtilities
 		for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
 		{
 			final char character=referenceURIString.charAt(i);	//get this character
-			if(!XML.isNameChar(character) && character!=URIConstants.ESCAPE_CHAR)	//if this is not a name character (but it isn't the URI escape character, either)
+			if(!XML.isNameChar(character) && character!=URIs.ESCAPE_CHAR)	//if this is not a name character (but it isn't the URI escape character, either)
 			{
 				return referenceURIString.substring(i+1);	//create a local name using everything after the last non-XML name character
 			}

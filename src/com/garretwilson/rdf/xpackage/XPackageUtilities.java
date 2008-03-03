@@ -4,7 +4,6 @@ import java.net.*;
 import java.util.Iterator;
 import java.util.List;
 
-import com.garretwilson.net.*;
 import static com.garretwilson.rdf.RDFConstants.*;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.xmlschema.URILiteral;
@@ -12,6 +11,7 @@ import com.garretwilson.rdf.xmlschema.URILiteral;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.xpackage.XPackageConstants.*;
 import com.globalmentor.marmot.Marmot;
+import com.globalmentor.net.*;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xlink.XLink;
 import com.globalmentor.util.Debug;

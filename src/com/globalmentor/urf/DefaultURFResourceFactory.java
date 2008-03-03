@@ -6,8 +6,7 @@ import java.util.Locale;
 
 import javax.mail.internet.ContentType;
 
-import static com.garretwilson.net.URIConstants.*;
-
+import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.util.Locales.*;
 

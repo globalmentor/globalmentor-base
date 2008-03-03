@@ -3,21 +3,17 @@ package com.garretwilson.rdf.directory.vcard;
 import java.net.URI;
 import java.util.Locale;
 
-
-import static com.garretwilson.net.URIConstants.*;
-
-import com.garretwilson.net.URIConstants;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.directory.Directory;
-
 import static com.garretwilson.rdf.rdfs.RDFSUtilities.*;
 
-
+import com.globalmentor.net.URIs;
 import com.globalmentor.text.directory.vcard.Name;
 import com.globalmentor.util.NameValuePair;
 
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.text.directory.vcard.VCardConstants.*;
 import static com.globalmentor.util.Arrays.*;
 
@@ -198,7 +194,7 @@ public class VCard extends Directory
 	@param emailURI The URI expressing the email to set.
 	@return The resource value used to represent the email.
 	@exception NullPointerException if the given resource and/or email URI is <code>null</code>.
-	@exception IllegalArgumentException if the given email URI does not have a scheme of {@value URIConstants#MAILTO_SCHEME}.
+	@exception IllegalArgumentException if the given email URI does not have a scheme of {@value URIs#MAILTO_SCHEME}.
 	*/
 	public static RDFResource setEmail(final RDFResource resource, final URI emailURI)
 	{

@@ -6,17 +6,17 @@ import java.net.*;
 import java.util.*;
 import static java.util.Collections.*;
 
-import com.garretwilson.net.*;
 
-import static com.garretwilson.net.URIs.*;
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.iso.ISO8601.*;
 import static com.globalmentor.java.Characters.*;
+import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.text.CharacterEncoding.*;
 import static com.globalmentor.urf.TURF.*;
 import static com.globalmentor.urf.URF.*;
 
 import com.globalmentor.io.ParseIOException;
+import com.globalmentor.net.*;
 import com.globalmentor.util.*;
 
 /**Constructs an URF data instance from a TURF representation.

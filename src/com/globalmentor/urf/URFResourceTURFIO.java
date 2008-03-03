@@ -3,8 +3,8 @@ package com.globalmentor.urf;
 import java.io.*;
 import java.net.*;
 
-import static com.garretwilson.net.URIs.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.net.URIs.*;
 
 /**Class for saving and loading an URF resource by its reference URI.
 Whenever an URF instance is read, a resource will be retrieved using the given URI, resolved against the given base URI if one is available.
