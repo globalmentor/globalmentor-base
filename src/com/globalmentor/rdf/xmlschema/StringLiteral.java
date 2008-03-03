@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.rdf.xmlschema;
 
 import com.globalmentor.rdf.*;
@@ -19,44 +35,4 @@ public class StringLiteral extends RDFTypedLiteral<String>
 		super(string, STRING_DATATYPE_URI);	//save the string object as the value, specifying the XML Schema boolean datatype URI
 	}
 
-	/**Determines if the RDF object is a string literal and, if so, casts the object to string boolean literal and returns it.
-	@param rdfObject The RDF object in question.
-	@return The RDF object as a string literal, or <code>null</code> if the object is not a string literal or the object is <code>null</code>.
-	*/
-/*TODO del if not needed
-	public static StringLiteral asStringLiteral(final RDFObject rdfObject)
-	{
-		return asInstance(rdfObject, StringLiteral.class);	//cast the object to a string literal if we can
-	}
-*/
-
-	/**Determines if the RDF object is a string literal and, if so, casts the 
-		object to a string literal and returns its value; otherwise, returns
-		<code>false</code>.
-	@param rdfObject The RDF object in question.
-	@return The boolean value of the boolean literal, or <code>false</code> if the
-		object is not a boolean literal or the object is <code>null</code>.
-	*/
-/*TODO del if not needed
-	public static boolean asBooleanValue(final RDFObject rdfObject)
-	{
-		return asBooleanValue(rdfObject, false);	//return the boolean value, defaulting to false if the given object is not a boolean literal
-	}
-*/
-
-	/**Determines if the RDF object is a boolean literal and, if so, casts the 
-		object to a boolean literal and returns its value; otherwise, returns
-		the given default.
-	@param rdfObject The RDF object in question.
-	@param defaultValue The default boolean value to return if the object is not a boolean literal.
-	@return The boolean value of the boolean literal, or <var>defaultValue</var> if the
-		object is not a boolean literal or the object is <code>null</code>.
-	*/
-/*TODO del if not needed
-	public static boolean asBooleanValue(final RDFObject rdfObject, final boolean defaultValue)
-	{
-		final BooleanLiteral booleanLiteral=asBooleanLiteral(rdfObject);	//cast the object to a boolean literal, if it is one
-		return booleanLiteral!=null ? booleanLiteral.getValue().booleanValue() : defaultValue;	//return the boolean value of the boolean literal, or the default value if there is no boolean literal
-	}
-*/
 }

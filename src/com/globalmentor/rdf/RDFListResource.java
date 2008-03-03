@@ -22,7 +22,7 @@ import java.util.*;
 
 import com.globalmentor.java.Objects;
 import static com.globalmentor.rdf.RDF.*;
-import static com.globalmentor.rdf.RDFUtilities.*;
+import static com.globalmentor.rdf.RDFResources.*;
 
 /**Represents an RDF list resource.
 <p>Manipulating an RDF list resource using its convenience methods may add
@@ -312,7 +312,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	{
 		int size=0;	//start out knowing about no elements
 		RDFResource list=this;	//start with this list resource
-		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
+		while(list!=null && !RDFResources.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			++size;	//show that we found another element
 			list=getRest(list);	//look at the rest of the list
@@ -323,7 +323,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	/**@return <code>true</code> if this list contains no elements.*/
 	public boolean isEmpty()
 	{
-		return RDFUtilities.isNil(this);	//we're empty if we're the nil list		
+		return RDFResources.isNil(this);	//we're empty if we're the nil list		
 	}
 
 	/**Determines if this list contains the specified element.
@@ -432,7 +432,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	{
 		int currentIndex=0;	//start out on the first index
 		RDFResource list=this;	//start with this list resource
-		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
+		while(list!=null && !RDFResources.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			final RDFObject object=getFirst(list);	//get this resource
 			if(object instanceof RDFResource)
@@ -461,7 +461,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	{
 		int currentIndex=0;	//start out on the first index
 		RDFResource list=this;	//start with this list resource
-		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
+		while(list!=null && !RDFResources.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			if(currentIndex==index)	///if this is the correct index
 			{
@@ -490,7 +490,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	{
 		int currentIndex=0;	//start out on the first index
 		RDFResource list=this;	//start with this list resource, which guarantees that the list will not be null the first time around
-		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
+		while(list!=null && !RDFResources.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			if(currentIndex==index)	///if this is the correct index
 			{
@@ -551,7 +551,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 				setRest(list, new RDFListResource<E>(oldReferenceURI, oldFirst, oldRest));	//create a new element that mimics the old one, and add it as the rest of the list
 				return;	//we've inserted the element, so there's nothing more to do here 
 			}
-			if(!RDFUtilities.isNil(list))	//if we're not at the last element
+			if(!RDFResources.isNil(list))	//if we're not at the last element
 			{
 				list=getRest(list);	//look at the rest of the list
 				++currentIndex;	//go to the next index
@@ -576,7 +576,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	{
 //TODO del		final RDFObject rdfObject=(RDFObject)object;	//cast the object to an RDF object to make sure it's the correct type
 		RDFResource list=this;	//start with this list resource
-		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
+		while(list!=null && !RDFResources.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			final RDFObject first=getFirst(list);	//get the first object
 			final RDFResource rest=getRest(list);	//get the rest of the list
@@ -584,7 +584,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 			{
 				setFirst(list, getFirst(rest));	//transfer the element of the next node to this node
 				setRest(list, getRest(rest));	//transfer the rest of the next node to this node					
-				if(RDFUtilities.isNil(rest))	//if the rest of the list is the nil list, the empty list
+				if(RDFResources.isNil(rest))	//if the rest of the list is the nil list, the empty list
 				{
 					list.setReferenceURI(rest.getURI());	//effectively change the current node into the empty list
 				}
@@ -606,7 +606,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	{
 		int currentIndex=0;	//start out on the first index
 		RDFResource list=this;	//start with this list resource
-		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
+		while(list!=null && !RDFResources.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			final E first=(E)getFirst(list);	//get the first object
 			final RDFResource rest=getRest(list);	//get the rest of the list
@@ -614,7 +614,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 			{
 				setFirst(list, getFirst(rest));	//transfer the element of the next node to this node
 				setRest(list, getRest(rest));	//transfer the rest of the next node to this node					
-				if(RDFUtilities.isNil(rest))	//if the rest of the list is the nil list, the empty list
+				if(RDFResources.isNil(rest))	//if the rest of the list is the nil list, the empty list
 				{
 					list.setReferenceURI(rest.getURI());	//effectively change the current node into the empty list
 				}
@@ -761,7 +761,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		int index=0;	//start out on the first index
 //TODO del		final RDFObject rdfObject=(RDFObject)object;	//cast the object to an RDF object to make sure it's the correct type
 		RDFResource list=this;	//start with this list resource
-		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
+		while(list!=null && !RDFResources.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			final RDFObject first=getFirst(list);	//get the first object
 			if(Objects.equals(object, first))	//if the objects are equal (taking into account nulls)
@@ -788,7 +788,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		int index=0;	//start out on the first index
 //TODO del		final RDFObject rdfObject=(RDFObject)object;	//cast the object to an RDF object to make sure it's the correct type
 		RDFResource list=this;	//start with this list resource
-		while(list!=null && !RDFUtilities.isNil(list))	//while we have a list and it's not the nil resource
+		while(list!=null && !RDFResources.isNil(list))	//while we have a list and it's not the nil resource
 		{
 			final RDFObject first=getFirst(list);	//get the first object
 			if(Objects.equals(object, first))	//if the objects are equal (taking into account nulls)
@@ -867,7 +867,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		{
 				//we have a next list element if there is a next list node and it's not the nil resource;
 				//make sure it has a next element as well, in case the list is corrupt, as that is what the next() method will use
-			return nextList!=null && !RDFUtilities.isNil(nextList) && getFirst(nextList)!=null;			
+			return nextList!=null && !RDFResources.isNil(nextList) && getFirst(nextList)!=null;			
 		}
 
 		/**@return The next element in the iteration.
@@ -876,7 +876,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		@SuppressWarnings("unchecked")	//cast needed so that Sun JDK 1.6.0_03-b05 will know which type we want; not required for Eclipse 3.4M3
 		public E next()
 		{
-			if(nextList!=null && !RDFUtilities.isNil(nextList))	//if we have a next list that isn't the nil resource
+			if(nextList!=null && !RDFResources.isNil(nextList))	//if we have a next list that isn't the nil resource
 			{
 				final E nextResource=(E)getFirst(nextList);	//get the element represented by the list
 				if(nextResource!=null)	//if there is a next resource

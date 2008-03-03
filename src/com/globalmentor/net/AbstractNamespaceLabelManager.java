@@ -27,14 +27,13 @@ import static com.globalmentor.net.URIs.*;
 
 import com.globalmentor.net.http.webdav.ApacheWebDAV;
 import com.globalmentor.rdf.RDF;
-import com.globalmentor.rdf.dicto.DictoConstants;
-import com.globalmentor.rdf.dublincore.DCConstants;
-import com.globalmentor.rdf.foaf.FOAF;
-import com.globalmentor.rdf.maqro.MAQROConstants;
-import com.globalmentor.rdf.rdfs.RDFSConstants;
-import com.globalmentor.rdf.version.VersionConstants;
-import com.globalmentor.rdf.xeb.XEBConstants;
-import com.globalmentor.rdf.xpackage.XPackageConstants;
+import com.globalmentor.rdf.dicto.Dicto;
+import com.globalmentor.rdf.maqro.MAQRO;
+import com.globalmentor.rdf.rdfs.RDFS;
+import com.globalmentor.rdf.version.RDFVersion;
+import com.globalmentor.rdf.xeb.RDFXEB;
+import com.globalmentor.rdf.xpackage.XMLOntology;
+import com.globalmentor.rdf.xpackage.XPackage;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.oeb.OEB;
 import com.globalmentor.text.xml.schema.XMLSchema;
@@ -42,6 +41,8 @@ import com.globalmentor.text.xml.xhtml.XHTML;
 import com.globalmentor.text.xml.xlink.XLink;
 import com.globalmentor.urf.URF;
 import com.globalmentor.urf.content.Content;
+import com.globalmentor.urf.dcmi.DCMI;
+import com.globalmentor.urf.foaf.FOAF;
 import com.globalmentor.urf.select.Select;
 import com.globalmentor.urf.vcard.VCard;
 import com.globalmentor.util.MapDecorator;
@@ -77,28 +78,28 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	{
 		final Map<URI, String> tempNamespaceURILabelMap=new HashMap<URI, String>();	//create a temporary map to fill
 			//add default labels for special namespace URIs
-		tempNamespaceURILabelMap.put(DictoConstants.DICTO_NAMESPACE_URI, DictoConstants.DICTO_NAMESPACE_PREFIX); //Dicto
-		tempNamespaceURILabelMap.put(DCConstants.DCMI11_ELEMENTS_NAMESPACE_URI, DCConstants.DCMI_ELEMENTS_NAMESPACE_PREFIX); //Dublin Core
+		tempNamespaceURILabelMap.put(Dicto.DICTO_NAMESPACE_URI, Dicto.DICTO_NAMESPACE_PREFIX); //Dicto
+		tempNamespaceURILabelMap.put(DCMI.DCMI11_ELEMENTS_NAMESPACE_URI, DCMI.DCMI_ELEMENTS_NAMESPACE_PREFIX); //Dublin Core
 		tempNamespaceURILabelMap.put(FOAF.FOAF_NAMESPACE_URI, FOAF.FOAF_NAMESPACE_PREFIX); //FOAF
-		tempNamespaceURILabelMap.put(MAQROConstants.MAQRO_NAMESPACE_URI, MAQROConstants.MAQRO_NAMESPACE_PREFIX); //MAQRO
+		tempNamespaceURILabelMap.put(MAQRO.MAQRO_NAMESPACE_URI, MAQRO.MAQRO_NAMESPACE_PREFIX); //MAQRO
 		tempNamespaceURILabelMap.put(OEB.OEB1_DOCUMENT_NAMESPACE_URI, OEB.OEB1_DOCUMENT_NAMESPACE_PREFIX); //OEB 1
 		tempNamespaceURILabelMap.put(URI.create("http://globalmentor.com/namespaces/marmot#"), "marmot"); //Marmot TODO link to Marmot constants when Marmot is included in normal libraries
 		tempNamespaceURILabelMap.put(URI.create("http://marmox.net/namespaces/content#"), "content"); //Marmox content
 //TODO del		tempNamespaceURIPrefixMap.put(PLOOP.PLOOP_PROPERTY_NAMESPACE_URI, PLOOP.PLOOP_PROPERTY_NAMESPACE_PREFIX); //PLOOP property
 //TODO fix		tempNamespaceURILabelMap.put(URI.create(QTIConstants.QTI_1_1_NAMESPACE_URI), QTIConstants.QTI_NAMESPACE_PREFIX); //QTI
 		tempNamespaceURILabelMap.put(RDF.RDF_NAMESPACE_URI, RDF.RDF_NAMESPACE_PREFIX); //RDF
-		tempNamespaceURILabelMap.put(RDFSConstants.RDFS_NAMESPACE_URI, RDFSConstants.RDFS_NAMESPACE_PREFIX); //RDFS
+		tempNamespaceURILabelMap.put(RDFS.RDFS_NAMESPACE_URI, RDFS.RDFS_NAMESPACE_PREFIX); //RDFS
 //G***add SOAP
 //TODO del		tempNamespaceURILabelMap.put(VCard.VCARD_NAMESPACE_URI, VCard.VCARD_NAMESPACE_PREFIX); //vCard
-		tempNamespaceURILabelMap.put(VersionConstants.VERSION_NAMESPACE_URI, VersionConstants.VERSION_NAMESPACE_PREFIX); //version
+		tempNamespaceURILabelMap.put(RDFVersion.VERSION_NAMESPACE_URI, RDFVersion.VERSION_NAMESPACE_PREFIX); //version
 		tempNamespaceURILabelMap.put(XMLSchema.XML_SCHEMA_NAMESPACE_URI, XMLSchema.XML_SCHEMA_NAMESPACE_PREFIX); //XML Schema
 		tempNamespaceURILabelMap.put(XHTML.XHTML_NAMESPACE_URI, XHTML.XHTML_NAMESPACE_PREFIX); //XHTML
 		tempNamespaceURILabelMap.put(XLink.XLINK_NAMESPACE_URI, XLink.XLINK_NAMESPACE_PREFIX); //XLink
 		tempNamespaceURILabelMap.put(XML.XML_NAMESPACE_URI, XML.XML_NAMESPACE_PREFIX); //XML
 		tempNamespaceURILabelMap.put(XML.XMLNS_NAMESPACE_URI, XML.XMLNS_NAMESPACE_PREFIX); //XML namespaces
-		tempNamespaceURILabelMap.put(XEBConstants.XEB_NAMESPACE_URI, XEBConstants.XEB_NAMESPACE_PREFIX); //XEbook
-		tempNamespaceURILabelMap.put(XPackageConstants.XPACKAGE_NAMESPACE_URI, XPackageConstants.XPACKAGE_NAMESPACE_PREFIX); //XPackage
-		tempNamespaceURILabelMap.put(XPackageConstants.XML_ONTOLOGY_NAMESPACE_URI, XPackageConstants.XML_ONTOLOGY_NAMESPACE_PREFIX); //XPackage XML ontology
+		tempNamespaceURILabelMap.put(RDFXEB.XEB_NAMESPACE_URI, RDFXEB.XEB_NAMESPACE_PREFIX); //XEbook
+		tempNamespaceURILabelMap.put(XPackage.XPACKAGE_NAMESPACE_URI, XPackage.XPACKAGE_NAMESPACE_PREFIX); //XPackage
+		tempNamespaceURILabelMap.put(XMLOntology.XML_ONTOLOGY_NAMESPACE_URI, XMLOntology.XML_ONTOLOGY_NAMESPACE_PREFIX); //XPackage XML ontology
 //TODO del		tempNamespaceURIPrefixMap.put(FileOntologyConstants.FILE_ONTOLOGY_NAMESPACE_URI, FileOntologyConstants.FILE_ONTOLOGY_NAMESPACE_PREFIX); //XPackage file ontology
 //TODO add XPackage Unicode ontology
 //TODO del		tempNamespaceURIPrefixMap.put(MIMEOntologyConstants.MIME_ONTOLOGY_NAMESPACE_URI, MIMEOntologyConstants.MIME_ONTOLOGY_NAMESPACE_PREFIX); //XPackage MIME ontology

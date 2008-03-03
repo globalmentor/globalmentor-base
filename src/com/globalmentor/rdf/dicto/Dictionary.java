@@ -1,15 +1,32 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.rdf.dicto;
 
 import java.net.URI;
 import java.util.Locale;
 
 import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.dublincore.DCUtilities;
+import static com.globalmentor.rdf.dicto.Dicto.*;
+import com.globalmentor.rdf.dublincore.RDFDublinCore;
 
 /**Class representing a Dictionary Ontology (Dicto) dictionary.
 @author Garret Wilson
 */
-public class Dictionary extends TypedRDFResource implements DictoConstants
+public class Dictionary extends TypedRDFResource
 {
 
 	/**@return The namespace URI of the ontology defining the default type of this resource.*/
@@ -45,7 +62,7 @@ public class Dictionary extends TypedRDFResource implements DictoConstants
 	*/
 	public Locale getDictionaryLanguage()
 	{
-		return DictoUtilities.getLanguage(this);	//return the dictionary language
+		return Dicto.getLanguage(this);	//return the dictionary language
 	}
 
 	/**@return The language of any translations, or <code>null</code> if
@@ -54,7 +71,7 @@ public class Dictionary extends TypedRDFResource implements DictoConstants
 	*/
 	public Locale getLanguage()
 	{
-		return DCUtilities.getLanguage(this);	//return the language
+		return RDFDublinCore.getLanguage(this);	//return the language
 	}
 
 }

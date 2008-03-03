@@ -62,7 +62,7 @@ public abstract class TypedRDFResource extends DefaultRDFResource
 	*/
 	public TypedRDFResource(final RDF rdf, final URI newNamespaceURI, final String newLocalName)
 	{
-		this(rdf, RDFUtilities.createReferenceURI(newNamespaceURI, newLocalName));  //do the default construction, combining the namespace URI and the local name for the reference URI
+		this(rdf, RDFResources.createReferenceURI(newNamespaceURI, newLocalName));  //do the default construction, combining the namespace URI and the local name for the reference URI
 	}
 
 	/**Constructs a resource with a reference URI from a data model.
@@ -72,7 +72,7 @@ public abstract class TypedRDFResource extends DefaultRDFResource
 	public TypedRDFResource(final RDF rdf, final URI referenceURI)
 	{
 		super(rdf, referenceURI);	//construct the parent class
-		RDFUtilities.addType(this, getDefaultTypeNamespaceURI(), getDefaultTypeName());	//add the default type
+		RDFResources.addType(this, getDefaultTypeNamespaceURI(), getDefaultTypeName());	//add the default type
 	}
 
 }

@@ -19,7 +19,7 @@ package com.globalmentor.rdf;
 import java.net.URI;
 
 import static com.globalmentor.java.Classes.*;
-import static com.globalmentor.rdf.RDFUtilities.*;
+import static com.globalmentor.rdf.RDFResources.*;
 
 /**An RDF resource that by default adds an <code>rdf:type</code> property upon creation.
 By default the type name will be set to the local name of the class. 

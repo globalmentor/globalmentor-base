@@ -1,11 +1,26 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.rdf.maqro;
 
 import java.net.URI;
 import java.util.*;
 
 import com.globalmentor.rdf.*;
-
-import static com.globalmentor.rdf.maqro.MAQROConstants.*;
+import static com.globalmentor.rdf.maqro.MAQRO.*;
 
 /**Designates an object is an interaction that can be part of a MAQRO activity.
 @author Garret Wilson
@@ -37,13 +52,13 @@ public abstract class Interaction extends TypedRDFResource
 	*/
 	public void addCategory(final String category, final Locale language)
 	{
-		MAQROUtilities.addCategory(this, category, language);	//add the category to the interaction
+		MAQRO.addCategory(this, category, language);	//add the category to the interaction
 	}
 
 	/**@return An iterable to categories, if any, of the interaction.*/
 	public Iterable<RDFObject> getCategories()
 	{
-		return MAQROUtilities.getCategories(this);	//return an iterable to the categories
+		return MAQRO.getCategories(this);	//return an iterable to the categories
 	}
 
 	/**Determines if the interaction has a category in the given category set.
@@ -56,7 +71,7 @@ public abstract class Interaction extends TypedRDFResource
 	*/
 	public boolean hasCategory(final Set categorySet)
 	{
-		return MAQROUtilities.hasCategory(this, categorySet);	//see whether this category has one of the supplied categories
+		return MAQRO.hasCategory(this, categorySet);	//see whether this category has one of the supplied categories
 	}
 
 }

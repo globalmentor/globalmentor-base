@@ -23,7 +23,7 @@ import static com.globalmentor.java.Objects.*;
 import com.globalmentor.net.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.rdf.RDF.*;
-import static com.globalmentor.rdf.RDFXMLConstants.*;
+import static com.globalmentor.rdf.RDFXML.*;
 import com.globalmentor.text.xml.*;
 import com.globalmentor.util.*;
 
@@ -298,7 +298,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 			{
 				final Resource property=processProperty(resource, (Element)childNode, memberCount);  //parse the element representing an RDF property
 					//if this is an rdf:_X property (originally serialized as rdf:li)
-				if(RDFUtilities.isContainerMemberPropertyReference(property.getURI()))
+				if(RDFResources.isContainerMemberPropertyReference(property.getURI()))
 				{
 					++memberCount;  //show that we have another member
 				}

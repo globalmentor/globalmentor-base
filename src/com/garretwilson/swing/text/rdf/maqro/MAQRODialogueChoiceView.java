@@ -13,7 +13,7 @@ import com.globalmentor.rdf.maqro.Question;
 
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.rdf.maqro.MAQROConstants.*;
+import static com.globalmentor.rdf.maqro.MAQRO.*;
 
 /**Displays a MAQRO choice as dialogue.
 TODO fix	The toggle button's action command will be set to the ident of the response label.

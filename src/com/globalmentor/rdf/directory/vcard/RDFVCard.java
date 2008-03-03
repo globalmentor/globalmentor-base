@@ -1,26 +1,42 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.rdf.directory.vcard;
 
 import java.net.URI;
 import java.util.Locale;
 
-
 import com.globalmentor.net.URIs;
 import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.directory.Directory;
+import com.globalmentor.rdf.directory.RDFDirectory;
 import com.globalmentor.text.directory.vcard.Name;
 import com.globalmentor.util.NameValuePair;
 
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.net.URIs.*;
-import static com.globalmentor.rdf.rdfs.RDFSUtilities.*;
+import static com.globalmentor.rdf.RDFResources.*;
 import static com.globalmentor.text.directory.vcard.VCardConstants.*;
 import static com.globalmentor.util.Arrays.*;
 
 /**An ontology to represent a vCard <code>text/directory</code> profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>, "vCard MIME Directory Profile".
 @author Garret Wilson
+@deprecated
 */
-public class VCard extends Directory
+public class RDFVCard extends RDFDirectory
 {
 
 	/**The recommended prefix to the vCard namespace.*/
@@ -148,7 +164,7 @@ public class VCard extends Directory
 	<ol>
 		<li>The lexical form of the literal value of the <code>vcard:fn</code> property, if available.</li>
 		<li>A formatted string derived from the value of the <code>vcard:n</code> property, if available.</li>
-		<li>The label of the resource as determined by {@link RDFUtilities#getDisplayLabel(RDFResource)}.
+		<li>The label of the resource as determined by {@link RDFResources#getDisplayLabel(RDFResource)}.
 	</ol>
 	@param resource The resource for which a formatted name should be determined.
 	@return The best possible formatted name string for the resource.
@@ -168,26 +184,6 @@ public class VCard extends Directory
 		}
 		return getDisplayLabel(resource);	//if all else fails, just return a label for the resource
 	}
-
-	/**Creates an array of associates between property URIs and elements of a given name.
-	@param name The name
-	 * @return
-	 */
-/*TODO del; not needed
-	protected static NameValuePair<URI, String[]>[] creatPropertyValuePairs(final Name name)
-	{
-		//create an array of the properties and values to store
-		return (NameValuePair<URI, String[]>[])new NameValuePair[]
-        {
-					new NameValuePair<URI, String[]>(createReferenceURI(VCARD_NAMESPACE_URI, FAMILY_NAME_PROPERTY_NAME), name.getFamilyNames()),
-					new NameValuePair<URI, String[]>(createReferenceURI(VCARD_NAMESPACE_URI, GIVEN_NAME_PROPERTY_NAME), name.getGivenNames()),
-					new NameValuePair<URI, String[]>(createReferenceURI(VCARD_NAMESPACE_URI, ADDITIONAL_NAMES_PROPERTY_NAME), name.getAdditionalNames()),
-					new NameValuePair<URI, String[]>(createReferenceURI(VCARD_NAMESPACE_URI, HONORIFIC_PREFIXES_PROPERTY_NAME), name.getHonorificPrefixes()),
-					new NameValuePair<URI, String[]>(createReferenceURI(VCARD_NAMESPACE_URI, HONORIFIC_SUFFIXES_PROPERTY_NAME), name.getHonorificSuffixes())
-        };
-		
-	}
-*/
 
 	/**Sets the email of a resource using the vCard {@value #EMAIL_PROPERTY_NAME} property.
 	@param resource The resource the email of which to set.

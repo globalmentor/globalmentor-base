@@ -6,7 +6,7 @@ import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.model.ResourceModel;
 
-import static com.globalmentor.rdf.maqro.MAQROConstants.*;
+import static com.globalmentor.rdf.maqro.MAQRO.*;
 
 import com.garretwilson.swing.ModelPanel;
 import com.garretwilson.swing.border.BorderUtilities;

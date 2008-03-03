@@ -1,11 +1,26 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.rdf.maqro;
 
 import java.io.*;
 import java.net.*;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static com.globalmentor.rdf.maqro.MAQROConstants.*;
+import static com.globalmentor.rdf.maqro.MAQRO.*;
 
 import com.globalmentor.io.*;
 import com.globalmentor.rdf.*;
@@ -17,6 +32,7 @@ import org.w3c.dom.Document;
 
 /**Class for loading and saving outcomes.
 @author Garret Wilson
+@deprecated
 */
 public class OutcomeIOKit extends AbstractIOKit<Outcome>
 {
@@ -68,7 +84,7 @@ public class OutcomeIOKit extends AbstractIOKit<Outcome>
 		try
 		{
 			final RDF rdf=new RDF();  //create a new RDF data model
-			rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQROUtilities());  //register a factory for MAQRO resource classes
+			rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQRO());  //register a factory for MAQRO resource classes
 			final XMLProcessor xmlProcessor=new XMLProcessor(this);	//create an XML processor using the correct input stream locator	TODO get the XML processor in a more general way
 			final Document document=xmlProcessor.parseDocument(inputStream, baseURI);	//parse the file
 			document.normalize(); //normalize the package description document
@@ -76,7 +92,7 @@ public class OutcomeIOKit extends AbstractIOKit<Outcome>
 			rdfProcessor.processRDF(document, baseURI);  //parse the RDF from the document
 			final Map<RDFResource, Set<RDFResource>> referenceMap=rdf.getReferences();	//get all references to resources
 				//get the outcomes from the data model, and find the root outcome
-			for(final RDFResource outcomeResource:RDFUtilities.getResourcesByType(rdf, MAQRO_NAMESPACE_URI, OUTCOME_CLASS_NAME))
+			for(final RDFResource outcomeResource:RDFResources.getResourcesByType(rdf, MAQRO_NAMESPACE_URI, OUTCOME_CLASS_NAME))
 			{
 				if(outcomeResource instanceof Outcome)	//if this is an outcome
 				{
@@ -85,16 +101,9 @@ public class OutcomeIOKit extends AbstractIOKit<Outcome>
 					{
 						return (Outcome)outcomeResource;	//return the outcome
 					}
-/*G***del when works
-					final Outcome outcome=(Outcome)outcomeResource;	//cast the resource to an outcome
-					if(outcome.getInteraction()!=null)	//if this outcome is for an interaction TODO fix better; make sure this is for the assessment
-					{
-						return outcome;	//return the outcome we found
-					}
-*/
 				}
 			}
-			throw new IOException("No outcome found.");	//G***i18n
+			throw new IOException("No outcome found.");	//TODO i18n
 		}
 		catch(URISyntaxException uriSyntaxException)	//if any of the URIs were incorrect
 		{

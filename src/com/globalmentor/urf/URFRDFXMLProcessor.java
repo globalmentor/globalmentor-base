@@ -9,7 +9,7 @@ import com.globalmentor.net.*;
 import static com.globalmentor.net.URIs.*;
 import com.globalmentor.rdf.*;
 import static com.globalmentor.rdf.RDF.*;
-import static com.globalmentor.rdf.RDFXMLConstants.*;
+import static com.globalmentor.rdf.RDFXML.*;
 import com.globalmentor.text.xml.*;
 import static com.globalmentor.text.xml.XML.*;
 import static com.globalmentor.text.xml.schema.XMLSchema.*;
@@ -268,7 +268,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		else	//if this is not an <rdf:Description> element, the element name gives its type, so add that type to the resource
 		{
 			final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
-			typeURI=getResourceURI(RDFUtilities.createReferenceURI(elementNamespaceURI, elementLocalName));	//create a type URI and get the equivalent URF URI
+			typeURI=getResourceURI(RDFResources.createReferenceURI(elementNamespaceURI, elementLocalName));	//create a type URI and get the equivalent URF URI
 			final Resource typePropertyValue=determineResourceProxy(typeURI);	//locate the resource representing the type value
 			addAssertion(new Assertion(resource, typePropertyResource, typePropertyValue));	//assert this type
 		}
@@ -435,7 +435,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 							throw new DataException(attribute.getName()+" attribute is not allowed in a property-and-node context.");
 						default:
 							{
-								final URI propertyURI=getResourceURI(RDFUtilities.createReferenceURI(attributeNamespaceURI, attributeLocalName));	//get the URF equivalent of the property URI
+								final URI propertyURI=getResourceURI(RDFResources.createReferenceURI(attributeNamespaceURI, attributeLocalName));	//get the URF equivalent of the property URI
 								final Resource property=determineResourceProxy(propertyURI);	//locate a resource proxy for this attribute property
 								final Resource object=determineResourceProxy(createStringURI(attributeValue));	//create a string for the object
 								addAssertion(new Assertion(resource, property, object));	//assert this property
@@ -495,7 +495,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		}
 		else	//if this is *not* an rdf:li property, it's a normal property
 		{
-			propertyURI=getResourceURI(RDFUtilities.createReferenceURI(elementNamespaceURI, elementLocalName));	//use the element's local name normally in forming the property URI, and get the URF equivalent of the URI
+			propertyURI=getResourceURI(RDFResources.createReferenceURI(elementNamespaceURI, elementLocalName));	//use the element's local name normally in forming the property URI, and get the URF equivalent of the URI
 		}
 		final Resource propertyResource=determineResourceProxy(propertyURI);	//get a proxy to the property resource
 		final Resource propertyValue;  //we'll assign the property value to this variable

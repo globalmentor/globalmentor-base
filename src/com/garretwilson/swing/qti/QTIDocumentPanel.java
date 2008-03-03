@@ -7,7 +7,7 @@ import javax.swing.*;
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.swing.*;
 import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.xpackage.XPackageUtilities;
+import com.globalmentor.rdf.xpackage.XPackage;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.util.Modifiable;
 

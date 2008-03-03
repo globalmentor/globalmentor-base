@@ -19,7 +19,7 @@ package com.globalmentor.rdf;
 /**Constants used in RDF+XML serializations.
 @author Garret Wilson
 */
-public class RDFXMLConstants
+public class RDFXML
 {
 
 		//RDF XML elements

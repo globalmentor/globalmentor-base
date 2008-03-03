@@ -1,10 +1,26 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.rdf.dicto;
 
 import java.io.*;
 import java.net.*;
 import com.garretwilson.model.*;
 
-import static com.globalmentor.rdf.dicto.DictoConstants.*;
+import static com.globalmentor.rdf.dicto.Dicto.*;
 
 import com.globalmentor.io.*;
 import com.globalmentor.rdf.*;
@@ -65,14 +81,14 @@ public class DictionaryModelIOKit extends AbstractIOKit<ResourceModel<Dictionary
 		try
 		{
 			final RDF rdf=new RDF();  //create a new RDF data model
-			rdf.registerResourceFactory(DICTO_NAMESPACE_URI, new DictoUtilities());  //register a factory for Dicto resource classes
+			rdf.registerResourceFactory(DICTO_NAMESPACE_URI, new Dicto());  //register a factory for Dicto resource classes
 			final XMLProcessor xmlProcessor=new XMLProcessor(this);	//create an XML processor using the correct input streams locator
 			final Document document=xmlProcessor.parseDocument(inputStream, baseURI);	//parse the activity file
 			document.normalize(); //normalize the package description document
 			final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf);	//create a new RDF processor
 			rdfProcessor.processRDF(document, baseURI);  //parse the RDF from the document
 				//get a dictionary from the data model
-			final Dictionary dictionary=(Dictionary)RDFUtilities.getResourceByType(rdf, DICTO_NAMESPACE_URI, DICTIONARY_CLASS_NAME);
+			final Dictionary dictionary=(Dictionary)RDFResources.getResourceByType(rdf, DICTO_NAMESPACE_URI, DICTIONARY_CLASS_NAME);
 			if(dictionary==null)	//if there is no dictionary
 			{
 				throw new IOException("No dictionary found.");	//G**i18n

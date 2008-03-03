@@ -22,7 +22,7 @@ import java.util.*;
 import com.globalmentor.java.Java;
 import com.globalmentor.net.*;
 import static com.globalmentor.rdf.RDF.*;
-import static com.globalmentor.rdf.RDFUtilities.*;
+import static com.globalmentor.rdf.RDFResources.*;
 
 /**Base class for RDF processors.
 	Each instance of an RDF processor maintains an internal

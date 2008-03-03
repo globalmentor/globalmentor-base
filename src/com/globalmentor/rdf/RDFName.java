@@ -23,7 +23,7 @@ import com.globalmentor.net.URIs;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.IDed;
 
-import static com.globalmentor.rdf.RDFUtilities.*;
+import static com.globalmentor.rdf.RDFResources.*;
 
 /**The name of an RDF entity, consisting of a namespace URI and a local name.
 @author Garret Wilson

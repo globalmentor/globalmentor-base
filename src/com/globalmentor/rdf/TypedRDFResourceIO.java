@@ -21,7 +21,7 @@ import java.net.*;
 
 import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.rdf.RDFUtilities.*;
+import static com.globalmentor.rdf.RDFResources.*;
 
 /**Class for loading and saving a particular type of RDF resource.
 Custom classes can be added using {@link #registerResourceFactory(URI, RDFResourceFactory)}.

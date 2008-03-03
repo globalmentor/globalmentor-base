@@ -21,8 +21,8 @@ import java.net.URI;
 import java.util.*;
 
 import com.globalmentor.net.BoundPropertyResource;
-import com.globalmentor.rdf.rdfs.RDFSUtilities;
-import static com.globalmentor.rdf.RDFUtilities.*;
+import com.globalmentor.rdf.rdfs.RDFS;
+import static com.globalmentor.rdf.RDFResources.*;
 import com.globalmentor.util.Arrays;
 
 /**Represents the default implementation of an RDF resource.
@@ -666,7 +666,7 @@ for some reason, this method as listed is crucial for determining if two resourc
 	@return <code>true<code> if this resource equals that specified in
 		<code>object</code>.
 	@see #getReferenceURI
-	@see RDFUtilities#getValue(RDFResource)
+	@see RDFResources#getValue(RDFResource)
 	*/
 	public boolean equals(final Object object)
 	{
@@ -708,14 +708,14 @@ for some reason, this method as listed is crucial for determining if two resourc
 	@return A negative integer, zero, or a positive integer as this resource
 		reference URI is less than, equal to, or greater than the reference URI of
 		the specified resource, respectively.
-	@see RDFSUtilities#getLabel(RDFResource)
+	@see RDFS#getLabel(RDFResource)
 	*/	//TODO fix compare and Comparable; maybe remove, and use custom Comparable elsewhere (as in Collections.sort())
 	public int compareTo(final RDFResource resource)	//G***is it correct to compare on different things? will this violate comparison rules? (e.g. two RDFResources with labels may compare differently than each of them compared against a normal Resource)
 	{
 //TODO del when works		if(resource instanceof RDFResource)	//if this resource is an RDF resource
 		{
-			final RDFLiteral label1=RDFSUtilities.getLabel(this);	//see if this resource has a label
-			final RDFLiteral label2=RDFSUtilities.getLabel((RDFResource)resource);	//see if there is a label for the other resource
+			final RDFLiteral label1=RDFS.getLabel(this);	//see if this resource has a label
+			final RDFLiteral label2=RDFS.getLabel((RDFResource)resource);	//see if there is a label for the other resource
 			if(label1!=null && label2!=null)	//if we have two labels to compare
 			{
 				return label1.compareTo(label2);	//compare labels
@@ -731,7 +731,7 @@ for some reason, this method as listed is crucial for determining if two resourc
 		<code>rdf:value</code> property value, the default representation will be
 		used.</p> 
 	@return A string representation of the resource.
-	@see RDFUtilities#getValue(RDFResource)
+	@see RDFResources#getValue(RDFResource)
 	*/
 	public String toString()
 	{

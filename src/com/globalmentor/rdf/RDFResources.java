@@ -23,7 +23,8 @@ import java.util.*;
 
 import static com.globalmentor.java.Objects.*;
 import com.globalmentor.net.URIs;
-import com.globalmentor.rdf.rdfs.RDFSUtilities;
+import static com.globalmentor.rdf.RDF.*;
+import com.globalmentor.rdf.rdfs.RDFS;
 import com.globalmentor.rdf.xmlschema.*;
 import com.globalmentor.text.W3CDateFormat;
 import com.globalmentor.text.xml.XML;
@@ -33,11 +34,11 @@ import org.w3c.dom.*;
 /**Various supporting methods for processing RDF resources and literals.
 @author Garret Wilson
 */
-public class RDFUtilities
+public class RDFResources
 {
 
 	/**The start of a reference URI from the rdf:li element qualified name (i.e. "rdfNamespaceURI#li_"), which we'll use to check for items.*/
-	protected final static String RDF_LI_REFERENCE_PREFIX=createReferenceURI(RDF.RDF_NAMESPACE_URI, RDF.CONTAINER_MEMBER_PREFIX).toString();
+	protected final static String RDF_LI_REFERENCE_PREFIX=createReferenceURI(RDF_NAMESPACE_URI, CONTAINER_MEMBER_PREFIX).toString();
 
 	/**Adds a <code>rdf:type</code> property to the resource.
 	<p>If an equivalent property already exists, no action is taken.</p>
@@ -47,7 +48,7 @@ public class RDFUtilities
 	*/
 	public static RDFResource addType(final RDFResource resource, final URI typeURI)
 	{
-		return resource.addProperty(RDF.RDF_NAMESPACE_URI, RDF.TYPE_PROPERTY_NAME, locateResource(resource, typeURI));  //get a resource from the type URI and add it as a type
+		return resource.addProperty(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME, locateResource(resource, typeURI));  //get a resource from the type URI and add it as a type
 	}
 
 	/**Adds an <code>rdf:type</code> property to the resource.
@@ -243,7 +244,7 @@ public class RDFUtilities
 	public static RDFResource locateTypeProperty(final RDFResource contextResource)
 	{
 			//TODO pass along the rdf:Property type, maybe, and create a separate method for creating properties
-		return locateResource(contextResource, RDF.RDF_NAMESPACE_URI, RDF.TYPE_PROPERTY_NAME); //get an rdf:type resource
+		return locateResource(contextResource, RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //get an rdf:type resource
 	}
 
 	/**Returns the value of the first indicated property parsed as a date, using the default W3C full date style.
@@ -398,7 +399,7 @@ public class RDFUtilities
 	*/
 	public static RDFResource getType(final RDFResource resource) throws ClassCastException
 	{
-		return (RDFResource)resource.getPropertyValue(RDF.RDF_NAMESPACE_URI, RDF.TYPE_PROPERTY_NAME); //return the type property
+		return (RDFResource)resource.getPropertyValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //return the type property
 	}
 	
 	/**Returns an iterable to each property of <code>rdf:type</code>.
@@ -409,7 +410,7 @@ public class RDFUtilities
 	*/
 	public static Iterable<RDFObject> getTypes(final RDFResource resource)
 	{
-		return resource.getPropertyValues(RDF.RDF_NAMESPACE_URI, RDF.TYPE_PROPERTY_NAME); //return an iterable to the type properties		
+		return resource.getPropertyValues(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //return an iterable to the type properties		
 	}
 	
 	/**Retrieves the value of the resource.
@@ -419,7 +420,7 @@ public class RDFUtilities
 	*/
 	public static RDFObject getValue(final RDFResource resource)
 	{
-		return resource.getPropertyValue(RDF.RDF_NAMESPACE_URI, RDF.VALUE_PROPERTY_NAME); //get the value of the value property
+		return resource.getPropertyValue(RDF_NAMESPACE_URI, VALUE_PROPERTY_NAME); //get the value of the value property
 	}
 
 	/**Replaces all <code>rdf:value</code> properties of the resource with a new
@@ -441,7 +442,7 @@ public class RDFUtilities
 	*/
 	public static void setValue(final RDFResource resource, final String value, final Locale language)
 	{
-		resource.setProperty(RDF.RDF_NAMESPACE_URI, RDF.VALUE_PROPERTY_NAME, value, language); //replace all value properties with a literal value
+		resource.setProperty(RDF_NAMESPACE_URI, VALUE_PROPERTY_NAME, value, language); //replace all value properties with a literal value
 	}
 
 	/**Replaces all <code>rdf:value</code> properties of the resource with a new
@@ -451,7 +452,7 @@ public class RDFUtilities
 	*/
 	public static void setValue(final RDFResource resource, final RDFLiteral literal)
 	{
-		resource.setProperty(RDF.RDF_NAMESPACE_URI, RDF.VALUE_PROPERTY_NAME, literal); //replace all value properties with a literal value
+		resource.setProperty(RDF_NAMESPACE_URI, VALUE_PROPERTY_NAME, literal); //replace all value properties with a literal value
 	}
 
 	/**Determines if the given resource is the empty list.
@@ -460,7 +461,7 @@ public class RDFUtilities
 	*/
 	public static boolean isNil(final RDFResource listResource)
 	{
-		return listResource!=null && RDF.NIL_RESOURCE_URI.equals(listResource.getURI());	//see if the resource has the nil URI 
+		return listResource!=null && NIL_RESOURCE_URI.equals(listResource.getURI());	//see if the resource has the nil URI 
 	}
 
 	/**Determines whether a given resource is of a particular type.
@@ -471,7 +472,7 @@ public class RDFUtilities
 	*/
 	public static boolean isType(final RDFResource resource, final URI typeURI)
 	{
-		return resource.hasPropertyResourceValue(RDF.RDF_NAMESPACE_URI, RDF.TYPE_PROPERTY_NAME, typeURI); //determine if the resource has a type property of the given URI
+		return resource.hasPropertyResourceValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME, typeURI); //determine if the resource has a type property of the given URI
 	}
 
 	/**Determines whether a given resource is of a particular type.
@@ -483,7 +484,7 @@ public class RDFUtilities
 	*/
 	public static boolean isType(final RDFResource resource, final URI typeNamespaceURI, final String typeLocalName)
 	{
-		return resource.hasPropertyResourceValue(RDF.RDF_NAMESPACE_URI, RDF.TYPE_PROPERTY_NAME, createReferenceURI(typeNamespaceURI, typeLocalName)); //determine if the resource has a type property of the URI from the given namespace and local name
+		return resource.hasPropertyResourceValue(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME, createReferenceURI(typeNamespaceURI, typeLocalName)); //determine if the resource has a type property of the URI from the given namespace and local name
 	}
 
 	/**Determines a string value for resource appropriate for representation.
@@ -500,7 +501,7 @@ public class RDFUtilities
 	*/
 	public static String getDisplayLabel(final RDFResource resource)
 	{
-		final RDFLiteral labelLiteral=RDFSUtilities.getLabel(resource);	//see if there is an rdfs:label property
+		final RDFLiteral labelLiteral=RDFS.getLabel(resource);	//see if there is an rdfs:label property
 		if(labelLiteral!=null)	//if a rdfs:label property was provided
 		{
 			return labelLiteral.getLexicalForm();	//return the rdfs:label property's lexical form

@@ -18,9 +18,9 @@ import com.globalmentor.mentoract.activity.maqro.*;
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.dicto.*;
 import com.globalmentor.rdf.dicto.Dictionary;
-import com.globalmentor.rdf.dublincore.DCUtilities;
+import com.globalmentor.rdf.dublincore.RDFDublinCore;
 import com.globalmentor.rdf.maqro.*;
-import com.globalmentor.rdf.xpackage.XPackageUtilities;
+import com.globalmentor.rdf.xpackage.XPackage;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xhtml.*;
 import static com.globalmentor.text.xml.xlink.XLink.*;
@@ -153,7 +153,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 									XHTML.ELEMENT_DT, orthography.toString());	//show the entry orthography TODO add xml:lang to all of these terms
 							if(resourcePronunciation!=null)	//if we have a pronunciation resource
 							{
-								final String href=XPackageUtilities.getLocationHRef(resourcePronunciation);	//see if the resource has a link to a resource
+								final String href=XPackage.getLocationHRef(resourcePronunciation);	//see if the resource has a link to a resource
 								if(href!=null)	//if there is a link to a resouce
 								{
 									setXLink(dtElement, SIMPLE_TYPE, href);	//link the term to the linked pronunciation resource
@@ -251,14 +251,14 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 				{
 					final Entry entry=(Entry)entryIterator.next();	//get the next entry
 					int entryCategoryCount=0;	//keep track of how many categories we retrieve for this category
-					for(final RDFObject cat:MAQROUtilities.getCategories(entry))	//for each of the categories for this entry
+					for(final RDFObject cat:MAQRO.getCategories(entry))	//for each of the categories for this entry
 					{
 						availableCategorySet.add(cat);	//get the next category (which should be a literal) and add it to our set
 						++entryCategoryCount;	//show that we added another category for this entry
 					}
 					if(entryCategoryCount==0)	//if this entry had no categories
 					{
-						availableCategorySet.add(MAQROConstants.NO_CATEGORY);	//add the constant object representing to category specified					
+						availableCategorySet.add(MAQRO.NO_CATEGORY);	//add the constant object representing to category specified					
 					}
 				}
 			}
@@ -289,7 +289,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 				dictionaryActivity.setShowResultProgress(true);
 				dictionaryActivity.setShowEachResult(true);
 				dictionaryActivity.setShowFinalResult(true);
-				DCUtilities.addTitle(dictionaryActivity, dictionaryLanguage.getDisplayLanguage()+" Quiz");	//add a title showing the language G***i18n
+				RDFDublinCore.addTitle(dictionaryActivity, dictionaryLanguage.getDisplayLanguage()+" Quiz");	//add a title showing the language G***i18n
 				dictionaryActivity.setSelection(optionsPanel.getSelection());	//set the activity's selection criteria
 /*G***fix and del
 				dictionaryActivity.setQuestionCount(optionsPanel.getQuestionCount());	//show how many questions to use

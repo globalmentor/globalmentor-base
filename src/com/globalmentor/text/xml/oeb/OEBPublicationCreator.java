@@ -481,7 +481,7 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 		publication.setRDF(rdf);	//set the publication's RDF data model
 		rdf.addResource(publication);	//add the resource to the RDF data model
 			//store the publication reference URI as a Dublin Core identifier property
-		DCUtilities.addIdentifier(publication, publication.getURI().toString());
+		RDFDublinCore.addIdentifier(publication, publication.getURI().toString());
 //TODO del when works		RDFUtilities.addProperty(getRDF(), publication, DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, publication.getReferenceURI());
 //TODO fix; moved to text converter		final RDFResource oebItem=gatherReference(publication, oebDocumentURL, oebDocumentURL.getFile(), OEB10_DOCUMENT_MEDIA_TYPE);  //add this document to the manifest
 /*TODO fix
@@ -578,23 +578,23 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 			//create a publication from our new OEB document
 		final OEBPublication publication=createPublicationFromOEBDocument(oebDocumentFile.toURL(), referenceURI, getOutputDir());
 		if(getTitle()!=null) //if we have a title
-		  DCUtilities.addTitle(publication, getTitle()); //add the title to the publication
+		  RDFDublinCore.addTitle(publication, getTitle()); //add the title to the publication
 		if(getAuthor()!=null) //if we have an author
-		  DCUtilities.addCreator(publication, getAuthor()); //add the author to the publication
+		  RDFDublinCore.addCreator(publication, getAuthor()); //add the author to the publication
 		if(getDescription()!=null) //if we have a description
-		  DCUtilities.addDescription(publication, getDescription()); //add the description to the publication
+		  RDFDublinCore.addDescription(publication, getDescription()); //add the description to the publication
 		if(languageLocale!=null) //if we have a language
-		  DCUtilities.addLanguage(publication, languageLocale); //add the language to the publication
-		DCUtilities.setDate(publication, new Date());  //add the current date and time
-		DCUtilities.addSource(publication, "file:"+URLs.getFileName(textURL));  //add the text filename as the source TODO use a constant
+		  RDFDublinCore.addLanguage(publication, languageLocale); //add the language to the publication
+		RDFDublinCore.setDate(publication, new Date());  //add the current date and time
+		RDFDublinCore.addSource(publication, "file:"+URLs.getFileName(textURL));  //add the text filename as the source TODO use a constant
 		if(isProjectGutenbergEText) //if we got this text from Project Gutenberg
 		{
-			DCUtilities.addContributor(publication, "Project Gutenberg");  //add Project Gutenberg as a contributor TODO use a constant
+			RDFDublinCore.addContributor(publication, "Project Gutenberg");  //add Project Gutenberg as a contributor TODO use a constant
 		}
 		if(getPublisher()!=null)  //if we have a publisher
-		  DCUtilities.addPublisher(publication, getPublisher()); //add the publisher to the publication
+		  RDFDublinCore.addPublisher(publication, getPublisher()); //add the publisher to the publication
 		if(getRights()!=null)  //if we have a rights statement
-		  DCUtilities.addRights(publication, getRights()); //add the rights statement to the publication
+		  RDFDublinCore.addRights(publication, getRights()); //add the rights statement to the publication
 		if(pgHeaderFragment!=null)  //if we have a Project Gutenberg header, write it to its own file
 		{
 			final Document pgHeaderDocument=OEB.createOEB1Document(pgHeaderFragment);  //create a document from the header fragment
@@ -1028,7 +1028,7 @@ TODO fix outputDir
 	Debug.trace("found media type");
 									//create a new OEB item to go in the manifest to represent this object or link targe
 								oebItem=getRDF().locateResource(itemURI);
-								XPackageUtilities.addLocation(oebItem, hrefRelativePath);  //add the relative href to the item
+								XPackage.addLocation(oebItem, hrefRelativePath);  //add the relative href to the item
 /*TODO fix with URF
 								Marmot.addContentType(oebItem, mediaType); //add the content type we determined
 								Marmot.getContents(publication).add(oebItem); //add the item to the publication's manifest

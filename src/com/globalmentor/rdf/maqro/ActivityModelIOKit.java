@@ -1,22 +1,36 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.rdf.maqro;
 
 import java.io.*;
 import java.net.*;
 import com.garretwilson.model.*;
 
-import static com.globalmentor.rdf.maqro.MAQROConstants.*;
-
 import com.globalmentor.io.*;
 import com.globalmentor.rdf.*;
-import com.globalmentor.text.xml.XMLDOMImplementation;
-import com.globalmentor.text.xml.XMLProcessor;
-import com.globalmentor.text.xml.XMLSerializer;
+import com.globalmentor.text.xml.*;
+import static com.globalmentor.rdf.maqro.MAQRO.*;
 
 import org.w3c.dom.Document;
 
 /**Class for loading and saving activities.
 @author Garret Wilson
 @see ActivityModel
+@deprecated
 */
 public class ActivityModelIOKit extends AbstractIOKit<ResourceModel<Activity>>
 {
@@ -67,7 +81,7 @@ public class ActivityModelIOKit extends AbstractIOKit<ResourceModel<Activity>>
 		try
 		{
 			final RDF rdf=new RDF();  //create a new RDF data model
-			rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQROUtilities());  //register a factory for MAQRO resource classes
+			rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQRO());  //register a factory for MAQRO resource classes
 
 			final XMLProcessor xmlProcessor=new XMLProcessor(this);	//create an XML processor using the correct input stream locator
 			final Document document=xmlProcessor.parseDocument(inputStream, baseURI);	//parse the activity file
@@ -75,7 +89,7 @@ public class ActivityModelIOKit extends AbstractIOKit<ResourceModel<Activity>>
 			final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf);	//create a new RDF processor
 			rdfProcessor.processRDF(document, baseURI);  //parse the RDF from the document
 				//get an activity from the data model
-			final Activity activity=(Activity)RDFUtilities.getResourceByType(rdf, MAQRO_NAMESPACE_URI, ACTIVITY_CLASS_NAME);
+			final Activity activity=(Activity)RDFResources.getResourceByType(rdf, MAQRO_NAMESPACE_URI, ACTIVITY_CLASS_NAME);
 			if(activity==null)	//if there is no activity
 			{
 				throw new IOException("No activity found.");	//G***i18n

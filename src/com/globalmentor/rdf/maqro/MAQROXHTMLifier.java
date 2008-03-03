@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.rdf.maqro;
 
 import org.w3c.dom.*;
@@ -13,12 +29,6 @@ import static com.globalmentor.text.xml.xhtml.XHTML.*;
 */
 public class MAQROXHTMLifier
 {
-
-	/**The DOM implementation for generating XML.*/
-//G***del	private final DOMImplementation domImplementation;
-
-		/**@return The DOM implementation for generating XML.*/
-//G***del		protected DOMImplementation getDOMImplementation() {return domImplementation;}
 
 	/**Default constructor.*/
 	public MAQROXHTMLifier()
@@ -41,7 +51,6 @@ public class MAQROXHTMLifier
 	/**Constructs an XHTML element representing the given outcome.
 	@param element The element to represent the outcome.
 	@param outcome The outcome to represent in XHTML.
-	@return An XHTML element representing the outcome.
 	*/
 	protected void constructElement(final Element element, final Outcome outcome)
 	{
@@ -168,13 +177,13 @@ public class MAQROXHTMLifier
 		{
 			final Score score=(Score)result;	//get the result as a score
 			stringBuilder.append("Score: ");	//TODO i18n
-			final NumberLiteral value=score.getValue();	//get the value of the score
+			final NumberLiteral<?> value=score.getValue();	//get the value of the score
 			if(value!=null)	//if there is a value
 			{
 				stringBuilder.append(value.getValue());	//append the value
 			}
 			stringBuilder.append('/');	//'/'
-			final NumberLiteral possible=score.getPossible();	//get the possible of the score
+			final NumberLiteral<?> possible=score.getPossible();	//get the possible of the score
 			if(possible!=null)	//if there is a possible value
 			{
 				stringBuilder.append(possible.getValue());	//append the possible value
@@ -182,18 +191,5 @@ public class MAQROXHTMLifier
 		}
 		return stringBuilder.toString();	//return the string we constructed
 	}
-
-	/**Creates a string to represent the given dialogue.
-	@param dialogue The dialogue to represent.
-	@return A string representation of the dialogue.
-	*/
-/*TODO del when new Dialogue element construction method works
-	protected String getDialogueString(final Dialogue dialogue)	//TODO somewhere along the way, literal XML character entities get escaped; fix
-	{
-		final StringBuilder stringBuilder=new StringBuilder();
-		final RDFLiteral literalValue=dialogue.getValue();	//get the literal value, if there is one
-		return literalValue!=null ? literalValue.getLexicalForm() : "";	//return the literal value if there is one
-	}
-*/
 
 }

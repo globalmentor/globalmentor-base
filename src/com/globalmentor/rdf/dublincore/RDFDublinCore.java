@@ -1,18 +1,34 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.rdf.dublincore;
 
 import java.text.*;
 import java.util.*;
 
 import com.globalmentor.rdf.*;
+import static com.globalmentor.rdf.RDFResources.*;
 import com.globalmentor.text.*;
+import static com.globalmentor.urf.dcmi.DCMI.*;
 import com.globalmentor.util.*;
-
-import static com.globalmentor.rdf.dublincore.DCConstants.*;
 
 /**Utilities for working with Dublin Core stored in RDF.
 @author Garret Wilson
 */
-public class DCUtilities extends RDFUtilities
+public class RDFDublinCore
 {
 
 	/**Adds a <code>dc:creator</code> property with the given value to the
@@ -23,7 +39,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral addCreator(final RDFResource resource, final String value)
 	{
-		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_CREATOR_PROPERTY_NAME, value);
+		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, CREATOR_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:contributor</code> property with the given value to the
@@ -34,23 +50,8 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral addContributor(final RDFResource resource, final String value)
 	{
-		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_CONTRIBUTOR_PROPERTY_NAME, value);
+		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, CONTRIBUTOR_PROPERTY_NAME, value);
 	}
-
-	/**Adds a <code>dc:date</code> property with the given value to the
-		resource.
-	@param resource The resource to which the property should be added.
-	@param date The property value to add.
-	@return The added literal property value.
-	*/
-/*G***del if not needed
-	public static RDFLiteral addDate(final RDFResource resource, final Date date)
-	{
-		  //G***fix
-//G***del		final DateFormat dateFormat=DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT); //G***testing
-		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME, createDateFormat().format(date));
-	}
-*/
 
 	/**Adds a <code>dc:description</code> property with the given value to the
 		resource.
@@ -60,7 +61,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral addDescription(final RDFResource resource, final String value)
 	{
-		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_DESCRIPTION_PROPERTY_NAME, value);
+		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DESCRIPTION_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:identifier</code> property with the given value to the
@@ -71,7 +72,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral addIdentifier(final RDFResource resource, final String value)
 	{
-		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_IDENTIFIER_PROPERTY_NAME, value);
+		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, IDENTIFIER_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:language</code> property with the given value to the
@@ -83,7 +84,7 @@ public class DCUtilities extends RDFUtilities
 	public static RDFLiteral addLanguage(final RDFResource resource, final Locale locale)
 	{
 			//add the literal language tag for this locale
-		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, Locales.getLanguageTag(locale));
+		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, LANGUAGE_PROPERTY_NAME, Locales.getLanguageTag(locale));
 	}
 
 	/**Adds a <code>dc:publisher</code> property with the given value to the
@@ -94,7 +95,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral addPublisher(final RDFResource resource, final String value)
 	{
-		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_PUBLISHER_PROPERTY_NAME, value);
+		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, PUBLISHER_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:rights</code> property with the given value to the
@@ -105,7 +106,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral addRights(final RDFResource resource, final String value)
 	{
-		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_RIGHTS_PROPERTY_NAME, value);
+		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, RIGHTS_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:source</code> property with the given value to the
@@ -116,7 +117,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral addSource(final RDFResource resource, final String value)
 	{
-		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_SOURCE_PROPERTY_NAME, value);
+		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, SOURCE_PROPERTY_NAME, value);
 	}
 
 	/**Adds a <code>dc:title</code> property with the given value to the resource.
@@ -126,7 +127,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral addTitle(final RDFResource resource, final String value)
 	{
-		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME, value);
+		return resource.addProperty(DCMI11_ELEMENTS_NAMESPACE_URI, TITLE_PROPERTY_NAME, value);
 	}
 
 	/**Returns the value of the first <code>dc:creator</code> property.
@@ -136,7 +137,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFObject getCreator(final RDFResource resource)
 	{
-		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_CREATOR_PROPERTY_NAME);
+		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, CREATOR_PROPERTY_NAME);
 	}
 
 	/**Returns the value of the first <code>dc:date</code> property parsed as a date,
@@ -150,7 +151,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static Date getDate(final RDFResource resource)
 	{
-		return RDFUtilities.getDate(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME);
+		return RDFResources.getDate(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DATE_PROPERTY_NAME);
 	}
 
 	/**Returns the value of the first <code>dc:date</code> property parsed as a date.
@@ -162,7 +163,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static Date getDate(final RDFResource resource, final W3CDateFormat.Style style)
 	{
-		return RDFUtilities.getDate(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME, style);
+		return RDFResources.getDate(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DATE_PROPERTY_NAME, style);
 	}
 	
 	/**Returns the value of the first <code>dc:date</code> property parsed as a date.
@@ -174,7 +175,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static Date getDate(final RDFResource resource, final DateFormat dateFormat)
 	{
-		return RDFUtilities.getDate(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME, dateFormat);
+		return RDFResources.getDate(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DATE_PROPERTY_NAME, dateFormat);
 	}
 
 	/**Returns the value of the first <code>dc:description</code> property.
@@ -184,7 +185,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFObject getDescription(final RDFResource resource)
 	{
-		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_DESCRIPTION_PROPERTY_NAME);
+		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DESCRIPTION_PROPERTY_NAME);
 	}
 
 	/**Returns the value of the first <code>dc:language</code> property.
@@ -195,7 +196,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static Locale getLanguage(final RDFResource resource)
 	{
-		final RDFObject languageObject=resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME);
+		final RDFObject languageObject=resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, LANGUAGE_PROPERTY_NAME);
 		if(languageObject instanceof RDFLiteral)	//if this is a literal value
 		{
 			return Locales.createLocale(((RDFLiteral)languageObject).getLexicalForm());	//create a locale from the literal's lexical form
@@ -212,7 +213,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral getTitle(final RDFResource resource)
 	{
-		return asLiteral(resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME));
+		return asLiteral(resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, TITLE_PROPERTY_NAME));
 	}
 
 	/**Set the <code>dc:title</code> property of the resource.
@@ -222,7 +223,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral setTitle(final RDFResource resource, final String value)
 	{
-		return resource.setProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_TITLE_PROPERTY_NAME, value);
+		return resource.setProperty(DCMI11_ELEMENTS_NAMESPACE_URI, TITLE_PROPERTY_NAME, value);
 	}
 
 	/**Returns the value of the first <code>dc:rights</code> property.
@@ -232,7 +233,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFObject getRights(final RDFResource resource)
 	{
-		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, DC_RIGHTS_PROPERTY_NAME);
+		return resource.getPropertyValue(DCMI11_ELEMENTS_NAMESPACE_URI, RIGHTS_PROPERTY_NAME);
 	}
 
 	/**Sets the <code>dc:date</code> property with the given value to the
@@ -244,7 +245,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral setDate(final RDFResource resource, final Date date)
 	{
-		return RDFUtilities.setDate(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME, date);
+		return RDFResources.setDate(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DATE_PROPERTY_NAME, date);
 	}
 
 	/**Sets the <code>dc:date</code> property with the given value to the
@@ -256,7 +257,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral setDate(final RDFResource resource, final Date date, final W3CDateFormat.Style style)
 	{
-		return RDFUtilities.setDate(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME, date, style);
+		return RDFResources.setDate(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DATE_PROPERTY_NAME, date, style);
 	}
 
 	/**Sets the <code>dc:date</code> property with the given value to the
@@ -268,7 +269,7 @@ public class DCUtilities extends RDFUtilities
 	*/
 	public static RDFLiteral setDate(final RDFResource resource, final Date date, final DateFormat dateFormat)
 	{
-		return RDFUtilities.setDate(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DC_DATE_PROPERTY_NAME, date, dateFormat);
+		return RDFResources.setDate(resource, DCMI11_ELEMENTS_NAMESPACE_URI, DATE_PROPERTY_NAME, date, dateFormat);
 	}
 
 	/**Sets the <code>dc:language</code> property with the given value to the
@@ -280,7 +281,7 @@ public class DCUtilities extends RDFUtilities
 	public static RDFLiteral setLanguage(final RDFResource resource, final Locale locale)
 	{
 			//set the literal language tag for this locale
-		return resource.setProperty(DCMI11_ELEMENTS_NAMESPACE_URI, DC_LANGUAGE_PROPERTY_NAME, Locales.getLanguageTag(locale));
+		return resource.setProperty(DCMI11_ELEMENTS_NAMESPACE_URI, LANGUAGE_PROPERTY_NAME, Locales.getLanguageTag(locale));
 	}
 
 }

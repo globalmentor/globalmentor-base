@@ -23,7 +23,7 @@ import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.maqro.*;
 import com.globalmentor.text.xml.XML;
 
-import static com.globalmentor.rdf.maqro.MAQROConstants.*;
+import static com.globalmentor.rdf.maqro.MAQRO.*;
 import static com.globalmentor.text.xml.xhtml.XHTML.*;
 import com.globalmentor.util.Debug;
 

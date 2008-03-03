@@ -1,22 +1,35 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.rdf.directory;
 
-import java.io.*;
 import java.net.URI;
 import java.util.*;
 
-import static com.globalmentor.text.directory.DirectoryConstants.*;
-
-import com.globalmentor.io.*;
-import com.globalmentor.net.URLs;
 import com.globalmentor.rdf.*;
 import com.globalmentor.text.directory.*;
-import com.globalmentor.util.*;
+import static com.globalmentor.text.directory.DirectoryConstants.*;
 
 /**RDF factory for the predefined types of a directory of type
 	<code>text/directory</code> as defined in
 	<a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
 	"A MIME Content-Type for Directory Information".
+This implementation is unfinished.
 @author Garret Wilson
+@deprecated
 */
 public class PredefinedRDFProfile extends PredefinedProfile implements RDFPropertyFactory, RDFPropertyValueFactory
 {
@@ -47,11 +60,8 @@ public class PredefinedRDFProfile extends PredefinedProfile implements RDFProper
 	public PredefinedRDFProfile()
 	{
 			//register property URIs for the predefined types
-		registerPropertyURI(SOURCE_TYPE, RDFUtilities.createReferenceURI(Directory.DIRECTORY_NAMESPACE_URI, SOURCE_TYPE.toLowerCase()));	//SOURCE		
-		registerPropertyURI(NAME_TYPE, RDFUtilities.createReferenceURI(Directory.DIRECTORY_NAMESPACE_URI, NAME_TYPE.toLowerCase()));	//NAME
-	//G***del		registerPropertyURI(PROFILE_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, PROFILE_TYPE.toLowerCase()));	//PROFILE		
-	//G***del		registerPropertyURI(BEGIN_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, BEGIN_TYPE.toLowerCase()));	//BEGIN
-	//G***del		registerPropertyURI(END_TYPE, RDFUtilities.createReferenceURI(DIRECTORY_NAMESPACE_URI, END_TYPE.toLowerCase()));	//END		
+		registerPropertyURI(SOURCE_TYPE, RDFResources.createReferenceURI(RDFDirectory.DIRECTORY_NAMESPACE_URI, SOURCE_TYPE.toLowerCase()));	//SOURCE		
+		registerPropertyURI(NAME_TYPE, RDFResources.createReferenceURI(RDFDirectory.DIRECTORY_NAMESPACE_URI, NAME_TYPE.toLowerCase()));	//NAME
 	}
 	
 	/**Creates an RDF property resource to represent the given directory
@@ -82,7 +92,7 @@ public class PredefinedRDFProfile extends PredefinedProfile implements RDFProper
 		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//if this is the "text" value type
 		{
 			return new RDFPlainLiteral(contentLine.getValue().toString());	//return the string value of the content line as a literal
-/*G***fix
+/*TODO fix
 				if(contentLine.getGroup()==null && contentLine.getParamList().size()==0)	//if there is no group and no parameters
 				{
 					return new Literal(contentLine.getValue().toString());	//return the string value of the content line as a literal

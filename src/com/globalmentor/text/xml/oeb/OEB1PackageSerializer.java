@@ -22,16 +22,13 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 import static com.globalmentor.io.Charsets.*;
-
-
-import static com.globalmentor.rdf.RDFUtilities.*;
-import static com.globalmentor.rdf.dublincore.DCConstants.*;
-import static com.globalmentor.text.xml.oeb.OEB.*;
-
+import static com.globalmentor.rdf.RDFResources.*;
 import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.xpackage.XPackageUtilities;
+import com.globalmentor.rdf.xpackage.XPackage;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.text.xml.XML;
+import static com.globalmentor.text.xml.oeb.OEB.*;
+import static com.globalmentor.urf.dcmi.DCMI.*;
 import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
@@ -111,61 +108,61 @@ public class OEB1PackageSerializer
 Debug.trace("property value is a literal"); //G**8del
 					final String propertyValue=((RDFLiteral)propertyValueObject).getLexicalForm(); //get the literal value of the property
 					//<package><metadata><dc-metadata><dc:Title>
-					if(DC_TITLE_PROPERTY_NAME.equals(propertyLocalName))
+					if(TITLE_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TITLE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Creator>
-					else if(DC_CREATOR_PROPERTY_NAME.equals(propertyLocalName))
+					else if(CREATOR_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CREATOR, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Subject>
-					else if(DC_SUBJECT_PROPERTY_NAME.equals(propertyLocalName))
+					else if(SUBJECT_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SUBJECT, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Description>
-					else if(DC_DESCRIPTION_PROPERTY_NAME.equals(propertyLocalName))
+					else if(DESCRIPTION_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DESCRIPTION, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Publisher>
-					else if(DC_PUBLISHER_PROPERTY_NAME.equals(propertyLocalName))
+					else if(PUBLISHER_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_PUBLISHER, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Contributor>
-					else if(DC_CONTRIBUTOR_PROPERTY_NAME.equals(propertyLocalName))
+					else if(CONTRIBUTOR_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CONTRIBUTOR, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Date>
-					else if(DC_DATE_PROPERTY_NAME.equals(propertyLocalName))
+					else if(DATE_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DATE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Type>
-					else if(DC_TYPE_PROPERTY_NAME.equals(propertyLocalName))
+					else if(TYPE_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TYPE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Format>
-					else if(DC_FORMAT_PROPERTY_NAME.equals(propertyLocalName))
+					else if(FORMAT_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_FORMAT, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Identifier>
-					else if(DC_IDENTIFIER_PROPERTY_NAME.equals(propertyLocalName))
+					else if(IDENTIFIER_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						final Element dcIdentifierElement=XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_IDENTIFIER, propertyValue);  //add the OEBPPS 1.x DC metadata element
@@ -179,31 +176,31 @@ Debug.trace("property value is a literal"); //G**8del
 						}
 					}
 					//<package><metadata><dc-metadata><dc:Source>
-					else if(DC_SOURCE_PROPERTY_NAME.equals(propertyLocalName))
+					else if(SOURCE_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SOURCE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Language>
-					else if(DC_LANGUAGE_PROPERTY_NAME.equals(propertyLocalName))
+					else if(LANGUAGE_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_LANGUAGE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Relation>
-					else if(DC_RELATION_PROPERTY_NAME.equals(propertyLocalName))
+					else if(RELATION_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RELATION, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Coverage>
-					else if(DC_COVERAGE_PROPERTY_NAME.equals(propertyLocalName))
+					else if(COVERAGE_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_COVERAGE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Rights>
-					else if(DC_RIGHTS_PROPERTY_NAME.equals(propertyLocalName))
+					else if(RIGHTS_PROPERTY_NAME.equals(propertyLocalName))
 					{
 						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RIGHTS, propertyValue);  //add the OEBPPS 1.x DC metadata element
@@ -260,7 +257,7 @@ Debug.trace("property value is a literal"); //G**8del
 	{
 		final Element itemElement=document.createElementNS(OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_MANIFEST_ITEM);  //create an OEB item element
 		itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_ID, createItemID(oebItem.getURI().toString(), publicationURI));		  //set the ID
-		final String href=XPackageUtilities.getLocationHRef(oebItem); //get the item's href
+		final String href=XPackage.getLocationHRef(oebItem); //get the item's href
 		if(href!=null)  //if the item has an href
 		{
 		  itemElement.setAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_HREF, href);		  //set the href

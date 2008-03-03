@@ -17,7 +17,7 @@ import static com.globalmentor.util.UUIDs.*;
 import com.globalmentor.io.ContentTypeConstants;
 import com.globalmentor.mentoract.activity.maqro.*;
 import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.dublincore.DCUtilities;
+import com.globalmentor.rdf.dublincore.RDFDublinCore;
 import com.globalmentor.rdf.maqro.*;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xhtml.XHTML;
@@ -168,7 +168,7 @@ public class ActivityPanel extends RDFPanel<Activity, ResourceModel<Activity>>
 					final Element bodyElement=XHTML.getBodyElement(xhtmlDocument);	//get the body element
 					assert bodyElement!=null : "Missing <body> element in default XHTML document.";
 						//set the title
-					final RDFLiteral title=RDFUtilities.asLiteral(DCUtilities.getTitle(activity));	//get the activity's title
+					final RDFLiteral title=RDFResources.asLiteral(RDFDublinCore.getTitle(activity));	//get the activity's title
 					if(title!=null)	//if there is a title
 					{
 						final Element h1Element=XML.appendElementNS(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_H1, title.toString());	//G***i18n
