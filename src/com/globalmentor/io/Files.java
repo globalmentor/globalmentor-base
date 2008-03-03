@@ -452,7 +452,7 @@ public class Files
 					//  front of it to represent the local root directory
 //TODO fix this to work with the new URI relativize
 				return "/"+
-						URLUtilities.getRelativePath(rootDirectory.toURL(), file.toURL());
+						URLs.getRelativePath(rootDirectory.toURL(), file.toURL());
 			}
 			catch(MalformedURLException malformedURLException)  //if a URL was malformed
 			{

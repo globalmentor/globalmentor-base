@@ -27,6 +27,8 @@ import static com.globalmentor.net.URIs.*;
 */
 public class UUIDs
 {
+	/**The UUID URN namespace identifier "uuid".*/
+	public final static String UUID_URN_NAMESPACE="uuid";
 
 	/**Constructs a string of hexadecimal characters equivalent to the return value of {@link UUID#toString()} with all non-digits removed.
 	@param uuid The UUID from which to construct a hex string.

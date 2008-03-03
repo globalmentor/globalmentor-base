@@ -22,6 +22,7 @@ import java.net.URI;
 import com.globalmentor.beans.BoundPropertyObject;
 import static com.globalmentor.net.URIs.*;
 import com.globalmentor.net.http.*;
+import static com.globalmentor.net.http.HTTP.*;
 
 /**Default implementation of a class that allows access to resources by
 	providing input streams and indicating a base URI against which relative URIs
@@ -154,8 +155,7 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		{
 			return uriInputStreamable.getInputStream(uri);	//delegate to the stored implementation
 		}
-		final String scheme=uri.getScheme();	//see what type of URI this is
-		if(HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme))	//if this is an HTTP URI, try to use an HTTP resource with our HTTP client
+		if(isHTTPURI(uri))	//if this is an HTTP URI, try to use an HTTP resource with our HTTP client
 		{
 			return new HTTPResource(uri, getHTTPClient()).getInputStream();	//get an HTTP resource using our HTTP client and get an input stream to the resource 
 		}
@@ -179,7 +179,7 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 		{
 			return new FileOutputStream(new File(uri));	//create and return an output stream to the file
 		}
-		else if(HTTP_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme))	//if this is an HTTP URI, try to use an HTTP resource with our HTTP client
+		else if(isHTTPURI(uri))	//if this is an HTTP URI, try to use an HTTP resource with our HTTP client
 		{
 			return new HTTPResource(uri, getHTTPClient()).getOutputStream();	//get an HTTP resource using our HTTP client and get an output stream to the resource 
 		}

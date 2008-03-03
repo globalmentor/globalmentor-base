@@ -16,10 +16,10 @@
 
 package com.globalmentor.java;
 
-/**Utilities for manipulating float objects and values.
+/**Utilities for manipulating double objects and values.
 @author Garret Wilson
 */
-public class Floats
+public class Doubles
 {
 
 	/**Checks to make sure that a given value is within the given range.
@@ -29,7 +29,7 @@ public class Floats
 	@exception IllegalArgumentException if the value is less than the range minimum or greater than the range maximum.
 	@return The given value.
 	*/
-	public static float checkRange(final float value, final float rangeMin, final float rangeMax)
+	public static double checkRange(final double value, final double rangeMin, final double rangeMax)
 	{
 		if(value<rangeMin || value>rangeMax)	//if the value not within the range
 		{

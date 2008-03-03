@@ -10,7 +10,7 @@ import com.garretwilson.rdf.*;
 import static com.globalmentor.text.directory.DirectoryConstants.*;
 
 import com.globalmentor.io.*;
-import com.globalmentor.net.URLUtilities;
+import com.globalmentor.net.URLs;
 import com.globalmentor.text.directory.*;
 import com.globalmentor.util.*;
 

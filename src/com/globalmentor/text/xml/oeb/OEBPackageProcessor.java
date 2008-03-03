@@ -29,6 +29,7 @@ import static com.globalmentor.text.xml.oeb.OEB.*;
 
 import com.globalmentor.io.ContentTypes;
 import static com.globalmentor.net.URIs.*;
+import static com.globalmentor.net.http.HTTP.*;
 import com.globalmentor.text.xml.*;
 import com.globalmentor.text.xml.xpath.XPath;
 import com.globalmentor.util.*;
@@ -144,7 +145,7 @@ public class OEBPackageProcessor
 				//  or if the identifier starts with "urn:", "http:", or "file:"
 			if("uri".equals(scheme) || URN_SCHEME.equals(scheme)	//TODO del "uri" scheme if not needed
 				  || dcIdentifierElementText.startsWith(URN_SCHEME+SCHEME_SEPARATOR)
-				  || dcIdentifierElementText.startsWith(HTTP_SCHEME+SCHEME_SEPARATOR)
+				  || dcIdentifierElementText.startsWith(HTTP_URI_SCHEME+SCHEME_SEPARATOR)
 				  || dcIdentifierElementText.startsWith(HTTPS_SCHEME+SCHEME_SEPARATOR)
 				  || dcIdentifierElementText.startsWith(FILE_SCHEME+SCHEME_SEPARATOR))
 			{

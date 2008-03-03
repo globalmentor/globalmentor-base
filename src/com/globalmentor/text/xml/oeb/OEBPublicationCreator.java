@@ -565,12 +565,12 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 		if(getOutputDir()!=null) //if an output directory was specified
 		{
 				//store the file in the output directory
-			oebDocumentFile=Files.changeExtension(new File(getOutputDir(), URLUtilities.getFileName(textURL)), "html");	//TODO use a constant
+			oebDocumentFile=Files.changeExtension(new File(getOutputDir(), URLs.getFileName(textURL)), "html");	//TODO use a constant
 		}
 		else  //if an output directory was not specified
 		{
 			//TODO make sure a file: protocol was specified
-			oebDocumentFile=Files.changeExtension(URLUtilities.getFile(textURL), "html");  //create a file from the URL TODO use a constant
+			oebDocumentFile=Files.changeExtension(URLs.getFile(textURL), "html");  //create a file from the URL TODO use a constant
 		}
 		  //TODO testing
 		setContextURL(oebDocumentFile.toURL()); //show that the location of the document will be the context URL
@@ -585,7 +585,7 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 		if(languageLocale!=null) //if we have a language
 		  DCUtilities.addLanguage(publication, languageLocale); //add the language to the publication
 		DCUtilities.setDate(publication, new Date());  //add the current date and time
-		DCUtilities.addSource(publication, "file:"+URLUtilities.getFileName(textURL));  //add the text filename as the source TODO use a constant
+		DCUtilities.addSource(publication, "file:"+URLs.getFileName(textURL));  //add the text filename as the source TODO use a constant
 		if(isProjectGutenbergEText) //if we got this text from Project Gutenberg
 		{
 			DCUtilities.addContributor(publication, "Project Gutenberg");  //add Project Gutenberg as a contributor TODO use a constant
@@ -620,7 +620,7 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 		final String prefaceLocation=getPrefaceLocation();  //see if we were given a preface to add
 		if(prefaceLocation!=null) //if we were given a preface to add
 		{
-		  final URL prefaceURL=useTemplate(URLUtilities.createURL(null, prefaceLocation));  //use the given preface template
+		  final URL prefaceURL=useTemplate(URLs.createURL(null, prefaceLocation));  //use the given preface template
 		  setPrefaceURL(prefaceURL);  //save the URL to the preface
 				//add the preface to the manifest without adding it to the spine
 		  final RDFResource prefaceResource=gatherReference(publication, prefaceURL, prefaceURL.getFile(), OEB10_DOCUMENT_MEDIA_TYPE, false);
@@ -631,7 +631,7 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 		final String titlePageLocation=getTitlePageLocation();  //see if we were given a title page to add
 		if(titlePageLocation!=null) //if we were given a title page to add
 		{
-		  final URL titlePageURL=useTemplate(URLUtilities.createURL(null, titlePageLocation));  //use the given template
+		  final URL titlePageURL=useTemplate(URLs.createURL(null, titlePageLocation));  //use the given template
 		  setTitlePageURL(titlePageURL);  //save the URL to the title page
 				//add the title page to the manifest without adding it to the spine
 		  final RDFResource titlePageResource=gatherReference(publication, titlePageURL, titlePageURL.getFile(), OEB10_DOCUMENT_MEDIA_TYPE, false);
@@ -645,7 +645,7 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 		{
 			final String href=(String)stylesheetReferenceIterator.next(); //get the next reference
 				//add the stylesheet to the manifest without adding it to the spine
-		  gatherReference(publication, URLUtilities.createURL(getContextURL(), href), href, OEB10_CSS_MEDIA_TYPE, false);
+		  gatherReference(publication, URLs.createURL(getContextURL(), href), href, OEB10_CSS_MEDIA_TYPE, false);
 		}
 		gatherGuides(publication, document);  //gather guides from the document
 		write(document, oebDocumentFile); //write the document after we've done everything else, because we might need to modify it along the way
@@ -993,10 +993,10 @@ TODO fix outputDir
 //TODO fix with URF		  oebItem=XPackageUtilities.getManifestItemByLocationHRef(publication, contextURL.toURI(), href);
 			if(oebItem==null) //if this item is not already in the manifest
 			{
-				final URL url=URLUtilities.createURL(contextURL, href); //create a URL for the href, allowing for the href to be a relative path (although we don't yet know if it was)
+				final URL url=URLs.createURL(contextURL, href); //create a URL for the href, allowing for the href to be a relative path (although we don't yet know if it was)
 	Debug.trace("src URL: "+url+" relative to "+contextURL);
 	//TODO important fix		  if(URLConstants.FILE_PROTOCOL.equals(url.getProtocol()))  //if this is a local file being gathered into the manifest
-				if(URLUtilities.exists(url))  //if a file exists at this URL
+				if(URLs.exists(url))  //if a file exists at this URL
 				{
 					final File file=new File(url.getPath());  //create a file from the URL
 					final boolean protocolsMatch=contextURL.getProtocol().equals(url.getProtocol()); //see if the protocols match
@@ -1006,7 +1006,7 @@ TODO fix outputDir
 					if(isLocalFile)  //if this is a local file TODO important check
 					{
 						String hrefRelativePath; //we'll set the relative path, if we can find it
-						hrefRelativePath=URLUtilities.getRelativePath(contextURL, url);  //try to create a relative path for the reference TODO why do we need to do this yet again?
+						hrefRelativePath=URLs.getRelativePath(contextURL, url);  //try to create a relative path for the reference TODO why do we need to do this yet again?
 						final URI itemURI=createURI(publication.getURI(), hrefRelativePath);  //create an ID from the relative path
 //TODO fix with URF						if(XPackageUtilities.getManifestItem(publication, itemURI)==null)  //if there isn't an item already in the manifest with this ID TODO this could in some strange circumstances prevent two different paths from being stored, if the slash conversion to underline matches a filename with underlines in the same locations
 						if(true)	//TODO fix with URF
@@ -1017,7 +1017,7 @@ TODO fix outputDir
 //TODO fix										Debug.assert(mediaType!=null, "\""+srcFile+"\" has unknown media type.");  //TODO put in better error handling here
 							if(mediaType==null) //if no media type is given
 							{
-								mediaType=URLUtilities.getMediaType(url);  //try to see which of media type the reference is by examining the URL
+								mediaType=URLs.getMediaType(url);  //try to see which of media type the reference is by examining the URL
 								if(mediaType.match(XHTML_CONTENT_TYPE))  //if this is the "application/xhtml+xml" media type
 									mediaType=OEB10_DOCUMENT_MEDIA_TYPE;  //assume it's really the OEB document media type
 							}
@@ -1047,7 +1047,7 @@ TODO fix outputDir
 	Debug.trace("original URL: ", url);
 									if(!outputURL.equals(url))  //if the output file isn't the same as the file we started with
 									{
-										try
+	//TODO fix									try
 										{
 												//make sure all subdirectories have been created
 											if(outputFile.getParentFile().exists() || outputFile.getParentFile().mkdirs())  //TODO probably put this in a FileUtilities
@@ -1056,14 +1056,16 @@ TODO fix outputDir
 													//  otherwise, we'll need to copy it ourselves
 												if(!isTidy() || !mediaType.match(OEB10_DOCUMENT_MEDIA_TYPE))
 												{
-													NetworkUtilities.copy(url, outputFile); //copy the URL to the output directory
+//TODO replace with a generalized copy method													NetworkUtilities.copy(url, outputFile); //copy the URL to the output directory
 												}
 											}
 										}
+/*TODO fix
 										catch(IOException ioException)  //if we can't copy the source URL to the destination file
 										{
 											Debug.error(ioException); //TODO fix
 										}
+*/
 									}
 								}
 //TODO fix								processManifestItem(publication, oebItem);  //process this manifest item
@@ -1352,7 +1354,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 			if(titlePageURL!=null)  //if we have a title page
 			{
 					//try to create a relative path for the reference
-				final String href=URLUtilities.getRelativePath(getContextURL(), titlePageURL);
+				final String href=URLs.getRelativePath(getContextURL(), titlePageURL);
 				final OEBGuide guide=new OEBGuide("title-page", "Title Page", href); //TODO use constants; i18n
 				publication.addGuide(guide);  //add the guide
 			}
@@ -1367,7 +1369,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 			if(prefaceURL!=null)  //if we have a preface
 			{
 					//try to create a relative path for the reference
-				final String href=URLUtilities.getRelativePath(getContextURL(), prefaceURL);
+				final String href=URLs.getRelativePath(getContextURL(), prefaceURL);
 				final OEBGuide guide=new OEBGuide("preface", "Preface", href); //TODO use constants; i18n
 				publication.addGuide(guide);  //add the guide
 			}
@@ -1407,7 +1409,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 						element.setAttributeNS(null, "id", id); //add the ID to the attribute TODO use a constant
 					}
 						//create an href to the element within the document
-					final String href=URLUtilities.getFileName(getContextURL())+'#'+id; //TODO pass the href; do something better than getContextURL(); use a constant for '#'
+					final String href=URLs.getFileName(getContextURL())+'#'+id; //TODO pass the href; do something better than getContextURL(); use a constant for '#'
 						//get the text of this element, collapsing all whitespace into single spaces
 					final String elementText=Strings.collapseEveryChar(XML.getText(element, true), WHITESPACE_CHARS, " ");
 						//making sure it's not too long
@@ -1460,7 +1462,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 	protected URL useTemplate(final URL templateURL) throws IOException
 	{
 		final String filename=getContextURL()!=null //if we have a context URL, get the filename
-				? Files.removeExtension(URLUtilities.getFileName(getContextURL()))
+				? Files.removeExtension(URLs.getFileName(getContextURL()))
 				: null;
 		  //the title (replacement parameter {0})
 		final String title=getTitle()!=null
@@ -1475,9 +1477,9 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 		  //a URL to more information about the book (replacement parameter {3})
 		final String infoURL=isProjectGutenbergEText()  //if this is a Project Gutenberg work
 			  ? "projectgutenbergheader.html" //point to the header we created TODO use a constant
-				: URLUtilities.getFileName(getContextURL());  //otherwise, just point to the main content TODO does this method always work?
+				: URLs.getFileName(getContextURL());  //otherwise, just point to the main content TODO does this method always work?
 		  //read the template as a string, assuming UTF-8 encoding
-		final String templateString=URLUtilities.readString(templateURL, CharacterEncoding.UTF_8);
+		final String templateString=URLs.readString(templateURL, CharacterEncoding.UTF_8);
 			//store the title and author in the preface, making sure all the content is valid for XML content
 	  final String formattedString=MessageFormat.format(templateString,
 			  new Object[]{
@@ -1485,7 +1487,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 							XML.createValidContent(author),
 							XML.createValidContent(by),
 							XML.createValidContent(infoURL)}); //TODO use constants
-	  final String templateFilename=URLUtilities.getFileName(templateURL);  //get the filename of the template
+	  final String templateFilename=URLs.getFileName(templateURL);  //get the filename of the template
 		final File formattedTemplateFile; //we'll find out where to store the formatted template
 		if(getOutputDir()!=null) //if an output directory was specified
 		{
@@ -1494,7 +1496,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 		else  //if an output directory was not specified
 		{
 				//create a file from the context URL TODO what if the context URL is not a file?
-			formattedTemplateFile=URLUtilities.getFile(URLUtilities.createURL(getContextURL(), templateFilename));
+			formattedTemplateFile=URLs.getFile(URLs.createURL(getContextURL(), templateFilename));
 		}
 			//write the resulting file
 		Files.write(formattedTemplateFile, formattedString.getBytes(CharacterEncoding.UTF_8));

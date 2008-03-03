@@ -32,7 +32,7 @@ import static com.globalmentor.io.Files.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.net.URIs.*;
-import static com.globalmentor.net.URLUtilities.*;
+import static com.globalmentor.net.URLs.*;
 
 import com.globalmentor.io.ContentTypes;
 import com.globalmentor.io.InputStreams;

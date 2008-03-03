@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.net;
 
 import java.net.URI;
@@ -13,25 +29,25 @@ public class ResourceEvent extends EventObject
 	private final URI oldParentResourceURI;
 
 		/**@return The old parent resource reference URI, or <code>null</code> if not applicable.*/
-//G***fix		public URI getOldParentResourceURI() {return oldParentResourceURI;}
+		public URI getOldParentResourceURI() {return oldParentResourceURI;}
 
 	/**A description of the old parent resource, or <code>null</code> if not applicable.*/
 	private final Resource oldParentResource;
 
 		/**@return A description of the old parent resource, or <code>null</code> if not applicable.*/
-//G***fix		public Resource getOldParentResource() {return resource;}
+		public Resource getOldParentResource() {return resource;}
 
 	/**The parent resource reference URI, or <code>null</code> if not applicable.*/
 	private final URI parentResourceURI;
 
 		/**@return The parent resource reference URI, or <code>null</code> if not applicable.*/
-//G***fix		public URI getParentResourceURI() {return parentResourceURI;}
+		public URI getParentResourceURI() {return parentResourceURI;}
 
 	/**A description of the parent resource, or <code>null</code> if not applicable.*/
 	private final Resource parentResource;
 
 		/**@return A description of the parent resource, or <code>null</code> if not applicable.*/
-//G***fix		public Resource getParentResource() {return resource;}
+		public Resource getParentResource() {return resource;}
 
 	/**The previous resource reference URI, or <code>null</code> if not applicable.*/
 	private final URI oldResourceURI;
@@ -163,10 +179,10 @@ public class ResourceEvent extends EventObject
 	/**@return A string representation of this resource event.*/
 	public String toString()
 	{
-		final StringBuffer stringBuffer=new StringBuffer(super.toString()).append(' ').append('[');
-		stringBuffer/*G***fix.append(getOldParentResourceURI()).append('/')*/.append(getOldResourceURI()).append(',').append(' ');	//oldParentResourceURI/oldResourceURI
-		stringBuffer/*G***fix.append(getParentResourceURI()).append('/')*/.append(getResourceURI()).append(']');	//oldResourceURI/resourceURI
-		return stringBuffer.toString();	//return the string we constructed
+		final StringBuilder stringBuilder=new StringBuilder(super.toString()).append(' ').append('[');
+		stringBuilder.append(getOldParentResourceURI()).append('/').append(getOldResourceURI()).append(',').append(' ');	//oldParentResourceURI/oldResourceURI
+		stringBuilder.append(getParentResourceURI()).append('/').append(getResourceURI()).append(']');	//oldResourceURI/resourceURI
+		return stringBuilder.toString();	//return the string we constructed
 	}
 
 }

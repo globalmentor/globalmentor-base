@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.net;
 
 import java.io.*;
@@ -5,22 +21,22 @@ import java.net.*;
 import java.util.*;
 
 import javax.mail.internet.ContentType;
-import static com.globalmentor.io.FileConstants.EXTENSION_SEPARATOR;
-import static com.globalmentor.java.CharSequences.*;
-import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.text.CharacterEncoding.*;
 
 import com.globalmentor.io.*;
+import static com.globalmentor.io.FileConstants.EXTENSION_SEPARATOR;
 import com.globalmentor.java.Integers;
-import com.globalmentor.text.TextFormatter;
-import com.globalmentor.text.SyntaxException;
+
+import static com.globalmentor.java.CharSequences.*;
+import static com.globalmentor.java.Objects.*;
+import com.globalmentor.text.*;
+import static com.globalmentor.text.CharacterEncoding.*;
 import com.globalmentor.text.unicode.UnicodeCharacter;
 import com.globalmentor.util.*;
 
 /**Various URI manipulating functions for working with URIs as defined in
 	<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
 	"Uniform Resource Identifiers (URI): Generic Syntax".
-@see java.net.URI
+@see URI
 */
 public class URIs
 {
@@ -40,12 +56,6 @@ public class URIs
 	/**The email address scheme identifier.*/
 	public final static String MAILTO_SCHEME="mailto";
 
-	/**The HTTP scheme identifier.*/
-	public final static String HTTP_SCHEME="http";
-
-	/**The HTTPS scheme identifier.*/
-	public final static String HTTPS_SCHEME="https";
-
 	/**The info scheme identifier.*/
 	public final static String INFO_SCHEME="info";
 
@@ -60,9 +70,6 @@ public class URIs
 
 	/**The URN scheme identifier "urn".*/
 	public final static String URN_SCHEME="urn";
-
-	/**The UUID URN namespace identifier "uuid".*/
-	public final static String UUID_URN_NAMESPACE="uuid";
 
 	/**The colon character (':') that separates a URI schema from the rest of the URI.*/
 	public final static char SCHEME_SEPARATOR=':';
@@ -923,16 +930,6 @@ public class URIs
 			throw new IllegalArgumentException("Path cannot have a URI scheme or authority, and must include a path: "+path);
 		}
 		return pathURI;	//return the URI we created
-	}
-
-	/**Determines if the given URI has an HTTP scheme, either {@value URIs#HTTP_SCHEME} or {@value URIs#HTTPS_SCHEME}.
-	@param uri The URI the scheme of which to test.
-	@return <code>true</code> if the given URI has a scheme designating HTTP or secure HTTP.
-	*/
-	public static boolean isHTTPScheme(final URI uri)
-	{
-		final String scheme=uri.getScheme();	//get the URI scheme
-		return URIs.HTTP_SCHEME.equals(scheme) || URIs.HTTPS_SCHEME.equals(scheme);	//see if the scheme is "http" or "https"
 	}
 
 	/**Checks to see if a given URI is absolute.

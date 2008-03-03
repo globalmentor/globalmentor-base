@@ -1,5 +1,22 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.net.http;
 
+import java.net.URI;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
@@ -7,15 +24,20 @@ import javax.servlet.http.HttpServletResponse;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Strings.*;
 
-/**Constants relating to the HyperText Transfer Protocol (HTTP) as defined by
+/**Constants and utilities relating to the HyperText Transfer Protocol (HTTP) as defined by
 <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>,	"Hypertext Transfer Protocol -- HTTP/1.1".
 <p>Status code declarations and comments used from Tomcat org.apache.catalina.servlets.WebdavServlet by Remy Maucherat Revision: 1.19 $ $Date: 2004/09/19 01:20:10.</p>
 @see <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>  
 @author Garret Wilson
 */
-public class HTTPConstants
+public class HTTP
 {
-	
+
+	/**The HTTP scheme identifier.*/
+	public final static String HTTP_URI_SCHEME="http";
+	/**The HTTPS scheme identifier.*/
+	public final static String HTTPS_SCHEME="https";
+
 	/**The default HTTP port, 80.*/
 	public final static int DEFAULT_PORT=80;
 	/**The default HTTPS port, 143.*/
@@ -369,5 +391,15 @@ public class HTTPConstants
 	This regular expression therefore accepts "6.0", "7.0b", "8.9.10", and "2.17b3".
 	*/
 	public final static String PRODUCT_VERSION_REGEX="(\\d+)(?:\\.(\\d+)[a-z]*\\d*(?:\\.(\\d+)[a-z]*\\d?)?)?";
-}
 
+	/**Determines if the given URI has an HTTP scheme, either {@value #HTTP_URI_SCHEME} or {@value #HTTPS_SCHEME}.
+	@param uri The URI the scheme of which to test.
+	@return <code>true</code> if the given URI has a scheme designating HTTP or secure HTTP.
+	*/
+	public static boolean isHTTPURI(final URI uri)
+	{
+		final String scheme=uri.getScheme();	//get the URI scheme
+		return HTTP_URI_SCHEME.equals(scheme) || HTTPS_SCHEME.equals(scheme);	//see if the scheme is "http" or "https"
+	}
+
+}

@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.net;
 
 import java.net.URI;
@@ -21,10 +37,10 @@ public final class URIPath
 {
 
 	/**The empty path ("").*/
-	public final static URIPath EMPTY=new URIPath("");
+	public final static URIPath EMPTY_URI_PATH=new URIPath("");
 
 	/**The path to root, consisting of a single path separator ("/").*/
-	public final static URIPath ROOT=new URIPath(ROOT_PATH);
+	public final static URIPath ROOT_URI_PATH=new URIPath(ROOT_PATH);
 
 	/**The root path in the {@value URIs#PATH_SCHEME} scheme; used for creating URI paths using {@link URI#relativize(URI)} for initial relative segments containing a colon.*/
 	private final static URI PATH_ROOT_URI=URI.create(PATH_SCHEME+SCHEME_SEPARATOR+PATH_SEPARATOR);	//path:/

@@ -23,11 +23,12 @@ import javax.mail.internet.ContentType;
 
 import com.globalmentor.io.*;
 import static com.globalmentor.net.URIs.*;
+import static com.globalmentor.net.http.HTTP.*;
 
 /**Various URL manipulating functions.
 @see URL
 */
-public class URLUtilities
+public class URLs
 {
 
 	/**Checks to see if a file exists at the location specified by the URL. The
@@ -48,7 +49,7 @@ public class URLUtilities
 		{
 		  return getFile(url).exists();  //create a file from the URL and see if it exists
 		}
-		else if(HTTP_SCHEME.equals(protocol))  //if this is the HTTP protocol
+		else if(HTTP_URI_SCHEME.equals(protocol))  //if this is the HTTP protocol TODO fix for HTTPS
 		{
 			try
 			{
