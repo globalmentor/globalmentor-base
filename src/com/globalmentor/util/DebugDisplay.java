@@ -19,8 +19,8 @@ package com.globalmentor.util;
 /**Interface for displaying debug information, such as in a graphical user
 	interface. This allows debugging both in Swing and the AWT, for example.
 @author Garret Wilson
-@see com.garretwilson.awt.DebugAWTDisplay
-@see com.garretwilson.swing.DebugSwingDisplay
+@see com.globalmentor.awt.DebugAWTDisplay
+@see com.globalmentor.swing.DebugSwingDisplay
 */
 public interface DebugDisplay
 {
