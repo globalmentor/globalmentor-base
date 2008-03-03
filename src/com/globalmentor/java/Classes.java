@@ -447,9 +447,9 @@ public class Classes
 	}
 
 	/**Creates a full name analogous to a class name from the package of an
-	 	existing class. For example, a class of <code>com.garretwilson.Foo</code>
+	 	existing class. For example, a class of <code>com.example.Foo</code>
 	 	and a local name of <code>Bar</code> will result in a full name of
-	 	<code>com.garretwilson.Bar</code>.
+	 	<code>com.example.Bar</code>.
 	@param objectClass The class to supply the package name.
 	@param localName The local name for constructing the full name within the package.
 	@return A full class name in the package of the given class with the given
@@ -462,9 +462,9 @@ public class Classes
 	}
 
 	/**Creates a full name given package and a local name.
-	 	For example, a package of <code>com.garretwilson</code>
+	 	For example, a package of <code>com.example</code>
 	 	and a local name of <code>Bar</code> will result in a full name of
-	 	<code>com.garretwilson.Bar</code>.
+	 	<code>com.example.Bar</code>.
 	@param objectClass The class to supply the package name.
 	@param localName The local name for constructing the full name within the package.
 	@return A full class name in the given package and the given local name.
@@ -475,7 +475,7 @@ public class Classes
 	}
 
 	/**Returns the local name of the class, with the package name removed.
-		Therefore <code>com.garretwilson.Foo$Bar</code> becomes <code>Foo$Bar</code>.
+		Therefore <code>com.example.Foo$Bar</code> becomes <code>Foo$Bar</code>.
 	@param objectClass The class for which a local name should be returned.
 	@return The local name of the class within its package.
 	@see #getSimpleName
@@ -488,7 +488,7 @@ public class Classes
 
 	/**Returns the local name of the class, with the package name removed. If
 		the class represents an internal class, the external class name is removed
-		as well. Therefore <code>com.garretwilson.Foo$Bar</code> becomes
+		as well. Therefore <code>com.example.Foo$Bar</code> becomes
 		<code>Bar</code>.
 	@param objectClass The class for which a simple name should be returned.
 	@return The simple name of the class within its package, if any, and within

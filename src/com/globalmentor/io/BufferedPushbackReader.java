@@ -174,7 +174,7 @@ public class BufferedPushbackReader extends Reader
 	@except IOException Thrown when an I/O error occurs.
 	@return An input stream based on the specified context and specification.
 	*/
-	//G***maybe put this in a separate com.garretwilson.io.Reader class
+	//G***maybe put this in a separate com.globalmentor.io.Reader class
 	//G***what about storing the URL so we can use it as a context elsewhere?
 /*G***fix
 	public static InputStream createInputStream(final URL context, final String spec) throws IOException

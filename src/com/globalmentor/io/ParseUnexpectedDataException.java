@@ -17,13 +17,14 @@
 package com.globalmentor.io;
 
 /**Class for unexpected characters encounted when parsing an input stream.
-Used by com.garretwilson.io.ParseReader.
+Used by {@link ParseReader}.
 This implementation assumes that if a list of strings were expected, a string
 	will have been found. That is, if <code>getExpectedCharacters()</code> returns
 	a non-null value, <code>getCharacterFound()</code> will hold a valid value;
 	otherwise, <code>getStringFound()</code> will hold the appropriate value.
 @see ParseIOException
 @see ParseReader
+@deprecated
 */
 public class ParseUnexpectedDataException extends ParseIOException
 {

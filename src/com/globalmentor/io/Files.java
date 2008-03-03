@@ -24,7 +24,6 @@ import static java.util.Collections.*;
 
 import javax.mail.internet.ContentType;
 
-import com.garretwilson.rdf.*;
 import com.globalmentor.java.*;
 import com.globalmentor.javascript.JavaScript;
 import com.globalmentor.net.*;
@@ -804,7 +803,8 @@ public class Files
 	@param io The I/O support for reading the object.
 	@return The object read from the file.
 	@throws IOException if there is an error reading the data.
-	*/ 
+	*/
+/*TODO move or delete
 	public static <T> T read(final File file, final RDF rdf, final RDFIO<T> io) throws IOException
 	{
 		final InputStream bufferedInputStream=new BufferedInputStream(new FileInputStream(file));	//create a buffered input stream to the file
@@ -817,6 +817,7 @@ public class Files
 			bufferedInputStream.close();	//always close the input stream
 		}
 	}
+*/
 
 	/**Reads an object from a file using the given URF I/O support, with the URI of the file as the base URI.
 	@param file The file from which to read.

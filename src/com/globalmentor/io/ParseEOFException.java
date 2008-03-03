@@ -17,9 +17,10 @@
 package com.globalmentor.io;
 
 /**Unexpected end of file error when parsing an input stream.
-Used by com.garretwilson.io.ParseReader.
+Used by {@link ParseReader}.
 @see ParseIOException
 @see ParseReader
+@deprecated
 */
 public class ParseEOFException extends ParseIOException
 {
