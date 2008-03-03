@@ -6,12 +6,12 @@ import java.util.*;
 import static java.util.Calendar.*;
 
 
-import com.garretwilson.iso.ISO8601;
-import static com.garretwilson.iso.ISO8601.*;
 import com.globalmentor.io.ParseIOException;
+import com.globalmentor.iso.ISO8601;
 import com.globalmentor.text.SyntaxException;
 
 import static com.globalmentor.io.ReaderParser.*;
+import static com.globalmentor.iso.ISO8601.*;
 import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.Strings.*;

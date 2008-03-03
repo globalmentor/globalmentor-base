@@ -27,6 +27,7 @@ import javax.mail.internet.ContentType;
 import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
 import com.globalmentor.java.*;
+import com.globalmentor.javascript.JavaScriptConstants;
 import com.globalmentor.text.Text;
 import com.globalmentor.text.xml.oeb.OEB;
 import com.globalmentor.text.xml.stylesheets.css.XMLCSS;
@@ -70,7 +71,7 @@ public class Files
 		tempFileExtensionContentTypeMap.put(JAVA_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, JAVA_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(JPEG_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(JPG_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(JS_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, JAVASCRIPT_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(JS_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, JavaScriptConstants.JAVASCRIPT_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put("marmox", new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, "x-marmox-page+rdf+xml", null));
 		tempFileExtensionContentTypeMap.put(MAQRO_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_MAQRO_RDF_XML_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(MP3_EXTENSION, new ContentType(ContentTypes.AUDIO_PRIMARY_TYPE, MPEG_SUBTYPE, null));	//RFC 3003

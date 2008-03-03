@@ -2,10 +2,10 @@ package com.globalmentor.urf;
 
 import java.util.*;
 
-import static com.garretwilson.iso.ISO8601.*;
 
 import com.globalmentor.java.Integers;
 
+import static com.globalmentor.iso.ISO8601.*;
 import static com.globalmentor.java.Integers.*;
 
 /**The abstract base type for <code>urf.Date</code> and <code>urf.DateTime</code> types.

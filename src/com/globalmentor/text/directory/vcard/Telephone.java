@@ -16,7 +16,7 @@
 
 package com.globalmentor.text.directory.vcard;
 
-import com.garretwilson.itu.*;
+import com.globalmentor.itu.*;
 import com.globalmentor.text.ArgumentSyntaxException;
 
 /**An object representing the "TEL" type of a vCard <code>text/directory</code>
