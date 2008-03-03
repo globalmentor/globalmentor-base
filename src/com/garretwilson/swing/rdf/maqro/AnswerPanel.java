@@ -11,7 +11,7 @@ import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.rdf.xmlschema.BooleanLiteral;
 import com.garretwilson.swing.*;
 import com.globalmentor.java.Objects;
-import com.globalmentor.text.xml.schema.XMLSchemaConstants;
+import com.globalmentor.text.xml.schema.XMLSchema;
 import com.globalmentor.util.Debug;
 
 /**Panel for editing the answer of a MAQRO question.
@@ -23,7 +23,7 @@ public class AnswerPanel extends ContentPanel
 
 	/**Example expected types for the combo box.*/
 	protected final static RDFResource[] TYPE_EXAMPLES=new RDFResource[]
-			{new DefaultRDFResource(XMLSchemaConstants.BOOLEAN_DATATYPE_URI)};
+			{new DefaultRDFResource(XMLSchema.BOOLEAN_DATATYPE_URI)};
 
 	final JLabel typeLabel;
 	final JComboBox typeComboBox;
@@ -254,7 +254,7 @@ public class AnswerPanel extends ContentPanel
 	{
 		if(type!=null)	//if a type was given
 		{
-			if(XMLSchemaConstants.BOOLEAN_DATATYPE_URI.equals(type.getURI()))	//if this is the boolean type
+			if(XMLSchema.BOOLEAN_DATATYPE_URI.equals(type.getURI()))	//if this is the boolean type
 			{
 				return new BooleanPanel(BooleanPanel.HORIZONTAL);	//use a boolean panel for the content component
 			}

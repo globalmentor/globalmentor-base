@@ -13,7 +13,7 @@ import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.globalmentor.text.xml.XMLBase;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.Debug;
 import com.globalmentor.util.Locales;
 
@@ -355,12 +355,12 @@ Debug.trace("processing attribute from local name: ", attributeLocalName);
 Debug.trace("processing attribute from value: ", attributeValue);
 */
 				//ignore attributes with the "xmlns" prefix or in the xmlns namespace
-			if(XMLUtilities.XMLNS_NAMESPACE_PREFIX.equals(attributePrefix) || XMLUtilities.XMLNS_NAMESPACE_URI.equals(attributeNamespaceURI))
+			if(XML.XMLNS_NAMESPACE_PREFIX.equals(attributePrefix) || XML.XMLNS_NAMESPACE_URI.equals(attributeNamespaceURI))
 			{
 				continue;
 			}
 				//process attributes with the "xml" prefix (or in the xml namespace) specially
-			else if(XMLUtilities.XML_NAMESPACE_PREFIX.equals(attributePrefix) || XMLUtilities.XML_NAMESPACE_URI.equals(attributeNamespaceURI))
+			else if(XML.XML_NAMESPACE_PREFIX.equals(attributePrefix) || XML.XML_NAMESPACE_URI.equals(attributeNamespaceURI))
 			{
 					//TODO add support for xml:lang
 				continue;
@@ -540,10 +540,10 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		else if(LITERAL_PARSE_TYPE.equals(parseType))	//if this is an XMLLiteral
 		{
 			//TODO process the attributes to make sure there are no unexpected attributes
-			final Document document=XMLUtilities.createDocument(element);	//create a new document from a copy of the given element
+			final Document document=XML.createDocument(element);	//create a new document from a copy of the given element
 			//G***do we want to ensure namespace declarations?
 			final Element documentElement=document.getDocumentElement();	//get a reference to the document element
-			final DocumentFragment documentFragment=XMLUtilities.extractChildren(documentElement);	//extract the children of the document element to a document fragment TODO important probably reset the owner document, so that this won't keep the entire original document tree around
+			final DocumentFragment documentFragment=XML.extractChildren(documentElement);	//extract the children of the document element to a document fragment TODO important probably reset the owner document, so that this won't keep the entire original document tree around
 			propertyValue=new RDFXMLLiteral(documentFragment);	//create an XML literal containing the document fragment, which now contains a copy of the information of the XML tree below the given element
 		}
 		else	//by default assume that we're parsing a resource as the property value
@@ -632,7 +632,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 		}
 		else  //if we didn't find any child elements, the content is a literal
 		{
-			final String childText=XMLUtilities.getText(propertyNode, true);	//retrieve the child text
+			final String childText=XML.getText(propertyNode, true);	//retrieve the child text
 			final String datatype=propertyNode instanceof Element ? getRDFAttribute((Element)propertyNode, ATTRIBUTE_DATATYPE) : null; //get the datatype, if there is one TODO check elsewhere to make sure a datatype isn't given for non-literal content
 			if(datatype!=null)	//if a datatype is present
 			{
@@ -641,7 +641,7 @@ Debug.trace("processing attribute from value: ", attributeValue);
 			else	//if a datatype is not present, this is a plain literal
 			{
 					//get the xml:lang language tag, if there is one
-				final String languageTag=propertyNode instanceof Element ? XMLUtilities.getDefinedAttributeNS((Element)propertyNode, XMLUtilities.XML_NAMESPACE_URI.toString(), XMLUtilities.ATTRIBUTE_LANG) : null;
+				final String languageTag=propertyNode instanceof Element ? XML.getDefinedAttributeNS((Element)propertyNode, XML.XML_NAMESPACE_URI.toString(), XML.ATTRIBUTE_LANG) : null;
 					//create a locale for the language if there is a language tag
 				final Locale languageLocale=languageTag!=null ? Locales.createLocale(languageTag) : null;
 				return new RDFPlainLiteral(childText, languageLocale);  //create a literal from the element's text, noting the specified language if any

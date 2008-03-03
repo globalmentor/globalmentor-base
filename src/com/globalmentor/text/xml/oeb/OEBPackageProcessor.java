@@ -30,9 +30,8 @@ import static com.globalmentor.text.xml.oeb.OEB.*;
 
 import com.globalmentor.io.ContentTypes;
 import com.globalmentor.text.xml.XMLProcessor;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xpath.XPath;
-import com.globalmentor.text.xml.xpath.XPathConstants;
 import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
@@ -133,13 +132,13 @@ public class OEBPackageProcessor
 		//get a list of all dc:Identifier elements
 		//XPath: /metadata/dc-metadata/dc:Identifier
 		final List<Node> dcIdentifierElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
-			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA+
-			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA_DC_METADATA+
-			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST_DC_METADATA_DC_IDENTIFIER);
+			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA+
+			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA_DC_METADATA+
+			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST_DC_METADATA_DC_IDENTIFIER);
 		for(int i=0; i<dcIdentifierElementList.size(); ++i)	//look at each DC metadata element
 		{
 			final Element dcIdentifierElement=(Element)dcIdentifierElementList.get(i);	//get a reference to this DC identifier element
-		  final String dcIdentifierElementText=XMLUtilities.getText(dcIdentifierElement, true); //get the text of the element
+		  final String dcIdentifierElementText=XML.getText(dcIdentifierElement, true); //get the text of the element
 				//get the trimmed scheme (in lowercase) being used by this Dublin Core identifier in OEBPS 1.x
 			final String scheme=dcIdentifierElement.getAttributeNS(null, PKG_METADATA_DC_METADATA_DC_IDENTIFIER_ATTRIBUTE_SCHEME).trim().toLowerCase();
 				//if the scheme indicates that the identifier is a URI, a URL, or a URN,
@@ -189,14 +188,14 @@ public class OEBPackageProcessor
 		rdf.addResource(publicationResource);	//add the resource to the RDF data model
 		//XPath: /metadata/dc-metadata/*
 		final List<Node> dcMetadataElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
-			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA+
-			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA_DC_METADATA+
-			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+XPathConstants.WILDCARD_CHAR);
+			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA+
+			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_METADATA_DC_METADATA+
+			XPath.LOCATION_STEP_SEPARATOR_CHAR+XPath.WILDCARD_CHAR);
 		for(int i=0; i<dcMetadataElementList.size(); ++i)	//look at each DC metadata element
 		{
 			final Element dcMetadataElement=(Element)dcMetadataElementList.get(i);	//get a reference to this DC metadata element
 			final String dcMetadataElementName=dcMetadataElement.getNodeName();	//get the name of this DC metadata element
-		  final String dcMetadataElementText=XMLUtilities.getText(dcMetadataElement, true); //get the text of the element
+		  final String dcMetadataElementText=XML.getText(dcMetadataElement, true); //get the text of the element
 			//<package><metadata><dc-metadata><dc:Title>
 			if(PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TITLE.equals(dcMetadataElementName))
 			{
@@ -308,8 +307,8 @@ public class OEBPackageProcessor
 //TODO fix with URF		final RDFListResource manifestResource=addManifest(publicationResource);
 		//XPath: /manifest/item
 		final List<Node> manifestElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
-			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST+
-			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST_ITEM);
+			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST+
+			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST_ITEM);
 		for(int i=0; i<manifestElementList.size(); ++i)	//look at each manifest element
 		{
 			final Element itemElement=(Element)manifestElementList.get(i);	//get a reference to this item in the manifest
@@ -347,8 +346,8 @@ Debug.trace("adding an organization to the publication");
 		final RDFListResource spine=new RDFListResource();	//create a new list for the spine
 		//XPath: /spine/itemref
 		final List<Node> spineElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
-			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE+
-			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE_ITEMREF);
+			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE+
+			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE_ITEMREF);
 Debug.trace("looking at spine elements");
 		for(int i=0; i<spineElementList.size(); ++i)	//look at each spine element
 		{
@@ -371,8 +370,8 @@ Debug.trace("adding item to organization");
 //TODO fix with new navigation stuff
 		//XPath: /guide/reference
 		final List<Node> guideElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
-			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_GUIDE+
-			XPathConstants.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_GUIDE_REFERENCE);
+			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_GUIDE+
+			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_GUIDE_REFERENCE);
 		for(int i=0; i<guideElementList.size(); ++i)	//look at each guide element
 		{
 			final Element referenceElement=(Element)guideElementList.get(i);	//get a reference to this reference in the guide

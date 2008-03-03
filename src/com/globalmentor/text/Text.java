@@ -20,14 +20,14 @@ import java.io.UnsupportedEncodingException;
 
 import javax.mail.internet.ContentType;
 
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.Arrays;
 
 import static com.globalmentor.io.ContentTypes.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.text.xml.XMLUtilities.*;
+import static com.globalmentor.text.xml.XML.*;
 
 /**Constants and utilities for text.
 @author Garret Wilson
@@ -67,8 +67,8 @@ public class Text
 		content type.
 	@return <code>true</code> if the given content type is one of several text
 		media types.
-	@see XMLUtilities#isXML(ContentType)
-	@see XMLUtilities#isXMLExternalParsedEntity(ContentType)
+	@see XML#isXML(ContentType)
+	@see XML#isXMLExternalParsedEntity(ContentType)
 	*/ 
 	public static boolean isText(final ContentType contentType)
 	{

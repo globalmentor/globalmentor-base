@@ -22,7 +22,7 @@ import java.util.*;
 import static com.globalmentor.io.ContentTypes.*;
 
 import static com.globalmentor.text.xml.oeb.OEB.*;
-import static com.globalmentor.text.xml.stylesheets.css.XMLCSSConstants.*;
+import static com.globalmentor.text.xml.stylesheets.css.XMLCSS.*;
 
 /**Utilities for working with OEB CSS.
 @author Garret Wilson

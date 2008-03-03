@@ -91,8 +91,8 @@ public class RDFXMLLiteral extends RDFTypedLiteral<DocumentFragment>
 		final String xmlDocumentLexicalForm="<dummy>"+lexicalForm+"</dummy>";	//wrap the lexical form in a dummy element
 		try
 		{
-			final Document document=XMLUtilities.createDocumentBuilder(true).parse(new ByteArrayInputStream(xmlDocumentLexicalForm.getBytes(UTF_8)));	//parse the document, recognizing namespaces
-			return XMLUtilities.extractChildren(document.getDocumentElement());	//extract the children of the document element to a document fragment and return that fragment
+			final Document document=XML.createDocumentBuilder(true).parse(new ByteArrayInputStream(xmlDocumentLexicalForm.getBytes(UTF_8)));	//parse the document, recognizing namespaces
+			return XML.extractChildren(document.getDocumentElement());	//extract the children of the document element to a document fragment and return that fragment
 		}
 		catch(final ParserConfigurationException parserConfigurationException)	//we should always be able to configure a namespace-aware XML parser
 		{

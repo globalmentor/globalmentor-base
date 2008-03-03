@@ -20,11 +20,11 @@ import com.garretwilson.rdf.rdfs.RDFSConstants;
 import com.garretwilson.rdf.version.VersionConstants;
 import com.garretwilson.rdf.xeb.XEBConstants;
 import com.garretwilson.rdf.xpackage.XPackageConstants;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.oeb.OEB;
-import com.globalmentor.text.xml.schema.XMLSchemaConstants;
+import com.globalmentor.text.xml.schema.XMLSchema;
 import com.globalmentor.text.xml.xhtml.XHTML;
-import com.globalmentor.text.xml.xlink.XLinkConstants;
+import com.globalmentor.text.xml.xlink.XLink;
 import com.globalmentor.urf.URF;
 import com.globalmentor.urf.content.Content;
 import com.globalmentor.urf.select.Select;
@@ -76,11 +76,11 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 //G***add SOAP
 //TODO del		tempNamespaceURILabelMap.put(VCard.VCARD_NAMESPACE_URI, VCard.VCARD_NAMESPACE_PREFIX); //vCard
 		tempNamespaceURILabelMap.put(VersionConstants.VERSION_NAMESPACE_URI, VersionConstants.VERSION_NAMESPACE_PREFIX); //version
-		tempNamespaceURILabelMap.put(XMLSchemaConstants.XML_SCHEMA_NAMESPACE_URI, XMLSchemaConstants.XML_SCHEMA_NAMESPACE_PREFIX); //XML Schema
+		tempNamespaceURILabelMap.put(XMLSchema.XML_SCHEMA_NAMESPACE_URI, XMLSchema.XML_SCHEMA_NAMESPACE_PREFIX); //XML Schema
 		tempNamespaceURILabelMap.put(XHTML.XHTML_NAMESPACE_URI, XHTML.XHTML_NAMESPACE_PREFIX); //XHTML
-		tempNamespaceURILabelMap.put(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.XLINK_NAMESPACE_PREFIX); //XLink
-		tempNamespaceURILabelMap.put(XMLUtilities.XML_NAMESPACE_URI, XMLUtilities.XML_NAMESPACE_PREFIX); //XML
-		tempNamespaceURILabelMap.put(XMLUtilities.XMLNS_NAMESPACE_URI, XMLUtilities.XMLNS_NAMESPACE_PREFIX); //XML namespaces
+		tempNamespaceURILabelMap.put(XLink.XLINK_NAMESPACE_URI, XLink.XLINK_NAMESPACE_PREFIX); //XLink
+		tempNamespaceURILabelMap.put(XML.XML_NAMESPACE_URI, XML.XML_NAMESPACE_PREFIX); //XML
+		tempNamespaceURILabelMap.put(XML.XMLNS_NAMESPACE_URI, XML.XMLNS_NAMESPACE_PREFIX); //XML namespaces
 		tempNamespaceURILabelMap.put(XEBConstants.XEB_NAMESPACE_URI, XEBConstants.XEB_NAMESPACE_PREFIX); //XEbook
 		tempNamespaceURILabelMap.put(XPackageConstants.XPACKAGE_NAMESPACE_URI, XPackageConstants.XPACKAGE_NAMESPACE_PREFIX); //XPackage
 		tempNamespaceURILabelMap.put(XPackageConstants.XML_ONTOLOGY_NAMESPACE_URI, XPackageConstants.XML_ONTOLOGY_NAMESPACE_PREFIX); //XPackage XML ontology

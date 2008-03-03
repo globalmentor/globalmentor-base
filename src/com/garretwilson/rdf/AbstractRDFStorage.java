@@ -8,7 +8,7 @@ import com.globalmentor.io.*;
 import com.globalmentor.text.xml.XMLDOMImplementation;
 import com.globalmentor.text.xml.XMLProcessor;
 import com.globalmentor.text.xml.XMLSerializer;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
@@ -167,7 +167,7 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 			final URI namespaceURI=namespaceURIPrefixEntry.getKey();	//get the namespace URI
 			final String namespacePrefix=namespaceURIPrefixEntry.getValue();	//get the namespace prefix
 				//make sure this xmlns:prefix attribute is declared
-			XMLUtilities.ensureNamespaceDeclaration(document.getDocumentElement(), namespacePrefix, namespaceURI.toString());
+			XML.ensureNamespaceDeclaration(document.getDocumentElement(), namespacePrefix, namespaceURI.toString());
 		}
 		store(document);	//store the XML document
 		setModified(false);	//show that we are no longer modified

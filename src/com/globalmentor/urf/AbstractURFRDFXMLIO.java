@@ -5,7 +5,7 @@ import java.net.*;
 
 import javax.xml.parsers.*;
 
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.DataException;
 
 import org.w3c.dom.Document;
@@ -39,7 +39,7 @@ public abstract class AbstractURFRDFXMLIO<T> extends AbstractURFIO<T>
 	*/
 	protected DocumentBuilder createDocumentBuilder() throws ParserConfigurationException
 	{
-		return XMLUtilities.createDocumentBuilder(true);	//create a document builder that understands namespaces
+		return XML.createDocumentBuilder(true);	//create a document builder that understands namespaces
 	}
 
 	/**Reads URF data from an input stream.

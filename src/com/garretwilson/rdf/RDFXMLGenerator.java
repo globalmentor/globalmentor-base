@@ -9,10 +9,10 @@ import static com.garretwilson.rdf.RDFXMLConstants.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.globalmentor.text.xml.XMLNamespacePrefixManager;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.*;
 
-import static com.globalmentor.text.xml.XMLUtilities.*;
+import static com.globalmentor.text.xml.XML.*;
 import static com.globalmentor.util.Collections.*;
 
 import org.w3c.dom.*;
@@ -285,7 +285,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 		  //create an RDF document
 		final Document document=domImplementation.createDocument(RDF_NAMESPACE_URI.toString(), createQualifiedName(RDF_NAMESPACE_PREFIX, ELEMENT_RDF), null);
 		  //add the RDF namespace declaration prefix, xmlns:rdf
-		document.getDocumentElement().setAttributeNS(XMLUtilities.XMLNS_NAMESPACE_URI.toString(), createQualifiedName(XMLUtilities.XMLNS_NAMESPACE_PREFIX, RDFConstants.RDF_NAMESPACE_PREFIX), RDFConstants.RDF_NAMESPACE_URI.toString());
+		document.getDocumentElement().setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, RDFConstants.RDF_NAMESPACE_PREFIX), RDFConstants.RDF_NAMESPACE_URI.toString());
 		return document;  //return the document we created
 	}
 
@@ -663,7 +663,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 				final Node importedDocumentFragment=document.importNode(valueXMLLiteral.getValue(), true);
 				propertyElement.appendChild(importedDocumentFragment);	//append the children of the document fragment to this node
 					//make sure all namespaces are properly declared for all child elements, declaring the namespaces on the property element itself if possible
-				XMLUtilities.ensureChildNamespaceDeclarations(propertyElement); 
+				XML.ensureChildNamespaceDeclarations(propertyElement); 
 			}
 			else	//for all other XML literals, just store their lexical form as a text child to the property element
 			{
@@ -675,7 +675,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 					{
 						final String languageTag=Locales.getLanguageTag(valuePlainLiteral.getLanguage());	//create a language tag from the locale
 							//store the language tag in the xml:lang attribute
-						propertyElement.setAttributeNS(XMLUtilities.XML_NAMESPACE_URI.toString(), createQualifiedName(XMLUtilities.XML_NAMESPACE_PREFIX, XMLUtilities.ATTRIBUTE_LANG), languageTag);
+						propertyElement.setAttributeNS(XML.XML_NAMESPACE_URI.toString(), createQualifiedName(XML.XML_NAMESPACE_PREFIX, XML.ATTRIBUTE_LANG), languageTag);
 					}
 				}
 				else if(valueLiteral instanceof RDFTypedLiteral)	//if this is a typed literal

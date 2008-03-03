@@ -18,7 +18,7 @@ import static com.garretwilson.rdf.RDFConstants.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.globalmentor.text.W3CDateFormat;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 
 import org.w3c.dom.*;
 
@@ -672,7 +672,7 @@ public class RDFUtilities
 		for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
 		{
 			final char character=referenceURIString.charAt(i);	//get this character
-			if(!XMLUtilities.isNameChar(character) && character!=URIConstants.ESCAPE_CHAR)	//if this is not a name character (but it isn't the URI escape character, either)
+			if(!XML.isNameChar(character) && character!=URIConstants.ESCAPE_CHAR)	//if this is not a name character (but it isn't the URI escape character, either)
 			{
 				return URI.create(referenceURIString.substring(0, i+1));	//create a URI using everything up to and including the last non-XML name character
 			}
@@ -707,7 +707,7 @@ public class RDFUtilities
 		for(int i=referenceURIString.length()-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
 		{
 			final char character=referenceURIString.charAt(i);	//get this character
-			if(!XMLUtilities.isNameChar(character) && character!=URIConstants.ESCAPE_CHAR)	//if this is not a name character (but it isn't the URI escape character, either)
+			if(!XML.isNameChar(character) && character!=URIConstants.ESCAPE_CHAR)	//if this is not a name character (but it isn't the URI escape character, either)
 			{
 				return referenceURIString.substring(i+1);	//create a local name using everything after the last non-XML name character
 			}
@@ -740,8 +740,8 @@ public class RDFUtilities
 */
 		try
 		{
-			final Document document=rdfXMLifier.createDocument(rdf, XMLUtilities.createDocumentBuilder(true).getDOMImplementation());  //create an XML document from the RDF
-			return XMLUtilities.toString(document); //convert the XML document to a string and return it
+			final Document document=rdfXMLifier.createDocument(rdf, XML.createDocumentBuilder(true).getDOMImplementation());  //create an XML document from the RDF
+			return XML.toString(document); //convert the XML document to a string and return it
 		}
 		catch(final ParserConfigurationException parserConfigurationException)	//we should always support a namespace-aware DOM implementation
 		{
@@ -767,8 +767,8 @@ public class RDFUtilities
 			
 		try
 		{
-			final Document document=rdfXMLifier.createDocument(resource, XMLUtilities.createDocumentBuilder(true).getDOMImplementation());  //create an XML document from the RDF
-			return XMLUtilities.toString(document); //convert the XML document to a string and return it
+			final Document document=rdfXMLifier.createDocument(resource, XML.createDocumentBuilder(true).getDOMImplementation());  //create an XML document from the RDF
+			return XML.toString(document); //convert the XML document to a string and return it
 		}
 		catch(final ParserConfigurationException parserConfigurationException)	//we should always support a namespace-aware DOM implementation
 		{

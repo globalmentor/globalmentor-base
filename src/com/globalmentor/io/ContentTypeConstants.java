@@ -16,7 +16,7 @@
 
 package com.globalmentor.io;
 
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 
 /**Constant values related to MIME media types, as originally defined in
 	<a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>,
@@ -24,14 +24,13 @@ import com.globalmentor.text.xml.XMLUtilities;
 @author Garret Wilson
 @see javax.mail.internet.ContentType
 @see http://www.rfc-editor.org/rfc/rfc2046.txt
-@see http://www.w3.org/TR/2002/NOTE-xhtml-media-types-20020430/
 */
 public class ContentTypeConstants	//TODO transfer these constants to specific relevant classes and remove this class
 {
 		//subtype suffixes
 
 	/**The suffix for RDF application types.*/
-	public final static String RDF_XML_SUBTYPE_SUFFIX="rdf"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XMLUtilities.XML_SUBTYPE_SUFFIX;
+	public final static String RDF_XML_SUBTYPE_SUFFIX="rdf"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XML.XML_SUBTYPE_SUFFIX;
 	/**The suffix for TURF application types.*/
 	public final static String TURF_SUBTYPE_SUFFIX="turf";
 	/**The suffix for URF TURF application types.*/
@@ -41,10 +40,7 @@ public class ContentTypeConstants	//TODO transfer these constants to specific re
 
 	//text media types
 	public final static String CALENDAR_SUBTYPE="calendar";
-	/**A Cascading Style Sheet document.*/
-	public final static String CSS_SUBTYPE="css";
 	public final static String DIRECTORY_SUBTYPE="directory";
-	public final static String HTML_SUBTYPE="html";
 	public final static String JAVASCRIPT_SUBTYPE="javascript";
 	/**A <code>text/uri-list</code> content type as defined in <a href="http://www.ietf.org/rfc/rfc2483.txt">RFC 2483</a>, "URI Resolution Services Necessary for URN Resolution".*/
 	public final static String URI_LIST_SUBTYPE="uri-list";
@@ -61,8 +57,6 @@ public class ContentTypeConstants	//TODO transfer these constants to specific re
 	public final static String JPEG_SUBTYPE="jpeg";
 	/**A PNG image.*/
 	public final static String PNG_SUBTYPE="png";
-	/**An SVG image.*/
-	public final static String SVG_XML_SUBTYPE="svg"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XMLUtilities.XML_SUBTYPE_SUFFIX;
 	/**A TIFF image.*/
 	public final static String TIFF_SUBTYPE="tiff";
 	/**A bitmap image.*/
@@ -111,10 +105,6 @@ public class ContentTypeConstants	//TODO transfer these constants to specific re
 	public final static String X_XEBOOK_RDF_XML_SUBTYPE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"xebook"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**An XEB book zip file, <code>x-xebook+rdf+xml+zip</code>.*/
 	public final static String X_XEBOOK_RDF_XML_ZIP_SUBTYPE=X_XEBOOK_RDF_XML_SUBTYPE+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+ZIP_SUBTYPE_SUFFIX;
-	/**An XHTML application.*/
-	public final static String XHTML_XML_SUBTYPE="xhtml"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XMLUtilities.XML_SUBTYPE_SUFFIX;
-	/**An XHTML fragment (not yet formally defined).*/
-	public final static String XHTML_XML_EXTERNAL_PARSED_ENTITY_SUBTYPE="xhtml"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+XMLUtilities.XML_EXTERNAL_PARSED_ENTITY_SUBTYPE_SUFFIX;
 	/**A Zip file.*/
 	public final static String ZIP_SUBTYPE="zip";
 

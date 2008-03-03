@@ -29,6 +29,7 @@ import com.garretwilson.rdf.*;
 import com.globalmentor.java.*;
 import com.globalmentor.text.Text;
 import com.globalmentor.text.xml.oeb.OEB;
+import com.globalmentor.text.xml.stylesheets.css.XMLCSS;
 import com.globalmentor.text.xml.xhtml.XHTML;
 import com.globalmentor.urf.*;
 
@@ -58,7 +59,7 @@ public class Files
 		tempFileExtensionContentTypeMap.put(AU_EXTENSION, new ContentType(ContentTypes.AUDIO_PRIMARY_TYPE, BASIC_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(BMP_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, X_BITMAP_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(CLASS_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, JAVA_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(CSS_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, CSS_SUBTYPE, null));	//text/css
+		tempFileExtensionContentTypeMap.put(CSS_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, XMLCSS.CSS_SUBTYPE, null));	//text/css
 		tempFileExtensionContentTypeMap.put(DICTO_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_DICTO_RDF_XML_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(DOC_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, MSWORD_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(GIF_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, GIF_SUBTYPE, null));	//image/gif

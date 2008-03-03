@@ -18,7 +18,7 @@ import com.garretwilson.swing.qti.tree.*;
 import com.garretwilson.assess.qti.*;
 import com.globalmentor.java.Booleans;
 import com.globalmentor.text.xml.XMLSerializer;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
@@ -325,7 +325,7 @@ Debug.trace("****setting XML");  //G***del
 
 //TODO use the XMLTextPane.setXML() version if we can
 						//G***testing for style application
-			((XMLEditorKit)xmlTextPane.getEditorKit()).setXML(xmlDocument, null, XMLUtilities.XML_CONTENT_TYPE, swingDocument); //set the XML document in the text pane
+			((XMLEditorKit)xmlTextPane.getEditorKit()).setXML(xmlDocument, null, XML.XML_CONTENT_TYPE, swingDocument); //set the XML document in the text pane
 	//G***del Debug.trace("navigating");  //G***del
 					}
 				});

@@ -30,7 +30,7 @@ import com.garretwilson.rdf.xpackage.XPackageUtilities;
 
 import static com.globalmentor.text.xml.oeb.OEB.*;
 import com.globalmentor.text.xml.XMLSerializer;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
@@ -83,15 +83,15 @@ public class OEB1PackageSerializer
 	{
 		final Document document=OEB.createOEB1Package(); //create a package XML document
 		//package
-		final Element packageElement=XMLUtilities.replaceDocumentElement(document, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_PACKAGE); //create the package element
+		final Element packageElement=XML.replaceDocumentElement(document, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_PACKAGE); //create the package element
 		  //package/metadata
-		final Element metadataElement=XMLUtilities.appendElementNS(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA); //create the metadata element
+		final Element metadataElement=XML.appendElementNS(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA); //create the metadata element
 			  //package/metadata/dc-metadata
-		final Element dcMetadataElement=XMLUtilities.appendElementNS(metadataElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA_DC_METADATA); //create the dc-metadata element
+		final Element dcMetadataElement=XML.appendElementNS(metadataElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_METADATA_DC_METADATA); //create the dc-metadata element
 			  //add the attribute, xmlns:dc="http://purl.org/dc/elements/1.0/"
-		dcMetadataElement.setAttributeNS(XMLUtilities.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLUtilities.XMLNS_NAMESPACE_PREFIX, DCMI_ELEMENTS_NAMESPACE_PREFIX), DCMI10_ELEMENTS_NAMESPACE_URI.toString());
+		dcMetadataElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XML.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, DCMI_ELEMENTS_NAMESPACE_PREFIX), DCMI10_ELEMENTS_NAMESPACE_URI.toString());
 			  //add the attribute, xmlns:oebpackage="http://openebook.org/namespaces/oeb-package/1.0/"
-		dcMetadataElement.setAttributeNS(XMLUtilities.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLUtilities.XMLNS_NAMESPACE_PREFIX, OEB1_PACKAGE_NAMESPACE_PREFIX), OEB1_PACKAGE_NAMESPACE_URI.toString());
+		dcMetadataElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XML.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, OEB1_PACKAGE_NAMESPACE_PREFIX), OEB1_PACKAGE_NAMESPACE_URI.toString());
 		final Iterator propertyIterator=publication.getPropertyIterator();  //get an iterator to the publication's properties
 		while(propertyIterator.hasNext()) //while there are more properties
 		{
@@ -112,61 +112,61 @@ Debug.trace("property value is a literal"); //G**8del
 					//<package><metadata><dc-metadata><dc:Title>
 					if(DC_TITLE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TITLE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Creator>
 					else if(DC_CREATOR_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CREATOR, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Subject>
 					else if(DC_SUBJECT_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SUBJECT, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Description>
 					else if(DC_DESCRIPTION_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DESCRIPTION, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Publisher>
 					else if(DC_PUBLISHER_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_PUBLISHER, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Contributor>
 					else if(DC_CONTRIBUTOR_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_CONTRIBUTOR, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Date>
 					else if(DC_DATE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_DATE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Type>
 					else if(DC_TYPE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_TYPE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Format>
 					else if(DC_FORMAT_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_FORMAT, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Identifier>
 					else if(DC_IDENTIFIER_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						final Element dcIdentifierElement=XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						final Element dcIdentifierElement=XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_IDENTIFIER, propertyValue);  //add the OEBPPS 1.x DC metadata element
 								//if the package has not yet been assigned a unique identifier attribute
 						if(!packageElement.hasAttributeNS(null, PKG_ELEMENT_PACKAGE_ATTRIBUTE_UNIQUE_IDENTIFIER))
@@ -180,31 +180,31 @@ Debug.trace("property value is a literal"); //G**8del
 					//<package><metadata><dc-metadata><dc:Source>
 					else if(DC_SOURCE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_SOURCE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Language>
 					else if(DC_LANGUAGE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_LANGUAGE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Relation>
 					else if(DC_RELATION_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RELATION, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Coverage>
 					else if(DC_COVERAGE_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_COVERAGE, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 					//<package><metadata><dc-metadata><dc:Rights>
 					else if(DC_RIGHTS_PROPERTY_NAME.equals(propertyLocalName))
 					{
-						XMLUtilities.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
+						XML.appendElementNS(dcMetadataElement, DCMI10_ELEMENTS_NAMESPACE_URI.toString(),
 							PKG_ELEMENT_MANIFEST_DC_METADATA_DC_RIGHTS, propertyValue);  //add the OEBPPS 1.x DC metadata element
 					}
 				}
@@ -228,7 +228,7 @@ Debug.trace("property value is a literal"); //G**8del
 		final RDFListResource<?> spine=publication.getSpine(); //get the spine
 		if(spine!=null)  //if the publication has a spine
 		{
-			final Element spineElement=XMLUtilities.appendElementNS(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_SPINE); //create the spine element
+			final Element spineElement=XML.appendElementNS(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_SPINE); //create the spine element
 			for(final RDFObject item:spine)	//for each item in the spine
 			{
 				spineElement.appendChild(generateItemRefElement(document, (RDFResource)item, publication.getURI()));  //generate an item element and add it to the spine element
@@ -237,7 +237,7 @@ Debug.trace("property value is a literal"); //G**8del
 		if(publication.getGuideList().size()>0) //if there are guides
 		{
 				//package/guide
-			final Element guideElement=XMLUtilities.appendElementNS(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_GUIDE); //create the guide element
+			final Element guideElement=XML.appendElementNS(packageElement, OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_GUIDE); //create the guide element
 			final Iterator guideIterator=publication.getGuideList().iterator(); //get an iterator to iterate through the guides
 			while(guideIterator.hasNext()) //while there are more items in the guide
 			{
@@ -321,13 +321,13 @@ Debug.trace("property value is a literal"); //G**8del
 	*/
 	public static String createItemID(final String identifier, final URI publicationURI)
 	{
-		if(!XMLUtilities.isName(identifier))  //if the identifier is not a name already
+		if(!XML.isName(identifier))  //if the identifier is not a name already
 		{
 			final StringBuffer stringBuffer=new StringBuffer(identifier); //create a string buffer to work with our identifier
 				//remove the publication URI, if present
 			for(int i=stringBuffer.length()-1; i>=0; --i) //look at each character from right to left
 			{
-				if(!XMLUtilities.isNameChar(stringBuffer.charAt(i)))  //if this is not a name character
+				if(!XML.isNameChar(stringBuffer.charAt(i)))  //if this is not a name character
 				{
 					final String prefix;  //we'll find out the prefix differently, depending on if the divider is a hash symbol
 					if(stringBuffer.charAt(i)=='#' && i>0) //if this is a fragment character that isn't the first characterTODO use a constant
@@ -342,13 +342,13 @@ Debug.trace("property value is a literal"); //G**8del
 				//convert characters to XML name characters
 			for(int i=stringBuffer.length()-1; i>=0; --i) //look at each character again
 			{
-				if(!XMLUtilities.isNameChar(stringBuffer.charAt(i)))  //if this is not a name character
+				if(!XML.isNameChar(stringBuffer.charAt(i)))  //if this is not a name character
 				{
 					stringBuffer.setCharAt(i, '_'); //replace the character with an underscore TODO use a constant
 				}
 			}
 				//if the first character isn't an XML character
-			if(stringBuffer.length()>0 && !XMLUtilities.isNameFirstChar(stringBuffer.charAt(0)))
+			if(stringBuffer.length()>0 && !XML.isNameFirstChar(stringBuffer.charAt(0)))
 			{
 				stringBuffer.insert(0, 'x');  //prepend the string with 'x' TODO use a constant
 			}

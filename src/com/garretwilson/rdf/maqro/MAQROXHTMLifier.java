@@ -4,7 +4,7 @@ import org.w3c.dom.*;
 
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.xmlschema.*;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 
 import static com.globalmentor.text.xml.xhtml.XHTML.*;
 
@@ -53,12 +53,12 @@ public class MAQROXHTMLifier
 			if(object instanceof Result)	//if this is a result object
 			{
 				final Result result=(Result)object;	//cast the object to a result
-				dlElement.appendChild(XMLUtilities.createElementNS(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Result"));	//TODO i18n
-				dlElement.appendChild(XMLUtilities.createElementNS(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD, getResultString(result)));	//show the result
+				dlElement.appendChild(XML.createElementNS(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Result"));	//TODO i18n
+				dlElement.appendChild(XML.createElementNS(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD, getResultString(result)));	//show the result
 			}
 		}
 		final Interaction interaction=outcome.getInteraction();	//get the interaction associated with the outcome
-		dlElement.appendChild(XMLUtilities.createElementNS(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Interaction"));	//TODO i18n
+		dlElement.appendChild(XML.createElementNS(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Interaction"));	//TODO i18n
 		final Element interactionElement=document.createElementNS(XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//create an element for the interaction
 		dlElement.appendChild(interactionElement);	//add the interaction element to the 
 		constructElement(interactionElement, outcome, interaction);
@@ -67,8 +67,8 @@ public class MAQROXHTMLifier
 			if(object instanceof Dialogue)	//if this is dialogue
 			{
 				final Dialogue dialogue=(Dialogue)object;	//cast the object to dialogue
-				dlElement.appendChild(XMLUtilities.createElementNS(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Response"));	//TODO i18n
-				final Element ddElement=XMLUtilities.appendElementNS(dlElement, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//append an element for dialogue
+				dlElement.appendChild(XML.createElementNS(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Response"));	//TODO i18n
+				final Element ddElement=XML.appendElementNS(dlElement, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//append an element for dialogue
 				constructElement(ddElement, dialogue);	//show the result
 			}
 		}		
@@ -112,8 +112,8 @@ public class MAQROXHTMLifier
 			final Dialogue query=question.getQuery();	//get the query, if any
 			if(query!=null)
 			{
-				dlElement.appendChild(XMLUtilities.createElementNS(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Query"));	//TODO i18n
-				final Element ddElement=XMLUtilities.appendElementNS(dlElement, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//append an element for dialogue
+				dlElement.appendChild(XML.createElementNS(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Query"));	//TODO i18n
+				final Element ddElement=XML.appendElementNS(dlElement, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//append an element for dialogue
 				constructElement(ddElement, query);	//show the query
 			}
 				//TODO fix for AND answers and OR answers
@@ -122,8 +122,8 @@ public class MAQROXHTMLifier
 				if(object instanceof Dialogue)	//if this is dialogue
 				{
 					final Dialogue dialogue=(Dialogue)object;	//cast the object to dialogue
-					dlElement.appendChild(XMLUtilities.createElementNS(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Answer"));	//TODO i18n
-					final Element ddElement=XMLUtilities.appendElementNS(dlElement, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//append an element for dialogue
+					dlElement.appendChild(XML.createElementNS(document, XHTML_NAMESPACE_URI.toString(), ELEMENT_DT, "Answer"));	//TODO i18n
+					final Element ddElement=XML.appendElementNS(dlElement, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//append an element for dialogue
 					constructElement(ddElement, dialogue);	//show the result
 				}
 			}		
@@ -141,13 +141,13 @@ public class MAQROXHTMLifier
 		final RDFLiteral dialogueValue=dialogue.getValue();	//get the value of this dialogue
 		if(dialogueValue instanceof RDFPlainLiteral)	//if the dialogue is a plain literal
 		{
-			XMLUtilities.appendText(element, dialogueValue.getLexicalForm());	//append the literal text to the element
+			XML.appendText(element, dialogueValue.getLexicalForm());	//append the literal text to the element
 		}
 		else if(dialogueValue instanceof RDFXMLLiteral)	//if the dialogue is an XML literal
 		{
 			final RDFXMLLiteral xmlLiteralDialogueValue=(RDFXMLLiteral)dialogueValue;
 			final DocumentFragment documentFragment=xmlLiteralDialogueValue.getValue();	//get the document fragment of the literal
-			XMLUtilities.appendImportedChildNodes(element, documentFragment, true);	//import the document fragment children into the element
+			XML.appendImportedChildNodes(element, documentFragment, true);	//import the document fragment children into the element
 		}
 /*TODO fix
 		else	//if we don't understand the type of dialogue value given (i.e. it's not a plain literal or an XML literal)

@@ -22,8 +22,8 @@ import com.garretwilson.swing.XMLTextPane;
 import com.garretwilson.swing.text.xml.*;
 import com.globalmentor.io.ContentTypes;
 import com.globalmentor.mentoract.activity.maqro.MAQROActivityEngine;
-import com.globalmentor.text.xml.XMLUtilities;
-import com.globalmentor.text.xml.xhtml.XHTML;
+import com.globalmentor.text.xml.XML;
+import static com.globalmentor.text.xml.xhtml.XHTML.*;
 import com.globalmentor.util.Debug;
 
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
@@ -219,13 +219,12 @@ public class MAQROViewFactory extends XMLViewFactory
 			  resultStringBuffer.append("</html>");
 */
 				final MAQROXHTMLifier maqroXHTMLifier=new MAQROXHTMLifier();	//create an object to create XHTML from a MAQRO outcome
-				final org.w3c.dom.Document document=XHTML.createXHTMLDocument("", true);	//create an XHTML document
+				final org.w3c.dom.Document document=createXHTMLDocument("", true);	//create an XHTML document
 					//create an element document from the outcome and append it to the XHTML body element
-				XHTML.getBodyElement(document).appendChild(maqroXHTMLifier.createElement(document, outcome));
+				getBodyElement(document).appendChild(maqroXHTMLifier.createElement(document, outcome));
 				final XMLTextPane outcomeTextPane=new XMLTextPane();	//TODO create a content type constructor
-				final ContentType contentType=new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, XHTML_XML_SUBTYPE, null);	//create an application/xhtml+xml content type
-				outcomeTextPane.setContentType(contentType.toString());	//set the content type to application/xhtml+xml
-				outcomeTextPane.setXML(document, null, contentType);	//set the XML in the text pane
+				outcomeTextPane.setContentType(XHTML_CONTENT_TYPE.toString());	//set the content type to application/xhtml+xml
+				outcomeTextPane.setXML(document, null, XHTML_CONTENT_TYPE);	//set the XML in the text pane
 				outcomeTextPane.setEditable(false);	//don't allow the text pane to be editable
 				
 //TODO fix				final String outcomeXHTMLString=XMLUtilities.toString(document.getDocumentElement());	//get a string version of the entire XHTML document

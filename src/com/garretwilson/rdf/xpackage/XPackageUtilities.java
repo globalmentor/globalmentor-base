@@ -12,8 +12,8 @@ import com.garretwilson.rdf.xmlschema.URILiteral;
 import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.garretwilson.rdf.xpackage.XPackageConstants.*;
 import com.globalmentor.marmot.Marmot;
-import com.globalmentor.text.xml.XMLUtilities;
-import com.globalmentor.text.xml.xlink.XLinkConstants;
+import com.globalmentor.text.xml.XML;
+import com.globalmentor.text.xml.xlink.XLink;
 import com.globalmentor.util.Debug;
 
 import org.w3c.dom.*;
@@ -68,9 +68,9 @@ public class XPackageUtilities
 		final RDFResource locationResource=RDFUtilities.locateResource(resource, null); //create an anonymous location resource
 //G***del; the location doesn't have a type		addType(rdf, locationResource, XPACKAGE_NAMESPACE_URI, LOCATION);  //set the location type to xpackage:location
 			//add the xlink:href property to the location
-		locationResource.addProperty(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.ATTRIBUTE_HREF, href);
+		locationResource.addProperty(XLink.XLINK_NAMESPACE_URI, XLink.ATTRIBUTE_HREF, href);
 			//add the xlink:type="simple" property to the location
-		locationResource.addProperty(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.ATTRIBUTE_TYPE, XLinkConstants.SIMPLE_TYPE);
+		locationResource.addProperty(XLink.XLINK_NAMESPACE_URI, XLink.ATTRIBUTE_TYPE, XLink.SIMPLE_TYPE);
 			//add the location property to the resource
 		resource.addProperty(XPACKAGE_NAMESPACE_URI, LOCATION_PROPERTY_NAME, locationResource);
 		return locationResource;  //return the location resource we created
@@ -101,15 +101,15 @@ public class XPackageUtilities
 //G***del if not needed		final DocumentType documentType=domImplementation.createDocumentType(ELEMENT_DESCRIPTION, OEB101_DOCUMENT_PUBLIC_ID, OEB101_DOCUMENT_SYSTEM_ID);	//create an OEB document type
 //G***del		final Document document=domImplementation.createDocument(OEB1_DOCUMENT_NAMESPACE_URI, ELEMENT_HTML, documentType);	//create an OEB XML document
 		  //create an XPackage package description document
-		final Document document=domImplementation.createDocument(XPACKAGE_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XPACKAGE_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION), null);
+		final Document document=domImplementation.createDocument(XPACKAGE_NAMESPACE_URI.toString(), XML.createQualifiedName(XPACKAGE_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION), null);
 		  //get the xpackage:description element
 		final Element descriptionElement=document.getDocumentElement();
 		  //add the RDF namespace declaration prefix, xmlns:rdf
-		descriptionElement.setAttributeNS(XMLUtilities.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLUtilities.XMLNS_NAMESPACE_PREFIX, RDF_NAMESPACE_PREFIX), RDF_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XML.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, RDF_NAMESPACE_PREFIX), RDF_NAMESPACE_URI.toString());
 		  //add the XPackage namespace declaration prefix, xmlns:xpackage
-		descriptionElement.setAttributeNS(XMLUtilities.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLUtilities.XMLNS_NAMESPACE_PREFIX, XPACKAGE_NAMESPACE_PREFIX), XPACKAGE_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XML.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, XPACKAGE_NAMESPACE_PREFIX), XPACKAGE_NAMESPACE_URI.toString());
 		  //add the XLink namespace declaration prefix, xmlns:xlink
-		descriptionElement.setAttributeNS(XMLUtilities.XMLNS_NAMESPACE_URI.toString(), XMLUtilities.createQualifiedName(XMLUtilities.XMLNS_NAMESPACE_PREFIX, XLinkConstants.XLINK_NAMESPACE_PREFIX), XLinkConstants.XLINK_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XML.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, XLink.XLINK_NAMESPACE_PREFIX), XLink.XLINK_NAMESPACE_URI.toString());
 		final Element rdfElement=RDFXMLGenerator.createRDFElement(document);  //create an <rdf:RDF> element
 		descriptionElement.appendChild(rdfElement);	//add the RDF element to the document
 		return document;  //return the document we created
@@ -125,7 +125,7 @@ public class XPackageUtilities
 	{
 		final RDFXMLGenerator rdfXMLifier=new RDFXMLGenerator(false);  //create a new RDF XMLifier that isn't compact
 		  //show that XLink properties should be serialized as attributes
-		rdfXMLifier.addLiteralAttributeSerializationNamespaceURI(XLinkConstants.XLINK_NAMESPACE_URI);
+		rdfXMLifier.addLiteralAttributeSerializationNamespaceURI(XLink.XLINK_NAMESPACE_URI);
 		return rdfXMLifier; //return the XMLifier we constructed
 	}
 
@@ -384,7 +384,7 @@ Debug.trace("looking at resource: ", resource); //G***del
 //G***del Debug.trace("found location resource: ", locationResource);
 		if(locationResource!=null)  //if there this resource has a location
 		{
-			final RDFLiteral hrefLiteral=(RDFLiteral)locationResource.getPropertyValue(XLinkConstants.XLINK_NAMESPACE_URI, XLinkConstants.ATTRIBUTE_HREF);  //get the XLink href value
+			final RDFLiteral hrefLiteral=(RDFLiteral)locationResource.getPropertyValue(XLink.XLINK_NAMESPACE_URI, XLink.ATTRIBUTE_HREF);  //get the XLink href value
 	  	return hrefLiteral!=null ? hrefLiteral.getLexicalForm() : null;  //return the href value or null if there is no href
 		}
 		else  //if there is no location

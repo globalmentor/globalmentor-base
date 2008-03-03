@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 
 import com.garretwilson.rdf.*;
 
-import static com.globalmentor.text.xml.schema.XMLSchemaConstants.*;
+import static com.globalmentor.text.xml.schema.XMLSchema.*;
 
 /**A factory to create typed literals within the XML schema namespace.
 @author Garret Wilson

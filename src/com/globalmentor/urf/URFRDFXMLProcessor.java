@@ -12,12 +12,12 @@ import static com.garretwilson.rdf.RDFConstants.*;
 import static com.garretwilson.rdf.RDFXMLConstants.*;
 
 import com.globalmentor.text.xml.*;
+import static com.globalmentor.text.xml.schema.XMLSchema.*;
 import com.globalmentor.urf.content.Content;
 import com.globalmentor.util.*;
 
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.text.xml.XMLUtilities.*;
-import static com.globalmentor.text.xml.schema.XMLSchemaConstants.*;
+import static com.globalmentor.text.xml.XML.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.dcmi.DCMI.LANGUAGE_PROPERTY_URI;
 import static com.globalmentor.util.Locales.*;

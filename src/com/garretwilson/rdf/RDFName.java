@@ -4,7 +4,7 @@ import java.net.URI;
 
 import com.garretwilson.net.DefaultResource;
 import com.garretwilson.net.URIConstants;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.IDed;
 
 import static com.garretwilson.rdf.RDFUtilities.*;
@@ -59,7 +59,7 @@ public class RDFName extends DefaultResource implements IDed<URI>
 		for(int i=referenceURILength-1; i>=0; --i)	//look at each character in the reference URI, starting at the end
 		{
 			final char character=referenceURIString.charAt(i);	//get this character
-			if(!XMLUtilities.isNameChar(character) && character!=URIConstants.ESCAPE_CHAR)	//if this is not a name character (but it isn't the URI escape character, either)
+			if(!XML.isNameChar(character) && character!=URIConstants.ESCAPE_CHAR)	//if this is not a name character (but it isn't the URI escape character, either)
 			{
 				delimiterIndex=i;	//record the delimiter index
 				break;	//stop looking for a delimtier

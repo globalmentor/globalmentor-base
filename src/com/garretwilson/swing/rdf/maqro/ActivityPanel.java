@@ -19,7 +19,7 @@ import static com.globalmentor.util.UUIDs.*;
 
 import com.globalmentor.io.ContentTypeConstants;
 import com.globalmentor.mentoract.activity.maqro.*;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xhtml.XHTML;
 
 import org.w3c.dom.*;
@@ -171,17 +171,17 @@ public class ActivityPanel extends RDFPanel<Activity, ResourceModel<Activity>>
 					final RDFLiteral title=RDFUtilities.asLiteral(DCUtilities.getTitle(activity));	//get the activity's title
 					if(title!=null)	//if there is a title
 					{
-						final Element h1Element=XMLUtilities.appendElementNS(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_H1, title.toString());	//G***i18n
+						final Element h1Element=XML.appendElementNS(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_H1, title.toString());	//G***i18n
 					}
 					if(activity.getInteractions()!=null)	//if the activity has interactions
 					{
-						final Element olElement=XMLUtilities.appendElementNS(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_OL);
+						final Element olElement=XML.appendElementNS(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_OL);
 						final Iterator interactionIterator=activity.getInteractions().iterator();	//get an iterator to look at all the activity interactions
 						while(interactionIterator.hasNext())	//while there are more interactions
 						{
 							final Interaction interaction=(Interaction)interactionIterator.next();	//get the next interaction
 							final Element interactionElement=createElement(xhtmlDocument, interaction);	//create an XML element from this interaction
-							final Element liElement=XMLUtilities.appendElementNS(olElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_LI);
+							final Element liElement=XML.appendElementNS(olElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_LI);
 							liElement.appendChild(interactionElement);	//append this interaction element to the list item element
 						}
 					}
@@ -269,13 +269,13 @@ public class ActivityPanel extends RDFPanel<Activity, ResourceModel<Activity>>
 			final Dialogue query=question.getQuery();	//get the question's query
 			if(query!=null)	//if we have a query
 			{
-				final Element queryElement=XMLUtilities.appendElementNS(questionElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_DIV);	//append an element for the query
+				final Element queryElement=XML.appendElementNS(questionElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_DIV);	//append an element for the query
 				appendDialogue(document, queryElement, query);	//append the query
 			}
 			final RDFListResource choices=question.getChoices();	//get the list of choices
 			if(choices!=null)	//if there are choices
 			{
-				final Element olElement=XMLUtilities.appendElementNS(questionElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_OL);
+				final Element olElement=XML.appendElementNS(questionElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_OL);
 				final Iterator choiceIterator=choices.iterator();	//get an iterator to the choices
 				while(choiceIterator.hasNext())	//while there are more choices
 				{
@@ -283,7 +283,7 @@ public class ActivityPanel extends RDFPanel<Activity, ResourceModel<Activity>>
 					if(choice instanceof Dialogue)	//if the choice is dialogue
 					{
 						final Dialogue choiceDialogue=(Dialogue)choice;	//cast the choice to dialogue
-						final Element choiceElement=XMLUtilities.appendElementNS(olElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_LI);	//append an element for the choice
+						final Element choiceElement=XML.appendElementNS(olElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_LI);	//append an element for the choice
 						appendDialogue(document, choiceElement, choiceDialogue);	//append the choice
 					}
 				}
@@ -310,7 +310,7 @@ public class ActivityPanel extends RDFPanel<Activity, ResourceModel<Activity>>
 			}
 			else	//if the value is not an XML literal
 			{
-				XMLUtilities.appendText(element, value.getLexicalForm());	//append the literal text to the element
+				XML.appendText(element, value.getLexicalForm());	//append the literal text to the element
 			}
 		}		
 	}

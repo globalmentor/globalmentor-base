@@ -10,7 +10,7 @@ import javax.xml.parsers.*;
 import static com.globalmentor.java.Objects.*;
 
 import com.globalmentor.text.xml.XMLSerializer;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -100,7 +100,7 @@ public abstract class AbstractRDFXMLIO<T> implements RDFIO<T>
 	*/
 	protected DocumentBuilder createDocumentBuilder() throws ParserConfigurationException
 	{
-		return XMLUtilities.createDocumentBuilder(true);	//create a document builder that understands namespaces
+		return XML.createDocumentBuilder(true);	//create a document builder that understands namespaces
 	}
 
 	/**Reads a resource from an input stream.

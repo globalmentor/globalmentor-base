@@ -29,7 +29,7 @@ import com.globalmentor.java.Java;
 import com.globalmentor.text.xml.XMLDOMImplementation;
 import com.globalmentor.text.xml.XMLProcessor;
 import com.globalmentor.text.xml.XMLSerializer;
-import com.globalmentor.text.xml.XMLUtilities;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xpath.XPath;
 
 import org.w3c.dom.*;
@@ -373,7 +373,7 @@ public class XMLStorage
 	*/
 	protected static void storeChild(final Object object, final Node parentNode, final String elementName)
 	{
-		final Element element=XMLUtilities.getDocument(parentNode).createElementNS(null, elementName);  //create an element for the object
+		final Element element=XML.getDocument(parentNode).createElementNS(null, elementName);  //create an element for the object
 		parentNode.appendChild(element);  //add the element to the parent node
 		store(object, element); //store the object in the new element
 	}
@@ -498,7 +498,7 @@ Debug.trace("using element: ", element.getNodeName());  //TODO del
 		}
 		else  //if the object passed is null
 		{
-			XMLUtilities.appendText(element, NULL_STRING);  //append a string that identifies the object as being null
+			XML.appendText(element, NULL_STRING);  //append a string that identifies the object as being null
 		}
 	}
 
@@ -713,7 +713,7 @@ Debug.trace("using element: ", element.getNodeName());  //TODO del
 		{
 Debug.trace("object is array");
 				//get a list of all the first-level child elements
-			final List childElementList=XMLUtilities.getNodesByNameNS(element, Node.ELEMENT_NODE, null, "*", false);  //TODO use a constant here
+			final List childElementList=XML.getNodesByNameNS(element, Node.ELEMENT_NODE, null, "*", false);  //TODO use a constant here
 //TODO del when works			final NodeList childElementList=element.getElementsByTagNameNS(null, "*"); //get all the child elements
 			final int childElementCount=childElementList.size();  //find out how many child elements there are
 Debug.trace("there are child elements: ", childElementCount);
@@ -1073,7 +1073,7 @@ Debug.trace("Initialized object: ", object);  //TODO del
 	protected static Object getProperty(final Element element, final String propertyName, final Class propertyType) throws InstantiationException
 	{
 		final String storageName=Java.getVariableName(propertyName); //get the name of the attribute or element
-		final String attributeValue=XMLUtilities.getDefinedAttributeNS(element, null, storageName); //get the attribute value if it is defined
+		final String attributeValue=XML.getDefinedAttributeNS(element, null, storageName); //get the attribute value if it is defined
 		if(attributeValue!=null)  //if the attribute is defined
 		{
 			return createObject(attributeValue, propertyType);  //create an object from the attribute value

@@ -24,7 +24,7 @@ import javax.xml.parsers.*;
 import com.globalmentor.io.*;
 import static com.globalmentor.text.xml.oeb.css.OEBCSS.*;
 import static com.globalmentor.io.ContentTypes.*;
-import static com.globalmentor.text.xml.XMLUtilities.*;
+import static com.globalmentor.text.xml.XML.*;
 import static com.globalmentor.text.xml.xhtml.XHTML.*;
 
 import org.w3c.dom.*;

@@ -1,14 +1,28 @@
+/*
+ * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.text.xml.soap;
 
-import java.io.*;
 import java.util.*;
+
 import javax.xml.soap.*;
-import com.globalmentor.io.InputStreams;
+
 import com.globalmentor.text.xml.XMLObjectEncoder;
-import com.globalmentor.text.xml.XMLUtilities;
-import com.globalmentor.text.xml.soap.SOAPUtilities;
+import com.globalmentor.text.xml.soap.SOAP;
 import com.globalmentor.util.BinaryObjectHolder;
-import com.globalmentor.util.Debug;
 
 import org.w3c.dom.*;
 
@@ -19,7 +33,7 @@ import org.w3c.dom.*;
 @author Garret Wilson
 @see BinaryObjectHolder
 */
-public class SOAPObjectEncoder extends XMLObjectEncoder  //G***fix resource message attachment stuff
+public class SOAPObjectEncoder extends XMLObjectEncoder  //TODO fix resource message attachment stuff
 {
 
 	/**Encodes an object to a SOAP message.
@@ -27,7 +41,7 @@ public class SOAPObjectEncoder extends XMLObjectEncoder  //G***fix resource mess
 	@param domImplementation The DOMImplementation to be used as an element factory.
 	@param messageFactory The SOAP message factory to be used to create messages.
 	@return A SOAP message containing the given object encoded in XML.
-	//G***add the DOM exceptions
+	//TODO add the DOM exceptions
 	*/
 	public SOAPMessage encode(final Object object, final DOMImplementation domImplementation, final MessageFactory messageFactory)
 	{
@@ -39,17 +53,13 @@ public class SOAPObjectEncoder extends XMLObjectEncoder  //G***fix resource mess
 	@param domImplementation The DOMImplementation to be used as an element factory.
 	@param messageFactory The SOAP message factory to be used to create messages.
 	@return A SOAP message containing the given objects encoded in XML.
-	//G***add the DOM exceptions
+	//TODO add the DOM exceptions
 	*/
 	public SOAPMessage encode(final Object[] objects, final DOMImplementation domImplementation, final MessageFactory messageFactory)
 	{
 		final Document document=encode(objects, domImplementation);  //convert the objects to an XML document
-/*G***del
-if(Debug.isDebug()) //G***del
-	Debug.trace("encoded message to DOM: ", XMLUtilities.toString(document)); //G***del
-*/
 			//convert the XML document to a SOAP message
-		final SOAPMessage soapMessage=SOAPUtilities.createSOAPMessage(document, messageFactory);
+		final SOAPMessage soapMessage=SOAP.createSOAPMessage(document, messageFactory);
 			//add any attachments from all objects that hold binary objects
 		for(int i=0; i<objects.length; ++i) //look at each object
 		{
@@ -63,8 +73,7 @@ if(Debug.isDebug()) //G***del
 					final String id=entry.getKey().toString();  //store the string value of the key as the attachment ID
 					final byte[] bytes=(byte[])entry.getValue();  //get the bytes from this entry
 						//create an attachment part containing the bytes of this binary object
-				  final AttachmentPart attachmentPart=SOAPUtilities.createAttachmentPart(soapMessage, bytes);
-//G***del Debug.trace("SOAPObjectDecoder: adding attachment part content ID: ", id);
+				  final AttachmentPart attachmentPart=SOAP.createAttachmentPart(soapMessage, bytes);
 				  attachmentPart.setContentId(id);  //set the content ID to the binary object ID
 				  soapMessage.addAttachmentPart(attachmentPart);  //add the attachment part to the message
 			  }

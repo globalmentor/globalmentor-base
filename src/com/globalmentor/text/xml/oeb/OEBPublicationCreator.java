@@ -25,10 +25,12 @@ import com.garretwilson.net.*;
 import com.garretwilson.rdf.*;
 import com.garretwilson.rdf.dublincore.*;
 import com.garretwilson.rdf.xpackage.*;
+
 import com.globalmentor.io.*;
 import com.globalmentor.java.*;
 import com.globalmentor.text.*;
 import com.globalmentor.text.xml.*;
+import static com.globalmentor.text.xml.xhtml.XHTML.*;
 import static com.globalmentor.text.xml.oeb.OEB.*;
 import com.globalmentor.text.xml.xhtml.*;
 import com.globalmentor.util.*;
@@ -233,9 +235,6 @@ public class OEBPublicationCreator	//TODO update this class to work with XEbook;
 
 	/**A static image/png media type for quick reference when comparing media types.*/
 	protected final static ContentType IMAGE_PNG_MEDIA_TYPE=new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, ContentTypeConstants.PNG_SUBTYPE, null);
-
-	/**A static text/html media type for quick reference when comparing media types.*/
-	protected final static ContentType APPLICATION_XHTML_XML_MEDIA_TYPE=new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, ContentTypeConstants.XHTML_XML_SUBTYPE, null);
 
 	/**Whether we should load and tidy each OEB document.*/
 	private boolean tidy=false;
@@ -526,21 +525,21 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 		}
 		Locale languageLocale=null; //assume we won't find a language TODO fix to be consistent with title and author
 		final DocumentFragment pgHeaderFragment;  //we'll attempt to find a Project Gutenberg header, if applicable
-		setProjectGutenbergEText(PGUtilities.isProjectGutenbergEText(document)); //see if this document is a Project Gutenberg EText
+		setProjectGutenbergEText(ProjectGutenbergXHTMLTidier.isProjectGutenbergEText(document)); //see if this document is a Project Gutenberg EText
 		if(isProjectGutenbergEText()) //if this document is a Project Gutenberg EText
 		{
 //TODO fix				new XHTMLTidier().tidy(document); //TODO testing
-			pgHeaderFragment=PGUtilities.extractHeader(document);  //extract the Project Gutenberg header
+			pgHeaderFragment=ProjectGutenbergXHTMLTidier.extractHeader(document);  //extract the Project Gutenberg header
 			if(pgHeaderFragment!=null)  //if we found a header
 			{
-				referenceURI=URI.create(PGUtilities.getID(referenceURI.toString())); //convert this URI into a Project Gutenberg identifier by removing the version number TODO fix better for URI
-				setTitle(PGUtilities.getTitle(pgHeaderFragment));  //get the title
-				setAuthor(PGUtilities.getAuthor(pgHeaderFragment, getTitle()));  //get the author
-				setDescription(PGUtilities.getDescription(pgHeaderFragment));  //get the description
-				final String displayLanguage=PGUtilities.getLanguage(pgHeaderFragment);  //get the language
+				referenceURI=URI.create(ProjectGutenbergXHTMLTidier.getID(referenceURI.toString())); //convert this URI into a Project Gutenberg identifier by removing the version number TODO fix better for URI
+				setTitle(ProjectGutenbergXHTMLTidier.getTitle(pgHeaderFragment));  //get the title
+				setAuthor(ProjectGutenbergXHTMLTidier.getAuthor(pgHeaderFragment, getTitle()));  //get the author
+				setDescription(ProjectGutenbergXHTMLTidier.getDescription(pgHeaderFragment));  //get the description
+				final String displayLanguage=ProjectGutenbergXHTMLTidier.getLanguage(pgHeaderFragment);  //get the language
 				languageLocale=Locales.createDisplayLanguageLocale(displayLanguage); //get the locale for this language
 			}
-			PGUtilities.extractFooter(document);  //extract the Project Gutenberg footer, if it is available
+			ProjectGutenbergXHTMLTidier.extractFooter(document);  //extract the Project Gutenberg footer, if it is available
 		}
 		else  //if this is not a Project Gutenberg EText
 		{
@@ -598,9 +597,9 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 		if(pgHeaderFragment!=null)  //if we have a Project Gutenberg header, write it to its own file
 		{
 			final Document pgHeaderDocument=OEB.createOEB1Document(pgHeaderFragment);  //create a document from the header fragment
-		  final Element bodyElement=XHTML.getBodyElement(pgHeaderDocument);  //get the body of the document
+		  final Element bodyElement=getBodyElement(pgHeaderDocument);  //get the body of the document
 				//create a header element and add it to the body
-			final Element headerElement=XMLUtilities.createElementNS(pgHeaderDocument, bodyElement.getNamespaceURI(), XHTML.ELEMENT_H2, "Information from the Original Project Gutenberg EText");  //TODO use a constant
+			final Element headerElement=XML.createElementNS(pgHeaderDocument, bodyElement.getNamespaceURI(), ELEMENT_H2, "Information from the Original Project Gutenberg EText");  //TODO use a constant
 		  bodyElement.insertBefore(headerElement, bodyElement.getFirstChild()); //insert the header element as the first element in the body
 		  final String pgHeaderDocumentFilename="projectgutenbergheader.html";  //create a filename for the header document TODO use constants here
 			final File pgHeaderDocumentFile; //we'll find out where to store the header document
@@ -1019,7 +1018,7 @@ TODO fix outputDir
 							if(mediaType==null) //if no media type is given
 							{
 								mediaType=URLUtilities.getMediaType(url);  //try to see which of media type the reference is by examining the URL
-								if(mediaType.match(APPLICATION_XHTML_XML_MEDIA_TYPE))  //if this is the "application/xhtml+xml" media type
+								if(mediaType.match(XHTML_CONTENT_TYPE))  //if this is the "application/xhtml+xml" media type
 									mediaType=OEB10_DOCUMENT_MEDIA_TYPE;  //assume it's really the OEB document media type
 							}
 							assert mediaType!=null : "\""+url+"\" has unknown media type.";  //TODO put in better error handling here
@@ -1154,7 +1153,7 @@ TODO fix outputDir
 		while(stylesheetReferenceIterator.hasNext())  //while there are more references
 		{
 			final String href=(String)stylesheetReferenceIterator.next(); //get the next reference
-			XMLUtilities.addStyleSheetReference(itemDocument, href, OEB10_CSS_MEDIA_TYPE);  //add the stylesheet to the document TODO eventually change to text/css
+			XML.addStyleSheetReference(itemDocument, href, OEB10_CSS_MEDIA_TYPE);  //add the stylesheet to the document TODO eventually change to text/css
 		}
 
 		//TODO see if we should extract the TOC or not
@@ -1298,14 +1297,14 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 		while((node=nodeIterator.nextNode())!=null)  //while we haven't reached the last node
 		{
 		  final Element element=(Element)node;  //cast the node to an element; elements are all we asked for
-		  if(XHTML.isLinkElement(element.getNamespaceURI(), element)) //if this is a link element TODO pass the real XHTML namespace
+		  if(isLinkElement(element.getNamespaceURI(), element)) //if this is a link element TODO pass the real XHTML namespace
 			{
-				final String href=XHTML.getLinkElementHRef(element.getNamespaceURI(), element);  //get the link element's href
+				final String href=getLinkElementHRef(element.getNamespaceURI(), element);  //get the link element's href
 				if(href!=null)  //if the link has an href
 				{
 					if(href.length()>0 && href.charAt(0)==URLConstants.FRAGMENT_SEPARATOR_CHAR) //if this link is an internal reference
 					{
-					  XHTML.setLinkElementHRef(element.getNamespaceURI(), element, externalHRef+href); //prepend the local reference with the external reference
+					  setLinkElementHRef(element.getNamespaceURI(), element, externalHRef+href); //prepend the local reference with the external reference
 					}
 				}
 			}
@@ -1335,7 +1334,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 		while(stylesheetReferenceIterator.hasNext())  //while there are more references
 		{
 			final String href=(String)stylesheetReferenceIterator.next(); //get the next reference
-			XMLUtilities.addStyleSheetReference(document, href, OEB10_CSS_MEDIA_TYPE);  //add the stylesheet to the document TODO eventually change to text/css
+			XML.addStyleSheetReference(document, href, OEB10_CSS_MEDIA_TYPE);  //add the stylesheet to the document TODO eventually change to text/css
 		}
 	}
 
@@ -1393,7 +1392,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 				final String elementClass=element.getAttributeNS(null, "class");
 					//see if this is a significant heading
 				final boolean isSignificant=Strings.indexOfIgnoreCase(elementClass, "significant")>=0;  //TODO use a constant
-				final String text=XMLUtilities.getText(element, true).trim(); //get the text of the element
+				final String text=XML.getText(element, true).trim(); //get the text of the element
 				final boolean hasLetterOrDigit=CharSequences.containsLetterOrDigit(text);  //see if the text has a letter or digit
 				final int headingType=Prose.getHeadingType(text); //see what type of heading this is
 					//make sure there is a letter or digit in the text
@@ -1401,7 +1400,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 				if(hasLetterOrDigit && (isSignificant || headingType<=Prose.MAX_SIGNIFICANT_HEADING))
 				{
 					++guideCount; //show that we'll add another guide
-					String id=XMLUtilities.getDefinedAttributeNS(element, null, "id");  //get the ID attribute TODO use a constant
+					String id=XML.getDefinedAttributeNS(element, null, "id");  //get the ID attribute TODO use a constant
 					if(id==null)  //if this heading doesn't have an ID attribute
 					{
 						id="guide"+guideCount;  //create an ID using this guide number TODO use a constant
@@ -1410,7 +1409,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 						//create an href to the element within the document
 					final String href=URLUtilities.getFileName(getContextURL())+'#'+id; //TODO pass the href; do something better than getContextURL(); use a constant for '#'
 						//get the text of this element, collapsing all whitespace into single spaces
-					final String elementText=Strings.collapseEveryChar(XMLUtilities.getText(element, true), WHITESPACE_CHARS, " ");
+					final String elementText=Strings.collapseEveryChar(XML.getText(element, true), WHITESPACE_CHARS, " ");
 						//making sure it's not too long
 					final String shortText=Strings.truncate(elementText, 32);  //TODO use a constant
 						//remove everything but the first line and trim it
@@ -1482,10 +1481,10 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 			//store the title and author in the preface, making sure all the content is valid for XML content
 	  final String formattedString=MessageFormat.format(templateString,
 			  new Object[]{
-						  XMLUtilities.createValidContent(title),
-							XMLUtilities.createValidContent(author),
-							XMLUtilities.createValidContent(by),
-							XMLUtilities.createValidContent(infoURL)}); //TODO use constants
+						  XML.createValidContent(title),
+							XML.createValidContent(author),
+							XML.createValidContent(by),
+							XML.createValidContent(infoURL)}); //TODO use constants
 	  final String templateFilename=URLUtilities.getFileName(templateURL);  //get the filename of the template
 		final File formattedTemplateFile; //we'll find out where to store the formatted template
 		if(getOutputDir()!=null) //if an output directory was specified
@@ -1541,7 +1540,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 	public static String getTitle(final Document xhtmlDocument)
 	{
 		final String BY="by"; //TODO put elsewhere
-		final Element bodyElement=XHTML.getBodyElement(xhtmlDocument);  //get the body of the document
+		final Element bodyElement=getBodyElement(xhtmlDocument);  //get the body of the document
 		final NodeList childNodes=bodyElement.getChildNodes();  //get the list of child nodes
 		for(int i=0; i<25 && i<childNodes.getLength(); ++i) //look at each child node
 		{
@@ -1549,7 +1548,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 			if(childNode.getNodeType()==Node.ELEMENT_NODE)  //if this is an element
 			{
 				final Element childElement=(Element)childNode;  //get a reference to this element
-				final String text=XMLUtilities.getText(childElement, true).trim(); //get the trimmed text of the element
+				final String text=XML.getText(childElement, true).trim(); //get the trimmed text of the element
 				  //Michael Hart shouldn't be in the title, or even near it (e.g. Project Gutenberg plboss10.txt)
 				if(Strings.indexOfIgnoreCase(text, "Michael S. Hart")<0 //TODO these are last-minute hacks specifically for plboss10.txt
 				  && Strings.indexOfIgnoreCase(text, "405 West")<0
@@ -1569,7 +1568,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 							if(versionIndex>=0)
 								title=title.substring(0, versionIndex); //TODO testing
 								//trim the title of certain delimiters, and then collapse the whitespace
-							title=PGUtilities.tidyTitle(title);  //TODO use a common method, not in PGUtilities
+							title=ProjectGutenbergXHTMLTidier.tidyTitle(title);  //TODO use a common method, not in PGUtilities
 							if(isTitleOrAuthor(title)) //if we have valid title text
 								return title; //assume that's the title
 						}
@@ -1596,7 +1595,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 								&& (Strings.indexOfIgnoreCase(text, "typed in")<0 || Strings.indexOfIgnoreCase(text, "typed in")>byIndex))
 						{
 								//get the title and trim it of certain delimiters, and then collapse the whitespace
-							final String title=PGUtilities.tidyTitle(text.substring(0, byIndex));  //TODO use a common method, not in PGUtilities
+							final String title=ProjectGutenbergXHTMLTidier.tidyTitle(text.substring(0, byIndex));  //TODO use a common method, not in PGUtilities
 							if(isTitleOrAuthor(title)) //if we have valid title text
 								return title; //assume that's the title
 						}
@@ -1617,7 +1616,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 	{
 		final String BY="by"; //TODO put elsewhere
 		boolean nextLineIsAuthor=false; //something might make us think at some point that the next line is the author
-		final Element bodyElement=XHTML.getBodyElement(xhtmlDocument);  //get the body of the document
+		final Element bodyElement=getBodyElement(xhtmlDocument);  //get the body of the document
 		final NodeList childNodes=bodyElement.getChildNodes();  //get the list of child nodes
 		for(int i=0; i<20 && i<childNodes.getLength(); ++i) //look at each child node
 		{
@@ -1625,13 +1624,13 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 			if(childNode.getNodeType()==Node.ELEMENT_NODE)  //if this is an element
 			{
 				final Element childElement=(Element)childNode;  //get a reference to this element
-				final String text=XMLUtilities.getText(childElement, true).trim(); //get the trimmed text of the element
+				final String text=XML.getText(childElement, true).trim(); //get the trimmed text of the element
 Debug.trace("looking for normal author in text: ", text);
 				if(nextLineIsAuthor)  //if we told ourselves that the next line will be the author
 				{
 Debug.trace("we think this line is the author");
 						//get the author and trim it of certain delimiters, and then collapse the whitespace
-					final String author=PGUtilities.tidyAuthor(text);  //TODO use a common method, not in PGUtilities
+					final String author=ProjectGutenbergXHTMLTidier.tidyAuthor(text);  //TODO use a common method, not in PGUtilities
 Debug.trace("checking next line author: ", author);
 					if(isTitleOrAuthor(author)) //if we have valid author text
 						return author; //assume that's the author
@@ -1684,7 +1683,7 @@ Debug.trace("byIndex: "+byIndex);
 										|| CharSequences.charIndexOf(Strings.trim(authorText, WHITESPACE_CHARS+"0123456789-"), EOL_CHARS)<0)
 								{
 										//get the author and trim it of certain delimiters, and then collapse the whitespace
-									final String author=PGUtilities.tidyAuthor(authorText);  //TODO use a common method, not in PGUtilities
+									final String author=ProjectGutenbergXHTMLTidier.tidyAuthor(authorText);  //TODO use a common method, not in PGUtilities
 									if(isTitleOrAuthor(author)  //if we have valid author text
 											&& !Strings.startsWithIgnoreCase(author, "author")  //if this wasn't "by author" TODO use a constant
 											&& !Strings.startsWithIgnoreCase(author, "the author")  //if this wasn't "by the author" TODO use a constant
