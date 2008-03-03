@@ -8,13 +8,13 @@ import static java.util.Collections.*;
 import java.util.List;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
-import com.garretwilson.rdf.RDFListResource;
-import com.garretwilson.rdf.RDFLiteral;
-import com.garretwilson.rdf.RDFObject;
-import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.BorderUtilities;
+import com.globalmentor.rdf.RDFListResource;
+import com.globalmentor.rdf.RDFLiteral;
+import com.globalmentor.rdf.RDFObject;
+import com.globalmentor.rdf.maqro.*;
 import com.globalmentor.util.*;
 
 /**Panel for editing a MAQRO activity selection.

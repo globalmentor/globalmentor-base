@@ -8,9 +8,9 @@ import java.awt.Dimension;
 import javax.swing.*;
 import javax.swing.text.*;
 
-import com.garretwilson.rdf.maqro.Activity;
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
+import com.globalmentor.rdf.maqro.Activity;
 
 /**View representing a MAQRO activity.
 The view optionally contains a submit button representing a provided submit action.

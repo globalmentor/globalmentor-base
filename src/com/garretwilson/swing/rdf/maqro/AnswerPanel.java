@@ -5,12 +5,12 @@ import java.awt.event.*;
 import java.net.*;
 import javax.swing.*;
 
-import com.garretwilson.rdf.*;
-import com.garretwilson.rdf.maqro.*;
-import com.garretwilson.rdf.xmlschema.BooleanLiteral;
 import com.garretwilson.swing.*;
 import com.globalmentor.java.Objects;
 import com.globalmentor.net.Resource;
+import com.globalmentor.rdf.*;
+import com.globalmentor.rdf.maqro.*;
+import com.globalmentor.rdf.xmlschema.BooleanLiteral;
 import com.globalmentor.text.xml.schema.XMLSchema;
 import com.globalmentor.util.Debug;
 

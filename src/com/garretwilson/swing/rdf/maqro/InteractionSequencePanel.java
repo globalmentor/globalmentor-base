@@ -4,8 +4,8 @@ import java.awt.*;
 import javax.swing.*;
 
 import com.garretwilson.model.ResourceModel;
-import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.swing.*;
+import com.globalmentor.rdf.maqro.*;
 
 /**A component that displays a sequence of MAQRO interactions and allows them
 	optionally to be edited.

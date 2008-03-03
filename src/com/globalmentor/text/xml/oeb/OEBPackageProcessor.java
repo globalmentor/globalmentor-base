@@ -21,15 +21,16 @@ import java.net.*;
 import java.util.List;
 
 import javax.mail.internet.ContentType;
-import com.garretwilson.rdf.*;
-import static com.garretwilson.rdf.dublincore.DCConstants.*;
-import static com.garretwilson.rdf.xpackage.XPackageUtilities.*;
 
+import static com.globalmentor.rdf.dublincore.DCConstants.*;
+import static com.globalmentor.rdf.xpackage.XPackageUtilities.*;
 import static com.globalmentor.text.xml.oeb.OEB.*;
 
 import com.globalmentor.io.ContentTypes;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.http.HTTP.*;
+
+import com.globalmentor.rdf.*;
 import com.globalmentor.text.xml.*;
 import com.globalmentor.text.xml.xpath.XPath;
 import com.globalmentor.util.*;

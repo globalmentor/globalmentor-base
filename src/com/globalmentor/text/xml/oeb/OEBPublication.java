@@ -18,7 +18,8 @@ package com.globalmentor.text.xml.oeb;
 
 import java.util.*;
 import java.net.*;
-import com.garretwilson.rdf.xeb.Book;
+
+import com.globalmentor.rdf.xeb.Book;
 
 /**Class which represents an OEB publication.
 @author Garret Wilson

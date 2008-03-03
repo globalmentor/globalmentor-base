@@ -21,14 +21,15 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
 
-import com.garretwilson.rdf.*;
-import static com.garretwilson.rdf.RDFUtilities.*;
 import static com.globalmentor.io.Charsets.*;
 
-import static com.garretwilson.rdf.dublincore.DCConstants.*;
-import com.garretwilson.rdf.xpackage.XPackageUtilities;
 
+import static com.globalmentor.rdf.RDFUtilities.*;
+import static com.globalmentor.rdf.dublincore.DCConstants.*;
 import static com.globalmentor.text.xml.oeb.OEB.*;
+
+import com.globalmentor.rdf.*;
+import com.globalmentor.rdf.xpackage.XPackageUtilities;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.*;

@@ -5,13 +5,15 @@ import java.io.IOException;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.model.ResourceModel;
-import com.garretwilson.rdf.RDFResource;
-import com.garretwilson.rdf.maqro.*;
-import static com.garretwilson.rdf.maqro.MAQROConstants.*;
-import com.garretwilson.rdf.xmlschema.BooleanLiteral;
-import com.garretwilson.rdf.xmlschema.IntegerLiteral;
+
+import static com.globalmentor.rdf.maqro.MAQROConstants.*;
+
 import com.garretwilson.swing.ModelPanel;
 import com.garretwilson.swing.border.BorderUtilities;
+import com.globalmentor.rdf.RDFResource;
+import com.globalmentor.rdf.maqro.*;
+import com.globalmentor.rdf.xmlschema.BooleanLiteral;
+import com.globalmentor.rdf.xmlschema.IntegerLiteral;
 
 /**Panel for editing behavior-related MAQRO resource properties.
 In most cases, the resource edited will be an activity.

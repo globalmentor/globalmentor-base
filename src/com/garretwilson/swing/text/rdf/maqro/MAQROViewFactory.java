@@ -10,9 +10,6 @@ import javax.swing.*;
 import javax.swing.text.*;
 
 
-import com.garretwilson.rdf.*;
-import static com.garretwilson.rdf.maqro.MAQROConstants.*;
-import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 
 import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
@@ -22,7 +19,11 @@ import com.garretwilson.swing.XMLTextPane;
 import com.garretwilson.swing.text.xml.*;
 import com.globalmentor.io.ContentTypes;
 import com.globalmentor.mentoract.activity.maqro.MAQROActivityEngine;
+import com.globalmentor.rdf.*;
+import com.globalmentor.rdf.maqro.*;
 import com.globalmentor.text.xml.XML;
+
+import static com.globalmentor.rdf.maqro.MAQROConstants.*;
 import static com.globalmentor.text.xml.xhtml.XHTML.*;
 import com.globalmentor.util.Debug;
 

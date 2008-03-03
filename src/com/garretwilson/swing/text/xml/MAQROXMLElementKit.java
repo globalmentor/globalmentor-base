@@ -1,8 +1,8 @@
 package com.garretwilson.swing.text.xml;
 
-import static com.garretwilson.rdf.RDFUtilities.*;
-import static com.garretwilson.rdf.maqro.MAQROConstants.*;
 import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
+import static com.globalmentor.rdf.RDFUtilities.*;
+import static com.globalmentor.rdf.maqro.MAQROConstants.*;
 
 import java.io.IOException;
 import java.net.URI;
@@ -15,9 +15,9 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 
-import com.garretwilson.rdf.*;
-import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.swing.text.xml.XMLEditorKit.ContentData;
+import com.globalmentor.rdf.*;
+import com.globalmentor.rdf.maqro.*;
 
 /**An element kit for creating element specs for MAQRO.
 @author Garret Wilson
@@ -49,7 +49,7 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 	*/
 	public MutableAttributeSet appendElementSpecList(final List<DefaultStyledDocument.ElementSpec> elementSpecList, final org.w3c.dom.Element xmlElement, final URI baseURI)
 	{
-		final RDF rdf=new RDF(baseURI);	//create new RDF
+		final RDF rdf=new RDF();	//create new RDF
 		rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQROUtilities());  //register a factory for MAQRO resource classes TODO make this more efficient and use a common factory
 		final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf); //create a new RDF processor
 		try

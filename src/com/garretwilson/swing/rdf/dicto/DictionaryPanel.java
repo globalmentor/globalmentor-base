@@ -10,17 +10,17 @@ import javax.swing.*;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
 import com.garretwilson.model.ResourceModel;
-import com.garretwilson.rdf.*;
-import com.garretwilson.rdf.dicto.*;
-import com.garretwilson.rdf.dicto.Dictionary;
-import com.garretwilson.rdf.dublincore.DCUtilities;
-import com.garretwilson.rdf.maqro.*;
-import com.garretwilson.rdf.xpackage.XPackageUtilities;
 import com.garretwilson.resources.icon.IconResources;
 
 import com.globalmentor.java.Characters;
 import com.globalmentor.marmot.resource.dicto.*;	//TODO GlobalMentor-specific items up to some other class if possible
 import com.globalmentor.mentoract.activity.maqro.*;
+import com.globalmentor.rdf.*;
+import com.globalmentor.rdf.dicto.*;
+import com.globalmentor.rdf.dicto.Dictionary;
+import com.globalmentor.rdf.dublincore.DCUtilities;
+import com.globalmentor.rdf.maqro.*;
+import com.globalmentor.rdf.xpackage.XPackageUtilities;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xhtml.*;
 import static com.globalmentor.text.xml.xlink.XLink.*;

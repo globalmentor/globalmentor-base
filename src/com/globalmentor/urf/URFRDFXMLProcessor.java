@@ -2,24 +2,21 @@ package com.globalmentor.urf;
 
 import java.net.*;
 import java.util.*;
-
 import static java.util.Collections.*;
 
-import com.garretwilson.rdf.*;
-import static com.garretwilson.rdf.RDFConstants.*;
-import static com.garretwilson.rdf.RDFXMLConstants.*;
-
-import com.globalmentor.net.*;
-import com.globalmentor.text.xml.*;
-import static com.globalmentor.text.xml.schema.XMLSchema.*;
-import com.globalmentor.urf.content.Content;
-import com.globalmentor.util.*;
-
 import static com.globalmentor.java.Objects.*;
+import com.globalmentor.net.*;
 import static com.globalmentor.net.URIs.*;
+import com.globalmentor.rdf.*;
+import static com.globalmentor.rdf.RDF.*;
+import static com.globalmentor.rdf.RDFXMLConstants.*;
+import com.globalmentor.text.xml.*;
 import static com.globalmentor.text.xml.XML.*;
+import static com.globalmentor.text.xml.schema.XMLSchema.*;
 import static com.globalmentor.urf.URF.*;
+import com.globalmentor.urf.content.Content;
 import static com.globalmentor.urf.dcmi.DCMI.LANGUAGE_PROPERTY_URI;
+import com.globalmentor.util.*;
 import static com.globalmentor.util.Locales.*;
 
 import org.w3c.dom.*;
@@ -742,11 +739,11 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 	/**Determines an URF resource URI from the given URF resource URI.
 	The following conversions are made:
 	<dl>
-		<dt>{@value RDFConstants#ALT_PROPERTY_REFERENCE_URI}</dt> <dd>{@value URF#SET_CLASS_URI}</dd>
-		<dt>{@value RDFConstants#BAG_PROPERTY_REFERENCE_URI}</dt> <dd>{@value URF#LIST_CLASS_URI}</dd>
-		<dt>{@value RDFConstants#LIST_PROPERTY_REFERENCE_URI}</dt> <dd>{@value URF#LIST_CLASS_URI}</dd>
-		<dt>{@value RDFConstants#SEQ_PROPERTY_REFERENCE_URI}</dt> <dd>{@value URF#LIST_CLASS_URI}</dd>
-		<dt>{@value RDFConstants#TYPE_PROPERTY_REFERENCE_URI}</dt> <dd>{@value URF#TYPE_CLASS_URI}</dd>
+		<dt>{@value RDF#ALT_PROPERTY_REFERENCE_URI}</dt> <dd>{@value URF#SET_CLASS_URI}</dd>
+		<dt>{@value RDF#BAG_PROPERTY_REFERENCE_URI}</dt> <dd>{@value URF#LIST_CLASS_URI}</dd>
+		<dt>{@value RDF#LIST_PROPERTY_REFERENCE_URI}</dt> <dd>{@value URF#LIST_CLASS_URI}</dd>
+		<dt>{@value RDF#SEQ_PROPERTY_REFERENCE_URI}</dt> <dd>{@value URF#LIST_CLASS_URI}</dd>
+		<dt>{@value RDF#TYPE_PROPERTY_REFERENCE_URI}</dt> <dd>{@value URF#TYPE_CLASS_URI}</dd>
 	</dl>
 	All other resource URIs are returned unchanged.
 	@param rdfResourceURI The RDF resource URI.

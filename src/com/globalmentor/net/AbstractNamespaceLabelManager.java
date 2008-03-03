@@ -25,16 +25,16 @@ import static java.util.Collections.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.net.URIs.*;
 
-import com.garretwilson.rdf.RDFConstants;
-import com.garretwilson.rdf.dicto.DictoConstants;
-import com.garretwilson.rdf.dublincore.DCConstants;
-import com.garretwilson.rdf.foaf.FOAF;
-import com.garretwilson.rdf.maqro.MAQROConstants;
-import com.garretwilson.rdf.rdfs.RDFSConstants;
-import com.garretwilson.rdf.version.VersionConstants;
-import com.garretwilson.rdf.xeb.XEBConstants;
-import com.garretwilson.rdf.xpackage.XPackageConstants;
 import com.globalmentor.net.http.webdav.ApacheWebDAV;
+import com.globalmentor.rdf.RDF;
+import com.globalmentor.rdf.dicto.DictoConstants;
+import com.globalmentor.rdf.dublincore.DCConstants;
+import com.globalmentor.rdf.foaf.FOAF;
+import com.globalmentor.rdf.maqro.MAQROConstants;
+import com.globalmentor.rdf.rdfs.RDFSConstants;
+import com.globalmentor.rdf.version.VersionConstants;
+import com.globalmentor.rdf.xeb.XEBConstants;
+import com.globalmentor.rdf.xpackage.XPackageConstants;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.oeb.OEB;
 import com.globalmentor.text.xml.schema.XMLSchema;
@@ -86,7 +86,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		tempNamespaceURILabelMap.put(URI.create("http://marmox.net/namespaces/content#"), "content"); //Marmox content
 //TODO del		tempNamespaceURIPrefixMap.put(PLOOP.PLOOP_PROPERTY_NAMESPACE_URI, PLOOP.PLOOP_PROPERTY_NAMESPACE_PREFIX); //PLOOP property
 //TODO fix		tempNamespaceURILabelMap.put(URI.create(QTIConstants.QTI_1_1_NAMESPACE_URI), QTIConstants.QTI_NAMESPACE_PREFIX); //QTI
-		tempNamespaceURILabelMap.put(RDFConstants.RDF_NAMESPACE_URI, RDFConstants.RDF_NAMESPACE_PREFIX); //RDF
+		tempNamespaceURILabelMap.put(RDF.RDF_NAMESPACE_URI, RDF.RDF_NAMESPACE_PREFIX); //RDF
 		tempNamespaceURILabelMap.put(RDFSConstants.RDFS_NAMESPACE_URI, RDFSConstants.RDFS_NAMESPACE_PREFIX); //RDFS
 //G***add SOAP
 //TODO del		tempNamespaceURILabelMap.put(VCard.VCARD_NAMESPACE_URI, VCard.VCARD_NAMESPACE_PREFIX); //vCard

@@ -4,10 +4,10 @@ import java.beans.*;
 import java.io.*;
 import javax.mail.internet.ContentType;
 import javax.swing.*;
-import com.garretwilson.rdf.xpackage.XPackageUtilities;
 import com.garretwilson.assess.qti.*;
-import com.garretwilson.rdf.*;
 import com.garretwilson.swing.*;
+import com.globalmentor.rdf.*;
+import com.globalmentor.rdf.xpackage.XPackageUtilities;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.util.Modifiable;
 

@@ -9,12 +9,12 @@ import java.util.*;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.model.ResourceModel;
-import com.garretwilson.rdf.*;
-import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.BorderUtilities;
 import com.globalmentor.net.Resource;
+import com.globalmentor.rdf.*;
+import com.globalmentor.rdf.maqro.*;
 import com.globalmentor.util.Collections;
 
 /**Panel for editing a MAQRO question.
@@ -169,7 +169,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 					}
 					else	//if there are no choices, set the first answer in the answer panel
 					{
-						queryAnswerPanel.choiceList.setModel(new ListListModel(new RDFListResource(RDFConstants.NIL_RESOURCE_URI)));	//create a default empty list for the choices
+						queryAnswerPanel.choiceList.setModel(new ListListModel(new RDFListResource(RDF.NIL_RESOURCE_URI)));	//create a default empty list for the choices
 						queryAnswerPanel.expectRadioButton.setSelected(true);	//show that we're expecting an answer
 						final Iterator answerIterator=question.getAnswers().iterator();	//get an iterator to the answers
 						if(answerIterator.hasNext())	//if there is at least one answer

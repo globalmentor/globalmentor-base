@@ -160,14 +160,7 @@ public class OEB
 	public static Document createOEB1Package()
 	{
 		final DocumentBuilder documentBuilder;
-		try
-		{
-			documentBuilder=createDocumentBuilder(true);	//create a namespace-aware document builder
-		}
-		catch(final ParserConfigurationException parserConfigurationException)	//if there is no namespace-aware parser
-		{
-			throw new IllegalStateException(parserConfigurationException);
-		}
+		documentBuilder=createDocumentBuilder(true);	//create a namespace-aware document builder
 		final DOMImplementation domImplementation=documentBuilder.getDOMImplementation();	//get the DOM implementation from the document builder
 		final DocumentType documentType=domImplementation.createDocumentType(PKG_ELEMENT_PACKAGE, OEB101_PACKAGE_PUBLIC_ID, OEB101_PACKAGE_SYSTEM_ID);	//create an XML document type for the publication
 		final Document document=domImplementation.createDocument(OEB1_PACKAGE_NAMESPACE_URI.toString(), PKG_ELEMENT_PACKAGE, documentType);	//create a package XML document

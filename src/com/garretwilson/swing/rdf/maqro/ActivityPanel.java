@@ -10,15 +10,15 @@ import javax.swing.*;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
 import com.garretwilson.model.ResourceModel;
-import com.garretwilson.rdf.*;
-import com.garretwilson.rdf.dublincore.DCUtilities;
-import com.garretwilson.rdf.maqro.*;
 import com.garretwilson.resources.icon.IconResources;
 
 import static com.globalmentor.util.UUIDs.*;
 
 import com.globalmentor.io.ContentTypeConstants;
 import com.globalmentor.mentoract.activity.maqro.*;
+import com.globalmentor.rdf.*;
+import com.globalmentor.rdf.dublincore.DCUtilities;
+import com.globalmentor.rdf.maqro.*;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xhtml.XHTML;
 
