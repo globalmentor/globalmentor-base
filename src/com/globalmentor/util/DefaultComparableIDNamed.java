@@ -16,17 +16,12 @@
 
 package com.globalmentor.util;
 
-import static com.globalmentor.java.Objects.*;
-
-/**A default implementation of a uniquely identified object.
- 	This class is useful to serve as a base class to other classes that are
- 	identified by an ID. It provides equality checking based upon the ID.
-<p>This implementation provides the capability to provide automatic conversion
-	of the ID when the ID is set, such as converting to lowercase.</p>
+/**A default implementation of an IDed and named object comparable by name.
+This implementation does not allow a <code>null</code> name.
+Note: Because this class considers equality by ID and order by name, this class has a natural ordering that is inconsistent with equals.
 @author Garret Wilson
-@see Object#equals
 */
-public class DefaultIDed<I> implements IDed<I>
+public class DefaultComparableIDNamed<I, N extends Comparable<N>> extends DefaultComparableNamed<N> implements IDed<I>, Comparable<Named<N>>
 {
 
 	/**@The identifier, preferably unique, of the object; or <code>null</code> if the object has no ID.*/
@@ -35,12 +30,15 @@ public class DefaultIDed<I> implements IDed<I>
 		/**@return The identifier, preferably unique, of the object; or <code>null</code> if the object has no ID.*/
 		public I getID() {return id;}
 
-	/**Constructor specifying the ID.
-	@param id The ID of the object.
+	/**Constructor specifying the ID and name.
+	@param id The ID of the object, or <code>null</code> if the object should have no ID.
+	@param name The name of the object.
+	@throws NullPointerException if the given name is <code>null</code>.
 	*/
-	public DefaultIDed(final I id)
+	public DefaultComparableIDNamed(final I id, final N name)
 	{
-		this.id=checkInstance(id, "ID cannot be null.");  //set the ID
+		super(name);  //construct the base class
+		this.id=id;
 	}
 
 	/**Considers another object equal if the other object is an {@link IDed} with the same ID.

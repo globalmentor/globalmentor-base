@@ -16,7 +16,7 @@
 
 package com.globalmentor.util;
 
-import static com.globalmentor.java.Objects.*;
+import com.globalmentor.java.Objects;
 
 /**A default implementation of a named object.
 @author Garret Wilson
@@ -24,19 +24,18 @@ import static com.globalmentor.java.Objects.*;
 public class DefaultNamed<N> implements Named<N>
 {
 
-	/**The name of the object.*/
+	/**The name of the object, or <code>null</code> if the object has no name.*/
 	private final N name;
 
-		/**@return The name of the object.*/
+		/**@return The name of the object, or <code>null</code> if the object has no name.*/
 		public N getName() {return name;}
 		
 	/**Constructor specifying the name.
-	@param newName The object's new name.
-	@throws NullPointerException if the given name is <code>null</code>;
+	@param name The object's new name, or <code>null</code> if the object has no name.
 	*/
-	public DefaultNamed(final N newName)
+	public DefaultNamed(final N name)
 	{
-		this.name=checkInstance(newName, "Name cannot be null."); //set the name
+		this.name=name; //set the name
 	}
 
 	/**Compares the names of two objects if the other object is a {@link Named}.
@@ -46,13 +45,14 @@ public class DefaultNamed<N> implements Named<N>
 	*/
 	public boolean equals(final Object object)
 	{
-		return object instanceof Named && getName().equals(((Named<?>)object).getName());	//see if the other object is a named object with the same named
+		return this==object || object instanceof Named && Objects.equals(getName(), ((Named<?>)object).getName());	//see if the other object is a named object with the same named
 	}
 
 	/**@return A hashcode value composed from the name.*/
 	public int hashCode()
 	{
-		return getName().hashCode();  //return the hash code of the name
+		final N name=getName();	//get the name, if any
+		return name!=null ? getName().hashCode() : super.hashCode();  //return the hash code of the name, if we can
 	}
 
 	/**@return A string representation of this object's name.*/

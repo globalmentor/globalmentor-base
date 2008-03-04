@@ -16,7 +16,10 @@
 
 package com.globalmentor.util;
 
+import static com.globalmentor.java.Objects.*;
+
 /**A default implementation of a named object comparable by name.
+This implementation does not allow a <code>null</code> name.
 @author Garret Wilson
 */
 public class DefaultComparableNamed<N extends Comparable<N>> extends DefaultNamed<N> implements Comparable<Named<N>>
@@ -28,7 +31,7 @@ public class DefaultComparableNamed<N extends Comparable<N>> extends DefaultName
 	*/
 	public DefaultComparableNamed(final N newName)
 	{
-		super(newName);	//construct the parent class
+		super(checkInstance(newName, "Name cannot be null."));	//construct the parent class
 	}
 
 	/**Compares this object to another object.

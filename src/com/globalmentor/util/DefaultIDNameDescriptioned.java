@@ -16,8 +16,6 @@
 
 package com.globalmentor.util;
 
-import static com.globalmentor.java.Objects.*;
-
 /**A convenience class for storing an ID, a name, and a description. Is useful
 	to serve as a base class to other classes that are identified by an ID and
 	have a name and a description.
@@ -26,31 +24,29 @@ import static com.globalmentor.java.Objects.*;
 public class DefaultIDNameDescriptioned<I, N extends Comparable<N>, D> extends DefaultIDNamed<I, N>
 {
 
-	/**The description of the object.*/
+	/**The description of the object, or <code>null</code> if the object has no description.*/
 	private D description;
 
-		/**@return The description of the object.*/
+		/**@return The description of the object, or <code>null</code> if the object has no description.*/
 		public D getDescription() {return description;}
 
 		/**Sets the description of the object.
-		@param newDescription The new description of the object.
-		@throws NullPointerException if the given description is <code>null</code>.
+		@param description The new description of the object, or <code>null</code> if the object should have no description.
 		*/
-		protected void setDescription(final D newDescription)
+		protected void setDescription(final D description)
 		{
-			this.description=checkInstance(newDescription, "Name cannot be null.");
+			this.description=description;
 		}
 
 	/**Constructor specifying the ID, name, and description.
-	@param id The ID of the object.
-	@param name The name of the object.
-	@param description The description of the object.
-	@throws NullPointerException if the given ID, name, and/or description is <code>null</code>.
+	@param id The ID of the object, or <code>null</code> if the object should have no ID.
+	@param name The name of the object, or <code>null</code> if the object should have no name.
+	@param description The description of the object, or <code>null</code> if the object should have no description.
 	*/
 	public DefaultIDNameDescriptioned(final I id, final N name, final D description)
 	{
 		super(id, name);  //construct the base class
-		this.description=checkInstance(description, "Name cannot be null.");
+		this.description=description;
 	}
 
 	/**@return A string representation of this object in the format "objectinfo: [ID] name (description)".*/

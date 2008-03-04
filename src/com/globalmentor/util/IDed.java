@@ -22,7 +22,7 @@ package com.globalmentor.util;
 public interface IDed<I>
 {
 
-	/**@return The identifier, preferably unique, of the object.*/
+	/**@return The identifier, preferably unique, of the object; or <code>null</code> if the object has no ID.*/
 	public I getID();
 
 }
