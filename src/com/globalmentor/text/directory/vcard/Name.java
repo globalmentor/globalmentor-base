@@ -37,8 +37,8 @@ public class Name extends DefaultLocaleable
 		/**@return The family names.*/
 		public String[] getFamilyNames() {return familyNames;}
 
-		/**@return The first family name, or <code>null</code> if there are no family names.*/
-		public String getFamilyName() {return familyNames.length>0 ? familyNames[0] : null;}
+		/**@return The last family name, or <code>null</code> if there are no family names.*/
+		public String getFamilyName() {return familyNames.length>0 ? familyNames[familyNames.length-1] : null;}
 		
 		/**Sets the family names.
 		@param familyNames The family names.
@@ -203,6 +203,40 @@ public class Name extends DefaultLocaleable
 		setAdditionalNames(additionalName);
 		setHonorificPrefixes(honorificPrefix);
 		setHonorificSuffixes(honorificSuffix);
+	}
+
+	/**Returns a compact form of the complete name.
+	This is normally the given name and the family name, if any.
+	This method never returns <code>null</code>.
+	@return A compact form of the complete name.
+	@see #getGivenName()
+	@see #getFamilyName()
+	*/
+	public final String getCompleteName()
+	{
+		final String givenName=getGivenName();	//get the first and last names
+		final String familyName=getFamilyName();
+		if(givenName!=null || familyName!=null)	//if we have a first or last name TODO add an additional name of there is no first or last name
+		{
+			final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to hold the complete name we'll construct
+			if(givenName!=null)	//if there is a first name
+			{
+				stringBuilder.append(givenName);	//append the first name
+			}
+			if(familyName!=null)	//if there is a last name
+			{
+				if(stringBuilder.length()>0)	//if there are characters so far
+				{
+					stringBuilder.append(' ');	//separate the components
+				}
+				stringBuilder.append(familyName);	//append the last name
+			}
+			return stringBuilder.toString();	//return the complete name we constructed
+		}
+		else	//if there is no first or last name
+		{
+			return "";	//return an empty string
+		}
 	}
 
 	/**@return A string representation of the name.*/
