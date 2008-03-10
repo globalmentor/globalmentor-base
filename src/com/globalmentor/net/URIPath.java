@@ -229,6 +229,16 @@ public final class URIPath
 	/**@return A URI containing this URI path in the {@value URIs#PATH_SCHEME} scheme.*/
 	public URI toPathURI() {return createURI(PATH_SCHEME, uri.getRawPath());}
 
+	/**Returns a collection form of the URI path.
+	If the URI path already is a collection path, it is returned unmodified.
+	Otherwise, a path separator is appended to the URI path. 
+	@return A form of the URI path that indicates a collection.
+	*/
+	public URIPath toCollectionURIPath()
+	{
+		return isCollection() ? this : new URIPath(uri.getRawPath()+PATH_SEPARATOR);	//if the URI path is not already a collection, append a path separator
+	}
+
 	/**@return A string representation of the raw, encoded path as it would appear in a URI.*/
 	public String toString()
 	{
