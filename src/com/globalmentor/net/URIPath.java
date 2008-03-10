@@ -223,6 +223,26 @@ public final class URIPath
 		return this.uri.resolve(checkInstance(uri, "URI cannot be null."));	//resolve the URI form of the given path against given URI
   }
 
+	/**Returns the raw, encoded name of the resource at the given path, which will be the name of the last path component.
+	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
+	As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
+	@return The raw name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
+	*/
+	public String getRawName()
+	{
+		return URIs.getRawName(uri);	//get the raw name of our URI
+	}
+
+	/**Returns the decoded name of the resource at the given path, which will be the name of the last path component.
+	If the path is a collection (i.e. it ends with slash), the component before the last slash will be returned.
+	As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
+	@return The decoded name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
+	*/
+	public String getName()
+	{
+		return URIs.getName(uri);	//get the name of our URI
+	}
+
 	/**@return A path-only URI containing this URI path.*/
 	public URI toURI() {return uri;}
 
