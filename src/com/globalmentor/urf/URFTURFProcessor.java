@@ -729,7 +729,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	@exception ParseIOException if the reader has no more characters before the current reference is completely parsed.
 	@exception DataException if there was an error with information being processed.
 	*/
-	protected URI parseReference(final Reader reader, final URI baseURI) throws IOException, ParseIOException, DataException
+	public static URI parseReference(final Reader reader, final URI baseURI) throws IOException, ParseIOException, DataException
 	{
 		return parseReference(reader, baseURI, (Map<String, URI>)EMPTY_MAP);	//parse a reference with no namespace prefixes
 	}
@@ -747,7 +747,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	@exception ParseIOException if the reader has no more characters before the current reference is completely parsed.
 	@exception DataException if there was an error with information being processed.
 	*/
-	protected URI parseReference(final Reader reader, final URI baseURI, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
+	public static URI parseReference(final Reader reader, final URI baseURI, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
 	{
 		return parseReference(reader, baseURI, null, prefixNamespaceURIMap);	//parse a reference with no default namespace URI
 	}
@@ -766,7 +766,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	@exception ParseIOException if the reader has no more characters before the current reference is completely parsed.
 	@exception DataException if there was an error with information being processed.
 	*/
-	protected URI parseReference(final Reader reader, final URI baseURI, final URI defaultNamespaceURI, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
+	public static URI parseReference(final Reader reader, final URI baseURI, final URI defaultNamespaceURI, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
 	{
 		final int c=peek(reader);	//peek the next character
 		switch(c)	//check for a reference or a short form
@@ -1287,7 +1287,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	@exception ParseIOException if the reader has no more characters before the current URI is completely parsed.
 	@exception DataException if the URI is not of the correct format.
 	*/
-	public URI parseURI(final Reader reader, final URI baseURI, final char uriBegin, final char uriEnd, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
+	public static URI parseURI(final Reader reader, final URI baseURI, final char uriBegin, final char uriEnd, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
 	{
 		check(reader, uriBegin);	//read the beginning URI delimiter
 		int c=peek(reader);	//peek the next character
@@ -1299,8 +1299,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			{
 				check(reader, TYPE_BEGIN);	//read the type delimiter
 				skipSeparators(reader);	//skip separators
-				final Resource type=parseResource(reader, baseURI, null, null, null, prefixNamespaceURIMap);	//parse the type resource
-				final URI typeURI=type.getURI();	//get the URI of the type
+				final URI typeURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse the type resource
 				if(typeURI==null)	//if no type URI was provided
 				{
 					throw new DataException("Lexical URI provided no type URI.");

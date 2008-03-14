@@ -8,8 +8,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.regex.Pattern;
 
 import static com.globalmentor.java.Classes.*;
+import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.ploop.PLOOP.*;
 import static com.globalmentor.util.Arrays.*;
@@ -102,7 +102,7 @@ public class PLOOPURFProcessor
 			while(!hasJavaType && typeIterator.hasNext())	//while we haven't found a Java type and there are other types left
 			{
 				final URI typeURI=typeIterator.next().getURI();	//get the next type URI
-				if(typeURI!=null && JAVA_SCHEME.equals(typeURI.getScheme()))	//if this is an a java: URI
+				if(typeURI!=null && JAVA_URI_SCHEME.equals(typeURI.getScheme()))	//if this is an a java: URI
 				{
 					hasJavaType=true;	//show that this resource has a Java type					
 				}

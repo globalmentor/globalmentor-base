@@ -37,7 +37,6 @@ import static com.globalmentor.net.URLs.*;
 import com.globalmentor.io.ContentTypes;
 import com.globalmentor.io.InputStreams;
 import com.globalmentor.net.URIPath;
-import com.globalmentor.net.URIs;
 import com.globalmentor.util.NameValuePair;
 
 /**Utilities for manipulating Java classes.
@@ -65,17 +64,17 @@ public class Classes
 	private Classes() {}
 
 	/**Determines the Java class represented by the given URI.
-	A URI represents a Java class if it has a {@value URIs#JAVA_SCHEME} scheme
+	A URI represents a Java class if it has a {@value Java#JAVA_URI_SCHEME} scheme
 	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.	
 	@param resourceURI The URI which is expected to represent a Java class, or <code>null</code>.
 	@return The Java class represented by the given URI, or <code>null</code> if the URI is not a <code>java:</code> URI.
 	@exception IllegalArgumentException if the given URI represents a Java class that does not have the correct syntax.
 	@exception ClassNotFoundException if the class represented by the given URI could not be found.
-	@see URIs#JAVA_SCHEME
+	@see Java#JAVA_URI_SCHEME
 	*/
 	public static Class<?> asClass(final URI resourceURI) throws ClassNotFoundException
 	{
-		if(resourceURI!=null && JAVA_SCHEME.equals(resourceURI.getScheme()))	//if an java: URI was given
+		if(resourceURI!=null && JAVA_URI_SCHEME.equals(resourceURI.getScheme()))	//if an java: URI was given
 		{
 			final String classPath=resourceURI.getRawPath();	//get the path to the class
 			if(classPath!=null)	//if there is a path
@@ -97,7 +96,7 @@ public class Classes
 		return null;	//no class could be found
 	}
 
-	/**Creates a Java URI for a Java package using the {@value URIs#JAVA_SCHEME} scheme
+	/**Creates a Java URI for a Java package using the {@value Java#JAVA_URI_SCHEME} scheme
 	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/</code>.
 	@param objectPackage The package to use in creating the <code>java:</code> URI.
 	@return A <code>java:</code> URI based upon the given class.
@@ -106,10 +105,10 @@ public class Classes
 	public static URI createJavaURI(final Package objectPackage)
 	{
 		final String packagePath=URIPath.encodeSegment(objectPackage.getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the package path by replacing the package separators with path separators after encoding
-		return URI.create(JAVA_SCHEME+SCHEME_SEPARATOR+ROOT_PATH+packagePath+PATH_SEPARATOR);	//create and return a new Java URI for the package
+		return URI.create(JAVA_URI_SCHEME+SCHEME_SEPARATOR+ROOT_PATH+packagePath+PATH_SEPARATOR);	//create and return a new Java URI for the package
 	}
 
-	/**Creates a Java URI for a Java class using the {@value URIs#JAVA_SCHEME} scheme
+	/**Creates a Java URI for a Java class using the {@value Java#JAVA_URI_SCHEME} scheme
 	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.
 	@param objectClass The class to use in creating the <code>java:</code> URI.
 	@return A <code>java:</code> URI based upon the given class.
@@ -118,7 +117,7 @@ public class Classes
 	public static URI createJavaURI(final Class<?> objectClass)
 	{
 		final String classPath=URIPath.encodeSegment(objectClass.getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the class path by replacing the package separators with path separators after encoding
-		return URI.create(JAVA_SCHEME+SCHEME_SEPARATOR+ROOT_PATH+classPath);	//create and return a new Java URI for the class
+		return URI.create(JAVA_URI_SCHEME+SCHEME_SEPARATOR+ROOT_PATH+classPath);	//create and return a new Java URI for the class
 	}
 
 	/**Returns a content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.

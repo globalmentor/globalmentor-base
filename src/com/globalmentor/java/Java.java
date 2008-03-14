@@ -42,6 +42,9 @@ public class Java
 	*/
 	public final static String I18N_PROPERTY_NAME="i18n";
 
+	/**The Java URI scheme identifier.*/
+	public final static String JAVA_URI_SCHEME="java";
+
 	/**This class cannot be publicly instantiated.*/
 	private Java() {}
 

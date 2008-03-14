@@ -50,9 +50,6 @@ public class URIs
 	/**The FTP scheme identifier.*/
 	public final static String FTP_SCHEME="ftp";
 
-	/**The Java scheme identifier.*/
-	public final static String JAVA_SCHEME="java";
-
 	/**The email address scheme identifier.*/
 	public final static String MAILTO_SCHEME="mailto";
 

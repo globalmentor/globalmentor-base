@@ -15,6 +15,7 @@ import com.globalmentor.java.*;
 import static com.globalmentor.java.Booleans.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.CharSequences.*;
+import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
 import com.globalmentor.net.*;
 import static com.globalmentor.net.URIs.*;
@@ -588,12 +589,12 @@ public class URF
 	</dl>
 	This method can return resource URIs using the following schemes for objects of the following types:
 	<dl>
-		<dt>{@link Class}</dt> <dd>{@value URIs#JAVA_SCHEME}</dd>
-		<dt>{@link Package}</dt> <dd>{@value URIs#JAVA_SCHEME}</dd>
+		<dt>{@link Class}</dt> <dd>{@value Java#JAVA_URI_SCHEME}</dd>
+		<dt>{@link Package}</dt> <dd>{@value Java#JAVA_URI_SCHEME}</dd>
 	</dl>
 	This method can return lexical resource URIs with lexical type URIs using the following schemes for objects of the following types:
 	<dl>
-		<dt>{@link Class} subclass of {@link Enum}</dt> <dd>{@value URIs#JAVA_SCHEME}</dd>
+		<dt>{@link Class} subclass of {@link Enum}</dt> <dd>{@value Java#JAVA_URI_SCHEME}</dd>
 	</dl>
 	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
 	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
@@ -753,12 +754,12 @@ public class URF
 	</dl>
 	This method can return objects for the resources with URIs of the following schemes:
 	<dl>
-		<dt>{@value URIs#JAVA_SCHEME}</dt> <dd>{@link Class}</dd>
+		<dt>{@value Java#JAVA_URI_SCHEME}</dt> <dd>{@link Class}</dd>
 		<dt>{@value URIs#PATH_SCHEME}</dt> <dd>{@link URIPath}</dd>
 	</dl>
 	This method can return objects for the resources with lexical URIs with lexical type URIs of the following schemes:
 	<dl>
-		<dt>{@value URIs#JAVA_SCHEME} indicating subclass of {@link Enum}</dt> <dd>{@link Enum}</dd>
+		<dt>{@value Java#JAVA_URI_SCHEME} indicating subclass of {@link Enum}</dt> <dd>{@link Enum}</dd>
 	</dl>
 	@param resourceURI The URI to represent as a Java object, or <code>null</code>.
 	@return An object representing the resource represented by the given URI, or <code>null</code> if the URI does not represent a known object.
@@ -770,7 +771,7 @@ public class URF
 		if(resourceURI!=null)	//if a resource URI was given
 		{
 			final String resourceURIScheme=resourceURI.getScheme();	//get the resource URI scheme, if any
-			if(JAVA_SCHEME.equals(resourceURIScheme))	//if this is a Java URI
+			if(JAVA_URI_SCHEME.equals(resourceURIScheme))	//if this is a Java URI
 			{
 				try
 				{
@@ -940,7 +941,7 @@ public class URF
 	}
 
 	/**Determines the Java class represented by the given resource.
-	A resource represents a Java class if it has a {@value URIs#JAVA_SCHEME} scheme URI
+	A resource represents a Java class if it has a {@value Java#JAVA_URI_SCHEME} scheme URI
 	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.	
 	@param resource The resource which is expected to represent a Java class, or <code>null</code>.
 	@return The Java class represented by the given resource, or <code>null</code> if the resource does not represent a Java class.
