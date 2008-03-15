@@ -249,6 +249,10 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 	*/
 	public boolean equals(final Object object)
 	{
+		if(this==object)	//if the resources are identical
+		{
+			return true;	//identical resources are always equal
+		}
 		if(object instanceof URFResource)	//if we're being compared with another URFresource
 		{
 			final URI uri=getURI();	//get the reference URI
