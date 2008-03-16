@@ -73,6 +73,17 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 		return createLexicalResource(INTEGER_CLASS_URI, Long.toString(integer));	//create and return a default integer resource
 	}
 
+	/**Creates a default date resource with its type added as a type property.
+	This method delegates to {@link #createLexicalResource(URI, String)}.
+	@param date The date for which a default resource should be created.
+	@return A default date resource with the appropriate type property added.
+	@exception NullPointerException if the given date is <code>null</code>.
+	*/
+	public URFResource createDateResource(final URFDate date)
+	{
+		return createLexicalResource(DATE_CLASS_URI, date.toString());	//create and return a default date resource
+	}
+
 	/**Creates a default date time resource with its type added as a type property.
 	This method delegates to {@link #createLexicalResource(URI, String)}.
 	@param dateTime The date time for which a default resource should be created.

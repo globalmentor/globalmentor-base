@@ -144,7 +144,7 @@ public class CharSequences
 	@param charSequence The character sequence to search.
 	@return <code>true</code> if the sequence has at least one letter.
 	*/
-	public static boolean containsLetter(final CharSequence charSequence) //G***maybe change this to indexOfLetterOrDigit
+	public static boolean containsLetter(final CharSequence charSequence) //TODO maybe change this to indexOfLetterOrDigit
 	{
 		for(int i=charSequence.length()-1; i>=0; --i) //look at each character in the string
 		{
@@ -157,8 +157,9 @@ public class CharSequences
 	/**Determines if the following character sequence contains a letter or a digit.
 	@param charSequence The character sequence to search.
 	@return <code>true</code> if the sequence has at least one letter or digit.
+	@see Character#isLetterOrDigit(char)
 	*/
-	public static boolean containsLetterOrDigit(final CharSequence charSequence) //G***maybe change this to indexOfLetterOrDigit
+	public static boolean containsLetterOrDigit(final CharSequence charSequence) //TODO maybe change this to indexOfLetterOrDigit
 	{
 		for(int i=charSequence.length()-1; i>=0; --i) //look at each character in the string
 		{
@@ -168,14 +169,89 @@ public class CharSequences
 		return false; //we found no letters or digits
 	}
 
-	/**Determines if a character sequence contains whitespace.
+	/**Determines if a character sequence contains Unicode whitespace.
+	Whitespace is denoted by the "WS" bidi class in <code>UnicodeData.txt</code>.
+	This method does not handle Unicode supplementary characters.
 	@param charSequence The character sequence to be searched.
 	@return <code>true</code> if the given character sequence contains whitespace.
-	@see Characters#WHITESPACE_CHARS
+	@see Character#isSpaceChar(char)
 	*/
 	public static boolean containsWhitespace(final CharSequence charSequence)
 	{
-		return containsChar(charSequence, WHITESPACE_CHARS);	//see if the character sequence contains whitespace
+		for(int i=charSequence.length()-1; i>=0; --i) //look at each character in the string
+		{
+			if(Character.isSpaceChar(charSequence.charAt(i)))  //if this is whitespace
+			{
+				return true;  //we found whitespace
+			}
+		}
+		return false; //we found no whitespace
+	}
+
+	/**Determines if a character sequence contains characters that are not Unicode whitespace (marked by "WS" in Unicode data).
+	Whitespace is denoted by the "WS" bidi class in <code>UnicodeData.txt</code>.
+	This method does not handle Unicode supplementary characters.
+	@param charSequence The character sequence to be searched.
+	@return <code>true</code> if the given character sequence contains non-whitespace.
+	@see Character#isSpaceChar(char)
+	*/
+	public static boolean containsNonWhitespace(final CharSequence charSequence)
+	{
+		for(int i=charSequence.length()-1; i>=0; --i) //look at each character in the string
+		{
+			if(!Character.isSpaceChar(charSequence.charAt(i)))  //if this is not whitespace
+			{
+				return true;  //we found non-whitespace
+			}
+		}
+		return false; //we found no non-whitespace
+	}
+
+	/**Determines if a character sequence contains characters that can be trimmed.
+	Trimmed characters are denoted by the "WS" (whitespace) bidi class, the "Cc" (control) category,
+	or the "Cf" (format) category  in <code>UnicodeData.txt</code>.
+	This method does not handle Unicode supplementary characters.
+	@param charSequence The character sequence to be searched.
+	@return <code>true</code> if the given character sequence contains trim characters.
+	@see Character#isSpaceChar(char)
+	@see Character#isISOControl(char)
+	@see Character#getType(char)
+	*/
+	public static boolean containsTrim(final CharSequence charSequence)
+	{
+		for(int i=charSequence.length()-1; i>=0; --i) //look at each character in the string
+		{
+			final char c=charSequence.charAt(i);	//get the current character
+			if(Character.isSpaceChar(c) || Character.isISOControl(c) || Character.getType(c)==Character.FORMAT)  //if this is whitespace, control, or format
+			{
+				return true;  //we found a trim character
+			}
+		}
+		return false; //we found no trim character
+	}
+
+	/**Determines if a character sequence contains characters that are not characters that can be trimmed.
+	This is useful for determining if a characer sequence actually contains useful data.
+	Trimmed characters are denoted by the "WS" (whitespace) bidi class, the "Cc" (control) category,
+	or the "Cf" (format) category  in <code>UnicodeData.txt</code>.
+	This method does not handle Unicode supplementary characters.
+	@param charSequence The character sequence to be searched.
+	@return <code>true</code> if the given character sequence contains non-trim characters.
+	@see Character#isSpaceChar(char)
+	@see Character#isISOControl(char)
+	@see Character#getType(char)
+	*/
+	public static boolean containsNonTrim(final CharSequence charSequence)
+	{
+		for(int i=charSequence.length()-1; i>=0; --i) //look at each character in the string
+		{
+			final char c=charSequence.charAt(i);	//get the current character
+			if(!Character.isSpaceChar(c) && !Character.isISOControl(c) && Character.getType(c)!=Character.FORMAT)  //if this is not whitespace, control, or format
+			{
+				return true;  //we found a non-trim character
+			}
+		}
+		return false; //we found no non-trim character
 	}
 
 	/**Counts the number of occurences of a particular character in a character sequence.
@@ -589,7 +665,7 @@ public class CharSequences
 	@param charSequence The character sequence to examine.
 	@return <code>true</code> if all the characters represent a number.
 	*/
-	public final static boolean isNumber(final CharSequence charSequence) //G***use a regex, and verify format
+	public final static boolean isNumber(final CharSequence charSequence) //TODO use a regex, and verify format
 	{
 		if(charSequence.length()==0) //if this is an empty string
 			return false; //there are no characters to check

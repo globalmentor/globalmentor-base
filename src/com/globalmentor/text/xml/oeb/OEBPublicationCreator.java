@@ -1412,7 +1412,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 						//create an href to the element within the document
 					final String href=URLs.getFileName(getContextURL())+'#'+id; //TODO pass the href; do something better than getContextURL(); use a constant for '#'
 						//get the text of this element, collapsing all whitespace into single spaces
-					final String elementText=Strings.collapseEveryChar(XML.getText(element, true), WHITESPACE_CHARS, " ");
+					final String elementText=Strings.collapseEveryChar(XML.getText(element, true), WHITESPACE_CHAR_STRING, " ");
 						//making sure it's not too long
 					final String shortText=Strings.truncate(elementText, 32);  //TODO use a constant
 						//remove everything but the first line and trim it
@@ -1670,7 +1670,7 @@ Debug.trace("byIndex: "+byIndex);
 									if(!"etext".equals(word) || CharSequences.charIndexOf(text, "Project Gutenberg")<byIndex)
 									{
 											//if there is just whitespace between the word and "by" (e.g. "donated by"), this is unacceptable
-										if(CharSequences.notCharIndexOf(text, WHITESPACE_CHARS, wordIndex+word.length())>=byIndex)
+										if(CharSequences.notCharIndexOf(text, WHITESPACE_CHAR_STRING, wordIndex+word.length())>=byIndex)
 										{
 											isAcceptableBy=false; //don't accept this phrase
 											break;  //stop looking for an unacceptable phrase; we just found one
@@ -1683,7 +1683,7 @@ Debug.trace("byIndex: "+byIndex);
 								final String authorText=text.substring(byIndex+BY.length());  //get everything after "by"
 								if(CharSequences.charIndexOf(authorText, EOL_CHARS)<0 //if everything's on a single line
 												//or if the other lines are just numbers and hyphens (hack for hrlnd10.txt)
-										|| CharSequences.charIndexOf(Strings.trim(authorText, WHITESPACE_CHARS+"0123456789-"), EOL_CHARS)<0)
+										|| CharSequences.charIndexOf(Strings.trim(authorText, WHITESPACE_CHAR_STRING+"0123456789-"), EOL_CHARS)<0)
 								{
 										//get the author and trim it of certain delimiters, and then collapse the whitespace
 									final String author=ProjectGutenbergXHTMLTidier.tidyAuthor(authorText);  //TODO use a common method, not in PGUtilities

@@ -954,6 +954,43 @@ public class URF
 		return resource!=null ? Classes.asClass(resource.getURI()) : null;	//if a resource was given, see if its URI represents a Java class
 	}
 
+	/**Determines the date or date time represented by the given resource.
+	@param resource The resource which is expected to represent a date or date time, or <code>null</code>.
+	@return The date or date time represented by the given resource, or <code>null</code> if the resource does not represent a date or date time.
+	@exception IllegalArgumentException if the given resource represents a date or date time that does not have the correct syntax.
+	@see #asAbstractDateTime(URI)
+	*/
+	public static AbstractURFDateTime asAbstractDateTime(final Resource resource)
+	{
+		return resource!=null ? asAbstractDateTime(resource.getURI()) : null;	//if a resource was given, see if its URI represents a date or date time
+	}
+
+	/**Determines the date or date time represented by the given URI.
+	@param resourceURI The URI which is expected to represent a date or date time, or <code>null</code>.
+	@return The date or date time represented by the given URI, or <code>null</code> if the URI does not represent a date or date time.
+	@exception IllegalArgumentException if the given URI represents a date or date time that does not have the correct syntax.
+	@see #DATE_CLASS_URI
+	@see #DATE_NAMESPACE_URI
+	@see #DATE_TIME_CLASS_URI
+	@see #DATE_TIME_NAMESPACE_URI
+	*/
+	public static AbstractURFDateTime asAbstractDateTime(final URI resourceURI)
+	{
+		if(resourceURI!=null)	//if there is a resource URI
+		{
+			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace URI of the resource URI
+			if(DATE_NAMESPACE_URI.equals(namespaceURI))	//if a date URI was given
+			{
+				return URFDate.valueOf(getLocalName(resourceURI));	//create a date from the local name
+			}
+			else if(DATE_TIME_NAMESPACE_URI.equals(namespaceURI))	//if a date time URI was given
+			{
+				return URFDateTime.valueOf(getLocalName(resourceURI));	//create a date time from the local name
+			}
+		}
+		return null;	//no pattern could be found
+	}
+
 	/**Determines the date time represented by the given resource.
 	@param resource The resource which is expected to represent a date time, or <code>null</code>.
 	@return The date time represented by the given resource, or <code>null</code> if the resource does not represent a date time.

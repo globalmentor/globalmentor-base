@@ -219,8 +219,10 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	/**Unicode segment separator characters.*/
 	public final static String SEGMENT_SEPARATOR_CHARS=""+HORIZONTAL_TABULATION_CHAR+VERTICAL_TABULATION_CHAR+INFORMATION_SEPARATOR_ONE_CHAR;
 
-	/**Unicode whitespace characters.*/
-	public final static String WHITESPACE_CHARS=""+HORIZONTAL_TABULATION_CHAR+LINE_FEED_CHAR+VERTICAL_TABULATION_CHAR+FORM_FEED_CHAR+CARRIAGE_RETURN_CHAR+SPACE_CHAR;
+	/**Unicode whitespace characters.
+	@deprecated
+	*/
+	public final static String WHITESPACE_CHAR_STRING=""+HORIZONTAL_TABULATION_CHAR+LINE_FEED_CHAR+VERTICAL_TABULATION_CHAR+FORM_FEED_CHAR+CARRIAGE_RETURN_CHAR+SPACE_CHAR;
 /*TODO add
 			  * U0085 NEL
 			  * U00A0 NBSP
@@ -233,8 +235,7 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 			  * U205F MEDIUM MATHEMATICAL SPACE
 			  * U3000 IDEOGRAPHIC SPACE
 */
-			
-			
+
 	/**Unicode formatting characters; Unicode characters marked with "Cf",
 		such as <code>WORD_JOINER</code>.
 	*/
@@ -248,7 +249,7 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	/**Characters that do not contain visible "content", and may be trimmed from ends of a string.
 	These include whitespace, control characters, and formatting characters.
 	*/
-	public final static String TRIM_CHARS=WHITESPACE_CHARS+CONTROL_CHARS+FORMAT_CHARS;
+	public final static String TRIM_CHARS=WHITESPACE_CHAR_STRING+CONTROL_CHARS+FORMAT_CHARS;
 
 	/**A regular expression pattern for the class of trim characters.
 	@see #TRIM_CHARS
@@ -342,7 +343,7 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 			HYPHEN_MINUS_CHAR+EM_DASH_CHAR+EN_DASH_CHAR;
 
 	/**Characters that separate words.*/
-	public final static String WORD_DELIMITER_CHARS=WHITESPACE_CHARS+PUNCTUATION_CHARS;	//TODO this needs fixed
+	public final static String WORD_DELIMITER_CHARS=WHITESPACE_CHAR_STRING+PUNCTUATION_CHARS;	//TODO this needs fixed
 
 	/**A regular expression pattern for the class of word delimiter characters.
 	@see #WORD_DELIMITER_CHARS
@@ -350,7 +351,7 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 //TODO fix; these characters must be escaped, or this Pattern.toString() will run into an endless loop!	public final static Pattern WORD_DELIMITER_PATTERN=Pattern.compile("["+WORD_DELIMITER_CHARS+"]");
 
 	/**Characters that allow words to wrap.*/
-	public final static String WORD_WRAP_CHARS=WHITESPACE_CHARS+"-/";	//TODO use constants
+	public final static String WORD_WRAP_CHARS=WHITESPACE_CHAR_STRING+"-/";	//TODO use constants
 
 	/**Sees if the specified character is in one of the specified ranges.
 	@param c The character to check.
@@ -417,7 +418,7 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	*/
 	public static boolean isWhitespace(final char c)
 	{
-		return WHITESPACE_CHARS.indexOf(c)>=0;	//return true if we can find the character in the string of whitespace characters
+		return WHITESPACE_CHAR_STRING.indexOf(c)>=0;	//return true if we can find the character in the string of whitespace characters
 	}
 
 	/**Specifies whether or not a given character is a word delimiter, such as

@@ -218,6 +218,14 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public URFResource setProperty(final URFProperty property);
 
+	/**Sets a date property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
+	@param propertyURI The URI of the property of the value to set.
+	@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.
+	@return The old property value, or <code>null</code> if there was no property value previously.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public URFResource setPropertyValue(final URI propertyURI, final URFDate propertyValue);
+
 	/**Sets a date time property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.
 	@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.
@@ -356,6 +364,15 @@ public interface URFScope extends ReadWriteLock
 	@exception NullPointerException if the given namespace URI is <code>null</code>.
 	*/
 	public long removeNamespacePropertyValues(final URI namespaceURI);
+
+	/**Removes a given property value for the indicated property and value.
+	If the given property and value do not exist, no action occurs.
+	This is a convenient method that is equivalent to {@link #removePropertyValue(URI, URFResource)}.
+	@param property The property and value to to remove.
+	@return <code>true</code> if the value was removed from the indicated property, else <code>false</code> if the property and value did not exist.
+	@exception NullPointerException if the given property is <code>null</code>.
+	*/
+	public boolean removeProperty(final URFProperty property);
 
 	/**Removes a given property value for the property with the given URI.
 	If the given property and value do not exist, no action occurs.

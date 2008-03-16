@@ -25,7 +25,7 @@ public class TURF
 	public final static String TURF_NAME_EXTENSION="turf";
 
 	/**Unicode whitespace characters.*/
-	public final static char[] SEPARATORS=(PARAGRAPH_SEPARATOR_CHARS+SEGMENT_SEPARATOR_CHARS+WHITESPACE_CHARS).toCharArray();
+	public final static char[] SEPARATORS=(PARAGRAPH_SEPARATOR_CHARS+SEGMENT_SEPARATOR_CHARS+WHITESPACE_CHAR_STRING).toCharArray();
 
 	/**The delimiters used to a name prefix.*/
 	public final static char NAME_PREFIX_DELIMITER='.';
