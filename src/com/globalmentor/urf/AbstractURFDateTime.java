@@ -79,14 +79,17 @@ public abstract class AbstractURFDateTime extends Date implements URFTemporal
 */
 
 	/**Temporal components constructor.
+	@param temporalComponents The components of the time information.
+	@param useTime <code>true</code> if the time should be used, or <code>false</code> if the given type components should be ignored.
 	@throws NullPointerException if the temporal components is null.
 	*/
-	protected AbstractURFDateTime(final URFTemporalComponents temporalComponents)
+	protected AbstractURFDateTime(final URFTemporalComponents temporalComponents, final boolean useTime)
 	{
+		super(temporalComponents.getTime());	//construct the parent class with the date time in milliseconds
 		this.year=temporalComponents.getYear();
 		this.month=temporalComponents.getMonth();
 		this.day=temporalComponents.getDay();
-		this.time=temporalComponents.asTime();	//store time if possible
+		this.time=useTime ? temporalComponents.asTime() : null;	//store time if requested and if possible
 	}
 
 	/**Appends the canonical lexical representation of this date time to a string builder in the form "YYYY-MM-DDThh:mm:ss[.s+]+/-hh:mm".

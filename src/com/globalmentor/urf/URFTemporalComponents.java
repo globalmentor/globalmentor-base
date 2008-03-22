@@ -163,7 +163,7 @@ public class URFTemporalComponents
 	}
 
 	/**Millisecond time and time zone constructor.
-	This method cannot handle offset that do not fall on whole minutes. 
+	This method cannot handle offsets that do not fall on whole minutes. 
 	@param time The difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	@param timeZone The time zone in which the time should be interpreted.
 	@throws NullPointerException if the given time zone is <code>null</code>.
@@ -470,7 +470,7 @@ public class URFTemporalComponents
 					final StringBuilder utcOffsetStringBuilder=new StringBuilder(3);	//create a new string builder for just enough room for a sign and the offset hours
 					if(utcOffsetDelimiter=='-')	//if this was the negative sign (don't append the positive sign, because Integer.parseInt doesn't allow it)
 					{
-						utcOffsetStringBuilder.append(utcOffsetDelimiter);	//append the negative sign
+						utcOffsetStringBuilder.append((char)utcOffsetDelimiter);	//append the negative sign
 					}
 					utcOffsetStringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read the UTC offset hours
 					utcOffsetHours=Integer.parseInt(utcOffsetStringBuilder.toString());	//parse the UTC offset hours

@@ -33,7 +33,7 @@ public class TimeZones
 	/**Retrieves a time zone based upon a UTC offset for the given date.
 	This method cannot return with certain a time zone valid for other dates,
 	as sufficient information both as to location and to daylight saving is not provided.
-	This method cannot handle offset that do not fall on whole minutes. 
+	This method cannot handle offsets that do not fall on whole minutes. 
 	@param date The date for which a time zone will be calculated.
 	@param offset The UTC offset for which a time zone will be retrieved, in milliseconds.
 	@return A time zone appropriate for the given UTC offset for the given date.

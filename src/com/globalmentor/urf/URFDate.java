@@ -24,7 +24,7 @@ public class URFDate extends AbstractURFDateTime
 	*/
 	private URFDate(final URFTemporalComponents temporalComponents)
 	{
-		super(temporalComponents);	//construct the parent class
+		super(temporalComponents, false);	//construct the parent class, ignoring the time information
 	}
 
 	/**Date components constructor.
