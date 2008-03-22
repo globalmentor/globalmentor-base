@@ -241,7 +241,7 @@ public class BoundPropertyObject implements PropertyBindable
 		}
 	}
 
-	/**Reports that a bound integer property has changed, reporting old and new values of type <code>Integer</code>.
+	/**Reports that a bound integer property has changed, reporting old and new values of type {@link Integer}.
 	No event is fired if the values are equal, or if no event is fired if no listeners are registered for the given property.
 	This method delegates actual firing of the event to {@link #firePropertyChange(String, V, V)}.
 	@param propertyName The name of the property being changed.
@@ -253,6 +253,21 @@ public class BoundPropertyObject implements PropertyBindable
 		if(oldValue!=newValue)	//if the values are different
 		{
 			firePropertyChange(propertyName, Integer.valueOf(oldValue), Integer.valueOf(newValue));	//convert the primitive values to objects and fire the event
+		}
+	}
+
+	/**Reports that a bound long property has changed, reporting old and new values of type {@link Long}.
+	No event is fired if the values are equal, or if no event is fired if no listeners are registered for the given property.
+	This method delegates actual firing of the event to {@link #firePropertyChange(String, V, V)}.
+	@param propertyName The name of the property being changed.
+	@param oldValue The old property value.
+	@param newValue The new property value.
+	*/
+	protected void firePropertyChange(final String propertyName, final long oldValue, final long newValue)
+	{
+		if(oldValue!=newValue)	//if the values are different
+		{
+			firePropertyChange(propertyName, Long.valueOf(oldValue), Long.valueOf(newValue));	//convert the primitive values to objects and fire the event
 		}
 	}
 

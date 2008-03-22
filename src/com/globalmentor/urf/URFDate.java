@@ -1,6 +1,7 @@
 package com.globalmentor.urf;
 
 import java.util.Date;
+import java.util.TimeZone;
 
 import com.globalmentor.text.*;
 
@@ -17,28 +18,28 @@ Any redistribution of this source code or derived source code must include these
 public class URFDate extends AbstractURFDateTime
 {
 
-	/**Date components constructor.
-	@param year The year, 0-9999.
-	@param month The month, 1-12.
-	@param day The day, 1-31.
-	@param time The time.
-	@exception IllegalArgumentException if one of the given arguments is outside the allowed range.
-	*/
-	public URFDate(final int year, final int month, final int day)
-	{
-		super(year, month, day, null);
-	}
-
 	/**Temporal component constructor.
 	@param temporalcomponents The temporal components from which to construct the class.
 	@exception NullPointerException if the given temporal components is <code>null</code>.
 	*/
 	private URFDate(final URFTemporalComponents temporalComponents)
 	{
-		this(temporalComponents.getYear(), temporalComponents.getMonth(), temporalComponents.getDay());
+		super(temporalComponents);	//construct the parent class
 	}
 
-	/**Date constructor.
+	/**Date components constructor.
+	The underlying {@link Date} will be constructed in terms of UTC.
+	@param year The year, 0-9999.
+	@param month The month, 1-12.
+	@param day The day, 1-31.
+	@exception IllegalArgumentException if one of the given arguments is outside the allowed range.
+	*/
+	public URFDate(final int year, final int month, final int day)
+	{
+		this(new URFTemporalComponents(year, month, day, -1, -1, -1, -1, 0, 0));	//construct the parent class with only a date in UTC
+	}
+
+	/**Date constructor in terms of UTC.
 	Any time-related information of the given date will be lost; only the date will be kept, in terms of midnight UTC.
 	@param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	@exception NullPointerException if the given date is <code>null</code>.
@@ -48,13 +49,37 @@ public class URFDate extends AbstractURFDateTime
 		this(new URFTemporalComponents(date));	//construct the class from temporal components
 	}
 
-	/**Millisecond time constructor.
+	/**Date constructor in terms the gigen time zone.
+	Any time-related information of the given date will be lost; only the date will be kept, in terms of midnight UTC.
+	@param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
+	@param timeZone The time zone in which the time should be interpreted.
+	@throws NullPointerException if the given date and/or time zone is <code>null</code>.
+	@throws IllegalArgumentException if a time zone was provided with an unsupported offset for the given time.
+	*/
+	public URFDate(final Date date, final TimeZone timeZone)
+	{
+		this(new URFTemporalComponents(date, timeZone));	//construct the class from temporal components
+	}
+
+	/**Millisecond time constructor in terms of UTC.
 	Any time-related information of the given time will be lost; only the date will be kept, in terms of midnight UTC.
 	@param time The difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	*/
 	public URFDate(final long time)
 	{
 		this(new URFTemporalComponents(time));	//construct the class from temporal components
+	}
+
+	/**Millisecond time constructor in terms of the given time zone.
+	Any time-related information of the given time will be lost; only the date will be kept, in terms of the given time zone.
+	@param time The difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
+	@param timeZone The time zone in which the time should be interpreted.
+	@throws NullPointerException if the given time zone is <code>null</code>.
+	@throws IllegalArgumentException if a time zone was provided with an unsupported offset for the given time.
+	*/
+	public URFDate(final long time, final TimeZone timeZone)
+	{
+		this(new URFTemporalComponents(time, timeZone));	//construct the class from temporal components
 	}
 
 	/**Returns an URF date object holding the value of the specified string.

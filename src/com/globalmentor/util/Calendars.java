@@ -29,6 +29,36 @@ public class Calendars
 	/**The number of days in a week.*/
 	public final static int WEEK_DAY_COUNT=7;
 
+	/**Clears the date-related calendar fields:
+	<ol>
+		<li>{@link Calendar#ERA}</li>
+		<li>{@link Calendar#YEAR}</li>
+		<li>{@link Calendar#MONTH}</li>
+		<li>{@link Calendar#WEEK_OF_YEAR}</li>
+		<li>{@link Calendar#WEEK_OF_MONTH}</li>
+		<li>{@link Calendar#DAY_OF_MONTH}</li>
+		<li>{@link Calendar#DAY_OF_YEAR}</li>
+		<li>{@link Calendar#DAY_OF_WEEK}</li>
+		<li>{@link Calendar#DAY_OF_WEEK_IN_MONTH}</li>
+	</ol>
+	@param calendar The calendar the time of which to reset.
+	@return The calendar being modified.
+	@throws NullPointerException if the given calendar is <code>null</code>.
+	*/
+	public static Calendar clearDate(final Calendar calendar)
+	{
+		calendar.clear(ERA);	//clear the time-related fields
+		calendar.clear(YEAR);
+		calendar.clear(MONTH);
+		calendar.clear(WEEK_OF_YEAR);
+		calendar.clear(WEEK_OF_MONTH);
+		calendar.clear(DAY_OF_MONTH);
+		calendar.clear(DAY_OF_YEAR);
+		calendar.clear(DAY_OF_WEEK);
+		calendar.clear(DAY_OF_WEEK_IN_MONTH);
+		return calendar;	//return the calendar
+	}
+
 	/**Clears the time-related calendar fields:
 	<ol>
 		<li>{@link Calendar#HOUR_OF_DAY}</li>
@@ -40,6 +70,7 @@ public class Calendars
 	</ol>
 	@param calendar The calendar the time of which to reset.
 	@return The calendar being modified.
+	@throws NullPointerException if the given calendar is <code>null</code>.
 	*/
 	public static Calendar clearTime(final Calendar calendar)
 	{
@@ -49,6 +80,46 @@ public class Calendars
 		calendar.clear(MINUTE);
 		calendar.clear(SECOND);
 		calendar.clear(MILLISECOND);
+		return calendar;	//return the calendar
+	}
+
+	/**Sets the following time-related calendar fields from a given calendar:
+	<ol>
+		<li>{@link Calendar#HOUR_OF_DAY}</li>
+		<li>{@link Calendar#MINUTE}</li>
+		<li>{@link Calendar#SECOND}</li>
+		<li>{@link Calendar#MILLISECOND}</li>
+	</ol>
+	@param calendar The calendar the time of which to set.
+	@param fromCalendar The calendar from which to get the time.
+	@throws NullPointerException if either of the given calendars is <code>null</code>.
+	*/
+	public static Calendar setTime(final Calendar calendar, final Calendar fromCalendar)
+	{
+		return setTime(calendar, fromCalendar.get(HOUR_OF_DAY), fromCalendar.get(MINUTE), fromCalendar.get(SECOND), fromCalendar.get(MILLISECOND));	//set the time fields from the given calendar and return the modified calendar
+	}
+
+	/**Sets the time-related calendar fields:
+	<ol>
+		<li>{@link Calendar#HOUR_OF_DAY}</li>
+		<li>{@link Calendar#MINUTE}</li>
+		<li>{@link Calendar#SECOND}</li>
+		<li>{@link Calendar#MILLISECOND}</li>
+	</ol>
+	@param calendar The calendar the time of which to set.
+	@param hour The hour of the day.
+	@param minute The minute of the hour.
+	@param second The second of the minute.
+	@param millisecond The millisecond of the second.
+	@return The calendar being modified.
+	@throws NullPointerException if the given calendar is <code>null</code>.
+	*/
+	public static Calendar setTime(final Calendar calendar, final int hour, final int minute, final int second, final int millisecond)
+	{
+		calendar.set(HOUR_OF_DAY, hour);	//clear the time-related fields
+		calendar.set(MINUTE, minute);
+		calendar.set(SECOND, second);
+		calendar.set(MILLISECOND, millisecond);
 		return calendar;	//return the calendar
 	}
 

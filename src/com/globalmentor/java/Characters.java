@@ -219,6 +219,9 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	/**Unicode segment separator characters.*/
 	public final static String SEGMENT_SEPARATOR_CHARS=""+HORIZONTAL_TABULATION_CHAR+VERTICAL_TABULATION_CHAR+INFORMATION_SEPARATOR_ONE_CHAR;
 
+	/**Unicode whitespace characters.*/
+	public final static char[] WHITESPACE_CHARS=new char[]{HORIZONTAL_TABULATION_CHAR, LINE_FEED_CHAR, VERTICAL_TABULATION_CHAR, FORM_FEED_CHAR, CARRIAGE_RETURN_CHAR, SPACE_CHAR};	//TODO finish
+
 	/**Unicode whitespace characters.
 	@deprecated
 	*/

@@ -45,20 +45,48 @@ public abstract class AbstractURFDateTime extends Date implements URFTemporal
 		/**@return The time, or <code>null</code> if there is a date with no time (not even midnight)*/
 		public URFTime getURFTime() {return time;}
 
-	/**Date components and time constructor.
+	/**Date components and time constructor with a date specified in epoch terms.
+	@param year The year, 0-9999.
+	@param month The month, 1-12.
+	@param day The day, 1-31.
+	@param time The time, or <code>null</code> if there is a date with no time (not even midnight).
+	@param date The milliseconds since January 1, 1970, 00:00:00 GMT.
+	@exception IllegalArgumentException if one of the given arguments is outside the allowed range.
+	*/
+/*TODO del
+	protected AbstractURFDateTime(final int year, final int month, final int day, final URFTime time, final long date)
+	{
+		super(date);	//construct the parent class with the date in epoch terms
+		this.year=checkRange(year, 0, 9999);
+		this.month=checkRange(month, 1, 12);
+		this.day=checkRange(day, 1, 31);
+		this.time=time;
+	}
+*/
+
+	/**Date components and time constructor in terms of UTC.
 	@param year The year, 0-9999.
 	@param month The month, 1-12.
 	@param day The day, 1-31.
 	@param time The time, or <code>null</code> if there is a date with no time (not even midnight).
 	@exception IllegalArgumentException if one of the given arguments is outside the allowed range.
 	*/
+/*TODO del
 	protected AbstractURFDateTime(final int year, final int month, final int day, final URFTime time)
 	{
-		super(URFTemporalComponents.createCalendar(year, month, day, time!=null ? time : URFTime.MIDNIGHT_UTC, Locale.ENGLISH).getTimeInMillis());	//construct the parent class with the time in milleconds the given information represents, using midnight UTC if no time was given; the locale shouldn't matter for just determining the time in milliseconds, so use a locale that is likely to be available
-		this.year=checkRange(year, 0, 9999);
-		this.month=checkRange(month, 1, 12);
-		this.day=checkRange(day, 1, 31);
-		this.time=time;
+		this(year, month, day, time, URFTemporalComponents.createCalendar(year, month, day, time!=null ? time : URFTime.MIDNIGHT_UTC, Locale.ENGLISH).getTimeInMillis());	//construct class with the time in milleconds the given information represents, using midnight UTC if no time was given; the locale shouldn't matter for just determining the time in milliseconds, so use a locale that is likely to be available
+	}
+*/
+
+	/**Temporal components constructor.
+	@throws NullPointerException if the temporal components is null.
+	*/
+	protected AbstractURFDateTime(final URFTemporalComponents temporalComponents)
+	{
+		this.year=temporalComponents.getYear();
+		this.month=temporalComponents.getMonth();
+		this.day=temporalComponents.getDay();
+		this.time=temporalComponents.asTime();	//store time if possible
 	}
 
 	/**Appends the canonical lexical representation of this date time to a string builder in the form "YYYY-MM-DDThh:mm:ss[.s+]+/-hh:mm".

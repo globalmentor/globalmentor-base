@@ -95,11 +95,8 @@ public class URFUTCOffset implements URFTemporal
 	*/
 	public StringBuilder append(final StringBuilder stringBuilder)
 	{
-		if(hours>=0)	//if the hours are not negative
-		{
-			stringBuilder.append('+');	//show that this is a positive offset
-		}
-		stringBuilder.append(Integers.toString(hours, 10, 2));	//append the offset hours, using two digits
+		stringBuilder.append(hours<0 ? '-' : '+');	//show whether this is a a positive or negative offset
+		stringBuilder.append(Integers.toString(Math.abs(hours), 10, 2));	//append the offset hours, using two digits
 		stringBuilder.append(TIME_DELIMITER);	//append ':'
 		stringBuilder.append(Integers.toString(minutes, 10, 2));	//append the offset minutes, using two digits
 		return stringBuilder;	//return the string builder

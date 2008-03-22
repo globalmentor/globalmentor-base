@@ -5,10 +5,11 @@ import java.util.*;
 
 import static java.util.Calendar.*;
 
-
 import com.globalmentor.io.ParseIOException;
 import com.globalmentor.iso.ISO8601;
+import static com.globalmentor.java.Characters.*;
 import com.globalmentor.text.SyntaxException;
+import static com.globalmentor.util.Calendars.*;
 
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.iso.ISO8601.*;
@@ -84,6 +85,12 @@ public class URFTemporalComponents
 		/**@return The UTC offset minutes, or -1 if there is no UTC offset hours or minutes specified.*/
 		public final int getUTCOffsetMinutes() {return utcOffsetMinutes;}
 
+	/**The difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.*/
+	private final long time;
+
+		/**@return The difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.*/
+		public long getTime() {return time;}
+
 	/**Full constructor.
 	@param year The year (0-9999), or -1 if there is no year specified.
 	@param month The month (1-12), or -1 if there is no month specified.
@@ -106,9 +113,28 @@ public class URFTemporalComponents
 		this.microseconds=microseconds;
 		this.utcOffsetHours=utcOffsetHours;
 		this.utcOffsetMinutes=utcOffsetMinutes;
+
+		final Calendar calendar=new GregorianCalendar(utcOffsetHours==0 && utcOffsetMinutes==0 ? TimeZone.getTimeZone(GMT_ID) : getTimeZone(utcOffsetHours, utcOffsetMinutes));	//get Gregorian calendar using the time zone from the UTC offset, defaulting to a GMT time zone
+		calendar.clear();	//clear the calendar
+		if(year>=0 && month>=0 && day>=0)	//if there is date information
+		{
+			if(hours>=0 && minutes>=0 && seconds>=0 && microseconds>=0)	//if date and time is available
+			{
+				calendar.set(checkRange(year, 0, 9999), checkRange(month, 1, 12)-1, checkRange(day, 1, 31), checkRange(hours, 0, 23), checkRange(minutes, 0, 59), checkRange(seconds, 0, 60));	//set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
+			}
+			else	//if no time is available
+			{
+				calendar.set(checkRange(year, 0, 9999), checkRange(month, 1, 12)-1, checkRange(day, 1, 31));	//set the calendar's date
+			}
+		}
+		else if(hours>=0 && minutes>=0 && seconds>=0 && microseconds>=0)	//if only time is available
+		{
+			setTime(calendar, checkRange(hours, 0, 23), checkRange(minutes, 0, 59), checkRange(seconds, 0, 60), checkRange(microseconds, 0, 999999)/1000);	//set the calendar's time, converting the microseconds to milliseconds
+		}
+		this.time=calendar.getTimeInMillis();	//get the time from the calendar
 	}
 
-	/**Date constructor.
+	/**Date constructor in terms of UTC.
 	@param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	@exception NullPointerException if the given date is <code>null</code>.
 	*/
@@ -117,12 +143,35 @@ public class URFTemporalComponents
 		this(date.getTime());	//calculate the components from the time
 	}
 
-	/**Millisecond time constructor.
+	/**Date and time zone constructor.
+	@param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
+	@param timeZone The time zone in which the time should be interpreted.
+	@throws NullPointerException if the given date and/or time zone is <code>null</code>.
+	@throws IllegalArgumentException if a time zone was provided with an unsupported offset for the given time.
+	*/
+	public URFTemporalComponents(final Date date, final TimeZone timeZone)
+	{
+		this(date.getTime(), timeZone);	//calculate the components from the time
+	}
+
+	/**Millisecond time constructor in terms of UTC.
 	@param time The difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	*/
 	public URFTemporalComponents(final long time)
 	{
-		final Calendar calendar=new GregorianCalendar(TimeZone.getTimeZone(GMT_ID));	//create a new Gregorian calendar for the UTC time zone
+		this(time, TimeZone.getTimeZone(GMT_ID));	//construct the class using UTC
+	}
+
+	/**Millisecond time and time zone constructor.
+	This method cannot handle offset that do not fall on whole minutes. 
+	@param time The difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
+	@param timeZone The time zone in which the time should be interpreted.
+	@throws NullPointerException if the given time zone is <code>null</code>.
+	@throws IllegalArgumentException if a time zone was provided with an unsupported offset for the given time.
+	*/
+	public URFTemporalComponents(final long time, final TimeZone timeZone)
+	{
+		final Calendar calendar=new GregorianCalendar(timeZone);	//create a new Gregorian calendar for the given time zone
 		calendar.setTimeInMillis(time);	//set the time of the calendar to the given time
 		this.year=calendar.get(YEAR);	//get the components from the calendar
 		this.month=calendar.get(MONTH)+1;	//compensate for Calendar's zero-based month
@@ -131,8 +180,29 @@ public class URFTemporalComponents
 		this.minutes=calendar.get(MINUTE);
 		this.seconds=calendar.get(SECOND);
 		this.microseconds=calendar.get(MILLISECOND)*1000;	//convert milliseconds to microseconds
-		this.utcOffsetHours=0;	//this is UTC, so the offset is zero
-		this.utcOffsetMinutes=0;
+		int offset=timeZone.getOffset(time);	//determine the offset for the given time zone
+		final boolean negative=offset<0;	//see if the offset is negative
+		if(negative)	//if the offset is negative
+		{
+			offset=-offset;	//use the postive offset in our calculations
+		}
+		final int hours=offset/(60*60*1000);	//get the hours
+		final int minutes=(offset-(hours*60*60*1000))/(60*1000);	//determine the minutes
+		if(hours*60*60*1000+minutes*60*1000!=offset)	//if there were milliseconds, we can't deal with those
+		{
+			throw new IllegalArgumentException("Cannot get UTF offset for millisecond-level offset "+offset);
+		}
+		this.utcOffsetHours=negative ? -hours : hours;	//set the UTC offset hours and minutes
+		this.utcOffsetMinutes=minutes;
+		this.time=time;	//store the time
+	}
+
+	/**Returns the temporal components as time information.
+	@return A time object representing the time components, or <code>null</code> if time components are not represented.
+	*/
+	public URFTime asTime()
+	{
+		return hours>=0 && minutes>=0 && seconds>=0 && microseconds>=0 ? new URFTime(this) : null;	//if we have time information, return a time; otherwise return null
 	}
 
 	/**Returns the temporal components as an URF time.
@@ -196,9 +266,9 @@ public class URFTemporalComponents
 	@exception NullPointerException if the given string is <code>null</code>.
 	@exception SyntaxException if the date/time is not of the correct format.
 	*/
-	public static URFTemporalComponents parseDateTimeUTCOffset(final String string, final boolean hasDate, final boolean hasTime) throws SyntaxException
+	static URFTemporalComponents parseDateTimeUTCOffset(final String string, final boolean hasDate, final boolean hasTime) throws SyntaxException
 	{
-		return parseDateTimeUTCOffset(string, hasDate, hasTime, false);	//parse the temporal components, requiring strict URF format
+		return parseDateTimeUTCOffset(string, hasDate, hasTime, false, false);	//parse the temporal components, requiring strict URF format
 	}
 
  	/**Parses a date, time, date time, and/or UTC offset lexical form from a string.
@@ -210,13 +280,67 @@ public class URFTemporalComponents
 	@return The temporal components parsed from the reader.
 	@exception NullPointerException if the given string is <code>null</code>.
 	@exception SyntaxException if the date/time is not of the correct format.
+	@see <a href="http://www.ietf.org/rfc/rfc3339.txt">RFC 3339</a>
+	@see <a href="http://www.ietf.org/rfc/rfc2518.txt">RFC 2518</a>
+	@see <a href="http://www.w3.org/TR/NOTE-datetime">W3C Date and Time Formats</a>
 	*/
-	public static URFTemporalComponents parseDateTimeUTCOffset(final String string, final boolean hasDate, final boolean hasTime, final boolean allowTimestampFormat) throws SyntaxException
+	static URFTemporalComponents parseDateTimeUTCOffset(final String string, final boolean hasDate, final boolean hasTime, final boolean allowTimestampFormat) throws SyntaxException
+	{
+		return parseDateTimeUTCOffset(string, hasDate, hasTime, allowTimestampFormat, false);	//parse the temporal components, allowing the optional timestamp format but not being any more liberal than that
+	}
+
+ 	/**Parses liberally a date, time, date time, and/or UTC offset lexical form from a string.
+	<p>Liberal parsing makes the following allowances:
+		<ul>
+			<li>Seconds are considered optional.</li>
+			<li>Whitespace after the date/time is allowed.</li>
+			<li>The looser RFC 3339 Internet timestamp format is allowed, allowing the UTC designator, {@value ISO8601#UTC_DESIGNATOR}, for example.</li>
+		</ul>
+	</p>
+	@param string The string the contents of which to be parsed.
+	@param hasDate Whether this lexical representation has a date component.
+	@param hasTime  Whether this lexical representation has a time component.
+	@return The temporal components parsed from the reader.
+	@exception NullPointerException if the given string is <code>null</code>.
+	@exception SyntaxException if the date/time is not of the correct format.
+	*/
+	static URFTemporalComponents parseDateTimeUTCOffsetLiberal(final String string, final boolean hasDate, final boolean hasTime) throws SyntaxException
+	{
+		return parseDateTimeUTCOffset(string, hasDate, hasTime, true, true);	//parse the temporal components, allowing everything we can
+	}
+
+ 	/**Parses a date, time, date time, and/or UTC offset lexical form from a string.
+	Unless liberal parsing is requested, the first characer must be that of the beginning date/time character, and there must be no characters after the date/time representation.
+	<p>Liberal parsing makes the following allowances:
+		<ul>
+			<li>Seconds are considered optional.</li>
+			<li>Whitespace after the date/time is allowed.</li>
+			<li>The looser RFC 3339 Internet timestamp format is allowed, allowing the UTC designator, {@value ISO8601#UTC_DESIGNATOR}, for example.</li>
+		</ul>
+	</p>
+	@param string The string the contents of which to be parsed.
+	@param hasDate Whether this lexical representation has a date component.
+	@param hasTime  Whether this lexical representation has a time component.
+	@param allowTimestampFormat Whether the looser RFC 3339 Internet timestamp format is allowed, allowing the UTC designator, {@value ISO8601#UTC_DESIGNATOR}, for example.
+	@param liberal If the date/time components should be parsed liberally, allowing any non-ambiguous representation of the values.
+	@return The temporal components parsed from the reader.
+	@exception NullPointerException if the given string is <code>null</code>.
+	@exception SyntaxException if the date/time is not of the correct format.
+	*/
+	private static URFTemporalComponents parseDateTimeUTCOffset(final String string, final boolean hasDate, final boolean hasTime, final boolean allowTimestampFormat, final boolean liberal) throws SyntaxException
 	{
 		try
 		{
 			final Reader reader=new StringReader(string);	//create a new string reader from the string
-			final URFTemporalComponents temporalComponents=parseDateTimeUTCOffset(reader, hasDate, hasTime, allowTimestampFormat);	//parse the date/time components
+			if(liberal)	//if we're parsing liberally
+			{
+				skip(reader, WHITESPACE_CHARS);	//skip whitespace
+			}
+			final URFTemporalComponents temporalComponents=parseDateTimeUTCOffset(reader, hasDate, hasTime, allowTimestampFormat, liberal);	//parse the date/time components
+			if(liberal)	//if we're parsing liberally
+			{
+				skip(reader, WHITESPACE_CHARS);	//skip whitespace
+			}
 			checkReaderEnd(reader);	//make sure we're at the end of the reader
 			return temporalComponents;	//return the temporal components
 		}
@@ -243,7 +367,7 @@ public class URFTemporalComponents
 	*/
 	public static URFTemporalComponents parseDateTimeUTCOffset(final Reader reader, final boolean hasDate, final boolean hasTime) throws IOException, ParseIOException, SyntaxException
 	{
-		return parseDateTimeUTCOffset(reader, hasDate, hasTime, false);	//parse the temporal components, requiring strict URF format
+		return parseDateTimeUTCOffset(reader, hasDate, hasTime, false, false);	//parse the temporal components, requiring strict URF format
 	}
 
  	/**Parses a date, time, date time, and/or UTC offset lexical form from a reader.
@@ -251,10 +375,17 @@ public class URFTemporalComponents
 	The new position will be that immediately after the last date/time character.
 	If neither a date nor a time are requested, a UTC offset is required.
 	Otherwise, a UTC offset is allowed unless only a date is requested.
+	<p>Liberal parsing makes the following allowances:
+		<ul>
+			<li>Seconds are considered optional.</li>
+			<li>The looser RFC 3339 Internet timestamp format is allowed, allowing the UTC designator, {@value ISO8601#UTC_DESIGNATOR}, for example.</li>
+		</ul>
+	</p>
 	@param reader The reader the contents of which to be parsed.
 	@param hasDate Whether this lexical representation has a date component.
 	@param hasTime  Whether this lexical representation has a time component.
 	@param allowTimestampFormat Whether the looser RFC 3339 Internet timestamp format is allowed, allowing the UTC designator, {@value ISO8601#UTC_DESIGNATOR}, for example.
+	@param liberal If the date/time components should be parsed liberally, allowing any non-ambiguous representation of the values.
 	@return The temporal components parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
@@ -264,7 +395,7 @@ public class URFTemporalComponents
 	@see <a href="http://www.ietf.org/rfc/rfc2518.txt">RFC 2518</a>
 	@see <a href="http://www.w3.org/TR/NOTE-datetime">W3C Date and Time Formats</a>
 	*/
-	public static URFTemporalComponents parseDateTimeUTCOffset(final Reader reader, final boolean hasDate, final boolean hasTime, final boolean allowTimestampFormat) throws IOException, ParseIOException, SyntaxException
+	private static URFTemporalComponents parseDateTimeUTCOffset(final Reader reader, final boolean hasDate, final boolean hasTime, final boolean allowTimestampFormat, final boolean liberal) throws IOException, ParseIOException, SyntaxException
 	{
 		final int year;
 		final int month;
@@ -300,8 +431,15 @@ public class URFTemporalComponents
 				hours=Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the hours
 				check(reader, TIME_DELIMITER);	//check the time delimiter
 				minutes=Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the minutes
-				check(reader, TIME_DELIMITER);	//check the time delimiter
-				seconds=Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the seconds
+				if(!liberal || confirm(reader, TIME_DELIMITER))	//if there are seconds (seconds are only optional if we aren't parsing liberally)
+				{
+					check(reader, TIME_DELIMITER);	//check the time delimiter
+					seconds=Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the seconds
+				}
+				else	//if this is a liberal parsing and there are no seconds
+				{
+					seconds=0;	//conclude no seconds
+				}
 				if(confirm(reader, DECIMAL_DELIMITER))	//if there are subseconds
 				{
 					microseconds=Integer.parseInt(makeStringLength(readMinimum(reader, 1, '0', '9'), 6, '0', -1)); //read all subseconds, converting the precision to six digits

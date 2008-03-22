@@ -52,7 +52,27 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	{
 		this(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createMediaTypeResource(value));	//construct the class with a resource created from the value
 	}
-	
+
+	/**Property URI and string value constructor with no subject scope, a default lock, and a default scope
+	@param propertyURI The property URI.
+	@param value The property value.
+	@exception NullPointerException if the given property URI, and/or value is <code>null</code>.
+	*/
+	public DefaultURFProperty(final URI propertyURI, final URFDate value)
+	{
+		this(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createDateResource(value));	//construct the class with a resource created from the value
+	}
+
+	/**Property URI and string value constructor with no subject scope, a default lock, and a default scope
+	@param propertyURI The property URI.
+	@param value The property value.
+	@exception NullPointerException if the given property URI, and/or value is <code>null</code>.
+	*/
+	public DefaultURFProperty(final URI propertyURI, final URFDateTime value)
+	{
+		this(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createDateTimeResource(value));	//construct the class with a resource created from the value
+	}
+
 	/**Property URI and string value constructor with no subject scope, a default lock, and a default scope
 	@param propertyURI The property URI.
 	@param value The property value.
