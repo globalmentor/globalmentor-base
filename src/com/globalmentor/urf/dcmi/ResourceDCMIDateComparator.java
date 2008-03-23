@@ -1,10 +1,10 @@
-package com.globalmentor.urf.content;
+package com.globalmentor.urf.dcmi;
 
 import com.globalmentor.urf.*;
-import static com.globalmentor.urf.content.Content.*;
+import static com.globalmentor.urf.dcmi.DCMI.*;
 import com.globalmentor.util.*;
 
-/**Sorts resources based upon URF content modified time and date.
+/**Sorts resources based upon DCMI date.
 This comparator does not sort unambiguously, and should be used as a delegate comparator of a {@link SerialDelegateComparator}.
 <p>Copyright © 2008 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
@@ -13,22 +13,22 @@ Any object code derived from this source code must include the following text to
 written by Garret Wilson &lt;http://www.garretwilson.com/&gt; and Copyright © 2007 GlobalMentor, Inc. &lt;http://www.globalmentor.com/&gt;."
 Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
-@see Content#MODIFIED_PROPERTY_URI
+@see DCMI#DATE_PROPERTY_URI
 @see SerialDelegateComparator
 */
-public class ResourceContentModifiedComparator extends AbstractSortOrderComparator<URFResource>
+public class ResourceDCMIDateComparator extends AbstractSortOrderComparator<URFResource>
 {
 
 	/**The lazily-created ascending singleton instance of the comparator.*/
-	private static ResourceContentModifiedComparator ascendingInstance=null;
+	private static ResourceDCMIDateComparator ascendingInstance=null;
 
 	/**The lazily-created descending singleton instance of the comparator.*/
-	private static ResourceContentModifiedComparator descendingInstance=null;
+	private static ResourceDCMIDateComparator descendingInstance=null;
 
 	/**Retrieves a singleton instance of the comparator with ascending order.
 	@return The lazily-created singleton instance of the comparator ascending order.
 	*/
-	public static ResourceContentModifiedComparator getInstance()
+	public static ResourceDCMIDateComparator getInstance()
 	{
 		return getInstance(SortOrder.ASCENDING);	//get the ascending singleton instance
 	}
@@ -38,20 +38,20 @@ public class ResourceContentModifiedComparator extends AbstractSortOrderComparat
 	@return The lazily-created singleton instance of the comparator with the given sort order.
 	@throws NullPointerException if the given sort order is <code>null</code>.
 	*/
-	public static ResourceContentModifiedComparator getInstance(final SortOrder sortOrder)
+	public static ResourceDCMIDateComparator getInstance(final SortOrder sortOrder)
 	{
 		switch(sortOrder)	//see which sort order is requested
 		{
 			case ASCENDING:
 				if(ascendingInstance==null)	//if there is not yet a singleton instance (the race condition here is benign)
 				{
-					ascendingInstance=new ResourceContentModifiedComparator(sortOrder);	//create a new instance
+					ascendingInstance=new ResourceDCMIDateComparator(sortOrder);	//create a new instance
 				}
 				return ascendingInstance;	//return the singleton instance
 			case DESCENDING:
 				if(descendingInstance==null)	//if there is not yet a singleton instance (the race condition here is benign)
 				{
-					descendingInstance=new ResourceContentModifiedComparator(sortOrder);	//create a new instance
+					descendingInstance=new ResourceDCMIDateComparator(sortOrder);	//create a new instance
 				}
 				return descendingInstance;	//return the singleton instance
 			default:
@@ -63,7 +63,7 @@ public class ResourceContentModifiedComparator extends AbstractSortOrderComparat
 	@param sortOrder The order in which to perform comparisons.
 	@throws NullPointerException if the given sort order is <code>null</code>.
 	*/
-	protected ResourceContentModifiedComparator(final SortOrder sortOrder)
+	protected ResourceDCMIDateComparator(final SortOrder sortOrder)
 	{
 		super(sortOrder);	//construct the parent class
 	}
@@ -71,14 +71,14 @@ public class ResourceContentModifiedComparator extends AbstractSortOrderComparat
 	/**Compares two resources for order.
 	Returns a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
 	Identical resources are always considered equal.
-	<p>This implementation compares resources based upon URF content modified time and date.
-	Resources without a modified property are considered less than those with a modified property.
+	<p>This implementation compares resources based upon DCMI date.
+	Resources without a date are considered less than those with a date property.
 	</p>
 	@param resource1 The first resource to be compared.
 	@param resource2 The second resource to be compared.
 	@return A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
 	@throws ClassCastException if the arguments' types prevent them from being compared by this comparator.
-	@see Content#MODIFIED_PROPERTY_URI
+	@see DCMI#DATE_PROPERTY_URI
 	*/
 	public int compare(final URFResource resource1, final URFResource resource2)
 	{
@@ -87,26 +87,26 @@ public class ResourceContentModifiedComparator extends AbstractSortOrderComparat
 			return 0;	//identical resources are always equal
 		}
 		final SortOrder sortOrder=getSortOrder();	//get the sorting order
-		final URFDateTime resource1Modified=getModified(resource1);	//get the modified datetime of the first resource
-		final URFDateTime resource2Modified=getModified(resource2);	//get the modified datetime of the second resource
-		if(resource1Modified!=null)	//if the first resource has a modified designation
+		final AbstractURFDateTime resource1Date=getDate(resource1);	//get the date of the first resource
+		final AbstractURFDateTime resource2Date=getDate(resource2);	//get the date of the second resource
+		if(resource1Date!=null)	//if the first resource has a date designation
 		{
-			if(resource2Modified!=null)	//if the second resource has a modified designation
+			if(resource2Date!=null)	//if the second resource has a date designation
 			{
-				return sortOrder==SortOrder.ASCENDING ? resource1Modified.compareTo(resource2Modified) : resource2Modified.compareTo(resource1Modified);	//compare in the requested order
+				return sortOrder==SortOrder.ASCENDING ? resource1Date.compareTo(resource2Date) : resource2Date.compareTo(resource1Date);	//compare in the requested order
 			}
-			else	//if only the first resource has a modified designation
+			else	//if only the first resource has a date designation
 			{
-				return sortOrder==SortOrder.ASCENDING ? 1 : -1;	//missing modified values should be sorted lower
+				return sortOrder==SortOrder.ASCENDING ? 1 : -1;	//missing date values should be sorted lower
 			}
 		}
-		else	//if the first resource has no modified designation
+		else	//if the first resource has no date designation
 		{
-			if(resource2Modified!=null)	//if the second resource has a modified designation
+			if(resource2Date!=null)	//if the second resource has a date designation
 			{
-				return sortOrder==SortOrder.ASCENDING ? -1 : 1;	//missing modified values should be sorted lower
+				return sortOrder==SortOrder.ASCENDING ? -1 : 1;	//missing date values should be sorted lower
 			}
-			else	//if neither resource has a modified designation
+			else	//if neither resource has a date designation
 			{
 				return 0;	//consider the resources equal so that other comparators may resolve the order
 			}

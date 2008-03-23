@@ -1,11 +1,9 @@
 package com.globalmentor.urf;
 
 import com.globalmentor.java.Longs;
-import com.globalmentor.util.AbstractChainedSortOrderComparator;
-import com.globalmentor.util.AbstractSortOrderComparator;
-import com.globalmentor.util.SortOrder;
+import com.globalmentor.util.*;
 
-/**An abstract comparator to sort resources based upon creation order.
+/**Sorts resources based upon creation order.
 Normally sorting based upon resource creation order alone is not useful.
 This class is useful to provide a fallback mechanism for sorting on creation order to guarantee uniqueness distinction,
 either as a superclass or as a subordinate chained comparator. 
@@ -27,6 +25,14 @@ public class ResourceCreationOrderComparator extends AbstractSortOrderComparator
 
 	/**The lazily-created descending singleton instance of the comparator.*/
 	private static ResourceCreationOrderComparator descendingInstance=null;
+
+	/**Retrieves a singleton instance of the comparator with ascending order.
+	@return The lazily-created singleton instance of the comparator ascending order.
+	*/
+	public static ResourceCreationOrderComparator getInstance()
+	{
+		return getInstance(SortOrder.ASCENDING);	//get the ascending singleton instance
+	}
 
 	/**Retrieves a singleton instance of the comparator with the correct sort order.
 	@param sortOrder The order in which to perform comparisons.

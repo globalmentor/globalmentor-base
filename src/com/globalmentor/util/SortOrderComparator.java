@@ -16,30 +16,17 @@
 
 package com.globalmentor.util;
 
-import static com.globalmentor.java.Objects.*;
-import com.globalmentor.util.SortOrder;
+import java.util.Comparator;
 
 /**A comparator that can sort in ascending or descending order.
 @param <T> The type of objects that may be compared by this comparator.
 @author Garret Wilson
 @see SortOrder
 */
-public abstract class AbstractSortOrderComparator<T> implements SortOrderComparator<T>
+public interface SortOrderComparator<T> extends Comparator<T>
 {
 
-	/**The order in which to perform comparisons.*/
-	private final SortOrder sortOrder;
-	
-		/**@return The order in which to perform comparisons.*/
-		public SortOrder getSortOrder() {return sortOrder;}
+	/**@return The order in which to perform comparisons.*/
+	public SortOrder getSortOrder();
 
-	/**Sort order constructor.
-	@param sortOrder The order in which to perform comparisons.
-	@throws NullPointerException if the given sort order is <code>null</code>.
-	*/
-	public AbstractSortOrderComparator(final SortOrder sortOrder)
-	{
-		this.sortOrder=checkInstance(sortOrder, "Sort order cannot be null.");
-	}
-		
 }
