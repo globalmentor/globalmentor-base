@@ -1416,7 +1416,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 						//making sure it's not too long
 					final String shortText=Strings.truncate(elementText, 32);  //TODO use a constant
 						//remove everything but the first line and trim it
-					final String line=Strings.truncateChar(shortText, EOL_CHARS).trim();
+					final String line=Strings.truncateChar(shortText, EOL_CHAR_STRING).trim();
 						//if we removed part of the string, indicate as much
 					final String title=line.length()==elementText.length() ? line : line+"..."; //TODO use a constant; should we use a real ellipsis?
 					final String guideType; //we'll decide what type of guide this is, based upon whether this is a heading
@@ -1681,9 +1681,9 @@ Debug.trace("byIndex: "+byIndex);
 							if(isAcceptableBy)  //if this "by" is acceptable
 							{
 								final String authorText=text.substring(byIndex+BY.length());  //get everything after "by"
-								if(CharSequences.charIndexOf(authorText, EOL_CHARS)<0 //if everything's on a single line
+								if(CharSequences.charIndexOf(authorText, EOL_CHAR_STRING)<0 //if everything's on a single line
 												//or if the other lines are just numbers and hyphens (hack for hrlnd10.txt)
-										|| CharSequences.charIndexOf(Strings.trim(authorText, WHITESPACE_CHAR_STRING+"0123456789-"), EOL_CHARS)<0)
+										|| CharSequences.charIndexOf(Strings.trim(authorText, WHITESPACE_CHAR_STRING+"0123456789-"), EOL_CHAR_STRING)<0)
 								{
 										//get the author and trim it of certain delimiters, and then collapse the whitespace
 									final String author=ProjectGutenbergXHTMLTidier.tidyAuthor(authorText);  //TODO use a common method, not in PGUtilities

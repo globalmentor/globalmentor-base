@@ -1,6 +1,8 @@
 package com.globalmentor.urf;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import com.globalmentor.text.*;
@@ -50,7 +52,7 @@ public class URFDate extends AbstractURFDateTime
 	}
 
 	/**Date constructor in terms the gigen time zone.
-	Any time-related information of the given date will be lost; only the date will be kept, in terms of midnight UTC.
+	Any time-related information of the given date will be lost; only the date will be kept, in terms of the given time zone.
 	@param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	@param timeZone The time zone in which the time should be interpreted.
 	@throws NullPointerException if the given date and/or time zone is <code>null</code>.
@@ -80,6 +82,19 @@ public class URFDate extends AbstractURFDateTime
 	public URFDate(final long time, final TimeZone timeZone)
 	{
 		this(new URFTemporalComponents(time, timeZone));	//construct the class from temporal components
+	}
+
+	/**Returns a date that represents this temporal information in the given time zone.
+	@param timeZone The time zone which the date should represent.
+	@return The date this object represents in relation to the given time zone.
+	@throws NullPointerException if the given time zone is <code>null</code>.
+	*/
+	public Date toDate(final TimeZone timeZone)
+	{
+		final Calendar calendar=new GregorianCalendar(timeZone);	//create a Gregorian calendar for the given time zone
+		calendar.clear();	//clear the calendar
+		calendar.set(getYear(), getMonth()-1, getDay());	//set the calendar date, compensating for Calendar's zero-based month
+		return calendar.getTime();	//return the calendar time
 	}
 
 	/**Returns an URF date object holding the value of the specified string.

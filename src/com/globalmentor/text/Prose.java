@@ -130,7 +130,7 @@ public class Prose
 			if(text.length()>0) //if there is text at all
 			{
 					//find out how many lines there are TODO testing
-				final int lineCount=(new StringTokenizer(text, EOL_CHARS, true).countTokens()+1)/2;
+				final int lineCount=(new StringTokenizer(text, EOL_CHAR_STRING, true).countTokens()+1)/2;
 				if(lineCount<4) //if there are less than four lines
 				{
 					if(isBreak(text))  //if this is text for a page break
@@ -161,7 +161,7 @@ public class Prose
 	*/
 					else
 					{
-						final String line=Strings.removeAfterFirstChar(text, EOL_CHARS);  //get the first line of text
+						final String line=Strings.removeAfterFirstChar(text, EOL_CHAR_STRING);  //get the first line of text
 							//see if this is one of the fixed hierarchical headings
 						if(isTitleHeading(line))  //if this is a title heading
 						{
@@ -258,7 +258,7 @@ public class Prose
 		*/
 		public static boolean isPageNumber(final String text) //TODO put this in some common routine in a common package
 		{
-			if(CharSequences.charIndexOf(text, EOL_CHARS)>0)  //if the text is not on a single line
+			if(CharSequences.charIndexOf(text, EOL_CHAR_STRING)>0)  //if the text is not on a single line
 				return false; //this isn't a page number
 			/**The strings that count as page indications.*/
 			final String[] pageStrings=new String[]{"p", "P", "pg", "Pg", "PG", "page", "Page", "PAGE"};
@@ -466,7 +466,7 @@ public class Prose
 		*/
 	public static int getSectionNumber(final String text, final String sectionLabel)
 		{
-			final int eolIndex=CharSequences.charIndexOf(text, EOL_CHARS);  //find the end of the line
+			final int eolIndex=CharSequences.charIndexOf(text, EOL_CHAR_STRING);  //find the end of the line
 			final String line=text.substring(0, eolIndex>=0 ? eolIndex : text.length());  //get the text up to our delimiter, if there is one
 			if(isQuoted(line))  //if this line is quoted
 			  return -1; //quoted strings are not headings

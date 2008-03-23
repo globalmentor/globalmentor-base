@@ -232,6 +232,51 @@ public class Strings
 		return inString.substring(0, index)+insertChar+inString.substring(index);	//return a string with the specified character inserted at the specified location
 	}
 
+	/**Concatenates the given strings.
+	@param strings The strings to be concatenated.
+	@return The string containing the concatenated strings.
+	@throws NullPointerException if the given strings is <code>null</code>.
+	*/
+	public static String join(final String... strings)
+	{
+		final int length=strings.length;	//find out how many strings there are
+		if(length>1)	//if there are more than one string
+		{
+			return StringBuilders.append(new StringBuilder(), strings).toString();	//join the character strings using a string builder
+		}
+		else if(length==1)	//if there is only one string
+		{
+			return strings[0];	//return the one string
+		}
+		else	//if there are no strings
+		{
+			return "";	//return the empty string
+		}
+	}
+
+	/**Concatenates the given strings, separated by the given delimiter.
+	@param delimiter The delimiter to be placed between each string.
+	@param string The strings to be concatenated.
+	@return The string containing the concatenated strings.
+	@throws NullPointerException if the given strings is <code>null</code>.
+	*/
+	public static String join(final char delimiter, final String... string)
+	{
+		final int length=string.length;	//find out how many strings there are
+		if(length>1)	//if there are more than one string
+		{
+			return StringBuilders.append(new StringBuilder(), delimiter, string).toString();	//join the character strings using a string builder
+		}
+		else if(length==1)	//if there is only one string
+		{
+			return string[0];	//return the one string
+		}
+		else	//if there are no strings
+		{
+			return "";	//return the empty string
+		}
+	}
+	
 	/**Searches a string in reverse and returns the last index of a substring
 		without case sensitivity, starting from <code>fromIndex</code>.
 	@param string The string to be searched.

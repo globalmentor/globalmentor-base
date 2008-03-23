@@ -1,9 +1,12 @@
 package com.globalmentor.urf;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import com.globalmentor.text.*;
+import com.globalmentor.util.Calendars;
 
 /**The class representing an <code>urf.DateTime</code> type.
 If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally in terms of UTC.
@@ -93,6 +96,24 @@ public class URFDateTime extends AbstractURFDateTime
 	public URFDateTime(final long time, final TimeZone timeZone)
 	{
 		this(new URFTemporalComponents(time, timeZone));	//construct the class from temporal components
+	}
+
+	/**Returns a date that represents this temporal information in the given time zone.
+	@param timeZone The time zone which the date should represent.
+	@return The date this object represents in relation to the given time zone.
+	@throws NullPointerException if the given time zone is <code>null</code>.
+	*/
+	public Date toDate(final TimeZone timeZone)
+	{
+		final Calendar calendar=new GregorianCalendar(timeZone);	//create a Gregorian calendar for the given time zone
+		calendar.clear();	//clear the calendar
+		calendar.set(getYear(), getMonth()-1, getDay());	//set the calendar date, compensating for Calendar's zero-based month
+		final URFTime time=getURFTime();	//get the URF time, if any
+		if(time!=null)	//if we have time
+		{
+			Calendars.setTime(calendar, time.getHours(), time.getMinutes(), time.getSeconds(), time.getMicroseconds()/1000);	//set the time
+		}
+		return calendar.getTime();	//return the calendar time
 	}
 
 	/**Returns an URF date time object holding the value of the specified string.

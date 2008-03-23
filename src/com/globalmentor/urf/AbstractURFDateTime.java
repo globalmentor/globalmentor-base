@@ -122,6 +122,14 @@ public abstract class AbstractURFDateTime extends Date implements URFTemporal
 	{
 		return URFTemporalComponents.createCalendar(getYear(), getMonth(), getDay(), getURFTime(), locale);
 	}
+
+	/**Returns a date that represents this temporal information in the given time zone.
+	@param timeZone The time zone which the date should represent.
+	@return The date this object represents in relation to the given time zone.
+	@throws NullPointerException if the given time zone is <code>null</code>.
+	*/
+	public abstract Date toDate(final TimeZone timeZone);
+
 	
 	/**Returns the canonical lexical representation of this date time in the form "YYYY-MM-DDThh:mm:ss[.s+]+/-hh:mm".
 	@return The canonical lexical representation of this date time.

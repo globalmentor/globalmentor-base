@@ -247,7 +247,12 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 			+WORD_JOINER_CHAR+ZERO_WIDTH_NO_BREAK_SPACE_CHAR;
 
 	/**Characters considered to be end-of-line markers (e.g. CR and LF).*/
-	public final static String EOL_CHARS=""+CARRIAGE_RETURN_CHAR+LINE_FEED_CHAR;
+	public final static char[] EOL_CHARS=new char[]{CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR};
+
+	/**Characters considered to be end-of-line markers (e.g. CR and LF).
+	@deprecated
+	*/
+	public final static String EOL_CHAR_STRING=new String(EOL_CHARS);
 
 	/**Characters that do not contain visible "content", and may be trimmed from ends of a string.
 	These include whitespace, control characters, and formatting characters.

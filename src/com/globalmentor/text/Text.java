@@ -17,9 +17,11 @@
 package com.globalmentor.text;
 
 import java.io.UnsupportedEncodingException;
+import java.util.regex.Pattern;
 
 import javax.mail.internet.ContentType;
 
+import com.globalmentor.java.Characters;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.Arrays;
 
@@ -27,7 +29,6 @@ import static com.globalmentor.io.ContentTypes.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.text.xml.XML.*;
 
 /**Constants and utilities for text.
 @author Garret Wilson
@@ -40,6 +41,27 @@ public class Text
 
 	/**The content type for plain text: <code>text/plain</code>.*/
 	public static final ContentType TEXT_PLAIN_CONTENT_TYPE=new ContentType(TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE, null);
+
+	/**The string representing the CR EOL character sequence.
+	@see {@link Characters#CARRIAGE_RETURN_CHAR}
+	*/
+	public final static String CARRIAGE_RETURN_STRING=new StringBuilder().append(CARRIAGE_RETURN_CHAR).toString();
+
+	/**The string representing the LF EOL character sequence. 
+	@see {@link Characters#LINE_FEED_CHAR}
+	*/
+	public final static String LINE_FEED_STRING=new StringBuilder().append(LINE_FEED_CHAR).toString();
+
+	/**The pattern that can split a line based upon linefeeds.
+	@see {@link Characters#LINE_FEED_CHAR}
+	*/
+	public final static Pattern LINE_FEED_PATTERN=Pattern.compile(LINE_FEED_STRING);
+	
+	/**The string representing the CRLF EOL sequence. 
+	@see {@link Characters#CARRIAGE_RETURN_CHAR}
+	@see {@link Characters#LINE_FEED_CHAR}
+	*/
+	public final static String CRLF_STRING=CARRIAGE_RETURN_STRING+LINE_FEED_STRING;
 
 	/**Creates a control string according to ECMA-48, "Control Functions for Coded Character Sets", Section 5.6, "Control strings".
 	A control string begins with the Start of String control character (U+0098) and ends with a String Terminator control character (U+009C).
@@ -78,7 +100,7 @@ public class Text
 			{
 				return true;	//text/* is a text content type
 			}
-			return isXML(contentType) || isXMLExternalParsedEntity(contentType);	//return whether this is an XML document or external parsed entity content type; all XML content types are text content types
+			return XML.isXML(contentType) || XML.isXMLExternalParsedEntity(contentType);	//return whether this is an XML document or external parsed entity content type; all XML content types are text content types
 		}
 		return false;	//this is not a media type we recognize as being HTML
 	}
@@ -125,4 +147,52 @@ public class Text
 		return stringBuilder.toString();	//return the encoded version of the string
 	}
 
+	/**Normalizes end-of-line sequences in the character sequence to the given .
+	The following sequences are normalized to the provided EOL:
+	<ul>
+		<li>CR</li>
+		<li>LF</li>
+		<li>CRLF</li>
+	</ul>
+	@param charSequence The character sequence to normalize.
+	@param eol The end of line characters to which to normalize the ends of lines.
+	@return A character sequence with the ends of lines normalized to the given end of line characters.
+	@throws NullPointerException if the given character sequence and/or EOL characters is <code>null</code>.
+	*/
+	public static CharSequence normalizeEOL(final CharSequence charSequence, final CharSequence eol)
+	{
+		final int length=charSequence.length();	//get the length of the string
+		int currentIndex=0;	//start searching from the beginning
+		int resultIndex;
+		StringBuilder stringBuilder=null;	//don't create a string builder unless we need to
+		while(currentIndex<length)	//keep searching until we finish the string
+		{
+			resultIndex=indexOfLength(charSequence, EOL_CHARS, currentIndex);	//perform the next search
+			if(stringBuilder==null)	//if we don't yet have a string builder
+			{
+				if(resultIndex==length)	//if there are no characters in the entire character sequence
+				{
+					break;	//there's no need to modify the character sequence
+				}
+				stringBuilder=new StringBuilder();	//create a new string builder
+			}
+			stringBuilder.append(charSequence, currentIndex, resultIndex);	//add the characters that aren't EOL characters
+			stringBuilder.append(eol);	//append the EOL sequence
+			int skipEOLCount=1;	//assume we'll just skip one character
+			if(resultIndex<length)	//if we aren't out of characters, yet
+			{
+				final char eolChar=charSequence.charAt(resultIndex);	//get the EOL character we found
+				if(eolChar==CARRIAGE_RETURN_CHAR)	//if this is a CR, see if it is a CRLF
+				{
+					final int nextIndex=resultIndex+1;	//get the index of the next character
+					if(nextIndex<length && charSequence.charAt(nextIndex)==LINE_FEED_CHAR)	//if the next character is an LF
+					{
+						++skipEOLCount;	//skip the next character
+					}
+				}
+			}
+			currentIndex=resultIndex+skipEOLCount;	//skip the EOL characters
+		}
+		return stringBuilder!=null ? stringBuilder.toString() : charSequence;	//return the string we constructed, or the character sequence if there were no EOL character
+	}
 }

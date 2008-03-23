@@ -34,7 +34,7 @@ public class StringBuilders
 	@param stringBuilder The string builder which the result should be placed.
 	@param objects The array of objects (such as strings) to be concatenated.
 	@return The string builder containing the new information.
-	@see Object#toString
+	@see Object#toString()
 	*/
 	public static StringBuilder append(final StringBuilder stringBuilder, final Object[] objects)
 	{
@@ -45,16 +45,76 @@ public class StringBuilders
 		return stringBuilder;	//return the string builder object
 	}
 
+	/**Concatenates the given character sequences by appending them to the string buffer.
+	@param stringBuilder The string builder which the result should be placed.
+	@param charSequences The character sequences to be appended.
+	@return The string builder containing the new information.
+	@throws NullPointerException if the given character sequences is <code>null</code>.
+	*/
+	public static StringBuilder append(final StringBuilder stringBuilder, final CharSequence... charSequences)
+	{
+		for(final CharSequence charSequence:charSequences)	//for each character sequence
+		{
+			stringBuilder.append(charSequence);	//append this character sequence
+		}
+		return stringBuilder;	//return the string builder object
+	}
+
+	/**Concatenates the given character sequences by appending them to the string buffer, separated by the given delimiter.
+	@param stringBuilder The string builder which the result should be placed.
+	@param delimiter The delimiter to be placed between each character sequence.
+	@param charSequences The character sequences to be appended.
+	@return The string builder containing the new information.
+	@throws NullPointerException if the given string builder and/or character sequences is <code>null</code>.
+	*/
+	public static StringBuilder append(final StringBuilder stringBuilder, final char delimiter, final CharSequence... charSequences)
+	{
+		final int length=charSequences.length;	//find out how many character sequences there are
+		if(length>0)	//if there are any character sequences
+		{
+			for(final CharSequence charSequence:charSequences)	//for each character sequence
+			{
+				stringBuilder.append(charSequence).append(delimiter);	//append this character sequence, followed by the given delimiter
+			}
+			stringBuilder.deleteCharAt(stringBuilder.length()-1);	//remove the last delimiter
+		}
+		return stringBuilder;	//return the string builder object
+	}
+
+	
+	
 	/**Concatenates the given strings by appending them to the string buffer.
 	@param stringBuilder The string builder which the result should be placed.
-	@param string The strings to be concatenated.
+	@param strings The strings to be appended.
 	@return The string builder containing the new information.
+	@throws NullPointerException if the given strings is <code>null</code>.
 	*/
 	public static StringBuilder append(final StringBuilder stringBuilder, final String... strings)
 	{
 		for(final String string:strings)	//for each string
 		{
 			stringBuilder.append(string);	//append this string
+		}
+		return stringBuilder;	//return the string builder object
+	}
+
+	/**Concatenates the given strings by appending them to the string buffer, separated by the given delimiter.
+	@param stringBuilder The string builder which the result should be placed.
+	@param delimiter The delimiter to be placed between each string.
+	@param strings The strings to be appended.
+	@return The string builder containing the new information.
+	@throws NullPointerException if the given string builder and/or strings is <code>null</code>.
+	*/
+	public static StringBuilder append(final StringBuilder stringBuilder, final char delimiter, final String... strings)
+	{
+		final int length=strings.length;	//find out how many strings there are
+		if(length>0)	//if there are any strings
+		{
+			for(final String string:strings)	//for each string
+			{
+				stringBuilder.append(string).append(delimiter);	//append this string, followed by the given delimiter
+			}
+			stringBuilder.deleteCharAt(stringBuilder.length()-1);	//remove the last delimiter
 		}
 		return stringBuilder;	//return the string builder object
 	}

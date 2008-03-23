@@ -413,6 +413,17 @@ public class CharSequences
 	}
 
 	/**Determines the first index of the given character.
+	@param charSequence The character sequence to check.
+	@param character The character to search for.
+	@return The index of the first occurrence of the given character, or the length of the character sequence if the character was not found.
+	*/
+	public static int indexOfLength(final CharSequence charSequence, final char character)
+	{
+		final int index=indexOf(charSequence, character);	//perform the search
+		return index>=0 ? index : charSequence.length();	//return the length if we're out of characters
+	}
+
+	/**Determines the first index of the given character.
 	If the character sequence is a {@link String}, this method delegates to {@link String#indexOf(int, int)}.
 	@param charSequence The character sequence to check.
 	@param character The character to search for.
@@ -435,7 +446,20 @@ public class CharSequences
 		}
 		return -1;	//show that we couldn't find the character
 	}
-	
+
+	/**Determines the first index of the given character.
+	If the character sequence is a {@link String}, this method delegates to {@link String#indexOf(int, int)}.
+	@param charSequence The character sequence to check.
+	@param character The character to search for.
+	@param index The first index to examine.
+	@return The index of the first occurrence of the given character, or the length of the character sequence if the character was not found.
+	*/
+	public static int indexOfLength(final CharSequence charSequence, final char character, int index)
+	{
+		index=indexOf(charSequence, character, index);	//perform the search
+		return index>=0 ? index : charSequence.length();	//return the length if we're out of characters		
+	}
+
 	/**Searches a character sequence and returns the first index of any character in the specified array, starting at the beginning.
 	@param charSequence The character sequence to be searched.
 	@param characters The characters to check.
@@ -445,7 +469,18 @@ public class CharSequences
 	{
 		return indexOf(charSequence, characters, 0);	//look of the characters, starting at the beginning of the string
 	}
-	
+
+	/**Searches a character sequence and returns the first index of any character in the specified array, starting at the beginning.
+	@param charSequence The character sequence to be searched.
+	@param characters The characters to check.
+	@return The index of the first occurrence of one of the supplied characters, or the length of the character sequence if none were found.
+	*/
+	public static int indexOfLength(final CharSequence charSequence, final char[] characters)
+	{
+		final int index=indexOf(charSequence, characters);	//perform the search
+		return index>=0 ? index : charSequence.length();	//return the length if we're out of characters
+	}
+
 	/**Searches a character sequence and returns the first index of any character in the specified array, starting at <var>fromIndex</var>.
 	@param charSequence The character sequence to be searched.
 	@param characters The characters to check.
@@ -461,7 +496,19 @@ public class CharSequences
 		}
 		return -1;	//if we make it to here, we didn't find any of the characters
 	}
-	
+
+	/**Searches a character sequence and returns the first index of any character in the specified array, starting at <var>fromIndex</var>.
+	@param charSequence The character sequence to be searched.
+	@param characters The characters to check.
+	@param fromIndex The index to search from.
+	@return The index of the first occurrence of one of the supplied characters, or the length of the character sequence if none were found.
+	*/
+	public static int indexOfLength(final CharSequence charSequence, final char[] characters, final int fromIndex)
+	{
+		final int index=indexOf(charSequence, characters, fromIndex);	//perform the search
+		return index>=0 ? index : charSequence.length();	//return the length if we're out of characters
+	}
+
 	/**Searches a character sequence and returns the first index of any character
 		<em>not</em> in the specified string, starting from the beginning.
 	@param charSequence The character sequence to be searched.
@@ -711,6 +758,51 @@ public class CharSequences
 		return true;  //if we make it to here, there weren't any non-uppercase characters in the string
 	}
 
+	/**Concatenates the given character sequences.
+	@param charSequences The character sequences to be concatenated.
+	@return The string containing the concatenated character sequences.
+	@throws NullPointerException if the given character sequences is <code>null</code>.
+	*/
+	public static CharSequence join(final CharSequence... charSequences)
+	{
+		final int length=charSequences.length;	//find out how many character sequences there are
+		if(length>1)	//if there are more than one character sequence
+		{
+			return StringBuilders.append(new StringBuilder(), charSequences);	//join the character strings using a string builder
+		}
+		else if(length==1)	//if there is only one character sequence
+		{
+			return charSequences[0];	//return the one character sequence
+		}
+		else	//if there are no character sequences
+		{
+			return "";	//return the empty string
+		}
+	}
+
+	/**Concatenates the given character sequences, separated by the given delimiter.
+	@param delimiter The delimiter to be placed between each character sequence.
+	@param charSequences The character sequences to be concatenated.
+	@return The string containing the concatenated character sequences.
+	@throws NullPointerException if the given character sequences is <code>null</code>.
+	*/
+	public static CharSequence join(final char delimiter, final CharSequence... charSequences)
+	{
+		final int length=charSequences.length;	//find out how many character sequences there are
+		if(length>1)	//if there are more than one character sequence
+		{
+			return StringBuilders.append(new StringBuilder(), delimiter, charSequences);	//join the character strings using a string builder
+		}
+		else if(length==1)	//if there is only one character sequence
+		{
+			return charSequences[0];	//return the one character sequence
+		}
+		else	//if there are no character sequences
+		{
+			return "";	//return the empty string
+		}
+	}
+
 	/**Splits a characters sequence into subsequences based upon the given delimiter.
 	Subsequences will be returned between delimiters even if they are empty, and
 		a subsequence will be returned after the last delimiter, even if there are no
@@ -719,6 +811,7 @@ public class CharSequences
 	@param charSequence The character sequence to split.
 	@param delimiter The delimiter to use for splitting.
 	@return An array of character subsequences between the delimiters.
+	@deprecated
 	*/
 	public static CharSequence[] split(final CharSequence charSequence, final char delimiter)	//TODO convert to using regular expressions
 	{
