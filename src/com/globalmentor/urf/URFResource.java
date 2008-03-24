@@ -81,4 +81,11 @@ public interface URFResource extends Resource, URFScope
 	@param typeURI The URI of the type to add.
 	*/
 	public void addTypeURI(final URI typeURI);
+
+	/**Alters the resource according to the given resource alteration specification.
+	@param resourceAlteration The specification of the alterations to be performed on the resource.
+	@return This resource after the alterations.
+	*/
+	public URFResource alter(final URFResourceAlteration resourceAlteration);
+
 }

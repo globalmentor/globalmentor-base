@@ -81,7 +81,7 @@ public class Files
 		tempFileExtensionContentTypeMap.put(PDF_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, PDF_SUBTYPE, null));	//pdf
 		tempFileExtensionContentTypeMap.put(PNG_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, PNG_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(QRO_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_QRO_RDF_XML_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put("qti", new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, "x-qti", null)); //G***use a constant here
+		tempFileExtensionContentTypeMap.put("qti", new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, "x-qti", null)); //TODO use a constant here
 		tempFileExtensionContentTypeMap.put(RAR_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_RAR_COMPRESSED_SUBTYPTE, null));
 		tempFileExtensionContentTypeMap.put(TIF_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE, null));
 		tempFileExtensionContentTypeMap.put(TIFF_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE, null));
@@ -197,9 +197,9 @@ public class Files
 		if(!file.createNewFile())	//create the file; if unsuccessful
 		{
 			if(file.exists())	//if the file already exists
-				throw new IOException("File "+file+" already exists and cannot be created.");	//throw an exception G***i18n
+				throw new IOException("File "+file+" already exists and cannot be created.");	//throw an exception TODO i18n
 			else	//if the file doesn't exist, there must have been some other creation error
-				throw new IOException("Cannot create "+file);	//throw an exception G***i18n
+				throw new IOException("Cannot create "+file);	//throw an exception TODO i18n
 		}
 	}
 
@@ -237,7 +237,7 @@ public class Files
 		}
 		if(!file.delete())	//delete the file; if unsuccessful
 		{
-			throw new IOException("Unable to delete "+file);	//throw an exception G***i18n
+			throw new IOException("Unable to delete "+file);	//throw an exception TODO i18n
 		}
 	}
 
@@ -456,12 +456,12 @@ public class Files
 			catch(MalformedURLException malformedURLException)  //if a URL was malformed
 			{
 				throw new AssertionError(malformedURLException); //we should never get this error
-//TODO del				return file.getPath().replace('\\', FileConstants.PATH_SEPARATOR);  //this should never be reached G***use a constant here
+//TODO del				return file.getPath().replace('\\', FileConstants.PATH_SEPARATOR);  //this should never be reached TODO use a constant here
 			}
 		}
 		else  //if we were not given a root directory
 		{
-			return file.getPath().replace('\\', '/');  //return the normal file path with the correct path separator G***use a constant here
+			return file.getPath().replace('\\', '/');  //return the normal file path with the correct path separator TODO use a constant here
 		}
 	}
 
@@ -499,7 +499,7 @@ public class Files
 	}
 
 	/**@return The characters that are not allowed in filenames of this operating system.*/
-/*G***del if not needed
+/*TODO del if not needed
 	public static String getSystemFilenameReservedCharacters()
 	{
 		if(SystemUtilities.isWindowsOS())	//if we're running on Windows
@@ -611,7 +611,7 @@ public class Files
 		return checkExists(file, getBackupFile(file)); //check to see if the file exists, using the default filename for the backup file
 	}
 
-	protected final static char REPLACEMENT_CHAR='_';  //the character to use to replace any other character  G***maybe move these up and/or rename
+	protected final static char REPLACEMENT_CHAR='_';  //the character to use to replace any other character  TODO maybe move these up and/or rename
 
 	/**Escape all reserved filename characters to a two-digit hex
 		representation using '^' as an escape character so that the filename can
@@ -711,12 +711,12 @@ public class Files
 	@param file The file to delete.
 	@exception IOException Thrown if there is an error deleting the file.
 	*/
-/*G***del; this is already implemented here	
+/*TODO del; this is already implemented here	
 	public static void delete(final File file) throws IOException
 	{
 		if(!file.delete)	//delete file; if unsuccessful
 		{
-			throw new IOException("Cannot delete "+file);	//throw an exception G***i18n
+			throw new IOException("Cannot delete "+file);	//throw an exception TODO i18n
 		}
 	}
 */
@@ -729,7 +729,7 @@ public class Files
 	{
 		if(!directory.mkdir())	//create the directory; if unsuccessful
 		{
-			throw new IOException("Cannot create directory "+directory);	//throw an exception G***i18n
+			throw new IOException("Cannot create directory "+directory);	//throw an exception TODO i18n
 		}
 	}
 	
@@ -741,7 +741,7 @@ public class Files
 	{
 		if(!directory.mkdirs())	//create the directory; if unsuccessful
 		{
-			throw new IOException("Cannot create directories "+directory);	//throw an exception G***i18n
+			throw new IOException("Cannot create directories "+directory);	//throw an exception TODO i18n
 		}
 	}
 
@@ -912,7 +912,7 @@ public class Files
 	{
 		if(!source.renameTo(destination))	//rename the file to its new filename; if unsuccessful
 		{
-			throw new IOException("Cannot rename "+source+" to "+destination);	//throw an exception G***i18n
+			throw new IOException("Cannot rename "+source+" to "+destination);	//throw an exception TODO i18n
 		}
 	}
 
@@ -961,7 +961,7 @@ public class Files
 	@exception IOException Thrown if an I/O error occurs, which is possible because
 		the construction of canonical pathnames may require filesystem queries.
 	*/
-/*G***del
+/*TODO del
 	public static String getRelativePath(final File referenceDirectory, final File file) throws IOException
 	{
 		final String canonicalReferenceDirectoryPath=referenceDirectory.getCanonicalPath(); //convert the reference directory to its canonical form
@@ -992,7 +992,7 @@ Debug.trace("Canonical file: "+canonicalFilePath);
 	@exception IOException Thrown if an I/O error occurs, which is possible because
 		the construction of canonical pathnames may require filesystem queries.
 	*/
-/*G***fix
+/*TODO fix
 	public static String getRelativePath(final File referenceDirectory, final File file) throws IOException
 	{
 		final String canonicalReferenceDirectoryPath=referenceDirectory.getCanonicalPath(); //convert the reference directory to its canonical form

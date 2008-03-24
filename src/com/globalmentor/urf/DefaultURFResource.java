@@ -233,6 +233,35 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 		addPropertyValue(TYPE_PROPERTY_URI, new DefaultURFResource(typeURI));	//add a type resource for the given type URI
 	}
 
+	/**Alters the resource according to the given resource alteration specification.
+	@param resourceAlteration The specification of the alterations to be performed on the resource.
+	@return This resource after the alterations.
+	*/
+	public URFResource alter(final URFResourceAlteration resourceAlteration)
+	{
+		writeLock().lock();	//get a write lock
+		try
+		{
+			for(final URI removePropertyURI:resourceAlteration.getPropertyURIRemovals())	//look at each property URI to remove
+			{
+				removePropertyValues(removePropertyURI);	//remove all the values for this property URI
+			}
+			for(final URFProperty removeProperty:resourceAlteration.getPropertyRemovals())	//look at each property to remove
+			{
+				removeProperty(removeProperty);	//remove the property
+			}
+			for(final URFProperty addProperty:resourceAlteration.getPropertyAdditions())	//look at each property to add
+			{
+				addProperty(addProperty);	//add the property
+			}
+			return this;	//return this altered resource
+		}
+		finally
+		{
+			writeLock().unlock();	//always release the write lock
+		}
+	}
+	
 	/**@return A hashcode value composed from the reference URI, if available.*/
 	public int hashCode()
 	{

@@ -99,33 +99,29 @@ public class VCard
 		}
 	}
 
-	/**Determines a formatted name for the given resource.
-	The formatted name is determined in this order:
+	/**Determines a VCard name-based label for the given resource.
+	The VCard name-based label is determined in this order:
 	<ol>
-		<li>The lexical form of the literal value of the «{@link #FN_PROPERTY_URI}», if available.</li>
-		<li>A formatted string derived from the value of the «{@link #N_PROPERTY_URI}» property, if available.</li>
-		<li>The label of the resource as determined by {@link URFResource#determineLabel()}.
+		<li>The value of the «{@link #FN_PROPERTY_URI}», if available.</li>
+		<li>A label derived from the value of the «{@link #N_PROPERTY_URI}» property, if available.</li>
 	</ol>
-	@param resource The resource for which a formatted name should be determined.
-	@return The best possible formatted name string for the resource.
+	@param resource The resource for which a name label should be determined.
+	@return The best possible VCard name label for the resource, or <code>null</code> if no VCard name-related information could be determined.
 	@exception NullPointerException if the given resource is <code>null</code>.
+	@see Name#getCompleteName()
 	*/
-	public static String getFormattedName(final URFResource resource)
+	public static String getNameLabel(final URFResource resource)
 	{
-		String formattedName=asString(resource.getPropertyValue(FN_PROPERTY_URI));	//get the vcard.fn value
-		if(formattedName==null)	//if there was no vcard.vn property value
+		String nameLabel=asString(resource.getPropertyValue(FN_PROPERTY_URI));	//get the vcard.fn value
+		if(nameLabel==null)	//if there was no vcard.vn property value
 		{
 			final Name name=getName(resource);	//see if the resource has a name specified
 			if(name!=null)	//if there is a name specified
 			{
-				formattedName=name.toString();	//format the name
-			}
-			else	//if no name was specified
-			{
-				formattedName=resource.determineLabel();	//use the resource's label
+				nameLabel=name.getCompleteName();	//get the complete name
 			}
 		}
-		return formattedName;	//return whatever formatted name we determined
+		return nameLabel;	//return whatever name label we determined if any
 	}
 
 	/**Sets the email of a resource using the vCard «{@value #EMAIL_PROPERTY_URI}» property.

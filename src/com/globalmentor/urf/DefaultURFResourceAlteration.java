@@ -15,6 +15,8 @@ Alternations are to be performed in the following order:
 </ol>
 To set a property to the exclusion of all other values, a property addition should be provided and its property URI
 included in the set of property URI removals. 
+<p>If no resource URI is provided, it means that the current URI of the resource should remain unchanged.
+Because of these semantics, this interface does not provide a means for indicating a resource should become unnamed.</p>
 <p>Copyright © 2008 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:
@@ -25,6 +27,12 @@ Any redistribution of this source code or derived source code must include these
 */
 public class DefaultURFResourceAlteration implements URFResourceAlteration
 {
+
+	/**The new URI of the resource, or <code>null</code> if the current URI of the resource, if any, should remain unchanged.*/
+	private final URI resourceURI;
+
+		/**@return The new URI of the resource, or <code>null</code> if the current URI of the resource, if any, should remain unchanged.*/
+		public URI getResourceURI() {return resourceURI;}
 
 	/**The immutable set of URIs of properties to remove.*/
 	private final Set<URI> propertyURIRemovals; 
@@ -45,6 +53,7 @@ public class DefaultURFResourceAlteration implements URFResourceAlteration
 		public Set<URFProperty> getPropertyAdditions() {return propertyAdditions;} 
 
 	/**Property URI removals, property removals, and property additions constructor.
+	No resource URI change is indicated.
 	@param propertyURIRemovals The URIs of properties to remove.
 	@param propertyRemovals The properties and values to remove.
 	@param propertyAdditions The properties and values to add.
@@ -52,6 +61,19 @@ public class DefaultURFResourceAlteration implements URFResourceAlteration
 	*/
 	public DefaultURFResourceAlteration(final Collection<URI> propertyURIRemovals, final Collection<URFProperty> propertyRemovals, final Collection<URFProperty> propertyAdditions)
 	{
+		this(null, propertyURIRemovals, propertyRemovals, propertyAdditions);	//construct the class without indicating a new resource URI
+	}
+
+	/**Resource URI, property URI removals, property removals, and property additions constructor.
+	@param resourceURI The new URI of the resource, or <code>null</code> if the current URI of the resource, if any, should remain unchanged.
+	@param propertyURIRemovals The URIs of properties to remove.
+	@param propertyRemovals The properties and values to remove.
+	@param propertyAdditions The properties and values to add.
+	@throws NullPointerException if the given property URI removals, property removals, and/or property additions is <code>null</code>.
+	*/
+	public DefaultURFResourceAlteration(final URI resourceURI, final Collection<URI> propertyURIRemovals, final Collection<URFProperty> propertyRemovals, final Collection<URFProperty> propertyAdditions)
+	{
+		this.resourceURI=resourceURI;
 		this.propertyURIRemovals=unmodifiableSet(new HashSet<URI>(checkInstance(propertyURIRemovals, "Property URI removals cannot be null")));
 		this.propertyRemovals=unmodifiableSet(new HashSet<URFProperty>(checkInstance(propertyRemovals, "Property removals cannot be null")));
 		this.propertyAdditions=unmodifiableSet(new HashSet<URFProperty>(checkInstance(propertyAdditions, "Property additions cannot be null")));

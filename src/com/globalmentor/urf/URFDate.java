@@ -24,7 +24,7 @@ public class URFDate extends AbstractURFDateTime
 	@param temporalcomponents The temporal components from which to construct the class.
 	@exception NullPointerException if the given temporal components is <code>null</code>.
 	*/
-	private URFDate(final URFTemporalComponents temporalComponents)
+	protected URFDate(final URFTemporalComponents temporalComponents)
 	{
 		super(temporalComponents, false);	//construct the parent class, ignoring the time information
 	}

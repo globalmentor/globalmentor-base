@@ -11,7 +11,9 @@ Alternations are to be performed in the following order:
 	<li>Any property value additions are performed.</li>
 </ol>
 To set a property to the exclusion of all other values, a property addition should be provided and its property URI
-included in the set of property URI removals. 
+included in the set of property URI removals.
+<p>If no resource URI is provided, it means that the current URI of the resource should remain unchanged.
+Because of these semantics, this interface does not provide a means for indicating a resource should become unnamed.</p>
 <p>Copyright © 2008 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:
@@ -22,6 +24,9 @@ Any redistribution of this source code or derived source code must include these
 */
 public interface URFResourceAlteration
 {
+
+	/**@return The new URI of the resource, or <code>null</code> if the current URI of the resource, if any, should remain unchanged.*/
+	public URI getResourceURI();
 
 	/**@return The immutable set of URIs of properties to remove.*/
 	public Set<URI> getPropertyURIRemovals(); 

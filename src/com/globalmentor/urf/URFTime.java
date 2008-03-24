@@ -79,7 +79,7 @@ public class URFTime implements URFTemporal
 	@param temporalcomponents The temporal components from which to construct the class.
 	@exception NullPointerException if the given temporal components is <code>null</code>.
 	*/
-	URFTime(final URFTemporalComponents temporalComponents)	//TODO improve
+	protected URFTime(final URFTemporalComponents temporalComponents)
 	{
 		this(temporalComponents.getHours(), temporalComponents.getMinutes(), temporalComponents.getSeconds(), temporalComponents.getMicroseconds(), temporalComponents.asUTCOffset());
 	}

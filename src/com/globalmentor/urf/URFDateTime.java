@@ -21,11 +21,17 @@ Any redistribution of this source code or derived source code must include these
 public class URFDateTime extends AbstractURFDateTime
 {
 
+	/**Default constructor of a floating date time with the current time in terms of UTC.*/
+	public URFDateTime()
+	{
+		this(System.currentTimeMillis());	//construct the class with the current time in milliseconds
+	}
+
 	/**Temporal component constructor.
 	@param temporalcomponents The temporal components from which to construct the class.
 	@exception NullPointerException if the given temporal components is <code>null</code>.
 	*/
-	private URFDateTime(final URFTemporalComponents temporalComponents)
+	protected URFDateTime(final URFTemporalComponents temporalComponents)
 	{
 		super(temporalComponents, true);	//construct the parent class, using the time information
 	}
