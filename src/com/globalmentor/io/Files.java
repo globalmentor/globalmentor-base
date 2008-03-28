@@ -48,6 +48,9 @@ import static com.globalmentor.net.URIs.*;
 public class Files
 {
 
+	/**The character used to separate an extension from the rest of a filename.*/
+	public final static char FILENAME_EXTENSION_SEPARATOR='.';
+
 	/**A singleton read-only map of lowercase file extensions and the corresponding content types they represent.*/
 	public final static Map<String, ContentType> FILE_EXTENSION_CONTENT_TYPE_MAP;	//TODO convert to lazy weak referenced map
 
