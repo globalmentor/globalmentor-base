@@ -19,7 +19,6 @@ package com.globalmentor.io;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-
 import static java.util.Collections.*;
 
 import javax.mail.internet.ContentType;
@@ -37,7 +36,6 @@ import static com.globalmentor.io.ContentTypeConstants.*;
 import static com.globalmentor.io.FileConstants.*;
 import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.java.CharSequences.*;
-import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.SystemUtilities.*;
 import static com.globalmentor.net.URIs.*;
@@ -50,6 +48,15 @@ public class Files
 
 	/**The character used to separate an extension from the rest of a filename.*/
 	public final static char FILENAME_EXTENSION_SEPARATOR='.';
+
+	/**The character to use for escaping reserved characters.
+	<p>Java automatically converts '%' in URIs and does not
+		correctly access file URIs containing '#', so neither
+		of these characters can be used as an escape character.</p>
+	<p>Note that, as '^' is not a valid URI character, it will be escaped again
+		using '%' if such a filename is included in a URI.</p> 
+	*/ 
+	public final static char FILENAME_ESCAPE_CHAR='^';
 
 	/**A singleton read-only map of lowercase file extensions and the corresponding content types they represent.*/
 	public final static Map<String, ContentType> FILE_EXTENSION_CONTENT_TYPE_MAP;	//TODO convert to lazy weak referenced map
@@ -624,7 +631,7 @@ public class Files
 	@param string The filename string to be encoded.
 	@return The string modified to be a filename.
 	@see FileConstants#RESERVED_CHARACTERS
-	@see FileConstants#ESCAPE_CHARACTER
+	@see #FILENAME_ESCAPE_CHAR
 	@see CharSequences#escapeHex
 	@see #isFilename
 	*/
@@ -642,9 +649,9 @@ public class Files
 	@param string The filename string to be encoded.
 	@return The string modified to be a filename.
 	@see FileConstants#RESERVED_CHARACTERS
-	@see FileConstants#ESCAPE_CHARACTER
-	@see CharSequences#escapeHex
-	@see #isFilename
+	@see #FILENAME_ESCAPE_CHAR
+	@see CharSequences#escapeHex(CharSequence, String, String, char, int)
+	@see #isFilename(String, String, String)
 	*/
 	public static String encodeFilename(final String filename)
 	{
@@ -665,22 +672,22 @@ public class Files
 		final character doesn't have to meet special rules.
 	@return The string modified to be a filename.
 	@see FileConstants#RESERVED_CHARACTERS
-	@see FileConstants#ESCAPE_CHARACTER
-	@see CharSequences#escapeHex
-	@see #isFilename
+	@see #FILENAME_ESCAPE_CHAR
+	@see CharSequences#escapeHex(CharSequence, String, String, char, int)
+	@see #isFilename(String, String, String)
 	*/
 	public static String encodeFilename(final String filename, final String reservedCharacters, final String reservedFinalCharacters)
 	{
 			//check to see if this is already a valid filename; if so (it usually is), this will give us a performance increase
 			//even if this is a valid filename, make sure it doesn't have the escape character in it---we would have to escape that, too, even though it isn't reserved
 		if(isFilename(filename, reservedCharacters, reservedFinalCharacters)	//if this is a valid filename already	
-				&& filename.indexOf(ESCAPE_CHARACTER)<0)	//if the filename doesn't contain the escape character	
+				&& filename.indexOf(FILENAME_ESCAPE_CHAR)<0)	//if the filename doesn't contain the escape character	
 		{
 				return filename;	//return the string as is---it already is a valid filename
 		}
 		else	//if something about the filename isn't correct
 		{
-			final String encodedFilename=escapeHex(filename, null, reservedCharacters, ESCAPE_CHARACTER, 2);
+			final String encodedFilename=escapeHex(filename, null, reservedCharacters, FILENAME_ESCAPE_CHAR, 2);
 			if(reservedFinalCharacters!=null && reservedFinalCharacters.length()>0)	//if we should check the final character (e.g. on Windows)
 			{
 				if(encodedFilename.length()>0)	//if we have a filename
@@ -688,8 +695,9 @@ public class Files
 					final char lastChar=encodedFilename.charAt(encodedFilename.length()-1);	//see what the last character is
 					if(reservedFinalCharacters.indexOf(lastChar)>=0)	//if the last character is a reserved character
 					{
-						return encodedFilename.substring(0, encodedFilename.length()-1)	//remove the last character
-								+ESCAPE_CHARACTER+toHexString(lastChar, 2).toUpperCase();	//add the escaped version of the character in its place
+						final String lastCharString=String.valueOf(lastChar);	//convert the last character to a string
+						final String replacementString=escapeHex(lastCharString, null, lastCharString, FILENAME_ESCAPE_CHAR, 2);	//escape the last character						
+						return encodedFilename.substring(0, encodedFilename.length()-1)+replacementString;	//replace the last character with its escaped form
 					}
 				}
 			}
@@ -702,28 +710,14 @@ public class Files
 	@param string The filename string to be decoded.
 	@return The filename string decoded back to a normal string.
 	@see FileConstants#RESERVED_CHARACTERS
-	@see FileConstants#ESCAPE_CHARACTER
-	@see CharSequences#unescapeHex
+	@see #FILENAME_ESCAPE_CHAR
+	@see CharSequences#unescapeHex(CharSequence, char, int)
 	*/
 	public static String decodeFilename(final String filename)
 	{
-		return unescapeHex(filename, ESCAPE_CHARACTER, 2);	//decode the filename
+		return unescapeHex(filename, FILENAME_ESCAPE_CHAR, 2);	//decode the filename
 	}
 
-	/**Deletes a file, throwing an exception if unsuccessful.
-	@param file The file to delete.
-	@exception IOException Thrown if there is an error deleting the file.
-	*/
-/*TODO del; this is already implemented here	
-	public static void delete(final File file) throws IOException
-	{
-		if(!file.delete)	//delete file; if unsuccessful
-		{
-			throw new IOException("Cannot delete "+file);	//throw an exception TODO i18n
-		}
-	}
-*/
-	
 	/**Creates the directory named by this abstract pathname, throwing an exception if unsuccessful.
 	@param directory The directory to create.
 	@exception IOException Thrown if there is an error creating the directory.

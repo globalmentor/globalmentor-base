@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.text.CharacterEncoding.*;
 
+import com.globalmentor.text.unicode.UnicodeCharacter;
 import com.globalmentor.util.Arrays;
 
 /**Various text manipulating functions. These methods work on
@@ -331,75 +332,99 @@ public class CharSequences
 	@param validCharacters The characters that should not be escaped and all others should be escaped, or <code>null</code> if characters should not be matched against valid characters.
 	@param invalidCharacters The characters that, if they appear, should be escaped, or <code>null</code> if characters should not be matched against invalid characters.
 	@param escapeChar The character to prefix the hex representation.
-	@param length The number of characters to use for the hex representation.
+	@param escapeLength The number of characters to use for the hex representation.
 	@return A string containing the escaped data.
 	@exception IllegalArgumentException if neither valid nor invalid characters are given.
 	*/
-	public static String escapeHex(final CharSequence charSequence, final String validCharacters, final String invalidCharacters, final char escapeChar, final int length)	//TODO del if not needed; more specialized processing is needed for URIs, such as UTF-8 conversion
+	public static String escapeHex(final CharSequence charSequence, final String validCharacters, final String invalidCharacters, final char escapeChar, final int escapeLength)
 	{
+		final StringBuilder stringBuilder=new StringBuilder(charSequence); //put the string in a string builder so that we can work with it; although inserting encoded sequences may seem inefficient, it should be noted that filling a string buffer with the entire string is more efficient than doing it one character at a time, that characters needed encoding are generally uncommon, and that any copying of the string characters during insertion is done via a native method, which should happen very quickly
+		for(int characterIndex=stringBuilder.length()-1; characterIndex>=0; --characterIndex) //work backwords; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
+		{
+			final char c=stringBuilder.charAt(characterIndex); //get the current character
+			final boolean encode=c==escapeChar	//always encode the escape character
+				|| (validCharacters!=null && validCharacters.indexOf(c)<0)	//encode if there is a list of valid characters and this character is not one of them
+				|| (invalidCharacters!=null && invalidCharacters.indexOf(c)>=0);	//encode if there is a list of invalid characters and this character is one of them
+			if(encode)	//if this a character to escape
+			{
+				try
+				{
+					final byte[] bytes=String.valueOf(c).getBytes(UTF_8); //convert this character to a sequence of UTF-8 bytes
+					final int byteCount=bytes.length; //find out how many bytes there are
+					final StringBuilder encodeStringBuilder=new StringBuilder(byteCount*3); //create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
+					for(int byteIndex=0; byteIndex<byteCount; ++byteIndex) //look at each byte
+					{
+						encodeStringBuilder.append(escapeChar); //escape character
+						encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], escapeLength).toUpperCase()); //HH
+					}
+					stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString()); //replace the character with its encoding
+				}
+				catch(final UnsupportedEncodingException unsupportedEncodingException) //the JVM should always know how to convert a string to UTF-8
+				{
+					throw new AssertionError(unsupportedEncodingException);
+				}
+			}
+		}
+		return stringBuilder.toString(); //return the encoded version of the string
+	}
+
+	/**Decodes the escaped characters in the character sequence by converting the hex value after each occurance of the escape character to the corresponding Unicode character using UTF-8.
+	@param charSequence The data to unescape.
+	@param escapeChar The character that prefixes the hex representation.
+	@param escapeLength The number of characters used for the hex representation.
+	@return A string containing the unescaped data.
+	@exception IllegalArgumentException if the given characters contains a character greater than U+00FF.
+	@exception IllegalArgumentException if a given escape character is not followed by an escape sequence.
+	*/
+	public static String unescapeHex(final CharSequence charSequence, final char escapeChar, final int escapeLength)
+	{
+		final int charSequenceLength=charSequence.length(); //get the length of the character sequence
+		final byte[] decodedBytes=new byte[charSequenceLength]; //create an array of byte to hold the UTF-8 data
+		int byteArrayIndex=0; //start at the first position in the byte array
+		for(int i=0; i<charSequenceLength; ++i) //look at each character in the character sequence
+		{
+			final char c=charSequence.charAt(i); //get a reference to this character in the character sequence
+			final byte b; //we'll determine what byte goes at this position
+			if(c==escapeChar) //if this is the beginning of an escaped sequence
+			{
+				if(i<charSequenceLength-escapeLength) //if there's room for enough hex characters after it
+				{
+					final String escapeSequence=charSequence.subSequence(i+1, i+escapeLength+1).toString(); //get the hex characters in the escape sequence							
+					try
+					{
+						b=(byte)Integer.parseInt(escapeSequence, 16); //convert the escape sequence to a single integer value and add it to the buffer
+						i+=2; //skip the escape sequence (we'll go to the last character, and we'll be advanced one character when we go back to the start of the loop)
+					}
+					catch(NumberFormatException numberFormatException) //if the characters weren't really hex characters
+					{
+						throw new IllegalArgumentException("Invalid escape sequence "+escapeSequence);
+					}
+				}
+				else	//if there is no room for an escape sequence at the end of the string
+				{
+					throw new IllegalArgumentException("Invalid escape sequence "+charSequence.subSequence(i+1, charSequenceLength));
+				}
+			}
+			else	//if this is not an escaped character
+			{
+				if(c>0xff) //if this character is larger than a byte, the character sequence was not encoded correctly
+				{
+					throw new IllegalArgumentException("Invalid encoded character "+UnicodeCharacter.getCodePointString(c));
+				}
+				b=(byte)c; //add this character to the result with no change
+			}
+			decodedBytes[byteArrayIndex++]=b; //add the byte to the buffer and keep going
+		}
 		try
 		{
-			final byte[] charBytes=charSequence.toString().getBytes(UTF_8);	//get the UTF-8 bytes of the string
-			final StringBuilder stringBuilder=new StringBuilder(charBytes.length+16);	//create a new string builder to hold the result, reserving some extra characters
-			for(byte charByte:charBytes)	//look at each character's byte in the sequence
-			{
-				final char c=(char)charByte;	//look at this UTF-8 byte as a character
-				final boolean encode=c==escapeChar	//always encode the escape character
-						|| (validCharacters!=null && validCharacters.indexOf(c)<0)	//encode if there is a list of valid characters and this character is not one of them
-						|| (invalidCharacters!=null && invalidCharacters.indexOf(c)>=0);	//encode if there is a list of invalid characters and this character is one of them
-				if(encode)	//if this a character to escape
-				{
-						//append the escape character, along with a two-digit representation of the character value
-					stringBuilder.append(escapeChar).append(Integers.toHexString(c, length).toUpperCase());
-				}
-				else	//if this is not a character to escape
-				{
-					stringBuilder.append(c);	//add this character to the result without escaping it
-				}	
-			}
-			return stringBuilder.toString();	//return the result we constructed
+			return new String(decodedBytes, 0, byteArrayIndex, UTF_8); //consider the bytes as a series of UTF-8 encoded characters.
 		}
-		catch(final UnsupportedEncodingException unsupportedEncodingException)	//the JVM should always know how to convert a string to UTF-8
+		catch(final UnsupportedEncodingException unsupportedEncodingException) //UTF-8 should always be supported
 		{
 			throw new AssertionError(unsupportedEncodingException);
 		}
 	}
 
-	/**Decodes the escaped characters in the character iterator by
-		converting the hex value after each occurrence of the escape
-		character to the corresponding Unicode character. 
-	@param charSequence The data to unescape.
-	@param escapeChar The character that prefixes the hex representation.
-	@param length The number of characters used for the hex representation.
-	@return A string containing the unescaped data.
-	*/
-	public static String unescapeHex(final CharSequence charSequence, final char escapeChar, final int length)	//TODO del if not needed; more specialized processing is needed for URIs, such as UTF-8 conversion
-	{
-		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to hold the result
-		for(int i=0; i<charSequence.length(); ++i)	//look at each character in the sequence
-		{
-			final char c=charSequence.charAt(i);	//get a reference to this character
-				//if this is the beginning of an escaped character, and there's room for enough hex characters after it (the last test is lenient, throwing no exception if the escape character doesn't actually encode anything) 
-			if(c==escapeChar && i<charSequence.length()-length)
-			{
-				try
-				{
-						//convert the next two hex characters to a single character value and add it to the string buffer
-					stringBuilder.append((char)Integer.parseInt(charSequence.subSequence(i+1, i+length+1).toString(), 16));
-					i+=length;	//skip the escape sequence (we'll go to the last character, and we'll be advanced one character when we go back to the start of the loop)
-				}
-				catch(NumberFormatException numberFormatException)	//if the characters weren't really hex characters
-				{
-					stringBuilder.append(c);	//we'll assume this wasn't an escape character after all, and add it normally (this is really lenient; this method could be written to throw an exception)
-				}
-			} 
-			else	//if this is not an escaped character
-			{
-				stringBuilder.append(c);	//add this character to the result with no change
-			}	
-		}
-		return stringBuilder.toString();	//return the result we constructed
-	}
 
 	/**Determines the first index of the given character.
 	@param charSequence The character sequence to check.
