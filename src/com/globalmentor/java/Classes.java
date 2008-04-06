@@ -26,6 +26,7 @@ import java.util.regex.*;
 
 import javax.mail.internet.*;
 
+import static com.globalmentor.io.ContentTypes.*;
 import static com.globalmentor.io.ContentTypeConstants.*;
 import static com.globalmentor.io.FileConstants.*;
 import static com.globalmentor.io.Files.*;
@@ -129,7 +130,7 @@ public class Classes
 	{
 		final ParameterList parameterList=new ParameterList();	//create a new parameter list
 		parameterList.set("class", objectClass.getName());	//TODO testing
-		return new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_JAVA_OBJECT, parameterList);	//create a content type appropriate for this object class TODO use a constant
+		return getContentTypeInstance(APPLICATION_PRIMARY_TYPE, X_JAVA_OBJECT, parameterList);	//create a content type appropriate for this object class TODO use a constant
 	}
 
 	/**Returns a constructor of a class that is compatible with the given parameter types.

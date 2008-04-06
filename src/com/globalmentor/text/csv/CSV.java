@@ -35,7 +35,7 @@ public class CSV
 	public final static String CSV_SUBTYPE="csv";
 
 	/**The content type for CSV: <code>text/csv</code>.*/
-	public static final ContentType CSV_CONTENT_TYPE=new ContentType(TEXT_PRIMARY_TYPE, CSV_SUBTYPE, null);
+	public static final ContentType CSV_CONTENT_TYPE=getContentTypeInstance(TEXT_PRIMARY_TYPE, CSV_SUBTYPE);
 	
 	/**The character that delimits CSV fields.*/
 	public final static char FIELD_DELIMITER_CHAR=COMMA_CHAR;

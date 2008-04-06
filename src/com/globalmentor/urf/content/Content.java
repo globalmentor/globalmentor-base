@@ -42,7 +42,7 @@ public class Content
 	public final static URI CREATED_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "created");
 	/**The actual content, such as bytes or a string, of a resource.*/
 	public final static URI CONTENT_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "content");
-	/**The array of child resources contained by a resource such as a collection or package.*/
+	/**The list of child resources contained by a resource such as a collection or package.*/
 	public final static URI CONTENTS_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "contents");
 	/**The date and time when a resource was last modified.*/
 	public final static URI MODIFIED_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "modified");
@@ -128,7 +128,7 @@ public class Content
 	{
 		if(resourceURI!=null && MEDIA_TYPE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a media type URI was given
 		{
-			return createContentType(getLocalName(resourceURI));	//create a media type from the local name
+			return getContentTypeInstance(getLocalName(resourceURI));	//create a media type from the local name
 		}
 		return null;	//no media type could be found
 	}

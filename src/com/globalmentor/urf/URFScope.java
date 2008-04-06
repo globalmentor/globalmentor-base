@@ -60,6 +60,14 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public long getPropertyValueCount(final URI propertyURI);
 
+	/**Determines whether there exists a property with the given property and value.
+	This is a convenient method that is equivalent to {@link #hasPropertyValue(URI, URFResource)}.
+	@param property The property and value to check.
+	@return <code>true</code> if a property exists with the given property and value.
+	@exception NullPointerException if the given property is <code>null</code>.
+	*/
+	public boolean hasProperty(final URFProperty property);
+
 	/**Determines whether there exists a property with the given property URI and the given property value.
 	@param propertyURI The URI of the property of the value to check.
 	@param propertyValue The value to match for the given property.
@@ -368,7 +376,7 @@ public interface URFScope extends ReadWriteLock
 	/**Removes a given property value for the indicated property and value.
 	If the given property and value do not exist, no action occurs.
 	This is a convenient method that is equivalent to {@link #removePropertyValue(URI, URFResource)}.
-	@param property The property and value to to remove.
+	@param property The property and value to remove.
 	@return <code>true</code> if the value was removed from the indicated property, else <code>false</code> if the property and value did not exist.
 	@exception NullPointerException if the given property is <code>null</code>.
 	*/

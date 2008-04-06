@@ -97,6 +97,20 @@ public class AbstractClient implements Client
 	/**The map of passwords keyed to users, keyed to realms, keyed to root URIs.*/
 	private final Map<URI, Map<String, Map<String, char[]>>> authenticationMap=new HashMap<URI, Map<String, Map<String, char[]>>>();	//TODO later store digest H(A1) information rather than raw passwords
 
+	/**Retrieves the realms stored for a given root URI.
+	@param rootURI The root URI of the domain governing the realms and user passwords.
+	@return A read-only set of reallms of the given root URI.
+	*/
+	public Set<String> getRealms(final URI rootURI)
+	{
+		final Map<String, Map<String, char[]>> realmMap=authenticationMap.get(rootURI);	//get the map with realm keys
+		if(realmMap!=null)	//if we found this realm
+		{
+			return unmodifiableSet(realmMap.keySet());	//return the set of realms for this domain
+		}
+		return emptySet();	//we don't have authentication information for any users for this domain and realm
+	}
+
 	/**Retrieves any users for which authentication information is stored for a given realm of a given root URI.
 	@param rootURI The root URI of the domain governing the realms and user passwords.
 	@param realm The realm of protection.
@@ -128,7 +142,7 @@ public class AbstractClient implements Client
 			if(userMap!=null)	//if there is a map for useres
 			{
 				final char[] password=userMap.get(username);	//get the password for this user
-				return password;	//return the password
+				return password!=null ? password.clone() : null;	//return the password TODO check and improve cloning
 			}
 		}
 		return null;	//indicate that we don't have a password stored
@@ -154,7 +168,7 @@ public class AbstractClient implements Client
 			userMap=new HashMap<String, char[]>();	//create a new map of users and passwords
 			realmMap.put(realm, userMap);	//key the map of users to the realm
 		}
-		userMap.put(username, password);	//store the password in the map, keyed to the user
+		userMap.put(username, password.clone());	//store the password in the map, keyed to the user TODO see if we can just store the hashes somewhere
 	}
 
 	/**Removes the password stored for a given user in a given realm of a given root URI.

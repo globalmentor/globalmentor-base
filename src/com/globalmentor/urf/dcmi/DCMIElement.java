@@ -5,7 +5,7 @@ import java.net.URI;
 import static com.globalmentor.urf.dcmi.DCMI.*;
 
 /**An enumeration of the Dublin Core Metadata Initiate elements.
-This enumeration does not cover the newer DCMI Metatadat Terms.
+This enumeration does not cover the newer DCMI Metatadats Terms.
 <p>Copyright © 2007-2008 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:

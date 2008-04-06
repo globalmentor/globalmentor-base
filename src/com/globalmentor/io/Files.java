@@ -32,6 +32,7 @@ import com.globalmentor.text.xml.stylesheets.css.XMLCSS;
 import com.globalmentor.text.xml.xhtml.XHTML;
 import com.globalmentor.urf.*;
 
+import static com.globalmentor.io.ContentTypes.*;
 import static com.globalmentor.io.ContentTypeConstants.*;
 import static com.globalmentor.io.FileConstants.*;
 import static com.globalmentor.io.InputStreams.*;
@@ -64,44 +65,44 @@ public class Files
 	static
 	{
 		final Map<String, ContentType> tempFileExtensionContentTypeMap=new HashMap<String, ContentType>();	//create a new hash map in which to store extensions, and add the default extensions
-		tempFileExtensionContentTypeMap.put("asi", new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, "x-qti-assessment", null));
-		tempFileExtensionContentTypeMap.put(AU_EXTENSION, new ContentType(ContentTypes.AUDIO_PRIMARY_TYPE, BASIC_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(BMP_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, X_BITMAP_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(CLASS_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, JAVA_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(CSS_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, XMLCSS.CSS_SUBTYPE, null));	//text/css
-		tempFileExtensionContentTypeMap.put(DICTO_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_DICTO_RDF_XML_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(DOC_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, MSWORD_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(GIF_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, GIF_SUBTYPE, null));	//image/gif
+		tempFileExtensionContentTypeMap.put("asi", getContentTypeInstance(APPLICATION_PRIMARY_TYPE, "x-qti-assessment"));
+		tempFileExtensionContentTypeMap.put(AU_EXTENSION, getContentTypeInstance(AUDIO_PRIMARY_TYPE, BASIC_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(BMP_EXTENSION, getContentTypeInstance(IMAGE_PRIMARY_TYPE, X_BITMAP_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(CLASS_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, JAVA_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(CSS_EXTENSION, getContentTypeInstance(TEXT_PRIMARY_TYPE, XMLCSS.CSS_SUBTYPE));	//text/css
+		tempFileExtensionContentTypeMap.put(DICTO_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, X_DICTO_RDF_XML_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(DOC_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, MSWORD_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(GIF_EXTENSION, getContentTypeInstance(IMAGE_PRIMARY_TYPE, GIF_SUBTYPE));	//image/gif
 		tempFileExtensionContentTypeMap.put(XHTML.HTM_NAME_EXTENSION, XHTML.HTML_CONTENT_TYPE);	//TODO make sure changing this to text/html doesn't cause other methods to fail; nevertheless, we can't assume all .html files are XHTML (i.e. valid XML)
 		tempFileExtensionContentTypeMap.put(XHTML.HTML_NAME_EXTENSION, XHTML.HTML_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put(XHTML.XHTML_NAME_EXTENSION, XHTML.XHTML_CONTENT_TYPE);
-		tempFileExtensionContentTypeMap.put(ICAL_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, CALENDAR_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(JAVA_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, JAVA_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(JPEG_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(JPG_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(JS_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, JavaScript.JAVASCRIPT_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put("marmox", new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, "x-marmox-page+rdf+xml", null));
-		tempFileExtensionContentTypeMap.put(MAQRO_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_MAQRO_RDF_XML_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(MP3_EXTENSION, new ContentType(ContentTypes.AUDIO_PRIMARY_TYPE, MPEG_SUBTYPE, null));	//RFC 3003
-		tempFileExtensionContentTypeMap.put(MPEG_EXTENSION, new ContentType(ContentTypes.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(MPG_EXTENSION, new ContentType(ContentTypes.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(OGG_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, OGG_SUBTYPE, null));	//application/ogg (RFC 3534)
-		tempFileExtensionContentTypeMap.put(OEB_ZIP_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, OEB.X_OEB_PUBLICATION_ZIP_SUBTYPE, null));	//oebzip
-		tempFileExtensionContentTypeMap.put(OEB1_PACKAGE_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, OEB.X_OEB1_PACKAGE_XML_SUBTYPE, null));	//opf
-		tempFileExtensionContentTypeMap.put(PDF_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, PDF_SUBTYPE, null));	//pdf
-		tempFileExtensionContentTypeMap.put(PNG_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, PNG_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(QRO_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_QRO_RDF_XML_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put("qti", new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, "x-qti", null)); //TODO use a constant here
-		tempFileExtensionContentTypeMap.put(RAR_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_RAR_COMPRESSED_SUBTYPTE, null));
-		tempFileExtensionContentTypeMap.put(TIF_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(TIFF_EXTENSION, new ContentType(ContentTypes.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(TURF.TURF_NAME_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, TURF_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(TXT_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, Text.PLAIN_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, new ContentType(ContentTypes.TEXT_PRIMARY_TYPE, DIRECTORY_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(WAV_EXTENSION, new ContentType(ContentTypes.AUDIO_PRIMARY_TYPE, X_WAV_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(XEB_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_SUBTYPE, null));
-		tempFileExtensionContentTypeMap.put(XEB_ZIP_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_ZIP_SUBTYPE, null));	//oebzip
-		tempFileExtensionContentTypeMap.put(ZIP_EXTENSION, new ContentType(ContentTypes.APPLICATION_PRIMARY_TYPE, ZIP_SUBTYPE, null));
+		tempFileExtensionContentTypeMap.put(ICAL_EXTENSION, getContentTypeInstance(TEXT_PRIMARY_TYPE, CALENDAR_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(JAVA_EXTENSION, getContentTypeInstance(TEXT_PRIMARY_TYPE, JAVA_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(JPEG_EXTENSION, getContentTypeInstance(IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(JPG_EXTENSION, getContentTypeInstance(IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(JS_EXTENSION, getContentTypeInstance(TEXT_PRIMARY_TYPE, JavaScript.JAVASCRIPT_SUBTYPE));
+		tempFileExtensionContentTypeMap.put("marmox", getContentTypeInstance(APPLICATION_PRIMARY_TYPE, "x-marmox-page+rdf+xml"));
+		tempFileExtensionContentTypeMap.put(MAQRO_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, X_MAQRO_RDF_XML_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(MP3_EXTENSION, getContentTypeInstance(AUDIO_PRIMARY_TYPE, MPEG_SUBTYPE));	//RFC 3003
+		tempFileExtensionContentTypeMap.put(MPEG_EXTENSION, getContentTypeInstance(VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(MPG_EXTENSION, getContentTypeInstance(VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(OGG_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, OGG_SUBTYPE));	//application/ogg (RFC 3534)
+		tempFileExtensionContentTypeMap.put(OEB_ZIP_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, OEB.X_OEB_PUBLICATION_ZIP_SUBTYPE));	//oebzip
+		tempFileExtensionContentTypeMap.put(OEB1_PACKAGE_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, OEB.X_OEB1_PACKAGE_XML_SUBTYPE));	//opf
+		tempFileExtensionContentTypeMap.put(PDF_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, PDF_SUBTYPE));	//pdf
+		tempFileExtensionContentTypeMap.put(PNG_EXTENSION, getContentTypeInstance(IMAGE_PRIMARY_TYPE, PNG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(QRO_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, X_QRO_RDF_XML_SUBTYPE));
+		tempFileExtensionContentTypeMap.put("qti", getContentTypeInstance(APPLICATION_PRIMARY_TYPE, "x-qti")); //TODO use a constant here
+		tempFileExtensionContentTypeMap.put(RAR_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, X_RAR_COMPRESSED_SUBTYPTE));
+		tempFileExtensionContentTypeMap.put(TIF_EXTENSION, getContentTypeInstance(IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(TIFF_EXTENSION, getContentTypeInstance(IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(TURF.TURF_NAME_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, TURF_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(TXT_EXTENSION, getContentTypeInstance(TEXT_PRIMARY_TYPE, Text.PLAIN_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, getContentTypeInstance(TEXT_PRIMARY_TYPE, DIRECTORY_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(WAV_EXTENSION, getContentTypeInstance(AUDIO_PRIMARY_TYPE, X_WAV_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(XEB_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(XEB_ZIP_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_ZIP_SUBTYPE));	//oebzip
+		tempFileExtensionContentTypeMap.put(ZIP_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, ZIP_SUBTYPE));
 		FILE_EXTENSION_CONTENT_TYPE_MAP=unmodifiableMap(tempFileExtensionContentTypeMap);	//store read-only access to the map		
 	}
 

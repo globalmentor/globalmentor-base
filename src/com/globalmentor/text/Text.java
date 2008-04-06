@@ -40,7 +40,7 @@ public class Text
 	public final static String PLAIN_SUBTYPE="plain";
 
 	/**The content type for plain text: <code>text/plain</code>.*/
-	public static final ContentType TEXT_PLAIN_CONTENT_TYPE=new ContentType(TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE, null);
+	public static final ContentType TEXT_PLAIN_CONTENT_TYPE=getContentTypeInstance(TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
 
 	/**The string representing the CR EOL character sequence.
 	@see {@link Characters#CARRIAGE_RETURN_CHAR}

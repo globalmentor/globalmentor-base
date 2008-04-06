@@ -25,6 +25,9 @@ Any redistribution of this source code or derived source code must include these
 public interface URFResourceAlteration
 {
 
+	/**The singleton resource alteration specification specifying no alterations.*/
+	public final static DefaultURFResourceAlteration NO_RESOURCE_ALTERATION=new DefaultURFResourceAlteration();
+
 	/**@return The new URI of the resource, or <code>null</code> if the current URI of the resource, if any, should remain unchanged.*/
 	public URI getResourceURI();
 
@@ -36,5 +39,12 @@ public interface URFResourceAlteration
 
 	/**@return The immutable set of properties and values to add.*/
 	public Set<URFProperty> getPropertyAdditions(); 
+
+	/**Combines the given alterations with the alterations specified in this object and returns a new specification of the union of alterations.
+	The resource URI specified by the given resource alteration, if provided, will override the resource URI specified by these resource alterations, if any.
+	@param resourceAlteration The alteration specification to add.
+	@return An alteration specification with the combined alterations specified by this specification and the given specification.
+	*/
+	public URFResourceAlteration add(final URFResourceAlteration resourceAlteration);
 
 }
