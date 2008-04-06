@@ -86,31 +86,7 @@ public class ResourceContentModifiedComparator extends AbstractSortOrderComparat
 		{
 			return 0;	//identical resources are always equal
 		}
-		final SortOrder sortOrder=getSortOrder();	//get the sorting order
-		final URFDateTime resource1Modified=getModified(resource1);	//get the modified datetime of the first resource
-		final URFDateTime resource2Modified=getModified(resource2);	//get the modified datetime of the second resource
-		if(resource1Modified!=null)	//if the first resource has a modified designation
-		{
-			if(resource2Modified!=null)	//if the second resource has a modified designation
-			{
-				return sortOrder==SortOrder.ASCENDING ? resource1Modified.compareTo(resource2Modified) : resource2Modified.compareTo(resource1Modified);	//compare in the requested order
-			}
-			else	//if only the first resource has a modified designation
-			{
-				return sortOrder==SortOrder.ASCENDING ? 1 : -1;	//missing modified values should be sorted lower
-			}
-		}
-		else	//if the first resource has no modified designation
-		{
-			if(resource2Modified!=null)	//if the second resource has a modified designation
-			{
-				return sortOrder==SortOrder.ASCENDING ? -1 : 1;	//missing modified values should be sorted lower
-			}
-			else	//if neither resource has a modified designation
-			{
-				return 0;	//consider the resources equal so that other comparators may resolve the order
-			}
-		}
+		return Comparables.compare(getModified(resource1), getModified(resource2), getSortOrder());	//compare modified datetimes
 	}
 
 }

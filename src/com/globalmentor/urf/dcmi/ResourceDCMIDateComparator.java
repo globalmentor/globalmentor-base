@@ -72,8 +72,7 @@ public class ResourceDCMIDateComparator extends AbstractSortOrderComparator<URFR
 	Returns a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
 	Identical resources are always considered equal.
 	<p>This implementation compares resources based upon DCMI date.
-	Resources without a date are considered less than those with a date property.
-	</p>
+	Resources without a date are considered less than those with a date property.</p>
 	@param resource1 The first resource to be compared.
 	@param resource2 The second resource to be compared.
 	@return A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
@@ -86,31 +85,7 @@ public class ResourceDCMIDateComparator extends AbstractSortOrderComparator<URFR
 		{
 			return 0;	//identical resources are always equal
 		}
-		final SortOrder sortOrder=getSortOrder();	//get the sorting order
-		final AbstractURFDateTime resource1Date=getDate(resource1);	//get the date of the first resource
-		final AbstractURFDateTime resource2Date=getDate(resource2);	//get the date of the second resource
-		if(resource1Date!=null)	//if the first resource has a date designation
-		{
-			if(resource2Date!=null)	//if the second resource has a date designation
-			{
-				return sortOrder==SortOrder.ASCENDING ? resource1Date.compareTo(resource2Date) : resource2Date.compareTo(resource1Date);	//compare in the requested order
-			}
-			else	//if only the first resource has a date designation
-			{
-				return sortOrder==SortOrder.ASCENDING ? 1 : -1;	//missing date values should be sorted lower
-			}
-		}
-		else	//if the first resource has no date designation
-		{
-			if(resource2Date!=null)	//if the second resource has a date designation
-			{
-				return sortOrder==SortOrder.ASCENDING ? -1 : 1;	//missing date values should be sorted lower
-			}
-			else	//if neither resource has a date designation
-			{
-				return 0;	//consider the resources equal so that other comparators may resolve the order
-			}
-		}
+		return Comparables.compare(getDate(resource1), getDate(resource2), getSortOrder());	//compare dates
 	}
 
 }
