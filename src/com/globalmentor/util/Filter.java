@@ -17,7 +17,7 @@
 package com.globalmentor.util;
 
 /**Indicates a class that determines whether a given object will pass through
-	the filter be filtered out.
+	the filter or be filtered out.
 @author Garret Wilson
 */
 public interface Filter<T>
