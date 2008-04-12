@@ -746,6 +746,8 @@ public class URF
 		<dt>{@value #LANGUAGE_NAMESPACE_URI}</dt> <dd>{@link Locale}</dd>
 		<dt>{@value Content#CHARSET_NAMESPACE_URI}</dt> <dd>{@link Charset}</dd>
 		<dt>{@value Content#MEDIA_TYPE_NAMESPACE_URI}</dt> <dd>{@link ContentType}</dd>
+		<dt>{@value #DATE_NAMESPACE_URI}</dt> <dd>{@link URFDate}</dd>
+		<dt>{@value #DATE_TIME_NAMESPACE_URI}</dt> <dd>{@link URFDateTime}</dd>
 		<dt>{@value #ORDINAL_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
 		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Real}</dd>
 		<dt>{@value #REGULAR_EXPRESSION_NAMESPACE_URI}</dt> <dd>{@link RegularExpressions}</dd>
@@ -820,6 +822,14 @@ public class URF
 				else if(Content.CHARSET_NAMESPACE_URI.equals(namespaceURI))	//charset
 				{
 					return Content.asCharset(resourceURI);	//return a charset
+				}
+				else if(DATE_NAMESPACE_URI.equals(namespaceURI))	//date
+				{
+					return asDate(resourceURI);	//return a date
+				}
+				else if(DATE_TIME_NAMESPACE_URI.equals(namespaceURI))	//date time
+				{
+					return asDateTime(resourceURI);	//return a date time
 				}
 				else if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//integer
 				{
@@ -988,8 +998,35 @@ public class URF
 				return URFDateTime.valueOf(getLocalName(resourceURI));	//create a date time from the local name
 			}
 		}
-		return null;	//no pattern could be found
+		return null;	//no abstract date time could be found
 	}
+
+	/**Determines the date represented by the given resource.
+	@param resource The resource which is expected to represent a date, or <code>null</code>.
+	@return The date represented by the given resource, or <code>null</code> if the resource does not represent a date.
+	@exception IllegalArgumentException if the given resource represents a date that does not have the correct syntax.
+	@see #asDate(URI)
+	*/
+	public static URFDate asDate(final Resource resource)
+	{
+		return resource!=null ? asDate(resource.getURI()) : null;	//if a resource was given, see if its URI represents a date
+	}
+
+	/**Determines the date represented by the given URI.
+	@param resourceURI The URI which is expected to represent a date, or <code>null</code>.
+	@return The date represented by the given URI, or <code>null</code> if the URI does not represent a date.
+	@exception IllegalArgumentException if the given URI represents a date that does not have the correct syntax.
+	@see #DATE_CLASS_URI
+	@see #DATE_NAMESPACE_URI
+	*/
+	public static URFDate asDate(final URI resourceURI)
+	{
+		if(resourceURI!=null && DATE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a date URI was given
+		{
+			return URFDate.valueOf(getLocalName(resourceURI));	//create a date from the local name
+		}
+		return null;	//no date could be found
+	}	
 
 	/**Determines the date time represented by the given resource.
 	@param resource The resource which is expected to represent a date time, or <code>null</code>.
