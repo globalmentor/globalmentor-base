@@ -35,7 +35,6 @@ import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.URLs.*;
 
-import com.globalmentor.io.ContentTypes;
 import com.globalmentor.io.InputStreams;
 import com.globalmentor.net.URIPath;
 import com.globalmentor.util.NameValuePair;
@@ -186,7 +185,7 @@ public class Classes
 				boolean isCompatible=true;	//start out assuming this is a compatible constructor
 				for(int i=parameterCount-1; isCompatible && i>=0; --i)	//for each parameter, as long we we think this is a compatible constructor
 				{
-					if(!((Class<?>)formalParameterTypes[i]).isAssignableFrom(parameterTypes[i]))	//if we can't assign the requested parameter type to the formal parameter type
+					if(!isCompatible(((Class<?>)formalParameterTypes[i]), parameterTypes[i]))	//if we can't assign the requested parameter type to the formal parameter type
 					{
 						isCompatible=false;	//this is not a compatible constructor
 					}
@@ -199,7 +198,69 @@ public class Classes
 		}
 		return compatibleConstructors.toArray((Constructor<T>[])new Constructor[compatibleConstructors.size()]);	//return an array of compatible constructors
 	}
-	
+
+	/**Determines if a class is compatible with a given class.
+	This method functions identically to {@link Class#isAssignableFrom(Class)}, except that it allows the compatible class to be a non-primitive representation (e.g. {@link Integer})
+	of a primitive type (e.g. <code>int</code>).
+	This method is useful for determining if some type is compatible with a method signature.
+	@param objectClass The class with which compatibility is being determined.
+	@param compatibleClass The class the compatibility of which is questioned.
+	@return <code>true</code> if the given class is compatible with the object class.
+	*/
+	public static boolean isCompatible(final Class<?> objectClass, final Class<?> compatibleClass)
+	{
+		if(objectClass.isPrimitive())	//if the class is a primitive, we'll have to do special checking
+		{
+			if(objectClass==compatibleClass)	//if the classes are the same
+			{
+				return true;	//they are compatible
+			}
+			if(Boolean.TYPE==objectClass)	//otherwise, check to see if a non-primitive version of a primitive class was given
+			{
+				return compatibleClass==Boolean.class;
+			}
+			else if(Byte.TYPE==objectClass)
+			{
+				return compatibleClass==Byte.class;
+			}
+			else if(Character.TYPE==objectClass)
+			{
+				return compatibleClass==Character.class;
+			}
+			else if(Double.TYPE==objectClass)
+			{
+				return compatibleClass==Double.class;
+			}
+			else if(Float.TYPE==objectClass)
+			{
+				return compatibleClass==Float.class;
+			}
+			else if(Integer.TYPE==objectClass)
+			{
+				return compatibleClass==Integer.class;
+			}
+			else if(Long.TYPE==objectClass)
+			{
+				return compatibleClass==Long.class;
+			}
+			else if(Short.TYPE==objectClass)
+			{
+				return compatibleClass==Short.class;
+			}
+			else if(Void.TYPE==objectClass)
+			{
+				return false;	//no class is compatible with void
+			}
+			else	//there should be no other primitive types in Java
+			{
+				throw new AssertionError("Unrecognized primitive type: "+objectClass);
+			}
+		}
+		else	//if the class is not primitive
+		{
+			return objectClass.isAssignableFrom(compatibleClass);	//see if we can assign the compatible class to the object class
+		}
+	}
 	
   /**Finds a defined constructor of a class.
 	This method differs from {@link Class#getConstructor(Class[])} in that if no matching constructor is found, <code>null</code> is returned rather than a {@link NoSuchMethodException} being thrown.
@@ -342,7 +403,7 @@ public class Classes
 				if(parameterTypes.length==1)	//if this setter has one parameter
 				{
 					final Class<?> parameterType=parameterTypes[0];	//get the single parameter type
-					if(parameterType.isAssignableFrom(valueClass))	//if we can assign the value class to the parameter type
+					if(isCompatible(parameterType, valueClass))	//if we can assign the value class to the parameter type
 					{
 						return method;	//return this method
 					}
