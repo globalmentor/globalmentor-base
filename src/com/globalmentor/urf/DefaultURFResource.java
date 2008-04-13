@@ -306,11 +306,8 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 	*/
 	public String toString()
 	{
-		return determineLabel();
-/*TODO bring back
 		final URI uri=getURI();	//get the URI, if any
-		return uri!=null ? new StringBuilder().append(REFERENCE_BEGIN).append(uri).append(REFERENCE_END).toString() : super.toString();	//return the URI, if available
-*/
+		return uri!=null ? new StringBuilder().append(TURF.REFERENCE_BEGIN).append(uri).append(TURF.REFERENCE_END).toString() : super.toString();	//return the URI, if available
 	}
 
 }
