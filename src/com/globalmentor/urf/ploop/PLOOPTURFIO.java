@@ -4,6 +4,8 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.*;
 
+import com.globalmentor.java.Classes;
+import com.globalmentor.java.Java;
 import com.globalmentor.urf.*;
 import com.globalmentor.util.DataException;
 
@@ -62,6 +64,58 @@ public class PLOOPTURFIO<T> extends AbstractTURFIO<T>
 		return object;	//return the object
 	}
 
+	/**Merges the description of a resource from an input stream using an existing URF instance.
+	The object description from the input must have the identical type as the given object.
+	This version delegates to {@link #merge(Object, URF, InputStream, URI)} using {@link #createURF()} to create a new URF instance.
+	@param object The object into which the read description should be merged.
+	@param inputStream The input stream from which to read the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The object after the property merging.
+	@exception NullPointerException if the given object and/or input stream is <code>null</code>.
+	@exception IOException if there is an error reading the data.
+	@exception ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
+	*/ 
+	public final T merge(final T object, final InputStream inputStream, final URI baseURI) throws IOException
+	{
+		return merge(object, createURF(), inputStream, baseURI);	//create a new URF data model, showing the base URI, and merge and return the object
+	}
+	
+	/**Merges the description of a resource from an input stream using an existing URF instance.
+	The object description from the input must have the identical type as the given object.
+	@param object The object into which the read description should be merged.
+	@param urf The URF instance to use in creating new resources.
+	@param inputStream The input stream from which to read the data.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@return The object after the property merging.
+	@exception NullPointerException if the given object, URF instance, and/or input stream is <code>null</code>.
+	@exception IOException if there is an error reading the data.
+	@exception ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
+	*/ 
+	public T merge(final T object, final URF urf, final InputStream inputStream, final URI baseURI) throws IOException
+	{
+		readURF(urf, inputStream, baseURI);	//read URF from the input stream
+		final Class<?> objectClass=object.getClass();	//get the class of the objeect
+		final URFResource resource=urf.getResourceByTypeURI(Classes.createJavaURI(objectClass));	//get the resource for this class
+		if(resource==null)	//if there is no resource
+		{
+			throw new IOException("No resource found with type "+objectClass+".");
+		}
+		final PLOOPURFProcessor ploopProcessor=new PLOOPURFProcessor();	//create a new PLOOP processor
+		try
+		{
+			ploopProcessor.setObjectProperties(object, resource);	//set the object's properties based upon the read description
+		}
+		catch(final DataException dataException)	//if the data was incorrect
+		{
+			throw new IOException(dataException);			
+		}
+		catch(final InvocationTargetException invocationTargetException)	//if a Java contructor threw an exception
+		{
+			throw new IOException(invocationTargetException);			
+		}
+		return object;	//return the object after the merge
+	}
+	
 	/**Writes an object to an output stream.
 	@param outputStream The output stream to which to write the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
