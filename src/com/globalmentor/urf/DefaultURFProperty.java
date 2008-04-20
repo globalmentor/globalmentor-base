@@ -36,7 +36,7 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	/**Property URI and value constructor with no subject scope, a default lock, and a default scope
 	@param propertyURI The property URI.
 	@param value The property value.
-	@exception NullPointerException if the given property URI, and/or value is <code>null</code>.
+	@exception NullPointerException if the given property URI and/or value is <code>null</code>.
 	*/
 	public DefaultURFProperty(final URI propertyURI, final URFResource value)
 	{
@@ -46,7 +46,7 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	/**Property URI and media type value constructor with no subject scope, a default lock, and a default scope
 	@param propertyURI The property URI.
 	@param value The property value.
-	@exception NullPointerException if the given property URI, and/or value is <code>null</code>.
+	@exception NullPointerException if the given property URI and/or value is <code>null</code>.
 	*/
 	public DefaultURFProperty(final URI propertyURI, final ContentType value)
 	{
@@ -56,7 +56,7 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	/**Property URI and string value constructor with no subject scope, a default lock, and a default scope
 	@param propertyURI The property URI.
 	@param value The property value.
-	@exception NullPointerException if the given property URI, and/or value is <code>null</code>.
+	@exception NullPointerException if the given property URI and/or value is <code>null</code>.
 	*/
 	public DefaultURFProperty(final URI propertyURI, final URFDate value)
 	{
@@ -66,7 +66,7 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	/**Property URI and string value constructor with no subject scope, a default lock, and a default scope
 	@param propertyURI The property URI.
 	@param value The property value.
-	@exception NullPointerException if the given property URI, and/or value is <code>null</code>.
+	@exception NullPointerException if the given property URI and/or value is <code>null</code>.
 	*/
 	public DefaultURFProperty(final URI propertyURI, final URFDateTime value)
 	{
@@ -76,11 +76,21 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	/**Property URI and string value constructor with no subject scope, a default lock, and a default scope
 	@param propertyURI The property URI.
 	@param value The property value.
-	@exception NullPointerException if the given property URI, and/or value is <code>null</code>.
+	@exception NullPointerException if the given property UR, and/or value is <code>null</code>.
 	*/
 	public DefaultURFProperty(final URI propertyURI, final String value)
 	{
 		this(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createStringResource(value));	//construct the class with a resource created from the value
+	}
+
+	/**Property URI and URI value constructor with no subject scope, a default lock, and a default scope
+	@param propertyURI The property URI.
+	@param value The property value.
+	@exception NullPointerException if the given property URI and/or value is <code>null</code>.
+	*/
+	public DefaultURFProperty(final URI propertyURI, final URI value)
+	{
+		this(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createURIResource(value));	//construct the class with a resource created from the value
 	}
 
 	/**Read write lock, property URI and value constructor with no subject scope and a default scope.

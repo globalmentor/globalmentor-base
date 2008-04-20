@@ -70,7 +70,38 @@ public class Arrays
 	{
 		return object!=null && elementClass.isInstance(object.getClass().getComponentType()) ? (T[])object : null;	//if each array element of the object is of the correct type, cast to the correct type of array
 	}
-	
+
+	/**Checks to see if the elements within an array are instances of any object, and throws a {@link NullPointerException} if any element is <code>null</code>.
+	@param <T> The type of array element to check.
+	@param array The array the elements of which to check.
+	@return The given array.
+	@exception NullPointerException if the given array or any element within the array is <code>null</code>.
+	*/
+	public static <T> T[] checkInstances(final T[] array)
+	{
+		return checkInstances(array, null);	//check for null with no description
+	}
+
+	/**Checks to see if a given variable is an instance of any object, and throws a {@link NullPointerException} if the variable is <code>null</code>.
+	@param <T> The type of array element to check.
+	@param array The array the elements of which to check.
+	@param description A description of the element to be used when generating an exception,
+		or <code>null</code> for no description.
+	@return The given variable.
+	@exception NullPointerException if the given array or any element within the array is <code>null</code>.
+	*/
+	public static <T> T[] checkInstances(final T[] array, final String description)
+	{
+		for(final T element:array)	//for each element in the array
+		{
+			if(element==null)	//if the element is null
+			{
+				throw new NullPointerException(description);
+			}
+		}
+		return array;	//return the array
+	}
+
 	/**Checks to make sure that a given index range is within the given array.
 	@param length The length of the array.
 	@param fromIndex The first index in the range.

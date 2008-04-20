@@ -72,10 +72,20 @@ public final class URIPath
 	
 	/**Determines whether this path is absolute.
 	@return <code>true</code> if the path begins with {@value com.globalmentor.net.URIs#ROOT_PATH}.
+	@see #isRelative()
 	*/
 	public boolean isAbsolute()
 	{
 		return uri.getRawPath().startsWith(ROOT_PATH);	//see if the path begins with '/'		
+	}
+
+	/**Determines whether this path is relative.
+	@return <code>true</code> if the path does not begin with {@value com.globalmentor.net.URIs#ROOT_PATH}.
+	@see #isAbsolute()
+	*/
+	public boolean isRelative()
+	{
+		return !isAbsolute();	//see if the path is not absolute		
 	}
 
 	/**Checks to see if the path is absolute.
@@ -128,11 +138,11 @@ public final class URIPath
 	If the path is not relative, an exception is thrown.
 	@return This path.
 	@exception IllegalArgumentException if the path is absolute.
-	@see #isAbsolute()
+	@see #isRelative()
 	*/
 	public URIPath checkRelative() throws IllegalArgumentException
 	{
-		if(isAbsolute())	//if this path is absolute
+		if(!isRelative())	//if this path is absolute
 		{
 			throw new IllegalArgumentException("The path "+this+" is not relative.");
 		}
@@ -246,8 +256,27 @@ public final class URIPath
 	/**@return A path-only URI containing this URI path.*/
 	public URI toURI() {return uri;}
 
-	/**@return A URI containing this URI path in the {@value URIs#PATH_SCHEME} scheme.*/
+	/**@return A URI containing this URI path in the {@value URIs#PATH_SCHEME} scheme.
+	@see URIs#PATH_SCHEME
+	*/
 	public URI toPathURI() {return createURI(PATH_SCHEME, uri.getRawPath());}
+
+	/**Returns a URI path based upon the path of the given URI if the given URI uses the {@value URIs#PATH_SCHEME} scheme.
+	@param uri The URI to examine as a path URI.
+	@return The path of the URI if the URI is absolute and has the {@value URIs#PATH_SCHEME} scheme, otherwise <code>null</code>.
+	@see URIs#PATH_SCHEME
+	*/
+	public static URIPath asPathURIPath(final URI uri)
+	{
+		if(PATH_SCHEME.equals(uri.getScheme()))	//if this is a path URI
+		{
+			return getPathURIPath(uri);	//create a new URI path from the raw path information of the URI (which may involve several types of processing based upon whether the path is relative or absolute)
+		}
+		else	//if this is not a path URI
+		{
+			return null;
+		}
+	}
 
 	/**Returns a collection form of the URI path.
 	If the URI path already is a collection path, it is returned unmodified.
@@ -282,8 +311,9 @@ public final class URIPath
 		return object instanceof URIPath && uri.equals(((URIPath)object).uri);	//see if the object is a URI path with the same URI
 	}
 
-	/**Creates a URI consisting of the given string version of the raw path.
+	/**Creates a path URI consisting of the given string version of the raw path.
 	This method performs special processing for relative paths that begin with a segment containing {@value URIs#SCHEME_SEPARATOR}.
+	This method is no more than a URI factory that compensates for a path known to be a path and not a URI and that may contain a {@value URIs#SCHEME_SEPARATOR} in its relative first segment.
 	@param path The raw, encoded path information.
 	@exception NullPointerException if the given path is <code>null</code>.
 	@exception IllegalArgumentException if the given string violates URI RFC 2396.
