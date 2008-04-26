@@ -1108,6 +1108,9 @@ public class URIs
 		URI; if the URI ends in '/', equivalent to resolving the path ".." to the URI;
 		if the URI does not end in '/', equivalent to resolving the path "." to the URI.	
 	@exception IllegalArgumentException if the URI does not have a path component.
+	@see #isCollectionURI(URI)
+	@see #getParentLevel(URI)
+	@see #getCurrentLevel(URI)
 	*/
 	public static URI getParentURI(final URI uri)
 	{

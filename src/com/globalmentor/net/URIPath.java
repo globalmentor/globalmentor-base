@@ -179,6 +179,20 @@ public final class URIPath
 		return parentLevelURI.equals(uri) ? this : new URIPath(parentLevelURI);	//only create a new URI path if it's a different path than this one
 	}
 
+	/**Determines the parent path of this path.
+	@return A path representing the parent collection of this path;
+		if the path ends in '/', equivalent to resolving the path ".." to the path;
+		if the path does not end in '/', equivalent to resolving the path "." to the path.	
+	@exception IllegalArgumentException if the URI does not have a path component.
+	@see #isCollection()
+	@see #getParentLevel()
+	@see #getParentPath()
+	*/
+	public URIPath getParentPath()
+	{
+		return isCollection() ? getParentLevel() : getCurrentLevel();	//if the path ends with a slash, get the parent level; otherwise, get the current level
+	}
+
 	/**Relativizes the given path against this path.
 	This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to {@link #relativize(URIPath)}.
 	@param path The path to be relativized against this path.
