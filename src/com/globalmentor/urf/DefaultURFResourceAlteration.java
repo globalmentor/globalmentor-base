@@ -124,6 +124,30 @@ public class DefaultURFResourceAlteration implements URFResourceAlteration
 		return new DefaultURFResourceAlteration(null, unmodifiableSet(propertyURIRemovals), (Set<URFProperty>)EMPTY_SET, unmodifiableSet(propertyAdditions));
 	}
 
+	/**Creates an alteration to set properties to match the given resource description.
+	The new resource alteration will alter a resource with no properties or a resource with the same property URIs
+	to have the same properties as the given resource.
+	This is achieved by an alteration to set the given properties by removing all properties with the URIs of the properties to set
+	and then adding the set properties.
+	The resource alteration will not remove any property URIs not present in the given resource description.
+	No resource URI change is indicated.
+	@param resource The resource indicating the properties to set.
+	@return A resource alteration indicating that the properties should be set to match the given resource description.
+	@throws NullPointerException if the given resource is <code>null</code>.
+	*/
+	@SuppressWarnings("unchecked")
+	public static DefaultURFResourceAlteration createResourceAlteration(final URFResource resource)
+	{
+		final Set<URI> propertyURIRemovals=new HashSet<URI>();	//the URIs of the properties to remove
+		final Set<URFProperty> propertyAdditions=new HashSet<URFProperty>();	//the properties to add
+		for(final URFProperty property:resource.getProperties())	//for each property
+		{
+			propertyURIRemovals.add(property.getPropertyURI());	//indicate that we should remove all values of this property
+			propertyAdditions.add(property);	//indicate that we should add this property
+		}
+		return new DefaultURFResourceAlteration(null, unmodifiableSet(propertyURIRemovals), (Set<URFProperty>)EMPTY_SET, unmodifiableSet(propertyAdditions));
+	}
+
 	/**Creates an alteration to remove all values of the properties with the givin URIs.
 	No resource URI change is indicated.
 	@param propertyURIRemovals The URIs of properties to remove.
