@@ -4,13 +4,12 @@ import java.net.URI;
 import java.util.Locale;
 
 import com.globalmentor.net.URIs;
-import com.globalmentor.text.directory.vcard.Name;
+import com.globalmentor.text.directory.vcard.*;
 import com.globalmentor.urf.*;
 
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.net.URIs.*;
-import static com.globalmentor.text.directory.vcard.VCardConstants.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.dcmi.DCMI.*;
 
@@ -32,15 +31,15 @@ public class VCard
 	
 		//classes 
 	/**Specifies the components of the name of the object the vCard represents.*/
-	public final static URI N_CLASS_URI=createResourceURI(VCARD_NAMESPACE_URI, N_TYPE);
+	public final static URI N_CLASS_URI=createResourceURI(VCARD_NAMESPACE_URI, com.globalmentor.text.directory.vcard.VCard.N_TYPE);
 
 		//properties
 	/**Specifies the electronic mail address for communication with the object the vCard represents.*/
-	public final static URI EMAIL_PROPERTY_URI=createResourceURI(VCARD_NAMESPACE_URI, getVariableName(EMAIL_TYPE));
+	public final static URI EMAIL_PROPERTY_URI=createResourceURI(VCARD_NAMESPACE_URI, getVariableName(com.globalmentor.text.directory.vcard.VCard.EMAIL_TYPE));
 	/**Specifies the formatted text corresponding to the name of the object the vCard represents.*/
-	public final static URI FN_PROPERTY_URI=createResourceURI(VCARD_NAMESPACE_URI, getVariableName(FN_TYPE));
+	public final static URI FN_PROPERTY_URI=createResourceURI(VCARD_NAMESPACE_URI, getVariableName(com.globalmentor.text.directory.vcard.VCard.FN_TYPE));
 	/**Specifies the components of the name of the object the vCard represents.*/
-	public final static URI N_PROPERTY_URI=createResourceURI(VCARD_NAMESPACE_URI, getVariableName(N_TYPE));
+	public final static URI N_PROPERTY_URI=createResourceURI(VCARD_NAMESPACE_URI, getVariableName(com.globalmentor.text.directory.vcard.VCard.N_TYPE));
 		/**Specifies the family name component of the name of the object the vCard represents.*/
 		public final static URI FAMILY_NAME_PROPERTY_URI=createResourceURI(VCARD_NAMESPACE_URI, "familyName");
 		/**Specifies the given name component of the name of the object the vCard represents.*/

@@ -22,7 +22,7 @@ import java.util.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.rdf.RDFResources.*;
-import static com.globalmentor.text.directory.DirectoryConstants.*;
+import static com.globalmentor.text.directory.Directory.*;
 import static com.globalmentor.util.Locales.*;
 
 import com.globalmentor.rdf.*;

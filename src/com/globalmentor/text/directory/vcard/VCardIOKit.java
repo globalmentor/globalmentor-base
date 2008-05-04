@@ -21,8 +21,7 @@ import java.net.*;
 import com.globalmentor.io.*;
 import com.globalmentor.text.CharacterEncoding;
 import com.globalmentor.text.directory.*;
-
-import static com.globalmentor.text.directory.vcard.VCardConstants.*;
+import static com.globalmentor.text.directory.vcard.VCard.*;
 
 /**Class for loading and saving a a vCard <code>text/directory</code>
 	profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>,

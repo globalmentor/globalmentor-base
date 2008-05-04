@@ -18,7 +18,8 @@ package com.globalmentor.text.directory;
 
 import java.io.*;
 
-import static com.globalmentor.text.directory.DirectoryConstants.*;
+import static com.globalmentor.text.ABNF.*;
+import static com.globalmentor.text.directory.Directory.*;
 
 /**Reader that folds lines of type <code>text/directory</code> as defined
 	"RFC 2425: A MIME Content-Type for Directory Information".

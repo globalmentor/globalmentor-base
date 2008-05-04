@@ -22,14 +22,14 @@ import java.util.Locale;
 import com.globalmentor.net.URIs;
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.directory.RDFDirectory;
-import com.globalmentor.text.directory.vcard.Name;
+import com.globalmentor.text.directory.vcard.*;
+import static com.globalmentor.text.directory.vcard.VCard.*;
 import com.globalmentor.util.NameValuePair;
 
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.rdf.RDFResources.*;
-import static com.globalmentor.text.directory.vcard.VCardConstants.*;
 import static com.globalmentor.util.Arrays.*;
 
 /**An ontology to represent a vCard <code>text/directory</code> profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>, "vCard MIME Directory Profile".

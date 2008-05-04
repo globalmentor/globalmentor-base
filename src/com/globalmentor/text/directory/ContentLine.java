@@ -18,7 +18,7 @@ package com.globalmentor.text.directory;
 
 import java.util.*;
 
-import static com.globalmentor.text.directory.DirectoryConstants.*;
+import static com.globalmentor.text.directory.Directory.*;
 
 import com.globalmentor.util.*;
 

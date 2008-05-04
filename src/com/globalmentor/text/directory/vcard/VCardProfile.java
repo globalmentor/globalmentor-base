@@ -21,7 +21,8 @@ import java.lang.ref.*;
 import java.net.*;
 import java.util.*;
 
-import static com.globalmentor.text.directory.vcard.VCardConstants.*;
+import static com.globalmentor.text.ABNF.*;
+import static com.globalmentor.text.directory.vcard.VCard.*;
 
 import com.globalmentor.io.*;
 import com.globalmentor.java.*;
@@ -71,7 +72,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		registerValueType(NOTE_TYPE, TEXT_VALUE_TYPE);	//NOTE: text
 		registerValueType(PRODID_TYPE, TEXT_VALUE_TYPE);	//PRODID: text
 		registerValueType(REV_TYPE, DATE_TIME_VALUE_TYPE);	//REV: date-time
-		registerValueType(SORT_STRING_TYPE, TEXT_VALUE_TYPE);	//SORT-STRING: text
+		registerValueType(SORT_STRING_TYPE, Directory.TEXT_VALUE_TYPE);	//SORT-STRING: text
 		registerValueType(SOUND_TYPE, BINARY_VALUE_TYPE);	//SOUND: binary
 		registerValueType(UID_TYPE, TEXT_VALUE_TYPE);	//UID: text
 		registerValueType(URL_TYPE, URI_VALUE_TYPE);	//URL: uri
@@ -223,13 +224,13 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		if(addressTypeIntegerMap==null)	//if we no longer have a map, create one and initialize it with lowercase address type values
 		{
 			addressTypeIntegerMap=new HashMap<String, Integer>();	//create a new map
-			addressTypeIntegerMap.put(ADR_DOM_PARAM_VALUE.toLowerCase(), new Integer(Address.DOMESTIC_ADDRESS_TYPE));
-			addressTypeIntegerMap.put(ADR_INTL_PARAM_VALUE.toLowerCase(), new Integer(Address.INTERNATIONAL_ADDRESS_TYPE));
-			addressTypeIntegerMap.put(ADR_POSTAL_PARAM_VALUE.toLowerCase(), new Integer(Address.POSTAL_ADDRESS_TYPE));
-			addressTypeIntegerMap.put(ADR_PARCEL_PARAM_VALUE.toLowerCase(), new Integer(Address.PARCEL_ADDRESS_TYPE));
-			addressTypeIntegerMap.put(ADR_HOME_PARAM_VALUE.toLowerCase(), new Integer(Address.HOME_ADDRESS_TYPE));
-			addressTypeIntegerMap.put(ADR_WORK_PARAM_VALUE.toLowerCase(), new Integer(Address.WORK_ADDRESS_TYPE));
-			addressTypeIntegerMap.put(ADR_PREF_PARAM_VALUE.toLowerCase(), new Integer(Address.PREFERRED_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_DOM_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.DOMESTIC_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_INTL_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.INTERNATIONAL_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_POSTAL_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.POSTAL_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_PARCEL_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.PARCEL_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_HOME_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.HOME_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_WORK_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.WORK_ADDRESS_TYPE));
+			addressTypeIntegerMap.put(ADR_PREF_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.PREFERRED_ADDRESS_TYPE));
 			addressTypeIntegerMapReference=new SoftReference<Map<String, Integer>>(addressTypeIntegerMap);	//store the map in a soft reference, so it can be reclaimed if needed			
 		}
 		return addressTypeIntegerMap;	//return the map
@@ -327,20 +328,20 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		if(telephoneTypeIntegerMap==null)	//if we no longer have a map, create one and initialize it with lowercase telephone type values
 		{
 			telephoneTypeIntegerMap=new HashMap<String, Integer>();	//create a new map
-			telephoneTypeIntegerMap.put(TEL_HOME_PARAM_VALUE.toLowerCase(), new Integer(Telephone.HOME_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_MSG_PARAM_VALUE.toLowerCase(), new Integer(Telephone.MESSAGE_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_WORK_PARAM_VALUE.toLowerCase(), new Integer(Telephone.WORK_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_PREF_PARAM_VALUE.toLowerCase(), new Integer(Telephone.PREFERRED_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_VOICE_PARAM_VALUE.toLowerCase(), new Integer(Telephone.VOICE_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_FAX_PARAM_VALUE.toLowerCase(), new Integer(Telephone.FAX_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_CELL_PARAM_VALUE.toLowerCase(), new Integer(Telephone.CELL_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_VIDEO_PARAM_VALUE.toLowerCase(), new Integer(Telephone.VIDEO_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_PAGER_PARAM_VALUE.toLowerCase(), new Integer(Telephone.PAGER_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_BBS_PARAM_VALUE.toLowerCase(), new Integer(Telephone.BBS_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_MODEM_PARAM_VALUE.toLowerCase(), new Integer(Telephone.MODEM_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_CAR_PARAM_VALUE.toLowerCase(), new Integer(Telephone.CAR_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_ISDN_PARAM_VALUE.toLowerCase(), new Integer(Telephone.ISDN_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_PCS_PARAM_VALUE.toLowerCase(), new Integer(Telephone.PCS_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_HOME_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.HOME_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_MSG_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.MESSAGE_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_WORK_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.WORK_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_PREF_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.PREFERRED_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_VOICE_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.VOICE_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_FAX_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.FAX_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_CELL_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.CELL_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_VIDEO_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.VIDEO_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_PAGER_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.PAGER_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_BBS_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.BBS_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_MODEM_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.MODEM_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_CAR_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.CAR_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_ISDN_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.ISDN_TELEPHONE_TYPE));
+			telephoneTypeIntegerMap.put(TEL_PCS_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.PCS_TELEPHONE_TYPE));
 			telephoneTypeIntegerMapReference=new SoftReference<Map<String, Integer>>(telephoneTypeIntegerMap);	//store the map in a soft reference, so it can be reclaimed if needed			
 		}
 		return telephoneTypeIntegerMap;	//return the map
@@ -979,7 +980,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		content line with the version used here: "3.0".</p>
 	@param vcard The vCard object to be converted to content lines.
 	@return The content lines that represent the vCard information.
-	@see VCardConstants#VCARD_VERSION_VALUE
+	@see VCard#VCARD_VERSION_VALUE
 	*/
 	public static ContentLine[] createContentLines(final VCard vcard)	//TODO make sure displayName and formattedName are included
 	{
@@ -1086,7 +1087,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 */
 		if(vcard.getURL()!=null)	//URL
 		{
-			contentLineList.add(new ContentLine(VCARD_PROFILE_NAME, null, URL_TYPE, vcard.getURL()));	//URL
+			contentLineList.add(new ContentLine(VCARD_PROFILE_NAME, null, VCard.URL_TYPE, vcard.getURL()));	//URL
 		}
 			//ignore the given vCard version, and always create "version:3.0"
 		contentLineList.add(new ContentLine(VERSION_TYPE, new LocaledText(VCARD_VERSION_VALUE)));	//VERSION

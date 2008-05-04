@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.directory;
+package com.globalmentor.urf;
 
 import java.net.URI;
 import java.util.*;
 
-import com.globalmentor.rdf.*;
 import com.globalmentor.text.directory.*;
+import static com.globalmentor.text.directory.Directory.*;
+import static com.globalmentor.urf.URF.*;
 
-/**RDF factory for the predefined types of a directory of type
+/**URF factory for the predefined types of a directory of type
 	<code>text/directory</code> as defined in
 	<a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
 	"A MIME Content-Type for Directory Information".
-This implementation is unfinished.
 @author Garret Wilson
-@deprecated
 */
-public class PredefinedRDFProfile extends PredefinedProfile implements RDFPropertyFactory, RDFPropertyValueFactory
+public class URFPredefinedDirectoryProfile extends PredefinedProfile implements DirectoryContentLineURFPropertyURIFactory, DirectoryContentLineURFPropertyValueFactory
 {
 
 	/**A map of property URIs keyed to supported type name strings.*/
@@ -56,41 +55,37 @@ public class PredefinedRDFProfile extends PredefinedProfile implements RDFProper
 		}
 
 	/**Default constructor.*/
-	public PredefinedRDFProfile()
+	public URFPredefinedDirectoryProfile()
 	{
 			//register property URIs for the predefined types
-		registerPropertyURI(Directory.SOURCE_TYPE, RDFResources.createReferenceURI(RDFDirectory.DIRECTORY_NAMESPACE_URI, Directory.SOURCE_TYPE.toLowerCase()));	//SOURCE		
-		registerPropertyURI(Directory.NAME_TYPE, RDFResources.createReferenceURI(RDFDirectory.DIRECTORY_NAMESPACE_URI, Directory.NAME_TYPE.toLowerCase()));	//NAME
+/*TODO fix if needed
+		registerPropertyURI(SOURCE_TYPE, RDFResources.createReferenceURI(RDFDirectory.DIRECTORY_NAMESPACE_URI, Directory.SOURCE_TYPE.toLowerCase()));	//SOURCE		
+		registerPropertyURI(NAME_TYPE, RDFResources.createReferenceURI(RDFDirectory.DIRECTORY_NAMESPACE_URI, Directory.NAME_TYPE.toLowerCase()));	//NAME
+*/
 	}
-	
-	/**Creates an RDF property resource to represent the given directory
-		content line.
-	@param rdf The RDF data model to use when creating the RDF property resource.
-	@param contentLine The directory content line to be converted to an RDF
-		property.
-	@return An RDF property resource representing the directory content line,
-		or <code>null</code> if an RDF property resource cannot be creatd. 
+
+	/**Creates an URF property URI to represent the given directory content line.
+	@param contentLine The directory content line to be converted to an URF property.
+	@return An URF property URI representing the directory content line,
+		or <code>null</code> if an URF property resource cannot be creatd. 
 	*/
-	public RDFResource createProperty(final RDF rdf, final ContentLine contentLine)
-	{
-		final URI propertyURI=getPropertyURI(contentLine.getName());	//get whatever property URI we have associated with this type name, if any
-		return propertyURI!=null ? rdf.locateResource(propertyURI) : null;	//if we have a property URI, return a resource for it from the RDF data model
+	public URI createPropertyURI(final ContentLine contentLine)
+	{	
+		return getPropertyURI(contentLine.getName());	//get whatever property URI we have associated with this type name, if any
 	}	
 
-	/**Creates an RDF object to represent the value of the given directory
-		content line.
-	@param rdf The RDF data model to use when creating the RDF objects.
-	@param contentLine The directory content line to be converted to an RDF
-		object.
+	/**Creates an URF resource to represent the value of the given directory content line.
+	@param urf The URFdata model to use when creating the URF resources.
+	@param contentLine The directory content line to be converted to an URF resource.
 	@param valueType The type of directory value the content line represents.
-	@return An RDF object representing the value of the directory content line,
-		or <code>null</code> if an RDF object cannot be creatd. 
+	@return An URF resource representing the value of the directory content line,
+		or <code>null</code> if an URF resource cannot be creatd. 
 	*/
-	public RDFObject createPropertyValue(final RDF rdf, final ContentLine contentLine, final String valueType)
+	public URFResource createPropertyValue(final URF urf, final ContentLine contentLine, final String valueType)
 	{
-		if(Directory.TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//if this is the "text" value type
+		if(TEXT_VALUE_TYPE.equalsIgnoreCase(valueType))	//if this is the "text" value type
 		{
-			return new RDFPlainLiteral(contentLine.getValue().toString());	//return the string value of the content line as a literal
+			return DEFAULT_URF_RESOURCE_FACTORY.createStringResource(contentLine.getValue().toString());	//return a resource with the string value of the content line as a literal
 /*TODO fix
 				if(contentLine.getGroup()==null && contentLine.getParamList().size()==0)	//if there is no group and no parameters
 				{
