@@ -727,7 +727,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final URFDate propertyValue)
 	{
-		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createDateResource(propertyValue));	//create a resource and set the property value
+		return setPropertyValue(propertyURI, propertyValue!=null ? DEFAULT_URF_RESOURCE_FACTORY.createDateResource(propertyValue) : null);	//create a resource and set the property value
 	}
 
 	/**Sets a date time property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
@@ -738,12 +738,12 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final URFDateTime propertyValue)
 	{
-		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createDateTimeResource(propertyValue));	//create a resource and set the property value
+		return setPropertyValue(propertyURI, propertyValue!=null ? DEFAULT_URF_RESOURCE_FACTORY.createDateTimeResource(propertyValue) : null);	//create a resource and set the property value
 	}
 
 	/**Sets an integer property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.
-	@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.
+	@param propertyValue The value to set for the given property.
 	@return The old property value, or <code>null</code> if there was no property value previously.
 	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
@@ -760,7 +760,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final String propertyValue)
 	{
-		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createStringResource(propertyValue));	//create a resource and set the property value
+		return setPropertyValue(propertyURI, propertyValue!=null ? DEFAULT_URF_RESOURCE_FACTORY.createStringResource(propertyValue) : null);	//create a resource and set the property value
 	}
 
 	/**Sets a URI property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
@@ -771,7 +771,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final URI propertyValue)
 	{
-		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createURIResource(propertyValue));	//create a resource and set the property value
+		return setPropertyValue(propertyURI, propertyValue!=null ? DEFAULT_URF_RESOURCE_FACTORY.createURIResource(propertyValue) : null);	//create a resource and set the property value
 	}
 
 	/**Sets values for the property with the given URI by removing all properties with the given URI and adding the given property values.

@@ -244,7 +244,7 @@ public interface URFScope extends ReadWriteLock
 
 	/**Sets an integer property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.
-	@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.
+	@param propertyValue The value to set for the given property.
 	@return The old property value, or <code>null</code> if there was no property value previously.
 	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
