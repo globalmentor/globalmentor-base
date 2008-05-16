@@ -121,7 +121,7 @@ public class WeakHashSet<E> extends AbstractSet<E> implements Set<E>
 	 *
 	 * @return an iterator over the elements in this set.
 	 */
-	public Iterator iterator() {return map.keySet().iterator();}
+	public Iterator<E> iterator() {return map.keySet().iterator();}
 
 
 	// Modification Operations
