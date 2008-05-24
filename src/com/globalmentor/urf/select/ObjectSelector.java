@@ -7,7 +7,7 @@ import com.globalmentor.urf.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.select.Select.*;
 
-/**A selector that selects a resource based its equality to an object.
+/**A selector that selects a resource based its equality to a runtime object represented by a resource.
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:

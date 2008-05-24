@@ -6,7 +6,7 @@ import com.globalmentor.net.Resource;
 import com.globalmentor.urf.URFResource;
 import static com.globalmentor.urf.select.Select.*;
 
-/**A selector that selects a resource based upon identity.
+/**A selector that selects a resource based upon URI identity.
 Resources are considered identical if they have the same URI.
 This selector differs from {@link URISelector} in that this selector provides the actual resource (with its identifying URI), not just its URI.
 <p>Copyright © 2007 GlobalMentor, Inc.
