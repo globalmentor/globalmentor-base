@@ -10,6 +10,7 @@ import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.util.Locales.*;
 
+import com.globalmentor.java.Classes;
 import com.globalmentor.urf.content.Content;
 
 /**A default factory to create default resources.
@@ -60,6 +61,17 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 	public URFResource createCharsetResource(final Charset charset)
 	{
 		return createLexicalResource(Content.CHARSET_CLASS_URI, charset.name());	//create and return a default charset resource
+	}
+
+	/**Creates a default class resource with the appropriate Java class URI.
+	This method delegates to {@link #createResource(URI, URI)}.
+	@param objectClass The class for which a default resource should be created.
+	@return A default class resource with the appropriate Java class URI.
+	@exception NullPointerException if the given class is <code>null</code>.
+	*/
+	public URFResource createClassResource(final Class<?> objectClass)
+	{
+		return createResource(Classes.createJavaURI(objectClass), null);	//create an untyped resource with a Java class URI
 	}
 
 	/**Creates a default integer resource with its type added as a type property.

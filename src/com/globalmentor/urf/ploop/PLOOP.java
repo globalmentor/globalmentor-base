@@ -22,11 +22,23 @@ public class PLOOP
 	@param object The object for which a property URI should be determined.
 	@param propertyName The name of the property.
 	@return The URF property URI for the object's property.
-	@exception NullPointerException if the given object, and/or property name is <code>null</code>.
+	@exception NullPointerException if the given object and/or property name is <code>null</code>.
 	*/
-	public static URI getPropertyURI(final Object object, final String propertyName)
+	public static URI createPropertyURI(final Object object, final String propertyName)
 	{
-		final URI namespaceURI=createJavaURI(object.getClass());	//the URI of the object's class will be the namespace of the property URI
+		return createPropertyURI(object.getClass(), propertyName);	//create a property URI from the object's class
+	}
+
+	/**Determines the URF property URI for a property of a given class.
+	The namespace of the property URI will be the URI of the class.
+	@param objectClass The class for which a property URI should be determined.
+	@param propertyName The name of the property.
+	@return The URF property URI for the class' property.
+	@exception NullPointerException if the given class and/or property name is <code>null</code>.
+	*/
+	public static URI createPropertyURI(final Class<?> objectClass, final String propertyName)
+	{
+		final URI namespaceURI=createJavaURI(objectClass);	//the URI of the class will be the namespace of the property URI
 		return createResourceURI(namespaceURI, propertyName);	//create and return a property URI for the given property
 	}
 

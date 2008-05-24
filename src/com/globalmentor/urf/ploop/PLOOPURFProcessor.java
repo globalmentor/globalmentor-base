@@ -412,7 +412,7 @@ public class PLOOPURFProcessor
 	*/
 	public boolean setObjectProperty(final Object object, final URFResource resource, final String propertyName) throws DataException, InvocationTargetException
 	{
-		final URI propertyURI=getPropertyURI(object, propertyName);	//get the property URI for the given property of the object
+		final URI propertyURI=createPropertyURI(object, propertyName);	//get the property URI for the given property of the object
 		final URFResource propertyValue=resource.getPropertyValue(propertyURI);	//get the value for this property
 //TODO fix to support null values		if(propertyValue==null && !resource.hasProperty(propertyURI))	//if the resource does not have a value for the property
 		if(propertyValue==null && !resource.hasProperty(propertyURI))	//if the resource does not have a value for the property

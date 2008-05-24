@@ -26,15 +26,37 @@ public class ObjectClassSelector extends AbstractSelector
 	/**Default constructor.*/
 	public ObjectClassSelector()
 	{
-		this(null);	//construct the class with no URI
+		this((URI)null);	//construct the class with no URI
 	}
 
 	/**URI constructor.
-	@param uri The URI for the new resource.
+	@param uri The URI for the new resource, or <code>null</code> if this resource has no URI.
 	*/
 	public ObjectClassSelector(final URI uri)
 	{
+		this(uri, null);  //construct the class with no select class
+	}
+
+	/**Class constructor.
+	@param selectClass The select class identified by this selector, or <code>null</code> if no select class is specified.
+	*/
+	public ObjectClassSelector(final Class<?> selectClass)
+	{
+		this(null, selectClass);	//construct the class with no URI
+	}
+
+	/**URI and class constructor.
+	@param uri The URI for the new resource, or <code>null</code> if this resource has no URI.
+	@param selectClass The select class identified by this selector, or <code>null</code> if no select class is specified.
+	*/
+	public ObjectClassSelector(final URI uri, final Class<?> selectClass)
+	{
 		super(uri);  //construct the parent class
+		if(selectClass!=null)	//if there is a select class
+		{
+			setPropertyValue(SELECT_CLASS_PROPERTY_URI, DEFAULT_URF_RESOURCE_FACTORY.createClassResource(selectClass));	//create a new resource for the class and use it to set the select class value
+			this.selectClass=selectClass;	//cache the class so we won't have to load it later
+		}
 	}
 
 	/**Returns the select class identified by this selector.

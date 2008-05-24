@@ -276,7 +276,7 @@ public class PLOOPURFGenerator
 		if(propertyValueObject!=null)	//if there is a value
 		{
 			final URFResource propertyValueResource=generateURFResource(propertyValueObject, propertyType);	//generate an URF object from the property value
-			final URI propertyURI=getPropertyURI(object, propertyName);	//get the property URI for the given property of the object
+			final URI propertyURI=createPropertyURI(object, propertyName);	//get the property URI for the given property of the object
 			return resource.setPropertyValue(propertyURI, propertyValueResource);	//set this property of the URF resource
 		}
 		else	//if there is no value

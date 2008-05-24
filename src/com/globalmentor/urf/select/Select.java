@@ -22,10 +22,14 @@ public class Select
 		//properties
 	/**Specifies the selected class of a class selector.*/
 	public final static URI SELECT_CLASS_PROPERTY_URI=createResourceURI(SELECT_NAMESPACE_URI, "selectClass");
+	/**Specifies the selected object of an object selector.*/
+	public final static URI SELECT_OBJECT_PROPERTY_URI=createResourceURI(SELECT_NAMESPACE_URI, "selectObject");
 	/**Specifies the selected property of a property selector.*/
 	public final static URI SELECT_PROPERTY_PROPERTY_URI=createResourceURI(SELECT_NAMESPACE_URI, "selectProperty");
 	/**Specifies the name of a selected property of an object property selector.*/
 	public final static URI SELECT_PROPERTY_NAME_PROPERTY_URI=createResourceURI(SELECT_NAMESPACE_URI, "selectPropertyName");
+	/**Specifies the selected resource of a resource selector.*/
+	public final static URI SELECT_RESOURCE_PROPERTY_URI=createResourceURI(SELECT_NAMESPACE_URI, "selectResource");
 	/**Specifies the selected URI of a URI selector.*/
 	public final static URI SELECT_URI_PROPERTY_URI=createResourceURI(SELECT_NAMESPACE_URI, "selectURI");
 	/**Specifies the selector to select one or more resources.*/
