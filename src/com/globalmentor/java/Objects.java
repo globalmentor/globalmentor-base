@@ -122,18 +122,12 @@ public class Objects
 		return instanceClass.isInstance(object) ? instanceClass.cast(object) : null;	//cast and return the object if it is an instance of the class, otherwise null
 	}
 
-	/**Compares two objects to make sure that the objects are equal, or the
-		objects are both set to <code>null</code>. If the first object is not
-		<code>null</code>, it is compared to the second using the first object's
-		{@link Object#equals(Object)} method.
-		This is a convenience method to compare two objects using the
-		{@link Object#equals(Object)} method when it's not known if one of the objects
-		is <code>null</code>.
+	/**Compares two objects to make sure that the objects are equal, or the objects are both set to <code>null</code>.
+	If the first object is not <code>null</code>, it is compared to the second using the first object's {@link Object#equals(Object)} method.
+	This is a convenience method to compare two objects using the {@link Object#equals(Object)} method when it's not known if one of the objects is <code>null</code>.
 	@param object1 The first object to compare.
 	@param object2 The second object to compare.
-	@return <code>true</code> if the objects are equal according to the first
-		object's {@link Object#equals(Object)} method or if both objects are
-		<code>null</code>.
+	@return <code>true</code> if the objects are equal according to the first object's {@link Object#equals(Object)} method or if both objects are <code>null</code>.
 	@see Object#equals(Object)
 	*/
 	public final static boolean equals(final Object object1, final Object object2)

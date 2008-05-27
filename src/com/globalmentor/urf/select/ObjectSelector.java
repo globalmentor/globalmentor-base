@@ -8,6 +8,7 @@ import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.select.Select.*;
 
 /**A selector that selects a resource based its equality to a runtime object represented by a resource.
+This implementation performs special comparisons on numbers to allow the URF integer and floating point types to select the multiple Java integer and floating point types.   
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:
@@ -47,6 +48,7 @@ public class ObjectSelector extends AbstractSelector
 	/**Determines if this selector selects a given object.
 	A selector with no select object will not match any resources.
 	This version returns <code>true</code> the the select object resource can be converted to an object the {@link Object#equals(Object)} method of which returns <code>true</code> for the given object.
+	This implementation performs special comparisons on numbers to allow the URF integer and floating point types to select the multiple Java integer and floating point types.   
 	@param object The object to test for a match, or <code>null</code> if there is no object.
 	@return <code>true</code> if this selector selects the given object.
 	@see #getSelectObject()
@@ -55,6 +57,27 @@ public class ObjectSelector extends AbstractSelector
 	public boolean selects(final Object object)
 	{
 		final Object selectObject=getSelectObject();	//get the select object, if any
-		return selectObject!=null && selectObject.equals(object);	//if there is a select object, see if the given object is equal to it
+		if(selectObject==null || object==null)	//if either object is null
+		{
+			return false;	//the selector or the selectee must be non-null for a match
+		}
+		if(selectObject instanceof Number)	//if the selector is a number, do special comparisons (perform the extra test to reduce overall tests in most cases, assuming most selectors are not numbers)
+		{
+			if(selectObject instanceof Long)	//if the object represents an URF integer
+			{
+				if(object instanceof Integer)	//Java integers hold valid URF integer values
+				{
+					return ((Long)selectObject).longValue()==((Integer)object).longValue();	//compare long values
+				}
+			}
+			else if(selectObject instanceof Double)	//if the object represents an URF real
+			{
+				if(object instanceof Float)	//Java floats hold valid URF real values
+				{
+					return Double.doubleToLongBits(((Double)selectObject).doubleValue())==Double.doubleToLongBits(((Float)object).doubleValue());	//compare long bits of double values
+				}
+			}
+		}
+		return selectObject.equals(object);	//by default just use the object equality method
 	}
 }
