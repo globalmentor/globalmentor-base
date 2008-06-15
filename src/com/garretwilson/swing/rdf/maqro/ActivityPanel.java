@@ -14,8 +14,8 @@ import com.garretwilson.resources.icon.IconResources;
 
 import static com.globalmentor.util.UUIDs.*;
 
+import com.globalmentor.apps.mentoract.activity.maqro.*;
 import com.globalmentor.io.ContentTypeConstants;
-import com.globalmentor.mentoract.activity.maqro.*;
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.dublincore.RDFDublinCore;
 import com.globalmentor.rdf.maqro.*;
