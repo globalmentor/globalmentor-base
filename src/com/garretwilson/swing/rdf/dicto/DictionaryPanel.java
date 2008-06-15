@@ -12,8 +12,8 @@ import com.garretwilson.swing.rdf.RDFPanel;
 import com.garretwilson.model.ResourceModel;
 import com.garretwilson.resources.icon.IconResources;
 
+import com.globalmentor.apps.marmot.resource.dicto.*;
 import com.globalmentor.java.Characters;
-import com.globalmentor.marmot.resource.dicto.*;	//TODO GlobalMentor-specific items up to some other class if possible
 import com.globalmentor.mentoract.activity.maqro.*;
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.dicto.*;
