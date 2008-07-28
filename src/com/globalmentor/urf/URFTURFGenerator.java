@@ -794,6 +794,7 @@ public class URFTURFGenerator
 					generateReference(writer, urf, typeURI);	//generate a reference to the type
 					markReferenceGenerated(urf, TYPE_PROPERTY_URI);	//mark that the type property was generated unless it has some other quality needed to be generated separately
 					markReferenceGenerated(urf, typeURI);	//mark that the type was generated unless it has some other quality needed to be generated separately
+					generatedComponent=true;	//indicate that we generated a component
 					++shortTypeCount;	//show that we've got another short type
 						//selector
 					if(selector!=null)	//if there is a selector for this type
@@ -820,6 +821,7 @@ public class URFTURFGenerator
 					generateReference(writer, urf, superclassURI);	//generate a reference to the superclass
 					markReferenceGenerated(urf, SUBCLASS_OF_PROPERTY_URI);	//mark that the superclass property was generated unless it has some other quality needed to be generated separately
 					markReferenceGenerated(urf, superclassURI);	//mark that the superclass was generated unless it has some other quality needed to be generated separately
+					generatedComponent=true;	//indicate that we generated a component
 				}
 				//TODO make sure superclasses without URIs get generated in the properties section
 			}
@@ -838,6 +840,7 @@ public class URFTURFGenerator
 					generateReference(writer, urf, interfaceURI);	//generate a reference to the interface
 					markReferenceGenerated(urf, IMPLEMENTATION_OF_PROPERTY_URI);	//mark that the interface property was generated unless it has some other quality needed to be generated separately
 					markReferenceGenerated(urf, interfaceURI);	//mark that the interface was generated unless it has some other quality needed to be generated separately
+					generatedComponent=true;	//indicate that we generated a component
 				}
 				//TODO make sure interfaces without URIs get generated in the properties section
 			}
