@@ -1548,7 +1548,7 @@ public class URF
 	{
 		for(final URFProperty property:scope.getProperties())	//for each property in the scope
 		{
-			addResource(property.getValue());	//add this property value resource
+			addResource(property.getValue(), addedResources);	//add this property value resource
 			addPropertyValues(property.getScope(), addedResources);	//add all property values from the property-value's scope recursively
 		}
 	}
@@ -1598,8 +1598,8 @@ public class URF
 	 */ 
 	public Iterable<URFResource> getRootResources()
 	{
-		final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap=getReferences();	//get a map of sets of all references to each resource
-		final Iterator<Map.Entry<URFResource, Set<URFScope>>> resourceScopeReferencesEntryIterator=referenceMap.entrySet().iterator();	//get an iterator to all the entries of the reference map
+		final ReferenceSummary referenceSummary=getReferenceSummary();	//get a summary all references to each resource
+		final Iterator<Map.Entry<URFResource, Set<URFScope>>> resourceScopeReferencesEntryIterator=referenceSummary.objectReferenceMap.entrySet().iterator();	//get an iterator to all the entries of the reference map
 		while(resourceScopeReferencesEntryIterator.hasNext())	//while there are more entries
 		{
 			final Map.Entry<URFResource, Set<URFScope>> resourceScopeReferencesEntry=resourceScopeReferencesEntryIterator.next();	//get the next entry
@@ -1608,7 +1608,7 @@ public class URF
 				resourceScopeReferencesEntryIterator.remove();	//remove this non-root resource from the reference map
 			}
 		}
-		return unmodifiableSet(referenceMap.keySet()); //return an unmodifiable iterable to the set of all remaining resources in the reference map: the root resource which have no references
+		return unmodifiableSet(referenceSummary.objectReferenceMap.keySet()); //return an unmodifiable iterable to the set of all remaining resources in the reference map: the root resource which have no references
 	}
 
 	/**Retrieves the first encountered resource in the data model that is of the requested type.
@@ -1732,57 +1732,68 @@ public class URF
 		return resource;  //return the resource we created
 	}
 
+	/**The encapsulation of a summary of reference information about an URF data model.
+	@author Garret Wilson
+	*/
+	public static class ReferenceSummary
+	{
+
+		/**The map of resources and the sets of scopes that reference them as property objects.*/
+		public final CollectionMap<URFResource, URFScope, Set<URFScope>> objectReferenceMap=new IdentityHashSetMap<URFResource, URFScope>(new HashMap<URFResource, Set<URFScope>>());	//create a new map in which to store reference sets; don't make the use identity for the map, or we wouldn't recognize references to multiple instances of resources with the same URI
+
+		/**The map of property URIs and the sets of scopes that reference them.*/
+		public final CollectionMap<URI, URFScope, Set<URFScope>> propertyURIReferenceMap=new IdentityHashSetMap<URI, URFScope>(new HashMap<URI, Set<URFScope>>());	//create a new map in which to store reference sets; don't make the use identity for the map, or we wouldn't recognize references to multiple instances of resources with the same URI
+
+		/**The map of the number of times each each property URI is referenced as a property URI, including multiple times by the same subject.*/
+		public final Map<URI, Integer> propertyURIReferenceCountMap=new HashMap<URI, Integer>();
+		
+	}
+
 	/**Looks at all the scopes in the URF data model and recursively gathers which scopes reference which other resources.
 	Circular references are correctly handled.
-	The returned map and the associated sets use identity rather than equality to store resources, as some resources may be anonymous.
-	This method considers "reference" to include the relationship of a scope to a property and of a scope to a value.
-	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource.
-	@return The map of resources and associated referring scopes.
+	The returned sets of scopes use identity equivalence.
+	@return A summary of scope references to resources and property URIs.
 	*/
-	public CollectionMap<URFResource, URFScope, Set<URFScope>> getReferences()
+	public ReferenceSummary getReferenceSummary()
 	{
-		final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap=new IdentityHashSetMap<URFResource, URFScope>(new IdentityHashMap<URFResource, Set<URFScope>>());	//create a new map in which to store reference sets
+		final ReferenceSummary referenceSummary=new ReferenceSummary();	//create a new reference summary to populate
 		final Set<URFScope> referrerScopeSet=new IdentityHashSet<URFScope>();	//create a set of referring scopes to prevent circular references
 		for(final URFResource resource:getResources())	//for each resource in this data model
 		{
-			getReferences(resource, referenceMap, referrerScopeSet);	//gather all references to this resource
+			getReferenceSummary(resource, referenceSummary, referrerScopeSet);	//gather all references to this resource
 		}
-		return referenceMap;	//return the map we populated
+		return referenceSummary;	//return the summary we populated
 	}
 
 	/**Looks at the scope and all its properties and recursively gathers which scopes reference which other resources.
 	Circular references are correctly handled.
-	The returned map and the associated sets use identity rather than equality to store resources, as some resources may be anonymous.
-	This method considers "reference" to include the relationship of a scope to a property and of a scope to a value.
 	@param scope The scope for which references should be gathered for the scope and all child scopes and resources that are property values of this resource's properties, and so on.
-	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
+	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param referrerScopeSet The set of referrers the properties and scopes of which have been traversed, the checking of which prevents circular reference problems.
-	@return The map of resources and associated referring scopes.
+	@return The summary of scope references to resources and property URIs.
 	*/
-	protected CollectionMap<URFResource, URFScope, Set<URFScope>> getReferences(final URFScope scope, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final Set<URFScope> referrerScopeSet)
+	protected ReferenceSummary getReferenceSummary(final URFScope scope, final ReferenceSummary referenceSummary, final Set<URFScope> referrerScopeSet)
 	{
 		if(!referrerScopeSet.contains(scope))	//if we haven't checked this scope before
 		{
 			referrerScopeSet.add(scope);	//show that we've now checked this scope (in case one of the scope's own properties, subproperties, or child scopes reference this resource)
 			if(scope instanceof URFResource)	//if the scope that we're checking is a resource
 			{
-				referenceMap.getCollection((URFResource)scope);	//make sure that there is a reference collection for the resources; otherwise, if there were no references to this resource, it would not appear in the reference map				
+				referenceSummary.objectReferenceMap.getCollection((URFResource)scope);	//make sure that there is a reference collection for the resources; otherwise, if there were no references to this resource, it would not appear in the reference map				
 			}
 			for(final URFProperty property:scope.getProperties())	//for each property in the scope
 			{
 				final URI propertyURI=property.getPropertyURI();	//get the property URI
-				final URFResource propertyResource=getResource(propertyURI);	//see if there is a resource in this data model corresponding to the given property
-				if(propertyResource!=null)	//if we know the property resource
-				{
-					referenceMap.addItem(propertyResource, scope);	//note that this scope references this property
-				}
+				referenceSummary.propertyURIReferenceMap.addItem(propertyURI, scope);	//note that this scope references this property
+				final Integer oldPropertyURIReferenceCount=referenceSummary.propertyURIReferenceCountMap.get(propertyURI);	//see how many times this property has already been referenced
+				referenceSummary.propertyURIReferenceCountMap.put(propertyURI, Integer.valueOf(oldPropertyURIReferenceCount!=null ? oldPropertyURIReferenceCount.intValue()+1 : 1));	//increment the count of property URI references, starting with one for the first reference
 				final URFResource value=property.getValue();	//get the property value
-				referenceMap.addItem(value, scope);	//note that this scope references this value
-				getReferences(value, referenceMap, referrerScopeSet);	//get all references that the value makes
-				getReferences(property.getScope(), referenceMap, referrerScopeSet);	//get all references that the scope makes
+				referenceSummary.objectReferenceMap.addItem(value, scope);	//note that this scope references this value
+				getReferenceSummary(value, referenceSummary, referrerScopeSet);	//get all references that the value makes
+				getReferenceSummary(property.getScope(), referenceSummary, referrerScopeSet);	//get all references that the scope makes
 			}
 		}
-		return referenceMap;	//return the map that was provided, which now holds sets of references to resources
+		return referenceSummary;	//return the reference summary that was provided, which now holds sets of references to resources
 	}
 
 	/**Returns a string representation of this data model.

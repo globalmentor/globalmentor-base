@@ -104,6 +104,18 @@ public class DefaultURFResourceAlteration implements URFResourceAlteration
 		this.propertyAdditions=checkInstance(propertyAdditions, "Property additions cannot be null");
 	}
 
+	/**Creates an alteration to add the given properties.
+	No resource URI change is indicated.
+	@param properties The properties to set.
+	@return A resource alteration indicating that the given properties should be added.
+	@throws NullPointerException if the given properties is <code>null</code>.
+	*/
+	@SuppressWarnings("unchecked")
+	public static DefaultURFResourceAlteration createAddPropertiesAlteration(final URFProperty... properties)
+	{
+		return new DefaultURFResourceAlteration(null, (Set<URI>)EMPTY_SET, (Set<URFProperty>)EMPTY_SET, unmodifiableSet(new HashSet<URFProperty>(asList(properties))));
+	}
+	
 	/**Creates an alteration to set the given properties by removing all properties with the URIs of the properties to set
 	and then adding the set properties.
 	No resource URI change is indicated.

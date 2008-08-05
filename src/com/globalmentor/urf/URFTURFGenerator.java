@@ -3,6 +3,7 @@ package com.globalmentor.urf;
 import java.io.*;
 import java.net.URI;
 import java.util.*;
+
 import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -457,43 +458,68 @@ public class URFTURFGenerator
 	public Writer generateResources(final Writer writer, final URF urf, final boolean generateSignature, final URFResource primaryResource) throws IOException
 	{
 		initialize();	//initialize the generator
-		final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap=urf.getReferences();	//get a map of sets of all references to each resource
+		final URF.ReferenceSummary referenceSummary=urf.getReferenceSummary();	//get a summary of all references to each resource
 		if(generateSignature)	//if we should generate a signature
 		{
 			writer.write(TURF_SIGNATURE);	//write the TURF signature
-				//gather namespace URIs used
+				//gather namespace URIs used; namespace may be used more than once by the appearance of multiple resources in the same namespace and/or the same resource referenced multiple times
 			final boolean isShortTypesGenerated=isShortTypesGenerated();	//see if short types are generated
 			final Map<URI, Boolean> namespaceURIMultipleMap=new HashMap<URI, Boolean>();	//create a hash map with namespace URI keys to keep track if a namespace is used multiple times
-			for(final URI resourceURI:urf.getResourceURIReferences())	//look at each resource URI, including property URIs
+					//gather all namespace URIs of resources used as objects
+			for(final Map.Entry<URFResource, Set<URFScope>> objectReferenceMapEntry:referenceSummary.objectReferenceMap.entrySet())//look at each resource and the number of references it has
 			{
-				if(isShortTypesGenerated && TYPE_PROPERTY_URI.equals(resourceURI))	//if we're generating short types and this is the type URI
+				final URI resourceURI=objectReferenceMapEntry.getKey().getURI();	//get the URI of this resource
+				if(resourceURI!=null && !SHORT_REFERENCE_CLASS_URIS.contains(resourceURI))	//if this resource has a URI (if not, it has no namespace) and it doesn't identify a type that will receive a short reference (such URIs will never show up in normal circumstances)
+				{
+					final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace URI of this resource URI
+					if(namespaceURI!=null && !isLexicalNamespaceURI(namespaceURI))	//if this resource URI has a namespace that isn't a lexical namespace (URIs in lexical namespaces have their own short forms)
+					{
+						if(objectReferenceMapEntry.getValue().size()>1)	//if this resource is referenced more than once
+						{
+							namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times, because the resource itself is referenced multiple times
+						}
+						else	//if this resource is only referenced once or not at all (for the root resource)
+						{
+							final Boolean hasMultipleReferences=namespaceURIMultipleMap.get(namespaceURI);	//see whether there are multiple references to this namespace
+							if(hasMultipleReferences==null)	//if we haven't seen this namespace URI before
+							{
+								namespaceURIMultipleMap.put(namespaceURI, Boolean.FALSE);	//show that we've seen this namespace URI, but there are not yet multiple references
+							}
+							else if(hasMultipleReferences.booleanValue()==false)	//if we've only seen this namespace URI once
+							{
+								namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times
+							}
+						}
+					}
+				}
+			}
+					//gather all namespace URIs of property URIs
+			for(final Map.Entry<URI, Set<URFScope>> propertyURIReferenceMapEntry:referenceSummary.propertyURIReferenceMap.entrySet())//look at each resource and the number of references it has
+			{
+				final URI propertyURI=propertyURIReferenceMapEntry.getKey();	//get the URI of the property
+				if(isShortTypesGenerated && TYPE_PROPERTY_URI.equals(propertyURI))	//if we're generating short types and this is the type URI
 				{
 					continue;	//ignore the type property URI, as it will never show up in normal circumstances
 				}
-				else if(SHORT_REFERENCE_CLASS_URIS.contains(resourceURI))	//if this is a type that will receive a short form
+				final URI namespaceURI=getNamespaceURI(propertyURI);	//get the namespace URI of this property URI
+				if(namespaceURI!=null && !isLexicalNamespaceURI(namespaceURI))	//if this property URI has a namespace that isn't a lexical namespace (URIs in lexical namespaces have their own short forms)
 				{
-					continue;	//ignore the class URI, as it will never show up in normal circumstances
-				}
-				final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace URI of this resource URI
-				if(namespaceURI!=null && !isLexicalNamespaceURI(namespaceURI))	//if this resource URI has a namespace that isn't a lexical namespace (URIs in lexical namespaces have their own short forms)
-				{
-					final Boolean hasMultipleReferences=namespaceURIMultipleMap.get(namespaceURI);	//see whether there are multiple references to this namespace
-					if(hasMultipleReferences==null)	//if we haven't seen this namespace URI before
+					final Integer referenceCountInteger=referenceSummary.propertyURIReferenceCountMap.get(propertyURI);	//see how many times this property URI is used as a property URI (either by distinct resources or by a single resource)
+					if(referenceCountInteger!=null && referenceCountInteger.intValue()>1)	//if this property URI is used more than once
 					{
-						final URFResource resource=urf.getResource(resourceURI);	//get the resource corresponding to this resource URI
-						assert referenceMap.containsKey(resource) : "Reference map should contain a reference to every resource for which a resource URI is returned by the data model.";
-						if(resource!=null && referenceMap.getItemCount(resource)>1)	//if this resource is referenced multiple times in the data model,
-						{
-							namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//the namespace of this resource will be used multiple times (once for each time this resource appears, at least)
-						}
-						else	//if this resource is only referenced once
+						namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times, because the resource itself is referenced multiple times
+					}
+					else	//if this property URI is only used once or not at all
+					{
+						final Boolean hasMultipleReferences=namespaceURIMultipleMap.get(namespaceURI);	//see whether there are multiple references to this namespace
+						if(hasMultipleReferences==null)	//if we haven't seen this namespace URI before
 						{
 							namespaceURIMultipleMap.put(namespaceURI, Boolean.FALSE);	//show that we've seen this namespace URI, but there are not yet multiple references
 						}
-					}
-					else if(hasMultipleReferences.booleanValue()==false)	//if we've only seen this namespace URI once
-					{
-						namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times
+						else if(hasMultipleReferences.booleanValue()==false)	//if we've only seen this namespace URI once
+						{
+							namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times
+						}
 					}
 				}
 			}
@@ -536,23 +562,23 @@ public class URFTURFGenerator
 			//generate the primary resource
 		if(primaryResource!=null)	//if there is a primary resource to generate
 		{
-			generateRootResource(writer, urf, referenceMap, primaryResource);	//generate the primary resource
+			generateRootResource(writer, urf, referenceSummary, primaryResource);	//generate the primary resource
 		}
 		final List<URFResource> resourceList=new ArrayList<URFResource>();	//create a list of resources
 		addAll(resourceList, urf.getResources());	//add all the resources in the data model to the list
 		sort(resourceList, reverseOrder(RESOURCE_PROPERTY_COUNT_COMPARATOR));	//sort the resources in reverse order of their number of properties, so that we'll have a bigger chance of inlining resources
 		for(final URFResource resource:resourceList)	//iterate over all the resources, generating only those with no references (i.e. root resources)
 		{
-			if(!isGenerated(resource) && !referenceMap.hasItems(resource))	//if this resource has not yet been generated and the resource has no references to it
+			if(!isGenerated(resource) && !referenceSummary.objectReferenceMap.hasItems(resource))	//if this resource has not yet been generated and the resource has no references to it
 			{
-				generateRootResource(writer, urf, referenceMap, resource);	//generate this root resource
+				generateRootResource(writer, urf, referenceSummary, resource);	//generate this root resource
 			}
 		}
 		for(final URFResource resource:resourceList)	//iterate over all the remaining resources, generating any that have not yet been generated
 		{
 			if(!isGenerated(resource))	//if this resource has not yet been generated
 			{
-				generateRootResource(writer, urf, referenceMap, resource);	//generate this root resource
+				generateRootResource(writer, urf, referenceSummary, resource);	//generate this root resource
 			}
 		}
 		if(generateSignature)	//if we generated a signature
@@ -569,42 +595,42 @@ public class URFTURFGenerator
 	The resource is noted as having been generated.
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
-	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
+	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param resource The resource to generate.
 	@return The writer.
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	protected Writer generateRootResource(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFResource resource) throws IOException
+	protected Writer generateRootResource(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final URFResource resource) throws IOException
 	{
 		if(getGeneratedResourceCount()>0)	//if we've already generated a least one resource
 		{
 			writer.write(LIST_DELIMITER);	//write a list delimiter
 			writeNewLine(writer);	//go to the next line
 		}
-		return generateResource(writer, urf, referenceMap, resource);	//generate the resource
+		return generateResource(writer, urf, referenceSummary, resource);	//generate the resource
 	}
 
 	/**Generates a single resource.
 	The resource is noted as having been generated.
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
-	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
+	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param resource The resource to generate.
 	@return The writer.
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	protected Writer generateResource(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFResource resource) throws IOException
+	protected Writer generateResource(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final URFResource resource) throws IOException
 	{
-		return generateResource(writer, urf, referenceMap, null, null, resource, false, null);	//generate the single resource; there is no context URI
+		return generateResource(writer, urf, referenceSummary, null, null, resource, false, null);	//generate the single resource; there is no context URI
 	}
 
 	/**Generates a single resource with no default namespace URI.
 	The resource is noted as having been generated.
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
-	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
+	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param subjectScope The scope to which the property and resource belongs, or <code>null</code> if the current resource is not in an object context.
 	@param scopePropertyURI The predicate for which the resource is a value, or <code>null</code> if the current resource is not in an object context.
 	@param resource The resource to generate.
@@ -613,16 +639,16 @@ public class URFTURFGenerator
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	protected Writer generateResource(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope subjectScope, final URI scopePropertyURI, final URFResource resource, final boolean inSequence) throws IOException
+	protected Writer generateResource(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final URFScope subjectScope, final URI scopePropertyURI, final URFResource resource, final boolean inSequence) throws IOException
 	{
-		return generateResource(writer, urf, referenceMap, subjectScope, scopePropertyURI, resource, inSequence, null);	//generate the resource with no default namespace URI
+		return generateResource(writer, urf, referenceSummary, subjectScope, scopePropertyURI, resource, inSequence, null);	//generate the resource with no default namespace URI
 	}
 
 	/**Generates a single resource.
 	The resource is noted as having been generated.
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
-	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
+	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param subjectScope The scope to which the property and resource belongs, or <code>null</code> if the current resource is not in an object context.
 	@param scopePropertyURI The predicate for which the resource is a value, or <code>null</code> if the current resource is not in an object context.
 	@param resource The resource to generate.
@@ -632,7 +658,7 @@ public class URFTURFGenerator
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	protected Writer generateResource(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope subjectScope, final URI scopePropertyURI, final URFResource resource, final boolean inSequence, final URI defaultNamespaceURI) throws IOException
+	protected Writer generateResource(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final URFScope subjectScope, final URI scopePropertyURI, final URFResource resource, final boolean inSequence, final URI defaultNamespaceURI) throws IOException
 	{
 		final boolean isGenerated=isGenerated(resource);	//see if this resource has already been generated
 		if(!isGenerated)	//if the resource hasn't been generated, yet
@@ -645,7 +671,7 @@ public class URFTURFGenerator
 		String label=getLabel(resource);	//see if there is a label for this resource
 		if(label==null && uri==null && !isGenerated)	//if there is no label or URI for this resource and the resource hasn't yet been generated
 		{
-			final Set<URFScope> referringScopes=referenceMap.get(resource);	//see how many scopes reference this resource
+			final Set<URFScope> referringScopes=referenceSummary.objectReferenceMap.get(resource);	//see how many scopes reference this resource
 			if(referringScopes!=null && !referringScopes.isEmpty() && !(referringScopes.size()==1 && referringScopes.iterator().next()==subjectScope))	//if there are multiple referring scopes, or just a single referring scope that isn't the scope subject in this context
 			{
 				label=determineLabel(resource);	//locate a label for this resource, because it has references
@@ -675,7 +701,7 @@ public class URFTURFGenerator
 				{
 					throw new IllegalArgumentException("No scope for given subject "+subjectScope+" and predicate URI "+scopePropertyURI);
 				}
-				if(generateProperties(writer, urf, referenceMap, scope, true, 0, true, true, true, true, true, true, true, !inSequence, null)>0)	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence; if we generated any scoped properties
+				if(generateProperties(writer, urf, referenceSummary, scope, true, 0, true, true, true, true, true, true, true, !inSequence, null)>0)	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence; if we generated any scoped properties
 				{
 					unindent();
 					writeNewLine(writer);
@@ -801,7 +827,7 @@ public class URFTURFGenerator
 					{
 						markReferenceGenerated(urf, SELECTOR_PROPERTY_URI);	//mark that the selector property was generated unless it has some other quality needed to be generated separately
 						setGenerated(selector, true);	//note that the selector list has been generated TODO make sure the selector list has no other properties that need to be generated
-						generateCollection(writer, urf, referenceMap, selector.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), SELECTOR_BEGIN, SELECTOR_END, false);	//generate all the values of ordinal properties in the selector list on the same line
+						generateCollection(writer, urf, referenceSummary, selector.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), SELECTOR_BEGIN, SELECTOR_END, false);	//generate all the values of ordinal properties in the selector list on the same line
 					}
 				}
 				//TODO make sure types without URIs get generated in the properties section
@@ -847,7 +873,7 @@ public class URFTURFGenerator
 		}
 			//properties
 		int propertyCount=0;	//start with no properties being generating
-		propertyCount=generateProperties(writer, urf, referenceMap, resource, false, propertyCount, !isShortTypesGenerated, !isShortSuperclassesGenerated, !isShortInterfacesGenerated, !isPropositionShortForm, !isListShortForm, !isSetShortForm, !isMapShortForm, true, typeDefaultNamespaceURI);	//generate properties
+		propertyCount=generateProperties(writer, urf, referenceSummary, resource, false, propertyCount, !isShortTypesGenerated, !isShortSuperclassesGenerated, !isShortInterfacesGenerated, !isPropositionShortForm, !isListShortForm, !isSetShortForm, !isMapShortForm, true, typeDefaultNamespaceURI);	//generate properties
 		if(subjectScope!=null && scopePropertyURI!=null)	//if this resource is the value of a property
 		{
 			final URFScope scope=subjectScope.getScope(scopePropertyURI, resource);	//get the scope for this value
@@ -855,7 +881,7 @@ public class URFTURFGenerator
 			{
 				throw new IllegalArgumentException("No scope for given subject "+subjectScope+" and predicate URI "+scopePropertyURI);
 			}
-			propertyCount=generateProperties(writer, urf, referenceMap, scope, true, propertyCount, true, true, true, true, true, true, true, !inSequence, typeDefaultNamespaceURI);	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence
+			propertyCount=generateProperties(writer, urf, referenceSummary, scope, true, propertyCount, true, true, true, true, true, true, true, !inSequence, typeDefaultNamespaceURI);	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence
 		}
 		if(propertyCount>0)	//if we started the properties section
 		{
@@ -875,32 +901,32 @@ public class URFTURFGenerator
 			markReferenceGenerated(urf, PROPOSITION_CLASS_URI);	//mark that the proposition type was generated unless it has some other quality needed to be generated separately
 			writer.write(PROPOSITION_BEGIN);	//start the proposition
 			markReferenceGenerated(urf, SUBJECT_PROPERTY_URI);	//mark that the subject property was generated unless it has some other quality needed to be generated separately
-			generateResource(writer, urf, referenceMap, resource, SUBJECT_PROPERTY_URI, subject, false);	//generate the subject
+			generateResource(writer, urf, referenceSummary, resource, SUBJECT_PROPERTY_URI, subject, false);	//generate the subject
 			writer.append(LIST_DELIMITER);	//separate the properties
 			markReferenceGenerated(urf, PREDICATE_PROPERTY_URI);	//mark that the predicate property was generated unless it has some other quality needed to be generated separately
-			generateResource(writer, urf, referenceMap, resource, PREDICATE_PROPERTY_URI, predicate, false);	//generate the predicate
+			generateResource(writer, urf, referenceSummary, resource, PREDICATE_PROPERTY_URI, predicate, false);	//generate the predicate
 			writer.append(LIST_DELIMITER);	//separate the properties
 			markReferenceGenerated(urf, OBJECT_PROPERTY_URI);	//mark that the object property was generated unless it has some other quality needed to be generated separately
-			generateResource(writer, urf, referenceMap, resource, OBJECT_PROPERTY_URI, object, false);	//generate the object
+			generateResource(writer, urf, referenceSummary, resource, OBJECT_PROPERTY_URI, object, false);	//generate the object
 			writer.write(PROPOSITION_END);	//end the proposition
 		}
 			//list
 		if(isListShortForm)	//if we should generate a list short form
 		{
 			markReferenceGenerated(urf, LIST_CLASS_URI);	//mark that the list type was generated unless it has some other quality needed to be generated separately
-			generateCollection(writer, urf, referenceMap, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), LIST_BEGIN, LIST_END, true);	//generate all the values of ordinal properties in the list, using multiple lines if there are elements
+			generateCollection(writer, urf, referenceSummary, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), LIST_BEGIN, LIST_END, true);	//generate all the values of ordinal properties in the list, using multiple lines if there are elements
 		}
 			//set
 		if(isSetShortForm)	//if we should generate a set short form
 		{
 			markReferenceGenerated(urf, SET_CLASS_URI);	//mark that the set type was generated unless it has some other quality needed to be generated separately
-			generateCollection(writer, urf, referenceMap, resource.getProperties(ELEMENT_PROPERTY_URI).iterator(), SET_BEGIN, SET_END, true);	//generate all the values of element properties in the set, using multiple lines if there are elements
+			generateCollection(writer, urf, referenceSummary, resource.getProperties(ELEMENT_PROPERTY_URI).iterator(), SET_BEGIN, SET_END, true);	//generate all the values of element properties in the set, using multiple lines if there are elements
 		}
 			//map
 		if(isMapShortForm)	//if we should generate a map short form
 		{
 			markReferenceGenerated(urf, MAP_CLASS_URI);	//mark that the map type was generated unless it has some other quality needed to be generated separately
-			generateMap(writer, urf, referenceMap, resource.getProperties(ENTRY_PROPERTY_URI).iterator(), MAP_BEGIN, MAP_END, true);	//generate all the values of entry properties in the map, using multiple lines if there are entries
+			generateMap(writer, urf, referenceSummary, resource.getProperties(ENTRY_PROPERTY_URI).iterator(), MAP_BEGIN, MAP_END, true);	//generate all the values of entry properties in the map, using multiple lines if there are entries
 		}
 		return writer;	//return the writer
 	}
@@ -908,7 +934,7 @@ public class URFTURFGenerator
 	/**Generates the elements of a list or set.
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
-	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
+	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param elementPropertyIterator An iterator to the elements of the resource.
 	@param collectionBegin The beginning delimiter of the collection.
 	@param collectionEnd The end delimiter of the collection.
@@ -917,7 +943,7 @@ public class URFTURFGenerator
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or element property iterator is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	protected Writer generateCollection(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final Iterator<URFProperty> elementPropertyIterator, final char collectionBegin, final char collectionEnd, final boolean multipleLines) throws IOException
+	protected Writer generateCollection(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final Iterator<URFProperty> elementPropertyIterator, final char collectionBegin, final char collectionEnd, final boolean multipleLines) throws IOException
 	{
 		if(elementPropertyIterator.hasNext())	//if there are elements in the collection
 		{
@@ -943,7 +969,7 @@ public class URFTURFGenerator
 						writeNewLine(writer);
 					}
 				}
-				generateResource(writer, urf, referenceMap, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false);	//generate the element; each element value is an object of the element predicate, so use the element property URI as the context
+				generateResource(writer, urf, referenceSummary, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false);	//generate the element; each element value is an object of the element predicate, so use the element property URI as the context
 				++elementCount;	//show that we generated another list element
 			}
 			if(multipleLines)	//if we should generate multiple lines
@@ -963,7 +989,7 @@ public class URFTURFGenerator
 	/**Generates the entries of a map.
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
-	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
+	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param entryPropertyIterator An iterator to the entries of the map.
 	@param mapBegin The beginning delimiter of the map.
 	@param mapEnd The end delimiter of the map.
@@ -972,7 +998,7 @@ public class URFTURFGenerator
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or entry property iterator is <code>null</code>.
 	@exception IOException if there is an error writing to the writer.
 	*/
-	protected Writer generateMap(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final Iterator<URFProperty> entryPropertyIterator, final char mapBegin, final char mapEnd, final boolean multipleLines) throws IOException
+	protected Writer generateMap(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final Iterator<URFProperty> entryPropertyIterator, final char mapBegin, final char mapEnd, final boolean multipleLines) throws IOException
 	{
 		if(entryPropertyIterator.hasNext())	//if there are entries in the collection
 		{
@@ -1003,10 +1029,10 @@ public class URFTURFGenerator
 				final URFResource value=entry.getPropertyValue(VALUE_PROPERTY_URI);	//get the value
 				if(key!=null && value!=null)	//if the entry has both a key and a value
 				{
-					generateResource(writer, urf, referenceMap, entry, KEY_PROPERTY_URI, key, false);	//generate the key
+					generateResource(writer, urf, referenceSummary, entry, KEY_PROPERTY_URI, key, false);	//generate the key
 					markReferenceGenerated(urf, KEY_PROPERTY_URI);	//mark that the key property was generated unless it has some other quality needed to be generated separately
 					writer.append(PROPERTY_VALUE_DELIMITER);	//=
-					generateResource(writer, urf, referenceMap, entry, VALUE_PROPERTY_URI, value, false);	//generate the value
+					generateResource(writer, urf, referenceSummary, entry, VALUE_PROPERTY_URI, value, false);	//generate the value
 					setGenerated(entry, true);	//note that the entry has been generated TODO make sure the entry has no other properties that need to be generated
 					markReferenceGenerated(urf, VALUE_PROPERTY_URI);	//mark that the value property was generated unless it has some other quality needed to be generated separately
 					markReferenceGenerated(urf, TYPE_PROPERTY_URI);	//mark that the type property was generated unless it has some other quality needed to be generated separately
@@ -1033,7 +1059,7 @@ public class URFTURFGenerator
 	The beginning property section delimiter will be added if needed, but no ending property section delimiter will be generated.
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
-	@param referenceMap A map that associates, for each resource, a set of all scopes that reference that resource value.
+	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param scope The scope the properties of which should be generated.
 	@param scoped Whether the given properties are scoped.
 	@param propertyCount the number of properties already generated; used to determine whether a new properties section should be generated.
@@ -1050,7 +1076,7 @@ public class URFTURFGenerator
 	@exception NullPointerException if the given writer, URF data model, reference map, and/or scope is <code>null</code>.
 	@exception IOException if there was an error writing to the writer.
 	*/
-	protected int generateProperties(final Writer writer, final URF urf, final CollectionMap<URFResource, URFScope, Set<URFScope>> referenceMap, final URFScope scope, final boolean scoped, int propertyCount, final boolean generateTypes, final boolean generateSuperclasses, final boolean generateInterfaces, final boolean generateProposition, final boolean generateOrdinals, final boolean generateElements, final boolean generateEntries, final boolean generateOrder, final URI defaultNamespaceURI) throws IOException
+	protected int generateProperties(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final URFScope scope, final boolean scoped, int propertyCount, final boolean generateTypes, final boolean generateSuperclasses, final boolean generateInterfaces, final boolean generateProposition, final boolean generateOrdinals, final boolean generateElements, final boolean generateEntries, final boolean generateOrder, final URI defaultNamespaceURI) throws IOException
 	{
 		URI sequencePropertyURI=null;	//this will indicate when we're in the middle of a sequence for a particular property
 		for(final URFProperty property:scope.getProperties())	//look at each property
@@ -1113,17 +1139,17 @@ public class URFTURFGenerator
 				{
 					writer.write(SEQUENCE_BEGIN);	//start a sequence for this property
 					sequencePropertyURI=propertyURI;	//indicate that we should have a sequence for this property
-					generateResource(writer, urf, referenceMap, scope, propertyURI, value, true, sequencePropertyURI);	//generate the property value, indicating that the value is an element in a sequence; use the property URI as the context URI
+					generateResource(writer, urf, referenceSummary, scope, propertyURI, value, true, sequencePropertyURI);	//generate the property value, indicating that the value is an element in a sequence; use the property URI as the context URI
 				}
 				else	//if this property has no sequence
 				{
-					generateResource(writer, urf, referenceMap, scope, propertyURI, value, false, propertyURI);	//generate the property value normally, using the property URI as the context URI
+					generateResource(writer, urf, referenceSummary, scope, propertyURI, value, false, propertyURI);	//generate the property value normally, using the property URI as the context URI
 				}
 			}
 			else	//if we are still in the middle of a sequence
 			{
 				writer.append(LIST_DELIMITER);	//separate the values in the sequence
-				generateResource(writer, urf, referenceMap, scope, propertyURI, value, true, sequencePropertyURI);	//generate the property value, indicating that the value is an element in a sequence, and using the property URI as the context URI
+				generateResource(writer, urf, referenceSummary, scope, propertyURI, value, true, sequencePropertyURI);	//generate the property value, indicating that the value is an element in a sequence, and using the property URI as the context URI
 			}
 			++propertyCount;	//show that we generated another property
 		}

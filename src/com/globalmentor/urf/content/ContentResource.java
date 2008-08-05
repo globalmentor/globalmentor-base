@@ -9,6 +9,8 @@ import com.globalmentor.urf.*;
 import static com.globalmentor.urf.content.Content.*;
 
 /**A general resource that holds content in its description through the {@value Content#CONTENT_PROPERTY_URI} property.
+This class allows content resource subclasses to be derived with a type automatically added for the name of the
+class in the indicated namespace.
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:
@@ -17,7 +19,7 @@ written by Garret Wilson &lt;http://www.garretwilson.com/&gt; and Copyright © 2
 Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @author Garret Wilson
 */
-public class ContentResource extends DefaultURFResource
+public class ContentResource extends AbstractClassTypedURFResource
 {
 
 	/**Default constructor with no URI.*/
@@ -31,9 +33,73 @@ public class ContentResource extends DefaultURFResource
 	*/
 	public ContentResource(final URI uri)
 	{
-		super(uri, CONTENT_RESOURCE_CLASS_URI);	//construct the parent class, specifying the type
+		this(uri, CONTENT_NAMESPACE_URI);	//construct the class, specifying the namespace of the type
 	}
 
+	/**URI and type namespace URI.
+	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
+	@param typeNamespaceURI The namespace URI of the URI of the type to be added.
+	@exception NullPointerException if the given type type namespace URI is <code>null</code>.
+	*/
+	public ContentResource(final URI uri, final URI typeNamespaceURI)
+	{
+		super(uri, typeNamespaceURI);	//construct the parent class
+	}
+
+	/**Returns the created date time.
+	@return The created date time of the resource, or <code>null</code> if there is no created date time or the property does not contain an <code>urf.DateTime</code>.
+	@see Content#CREATED_PROPERTY_URI
+	*/
+	public URFDateTime getCreated()
+	{
+		return Content.getCreated(this);
+	}
+
+	/**Sets the created property of the resource
+	@param dateTime The new created date and time.
+	@see Content#CREATED_PROPERTY_URI
+	*/
+	public void setCreated(final URFDateTime dateTime)
+	{
+		Content.setCreated(this, dateTime);
+	}
+
+	/**Returns the resource that created this resource on the indicated created date and time.
+	@return The string value of the property, or <code>null</code> if there is no such property or the property value is not a string.
+	@see Content#CREATOR_PROPERTY_URI
+	*/
+	public URFResource getCreator()
+	{
+		return Content.getCreator(this);
+	}
+
+	/**Sets the creator of the resource.
+	@param value The property value to set.
+	@see Content#CREATOR_PROPERTY_URI
+	*/
+	public void setCreator(final URFResource value)
+	{
+		Content.setCreator(this, value);
+	}
+
+	/**Returns the length of the resource contents.
+	@return The size of the resource, or <code>-1</code> if the size could not be determined or the value was not an integer.
+	@see Content#LENGTH_PROPERTY_URI
+	*/ 
+	public long getContentLength()
+	{
+		return Content.getContentLength(this);
+	}
+
+	/**Sets the length of the resource contents.
+	@param length The content length.
+	@see Content#LENGTH_PROPERTY_URI
+	*/
+	public void setContentLength(final long length) 
+	{
+		Content.setContentLength(this, length);
+	}
+	
 	/**Returns the declared content type of the resource as an Internet media type.
 	@return This resource's content type declaration as a media type, or <code>null</code> if the resource has no <code>content.type</code> property specified
 		or the content type was not a resource with an Internet media type URI.
@@ -85,5 +151,23 @@ public class ContentResource extends DefaultURFResource
 	public void setContent(final String content)
 	{
 		Content.setContent(this, content);	//set the content.content property
+	}
+
+	/**Returns the modified date time.
+	@return The modified date time of the resource, or <code>null</code> if there is no modified date time or the property does not contain an <code>urf.DateTime</code>.
+	@see Content#MODIFIED_PROPERTY_URI
+	*/
+	public URFDateTime getModified()
+	{
+		return Content.getModified(this);
+	}
+
+	/**Sets the modified property of the resource
+	@param dateTime The new modified date and time.
+	@see Content#MODIFIED_PROPERTY_URI
+	*/
+	public void setModified(final URFDateTime dateTime)
+	{
+		Content.setModified(this, dateTime);
 	}
 }

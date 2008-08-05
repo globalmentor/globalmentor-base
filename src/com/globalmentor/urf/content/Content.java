@@ -40,6 +40,8 @@ public class Content
 	public final static URI CHARSET_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "charset");
 	/**The date and time when a resource was created.*/
 	public final static URI CREATED_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "created");
+	/**The resource that created this resource on the indicated created date and time.*/
+	public final static URI CREATOR_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "creator");
 	/**The actual content, such as bytes or a string, of a resource.*/
 	public final static URI CONTENT_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "content");
 	/**The list of child resources contained by a resource such as a collection or package.*/
@@ -233,25 +235,25 @@ public class Content
 	{
 		resource.setPropertyValue(CREATED_PROPERTY_URI, dateTime);	//create a date time resource and set the resource's modified timestamp
 	}
-	
-	/**Returns the modified date time.
-	@param resource The resource for which the modified date time should be returned.
-	@return The modified date time of the resource, or <code>null</code> if there is no modified date time or the property does not contain an <code>urf.DateTime</code>.
-	@see #MODIFIED_PROPERTY_URI
+
+	/**Returns the resource that created this resource on the indicated created date and time.
+	@param resource The resource the property of which should be located.
+	@return The string value of the property, or <code>null</code> if there is no such property or the property value is not a string.
+	@see #CREATOR_PROPERTY_URI
 	*/
-	public static URFDateTime getModified(final URFResource resource)
+	public static URFResource getCreator(final URFResource resource)
 	{
-		return asDateTime(resource.getPropertyValue(MODIFIED_PROPERTY_URI));	//return the modified timestamp as a date time
+		return resource.getPropertyValue(CREATOR_PROPERTY_URI);
 	}
 
-	/**Sets the modified property of the resource
-	@param resource The resource the modified date and time to set.
-	@param dateTime The new modified date and time.
-	@see #MODIFIED_PROPERTY_URI
+	/**Sets the creator of the resource.
+	@param resource The resource of which the property should be set.
+	@param value The property value to set.
+	@see #CREATOR_PROPERTY_URI
 	*/
-	public static void setModified(final URFResource resource, final URFDateTime dateTime)
+	public static void setCreator(final URFResource resource, final URFResource value)
 	{
-		resource.setPropertyValue(MODIFIED_PROPERTY_URI, dateTime);	//create a date time resource and set the resource's modified timestamp
+		resource.setPropertyValue(CREATOR_PROPERTY_URI, value);
 	}
 
 	/**Returns the length of the resource contents.
@@ -316,6 +318,26 @@ public class Content
 	public static void setContentType(final URFResource resource, final ContentType contentType)
 	{
 		resource.setPropertyValue(TYPE_PROPERTY_URI, DEFAULT_URF_RESOURCE_FACTORY.createMediaTypeResource(contentType));	//create a media type resource and set the resource's content type
+	}
+
+	/**Returns the modified date time.
+	@param resource The resource for which the modified date time should be returned.
+	@return The modified date time of the resource, or <code>null</code> if there is no modified date time or the property does not contain an <code>urf.DateTime</code>.
+	@see #MODIFIED_PROPERTY_URI
+	*/
+	public static URFDateTime getModified(final URFResource resource)
+	{
+		return asDateTime(resource.getPropertyValue(MODIFIED_PROPERTY_URI));	//return the modified timestamp as a date time
+	}
+
+	/**Sets the modified property of the resource
+	@param resource The resource the modified date and time to set.
+	@param dateTime The new modified date and time.
+	@see #MODIFIED_PROPERTY_URI
+	*/
+	public static void setModified(final URFResource resource, final URFDateTime dateTime)
+	{
+		resource.setPropertyValue(MODIFIED_PROPERTY_URI, dateTime);	//create a date time resource and set the resource's modified timestamp
 	}
 
 	/**The default resource factory for the content ontology.

@@ -1,9 +1,6 @@
 package com.globalmentor.urf;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.util.*;
 
 import com.globalmentor.text.*;
 import com.globalmentor.util.Calendars;
@@ -27,6 +24,17 @@ public class URFDateTime extends AbstractURFDateTime
 		this(System.currentTimeMillis());	//construct the class with the current time in milliseconds
 	}
 
+	
+	/**Curent time constructor in terms of UTC.
+	@param timeZone The time zone in which the time should be interpreted.
+	@throws NullPointerException if the given time zone is <code>null</code>.
+	@throws IllegalArgumentException if a time zone was provided with an unsupported offset for the given time.
+	*/
+	public URFDateTime(final TimeZone timeZone)
+	{
+		this(System.currentTimeMillis(), timeZone);	//construct the class with the current time in milliseconds
+	}
+	
 	/**Temporal component constructor.
 	@param temporalcomponents The temporal components from which to construct the class.
 	@exception NullPointerException if the given temporal components is <code>null</code>.
