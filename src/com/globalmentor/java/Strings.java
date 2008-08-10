@@ -18,25 +18,26 @@ package com.globalmentor.java;
 
 import java.io.*;
 import java.net.URI;
+import java.nio.charset.Charset;
 
+import static com.globalmentor.io.Charsets.*;
 import com.globalmentor.io.IO;
-import com.globalmentor.text.*;
-
-
 import static com.globalmentor.java.Characters.*;
+import com.globalmentor.text.*;
 import static com.globalmentor.util.Arrays.*;
 
 /**Various text manipulating functions. These methods work on
-	<code>String</code> objects, which are immutable heavyweight objects that must
+	{@link String} objects, which are immutable heavyweight objects that must
 	be recreated with every modification. Many of these methods should therefore
-	be avoided in favor of their corresponding <code>StringBufferUtilities</code>
-	methods, which operate on <code>StringBuffer</code> objects.
-@see StringBuffers
+	be avoided in favor of their corresponding {@link StringBuilders}
+	methods, which operate on {@link StringBuilder} objects.
+@see StringBuilders
 @author Garret Wilson
 */
 public class Strings 
 {
-	//TODO move most of the methods that reference CharSequenceUtilities to that class
+	//TODO move most of the methods that reference CharSequences to that class
+	//TODO convert StringBuffer code to StringBuilder
 
 	/**Creates an array of strings from the given string.
 	@param string The string to include in the array, or <code>null</code> if the
@@ -54,7 +55,7 @@ public class Strings
 	@param objects The array of objects (such as strings) to be concatenated.
 	@return A concatenation of string representations of all objects in the
 		array.
-	@see Object#toString
+	@see Object#toString()
 	*/
 	public static String append(final Object[] objects)
 	{
@@ -83,7 +84,6 @@ public class Strings
 	@return A concatenation of string representations of all objects in the
 		array, separted by the separator.
 	@see Object#toString
-	@return The string containing the concatenated information.
 	*/
 	public static String concat(final Object[] objects, final String separator)
 	{
@@ -980,18 +980,18 @@ public class Strings
 	*/
 	public static <T> String write(final URI baseURI, final T object, final IO<T> io) throws IOException
 	{
-		return write(baseURI, object, io, CharacterEncoding.UTF_8);	//write and convert to a string using UTF_8
+		return write(baseURI, object, io, UTF_8_CHARSET);	//write and convert to a string using UTF_8
 	}
 
 	/**Writes an object to a string using the given I/O support.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param object The object to write to a string.
 	@param io The I/O support for writing the object.
-	@param encoding The encoding with which to interpret the written bytes.
+	@param charset The encoding with which to interpret the written bytes.
 	@throws IOException if there is an error writing the data.
 	@throws UnsupportedEncodingException if the named character encoding is not supported.
 	*/
-	public static <T> String write(final URI baseURI, final T object, final IO<T> io, final String encoding) throws IOException
+	public static <T> String write(final URI baseURI, final T object, final IO<T> io, final Charset charset) throws IOException
 	{
 		final ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();	//create a new byte array output stream
 		try
@@ -1002,7 +1002,7 @@ public class Strings
 		{
 			byteArrayOutputStream.close();	//always close the output stream
 		}
-		return byteArrayOutputStream.toString(encoding);	//convert the byte array to a string using the given encoding
+		return byteArrayOutputStream.toString(charset.name());	//convert the byte array to a string using the given encoding
 	}
 
 }

@@ -123,6 +123,17 @@ public class VCard
 		return nameLabel;	//return whatever name label we determined if any
 	}
 
+	/**Retrieves the email of a resource using the vCard «{@value #EMAIL_PROPERTY_URI}» property.
+	@param resource The resource the email of which to get.
+	@return The URI expressing the email, or <code>null</code> if there is no email property or the value does not have the {@value URIs#MAILTO_SCHEME} scheme.
+	@exception NullPointerException if the given resource is <code>null</code>.
+	*/
+	public static URI getEmail(final URFResource resource)
+	{
+		final URI emailURI=URF.asURI(resource.getPropertyValue(EMAIL_PROPERTY_URI));	//get the email URI, if there is a URI
+		return emailURI!=null && MAILTO_SCHEME.equals(emailURI.getScheme()) ? emailURI : null;	//only return the email if it has a mailto scheme
+	}
+
 	/**Sets the email of a resource using the vCard «{@value #EMAIL_PROPERTY_URI}» property.
 	@param resource The resource the email of which to set.
 	@param emailURI The URI expressing the email to set.
