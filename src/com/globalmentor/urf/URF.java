@@ -749,7 +749,7 @@ public class URF
 		<dt>{@value #DATE_NAMESPACE_URI}</dt> <dd>{@link URFDate}</dd>
 		<dt>{@value #DATE_TIME_NAMESPACE_URI}</dt> <dd>{@link URFDateTime}</dd>
 		<dt>{@value #ORDINAL_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
-		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Real}</dd>
+		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Double}</dd>
 		<dt>{@value #REGULAR_EXPRESSION_NAMESPACE_URI}</dt> <dd>{@link RegularExpressions}</dd>
 		<dt>{@value #STRING_NAMESPACE_URI}</dt> <dd>{@link String}</dd>
 		<dt>{@value #URI_NAMESPACE_URI}</dt> <dd>{@link URI}</dd>

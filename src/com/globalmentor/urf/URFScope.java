@@ -192,14 +192,32 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public boolean addPropertyValue(final URI propertyURI, final URFDateTime propertyValue);
 
-	/**Adds an integer property value for the property with the given URI.
+	/**Adds a number property value for the property with the given URI.
 	If the given property and value already exists, no action occurs.
 	@param propertyURI The URI of the property of the value to add.
 	@param propertyValue The value to add for the given property.
 	@return <code>true</code> if the value was added for the indicated property, else <code>false</code> if the property and value already existed.
 	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
 	*/
+	public boolean addPropertyValue(final URI propertyURI, final Number propertyValue);
+
+	/**Adds an integer property value for the property with the given URI.
+	If the given property and value already exists, no action occurs.
+	@param propertyURI The URI of the property of the value to add.
+	@param propertyValue The value to add for the given property.
+	@return <code>true</code> if the value was added for the indicated property, else <code>false</code> if the property and value already existed.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
 	public boolean addPropertyValue(final URI propertyURI, final long propertyValue);
+
+	/**Adds a real property value for the property with the given URI.
+	If the given property and value already exists, no action occurs.
+	@param propertyURI The URI of the property of the value to add.
+	@param propertyValue The value to add for the given property.
+	@return <code>true</code> if the value was added for the indicated property, else <code>false</code> if the property and value already existed.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public boolean addPropertyValue(final URI propertyURI, final double propertyValue);
 
 	/**Adds a string property value for the property with the given URI.
 	If the given property and value already exists, no action occurs.
@@ -242,6 +260,22 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final URFDateTime propertyValue);
 
+	/**Sets a number property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
+	@param propertyURI The URI of the property of the value to set.
+	@param propertyValue The value to set for the given property, or <code>null</code> if there should be no such property.
+	@return The old property value, or <code>null</code> if there was no property value previously.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public URFResource setPropertyValue(final URI propertyURI, final Number propertyValue);
+
+	/**Sets an boolean property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
+	@param propertyURI The URI of the property of the value to set.
+	@param propertyValue The value to set for the given property.
+	@return The old property value, or <code>null</code> if there was no property value previously.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public URFResource setPropertyValue(final URI propertyURI, final boolean propertyValue);
+
 	/**Sets an integer property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.
 	@param propertyValue The value to set for the given property.
@@ -249,6 +283,14 @@ public interface URFScope extends ReadWriteLock
 	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final long propertyValue);
+
+	/**Sets a real property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
+	@param propertyURI The URI of the property of the value to set.
+	@param propertyValue The value to set for the given property.
+	@return The old property value, or <code>null</code> if there was no property value previously.
+	@exception NullPointerException if the given property URI is <code>null</code>.
+	*/
+	public URFResource setPropertyValue(final URI propertyURI, final double propertyValue);
 
 	/**Sets values for the property with the given URI by removing all properties with the given URI and adding the given property values.
 	Duplicate property values are ignored.
@@ -269,6 +311,16 @@ public interface URFScope extends ReadWriteLock
 	@exception NullPointerException if the given property URI and/or property values is <code>null</code>.
 	*/
 	public URFResource[] setPropertyValues(final URI propertyURI, final long... propertyValues);
+
+	/**Sets real values for the property with the given URI by removing all properties with the given URI and adding the given property values.
+	Duplicate property values are ignored.
+	@param propertyURI The URI of the property of the value to set.
+	@param ordered Whether each added property value should be given a contextual order.
+	@param propertyValues The values to set for the given property.
+	@return The old property values.
+	@exception NullPointerException if the given property URI and/or property values is <code>null</code>.
+	*/
+	public URFResource[] setPropertyValues(final URI propertyURI, final double... propertyValues);
 
 	/**Sets string values for the property with the given URI by removing all properties with the given URI and adding the given property values.
 	Duplicate property values are ignored.

@@ -74,13 +74,22 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 		return createResource(Classes.createJavaURI(objectClass), null);	//create an untyped resource with a Java class URI
 	}
 
+	/**Creates a default boolean resource with its type added as a type property.
+	This method delegates to {@link #createLexicalResource(URI, String)}.
+	@param bool The boolean for which a default resource should be created.
+	@return A default boolean resource with the appropriate type property added.
+	*/
+	public URFResource createBooleanResource(final boolean bool)
+	{
+		return createLexicalResource(BOOLEAN_CLASS_URI, Boolean.toString(bool));	//create and return a default boolean resource
+	}
+
 	/**Creates a default integer resource with its type added as a type property.
 	This method delegates to {@link #createLexicalResource(URI, String)}.
 	@param integer The integer for which a default resource should be created.
 	@return A default integer resource with the appropriate type property added.
-	@exception NullPointerException if the given integer is <code>null</code>.
 	*/
-	public URFResource createIntegerResource(final Long integer)
+	public URFResource createIntegerResource(final long integer)
 	{
 		return createLexicalResource(INTEGER_CLASS_URI, Long.toString(integer));	//create and return a default integer resource
 	}
@@ -128,6 +137,16 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 	public URFResource createMediaTypeResource(final ContentType mediaType)
 	{
 		return createLexicalResource(Content.MEDIA_TYPE_CLASS_URI, mediaType.getBaseType());	//create and return a default media type resource from the media type base type
+	}
+
+	/**Creates a default real resource with its type added as a type property.
+	This method delegates to {@link #createLexicalResource(URI, String)}.
+	@param real The real for which a default resource should be created.
+	@return A default integer resource with the appropriate type property added.
+	*/
+	public URFResource createRealResource(final double real)
+	{
+		return createLexicalResource(REAL_CLASS_URI, Double.toString(real));	//create and return a default real resource
 	}
 
 	/**Creates a default string resource with its type added as a type property.

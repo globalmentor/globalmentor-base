@@ -17,6 +17,7 @@
 package com.globalmentor.java;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**Utilities for manipulating numbers.
 @author Garret Wilson
@@ -29,6 +30,35 @@ public class Numbers
 	/**The double value representing 2/3.*/
 	public final static double TWO_THIRDS_DOUBLE=2.0d/3.0d;
 
+	/**Returns the value of the given number if the number is integral.
+	@param number The number to examine.
+	@return The value of the given number if the number is integral, or -1 if the given number is not an integral.
+	@see #isIntegral(Number)
+	*/
+	public static long asIntegralValue(final Number number)
+	{
+		return isIntegral(number) ? number.longValue() : -1;
+	}
+
+	/**Returns the value of the given number if the number is decimal.
+	@param number The number to examine.
+	@return The value of the given number if the number is decimal, or -1 if the given number is not decimal.
+	@see #isDecimal(Number)
+	*/
+	public static double asDecimalValue(final Number number)
+	{
+		return isDecimal(number) ? number.doubleValue() : -1;
+	}
+
+	/**Determines if the given number is an integral type: {@link BigInteger}, {@link Byte}, {@link Integer}, {@link Long}, or {@link Short}.
+	@param number The number to examine.
+	@return <code>true</code> if the given number is an integral type.
+	*/
+	public static boolean isIntegral(final Number number)
+	{
+		return number instanceof Integer || number instanceof Long || number instanceof Short || number instanceof Byte || number instanceof BigInteger;
+	}
+
 	/**Determines if the given number is a non-integer decimal type: {@link Float}, {@link Double}, or {@link BigDecimal}.
 	@param number The number to examine.
 	@return <code>true</code> if the given number is a non-integer decimal type.
@@ -39,15 +69,14 @@ public class Numbers
 	}
 
 	/**Returns a big decimal representation of the given number.
+	If the number is already a {@link BigDecimal}, the same number object is returned.
 	@param number The number to return as a big decimal.
-	@return The number as a big decimal.
-	@see #isDecimal(Number)
+	@return A big decimal representing the number.
 	*/
-	public static BigDecimal asBigDecimal(final Number number)
+	public static BigDecimal toBigDecimal(final Number number)
 	{
 		return number instanceof BigDecimal ? (BigDecimal)number : new BigDecimal(number.toString());	//create a big decimal only if needed
 	}
-
 
 	/**Compares the two specified numbers.
 	@param number1 The first number to compare.
