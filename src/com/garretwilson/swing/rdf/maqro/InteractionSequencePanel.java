@@ -5,7 +5,7 @@ import javax.swing.*;
 
 import com.garretwilson.model.ResourceModel;
 import com.garretwilson.swing.*;
-import com.globalmentor.rdf.maqro.*;
+import com.globalmentor.urf.maqro.*;
 
 /**A component that displays a sequence of MAQRO interactions and allows them
 	optionally to be edited.

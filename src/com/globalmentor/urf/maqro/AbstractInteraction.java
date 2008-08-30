@@ -14,35 +14,37 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import java.net.URI;
 import java.util.*;
 
-import com.globalmentor.rdf.*;
-import static com.globalmentor.rdf.maqro.MAQRO.*;
+import com.globalmentor.urf.AbstractClassTypedURFResource;
 
-/**Designates an object is an interaction that can be part of a MAQRO activity.
+import static com.globalmentor.urf.maqro.MAQRO.*;
+
+/**Abstract implementation of an interaction which can be part of a MAQRO activity.
 @author Garret Wilson
 */
-public abstract class Interaction extends TypedRDFResource
+public abstract class AbstractInteraction extends AbstractClassTypedURFResource implements Interaction
 {
 
-	/**@return The namespace URI of the ontology defining the default type of this resource.*/
-	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
-
-	/**Default constructor.*/
-	public Interaction()
-	{
-		super();	//construct the parent class
-	}
-	
-	/**Reference URI constructor.
-	@param referenceURI The reference URI for the new resource.
+	/**URI constructor with a type namespace of {@value MAQRO#MAQRO_NAMESPACE_URI}.
+	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
 	*/
-	public Interaction(final URI referenceURI)
+	public AbstractInteraction(final URI uri)
 	{
-		super(referenceURI);  //construct the parent class
+		this(uri, MAQRO_NAMESPACE_URI);	//construct the parent class
+	}
+
+	/**URI and type namespace URI constructor.
+	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
+	@param typeNamespaceURI The namespace URI of the URI of the type to be added.
+	@exception NullPointerException if the given type type namespace URI is <code>null</code>.
+	*/
+	public AbstractInteraction(final URI uri, final URI typeNamespaceURI)
+	{
+		super(uri, typeNamespaceURI);	//construct the parent class
 	}
 
 	/**Adds a category to the interaction.
@@ -50,16 +52,20 @@ public abstract class Interaction extends TypedRDFResource
 	@param language The language of the category, or <code>null</code> if
 		no language should be specified.
 	*/
+/*TODO fix
 	public void addCategory(final String category, final Locale language)
 	{
 		MAQRO.addCategory(this, category, language);	//add the category to the interaction
 	}
+*/
 
 	/**@return An iterable to categories, if any, of the interaction.*/
+/*TODO fix
 	public Iterable<RDFObject> getCategories()
 	{
 		return MAQRO.getCategories(this);	//return an iterable to the categories
 	}
+*/
 
 	/**Determines if the interaction has a category in the given category set.
 	<p>If the category set contains <code>NO_CATEGORY</code>, this method returns
@@ -69,9 +75,11 @@ public abstract class Interaction extends TypedRDFResource
 	@return <code>true</code> if the interaction has a category that is
 		included in the category set.
 	*/
+/*TODO fix
 	public boolean hasCategory(final Set categorySet)
 	{
 		return MAQRO.hasCategory(this, categorySet);	//see whether this category has one of the supplied categories
 	}
+*/
 
 }

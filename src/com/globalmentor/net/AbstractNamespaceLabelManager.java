@@ -28,7 +28,6 @@ import static com.globalmentor.net.URIs.*;
 import com.globalmentor.net.http.webdav.ApacheWebDAV;
 import com.globalmentor.rdf.RDF;
 import com.globalmentor.rdf.dicto.Dicto;
-import com.globalmentor.rdf.maqro.MAQRO;
 import com.globalmentor.rdf.rdfs.RDFS;
 import com.globalmentor.rdf.version.RDFVersion;
 import com.globalmentor.rdf.xeb.RDFXEB;
@@ -43,6 +42,7 @@ import com.globalmentor.urf.URF;
 import com.globalmentor.urf.content.Content;
 import com.globalmentor.urf.dcmi.DCMI;
 import com.globalmentor.urf.foaf.FOAF;
+import com.globalmentor.urf.maqro.MAQRO;
 import com.globalmentor.urf.select.Select;
 import com.globalmentor.urf.vcard.VCard;
 import com.globalmentor.util.MapDecorator;
@@ -81,7 +81,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		tempNamespaceURILabelMap.put(Dicto.DICTO_NAMESPACE_URI, Dicto.DICTO_NAMESPACE_PREFIX); //Dicto
 		tempNamespaceURILabelMap.put(DCMI.DCMI11_ELEMENTS_NAMESPACE_URI, DCMI.DCMI_ELEMENTS_NAMESPACE_PREFIX); //Dublin Core
 		tempNamespaceURILabelMap.put(FOAF.FOAF_NAMESPACE_URI, FOAF.FOAF_NAMESPACE_PREFIX); //FOAF
-		tempNamespaceURILabelMap.put(MAQRO.MAQRO_NAMESPACE_URI, MAQRO.MAQRO_NAMESPACE_PREFIX); //MAQRO
+//TODO convert to URF		tempNamespaceURILabelMap.put(MAQRO.MAQRO_NAMESPACE_URI, MAQRO.MAQRO_NAMESPACE_PREFIX); //MAQRO
 		tempNamespaceURILabelMap.put(OEB.OEB1_DOCUMENT_NAMESPACE_URI, OEB.OEB1_DOCUMENT_NAMESPACE_PREFIX); //OEB 1
 		tempNamespaceURILabelMap.put(URI.create("http://globalmentor.com/namespaces/marmot#"), "marmot"); //Marmot TODO link to Marmot constants when Marmot is included in normal libraries
 		tempNamespaceURILabelMap.put(URI.create("http://marmox.net/namespaces/content#"), "content"); //Marmox content

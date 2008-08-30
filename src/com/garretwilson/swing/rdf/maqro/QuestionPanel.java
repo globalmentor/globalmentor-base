@@ -14,7 +14,7 @@ import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.BorderUtilities;
 import com.globalmentor.net.Resource;
 import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.maqro.*;
+import com.globalmentor.urf.maqro.*;
 import com.globalmentor.util.Collections;
 
 /**Panel for editing a MAQRO question.
@@ -42,13 +42,13 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 		private QueryAnswerPanel getQueryAnswerPanel() {return queryAnswerPanel;}
 
 	private final JList hintSwingList;
-	private final ListPanel<Dialogue> hintPanel;
+//TODO fix	private final ListPanel<Dialogue> hintPanel;
 
 	/**The list of hints for this question.*/
 	private final ListListModel<RDFObject> hintList;
 
 	private final JList explanationSwingList;
-	private final ListPanel<Dialogue> explanationPanel;
+//TODO fix	private final ListPanel<Dialogue> explanationPanel;
 
 	/**The list of explanations for this question.*/
 	private final ListListModel<RDFResource> explanationList;
@@ -73,10 +73,10 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 		setDefaultDataView(DEFAULT_DEFAULT_MODEL_VIEW);	//set the default data view
 		hintList=new ListListModel<RDFObject>(new ArrayList<RDFObject>());	//create a list in which to store the hints
 		hintSwingList=new JList(hintList);
-		hintPanel=new ListPanel<Dialogue>(hintSwingList, new HintEditStrategy());
+//TODO fix		hintPanel=new ListPanel<Dialogue>(hintSwingList, new HintEditStrategy());
 		explanationList=new ListListModel<RDFResource>(new ArrayList<RDFResource>());	//create a list in which to store the explanations
 		explanationSwingList=new JList(explanationList);
-		explanationPanel=new ListPanel<Dialogue>(explanationSwingList, new ExplanationEditStrategy());
+//TODO fix		explanationPanel=new ListPanel<Dialogue>(explanationSwingList, new ExplanationEditStrategy());
 		queryAnswerPanel=new QueryAnswerPanel();	//create the query/answer
 		if(initialize)  //if we should initialize
 			initialize();   //initialize the panel
@@ -87,6 +87,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 	{
 		setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border
 		setTitle("Question");	//G***i18n
+/*TODO fix
 		addView(QUERY_MODEL_VIEW, "Query and Response", IconResources.getIcon(IconResources.SPEECH_RECTANGLE_TEXT_ICON_FILENAME), queryAnswerPanel);	//add the query view G***i18n
 		addView(HINT_MODEL_VIEW, "Hints", IconResources.getIcon(IconResources.QUESTION_ICON_FILENAME), hintPanel);	//add the hint view G***i18n
 		addView(EXPLANATION_MODEL_VIEW, "Explanations", IconResources.getIcon(IconResources.INFO_ICON_FILENAME), explanationPanel);	//add the explanation view G***i18n
@@ -96,6 +97,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 		hintPanel.setEditable(true);	//allow the hints to be edited
 		explanationSwingList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	//only allow one explanation to be selected at a time
 		explanationPanel.setEditable(true);	//allow the explanations to be edited
+*/
 	}
 
 	/**Updates the states of the actions, including enabled/disabled status,
@@ -116,6 +118,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 	protected void loadModel(final int modelView) throws IOException
 	{
 		super.loadModel(modelView);	//do the default loading
+/*TODO fix
 		final ResourceModel<Question> model=getModel();	//get the data model
 		final Question question=model.getResource();	//get the question, if there is one
 		switch(modelView)	//see which view of data we should load
@@ -213,6 +216,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 				}
 				break;
 		}
+*/
 	}
 
 	/**Stores the current data being edited to the model, if necessary.
@@ -221,6 +225,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 	*/
 	protected void saveModel(final int modelView) throws IOException
 	{
+/*TODO fix
 		super.saveModel(modelView);	//do the default saving
 		final ResourceModel<Question> model=getModel();	//get the data model
 		final Question question=model.getResource()!=null ? model.getResource() : new Question();	//get the question, if there is one; if not, create one
@@ -288,6 +293,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 				}
 				break;
 		}
+*/
 	}
 
 	/**Indicates that the view of the data has changed.
@@ -302,7 +308,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 		{
 			case QUERY_MODEL_VIEW:	//if we're changing from the query view
 //G***fix				getSourceTextPane().getDocument().removeDocumentListener(getModifyDocumentListener());	//don't listen for changes to the source text pane any more
-				queryAnswerPanel.queryPanel.setModel(new ResourceModel<Dialogue>(model.getBaseURI(), model));	//clear the query panel
+//TODO fix				queryAnswerPanel.queryPanel.setModel(new ResourceModel<Dialogue>(model.getBaseURI(), model));	//clear the query panel
 				break;
 		}
 		switch(newView)	//see which view we're changing to
@@ -324,13 +330,13 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 	{
 
 		private final JLabel queryLabel;
-		private final DialoguePanel queryPanel;
+//TODO fix		private final DialoguePanel queryPanel;
 		private final ButtonGroup expectButtonGroup;
 		private final JRadioButton choicesRadioButton;
 		private final JCheckBox mutuallyExclusiveCheckBox;
 		private final JCheckBox requireAllCheckBox;
 		private final JList choiceList;
-		private final ListPanel<Dialogue> choicePanel;
+//TODO fix		private final ListPanel<Dialogue> choicePanel;
 		private final JRadioButton expectRadioButton;
 		private final AnswerPanel answerPanel;
 
@@ -339,13 +345,13 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 		{
 			super(new BasicGridBagLayout(), false);	//construct the parent class but don't initialize it
 			queryLabel=new JLabel();
-			queryPanel=new DialoguePanel(new ResourceModel<Dialogue>(getModel().getBaseURI(), getModel())); 
+//TODO fix			queryPanel=new DialoguePanel(new ResourceModel<Dialogue>(getModel().getBaseURI(), getModel())); 
 			expectButtonGroup=new ButtonGroup();
 			choicesRadioButton=new JRadioButton();
 			mutuallyExclusiveCheckBox=new JCheckBox();
 			requireAllCheckBox=new JCheckBox();
 			choiceList=new JList(new ListListModel<RDFObject>(new RDFListResource()));	//create a default empty list for the choices
-			choicePanel=new ListPanel<Dialogue>(choiceList, new ChoiceEditStrategy());
+//TODO fix			choicePanel=new ListPanel<Dialogue>(choiceList, new ChoiceEditStrategy());
 			expectRadioButton=new JRadioButton();
 			answerPanel=new AnswerPanel();
 			initialize();   //initialize the panel
@@ -373,9 +379,11 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			choiceList.setCellRenderer(new CheckBoxListCellRenderer());  //display the choices with checkboxes
 			choiceList.setEnabled(false);	//default to disabling the choice list; it will be enabled if the corresponding radio button is selected
 			choiceList.addListSelectionListener(getModifyListSelectionListener());	//selecting a different choice modifies the panel
+/*TODO fix
 			choicePanel.setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border for the choice panel
 			choicePanel.setTitle("Choices and Answers");	//G***i18n
 			choicePanel.setEditable(true);	//allow the choices to be edited
+*/
 			expectRadioButton.setText("Expect Response Type");	//G***i18n
 			expectRadioButton.addItemListener(updateStatusItemListener); 
 			choicesRadioButton.addItemListener(getModifyItemListener()); 
@@ -383,11 +391,11 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			answerPanel.setTitle("Expectation and Answer");	//G***i18n
 			final Insets choiceAnswerInsets=new Insets(0, 32, 0, 0);
 			add(queryLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-			add(queryPanel, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
+//TODO fix			add(queryPanel, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
 			add(choicesRadioButton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 			add(mutuallyExclusiveCheckBox, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 			add(requireAllCheckBox, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-			add(choicePanel, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, choiceAnswerInsets, 0, 0));
+//TODO fix			add(choicePanel, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, choiceAnswerInsets, 0, 0));
 			add(expectRadioButton, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 			add(answerPanel, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, choiceAnswerInsets, 0, 0));
 		}
@@ -402,7 +410,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			mutuallyExclusiveCheckBox.setEnabled(isChoicesSelected);
 			requireAllCheckBox.setEnabled(isChoicesSelected && ! mutuallyExclusiveCheckBox.isSelected());	//don't allow requiring all if only one choice can be selected
 
-			choicePanel.setVisible(isChoicesSelected);	//G***testing
+//TODO fix			choicePanel.setVisible(isChoicesSelected);	//G***testing
 			
 			choiceList.setEnabled(isChoicesSelected);	//only enable the choice list if the choices radio button is selected
 			if(mutuallyExclusiveCheckBox.isSelected())	//if the choices should be mutually exclusive
@@ -425,7 +433,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 					choiceList.setCellRenderer(new CheckBoxListCellRenderer());  //display the choices with checkboxes
 				}
 			}
-			choicePanel.updateStatus();	//update the status of the choice panel, in case we changed the selection mode
+//TODO fix			choicePanel.updateStatus();	//update the status of the choice panel, in case we changed the selection mode
 			answerPanel.setEnabled(expectRadioButton.isSelected());	//only enable the answer panel if the expect radio button is selected
 
 			answerPanel.setVisible(expectRadioButton.isSelected());	//G***testing
@@ -435,13 +443,15 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 		/**The edit strategy that allows editing of choices from a list.
 		@author Garret Wilson
 		*/
-		protected class ChoiceEditStrategy extends ListEditStrategy<Dialogue>
+		protected class ChoiceEditStrategy //TODO fix extends ListEditStrategy<Dialogue>
 		{
 			/**Default constructor.*/
+/*TODO fix
 			public ChoiceEditStrategy()
 			{
 				super(choiceList, QueryAnswerPanel.this);	//construct the parent class
 			}
+*/
 
 			/**Creates a new default object to be edited.
 			@return The new default object.
@@ -452,10 +462,12 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 				or if the class has no nullary constructor; or if the instantiation fails
 				for some other reason.
 			*/
+/*TODO fix
 			protected Dialogue createItem() throws InstantiationException, IllegalAccessException
 			{
 				return new Dialogue();
 			}
+*/
 
 			/**Edits an object from the list.
 			@param parentComponent The component to use as a parent for any editing
@@ -464,6 +476,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			@return The object with the modifications from the edit, or
 				<code>null</code> if the edits should not be accepted.
 			*/
+/*TODO fix
 			protected Dialogue editItem(final Dialogue item)
 			{
 				final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
@@ -477,6 +490,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 				}
 				return null;	//show that editing did not succeed
 			}
+*/
 		}
 
 	}
@@ -484,13 +498,15 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 	/**The edit strategy that allows editing of hints from a list.
 	@author Garret Wilson
 	*/
-	protected class HintEditStrategy extends ListEditStrategy<Dialogue>
+	protected class HintEditStrategy //TODO fix extends ListEditStrategy<Dialogue>
 	{
 		/**Default constructor.*/
+/*TODO fix
 		public HintEditStrategy()
 		{
 			super(hintSwingList, QuestionPanel.this);	//construct the parent class
 		}
+*/
 
 		/**Creates a new default object to be edited.
 		@return The new default object.
@@ -501,16 +517,19 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			or if the class has no nullary constructor; or if the instantiation fails
 			for some other reason.
 		*/
+/*TODO fix
 		protected Dialogue createItem() throws InstantiationException, IllegalAccessException
 		{
 			return new Dialogue();
 		}
+*/
 
 		/**Edits an object from the list.
 		@param item The item to edit in the list.
 		@return The object with the modifications from the edit, or
 			<code>null</code> if the edits should not be accepted.
 		*/
+/*TODO fix
 		protected Dialogue editItem(final Dialogue item)
 		{
 			final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
@@ -524,18 +543,21 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			}
 			return null;	//show that editing did not succeed
 		}
+*/
 	}
 
 	/**The edit strategy that allows editing of explanations from a list.
 	@author Garret Wilson
 	*/
-	protected class ExplanationEditStrategy extends ListEditStrategy<Dialogue>
+	protected class ExplanationEditStrategy //TODO fix extends ListEditStrategy<Dialogue>
 	{
 		/**Default constructor.*/
+/*TODO fix
 		public ExplanationEditStrategy()
 		{
 			super(explanationSwingList, QuestionPanel.this);	//construct the parent class
 		}
+*/
 
 		/**Creates a new default object to be edited.
 		@return The new default object.
@@ -546,16 +568,19 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			or if the class has no nullary constructor; or if the instantiation fails
 			for some other reason.
 		*/
+/*TODO fix
 		protected Dialogue createItem() throws InstantiationException, IllegalAccessException
 		{
 			return new Dialogue();
 		}
+*/
 
 		/**Edits an object from the list.
 		@param item The item to edit in the list.
 		@return The object with the modifications from the edit, or
 			<code>null</code> if the edits should not be accepted.
 		*/
+/*TODO fix
 		protected Dialogue editItem(final Dialogue item)
 		{
 			final Dialogue dialogueClone=(Dialogue)((Dialogue)item).clone();	//create a clone of the dialogue
@@ -569,6 +594,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			}
 			return null;	//show that editing did not succeed
 		}
+*/
 	}
 
 }

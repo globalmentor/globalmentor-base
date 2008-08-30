@@ -21,7 +21,7 @@ import com.globalmentor.apps.mentoract.activity.maqro.MAQROActivityPanel;
 import com.globalmentor.io.URIAccessible;
 import com.globalmentor.rdf.RDFObject;
 import com.globalmentor.rdf.RDFResource;
-import com.globalmentor.rdf.maqro.*;
+import com.globalmentor.urf.maqro.*;
 
 /**View representing a MAQRO question.
 @author Garret Wilson
@@ -42,10 +42,10 @@ public class MAQROQuestionView extends XMLComponentBlockView implements Outcomab
 		public void addChoiceView(final View view) {choiceViews.add(view);}
 
 	/**The button interface to the hint action, or <code>null</code> if there is no hint button.*/
-	private final AbstractButton hintButton;
+//TODO fix	private final AbstractButton hintButton;
 
 		/**@return The button interface to the hint action, or <code>null</code> if there is no hint button.*/
-		protected AbstractButton getSubmitButton() {return hintButton;}
+//TODO fix		protected AbstractButton getSubmitButton() {return hintButton;}
 
 	/**@return The question stored in a element's attributes, or <code>null</code> if no question could be found.*/ 
 	public Question getQuestion()
@@ -67,6 +67,7 @@ public class MAQROQuestionView extends XMLComponentBlockView implements Outcomab
 		{
 			throw new IllegalArgumentException("Element does not represent a question");
 		}
+/*TODO fix
 		final List<RDFObject> hintList=question.getHints();	//get the question hints
 		if(hintList!=null && hintList.size()>0	//if there are hints
 				&& (activityView==null || activityView.getActivity().isAllowHint()))	//and if there is no associated activity, or the activity allows hints
@@ -88,6 +89,7 @@ public class MAQROQuestionView extends XMLComponentBlockView implements Outcomab
 		{
 			hintButton=null;	//don't create a hint button
 		}
+*/
 	}
 
 	/**Retrieves user response information for the associated interaction and returns the outcome information.
@@ -103,11 +105,13 @@ public class MAQROQuestionView extends XMLComponentBlockView implements Outcomab
 			{
 				final MAQRODialogueChoiceView choiceView=(MAQRODialogueChoiceView)view;	//get the view as a choice view
 				final RDFResource choice=choiceView.getChoice();	//get the associated choice
+/*TODO fix
 				final AbstractButton button=choiceView.getToggleButton();	//get the button
 				if(button.isSelected())	//if this button is selected
 				{
 					result.addResponse(choice);	//add this choice as a response to the result
-				}				
+				}
+*/
 			}
 		}
 		return result;	//return the result

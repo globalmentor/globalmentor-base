@@ -14,31 +14,28 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import java.net.URI;
+import java.util.List;
 
-import com.globalmentor.rdf.*;
-import static com.globalmentor.rdf.maqro.MAQRO.*;
-import com.globalmentor.rdf.xmlschema.BooleanLiteral;
+import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.urf.maqro.MAQRO.*;
+import com.globalmentor.urf.*;
+
+import static com.globalmentor.urf.URF.*;
 
 /**Represents the outcome, including responses, evaluations, and scores, of a
 	MAQRO interaction such as an activity or question.
 @author Garret Wilson
 */
-public class Outcome extends TypedRDFResource
+public class Outcome extends AbstractClassTypedURFResource
 {
-
-	/**@return The namespace URI of the ontology defining the default type of this resource.*/
-	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
-
-	/**@return The local name of the default type of this resource.*/
-	public String getDefaultTypeName() {return OUTCOME_CLASS_NAME;}
 
 	/**Default constructor.*/
 	public Outcome()
 	{
-		super();	//construct the parent class
+		this((URI)null);	//construct the class with no URI
 	}
 
 	/**Interaction constructor.
@@ -50,18 +47,18 @@ public class Outcome extends TypedRDFResource
 		setInteraction(interaction);	//set the interaction
 	}
 	
-	/**Reference URI constructor.
-	@param referenceURI The reference URI for the new resource.
+	/**URI constructor.
+	@param uri The URI for the new resource.
 	*/
-	public Outcome(final URI referenceURI)
+	public Outcome(final URI uri)
 	{
-		super(referenceURI);  //construct the parent class
+		super(uri, MAQRO_NAMESPACE_URI);  //construct the parent class
 	}
 
-	/**@return The interaction for which this object gives the outcome.*/
+	/**@return The interaction for which this object gives the outcome, or <code>null</code> if there is no interaction or the value is not an interaction.*/
 	public Interaction getInteraction()
 	{
-		return (Interaction)getPropertyValue(MAQRO_NAMESPACE_URI, INTERACTION_PROPERTY_NAME);	//retrieve the interaction
+		return asInstance(getPropertyValue(INTERACTION_PROPERTY_URI), Interaction.class);	//retrieve the interaction
 	}
 
 	/**Sets the interaction for which this object gives the outcome.
@@ -69,15 +66,15 @@ public class Outcome extends TypedRDFResource
 	 */
 	public void setInteraction(final Interaction interaction)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, INTERACTION_PROPERTY_NAME, interaction);	//set the interaction
+		setPropertyValue(INTERACTION_PROPERTY_URI, interaction);	//set the interaction
 	}
 
-	/**@return The list of outcomes for this interaction's contained interactions,
+	/**@return The list of outcomes for this outcome's contained outcomes,
 		or <code>null</code> if there is no list of outcomes or the value is not a list.
 	*/
-	public RDFListResource<?> getOutcomes()
+	public List<Outcome> getOutcomes()
 	{
-		return RDFResources.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, OUTCOMES_PROPERTY_NAME));	//get the maqro:outcomes property value as a list	
+		return asListInstance(getPropertyValue(OUTCOMES_PROPERTY_URI));	//get the maqro.outcomes property value as a list	
 	}
 	
 	/**Retrieves the first outcome that represents a particular interaction from the list of contained outcomes.
@@ -88,15 +85,11 @@ public class Outcome extends TypedRDFResource
 	*/
 	public Outcome getOutcome(final Interaction interaction)
 	{
-		for(final RDFObject resource:getOutcomes())	//look at each outcome
+		for(final Outcome outcome:getOutcomes())	//look at each outcome
 		{
-			if(resource instanceof Outcome)	//if this is an outcome
+			if(interaction.equals(outcome.getInteraction()))	//if this is an outcome specified to be for the given interaction
 			{
-				final Outcome outcome=(Outcome)resource;	//get the resource as an outcome
-				if(interaction.equals(((Outcome)resource).getInteraction()))	//if this is an outcome specified to be for the given interaction
-				{
-					return outcome;	//return the matching outcome
-				}
+				return outcome;	//return the matching outcome
 			}
 		}
 		return null;	//show that we couldn't find a matching outcome
@@ -106,23 +99,23 @@ public class Outcome extends TypedRDFResource
 	@param outcomes The list of outcomes for this interaction group, or
 		<code>null</code> if the list of outcomes should be removed.
 	*/
-	public void setOutcomes(final RDFListResource interactions)
+	public void setOutcomes(final URFListResource<Outcome> interactions)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, OUTCOMES_PROPERTY_NAME, interactions);	//set the maqro:outcomes property
+		setPropertyValue(OUTCOMES_PROPERTY_URI, interactions);	//set the maqro.outcomes property
 	}
 
 	/**Adds a response to the outcome.
 	@param response The response to add.
 	*/
-	public void addResponse(final RDFObject response)
+	public void addResponse(final URFResource response)
 	{
-		addProperty(MAQRO_NAMESPACE_URI, RESPONSE_PROPERTY_NAME, response);	//add the response to the outcome
+		addPropertyValue(RESPONSE_PROPERTY_URI, response);	//add the response to the outcome
 	}
 
 	/**@return An iterable to responses, if any, of the outcome.*/
-	public Iterable<RDFObject> getResponses()
+	public Iterable<URFResource> getResponses()
 	{
-		return getPropertyValues(MAQRO_NAMESPACE_URI, RESPONSE_PROPERTY_NAME);	//return an iterable to the responses 
+		return getPropertyValues(RESPONSE_PROPERTY_URI);	//return an iterable to the responses 
 	}
 
 	/**Adds a result to the outcome.
@@ -130,13 +123,13 @@ public class Outcome extends TypedRDFResource
 	*/
 	public void addResult(final Result result)
 	{
-		addProperty(MAQRO_NAMESPACE_URI, RESULT_PROPERTY_NAME, result);	//add the result to the outcome
+		addPropertyValue(RESULT_PROPERTY_URI, result);	//add the result to the outcome
 	}
 
 	/**@return An iterable to results, if any, of the outcome.*/
-	public Iterable<RDFObject> getResults()
+	public Iterable<Result> getResults()
 	{
-		return getPropertyValues(MAQRO_NAMESPACE_URI, RESULT_PROPERTY_NAME);	//return an iterable to the results 
+		return getPropertyValues(RESULT_PROPERTY_URI, Result.class);	//return an iterable to the results 
 	}
 
 	/**Determines whether the outcome is marked as correct or incorrect.
@@ -145,7 +138,7 @@ public class Outcome extends TypedRDFResource
 	*/
 	public boolean hasCorrect()
 	{
-		return getPropertyValue(MAQRO_NAMESPACE_URI, CORRECT_PROPERTY_NAME) instanceof BooleanLiteral; //see if the correct property is present
+		return asObject(getPropertyValue(CORRECT_PROPERTY_URI)) instanceof Boolean; //see if the correct property is present
 	}
 
 	/**Determines whether the outcome is correct.
@@ -155,8 +148,7 @@ public class Outcome extends TypedRDFResource
 	*/
 	public boolean isCorrect()
 	{
-		final RDFObject rdfObject=getPropertyValue(MAQRO_NAMESPACE_URI, CORRECT_PROPERTY_NAME); //get the value of the correct property
-		return rdfObject instanceof BooleanLiteral ? ((BooleanLiteral)rdfObject).getValue().booleanValue() : false; //return the boolean value of the object, or null if is no such property or the property value is not a boolean typed literal
+		return Boolean.TRUE.equals(asObject(getPropertyValue(CORRECT_PROPERTY_URI))); //see if the correct property is true
 	}
 
 	/**Sets whether the outcome is correct.
@@ -165,7 +157,7 @@ public class Outcome extends TypedRDFResource
 	*/
 	public void setCorrect(final boolean correct)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, CORRECT_PROPERTY_NAME, new BooleanLiteral(correct)); //set the correct property with a boolean typed literal
+		setPropertyValue(CORRECT_PROPERTY_URI, correct); //set the correct property with a boolean value
 	}
 
 }

@@ -14,33 +14,15 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
-import java.net.URI;
+import com.globalmentor.urf.URFResource;
 
-import static com.globalmentor.rdf.maqro.MAQRO.*;
-
-/**Random selection of MAQRO interactions.
+/**An interaction which can be part of a MAQRO activity.
 @author Garret Wilson
 */
-public class RandomSelection extends Selection
+public interface Interaction extends URFResource
 {
 
-	/**@return The local name of the default type of this resource.*/
-	public String getDefaultTypeName() {return RANDOM_SELECTION_CLASS_NAME;}
-
-	/**Default constructor.*/
-	public RandomSelection()
-	{
-		super();	//construct the parent class
-	}
-
-	/**Constructs selection criteria with a reference URI.
-	@param referenceURI The reference URI for the new resource.
-	*/
-	public RandomSelection(final URI referenceURI)
-	{
-		super(referenceURI);  //construct the parent class
-	}
 
 }

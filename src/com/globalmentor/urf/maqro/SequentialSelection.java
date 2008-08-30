@@ -14,33 +14,28 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import java.net.URI;
 
-import static com.globalmentor.rdf.maqro.MAQRO.*;
-
-/**Filter for choosing MAQRO interactions based upon interaction type.
+/**Sequential selection of MAQRO interactions.
 @author Garret Wilson
 */
-public class InteractionTypeFilter extends Filter
+public class SequentialSelection extends AbstractSelection
 {
 
-	/**@return The local name of the default type of this resource.*/
-	public String getDefaultTypeName() {return INTERACTION_TYPE_FILTER_CLASS_NAME;}
-
 	/**Default constructor.*/
-	public InteractionTypeFilter()
+	public SequentialSelection()
 	{
-		super();	//construct the parent class
+		this(null);	//construct the class with no URI
 	}
 
-	/**Constructs selection criteria with a reference URI.
-	@param referenceURI The reference URI for the new resource.
+	/**URI constructor.
+	@param uri The URI for the new resource.
 	*/
-	public InteractionTypeFilter(final URI referenceURI)
+	public SequentialSelection(final URI uri)
 	{
-		super(referenceURI);  //construct the parent class
+		super(uri);  //construct the parent class
 	}
 
 }

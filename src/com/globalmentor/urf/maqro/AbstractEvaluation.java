@@ -14,50 +14,54 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import java.net.URI;
 
-import com.globalmentor.rdf.*;
+import com.globalmentor.urf.AbstractClassTypedURFResource;
 
-import static com.globalmentor.rdf.RDFResources.*;
-import static com.globalmentor.rdf.maqro.MAQRO.*;
+import static com.globalmentor.urf.maqro.MAQRO.*;
 
 /**An evaluation of a MAQRO activity.
 @author Garret Wilson
 */
-public abstract class Evaluation extends TypedRDFResource
+public abstract class AbstractEvaluation extends AbstractClassTypedURFResource
 {
 
-	/**@return The namespace URI of the ontology defining the default type of this resource.*/
-	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
-
-	/**Default constructor.*/
-	public Evaluation()
-	{
-		super();	//construct the parent class
-	}
-	
-	/**Reference URI constructor.
-	@param referenceURI The reference URI for the new resource.
+	/**URI constructor with a type namespace of {@value MAQRO#MAQRO_NAMESPACE_URI}.
+	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
 	*/
-	public Evaluation(final URI referenceURI)
+	public AbstractEvaluation(final URI uri)
 	{
-		super(referenceURI);  //construct the parent class
+		this(uri, MAQRO_NAMESPACE_URI);	//construct the parent class
+	}
+
+	/**URI and type namespace URI constructor.
+	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
+	@param typeNamespaceURI The namespace URI of the URI of the type to be added.
+	@exception NullPointerException if the given type type namespace URI is <code>null</code>.
+	*/
+	public AbstractEvaluation(final URI uri, final URI typeNamespaceURI)
+	{
+		super(uri, typeNamespaceURI);	//construct the parent class
 	}
 
 	/**@return The <code>maqro:condition</code> literal value, or <code>null</code> if there is condition no value or it is not a plain literal.*/
+/*TODO fix
 	public String getCondition()
 	{
 		return asString(getPropertyValue(MAQRO_NAMESPACE_URI, CONDITION_PROPERTY_NAME));	//return the maqro:condition property value if it represents a string
 	}
+*/
 	
 	/**Sets the <code>maqro:condition</code> property of the evaluation of the dialogue with the new condition string.
 	@param condition The new conditoin string.
 	*/
+/*TODO fix
 	public void setCondition(final String condition)
 	{
 		setProperty(MAQRO_NAMESPACE_URI, CONDITION_PROPERTY_NAME, condition); //set the maqro:condition property value
 	}
+*/
 
 }

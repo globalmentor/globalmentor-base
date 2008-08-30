@@ -14,35 +14,28 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import java.net.URI;
 
-import com.globalmentor.rdf.*;
-
-import static com.globalmentor.rdf.maqro.MAQRO.*;
-
-/**Criteria for ordering MAQRO interactions.
+/**Random selection of MAQRO interactions.
 @author Garret Wilson
 */
-public abstract class Order extends TypedRDFResource
+public class RandomSelection extends AbstractSelection
 {
 
-	/**@return The namespace URI of the ontology defining the default type of this resource.*/
-	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
-
 	/**Default constructor.*/
-	public Order()
+	public RandomSelection()
 	{
-		super();	//construct the parent class
+		this(null);	//construct the class with no URI
 	}
 
-	/**Reference URI constructor.
-	@param referenceURI The reference URI for the new resource.
+	/**Constructs selection criteria with a URI.
+	@param uri The URI for the new resource.
 	*/
-	public Order(final URI referenceURI)
+	public RandomSelection(final URI uri)
 	{
-		super(referenceURI);  //construct the parent class
+		super(uri);  //construct the parent class
 	}
 
 }

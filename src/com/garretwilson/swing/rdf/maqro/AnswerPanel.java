@@ -9,9 +9,9 @@ import com.garretwilson.swing.*;
 import com.globalmentor.java.Objects;
 import com.globalmentor.net.Resource;
 import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.maqro.*;
 import com.globalmentor.rdf.xmlschema.BooleanLiteral;
 import com.globalmentor.text.xml.schema.XMLSchema;
+import com.globalmentor.urf.maqro.*;
 import com.globalmentor.util.Debug;
 
 /**Panel for editing the answer of a MAQRO question.
@@ -140,6 +140,7 @@ public class AnswerPanel extends ContentPanel
 		the correct answer, or <code>null</code> if there is no answer.
 	@see #getExpectation()
 	*/
+/*TODO fix
 	public void setAnswer(final Dialogue answer)
 	{
 		final RDFResource expectation=getExpectation();	//see what we expect
@@ -160,6 +161,7 @@ public class AnswerPanel extends ContentPanel
 				//G***fix for unexpected types else--put the lexical form in a generic text field
 			}
 		}
+*/
 /*G***fix or del
 		else if(answer!=null)	//if we don't expect a type but an answer is given
 		{
@@ -168,11 +170,12 @@ public class AnswerPanel extends ContentPanel
 			//assert that the expectation already matches the datatype G***should we throw an illegal
 		assert answer==null || !(answer.getValue() instanceof RDFTypedLiteral) || getExpectation()==null || ((RDFTypedLiteral)answer.getValue()).getDatatypeURI().equals(getExpectation().getReferenceURI());
 */
-	}
+//TODO fix	}
 
 	/**@return A resource the <code>rdf:value</code> of which indicates the
 		answer provided by the user, or <code>null</code> if no answer is indicated.
 	*/
+/*TODO fix
 	public Dialogue getAnswer()
 	{
 		if(answerCheckBox.isSelected())	//if the answer checkbox is selected, then and only then will we provide an answer
@@ -197,6 +200,7 @@ public class AnswerPanel extends ContentPanel
 		}
 		return null;	//show that there is no answer
 	}
+*/
 
 	/**Determines a resource appropriate for representing the indicated type object.
 	@param typeObject A resource that indicates the  type, such as a resource

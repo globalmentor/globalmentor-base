@@ -14,124 +14,129 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import java.net.URI;
 
-
-import static com.globalmentor.rdf.RDFResources.asListResource;
-import static com.globalmentor.rdf.maqro.MAQRO.*;
-
-import com.globalmentor.java.Objects;
-import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.xmlschema.IntegerLiteral;
+import static com.globalmentor.java.Objects.*;
+import com.globalmentor.urf.*;
+import static com.globalmentor.urf.URF.*;
+import com.globalmentor.urf.content.Text;
+import static com.globalmentor.urf.maqro.MAQRO.*;
 
 /**Class representing a MAQRO question.
 @author Garret Wilson
 */
-public class Question extends Interaction
+public class Question extends AbstractInteraction
 {
-
-	/**@return The local name of the default type of this resource.*/
-	public String getDefaultTypeName() {return QUESTION_CLASS_NAME;}
 
 	/**Default constructor.*/
 	public Question()
 	{
-		super();	//construct the parent class
+		this(null);	//construct the class with no URI
 	}
 	
-	/**Reference URI constructor.
-	@param referenceURI The reference URI for the new resource.
+	/**URI constructor.
+	@param uri The URI for the new resource.
 	*/
-	public Question(final URI referenceURI)
+	public Question(final URI uri)
 	{
-		super(referenceURI);  //construct the parent class
+		super(uri);  //construct the parent class
 	}
 
 	/**@return The query part of the question, or <code>null</code> if there is
-		no query.
+		no query or the query is not text.
 	*/
-	public Dialogue getQuery()
+	public Text getQuery()
 	{
-		return Objects.asInstance(getPropertyValue(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME), Dialogue.class);	//get the query only if it is Dialogue		
+		return asInstance(getPropertyValue(QUERY_PROPERTY_URI), Text.class);	//get the query only if it is Text		
 	}
 
 	/**Sets the query of the question.
 	@param query The query part of the question, or <code>null</code> if there
 		should be no query.
 	*/
-	public void setQuery(final Dialogue query)
+	public void setQuery(final Text query)
 	{
-		this.setProperty(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME, query);	//set the query		
+		setPropertyValue(QUERY_PROPERTY_URI, query);	//set the query		
 	}
 
-	/**@return The list of choices for this question, or <code>null</code>
-		if there is no list of choices or the value is not a list.
-	*/
-	public RDFListResource getChoices()
+	/**@return An iteratoble to the choices for this question.*/
+	public Iterable<Text> getChoices()
 	{
-		return RDFResources.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, CHOICES_PROPERTY_NAME));	//get the maqro:choices property value as a list	
+		return getPropertyValues(CHOICE_PROPERTY_URI, Text.class);	//get the maqro.choices property value if they are Text resources	
 	}
 
-	/**Sets the list of question choices.
-	@param choices The list of question choices
+	/**Adds a choice to the question.
+	@param choice The choice to add.
 	*/
-	public void setChoices(final RDFListResource choices)
+	public void addChoice(final Text choice)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, CHOICES_PROPERTY_NAME, choices);	//set the choices
+		addPropertyValue(CHOICE_PROPERTY_URI, choice);	//add the choice
+	}
+
+	/**Adds ordered choices to the question.
+	All existing choices will be replaced.
+	@param choices The question choices.
+	*/
+	public void setChoices(final Text... choices)
+	{
+		setPropertyValues(CHOICE_PROPERTY_URI, choices);	//set the choices
 	}
 
 	/**@return The <code>maqro:evaluations</code> list of evaluations for this question, or <code>null</code> if there is no list of evaluations or the value is not a list.*/
+/*TODO fix
 	public RDFListResource<?> getEvaluations()
 	{
 		return asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, EVALUATIONS_PROPERTY_NAME));	//get the maqro:evaluations property value as a list	
 	}
+*/
 
 	/**Sets the <code>maqro:evaluations</code> list of evaluations for this question.
 	@param evaluations The list of evaluations for this question, or <code>null</code> if the list of evaluations should be removed.
 	*/
+/*TODO fix
 	public void setEvaluations(final RDFListResource evaluations)
 	{
 		setProperty(MAQRO_NAMESPACE_URI, EVALUATIONS_PROPERTY_NAME, evaluations);	//set the maqro:evaluations property
 	}
+*/	
 	
-	/**@return The resource indicating the datatype expected in the response, or
-		<code>null</code> if there is no expected datatype or the expected datatype
-		is not a resource.
+	/**@return The resource indicating the type expected in the response, or
+		<code>null</code> if there is no expected type.
 	*/
-	public RDFResource getExpectation()
+	public URFResource getExpectation()
 	{
-		return RDFResources.asResource(getPropertyValue(MAQRO_NAMESPACE_URI, EXPECTATION_PROPERTY_NAME));	//get the expectation		
+		return getPropertyValue(EXPECTATION_PROPERTY_URI);	//get the expectation		
 	}
 
 	/**Sets the expectation of the question.
-	@param expectation The resource indicating the datatype expected in the
-		response, or <code>null</code> if there is no expected datatype.
+	@param expectation The resource indicating the type expected in the
+		response, or <code>null</code> if there is no expected type.
 	*/
-	public void setExpectation(final RDFResource expectation)
+	public void setExpectation(final URFResource expectation)
 	{
-		this.setProperty(MAQRO_NAMESPACE_URI, EXPECTATION_PROPERTY_NAME, expectation);	//set the expectation		
+		setPropertyValue(EXPECTATION_PROPERTY_URI, expectation);	//set the expectation		
 	}
 
 	/**Adds an explanation to the question.
 	@param explanation An explanation of the question.
 	*/
-	public void addExplanation(final Dialogue explanation)
+	public void addExplanation(final Text explanation)
 	{
-		addProperty(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME, explanation);	//add the explanation
+		addPropertyValue(EXPLANATION_PROPERTY_URI, explanation);	//add the explanation
 	}
 
 	/**@return An iterable to the explanations, if any, of the question.*/
-	public Iterable<RDFObject> getExplanations()
+	public Iterable<Text> getExplanations()
 	{
-		return getPropertyValues(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME);	//return an iterable to the explanations 
+		return getPropertyValues(EXPLANATION_PROPERTY_URI, Text.class);	//return an iterable to the explanations 
 	}
 
 	/**Removes all answers from the question.*/
 	public void removeExplanations()
 	{
-		removeProperties(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME);	//remove all explanations
+		removePropertyValues(EXPLANATION_PROPERTY_URI);	//remove all explanations
 	}
 
 	/**@return The <code>maqro:followups</code> list of followups for this question, or <code>null</code> if there is no list of followups or the value is not a list.*/
@@ -152,77 +157,95 @@ public class Question extends Interaction
 	}
 */
 	
-	/**@return The list of hints for this question, or <code>null</code>
-		if there is no list of hints or the value is not a list.
-	*/
-	public RDFListResource getHints()
+	/**@return An iterable to the hints for this question.*/
+	public Iterable<Text> getHints()
 	{
-		return RDFResources.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, HINTS_PROPERTY_NAME));	//get the maqro:hints property value as a list	
+		return getPropertyValues(HINT_PROPERTY_URI, Text.class);	//get the maqro.hint property values	
 	}
 
-	/**Sets the list of question hints.
-	@param hints The list of question hints.
+	/**Adds a hint to the question.
+	@param hint The hint to add.
 	*/
-	public void setHints(final RDFListResource hints)
+	public void addHint(final Text hint)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, HINTS_PROPERTY_NAME, hints);	//set the hints
+		addPropertyValue(HINT_PROPERTY_URI, hint);	//add the hint
 	}
 
-	/**Adds an answer dialogue to the question.
+	/**Adds ordered hints to the question.
+	All existing hints will be replaced.
+	@param hints The question hints.
+	*/
+	public void setHints(final Text... hints)
+	{
+		setPropertyValues(HINT_PROPERTY_URI, hints);	//set the hints
+	}
+
+	/**Adds answer text to the question.
 	@param answer A correct answer to the question.
 	*/
-	public void addAnswer(final Dialogue answer)
+	public void addAnswer(final Text answer)
 	{
-		addProperty(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME, answer);	//add the correct answer
+		addPropertyValue(ANSWER_PROPERTY_URI, answer);	//add the correct answer
 	}
 
 	/**Adds an answer list to the question.
 	@param answerList A correct answer to the question.
 	*/
+/*TODO del
 	public void addAnswer(final RDFListResource answer)
 	{
 		addProperty(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME, answer);	//add the correct answer
 	}
+*/
 
 	/**@return An iterable to the answers, if any, of the question.*/
-	public Iterable<RDFObject> getAnswers()
+	public Iterable<Text> getAnswers()
 	{
-		return getPropertyValues(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME);	//return an iterable to the answers 
+		return getPropertyValues(ANSWER_PROPERTY_URI, Text.class);	//return an iterable to the answers 
 	}
 
 	/**Removes all answers from the question.*/
 	public void removeAnswers()
 	{
-		removeProperties(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME);	//remove all answers
+		removePropertyValues(ANSWER_PROPERTY_URI);	//remove all answers
 	}
 
 	/**@return The maximum number of responses to accept, or -1 if the maximum
 		response count is not indicated and should be infinite.
 	*/
+/*TODO fix
 	public int getMaxResponseCount()
 	{
 		final RDFObject maxResponseCount=getPropertyValue(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME);	//get the value
 		return maxResponseCount instanceof IntegerLiteral ? ((IntegerLiteral)maxResponseCount).getValue().intValue() : -1;	//return the integer value, if there is one
 	}
+*/
 
 	/**Sets the maximum number of responses to accept.
 	@param count The maximum number of responses, or -1 if the maximum response
 		count should be infinite.
 	*/
+/*TODO fix
 	public void setMaxResponseCount(final int count)
 	{
 		setProperty(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME, count>=0 ? new IntegerLiteral(count) : null);	//set the value or remove it
 	}
+*/
 
-	/**Returns a string representation of the resource.
-	<p>This implementation returns the question query, if there is a query;
-		otherwise, the default string value is returned.</p> 
-	@return A string representation of the resource.
+	/**Determines a string value to use for representation.
+	This method may take into account the current properties of the resource in order to provide the best possible string representation.
+	This implementation determines the label in the following sequence:
+	<ol>
+		<li>The determined label of any «{@value MAQRO#QUERY_PROPERTY_URI}» property.</li>
+		<li>Whatever label is determined by the parent class.</li>
+	</ol>
+	@return A string label to use for representation of the resource.
+	@see #getQuery()
 	*/
-	public String toString()
+	public String determineLabel()
 	{
-		final Dialogue query=getQuery();	//get the query, if there is one
-		return query!=null ? query.toString() : super.toString();	//return the string value of the query, if there is one; otherwise return the default string representation 
+		final Text query=getQuery();	//get the query, if there is one
+		return query!=null ? query.determineLabel() : super.determineLabel();	//determine the label of the query, if there is one; otherwise determine the default label
 	}
 	
 }

@@ -14,61 +14,61 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import java.net.URI;
 import java.util.*;
 
-import com.globalmentor.rdf.RDFLiteral;
-import com.globalmentor.rdf.RDFObject;
-
-import static com.globalmentor.rdf.maqro.MAQRO.*;
+import static com.globalmentor.urf.maqro.MAQRO.*;
 
 /**Filter for choosing MAQRO interactions based upon category.
 @author Garret Wilson
 */
-public class CategoryFilter extends Filter
+public class CategoryFilter extends AbstractFilter
 {
-
-	/**@return The local name of the default type of this resource.*/
-	public String getDefaultTypeName() {return CATEGORY_FILTER_CLASS_NAME;}
 
 	/**Default constructor.*/
 	public CategoryFilter()
 	{
-		super();	//construct the parent class
+		this(null);	//construct the class with no URI
 	}
 
-	/**Constructs selection criteria with a reference URI.
-	@param referenceURI The reference URI for the new resource.
+	/**Constructs selection criteria with a URI.
+	@param uri The URI for the new resource.
 	*/
-	public CategoryFilter(final URI referenceURI)
+	public CategoryFilter(final URI uri)
 	{
-		super(referenceURI);  //construct the parent class
+		super(uri);  //construct the parent class
 	}
 
 	/**Adds a category to the interaction.
 	@param categoryLiteral A literal category value.
 	*/
+/*TODO fix
 	public void addCategory(final RDFLiteral categoryLiteral)
 	{
 		MAQRO.addCategory(this, categoryLiteral);	//add the category to the filter
 	}
+*/
 
 	/**Adds a category to the filter.
 	@param category The category to add.
 	@param language The language of the category, or <code>null</code> if
 		no language should be specified.
 	*/
+/*TODO fix
 	public void addCategory(final String category, final Locale language)
 	{
 		MAQRO.addCategory(this, category, language);	//add the category to the filter
 	}
+*/
 
 	/**@return An iterable to categories, if any, of the interaction.*/
+/*TODO fix
 	public Iterable<RDFObject> getCategories()
 	{
 		return MAQRO.getCategories(this);	//return an iterator to the categories
 	}
+*/
 
 }

@@ -9,11 +9,11 @@ import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
 
 import com.garretwilson.swing.text.xml.*;
 import com.globalmentor.rdf.RDFResource;
-import com.globalmentor.rdf.maqro.Question;
+import com.globalmentor.urf.maqro.Question;
 
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.rdf.maqro.MAQRO.*;
+import static com.globalmentor.urf.maqro.MAQRO.*;
 
 /**Displays a MAQRO choice as dialogue.
 TODO fix	The toggle button's action command will be set to the ident of the response label.
@@ -23,10 +23,10 @@ public class MAQRODialogueChoiceView extends XMLComponentParagraphView
 {
 
 	/**The toggle button (radio button or checkbox) this choice view presents.*/
-	private final JToggleButton toggleButton;
+//TODO fix	private final JToggleButton toggleButton;
 
 		/**@return The toggle button (radio button or checkbox) this choice view presents.*/
-		public JToggleButton getToggleButton() {return toggleButton;}
+//TODO fix		public JToggleButton getToggleButton() {return toggleButton;}
 
 	/**@return The choice stored in a element's attributes, or <code>null</code> if no choice could be found.*/ 
 	public RDFResource getChoice()
@@ -47,6 +47,7 @@ public class MAQRODialogueChoiceView extends XMLComponentParagraphView
 		{
 			throw new IllegalArgumentException("Question view element does not represent a question.");
 		}
+/*TODO fix
 		final int maxResponseCount=question.getMaxResponseCount();	//find out the maximum responses allowed
 		if(maxResponseCount>1)  //if we allow multiple responses
 		{
@@ -58,20 +59,23 @@ public class MAQRODialogueChoiceView extends XMLComponentParagraphView
 		}
 		toggleButton.setContentAreaFilled(false); //don't paint the background---let the toggle button be transparent
 		toggleButton.setFocusable(false);	//don't allow the button to receive the focus TODO maybe fix the focus transfer to other components in the book
+*/
 /*TODO fix
 		final String ident=(String)StyleUtilities.getDefinedAttribute(element.getAttributes(), ATTRIBUTE_IDENT); //get the ident, if available
 		toggleButton.setActionCommand(ident); //set the ident as the action command G***should we check to see if this is null? probably not---just use it as is
 */
 		questionView.addChoiceView(this);	//tell the question view that this view is one of its choices
+/*TODO fix
 		if(maxResponseCount<=1) //if we shouldn't allow multiple selections
 		{
 			questionView.getButtonGroup().add(getToggleButton()); //add our radio button to the enclosing question button group to allow for mutual exclusion
 		}
+*/
 			//place the button in the near inset of the tile axis and in the middle of the perpendicular axis
 		final int axis=getAxis();	//get our axis
 		final ViewComponentManager.AxisLocation.Region regionX=axis==X_AXIS ? ViewComponentManager.AxisLocation.Region.MIDDLE : ViewComponentManager.AxisLocation.Region.BEFORE; 
 		final ViewComponentManager.AxisLocation.Region regionY=axis==Y_AXIS ? ViewComponentManager.AxisLocation.Region.MIDDLE : ViewComponentManager.AxisLocation.Region.BEFORE; 
-		getComponentManager().add(getToggleButton(), regionX, 0.5f, regionY, 0.5f); //add the radio button at the start of the line
+//TODO fix		getComponentManager().add(getToggleButton(), regionX, 0.5f, regionY, 0.5f); //add the radio button at the start of the line
 //TODO del when works		getComponentManager().add(getToggleButton(), ViewComponentManager.Border.LINE_START); //add the radio button at the start of the line
 	}
 

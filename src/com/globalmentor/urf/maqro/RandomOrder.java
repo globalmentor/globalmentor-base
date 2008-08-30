@@ -14,31 +14,28 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import java.net.URI;
 
-import com.globalmentor.rdf.*;
-
-/**A result of an outcome evaluation.
+/**Random ordering of MAQRO interactions.
 @author Garret Wilson
-@see Outcome
 */
-public abstract class Result extends TypedRDFResource
+public class RandomOrder extends AbstractOrder
 {
 
 	/**Default constructor.*/
-	public Result()
+	public RandomOrder()
 	{
-		super();	//construct the parent class
+		this(null);	//construct the class with no URI
 	}
-	
-	/**Reference URI constructor.
-	@param referenceURI The reference URI for the new resource.
+
+	/**URI constructor.
+	@param uri The URI for the new resource.
 	*/
-	public Result(final URI referenceURI)
+	public RandomOrder(final URI uri)
 	{
-		super(referenceURI);  //construct the parent class
+		super(uri);  //construct the parent class
 	}
 
 }

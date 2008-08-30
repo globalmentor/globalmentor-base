@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import org.w3c.dom.*;
 
@@ -27,7 +27,7 @@ import static com.globalmentor.text.xml.xhtml.XHTML.*;
 /**Creates an XHTML tree representing MAQRO resources.
 @author Garret Wilson
 */
-public class MAQROXHTMLifier
+public class MAQROXHTMLifier	//TODO convert to URF
 {
 
 	/**Default constructor.*/
@@ -57,6 +57,7 @@ public class MAQROXHTMLifier
 		final Document document=element.getOwnerDocument();	//get the document to use an an element factory
 		final Element dlElement=document.createElementNS(XHTML_NAMESPACE_URI.toString(), ELEMENT_DL);	//<dl>
 		element.appendChild(dlElement);	//add the definition list
+/*TODO fix
 		for(final RDFObject object:outcome.getResults())	//for each result
 		{
 			if(object instanceof Result)	//if this is a result object
@@ -80,7 +81,8 @@ public class MAQROXHTMLifier
 				final Element ddElement=XML.appendElementNS(dlElement, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//append an element for dialogue
 				constructElement(ddElement, dialogue);	//show the result
 			}
-		}		
+		}
+*/
 	}
 
 	/**Constructs an XHTML element representing the given interaction.
@@ -97,6 +99,7 @@ public class MAQROXHTMLifier
 			final Element olElement=document.createElementNS(XHTML_NAMESPACE_URI.toString(), ELEMENT_OL);	//<ol>
 			element.appendChild(olElement);	//add the list
 			final Group group=(Group)interaction;	//get the interaction as a group
+/*TODO fix
 			for(final RDFObject object:group.getInteractions())	//look at all the interactions in the group
 			{
 				if(object instanceof Interaction)	//if this is an interaction
@@ -109,8 +112,9 @@ public class MAQROXHTMLifier
 						olElement.appendChild(liElement);	//add the list item
 						constructElement(liElement, subOutcome);	//construct the element for this outcome
 					}
-				}				
+				}
 			}
+*/
 		}
 		else if(interaction instanceof Question)	//if this is a question
 		{
@@ -118,6 +122,7 @@ public class MAQROXHTMLifier
 			final Element dlElement=element.getOwnerDocument().createElementNS(XHTML_NAMESPACE_URI.toString(), ELEMENT_DL);	//<dl>
 			element.appendChild(dlElement);	//add the definition list
 			final Question question=(Question)interaction;	//get the interaction as a question
+/*TODO fix
 			final Dialogue query=question.getQuery();	//get the query, if any
 			if(query!=null)
 			{
@@ -135,7 +140,8 @@ public class MAQROXHTMLifier
 					final Element ddElement=XML.appendElementNS(dlElement, XHTML_NAMESPACE_URI.toString(), ELEMENT_DD);	//append an element for dialogue
 					constructElement(ddElement, dialogue);	//show the result
 				}
-			}		
+			}
+*/
 		}
 	}
 
@@ -145,6 +151,7 @@ public class MAQROXHTMLifier
 	@param element The element to hold the dialogue information
 	@param dialogue The dialogue information to represent in XHTML.
 	*/
+/*TODO fix
 	protected void constructElement(final Element element, final Dialogue dialogue)
 	{
 		final RDFLiteral dialogueValue=dialogue.getValue();	//get the value of this dialogue
@@ -158,13 +165,14 @@ public class MAQROXHTMLifier
 			final DocumentFragment documentFragment=xmlLiteralDialogueValue.getValue();	//get the document fragment of the literal
 			XML.appendImportedChildNodes(element, documentFragment, true);	//import the document fragment children into the element
 		}
+*/
 /*TODO fix
 		else	//if we don't understand the type of dialogue value given (i.e. it's not a plain literal or an XML literal)
 		{
 			throw new IllegalArgumentException("Unknown dialogue literal type for "+dialogueValue);
 		}
 */	
-	}
+//TODO fix	}
 	
 	/**Creates a string to represent the given result.
 	@param result The result to represent.
@@ -177,6 +185,7 @@ public class MAQROXHTMLifier
 		{
 			final Score score=(Score)result;	//get the result as a score
 			stringBuilder.append("Score: ");	//TODO i18n
+/*TODO fix
 			final NumberLiteral<?> value=score.getValue();	//get the value of the score
 			if(value!=null)	//if there is a value
 			{
@@ -188,6 +197,7 @@ public class MAQROXHTMLifier
 			{
 				stringBuilder.append(possible.getValue());	//append the possible value
 			}
+*/
 		}
 		return stringBuilder.toString();	//return the string we constructed
 	}

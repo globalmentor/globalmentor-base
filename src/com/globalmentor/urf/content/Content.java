@@ -357,10 +357,12 @@ public class Content
 				*/
 				public URFResource createResource(final URI resourceURI, final URI typeURI)
 				{
+/*TODO fix if needed
 					if(CONTENT_RESOURCE_CLASS_URI.equals(typeURI))	//if this is a content resource
 					{
 						return new ContentResource(resourceURI);	//create a new content resource
 					}
+*/
 					return super.createResource(resourceURI, typeURI);	//if we don't recognize the type, create a default resource
 				}
 			};

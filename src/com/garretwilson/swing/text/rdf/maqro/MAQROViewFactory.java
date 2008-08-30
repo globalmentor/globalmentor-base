@@ -20,11 +20,12 @@ import com.garretwilson.swing.text.xml.*;
 import com.globalmentor.apps.mentoract.activity.maqro.MAQROActivityEngine;
 import com.globalmentor.io.ContentTypes;
 import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.maqro.*;
 import com.globalmentor.text.xml.XML;
 
-import static com.globalmentor.rdf.maqro.MAQRO.*;
 import static com.globalmentor.text.xml.xhtml.XHTML.*;
+import static com.globalmentor.urf.maqro.MAQRO.*;
+
+import com.globalmentor.urf.maqro.*;
 import com.globalmentor.util.Debug;
 
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
@@ -90,7 +91,7 @@ public class MAQROViewFactory extends XMLViewFactory
 			{
 				if(parentElement!=null)	//if there is a parent element
 				{
-					if(isXMLElement(parentElement.getAttributes(), MAQRO_NAMESPACE_URI.toString(), CHOICES_PROPERTY_NAME))	//if the parent element represents the list of choices maqro:choices
+					if(isXMLElement(parentElement.getAttributes(), MAQRO_NAMESPACE_URI.toString(), CHOICE_PROPERTY_NAME))	//if the parent element represents the list of choices maqro:choices
 					{
 						final Element questionElement=parentElement.getParentElement();	//the parent of the choices should be the question element itself
 						if(questionElement!=null)	//if we found the question element
@@ -126,7 +127,7 @@ public class MAQROViewFactory extends XMLViewFactory
 					view=new XMLParagraphView(element);	//for every other dialogue instances, create a paragraph view
 				}
 			}
-		  else if(CHOICES_PROPERTY_NAME.equals(elementLocalName)) //maqro:choices
+		  else if(CHOICE_PROPERTY_NAME.equals(elementLocalName)) //maqro:choices
 			{
 				view=new XMLBlockView(element, View.Y_AXIS);	//create block view for choices TODO maybe create a list view				
 			}

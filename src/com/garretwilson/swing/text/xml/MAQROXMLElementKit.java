@@ -2,7 +2,7 @@ package com.garretwilson.swing.text.xml;
 
 import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
 import static com.globalmentor.rdf.RDFResources.*;
-import static com.globalmentor.rdf.maqro.MAQRO.*;
+import static com.globalmentor.urf.maqro.MAQRO.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,7 +13,7 @@ import javax.swing.text.*;
 
 import com.garretwilson.swing.text.xml.XMLEditorKit.ContentData;
 import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.maqro.*;
+import com.globalmentor.urf.maqro.*;
 
 /**An element kit for creating element specs for MAQRO.
 @author Garret Wilson
@@ -46,7 +46,7 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 	public MutableAttributeSet appendElementSpecList(final List<DefaultStyledDocument.ElementSpec> elementSpecList, final org.w3c.dom.Element xmlElement, final URI baseURI)
 	{
 		final RDF rdf=new RDF();	//create new RDF
-		rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQRO());  //register a factory for MAQRO resource classes TODO make this more efficient and use a common factory
+//TODO convert to URF		rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQRO());  //register a factory for MAQRO resource classes TODO make this more efficient and use a common factory
 		final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf); //create a new RDF processor
 		try
 		{
@@ -108,6 +108,8 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 	*/
 	public MutableAttributeSet appendElementSpecList(final List<DefaultStyledDocument.ElementSpec> elementSpecList, final Activity activity, final URI baseURI)
 	{
+		final MutableAttributeSet attributeSet=new SimpleAttributeSet();
+/*TODO fix
 		final MutableAttributeSet attributeSet=createAttributeSet(activity, baseURI);	//create and fill an attribute set based upon the RDF resource
 		elementSpecList.add(new DefaultStyledDocument.ElementSpec(attributeSet, DefaultStyledDocument.ElementSpec.StartTagType));	//create the beginning of a Swing element to model this resource
 		final List<RDFObject> interactions=activity.getInteractions();	//get the activity interactions
@@ -131,6 +133,7 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 		}
 //G***fix if(!"null".equals(xmlElement.getLocalName()))	//G***testing
 		elementSpecList.add(new DefaultStyledDocument.ElementSpec(attributeSet, DefaultStyledDocument.ElementSpec.EndTagType));	//finish the element we started at the beginning of this function
+*/
 		return attributeSet;  //return the attribute set used for the element
 	}
 
@@ -144,6 +147,8 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 	*/
 	protected MutableAttributeSet appendElementSpecList(final List<DefaultStyledDocument.ElementSpec> elementSpecList, final Question question, final URI baseURI)
 	{
+		final MutableAttributeSet attributeSet=new SimpleAttributeSet();
+/*TODO fix
 		final MutableAttributeSet attributeSet=createAttributeSet(question, baseURI);	//create and fill an attribute set based upon the RDF resource
 		elementSpecList.add(new DefaultStyledDocument.ElementSpec(attributeSet, DefaultStyledDocument.ElementSpec.StartTagType));	//create the beginning of a Swing element to model this resource
 		final Dialogue query=question.getQuery();	//get the question query
@@ -154,7 +159,7 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 		final List<RDFObject> choices=question.getChoices();	//get the question choices
 		if(choices!=null)	//if there are choices
 		{
-			final MutableAttributeSet choicesAttributeSet=getDefaultXMLElementKit().createAttributeSet(MAQRO_NAMESPACE_URI, CHOICES_PROPERTY_NAME);	//create and fill an attribute set for the choices property
+			final MutableAttributeSet choicesAttributeSet=getDefaultXMLElementKit().createAttributeSet(MAQRO_NAMESPACE_URI, CHOICE_PROPERTY_NAME);	//create and fill an attribute set for the choices property
 			elementSpecList.add(new DefaultStyledDocument.ElementSpec(choicesAttributeSet, DefaultStyledDocument.ElementSpec.StartTagType));	//create the beginning of a Swing element to model this resource
 			for(final RDFObject choice:choices)	//for each choice
 			{
@@ -170,13 +175,14 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 			elementSpecList.add(new DefaultStyledDocument.ElementSpec(choicesAttributeSet, DefaultStyledDocument.ElementSpec.EndTagType));	//finish the element we started at the beginning of this function
 			
 		}
+*/
 /*TODO del; add support for other response expectations
 		else
 		{
 			throw new IllegalArgumentException("Questions without choices not supported");
 		}
 */
-		elementSpecList.add(new DefaultStyledDocument.ElementSpec(attributeSet, DefaultStyledDocument.ElementSpec.EndTagType));	//finish the element we started at the beginning of this function
+//TODO fix		elementSpecList.add(new DefaultStyledDocument.ElementSpec(attributeSet, DefaultStyledDocument.ElementSpec.EndTagType));	//finish the element we started at the beginning of this function
 		return attributeSet;  //return the attribute set used for the element
 	}
 
@@ -188,6 +194,7 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 	@return The attribute set used to represent the resource.
 	@exception BadLocationException for an invalid starting offset
 	*/
+/*TODO fix
 	protected MutableAttributeSet appendElementSpecList(final List<DefaultStyledDocument.ElementSpec> elementSpecList, final Dialogue dialogue, final URI baseURI)
 	{
 		final MutableAttributeSet attributeSet=createAttributeSet(dialogue, baseURI);	//create and fill an attribute set based upon the RDF resource
@@ -210,5 +217,6 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 		elementSpecList.add(new DefaultStyledDocument.ElementSpec(attributeSet, DefaultStyledDocument.ElementSpec.EndTagType));	//finish the element we started at the beginning of this function
 		return attributeSet;  //return the attribute set used for the element
 	}
+*/
 
 }

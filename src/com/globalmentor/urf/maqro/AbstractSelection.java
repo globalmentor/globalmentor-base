@@ -14,68 +14,72 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import java.net.URI;
 
-import com.globalmentor.rdf.*;
+import static com.globalmentor.java.Objects.*;
+import com.globalmentor.urf.AbstractClassTypedURFResource;
+import static com.globalmentor.urf.maqro.MAQRO.*;
 
-import static com.globalmentor.rdf.maqro.MAQRO.*;
-
-/**Criteria for selecting MAQRO interactions.
+/**Abstract implementation of criteria for selecting MAQRO interactions.
 @author Garret Wilson
 */
-public abstract class Selection extends TypedRDFResource
+public abstract class AbstractSelection extends AbstractClassTypedURFResource implements Selection
 {
 
-	/**@return The namespace URI of the ontology defining the default type of this resource.*/
-	public URI getDefaultTypeNamespaceURI() {return MAQRO_NAMESPACE_URI;}
-
-	/**Default constructor.*/
-	public Selection()
+	/**URI constructor with a type namespace of {@value MAQRO#MAQRO_NAMESPACE_URI}.
+	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
+	*/
+	public AbstractSelection(final URI uri)
 	{
-		super();	//construct the parent class
+		this(uri, MAQRO_NAMESPACE_URI);	//construct the parent class
 	}
 
-	/**Constructs selection criteria with a reference URI.
-	@param referenceURI The reference URI for the new resource.
+	/**URI and type namespace URI constructor.
+	@param uri The URI for the resource, or <code>null</code> if the resource should have no URI.
+	@param typeNamespaceURI The namespace URI of the URI of the type to be added.
+	@exception NullPointerException if the given type type namespace URI is <code>null</code>.
 	*/
-	public Selection(final URI referenceURI)
+	public AbstractSelection(final URI uri, final URI typeNamespaceURI)
 	{
-		super(referenceURI);  //construct the parent class
+		super(uri, typeNamespaceURI);	//construct the parent class
 	}
 
 	/**@return The list of selectors for this selection, or <code>null</code>
 		if there is no list of selectors or the value is not a list.
 	*/
+/*TODO fix
 	public RDFListResource getSelectors()
 	{
 		return RDFResources.asListResource(getPropertyValue(MAQRO_NAMESPACE_URI, SELECTORS_PROPERTY_NAME));	//get the maqro:selectors property value as a list	
 	}
+*/
 
 	/**Sets the list of selectors.
 	@param selectors The list of selectors.
 	*/
+/*TODO fix
 	public void setSelectors(final RDFListResource selectors)
 	{
 		setProperty(MAQRO_NAMESPACE_URI, SELECTORS_PROPERTY_NAME, selectors);	//set the selectors
 	}
+*/
 
 	/**@return The order criteria, or <code>null</code> if there is no
 		order criteria indicated or if it is not of the correct type.
 	*/
-	public Order getOrder()
+	public Order getMAQROOrder()
 	{
-		final RDFObject order=getPropertyValue(MAQRO_NAMESPACE_URI, ORDER_PROPERTY_NAME);	//get the maqro:order property value
-		return order instanceof Order ? (Order)order : null;	//return the order criteria if there are any
+		return asInstance(getPropertyValue(ORDER_PROPERTY_URI), Order.class);	//get the maqro.order property value
 	}
 
 	/**Sets the order criteria for the activity.
-	@param orderDescription The order criteria.
+	@param order The order criteria.
 	*/
-	public void setOrder(final Order orderDescription)
+	public void setMAQROOrder(final Order order)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, ORDER_PROPERTY_NAME, orderDescription);	//set the order criteria
+		setPropertyValue(ORDER_PROPERTY_URI, order);	//set the order criteria
 	}
 	
 }

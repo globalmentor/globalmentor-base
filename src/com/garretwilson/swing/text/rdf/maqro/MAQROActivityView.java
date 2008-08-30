@@ -10,7 +10,7 @@ import javax.swing.text.*;
 
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
-import com.globalmentor.rdf.maqro.Activity;
+import com.globalmentor.urf.maqro.Activity;
 
 /**View representing a MAQRO activity.
 The view optionally contains a submit button representing a provided submit action.
@@ -48,9 +48,11 @@ public class MAQROActivityView extends XMLComponentBlockView	//TODO transfer all
 		super(element, axis, true); //construct the parent, compensating for the submit button
 		this.submitAction=submitAction;	//save the submit action
 		final Activity activity=getActivity();	//get the activity
+/*TODO fix
 		submitButton=activity!=null && activity.isAllowSubmit() && submitAction!=null	//if we have a submitable activity and were provided a submit action	
 				? new JButton(submitAction)	//create a button for the submit action
 				: null;	//don't create a submit button if we don't have a submitable activity and a submit action
+*/submitButton=null;
 		if(submitButton!=null)	//if there is a submit button
 		{
 			submitButton.setFocusable(false);	//TODO fix component manager focus traversal

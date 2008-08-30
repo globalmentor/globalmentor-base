@@ -19,10 +19,11 @@ import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.dicto.*;
 import com.globalmentor.rdf.dicto.Dictionary;
 import com.globalmentor.rdf.dublincore.RDFDublinCore;
-import com.globalmentor.rdf.maqro.*;
 import com.globalmentor.rdf.xpackage.XPackage;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xhtml.*;
+import com.globalmentor.urf.maqro.*;
+
 import static com.globalmentor.text.xml.xlink.XLink.*;
 
 import org.w3c.dom.*;
@@ -251,6 +252,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 				{
 					final Entry entry=(Entry)entryIterator.next();	//get the next entry
 					int entryCategoryCount=0;	//keep track of how many categories we retrieve for this category
+/*TODO convert to URF
 					for(final RDFObject cat:MAQRO.getCategories(entry))	//for each of the categories for this entry
 					{
 						availableCategorySet.add(cat);	//get the next category (which should be a literal) and add it to our set
@@ -260,11 +262,12 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 					{
 						availableCategorySet.add(MAQRO.NO_CATEGORY);	//add the constant object representing to category specified					
 					}
+*/
 				}
 			}
 			final DictionaryActivityOptionsPanel optionsPanel=new DictionaryActivityOptionsPanel();	//create a new options panel
-			final Selection selection=new RandomSelection();	//create random selection criteria
-			selection.setOrder(new RandomOrder());	//set the order of the selection to random
+			final AbstractSelection selection=new RandomSelection();	//create random selection criteria
+//TODO fix			selection.setOrder(new RandomOrder());	//set the order of the selection to random
 			optionsPanel.setAvailableCategorySet(availableCategorySet);	//set the available categories in the options panel
 /*G***del; no selected categories selects all categories
 			//select all available categories
@@ -285,12 +288,14 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 			{
 					//create a Mentoract activity adapter that will create questions based upon dictionary entries
 				final DictionaryActivity dictionaryActivity=new DictionaryActivity(dictionary);
+/*TODO fix
 				dictionaryActivity.setAllowHint(true);
 				dictionaryActivity.setShowResultProgress(true);
 				dictionaryActivity.setShowEachResult(true);
 				dictionaryActivity.setShowFinalResult(true);
 				RDFDublinCore.addTitle(dictionaryActivity, dictionaryLanguage.getDisplayLanguage()+" Quiz");	//add a title showing the language G***i18n
 				dictionaryActivity.setSelection(optionsPanel.getSelection());	//set the activity's selection criteria
+*/
 /*G***fix and del
 				dictionaryActivity.setQuestionCount(optionsPanel.getQuestionCount());	//show how many questions to use
 				dictionaryActivity.setChoiceCount(optionsPanel.getChoiceCount());	//show how many questions to use

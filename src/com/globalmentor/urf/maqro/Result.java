@@ -14,33 +14,15 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
-import java.net.URI;
+import com.globalmentor.urf.URFResource;
 
-import static com.globalmentor.rdf.maqro.MAQRO.*;
-
-/**Sequential ordering of MAQRO interactions.
+/**A result of an outcome evaluation.
 @author Garret Wilson
+@see Outcome
 */
-public class SequentialOrder extends Order
+public interface Result extends URFResource
 {
-
-	/**@return The local name of the default type of this resource.*/
-	public String getDefaultTypeName() {return SEQUENTIAL_ORDER_CLASS_NAME;}
-
-	/**Default constructor.*/
-	public SequentialOrder()
-	{
-		super();	//construct the parent class
-	}
-
-	/**Reference URI constructor.
-	@param referenceURI The reference URI for the new resource.
-	*/
-	public SequentialOrder(final URI referenceURI)
-	{
-		super(referenceURI);  //construct the parent class
-	}
 
 }

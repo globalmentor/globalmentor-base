@@ -14,39 +14,37 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import java.net.URI;
 
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.rdf.maqro.MAQRO.*;
+import static com.globalmentor.urf.maqro.MAQRO.*;
 
 /**Class representing an evaluation to determine a followup.
 @author Garret Wilson
 */
-public class FollowupEvaluation extends Evaluation
+public class FollowupEvaluation extends AbstractEvaluation
 {
-
-	/**@return The local name of the default type of this resource.*/
-	public String getDefaultTypeName() {return FOLLOWUP_EVALUATION_CLASS_NAME;}
 
 	/**Default constructor.*/
 	public FollowupEvaluation()
 	{
+		this(null);
 	}
 
-	/**Constructs an activity with a reference URI.
-	@param referenceURI The reference URI for the new resource.
+	/**Constructs an activity with a URI.
+	@param uri The URI for the new resource.
 	*/
-	public FollowupEvaluation(final URI referenceURI)
+	public FollowupEvaluation(final URI uri)
 	{
-		super(referenceURI);  //construct the parent class
+		super(uri);  //construct the parent class
 	}
 
 	/**@return The followup interaction indicated by this evaluation, or <code>null</code> if no followup interaction is indicated.*/
 	public Interaction getFollowup()
 	{
-		return asInstance(getPropertyValue(MAQRO_NAMESPACE_URI, FOLLOWUP_PROPERTY_NAME), Interaction.class);	//retrieve the followup interaction, if one is present
+		return asInstance(getPropertyValue(FOLLOWUP_PROPERTY_URI), Interaction.class);	//retrieve the followup interaction, if one is present
 	}
 
 	/**Sets the followup for this evaluation.
@@ -54,7 +52,7 @@ public class FollowupEvaluation extends Evaluation
 	 */
 	public void setFollowup(final Interaction followup)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, FOLLOWUP_PROPERTY_NAME, followup);	//set the followup
+		setPropertyValue(FOLLOWUP_PROPERTY_URI, followup);	//set the followup
 	}
 
 }

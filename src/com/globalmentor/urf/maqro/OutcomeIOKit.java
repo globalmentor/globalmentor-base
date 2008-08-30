@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import static com.globalmentor.rdf.maqro.MAQRO.*;
+import static com.globalmentor.urf.maqro.MAQRO.*;
 
 import com.globalmentor.io.*;
 import com.globalmentor.rdf.*;
@@ -34,7 +34,7 @@ import org.w3c.dom.Document;
 @author Garret Wilson
 @deprecated
 */
-public class OutcomeIOKit extends AbstractIOKit<Outcome>
+public class OutcomeIOKit extends AbstractIOKit<Outcome>	//TODO del class
 {
 
 	/**Default constructor.*/
@@ -84,7 +84,7 @@ public class OutcomeIOKit extends AbstractIOKit<Outcome>
 		try
 		{
 			final RDF rdf=new RDF();  //create a new RDF data model
-			rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQRO());  //register a factory for MAQRO resource classes
+//TODO fix			rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQRO());  //register a factory for MAQRO resource classes
 			final XMLProcessor xmlProcessor=new XMLProcessor(this);	//create an XML processor using the correct input stream locator	TODO get the XML processor in a more general way
 			final Document document=xmlProcessor.parseDocument(inputStream, baseURI);	//parse the file
 			document.normalize(); //normalize the package description document
@@ -118,10 +118,12 @@ public class OutcomeIOKit extends AbstractIOKit<Outcome>
 	*/
 	public void save(final Outcome outcome, final OutputStream outputStream) throws IOException
 	{
+/*TODO fix
 		//create an XML document containing the activity TODO see about using a common RDFXMLifier
 		final Document document=new RDFXMLGenerator().createDocument(outcome, new XMLDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
 		final XMLSerializer xmlSerializer=new XMLSerializer(true);  //create a formatted serializer
 		xmlSerializer.serialize(document, outputStream);	//serialize the document to the output stream
+*/
 	}
 
 }

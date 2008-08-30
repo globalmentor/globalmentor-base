@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.rdf.maqro;
+package com.globalmentor.urf.maqro;
 
 import java.io.*;
 import java.net.*;
@@ -23,7 +23,8 @@ import com.garretwilson.model.*;
 import com.globalmentor.io.*;
 import com.globalmentor.rdf.*;
 import com.globalmentor.text.xml.*;
-import static com.globalmentor.rdf.maqro.MAQRO.*;
+
+import static com.globalmentor.urf.maqro.MAQRO.*;
 
 import org.w3c.dom.Document;
 
@@ -32,7 +33,7 @@ import org.w3c.dom.Document;
 @see ActivityModel
 @deprecated
 */
-public class ActivityModelIOKit extends AbstractIOKit<ResourceModel<Activity>>
+public class ActivityModelIOKit extends AbstractIOKit<ResourceModel<Activity>>	//TODO del class
 {
 
 	/**Default constructor.*/
@@ -81,7 +82,7 @@ public class ActivityModelIOKit extends AbstractIOKit<ResourceModel<Activity>>
 		try
 		{
 			final RDF rdf=new RDF();  //create a new RDF data model
-			rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQRO());  //register a factory for MAQRO resource classes
+//TODO fix			rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQRO());  //register a factory for MAQRO resource classes
 
 			final XMLProcessor xmlProcessor=new XMLProcessor(this);	//create an XML processor using the correct input stream locator
 			final Document document=xmlProcessor.parseDocument(inputStream, baseURI);	//parse the activity file
@@ -119,9 +120,11 @@ public class ActivityModelIOKit extends AbstractIOKit<ResourceModel<Activity>>
 	*/
 	public static void write(final Activity activity, final OutputStream outputStream) throws IOException
 	{
+/*TODO fix
 			//create an XML document containing the activity TODO see about using a common RDFXMLifier
 		final Document document=new RDFXMLGenerator().createDocument(activity, new XMLDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
 		final XMLSerializer xmlSerializer=new XMLSerializer(true);  //create a formatted serializer
 		xmlSerializer.serialize(document, outputStream);	//serialize the document to the output stream
+*/
 	}
 }

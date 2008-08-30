@@ -14,7 +14,7 @@ import com.garretwilson.swing.border.BorderUtilities;
 import com.globalmentor.rdf.RDFListResource;
 import com.globalmentor.rdf.RDFLiteral;
 import com.globalmentor.rdf.RDFObject;
-import com.globalmentor.rdf.maqro.*;
+import com.globalmentor.urf.maqro.*;
 import com.globalmentor.util.*;
 
 /**Panel for editing a MAQRO activity selection.
@@ -40,7 +40,7 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 		protected Action getSelectCategoriesAction() {return selectCategoriesAction;}
 
 	/**@return New default selection criteria.*/
-	protected Selection createSelection()
+	protected AbstractSelection createSelection()
 	{
 		if(randomSelectionCheckBox.isSelected())	//if there should be random selection
 		{
@@ -53,9 +53,9 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 	}
 
 	/**@return Selection criteria for selecting interactions.*/
-	public Selection getSelection()
+	public AbstractSelection getSelection()
 	{
-		final Selection selection=createSelection();	//create new selection criteria
+		final AbstractSelection selection=createSelection();	//create new selection criteria
 		final RDFListResource selectors=new RDFListResource();	//create a list of selectors
 		final Selector selector=new Selector();	//create a new selector
 		if(onlyQuestionsRadioButton.isSelected())	//if the user wants to limit the number of questions
@@ -63,6 +63,7 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 			selector.setCount(Integer.parseInt(questionCountTextField.getText().trim()));	//set the interaction count
 		}
 		final RDFListResource filters=new RDFListResource();	//create a list of filters
+/*TODO fix
 			//copy the selected categories to the selector
 		final Iterator categoryIterator=getCategorySet().iterator();	//get an iterator to look at all the selected categories
 		if(categoryIterator.hasNext())	//if there are any categories specified
@@ -84,9 +85,10 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 		{
 			selector.setFilters(filters);	//specify the filters
 		}
+*/
 		selectors.add(selector);	//add the selector to the list of selectors
-		selection.setSelectors(selectors);	//set the list of the selection's selectors
-		final Order order;	//determine the order
+//TODO fix		selection.setSelectors(selectors);	//set the list of the selection's selectors
+		final AbstractOrder order;	//determine the order
 		if(randomOrderCheckBox.isSelected())	//if there should be random ordering
 		{
 			order=new RandomOrder();	//use random ordering
@@ -95,17 +97,18 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 		{
 			order=new SequentialOrder();	//use sequential ordering	
 		}
-		selection.setOrder(order);	//set the order of the selection criteria
+//TODO fix		selection.setOrder(order);	//set the order of the selection criteria
 		return selection;	//return the selection criteria we constructed
 	}
 
 	/**Sets the selection criteria to show in the panel.
 	@param selectDescription The selection criteria.
 	*/
-	public void setSelection(final Selection selection)
+	public void setSelection(final AbstractSelection selection)
 	{
+/*TODO fix
 		randomSelectionCheckBox.setSelected(selection instanceof RandomSelection);	//if this is random selection, select the random selection checkbox
-		final Order order=selection.getOrder();	//get the order
+		final AbstractOrder order=selection.getOrder();	//get the order
 		randomOrderCheckBox.setSelected(order!=null && order instanceof RandomOrder);	//if this is random ordering, select the random order checkbox
 		final RDFListResource selectors=selection.getSelectors();	//get the selectors
 		final int count;	//we'll determine the count to show
@@ -146,6 +149,7 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 			questionCountTextField.setText("");	//clear the count
 		}
 		updateStatus();	//update our status to reflect the new selection
+*/
 	}
 
 	/**The set of avaiable categories.*/
