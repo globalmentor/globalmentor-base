@@ -17,6 +17,15 @@ import com.garretwilson.swing.tree.*;
 import com.garretwilson.swing.qti.tree.*;
 import com.garretwilson.assess.qti.*;
 import com.globalmentor.java.Booleans;
+import com.globalmentor.mentoract.qti.Assessment;
+import com.globalmentor.mentoract.qti.Item;
+import com.globalmentor.mentoract.qti.Material;
+import com.globalmentor.mentoract.qti.Presentation;
+import com.globalmentor.mentoract.qti.QTI;
+import com.globalmentor.mentoract.qti.QTIXMLifier;
+import com.globalmentor.mentoract.qti.Response;
+import com.globalmentor.mentoract.qti.ResponseLID;
+import com.globalmentor.mentoract.qti.Section;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.*;
@@ -163,7 +172,7 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 		xmlSerializer=new XMLSerializer();  //create an XML serializer
 		xmlSerializer.setFormatted(true); //tell the serializer to format the QTI data
 			//register a QTI view factory with the QTI namespace, with the normal XML view factory as the fallback
-		xmlTextPane.registerViewFactory(QTIConstants.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //G***testing
+		xmlTextPane.registerViewFactory(QTI.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //G***testing
 			//setup tree cell icons
 				//assessment
 		qtiTreeCellRenderer.registerOpenIcon(Assessment.class, IconResources.getIcon(IconResources.DOCUMENT_QUESTION_ICON_FILENAME));

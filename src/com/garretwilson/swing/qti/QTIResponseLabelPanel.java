@@ -9,6 +9,7 @@ import com.garretwilson.awt.*;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.draw.*;
 import com.garretwilson.assess.qti.*;
+import com.globalmentor.mentoract.qti.ResponseLabel;
 import com.globalmentor.util.Verifiable;
 
 /**Provides a visual editing environment for a QTI response label.

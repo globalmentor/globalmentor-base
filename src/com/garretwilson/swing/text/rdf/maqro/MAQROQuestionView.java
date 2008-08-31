@@ -17,7 +17,7 @@ import javax.swing.text.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
-import com.globalmentor.apps.mentoract.activity.maqro.MAQROActivityPanel;
+import com.globalmentor.apps.mentoract.swing.maqro.MAQROActivityPanel;
 import com.globalmentor.io.URIAccessible;
 import com.globalmentor.rdf.RDFObject;
 import com.globalmentor.rdf.RDFResource;

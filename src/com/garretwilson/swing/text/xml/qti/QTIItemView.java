@@ -1,13 +1,12 @@
 package com.garretwilson.swing.text.xml.qti;
 
 import javax.swing.text.*;
-import com.garretwilson.assess.qti.QTIConstants;
 import com.garretwilson.swing.text.xml.*;
 
 /**Represents a QTI item in a section.
 @author Garret Wilson
 */
-public class QTIItemView extends XMLBlockView implements QTIConstants
+public class QTIItemView extends XMLBlockView
 {
 
 	/**The logical ID response view; currently only one is supported.*/ //G***fix; update for multiple response types

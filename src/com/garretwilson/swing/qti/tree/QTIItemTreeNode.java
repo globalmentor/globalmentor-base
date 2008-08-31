@@ -2,6 +2,8 @@ package com.garretwilson.swing.qti.tree;
 
 import javax.swing.tree.*;
 import com.garretwilson.assess.qti.*;
+import com.globalmentor.mentoract.qti.Item;
+import com.globalmentor.mentoract.qti.Presentation;
 
 /**A tree node that represents a QTI item.
 	The QTI object is stored as the user object of the tree node.

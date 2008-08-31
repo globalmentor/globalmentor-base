@@ -9,6 +9,7 @@ import javax.swing.text.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.assess.qti.*;
 import com.garretwilson.swing.text.xml.*;
+import com.globalmentor.mentoract.qti.Assessment;
 import com.globalmentor.util.Debug;
 
 //G***del class if not needed
@@ -16,7 +17,7 @@ import com.globalmentor.util.Debug;
 /**Displays a QTI assessment, along with the appropriate submit button.
 @author Garret Wilson
 */
-public class QTIAssessmentView extends XMLComponentBlockView implements QTIConstants
+public class QTIAssessmentView extends XMLComponentBlockView
 {
 
 	/**The button used for submitting the assessment.*/

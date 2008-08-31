@@ -10,13 +10,15 @@ import com.garretwilson.swing.text.InvisibleView;
 import com.garretwilson.swing.text.StyleUtilities;
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
-import com.garretwilson.assess.qti.*;
+import com.globalmentor.mentoract.qti.QTI;
+import com.globalmentor.mentoract.qti.QTIProcessor;
+import static com.globalmentor.mentoract.qti.QTI.*;
 import com.globalmentor.util.Debug;
 
 /**Represents a QTI hotspot rendering.
 @author Garret Wilson
 */
-public class QTIRenderHotspotView extends InvisibleView implements QTIConstants
+public class QTIRenderHotspotView extends InvisibleView
 {
 
 	/**The button group for the choices.*/
@@ -45,7 +47,7 @@ public class QTIRenderHotspotView extends InvisibleView implements QTIConstants
 				//G***maybe put some of this into common routines
 			boolean allowMultipleSelections=false;  //start out assuming we won't allow multiple selections
 				//get the enclosing logical ID response element
-			final Element responseLIDElement=XMLStyleUtilities.getAncestorElement(element, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_RESPONSE_LID);
+			final Element responseLIDElement=XMLStyleUtilities.getAncestorElement(element, QTI.QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_RESPONSE_LID);
 			final AttributeSet responseLIDAttributeSet=responseLIDElement!=null ?
 					responseLIDElement.getAttributes() : null;	//get the attributes of the logical ID response element
 			if(responseLIDAttributeSet!=null)  //if the logical ID response has attributes
@@ -53,7 +55,7 @@ public class QTIRenderHotspotView extends InvisibleView implements QTIConstants
 					//get the cardinality defined for the response LID G***why not just store the responseLID in the view?
 				final String cardinality=XMLStyleUtilities.getXMLAttributeValue(responseLIDAttributeSet, null, ATTRIBUTE_RCARDINALITY);
 					//if we allow multiple selections
-				if(MULTIPLE_CARDINALITY.equals(cardinality) || ORDERED_CARDINALITY.equals(cardinality))
+				if(QTI.MULTIPLE_CARDINALITY.equals(cardinality) || QTI.ORDERED_CARDINALITY.equals(cardinality))
 				{
 					allowMultipleSelections=true; //show that we allow multiple selections G***do we want to make this final at some point?
 				}
@@ -74,7 +76,7 @@ public class QTIRenderHotspotView extends InvisibleView implements QTIConstants
 					try
 					{
 						final String areaText=childElement.getDocument().getText(childElement.getStartOffset(), childElement.getEndOffset()-childElement.getStartOffset());
-						final Shape area=QTIParser.createArea(areaType, areaText);  //create a shape from the area
+						final Shape area=QTIProcessor.createArea(areaType, areaText);  //create a shape from the area
 Debug.trace("ready to put toggle button in area: ", area);  //G***del
 						final Point center=GeometryUtilities.getCenter(area); //get the center point of the area
 Debug.trace("new center: ", center);  //G***del

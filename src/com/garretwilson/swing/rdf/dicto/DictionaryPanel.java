@@ -13,8 +13,9 @@ import com.garretwilson.model.ResourceModel;
 import com.garretwilson.resources.icon.IconResources;
 
 import com.globalmentor.apps.marmot.resource.dicto.*;
-import com.globalmentor.apps.mentoract.activity.maqro.*;
+import com.globalmentor.apps.mentoract.swing.maqro.MAQROActivityPanel;
 import com.globalmentor.java.Characters;
+import com.globalmentor.mentoract.maqro.*;
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.dicto.*;
 import com.globalmentor.rdf.dicto.Dictionary;

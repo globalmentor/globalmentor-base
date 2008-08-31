@@ -8,7 +8,7 @@ import javax.swing.text.*;
 import com.garretwilson.awt.ImageUtilities;
 import com.garretwilson.swing.text.xml.XMLComponentImageView;
 import com.garretwilson.swing.text.xml.XMLStyleUtilities;
-import com.garretwilson.assess.qti.QTIConstants;
+import static com.globalmentor.mentoract.qti.QTI.*;
 import com.globalmentor.util.Debug;
 
 /**A view that displays an image, intended to support the QTI
@@ -16,7 +16,7 @@ import com.globalmentor.util.Debug;
 @author Garret Wilson
 @see javax.swing.text.html.ImageView
 */
-public class QTIMaterialImageView extends XMLComponentImageView implements QTIConstants
+public class QTIMaterialImageView extends XMLComponentImageView
 {
 
 	/**Creates a new view that represents a QTI material image element.

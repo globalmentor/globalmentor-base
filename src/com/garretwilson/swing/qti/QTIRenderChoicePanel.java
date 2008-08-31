@@ -8,6 +8,10 @@ import java.util.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.assess.qti.*;
+import com.globalmentor.mentoract.qti.Material;
+import com.globalmentor.mentoract.qti.Render;
+import com.globalmentor.mentoract.qti.RenderChoice;
+import com.globalmentor.mentoract.qti.ResponseLabel;
 import com.globalmentor.util.Debug;
 
 /**Provides a visual editing environment for a QTI choice rendering.

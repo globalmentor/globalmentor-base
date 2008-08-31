@@ -4,11 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.*;
 import javax.swing.text.*;
-import com.garretwilson.assess.qti.QTIConstants;
 import com.garretwilson.swing.text.StyleUtilities;
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.swing.text.xml.css.XMLCSSStyleUtilities;
+import com.globalmentor.mentoract.qti.QTI;
 import com.globalmentor.util.Debug;
 
 /**Displays a QTI response label for a coice rendering, along with the
@@ -16,7 +16,7 @@ import com.globalmentor.util.Debug;
 	ident of the response label.
 @author Garret Wilson
 */
-public class QTIChoiceResponseLabelView extends XMLComponentBlockView implements QTIConstants
+public class QTIChoiceResponseLabelView extends XMLComponentBlockView
 {
 
 	/**The toggle button (radio button or checkbox) this label view presents.*/
@@ -43,15 +43,15 @@ public class QTIChoiceResponseLabelView extends XMLComponentBlockView implements
 		super(element, X_AXIS); //construct the parent, tiling horizontally G***fix or del: and allowing expansion in both direction
 		boolean allowMultipleSelections=false;  //start out assuming we won't allow multiple selections
 			//get the enclosing logical ID response element
-		final Element responseLIDElement=XMLStyleUtilities.getAncestorElement(element, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_RESPONSE_LID);
+		final Element responseLIDElement=XMLStyleUtilities.getAncestorElement(element, QTI.QTI_1_1_NAMESPACE_URI.toString(), QTI.ELEMENT_RESPONSE_LID);
 		final AttributeSet responseLIDAttributeSet=responseLIDElement!=null ?
 			  responseLIDElement.getAttributes() : null;	//get the attributes of the logical ID response element
 		if(responseLIDAttributeSet!=null)  //if the logical ID response has attributes
 		{
 				//get the cardinality defined for the response LID G***why not just store the responseLID in the view?
-			final String cardinality=XMLStyleUtilities.getXMLAttributeValue(responseLIDAttributeSet, null, ATTRIBUTE_RCARDINALITY);
+			final String cardinality=XMLStyleUtilities.getXMLAttributeValue(responseLIDAttributeSet, null, QTI.ATTRIBUTE_RCARDINALITY);
 				//if we allow multiple selections
-		  if(MULTIPLE_CARDINALITY.equals(cardinality) || ORDERED_CARDINALITY.equals(cardinality))
+		  if(QTI.MULTIPLE_CARDINALITY.equals(cardinality) || QTI.ORDERED_CARDINALITY.equals(cardinality))
 			{
 				allowMultipleSelections=true; //show that we allow multiple selections G***do we want to make this final at some point?
 			}
@@ -75,7 +75,7 @@ public class QTIChoiceResponseLabelView extends XMLComponentBlockView implements
 			getToggleButton().setBackground(backgroundColor); //set the background color of the radio button
 		}
 */
-		final String ident=(String)StyleUtilities.getDefinedAttribute(element.getAttributes(), ATTRIBUTE_IDENT); //get the ident, if available
+		final String ident=(String)StyleUtilities.getDefinedAttribute(element.getAttributes(), QTI.ATTRIBUTE_IDENT); //get the ident, if available
 		toggleButton.setActionCommand(ident); //set the ident as the action command G***should we check to see if this is null? probably not---just use it as is
 		if(renderChoiceView!=null && !allowMultipleSelections) //if we have an enclosing choice rendering view, and we shouldn't allow multiple selections
 		{
