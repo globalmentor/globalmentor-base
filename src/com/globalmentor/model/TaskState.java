@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package com.guiseframework.model;
-
-import java.net.URI;
-
-import com.globalmentor.util.StringTemplate;
-
-import static com.guiseframework.Resources.*;
+package com.globalmentor.model;
 
 /**Represents the progress of a task.
 @author Garret Wilson
 */
 public enum TaskState
 {
+
+	/**The task has not yet begun.*/
+	UNSTARTED,
 
 	/**The task is preparing to begin.*/
 	INITIALIZE,
@@ -50,40 +47,50 @@ public enum TaskState
 	COMPLETE;
 
 	/**The resource key template for each label.*/
-	private final static StringTemplate LABEL_RESOURCE_KEY_TEMPLATE=new StringTemplate("task.state.", StringTemplate.STRING_PARAMETER, ".label");
+//TODO del	private final static StringTemplate LABEL_RESOURCE_KEY_TEMPLATE=new StringTemplate("task.state.", StringTemplate.STRING_PARAMETER, ".label");
 	/**The resource key template for each glyph.*/
-	private final static StringTemplate GLYPH_RESOURCE_KEY_TEMPLATE=new StringTemplate("task.state.", StringTemplate.STRING_PARAMETER, ".glyph");
+//TODO del	private final static StringTemplate GLYPH_RESOURCE_KEY_TEMPLATE=new StringTemplate("task.state.", StringTemplate.STRING_PARAMETER, ".glyph");
 
 	/**@return A resource reference representing a label for no task state.*/
+/*TODO del
 	public static String getNoLabel()
 	{
 		return createStringResourceReference(LABEL_RESOURCE_KEY_TEMPLATE.apply(""));	//get the label representing no value
 	}
+*/
 
 	/**@return The resource reference for the label.*/
+/*TODO del
 	public String getLabel()
 	{
 		return createStringResourceReference(LABEL_RESOURCE_KEY_TEMPLATE.apply(getResourceKeyName(this)));	//create a resource reference using the resource key name of this enum value
 	}
+*/
 
 	/**@return A resource reference representing a glyph for no task state.*/
+/*TODO del
 	public static URI getNoGlyph()
 	{
 		return createURIResourceReference(GLYPH_RESOURCE_KEY_TEMPLATE.apply(""));	//get the glyph representing no value
 	}
+*/
 
 	/**@return The resource reference for the glyph.*/
+/*TODO del
 	public URI getGlyph()
 	{
 		return createURIResourceReference(GLYPH_RESOURCE_KEY_TEMPLATE.apply(getResourceKeyName(this)));	//create a resource reference using the resource key name of this enum value
 	}
+*/
 
 	/**Returns a string representation of the task state.
 	This implementation delegates to {@link #getLabel()}.
 	@return A string representation of the object.
 	*/
+/*TODO del
 	public String toString()
 	{
 		return getLabel();
 	}
+*/
 }

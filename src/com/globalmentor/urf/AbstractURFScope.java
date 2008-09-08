@@ -784,13 +784,20 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final Number propertyValue)
 	{
-		if(Numbers.isIntegral(propertyValue))	//integral
+		if(propertyValue!=null)	//if a property value was given
 		{
-			return setPropertyValue(propertyURI, propertyValue.longValue());
+			if(Numbers.isIntegral(propertyValue))	//integral
+			{
+				return setPropertyValue(propertyURI, propertyValue.longValue());
+			}
+			else	//decimal and all others
+			{
+				return setPropertyValue(propertyURI, propertyValue.doubleValue());
+			}
 		}
-		else	//decimal and all others
+		else	//if there is no property value
 		{
-			return setPropertyValue(propertyURI, propertyValue.doubleValue());
+			return setPropertyValue(propertyURI, (URFResource)null);	//remove the property value
 		}
 	}
 

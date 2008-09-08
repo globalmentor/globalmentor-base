@@ -22,6 +22,9 @@ import static com.globalmentor.urf.URF.createResourceURI;
 import java.net.URI;
 import java.util.*;
 
+import javax.mail.internet.ContentType;
+
+import static com.globalmentor.io.ContentTypes.*;
 import com.globalmentor.rdf.*;
 
 /**Constants and utilities used in MAQRO processing.
@@ -30,10 +33,19 @@ import com.globalmentor.rdf.*;
 public class MAQRO
 {
 
-	/**The recommended prefix to the MAQRO ontology namespace.*/
-//TODO del	public final static String MAQRO_NAMESPACE_PREFIX="maqro";
 	/**The URI to the MAQRO namespace.*/
 	public final static URI MAQRO_NAMESPACE_URI=URI.create("http://maqro.org/maqro");
+	/**The URI to the MAQRO interactivity namespace.*/
+	public final static URI MAQRO_INTERACT_NAMESPACE_URI=URI.create("http://maqro.org/interact");
+
+	/**The MIME content type for mentoring activities.*/
+	public final static ContentType MENTOR_ACTIVITY_CONTENT_TYPE=getContentTypeInstance(APPLICATION_PRIMARY_TYPE, "x-mentor-activity+turf");
+	/**An extension for mentoring activity resource names.*/
+	public final static String MENTOR_ACTIVITY_NAME_EXTENSION="mact";
+	/**The MIME content type for mentoring interactions.*/
+	public final static ContentType MENTOR_INTERACTION_CONTENT_TYPE=getContentTypeInstance(APPLICATION_PRIMARY_TYPE, "x-mentor-interaction+turf");
+	/**An extension for mentoring interaction resource names.*/
+	public final static String MENTOR_INTERACTION_NAME_EXTENSION="mint";
 
 	/**The recommended prefix to the MAQRO ontology scoring algorithm namespace.*/
 //TODO fix	public final static String MAQRO_SCORING_NAMESPACE_PREFIX="maqroScoring";
@@ -212,6 +224,8 @@ public class MAQRO
 	public final static URI EXPECTATION_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, EXPECTATION_PROPERTY_NAME);
 	/**A followup interaction.*/
 	public final static URI FOLLOWUP_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, FOLLOWUP_PROPERTY_NAME);
+	/**The maximum number of responses to accept.*/
+	public final static URI MAX_RESPONSE_COUNT_URI=createResourceURI(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME);
 	/**The order criteria of an activity. The local name of maqro.order.*/
 	public final static URI ORDER_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, ORDER_PROPERTY_NAME);
 	/**The outcomes of a group's interactions.*/

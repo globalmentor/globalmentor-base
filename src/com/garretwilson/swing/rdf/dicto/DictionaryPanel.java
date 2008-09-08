@@ -305,7 +305,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 */
 				final MAQROActivityEngine activityEngine=new MAQROActivityEngine(dictionaryActivity);	//create an engine for the activity
 				activityEngine.setBaseURI(getModel().getBaseURI());	//set the base URI of the engine TODO probably make the resource application panel URIAccessible
-				activityEngine.setURIInputStreamable(getModel());	//tell the activity engine to use our URI sourcefor reading
+//TODO fix				activityEngine.setURIInputStreamable(getModel());	//tell the activity engine to use our URI sourcefor reading
 				final MAQROActivityPanel activityPanel=new MAQROActivityPanel(activityEngine);	//create a new activity panel for the engine
 
 				/*TODO fix with non-ResourceApplicationFrame

@@ -248,7 +248,7 @@ System.out.println(outcomeXHTMLString);
 			}
 			finally
 			{
-				activityEngine.stop();	//always stop the engine
+				activityEngine.goStop();	//always stop the engine
 			}
 		}
 	}

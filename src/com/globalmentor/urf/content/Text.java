@@ -28,7 +28,16 @@ public class Text extends AbstractContentResource
 	{
 		super(uri, Content.CONTENT_NAMESPACE_URI);	//construct the class, specifying the Content namespace
 	}
-	
+
+	/**Returns the actual content of the resource.
+	This method delegates to {@link #getStringContent()}. 
+	@return This resource's string content declaration, or <code>null</code> if the resource has no <code>content.content</code> property specified or the content is not a string.
+	*/
+	public String getContent()
+	{
+		return getStringContent();	//get any string content
+	}
+
 	/**Determines a string value to use for representation.
 	This method may take into account the current properties of the resource in order to provide the best possible string representation.
 	This implementation determines the label in the following sequence:

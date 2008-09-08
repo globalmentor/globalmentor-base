@@ -210,27 +210,19 @@ public class Question extends AbstractInteraction
 		removePropertyValues(ANSWER_PROPERTY_URI);	//remove all answers
 	}
 
-	/**@return The maximum number of responses to accept, or -1 if the maximum
-		response count is not indicated and should be infinite.
-	*/
-/*TODO fix
-	public int getMaxResponseCount()
+	/**@return The maximum number of responses to accept, <code>null</code> if the maximum response count is not indicated or not an integer.*/
+	public Long getMaxResponseCount()
 	{
-		final RDFObject maxResponseCount=getPropertyValue(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME);	//get the value
-		return maxResponseCount instanceof IntegerLiteral ? ((IntegerLiteral)maxResponseCount).getValue().intValue() : -1;	//return the integer value, if there is one
+		return asInteger(getPropertyValue(MAX_RESPONSE_COUNT_URI));
 	}
-*/
 
 	/**Sets the maximum number of responses to accept.
-	@param count The maximum number of responses, or -1 if the maximum response
-		count should be infinite.
+	@param count The maximum number of responses, or <code>null</code> if the maximum response count should be infinite.
 	*/
-/*TODO fix
-	public void setMaxResponseCount(final int count)
+	public void setMaxResponseCount(final Long count)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME, count>=0 ? new IntegerLiteral(count) : null);	//set the value or remove it
+		setPropertyValue(MAX_RESPONSE_COUNT_URI, count);
 	}
-*/
 
 	/**Determines a string value to use for representation.
 	This method may take into account the current properties of the resource in order to provide the best possible string representation.
