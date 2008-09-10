@@ -13,23 +13,7 @@ import com.garretwilson.swing.text.*;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.swing.text.xml.css.*; //G***del when component color update is moved
 import com.garretwilson.resources.icon.IconResources;
-import com.garretwilson.assess.qti.*;
-import com.globalmentor.mentoract.qti.Assessment;
-import com.globalmentor.mentoract.qti.Condition;
-import com.globalmentor.mentoract.qti.ConditionVar;
-import com.globalmentor.mentoract.qti.DecVar;
-import com.globalmentor.mentoract.qti.Item;
-import com.globalmentor.mentoract.qti.Outcomes;
-import com.globalmentor.mentoract.qti.Presentation;
-import com.globalmentor.mentoract.qti.QTI;
-import com.globalmentor.mentoract.qti.RenderChoice;
-import com.globalmentor.mentoract.qti.ResponseCondition;
-import com.globalmentor.mentoract.qti.ResponseLID;
-import com.globalmentor.mentoract.qti.ResponseLabel;
-import com.globalmentor.mentoract.qti.ResponseProcessing;
-import com.globalmentor.mentoract.qti.Section;
-import com.globalmentor.mentoract.qti.SetVar;
-import com.globalmentor.mentoract.qti.VarEqual;
+import com.globalmentor.mentoract.qti.*;
 import static com.globalmentor.mentoract.qti.QTI.*;
 import com.globalmentor.util.Debug;
 

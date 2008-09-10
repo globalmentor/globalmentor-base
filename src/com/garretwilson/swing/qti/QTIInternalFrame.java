@@ -11,7 +11,6 @@ import javax.swing.event.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.text.xml.XMLEditorKit;
-import com.garretwilson.assess.qti.*;
 import com.globalmentor.mentoract.qti.QTI;
 import com.globalmentor.text.CharacterEncoding;
 import com.globalmentor.text.xml.stylesheets.css.XMLCSSProcessor;

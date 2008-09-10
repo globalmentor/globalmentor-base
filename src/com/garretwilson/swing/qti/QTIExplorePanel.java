@@ -15,7 +15,6 @@ import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.swing.text.xml.qti.QTIViewFactory;
 import com.garretwilson.swing.tree.*;
 import com.garretwilson.swing.qti.tree.*;
-import com.garretwilson.assess.qti.*;
 import com.globalmentor.java.Booleans;
 import com.globalmentor.mentoract.qti.Assessment;
 import com.globalmentor.mentoract.qti.Item;

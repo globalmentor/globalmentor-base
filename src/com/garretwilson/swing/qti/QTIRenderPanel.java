@@ -7,7 +7,6 @@ import javax.swing.event.*;
 import java.util.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.ActionList;
-import com.garretwilson.assess.qti.*;
 import com.globalmentor.java.Booleans;
 import com.globalmentor.mentoract.qti.Render;
 import com.globalmentor.mentoract.qti.ResponseLabel;

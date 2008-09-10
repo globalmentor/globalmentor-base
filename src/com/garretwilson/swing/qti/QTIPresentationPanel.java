@@ -6,11 +6,7 @@ import javax.swing.*;
 import java.util.*;
 import com.garretwilson.awt.WindowUtilities;
 import com.garretwilson.resources.icon.IconResources;
-import com.garretwilson.assess.qti.*;
-import com.globalmentor.mentoract.qti.Material;
-import com.globalmentor.mentoract.qti.Presentation;
-import com.globalmentor.mentoract.qti.Response;
-import com.globalmentor.mentoract.qti.ResponseLID;
+import com.globalmentor.mentoract.qti.*;
 import com.globalmentor.util.Debug;
 
 /**Provides a visual editing environment for QTI presentation.

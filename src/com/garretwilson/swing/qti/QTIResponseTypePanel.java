@@ -4,15 +4,9 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import com.garretwilson.resources.icon.IconResources;
-import com.garretwilson.assess.qti.*;
 import com.globalmentor.java.CharSequences;
 import com.globalmentor.java.Strings;
-import com.globalmentor.mentoract.qti.Render;
-import com.globalmentor.mentoract.qti.RenderChoice;
-import com.globalmentor.mentoract.qti.RenderHotspot;
-import com.globalmentor.mentoract.qti.Response;
-import com.globalmentor.mentoract.qti.ResponseLID;
-import com.globalmentor.mentoract.qti.ResponseLabel;
+import com.globalmentor.mentoract.qti.*;
 import com.globalmentor.util.*;
 
 /**Allows a response type to be selected.

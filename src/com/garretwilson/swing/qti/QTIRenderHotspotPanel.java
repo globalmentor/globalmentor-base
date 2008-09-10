@@ -10,10 +10,7 @@ import com.garretwilson.awt.ImageUtilities;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.draw.*;
-import com.garretwilson.assess.qti.*;
-import com.globalmentor.mentoract.qti.Render;
-import com.globalmentor.mentoract.qti.RenderHotspot;
-import com.globalmentor.mentoract.qti.ResponseLabel;
+import com.globalmentor.mentoract.qti.*;
 import com.globalmentor.util.Debug;
 
 /**Provides a visual editing environment for a QTI hotspot rendering.

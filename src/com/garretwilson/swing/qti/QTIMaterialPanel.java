@@ -9,10 +9,7 @@ import javax.swing.*;
 
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
-import com.garretwilson.assess.qti.*;
-import com.globalmentor.mentoract.qti.Material;
-import com.globalmentor.mentoract.qti.MaterialContent;
-import com.globalmentor.mentoract.qti.MaterialText;
+import com.globalmentor.mentoract.qti.*;
 
 import static com.globalmentor.net.URIs.*;
 

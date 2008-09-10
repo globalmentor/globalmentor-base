@@ -4,7 +4,6 @@ import java.awt.*;
 import java.beans.*;
 import javax.swing.*;
 import java.util.*;
-import com.garretwilson.assess.qti.*;
 import com.globalmentor.mentoract.qti.Item;
 import com.globalmentor.mentoract.qti.Presentation;
 import com.globalmentor.mentoract.qti.Response;

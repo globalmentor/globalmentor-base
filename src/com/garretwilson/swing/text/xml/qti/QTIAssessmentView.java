@@ -7,7 +7,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.text.*;
 import com.garretwilson.resources.icon.IconResources;
-import com.garretwilson.assess.qti.*;
 import com.garretwilson.swing.text.xml.*;
 import com.globalmentor.mentoract.qti.Assessment;
 import com.globalmentor.util.Debug;

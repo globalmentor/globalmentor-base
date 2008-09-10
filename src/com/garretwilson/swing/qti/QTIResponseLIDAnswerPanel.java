@@ -5,17 +5,7 @@ import javax.swing.*;
 import java.util.*;
 import java.awt.event.*;
 import com.garretwilson.swing.*;
-import com.garretwilson.assess.qti.*;
-import com.globalmentor.mentoract.qti.Condition;
-import com.globalmentor.mentoract.qti.ConditionVar;
-import com.globalmentor.mentoract.qti.DecVar;
-import com.globalmentor.mentoract.qti.Render;
-import com.globalmentor.mentoract.qti.ResponseCondition;
-import com.globalmentor.mentoract.qti.ResponseLID;
-import com.globalmentor.mentoract.qti.ResponseLabel;
-import com.globalmentor.mentoract.qti.ResponseProcessing;
-import com.globalmentor.mentoract.qti.SetVar;
-import com.globalmentor.mentoract.qti.VarEqual;
+import com.globalmentor.mentoract.qti.*;
 import com.globalmentor.util.Debug;
 
 /**Allows input of the answer to a logical ID response type.

@@ -3,12 +3,7 @@ package com.garretwilson.swing.qti;
 import java.awt.*;
 import javax.swing.*;
 import java.util.*;
-import com.garretwilson.assess.qti.*;
-import com.globalmentor.mentoract.qti.Render;
-import com.globalmentor.mentoract.qti.RenderChoice;
-import com.globalmentor.mentoract.qti.RenderHotspot;
-import com.globalmentor.mentoract.qti.Response;
-import com.globalmentor.mentoract.qti.ResponseLID;
+import com.globalmentor.mentoract.qti.*;
 import com.globalmentor.util.Debug;
 
 /**Provides a visual editing environment for a QTI logical ID response.

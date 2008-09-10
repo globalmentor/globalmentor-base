@@ -2,7 +2,6 @@ package com.garretwilson.swing.qti.tree;
 
 import java.util.*;
 import javax.swing.tree.*;
-import com.garretwilson.assess.qti.*;
 import com.globalmentor.mentoract.qti.ResponseLID;
 
 /**A tree node that represents a QTI logical ID response.
