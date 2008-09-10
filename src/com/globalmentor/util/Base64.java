@@ -4,10 +4,28 @@ package com.globalmentor.util;
  * <p>Encodes and decodes to and from Base64 notation.</p>
  * <p>Homepage: <a href="http://iharder.net/base64">http://iharder.net/base64</a>.</p>
  *
+ * <p>The <tt>options</tt> parameter, which appears in a few places, is used to pass 
+ * several pieces of information to the encoder. In the "higher level" methods such as 
+ * encodeBytes( bytes, options ) the options parameter can be used to indicate such 
+ * things as first gzipping the bytes before encoding them, not inserting linefeeds 
+ * (though that breaks strict Base64 compatibility), and encoding using the URL-safe 
+ * and Ordered dialects.</p>
+ *
+ * <p>The constants defined in Base64 can be OR-ed together to combine options, so you 
+ * might make a call like this:</p>
+ *
+ * <code>String encoded = Base64.encodeBytes( mybytes, Base64.GZIP | Base64.DONT_BREAK_LINES );</code>
+ *
+ * <p>to compress the data before encoding it and then making the output have no newline characters.</p>
+ *
+ *
  * <p>
  * Change Log:
  * </p>
  * <ul>
+ *  <li>v2.2.2 - Fixed encodeFileToFile and decodeFileToFile to use the
+ *   Base64.InputStream class to encode and decode on the fly which uses
+ *   less memory than encoding/decoding an entire file into memory before writing.</li>
  *  <li>v2.2.1 - Fixed bug using URL_SAFE and ORDERED encodings. Fixed bug
  *   when using very small files (~< 40 bytes).</li>
  *  <li>v2.2 - Added some helper methods for encoding/decoding directly from
@@ -64,7 +82,7 @@ package com.globalmentor.util;
  *
  * @author Robert Harder
  * @author rob@iharder.net
- * @version 2.2.1
+ * @version 2.2.2
  * 
  * This version has additions marked with GDW.
  * @author Garret Wilson
@@ -923,7 +941,7 @@ public class Base64
             {
 //                System.err.println( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );
 //                return null;
-              throw new IllegalArgumentException( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );	//GDW
+                throw new IllegalArgumentException( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );	//GDW
             }   // end else: 
         }   // each input character
                                    
@@ -1241,55 +1259,79 @@ public class Base64
         return encodedData;
         }   // end encodeFromFile
     
+    
+    
+    
     /**
      * Reads <tt>infile</tt> and encodes it to <tt>outfile</tt>.
      *
      * @param infile Input file
      * @param outfile Output file
+     * @return true if the operation is successful
      * @since 2.2
      */
-    public static void encodeFileToFile( String infile, String outfile )
+    public static boolean encodeFileToFile( String infile, String outfile )
     {
-        String encoded = Base64.encodeFromFile( infile );
+        boolean success = false;
+        java.io.InputStream in = null;
         java.io.OutputStream out = null;
         try{
-            out = new java.io.BufferedOutputStream(
-                  new java.io.FileOutputStream( outfile ) );
-            out.write( encoded.getBytes("US-ASCII") ); // Strict, 7-bit output.
-        }   // end try
-        catch( java.io.IOException ex ) {
-            ex.printStackTrace();
-        }   // end catch
-        finally {
-            try { out.close(); }
-            catch( Exception ex ){}
-        }   // end finally    
+            in  = new Base64.InputStream( 
+                      new java.io.BufferedInputStream( 
+                      new java.io.FileInputStream( infile ) ), 
+                      Base64.ENCODE );
+            out = new java.io.BufferedOutputStream( new java.io.FileOutputStream( outfile ) );
+            byte[] buffer = new byte[65536]; // 64K
+            int read = -1;
+            while( ( read = in.read(buffer) ) >= 0 ){
+                out.write( buffer,0,read );
+            }   // end while: through file
+            success = true;
+        } catch( java.io.IOException exc ){
+            exc.printStackTrace();
+        } finally{
+            try{ in.close();  } catch( Exception exc ){}
+            try{ out.close(); } catch( Exception exc ){}
+        }   // end finally
+        
+        return success;
     }   // end encodeFileToFile
-
-
+    
+    
+    
     /**
      * Reads <tt>infile</tt> and decodes it to <tt>outfile</tt>.
      *
      * @param infile Input file
      * @param outfile Output file
+     * @return true if the operation is successful
      * @since 2.2
      */
-    public static void decodeFileToFile( String infile, String outfile )
+    public static boolean decodeFileToFile( String infile, String outfile )
     {
-        byte[] decoded = Base64.decodeFromFile( infile );
+        boolean success = false;
+        java.io.InputStream in = null;
         java.io.OutputStream out = null;
         try{
-            out = new java.io.BufferedOutputStream(
-                  new java.io.FileOutputStream( outfile ) );
-            out.write( decoded );
-        }   // end try
-        catch( java.io.IOException ex ) {
-            ex.printStackTrace();
-        }   // end catch
-        finally {
-            try { out.close(); }
-            catch( Exception ex ){}
-        }   // end finally    
+            in  = new Base64.InputStream( 
+                      new java.io.BufferedInputStream( 
+                      new java.io.FileInputStream( infile ) ), 
+                      Base64.DECODE );
+            out = new java.io.BufferedOutputStream( new java.io.FileOutputStream( outfile ) );
+            byte[] buffer = new byte[65536]; // 64K
+            int read = -1;
+            while( ( read = in.read(buffer) ) >= 0 ){
+                out.write( buffer,0,read );
+            }   // end while: through file
+            success = true;
+        } catch( java.io.IOException exc ){
+            exc.printStackTrace();
+        } finally{
+            try{ in.close();  } catch( Exception exc ){}
+            try{ out.close(); } catch( Exception exc ){}
+        }   // end finally
+        
+        return success;
     }   // end decodeFileToFile
     
     
