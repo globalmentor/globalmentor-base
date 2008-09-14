@@ -17,17 +17,16 @@
 package com.globalmentor.urf.maqro;
 
 import java.net.URI;
-import java.util.*;
 
+import com.globalmentor.urf.URF;
+import static com.globalmentor.urf.URF.*;
 import com.globalmentor.urf.content.Text;
-
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.maqro.MAQRO.*;
 
 /**Class representing a MAQRO activity.
 The activity, besides containing interactions, is an interaction itself.
-The activity is also a group, and can contain other groups, which themselves
-	are interactions.
+The activity is also a group, and can contain other groups, which themselves are interactions.
 @author Garret Wilson
 */
 public class Activity extends Group
@@ -140,245 +139,176 @@ public class Activity extends Group
 	}
 */
 
-	/**@return The selection criteria, or <code>null</code> if there is no
-		selection criteria indicated or if it is not of the correct type.
-	*/
-/*TODO fix
-	public Selection getSelection()
-	{
-		final RDFObject select=getPropertyValue(MAQRO_NAMESPACE_URI, SELECTION_PROPERTY_NAME);	//get the maqro:select property value
-		return select instanceof Selection ? (Selection)select : null;	//return the selection criteria if there are any
-	}
-*/
-
-	/**Sets the selection criteria for the activity.
-	@param selectDescription The selection criteria.
-	*/
-/*TODO fix
-	public void setSelection(final Selection selection)
-	{
-		setProperty(MAQRO_NAMESPACE_URI, SELECTION_PROPERTY_NAME, selection);	//set the selection criteria
-	}
-*/
-
-		//behavior
+		//interaction behavior
 			//permissions
 	/**@return <code>true</code> if hints are allowed.*/
-/*TODO fix
 	public boolean isAllowHint()
 	{
-		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_HINT_PROPERTY_NAME)); //get the boolean value of the property
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(ALLOW_HINT_PROPERTY_URI)));
 	}
-*/
 
 	/**Sets whether hints are allowed.
 	@param allowHint <code>true</code> if hints should be allowed.
 	*/
-/*TODO fix
 	public void setAllowHint(final boolean allowHint)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, ALLOW_HINT_PROPERTY_NAME, new BooleanLiteral(allowHint)); //set the property with a boolean typed literal
+		setPropertyValue(ALLOW_HINT_PROPERTY_URI, allowHint);
 	}
-*/
 
 	/**@return <code>true</code> if previous nativation is allowed.*/
-/*TODO fix
 	public boolean isAllowPrevious()
 	{
-		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_PREVIOUS_PROPERTY_NAME)); //get the boolean value of the property
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(ALLOW_PREVIOUS_PROPERTY_URI)));
 	}
-*/
 
 	/**Sets whether previous navigation is allowed.
 	@param allowPrevious <code>true</code> if previous navigation should be allowed.
 	*/
-/*TODO fix
 	public void setAllowPrevious(final boolean allowPrevious)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, ALLOW_PREVIOUS_PROPERTY_NAME, new BooleanLiteral(allowPrevious)); //set the property with a boolean typed literal
+		setPropertyValue(ALLOW_PREVIOUS_PROPERTY_URI, allowPrevious);
 	}
-*/
 
 	/**@return <code>true</code> if the activity can be canceled.*/
-/*TODO fix
 	public boolean isAllowCancel()
 	{
-		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_CANCEL_PROPERTY_NAME)); //get the boolean value of the property
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(ALLOW_CANCEL_PROPERTY_URI)));
 	}
-*/
 
 	/**Sets whether the activity can be canceled.
 	@param allowStop <code>true</code> if canceling should be allowed.
 	*/
-/*TODO fix
 	public void setAllowCancel(final boolean allowCancel)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, ALLOW_CANCEL_PROPERTY_NAME, new BooleanLiteral(allowCancel)); //set the property with a boolean typed literal
+		setPropertyValue(ALLOW_CANCEL_PROPERTY_URI, allowCancel);
 	}
-*/
 
 	/**@return <code>true</code> if submission is allowed; the default is <code>true</code>.*/
-/*TODO fix
 	public boolean isAllowSubmit()
 	{
-		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_SUBMIT_PROPERTY_NAME), true); //get the boolean value of the property, defaulting to true
+		return asInstance(getPropertyValue(ALLOW_SUBMIT_PROPERTY_URI), Boolean.class, Boolean.TRUE).booleanValue(); //get the boolean value of the property, defaulting to true
 	}
-*/
 
 	/**Sets whether submission is allowed.
 	@param allowSubmit <code>true</code> if submission should be allowed.
 	*/
-/*TODO fix
 	public void setAllowSubmit(final boolean allowSubmit)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, ALLOW_SUBMIT_PROPERTY_NAME, new BooleanLiteral(allowSubmit)); //set the property with a boolean typed literal
+		setPropertyValue(ALLOW_SUBMIT_PROPERTY_URI, allowSubmit);
 	}
-*/
 
 			//process
 	/**@return <code>true</code> if each response commit should be confirmed.*/
-/*TODO fix
 	public boolean isConfirmCommit()
 	{
-		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME)); //get the boolean value of the property
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(CONFIRM_COMMIT_PROPERTY_URI)));
 	}
-*/
 
 	/**Sets whether each response commit must be confirmed.
 	@param confirmCommit <code>true</code> if each commit must be confirmed.
 	*/
-/*TODO fix
 	public void setConfirmCommit(final boolean confirmCommit)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME, new BooleanLiteral(confirmCommit)); //set the property with a boolean typed literal
+		setPropertyValue(CONFIRM_COMMIT_PROPERTY_URI, confirmCommit);
 	}
-*/
 
 	/**@return <code>true</code> if activity submission should be confirmed.*/
-/*TODO fix
 	public boolean isConfirmSubmit()
 	{
-		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_SUBMIT_PROPERTY_NAME)); //get the boolean value of the property
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(CONFIRM_SUBMIT_PROPERTY_URI)));
 	}
-*/
 
 	/**Sets whether activity submission must be confirmed.
 	@param confirmSubmit <code>true</code> if activity submission must be confirmed.
 	*/
-/*TODO fix
 	public void setConfirmSubmit(final boolean confirmSubmit)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, CONFIRM_SUBMIT_PROPERTY_NAME, new BooleanLiteral(confirmSubmit)); //set the property with a boolean typed literal
+		setPropertyValue(CONFIRM_SUBMIT_PROPERTY_URI, confirmSubmit);
 	}
-*/
 	
 	/**@return <code>true</code> if a response is required for all applicable interactions.*/
-/*TODO fix
 	public boolean isRequireResponse()
 	{
-		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, REQUIRE_RESPONSE_PROPERTY_NAME)); //get the boolean value of the property
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(REQUIRE_RESPONSE_PROPERTY_URI)));
 	}
-*/
 
 	/**Sets whether a response is required for all applicable interactions.
 	@param confirmCommit <code>true</code> if a response is always required.
 	*/
-/*TODO fix
 	public void setRequireResponse(final boolean requireResponse)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, REQUIRE_RESPONSE_PROPERTY_NAME, new BooleanLiteral(requireResponse)); //set the property with a boolean typed literal
+		setPropertyValue(REQUIRE_RESPONSE_PROPERTY_URI, requireResponse);
 	}
-*/
 	
 			//feedback
 	/**@return <code>true</code> if the result of each interaction should immediately be shown.*/
-/*TODO fix
 	public boolean isShowEachResult()
 	{
-		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_EACH_RESULT_PROPERTY_NAME)); //get the boolean value of the property
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(SHOW_EACH_RESULT_PROPERTY_URI)));
 	}
-*/
 
 	/**Sets whether the result of each interaction should immediately be shown.
 	@param showEachResult <code>true</code> if each result should be shown.
 	*/
-/*TODO fix
 	public void setShowEachResult(final boolean showEachResult)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, SHOW_EACH_RESULT_PROPERTY_NAME, new BooleanLiteral(showEachResult)); //set the property with a boolean typed literal
+		setPropertyValue(SHOW_EACH_RESULT_PROPERTY_URI, showEachResult);
 	}
-*/
 
 	/**@return <code>true</code> if the final result of the activity should be shown.*/
-/*TODO fix
 	public boolean isShowFinalResult()
 	{
-		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_FINAL_RESULT_PROPERTY_NAME)); //get the boolean value of the property
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(SHOW_FINAL_RESULT_PROPERTY_URI)));
 	}
-*/
 
 	/**Sets whether the final result of the activity should be shown.
 	@param showFinalResult <code>true</code> if the activity result should be shown.
 	*/
-/*TODO fix
 	public void setShowFinalResult(final boolean showFinalResult)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, SHOW_FINAL_RESULT_PROPERTY_NAME, new BooleanLiteral(showFinalResult)); //set the property with a boolean typed literal
+		setPropertyValue(SHOW_FINAL_RESULT_PROPERTY_URI, showFinalResult);
 	}
-*/
 
 	/**@return <code>true</code> if the progress of results should be shown.*/
-/*TODO fix
 	public boolean isShowResultProgress()
 	{
-		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_RESULT_PROGRESS_PROPERTY_NAME)); //get the boolean value of the property
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(SHOW_RESULT_PROGRESS_PROPERTY_URI)));
 	}
-*/
 
 	/**Sets whether real-time results progress should be shown.
 	@param showResultProgress <code>true</code> if the results should continuously be shown.
 	*/
-/*TODO fix
 	public void setShowResultProgress(final boolean showResultProgress)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, SHOW_RESULT_PROGRESS_PROPERTY_NAME, new BooleanLiteral(showResultProgress)); //set the property with a boolean typed literal
+		setPropertyValue(SHOW_RESULT_PROGRESS_PROPERTY_URI, showResultProgress);
 	}
-*/
 
 	/**@return <code>true</code> if the position within the activity should be shown.*/
-/*TODO fix
 	public boolean isShowProgress()
 	{
-		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_PROGRESS_PROPERTY_NAME)); //get the boolean value of the property
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(SHOW_PROGRESS_PROPERTY_URI)));
 	}
-*/
 
 	/**Sets whether the position within the activity should be shown.
 	@param showProgress <code>true</code> if the position within the activity should be shown.
 	*/
-/*TODO fix
 	public void setShowProgress(final boolean showProgress)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, SHOW_PROGRESS_PROPERTY_NAME, new BooleanLiteral(showProgress)); //set the property with a boolean typed literal
+		setPropertyValue(SHOW_PROGRESS_PROPERTY_URI, showProgress);
 	}
-*/
 
 	/**@return <code>true</code> if the time used and/or time available should be shown.*/
-/*TODO fix
 	public boolean isShowTime()
 	{
-		return BooleanLiteral.asBooleanValue(getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_TIME_PROPERTY_NAME)); //get the boolean value of the property
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(SHOW_TIME_PROPERTY_URI)));
 	}
-*/
 
 	/**Sets whether the time used and/or time available should be shown..
 	@param showTime <code>true</code> if the time used and/or time available should be shown.
 	*/
-/*TODO fix
 	public void setShowTime(final boolean showTime)
 	{
-		setProperty(MAQRO_NAMESPACE_URI, SHOW_TIME_PROPERTY_NAME, new BooleanLiteral(showTime)); //set the property with a boolean typed literal
+		setPropertyValue(SHOW_TIME_PROPERTY_URI, showTime);
 	}
-*/
 
 }

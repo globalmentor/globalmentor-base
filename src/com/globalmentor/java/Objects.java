@@ -109,9 +109,8 @@ public class Objects
 		}		
 	}
 
-	/**Convenience method that returns the given object if and only if it is an
-		instance of the given class. This method is equivalent to
-		<code><var>object</var> instanceof <var>Type</var> ? (Type)object : null</code>. 
+	/**Convenience method that returns the given object if and only if it is an instance of the given class.
+	This method is equivalent to <code><var>object</var> instanceof <var>Type</var> ? (Type)object : null</code>. 
 	@param <T> The type of object to check for.
 	@param object The object to examine.
 	@param instanceClass The class of which the object may be an instance.
@@ -119,7 +118,21 @@ public class Objects
 	 */
 	public static <T> T asInstance(final Object object, final Class<T> instanceClass)
 	{
-		return instanceClass.isInstance(object) ? instanceClass.cast(object) : null;	//cast and return the object if it is an instance of the class, otherwise null
+		return asInstance(object, instanceClass, null);	//use a default value of null
+	}
+
+	/**Convenience method that returns the given object if and only if it is an instance of the given class.
+	If the object is not an instance of the given class, the given default value, if any, will be returned.
+	This method is equivalent to <code><var>object</var> instanceof <var>Type</var> ? (Type)object : <var>defaultValue</var></code>. 
+	@param <T> The type of object to check for.
+	@param object The object to examine.
+	@param instanceClass The class of which the object may be an instance.
+	@param defaultValue The default value to return.
+	@return The object if it is an instance of the given class, otherwise the default value.
+	 */
+	public static <T> T asInstance(final Object object, final Class<T> instanceClass, final T defaultValue)
+	{
+		return instanceClass.isInstance(object) ? instanceClass.cast(object) : defaultValue;	//cast and return the object if it is an instance of the class, otherwise the default value
 	}
 
 	/**Compares two objects to make sure that the objects are equal, or the objects are both set to <code>null</code>.

@@ -17,6 +17,8 @@
 package com.globalmentor.model;
 
 import com.globalmentor.beans.BoundPropertyObject;
+import com.globalmentor.event.EventListenerManager;
+
 import static com.globalmentor.java.Objects.*;
 
 /**Abstract implementation of a task performed in a sequence.
@@ -24,6 +26,12 @@ import static com.globalmentor.java.Objects.*;
 */
 public abstract class AbstractTask extends BoundPropertyObject implements Task
 {
+
+	/**The object managing event listeners.*/
+	private final EventListenerManager eventListenerManager=new EventListenerManager();
+
+		/**@return The object managing event listeners.*/
+		protected EventListenerManager getEventListenerManager() {return eventListenerManager;}
 
 	/**The current state of the task.*/
 	private TaskState state=TaskState.UNSTARTED;

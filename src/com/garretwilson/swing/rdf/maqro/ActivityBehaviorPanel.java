@@ -165,10 +165,10 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
-				allowHintCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_HINT_PROPERTY_NAME)));
-				allowPreviousCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_PREVIOUS_PROPERTY_NAME)));
-				allowCancelCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_CANCEL_PROPERTY_NAME)));
-				allowSubmitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, ALLOW_SUBMIT_PROPERTY_NAME)));
+				allowHintCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(ALLOW_HINT_PROPERTY_URI)));	//TODO convert to URF
+				allowPreviousCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(ALLOW_PREVIOUS_PROPERTY_URI)));
+				allowCancelCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(ALLOW_CANCEL_PROPERTY_URI)));
+				allowSubmitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(ALLOW_SUBMIT_PROPERTY_URI)));
 			}
 		}
 
@@ -181,10 +181,10 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
-				resource.setProperty(MAQRO_NAMESPACE_URI, ALLOW_HINT_PROPERTY_NAME, new BooleanLiteral(allowHintCheckBox.isSelected()));
-				resource.setProperty(MAQRO_NAMESPACE_URI, ALLOW_PREVIOUS_PROPERTY_NAME, new BooleanLiteral(allowPreviousCheckBox.isSelected()));
-				resource.setProperty(MAQRO_NAMESPACE_URI, ALLOW_CANCEL_PROPERTY_NAME, new BooleanLiteral(allowCancelCheckBox.isSelected()));
-				resource.setProperty(MAQRO_NAMESPACE_URI, ALLOW_SUBMIT_PROPERTY_NAME, new BooleanLiteral(allowSubmitCheckBox.isSelected()));
+				resource.setProperty(ALLOW_HINT_PROPERTY_URI, new BooleanLiteral(allowHintCheckBox.isSelected()));
+				resource.setProperty(ALLOW_PREVIOUS_PROPERTY_URI, new BooleanLiteral(allowPreviousCheckBox.isSelected()));
+				resource.setProperty(ALLOW_CANCEL_PROPERTY_URI, new BooleanLiteral(allowCancelCheckBox.isSelected()));
+				resource.setProperty(ALLOW_SUBMIT_PROPERTY_URI, new BooleanLiteral(allowSubmitCheckBox.isSelected()));
 			}
 		}
 	}
@@ -259,10 +259,10 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
-				confirmCommitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME)));
-				confirmSubmitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, CONFIRM_SUBMIT_PROPERTY_NAME)));
-				requireResponseCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, REQUIRE_RESPONSE_PROPERTY_NAME)));
-				final long maxTime=IntegerLiteral.asLongValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME));
+				confirmCommitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(CONFIRM_COMMIT_PROPERTY_URI)));	//TODO conver to URF
+				confirmSubmitCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(CONFIRM_SUBMIT_PROPERTY_URI)));
+				requireResponseCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(REQUIRE_RESPONSE_PROPERTY_URI)));
+				final long maxTime=IntegerLiteral.asLongValue(resource.getPropertyValue(MAX_TIME_PROPERTY_URI));
 				if(maxTime>=0)	//if a maximum amount of time was specified
 				{
 					limitTimeCheckBox.setSelected(true);
@@ -285,9 +285,9 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
-				resource.setProperty(MAQRO_NAMESPACE_URI, CONFIRM_COMMIT_PROPERTY_NAME, new BooleanLiteral(confirmCommitCheckBox.isSelected()));
-				resource.setProperty(MAQRO_NAMESPACE_URI, CONFIRM_SUBMIT_PROPERTY_NAME, new BooleanLiteral(confirmSubmitCheckBox.isSelected()));
-				resource.setProperty(MAQRO_NAMESPACE_URI, REQUIRE_RESPONSE_PROPERTY_NAME, new BooleanLiteral(requireResponseCheckBox.isSelected()));
+				resource.setProperty(CONFIRM_COMMIT_PROPERTY_URI, new BooleanLiteral(confirmCommitCheckBox.isSelected()));	//TODO convert to URF
+				resource.setProperty(CONFIRM_SUBMIT_PROPERTY_URI, new BooleanLiteral(confirmSubmitCheckBox.isSelected()));
+				resource.setProperty(REQUIRE_RESPONSE_PROPERTY_URI, new BooleanLiteral(requireResponseCheckBox.isSelected()));
 				final IntegerLiteral maxTimeLiteral;
 				if(limitTimeCheckBox.isSelected())	//if the user wishes to limit time
 				{
@@ -304,7 +304,7 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 				{
 					maxTimeLiteral=null;	//don't limit the time
 				}
-				resource.setProperty(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME, maxTimeLiteral);
+				resource.setProperty(MAX_TIME_PROPERTY_URI, maxTimeLiteral);
 			}
 		}
 
@@ -394,11 +394,11 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
-				showEachResultCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_EACH_RESULT_PROPERTY_NAME)));
-				showFinalResultCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_FINAL_RESULT_PROPERTY_NAME)));
-				showResultProgressCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_RESULT_PROGRESS_PROPERTY_NAME)));
-				showProgressCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_PROGRESS_PROPERTY_NAME)));
-				showTimeCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(MAQRO_NAMESPACE_URI, SHOW_TIME_PROPERTY_NAME)));
+				showEachResultCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(SHOW_EACH_RESULT_PROPERTY_URI)));	//TODO convert to URF
+				showFinalResultCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(SHOW_FINAL_RESULT_PROPERTY_URI)));
+				showResultProgressCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(SHOW_RESULT_PROGRESS_PROPERTY_URI)));
+				showProgressCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(SHOW_PROGRESS_PROPERTY_URI)));
+				showTimeCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(SHOW_TIME_PROPERTY_URI)));
 			}
 		}
 
@@ -411,11 +411,11 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
-				resource.setProperty(MAQRO_NAMESPACE_URI, SHOW_EACH_RESULT_PROPERTY_NAME, new BooleanLiteral(showEachResultCheckBox.isSelected()));
-				resource.setProperty(MAQRO_NAMESPACE_URI, SHOW_FINAL_RESULT_PROPERTY_NAME, new BooleanLiteral(showFinalResultCheckBox.isSelected()));
-				resource.setProperty(MAQRO_NAMESPACE_URI, SHOW_RESULT_PROGRESS_PROPERTY_NAME, new BooleanLiteral(showResultProgressCheckBox.isSelected()));
-				resource.setProperty(MAQRO_NAMESPACE_URI, SHOW_PROGRESS_PROPERTY_NAME, new BooleanLiteral(showProgressCheckBox.isSelected()));
-				resource.setProperty(MAQRO_NAMESPACE_URI, SHOW_TIME_PROPERTY_NAME, new BooleanLiteral(showTimeCheckBox.isSelected()));
+				resource.setProperty(SHOW_EACH_RESULT_PROPERTY_URI, new BooleanLiteral(showEachResultCheckBox.isSelected()));	//TODO convert to URF
+				resource.setProperty(SHOW_FINAL_RESULT_PROPERTY_URI, new BooleanLiteral(showFinalResultCheckBox.isSelected()));
+				resource.setProperty(SHOW_RESULT_PROGRESS_PROPERTY_URI, new BooleanLiteral(showResultProgressCheckBox.isSelected()));
+				resource.setProperty(SHOW_PROGRESS_PROPERTY_URI, new BooleanLiteral(showProgressCheckBox.isSelected()));
+				resource.setProperty(SHOW_TIME_PROPERTY_URI, new BooleanLiteral(showTimeCheckBox.isSelected()));
 			}
 		}
 	}

@@ -86,57 +86,71 @@ public class MAQRO
 //TODO del	public final static String TEXT_CLASS_NAME="Text";	//TODO add to spec
 
 		//MAQRO interaction property names
-	/**A choice of an interaction. The local name of maqro.category.*/
+	/**A category of an interaction. The local name of maqro.category.*/
 	public final static String CATEGORY_PROPERTY_NAME="category";
 
 		//MAQRO activity behavior property names
 			//permissions
-	/**Whether hints are allowed. The local name of maqro.allowHint.*/
-	public final static String ALLOW_HINT_PROPERTY_NAME="allowHint";
-	/**Whether navigating to the previous interaction is allowed. The local name of maqro.allowPrevious.*/
-	public final static String ALLOW_PREVIOUS_PROPERTY_NAME="allowPrevious";
-	/**Whether the activity can be canceled. The local name of maqro.allowCancel.*/
-	public final static String ALLOW_CANCEL_PROPERTY_NAME="allowCancel";
-	/**Whether the activity can be submitted. The local name of maqro.allowSubmit.*/
-	public final static String ALLOW_SUBMIT_PROPERTY_NAME="allowSubmit";
+	/**Whether hints are allowed.*/
+	public final static URI ALLOW_HINT_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "allowHint");
+	/**Whether navigating to the previous interaction is allowed.*/
+	public final static URI ALLOW_PREVIOUS_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "allowPrevious");
+	/**Whether the activity can be canceled.*/
+	public final static URI ALLOW_CANCEL_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "allowCancel");
+	/**Whether the activity can be submitted.*/
+	public final static URI ALLOW_SUBMIT_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "allowSubmit");
 			//process
-	/**Whether each response commit should be confirmed. The local name of maqro.confirmCommit.*/
-	public final static String CONFIRM_COMMIT_PROPERTY_NAME="confirmCommit";
-	/**Whether submission of the activity should be confirmed. The local name of maqro.confirmSubmit.*/
-	public final static String CONFIRM_SUBMIT_PROPERTY_NAME="confirmSubmit";
-	/**Whether a response is required for all applicable interactions. The local name of maqro.requireResponse.*/
-	public final static String REQUIRE_RESPONSE_PROPERTY_NAME="requireResponse";
-	/**The maximum amount of time for the activity, in milliseconds. The local name of maqro.maxTime.*/
-	public final static String MAX_TIME_PROPERTY_NAME="maxTime";
+	/**Whether each response commit should be confirmed.*/
+	public final static URI CONFIRM_COMMIT_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "confirmCommit");
+	/**Whether submission of the activity should be confirmed.*/
+	public final static URI CONFIRM_SUBMIT_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "confirmSubmit");
+	/**Whether a response is required for all applicable interactions.*/
+	public final static URI REQUIRE_RESPONSE_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "requireResponse");
+	/**The maximum amount of time for the activity, in milliseconds.*/
+	public final static URI MAX_TIME_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "maxTime");
 			//feedback
-	/**Whether the result of each interaction should be immediately shown. The local name of maqro.showResult.*/
-	public final static String SHOW_EACH_RESULT_PROPERTY_NAME="showEachResult";
-	/**Whether the final result of the activity should be shown. The local name of maqro.showFinalResult.*/
-	public final static String SHOW_FINAL_RESULT_PROPERTY_NAME="showFinalResult";
-	/**Whether the current result should continuously be shown. The local name of maqro.showResultProgress.*/
-	public final static String SHOW_RESULT_PROGRESS_PROPERTY_NAME="showResultProgress";
-	/**Whether the position within the activity should be continuously shown. The local name of maqro.showProgress.*/
-	public final static String SHOW_PROGRESS_PROPERTY_NAME="showProgress";
-	/**Whether the current time used and/or available should be shown. The local name of maqro.showTime.*/
-	public final static String SHOW_TIME_PROPERTY_NAME="showTime";
+	/**Whether the result of each interaction should be immediately shown.*/
+	public final static URI SHOW_EACH_RESULT_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "showEachResult");
+	/**Whether the final result of the activity should be shown.*/
+	public final static URI SHOW_FINAL_RESULT_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "showFinalResult");
+	/**Whether the current result should continuously be shown.*/
+	public final static URI SHOW_RESULT_PROGRESS_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "showResultProgress");
+	/**Whether the position within the activity should be continuously shown.*/
+	public final static URI SHOW_PROGRESS_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "showProgress");
+	/**Whether the current time used and/or available should be shown.*/
+	public final static URI SHOW_TIME_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "showTime");
 
 		//MAQRO question property names
 	/**The answer of a question. The local name of maqro.answer.*/
 	public final static String ANSWER_PROPERTY_NAME="answer";
+	/**The answer of a question.*/
+	public final static URI ANSWER_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME);
 	/**A choice of a question. The local name of maqro.choice.*/
 	public final static String CHOICE_PROPERTY_NAME="choice";
+	/**A choice of a question.*/
+	public final static URI CHOICE_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, CHOICE_PROPERTY_NAME);
 	/**The type of response a question expects. The local name of maqro.expectation.*/
 	public final static String EXPECTATION_PROPERTY_NAME="expectation";
+	/**The type of response a question expects.*/
+	public final static URI EXPECTATION_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, EXPECTATION_PROPERTY_NAME);
 	/**An explanation of a question. The local name of maqro.explanation.*/
 	public final static String EXPLANATION_PROPERTY_NAME="explanation";
+	/**An explanation of a question.*/
+	public final static URI EXPLANATION_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME);
 	/**A hint of a question. The local name of maqro.hint.*/
 	public final static String HINT_PROPERTY_NAME="hint";
+	/**A hint of a question.*/
+	public final static URI HINT_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, HINT_PROPERTY_NAME);
 	/**The minimum number of responses to accept. The local name of maqro.minResponseCount.*/
 	public final static String MIN_RESPONSE_COUNT_PROPERTY_NAME="minResponseCount";
 	/**The maximum number of responses to accept. The local name of maqro.maxResponseCount.*/
 	public final static String MAX_RESPONSE_COUNT_PROPERTY_NAME="maxResponseCount";
+	/**The maximum number of responses to accept.*/
+	public final static URI MAX_RESPONSE_COUNT_URI=createResourceURI(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME);
 	/**The query of a question. The local name of maqro.query.*/
 	public final static String QUERY_PROPERTY_NAME="query";
+	/**The query of a question.*/
+	public final static URI QUERY_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME);
 
 		//MAQRO selection class names
 	/**The local name of maqro.CategoryFilter.*/
@@ -160,8 +174,12 @@ public class MAQRO
 	public final static String SELECTORS_PROPERTY_NAME="selectors";
 	/**The number of interactions to select. The local name of maqro.count.*/
 	public final static String COUNT_PROPERTY_NAME="count";
+	/**The number of interactions to select.*/
+	public final static URI COUNT_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, COUNT_PROPERTY_NAME);;
 	/**The order criteria of an activity. The local name of maqro.order.*/
 	public final static String ORDER_PROPERTY_NAME="order";
+	/**The order criteria of an activity. The local name of maqro.order.*/
+	public final static URI ORDER_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, ORDER_PROPERTY_NAME);
 
 		//MAQRO outcome class names
 	/**The local name of maqro.Score.*/
@@ -169,16 +187,28 @@ public class MAQRO
 		//MAQRO outcome property names
 	/**The actual score. The local name of maqro.actual.*/
 	public final static String ACTUAL_PROPERTY_NAME="actual";
+	/**The actual score.*/
+	public final static URI ACTUAL_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, ACTUAL_PROPERTY_NAME);
 	/**Whether the result is correct. The local name of maqro.correct.*/
 	public final static String CORRECT_PROPERTY_NAME="correct";
+	/**Whether the result is correct.*/
+	public final static URI CORRECT_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, CORRECT_PROPERTY_NAME);
 	/**The outcomes of a group's interactions. The local name of maqro.outcomes.*/
 	public final static String OUTCOMES_PROPERTY_NAME="outcomes";
+	/**The outcomes of a group's interactions.*/
+	public final static URI OUTCOMES_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, OUTCOMES_PROPERTY_NAME);
 	/**The possible score. The local name of maqro.possible.*/
 	public final static String POSSIBLE_PROPERTY_NAME="possible";
+	/**The possible score.*/
+	public final static URI POSSIBLE_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, POSSIBLE_PROPERTY_NAME);
 	/**A response to an interaction. The local name of maqro.response.*/
 	public final static String RESPONSE_PROPERTY_NAME="response";
+	/**A response to an interaction.*/
+	public final static URI RESPONSE_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, RESPONSE_PROPERTY_NAME);
 	/**A result of an outcome evaluation. The local name of maqro.result.*/
 	public final static String RESULT_PROPERTY_NAME="result";
+	/**A result of an outcome evaluation.*/
+	public final static URI RESULT_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, RESULT_PROPERTY_NAME);
 
 		//MAQRO ontology properties
 	/**The number of choices to select. The local name of maqro.choiceCount.*/
@@ -191,57 +221,28 @@ public class MAQRO
 	public final static String EVALUATIONS_PROPERTY_NAME="evaluations";
 	/**Identifies a followup interaction. The local name of maqro.followup.*/
 	public final static String FOLLOWUP_PROPERTY_NAME="followup";
+	/**A followup interaction.*/
+	public final static URI FOLLOWUP_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, FOLLOWUP_PROPERTY_NAME);
 	/**Identifies an ordered list of followup interactions. The local name of maqro.followups.*/
 	public final static String FOLLOWUPS_PROPERTY_NAME="followups";
 	/**Identifies an interaction. The local name of maqro.interaction.*/
 	public final static String INTERACTION_PROPERTY_NAME="interaction";
-	/**The interactions of an activity. The local name of maqro.interactions.*/
-	public final static String INTERACTIONS_PROPERTY_NAME="interactions";
-	/**The introduction of an activity.*/
-	public final static String INTRODUCTION_PROPERTY_NAME="introduction";
-	/**The selection criteria of an activity. The local name of maqro.selection.*/
-	public final static String SELECTION_PROPERTY_NAME="selection";
-	/**A supplement to an interaction or part of a question. The local name of maqro.supplement.*/
-	public final static String SUPPLEMENT_PROPERTY_NAME="supplement";
-
-	/**The actual score.*/
-	public final static URI ACTUAL_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, ACTUAL_PROPERTY_NAME);
-	/**The answer of a question.*/
-	public final static URI ANSWER_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, ANSWER_PROPERTY_NAME);
-	/**A choice of a question.*/
-	public final static URI CHOICE_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, CHOICE_PROPERTY_NAME);
-	/**Whether the result is correct.*/
-	public final static URI CORRECT_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, CORRECT_PROPERTY_NAME);
-	/**The number of interactions to select.*/
-	public final static URI COUNT_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, COUNT_PROPERTY_NAME);;
-	/**A hint of a question.*/
-	public final static URI HINT_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, HINT_PROPERTY_NAME);
 	/**Identifies an interaction.*/
 	public final static URI INTERACTION_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, INTERACTION_PROPERTY_NAME);
+	/**The interactions of an activity. The local name of maqro.interactions.*/
+	public final static String INTERACTIONS_PROPERTY_NAME="interactions";
 	/**The interactions of a group.*/
 	public final static URI INTERACTIONS_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, INTERACTIONS_PROPERTY_NAME);
-	/**An explanation of a question.*/
-	public final static URI EXPLANATION_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, EXPLANATION_PROPERTY_NAME);
-	/**The type of response a question expects.*/
-	public final static URI EXPECTATION_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, EXPECTATION_PROPERTY_NAME);
-	/**A followup interaction.*/
-	public final static URI FOLLOWUP_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, FOLLOWUP_PROPERTY_NAME);
+	/**The introduction of an activity.*/
+	public final static String INTRODUCTION_PROPERTY_NAME="introduction";
 	/**The introduction of an activity.*/
 	public final static URI INTRODUCTION_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, INTRODUCTION_PROPERTY_NAME);
-	/**The maximum number of responses to accept.*/
-	public final static URI MAX_RESPONSE_COUNT_URI=createResourceURI(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME);
-	/**The order criteria of an activity. The local name of maqro.order.*/
-	public final static URI ORDER_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, ORDER_PROPERTY_NAME);
-	/**The outcomes of a group's interactions.*/
-	public final static URI OUTCOMES_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, OUTCOMES_PROPERTY_NAME);
-	/**The possible score.*/
-	public final static URI POSSIBLE_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, POSSIBLE_PROPERTY_NAME);
-	/**The query of a question.*/
-	public final static URI QUERY_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME);
-	/**A response to an interaction.*/
-	public final static URI RESPONSE_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, RESPONSE_PROPERTY_NAME);
-	/**A result of an outcome evaluation.*/
-	public final static URI RESULT_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, RESULT_PROPERTY_NAME);
+	/**The selection criteria of a group. The local name of maqro.selection.*/
+	public final static String SELECTION_PROPERTY_NAME="selection";
+	/**The selection criteria of a group.*/
+	public final static URI SELECTION_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, SELECTION_PROPERTY_NAME);
+	/**A supplement to an interaction or part of a question. The local name of maqro.supplement.*/
+	public final static String SUPPLEMENT_PROPERTY_NAME="supplement";
 
 	/**The constant category that indicates no specified category.*/
 	public final static RDFPlainLiteral NO_CATEGORY=new RDFPlainLiteral("No category specified");	//TODO i18n

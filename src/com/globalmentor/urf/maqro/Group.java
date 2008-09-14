@@ -22,6 +22,7 @@ import java.util.List;
 import static com.globalmentor.urf.maqro.MAQRO.*;
 import static com.globalmentor.urf.URF.*;
 
+import static com.globalmentor.java.Objects.*;
 import com.globalmentor.urf.URFListResource;
 
 /**Class representing a group of MAQRO interactions.
@@ -111,5 +112,19 @@ public class Group extends AbstractInteraction
 		setProperty(MAQRO_NAMESPACE_URI, MAX_TIME_PROPERTY_NAME, maxTime>=0 ? new IntegerLiteral(maxTime) : null); //set the property with an integer typed literal
 	}
 */
+
+	/**@return The selection criteria, or <code>null</code> if there is no selection criteria indicated or if it is not of the correct type.*/
+	public Selection getSelection()
+	{
+		return asInstance(getPropertyValue(SELECTION_PROPERTY_URI), Selection.class);	//get the maqro.select property value
+	}
+	
+	/**Sets the selection criteria.
+	@param selection The selection criteria.
+	*/
+	public void setSelection(final Selection selection)
+	{
+		setPropertyValue(SELECTION_PROPERTY_URI, selection);	//set the selection criteria
+	}
 
 }
