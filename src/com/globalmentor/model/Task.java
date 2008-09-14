@@ -18,10 +18,12 @@ package com.globalmentor.model;
 
 import static com.globalmentor.java.Classes.*;
 
+import com.globalmentor.beans.*;
+
 /**Represents a task being performed.
 @author Garret Wilson
 */
-public interface Task
+public interface Task extends PropertyBindable, PropertyConstrainable
 {
 
 	/**The bound property of the task state.*/

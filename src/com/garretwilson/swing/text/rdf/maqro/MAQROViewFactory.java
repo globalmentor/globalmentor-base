@@ -3,6 +3,7 @@ package com.garretwilson.swing.text.rdf.maqro;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyVetoException;
 import java.util.*;
 
 import javax.mail.internet.ContentType;
@@ -171,7 +172,14 @@ public class MAQROViewFactory extends XMLViewFactory
 			{
 				while(activityEngine.hasNext())	//store all the responses; while there are more items
 				{
-					activityEngine.goNext();	//go to the next item
+					try
+					{
+						activityEngine.goNext();	//go to the next item
+					}
+					catch(final PropertyVetoException propertyVetoException)
+					{
+						throw new IllegalStateException(propertyVetoException);
+					}
 					final Interaction interaction=activityEngine.getItem();	//get the current item
 					if(interaction!=null)	//if we have an interaction
 					{

@@ -19,6 +19,9 @@ package com.globalmentor.urf.maqro;
 import java.net.URI;
 import java.util.*;
 
+import com.globalmentor.urf.content.Text;
+
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.maqro.MAQRO.*;
 
 /**Class representing a MAQRO activity.
@@ -46,8 +49,21 @@ public class Activity extends Group
 		super(referenceURI);  //construct the parent class
 	}
 
-	/**@return A filter that filters objects based upon the contents of the
-		selection criteria, or <code>null</code> if there is no filter.
+	/**@return The introduction to the activity, or <code>null</code> if there is no introductiono or the introduction is not text.*/
+	public Text getIntroduction()
+	{
+		return asInstance(getPropertyValue(INTRODUCTION_PROPERTY_URI), Text.class);	//get the introduction only if it is Text		
+	}
+
+	/**Sets the introduction of the activity.
+	@param introduction The introduction to the activity, or <code>null</code> if there should be no introduction.
+	*/
+	public void setIntroduction(final Text introduction)
+	{
+		setPropertyValue(INTRODUCTION_PROPERTY_URI, introduction);	//set the introduction		
+	}
+
+	/**@return A filter that filters objects based upon the contents of the selection criteria, or <code>null</code> if there is no filter.
 	@see #getSelect()
 	*/
 /*G***del

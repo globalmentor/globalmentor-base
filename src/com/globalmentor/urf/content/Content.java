@@ -33,6 +33,8 @@ public class Content
 	public final static URI CONTENT_RESOURCE_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "ContentResource");
 	/**The URI of the content <code>MediaType</code> class.*/
 	public final static URI MEDIA_TYPE_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "MediaType");
+	/**The URI of the content <code>Text</code> class.*/
+	public final static URI TEXT_CLASS_URI=createResourceURI(CONTENT_NAMESPACE_URI, "Text");
 		//properties
 	/**The date and time when a resource was last accessed.*/
 	public final static URI ACCESSED_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "accessed");
@@ -343,7 +345,7 @@ public class Content
 	/**The default resource factory for the content ontology.
 	This resource factory can create the following types of resource objects for the given types:
 	<dl>
-		<dt>{@value #CONTENT_RESOURCE_CLASS_URI}</dt> <dd>{@link ContentResource}</dd>
+		<dt>{@value #TEXT_CLASS_URI}</dt> <dd>{@link Text}</dd>
 	</dl>
 	*/
 	public final static URFResourceFactory DEFAULT_CONTENT_RESOURCE_FACTORY=new DefaultURFResourceFactory()
@@ -357,12 +359,16 @@ public class Content
 				*/
 				public URFResource createResource(final URI resourceURI, final URI typeURI)
 				{
-/*TODO fix if needed
+/*TODO del
 					if(CONTENT_RESOURCE_CLASS_URI.equals(typeURI))	//if this is a content resource
 					{
 						return new ContentResource(resourceURI);	//create a new content resource
 					}
 */
+					if(TEXT_CLASS_URI.equals(typeURI))	//if this is a text resource
+					{
+						return new Text(resourceURI);	//create a new text resource
+					}
 					return super.createResource(resourceURI, typeURI);	//if we don't recognize the type, create a default resource
 				}
 			};

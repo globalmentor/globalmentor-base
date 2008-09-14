@@ -34,7 +34,7 @@ import com.globalmentor.java.Objects;
 @see GenericPropertyChangeEvent
 @see GenericPropertyChangeListener
 */
-public class BoundPropertyObject implements PropertyBindable
+public class BoundPropertyObject implements PropertyBindable, PropertyConstrainable
 {
 
 	/**A convenience static empty array of property change listeners.*/

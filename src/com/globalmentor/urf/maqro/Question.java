@@ -44,17 +44,14 @@ public class Question extends AbstractInteraction
 		super(uri);  //construct the parent class
 	}
 
-	/**@return The query part of the question, or <code>null</code> if there is
-		no query or the query is not text.
-	*/
+	/**@return The query part of the question, or <code>null</code> if there is no query or the query is not text.*/
 	public Text getQuery()
 	{
 		return asInstance(getPropertyValue(QUERY_PROPERTY_URI), Text.class);	//get the query only if it is Text		
 	}
 
 	/**Sets the query of the question.
-	@param query The query part of the question, or <code>null</code> if there
-		should be no query.
+	@param query The query part of the question, or <code>null</code> if there should be no query.
 	*/
 	public void setQuery(final Text query)
 	{

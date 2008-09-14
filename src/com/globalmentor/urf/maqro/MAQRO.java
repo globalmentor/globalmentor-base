@@ -197,6 +197,8 @@ public class MAQRO
 	public final static String INTERACTION_PROPERTY_NAME="interaction";
 	/**The interactions of an activity. The local name of maqro.interactions.*/
 	public final static String INTERACTIONS_PROPERTY_NAME="interactions";
+	/**The introduction of an activity.*/
+	public final static String INTRODUCTION_PROPERTY_NAME="introduction";
 	/**The selection criteria of an activity. The local name of maqro.selection.*/
 	public final static String SELECTION_PROPERTY_NAME="selection";
 	/**A supplement to an interaction or part of a question. The local name of maqro.supplement.*/
@@ -224,6 +226,8 @@ public class MAQRO
 	public final static URI EXPECTATION_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, EXPECTATION_PROPERTY_NAME);
 	/**A followup interaction.*/
 	public final static URI FOLLOWUP_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, FOLLOWUP_PROPERTY_NAME);
+	/**The introduction of an activity.*/
+	public final static URI INTRODUCTION_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, INTRODUCTION_PROPERTY_NAME);
 	/**The maximum number of responses to accept.*/
 	public final static URI MAX_RESPONSE_COUNT_URI=createResourceURI(MAQRO_NAMESPACE_URI, MAX_RESPONSE_COUNT_PROPERTY_NAME);
 	/**The order criteria of an activity. The local name of maqro.order.*/
@@ -232,7 +236,7 @@ public class MAQRO
 	public final static URI OUTCOMES_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, OUTCOMES_PROPERTY_NAME);
 	/**The possible score.*/
 	public final static URI POSSIBLE_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, POSSIBLE_PROPERTY_NAME);
-	/**The query of a question. The local name of maqro.query.*/
+	/**The query of a question.*/
 	public final static URI QUERY_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, QUERY_PROPERTY_NAME);
 	/**A response to an interaction.*/
 	public final static URI RESPONSE_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, RESPONSE_PROPERTY_NAME);
