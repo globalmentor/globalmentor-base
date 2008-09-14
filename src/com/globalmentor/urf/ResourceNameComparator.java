@@ -22,7 +22,7 @@ Any redistribution of this source code or derived source code must include these
 public class ResourceNameComparator extends AbstractCollatedSortOrderComparator<URFResource>
 {
 
-	/**Collator factory sorting in ascending order.
+	/**Collator factory constructor sorting in ascending order.
 	@param collatorFactory The source of collators.
 	@throws NullPointerException if the given collator factory is <code>null</code>.
 	*/

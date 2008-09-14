@@ -113,6 +113,22 @@ public class Numbers
 	*/
 	public static int sort(final Object object1, final Object object2)
 	{
+		return sort(object1, object2, false);	//sort the two objects unambiguously
+	}
+
+	/**Compares the two specified objects, one of which must be an instance of {@link Number}, and either of which may be <code>null</code>.
+	Numbers are sorted before non-numbers, and two numbers are compared.
+	If ambiguous sorting is requested, if neither object is a number the objects will be considered equal;
+	otherwise, if neither object is a number an exception will be thrown.
+	@param object1 The first object to compare.
+	@param object2 The second object to compare.
+	@return The value <code>0</code> if both are numbers and the first number is numerically equal to the second number;
+		a value less than <code>0</code> if only the first is a number, or both are numbers and the first number is numerically less than the second number;
+		or a value greater than <code>0</code> if only the second is a number, or both are numbers and the first number is numerically greater than the second number.
+	@exception IllegalArgumentException if neither of the given objects is an instance of {@link Number} and non-ambiguous sorting is requested.
+	*/
+	public static int sort(final Object object1, final Object object2, final boolean ambiguous)
+	{
 		if(object1 instanceof Number)	//if the first is a number
 		{
 			if(object2 instanceof Number)	//if they are both numbers
@@ -130,7 +146,14 @@ public class Numbers
 		}
 		else	//if neither are numbers
 		{
-			throw new IllegalArgumentException("Either "+object1+" or "+object2+" must be a number.");
+			if(ambiguous)	//if ambiguity is fine
+			{
+				return 0;	//consider non-numbers equivalent
+			}
+			else	//if ambiguity is not accepted, this is an error condition
+			{
+				throw new IllegalArgumentException("Either "+object1+" or "+object2+" must be a number.");
+			}
 		}
 	}
 

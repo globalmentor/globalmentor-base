@@ -16,6 +16,7 @@ Any redistribution of this source code or derived source code must include these
 @author Garret Wilson
 @see URFScope#getCreationOrder()
 @see AbstractChainedSortOrderComparator
+@see SerialDelegateComparator
 */
 public class ResourceCreationOrderComparator extends AbstractSortOrderComparator<URFResource>
 {

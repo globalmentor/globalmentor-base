@@ -83,6 +83,16 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 		this(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createStringResource(value));	//construct the class with a resource created from the value
 	}
 
+	/**Property URI and long value constructor with no subject scope, a default lock, and a default scope
+	@param propertyURI The property URI.
+	@param value The property value.
+	@exception NullPointerException if the given property UR, and/or value is <code>null</code>.
+	*/
+	public DefaultURFProperty(final URI propertyURI, final long value)
+	{
+		this(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createIntegerResource(value));	//construct the class with a resource created from the value
+	}
+
 	/**Property URI and URI value constructor with no subject scope, a default lock, and a default scope
 	@param propertyURI The property URI.
 	@param value The property value.
