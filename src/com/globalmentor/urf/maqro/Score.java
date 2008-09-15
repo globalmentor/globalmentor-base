@@ -19,6 +19,7 @@ package com.globalmentor.urf.maqro;
 import java.net.URI;
 
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.urf.maqro.MAQRO.*;
 
 /**The result of a score evalution.
@@ -65,7 +66,7 @@ public class Score extends AbstractResult
 	*/
 	public Number getActual()
 	{
-		return asInstance(getPropertyValue(ACTUAL_PROPERTY_URI), Number.class);	//get the actual value of this score resource
+		return asNumber(getPropertyValue(ACTUAL_PROPERTY_URI));	//get the actual value of this score resource
 	}
 
 	/**Sets the possible value of the score.
@@ -81,7 +82,7 @@ public class Score extends AbstractResult
 	*/
 	public Number getPossible()
 	{
-		return asInstance(getPropertyValue(POSSIBLE_PROPERTY_URI), Number.class);	//get the possible value of this score resource
+		return asNumber(getPropertyValue(POSSIBLE_PROPERTY_URI));	//get the possible value of this score resource
 	}
 	
 }

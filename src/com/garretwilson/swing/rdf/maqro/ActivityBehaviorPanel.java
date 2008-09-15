@@ -394,11 +394,11 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
-				showEachResultCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(SHOW_EACH_RESULT_PROPERTY_URI)));	//TODO convert to URF
-				showFinalResultCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(SHOW_FINAL_RESULT_PROPERTY_URI)));
-				showResultProgressCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(SHOW_RESULT_PROGRESS_PROPERTY_URI)));
-				showProgressCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(SHOW_PROGRESS_PROPERTY_URI)));
-				showTimeCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(SHOW_TIME_PROPERTY_URI)));
+				showEachResultCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(REPORT_EACH_RESULT_PROPERTY_URI)));	//TODO convert to URF
+				showFinalResultCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(REPORT_FINAL_RESULT_PROPERTY_URI)));
+				showResultProgressCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(REPORT_RESULT_PROGRESS_PROPERTY_URI)));
+				showProgressCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(REPORT_PROGRESS_PROPERTY_URI)));
+				showTimeCheckBox.setSelected(BooleanLiteral.asBooleanValue(resource.getPropertyValue(REPORT_TIME_PROPERTY_URI)));
 			}
 		}
 
@@ -411,11 +411,11 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 			final RDFResource resource=getModel().getResource();	//get the resource
 			if(resource!=null)	//if we have a resource
 			{
-				resource.setProperty(SHOW_EACH_RESULT_PROPERTY_URI, new BooleanLiteral(showEachResultCheckBox.isSelected()));	//TODO convert to URF
-				resource.setProperty(SHOW_FINAL_RESULT_PROPERTY_URI, new BooleanLiteral(showFinalResultCheckBox.isSelected()));
-				resource.setProperty(SHOW_RESULT_PROGRESS_PROPERTY_URI, new BooleanLiteral(showResultProgressCheckBox.isSelected()));
-				resource.setProperty(SHOW_PROGRESS_PROPERTY_URI, new BooleanLiteral(showProgressCheckBox.isSelected()));
-				resource.setProperty(SHOW_TIME_PROPERTY_URI, new BooleanLiteral(showTimeCheckBox.isSelected()));
+				resource.setProperty(REPORT_EACH_RESULT_PROPERTY_URI, new BooleanLiteral(showEachResultCheckBox.isSelected()));	//TODO convert to URF
+				resource.setProperty(REPORT_FINAL_RESULT_PROPERTY_URI, new BooleanLiteral(showFinalResultCheckBox.isSelected()));
+				resource.setProperty(REPORT_RESULT_PROGRESS_PROPERTY_URI, new BooleanLiteral(showResultProgressCheckBox.isSelected()));
+				resource.setProperty(REPORT_PROGRESS_PROPERTY_URI, new BooleanLiteral(showProgressCheckBox.isSelected()));
+				resource.setProperty(REPORT_TIME_PROPERTY_URI, new BooleanLiteral(showTimeCheckBox.isSelected()));
 			}
 		}
 	}

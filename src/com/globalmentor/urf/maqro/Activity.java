@@ -18,7 +18,6 @@ package com.globalmentor.urf.maqro;
 
 import java.net.URI;
 
-import com.globalmentor.urf.URF;
 import static com.globalmentor.urf.URF.*;
 import com.globalmentor.urf.content.Text;
 import static com.globalmentor.java.Objects.*;
@@ -242,73 +241,73 @@ public class Activity extends Group
 	
 			//feedback
 	/**@return <code>true</code> if the result of each interaction should immediately be shown.*/
-	public boolean isShowEachResult()
+	public boolean isReportEachResult()
 	{
-		return Boolean.TRUE.equals(asBoolean(getPropertyValue(SHOW_EACH_RESULT_PROPERTY_URI)));
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(REPORT_EACH_RESULT_PROPERTY_URI)));
 	}
 
 	/**Sets whether the result of each interaction should immediately be shown.
-	@param showEachResult <code>true</code> if each result should be shown.
+	@param reportEachResult <code>true</code> if each result should be shown.
 	*/
-	public void setShowEachResult(final boolean showEachResult)
+	public void setReportEachResult(final boolean reportEachResult)
 	{
-		setPropertyValue(SHOW_EACH_RESULT_PROPERTY_URI, showEachResult);
+		setPropertyValue(REPORT_EACH_RESULT_PROPERTY_URI, reportEachResult);
 	}
 
 	/**@return <code>true</code> if the final result of the activity should be shown.*/
-	public boolean isShowFinalResult()
+	public boolean isReportFinalResult()
 	{
-		return Boolean.TRUE.equals(asBoolean(getPropertyValue(SHOW_FINAL_RESULT_PROPERTY_URI)));
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(REPORT_FINAL_RESULT_PROPERTY_URI)));
 	}
 
 	/**Sets whether the final result of the activity should be shown.
-	@param showFinalResult <code>true</code> if the activity result should be shown.
+	@param reportFinalResult <code>true</code> if the activity result should be shown.
 	*/
-	public void setShowFinalResult(final boolean showFinalResult)
+	public void setReportFinalResult(final boolean reportFinalResult)
 	{
-		setPropertyValue(SHOW_FINAL_RESULT_PROPERTY_URI, showFinalResult);
+		setPropertyValue(REPORT_FINAL_RESULT_PROPERTY_URI, reportFinalResult);
 	}
 
 	/**@return <code>true</code> if the progress of results should be shown.*/
-	public boolean isShowResultProgress()
+	public boolean isReportResultProgress()
 	{
-		return Boolean.TRUE.equals(asBoolean(getPropertyValue(SHOW_RESULT_PROGRESS_PROPERTY_URI)));
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(REPORT_RESULT_PROGRESS_PROPERTY_URI)));
 	}
 
 	/**Sets whether real-time results progress should be shown.
-	@param showResultProgress <code>true</code> if the results should continuously be shown.
+	@param reportResultProgress <code>true</code> if the results should continuously be shown.
 	*/
-	public void setShowResultProgress(final boolean showResultProgress)
+	public void setReportResultProgress(final boolean reportResultProgress)
 	{
-		setPropertyValue(SHOW_RESULT_PROGRESS_PROPERTY_URI, showResultProgress);
+		setPropertyValue(REPORT_RESULT_PROGRESS_PROPERTY_URI, reportResultProgress);
 	}
 
 	/**@return <code>true</code> if the position within the activity should be shown.*/
-	public boolean isShowProgress()
+	public boolean isReportProgress()
 	{
-		return Boolean.TRUE.equals(asBoolean(getPropertyValue(SHOW_PROGRESS_PROPERTY_URI)));
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(REPORT_PROGRESS_PROPERTY_URI)));
 	}
 
 	/**Sets whether the position within the activity should be shown.
-	@param showProgress <code>true</code> if the position within the activity should be shown.
+	@param reportProgress <code>true</code> if the position within the activity should be shown.
 	*/
-	public void setShowProgress(final boolean showProgress)
+	public void setReportProgress(final boolean reportProgress)
 	{
-		setPropertyValue(SHOW_PROGRESS_PROPERTY_URI, showProgress);
+		setPropertyValue(REPORT_PROGRESS_PROPERTY_URI, reportProgress);
 	}
 
 	/**@return <code>true</code> if the time used and/or time available should be shown.*/
-	public boolean isShowTime()
+	public boolean isReportTime()
 	{
-		return Boolean.TRUE.equals(asBoolean(getPropertyValue(SHOW_TIME_PROPERTY_URI)));
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(REPORT_TIME_PROPERTY_URI)));
 	}
 
-	/**Sets whether the time used and/or time available should be shown..
-	@param showTime <code>true</code> if the time used and/or time available should be shown.
+	/**Sets whether the time used and/or time available should be shown.
+	@param reportTime <code>true</code> if the time used and/or time available should be shown.
 	*/
-	public void setShowTime(final boolean showTime)
+	public void setReportTime(final boolean reportTime)
 	{
-		setPropertyValue(SHOW_TIME_PROPERTY_URI, showTime);
+		setPropertyValue(REPORT_TIME_PROPERTY_URI, reportTime);
 	}
 
 }

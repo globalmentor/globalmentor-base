@@ -89,6 +89,7 @@ public abstract class AbstractSequenceTask extends AbstractTask implements Seque
 	}
 
 	/**Starts the sequence by going to the first step in the sequence.
+	This implementation sets the task state to {@link TaskState#INCOMPLETE}.
 	This implementation calls {@link #goFirst()}.
 	@throws IllegalStateException if the task has already been started.
 	@see #goFirst()
@@ -185,10 +186,11 @@ public abstract class AbstractSequenceTask extends AbstractTask implements Seque
 	}
 	
 	/**Finishes the sequence.
-	This version does nothing.
+	This implementation sets the task state to {@link TaskState#INCOMPLETE}.
 	*/
 	protected void finish()
 	{
+		setState(TaskState.COMPLETE);  //show that the sequence is complete
 	}
 
 }

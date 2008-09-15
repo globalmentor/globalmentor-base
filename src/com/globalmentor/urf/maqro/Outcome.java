@@ -25,8 +25,7 @@ import com.globalmentor.urf.*;
 
 import static com.globalmentor.urf.URF.*;
 
-/**Represents the outcome, including responses, evaluations, and scores, of a
-	MAQRO interaction such as an activity or question.
+/**Represents the outcome, including responses, evaluations, and scores, of a MAQRO interaction such as an activity or question.
 @author Garret Wilson
 */
 public class Outcome extends AbstractClassTypedURFResource
@@ -138,7 +137,7 @@ public class Outcome extends AbstractClassTypedURFResource
 	*/
 	public boolean hasCorrect()
 	{
-		return asObject(getPropertyValue(CORRECT_PROPERTY_URI)) instanceof Boolean; //see if the correct property is present
+		return asBoolean(getPropertyValue(CORRECT_PROPERTY_URI)); //see if the correct property is present
 	}
 
 	/**Determines whether the outcome is correct.
@@ -148,7 +147,7 @@ public class Outcome extends AbstractClassTypedURFResource
 	*/
 	public boolean isCorrect()
 	{
-		return Boolean.TRUE.equals(asObject(getPropertyValue(CORRECT_PROPERTY_URI))); //see if the correct property is true
+		return Boolean.TRUE.equals(asBoolean(getPropertyValue(CORRECT_PROPERTY_URI))); //see if the correct property is true
 	}
 
 	/**Sets whether the outcome is correct.

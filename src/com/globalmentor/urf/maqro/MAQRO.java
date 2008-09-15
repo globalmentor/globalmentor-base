@@ -110,15 +110,15 @@ public class MAQRO
 	public final static URI MAX_TIME_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "maxTime");
 			//feedback
 	/**Whether the result of each interaction should be immediately shown.*/
-	public final static URI SHOW_EACH_RESULT_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "showEachResult");
+	public final static URI REPORT_EACH_RESULT_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "reportEachResult");
 	/**Whether the final result of the activity should be shown.*/
-	public final static URI SHOW_FINAL_RESULT_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "showFinalResult");
+	public final static URI REPORT_FINAL_RESULT_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "reportFinalResult");
 	/**Whether the current result should continuously be shown.*/
-	public final static URI SHOW_RESULT_PROGRESS_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "showResultProgress");
+	public final static URI REPORT_RESULT_PROGRESS_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "reportResultProgress");
 	/**Whether the position within the activity should be continuously shown.*/
-	public final static URI SHOW_PROGRESS_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "showProgress");
+	public final static URI REPORT_PROGRESS_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "reportProgress");
 	/**Whether the current time used and/or available should be shown.*/
-	public final static URI SHOW_TIME_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "showTime");
+	public final static URI REPORT_TIME_PROPERTY_URI=createResourceURI(MAQRO_INTERACT_NAMESPACE_URI, "reportTime");
 
 		//MAQRO question property names
 	/**The answer of a question. The local name of maqro.answer.*/
