@@ -762,7 +762,7 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 		{
 			for(int i=allowSize ? index-1 : index; i>=0; --i)	//make sure there are no missing indexes up to and including this value (or one less than the value, if we should allow the size index); if so, this index is out of bounds
 			{
-				if(!hasProperty(createOrdinalURI(index)))	//if there is no such index
+				if(!hasProperty(createOrdinalURI(i)))	//if there is no such index
 				{
 					throw new IndexOutOfBoundsException("Index out of bounds: "+index);
 				}
