@@ -81,7 +81,7 @@ public class ContentTypeConstants	//TODO transfer these constants to specific re
 	/**A Java object.*/
 	public final static String X_JAVA_OBJECT=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"java-object";
 	/**A MAQRO activity.*/
-	public final static String X_MAQRO_RDF_XML_SUBTYPE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"maqro"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
+	public final static String X_MAQRO_RDF_XML_SUBTYPE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"maqro"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;	//TODO del; use MAQRO version
 	/**A MAQRO question.*/
 	public final static String X_QRO_RDF_XML_SUBTYPE=ContentTypes.SUBTYPE_EXTENSION_PREFIX+"qro"+ContentTypes.SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A Microsoft Word document; see <a href="http://www.iana.org/assignments/media-types/application/msword">http://www.iana.org/assignments/media-types/application/msword</a>.*/

@@ -31,6 +31,7 @@ import com.globalmentor.text.xml.oeb.OEB;
 import com.globalmentor.text.xml.stylesheets.css.XMLCSS;
 import com.globalmentor.text.xml.xhtml.XHTML;
 import com.globalmentor.urf.*;
+import com.globalmentor.urf.maqro.MAQRO;
 
 import static com.globalmentor.io.ContentTypes.*;
 import static com.globalmentor.io.ContentTypeConstants.*;
@@ -82,7 +83,7 @@ public class Files
 		tempFileExtensionContentTypeMap.put(JPG_EXTENSION, getContentTypeInstance(IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(JS_EXTENSION, getContentTypeInstance(TEXT_PRIMARY_TYPE, JavaScript.JAVASCRIPT_SUBTYPE));
 		tempFileExtensionContentTypeMap.put("marmox", getContentTypeInstance(APPLICATION_PRIMARY_TYPE, "x-marmox-page+rdf+xml"));
-		tempFileExtensionContentTypeMap.put(MAQRO_EXTENSION, getContentTypeInstance(APPLICATION_PRIMARY_TYPE, X_MAQRO_RDF_XML_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(MAQRO.MENTOR_ACTIVITY_NAME_EXTENSION, MAQRO.MENTOR_ACTIVITY_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put(MP3_EXTENSION, getContentTypeInstance(AUDIO_PRIMARY_TYPE, MPEG_SUBTYPE));	//RFC 3003
 		tempFileExtensionContentTypeMap.put(MPEG_EXTENSION, getContentTypeInstance(VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(MPG_EXTENSION, getContentTypeInstance(VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
