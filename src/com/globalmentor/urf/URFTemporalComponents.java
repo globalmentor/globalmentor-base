@@ -120,7 +120,7 @@ public class URFTemporalComponents
 		{
 			if(hours>=0 && minutes>=0 && seconds>=0 && microseconds>=0)	//if date and time is available
 			{
-				calendar.set(checkRange(year, 0, 9999), checkRange(month, 1, 12)-1, checkRange(day, 1, 31), checkRange(hours, 0, 23), checkRange(minutes, 0, 59), checkRange(seconds, 0, 60));	//set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
+				setDateTime(calendar, checkRange(year, 0, 9999), checkRange(month, 1, 12)-1, checkRange(day, 1, 31), checkRange(hours, 0, 23), checkRange(minutes, 0, 59), checkRange(seconds, 0, 60), checkRange(microseconds, 0, 999999)/1000);	//set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
 			}
 			else	//if no time is available
 			{
@@ -252,9 +252,7 @@ public class URFTemporalComponents
 	{
 		final Calendar calendar=new GregorianCalendar(utcOffset!=null ? utcOffset.toTimeZone() : URFUTCOffset.GMT, checkInstance(locale, "Locale cannot be null."));	//get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
 		calendar.clear();	//clear the calendar
-		calendar.set(checkRange(year, 0, 9999), checkRange(month, 1, 12)-1, checkRange(day, 1, 31), checkRange(hours, 0, 23), checkRange(minutes, 0, 59), checkRange(seconds, 0, 60));	//set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
-		calendar.set(MILLISECOND, checkRange(microseconds, 0, 999999)/1000);	//set the calendar's milliseconds, converting the microseconds to milliseconds
-		return calendar;	//return the calendar we created
+		return setDateTime(calendar, checkRange(year, 0, 9999), checkRange(month, 1, 12)-1, checkRange(day, 1, 31), checkRange(hours, 0, 23), checkRange(minutes, 0, 59), checkRange(seconds, 0, 60), checkRange(microseconds, 0, 999999)/1000);	//set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
 	}
 
  	/**Parses a date, time, date time, and/or UTC offset lexical form from a string.

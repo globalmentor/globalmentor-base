@@ -99,6 +99,25 @@ public class Calendars
 		return setTime(calendar, fromCalendar.get(HOUR_OF_DAY), fromCalendar.get(MINUTE), fromCalendar.get(SECOND), fromCalendar.get(MILLISECOND));	//set the time fields from the given calendar and return the modified calendar
 	}
 
+	/**Sets the date and time-related fields, including milliseconds.
+	@param year The year.
+	@param month The zero-based month.
+	@param date The day of the month.
+	@param hour The hour of the day.
+	@param minute The minute of the hour.
+	@param second The second of the minute.
+	@param millisecond The millisecond of the second.
+	@return The calendar being modified.
+	@throws NullPointerException if the given calendar is <code>null</code>.
+	@see Calendar#set(int, int, int, int, int, int)
+	*/
+	public static Calendar setDateTime(final Calendar calendar, final int year, final int month, final int date, final int hour, final int minute, final int second, final int millisecond)
+	{
+		calendar.set(year, month, date, hour, minute, second);	//set the calendar
+		calendar.set(MILLISECOND, millisecond);	//set the milliseconds
+		return calendar;	//return the calendar
+	}
+
 	/**Sets the time-related calendar fields:
 	<ol>
 		<li>{@link Calendar#HOUR_OF_DAY}</li>

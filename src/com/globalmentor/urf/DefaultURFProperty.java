@@ -7,7 +7,7 @@ import javax.mail.internet.ContentType;
 
 import com.globalmentor.java.Objects;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.urf.URF.DEFAULT_URF_RESOURCE_FACTORY;
+import static com.globalmentor.urf.URF.*;
 
 /**Default implementation of an encapsulation of a parent scope, property URI, value, and the associated property-value scope.
 <p>Copyright © 2007 GlobalMentor, Inc.
@@ -189,5 +189,11 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 		{
 			return false;	//the objects aren't equal
 		}
+	}
+
+	/**@return A string representation of the property.*/
+	public String toString()
+	{
+		return new StringBuilder().append('(').append(TURF.REFERENCE_BEGIN).append(getPropertyURI()).append(TURF.REFERENCE_END).append(',').append(getValue()).toString();
 	}
 }
