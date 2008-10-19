@@ -19,7 +19,8 @@ package com.globalmentor.activation;
 import java.io.*;
 import javax.activation.DataSource;
 
-import static com.globalmentor.io.ContentTypes.*;
+import com.globalmentor.net.ContentType;
+
 import static com.globalmentor.java.Objects.*;
 
 /**A JavaBeans Activation Framework data source class that serves as a source of data from an array of bytes.
@@ -70,7 +71,7 @@ public class ByteArrayDataSource implements DataSource
 	/**@return The content type of a byte array, <code>application/octet-stream</code>.*/
   public String getContentType()
 	{
-		return APPLICATION_OCTET_STREAM_CONTENT_TYPE.toString();
+		return ContentType.APPLICATION_OCTET_STREAM_CONTENT_TYPE.toString();
 	}
 
   /**@return The name of this object.*/

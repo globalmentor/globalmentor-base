@@ -20,7 +20,6 @@ package com.globalmentor.net.mime;
 	<a href="http://www.rfc-editor.org/rfc/rfc1806.txt">RFC 1806</a>,
 	"Communicating Presentation Information in Internet Messages: The Content-Disposition Header".
 @author Garret Wilson
-@see javax.mail.internet.ContentDisposition
 @see <a href="http://www.rfc-editor.org/rfc/rfc1806.txt">Communicating Presentation Information in Internet Messages - The Content-Disposition Header</a>
 @author Garret Wilson
 */

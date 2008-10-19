@@ -20,15 +20,15 @@ import java.io.*;
 import java.net.*;
 import java.util.List;
 
-import javax.mail.internet.ContentType;
-
 import static com.globalmentor.rdf.xpackage.XPackage.*;
 import static com.globalmentor.text.xml.oeb.OEB.*;
 
-import com.globalmentor.io.ContentTypes;
+import com.globalmentor.io.*;
+
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.http.HTTP.*;
 
+import com.globalmentor.net.ContentType;
 import com.globalmentor.rdf.*;
 import com.globalmentor.text.xml.*;
 import com.globalmentor.text.xml.xpath.XPath;
@@ -316,7 +316,7 @@ public class OEBPackageProcessor
 			final Element itemElement=(Element)manifestElementList.get(i);	//get a reference to this item in the manifest
 		  final String itemID=itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_ID); //get the item ID
 		  final String itemHRef=itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_HREF); //get the item href
-		  final ContentType itemMediaType=ContentTypes.getContentTypeInstance(itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE));  //get the item's media type
+		  final ContentType itemMediaType=ContentType.getInstance(itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_MEDIA_TYPE));  //get the item's media type
 				//create an RDF resource for the item with a type of rdf:resource
 			final RDFResource itemResource=rdf.createResource(new URI(URN_SCHEME, "local:"+itemID, null)); //TODO fix the reference URI
 //TODO fix with URF content			Marmot.addContentType(itemResource, itemMediaType); //add the item's content type

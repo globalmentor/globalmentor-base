@@ -5,7 +5,6 @@ import java.awt.Frame;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.*;
-import javax.mail.internet.ContentType;
 import javax.swing.*;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
@@ -14,7 +13,6 @@ import com.garretwilson.resources.icon.IconResources;
 
 import static com.globalmentor.util.UUIDs.*;
 
-import com.globalmentor.io.ContentTypeConstants;
 import com.globalmentor.mentoract.maqro.*;
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.dublincore.RDFDublinCore;

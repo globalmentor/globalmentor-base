@@ -18,12 +18,13 @@ package com.globalmentor.text.xml.oeb;
 
 import java.net.URI;
 
-import javax.mail.internet.ContentType;
 import javax.xml.parsers.*;
 
 import com.globalmentor.io.*;
+import com.globalmentor.net.ContentType;
+import com.globalmentor.net.ContentTypeConstants;
+
 import static com.globalmentor.text.xml.oeb.css.OEBCSS.*;
-import static com.globalmentor.io.ContentTypes.*;
 import static com.globalmentor.text.xml.XML.*;
 import static com.globalmentor.text.xml.xhtml.XHTML.*;
 
@@ -92,20 +93,20 @@ public class OEB
 			public final static String PKG_GUIDE_REFERENCE_ATTRIBUTE_HREF="href";
 
 	/**An OEB 1.x publication zip file MIME subtype.*/
-	public final static String X_OEB_PUBLICATION_ZIP_SUBTYPE=SUBTYPE_EXTENSION_PREFIX+"oeb-publication"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX+SUBTYPE_SUFFIX_DELIMITER_CHAR+ContentTypeConstants.ZIP_SUBTYPE_SUFFIX;
+	public final static String X_OEB_PUBLICATION_ZIP_SUBTYPE=ContentType.SUBTYPE_EXTENSION_PREFIX+"oeb-publication"+ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX+ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR+ContentTypeConstants.ZIP_SUBTYPE_SUFFIX;
 	/**An OEB 1.x publication document MIME subtype.*/
-	public final static String X_OEB1_DOCUMENT_SUBTYPE=SUBTYPE_EXTENSION_PREFIX+"oeb1-document";
+	public final static String X_OEB1_DOCUMENT_SUBTYPE=ContentType.SUBTYPE_EXTENSION_PREFIX+"oeb1-document";
 	/**An OEB 1.x package MIME subtype.*/
-	public final static String X_OEB1_PACKAGE_XML_SUBTYPE=SUBTYPE_EXTENSION_PREFIX+"oeb1-package"+SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
+	public final static String X_OEB1_PACKAGE_XML_SUBTYPE=ContentType.SUBTYPE_EXTENSION_PREFIX+"oeb1-package"+ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 
 	/**The media type of an OEB 1.0 package.*/
-	public final static ContentType OEB10_PACKAGE_MEDIA_TYPE=getContentTypeInstance(APPLICATION_PRIMARY_TYPE, X_OEB1_PACKAGE_XML_SUBTYPE);
+	public final static ContentType OEB10_PACKAGE_MEDIA_TYPE=ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_OEB1_PACKAGE_XML_SUBTYPE);
 
 		/**The media type of an OEB 1.0 document.*/
-	public final static ContentType OEB10_DOCUMENT_MEDIA_TYPE=getContentTypeInstance(TEXT_PRIMARY_TYPE, X_OEB1_DOCUMENT_SUBTYPE);
+	public final static ContentType OEB10_DOCUMENT_MEDIA_TYPE=ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, X_OEB1_DOCUMENT_SUBTYPE);
 
 		/**The media type of an OEB 1.0 CSS document.*/
-	public final static ContentType OEB10_CSS_MEDIA_TYPE=getContentTypeInstance(TEXT_PRIMARY_TYPE, X_OEB1_CSS_SUBTYPE);
+	public final static ContentType OEB10_CSS_MEDIA_TYPE=ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, X_OEB1_CSS_SUBTYPE);
 
 	/**The public ID for OEBPS 1.0.*/
 	public final static String OEB10_DOCUMENT_PUBLIC_ID="+//ISBN 0-9673008-1-9//DTD OEB 1.0 Document//EN";

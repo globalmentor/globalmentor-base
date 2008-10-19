@@ -20,14 +20,12 @@ import java.io.UnsupportedEncodingException;
 import java.text.Collator;
 import java.util.regex.Pattern;
 
-import javax.mail.internet.ContentType;
-
 import com.globalmentor.java.Characters;
+import com.globalmentor.net.ContentType;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.Arrays;
 import com.globalmentor.util.SortOrder;
 
-import static com.globalmentor.io.ContentTypes.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Objects.*;
@@ -42,7 +40,7 @@ public class Text
 	public final static String PLAIN_SUBTYPE="plain";
 
 	/**The content type for plain text: <code>text/plain</code>.*/
-	public static final ContentType TEXT_PLAIN_CONTENT_TYPE=getContentTypeInstance(TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
+	public static final ContentType TEXT_PLAIN_CONTENT_TYPE=ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
 
 	/**The string representing the CR EOL character sequence.
 	@see {@link Characters#CARRIAGE_RETURN_CHAR}
@@ -159,7 +157,7 @@ public class Text
 	{
 		if(contentType!=null)	//if a content type is given
 		{
-			if(TEXT_PRIMARY_TYPE.equals(contentType.getPrimaryType()))	//if this is "text/*"
+			if(ContentType.TEXT_PRIMARY_TYPE.equals(contentType.getPrimaryType()))	//if this is "text/*"
 			{
 				return true;	//text/* is a text content type
 			}

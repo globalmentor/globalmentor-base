@@ -3,7 +3,6 @@ package com.garretwilson.swing.qti;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import javax.mail.internet.ContentType;
 import javax.swing.*;
 import javax.swing.event.*;
 //G***del import javax.swing.text.*;

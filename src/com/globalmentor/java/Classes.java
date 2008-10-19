@@ -24,18 +24,16 @@ import static java.util.Collections.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.*;
 
-import javax.mail.internet.*;
-
-import static com.globalmentor.io.ContentTypes.*;
-import static com.globalmentor.io.ContentTypeConstants.*;
 import static com.globalmentor.io.FileConstants.*;
 import static com.globalmentor.io.Files.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
+import static com.globalmentor.net.ContentTypeConstants.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.URLs.*;
 
 import com.globalmentor.io.InputStreams;
+import com.globalmentor.net.ContentType;
 import com.globalmentor.net.URIPath;
 import com.globalmentor.util.NameValuePair;
 
@@ -127,9 +125,7 @@ public class Classes
 	*/
 	public static ContentType getObjectContentType(final Class<?> objectClass)
 	{
-		final ParameterList parameterList=new ParameterList();	//create a new parameter list
-		parameterList.set("class", objectClass.getName());	//TODO testing
-		return getContentTypeInstance(APPLICATION_PRIMARY_TYPE, X_JAVA_OBJECT, parameterList);	//create a content type appropriate for this object class TODO use a constant
+		return ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, ContentType.X_JAVA_OBJECT, new NameValuePair<String, String>("class", objectClass.getName()));	//create a content type appropriate for this object class TODO use a constant; testing
 	}
 
 	/**Returns a constructor of a class that is compatible with the given parameter types.

@@ -20,12 +20,9 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import javax.mail.internet.ContentType;
-
 import com.globalmentor.io.*;
 import static com.globalmentor.io.FileConstants.EXTENSION_SEPARATOR;
 import com.globalmentor.java.Integers;
-
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 import com.globalmentor.text.*;

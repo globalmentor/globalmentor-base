@@ -5,7 +5,6 @@ import java.awt.event.*;
 import java.beans.*;
 import java.io.*; //G***move
 import java.util.*;
-import javax.mail.internet.ContentType;
 import javax.swing.*;
 import javax.swing.event.*;
 import com.garretwilson.resources.icon.IconResources;

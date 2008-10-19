@@ -16,7 +16,7 @@
 
 package com.globalmentor.text.xml.oeb;
 
-import javax.mail.internet.ContentType;
+import com.globalmentor.net.ContentType;
 
 /**Class which represents an OEB item (OEB document, image, etc.) found in
 the manifest section of an OEB package.

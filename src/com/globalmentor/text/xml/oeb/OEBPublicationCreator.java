@@ -20,13 +20,13 @@ import java.io.*;
 import java.net.*;
 import java.text.MessageFormat;
 import java.util.*;
-import javax.mail.internet.ContentType;
 
 import com.globalmentor.io.*;
-import static com.globalmentor.io.ContentTypes.*;
+
 import com.globalmentor.java.*;
 import static com.globalmentor.java.Characters.*;
 import com.globalmentor.net.*;
+
 import static com.globalmentor.net.URIs.*;
 
 import com.globalmentor.rdf.*;
@@ -230,13 +230,13 @@ public class OEBPublicationCreator	//TODO update this class to work with XEbook;
 		public void setRights(final String newRights) {rights=newRights;}
 
 	/**A static application/java media type for quick reference when comparing media types.*/
-	protected final static ContentType APPLICATION_JAVA_MEDIA_TYPE=getContentTypeInstance(APPLICATION_PRIMARY_TYPE, ContentTypeConstants.JAVA_SUBTYPE);
+	protected final static ContentType APPLICATION_JAVA_MEDIA_TYPE=ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, ContentTypeConstants.JAVA_SUBTYPE);
 
 	/**A static image/gif media type for quick reference when comparing media types.*/
-	protected final static ContentType IMAGE_GIF_MEDIA_TYPE=getContentTypeInstance(ContentTypes.IMAGE_PRIMARY_TYPE, ContentTypeConstants.GIF_SUBTYPE);
+	protected final static ContentType IMAGE_GIF_MEDIA_TYPE=ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, ContentTypeConstants.GIF_SUBTYPE);
 
 	/**A static image/png media type for quick reference when comparing media types.*/
-	protected final static ContentType IMAGE_PNG_MEDIA_TYPE=getContentTypeInstance(ContentTypes.IMAGE_PRIMARY_TYPE, ContentTypeConstants.PNG_SUBTYPE);
+	protected final static ContentType IMAGE_PNG_MEDIA_TYPE=ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, ContentTypeConstants.PNG_SUBTYPE);
 
 	/**Whether we should load and tidy each OEB document.*/
 	private boolean tidy=false;

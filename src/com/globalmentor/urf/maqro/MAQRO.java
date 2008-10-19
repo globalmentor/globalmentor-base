@@ -16,16 +16,11 @@
 
 package com.globalmentor.urf.maqro;
 
-import static com.globalmentor.java.Java.getVariableName;
-import static com.globalmentor.urf.URF.createResourceURI;
-
 import java.net.URI;
-import java.util.*;
 
-import javax.mail.internet.ContentType;
+import com.globalmentor.net.ContentType;
 
-import static com.globalmentor.io.ContentTypes.*;
-import com.globalmentor.rdf.*;
+import static com.globalmentor.urf.URF.*;
 
 /**Constants and utilities used in MAQRO processing.
 @author Garret Wilson
@@ -39,11 +34,11 @@ public class MAQRO
 	public final static URI MAQRO_INTERACT_NAMESPACE_URI=URI.create("http://maqro.org/interact");
 
 	/**The MIME content type for mentoring activities.*/
-	public final static ContentType MENTOR_ACTIVITY_CONTENT_TYPE=getContentTypeInstance(APPLICATION_PRIMARY_TYPE, "x-mentor-activity+turf");
+	public final static ContentType MENTOR_ACTIVITY_CONTENT_TYPE=ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "x-mentor-activity+turf");
 	/**An extension for mentoring activity resource names.*/
 	public final static String MENTOR_ACTIVITY_NAME_EXTENSION="mact";
 	/**The MIME content type for mentoring interactions.*/
-	public final static ContentType MENTOR_INTERACTION_CONTENT_TYPE=getContentTypeInstance(APPLICATION_PRIMARY_TYPE, "x-mentor-interaction+turf");
+	public final static ContentType MENTOR_INTERACTION_CONTENT_TYPE=ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "x-mentor-interaction+turf");
 	/**An extension for mentoring interaction resource names.*/
 	public final static String MENTOR_INTERACTION_NAME_EXTENSION="mint";
 
@@ -243,9 +238,6 @@ public class MAQRO
 	public final static URI SELECTION_PROPERTY_URI=createResourceURI(MAQRO_NAMESPACE_URI, SELECTION_PROPERTY_NAME);
 	/**A supplement to an interaction or part of a question. The local name of maqro.supplement.*/
 	public final static String SUPPLEMENT_PROPERTY_NAME="supplement";
-
-	/**The constant category that indicates no specified category.*/
-	public final static RDFPlainLiteral NO_CATEGORY=new RDFPlainLiteral("No category specified");	//TODO i18n
 
 	//MAQRO representation names
 	/**The name for the yes/no representation boolean. The fragement identifier of <code>http://maqro.org/namespaces/representation#booleanYesNo</code>.*/

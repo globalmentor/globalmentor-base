@@ -8,8 +8,6 @@ import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.*;
 
-import javax.mail.internet.ContentType;
-
 import static com.globalmentor.io.Charsets.*;
 import com.globalmentor.java.*;
 import static com.globalmentor.java.Booleans.*;
@@ -18,6 +16,7 @@ import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
 import com.globalmentor.net.*;
+
 import static com.globalmentor.net.URIs.*;
 import com.globalmentor.text.RegularExpressions;
 import static com.globalmentor.util.Collections.*;

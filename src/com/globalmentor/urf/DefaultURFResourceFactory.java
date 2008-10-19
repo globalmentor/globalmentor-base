@@ -4,13 +4,12 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.Locale;
 
-import javax.mail.internet.ContentType;
-
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.urf.URF.*;
 import static com.globalmentor.util.Locales.*;
 
 import com.globalmentor.java.Classes;
+import com.globalmentor.net.ContentType;
 import com.globalmentor.urf.content.Content;
 
 /**A default factory to create default resources.

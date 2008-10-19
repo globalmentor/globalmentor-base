@@ -19,8 +19,6 @@ package com.globalmentor.net;
 import java.io.*;
 import java.net.*;
 
-import javax.mail.internet.ContentType;
-
 import com.globalmentor.io.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.http.HTTP.*;

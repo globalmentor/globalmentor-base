@@ -2,7 +2,6 @@ package com.garretwilson.swing.qti;
 
 import java.beans.*;
 import java.io.*;
-import javax.mail.internet.ContentType;
 import javax.swing.*;
 import com.garretwilson.swing.*;
 import com.globalmentor.mentoract.qti.Assessment;

@@ -2,8 +2,7 @@ package com.globalmentor.urf.content;
 
 import java.net.URI;
 
-import javax.mail.internet.ContentType;
-
+import com.globalmentor.net.ContentType;
 import com.globalmentor.urf.*;
 
 /**An abstract implementation of a general resource that holds content in its description through the {@value Content#CONTENT_PROPERTY_URI} property.

@@ -3,12 +3,10 @@ package com.globalmentor.urf.content;
 import java.net.URI;
 import java.nio.charset.Charset;
 
-import javax.mail.internet.ContentType;
-
+import com.globalmentor.net.ContentType;
 import com.globalmentor.net.Resource;
 import com.globalmentor.urf.*;
 
-import static com.globalmentor.io.ContentTypes.*;
 import static com.globalmentor.urf.URF.*;
 
 /**The URF content ontology.
@@ -132,7 +130,7 @@ public class Content
 	{
 		if(resourceURI!=null && MEDIA_TYPE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a media type URI was given
 		{
-			return getContentTypeInstance(getLocalName(resourceURI));	//create a media type from the local name
+			return ContentType.getInstance(getLocalName(resourceURI));	//create a media type from the local name
 		}
 		return null;	//no media type could be found
 	}
@@ -306,7 +304,7 @@ public class Content
 			final Charset charset=getCharset(resource);	//get the charset, if any
 			if(charset!=null)	//if a charset was specified
 			{
-				contentType.setParameter(CHARSET_PARAMETER, charset.name());	//add the charset as the value of the charset parameter
+				contentType.setParameter(ContentType.CHARSET_PARAMETER, charset.name());	//add the charset as the value of the charset parameter
 			}
 		}
 		return contentType;	//return the full content type, if any, we constructed

@@ -8,10 +8,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import javax.mail.internet.ContentType;
 import javax.swing.text.*;
 
 import com.garretwilson.swing.text.xml.XMLEditorKit.ContentData;
+import com.globalmentor.net.ContentType;
 import com.globalmentor.rdf.*;
 import com.globalmentor.urf.maqro.*;
 
