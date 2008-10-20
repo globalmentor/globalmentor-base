@@ -17,6 +17,7 @@
 package com.globalmentor.net;
 
 import java.net.URLConnection;
+import java.util.Enumeration;
 
 import javax.activation.*;
 
@@ -224,8 +225,8 @@ public class ContentType extends MimeType
 	}
 
 	/**Indicates whether some other object is "equal to" this one.
-	If the other object is a content type has no parameters, this implementation compares the primary types and subtypes;
-	otherwise, this implementation compares the string versions of the two content types if the other object is a content type.
+	This implementation considers an object equal if it is another {@link MimeType} with the same primary types and subtypes,
+	the same number of parameters, and a matching parameter value for every parameter of this content type.
 	@param  object The reference object with which to compare.
 	@return <code>true</code> if this object is equal to the argument; <code>false</code> otherwise.
 	@see #getPrimaryType()
@@ -233,6 +234,7 @@ public class ContentType extends MimeType
 	@see #getParameters()
 	@see #toString()
 	*/
+	@SuppressWarnings("unchecked")
 	public boolean equals(final Object object)
 	{
 		if(this==object)	//if the objects are the same identical object
@@ -254,9 +256,18 @@ public class ContentType extends MimeType
 					{
 						return true;	//base types with no parameters are equal
 					}
-					else	//if both have the same number of parameters
+					else	//if both have the same non-zero number of parameters
 					{
-						return toString().equals(mimeType.toString());	//this is an uncommon case; do the inefficient but easy check of comparing lexicon forms
+						final Enumeration<String> parameterNameEnumeration=(Enumeration<String>)parameterList.getNames();	//get an enumeration to all the names
+						while(parameterNameEnumeration.hasMoreElements())
+						{
+							final String parameterName=parameterNameEnumeration.nextElement();
+							if(!parameterList.get(parameterName).equals(mimeTypeParameterList.get(parameterName)))	//if the other parameter list doesn't have an identical parameter value
+							{
+								return false;
+							}
+						}
+						return true;	//all the parameters matched
 					}
 				}
 			}
