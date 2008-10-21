@@ -10,6 +10,7 @@ import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 
 /**Default implementation of an encapsulation of a parent scope, property URI, value, and the associated property-value scope.
+<p>Properties calculate {@link #equals(Object)} by whether they have equivalent values for {@link #getPropertyURI()} and {@link #getValue()}.</p>
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:
@@ -165,13 +166,17 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 		this.propertyURI=checkInstance(propertyURI, "Property URI cannot be null.");
 	}
 
-	/**@return A hash code value for the object.*/
+	/**Determines a hash code for the object.
+	This implementation returns the hash code for the property URI and the value.
+	@return A hash code value for the object.
+	*/
 	public int hashCode()
 	{
-		return Objects.hashCode(getSubjectScope(), getPropertyURI(), getValue(), getScope());	//calculate a hash code from the resource, property URI, value, and scope
+		return Objects.hashCode(getPropertyURI(), getValue());	//calculate a hash code from the property URI and value
 	}
 
-	/**Determines if the given object is URF property with the same property URI, value, and scope.
+	/**Determines if the given object is an equivalent URF property.
+	Another URF property is considered equivalent to this one if it has equivalent values for {@link #getPropertyURI()} and {@link #getValue()}.
 	@param object The object with which to compare this URF property.
 	@return <code>true<code> if this URF property equals that specified in <code>object</code>.
 	*/
@@ -180,10 +185,8 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 		if(object instanceof URFProperty)	//if we're being compared with another URF Property
 		{
 			final URFProperty urfProperty=(URFProperty)object;	//get the object as an URF property
-			return getSubjectScope()==urfProperty.getSubjectScope()	//compare subject scopes by identity
-					&& getPropertyURI().equals(urfProperty.getPropertyURI())	//compare property URIs by equivalence
-					&& getValue().equals(urfProperty.getValue())	//compare values by equivalence
-					&& getScope()==urfProperty.getScope();	//compare property-value scopes by identity
+			return getPropertyURI().equals(urfProperty.getPropertyURI())	//compare property URI and value
+					&& getValue().equals(urfProperty.getValue());
 		}
 		else	//if we're being compared with anything else
 		{

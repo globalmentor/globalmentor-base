@@ -3,6 +3,7 @@ package com.globalmentor.urf;
 import java.net.URI;
 
 /**An encapsulation of a parent scope, property URI, value, and the associated property-value scope.
+<p>Properties calculate {@link #equals(Object)} by whether they have equivalent values for {@link #getPropertyURI()} and {@link #getValue()}.</p>
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:

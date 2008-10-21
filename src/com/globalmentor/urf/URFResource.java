@@ -5,6 +5,8 @@ import java.net.URI;
 import com.globalmentor.net.Resource;
 
 /**An URF resource.
+<p>Resources with equivalent non-<code>null</code> URIs are considered equal for {@link #equals(Object)};
+otherwise, resources are equal only if they both have <code>null</code> URIs and they have the same properties with equivalent values.</p>
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:

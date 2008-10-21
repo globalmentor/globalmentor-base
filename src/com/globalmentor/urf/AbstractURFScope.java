@@ -1207,6 +1207,45 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		return asNumber(getPropertyValue(ORDER_PROPERTY_URI));
 	}
 
+	/**Returns a hash code for the scope.
+	This implementation returns a hash code based upon the number of distinct properties, the number of property values,
+	the URIs of properties, and the URIs of property values or the the number of their properties.
+	@return A hash code to represent this scope.
+	*/
+	public int hashCode()
+	{
+		int hashCode=17;	//start with a base hash code
+		readLock().lock();	//get a read lock
+		try
+		{
+			hashCode=37*hashCode+(int)getPropertyCount();	//hash the number of properties; ignore overflows, as all we care about is consistent numbers
+			hashCode=37*hashCode+(int)getPropertyValueCount();	//hash the number of property values; ignore overflows, as all we care about is consistent numbers
+			for(final Map.Entry<URI, List<URFValueContext>> propertyURIValueContextsEntry:propertyURIValueContextsMap.entrySet())	//look at the entries in the map; these are always returned in the same order
+			{
+				hashCode=37*hashCode+propertyURIValueContextsEntry.getKey().hashCode();	//hash the property URI hash code
+				for(final URFValueContext valueContext:propertyURIValueContextsEntry.getValue())	//look at the value contexts
+				{
+					final URFResource value=valueContext.getValue();	//get the value
+					final URI valueURI=value.getURI();	//get the value's URI, if any
+					if(valueURI!=null)	//if the value has a URI
+					{
+						hashCode=37*hashCode+valueURI.hashCode();	//hash the value URI hash code
+					}
+					else	//if the value doesn't have a URI
+					{
+						hashCode=37*hashCode+(int)value.getPropertyCount();	//hash the value's number of properties; ignore overflows, as all we care about is consistent numbers
+						hashCode=37*hashCode+(int)value.getPropertyValueCount();	//hash the value's number of property values; ignore overflows, as all we care about is consistent numbers
+					}
+				}
+			}
+		}
+		finally
+		{
+			readLock().unlock();	//always release the read lock
+		}
+		return hashCode;
+	}
+
 	/**Implementation of a child URF scope subordinate to another URF scope.
 	This version ensures that the value orders for the parent scope remain sorted if a scoped order is changed.
 	@author Garret Wilson
