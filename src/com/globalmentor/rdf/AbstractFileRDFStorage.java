@@ -62,7 +62,7 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 	*/
 	public AbstractFileRDFStorage(final File storageFile, final boolean useBackup)
 	{
-		super(storageFile.toURI());	//save the URI of the file
+		super(Files.toURI(storageFile));	//save the URI of the file
 		backupUsed=useBackup;	//save whether we should use backup files
 	}
 
@@ -132,7 +132,7 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 		}
 		final File tempFile=Files.getTempFile(storageFile);  //get a temporary file to write to
 		final File backupFile=isBackupUsed() ? Files.getBackupFile(storageFile) : null;  //get a backup file, if we should create a backup, or null if we shouldn't
-		store(document, tempFile.toURI());	//store the document in the temporary file
+		store(document, Files.toURI(tempFile));	//store the document in the temporary file
 		Files.moveFile(tempFile, storageFile, backupFile); //move the temp file to the normal file, creating a backup if necessary
 	}
 

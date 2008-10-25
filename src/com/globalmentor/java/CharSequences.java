@@ -397,19 +397,19 @@ public class CharSequences
 					}
 					catch(NumberFormatException numberFormatException) //if the characters weren't really hex characters
 					{
-						throw new IllegalArgumentException("Invalid escape sequence "+escapeSequence);
+						throw new IllegalArgumentException("Invalid escape sequence "+escapeSequence+" at index "+i+" in character sequence \""+charSequence+"\".");
 					}
 				}
 				else	//if there is no room for an escape sequence at the end of the string
 				{
-					throw new IllegalArgumentException("Invalid escape sequence "+charSequence.subSequence(i+1, charSequenceLength));
+					throw new IllegalArgumentException("Invalid escape sequence "+charSequence.subSequence(i+1, charSequenceLength)+" at index "+i+" in character sequence \""+charSequence+"\".");
 				}
 			}
 			else	//if this is not an escaped character
 			{
 				if(c>0xff) //if this character is larger than a byte, the character sequence was not encoded correctly
 				{
-					throw new IllegalArgumentException("Invalid encoded character "+UnicodeCharacter.getCodePointString(c));
+					throw new IllegalArgumentException("Invalid encoded character "+UnicodeCharacter.getCodePointString(c)+" at index "+i+" in character sequence \""+charSequence+"\".");
 				}
 				b=(byte)c; //add this character to the result with no change
 			}

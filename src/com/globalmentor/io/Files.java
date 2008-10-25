@@ -408,14 +408,14 @@ public class Files
 	}
 
 	/**Returns the appropriate URI for a directory, whether or not the directory
-		exists. Contrast this behavior with <code>File.toURI()</code>, which will
+		exists. Contrast this behavior with {@link File#toURI()}, which will
 		return a file URI without a trailing slash if the directory does not exist.
 	@param directory The name of a directory, which may or may not exist.
 	@return A URI, with trailing slash, to represent the given directory.
 	*/
 	public static URI getDirectoryURI(final File directory)
 	{
-		final URI fileURI=directory.toURI();	//create a URI from the file
+		final URI fileURI=toURI(directory);	//create a URI from the file
 		final String fileRawPath=fileURI.getRawPath();	//get the raw path of the directory URI
 		if(endsWith(fileRawPath, PATH_SEPARATOR))	//if the file URI is a directory URI
 		{
@@ -717,6 +717,32 @@ public class Files
 		return unescapeHex(filename, FILENAME_ESCAPE_CHAR, 2);	//decode the filename
 	}
 
+	
+	/**Constructs a {@link URIs#FILE_SCHEME} scheme URI that represents this abstract pathname.
+	This functions similary to {@link File#toURI()}, except that this method
+	always returns a true URI in which the characters all are within ranges allowed by
+	RFC 3986, notably that non-ASCII chracters are all encoded.
+	@param file The file which should be converted to a URI.
+	@return An absolute, hierarchical URI with non-ASCII chracters encoded, with a {@link URIs#FILE_SCHEME} scheme, a path representing this abstract pathname, and undefined authority, query, and fragment components.
+	@throws NullPointerException if the given file is <code>null</code>.
+	@throws SecurityException If a required system property value cannot be accessed.
+	@see File#toURI()
+	*/
+	public static URI toURI(final File file)
+	{
+		URI uri=file.toURI();	//create a URI from the file normally; Java may allow non-ASCII characters in this version
+		final String uriString=uri.toString();	//get the string version of the URI; we may end up getting another string later, but assuming that most URIs do not have non-ASCII characters, it will be more efficient to check the characters first, as we may not have to do any conversion
+		for(int i=uriString.length()-1; i>=0; --i)	//for each character (iteration order doesn't matter), make sure it is in the ASCII range
+		{
+			if(uriString.charAt(i)>0xff)	//if we found a non-ASCII character
+			{
+				uri=URI.create(uri.toASCIIString());	//get the ASCII version of its string (which will encode non-ASCII characters), and then create a new URI from that
+				break;	//skip looking at the rest of the string
+			}
+		}
+		return uri;	//return whichever URI we determined
+	}
+
 	/**Creates the directory named by this abstract pathname, throwing an exception if unsuccessful.
 	@param directory The directory to create.
 	@exception IOException Thrown if there is an error creating the directory.
@@ -785,7 +811,7 @@ public class Files
 		final InputStream bufferedInputStream=new BufferedInputStream(new FileInputStream(file));	//create a buffered input stream to the file
 		try
 		{
-			return io.read(bufferedInputStream, file.toURI());	//read the object, determining the base URI from the file
+			return io.read(bufferedInputStream, toURI(file));	//read the object, determining the base URI from the file
 		}
 		finally
 		{
@@ -806,7 +832,7 @@ public class Files
 		final InputStream bufferedInputStream=new BufferedInputStream(new FileInputStream(file));	//create a buffered input stream to the file
 		try
 		{
-			return io.read(rdf, bufferedInputStream, file.toURI());	//read the object, using the given RDF instance and determining the base URI from the file
+			return io.read(rdf, bufferedInputStream, toURI(file));	//read the object, using the given RDF instance and determining the base URI from the file
 		}
 		finally
 		{
@@ -824,7 +850,7 @@ public class Files
 	*/ 
 	public static <T> T read(final File file, final URF urf, final URFIO<T> io) throws IOException
 	{
-		return read(file, urf, file.toURI(), io);	//read from the file, using the file URI as the base URI
+		return read(file, urf, toURI(file), io);	//read from the file, using the file URI as the base URI
 	}
 
 	/**Reads an object from a file using the given URF I/O support.
@@ -856,7 +882,7 @@ public class Files
 	*/
 	public static <T> void write(final File file, final T object, final IO<T> io) throws IOException
 	{
-		write(file, file.toURI(), object, io);	//write to the file, using the file URI as the base URI
+		write(file, toURI(file), object, io);	//write to the file, using the file URI as the base URI
 	}
 
 	/**Writes an object to a file using the given I/O support.

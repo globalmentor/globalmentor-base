@@ -21,6 +21,7 @@ import java.net.*;
 import java.util.*;
 
 import com.globalmentor.io.*;
+
 import static com.globalmentor.io.FileConstants.EXTENSION_SEPARATOR;
 import com.globalmentor.java.Integers;
 import static com.globalmentor.java.CharSequences.*;
@@ -1271,7 +1272,7 @@ public class URIs
 		}
 		else if(contextObject instanceof File) //if the context object is a file
 		{
-			return createURI(((File)contextObject).toURI(), string); //convert the File to a URI and use it as a context
+			return createURI(Files.toURI(((File)contextObject)), string); //convert the File to a URI and use it as a context
 		}
 		else
 		//if we don't recognize the context object
@@ -1300,18 +1301,18 @@ public class URIs
 			else
 			//if the URI is not absolute
 			{
-				return new File(string).toURI(); //a local file must have been requested				
+				return Files.toURI(new File(string)); //a local file must have been requested				
 			}
 		}
 		/*G***del if not needed
 				catch(IllegalArgumentException illegalArgumentException)	//if the string is not an absolute URI
 				{
-					return new File(string).toURI();	//construct a file object and convert that to a URI
+					return Files.toURI(new File(string));	//construct a file object and convert that to a URI
 				}
 		*/
 		catch(URISyntaxException uriSyntaxException) //if the string is not a valid URI
 		{
-			return new File(string).toURI(); //construct a file object and convert that to an absolute URI
+			return Files.toURI(new File(string)); //construct a file object and convert that to an absolute URI
 		}
 	}
 

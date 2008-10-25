@@ -45,7 +45,7 @@ public class FileResource extends DefaultResource
 	*/
 	public FileResource(final File file)
 	{
-		this(file, file.toURI());	//construct the resource using the file's URI
+		this(file, Files.toURI(file));	//construct the resource using the file's URI
 	}
 
 	/**Constructs a resource with a file and a reference URI.
