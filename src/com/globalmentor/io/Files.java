@@ -686,7 +686,7 @@ public class Files
 		}
 		else	//if something about the filename isn't correct
 		{
-			final String encodedFilename=escapeHex(filename, null, reservedCharacters, FILENAME_ESCAPE_CHAR, 2);
+			final String encodedFilename=escapeHex(filename, null, reservedCharacters, Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2);
 			if(reservedFinalCharacters!=null && reservedFinalCharacters.length()>0)	//if we should check the final character (e.g. on Windows)
 			{
 				if(encodedFilename.length()>0)	//if we have a filename
@@ -695,7 +695,7 @@ public class Files
 					if(reservedFinalCharacters.indexOf(lastChar)>=0)	//if the last character is a reserved character
 					{
 						final String lastCharString=String.valueOf(lastChar);	//convert the last character to a string
-						final String replacementString=escapeHex(lastCharString, null, lastCharString, FILENAME_ESCAPE_CHAR, 2);	//escape the last character						
+						final String replacementString=escapeHex(lastCharString, null, lastCharString, Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2);	//escape the last character						
 						return encodedFilename.substring(0, encodedFilename.length()-1)+replacementString;	//replace the last character with its escaped form
 					}
 				}
@@ -722,11 +722,13 @@ public class Files
 	This functions similary to {@link File#toURI()}, except that this method
 	always returns a true URI in which the characters all are within ranges allowed by
 	RFC 3986, notably that non-ASCII chracters are all encoded.
+	Following the examples in RFC 3986, this is guaranteed to produce only lowercase hexadecimal escape codes. 
 	@param file The file which should be converted to a URI.
 	@return An absolute, hierarchical URI with non-ASCII chracters encoded, with a {@link URIs#FILE_SCHEME} scheme, a path representing this abstract pathname, and undefined authority, query, and fragment components.
 	@throws NullPointerException if the given file is <code>null</code>.
 	@throws SecurityException If a required system property value cannot be accessed.
 	@see File#toURI()
+	@see URIs#toCanonicalURI(URI)
 	*/
 	public static URI toURI(final File file)
 	{
@@ -734,13 +736,12 @@ public class Files
 		final String uriString=uri.toString();	//get the string version of the URI; we may end up getting another string later, but assuming that most URIs do not have non-ASCII characters, it will be more efficient to check the characters first, as we may not have to do any conversion
 		for(int i=uriString.length()-1; i>=0; --i)	//for each character (iteration order doesn't matter), make sure it is in the ASCII range
 		{
-			if(uriString.charAt(i)>0xff)	//if we found a non-ASCII character
+			if(uriString.charAt(i)>127)	//if we found a non-ASCII character
 			{
-				uri=URI.create(uri.toASCIIString());	//get the ASCII version of its string (which will encode non-ASCII characters), and then create a new URI from that
-				break;	//skip looking at the rest of the string
+				uri=URI.create(escapeHex(uriString, null, null, 127, URIs.ESCAPE_CHAR, 2));	//escape the string again only for those characters that are non-ASCII characters; don't use URI.create(uri.toASCIIString()), which is less efficient and also produces uppercase hex codes				break;	//skip looking at the rest of the string
 			}
 		}
-		return uri;	//return whichever URI we determined
+		return toCanonicalURI(uri);	//return the URI in canonical form; even if we converted ASCII characters, the File.toURI() method might have produced uppercase hex escape codes when escaping illegal characters
 	}
 
 	/**Creates the directory named by this abstract pathname, throwing an exception if unsuccessful.

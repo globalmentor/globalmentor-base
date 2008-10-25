@@ -1915,7 +1915,7 @@ public class URIs
 	*/
 	static String uriEncode(final String string, final String validCharacters, final char escapeChar)
 	{
-		return escapeHex(string, validCharacters, null, escapeChar, 2);	//escape the string using two escape hex digits
+		return escapeHex(string, validCharacters, null, Integer.MAX_VALUE, escapeChar, 2);	//escape the string using two escape hex digits; don't use an upper bound, as the valid characters take inherently care of this
 	}
 
 	/**Decodes the escaped characters in the character iterator according to the URI encoding rules in
@@ -1946,6 +1946,45 @@ public class URIs
 	{
 		return unescapeHex(uri, escapeChar, 2);	//unescape the string using two escape hex digits
 	}
+
+	/**Ensures that the given URI is in canonical form.
+	This implemention, following the examples in RFC 3986, ensures that all hexadecimal escape codes
+	are in lowercase. 
+	@param uri The URI to be returned in canonical form.
+	@return The canonical form of the given URI.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given URI has an invalid escape sequence.
+	*/
+	public static URI toCanonicalURI(final URI uri)
+	{
+		final String uriString=uri.toString();	//get the string version of the URI
+		final int uriStringLength=uriString.length();	//get the length of the string
+		StringBuilder uriStringBuilder=null;	//we'll only create a string builder if we need one
+		for(int i=0; i<uriStringLength; ++i)	//for each character, make sure that the escape sequences are in lowercase
+		{
+			if(uriString.charAt(i)==ESCAPE_CHAR)	//if this is an escape sequence
+			{
+				if(i>=uriStringLength-2)	//if there isn't room for an escape sequence
+				{
+					throw new IllegalArgumentException("Invalid escape sequence in URI "+uriString+" at index "+i+".");
+				}
+				final char hex1=uriString.charAt(i+1);
+				final char hex2=uriString.charAt(i+2);
+				if((hex1>='A' && hex1<='Z') || (hex2>='A' && hex2<='Z'))	//if the hex code is not in lowercase
+				{
+					if(uriStringBuilder==null)	//if we haven't yet created a string builder
+					{
+						uriStringBuilder=new StringBuilder(uriString);	//create a new string builder for manipulating the URI
+					}
+					uriStringBuilder.setCharAt(i+1, hex1>='A' && hex1<='Z' ? (char)(hex1+('a'-'A')) : hex1);	//convert any hex characters to lowercase
+					uriStringBuilder.setCharAt(i+2, hex2>='A' && hex2<='Z' ? (char)(hex2+('a'-'A')) : hex2);
+				}
+				i+=2;	//skip the escape sequence
+			}
+		}
+		return uriStringBuilder!=null ? URI.create(uriStringBuilder.toString()) : uri;	//if we modified the URI, return a new URI created from the string builder
+	}
+	
 
 	//variables for fixing a JDK URI.resolve() bug
 	private final static String EXPECTED_URI_PREFIX="file:////";

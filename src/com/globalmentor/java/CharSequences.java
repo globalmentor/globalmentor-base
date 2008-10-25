@@ -327,24 +327,29 @@ public class CharSequences
 	/**Escapes the indicated characters in the character sequence using the supplied escape character.
 	All characters are first encoded using UTF-8.
 	Every invalid character is converted to its Unicode hex equivalent and prefixed with the given escape character.
+	This method uses lowercase hexadecimal escape codes.
 	Characters are assumed to be valid unless specified otherwise.
+	The escape character, if encountered, is not escaped unless it specifically meets one of the specified criteria;
+	this allows re-escaping strings that may contain escape characters produced under less-strict rules
+	(e.g. a URI containing escaped restricted characters, but still containing non-ASCII characters).
 	@param charSequence The data to escape.
 	@param validCharacters The characters that should not be escaped and all others should be escaped, or <code>null</code> if characters should not be matched against valid characters.
 	@param invalidCharacters The characters that, if they appear, should be escaped, or <code>null</code> if characters should not be matched against invalid characters.
+	@param maxCharacter The character value that represents the highest non-escaped value.
 	@param escapeChar The character to prefix the hex representation.
 	@param escapeLength The number of characters to use for the hex representation.
 	@return A string containing the escaped data.
 	@exception IllegalArgumentException if neither valid nor invalid characters are given.
 	*/
-	public static String escapeHex(final CharSequence charSequence, final String validCharacters, final String invalidCharacters, final char escapeChar, final int escapeLength)
+	public static String escapeHex(final CharSequence charSequence, final String validCharacters, final String invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength)
 	{
 		final StringBuilder stringBuilder=new StringBuilder(charSequence); //put the string in a string builder so that we can work with it; although inserting encoded sequences may seem inefficient, it should be noted that filling a string buffer with the entire string is more efficient than doing it one character at a time, that characters needed encoding are generally uncommon, and that any copying of the string characters during insertion is done via a native method, which should happen very quickly
 		for(int characterIndex=stringBuilder.length()-1; characterIndex>=0; --characterIndex) //work backwords; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
 		{
 			final char c=stringBuilder.charAt(characterIndex); //get the current character
-			final boolean encode=c==escapeChar	//always encode the escape character
-				|| (validCharacters!=null && validCharacters.indexOf(c)<0)	//encode if there is a list of valid characters and this character is not one of them
-				|| (invalidCharacters!=null && invalidCharacters.indexOf(c)>=0);	//encode if there is a list of invalid characters and this character is one of them
+			final boolean encode=(validCharacters!=null && validCharacters.indexOf(c)<0)	//encode if there is a list of valid characters and this character is not one of them
+				|| (invalidCharacters!=null && invalidCharacters.indexOf(c)>=0)	//encode if there is a list of invalid characters and this character is one of them
+				|| (c>maxCharacter);	//encode the character if it is past the given upper bound
 			if(encode)	//if this a character to escape
 			{
 				try
@@ -355,7 +360,7 @@ public class CharSequences
 					for(int byteIndex=0; byteIndex<byteCount; ++byteIndex) //look at each byte
 					{
 						encodeStringBuilder.append(escapeChar); //escape character
-						encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], escapeLength).toUpperCase()); //HH
+						encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], escapeLength)); //hh
 					}
 					stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString()); //replace the character with its encoding
 				}
