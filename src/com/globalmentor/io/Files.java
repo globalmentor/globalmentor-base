@@ -24,14 +24,16 @@ import static java.util.Collections.*;
 import com.globalmentor.java.*;
 import com.globalmentor.javascript.JavaScript;
 import com.globalmentor.net.*;
+import com.globalmentor.rdf.RDF;
 import com.globalmentor.text.Text;
+import com.globalmentor.text.csv.CSV;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.oeb.OEB;
 import com.globalmentor.text.xml.stylesheets.css.XMLCSS;
 import com.globalmentor.text.xml.xhtml.XHTML;
 import com.globalmentor.urf.*;
 import com.globalmentor.urf.maqro.MAQRO;
 
-import static com.globalmentor.io.FileConstants.*;
 import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
@@ -57,6 +59,70 @@ public class Files
 	*/ 
 	public final static char FILENAME_ESCAPE_CHAR='^';
 
+	/**The extension for backup files.*/
+	private final static String BACKUP_EXTENSION="backup";
+	/**The extension for temporary files.*/
+	private final static String TEMP_EXTENSION="temp";
+
+	/**Path separator characters used on several systems.*/
+	public final static String FILE_PATH_SEPARATOR_CHARACTERS="\\/";
+
+	/**The characters which may not be used in POSIX filenames.
+	@see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
+	@see #encodeFilename(String)
+	*/
+	public final static String POSIX_FILENAME_RESERVED_CHARACTERS="\u0000/";
+
+	/**The characters which may not be used in Windows filenames.
+	@see <a href="http://msdn.microsoft.com/en-us/library/aa365247.aspx">MSDN: Naming a File or Directory</a>
+	@see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
+	@see #encodeFilename(String)
+	*/
+	public final static String WINDOWS_FILENAME_RESERVED_CHARACTERS="\u0000<>:\"/\\|?*";
+
+	/**The characters which may not be used as the last character of Windows filenames.
+	@see <a href="http://msdn.microsoft.com/en-us/library/aa365247.aspx">MSDN: Naming a File or Directory</a>
+	@see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
+	@see #encodeFilename(String)
+	*/
+	public final static String WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS=". ";
+
+	/**The characters which may not be used in various file system filenames.
+	@see <a href="http://msdn.microsoft.com/en-us/library/aa365247.aspx">MSDN: Naming a File or Directory</a>
+	@see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
+	@see #encodeFilename(String)
+	*/
+	public final static String CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS="\u0000<>:\"/\\|?*";
+
+	/**The characters which may not be used as the last character of various file system filenames.
+	@see <a href="http://msdn.microsoft.com/en-us/library/aa365247.aspx">MSDN: Naming a File or Directory</a>
+	@see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
+	@see #encodeFilename(String)
+	*/
+	public final static String CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS=". ";
+
+	/**The prefix used by Unix to designate a hidden file.*/
+	public final static String UNIX_HIDDEN_FILENAME_PREFIX=".";
+
+	/**The NTFS delimiter for separating Alternat Data Stream identifiers from the rest of the filename.
+	@see <a href="http://support.microsoft.com/kb/105763">How To Use NTFS Alternate Data Streams</a>
+	*/
+	public final static char NTFS_ADS_DELIMITER=':';
+	
+			//file extensions for certain media types TODO move to respective files 
+	/**The extension for Common Gateway Interface (CGI) files.*/
+	public final static String CGI_EXTENSION="cgi";
+	/**The extension for Microsoft Word files.*/
+	public final static String DOC_EXTENSION="doc";
+	/**The extension for iCalendar files.*/
+	public final static String ICAL_EXTENSION="ical";
+	/**An extension for Java Server Page (JSP) files.*/
+	public final static String JSP_EXTENSION="jsp";
+	/**The extension for Adobe PDF files.*/
+	public final static String PDF_EXTENSION="pdf";
+	/**The extension for vCard files.*/
+	public final static String VCF_EXTENSION="vcf";
+
 	/**A singleton read-only map of lowercase file extensions and the corresponding content types they represent.*/
 	public final static Map<String, ContentType> FILE_EXTENSION_CONTENT_TYPE_MAP;	//TODO convert to lazy weak referenced map
 
@@ -64,43 +130,43 @@ public class Files
 	{
 		final Map<String, ContentType> tempFileExtensionContentTypeMap=new HashMap<String, ContentType>();	//create a new hash map in which to store extensions, and add the default extensions
 		tempFileExtensionContentTypeMap.put("asi", ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "x-qti-assessment"));
-		tempFileExtensionContentTypeMap.put(AU_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, BASIC_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(BMP_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, X_BITMAP_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(CLASS_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, JAVA_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(CSS_EXTENSION, ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, XMLCSS.CSS_SUBTYPE));	//text/css
-		tempFileExtensionContentTypeMap.put(DICTO_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_DICTO_RDF_XML_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Audio.AU_NAME_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, BASIC_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Images.BMP_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, X_BITMAP_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Classes.CLASS_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, JAVA_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(CSV.CSV_NAME_EXTENSION, CSV.CSV_CONTENT_TYPE);
+		tempFileExtensionContentTypeMap.put(XMLCSS.CSS_NAME_EXTENSION, XMLCSS.TEXT_CSS_CONTENT_TYPE);	//text/css
+//		tempFileExtensionContentTypeMap.put(Dicto.DICTO_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_DICTO_RDF_XML_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(DOC_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, MSWORD_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(GIF_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, GIF_SUBTYPE));	//image/gif
+		tempFileExtensionContentTypeMap.put(Images.GIF_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, GIF_SUBTYPE));	//image/gif
 		tempFileExtensionContentTypeMap.put(XHTML.HTM_NAME_EXTENSION, XHTML.HTML_CONTENT_TYPE);	//TODO make sure changing this to text/html doesn't cause other methods to fail; nevertheless, we can't assume all .html files are XHTML (i.e. valid XML)
 		tempFileExtensionContentTypeMap.put(XHTML.HTML_NAME_EXTENSION, XHTML.HTML_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put(XHTML.XHTML_NAME_EXTENSION, XHTML.XHTML_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put(ICAL_EXTENSION, ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, CALENDAR_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(JAVA_EXTENSION, ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, JAVA_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(JPEG_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(JPG_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(JS_EXTENSION, ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, JavaScript.JAVASCRIPT_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Java.JAVA_NAME_EXTENSION, ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, JAVA_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Images.JPEG_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Images.JPG_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(JavaScript.JS_NAME_EXTENSION, JavaScript.JAVASCRIPT_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put("marmox", ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "x-marmox-page+rdf+xml"));
 		tempFileExtensionContentTypeMap.put(MAQRO.MENTOR_ACTIVITY_NAME_EXTENSION, MAQRO.MENTOR_ACTIVITY_CONTENT_TYPE);
-		tempFileExtensionContentTypeMap.put(MP3_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, MPEG_SUBTYPE));	//RFC 3003
-		tempFileExtensionContentTypeMap.put(MPEG_EXTENSION, ContentType.getInstance(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(MPG_EXTENSION, ContentType.getInstance(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(OGG_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, Audio.OGG_SUBTYPE));	//application/ogg (RFC 3534)
-		tempFileExtensionContentTypeMap.put(OEB_ZIP_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, OEB.X_OEB_PUBLICATION_ZIP_SUBTYPE));	//oebzip
-		tempFileExtensionContentTypeMap.put(OEB1_PACKAGE_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, OEB.X_OEB1_PACKAGE_XML_SUBTYPE));	//opf
+		tempFileExtensionContentTypeMap.put(Audio.MP3_NAME_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, MPEG_SUBTYPE));	//RFC 3003
+		tempFileExtensionContentTypeMap.put(Video.MPEG_NAME_EXTENSION, ContentType.getInstance(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Video.MPG_NAME_EXTENSION, ContentType.getInstance(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Audio.OGG_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, Audio.OGG_SUBTYPE));	//application/ogg (RFC 3534)
+		tempFileExtensionContentTypeMap.put(OEB.OEB1_PACKAGE_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, OEB.X_OEB1_PACKAGE_XML_SUBTYPE));	//opf
 		tempFileExtensionContentTypeMap.put(PDF_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, PDF_SUBTYPE));	//pdf
-		tempFileExtensionContentTypeMap.put(PNG_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, PNG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(QRO_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_QRO_RDF_XML_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Images.PNG_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, PNG_SUBTYPE));
 		tempFileExtensionContentTypeMap.put("qti", ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "x-qti")); //TODO use a constant here
-		tempFileExtensionContentTypeMap.put(RAR_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_RAR_COMPRESSED_SUBTYPTE));
-		tempFileExtensionContentTypeMap.put(TIF_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(TIFF_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Archive.RAR_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_RAR_COMPRESSED_SUBTYPTE));
+		tempFileExtensionContentTypeMap.put(Images.TIF_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Images.TIFF_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(RDF.RDF_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "rdf+xml"));	//RFC 3870; move to RDF class
 		tempFileExtensionContentTypeMap.put(TURF.TURF_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, TURF_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(TXT_EXTENSION, ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, Text.PLAIN_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Text.TXT_NAME_EXTENSION, Text.TEXT_PLAIN_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, DIRECTORY_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(WAV_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, X_WAV_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(XEB_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(XEB_ZIP_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_ZIP_SUBTYPE));	//oebzip
-		tempFileExtensionContentTypeMap.put(ZIP_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, ZIP_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Audio.WAV_NAME_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, X_WAV_SUBTYPE));
+//		tempFileExtensionContentTypeMap.put(RDFXEB.XEB_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(XML.XML_NAME_EXTENSION, XML.XML_CONTENT_TYPE);
+		tempFileExtensionContentTypeMap.put(Archive.ZIP_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, ZIP_SUBTYPE));
 		FILE_EXTENSION_CONTENT_TYPE_MAP=unmodifiableMap(tempFileExtensionContentTypeMap);	//store read-only access to the map		
 	}
 
@@ -130,7 +196,7 @@ public class Files
 	*/
 	public static String addExtension(final String filename, final String extension)
 	{
-		return new StringBuilder(filename).append(EXTENSION_SEPARATOR).append(checkInstance(extension, "Extension cannot be null")).toString();  //add the requested extension and return the new filename
+		return new StringBuilder(filename).append(FILENAME_EXTENSION_SEPARATOR).append(checkInstance(extension, "Extension cannot be null")).toString();  //add the requested extension and return the new filename
 	}
 
 	/**Creates a temporary file in the standard temporary directory with automatic deletion on JVM exit.
@@ -189,7 +255,7 @@ public class Files
 		{
 			baseName=baseName+"-temp";	//pad the base name to meet the requirements of File.createTempFile()
 		}
-		final File tempFile=File.createTempFile(baseName, new StringBuilder().append(EXTENSION_SEPARATOR).append(extension).toString(), directory);	//create a temporary file in the given directory, if any
+		final File tempFile=File.createTempFile(baseName, new StringBuilder().append(FILENAME_EXTENSION_SEPARATOR).append(extension).toString(), directory);	//create a temporary file in the given directory, if any
 		if(deleteOnExit)	//if the file should be deleted on JVM exit
 		{
 			tempFile.deleteOnExit();	//tell the file it should be deleted when the JVM exits
@@ -257,7 +323,7 @@ public class Files
 	@param filePath The file path.
 	@return The filename after the last file path separator.
 	@exception NullPointerException if the given file path is <code>null</code>.
-	@see FileConstants#FILE_PATH_SEPARATOR_CHARACTERS
+	@see #FILE_PATH_SEPARATOR_CHARACTERS
 	*/
 	public static String getFilename(final String filePath)	//TODO fix for Unix filenames; perhaps pass a system identification enum value
 	{
@@ -384,7 +450,7 @@ public class Files
 	*/
 	protected static int getExtensionSeparatorIndex(final String path)	//TODO fix to work with Windows backslashes as well
 	{
-		final int separatorIndex=path.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
+		final int separatorIndex=path.lastIndexOf(FILENAME_EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
 		if(separatorIndex>=0)  //if we found a separator
 		{
 			if(charIndexOf(path, FILE_PATH_SEPARATOR_CHARACTERS, separatorIndex+1)<0)	//if there is no slash after after the extension separator
@@ -399,7 +465,7 @@ public class Files
 	@param file The file for which to return a media type.
 	@return The default media type for the file's extension, or <code>null</code>
 		if no known media type is associated with this file's extension.
-	@see Files#getExtensionContentType(String)
+	@see #getExtensionContentType(String)
 	*/
 	public static ContentType getContentType(final File file)
 	{
@@ -433,12 +499,12 @@ public class Files
 	@return The default media type for the filename's extension, or <code>null</code>
 		if no known media type is associated with this file's extension or if the
 		filename has no extension.
-	@see Files#getExtensionContentType(String)
+	@see #getExtensionContentType(String)
 	*/
 	public static ContentType getMediaType(final String filename)
 	{
 		final String extension=getExtension(filename);  //get the file's extension
-		return extension!=null ? Files.getExtensionContentType(extension) : null; //return the media type based on the filename's extension, if there is one
+		return extension!=null ? getExtensionContentType(extension) : null; //return the media type based on the filename's extension, if there is one
 	}
 
 	/**Determines the path of the file relative to a root directory. Backslashes
@@ -465,7 +531,6 @@ public class Files
 			catch(MalformedURLException malformedURLException)  //if a URL was malformed
 			{
 				throw new AssertionError(malformedURLException); //we should never get this error
-//TODO del				return file.getPath().replace('\\', FileConstants.PATH_SEPARATOR);  //this should never be reached TODO use a constant here
 			}
 		}
 		else  //if we were not given a root directory
@@ -478,7 +543,7 @@ public class Files
 		filename, by adding a ".temp" extension.
 	@param file The file for which a temporary file should be returned.
 	@return The file suitable for temporary access.
-	@see FileConstants#TEMP_EXTENSION
+	@see TEMP_EXTENSION
 	*/
 	public static File getTempFile(final File file)
 	{
@@ -489,7 +554,7 @@ public class Files
 		adding a ".backup" extension.
 	@param file The file for which a backup file should be returned.
 	@return The file suitable for backup.
-	@see FileConstants#BACKUP_EXTENSION
+	@see BACKUP_EXTENSION
 	*/
 	public static File getBackupFile(final File file)
 	{
@@ -629,7 +694,7 @@ public class Files
 		method should only be called on filenames, not paths.</p>
 	@param string The filename string to be encoded.
 	@return The string modified to be a filename.
-	@see FileConstants#RESERVED_CHARACTERS
+	@see RESERVED_CHARACTERS
 	@see #FILENAME_ESCAPE_CHAR
 	@see CharSequences#escapeHex
 	@see #isFilename
@@ -647,7 +712,7 @@ public class Files
 		operating system.</p>
 	@param string The filename string to be encoded.
 	@return The string modified to be a filename.
-	@see FileConstants#RESERVED_CHARACTERS
+	@see RESERVED_CHARACTERS
 	@see #FILENAME_ESCAPE_CHAR
 	@see CharSequences#escapeHex(CharSequence, String, String, char, int)
 	@see #isFilename(String, String, String)
@@ -670,7 +735,7 @@ public class Files
 		appear in the final position of the filename, or <code>null</code> if the
 		final character doesn't have to meet special rules.
 	@return The string modified to be a filename.
-	@see FileConstants#RESERVED_CHARACTERS
+	@see #RESERVED_CHARACTERS
 	@see #FILENAME_ESCAPE_CHAR
 	@see CharSequences#escapeHex(CharSequence, String, String, char, int)
 	@see #isFilename(String, String, String)
@@ -708,7 +773,7 @@ public class Files
 		using '^' as an escape character followed by two hex digits.
 	@param string The filename string to be decoded.
 	@return The filename string decoded back to a normal string.
-	@see FileConstants#RESERVED_CHARACTERS
+	@see #RESERVED_CHARACTERS
 	@see #FILENAME_ESCAPE_CHAR
 	@see CharSequences#unescapeHex(CharSequence, char, int)
 	*/

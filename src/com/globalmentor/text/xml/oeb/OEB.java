@@ -40,8 +40,8 @@ public class OEB
 	public final static String OEB10_PACKAGE_PUBLIC_ID="+//ISBN 0-9673008-1-9//DTD OEB 1.0 Package//EN";
 	/**The default system ID for the OEBPS 1.0 package.*/
 	public final static String OEB10_PACKAGE_SYSTEM_ID="http://openebook.org/dtds/oeb-1.0/oebpkg1.dtd";
-	/**The default extension for the OEBPS 1.0 package.*/
-	public final static String OEB1_PACKAGE_EXTENSION="opf";
+	/**The name extension for the OEBPS 1.0 package.*/
+	public final static String OEB1_PACKAGE_NAME_EXTENSION="opf";
 
 	/**The public ID for the OEBPS 1.0.1 package.*/
 	public final static String OEB101_PACKAGE_PUBLIC_ID="+//ISBN 0-9673008-1-9//DTD OEB 1.0.1 Package//EN";

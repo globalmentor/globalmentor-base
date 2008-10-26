@@ -22,13 +22,11 @@ import java.util.*;
 
 import com.globalmentor.io.*;
 
-import static com.globalmentor.io.FileConstants.EXTENSION_SEPARATOR;
 import com.globalmentor.java.Integers;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 import com.globalmentor.text.*;
 import static com.globalmentor.text.CharacterEncoding.*;
-import com.globalmentor.text.unicode.UnicodeCharacter;
 import com.globalmentor.util.*;
 
 /**Various URI manipulating functions for working with URIs as defined in
@@ -530,8 +528,7 @@ public class URIs
 	public static String addNameExtension(final String name,
 			final String extension)
 	{
-		return new StringBuilder(name).append(EXTENSION_SEPARATOR).append(
-				checkInstance(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
+		return new StringBuilder(name).append(NAME_EXTENSION_SEPARATOR).append(checkInstance(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
 	}
 
 	/**Extracts the extension from a name.
@@ -540,7 +537,7 @@ public class URIs
 	*/
 	public static String getNameExtension(final String name)
 	{
-		final int separatorIndex=name.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
+		final int separatorIndex=name.lastIndexOf(NAME_EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
 		return separatorIndex>=0 ? name.substring(separatorIndex+1) : null; //if we found a separator, return everything after it 
 	}
 
@@ -552,7 +549,7 @@ public class URIs
 	*/
 	public static String changeNameExtension(String name, final String extension)
 	{
-		final int separatorIndex=name.lastIndexOf(EXTENSION_SEPARATOR); //see if we can find the extension separator
+		final int separatorIndex=name.lastIndexOf(NAME_EXTENSION_SEPARATOR); //see if we can find the extension separator
 		if(separatorIndex>=0) //if we found a separator
 		{
 			name=name.substring(0, separatorIndex); //remove the extension

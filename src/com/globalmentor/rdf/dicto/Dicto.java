@@ -30,6 +30,9 @@ import com.globalmentor.util.Locales;
 public class Dicto implements RDFResourceFactory
 {
 
+	/**The name extension for Dictionary Ontology (Dicto) dictionaries.*/
+	public final static String DICTO_NAME_EXTENSION="dicto";
+
 	/**The recommended prefix to the Dicto ontology namespace.*/
 	public final static String DICTO_NAMESPACE_PREFIX="dicto";
 	/**The URI to the Dicto namespace.*/

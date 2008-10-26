@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.globalmentor.net;
+package com.globalmentor.io;
 
-/**Utilities and constants for working with networked audio.
+import com.globalmentor.net.ContentType;
+
+/**Utilities and constants for working with audio content.
 @author Garret Wilson
 */
 public class Audio
@@ -24,6 +26,15 @@ public class Audio
 
 	/**An Ogg Vorbis file; see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>.*/
 	public final static String OGG_SUBTYPE="ogg";
+
+	/**The name extension for audio files.*/
+	public final static String AU_NAME_EXTENSION="au";
+	/**The extension for MPEG 2 layer 3 (MP3) files.*/
+	public final static String MP3_NAME_EXTENSION="mp3";
+	/**The extension for Ogg Vorbis files.*/
+	public final static String OGG_NAME_EXTENSION="ogg";
+	/**The name extension for Microsoft Windows Wave format.*/
+	public final static String WAV_NAME_EXTENSION="wav";
 
 	/**Determines if the given content type represents an audio file.
 	<p>This method recognizes the following audio media types:</p>
@@ -34,7 +45,7 @@ public class Audio
 	@param mediaType The content type to examine.
 	@return <code>true</code> if the content type represents audio.
 	*/
-	public static boolean isAudio(final ContentType mediaType)	//TODO move to some Audio class
+	public static boolean isAudio(final ContentType mediaType)
 	{
 		final String topLevelType=mediaType.getPrimaryType();	//get the content type top-level type
 		if(ContentType.AUDIO_PRIMARY_TYPE.equals(topLevelType))	//if this is a top-level audio content type

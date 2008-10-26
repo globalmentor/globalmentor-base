@@ -25,6 +25,9 @@ import java.util.*;
 public class PropertiesUtilities
 {
 
+	/**The name extension for properties files, such as Java properties files.*/
+	public final static String PROPERTIES_NAME_EXTENSION="properties";
+
 	/**A string representation of boolean <code>true</code>.*/
 	public final static String TRUE_STRING=String.valueOf(true);
 

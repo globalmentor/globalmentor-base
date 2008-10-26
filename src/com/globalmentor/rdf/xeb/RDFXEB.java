@@ -29,6 +29,9 @@ import com.globalmentor.rdf.*;
 public class RDFXEB implements RDFResourceFactory
 {
 
+	/**The name extension for XEB book files.*/
+	public final static String XEB_NAME_EXTENSION="xeb";
+
 	/**The recommended prefix to the XEB namespace.*/
 	public final static String XEB_NAMESPACE_PREFIX="xeb";
 	/**The URI to the XEB namespace.*/

@@ -1162,7 +1162,7 @@ TODO fix outputDir
 
 		//TODO see if we should extract the TOC or not
 		extractTOC(publication, itemURL, itemDocument, outputFile); //TODO testing
-		final File backupFile=new File(outputFile.getParent(), outputFile.getName()+FileConstants.EXTENSION_SEPARATOR+"backup"); //create the backup file object TRODO use a constant here TODO use a standard extension changing routine
+		final File backupFile=new File(outputFile.getParent(), outputFile.getName()+Files.FILENAME_EXTENSION_SEPARATOR+"backup"); //create the backup file object TRODO use a constant here TODO use a standard extension changing routine
 		if(backupFile.exists()) //if the  backup file exists
 			backupFile.delete();  //delete the backup file
 		if(!outputFile.exists() || outputFile.renameTo(backupFile)) //try to rename the file to a backup file; if we succeeded (or if the file didn't exist in the first place, meaning we're transferring the file from another location

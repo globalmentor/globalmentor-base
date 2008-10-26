@@ -24,7 +24,6 @@ import static java.util.Collections.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.*;
 
-import static com.globalmentor.io.FileConstants.*;
 import static com.globalmentor.io.Files.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
@@ -42,7 +41,10 @@ import com.globalmentor.util.NameValuePair;
 */
 public class Classes
 {
-	
+
+	/**The name extension for Java class files.*/
+	public final static String CLASS_NAME_EXTENSION="class";
+
 	/**The getter prefix "get".*/
 	public final static String GET_GETTER_PREFIX="get";
 
@@ -797,7 +799,7 @@ public class Classes
 //			TODO del Debug.trace("baseName:", baseName);
 				final String extension=getExtension(filename);	//get the extension
 //			TODO del Debug.trace("extension:", extension);
-				file=File.createTempFile(baseName, new StringBuilder().append(EXTENSION_SEPARATOR).append(extension).toString());	//create a temp file with the base name as the prefix and the extension (with separator) as the suffix
+				file=File.createTempFile(baseName, new StringBuilder().append(FILENAME_EXTENSION_SEPARATOR).append(extension).toString());	//create a temp file with the base name as the prefix and the extension (with separator) as the suffix
 				file.deleteOnExit();	//indicate that the temporary file should be deleted when the JVM exits
 				final InputStream inputStream=resourceURL.openConnection().getInputStream();	//get an input stream to the resource
 				try

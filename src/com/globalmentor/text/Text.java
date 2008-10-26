@@ -42,6 +42,9 @@ public class Text
 	/**The content type for plain text: <code>text/plain</code>.*/
 	public static final ContentType TEXT_PLAIN_CONTENT_TYPE=ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
 
+	/**The name extension for text files.*/
+	public final static String TXT_NAME_EXTENSION="txt";
+
 	/**The string representing the CR EOL character sequence.
 	@see {@link Characters#CARRIAGE_RETURN_CHAR}
 	*/
