@@ -19,7 +19,6 @@ package com.globalmentor.java;
 import java.io.File;
 
 import static com.globalmentor.java.Strings.*;
-import static com.globalmentor.java.SystemConstants.*;
 
 /**Utilities for working with system-specific attributes.
 @author Garret Wilson
@@ -27,10 +26,28 @@ import static com.globalmentor.java.SystemConstants.*;
 public class SystemUtilities
 {
 
+	/**The user name property.*/
+	public final static String USER_NAME_PROPERTY="user.name";
+	/**The property for the user's home directory.*/
+	public final static String USER_HOME_PROPERTY="user.home";
+	/**The property for the user's current directory.*/
+	public final static String USER_DIR_PROPERTY="user.dir";
+	/**The name of the operating system.*/
+	public final static String OS_NAME_PROPERTY="os.name";
+	/**The operating system architecture.*/
+	public final static String OS_ARCH_PROPERTY="os.arch";
+	/**The operating system version.*/
+	public final static String OS_VERSION_PROPERTY="os.version";
+	/**The property specifying the line separator character for the platform.*/
+	public final static String LINE_SEPARATOR_PROPERTY="line.separator";
+	
+	/**The string, "windows", which is a case-insensitive substring of a Windows operating system identification string.*/
+	public final static String WINDOWS="windows";
+
 	/**Returns the system line separator string.
 	@return The the system line separator string.
 	@exception SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
-	@see SystemConstants#LINE_SEPARATOR_PROPERTY
+	@see #LINE_SEPARATOR_PROPERTY
 	*/
 	public static String getLineSeparator() throws SecurityException
 	{
@@ -40,7 +57,7 @@ public class SystemUtilities
 	/**Returns the home directory of the user.
 	@return The user home directory.
 	@exception SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
-	@see SystemConstants#USER_HOME_PROPERTY
+	@see #USER_HOME_PROPERTY
 	*/
 	public static File getUserHomeDirectory() throws SecurityException
 	{
@@ -49,11 +66,12 @@ public class SystemUtilities
 
 	/**@return <code>true</code> if the operating system is a version of Windows.
 	@exception SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
-	@see SystemConstants#OS_NAME_PROPERTY
+	@see #OS_NAME_PROPERTY
 	*/
 	public static boolean isWindowsOS()
 	{
 		final String osName=System.getProperty(OS_NAME_PROPERTY);	//get the name of the operating system
 		return indexOfIgnoreCase(osName, WINDOWS)>=0;	//we're running on Windows if the operating system name has "windows" in it somewhere
 	}
+
 }

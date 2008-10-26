@@ -104,12 +104,22 @@ public class Files
 	/**The prefix used by Unix to designate a hidden file.*/
 	public final static String UNIX_HIDDEN_FILENAME_PREFIX=".";
 
+	/**The filename of the NTFS recycle bin folder.
+	@see <a href="http://support.microsoft.com/kb/171694">Differences Between the Recycle Bin and the Recycler Folder</a>
+	*/
+	public final static String NTFS_RECYCLER_DIRECTORY_FILENAME="RECYCLER";
+	
 	/**The NTFS delimiter for separating Alternat Data Stream identifiers from the rest of the filename.
 	@see <a href="http://support.microsoft.com/kb/105763">How To Use NTFS Alternate Data Streams</a>
 	*/
 	public final static char NTFS_ADS_DELIMITER=':';
+
+	/**The name of the hidden system folder on Windows used by System Restore to store its information and restore points.
+	@see <a href="http://support.microsoft.com/kb/309531">How to gain access to the System Volume Information folder</a>
+	*/
+	public final static String WINDOWS_SYSTEM_VOLUME_INFORMATION_DIRECTORY_FILENAME="System Volume Information";
 	
-			//file extensions for certain media types TODO move to respective files 
+			//file extensions for certain media types TODO move to respective classes 
 	/**The extension for Common Gateway Interface (CGI) files.*/
 	public final static String CGI_EXTENSION="cgi";
 	/**The extension for Microsoft Word files.*/
@@ -565,11 +575,11 @@ public class Files
 	@exception SecurityException Thrown if we don't have permission to access the
 		user's directory.
 	@see System
-	@see SystemConstants#USER_DIR_PROPERTY
+	@see SystemUtilities#USER_DIR_PROPERTY
 	*/
 	public static File getUserDirectory() throws SecurityException
 	{
-		return new File(System.getProperty(SystemConstants.USER_DIR_PROPERTY)); //try to get the current directory
+		return new File(System.getProperty(SystemUtilities.USER_DIR_PROPERTY)); //try to get the current directory
 	}
 
 	/**@return The characters that are not allowed in filenames of this operating system.*/
