@@ -23,6 +23,7 @@ import static com.globalmentor.java.Objects.*;
 /**Wraps an existing output stream.
 The decorated output stream is released when this stream is closed.
 This decorator provides convenience methods {@link #beforeClose()} and {@link #afterClose()} called before and after the stream is closed, respectively.
+@param <O> The type of output stream being decorated.
 @author Garret Wilson
 */
 public class OutputStreamDecorator<O extends OutputStream> extends OutputStream
@@ -164,21 +165,37 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream
   {
   }
 
-	/**Closes this output stream and releases any system resources associated with this stream. 
+	/**Closes this output stream and releases any system resources associated with the stream.
 	A closed stream cannot perform output operations and cannot be reopened.
+	@param closeDecoratedStream Whether the decorated stream should also be closed.
 	@exception IOException if an I/O error occurs.
 	@see #beforeClose()
 	@see #afterClose()
 	*/
-  public synchronized void close() throws IOException	//this method is synchronized so that the colsing operation can complete without being bothered by other threads 
+	public synchronized void close(final boolean closeDecoratedStream) throws IOException	//this method is synchronized so that the closing operation can complete without being bothered by other threads
 	{
   	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
   	if(outputStream!=null)	//if we still have an output stream to decorate
   	{
   		beforeClose();	//perform actions before closing
-  		outputStream.close();	//close the decorated output stream
+  		if(closeDecoratedStream)
+  		{
+  			outputStream.close();	//close the decorated output stream
+  		}
   		this.outputStream=null;	//release the decorated output stream if closing was successful
   		afterClose();	//perform actions after closing
   	}
+	}
+
+	/**Closes this output stream and releases any system resources associated with this stream. 
+	A closed stream cannot perform output operations and cannot be reopened.
+	@exception IOException if an I/O error occurs.
+	@see #beforeClose()
+	@see #afterClose()
+	@see #close(boolean)
+	*/
+  public void close() throws IOException 
+	{
+		close(true);	//close this stream and the underlying stream
 	}
 }

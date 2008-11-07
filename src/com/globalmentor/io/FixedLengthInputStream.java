@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,59 +17,50 @@
 package com.globalmentor.io;
 
 import java.io.*;
-import static java.lang.Math.*;
 
-/**An input stream that logs all transferred bytes of a decorated stream.
+import static com.globalmentor.java.Longs.*;
+
+/**Wraps an existing input stream and only returns a fixed number of bytes.
+<p>This stream should always be closed when access is finished; otherwise the underlying stream could be corrupted.</p>
+<p>This class is not thread safe.</p>
 @author Garret Wilson
 */
-public class LogInputStream extends InputStreamDecorator<InputStream>
+public class FixedLengthInputStream extends InputStreamDecorator<InputStream>
 {
 
-	/**The size of the local buffer used for skipping.*/
-	private final long SKIP_BUFFER_SIZE=2048;
+	/**The number of bytes left to be read.*/
+	private long length;
 
-	/**The byte array output stream that logs transferred data.*/
-	private ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+		/**@return The number of bytes left to be read.*/
+		protected long getLength() {return length;}
 
-	/**@return The current logged data accumulated from transfers, leaving the data to be retrieved again at a future time.*/
-	public byte[] getLoggedBytes()
-	{
-		return getLoggedBytes(false);	//return the logged bytes without clearing the log
-	}
+	/**Whether the decorated stream should be closed when this stream is closed.*/
+	private final boolean closeDecoratedStream;
 
-	/**Returns all logged bytes accumulated from transfers since the logged bytes were last cleared.
-	This method allows the log to be atomically cleared at the same time that data is retrieved so that no data is lost. 
-	@param clearLoggedBytes Whether the log should be cleared after retrieving the data.
-	@return The current logged data accumulated from transfers.
-	@see #clearLoggedBytes()
+	/**Decorates the given input stream.
+	The underlying stream will be closed when this stream is closed.
+	@param inputStream The input stream to decorate.
+	@param length The number of bytes to read.
+	@exception NullPointerException if the given stream is <code>null</code>.
+	@throws IllegalArgumentException if the given length is less than zero.
 	*/
-	public byte[] getLoggedBytes(final boolean clearLoggedBytes)
+	public FixedLengthInputStream(final InputStream inputStream, final long length)
 	{
-		final byte[] bytes;	//we'll store here the bytes we retrieve
-		synchronized(byteArrayOutputStream)	//synchronize on the logged bytes
-		{
-			bytes=byteArrayOutputStream.toByteArray();	//get the accumulated bytes
-			if(clearLoggedBytes)	//if we should clear the logged bytes
-			{
-				byteArrayOutputStream.reset();	//reset the buffer
-			}
-		}
-		return bytes;	//return the bytes we retrieved
-	}
-
-	/**Clears all accumulated logged bytes.*/
-	public void clearLoggedBytes()
-	{
-		byteArrayOutputStream.reset();	//reset the logged data
+		this(inputStream, length, true);
 	}
 
 	/**Decorates the given input stream.
 	@param inputStream The input stream to decorate.
+	@param length The number of bytes to read.
+	@param closeDecoratedStream Whether the decorated stream should be closed when this stream is closed.
 	@exception NullPointerException if the given stream is <code>null</code>.
+	@throws IllegalArgumentException if the given length is less than zero.
 	*/
-	public LogInputStream(final InputStream inputStream)
+	public FixedLengthInputStream(final InputStream inputStream, final long length, final boolean closeDecoratedStream)
 	{
-		super(inputStream);	//construct the parent class
+		super(inputStream);
+		this.length=checkMinimum(length, 0);
+		this.closeDecoratedStream=closeDecoratedStream;
 	}
 
   /**
@@ -88,12 +79,16 @@ public class LogInputStream extends InputStreamDecorator<InputStream>
    */
   public int read() throws IOException
 	{
-  	final int b=super.read();	//read data normally
-  	if(b>=0)	//if valid data was read
+  	if(length==0)	//if we've reached the end of our stream
   	{
-  		byteArrayOutputStream.write(b);	//log the data
+  		return -1;
   	}
-  	return b;	//return the data read
+  	final int b=super.read();
+  	if(b>=0)	//if we haven't reached the end of the stream
+  	{
+  		--length;	//indicate that we've read another byte
+  	}
+  	return b;
 	}
 
   /**
@@ -133,14 +128,9 @@ public class LogInputStream extends InputStreamDecorator<InputStream>
    * @exception  NullPointerException  if <code>b</code> is <code>null</code>.
    * @see        java.io.InputStream#read(byte[], int, int)
    */
-  public int read(byte b[]) throws IOException
+  public final int read(byte b[]) throws IOException
 	{
-  	final int count=super.read(b);	//read data normally
-  	if(count>0)	//if data was read
-  	{
-  		byteArrayOutputStream.write(b, 0, count);	//log the data
-  	}
-  	return count;	//return the amount of data read
+  	return read(b, 0, b.length);	//let the other method take care of the fixed length
 	}
 
   /**
@@ -205,14 +195,22 @@ public class LogInputStream extends InputStreamDecorator<InputStream>
    * @exception  NullPointerException  if <code>b</code> is <code>null</code>.
    * @see        java.io.InputStream#read()
    */
-  public int read(byte b[], int off, int len) throws IOException
+  public final int read(byte b[], int off, int len) throws IOException
 	{
-  	final int count=super.read(b, off, len);	//read data normally
-  	if(count>0)	//if data was read
+  	if(length==0)	//if we've reached the end of our stream
   	{
-  		byteArrayOutputStream.write(b, off, count);	//log the data
+  		return -1;
   	}
-  	return count;	//return the amount of data read
+  	if(len>length)	//if they want to read more than we have
+  	{
+  		len=(int)length;	//only read what we have
+  	}
+  	int count=super.read(b, off, len);	//read the data
+  	if(count>=0)	//if we haven't reached the end of the stream
+  	{
+  		length-=count;	//note that we've read however many bytes 
+  	}
+  	return count;
 	}
 
   /**
@@ -224,27 +222,66 @@ public class LogInputStream extends InputStreamDecorator<InputStream>
    * The actual number of bytes skipped is returned.  If <code>n</code> is
    * negative, no bytes are skipped.
    *
-   * This version reads and logs the skipped data. 
+   * <p> The <code>skip</code> method of <code>InputStream</code> creates a
+   * byte array and then repeatedly reads into it until <code>n</code> bytes
+   * have been read or the end of the stream has been reached. Subclasses are
+   * encouraged to provide a more efficient implementation of this method.
    *
    * @param      n   the number of bytes to be skipped.
    * @return     the actual number of bytes skipped.
    * @exception  IOException  if an I/O error occurs.
    */
-  public long skip(final long n) throws IOException
+  public long skip(long n) throws IOException
 	{
-  	final byte[] buffer=new byte[(int)min(n, SKIP_BUFFER_SIZE)];	//make a buffer only as large as needed (we can cast to an int, because we know that at least one of the values is an int, and we're taking the minimum of the two
-  	final int bufferSize=buffer.length;	//get the length of the buffer
-  	long bytesLeft=n;	//we'll start out needing to read all the bytes
-  	int bufferBytesRead=0;	//we'll keep track of how many bytes we read each time
-  	while(bytesLeft>0 && bufferBytesRead>=0)	//while there are bytes left and we haven't reached the end of the stream
+  	if(length==0)	//if we've reached the end of our stream
   	{
-  		bufferBytesRead=read(buffer, 0, (int)min(bytesLeft, bufferSize));	//read as many bytes as we have left, or as many as our buffer can hold, whichever is less; this will also automatically log our data
-	  	if(bufferBytesRead>0)	//if we read any bytes at all (this could be negative, so don't blindly subtract; but since we're checking anyway, we might as well throw out the zero case)
-	  	{
-	  		bytesLeft-=bufferBytesRead;	//decrease the bytes left by the number read
-	  	}
+  		return 0;
   	}
-  	return n-bytesLeft;	//return the number of bytes we skipped (logged), which will be the total number minus however many we have left to read, if any (if we reached the end of the stream, that is)
+  	if(n>length)	//if they want to skip more than we have
+  	{
+  		n=length;	//only skip what we have
+  	}
+  	long count=super.skip(n);	//skip the data
+  	if(count>=0)	//if we haven't reached the end of the stream
+  	{
+  		length-=count;	//note that we've skipped however many bytes 
+  	}
+  	return count;
 	}
-	
+
+  /**
+   * Returns the number of bytes that can be read (or skipped over) from
+   * this input stream without blocking by the next caller of a method for
+   * this input stream.  The next caller might be the same thread or
+   * another thread.
+   *
+   * <p> The <code>available</code> method for class <code>InputStream</code>
+   * always returns <code>0</code>.
+   *
+   * <p> This method should be overridden by subclasses.
+   *
+   * @return     the number of bytes that can be read from this input stream
+   *             without blocking.
+   * @exception  IOException  if an I/O error occurs.
+   */
+  public int available() throws IOException
+	{
+  	return (int)Math.min(super.available(), length);	//don't return that more is available that our length 
+	}
+
+	/**Closes this input stream and releases any system resources associated with the stream.
+	A closed stream cannot perform output operations and cannot be reopened.
+	@exception IOException if an I/O error occurs.
+	@see #beforeClose()
+	@see #afterClose()
+	@see #close(boolean)
+	*/
+	public void close() throws IOException
+	{
+		if(getInputStream()!=null && length>0)	//if we aren't already closed and we have more bytes left
+		{
+			skip(length);	//skip the remaining bytes
+		}
+		close(closeDecoratedStream);	//close this stream and optionally the underlying string, as configured
+	}
 }

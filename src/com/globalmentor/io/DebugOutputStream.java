@@ -16,56 +16,39 @@
 
 package com.globalmentor.io;
 
+import static com.globalmentor.io.Charsets.*;
+import static com.globalmentor.java.Objects.*;
+
 import java.io.*;
+
+import com.globalmentor.util.Debug;
 
 /**An output stream that logs all transferred bytes of a decorated stream.
 @author Garret Wilson
 */
-public class LogOutputStream extends OutputStreamDecorator<OutputStream>
+public class DebugOutputStream extends OutputStreamDecorator<OutputStream>
 {
 
-	/**The byte array output stream that logs transferred data.*/
-	private ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+	/**The log report level to use.*/
+	private final Debug.ReportLevel reportLevel;
 
-	/**@return The current logged data accumulated from transfers, leaving the data to be retrieved again at a future time.*/
-	public byte[] getLoggedBytes()
-	{
-		return getLoggedBytes(false);	//return the logged bytes without clearing the log
-	}
-
-	/**Returns all logged bytes accumulated from transfers since the logged bytes were last cleared.
-	This method allows the log to be atomically cleared at the same time that data is retrieved so that no data is lost. 
-	@param clearLoggedBytes Whether the log should be cleared after retrieving the data.
-	@return The current logged data accumulated from transfers.
-	@see #clearLoggedBytes()
+	/**Decorates the given output stream with a report level of {@link Debug.ReportLevel#LOG}.
+	@param outputStream The output stream to decorate.
+	@exception NullPointerException if the given stream is <code>null</code>.
 	*/
-	public byte[] getLoggedBytes(final boolean clearLoggedBytes)
+	public DebugOutputStream(final OutputStream outputStream)
 	{
-		final byte[] bytes;	//we'll store here the bytes we retrieve
-		synchronized(byteArrayOutputStream)	//synchronize on the logged bytes
-		{
-			bytes=byteArrayOutputStream.toByteArray();	//get the accumulated bytes
-			if(clearLoggedBytes)	//if we should clear the logged bytes
-			{
-				byteArrayOutputStream.reset();	//reset the buffer
-			}
-		}
-		return bytes;	//return the bytes we retrieved
-	}
-
-	/**Clears all accumulated logged bytes.*/
-	public void clearLoggedBytes()
-	{
-		byteArrayOutputStream.reset();	//reset the logged data
+		this(outputStream, Debug.ReportLevel.LOG);
 	}
 
 	/**Decorates the given output stream.
 	@param outputStream The output stream to decorate.
-	@exception NullPointerException if the given stream is <code>null</code>.
+	@exception NullPointerException if the given stream and/or report level is <code>null</code>.
 	*/
-	public LogOutputStream(final OutputStream outputStream)
+	public DebugOutputStream(final OutputStream outputStream, final Debug.ReportLevel reportLevel)
 	{
 		super(outputStream);	//construct the parent class
+		this.reportLevel=checkInstance(reportLevel, "Report level cannot be null.");
 	}
 
   /**
@@ -85,7 +68,10 @@ public class LogOutputStream extends OutputStreamDecorator<OutputStream>
    */
 	public void write(int b) throws IOException
 	{
-		byteArrayOutputStream.write(b);	//log the byte
+		if(Debug.getReportLevels().contains(reportLevel) && Debug.isDebug())	//if this report level is requested and debugging is turned on
+		{
+			Debug.getOutput().write(b);
+		}
 		super.write(b);	//do the default writing
 	}
 
@@ -101,7 +87,10 @@ public class LogOutputStream extends OutputStreamDecorator<OutputStream>
    */
   public void write(byte b[]) throws IOException
 	{
-		byteArrayOutputStream.write(b);	//log the bytes
+		if(Debug.getReportLevels().contains(reportLevel) && Debug.isDebug())	//if this report level is requested and debugging is turned on
+		{
+			Debug.getOutput().write(new String(b, US_ASCII_CHARSET));
+		}
 		super.write(b);	//do the default writing
   }
 
@@ -135,7 +124,10 @@ public class LogOutputStream extends OutputStreamDecorator<OutputStream>
    */
   public void write(byte b[], int off, int len) throws IOException
 	{
-		byteArrayOutputStream.write(b, off, len);	//log the bytes
+		if(Debug.getReportLevels().contains(reportLevel) && Debug.isDebug())	//if this report level is requested and debugging is turned on
+		{
+			Debug.getOutput().write(new String(b, off, len, US_ASCII_CHARSET));
+		}
 		super.write(b, off, len);	//do the default writing
   }
 

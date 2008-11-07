@@ -17,10 +17,12 @@
 package com.globalmentor.net.http;
 
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
+import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Strings.*;
 
@@ -43,6 +45,9 @@ public class HTTP
 	/**The default HTTPS port, 143.*/
 	public final static int DEFAULT_SECURE_PORT=443;
 
+	/**The charset used for HTTP.*/
+	public final static Charset HTTP_CHARSET=US_ASCII_CHARSET;
+	
 	/**The HTTP header indicating the allowed methods.*/
 	public final static String ALLOW_HEADER="Allow";
 	/**The HTTP header indicating the accepted content types.*/

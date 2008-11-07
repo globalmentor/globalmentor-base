@@ -21,6 +21,7 @@ import java.io.*;
 import static java.lang.System.*;
 import java.util.*;
 
+import com.globalmentor.java.Bytes;
 import com.globalmentor.text.CharacterEncoding;
 
 /**Class to manipulate input streams.
@@ -143,7 +144,7 @@ public class InputStreams
 		}
 		else	//if not all the skipped bytes requested were actually skipped
 		{
-			return new byte[0];	//return an empty byte array
+			return Bytes.NO_BYTES;	//return an empty byte array
 		}
 	}
 

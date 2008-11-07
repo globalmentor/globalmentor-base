@@ -14,34 +14,60 @@
  * limitations under the License.
  */
 
-package com.globalmentor.io;
+package com.globalmentor.net.http;
 
 import java.io.*;
+import static java.lang.System.*;
+
+import com.globalmentor.java.Bytes;
 
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.net.http.HTTPParser.*;
 
-/**Wraps an existing input stream.
-The decorated input stream is released when this stream is closed.
-This decorator provides convenience methods {@link #beforeClose()} and {@link #afterClose()} called before and after the stream is closed, respectively.
-@param <I> The type of input stream being decorated.
+/**An input stream that reads HTTP chunked content from an existing stream,
+signalling the end of the stream when the chunks are finished, but doesn't close the underlying stream.
+<p>This stream should always be closed when access is finished; otherwise the underlying stream could be corrupted.</p>
+<p>This implementation ignores chunked trailers.</p>
+<p>This implementation does not support mark and reset.</p>
+<p>This class is not thread safe.</p>
 @author Garret Wilson
 */
-public class InputStreamDecorator<I extends InputStream> extends InputStream
+public class HTTPChunkedInputStream extends InputStream
 {
-	
-	/**The input stream being decorated.*/
-	private I inputStream;
 
-		/**@return The input stream being decorated, or <code>null</code> if it has been released after this stream was closed.*/
-		protected I getInputStream() {return inputStream;}
+	/**The input stream being decorated.*/
+	private InputStream inputStream;
+
+	/**The current chunk being read, or <code>null</code> if the end of the chunks has been reached.*/
+	private byte[] chunk=Bytes.NO_BYTES;
+
+	/**The current index within the chunk, or the length of the chunk if this chunk has been drained.
+	This value is not specified if there is no current chunk.
+	*/
+	private int index=0;
+
+	/**Whether the decorated stream should be closed when this stream is closed.*/
+	private final boolean closeDecoratedStream;
 
 	/**Decorates the given input stream.
+	The underlying stream will be closed when this stream is closed.
 	@param inputStream The input stream to decorate.
 	@exception NullPointerException if the given stream is <code>null</code>.
 	*/
-	public InputStreamDecorator(final I inputStream)
+	public HTTPChunkedInputStream (final InputStream inputStream)
+	{
+		this(inputStream, true);
+	}
+
+	/**Decorates the given input stream.
+	@param inputStream The input stream to decorate.
+	@param closeDecoratedStream Whether the decorated stream should be closed when this stream is closed.
+	@exception NullPointerException if the given stream is <code>null</code>.
+	*/
+	public HTTPChunkedInputStream (final InputStream inputStream, final boolean closeDecoratedStream)
 	{
 		this.inputStream=checkInstance(inputStream, "Input stream cannot be null.");	//save the decorated input stream
+		this.closeDecoratedStream=closeDecoratedStream;
 	}
 
   /**
@@ -60,8 +86,20 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream
    */
   public int read() throws IOException
 	{
-  	final InputStream inputStream=getInputStream();	//get the decorated input stream
- 		return inputStream!=null ? inputStream.read() : -1;	//if there is no decorated input stream, indicate that the stream is closed by returning -1
+  	if(inputStream==null || chunk==null)	//if this stream is closed or we're out of chunks
+  	{
+  		return -1;
+  	}
+  	if(index==chunk.length)	//if we have drained this chunk
+  	{
+  		chunk=parseChunk(inputStream);	//parse another chunk from the input stream
+  		index=0;	//reset our position to the start of the chunk
+  		if(chunk==null)	//if we were unable to get another chunk
+  		{
+  			return -1;
+  		}
+  	}
+  	return chunk[index++];	//return the current data and advance the index
 	}
 
   /**
@@ -101,10 +139,9 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream
    * @exception  NullPointerException  if <code>b</code> is <code>null</code>.
    * @see        java.io.InputStream#read(byte[], int, int)
    */
-  public int read(byte b[]) throws IOException
+  public final int read(byte b[]) throws IOException
 	{
-  	final InputStream inputStream=getInputStream();	//get the decorated input stream
- 		return inputStream!=null ? inputStream.read(b) : -1;	//if there is no decorated input stream, indicate that the stream is closed by returning -1
+  	return read(b, 0, b.length);	//let the other method take care of the fixed length
 	}
 
   /**
@@ -171,8 +208,25 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream
    */
   public int read(byte b[], int off, int len) throws IOException
 	{
-  	final InputStream inputStream=getInputStream();	//get the decorated input stream
- 		return inputStream!=null ? inputStream.read(b, off, len) : -1;	//if there is no decorated input stream, indicate that the stream is closed by returning -1
+  	if(inputStream==null || chunk==null)	//if this stream is closed or we're out of chunks
+  	{
+  		return -1;
+  	}
+  	int total=0;
+  	while(chunk!=null && len>0)	//keep reading until we run out of chunks or we don't need to read any more
+  	{
+  		final int count=Math.min(len, chunk.length-index);	//don't read more from this chunk that there is left in the chunk
+  		arraycopy(chunk, index, b, off, count);	//copy from the chunk
+  		total+=count;	//increase the total number of bytes read
+  		index+=count;	//advance our position in the chunk
+  		len-=count;	//decrease the number of bytes we need to copy
+  		if(len>0 && index==chunk.length)	//if we need to read more bytes but we've drained the chunk
+  		{
+	  		chunk=parseChunk(inputStream);	//parse another chunk from the input stream
+	  		index=0;	//reset our position to the start of the chunk
+  		}
+  	}
+  	return total;	//return the total bytes read
 	}
 
   /**
@@ -195,8 +249,24 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream
    */
   public long skip(long n) throws IOException
 	{
-  	final InputStream inputStream=getInputStream();	//get the decorated input stream
-  	return inputStream!=null ? inputStream.skip(n) : 0;
+  	if(inputStream==null)	//if this stream is closed
+  	{
+  		return 0;
+  	}
+  	int total=0;
+  	while(chunk!=null && n>0)	//keep reading until we run out of chunks or we don't need to read any more
+  	{
+  		final long count=Math.min(n, chunk.length-index);	//don't skip more from this chunk that there is left in the chunk
+  		total+=count;	//increase the total number of bytes read
+  		index+=count;	//advance our position in the chunk
+  		n-=count;	//decrease the number of bytes we need to skip
+  		if(n>0 && index==chunk.length)	//if we need to read more bytes but we've drained the chunk
+  		{
+	  		chunk=parseChunk(inputStream);	//parse another chunk from the input stream
+	  		index=0;	//reset our position to the start of the chunk
+  		}
+  	}
+  	return total;	//return the total bytes skipped
 	}
 
   /**
@@ -216,8 +286,11 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream
    */
   public int available() throws IOException
 	{
-  	final InputStream inputStream=getInputStream();	//get the decorated input stream
- 		return inputStream!=null ? inputStream.available() : 0;
+  	if(inputStream==null || chunk==null)	//if this stream is closed or we're out of chunks
+  	{
+  		return 0;
+  	}
+  	return chunk.length-index;	//show how many bytes are left in this chunk
 	}
 
   /**
@@ -246,11 +319,6 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream
    */
   public synchronized void mark(int readlimit)
 	{
-  	final InputStream inputStream=getInputStream();	//get the decorated input stream
-  	if(inputStream!=null)	//if we still have an input stream to decorate
-  	{
-  		inputStream.mark(readlimit);
-  	}
 	}
 
   /**
@@ -300,11 +368,7 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream
    */
   public synchronized void reset() throws IOException
 	{
-  	final InputStream inputStream=getInputStream();	//get the decorated input stream
-  	if(inputStream!=null)	//if we still have an input stream to decorate
-  	{
-  		inputStream.reset();
-  	}
+  	throw new IOException("Mark/reset not supported.");
 	}
 
   /**
@@ -321,55 +385,27 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream
    */
   public boolean markSupported()
 	{
-  	final InputStream inputStream=getInputStream();	//get the decorated input stream
- 		return inputStream!=null ? inputStream.markSupported() : false;
-	}
-	
-  /**Called before the stream is closed.
-	@exception IOException if an I/O error occurs.
-	*/
-  protected void beforeClose() throws IOException 
-  {
-  }
-
-  /**Called after the stream is successfully closed.
-	@exception IOException if an I/O error occurs.
-	*/
-  protected void afterClose() throws IOException
-  {
-  }
-
-	/**Closes this input stream and releases any system resources associated with the stream.
-	A closed stream cannot perform output operations and cannot be reopened.
-	@param closeDecoratedStream Whether the decorated stream should also be closed.
-	@exception IOException if an I/O error occurs.
-	@see #beforeClose()
-	@see #afterClose()
-	*/
-	public synchronized void close(final boolean closeDecoratedStream) throws IOException	//this method is synchronized so that the closing operation can complete without being bothered by other threads
-	{
-  	final InputStream inputStream=getInputStream();	//get the decorated input stream
-  	if(inputStream!=null)	//if we still have an input stream to decorate
-  	{
-  		beforeClose();	//perform actions before closing
-  		if(closeDecoratedStream)
-  		{
-  			inputStream.close();	//close the decorated input stream
-  		}
-  		this.inputStream=null;	//release the decorated input stream if closing was successful
-  		afterClose();	//perform actions after closing
-  	}
+  	return false;
 	}
 
 	/**Closes this input stream and releases any system resources associated with the stream.
 	A closed stream cannot perform output operations and cannot be reopened.
 	@exception IOException if an I/O error occurs.
-	@see #beforeClose()
-	@see #afterClose()
-	@see #close(boolean)
 	*/
 	public void close() throws IOException
 	{
-		close(true);	//close this stream and the underlying stream
+  	if(inputStream!=null)	//if we still have an input stream to decorate
+  	{
+  		while(chunk!=null)	//while there are more chunks, drain the input stream
+  		{
+    		chunk=parseChunk(inputStream);	//parse another chunk from the input stream
+  		}
+  		parseHeaders(inputStream);	//parse any trailers
+  		if(closeDecoratedStream)	//if we should close the underlying stream
+  		{
+  			inputStream.close();
+  		}
+  		inputStream=null;	//release the underlying input stream, but don't close it
+  	}
 	}
 }

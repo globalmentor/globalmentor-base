@@ -40,6 +40,8 @@ public class Charsets
 	public final static String UTF_32BE_NAME="UTF-32BE";
 	/**The canonical name of the 32-bit UTF-32 little-endian charset.*/
 	public final static String UTF_32LE_NAME="UTF-32LE";
+	/**The canonical name of the US-ASCII charset.*/
+	public final static String US_ASCII_NAME="US-ASCII";
 	/**The canonical name of the ISO-8859-1 charset.*/
 	public final static String ISO_8859_1_NAME="ISO-8859-1";
 	/**The canonical name of the Cp1252 charset.*/
@@ -47,6 +49,8 @@ public class Charsets
 
 	/**The UTF-8 charset.*/
 	public final static Charset UTF_8_CHARSET=Charset.forName(UTF_8_NAME);
+	/**The US-ASCII charset.*/
+	public final static Charset US_ASCII_CHARSET=Charset.forName(US_ASCII_NAME);
 
 	/**Determines the byte order mark (BOM) needed to represent the given charset.
 	For charsets that do not specify endianness, big-endian is assumed.
