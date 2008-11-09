@@ -277,7 +277,8 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 	/**Compares this resource with another for equality.
 	This implementation returns <code>true</code> if the other object is an URF resource
 	and either both resources have the same non-<code>null</code> URI, or neither resource
-	has a URI but they have the same number of properties and the properties are equal.
+	has a URI but they have the same number of properties and the properties are equal
+	(including scoped properties).
 	@param object The object with which to compare this resource.
 	@return <code>true<code> if the other object is the same resource, an URF resource with the same non-<code>null</code> URI, or a resource with the same <code>null</code> URI and equal properties.
 	@see #getURI()
@@ -293,41 +294,19 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 			return false;	//non-resources aren't equal
 		}
 		final URFResource resource=(URFResource)object;
-		final URI uri=getURI();	//get the reference URI
-		if(uri!=null)	//if this resource has a reference URI
+		final URI uri=getURI();	//get the resource URI
+		final URI resourceURI=resource.getURI();	//get the URI of the other resource
+		if(uri!=null)	//if this resource has a URI
 		{
-			return uri.equals(resource.getURI());	//compare reference URIs
+			return uri.equals(resourceURI);	//compare URIs
 		}
-		else	//if this resource has no reference URI
+		else	//if this resource has no URI
 		{
-			readLock().lock();	//get a read lock
-			try
+			if(resourceURI!=null)	//if the other resource has a URI, and this one doesn't they aren't equal
 			{
-				if(getPropertyCount()!=resource.getPropertyCount())	//see if the number of properties are different
-				{
-					return false;
-				}
-				if(getPropertyValueCount()!=resource.getPropertyValueCount())	//see if the number of property values are different
-				{
-					return false;
-				}
-				if(hashCode()!=resource.hashCode())	//see if the hash codes are different
-				{
-					return false;
-				}
-				for(final URFProperty property:getProperties())	//because everything looks equal so far, we'll have to look at all our properties to make sure
-				{
-					if(!resource.hasProperty(property))	//if the other resource doesn't have this property
-					{
-						return false;
-					}
-				}
-				return true;	//the other resource has all the same properties as this resource
+				return false;
 			}
-			finally
-			{
-				readLock().unlock();	//always release the read lock
-			}
+			return super.equals(object);	//neither resource has a URI; compare the scopes without regard to the URI
 		}
 	}
 

@@ -109,6 +109,14 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public Iterable<URI> getPropertyURIs();
 
+	/**Retrieves the value context of the property with the given preoprty URI and the given property value.
+	@param propertyURI The URI of the property for which a value context should be returned.
+	@param propertyValue The value of the property for which a value context should be returned.
+	@return The value context of the property with the given URI and value, or <code>null</code> if there is no such property with the given value.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	*/
+	public URFValueContext getPropertyValueContext(final URI propertyURI, final URFResource propertyValue);
+
 	/**Retrieves the first value context of the property with the given URI.
 	All ordered properties will be returned in their correct order before any non-ordered properties.
 	Unordered properties will be returned in an arbitrary order.

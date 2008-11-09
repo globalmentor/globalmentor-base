@@ -253,6 +253,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	}
 
 	/**Determines whether there exists a property with the given property URI and the given property value.
+	This implementation delegates to {@link #getPropertyValueContext(URI, URFResource)}.
 	@param propertyURI The URI of the property of the value to check.
 	@param propertyValue The value to match for the given property.
 	@return <code>true</code> if a property exists with the given property URI and property value.
@@ -260,28 +261,9 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public boolean hasPropertyValue(final URI propertyURI, final URFResource propertyValue)
 	{
-		readLock().lock();	//get a read lock
-		try
-		{
-			final List<URFValueContext> valueContextList=propertyURIValueContextsMap.get(propertyURI);	//get the list of value contexts, if there is one
-			if(valueContextList!=null)	//if there is a list of property values
-			{
-				for(final URFValueContext valueContext:valueContextList)	//look at each value context
-				{
-					if(propertyValue.equals(valueContext.getValue()))	//if we have a context with this value
-					{
-						return true;	//indicate that we found a matching property value
-					}
-				}
-			}
-			return false;	//indicate that the given property value could not be found
-		}
-		finally
-		{
-			readLock().unlock();	//always release the read lock
-		}
+		return getPropertyValueContext(propertyURI, propertyValue)!=null;
 	}
-
+	
 	/**Determines whether there exists a property with the given property URI and the given property value URI.
 	@param propertyURI The URI of the property of the value to check.
 	@param propertyValueURI The value URI to match for the given property.
@@ -396,6 +378,36 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	}
 */
 
+	/**Retrieves the value context of the property with the given preoprty URI and the given property value.
+	@param propertyURI The URI of the property for which a value context should be returned.
+	@param propertyValue The value of the property for which a value context should be returned.
+	@return The value context of the property with the given URI and value, or <code>null</code> if there is no such property with the given value.
+	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	*/
+	public URFValueContext getPropertyValueContext(final URI propertyURI, final URFResource propertyValue)
+	{
+		readLock().lock();	//get a read lock
+		try
+		{
+			final List<URFValueContext> valueContextList=propertyURIValueContextsMap.get(propertyURI);	//get the list of value contexts, if there is one
+			if(valueContextList!=null)	//if there is a list of property values
+			{
+				for(final URFValueContext valueContext:valueContextList)	//look at each value context
+				{
+					if(propertyValue.equals(valueContext.getValue()))	//if we have a context with this value
+					{
+						return valueContext;	//return the matching property value
+					}
+				}
+			}
+			return null;	//indicate that the given property value could not be found
+		}
+		finally
+		{
+			readLock().unlock();	//always release the read lock
+		}
+	}
+	
 	/**Retrieves the first value context of the property with the given URI.
 	All ordered properties will be returned in their correct order before any non-ordered properties.
 	Unordered properties will be returned in an arbitrary order.
@@ -430,7 +442,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		try
 		{
 			final List<URFValueContext> valueContextList=propertyURIValueContextsMap.get(propertyURI);	//get the list of value contexts
-			return (Iterable<URFValueContext>)(valueContextList!=null ? unmodifiableList(valueContextList) : emptyIterable());	//return an unmodifiable version of the list, or an empty iterable if there is no list
+			return valueContextList!=null ? unmodifiableList(valueContextList) : Iterators.<URFValueContext>emptyIterable();	//return an unmodifiable version of the list, or an empty iterable if there is no list
 		}
 		finally
 		{
@@ -1244,6 +1256,57 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 			readLock().unlock();	//always release the read lock
 		}
 		return hashCode;
+	}
+
+	/**Compares this resource with another for equality.
+	This implementation returns <code>true</code> if the other object is an URF scope with  the same number of properties and the properties are equal (including scoped properties).
+	@param object The object with which to compare this resource.
+	@return <code>true<code> if the other object is the same scope or another scope with equal properties and scoped properties.
+	*/
+	public boolean equals(final Object object)
+	{
+		if(this==object)	//if the resources are identical
+		{
+			return true;	//identical resources are always equal
+		}
+		if(!(object instanceof URFScope))	//if we're being compared with something other than an URF scope
+		{
+			return false;	//non-scopes aren't equal
+		}
+		final URFScope scope=(URFScope)object;
+		readLock().lock();	//get a read lock
+		try
+		{
+			if(getPropertyCount()!=scope.getPropertyCount())	//see if the number of properties are different
+			{
+				return false;
+			}
+			if(getPropertyValueCount()!=scope.getPropertyValueCount())	//see if the number of property values are different
+			{
+				return false;
+			}
+			if(hashCode()!=scope.hashCode())	//see if the hash codes are different
+			{
+				return false;
+			}
+			for(final URFProperty property:getProperties())	//because everything looks equal so far, we'll have to look at all our properties to make sure
+			{
+				final URFValueContext scopePropertyValueContext=scope.getPropertyValueContext(property.getPropertyURI(), property.getValue());	//get the context of the property value from the other scope
+				if(scopePropertyValueContext==null)	//if the other scope doesn't have this property
+				{
+					return false;
+				}
+				if(!property.getScope().equals(scopePropertyValueContext.getScope()))	//even though the property and property value are the same, check the scoped properties; if the scoped properties aren't the same
+				{
+					return false;
+				}
+			}
+			return true;	//the other scope has all the same properties as this scope
+		}
+		finally
+		{
+			readLock().unlock();	//always release the read lock
+		}
 	}
 
 	/**Implementation of a child URF scope subordinate to another URF scope.
