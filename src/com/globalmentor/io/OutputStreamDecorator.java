@@ -62,10 +62,11 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream
 	public void write(int b) throws IOException
 	{
   	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
-  	if(outputStream!=null)	//if we still have an output stream to decorate
+  	if(outputStream==null)	//if this stream is closed
   	{
-  		outputStream.write(b);
+  		throw new IOException("Stream already closed.");
   	}
+  	outputStream.write(b);
 	}
 
   /**
@@ -81,10 +82,11 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream
   public void write(byte b[]) throws IOException
 	{
   	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
-  	if(outputStream!=null)	//if we still have an output stream to decorate
+  	if(outputStream==null)	//if this stream is closed
   	{
-  		outputStream.write(b);
+  		throw new IOException("Stream already closed.");
   	}
+  	outputStream.write(b);
   }
 
   /**
@@ -118,10 +120,11 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream
   public void write(byte b[], int off, int len) throws IOException
 	{
   	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
-  	if(outputStream!=null)	//if we still have an output stream to decorate
+  	if(outputStream==null)	//if this stream is closed
   	{
-  		outputStream.write(b, off, len);
+  		throw new IOException("Stream already closed.");
   	}
+  	outputStream.write(b, off, len);
   }
 
   /**
@@ -138,17 +141,17 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream
    * passed to the operating system for writing; it does not guarantee that
    * they are actually written to a physical device such as a disk drive.
    * <p>
-   * The <code>flush</code> method of <code>OutputStream</code> does nothing.
    *
    * @exception  IOException  if an I/O error occurs.
    */
   public void flush() throws IOException
 	{
   	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
-  	if(outputStream!=null)	//if we still have an output stream to decorate
+  	if(outputStream==null)	//if this stream is closed
   	{
-  		outputStream.flush();
+  		throw new IOException("Stream already closed.");
   	}
+		outputStream.flush();
   }
 
   /**Called before the stream is closed.
