@@ -969,9 +969,7 @@ public class URIs
 		final URI pathURI=URI.create(checkInstance(path, "Path cannot be null")); //create a URI from the given path
 		if(!isPathURI(pathURI)) //if there is a scheme or an authority
 		{
-			throw new IllegalArgumentException(
-					"Path cannot have a URI scheme or authority, and must include a path: "
-							+path);
+			throw new IllegalArgumentException("Path cannot have a URI scheme or authority, and must include a path: "+path);
 		}
 		return pathURI; //return the URI we created
 	}
@@ -984,13 +982,11 @@ public class URIs
 	@exception IllegalArgumentException if the given URI is not absolute.
 	@see URI#isAbsolute()
 	*/
-	public static URI checkAbsolute(final URI uri)
-			throws IllegalArgumentException
+	public static URI checkAbsolute(final URI uri) throws IllegalArgumentException
 	{
 		if(!uri.isAbsolute()) //if the given URI is not absolute
 		{
-			throw new IllegalArgumentException("The given URI "+uri
-					+" is not absolute.");
+			throw new IllegalArgumentException("The given URI "+uri+" is not absolute.");
 		}
 		return uri; //return the absolute URI
 	}
@@ -1003,13 +999,11 @@ public class URIs
 	@exception IllegalArgumentException if the given string is not a path.
 	@see #isPath(String)
 	*/
-	public static String checkPath(final String path)
-			throws IllegalArgumentException
+	public static String checkPath(final String path) throws IllegalArgumentException
 	{
 		if(!isPath(path)) //if the string is not a path
 		{
-			throw new IllegalArgumentException("The given string "+path
-					+" is not a valid sole path.");
+			throw new IllegalArgumentException("The given string "+path+" is not a valid sole path.");
 		}
 		return path; //return the path
 	}
@@ -1022,13 +1016,11 @@ public class URIs
 	@exception IllegalArgumentException if the given string is not a path or the path is not relative.
 	@see #isPath(String)
 	*/
-	public static String checkRelativePath(final String path)
-			throws IllegalArgumentException
+	public static String checkRelativePath(final String path) throws IllegalArgumentException
 	{
 		if(isAbsolutePath(checkPath(path))) //check the path; if it is a path but it is absolute
 		{
-			throw new IllegalArgumentException("The given path "+path
-					+" is not relative.");
+			throw new IllegalArgumentException("The given path "+path+" is not relative.");
 		}
 		return path; //return the relative path
 	}
@@ -1045,25 +1037,6 @@ public class URIs
 		return isPathURI(pathURI); //indicate whether the constructed URI represents a path
 	}
 
-	/**Checks to see if a given URI is only a path and not a URI with a scheme, authority, query, and/or fragment.
-	If the given URI is not a path, an exception is thrown.
-	@param uri The URI to check to for path status.
-	@return The given path URI.
-	@exception NullPointerException if the given path URI is <code>null</code>.
-	@exception IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
-	@exception IllegalArgumentException if the given URI is not a path.
-	@see #isPath(String)
-	*/
-	public static URI checkPathURI(final URI pathURI)
-	{
-		if(!isPathURI(pathURI)) //if the string is not a path
-		{
-			throw new IllegalArgumentException("The given URI "+pathURI
-					+" is not a valid sole path URI.");
-		}
-		return pathURI; //return the path URI
-	}
-
 	/**Determines if a given URI contains only a path and does not have a scheme, authority, query, and/or fragment.
 	@param uri The URI to check to for path status.
 	@exception NullPointerException if the given URI is <code>null</code>.
@@ -1072,9 +1045,54 @@ public class URIs
 	public static boolean isPathURI(final URI uri)
 	{
 		checkInstance(uri, "URI cannot be null");
-		return uri.getScheme()==null&&uri.getRawAuthority()==null
-				&&uri.getPath()!=null&&uri.getRawQuery()==null
-				&&uri.getRawFragment()==null; //see if there is no scheme, no authority, a path, no query, and no fragment
+		return uri.getScheme()==null && uri.getRawAuthority()==null
+				&& uri.getPath()!=null && isPlainURI(uri); //see if there is no scheme, no authority, a path, no query, and no fragment
+	}
+
+	/**Checks to see if a given URI is only a path and not a URI with a scheme, authority, query, and/or fragment.
+	If the given URI is not a path, an exception is thrown.
+	@param uri The URI to check to for path status.
+	@return The given path URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@exception IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
+	@exception IllegalArgumentException if the given URI is not a path.
+	@see #isPath(String)
+	*/
+	public static URI checkPathURI(final URI uri)
+	{
+		if(!isPathURI(uri)) //if the URI is not a path
+		{
+			throw new IllegalArgumentException("The given URI "+uri+" is not a valid sole path URI.");
+		}
+		return uri; //return the path URI
+	}
+
+	/**Determines if a given URI is plain, i.e. it does not contain a query or a fragment.
+	@param uri The URI to check to for plainness.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@return <code>true</code> if the URI has no query or fragment.
+	*/
+	public static boolean isPlainURI(final URI uri)
+	{
+		checkInstance(uri, "URI cannot be null");
+		return uri.getRawQuery()==null && uri.getRawFragment()==null; //see if there is no query and no fragment
+	}
+
+	/**Checks to see if a given URI is plain, i.e. it does not contain a query or a fragment.
+	If the given URI is not a plain URI, an exception is thrown.
+	@param uri The URI to check to for plainness.
+	@return The given plain URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@exception IllegalArgumentException if the provided URI specifies a query and/or fragment.
+	@see #isPlainURI(URI)
+	*/
+	public static URI checkPlainURI(final URI uri)
+	{
+		if(!isPlainURI(uri)) //if the URI is not a plain URI
+		{
+			throw new IllegalArgumentException("The given URI "+uri+" is not a plain URI.");
+		}
+		return uri; //return the plain URI
 	}
 
 	/**Determines the current level of a hierarchical URI.
@@ -1495,7 +1513,7 @@ public class URIs
 		return absolutePath.substring(URIs.ROOT_PATH.length()); //remove the beginning root path indicator
 	}
 
-	/**Determines whether the URI represents a canonical collection.
+	/**Determines whether the URI represents a canonical collection, that is, it has a path that ends with a slash ('/').
 	This method returns <code>false</code> for URIs with no path component.
 	@param uri The URI the raw path of which to examine.
 	@return <code>true</code> if the given URI has a path that ends with a slash ('/').
@@ -1505,6 +1523,23 @@ public class URIs
 	{
 		final String rawPath=uri.getRawPath(); //get the raw path (use the raw path in case the last character is an encoded slash)
 		return rawPath!=null ? isCollectionPath(rawPath) : false; //see if the path ends with '/'		
+	}
+
+	/**Checks to see if a given URI represents a canonical collection, that is, it has a path that ends with a slash ('/').
+	If the given URI is not a collection URI, an exception is thrown.
+	@param uri The URI to check to for a collection.
+	@return The given collection URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@exception IllegalArgumentException if the provided does not have a path that ends with a slash ('/').
+	@see #isCollectionURI(URI)
+	*/
+	public static URI checkCollectionURI(final URI uri)
+	{
+		if(!isCollectionURI(uri)) //if the URI is not a collection URI
+		{
+			throw new IllegalArgumentException("The given URI "+uri+" is not a collection URI.");
+		}
+		return uri; //return the collection URI
 	}
 
 	/**Determines whether the given path is a canonical collection path.
