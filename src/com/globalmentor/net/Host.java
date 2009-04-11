@@ -17,6 +17,8 @@
 package com.globalmentor.net;
 
 import static com.globalmentor.net.URIs.*;
+
+import com.globalmentor.java.Objects;
 import com.globalmentor.util.DefaultComparableNamed;
 
 /**Encapsulates a host and an optional port.
@@ -83,17 +85,27 @@ public class Host extends DefaultComparableNamed<String>
 		return stringBuilder.toString();	//return the string we constructed
 	}
 
+	/**@return A hash code for this object.*/
+	public int hashCode()
+	{
+		return (17*37+super.hashCode())*37+getPort();
+	}
+
 	/**If <code>object</code> is another <code>Host</code>, compares the
 		hostname and port.
 	@param object The object with which to compare this host; should be
 		another <code>Host</code>.
 	@return <code>true<code> if this host equals a host specified in
 		<code>object</code>.
-	@see #getName
-	@see #getPort
+	@see #getName()
+	@see #getPort()
 	*/
 	public boolean equals(Object object)
 	{
+		if(object==this)	//identical objects are always equal
+		{
+			return true;
+		}
 		if(object instanceof Host)	//if we're being compared with another host
 		{
 			return super.equals(object) && getPort()==((Host)object).getPort();	//compare names and ports

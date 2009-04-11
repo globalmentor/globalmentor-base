@@ -102,6 +102,12 @@ public class HTTP
 	public final static String CONTENT_LENGTH_HEADER="Content-Length";
 	/**The HTTP header indicating the canonical location of the resource.*/
 	public final static String CONTENT_LOCATION_HEADER="Content-Location";
+	/**The HTTP header indicating the MD5 digest of the body.*/
+	public final static String CONTENT_MD5_HEADER="Content-MD5";
+	/**The HTTP header indicating the content type.*/
+	public final static String CONTENT_TYPE_HEADER="Content-Type";
+	/**The HTTP header indicating the date of the message, in RFC 1123 format.*/
+	public final static String DATE_HEADER="Date";
 	/**The HTTP header indicating the expiration of the content.*/
 	public final static String EXPIRES_HEADER="Expires";
 	/**The HTTP header indicating Internet host and port number of the resource being requested.*/

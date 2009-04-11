@@ -17,8 +17,9 @@
 package com.globalmentor.java;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
-import com.globalmentor.text.CharacterEncoding;
+import static com.globalmentor.io.Charsets.*;
 import com.globalmentor.text.RomanNumerals;
 
 /**Various utilities and constants for interacting with characters.
@@ -448,36 +449,47 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 		return WORD_WRAP_CHARS.indexOf(c)>=0;	//return true if we can find the character in the string of word wrap characters
 	}
 
-	/**Converts an array of characters to an array of bytes, using the UTF-8
-	character encoding.
+	/**Converts an array of characters to an array of bytes, using the UTF-8 charset.
 	@param characters The characters to convert to bytes.
-	@return An array of bytes representing the given characters in the UTF-8
-		encoding.
+	@return An array of bytes representing the given characters in the UTF-8 charset.
 	*/
 	public static byte[] toByteArray(final char[] characters)
 	{
-		try
-		{
-			return toByteArray(characters, CharacterEncoding.UTF_8);	//convert the characters using UTF-8
-		}
-		catch(UnsupportedEncodingException unsupportedEncodingException)	//all JVMs should support UTF-8
-		{
-			throw new AssertionError(unsupportedEncodingException);
-		}
+		return toByteArray(characters, UTF_8_CHARSET);	//convert the characters using UTF-8
 	}
 
-	/**Converts an array of characters to an array of bytes, using the given
-	character encoding.
+	/**Converts an array of characters to an array of bytes, using the given character encoding.
 	@param characters The characters to convert to bytes.
 	@param encoding The encoding to use when converting characters to bytes.
-	@return An array of bytes representing the given characters in the specified
-		encoding.
+	@return An array of bytes representing the given characters in the specified encoding.
 	@exception UnsupportedEncodingException if the given encoding is not supported.
+	@deprecated
 	*/
 	public static byte[] toByteArray(final char[] characters, final String encoding) throws UnsupportedEncodingException
 	{
 		final ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();	//create a byte array output stream
 		final Writer writer=new OutputStreamWriter(byteArrayOutputStream, encoding);	//create a writer for converting characters to bytes
+		try
+		{
+			writer.write(characters);	//write the characters to the writer in one batch (writing them individually would be extremely inefficient)
+			writer.flush();	//flush everything we've written to the byte output stream
+		}
+		catch(IOException ioException)		//we don't expect any errors
+		{
+			throw new AssertionError(ioException);
+		}
+		return byteArrayOutputStream.toByteArray();	//return the bytes we collected from the character conversion
+	}
+
+	/**Converts an array of characters to an array of bytes, using the given character encoding.
+	@param characters The characters to convert to bytes.
+	@param charset The charset to use when converting characters to bytes.
+	@return An array of bytes representing the given characters in the specified encoding.
+	*/
+	public static byte[] toByteArray(final char[] characters, final Charset charset)
+	{
+		final ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();	//create a byte array output stream
+		final Writer writer=new OutputStreamWriter(byteArrayOutputStream, charset);	//create a writer for converting characters to bytes
 		try
 		{
 			writer.write(characters);	//write the characters to the writer in one batch (writing them individually would be extremely inefficient)
