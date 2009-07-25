@@ -573,7 +573,7 @@ public class PLOOPURFProcessor
 	@exception NullPointerException if the given object is <code>null</code>.
 	@exception DataException if the given object should be able to be converted to the required type but something about its state, format, or contents prevented the conversion.
 	*/
-	protected Object convertObject(final Object object, final Class<?> requiredType) throws DataException	//TODO search for a string contructor or a static valueOf() method
+	protected Object convertObject(final Object object, final Class<?> requiredType) throws DataException	//TODO search for a string constructor or a static valueOf() method
 	{
 		final Class<?> objectType=object.getClass();	//get the type of the object
 		if(requiredType.isAssignableFrom(objectType))	//if we expect this type (this algorithm could be improved to first try to find an exact match and then find a convertible match)

@@ -53,7 +53,7 @@ public class PLOOPTURFIO<T> extends AbstractTURFIO<T>
 		{
 			throw new IOException(dataException);			
 		}
-		catch(final InvocationTargetException invocationTargetException)	//if a Java contructor threw an exception
+		catch(final InvocationTargetException invocationTargetException)	//if a Java constructor threw an exception
 		{
 			throw new IOException(invocationTargetException);			
 		}
@@ -109,7 +109,7 @@ public class PLOOPTURFIO<T> extends AbstractTURFIO<T>
 		{
 			throw new IOException(dataException);			
 		}
-		catch(final InvocationTargetException invocationTargetException)	//if a Java contructor threw an exception
+		catch(final InvocationTargetException invocationTargetException)	//if a Java constructor threw an exception
 		{
 			throw new IOException(invocationTargetException);			
 		}
@@ -130,7 +130,7 @@ public class PLOOPTURFIO<T> extends AbstractTURFIO<T>
 		{
 			resource=urfGenerator.generateURFResource(object);	//generate the URF resource
 		}
-		catch(final InvocationTargetException invocationTargetException)	//if a Java contructor throw an exception
+		catch(final InvocationTargetException invocationTargetException)	//if a Java constructor throw an exception
 		{
 			throw new IOException(invocationTargetException);			
 		}
