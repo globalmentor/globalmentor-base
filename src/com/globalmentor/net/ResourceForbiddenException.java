@@ -18,7 +18,9 @@ package com.globalmentor.net;
 
 import java.net.URI;
 
-/**A class indicating that a resource cannot be accessed with the current authorization.
+/**A class indicating that a resource cannot be accessed with the current authorization,
+either because of the current authorization or because the access is denied in general
+(e.g. a read-only resource). 
 @author Garret Wilson
 */
 public class ResourceForbiddenException extends ResourceIOException
