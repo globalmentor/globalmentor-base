@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.globalmentor.util;
-
-import static com.globalmentor.java.Objects.*;
+package com.globalmentor.cache;
 
 import java.util.EventObject;
+
+import static com.globalmentor.java.Objects.*;
 
 /**An event that is fired when a value is fetched in the cache.
 @param <Q> The type of query used to request data from the cache.

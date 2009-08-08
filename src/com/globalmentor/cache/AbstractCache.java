@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.util;
+package com.globalmentor.cache;
 
 import java.io.IOException;
 import java.util.*;
@@ -22,6 +22,7 @@ import static java.util.Collections.*;
 import java.util.concurrent.locks.*;
 
 import static com.globalmentor.java.Objects.*;
+import com.globalmentor.util.*;
 import static com.globalmentor.util.Collections.*;
 
 /**An abstract cache that requires a subclass implementing data retrieval methods.
