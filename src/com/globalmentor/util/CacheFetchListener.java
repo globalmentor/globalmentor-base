@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,18 @@ package com.globalmentor.util;
 import java.util.EventListener;
 
 /**Indicates the implementing class can listen for a value being fetched in a cache.
-@param <K> The type of key used to lookup data in the cache.
+@param <Q> The type of query used to request data from the cache.
 @param <V> The type of value stored in the cache.
 @see Cache
 @see CacheFetchEvent
 @author Garret Wilson
 */
-public interface CacheFetchListener<K, V> extends EventListener
+public interface CacheFetchListener<Q, V> extends EventListener
 {
 
 	/**Called when a value is fetched in the cache.
 	@param cacheFetchEvent The event identifying the value fetched.
 	*/
-	public void fetched(final CacheFetchEvent<K, V> cacheFetchEvent);
+	public void fetched(final CacheFetchEvent<Q, V> cacheFetchEvent);
 
 }

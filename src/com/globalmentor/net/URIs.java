@@ -531,6 +531,30 @@ public class URIs
 		return new StringBuilder(name).append(NAME_EXTENSION_SEPARATOR).append(checkInstance(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
 	}
 
+	/**Extracts the extension from a URI's name.
+	This this the preferred method for extracting an extension from a URI,
+	as this method correctly parses the raw form of the URI path to find the extension before decoding.
+	@param URI The URI to examine.
+	@return The extension of the URI's name (not including '.'), or <code>null</code> if no extension is present.
+	@see #getName(URI)
+	*/
+	public static String getNameExtension(final URI uri)
+	{
+		final String rawNameExtension=getRawNameExtension(uri);
+		return rawNameExtension!=null ? uriDecode(rawNameExtension) : null;	//if there is a raw extension, decode it
+	}
+
+	/**Extracts the raw, encoded extension from a URI's name.
+	@param URI The URI to examine.
+	@return The raw, encoded extension of the URI's name (not including '.'), or <code>null</code> if no extension is present.
+	@see #getRawName(URI)
+	*/
+	public static String getRawNameExtension(final URI uri)
+	{
+		final String rawName=getRawName(uri);	//get the raw name of the URI, if any
+		return rawName!=null ? getNameExtension(rawName) : null;	//if there is a raw name, return its extension, if any
+	}
+
 	/**Extracts the extension from a name.
 	@param name The URI name to examine.
 	@return The extension of the name (not including '.'), or <code>null</code> if no extension is present.
@@ -1151,7 +1175,7 @@ public class URIs
 	{
 		final String rawPath=uri.getRawPath(); //get the raw path
 		return rawPath!=null ? Files
-				.getExtensionContentType(getNameExtension(getRawName(uri))) : null; //return the content type based on the extension of the URI name, if there is one
+				.getExtensionContentType(getNameExtension(uri)) : null; //return the content type based on the extension of the URI name, if there is one
 	}
 
 	/**Normalizes the given path by resolving the '.' and '..' path segments.
