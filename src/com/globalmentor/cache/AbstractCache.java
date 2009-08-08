@@ -26,9 +26,10 @@ import com.globalmentor.util.*;
 import static com.globalmentor.util.Collections.*;
 
 /**An abstract cache that requires a subclass implementing data retrieval methods.
-@param <Q> The type of query used to request data from the cache.
 @param <K> The type of key used to look up data in the cache.
+@param <Q> The type of query used to request data from the cache.
 @param <V> The type of value stored in the cache.
+@param <I> The type of information used to hold the value.
 @author Garret Wilson
 */
 public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, I extends AbstractCache.CachedInfo<V>> implements Cache<Q, V>
