@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.util;
+package com.globalmentor.config;
 
 /**An unchecked illegal state exception to indicate that the system is not configured correctly for some operation.
 For example, this exception might be thrown if no appropriate parser is available or a particular character encoding is not supported.
