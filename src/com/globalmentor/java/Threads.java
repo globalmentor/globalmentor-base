@@ -18,8 +18,6 @@ package com.globalmentor.java;
 
 import java.lang.reflect.UndeclaredThrowableException;
 
-import com.globalmentor.config.Configuration;
-
 /**Utility methods for threads.
 @author Garret Wilson
 */
@@ -168,20 +166,21 @@ public class Threads
 	 * @return The first thread group of the given type, or <code>null</code> if no thread group of the given type could be found.
 	 * @throws NullPointerException if the given thread and/or thread group class is <code>null</code>.
 	 */
-	public static <TG extends ThreadGroup> TG getThreadGroup(final Thread thread, final Class<TG> threadGroupClass)
+	public static <TG> TG getThreadGroup(final Thread thread, final Class<TG> threadGroupClass)
 	{
 		final ThreadGroup threadGroup=thread.getThreadGroup();	//get the thread's thread group
 		return threadGroup!=null ? getThreadGroup(threadGroup, threadGroupClass) : null;	//if the thread has a thread group, look for the thread group of the requested type 
 	}
 
-	/**Walks up the thread group chain of the given thread group to find the thread group of the given type.
+	/**Walks up the thread group chain of the given thread group to find the thread group of the given type
+	 * or that implements the given interface.
 	 * @param <TG> The type of thread group to find.
 	 * @param threadGroup The thread group at which the search should begin.
 	 * @param threadGroupClass The class of the type of thread group to find.
 	 * @return The first thread group of the given type, or <code>null</code> if no thread group of the given type could be found.
 	 * @throws NullPointerException if the given thread group and/or thread group class is <code>null</code>.
 	 */
-	public static <TG extends ThreadGroup> TG getThreadGroup(ThreadGroup threadGroup, final Class<TG> threadGroupClass)
+	public static <TG> TG getThreadGroup(ThreadGroup threadGroup, final Class<TG> threadGroupClass)
 	{
 		do
 		{
