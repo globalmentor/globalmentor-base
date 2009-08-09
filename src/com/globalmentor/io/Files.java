@@ -37,7 +37,7 @@ import com.globalmentor.urf.maqro.MAQRO;
 import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.java.SystemUtilities.*;
+import static com.globalmentor.java.OperatingSystem.*;
 import static com.globalmentor.net.ContentTypeConstants.*;
 import static com.globalmentor.net.URIs.*;
 
@@ -575,11 +575,11 @@ public class Files
 	@exception SecurityException Thrown if we don't have permission to access the
 		user's directory.
 	@see System
-	@see SystemUtilities#USER_DIR_PROPERTY
+	@see OperatingSystem#USER_DIR_PROPERTY
 	*/
 	public static File getUserDirectory() throws SecurityException
 	{
-		return new File(System.getProperty(SystemUtilities.USER_DIR_PROPERTY)); //try to get the current directory
+		return new File(System.getProperty(OperatingSystem.USER_DIR_PROPERTY)); //try to get the current directory
 	}
 
 	/**@return The characters that are not allowed in filenames of this operating system.*/
@@ -845,15 +845,17 @@ public class Files
 
 	/**If the directory does not exist, creates the directory named by this abstract pathname, including any necessary but nonexistent parent directories, throwing an exception if unsuccessful.
 	@param directory The directory to create if necessary.
+	@return The directory, which has been verified to exist.
 	@exception IOException Thrown if there is an error creating the directory.
 	@see #mkdirs(File)
 	*/
-	public static void ensureDirectoryExists(final File directory) throws IOException
+	public static File ensureDirectoryExists(final File directory) throws IOException
 	{
 		if(!directory.exists() || !directory.isDirectory())	//if the directory doesn't exist as a directory
 		{
 			mkdirs(directory);	//make the directories
-		}		
+		}
+		return directory;
 	}
 
 	/**Loads the contents of a file into an array of bytes. The file is closed after the operation.

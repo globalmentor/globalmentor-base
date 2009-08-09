@@ -20,7 +20,7 @@ import java.io.*;
 import java.util.*;
 
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.java.SystemUtilities.*;
+import static com.globalmentor.java.OperatingSystem.*;
 
 /**A print stream that writes to a given writer.
 This print stream writer assumes that all bytes written to it are characters encoded in the platform default character encoding.

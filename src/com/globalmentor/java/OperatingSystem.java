@@ -20,26 +20,28 @@ import java.io.File;
 
 import static com.globalmentor.java.Strings.*;
 
-/**Utilities for working with system-specific attributes.
+/**Utilities for working with operating system-specific attributes.
 @author Garret Wilson
 */
-public class SystemUtilities
+public class OperatingSystem
 {
 
-	/**The user name property.*/
-	public final static String USER_NAME_PROPERTY="user.name";
-	/**The property for the user's home directory.*/
-	public final static String USER_HOME_PROPERTY="user.home";
-	/**The property for the user's current directory.*/
-	public final static String USER_DIR_PROPERTY="user.dir";
+	/**The property specifying the line separator character for the platform.*/
+	public final static String LINE_SEPARATOR_PROPERTY="line.separator";
+	/**The temporary directory name.*/
+	public final static String JAVA_IO_TMPDIR_PROPERTY="java.io.tmpdir";
 	/**The name of the operating system.*/
 	public final static String OS_NAME_PROPERTY="os.name";
 	/**The operating system architecture.*/
 	public final static String OS_ARCH_PROPERTY="os.arch";
 	/**The operating system version.*/
 	public final static String OS_VERSION_PROPERTY="os.version";
-	/**The property specifying the line separator character for the platform.*/
-	public final static String LINE_SEPARATOR_PROPERTY="line.separator";
+	/**The user name property.*/
+	public final static String USER_NAME_PROPERTY="user.name";
+	/**The property for the user's home directory.*/
+	public final static String USER_HOME_PROPERTY="user.home";
+	/**The property for the user's current directory.*/
+	public final static String USER_DIR_PROPERTY="user.dir";
 	
 	/**The string, "windows", which is a case-insensitive substring of a Windows operating system identification string.*/
 	public final static String WINDOWS="windows";
@@ -63,6 +65,17 @@ public class SystemUtilities
 	{
 		return new File(System.getProperty(USER_HOME_PROPERTY));	//return the user home directory
 	}
+
+	/**Returns the system temporary directory
+	@return The system temporary directory directory.
+	@exception SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
+	@see #JAVA_IO_TMPDIR_PROPERTY
+	*/
+	public static File getTempDirectory() throws SecurityException
+	{
+		return new File(System.getProperty(JAVA_IO_TMPDIR_PROPERTY));	//return the system temporary directory
+	}
+	
 
 	/**@return <code>true</code> if the operating system is a version of Windows.
 	@exception SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
