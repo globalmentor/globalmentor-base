@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,8 @@
 
 package com.globalmentor.java;
 
-import java.io.UnsupportedEncodingException;
-
 import static com.globalmentor.java.Characters.*;
-import static com.globalmentor.text.CharacterEncoding.*;
-
+import static com.globalmentor.io.Charsets.*;
 import com.globalmentor.text.unicode.UnicodeCharacter;
 import com.globalmentor.util.Arrays;
 
@@ -262,8 +259,21 @@ public class CharSequences
 	*/
 	public static int count(final CharSequence charSequence, final char character)
 	{
+		return count(charSequence, character, 0);	//count, starting at the beginning
+	}
+
+	/**Counts the number of occurences of a particular character in a character sequence,
+	starting at a specified index and searching forward.
+	@param charSequence The character sequence to examine.
+	@param character The character to count.
+	@param fromIndex The index to start counting at.
+	@return The number of occurences of the character in the character sequence.
+	*/
+	public static int count(final CharSequence charSequence, final char character, final int fromIndex)
+	{
+		final int length=charSequence.length();
 		int count=0;	//start out without knowing any occurrences
-		for(int i=charSequence.length()-1; i>=0; --i)	//look at each character
+		for(int i=fromIndex; i<length; ++i)	//look at each character
 		{
 			if(charSequence.charAt(i)==character)	//if this character matches the given characters
 			{
@@ -352,22 +362,15 @@ public class CharSequences
 				|| (c>maxCharacter);	//encode the character if it is past the given upper bound
 			if(encode)	//if this a character to escape
 			{
-				try
+				final byte[] bytes=String.valueOf(c).getBytes(UTF_8_CHARSET); //convert this character to a sequence of UTF-8 bytes
+				final int byteCount=bytes.length; //find out how many bytes there are
+				final StringBuilder encodeStringBuilder=new StringBuilder(byteCount*3); //create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
+				for(int byteIndex=0; byteIndex<byteCount; ++byteIndex) //look at each byte
 				{
-					final byte[] bytes=String.valueOf(c).getBytes(UTF_8); //convert this character to a sequence of UTF-8 bytes
-					final int byteCount=bytes.length; //find out how many bytes there are
-					final StringBuilder encodeStringBuilder=new StringBuilder(byteCount*3); //create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
-					for(int byteIndex=0; byteIndex<byteCount; ++byteIndex) //look at each byte
-					{
-						encodeStringBuilder.append(escapeChar); //escape character
-						encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], escapeLength)); //hh
-					}
-					stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString()); //replace the character with its encoding
+					encodeStringBuilder.append(escapeChar); //escape character
+					encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], escapeLength)); //hh
 				}
-				catch(final UnsupportedEncodingException unsupportedEncodingException) //the JVM should always know how to convert a string to UTF-8
-				{
-					throw new AssertionError(unsupportedEncodingException);
-				}
+				stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString()); //replace the character with its encoding
 			}
 		}
 		return stringBuilder.toString(); //return the encoded version of the string
@@ -420,14 +423,7 @@ public class CharSequences
 			}
 			decodedBytes[byteArrayIndex++]=b; //add the byte to the buffer and keep going
 		}
-		try
-		{
-			return new String(decodedBytes, 0, byteArrayIndex, UTF_8); //consider the bytes as a series of UTF-8 encoded characters.
-		}
-		catch(final UnsupportedEncodingException unsupportedEncodingException) //UTF-8 should always be supported
-		{
-			throw new AssertionError(unsupportedEncodingException);
-		}
+		return new String(decodedBytes, 0, byteArrayIndex, UTF_8_CHARSET); //consider the bytes as a series of UTF-8 encoded characters.
 	}
 
 
