@@ -1160,8 +1160,7 @@ public class URIs
 	*/
 	public static URI getRootURI(final URI uri)
 	{
-		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri
-				.getPort(), null, null, null);
+		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
 	}
 
 	/**Returns the content type for the specified URI based on its name extension.
@@ -1174,8 +1173,7 @@ public class URIs
 	public static ContentType getContentType(final URI uri)
 	{
 		final String rawPath=uri.getRawPath(); //get the raw path
-		return rawPath!=null ? Files
-				.getExtensionContentType(getNameExtension(uri)) : null; //return the content type based on the extension of the URI name, if there is one
+		return rawPath!=null ? Files.getExtensionContentType(getNameExtension(uri)) : null; //return the content type based on the extension of the URI name, if there is one
 	}
 
 	/**Normalizes the given path by resolving the '.' and '..' path segments.
@@ -1198,12 +1196,31 @@ public class URIs
 	@exception NullPointerException if one of the given paths is <code>null</code>.
 	@exception IllegalArgumentException if one of the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
 	*/
-	public static String relativizePath(final String basePath,
-			final String fullPath)
+	public static String relativizePath(final String basePath, final String fullPath)
 	{
 		final URI baseURI=createPathURI(basePath); //create a URI for the base path, ensuring it's a path
 		final URI fullURI=createPathURI(fullPath); //create a URI for the full path, ensuring it's a path
 		return baseURI.relativize(fullURI).getPath(); //relativize the URIs and return the path
+	}
+
+	/**Returns the path relative to the given parent URI.
+	@param parentURI The URI to which the child URI is relative.
+	@param childURI The URI that will be relativized against the parent URI.
+	@return The relative path of the child URI to the parent URI.
+	@throws IllegalArgumentException if the given parent URI and/or child URI is
+		not a plain URI (that is, if it contains a query and/or fragment).
+	@throws IllegalArgumentException if the child URI is not relative to the parent URI.
+	*/
+	public static URIPath relativize(final URI parentURI, final URI childURI)
+	{
+		checkPlainURI(parentURI);
+		checkPlainURI(childURI);
+		final URI relativeURI=parentURI.relativize(childURI);	//get a relative URI
+		if(relativeURI.isAbsolute())	//if the resulting "relative" URI is not relative
+		{
+			throw new IllegalArgumentException("URI "+childURI+" is not relative to "+parentURI);
+		}
+		return new URIPath(relativeURI);
 	}
 
 	/**Creates a URI from a URL.
@@ -2064,8 +2081,7 @@ public class URIs
 	@exception IllegalArgumentException Thrown if <var>oldBaseURI</code> is not
 		a base URI of <var>uri</var>.
 	*/
-	public static URI changeBase(final URI uri, final URI oldBaseURI,
-			final URI newBaseURI)
+	public static URI changeBase(final URI uri, final URI oldBaseURI, final URI newBaseURI)
 	{
 		if(oldBaseURI.equals(newBaseURI)) //if the old and new base URIs are the same
 		{

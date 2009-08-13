@@ -308,6 +308,12 @@ public final class URIPath
 		return uri.getRawPath();	//return the raw path from the local URI
 	}
 
+	/**@return A string representation of the path with any URI escape sequences decoded.*/
+	public String toDecodedString()
+	{
+		return uri.getPath();	//return the path from the local URI
+	}
+
 	/**Returns the hash code of this object.
 	@return The hash code of this object.
 	*/
