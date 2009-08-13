@@ -29,10 +29,10 @@ import static com.globalmentor.util.Collections.*;
 @param <K> The type of key used to look up data in the cache.
 @param <Q> The type of query used to request data from the cache.
 @param <V> The type of value stored in the cache.
-@param <I> The type of information used to hold the value.
+@param <D> The type of data that holds the value.
 @author Garret Wilson
 */
-public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, I extends AbstractCache.CachedInfo<V>> implements Cache<Q, V>
+public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D extends Cache.Data<V>> implements Cache<Q, V>
 {
 
 	/**Whether fetching new values is synchronous.*/
@@ -62,7 +62,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, I ex
 	protected final Lock fetchLock=new ReentrantLock();
 
 	/**The read/write lock soft value map containing cached values.*/
-	protected final ReadWriteLockMap<K, I> cacheMap=new DecoratorReadWriteLockMap<K, I>(new PurgeOnWriteSoftValueHashMap<K, I>());
+	protected final ReadWriteLockMap<K, D> cacheMap=new DecoratorReadWriteLockMap<K, D>(new PurgeOnWriteSoftValueHashMap<K, D>());
 
 	/**The map of cache fetch listeners keyed to cache keys.*/
 	private final ReadWriteLockCollectionMap<K, CacheFetchListener<Q, V>, List<CacheFetchListener<Q, V>>> cacheFetchListenerMap=new DecoratorReadWriteLockCollectionMap<K, CacheFetchListener<Q, V>, List<CacheFetchListener<Q, V>>>(new ArrayListHashMap<K, CacheFetchListener<Q, V>>());
@@ -99,48 +99,95 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, I ex
 	@param query The query for requesting a value from the cache.
 	@return Whether the value associated with the given query is in the cache and not stale.
 	@exception IOException if there was an error checking the cached information for staleness.
-	@see #isStale(Query, CachedInfo)
+	@see #isStaleData(Query, Data)
 	*/
-	public boolean isCached(final Q query) throws IOException {
-		final I cachedInfo=cacheMap.get(query.getKey());	//get cached information from the map
-		return cachedInfo!=null && !isStale(query, cachedInfo);	//return whether there is a cached value that isn't stale
+	public boolean isCached(final Q query) throws IOException
+	{
+		final D cachedData=cacheMap.get(query.getKey());	//get cached information from the map
+		return cachedData!=null && !isStaleData(query, cachedData);	//return whether there is a cached value that isn't stale
 	}
+
+	/**Determined if the given data is still cached for the given query.
+	This method provides a way to tell if previously retrieved data is still valid.  
+	@param query The query for requesting a value from the cache.
+	@param data Data that was once and may still be associated with the given query in the cache.
+	@return Whether the given data is still associated with the given query is in the cache and not stale.
+	@throws NullPointerException if the given data is <code>null</code>.
+	@exception IOException if there was an error checking the cached data for staleness.
+	@see #isStaleData(Query, Data)
+	*/
+/*TODO del
+	public boolean isDataCached(final Q query, final Data<V> data) throws IOException
+	{
+		checkInstance(data, "Data cannot be null.");
+		final D cachedData=cacheMap.get(query.getKey());	//get cached information from the map
+		return cachedData==data && !isStaleData(query, cachedData);	//return whether this data is still cached and isn't stale
+	}
+*/
 
 	/**Retrieves a value from the cache.
 	Values are fetched from the backing store if needed, and this method blocks until the data is fetched.
 	@param query The query for requesting a value from the cache.
 	@return The cached value.
 	@exception IOException if there was an error fetching the value from the backing store.
-	@see #isStale(Query, CachedInfo)
-	@see #fetch(Query)
+	@see #isStaleData(Query, Data)
+	@see #fetchData(Query)
 	*/
 	public final V get(final Q query) throws IOException
 	{
 		return get(query, false);	//get without deferring fetching
 	}
-	
+
 	/**Retrieves a value from the cache.
 	Values are fetched from the backing store if needed, with fetching optionally deferred until later.
 	@param query The query for requesting a value from the cache.
 	@param deferFetch Whether fetching, if needed, should be deffered and performed in an asynchronous thread.
 	@return The cached value, or <code>null</code> if fetching was deferred.
 	@exception IOException if there was an error fetching the value from the backing store.
-	@see #isStale(Query, CachedInfo)
-	@see #fetch(Query)
+	@see #isStaleData(Query, Data)
+	@see #fetchData(Query)
 	*/
-	public V get(final Q query, final boolean deferFetch) throws IOException
+	public final V get(final Q query, final boolean deferFetch) throws IOException
+	{
+		final Data<V> cachedData=getData(query, deferFetch);	//get the cached data, if appropriate
+		return cachedData!=null ? cachedData.getValue() : null;
+	}
+
+	/**Retrieves data from the cache.
+	Data is fetched from the backing store if needed, and this method blocks until the data is fetched.
+	@param query The query for requesting data from the cache.
+	@return The cached data.
+	@exception IOException if there was an error fetching the data from the backing store.
+	@see #isStaleData(Query, Data)
+	@see #fetchData(Query)
+	*/
+	public final Data<V> getData(final Q query) throws IOException
+	{
+		return getData(query, false);	//get without deferring fetching
+	}
+	
+	/**Retrieves data from the cache.
+	Data is fetched from the backing store if needed, with fetching optionally deferred until later.
+	@param query The query for requesting data from the cache.
+	@param deferFetch Whether fetching, if needed, should be deffered and performed in an asynchronous thread.
+	@return The cached data, or <code>null</code> if fetching was deferred.
+	@exception IOException if there was an error fetching the value from the backing store.
+	@see #isStaleData(Query, Data)
+	@see #fetchData(Query)
+	*/
+	public Data<V> getData(final Q query, final boolean deferFetch) throws IOException
 	{
 		final K key=query.getKey();	//get a key for this query
-		final I cachedInfo;
-		cachedInfo=cacheMap.get(key);	//get cached value from the map
-		if(cachedInfo!=null)	//if we have a cached value
+		final D cachedData;
+		cachedData=cacheMap.get(key);	//get cached data from the map
+		if(cachedData!=null)	//if we have cached data
 		{
-			if(!isStale(query, cachedInfo))	//if the cached value isn't stale
+			if(!isStaleData(query, cachedData))	//if the cached data isn't stale
 			{
-				return cachedInfo.getValue();	//return the value that was cached
+				return cachedData;	//return the value that was cached
 			}
 		}
-		if(cachedInfo!=null)	//if we had cached a value
+		if(cachedData!=null)	//if we had cached a value
 		{
 			uncache(query);	//uncache the information (a benign race condition here could have us remove new valid data that has just come in, but that has a low probability and would only result in an extra cache miss in the future)
 		}
@@ -151,17 +198,17 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, I ex
 		}
 		else	//if we shouldn't defer fetching
 		{
-			return doFetch(query);	//fetch now and return the value
+			return retrieveData(query);	//fetch now and return the value
 		}
 	}
 
 	/**Fetches data from the backing store, stores the data in the cache, and notifies any listeners.
 	@param query The query for requesting a value from the cache.
-	@return The fetched and cached value.
+	@return The fetched and cached data.
 	@exception IOException if there was an error fetching the value from the backing store.
-	@see #fetch(Cache.Query)
+	@see #fetchData(Query)
 	*/
-	protected final V doFetch(final Q query) throws IOException
+	protected final Data<V> retrieveData(final Q query) throws IOException
 	{
 		final boolean isFetchSynchronous=isFetchSynchronous();	//see if cache fetching should be synchronous
 		if(isFetchSynchronous)	//if cache fetching should be synchronous
@@ -171,9 +218,8 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, I ex
 		try
 		{
 			final K key=query.getKey();	//get a key for this query
-			final I newCachedInfo=fetch(query);	//fetch new cached info for the key
-			cacheMap.put(key, newCachedInfo);	//cache the information
-			final V value=newCachedInfo.getValue();	//get the value we fetched
+			final D cachedData=fetchData(query);	//fetch new cached info for the key
+			cacheMap.put(key, cachedData);	//cache the information
 			final Collection<CacheFetchListener<Q, V>> cacheFetchListeners;	//we'll determine the cache fetch listeners; do this outside the read lock, in case a listener wants to remove itself from the list
 			cacheFetchListenerMap.readLock().lock();	//get a read lock on the listeners
 			try
@@ -194,13 +240,13 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, I ex
 			}
 			if(!cacheFetchListeners.isEmpty())	//if there are cache fetch listeners
 			{
-				final CacheFetchEvent<Q, V> cacheFetchEvent=new CacheFetchEvent<Q, V>(this, query, value);	//create an event to send to the listeners
+				final CacheFetchEvent<Q, V> cacheFetchEvent=new CacheFetchEvent<Q, V>(this, query, cachedData.getValue());	//create an event to send to the listeners
 				for(final CacheFetchListener<Q, V> listener:cacheFetchListeners)	//for each listener wanting to know when data is fetched for this key
 				{
 					listener.fetched(cacheFetchEvent);	//inform the listener that the data was fetched
 				}
 			}
-			return value;	//return the value we fetched
+			return cachedData;	//return the cached data we fetched
 		}
 		finally
 		{
@@ -218,32 +264,31 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, I ex
 	*/
 	public final V uncache(final Q query) throws IOException
 	{
-		final I cachedInfo;
-		cachedInfo=cacheMap.remove(query.getKey());	//remove the cached information
+		final D cachedData=cacheMap.remove(query.getKey());	//remove the cached information
 //TODO fix; there seems to be no way to know if someone is still using the file		discard(key, cachedValue);	//discard the cached information, which we can do separately now that
-		return cachedInfo!=null ? cachedInfo.getValue() : null;	//if there was cached info, returned the cached value
+		return cachedData!=null ? cachedData.getValue() : null;	//if there was cached info, returned the cached value
 	}
 
 	/**Determines if a given cached value is stale.
 	This version checks to see if the age of the cached information is greater than {@link #getExpiration()}.
 	@param query The query for requesting a value from the cache.
-	@param cachedInfo The information that is cached.
+	@param cachedData The information that is cached.
 	@return <code>true</code> if the cached information has become stale.
 	@exception IOException if there was an error checking the cached information for staleness.
-	@see CachedInfo#getCachedTime()
+	@see Data#getCachedTime()
 	*/
-	public boolean isStale(final Q query, final I cachedInfo) throws IOException
+	protected boolean isStaleData(final Q query, final D cachedData) throws IOException
 	{
-		return System.currentTimeMillis()-cachedInfo.getCachedTime()>getExpiration();	//if the age is greater than the expiration time, the information is stale
+		return System.currentTimeMillis()-cachedData.getCachedTime()>getExpiration();	//if the age is greater than the expiration time, the information is stale
 	}
 
 	/**Performs any operations that need to be done when cached information is discarded (for example, if the cached information is stale).
 	This version does nothing.
 	@param key The key for the cached information.
-	@param cachedInfo The information that is cached.
+	@param cachedData The information that is cached.
 	@exception IOException if there was an error discarding the cached information.
 	*/
-	public void discard(final K key, final I cachedInfo) throws IOException
+	public void discard(final K key, final D cachedData) throws IOException
 	{
 	}
 
@@ -252,7 +297,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, I ex
 	@return New information to cache.
 	@exception IOException if there was an error fetching the value from the backing store.
 	*/
-	public abstract I fetch(final Q query) throws IOException;
+	protected abstract D fetchData(final Q query) throws IOException;
 
 	/**The runnable that can fetch in a separate thread.
 	@author Garret Wilson
@@ -273,13 +318,13 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, I ex
 		}
 
 		/**Fetches the value from the cache.
-		@see AbstractCache#doFetch(Cache.Query)
+		@see AbstractCache#retrieveData(Cache.Query)
 		*/
 		public void run()
 		{
 			try
 			{
-				doFetch(query);	//perform the fetch
+				retrieveData(query);	//perform the fetch
 			}
 			catch(final IOException ioException)
 			{
@@ -297,34 +342,6 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, I ex
 	{
 		/**@return A key for looking up data for the query.*/ 
 		public KK getKey();
-	}
-
-	/**Class for storing a value along with its expiration information.
-	@param <V> The type of value stored in the cache.
-	@author Garret Wilson
-	*/
-	public static class CachedInfo<VV>
-	{
-		/**The time the cached information was created.*/
-		private final long cachedTime;
-	
-			/**@return The time the cached information was created.*/
-			public long getCachedTime() {return cachedTime;}
-
-		/**The value being stored.*/
-		private final VV value;
-
-			/**@return The value being stored.*/
-			public VV getValue() {return value;}
-
-		/**Value constructor.
-		@param value The value to store.
-		*/
-		public CachedInfo(final VV value)
-		{
-			cachedTime=System.currentTimeMillis();	//record the time this information was created
-			this.value=value;	//save the value
-		}
 	}
 
 }

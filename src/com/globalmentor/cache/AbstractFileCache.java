@@ -24,7 +24,7 @@ import java.util.Date;
 @param <Q> The type of query used to request data from the cache.
 @author Garret Wilson
 */
-public abstract class AbstractFileCache<K, Q extends AbstractCache.Query<K>> extends AbstractCache<K, Q, File, AbstractFileCache.CachedFileInfo>
+public abstract class AbstractFileCache<K, Q extends AbstractCache.Query<K>> extends AbstractCache<K, Q, File, AbstractFileCache.FileData>
 {
 	
 	/**Constructor.
@@ -40,7 +40,7 @@ public abstract class AbstractFileCache<K, Q extends AbstractCache.Query<K>> ext
 	If no modified time is known, this will not influence the staleness determination of cached information.
 	@author Garret Wilson
 	*/
-	public static class CachedFileInfo extends AbstractCache.CachedInfo<File>
+	public static class FileData extends Data<File>
 	{
 
 		/**The last known modified time of the resource represented, or <code>null</code> if the last modified time is not known.*/
@@ -53,7 +53,7 @@ public abstract class AbstractFileCache<K, Q extends AbstractCache.Query<K>> ext
 		@param file The file to store.
 		@param modifiedTime The last known modified time of the resource represented, or <code>null</code> if the last modified time is not known.
 		*/
-		public CachedFileInfo(final File value, final Date modifiedTime)
+		public FileData(final File value, final Date modifiedTime)
 		{
 			super(value);	//construct the parent class
 			this.modifiedTime=modifiedTime;
