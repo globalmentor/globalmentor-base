@@ -571,11 +571,13 @@ public class Classes
 		return Java.getVariableName(getSimpleName(objectClass));	//get the variable name form of the simple name of the class
 	}
 
-	/**A comparator that sorts ancestor classes primarily in terms of height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.*/
+	/**A comparator that sorts ancestor classes primarily in terms of height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and tertiarialy by class name.*/
 	public final static Comparator<NameValuePair<Class<?>, Integer>> CONCRETE_CLASS_HEIGHT_COMPARATOR=new Comparator<NameValuePair<Class<?>,Integer>>()
 			{
 				/**Compares two classes based upon the classes and their height or distance from a particular class.
-				Comparing is performed primarily in terms of height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.
+				Comparison is performed primarily in terms of maximum height (distance from a descendant class),
+				secondarily in terms of concreteness (concrete class, abstract class, and then interface),
+				and tertiarialy by class name, in increasing order of height and abstractness. 
 				@param classHeight1 The first class paired with its distance from a descendant class.
 				@param classHeight2 The second class paired with its distance from a descendant class.
 				@return The result of comparing the two classes.
@@ -610,7 +612,9 @@ public class Classes
 			};
 
 	/**Determines all super classes and interfaces of the given class, including the given class itself.
-	Classes will be sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.
+	Classes will be sorted primarily in terms of maximum height (distance from a descendant class),
+	secondarily in terms of concreteness (concrete class, abstract class, and then interface),
+	and tertiarialy by class name, in increasing order of height and abstractness. 
 	@param objectClass The class for which super classes and interfaces should be found.
 	@return The set of all super classes and implemented interfaces.
 	@exception NullPointerException if the given object class is <code>null</code>.
@@ -622,7 +626,9 @@ public class Classes
 	}
 
 	/**Determines all super classes and interfaces of the given class, excluding the given class itself.
-	Classes will be sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.
+	Classes will be sorted primarily in terms of maximum height (distance from a descendant class),
+	secondarily in terms of concreteness (concrete class, abstract class, and then interface),
+	and tertiarialy by class name, in increasing order of height and abstractness. 
 	@param objectClass The class for which super classes and interfaces should be found.
 	@return The set of all super classes and implemented interfaces.
 	@exception NullPointerException if the given object class is <code>null</code>.
@@ -633,8 +639,10 @@ public class Classes
 		return getProperAncestorClasses(objectClass, Object.class);	//get all classes and interfaces
 	}
 
-	/**Determines all super classes and interfaces of the given class, including the given class itself, up to the given class, in no guaranteed order.
-	Classes will be sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.
+	/**Determines all super classes and interfaces of the given class, including the given class itself, up to and including the given class.
+	Classes will be sorted primarily in terms of maximum height (distance from a descendant class),
+	secondarily in terms of concreteness (concrete class, abstract class, and then interface),
+	and tertiarialy by class name, in increasing order of height and abstractness. 
 	@param <R> The type of root class.
 	@param objectClass The class for which super classes and interfaces should be found.
 	@param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
@@ -647,8 +655,10 @@ public class Classes
 		return getAncestorClasses(objectClass, rootClass, true, true, true, true, (Comparator<NameValuePair<Class<? extends R>, Integer>>)(Object)CONCRETE_CLASS_HEIGHT_COMPARATOR);	//get ancestor classes, including super classes, abstract classes, and interfaces TODO check cast
 	}
 
-	/**Determines all super classes and interfaces of the given class, excluding the given class itself, up to the given class, in no guaranteed order.
-	Classes will be sorted primarily in terms of maximum height (distance from a descendant class), secondarily in terms of concreteness (concrete class, abstract class, and then interface), and teriarily by class name.
+	/**Determines all super classes and interfaces of the given class, excluding the given class itself, up to and including the given class.
+	Classes will be sorted primarily in terms of maximum height (distance from a descendant class),
+	secondarily in terms of concreteness (concrete class, abstract class, and then interface),
+	and tertiarialy by class name, in increasing order of height and abstractness. 
 	@param <R> The type of root class.
 	@param objectClass The class for which super classes and interfaces should be found.
 	@param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
@@ -662,7 +672,9 @@ public class Classes
 	}
 
 	/**Determines all super classes and interfaces of the given class.
-	If a comparator is given, the classes and interfaces will be sorted based upon that comparator, using the farthest distance from the given class when sorting.
+	Classes will be sorted primarily in terms of maximum height (distance from a descendant class),
+	secondarily in terms of concreteness (concrete class, abstract class, and then interface),
+	and tertiarialy by class name, in increasing order of height and abstractness. 
 	@param <R> The type of root class.
 	@param objectClass The class for which super classes and interfaces should be found.
 	@param rootClass The root class or interface to retrieve.
