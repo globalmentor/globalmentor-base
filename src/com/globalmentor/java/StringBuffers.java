@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,59 +25,9 @@ package com.globalmentor.java;
 @author Garret Wilson
 @see Strings
 */
+@Deprecated
 public class StringBuffers
 {
-
-	/**Concatenates the string representations of the objects
-		in the array by appending them to the string buffer.
-	@param stringBuffer The string buffer into which the result should be placed.
-	@param objects The array of objects (such as strings) to be concatenated.
-	@return A concatenation of string representations of all objects in the
-		array.
-	@see Object#toString
-	*/
-	public static StringBuffer append(final StringBuffer stringBuffer, final Object[] objects)
-	{
-		return append(stringBuffer, objects, null);	//append the objects with no separator
-	}
-
-	/**Concatenates the string representations of the objects
-		in the array, separated by the given separator character, by appending
-		them to the string buffer.
-	@param stringBuffer The string buffer into which the result should be placed.
-	@param objects The array of objects (such as strings) to be concatenated.
-	@param separator The separator character to be inserted between the object
-		strings. 
-	@return A concatenation of string representations of all objects in the
-		array, separted by the separator character.
-	@see Object#toString
-	*/
-	public static StringBuffer append(final StringBuffer stringBuffer, final Object[] objects, final char separator)
-	{
-		return append(stringBuffer, objects, String.valueOf(separator));	//convert the separator to a string and append the objects
-	}
-	
-	/**Concatenates the string representations of the objects
-		in the array, separated by the given separator string, by appending
-		them to the string buffer.
-	@param stringBuffer The string buffer into which the result should be placed.
-	@param objects The array of objects (such as strings) to be concatenated.
-	@param separator The separator string to be inserted between the object
-		strings, or <code>null</code> (if no separator should be used. 
-	@return A concatenation of string representations of all objects in the
-		array, separted by the separator.
-	@see Object#toString
-	*/
-	public static StringBuffer append(final StringBuffer stringBuffer, final Object[] objects, final String separator)
-	{
-		for(int i=0; i<objects.length; ++i)	//look at each object
-		{
-			stringBuffer.append(objects[i].toString());	//add the string representation of this object to the string buffer
-			if(i<objects.length-1 && separator!=null)	//if this isn't the last object, and there is a separator string
-				stringBuffer.append(separator);	//append the separator character 			
-		}
-		return stringBuffer;	//return the string buffer, now containing the new information
-	}	
 
 	/**Collapses every run of any number of collapseChars to a single replaceString.
 	@param stringBuffer The buffer in which the information will be collapsed.

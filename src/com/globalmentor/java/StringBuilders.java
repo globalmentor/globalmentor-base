@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,13 @@ public class StringBuilders
 {
 
 	/**Concatenates the string representations of the objects in the array by appending them to the string buffer.
+	Null objects are handled as per {@link StringBuilder#append(Object)}.
 	@param stringBuilder The string builder which the result should be placed.
 	@param objects The array of objects (such as strings) to be concatenated.
 	@return The string builder containing the new information.
-	@see Object#toString()
+	@see StringBuilder#append(Object)
 	*/
-	public static StringBuilder append(final StringBuilder stringBuilder, final Object[] objects)
+	public static StringBuilder append(final StringBuilder stringBuilder, final Object... objects)
 	{
 		for(final Object object:objects)	//for each object
 		{
@@ -141,7 +142,51 @@ public class StringBuilders
 	{
 		return charSequence instanceof StringBuilder ? (StringBuilder)charSequence : new StringBuilder(charSequence);	//return a new or existing string builder
 	}
+
+	/**Concatenates the string representations of the objects in the array, separated by the given separator character, by appending them to the string builder.
+	Null objects are handled as per {@link StringBuilder#append(Object)}.
+	@param stringBuilder The string builder into which the result should be placed.
+	@param objects The array of objects (such as strings) to be concatenated.
+	@param separator The separator character to be inserted between the object strings. 
+	@return A concatenation of string representations of all objects in the array, separted by the separator character.
+	@see Object#toString()
+	*/
+	public static StringBuilder append(final StringBuilder stringBuilder, final Object[] objects, final char separator)
+	{
+		for(final Object object:objects)	//look at each object
+		{
+			stringBuilder.append(object).append(separator);	//add this object to the string builder, along the separator
+		}
+		if(objects.length>0)	//if we added information
+		{
+			stringBuilder.deleteCharAt(stringBuilder.length()-1);	//remove the last separator
+		}
+		return stringBuilder;	//return the string builder, now containing the new information
+	}
 	
+	/**Concatenates the string representations of the objects
+		in the array, separated by the given separator string, by appending
+		them to the string builder.
+	@param stringBuilder The string builder into which the result should be placed.
+	@param objects The array of objects (such as strings) to be concatenated.
+	@param separator The separator string to be inserted between the object
+		strings, or <code>null</code> if no separator should be used. 
+	@return A concatenation of string representations of all objects in the
+		array, separted by the separator.
+	@see Object#toString
+	*/
+	public static StringBuilder append(final StringBuilder stringBuilder, final Object[] objects, final String separator)
+	{
+		final int length=objects.length;
+		for(int i=0; i<objects.length; ++i)	//look at each object
+		{
+			stringBuilder.append(objects[i]);	//add this object to the string builder
+			if(i<length-1 && separator!=null)	//if this isn't the last object, and there is a separator string
+				stringBuilder.append(separator);	//append the separator character 			
+		}
+		return stringBuilder;	//return the string builder, now containing the new information
+	}	
+
 	/**Removes all the content of a string builder.
 	@param stringBuilder The string builder the content of which should be cleared.
 	@return The string builder after all content is removed.

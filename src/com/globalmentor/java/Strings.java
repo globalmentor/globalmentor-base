@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,44 +50,39 @@ public class Strings
 		return string!=null ? new String[]{string} : EMPTY_STRING_ARRAY;	//return an array containing the string, or an empty array if the string is null
 	}
 	
-	/**Concatenates the string representations of the objects
-		in the array.
+	/**Concatenates the string representations of the objects in the array.
+	Null objects are represented by the string "null".
 	@param objects The array of objects (such as strings) to be concatenated.
-	@return A concatenation of string representations of all objects in the
-		array.
+	@return A concatenation of string representations of all objects in the array.
 	@see Object#toString()
 	*/
 	public static String append(final Object[] objects)
 	{
-		return StringBuffers.append(new StringBuffer(), objects).toString();	//append the objects to a string buffer and return the string
+		return StringBuilders.append(new StringBuilder(), objects).toString();	//append the objects to a string builder and return the string
 	}
 	
-	/**Concatenates the string representations of the objects
-		in the array, separated by the given separator character.
+	/**Concatenates the string representations of the objects in the array, separated by the given separator character.
+	Null objects are represented by the string "null".
 	@param objects The array of objects (such as strings) to be concatenated.
-	@param separator The separator character to be inserted between the object
-		strings. 
-	@return A concatenation of string representations of all objects in the
-		array, separted by the separator character.
-	@see Object#toString
+	@param separator The separator character to be inserted between the object strings. 
+	@return A concatenation of string representations of all objects in the array, separted by the separator character.
+	@see Object#toString()
 	*/
 	public static String concat(final Object[] objects, final char separator)
 	{
-		return StringBuffers.append(new StringBuffer(), objects, separator).toString();	//append the objects to a string buffer and return the string
+		return StringBuilders.append(new StringBuilder(), objects, separator).toString();	//append the objects to a string builder and return the string
 	}
 		
-	/**Concatenates the string representations of the objects
-		in the array, separated by the given separator string.
+	/**Concatenates the string representations of the objects in the array, separated by the given separator string.
+	Null objects are represented by the string "null".
 	@param objects The array of objects (such as strings) to be concatenated.
-	@param separator The separator string to be inserted between the object
-		strings, or <code>null</code> (if no separator should be used. 
-	@return A concatenation of string representations of all objects in the
-		array, separted by the separator.
-	@see Object#toString
+	@param separator The separator string to be inserted between the object strings, or <code>null</code> if no separator should be used. 
+	@return A concatenation of string representations of all objects in the array, separted by the separator.
+	@see Object#toString()
 	*/
 	public static String concat(final Object[] objects, final String separator)
 	{
-		return StringBuffers.append(new StringBuffer(), objects, separator).toString();	//append the objects to a string buffer and return the string
+		return StringBuilders.append(new StringBuilder(), objects, separator).toString();	//append the objects to a string builder and return the string
 	}
 	
 	/**Compares two strings to make sure that the strings are equal without regard to case,
