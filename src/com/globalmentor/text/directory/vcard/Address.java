@@ -338,31 +338,31 @@ public class Address implements AddressConstants
 	/**@return A string representation of the address.*/
 	public String toString()
 	{
-		final StringBuffer stringBuffer=new StringBuffer();	//create a new string buffer to hold the string we'll construct
+		final StringBuilder stringBuilder=new StringBuilder();	//create a new string buffer to hold the string we'll construct
 		if(postOfficeBox!=null)	//if there is a post office box
-			stringBuffer.append("PO Box ").append(postOfficeBox);	//append the post office box G***i18n
+			stringBuilder.append("PO Box ").append(postOfficeBox);	//append the post office box G***i18n
 		if(postOfficeBox!=null && (extendedAddresses.length>0 || streetAddresses.length>0 || locality!=null || region!=null || postalCode!=null ||countryName!=null))	//if we added information and there is more information following
-			stringBuffer.append('\n');	//append a newline
-		StringBuffers.append(stringBuffer, extendedAddresses, '\n');	//append the extended addresses, separated by a newline
+			stringBuilder.append('\n');	//append a newline
+		StringBuilders.append(stringBuilder, extendedAddresses, '\n');	//append the extended addresses, separated by a newline
 		if(extendedAddresses.length>0 && (streetAddresses.length>0 || locality!=null || region!=null || postalCode!=null ||countryName!=null))	//if we added information and there is more information following
-			stringBuffer.append('\n');	//append a newline
-		StringBuffers.append(stringBuffer, streetAddresses, '\n');	//append the street addresses, separated by a newline
+			stringBuilder.append('\n');	//append a newline
+		StringBuilders.append(stringBuilder, streetAddresses, '\n');	//append the street addresses, separated by a newline
 		if(streetAddresses.length>0 && (locality!=null || region!=null || postalCode!=null ||countryName!=null))	//if we added information and there is more information following
-			stringBuffer.append('\n');	//append a newline
+			stringBuilder.append('\n');	//append a newline
 		if(locality!=null)	//if there is a locality
-			stringBuffer.append(locality);	//append the locality
+			stringBuilder.append(locality);	//append the locality
 		if(locality!=null && (region!=null || postalCode!=null ||countryName!=null))	//if we added information and there is more information following
-			stringBuffer.append(", ");	//append a comma and a space
+			stringBuilder.append(", ");	//append a comma and a space
 		if(region!=null)	//if there is a region
-			stringBuffer.append(region);	//append the region
+			stringBuilder.append(region);	//append the region
 		if(region!=null && (postalCode!=null ||countryName!=null))	//if we added information and there is more information following
-			stringBuffer.append('\n');	//append a newline
+			stringBuilder.append('\n');	//append a newline
 		if(postalCode!=null)	//if there is a postal code
-			stringBuffer.append(postalCode);	//append the postal code
+			stringBuilder.append(postalCode);	//append the postal code
 		if(postalCode!=null && (countryName!=null))	//if we added information and there is more information following
-			stringBuffer.append(' ');	//append a space
+			stringBuilder.append(' ');	//append a space
 		if(countryName!=null)	//if there is a country name
-			stringBuffer.append(countryName);	//append the country name
-		return stringBuffer.toString();	//return the string we constructed
+			stringBuilder.append(countryName);	//append the country name
+		return stringBuilder.toString();	//return the string we constructed
 	}
 }
