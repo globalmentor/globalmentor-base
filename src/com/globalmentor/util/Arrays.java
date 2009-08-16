@@ -342,6 +342,25 @@ public class Arrays
 		return -1;  //show that we could not find the object in the array
 	}
 
+	/**Finds and returns the first instance of the given class in the array.
+	@param <T> The type of object to return.
+	@param array The array to search.
+	@param objectClass The class of object to return.
+	@return The first object that is the instance of the given class, or <code>null</code> if there is no instance of the given class in the array.
+	@throws NullPointerException if the given array and/or object class is <code>null</code>.
+	*/
+	public static <T> T getInstance(final Object[] array, final Class<T> objectClass)
+	{
+		for(final Object object:array)	//look at each object in the array
+		{
+			if(objectClass.isInstance(object))	//if this object is an instance of the given class
+			{
+				return objectClass.cast(object);	//return the object
+			}
+		}
+		return null;	//an instance of the given class could not be found
+	}
+
 	/**Counts the number of non-<code>null</code> objects in an array.
 	@param <T> The type of object contained in the array.
 	@param array The array to iteratate.

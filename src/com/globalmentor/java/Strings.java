@@ -72,7 +72,20 @@ public class Strings
 	{
 		return StringBuilders.append(new StringBuilder(), objects, separator).toString();	//append the objects to a string builder and return the string
 	}
-		
+
+	/**Concatenates the string representations of the objects in the array, separated by the given separator character.
+	Null objects are represented by the string "null".
+	@param objects The array of objects (such as strings) to be concatenated.
+	@param separator The separator character to be inserted between the object strings. 
+	@param ignoreObject The object to ignore, or <code>null</code> if no objects should be ignored.
+	@return A concatenation of string representations of all objects in the array, separted by the separator character.
+	@see Object#toString()
+	*/
+	public static String concat(final Object[] objects, final char separator, final Object ignoreObject)
+	{
+		return StringBuilders.append(new StringBuilder(), objects, separator, ignoreObject).toString();	//append the objects to a string builder and return the string
+	}
+
 	/**Concatenates the string representations of the objects in the array, separated by the given separator string.
 	Null objects are represented by the string "null".
 	@param objects The array of objects (such as strings) to be concatenated.

@@ -153,8 +153,26 @@ public class StringBuilders
 	*/
 	public static StringBuilder append(final StringBuilder stringBuilder, final Object[] objects, final char separator)
 	{
+		return append(stringBuilder, objects, separator, null);	//append the objects without ignoring any
+	}
+
+	/**Concatenates the string representations of the objects in the array, separated by the given separator character, by appending them to the string builder.
+	Null objects are handled as per {@link StringBuilder#append(Object)}.
+	@param stringBuilder The string builder into which the result should be placed.
+	@param objects The array of objects (such as strings) to be concatenated.
+	@param separator The separator character to be inserted between the object strings.
+	@param ignoreObject The object to ignore, or <code>null</code> if no objects should be ignored.
+	@return A concatenation of string representations of all objects in the array, separted by the separator character.
+	@see Object#toString()
+	*/
+	public static StringBuilder append(final StringBuilder stringBuilder, final Object[] objects, final char separator, final Object ignoreObject)
+	{
 		for(final Object object:objects)	//look at each object
 		{
+			if(ignoreObject!=null && object==ignoreObject)	//ignore certain objects if requested 
+			{
+				continue;
+			}
 			stringBuilder.append(object).append(separator);	//add this object to the string builder, along the separator
 		}
 		if(objects.length>0)	//if we added information
@@ -163,7 +181,7 @@ public class StringBuilders
 		}
 		return stringBuilder;	//return the string builder, now containing the new information
 	}
-	
+
 	/**Concatenates the string representations of the objects
 		in the array, separated by the given separator string, by appending
 		them to the string builder.
