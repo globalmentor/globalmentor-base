@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.*;
 import static java.util.Collections.*;
 
+import com.globalmentor.java.Characters;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.urf.URF.*;
 
@@ -25,7 +26,7 @@ public class TURF
 	public final static String TURF_NAME_EXTENSION="turf";
 
 	/**Unicode whitespace characters.*/
-	public final static char[] SEPARATORS=(PARAGRAPH_SEPARATOR_CHARS+SEGMENT_SEPARATOR_CHARS+WHITESPACE_CHAR_STRING).toCharArray();
+	public final static Characters SEPARATORS=WHITESPACE_CHARACTERS.add(PARAGRAPH_SEPARATOR_CHARS).add(SEGMENT_SEPARATOR_CHARS);
 
 	/**The delimiters used to a name prefix.*/
 	public final static char NAME_PREFIX_DELIMITER='.';

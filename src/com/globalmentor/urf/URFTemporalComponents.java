@@ -2,7 +2,6 @@ package com.globalmentor.urf;
 
 import java.io.*;
 import java.util.*;
-
 import static java.util.Calendar.*;
 
 import com.globalmentor.io.ParseIOException;
@@ -332,12 +331,12 @@ public class URFTemporalComponents
 			final Reader reader=new StringReader(string);	//create a new string reader from the string
 			if(liberal)	//if we're parsing liberally
 			{
-				skip(reader, WHITESPACE_CHARS);	//skip whitespace
+				skip(reader, WHITESPACE_CHARACTERS);	//skip whitespace
 			}
 			final URFTemporalComponents temporalComponents=parseDateTimeUTCOffset(reader, hasDate, hasTime, allowTimestampFormat, liberal);	//parse the date/time components
 			if(liberal)	//if we're parsing liberally
 			{
-				skip(reader, WHITESPACE_CHARS);	//skip whitespace
+				skip(reader, WHITESPACE_CHARACTERS);	//skip whitespace
 			}
 			checkReaderEnd(reader);	//make sure we're at the end of the reader
 			return temporalComponents;	//return the temporal components

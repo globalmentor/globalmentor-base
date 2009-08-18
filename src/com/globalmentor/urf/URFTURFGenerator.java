@@ -1547,7 +1547,7 @@ public class URFTURFGenerator
 					escaped=true;	//show that we should escape the character
 					c=ESCAPED_CARRIAGE_RETURN;	//use \r for carriage return
 					break;
-				case HORIZONTAL_TABULATION_CHAR:	//tab
+				case CHARACTER_TABULATION_CHAR:	//tab
 					escaped=true;	//show that we should escape the character
 					c=ESCAPED_TAB;	//use \t for tab
 					break;
@@ -1598,7 +1598,7 @@ public class URFTURFGenerator
 			writer.write(LINE_FEED_CHAR);	//newline
 			for(int i=getIndentLevel(); i>0; --i)	//for each indention
 			{
-				writer.write(HORIZONTAL_TABULATION_CHAR);	//write a tab
+				writer.write(CHARACTER_TABULATION_CHAR);	//write a tab
 			}
 		}
 	}

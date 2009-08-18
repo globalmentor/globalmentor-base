@@ -909,6 +909,26 @@ public class CharSequences
 		return charSequence.length()>0 && characters.indexOf(charSequence.charAt(0))>=0;
 	}
 
+	/**Returns a character array containing the characters from the given character sequence.
+	@param charSequence The character sequence from which to retrieve characters.
+	@return A character array containing the characters from the given character sequence.
+	@throws NullPointerException if the given character sequence is <code>null</code>.
+	*/
+	public static char[] toCharArray(final CharSequence charSequence)
+	{
+		if(charSequence instanceof String)	//if this is a String, don't invent the wheel
+		{
+			return ((String)charSequence).toCharArray();
+		}
+		final int length=charSequence.length();
+		final char[] chars=new char[length];	//create a new character array of the correct length
+		for(int i=length-1; i>=0; --i)	//populate the character array
+		{
+			chars[i]=charSequence.charAt(i);
+		}
+		return chars;
+	}
+	
 	/**Trims the right side of the string beginning at the first occurrence of the
 		given character. If the character sequence does not contain the trim
 		character, no action takes place.

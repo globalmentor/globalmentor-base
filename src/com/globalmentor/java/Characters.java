@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,21 @@
 package com.globalmentor.java;
 
 import java.io.*;
+import static java.util.Arrays.*;
 import java.nio.charset.Charset;
 
 import static com.globalmentor.io.Charsets.*;
+import static com.globalmentor.java.CharSequences.*;
+import static com.globalmentor.java.Integers.*;
 import com.globalmentor.text.RomanNumerals;
 
-/**Various utilities and constants for interacting with characters.
-In most cases, names of constants are derived from Unicode names.
+/**An immutable set of characters that supports various searching and other functions.
+This essentially provides an efficient yet immutable array with object-oriented functionality.
+<p>This class is similar to {@link String}, except that it discards duplicate characters.
+Furthermore, this class allows no Unicode surrogates; the characters contained are interpreted as complete Unicode code points.
+This also makes comparison more efficient.</p>
+<p>This class also provides static utilities and constants for interacting with characters in general.</p>
+<p>In most cases, names of constants are derived from Unicode names.</p>
 @author Garret Wilson
 */
 public class Characters
@@ -32,12 +40,12 @@ public class Characters
 	public final static char NULL_CHAR=0x0000;
 	/**A backspace.*/
 	public final static char BACKSPACE_CHAR=0x0008;
-	/**A horizontal tab.*/
-	public final static char HORIZONTAL_TABULATION_CHAR=0x0009;
+	/**A horizontal tab (0009;&lt;control&gt;;Cc;0;S;;;;;N;CHARACTER TABULATION;;;;).*/
+	public final static char CHARACTER_TABULATION_CHAR=0x0009;
 	/**A line feed (LF).*/
 	public final static char LINE_FEED_CHAR=0x000A;
-	/**A vertical tab.*/
-	public final static char VERTICAL_TABULATION_CHAR=0x000B;
+	/**A vertical tab (000B;&lt;control&gt;;Cc;0;S;;;;;N;LINE TABULATION;;;;).*/
+	public final static char LINE_TABULATION_CHAR=0x000B;
 	/**A form feed (FF).*/
 	public final static char FORM_FEED_CHAR=0x000C;
 	/**A carriage return.*/
@@ -164,7 +172,9 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	public final static char BULLET_CHAR=0x2022;
 	/**Unicode horizontal ellipsis.*/
 	public final static char HORIZONTAL_ELLIPSIS_CHAR=0x2026;
-	/**A paragraph separator character.*/
+	/**A line separator character (2028;LINE SEPARATOR;Zl;0;WS;;;;;N;;;;;).*/
+	public final static char LINE_SEPARATOR_CHAR=0x2028;
+	/**A paragraph separator character (2029;PARAGRAPH SEPARATOR;Zp;0;B;;;;;N;;;;;).*/
 	public final static char PARAGRAPH_SEPARATOR_CHAR=0x2029;
 	/**A left-pointing single guillemet character.*/
 	public final static char SINGLE_LEFT_POINTING_ANGLE_QUOTATION_MARK_CHAR=0x2039;
@@ -218,15 +228,15 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	public final static String PARAGRAPH_SEPARATOR_CHARS=""+LINE_FEED_CHAR+CARRIAGE_RETURN_CHAR+INFORMATION_SEPARATOR_FOUR_CHAR+INFORMATION_SEPARATOR_THREE_CHAR+INFORMATION_SEPARATOR_TWO_CHAR+NEXT_LINE_CHAR+PARAGRAPH_SEPARATOR_CHAR;
 
 	/**Unicode segment separator characters.*/
-	public final static String SEGMENT_SEPARATOR_CHARS=""+HORIZONTAL_TABULATION_CHAR+VERTICAL_TABULATION_CHAR+INFORMATION_SEPARATOR_ONE_CHAR;
+	public final static String SEGMENT_SEPARATOR_CHARS=""+CHARACTER_TABULATION_CHAR+LINE_TABULATION_CHAR+INFORMATION_SEPARATOR_ONE_CHAR;
 
 	/**Unicode whitespace characters.*/
-	public final static char[] WHITESPACE_CHARS=new char[]{HORIZONTAL_TABULATION_CHAR, LINE_FEED_CHAR, VERTICAL_TABULATION_CHAR, FORM_FEED_CHAR, CARRIAGE_RETURN_CHAR, SPACE_CHAR};	//TODO finish
+	public final static Characters WHITESPACE_CHARACTERS=new Characters(CHARACTER_TABULATION_CHAR, LINE_FEED_CHAR, LINE_TABULATION_CHAR, FORM_FEED_CHAR, CARRIAGE_RETURN_CHAR, SPACE_CHAR);	//TODO finish
 
 	/**Unicode whitespace characters.
 	@deprecated
 	*/
-	public final static String WHITESPACE_CHAR_STRING=""+HORIZONTAL_TABULATION_CHAR+LINE_FEED_CHAR+VERTICAL_TABULATION_CHAR+FORM_FEED_CHAR+CARRIAGE_RETURN_CHAR+SPACE_CHAR;
+	public final static String WHITESPACE_CHAR_STRING=""+CHARACTER_TABULATION_CHAR+LINE_FEED_CHAR+LINE_TABULATION_CHAR+FORM_FEED_CHAR+CARRIAGE_RETURN_CHAR+SPACE_CHAR;
 /*TODO add
 			  * U0085 NEL
 			  * U00A0 NBSP
@@ -361,6 +371,163 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 
 	/**Characters that allow words to wrap.*/
 	public final static String WORD_WRAP_CHARS=WHITESPACE_CHAR_STRING+"-/";	//TODO use constants
+
+	/**The set of sorted characters, with no duplicates or surrogates.*/
+	private final char[] chars;
+
+	/**The lowest character, or -1 if there are no characters.*/
+	private final int minChar;
+
+	/**The highest character, or -1 if there are no characters..*/
+	private final int maxChar;
+
+	/**Characters constructor.
+	Duplicates are ignored.
+	@param characters The characters to store.
+	@throws NullPointerException if the given characters is <code>null</code>.
+	@throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
+	*/
+	public Characters(char... characters)
+	{
+		characters=characters.clone();	//create a copy of the characters so that we can control the array completely
+		if(characters.length!=0)	//if this is not an empty array of characters
+		{
+			sort(characters);	//sort the characters
+			boolean duplicates=false;	//start by assuming there are no duplicates
+			final int length=characters.length;
+			final int lastIndex=length-1;
+			for(int i=lastIndex; i>0; --i)	//check the characters for duplicates; iterate down to the second character
+			{
+				final char c=characters[i];
+				if(c==characters[i-1])	//because the characters are now sorted, we just check for two of the same character side-by-side
+				{
+					duplicates=true;
+				}
+				if(c>=Character.MIN_SURROGATE && c<=Character.MAX_SURROGATE)	//if this is a surrogate character
+				{
+					throw new IllegalArgumentException("Characters contain surrogate character: 0x"+Integer.toHexString(c)+".");
+				}
+			}
+			minChar=characters[0];
+			if(minChar>=Character.MIN_SURROGATE && minChar<=Character.MAX_SURROGATE)	//check the first character, which we skipped
+			{
+				throw new IllegalArgumentException("Characters contain surrogate character: 0x"+Integer.toHexString(minChar)+".");
+			}
+			maxChar=characters[lastIndex];
+			if(duplicates)	//if there are duplicates, remove them
+			{
+				int lastChar=-1;
+				final StringBuilder stringBuilder=new StringBuilder(characters.length);
+				for(final char c:characters)
+				{
+					if(c!=lastChar)	//if this is not a duplicate (the characters are in order, so duplicates will always be side-by-side)
+					{
+						stringBuilder.append(c);
+						lastChar=c;	//indicate the last character we looked at, so we can prevent duplicates
+					}
+				}
+				characters=toCharArray(stringBuilder);	//use the characters in the string builder, which no longer contain duplicates
+			}
+		}
+		else	//if there are no characters
+		{
+			minChar=maxChar=-1;
+		}
+		this.chars=characters;	//save the processed characters
+	}
+
+	/**Character sequence constructor.
+	Duplicates are ignored.
+	@param charSequence The character sequence containing characters to store.
+	@throws NullPointerException if the given character sequence is <code>null</code>.
+	@throws IllegalArgumentException if the given character sequence contains Unicode surrogate characters.
+	*/
+	public Characters(final CharSequence charSequence)
+	{
+		this(toCharArray(charSequence));
+	}
+
+	/**@return <code>true</code> if this object contains no characters.*/
+	public boolean isEmpty()
+	{
+		return chars.length==0;
+	}
+
+	/**Creates a new object with these characters and the given characters.
+	Duplicates are ignored.
+ 	@param characters The characters to add.
+	@return A new object containing these characters and the given characters.
+	@throws NullPointerException if the given characters is <code>null</code>.
+	@throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
+	*/
+	public Characters add(final char... characters)
+	{
+		return new Characters(toStringBuilder(characters.length).append(characters));	//get a string builder from the characters and append the given characters to create a new object
+	}
+
+	/**Creates a new object with these characters and the given characters.
+	Duplicates are ignored.
+ 	@param charSequence The characters to add.
+	@return A new object containing these characters and the given characters.
+	@throws NullPointerException if the given character sequence <code>null</code>.
+	@throws IllegalArgumentException if the given character sequence contains Unicode surrogate characters.
+	*/
+	public Characters add(final CharSequence charSequence)
+	{
+		return new Characters(toStringBuilder(charSequence.length()).append(charSequence));	//get a string builder from the characters and append the given characters to create a new object
+	}
+
+	/**@return A string containing these characters.*/
+	public String toString()
+	{
+		return new String(chars);
+	}
+	
+	/**A string builder containing these characters.
+	This implementation provides an initial capacity for 16 more characters.
+	@return A string builder containing these characters.
+	@see StringBuilder#append(char[])
+	*/
+	public StringBuilder toStringBuilder()
+	{
+		return toStringBuilder(16);
+	}
+
+	/**A string builder containing these characters,
+	with an initial capacity with room for the specified number of extra characters.
+	@param extraCapacity The extra initial capacity.
+	@return A string builder containing these characters.
+	@throws IllegalArgumentException if the given capacity is negative.
+	@see StringBuilder#append(char[])
+	*/
+	public StringBuilder toStringBuilder(final int extraCapacity)
+	{
+		return new StringBuilder(chars.length+checkMinimum(extraCapacity, 0)).append(chars);	//allow room for more characters
+	}
+
+	/**Determines whether the given character is contained in these characters.
+	@param character The character to check.
+	@return <code>true</code> if the character exists in these characters.
+	*/
+	public boolean contains(final char character)
+	{
+		if(character<minChar || character>maxChar)	//do quick bounds checking
+		{
+			return false;
+		}
+		for(final char c:chars)	//look at each character
+		{
+			if(c==character)	//if we found the character
+			{
+				return true;
+			}
+			else if(c>character)	//if we've gone beyond the character, the character doesn't exist, because the characters are in order
+			{
+				return false;
+			}
+		}
+		return false;	//we couldn't find the character
+	}
 
 	/**Sees if the specified character is in one of the specified ranges.
 	@param c The character to check.

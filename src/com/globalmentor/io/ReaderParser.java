@@ -19,6 +19,7 @@ package com.globalmentor.io;
 import java.io.*;
 import java.util.*;
 
+import com.globalmentor.java.Characters;
 import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.util.Arrays.*;
 
@@ -389,7 +390,7 @@ public class ReaderParser
 	@exception NullPointerException if the given reader and/or the given characters is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	*/
-	public static String read(final Reader reader, final char[] characters) throws IOException
+	public static String read(final Reader reader, final Characters characters) throws IOException
 	{
 		final StringBuilder stringBuilder=new StringBuilder();	//create a string builder
 		skip(reader, characters, stringBuilder);	//read the characters
@@ -457,7 +458,7 @@ public class ReaderParser
 	@exception NullPointerException if the given reader and/or the given characters is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	*/
-	public static int skip(final Reader reader, final char[] characters) throws IOException
+	public static int skip(final Reader reader, final Characters characters) throws IOException
 	{
 		return skip(reader, characters, null);	//skip the characters without saving them
 	}
@@ -471,22 +472,8 @@ public class ReaderParser
 	@exception NullPointerException if the given reader and/or the given characters is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	*/
-	protected static int skip(final Reader reader, final char[] characters, final StringBuilder stringBuilder) throws IOException
+	protected static int skip(final Reader reader, final Characters characters, final StringBuilder stringBuilder) throws IOException
 	{
-		char lowerBound=Character.MAX_VALUE;	//we'll determine the lower bound of the range
-		char upperBound=0;	//we'll determine the lower bound of the range
-		for(int i=characters.length-1; i>=0; --i)	//look at each characters to skip
-		{
-			final char c=characters[i];	//get this character
-			if(c<lowerBound)	//if this is a lower character than the one we already have for the lower bound
-			{
-				lowerBound=c;	//update the lower bound
-			}
-			if(c>upperBound)	//if this is a higher character than the one we already have for the upper bound
-			{
-				upperBound=c;	//update the upper bound
-			}
-		}
 		int c;	//the character read
 		boolean skip;	//we'll note when we should skip
 		do
@@ -500,19 +487,13 @@ public class ReaderParser
 				return c;	//stop skipping and return without resetting the reader to the mark
 			}
 //Debug.trace("trying to skip character", (char)c);
-			if(c>=lowerBound && c<=upperBound)	//if the character is within the range of characters, make sure it's one of the characters
+			if(characters.contains((char)c))
 			{
-				for(int i=characters.length-1; i>=0 && !skip; --i)	//look at each characters to skip
+				if(stringBuilder!=null)	//if a string builder was given
 				{
-					if(c==characters[i])	//if we found a character to skip
-					{
-						if(stringBuilder!=null)	//if a string builder was given
-						{
-							stringBuilder.append((char)c);	//save the character to be sent back
-						}
-						skip=true;	//indicate that we should skip this character
-					}
+					stringBuilder.append((char)c);	//save the character to be sent back
 				}
+				skip=true;	//indicate that we should skip this character
 			}
 		}
 		while(skip);	//keep reading characters until we find one we shouldn't skip

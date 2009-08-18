@@ -4,6 +4,8 @@ import java.io.*;
 import java.math.*;
 import java.net.*;
 import java.util.*;
+import java.util.Collections;
+
 import static java.util.Collections.*;
 
 
@@ -134,7 +136,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	public List<URFResource> processResources(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
-		return processResources(reader, baseURI, NULL_CHAR, (Map<String, URI>)EMPTY_MAP);	//parse the resources, with no particular end of list indicated
+		return processResources(reader, baseURI, NULL_CHAR, Collections.<String, URI>emptyMap());	//parse the resources, with no particular end of list indicated
 	}
 
 	/**Parses a list of resources resources and then processes the resulting URF instance.
@@ -1230,7 +1232,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 						c=CARRIAGE_RETURN_CHAR;	//use the character that was escaped
 						break;
 					case ESCAPED_TAB:	//t tab
-						c=HORIZONTAL_TABULATION_CHAR;	//use the character that was escaped
+						c=CHARACTER_TABULATION_CHAR;	//use the character that was escaped
 						break;
 					case ESCAPED_START_OF_STRING:	//left double quotation mark start of string
 						c=START_OF_STRING_CHAR;	//use the character that was escaped
