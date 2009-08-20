@@ -35,7 +35,7 @@ public class URFTURFProcessorTest
 	{
 		final URFTURFProcessor urfProcessor=new URFTURFProcessor();
 		final URL themeURL=getClass().getResource("theme.turf");
-		final Reader reader=new BufferedReader(new InputStreamReader(themeURL.openStream(), Charsets.UTF_8_CHARSET));
+		final Reader reader=new LineNumberReader(new InputStreamReader(themeURL.openStream(), Charsets.UTF_8_CHARSET));
 		try
 		{
 			urfProcessor.process(reader, themeURL.toURI());
