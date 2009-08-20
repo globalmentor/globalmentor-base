@@ -5,20 +5,17 @@ import java.math.*;
 import java.net.*;
 import java.util.*;
 import java.util.Collections;
-
 import static java.util.Collections.*;
 
-
+import static com.globalmentor.io.Charsets.*;
+import com.globalmentor.io.ParseIOException;
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.iso.ISO8601.*;
 import static com.globalmentor.java.Characters.*;
+import com.globalmentor.net.*;
 import static com.globalmentor.net.URIs.*;
-import static com.globalmentor.text.CharacterEncoding.*;
 import static com.globalmentor.urf.TURF.*;
 import static com.globalmentor.urf.URF.*;
-
-import com.globalmentor.io.ParseIOException;
-import com.globalmentor.net.*;
 import com.globalmentor.util.*;
 
 /**Constructs an URF data instance from a TURF representation.
@@ -205,7 +202,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	public Resource parseResource(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
-		return parseResource(reader, baseURI, null, (Map<String, URI>)EMPTY_MAP);	//parse a resource with no context URI or namespace prefixes
+		return parseResource(reader, baseURI, null, Collections.<String, URI>emptyMap());	//parse a resource with no context URI or namespace prefixes
 	}
 
 	/**Parses a single resource and returns a proxy to the resource.
@@ -733,7 +730,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	public static URI parseReference(final Reader reader, final URI baseURI) throws IOException, ParseIOException, DataException
 	{
-		return parseReference(reader, baseURI, (Map<String, URI>)EMPTY_MAP);	//parse a reference with no namespace prefixes
+		return parseReference(reader, baseURI, Collections.<String, URI>emptyMap());	//parse a reference with no namespace prefixes
 	}
 
 	/**Parses a reference to a resource and returns the URI the reference represents, if any.
@@ -945,7 +942,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		final String base64urlString=reachAfter(reader, BINARY_END);	//read the rest of the binary data
 		try
 		{
-			return Base64.decode(base64urlString.getBytes(UTF_8), 0, base64urlString.length(), Base64.URL_SAFE&Base64.DONT_BREAK_LINES);	//decode and return the data
+			return Base64.decode(base64urlString.getBytes(UTF_8_CHARSET), 0, base64urlString.length(), Base64.URL_SAFE&Base64.DONT_BREAK_LINES);	//decode and return the data
 		}
 		catch(final IllegalArgumentException illegalArgumentException)	//if the string was not valid base64url-encoded data
 		{

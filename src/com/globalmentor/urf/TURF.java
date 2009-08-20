@@ -25,7 +25,7 @@ public class TURF
 	/**An extension for TURF resource names.*/
 	public final static String TURF_NAME_EXTENSION="turf";
 
-	/**Unicode whitespace characters.*/
+	/**The TURF general separator characters.*/
 	public final static Characters SEPARATORS=WHITESPACE_CHARACTERS.add(PARAGRAPH_SEPARATOR_CHARS).add(SEGMENT_SEPARATOR_CHARS);
 
 	/**The delimiters used to a name prefix.*/

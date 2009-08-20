@@ -23,7 +23,9 @@ import java.nio.charset.Charset;
 import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Integers.*;
+import static com.globalmentor.java.StringBuilders.*;
 import com.globalmentor.text.RomanNumerals;
+import com.globalmentor.util.Arrays;
 
 /**An immutable set of characters that supports various searching and other functions.
 This essentially provides an efficient yet immutable array with object-oriented functionality.
@@ -33,8 +35,9 @@ This also makes comparison more efficient.</p>
 <p>This class also provides static utilities and constants for interacting with characters in general.</p>
 <p>In most cases, names of constants are derived from Unicode names.</p>
 @author Garret Wilson
+@see <a href="http://unicode.org/unicode/standard/reports/tr13/tr13-5.html">Unicode Newline Guidelines</a>
 */
-public class Characters
+public final class Characters
 {
 	/**The character with Unicode code point zero.*/
 	public final static char NULL_CHAR=0x0000;
@@ -230,8 +233,13 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	/**Unicode segment separator characters.*/
 	public final static String SEGMENT_SEPARATOR_CHARS=""+CHARACTER_TABULATION_CHAR+LINE_TABULATION_CHAR+INFORMATION_SEPARATOR_ONE_CHAR;
 
+	/**Unicode newline characters.
+	@see <a href="http://unicode.org/unicode/standard/reports/tr13/tr13-5.html">Unicode Newline Guidelines</a>
+	*/
+	public final static Characters NEWLINE_CHARACTERS=new Characters(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR, NEXT_LINE_CHAR, LINE_SEPARATOR_CHAR, FORM_FEED_CHAR, LINE_SEPARATOR_CHAR, PARAGRAPH_SEPARATOR_CHAR); 
+
 	/**Unicode whitespace characters.*/
-	public final static Characters WHITESPACE_CHARACTERS=new Characters(CHARACTER_TABULATION_CHAR, LINE_FEED_CHAR, LINE_TABULATION_CHAR, FORM_FEED_CHAR, CARRIAGE_RETURN_CHAR, SPACE_CHAR);	//TODO finish
+	public final static Characters WHITESPACE_CHARACTERS=NEWLINE_CHARACTERS.add(CHARACTER_TABULATION_CHAR, SPACE_CHAR);	//TODO finish
 
 	/**Unicode whitespace characters.
 	@deprecated
@@ -460,9 +468,24 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	@throws NullPointerException if the given characters is <code>null</code>.
 	@throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
 	*/
+	public Characters add(final Characters characters)
+	{
+		return add(characters.chars);
+	}
+
+	/**Creates a new object with these characters and the given characters.
+	Duplicates are ignored.
+ 	@param characters The characters to add.
+	@return A new object containing these characters and the given characters.
+	@throws NullPointerException if the given characters is <code>null</code>.
+	@throws IllegalArgumentException if the given characters contain Unicode surrogate characters.
+	*/
 	public Characters add(final char... characters)
 	{
-		return new Characters(toStringBuilder(characters.length).append(characters));	//get a string builder from the characters and append the given characters to create a new object
+		final int length=characters.length;
+		return length>0
+			? new Characters(toStringBuilder(length).append(characters))	//get a string builder from the characters and append the given characters to create a new object
+			: this;	//if nothing is being added, return these characters
 	}
 
 	/**Creates a new object with these characters and the given characters.
@@ -474,7 +497,70 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	*/
 	public Characters add(final CharSequence charSequence)
 	{
-		return new Characters(toStringBuilder(charSequence.length()).append(charSequence));	//get a string builder from the characters and append the given characters to create a new object
+		final int length=charSequence.length();
+		return length>0
+			? new Characters(toStringBuilder(charSequence.length()).append(charSequence))	//get a string builder from the characters and append the given characters to create a new object
+			: this;	//if nothing is being added, return these characters
+	}
+
+	/**Creates a new object with these characters, with the given characters removed.
+ 	@param characters The characters to remove.
+	@return A new object containing these characters without the given characters.
+	@throws NullPointerException if the given characters is <code>null</code>.
+	*/
+	public Characters remove(final Characters characters)
+	{
+		return remove(characters.chars);
+	}
+
+	/**Creates a new object with these characters, with the given characters removed.
+ 	@param characters The characters to remove.
+	@return A new object containing these characters without the given characters.
+	@throws NullPointerException if the given characters is <code>null</code>.
+	*/
+	public Characters remove(final char... characters)
+	{
+		for(final char character:characters)	//see if we have any of the given characters
+		{
+			if(contains(character))	//if there is at least one character to remove
+			{
+				final StringBuilder stringBuilder=new StringBuilder(chars.length);	//create a new string builder with enough room for our current characters
+				for(final char c:chars)	//look at all our current characters
+				{
+					if(!Arrays.contains(characters, c))	//if this is not a character to remove
+					{
+						stringBuilder.append(c);	//add this character to our string builder
+					}
+				}
+				return new Characters(stringBuilder);	//return new characters from our string builder, with the requested characters removed
+			}
+		}
+		return this;	//if we didn't have any of the given characters to begin with, return the characters the way they are
+	}
+
+	/**Creates a new object with these characters, with the given characters removed.
+ 	@param charSequence The characters to add.
+	@return A new object containing these characters without the given characters.
+	@throws NullPointerException if the given character sequence <code>null</code>.
+	*/
+	public Characters remove(final CharSequence charSequence)
+	{
+		for(int i=charSequence.length()-1; i>=0; --i)	//see if we have any of the given characters
+		{
+			if(contains(charSequence.charAt(i)))	//if there is at least one character to remove
+			{
+				final StringBuilder stringBuilder=new StringBuilder(chars.length);	//create a new string builder with enough room for our current characters
+				for(final char c:chars)	//look at all our current characters
+				{
+					if(!CharSequences.contains(charSequence, c))	//if this is not a character to remove
+					{
+						stringBuilder.append(c);	//add this character to our string builder
+					}
+				}
+				return new Characters(stringBuilder);	//return new characters from our string builder, with the requested characters removed
+			}
+		}
+		return this;	//if we didn't have any of the given characters to begin with, return the characters the way they are
 	}
 
 	/**@return A string containing these characters.*/
@@ -482,7 +568,18 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	{
 		return new String(chars);
 	}
-	
+
+	/**Returns a string representing an array of these characters, each character represented as 'x', or if the character is a control character, the Unicode code point of this character, e.g. "U+1234".
+	Example: "['a', 0x0020]"
+	<p>This method does not treat surrogate characters specially.</p>
+	@return A string containing an array representation of these characters.
+	*/
+	public String toArrayString()
+	{
+		return appendArrayString(new StringBuilder(chars.length*8), chars).toString();	//most of the time, each character will just take up five to eight characters
+	}
+
+
 	/**A string builder containing these characters.
 	This implementation provides an initial capacity for 16 more characters.
 	@return A string builder containing these characters.
@@ -667,6 +764,67 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 			throw new AssertionError(ioException);
 		}
 		return byteArrayOutputStream.toByteArray();	//return the bytes we collected from the character conversion
+	}
+
+	/**Appends a string representing an array of characters, each character represented as 'x', or if the character is a control character, the Unicode code point of this character, e.g. "U+1234".
+	Example: "['a', 0x0020]"
+	<p>This method does not treat surrogate characters specially.</p>
+	@param stringBuilder The string builder to which the string will be appended.
+	@param characters The characters the strings of the Unicode code points to append.
+	@return The string builder.
+	@throws NullPointerException if the given string builder is <code>null</code>.
+	*/
+	public static StringBuilder appendArrayString(final StringBuilder stringBuilder, final char[] characters)
+	{
+		stringBuilder.append('[');
+		final int last=characters.length-1;
+		for(int i=0; i<=last; ++i)
+		{
+			appendString(stringBuilder, characters[i]);	//append a string for the character
+			if(i!=last)	//if this is not the last character
+			{
+				stringBuilder.append(',').append(' ');	//add delimiters
+			}
+		}
+		return stringBuilder;
+	}
+	
+	/**Appends a string representing the character as 'x', or if the character is a control character, the Unicode code point of this character, e.g. "U+1234".
+	<p>This method supports Unicode supplementary code points.</p>
+	@param stringBuilder The string builder to which the string will be appended.
+	@param c The code point a string representation of which to append.
+	@return The string builder.
+	@throws NullPointerException if the given string builder is <code>null</code>.
+	@see #appendUnicodeString(StringBuilder, int)
+	*/
+	public static StringBuilder appendString(final StringBuilder stringBuilder, final char c) 
+	{
+		if(Character.isISOControl(c))	//if this is a control character
+		{
+			appendUnicodeString(stringBuilder, c);	//append a Unicode representation
+		}
+		else	//for all other characters
+		{
+			stringBuilder.append('\'');
+			appendChar(stringBuilder, c);
+			stringBuilder.append('\'');
+		}
+		return stringBuilder;
+	}
+
+	/**Appends a string representing the Unicode code point of this character, e.g. "U+1234".
+	The length of the added string depends on the Unicode code point; most code points will result in four hex characters.
+	@param stringBuilder The string builder to which the string will be appended.
+	@param c The code point the Unicode string of which  to append.
+	@return The string builder.
+	@throws NullPointerException if the given string builder is <code>null</code>.
+	*/
+	public static StringBuilder appendUnicodeString(final StringBuilder stringBuilder, final int c)
+	{
+		stringBuilder.append('U').append('+');	//U+
+		final int length=Character.isSupplementaryCodePoint(c)? 6 : 4;	//allow for supplementary Unicode code points
+		stringBuilder.append(toHexString(c, length));	//append the hex value of the character
+		return stringBuilder;
 	}
 
 	/**Parses a string and returns its character value.

@@ -82,8 +82,6 @@ public class StringBuilders
 		return stringBuilder;	//return the string builder object
 	}
 
-	
-	
 	/**Concatenates the given strings by appending them to the string buffer.
 	@param stringBuilder The string builder which the result should be placed.
 	@param strings The strings to be appended.
@@ -204,6 +202,30 @@ public class StringBuilders
 		}
 		return stringBuilder;	//return the string builder, now containing the new information
 	}	
+
+	/**Appends a character to a string builder.
+	This method supports Unicode supplementary code points.
+	@param stringBuilder The string builder to which  to append.
+	@param c The character to append.
+	@return The string builder.
+	@throws NullPointerException if the given string builder is <code>null</code>.
+	*/
+	public static StringBuilder appendChar(final StringBuilder stringBuilder, final int c)
+	{
+		if(Character.isSupplementaryCodePoint(c))	//if this is a supplementary code point
+		{
+			for(final char surrogate:Character.toChars(c))	//add each surrogate
+			{
+				stringBuilder.append(surrogate);
+			}
+		}
+		else	//if this is not a supplementary code point
+		{
+			stringBuilder.append(c);	//append the character normally
+		}
+		return stringBuilder;
+	}
+
 
 	/**Removes all the content of a string builder.
 	@param stringBuilder The string builder the content of which should be cleared.

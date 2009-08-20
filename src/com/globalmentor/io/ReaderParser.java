@@ -106,13 +106,13 @@ public class ReaderParser
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the current character in the reader does not match one of the specified characters or if the reader has no more characters.
 	*/
-	public static char check(final Reader reader, final char[] characters) throws IOException, ParseIOException
+	public static char check(final Reader reader, final Characters characters) throws IOException, ParseIOException
 	{
 		final int c=reader.read();	//get the current character
 		checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
-		if(indexOf(characters, (char)c)<0)	//if this character does not match one of the expected characters
+		if(!characters.contains((char)c))	//if this character does not match one of the expected characters
 		{
-			throw new ParseIOException(reader, "Expected one of "+Arrays.toString(characters)+"; found "+(char)c+".");
+			throw new ParseIOException(reader, "Expected one of "+characters.toArrayString()+"; found "+(char)c+".");
 		}
 		return (char)c;	//return the character read
 	}
@@ -167,13 +167,13 @@ public class ReaderParser
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	*/
-	public static boolean confirm(final Reader reader, final char[] characters) throws IOException, ParseIOException
+	public static boolean confirm(final Reader reader, final Characters characters) throws IOException, ParseIOException
 	{
 		reader.mark(1);	//mark our current position
 		final int c=reader.read();	//get the current character
 		if(c>=0)	//if the end of the reader was not reached
 		{
-			if(indexOf(characters, (char)c)>=0)	//if one of the expected characters was read
+			if(characters.contains((char)c))	//if one of the expected characters was read
 			{
 				return true;	//indicate that the character was the one expected
 			}
