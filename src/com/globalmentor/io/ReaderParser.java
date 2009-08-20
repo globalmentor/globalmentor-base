@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,9 @@
 package com.globalmentor.io;
 
 import java.io.*;
-import java.util.*;
 
 import com.globalmentor.java.Characters;
 import static com.globalmentor.java.Integers.*;
-import static com.globalmentor.util.Arrays.*;
 
 /**Parsing methods that work on a {@link Reader}.
 The reader must support marking.
