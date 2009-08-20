@@ -2,7 +2,7 @@ package com.globalmentor.common;
 
 import java.security.Principal;
 
-import com.globalmentor.util.IDed;
+import com.globalmentor.model.IDed;
 
 /**A representation of an individual.
 @author Garret Wilson

@@ -18,8 +18,8 @@ package com.globalmentor.text.directory.vcard;
 
 import java.util.*;
 
-import com.globalmentor.util.LocaledText;
-import com.globalmentor.util.ModifiableSet;
+import com.globalmentor.collections.ModifiableSet;
+import com.globalmentor.model.LocaledText;
 
 /**A class that maintains a singleton instance of a list of available categories
 	that are available to be chosen for the "CATEGORIES" type of a vCard <code>text/directory</code>

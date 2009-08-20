@@ -5,12 +5,19 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.concurrent.locks.*;
 
+import com.globalmentor.collections.ArrayListMap;
+import com.globalmentor.collections.CollectionMap;
+import com.globalmentor.collections.DecoratorReadWriteLockCollectionMap;
+import com.globalmentor.collections.ReadWriteLockDecorator;
+import com.globalmentor.collections.iterators.AbstractListIterator;
+import com.globalmentor.collections.iterators.Iterators;
+import com.globalmentor.collections.iterators.ObjectIterator;
 import com.globalmentor.java.*;
 import com.globalmentor.util.*;
 
+import static com.globalmentor.collections.iterators.Iterators.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
-import static com.globalmentor.util.Iterators.*;
 
 /**Abstract implementation of a scope of URF properties.
 This implementation maintains a map of URF value context lists representing property values, each keyed to the URI of the corresponding URI.

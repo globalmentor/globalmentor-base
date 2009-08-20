@@ -7,10 +7,10 @@ import com.garretwilson.swing.*;
 import com.globalmentor.mentoract.qti.Assessment;
 import com.globalmentor.mentoract.qti.QTI;
 import com.globalmentor.mentoract.qti.QTIXMLifier;
+import com.globalmentor.model.Modifiable;
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.xpackage.XPackage;
 import com.globalmentor.text.xml.XMLSerializer;
-import com.globalmentor.util.Modifiable;
 
 import org.w3c.dom.*;
 

@@ -9,6 +9,8 @@ import com.globalmentor.mentoract.qti.Presentation;
 import com.globalmentor.mentoract.qti.Response;
 import com.globalmentor.mentoract.qti.ResponseLID;
 import com.globalmentor.mentoract.qti.ResponseProcessing;
+import com.globalmentor.model.Modifiable;
+import com.globalmentor.model.Verifiable;
 import com.globalmentor.util.*;
 
 /**Provides a visual editing environment for a QTI item.

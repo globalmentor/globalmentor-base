@@ -18,7 +18,7 @@ package com.globalmentor.event;
 
 import java.util.*;
 
-import static com.globalmentor.util.Iterators.*;
+import static com.globalmentor.collections.iterators.Iterators.*;
 
 import java.util.concurrent.CopyOnWriteArraySet;
 

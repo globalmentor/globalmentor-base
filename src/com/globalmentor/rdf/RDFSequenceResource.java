@@ -20,7 +20,8 @@ import java.net.URI;
 import java.util.*;
 
 import static com.globalmentor.rdf.RDF.*;
-import com.globalmentor.util.NameValuePair;
+
+import com.globalmentor.model.NameValuePair;
 
 /**Represents an RDF sequence resource.
 @author Garret Wilson

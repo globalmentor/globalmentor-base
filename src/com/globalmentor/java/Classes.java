@@ -32,9 +32,9 @@ import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.URLs.*;
 
 import com.globalmentor.io.InputStreams;
+import com.globalmentor.model.NameValuePair;
 import com.globalmentor.net.ContentType;
 import com.globalmentor.net.URIPath;
-import com.globalmentor.util.NameValuePair;
 
 /**Utilities for manipulating Java classes.
 @author Garret Wilson

@@ -2,6 +2,8 @@ package com.garretwilson.awt;
 
 import java.awt.*;
 
+import com.globalmentor.model.Modifiable;
+import com.globalmentor.model.Verifiable;
 import com.globalmentor.util.*;
 
 /**Utility methods for working with AWT containers.

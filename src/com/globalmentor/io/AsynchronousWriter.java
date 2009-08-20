@@ -21,8 +21,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.*;
 
+import static com.globalmentor.collections.Arrays.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.util.Arrays.*;
 
 /**Writer that queues information and writes the information to the underlying writer asynchronously.
 

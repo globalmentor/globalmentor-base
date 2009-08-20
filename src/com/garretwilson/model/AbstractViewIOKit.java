@@ -8,7 +8,7 @@ import com.globalmentor.io.*;
 /**Absract implementation of loading information into a view or
 	saving information from a view.
 @author GarretWilson
-@see com.globalmentor.util.Modifiable
+@see com.globalmentor.model.Modifiable
 */
 public abstract class AbstractViewIOKit<M> extends DefaultURIAccessible implements ViewIOKit<M>
 {
@@ -78,7 +78,7 @@ public abstract class AbstractViewIOKit<M> extends DefaultURIAccessible implemen
 	@param view The view the data of which will be saved at the given URI.
 	@param uri The URI at which the view data should be saved.
 	@exception IOException Thrown if there is an error writing the data.
-	@see com.globalmentor.util.Modifiable
+	@see com.globalmentor.model.Modifiable
 	@see Verifiable#verify()
 	*/
 	public void save(final ModelView<M> view, final URI uri) throws IOException

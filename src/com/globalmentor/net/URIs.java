@@ -20,9 +20,13 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import com.globalmentor.collections.ArrayListHashMap;
+import com.globalmentor.collections.CollectionMap;
 import com.globalmentor.io.*;
 
 import com.globalmentor.java.Integers;
+import com.globalmentor.model.NameValuePair;
+
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 import com.globalmentor.text.*;

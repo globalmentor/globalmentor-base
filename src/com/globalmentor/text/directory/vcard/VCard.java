@@ -20,6 +20,7 @@ import java.net.*;
 import java.util.*;
 import static java.util.Collections.*;
 
+import com.globalmentor.model.LocaledText;
 import com.globalmentor.text.directory.*;
 import com.globalmentor.util.*;
 

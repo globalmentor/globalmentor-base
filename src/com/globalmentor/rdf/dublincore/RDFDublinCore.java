@@ -19,6 +19,7 @@ package com.globalmentor.rdf.dublincore;
 import java.text.*;
 import java.util.*;
 
+import com.globalmentor.model.Locales;
 import com.globalmentor.rdf.*;
 import static com.globalmentor.rdf.RDFResources.*;
 import com.globalmentor.text.*;

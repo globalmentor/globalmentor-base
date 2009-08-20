@@ -20,11 +20,11 @@ import java.io.UnsupportedEncodingException;
 import java.text.Collator;
 import java.util.regex.Pattern;
 
+import com.globalmentor.collections.Arrays;
+import com.globalmentor.collections.comparators.SortOrder;
 import com.globalmentor.java.Characters;
 import com.globalmentor.net.ContentType;
 import com.globalmentor.text.xml.XML;
-import com.globalmentor.util.Arrays;
-import com.globalmentor.util.SortOrder;
 
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;

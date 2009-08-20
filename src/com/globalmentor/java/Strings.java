@@ -20,11 +20,11 @@ import java.io.*;
 import java.net.URI;
 import java.nio.charset.Charset;
 
+import static com.globalmentor.collections.Arrays.*;
 import static com.globalmentor.io.Charsets.*;
 import com.globalmentor.io.IO;
 import static com.globalmentor.java.Characters.*;
 import com.globalmentor.text.*;
-import static com.globalmentor.util.Arrays.*;
 
 /**Various text manipulating functions. These methods work on
 	{@link String} objects, which are immutable heavyweight objects that must

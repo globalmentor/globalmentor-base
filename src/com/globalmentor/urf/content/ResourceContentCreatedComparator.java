@@ -1,5 +1,9 @@
 package com.globalmentor.urf.content;
 
+import com.globalmentor.collections.comparators.AbstractSortOrderComparator;
+import com.globalmentor.collections.comparators.SerialDelegateComparator;
+import com.globalmentor.collections.comparators.SortOrder;
+import com.globalmentor.model.Comparables;
 import com.globalmentor.urf.URFResource;
 import static com.globalmentor.urf.content.Content.*;
 import com.globalmentor.util.*;

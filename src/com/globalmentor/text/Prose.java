@@ -18,10 +18,10 @@ package com.globalmentor.text;
 
 import java.util.StringTokenizer;
 
+import com.globalmentor.collections.Arrays;
 import com.globalmentor.java.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
-import com.globalmentor.util.Arrays;
 
 /**Constants and utilities for working with the structure of text.
 <p>Work in progress.</p>

@@ -20,6 +20,7 @@ import java.util.*;
 
 import static com.globalmentor.text.directory.Directory.*;
 
+import com.globalmentor.model.NameValuePair;
 import com.globalmentor.util.*;
 
 /**A line in a directory of type <code>text/directory</code> as defined in

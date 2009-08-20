@@ -24,7 +24,7 @@ import static com.globalmentor.java.StringBuilders.*;
 
 import com.globalmentor.java.Characters;
 import com.globalmentor.java.Integers;
-import com.globalmentor.util.NameValuePair;
+import com.globalmentor.model.NameValuePair;
 
 /**Utilities for formatting text.
 @author Garret Wilson

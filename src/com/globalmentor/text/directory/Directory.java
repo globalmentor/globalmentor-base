@@ -18,6 +18,7 @@ package com.globalmentor.text.directory;
 
 import java.util.*;
 
+import com.globalmentor.model.LocaledText;
 import com.globalmentor.util.*;
 
 /**A directory of type <code>text/directory</code> as defined in

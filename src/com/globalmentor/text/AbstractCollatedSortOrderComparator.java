@@ -18,6 +18,8 @@ package com.globalmentor.text;
 
 import java.text.Collator;
 
+import com.globalmentor.collections.comparators.AbstractSortOrderComparator;
+import com.globalmentor.collections.comparators.SortOrder;
 import com.globalmentor.util.*;
 import static com.globalmentor.java.Objects.*;
 

@@ -11,7 +11,7 @@ import com.garretwilson.swing.rdf.RDFPanel;
 import com.garretwilson.model.ResourceModel;
 import com.garretwilson.resources.icon.IconResources;
 
-import static com.globalmentor.util.UUIDs.*;
+import static com.globalmentor.model.UUIDs.*;
 
 import com.globalmentor.mentoract.maqro.*;
 import com.globalmentor.rdf.*;

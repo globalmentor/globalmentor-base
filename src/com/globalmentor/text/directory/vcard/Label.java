@@ -18,6 +18,7 @@ package com.globalmentor.text.directory.vcard;
 
 import java.util.*;
 import com.globalmentor.java.*;
+import com.globalmentor.model.LocaledText;
 import com.globalmentor.util.*;
 
 /**An object representing the "LABEL" type of a vCard <code>text/directory</code>

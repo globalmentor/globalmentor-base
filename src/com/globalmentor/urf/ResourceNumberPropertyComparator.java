@@ -2,6 +2,8 @@ package com.globalmentor.urf;
 
 import java.net.URI;
 
+import com.globalmentor.collections.comparators.SerialDelegateComparator;
+import com.globalmentor.collections.comparators.SortOrder;
 import com.globalmentor.java.Numbers;
 import static com.globalmentor.urf.URF.*;
 import com.globalmentor.util.*;

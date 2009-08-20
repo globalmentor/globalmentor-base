@@ -20,6 +20,7 @@ import java.util.concurrent.BlockingQueue;
 
 import javax.mail.*;
 
+import com.globalmentor.collections.AbstractRunnableBlockingQueueConsumer;
 import com.globalmentor.util.*;
 
 import static com.globalmentor.java.Objects.*;

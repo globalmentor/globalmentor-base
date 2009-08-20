@@ -19,7 +19,7 @@ package com.globalmentor.net;
 import static com.globalmentor.net.URIs.*;
 
 import com.globalmentor.java.Objects;
-import com.globalmentor.util.DefaultComparableNamed;
+import com.globalmentor.model.DefaultComparableNamed;
 
 /**Encapsulates a host and an optional port.
 @author Garret Wilson

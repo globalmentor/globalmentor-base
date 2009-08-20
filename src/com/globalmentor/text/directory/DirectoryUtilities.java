@@ -21,6 +21,9 @@ import java.util.*;
 import static com.globalmentor.text.ABNF.*;
 
 import com.globalmentor.java.StringBuilders;
+import com.globalmentor.model.LocaledText;
+import com.globalmentor.model.Locales;
+import com.globalmentor.model.NameValuePair;
 import com.globalmentor.util.*;
 
 /**Utilities for working with directories of type <code>text/directory</code> as

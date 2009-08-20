@@ -23,8 +23,8 @@ import javax.activation.*;
 
 import static com.globalmentor.java.Characters.SPACE_CHAR;
 import com.globalmentor.java.Objects;
+import com.globalmentor.model.NameValuePair;
 import com.globalmentor.text.ArgumentSyntaxException;
-import com.globalmentor.util.NameValuePair;
 
 /**An encapsulation of an Internet media content type as originally defined in <a href="http://www.rfc-editor.org/rfc/rfc2046.txt">RFC 2046</a>, "MIME Part 2: Media Types".
 <p>Neither {@link MimeType} nor <code>javax.mail.internet.ContentType</code> correctly implements {@link Object#equals(Object)} and therefore cannot reliably be used in sets and maps.

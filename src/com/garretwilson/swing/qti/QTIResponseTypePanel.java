@@ -7,6 +7,7 @@ import com.garretwilson.resources.icon.IconResources;
 import com.globalmentor.java.CharSequences;
 import com.globalmentor.java.Strings;
 import com.globalmentor.mentoract.qti.*;
+import com.globalmentor.model.Verifiable;
 import com.globalmentor.util.*;
 
 /**Allows a response type to be selected.

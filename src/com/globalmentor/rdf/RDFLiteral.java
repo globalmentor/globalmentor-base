@@ -18,7 +18,7 @@ package com.globalmentor.rdf;
 
 import java.text.Collator;
 
-import com.globalmentor.util.LocaledText;
+import com.globalmentor.model.LocaledText;
 
 /**Represents an RDF literal, either plain or typed.
 @author Garret Wilson

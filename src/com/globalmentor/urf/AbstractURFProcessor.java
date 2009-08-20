@@ -5,7 +5,9 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.globalmentor.collections.IdentityHashSet;
 import com.globalmentor.java.*;
+import com.globalmentor.model.NameValuePair;
 import com.globalmentor.net.*;
 
 import static com.globalmentor.java.Objects.*;

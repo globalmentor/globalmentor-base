@@ -3,6 +3,10 @@ package com.globalmentor.urf;
 import java.net.URI;
 
 import static com.globalmentor.java.Objects.*;
+
+import com.globalmentor.collections.comparators.AbstractSortOrderComparator;
+import com.globalmentor.collections.comparators.SerialDelegateComparator;
+import com.globalmentor.collections.comparators.SortOrder;
 import com.globalmentor.util.*;
 
 /**Abstract comparator that sorts resources based upon the value of some identified property.

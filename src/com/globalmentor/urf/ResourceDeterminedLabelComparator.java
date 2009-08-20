@@ -2,6 +2,8 @@ package com.globalmentor.urf;
 
 import java.text.Collator;
 
+import com.globalmentor.collections.comparators.SerialDelegateComparator;
+import com.globalmentor.collections.comparators.SortOrder;
 import com.globalmentor.text.*;
 import com.globalmentor.util.*;
 

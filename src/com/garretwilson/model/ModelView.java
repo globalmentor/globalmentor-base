@@ -1,6 +1,6 @@
 package com.garretwilson.model;
 
-import com.globalmentor.util.Verifiable;
+import com.globalmentor.model.Verifiable;
 
 /**Represents a view of a model.
 @author Garret Wilson

@@ -5,7 +5,11 @@ import java.util.*;
 import static java.util.Collections.*;
 
 import static com.globalmentor.java.Objects.*;
+
+import com.globalmentor.model.NameValuePair;
 import com.globalmentor.net.*;
+
+import static com.globalmentor.model.Locales.*;
 import static com.globalmentor.net.URIs.*;
 import com.globalmentor.rdf.*;
 import static com.globalmentor.rdf.RDF.*;
@@ -17,7 +21,6 @@ import static com.globalmentor.urf.URF.*;
 import com.globalmentor.urf.content.Content;
 import static com.globalmentor.urf.dcmi.DCMI.LANGUAGE_PROPERTY_URI;
 import com.globalmentor.util.*;
-import static com.globalmentor.util.Locales.*;
 
 import org.w3c.dom.*;
 

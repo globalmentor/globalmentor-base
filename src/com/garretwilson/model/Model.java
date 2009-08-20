@@ -2,7 +2,7 @@ package com.garretwilson.model;
 
 import static com.globalmentor.java.Classes.*;
 
-import com.globalmentor.util.Modifiable;
+import com.globalmentor.model.Modifiable;
 
 /**Indicates that an implementing class is a data model.
 @author Garret Wilson

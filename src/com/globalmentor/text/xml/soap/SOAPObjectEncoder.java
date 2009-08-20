@@ -20,9 +20,9 @@ import java.util.*;
 
 import javax.xml.soap.*;
 
+import com.globalmentor.model.BinaryObjectHolder;
 import com.globalmentor.text.xml.XMLObjectEncoder;
 import com.globalmentor.text.xml.soap.SOAP;
-import com.globalmentor.util.BinaryObjectHolder;
 
 import org.w3c.dom.*;
 

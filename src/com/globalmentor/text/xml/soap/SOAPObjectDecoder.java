@@ -22,9 +22,9 @@ import java.util.*;
 import javax.xml.soap.*;
 
 import com.globalmentor.io.InputStreams;
+import com.globalmentor.model.BinaryObjectHolder;
 import com.globalmentor.text.xml.XMLObjectDecoder;
 import com.globalmentor.text.xml.soap.SOAP;
-import com.globalmentor.util.BinaryObjectHolder;
 import com.globalmentor.util.Debug;
 
 import org.w3c.dom.*;

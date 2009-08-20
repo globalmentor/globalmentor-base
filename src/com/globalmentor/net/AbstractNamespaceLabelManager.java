@@ -25,6 +25,7 @@ import static java.util.Collections.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.net.URIs.*;
 
+import com.globalmentor.collections.MapDecorator;
 import com.globalmentor.net.http.webdav.ApacheWebDAV;
 import com.globalmentor.rdf.RDF;
 import com.globalmentor.rdf.dicto.Dicto;
@@ -45,7 +46,6 @@ import com.globalmentor.urf.foaf.FOAF;
 import com.globalmentor.urf.maqro.MAQRO;
 import com.globalmentor.urf.select.Select;
 import com.globalmentor.urf.vcard.VCard;
-import com.globalmentor.util.MapDecorator;
 
 /**Map managing namespace URIs and labels for serialization.
 Mapping labels to the <code>null</code> namespace or to the <code>null</code> label is allowed.

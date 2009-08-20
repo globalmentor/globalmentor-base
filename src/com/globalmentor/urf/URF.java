@@ -8,7 +8,12 @@ import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.*;
 
+import static com.globalmentor.collections.Collections.*;
 import static com.globalmentor.io.Charsets.*;
+
+import com.globalmentor.collections.CollectionMap;
+import com.globalmentor.collections.IdentityHashSet;
+import com.globalmentor.collections.IdentityHashSetMap;
 import com.globalmentor.java.*;
 import static com.globalmentor.java.Booleans.*;
 import static com.globalmentor.java.Characters.*;
@@ -17,10 +22,9 @@ import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
 import com.globalmentor.net.*;
 
+import static com.globalmentor.model.Locales.*;
 import static com.globalmentor.net.URIs.*;
 import com.globalmentor.text.RegularExpressions;
-import static com.globalmentor.util.Collections.*;
-import static com.globalmentor.util.Locales.*;
 import com.globalmentor.urf.content.*;
 import com.globalmentor.urf.select.Select;
 import com.globalmentor.util.*;

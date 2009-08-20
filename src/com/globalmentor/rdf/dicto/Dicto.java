@@ -19,8 +19,8 @@ package com.globalmentor.rdf.dicto;
 import java.net.URI;
 import java.util.Locale;
 
+import com.globalmentor.model.Locales;
 import com.globalmentor.rdf.*;
-import com.globalmentor.util.Locales;
 
 /**Constants and utilities used in Dictionary Ontology (Dicto) processing.
 <p>This class also serves as a resource factory that knows how to 

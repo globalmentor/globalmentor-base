@@ -7,14 +7,15 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.globalmentor.collections.IdentityHashSet;
 import com.globalmentor.java.Integers;
 import com.globalmentor.util.*;
 
+import static com.globalmentor.collections.Collections.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.TURF.*;
 import static com.globalmentor.urf.URF.*;
-import static com.globalmentor.util.Collections.*;
 
 /**Generates TURF from URF.
 <p>Copyright © 2007 GlobalMentor, Inc.

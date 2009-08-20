@@ -8,15 +8,15 @@ import com.globalmentor.io.ParseIOException;
 import com.globalmentor.iso.ISO8601;
 import static com.globalmentor.java.Characters.*;
 import com.globalmentor.text.SyntaxException;
-import static com.globalmentor.util.Calendars.*;
 
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.iso.ISO8601.*;
 import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.Strings.*;
+import static com.globalmentor.model.Calendars.*;
+import static com.globalmentor.model.TimeZones.*;
 import static com.globalmentor.urf.URF.*;
-import static com.globalmentor.util.TimeZones.*;
 
 /**A lightweight structure for transferring components of URF temporal types.
 <p>Copyright © 2007 GlobalMentor, Inc.

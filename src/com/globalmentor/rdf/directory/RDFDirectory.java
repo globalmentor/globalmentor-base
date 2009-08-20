@@ -21,12 +21,12 @@ import java.util.*;
 
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.model.Locales.*;
 import static com.globalmentor.rdf.RDFResources.*;
 import static com.globalmentor.text.directory.Directory.*;
-import static com.globalmentor.util.Locales.*;
 
+import com.globalmentor.model.LocaledText;
 import com.globalmentor.rdf.*;
-import com.globalmentor.util.LocaledText;
 
 /**Constants used in RDF processing of a directory of type
 	<code>text/directory</code> as defined in 

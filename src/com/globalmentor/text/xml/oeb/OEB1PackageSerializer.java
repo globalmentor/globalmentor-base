@@ -23,6 +23,8 @@ import java.util.*;
 
 import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.rdf.RDFResources.*;
+
+import com.globalmentor.model.NameValuePair;
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.xpackage.XPackage;
 import com.globalmentor.text.xml.XMLSerializer;

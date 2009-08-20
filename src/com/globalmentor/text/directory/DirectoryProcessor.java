@@ -23,6 +23,8 @@ import static com.globalmentor.text.ABNF.*;
 import static com.globalmentor.text.directory.Directory.*;
 
 import com.globalmentor.io.*;
+import com.globalmentor.model.LocaledText;
+import com.globalmentor.model.NameValuePair;
 import com.globalmentor.util.*;
 
 /**Class that can process a directory of type <code>text/directory</code> as

@@ -18,7 +18,7 @@ package com.globalmentor.text.directory;
 
 import java.util.*;
 
-import com.globalmentor.util.NameValuePair;
+import com.globalmentor.model.NameValuePair;
 
 /**Class that knows how to give profile-specific information for types within
 	a profile of a <code>text/directory</code> as defined in 

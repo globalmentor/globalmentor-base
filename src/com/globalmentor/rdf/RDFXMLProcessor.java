@@ -20,6 +20,8 @@ import java.net.*;
 import java.util.*;
 
 import static com.globalmentor.java.Objects.*;
+
+import com.globalmentor.model.Locales;
 import com.globalmentor.net.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.rdf.RDF.*;

@@ -18,10 +18,10 @@ package com.globalmentor.rdf;
 
 import java.net.URI;
 
+import com.globalmentor.model.IDed;
 import com.globalmentor.net.DefaultResource;
 import com.globalmentor.net.URIs;
 import com.globalmentor.text.xml.XML;
-import com.globalmentor.util.IDed;
 
 import static com.globalmentor.rdf.RDFResources.*;
 

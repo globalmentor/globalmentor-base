@@ -4,9 +4,9 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.Locale;
 
+import static com.globalmentor.model.Locales.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.urf.URF.*;
-import static com.globalmentor.util.Locales.*;
 
 import com.globalmentor.java.Classes;
 import com.globalmentor.net.ContentType;

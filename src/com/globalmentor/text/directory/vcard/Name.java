@@ -21,7 +21,7 @@ import java.util.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.text.TextFormatter.*;
 
-import com.globalmentor.util.DefaultLocaleable;
+import com.globalmentor.model.DefaultLocaleable;
 
 /**An object representing the "N" type of a vCard <code>text/directory</code>
 	profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>,

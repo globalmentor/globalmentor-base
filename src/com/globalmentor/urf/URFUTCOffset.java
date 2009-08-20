@@ -7,7 +7,7 @@ import com.globalmentor.text.*;
 
 import static com.globalmentor.iso.ISO8601.*;
 import static com.globalmentor.java.Integers.*;
-import static com.globalmentor.util.TimeZones.*;
+import static com.globalmentor.model.TimeZones.*;
 
 /**The class representing an <code>urf.UTCOffset</code> type.
 <p>Copyright © 2007 GlobalMentor, Inc.

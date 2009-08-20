@@ -18,7 +18,7 @@ package com.globalmentor.security;
 
 import java.security.Principal;
 
-import com.globalmentor.util.DefaultIDed;
+import com.globalmentor.model.DefaultIDed;
 
 /**An abstract implementation of a principal.
 @author Garret Wilson

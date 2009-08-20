@@ -22,12 +22,14 @@ import java.text.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.globalmentor.collections.Maps.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.StringBuilders.*;
+import static com.globalmentor.model.TimeZones.*;
 import static com.globalmentor.net.URIs.*;
-import com.globalmentor.util.NameValuePair;
-import static com.globalmentor.util.Maps.*;
-import static com.globalmentor.util.TimeZones.*;
+
+import com.globalmentor.model.NameValuePair;
+
 
 /**Access to a log in the Extended Log File Format (ELFF).
 This class is thread-safe and can be used to concurrently generate log information.

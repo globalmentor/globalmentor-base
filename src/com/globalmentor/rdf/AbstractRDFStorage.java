@@ -21,6 +21,8 @@ import java.net.*;
 import java.util.*;
 
 import com.globalmentor.io.*;
+import com.globalmentor.model.DefaultModifiable;
+import com.globalmentor.model.Modifiable;
 import com.globalmentor.text.xml.XMLProcessor;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.text.xml.XML;

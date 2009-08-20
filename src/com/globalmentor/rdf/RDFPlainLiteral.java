@@ -21,7 +21,7 @@ import java.util.Locale;
 
 import static com.globalmentor.java.Objects.*;
 
-import com.globalmentor.util.LocaledText;
+import com.globalmentor.model.LocaledText;
 
 /**Represents a plain RDF literal.
 @author Garret Wilson

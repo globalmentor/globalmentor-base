@@ -24,8 +24,9 @@ import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.StringBuilders.*;
+
+import com.globalmentor.collections.Arrays;
 import com.globalmentor.text.RomanNumerals;
-import com.globalmentor.util.Arrays;
 
 /**An immutable set of characters that supports various searching and other functions.
 This essentially provides an efficient yet immutable array with object-oriented functionality.

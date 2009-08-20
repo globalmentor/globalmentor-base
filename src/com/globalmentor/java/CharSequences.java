@@ -18,8 +18,9 @@ package com.globalmentor.java;
 
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.io.Charsets.*;
+
+import com.globalmentor.collections.Arrays;
 import com.globalmentor.text.unicode.UnicodeCharacter;
-import com.globalmentor.util.Arrays;
 
 /**Various text manipulating functions. These methods work on
 	objects that implement the {@link CharSequence} interface.

@@ -26,6 +26,8 @@ import static com.globalmentor.text.directory.vcard.VCard.*;
 
 import com.globalmentor.io.*;
 import com.globalmentor.java.*;
+import com.globalmentor.model.LocaledText;
+import com.globalmentor.model.NameValuePair;
 import com.globalmentor.text.ArgumentSyntaxException;
 import com.globalmentor.text.directory.*;
 import com.globalmentor.util.*;

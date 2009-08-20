@@ -20,10 +20,10 @@ import java.lang.ref.*;
 import java.net.URI;
 import java.util.*;
 
+import com.globalmentor.collections.Arrays;
 import com.globalmentor.net.BoundPropertyResource;
 import com.globalmentor.rdf.rdfs.RDFS;
 import static com.globalmentor.rdf.RDFResources.*;
-import com.globalmentor.util.Arrays;
 
 /**Represents the default implementation of an RDF resource.
 <p>This class provides compare functionality that sorts according to the reference URI.</p>

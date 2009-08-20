@@ -16,7 +16,7 @@
 
 package com.globalmentor.rdf;
 
-import com.globalmentor.util.NameValuePair;
+import com.globalmentor.model.NameValuePair;
 
 /**An RDF property and its value.
 @author Garret Wilson

@@ -18,6 +18,9 @@ package com.globalmentor.util;
 
 import java.util.*;
 
+import com.globalmentor.collections.iterators.EnumerationIterator;
+import com.globalmentor.collections.iterators.JoinIterator;
+
 import static com.globalmentor.java.Objects.*;
 
 /**A resource bundle backed by a hash map.

@@ -5,7 +5,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 
 import static com.globalmentor.java.Objects.*;
 
-import com.globalmentor.util.ReadWriteLockDecorator;
+import com.globalmentor.collections.ReadWriteLockDecorator;
 
 /**Default implementatioon of An URF value with its scope.
 <p>Copyright © 2007 GlobalMentor, Inc.

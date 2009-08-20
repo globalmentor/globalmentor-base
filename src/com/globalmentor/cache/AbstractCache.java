@@ -21,9 +21,16 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.concurrent.locks.*;
 
+import static com.globalmentor.collections.Collections.*;
 import static com.globalmentor.java.Objects.*;
+
+import com.globalmentor.collections.ArrayListHashMap;
+import com.globalmentor.collections.DecoratorReadWriteLockCollectionMap;
+import com.globalmentor.collections.DecoratorReadWriteLockMap;
+import com.globalmentor.collections.PurgeOnWriteSoftValueHashMap;
+import com.globalmentor.collections.ReadWriteLockCollectionMap;
+import com.globalmentor.collections.ReadWriteLockMap;
 import com.globalmentor.util.*;
-import static com.globalmentor.util.Collections.*;
 
 /**An abstract cache that requires a subclass implementing data retrieval methods.
 @param <K> The type of key used to look up data in the cache.

@@ -20,7 +20,7 @@ import java.io.*;
 import java.util.*;
 
 import com.globalmentor.io.*;
-import com.globalmentor.util.NameValuePair;
+import com.globalmentor.model.NameValuePair;
 
 /**Class that knows how to create objects to represent values provided in
 	the lines of a <code>text/directory</code> as defined in 

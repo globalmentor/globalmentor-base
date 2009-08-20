@@ -25,6 +25,8 @@ import com.globalmentor.io.*;
 
 import com.globalmentor.java.*;
 import static com.globalmentor.java.Characters.*;
+
+import com.globalmentor.model.Locales;
 import com.globalmentor.net.*;
 
 import static com.globalmentor.net.URIs.*;

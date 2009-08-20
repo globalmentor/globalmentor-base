@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.URI;
 
 import com.globalmentor.io.IOKit;
-import com.globalmentor.util.Modifiable;
+import com.globalmentor.model.Modifiable;
 
 /**An implementation for loading information into a view or
 	saving information from a view using a model's I/O kit.

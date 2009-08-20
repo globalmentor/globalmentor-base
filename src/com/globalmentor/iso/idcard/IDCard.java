@@ -18,6 +18,8 @@ package com.globalmentor.iso.idcard;
 
 import java.util.*;
 
+import com.globalmentor.model.NameValuePair;
+import com.globalmentor.model.Range;
 import com.globalmentor.util.*;
 
 /**An encapsulation of an ISO identity card, such as as defined in ISO/IEC 7812-1:2000(E),

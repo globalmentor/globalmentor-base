@@ -19,7 +19,11 @@ package com.globalmentor.rdf;
 import java.net.URI;
 import java.util.*;
 
+import static com.globalmentor.collections.Collections.*;
 import static com.globalmentor.java.Objects.*;
+
+import com.globalmentor.collections.IdentityHashSet;
+import com.globalmentor.model.Locales;
 import com.globalmentor.text.xml.XMLNamespacePrefixManager;
 import com.globalmentor.text.xml.XML;
 import static com.globalmentor.rdf.RDF.*;
@@ -27,7 +31,6 @@ import static com.globalmentor.rdf.RDFResources.*;
 import static com.globalmentor.rdf.RDFXML.*;
 import static com.globalmentor.text.xml.XML.*;
 import com.globalmentor.util.*;
-import static com.globalmentor.util.Collections.*;
 
 import org.w3c.dom.*;
 

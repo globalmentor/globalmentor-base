@@ -24,6 +24,8 @@ import static com.globalmentor.text.ABNF.*;
 import static com.globalmentor.text.directory.DirectoryUtilities.*;
 
 import com.globalmentor.io.*;
+import com.globalmentor.model.LocaledText;
+import com.globalmentor.model.NameValuePair;
 import com.globalmentor.util.*;
 
 /**Profile for predefined types of a <code>text/directory</code> as defined in 

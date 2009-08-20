@@ -12,10 +12,10 @@ import com.garretwilson.model.ResourceModel;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.BorderUtilities;
+import com.globalmentor.collections.Collections;
 import com.globalmentor.net.Resource;
 import com.globalmentor.rdf.*;
 import com.globalmentor.urf.maqro.*;
-import com.globalmentor.util.Collections;
 
 /**Panel for editing a MAQRO question.
 @author Garret Wilson

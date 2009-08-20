@@ -4,7 +4,6 @@ import java.io.*;
 import java.math.*;
 import java.net.*;
 import java.util.*;
-import java.util.Collections;
 import static java.util.Collections.*;
 
 import static com.globalmentor.io.Charsets.*;
@@ -12,6 +11,8 @@ import com.globalmentor.io.ParseIOException;
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.iso.ISO8601.*;
 import static com.globalmentor.java.Characters.*;
+
+import com.globalmentor.model.NameValuePair;
 import com.globalmentor.net.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.urf.TURF.*;

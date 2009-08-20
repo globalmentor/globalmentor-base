@@ -8,7 +8,7 @@ import com.globalmentor.io.URIAccessible;
 /**Represents an implementation for loading information into a view or
 	saving information from a view.
 @author GarretWilson
-@see com.globalmentor.util.Modifiable
+@see com.globalmentor.model.Modifiable
 */
 public interface ViewIOKit<M> extends URIAccessible
 {
@@ -38,7 +38,7 @@ public interface ViewIOKit<M> extends URIAccessible
 	@param view The view the data of which will be saved at the given URI.
 	@param uri The URI at which the view data should be saved.
 	@exception IOException Thrown if there is an error writing the data.
-	@see com.globalmentor.util.Modifiable
+	@see com.globalmentor.model.Modifiable
 	@see Verifiable#verify()
 	*/
 	public void save(final ModelView<M> view, final URI uri) throws IOException;
@@ -52,7 +52,7 @@ public interface ViewIOKit<M> extends URIAccessible
 	@param view The view the data of which will be written to the given output stream.
 	@param outputStream The output stream to which to write the model content.
 	@throws IOException Thrown if there is an error writing the data.
-	@see com.globalmentor.util.Modifiable
+	@see com.globalmentor.model.Modifiable
 	@see Verifiable#verify()
 	*/
 	public void save(final ModelView<M> view, final OutputStream outputStream) throws IOException;
