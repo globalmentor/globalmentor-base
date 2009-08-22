@@ -1575,7 +1575,7 @@ public class URIs
 	@param uri The URI to check to for a collection.
 	@return The given collection URI.
 	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the provided does not have a path that ends with a slash ('/').
+	@exception IllegalArgumentException if the provided URI does not have a path that ends with a slash ('/').
 	@see #isCollectionURI(URI)
 	*/
 	public static URI checkCollectionURI(final URI uri)
@@ -1586,6 +1586,24 @@ public class URIs
 		}
 		return uri; //return the collection URI
 	}
+
+	/**Checks to see if a given URI does not represents a canonical collection, that is, it does not have a path that ends with a slash ('/').
+	If the given URI is not a collection URI, an exception is thrown.
+	@param uri The URI to check to for a collection.
+	@return The given non-collection URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@exception IllegalArgumentException if the provided URI has path that ends with a slash ('/').
+	@see #isCollectionURI(URI)
+	*/
+	public static URI checkNotCollectionURI(final URI uri)
+	{
+		if(isCollectionURI(uri)) //if the URI is a collection URI
+		{
+			throw new IllegalArgumentException("The given URI "+uri+" is a collection URI.");
+		}
+		return uri; //return the collection URI
+	}
+
 
 	/**Determines whether the given path is a canonical collection path.
 	@param rawPath The raw path to examine.
