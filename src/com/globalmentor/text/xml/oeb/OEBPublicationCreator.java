@@ -22,15 +22,12 @@ import java.text.MessageFormat;
 import java.util.*;
 
 import com.globalmentor.io.*;
-
 import com.globalmentor.java.*;
 import static com.globalmentor.java.Characters.*;
-
+import com.globalmentor.log.Log;
 import com.globalmentor.model.Locales;
 import com.globalmentor.net.*;
-
 import static com.globalmentor.net.URIs.*;
-
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.dublincore.*;
 import com.globalmentor.rdf.xpackage.*;
@@ -424,7 +421,7 @@ public class OEBPublicationCreator	//TODO update this class to work with XEbook;
 	public OEBPublication createPublicationFromDirectory(final File directory) throws MalformedURLException, IOException
 	{
 /*TODO fix new publication
-Debug.trace("OEBPublicationCreator.createPublication() directory: ", directory);
+Log.trace("OEBPublicationCreator.createPublication() directory: ", directory);
 		final File canonicalDirectory=directory.getCanonicalFile(); //convert the directory into a canonical directory (i.e. "c:\\temp\\.\\.\\." will be changed to "c:\\temp")
 			//create a new OEB publication using the directory as the publication URL; this will later be changed to the actual name of the OEB publication file
 		final OEBPublication publication=new OEBPublication(canonicalDirectory.toURL());
@@ -445,7 +442,7 @@ Debug.trace("OEBPublicationCreator.createPublication() directory: ", directory);
 	public OEBPublication createPublicationFromOEBFile(final File oebFile) throws MalformedURLException, IOException
 	{
 /*TODO fix new publication
-Debug.trace("OEBPublicationCreator.createPublication() file: ", oebFile);
+Log.trace("OEBPublicationCreator.createPublication() file: ", oebFile);
 		final File canonicalDirectory=oebFile.getCanonicalFile(); //convert the directory into a canonical directory (i.e. "c:\\temp\\.\\.\\." will be changed to "c:\\temp")
 			//create a new OEB publication using the directory as the publication URL; this will later be changed to the actual name of the OEB publication file
 		final OEBPublication publication=new OEBPublication(canonicalDirectory.toURL());
@@ -477,7 +474,7 @@ Debug.trace("OEBPublicationCreator.createPublication() file: ", oebFile);
 	{
 		if(outputDir!=null) //if an output directory is specified
 			setOutputDir(outputDir.getCanonicalFile());  //set the output directory TODO should we make sure this directory exists, and create it if  not?
-Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentURL);
+Log.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentURL);
 		final RDF rdf=getRDF();	//get the RDF data model
 			//create a new OEB publication using the OEB document URL as the publication URL; this will later be changed to the actual name of the OEB publication file
 		final OEBPublication publication=new OEBPublication(referenceURI);	//create a new OEB publication
@@ -685,10 +682,10 @@ Debug.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentU
 		for(int i=0; i<fileList.length; ++i)  //look at each file in the list
 		{
 			final File file=fileList[i].getCanonicalFile();  //get a reference to this file, after changing it to a canonical file
-Debug.trace("looking at publication file: ", file);
+Log.trace("looking at publication file: ", file);
 		  final URL fileURL=file.toURL(); //convert the file to a URL so that we can create a relative path with a correct href format
 		  final String fileRelativePath=URLUtilities.getRelativePath(directoryURL, fileURL);  //create a relative path for the file
-Debug.trace("Relative path: ", fileRelativePath);  //TODO fix
+Log.trace("Relative path: ", fileRelativePath);  //TODO fix
 		  final MediaType mediaType=OEB10_DOCUMENT_MEDIA_TYPE;  //assume this is an OEB document TODO remove this variable and use the value directly
 		  //create an OEB item with no fallback for this document; use the URL for an ID, after converting it to an XML name
 		  final OEBItem oebItem=new OEBItem(publication, XMLUtilities.createName(fileRelativePath), fileRelativePath, mediaType);
@@ -747,16 +744,16 @@ Debug.trace("Relative path: ", fileRelativePath);  //TODO fix
 		if(oebItem.getMediaType().equals(OEB10_DOCUMENT_MEDIA_TYPE)) //if this is an OEB document
 		{
 			final URL itemURL=oebItem.getURL(); //get the URL to the item
-Debug.trace("Looking at item URL: ", itemURL);
-Debug.trace("Output directory: ", getOutputDir());
+Log.trace("Looking at item URL: ", itemURL);
+Log.trace("Output directory: ", getOutputDir());
 			final File outputFile;  //we'll store here a reference to the file to write
 			final File outputDir=getOutputDir();  //get the output directory if one is specified
 			if(outputDir!=null) //if an output directory was specified
 			{
-Debug.trace("publication URL: ", publication.getPublicationURL());  //G***del
-Debug.trace("item URL: ", itemURL);  //G***del
+Log.trace("publication URL: ", publication.getPublicationURL());  //G***del
+Log.trace("item URL: ", itemURL);  //G***del
 				final String fileRelativePath=URLUtilities.getRelativePath(publication.getPublicationURL(), itemURL); //get the file's relative path
-Debug.trace("File relative path: ", fileRelativePath);  //G***del
+Log.trace("File relative path: ", fileRelativePath);  //G***del
 			  outputFile=new File(outputDir, fileRelativePath); //the file will be relative to the original URL, yet in our output directory
 			}
 			else  //if an output directory was not specified
@@ -779,7 +776,7 @@ Debug.trace("File relative path: ", fileRelativePath);  //G***del
 			{
 				tidyDocument(publication, itemURL, itemDocument, outputFile); //tidy the document
 			}
-Debug.trace("ready to gatherReferences() for item: ", oebItem.getHRef());
+Log.trace("ready to gatherReferences() for item: ", oebItem.getHRef());
 				//Gather items referenced in this document, which will also make
 				//  changes in the document if tidy is turned on, such as updating
 				//  image dimensions.
@@ -833,20 +830,20 @@ Debug.trace("ready to gatherReferences() for item: ", oebItem.getHRef());
 			}
 		  else if(elementName.equals(ELEMENT_OBJECT)) //if this is an object element
 			{
-Debug.trace("gatherReferences() found object.");
+Log.trace("gatherReferences() found object.");
 				final String codeType=element.getAttributeNS(null, ELEMENT_OBJECT_ATTRIBUTE_CODETYPE); //see if there is a code type attribute
 				if(codeType.length()!=0)  //if the object has a code type
 				{
-Debug.trace("found codetype: ", codeType);
+Log.trace("found codetype: ", codeType);
 					final MediaType mediaType=new MediaType(codeType); //create a media type from the given type
-Debug.trace("media type: ", mediaType);
+Log.trace("media type: ", mediaType);
 					if(mediaType.match(APPLICATION_JAVA_MEDIA_TYPE))  //if this is a java applet
 					{
-Debug.trace("determined media type: ", mediaType);
+Log.trace("determined media type: ", mediaType);
 						final String classID=element.getAttributeNS(null, ELEMENT_OBJECT_ATTRIBUTE_CLASSID); //see if there is a class ID attribute
 						if(classID.length()!=0) //if there is a class ID attribute
 						{
-Debug.trace("found class ID: ", classID);
+Log.trace("found class ID: ", classID);
 								//TODO put this code in a common location
 							final String javaPrefix="java:";  //the prefix the classid, as a URI, will probably have TODO use a constant here
 							final String classPostfix=".class"; //the ending postfix the classid URI may have TODO use a constant here
@@ -875,11 +872,11 @@ Debug.trace("found class ID: ", classID);
 
 
 /*TODO fix
-Debug.trace("preparing to gather info for element: "+element.getNodeName());
+Log.trace("preparing to gather info for element: "+element.getNodeName());
 			  //if this element represents an image TODO fix for namespace; currently this takes any namespace
 			if(XHTMLUtilities.isImageElement(element.getNamespaceURI(), element))
 			{
-Debug.trace("element is an image");
+Log.trace("element is an image");
 					//get the reference to the image TODO fix for namespace; currently this takes any namespace
 				final String href=XHTMLUtilities.getImageElementHRef(element.getNamespaceURI(), element);
 				if(href!=null)  //if there is a valid image reference
@@ -887,8 +884,8 @@ Debug.trace("element is an image");
 					gatherReference(publication, href);  //gather a reference to this image
 					if(isTidy())  //if we're tidying the document
 				  {
-Debug.trace("OEBPublicationCreator tidying image: "+href);
-Debug.trace("Old image dimensions, width: "+element.getAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_WIDTH)+" height: "+element.getAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_HEIGHT));
+Log.trace("OEBPublicationCreator tidying image: "+href);
+Log.trace("Old image dimensions, width: "+element.getAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_WIDTH)+" height: "+element.getAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_HEIGHT));
 						final URL imageURL=publication.getURL(href);  //get the full URL to the image
 						final Toolkit toolkit=Toolkit.getDefaultToolkit(); //get the default toolkit
 						final Image image=toolkit.createImage(imageURL);  //load the image
@@ -896,7 +893,7 @@ Debug.trace("Old image dimensions, width: "+element.getAttributeNS(null, ELEMENT
 						ImageUtilities.loadImage(image);  //make sure the image is loaded
 						element.setAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_WIDTH, String.valueOf(image.getWidth(null)));  //TODO testing
 						element.setAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_HEIGHT, String.valueOf(image.getHeight(null)));  //TODO testing
-Debug.trace("New image dimensions, width: "+element.getAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_WIDTH)+" height: "+element.getAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_HEIGHT));
+Log.trace("New image dimensions, width: "+element.getAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_WIDTH)+" height: "+element.getAttributeNS(null, ELEMENT_IMG_ATTRIBUTE_HEIGHT));
 				  }
 				}
 			}
@@ -998,7 +995,7 @@ TODO fix outputDir
 			if(oebItem==null) //if this item is not already in the manifest
 			{
 				final URL url=URLs.createURL(contextURL, href); //create a URL for the href, allowing for the href to be a relative path (although we don't yet know if it was)
-	Debug.trace("src URL: "+url+" relative to "+contextURL);
+	Log.trace("src URL: "+url+" relative to "+contextURL);
 	//TODO important fix		  if(URLConstants.FILE_PROTOCOL.equals(url.getProtocol()))  //if this is a local file being gathered into the manifest
 				if(URLs.exists(url))  //if a file exists at this URL
 				{
@@ -1015,7 +1012,7 @@ TODO fix outputDir
 //TODO fix with URF						if(XPackageUtilities.getManifestItem(publication, itemURI)==null)  //if there isn't an item already in the manifest with this ID TODO this could in some strange circumstances prevent two different paths from being stored, if the slash conversion to underline matches a filename with underlines in the same locations
 						if(true)	//TODO fix with URF
 						{
-	Debug.trace("no manifest items with URI: ", itemURI);
+	Log.trace("no manifest items with URI: ", itemURI);
 //TODO fix										final File srcFile=new File(src); //create a file object to represent the image source
 //TODO fix										final MediaType mediaType=FileUtilities.getMediaType(srcFile);  //try to see which of media type the image is
 //TODO fix										Debug.assert(mediaType!=null, "\""+srcFile+"\" has unknown media type.");  //TODO put in better error handling here
@@ -1028,7 +1025,7 @@ TODO fix outputDir
 							assert mediaType!=null : "\""+url+"\" has unknown media type.";  //TODO put in better error handling here
 							if(mediaType!=null) //if we have a media type
 							{
-	Debug.trace("found media type");
+	Log.trace("found media type");
 									//create a new OEB item to go in the manifest to represent this object or link targe
 								oebItem=getRDF().locateResource(itemURI);
 								XPackage.addLocation(oebItem, hrefRelativePath);  //add the relative href to the item
@@ -1043,12 +1040,12 @@ TODO fix outputDir
 								}
 								if(getOutputDir()!=null)  //if we have an output directory where files should be copied
 								{
-	Debug.trace("output dir: ", getOutputDir());
+	Log.trace("output dir: ", getOutputDir());
 									final File outputFile=new File(getOutputDir(), hrefRelativePath); //create an output file for the file
-	Debug.trace("output file: ", outputFile);
+	Log.trace("output file: ", outputFile);
 									final URL outputURL=outputFile.toURL(); //create a URL from the output file
-	Debug.trace("output URL: ", outputURL);
-	Debug.trace("original URL: ", url);
+	Log.trace("output URL: ", outputURL);
+	Log.trace("original URL: ", url);
 									if(!outputURL.equals(url))  //if the output file isn't the same as the file we started with
 									{
 	//TODO fix									try
@@ -1067,7 +1064,7 @@ TODO fix outputDir
 /*TODO fix
 										catch(IOException ioException)  //if we can't copy the source URL to the destination file
 										{
-											Debug.error(ioException); //TODO fix
+											Log.error(ioException); //TODO fix
 										}
 */
 									}
@@ -1079,13 +1076,13 @@ TODO fix outputDir
 				}
 				else  //if the URL doesn't exist
 				{
-					Debug.warn("File not found at "+url+" referenced from "+contextURL);
+					Log.warn("File not found at "+url+" referenced from "+contextURL);
 				}
 			}
 		}
 		catch(MalformedURLException e)  //if there was an error creating a relative path, the URL is probably an absolute path
 		{
-				Debug.warn(e);  //TODO fix
+				Log.warn(e);  //TODO fix
 			//we currently ignore files that are not stored locally TODO what should we do with these?
 		}
 		return oebItem; //return the item we found or created, or null if we did neither
@@ -1169,7 +1166,7 @@ TODO fix outputDir
 			backupFile.delete();  //delete the backup file
 		if(!outputFile.exists() || outputFile.renameTo(backupFile)) //try to rename the file to a backup file; if we succeeded (or if the file didn't exist in the first place, meaning we're transferring the file from another location
 		{
-Debug.trace("Ready to write file to: ", outputFile);
+Log.trace("Ready to write file to: ", outputFile);
 			final OutputStream outputStream=new BufferedOutputStream(new FileOutputStream(outputFile)); //create an output stream to the original filename
 			try
 			{
@@ -1211,7 +1208,7 @@ Debug.trace("Ready to write file to: ", outputFile);
 			{
 				getXMLSerializer().serialize(tocDocument, tocOutputStream);	//serialize the document to the output stream
 				tocOutputStream.flush(); //flush the output stream
-Debug.trace("Ready to gather reference for toc file: ", tocFile.getName());
+Log.trace("Ready to gather reference for toc file: ", tocFile.getName());
 				final OEBItem tocItem=gatherReference(publication, itemURL, tocFile.getName(), OEB10_DOCUMENT_MEDIA_TYPE);  //TODO fix; testing
 				publication.addSpineItem(0, tocItem);  //add the item to the first of the spine
 				final OEBGuide tocGuide=new OEBGuide(OEBGuide.TOC, "Table of Contents", tocItem.getHRef()); //create a new guide for the table of contents TODO i18n
@@ -1249,7 +1246,7 @@ Debug.trace("Ready to gather reference for toc file: ", tocFile.getName());
 		for(int i=0; i<childCount; ++i) //look at each of the children
 		{
 			final Node childNode=childNodeList.item(i); //get a reference tot his child
-Debug.trace("Looking for TOC element: ", childNode.toString());
+Log.trace("Looking for TOC element: ", childNode.toString());
 			if(childNode.getNodeType()==childNode.ELEMENT_NODE) //if this is an element
 			{
 				final Element childElement=(Element)childNode;  //get a reference to this element
@@ -1365,7 +1362,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 		}
 		catch(MalformedURLException malformedURLException)
 		{
-			Debug.warn(malformedURLException);  //TODO fix
+			Log.warn(malformedURLException);  //TODO fix
 		}
 		try //gather the preface
 		{
@@ -1380,7 +1377,7 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 		}
 		catch(MalformedURLException malformedURLException)
 		{
-			Debug.warn(malformedURLException);  //TODO fix
+			Log.warn(malformedURLException);  //TODO fix
 		}
 		int guideCount=0; //we'll keep track of the number of guides we have
 		final Element rootElement=document.getDocumentElement();  //get the root element
@@ -1631,20 +1628,20 @@ Debug.trace("Looking for TOC element: ", childNode.toString());
 			{
 				final Element childElement=(Element)childNode;  //get a reference to this element
 				final String text=XML.getText(childElement, true).trim(); //get the trimmed text of the element
-Debug.trace("looking for normal author in text: ", text);
+Log.trace("looking for normal author in text: ", text);
 				if(nextLineIsAuthor)  //if we told ourselves that the next line will be the author
 				{
-Debug.trace("we think this line is the author");
+Log.trace("we think this line is the author");
 						//get the author and trim it of certain delimiters, and then collapse the whitespace
 					final String author=ProjectGutenbergXHTMLTidier.tidyAuthor(text);  //TODO use a common method, not in PGUtilities
-Debug.trace("checking next line author: ", author);
+Log.trace("checking next line author: ", author);
 					if(isTitleOrAuthor(author)) //if we have valid author text
 						return author; //assume that's the author
 				}
 				int byIndex=Strings.indexOfIgnoreCase(text, BY);  //see if "by" is in this string
 				while(byIndex>=0)  //if we found "by"
 				{
-Debug.trace("byIndex: "+byIndex);
+Log.trace("byIndex: "+byIndex);
 						//and it's at the first of the line or preceded by whitespace
 				  if((byIndex==0 || Characters.isWhitespace(text.charAt(byIndex-1)))
 						&& (byIndex+BY.length()==text.length()

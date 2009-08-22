@@ -19,6 +19,7 @@ package com.globalmentor.rdf.xpackage;
 import java.net.*;
 import java.util.List;
 
+import com.globalmentor.log.Log;
 import com.globalmentor.net.*;
 import com.globalmentor.rdf.*;
 import static com.globalmentor.rdf.RDF.*;
@@ -26,7 +27,6 @@ import static com.globalmentor.rdf.RDFResources.*;
 import com.globalmentor.rdf.xmlschema.URILiteral;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xlink.XLink;
-import com.globalmentor.util.Debug;
 
 import org.w3c.dom.*;
 
@@ -180,7 +180,7 @@ public class XPackage
 		}
 		catch(URISyntaxException uriSyntaxException)	//if there is an error with the URI
 		{
-//TODO fix			Debug.error(uriSyntaxException);	//log the error
+//TODO fix			Log.error(uriSyntaxException);	//log the error
 			return null;	//that simply means we can't find the item
 		}
 	}
@@ -215,7 +215,7 @@ public class XPackage
 					}
 					catch(URISyntaxException uriSyntaxException)	//if there is an error creating the URI
 					{
-						Debug.warn(uriSyntaxException);	//warn about the error, but keep searching
+						Log.warn(uriSyntaxException);	//warn about the error, but keep searching
 					}
 				}
 			}
@@ -308,7 +308,7 @@ public class XPackage
 				}
 				catch(URISyntaxException uriSyntaxException)	//if there is an error creating the URI
 				{
-					Debug.warn(uriSyntaxException);	//warn about the error, but keep searching
+					Log.warn(uriSyntaxException);	//warn about the error, but keep searching
 				}
 			}
 		}

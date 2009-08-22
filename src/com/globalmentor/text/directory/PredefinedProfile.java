@@ -142,10 +142,10 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		{
 			reader.resetPeek();	//reset peeking
 			final String string=processTextValue(reader);	//read a string
-//		G***del Debug.trace("read text string: ", string);	//G***del
+//		G***del Log.trace("read text string: ", string);	//G***del
 			localeTextList.add(new LocaledText(string, locale));	//add the text to our list			
 			delimiter=reader.peekChar();	//see what character is next
-//		G***del Debug.trace("next delimiter: ", delimiter);	//G***del			
+//		G***del Log.trace("next delimiter: ", delimiter);	//G***del			
 		}
 		while(delimiter==Directory.VALUE_SEPARATOR_CHAR);	//keep getting strings while we are still running into value separators
 		reader.resetPeek();	//reset peeking
@@ -170,7 +170,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		char delimiter;	//we'll store the last delimiter peeked		
 		do	
 		{
-//		G***del Debug.trace("string buffer so far: ", stringBuffer);	//G***del			
+//		G***del Log.trace("string buffer so far: ", stringBuffer);	//G***del			
 			stringBuilder.append(reader.readStringUntilChar(TEXT_VALUE_DELIMITER_CHARS));	//read all undelimited characters until we find a delimiter
 			delimiter=reader.peekChar();	//see what the delimiter will be
 			switch(delimiter)	//see which delimiter we found
@@ -204,7 +204,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		while(delimiter!=Directory.VALUE_SEPARATOR_CHAR && delimiter!=CR);	//keep collecting parts of the string until we encounter a ',' or a CR
 		//G***check the text value
 		reader.resetPeek();	//reset peeking
-//	G***del Debug.trace("returning string: ", stringBuffer);	//G***del			
+//	G***del Log.trace("returning string: ", stringBuffer);	//G***del			
 		return stringBuilder.toString();	//return the string we've collected so far
 	}
 

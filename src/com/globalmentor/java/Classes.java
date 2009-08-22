@@ -796,21 +796,21 @@ public class Classes
 	*/
 	public static File getResource(final Class<?> objectClass, final String name) throws IOException
 	{
-//TODO del Debug.trace("ready to get file to resource", name);
+//TODO del Log.trace("ready to get file to resource", name);
 		File file=resourceFileMap.get(name);	//get any cached temporary file
 		if(file==null)	//if there is no cached file for this name (there is a benign race condition here; it is better to allow the possibility of multiple temporary files for a single resource than to slow down all accesses to resources while one loads)
 		{
-//		TODO del Debug.trace("must create new file");
+//		TODO del Log.trace("must create new file");
 			final URL resourceURL=objectClass.getResource(name);	//get a URL to the resource
-//		TODO del Debug.trace("got URL to resource", resourceURL);
+//		TODO del Log.trace("got URL to resource", resourceURL);
 			if(resourceURL!=null)	//if there is such a resource
 			{
 				final String filename=getFileName(resourceURL);	//get the filename of the URL
-//			TODO del Debug.trace("resource filename:", filename);
+//			TODO del Log.trace("resource filename:", filename);
 				final String baseName=removeExtension(filename);	//get the base name
-//			TODO del Debug.trace("baseName:", baseName);
+//			TODO del Log.trace("baseName:", baseName);
 				final String extension=getExtension(filename);	//get the extension
-//			TODO del Debug.trace("extension:", extension);
+//			TODO del Log.trace("extension:", extension);
 				file=File.createTempFile(baseName, new StringBuilder().append(FILENAME_EXTENSION_SEPARATOR).append(extension).toString());	//create a temp file with the base name as the prefix and the extension (with separator) as the suffix
 				file.deleteOnExit();	//indicate that the temporary file should be deleted when the JVM exits
 				final InputStream inputStream=resourceURL.openConnection().getInputStream();	//get an input stream to the resource

@@ -22,10 +22,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.lang.InstantiationException;
 import java.lang.reflect.*;
+
 import com.globalmentor.io.Files;
 import com.globalmentor.java.Classes;
 import com.globalmentor.java.Integers;
 import com.globalmentor.java.Java;
+import com.globalmentor.log.Log;
 import com.globalmentor.text.xml.XMLDOMImplementation;
 import com.globalmentor.text.xml.XMLProcessor;
 import com.globalmentor.text.xml.XMLSerializer;
@@ -390,12 +392,12 @@ public class XMLStorage
 	{
 		if(object!=null)  //if the object isn't null
 		{
-Debug.trace("ready to store object: ", object.getClass().getName());  //TODO del
-Debug.trace("using element: ", element.getNodeName());  //TODO del
+Log.trace("ready to store object: ", object.getClass().getName());  //TODO del
+Log.trace("using element: ", element.getNodeName());  //TODO del
 			final Class objectClass=object.getClass();  //get the object's class
 			if(objectClass.isArray()) //if the object being stored is an array
 			{
-	Debug.trace("object is array with length: ", Array.getLength(object));			  //TODO del
+	Log.trace("object is array with length: ", Array.getLength(object));			  //TODO del
 				final int arrayLength=Array.getLength(object);  //see how long the array is
 				for(int i=0; i<arrayLength; ++i)  //look at each element in the array
 				{
@@ -434,7 +436,7 @@ Debug.trace("using element: ", element.getNodeName());  //TODO del
 								final Method setMethod=objectClass.getMethod(SET+propertyName, new Class[]{returnType});
 							}
 							final String storageName=JavaUtilities.getVariableName(propertyName); //get the name of the attribute or element
-	Debug.trace("invoking method: ", method.getName()); //TODO del
+	Log.trace("invoking method: ", method.getName()); //TODO del
 */
 		/*TODO fix
 							if(attributeName.toUpperCase().equals("PCDATA") && returnType.getName().equals("java.lang.String"))	//if this is a PCDATA tag that returns a string
@@ -486,11 +488,11 @@ Debug.trace("using element: ", element.getNodeName());  //TODO del
 */
 						catch(IllegalAccessException e)	//if we can't access the method
 						{
-							Debug.warn(e); //we should not normally receive this error, but if we do normal processing should still occur
+							Log.warn(e); //we should not normally receive this error, but if we do normal processing should still occur
 						}
 						catch(InvocationTargetException e)	//if the underlying method throws an exception
 						{
-							Debug.warn(e); //we should not normally receive this error, but if we do normal processing should still occur
+							Log.warn(e); //we should not normally receive this error, but if we do normal processing should still occur
 						}
 					}
 				}
@@ -641,7 +643,7 @@ Debug.trace("using element: ", element.getNodeName());  //TODO del
 	*/  //TODO add a boolean return value which has the status of the actual file move
 	public static void store(final Object object, final File file, final boolean createBackup) throws FileNotFoundException, IOException
 	{
-Debug.trace("Storing in file: ", file); //TODO del
+Log.trace("Storing in file: ", file); //TODO del
 		final File tempFile=Files.getTempFile(file);  //get a temporary file to write to
 		final File backupFile=createBackup ? Files.getBackupFile(file) : null;  //get a backup file, if we should create a backup, or null if we shouldn't
 		final OutputStream outputStream=new BufferedOutputStream(new FileOutputStream(tempFile)); //create a buffered output stream to the temporary file
@@ -695,8 +697,8 @@ Debug.trace("Storing in file: ", file); //TODO del
 	*/
 	protected static Object retrieve(final Element element, final Class objectClass) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException
 	{
-Debug.trace("ready to retrieve object: ", objectClass.getName());  //TODO del
-Debug.trace("using element: ", element.getNodeName());  //TODO del
+Log.trace("ready to retrieve object: ", objectClass.getName());  //TODO del
+Log.trace("using element: ", element.getNodeName());  //TODO del
 		final NodeList childNodeList=element.getChildNodes(); //get a list of child nodes
 			//see if this element encodes the special null value
 		if(childNodeList.getLength()==1)  //if this element only has one child node
@@ -711,12 +713,12 @@ Debug.trace("using element: ", element.getNodeName());  //TODO del
 		final Object object;  //we'll create a new instance of the object and store it here
 		if(objectClass.isArray()) //if they are wanting to retrieve the element into an array
 		{
-Debug.trace("object is array");
+Log.trace("object is array");
 				//get a list of all the first-level child elements
 			final List childElementList=XML.getNodesByNameNS(element, Node.ELEMENT_NODE, null, "*", false);  //TODO use a constant here
 //TODO del when works			final NodeList childElementList=element.getElementsByTagNameNS(null, "*"); //get all the child elements
 			final int childElementCount=childElementList.size();  //find out how many child elements there are
-Debug.trace("there are child elements: ", childElementCount);
+Log.trace("there are child elements: ", childElementCount);
 			final Class componentType=objectClass.getComponentType(); //find out what type of object the array holds
 		  object=Array.newInstance(componentType, childElementCount);  //create an array to hold the objects we'll construct from the child elements
 		  final Iterator childElementIterator=childElementList.iterator();  //get an iterator to look at the child elements
@@ -733,23 +735,23 @@ Debug.trace("there are child elements: ", childElementCount);
 				}
 				catch(IllegalAccessException e) //if we aren't allowed to call this method
 				{
-					Debug.warn(e);  //we checked a few things already, but if we can't call this method, just warn and continue constructing the object
+					Log.warn(e);  //we checked a few things already, but if we can't call this method, just warn and continue constructing the object
 				}
 				catch(InstantiationException e)  //if instantiation fails
 				{
-					Debug.warn(e);  //warn of the error but try to construct the rest of the object TODO should we do something more severe here?
+					Log.warn(e);  //warn of the error but try to construct the rest of the object TODO should we do something more severe here?
 				}
 				catch(InvocationTargetException e) //if the constructor of the element threw an exception
 				{
-					Debug.warn(e);  //warn and continue constructing the object
+					Log.warn(e);  //warn and continue constructing the object
 				}
 			}
 		}
 		else  //if this is not an array, but a normal object type
 		{
-Debug.trace("Ready to create object: ", objectClass.getName()); //TODO del
+Log.trace("Ready to create object: ", objectClass.getName()); //TODO del
 		  object=createObject(element, objectClass);  //create an object for this element
-Debug.trace("Created object: ", object);  //TODO del
+Log.trace("Created object: ", object);  //TODO del
 //TODO del when works			object=objectClass.newInstance(); //create a new instance of the class, using its default constructor
 			final Method[] objectMethods=objectClass.getMethods();  //get an array of the object's methods
 				//retrieve the objects stored as attributes
@@ -759,19 +761,19 @@ Debug.trace("Created object: ", object);  //TODO del
 				final Attr attribute=(Attr)attributeMap.item(attributeIndex); //get a reference to this attribute
 				final String attributeName=attribute.getName(); //get the attribute name
 				final String attributeValue=attribute.getValue(); //get the attribute value
-Debug.trace("looking at attribute: ", attributeName); //TODO del
-Debug.trace("attribute has value: ", attributeValue); //TODO del
+Log.trace("looking at attribute: ", attributeName); //TODO del
+Log.trace("attribute has value: ", attributeValue); //TODO del
 				final String properName=Java.getProperName(attributeName); //convert the attribute name into a name appropriate for getXXX() or setXXX()
 				final String methodName=SET+properName; //the accessor method is "set" plus the proper name (e.g. setStatus())
-Debug.trace("looking for method name: ", methodName);
+Log.trace("looking for method name: ", methodName);
 				for(int methodIndex=objectMethods.length-1; methodIndex>=0; --methodIndex)  //look at each method
 				{
 					final Method method=objectMethods[methodIndex]; //get a reference to this method
-Debug.trace("checking method name: ", method.getName());
+Log.trace("checking method name: ", method.getName());
 					final int modifiers=method.getModifiers();	//get the modifiers for this method
 					if(Modifier.isPublic(modifiers) && method.getName().equals(methodName)) //if this method is public and has the correct name
 					{
-Debug.trace("checking parameters");
+Log.trace("checking parameters");
 						final Class[] parameterTypes=method.getParameterTypes();  //get an array of parameter types
 						if(parameterTypes.length==1)  //if this method takes one parameter
 						{
@@ -783,7 +785,7 @@ Debug.trace("checking parameters");
 							if(!attributeValue.equals(NULL_STRING))  //only try to convert the value if it doesn't represent null
 							{
 								final Class parameterType=parameterTypes[0];  //get the parameter type of the setXXX() method
-	Debug.trace("has one parameter of type: ", parameterType.getName());
+	Log.trace("has one parameter of type: ", parameterType.getName());
 								argumentObject=createObject(attributeValue, parameterType);  //change the attribute value into the correct type of object, if we can
 								if(argumentObject==null)	//if we didn't find a way to convert the attribute value to an argument object
 									continue; //try another method; don't use this setXXX() method
@@ -794,16 +796,16 @@ Debug.trace("checking parameters");
 							}
 							catch(InstantiationException e)	//if we can't create the object, for some reason
 							{
-								Debug.warn(e); //warn that we couldn't find a way to construct an object from the string
+								Log.warn(e); //warn that we couldn't find a way to construct an object from the string
 							}
 							catch(IllegalAccessException e) //if we aren't allowed to call this method
 							{
-								Debug.warn(e);  //we checked a few things already, but if we can't call this method, just warn and continue constructing the object
+								Log.warn(e);  //we checked a few things already, but if we can't call this method, just warn and continue constructing the object
 								break;  //don't try to construct this object anymore
 							}
 							catch(InvocationTargetException e)  //if the underlying method throws an exception
 							{
-								Debug.warn(e);  //warn of the error but try to construct the rest of the object TODO should we do something more severe here?
+								Log.warn(e);  //warn of the error but try to construct the rest of the object TODO should we do something more severe here?
 								break;  //don't try to construct this object anymore
 							}
 						}
@@ -821,23 +823,23 @@ Debug.trace("checking parameters");
 				{
 					final Element childElement=(Element)childNode;  //cast the node to an element
 					final String elementName=childElement.getLocalName(); //get the element name
-Debug.trace("looking at child element: ", elementName); //TODO del
+Log.trace("looking at child element: ", elementName); //TODO del
 					final String properName=Java.getProperName(elementName); //convert the element name into a name appropriate for getXXX() or setXXX()
 					final String methodName=SET+properName; //the accessor method is "set" plus the proper name (e.g. setStatus())
-Debug.trace("looking for method name: ", methodName);
+Log.trace("looking for method name: ", methodName);
 					for(int methodIndex=objectMethods.length-1; methodIndex>=0; --methodIndex)  //look at each method
 					{
 						final Method method=objectMethods[methodIndex]; //get a reference to this method
-Debug.trace("checking method name: ", method.getName());
+Log.trace("checking method name: ", method.getName());
 						final int modifiers=method.getModifiers();	//get the modifiers for this method
 						if(Modifier.isPublic(modifiers) && method.getName().equals(methodName)) //if this method is public and has the correct name
 						{
-Debug.trace("checking parameters");
+Log.trace("checking parameters");
 							final Class[] parameterTypes=method.getParameterTypes();  //get an array of parameter types
 							if(parameterTypes.length==1)  //if this method takes one parameter
 							{
 								final Class parameterType=parameterTypes[0];  //get the parameter type of the setXXX() method
-Debug.trace("has one parameter of type: ", parameterType.getName());
+Log.trace("has one parameter of type: ", parameterType.getName());
 								if(isStorable(parameterType)) //if this parameter is an object that can be stored
 								{
 									try
@@ -848,15 +850,15 @@ Debug.trace("has one parameter of type: ", parameterType.getName());
 									}
 									catch(IllegalAccessException e) //if we aren't allowed to call this method
 									{
-										Debug.warn(e);  //we checked a few things already, but if we can't call this method, just warn and continue constructing the object
+										Log.warn(e);  //we checked a few things already, but if we can't call this method, just warn and continue constructing the object
 									}
 									catch(InvocationTargetException e)  //if the underlying method throws an exception
 									{
-										Debug.warn(e);  //warn of the error but try to construct the rest of the object TODO should we do something more severe here?
+										Log.warn(e);  //warn of the error but try to construct the rest of the object TODO should we do something more severe here?
 									}
 									catch(NoSuchMethodException e)  //if a method is not found for initializing the object
 									{
-										Debug.warn(e);  //warn of the error but try to construct the rest of the object
+										Log.warn(e);  //warn of the error but try to construct the rest of the object
 									}
 								}
 							}
@@ -943,9 +945,9 @@ Debug.trace("has one parameter of type: ", parameterType.getName());
 				{
 //TODO del					try
 					{
-//TODO del Debug.trace("Getting property "+constructorPropertyNames[parameterIndex]+" for type "+parameterTypes[parameterIndex]);  //TODO del
+//TODO del Log.trace("Getting property "+constructorPropertyNames[parameterIndex]+" for type "+parameterTypes[parameterIndex]);  //TODO del
 						arguments[parameterIndex]=getProperty(element, constructorPropertyNames[parameterIndex], constructorParameterTypes[parameterIndex]); //get this property value from the element
-//TODO del Debug.trace("Got property: ", arguments[parameterIndex]); //TODO del
+//TODO del Log.trace("Got property: ", arguments[parameterIndex]); //TODO del
 					}
 /*TODO del
 					catch(Exception e) //if one of the arguments could not be constructed
@@ -985,8 +987,8 @@ Debug.trace("has one parameter of type: ", parameterType.getName());
 	*/
 	protected static Object createObject(final Element element, final Class type, final String methodName, final Class[] methodParameterTypes, final String[] methodPropertyNames) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException
 	{
-Debug.trace("Using default constructor to create instance of ", type.getName());  //TODO del
-Debug.trace("Looking for method: ", methodName);  //TODO del
+Log.trace("Using default constructor to create instance of ", type.getName());  //TODO del
+Log.trace("Looking for method: ", methodName);  //TODO del
 		final Object object=type.newInstance(); //create a new instance of the object using its default constructor
 		final Object[] arguments=new Object[methodParameterTypes.length]; //create an array to hold our arguments
 		//TODO maybe make sure the parameter type array and name array are the same length
@@ -999,13 +1001,13 @@ Debug.trace("Looking for method: ", methodName);  //TODO del
 //TODO fix			try
 			{
 				arguments[parameterIndex]=getProperty(element, methodPropertyNames[parameterIndex], methodParameterTypes[parameterIndex]); //get this property value from the element
-Debug.trace("constructed argument: ", arguments[parameterIndex]);
-Debug.trace("argument type: ", arguments[parameterIndex].getClass().getName());
+Log.trace("constructed argument: ", arguments[parameterIndex]);
+Log.trace("argument type: ", arguments[parameterIndex].getClass().getName());
 			}
 /*TODO fix
 			catch(Exception e) //if one of the arguments could not be constructed
 			{
-				Debug.warn(e);  //warn of the error
+				Log.warn(e);  //warn of the error
 				return
 				break;  //ignore this error but try the next method
 			}
@@ -1013,9 +1015,9 @@ Debug.trace("argument type: ", arguments[parameterIndex].getClass().getName());
 		}
 		if(parameterIndex<0)  //if we successfully created all arguments
 		{
-Debug.trace("Ready to initialize object: ", object);  //TODO del
+Log.trace("Ready to initialize object: ", object);  //TODO del
 			method.invoke(object, arguments);  //invoke the method of the object using the arguments we created
-Debug.trace("Initialized object: ", object);  //TODO del
+Log.trace("Initialized object: ", object);  //TODO del
 			return object;  //return the object we created, now that we've initialized it
 		}
 
@@ -1026,7 +1028,7 @@ Debug.trace("Initialized object: ", object);  //TODO del
 		for(int methodIndex=methods.length-1; methodIndex>=0; --methodIndex) //look at each method
 		{
 			final Method method=methods[methodIndex];  //get a reference to this method
-Debug.trace("Found method: ", method);  //TODO del
+Log.trace("Found method: ", method);  //TODO del
 			final Class[] parameterTypes=method.getParameterTypes(); //get an array of all the parameters this method takes
 		  if(parameterTypes.length==methodPropertyNames.length) //if this method has the same number of parameters as the number of properties passed to us
 		  {
@@ -1036,8 +1038,8 @@ Debug.trace("Found method: ", method);  //TODO del
 					try
 					{
 						arguments[parameterIndex]=getProperty(element, methodPropertyNames[parameterIndex], parameterTypes[parameterIndex]); //get this property value from the element
-Debug.trace("constructed argument: ", arguments[parameterIndex]);
-Debug.trace("argument type: ", arguments[parameterIndex].getClass().getName());
+Log.trace("constructed argument: ", arguments[parameterIndex]);
+Log.trace("argument type: ", arguments[parameterIndex].getClass().getName());
 					}
 					catch(Exception e) //if one of the arguments could not be constructed
 					{
@@ -1046,9 +1048,9 @@ Debug.trace("argument type: ", arguments[parameterIndex].getClass().getName());
 				}
 				if(parameterIndex<0)  //if we successfully created all arguments
 				{
-Debug.trace("Ready to initialize object: ", object);  //TODO del
+Log.trace("Ready to initialize object: ", object);  //TODO del
 					method.invoke(object, arguments);  //invoke the method of the object using the arguments we created
-Debug.trace("Initialized object: ", object);  //TODO del
+Log.trace("Initialized object: ", object);  //TODO del
 					return object;  //return the object we created, now that we've initialized it
 				}
 		  }
@@ -1164,18 +1166,18 @@ Debug.trace("Initialized object: ", object);  //TODO del
 				}
 				catch(IllegalAccessException e)	//if we can't access the string constructor
 				{
-					Debug.warn(e); //warn of the error and return null
+					Log.warn(e); //warn of the error and return null
 				}
 	/*TODO del
 				catch(InstantiationException e)	//if we can't create the object, for some reason
 				{
-					Debug.warn(e); //warn of the error and return null
+					Log.warn(e); //warn of the error and return null
 					throw e;  //rethrow the object
 				}
 	*/
 				catch(InvocationTargetException e)	//if the underlying method throws an exception
 				{
-					Debug.warn(e); //warn of the error and return null
+					Log.warn(e); //warn of the error and return null
 				}
 			}
 			throw new InstantiationException("Could not construct a "+type.getName()+" from the value, \""+value+"\".");  //show that we couldn't get an object with the correct type from the string

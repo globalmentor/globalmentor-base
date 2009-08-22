@@ -256,7 +256,7 @@ public class DirectoryProcessor
 				for(int i=0; i<contentLines.length; ++i)	//look at each line of content
 				{
 					final ContentLine contentLine=contentLines[i];	//get a reference to this content line
-//G***del Debug.trace("just processed content line: ", contentLine);	//G***del
+//G***del Log.trace("just processed content line: ", contentLine);	//G***del
 					final String typeName=contentLine.getName();	//get the type
 /*G***del when works
 					if(NAME_TYPE.equalsIgnoreCase(typeName))	//if this is NAME
@@ -336,7 +336,7 @@ public class DirectoryProcessor
 		{
 			//G***check the syntax of the group
 			group=token;	//save the group we read
-//G***del Debug.trace("found group: ", group);
+//G***del Log.trace("found group: ", group);
 			token=reader.readStringUntilChar(GROUPLESS_CONTENT_LINE_DELIMITER_CHARS);	//read the next line token after the group, which should be the name
 			c=reader.readChar();	//get the delimiter character we encountered, and fall through to checking the name
 		}
@@ -346,7 +346,7 @@ public class DirectoryProcessor
 			case NAME_VALUE_SEPARATOR_CHAR:	//if we just read the character separates the name from the value
 				//G***check the name
 				name=token;	//this is the name
-//		G***del Debug.trace("found name: ", name);
+//		G***del Log.trace("found name: ", name);
 				if(c==PARAM_SEPARATOR_CHAR)	//if this was the character separating the name from parameters, read the parameters
 				{
 					paramList=processParameters(reader);	//process the parameters
@@ -356,7 +356,7 @@ public class DirectoryProcessor
 				{
 					paramList=new ArrayList<NameValuePair<String, String>>();	//create an empty list, since we didn't read any parameters
 				}
-//		G***del Debug.trace("ready to process value");
+//		G***del Log.trace("ready to process value");
 				final Object[] values=processValue(profile, group, name, paramList, reader);	//process the value and get an object that represents the object
 				reader.readExpectedString(CRLF);	//there should always be a CRLF after the value
 				final ContentLine[] contentLines=new ContentLine[values.length];	//create an array of content lines that we'll fill with new content lines
@@ -408,7 +408,7 @@ public class DirectoryProcessor
 		{
 					//read the parameter name
 			final String paramName=reader.readStringUntilChar(PARAM_NAME_VALUE_SEPARATOR_CHAR);	//get the parameter name, which is everything up to the ':' characters
-//		G***del Debug.trace("found param name: ", paramName);
+//		G***del Log.trace("found param name: ", paramName);
 			//G***check the param name for validity
 			final List<String> paramValueList=new ArrayList<String>();	//create a list to hold the parameter values
 			do	//read the parameter value(s)
@@ -424,7 +424,7 @@ public class DirectoryProcessor
 						paramValue=reader.readStringUntilChar(PARAM_VALUE_DELIMITER_CHARS);	//read everything until the end of this parameter
 						break;
 				}
-//			G***del Debug.trace("found param value: ", paramValue);
+//			G***del Log.trace("found param value: ", paramValue);
 				//G***check the parameter value, here
 				paramList.add(new NameValuePair<String, String>(paramName, paramValue));	//add this name/value pair to our list of parameters
 				nextCharacter=reader.peekChar();	//see what delimiter will come next

@@ -613,7 +613,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 						&& valueResource.getPropertyCount()>0)	//if this resource has at least one property 
 				{
 					boolean serializeSubPropertyLiteralAttributes=true; //we'll see if all the subproperties are plain literals without language indications; if so, we'll just add them as attributes
-//TODO del Debug.trace("ready to look at all property value properties");
+//TODO del Log.trace("ready to look at all property value properties");
 					final Iterator<RDFPropertyValuePair> propertyIterator=valueResource.getPropertyIterator(); //get an iterator to all the element properties
 					while(propertyIterator.hasNext()) //while there are more properties
 					{

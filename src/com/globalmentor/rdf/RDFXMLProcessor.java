@@ -20,7 +20,7 @@ import java.net.*;
 import java.util.*;
 
 import static com.globalmentor.java.Objects.*;
-
+import com.globalmentor.log.Log;
 import com.globalmentor.model.Locales;
 import com.globalmentor.net.*;
 import static com.globalmentor.net.URIs.*;
@@ -262,7 +262,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		}
 		else	//if there is no reference URI
 		{
-		//TODO del Debug.trace("there is no reference URI; getting proxy");
+		//TODO del Log.trace("there is no reference URI; getting proxy");
 			resource=getResourceProxy(nodeIDValue!=null ? nodeIDValue : generateNodeID());	//retrieve or create a resource proxy from the node ID, generating our own node ID if there was none given
 		}
 			//if this is not an <rdf:Description> element, the element name gives its type, so add that type to the resource
@@ -270,14 +270,14 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		{
 			final RDFResource typeProperty=getRDF().locateResource(RDF_NAMESPACE_URI, TYPE_PROPERTY_NAME); //get an rdf:type resource
 			final RDFResource typePropertyValue=getRDF().locateResource(elementNamespaceURI, elementLocalName);	//locate the resource representing the type value
-		//TODO del Debug.trace("adding type statement for the resource, with type property", typeProperty, "and type property value", typePropertyValue);
+		//TODO del Log.trace("adding type statement for the resource, with type property", typeProperty, "and type property value", typePropertyValue);
 				//add a statement in the form, {resource proxy, rdf:type resource, type value resource}
 			addStatement(new DefaultStatement(resource, typeProperty, typePropertyValue));
 		}
 		processAttributeProperties(resource, element, AttributePropertyContext.DESCRIPTION);  //parse the attributes for the resource description
-	//TODO del Debug.trace("ready to process child element properties");
+	//TODO del Log.trace("ready to process child element properties");
 		processChildElementProperties(resource, element);	//parse the child elements as properties
-	//TODO del Debug.trace("ready to return property value resource", resource, "type", resource.getClass());
+	//TODO del Log.trace("ready to return property value resource", resource, "type", resource.getClass());
 		return resource;  //return the resource or resource proxy we created
 	}
 
@@ -447,7 +447,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	{
 		final URI elementNamespaceURI=element.getNamespaceURI()!=null ? new URI(element.getNamespaceURI()) : null; //get the element's namespace, or null if there is no namespace URI
 		final String elementLocalName=element.getLocalName(); //get the element's local name
-//Debug.trace("processing property with XML element namespace: ", elementNamespaceURI, "local name", elementLocalName);
+//Log.trace("processing property with XML element namespace: ", elementNamespaceURI, "local name", elementLocalName);
 		final String propertyLocalName;	//if this is an rdf:li property, we'll convert it to rdf_X, where X represents the member count plus one
 		if(RDF_NAMESPACE_URI.equals(elementNamespaceURI) && LI_PROPERTY_NAME.equals(elementLocalName)) //if this is an rdf:li property
 		{
@@ -526,7 +526,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		}
 		else	//by default assume that we're parsing a resource as the property value
 		{
-//Debug.trace("we must be parsing a resource as the property value");
+//Log.trace("we must be parsing a resource as the property value");
 			final String referenceURIValue=getRDFAttribute(element, ATTRIBUTE_RESOURCE); //get the reference URI of the referenced resource, if there is one
 			final String nodeIDValue=getRDFAttribute(element, ATTRIBUTE_NODE_ID);	//get the node ID attribute value, if there is one
 			assert referenceURIValue==null || nodeIDValue==null : "Resource cannot have both reference URI "+referenceURIValue+" and node ID "+nodeIDValue+"."; //TODO change to an actual RDF error
@@ -542,7 +542,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 				{
 					propertyValue=getResourceProxy(nodeIDValue!=null ? nodeIDValue : generateNodeID());	//retrieve or create a resource proxy from the node ID, generating our own node ID if there was none given
 				}
-//Debug.trace("ready to process attributes");
+//Log.trace("ready to process attributes");
 				processAttributeProperties((Resource)propertyValue, element, AttributePropertyContext.REFERENCE);  //parse the property attributes, assigning them to the property value
 			}
 			else if(element.getChildNodes().getLength()==0 && element.getAttributes().getLength()!=0) //if there are no child elements but there are attributes, this is a blank node
@@ -552,14 +552,14 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 			}
 			else  //if there is no reference URI or node ID, and there are children, there is either a normal property description below, or a literal
 			{
-			//TODO del Debug.trace("seems to be a normal property description; ready to process its contents");
+			//TODO del Log.trace("seems to be a normal property description; ready to process its contents");
 				//TODO we should make sure there are no attributes
 				propertyValue=processPropertyValueContents(element);	//process the contents of the element as a normal property value
 			}
 		}
 		if(propertyValue instanceof Resource)	//if we found a resource for the property value
 		{
-		//TODO del Debug.trace("we found a resource property value:", propertyValue, "of type", propertyValue.getClass(), "creating a statement for subject resource", resource);
+		//TODO del Log.trace("we found a resource property value:", propertyValue, "of type", propertyValue.getClass(), "creating a statement for subject resource", resource);
 				//add a statement in the form, {resource/resource proxy, property resource, resource/resource proxy value}
 			addStatement(new DefaultStatement(resource, propertyResource, (Resource)propertyValue));
 		}
@@ -597,13 +597,13 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 				}
 				else if(childElement!=null)  //if we've already found a child element
 				{
-					Debug.warn("Only one property value allowed for property element "+propertyNode.getNodeName()); //TODO with real error handling
+					Log.warn("Only one property value allowed for property element "+propertyNode.getNodeName()); //TODO with real error handling
 				}
 			}
 		}
 		if(childElement!=null)  //if we found a child element for the property value
 		{
-		//TODO del Debug.trace("found child element; ready to process as resource");
+		//TODO del Log.trace("found child element; ready to process as resource");
 			return processResource(childElement); //process the child element as an RDF resource, the value of the property in this case
 		}
 		else  //if we didn't find any child elements, the content is a literal
@@ -677,7 +677,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 			case RDF_OR_NULL:
 				if(RDF_NAMESPACE_URI.toString().equals(element.getNamespaceURI()) && element.hasAttributeNS(null, attributeLocalName)) //if there is a non-prefixed attribute value
 				{
-					Debug.warn("Non-prefixed rdf:"+attributeLocalName+" attribute deprecated."); //TODO put in a real warning
+					Log.warn("Non-prefixed rdf:"+attributeLocalName+" attribute deprecated."); //TODO put in a real warning
 				  return element.getAttributeNS(null, attributeLocalName); //return the non-prefixed attribute value
 				}
 			case ANY:

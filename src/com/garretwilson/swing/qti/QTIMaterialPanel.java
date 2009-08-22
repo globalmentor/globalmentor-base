@@ -203,7 +203,7 @@ public class QTIMaterialPanel extends JPanel
 			}
 //G***fix			catch(Exception ex)
 			{
-//G***fix				Debug.error("Error: "+ex);	//G***fix
+//G***fix				Log.error("Error: "+ex);	//G***fix
 			}
 		}
 	}

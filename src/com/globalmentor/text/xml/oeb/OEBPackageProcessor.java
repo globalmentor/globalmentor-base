@@ -24,16 +24,14 @@ import static com.globalmentor.rdf.xpackage.XPackage.*;
 import static com.globalmentor.text.xml.oeb.OEB.*;
 
 import com.globalmentor.io.*;
-
+import com.globalmentor.log.Log;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.http.HTTP.*;
-
 import com.globalmentor.net.ContentType;
 import com.globalmentor.rdf.*;
 import com.globalmentor.text.xml.*;
 import com.globalmentor.text.xml.xpath.XPath;
 import static com.globalmentor.urf.dcmi.DCMI.*;
-import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
 
@@ -343,27 +341,27 @@ public class OEBPackageProcessor
 		}
 */
 
-Debug.trace("adding an organization to the publication");
+Log.trace("adding an organization to the publication");
 		  //add the publication spine
 		final RDFListResource spine=new RDFListResource();	//create a new list for the spine
 		//XPath: /spine/itemref
 		final List<Node> spineElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
 			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE+
 			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_SPINE_ITEMREF);
-Debug.trace("looking at spine elements");
+Log.trace("looking at spine elements");
 		for(int i=0; i<spineElementList.size(); ++i)	//look at each spine element
 		{
-Debug.trace("looking at spine element: ", i);
+Log.trace("looking at spine element: ", i);
 			final Element itemElement=(Element)spineElementList.get(i);	//get a reference to this item in the spine
 		  final String itemIDRef=itemElement.getAttributeNS(null, PKG_SPINE_ITEMREF_ATTRIBUTE_IDREF);  //get the item's idref value
-Debug.trace("idref: ", itemIDRef);
+Log.trace("idref: ", itemIDRef);
 			final URI itemReferenceURI=new URI(URN_SCHEME, "local:"+itemIDRef, null);  //TODO fix the reference URI
-Debug.trace("item reference URI: ", itemReferenceURI);
+Log.trace("item reference URI: ", itemReferenceURI);
 /*TODO fix with URF
 			final RDFResource itemResource=manifestResource.getResourceByReferenceURI(itemReferenceURI);	//get the referenced item from the manifest
-Debug.trace("item resource: ", RDFUtilities.toString(itemResource));
+Log.trace("item resource: ", RDFUtilities.toString(itemResource));
 			assert itemResource!=null : "Missing spine element: "+itemIDRef; //TODO fix with a real error message
-Debug.trace("adding item to organization");
+Log.trace("adding item to organization");
 			spine.add(itemResource);	//add this item to the spine
 */
 		}
@@ -380,7 +378,7 @@ Debug.trace("adding item to organization");
 		  final String type=referenceElement.getAttributeNS(null, PKG_GUIDE_REFERENCE_ATTRIBUTE_TYPE);  //get the guide type
 		  final String title=referenceElement.getAttributeNS(null, PKG_GUIDE_REFERENCE_ATTRIBUTE_TITLE);  //get the guide title
 		  final String href=referenceElement.getAttributeNS(null, PKG_GUIDE_REFERENCE_ATTRIBUTE_HREF);  //get the guide href
-Debug.trace("found guide type: "+type+" title: "+title+" href: "+href);
+Log.trace("found guide type: "+type+" title: "+title+" href: "+href);
 			//create a new OEB guide
 			final OEBGuide oebGuide=new OEBGuide(type, title, href); //create a new guide
 			publicationResource.addGuide(oebGuide); //add this guide to our list

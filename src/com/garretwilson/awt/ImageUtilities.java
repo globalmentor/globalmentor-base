@@ -2,8 +2,6 @@ package com.garretwilson.awt;
 
 import java.awt.*;
 
-import com.globalmentor.util.Debug;
-
 /**Convenience routines for manipulating images.
 @see java.awt.Image
 @author Garret Wilson

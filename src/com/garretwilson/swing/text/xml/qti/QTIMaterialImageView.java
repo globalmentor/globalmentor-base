@@ -8,8 +8,8 @@ import javax.swing.text.*;
 import com.garretwilson.awt.ImageUtilities;
 import com.garretwilson.swing.text.xml.XMLComponentImageView;
 import com.garretwilson.swing.text.xml.XMLStyleUtilities;
+import com.globalmentor.log.Log;
 import static com.globalmentor.mentoract.qti.QTI.*;
-import com.globalmentor.util.Debug;
 
 /**A view that displays an image, intended to support the QTI
 	<code>&lt;matimage&gt;</code> element.
@@ -57,25 +57,25 @@ public class QTIMaterialImageView extends XMLComponentImageView
 		{
 			try
 			{
-Debug.trace("we don't know the dimensions of the QTI image; we'll have to get it"); //G***del
+Log.trace("we don't know the dimensions of the QTI image; we'll have to get it"); //G***del
 				final Image image=getImage(); //get the image, loading it if needed (in initialize() it will usually have to be loaded)
-Debug.trace("got the image;  loading it"); //G***del
+Log.trace("got the image;  loading it"); //G***del
 assert image!=null : "fImage is null";  //G***fix
   			ImageUtilities.loadImage(image);  //load the image G***optimize: perhaps there's a way to just load part of the image, to get the image dimensions
-Debug.trace("loaded the image"); //G***del
+Log.trace("loaded the image"); //G***del
 				height=image.getHeight(this);	//get the image's height
 				width=image.getWidth(this);	//get the image's width
-Debug.trace("height: ", height); //G***del
-Debug.trace("width", width); //G***del
+Log.trace("height: ", height); //G***del
+Log.trace("width", width); //G***del
 				freeImage();  //free the image memory; this should speed up view flowing
 			}
 			catch(URISyntaxException e)	//G***do something better here
 			{
-				Debug.error(e);
+				Log.error(e);
 			}
 			catch(IOException e)	//G***do something better here
 			{
-				Debug.error(e);
+				Log.error(e);
 			}
 		}
 		setHeight(height);	//set the height of the image view to whatever we found

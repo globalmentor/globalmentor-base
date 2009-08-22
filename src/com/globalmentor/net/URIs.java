@@ -1350,7 +1350,7 @@ public class URIs
 	*/
 	public static URI guessAbsoluteURI(final String string)
 	{
-		//TODO del Debug.trace("guessing URI: ", string);
+		//TODO del Log.trace("guessing URI: ", string);
 		try
 		{
 			final URI uri=new URI(string); //see if the string is already a valid URI
@@ -2091,7 +2091,7 @@ public class URIs
 		{
 			return uri; //the URI will not change
 		}
-		//G***del Debug.trace("changing base of ", uri, "from", oldBaseURI, "to", newBaseURI);
+		//G***del Log.trace("changing base of ", uri, "from", oldBaseURI, "to", newBaseURI);
 		final URI relativeURI=oldBaseURI.relativize(uri); //get a URI relative to the old base URI
 		if(relativeURI.isAbsolute()) //if we couldn't relativize the the URI to the old base URI and come up with a relative URI
 		{
@@ -2099,7 +2099,7 @@ public class URIs
 					+" is not a base URI of "+uri);
 		}
 		URI newURI=newBaseURI.resolve(relativeURI); //resolve the relative URI to the new base URI
-		//G***del Debug.trace("new URI:", newURI);
+		//G***del Log.trace("new URI:", newURI);
 		final String newBaseURIString=newBaseURI.toString(); //get the string of the new base URI
 		//G***del; maybe not needed		final StringBuilder newURIStringBuilder=new StringBuilder(newURI.toString());	//get the string of the new URI
 		final String newURIString=newURI.toString(); //get the string version of the new URI

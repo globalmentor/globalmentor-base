@@ -139,7 +139,7 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 		for(int i=0; i<choiceListModel.getSize(); ++i)  //look at each of the choices
 		{
 			final ResponseLabel responseLabel=(ResponseLabel)choiceListModel.getElementAt(i); //get this response label
-//G**del Debug.trace("Getting response label: ", responseLabel); //G***del
+//G**del Log.trace("Getting response label: ", responseLabel); //G***del
 			render.getResponseLabelList().add(responseLabel); //add this response label to our list
 		}
 		return render;  //return the rendering

@@ -315,7 +315,7 @@ public class StringBuilders
 		{
 			if(collapseChars.indexOf(stringBuilder.charAt(nextIndex))>=0)	//if this character is one of our remove characters
 			{
-	//G***del Debug.trace("found collapse character at index: ", nextIndex);  //G***del
+	//G***del Log.trace("found collapse character at index: ", nextIndex);  //G***del
 				int removeEnd=nextIndex+1;	//start looking at the next character to see how long this run is
 				while(removeEnd<stringBuilder.length() && collapseChars.indexOf(stringBuilder.charAt(removeEnd))>=0)	//while we still have more characters, and the characters we're finding are characters to remove
 				{

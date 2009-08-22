@@ -16,6 +16,7 @@ import com.garretwilson.swing.tree.*;
 import com.garretwilson.swing.qti.tree.*;
 import com.globalmentor.collections.Lists;
 import com.globalmentor.java.Booleans;
+import com.globalmentor.log.Log;
 import com.globalmentor.mentoract.qti.Assessment;
 import com.globalmentor.mentoract.qti.Item;
 import com.globalmentor.mentoract.qti.Material;
@@ -28,7 +29,6 @@ import com.globalmentor.mentoract.qti.Section;
 import com.globalmentor.model.Modifiable;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.text.xml.XML;
-import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
 
@@ -50,7 +50,7 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 		*/
 		public void setQTI(final QTI newQTI)
 		{
-	Debug.trace("Setting QTI"); //G***del
+	Log.trace("Setting QTI"); //G***del
 		  assessment=null;  //show that there is no assessment
 			qti=newQTI; //save the QTI data
 			qtiTree.setModel(new DefaultTreeModel(new QTITreeNode(qti)));  //G***testing
@@ -304,38 +304,38 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 
 
 	/*G***del
-	Debug.trace("Created document from QTI item: ");
+	Log.trace("Created document from QTI item: ");
 	com.garretwilson.text.xml.XMLUtilities.printTree(xmlDocument, Debug.getOutput()); //G***del
 	*/
-	//G***del Debug.trace("navigating");  //G***del
+	//G***del Log.trace("navigating");  //G***del
 
 		  //G***testing removal of all QTI stuff; instead, add a qtiViewVactory.resetState() or something
 //G***fix; this didn't fix the problem, we do have to clear the state somehow		xmlTextPane.registerViewFactory(QTIConstants.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //G***testing
 
 			xmlTextPane.setContentType("text/xml");  //G***use constant, put elsewhere
-	//G***del Debug.trace("navigating");  //G***del
+	//G***del Log.trace("navigating");  //G***del
 			final XMLDocument swingDocument=(XMLDocument)xmlTextPane.getDocument(); //get the currently loaded document
-	//G***del Debug.trace("navigating");  //G***del
+	//G***del Log.trace("navigating");  //G***del
 
-//G***del if not needed Debug.trace("****hiding views");  //G***del
+//G***del if not needed Log.trace("****hiding views");  //G***del
 //G***del if not needed			ViewUtilities.hideView(xmlTextPane.getUI().getRootView(xmlTextPane)); //G***testing remove components
 		  //G***testing removal of all QTI stuff; instead, add a qtiViewVactory.resetState() or something
 //G***fix; this didn't fix the problem, we do have to clear the state somehow		xmlTextPane.registerViewFactory(QTIConstants.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //G***testing
 //G***fix				xmlTextPane.registerViewFactory(QTIConstants.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //G***testing
-	//G***del Debug.trace("navigating");  //G***del
+	//G***del Log.trace("navigating");  //G***del
 
 				javax.swing.SwingUtilities.invokeLater(new Runnable()	//invoke the hyperlink traversal until a later time in the event thread, so the mouse click won't be re-interpreted when we arrive at the hyperlink destination
 				{
 					public void run()
 					{
 
-	//G***del Debug.trace("navigating");  //G***del
-Debug.trace("****setting XML");  //G***del
+	//G***del Log.trace("navigating");  //G***del
+Log.trace("****setting XML");  //G***del
 
 //TODO use the XMLTextPane.setXML() version if we can
 						//G***testing for style application
 			((XMLEditorKit)xmlTextPane.getEditorKit()).setXML(xmlDocument, null, XML.XML_CONTENT_TYPE, swingDocument); //set the XML document in the text pane
-	//G***del Debug.trace("navigating");  //G***del
+	//G***del Log.trace("navigating");  //G***del
 					}
 				});
 		}
@@ -348,7 +348,7 @@ Debug.trace("****setting XML");  //G***del
 	protected Item askNewItem()
 	{
 		final QTIResponseTypePanel responseTypePanel=new QTIResponseTypePanel();  //create a new response type panel
-Debug.trace("asking new item"); //G***del
+Log.trace("asking new item"); //G***del
 //G***testing optionpane
 //G***del		OptionPane.test();  //G***del
 			//ask what type of response should be added; if they make a selection G***i18n
@@ -577,15 +577,15 @@ Debug.trace("asking new item"); //G***del
 				while(path!=null) //while we haven't reached the root
 				{
 					final Object pathComponent=path.getLastPathComponent(); //get the last path component
-//G***del Debug.trace("Looking at path component: ", pathComponent.getClass().getName()); //G***del
+//G***del Log.trace("Looking at path component: ", pathComponent.getClass().getName()); //G***del
 					if(pathComponent instanceof DefaultMutableTreeNode) //if this is a tree node with a user object
 					{
 						final DefaultMutableTreeNode treeNode=(DefaultMutableTreeNode)pathComponent;  //cast the path component to the desired type
 						final Object userObject=treeNode.getUserObject();  //get the user object
-//G***del Debug.trace("Looking at user object: ", userObject.getClass().getName()); //G***del
+//G***del Log.trace("Looking at user object: ", userObject.getClass().getName()); //G***del
 						if(userObject instanceof Section) //if a section is selected
 						{
-//G***del Debug.trace("found section");  //G***del
+//G***del Log.trace("found section");  //G***del
 							((Section)userObject).getItemList().add(item); //add the item to the section
 								//add the item tree node to the tree
 							((DefaultTreeModel)qtiTree.getModel()).insertNodeInto(itemTreeNode, treeNode, treeNode.getChildCount());
@@ -597,7 +597,7 @@ Debug.trace("asking new item"); //G***del
 						}
 						else if(userObject instanceof Assessment) //if an assessment is selected
 						{
-//G***del Debug.trace("found assessment");  //G***del
+//G***del Log.trace("found assessment");  //G***del
 						  final Assessment assessment=(Assessment)userObject; //get the selected assessment
 							final Section section;  //we'll find out which section to use, or add a new one
 							final MutableTreeNode sectionTreeNode; //we'll also find the section node being shown

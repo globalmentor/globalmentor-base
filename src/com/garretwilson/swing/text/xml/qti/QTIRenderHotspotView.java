@@ -10,10 +10,11 @@ import com.garretwilson.swing.text.InvisibleView;
 import com.garretwilson.swing.text.StyleUtilities;
 import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
+
+import com.globalmentor.log.Log;
 import com.globalmentor.mentoract.qti.QTI;
 import com.globalmentor.mentoract.qti.QTIProcessor;
 import static com.globalmentor.mentoract.qti.QTI.*;
-import com.globalmentor.util.Debug;
 
 /**Represents a QTI hotspot rendering.
 @author Garret Wilson
@@ -77,9 +78,9 @@ public class QTIRenderHotspotView extends InvisibleView
 					{
 						final String areaText=childElement.getDocument().getText(childElement.getStartOffset(), childElement.getEndOffset()-childElement.getStartOffset());
 						final Shape area=QTIProcessor.createArea(areaType, areaText);  //create a shape from the area
-Debug.trace("ready to put toggle button in area: ", area);  //G***del
+Log.trace("ready to put toggle button in area: ", area);  //G***del
 						final Point center=GeometryUtilities.getCenter(area); //get the center point of the area
-Debug.trace("new center: ", center);  //G***del
+Log.trace("new center: ", center);  //G***del
 						final JToggleButton toggleButton; //we'll create a toggle button to show in the material image view
 						if(allowMultipleSelections)  //if we allow multiple selections
 						{

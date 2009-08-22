@@ -5,11 +5,10 @@ import java.util.*;
 import static java.util.Collections.*;
 
 import static com.globalmentor.java.Objects.*;
-
+import com.globalmentor.log.Log;
+import static com.globalmentor.model.Locales.*;
 import com.globalmentor.model.NameValuePair;
 import com.globalmentor.net.*;
-
-import static com.globalmentor.model.Locales.*;
 import static com.globalmentor.net.URIs.*;
 import com.globalmentor.rdf.*;
 import static com.globalmentor.rdf.RDF.*;
@@ -706,7 +705,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			case RDF_OR_NULL:
 				if(RDF_NAMESPACE_URI.toString().equals(element.getNamespaceURI()) && element.hasAttributeNS(null, attributeLocalName)) //if there is a non-prefixed attribute value
 				{
-					Debug.warn("Non-prefixed rdf:"+attributeLocalName+" attribute deprecated.");
+					Log.warn("Non-prefixed rdf:"+attributeLocalName+" attribute deprecated.");
 				  return element.hasAttributeNS(null, attributeLocalName) ? element.getAttributeNS(null, attributeLocalName) : null; //get the non-prefixed attribute value
 				}
 			case ANY:

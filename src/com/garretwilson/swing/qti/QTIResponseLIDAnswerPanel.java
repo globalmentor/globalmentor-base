@@ -5,8 +5,9 @@ import javax.swing.*;
 import java.util.*;
 import java.awt.event.*;
 import com.garretwilson.swing.*;
+
+import com.globalmentor.log.Log;
 import com.globalmentor.mentoract.qti.*;
-import com.globalmentor.util.Debug;
 
 /**Allows input of the answer to a logical ID response type.
 @author Garret Wilson
@@ -188,7 +189,7 @@ public class QTIResponseLIDAnswerPanel extends JPanel
 							final Condition condition=(Condition)conditionIterator.next(); //get the next condition
 	//G***make sure this is a varequal
 							final String responseLabelID=condition.getValue(); //get the condition value
-	Debug.trace("found condition variable with response label ID: ", responseLabelID);  //G***del
+	Log.trace("found condition variable with response label ID: ", responseLabelID);  //G***del
 								//try to locate a matching response
 							final ResponseLabel responseLabel=render.getResponseLabel(responseLabelID);
 							if(responseLabel!=null) //if this condition matches a response label

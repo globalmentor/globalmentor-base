@@ -7,12 +7,12 @@ import javax.swing.*;
 
 import com.garretwilson.swing.*;
 import com.globalmentor.java.Objects;
+import com.globalmentor.log.Log;
 import com.globalmentor.net.Resource;
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.xmlschema.BooleanLiteral;
 import com.globalmentor.text.xml.schema.XMLSchema;
 import com.globalmentor.urf.maqro.*;
-import com.globalmentor.util.Debug;
 
 /**Panel for editing the answer of a MAQRO question.
 @author Garret Wilson
@@ -127,7 +127,7 @@ public class AnswerPanel extends ContentPanel
 			}
 			catch(final URISyntaxException uriSyntaxException)	//if the user entered a syntactically incorrect URI
 			{
-				Debug.warn(uriSyntaxException);	//we shouldn't get an error here if the panel was already verified, as the user interface should do
+				Log.warn(uriSyntaxException);	//we shouldn't get an error here if the panel was already verified, as the user interface should do
 			}
 		}
 		return null;	//return no expected resource

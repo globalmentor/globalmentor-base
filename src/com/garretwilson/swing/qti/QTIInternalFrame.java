@@ -10,11 +10,12 @@ import javax.swing.event.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.text.xml.XMLEditorKit;
+
+import com.globalmentor.log.Log;
 import com.globalmentor.mentoract.qti.QTI;
 import com.globalmentor.model.Modifiable;
 import com.globalmentor.text.CharacterEncoding;
 import com.globalmentor.text.xml.stylesheets.css.XMLCSSProcessor;
-import com.globalmentor.util.*;
 
 /**An internal frame for editing lists of questions. Contains the internal
 	item list data model.
@@ -87,7 +88,7 @@ public class QTIInternalFrame extends JInternalFrame implements Modifiable
 		super("[Question Items]", true, true, true, true);  //create the default options G***i18n
 //G***del		  final JInternalFrame internalFrame=new JInternalFrame("Test internal frame", true, true, true, true);
 
-Debug.trace("saving item list model with size: ", listModel.size()); //G***del
+Log.trace("saving item list model with size: ", listModel.size()); //G***del
 	  itemListModel=listModel;  //save the given list model
 			//create the actions
 		deleteAction=new DeleteAction();
@@ -115,7 +116,7 @@ Debug.trace("saving item list model with size: ", listModel.size()); //G***del
 //G***fix		toolBar.add(deleteAction);	//delete
 //G***fix		toolBar.addSeparator();	//--
 //G***fix		toolBar.add(editAction);	//edit
-//G***del Debug.trace("ready to set list model with size: ", itemListModel.size()); //G***del
+//G***del Log.trace("ready to set list model with size: ", itemListModel.size()); //G***del
     this.getContentPane().setLayout(borderLayout);
 			//forward all explore panel "modified" property changes to anyone listening to our property changes
 		explorePanel.addPropertyChangeListener(MODIFIED_PROPERTY, new java.beans.PropertyChangeListener()
@@ -138,7 +139,7 @@ Debug.trace("saving item list model with size: ", listModel.size()); //G***del
 	*/
 	public void setQTI(final QTI newQTI)
 	{
-Debug.trace("Setting QTI"); //G***del
+Log.trace("Setting QTI"); //G***del
 //G***del		qti=newQTI; //save the QTI data
 		explorePanel.setQTI(newQTI); //set the QTI data model in the explore panel
 	}
@@ -197,15 +198,15 @@ Debug.trace("Setting QTI"); //G***del
 
 			try
 			{
-Debug.trace("Body element before: ", com.garretwilson.text.xml.XMLUtilities.getText(bodyElement, true)); //G***del
+Log.trace("Body element before: ", com.garretwilson.text.xml.XMLUtilities.getText(bodyElement, true)); //G***del
 		  xmlProcessor.parseElementContent(bodyElement, textHTML);  //G***testing
-Debug.trace("Body element after: ", com.garretwilson.text.xml.XMLUtilities.getText(bodyElement, true)); //G***del
+Log.trace("Body element after: ", com.garretwilson.text.xml.XMLUtilities.getText(bodyElement, true)); //G***del
 com.garretwilson.text.xml.XMLUtilities.printTree(xmlDocument, Debug.getOutput()); //G***del
 
 			}
 			catch(java.io.IOException ioException)
 			{
-				Debug.error(ioException); //G***fix
+				Log.error(ioException); //G***fix
 			}
 
 //G***del xmlTextPane.setPaged(true); //G***testing
@@ -238,7 +239,7 @@ xmlTextPane.setPreferredSize(new Dimension(200, 300));  //G***fix
 			}
 			catch(java.io.IOException ioException)
 			{
-				Debug.error(ioException); //G***fix
+				Log.error(ioException); //G***fix
 			}
 
 			try
@@ -248,7 +249,7 @@ xmlTextPane.setPreferredSize(new Dimension(200, 300));  //G***fix
 
 
 //G***testing
-Debug.trace("Ready to print tree"); //G***del
+Log.trace("Ready to print tree"); //G***del
 			if(Debug.isDebug())	//if debugging is turned on
 				com.garretwilson.swing.text.ViewUtilities.printViews(xmlTextPane, Debug.getOutput());	//G***testing
 			// Create a frame containing an instance of
@@ -272,7 +273,7 @@ Debug.trace("Ready to print tree"); //G***del
 			}
 			catch(java.io.UnsupportedEncodingException unsupportedEncodingException)
 			{
-				Debug.error(unsupportedEncodingException); //G***fix
+				Log.error(unsupportedEncodingException); //G***fix
 			}
 //G***del }}.run(); //G***testing
 */

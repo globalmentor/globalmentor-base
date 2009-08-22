@@ -18,8 +18,8 @@ package com.globalmentor.collections;
 
 import java.util.*;
 
+import com.globalmentor.log.Log;
 import com.globalmentor.model.ObjectProcessor;
-import com.globalmentor.util.Debug;
 
 /**A queue of objects that, once an object is added to a queue, will process
 	the queue contents in a separate thread. Once all objects in the queue have
@@ -142,7 +142,7 @@ public class ThreadedQueue implements Runnable, ObjectProcessor
 			}
 			catch(InterruptedException interruptedException)
 			{
-				Debug.warn(interruptedException); //TODO fix; do we need to loop until we've really joined the thread?
+				Log.warn(interruptedException); //TODO fix; do we need to loop until we've really joined the thread?
 			}
 		}
 	}
@@ -202,7 +202,7 @@ public class ThreadedQueue implements Runnable, ObjectProcessor
 			}
 			catch(Throwable throwable)  //don't let any exceptions or anything else shut down the thread; only allow it to be stopped normally
 			{
-				Debug.warn(throwable);  //there's not much we can do here, but this shouldn't happen unless there is a logic error, so create a warning
+				Log.warn(throwable);  //there's not much we can do here, but this shouldn't happen unless there is a logic error, so create a warning
 			}
 		}
 	}

@@ -22,12 +22,12 @@ import java.util.*;
 import static java.util.Collections.*;
 import java.util.StringTokenizer;
 
+import com.globalmentor.log.Log;
 import static com.globalmentor.text.unicode.UnicodeBlocks.*;
 import static com.globalmentor.text.unicode.UnicodeConstants.*;
 
 import com.globalmentor.java.Integers;
 import com.globalmentor.text.CharacterEncoding;
-import com.globalmentor.util.Debug;
 
 /**Represents the Unicode data in the file <code>UnicodeData.txt</code>.
 <p>This class expects the Unicode data file to exist in the same package as
@@ -139,7 +139,7 @@ public class UnicodeData
 			}
 			catch(IOException ioException)	//we don't expect errors reading the data file, as it's a local resource
 			{
-				Debug.warn(ioException);	//don't do anything major if we can't read the data file 
+				Log.warn(ioException);	//don't do anything major if we can't read the data file 
 			}
 		}
 		return unicodeCharacter;	//return the character we found, if any

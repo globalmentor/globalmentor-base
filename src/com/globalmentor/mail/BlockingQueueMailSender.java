@@ -21,7 +21,7 @@ import java.util.concurrent.BlockingQueue;
 import javax.mail.*;
 
 import com.globalmentor.collections.AbstractRunnableBlockingQueueConsumer;
-import com.globalmentor.util.*;
+import com.globalmentor.log.Log;
 
 import static com.globalmentor.java.Objects.*;
 
@@ -87,7 +87,7 @@ public class BlockingQueueMailSender extends AbstractRunnableBlockingQueueConsum
 		}
 		catch(final MessagingException messagingException)	//if there is a messaging error
 		{
-			Debug.log(messagingException);	//log the error
+			Log.info(messagingException);	//log the error
 		}
 	}
 
@@ -103,7 +103,7 @@ public class BlockingQueueMailSender extends AbstractRunnableBlockingQueueConsum
 		}
 		catch(final MessagingException messagingException)	//if there is a messaging error
 		{
-			Debug.log(messagingException);	//log the error
+			Log.info(messagingException);	//log the error
 		}
 	}
 

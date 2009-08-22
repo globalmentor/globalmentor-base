@@ -123,7 +123,7 @@ public class DictionaryModelIOKit extends AbstractIOKit<ResourceModel<Dictionary
 				}
 				catch(BadLocationException badLocationException)
 				{
-					Debug.error(badLocationException);	//this should never occcur
+					Log.error(badLocationException);	//this should never occcur
 				}	
 				setModified(false);	//show that the information has not been modified, as we just saved it
 		*/

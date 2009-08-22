@@ -941,12 +941,12 @@ public class Strings
 	*/
 	static public String wrap(final String inString, final int wrapLength, final char padChar, final char eolChar)
 	{
-//TODO del Debug.trace("inside wrap() with string: "+inString+", length: "+wrapLength);	//TODO del
+//TODO del Log.trace("inside wrap() with string: "+inString+", length: "+wrapLength);	//TODO del
 		final StringBuffer outStringBuffer=new StringBuffer(inString.length());	//create a new string buffer that's at least as long as the input string
 		int lineBeginIndex=0;	//this will keep track of the start of each line
 		while(lineBeginIndex<inString.length())	//while we haven't reached the end of the input string
 		{
-//TODO del Debug.trace("Loop iteration, lineBeginIndex: "+lineBeginIndex);	//TODO del
+//TODO del Log.trace("Loop iteration, lineBeginIndex: "+lineBeginIndex);	//TODO del
 			int lineEndIndex=lineBeginIndex+wrapLength;	//we'll assume that we can't find any character on which to break, which will mean we'll have to force a break at the maximum length of the line
 			if(lineEndIndex>inString.length())	//if we went past the end of the string
 				lineEndIndex=inString.length();	//there's no need to wrap -- the end of the string is shorting than our wrapping length

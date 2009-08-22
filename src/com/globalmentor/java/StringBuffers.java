@@ -36,25 +36,25 @@ public class StringBuffers
 	*/
 	public static void collapse(final StringBuffer stringBuffer, final String collapseChars, final String replaceString)
 	{
-//TODO del Debug.trace("ready to collapse: ", stringBuffer); //TODO del
+//TODO del Log.trace("ready to collapse: ", stringBuffer); //TODO del
 //TODO shouldn't we trim the string, first? no, probably not
 		final int replaceLength=replaceString.length(); //find the length of the replacement string
 		int nextIndex=0;	//start at the beginning of the string
 		while(nextIndex<stringBuffer.length())	//keep going until we reach the end of the string buffer
 		{
 //TODO del System.out.println(outString.length());	//TODO del
-//TODO del Debug.trace("checking index: ", nextIndex); //TODO del
-//TODO del Debug.trace("checking character: "+(int)stringBuffer.charAt(nextIndex)+" "+stringBuffer.charAt(nextIndex)); //TODO del
+//TODO del Log.trace("checking index: ", nextIndex); //TODO del
+//TODO del Log.trace("checking character: "+(int)stringBuffer.charAt(nextIndex)+" "+stringBuffer.charAt(nextIndex)); //TODO del
 			if(collapseChars.indexOf(stringBuffer.charAt(nextIndex))>=0)	//if this character is one of our remove characters
 			{
-//TODO del Debug.trace("found collapse character at index: ", nextIndex);  //TODO del
+//TODO del Log.trace("found collapse character at index: ", nextIndex);  //TODO del
 				int removeEnd=nextIndex+1;	//start looking at the next character to see how long this run is
 				while(removeEnd<stringBuffer.length() && collapseChars.indexOf(stringBuffer.charAt(removeEnd))>=0)	//while we still have more characters, and the characters we're finding are characters to remove
 					++removeEnd;
 //TODO del				final int removeLength=removeEnd-nextIndex;	//find out how many characters to remove
 //TODO del System.out.println("Ready to remove stuff from: "+StringManipulator.replace(outString, '\n', "\\n"));	//TODO del
 //TODO del				replace(stringBuffer, nextIndex, removeLength, replaceString);	//replace our characters with the given string
-//TODO del Debug.trace("after collapse: ", stringBuffer); //TODO del
+//TODO del Log.trace("after collapse: ", stringBuffer); //TODO del
 				stringBuffer.replace(nextIndex, removeEnd, replaceString);	//replace our characters with the given string
 				nextIndex+=replaceLength; //move to the position after the replacement string
 //TODO del System.out.println("New out string: "+StringManipulator.replace(outString, '\n', "\\n"));	//TODO del

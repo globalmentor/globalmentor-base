@@ -4,7 +4,7 @@ import java.awt.*;
 import java.lang.ref.*;
 import java.util.*;
 
-import com.globalmentor.util.Debug;
+import com.globalmentor.log.Log;
 
 /**Various routines for working with fonts. This class also keeps several static
 	maps of references to fonts for quick lookup that will be garbage-collected
@@ -79,9 +79,9 @@ public class FontUtilities
 	public static Font getFont(final String family, final int style, final int size)
 	{
 /*G***del
-Debug.trace("Get tont family: ", family);  //G***del
-Debug.trace("Get font style italic: ", style & Font.ITALIC);
-Debug.trace("Get font style bold: ", style & Font.BOLD);
+Log.trace("Get tont family: ", family);  //G***del
+Log.trace("Get font style italic: ", style & Font.ITALIC);
+Log.trace("Get font style bold: ", style & Font.BOLD);
 */
 		searchFontKey.setValue(family, style, size);  //set the values of the font key for searching
 		final Reference fontReference=(Reference)fontReferenceMap.get(searchFontKey); //see if this font is already in the map
@@ -103,8 +103,8 @@ Debug.trace("Get font style bold: ", style & Font.BOLD);
 /*G***del
 if(font!=null)  //G***del
 {
-Debug.trace("Font family: ", font.getFamily()); //G***del
-Debug.trace("Font name: ", font.getFontName()); //G***del
+Log.trace("Font family: ", font.getFamily()); //G***del
+Log.trace("Font name: ", font.getFontName()); //G***del
 }
 */
 		return font;  //return the font we found in the map or created
@@ -158,18 +158,18 @@ Debug.trace("Font name: ", font.getFontName()); //G***del
 if(c<32)  //G***testing; used to get around the initial '\n' stored in a paragraph; fix
 	return null;
 /*G***del
-Debug.trace("Font character: "+c);  //G***del
-Debug.trace("Font style italic: ", style & Font.ITALIC);
-Debug.trace("Font style bold: ", style & Font.BOLD);
+Log.trace("Font character: "+c);  //G***del
+Log.trace("Font style italic: ", style & Font.ITALIC);
+Log.trace("Font style bold: ", style & Font.BOLD);
 */
 
-//G***del Debug.trace("Looking for character "+Integer.toHexString(c));
+//G***del Log.trace("Looking for character "+Integer.toHexString(c));
 		final Character character=new Character(c); //create a character object to use as a key to lookup the character in the map
 		//see if we know about a font family name for this character
 		final String characterFamilyName=(String)characterFontFamilyNameMap.get(character);
 		if(characterFamilyName!=null) //if we found a family name for this character
 		{
-//G***del Debug.trace("found matching character in map");
+//G***del Log.trace("found matching character in map");
 		  final Font characterFont=getFont(characterFamilyName, style, size); //create the font for the character
 			if(characterFont.canDisplay(c)) //if the font can really display the character
 				return characterFont; //return the font
@@ -185,12 +185,12 @@ Debug.trace("Font style bold: ", style & Font.BOLD);
 		}
 		//see which Unicode block this character is in
 		final Character.UnicodeBlock unicodeBlock=Character.UnicodeBlock.of(c);	//TODO user our own Unicode block implementation
-//G***del Debug.trace("character in unicode block: "+unicodeBlock); //G***del
+//G***del Log.trace("character in unicode block: "+unicodeBlock); //G***del
 		//see if we know about a font family name for this block
 		final String blockFamilyName=(String)characterFontFamilyNameMap.get(unicodeBlock);
 		if(blockFamilyName!=null) //if we found a family name for this character
 		{
-//G***del Debug.trace("found matching Unicode block");
+//G***del Log.trace("found matching Unicode block");
 		  final Font blockFont=getFont(blockFamilyName, style, size); //create the font for the Unicode block
 			if(blockFont.canDisplay(c)) //if the font can really display the character
 				return blockFont; //return the font
@@ -214,7 +214,7 @@ Debug.trace("Font style bold: ", style & Font.BOLD);
 			possibleFontFamilyNames=new String[]{"Berling Antiqua", "Lucida Sans Regular"};  //show which font family names we want to try G***use a pre-created static version
 		else  //if we have no suggestions
 		{
-Debug.trace("Font cannot support character: "+Integer.toHexString(c)+", but we have no suggestions");
+Log.trace("Font cannot support character: "+Integer.toHexString(c)+", but we have no suggestions");
 
 //G***add lookup for "MS Hei" to the appropriate Unicode blocks, such as for 0x4F60
 			possibleFontFamilyNames=new String[]{"Lucida Sans Regular", "Code2000", "Batang", "MS Hei"};  //always try the installed font, along with Code2000 G***use a pre-created static version G***see which fonts Batang contains -- it has, for example, 0x5DE5, which Code2000 does not
@@ -222,13 +222,13 @@ Debug.trace("Font cannot support character: "+Integer.toHexString(c)+", but we h
 			//try the suggested fonts based upon the Unicode block G***we might want to make sure each font is available on the system, first
 		if(possibleFontFamilyNames!=null) //if know of several font family names to try
 		{
-Debug.trace("Font cannot support character: "+Integer.toHexString(c)+"; trying possible fonts");
+Log.trace("Font cannot support character: "+Integer.toHexString(c)+"; trying possible fonts");
 			for(int i=0; i<possibleFontFamilyNames.length; ++i)  //look at each font family name
 			{
 				final Font possibleFont=new Font(possibleFontFamilyNames[i], style, size); //create a font with the possible name, but don't get it using getFont() because we're not sure we want to add it to our cache
 				if(possibleFont.canDisplay(c))  //if the font can display the character
 				{
-Debug.trace("Character "+Integer.toHexString(c)+" used suggested font: "+possibleFont);
+Log.trace("Character "+Integer.toHexString(c)+" used suggested font: "+possibleFont);
 					chosenFont=getFont(possibleFontFamilyNames[i], style, size); //choose a font after getting it with getFont(), which will add it to our cache for next time
 //G***del				  chosenFont=possibleFont;  //show that we've chosen a font
 					break;  //stop searching
@@ -244,11 +244,11 @@ Debug.trace("Character "+Integer.toHexString(c)+" used suggested font: "+possibl
 			for(int i=0; i<availableFontFamilyNames.length; ++i)  //look at each available font
 			{
 				final Font availableFont=new Font(availableFontFamilyNames[i], style, size); //create a the available font, but don't get it using getFont() because we're not sure we want to add it to our cache
-Debug.trace("trying font: ", availableFont);  //G***del
+Log.trace("trying font: ", availableFont);  //G***del
 //G***del				final Font availableFont=getFont(availableFontFamilyNames[i], style, size); //create the available font
 				if(availableFont.canDisplay(c))  //if the font can display the character
 				{
-Debug.trace("Character "+Integer.toHexString(c)+" not found; had to search available fonts, found: "+availableFont);
+Log.trace("Character "+Integer.toHexString(c)+" not found; had to search available fonts, found: "+availableFont);
 					chosenFont=getFont(availableFontFamilyNames[i], style, size); //choose a font after getting it with getFont(), which will add it to our cache for next time
 //G***del				  chosenFont=availableFont;  //show that we've chosen a font
 					break;  //stop searching
@@ -258,12 +258,12 @@ Debug.trace("Character "+Integer.toHexString(c)+" not found; had to search avail
 		}
 		if(chosenFont!=null)  //if we found a font
 		{
-//G***del Debug.trace("Storing character keyed to character: "+character);
+//G***del Log.trace("Storing character keyed to character: "+character);
 			characterFontFamilyNameMap.put(character, chosenFont.getFamily()); //store the family name in the map keyed to the character
-//G***del Debug.trace("Stored object: "+characterFontFamilyNameMap.get(character)); //G***del; testing
-//G***del Debug.trace("Stored object from new character: "+characterFontFamilyNameMap.get(new Character(character.charValue())));
+//G***del Log.trace("Stored object: "+characterFontFamilyNameMap.get(character)); //G***del; testing
+//G***del Log.trace("Stored object from new character: "+characterFontFamilyNameMap.get(new Character(character.charValue())));
 			characterFontFamilyNameMap.put(unicodeBlock, chosenFont.getFamily()); //store the name in the map keyed to the Unicode block
-Debug.trace("Finally chose font: ", chosenFont); //G***del
+Log.trace("Finally chose font: ", chosenFont); //G***del
 		  return chosenFont;  //return the font we chose
 		}
 		else  //if we could not find a font for the character

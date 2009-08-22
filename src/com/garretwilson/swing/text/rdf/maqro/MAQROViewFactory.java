@@ -25,7 +25,6 @@ import static com.globalmentor.text.xml.xhtml.XHTML.*;
 import static com.globalmentor.urf.maqro.MAQRO.*;
 
 import com.globalmentor.urf.maqro.*;
-import com.globalmentor.util.Debug;
 
 import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
 import static com.globalmentor.java.Objects.*;
@@ -102,11 +101,11 @@ public class MAQROViewFactory extends XMLViewFactory
 										public void itemStateChanged(final ItemEvent itemEvent)	//if the choice button was toggled
 										{
 											updateOutcome(questionView.getQ)
-//G***del Debug.trace("storing value in response map for ID: ", id);  //G***del
-//G***del Debug.trace("storing in response map: ", getResponseMap()); //G***del
+//G***del Log.trace("storing value in response map for ID: ", id);  //G***del
+//G***del Log.trace("storing in response map: ", getResponseMap()); //G***del
 												//update the response with a boolean indication of the selection state
 											getItemResponseMap(itemIdent).put(ident, new Boolean(responseLabelView.getToggleButton().isSelected()));
-//G***del Debug.trace("reponse map now has size: ", getResponseMap().size());  //G***del
+//G***del Log.trace("reponse map now has size: ", getResponseMap().size());  //G***del
 
 //G***del Debug.notify("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //G***testing
 //G***del	System.out.println("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //G***testing

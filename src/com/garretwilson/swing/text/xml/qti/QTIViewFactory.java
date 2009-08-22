@@ -8,14 +8,16 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.text.*;
+
 //G***del import com.garretwilson.net.URIConstants;
 import com.garretwilson.swing.text.*;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.swing.text.xml.css.*; //G***del when component color update is moved
 import com.garretwilson.resources.icon.IconResources;
+
+import com.globalmentor.log.Log;
 import com.globalmentor.mentoract.qti.*;
 import static com.globalmentor.mentoract.qti.QTI.*;
-import com.globalmentor.util.Debug;
 
 /**Creates a view for a Question and Test Iterpoperability element.
 @author Garret Wilson
@@ -54,7 +56,7 @@ public class QTIViewFactory extends XMLViewFactory
 	*/
 	public void clearContext()
 	{
-//G***del Debug.trace("Clearing context");  //G***del
+//G***del Log.trace("Clearing context");  //G***del
 //G***del		getResponseMap().clear(); //clear the response map
 		itemResponseMapMap.clear(); //clear the map of response maps
 		elementQTIMap.clear();  //clear the map of QTI objects
@@ -278,7 +280,7 @@ public class QTIViewFactory extends XMLViewFactory
 		{
 			//G***we should probably make sure this element is in our namespace
 			final String elementLocalName=XMLStyleUtilities.getXMLElementLocalName(attributeSet); //get the local name of this element
-Debug.trace("QTI local name: ", elementLocalName);  //G***del when works
+Log.trace("QTI local name: ", elementLocalName);  //G***del when works
 		  if(ELEMENT_ASSESSMENT.equals(elementLocalName)) //if this is an assessment
 			{
 				final Assessment assessment=createAssessment(element);  //create an assessment from this element hierarcy
@@ -298,10 +300,10 @@ Debug.trace("QTI local name: ", elementLocalName);  //G***del when works
 			{
 				if(getQTIObject(element)==null) //if no QTI item has been created yet for the given item element
 				{
-Debug.trace("Creating item object without an assessment."); //G***del
+Log.trace("Creating item object without an assessment."); //G***del
 					createItem(element);  //create an item from the element, which will automatically add it to the map of created items G***do we wannt this routine to automatically add the item?
 				}
-Debug.trace("Creating new item view");
+Log.trace("Creating new item view");
 				final QTIItemView itemView=new QTIItemView(element, QTIItemView.Y_AXIS);  //construct an item view
 /*G***del when works
 				if(assessmentView!=null) //if we have an assessment view
@@ -315,10 +317,10 @@ Debug.trace("Creating new item view");
 /*G***fix or del
 				if(getQTIObject(element)==null) //if no QTI item has been created yet for the given item element
 				{
-Debug.trace("Creating item object without an assessment."); //G***del
+Log.trace("Creating item object without an assessment."); //G***del
 					createItem(element);  //create an item from the element, which will automatically add it to the map of created items G***do we wannt this routine to automatically add the item?
 				}
-Debug.trace("Creating new item view");
+Log.trace("Creating new item view");
 */
 				final QTIMaterialImageView materialImageView=new QTIMaterialImageView(element); //construct an image view
 				putQTIView(element, materialImageView);  //store the view keyed indirectly to the element by the QTI object
@@ -329,10 +331,10 @@ Debug.trace("Creating new item view");
 			{
 				if(getQTIObject(element)==null) //if no QTI item has been created yet for the given item element
 				{
-Debug.trace("Creating response LID object by itself."); //G***del
+Log.trace("Creating response LID object by itself."); //G***del
 					createResponseLID(element);  //create a response LID from the element, which will automatically add it to the map of created items G***do we want this routine to automatically add the item?
 				}
-Debug.trace("building response LID view");
+Log.trace("building response LID view");
 				final QTIResponseLIDView responseLIDView=new QTIResponseLIDView(element, QTIResponseLIDView.Y_AXIS);  //create a view for the logical ID responses
 				putQTIView(element, responseLIDView);  //store the view keyed indirectly to the element by the QTI object
 				return responseLIDView; //return the logical ID response view we created
@@ -343,11 +345,11 @@ Debug.trace("building response LID view");
 /*G***fix
 				if(getQTIObject(element)==null) //if no QTI item has been created yet for the given item element
 				{
-Debug.trace("Creating response LID object by itself."); //G***del
+Log.trace("Creating response LID object by itself."); //G***del
 					createResponseLID(element);  //create a response LID from the element, which will automatically add it to the map of created items G***do we want this routine to automatically add the item?
 				}
 */
-Debug.trace("building render choice view");
+Log.trace("building render choice view");
 				final QTIRenderChoiceView renderChoiceView=new QTIRenderChoiceView(element, QTIResponseLIDView.Y_AXIS);  //create a view for the choice rendering
 				putQTIView(element, renderChoiceView);  //store the view keyed indirectly to the element by the QTI object
 				return renderChoiceView; //return the choice rendering view we created
@@ -357,11 +359,11 @@ Debug.trace("building render choice view");
 /*G***fix
 				if(getQTIObject(element)==null) //if no QTI item has been created yet for the given item element
 				{
-Debug.trace("Creating response LID object by itself."); //G***del
+Log.trace("Creating response LID object by itself."); //G***del
 					createResponseLID(element);  //create a response LID from the element, which will automatically add it to the map of created items G***do we want this routine to automatically add the item?
 				}
 */
-Debug.trace("building render hotspot view");
+Log.trace("building render hotspot view");
 				QTIMaterialImageView materialImageView=null;  //try to find the image with which this hotspot is paired
 				final Element presentationElement=XMLStyleUtilities.getAncestorElement(element, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_PRESENTATION);  //get the presentation element in which this element resides
 				if(presentationElement!=null) //if there is an enclosing presentation element
@@ -382,7 +384,7 @@ Debug.trace("building render hotspot view");
 			}
 		  else if(ELEMENT_RESPONSE_LABEL.equals(elementLocalName)) //if this is a <response_label>
 			{
-Debug.trace("building response label view");
+Log.trace("building response label view");
 				  //build a different type of response label view, based upon the rendering type
 				final Element parentElement=element.getParentElement(); //get the parent element
 				final AttributeSet parentAttributeSet=parentElement.getAttributes();  //get the parent element's attribute set
@@ -403,7 +405,7 @@ Debug.trace("building response label view");
 						final String ident=XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT);  //get the ident
 						if(ident!=null && ident.length()>0) //if there is an ident
 						{
-Debug.trace("found ident to display QTI response: ", ident);  //G***del
+Log.trace("found ident to display QTI response: ", ident);  //G***del
 /*G***del when works
 							putQTIView(ident, responseLabelView); //store the response label keyed to its ident
 							final String id=createID(element);  //create an ID from this element
@@ -417,7 +419,7 @@ Debug.trace("found ident to display QTI response: ", ident);  //G***del
 								final String itemIdent=XMLStyleUtilities.getXMLAttributeValue(itemElement.getAttributes(), null, ATTRIBUTE_IDENT);
 								if(itemIdent!=null && itemIdent.length()>0) //if there is an item ident
 								{
-	Debug.trace("found item ident to display QTI response: ", itemIdent);  //G***del
+	Log.trace("found item ident to display QTI response: ", itemIdent);  //G***del
 
 									final Object booleanObject=getItemResponseMap(itemIdent).get(ident); //see if there is already a value for this choice
 									if(booleanObject instanceof Boolean)  //if this object already has a value
@@ -425,17 +427,17 @@ Debug.trace("found ident to display QTI response: ", ident);  //G***del
 											//set the toggle button to reflect the stored value
 										responseLabelView.getToggleButton().setSelected(((Boolean)booleanObject).booleanValue());
 									}
-	//G***del Debug.trace("created ID: ", id);  //G***del
+	//G***del Log.trace("created ID: ", id);  //G***del
 										//listen for the response being checked or unchecked
 									responseLabelView.getToggleButton().addItemListener(new ItemListener()
 											{
 												public void itemStateChanged(final ItemEvent itemEvent)
 												{
-	//G***del Debug.trace("storing value in response map for ID: ", id);  //G***del
-	//G***del Debug.trace("storing in response map: ", getResponseMap()); //G***del
+	//G***del Log.trace("storing value in response map for ID: ", id);  //G***del
+	//G***del Log.trace("storing in response map: ", getResponseMap()); //G***del
 														//update the response with a boolean indication of the selection state
 													getItemResponseMap(itemIdent).put(ident, new Boolean(responseLabelView.getToggleButton().isSelected()));
-	//G***del Debug.trace("reponse map now has size: ", getResponseMap().size());  //G***del
+	//G***del Log.trace("reponse map now has size: ", getResponseMap().size());  //G***del
 
 		//G***del Debug.notify("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //G***testing
 	//G***del	System.out.println("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //G***testing
@@ -470,7 +472,7 @@ Debug.trace("found ident to display QTI response: ", ident);  //G***del
 	*/
 	protected Assessment createAssessment(final Element element)
 	{
-Debug.trace();
+Log.trace();
 		final Assessment assessment=new Assessment(); //create a new assessment
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
@@ -502,7 +504,7 @@ Debug.trace();
 	*/
 	protected Section createSection(final Element element)
 	{
-Debug.trace();
+Log.trace();
 		final Section section=new Section(); //create a new section
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
@@ -534,7 +536,7 @@ Debug.trace();
 	*/
 	protected Item createItem(final Element element)
 	{
-Debug.trace();
+Log.trace();
 		final Item item=new Item(); //create a new item
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
@@ -571,7 +573,7 @@ Debug.trace();
 	*/
 	protected Presentation createPresentation(final Element element)
 	{
-Debug.trace();
+Log.trace();
 		final Presentation presentation=new Presentation(); //create new presentation
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 /*G***fix for label
@@ -605,7 +607,7 @@ Debug.trace();
 	*/
 	protected ResponseLID createResponseLID(final Element element)
 	{
-Debug.trace();
+Log.trace();
 		final ResponseLID responseLID=new ResponseLID(); //create a new logical ID response
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
@@ -637,7 +639,7 @@ Debug.trace();
 	*/
 	protected RenderChoice createRenderChoice(final Element element)
 	{
-Debug.trace();
+Log.trace();
 		final RenderChoice renderChoice=new RenderChoice(); //create a new render choice
 /*G***del if not needed
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
@@ -671,7 +673,7 @@ Debug.trace();
 	*/
 	protected ResponseLabel createResponseLabel(final Element element)
 	{
-Debug.trace();
+Log.trace();
 		final ResponseLabel responseLabel=new ResponseLabel(); //create a new response label
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
@@ -705,7 +707,7 @@ Debug.trace();
 	*/
 	protected ResponseProcessing createResponseProcessing(final Element element)
 	{
-Debug.trace("Found resprocessing");  //G***del
+Log.trace("Found resprocessing");  //G***del
 		final ResponseProcessing responseProcessing=new ResponseProcessing(); //create a new response processing object
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
@@ -737,7 +739,7 @@ Debug.trace("Found resprocessing");  //G***del
 	*/
 	protected Outcomes createOutcomes(final Element element)
 	{
-Debug.trace("Found outcomes");  //G***del
+Log.trace("Found outcomes");  //G***del
 		final Outcomes outcomes=new Outcomes(); //create a new outcomes object
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
@@ -765,7 +767,7 @@ Debug.trace("Found outcomes");  //G***del
 	*/
 	protected ResponseCondition createResponseCondition(final Element element)
 	{
-Debug.trace("Found respcondition");  //G***del
+Log.trace("Found respcondition");  //G***del
 		final ResponseCondition responseCondition=new ResponseCondition(); //create a new response processing object
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
@@ -801,7 +803,7 @@ Debug.trace("Found respcondition");  //G***del
 	*/
 	protected ConditionVar createConditionVar(final Element element)
 	{
-Debug.trace("Found conditionvar");  //G***del
+Log.trace("Found conditionvar");  //G***del
 		final ConditionVar conditionVar=new ConditionVar(); //create a new condition variable group
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
@@ -836,14 +838,14 @@ Debug.trace("Found conditionvar");  //G***del
 		}
 		try
 		{
-//G***Del Debug.trace("Getting ready to create varequal with start offset: "+element.getStartOffset()+" end offset: "+element.getEndOffset());  //G***del
-//G***Del Debug.trace("Document length: "+element.getDocument().getLength()); //G***del
-Debug.trace("Getting ready to create varequal with value: ", element.getDocument().getText(element.getStartOffset(), element.getEndOffset()-element.getStartOffset()));  //G***del
+//G***Del Log.trace("Getting ready to create varequal with start offset: "+element.getStartOffset()+" end offset: "+element.getEndOffset());  //G***del
+//G***Del Log.trace("Document length: "+element.getDocument().getLength()); //G***del
+Log.trace("Getting ready to create varequal with value: ", element.getDocument().getText(element.getStartOffset(), element.getEndOffset()-element.getStartOffset()));  //G***del
 			varEqual.setValue(element.getDocument().getText(element.getStartOffset(), element.getEndOffset()-element.getStartOffset()));  //get the value of the variable G***make sure there is text
 		}
 		catch(BadLocationException badLocationException)
 		{
-			Debug.warn(badLocationException); //G***fix
+			Log.warn(badLocationException); //G***fix
 		}
 //G***fix		varEqual.setValue(XMLUtilities.getText(element, false));  //get the value of the variable
 		putQTIObject(element, varEqual);  //store the QTI object in the map, keyed to the element
@@ -867,7 +869,7 @@ Debug.trace("Getting ready to create varequal with value: ", element.getDocument
 		}
 		catch(BadLocationException badLocationException)
 		{
-			Debug.warn(badLocationException); //G***fix
+			Log.warn(badLocationException); //G***fix
 		}
 		putQTIObject(element, setVar);  //store the QTI object in the map, keyed to the element
 		return setVar;  //return the object we created
@@ -935,33 +937,33 @@ Debug.trace("Getting ready to create varequal with value: ", element.getDocument
 			final Iterator sectionIterator=assessment.getSectionList().iterator();  //get an iterator to look through each section
 		  while(sectionIterator.hasNext())  //while there are more sections
 			{
-Debug.trace("Found section"); //G***del
+Log.trace("Found section"); //G***del
 				final Section section=(Section)sectionIterator.next();  //get a reference to this section
 				final Iterator itemIterator=section.getItemList().iterator(); //get an iterator to look through all the items in this section
 				while(itemIterator.hasNext()) //while there are more items
 				{
-Debug.trace("Found item"); //G***del
+Log.trace("Found item"); //G***del
 				  final Item item=(Item)itemIterator.next();  //get a reference to this item
 					final List responseList=new ArrayList();  //create a list to store the responses for this item
 					final Presentation presentation=item.getPresentation(); //get the item's presentation
 					if(presentation!=null && presentation.getResponseList().size()>0)  //if this item has presentation and there is a response section G***only one response is currently supported
 					{
-Debug.trace("Found presentation"); //G***del
+Log.trace("Found presentation"); //G***del
 						final ResponseLID responseLID=(ResponseLID)presentation.getResponseList().get(0);  //get the first response and assume it's a logical ID response G***fix for other response types
 						if(responseLID.getRenderList().size()>0)  //if there is a render section G***add support for multiple render sections
 						{
 						  final RenderChoice renderChoice=(RenderChoice)responseLID.getRenderList().get(0); //get the first render type and assume it's a choice render G***add support for other types
-Debug.trace("Found render choice"); //G***del
+Log.trace("Found render choice"); //G***del
 							final Iterator responseLabelIterator=renderChoice.getResponseLabelList().iterator();  //get an iterator to look through the response labels
 							while(responseLabelIterator.hasNext())  //while there are more response labels
 							{
 								final ResponseLabel responseLabel=(ResponseLabel)responseLabelIterator.next();  //get the next response label
 /*G***fix
-Debug.trace("Found response label"); //G***del
+Log.trace("Found response label"); //G***del
 								final QTIResponseLabelView responseLabelView=(QTIResponseLabelView)getQTIView(responseLabel); //get the view that corresponsds to this response label
 								if(responseLabelView!=null) //if a view was created for this response label
 								{
-Debug.trace("Found response label view"); //G***del
+Log.trace("Found response label view"); //G***del
 									if(responseLabelView.getToggleButton().isSelected()) //if this response was selected
 									{
 //G***del						Debug.notify("Answered ident: "+responseLabel.getIdent()); //G***del
@@ -986,9 +988,9 @@ Debug.trace("Found response label view"); //G***del
 				final List responseList=(List)itemResponseMap.get(itemIdent); //get the response list for the given item
 				if(responseList!=null && responseList.size()==1)  //if there is list of responses (assume this question only has one answer)
 				{
-Debug.trace("Only one response for item: ", itemIdent); //G***del
+Log.trace("Only one response for item: ", itemIdent); //G***del
 					final String responseIdent=(String)responseList.get(0);  //get the first response
-Debug.trace("Response ID: ", responseIdent); //G***del
+Log.trace("Response ID: ", responseIdent); //G***del
 					final ResponseProcessing responseProcessing=item.getResponseProcessing();  //get the item's response processing
 					if(responseProcessing!=null) //if there is response processing
 					{
@@ -1004,7 +1006,7 @@ Debug.trace("Response ID: ", responseIdent); //G***del
 									assert condition instanceof VarEqual : "Unknown condition; we only support VarEqual"; //G***fix
 								  final VarEqual varEqual=(VarEqual)condition;  //cast the condition to a VarEqual
 								  final String varEqualValue=varEqual.getValue(); //get the expected value
-Debug.trace("expected value: ", varEqualValue); //G***del
+Log.trace("expected value: ", varEqualValue); //G***del
 								  if(responseIdent.equals(varEqualValue)) //if the answer matches their response
 										result=true;  //show that this result is correct
 								}

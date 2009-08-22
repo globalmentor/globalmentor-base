@@ -346,12 +346,12 @@ public abstract class AbstractRDFProcessor
 	*/
 	public void processStatements()
 	{
-//TODO del Debug.trace("ready to process statements");
+//TODO del Log.trace("ready to process statements");
 		final Iterator<Statement> statementIterator=getStatementIterator();	//get an iterator to statements
 		while(statementIterator.hasNext())	//while there are more statements
 		{
 			final Statement statement=(Statement)statementIterator.next();	//get the next statement
-		//TODO del Debug.trace("here's a statement:", statement);
+		//TODO del Log.trace("here's a statement:", statement);
 			final Resource subject=statement.getSubject();	//get the statement subject
 			final Resource predicate=statement.getPredicate();	//get the statement predicate
 				//if both the subject and predicate of the statement are RDF resources
@@ -362,7 +362,7 @@ public abstract class AbstractRDFProcessor
 				final Object object=statement.getObject();	//get the statement object
 				if(object instanceof RDFObject)	//if the object is an RDF object
 				{
-				//TODO del Debug.trace("ready to add predicate to subject:", rdfSubject);
+				//TODO del Log.trace("ready to add predicate to subject:", rdfSubject);
 					rdfSubject.addProperty(rdfPredicate, (RDFObject)object);	//process this statement by adding the predicate and object to the subject as a property
 				}
 			}

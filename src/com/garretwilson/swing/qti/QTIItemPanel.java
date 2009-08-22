@@ -75,12 +75,12 @@ public class QTIItemPanel extends JPanel implements Verifiable
 			//get the presentation
 		final Presentation presentation=((QTIPresentationPanel)tabbedPane.getComponentAt(0)).getPresentation();
 //G***del		final Presentation presentation=((QTIPresentationPanel)presentationPanel.getComponent(0)).getPresentation();
-//G***del Debug.trace("Getting presentation with first response label: ", ((RenderChoice)((ResponseLID)presentation.getResponseList().get(0)).getRenderList().get(0)).getResponseLabelList().get(0)); //G***del
+//G***del Log.trace("Getting presentation with first response label: ", ((RenderChoice)((ResponseLID)presentation.getResponseList().get(0)).getRenderList().get(0)).getResponseLabelList().get(0)); //G***del
 		item.setPresentation(presentation);  //set the presentation
 			//get the response processing
 		final ResponseProcessing responseProcessing=getResponseProcessing();
 //G***del		final Presentation presentation=((QTIPresentationPanel)presentationPanel.getComponent(0)).getPresentation();
-//G***del Debug.trace("Getting presentation with first response label: ", ((RenderChoice)((ResponseLID)presentation.getResponseList().get(0)).getRenderList().get(0)).getResponseLabelList().get(0)); //G***del
+//G***del Log.trace("Getting presentation with first response label: ", ((RenderChoice)((ResponseLID)presentation.getResponseList().get(0)).getRenderList().get(0)).getResponseLabelList().get(0)); //G***del
 		item.setResponseProcessing(responseProcessing);  //set the response processing
 		//G**update the other properties
 		return item;  //return the item
@@ -149,15 +149,15 @@ public class QTIItemPanel extends JPanel implements Verifiable
 	/**Updates the response processing to match the available choices.*/
 	protected void updateResponseProcessing()
 	{
-//G***del Debug.trace("updating response processing");  //G***del
+//G***del Log.trace("updating response processing");  //G***del
 		final Item item=getItem();  //get the item being edited
 		if(item.getPresentation().getResponseList().size()>0) //if there is at least one response G***fix for multiple responses
 		{
-//G***del Debug.trace("found response");
+//G***del Log.trace("found response");
 		  final Response response=(Response)item.getPresentation().getResponseList().get(0);  //get the first response
 			if(response instanceof ResponseLID)  //if this is a logical ID response
 			{
-//G***del Debug.trace("found response LID");
+//G***del Log.trace("found response LID");
 				final ResponseLID responseLID=(ResponseLID)response; //cast the response to a logical ID response
 				final QTIResponseLIDAnswerPanel responseProcessingPanel=((QTIResponseLIDAnswerPanel)tabbedPane.getComponentAt(1));  //G***testing; use a constant here; comment
 				responseProcessingPanel.setResponseProcessing(responseLID, item.getResponseProcessing()); //set the response processing in the panel

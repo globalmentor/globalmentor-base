@@ -24,6 +24,7 @@ import java.util.*;
 import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.rdf.RDFResources.*;
 
+import com.globalmentor.log.Log;
 import com.globalmentor.model.NameValuePair;
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.xpackage.XPackage;
@@ -107,7 +108,7 @@ public class OEB1PackageSerializer
 				final Object propertyValueObject=property.getValue(); //get the property value
 				if(propertyValueObject instanceof RDFLiteral)  //if the value is a literal
 				{
-Debug.trace("property value is a literal"); //G**8del
+Log.trace("property value is a literal"); //G**8del
 					final String propertyValue=((RDFLiteral)propertyValueObject).getLexicalForm(); //get the literal value of the property
 					//<package><metadata><dc-metadata><dc:Title>
 					if(TITLE_PROPERTY_NAME.equals(propertyLocalName))

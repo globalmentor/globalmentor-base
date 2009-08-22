@@ -22,10 +22,10 @@ import java.util.*;
 import javax.xml.soap.*;
 
 import com.globalmentor.io.InputStreams;
+import com.globalmentor.log.Log;
 import com.globalmentor.model.BinaryObjectHolder;
 import com.globalmentor.text.xml.XMLObjectDecoder;
 import com.globalmentor.text.xml.soap.SOAP;
-import com.globalmentor.util.Debug;
 
 import org.w3c.dom.*;
 
@@ -77,11 +77,11 @@ public class SOAPObjectDecoder extends XMLObjectDecoder  //TODO fix resource mes
 			}
 			catch(IOException ioException)  //if an I/O error occurs
 			{
-				Debug.error(ioException); //TODO fix;
+				Log.error(ioException); //TODO fix;
 			}
 			catch(SOAPException soapException)  //if a SOAP error occurs
 			{
-				Debug.error(soapException); //TODO fix;
+				Log.error(soapException); //TODO fix;
 			}
 		}
 		return objects; //return the decoded objects

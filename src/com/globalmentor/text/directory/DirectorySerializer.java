@@ -232,7 +232,7 @@ public class DirectorySerializer
 			writer.write(GROUP_NAME_SEPARATOR_CHAR);	//write the group name separator
 		}
 		final String typeName=contentLine.getName();	//get the type name of the line
-//G***del Debug.trace("Serializing content line for type name: ", typeName);
+//G***del Log.trace("Serializing content line for type name: ", typeName);
 		writer.write(typeName);	//write the type name
 		final List<NameValuePair<String, String>> paramList=contentLine.getParamList();	//get the list of parameters
 		if(paramList.size()>0)	//if there are parameters
@@ -270,7 +270,7 @@ public class DirectorySerializer
 		boolean isValueSerialized=false;	//start out without having serialized the value
 			//get the name of the profile for this content line; if the content line has no profile, get the current profile as we've been keeping track of it
 		final String profileName=contentLine.getProfile()!=null ? contentLine.getProfile() : getProfile();
-//G***del Debug.trace("found profile name: ", profileName);
+//G***del Log.trace("found profile name: ", profileName);
 		final Profile profile=getProfile(profileName);	//see if we have a profile registered with this profile name
 		String valueType=DirectoryUtilities.getParamValue(paramList, VALUE_PARAM_NAME);	//get the value type parameter value
 		if(valueType==null)	//if the value type wasn't explicitly given
@@ -284,7 +284,7 @@ public class DirectorySerializer
 				valueType=getPredefinedProfile().getValueType(profileName, group, typeName, paramList);	//ask the predefined profile for the value type
 			}
 		}
-//G***del Debug.trace("using profile type: ", typeName);
+//G***del Log.trace("using profile type: ", typeName);
 		if(profile instanceof ValueSerializer)	//if our profile is a value serializer, use the profile as a value serializer
 		{
 			isValueSerialized=((ValueSerializer)profile).serializeValue(profileName, group, typeName, paramList, value, valueType, writer);	//serialize the value for this profile

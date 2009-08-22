@@ -215,10 +215,10 @@ public class AbstractClient implements Client
 			final DigestAuthenticateChallenge digestChallenge=(DigestAuthenticateChallenge)challenge;	//get the challenge as a digest challenge
 		final Host host=request.getHost();	//get the host of the request, as we may have been redirected
 		final int port=host.getPort()>=0 ? host.getPort() : DEFAULT_PORT;	//TODO maybe force host to have a port
-Debug.trace("getting password authentication");
+Log.trace("getting password authentication");
 final PasswordAuthentication passwordAuthentication=Authenticator.requestPasswordAuthentication(host.getName(), getInetAddress(), port,
 response.getVersion().toString(), "You must enter a username and password to access this resource at \""+digestChallenge.getRealm()+"\".", digestChallenge.getScheme().toString());
-Debug.trace("got password authentication", passwordAuthentication);
+Log.trace("got password authentication", passwordAuthentication);
 */
 		}
 		return null;	//we couldn't retrieve a password

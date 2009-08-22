@@ -1067,8 +1067,8 @@ public class Files
 		final String canonicalReferenceDirectoryPath=referenceDirectory.getCanonicalPath(); //convert the reference directory to its canonical form
 		final String canonicalFilePath=file.getCanonicalPath(); //convert the file to its canonical form
 		final int canonicalReferenceDirectoryPathLength=canonicalReferenceDirectoryPath.length(); //see how long the canonical directory is
-Debug.trace("Canonical directory: "+canonicalReferenceDirectoryPath);
-Debug.trace("Canonical file: "+canonicalFilePath);
+Log.trace("Canonical directory: "+canonicalReferenceDirectoryPath);
+Log.trace("Canonical file: "+canonicalFilePath);
 		if(canonicalReferenceDirectoryPathLength<canonicalFilePath.length())  //make sure the directory is shorter than the entire file path
 		{
 			if(canonicalFilePath.substring(0, canonicalReferenceDirectoryPathLength)) //if the file path contains the directory
@@ -1098,8 +1098,8 @@ Debug.trace("Canonical file: "+canonicalFilePath);
 		final String canonicalReferenceDirectoryPath=referenceDirectory.getCanonicalPath(); //convert the reference directory to its canonical form
 		final String canonicalFilePath=file.getCanonicalPath(); //convert the file to its canonical form
 		final int canonicalReferenceDirectoryPathLength=canonicalReferenceDirectoryPath.length(); //see how long the canonical directory is
-Debug.trace("Canonical directory: "+canonicalReferenceDirectoryPath);
-Debug.trace("Canonical file: "+canonicalFilePath);
+Log.trace("Canonical directory: "+canonicalReferenceDirectoryPath);
+Log.trace("Canonical file: "+canonicalFilePath);
 		if(canonicalReferenceDirectoryPathLength<canonicalFilePath.length())  //make sure the directory is shorter than the entire file path
 		{
 			if(canonicalFilePath.substring(0, canonicalReferenceDirectoryPathLength)) //if the file path contains the directory

@@ -6,12 +6,14 @@ import java.io.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import java.util.*;
+
 import com.garretwilson.awt.ImageUtilities;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.draw.*;
+
+import com.globalmentor.log.Log;
 import com.globalmentor.mentoract.qti.*;
-import com.globalmentor.util.Debug;
 
 /**Provides a visual editing environment for a QTI hotspot rendering.
 @author Garret Wilson
@@ -89,11 +91,11 @@ public class QTIRenderHotspotPanel extends QTIRenderPanel
 			//G***put all of this in ResponseLabel
 		if(materialPanel!=null) //if we know the material panel G***we always should
 		{
-Debug.trace("have material"); //G***del
+Log.trace("have material"); //G***del
 			final File imageFile=materialPanel.getImageFile();  //get the file of the image
 			if(imageFile!=null) //if there is an image file
 			{
-Debug.trace("found image"); //G***del
+Log.trace("found image"); //G***del
 				final Toolkit toolkit=Toolkit.getDefaultToolkit();	//get the default toolkit
 				final Image image=toolkit.getImage(imageFile.toString()); //load the image from the file
 /*G***del when works

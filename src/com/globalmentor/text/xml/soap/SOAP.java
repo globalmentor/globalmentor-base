@@ -22,8 +22,8 @@ import javax.activation.*;
 import javax.xml.soap.*;
 import com.globalmentor.activation.ByteArrayDataSource;
 import com.globalmentor.java.*;
+import com.globalmentor.log.Log;
 import com.globalmentor.text.xml.XML;
-import com.globalmentor.util.Debug;
 
 import org.w3c.dom.*;
 
@@ -75,7 +75,7 @@ public class SOAP
 		}
 		catch(SOAPException soapException)  //if a SOAP error occurs
 		{
-			Debug.error(soapException); //TODO fix; convert to a DOM exception
+			Log.error(soapException); //TODO fix; convert to a DOM exception
 			return null;  //TODO fix
 		}
 	}
@@ -103,7 +103,7 @@ public class SOAP
 		}
 		catch(SOAPException soapException)  //if a SOAP error occurs
 		{
-			Debug.error(soapException); //TODO fix; convert to a DOM exception
+			Log.error(soapException); //TODO fix; convert to a DOM exception
 			return null;  //TODO fix
 		}
 	}
@@ -142,7 +142,7 @@ public class SOAP
 		}
 		catch(SOAPException soapException)  //if a SOAP error occurs
 		{
-			Debug.error(soapException); //TODO fix; convert to a DOM exception
+			Log.error(soapException); //TODO fix; convert to a DOM exception
 		}
 	}
 
@@ -181,7 +181,7 @@ public class SOAP
 		}
 		catch(SOAPException soapException)  //if a SOAP error occurs
 		{
-			Debug.error(soapException); //TODO fix; convert to a DOM exception
+			Log.error(soapException); //TODO fix; convert to a DOM exception
 		}
 	}
 
@@ -257,7 +257,7 @@ public class SOAP
 		}
 		catch(SOAPException soapException)  //if a SOAP error occurs
 		{
-			Debug.error(soapException); //TODO fix; convert to a DOM exception
+			Log.error(soapException); //TODO fix; convert to a DOM exception
 			return null;  //TODO fix
 		}
 	}
@@ -279,7 +279,7 @@ public class SOAP
 		}
 		catch(SOAPException soapException)  //if a SOAP error occurs
 		{
-			Debug.error(soapException); //TODO fix; convert to a DOM exception
+			Log.error(soapException); //TODO fix; convert to a DOM exception
 			return null;  //TODO fix
 		}
 	}
@@ -301,7 +301,7 @@ public class SOAP
 		}
 		catch(SOAPException soapException)  //if a SOAP error occurs
 		{
-			Debug.error(soapException); //TODO fix; convert to a DOM exception
+			Log.error(soapException); //TODO fix; convert to a DOM exception
 			return null;  //TODO fix
 		}
 	}
@@ -323,7 +323,7 @@ public class SOAP
 		}
 		catch(SOAPException soapException)  //if a SOAP error occurs
 		{
-			Debug.error(soapException); //TODO fix; convert to a DOM exception
+			Log.error(soapException); //TODO fix; convert to a DOM exception
 			return null;  //TODO fix
 		}
 	}
@@ -345,7 +345,7 @@ public class SOAP
 		}
 		catch(SOAPException soapException)  //if a SOAP error occurs
 		{
-			Debug.error(soapException); //TODO fix; convert to a DOM exception
+			Log.error(soapException); //TODO fix; convert to a DOM exception
 			return null;  //TODO fix
 		}
 	}

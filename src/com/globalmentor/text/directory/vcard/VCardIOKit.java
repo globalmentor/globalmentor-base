@@ -83,7 +83,7 @@ public class VCardIOKit extends AbstractIOKit<VCard>
 		directoryProcessor.registerProfile(VCARD_PROFILE_NAME, VCARD_PROFILE);	//register the vCard profile with the vCard processor
 		final Reader reader=new InputStreamReader(inputStream, CharacterEncoding.UTF_8);	//assume the vCard is stored in UTF-8
 		final Directory directory=directoryProcessor.processDirectory(reader, baseURI);	//process the directory
-//G***del Debug.trace("parsed directory: ", directory);
+//G***del Log.trace("parsed directory: ", directory);
 		if(directory instanceof VCard)	//if this directory is a vCard
 		{
 //		G***del		final VCard vcard=VCardProfile.createVCard(directory);	//create a new VCard from the directory

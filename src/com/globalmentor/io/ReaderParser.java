@@ -273,10 +273,10 @@ public class ReaderParser
 	*/
 	public static int peek(final Reader reader) throws IOException, ParseIOException
 	{
-//Debug.trace("ready to peek");
+//Log.trace("ready to peek");
 		reader.mark(1);	//mark our current position
 		final int c=reader.read();	//get the current character
-//Debug.trace("peek-read char", c);
+//Log.trace("peek-read char", c);
 		if(c>=0)	//if the reader is not out of data
 		{
 			reader.reset();	//reset to the last mark, which was set right before the character we found
@@ -428,12 +428,12 @@ public class ReaderParser
 			skip=false;	//start out assuming we shouldn't skip this character
 			reader.mark(1);	//mark our current position
 			c=reader.read();	//read another character
-//Debug.trace("just read for skipping:", c);
+//Log.trace("just read for skipping:", c);
 			if(c<0)	//if we're at the end of the reader
 			{
 				return c;	//stop skipping and return without resetting the reader to the mark
 			}
-//Debug.trace("trying to skip character", (char)c);
+//Log.trace("trying to skip character", (char)c);
 			if(c>=lowerBound && c<=upperBound)	//if the character is within the range of characters, we'll skip it
 			{
 				if(stringBuilder!=null)	//if a string builder was given
@@ -479,12 +479,12 @@ public class ReaderParser
 			skip=false;	//start out assuming we shouldn't skip this character
 			reader.mark(1);	//mark our current position
 			c=reader.read();	//read another character
-//Debug.trace("just read for skipping:", c);
+//Log.trace("just read for skipping:", c);
 			if(c<0)	//if we're at the end of the reader
 			{
 				return c;	//stop skipping and return without resetting the reader to the mark
 			}
-//Debug.trace("trying to skip character", (char)c);
+//Log.trace("trying to skip character", (char)c);
 			if(characters.contains((char)c))
 			{
 				if(stringBuilder!=null)	//if a string builder was given

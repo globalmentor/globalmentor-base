@@ -17,8 +17,9 @@
 package com.globalmentor.text.xml;
 
 import java.util.*;
+
+import com.globalmentor.log.Log;
 import static com.globalmentor.text.xml.XML.*;
-import com.globalmentor.util.Debug;
 
 import org.w3c.dom.*;
 
@@ -102,7 +103,7 @@ public class XMLObjectEncoder
 			return objectXMLFactory.create(object, document);  //let the factory create an element from the object
 		else  //if we don't have an XML factory
 		{
-			Debug.warn("cannot find XML factory for package: "+packageName);  //TODO fix
+			Log.warn("cannot find XML factory for package: "+packageName);  //TODO fix
 			return null;  //show that we can't create an element TODO fix
 		}
 	}

@@ -3,8 +3,8 @@ package com.garretwilson.swing.qti;
 import java.awt.*;
 import javax.swing.*;
 import java.util.*;
+import com.globalmentor.log.Log;
 import com.globalmentor.mentoract.qti.*;
-import com.globalmentor.util.Debug;
 
 /**Provides a visual editing environment for a QTI logical ID response.
 @author Garret Wilson
@@ -108,14 +108,14 @@ public class QTIResponseLIDPanel extends JPanel
 */
 			final QTIRenderPanel renderPanel=getRenderPanel(0); //get the first render panel
 			final Render render=renderPanel.getRender();  //get the render from the panel
-//G***del Debug.trace("Getting render choice with first response label: ", renderChoice.getResponseLabelList().get(0)); //G***del
+//G***del Log.trace("Getting render choice with first response label: ", renderChoice.getResponseLabelList().get(0)); //G***del
 			responseLID.getRenderList().add(render);  //add the rendering to our renderings
 /*G***del when works
 			if(component instanceof QTIRenderChoicePanel) //if this is a choice rendering
 			{
 				final QTIRenderChoicePanel renderChoicePanel=(QTIRenderChoicePanel)component; //cast the component to a render choice panel
 				final RenderChoice renderChoice=renderChoicePanel.getRenderChoice();  //get the render choice from the panel
-//G***del Debug.trace("Getting render choice with first response label: ", renderChoice.getResponseLabelList().get(0)); //G***del
+//G***del Log.trace("Getting render choice with first response label: ", renderChoice.getResponseLabelList().get(0)); //G***del
 				responseLID.getRenderList().add(renderChoice);  //add the choice rendering to our renderings
 			}
 */
@@ -169,7 +169,7 @@ public class QTIResponseLIDPanel extends JPanel
 			}
 			else  //if we don't recognize the rendering type
 			{
-				Debug.error("Unrecognized rendering type"); //G***fix
+				Log.error("Unrecognized rendering type"); //G***fix
 				return; //G***fix
 			}
 			renderPanel.setRender(materialPanel, render);  //set the rendering being shown in the panel

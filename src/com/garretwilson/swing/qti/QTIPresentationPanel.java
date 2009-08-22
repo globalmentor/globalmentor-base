@@ -7,7 +7,6 @@ import java.util.*;
 import com.garretwilson.awt.WindowUtilities;
 import com.garretwilson.resources.icon.IconResources;
 import com.globalmentor.mentoract.qti.*;
-import com.globalmentor.util.Debug;
 
 /**Provides a visual editing environment for QTI presentation.
 @author Garret Wilson
@@ -92,7 +91,7 @@ public class QTIPresentationPanel extends JPanel
 		if(response instanceof ResponseLID)  //if this is a logical ID response
 		{
 //G***del when works				final ResponseLID responseLID=(ResponseLID)response; //cast the response to a logical ID response
-//G***del Debug.trace("adding response, material panel is: ", materialPanel); //G***del
+//G***del Log.trace("adding response, material panel is: ", materialPanel); //G***del
 			final QTIResponseLIDPanel responseLIDPanel=new QTIResponseLIDPanel(materialPanel, (ResponseLID)response);  //create a panel for the logical ID response
 //G***del				responseLIDPanel.setResponseLID(responseLID); //set the response being shown in the panel
 		  final int responseCount=responsePanel.getComponentCount();  //find out how many components are present already
@@ -116,7 +115,7 @@ public class QTIPresentationPanel extends JPanel
 			if(component instanceof QTIResponseLIDPanel) //if this is a panel for a logical ID response
 			{
 				final QTIResponseLIDPanel responseLIDPanel=(QTIResponseLIDPanel)component;  //cast the component to a logical ID response panel
-//G***del Debug.trace("Getting response lid with render choice with first response label: ", ((RenderChoice)responseLIDPanel.getResponseLID().getRenderList().get(0)).getResponseLabelList().get(0)); //G***del
+//G***del Log.trace("Getting response lid with render choice with first response label: ", ((RenderChoice)responseLIDPanel.getResponseLID().getRenderList().get(0)).getResponseLabelList().get(0)); //G***del
 				responseList.add(responseLIDPanel.getResponseLID());  //get the logical ID response and add it to the list
 			}
 			//G***add other response types
