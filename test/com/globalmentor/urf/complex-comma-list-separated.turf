@@ -7,16 +7,14 @@
 	"resources"~<http://guiseframework.com/namespaces/resources>,
 	"style"~<java:/com/guiseframework/style/>,
 	"dc"~<http://purl.org/dc/elements/1.1/>
-;
-¤
+;¤
 	*theme.Theme:
 		dc.title="Guise™ Basic Theme",
 		dc.description="The bland, basic, default Guise™ theme.",
 		dc.rights="Copyright © 2007 GlobalMentor, Inc.",
 		dc.creator="Garret Wilson",
 	
-		theme.resources=*resources.Resources
-		〔
+		theme.resources=*resources.Resources〔
 			†<resource:theme.color.text>slategray</resource:theme.color.text>‡
 			"theme.color.subordinateA"="whitesmoke",
 			"theme.color.menu"="whitesmoke",
@@ -26,8 +24,7 @@
 			"theme.color.frame.title.text"="\“theme.color.subordinate\”",
 			"theme.color.link"="cornflowerblue"
 		〕
-	;
-	[
+	;[
 		†ActionControl‡
 		*theme.Rule:
 			select.selector=*select.ObjectClassSelector:

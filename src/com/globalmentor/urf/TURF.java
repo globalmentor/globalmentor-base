@@ -25,8 +25,17 @@ public class TURF
 	/**An extension for TURF resource names.*/
 	public final static String TURF_NAME_EXTENSION="turf";
 
-	/**The TURF general separator characters.*/
-	public final static Characters SEPARATORS=WHITESPACE_CHARACTERS.add(PARAGRAPH_SEPARATOR_CHARS).add(SEGMENT_SEPARATOR_CHARS);
+	/**The character that separates items in a list.*/
+	public final static char LIST_DELIMITER=',';
+
+	/**The TURF list separator characters, including the {@link #LIST_DELIMITER} and the newline characters.*/
+	public final static Characters LIST_SEPARATORS=NEWLINE_CHARACTERS.add(LIST_DELIMITER);
+
+	/**The TURF general filler characters.*/
+	public final static Characters FILLERS=WHITESPACE_CHARACTERS.add(PARAGRAPH_SEPARATOR_CHARS).add(SEGMENT_SEPARATOR_CHARS);
+
+	/**The TURF separator characters that do not separate list components; the general fillers without newlines.*/
+	public final static Characters NON_LIST_SEPARATOR_FILLERS=FILLERS.remove(LIST_SEPARATORS);
 
 	/**The delimiters used to a name prefix.*/
 	public final static char NAME_PREFIX_DELIMITER='.';
@@ -150,9 +159,6 @@ public class TURF
 	public final static char URI_BEGIN='<';
 	/**The delimiter that ends URI shorthand declarations.*/
 	public final static char URI_END='>';
-
-	/**The character that separates items in a list.*/
-	public final static char LIST_DELIMITER=',';
 
 	/**The character that indicates the beginning of a new scope.*/
 	public final static char SCOPE_DELIMITER='`';

@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.globalmentor.collections.IdentityHashSet;
 import com.globalmentor.java.Integers;
-import com.globalmentor.util.*;
 
 import static com.globalmentor.collections.Collections.*;
 import static com.globalmentor.java.Characters.*;
@@ -145,6 +144,17 @@ public class URFTURFGenerator
 		@param formatted Whether output is formatted.
 		*/
 		public void setFormatted(final boolean formatted) {this.formatted=formatted;}
+
+	/**Whether formatted output uses the list delimiter in addition to newlines.*/
+	private boolean formattedListDelimiter=false;
+
+		/**@return Whether formatted output uses the list delimiter in addition to newlines.*/
+		public boolean isFormattedListDelimiter() {return formattedListDelimiter;}
+
+		/**Sets whether formatted output uses the list delimiter in addition to newlines.
+		@param formattedListDelimiter Whether formatted output uses the list delimiter.
+		*/
+		public void setFormattedListDelimiter(final boolean formattedListDelimiter) {this.formattedListDelimiter=formattedListDelimiter;}
 
 	/**Whether prefixes are suppressed for inherited namespaces.*/
 	private boolean inheritedNamespacePrefixesSuppressed=true;
@@ -534,7 +544,7 @@ public class URFTURFGenerator
 				{
 					if(startedProperties)	//if we already started the preamble
 					{
-						writer.write(LIST_DELIMITER);	//write a list delimiter
+						writeListSeparator(writer);	//write a list separator
 					}
 					else	//if we haven't started the properties, yet
 					{
@@ -542,7 +552,6 @@ public class URFTURFGenerator
 						indent();	//indent the properties
 						startedProperties=true;	//show that we've started the properties
 					}
-					writeNewLine(writer);	//go to the next line
 					final String prefix=namespaceLabelManager.determineNamespaceLabel(namespaceURI);	//get a namespace label for the URI
 					writeString(writer, prefix);	//write the prefix
 					writer.write(NAMESPACE_ASSOCIATION_DELIMITER);	//write the property-value delimiter
@@ -555,7 +564,6 @@ public class URFTURFGenerator
 				writeNewLine(writer);
 				writer.write(PROPERTIES_END);	//end the properties
 			}
-			writeNewLine(writer);
 			writer.write(COMMUNITY_BEGIN);	//start the instance community
 			indent();	//indent the resources
 			writeNewLine(writer);
@@ -606,8 +614,7 @@ public class URFTURFGenerator
 	{
 		if(getGeneratedResourceCount()>0)	//if we've already generated a least one resource
 		{
-			writer.write(LIST_DELIMITER);	//write a list delimiter
-			writeNewLine(writer);	//go to the next line
+			writeListSeparator(writer);	//write a list separator
 		}
 		return generateResource(writer, urf, referenceSummary, resource);	//generate the resource
 	}
@@ -948,10 +955,6 @@ public class URFTURFGenerator
 	{
 		if(elementPropertyIterator.hasNext())	//if there are elements in the collection
 		{
-			if(multipleLines)	//if we should generate multiple lines
-			{
-				writeNewLine(writer);
-			}
 			writer.write(collectionBegin);	//start the collection
 			if(multipleLines)	//if we should generate multiple lines
 			{
@@ -964,10 +967,13 @@ public class URFTURFGenerator
 				final URFProperty elementProperty=elementPropertyIterator.next();	//get the next element property
 				if(elementCount>0)	//if we've already generated an element
 				{
-					writer.append(LIST_DELIMITER);	//separate the elements
 					if(multipleLines)	//if we should generate multiple lines
 					{
-						writeNewLine(writer);
+						writeListSeparator(writer);	//write a list separator, which will write multiple lines (also using a comma, if so configured), unless formatting is turned off, in which case only a list delimiter will be used
+					}
+					else
+					{
+						writer.append(LIST_DELIMITER);	//separate the elements using a list delimiter
 					}
 				}
 				generateResource(writer, urf, referenceSummary, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false);	//generate the element; each element value is an object of the element predicate, so use the element property URI as the context
@@ -1003,10 +1009,6 @@ public class URFTURFGenerator
 	{
 		if(entryPropertyIterator.hasNext())	//if there are entries in the collection
 		{
-			if(multipleLines)	//if we should generate multiple lines
-			{
-				writeNewLine(writer);
-			}
 			writer.write(mapBegin);	//start the map
 			if(multipleLines)	//if we should generate multiple lines
 			{
@@ -1019,10 +1021,13 @@ public class URFTURFGenerator
 				final URFProperty entryProperty=entryPropertyIterator.next();	//get the next entry property
 				if(entryCount>0)	//if we've already generated an entry
 				{
-					writer.append(LIST_DELIMITER);	//separate the entries
 					if(multipleLines)	//if we should generate multiple lines
 					{
-						writeNewLine(writer);
+						writeListSeparator(writer);	//write a list separator, which will write multiple lines (also using a comma, if so configured), unless formatting is turned off, in which case only a list delimiter will be used
+					}
+					else
+					{
+						writer.append(LIST_DELIMITER);	//separate the entries without newlines
 					}
 				}
 				final URFResource entry=entryProperty.getValue();	//get the entry, which is the subject of the key and value 
@@ -1120,8 +1125,7 @@ public class URFTURFGenerator
 			{
 				if(propertyCount>0)	//if we've already generated a property
 				{
-					writer.append(LIST_DELIMITER);	//separate the properties
-					writeNewLine(writer);
+					writeListSeparator(writer);	//write a list separator
 				}
 				else	//if we haven't yet started the properties section
 				{
@@ -1582,6 +1586,34 @@ public class URFTURFGenerator
 			}
 		}
 		writer.write(stringEnd);	//write the string ending delimiter
+	}
+
+	/**Writes a list separator.
+	If the generator is formatted, this method generates a newline (optionally preceded by a
+	{@link TURF#LIST_DELIMITER}, depending on the setting of {@link #isFormattedListDelimiter()})
+	and and then indents at the current indent level.
+	If the generator is not formatted, a {@link TURF#LIST_DELIMITER} is generated.
+	@param writer The writer used for generating the information.
+	@exception NullPointerException if the given writer is <code>null</code>.
+	@exception IOException if there was an error writing to the writer.
+	@see #isFormatted()
+	@see #isFormattedListDelimiter()
+	@see #writeNewLine(Writer) 
+	*/
+	public void writeListSeparator(final Writer writer) throws IOException
+	{
+		if(isFormatted())	//if we should format the output
+		{
+			if(isFormattedListDelimiter())	//if we should nonetheless write a list delimiter even when formatted
+			{
+				writer.write(LIST_DELIMITER);	//write a list delimiter
+			}
+			writeNewLine(writer);	//use a newline as a list delimiter
+		}
+		else	//if we shouldn't format the output
+		{
+			writer.write(LIST_DELIMITER);	//write a list delimiter
+		}
 	}
 
 	/**Writes the end of a line and then indents at the current indent level.

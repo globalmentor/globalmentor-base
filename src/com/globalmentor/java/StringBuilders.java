@@ -221,7 +221,7 @@ public class StringBuilders
 		}
 		else	//if this is not a supplementary code point
 		{
-			stringBuilder.append(c);	//append the character normally
+			stringBuilder.append((char)c);	//append the character normally
 		}
 		return stringBuilder;
 	}

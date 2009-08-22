@@ -8,6 +8,8 @@ import static java.util.Collections.*;
 
 import static com.globalmentor.io.Charsets.*;
 import com.globalmentor.io.ParseIOException;
+import com.globalmentor.java.Characters;
+
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.iso.ISO8601.*;
 import static com.globalmentor.java.Characters.*;
@@ -64,11 +66,11 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	{
 		Map<String, URI> prefixNamespaceURIMap=emptyMap();	//start out with no namespaces defined
 		check(reader, TURF_SIGNATURE);	//read the TURF signature
-		int c=skipSeparators(reader);	//skip separators
+		int c=skipFillers(reader);	//skip fillers
 		if(c==PROPERTIES_BEGIN)	//check for a TURF preamble
 		{
 			check(reader, PROPERTIES_BEGIN);	//read the beginning preamble delimiter			
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipFillers(reader);	//skip fillers and peek the next character
 			if(c!=PROPERTIES_END)	//if this is not an empty preamble
 			{
 				try
@@ -81,9 +83,9 @@ public class URFTURFProcessor extends AbstractURFProcessor
 						{
 							throw new DataException("Expected namespace prefix reference"+(namespacePrefixResourceURI!=null ? "; found: "+namespacePrefixResourceURI : "."));
 						}
-						skipSeparators(reader);	//skip separators
+						skipFillers(reader);	//skip fillers
 						check(reader, NAMESPACE_ASSOCIATION_DELIMITER);	//read the namespace association delimiter
-						skipSeparators(reader);	//skip separators
+						skipFillers(reader);	//skip fillers
 						final URI namespaceURIResourceURI=parseReference(reader, baseURI);	//parse a reference to the namespace URI
 						final URI namespaceURI=asURI(namespaceURIResourceURI);	//get the namespace URI
 						if(namespaceURI==null)	//if there is no namespace URI
@@ -95,13 +97,12 @@ public class URFTURFProcessor extends AbstractURFProcessor
 							prefixNamespaceURIMap=new HashMap<String, URI>();	//create a new map that is mutable
 						}
 						prefixNamespaceURIMap.put(namespacePrefix, namespaceURI);	//store the TURF namespace prefix association
-						c=skipSeparators(reader);	//skip separators and peek the next character
-						if(c==LIST_DELIMITER)	//if this is a list delimiter
+						c=skipListSeparators(reader, PROPERTIES_END);	//skip list separators and peek the next character
+						if(c==LIST_DELIMITER)	//if we passed a list separator
 						{
-							check(reader, LIST_DELIMITER);	//skip the list delimiter
-							c=skipSeparators(reader);	//skip separators and peek the next character
+							c=peek(reader);	//peek the next character
 						}
-						else	//if there's anything besides a list delimiter, we've reached the end of the properties
+						else	//if there's anything besides a list delimiter, we've reached the end of the list
 						{
 							break;	//stop parsing the list
 						}
@@ -113,10 +114,11 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				}
 			}
 			check(reader, PROPERTIES_END);	//read the ending preamble delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			skipFillers(reader);	//skip fillers and peek the next character
+//TODO bring back and replace with previous line when root community newline leniency is removed			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 		}
 		check(reader, COMMUNITY_BEGIN);	//read the beginning instance community delimiter
-		skipSeparators(reader);	//skip separators
+		skipFillers(reader);	//skip fillers
 		final List<URFResource> urfResourceList=processResources(reader, baseURI, COMMUNITY_END, prefixNamespaceURIMap);	//process resources, indicating the end of the instance community
 		check(reader, COMMUNITY_END);	//read the ending community delimiter
 		return urfResourceList;	//return the URF resources parsed
@@ -172,28 +174,133 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		return urfResources;	//return the list of URF resources
 	}
 
-	/**Skips over TURF separators in a reader.
-	This method skips all separator characters {@link TURF#SEPARATORS}, as well as any comments.
-	The new position will either be the that of the first non-separator character or the end of the input stream.
+	/**Skips over TURF fillers in a reader.
+	This method skips all filler characters {@link TURF#FILLERS}, as well as any comments.
+	The new position will either be the that of the first non-filler character or the end of the input stream.
 	@param reader The reader the contents of which to be parsed.
 	@return The next character that will be returned the reader's {@link Reader#read()} operation, or <code>-1</code> if the end of the reader has been reached.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	*/
-	protected static int skipSeparators(final Reader reader) throws IOException
+	protected static int skipFillers(final Reader reader) throws IOException
 	{
-		int c;	//we'll store the next non-separator character here so that it can be returned
-		while((c=skip(reader, SEPARATORS))==COMMENT_BEGIN)	//skip all separators; if the start of a comment was encountered
+		int c;	//we'll store the next non-filler character here so that it can be returned
+		while((c=skip(reader, FILLERS))==COMMENT_BEGIN)	//skip all fillers; if the start of a comment was encountered
 		{
 			check(reader, COMMENT_BEGIN);	//read the beginning comment delimiter
-			pass(reader, COMMENT_END);	//skip past the end of the comment; we'll then skip all separator characters and see if another comment starts
+			pass(reader, COMMENT_END);	//skip past the end of the comment; we'll then skip all filler characters and see if another comment starts
 		}
 		return c;	//return the last character read
 	}
 
+	/**Skips over TURF non-list-separator fillers in a reader.
+	This method skips all non-list-separator filler characters {@link TURF#NON_LIST_SEPARATOR_FILLERS}, as well as any comments.
+	The new position will either be the that of the first character that is not a list separator or a filler character, or the end of the input stream.
+	@param reader The reader the contents of which to be parsed.
+	@return The next character that will be returned the reader's {@link Reader#read()} operation, or <code>-1</code> if the end of the reader has been reached.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	*/
+	protected static int skipNonListSeparatorFillers(final Reader reader) throws IOException
+	{
+		int c;	//we'll store the next non-filler character here so that it can be returned
+		while((c=skip(reader, NON_LIST_SEPARATOR_FILLERS))==COMMENT_BEGIN)	//skip all non-list-separator fillers; if the start of a comment was encountered
+		{
+			check(reader, COMMENT_BEGIN);	//read the beginning comment delimiter
+			pass(reader, COMMENT_END);	//skip past the end of the comment; we'll then skip all filler characters and see if another comment starts
+		}
+		return c;	//return the last character read
+	}
+
+	/**Skips over TURF separators and list separators in a reader.
+	This method skips all separator characters {@link TURF#FILLERS}, the list delimiter character {@link TURF#LIST_DELIMITER}, as well as any comments.
+	The new position will either be the that of the first non-list separator character or the end of the input stream.
+	If {@link TURF#LIST_DELIMITER}, it indicates that the list delimiter or one or more new lines was encountered and, if a newline was encounter,
+	the next character is not the end of the list; there will be no indication of the next character in the reader.
+	Otherwise, the next character that will be returned from the reader	will be given.
+	@param reader The reader the contents of which to be parsed.
+	@param listEnd The character expected to end the list.
+	@return The next character that will be returned the reader's {@link Reader#read()} operation;
+	or {@link TURF#LIST_DELIMITER} if a list separator (the list delimiter or newline) was encountered;
+	or <code>-1</code> if the end of the reader has been reached without encountering a list separator or non-separator character.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	*/
+	protected static int skipListSeparators(final Reader reader, final char listEnd) throws IOException
+	{
+		boolean foundListDelimiter=false;
+		boolean foundNewline=false;
+		int c;
+		while((c=skip(reader, NON_LIST_SEPARATOR_FILLERS))>=0)	//while the end of the data has not been reached, skip fillers that do not delimit lists, and peek the next character
+		{
+			if(c==LIST_DELIMITER)	//there can be one list delimiter character
+			{
+				if(foundListDelimiter)	//if we've already found a list delimiter
+				{
+					throw new ParseIOException("Duplicate list delimiter: '"+LIST_DELIMITER+"");
+				}
+	/*TODO bring back when legacy data is converted
+				else if(foundNewline)	//if we also found newlines
+				{
+					throw new ParseIOException("The list delimiter '"+LIST_DELIMITER+"' and newlines cannot both be used to delimit two list items.");
+				}
+	*/
+				foundListDelimiter=true;
+				check(reader, (char)c);	//skip the character
+			}
+			else if(NEWLINE_CHARACTERS.contains((char)c))	//there may be multiple newline characters
+			{
+	/*TODO bring back when legacy data is converted
+				if(foundListDelimiter)	//if we also found a list delimiter
+				{
+					throw new ParseIOException("The list delimiter '"+LIST_DELIMITER+"' and newlines cannot both be used to delimit two list items.");
+				}
+	*/
+				foundNewline=true;
+				check(reader, (char)c);	//skip the character
+			}
+			else if(c==COMMENT_BEGIN)	//if the start of a comment was encountered
+			{
+				check(reader, COMMENT_BEGIN);	//read the beginning comment delimiter
+				pass(reader, COMMENT_END);	//skip past the end of the comment; we'll then skip all separator characters and see if another comment starts
+			}
+			else	//if any other character was found, we've reached the end of the list
+			{
+				break;	//stop parsing the list separators
+			}
+		}
+		return foundListDelimiter	//if we found the list delimiter, we'll return it
+			|| (foundNewline && c!=listEnd)	//a newline will also be interepreted as a list delimiter---but only if we didn't encounter the end-of-list character
+			? LIST_DELIMITER
+					: c;	//return the list delimiter of a list separator was found, or the next character (which may indicate the end of the data)
+	}
+
+	/**Skips over TURF separators and list separators in a reader, checking to make sure that a list separator was encountered.
+	This method skips all separator characters {@link TURF#FILLERS}, the list delimiter character {@link TURF#LIST_DELIMITER}, as well as any comments.
+	The new position will either be the that of the first non-list separator character or the end of the input stream.
+	@param reader The reader the contents of which to be parsed.
+	@param listEnd The character expected to end the list.
+	@return The next character that will be returned the reader's {@link Reader#read()} operation,
+	or <code>-1</code> if the end of the reader has been reached without encountering a list separator or non-separator character.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	*/
+	protected static int checkSkipListSeparators(final Reader reader, final char listEnd) throws IOException
+	{
+		final int c=skipListSeparators(reader, listEnd);	//skip the list separators
+		if(c==LIST_DELIMITER)	//if we passed a list separator
+		{
+			return peek(reader);	//return the next character
+		}
+		else	//if we didn't pass a list separator as expected
+		{
+			throw new ParseIOException(reader, "Expected list delimiter one of "+LIST_SEPARATORS.toLabelArrayString()+"; found "+Characters.getLabel(c)+".");
+		}
+	}
+
 	/**Parses a single resource and returns a proxy to the resource.
 	The current position must be that of the first character of the resource.
-	The new position will be that of the first non-separator character after the resource or the end of the reader.
+	The new position will be that of the first character after the resource that is not a non-list-separator filler, or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The resource parsed from the reader.
@@ -208,7 +315,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 
 	/**Parses a single resource and returns a proxy to the resource.
 	The current position must be that of the first character of the resource.
-	The new position will be that of the first non-separator character after the resource or the end of the reader.
+	The new position will be that of the first character after the resource that is not a non-list-separator filler, or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is allowed; for properties, this is the URI of the first type short form.
@@ -232,7 +339,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 
 	/**Parses a single optionally scoped resource with no default namespace URI and returns a proxy to the resource.
 	The current position must be that of the first character of the resource.
-	The new position will be that of the first non-separator character after the resource or the end of the reader.
+	The new position will be that of the first character after the resource that is not a non-list-separator filler, or the end of the reader.
 	For every resource that is being parsed as the object of a subject and predicate, the scope base, scope chain, and scope predicate must all be non-<code>null</code>.
 	Whenever the scope chain is lengthened it must first be cloned so that the local version will not be modified during recursion.
 	@param reader The reader the contents of which to be parsed.
@@ -254,7 +361,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 
 	/**Parses a single optionally scoped resource and returns a proxy to the resource.
 	The current position must be that of the first character of the resource.
-	The new position will be that of the first non-separator character after the resource or the end of the reader.
+	The new position will be that of the first character after the resource that is not a non-list-separator filler, or the end of the reader.
 	For every resource that is being parsed as the object of a subject and predicate, the scope base, scope chain, and scope predicate must all be non-<code>null</code>.
 	Whenever the scope chain is lengthened it must first be cloned so that the local version will not be modified during recursion.
 	@param reader The reader the contents of which to be parsed.
@@ -281,13 +388,13 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		{
 			foundComponent=true;	//indicate that at least one description component is present
 			label=parseLabel(reader);	//parse the label
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 		}
 		final URI resourceURI=parseReference(reader, baseURI, defaultNamespaceURI, prefixNamespaceURIMap);	//parse a reference to the resource, if any
 		if(resourceURI!=null)	//if we parsed a reference
 		{
 			foundComponent=true;	//indicate that at least one description component is present
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 		}
 		final Resource resource=determineResourceProxy(label, resourceURI);	//get a resource proxy from the label and/or reference URI, or use one already available for the reference URI
 		final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
@@ -305,7 +412,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			final Resource typeResource=determineResourceProxy(typeURI);	//get a proxy to the type resource
 			addAssertion(new Assertion(resource, typePropertyResource, typeResource));	//assert the type
 			types.add(typeResource);	//add the type to our list of types
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipFillers(reader);	//skip fillers and peek the next character
 			if(c==SELECTOR_BEGIN)	//check for a selector
 			{
 				check(reader, SELECTOR_BEGIN);	//read the beginning selectordelimiter
@@ -316,7 +423,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				addAssertion(new Assertion(listResource, typePropertyResource, listType));	//assert the list type for the list
 				parseListContents(reader, baseURI, listResource, SELECTOR_END, prefixNamespaceURIMap);	//parse the selector elements
 				check(reader, SELECTOR_END);	//read the ending selector delimiter
-				c=skipSeparators(reader);	//skip separators and peek the next character
+				c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 			}
 		}
 		while(c==SUBCLASS_OF_BEGIN)	//check for subclass of
@@ -327,7 +434,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			final URI subclassOfURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse the superclass URI
 			final Resource subclassOfResource=determineResourceProxy(subclassOfURI);	//get a proxy to the superclass resource
 			addAssertion(new Assertion(resource, subclassOfPropertyResource, subclassOfResource));	//assert the superclass
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 		}		
 		while(c==IMPLEMENTATION_OF_BEGIN)	//check for implementation of
 		{
@@ -337,21 +444,21 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			final URI implementationOfURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse the interface URI
 			final Resource implementationOfResource=determineResourceProxy(implementationOfURI);	//get a proxy to the interface resource
 			addAssertion(new Assertion(resource, implementationOfPropertyResource, implementationOfResource));	//assert the interface
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 		}		
 		final URI typeURI=!types.isEmpty() ? types.get(0).getURI() : null;	//the first type, if any, will determine the default namespace for properties
 		if(c==PROPERTIES_BEGIN)	//check for properties
 		{
 			foundComponent=true;	//indicate that at least one description component is present
 			check(reader, PROPERTIES_BEGIN);	//read the beginning properties delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipFillers(reader);	//skip fillers and peek the next character
 			if(c!=PROPERTIES_END)	//if this is not an empty properties section
 			{
 				while(c>=0)	//while the end of the data has not been reached
 				{
 					final Resource predicate=parseResource(reader, baseURI, null, null, null, typeURI, prefixNamespaceURIMap);	//parse the predicate resource, providing the typeURI (if any) as a default namespace URI
 					final URI predicateURI=predicate.getURI();	//get the predicate URI
-					c=skipSeparators(reader);	//skip separators
+					c=skipFillers(reader);	//skip fillers
 					if(c==LABEL_BEGIN)	//if this is the beginning of a property reification
 					{
 						throw new DataException("Property reification not yet supported.");	//TODO implement property reification
@@ -361,7 +468,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 					{
 						scoped=true;	//this is a scoped property
 						check(reader, SCOPE_DELIMITER);	//read the scope begin character
-						c=skipSeparators(reader);	//skip separators
+						c=skipFillers(reader);	//skip fillers
 					}
 					else	//if there is no scope indicator
 					{
@@ -369,7 +476,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 					}
 					check(reader, PROPERTY_VALUE_DELIMITER);	//read the property value delimiter
 					final Resource object;	//we'll use this to store the object, if there is just one object
-					if(skipSeparators(reader)==SEQUENCE_BEGIN)	//skip separators and see what the next character will be; if this is the beginning of a sequence
+					if(skipFillers(reader)==SEQUENCE_BEGIN)	//skip fillers and see what the next character will be; if this is the beginning of a sequence
 					{
 						check(reader, SEQUENCE_BEGIN);	//read the beginning sequence delimiter
 						final List<Resource> sequenceResources=parseSequence(reader, baseURI, predicateURI, scopeBase, scopeChain, resource, predicate, scoped, SEQUENCE_END, prefixNamespaceURIMap);	//parse the sequence of resources
@@ -405,20 +512,19 @@ public class URFTURFProcessor extends AbstractURFProcessor
 							}
 						}
 					}
-					c=skipSeparators(reader);	//skip separators and peek the next character
-					if(c==LIST_DELIMITER)	//if this is a list delimiter
+					c=skipListSeparators(reader, PROPERTIES_END);	//skip list separators and peek the next character
+					if(c==LIST_DELIMITER)	//if we passed a list separator
 					{
-						check(reader, LIST_DELIMITER);	//skip the list delimiter
-						c=skipSeparators(reader);	//skip separators and peek the next character
+						c=peek(reader);	//peek the next character
 					}
-					else	//if there's anything besides a list delimiter, we've reached the end of the properties
+					else	//if there's anything besides a list delimiter, we've reached the end of the list
 					{
 						break;	//stop parsing the list
 					}
 				}
 			}
 			check(reader, PROPERTIES_END);	//read the ending properties delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 		}
 		if(c==COMMUNITY_BEGIN)	//if a community is next
 		{
@@ -435,25 +541,21 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			}
 			long index=0;	//start out with an index of zero
 			check(reader, PROPOSITION_BEGIN);	//read the beginning proposition delimiter
-			skipSeparators(reader);	//skip separators
+			skipFillers(reader);	//skip fillers
 			final Resource subjectPredicate=determineResourceProxy(SUBJECT_PROPERTY_URI);	//get the subject predicate
 			final Resource subject=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), subjectPredicate, prefixNamespaceURIMap);	//parse the subject, giving a scope chain and predicate in case a scope is formed for the value
 			addAssertion(new Assertion(resource, subjectPredicate, subject));	//assert the proposition subject
-			skipSeparators(reader);	//skip separators
-			check(reader, LIST_DELIMITER);	//read the list delimiter
-			skipSeparators(reader);	//skip separators
+			checkSkipListSeparators(reader, PROPOSITION_END);	//skip list separators, making sure there is a list delimiter
 			final Resource predicatePredicate=determineResourceProxy(PREDICATE_PROPERTY_URI);	//get the predicate predicate
 			final Resource predicate=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), predicatePredicate, prefixNamespaceURIMap);	//parse the predicate, giving a scope chain and predicate in case a scope is formed for the value
 			addAssertion(new Assertion(resource, predicatePredicate, predicate));	//assert the proposition predicate
-			skipSeparators(reader);	//skip separators
-			check(reader, LIST_DELIMITER);	//read the list delimiter
-			skipSeparators(reader);	//skip separators
+			checkSkipListSeparators(reader, PROPOSITION_END);	//skip list separators, making sure there is a list delimiter
 			final Resource objectPredicate=determineResourceProxy(OBJECT_PROPERTY_URI);	//get the object predicate
 			final Resource object=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), objectPredicate, prefixNamespaceURIMap);	//parse the object, giving a scope chain and predicate in case a scope is formed for the value
 			addAssertion(new Assertion(resource, objectPredicate, object));	//assert the proposition object
-			skipSeparators(reader);	//skip separators
+			skipFillers(reader);	//skip fillers
 			check(reader, PROPOSITION_END);	//read the ending proposition delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 		}
 		if(c==LIST_BEGIN)	//if a list is next
 		{
@@ -467,7 +569,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			check(reader, LIST_BEGIN);	//read the beginning list delimiter
 			parseListContents(reader, baseURI, resource, LIST_END, prefixNamespaceURIMap);	//parse the list elements
 			check(reader, LIST_END);	//read the ending list delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 		}
 		if(c==SET_BEGIN)	//if a set is next
 		{
@@ -479,7 +581,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				addAssertion(new Assertion(resource, typePropertyResource, setType));	//assert the set type
 			}
 			check(reader, SET_BEGIN);	//read the beginning set delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipFillers(reader);	//skip fillers and peek the next character
 			if(c!=SET_END)	//if this is not an empty set
 			{
 				final Resource elementPredicate=determineResourceProxy(ELEMENT_PROPERTY_URI);	//get the element property resource proxy
@@ -487,20 +589,19 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				{
 					final Resource element=parseResource(reader, baseURI, resource, new ArrayList<NameValuePair<Resource,Resource>>(), elementPredicate, prefixNamespaceURIMap);	//parse the set element, giving a scope chain and predicate in case a scope is formed for the value
 					addAssertion(new Assertion(resource, elementPredicate, element));	//assert the assertion that the element is an element of the set; there is no scope with a set short form
-					c=skipSeparators(reader);	//skip separators and peek the next character
-					if(c==LIST_DELIMITER)	//if this is a list delimiter
+					c=skipListSeparators(reader, SET_END);	//skip list separators and peek the next character
+					if(c==LIST_DELIMITER)	//if we passed a list separator
 					{
-						check(reader, LIST_DELIMITER);	//skip the list delimiter
-						c=skipSeparators(reader);	//skip separators and peek the next character
+						c=peek(reader);	//peek the next character
 					}
-					else	//if there's anything besides a list delimiter, we've reached the end of the set
+					else	//if there's anything besides a list delimiter, we've reached the end of the list
 					{
 						break;	//stop parsing the list
 					}
 				}
 			}
 			check(reader, SET_END);	//read the ending set delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 		}
 		if(c==MAP_BEGIN)	//if a map is next
 		{
@@ -512,7 +613,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				addAssertion(new Assertion(resource, typePropertyResource, mapType));	//assert the map type
 			}
 			check(reader, MAP_BEGIN);	//read the beginning map delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipFillers(reader);	//skip fillers and peek the next character
 			if(c!=MAP_END)	//if this is not an empty map
 			{
 				final Resource entryPredicate=determineResourceProxy(ENTRY_PROPERTY_URI);	//get the entry property resource proxy
@@ -529,25 +630,24 @@ public class URFTURFProcessor extends AbstractURFProcessor
 					check(reader, PROPERTY_VALUE_DELIMITER);	//read the property value delimiter
 					final Resource value=parseResource(reader, baseURI, mapEntryResource, new ArrayList<NameValuePair<Resource,Resource>>(), valuePredicate, prefixNamespaceURIMap);	//parse the value element, giving a scope chain and predicate in case a scope is formed for the value
 					addAssertion(new Assertion(mapEntryResource, valuePredicate, value));	//assert the value is a value of the map entry
-					c=skipSeparators(reader);	//skip separators and peek the next character
-					if(c==LIST_DELIMITER)	//if this is a list delimiter
+					c=skipListSeparators(reader, MAP_END);	//skip list separators and peek the next character
+					if(c==LIST_DELIMITER)	//if we passed a list separator
 					{
-						check(reader, LIST_DELIMITER);	//skip the list delimiter
-						c=skipSeparators(reader);	//skip separators and peek the next character
+						c=peek(reader);	//peek the next character
 					}
-					else	//if there's anything besides a list delimiter, we've reached the end of the map
+					else	//if there's anything besides a list delimiter, we've reached the end of the list
 					{
 						break;	//stop parsing the list
 					}
 				}
 			}
 			check(reader, MAP_END);	//read the ending map delimiter
-			c=skipSeparators(reader);	//skip separators and peek the next character
+			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 		}
 		if(!foundComponent)	//if there were no description components
 		{
 			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
-			throw new ParseIOException(reader, "Expected resource; found character: "+(char)c);
+			throw new ParseIOException(reader, "Expected resource; found character: "+Characters.getLabel(c));
 		}
 		return resource;	//return the resource proxy we created
 	}
@@ -569,7 +669,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	protected Resource parseListContents(final Reader reader, final URI baseURI, final Resource listResource, final char listEnd, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
 	{
 		long index=0;	//start out with an index of zero
-		int c=skipSeparators(reader);	//skip separators and peek the next character
+		int c=skipFillers(reader);	//skip fillers and peek the next character
 		if(c!=listEnd)	//if this is not an empty list
 		{
 			while(c>=0)	//while the end of the data has not been reached
@@ -578,11 +678,10 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				final Resource element=parseResource(reader, baseURI, listResource, new ArrayList<NameValuePair<Resource,Resource>>(), indexPredicate, prefixNamespaceURIMap);	//parse the list element, giving a scope chain and predicate in case a scope is formed for the value
 				addAssertion(new Assertion(listResource, indexPredicate, element));	//assert the assertion that the element is an index of the list; there is no scope with an list short form
 				++index;	//go to the next index
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				if(c==LIST_DELIMITER)	//if this is a list delimiter
+				c=skipListSeparators(reader, listEnd);	//skip list separators and peek the next character
+				if(c==LIST_DELIMITER)	//if we passed a list separator
 				{
-					check(reader, LIST_DELIMITER);	//skip the list delimiter
-					c=skipSeparators(reader);	//skip separators and peek the next character
+					c=peek(reader);	//peek the next character
 				}
 				else	//if there's anything besides a list delimiter, we've reached the end of the list
 				{
@@ -620,7 +719,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
 		final Resource integerClassResource=determineResourceProxy(INTEGER_CLASS_URI);	//get a proxy to the integer class resource
 		long order=0;	//start out with an order of zero
-		int c=skipSeparators(reader);	//skip separators and peek the next character
+		int c=skipFillers(reader);	//skip fillers and peek the next character
 		if(c!=sequenceEnd)	//if this is not an empty list
 		{
 			final List<Resource> resourceList=new ArrayList<Resource>();	//create a new list in which to place the resources
@@ -646,13 +745,12 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				addAssertion(new Assertion(newScopeBase, orderPredicate, orderObject, newScopeChain.toArray(new NameValuePair[newScopeChain.size()])));	//assert the scoped order assertion
 				addAssertion(new Assertion(orderObject, typePropertyResource, integerClassResource));	//assert that the order is an integer
 				++order;	//increaes the order for next time
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				if(c==LIST_DELIMITER)	//if this is a list delimiter
+				c=skipListSeparators(reader, sequenceEnd);	//skip list separators and peek the next character
+				if(c==LIST_DELIMITER)	//if we passed a list separator
 				{
-					check(reader, LIST_DELIMITER);	//skip the list delimiter
-					c=skipSeparators(reader);	//skip separators and peek the next character
+					c=peek(reader);	//peek the next character
 				}
-				else	//if there's anything besides a list delimiter, we've reached the end of the sequence
+				else	//if there's anything besides a list delimiter, we've reached the end of the list
 				{
 					break;	//stop parsing the list
 				}
@@ -676,7 +774,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	public List<Resource> parseResourceList(final Reader reader, final URI baseURI, final char listEnd, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException
 	{
-		int c=skipSeparators(reader);	//skip separators and peek the next character
+		int c=skipFillers(reader);	//skip fillers and peek the next character
 		if(c!=listEnd)	//if this is not an empty list
 		{
 			final List<Resource> resourceList=new ArrayList<Resource>();	//create a new list in which to place the resources
@@ -684,11 +782,10 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			{
 				final Resource resource=parseResource(reader, baseURI, null, prefixNamespaceURIMap);	//parse another resource
 				resourceList.add(resource);	//add the resource to the list of resources
-				c=skipSeparators(reader);	//skip separators and peek the next character
-				if(c==LIST_DELIMITER)	//if this is a list delimiter
+				c=skipListSeparators(reader, listEnd);	//skip list separators and peek the next character
+				if(c==LIST_DELIMITER)	//if we passed a list separator
 				{
-					check(reader, LIST_DELIMITER);	//skip the list delimiter
-					c=skipSeparators(reader);	//skip separators and peek the next character
+					c=peek(reader);	//peek the next character
 				}
 				else	//if there's anything besides a list delimiter, we've reached the end of the list
 				{
@@ -911,7 +1008,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		if(!isNameBeginCharacter(c))	//if the name doesn't start with a name character
 		{
 			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
-			throw new ParseIOException(reader, "Expected name begin character; found "+(char)c+".");
+			throw new ParseIOException(reader, "Expected name begin character; found "+Characters.getLabel(c)+".");
 		}
 		do
 		{
@@ -1298,17 +1395,17 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			if(c==TYPE_BEGIN)	//if the URI begins with a type declaration
 			{
 				check(reader, TYPE_BEGIN);	//read the type delimiter
-				skipSeparators(reader);	//skip separators
+				skipFillers(reader);	//skip fillers
 				final URI typeURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse the type resource
 				if(typeURI==null)	//if no type URI was provided
 				{
 					throw new DataException("Lexical URI provided no type URI.");
 				}
-				skipSeparators(reader);	//skip separators
+				skipFillers(reader);	//skip fillers
 				check(reader, SELECTOR_BEGIN);	//read the beginning selector delimiter
-				skipSeparators(reader);	//skip separators
+				skipFillers(reader);	//skip fillers
 				lexicalForm=parseString(reader, STRING_BEGIN,	STRING_END);	//parse the lexical form, which must appear next
-				skipSeparators(reader);	//skip separators
+				skipFillers(reader);	//skip fillers
 				check(reader, SELECTOR_END);	//read the ending selector delimiter
 				check(reader, uriEnd);	//read the ending URI delimiter
 				uri=createLexicalURI(typeURI, lexicalForm);	//create a lexical URI using the lexical form and the type URI

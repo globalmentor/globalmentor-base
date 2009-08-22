@@ -414,13 +414,13 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 				}
 				if(c>=Character.MIN_SURROGATE && c<=Character.MAX_SURROGATE)	//if this is a surrogate character
 				{
-					throw new IllegalArgumentException("Characters contain surrogate character: 0x"+Integer.toHexString(c)+".");
+					throw new IllegalArgumentException("Characters contain surrogate character: "+getLabel(c)+".");
 				}
 			}
 			minChar=characters[0];
 			if(minChar>=Character.MIN_SURROGATE && minChar<=Character.MAX_SURROGATE)	//check the first character, which we skipped
 			{
-				throw new IllegalArgumentException("Characters contain surrogate character: 0x"+Integer.toHexString(minChar)+".");
+				throw new IllegalArgumentException("Characters contain surrogate character: "+getLabel(minChar)+".");
 			}
 			maxChar=characters[lastIndex];
 			if(duplicates)	//if there are duplicates, remove them
@@ -575,11 +575,10 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	<p>This method does not treat surrogate characters specially.</p>
 	@return A string containing an array representation of these characters.
 	*/
-	public String toArrayString()
+	public String toLabelArrayString()
 	{
-		return appendArrayString(new StringBuilder(chars.length*8), chars).toString();	//most of the time, each character will just take up five to eight characters
+		return appendLabelArrayString(new StringBuilder(chars.length*8), chars).toString();	//most of the time, each character will just take up five to eight characters
 	}
-
 
 	/**A string builder containing these characters.
 	This implementation provides an initial capacity for 16 more characters.
@@ -714,6 +713,28 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 		return WORD_WRAP_CHARS.indexOf(c)>=0;	//return true if we can find the character in the string of word wrap characters
 	}
 
+	/**Returns a string representing the character as 'x', or if the character is a control character, the Unicode code point of this character, e.g. "U+1234".
+	<p>This method supports Unicode supplementary code points.</p>
+	@param c The code point a string representation of which to append.
+	@return The string label representing the character.
+	@see #appendLabel(StringBuilder, char)
+	*/
+	public static String getLabel(final int c) 
+	{
+		return appendLabel(new StringBuilder(), c).toString();
+	}
+
+	/**Returns a string representing an array of these characters, each character represented as 'x', or if the character is a control character, the Unicode code point of this character, e.g. "U+1234".
+	Example: "['a', 0x0020]"
+	<p>This method does not treat surrogate characters specially.</p>
+	@param characters The characters to return as a string of an array.
+	@return A string containing an array representation of these characters.
+	*/
+	public static String toLabelArrayString(final char[] characters)
+	{
+		return appendLabelArrayString(new StringBuilder(characters.length*8), characters).toString();	//most of the time, each character will just take up five to eight characters
+	}
+
 	/**Converts an array of characters to an array of bytes, using the UTF-8 charset.
 	@param characters The characters to convert to bytes.
 	@return An array of bytes representing the given characters in the UTF-8 charset.
@@ -775,13 +796,13 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	@return The string builder.
 	@throws NullPointerException if the given string builder is <code>null</code>.
 	*/
-	public static StringBuilder appendArrayString(final StringBuilder stringBuilder, final char[] characters)
+	public static StringBuilder appendLabelArrayString(final StringBuilder stringBuilder, final char[] characters)
 	{
 		stringBuilder.append('[');
 		final int last=characters.length-1;
 		for(int i=0; i<=last; ++i)
 		{
-			appendString(stringBuilder, characters[i]);	//append a string for the character
+			appendLabel(stringBuilder, characters[i]);	//append a string for the character
 			if(i!=last)	//if this is not the last character
 			{
 				stringBuilder.append(',').append(' ');	//add delimiters
@@ -798,7 +819,7 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	@throws NullPointerException if the given string builder is <code>null</code>.
 	@see #appendUnicodeString(StringBuilder, int)
 	*/
-	public static StringBuilder appendString(final StringBuilder stringBuilder, final char c) 
+	public static StringBuilder appendLabel(final StringBuilder stringBuilder, final int c) 
 	{
 		if(Character.isISOControl(c))	//if this is a control character
 		{
@@ -824,7 +845,7 @@ FFFB;INTERLINEAR ANNOTATION TERMINATOR;Cf;0;BN;;;;;N;;;;;
 	{
 		stringBuilder.append('U').append('+');	//U+
 		final int length=Character.isSupplementaryCodePoint(c)? 6 : 4;	//allow for supplementary Unicode code points
-		stringBuilder.append(toHexString(c, length));	//append the hex value of the character
+		stringBuilder.append(toHexString(c, length).toUpperCase());	//append the hex value of the character
 		return stringBuilder;
 	}
 

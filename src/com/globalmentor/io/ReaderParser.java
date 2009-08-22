@@ -40,7 +40,7 @@ public class ReaderParser
 		final int c=reader.read();	//get the current character
 		if(c>=0)	//if this character is valid (the reader is not out of data)
 		{
-			throw new ParseIOException(reader, "Expected end of data; found "+(char)c+".");
+			throw new ParseIOException(reader, "Expected end of data; found "+Characters.getLabel(c)+".");
 		}
 	}
 
@@ -71,7 +71,7 @@ public class ReaderParser
 		if(c!=character)	//if this character does not match what we expected
 		{
 			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
-			throw new ParseIOException(reader, "Expected "+(char)character+"; found "+(char)c+".");
+			throw new ParseIOException(reader, "Expected "+Characters.getLabel(character)+"; found "+Characters.getLabel(c)+".");
 		}
 		return (char)c;	//return the character read
 	}
@@ -91,7 +91,7 @@ public class ReaderParser
 		if(c<lowerBound || c>upperBound)	//if this character is not in the range
 		{
 			checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
-			throw new ParseIOException(reader, "Expected character from "+(char)lowerBound+" to "+(char)upperBound+"; found "+(char)c+".");
+			throw new ParseIOException(reader, "Expected character from "+Characters.getLabel(lowerBound)+" to "+Characters.getLabel(upperBound)+"; found "+Characters.getLabel(c)+".");
 		}
 		return (char)c;	//return the character read
 	}
@@ -110,7 +110,7 @@ public class ReaderParser
 		checkReaderNotEnd(reader, c);	//make sure we're not at the end of the reader
 		if(!characters.contains((char)c))	//if this character does not match one of the expected characters
 		{
-			throw new ParseIOException(reader, "Expected one of "+characters.toArrayString()+"; found "+(char)c+".");
+			throw new ParseIOException(reader, "Expected one of "+characters.toLabelArrayString()+"; found "+Characters.getLabel(c)+".");
 		}
 		return (char)c;	//return the character read
 	}
@@ -242,7 +242,7 @@ public class ReaderParser
 			final char c=characters[i];	//look at this character
 			if(c<lowerBound || c>upperBound)	//if this character is not in the range
 			{
-				throw new ParseIOException(reader, "Expected character from "+(char)lowerBound+" to "+(char)upperBound+"; found "+(char)c+".");
+				throw new ParseIOException(reader, "Expected character from "+Characters.getLabel(lowerBound)+" to "+Characters.getLabel(upperBound)+"; found "+Characters.getLabel(c)+".");
 			}
 		}
 		return new String(characters);	//return a new string from the characters read 
