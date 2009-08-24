@@ -20,18 +20,14 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import com.globalmentor.collections.ArrayListHashMap;
-import com.globalmentor.collections.CollectionMap;
+import com.globalmentor.collections.*;
 import com.globalmentor.io.*;
-
+import static com.globalmentor.io.Charsets.*;
 import com.globalmentor.java.Integers;
 import com.globalmentor.model.NameValuePair;
-
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
 import com.globalmentor.text.*;
-import static com.globalmentor.text.CharacterEncoding.*;
-import com.globalmentor.util.*;
 
 /**Various URI manipulating functions for working with URIs as defined in
 	<a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
@@ -178,8 +174,8 @@ public class URIs
 	@param uri The URI to check.
 	@param scheme The scheme to match for the URI.
 	@return The given URI.
-	@exception NullPointerException if the given URI and/or scheme is <code>null</code>.
-	@exception IllegalArgumentException if the scheme of the given URI does not match the given scheme.
+	@throws NullPointerException if the given URI and/or scheme is <code>null</code>.
+	@throws IllegalArgumentException if the scheme of the given URI does not match the given scheme.
 	*/
 	public final static URI checkScheme(final URI uri, final String scheme)
 	{
@@ -195,8 +191,8 @@ public class URIs
 	@param uri The URI to check.
 	@param infoNamespace The info namespace to match for the URI.
 	@return The given URI.
-	@exception NullPointerException if the given URI and/or info namespace is <code>null</code>.
-	@exception IllegalArgumentException if the scheme of the given URI is not {@value URIs#INFO_SCHEME} and/or the info namespace does not match the given info namespace.
+	@throws NullPointerException if the given URI and/or info namespace is <code>null</code>.
+	@throws IllegalArgumentException if the scheme of the given URI is not {@value URIs#INFO_SCHEME} and/or the info namespace does not match the given info namespace.
 	*/
 	public final static URI checkInfoNamespace(final URI uri,
 			final String infoNamespace)
@@ -213,8 +209,8 @@ public class URIs
 	/**Determines the info namespace of the given {@value URIs#INFO_SCHEME} scheme URI.
 	@param uri The URI from which the info namespace should be retrieved.
 	@return The info namespace of the given info URI.
-	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
 	*/
 	public final static String getInfoNamespace(final URI uri)
 	{
@@ -233,8 +229,8 @@ public class URIs
 	/**Determines the info indentifier of the given {@value URIs#INFO_SCHEME} scheme URI.
 	@param uri The URI from which the info identifier should be retrieved.
 	@return The decoded info identifier of the given info URI.
-	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
 	*/
 	public final static String getInfoIdentifier(final URI uri)
 	{
@@ -244,8 +240,8 @@ public class URIs
 	/**Determines the raw, encoded info indentifier of the given {@value URIs#INFO_SCHEME} scheme URI.
 	@param uri The URI from which the info identifier should be retrieved.
 	@return The raw, encoded info identifier of the given info URI.
-	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given URI is not a valid {@value URIs#INFO_SCHEME} scheme URI.
 	*/
 	public final static String getInfoRawIdentifier(final URI uri)
 	{
@@ -265,7 +261,7 @@ public class URIs
 	@param uri The URI to check.
 	@param infoNamespace The info namespace to match for the URI.
 	@return The <code>true</code> if the given URI has a scheme of {@value URIs#INFO_SCHEME} and has the indicated info namespace.
-	@exception NullPointerException if the given URI and/or info namespace is <code>null</code>.
+	@throws NullPointerException if the given URI and/or info namespace is <code>null</code>.
 	*/
 	public final static boolean isInfoNamespace(final URI uri,
 			final String infoNamespace)
@@ -281,8 +277,8 @@ public class URIs
 	This method is needed because the {@link URI#getRawPath()} method does not recognize relative paths for the {@value #PATH_SCHEME} scheme.
 	@param uri The path URI from which the path should be retrieved.
 	@return The raw, encoded path of the given path URI.
-	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the given URI is not a valid {@value #PATH_SCHEME} scheme URI.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given URI is not a valid {@value #PATH_SCHEME} scheme URI.
 	*/
 	public final static String getPathRawPath(final URI uri)
 	{
@@ -302,8 +298,8 @@ public class URIs
 	/**Returns the path of the given {@value #PATH_SCHEME} scheme URI as a {@link URIPath}.
 	@param uri The path URI from which the path should be retrieved.
 	@return A URI path object representing the path of the given path URI.
-	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the given URI is not a valid {@value #PATH_SCHEME} scheme URI.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given URI is not a valid {@value #PATH_SCHEME} scheme URI.
 	*/
 	public final static URIPath getPathURIPath(final URI uri)
 	{
@@ -314,8 +310,8 @@ public class URIs
 	@param uri The URI to change.
 	@param newRawPath The raw, escaped path, or <code>null</code> if there should be no path.
 	@return A new URI with the new raw path information.
-	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the given path results in an invalid URI.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given path results in an invalid URI.
 	*/
 	public static URI changeRawPath(final URI uri, final String newRawPath)
 	{
@@ -341,8 +337,8 @@ public class URIs
 	@param uri The URI to change.
 	@param newRawSSP The raw, escaped scheme-specific part, or <code>null</code> if there should be no scheme-specific part.
 	@return A new URI with the new raw scheme-specific part information.
-	@exception NullPointerException if the given URI and/or scheme-specific part is <code>null</code>.
-	@exception IllegalArgumentException if the given scheme-specific part results in an invalid URI.
+	@throws NullPointerException if the given URI and/or scheme-specific part is <code>null</code>.
+	@throws IllegalArgumentException if the given scheme-specific part results in an invalid URI.
 	*/
 	public static URI changeRawSchemeSpecificPart(final URI uri,
 			final String newRawSSP)
@@ -378,7 +374,7 @@ public class URIs
 	As examples, "/path/name.ext" and "name.ext" will return "name.ext". "/path/", "path/", and "path" will all return "path".
 	@param path The path, which should be encoded if {@value URIs#PATH_SEPARATOR} characters are present within a path component.
 	@return The name of the last last path component, the empty string if the path is the empty string, or "/" if the path is the root path.
-	@exception NullPointerException if the given path is <code>null</code>.
+	@throws NullPointerException if the given path is <code>null</code>.
 	*/
 	public static String getName(final String path)
 	{
@@ -406,13 +402,11 @@ public class URIs
 	This method correctly handles {@value URIs#INFO_SCHEME} URIs.
 	@param URI The URI the path of which will be examined.
 	@return The name of the last last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code> if the URI has no path.
-	@exception NullPointerException if the given URI is <code>null</code>.
+	@throws NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static String getRawName(final URI uri) //TODO important: update all references to check for null
 	{
-		final String rawPath=uri.isOpaque()
-				&&URIs.INFO_SCHEME.equals(uri.getScheme()) ? uri
-				.getRawSchemeSpecificPart() : uri.getRawPath(); //get the raw path, using the scheme-specific part of any info URI
+		final String rawPath=uri.isOpaque() && URIs.INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath(); //get the raw path, using the scheme-specific part of any info URI
 		return rawPath!=null ? getName(rawPath) : null; //if we have a raw path, return the name
 	}
 
@@ -424,7 +418,7 @@ public class URIs
 	This method correctly handles {@value URIs#INFO_SCHEME} URIs.
 	@param URI The URI the path of which will be examined.
 	@return The name of the last path component, the empty string if the path is the empty string, "/" if the path is the root path, or <code>null</code> if the URI has no path.
-	@exception NullPointerException if the given URI is <code>null</code>.
+	@throws NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static String getName(final URI uri) //TODO important: update all references to check for null
 	{
@@ -439,7 +433,7 @@ public class URIs
 	@param path The path, which should be encoded if {@value URIs#PATH_SEPARATOR} characters are present.
 	@param name The new name of the path.
 	@return A new path with the name changed to the given name.
-	@exception NullPointerException if the given path and/or name is <code>null</code>.
+	@throws NullPointerException if the given path and/or name is <code>null</code>.
 	@see #getName(String)
 	*/
 	public static String changeName(final String path, final String name)
@@ -461,8 +455,7 @@ public class URIs
 		{
 			pathStringBuilder.replace(beginIndex, endIndex, name); //replace the found name with the new name
 		}
-		else
-		//if there are no characters to collect, this must be the root path ("/")
+		else	//if there are no characters to collect, this must be the root path ("/")
 		{
 			assert URIs.ROOT_PATH.equals(path) : "Path unexpectedly not the root path.";
 			pathStringBuilder.append(name).append(URIs.PATH_SEPARATOR); //append "name/" to the root path to yield "/name/"
@@ -478,8 +471,8 @@ public class URIs
 	@param uri The URI the raw name of which to change.
 	@param rawName The new raw name of the URI.
 	@return A new URI with the raw name changed to the given raw name.
-	@exception NullPointerException if the given URI and/or name is <code>null</code>.
-	@exception IllegalArgumentException if the given URI has no path.
+	@throws NullPointerException if the given URI and/or name is <code>null</code>.
+	@throws IllegalArgumentException if the given URI has no path.
 	@see #getRawName(URI)
 	*/
 	public static URI changeRawName(final URI uri, final String rawName)
@@ -490,11 +483,9 @@ public class URIs
 			final String newRawSSP=changeName(rawSSP, rawName); //change the name to the given name
 			return changeRawSchemeSpecificPart(uri, newRawSSP); //change the URI's scheme-specific part to the new scheme-specific part			
 		}
-		else
-		//if this is not an info URI
+		else	//if this is not an info URI
 		{
-			final String rawPath=checkInstance(uri, "URI cannot be null")
-					.getRawPath(); //get the raw path
+			final String rawPath=checkInstance(uri, "URI cannot be null").getRawPath(); //get the raw path
 			if(rawPath==null) //if the URI has no path
 			{
 				throw new IllegalArgumentException("URI "+uri+" has no path.");
@@ -512,8 +503,8 @@ public class URIs
 	@param uri The URI the name of which to change.
 	@param name The new unencoded name of the URI, which will be encoded.
 	@return A new URI with the name changed to the given name.
-	@exception NullPointerException if the given URI and/or name is <code>null</code>.
-	@exception IllegalArgumentException if the given URI has no path.
+	@throws NullPointerException if the given URI and/or name is <code>null</code>.
+	@throws IllegalArgumentException if the given URI has no path.
 	@see URIPath#encodeSegment(String)
 	@see #getName(URI)
 	*/
@@ -527,12 +518,29 @@ public class URIs
 	@param name The name to which to add an extension.
 	@param extension The extension to add.
 	@return The name with the new extension.
-	@exception NullPointerException if the given extension is <code>null</code>.
+	@throws NullPointerException if the given extension is <code>null</code>.
 	*/
-	public static String addNameExtension(final String name,
-			final String extension)
+	public static String addNameExtension(final String name, final String extension)
 	{
 		return new StringBuilder(name).append(NAME_EXTENSION_SEPARATOR).append(checkInstance(extension, "Extension cannot be null")).toString(); //add the requested extension and return the new filename
+	}
+
+	/**Adds the given extension to a URI name and returns the new URI with the new extension.
+	The URI name is not checked to see if it currently has an extension.
+	@param uri The URI the name of which an extension should be added.
+	@param extension The raw, encoded extension to add.
+	@return The URI with the new extension.
+	@throws NullPointerException if the given extension is <code>null</code>.
+	@throws IllegalArgumentException if the given URI has no path.
+	*/
+	public static URI addRawNameExtension(final URI uri, final String extension)
+	{
+		final String rawName=getRawName(uri);	//get the URI raw name
+		if(rawName==null)	//if there is no raw name
+		{
+			throw new IllegalArgumentException("Cannot add name extension to URI "+uri+", which has no path.");
+		}
+		return changeRawName(uri, addNameExtension(rawName, extension));
 	}
 
 	/**Extracts the extension from a URI's name.
@@ -559,6 +567,49 @@ public class URIs
 		return rawName!=null ? getNameExtension(rawName) : null;	//if there is a raw name, return its extension, if any
 	}
 
+	/**Changes the extension of a URI name and returns a new URI with the new name extension.
+	If the URI name does not currently have an extension, one will be added.
+	@param uri The URI to examine.
+	@param extension The raw extension to set, or <code>null</code> if the extension should be removed.
+	@return The name with the new extension.
+	@throws IllegalArgumentException if the given URI has no path and a non-<code>null</code> extension was given.
+	*/
+	public static URI changeRawNameExtension(final URI uri, final String extension)
+	{
+		String rawName=getRawName(uri);	//get the URI raw name
+		if(rawName==null)	//if there is no raw name
+		{
+			if(extension==null)	//if they didn't want an extension, anyway
+			{
+				return uri;	//just return the URI, which has no extension
+			}
+			throw new IllegalArgumentException("Cannot change the name extension of URI "+uri+", which has no path.");
+		}
+		rawName=changeNameExtension(rawName, extension);	//change the extension of the name
+		return changeRawName(uri, rawName);	//change the raw name of the URI
+	}
+
+	/**Adds the extension, if any, to a name and returns the new URI.
+	This is a convenience method that delegates to {@link #addRawNameExtension(URI, String)} if a non-<code>null</code> extension is given.
+	@param uri The URI to examine.
+	@param extension The raw, encoded extension to add, or <code>null</code> if no extension should be added.
+	@return The name with the new extension, if any.
+	*/
+	public static URI setRawNameExtension(final URI uri, final String extension)
+	{
+		return extension!=null ? addRawNameExtension(uri, extension) : uri; //if an extension was given, add it; otherwise, return the URI unmodified
+	}
+
+	/**Removes the extension, if any, of a URI name and returns a new URI with no extension.
+	This is a convenience method that delegates to {@link #changeRawNameExtension(URI, String)}.
+	@param URI The URI to examine.
+	@return The URI with no extension.
+	*/
+	public static URI removeRawNameExtension(final URI uri)
+	{
+		return changeRawNameExtension(uri, null); //replace the extension with nothing
+	}
+	
 	/**Extracts the extension from a name.
 	@param name The URI name to examine.
 	@return The extension of the name (not including '.'), or <code>null</code> if no extension is present.
@@ -589,14 +640,13 @@ public class URIs
 		return name; //return the new filename
 	}
 
-	/**Adds the extension, if any, of a name and returns the new name.
+	/**Adds the extension, if any, to a name and returns the new name.
 	This is a convenience method that delegates to {@link #addNameExtension(String, String)} if a non-<code>null</code> extension is given.
 	@param name The name to examine.
 	@param extension The extension to add, or <code>null</code> if no extension should be added.
 	@return The name with the new extension, if any.
 	*/
-	public static String setNameExtension(final String name,
-			final String extension)
+	public static String setNameExtension(final String name, final String extension)
 	{
 		return extension!=null ? addNameExtension(name, extension) : name; //if an extension was given, add it; otherwise, return the name unmodified
 	}
@@ -617,8 +667,7 @@ public class URIs
 	*/
 	public static URI getPlainURI(final URI uri)
 	{
-		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri
-				.getPort(), uri.getRawPath(), null, null); //construct an identical URI except with no query or fragment
+		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), uri.getRawPath(), null, null); //construct an identical URI except with no query or fragment
 	}
 
 	/**Constructs an absolute path from the given elements in the form:
@@ -629,7 +678,7 @@ public class URIs
 	@param pathElements <code>true</code> if the path represents a collection
 		and therefore should end with '/'. 
 	@return A path constructed according to the given rules.
-	@exception IllegalArgumentException if there are no path elements and an
+	@throws IllegalArgumentException if there are no path elements and an
 		absolute non-collection or non-absolute collection is requested.
 	*/
 	public static String constructPath(final boolean absolute,
@@ -700,7 +749,7 @@ public class URIs
 	@param uri The existing URI.
 	@param rawQuery The encoded query information, without a beginning query separator.
 	@return A URI representing the URI with the appended query parameters.
-	@exception NullPointerException if the given URI and/or query is <code>null</code>.
+	@throws NullPointerException if the given URI and/or query is <code>null</code>.
 	*/
 	public static URI appendRawQuery(final URI uri, final String rawQuery)
 	{
@@ -716,7 +765,7 @@ public class URIs
 	@param uri The existing URI.
 	@param params The name-value pairs representing the query parameters.
 	@return A URI representing the URI with the appended query parameters.
-	@exception NullPointerException if the given URI and/or params is <code>null</code>.
+	@throws NullPointerException if the given URI and/or params is <code>null</code>.
 	*/
 	public static URI appendQueryParameters(final URI uri,
 			final NameValuePair<String, String>... params)
@@ -988,8 +1037,8 @@ public class URIs
 
 	/**Creates a URI from the given path, verifying that the string contains only a path.
 	@param path The string version of a path to convert to a URI form of that same path.
-	@exception NullPointerException if the given path is <code>null</code>.
-	@exception IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
+	@throws NullPointerException if the given path is <code>null</code>.
+	@throws IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
 	@see #isPathURI(URI)
 	*/
 	public static URI createPathURI(final String path)
@@ -1006,8 +1055,8 @@ public class URIs
 	If the given URI is not absolute, an exception is thrown.
 	@param uri The URI to check to see if it is absolute.
 	@return The given absolute URI.
-	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the given URI is not absolute.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given URI is not absolute.
 	@see URI#isAbsolute()
 	*/
 	public static URI checkAbsolute(final URI uri) throws IllegalArgumentException
@@ -1023,8 +1072,8 @@ public class URIs
 	If the given string is not a path, an exception is thrown.
 	@param path The string version of a path to determine if it is indeed only a path.
 	@return The given path.
-	@exception NullPointerException if the given path is <code>null</code>.
-	@exception IllegalArgumentException if the given string is not a path.
+	@throws NullPointerException if the given path is <code>null</code>.
+	@throws IllegalArgumentException if the given string is not a path.
 	@see #isPath(String)
 	*/
 	public static String checkPath(final String path) throws IllegalArgumentException
@@ -1040,8 +1089,8 @@ public class URIs
 	If the given string is not a relative path, an exception is thrown.
 	@param path The string version of a path to determine if it is indeed only a relative path.
 	@return The given relative path.
-	@exception NullPointerException if the given path is <code>null</code>.
-	@exception IllegalArgumentException if the given string is not a path or the path is not relative.
+	@throws NullPointerException if the given path is <code>null</code>.
+	@throws IllegalArgumentException if the given string is not a path or the path is not relative.
 	@see #isPath(String)
 	*/
 	public static String checkRelativePath(final String path) throws IllegalArgumentException
@@ -1056,7 +1105,7 @@ public class URIs
 	/**Determines if a given path is only a path and not a URI with a scheme and/or authority.
 	@param path The string version of a path to determine if it.
 	@return <code>true</code> if the path is a path and does not specifiy a scheme (i.e. the URI is not absolute) or authority.
-	@exception NullPointerException if the given path is <code>null</code>.
+	@throws NullPointerException if the given path is <code>null</code>.
 	@see #isPathURI(URI)
 	*/
 	public static boolean isPath(final String path)
@@ -1067,7 +1116,7 @@ public class URIs
 
 	/**Determines if a given URI contains only a path and does not have a scheme, authority, query, and/or fragment.
 	@param uri The URI to check to for path status.
-	@exception NullPointerException if the given URI is <code>null</code>.
+	@throws NullPointerException if the given URI is <code>null</code>.
 	@return <code>true</code> if the URI has a path and does not specifiy a scheme (i.e. the URI is not absolute), authority, query, or fragment.
 	*/
 	public static boolean isPathURI(final URI uri)
@@ -1081,9 +1130,9 @@ public class URIs
 	If the given URI is not a path, an exception is thrown.
 	@param uri The URI to check to for path status.
 	@return The given path URI.
-	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
-	@exception IllegalArgumentException if the given URI is not a path.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
+	@throws IllegalArgumentException if the given URI is not a path.
 	@see #isPath(String)
 	*/
 	public static URI checkPathURI(final URI uri)
@@ -1097,7 +1146,7 @@ public class URIs
 
 	/**Determines if a given URI is plain, i.e. it does not contain a query or a fragment.
 	@param uri The URI to check to for plainness.
-	@exception NullPointerException if the given URI is <code>null</code>.
+	@throws NullPointerException if the given URI is <code>null</code>.
 	@return <code>true</code> if the URI has no query or fragment.
 	*/
 	public static boolean isPlainURI(final URI uri)
@@ -1110,8 +1159,8 @@ public class URIs
 	If the given URI is not a plain URI, an exception is thrown.
 	@param uri The URI to check to for plainness.
 	@return The given plain URI.
-	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the provided URI specifies a query and/or fragment.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the provided URI specifies a query and/or fragment.
 	@see #isPlainURI(URI)
 	*/
 	public static URI checkPlainURI(final URI uri)
@@ -1148,7 +1197,7 @@ public class URIs
 	@return A URI representing the parent collection of a hierarchical
 		URI; if the URI ends in '/', equivalent to resolving the path ".." to the URI;
 		if the URI does not end in '/', equivalent to resolving the path "." to the URI.	
-	@exception IllegalArgumentException if the URI does not have a path component.
+	@throws IllegalArgumentException if the URI does not have a path component.
 	@see #isCollectionURI(URI)
 	@see #getParentLevel(URI)
 	@see #getCurrentLevel(URI)
@@ -1183,8 +1232,8 @@ public class URIs
 	/**Normalizes the given path by resolving the '.' and '..' path segments.
 	@param path The path to normalize.
 	@return The normalized form of the given path.
-	@exception NullPointerException if the given path is <code>null</code>.
-	@exception IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
+	@throws NullPointerException if the given path is <code>null</code>.
+	@throws IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
 	@see URI#normalize()
 	*/
 	public static String normalizePath(final String path)
@@ -1197,8 +1246,8 @@ public class URIs
 	@param basePath The path against which the full path should be relativized.
 	@param fullPath The full path to be relativized.
 	@return A form of the full path relative to the base path.
-	@exception NullPointerException if one of the given paths is <code>null</code>.
-	@exception IllegalArgumentException if one of the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
+	@throws NullPointerException if one of the given paths is <code>null</code>.
+	@throws IllegalArgumentException if one of the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
 	*/
 	public static String relativizePath(final String basePath, final String fullPath)
 	{
@@ -1232,7 +1281,7 @@ public class URIs
 	This method is provided for backwards-compatibility using for example Retroweaver. 
 	@param url The URL to convert to a URI. The URL should already be properly encoded.
 	@return The URI form of the URL.
-	@exception URISyntaxException Thrown if the URL could not be converted to a URI.
+	@throws URISyntaxException Thrown if the URL could not be converted to a URI.
 	*/
 	/*TODO del
 		public static URI createURI(final URL url) throws URISyntaxException
@@ -1259,8 +1308,8 @@ public class URIs
 	@param rawIdentifier The raw, encoded info identifier.
 	@return An info URI based upon the given parameters.
 	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
-	@exception NullPointerException if the given namespace and/or identifier is <code>null</code>.
-	@exception IllegalArgumentException if the given namespace, and/or identifier result in an invalid URI.
+	@throws NullPointerException if the given namespace and/or identifier is <code>null</code>.
+	@throws IllegalArgumentException if the given namespace, and/or identifier result in an invalid URI.
 	*/
 	public static URI createInfoURI(final String namespace,
 			final String rawIdentifier)
@@ -1274,8 +1323,8 @@ public class URIs
 	@param rawFragment The raw, encoded fragment, or <code>null</code> if there should be no fragment
 	@return An info URI based upon the given parameters.
 	@see <a href="http://www.ietf.org/rfc/rfc4452.txt">RFC 4452</a>
-	@exception NullPointerException if the given namespace and/or identifier is <code>null</code>.
-	@exception IllegalArgumentException if the given namespace, identifier, and/or fragment result in an invalid URI.
+	@throws NullPointerException if the given namespace and/or identifier is <code>null</code>.
+	@throws IllegalArgumentException if the given namespace, identifier, and/or fragment result in an invalid URI.
 	*/
 	public static URI createInfoURI(final String namespace,
 			final String rawIdentifier, final String rawFragment)
@@ -1298,7 +1347,7 @@ public class URIs
 	@param domain The mail domain.
 	@return A <code>mailto</code> URI based upon the given parameters.
 	@see <a href="http://www.ietf.org/rfc/rfc2368.txt">RFC 2368</a>
-	@exception NullPointerException if the given username and/or domain is <code>null</code>.
+	@throws NullPointerException if the given username and/or domain is <code>null</code>.
 	*/
 	public static URI createMailtoURI(final String username, final String domain)
 	{
@@ -1312,7 +1361,7 @@ public class URIs
 	@param string The string version of a URI, either relative or absolute, or a URI
 		fragment beginning with "#".
 	@return A URI constructed from the URI string and context object.
-	@exception URISyntaxException Thrown if the context object and string cannot be used to create a valid URI.
+	@throws URISyntaxException Thrown if the context object and string cannot be used to create a valid URI.
 	@see File
 	@see URI
 	@see URL
@@ -1512,7 +1561,7 @@ public class URIs
 	/**Loads the contents of a URL into an array of bytes.
 	@param url The URL from which to read.
 	@return An array of bytes from the URL.
-	@exception IOException Thrown if there is an error loading the bytes.
+	@throws IOException Thrown if there is an error loading the bytes.
 	@see InputStreamUtilities#getBytes
 	*/
 	/*G***fix
@@ -1534,7 +1583,7 @@ public class URIs
 	@param url The URL from which to read.
 	@param encoding The encoding (such as UTF-8) used to store the string.
 	@return A string containing the contents of the URL.
-	@exception IOException Thrown if there is an error loading the bytes.
+	@throws IOException Thrown if there is an error loading the bytes.
 	*/
 	/*G***fix
 		public static String readString(final URL url, final String encoding) throws IOException
@@ -1547,7 +1596,7 @@ public class URIs
 	/**Determines the relative path of the given absolute path by removing the root path '/' character from the beginning of the path.
 	@param absolutePath The absolute path to convert to a relative path.
 	@return A relative path from the root of the absolute path.
-	@exception IllegalArgumentException if the given path is not absolute.
+	@throws IllegalArgumentException if the given path is not absolute.
 	*/
 	public static String getRelativePath(final String absolutePath)
 	{
@@ -1574,8 +1623,8 @@ public class URIs
 	If the given URI is not a collection URI, an exception is thrown.
 	@param uri The URI to check to for a collection.
 	@return The given collection URI.
-	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the provided URI does not have a path that ends with a slash ('/').
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the provided URI does not have a path that ends with a slash ('/').
 	@see #isCollectionURI(URI)
 	*/
 	public static URI checkCollectionURI(final URI uri)
@@ -1591,8 +1640,8 @@ public class URIs
 	If the given URI is not a collection URI, an exception is thrown.
 	@param uri The URI to check to for a collection.
 	@return The given non-collection URI.
-	@exception NullPointerException if the given URI is <code>null</code>.
-	@exception IllegalArgumentException if the provided URI has path that ends with a slash ('/').
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the provided URI has path that ends with a slash ('/').
 	@see #isCollectionURI(URI)
 	*/
 	public static URI checkNotCollectionURI(final URI uri)
@@ -1608,7 +1657,7 @@ public class URIs
 	/**Determines whether the given path is a canonical collection path.
 	@param rawPath The raw path to examine.
 	@return <code>true</code> if the path ends with a slash ('/').
-	@exception NullPointerException if the given path is <code>null</code>.
+	@throws NullPointerException if the given path is <code>null</code>.
 	*/
 	public static boolean isCollectionPath(final String rawPath)
 	{
@@ -1628,7 +1677,7 @@ public class URIs
 	/**Determines whether the given path is absolute.
 	@param path The path to examine.
 	@return <code>true</code> if the path begins with a slash ('/').
-	@exception NullPointerException if the path is <code>null</code>.
+	@throws NullPointerException if the path is <code>null</code>.
 	*/
 	public static boolean isAbsolutePath(final String path)
 	{
@@ -1671,7 +1720,7 @@ public class URIs
 	@param baseURI The URI against which the child URI should be resolved.
 	@param childURI The URI to resolve against the base URI.
 	@return The child URI resolved against the base URI.
-	@exception NullPointerException if the base URI and/or the child URI is <code>null</code>.
+	@throws NullPointerException if the base URI and/or the child URI is <code>null</code>.
 	@see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	*/
 	public static URI resolve(final URI baseURI, final URI childURI)
@@ -1699,7 +1748,7 @@ public class URIs
 	@param baseURI The base URI against which the path should be resolved.
 	@param path The path to resolve against the base URI.
 	@return A URI that represents the path resolved against the base URI.
-	@exception NullPointerException if the given base URI and/or path is <code>null</code>.
+	@throws NullPointerException if the given base URI and/or path is <code>null</code>.
 	*/
 	public static URI resolve(final URI baseURI, final URIPath path)
 	{
@@ -1712,7 +1761,7 @@ public class URIs
 	<p>If no URI is provided, a URI is created from the fragment itself.</p>
 	@param uri The URI to which to add a fragement identifier, or <code>null</code> if a URI chould be created from just the fragment.
 	@param fragment The raw, encoded fragment to add to the end of the URI.
-	@exception IllegalArgumentException if the a URI cannot be constructed from the given information.
+	@throws IllegalArgumentException if the a URI cannot be constructed from the given information.
 	@see URI#create(String)
 	*/
 	public static URI resolveFragment(final URI uri, final String fragment)
@@ -1727,7 +1776,7 @@ public class URIs
 	/**Returns a URI with its fragment, if any, removed.
 	@param uri The URI from which a fragment should be removed.
 	@return The URI with the fragment, if any, removed.
-	@exception NullPointerException if the given URI is <code>null</code>.
+	@throws NullPointerException if the given URI is <code>null</code>.
 	@see #replaceRawFragment(URI, String)
 	*/
 	public static URI removeFragment(final URI uri)
@@ -1739,7 +1788,7 @@ public class URIs
 	@param uri The URI from which a fragment should be removed.
 	@param newRawFragment The new encoded fragment, or <code>null</code> if the URI should have no fragment.
 	@return The URI with the fragment, if any, removed and replaced with the given raw fragment, if any.
-	@exception NullPointerException if the given URI is <code>null</code>.
+	@throws NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static URI replaceRawFragment(final URI uri,
 			final String newRawFragment)
@@ -1785,7 +1834,7 @@ public class URIs
 	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
 	@param scheme The name of the URI scheme.
 	@param rawSchemeSpecificPart The raw, encoded scheme-specific part, or <code>null</code> if there is no scheme-specific part.
-	@exception IllegalArgumentException if the a URI cannot be constructed from the given strings.
+	@throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	*/
 	public static URI createURI(final String scheme,
 			final String rawSchemeSpecificPart) throws IllegalArgumentException
@@ -1798,7 +1847,7 @@ public class URIs
 	@param scheme The name of the URI scheme.
 	@param rawSchemeSpecificPart The raw, encoded scheme-specific part, or <code>null</code> if there is no scheme-specific part.
 	@param rawFragment The raw, encoded fragment at the end of the URI, or <code>null</code> if there is no fragment.
-	@exception IllegalArgumentException if the a URI cannot be constructed from the given strings.
+	@throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	*/
 	public static URI createURI(final String scheme,
 			final String rawSchemeSpecificPart, final String rawFragment)
@@ -1829,7 +1878,7 @@ public class URIs
 	@param rawPath The raw, encoded path, or <code>null</code> if there is no path.
 	@param rawQuery The raw, encoded URI query, or <code>null</code> if there is no query.
 	@param rawFragment The raw, encoded fragment at the end of the URI, or <code>null</code> if there is no fragment.
-	@exception IllegalArgumentException if the a URI cannot be constructed from the given strings.
+	@throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	*/
 	public static URI createURI(final String scheme, final String rawUserInfo,
 			final String host, final int port, final String rawPath,
@@ -1925,24 +1974,15 @@ public class URIs
 					||(invalidCharacters!=null&&invalidCharacters.indexOf(c)>=0); //encode if there is a list of invalid characters and this character is one of them
 			if(encode) //if we should encode this character
 			{
-				try
+				final byte[] bytes=String.valueOf(c).getBytes(UTF_8_CHARSET); //convert this character to a sequence of UTF-8 bytes
+				final int byteCount=bytes.length; //find out how many bytes there are
+				final StringBuilder encodeStringBuilder=new StringBuilder(byteCount*3); //create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
+				for(int byteIndex=0; byteIndex<byteCount; ++byteIndex) //look at each byte
 				{
-					final byte[] bytes=String.valueOf(c).getBytes(UTF_8); //convert this character to a sequence of UTF-8 bytes
-					final int byteCount=bytes.length; //find out how many bytes there are
-					final StringBuilder encodeStringBuilder=new StringBuilder(byteCount*3); //create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
-					for(int byteIndex=0; byteIndex<byteCount; ++byteIndex) //look at each byte
-					{
-						encodeStringBuilder.append(URIs.ESCAPE_CHAR); //&
-						encodeStringBuilder.append(Integers
-								.toHexString(bytes[byteIndex], 2).toUpperCase()); //HH
-					}
-					stringBuilder.replace(characterIndex, characterIndex+1,
-							encodeStringBuilder.toString()); //replace the character with its encoding
+					encodeStringBuilder.append(URIs.ESCAPE_CHAR); //&
+					encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], 2).toUpperCase()); //HH
 				}
-				catch(final UnsupportedEncodingException unsupportedEncodingException) //the JVM should always know how to convert a string to UTF-8
-				{
-					throw new AssertionError(unsupportedEncodingException);
-				}
+				stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString()); //replace the character with its encoding
 			}
 		}
 		return stringBuilder.toString(); //return the encoded version of the string
@@ -2018,8 +2058,8 @@ public class URIs
 		using the URI escape character, {@value URIs#ESCAPE_CHAR}.
 	@param uri The data to URI-decode.
 	@return A string containing the encoded URI data.
-	@exception IllegalArgumentException if the given URI string contains a character greater than U+00FF.
-	@exception IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
+	@throws IllegalArgumentException if the given URI string contains a character greater than U+00FF.
+	@throws IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
 	@see URIs#ESCAPE_CHAR
 	*/
 	public static String uriDecode(final String uri)
@@ -2034,8 +2074,8 @@ public class URIs
 	@param uri The data to URI-decode.
 	@parm escapeChar The escape character.
 	@return A string containing the encoded URI data.
-	@exception IllegalArgumentException if the given URI string contains a character greater than U+00FF.
-	@exception IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
+	@throws IllegalArgumentException if the given URI string contains a character greater than U+00FF.
+	@throws IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
 	*/
 	public static String uriDecode(final String uri, final char escapeChar)
 	{
@@ -2100,7 +2140,7 @@ public class URIs
 		resolving the resulting URI agains the new base URI.
 	@see URI#relativize(URI)
 	@see URI#resolve(URI)
-	@exception IllegalArgumentException Thrown if <var>oldBaseURI</code> is not
+	@throws IllegalArgumentException Thrown if <var>oldBaseURI</code> is not
 		a base URI of <var>uri</var>.
 	*/
 	public static URI changeBase(final URI uri, final URI oldBaseURI, final URI newBaseURI)
@@ -2156,7 +2196,7 @@ public class URIs
 	@param baseURI The assumed base URI.
 	@param uri The URI which may be relative to the given base URI.
 	@return <code>true</code> if the given URI can be made relative to the given base URI resulting in a non-absolute form.
-	@exception NullPointerException if the given base URI and/or URI is <code>null</code>.
+	@throws NullPointerException if the given base URI and/or URI is <code>null</code>.
 	*/
 	public static boolean isChild(final URI baseURI, final URI uri)
 	{
@@ -2238,7 +2278,7 @@ public class URIs
 	/**Compresses a URI into a shorter string representation.
 	@param string The alphanumeric string.
 	@return An uncompressed URI from the alphanumeric string.
-	@exception SyntaxException Thrown if the given string is not correctly encoded. 
+	@throws SyntaxException Thrown if the given string is not correctly encoded. 
 	*/
 	public static URI safeDecode(final String string) throws SyntaxException
 	{
