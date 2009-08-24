@@ -550,6 +550,7 @@ public class URFTURFGenerator
 					{
 						writer.write(PROPERTIES_BEGIN);	//start the properties
 						indent();	//indent the properties
+						writeNewLine(writer);
 						startedProperties=true;	//show that we've started the properties
 					}
 					final String prefix=namespaceLabelManager.determineNamespaceLabel(namespaceURI);	//get a namespace label for the URI
