@@ -1433,7 +1433,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 			try
 			{
 				final long removedPropertyCount=super.removeNamespacePropertyValues(namespaceURI);	//remove the namespaced properties normally, saving the number of properties removed
-				if(removedPropertyCount>0 && URF_NAMESPACE_URI.equals(namespaceURI))	//if all the URF properties were removed, the scoped order might have changed
+				if(removedPropertyCount>0 && NAMESPACE_URI.equals(namespaceURI))	//if all the URF properties were removed, the scoped order might have changed
 				{
 					resortOrder();	//resort the values of the parent scope
 				}

@@ -34,7 +34,7 @@ This data model keeps track of all resources that are being created as a linked 
 and are thought of as a separate universe of descriptions.
 This implementation by default registers the following namespace factories for the following namespaces:
 <dl>
-	<dt>{@value #URF_NAMESPACE_URI}</dt> <dd>{@link #DEFAULT_URF_RESOURCE_FACTORY}</dd>
+	<dt>{@value URF#NAMESPACE_URI}</dt> <dd>{@link #DEFAULT_URF_RESOURCE_FACTORY}</dd>
 	<dt>{@value Content#CONTENT_NAMESPACE_URI}</dt> <dd>{@link Content#DEFAULT_CONTENT_RESOURCE_FACTORY}</dd>
 	<dt>{@value Select#SELECT_NAMESPACE_URI}</dt> <dd>{@link JavaURFResourceFactory} for {@link Select#getClass()}</dd>
 </dl>
@@ -50,94 +50,96 @@ public class URF
 {
 
 	/**The name of URF.*/
-	public final static String URF_NAME="URF";
+	public final static String NAME="URF";
 	
 	/**The URI to the URF namespace.*/
-	public final static URI URF_NAMESPACE_URI=URI.create("http://urf.name/urf");
+	public final static URI NAMESPACE_URI=URI.create("http://urf.name/urf");
+	/**The URI to the URF default namespace.*/
+	public final static URI DEFAULT_NAMESPACE_URI=URI.create("http://urf.name/default");
 	/**The base to the URF lexical namespace.*/
-	private final static String URF_LEXICAL_NAMESPACE_BASE="http://urf.name/lexical/";
+	private final static String LEXICAL_NAMESPACE_BASE="http://urf.name/lexical/";
 	/**The base URI to the URF lexical namespace.*/
-	public final static URI URF_LEXICAL_NAMESPACE_BASE_URI=URI.create(URF_LEXICAL_NAMESPACE_BASE);
+	public final static URI LEXICAL_NAMESPACE_BASE_URI=URI.create(LEXICAL_NAMESPACE_BASE);
 	
 		//classes 
 	/**The URI of the URF <code>Binary</code> class.*/
-	public final static URI BINARY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Binary");
+	public final static URI BINARY_CLASS_URI=createResourceURI(NAMESPACE_URI, "Binary");
 	/**The URI of the URF <code>Boolean</code> class.*/
-	public final static URI BOOLEAN_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Boolean");
+	public final static URI BOOLEAN_CLASS_URI=createResourceURI(NAMESPACE_URI, "Boolean");
 	/**The URI of the URF <code>Character</code> class.*/
-	public final static URI CHARACTER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Character");
+	public final static URI CHARACTER_CLASS_URI=createResourceURI(NAMESPACE_URI, "Character");
 	/**The URI of the URF <code>Community</code> class.*/
-	public final static URI COMMUNITY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Community");
+	public final static URI COMMUNITY_CLASS_URI=createResourceURI(NAMESPACE_URI, "Community");
 	/**The URI of the URF <code>Date</code> class.*/
-	public final static URI DATE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Date");
+	public final static URI DATE_CLASS_URI=createResourceURI(NAMESPACE_URI, "Date");
 	/**The URI of the URF <code>DateTime</code> class.*/
-	public final static URI DATE_TIME_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "DateTime");
+	public final static URI DATE_TIME_CLASS_URI=createResourceURI(NAMESPACE_URI, "DateTime");
 	/**The URI of the URF <code>Duration</code> class.*/
-	public final static URI DURATION_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Duration");
+	public final static URI DURATION_CLASS_URI=createResourceURI(NAMESPACE_URI, "Duration");
 	/**The URI of the URF <code>Integer</code> class.*/
-	public final static URI INTEGER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Integer");
+	public final static URI INTEGER_CLASS_URI=createResourceURI(NAMESPACE_URI, "Integer");
 	/**The URI of the URF <code>Language</code> class.*/
-	public final static URI LANGUAGE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Language");
+	public final static URI LANGUAGE_CLASS_URI=createResourceURI(NAMESPACE_URI, "Language");
 	/**The URI of the URF <code>List</code> class.*/
-	public final static URI LIST_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "List");
+	public final static URI LIST_CLASS_URI=createResourceURI(NAMESPACE_URI, "List");
 	/**The URI of the URF <code>Map</code> class.*/
-	public final static URI MAP_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Map");
+	public final static URI MAP_CLASS_URI=createResourceURI(NAMESPACE_URI, "Map");
 	/**The URI of the URF <code>MapEntry</code> class.*/
-	public final static URI MAP_ENTRY_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "MapEntry");
+	public final static URI MAP_ENTRY_CLASS_URI=createResourceURI(NAMESPACE_URI, "MapEntry");
 	/**The URI of the URF <code>Number</code> class.*/
-	public final static URI NUMBER_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Number");
+	public final static URI NUMBER_CLASS_URI=createResourceURI(NAMESPACE_URI, "Number");
 	/**The URI of the URF <code>Ordinal</code> class.*/
-	public final static URI ORDINAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Ordinal");
+	public final static URI ORDINAL_CLASS_URI=createResourceURI(NAMESPACE_URI, "Ordinal");
 	/**The URI of the URF <code>Proposition</code> class.*/
-	public final static URI PROPOSITION_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Proposition");
+	public final static URI PROPOSITION_CLASS_URI=createResourceURI(NAMESPACE_URI, "Proposition");
 	/**The URI of the URF <code>Real</code> class.*/
-	public final static URI REAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Real");
+	public final static URI REAL_CLASS_URI=createResourceURI(NAMESPACE_URI, "Real");
 	/**The URI of the URF <code>RegularExpression</code> class.*/
-	public final static URI REGULAR_EXPRESSION_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "RegularExpression");
+	public final static URI REGULAR_EXPRESSION_CLASS_URI=createResourceURI(NAMESPACE_URI, "RegularExpression");
 	/**The URI of the URF <code>Resource</code> class.*/
-	public final static URI RESOURCE_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Resource");
+	public final static URI RESOURCE_CLASS_URI=createResourceURI(NAMESPACE_URI, "Resource");
 	/**The URI of the URF <code>Set</code> class.*/
-	public final static URI SET_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Set");
+	public final static URI SET_CLASS_URI=createResourceURI(NAMESPACE_URI, "Set");
 	/**The URI of the URF <code>String</code> class.*/
-	public final static URI STRING_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "String");
+	public final static URI STRING_CLASS_URI=createResourceURI(NAMESPACE_URI, "String");
 	/**The URI of the URF <code>Temporal</code> class.*/
-	public final static URI TEMPORAL_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Temporal");
+	public final static URI TEMPORAL_CLASS_URI=createResourceURI(NAMESPACE_URI, "Temporal");
 	/**The URI of the URF <code>Time</code> class.*/
-	public final static URI TIME_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "Time");
+	public final static URI TIME_CLASS_URI=createResourceURI(NAMESPACE_URI, "Time");
 	/**The URI of the URF <code>UTCOffset</code> class.*/
-	public final static URI UTC_OFFSET_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "UTCOffset");
+	public final static URI UTC_OFFSET_CLASS_URI=createResourceURI(NAMESPACE_URI, "UTCOffset");
 	/**The URI of the URF <code>URI</code> class.*/
-	public final static URI URI_CLASS_URI=createResourceURI(URF_NAMESPACE_URI, "URI");
+	public final static URI URI_CLASS_URI=createResourceURI(NAMESPACE_URI, "URI");
 
 		//properties
 	/**The URI of the property indicating an element of a container such as a set.*/
-	public final static URI ELEMENT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "element");
+	public final static URI ELEMENT_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "element");
 	/**The URI of the property indicating an entry of a map.*/
-	public final static URI ENTRY_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "entry");
+	public final static URI ENTRY_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "entry");
 	/**The interface implemented by a class.*/
-	public final static URI IMPLEMENTATION_OF_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "implementationOf");
+	public final static URI IMPLEMENTATION_OF_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "implementationOf");
 	/**The URI of the property indicating the key of a map entry.*/
-	public final static URI KEY_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "key");
+	public final static URI KEY_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "key");
 	/**A short name meant for human consumption which is perhaps more appropriate than display of the class or property name but perhaps less complete than a full title.*/
-	public final static URI LABEL_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "label");
+	public final static URI LABEL_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "label");
 	/**The name of a resource meant for machine processing, which may differ from that indicated by the URI, if any.*/
-	public final static URI NAME_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "name");
+	public final static URI NAME_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "name");
 	/**The URI of the URF object property.*/
-	public final static URI OBJECT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "object");
+	public final static URI OBJECT_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "object");
 	/**The URI of the URF order property.*/
-	public final static URI ORDER_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "order");
+	public final static URI ORDER_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "order");
 	/**The URI of the URF predicate property.*/
-	public final static URI PREDICATE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "predicate");
+	public final static URI PREDICATE_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "predicate");
 	/**A list of resources to be used to select a resoruce of a particular type.*/
-	public final static URI SELECTOR_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "selector");
+	public final static URI SELECTOR_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "selector");
 	/**The URI of the URF subject property.*/
-	public final static URI SUBJECT_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "subject");
+	public final static URI SUBJECT_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "subject");
 	/**The superclass extended by a class.*/
-	public final static URI SUBCLASS_OF_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "subclassOf");
+	public final static URI SUBCLASS_OF_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "subclassOf");
 	/**The URI of the URF type property.*/
-	public final static URI TYPE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "type");
+	public final static URI TYPE_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "type");
 	/**The URI of the property indicating the value of a map entry.*/
-	public final static URI VALUE_PROPERTY_URI=createResourceURI(URF_NAMESPACE_URI, "value");
+	public final static URI VALUE_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "value");
 
 		//lexical namespaces
 	/**The binary lexical namespace URI.*/
@@ -371,7 +373,7 @@ public class URF
 	*/
 	public static boolean isLexicalNamespaceURI(final URI uri)
 	{
-		return uri.getFragment()==null && uri.toString().startsWith(URF_LEXICAL_NAMESPACE_BASE);	//see if this is URI without a fragment that starts with the lexical namespace base URI
+		return uri.getFragment()==null && uri.toString().startsWith(LEXICAL_NAMESPACE_BASE);	//see if this is URI without a fragment that starts with the lexical namespace base URI
 	}
 
 	/**Retrieves the type URI of a URI in a lexical namespace.
@@ -390,11 +392,11 @@ public class URF
 			throw new IllegalArgumentException("URI "+lexicalURI+" is not in any namespace.");
 		}
 		final String lexicalNamespaceURIString=namespaceURI.toString();	//get the string version of the namespace URI
-		if(!lexicalNamespaceURIString.startsWith(URF_LEXICAL_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
+		if(!lexicalNamespaceURIString.startsWith(LEXICAL_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
 		{
 			throw new IllegalArgumentException("URI "+lexicalURI+" is not a URI in a lexical namespace.");
 		}
-		return URI.create(uriDecode(lexicalNamespaceURIString.substring(URF_LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
+		return URI.create(uriDecode(lexicalNamespaceURIString.substring(LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
 	}
 
 	/**Retrieves the type URI of a lexical namespace URI.
@@ -411,11 +413,11 @@ public class URF
 			throw new IllegalArgumentException("URI "+namespaceURI+" is not a namespace URI.");			
 		}
 		final String lexicalNamespaceURIString=namespaceURI.toString();	//get the string version of the namespace URI
-		if(!lexicalNamespaceURIString.startsWith(URF_LEXICAL_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
+		if(!lexicalNamespaceURIString.startsWith(LEXICAL_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
 		{
 			throw new IllegalArgumentException("URI "+namespaceURI+" is not a lexical namespace URI.");
 		}
-		return URI.create(uriDecode(lexicalNamespaceURIString.substring(URF_LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
+		return URI.create(uriDecode(lexicalNamespaceURIString.substring(LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
 	}
 	
 	/**Creates a lexical namespace URI for the given resource type.
@@ -425,7 +427,7 @@ public class URF
 	*/
 	public static URI createLexicalNamespaceURI(final URI typeURI)
 	{
-		return URI.create(URF_LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString()));	//encode the type and append it to the lexical namespace base URI
+		return URI.create(LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString()));	//encode the type and append it to the lexical namespace base URI
 	}
 
 	/**Creates a URI in a lexical namespace for the given resource type and lexical form.
@@ -437,7 +439,7 @@ public class URF
 	*/
 	public static URI createLexicalURI(final URI typeURI, final String lexicalForm)
 	{
-		return URI.create(URF_LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(checkAbsolute(typeURI).toString())+FRAGMENT_SEPARATOR+encodeURI(lexicalForm));	//encode the type, append it to the lexical namespace base URI, and append the fragment of the encoded lexical form
+		return URI.create(LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(checkAbsolute(typeURI).toString())+FRAGMENT_SEPARATOR+encodeURI(lexicalForm));	//encode the type, append it to the lexical namespace base URI, and append the fragment of the encoded lexical form
 	}
 
 	/**Creates a URI to represent URF binary data.
@@ -1653,7 +1655,7 @@ public class URF
 	/**Default constructor.*/
 	public URF()
 	{
-		registerResourceFactory(URF_NAMESPACE_URI, DEFAULT_URF_RESOURCE_FACTORY);	//register the default URF resource factory with the URF namespace
+		registerResourceFactory(NAMESPACE_URI, DEFAULT_URF_RESOURCE_FACTORY);	//register the default URF resource factory with the URF namespace
 		registerResourceFactory(Content.CONTENT_NAMESPACE_URI, Content.DEFAULT_CONTENT_RESOURCE_FACTORY);	//register the default content resource factory with the content namespace
 		registerResourceFactory(Select.SELECT_NAMESPACE_URI, new JavaURFResourceFactory(Select.class.getPackage()));	//instantiate select classes for select resources
 	}
@@ -1800,12 +1802,12 @@ public class URF
 	}
 
 	/**Returns a string representation of this data model.
-	This implementation returns {@value #URF_NAME}.
+	This implementation returns {@value #NAME}.
 	@return A string representation of this data model.
 	*/
 	public String toString()
 	{
-		return URF_NAME;	//return "URF"
+		return NAME;	//return "URF"
 	}
 
 	/**The shared resource factory for default resources.

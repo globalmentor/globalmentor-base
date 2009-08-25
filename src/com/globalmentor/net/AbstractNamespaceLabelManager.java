@@ -64,7 +64,8 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		knownNamespaceURIs.add(ApacheWebDAV.APACHE_WEBDAV_PROPERTY_NAMESPACE_URI);	//Apache WebDAV properties
 		knownNamespaceURIs.add(URI.create("http://example.com/example"));	//example
 		knownNamespaceURIs.add(FOAF.FOAF_NAMESPACE_URI);	//FOAF
-		knownNamespaceURIs.add(URF.URF_NAMESPACE_URI);	//URF
+		knownNamespaceURIs.add(URF.NAMESPACE_URI);	//URF
+		knownNamespaceURIs.add(URF.DEFAULT_NAMESPACE_URI);	//URF default
 		knownNamespaceURIs.add(Content.CONTENT_NAMESPACE_URI);	//URF Content
 		knownNamespaceURIs.add(Select.SELECT_NAMESPACE_URI);	//URF Select
 		knownNamespaceURIs.add(VCard.VCARD_NAMESPACE_URI);	//URF VCard

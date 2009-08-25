@@ -8,7 +8,6 @@ import java.util.*;
 import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
-import static com.globalmentor.urf.ploop.PLOOP.*;
 
 import com.globalmentor.net.*;
 import com.globalmentor.urf.*;
@@ -110,7 +109,7 @@ public class PLOOPURFGenerator
 		final URF urf=getURF();	//get the URF instance for creating the resource
 		if(object!=null)	//if the object is not null
 		{
-			if(object instanceof List && List.class.isAssignableFrom(preferredType))	//if a list was requested
+			if(object instanceof List<?> && List.class.isAssignableFrom(preferredType))	//if a list was requested
 			{
 				final URFListResource<URFResource> listResource=new URFListResource<URFResource>();	//create a new URF list resource
 				for(final Object listItem:(List<?>)object)	//for each item in the list
@@ -120,7 +119,7 @@ public class PLOOPURFGenerator
 				}
 				return listResource;	//return the list resource
 			}
-			else if(object instanceof Set && Set.class.isAssignableFrom(preferredType))	//if a set was requested
+			else if(object instanceof Set<?> && Set.class.isAssignableFrom(preferredType))	//if a set was requested
 			{
 				final URFSetResource<URFResource> setResource=new URFSetResource<URFResource>();	//create a new URF set resource
 				for(final Object setElement:(Set<?>)object)	//for each element in the set
@@ -130,7 +129,7 @@ public class PLOOPURFGenerator
 				}
 				return setResource;	//return the set resource
 			}
-			else if(object instanceof Map && Map.class.isAssignableFrom(preferredType))	//if a map was requested
+			else if(object instanceof Map<?, ?> && Map.class.isAssignableFrom(preferredType))	//if a map was requested
 			{
 				final URFMapResource<URFResource, URFResource> mapResource=new URFMapResource<URFResource, URFResource>();	//create a new URF map resource
 				for(final Map.Entry<?, ?> mapEntry:((Map<?, ?>)object).entrySet())	//for each entry in the map
@@ -208,7 +207,7 @@ public class PLOOPURFGenerator
 						if(useProperty)	//if we decided that we should use this property
 						{
 							setURFResourceProperty(resource, object, getterPropertyName, method);	//set this property of the resource
-							ploopPropertyURIs.add(createResourceURI(typeURI, getterPropertyName));	//remember the associated PLOOP URF property so that we won't use it in transferring any URF properties
+							ploopPropertyURIs.add(createResourceURI(DEFAULT_NAMESPACE_URI, getterPropertyName));	//remember the associated PLOOP URF property so that we won't use it in transferring any URF properties
 						}
 					}
 				}
@@ -276,8 +275,9 @@ public class PLOOPURFGenerator
 		if(propertyValueObject!=null)	//if there is a value
 		{
 			final URFResource propertyValueResource=generateURFResource(propertyValueObject, propertyType);	//generate an URF object from the property value
-			final URI propertyURI=createPropertyURI(object, propertyName);	//get the property URI for the given property of the object
-			return resource.setPropertyValue(propertyURI, propertyValueResource);	//set this property of the URF resource
+			final URI propertyURI=createResourceURI(DEFAULT_NAMESPACE_URI, propertyName);	//get the property URI for the given property of the object
+			resource.setPropertyValue(propertyURI, propertyValueResource);	//set this property of the URF resource
+			return propertyValueResource;	//return the property value that was added
 		}
 		else	//if there is no value
 		{

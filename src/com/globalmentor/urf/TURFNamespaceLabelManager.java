@@ -31,6 +31,7 @@ public class TURFNamespaceLabelManager extends AbstractNamespaceLabelManager
 	public TURFNamespaceLabelManager(final Map<URI, String> map)
 	{
 		super(map);	//construct the parent class
+		put(URF.DEFAULT_NAMESPACE_URI, null);	//associate no prefix with the URF default namespace
 	}
 
 	/**Determines whether the given string is a valid label

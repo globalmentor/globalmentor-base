@@ -310,7 +310,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	public Resource parseResource(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
-		return parseResource(reader, baseURI, null, Collections.<String, URI>emptyMap());	//parse a resource with no context URI or namespace prefixes
+		return parseResource(reader, baseURI, Collections.<String, URI>emptyMap());	//parse a resource with no context URI or namespace prefixes
 	}
 
 	/**Parses a single resource and returns a proxy to the resource.
@@ -318,18 +318,17 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	The new position will be that of the first character after the resource that is not a non-list-separator filler, or the end of the reader.
 	@param reader The reader the contents of which to be parsed.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is allowed; for properties, this is the URI of the first type short form.
 	@param prefixNamespaceURIMap The map of namespace URIs associated with prefixes; a new map containing the same information should be created if new namespaces should be added for a particular resource and it children.
 	@return The resource parsed from the reader.
 	@exception NullPointerException if the given reader is <code>null</code>.
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the reader has no more characters before the current resource is completely parsed.
 	*/
-	public Resource parseResource(final Reader reader, final URI baseURI, final URI defaultNamespaceURI, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException
+	public Resource parseResource(final Reader reader, final URI baseURI, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException
 	{
 		try
 		{
-			return parseResource(reader, baseURI, null, null, null, defaultNamespaceURI, prefixNamespaceURIMap);	//parse a resource with no scope
+			return parseResource(reader, baseURI, null, null, null, prefixNamespaceURIMap);	//parse a resource with no scope
 		}
 		catch(final DataException dataException)
 		{
@@ -356,29 +355,6 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	protected Resource parseResource(final Reader reader, final URI baseURI, final Resource scopeBase, final ArrayList<NameValuePair<Resource, Resource>> scopeChain, final Resource scopePredicate, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
 	{
-		return parseResource(reader, baseURI, scopeBase, scopeChain, scopePredicate, null, prefixNamespaceURIMap);	//parse the resource with no default namespace URI
-	}
-
-	/**Parses a single optionally scoped resource and returns a proxy to the resource.
-	The current position must be that of the first character of the resource.
-	The new position will be that of the first character after the resource that is not a non-list-separator filler, or the end of the reader.
-	For every resource that is being parsed as the object of a subject and predicate, the scope base, scope chain, and scope predicate must all be non-<code>null</code>.
-	Whenever the scope chain is lengthened it must first be cloned so that the local version will not be modified during recursion.
-	@param reader The reader the contents of which to be parsed.
-	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param scopeBase The base resource of the current scope, or <code>null</code> if the current resource is not in an object context.
-	@param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value, or <code>null</code> if there is no current scope.
-	@param scopePredicate The predicate for which the new resource is a value, or <code>null</code> if the current resource is not in an object context.
-	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is allowed; for properties, this is the URI of the first type short form.
-	@param prefixNamespaceURIMap The map of namespace URIs associated with prefixes; a new map containing the same information should be created if new namespaces should be added for a particular resource and it children.
-	@return The resource parsed from the reader.
-	@exception NullPointerException if the given reader is <code>null</code>.
-	@exception IOException if there is an error reading from the reader.
-	@exception ParseIOException if the reader has no more characters before the current resource is completely parsed.
-	@exception DataException if there was an error with information being processed.
-	*/
-	protected Resource parseResource(final Reader reader, final URI baseURI, final Resource scopeBase, final ArrayList<NameValuePair<Resource, Resource>> scopeChain, final Resource scopePredicate, final URI defaultNamespaceURI, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
-	{
 		final URF urf=getURF();	//get the URF data model
 		String label=null;	//the label of the resource, if any
 		final List<Resource> types=new ArrayList<Resource>();	//we'll keep track of all the types we find
@@ -390,7 +366,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			label=parseLabel(reader);	//parse the label
 			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 		}
-		final URI resourceURI=parseReference(reader, baseURI, defaultNamespaceURI, prefixNamespaceURIMap);	//parse a reference to the resource, if any
+		final URI resourceURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse a reference to the resource, if any
 		if(resourceURI!=null)	//if we parsed a reference
 		{
 			foundComponent=true;	//indicate that at least one description component is present
@@ -456,7 +432,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			{
 				while(c>=0)	//while the end of the data has not been reached
 				{
-					final Resource predicate=parseResource(reader, baseURI, null, null, null, typeURI, prefixNamespaceURIMap);	//parse the predicate resource, providing the typeURI (if any) as a default namespace URI
+					final Resource predicate=parseResource(reader, baseURI, null, null, null, prefixNamespaceURIMap);	//parse the predicate resource
 					final URI predicateURI=predicate.getURI();	//get the predicate URI
 					c=skipFillers(reader);	//skip fillers
 					if(c==LABEL_BEGIN)	//if this is the beginning of a property reification
@@ -780,7 +756,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			final List<Resource> resourceList=new ArrayList<Resource>();	//create a new list in which to place the resources
 			while(c>=0)	//while the end of the data has not been reached
 			{
-				final Resource resource=parseResource(reader, baseURI, null, prefixNamespaceURIMap);	//parse another resource
+				final Resource resource=parseResource(reader, baseURI, prefixNamespaceURIMap);	//parse another resource
 				resourceList.add(resource);	//add the resource to the list of resources
 				c=skipListSeparators(reader, listEnd);	//skip list separators and peek the next character
 				if(c==LIST_DELIMITER)	//if we passed a list separator
@@ -845,25 +821,6 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	@exception DataException if there was an error with information being processed.
 	*/
 	public static URI parseReference(final Reader reader, final URI baseURI, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
-	{
-		return parseReference(reader, baseURI, null, prefixNamespaceURIMap);	//parse a reference with no default namespace URI
-	}
-
-	/**Parses a reference to a resource and returns the URI the reference represents, if any.
-	For references, the current position must be that of the first character of the reference.
-	If a reference was parsed, the new position will be that of the first non-separator character after the reference or the end of the reader.
-	If no reference was encountered, the new position will be the same as the old position.
-	@param reader The reader the contents of which to be parsed.
-	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
-	@param defaultNamespaceURI The URI of the default namespace, or <code>null</code> if no default namespace is allowed; for properties, this is the URI of the first type short form.
-	@param prefixNamespaceURIMap The map of namespace URIs associated with prefixes; a new map containing the same information should be created if new namespaces should be added for a particular resource and it children.
-	@return The reference parsed from the reader, or <code>null</code> if there is no reference at the current position.
-	@exception NullPointerException if the given reader is <code>null</code>.
-	@exception IOException if there is an error reading from the reader.
-	@exception ParseIOException if the reader has no more characters before the current reference is completely parsed.
-	@exception DataException if there was an error with information being processed.
-	*/
-	public static URI parseReference(final Reader reader, final URI baseURI, final URI defaultNamespaceURI, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
 	{
 		final int c=peek(reader);	//peek the next character
 		switch(c)	//check for a reference or a short form
@@ -935,13 +892,9 @@ public class URFTURFProcessor extends AbstractURFProcessor
 							throw new DataException("No namespace URI defined for prefix "+prefix+".");
 						}
 					}
-					else	//if there is no prefix, get the default namespace for this context
+					else	//if there is no prefix, use the default namespace for this context
 					{
-						if(defaultNamespaceURI==null)	//if no default namespace is available
-						{
-							throw new DataException("Local name "+localName+" has no context for default namespace determination.");
-						}
-						namespaceURI=defaultNamespaceURI;	//use the default namespace URI
+						namespaceURI=DEFAULT_NAMESPACE_URI;	//use the default namespace URI
 					}
 					try
 					{

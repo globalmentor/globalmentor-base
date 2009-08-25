@@ -163,7 +163,7 @@ public class PLOOPURFProcessor
 	*/
 	protected Object createObject(final URFResource resource) throws DataException, InvocationTargetException
 	{
-		if(resource instanceof URFListResource)	//if the object is an URF array
+		if(resource instanceof URFListResource<?>)	//if the object is an URF array
 		{
 			final URFListResource<?> urfListResource=(URFListResource<?>)resource;	//cast the object to a list
 			final List<Object> list=new ArrayList<Object>();	//create a new list TODO eventually create a list but later check to see if the setter will accept a collection
@@ -181,7 +181,7 @@ public class PLOOPURFProcessor
 			}
 			return list;	//return the list of objects we created
 		}
-		else if(resource instanceof URFSetResource)	//if the object is an URF set
+		else if(resource instanceof URFSetResource<?>)	//if the object is an URF set
 		{
 			final URFSetResource<?> urfSetResource=(URFSetResource<?>)resource;	//cast the object to a set
 			final Set<Object> set=new HashSet<Object>();	//create a new set TODO eventually create a set but later check to see if the setter will accept a collection
@@ -199,7 +199,7 @@ public class PLOOPURFProcessor
 			}
 			return set;	//return the set of objects we created
 		}
-		else if(resource instanceof URFMapResource)	//if the object is an URF map
+		else if(resource instanceof URFMapResource<?, ?>)	//if the object is an URF map
 		{
 			final URFMapResource<?, ?> urfMapResource=(URFMapResource<?, ?>)resource;	//cast the object to a map
 			final Map<Object, Object> map=new HashMap<Object, Object>();	//create a new map
@@ -342,25 +342,6 @@ public class PLOOPURFProcessor
 		setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object from the property descriptions
 	}
 
-	/**Initializes an object based upon the given description, using the supplied namepace to locate properties.
-	The object being initialized will be stored locally keyed to the resource description for later lookup.
-	This implementation also recognizes the {@link URFResource} type and will transfer all non-PLOOP properties when an instance is encountered.
-	@param object The object to initialize.
-	@param resource The description for the object.
-	@param propertyNamespaceURI The namespace URI of the properties to enumerate.
-	@exception NullPointerException if the given object, resource, and/or namespace URI is <code>null</code>.
- 	@exception DataException if a resource is a Java-typed resource the class of which cannot be found.
-	@exception DataException if a particular value is not an appropriate argument for the corresponding property.
-	@exception DataException If a particular property could not be accessed.
-	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
-	@see #setObjectProperties(Object, Map)
-	*/
-	public void setObjectProperties(final Object object, final URFResource resource, final URI propertyNamespaceURI) throws DataException, InvocationTargetException
-	{
-		final Map<URI, PropertyDescription> propertyDescriptionMap=getPropertyDescriptionMap(object.getClass(), resource, propertyNamespaceURI);	//get property descriptions from the resource description
-		setObjectProperties(object, resource, propertyDescriptionMap);	//initialize the object from the property descriptions
-	}
-
 	/**Initializes an object based upon the given URI and property descriptions.
 	The object being initialized will be stored locally keyed to the resource description for later lookup.
 	This implementation also recognizes the {@link URFResource} type and will transfer all non-PLOOP properties to the object when an instance is encountered.
@@ -412,7 +393,7 @@ public class PLOOPURFProcessor
 	*/
 	public boolean setObjectProperty(final Object object, final URFResource resource, final String propertyName) throws DataException, InvocationTargetException
 	{
-		final URI propertyURI=createPropertyURI(object, propertyName);	//get the property URI for the given property of the object
+		final URI propertyURI=createResourceURI(DEFAULT_NAMESPACE_URI, propertyName);	//get the property URI for the given property of the object
 		final URFResource propertyValue=resource.getPropertyValue(propertyURI);	//get the value for this property
 //TODO fix to support null values		if(propertyValue==null && !resource.hasProperty(propertyURI))	//if the resource does not have a value for the property
 		if(propertyValue==null && !resource.hasProperty(propertyURI))	//if the resource does not have a value for the property
@@ -467,30 +448,11 @@ public class PLOOPURFProcessor
 	*/
 	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URFResource resource) throws DataException, InvocationTargetException
 	{
-		return getPropertyDescriptionMap(objectClass, resource, createJavaURI(objectClass));	//get a property description map using the class namespace
-	}
-
-	/**Constructs a map of property descriptions for a class based upon a resource description.
-	If there are duplicate properties, only one will be stored.
-	@param objectClass The class of the object to be constructed.
-	@param resource The description fo the object.
-	@param propertyNamespaceURI The namespace URI of the properties to enumerate.
-	@return A map of property descriptions keyed to property URIs.
-	@exception NullPointerException if the given object class, resource, and/or property namespace URI is <code>null</code>.
- 	@exception DataException if a resource does not specify Java type information.
- 	@exception DataException if a resource is a Java-typed resource the class of which cannot be found.
- 	@exception DataException if a resource indicates a Java class that has no appropriate constructor.
- 	@exception DataException if a resource indicates a Java class that is an interface or an abstract class.
- 	@exception DataException if a resource indicates a Java class the constructor of which is not accessible.
-	@exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
-	*/
-	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URFResource resource, final URI propertyNamespaceURI) throws DataException, InvocationTargetException
-	{
 		final Map<URI, PropertyDescription> propertyDescriptionMap=new HashMap<URI, PropertyDescription>((int)resource.getPropertyValueCount());	//create a map to hold property descriptions, with a least enough capacity to hold descriptions for all properties
 		for(final URFProperty property:resource.getProperties())	//for each resource property
 		{
 			final URI propertyURI=property.getPropertyURI();	//get the property URI
-			if(propertyNamespaceURI.equals(getNamespaceURI(propertyURI)))	//if this property is in the correct namespace
+			if(DEFAULT_NAMESPACE_URI.equals(getNamespaceURI(propertyURI)))	//if this property is in the default namespace
 			{
 				final String propertyName=getLocalName(property.getPropertyURI());	//get the local name of the property
 				final PropertyDescription propertyDescription=getPropertyDescription(objectClass, propertyName, property.getValue());	//get a description for this property
