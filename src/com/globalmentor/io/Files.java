@@ -170,7 +170,7 @@ public class Files
 		tempFileExtensionContentTypeMap.put(Images.TIF_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Images.TIFF_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(RDF.RDF_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "rdf+xml"));	//RFC 3870; move to RDF class
-		tempFileExtensionContentTypeMap.put(TURF.TURF_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, TURF_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(TURF.NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, TURF_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Text.TXT_NAME_EXTENSION, Text.TEXT_PLAIN_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, DIRECTORY_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Audio.WAV_NAME_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, X_WAV_SUBTYPE));

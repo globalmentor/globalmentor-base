@@ -5,6 +5,8 @@ import java.util.*;
 import static java.util.Collections.*;
 
 import com.globalmentor.java.Characters;
+import com.globalmentor.net.ContentType;
+
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.urf.URF.*;
 
@@ -22,8 +24,11 @@ Any redistribution of this source code or derived source code must include these
 public class TURF
 {
 
+	/**The content type for TURF: <code>text/urf</code>.*/ 
+	public static final ContentType CONTENT_TYPE=ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, "urf");
+
 	/**An extension for TURF resource names.*/
-	public final static String TURF_NAME_EXTENSION="turf";
+	public final static String NAME_EXTENSION="turf";
 
 	/**The character that separates items in a list.*/
 	public final static char LIST_DELIMITER=',';
