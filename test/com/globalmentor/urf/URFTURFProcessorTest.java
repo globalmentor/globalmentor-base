@@ -100,4 +100,22 @@ public class URFTURFProcessorTest
 		}
 		assertTrue("The two parsed TURF files are not equivalent.", resource1.equals(resource2));
 	}
+
+	/**Tests that the URF parser can parse a simple TURF file containing an anonymous resource.*/
+	@Test
+	public void testSimpleAnonymousResource() throws IOException, URISyntaxException
+	{
+		final URFTURFProcessor urfProcessor=new URFTURFProcessor();
+		final URL turfURL=getClass().getResource("simple-anonymous-resource.turf");
+		final Reader reader=new LineNumberReader(new InputStreamReader(turfURL.openStream(), Charsets.UTF_8_CHARSET));
+		try
+		{
+			urfProcessor.process(reader, turfURL.toURI());
+		}
+		finally
+		{
+			reader.close();
+		}
+		Log.info(URF.toString(urfProcessor.getURF()));
+	}
 }
