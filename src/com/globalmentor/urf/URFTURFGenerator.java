@@ -540,7 +540,7 @@ public class URFTURFGenerator
 			for(final Map.Entry<URI, Boolean> namespaceURIMultipleEntry:namespaceURIMultipleMap.entrySet())	//for each namespace URI entry
 			{
 				final URI namespaceURI=namespaceURIMultipleEntry.getKey();	//get the namespace URI
-				if(namespaceLabelManager.containsKey(namespaceURI))	//don't generate associations for prefixes that are already associated (e.g. the default namespace)
+				if(!DEFAULT_NAMESPACE_URI.equals(namespaceURI))	//don't generate associations for the default namespace
 				{
 					continue;
 				}
@@ -558,7 +558,7 @@ public class URFTURFGenerator
 						startedProperties=true;	//show that we've started the properties
 					}
 					final String prefix=namespaceLabelManager.determineNamespaceLabel(namespaceURI);	//get a namespace label for the URI
-					assert prefix!=null;	//the only namespace that should have no prefix is the default namespace, which should have already been registered and which we should already have skipped
+					assert prefix!=null;	//the only namespace that should have no prefix is the default namespace, which we should already have skipped
 					writeString(writer, prefix);	//write the prefix
 					writer.write(NAMESPACE_ASSOCIATION_DELIMITER);	//write the property-value delimiter
 					writeURI(writer, namespaceURI);	//write the URI
