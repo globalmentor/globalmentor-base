@@ -146,9 +146,12 @@ public class URFTURFGenerator
 		public void setFormatted(final boolean formatted) {this.formatted=formatted;}
 
 	/**Whether formatted output uses the list delimiter in addition to newlines.*/
-	private boolean formattedListDelimiter=false;
+	private boolean formattedListDelimiter=true;
 
-		/**@return Whether formatted output uses the list delimiter in addition to newlines.*/
+		/**Indicates whether formatted output uses the list delimiter in addition to newlines.
+		This option is set to <code>true</code> by default.
+		@return Whether formatted output uses the list delimiter in addition to newlines.
+		*/
 		public boolean isFormattedListDelimiter() {return formattedListDelimiter;}
 
 		/**Sets whether formatted output uses the list delimiter in addition to newlines.
