@@ -543,7 +543,7 @@ public class URFTURFGenerator
 			for(final Map.Entry<URI, Boolean> namespaceURIMultipleEntry:namespaceURIMultipleMap.entrySet())	//for each namespace URI entry
 			{
 				final URI namespaceURI=namespaceURIMultipleEntry.getKey();	//get the namespace URI
-				if(!DEFAULT_NAMESPACE_URI.equals(namespaceURI))	//don't generate associations for the default namespace
+				if(DEFAULT_NAMESPACE_URI.equals(namespaceURI))	//don't generate associations for the default namespace
 				{
 					continue;
 				}
