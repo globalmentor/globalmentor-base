@@ -14,6 +14,7 @@ import static com.globalmentor.io.Charsets.*;
 import com.globalmentor.collections.CollectionMap;
 import com.globalmentor.collections.IdentityHashSet;
 import com.globalmentor.collections.IdentityHashSetMap;
+import com.globalmentor.io.ParseIOException;
 import com.globalmentor.java.*;
 import static com.globalmentor.java.Booleans.*;
 import static com.globalmentor.java.Characters.*;
@@ -53,13 +54,21 @@ public class URF
 	public final static String NAME="URF";
 	
 	/**The URI to the URF namespace.*/
-	public final static URI NAMESPACE_URI=URI.create("http://urf.name/urf");
+	public final static URI NAMESPACE_URI=URI.create("http://urf.name/urf/");
 	/**The URI to the URF default namespace.*/
-	public final static URI DEFAULT_NAMESPACE_URI=URI.create("http://urf.name/default");
+	public final static URI DEFAULT_NAMESPACE_URI=URI.create("http://urf.name/default/");
 	/**The base to the URF lexical namespace.*/
 	private final static String LEXICAL_NAMESPACE_BASE="http://urf.name/lexical/";
 	/**The base URI to the URF lexical namespace.*/
 	public final static URI LEXICAL_NAMESPACE_BASE_URI=URI.create(LEXICAL_NAMESPACE_BASE);
+	/**The prefix for local names containing values in lexical URIs.*/
+//TODO del	public final static String LEXICAL_VALUE_LOCAL_NAME_STRING_PREFIX=URIs.encodeURI("(\"");
+	/**The suffix for local names containing values in lexical URIs.*/
+//TODO del	public final static String LEXICAL_VALUE_LOCAL_NAME_STRING_SUFFIX=URIs.encodeURI("\")");
+	/**The pattern for matching a string-based value in the local name of a lexical URI.
+	The first and only matching group is that of the encoded lexical value.
+	*/
+//TODO del	public final static Pattern LEXICAL_VALUE_LOCAL_NAME_STRING_PATTERN=Pattern.compile("\\(\"([^\"\\)]*)\"\\)");
 	
 		//classes 
 	/**The URI of the URF <code>Binary</code> class.*/
@@ -225,71 +234,43 @@ public class URF
 			return scopeCreationOrder.getAndIncrement();	//atomically get the next counter value
 		}
 
+	/**Checks to ensure that the given URI meets the criteria of an URF namespace URI.
+	In particular, the URI must be an absolute plain collection URI.
+	@param namespaceURI The URI to check.
+	@return The given namespace URI.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given URI does not meet the criteria of an URF namespace URI.
+	@see URIs#checkAbsolute(URI)
+	@see URIs#checkCollectionURI(URI)
+	@see URIs#checkPlainURI(URI)
+	*/
+	public static URI checkNamespaceURI(final URI namespaceURI)
+	{
+		return checkPlainURI(checkCollectionURI(checkAbsolute(namespaceURI)));
+	}
+
 	/**Creates a resource URI from a given namespace URI and a local name.
-	If the namespace URI has no fragment and is a hierarchical URI that ends with a path separator, the local name is encoded and appended to the URI.
-	If the namespace URI has no fragment and is not a hierarchical URI or does not end with a path separator, the local name is encoded and added as a fragment.
-	If the namespace URI has a fragment that does not end in a path separator, a path separator followed by the encoded local name is appended to the fragment.
+	The local name is encoded and appended to the URI.
 	@param namespaceURI The URI of the namespace.
 	@param localName The unencoded local name of the resource.
 	@return A URI constructed from the given namespace URI and local name.
 	@exception NullPointerException if the given namespace URI and/or local name is <code>null</code>.
-	@exception IllegalArgumentException if the given namespace URI has a fragment that ends with a path separator.
+	@exception IllegalArgumentException if the given URI is not a valid namespace URI.
 	*/
 	public static URI createResourceURI(final URI namespaceURI, final String localName)
 	{
-		final String encodedLocalName=encodeURI(localName);	//encode the local name
-		final String rawFragment=namespaceURI.getRawFragment();	//get the namespace URI fragment, if any
-		if(rawFragment!=null)	//if there is a fragment
-		{
-			if(endsWith(rawFragment, PATH_SEPARATOR))	//if the raw fragment ends with a path separator
-			{
-				throw new IllegalArgumentException("Invalid namespace URI: "+namespaceURI);				
-			}
-			return replaceRawFragment(namespaceURI, rawFragment+PATH_SEPARATOR+encodedLocalName);	//append the encoded local name to the fragment after a path separator
-		}
-		else	//if there is no fragment
-		{
-			final String namespaceURIString=namespaceURI.toString();	//get the string form of the namespace
-			final int namespaceURIStringLength=namespaceURIString.length();	//get the length of the namespace URI string
-			if(endsWith(namespaceURIString, PATH_SEPARATOR))	//if the string ends with a path separator
-			{
-				return URI.create(namespaceURIString+encodedLocalName);	//append the encoded name to the URI
-			}
-			else	//if the string ends with any other character
-			{
-				return resolveFragment(namespaceURI, encodedLocalName);	//add the local name as a fragment
-			}
-		}
+		return checkNamespaceURI(namespaceURI).resolve(encodeURI(localName));	//encode the local name and resolve it to the namespace
 	}
 
 	/**Retrieves the namespace from the given URI.
-	If the URI has a fragment that does not end with a path separator,
-	the namespace URI is the URI with the last path separator and following characters of the fragment removed,
-	or the URI with no fragment if the fragment does not contain a path separator.
-	If the URI has no fragment and is a hierarchical URI that does not end with a path separator, the namespace URI is the parent collection.
+	The namespace URI is the parent collection of the URI.
 	@param uri The URI from which a namespace should be retrieved.
-	@return The namespace represented by the given URI, or <code>null</code> if the URI has no fragment and ends with a path separator, or if the URI has a fragment that ends with a path separator.
+	@return The namespace represented by the given URI, or <code>null</code> if the URI has no path or the path ends with a path separator.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static URI getNamespaceURI(final URI uri)
 	{
-		final String rawFragment=uri.getRawFragment();	//get the URI fragment, if any
-		if(rawFragment!=null)	//if the URI has a fragment
-		{
-			final int lastRawFragmentPathSeparatorIndex=rawFragment.lastIndexOf(PATH_SEPARATOR);	//see if the raw fragment has a path separator
-			if(lastRawFragmentPathSeparatorIndex>=0)	//if there is a path separator in the fragment
-			{
-				if(lastRawFragmentPathSeparatorIndex!=rawFragment.length()-1)	//if the path separator is not the last character in the fragment
-				{
-					return replaceRawFragment(uri, rawFragment.substring(0, lastRawFragmentPathSeparatorIndex));	//remove the last path separator and everything after it from the fragment
-				}
-			}
-			else	//if the fragment has no path separator
-			{
-				return removeFragment(uri);	//remove the fragment to get the namespace
-			}
-		}
-		else	//if there is no fragment, check for a path-based namespace
+		if(uri.isAbsolute())	//only absolute URIs can be namespaces
 		{
 			final String rawPath=uri.getRawPath();	//get the raw path
 			if(rawPath!=null && !endsWith(rawPath, PATH_SEPARATOR))	//if there is a raw path that isn't a collection
@@ -301,45 +282,79 @@ public class URF
 	}
 
 	/**Retrieves the local name from the given URI.
-	If the URI has a fragment that does not end with a path separator,
-	the local name consists of the decoded characters following the last path separator of the fragment,
-	or the the decoded fragment if the fragment does not contain a path separator.
-	If the URI has no fragment and is a hierarchical URI that does not end with a path separator, the local name is the decoded last path segment of the URI.
+	The local name is the decoded last path segment of the URI.
 	@param uri The URI from which a namespace should be retrieved.
-	@return The namespace represented by the given URI, or <code>null</code> if the URI has no fragment and ends with a path separator, or if the URI has a fragment that ends with a path separator.
+	@return The local name of the given URI, or <code>null</code> if the URI has no path or the path ends with a path separator.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	*/
 	public static String getLocalName(final URI uri)
 	{
-		final String rawFragment=uri.getRawFragment();	//get the URI fragment, if any
-		if(rawFragment!=null)	//if the URI has a fragment
+		final String rawPath=uri.getRawPath();	//get the raw path
+		if(rawPath!=null && !endsWith(rawPath, PATH_SEPARATOR))	//if there is a raw path that isn't a collection
 		{
-			final int lastRawFragmentPathSeparatorIndex=rawFragment.lastIndexOf(PATH_SEPARATOR);	//see if the raw fragment has a path separator
-			if(lastRawFragmentPathSeparatorIndex>=0)	//if there is a path separator in the fragment
-			{
-				if(lastRawFragmentPathSeparatorIndex!=rawFragment.length()-1)	//if the path separator is not the last character in the fragment
-				{
-					return uriDecode(rawFragment.substring(lastRawFragmentPathSeparatorIndex+1));	//the local name is determined by decoding the characters after the last path separator
-				}
-			}
-			else	//if the fragment has no path separator
-			{
-				return uriDecode(rawFragment);	//the local name name is the decoded fragment
-			}
-		}
-		else	//if there is no fragment, check for a path-based namespace
-		{
-			final String rawPath=uri.getRawPath();	//get the raw path
-			if(rawPath!=null && !endsWith(rawPath, PATH_SEPARATOR))	//if there is a raw path that isn't a collection
-			{
-				return getName(rawPath);	//return the name from the raw path
-			}
+			return uriDecode(getName(rawPath));	//return the name from the raw path
 		}
 		return null;	//indicate that this URI has no namespace
 	}
 
+	/**Retrieves the lexical value stored in the local name of the given URI.
+	The lexical value is the decoded form of the value stored inside <code>("...")</code> in the local name.
+	@param uri The URI from which a namespace should be retrieved.
+	@return The lexical value of the given URI, or <code>null</code> if the URI has no path or the path ends with a path separator.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if there is no valid lexical value.
+	@see #getLocalName(URI) 
+	*/
+	public static String getLexicalValue(final URI uri)
+	{
+		final String localName=getLocalName(uri);	//start with the decoded local name
+		if(localName!=null)
+		{
+			final StringReader localNameReader=new StringReader(localName);
+			try
+			{
+				return URFTURFProcessor.parseString(localNameReader);	//parse a string from the local name
+			}
+			catch(final IOException ioException)
+			{
+				throw new AssertionError(ioException);
+			}
+			catch(final DataException dataException)
+			{
+				throw new IllegalArgumentException("URI "+uri+" has an invalid inline value: "+dataException.getMessage(), dataException);
+			}
+		}
+		throw new IllegalArgumentException("URI "+uri+" has no inline value.");
+	}
+
+	/**Determines whether the given namespace URI the URI of a lexical namespace.
+	@param namespaceURI The URI to check for being that of a lexical namespace
+	@return <code>true</code> if the URI is that of a lexical namespace.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given URI is not a valid namespace URI.
+	*/
+	public static boolean isLexicalNamespaceURI(final URI namespaceURI)
+	{
+		return checkNamespaceURI(namespaceURI).toString().startsWith(LEXICAL_NAMESPACE_BASE);	//see if this is namespace URI that starts with the lexical namespace base URI
+	}
+
+	/**Determines whether the given namespace URI is the URI of a lexical namespace.
+	@param lexicalNamespaceURI The URI to check for being that of a lexical namespace
+	@return The lexical namespace URI.
+	@exception NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given URI is not a valid lexical namespace URI.
+	*/
+	public static URI checkLexicalNamespaceURI(final URI lexicalNamespaceURI)
+	{
+		if(!isLexicalNamespaceURI(lexicalNamespaceURI))	//if this is not a lexical namespace URI
+		{
+			throw new IllegalArgumentException("URI "+lexicalNamespaceURI+" is not a lexical namespace URI.");
+		}
+		return lexicalNamespaceURI;
+	}
+
 	/**Determines whether the given URI is in a lexical namespace.
-	This method returns <code>false</code> for lexical namespaces themselves (i.e. a lexical namespace URI with no fragment).
+	This method returns <code>false</code> for lexical namespaces themselves.
 	@param uri The URI to check for being in a lexical namespace.
 	@return <code>true</code> if the URI is is in a lexical namespace.
 	@exception NullPointerException if the given URI is <code>null</code>.
@@ -352,7 +367,7 @@ public class URF
 	}
 
 	/**Determines whether the given URI is in a lexical namespace with the given type.
-	This method returns <code>false</code> for lexical namespaces themselves (i.e. a lexical namespace URI with no fragment).
+	This method returns <code>false</code> for lexical namespaces themselves.
 	@param uri The URI to check for being in a lexical namespace with the given lexical type
 	@param lexicalTypeURI The URI of the type of the resource.
 	@return <code>true</code> if the URI is is in a lexical namespace with the given lexical type.
@@ -365,19 +380,8 @@ public class URF
 		return isLexicalURI(uri) && lexicalTypeURI.equals(getLexicalTypeURI(uri));	//see if the URI is a lexical URI with the given lexical type
 	}
 	
-	/**Determines whether the given URI the URI of a lexical namespace.
-	This method returns <code>false</code> for lexical URIs that have fragments
-	@param uri The URI to check for being that of a lexical namespace
-	@return <code>true</code> if the URI is that of a lexical namespace.
-	@exception NullPointerException if the given URI is <code>null</code>.
-	*/
-	public static boolean isLexicalNamespaceURI(final URI uri)
-	{
-		return uri.getFragment()==null && uri.toString().startsWith(LEXICAL_NAMESPACE_BASE);	//see if this is URI without a fragment that starts with the lexical namespace base URI
-	}
-
 	/**Retrieves the type URI of a URI in a lexical namespace.
-	This method throws an exception for lexical namespaces themselves (i.e. a lexical namespace URI with no fragment).
+	This method throws an exception for lexical namespaces themselves.
 	@param lexicalURI A URI URI in a lexical namespace.
 	@return The type URI of the namespace of the lexical URI.
 	@exception IllegalArgumentException if the given URI is not in a lexical namespace.
@@ -391,16 +395,10 @@ public class URF
 		{
 			throw new IllegalArgumentException("URI "+lexicalURI+" is not in any namespace.");
 		}
-		final String lexicalNamespaceURIString=namespaceURI.toString();	//get the string version of the namespace URI
-		if(!lexicalNamespaceURIString.startsWith(LEXICAL_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
-		{
-			throw new IllegalArgumentException("URI "+lexicalURI+" is not a URI in a lexical namespace.");
-		}
-		return URI.create(uriDecode(lexicalNamespaceURIString.substring(LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
+		return getLexicalNamespaceTypeURI(namespaceURI);
 	}
 
 	/**Retrieves the type URI of a lexical namespace URI.
-	This method throws an exception if the given URI has a fragment.
 	@param namespaceURI The URI of a lexical namespace.
 	@return The type URI of the lexical namespace.
 	@exception IllegalArgumentException if the given URI is not a lexical namespace.
@@ -408,16 +406,12 @@ public class URF
 	*/
 	public static URI getLexicalNamespaceTypeURI(final URI namespaceURI)
 	{
-		if(namespaceURI.getFragment()!=null)	//if the given URI has a local name
-		{
-			throw new IllegalArgumentException("URI "+namespaceURI+" is not a namespace URI.");			
-		}
-		final String lexicalNamespaceURIString=namespaceURI.toString();	//get the string version of the namespace URI
+		final String lexicalNamespaceURIString=checkNamespaceURI(namespaceURI).toString();	//get the string version of the namespace URI
 		if(!lexicalNamespaceURIString.startsWith(LEXICAL_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
 		{
 			throw new IllegalArgumentException("URI "+namespaceURI+" is not a lexical namespace URI.");
 		}
-		return URI.create(uriDecode(lexicalNamespaceURIString.substring(LEXICAL_NAMESPACE_BASE.length())));	//retrieve the type substring and decode it
+		return URI.create(uriDecode(lexicalNamespaceURIString.substring(LEXICAL_NAMESPACE_BASE.length(), lexicalNamespaceURIString.length()-1)));	//retrieve the type substring and decode it
 	}
 	
 	/**Creates a lexical namespace URI for the given resource type.
@@ -427,7 +421,7 @@ public class URF
 	*/
 	public static URI createLexicalNamespaceURI(final URI typeURI)
 	{
-		return URI.create(LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString()));	//encode the type and append it to the lexical namespace base URI
+		return URI.create(LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString())+PATH_SEPARATOR);	//encode the type and append it to the lexical namespace base URI
 	}
 
 	/**Creates a URI in a lexical namespace for the given resource type and lexical form.
@@ -439,7 +433,16 @@ public class URF
 	*/
 	public static URI createLexicalURI(final URI typeURI, final String lexicalForm)
 	{
-		return URI.create(LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(checkAbsolute(typeURI).toString())+FRAGMENT_SEPARATOR+encodeURI(lexicalForm));	//encode the type, append it to the lexical namespace base URI, and append the fragment of the encoded lexical form
+		final StringWriter localNameWriter=new StringWriter(lexicalForm.length()*3/2);	//create a new string writer with extra room to encode the lexical form
+		try
+		{
+			URFTURFGenerator.writeString(localNameWriter, lexicalForm);	//write the lexical form as a string
+		}
+		catch(final IOException ioException)
+		{
+			throw new AssertionError(ioException);
+		}
+		return createResourceURI(createLexicalNamespaceURI(typeURI), localNameWriter.toString());	//get the appropriate lexical namespace and form a resource URI from the local name we just created
 	}
 
 	/**Creates a URI to represent URF binary data.
@@ -801,7 +804,7 @@ public class URF
 					final Class<?> lexicalClass=Classes.asClass(lexicalTypeURI);	//see if this is lexical type represents a Java class
 					if(lexicalClass!=null && Enum.class.isAssignableFrom(lexicalClass))	//if the lexical type is an enum
 					{
-						return Enum.valueOf((Class<? extends Enum>)lexicalClass, getLocalName(resourceURI));	//create an enum using the given lexical type and enum value
+						return Enum.valueOf((Class<? extends Enum>)lexicalClass, getLexicalValue(resourceURI));	//create an enum using the given lexical type and enum value
 					}
 				}
 				catch(final ClassNotFoundException classNotFoundException)
@@ -895,7 +898,7 @@ public class URF
 	{
 		if(resourceURI!=null && BINARY_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a binary URI was given
 		{
-			final String base64urlString=getLocalName(resourceURI);	//get the base64url-encoded binary data from the local name
+			final String base64urlString=getLexicalValue(resourceURI);	//get the base64url-encoded binary data from the value
 			return Base64.decode(base64urlString.getBytes(UTF_8_CHARSET), 0, base64urlString.length(), Base64.URL_SAFE&Base64.DONT_BREAK_LINES);	//decode and return the data
 		}
 		return null;	//no boolean could be found
@@ -923,7 +926,7 @@ public class URF
 	{
 		if(resourceURI!=null && BOOLEAN_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a boolean URI was given
 		{
-			return parseBoolean(getLocalName(resourceURI));	//create a boolean from the local name
+			return parseBoolean(getLexicalValue(resourceURI));	//create a boolean from the value
 		}
 		return null;	//no boolean could be found
 	}
@@ -950,7 +953,7 @@ public class URF
 	{
 		if(resourceURI!=null && CHARACTER_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a character URI was given
 		{
-			return parseCharacter(getLocalName(resourceURI));	//create a character from the local name
+			return parseCharacter(getLexicalValue(resourceURI));	//create a character from the value
 		}
 		return null;	//no boolean could be found
 	}
@@ -996,11 +999,11 @@ public class URF
 			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace URI of the resource URI
 			if(DATE_NAMESPACE_URI.equals(namespaceURI))	//if a date URI was given
 			{
-				return URFDate.valueOf(getLocalName(resourceURI));	//create a date from the local name
+				return URFDate.valueOf(getLexicalValue(resourceURI));	//create a date from the value
 			}
 			else if(DATE_TIME_NAMESPACE_URI.equals(namespaceURI))	//if a date time URI was given
 			{
-				return URFDateTime.valueOf(getLocalName(resourceURI));	//create a date time from the local name
+				return URFDateTime.valueOf(getLexicalValue(resourceURI));	//create a date time from the value
 			}
 		}
 		return null;	//no abstract date time could be found
@@ -1028,7 +1031,7 @@ public class URF
 	{
 		if(resourceURI!=null && DATE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a date URI was given
 		{
-			return URFDate.valueOf(getLocalName(resourceURI));	//create a date from the local name
+			return URFDate.valueOf(getLexicalValue(resourceURI));	//create a date from the value
 		}
 		return null;	//no date could be found
 	}	
@@ -1055,7 +1058,7 @@ public class URF
 	{
 		if(resourceURI!=null && DATE_TIME_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a date time URI was given
 		{
-			return URFDateTime.valueOf(getLocalName(resourceURI));	//create a date time from the local name
+			return URFDateTime.valueOf(getLexicalValue(resourceURI));	//create a date time from the value
 		}
 		return null;	//no pattern could be found
 	}	
@@ -1086,22 +1089,18 @@ public class URF
 	{
 		if(resourceURI!=null)	//if a URI was given
 		{
-			final String localName=getLocalName(resourceURI);	//retrieve the URI local name, if any
-			if(localName!=null)	//if there is a local name
+			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace of the URI
+			if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//if this is an integer
 			{
-				final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace of the URI
-				if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//if this is an integer
-				{
-					return Long.valueOf(Long.parseLong(localName));	//parse a long from the local name
-				}
-				else if(ORDINAL_NAMESPACE_URI.equals(namespaceURI))	//if this is an ordinal
-				{
-					return Long.valueOf(Long.parseLong(localName));	//parse a long from the local name
-				}
-				else if(REAL_NAMESPACE_URI.equals(namespaceURI))	//if this is an real
-				{
-					return Double.valueOf(Double.parseDouble(localName));	//parse a double from the local name
-				}
+				return Long.valueOf(Long.parseLong(getLexicalValue(resourceURI)));	//parse a long from the value
+			}
+			else if(ORDINAL_NAMESPACE_URI.equals(namespaceURI))	//if this is an ordinal
+			{
+				return Long.valueOf(Long.parseLong(getLexicalValue(resourceURI)));	//parse a long from the value
+			}
+			else if(REAL_NAMESPACE_URI.equals(namespaceURI))	//if this is an real
+			{
+				return Double.valueOf(Double.parseDouble(getLexicalValue(resourceURI)));	//parse a double from the value
 			}
 		}
 		return null;	//no number could be found
@@ -1157,7 +1156,7 @@ public class URF
 	{
 		if(resourceURI!=null && INTEGER_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if an integer URI was given
 		{
-			return Long.valueOf(Long.parseLong(getLocalName(resourceURI)));	//parse a long from the local name
+			return Long.valueOf(Long.parseLong(getLexicalValue(resourceURI)));	//parse a long from the value
 		}
 		return null;	//no integer could be found
 	}
@@ -1184,7 +1183,7 @@ public class URF
 	{
 		if(resourceURI!=null && LANGUAGE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a language URI was given
 		{
-			return createLocale(getLocalName(resourceURI));	//create a locale from the local name
+			return createLocale(getLexicalValue(resourceURI));	//create a locale from the value
 		}
 		return null;	//no language could be found
 	}
@@ -1200,7 +1199,7 @@ public class URF
 	{
 		if(resourceURI!=null && ORDINAL_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if an ordinal URI was given
 		{
-			return Long.valueOf(Long.parseLong(getLocalName(resourceURI)));	//parse a long from the local name
+			return Long.valueOf(Long.parseLong(getLexicalValue(resourceURI)));	//parse a long from the value
 		}
 		return null;	//no ordinal could be found
 	}
@@ -1231,7 +1230,7 @@ public class URF
 		{
 			try
 			{
-				return Pattern.compile(getLocalName(resourceURI));	//create a pattern from the local name
+				return Pattern.compile(getLexicalValue(resourceURI));	//create a pattern from the value
 			}
 			catch(final PatternSyntaxException patternSyntaxException)
 			{
@@ -1263,7 +1262,7 @@ public class URF
 	{
 		if(resourceURI!=null && REAL_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a real URI was given
 		{
-			return Double.parseDouble(getLocalName(resourceURI));	//parse a double from the local name
+			return Double.parseDouble(getLexicalValue(resourceURI));	//parse a double from the value
 		}
 		return null;	//no real could be found
 	}
@@ -1312,7 +1311,7 @@ public class URF
 	{
 		if(resourceURI!=null && STRING_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a string URI was given
 		{
-			return getLocalName(resourceURI);	//return the local name, which is the string value
+			return getLexicalValue(resourceURI);	//return the value, which is the string value
 		}
 		return null;	//no string could be found
 	}
@@ -1361,12 +1360,11 @@ public class URF
 	{
 		if(resourceURI!=null && URI_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a URI URI was given
 		{
-			return URI.create(getLocalName(resourceURI));	//create a URI from the local name
+			return URI.create(getLexicalValue(resourceURI));	//create a URI from the value
 		}
 		return null;	//no URI could be found
 	}
 
-	
 	/**Determines the URI path represented by the given resource.
 	A resource represents a URI path if it is has a URI with the {@value URIs#PATH_SCHEME} scheme.
 	@param resource The resource which is expected to represent a URI path, or <code>null</code>.

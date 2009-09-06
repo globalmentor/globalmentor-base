@@ -27,7 +27,7 @@ public class VCard
 {
 
 	/**The URI to the VCard namespace.*/
-	public final static URI VCARD_NAMESPACE_URI=URI.create("http://urf.name/vcard");
+	public final static URI VCARD_NAMESPACE_URI=URI.create("http://urf.name/vcard/");
 	
 		//classes 
 	/**Specifies the components of the name of the object the vCard represents.*/

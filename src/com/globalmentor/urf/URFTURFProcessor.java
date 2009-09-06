@@ -4,6 +4,7 @@ import java.io.*;
 import java.math.*;
 import java.net.*;
 import java.util.*;
+
 import static java.util.Collections.*;
 
 import static com.globalmentor.io.Charsets.*;
@@ -37,6 +38,37 @@ Any redistribution of this source code or derived source code must include these
 public class URFTURFProcessor extends AbstractURFProcessor
 {
 
+	/**The legacy, discontinued namespace URIs used during developement of URF.*/
+	private final static Set<URI> LEGACY_NAMESPACE_URIS;
+
+	static {
+		final Set<URI> legacyNamespaceURIs=new HashSet<URI>();
+		legacyNamespaceURIs.add(URI.create("http://urf.name/urf"));
+		legacyNamespaceURIs.add(URI.create("http://urf.name/content"));
+		legacyNamespaceURIs.add(URI.create("http://urf.name/default"));
+		legacyNamespaceURIs.add(URI.create("http://urf.name/select"));
+		legacyNamespaceURIs.add(URI.create("http://urf.name/vcard"));
+		legacyNamespaceURIs.add(URI.create("http://urf.name/xml"));
+		legacyNamespaceURIs.add(URI.create("http://example.com/example"));
+		legacyNamespaceURIs.add(URI.create("http://globalmentor.com/marmot/resource"));
+		legacyNamespaceURIs.add(URI.create("http://globalmentor.com/marmot/resource/xhtml"));
+		legacyNamespaceURIs.add(URI.create("http://globalmentor.com/marmot/security"));
+		legacyNamespaceURIs.add(URI.create("http://guiseframework.com/namespaces/resources"));
+		legacyNamespaceURIs.add(URI.create("http://guiseframework.com/namespaces/theme"));
+		LEGACY_NAMESPACE_URIS=unmodifiableSet(legacyNamespaceURIs);
+	}
+
+	/**Whether legacy, discontinued features are allowed.*/
+	private boolean legacyAllowed=true;
+
+	/**@return Whether legacy, discontinued features are allowed.*/
+	public boolean isLegacyAllowed() {return legacyAllowed;}
+
+	/**Sets whether legacy, discontinued features are allowed.
+	@param legacyAllowed Whether legacy, discontinued features are allowed.
+	*/
+	public void setLegacyAllowed(final boolean legacyAllowed) {this.legacyAllowed=legacyAllowed;}
+
 	/**Default constructor.*/
 	public URFTURFProcessor()
 	{
@@ -65,62 +97,74 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	public List<URFResource> process(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
 		Map<String, URI> prefixNamespaceURIMap=emptyMap();	//start out with no namespaces defined
-		check(reader, TURF_SIGNATURE);	//read the TURF signature
-		int c=skipFillers(reader);	//skip fillers
-		if(c==PROPERTIES_BEGIN)	//check for a TURF preamble
+		final List<URFResource> urfResourceList;
+		try
 		{
-			check(reader, PROPERTIES_BEGIN);	//read the beginning preamble delimiter			
-			c=skipFillers(reader);	//skip fillers and peek the next character
-			if(c!=PROPERTIES_END)	//if this is not an empty preamble
+			check(reader, TURF_SIGNATURE);	//read the TURF signature
+			int c=skipFillers(reader);	//skip fillers
+			if(c==PROPERTIES_BEGIN)	//check for a TURF preamble
 			{
-				try
+				check(reader, PROPERTIES_BEGIN);	//read the beginning preamble delimiter			
+				c=skipFillers(reader);	//skip fillers and peek the next character
+				if(c!=PROPERTIES_END)	//if this is not an empty preamble
 				{
-					while(c>=0)	//while the end of the data has not been reached
+					try
 					{
-						final URI namespacePrefixResourceURI=parseReference(reader, baseURI);	//parse a reference to the namespace prefix
-						final String namespacePrefix=asString(namespacePrefixResourceURI);	//get the namespace prefix
-						if(namespacePrefix==null)	//if there is no namespace prefix
+						while(c>=0)	//while the end of the data has not been reached
 						{
-							throw new DataException("Expected namespace prefix reference"+(namespacePrefixResourceURI!=null ? "; found: "+namespacePrefixResourceURI : "."));
-						}
-						skipFillers(reader);	//skip fillers
-						check(reader, NAMESPACE_ASSOCIATION_DELIMITER);	//read the namespace association delimiter
-						skipFillers(reader);	//skip fillers
-						final URI namespaceURIResourceURI=parseReference(reader, baseURI);	//parse a reference to the namespace URI
-						final URI namespaceURI=asURI(namespaceURIResourceURI);	//get the namespace URI
-						if(namespaceURI==null)	//if there is no namespace URI
-						{
-							throw new DataException("Expected namespace URI; found reference: "+namespaceURIResourceURI);
-						}
-						if(prefixNamespaceURIMap.isEmpty())	//if we haven't added any namespaces, yet, we're using the empty map
-						{
-							prefixNamespaceURIMap=new HashMap<String, URI>();	//create a new map that is mutable
-						}
-						prefixNamespaceURIMap.put(namespacePrefix, namespaceURI);	//store the TURF namespace prefix association
-						c=skipListSeparators(reader, PROPERTIES_END);	//skip list separators and peek the next character
-						if(c==LIST_DELIMITER)	//if we passed a list separator
-						{
-							c=peek(reader);	//peek the next character
-						}
-						else	//if there's anything besides a list delimiter, we've reached the end of the list
-						{
-							break;	//stop parsing the list
+							final URI namespacePrefixResourceURI=parseReference(reader, baseURI, Collections.<String, URI>emptyMap(), isLegacyAllowed());	//parse a reference to the namespace prefix
+							final String namespacePrefix=asString(namespacePrefixResourceURI);	//get the namespace prefix
+							if(namespacePrefix==null)	//if there is no namespace prefix
+							{
+								throw new DataException("Expected namespace prefix reference"+(namespacePrefixResourceURI!=null ? "; found: "+namespacePrefixResourceURI : "."));
+							}
+							skipFillers(reader);	//skip fillers
+							check(reader, NAMESPACE_ASSOCIATION_DELIMITER);	//read the namespace association delimiter
+							skipFillers(reader);	//skip fillers
+							final URI namespaceURIResourceURI=parseReference(reader, baseURI, Collections.<String, URI>emptyMap(), isLegacyAllowed());	//parse a reference to the namespace URI
+							URI namespaceURI=asURI(namespaceURIResourceURI);	//get the namespace URI
+							if(namespaceURI==null)	//if there is no namespace URI
+							{
+								throw new DataException("Expected namespace URI; found reference: "+namespaceURIResourceURI);
+							}
+							if(isLegacyAllowed())	//if we allow legacy features
+							{
+								namespaceURI=convertLegacyNamespaceURI(namespaceURI);	//convert the legacy namespace URI if needed
+							}
+							if(prefixNamespaceURIMap.isEmpty())	//if we haven't added any namespaces, yet, we're using the empty map
+							{
+								prefixNamespaceURIMap=new HashMap<String, URI>();	//create a new map that is mutable
+							}
+							prefixNamespaceURIMap.put(namespacePrefix, namespaceURI);	//store the TURF namespace prefix association
+							c=skipListSeparators(reader, PROPERTIES_END);	//skip list separators and peek the next character
+							if(c==LIST_DELIMITER)	//if we passed a list separator
+							{
+								c=peek(reader);	//peek the next character
+							}
+							else	//if there's anything besides a list delimiter, we've reached the end of the list
+							{
+								break;	//stop parsing the list
+							}
 						}
 					}
+					catch(final DataException dataException)
+					{
+						throw new ParseIOException(reader, dataException);
+					}
 				}
-				catch(final DataException dataException)
-				{
-					throw new ParseIOException(reader, dataException);
-				}
+				check(reader, PROPERTIES_END);	//read the ending preamble delimiter
+				skipFillers(reader);	//skip fillers and peek the next character
+	//TODO bring back and replace with previous line when root community newline leniency is removed			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 			}
-			check(reader, PROPERTIES_END);	//read the ending preamble delimiter
-			skipFillers(reader);	//skip fillers and peek the next character
-//TODO bring back and replace with previous line when root community newline leniency is removed			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
+			check(reader, COMMUNITY_BEGIN);	//read the beginning instance community delimiter
+			skipFillers(reader);	//skip fillers
+			urfResourceList=processResources(reader, baseURI, COMMUNITY_END, prefixNamespaceURIMap);	//process resources, indicating the end of the instance community
+			check(reader, COMMUNITY_END);	//read the ending community delimiter
 		}
-		check(reader, COMMUNITY_BEGIN);	//read the beginning instance community delimiter
-		skipFillers(reader);	//skip fillers
-		final List<URFResource> urfResourceList=processResources(reader, baseURI, COMMUNITY_END, prefixNamespaceURIMap);	//process resources, indicating the end of the instance community
-		check(reader, COMMUNITY_END);	//read the ending community delimiter
+		catch(final IllegalArgumentException illegalArgumentException)	//if something was wrong with one of the resources
+		{
+			throw new ParseIOException(reader, illegalArgumentException);
+		}
 		return urfResourceList;	//return the URF resources parsed
 	}
 
@@ -366,7 +410,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			label=parseLabel(reader);	//parse the label
 			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
 		}
-		final URI resourceURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse a reference to the resource, if any
+		final URI resourceURI=parseReference(reader, baseURI, prefixNamespaceURIMap, isLegacyAllowed());	//parse a reference to the resource, if any
 		if(resourceURI!=null)	//if we parsed a reference
 		{
 			foundComponent=true;	//indicate that at least one description component is present
@@ -384,7 +428,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		{
 			foundComponent=true;	//indicate that at least one description component is present
 			check(reader, TYPE_BEGIN);	//read the type delimiter
-			final URI typeURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse the type URI
+			final URI typeURI=parseReference(reader, baseURI, prefixNamespaceURIMap, isLegacyAllowed());	//parse the type URI
 			final Resource typeResource=determineResourceProxy(typeURI);	//get a proxy to the type resource
 			addAssertion(new Assertion(resource, typePropertyResource, typeResource));	//assert the type
 			types.add(typeResource);	//add the type to our list of types
@@ -407,7 +451,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			foundComponent=true;	//indicate that at least one description component is present
 			check(reader, SUBCLASS_OF_BEGIN);	//read the superclass delimiter
 			final Resource subclassOfPropertyResource=determineResourceProxy(SUBCLASS_OF_PROPERTY_URI);	//get a proxy to the superclass property resource
-			final URI subclassOfURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse the superclass URI
+			final URI subclassOfURI=parseReference(reader, baseURI, prefixNamespaceURIMap, isLegacyAllowed());	//parse the superclass URI
 			final Resource subclassOfResource=determineResourceProxy(subclassOfURI);	//get a proxy to the superclass resource
 			addAssertion(new Assertion(resource, subclassOfPropertyResource, subclassOfResource));	//assert the superclass
 			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
@@ -417,7 +461,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			foundComponent=true;	//indicate that at least one description component is present
 			check(reader, IMPLEMENTATION_OF_BEGIN);	//read the interface delimiter
 			final Resource implementationOfPropertyResource=determineResourceProxy(IMPLEMENTATION_OF_PROPERTY_URI);	//get a proxy to the interface property resource
-			final URI implementationOfURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse the interface URI
+			final URI implementationOfURI=parseReference(reader, baseURI, prefixNamespaceURIMap, isLegacyAllowed());	//parse the interface URI
 			final Resource implementationOfResource=determineResourceProxy(implementationOfURI);	//get a proxy to the interface resource
 			addAssertion(new Assertion(resource, implementationOfPropertyResource, implementationOfResource));	//assert the interface
 			c=skipNonListSeparatorFillers(reader);	//skip non-list-separator fillers and peek the next character
@@ -822,11 +866,33 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	public static URI parseReference(final Reader reader, final URI baseURI, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
 	{
+		return parseReference(reader, baseURI, prefixNamespaceURIMap, false); 
+	}
+
+	/**Parses a reference to a resource and returns the URI the reference represents, if any.
+	For references, the current position must be that of the first character of the reference.
+	If a reference was parsed, the new position will be that of the first non-separator character after the reference or the end of the reader.
+	If no reference was encountered, the new position will be the same as the old position.
+	@param reader The reader the contents of which to be parsed.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param prefixNamespaceURIMap The map of namespace URIs associated with prefixes; a new map containing the same information should be created if new namespaces should be added for a particular resource and it children.
+	@param legacyAllowed Whether legacy, discontinued features are allowed.
+	@return The reference parsed from the reader, or <code>null</code> if there is no reference at the current position.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters before the current reference is completely parsed.
+	@exception DataException if there was an error with information being processed.
+	*/
+	private static URI parseReference(final Reader reader, final URI baseURI, final Map<String, URI> prefixNamespaceURIMap, final boolean legacyAllowed) throws IOException, ParseIOException, DataException
+	{
 		final int c=peek(reader);	//peek the next character
 		switch(c)	//check for a reference or a short form
 		{
 			case REFERENCE_BEGIN:
-				return parseURI(reader, baseURI, REFERENCE_BEGIN, REFERENCE_END, prefixNamespaceURIMap);	//parse the resource URI
+				{
+					final URI uri=parseURI(reader, baseURI, REFERENCE_BEGIN, REFERENCE_END, prefixNamespaceURIMap, legacyAllowed);	//parse the reference URI
+					return legacyAllowed ? convertLegacyNamespacedURI(uri) : uri;	//convert the legacy URI if needed
+				}
 			case BINARY_BEGIN:	//binary
 				{
 					final byte[] binary=parseBinary(reader);	//parse the binary data
@@ -874,7 +940,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				return parseTemporal(reader);	//parse the temporal
 			case URI_BEGIN:	//URI
 				{
-					final URI uri=parseURI(reader, baseURI, URI_BEGIN, URI_END, prefixNamespaceURIMap);	//parse the URI
+					final URI uri=parseURI(reader, baseURI, URI_BEGIN, URI_END, prefixNamespaceURIMap);	//parse the URI, without allowing for legacy namespaced forms
 					return createLexicalURI(URI_CLASS_URI, uri.toString());	//create a URI for the resource
 				}
 			default:	//if there was some other character, see if it's a name reference
@@ -1252,6 +1318,25 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	@exception IOException if there is an error reading from the reader.
 	@exception ParseIOException if the string is not escaped correctly or reader has no more characters before the current string is completely parsed.
 	@exception DataException if the string is not of the correct format.
+	@see TURF#STRING_BEGIN
+	@see TURF#STRING_END
+	*/
+	public static String parseString(final Reader reader) throws IOException, ParseIOException, DataException
+	{
+		return parseString(reader, STRING_BEGIN, STRING_END);
+	}
+
+	/**Parses a string surrounded by the indicated delimiters.
+	The current position must be that of the first string delimiter character.
+	The new position will be that immediately after the string number delimiter character.
+	@param reader The reader the contents of which to be parsed.
+	@param stringBegin The beginning string delimiter.
+	@param stringEnd The ending string delimiter.
+	@return The string parsed from the reader.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the string is not escaped correctly or reader has no more characters before the current string is completely parsed.
+	@exception DataException if the string is not of the correct format.
 	*/
 	public static String parseString(final Reader reader, final char stringBegin, final char stringEnd) throws IOException, ParseIOException, DataException
 	{
@@ -1339,6 +1424,27 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	public static URI parseURI(final Reader reader, final URI baseURI, final char uriBegin, final char uriEnd, final Map<String, URI> prefixNamespaceURIMap) throws IOException, ParseIOException, DataException
 	{
+		return parseURI(reader, baseURI, uriBegin, uriEnd, prefixNamespaceURIMap, false);
+	}
+
+	/**Parses a URI surrounded by specified URI delimiters.
+	The current position must be that of the first URI delimiter character.
+	The new position will be that immediately after the last URI delimiter character.
+	The URI is resolved to the base URI, if any
+	@param reader The reader the contents of which to be parsed.
+	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
+	@param uriBegin The beginning URI delimiter.
+	@param uriEnd The ending URI delimiter.
+	@param prefixNamespaceURIMap The map of namespace URIs associated with prefixes; a new map containing the same information should be created if new namespaces should be added for a particular resource and it children.
+	@param legacyAllowed Whether legacy, discontinued features are allowed.
+	@return The URI parsed from the reader.
+	@exception NullPointerException if the given reader is <code>null</code>.
+	@exception IOException if there is an error reading from the reader.
+	@exception ParseIOException if the reader has no more characters before the current URI is completely parsed.
+	@exception DataException if the URI is not of the correct format.
+	*/
+	private static URI parseURI(final Reader reader, final URI baseURI, final char uriBegin, final char uriEnd, final Map<String, URI> prefixNamespaceURIMap, final boolean legacyAllowed) throws IOException, ParseIOException, DataException
+	{
 		check(reader, uriBegin);	//read the beginning URI delimiter
 		int c=peek(reader);	//peek the next character
 		final String lexicalForm;	//the lexical form, if any
@@ -1349,7 +1455,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			{
 				check(reader, TYPE_BEGIN);	//read the type delimiter
 				skipFillers(reader);	//skip fillers
-				final URI typeURI=parseReference(reader, baseURI, prefixNamespaceURIMap);	//parse the type resource
+				final URI typeURI=parseReference(reader, baseURI, prefixNamespaceURIMap, legacyAllowed);	//parse the type resource
 				if(typeURI==null)	//if no type URI was provided
 				{
 					throw new DataException("Lexical URI provided no type URI.");
@@ -1377,6 +1483,46 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			throw new DataException(uriSyntaxException);
 		}
 		return baseURI!=null ? resolve(baseURI, uri) : uri;	//return the URI, resolved against the base URI if there is a base URI
+	}
+
+	/**Converts a legacy namespace URI to a standard namespace URI.
+	This method converts a non-collection path into a collection path, ending with the {@value URIs#PATH_SEPARATOR} character,
+	if the legacy namespace is one of those recognized.
+	If the given namespace URI is not a legacy namespace URI, no action occurs.
+	@param legacyNamespaceURI The possibly legacy namespace URI to convert.
+	@return The new namespace URI converted from the given possibly legacy namespace URI.
+	@see #LEGACY_NAMESPACE_URIS 
+	*/
+	protected static URI convertLegacyNamespaceURI(final URI legacyNamespaceURI)
+	{
+		if(LEGACY_NAMESPACE_URIS.contains(legacyNamespaceURI))	//if this is a legacy URI
+		{
+			assert legacyNamespaceURI.getRawPath()!=null && !isCollectionPath(legacyNamespaceURI.getRawPath()); 
+			return changeRawPath(legacyNamespaceURI, legacyNamespaceURI.getRawPath()+PATH_SEPARATOR);	//change the path to a collection path
+		}
+		return legacyNamespaceURI;	//the URI didn't need converting
+	}
+
+	/**Converts a URI with a legacy namespace URI to a URI with a standard namespace URI.
+	This method converts URIs using the legacy namespace delimiter {@value URIs#FRAGMENT_SEPARATOR} to use the {@value URIs#PATH_SEPARATOR} character
+	if the legacy namespace is one of those recognized.
+	If the given URI does not have a legacy namespace URI, no action occurs.
+	@param legacyNamespacedURI The URI with possibly a legacy namespace URI to convert.
+	@return The new URI converted from the given URI with a possibly legacy namespace URI. 
+	@see #LEGACY_NAMESPACE_URIS 
+	*/
+	protected static URI convertLegacyNamespacedURI(final URI legacyNamespacedURI)
+	{
+		final String rawFragment=legacyNamespacedURI.getRawFragment();	//get the URI fragment, if any
+		if(rawFragment!=null && legacyNamespacedURI.getRawPath()!=null)	//if the URI has a fragment and a path
+		{
+			final URI legacyNamespaceURI=removeFragment(legacyNamespacedURI);	//remove the fragment to get the legacy namespace
+			if(LEGACY_NAMESPACE_URIS.contains(legacyNamespaceURI))	//if this is a legacy URI
+			{
+				return convertLegacyNamespaceURI(legacyNamespaceURI).resolve(rawFragment);	//convert that namespace and resolve the fragment against it
+			}
+		}
+		return legacyNamespacedURI;	//the URI didn't need converting
 	}
 
 }

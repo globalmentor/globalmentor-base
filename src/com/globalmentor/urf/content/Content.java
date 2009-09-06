@@ -22,7 +22,7 @@ public class Content
 {
 
 	/**The URI to the URF content namespace.*/
-	public final static URI CONTENT_NAMESPACE_URI=URI.create("http://urf.name/content");
+	public final static URI CONTENT_NAMESPACE_URI=URI.create("http://urf.name/content/");
 
 		//classes
 	/**The URI of the content <code>Charset</code> class.*/
@@ -103,7 +103,7 @@ public class Content
 	{
 		if(resourceURI!=null && CHARSET_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a charset URI was given
 		{
-			return Charset.forName(getLocalName(resourceURI));	//get a charset from the local name
+			return Charset.forName(getLexicalValue(resourceURI));	//get a charset from the value
 		}
 		return null;	//no charset could be found
 	}
@@ -130,7 +130,7 @@ public class Content
 	{
 		if(resourceURI!=null && MEDIA_TYPE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a media type URI was given
 		{
-			return ContentType.getInstance(getLocalName(resourceURI));	//create a media type from the local name
+			return ContentType.getInstance(getLexicalValue(resourceURI));	//create a media type from the value
 		}
 		return null;	//no media type could be found
 	}

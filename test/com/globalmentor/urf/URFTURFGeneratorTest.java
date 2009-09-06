@@ -64,7 +64,7 @@ public class URFTURFGeneratorTest
 	*/
 	protected void testGeneration(final URFTURFGenerator generator, final URF sourceURF) throws IOException
 	{
-		final URFResource sourceResource=sourceURF.getResourceByTypeURI(URI.create("http://guiseframework.com/namespaces/theme#Theme"));
+		final URFResource sourceResource=sourceURF.getResourceByTypeURI(URI.create("http://guiseframework.com/namespaces/theme/Theme"));
 		assertNotNull("Could not find resource from source.", sourceResource);
 		final StringWriter writer=new StringWriter();
 		generator.generateResources(writer, sourceResource);
@@ -72,7 +72,7 @@ public class URFTURFGeneratorTest
 		final URFTURFProcessor urfProcessor=new URFTURFProcessor();
 		final StringReader reader=new StringReader(writer.toString());
 		urfProcessor.process(new LineNumberReader(reader), null);
-		final URFResource destinationResource=urfProcessor.getURF().getResourceByTypeURI(URI.create("http://guiseframework.com/namespaces/theme#Theme"));
+		final URFResource destinationResource=urfProcessor.getURF().getResourceByTypeURI(URI.create("http://guiseframework.com/namespaces/theme/Theme"));
 		assertNotNull("Could not find resource from source.", sourceResource);
 		assertTrue("The generated TURF is not equavalent to what was parsed", sourceResource.equals(destinationResource));
 	}

@@ -78,8 +78,8 @@ public class URFTURFProcessorTest
 		{
 			final URFTURFProcessor urfProcessor=new URFTURFProcessor();
 			urfProcessor.process(reader1, turf1URL.toURI());
-			resource1=urfProcessor.getURF().getResourceByTypeURI(URI.create("http://guiseframework.com/namespaces/theme#Theme"));
-			assertNotNull("Could not find parsed resource from second file.", resource1);
+			resource1=urfProcessor.getURF().getResourceByTypeURI(URI.create("http://guiseframework.com/namespaces/theme/Theme"));
+			assertNotNull("Could not find parsed resource from first file.", resource1);
 		}
 		finally
 		{
@@ -91,7 +91,7 @@ public class URFTURFProcessorTest
 		{
 			final URFTURFProcessor urfProcessor=new URFTURFProcessor();
 			urfProcessor.process(reader2, turf2URL.toURI());
-			resource2=urfProcessor.getURF().getResourceByTypeURI(URI.create("http://guiseframework.com/namespaces/theme#Theme"));
+			resource2=urfProcessor.getURF().getResourceByTypeURI(URI.create("http://guiseframework.com/namespaces/theme/Theme"));
 			assertNotNull("Could not find parsed resource from second file.", resource2);
 		}
 		finally
@@ -107,6 +107,24 @@ public class URFTURFProcessorTest
 	{
 		final URFTURFProcessor urfProcessor=new URFTURFProcessor();
 		final URL turfURL=getClass().getResource("simple-anonymous-resource.turf");
+		final Reader reader=new LineNumberReader(new InputStreamReader(turfURL.openStream(), Charsets.UTF_8_CHARSET));
+		try
+		{
+			urfProcessor.process(reader, turfURL.toURI());
+		}
+		finally
+		{
+			reader.close();
+		}
+		Log.info(URF.toString(urfProcessor.getURF()));
+	}
+
+	/**Tests that the URF parser can parse a legacy TURF file containing old, deprecated features.*/
+	@Test
+	public void testLegacy() throws IOException, URISyntaxException
+	{
+		final URFTURFProcessor urfProcessor=new URFTURFProcessor();
+		final URL turfURL=getClass().getResource("legacy.turf");
 		final Reader reader=new LineNumberReader(new InputStreamReader(turfURL.openStream(), Charsets.UTF_8_CHARSET));
 		try
 		{

@@ -29,9 +29,9 @@ public class MAQRO
 {
 
 	/**The URI to the MAQRO namespace.*/
-	public final static URI MAQRO_NAMESPACE_URI=URI.create("http://maqro.org/maqro");
+	public final static URI MAQRO_NAMESPACE_URI=URI.create("http://maqro.org/maqro/");
 	/**The URI to the MAQRO interactivity namespace.*/
-	public final static URI MAQRO_INTERACT_NAMESPACE_URI=URI.create("http://maqro.org/interact");
+	public final static URI MAQRO_INTERACT_NAMESPACE_URI=URI.create("http://maqro.org/interact/");
 
 	/**The MIME content type for mentoring activities.*/
 	public final static ContentType MENTOR_ACTIVITY_CONTENT_TYPE=ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "x-mentor-activity+turf");

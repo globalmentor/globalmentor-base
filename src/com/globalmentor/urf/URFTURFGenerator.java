@@ -1241,7 +1241,7 @@ public class URFTURFGenerator
 		if(isLexicalURI(uri))	//if this URI is in a lexical namespace
 		{
 			lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI so that we don't generate it again
-			final String lexicalForm=getLocalName(uri);	//get the lexical form of the lexical type
+			final String lexicalForm=getLexicalValue(uri);	//get the lexical form of the lexical type
 			assert lexicalForm!=null : "A lexical namespace URI should always have a lexical form.";
 			if(BINARY_CLASS_URI.equals(lexicalTypeURI))	//binary
 			{
@@ -1340,7 +1340,7 @@ public class URFTURFGenerator
 		if(isLexicalURI(uri))	//if this URI is in a lexical namespace
 		{
 			final URI lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI
-			final String lexicalForm=getLocalName(uri);	//get the lexical form of the lexical type
+			final String lexicalForm=getLexicalValue(uri);	//get the lexical form of the lexical type
 			assert lexicalForm!=null : "A lexical namespace URI should always have a lexical form.";
 			writer.write(TYPE_BEGIN);	//start a type declaration
 			generateReference(writer, lexicalTypeURI, namespaceLabelManager, baseURI, determinePrefix);	//generate a reference to the lexical type, determining a new prefix if needed

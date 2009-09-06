@@ -17,7 +17,7 @@ public class Select
 {
 
 	/**The URI to the URF select namespace.*/
-	public final static URI SELECT_NAMESPACE_URI=URI.create("http://urf.name/select");
+	public final static URI SELECT_NAMESPACE_URI=URI.create("http://urf.name/select/");
 
 		//properties
 	/**Specifies the selected class of a class selector.*/

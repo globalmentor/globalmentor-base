@@ -142,7 +142,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 				{
 					if(isLexicalURI(uri))	//if the URI is a lexical URI
 					{
-						label=getLocalName(uri);	//get the local name of the URI, which will be the lexical form
+						label=getLexicalValue(uri);	//get the local name of the URI, which will be the lexical form
 					}
 					else	//if the URI is not in a lexical namespace
 					{

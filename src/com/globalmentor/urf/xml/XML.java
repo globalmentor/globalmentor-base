@@ -19,7 +19,7 @@ public class XML
 {
 
 	/**The URI to the URF XML namespace.*/
-	public final static URI XML_NAMESPACE_URI=URI.create("http://urf.name/xml");
+	public final static URI XML_NAMESPACE_URI=URI.create("http://urf.name/xml/");
 
 		//properties
 	/**The DTD of a resource.*/
