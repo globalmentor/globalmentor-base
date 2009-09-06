@@ -157,7 +157,7 @@ public class MAQROXHTMLifier	//TODO convert to URF
 		final RDFLiteral dialogueValue=dialogue.getValue();	//get the value of this dialogue
 		if(dialogueValue instanceof RDFPlainLiteral)	//if the dialogue is a plain literal
 		{
-			XML.appendText(element, dialogueValue.getLexicalForm());	//append the literal text to the element
+			XML.appendText(element, dialogueValue.getInlineLexicalForm());	//append the literal text to the element
 		}
 		else if(dialogueValue instanceof RDFXMLLiteral)	//if the dialogue is an XML literal
 		{

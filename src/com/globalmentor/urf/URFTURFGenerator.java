@@ -486,7 +486,7 @@ public class URFTURFGenerator
 				if(resourceURI!=null && !SHORT_REFERENCE_CLASS_URIS.contains(resourceURI))	//if this resource has a URI (if not, it has no namespace) and it doesn't identify a type that will receive a short reference (such URIs will never show up in normal circumstances)
 				{
 					final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace URI of this resource URI
-					if(namespaceURI!=null && !isLexicalNamespaceURI(namespaceURI))	//if this resource URI has a namespace that isn't a lexical namespace (URIs in lexical namespaces have their own short forms)
+					if(namespaceURI!=null && !isInlineNamespaceURI(namespaceURI))	//if this resource URI has a namespace that isn't an inline namespace (URIs in inline namespaces have their own short forms)
 					{
 						if(objectReferenceMapEntry.getValue().size()>1)	//if this resource is referenced more than once
 						{
@@ -516,7 +516,7 @@ public class URFTURFGenerator
 					continue;	//ignore the type property URI, as it will never show up in normal circumstances
 				}
 				final URI namespaceURI=getNamespaceURI(propertyURI);	//get the namespace URI of this property URI
-				if(namespaceURI!=null && !isLexicalNamespaceURI(namespaceURI))	//if this property URI has a namespace that isn't a lexical namespace (URIs in lexical namespaces have their own short forms)
+				if(namespaceURI!=null && !isInlineNamespaceURI(namespaceURI))	//if this property URI has a namespace that isn't an inline namespace (URIs in inline namespaces have their own short forms)
 				{
 					final Integer referenceCountInteger=referenceSummary.propertyURIReferenceCountMap.get(propertyURI);	//see how many times this property URI is used as a property URI (either by distinct resources or by a single resource)
 					if(referenceCountInteger!=null && referenceCountInteger.intValue()>1)	//if this property URI is used more than once
@@ -664,7 +664,7 @@ public class URFTURFGenerator
 			setGenerated(resource, true);	//note that the resource has been generated so that any recursive references won't regenerate the entire resoure again
 		}
 		boolean generatedComponent=false;	//we haven't generated any components, yet
-		URI lexicalTypeURI=null;	//the lexical namespace type URI, if any
+		URI inlineTypeURI=null;	//the inline namespace type URI, if any
 		final URI uri=resource.getURI();	//get the resource URI
 		String label=getLabel(resource);	//see if there is a label for this resource
 		if(label==null && uri==null && !isGenerated)	//if there is no label or URI for this resource and the resource hasn't yet been generated
@@ -682,9 +682,9 @@ public class URFTURFGenerator
 			//reference
 		if(uri!=null && (!isGenerated || label==null))	//if there is a URI (don't show the URI if the resource is already generated and we already generated a label here)
 		{
-			if(isLexicalURI(uri))	//if this URI is in a lexical namespace
+			if(isInlineURI(uri))	//if this URI is in an inline namespace
 			{
-				lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI so that we don't generate it again
+				inlineTypeURI=getInlineTypeURI(uri);	//get the inline type of the URI so that we don't generate it again
 			}
 			generateReference(writer, urf, uri);	//write a reference for the resource
 			generatedComponent=true;	//indicate that we generated a component
@@ -710,11 +710,11 @@ public class URFTURFGenerator
 		}
 		boolean isProposition=false;	//we'll see if this is a proposition
 		boolean isList=false;	//we'll see if this is a list
-		boolean hasNonListType=lexicalTypeURI!=null && !LIST_CLASS_URI.equals(lexicalTypeURI);	//we'll see if there is a type that is not a list
+		boolean hasNonListType=inlineTypeURI!=null && !LIST_CLASS_URI.equals(inlineTypeURI);	//we'll see if there is a type that is not a list
 		boolean isSet=false;	//we'll see if this is a set
-		boolean hasNonSetType=lexicalTypeURI!=null && !SET_CLASS_URI.equals(lexicalTypeURI);	//we'll see if there is a type that is not a set
+		boolean hasNonSetType=inlineTypeURI!=null && !SET_CLASS_URI.equals(inlineTypeURI);	//we'll see if there is a type that is not a set
 		boolean isMap=false;	//we'll see if this is a map
-		boolean hasNonMapType=lexicalTypeURI!=null && !MAP_CLASS_URI.equals(lexicalTypeURI);	//we'll see if there is a type that is not a map
+		boolean hasNonMapType=inlineTypeURI!=null && !MAP_CLASS_URI.equals(inlineTypeURI);	//we'll see if there is a type that is not a map
 		for(final URFResource type:resource.getTypes())	//look through all the types
 		{
 			final URI typeURI=type.getURI();	//get the type URI
@@ -782,7 +782,7 @@ public class URFTURFGenerator
 				final URI typeURI=type.getURI();	//get the URI of this type
 				if(typeURI!=null)	//if the given type has a URI
 				{
-					if(typeURI.equals(lexicalTypeURI))	//if this is the same type URI as the URI included in the lexical namespace type URI, if any
+					if(typeURI.equals(inlineTypeURI))	//if this is the same type URI as the URI included in the inline namespace type URI, if any
 					{
 						continue;	//skip this type
 					}
@@ -1204,7 +1204,7 @@ public class URFTURFGenerator
 
 	/**Generates a reference to a resource with the given URI with no default namespace URI.
 	A name reference or short form will be used if appropriate.
-	If a reference to a lexical URI is generated, the corresponding lexical type URI will be marked as generated if it has no other qualities needed to be generated separately.
+	If a reference to an inline URI is generated, the corresponding inline type URI will be marked as generated if it has no other qualities needed to be generated separately.
 	No prefix will be determined if one is not already available for the namespace URI, if any, of the given resource URI.
 	@param writer The writer used for generating the information.
 	@param urf The URF data model.
@@ -1216,10 +1216,10 @@ public class URFTURFGenerator
 	*/
 	public void generateReference(final Writer writer, final URF urf, final URI uri) throws IOException
 	{
-		final URI lexicalTypeURI=generateReference(writer, uri, namespaceLabelManager, baseURI, false);	//generate a reference, keeping track of the lexical type URI generated, if any
-		if(lexicalTypeURI!=null)	//if a lexical URI was generated
+		final URI inlineTypeURI=generateReference(writer, uri, namespaceLabelManager, baseURI, false);	//generate a reference, keeping track of the inline type URI generated, if any
+		if(inlineTypeURI!=null)	//if an inline URI was generated
 		{
-			markReferenceGenerated(urf, lexicalTypeURI);	//mark that this lexical type was generated unless it has some other quality needed to be generated separately
+			markReferenceGenerated(urf, inlineTypeURI);	//mark that this inline type was generated unless it has some other quality needed to be generated separately
 		}
 	}
 
@@ -1230,65 +1230,65 @@ public class URFTURFGenerator
 	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
 	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
 	@param determinePrefix <code>true</code> if a prefix should be determined if one is not available for the namespace URI, if any, of the given resource URI.
-	@return The lexical type URI, if a reference to a lexical URI was generated, or <code>null</code> if no lexical resource URI reference was generated.
+	@return The inline type URI, if a reference to an inline URI was generated, or <code>null</code> if no inline resource URI reference was generated.
 	@exception NullPointerException if the given writer URI, and/or namespace label manager is <code>null</code>.
 	@exception IOException if there was an error writing to the writer.
 	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
 	*/
 	public static URI generateReference(final Writer writer, final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final boolean determinePrefix) throws IOException
 	{
-		URI lexicalTypeURI=null;	//keep track of whether a lexical type URI was generated
-		if(isLexicalURI(uri))	//if this URI is in a lexical namespace
+		URI inlineTypeURI=null;	//keep track of whether an inline type URI was generated
+		if(isInlineURI(uri))	//if this URI is in an inline namespace
 		{
-			lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI so that we don't generate it again
-			final String lexicalForm=getLexicalValue(uri);	//get the lexical form of the lexical type
-			assert lexicalForm!=null : "A lexical namespace URI should always have a lexical form.";
-			if(BINARY_CLASS_URI.equals(lexicalTypeURI))	//binary
+			inlineTypeURI=getInlineTypeURI(uri);	//get the inline type of the URI so that we don't generate it again
+			final String lexicalForm=getInlineLexicalForm(uri);	//get the lexical form of the inline type
+			assert lexicalForm!=null : "An inline namespace URI should always have a lexical form.";
+			if(BINARY_CLASS_URI.equals(inlineTypeURI))	//binary
 			{
 				writer.append(BINARY_BEGIN).append(lexicalForm).append(BINARY_END);	//write the binary short form
-				return lexicalTypeURI;
+				return inlineTypeURI;
 			}
-			else if(BOOLEAN_CLASS_URI.equals(lexicalTypeURI))	//boolean
+			else if(BOOLEAN_CLASS_URI.equals(inlineTypeURI))	//boolean
 			{
 				writer.append(BOOLEAN_BEGIN).append(lexicalForm).append(BOOLEAN_END);	//write the boolean short form
-				return lexicalTypeURI;
+				return inlineTypeURI;
 			}
-			else if(CHARACTER_CLASS_URI.equals(lexicalTypeURI))	//character
+			else if(CHARACTER_CLASS_URI.equals(inlineTypeURI))	//character
 			{
 				writer.append(CHARACTER_BEGIN).append(lexicalForm).append(CHARACTER_END);	//write the character short form
-				return lexicalTypeURI;
+				return inlineTypeURI;
 			}
-			else if(DATE_CLASS_URI.equals(lexicalTypeURI) || DATE_TIME_CLASS_URI.equals(lexicalTypeURI)
-					|| DURATION_CLASS_URI.equals(lexicalTypeURI) || TIME_CLASS_URI.equals(lexicalTypeURI)
-					|| UTC_OFFSET_CLASS_URI.equals(lexicalTypeURI))	//if this is a temporal
+			else if(DATE_CLASS_URI.equals(inlineTypeURI) || DATE_TIME_CLASS_URI.equals(inlineTypeURI)
+					|| DURATION_CLASS_URI.equals(inlineTypeURI) || TIME_CLASS_URI.equals(inlineTypeURI)
+					|| UTC_OFFSET_CLASS_URI.equals(inlineTypeURI))	//if this is a temporal
 			{
 				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
-				return lexicalTypeURI;
+				return inlineTypeURI;
 			}
-			else if(INTEGER_CLASS_URI.equals(lexicalTypeURI) || REAL_CLASS_URI.equals(lexicalTypeURI))	//integer or real
+			else if(INTEGER_CLASS_URI.equals(inlineTypeURI) || REAL_CLASS_URI.equals(inlineTypeURI))	//integer or real
 			{
 				writer.append(NUMBER_BEGIN).append(lexicalForm).append(NUMBER_END);	//write the number short form
-				return lexicalTypeURI;
+				return inlineTypeURI;
 			}
-			else if(ORDINAL_CLASS_URI.equals(lexicalTypeURI))	//ordinal
+			else if(ORDINAL_CLASS_URI.equals(inlineTypeURI))	//ordinal
 			{
 				writer.append(ORDINAL_BEGIN).append(lexicalForm).append(ORDINAL_END);	//write the ordinal short form
-				return lexicalTypeURI;
+				return inlineTypeURI;
 			}
-			else if(REGULAR_EXPRESSION_CLASS_URI.equals(lexicalTypeURI))	//if this is a regular expression
+			else if(REGULAR_EXPRESSION_CLASS_URI.equals(inlineTypeURI))	//if this is a regular expression
 			{
 				writeRegularExpression(writer, lexicalForm);	//write the regular expression short form
-				return lexicalTypeURI;
+				return inlineTypeURI;
 			}
-			else if(STRING_CLASS_URI.equals(lexicalTypeURI))	//if this is a string
+			else if(STRING_CLASS_URI.equals(inlineTypeURI))	//if this is a string
 			{
 				writeString(writer, lexicalForm);	//write the string short form
-				return lexicalTypeURI;
+				return inlineTypeURI;
 			}
-			else if(URI_CLASS_URI.equals(lexicalTypeURI))	//if this is a URI
+			else if(URI_CLASS_URI.equals(inlineTypeURI))	//if this is a URI
 			{
 				writeURI(writer, lexicalForm);	//write the URI short form
-				return lexicalTypeURI;
+				return inlineTypeURI;
 			}
 		}
 		final URI namespaceURI=getNamespaceURI(uri);	//see if the URI has a namespace
@@ -1305,11 +1305,11 @@ public class URFTURFGenerator
 					writer.append(prefix).append(NAME_PREFIX_DELIMITER);	//prefix.
 				}
 				writer.append(localName);	//prefix.localName
-				return lexicalTypeURI;	//return the lexical type URI, if any
+				return inlineTypeURI;	//return the inline type URI, if any
 			}
 		}
 		generateURIReference(writer, uri, namespaceLabelManager, baseURI, determinePrefix);	//generate the URI reference normally by default
-		return lexicalTypeURI;	//return the lexical type URI, if any
+		return inlineTypeURI;	//return the inline type URI, if any
 	}
 
 	/**Writes a URI reference to a resource with the given URI.
@@ -1337,18 +1337,18 @@ public class URFTURFGenerator
 	public static void generateURIReference(final Writer writer, URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final boolean determinePrefix) throws IOException
 	{
 		writer.write(REFERENCE_BEGIN);	//start the URI reference
-		if(isLexicalURI(uri))	//if this URI is in a lexical namespace
+		if(isInlineURI(uri))	//if this URI is in an inline namespace
 		{
-			final URI lexicalTypeURI=getLexicalTypeURI(uri);	//get the lexical type of the URI
-			final String lexicalForm=getLexicalValue(uri);	//get the lexical form of the lexical type
-			assert lexicalForm!=null : "A lexical namespace URI should always have a lexical form.";
+			final URI inlineTypeURI=getInlineTypeURI(uri);	//get the inline type of the URI
+			final String lexicalForm=getInlineLexicalForm(uri);	//get the lexical form of the inline type
+			assert lexicalForm!=null : "An inline namespace URI should always have a lexical form.";
 			writer.write(TYPE_BEGIN);	//start a type declaration
-			generateReference(writer, lexicalTypeURI, namespaceLabelManager, baseURI, determinePrefix);	//generate a reference to the lexical type, determining a new prefix if needed
+			generateReference(writer, inlineTypeURI, namespaceLabelManager, baseURI, determinePrefix);	//generate a reference to the inline type, determining a new prefix if needed
 			writer.write(SELECTOR_BEGIN);	//start the selector
 			writeString(writer, lexicalForm);	//write the string lexical form			
 			writer.write(SELECTOR_END);	//end the selector
 		}
-		else	//if this URI is not in a lexical namespace
+		else	//if this URI is not in an inline namespace
 		{
 			if(baseURI!=null)	//if there is a base URI
 			{
@@ -1360,7 +1360,7 @@ public class URFTURFGenerator
 	}
 
 	/**Marks a reference as generated if appropriate.
-	If a reference is to a resource with no properties, or the reference is a lexical URI and there is only a single type of the lexical type,
+	If a reference is to a resource with no properties, or the reference is an inline URI and there is only a single type of the inline type,
 	there will be no need to generate the resource in full form, so it will be marked as generated.
 	This method is useful for marking property URI references as generated if they do not need to stand on their own.
 	@param urf The URF data model.
@@ -1376,14 +1376,14 @@ public class URFTURFGenerator
 			try
 			{
 				final long propertyCount=resource.getPropertyValueCount();	//find out how many properties the resource has
-				if(propertyCount>0)	//if there is more than one property, make sure it's not just a type of a lexical URI
+				if(propertyCount>0)	//if there is more than one property, make sure it's not just a type of an inline URI
 				{
-					if(propertyCount!=1 || !isLexicalURI(resourceURI))	//if there's not just one property, or this is not a lexical URI
+					if(propertyCount!=1 || !isInlineURI(resourceURI))	//if there's not just one property, or this is not an inline URI
 					{
 						return;	//we shouldn't mark this resource as generated
 					}
-					final URI lexicalTypeURI=getLexicalTypeURI(resourceURI);	//find out the lexical type of the URI
-					if(!resource.hasTypeURI(lexicalTypeURI))	//if there is another type besides the lexical type, don't mark the resource as generated; otherwise, the type is redundance
+					final URI inlineTypeURI=getInlineTypeURI(resourceURI);	//find out the inline type of the URI
+					if(!resource.hasTypeURI(inlineTypeURI))	//if there is another type besides the inline type, don't mark the resource as generated; otherwise, the type is redundance
 					{
 						return;	//we shouldn't mark this resource as generated
 					}

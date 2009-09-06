@@ -53,11 +53,11 @@ public class Content
 	/**The Internet media type of a resource.*/
 	public final static URI TYPE_PROPERTY_URI=createResourceURI(CONTENT_NAMESPACE_URI, "type");
 
-		//lexical namespaces
-	/**The charset lexical namespace URI.*/
-	public final static URI CHARSET_NAMESPACE_URI=createLexicalNamespaceURI(CHARSET_CLASS_URI);
-	/**The media type lexical namespace URI.*/
-	public final static URI MEDIA_TYPE_NAMESPACE_URI=createLexicalNamespaceURI(MEDIA_TYPE_CLASS_URI);
+		//inline namespaces
+	/**The charset inline namespace URI.*/
+	public final static URI CHARSET_NAMESPACE_URI=createInlineNamespaceURI(CHARSET_CLASS_URI);
+	/**The media type inline namespace URI.*/
+	public final static URI MEDIA_TYPE_NAMESPACE_URI=createInlineNamespaceURI(MEDIA_TYPE_CLASS_URI);
 
 	/**Creates a URI to represent a content charset.
 	@param charset The charset to represent.
@@ -67,7 +67,7 @@ public class Content
 	*/
 	public static URI createCharsetURI(final Charset charset)
 	{
-		return createLexicalURI(CHARSET_CLASS_URI, charset.name());	//create a charset URI
+		return createInlineURI(CHARSET_CLASS_URI, charset.name());	//create a charset URI
 	}
 
 	/**Creates a URI to represent a content media type.
@@ -78,7 +78,7 @@ public class Content
 	*/
 	public static URI createMediaTypeURI(final ContentType mediaType)
 	{
-		return createLexicalURI(MEDIA_TYPE_CLASS_URI, mediaType.getBaseType());	//create a media type URI
+		return createInlineURI(MEDIA_TYPE_CLASS_URI, mediaType.getBaseType());	//create a media type URI
 	}
 
 	/**Determines the charset represented by the given resource.
@@ -103,7 +103,7 @@ public class Content
 	{
 		if(resourceURI!=null && CHARSET_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a charset URI was given
 		{
-			return Charset.forName(getLexicalValue(resourceURI));	//get a charset from the value
+			return Charset.forName(getInlineLexicalForm(resourceURI));	//get a charset from the value
 		}
 		return null;	//no charset could be found
 	}
@@ -130,7 +130,7 @@ public class Content
 	{
 		if(resourceURI!=null && MEDIA_TYPE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a media type URI was given
 		{
-			return ContentType.getInstance(getLexicalValue(resourceURI));	//create a media type from the value
+			return ContentType.getInstance(getInlineLexicalForm(resourceURI));	//create a media type from the value
 		}
 		return null;	//no media type could be found
 	}
@@ -353,7 +353,7 @@ public class Content
 				@param resourceURI The URI of the resource to create, or <code>null</code> if the resource created should be anonymous.
 				@param typeURI The URI of the resource type, or <code>null</code> if the type is not known.
 				@return The resource created with this URI.
-				@exception IllegalArgumentException if a lexical resource URI was given with a different type URI than the specified type URI.
+				@exception IllegalArgumentException if an inline resource URI was given with a different type URI than the specified type URI.
 				*/
 				public URFResource createResource(final URI resourceURI, final URI typeURI)
 				{

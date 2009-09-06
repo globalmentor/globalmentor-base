@@ -418,11 +418,11 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		}
 		final Resource resource=determineResourceProxy(label, resourceURI);	//get a resource proxy from the label and/or reference URI, or use one already available for the reference URI
 		final Resource typePropertyResource=determineResourceProxy(TYPE_PROPERTY_URI);	//get a proxy to the type property resource
-		if(resourceURI!=null && isLexicalURI(resourceURI))	//if there is a resource URI that is in a lexical namespace
+		if(resourceURI!=null && isInlineURI(resourceURI))	//if there is a resource URI that is in an inline namespace
 		{
-			final Resource lexicalType=determineResourceProxy(getLexicalTypeURI(resourceURI));	//get a proxy to the lexical type
-			types.add(lexicalType);	//add the lexical type to our list of types
-			addAssertion(new Assertion(resource, typePropertyResource, lexicalType));	//assert the lexical type
+			final Resource inlineType=determineResourceProxy(getInlineTypeURI(resourceURI));	//get a proxy to the inline type
+			types.add(inlineType);	//add the inline type to our list of types
+			addAssertion(new Assertion(resource, typePropertyResource, inlineType));	//assert the inline type
 		}
 		while(c==TYPE_BEGIN)	//check for types
 		{
@@ -901,25 +901,25 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			case BOOLEAN_BEGIN:	//boolean
 				{
 					final boolean b=parseBoolean(reader);	//parse the boolean
-					return createLexicalURI(BOOLEAN_CLASS_URI, Boolean.toString(b));	//create a URI for the resource
+					return createInlineURI(BOOLEAN_CLASS_URI, Boolean.toString(b));	//create a URI for the resource
 				}
 			case NUMBER_BEGIN:	//number
 				{
 					final Number number=parseNumber(reader, NUMBER_BEGIN, NUMBER_END, true, true, true);	//parse the number, allowing negative, decimal, and exponents
-					final URI lexicalTypeURI;	//determine which type of number this is
+					final URI inlineTypeURI;	//determine which type of number this is
 					if(number instanceof Integer || number instanceof Long || number instanceof BigInteger)	//if this is an integer
 					{
-						lexicalTypeURI=INTEGER_CLASS_URI;	//we'll create an integer URI for the resource
+						inlineTypeURI=INTEGER_CLASS_URI;	//we'll create an integer URI for the resource
 					}
 					else if(number instanceof Float || number instanceof Double || number instanceof BigDecimal)	//if this is an real
 					{
-						lexicalTypeURI=REAL_CLASS_URI;	//create a real URI for the resource
+						inlineTypeURI=REAL_CLASS_URI;	//create a real URI for the resource
 					}
 					else	//if we don't recognize the number type
 					{
 						throw new AssertionError("Unrecognized number type produced: "+number.getClass());
 					}
-					return createLexicalURI(lexicalTypeURI, number.toString());	//create a URI for the resource
+					return createInlineURI(inlineTypeURI, number.toString());	//create a URI for the resource
 				}
 			case ORDINAL_BEGIN:	//number
 				{
@@ -929,19 +929,19 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			case REGULAR_EXPRESSION_BEGIN:	//regular expression
 				{
 					final String regularExpressionString=parseString(reader, REGULAR_EXPRESSION_BEGIN, REGULAR_EXPRESSION_END);	//parse the regular expression string
-					return createLexicalURI(REGULAR_EXPRESSION_CLASS_URI, regularExpressionString);	//create a URI for the regular expression
+					return createInlineURI(REGULAR_EXPRESSION_CLASS_URI, regularExpressionString);	//create a URI for the regular expression
 				}
 			case STRING_BEGIN:	//string
 				{
 					final String string=parseString(reader, STRING_BEGIN, STRING_END);	//parse the string
-					return createLexicalURI(STRING_CLASS_URI, string);	//create a URI for the string
+					return createInlineURI(STRING_CLASS_URI, string);	//create a URI for the string
 				}
 			case TEMPORAL_BEGIN:	//temporal
 				return parseTemporal(reader);	//parse the temporal
 			case URI_BEGIN:	//URI
 				{
 					final URI uri=parseURI(reader, baseURI, URI_BEGIN, URI_END, prefixNamespaceURIMap);	//parse the URI, without allowing for legacy namespaced forms
-					return createLexicalURI(URI_CLASS_URI, uri.toString());	//create a URI for the resource
+					return createInlineURI(URI_CLASS_URI, uri.toString());	//create a URI for the resource
 				}
 			default:	//if there was some other character, see if it's a name reference
 				if(isNameBeginCharacter(c))	//if this is a name begin character
@@ -1187,11 +1187,11 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		check(reader, TEMPORAL_BEGIN);	//read the beginning temporal delimiter
 		int c;	//we'll use this to keep track of the next character
 		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to use when reading the temporal
-		final URI lexicalTypeURI;	//determine which type of temporal this is
+		final URI inlineTypeURI;	//determine which type of temporal this is
 		c=peek(reader);	//peek the first character
 		if(c==DURATION_LEXICAL_FORM_BEGIN)	//if this temporal starts with a duration delimiter
 		{
-			lexicalTypeURI=DURATION_CLASS_URI;	//this is a duration
+			inlineTypeURI=DURATION_CLASS_URI;	//this is a duration
 			stringBuilder.append(check(reader, DURATION_LEXICAL_FORM_BEGIN));	//read and add the delimiter
 			boolean hasComponent=false;	//we'll see if the duration has some component
 			c=peek(reader);	//peek the next character
@@ -1236,7 +1236,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		}
 		else if(c=='+' || c=='-')	//if this is the start of a UTC offset
 		{
-			lexicalTypeURI=UTC_OFFSET_CLASS_URI;	//this is a UTC offset
+			inlineTypeURI=UTC_OFFSET_CLASS_URI;	//this is a UTC offset
 			stringBuilder.append(check(reader, (char)c));	//read and add the delimiter
 			stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read two digits
 			stringBuilder.append(check(reader, TIME_DELIMITER));	//read and add the time delimiter
@@ -1257,14 +1257,14 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				c=peek(reader);	//peek the next character
 				if(c==TIME_BEGIN)	//if this is the beginning of a time
 				{
-					lexicalTypeURI=DATE_TIME_CLASS_URI;	//this is a date time
+					inlineTypeURI=DATE_TIME_CLASS_URI;	//this is a date time
 					stringBuilder.append(check(reader, TIME_BEGIN));	//read and append the time delimiter
 					dateTimeStart=readStringCheck(reader, 2, '0', '9'); //read the hour, and then let the time code take over
 					hasTime=true;	//we still have time to parse
 				}
 				else	//if this is only a date
 				{
-					lexicalTypeURI=DATE_CLASS_URI;	//this is a date
+					inlineTypeURI=DATE_CLASS_URI;	//this is a date
 					hasTime=false;	//there is no time to parse
 				}					
 			}
@@ -1272,7 +1272,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			{
 				if(dateTimeStartLength==2)	//if we're starting a time
 				{
-					lexicalTypeURI=TIME_CLASS_URI;	//this is a time
+					inlineTypeURI=TIME_CLASS_URI;	//this is a time
 					hasTime=true;	//we need to parse the time
 				}
 				else	//if this is neither the start of a date nor the start of a time
@@ -1304,7 +1304,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			}
 		}
 		check(reader, TEMPORAL_END);	//read the ending temporal delimiter
-		return createLexicalURI(lexicalTypeURI, stringBuilder.toString());	//create and return a URI for the temporal
+		return createInlineURI(inlineTypeURI, stringBuilder.toString());	//create and return a URI for the temporal
 	}
 
 	/**Parses a string surrounded by string delimiters.
@@ -1458,7 +1458,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				final URI typeURI=parseReference(reader, baseURI, prefixNamespaceURIMap, legacyAllowed);	//parse the type resource
 				if(typeURI==null)	//if no type URI was provided
 				{
-					throw new DataException("Lexical URI provided no type URI.");
+					throw new DataException("Inline URI provided no type URI.");
 				}
 				skipFillers(reader);	//skip fillers
 				check(reader, SELECTOR_BEGIN);	//read the beginning selector delimiter
@@ -1467,14 +1467,14 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				skipFillers(reader);	//skip fillers
 				check(reader, SELECTOR_END);	//read the ending selector delimiter
 				check(reader, uriEnd);	//read the ending URI delimiter
-				uri=createLexicalURI(typeURI, lexicalForm);	//create a lexical URI using the lexical form and the type URI
+				uri=createInlineURI(typeURI, lexicalForm);	//create an inline URI using the lexical form and the type URI
 			}
 			else	//if no type was encountered
 			{
 				uri=new URI(reachAfter(reader, uriEnd));	//read the rest of the URI normally
 			}
 		}
-		catch(final IllegalArgumentException illegalArgumentException)	//if we couldn't create a correct lexical URI
+		catch(final IllegalArgumentException illegalArgumentException)	//if we couldn't create a correct inline URI
 		{
 			throw new DataException(illegalArgumentException);
 		}

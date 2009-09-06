@@ -121,7 +121,7 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 	<ol>
 		<li>The string value of any «{@value URF#LABEL_PROPERTY_URI}» property.</li>
 		<li>The string value of any «{@value DCMI#TITLE_PROPERTY_URI}» property.</li>
-		<li>The lexical form of any resource with a URI in a lexical namespace.</li>
+		<li>The lexical form of any resource with a URI in an inline namespace.</li>
 		<li>The decoded last past segment of a hierarchical URI.</li>
 		<li>The reference URI.</li>
 		<li>The Java string representation of the resource as given by its <code>toString()</code> method.</li>
@@ -140,11 +140,11 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 				final URI uri=getURI();	//get the resource URI
 				if(uri!=null)	//if this resource has a URI
 				{
-					if(isLexicalURI(uri))	//if the URI is a lexical URI
+					if(isInlineURI(uri))	//if the URI is an inline URI
 					{
-						label=getLexicalValue(uri);	//get the local name of the URI, which will be the lexical form
+						label=getInlineLexicalForm(uri);	//get the lexical form
 					}
-					else	//if the URI is not in a lexical namespace
+					else	//if the URI is not in an inline namespace
 					{
 						label=URIs.getName(uri);	//get the name of the URI, if any
 						if(label==null)	//if no name could be determined from the URI

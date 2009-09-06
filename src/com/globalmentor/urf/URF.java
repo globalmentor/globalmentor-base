@@ -14,7 +14,6 @@ import static com.globalmentor.io.Charsets.*;
 import com.globalmentor.collections.CollectionMap;
 import com.globalmentor.collections.IdentityHashSet;
 import com.globalmentor.collections.IdentityHashSetMap;
-import com.globalmentor.io.ParseIOException;
 import com.globalmentor.java.*;
 import static com.globalmentor.java.Booleans.*;
 import static com.globalmentor.java.Characters.*;
@@ -57,18 +56,10 @@ public class URF
 	public final static URI NAMESPACE_URI=URI.create("http://urf.name/urf/");
 	/**The URI to the URF default namespace.*/
 	public final static URI DEFAULT_NAMESPACE_URI=URI.create("http://urf.name/default/");
-	/**The base to the URF lexical namespace.*/
-	private final static String LEXICAL_NAMESPACE_BASE="http://urf.name/lexical/";
-	/**The base URI to the URF lexical namespace.*/
-	public final static URI LEXICAL_NAMESPACE_BASE_URI=URI.create(LEXICAL_NAMESPACE_BASE);
-	/**The prefix for local names containing values in lexical URIs.*/
-//TODO del	public final static String LEXICAL_VALUE_LOCAL_NAME_STRING_PREFIX=URIs.encodeURI("(\"");
-	/**The suffix for local names containing values in lexical URIs.*/
-//TODO del	public final static String LEXICAL_VALUE_LOCAL_NAME_STRING_SUFFIX=URIs.encodeURI("\")");
-	/**The pattern for matching a string-based value in the local name of a lexical URI.
-	The first and only matching group is that of the encoded lexical value.
-	*/
-//TODO del	public final static Pattern LEXICAL_VALUE_LOCAL_NAME_STRING_PATTERN=Pattern.compile("\\(\"([^\"\\)]*)\"\\)");
+	/**The string form of the URF inline namespace.*/
+	private final static String BASE_INLINE_NAMESPACE_URI_STRING="http://urf.name/inline/";
+	/**The URF base inline namespace.*/
+	public final static URI BASE_INLINE_NAMESPACE_URI=URI.create(BASE_INLINE_NAMESPACE_URI_STRING);
 	
 		//classes 
 	/**The URI of the URF <code>Binary</code> class.*/
@@ -150,27 +141,27 @@ public class URF
 	/**The URI of the property indicating the value of a map entry.*/
 	public final static URI VALUE_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "value");
 
-		//lexical namespaces
-	/**The binary lexical namespace URI.*/
-	public final static URI BINARY_NAMESPACE_URI=createLexicalNamespaceURI(BINARY_CLASS_URI);
-	/**The boolean lexical namespace URI.*/
-	public final static URI BOOLEAN_NAMESPACE_URI=createLexicalNamespaceURI(BOOLEAN_CLASS_URI);
+		//inline namespaces
+	/**The binary inline namespace URI.*/
+	public final static URI BINARY_NAMESPACE_URI=createInlineNamespaceURI(BINARY_CLASS_URI);
+	/**The boolean inline namespace URI.*/
+	public final static URI BOOLEAN_NAMESPACE_URI=createInlineNamespaceURI(BOOLEAN_CLASS_URI);
 		/**The lexical form of the boolean value <code>false</code>.*/
 		public final static String BOOLEAN_FALSE_LEXICAL_FORM=Boolean.FALSE.toString();
 		/**The lexical form of the boolean value <code>true</code>.*/
 		public final static String BOOLEAN_TRUE_LEXICAL_FORM=Boolean.TRUE.toString();
 		/**The URI of the boolean value <code>false</code>.*/
-		public final static URI BOOLEAN_FALSE_URI=createLexicalURI(BOOLEAN_CLASS_URI, BOOLEAN_FALSE_LEXICAL_FORM);
+		public final static URI BOOLEAN_FALSE_URI=createInlineURI(BOOLEAN_CLASS_URI, BOOLEAN_FALSE_LEXICAL_FORM);
 		/**The URI of the boolean value <code>true</code>.*/
-		public final static URI BOOLEAN_TRUE_URI=createLexicalURI(BOOLEAN_CLASS_URI, BOOLEAN_TRUE_LEXICAL_FORM);
-	/**The character lexical namespace URI.*/
-	public final static URI CHARACTER_NAMESPACE_URI=createLexicalNamespaceURI(CHARACTER_CLASS_URI);
-	/**The date lexical namespace URI.*/
-	public final static URI DATE_NAMESPACE_URI=createLexicalNamespaceURI(DATE_CLASS_URI);
-	/**The date time lexical namespace URI.*/
-	public final static URI DATE_TIME_NAMESPACE_URI=createLexicalNamespaceURI(DATE_TIME_CLASS_URI);
-	/**The duration lexical namespace URI.*/
-	public final static URI DURATION_NAMESPACE_URI=createLexicalNamespaceURI(DURATION_CLASS_URI);
+		public final static URI BOOLEAN_TRUE_URI=createInlineURI(BOOLEAN_CLASS_URI, BOOLEAN_TRUE_LEXICAL_FORM);
+	/**The character inline namespace URI.*/
+	public final static URI CHARACTER_NAMESPACE_URI=createInlineNamespaceURI(CHARACTER_CLASS_URI);
+	/**The date inline namespace URI.*/
+	public final static URI DATE_NAMESPACE_URI=createInlineNamespaceURI(DATE_CLASS_URI);
+	/**The date time inline namespace URI.*/
+	public final static URI DATE_TIME_NAMESPACE_URI=createInlineNamespaceURI(DATE_TIME_CLASS_URI);
+	/**The duration inline namespace URI.*/
+	public final static URI DURATION_NAMESPACE_URI=createInlineNamespaceURI(DURATION_CLASS_URI);
 		/**The delimiter that marks the beginning of a duration lexical form.*/
 		public final static char DURATION_LEXICAL_FORM_BEGIN='P';
 		/**The delimiter that indicates a duration year.*/
@@ -185,32 +176,32 @@ public class URF
 		public final static char DURATION_MINUTES_DELIMITER='M';
 		/**The delimiter that indicates a duration second.*/
 		public final static char DURATION_SECONDS_DELIMITER='S';
-	/**The integer lexical namespace URI.*/
-	public final static URI INTEGER_NAMESPACE_URI=createLexicalNamespaceURI(INTEGER_CLASS_URI);
+	/**The integer inline namespace URI.*/
+	public final static URI INTEGER_NAMESPACE_URI=createInlineNamespaceURI(INTEGER_CLASS_URI);
 		/**The URI of the integer value <code>0</code>.*/
-		public final static URI INTEGER_0_URI=createLexicalURI(INTEGER_CLASS_URI, Long.toString(0));
-	/**The language lexical namespace URI.*/
-	public final static URI LANGUAGE_NAMESPACE_URI=createLexicalNamespaceURI(LANGUAGE_CLASS_URI);
-	/**The ordinal lexical namespace URI.*/
-	public final static URI ORDINAL_NAMESPACE_URI=createLexicalNamespaceURI(ORDINAL_CLASS_URI);
+		public final static URI INTEGER_0_URI=createInlineURI(INTEGER_CLASS_URI, Long.toString(0));
+	/**The language inline namespace URI.*/
+	public final static URI LANGUAGE_NAMESPACE_URI=createInlineNamespaceURI(LANGUAGE_CLASS_URI);
+	/**The ordinal inline namespace URI.*/
+	public final static URI ORDINAL_NAMESPACE_URI=createInlineNamespaceURI(ORDINAL_CLASS_URI);
 		/**The URI of the ordinal value <code>0</code>.*/
-		public final static URI ORDINAL_0_URI=createLexicalURI(ORDINAL_CLASS_URI, Long.toString(0));
-	/**The real lexical namespace URI.*/
-	public final static URI REAL_NAMESPACE_URI=createLexicalNamespaceURI(REAL_CLASS_URI);
+		public final static URI ORDINAL_0_URI=createInlineURI(ORDINAL_CLASS_URI, Long.toString(0));
+	/**The real inline namespace URI.*/
+	public final static URI REAL_NAMESPACE_URI=createInlineNamespaceURI(REAL_CLASS_URI);
 		/**The URI of the real value <code>0.0</code>.*/
-		public final static URI REAL_0_URI=createLexicalURI(REAL_CLASS_URI, Double.toString(0));
-	/**The regular expression lexical namespace URI.*/
-	public final static URI REGULAR_EXPRESSION_NAMESPACE_URI=createLexicalNamespaceURI(REGULAR_EXPRESSION_CLASS_URI);
-	/**The string lexical namespace URI.*/
-	public final static URI STRING_NAMESPACE_URI=createLexicalNamespaceURI(STRING_CLASS_URI);
+		public final static URI REAL_0_URI=createInlineURI(REAL_CLASS_URI, Double.toString(0));
+	/**The regular expression inline namespace URI.*/
+	public final static URI REGULAR_EXPRESSION_NAMESPACE_URI=createInlineNamespaceURI(REGULAR_EXPRESSION_CLASS_URI);
+	/**The string inline namespace URI.*/
+	public final static URI STRING_NAMESPACE_URI=createInlineNamespaceURI(STRING_CLASS_URI);
 		/**The URI of the empty string "".*/
-		public final static URI EMPTY_STRING_URI=createLexicalURI(STRING_CLASS_URI, "");
-	/**The time lexical namespace URI.*/
-	public final static URI TIME_NAMESPACE_URI=createLexicalNamespaceURI(TIME_CLASS_URI);
-	/**The URI lexical namespace URI.*/
-	public final static URI URI_NAMESPACE_URI=createLexicalNamespaceURI(URI_CLASS_URI);
-	/**The UTC offset lexical namespace URI.*/
-	public final static URI UTC_OFFSET_NAMESPACE_URI=createLexicalNamespaceURI(UTC_OFFSET_CLASS_URI);
+		public final static URI EMPTY_STRING_URI=createInlineURI(STRING_CLASS_URI, "");
+	/**The time inline namespace URI.*/
+	public final static URI TIME_NAMESPACE_URI=createInlineNamespaceURI(TIME_CLASS_URI);
+	/**The URI inline namespace URI.*/
+	public final static URI URI_NAMESPACE_URI=createInlineNamespaceURI(URI_CLASS_URI);
+	/**The UTC offset inline namespace URI.*/
+	public final static URI UTC_OFFSET_NAMESPACE_URI=createInlineNamespaceURI(UTC_OFFSET_CLASS_URI);
 
 		//general lexical delimiters
 	/**The delimiter for decimal separation of numbers and times.*/
@@ -297,15 +288,15 @@ public class URF
 		return null;	//indicate that this URI has no namespace
 	}
 
-	/**Retrieves the lexical value stored in the local name of the given URI.
-	The lexical value is the decoded form of the value stored inside <code>("...")</code> in the local name.
-	@param uri The URI from which a namespace should be retrieved.
-	@return The lexical value of the given URI, or <code>null</code> if the URI has no path or the path ends with a path separator.
+	/**Retrieves the lexical form stored in the local name of the given lexical URI.
+	The lexical value is the decoded form of the value stored inside <code>"..."</code> in the local name.
+	@param uri The inline URI from which a lexical form should be retrieved.
+	@return The lexical form stored in the given URI, or <code>null</code> if the URI has no path or the path ends with a path separator.
 	@exception NullPointerException if the given URI is <code>null</code>.
-	@throws IllegalArgumentException if there is no valid lexical value.
+	@throws IllegalArgumentException if there is no valid lexical form.
 	@see #getLocalName(URI) 
 	*/
-	public static String getLexicalValue(final URI uri)
+	public static String getInlineLexicalForm(final URI uri)
 	{
 		final String localName=getLocalName(uri);	//start with the decoded local name
 		if(localName!=null)
@@ -327,111 +318,111 @@ public class URF
 		throw new IllegalArgumentException("URI "+uri+" has no inline value.");
 	}
 
-	/**Determines whether the given namespace URI the URI of a lexical namespace.
-	@param namespaceURI The URI to check for being that of a lexical namespace
-	@return <code>true</code> if the URI is that of a lexical namespace.
+	/**Determines whether the given namespace URI the URI of an inline namespace.
+	@param namespaceURI The URI to check for being that of an inline namespace
+	@return <code>true</code> if the URI is that of an inline namespace.
 	@exception NullPointerException if the given URI is <code>null</code>.
 	@throws IllegalArgumentException if the given URI is not a valid namespace URI.
 	*/
-	public static boolean isLexicalNamespaceURI(final URI namespaceURI)
+	public static boolean isInlineNamespaceURI(final URI namespaceURI)
 	{
-		return checkNamespaceURI(namespaceURI).toString().startsWith(LEXICAL_NAMESPACE_BASE);	//see if this is namespace URI that starts with the lexical namespace base URI
+		return checkNamespaceURI(namespaceURI).toString().startsWith(BASE_INLINE_NAMESPACE_URI_STRING);	//see if this is namespace URI that starts with the inline namespace URI string
 	}
 
-	/**Determines whether the given namespace URI is the URI of a lexical namespace.
-	@param lexicalNamespaceURI The URI to check for being that of a lexical namespace
-	@return The lexical namespace URI.
+	/**Determines whether the given namespace URI is the URI of an inline namespace.
+	@param inlineNamespaceURI The URI to check for being that of an inline namespace
+	@return The inline namespace URI.
 	@exception NullPointerException if the given URI is <code>null</code>.
-	@throws IllegalArgumentException if the given URI is not a valid lexical namespace URI.
+	@throws IllegalArgumentException if the given URI is not a valid inline namespace URI.
 	*/
-	public static URI checkLexicalNamespaceURI(final URI lexicalNamespaceURI)
+	public static URI checkInlineNamespaceURI(final URI inlineNamespaceURI)
 	{
-		if(!isLexicalNamespaceURI(lexicalNamespaceURI))	//if this is not a lexical namespace URI
+		if(!isInlineNamespaceURI(inlineNamespaceURI))	//if this is not an inline namespace URI
 		{
-			throw new IllegalArgumentException("URI "+lexicalNamespaceURI+" is not a lexical namespace URI.");
+			throw new IllegalArgumentException("URI "+inlineNamespaceURI+" is not an inline namespace URI.");
 		}
-		return lexicalNamespaceURI;
+		return inlineNamespaceURI;
 	}
 
-	/**Determines whether the given URI is in a lexical namespace.
-	This method returns <code>false</code> for lexical namespaces themselves.
-	@param uri The URI to check for being in a lexical namespace.
-	@return <code>true</code> if the URI is is in a lexical namespace.
+	/**Determines whether the given URI is in an inline namespace.
+	This method returns <code>false</code> for inline namespaces themselves.
+	@param uri The URI to check for being in an inline namespace.
+	@return <code>true</code> if the URI is is in an inline namespace.
 	@exception NullPointerException if the given URI is <code>null</code>.
-	@see #isLexicalNamespaceURI(URI)
+	@see #isInlineNamespaceURI(URI)
 	*/
-	public static boolean isLexicalURI(final URI uri)
+	public static boolean isInlineURI(final URI uri)
 	{
 		final URI namespaceURI=getNamespaceURI(uri);	//get the namespace of the URI, if any
-		return namespaceURI!=null && isLexicalNamespaceURI(namespaceURI);	//see if there is a namespace URI that is a lexical namespace URI
+		return namespaceURI!=null && isInlineNamespaceURI(namespaceURI);	//see if there is a namespace URI that is a lexical namespace URI
 	}
 
-	/**Determines whether the given URI is in a lexical namespace with the given type.
-	This method returns <code>false</code> for lexical namespaces themselves.
-	@param uri The URI to check for being in a lexical namespace with the given lexical type
-	@param lexicalTypeURI The URI of the type of the resource.
-	@return <code>true</code> if the URI is is in a lexical namespace with the given lexical type.
-	@exception NullPointerException if the given URI and/or lexical type URI is <code>null</code>.
-	@see #isLexicalURI(URI)
-	@see #isLexicalTypeURI(URI)
+	/**Determines whether the given URI is in an inline namespace with the given type.
+	This method returns <code>false</code> for inline namespaces themselves.
+	@param uri The URI to check for being in an inline namespace with the given inline type.
+	@param inlineTypeURI The URI of the type of the resource.
+	@return <code>true</code> if the URI is is in an inline namespace with the given inline type.
+	@exception NullPointerException if the given URI and/or inline type URI is <code>null</code>.
+	@see #isInlineURI(URI)
+	@see #getInlineTypeURI(URI)
 	*/
-	public static boolean isLexicalTypeURI(final URI uri, final URI lexicalTypeURI)
+	public static boolean isInlineTypeURI(final URI uri, final URI inlineTypeURI)
 	{
-		return isLexicalURI(uri) && lexicalTypeURI.equals(getLexicalTypeURI(uri));	//see if the URI is a lexical URI with the given lexical type
+		return isInlineURI(uri) && inlineTypeURI.equals(getInlineTypeURI(uri));	//see if the URI is a lexical URI with the given lexical type
 	}
 	
-	/**Retrieves the type URI of a URI in a lexical namespace.
-	This method throws an exception for lexical namespaces themselves.
-	@param lexicalURI A URI URI in a lexical namespace.
-	@return The type URI of the namespace of the lexical URI.
-	@exception IllegalArgumentException if the given URI is not in a lexical namespace.
-	@exception IllegalArgumentException if the given URI's lexical namespace URI does not have a correctly encoded type URI.
-	@see #getLexicalNamespaceTypeURI(URI)
+	/**Retrieves the type URI of a URI in an inline namespace.
+	This method throws an exception for inline namespaces themselves.
+	@param inlineURI A URI in an inline namespace.
+	@return The type URI of the namespace of the inline URI.
+	@exception IllegalArgumentException if the given URI is not in an inline namespace.
+	@exception IllegalArgumentException if the given URI's inline namespace URI does not have a correctly encoded type URI.
+	@see #getInlineNamespaceTypeURI(URI)
 	*/
-	public static URI getLexicalTypeURI(final URI lexicalURI)
+	public static URI getInlineTypeURI(final URI inlineURI)
 	{
-		final URI namespaceURI=getNamespaceURI(lexicalURI);	//get the namespace of the URI
+		final URI namespaceURI=getNamespaceURI(inlineURI);	//get the namespace of the URI
 		if(namespaceURI==null)	//if this URI has no namespace
 		{
-			throw new IllegalArgumentException("URI "+lexicalURI+" is not in any namespace.");
+			throw new IllegalArgumentException("URI "+inlineURI+" is not in any namespace.");
 		}
-		return getLexicalNamespaceTypeURI(namespaceURI);
+		return getInlineNamespaceTypeURI(namespaceURI);
 	}
 
-	/**Retrieves the type URI of a lexical namespace URI.
-	@param namespaceURI The URI of a lexical namespace.
-	@return The type URI of the lexical namespace.
-	@exception IllegalArgumentException if the given URI is not a lexical namespace.
-	@exception IllegalArgumentException if the given URI's lexical namespace URI does not have a correctly encoded type URI.
+	/**Retrieves the type URI of an inline namespace URI.
+	@param namespaceURI The URI of an inline namespace.
+	@return The type URI of the inline namespace.
+	@exception IllegalArgumentException if the given URI is not an inline namespace.
+	@exception IllegalArgumentException if the given URI's inline namespace URI does not have a correctly encoded type URI.
 	*/
-	public static URI getLexicalNamespaceTypeURI(final URI namespaceURI)
+	public static URI getInlineNamespaceTypeURI(final URI namespaceURI)
 	{
-		final String lexicalNamespaceURIString=checkNamespaceURI(namespaceURI).toString();	//get the string version of the namespace URI
-		if(!lexicalNamespaceURIString.startsWith(LEXICAL_NAMESPACE_BASE))	//if this URI doesn't start with the lexical namespace base URI
+		final String inlineNamespaceURIString=checkNamespaceURI(namespaceURI).toString();	//get the string version of the namespace URI
+		if(!inlineNamespaceURIString.startsWith(BASE_INLINE_NAMESPACE_URI_STRING))	//if this URI doesn't start with the base inline namespace URI
 		{
-			throw new IllegalArgumentException("URI "+namespaceURI+" is not a lexical namespace URI.");
+			throw new IllegalArgumentException("URI "+namespaceURI+" is not an inline namespace URI.");
 		}
-		return URI.create(uriDecode(lexicalNamespaceURIString.substring(LEXICAL_NAMESPACE_BASE.length(), lexicalNamespaceURIString.length()-1)));	//retrieve the type substring and decode it
+		return URI.create(uriDecode(inlineNamespaceURIString.substring(BASE_INLINE_NAMESPACE_URI_STRING.length(), inlineNamespaceURIString.length()-1)));	//retrieve the type substring and decode it
 	}
 	
-	/**Creates a lexical namespace URI for the given resource type.
+	/**Creates an inline namespace URI for the given resource type.
 	@param typeURI The URI of the type of the resource.
-	@return The lexical namespace for the specified type.
+	@return The inline namespace for the specified type.
 	@exception NullPointerException if the given type URI is <code>null</code>.
 	*/
-	public static URI createLexicalNamespaceURI(final URI typeURI)
+	public static URI createInlineNamespaceURI(final URI typeURI)
 	{
-		return URI.create(LEXICAL_NAMESPACE_BASE_URI.toString()+encodeURI(typeURI.toString())+PATH_SEPARATOR);	//encode the type and append it to the lexical namespace base URI
+		return URI.create(BASE_INLINE_NAMESPACE_URI.toString()+encodeURI(typeURI.toString())+PATH_SEPARATOR);	//encode the type and append it to the inline namespace URI
 	}
 
-	/**Creates a URI in a lexical namespace for the given resource type and lexical form.
+	/**Creates a URI in an inline namespace for the given resource type and lexical form.
 	@param typeURI The URI of the type of the resource.
 	@param lexicalForm The canonical lexical form of the resource.
-	@return A URI in the lexical namespace for the specified type of a resource based upon its lexical form.
+	@return A URI in the inline namespace for the specified type of a resource based upon its lexical form.
 	@exception NullPointerException if the given type URI and/or lexical form is <code>null</code>.
 	@exception IllegalArgumentException if the given type URI is not absolute.
 	*/
-	public static URI createLexicalURI(final URI typeURI, final String lexicalForm)
+	public static URI createInlineURI(final URI typeURI, final String lexicalForm)
 	{
 		final StringWriter localNameWriter=new StringWriter(lexicalForm.length()*3/2);	//create a new string writer with extra room to encode the lexical form
 		try
@@ -442,7 +433,7 @@ public class URF
 		{
 			throw new AssertionError(ioException);
 		}
-		return createResourceURI(createLexicalNamespaceURI(typeURI), localNameWriter.toString());	//get the appropriate lexical namespace and form a resource URI from the local name we just created
+		return createResourceURI(createInlineNamespaceURI(typeURI), localNameWriter.toString());	//get the appropriate inline namespace and form a resource URI from the local name we just created
 	}
 
 	/**Creates a URI to represent URF binary data.
@@ -453,7 +444,7 @@ public class URF
 	*/
 	public static URI createBinaryURI(final byte[] binary)
 	{
-		return createLexicalURI(BINARY_CLASS_URI, Base64.encodeBytes(binary, Base64.URL_SAFE&Base64.DONT_BREAK_LINES));	//encode the binary data and create a URI from base64url form
+		return createInlineURI(BINARY_CLASS_URI, Base64.encodeBytes(binary, Base64.URL_SAFE&Base64.DONT_BREAK_LINES));	//encode the binary data and create a URI from base64url form
 	}
 
 	/**Creates a URI to represent an URF boolean.
@@ -473,7 +464,7 @@ public class URF
 	*/
 	public static URI createCharacterURI(final char c)
 	{
-		return createLexicalURI(CHARACTER_CLASS_URI, String.valueOf(c));	//create a character URI
+		return createInlineURI(CHARACTER_CLASS_URI, String.valueOf(c));	//create a character URI
 	}
 
 	/**Creates a URI to represent an URF date time.
@@ -484,7 +475,7 @@ public class URF
 	*/
 	public static URI createDateTimeURI(final Date dateTime)
 	{
-		return createLexicalURI(DATE_TIME_CLASS_URI, URFDateFormat.format(dateTime, URFDateFormat.Style.DATE_TIME));	//create a date time URI
+		return createInlineURI(DATE_TIME_CLASS_URI, URFDateFormat.format(dateTime, URFDateFormat.Style.DATE_TIME));	//create a date time URI
 	}
 
 	/**Creates a URI to represent an URF string.
@@ -495,7 +486,7 @@ public class URF
 	*/
 	public static URI createStringURI(final String string)
 	{
-		return string.isEmpty() ? EMPTY_STRING_URI : createLexicalURI(STRING_CLASS_URI, string);	//create a string URI, using the pre-made empty string URI if we can
+		return string.isEmpty() ? EMPTY_STRING_URI : createInlineURI(STRING_CLASS_URI, string);	//create a string URI, using the pre-made empty string URI if we can
 	}
 
 	/**Creates a URI to represent an URF integer.
@@ -505,7 +496,7 @@ public class URF
 	*/
 	public static URI createIntegerURI(final long integer)
 	{
-		return integer==0 ? INTEGER_0_URI : createLexicalURI(INTEGER_CLASS_URI, Long.toString(integer));	//create an integer URI, using the pre-made zero integer URI if we can
+		return integer==0 ? INTEGER_0_URI : createInlineURI(INTEGER_CLASS_URI, Long.toString(integer));	//create an integer URI, using the pre-made zero integer URI if we can
 	}
 
 	/**Creates a URI to represent an URF language.
@@ -516,7 +507,7 @@ public class URF
 	*/
 	public static URI createLanguageURI(final Locale language)
 	{
-		return createLexicalURI(LANGUAGE_CLASS_URI, getLanguageTag(language));	//create a language URI
+		return createInlineURI(LANGUAGE_CLASS_URI, getLanguageTag(language));	//create a language URI
 	}
 
 	/**Creates a URI to represent an URF ordinal.
@@ -527,7 +518,7 @@ public class URF
 	*/
 	public static URI createOrdinalURI(final long ordinal)
 	{
-		return ordinal==0 ? ORDINAL_0_URI : createLexicalURI(ORDINAL_CLASS_URI, Long.toString(Longs.checkMinimum(ordinal, 0)));	//create an ordinal URI, using the pre-made zero ordinal URI if we can and making sure that the value is not less than zero
+		return ordinal==0 ? ORDINAL_0_URI : createInlineURI(ORDINAL_CLASS_URI, Long.toString(Longs.checkMinimum(ordinal, 0)));	//create an ordinal URI, using the pre-made zero ordinal URI if we can and making sure that the value is not less than zero
 	}
 
 	/**Creates a URI to represent an URF real.
@@ -537,7 +528,7 @@ public class URF
 	*/
 	public static URI createRealURI(final double real)
 	{
-		return real==0.0 ? REAL_0_URI : createLexicalURI(REAL_CLASS_URI, Double.toString(real));	//create a real URI, using the pre-made zero real URI if we can
+		return real==0.0 ? REAL_0_URI : createInlineURI(REAL_CLASS_URI, Double.toString(real));	//create a real URI, using the pre-made zero real URI if we can
 	}
 
 	/**Creates a URI to represent an URF regular expression.
@@ -548,7 +539,7 @@ public class URF
 	*/
 	public static URI createRegularExpressionURI(final Pattern pattern)
 	{
-		return createLexicalURI(REGULAR_EXPRESSION_CLASS_URI, pattern.toString());	//create a regular expression URI
+		return createInlineURI(REGULAR_EXPRESSION_CLASS_URI, pattern.toString());	//create a regular expression URI
 	}
 
 	/**Creates a URI to represent an URF URI.
@@ -559,7 +550,7 @@ public class URF
 	*/
 	public static URI createURIURI(final URI uri)
 	{
-		return createLexicalURI(URI_CLASS_URI, uri.toString());	//create a URI URI
+		return createInlineURI(URI_CLASS_URI, uri.toString());	//create a URI URI
 	}
 
 	/**Returns an array containing the URIs of the given resources.
@@ -600,7 +591,7 @@ public class URF
 		<dt>{@link Class}</dt> <dd>{@value Java#JAVA_URI_SCHEME}</dd>
 		<dt>{@link Package}</dt> <dd>{@value Java#JAVA_URI_SCHEME}</dd>
 	</dl>
-	This method can return lexical resource URIs with lexical type URIs using the following schemes for objects of the following types:
+	This method can return inline resource URIs with inline type URIs using the following schemes for objects of the following types:
 	<dl>
 		<dt>{@link Class} subclass of {@link Enum}</dt> <dd>{@value Java#JAVA_URI_SCHEME}</dd>
 	</dl>
@@ -613,7 +604,7 @@ public class URF
 	{
 		if(object!=null)	//if an object was given
 		{
-				//lexical URIs
+				//inline URIs
 			if(object instanceof byte[])//if this is an byte array
 			{
 				return createBinaryURI((byte[])object);	//return a binary URI
@@ -642,9 +633,9 @@ public class URF
 			{
 				return createRealURI(((Double)object).doubleValue());	//return a real URI
 			}
-			else if(object instanceof Enum)	//if this is an enum
+			else if(object instanceof Enum<?>)	//if this is an enum
 			{
-				return createLexicalURI(Classes.createJavaURI(object.getClass()), ((Enum<?>)object).name());	//return a lexical URI using the enum class as the lexical type and the name of the enum as the local name
+				return createInlineURI(Classes.createJavaURI(object.getClass()), ((Enum<?>)object).name());	//return an inline URI using the enum class as the inline type and the name of the enum as the local name
 			}
 			else if(object instanceof Float)	//if this is a float
 			{
@@ -671,7 +662,7 @@ public class URF
 				return createURIURI(((URI)object));	//return a URI URI
 			}
 				//other schemes
-			else if(object instanceof Class)	//if this is a class
+			else if(object instanceof Class<?>)	//if this is a class
 			{
 				return Classes.createJavaURI((Class<?>)object);	//create a java: URI for a class
 			}
@@ -767,7 +758,7 @@ public class URF
 		<dt>{@value Java#JAVA_URI_SCHEME}</dt> <dd>{@link Class}</dd>
 		<dt>{@value URIs#PATH_SCHEME}</dt> <dd>{@link URIPath}</dd>
 	</dl>
-	This method can return objects for the resources with lexical URIs with lexical type URIs of the following schemes:
+	This method can return objects for the resources with inline URIs with inline type URIs of the following schemes:
 	<dl>
 		<dt>{@value Java#JAVA_URI_SCHEME} indicating subclass of {@link Enum}</dt> <dd>{@link Enum}</dd>
 	</dl>
@@ -776,6 +767,7 @@ public class URF
 	@exception IllegalArgumentException if the given URI represents an object but does not have the correct syntax for that object.
 	@exception ClassNotFoundException if the class represented by the given resource could not be found.
 	*/
+	@SuppressWarnings("unchecked")
 	public static Object asObject(final URI resourceURI)
 	{
 		if(resourceURI!=null)	//if a resource URI was given
@@ -796,15 +788,15 @@ public class URF
 			{
 				return asURIPath(resourceURI);	//return a URI path
 			}
-			else if(isLexicalURI(resourceURI))	//if the resource URI is a lexical URI
+			else if(isInlineURI(resourceURI))	//if the resource URI is an inline URI
 			{
-				final URI lexicalTypeURI=getLexicalTypeURI(resourceURI);	//get the lexical type
+				final URI inlineTypeURI=getInlineTypeURI(resourceURI);	//get the inline type
 				try
 				{
-					final Class<?> lexicalClass=Classes.asClass(lexicalTypeURI);	//see if this is lexical type represents a Java class
-					if(lexicalClass!=null && Enum.class.isAssignableFrom(lexicalClass))	//if the lexical type is an enum
+					final Class<?> inlineClass=Classes.asClass(inlineTypeURI);	//see if this is inline type represents a Java class
+					if(inlineClass!=null && Enum.class.isAssignableFrom(inlineClass))	//if the inline type is an enum
 					{
-						return Enum.valueOf((Class<? extends Enum>)lexicalClass, getLexicalValue(resourceURI));	//create an enum using the given lexical type and enum value
+						return Enum.valueOf((Class<? extends Enum>)inlineClass, getInlineLexicalForm(resourceURI));	//create an enum using the given inline type and enum value
 					}
 				}
 				catch(final ClassNotFoundException classNotFoundException)
@@ -898,7 +890,7 @@ public class URF
 	{
 		if(resourceURI!=null && BINARY_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a binary URI was given
 		{
-			final String base64urlString=getLexicalValue(resourceURI);	//get the base64url-encoded binary data from the value
+			final String base64urlString=getInlineLexicalForm(resourceURI);	//get the base64url-encoded binary data from the value
 			return Base64.decode(base64urlString.getBytes(UTF_8_CHARSET), 0, base64urlString.length(), Base64.URL_SAFE&Base64.DONT_BREAK_LINES);	//decode and return the data
 		}
 		return null;	//no boolean could be found
@@ -926,7 +918,7 @@ public class URF
 	{
 		if(resourceURI!=null && BOOLEAN_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a boolean URI was given
 		{
-			return parseBoolean(getLexicalValue(resourceURI));	//create a boolean from the value
+			return parseBoolean(getInlineLexicalForm(resourceURI));	//create a boolean from the value
 		}
 		return null;	//no boolean could be found
 	}
@@ -953,7 +945,7 @@ public class URF
 	{
 		if(resourceURI!=null && CHARACTER_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a character URI was given
 		{
-			return parseCharacter(getLexicalValue(resourceURI));	//create a character from the value
+			return parseCharacter(getInlineLexicalForm(resourceURI));	//create a character from the value
 		}
 		return null;	//no boolean could be found
 	}
@@ -999,11 +991,11 @@ public class URF
 			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace URI of the resource URI
 			if(DATE_NAMESPACE_URI.equals(namespaceURI))	//if a date URI was given
 			{
-				return URFDate.valueOf(getLexicalValue(resourceURI));	//create a date from the value
+				return URFDate.valueOf(getInlineLexicalForm(resourceURI));	//create a date from the value
 			}
 			else if(DATE_TIME_NAMESPACE_URI.equals(namespaceURI))	//if a date time URI was given
 			{
-				return URFDateTime.valueOf(getLexicalValue(resourceURI));	//create a date time from the value
+				return URFDateTime.valueOf(getInlineLexicalForm(resourceURI));	//create a date time from the value
 			}
 		}
 		return null;	//no abstract date time could be found
@@ -1031,7 +1023,7 @@ public class URF
 	{
 		if(resourceURI!=null && DATE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a date URI was given
 		{
-			return URFDate.valueOf(getLexicalValue(resourceURI));	//create a date from the value
+			return URFDate.valueOf(getInlineLexicalForm(resourceURI));	//create a date from the value
 		}
 		return null;	//no date could be found
 	}	
@@ -1058,7 +1050,7 @@ public class URF
 	{
 		if(resourceURI!=null && DATE_TIME_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a date time URI was given
 		{
-			return URFDateTime.valueOf(getLexicalValue(resourceURI));	//create a date time from the value
+			return URFDateTime.valueOf(getInlineLexicalForm(resourceURI));	//create a date time from the value
 		}
 		return null;	//no pattern could be found
 	}	
@@ -1092,15 +1084,15 @@ public class URF
 			final URI namespaceURI=getNamespaceURI(resourceURI);	//get the namespace of the URI
 			if(INTEGER_NAMESPACE_URI.equals(namespaceURI))	//if this is an integer
 			{
-				return Long.valueOf(Long.parseLong(getLexicalValue(resourceURI)));	//parse a long from the value
+				return Long.valueOf(Long.parseLong(getInlineLexicalForm(resourceURI)));	//parse a long from the value
 			}
 			else if(ORDINAL_NAMESPACE_URI.equals(namespaceURI))	//if this is an ordinal
 			{
-				return Long.valueOf(Long.parseLong(getLexicalValue(resourceURI)));	//parse a long from the value
+				return Long.valueOf(Long.parseLong(getInlineLexicalForm(resourceURI)));	//parse a long from the value
 			}
 			else if(REAL_NAMESPACE_URI.equals(namespaceURI))	//if this is an real
 			{
-				return Double.valueOf(Double.parseDouble(getLexicalValue(resourceURI)));	//parse a double from the value
+				return Double.valueOf(Double.parseDouble(getInlineLexicalForm(resourceURI)));	//parse a double from the value
 			}
 		}
 		return null;	//no number could be found
@@ -1156,7 +1148,7 @@ public class URF
 	{
 		if(resourceURI!=null && INTEGER_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if an integer URI was given
 		{
-			return Long.valueOf(Long.parseLong(getLexicalValue(resourceURI)));	//parse a long from the value
+			return Long.valueOf(Long.parseLong(getInlineLexicalForm(resourceURI)));	//parse a long from the value
 		}
 		return null;	//no integer could be found
 	}
@@ -1183,7 +1175,7 @@ public class URF
 	{
 		if(resourceURI!=null && LANGUAGE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a language URI was given
 		{
-			return createLocale(getLexicalValue(resourceURI));	//create a locale from the value
+			return createLocale(getInlineLexicalForm(resourceURI));	//create a locale from the value
 		}
 		return null;	//no language could be found
 	}
@@ -1199,13 +1191,13 @@ public class URF
 	{
 		if(resourceURI!=null && ORDINAL_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if an ordinal URI was given
 		{
-			return Long.valueOf(Long.parseLong(getLexicalValue(resourceURI)));	//parse a long from the value
+			return Long.valueOf(Long.parseLong(getInlineLexicalForm(resourceURI)));	//parse a long from the value
 		}
 		return null;	//no ordinal could be found
 	}
 
 	/**Determines the pattern represented by the given resource.
-	A URI represents a pattern if it is a valid regular expression lexical URI.
+	A URI represents a pattern if it is a valid regular expression inline URI.
 	@param resource The resource which is expected to represent a pattern, or <code>null</code>.
 	@return The pattern represented by the given resource, or <code>null</code> if the resource does not represent a pattern.
 	@exception IllegalArgumentException if the given resource represents a pattern that does not have the correct syntax.
@@ -1217,7 +1209,7 @@ public class URF
 	}
 
 	/**Determines the pattern represented by the given URI.
-	A resource represents a pattern if it has a valid regular expression lexical URI.
+	A resource represents a pattern if it has a valid regular expression inline URI.
 	@param resourceURI The URI which is expected to represent a pattern, or <code>null</code>.
 	@return The pattern represented by the given URI, or <code>null</code> if the URI does not represent a pattern.
 	@exception IllegalArgumentException if the given URI represents a pattern that does not have the correct syntax.
@@ -1230,7 +1222,7 @@ public class URF
 		{
 			try
 			{
-				return Pattern.compile(getLexicalValue(resourceURI));	//create a pattern from the value
+				return Pattern.compile(getInlineLexicalForm(resourceURI));	//create a pattern from the value
 			}
 			catch(final PatternSyntaxException patternSyntaxException)
 			{
@@ -1262,7 +1254,7 @@ public class URF
 	{
 		if(resourceURI!=null && REAL_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a real URI was given
 		{
-			return Double.parseDouble(getLexicalValue(resourceURI));	//parse a double from the value
+			return Double.parseDouble(getInlineLexicalForm(resourceURI));	//parse a double from the value
 		}
 		return null;	//no real could be found
 	}
@@ -1311,7 +1303,7 @@ public class URF
 	{
 		if(resourceURI!=null && STRING_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a string URI was given
 		{
-			return getLexicalValue(resourceURI);	//return the value, which is the string value
+			return getInlineLexicalForm(resourceURI);	//return the value, which is the string value
 		}
 		return null;	//no string could be found
 	}
@@ -1360,7 +1352,7 @@ public class URF
 	{
 		if(resourceURI!=null && URI_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a URI URI was given
 		{
-			return URI.create(getLexicalValue(resourceURI));	//create a URI from the value
+			return URI.create(getInlineLexicalForm(resourceURI));	//create a URI from the value
 		}
 		return null;	//no URI could be found
 	}
@@ -1660,7 +1652,7 @@ public class URF
 
 	/**Retreives a resource from the data model based upon a URI.
 	If no such resource exists, a resource will be created and added to the data model.
-	If the given resource URI is in a lexical namespace, its lexical type will be used.
+	If the given resource URI is in an inline namespace, its inline type will be used.
 	@param resourceURI The URI of the resource to retrieve, or <code>null</code> if the resource should have no URI.
 	@return A resource with the given URI.
 	@exception NullPointerException if the given URI is <code>null</code>.
@@ -1668,7 +1660,7 @@ public class URF
 	*/
 	public URFResource locateResource(final URI resourceURI)
 	{
-		final URI[] typeURIs=isLexicalURI(resourceURI) ? new URI[]{getLexicalTypeURI(resourceURI)} : NO_URIS;	//get the lexical type, if we can
+		final URI[] typeURIs=isInlineURI(resourceURI) ? new URI[]{getInlineTypeURI(resourceURI)} : NO_URIS;	//get the inline type, if we can
 		return locateResource(resourceURI, typeURIs);	//locate a resource with whatever type we determined, if any
 	}
 
@@ -1829,7 +1821,7 @@ public class URF
 				@param resourceURI The URI of the resource to create, or <code>null</code> if the resource created should be anonymous.
 				@param typeURI The URI of the resource type, or <code>null</code> if the type is not known.
 				@return The resource created with this URI.
-				@exception IllegalArgumentException if a lexical resource URI was given with a different type URI than the specified type URI.
+				@exception IllegalArgumentException if an inline resource URI was given with a different type URI than the specified type URI.
 				@see URF#asObject(URI)
 				*/
 				public URFResource createResource(final URI resourceURI, final URI typeURI)

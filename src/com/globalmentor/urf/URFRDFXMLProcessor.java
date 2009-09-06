@@ -297,7 +297,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			{
 				final Resource property=processProperty(resource, typeURI, (Element)childNode, memberCount, baseURI);  //parse the element representing an RDF property
 				final URI propertyURI=property.getURI();	//get the property URI
-				if(propertyURI!=null && isLexicalTypeURI(propertyURI, ORDINAL_CLASS_URI))	//if this is an ordinal property (originally serialized as rdf:li)
+				if(propertyURI!=null && isInlineTypeURI(propertyURI, ORDINAL_CLASS_URI))	//if this is an ordinal property (originally serialized as rdf:li)
 				{
 					++memberCount;  //show that we have another member
 				}
@@ -625,13 +625,13 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		{
 			final String childText=getText(propertyNode, true);	//retrieve the child text
 			final String datatype=propertyNode instanceof Element ? getRDFAttribute((Element)propertyNode, ATTRIBUTE_DATATYPE) : null; //get the datatype, if there is one TODO check elsewhere to make sure a datatype isn't given for non-literal content
-			final URI lexicalTypeURI;	//all RDF literals belong in some URF lexical namespace; determine the type URI
+			final URI inlineTypeURI;	//all RDF literals belong in some URF inline namespace; determine the type URI
 			String languageTag=null;		//there may be a language tag for RDF plain literals
 			if(datatype!=null)	//if a datatype is present
 			{
 				try
 				{
-					lexicalTypeURI=getURFLexicalTypeURI(new URI(datatype));	//find the URF lexical type URI from the datatype URI
+					inlineTypeURI=getURFInlineTypeURI(new URI(datatype));	//find the URF inline type URI from the datatype URI
 				}
 				catch(final URISyntaxException uriSyntaxException)	//if the datatype string is not a valid URI
 				{
@@ -640,11 +640,11 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			}
 			else	//if a datatype is not present, this is a plain literal
 			{
-				lexicalTypeURI=STRING_CLASS_URI;	//RDF plain literals are strings
+				inlineTypeURI=STRING_CLASS_URI;	//RDF plain literals are strings
 					//get the xml:lang language tag, if there is one
 				languageTag=propertyNode instanceof Element ? getDefinedAttributeNS((Element)propertyNode, XML_NAMESPACE_URI.toString(), ATTRIBUTE_LANG) : null;
 			}
-			final URI valueURI=createLexicalURI(lexicalTypeURI, childText);	//create a URI for the value
+			final URI valueURI=createInlineURI(inlineTypeURI, childText);	//create a URI for the value
 			final Resource valueResource=determineResourceProxy(valueURI);	//determine the value resource from the value URI
 			if(languageTag!=null)	//if a language tag was given
 			{
@@ -757,32 +757,32 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		return resourceURI!=null ? resourceURI : rdfResourceURI;	//if we don't know an equivalent URF resource URI, just return the RDF resource URI
 	}
 
-	/**The map of URF lexical types keyed to RDF datatype URIs.*/
-	private final static Map<URI, URI> datatypeURILexicalTypeURIMap;
+	/**The map of URF inline types keyed to RDF datatype URIs.*/
+	private final static Map<URI, URI> DATA_TYPE_URI_INLINE_TYPE_URI_MAP;
 
 	static
 	{
-		final Map<URI, URI> tempDatatypeURILexicalTypeURIMap=new HashMap<URI, URI>();	//create a new map
-		tempDatatypeURILexicalTypeURIMap.put(BASE64_BINARY_DATATYPE_URI, BINARY_CLASS_URI);	//fill the  map
-		tempDatatypeURILexicalTypeURIMap.put(BOOLEAN_DATATYPE_URI, BOOLEAN_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(BYTE_DATATYPE_URI, INTEGER_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(DATE_DATATYPE_URI, DATE_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(DATE_TIME_DATATYPE_URI, DATE_TIME_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(DECIMAL_DATATYPE_URI, REAL_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(DOUBLE_DATATYPE_URI, REAL_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(DURATION_DATATYPE_URI, DURATION_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(FLOAT_DATATYPE_URI, REAL_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(INT_DATATYPE_URI, INTEGER_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(INTEGER_DATATYPE_URI, INTEGER_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(LONG_DATATYPE_URI, INTEGER_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(SHORT_DATATYPE_URI, INTEGER_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(STRING_DATATYPE_URI, STRING_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(TIME_DATATYPE_URI, TIME_CLASS_URI);
-		tempDatatypeURILexicalTypeURIMap.put(URI_DATATYPE_URI, URI_CLASS_URI);
-		datatypeURILexicalTypeURIMap=unmodifiableMap(tempDatatypeURILexicalTypeURIMap);
+		final Map<URI, URI> datatypeURIInlineTypeURIMap=new HashMap<URI, URI>();	//create a new map
+		datatypeURIInlineTypeURIMap.put(BASE64_BINARY_DATATYPE_URI, BINARY_CLASS_URI);	//fill the  map
+		datatypeURIInlineTypeURIMap.put(BOOLEAN_DATATYPE_URI, BOOLEAN_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(BYTE_DATATYPE_URI, INTEGER_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(DATE_DATATYPE_URI, DATE_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(DATE_TIME_DATATYPE_URI, DATE_TIME_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(DECIMAL_DATATYPE_URI, REAL_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(DOUBLE_DATATYPE_URI, REAL_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(DURATION_DATATYPE_URI, DURATION_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(FLOAT_DATATYPE_URI, REAL_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(INT_DATATYPE_URI, INTEGER_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(INTEGER_DATATYPE_URI, INTEGER_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(LONG_DATATYPE_URI, INTEGER_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(SHORT_DATATYPE_URI, INTEGER_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(STRING_DATATYPE_URI, STRING_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(TIME_DATATYPE_URI, TIME_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(URI_DATATYPE_URI, URI_CLASS_URI);
+		DATA_TYPE_URI_INLINE_TYPE_URI_MAP=unmodifiableMap(datatypeURIInlineTypeURIMap);
 	}
 
-	/**Determines an URF lexical type URI from the given RDF datatype URI.
+	/**Determines an URF inline type URI from the given RDF datatype URI.
 	The following conversions are made:
 	<dl>
 		<dt>{@value XMLSchemaContants#BASE64_BINARY_DATATYPE_URI}</dt> <dd>{@value URF#BINARY_CLASS_URI}</dd>
@@ -804,12 +804,12 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 	</dl>
 	All other datatype URIs are returned unchanged.
 	@param rdfDatatypeURI The RDF datatype URI.
-	@return The URF lexical type URI to use in place of the given RDF datatype URI.
+	@return The URF inline type URI to use in place of the given RDF datatype URI.
 	*/
-	public static URI getURFLexicalTypeURI(final URI rdfDatatypeURI)
+	public static URI getURFInlineTypeURI(final URI rdfDatatypeURI)
 	{
-		URI lexicalTypeURI=datatypeURILexicalTypeURIMap.get(rdfDatatypeURI);	//see if we know an equivalent URF lexical type URI
-		return lexicalTypeURI!=null ? lexicalTypeURI : rdfDatatypeURI;	//if we don't know an equivalent URF lexical type URI, just return the RDF datatype URI
+		URI inlineTypeURI=DATA_TYPE_URI_INLINE_TYPE_URI_MAP.get(rdfDatatypeURI);	//see if we know an equivalent URF inline type URI
+		return inlineTypeURI!=null ? inlineTypeURI : rdfDatatypeURI;	//if we don't know an equivalent URF inline type URI, just return the RDF datatype URI
 	}
 
 	/**Creates a URI by resolving the given URI relative to the base URI of the provided element, taking into account the given base URI of the document.

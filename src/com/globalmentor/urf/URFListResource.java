@@ -80,7 +80,7 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 		{
 			for(final URFProperty ordinalProperty:getNamespaceProperties(ORDINAL_NAMESPACE_URI))	//look at all the ordinal properties; if there are duplicate ordinal properties, we'll ignore them
 			{
-				final long index=Long.parseLong(getLexicalValue(ordinalProperty.getPropertyURI()));	//get the index
+				final long index=Long.parseLong(getInlineLexicalForm(ordinalProperty.getPropertyURI()));	//get the index
 				if(index==length)	//if we found this index
 				{
 					++length;	//show that we found another element
