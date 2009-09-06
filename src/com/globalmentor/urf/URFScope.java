@@ -218,7 +218,7 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public boolean addPropertyValue(final URI propertyURI, final long propertyValue);
 
-	/**Adds a real property value for the property with the given URI.
+	/**Adds a rational property value for the property with the given URI.
 	If the given property and value already exists, no action occurs.
 	@param propertyURI The URI of the property of the value to add.
 	@param propertyValue The value to add for the given property.
@@ -292,7 +292,7 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final long propertyValue);
 
-	/**Sets a real property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
+	/**Sets a rational property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.
 	@param propertyValue The value to set for the given property.
 	@return The old property value, or <code>null</code> if there was no property value previously.
@@ -320,7 +320,7 @@ public interface URFScope extends ReadWriteLock
 	*/
 	public URFResource[] setPropertyValues(final URI propertyURI, final long... propertyValues);
 
-	/**Sets real values for the property with the given URI by removing all properties with the given URI and adding the given property values.
+	/**Sets rational values for the property with the given URI by removing all properties with the given URI and adding the given property values.
 	Duplicate property values are ignored.
 	@param propertyURI The URI of the property of the value to set.
 	@param ordered Whether each added property value should be given a contextual order.

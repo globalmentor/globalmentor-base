@@ -92,8 +92,8 @@ public class URF
 	public final static URI ORDINAL_CLASS_URI=createResourceURI(NAMESPACE_URI, "Ordinal");
 	/**The URI of the URF <code>Proposition</code> class.*/
 	public final static URI PROPOSITION_CLASS_URI=createResourceURI(NAMESPACE_URI, "Proposition");
-	/**The URI of the URF <code>Real</code> class.*/
-	public final static URI REAL_CLASS_URI=createResourceURI(NAMESPACE_URI, "Real");
+	/**The URI of the URF <code>Rational</code> class.*/
+	public final static URI RATIONAL_CLASS_URI=createResourceURI(NAMESPACE_URI, "Rational");
 	/**The URI of the URF <code>RegularExpression</code> class.*/
 	public final static URI REGULAR_EXPRESSION_CLASS_URI=createResourceURI(NAMESPACE_URI, "RegularExpression");
 	/**The URI of the URF <code>Resource</code> class.*/
@@ -186,10 +186,10 @@ public class URF
 	public final static URI ORDINAL_NAMESPACE_URI=createInlineNamespaceURI(ORDINAL_CLASS_URI);
 		/**The URI of the ordinal value <code>0</code>.*/
 		public final static URI ORDINAL_0_URI=createInlineURI(ORDINAL_CLASS_URI, Long.toString(0));
-	/**The real inline namespace URI.*/
-	public final static URI REAL_NAMESPACE_URI=createInlineNamespaceURI(REAL_CLASS_URI);
-		/**The URI of the real value <code>0.0</code>.*/
-		public final static URI REAL_0_URI=createInlineURI(REAL_CLASS_URI, Double.toString(0));
+	/**The rational inline namespace URI.*/
+	public final static URI RATIONAL_NAMESPACE_URI=createInlineNamespaceURI(RATIONAL_CLASS_URI);
+		/**The URI of the rational value <code>0.0</code>.*/
+		public final static URI RATIONAL_0_URI=createInlineURI(RATIONAL_CLASS_URI, Double.toString(0));
 	/**The regular expression inline namespace URI.*/
 	public final static URI REGULAR_EXPRESSION_NAMESPACE_URI=createInlineNamespaceURI(REGULAR_EXPRESSION_CLASS_URI);
 	/**The string inline namespace URI.*/
@@ -521,14 +521,14 @@ public class URF
 		return ordinal==0 ? ORDINAL_0_URI : createInlineURI(ORDINAL_CLASS_URI, Long.toString(Longs.checkMinimum(ordinal, 0)));	//create an ordinal URI, using the pre-made zero ordinal URI if we can and making sure that the value is not less than zero
 	}
 
-	/**Creates a URI to represent an URF real.
-	@param real The real value to represent.
-	@return A URI representing the given URF real.
-	@see #REAL_CLASS_URI
+	/**Creates a URI to represent an URF rational.
+	@param rational The rational value to represent.
+	@return A URI representing the given URF rational.
+	@see #RATIONAL_CLASS_URI
 	*/
-	public static URI createRealURI(final double real)
+	public static URI createRationalURI(final double rational)
 	{
-		return real==0.0 ? REAL_0_URI : createInlineURI(REAL_CLASS_URI, Double.toString(real));	//create a real URI, using the pre-made zero real URI if we can
+		return rational==0.0 ? RATIONAL_0_URI : createInlineURI(RATIONAL_CLASS_URI, Double.toString(rational));	//create a rational URI, using the pre-made zero rational URI if we can
 	}
 
 	/**Creates a URI to represent an URF regular expression.
@@ -578,8 +578,8 @@ public class URF
 		<dt>{@link Charset}</dt> <dd>{@value Content#CHARSET_NAMESPACE_URI}</dd>
 		<dt>{@link ContentType}</dt> <dd>{@value Content#MEDIA_TYPE_NAMESPACE_URI}</dd>
 		<dt>{@link Integer}</dt> <dd>{@value #INTEGER_NAMESPACE_URI}</dd>
-		<dt>{@link Double}</dt> <dd>{@value #REAL_NAMESPACE_URI}</dd>
-		<dt>{@link Float}</dt> <dd>{@value #REAL_NAMESPACE_URI}</dd>
+		<dt>{@link Double}</dt> <dd>{@value #RATIONAL_NAMESPACE_URI}</dd>
+		<dt>{@link Float}</dt> <dd>{@value #RATIONAL_NAMESPACE_URI}</dd>
 		<dt>{@link Locale}</dt> <dd>{@value #LANGUAGE_NAMESPACE_URI}</dd>
 		<dt>{@link Long}</dt> <dd>{@value #INTEGER_NAMESPACE_URI}</dd>
 		<dt>{@link Pattern}</dt> <dd>{@value #REGULAR_EXPRESSION_NAMESPACE_URI}</dd>
@@ -631,7 +631,7 @@ public class URF
 			}
 			else if(object instanceof Double)	//if this is a double
 			{
-				return createRealURI(((Double)object).doubleValue());	//return a real URI
+				return createRationalURI(((Double)object).doubleValue());	//return a rational URI
 			}
 			else if(object instanceof Enum<?>)	//if this is an enum
 			{
@@ -639,7 +639,7 @@ public class URF
 			}
 			else if(object instanceof Float)	//if this is a float
 			{
-				return createRealURI(((Float)object).doubleValue());	//return a real URI
+				return createRationalURI(((Float)object).doubleValue());	//return a rational URI
 			}
 			else if(object instanceof Long)	//if this is a long
 			{
@@ -748,7 +748,7 @@ public class URF
 		<dt>{@value #DATE_NAMESPACE_URI}</dt> <dd>{@link URFDate}</dd>
 		<dt>{@value #DATE_TIME_NAMESPACE_URI}</dt> <dd>{@link URFDateTime}</dd>
 		<dt>{@value #ORDINAL_NAMESPACE_URI}</dt> <dd>{@link Long}</dd>
-		<dt>{@value #REAL_NAMESPACE_URI}</dt> <dd>{@link Double}</dd>
+		<dt>{@value #RATIONAL_NAMESPACE_URI}</dt> <dd>{@link Double}</dd>
 		<dt>{@value #REGULAR_EXPRESSION_NAMESPACE_URI}</dt> <dd>{@link RegularExpressions}</dd>
 		<dt>{@value #STRING_NAMESPACE_URI}</dt> <dd>{@link String}</dd>
 		<dt>{@value #URI_NAMESPACE_URI}</dt> <dd>{@link URI}</dd>
@@ -847,9 +847,9 @@ public class URF
 				{
 					return asOrdinal(resourceURI);	//return a long
 				}
-				else if(REAL_NAMESPACE_URI.equals(namespaceURI))	//real
+				else if(RATIONAL_NAMESPACE_URI.equals(namespaceURI))	//rational
 				{
-					return asReal(resourceURI);	//return a real
+					return asRational(resourceURI);	//return a rational
 				}
 				else if(REGULAR_EXPRESSION_NAMESPACE_URI.equals(namespaceURI))	//regular expression
 				{
@@ -1074,8 +1074,8 @@ public class URF
 	@see #INTEGER_NAMESPACE_URI
 	@see #ORDINAL_CLASS_URI
 	@see #ORDINAL_NAMESPACE_URI
-	@see #REAL_CLASS_URI
-	@see #REAL_NAMESPACE_URI
+	@see #RATIONAL_CLASS_URI
+	@see #RATIONAL_NAMESPACE_URI
 	*/
 	public static Number asNumber(final URI resourceURI)
 	{
@@ -1090,7 +1090,7 @@ public class URF
 			{
 				return Long.valueOf(Long.parseLong(getInlineLexicalForm(resourceURI)));	//parse a long from the value
 			}
-			else if(REAL_NAMESPACE_URI.equals(namespaceURI))	//if this is an real
+			else if(RATIONAL_NAMESPACE_URI.equals(namespaceURI))	//if this is a rational
 			{
 				return Double.valueOf(Double.parseDouble(getInlineLexicalForm(resourceURI)));	//parse a double from the value
 			}
@@ -1232,31 +1232,31 @@ public class URF
 		return null;	//no pattern could be found
 	}	
 
-	/**Determines the real represented by the given resource.
-	@param resource The resource which is expected to represent a real, or <code>null</code>.
-	@return The real represented by the given resource, or <code>null</code> if the resource does not represent a real.
-	@exception IllegalArgumentException if the given resource represents a real that does not have the correct syntax.
-	@see #asReal(URI)
+	/**Determines the rational represented by the given resource.
+	@param resource The resource which is expected to represent a rational, or <code>null</code>.
+	@return The rational represented by the given resource, or <code>null</code> if the resource does not represent a rational.
+	@exception IllegalArgumentException if the given resource represents a rational that does not have the correct syntax.
+	@see #asRational(URI)
 	*/
-	public static Double asreal(final Resource resource)
+	public static Double asRational(final Resource resource)
 	{
-		return resource!=null ? asReal(resource.getURI()) : null;	//if a resource was given, see if its URI represents a real
+		return resource!=null ? asRational(resource.getURI()) : null;	//if a resource was given, see if its URI represents a rational
 	}
 
-	/**Determines the real represented by the given URI.
-	@param resourceURI The URI which is expected to represent a real, or <code>null</code>.
-	@return The real represented by the given URI, or <code>null</code> if the URI does not represent a real.
-	@exception IllegalArgumentException if the given URI represents a real that does not have the correct syntax.
-	@see #REAL_CLASS_URI
-	@see #REAL_NAMESPACE_URI
+	/**Determines the rational represented by the given URI.
+	@param resourceURI The URI which is expected to represent a rational, or <code>null</code>.
+	@return The rational represented by the given URI, or <code>null</code> if the URI does not represent a rational.
+	@exception IllegalArgumentException if the given URI represents a rational that does not have the correct syntax.
+	@see #RATIONAL_CLASS_URI
+	@see #RATIONAL_NAMESPACE_URI
 	*/
-	public static Double asReal(final URI resourceURI)
+	public static Double asRational(final URI resourceURI)
 	{
-		if(resourceURI!=null && REAL_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a real URI was given
+		if(resourceURI!=null && RATIONAL_NAMESPACE_URI.equals(getNamespaceURI(resourceURI)))	//if a rational URI was given
 		{
 			return Double.parseDouble(getInlineLexicalForm(resourceURI));	//parse a double from the value
 		}
-		return null;	//no real could be found
+		return null;	//no rational could be found
 	}
 
 	/**Determines the strings represented by the resources returned from the given resource iterator.

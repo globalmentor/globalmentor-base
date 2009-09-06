@@ -911,9 +911,9 @@ public class URFTURFProcessor extends AbstractURFProcessor
 					{
 						inlineTypeURI=INTEGER_CLASS_URI;	//we'll create an integer URI for the resource
 					}
-					else if(number instanceof Float || number instanceof Double || number instanceof BigDecimal)	//if this is an real
+					else if(number instanceof Float || number instanceof Double || number instanceof BigDecimal)	//if this is an rational
 					{
-						inlineTypeURI=REAL_CLASS_URI;	//create a real URI for the resource
+						inlineTypeURI=RATIONAL_CLASS_URI;	//create a rational URI for the resource
 					}
 					else	//if we don't recognize the number type
 					{

@@ -70,9 +70,9 @@ public class ObjectSelector extends AbstractSelector
 					return ((Long)selectObject).longValue()==((Integer)object).longValue();	//compare long values
 				}
 			}
-			else if(selectObject instanceof Double)	//if the object represents an URF real
+			else if(selectObject instanceof Double)	//if the object represents an URF rational
 			{
-				if(object instanceof Float)	//Java floats hold valid URF real values
+				if(object instanceof Float)	//Java floats hold valid URF rational values
 				{
 					return Double.doubleToLongBits(((Double)selectObject).doubleValue())==Double.doubleToLongBits(((Float)object).doubleValue());	//compare long bits of double values
 				}

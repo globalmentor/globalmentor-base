@@ -138,14 +138,14 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 		return createInlineResource(Content.MEDIA_TYPE_CLASS_URI, mediaType.getBaseType());	//create and return a default media type resource from the media type base type
 	}
 
-	/**Creates a default real resource with its type added as a type property.
+	/**Creates a default rational resource with its type added as a type property.
 	This method delegates to {@link #createInlineResource(URI, String)}.
-	@param real The real for which a default resource should be created.
+	@param rational The rational for which a default resource should be created.
 	@return A default integer resource with the appropriate type property added.
 	*/
-	public URFResource createRealResource(final double real)
+	public URFResource createRationalResource(final double rational)
 	{
-		return createInlineResource(REAL_CLASS_URI, Double.toString(real));	//create and return a default real resource
+		return createInlineResource(RATIONAL_CLASS_URI, Double.toString(rational));	//create and return a default rational resource
 	}
 
 	/**Creates a default string resource with its type added as a type property.

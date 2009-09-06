@@ -1265,7 +1265,7 @@ public class URFTURFGenerator
 				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
 				return inlineTypeURI;
 			}
-			else if(INTEGER_CLASS_URI.equals(inlineTypeURI) || REAL_CLASS_URI.equals(inlineTypeURI))	//integer or real
+			else if(INTEGER_CLASS_URI.equals(inlineTypeURI) || RATIONAL_CLASS_URI.equals(inlineTypeURI))	//integer or rational
 			{
 				writer.append(NUMBER_BEGIN).append(lexicalForm).append(NUMBER_END);	//write the number short form
 				return inlineTypeURI;

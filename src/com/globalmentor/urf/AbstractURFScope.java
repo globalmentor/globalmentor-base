@@ -655,7 +655,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		return addPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createIntegerResource(propertyValue));	//create a resource add the property value
 	}
 
-	/**Adds a real property value for the property with the given URI.
+	/**Adds a rational property value for the property with the given URI.
 	If the given property and value already exists, no action occurs.
 	@param propertyURI The URI of the property of the value to add.
 	@param propertyValue The value to add for the given property.
@@ -664,7 +664,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public boolean addPropertyValue(final URI propertyURI, final double propertyValue)
 	{
-		return addPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createRealResource(propertyValue));	//create a resource add the property value
+		return addPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createRationalResource(propertyValue));	//create a resource add the property value
 	}
 
 	/**Adds a string property value for the property with the given URI.
@@ -842,7 +842,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createIntegerResource(propertyValue));	//create a resource and set the property value
 	}
 
-	/**Sets a real property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
+	/**Sets a rational property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.
 	@param propertyValue The value to set for the given property.
 	@return The old property value, or <code>null</code> if there was no property value previously.
@@ -850,7 +850,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	*/
 	public URFResource setPropertyValue(final URI propertyURI, final double propertyValue)
 	{
-		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createRealResource(propertyValue));	//create a resource and set the property value
+		return setPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createRationalResource(propertyValue));	//create a resource and set the property value
 	}
 
 	/**Sets a string property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
@@ -907,7 +907,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		return setPropertyValues(propertyURI, propertyValueResources);	//set the property values
 	}
 
-	/**Sets real values for the property with the given URI by removing all properties with the given URI and adding the given property values.
+	/**Sets rational values for the property with the given URI by removing all properties with the given URI and adding the given property values.
 	Duplicate property values are ignored.
 	@param propertyURI The URI of the property of the value to set.
 	@param ordered Whether each added property value should be given a contextual order.
@@ -921,7 +921,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 		final URFResource[] propertyValueResources=new URFResource[propertyValueCount];	//create an array of resource property values
 		for(int i=0; i<propertyValueCount; ++i)	//for each property value
 		{
-			propertyValueResources[i]=DEFAULT_URF_RESOURCE_FACTORY.createRealResource(propertyValues[i]);	//create a resource for this value
+			propertyValueResources[i]=DEFAULT_URF_RESOURCE_FACTORY.createRationalResource(propertyValues[i]);	//create a resource for this value
 		}
 		return setPropertyValues(propertyURI, propertyValueResources);	//set the property values
 	}

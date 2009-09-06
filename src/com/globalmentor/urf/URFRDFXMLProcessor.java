@@ -768,10 +768,10 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		datatypeURIInlineTypeURIMap.put(BYTE_DATATYPE_URI, INTEGER_CLASS_URI);
 		datatypeURIInlineTypeURIMap.put(DATE_DATATYPE_URI, DATE_CLASS_URI);
 		datatypeURIInlineTypeURIMap.put(DATE_TIME_DATATYPE_URI, DATE_TIME_CLASS_URI);
-		datatypeURIInlineTypeURIMap.put(DECIMAL_DATATYPE_URI, REAL_CLASS_URI);
-		datatypeURIInlineTypeURIMap.put(DOUBLE_DATATYPE_URI, REAL_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(DECIMAL_DATATYPE_URI, RATIONAL_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(DOUBLE_DATATYPE_URI, RATIONAL_CLASS_URI);
 		datatypeURIInlineTypeURIMap.put(DURATION_DATATYPE_URI, DURATION_CLASS_URI);
-		datatypeURIInlineTypeURIMap.put(FLOAT_DATATYPE_URI, REAL_CLASS_URI);
+		datatypeURIInlineTypeURIMap.put(FLOAT_DATATYPE_URI, RATIONAL_CLASS_URI);
 		datatypeURIInlineTypeURIMap.put(INT_DATATYPE_URI, INTEGER_CLASS_URI);
 		datatypeURIInlineTypeURIMap.put(INTEGER_DATATYPE_URI, INTEGER_CLASS_URI);
 		datatypeURIInlineTypeURIMap.put(LONG_DATATYPE_URI, INTEGER_CLASS_URI);
@@ -790,10 +790,10 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 		<dt>{@value XMLSchemaContants#BYTE_DATATYPE_URI}</dt> <dd>{@value URF#INTEGER_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#DATE_DATATYPE_URI}</dt> <dd>{@value URF#DATE_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#DATE_TIME_DATATYPE_URI}</dt> <dd>{@value URF#DATE_TIME_CLASS_URI}</dd>
-		<dt>{@value XMLSchemaContants#DECIMAL_DATATYPE_URI}</dt> <dd>{@value URF#REAL_CLASS_URI}</dd>
-		<dt>{@value XMLSchemaContants#DOUBLE_DATATYPE_URI}</dt> <dd>{@value URF#REAL_CLASS_URI}</dd>
+		<dt>{@value XMLSchemaContants#DECIMAL_DATATYPE_URI}</dt> <dd>{@value URF#RATIONAL_CLASS_URI}</dd>
+		<dt>{@value XMLSchemaContants#DOUBLE_DATATYPE_URI}</dt> <dd>{@value URF#RATIONAL_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#DURATION_DATATYPE_URI}</dt> <dd>{@value URF#DURATION_CLASS_URI}</dd>
-		<dt>{@value XMLSchemaContants#FLOAT_DATATYPE_URI}</dt> <dd>{@value URF#REAL_CLASS_URI}</dd>
+		<dt>{@value XMLSchemaContants#FLOAT_DATATYPE_URI}</dt> <dd>{@value URF#RATIONAL_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#INT_DATATYPE_URI}</dt> <dd>{@value URF#INTEGER_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#INTEGER_DATATYPE_URI}</dt> <dd>{@value URF#INTEGER_CLASS_URI}</dd>
 		<dt>{@value XMLSchemaContants#LONG_DATATYPE_URI}</dt> <dd>{@value URF#INTEGER_CLASS_URI}</dd>
