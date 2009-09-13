@@ -24,6 +24,7 @@ import static com.globalmentor.collections.Arrays.*;
 import static com.globalmentor.io.Charsets.*;
 import com.globalmentor.io.IO;
 import static com.globalmentor.java.Characters.*;
+import static com.globalmentor.java.Objects.*;
 import com.globalmentor.text.*;
 
 /**Various text manipulating functions. These methods work on
@@ -264,27 +265,51 @@ public class Strings
 
 	/**Concatenates the given strings, separated by the given delimiter.
 	@param delimiter The delimiter to be placed between each string.
-	@param string The strings to be concatenated.
+	@param strings The strings to be concatenated.
 	@return The string containing the concatenated strings.
 	@throws NullPointerException if the given strings is <code>null</code>.
 	*/
-	public static String join(final char delimiter, final String... string)
+	public static String join(final char delimiter, final String... strings)
 	{
-		final int length=string.length;	//find out how many strings there are
+		final int length=strings.length;	//find out how many strings there are
 		if(length>1)	//if there are more than one string
 		{
-			return StringBuilders.append(new StringBuilder(), delimiter, string).toString();	//join the character strings using a string builder
+			return StringBuilders.append(new StringBuilder(), delimiter, strings).toString();	//join the character strings using a string builder
 		}
 		else if(length==1)	//if there is only one string
 		{
-			return string[0];	//return the one string
+			return strings[0];	//return the one string
 		}
 		else	//if there are no strings
 		{
 			return "";	//return the empty string
 		}
 	}
-	
+
+	/**Concatenates the given strings, separated by the given delimiter.
+	<p>This implementation is especially efficient if one or both of the strings is empty.</p>
+	@param delimiter The delimiter to be placed between each string.
+	@param string1 The first string to be concatenated.
+	@param string2 The second string to be concatenated.
+	@return The string containing the concatenated strings.
+	@throws NullPointerException if one of the given strings is <code>null</code>.
+	*/
+	public static String join(final char delimiter, final String string1, final String string2)
+	{
+		if(string1.isEmpty())	//if one of the strings is empty, return the other
+		{
+			return checkInstance(string2);
+		}
+		else if(string2.isEmpty())
+		{
+			return string1;
+		}
+		else	//if neither string is empty, concatenate them using the given delimiter
+		{
+			return string1+delimiter+string2; 
+		}
+	}
+
 	/**Searches a string in reverse and returns the last index of a substring
 		without case sensitivity, starting from <code>fromIndex</code>.
 	@param string The string to be searched.
