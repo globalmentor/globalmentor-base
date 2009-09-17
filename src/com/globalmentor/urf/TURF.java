@@ -8,6 +8,7 @@ import com.globalmentor.java.Characters;
 import com.globalmentor.net.ContentType;
 
 import static com.globalmentor.java.Characters.*;
+import static com.globalmentor.text.xml.XML.XML_SUBTYPE_SUFFIX;
 import static com.globalmentor.urf.URF.*;
 
 /**Constants relating to the text serialization of URF, TURF.
@@ -26,6 +27,9 @@ public class TURF
 
 	/**The content type for TURF: <code>text/urf</code>.*/ 
 	public static final ContentType CONTENT_TYPE=ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, "urf");
+
+	/**The suffix for a TURF application content type subtype.*/
+	public final static String SUBTYPE_SUFFIX="turf";
 
 	/**An extension for TURF resource names.*/
 	public final static String NAME_EXTENSION="turf";
