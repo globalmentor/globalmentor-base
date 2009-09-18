@@ -537,6 +537,33 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 
 	/**Adds a property and its scoped properties recursively.
 	If the given property and value already exists, the scoped properties, if any, will still be added recursively if they don't exist.
+	@param scope The scope containing the properties to add.
+	@return <code>true</code> if one or more properties was added, else <code>false</code> if all given property URI and value pairs already existed.
+	@exception NullPointerException if the given scope is <code>null</code>.
+	*/
+	public boolean addAllProperties(final URFScope scope)
+	{
+		writeLock().lock();	//get a write lock
+		try
+		{
+			boolean propertyAdded=false;	//we'll see if we add a property
+			for(final URFProperty property:scope.getProperties())	//for all the properties in the scope
+			{
+				if(addProperty(property))	//add the given property; if the property was added
+				{
+					propertyAdded=true;	//we added a property
+				}
+			}
+			return propertyAdded;	//indicate whether we added a new property value context
+		}
+		finally
+		{
+			writeLock().unlock();	//always release the write lock
+		}
+	}
+	
+	/**Adds a property and its scoped properties recursively.
+	If the given property and value already exists, the scoped properties, if any, will still be added recursively if they don't exist.
 	@param property The property to add.
 	@return <code>true</code> if the property was added, else <code>false</code> if the property URI and value already existed.
 	@exception NullPointerException if the given property is <code>null</code>.

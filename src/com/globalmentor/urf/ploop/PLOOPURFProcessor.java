@@ -12,7 +12,6 @@ import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
-import static com.globalmentor.urf.ploop.PLOOP.*;
 
 import com.globalmentor.collections.Collections;
 import com.globalmentor.net.*;
@@ -147,8 +146,8 @@ public class PLOOPURFProcessor
 		<li>If the resource is an {@link URFMapResource}, a new {@link Map} containing the converted keys and converted value objects will be returned.</li>
 		<li>If the resource specifies a Java type, the indicated Java class is instantiated and initialized from the resource description.</li>
 		<li>If the resource otherwise indicates a value that can be represented by a Java object (such as an integer), such an object will be returned.</li>
+		<li>If the resource does not meet any of the above criteria, the resource itself will be returned.</li>
 	</ul>
-	If the resource does not meet any of the above criteria, a {@link DataException} is thrown.
 	@param urfResource The URF resource describing the Java object to be created.
 	@return A created and initialized object according to the given resource description.
 	@exception NullPointerException if the given resource is <code>null</code>. 
@@ -321,7 +320,7 @@ public class PLOOPURFProcessor
 					}
 				}
 			}
-			throw new DataException("Value resource missing type information: "+URF.toString(resource));
+			return resource;	//return the resource itself
 		}
 	}
 
