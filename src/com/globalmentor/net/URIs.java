@@ -306,6 +306,18 @@ public class URIs
 		return new URIPath(getPathRawPath(uri)); //get the raw path and create a URIPath from that
 	}
 
+	/**Creates a new URI identical to the supplied URI with a different path.
+	@param uri The URI to change.
+	@param path The path, or <code>null</code> if there should be no path.
+	@return A new URI with the new path.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given path results in an invalid URI.
+	*/
+	public static URI changePath(final URI uri, final URIPath path)
+	{
+		return changeRawPath(uri, path!=null ? path.toString() : null);
+	}
+
 	/**Creates a new URI identical to the supplied URI with a different raw path.
 	@param uri The URI to change.
 	@param newRawPath The raw, escaped path, or <code>null</code> if there should be no path.
@@ -315,8 +327,7 @@ public class URIs
 	*/
 	public static URI changeRawPath(final URI uri, final String newRawPath)
 	{
-		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri
-				.getPort(), newRawPath, uri.getRawQuery(), uri.getRawFragment()); //construct an identical URI except with a different raw path
+		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), newRawPath, uri.getRawQuery(), uri.getRawFragment()); //construct an identical URI except with a different raw path
 	}
 
 	/**Creates a new URI identical to the supplied URI with a different host.
@@ -1051,6 +1062,24 @@ public class URIs
 		return pathURI; //return the URI we created
 	}
 
+	/**Checks to see if a given URI has the root path.
+	If the given URI does not have the root path, an exception is thrown.
+	@param uri The URI to check to see if it has the root path.
+	@return The given root URI.
+	@throws NullPointerException if the given URI is <code>null</code>.
+	@throws IllegalArgumentException if the given URI does not have the root path.
+	@see URI#getPath()
+	@see #ROOT_PATH
+	*/
+	public static URI checkRoot(final URI uri) throws IllegalArgumentException
+	{
+		if(!ROOT_PATH.equals(uri.getPath())) //if the given URI does not have the root path
+		{
+			throw new IllegalArgumentException("The given URI "+uri+" is a root URI.");
+		}
+		return uri; //return the root URI
+	}
+
 	/**Checks to see if a given URI is absolute.
 	If the given URI is not absolute, an exception is thrown.
 	@param uri The URI to check to see if it is absolute.
@@ -1213,7 +1242,7 @@ public class URIs
 	*/
 	public static URI getRootURI(final URI uri)
 	{
-		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), null, null, null);
+		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), (URIPath)null, null, null);
 	}
 
 	/**Returns the content type for the specified URI based on its name extension.
@@ -1875,15 +1904,28 @@ public class URIs
 	@param rawUserInfo The raw, encoded user information, or <code>null</code> if there is no user information.
 	@param host The host information, or <code>null</code> if there is no host.
 	@param port The port number, or -1 for no defined port.
+	@param path The path, or <code>null</code> if there is no path.
+	@param rawQuery The raw, encoded URI query, or <code>null</code> if there is no query.
+	@param rawFragment The raw, encoded fragment at the end of the URI, or <code>null</code> if there is no fragment.
+	@throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
+	*/
+	public static URI createURI(final String scheme, final String rawUserInfo, final String host, final int port, final URIPath path, final String rawQuery, final String rawFragment) throws IllegalArgumentException
+	{
+		return createURI(scheme, rawUserInfo, host, port, path!=null ? path.toString() : null, rawQuery, rawFragment);
+	}
+
+	/**Returns a URI constructed from the given parts, any of which can be <code>null</code>.
+	<p>This method should normally only be used when the format of the string is known to be a syntactically correct URI.</p>
+	@param scheme The name of the URI scheme.
+	@param rawUserInfo The raw, encoded user information, or <code>null</code> if there is no user information.
+	@param host The host information, or <code>null</code> if there is no host.
+	@param port The port number, or -1 for no defined port.
 	@param rawPath The raw, encoded path, or <code>null</code> if there is no path.
 	@param rawQuery The raw, encoded URI query, or <code>null</code> if there is no query.
 	@param rawFragment The raw, encoded fragment at the end of the URI, or <code>null</code> if there is no fragment.
 	@throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	*/
-	public static URI createURI(final String scheme, final String rawUserInfo,
-			final String host, final int port, final String rawPath,
-			final String rawQuery, final String rawFragment)
-			throws IllegalArgumentException
+	public static URI createURI(final String scheme, final String rawUserInfo, final String host, final int port, final String rawPath, final String rawQuery, final String rawFragment) throws IllegalArgumentException
 	{
 		final StringBuilder stringBuilder=new StringBuilder(); //we'll use this to construct the URI
 		if(scheme!=null) //if there is a scheme

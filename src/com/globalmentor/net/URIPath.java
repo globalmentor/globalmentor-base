@@ -302,6 +302,16 @@ public final class URIPath
 		return isCollection() ? this : new URIPath(uri.getRawPath()+PATH_SEPARATOR);	//if the URI path is not already a collection, append a path separator
 	}
 
+	/**Returns a relative form of the URI path.
+	If the URI path already is already a relative path, it is returned unmodified.
+	Otherwise, the beginning separator is removed from the URI path. 
+	@return A form of the URI path that is relative.
+	*/
+	public URIPath toRelativeURIPath()
+	{
+		return isRelative() ? this : new URIPath(uri.getRawPath().substring(1));	//if the URI path is not relative, remove the beginning path separator
+	}
+
 	/**@return A string representation of the raw, encoded path as it would appear in a URI.*/
 	public String toString()
 	{
