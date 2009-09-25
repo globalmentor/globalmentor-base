@@ -304,7 +304,7 @@ public class OEBPackageProcessor
 		}
 //TODO fix fallbacks		final Map fallbackMap=new HashMap();  //create a map to be used for storing references to fallbacks
 		  //add a manifest to the publication
-//TODO fix with URF		final RDFListResource manifestResource=addManifest(publicationResource);
+		final RDFListResource manifestResource=new RDFListResource<RDFObject>();
 		//XPath: /manifest/item
 		final List<Node> manifestElementList=(List<Node>)XPath.evaluatePathExpression(rootElement,
 			XPath.LOCATION_STEP_SEPARATOR_CHAR+PKG_ELEMENT_MANIFEST+
@@ -319,7 +319,7 @@ public class OEBPackageProcessor
 			final RDFResource itemResource=rdf.createResource(new URI(URN_SCHEME, "local:"+itemID, null)); //TODO fix the reference URI
 //TODO fix with URF content			Marmot.addContentType(itemResource, itemMediaType); //add the item's content type
 		  addLocation(itemResource, itemHRef); //add the item's href
-//TODO fix with URF		  manifestResource.add(itemResource);  //add the item to the manifest
+		  manifestResource.add(itemResource);  //add the item to the manifest
 /*TODO fix fallbacks
 			if(itemElement.hasAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_FALLBACK)) //if the element has a fallback attribute
 				fallbackMap.put(oebItem, itemElement.getAttributeNS(null, PKG_MANIFEST_ITEM_ATTRIBUTE_FALLBACK)); //put the fallback ID in the map, keyed to the item
@@ -357,13 +357,11 @@ Log.trace("looking at spine element: ", i);
 Log.trace("idref: ", itemIDRef);
 			final URI itemReferenceURI=new URI(URN_SCHEME, "local:"+itemIDRef, null);  //TODO fix the reference URI
 Log.trace("item reference URI: ", itemReferenceURI);
-/*TODO fix with URF
 			final RDFResource itemResource=manifestResource.getResourceByReferenceURI(itemReferenceURI);	//get the referenced item from the manifest
-Log.trace("item resource: ", RDFUtilities.toString(itemResource));
+Log.trace("item resource: ", RDFResources.toString(itemResource));
 			assert itemResource!=null : "Missing spine element: "+itemIDRef; //TODO fix with a real error message
 Log.trace("adding item to organization");
 			spine.add(itemResource);	//add this item to the spine
-*/
 		}
 		publicationResource.setSpine(spine);	//add the spine to the resource
 
