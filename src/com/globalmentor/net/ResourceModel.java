@@ -25,7 +25,7 @@ import static com.globalmentor.java.Classes.*;
 /**A model of a resource.
 <p>Bound properties:</p>
 <dl>
-	<dt> {@link #RESOURCE_PROPERTY} ( {@link Resource})</dt>
+	<dt>{@link #RESOURCE_PROPERTY} ({@link Resource})</dt>
 	<dd>Indicates that the resource property has been changed.</dd>
 </dl>
 @author Garret Wilson

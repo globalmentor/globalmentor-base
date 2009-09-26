@@ -18,7 +18,6 @@ package com.globalmentor.urf.maqro;
 
 import java.io.*;
 import java.net.*;
-import com.garretwilson.model.*;
 
 import com.globalmentor.io.*;
 import com.globalmentor.net.ResourceModel;

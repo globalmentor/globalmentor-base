@@ -18,8 +18,8 @@ package com.globalmentor.io;
 
 import java.net.URI;
 
-import com.garretwilson.model.Model;
 import com.globalmentor.event.EventListenerManager;
+import com.globalmentor.model.Model;
 
 /**A model that keeps track of a base URI and knows how to access input streams
 	based upon URIs.

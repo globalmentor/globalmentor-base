@@ -18,7 +18,6 @@ package com.globalmentor.rdf.dicto;
 
 import java.io.*;
 import java.net.*;
-import com.garretwilson.model.*;
 
 import static com.globalmentor.rdf.dicto.Dicto.*;
 
