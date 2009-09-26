@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.lang.InstantiationException;
 import java.lang.reflect.*;
+import java.net.URI;
 
 import com.globalmentor.io.Files;
 import com.globalmentor.java.Classes;
@@ -563,8 +564,15 @@ Log.trace("using element: ", element.getNodeName());  //TODO del
 	*/
 	protected static Object retrieve(final InputStream inputStream, final Object sourceObject, final Class type) throws IOException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
 	{
-		final XMLProcessor xmlProcessor=new XMLProcessor(); //create a new XML processor TODO use JAXP or something
-		final Document document=xmlProcessor.parseDocument(inputStream, sourceObject);  //retrieve an XML document from the input stream
+		final Document document;
+		if(sourceObject!=null)
+		{
+			document=XML.parse(inputStream, URI.create(sourceObject.toString()), true);	//create an XML processor parse the input stream
+		}
+		else
+		{
+			document=XML.parse(inputStream, true);	//create an XML processor parse the input stream
+		}
 		return retrieve(document, type);  //return the object from the document
 	}
 

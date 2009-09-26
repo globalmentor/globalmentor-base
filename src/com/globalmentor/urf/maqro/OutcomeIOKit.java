@@ -24,9 +24,8 @@ import static com.globalmentor.urf.maqro.MAQRO.*;
 
 import com.globalmentor.io.*;
 import com.globalmentor.rdf.*;
-import com.globalmentor.text.xml.XMLDOMImplementation;
-import com.globalmentor.text.xml.XMLProcessor;
-import com.globalmentor.text.xml.XMLSerializer;
+import com.globalmentor.text.xml.URIInputStreamableXMLEntityResolver;
+import com.globalmentor.text.xml.XML;
 
 import org.w3c.dom.Document;
 
@@ -85,8 +84,7 @@ public class OutcomeIOKit extends AbstractIOKit<Outcome>	//TODO del class
 		{
 			final RDF rdf=new RDF();  //create a new RDF data model
 //TODO fix			rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQRO());  //register a factory for MAQRO resource classes
-			final XMLProcessor xmlProcessor=new XMLProcessor(this);	//create an XML processor using the correct input stream locator	TODO get the XML processor in a more general way
-			final Document document=xmlProcessor.parseDocument(inputStream, baseURI);	//parse the file
+			final Document document=XML.parse(inputStream, baseURI, true, new URIInputStreamableXMLEntityResolver(this));	//create an XML processor using the correct input streams locator and parse the file
 			document.normalize(); //normalize the package description document
 			final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf);	//create a new RDF processor
 			rdfProcessor.processRDF(document, baseURI);  //parse the RDF from the document

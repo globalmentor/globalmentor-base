@@ -20,10 +20,12 @@ import java.io.*;
 import java.net.*;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+
 import static com.globalmentor.rdf.xpackage.XPackage.*;
 import static com.globalmentor.text.xml.oeb.OEB.*;
 
-import com.globalmentor.io.*;
+import static com.globalmentor.java.Objects.*;
 import com.globalmentor.log.Log;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.http.HTTP.*;
@@ -34,33 +36,33 @@ import com.globalmentor.text.xml.xpath.XPath;
 import static com.globalmentor.urf.dcmi.DCMI.*;
 
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 /**Class which parses an input stream containing an OEB publication.
 If the input stream contains an OEB 1.x package document, it will be converted to an XEbook.
-@see XMLProcessor
 */
 public class OEBPackageProcessor
 {
 
-	/**The XML processor for parsing an OEB package description document.*/
-	private final XMLProcessor xmlProcessor;
+	/**The document builder for parsing an OEB package description document.*/
+	private final DocumentBuilder documentBuilder;
 
-		/**@return The XML processor for parsing an OEB package description document.*/
-		protected XMLProcessor getXMLProcessor() {return xmlProcessor;}
-
+		/**@return The document builder for parsing an OEB package description document.*/
+		protected DocumentBuilder getDocumentBuilder() {return documentBuilder;}
 
 	/**Default constructor that creates a new XML processor.*/
 	public OEBPackageProcessor()
 	{
-		this(new XMLProcessor()); //create a new XML processor and finish constructing the class
+		this(XML.createDocumentBuilder(true)); //create a new XML processor and finish constructing the class
 	}
 
 	/**Constructor that uses an existing XML processor.
-	@param processor The XML processor to use for parsing and OEB package description document.
+	@param documentBuilder The XML processor to use for parsing and OEB package description document.
+	@throws NullPointerException if the given document builder is <code>null</code>.
 	*/
-	public OEBPackageProcessor(final XMLProcessor processor)
+	public OEBPackageProcessor(final DocumentBuilder documentBuilder)
 	{
-		xmlProcessor=processor; //save the XML processor
+		this.documentBuilder=checkInstance(documentBuilder, "Document builder cannot be null."); //save the XML processor
 	}
 
 	/**Reads an OEB publication from a package file and converts it to an
@@ -91,10 +93,10 @@ public class OEBPackageProcessor
 	public RDF read(final InputStream packageInputStream, final URI packageURI) throws IOException
 	{
 		final RDF rdf=new RDF();  //create a new RDF data model
-		final Document document=getXMLProcessor().parseDocument(packageInputStream, packageURI);	//parse the package description document
-		document.normalize(); //normalize the package description document
 		try
 		{
+			final Document document=documentBuilder.parse(packageInputStream, packageURI.toString());	//parse the package description document
+			document.normalize(); //normalize the package description document
 				//check for an OEB 1.x package document
 			final DocumentType documentType=document.getDoctype();  //get the document type of this document
 			if(documentType!=null)  //if there is a document type
@@ -109,9 +111,13 @@ public class OEBPackageProcessor
 			final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf);	//create a new RDF processor using the RDF data model we already created
 			return rdfProcessor.processRDF(document, packageURI);  //parse the RDF from the document
 		}
-		catch (URISyntaxException e)
+		catch(final URISyntaxException uriSyntaxException)
 		{
-			throw (IOException)new IOException(e.getMessage()).initCause(e);
+			throw new IOException(uriSyntaxException.getMessage(), uriSyntaxException);
+		} 
+		catch(final SAXException saxException)
+		{
+			throw new IOException(saxException.getMessage(), saxException);
 		} 
 	}
 

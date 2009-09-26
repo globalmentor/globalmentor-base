@@ -19,12 +19,16 @@ package com.globalmentor.rdf;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
+import javax.xml.parsers.DocumentBuilder;
+
 import com.globalmentor.io.*;
-import com.globalmentor.text.xml.XMLDOMImplementation;
-import com.globalmentor.text.xml.XMLProcessor;
+import com.globalmentor.text.xml.URIInputStreamableXMLEntityResolver;
+import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.XMLSerializer;
 
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**Class for loading and saving an RDF resource from an RDF+XML serialization.
 @author Garret Wilson
@@ -177,9 +181,9 @@ public class RDFResourceIOKit<R extends RDFResource> extends AbstractIOKit<R>
 	}
 
 	/**@return An XML processor appropriately configured for parsing XML.*/
-	protected XMLProcessor getXMLProcessor()
+	protected DocumentBuilder getDocumentBuilder()
 	{
-		return new XMLProcessor(this);	//create an XML processor using the correct input stream locator
+		return XML.createDocumentBuilder(true, new URIInputStreamableXMLEntityResolver(this));	//create an XML processor using the correct input stream locator
 	}
 	
 	/**Loads an RDF resource from an input stream.
@@ -202,8 +206,8 @@ public class RDFResourceIOKit<R extends RDFResource> extends AbstractIOKit<R>
 				final RDFResourceFactory resourceFactory=resourceFactoryEntry.getValue();	//get the resource factory associated with this type
 				rdf.registerResourceFactory(typeNamespaceURI, resourceFactory);	//register this resource factory for this type namespace
 			}
-			final XMLProcessor xmlProcessor=getXMLProcessor();	//get the XML processor
-			final Document document=xmlProcessor.parseDocument(inputStream, baseURI);	//parse the activity file
+			final DocumentBuilder documentBuilder=getDocumentBuilder();	//get the XML processor
+			final Document document=documentBuilder.parse(inputStream, baseURI.toString());	//parse the activity file
 			document.normalize(); //normalize the package description document
 			final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf);	//create a new RDF processor
 			rdfProcessor.processRDF(document, baseURI);  //parse the RDF from the document
@@ -219,6 +223,10 @@ public class RDFResourceIOKit<R extends RDFResource> extends AbstractIOKit<R>
 		{
 			throw (IOException)new IOException(uriSyntaxException.getMessage()).initCause(uriSyntaxException);	//convert the exception into an IO exception
 		}
+		catch(final SAXException saxException)
+		{
+			throw new IOException(saxException.getMessage(), saxException);
+		}
 	}
 	
 	/**Saves a model to an output stream.
@@ -229,7 +237,7 @@ public class RDFResourceIOKit<R extends RDFResource> extends AbstractIOKit<R>
 	public void save(final R resource, final OutputStream outputStream) throws IOException
 	{
 			//create an XML document containing the resource
-		final Document document=getRDFXMLGenerator().createDocument((RDFResource)resource, new XMLDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
+		final Document document=getRDFXMLGenerator().createDocument((RDFResource)resource, XML.createDocumentBuilder(true).getDOMImplementation());	//TODO get the XMLDOMImplementation from some common source
 		getXMLSerializer().serialize(document, outputStream);	//serialize the document to the output stream
 	}
 

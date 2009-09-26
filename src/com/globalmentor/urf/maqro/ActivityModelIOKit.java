@@ -83,9 +83,7 @@ public class ActivityModelIOKit extends AbstractIOKit<ResourceModel<Activity>>	/
 		{
 			final RDF rdf=new RDF();  //create a new RDF data model
 //TODO fix			rdf.registerResourceFactory(MAQRO_NAMESPACE_URI, new MAQRO());  //register a factory for MAQRO resource classes
-
-			final XMLProcessor xmlProcessor=new XMLProcessor(this);	//create an XML processor using the correct input stream locator
-			final Document document=xmlProcessor.parseDocument(inputStream, baseURI);	//parse the activity file
+			final Document document=XML.parse(inputStream, baseURI, true, new URIInputStreamableXMLEntityResolver(this));	//create an XML processor using the correct input streams locator and parse the activity file
 			document.normalize(); //normalize the package description document
 			final RDFXMLProcessor rdfProcessor=new RDFXMLProcessor(rdf);	//create a new RDF processor
 			rdfProcessor.processRDF(document, baseURI);  //parse the RDF from the document

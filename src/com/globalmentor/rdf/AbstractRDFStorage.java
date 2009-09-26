@@ -20,15 +20,16 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import javax.xml.parsers.DocumentBuilder;
+
 import com.globalmentor.io.*;
 import com.globalmentor.model.DefaultModifiable;
 import com.globalmentor.model.Modifiable;
-import com.globalmentor.text.xml.XMLProcessor;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.text.xml.XML;
-import com.globalmentor.util.*;
 
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 /**A modifiable object that knows how to store and retrieve itself as RDF.
 <p>The data storage and retrieval operations of this class are thread-safe.</p>
@@ -133,9 +134,9 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	}
 
 	/**@return An XML processor appropriately configured for parsing XML.*/
-	protected XMLProcessor getXMLProcessor()
+	protected DocumentBuilder getDocumentBuilder()
 	{
-		return new XMLProcessor();	//create an XML processor
+		return XML.createDocumentBuilder(true);	//create an XML processor
 	}
 	
 	/**@return An RDF processor appropriately configured for processing RDF
@@ -271,11 +272,15 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	*/
 	protected synchronized Document retrieveXML(final URI uri) throws IOException
 	{
-		final XMLProcessor xmlProcessor=getXMLProcessor();	//get an XML processor
+		final DocumentBuilder documentBuilder=getDocumentBuilder();	//get an XML processor
 		final InputStream inputStream=new BufferedInputStream(getInputStream(uri));	//get a buffered input stream from the URI
 		try
 		{
-			return xmlProcessor.parseDocument(inputStream, uri);	//read an XML document from the input stream and return it	
+			return documentBuilder.parse(inputStream, uri.toString());	//read an XML document from the input stream and return it	
+		}
+		catch(final SAXException saxException)
+		{
+			throw new IOException(saxException.getMessage(), saxException);
 		}
 		finally
 		{
