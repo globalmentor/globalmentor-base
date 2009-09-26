@@ -229,7 +229,7 @@ public class QTIResponseLabelPanel extends JPanel implements Verifiable
 		public HotspotComponent(final Image image, final DrawShape drawShape)
 		{
 			super(image); //construct the parent class with the image
-			ImageUtilities.loadImage(image);  //load the image so that we will know its size when we display it
+			Images.loadImage(image);  //load the image so that we will know its size when we display it
 			drawShapeStrategy=new DrawShapeStrategy(this, drawShape);  //create the strategy for drawing the shape
 			addMouseListener(drawShapeStrategy); //allow the strategy to listen to mouse events
 			addMouseMotionListener(drawShapeStrategy); //allow the strategy to listen to mouse motion events

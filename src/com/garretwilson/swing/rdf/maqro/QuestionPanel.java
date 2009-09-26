@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.*;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
+import com.garretwilson.awt.Containers;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.Borders;
 import com.globalmentor.net.ResourceModel;
@@ -402,13 +403,13 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			answerPanel.setBorder(Borders.createDefaultTitledBorder());	//set a titled border for the answer panel
 			answerPanel.setTitle("Expectation and Answer");	//TODO i18n
 			final Insets choiceAnswerInsets=new Insets(0, 32, 0, 0);
-			add(queryLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+			add(queryLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
 //TODO fix			add(queryPanel, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
-			add(choicesRadioButton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-			add(mutuallyExclusiveCheckBox, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-			add(requireAllCheckBox, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+			add(choicesRadioButton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
+			add(mutuallyExclusiveCheckBox, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
+			add(requireAllCheckBox, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
 //TODO fix			add(choicePanel, new GridBagConstraints(0, 3, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, choiceAnswerInsets, 0, 0));
-			add(expectRadioButton, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+			add(expectRadioButton, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
 			add(answerPanel, new GridBagConstraints(0, 5, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, choiceAnswerInsets, 0, 0));
 		}
 

@@ -20,7 +20,7 @@ import java.awt.Point;
 import java.awt.Shape;
 import javax.swing.*;
 import javax.swing.text.*;
-import com.garretwilson.awt.geom.GeometryUtilities;
+import com.garretwilson.awt.geom.Geometry;
 import com.garretwilson.swing.text.InvisibleView;
 import com.garretwilson.swing.text.Styles;
 import com.garretwilson.swing.text.ViewComponentManager;
@@ -88,7 +88,7 @@ public class QTIRenderHotspotView extends InvisibleView
 						final String areaText=childElement.getDocument().getText(childElement.getStartOffset(), childElement.getEndOffset()-childElement.getStartOffset());
 						final Shape area=QTIProcessor.createArea(areaType, areaText);  //create a shape from the area
 Log.trace("ready to put toggle button in area: ", area);  //TODO del
-						final Point center=GeometryUtilities.getCenter(area); //get the center point of the area
+						final Point center=Geometry.getCenter(area); //get the center point of the area
 Log.trace("new center: ", center);  //TODO del
 						final JToggleButton toggleButton; //we'll create a toggle button to show in the material image view
 						if(allowMultipleSelections)  //if we allow multiple selections

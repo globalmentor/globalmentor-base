@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.awt;
 
 import java.awt.*;
@@ -6,18 +22,18 @@ import javax.swing.*;
 /**Various utility methods for manipulating windows.
 @author Garret Wilson
 */
-public class WindowUtilities
+public class Windows
 {
 
 	/**This class cannot be publicly instantiated.*/
-	private WindowUtilities() {}
+	private Windows() {}
 
 
 	/**Centers a window in its graphics configuration, which is usually the
 		physical screen although a window may be located in a virtual display.
 	@param window The window to center.
 	*/
-	public static void center(final Window window)  //G***this needs to be updated to consider centering points and virtual screens
+	public static void center(final Window window)  //TODO this needs to be updated to consider centering points and virtual screens
 	{
 		final GraphicsConfiguration graphicsConfiguration=window.getGraphicsConfiguration();  //get the window's graphics configuration
 		final Rectangle gcBounds=graphicsConfiguration.getBounds(); //get the bounds of the graphics configuration
@@ -35,8 +51,8 @@ public class WindowUtilities
 		final GraphicsConfiguration graphicsConfiguration=window.getGraphicsConfiguration();  //get the window's graphics configuration
 		final Rectangle gcBounds=graphicsConfiguration.getBounds(); //get the bounds of the graphics configuration
 		gcBounds.grow(4, 4);  //grow the rectangle by four units in all four directions
-		window.setBounds(gcBounds); //G***testing
-//G***bring back if  needed window.validate();	//update our size changes G***do we need this?
+		window.setBounds(gcBounds); //TODO testing
+//TODO bring back if  needed window.validate();	//update our size changes TODO do we need this?
 	}
 
 	/**If the window contains a scroll pane as its single
@@ -52,7 +68,7 @@ public class WindowUtilities
 	*/ 
 	public static void constrainSize(final Window window)
 	{
-/*G***fix or del; an option pane doesn't have a single scroll pane, so maybe look only at center border layouts
+/*TODO fix or del; an option pane doesn't have a single scroll pane, so maybe look only at center border layouts
 		boolean hasSingleScrollPaneDesendant=false;	//we'll see if there descendant line between the window and any scroll pane has no siblings
 		Container container;	//see which container to start looking at
 		if(window instanceof JFrame)	//if the window is a frame
@@ -85,7 +101,7 @@ public class WindowUtilities
 			}
 		}
 */
-//G***fix		if(hasSingleScrollPaneDesendant)	//if the window has just one scroll pane descendant
+//TODO fix		if(hasSingleScrollPaneDesendant)	//if the window has just one scroll pane descendant
 		{
 			final GraphicsConfiguration graphicsConfiguration=window.getGraphicsConfiguration();  //get the window's graphics configuration
 			final Rectangle gcBounds=graphicsConfiguration.getBounds(); //get the bounds of the graphics configuration
@@ -100,7 +116,7 @@ public class WindowUtilities
 				final float proportionalWidth=preferredArea/proportionalHeight;	//find the width from the height
 	//G**fix			final int proportionalWidth=(int)Math.ceil(Math.sqrt(preferredArea));	//make the sides of the window approximately equal  
 				window.setSize((int)Math.ceil(proportionalWidth), (int)Math.ceil(proportionalWidth));	//change the size of the window to our new approximately square size
-	//G***fix			window.setSize(gcBounds.width*2/3, gcBounds.height*2/3);
+	//TODO fix			window.setSize(gcBounds.width*2/3, gcBounds.height*2/3);
 				window.validate();	//validate the new bounds
 			}
 		}

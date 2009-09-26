@@ -1,21 +1,29 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.awt;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.TextArea;
-/*G***del when not needed
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-*/
-import com.globalmentor.java.Strings;
 import com.globalmentor.util.DebugDisplay;
 
 /**Interface for displaying debug information using the AWT.
 @author Garret Wilson
-@see com.garretwilson.swing.DebugSwingDisplay
 */
 public class DebugAWTDisplay implements DebugDisplay
 {
@@ -25,9 +33,6 @@ public class DebugAWTDisplay implements DebugDisplay
 
 	/**The text area used to log visible output.*/
 	private TextArea debugTextArea;
-
-	/**Whether this displayer is enabled.*/
-//G***del if not needed	private boolean enabled=false;
 
 	/**Default constructor.*/
 	public DebugAWTDisplay()
@@ -56,7 +61,7 @@ public class DebugAWTDisplay implements DebugDisplay
 				final Frame frame=new Frame();	//create a new frame
 				final TextArea textArea=new TextArea(100, 100);	//create a new text area
 				frame.setSize(new Dimension(800, 600));	//give the frame a default size
-		    textArea.setText("Debug output\n");	//G***put the current date here or something
+		    textArea.setText("Debug output\n");	//TODO put the current date here or something
 		    textArea.setEditable(false);	//don't allow the text to be edited
 		    frame.add(textArea, BorderLayout.CENTER);
 				frame.validate();	//validate the frame, now that we've added all the components
@@ -93,10 +98,10 @@ public class DebugAWTDisplay implements DebugDisplay
 	*/
 	public void notify(final String message)
 	{
-/*G***fix
-		final String wrappedMessage=StringUtilities.wrap(message, 100);	//wrap the error message at 100 characters G***probably use a constant here
-			//G***maybe later use a specified frame as the parent
-		JOptionPane.showMessageDialog(null, wrappedMessage, "Debug Message", JOptionPane.INFORMATION_MESSAGE);	//G***i18n; comment
+/*TODO fix
+		final String wrappedMessage=StringUtilities.wrap(message, 100);	//wrap the error message at 100 characters TODO probably use a constant here
+			//TODO maybe later use a specified frame as the parent
+		JOptionPane.showMessageDialog(null, wrappedMessage, "Debug Message", JOptionPane.INFORMATION_MESSAGE);	//TODO i18n; comment
 */
 	}
 
@@ -108,10 +113,10 @@ public class DebugAWTDisplay implements DebugDisplay
 	*/
 	public void error(final String errorString)
 	{
-/*G***fix
-		final String wrappedErrorString=StringUtilities.wrap(errorString, 100);	//wrap the error message at 100 characters G***probably use a constant here
-			//G***maybe later use a specified frame as the parent
-	JOptionPane.showMessageDialog(null, wrappedErrorString, "Error", JOptionPane.ERROR_MESSAGE);	//G***i18n; comment
+/*TODO fix
+		final String wrappedErrorString=StringUtilities.wrap(errorString, 100);	//wrap the error message at 100 characters TODO probably use a constant here
+			//TODO maybe later use a specified frame as the parent
+	JOptionPane.showMessageDialog(null, wrappedErrorString, "Error", JOptionPane.ERROR_MESSAGE);	//TODO i18n; comment
 */
 	}
 

@@ -19,11 +19,11 @@ package com.garretwilson.swing.rdf.maqro;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
-import java.util.Collections;
 import static java.util.Collections.*;
 import java.util.List;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
+import com.garretwilson.awt.Containers;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.Borders;
@@ -251,13 +251,13 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 		onlyQuestionsRadioButton.addItemListener(updateStatusItemListener);	//update the status if this button is pressed
 		categoriesButton.setText("Categories...");	//TODO i18n
 
-		add(questionCountLabel, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		add(allQuestionsRadioButton, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		add(onlyQuestionsRadioButton, new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		add(questionCountTextField, new GridBagConstraints(2, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		add(randomSelectionCheckBox, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		add(randomOrderCheckBox, new GridBagConstraints(0, 2, 3, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		add(categoriesButton, new GridBagConstraints(0, 3, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+		add(questionCountLabel, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
+		add(allQuestionsRadioButton, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
+		add(onlyQuestionsRadioButton, new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
+		add(questionCountTextField, new GridBagConstraints(2, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
+		add(randomSelectionCheckBox, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
+		add(randomOrderCheckBox, new GridBagConstraints(0, 2, 3, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
+		add(categoriesButton, new GridBagConstraints(0, 3, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
 	}
 
 	/**Updates the states of the actions, including enabled/disabled status,

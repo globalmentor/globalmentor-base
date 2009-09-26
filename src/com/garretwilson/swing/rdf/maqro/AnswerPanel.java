@@ -21,6 +21,7 @@ import java.awt.event.*;
 import java.net.*;
 import javax.swing.*;
 
+import com.garretwilson.awt.Containers;
 import com.garretwilson.swing.*;
 import com.globalmentor.java.Objects;
 import com.globalmentor.log.Log;
@@ -46,7 +47,7 @@ public class AnswerPanel extends ContentPanel
 	/**Default constructor.*/
 	public AnswerPanel()
 	{
-		super(new JPanel(), new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0), false);	//construct the parent class but don't initialize it
+		super(new JPanel(), new GridBagConstraints(1, 1, 1, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, Containers.NO_INSETS, 0, 0), false);	//construct the parent class but don't initialize it
 		typeLabel=new JLabel();
 		typeComboBox=new JComboBox();
 		answerCheckBox=new JCheckBox();
@@ -93,9 +94,9 @@ public class AnswerPanel extends ContentPanel
 		answerCheckBox.setSelected(true);	//default to providing an answer
 		answerCheckBox.addItemListener(getModifyItemListener());
 		answerCheckBox.addItemListener(createUpdateStatusItemListener());	//update the status if the answer checkbox is changed
-		add(typeLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
-		add(typeComboBox, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, NO_INSETS, 0, 0));
-		add(answerCheckBox, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
+		add(typeLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
+		add(typeComboBox, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, Containers.NO_INSETS, 0, 0));
+		add(answerCheckBox, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, Containers.NO_INSETS, 0, 0));
 	}
 
 	/**Updates the states of the actions, including enabled/disabled status,

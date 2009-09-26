@@ -1,26 +1,46 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.awt;
 
 import java.awt.*;
 import java.util.*;
 
+import javax.swing.Box;
+
+import static com.garretwilson.awt.Containers.*;
+
 /**Grid bag layout class that has additional convenience functionality,
 	including box layout and border layout functionality.
-<p>This layout can be used in place of <code>BorderLayout</code> either by using
-	the <code>BorderLayout</code> constraints or, preferably, by using one of
+<p>This layout can be used in place of {@link BorderLayout} either by using
+	the {@link BorderLayout} constraints or, preferably, by using one of
 	the <code>createBorderConstraints()</code> in this class. Border layout
 	functionality is enhanced by allowing multiple components in each border,
 	the total number in both directions together limited by
-	<code>GridBagLayout.MAXGRIDSIZE</code>.</p>
+	{@link GridBagLayout#MAXGRIDSIZE}.</p>
 <p>A component with a basic grid bag layout can be used in place of a horizontal
-	or vertical <code>javax.swing.Box</code>, with the added benefit that weights
+	or vertical {@link Box}, with the added benefit that weights
 	can be assigned to each component, using <code>createNextBoxConstraints()</code>
 	for layout constraints when adding components. For example, a vertical layout
-	might add a <code>Box.createGlue()</code> at the end using constraints of
+	might add a {@link Box#createGlue()} at the end using constraints of
 	<code>createNextBoxConstraints(BasicGridBagLayout.X_AXIS, 1.0)</code>.</p>  
 @author Garret Wilson
-@see javax.swing.Box
+@see Box
 */
-public class BasicGridBagLayout extends GridBagLayout implements ContainerConstants
+public class BasicGridBagLayout extends GridBagLayout
 {
 
 	/**The origin (i.e. the center cell position) both horizontally and vertically
@@ -70,7 +90,7 @@ public class BasicGridBagLayout extends GridBagLayout implements ContainerConsta
 					max=Math.max(max, constraints.gridy);	//see if we need to update the largest y coordinate
 					break;
 				default:	//if the axis value isn't recognized
-					throw new IllegalArgumentException("Unrecognized axis value");	//G***i18n
+					throw new IllegalArgumentException("Unrecognized axis value");	//TODO i18n
 			}
 		}
 		return max;	//return whatever max value we found
@@ -173,18 +193,8 @@ public class BasicGridBagLayout extends GridBagLayout implements ContainerConsta
 			case Y_AXIS:
 				return new GridBagConstraints(0, nextGrid, MAXGRIDSIZE, 1, 1.0, weight, anchor, fill, NO_INSETS, 0, 0);
 			default:	//if the axis value isn't recognized
-				throw new IllegalArgumentException("Unrecognized axis value");	//G***i18n
+				throw new IllegalArgumentException("Unrecognized axis value");	//TODO i18n
 		}
-/*G***del when works
-		return new GridBagConstraints(
-				axis==X_AXIS ? nextGrid : 0,	//use the next coordinate for the appropriate axis
-				axis==Y_AXIS ? nextGrid : 0,
-				1,
-				1,
-				axis==X_AXIS ? weight : 1.0,	//use the weight for the appropriate axis
-				axis==Y_AXIS ? weight : 1.0,
-				anchor, fill, NO_INSETS, 0, 0);
-*/
 	}
 
 
@@ -197,7 +207,7 @@ public class BasicGridBagLayout extends GridBagLayout implements ContainerConsta
 		or border of this panel.
 	@see BorderLayout
 	*/
-//G***fix	public static GridBagConstraints createBorderConstraints(final String position, final int displacement) 
+//TODO fix	public static GridBagConstraints createBorderConstraints(final String position, final int displacement) 
 
 
 
@@ -212,7 +222,7 @@ public class BasicGridBagLayout extends GridBagLayout implements ContainerConsta
 		or border of this panel.
 	@see BorderLayout
 	*/
-/*G***fix
+/*TODO fix
 	public static GridBagConstraints createBorderConstraints(final String position, final int displacement) 
 	{
 		final int nextGrid=getMaxGrid(axis)+1;	//determine the next coordinate on the grid

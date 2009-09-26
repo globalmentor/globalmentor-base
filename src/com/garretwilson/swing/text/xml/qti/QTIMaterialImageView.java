@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import javax.swing.text.*;
-import com.garretwilson.awt.ImageUtilities;
+import com.garretwilson.awt.Images;
 import com.garretwilson.swing.text.xml.XMLComponentImageView;
 import com.garretwilson.swing.text.xml.XMLStyles;
 import com.globalmentor.log.Log;
@@ -77,7 +77,7 @@ Log.trace("we don't know the dimensions of the QTI image; we'll have to get it")
 				final Image image=getImage(); //get the image, loading it if needed (in initialize() it will usually have to be loaded)
 Log.trace("got the image;  loading it"); //TODO del
 assert image!=null : "fImage is null";  //TODO fix
-  			ImageUtilities.loadImage(image);  //load the image TODO optimize: perhaps there's a way to just load part of the image, to get the image dimensions
+  			Images.loadImage(image);  //load the image TODO optimize: perhaps there's a way to just load part of the image, to get the image dimensions
 Log.trace("loaded the image"); //TODO del
 				height=image.getHeight(this);	//get the image's height
 				width=image.getWidth(this);	//get the image's width
