@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.rdf.dicto;
 
 import java.awt.BorderLayout;
@@ -19,7 +35,6 @@ import com.globalmentor.mentoract.maqro.*;
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.dicto.*;
 import com.globalmentor.rdf.dicto.Dictionary;
-import com.globalmentor.rdf.dublincore.RDFDublinCore;
 import com.globalmentor.rdf.xpackage.XPackage;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xhtml.*;
@@ -86,7 +101,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 	/**Initialize the user interface.*/
 	protected void initializeUI()
 	{
-		addView(WYSIWYG_MODEL_VIEW, "Dictionary", book, null);	//add the book component as the WYSIWYG view G***i18n
+		addView(WYSIWYG_MODEL_VIEW, "Dictionary", book, null);	//add the book component as the WYSIWYG view TODO i18n
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 //TODO set the book to be not editable
@@ -116,7 +131,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 						//set the title
 					final Locale dictionaryLanguage=dictionary.getDictionaryLanguage();	//get the language of the entries
 					final String languageTitle=dictionaryLanguage!=null ? dictionaryLanguage.getDisplayLanguage()+" " : "";	//get the language part of the title
-					final Element h1Element=XML.appendElementNS(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_H1, languageTitle+"Dictionary");	//G***i18n
+					final Element h1Element=XML.appendElementNS(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_H1, languageTitle+"Dictionary");	//TODO i18n
 					if(dictionary.getEntries()!=null)	//if we have a dictionary and it has entries
 					{
 						final Element dlElement=XML.appendElementNS(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_DL);
@@ -140,7 +155,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 								}
 							}
 							final StringBuffer orthographyStringBuffer=new StringBuffer(orthography.toString());	//deterine the orthography HTML
-/*G***del
+/*TODO del
 							if(resourcePronunciation!=null)	//if we have a pronunciation resource
 							{
 								final String href=XPackageUtilities.getLocationHRef(resourcePronunciation);	//see if the resource has a link to a resource
@@ -270,7 +285,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 			final AbstractSelection selection=new RandomSelection();	//create random selection criteria
 //TODO fix			selection.setOrder(new RandomOrder());	//set the order of the selection to random
 			optionsPanel.setAvailableCategorySet(availableCategorySet);	//set the available categories in the options panel
-/*G***del; no selected categories selects all categories
+/*TODO del; no selected categories selects all categories
 			//select all available categories
 			final Iterator availableCategoryIterator=availableCategorySet.iterator();	//get an iterator to the available categories
 			while(availableCategoryIterator.hasNext())	//while there are more available categories
@@ -285,7 +300,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 			optionsPanel.setSelection(selection);	//set the panel selection criteria
 
 				//show the options; if the user accepts the options 
-			if(BasicOptionPane.showConfirmDialog(this, optionsPanel, "Dictionary Quiz Options", BasicOptionPane.OK_CANCEL_OPTION, BasicOptionPane.QUESTION_MESSAGE)==BasicOptionPane.OK_OPTION)	//G***i18n
+			if(BasicOptionPane.showConfirmDialog(this, optionsPanel, "Dictionary Quiz Options", BasicOptionPane.OK_CANCEL_OPTION, BasicOptionPane.QUESTION_MESSAGE)==BasicOptionPane.OK_OPTION)	//TODO i18n
 			{
 					//create a Mentoract activity adapter that will create questions based upon dictionary entries
 				final DictionaryActivity dictionaryActivity=new DictionaryActivity(dictionary);
@@ -294,10 +309,10 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 				dictionaryActivity.setShowResultProgress(true);
 				dictionaryActivity.setShowEachResult(true);
 				dictionaryActivity.setShowFinalResult(true);
-				RDFDublinCore.addTitle(dictionaryActivity, dictionaryLanguage.getDisplayLanguage()+" Quiz");	//add a title showing the language G***i18n
+				RDFDublinCore.addTitle(dictionaryActivity, dictionaryLanguage.getDisplayLanguage()+" Quiz");	//add a title showing the language TODO i18n
 				dictionaryActivity.setSelection(optionsPanel.getSelection());	//set the activity's selection criteria
 */
-/*G***fix and del
+/*TODO fix and del
 				dictionaryActivity.setQuestionCount(optionsPanel.getQuestionCount());	//show how many questions to use
 				dictionaryActivity.setChoiceCount(optionsPanel.getChoiceCount());	//show how many questions to use
 				dictionaryActivity.setQueryProperty(optionsPanel.getQueryProperty());	//show which property to use for the query
@@ -314,7 +329,7 @@ public class DictionaryPanel extends RDFPanel<Dictionary, ResourceModel<Dictiona
 */
 
 	//TODO should we just make ApplicationFrame a concrete class?
-	/*G***fix
+	/*TODO fix
 				resourceApplicationFrame.setApplicationName(getLabel());	//set the type of resource as the application name of the frame
 				resourceApplicationFrame.setIconImage(getIcon().getImage());	//set the resource type icon as the frame icon
 				resourceApplicationFrame.setFileMenuInclusions(ResourceApplicationFrame.MENU_FILE_SAVE|ResourceApplicationFrame.MENU_FILE_EXIT);	//only show file|save and file|exit
@@ -340,13 +355,13 @@ activityFrame.setVisible(true);	//show the activity frame
 		/**Default constructor.*/
 		public QuizAction()
 		{
-			super("Quiz");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Interactive Quiz");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Display an interactive quiz on the contents of the dictionary.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_Q));  //set the mnemonic key; for some reason, 's' causes the action to be activated when Alt+F4 is pressed G***i18n
+			super("Quiz");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Interactive Quiz");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Display an interactive quiz on the contents of the dictionary.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_Q));  //set the mnemonic key; for some reason, 's' causes the action to be activated when Alt+F4 is pressed TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.ANIMATION_ICON_FILENAME)); //load the correct icon
-//G***del			putValue(SMALL_ICON, IconResources.getIcon(IconResources.DOCUMENT_QUESTION_ICON_FILENAME)); //load the correct icon
-			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK)); //add the accelerator G***i18n
+//TODO del			putValue(SMALL_ICON, IconResources.getIcon(IconResources.DOCUMENT_QUESTION_ICON_FILENAME)); //load the correct icon
+			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK)); //add the accelerator TODO i18n
 		}
 
 		/**Called when the action should be performed.

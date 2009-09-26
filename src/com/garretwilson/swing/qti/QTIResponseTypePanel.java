@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.qti;
 
 import java.awt.*;
@@ -5,10 +21,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.globalmentor.java.CharSequences;
-import com.globalmentor.java.Strings;
 import com.globalmentor.mentoract.qti.*;
 import com.globalmentor.model.Verifiable;
-import com.globalmentor.util.*;
 
 /**Allows a response type to be selected.
 @author Garret Wilson
@@ -271,7 +285,7 @@ public class QTIResponseTypePanel extends JPanel implements Verifiable
 			fibRadioButton.setEnabled(false); //disable fill-in-the-blank rendering
 			fibRadioButton.setSelected(false);
 		}
-		else  //G***fix other response types
+		else  //TODO fix other response types
 		{
 			choiceRadioButton.setEnabled(false); //disable choice rendering
 			choiceRadioButton.setSelected(false);
@@ -343,7 +357,7 @@ public class QTIResponseTypePanel extends JPanel implements Verifiable
 		final String responseType=getResponseType();  //get the response type
 		if(responseType==null)  //if there is no response type
 		{
-			JOptionPane.showMessageDialog(this, "A response type must be specified.", "Missing response type", JOptionPane.ERROR_MESSAGE);	//G***i18n
+			JOptionPane.showMessageDialog(this, "A response type must be specified.", "Missing response type", JOptionPane.ERROR_MESSAGE);	//TODO i18n
 			return false;
 		}
 		final int responseTypeCategory=getResponseTypeCategory(); //get the category of response type
@@ -356,7 +370,7 @@ public class QTIResponseTypePanel extends JPanel implements Verifiable
 							//make sure a valid number of choices is listed
 					if(numChoicesTextField.getText().length()==0 || !CharSequences.isLatinDigits(numChoicesTextField.getText()))
 					{
-		  			JOptionPane.showMessageDialog(this, "A valid number of choices must be specified.", "Invalid number of choices", JOptionPane.ERROR_MESSAGE);	//G***i18n
+		  			JOptionPane.showMessageDialog(this, "A valid number of choices must be specified.", "Invalid number of choices", JOptionPane.ERROR_MESSAGE);	//TODO i18n
 						numChoicesTextField.requestFocus(); //focus on the number of choices text field
 						return false;
 					}
@@ -365,7 +379,7 @@ public class QTIResponseTypePanel extends JPanel implements Verifiable
 			case GENERAL_CATEGORY: //if one of the general categories were selected
 				if(renderType==null)  //if there is no render type
 				{
-					JOptionPane.showMessageDialog(this, "A rendering type must be specified.", "Missing render type", JOptionPane.ERROR_MESSAGE);	//G***i18n
+					JOptionPane.showMessageDialog(this, "A rendering type must be specified.", "Missing render type", JOptionPane.ERROR_MESSAGE);	//TODO i18n
 					return false;
 				}
 				break;
@@ -382,8 +396,8 @@ public class QTIResponseTypePanel extends JPanel implements Verifiable
 	*/
 	public Response createResponse()  //G**this would ideally go elsewhere, maybe even in a utilities class
 	{
-			//G***we probably want to make sure we set default idents for responses and such
-//G***del		final QTIResponseTypePanel responseTypePanel=new QTIResponseTypePanel();  //create a new response type panel
+			//TODO we probably want to make sure we set default idents for responses and such
+//TODO del		final QTIResponseTypePanel responseTypePanel=new QTIResponseTypePanel();  //create a new response type panel
 		final Response response;  //we'll create the appropriate response and store it in this variable
 		final String responseType=getResponseType();  //see what type of response type is requested
 		final String renderType=getRenderType();  //see what type of rendering was requested
@@ -391,9 +405,9 @@ public class QTIResponseTypePanel extends JPanel implements Verifiable
 		{
 			final RenderChoice renderChoice=new RenderChoice(); //create a render choice
 				//create a response label for "false"
-			renderChoice.getResponseLabelList().add(new ResponseLabel(String.valueOf(Boolean.FALSE), "False"));  //G***i18n
+			renderChoice.getResponseLabelList().add(new ResponseLabel(String.valueOf(Boolean.FALSE), "False"));  //TODO i18n
 				//create a response label for "true"
-			renderChoice.getResponseLabelList().add(new ResponseLabel(String.valueOf(Boolean.TRUE), "True"));  //G***i18n
+			renderChoice.getResponseLabelList().add(new ResponseLabel(String.valueOf(Boolean.TRUE), "True"));  //TODO i18n
 			final ResponseLID responseLID=new ResponseLID(renderChoice); //create a new logical ID response with the choice rendering we created
 			response=responseLID;  //show which response we created
 		}
@@ -403,7 +417,7 @@ public class QTIResponseTypePanel extends JPanel implements Verifiable
 			final int numChoices=getNumChoices(); //find out how many choices are requested
 			for(int i=0; i<numChoices; ++i) //create each choice
 			{
-				renderChoice.getResponseLabelList().add(new ResponseLabel(String.valueOf((char)('A'+i)), ""));  //create this choice G***i18n
+				renderChoice.getResponseLabelList().add(new ResponseLabel(String.valueOf((char)('A'+i)), ""));  //create this choice TODO i18n
 			}
 			final ResponseLID responseLID=new ResponseLID(renderChoice); //create a new logical ID response with the choice rendering we created
 			response=responseLID;  //show which response we created
@@ -411,11 +425,11 @@ public class QTIResponseTypePanel extends JPanel implements Verifiable
 		else if(HOTSPOT_CHOICE_TEMPLATE_RESPONSE_TYPE.equals(responseType))  //hotspot choice
 		{
 			final RenderHotspot renderHotspot=new RenderHotspot(); //create a hotspot rendering
-/*G***del if not needed
+/*TODO del if not needed
 			final int numChoices=getNumChoices(); //find out how many choices are requested
 			for(int i=0; i<numChoices; ++i) //create each choice
 			{
-				renderChoice.getResponseLabelList().add(new ResponseLabel(String.valueOf((char)('A'+i)), ""));  //create this choice G***i18n
+				renderChoice.getResponseLabelList().add(new ResponseLabel(String.valueOf((char)('A'+i)), ""));  //create this choice TODO i18n
 			}
 */
 			final ResponseLID responseLID=new ResponseLID(renderHotspot); //create a new logical ID response with the hotspot rendering we created
@@ -432,7 +446,7 @@ public class QTIResponseTypePanel extends JPanel implements Verifiable
 			{
 				render=new RenderHotspot(); //create a render hotspot
 			}
-/*G***fix
+/*TODO fix
 			else if(SLIDER_RENDER_TYPE.equals(renderType)) //slider rendering
 			{
 				render=new RenderSlider(); //create a render slider

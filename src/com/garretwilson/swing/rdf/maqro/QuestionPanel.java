@@ -1,6 +1,21 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.rdf.maqro;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ItemListener;
@@ -9,11 +24,8 @@ import java.util.*;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.model.ResourceModel;
-import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
-import com.garretwilson.swing.border.BorderUtilities;
-import com.globalmentor.collections.Collections;
-import com.globalmentor.net.Resource;
+import com.garretwilson.swing.border.Borders;
 import com.globalmentor.rdf.*;
 import com.globalmentor.urf.maqro.*;
 
@@ -85,12 +97,12 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 	/**Initialize the user interface.*/
 	protected void initializeUI()
 	{
-		setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border
-		setTitle("Question");	//G***i18n
+		setBorder(Borders.createDefaultTitledBorder());	//set a titled border
+		setTitle("Question");	//TODO i18n
 /*TODO fix
-		addView(QUERY_MODEL_VIEW, "Query and Response", IconResources.getIcon(IconResources.SPEECH_RECTANGLE_TEXT_ICON_FILENAME), queryAnswerPanel);	//add the query view G***i18n
-		addView(HINT_MODEL_VIEW, "Hints", IconResources.getIcon(IconResources.QUESTION_ICON_FILENAME), hintPanel);	//add the hint view G***i18n
-		addView(EXPLANATION_MODEL_VIEW, "Explanations", IconResources.getIcon(IconResources.INFO_ICON_FILENAME), explanationPanel);	//add the explanation view G***i18n
+		addView(QUERY_MODEL_VIEW, "Query and Response", IconResources.getIcon(IconResources.SPEECH_RECTANGLE_TEXT_ICON_FILENAME), queryAnswerPanel);	//add the query view TODO i18n
+		addView(HINT_MODEL_VIEW, "Hints", IconResources.getIcon(IconResources.QUESTION_ICON_FILENAME), hintPanel);	//add the hint view TODO i18n
+		addView(EXPLANATION_MODEL_VIEW, "Explanations", IconResources.getIcon(IconResources.INFO_ICON_FILENAME), explanationPanel);	//add the explanation view TODO i18n
 		super.initializeUI(); //do the default UI initialization
 		getTabbedPane().setTabPlacement(JTabbedPane.TOP);	//put the tabs on the top
 		hintSwingList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	//only allow one hint to be selected at a time
@@ -103,11 +115,11 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 	/**Updates the states of the actions, including enabled/disabled status,
 		proxied actions, etc.
 	*/
-/*G***del if not needed
+/*TODO del if not needed
 	protected void updateStatus()
 	{
 		super.updateStatus();	//do the default updating
-//G***fix for expectation		choiceList.setEnabled(choicesRadioButton.isSelected());	//only enable the choice list if the choices radio button is selected
+//TODO fix for expectation		choiceList.setEnabled(choicesRadioButton.isSelected());	//only enable the choice list if the choices radio button is selected
 	}
 */
 
@@ -270,7 +282,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 					final Dialogue answer=queryAnswerPanel.answerPanel.getAnswer();	//get the answer
 					if(answer!=null)	//if an answer is specified
 						question.addAnswer(answer);	//add the answer (we cleared all the answers earlier)
-					maxResponseCount=1;	//only allow one response for an expected type G***allow more later
+					maxResponseCount=1;	//only allow one response for an expected type TODO allow more later
 				}
 				question.setMaxResponseCount(maxResponseCount);	//update the maximum responses allowed (which may remove the limit altogether)
 				model.setResource(question);	//put the question in the model, if it isn't there already
@@ -307,13 +319,13 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 		switch(oldView)	//see which view we're changing from
 		{
 			case QUERY_MODEL_VIEW:	//if we're changing from the query view
-//G***fix				getSourceTextPane().getDocument().removeDocumentListener(getModifyDocumentListener());	//don't listen for changes to the source text pane any more
+//TODO fix				getSourceTextPane().getDocument().removeDocumentListener(getModifyDocumentListener());	//don't listen for changes to the source text pane any more
 //TODO fix				queryAnswerPanel.queryPanel.setModel(new ResourceModel<Dialogue>(model.getBaseURI(), model));	//clear the query panel
 				break;
 		}
 		switch(newView)	//see which view we're changing to
 		{
-/*G***fix
+/*TODO fix
 			case SOURCE_MODEL_VIEW:	//if we're changing to the source view
 				getSourceTextPane().getDocument().addDocumentListener(getModifyDocumentListener());	//add ourselves as a document listener to see if the source pane is modified
 				break;
@@ -362,17 +374,17 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 		{
 			super.initializeUI(); //do the default UI initialization
 			final ItemListener updateStatusItemListener=createUpdateStatusItemListener();	//create an item listener that will update the status			
-			queryLabel.setText("Query");	//G***i18n
+			queryLabel.setText("Query");	//TODO i18n
 			expectButtonGroup.add(choicesRadioButton);
 			expectButtonGroup.add(expectRadioButton);
-			choicesRadioButton.setText("Provide Choices");	//G***i18n
+			choicesRadioButton.setText("Provide Choices");	//TODO i18n
 			choicesRadioButton.addItemListener(updateStatusItemListener);
 			choicesRadioButton.addItemListener(getModifyItemListener());
-			mutuallyExclusiveCheckBox.setText("Mutually exclusive");	//G***i18n
+			mutuallyExclusiveCheckBox.setText("Mutually exclusive");	//TODO i18n
 			mutuallyExclusiveCheckBox.setSelected(true);	//default to mutually exclusive choices
 			mutuallyExclusiveCheckBox.addItemListener(updateStatusItemListener);
 			mutuallyExclusiveCheckBox.addItemListener(getModifyItemListener());
-			requireAllCheckBox.setText("Require all correct choices");	//G***i18n
+			requireAllCheckBox.setText("Require all correct choices");	//TODO i18n
 			requireAllCheckBox.addItemListener(updateStatusItemListener);
 			requireAllCheckBox.addItemListener(getModifyItemListener());
 			choiceList.setUI(new ToggleListUI()); //allow the choices to be toggled on and off
@@ -381,14 +393,14 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			choiceList.addListSelectionListener(getModifyListSelectionListener());	//selecting a different choice modifies the panel
 /*TODO fix
 			choicePanel.setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border for the choice panel
-			choicePanel.setTitle("Choices and Answers");	//G***i18n
+			choicePanel.setTitle("Choices and Answers");	//TODO i18n
 			choicePanel.setEditable(true);	//allow the choices to be edited
 */
-			expectRadioButton.setText("Expect Response Type");	//G***i18n
+			expectRadioButton.setText("Expect Response Type");	//TODO i18n
 			expectRadioButton.addItemListener(updateStatusItemListener); 
 			choicesRadioButton.addItemListener(getModifyItemListener()); 
-			answerPanel.setBorder(BorderUtilities.createDefaultTitledBorder());	//set a titled border for the answer panel
-			answerPanel.setTitle("Expectation and Answer");	//G***i18n
+			answerPanel.setBorder(Borders.createDefaultTitledBorder());	//set a titled border for the answer panel
+			answerPanel.setTitle("Expectation and Answer");	//TODO i18n
 			final Insets choiceAnswerInsets=new Insets(0, 32, 0, 0);
 			add(queryLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 //TODO fix			add(queryPanel, new GridBagConstraints(0, 1, 3, 1, 1.0, 1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
@@ -410,7 +422,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			mutuallyExclusiveCheckBox.setEnabled(isChoicesSelected);
 			requireAllCheckBox.setEnabled(isChoicesSelected && ! mutuallyExclusiveCheckBox.isSelected());	//don't allow requiring all if only one choice can be selected
 
-//TODO fix			choicePanel.setVisible(isChoicesSelected);	//G***testing
+//TODO fix			choicePanel.setVisible(isChoicesSelected);	//TODO testing
 			
 			choiceList.setEnabled(isChoicesSelected);	//only enable the choice list if the choices radio button is selected
 			if(mutuallyExclusiveCheckBox.isSelected())	//if the choices should be mutually exclusive
@@ -436,7 +448,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 //TODO fix			choicePanel.updateStatus();	//update the status of the choice panel, in case we changed the selection mode
 			answerPanel.setEnabled(expectRadioButton.isSelected());	//only enable the answer panel if the expect radio button is selected
 
-			answerPanel.setVisible(expectRadioButton.isSelected());	//G***testing
+			answerPanel.setVisible(expectRadioButton.isSelected());	//TODO testing
 			
 		}
 
@@ -484,7 +496,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 				final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
 				dialoguePanel.setPreferredSize(new Dimension(600, 400));	//don't allow the panel to get too small
 					//allow the dialogue to be edited in a dialog box; if the user accepts the changes
-				if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Choice", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
+				if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Choice", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//TODO i18n
 				{
 					return dialogueClone;	//return the new dialogue
 				}
@@ -537,7 +549,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
 			dialoguePanel.setPreferredSize(new Dimension(600, 400));	//don't allow the panel to get too small
 				//allow the dialogue to be edited in a dialog box; if the user accepts the changes
-			if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Hint", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
+			if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Hint", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//TODO i18n
 			{
 				return dialogueClone;	//return the new dialogue
 			}
@@ -588,7 +600,7 @@ public class QuestionPanel extends TabbedViewPanel<ResourceModel<Question>>
 			final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
 			dialoguePanel.setPreferredSize(new Dimension(600, 400));	//don't allow the panel to get too small
 				//allow the dialogue to be edited in a dialog box; if the user accepts the changes
-			if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Explanation", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//G***i18n
+			if(BasicOptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Explanation", BasicOptionPane.OK_CANCEL_OPTION)==BasicOptionPane.OK_OPTION)	//TODO i18n
 			{
 				return dialogueClone;	//return the new dialogue
 			}

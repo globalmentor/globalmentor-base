@@ -1,30 +1,42 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.qti;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import javax.swing.*;
-import javax.swing.event.*;
-import java.util.*;
-import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.globalmentor.mentoract.qti.*;
 
 /**Provides a visual editing environment for a QTI choice rendering.
 @author Garret Wilson
 */
-public class QTIRenderChoicePanel extends QTIRenderPanel //G***del implements ListSelectionListener
+public class QTIRenderChoicePanel extends QTIRenderPanel //TODO del implements ListSelectionListener
 {
 	/**Default constructor.*/
 	public QTIRenderChoicePanel()
 	{
 		super();  //create the parent class
-		jbInit(); //G***fix
+		jbInit(); //TODO fix
 	}
 
 	/**Initializes the user interface.*/
   private void jbInit()
   {
-    label.setText("Choices"); //G***fix
+    label.setText("Choices"); //TODO fix
   }
 
 	/**@return An empty choice render object.*/
@@ -39,7 +51,7 @@ public class QTIRenderChoicePanel extends QTIRenderPanel //G***del implements Li
 		selection.
 	@see #updateActions
 	*/
-/*G***del
+/*TODO del
   public void valueChanged(final ListSelectionEvent listSelectionEvent)
   {
 		updateActions();  //update the actions
@@ -54,17 +66,17 @@ public class QTIRenderChoicePanel extends QTIRenderPanel //G***del implements Li
 		getAddResponseLabelAction().putValue(Action.NAME, "Add Choice...");
 		getAddResponseLabelAction().putValue(Action.SHORT_DESCRIPTION, "Add choice");
 		getAddResponseLabelAction().putValue(Action.LONG_DESCRIPTION, "Add a new choice.");
-//G***fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
+//TODO fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key TODO i18n
 		  //update the remove action properties to be specific to the type of rendering
 		getRemoveResponseLabelAction().putValue(Action.NAME, "Remove Choice...");
 		getRemoveResponseLabelAction().putValue(Action.SHORT_DESCRIPTION, "Remove choice");
 		getRemoveResponseLabelAction().putValue(Action.LONG_DESCRIPTION, "Remove the selected choice.");
-//G***fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
+//TODO fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key TODO i18n
 		  //update the edit action properties to be specific to the type of rendering
 		getEditResponseLabelAction().putValue(Action.NAME, "Edit Choice...");
 		getEditResponseLabelAction().putValue(Action.SHORT_DESCRIPTION, "Edit choice");
 		getEditResponseLabelAction().putValue(Action.LONG_DESCRIPTION, "Edit the selected choice.");
-//G***fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
+//TODO fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key TODO i18n
 	}
 
 	/**Creates a new response label.
@@ -74,7 +86,7 @@ public class QTIRenderChoicePanel extends QTIRenderPanel //G***del implements Li
 	{
 		final ResponseLabel responseLabel=super.createResponseLabel();  //create the default response label
 		final Render render=getRender();  //get the render object being represented
-		responseLabel.setIdent(String.valueOf((char)('A'+render.getResponseLabelList().size()))); //set the ident for the new choice G***fix to some standard method
+		responseLabel.setIdent(String.valueOf((char)('A'+render.getResponseLabelList().size()))); //set the ident for the new choice TODO fix to some standard method
 		responseLabel.setMaterial(new Material());  //add default material
 		return responseLabel;  //return the default response label we constructed
 	}
@@ -88,14 +100,14 @@ public class QTIRenderChoicePanel extends QTIRenderPanel //G***del implements Li
 	{
 		final QTIResponseLabelPanel responseLabelPanel=new QTIResponseLabelPanel();  //create a new panel to edit the response label
 		responseLabelPanel.setResponseLabel(responseLabel, null); //set the response label
-		responseLabelPanel.setPreferredSize(new Dimension(300, 200));  //G***fix preferred size QTI
+		responseLabelPanel.setPreferredSize(new Dimension(300, 200));  //TODO fix preferred size QTI
 		  //show the response label panel
-		final int result=BasicOptionPane.showConfirmDialog(this, responseLabelPanel, "Response Label", JOptionPane.OK_CANCEL_OPTION);  //G***i18n; comment
+		final int result=BasicOptionPane.showConfirmDialog(this, responseLabelPanel, "Response Label", JOptionPane.OK_CANCEL_OPTION);  //TODO i18n; comment
 		return result==JOptionPane.OK_OPTION ? responseLabelPanel.getResponseLabel() : null; //return their response, or null if they cancelled
 	}
 
 	/**A custom renderer for the choices in the list.*/
-/*G***fix
+/*TODO fix
 	protected static class ChoiceListCellRenderer extends StringListCellRenderer
 	{
 */
@@ -105,7 +117,7 @@ public class QTIRenderChoicePanel extends QTIRenderPanel //G***del implements Li
 		@param index The index of this list item.
 		@param cellHasFocus Whether the list item has the focus.
 		*/
-/*G***fix
+/*TODO fix
 		protected String getListCellRendererString(final Object value)
 		{
 			final ChoiceLabel choiceLabel=(ChoiceLabel)value; //get the choice label

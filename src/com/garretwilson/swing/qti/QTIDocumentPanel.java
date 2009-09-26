@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.qti;
 
 import java.beans.*;
@@ -8,8 +24,6 @@ import com.globalmentor.mentoract.qti.Assessment;
 import com.globalmentor.mentoract.qti.QTI;
 import com.globalmentor.mentoract.qti.QTIXMLifier;
 import com.globalmentor.model.Modifiable;
-import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.xpackage.XPackage;
 import com.globalmentor.text.xml.XMLSerializer;
 
 import org.w3c.dom.*;
@@ -24,7 +38,7 @@ public class QTIDocumentPanel extends AbstractMDIDocumentPanel implements Modifi
 	/**The main QTI exploration panel.*/
 	private final QTIExplorePanel qtiExplorePanel;
 
-		/**@return The QTI data model.*/ //G***do we want to do this and allow it to be edited elsewhere?
+		/**@return The QTI data model.*/ //TODO do we want to do this and allow it to be edited elsewhere?
 		public QTI getQTI() {return qtiExplorePanel.getQTI();}
 
 		/**Sets the QTI information for the frame, in essence loading the data.
@@ -64,9 +78,9 @@ public class QTIDocumentPanel extends AbstractMDIDocumentPanel implements Modifi
 	public Action getRemoveItemAction() {return qtiExplorePanel.getDeleteAction();}
 
 	/**The action for editing an item.*/
-//G***fix	final Action editItemAction=new EditItemAction();
+//TODO fix	final Action editItemAction=new EditItemAction();
 
-	/**@return The action for editing an item.*/  //G***probably rename these to getEditAction() and getDeleteAction()
+	/**@return The action for editing an item.*/  //TODO probably rename these to getEditAction() and getDeleteAction()
 	public Action getEditItemAction() {return qtiExplorePanel.getEditAction();}
 
 	/**Default constructor.*/
@@ -74,7 +88,7 @@ public class QTIDocumentPanel extends AbstractMDIDocumentPanel implements Modifi
 	{
 		super(true, true, false); //construct the panel without initializing
 		qtiExplorePanel=new QTIExplorePanel();  //create the QTI exploring panel
-//G***del		super(qtiExplorePanel=new QTIExplorePanel());  //construct the parent, creating the QTI exploring panel
+//TODO del		super(qtiExplorePanel=new QTIExplorePanel());  //construct the parent, creating the QTI exploring panel
 		initialize(); //initialize the panel
 	}
 
@@ -99,7 +113,7 @@ public class QTIDocumentPanel extends AbstractMDIDocumentPanel implements Modifi
 	/**Creates any application objects and initializes data.
 		Any class that overrides this method must call this version.
 	*/
-/*G***del when works
+/*TODO del when works
 	protected void initializeData()
 	{
 		super.initializeData(); //do the default initialization
@@ -110,11 +124,11 @@ public class QTIDocumentPanel extends AbstractMDIDocumentPanel implements Modifi
 	/**Creates the default resource used for describing the document.
 	@return A resource for describing the document.
 	*/
-/*G***del when works
+/*TODO del when works
 	protected RDFResource createDefaultResource()
 	{
 		final RDFResource resource=super.createDefaultResource(); //create the default resource
-		XPackageUtilities.addContentType(getRDF(), resource, new MediaType("application", "x-qti-assessment")); //G***testing; use constants
+		XPackageUtilities.addContentType(getRDF(), resource, new MediaType("application", "x-qti-assessment")); //TODO testing; use constants
 		return resource;  //return the default resource with our new properties added
 	}
 */
@@ -135,10 +149,10 @@ public class QTIDocumentPanel extends AbstractMDIDocumentPanel implements Modifi
       }
     });
 		setContentComponent(qtiExplorePanel); //show the QTI exploring panel as our application component
-				//G***should this all go in a special initializeToolBar()?
-		getToolBar().add(qtiExplorePanel.getAddItemAction());  //G***testing; use intermediate methods
-		getToolBar().add(qtiExplorePanel.getDeleteAction());  //G***testing; use intermediate methods
-		getToolBar().add(qtiExplorePanel.getEditAction());  //G***testing; use intermediate methods
+				//TODO should this all go in a special initializeToolBar()?
+		getToolBar().add(qtiExplorePanel.getAddItemAction());  //TODO testing; use intermediate methods
+		getToolBar().add(qtiExplorePanel.getDeleteAction());  //TODO testing; use intermediate methods
+		getToolBar().add(qtiExplorePanel.getEditAction());  //TODO testing; use intermediate methods
   }
 
 	/**Loads the document by reading the contents of the document from the given
@@ -149,7 +163,7 @@ public class QTIDocumentPanel extends AbstractMDIDocumentPanel implements Modifi
 	*/ 
 	public void read(final InputStream inputStream, final Object description) throws IOException
 	{
-//G***fix
+//TODO fix
 	}
 
 	/**Saves the document by writing the contents of the document to the given
@@ -164,7 +178,7 @@ public class QTIDocumentPanel extends AbstractMDIDocumentPanel implements Modifi
 		{
 			qti=getQTI(); //store the QTI
 		}
-		else  //if we don't have QTI, we must have an assessment G***fix; this will eventually allow other things, such as sections and such
+		else  //if we don't have QTI, we must have an assessment TODO fix; this will eventually allow other things, such as sections and such
 		{
 			qti=new QTI();  //create qti
 			qti.getAssessmentList().add(getAssessment()); //add the assessment

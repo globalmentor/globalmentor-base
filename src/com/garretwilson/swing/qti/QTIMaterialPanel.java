@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.qti;
 
 import java.awt.*;
@@ -85,7 +101,7 @@ public class QTIMaterialPanel extends JPanel
   private void jbInit()
   {
     this.setLayout(gridBagLayout);
-//G***del    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//TODO del    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		textArea.setColumns(32);
 		textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
@@ -137,12 +153,12 @@ public class QTIMaterialPanel extends JPanel
 		  if(materialContent instanceof MaterialText) //if this is material text
 			{
 				textArea.append((((MaterialText)materialContent).getText()));  //append the text to the text field
-//G***del				break;  //stop looking for text G***what about adding multiple material text?
+//TODO del				break;  //stop looking for text TODO what about adding multiple material text?
 			}
 		}
 		if(material.getImageURI()!=null)  //if there is an image
 		{
-			//G***decide what to do if the image is a relative URI
+			//TODO decide what to do if the image is a relative URI
 			try
 			{
 				final URL imageURL=new URL(material.getImageURI()); //create a URL from the image reference
@@ -151,11 +167,11 @@ public class QTIMaterialPanel extends JPanel
 					setImageFile(new File(imageURL.getPath())); //set the file to thta contained in the URL
 				}
 				else
-	;			//G***decide what to do if the image is not a file
+	;			//TODO decide what to do if the image is not a file
 			}
 			catch(MalformedURLException malformedURLException)
 			{
-				throw new AssertionError(malformedURLException); //G***fix
+				throw new AssertionError(malformedURLException); //TODO fix
 			}
 		}
 	}
@@ -174,10 +190,10 @@ public class QTIMaterialPanel extends JPanel
 		/**Default constructor.*/
 		public SetImageAction()
 		{
-			super("Set Image...");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Set image.");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Set the image to use with the material.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_I));  //set the mnemonic key G***i18n
+			super("Set Image...");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Set image.");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Set the image to use with the material.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_I));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.IMAGE_ICON_FILENAME)); //load the correct icon
 		}
 
@@ -186,14 +202,14 @@ public class QTIMaterialPanel extends JPanel
 		*/
 		public void actionPerformed(final ActionEvent e)
 		{
-//G***fix			try
+//TODO fix			try
 			{
 				final JFileChooser fileChooser=new JFileChooser();	//create a new dialog for listing files
-	//G***fix			fileChooser.setCurrentDirectory(getReaderConfig().getFileLocations().getCurrentDirectory());	//change the file chooser directory to the reader's current directory
+	//TODO fix			fileChooser.setCurrentDirectory(getReaderConfig().getFileLocations().getCurrentDirectory());	//change the file chooser directory to the reader's current directory
 				final int option=fileChooser.showOpenDialog(QTIMaterialPanel.this);	//show the open dialog
 				if(option==JFileChooser.APPROVE_OPTION)	//if they chose a file
 				{
-	//G***fix				getReaderConfig().getFileLocations().setCurrentDirectory(fileChooser.getCurrentDirectory());	//save the new directory they changed to
+	//TODO fix				getReaderConfig().getFileLocations().setCurrentDirectory(fileChooser.getCurrentDirectory());	//save the new directory they changed to
 					final File selectedFile=fileChooser.getSelectedFile();	//get the file they chose
 					if(selectedFile!=null)	//if they chose a file
 					{
@@ -201,9 +217,9 @@ public class QTIMaterialPanel extends JPanel
 					}
 				}
 			}
-//G***fix			catch(Exception ex)
+//TODO fix			catch(Exception ex)
 			{
-//G***fix				Log.error("Error: "+ex);	//G***fix
+//TODO fix				Log.error("Error: "+ex);	//TODO fix
 			}
 		}
 	}
@@ -214,10 +230,10 @@ public class QTIMaterialPanel extends JPanel
 		/**Default constructor.*/
 		public PreviewImageAction()
 		{
-			super("Preview Image...");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Preview image.");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Preview the image assocciated with the material.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
+			super("Preview Image...");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Preview image.");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Preview the image assocciated with the material.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.IMAGE_PREVIEW_ICON_FILENAME)); //load the correct icon
 		}
 
@@ -232,34 +248,34 @@ public class QTIMaterialPanel extends JPanel
 				final Toolkit toolkit=Toolkit.getDefaultToolkit();	//get the default toolkit
 				final Image image=toolkit.getImage(imageFile.toString()); //load the image from the file
 				final ImagePanel imagePanel=new ImagePanel(image); //create a panel to view the image
-//G***del if doesn't work				final Frame frame=ComponentUtilities.getParentFrame(QTIMaterialPanel.this); //get the frame in which this panel is embedded, if possible
+//TODO del if doesn't work				final Frame frame=ComponentUtilities.getParentFrame(QTIMaterialPanel.this); //get the frame in which this panel is embedded, if possible
 
-//G***fix				JOptionPane.showConfirmDialog(QTIMaterialPanel.this, imagePanel, "Item", JOptionPane.OK_CANCEL_OPTION); //G***testing
+//TODO fix				JOptionPane.showConfirmDialog(QTIMaterialPanel.this, imagePanel, "Item", JOptionPane.OK_CANCEL_OPTION); //TODO testing
 
 				final Dimension screenSize=Toolkit.getDefaultToolkit().getScreenSize(); //find the size of the screen
 				imagePanel.setPreferredSize(new Dimension(screenSize.width/2, screenSize.height/2));  //set the panel prefer to be 1/4 the screen size
-				JOptionPane.showMessageDialog(QTIMaterialPanel.this, imagePanel, imageFile.toString(), JOptionPane.PLAIN_MESSAGE); //G***testing
+				JOptionPane.showMessageDialog(QTIMaterialPanel.this, imagePanel, imageFile.toString(), JOptionPane.PLAIN_MESSAGE); //TODO testing
 
-/*G***fix
-				final JFrame frame=new JFrame(imageFile.toString()); //G***testing
-				frame.setContentPane(imagePanel); //G***testing
+/*TODO fix
+				final JFrame frame=new JFrame(imageFile.toString()); //TODO testing
+				frame.setContentPane(imagePanel); //TODO testing
 				final Dimension screenSize=Toolkit.getDefaultToolkit().getScreenSize(); //find the size of the screen
 				frame.setSize(screenSize.width/2, screenSize.height/2);  //set the dialog to be 1/4 the screen size
-//G***fix				frame.setResizable(true);  //G***testing
-	//G***fix				dialog.validate();  //G***comment
-	//G***fix				dialog.pack();  //pack the contents of the dialog
+//TODO fix				frame.setResizable(true);  //TODO testing
+	//TODO fix				dialog.validate();  //TODO comment
+	//TODO fix				dialog.pack();  //pack the contents of the dialog
 				frame.setVisible(true);  //show the dialog
 */
-/*G***fix
-				  //G***check about closing and disposing; see JOptionPane
+/*TODO fix
+				  //TODO check about closing and disposing; see JOptionPane
 				final JDialog dialog=new JDialog((Frame)null, imageFile.toString(), true); //create a new modal dialog in which to show the image
-				dialog.setDefaultCloseOperation(dialog.DISPOSE_ON_CLOSE); //G***comment; fix for other dialogs; create utility function
+				dialog.setDefaultCloseOperation(dialog.DISPOSE_ON_CLOSE); //TODO comment; fix for other dialogs; create utility function
 				dialog.setContentPane(imagePanel);  //put the image panel in the dialog
 				final Dimension screenSize=Toolkit.getDefaultToolkit().getScreenSize(); //find the size of the screen
 				dialog.setSize(screenSize.width/2, screenSize.height/2);  //set the dialog to be 1/4 the screen size
-				dialog.setResizable(true);  //G***testing
-	//G***fix				dialog.validate();  //G***comment
-	//G***fix				dialog.pack();  //pack the contents of the dialog
+				dialog.setResizable(true);  //TODO testing
+	//TODO fix				dialog.validate();  //TODO comment
+	//TODO fix				dialog.pack();  //pack the contents of the dialog
 				dialog.setVisible(true);  //show the dialog
 */
 			}
@@ -272,10 +288,10 @@ public class QTIMaterialPanel extends JPanel
 		/**Default constructor.*/
 		public DeleteImageAction()
 		{
-			super("Delete Image...");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Delete image.");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Delete the image currently assocciated with the material.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_D));  //set the mnemonic key G***i18n
+			super("Delete Image...");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Delete image.");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Delete the image currently assocciated with the material.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_D));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.IMAGE_DELETE_ICON_FILENAME)); //load the correct icon
 		}
 
@@ -284,7 +300,7 @@ public class QTIMaterialPanel extends JPanel
 		*/
 		public void actionPerformed(final ActionEvent e)
 		{
-		  //G***ask for confirmation
+		  //TODO ask for confirmation
 			setImageFile(null); //remove the image
 		}
 	}

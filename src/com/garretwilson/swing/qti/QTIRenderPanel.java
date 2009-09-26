@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.qti;
 
 import java.awt.*;
@@ -7,11 +23,9 @@ import javax.swing.event.*;
 import java.util.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.ActionList;
-import com.globalmentor.java.Booleans;
 import com.globalmentor.mentoract.qti.Render;
 import com.globalmentor.mentoract.qti.ResponseLabel;
 import com.globalmentor.model.Modifiable;
-import com.globalmentor.util.*;
 
 /**Provides a visual editing environment for a type of QTI rendering.
 @author Garret Wilson
@@ -65,13 +79,13 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 
 
 	/**@return The action for adding a response label.*/
-//G***del	public abstract Action getAddResponseLabelAction();
+//TODO del	public abstract Action getAddResponseLabelAction();
 
 	/**@return The action for removing a response label.*/
-//G***del	public abstract Action getRemoveResponseLabelAction();
+//TODO del	public abstract Action getRemoveResponseLabelAction();
 
 	/**@return The action for editing a response label.*/
-//G***del	public abstract Action getEditResponseLabelAction();
+//TODO del	public abstract Action getEditResponseLabelAction();
 
   GridBagLayout gridBagLayout = new GridBagLayout();
   JLabel label = new JLabel();
@@ -92,7 +106,7 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
   {
     this.setLayout(gridBagLayout);
 		choiceList.setModel(new DefaultListModel());  //use a default list model in the choice list
-//G***del    choiceList.addListSelectionListener(this);  //show that we want to listent to changes in the list
+//TODO del    choiceList.addListSelectionListener(this);  //show that we want to listent to changes in the list
     choiceList.addListSelectionListener(new ListSelectionListener()
     {
       public void valueChanged(ListSelectionEvent e)
@@ -102,12 +116,12 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
     });
 		choiceList.addActionListener(editResponseLabelAction); //call the edit action when the item is selected
     label.setText("Choices");
-//G***del    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//G***del    jButton1.setText("jButton1");
+//TODO del    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//TODO del    jButton1.setText("jButton1");
     scrollPane.setMinimumSize(new Dimension(50, 50));
     this.add(label,     new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-/*G***fix
+/*TODO fix
     this.add(newChoiceButton,     new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0
             ,GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 */
@@ -120,7 +134,7 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 		toolBar.add(getRemoveResponseLabelAction());
 		toolBar.addSeparator();
 		toolBar.add(getEditResponseLabelAction());
-//G***del    scrollPane.getViewport().add(responseLabelsPanel, null);
+//TODO del    scrollPane.getViewport().add(responseLabelsPanel, null);
   }
 
 	/**Creates a new render of the correct type (e.g. choice or hotspot) and
@@ -134,12 +148,12 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 	public Render getRender()
 	{
 		final Render render=createRender(); //create the correct type of rendering
-//G***del		final RenderChoice renderChoice=new RenderChoice();  //create a new choice rendering
+//TODO del		final RenderChoice renderChoice=new RenderChoice();  //create a new choice rendering
 		final ListModel choiceListModel=choiceList.getModel();  //get the list model of choices
 		for(int i=0; i<choiceListModel.getSize(); ++i)  //look at each of the choices
 		{
 			final ResponseLabel responseLabel=(ResponseLabel)choiceListModel.getElementAt(i); //get this response label
-//G**del Log.trace("Getting response label: ", responseLabel); //G***del
+//G**del Log.trace("Getting response label: ", responseLabel); //TODO del
 			render.getResponseLabelList().add(responseLabel); //add this response label to our list
 		}
 		return render;  //return the rendering
@@ -152,9 +166,9 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 	*/
 	public void setRender(final QTIMaterialPanel qtiMaterialPanel, final Render render)
 	{
-	  materialPanel=qtiMaterialPanel; //set the material panel G***is this the best way to do this?
-//G***del		final DefaultListModel choiceListModel=new DefaultListModel();  //create a new list model
-//G***del		choiceList.setModel(choiceListModel);  //assign the default list model to the choice list
+	  materialPanel=qtiMaterialPanel; //set the material panel TODO is this the best way to do this?
+//TODO del		final DefaultListModel choiceListModel=new DefaultListModel();  //create a new list model
+//TODO del		choiceList.setModel(choiceListModel);  //assign the default list model to the choice list
 		final DefaultListModel choiceListModel=(DefaultListModel)choiceList.getModel();  //get the list model of choices
 		choiceListModel.clear();  //clear all the values in the list model
 		final Iterator renderChoiceIterator=render.getResponseLabelList().iterator(); //get an iterator to the choices
@@ -169,7 +183,7 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 		selection.
 	@see #updateActions
 	*/
-/*G***del
+/*TODO del
   public void valueChanged(final ListSelectionEvent listSelectionEvent)
   {
 		updateActions();  //update the actions
@@ -215,7 +229,7 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 	protected abstract ResponseLabel editResponseLabel(final ResponseLabel responseLabel);
 
 	/**A custom renderer for the choices in the list.*/
-/*G***fix
+/*TODO fix
 	protected static class ChoiceListCellRenderer extends StringListCellRenderer
 	{
 */
@@ -225,7 +239,7 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 		@param index The index of this list item.
 		@param cellHasFocus Whether the list item has the focus.
 		*/
-/*G***fix
+/*TODO fix
 		protected String getListCellRendererString(final Object value)
 		{
 			final ChoiceLabel choiceLabel=(ChoiceLabel)value; //get the choice label
@@ -240,13 +254,13 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 		/**Default constructor.*/
 		public AddResponseLabelAction()
 		{
-			super("Add Response Label...");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Add response label.");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Add a new response label.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));  //set the mnemonic key G***i18n
+			super("Add Response Label...");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Add response label.");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Add a new response label.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_A));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.ADD_ICON_FILENAME)); //load the correct icon
-//G***del when works			new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
-//G***del when works			putValue(SMALL_ICON, new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
+//TODO del when works			new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
+//TODO del when works			putValue(SMALL_ICON, new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
 		}
 
 		/**Called when the action should be performed.
@@ -272,10 +286,10 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 		/**Default constructor.*/
 		public RemoveResponseLabelAction()
 		{
-			super("Remove Response Label...");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Remove response label.");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Remove the selected response label.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_R));  //set the mnemonic key G***i18n
+			super("Remove Response Label...");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Remove response label.");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Remove the selected response label.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_R));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.SUBTRACT_ICON_FILENAME)); //load the correct icon
 		}
 
@@ -306,10 +320,10 @@ public abstract class QTIRenderPanel extends JPanel implements Modifiable
 		/**Default constructor.*/
 		public EditResponseLabelAction()
 		{
-			super("Edit Response Label...");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Edit response label.");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Edit the selected response label.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));  //set the mnemonic key G***i18n
+			super("Edit Response Label...");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Edit response label.");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Edit the selected response label.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.EDIT_ICON_FILENAME)); //load the correct icon
 		}
 

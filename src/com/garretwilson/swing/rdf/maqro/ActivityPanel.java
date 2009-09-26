@@ -1,22 +1,31 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.rdf.maqro;
 
-import java.awt.BorderLayout;
-import java.awt.Frame;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.*;
 import javax.swing.*;
 import com.garretwilson.swing.*;
-import com.garretwilson.swing.rdf.RDFPanel;
 import com.garretwilson.model.ResourceModel;
 import com.garretwilson.resources.icon.IconResources;
 
 import static com.globalmentor.model.UUIDs.*;
 
-import com.globalmentor.mentoract.maqro.*;
-import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.dublincore.RDFDublinCore;
-import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xhtml.XHTML;
 import com.globalmentor.urf.maqro.*;
 
@@ -119,10 +128,10 @@ public class ActivityPanel //TODO fix extends RDFPanel<Activity, ResourceModel<A
 	protected void initializeUI()
 	{
 /*TODO fix
-		addView(WYSIWYG_MODEL_VIEW, "Activity", book, null);	//add the book component as the WYSIWYG view G***i18n
-		addView(SEQUENCE_MODEL_VIEW, "Interaction Sequence", interactionSequencePanel, null);	//add the interaction sequence panel as the sequence view G***i18n
-		addView(LIST_MODEL_VIEW, "Interaction List", interactionListPanel, null);	//add the interaction list panel as the list view G***i18n
-		addView(CONFIGURATION_MODEL_VIEW, "Behavior", activityBehaviorPanel, null);	//add the activity behavior panel as the configuration/settings view G***i18n
+		addView(WYSIWYG_MODEL_VIEW, "Activity", book, null);	//add the book component as the WYSIWYG view TODO i18n
+		addView(SEQUENCE_MODEL_VIEW, "Interaction Sequence", interactionSequencePanel, null);	//add the interaction sequence panel as the sequence view TODO i18n
+		addView(LIST_MODEL_VIEW, "Interaction List", interactionListPanel, null);	//add the interaction list panel as the list view TODO i18n
+		addView(CONFIGURATION_MODEL_VIEW, "Behavior", activityBehaviorPanel, null);	//add the activity behavior panel as the configuration/settings view TODO i18n
 		setDefaultDataView(WYSIWYG_MODEL_VIEW);	//set the WYSIWYG view as the default view
 		super.initializeUI(); //do the default UI initialization
 */
@@ -149,9 +158,9 @@ public class ActivityPanel //TODO fix extends RDFPanel<Activity, ResourceModel<A
 		{
 			model.getResource().setInteractions(new RDFListResource());	//set a default list of interactions
 		}
-		final ListModel interactionListModel=new ListListModel<RDFObject>(model.getResource().getInteractions());	//create a new list model from the interaction list G***this will change when we have nested groups, as it will be difficult to keep both the sequence and the list in synch; we may want to switch to load/save on view change
+		final ListModel interactionListModel=new ListListModel<RDFObject>(model.getResource().getInteractions());	//create a new list model from the interaction list TODO this will change when we have nested groups, as it will be difficult to keep both the sequence and the list in synch; we may want to switch to load/save on view change
 		interactionSequencePanel.setListModel(interactionListModel);	//put the interaction list model in the sequence panel
-		interactionListComponent.setModel(interactionListModel);	//put the interaction list model in the interaction list component in the interaction list view G***make sure changing the model here keeps everything else in synch
+		interactionListComponent.setModel(interactionListModel);	//put the interaction list model in the interaction list component in the interaction list view TODO make sure changing the model here keeps everything else in synch
 */
 	}
 
@@ -178,7 +187,7 @@ public class ActivityPanel //TODO fix extends RDFPanel<Activity, ResourceModel<A
 					final RDFLiteral title=RDFResources.asLiteral(RDFDublinCore.getTitle(activity));	//get the activity's title
 					if(title!=null)	//if there is a title
 					{
-						final Element h1Element=XML.appendElementNS(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_H1, title.toString());	//G***i18n
+						final Element h1Element=XML.appendElementNS(bodyElement, XHTML.XHTML_NAMESPACE_URI.toString(), XHTML.ELEMENT_H1, title.toString());	//TODO i18n
 					}
 					if(activity.getInteractions()!=null)	//if the activity has interactions
 					{
@@ -201,11 +210,11 @@ public class ActivityPanel //TODO fix extends RDFPanel<Activity, ResourceModel<A
 				}
 				break;
 */
-/*G***fix
+/*TODO fix
 			case SEQUENCE_MODEL_VIEW:	//if we're changing to the sequence view
 				if(model.getActivity()==null || model.getActivity().getInteractions()==null)	//if we don't have an activity or the activity has no interactions
 				{
-					interactionSequencePanel.setListModel(null);	//remove any list shown G***won't we want to do this when the model changes?
+					interactionSequencePanel.setListModel(null);	//remove any list shown TODO won't we want to do this when the model changes?
 				}
 				else if(((ListListModel)interactionSequencePanel.getListModel()).getList()!=model.getActivity().getInteractions())	//if the sequence panel isn't showing our interactions
 				{
@@ -218,15 +227,15 @@ public class ActivityPanel //TODO fix extends RDFPanel<Activity, ResourceModel<A
 				activityBehaviorPanel.loadModel();	//tell the configuration view to load the model
 				break;
 */
-/*G***testing---why does the list view incorrectly size the list, exclusing the last item?					
-			case LIST_MODEL_VIEW:	//G***testing
-//G***testing				interactionListComponent.setVisibleRowCount(interactionListComponent.getModel().getSize());
+/*TODO testing---why does the list view incorrectly size the list, exclusing the last item?					
+			case LIST_MODEL_VIEW:	//TODO testing
+//TODO testing				interactionListComponent.setVisibleRowCount(interactionListComponent.getModel().getSize());
 				{
-					final Frame frame=JOptionPane.getFrameForComponent(this);	//G***testing
+					final Frame frame=JOptionPane.getFrameForComponent(this);	//TODO testing
 					if(frame!=null)
 					{
-						frame.invalidate();	//G***testing
-						frame.validate();	//G***testing
+						frame.invalidate();	//TODO testing
+						frame.validate();	//TODO testing
 					}
 				}
 				break;
@@ -346,7 +355,7 @@ public class ActivityPanel //TODO fix extends RDFPanel<Activity, ResourceModel<A
 			final MAQROActivityPanel activityPanel=new MAQROActivityPanel(activityEngine);	//create a new activity panel for the engine
 			final ApplicationFrame activityFrame=new ApplicationFrame(activityPanel);	//construct a frame for the activity
 			activityFrame.setVisible(true);	//show the activity frame
-//G***del			activityEngine.start();	//start the interaction
+//TODO del			activityEngine.start();	//start the interaction
 		}
 */
 	}
@@ -357,12 +366,12 @@ public class ActivityPanel //TODO fix extends RDFPanel<Activity, ResourceModel<A
 		/**Default constructor.*/
 		public InteractAction()
 		{
-			super("Interact");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Interactive activity");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Test the interactive activity.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_I));  //set the mnemonic key G***i18n
+			super("Interact");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Interactive activity");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Test the interactive activity.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_I));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.ANIMATION_ICON_FILENAME)); //load the correct icon
-//G***del			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK)); //add the accelerator G***i18n
+//TODO del			putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_MASK)); //add the accelerator TODO i18n
 		}
 
 		/**Called when the action should be performed.
@@ -416,7 +425,7 @@ public class ActivityPanel //TODO fix extends RDFPanel<Activity, ResourceModel<A
 			{
 				interactionSequencePanel.go(index);	//navigate to the selected index
 			}
-			return item;	//G***testing
+			return item;	//TODO testing
 */
 /*TODO fix list editing of interactions
 			if(item instanceof Dialogue)	//if this is dialogue to be edited
@@ -425,7 +434,7 @@ public class ActivityPanel //TODO fix extends RDFPanel<Activity, ResourceModel<A
 				final DialogueModel dialogueModel=new DialogueModel(dialogueClone);	//create a model containing the dialogue
 				final DialoguePanel dialoguePanel=new DialoguePanel(dialogueModel);	//construct a panel in which to edit the dialogue
 				//allow the dialogue to be edited in a dialog box; if the user accepts the changes
-				if(OptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Choice", OptionPane.OK_CANCEL_OPTION)==OptionPane.OK_OPTION)	//G***i18n
+				if(OptionPane.showConfirmDialog(getParentComponent(), dialoguePanel, "Choice", OptionPane.OK_CANCEL_OPTION)==OptionPane.OK_OPTION)	//TODO i18n
 				{
 					return dialogueClone;	//return the new dialogue
 				}

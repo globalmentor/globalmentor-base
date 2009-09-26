@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.*;
@@ -10,9 +26,7 @@ import com.globalmentor.java.Objects;
 import com.globalmentor.log.Log;
 import com.globalmentor.net.Resource;
 import com.globalmentor.rdf.*;
-import com.globalmentor.rdf.xmlschema.BooleanLiteral;
 import com.globalmentor.text.xml.schema.XMLSchema;
-import com.globalmentor.urf.maqro.*;
 
 /**Panel for editing the answer of a MAQRO question.
 @author Garret Wilson
@@ -43,10 +57,10 @@ public class AnswerPanel extends ContentPanel
 	protected void initializeUI()
 	{
 		super.initializeUI(); //do the default UI initialization
-		typeLabel.setText("Type");	//G***i18n
+		typeLabel.setText("Type");	//TODO i18n
 		typeComboBox.setEditable(true);
 		typeComboBox.setModel(new DefaultComboBoxModel(TYPE_EXAMPLES));	//set up the example type resources
-//G***del		typeComboBox.setPrototypeDisplayValue(TYPE_EXAMPLES[0]);
+//TODO del		typeComboBox.setPrototypeDisplayValue(TYPE_EXAMPLES[0]);
 		typeComboBox.addActionListener(getModifyActionListener());
 		typeComboBox.addActionListener(new ActionListener()
 				{
@@ -75,7 +89,7 @@ public class AnswerPanel extends ContentPanel
 						updateStatus();	//update the status
 					}
 				});
-		answerCheckBox.setText("Answer");	//G***i18n
+		answerCheckBox.setText("Answer");	//TODO i18n
 		answerCheckBox.setSelected(true);	//default to providing an answer
 		answerCheckBox.addItemListener(getModifyItemListener());
 		answerCheckBox.addItemListener(createUpdateStatusItemListener());	//update the status if the answer checkbox is changed
@@ -109,7 +123,7 @@ public class AnswerPanel extends ContentPanel
 		{
 			typeComboBox.setSelectedItem(expectedType);	//show the expected type in the combo box
 		}
-		else	//G***testing; comment, and make sure we completely know why this isn't set already if the selected type was already correct
+		else	//TODO testing; comment, and make sure we completely know why this isn't set already if the selected type was already correct
 			updateContentComponent(expectedType);	//update the content component to reflect the new selected type
 	}
 
@@ -158,16 +172,16 @@ public class AnswerPanel extends ContentPanel
 						((BooleanPanel)getContentComponent()).setValue(((BooleanLiteral)answerTypedLiteral).getValue());	//set the value of the boolean panel
 					}
 				}
-				//G***fix for unexpected types else--put the lexical form in a generic text field
+				//TODO fix for unexpected types else--put the lexical form in a generic text field
 			}
 		}
 */
-/*G***fix or del
+/*TODO fix or del
 		else if(answer!=null)	//if we don't expect a type but an answer is given
 		{
 			
 		}
-			//assert that the expectation already matches the datatype G***should we throw an illegal
+			//assert that the expectation already matches the datatype TODO should we throw an illegal
 		assert answer==null || !(answer.getValue() instanceof RDFTypedLiteral) || getExpectation()==null || ((RDFTypedLiteral)answer.getValue()).getDatatypeURI().equals(getExpectation().getReferenceURI());
 */
 //TODO fix	}
@@ -263,7 +277,7 @@ public class AnswerPanel extends ContentPanel
 				return new BooleanPanel(BooleanPanel.HORIZONTAL);	//use a boolean panel for the content component
 			}
 		}
-		return new JPanel();	//if we don't recognize the expected type, or there was no type given, return a default panel G***fix
+		return new JPanel();	//if we don't recognize the expected type, or there was no type given, return a default panel TODO fix
 	}
 
 	/**Verifies the component.

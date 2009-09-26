@@ -1,8 +1,23 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.qti;
 
 import java.awt.*;
 import javax.swing.*;
-import java.util.*;
 import com.globalmentor.log.Log;
 import com.globalmentor.mentoract.qti.*;
 
@@ -96,11 +111,11 @@ public class QTIResponseLIDPanel extends JPanel
 		final ResponseLID responseLID=new ResponseLID();  //create a new logical ID response
 		responseLID.setCardinality((String)cardinalityComboBox.getSelectedItem());  //get the cardinality
 		responseLID.setTiming(timingCheckBox.isSelected()); //get the timing
-		if(renderContainerPanel.getComponents().length>0)  //if there is at least one rendering G***fix for multiple renderings
+		if(renderContainerPanel.getComponents().length>0)  //if there is at least one rendering TODO fix for multiple renderings
 		{
-/*G***fix for multiple renderings
+/*TODO fix for multiple renderings
 		final Component[] renderComponents=renderContainerPanel.getComponents(); //get the components in the render panel
-		if(renderComponents.length>0) //if there is at least one rendering G***fix for multiple renderings
+		if(renderComponents.length>0) //if there is at least one rendering TODO fix for multiple renderings
 		{
 			final Component component=renderComponents[0];  //get the component
 			Debug.assert(component instanceof QTIRenderPanel, "Component is not a render panel.");
@@ -108,14 +123,14 @@ public class QTIResponseLIDPanel extends JPanel
 */
 			final QTIRenderPanel renderPanel=getRenderPanel(0); //get the first render panel
 			final Render render=renderPanel.getRender();  //get the render from the panel
-//G***del Log.trace("Getting render choice with first response label: ", renderChoice.getResponseLabelList().get(0)); //G***del
+//TODO del Log.trace("Getting render choice with first response label: ", renderChoice.getResponseLabelList().get(0)); //TODO del
 			responseLID.getRenderList().add(render);  //add the rendering to our renderings
-/*G***del when works
+/*TODO del when works
 			if(component instanceof QTIRenderChoicePanel) //if this is a choice rendering
 			{
 				final QTIRenderChoicePanel renderChoicePanel=(QTIRenderChoicePanel)component; //cast the component to a render choice panel
 				final RenderChoice renderChoice=renderChoicePanel.getRenderChoice();  //get the render choice from the panel
-//G***del Log.trace("Getting render choice with first response label: ", renderChoice.getResponseLabelList().get(0)); //G***del
+//TODO del Log.trace("Getting render choice with first response label: ", renderChoice.getResponseLabelList().get(0)); //TODO del
 				responseLID.getRenderList().add(renderChoice);  //add the choice rendering to our renderings
 			}
 */
@@ -138,43 +153,43 @@ public class QTIResponseLIDPanel extends JPanel
 		timingCheckBox.setSelected(responseLID.isTiming());  //set the timing checkbox
 		if(responseLID.getRenderList().size()>0)  //if there is at least one render type
 		{
-			final Render render=(Render)responseLID.getRenderList().get(0); //get the first render type G***assert there is at least one
+			final Render render=(Render)responseLID.getRenderList().get(0); //get the first render type TODO assert there is at least one
 		  final QTIRenderPanel renderPanel; //we'll construct the correct type of panel here
 			if(render instanceof RenderChoice)  //if this is a render choice
 			{
-//G***del when works				final RenderChoice renderChoice=(RenderChoice)render; //cast the render to a render choice
+//TODO del when works				final RenderChoice renderChoice=(RenderChoice)render; //cast the render to a render choice
 				renderPanel=new QTIRenderChoicePanel();  //create a panel for the render choice
-/*G***del when works
+/*TODO del when works
 				final QTIRenderChoicePanel renderChoicePanel=new QTIRenderChoicePanel();  //create a panel for the render choice
 				renderChoicePanel.setRenderChoice(renderChoice);  //set the choice being shown in the panel
 				renderPanel.removeAll();  //remove all components from the render panel
-	//G***del		  renderPanel.add(renderChoicePanel, BorderLayout.CENTER);  //add the render choice panel to the render panel G***do we want to just replace the render choice panel, or perhaps use a borderlayout?
-	//G***del			renderPanel.add(renderChoicePanel); //add the render choice panel to the render panel G***do we want to just replace the render choice panel, or perhaps use a borderlayout?
-						//add the render choice panel to the render panel G***do we want to just replace the render choice panel, or perhaps use a borderlayout?
+	//TODO del		  renderPanel.add(renderChoicePanel, BorderLayout.CENTER);  //add the render choice panel to the render panel TODO do we want to just replace the render choice panel, or perhaps use a borderlayout?
+	//TODO del			renderPanel.add(renderChoicePanel); //add the render choice panel to the render panel TODO do we want to just replace the render choice panel, or perhaps use a borderlayout?
+						//add the render choice panel to the render panel TODO do we want to just replace the render choice panel, or perhaps use a borderlayout?
 				renderPanel.add(renderChoicePanel, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
 					GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 */
 			}
 			else if(render instanceof RenderHotspot)  //if this is a render hotspot
 			{
-//G***del when works				final RenderHotspot renderHotspot=(RenderHotspot)render; //cast the render to a render hotspot
+//TODO del when works				final RenderHotspot renderHotspot=(RenderHotspot)render; //cast the render to a render hotspot
 				renderPanel=new QTIRenderHotspotPanel();  //create a panel for the render hotspot
-/*G***del when works
+/*TODO del when works
 				final QTIRenderHotspotPanel renderHotspotPanel=new QTIRenderHotspotPanel();  //create a panel for the render hotspot
 				renderHotspotPanel.setRenderHotspot(materialPanel, renderHotspot);  //set the hotspots being shown in the panel
-				renderPanel.removeAll();  //remove all components from the render panel G***should we combine all this for all the render types?
+				renderPanel.removeAll();  //remove all components from the render panel TODO should we combine all this for all the render types?
 				renderPanel.add(renderHotspotPanel, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
 					GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 */
 			}
 			else  //if we don't recognize the rendering type
 			{
-				Log.error("Unrecognized rendering type"); //G***fix
-				return; //G***fix
+				Log.error("Unrecognized rendering type"); //TODO fix
+				return; //TODO fix
 			}
 			renderPanel.setRender(materialPanel, render);  //set the rendering being shown in the panel
 			renderContainerPanel.removeAll();  //remove all components from the render container panel
-					//add the render panel to the render container panel G***do we want to just replace the render choice panel, or perhaps use a borderlayout?
+					//add the render panel to the render container panel TODO do we want to just replace the render choice panel, or perhaps use a borderlayout?
 			renderContainerPanel.add(renderPanel, new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
 				GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		}

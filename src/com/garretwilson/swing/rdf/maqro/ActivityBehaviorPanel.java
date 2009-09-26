@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.*;
@@ -9,7 +25,7 @@ import com.garretwilson.model.ResourceModel;
 import static com.globalmentor.urf.maqro.MAQRO.*;
 
 import com.garretwilson.swing.ModelPanel;
-import com.garretwilson.swing.border.BorderUtilities;
+import com.garretwilson.swing.border.Borders;
 import com.globalmentor.rdf.RDFResource;
 import com.globalmentor.rdf.xmlschema.BooleanLiteral;
 import com.globalmentor.rdf.xmlschema.IntegerLiteral;
@@ -66,12 +82,12 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 	public void initializeUI()
 	{
 		super.initializeUI();	//do the default user interface initialization
-		permissionsPanel.setBorder(BorderUtilities.createDefaultTitledBorder());
-		permissionsPanel.setTitle("Permissions");	//G***i18n
-		processPanel.setBorder(BorderUtilities.createDefaultTitledBorder());
-		processPanel.setTitle("Process");	//G***i18n
-		feedbackPanel.setBorder(BorderUtilities.createDefaultTitledBorder());
-		feedbackPanel.setTitle("Feedback");	//G***i18n
+		permissionsPanel.setBorder(Borders.createDefaultTitledBorder());
+		permissionsPanel.setTitle("Permissions");	//TODO i18n
+		processPanel.setBorder(Borders.createDefaultTitledBorder());
+		processPanel.setTitle("Process");	//TODO i18n
+		feedbackPanel.setBorder(Borders.createDefaultTitledBorder());
+		feedbackPanel.setTitle("Feedback");	//TODO i18n
 		add(permissionsPanel, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
 		add(processPanel, new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
 		add(feedbackPanel, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, NO_INSETS, 0, 0));
@@ -80,7 +96,7 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 	/**Updates the states of the actions, including enabled/disabled status,
 		proxied actions, etc.
 	*/
-/*G***fix
+/*TODO fix
 	public void updateStatus()
 	{
 		super.updateStatus();	//do the default updating
@@ -142,13 +158,13 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 		protected void initializeUI()
 		{
 			super.initializeUI(); //do the default UI initialization
-			allowHintCheckBox.setText("Allow hints");	//G***i18n
+			allowHintCheckBox.setText("Allow hints");	//TODO i18n
 			allowHintCheckBox.addItemListener(getModifyItemListener());
-			allowPreviousCheckBox.setText("Allow previous");	//G***i18n		
+			allowPreviousCheckBox.setText("Allow previous");	//TODO i18n		
 			allowPreviousCheckBox.addItemListener(getModifyItemListener());
-			allowCancelCheckBox.setText("Allow cancel");	//G***i18n
+			allowCancelCheckBox.setText("Allow cancel");	//TODO i18n
 			allowCancelCheckBox.addItemListener(getModifyItemListener());
-			allowSubmitCheckBox.setText("Allow submit");	//G***i18n
+			allowSubmitCheckBox.setText("Allow submit");	//TODO i18n
 			allowSubmitCheckBox.addItemListener(getModifyItemListener());
 			add(allowHintCheckBox, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 			add(allowPreviousCheckBox, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
@@ -222,17 +238,17 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 		protected void initializeUI()
 		{
 			super.initializeUI(); //do the default UI initialization
-			confirmCommitCheckBox.setText("Confirm commit");	//G***i18n
+			confirmCommitCheckBox.setText("Confirm commit");	//TODO i18n
 			confirmCommitCheckBox.addItemListener(getModifyItemListener());
-			confirmSubmitCheckBox.setText("Confirm submit");	//G***i18n
+			confirmSubmitCheckBox.setText("Confirm submit");	//TODO i18n
 			confirmSubmitCheckBox.addItemListener(getModifyItemListener());
-			requireResponseCheckBox.setText("Require response");	//G***i18n
+			requireResponseCheckBox.setText("Require response");	//TODO i18n
 			requireResponseCheckBox.addItemListener(getModifyItemListener());
-			limitTimeCheckBox.setText("Limit time");	//G***i18n
+			limitTimeCheckBox.setText("Limit time");	//TODO i18n
 			limitTimeCheckBox.addItemListener(createUpdateStatusItemListener());
 			limitTimeCheckBox.addItemListener(getModifyItemListener());
 			maxTimeTextField.getDocument().addDocumentListener(getModifyDocumentListener());
-			maxTimeUnitsLabel.setText("milliseconds");	//G***i18n TODO use a special time selection control
+			maxTimeUnitsLabel.setText("milliseconds");	//TODO i18n TODO use a special time selection control
 			add(confirmCommitCheckBox, new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 			add(confirmSubmitCheckBox, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 			add(requireResponseCheckBox, new GridBagConstraints(0, 2, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
@@ -321,14 +337,14 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 					final int time=Integer.parseInt(maxTimeTextField.getText().trim());	//see if we can convert the max time string to an integer
 					if(time<=0)	//if the time limit is not positive
 					{
-						JOptionPane.showMessageDialog(this, "You must enter a positive amount of time in milliseconds.", "Invalid time limit", JOptionPane.ERROR_MESSAGE);	//G***i18n
+						JOptionPane.showMessageDialog(this, "You must enter a positive amount of time in milliseconds.", "Invalid time limit", JOptionPane.ERROR_MESSAGE);	//TODO i18n
 						maxTimeTextField.requestFocusInWindow(); //focus on the maximum time text field
 						return false; //show that verification failed				
 					}
 				}
 				catch(NumberFormatException numberFormatException)	//if there was an error converting the string to an integer
 				{
-					JOptionPane.showMessageDialog(this, "You must enter a valid amount of time in milliseconds.", "Invalid time limit", JOptionPane.ERROR_MESSAGE);	//G***i18n
+					JOptionPane.showMessageDialog(this, "You must enter a valid amount of time in milliseconds.", "Invalid time limit", JOptionPane.ERROR_MESSAGE);	//TODO i18n
 					maxTimeTextField.requestFocusInWindow(); //focus on the maximum time text field
 					return false; //show that verification failed
 				}
@@ -368,15 +384,15 @@ public class ActivityBehaviorPanel extends ModelPanel<ResourceModel<? extends RD
 		protected void initializeUI()
 		{
 			super.initializeUI(); //do the default UI initialization
-			showEachResultCheckBox.setText("Show each interaction result");	//G***i18n
+			showEachResultCheckBox.setText("Show each interaction result");	//TODO i18n
 			showEachResultCheckBox.addItemListener(getModifyItemListener());
-			showFinalResultCheckBox.setText("Show final activity result");	//G***i18n
+			showFinalResultCheckBox.setText("Show final activity result");	//TODO i18n
 			showFinalResultCheckBox.addItemListener(getModifyItemListener());
-			showResultProgressCheckBox.setText("Continuously show results");	//G***i18n
+			showResultProgressCheckBox.setText("Continuously show results");	//TODO i18n
 			showResultProgressCheckBox.addItemListener(getModifyItemListener());
-			showProgressCheckBox.setText("Show progress");	//G***i18n
+			showProgressCheckBox.setText("Show progress");	//TODO i18n
 			showProgressCheckBox.addItemListener(getModifyItemListener());
-			showTimeCheckBox.setText("Show time");	//G***i18n
+			showTimeCheckBox.setText("Show time");	//TODO i18n
 			showTimeCheckBox.addItemListener(getModifyItemListener());
 			add(showEachResultCheckBox, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 			add(showFinalResultCheckBox, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));

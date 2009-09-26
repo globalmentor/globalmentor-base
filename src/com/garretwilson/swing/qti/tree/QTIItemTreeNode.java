@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.qti.tree;
 
 import javax.swing.tree.*;
@@ -50,10 +66,10 @@ public class QTIItemTreeNode extends QTIObjectTreeNode
 		final StringBuffer stringBuffer=new StringBuffer(); //create a new string buffer for constructing the string
 		  //append "[ID]"
 		stringBuffer.append('[');
-		if(item.getIdent().length()<=16)  //G***testing; fix
+		if(item.getIdent().length()<=16)  //TODO testing; fix
 		  stringBuffer.append(item.getIdent());  //append the ID
-		else  //G***testing; fix
-		  stringBuffer.append("..."+item.getIdent().substring(item.getIdent().length()-16));  //append the ID G***fix
+		else  //TODO testing; fix
+		  stringBuffer.append("..."+item.getIdent().substring(item.getIdent().length()-16));  //append the ID TODO fix
 		stringBuffer.append(']');
 			//append the presentation
 		final Presentation presentation=item.getPresentation();  //get the presentation information

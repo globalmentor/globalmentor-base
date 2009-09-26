@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.qti;
 
 import java.awt.*;
@@ -5,27 +21,16 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
-//G***del import javax.swing.text.*;
 import javax.swing.tree.*;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
-import com.garretwilson.swing.text.Views;
 import com.garretwilson.swing.text.xml.*;
 import com.garretwilson.swing.text.xml.qti.QTIViewFactory;
 import com.garretwilson.swing.tree.*;
 import com.garretwilson.swing.qti.tree.*;
 import com.globalmentor.collections.Lists;
-import com.globalmentor.java.Booleans;
 import com.globalmentor.log.Log;
-import com.globalmentor.mentoract.qti.Assessment;
-import com.globalmentor.mentoract.qti.Item;
-import com.globalmentor.mentoract.qti.Material;
-import com.globalmentor.mentoract.qti.Presentation;
-import com.globalmentor.mentoract.qti.QTI;
-import com.globalmentor.mentoract.qti.QTIXMLifier;
-import com.globalmentor.mentoract.qti.Response;
-import com.globalmentor.mentoract.qti.ResponseLID;
-import com.globalmentor.mentoract.qti.Section;
+import com.globalmentor.mentoract.qti.*;
 import com.globalmentor.model.Modifiable;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.text.xml.XML;
@@ -40,9 +45,9 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 {
 
 	/**The object containing the QTI information; the model for this frame.*/
-	private QTI qti=new QTI();  //G***don't initialize this, and instead do this in the default constructor, with another constructor for initialization with QTI data
+	private QTI qti=new QTI();  //TODO don't initialize this, and instead do this in the default constructor, with another constructor for initialization with QTI data
 
-		/**@return The QTI data model.*/ //G***do we want to do this and allow it to be edited elsewhere?
+		/**@return The QTI data model.*/ //TODO do we want to do this and allow it to be edited elsewhere?
 		public QTI getQTI() {return qti;}
 
 		/**Sets the QTI data model.
@@ -50,12 +55,12 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 		*/
 		public void setQTI(final QTI newQTI)
 		{
-	Log.trace("Setting QTI"); //G***del
+	Log.trace("Setting QTI"); //TODO del
 		  assessment=null;  //show that there is no assessment
 			qti=newQTI; //save the QTI data
-			qtiTree.setModel(new DefaultTreeModel(new QTITreeNode(qti)));  //G***testing
-			qtiTree.expandRow(1);  //G***fix; testing
-			splitPane.resetToPreferredSizes();  //G***testing
+			qtiTree.setModel(new DefaultTreeModel(new QTITreeNode(qti)));  //TODO testing
+			qtiTree.expandRow(1);  //TODO fix; testing
+			splitPane.resetToPreferredSizes();  //TODO testing
 			setModified(false); //show that, since we just received the data model, the data model hasn't been modified
 		}
 
@@ -103,16 +108,16 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 		}
 
 	/**The tree model used for the explore view.*/
-//G***del;	private TreeModel treeModel=new DefaultTreeModel();
+//TODO del;	private TreeModel treeModel=new DefaultTreeModel();
 
 		/**@return The tree model used for the explore view.*/
-//G***del;		private TreeModel treeModel=new DefaultTreeModel();
+//TODO del;		private TreeModel treeModel=new DefaultTreeModel();
 
 	/**The action for editing an item.*/
-//G***del	protected final Action editItemAction=new EditItemAction();
+//TODO del	protected final Action editItemAction=new EditItemAction();
 
 		/**@return The action for editing an item.*/
-//G***del		public Action getEditItemAction() {return editItemAction;}
+//TODO del		public Action getEditItemAction() {return editItemAction;}
 
 	/**The action for editing.*/
 	protected final ProxyAction editAction=new EditAction();
@@ -172,7 +177,7 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 		xmlSerializer=new XMLSerializer();  //create an XML serializer
 		xmlSerializer.setFormatted(true); //tell the serializer to format the QTI data
 			//register a QTI view factory with the QTI namespace, with the normal XML view factory as the fallback
-		xmlTextPane.registerViewFactory(QTI.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //G***testing
+		xmlTextPane.registerViewFactory(QTI.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //TODO testing
 			//setup tree cell icons
 				//assessment
 		qtiTreeCellRenderer.registerOpenIcon(Assessment.class, IconResources.getIcon(IconResources.DOCUMENT_QUESTION_ICON_FILENAME));
@@ -212,8 +217,8 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
     viewTabbedPane.setTabPlacement(JTabbedPane.BOTTOM);
     previewPanel.setLayout(previewBorderLayout);
     sourcePanel.setLayout(sourceBorderLayout);
-//G***del    sourceTextArea.setText("jTextArea1");
-//G***del    previewTextPane.setText("jTextPane1");
+//TODO del    sourceTextArea.setText("jTextArea1");
+//TODO del    previewTextPane.setText("jTextPane1");
     sourceTextArea.setFont(new java.awt.Font("Dialog", 0, 10));
     sourceTextArea.setEditable(false);
     sourceTextArea.setTabSize(2);
@@ -221,11 +226,11 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
     xmlTextPane.setEditable(false);
     this.add(splitPane, BorderLayout.CENTER);
     splitPane.add(qtiScrollPane, JSplitPane.LEFT);
-		qtiScrollPane.setMinimumSize(new Dimension(100, 100)); //G***testing
+		qtiScrollPane.setMinimumSize(new Dimension(100, 100)); //TODO testing
     qtiScrollPane.getViewport().add(qtiTree, null);
     splitPane.add(viewTabbedPane, JSplitPane.RIGHT);
-    viewTabbedPane.add(previewPanel,  "Preview"); //G***i18n
-    viewTabbedPane.add(sourcePanel,  "Source"); //G***i18n
+    viewTabbedPane.add(previewPanel,  "Preview"); //TODO i18n
+    viewTabbedPane.add(sourcePanel,  "Source"); //TODO i18n
     previewPanel.add(previewScrollPane, BorderLayout.CENTER);
     sourcePanel.add(sourceScrollPane, BorderLayout.CENTER);
     sourceScrollPane.getViewport().add(sourceTextArea, null);
@@ -259,40 +264,40 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 		else if(selectedObject instanceof QTIMaterialTreeNode)  //material
 		{
 			final Material material=((QTIMaterialTreeNode)selectedObject).getMaterial(); //get the object stored in the node
-			xmlDocument=QTIXMLifier.createDocument(); //create a blank document G***fix
+			xmlDocument=QTIXMLifier.createDocument(); //create a blank document TODO fix
 			xmlDocument.replaceChild(QTIXMLifier.createElement(xmlDocument, material), xmlDocument.getDocumentElement());  //create an XML element from the material and set it as the document element
-			editAction.setProxiedAction(null); //G***fix
-			deleteAction.setProxiedAction(null); //G***fix
+			editAction.setProxiedAction(null); //TODO fix
+			deleteAction.setProxiedAction(null); //TODO fix
 		}
 		else if(selectedObject instanceof QTIPresentationTreeNode)  //presentation
 		{
 			final Presentation presentation=((QTIPresentationTreeNode)selectedObject).getPresentation(); //get the object stored in the node
-			xmlDocument=QTIXMLifier.createDocument(); //create a blank document G***fix
+			xmlDocument=QTIXMLifier.createDocument(); //create a blank document TODO fix
 			xmlDocument.replaceChild(QTIXMLifier.createElement(xmlDocument, presentation), xmlDocument.getDocumentElement());  //create an XML element from the presentation and set it as the document element
-			editAction.setProxiedAction(null); //G***fix
-			deleteAction.setProxiedAction(null); //G***fix
+			editAction.setProxiedAction(null); //TODO fix
+			deleteAction.setProxiedAction(null); //TODO fix
 		}
 		else if(selectedObject instanceof QTISectionTreeNode)  //section
 		{
 			final Section section=((QTISectionTreeNode)selectedObject).getSection(); //get the object stored in the node
-			xmlDocument=QTIXMLifier.createDocument(); //create a blank document G***fix
+			xmlDocument=QTIXMLifier.createDocument(); //create a blank document TODO fix
 			xmlDocument.replaceChild(QTIXMLifier.createElement(xmlDocument, section), xmlDocument.getDocumentElement());  //create an XML element from the section and set it as the document element
-			editAction.setProxiedAction(null); //G***fix
-			deleteAction.setProxiedAction(null); //G***fix
+			editAction.setProxiedAction(null); //TODO fix
+			deleteAction.setProxiedAction(null); //TODO fix
 		}
 		else if(selectedObject instanceof QTIAssessmentTreeNode)  //assessment
 		{
 			final Assessment assessment=((QTIAssessmentTreeNode)selectedObject).getAssessment(); //get the object stored in the node
-			xmlDocument=QTIXMLifier.createDocument(); //create a blank document G***fix
+			xmlDocument=QTIXMLifier.createDocument(); //create a blank document TODO fix
 			xmlDocument.replaceChild(QTIXMLifier.createElement(xmlDocument, assessment), xmlDocument.getDocumentElement());  //create an XML element from the assessment and set it as the document element
-			editAction.setProxiedAction(null); //G***fix
-			deleteAction.setProxiedAction(null); //G***fix
+			editAction.setProxiedAction(null); //TODO fix
+			deleteAction.setProxiedAction(null); //TODO fix
 		}
 		else  //if we don't recognize what is selected
 		{
 			xmlDocument=null; //show that we have no XML
-			editAction.setProxiedAction(null); //G***fix
-			deleteAction.setProxiedAction(null); //G***fix
+			editAction.setProxiedAction(null); //TODO fix
+			deleteAction.setProxiedAction(null); //TODO fix
 		}
 		if(xmlDocument!=null) //if we have XML from the selected object
 		{
@@ -303,39 +308,39 @@ public class QTIExplorePanel extends JPanel implements TreeSelectionListener, Mo
 			//setup the preview view
 
 
-	/*G***del
+	/*TODO del
 	Log.trace("Created document from QTI item: ");
-	com.garretwilson.text.xml.XMLUtilities.printTree(xmlDocument, Debug.getOutput()); //G***del
+	com.garretwilson.text.xml.XMLUtilities.printTree(xmlDocument, Debug.getOutput()); //TODO del
 	*/
-	//G***del Log.trace("navigating");  //G***del
+	//TODO del Log.trace("navigating");  //TODO del
 
-		  //G***testing removal of all QTI stuff; instead, add a qtiViewVactory.resetState() or something
-//G***fix; this didn't fix the problem, we do have to clear the state somehow		xmlTextPane.registerViewFactory(QTIConstants.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //G***testing
+		  //TODO testing removal of all QTI stuff; instead, add a qtiViewVactory.resetState() or something
+//TODO fix; this didn't fix the problem, we do have to clear the state somehow		xmlTextPane.registerViewFactory(QTIConstants.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //TODO testing
 
-			xmlTextPane.setContentType("text/xml");  //G***use constant, put elsewhere
-	//G***del Log.trace("navigating");  //G***del
+			xmlTextPane.setContentType("text/xml");  //TODO use constant, put elsewhere
+	//TODO del Log.trace("navigating");  //TODO del
 			final XMLDocument swingDocument=(XMLDocument)xmlTextPane.getDocument(); //get the currently loaded document
-	//G***del Log.trace("navigating");  //G***del
+	//TODO del Log.trace("navigating");  //TODO del
 
-//G***del if not needed Log.trace("****hiding views");  //G***del
-//G***del if not needed			ViewUtilities.hideView(xmlTextPane.getUI().getRootView(xmlTextPane)); //G***testing remove components
-		  //G***testing removal of all QTI stuff; instead, add a qtiViewVactory.resetState() or something
-//G***fix; this didn't fix the problem, we do have to clear the state somehow		xmlTextPane.registerViewFactory(QTIConstants.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //G***testing
-//G***fix				xmlTextPane.registerViewFactory(QTIConstants.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //G***testing
-	//G***del Log.trace("navigating");  //G***del
+//TODO del if not needed Log.trace("****hiding views");  //TODO del
+//TODO del if not needed			ViewUtilities.hideView(xmlTextPane.getUI().getRootView(xmlTextPane)); //TODO testing remove components
+		  //TODO testing removal of all QTI stuff; instead, add a qtiViewVactory.resetState() or something
+//TODO fix; this didn't fix the problem, we do have to clear the state somehow		xmlTextPane.registerViewFactory(QTIConstants.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //TODO testing
+//TODO fix				xmlTextPane.registerViewFactory(QTIConstants.QTI_1_1_NAMESPACE_URI, new QTIViewFactory());  //TODO testing
+	//TODO del Log.trace("navigating");  //TODO del
 
 				javax.swing.SwingUtilities.invokeLater(new Runnable()	//invoke the hyperlink traversal until a later time in the event thread, so the mouse click won't be re-interpreted when we arrive at the hyperlink destination
 				{
 					public void run()
 					{
 
-	//G***del Log.trace("navigating");  //G***del
-Log.trace("****setting XML");  //G***del
+	//TODO del Log.trace("navigating");  //TODO del
+Log.trace("****setting XML");  //TODO del
 
 //TODO use the XMLTextPane.setXML() version if we can
-						//G***testing for style application
+						//TODO testing for style application
 			((XMLEditorKit)xmlTextPane.getEditorKit()).setXML(xmlDocument, null, XML.XML_CONTENT_TYPE, swingDocument); //set the XML document in the text pane
-	//G***del Log.trace("navigating");  //G***del
+	//TODO del Log.trace("navigating");  //TODO del
 					}
 				});
 		}
@@ -348,30 +353,30 @@ Log.trace("****setting XML");  //G***del
 	protected Item askNewItem()
 	{
 		final QTIResponseTypePanel responseTypePanel=new QTIResponseTypePanel();  //create a new response type panel
-Log.trace("asking new item"); //G***del
-//G***testing optionpane
-//G***del		OptionPane.test();  //G***del
-			//ask what type of response should be added; if they make a selection G***i18n
+Log.trace("asking new item"); //TODO del
+//TODO testing optionpane
+//TODO del		OptionPane.test();  //TODO del
+			//ask what type of response should be added; if they make a selection TODO i18n
 		if(BasicOptionPane.showConfirmDialog(this, responseTypePanel, "Response Type", JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION)
 		{
 			final Response response=responseTypePanel.createResponse();  //create a response from the given information in the panel
 			if(response!=null)  //if we got a response
 			{
 				final Presentation presentation=new Presentation("", response);  //create presentation with the given reseponse
-/*G***del org.doomdark.uuid.UUID version when new Java 5.0 version works
-//G***del				final UUID uuid=UUIDGenerator.getInstance().generateTimeBasedUUID();  //create a new UUID
+/*TODO del org.doomdark.uuid.UUID version when new Java 5.0 version works
+//TODO del				final UUID uuid=UUIDGenerator.getInstance().generateTimeBasedUUID();  //create a new UUID
 				final UUID uuid=UUIDGenerator.getInstance().generateRandomBasedUUID();  //create a new UUID
-				final String ident="uuid:"+uuid.toString(); //create a UUID URI for the ID G***use a constant; fix better
+				final String ident="uuid:"+uuid.toString(); //create a UUID URI for the ID TODO use a constant; fix better
 */
 				final UUID uuid=UUID.randomUUID();  //create a new UUID
-				final String ident="uuid:"+uuid.toString(); //create a UUID URI for the ID G***use a constant; fix better
+				final String ident="uuid:"+uuid.toString(); //create a UUID URI for the ID TODO use a constant; fix better
 				
 				final Item item=new Item(ident, presentation); //create an item with the presentation
 				return editItem(item);  //edit the item and return the edited item
-/*G***del when works
+/*TODO del when works
 				final QTIItemPanel itemPanel=new QTIItemPanel(item);  //create an panel to edit the item
 					//edit the new item; if the user accepts the changes
-				if(JOptionPane.showConfirmDialog(QTIInternalFrame.this, itemPanel, "Item", JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION)  //G***i18n
+				if(JOptionPane.showConfirmDialog(QTIInternalFrame.this, itemPanel, "Item", JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION)  //TODO i18n
 				{
 				  return itemPanel.getItem();  //return the new, edited item
 				}
@@ -388,9 +393,9 @@ Log.trace("asking new item"); //G***del
 	protected Item editItem(final Item item)
 	{
 		final QTIItemPanel itemPanel=new QTIItemPanel(item);  //create an panel to edit the item
-		itemPanel.setPreferredSize(new Dimension(400, 400));  //G***fix preferred size QTI
+		itemPanel.setPreferredSize(new Dimension(400, 400));  //TODO fix preferred size QTI
 			//edit the new item; if the user accepts the changes
-		if(BasicOptionPane.showConfirmDialog(QTIExplorePanel.this, itemPanel, "Item", JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION)  //G***i18n
+		if(BasicOptionPane.showConfirmDialog(QTIExplorePanel.this, itemPanel, "Item", JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION)  //TODO i18n
 		{
 			return itemPanel.getItem();  //return the new, edited item
 		}
@@ -405,7 +410,7 @@ Log.trace("asking new item"); //G***del
 		/**Default constructor.*/
 		public EditAction()
 		{
-			super("Edit...");	//create the base class G***i18n
+			super("Edit...");	//create the base class TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.EDIT_ICON_FILENAME)); //load the correct icon
 		}
 	}
@@ -426,10 +431,10 @@ Log.trace("asking new item"); //G***del
 		*/
 		public EditItemAction(final Item qtiItem, final QTIItemTreeNode qtiItemTreeNode)
 		{
-			super("Edit item...");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Edit item");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Edit the selected item.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));  //set the mnemonic key G***i18n
+			super("Edit item...");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Edit item");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Edit the selected item.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.EDIT_ICON_FILENAME)); //load the correct icon
 			item=qtiItem; //save the item for editing
 			itemTreeNode=qtiItemTreeNode; //save the item tree node
@@ -443,8 +448,8 @@ Log.trace("asking new item"); //G***del
 			final Item newItem=editItem(item); //edit the item
 			if(newItem!=null && itemTreeNode!=null)  //if we edited the item successfully and there is a tree node for the item
 			{
-//G***del				Debug.assert(itemTreeNode.getParent() instanceof DefaultMutableTreeNode, "Invalid QTI tree structure.");
-				  //G***del next line
+//TODO del				Debug.assert(itemTreeNode.getParent() instanceof DefaultMutableTreeNode, "Invalid QTI tree structure.");
+				  //TODO del next line
 				if(itemTreeNode.getParent() instanceof DefaultMutableTreeNode)  //if the parent is a default mutable tree node
 				{
 					final DefaultMutableTreeNode parentTreeNode=(DefaultMutableTreeNode)itemTreeNode.getParent(); //cast the parent node to a default mutable tree node
@@ -464,15 +469,15 @@ Log.trace("asking new item"); //G***del
 		  		updateSelection(qtiTree.getSelectionPath()); //update the selection in case our editing changed things
 				}
 
-/*G***fix
+/*TODO fix
 					final int treeNodeIndex=parentTreeNode.getIndex(itemTreeNode);  //get the index of the tree node in its parent
 					parentTreeNode.a
 				((DefaultTreeModel)qtiTree.getModel()).va
 				.insertNodeInto(itemTreeNode, treeNode, treeNode.getChildCount());
 				qtiTree.scrollPathToVisible(path.pathByAddingChild(itemTreeNode)); //scroll to the path that includes the added child
 */
-//G***fix				final ItemListModel itemListModel=(ItemListModel)itemListPanel.itemList.getModel(); //get the list model being used in the section
-//G***fix				itemListModel.replaceItem(oldItem, newItem);  //replace the old item with the new one
+//TODO fix				final ItemListModel itemListModel=(ItemListModel)itemListPanel.itemList.getModel(); //get the list model being used in the section
+//TODO fix				itemListModel.replaceItem(oldItem, newItem);  //replace the old item with the new one
 			}
 		}
 	}
@@ -484,7 +489,7 @@ Log.trace("asking new item"); //G***del
 		/**Default constructor.*/
 		public DeleteAction()
 		{
-			super("Delete");	//create the base class G***i18n
+			super("Delete");	//create the base class TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.DELETE_ICON_FILENAME)); //load the correct icon
 		}
 	}
@@ -505,10 +510,10 @@ Log.trace("asking new item"); //G***del
 		*/
 		public DeleteItemAction(final Item qtiItem, final QTIItemTreeNode qtiItemTreeNode)
 		{
-			super("Delete item");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Delete item");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Delete the selected item.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_D));  //set the mnemonic key G***i18n
+			super("Delete item");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Delete item");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Delete the selected item.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_D));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.DELETE_ICON_FILENAME)); //load the correct icon
 			item=qtiItem; //save the item for editing
 			itemTreeNode=qtiItemTreeNode; //save the item tree node
@@ -522,7 +527,7 @@ Log.trace("asking new item"); //G***del
 				//if they really want to remove the item
 			if(JOptionPane.showConfirmDialog(QTIExplorePanel.this, "Are you sure you want to delete item with ID "+item.getIdent()+"?", "Delete Item", JOptionPane.OK_CANCEL_OPTION)==JOptionPane.OK_OPTION)
 			{
-				  //G***del next line
+				  //TODO del next line
 				if(itemTreeNode.getParent() instanceof DefaultMutableTreeNode)  //if the parent is a default mutable tree node
 				{
 					final DefaultMutableTreeNode parentTreeNode=(DefaultMutableTreeNode)itemTreeNode.getParent(); //cast the parent node to a default mutable tree node
@@ -539,7 +544,7 @@ Log.trace("asking new item"); //G***del
 					}
 						//remove the item tree node from the tree
 					((DefaultTreeModel)qtiTree.getModel()).removeNodeFromParent(itemTreeNode);
-						//G***fix; find out how to update the selection after deleting the node from the tree
+						//TODO fix; find out how to update the selection after deleting the node from the tree
 				  updateSelection(qtiTree.getSelectionPath()); //update the selection in case our editing changed things
 				}
 			}
@@ -552,13 +557,13 @@ Log.trace("asking new item"); //G***del
 		/**Default constructor.*/
 		public AddItemAction()
 		{
-			super("Add Question...");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Add question");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Create a new question.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_Q));  //set the mnemonic key G***i18n
+			super("Add Question...");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Add question");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Create a new question.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_Q));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.QUESTION_NEW_ICON_FILENAME)); //load the correct icon
-//G***del when works			new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
-//G***del when works			putValue(SMALL_ICON, new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
+//TODO del when works			new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
+//TODO del when works			putValue(SMALL_ICON, new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
 		}
 
 		/**Called when the action should be performed.
@@ -566,7 +571,7 @@ Log.trace("asking new item"); //G***del
 		*/
 		public void actionPerformed(final ActionEvent e)
 		{
-//G***del			final ItemListModel itemListModel=(ItemListModel)itemListPanel.itemList.getModel(); //get the list model being used in the section
+//TODO del			final ItemListModel itemListModel=(ItemListModel)itemListPanel.itemList.getModel(); //get the list model being used in the section
 			final Item item=askNewItem(); //ask for a new item
 			if(item!=null)  //if an item was created
 			{
@@ -577,27 +582,27 @@ Log.trace("asking new item"); //G***del
 				while(path!=null) //while we haven't reached the root
 				{
 					final Object pathComponent=path.getLastPathComponent(); //get the last path component
-//G***del Log.trace("Looking at path component: ", pathComponent.getClass().getName()); //G***del
+//TODO del Log.trace("Looking at path component: ", pathComponent.getClass().getName()); //TODO del
 					if(pathComponent instanceof DefaultMutableTreeNode) //if this is a tree node with a user object
 					{
 						final DefaultMutableTreeNode treeNode=(DefaultMutableTreeNode)pathComponent;  //cast the path component to the desired type
 						final Object userObject=treeNode.getUserObject();  //get the user object
-//G***del Log.trace("Looking at user object: ", userObject.getClass().getName()); //G***del
+//TODO del Log.trace("Looking at user object: ", userObject.getClass().getName()); //TODO del
 						if(userObject instanceof Section) //if a section is selected
 						{
-//G***del Log.trace("found section");  //G***del
+//TODO del Log.trace("found section");  //TODO del
 							((Section)userObject).getItemList().add(item); //add the item to the section
 								//add the item tree node to the tree
 							((DefaultTreeModel)qtiTree.getModel()).insertNodeInto(itemTreeNode, treeNode, treeNode.getChildCount());
 							setModified(true);  //show that the data model has been modified
-//G***fix							qtiTree.setSelectionPath(path.pathByAddingChild(itemTreeNode)); //select the new item G***don't duplicate path code
+//TODO fix							qtiTree.setSelectionPath(path.pathByAddingChild(itemTreeNode)); //select the new item TODO don't duplicate path code
 							qtiTree.scrollPathToVisible(path.pathByAddingChild(itemTreeNode)); //scroll to the path that includes the added child
-							splitPane.resetToPreferredSizes();  //G***testing
+							splitPane.resetToPreferredSizes();  //TODO testing
 							break;  //stop looking for the correct container
 						}
 						else if(userObject instanceof Assessment) //if an assessment is selected
 						{
-//G***del Log.trace("found assessment");  //G***del
+//TODO del Log.trace("found assessment");  //TODO del
 						  final Assessment assessment=(Assessment)userObject; //get the selected assessment
 							final Section section;  //we'll find out which section to use, or add a new one
 							final MutableTreeNode sectionTreeNode; //we'll also find the section node being shown
@@ -620,7 +625,7 @@ Log.trace("asking new item"); //G***del
 							((DefaultTreeModel)qtiTree.getModel()).insertNodeInto(itemTreeNode, sectionTreeNode, sectionTreeNode.getChildCount());
 							setModified(true);  //show that the data model has been modified
 							qtiTree.scrollPathToVisible(path.pathByAddingChild(itemTreeNode)); //scroll to the path that includes the added child
-							splitPane.resetToPreferredSizes();  //G***testing
+							splitPane.resetToPreferredSizes();  //TODO testing
 							break;  //stop looking for the correct container
 						}
 						else if(userObject instanceof QTI) //if the QTI data model itself is selected
@@ -630,7 +635,7 @@ Log.trace("asking new item"); //G***del
 							((DefaultTreeModel)qtiTree.getModel()).insertNodeInto(itemTreeNode, treeNode, treeNode.getChildCount());
 							setModified(true);  //show that the data model has been modified
 							qtiTree.scrollPathToVisible(path.pathByAddingChild(itemTreeNode)); //scroll to the path that includes the added child
-							splitPane.resetToPreferredSizes();  //G***testing
+							splitPane.resetToPreferredSizes();  //TODO testing
 							break;  //stop looking for the correct container
 						}
 					}
@@ -646,13 +651,13 @@ Log.trace("asking new item"); //G***del
 		/**Default constructor.*/
 		public AddSectionAction()
 		{
-			super("Add Section...");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Add section");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Create a new section.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));  //set the mnemonic key G***i18n
+			super("Add Section...");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Add section");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Create a new section.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.FOLDER_NEW_ICON_FILENAME)); //load the correct icon
-//G***del when works			new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
-//G***del when works			putValue(SMALL_ICON, new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
+//TODO del when works			new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
+//TODO del when works			putValue(SMALL_ICON, new ImageIcon(ReaderFrame.class.getResource("book_open.gif")));	//load the correct icon
 		}
 
 		/**Called when the action should be performed.
@@ -660,7 +665,7 @@ Log.trace("asking new item"); //G***del
 		*/
 		public void actionPerformed(final ActionEvent e)
 		{
-/*G***fix
+/*TODO fix
 			QTIItemListPanel itemListPanel=(QTIItemListPanel)sectionTabbedPane.getSelectedComponent(); //get the section panel selected in the tabbed pane
 			if(itemListPanel==null)  //if there is no section panel selected, assume there are no section panels
 			{

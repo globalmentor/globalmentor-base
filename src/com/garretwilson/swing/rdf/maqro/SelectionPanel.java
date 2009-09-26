@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.rdf.maqro;
 
 import java.awt.*;
@@ -10,12 +26,9 @@ import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
 import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
-import com.garretwilson.swing.border.BorderUtilities;
+import com.garretwilson.swing.border.Borders;
 import com.globalmentor.rdf.RDFListResource;
-import com.globalmentor.rdf.RDFLiteral;
-import com.globalmentor.rdf.RDFObject;
 import com.globalmentor.urf.maqro.*;
-import com.globalmentor.util.*;
 
 /**Panel for editing a MAQRO activity selection.
 <p>This implementation does not support multiple selector filters of the same type.</p>
@@ -75,7 +88,7 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 				if(category instanceof RDFLiteral)	//if this category is a literal
 				{
 						//copy this category to the selection criteria
-					categoryFilter.addCategory((RDFLiteral)category);	//G***it would be best to clone the category
+					categoryFilter.addCategory((RDFLiteral)category);	//TODO it would be best to clone the category
 				}
 			}
 			while(categoryIterator.hasNext());	//keep adding the categories while there are more categories
@@ -115,7 +128,7 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 		categorySet.clear();	//clear our categories
 		if(selectors!=null && selectors.size()>0)	//if there is at least one selector, we'll use the first one and ignore the others
 		{
-			final Selector selector=(Selector)selectors.get(0);	//get the first selector G***should we really assume that this is a selector
+			final Selector selector=(Selector)selectors.get(0);	//get the first selector TODO should we really assume that this is a selector
 			count=selector.getCount();	//see if a count is specified
 			final RDFListResource filters=selector.getFilters();	//get any filters of this selector
 			if(filters!=null)	//if we have filters
@@ -128,7 +141,7 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 					{
 						final CategoryFilter categoryFilter=(CategoryFilter)filter;	//cast the filter to a category filter
 							//TODO upgrade to generics
-						Collections.addAll(categorySet, categoryFilter.getCategories());	//add all selector categories to our set of categories G***we should really create clones of these
+						Collections.addAll(categorySet, categoryFilter.getCategories());	//add all selector categories to our set of categories TODO we should really create clones of these
 						break;	//this implementation only recognizes the first category filter
 					}
 				}
@@ -178,7 +191,7 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 		/**Sets the categories to use, keeping the categories but not the given set.
 		@param set The set of categories to use.
 		*/
-/*G***del when works
+/*TODO del when works
 		protected void setCategorySet(final Set set)
 		{
 			categorySet.clear();	//clear our categories
@@ -219,24 +232,24 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 	public void initializeUI()
 	{
 		super.initializeUI();	//do the default user interface initialization
-		setBorder(BorderUtilities.createDefaultTitledBorder());
-		setTitle("Selection");	//G***i18n
-		randomSelectionCheckBox.setText("Random selection");	//G***i18n
+		setBorder(Borders.createDefaultTitledBorder());
+		setTitle("Selection");	//TODO i18n
+		randomSelectionCheckBox.setText("Random selection");	//TODO i18n
 		randomSelectionCheckBox.setSelected(true);
-		randomOrderCheckBox.setText("Random order");	//G***i18n
+		randomOrderCheckBox.setText("Random order");	//TODO i18n
 		randomOrderCheckBox.setSelected(true);
-		questionCountLabel.setText("Number of questions");	//G***i18n
+		questionCountLabel.setText("Number of questions");	//TODO i18n
 		questionCountButtonGroup.add(allQuestionsRadioButton);
 		questionCountButtonGroup.add(onlyQuestionsRadioButton);
 
 		final ItemListener updateStatusItemListener=createUpdateStatusItemListener();	//create an item listener to update the status		
-		allQuestionsRadioButton.setText("All");	//G***i18n
+		allQuestionsRadioButton.setText("All");	//TODO i18n
 		allQuestionsRadioButton.setSelected(true);
 		allQuestionsRadioButton.addItemListener(updateStatusItemListener);	//update the status if this button is pressed
 		questionCountTextField.setColumns(4);
-		onlyQuestionsRadioButton.setText("Only");	//G***i18n
+		onlyQuestionsRadioButton.setText("Only");	//TODO i18n
 		onlyQuestionsRadioButton.addItemListener(updateStatusItemListener);	//update the status if this button is pressed
-		categoriesButton.setText("Categories...");	//G***i18n
+		categoriesButton.setText("Categories...");	//TODO i18n
 
 		add(questionCountLabel, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
 		add(allQuestionsRadioButton, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, NO_INSETS, 0, 0));
@@ -272,14 +285,14 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 				final int questionCount=Integer.parseInt(questionCountTextField.getText().trim());	//see if we can convert the question count string to an integer
 				if(questionCount==0)	//if there are no questions requested
 				{
-					JOptionPane.showMessageDialog(this, "You must enter a positive number of questions.", "Invalid number of questions", JOptionPane.ERROR_MESSAGE);	//G***i18n
+					JOptionPane.showMessageDialog(this, "You must enter a positive number of questions.", "Invalid number of questions", JOptionPane.ERROR_MESSAGE);	//TODO i18n
 					questionCountTextField.requestFocusInWindow(); //focus on the question count text field
 					return false; //show that verification failed				
 				}
 			}
 			catch(NumberFormatException numberFormatException)	//if there was an error converting the string to an integer
 			{
-				JOptionPane.showMessageDialog(this, "You must enter a valid number of questions.", "Invalid number of questions", JOptionPane.ERROR_MESSAGE);	//G***i18n
+				JOptionPane.showMessageDialog(this, "You must enter a valid number of questions.", "Invalid number of questions", JOptionPane.ERROR_MESSAGE);	//TODO i18n
 				questionCountTextField.requestFocusInWindow(); //focus on the question count text field
 				return false; //show that verification failed
 			}
@@ -307,7 +320,7 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 			}
 		}
 			//show the categories; if the user accepts the new selections 
-		if(BasicOptionPane.showConfirmDialog(this, new ListPanel(categorySwingList), "Selected categories", BasicOptionPane.OK_CANCEL_OPTION, BasicOptionPane.QUESTION_MESSAGE)==BasicOptionPane.OK_OPTION)	//G***i18n
+		if(BasicOptionPane.showConfirmDialog(this, new ListPanel(categorySwingList), "Selected categories", BasicOptionPane.OK_CANCEL_OPTION, BasicOptionPane.QUESTION_MESSAGE)==BasicOptionPane.OK_OPTION)	//TODO i18n
 		{
 			categorySet.clear();	//clear our set of categories
 			addAll(categorySet, categorySwingList.getSelectedValues());	//add the selected categories
@@ -320,10 +333,10 @@ public class SelectionPanel extends BasicPanel	//TODO eventually separate Select
 		/**Default constructor.*/
 		public SelectCategoriesAction()
 		{
-			super("Categories...");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Select categories...");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Select the categories of entries to include.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));  //set the mnemonic key G***i18n
+			super("Categories...");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Select categories...");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Select the categories of entries to include.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.GROUP_ICON_FILENAME)); //load the correct icon
 		}
 	

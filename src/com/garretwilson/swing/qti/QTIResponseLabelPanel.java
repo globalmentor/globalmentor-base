@@ -1,9 +1,23 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.qti;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
-import java.util.*;
 import javax.swing.*;
 import com.garretwilson.awt.*;
 import com.garretwilson.swing.*;
@@ -57,7 +71,7 @@ public class QTIResponseLabelPanel extends JPanel implements Verifiable
 	{
 		if(area instanceof Ellipse2D) //if the area is an ellipse
 		{
-/*G***fix
+/*TODO fix
 			final Rectangle rectangle=(Rectangle)area;  //cast the area to a rectangle
 			stringBuffer.append(' ').append(RECTANGLE_AREA).append(':').append(' ');  //append "rectangle: "
 			stringBuffer.append('('); //append '('
@@ -72,7 +86,7 @@ public class QTIResponseLabelPanel extends JPanel implements Verifiable
 		}
 		else if(area instanceof Polygon) //if the area is a polygon
 		{
-/*G***fix
+/*TODO fix
 			final Rectangle rectangle=(Rectangle)area;  //cast the area to a rectangle
 			stringBuffer.append(' ').append(RECTANGLE_AREA).append(':').append(' ');  //append "rectangle: "
 			stringBuffer.append('('); //append '('
@@ -147,7 +161,7 @@ public class QTIResponseLabelPanel extends JPanel implements Verifiable
 		if(area!=null)  //if the response label has an area
 		{
 			toolBar.setVisible(false); //hide the toolbar, because we won't need it
-	    contentLabel.setText("Hotspot");  //G***i18n
+	    contentLabel.setText("Hotspot");  //TODO i18n
 			materialPanel=null; //show that we don't have a material panel
 			hotspotComponent=new HotspotComponent(image); //create a hotspot component
 			setArea(area);  //set the area being used
@@ -156,7 +170,7 @@ public class QTIResponseLabelPanel extends JPanel implements Verifiable
 		}
 		else if(responseLabel.getMaterial()!=null)  //if there is no area, but there is material
 		{
-	    contentLabel.setText("Material"); //G***i18n
+	    contentLabel.setText("Material"); //TODO i18n
 			hotspotComponent=null;  //show that we don't have a hotspot component
 				//create a material panel with the material
 		  materialPanel=new QTIMaterialPanel(responseLabel.getMaterial());
@@ -177,7 +191,7 @@ public class QTIResponseLabelPanel extends JPanel implements Verifiable
 	{
 		if(identTextField.getText().length()==0)  //if there is no ID
 		{
-			JOptionPane.showMessageDialog(this, "Each response label must have a unique identifier.", "Missing ident", JOptionPane.ERROR_MESSAGE);	//G***i18n
+			JOptionPane.showMessageDialog(this, "Each response label must have a unique identifier.", "Missing ident", JOptionPane.ERROR_MESSAGE);	//TODO i18n
 			identTextField.requestFocus(); //focus on the ID text field
 			return false; //show that verification failed
 		}
@@ -185,9 +199,9 @@ public class QTIResponseLabelPanel extends JPanel implements Verifiable
 //TODO change this panel to inherit from BasicPanel, and verify the parent class (removing the implements Verifiable)		return super.verify();  //if we couldn't find any problems, verify the parent class
 	}
 
-//G***probably add an option for showing the labels or not
+//TODO probably add an option for showing the labels or not
 
-	/**The component for editing hotspots.*/  //G***maybe refactor this into a separate public class
+	/**The component for editing hotspots.*/  //TODO maybe refactor this into a separate public class
 	protected static class HotspotComponent extends ImageComponent
 	{
 
@@ -235,7 +249,7 @@ public class QTIResponseLabelPanel extends JPanel implements Verifiable
 		public void paintComponent(final Graphics graphics)
 		{
 			super.paintComponent(graphics); //paint the parent normally
-			drawShapeStrategy.paint(graphics);  //G***testing
+			drawShapeStrategy.paint(graphics);  //TODO testing
 		}
 	}
 

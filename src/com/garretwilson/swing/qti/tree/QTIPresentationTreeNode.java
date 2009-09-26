@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.qti.tree;
 
 import java.util.*;
@@ -49,13 +65,13 @@ public class QTIPresentationTreeNode extends DefaultMutableTreeNode
 			final Response response=(Response)responseIterator.next();  //get the next response
 			if(response instanceof ResponseLID) //if this is a logical ID response
 				add(new QTIResponseLIDTreeNode((ResponseLID)response)); //create a node for the logical ID response and add it to this node
-				//G***fix for other response types
+				//TODO fix for other response types
 		}
 	}
 
 	/**@return A string representation to display as the tree node's label.*/
 	public String toString()
 	{
-		return "Presentation";  //G***i18n
+		return "Presentation";  //TODO i18n
 	}
 }

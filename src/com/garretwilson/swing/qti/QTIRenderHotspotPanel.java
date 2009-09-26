@@ -1,14 +1,26 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.qti;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.*;
 import javax.swing.*;
-import javax.swing.event.*;
-import java.util.*;
 
 import com.garretwilson.awt.ImageUtilities;
-import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.draw.*;
 
@@ -31,7 +43,7 @@ public class QTIRenderHotspotPanel extends QTIRenderPanel
 	/**Initializes the user interface.*/
   private void jbInit()
   {
-    label.setText("Hotspots");  //G***fix
+    label.setText("Hotspots");  //TODO fix
   }
 
 	/**@return An empty hotspot render object.*/
@@ -48,17 +60,17 @@ public class QTIRenderHotspotPanel extends QTIRenderPanel
 		getAddResponseLabelAction().putValue(Action.NAME, "Add Hotspot...");
 		getAddResponseLabelAction().putValue(Action.SHORT_DESCRIPTION, "Add hotspot");
 		getAddResponseLabelAction().putValue(Action.LONG_DESCRIPTION, "Add a new hotspot.");
-//G***fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
+//TODO fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key TODO i18n
 		  //update the remove action properties to be specific to the type of rendering
 		getRemoveResponseLabelAction().putValue(Action.NAME, "Remove Hotspot...");
 		getRemoveResponseLabelAction().putValue(Action.SHORT_DESCRIPTION, "Remove hotspot");
 		getRemoveResponseLabelAction().putValue(Action.LONG_DESCRIPTION, "Remove the selected hotspot.");
-//G***fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
+//TODO fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key TODO i18n
 		  //update the edit action properties to be specific to the type of rendering
 		getEditResponseLabelAction().putValue(Action.NAME, "Edit Hotspot...");
 		getEditResponseLabelAction().putValue(Action.SHORT_DESCRIPTION, "Edit hotspot");
 		getEditResponseLabelAction().putValue(Action.LONG_DESCRIPTION, "Edit the selected hotspot.");
-//G***fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key G***i18n
+//TODO fix putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));  //set the mnemonic key TODO i18n
 	}
 
 	/**Creates a new response label.
@@ -68,7 +80,7 @@ public class QTIRenderHotspotPanel extends QTIRenderPanel
 	{
 		final ResponseLabel responseLabel=super.createResponseLabel();  //create the default response label
 		final Render render=getRender();  //get the render object being represented
-		responseLabel.setIdent(String.valueOf((char)('A'+render.getResponseLabelList().size()))); //set the ident for the new choice G***fix to some standard method G***do we want to do this?
+		responseLabel.setIdent(String.valueOf((char)('A'+render.getResponseLabelList().size()))); //set the ident for the new choice TODO fix to some standard method TODO do we want to do this?
 		responseLabel.setArea(new Rectangle()); //set the area to a default rectangle
 		return responseLabel;  //return the default response label we constructed
 	}
@@ -80,54 +92,54 @@ public class QTIRenderHotspotPanel extends QTIRenderPanel
 	*/
 	protected ResponseLabel editResponseLabel(final ResponseLabel responseLabel)
 	{
-/*G***fix
+/*TODO fix
 		final QTIResponseLabelPanel responseLabelPanel=new QTIResponseLabelPanel();  //create a new panel to edit the response label
 		responseLabelPanel.setResponseLabel(responseLabel); //set the response label
-		responseLabelPanel.setPreferredSize(new Dimension(300, 200));  //G***fix preferred size QTI
+		responseLabelPanel.setPreferredSize(new Dimension(300, 200));  //TODO fix preferred size QTI
 		  //show the response label panel
-		final int result=JOptionPane.showConfirmDialog(this, responseLabelPanel, "Response Label", JOptionPane.OK_CANCEL_OPTION);  //G***i18n; comment
+		final int result=JOptionPane.showConfirmDialog(this, responseLabelPanel, "Response Label", JOptionPane.OK_CANCEL_OPTION);  //TODO i18n; comment
 		return result==JOptionPane.OK_OPTION ? responseLabelPanel.getResponseLabel() : null; //return their response, or null if they cancelled
 */
-			//G***put all of this in ResponseLabel
-		if(materialPanel!=null) //if we know the material panel G***we always should
+			//TODO put all of this in ResponseLabel
+		if(materialPanel!=null) //if we know the material panel TODO we always should
 		{
-Log.trace("have material"); //G***del
+Log.trace("have material"); //TODO del
 			final File imageFile=materialPanel.getImageFile();  //get the file of the image
 			if(imageFile!=null) //if there is an image file
 			{
-Log.trace("found image"); //G***del
+Log.trace("found image"); //TODO del
 				final Toolkit toolkit=Toolkit.getDefaultToolkit();	//get the default toolkit
 				final Image image=toolkit.getImage(imageFile.toString()); //load the image from the file
-/*G***del when works
-//G***del when works				  ImageUtilities.loadImage(image);  //load the image so that we will know its size when we display it
-				final DrawRectangle drawRectangle=new DrawRectangle(Color.black);  //G***testing
-				final HotspotComponent hotspotComponent=new HotspotComponent(image, drawRectangle);  //G***fix
+/*TODO del when works
+//TODO del when works				  ImageUtilities.loadImage(image);  //load the image so that we will know its size when we display it
+				final DrawRectangle drawRectangle=new DrawRectangle(Color.black);  //TODO testing
+				final HotspotComponent hotspotComponent=new HotspotComponent(image, drawRectangle);  //TODO fix
 				final JScrollPane hotspotScrollPane=new JScrollPane(hotspotComponent);  //create a scroll pane to scroll the image
-				JOptionPane.showConfirmDialog(QTIRenderHotspotPanel.this, hotspotScrollPane, "Edit Hotspot", JOptionPane.OK_CANCEL_OPTION);  //G***testing
+				JOptionPane.showConfirmDialog(QTIRenderHotspotPanel.this, hotspotScrollPane, "Edit Hotspot", JOptionPane.OK_CANCEL_OPTION);  //TODO testing
 */
 
 				final QTIResponseLabelPanel responseLabelPanel=new QTIResponseLabelPanel();  //create a new panel to edit the response label
 				responseLabelPanel.setResponseLabel(responseLabel, image); //set the response label
-//G***del				responseLabelPanel.setPreferredSize(new Dimension(300, 200));  //G***fix preferred size QTI
+//TODO del				responseLabelPanel.setPreferredSize(new Dimension(300, 200));  //TODO fix preferred size QTI
 					//show the response label panel
-				final int result=BasicOptionPane.showConfirmDialog(this, responseLabelPanel, "Response Label", JOptionPane.OK_CANCEL_OPTION);  //G***i18n; comment
+				final int result=BasicOptionPane.showConfirmDialog(this, responseLabelPanel, "Response Label", JOptionPane.OK_CANCEL_OPTION);  //TODO i18n; comment
 				return result==JOptionPane.OK_OPTION ? responseLabelPanel.getResponseLabel() : null; //return their response, or null if they cancelled
 
 
-//G***del if doesn't work				final Frame frame=ComponentUtilities.getParentFrame(QTIMaterialPanel.this); //get the frame in which this panel is embedded, if possible
+//TODO del if doesn't work				final Frame frame=ComponentUtilities.getParentFrame(QTIMaterialPanel.this); //get the frame in which this panel is embedded, if possible
 
-//G***fix				JOptionPane.showConfirmDialog(QTIMaterialPanel.this, imagePanel, "Item", JOptionPane.OK_CANCEL_OPTION); //G***testing
+//TODO fix				JOptionPane.showConfirmDialog(QTIMaterialPanel.this, imagePanel, "Item", JOptionPane.OK_CANCEL_OPTION); //TODO testing
 /*G**del
 				final Dimension screenSize=Toolkit.getDefaultToolkit().getScreenSize(); //find the size of the screen
 				imagePanel.setPreferredSize(new Dimension(screenSize.width/2, screenSize.height/2));  //set the panel prefer to be 1/4 the screen size
-				JOptionPane.showMessageDialog(QTIMaterialPanel.this, imagePanel, imageFile.toString(), JOptionPane.PLAIN_MESSAGE); //G***testing
+				JOptionPane.showMessageDialog(QTIMaterialPanel.this, imagePanel, imageFile.toString(), JOptionPane.PLAIN_MESSAGE); //TODO testing
 */
 			}
 		}
 		return null;  //show that editing the response label was cancelled
 	}
 
-	/**The component for editing hotspots.*/  //G***put this inside ResponseLabelPanel
+	/**The component for editing hotspots.*/  //TODO put this inside ResponseLabelPanel
 	protected static class HotspotComponent extends ImageComponent
 	{
 
@@ -153,7 +165,7 @@ Log.trace("found image"); //G***del
 		public void paintComponent(final Graphics graphics)
 		{
 			super.paintComponent(graphics); //paint the parent normally
-			drawShapeStrategy.paint(graphics);  //G***testing
+			drawShapeStrategy.paint(graphics);  //TODO testing
 		}
 	}
 
