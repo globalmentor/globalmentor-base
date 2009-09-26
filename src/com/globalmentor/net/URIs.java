@@ -2085,6 +2085,7 @@ public class URIs
 	}
 
 	/**Encodes the URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
+	Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes. 
 	@param string The data to URI-encode.
 	@param validCharacters Characters that should not be encoded; all other characters will be encoded.
 	@parm escapeChar The escape character to use, which will always be escaped.
@@ -2092,7 +2093,7 @@ public class URIs
 	*/
 	static String uriEncode(final String string, final String validCharacters, final char escapeChar)
 	{
-		return escapeHex(string, validCharacters, null, Integer.MAX_VALUE, escapeChar, 2);	//escape the string using two escape hex digits; don't use an upper bound, as the valid characters take inherently care of this
+		return escapeHex(string, validCharacters, null, Integer.MAX_VALUE, escapeChar, 2, Case.LOWERCASE);	//escape the string using two escape hex digits; don't use an upper bound, as the valid characters take inherently care of this
 	}
 
 	/**Decodes the escaped characters in the character iterator according to the URI encoding rules in

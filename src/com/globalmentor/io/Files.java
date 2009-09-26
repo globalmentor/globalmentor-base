@@ -25,7 +25,7 @@ import com.globalmentor.java.*;
 import com.globalmentor.javascript.JavaScript;
 import com.globalmentor.net.*;
 import com.globalmentor.rdf.RDF;
-import com.globalmentor.text.Text;
+import com.globalmentor.text.*;
 import com.globalmentor.text.csv.CSV;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.oeb.OEB;
@@ -697,7 +697,7 @@ public class Files
 
 	protected final static char REPLACEMENT_CHAR='_';  //the character to use to replace any other character  TODO maybe move these up and/or rename
 
-	/**Escape all reserved filename characters to a two-digit hex
+	/**Escape all reserved filename characters to a two-digit <em>uppercase</em> hex
 		representation using '^' as an escape character so that the filename can
 		be used across operating systems.
 	<p>Note that this encodes path separators, and therefore this
@@ -706,15 +706,15 @@ public class Files
 	@return The string modified to be a filename.
 	@see RESERVED_CHARACTERS
 	@see #FILENAME_ESCAPE_CHAR
-	@see CharSequences#escapeHex
-	@see #isFilename
+	@see CharSequences#escapeHex(CharSequence, String, String, int, char, int, Case)
+	@see #isFilename(String, String, String)
 	*/
 	public static String encodeCrossPlatformFilename(final String filename)
 	{
 		return encodeFilename(filename, CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS, CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS);	//encode the filename using cross-platform reserved characters
 	}
 
-	/**Escape all reserved filename characters to a two-digit hex
+	/**Escape all reserved filename characters to a two-digit <em>uppercase</em> hex
 		representation using '^' as an escape character.
 	<p>Note that this encodes path separators, and therefore this
 		method should only be called on filenames, not paths.</p>
@@ -724,7 +724,7 @@ public class Files
 	@return The string modified to be a filename.
 	@see RESERVED_CHARACTERS
 	@see #FILENAME_ESCAPE_CHAR
-	@see CharSequences#escapeHex(CharSequence, String, String, char, int)
+	@see CharSequences#escapeHex(CharSequence, String, String, int, char, int, Case)
 	@see #isFilename(String, String, String)
 	*/
 	public static String encodeFilename(final String filename)
@@ -735,7 +735,7 @@ public class Files
 			return encodeFilename(filename, POSIX_FILENAME_RESERVED_CHARACTERS, null);	//encode the filename for POSIX
 	}
 
-	/**Escape all reserved filename characters to a two-digit hex
+	/**Escape all reserved filename characters to a two-digit <em>uppercase</em> hex
 		representation using '^' as an escape character.
 	<p>Note that this encodes path separators, and therefore this
 		method should only be called on filenames, not paths.</p>
@@ -747,7 +747,7 @@ public class Files
 	@return The string modified to be a filename.
 	@see #RESERVED_CHARACTERS
 	@see #FILENAME_ESCAPE_CHAR
-	@see CharSequences#escapeHex(CharSequence, String, String, char, int)
+	@see CharSequences#escapeHex(CharSequence, String, String, int, char, int, Case)
 	@see #isFilename(String, String, String)
 	*/
 	public static String encodeFilename(final String filename, final String reservedCharacters, final String reservedFinalCharacters)
@@ -761,7 +761,7 @@ public class Files
 		}
 		else	//if something about the filename isn't correct
 		{
-			final String encodedFilename=escapeHex(filename, null, reservedCharacters, Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2);
+			final String encodedFilename=escapeHex(filename, null, reservedCharacters, Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2, Case.UPPERCASE);
 			if(reservedFinalCharacters!=null && reservedFinalCharacters.length()>0)	//if we should check the final character (e.g. on Windows)
 			{
 				if(encodedFilename.length()>0)	//if we have a filename
@@ -770,7 +770,7 @@ public class Files
 					if(reservedFinalCharacters.indexOf(lastChar)>=0)	//if the last character is a reserved character
 					{
 						final String lastCharString=String.valueOf(lastChar);	//convert the last character to a string
-						final String replacementString=escapeHex(lastCharString, null, lastCharString, Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2);	//escape the last character						
+						final String replacementString=escapeHex(lastCharString, null, lastCharString, Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2, Case.UPPERCASE);	//escape the last character						
 						return encodedFilename.substring(0, encodedFilename.length()-1)+replacementString;	//replace the last character with its escaped form
 					}
 				}
@@ -791,13 +791,12 @@ public class Files
 	{
 		return unescapeHex(filename, FILENAME_ESCAPE_CHAR, 2);	//decode the filename
 	}
-
 	
 	/**Constructs a {@link URIs#FILE_SCHEME} scheme URI that represents this abstract pathname.
 	This functions similary to {@link File#toURI()}, except that this method
 	always returns a true URI in which the characters all are within ranges allowed by
 	RFC 3986, notably that non-ASCII chracters are all encoded.
-	Following the examples in RFC 3986, this is guaranteed to produce only lowercase hexadecimal escape codes. 
+	Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes. 
 	@param file The file which should be converted to a URI.
 	@return An absolute, hierarchical URI with non-ASCII chracters encoded, with a {@link URIs#FILE_SCHEME} scheme, a path representing this abstract pathname, and undefined authority, query, and fragment components.
 	@throws NullPointerException if the given file is <code>null</code>.
@@ -813,7 +812,8 @@ public class Files
 		{
 			if(uriString.charAt(i)>127)	//if we found a non-ASCII character
 			{
-				uri=URI.create(escapeHex(uriString, null, null, 127, URIs.ESCAPE_CHAR, 2));	//escape the string again only for those characters that are non-ASCII characters; don't use URI.create(uri.toASCIIString()), which is less efficient and also produces uppercase hex codes				break;	//skip looking at the rest of the string
+				uri=URI.create(escapeHex(uriString, null, null, 127, URIs.ESCAPE_CHAR, 2, Case.LOWERCASE));	//escape the string again only for those characters that are non-ASCII characters; don't use URI.create(uri.toASCIIString()), which is less efficient and also produces uppercase hex codes
+				break;	//skip looking at the rest of the string
 			}
 		}
 		return toCanonicalURI(uri);	//return the URI in canonical form; even if we converted ASCII characters, the File.toURI() method might have produced uppercase hex escape codes when escaping illegal characters

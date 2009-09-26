@@ -16,6 +16,8 @@
 
 package com.globalmentor.java;
 
+import com.globalmentor.text.Case;
+
 /**Utilities for manipulating integer objects.
 @author Garret Wilson
 */
@@ -217,8 +219,24 @@ public class Integers
 	*/
 	public static String toHexString(final int value, final int length)
 	{
-		  //convert the integer to hex, then make the string the correct length by padding the beginning with zeros
-		return Strings.makeStringLength(Integer.toHexString(value), length, '0', 0);
+		return toHexString(value, length, Case.LOWERCASE);	//default to lowercase hex characters
+	}
+
+	/**Converts an integer into a hex string with the specified number of digits.
+	@param value The value to convert.
+	@param length The number of digits the returned string should have.
+	@param hexCase Whether the hex characters should be lowercase or uppercase.
+	@return The hex version of the given value with the correct number of digits, using zeros to pad the left of the string to the correct length.
+	@see Integer#toHexString(int)
+	*/
+	public static String toHexString(final int value, final int length, final Case hexCase)
+	{
+		String hexString=Integer.toHexString(value);	//conver the integer to hex
+		if(hexCase==Case.UPPERCASE)	//if uppercase is requested
+		{
+			hexString=hexString.toUpperCase();
+		}
+		return Strings.makeStringLength(hexString, length, '0', 0);	//make the string the correct length by padding the beginning with zeros
 	}
 
 	/**Creates an array of primitive values from the given array of objects.
