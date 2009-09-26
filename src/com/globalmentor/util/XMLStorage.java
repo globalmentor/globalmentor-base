@@ -565,14 +565,16 @@ Log.trace("using element: ", element.getNodeName());  //TODO del
 	protected static Object retrieve(final InputStream inputStream, final Object sourceObject, final Class type) throws IOException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
 	{
 		final Document document;
+/*TODO fix; this doesn't work when absolute file paths are passed
 		if(sourceObject!=null)
 		{
 			document=XML.parse(inputStream, URI.create(sourceObject.toString()), true);	//create an XML processor parse the input stream
 		}
 		else
 		{
+*/
 			document=XML.parse(inputStream, true);	//create an XML processor parse the input stream
-		}
+//TODO fix		}
 		return retrieve(document, type);  //return the object from the document
 	}
 

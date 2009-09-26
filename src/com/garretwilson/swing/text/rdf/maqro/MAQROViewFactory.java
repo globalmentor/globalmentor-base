@@ -1,3 +1,19 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.text.rdf.maqro;
 
 import java.awt.Component;
@@ -9,31 +25,26 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
-
 import com.garretwilson.resources.icon.IconResources;
-
-import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
-
+import static com.garretwilson.swing.text.rdf.RDFStyles.*;
 import com.garretwilson.swing.BasicOptionPane;
 import com.garretwilson.swing.XMLTextPane;
 import com.garretwilson.swing.text.xml.*;
 import com.globalmentor.mentoract.maqro.MAQROActivityEngine;
 import com.globalmentor.rdf.*;
-import com.globalmentor.text.xml.XML;
 
 import static com.globalmentor.text.xml.xhtml.XHTML.*;
 import static com.globalmentor.urf.maqro.MAQRO.*;
 
 import com.globalmentor.urf.maqro.*;
 
-import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
+import static com.garretwilson.swing.text.xml.XMLStyles.*;
 import static com.globalmentor.java.Objects.*;
 
 /**Creates views for MAQRO elements.
 @author Garret Wilson
-TODO decide if we want to check for the choices list, and create a special XMLListView; this would probably be better, as it is more consistent
 */
-public class MAQROViewFactory extends XMLViewFactory
+public class MAQROViewFactory extends XMLViewFactory	//TODO decide if we want to check for the choices list, and create a special XMLListView; this would probably be better, as it is more consistent
 {
 
 	/**The map of views, weakly keyed to resources.*/
@@ -67,8 +78,8 @@ public class MAQROViewFactory extends XMLViewFactory
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attribute set
 		if(attributeSet!=null)  //if we have an attribute set
 		{
-			//G***we should probably make sure this element is in our namespace
-			final String elementLocalName=XMLStyleUtilities.getXMLElementLocalName(attributeSet); //get the local name of this element
+			//TODO we should probably make sure this element is in our namespace
+			final String elementLocalName=XMLStyles.getXMLElementLocalName(attributeSet); //get the local name of this element
 		  if(ACTIVITY_CLASS_NAME.equals(elementLocalName)) //maqro:Activity
 			{
 				final Activity activity=asInstance(getRDFResource(attributeSet), Activity.class);	//get the activity
@@ -101,14 +112,14 @@ public class MAQROViewFactory extends XMLViewFactory
 										public void itemStateChanged(final ItemEvent itemEvent)	//if the choice button was toggled
 										{
 											updateOutcome(questionView.getQ)
-//G***del Log.trace("storing value in response map for ID: ", id);  //G***del
-//G***del Log.trace("storing in response map: ", getResponseMap()); //G***del
+//TODO del Log.trace("storing value in response map for ID: ", id);  //TODO del
+//TODO del Log.trace("storing in response map: ", getResponseMap()); //TODO del
 												//update the response with a boolean indication of the selection state
 											getItemResponseMap(itemIdent).put(ident, new Boolean(responseLabelView.getToggleButton().isSelected()));
-//G***del Log.trace("reponse map now has size: ", getResponseMap().size());  //G***del
+//TODO del Log.trace("reponse map now has size: ", getResponseMap().size());  //TODO del
 
-//G***del Debug.notify("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //G***testing
-//G***del	System.out.println("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //G***testing
+//TODO del Debug.notify("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //TODO testing
+//TODO del	System.out.println("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //TODO testing
 
 										}
 
@@ -197,7 +208,7 @@ public class MAQROViewFactory extends XMLViewFactory
 				{
 						//ask the user for confimation to submit the activity; if the user doesn't really want to submit
 					if(BasicOptionPane.showConfirmDialog(component,
-							"Are you sure you want to submit the activity?", "Confirm submit", BasicOptionPane.OK_CANCEL_OPTION)!=BasicOptionPane.OK_OPTION)	//G***i18n
+							"Are you sure you want to submit the activity?", "Confirm submit", BasicOptionPane.OK_CANCEL_OPTION)!=BasicOptionPane.OK_OPTION)	//TODO i18n
 					{
 						return;	//return without submitting
 					}
@@ -207,7 +218,7 @@ public class MAQROViewFactory extends XMLViewFactory
 				final String scoreString=MAQROActivityEngine.getScoreString(outcome);	//try to get a score string
 				final StringBuffer resultStringBuffer=new StringBuffer(); //create a new string buffer in which to construct the results display
 				resultStringBuffer.append("<html>");
-	//G***fix		  resultStringBuffer.append("<h1>Assessment Results</h1>");
+	//TODO fix		  resultStringBuffer.append("<h1>Assessment Results</h1>");
 				if(scoreString!=null)	//if there is a score string
 				{
 					resultStringBuffer.append("<p><strong>Score:</strong> ").append(scoreString).append("</p>");	//append the score
@@ -246,9 +257,9 @@ public class MAQROViewFactory extends XMLViewFactory
 				final org.w3c.dom.Element element=new MAQROXHTMLifier().createElement(document, outcome);	//create an XHTML element from the outcome
 				final String outcomeXHTMLString="<html>"+XMLUtilities.toString(element)+"</html>";	//get a string version of the entire XHTML document, using HTML as Swing doesn't understand XHTML
 System.out.println(outcomeXHTMLString);
-			  BasicOptionPane.showMessageDialog(component, outcomeXHTMLString, "Assessment Results", BasicOptionPane.INFORMATION_MESSAGE);	//G***i18n; comment
+			  BasicOptionPane.showMessageDialog(component, outcomeXHTMLString, "Assessment Results", BasicOptionPane.INFORMATION_MESSAGE);	//TODO i18n; comment
 */
-			  BasicOptionPane.showMessageDialog(component, new JScrollPane(outcomeTextPane), "Assessment Results", BasicOptionPane.INFORMATION_MESSAGE);	//G***i18n; comment
+			  BasicOptionPane.showMessageDialog(component, new JScrollPane(outcomeTextPane), "Assessment Results", BasicOptionPane.INFORMATION_MESSAGE);	//TODO i18n; comment
 			}
 			finally
 			{
@@ -271,10 +282,10 @@ System.out.println(outcomeXHTMLString);
 		*/
 		public SubmitAction(final Activity activity)
 		{
-			super("Submit");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Submit the activity.");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Submit the activity.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));  //set the mnemonic key G***i18n
+			super("Submit");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Submit the activity.");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Submit the activity.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.SUBMIT_ICON_FILENAME)); //load the correct icon
 			this.activity=activity;  //store the activity
 		}

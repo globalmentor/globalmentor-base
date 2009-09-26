@@ -1,34 +1,42 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.text.xml.qti;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.util.*;
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
 import javax.swing.text.*;
-import com.garretwilson.resources.icon.IconResources;
 import com.garretwilson.swing.text.xml.*;
 import com.globalmentor.mentoract.qti.Assessment;
-
-//G***del class if not needed
 
 /**Displays a QTI assessment, along with the appropriate submit button.
 @author Garret Wilson
 */
-public class QTIAssessmentView extends XMLComponentBlockView
+public class QTIAssessmentView extends XMLComponentBlockView	//TODO del class if not needed
 {
 
 	/**The button used for submitting the assessment.*/
-//G***del if not needed	private final JButton submitButton;
+//TODO del if not needed	private final JButton submitButton;
 
 		/**@return The button used for submitting the assessment.*/
-//G***del if not needed		public JButton getSubmitButton() {return submitButton;}
+//TODO del if not needed		public JButton getSubmitButton() {return submitButton;}
 
 	/**The list of item views. within the various sections.*/
-//G***del	private final List itemViewList=new ArrayList();
+//TODO del	private final List itemViewList=new ArrayList();
 
 		/**@return The list of item views. within the various sections.*/
-//G***del		public List getItemViewList() {return itemViewList;}
+//TODO del		public List getItemViewList() {return itemViewList;}
 
 	/**Constructs an assessment view.
 	@param element The element this view is responsible for.
@@ -38,8 +46,8 @@ public class QTIAssessmentView extends XMLComponentBlockView
 	*/
 	public QTIAssessmentView(final Element element, final int axis, final Assessment assessment)
 	{
-		super(element, axis); //construct the parent G***fix or del: and allowing expansion in both direction
-/*G***fix
+		super(element, axis); //construct the parent TODO fix or del: and allowing expansion in both direction
+/*TODO fix
 		final String ident=(String)XMLStyleConstants.getDefinedAttribute(element.getAttributes(), ATTRIBUTE_IDENT); //get the ident, if available
 		if(responseLIDView!=null) //if we have an enclosing logical response view
 		{

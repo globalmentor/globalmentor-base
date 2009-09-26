@@ -1,25 +1,35 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.text.rdf.maqro;
 
-import javax.swing.*;
 import javax.swing.text.*;
 
 import com.garretwilson.swing.text.ViewComponentManager;
 
-import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
+import static com.garretwilson.swing.text.rdf.RDFStyles.*;
 
 import com.garretwilson.swing.text.xml.*;
 import com.globalmentor.rdf.RDFResource;
 import com.globalmentor.urf.maqro.Question;
 
-import static com.garretwilson.swing.text.xml.XMLStyleUtilities.*;
-import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.urf.maqro.MAQRO.*;
-
 /**Displays a MAQRO choice as dialogue.
-TODO fix	The toggle button's action command will be set to the ident of the response label.
 @author Garret Wilson
 */
-public class MAQRODialogueChoiceView extends XMLComponentParagraphView
+public class MAQRODialogueChoiceView extends XMLComponentParagraphView	//TODO fix	The toggle button's action command will be set to the ident of the response label.
 {
 
 	/**The toggle button (radio button or checkbox) this choice view presents.*/
@@ -62,7 +72,7 @@ public class MAQRODialogueChoiceView extends XMLComponentParagraphView
 */
 /*TODO fix
 		final String ident=(String)StyleUtilities.getDefinedAttribute(element.getAttributes(), ATTRIBUTE_IDENT); //get the ident, if available
-		toggleButton.setActionCommand(ident); //set the ident as the action command G***should we check to see if this is null? probably not---just use it as is
+		toggleButton.setActionCommand(ident); //set the ident as the action command TODO should we check to see if this is null? probably not---just use it as is
 */
 		questionView.addChoiceView(this);	//tell the question view that this view is one of its choices
 /*TODO fix

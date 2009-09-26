@@ -1,6 +1,22 @@
-package com.garretwilson.swing.text.xml;
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
+package com.garretwilson.swing.text.rdf.maqro;
+
+import static com.garretwilson.swing.text.rdf.RDFStyles.*;
 import static com.globalmentor.rdf.RDFResources.*;
 import static com.globalmentor.urf.maqro.MAQRO.*;
 
@@ -10,7 +26,7 @@ import java.util.List;
 
 import javax.swing.text.*;
 
-import com.garretwilson.swing.text.xml.XMLEditorKit.ContentData;
+import com.garretwilson.swing.text.xml.*;
 import com.globalmentor.net.ContentType;
 import com.globalmentor.rdf.*;
 import com.globalmentor.urf.maqro.*;
@@ -91,7 +107,7 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 	@param swingXMLDocument The Swing document into which the content will be set.
 	@return The attribute set for the MAQRO activity.
 	*/
-	protected MutableAttributeSet appendMAQROActivityElementSpecList(final List<DefaultStyledDocument.ElementSpec> elementSpecList, final ContentData<? extends Activity> contentData, final XMLDocument swingXMLDocument)
+	protected MutableAttributeSet appendMAQROActivityElementSpecList(final List<DefaultStyledDocument.ElementSpec> elementSpecList, final XMLEditorKit.ContentData<? extends Activity> contentData, final XMLDocument swingXMLDocument)
 	{
 		final Activity activity=contentData.getObject();	//get a reference to this activity
 		final URI baseURI=contentData.getBaseURI(); //get a reference to the base URI
@@ -131,7 +147,7 @@ public class MAQROXMLElementKit implements XMLEditorKit.XMLElementKit
 		{
 			throw new IllegalArgumentException("Activity without interactions not supported");
 		}
-//G***fix if(!"null".equals(xmlElement.getLocalName()))	//G***testing
+//TODO fix if(!"null".equals(xmlElement.getLocalName()))	//TODO testing
 		elementSpecList.add(new DefaultStyledDocument.ElementSpec(attributeSet, DefaultStyledDocument.ElementSpec.EndTagType));	//finish the element we started at the beginning of this function
 */
 		return attributeSet;  //return the attribute set used for the element

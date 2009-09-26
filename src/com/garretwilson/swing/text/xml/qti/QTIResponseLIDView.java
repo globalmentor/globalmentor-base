@@ -1,8 +1,21 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.text.xml.qti;
 
-//G***del class
-
-import java.util.*;
 import javax.swing.ButtonGroup;
 import javax.swing.text.*;
 import com.garretwilson.swing.text.xml.*;
@@ -10,7 +23,7 @@ import com.garretwilson.swing.text.xml.*;
 /**Represents a QTI logical response group.
 @author Garret Wilson
 */
-public class QTIResponseLIDView extends XMLBlockView
+public class QTIResponseLIDView extends XMLBlockView	//TODO delete class
 {
 
 	/**The button group for the logical ID responses.*/
@@ -18,12 +31,6 @@ public class QTIResponseLIDView extends XMLBlockView
 
 		/**The button group for the logical ID responses.*/
 		public ButtonGroup getButtonGroup() {return buttonGroup;}
-
-	/**The map of response label views, keyed to response label idents.*/
-//G***del	private final Map responseLabelViewMap=new HashMap();
-
-		/**@return The map of response label views, keyed to response label idents.*/
-//G***del		public Map getResponseLabelViewMap() {return responseLabelViewMap;}
 
 	/**Constructs a logical ID response view.
 	@param element The element this view is responsible for.

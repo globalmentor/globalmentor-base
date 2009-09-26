@@ -1,6 +1,22 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.text.rdf.maqro;
 
-import static com.garretwilson.swing.text.rdf.RDFStyleUtilities.*;
+import static com.garretwilson.swing.text.rdf.RDFStyles.*;
 import static com.globalmentor.java.Objects.*;
 
 import java.awt.Container;
@@ -9,17 +25,13 @@ import java.awt.event.KeyEvent;
 import java.util.*;
 
 import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
-import javax.swing.JButton;
 import javax.swing.text.*;
 
 import com.garretwilson.resources.icon.IconResources;
-import com.garretwilson.swing.text.ViewComponentManager;
 import com.garretwilson.swing.text.xml.*;
 import com.globalmentor.apps.mentoract.swing.maqro.MAQROActivityPanel;
 import com.globalmentor.io.URIAccessible;
-import com.globalmentor.rdf.RDFObject;
 import com.globalmentor.rdf.RDFResource;
 import com.globalmentor.urf.maqro.*;
 
@@ -123,10 +135,10 @@ public class MAQROQuestionView extends XMLComponentBlockView implements Outcomab
 		/**Default constructor.*/
 		public HintAction()
 		{
-			super("Hint");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Show hint");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Show a hint.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_H));  //set the mnemonic key G***i18n
+			super("Hint");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Show hint");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Show a hint.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_H));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.QUESTION_ICON_FILENAME)); //load the correct icon
 		}
 

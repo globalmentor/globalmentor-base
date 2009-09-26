@@ -1,18 +1,28 @@
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.garretwilson.swing.text.xml.qti;
 
-import java.awt.BorderLayout; //G***maybe move elsewhere
-import java.awt.Color; //G***del when component color update is moved
 import java.awt.event.*;
-import java.text.MessageFormat;
 import java.util.*;
 import javax.swing.*;
-import javax.swing.event.*;
 import javax.swing.text.*;
 
-//G***del import com.garretwilson.net.URIConstants;
 import com.garretwilson.swing.text.*;
 import com.garretwilson.swing.text.xml.*;
-import com.garretwilson.swing.text.xml.css.*; //G***del when component color update is moved
 import com.garretwilson.resources.icon.IconResources;
 
 import com.globalmentor.log.Log;
@@ -25,39 +35,11 @@ import static com.globalmentor.mentoract.qti.QTI.*;
 public class QTIViewFactory extends XMLViewFactory
 {
 
-	/**The map of QTI assessments.*/
-//G***del if not needed	private final Map assessmentMap=new HashMap();
-
-		/**Retrieves an assessment based on its ID.
-		@param assessmentIdent The ID of the assessment to retrieve.
-		@return The assessment with the given identification, or <code>null</code>
-			if no assessment with that identification exists.
-		*/
-/*G***del if not needed
-		public Assessment getAssessment(final String assessmentIdent)
-		{
-			return (Assessment)assessmentMap.get(assessmentIdent);
-		}
-*/
-
-		/**Stores an assessment, keyed by its ident.
-		@param assessment The assessment to store.
-		@see Assessment#getIdent
-		*/
-/*G***del if not needed
-		public void putAssessment(final Assessment assessment)
-		{
-		  assessmentMap.put(assessment.getIdent(), assessment);
-		}
-*/
-
 	/**Clears all context information, including responses and references to
 		created views.
 	*/
 	public void clearContext()
 	{
-//G***del Log.trace("Clearing context");  //G***del
-//G***del		getResponseMap().clear(); //clear the response map
 		itemResponseMapMap.clear(); //clear the map of response maps
 		elementQTIMap.clear();  //clear the map of QTI objects
 		qtiViewMap.clear(); //clear the map of views
@@ -93,18 +75,6 @@ public class QTIViewFactory extends XMLViewFactory
 		{
 			itemResponseMapMap.put(itemIdent, responseMap); //store the response map in the map map
 		}
-
-	/**A map of response objects keyed to response idents.*/
-//G***del when works	private final Map responseMap=new HashMap();
-
-		/**Retrieves a map of response objects keyed to response idents.
-		  The keys are the in the form <em>itemIdent</em>#<em>responseIdent</em>.
-		  The objects stored vary depending on the response type. A multiple choice
-			response label, for instance, will hold a <code>Boolean</code> value
-			indicating the state of the choice.
-		@return A map of response objects keyed to response idents.
-		*/
-//G***del when works		public Map getResponseMap() {return responseMap;}
 
 	/**The map of QTI objects, keyed by the elements they represent.*/
 	private final Map elementQTIMap=new HashMap();
@@ -150,9 +120,6 @@ public class QTIViewFactory extends XMLViewFactory
 			return (View)qtiViewMap.get(object); //lookup the view using the QTI object as a key
 		}
 
-	/**The map of views, keyed by elements.*/
-//G***del	private final Map qtiElementViewMap=new HashMap();
-
 		/**Stores a view keyed to an element
 		@param element The element this view represents.
 		@param view The view to store, keyed to the appropriate element.
@@ -172,84 +139,13 @@ public class QTIViewFactory extends XMLViewFactory
 			return (View)qtiViewMap.get(element); //lookup the view using the element as a key
 		}
 
-	/**The map of views, keyed to idents.*/
-//G***del	private final Map qtiViewMap=new HashMap();
-
-		/**Stores a view in the map, keyed to the ident.
-		@param ident The QTI object identification string.
-		@param view The view that represents the QTI object.
-		*/
-/*G***del if not needed
-		public void putQTIView(final String ident, final View view)
-		{
-		  qtiViewMap.put(ident, view); //store the view in the map, keyed to the ident
-		}
-*/
-
-		/**Retrieves a view representing a QTI object from the map.
-		@param ident The QTI object identification string.
-		@return The view that represents the QTI with the given ident, or
-			<code>null</code> if there is no view for the given ident.
-		*/
-/*G***del if not needed
-		public View getQTIView(final String ident)
-		{
-			return (View)qtiViewMap.get(ident); //lookup the view using the QTI string as a key
-		}
-*/
-
-		/**Stores a view keyed to a QTI object after first looking up the object
-		  from the element QTI object map. The view will therefore be indirectly
-			keyed to the element.
-			There must have first been a QTI object stored keyed to the given element.
-		@param element The element this view represents.
-		@param view The view to store, keyed to the appropriate QTI object.
-		@see #getQTIObject
-		*/
-/*G***del when works
-		public void putQTIView(final Element element, final View view)
-		{
-			final Object qtiObject=getQTIObject(element); //get the QTI object already stored, keyed to the element
-		  Debug.assert(qtiObject!=null, "QTI object not stored for element "+XMLStyleConstants.getXMLElementLocalName(element.getAttributes()));
-		  putQTIView(qtiObject, view);  //store the view keyed to the QTI object
-		}
-*/
-
-		/**Retrieves a view keyed to a QTI object after first looking up the object
-		  from the element QTI object map. The view will therefore be indirectly
-			keyed to the element.
-			There must have first been a QTI object stored keyed to the given element.
-		@param element The element this view represents.
-		@return view The view keyed to the appropriate QTI object, keyed to the
-			element.
-		@see #getQTIObject
-		*/
-/*G***del when works
-		public View getQTIView(final Element element)
-		{
-			final Object qtiObject=getQTIObject(element); //get the QTI object already stored, keyed to the element
-//G***del			Debug.assert(qtiObject!=null, "QTI object not stored for element.");
-			return qtiObject!=null ? (View)getQTIView(qtiObject) : null;  //retrieve the view keyed to the QTI object, if a QTI object as indeed found
-		}
-*/
-
-	/**The last assessment view created.*/
-//G***del	protected QTIAssessmentView assessmentView=null;
-
-	/**The last logical ID response view created.*/
-//G***del	protected QTIResponseLIDView responseLIDView=null;
-
-	/**The last item view created.*/
-//G***del	protected QTIItemView itemView=null;
-
-//G***del	protected ButtonGroup buttonGroup=new ButtonGroup();  //G***fix; testing
-
 	/**Creates a QTI view factory with a fallback view factory.*/
 	public QTIViewFactory()
 	{
 		super(); //create the parent class
 	}
-/*G***fix
+
+/*TODO fix
 	public QTIViewFactory(final ViewFactory fallbackViewFactory)
 	{
 		super(fallbackViewFactory); //create the parent class
@@ -278,16 +174,16 @@ public class QTIViewFactory extends XMLViewFactory
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attribute set
 		if(attributeSet!=null)  //if we have an attribute set
 		{
-			//G***we should probably make sure this element is in our namespace
-			final String elementLocalName=XMLStyleUtilities.getXMLElementLocalName(attributeSet); //get the local name of this element
-Log.trace("QTI local name: ", elementLocalName);  //G***del when works
+			//TODO we should probably make sure this element is in our namespace
+			final String elementLocalName=XMLStyles.getXMLElementLocalName(attributeSet); //get the local name of this element
+Log.trace("QTI local name: ", elementLocalName);  //TODO del when works
 		  if(ELEMENT_ASSESSMENT.equals(elementLocalName)) //if this is an assessment
 			{
 				final Assessment assessment=createAssessment(element);  //create an assessment from this element hierarcy
 				final SubmitAction submitAction=new SubmitAction(assessment); //create a new submission action for this assessment
-//G***del if not needed				putAssessment(assessment);  //put the assessment in our map
+//TODO del if not needed				putAssessment(assessment);  //put the assessment in our map
 				final XMLComponentBlockView assessmentView=new XMLComponentBlockView(element, QTIAssessmentView.Y_AXIS);  //create a new view for the assessment
-//G***del if not needed				final QTIAssessmentView assessmentView=new QTIAssessmentView(element, QTIAssessmentView.Y_AXIS, submitAction);  //create a new view for the assessment
+//TODO del if not needed				final QTIAssessmentView assessmentView=new QTIAssessmentView(element, QTIAssessmentView.Y_AXIS, submitAction);  //create a new view for the assessment
 				final JButton submitButton=new JButton(submitAction); //create a new button for the submission
 				//place the button in the far inset of the tile axis and in the middle of the perpendicular axis
 				final ViewComponentManager.AxisLocation.Region regionX=assessmentView.getAxis()==View.X_AXIS ? ViewComponentManager.AxisLocation.Region.AFTER : ViewComponentManager.AxisLocation.Region.MIDDLE; 
@@ -300,12 +196,12 @@ Log.trace("QTI local name: ", elementLocalName);  //G***del when works
 			{
 				if(getQTIObject(element)==null) //if no QTI item has been created yet for the given item element
 				{
-Log.trace("Creating item object without an assessment."); //G***del
-					createItem(element);  //create an item from the element, which will automatically add it to the map of created items G***do we wannt this routine to automatically add the item?
+Log.trace("Creating item object without an assessment."); //TODO del
+					createItem(element);  //create an item from the element, which will automatically add it to the map of created items TODO do we wannt this routine to automatically add the item?
 				}
 Log.trace("Creating new item view");
 				final QTIItemView itemView=new QTIItemView(element, QTIItemView.Y_AXIS);  //construct an item view
-/*G***del when works
+/*TODO del when works
 				if(assessmentView!=null) //if we have an assessment view
 					assessmentView.getItemViewList().add(itemView); //add this item view to the assessment view's list of item views
 */
@@ -314,11 +210,11 @@ Log.trace("Creating new item view");
 			}
 		  else if(ELEMENT_MATIMAGE.equals(elementLocalName)) //if this is a <matimage>
 			{
-/*G***fix or del
+/*TODO fix or del
 				if(getQTIObject(element)==null) //if no QTI item has been created yet for the given item element
 				{
-Log.trace("Creating item object without an assessment."); //G***del
-					createItem(element);  //create an item from the element, which will automatically add it to the map of created items G***do we wannt this routine to automatically add the item?
+Log.trace("Creating item object without an assessment."); //TODO del
+					createItem(element);  //create an item from the element, which will automatically add it to the map of created items TODO do we wannt this routine to automatically add the item?
 				}
 Log.trace("Creating new item view");
 */
@@ -326,27 +222,13 @@ Log.trace("Creating new item view");
 				putQTIView(element, materialImageView);  //store the view keyed indirectly to the element by the QTI object
 				return materialImageView;  //return the material image view we created
 			}
-/*G***del when works
-		  else if(ELEMENT_RESPONSE_LID.equals(elementLocalName)) //if this is a <response_lid>
-			{
-				if(getQTIObject(element)==null) //if no QTI item has been created yet for the given item element
-				{
-Log.trace("Creating response LID object by itself."); //G***del
-					createResponseLID(element);  //create a response LID from the element, which will automatically add it to the map of created items G***do we want this routine to automatically add the item?
-				}
-Log.trace("building response LID view");
-				final QTIResponseLIDView responseLIDView=new QTIResponseLIDView(element, QTIResponseLIDView.Y_AXIS);  //create a view for the logical ID responses
-				putQTIView(element, responseLIDView);  //store the view keyed indirectly to the element by the QTI object
-				return responseLIDView; //return the logical ID response view we created
-			}
-*/
 		  else if(ELEMENT_RENDER_CHOICE.equals(elementLocalName)) //if this is a <render_choice>
 			{
-/*G***fix
+/*TODO fix
 				if(getQTIObject(element)==null) //if no QTI item has been created yet for the given item element
 				{
-Log.trace("Creating response LID object by itself."); //G***del
-					createResponseLID(element);  //create a response LID from the element, which will automatically add it to the map of created items G***do we want this routine to automatically add the item?
+Log.trace("Creating response LID object by itself."); //TODO del
+					createResponseLID(element);  //create a response LID from the element, which will automatically add it to the map of created items TODO do we want this routine to automatically add the item?
 				}
 */
 Log.trace("building render choice view");
@@ -356,29 +238,29 @@ Log.trace("building render choice view");
 			}
 		  else if(ELEMENT_RENDER_HOTSPOT.equals(elementLocalName)) //if this is a <render_hotspot>
 			{
-/*G***fix
+/*TODO fix
 				if(getQTIObject(element)==null) //if no QTI item has been created yet for the given item element
 				{
-Log.trace("Creating response LID object by itself."); //G***del
-					createResponseLID(element);  //create a response LID from the element, which will automatically add it to the map of created items G***do we want this routine to automatically add the item?
+Log.trace("Creating response LID object by itself."); //TODO del
+					createResponseLID(element);  //create a response LID from the element, which will automatically add it to the map of created items TODO do we want this routine to automatically add the item?
 				}
 */
 Log.trace("building render hotspot view");
 				QTIMaterialImageView materialImageView=null;  //try to find the image with which this hotspot is paired
-				final Element presentationElement=XMLStyleUtilities.getAncestorElement(element, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_PRESENTATION);  //get the presentation element in which this element resides
+				final Element presentationElement=XMLStyles.getAncestorElement(element, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_PRESENTATION);  //get the presentation element in which this element resides
 				if(presentationElement!=null) //if there is an enclosing presentation element
 				{
-					final Element materialElement=XMLStyleUtilities.getChildElement(presentationElement, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_MATERIAL); //get the child material element, if there is one
+					final Element materialElement=XMLStyles.getChildElement(presentationElement, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_MATERIAL); //get the child material element, if there is one
 					if(materialElement!=null) //if there is a material element in the presentation
 					{
-						final Element materialImageElement=XMLStyleUtilities.getChildElement(materialElement, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_MATIMAGE); //get the child material image element, if there is one
+						final Element materialImageElement=XMLStyles.getChildElement(materialElement, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_MATIMAGE); //get the child material image element, if there is one
 						if(materialImageElement!=null) //if there is a material element in the presentation
 						{
 							materialImageView=(QTIMaterialImageView)getQTIView(materialImageElement);  //get the view created for the element
 						}
 					}
 				}
-				final QTIRenderHotspotView renderHotspotView=new QTIRenderHotspotView(element, materialImageView);  //create a view for the hotspot rendering, passing the view created for the image with which the hotspots are associated G***this might get changed when the hotspots can go with different images
+				final QTIRenderHotspotView renderHotspotView=new QTIRenderHotspotView(element, materialImageView);  //create a view for the hotspot rendering, passing the view created for the image with which the hotspots are associated TODO this might get changed when the hotspots can go with different images
 				putQTIView(element, renderHotspotView);  //store the view keyed indirectly to the element by the QTI object
 				return renderHotspotView; //return the hotspot rendering view we created
 			}
@@ -390,36 +272,36 @@ Log.trace("building response label view");
 				final AttributeSet parentAttributeSet=parentElement.getAttributes();  //get the parent element's attribute set
 				if(attributeSet!=null)  //if we have an attribute set
 				{
-					//G***we should probably make sure this element is in our namespace
-					final String parentElementLocalName=XMLStyleUtilities.getXMLElementLocalName(parentAttributeSet); //get the local name of the parent element
+					//TODO we should probably make sure this element is in our namespace
+					final String parentElementLocalName=XMLStyles.getXMLElementLocalName(parentAttributeSet); //get the local name of the parent element
 				  if(ELEMENT_RENDER_CHOICE.equals(parentElementLocalName)) //if the parent is a <render_choice>
 					{
 						final QTIRenderChoiceView renderChoiceView=(QTIRenderChoiceView)getQTIView(parentElement);  //get the choice rendering view already created, if one is available
-/*G***del when works
+/*TODO del when works
 				final Element responseLIDElement=getAncestorElement(element, ELEMENT_RESPONSE_LID);  //get the ancestor element corresponding to the <response_lid> this label belongs to
 				final QTIResponseLIDView responseLIDView=(QTIResponseLIDView)getQTIView(responseLIDElement);  //get the view created for the logical ID response
 				if(responseLIDView!=null) //if we found a logical ID response view
 				{
 */
 						final QTIChoiceResponseLabelView responseLabelView=new QTIChoiceResponseLabelView(element, renderChoiceView);  //construct a response label, passing the enclosing choice rendering view
-						final String ident=XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT);  //get the ident
+						final String ident=XMLStyles.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT);  //get the ident
 						if(ident!=null && ident.length()>0) //if there is an ident
 						{
-Log.trace("found ident to display QTI response: ", ident);  //G***del
-/*G***del when works
+Log.trace("found ident to display QTI response: ", ident);  //TODO del
+/*TODO del when works
 							putQTIView(ident, responseLabelView); //store the response label keyed to its ident
 							final String id=createID(element);  //create an ID from this element
 							if(id!=null)  //if we have an ID
 							{
 */
-							final Element itemElement=XMLStyleUtilities.getAncestorElement(element, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_ITEM);  //get the item element in which this element resides
+							final Element itemElement=XMLStyles.getAncestorElement(element, QTI_1_1_NAMESPACE_URI.toString(), ELEMENT_ITEM);  //get the item element in which this element resides
 							if(itemElement!=null) //if there is an enclosing item element
 							{
 									//get the item's ident
-								final String itemIdent=XMLStyleUtilities.getXMLAttributeValue(itemElement.getAttributes(), null, ATTRIBUTE_IDENT);
+								final String itemIdent=XMLStyles.getXMLAttributeValue(itemElement.getAttributes(), null, ATTRIBUTE_IDENT);
 								if(itemIdent!=null && itemIdent.length()>0) //if there is an item ident
 								{
-	Log.trace("found item ident to display QTI response: ", itemIdent);  //G***del
+	Log.trace("found item ident to display QTI response: ", itemIdent);  //TODO del
 
 									final Object booleanObject=getItemResponseMap(itemIdent).get(ident); //see if there is already a value for this choice
 									if(booleanObject instanceof Boolean)  //if this object already has a value
@@ -427,20 +309,20 @@ Log.trace("found ident to display QTI response: ", ident);  //G***del
 											//set the toggle button to reflect the stored value
 										responseLabelView.getToggleButton().setSelected(((Boolean)booleanObject).booleanValue());
 									}
-	//G***del Log.trace("created ID: ", id);  //G***del
+	//TODO del Log.trace("created ID: ", id);  //TODO del
 										//listen for the response being checked or unchecked
 									responseLabelView.getToggleButton().addItemListener(new ItemListener()
 											{
 												public void itemStateChanged(final ItemEvent itemEvent)
 												{
-	//G***del Log.trace("storing value in response map for ID: ", id);  //G***del
-	//G***del Log.trace("storing in response map: ", getResponseMap()); //G***del
+	//TODO del Log.trace("storing value in response map for ID: ", id);  //TODO del
+	//TODO del Log.trace("storing in response map: ", getResponseMap()); //TODO del
 														//update the response with a boolean indication of the selection state
 													getItemResponseMap(itemIdent).put(ident, new Boolean(responseLabelView.getToggleButton().isSelected()));
-	//G***del Log.trace("reponse map now has size: ", getResponseMap().size());  //G***del
+	//TODO del Log.trace("reponse map now has size: ", getResponseMap().size());  //TODO del
 
-		//G***del Debug.notify("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //G***testing
-	//G***del	System.out.println("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //G***testing
+		//TODO del Debug.notify("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //TODO testing
+	//TODO del	System.out.println("New state of "+ident+": "+responseLabelView.getToggleButton().isSelected());  //TODO testing
 
 												}
 
@@ -453,17 +335,10 @@ Log.trace("found ident to display QTI response: ", ident);  //G***del
 						return responseLabelView; //return the response label view we created
 					}
 				}
-/*G***del when works
-			  final QTIResponseLID responseLID=(QTIResponseLID)getQTIObject(responseLIDElement); //get the QTI logical ID response object already stored
-				if(responseLID!=null) //if we found a logical ID response
-				{
-					return new QTIResponseLabelView(element, responseLID);  //construct a response label, passing the enclosing logical ID response view
-				}
-*/
 			}
 		}
 		return super.create(element, indicateMultipleViews);	//if we couldn't figure out which kind of view to create, let the parent class decide what to do
-//G***del		return super.create(element); //if we couldn't create the element, allow the super class to create the element
+//TODO del		return super.create(element); //if we couldn't create the element, allow the super class to create the element
 	}
 
 	/**Creates and returns an assessment object to represent the given assessment
@@ -477,8 +352,8 @@ Log.trace();
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  assessment.setIdent(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
-		  assessment.setTitle(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_TITLE));  //set the title
+		  assessment.setIdent(XMLStyles.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
+		  assessment.setTitle(XMLStyles.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_TITLE));  //set the title
 		}
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
 		{
@@ -486,12 +361,12 @@ Log.trace();
 			final AttributeSet childAttributeSet=childElement.getAttributes();  //get the child's attributes
 			if(childAttributeSet!=null) //if this child has attributes
 			{
-				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				//TODO we should probably make sure this element is in our namespace
+				final String childElementLocalName=XMLStyles.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_SECTION.equals(childElementLocalName)) //if this is a section
 				{
 					final Section section=createSection(childElement);  //create a section
-					assessment.getSectionList().add(section); //add this section to our assessment G***make this better with a hash map or something
+					assessment.getSectionList().add(section); //add this section to our assessment TODO make this better with a hash map or something
 				}
 			}
 		}
@@ -509,8 +384,8 @@ Log.trace();
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  section.setIdent(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
-		  section.setTitle(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_TITLE));  //set the title
+		  section.setIdent(XMLStyles.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
+		  section.setTitle(XMLStyles.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_TITLE));  //set the title
 		}
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
 		{
@@ -518,12 +393,12 @@ Log.trace();
 			final AttributeSet childAttributeSet=childElement.getAttributes();  //get the child's attributes
 			if(childAttributeSet!=null) //if this child has attributes
 			{
-				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				//TODO we should probably make sure this element is in our namespace
+				final String childElementLocalName=XMLStyles.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_ITEM.equals(childElementLocalName)) //if this is an item
 				{
 					final Item item=createItem(childElement);  //create an item
-					section.getItemList().add(item); //add this item to our section G***make this better with a hash map or something
+					section.getItemList().add(item); //add this item to our section TODO make this better with a hash map or something
 				}
 			}
 		}
@@ -541,8 +416,8 @@ Log.trace();
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  item.setIdent(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
-		  item.setTitle(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_TITLE));  //set the title
+		  item.setIdent(XMLStyles.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
+		  item.setTitle(XMLStyles.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_TITLE));  //set the title
 		}
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
 		{
@@ -550,8 +425,8 @@ Log.trace();
 			final AttributeSet childAttributeSet=childElement.getAttributes();  //get the child's attributes
 			if(childAttributeSet!=null) //if this child has attributes
 			{
-				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				//TODO we should probably make sure this element is in our namespace
+				final String childElementLocalName=XMLStyles.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_PRESENTATION.equals(childElementLocalName)) //if this is presentation
 				{
 					final Presentation presentation=createPresentation(childElement);  //create presentation
@@ -576,7 +451,7 @@ Log.trace();
 Log.trace();
 		final Presentation presentation=new Presentation(); //create new presentation
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
-/*G***fix for label
+/*TODO fix for label
 		if(attributeSet!=null)  //if the element has attributes
 		{
 		  item.setIdent((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_IDENT));  //set the ident
@@ -589,8 +464,8 @@ Log.trace();
 			final AttributeSet childAttributeSet=childElement.getAttributes();  //get the child's attributes
 			if(childAttributeSet!=null) //if this child has attributes
 			{
-				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				//TODO we should probably make sure this element is in our namespace
+				final String childElementLocalName=XMLStyles.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_RESPONSE_LID.equals(childElementLocalName)) //if this is a logical ID response
 				{
 					final ResponseLID responseLID=createResponseLID(childElement);  //create a logical ID response
@@ -612,8 +487,8 @@ Log.trace();
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  responseLID.setIdent(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
-//G***fix for cardinality and timing		  item.setTitle((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_TITLE));  //set the title
+		  responseLID.setIdent(XMLStyles.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
+//TODO fix for cardinality and timing		  item.setTitle((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_TITLE));  //set the title
 		}
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
 		{
@@ -621,8 +496,8 @@ Log.trace();
 			final AttributeSet childAttributeSet=childElement.getAttributes();  //get the child's attributes
 			if(childAttributeSet!=null) //if this child has attributes
 			{
-				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				//TODO we should probably make sure this element is in our namespace
+				final String childElementLocalName=XMLStyles.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_RENDER_CHOICE.equals(childElementLocalName)) //if this is render choice
 				{
 					final RenderChoice renderChoice=createRenderChoice(childElement);  //create a render choice
@@ -641,12 +516,12 @@ Log.trace();
 	{
 Log.trace();
 		final RenderChoice renderChoice=new RenderChoice(); //create a new render choice
-/*G***del if not needed
+/*TODO del if not needed
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
 		  responseLID.setIdent((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_IDENT));  //set the ident
-//G***fix for cardinality and timing		  item.setTitle((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_TITLE));  //set the title
+//TODO fix for cardinality and timing		  item.setTitle((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_TITLE));  //set the title
 		}
 */
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
@@ -655,8 +530,8 @@ Log.trace();
 			final AttributeSet childAttributeSet=childElement.getAttributes();  //get the child's attributes
 			if(childAttributeSet!=null) //if this child has attributes
 			{
-				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				//TODO we should probably make sure this element is in our namespace
+				final String childElementLocalName=XMLStyles.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_RESPONSE_LABEL.equals(childElementLocalName)) //if this is a response label
 				{
 					final ResponseLabel responseLabel=createResponseLabel(childElement);  //create a response label
@@ -678,17 +553,17 @@ Log.trace();
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  responseLabel.setIdent(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
-//G***fix for rshuffle, etc.		  item.setTitle((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_TITLE));  //set the title
+		  responseLabel.setIdent(XMLStyles.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_IDENT));  //set the ident
+//TODO fix for rshuffle, etc.		  item.setTitle((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_TITLE));  //set the title
 		}
-/*G***fix for ResponseLabel sub-elements
+/*TODO fix for ResponseLabel sub-elements
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
 		{
 			final Element childElement=element.getElement(i); //get a reference to this element
 			final AttributeSet childAttributeSet=childElement.getAttributes();  //get the child's attributes
 			if(childAttributeSet!=null) //if this child has attributes
 			{
-				//G***we should probably make sure this element is in our namespace
+				//TODO we should probably make sure this element is in our namespace
 				final String childElementLocalName=XMLStyleConstants.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_RESPONSE_LABEL.equals(childElementLocalName)) //if this is a response label
 				{
@@ -707,7 +582,7 @@ Log.trace();
 	*/
 	protected ResponseProcessing createResponseProcessing(final Element element)
 	{
-Log.trace("Found resprocessing");  //G***del
+Log.trace("Found resprocessing");  //TODO del
 		final ResponseProcessing responseProcessing=new ResponseProcessing(); //create a new response processing object
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
@@ -716,8 +591,8 @@ Log.trace("Found resprocessing");  //G***del
 			final AttributeSet childAttributeSet=childElement.getAttributes();  //get the child's attributes
 			if(childAttributeSet!=null) //if this child has attributes
 			{
-				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				//TODO we should probably make sure this element is in our namespace
+				final String childElementLocalName=XMLStyles.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_OUTCOMES.equals(childElementLocalName)) //if this is outcomes
 				{
 					final Outcomes outcomes=createOutcomes(childElement);  //create outcomes
@@ -739,7 +614,7 @@ Log.trace("Found resprocessing");  //G***del
 	*/
 	protected Outcomes createOutcomes(final Element element)
 	{
-Log.trace("Found outcomes");  //G***del
+Log.trace("Found outcomes");  //TODO del
 		final Outcomes outcomes=new Outcomes(); //create a new outcomes object
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
@@ -748,12 +623,12 @@ Log.trace("Found outcomes");  //G***del
 			final AttributeSet childAttributeSet=childElement.getAttributes();  //get the child's attributes
 			if(childAttributeSet!=null) //if this child has attributes
 			{
-				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				//TODO we should probably make sure this element is in our namespace
+				final String childElementLocalName=XMLStyles.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_DECVAR.equals(childElementLocalName)) //if this is a variable declaration
 				{
-					final DecVar decVar=new DecVar(); //G***fix; for now, create a default score variable
-//G***fix					final DecVar decVar=createDecVar(childElement);  //create a variable declaration
+					final DecVar decVar=new DecVar(); //TODO fix; for now, create a default score variable
+//TODO fix					final DecVar decVar=createDecVar(childElement);  //create a variable declaration
 				  outcomes.getDecVarList().add(decVar); //add this variable declaration
 				}
 			}
@@ -767,12 +642,12 @@ Log.trace("Found outcomes");  //G***del
 	*/
 	protected ResponseCondition createResponseCondition(final Element element)
 	{
-Log.trace("Found respcondition");  //G***del
+Log.trace("Found respcondition");  //TODO del
 		final ResponseCondition responseCondition=new ResponseCondition(); //create a new response processing object
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  responseCondition.setTitle(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_TITLE));  //set the title
+		  responseCondition.setTitle(XMLStyles.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_TITLE));  //set the title
 		}
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
 		{
@@ -780,8 +655,8 @@ Log.trace("Found respcondition");  //G***del
 			final AttributeSet childAttributeSet=childElement.getAttributes();  //get the child's attributes
 			if(childAttributeSet!=null) //if this child has attributes
 			{
-				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				//TODO we should probably make sure this element is in our namespace
+				final String childElementLocalName=XMLStyles.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_CONDITIONVAR.equals(childElementLocalName)) //if this is a condition variable group
 				{
 					final ConditionVar conditionVar=createConditionVar(childElement);  //create the condition variable group
@@ -803,7 +678,7 @@ Log.trace("Found respcondition");  //G***del
 	*/
 	protected ConditionVar createConditionVar(final Element element)
 	{
-Log.trace("Found conditionvar");  //G***del
+Log.trace("Found conditionvar");  //TODO del
 		final ConditionVar conditionVar=new ConditionVar(); //create a new condition variable group
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		for(int i=0; i<element.getElementCount(); ++i)  //look at each of the child elements
@@ -812,8 +687,8 @@ Log.trace("Found conditionvar");  //G***del
 			final AttributeSet childAttributeSet=childElement.getAttributes();  //get the child's attributes
 			if(childAttributeSet!=null) //if this child has attributes
 			{
-				//G***we should probably make sure this element is in our namespace
-				final String childElementLocalName=XMLStyleUtilities.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
+				//TODO we should probably make sure this element is in our namespace
+				final String childElementLocalName=XMLStyles.getXMLElementLocalName(childAttributeSet); //get the local name of this child element
 				if(ELEMENT_VAREQUAL.equals(childElementLocalName)) //if this is variable equal condition
 				{
 					final VarEqual varEqual=createVarEqual(childElement);  //create the variable equal condition
@@ -834,20 +709,20 @@ Log.trace("Found conditionvar");  //G***del
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-//G***fix		  varEqual.setRespIdent((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_RESPIDENT));  //set the response ident
+//TODO fix		  varEqual.setRespIdent((String)XMLStyleConstants.getDefinedAttribute(attributeSet, ATTRIBUTE_RESPIDENT));  //set the response ident
 		}
 		try
 		{
-//G***Del Log.trace("Getting ready to create varequal with start offset: "+element.getStartOffset()+" end offset: "+element.getEndOffset());  //G***del
-//G***Del Log.trace("Document length: "+element.getDocument().getLength()); //G***del
-Log.trace("Getting ready to create varequal with value: ", element.getDocument().getText(element.getStartOffset(), element.getEndOffset()-element.getStartOffset()));  //G***del
-			varEqual.setValue(element.getDocument().getText(element.getStartOffset(), element.getEndOffset()-element.getStartOffset()));  //get the value of the variable G***make sure there is text
+//TODO Del Log.trace("Getting ready to create varequal with start offset: "+element.getStartOffset()+" end offset: "+element.getEndOffset());  //TODO del
+//TODO Del Log.trace("Document length: "+element.getDocument().getLength()); //TODO del
+Log.trace("Getting ready to create varequal with value: ", element.getDocument().getText(element.getStartOffset(), element.getEndOffset()-element.getStartOffset()));  //TODO del
+			varEqual.setValue(element.getDocument().getText(element.getStartOffset(), element.getEndOffset()-element.getStartOffset()));  //get the value of the variable TODO make sure there is text
 		}
 		catch(BadLocationException badLocationException)
 		{
-			Log.warn(badLocationException); //G***fix
+			Log.warn(badLocationException); //TODO fix
 		}
-//G***fix		varEqual.setValue(XMLUtilities.getText(element, false));  //get the value of the variable
+//TODO fix		varEqual.setValue(XMLUtilities.getText(element, false));  //get the value of the variable
 		putQTIObject(element, varEqual);  //store the QTI object in the map, keyed to the element
 		return varEqual;  //return the object we created
 	}
@@ -861,49 +736,19 @@ Log.trace("Getting ready to create varequal with value: ", element.getDocument()
 		final AttributeSet attributeSet=element.getAttributes();  //get the element's attributes
 		if(attributeSet!=null)  //if the element has attributes
 		{
-		  setVar.setAction(XMLStyleUtilities.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_ACTION));  //set the action
+		  setVar.setAction(XMLStyles.getXMLAttributeValue(attributeSet, null, ATTRIBUTE_ACTION));  //set the action
 		}
 		try
 		{
-			setVar.setValue(element.getDocument().getText(element.getStartOffset(), element.getEndOffset()-element.getStartOffset()));  //get the value of the variable G***make sure there is text
+			setVar.setValue(element.getDocument().getText(element.getStartOffset(), element.getEndOffset()-element.getStartOffset()));  //get the value of the variable TODO make sure there is text
 		}
 		catch(BadLocationException badLocationException)
 		{
-			Log.warn(badLocationException); //G***fix
+			Log.warn(badLocationException); //TODO fix
 		}
 		putQTIObject(element, setVar);  //store the QTI object in the map, keyed to the element
 		return setVar;  //return the object we created
 	}
-
-	/**Creates an identifier from the element in the form
-		<em>itemIdent</em>#<em>objectIdent</em>. The element should have an
-		<code>ident</code> attribute and a parent <code>&lt;item&gt;</code> that
-		also has an <code>ident</code> attribute.
-	@param element The QTI object for which an identifier should be created.
-	@return An identifier uniquely identifying the QTI object within the item,
-		or <code>null</code> if an ID could not be created because of a missing
-		<code>ident</code> attribute.
-	*/
-/*G***del if not needed
-	protected static String createID(final Element element)
-	{
-		final String ident=((String)XMLStyleConstants.getDefinedAttribute(element.getAttributes(), ATTRIBUTE_IDENT));  //get the ident
-		if(ident!=null && ident.length()>0) //if there is an ident
-		{
-			final Element itemElement=XMLStyleConstants.getAncestorElement(element, ELEMENT_ITEM);  //get the item element in which this element resides
-			if(itemElement!=null) //if there is an enclosing item element
-			{
-					//get the item's ident
-				final String itemIdent=((String)XMLStyleConstants.getDefinedAttribute(itemElement.getAttributes(), ATTRIBUTE_IDENT));
-				if(itemIdent!=null && itemIdent.length()>0) //if there is an item ident
-				{
-					return QTIUtilities.createID(itemIdent, ident);  //create an identifier from the item ident and the object ident
-				}
-			}
-		}
-		return null;  //show that we couldn't create an ID
-	}
-*/
 
 	/**Action for submitting an assessment.
 	@param assessment The assessment to be submitted.
@@ -919,10 +764,10 @@ Log.trace("Getting ready to create varequal with value: ", element.getDocument()
 		*/
 		public SubmitAction(final Assessment submitAssessment)
 		{
-			super("Submit");	//create the base class G***i18n
-			putValue(SHORT_DESCRIPTION, "Submit the assessment.");	//set the short description G***i18n
-			putValue(LONG_DESCRIPTION, "Submit the assessment.");	//set the long description G***i18n
-			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));  //set the mnemonic key G***i18n
+			super("Submit");	//create the base class TODO i18n
+			putValue(SHORT_DESCRIPTION, "Submit the assessment.");	//set the short description TODO i18n
+			putValue(LONG_DESCRIPTION, "Submit the assessment.");	//set the long description TODO i18n
+			putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));  //set the mnemonic key TODO i18n
 			putValue(SMALL_ICON, IconResources.getIcon(IconResources.SUBMIT_ICON_FILENAME)); //load the correct icon
 			assessment=submitAssessment;  //store the specified assessment
 		}
@@ -932,41 +777,41 @@ Log.trace("Getting ready to create varequal with value: ", element.getDocument()
 		*/
 		public void actionPerformed(ActionEvent e)
 		{
-//G***del			Debug.notify("Ready to grade items: "+getItemViewList().size()); //G***del
+//TODO del			Debug.notify("Ready to grade items: "+getItemViewList().size()); //TODO del
 			final Map itemResponseMap=new HashMap();  //create a hash map to store lists of responses for each item, each list keyed to an item ident
 			final Iterator sectionIterator=assessment.getSectionList().iterator();  //get an iterator to look through each section
 		  while(sectionIterator.hasNext())  //while there are more sections
 			{
-Log.trace("Found section"); //G***del
+Log.trace("Found section"); //TODO del
 				final Section section=(Section)sectionIterator.next();  //get a reference to this section
 				final Iterator itemIterator=section.getItemList().iterator(); //get an iterator to look through all the items in this section
 				while(itemIterator.hasNext()) //while there are more items
 				{
-Log.trace("Found item"); //G***del
+Log.trace("Found item"); //TODO del
 				  final Item item=(Item)itemIterator.next();  //get a reference to this item
 					final List responseList=new ArrayList();  //create a list to store the responses for this item
 					final Presentation presentation=item.getPresentation(); //get the item's presentation
-					if(presentation!=null && presentation.getResponseList().size()>0)  //if this item has presentation and there is a response section G***only one response is currently supported
+					if(presentation!=null && presentation.getResponseList().size()>0)  //if this item has presentation and there is a response section TODO only one response is currently supported
 					{
-Log.trace("Found presentation"); //G***del
-						final ResponseLID responseLID=(ResponseLID)presentation.getResponseList().get(0);  //get the first response and assume it's a logical ID response G***fix for other response types
-						if(responseLID.getRenderList().size()>0)  //if there is a render section G***add support for multiple render sections
+Log.trace("Found presentation"); //TODO del
+						final ResponseLID responseLID=(ResponseLID)presentation.getResponseList().get(0);  //get the first response and assume it's a logical ID response TODO fix for other response types
+						if(responseLID.getRenderList().size()>0)  //if there is a render section TODO add support for multiple render sections
 						{
-						  final RenderChoice renderChoice=(RenderChoice)responseLID.getRenderList().get(0); //get the first render type and assume it's a choice render G***add support for other types
-Log.trace("Found render choice"); //G***del
+						  final RenderChoice renderChoice=(RenderChoice)responseLID.getRenderList().get(0); //get the first render type and assume it's a choice render TODO add support for other types
+Log.trace("Found render choice"); //TODO del
 							final Iterator responseLabelIterator=renderChoice.getResponseLabelList().iterator();  //get an iterator to look through the response labels
 							while(responseLabelIterator.hasNext())  //while there are more response labels
 							{
 								final ResponseLabel responseLabel=(ResponseLabel)responseLabelIterator.next();  //get the next response label
-/*G***fix
-Log.trace("Found response label"); //G***del
+/*TODO fix
+Log.trace("Found response label"); //TODO del
 								final QTIResponseLabelView responseLabelView=(QTIResponseLabelView)getQTIView(responseLabel); //get the view that corresponsds to this response label
 								if(responseLabelView!=null) //if a view was created for this response label
 								{
-Log.trace("Found response label view"); //G***del
+Log.trace("Found response label view"); //TODO del
 									if(responseLabelView.getToggleButton().isSelected()) //if this response was selected
 									{
-//G***del						Debug.notify("Answered ident: "+responseLabel.getIdent()); //G***del
+//TODO del						Debug.notify("Answered ident: "+responseLabel.getIdent()); //TODO del
 										responseList.add(responseLabel.getIdent());  //add this response's ident to the response list
 									}
 								}
@@ -988,25 +833,25 @@ Log.trace("Found response label view"); //G***del
 				final List responseList=(List)itemResponseMap.get(itemIdent); //get the response list for the given item
 				if(responseList!=null && responseList.size()==1)  //if there is list of responses (assume this question only has one answer)
 				{
-Log.trace("Only one response for item: ", itemIdent); //G***del
+Log.trace("Only one response for item: ", itemIdent); //TODO del
 					final String responseIdent=(String)responseList.get(0);  //get the first response
-Log.trace("Response ID: ", responseIdent); //G***del
+Log.trace("Response ID: ", responseIdent); //TODO del
 					final ResponseProcessing responseProcessing=item.getResponseProcessing();  //get the item's response processing
 					if(responseProcessing!=null) //if there is response processing
 					{
-						if(responseProcessing.getResponseConditionList().size()>0)  //if there is at least one response condition G***fix; we're only grabbing the first one now
+						if(responseProcessing.getResponseConditionList().size()>0)  //if there is at least one response condition TODO fix; we're only grabbing the first one now
 						{
 							final ResponseCondition responseCondition=(ResponseCondition)responseProcessing.getResponseConditionList().get(0);  //get the first response condition
-						  if(responseCondition.getConditionVarList().size()>0)  //if there is at least one condition var G***fix; right now we're only grabbing the first one
+						  if(responseCondition.getConditionVarList().size()>0)  //if there is at least one condition var TODO fix; right now we're only grabbing the first one
 						  {
 								final ConditionVar conditionVar=(ConditionVar)responseCondition.getConditionVarList().get(0); //get the first condition var
-								if(conditionVar.getConditionList().size()>0)  //if there is at least one condition var G***fix; right now we're only grabbing the first one
+								if(conditionVar.getConditionList().size()>0)  //if there is at least one condition var TODO fix; right now we're only grabbing the first one
 								{
 									final Condition condition=(Condition)conditionVar.getConditionList().get(0); //grab the first condition
-									assert condition instanceof VarEqual : "Unknown condition; we only support VarEqual"; //G***fix
+									assert condition instanceof VarEqual : "Unknown condition; we only support VarEqual"; //TODO fix
 								  final VarEqual varEqual=(VarEqual)condition;  //cast the condition to a VarEqual
 								  final String varEqualValue=varEqual.getValue(); //get the expected value
-Log.trace("expected value: ", varEqualValue); //G***del
+Log.trace("expected value: ", varEqualValue); //TODO del
 								  if(responseIdent.equals(varEqualValue)) //if the answer matches their response
 										result=true;  //show that this result is correct
 								}
@@ -1036,39 +881,39 @@ Log.trace("expected value: ", varEqualValue); //G***del
 					missedStringBuffer.append(questionNumber);  //append this question number
 				}
 			}
-			final String rawScoreString=String.valueOf(rawScore)+" out of "+questionCount;	//make a string with their raw score information G***fix; i18n
-		  final String percScoreString=String.valueOf(Math.round(rawScore/questionCount*1000)/10)+"%"; //G***fix; comment; use MessageFormat
+			final String rawScoreString=String.valueOf(rawScore)+" out of "+questionCount;	//make a string with their raw score information TODO fix; i18n
+		  final String percScoreString=String.valueOf(Math.round(rawScore/questionCount*1000)/10)+"%"; //TODO fix; comment; use MessageFormat
 		  final StringBuffer resultStringBuffer=new StringBuffer(); //create a new string buffer in which to construct the results display
 			resultStringBuffer.append("<html>");
-//G***fix		  resultStringBuffer.append("<h1>Assessment Results</h1>");
+//TODO fix		  resultStringBuffer.append("<h1>Assessment Results</h1>");
 		  resultStringBuffer.append("<p><strong>Raw Score:</strong> ").append(rawScoreString).append("</p>");
 		  resultStringBuffer.append("<p><strong>Percentage Correct:</strong> ").append(percScoreString).append("</p>");
 			if(rawScore!=questionCount)	//if they missed any questions at all
 				resultStringBuffer.append("<p><strong>Questions Missed:</strong> ").append(missedStringBuffer).append("</p>");
 		  resultStringBuffer.append("</html>");
 
-		  JOptionPane.showMessageDialog(null, resultStringBuffer.toString(), "Assessment Results", JOptionPane.INFORMATION_MESSAGE);	//G***i18n; comment; fix null
+		  JOptionPane.showMessageDialog(null, resultStringBuffer.toString(), "Assessment Results", JOptionPane.INFORMATION_MESSAGE);	//TODO i18n; comment; fix null
 
-//G***del		  Debug.notify(resultStringBuffer.toString());
+//TODO del		  Debug.notify(resultStringBuffer.toString());
 
-//G***fix			final String resultString=resultStringBuffer.toString();  //G***testing
-/*G***fix
+//TODO fix			final String resultString=resultStringBuffer.toString();  //TODO testing
+/*TODO fix
 Debug.notify("<html><p><strong>Raw Score:</strong> 0 out of 1</p></html>");
 Debug.notify("<html><h1>Quiz Results</h1><p><strong>Raw Score:</strong> 0 out of 1</p></html>");
 */
-/*G***fix
+/*TODO fix
 Debug.notify("<html><h1><center>Quiz Results</center></h1><p><strong>Raw Score:</strong> 0 out of 1</p><p><strong>Percentage Correct:</strong> 0%</P><p><strong>Questions Missed:</strong>1</p></html>");
 Debug.notify("<html><h1><center>Quiz Results</center></h1><p><strong>Raw Score:</strong> 0 out of 1</p><p><strong>Percentage Correct:</strong> 0%</P><p><strong>Questions Missed:</strong>1</p></html>");
 Debug.notify("<html><h1><center>Quiz Results</center></h1><p><strong>Raw Score:</strong> 0 out of 1</p><p><strong>Percentage Correct:</strong> 0%</P><p><strong>Questions Missed:</strong>1</p></html>");
 Debug.notify("<html><h1><center>Quiz Results</center></h1><p><strong>Raw Score:</strong> 0 out of 1</p><p><strong>Percentage Correct:</strong> 0%</P><p><strong>Questions Missed:</strong>1</p></html>");
 */
-/*G***fix
-SwingUtilities.invokeLater(new Runnable()	//G***testing; comment
+/*TODO fix
+SwingUtilities.invokeLater(new Runnable()	//TODO testing; comment
 	{
 		public void run() {Debug.notify(resultString);}	//update the status
 	});
 */
-//G***fix Debug.notify(resultStringBuffer.toString());
+//TODO fix Debug.notify(resultStringBuffer.toString());
 		}
 	}
 
