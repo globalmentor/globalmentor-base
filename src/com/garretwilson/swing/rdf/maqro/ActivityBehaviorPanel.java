@@ -20,12 +20,12 @@ import java.awt.*;
 import java.io.IOException;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
-import com.garretwilson.model.ResourceModel;
 
 import static com.globalmentor.urf.maqro.MAQRO.*;
 
 import com.garretwilson.swing.ModelPanel;
 import com.garretwilson.swing.border.Borders;
+import com.globalmentor.net.ResourceModel;
 import com.globalmentor.rdf.RDFResource;
 import com.globalmentor.rdf.xmlschema.BooleanLiteral;
 import com.globalmentor.rdf.xmlschema.IntegerLiteral;

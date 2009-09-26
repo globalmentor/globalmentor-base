@@ -25,13 +25,13 @@ import java.util.*;
 import javax.swing.*;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.rdf.RDFPanel;
-import com.garretwilson.model.ResourceModel;
 import com.garretwilson.resources.icon.IconResources;
 
 import com.globalmentor.apps.marmot.resource.dicto.*;
 import com.globalmentor.apps.mentoract.swing.maqro.MAQROActivityPanel;
 import com.globalmentor.java.Characters;
 import com.globalmentor.mentoract.maqro.*;
+import com.globalmentor.net.ResourceModel;
 import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.dicto.*;
 import com.globalmentor.rdf.dicto.Dictionary;

@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.util.*;
 import javax.swing.*;
 import com.garretwilson.awt.BasicGridBagLayout;
-import com.garretwilson.model.ResourceModel;
 import com.garretwilson.swing.*;
 import com.garretwilson.swing.border.Borders;
+import com.globalmentor.net.ResourceModel;
 import com.globalmentor.rdf.*;
 import com.globalmentor.urf.maqro.*;
 

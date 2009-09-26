@@ -21,6 +21,7 @@ import java.net.*;
 import com.garretwilson.model.*;
 
 import com.globalmentor.io.*;
+import com.globalmentor.net.ResourceModel;
 import com.globalmentor.rdf.*;
 import com.globalmentor.text.xml.*;
 

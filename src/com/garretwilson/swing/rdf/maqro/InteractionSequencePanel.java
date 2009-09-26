@@ -19,8 +19,8 @@ package com.garretwilson.swing.rdf.maqro;
 import java.awt.*;
 import javax.swing.*;
 
-import com.garretwilson.model.ResourceModel;
 import com.garretwilson.swing.*;
+import com.globalmentor.net.ResourceModel;
 import com.globalmentor.urf.maqro.*;
 
 /**A component that displays a sequence of MAQRO interactions and allows them

@@ -21,11 +21,11 @@ import java.io.IOException;
 import java.util.*;
 import javax.swing.*;
 import com.garretwilson.swing.*;
-import com.garretwilson.model.ResourceModel;
 import com.garretwilson.resources.icon.IconResources;
 
 import static com.globalmentor.model.UUIDs.*;
 
+import com.globalmentor.net.ResourceModel;
 import com.globalmentor.text.xml.xhtml.XHTML;
 import com.globalmentor.urf.maqro.*;
 

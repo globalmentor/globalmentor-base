@@ -1,8 +1,25 @@
-package com.garretwilson.model;
+/*
+ * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.globalmentor.io;
 
 import java.net.URI;
+
+import com.garretwilson.model.Model;
 import com.globalmentor.event.EventListenerManager;
-import com.globalmentor.io.*;
 
 /**A model that keeps track of a base URI and knows how to access input streams
 	based upon URIs.
@@ -12,16 +29,16 @@ public abstract class URIAccessibleModel extends DefaultURIAccessible implements
 {
 
 	/**Whether the object has been modified; the default is not modified.*/
-//G***del if not needed	private boolean modified=false;
+//TODO del if not needed	private boolean modified=false;
 
 		/**@return Whether the object been modified.*/
-//G***del if not needed		public boolean isModified() {return modified;}
+//TODO del if not needed		public boolean isModified() {return modified;}
 
 		/**Sets whether the object has been modified.
 		This is a bound property.
 		@param newModified The new modification status.
 		*/
-/*G***del if not needed
+/*TODO del if not needed
 		public void setModified(final boolean newModified)
 		{
 			final boolean oldModified=modified; //get the old modified value
@@ -41,7 +58,7 @@ public abstract class URIAccessibleModel extends DefaultURIAccessible implements
 		public EventListenerManager getEventListenerManager() {return eventListenerManager;}
 
 	/**The base URI of the model, or <code>null</code> if unknown.*/
-	private final URI baseURI;	//G***maybe move this up into XMLNodeModel---or, more likely, down into Model itself
+	private final URI baseURI;
 	
 		/**@return The base URI of the model, or <code>null</code> if unknown.*/
 		public URI getBaseURI() {return baseURI;}
