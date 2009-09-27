@@ -77,7 +77,7 @@ public class AnswerPanel extends ContentPanel
 							}
 							catch(final URISyntaxException uriSyntaxException)	//if the user entered a syntactically incorrect URI
 							{
-								SwingApplication.displayApplicationError(AnswerPanel.this, uriSyntaxException);	//show the error
+								AbstractSwingApplication.displayApplicationError(AnswerPanel.this, uriSyntaxException);	//show the error
 								typeComboBox.requestFocusInWindow();	//put the focus back on the combo box
 								return;	//do no further processing
 							}
@@ -296,7 +296,7 @@ public class AnswerPanel extends ContentPanel
 			}
 			catch(final URISyntaxException uriSyntaxException)	//if the user entered a syntactically incorrect URI
 			{
-				SwingApplication.displayApplicationError(AnswerPanel.this, uriSyntaxException);	//show the error
+				AbstractSwingApplication.displayApplicationError(AnswerPanel.this, uriSyntaxException);	//show the error
 				typeComboBox.requestFocusInWindow();	//put the focus back on the combo box
 				return false;	//show that the URI was incorrect
 			}
