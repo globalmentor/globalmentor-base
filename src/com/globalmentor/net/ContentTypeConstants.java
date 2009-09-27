@@ -73,8 +73,6 @@ public class ContentTypeConstants	//TODO transfer these constants to specific re
 	public final static String X_DICTO_RDF_XML_SUBTYPE=ContentType.SUBTYPE_EXTENSION_PREFIX+"dicto"+ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;
 	/**A Java application.*/
 	public final static String JAVA_SUBTYPE="java";
-	/**A Java JNLP file.*/
-	public final static String X_JAVA_JNLP_FILE=ContentType.SUBTYPE_EXTENSION_PREFIX+"java-jnlp-file";
 	/**A MAQRO activity.*/
 	public final static String X_MAQRO_RDF_XML_SUBTYPE=ContentType.SUBTYPE_EXTENSION_PREFIX+"maqro"+ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR+RDF_XML_SUBTYPE_SUFFIX;	//TODO del; use MAQRO version
 	/**A MAQRO question.*/

@@ -24,8 +24,13 @@ import com.globalmentor.net.ContentType;
 public class Audio
 {
 
-	/**An Ogg Vorbis file; see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>.*/
-	public final static String OGG_SUBTYPE="ogg";
+	/**The content type for an Ogg Vorbis file: <code>application/ogg</code>.
+	@see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>
+	*/
+	public static final ContentType OGG_CONTENT_TYPE=ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "ogg");
+
+	/**The content type for MP3: <code>audio/mpeg</code>.*/ 
+	public static final ContentType MPEG_CONTENT_TYPE=ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, "mpeg");
 
 	/**The name extension for audio files.*/
 	public final static String AU_NAME_EXTENSION="au";
@@ -52,7 +57,7 @@ public class Audio
 			return true;	//this is an audio content type
 		if(ContentType.APPLICATION_PRIMARY_TYPE.equals(topLevelType))	//if this is an application type
 		{
-			if(OGG_SUBTYPE.equals(mediaType.getSubType()))	//if this is application/ogg
+			if(OGG_CONTENT_TYPE.getSubType().equals(mediaType.getSubType()))	//if this is application/ogg
 				return true;	//this is an Ogg Vorbis  audio file
 		}
 		return false;	//we didn't recognize the type as an audio type
