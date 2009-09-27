@@ -22,15 +22,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.lang.InstantiationException;
 import java.lang.reflect.*;
-import java.net.URI;
 
 import com.globalmentor.io.Files;
 import com.globalmentor.java.Classes;
 import com.globalmentor.java.Integers;
 import com.globalmentor.java.Java;
 import com.globalmentor.log.Log;
-import com.globalmentor.text.xml.XMLDOMImplementation;
-import com.globalmentor.text.xml.XMLProcessor;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.xpath.XPath;
@@ -512,7 +509,7 @@ Log.trace("using element: ", element.getNodeName());  //TODO del
 	*/
 	protected static void store(final Object object, final OutputStream outputStream) throws IOException
 	{
-		final DOMImplementation domImplementation=new XMLDOMImplementation();	//create a new DOM implementation TODO use a standard way of getting the DOM implementation
+		final DOMImplementation domImplementation=XML.createDocumentBuilder(true).getDOMImplementation();	//create a new DOM implementation
 		final Document document=domImplementation.createDocument(null, getStorageName(object.getClass()), null);	//create an XML document for the object
 		store(object, document); //store the object in the document
 		final XMLSerializer xmlSerializer=new XMLSerializer(true);  //create a formatted serializer
