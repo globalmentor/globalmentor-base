@@ -17,6 +17,7 @@ import com.guiseframework.style.RGBColor;
 /**Class that generates an URF instance from a Java object.
 This PLOOP processor recognizes {@link Resource} objects and writes their URIs.
 This PLOOP processor also recognizes {@link URFResource} objects and transfers any non-PLOOP properties when an instance is encountered.
+<p>This implementation does not yet support arrays of anything besides <code>char</code>.</p>
 <p>Copyright © 2007 GlobalMentor, Inc.
 This source code can be freely used for any purpose, as long as the following conditions are met.
 Any object code derived from this source code must include the following text to users using along with other "about" notifications:
@@ -162,6 +163,10 @@ public class PLOOPURFGenerator
 			final boolean isObjectResource=object instanceof Resource;	//see if the object is a resource
 			resourceURI=isObjectResource ? ((Resource)object).getURI() : null;	//get the URI of the object, if it is a resource
 			final Class<?> objectClass=object.getClass();	//get the object type
+			if(objectClass.isArray())
+			{
+				throw new IllegalArgumentException("Non-char arrays are not yet supported: "+objectClass);	//TODO implement; also take into account the complex array name when creating a Java URI
+			}
 			final URI typeURI=createJavaURI(objectClass);	//get a URI to represent the class
 			resource=urf.locateResource(resourceURI, typeURI);	//locate and create if needed a new resource
 			resource.addTypeURI(typeURI);	//add the type URI
