@@ -20,9 +20,8 @@ import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
-import com.globalmentor.net.*;
-
 import static com.globalmentor.model.Locales.*;
+import com.globalmentor.net.*;
 import static com.globalmentor.net.URIs.*;
 import com.globalmentor.text.RegularExpressions;
 import com.globalmentor.urf.content.*;
@@ -112,7 +111,7 @@ public class URF
 	public final static URI URI_CLASS_URI=createResourceURI(NAMESPACE_URI, "URI");
 
 		//properties
-	/**The URI of the property indicating an element of a container such as a set.*/
+	/**The URI of the property indicating an element of a collection such as a set.*/
 	public final static URI ELEMENT_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "element");
 	/**The URI of the property indicating an entry of a map.*/
 	public final static URI ENTRY_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "entry");
@@ -130,7 +129,7 @@ public class URF
 	public final static URI ORDER_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "order");
 	/**The URI of the URF predicate property.*/
 	public final static URI PREDICATE_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "predicate");
-	/**A list of resources to be used to select a resoruce of a particular type.*/
+	/**A list of resources to be used to select a resource of a particular type.*/
 	public final static URI SELECTOR_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "selector");
 	/**The URI of the URF subject property.*/
 	public final static URI SUBJECT_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "subject");
@@ -140,6 +139,8 @@ public class URF
 	public final static URI TYPE_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "type");
 	/**The URI of the property indicating the value of a map entry.*/
 	public final static URI VALUE_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "value");
+	/**The identifier of the version of hte resource.*/
+	public final static URI VERSION_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "version");
 
 		//inline namespaces
 	/**The binary inline namespace URI.*/
@@ -1725,6 +1726,26 @@ public class URF
 		resource.removeProperties();	//remove any properties that the resource factory may have added
 		addResource(resource);  //store the resource in the data model
 		return resource;  //return the resource we created
+	}
+	
+	/**Returns the version of the resource.
+	@param resource The resource the property of which should be located.
+	@return The string value of the property, or <code>null</code> if there is no such property or the property value is not a string.
+	@see #VERSION_PROPERTY_URI
+	*/
+	public static String getVersion(final URFResource resource)
+	{
+		return asString(resource.getPropertyValue(VERSION_PROPERTY_URI));
+	}
+
+	/**Sets the version of the resource.
+	@param resource The resource of which the property should be set.
+	@param value The property value to set.
+	@see #VERSION_PROPERTY_URI
+	*/
+	public static void setVersion(final URFResource resource, final String value)
+	{
+		resource.setPropertyValue(VERSION_PROPERTY_URI, value);
 	}
 
 	/**The encapsulation of a summary of reference information about an URF data model.
