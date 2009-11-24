@@ -40,7 +40,7 @@ public class InputStreams
 	@return The total number of bytes copied.
 	@exception IOException Thrown if there is an error reading from or writing to a stream.
 	*/
-	public static int copy(final InputStream inputStream, final OutputStream outputStream) throws IOException
+	public static long copy(final InputStream inputStream, final OutputStream outputStream) throws IOException
 	{
 		return copy(inputStream, outputStream, -1);	//we don't know how many bytes to expect
 	}
@@ -57,11 +57,11 @@ public class InputStreams
 	@throws IOException Thrown if there is an error reading from or writing to a stream.
 	@throws IOException if an expected content length was given and the number of bytes written to the output stream is not what was expected.
 	*/
-	public static int copy(final InputStream inputStream, final OutputStream outputStream, final long expectedContentLength) throws IOException
+	public static long copy(final InputStream inputStream, final OutputStream outputStream, final long expectedContentLength) throws IOException
 	{
 		final int bufferSize=expectedContentLength>=16*1024*1024 ? 10*1024*1024 : 64*1024;	//create a buffer of the correct size, based upon the expected length if known; use a 10MB buffer for anything at least 10MB, or a 16KB buffer for everything else
 	  final byte[] buffer=new byte[bufferSize];	//create a buffer for copying data
-		int totalBytesCopied=0; //show that we have not copied any data
+		long totalBytesCopied=0; //show that we have not copied any data
 		int bytesRead;	//this will store the number of bytes read each time
 		while((bytesRead=inputStream.read(buffer))>=0)	//read bytes until the end of the input stream is reached
 		{
