@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2010 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 
 package com.globalmentor.java;
 
+import static com.globalmentor.io.Charsets.UTF_8_CHARSET;
 import static com.globalmentor.java.CharSequences.*;
+import com.globalmentor.text.Case;
 
 /**Various methods that manipulate <code>StringBuilder</code> objects. These
 	methods are fast relative to their {@link Strings}
@@ -356,6 +358,99 @@ public class StringBuilders
 		stringBuilder.delete(length-count, length);	//remove the last character
 	}
 
+	/**Escapes the indicated characters in the string builder using the supplied escape character.
+	All characters are first encoded using UTF-8.
+	Every invalid character is converted to its Unicode hex equivalent and prefixed with the given escape character.
+	Characters are assumed to be valid unless specified otherwise.
+	The escape character, if encountered, is not escaped unless it specifically meets one of the specified criteria;
+	this allows re-escaping strings that may contain escape characters produced under less-strict rules
+	(e.g. a URI containing escaped restricted characters, but still containing non-ASCII characters).
+	@param charSequence The data to escape.
+	@param validCharacters The characters that should not be escaped and all others should be escaped, or <code>null</code> if characters should not be matched against valid characters.
+	@param invalidCharacters The characters that, if they appear, should be escaped, or <code>null</code> if characters should not be matched against invalid characters.
+	@param maxCharacter The character value that represents the highest non-escaped value.
+	@param escapeChar The character to prefix the hex representation.
+	@param escapeLength The number of characters to use for the hex representation.
+	@param hexCase Whether the hex characters should be lowercase or uppercase.
+	@return The string builder, now containing the escaped data.
+	@exception IllegalArgumentException if neither valid nor invalid characters are given.
+	*/
+	public static StringBuilder escapeHex(final StringBuilder stringBuilder, final String validCharacters, final String invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase)
+	{
+		for(int characterIndex=stringBuilder.length()-1; characterIndex>=0; --characterIndex) //work backwords; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
+		{
+			final char c=stringBuilder.charAt(characterIndex); //get the current character
+			final boolean encode=(validCharacters!=null && validCharacters.indexOf(c)<0)	//encode if there is a list of valid characters and this character is not one of them
+				|| (invalidCharacters!=null && invalidCharacters.indexOf(c)>=0)	//encode if there is a list of invalid characters and this character is one of them
+				|| (c>maxCharacter);	//encode the character if it is past the given upper bound
+			if(encode)	//if this a character to escape
+			{
+				escapeHex(stringBuilder, characterIndex, c, escapeChar, escapeLength, hexCase);	//escape this character in the sequence
+			}
+		}
+		return stringBuilder; //return the encoded version of the string
+	}
+
+	/**Escapes the indicated character in the string builder using the supplied escape character.
+	All characters are first encoded using UTF-8.
+	The character is converted to its Unicode hex equivalent and prefixed with the given escape character.
+	This method uses <em>lowercase</em> hexadecimal escape codes.
+	@param stringBuilder The strinbg builder containing data to escape.
+	@param index The index of the character to escape.
+	@param escapeChar The character to prefix the hex representation.
+	@param escapeLength The number of characters to use for the hex representation.
+	@param hexCase Whether the hex characters should be lowercase or uppercase.
+	@return A string representing the escaped data that was used as a replacement for the character.
+	@throws StringIndexOutOfBoundsException if the given index does not represent a valid location in the string builder.
+	*/
+	public static String escapeHex(final StringBuilder stringBuilder, final int index, final char escapeChar, final int escapeLength)
+	{
+		return escapeHex(stringBuilder, index, escapeChar, escapeLength, Case.LOWERCASE);
+	}
+
+	/**Escapes the indicated character in the string builder using the supplied escape character.
+	All characters are first encoded using UTF-8.
+	The character is converted to its Unicode hex equivalent and prefixed with the given escape character.
+	@param stringBuilder The strinbg builder containing data to escape.
+	@param index The index of the character to escape.
+	@param escapeChar The character to prefix the hex representation.
+	@param escapeLength The number of characters to use for the hex representation.
+	@param hexCase Whether the hex characters should be lowercase or uppercase.
+	@return A string representing the escaped data that was used as a replacement for the character.
+	@throws StringIndexOutOfBoundsException if the given index does not represent a valid location in the string builder.
+	*/
+	public static String escapeHex(final StringBuilder stringBuilder, final int index, final char escapeChar, final int escapeLength, final Case hexCase)
+	{
+		return escapeHex(stringBuilder, index, stringBuilder.charAt(index), escapeChar, escapeLength, hexCase);
+	}
+
+	/**Escapes the indicated character in the string builder using the supplied escape character.
+	All characters are first encoded using UTF-8.
+	The character is converted to its Unicode hex equivalent and prefixed with the given escape character.
+	@param stringBuilder The strinbg builder containing data to escape.
+	@param index The index of the character to replace.
+	@param c The character to be escaped.
+	@param escapeChar The character to prefix the hex representation.
+	@param escapeLength The number of characters to use for the hex representation.
+	@param hexCase Whether the hex characters should be lowercase or uppercase.
+	@return A string representing the escaped data that was used as a replacement for the character.
+	@throws StringIndexOutOfBoundsException if the given index does not represent a valid location in the string builder.
+	*/
+	public static String escapeHex(final StringBuilder stringBuilder, final int index, final char c, final char escapeChar, final int escapeLength, final Case hexCase)
+	{
+		final byte[] bytes=String.valueOf(c).getBytes(UTF_8_CHARSET); //convert this character to a sequence of UTF-8 bytes
+		final int byteCount=bytes.length; //find out how many bytes there are
+		final StringBuilder encodeStringBuilder=new StringBuilder(byteCount*3); //create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
+		for(int byteIndex=0; byteIndex<byteCount; ++byteIndex) //look at each byte
+		{
+			encodeStringBuilder.append(escapeChar); //escape character
+			encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], escapeLength, hexCase)); //hh or HH
+		}
+		final String escapeString=encodeStringBuilder.toString();	//encode the characters
+		stringBuilder.replace(index, index+1, escapeString); //replace the character with its encoding
+		return escapeString;	//return the escape string
+	}
+	
 	/**Unescapes a value int a string builder using the provided escape character.
 	Every instance of the escape character will be removed if followed by another character and the subsequent character will be ignored. 
 	@param stringBuilder The string builder to unescape.
@@ -377,7 +472,7 @@ public class StringBuilders
 		};
 		return stringBuilder;	//return the string builder
 	}
-	
+
 	/**Returns the index of the first ocurrence of the given character in the string buffer.
 	@param stringBuilder The string buffer to search.
 	@param c The character to look for.

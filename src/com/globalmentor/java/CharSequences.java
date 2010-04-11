@@ -377,27 +377,11 @@ public class CharSequences
 	*/
 	public static String escapeHex(final CharSequence charSequence, final String validCharacters, final String invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase)
 	{
-		final StringBuilder stringBuilder=new StringBuilder(charSequence); //put the string in a string builder so that we can work with it; although inserting encoded sequences may seem inefficient, it should be noted that filling a string buffer with the entire string is more efficient than doing it one character at a time, that characters needed encoding are generally uncommon, and that any copying of the string characters during insertion is done via a native method, which should happen very quickly
-		for(int characterIndex=stringBuilder.length()-1; characterIndex>=0; --characterIndex) //work backwords; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
-		{
-			final char c=stringBuilder.charAt(characterIndex); //get the current character
-			final boolean encode=(validCharacters!=null && validCharacters.indexOf(c)<0)	//encode if there is a list of valid characters and this character is not one of them
-				|| (invalidCharacters!=null && invalidCharacters.indexOf(c)>=0)	//encode if there is a list of invalid characters and this character is one of them
-				|| (c>maxCharacter);	//encode the character if it is past the given upper bound
-			if(encode)	//if this a character to escape
-			{
-				final byte[] bytes=String.valueOf(c).getBytes(UTF_8_CHARSET); //convert this character to a sequence of UTF-8 bytes
-				final int byteCount=bytes.length; //find out how many bytes there are
-				final StringBuilder encodeStringBuilder=new StringBuilder(byteCount*3); //create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
-				for(int byteIndex=0; byteIndex<byteCount; ++byteIndex) //look at each byte
-				{
-					encodeStringBuilder.append(escapeChar); //escape character
-					encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], escapeLength, hexCase)); //hh or HH
-				}
-				stringBuilder.replace(characterIndex, characterIndex+1, encodeStringBuilder.toString()); //replace the character with its encoding
-			}
-		}
-		return stringBuilder.toString(); //return the encoded version of the string
+			//put the string in a string builder and escape it; although inserting encoded sequences may seem inefficient,
+			//	it should be noted that filling a string buffer with the entire string is more efficient than doing it one character at a time,
+			//	that characters needed encoding are generally uncommon, and that any copying of the string characters during insertion is done
+			//	via a native method, which should happen very quickly
+		return StringBuilders.escapeHex(new StringBuilder(charSequence), validCharacters, invalidCharacters, maxCharacter, escapeChar, escapeLength, hexCase).toString();
 	}
 
 	/**Decodes the escaped characters in the character sequence by converting the hex value after each occurance of the escape character to the corresponding Unicode character using UTF-8.
@@ -408,7 +392,7 @@ public class CharSequences
 	@exception IllegalArgumentException if the given characters contains a character greater than U+00FF.
 	@exception IllegalArgumentException if a given escape character is not followed by an escape sequence.
 	*/
-	public static String unescapeHex(final CharSequence charSequence, final char escapeChar, final int escapeLength)
+	public static String unescapeHex(final CharSequence charSequence, final char escapeChar, final int escapeLength)	//TODO fix for UTF-8
 	{
 		final int charSequenceLength=charSequence.length(); //get the length of the character sequence
 		final byte[] decodedBytes=new byte[charSequenceLength]; //create an array of byte to hold the UTF-8 data

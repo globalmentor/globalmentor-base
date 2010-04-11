@@ -793,26 +793,33 @@ public class Files
 	}
 	
 	/**Constructs a {@link URIs#FILE_SCHEME} scheme URI that represents this abstract pathname.
-	This functions similary to {@link File#toURI()}, except that this method
+	<p>This functions similary to {@link File#toURI()}, except that this method
 	always returns a true URI in which the characters all are within ranges allowed by
-	RFC 3986, notably that non-ASCII chracters are all encoded.
-	Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes. 
+	RFC 3986, notably that non-ASCII chracters are all encoded.</p>
+	<p>In addition, the character <code>';'</code> is encoded, as expected by HTTP servers
+	such as Apache when part of the path.</p>
+	<p>Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes.</p> 
 	@param file The file which should be converted to a URI.
 	@return An absolute, hierarchical URI with non-ASCII chracters encoded, with a {@link URIs#FILE_SCHEME} scheme, a path representing this abstract pathname, and undefined authority, query, and fragment components.
 	@throws NullPointerException if the given file is <code>null</code>.
 	@throws SecurityException If a required system property value cannot be accessed.
 	@see File#toURI()
 	@see URIs#toCanonicalURI(URI)
+	@see URIs#PATH_CHARACTERS
 	*/
 	public static URI toURI(final File file)
 	{
 		URI uri=file.toURI();	//create a URI from the file normally; Java may allow non-ASCII characters in this version
-		final String uriString=uri.toString();	//get the string version of the URI; we may end up getting another string later, but assuming that most URIs do not have non-ASCII characters, it will be more efficient to check the characters first, as we may not have to do any conversion
-		for(int i=uriString.length()-1; i>=0; --i)	//for each character (iteration order doesn't matter), make sure it is in the ASCII range
+			//test the entire URI for non-ASCII characters, as well the ';' character, which has a special meaning in URIs
+		String rawPath=uri.getRawPath();	//get the path of the URI; assuming that most URIs do not have non-ASCII characters, it will be more efficient to check the characters first, as we may not have to do any conversion
+		for(int i=rawPath.length()-1; i>=0; --i)	//for each character (iteration order doesn't matter)
 		{
-			if(uriString.charAt(i)>127)	//if we found a non-ASCII character
+			final char c=rawPath.charAt(i);
+			if(c>127 || c==';')	//if we found a non-ASCII character or the special
 			{
-				uri=URI.create(escapeHex(uriString, null, null, 127, URIs.ESCAPE_CHAR, 2, Case.LOWERCASE));	//escape the string again only for those characters that are non-ASCII characters; don't use URI.create(uri.toASCIIString()), which is less efficient and also produces uppercase hex codes
+					//escape the path from scratch, but only consider the ';' character and characters above 127 invalid so as to preserve the originally encoded characters, if any 
+				rawPath=CharSequences.escapeHex(rawPath, null, String.valueOf(';'), 127, URIs.ESCAPE_CHAR, 2, Case.LOWERCASE);
+				uri=URIs.changeRawPath(uri, rawPath);	//change the path of the URI
 				break;	//skip looking at the rest of the string
 			}
 		}
