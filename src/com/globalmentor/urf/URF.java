@@ -251,7 +251,7 @@ public class URF
 	*/
 	public static URI createResourceURI(final URI namespaceURI, final String localName)
 	{
-		return checkNamespaceURI(namespaceURI).resolve(encodeURI(localName));	//encode the local name and resolve it to the namespace
+		return resolve(checkNamespaceURI(namespaceURI), encodeURI(localName));	//encode the local name and resolve it to the namespace
 	}
 
 	/**Retrieves the namespace from the given URI.

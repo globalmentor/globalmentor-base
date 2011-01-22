@@ -150,14 +150,15 @@ public final class URIPath
 	}
 
 	/**Normalizes the path by removing all <code>.</code> and <code>..</code> segments.
+	<p>This method works correctly with Windows UNC path URIs.</p>
 	@return A URI path equivalent to this URI path, but in normal form.
+	@see URIs#normalize(URI)
 	*/
 	public URIPath normalize()
 	{
-		final URI normalizedURI=uri.normalize();	//normalize the URI
+		final URI normalizedURI=URIs.normalize(uri);	//normalize the URI
 		return normalizedURI==uri ? this : new URIPath(normalizedURI);	//if the URI was already normalized and we got back the same URI, we're already normalized
 	}
-
 
 	/**Determines the current level of this path.
 	This is equivalent to resolving the path {@value URIs#CURRENT_LEVEL_PATH_SEGMENT} to this path.
@@ -216,11 +217,13 @@ public final class URIPath
 
 	/**Resolves the given path against this path.
 	This is a convenience method that functions by creating a new {@link URIPath} from the given string and delegating to {@link #resolve(URIPath)}.
+	<p>This method works correctly with Windows UNC path URIs.</p>
 	@param path The path to be resolved against this path.
 	@return The resulting path.
 	@exception NullPointerException if the given path is <code>null</code>.
 	@exception IllegalArgumentException if the given string violates URI RFC 2396.
 	@exception IllegalArgumentException if the provided path specifies a URI scheme (i.e. the path represents an absolute URI) and/or authority.
+	@see #resolve(URIPath)
 	*/
 	public final URIPath resolve(final String path)
 	{
@@ -228,23 +231,27 @@ public final class URIPath
   }
 
 	/**Resolves the given path against this path.
+	<p>This method works correctly with Windows UNC path URIs.</p>
 	@param path The path to be resolved against this path.
 	@return The resulting path.
 	@exception NullPointerException if the given path is <code>null</code>.
+	@see URIs#resolve(URI, String)
 	*/
 	public URIPath resolve(final URIPath path)
 	{
-		return new URIPath(uri.resolve(checkInstance(path, "Path cannot be null.").toURI()).getRawPath());	//resolve the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
+		return new URIPath(URIs.resolve(uri, checkInstance(path, "Path cannot be null.").toURI()).getRawPath());	//resolve the URI form of the given path against the URI form of this path and create a new path from the resulting URI's raw path
   }
 
 	/**Resolves the given URI against this path.
+	<p>This method works correctly with Windows UNC path URIs.</p>
 	@param uri The uri to be resolved against this path.
 	@return The resulting URI.
 	@exception NullPointerException if the given URI is <code>null</code>.
+	@see URIs#resolve(URI, URI)
 	*/
 	public URI resolve(final URI uri)
 	{
-		return this.uri.resolve(checkInstance(uri, "URI cannot be null."));	//resolve the URI form of the given path against given URI
+		return URIs.resolve(this.uri, checkInstance(uri, "URI cannot be null."));	//resolve the URI form of the given path against given URI
   }
 
 	/**Returns the raw, encoded name of the resource at the given path, which will be the name of the last path component.

@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2010 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -263,12 +263,9 @@ public class URIs
 	@return The <code>true</code> if the given URI has a scheme of {@value URIs#INFO_SCHEME} and has the indicated info namespace.
 	@throws NullPointerException if the given URI and/or info namespace is <code>null</code>.
 	*/
-	public final static boolean isInfoNamespace(final URI uri,
-			final String infoNamespace)
+	public final static boolean isInfoNamespace(final URI uri, final String infoNamespace)
 	{
-		return URIs.INFO_SCHEME.equals(uri.getScheme())
-				&&uri.getRawSchemeSpecificPart().startsWith(
-						infoNamespace+URIs.INFO_SCHEME_NAMESPACE_DELIMITER); //check for the info scheme and the info namespace
+		return URIs.INFO_SCHEME.equals(uri.getScheme()) && uri.getRawSchemeSpecificPart().startsWith(infoNamespace+URIs.INFO_SCHEME_NAMESPACE_DELIMITER); //check for the info scheme and the info namespace
 	}
 
 	/**Determines the raw, encoded path of the given {@value #PATH_SCHEME} scheme URI.
@@ -339,9 +336,7 @@ public class URIs
 	*/
 	public static URI changeHost(final URI uri, final String newHost)
 	{
-		return createURI(uri.getScheme(), uri.getRawUserInfo(), checkInstance(
-				newHost, "Host cannot be null."), uri.getPort(), uri.getRawPath(), uri
-				.getRawQuery(), uri.getRawFragment()); //construct an identical URI except with a different host
+		return createURI(uri.getScheme(), uri.getRawUserInfo(), checkInstance(newHost, "Host cannot be null."), uri.getPort(), uri.getRawPath(), uri.getRawQuery(), uri.getRawFragment()); //construct an identical URI except with a different host
 	}
 
 	/**Creates a new URI identical to the supplied URI with a different raw scheme-specific part.
@@ -351,8 +346,7 @@ public class URIs
 	@throws NullPointerException if the given URI and/or scheme-specific part is <code>null</code>.
 	@throws IllegalArgumentException if the given scheme-specific part results in an invalid URI.
 	*/
-	public static URI changeRawSchemeSpecificPart(final URI uri,
-			final String newRawSSP)
+	public static URI changeRawSchemeSpecificPart(final URI uri, final String newRawSSP)
 	{
 		final String oldRawSSP=uri.getRawSchemeSpecificPart(); //get the old raw scheme-specific part of the URI
 		if(oldRawSSP.equals(newRawSSP)) //if the scheme-specific part is the same
@@ -360,8 +354,7 @@ public class URIs
 			return uri; //the URI remains unchanged
 		}
 		final StringBuilder stringBuilder=new StringBuilder(); //create a new string builder
-		stringBuilder.append(uri.getScheme()).append(URIs.SCHEME_SEPARATOR).append(
-				newRawSSP); //append the scheme and the scheme-specific part
+		stringBuilder.append(uri.getScheme()).append(URIs.SCHEME_SEPARATOR).append(newRawSSP); //append the scheme and the scheme-specific part
 		final String rawFragment=uri.getRawFragment(); //get the raw fragment, if any
 		if(rawFragment!=null) //if there is a raw fragment
 		{
@@ -1208,7 +1201,7 @@ public class URIs
 	*/
 	public static URI getCurrentLevel(final URI uri)
 	{
-		return uri.resolve(URIs.CURRENT_LEVEL_PATH_SEGMENT); //resolve the URI to "."
+		return resolve(uri, URIs.CURRENT_LEVEL_PATH_SEGMENT); //resolve the URI to "."
 	}
 
 	/**Determines the parent level of a hierarchical URI.
@@ -1218,7 +1211,7 @@ public class URIs
 	*/
 	public static URI getParentLevel(final URI uri)
 	{
-		return uri.resolve(URIs.PARENT_LEVEL_PATH_SEGMENT); //resolve the URI to ".."
+		return resolve(uri, URIs.PARENT_LEVEL_PATH_SEGMENT); //resolve the URI to ".."
 	}
 
 	/**Determines the parent collection of a hierarchical URI.
@@ -1263,11 +1256,11 @@ public class URIs
 	@return The normalized form of the given path.
 	@throws NullPointerException if the given path is <code>null</code>.
 	@throws IllegalArgumentException if the provided path specifies a URI scheme (i.e. the URI is absolute) and/or authority.
-	@see URI#normalize()
+	@see #normalize(URI)
 	*/
 	public static String normalizePath(final String path)
 	{
-		return createPathURI(path).normalize().getPath(); //get a URI from the path, normalize that URI, and then return the path of the resulting URI
+		return normalize(createPathURI(path)).getPath(); //get a URI from the path, normalize that URI, and then return the path of the resulting URI
 	}
 
 	/**Relativizes the given full path against the given base path.
@@ -1395,18 +1388,17 @@ public class URIs
 	@see URI
 	@see URL
 	*/
-	public static URI createURI(final Object contextObject, final String string)
-			throws URISyntaxException //TODO maybe delete this eventually
+	public static URI createURI(final Object contextObject, final String string) throws URISyntaxException //TODO maybe delete this eventually
 	{
 		if(contextObject instanceof URI) //if the context is a URI
 		{
 			//TODO if the string contains illegal URI characters, such as spaces, this won't work
 			//TODO also check to see if the string is null.
-			return ((URI)contextObject).resolve(new URI(string)); //resolve the URI form of the string, creating a URISyntaxException if there is a problem
+			return resolve((URI)contextObject, new URI(string)); //resolve the URI form of the string, creating a URISyntaxException if there is a problem
 		}
 		else if(contextObject instanceof URL) //if the context is a URL
 		{
-			return ((URL)contextObject).toURI().resolve(string); //convert the URL to a URI and use it as a context
+			return resolve(((URL)contextObject).toURI(), string); //convert the URL to a URI and use it as a context
 		}
 		else if(contextObject instanceof File) //if the context object is a file
 		{
@@ -1743,14 +1735,95 @@ public class URIs
 		}
 	}
 
-	/**Resolved a relative URI against a base URI with added functionality.
-	The emptry string is appended to the given base URI with no fragment.
-	This method correctly resolves fragment URIs against opaque base URIs.
+	/**The prefix used in the scheme-specific part by Java for Windows UNC paths in file URIs.*/
+	public final static String WINDOWS_UNC_PATH_URI_SSP_PREFIX=ROOT_PATH+PATH_SEPARATOR+PATH_SEPARATOR+PATH_SEPARATOR;
+
+	/**Determines whether the given URI is a UNC file path URI in the form <code>file:////server/file.ext</code>.
+	<p>Strangly, the Java URI form of a UNC path will contain a path prefixed with <code>//</code>, but the entire
+	scheme-specific part will be prefixed with <code>////</code>.</p>
+	@param uri The URI to test.
+	@return <code>true</code> if the given URI has a scheme of {@value #FILE_SCHEME} and its scheme-specific part begins with four slashes.
+	@see #WINDOWS_UNC_PATH_URI_SSP_PREFIX
+	*/
+	public static boolean isUNCFileURI(final URI uri)
+	{
+		return FILE_SCHEME.equals(uri.getScheme()) && uri.getRawSchemeSpecificPart().startsWith(WINDOWS_UNC_PATH_URI_SSP_PREFIX);
+	}
+
+	/**Fixes a file URI that the caller knows originated as a Windows UNC path (e.g. <code>file:////server/file.ext</code>)
+	and that has been corrupted by Java	(e.g. <code>file:/server/file.ext</code>) via, for example, {@link URI#normalize()} or {@link URI#resolve(String)}. 
+	@param uri The path to be restored to a Java URI form of the UNC path.
+	@return The original UNC path file URI as would have been given by {@link File#toURI()}.
+	@throws IllegalArgumentException if the given path does not have a {@value #FILE_SCHEME} scheme and/or does not have a path
+	that begins with {@value #ROOT_PATH}.
+	@see #isUNCFileURI(URI)
+	*/
+	private static URI fixUNCPathFileURI(final URI uri)
+	{
+		if(!FILE_SCHEME.equals(uri.getScheme()))
+		{
+			throw new IllegalArgumentException("Cannot fix UNC path of non-file URI: "+uri);
+		}
+		final String rawPath=uri.getRawPath();	//get the path of the URI
+		if(rawPath==null || !rawPath.startsWith(ROOT_PATH))	//double-check the path---it should still start with a slash
+		{
+			throw new IllegalArgumentException("Cannot fix UNC path of a relative path URI: "+uri);
+		}
+		return changeRawSchemeSpecificPart(uri, ROOT_PATH+PATH_SEPARATOR+PATH_SEPARATOR+rawPath);	//prepend "///" to the scheme-specific part
+	}
+
+
+	/**Normalizes a URI.
+	<p>This method has the same semantics as {@link URI#normalize()}, except that this method
+	has improvements and bug fixes. For example, a UNC path such as <code>file:////server/file.ext</code>
+	will retain its correct path, unlike {@link URI#normalize()}, which would reduce this to <code>file:/server/file.ext</code>.</p>
+	@param uri The URI to normalize.
+	@return The normalized URI.
+	@see #isUNCFileURI(URI)
+	@see <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4723726">Java Bug ID: 4723726</a>
+	*/
+	public static URI normalize(URI uri)
+	{
+		final boolean wasUNCFileURI=isUNCFileURI(uri);
+		uri=uri.normalize();	//normalize the URI using Java's normalization
+		if(wasUNCFileURI && !isUNCFileURI(uri))	//if a UNC file URI is no longer a UNC file URI (i.e. it has lost its preceding slashes)
+		{
+			assert FILE_SCHEME.equals(uri.getScheme());
+			assert uri.getRawPath()!=null && uri.getRawPath().startsWith(ROOT_PATH);
+			uri=fixUNCPathFileURI(uri);	//convert the URI back to a UNC path URI
+		}
+		return uri;	//return the normalized, possibly fixed-up URI
+	}
+
+	/**Resolves a string against a base URI with added functionality and bug fixes over {@link URI#resolve(String)}.
+	<p>This method creates a URI from the child URI using {@link URI#create(String)} and then delegates to {@link #resolve(URI, URI)}.</p>
+	<p>The empty string is appended to the given base URI with no fragment.</p>
+	<p>This method correctly resolves fragment URIs against opaque base URIs.</p>
+	<p>This method corrects Java's erroneous collapsing of slashes in UNC paths, so that
+	for example <code>file:////server/file.ext</code> can successfully be resolved against.</p>
 	@param baseURI The URI against which the child URI should be resolved.
 	@param childURI The URI to resolve against the base URI.
 	@return The child URI resolved against the base URI.
 	@throws NullPointerException if the base URI and/or the child URI is <code>null</code>.
 	@see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
+	@see #isUNCFileURI(URI)
+	*/
+	public static URI resolve(final URI baseURI, final String childURI)
+	{
+		return resolve(baseURI, URI.create(childURI));
+	}
+
+	/**Resolves a relative URI against a base URI with added functionality and bug fixes over {@link URI#resolve(URI)}.
+	<p>The empty string is appended to the given base URI with no fragment.</p>
+	<p>This method correctly resolves fragment URIs against opaque base URIs.</p>
+	<p>This method corrects Java's erroneous collapsing of slashes in UNC paths in {@link URI#resolve(URI)}, so that
+	for example <code>file:////server/file.ext</code> can successfully be resolved against.</p>
+	@param baseURI The URI against which the child URI should be resolved.
+	@param childURI The URI to resolve against the base URI.
+	@return The child URI resolved against the base URI.
+	@throws NullPointerException if the base URI and/or the child URI is <code>null</code>.
+	@see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
+	@see #isUNCFileURI(URI)
 	*/
 	public static URI resolve(final URI baseURI, final URI childURI)
 	{
@@ -1770,7 +1843,12 @@ public class URIs
 				return removeFragment(baseURI); //return the base URI with no fragment
 			}
 		}
-		return baseURI.resolve(childURI); //resolve the child URI against the base normally
+		URI resolvedURI=baseURI.resolve(childURI); //resolve the child URI against the base normally
+		if(isUNCFileURI(baseURI) && !childURI.isAbsolute())	//if we resolved a relative URI against a Windows UNC path file URI, the resulting URI should also be a UNC path file URI
+		{
+			resolvedURI=fixUNCPathFileURI(resolvedURI);	//restore the URI to a UNC path file URI, as Java will have collapsed several slashes
+		}
+		return resolvedURI;
 	}
 
 	/**Resolves a URI path against a base URI.
@@ -1781,7 +1859,7 @@ public class URIs
 	*/
 	public static URI resolve(final URI baseURI, final URIPath path)
 	{
-		return baseURI.resolve(path.toURI()); //resolve the path as a URI against the base URI
+		return resolve(baseURI, path.toURI()); //resolve the path as a URI against the base URI
 	}
 
 	/**Returns a URI constructed from a given URI and a fragment identifier.
@@ -1793,11 +1871,9 @@ public class URIs
 	@throws IllegalArgumentException if the a URI cannot be constructed from the given information.
 	@see URI#create(String)
 	*/
-	public static URI resolveFragment(final URI uri, final String fragment)
-			throws IllegalArgumentException
+	public static URI resolveFragment(final URI uri, final String fragment) throws IllegalArgumentException
 	{
-		final String fragmentSuffix=new StringBuilder().append(
-				URIs.FRAGMENT_SEPARATOR).append(fragment).toString(); //create a suffix that includes the fragment separator and the fragment
+		final String fragmentSuffix=new StringBuilder().append(URIs.FRAGMENT_SEPARATOR).append(fragment).toString(); //create a suffix that includes the fragment separator and the fragment
 		final URI fragmentURI=URI.create(fragmentSuffix); //create a URI from the fragment
 		return uri!=null ? resolve(uri, fragmentURI) : fragmentURI; //if a URI was given, resolve the fragment against the URI; otherwise, just return the fragment suffix itself 
 	}
@@ -1819,8 +1895,7 @@ public class URIs
 	@return The URI with the fragment, if any, removed and replaced with the given raw fragment, if any.
 	@throws NullPointerException if the given URI is <code>null</code>.
 	*/
-	public static URI replaceRawFragment(final URI uri,
-			final String newRawFragment)
+	public static URI replaceRawFragment(final URI uri, final String newRawFragment)
 	{
 		final String oldRawFragment=uri.getRawFragment(); //get the raw fragment, if any
 		if(oldRawFragment!=null) //if there is currently a fragment
@@ -1828,31 +1903,24 @@ public class URIs
 			final int oldRawFragmentLength=oldRawFragment.length(); //get theh length of the current raw fragment
 			final StringBuilder uriStringBuilder=new StringBuilder(uri.toString()); //get the string representation of the URI
 			final int uriLength=uriStringBuilder.length(); //get the length of the URI
-			assert uriStringBuilder.toString().endsWith(
-					new StringBuilder().append(URIs.FRAGMENT_SEPARATOR).append(
-							oldRawFragment).toString());
+			assert uriStringBuilder.toString().endsWith(new StringBuilder().append(URIs.FRAGMENT_SEPARATOR).append(oldRawFragment).toString());
 			if(newRawFragment!=null) //if a new raw fragment was given
 			{
-				uriStringBuilder.replace(uriLength-oldRawFragmentLength, uriLength,
-						newRawFragment); //replace the old fragment with the new one
+				uriStringBuilder.replace(uriLength-oldRawFragmentLength, uriLength, newRawFragment); //replace the old fragment with the new one
 			}
-			else
-			//if no new raw fragment was given
+			else	//if no new raw fragment was given
 			{
 				uriStringBuilder.delete(uriLength-oldRawFragmentLength-1, uriLength); //delete the entire fragment
 			}
 			return URI.create(uriStringBuilder.toString()); //create a URI from the new URI string
 		}
-		else
-		//if there is no fragment
+		else	//if there is no fragment
 		{
 			if(newRawFragment!=null) //if a new raw fragment was given
 			{
-				return URI
-						.create(uri.toString()+URIs.FRAGMENT_SEPARATOR+newRawFragment); //append the new raw fragment
+				return URI.create(uri.toString()+URIs.FRAGMENT_SEPARATOR+newRawFragment); //append the new raw fragment
 			}
-			else
-			//if no new raw fragment was given
+			else	//if no new raw fragment was given
 			{
 				return checkInstance(uri, "URI cannot be null."); //return the original URI
 			}
@@ -1865,8 +1933,7 @@ public class URIs
 	@param rawSchemeSpecificPart The raw, encoded scheme-specific part, or <code>null</code> if there is no scheme-specific part.
 	@throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	*/
-	public static URI createURI(final String scheme,
-			final String rawSchemeSpecificPart) throws IllegalArgumentException
+	public static URI createURI(final String scheme, final String rawSchemeSpecificPart) throws IllegalArgumentException
 	{
 		return createURI(scheme, rawSchemeSpecificPart, null); //create a URI with no fragment
 	}
@@ -1878,9 +1945,7 @@ public class URIs
 	@param rawFragment The raw, encoded fragment at the end of the URI, or <code>null</code> if there is no fragment.
 	@throws IllegalArgumentException if the a URI cannot be constructed from the given strings.
 	*/
-	public static URI createURI(final String scheme,
-			final String rawSchemeSpecificPart, final String rawFragment)
-			throws IllegalArgumentException
+	public static URI createURI(final String scheme, final String rawSchemeSpecificPart, final String rawFragment) throws IllegalArgumentException
 	{
 		final StringBuilder stringBuilder=new StringBuilder(); //we'll use this to construct the URI
 		if(scheme!=null) //if there is a scheme
@@ -2163,28 +2228,18 @@ public class URIs
 		return uriStringBuilder!=null ? URI.create(uriStringBuilder.toString()) : uri;	//if we modified the URI, return a new URI created from the string builder
 	}
 	
-
-	//variables for fixing a JDK URI.resolve() bug
-	private final static String EXPECTED_URI_PREFIX="file:////";
-
-	private final static String RESULT_URI_PREFIX="file:/";
-
 	/**Changes a URI from one base to another.
-	For example, <code>http://example.com/base1/test.txt</code> changed to base
-		<code>http://example.com/base2/level2/</code> yields
-		<code>http://example.com/base2/level2/test.txt</code>.
+	For example, <code>http://example.com/base1/test.txt</code> changed to base <code>http://example.com/base2/level2/</code> yields <code>http://example.com/base2/level2/test.txt</code>.
 	<p>If the old and new base URIs are the same, the given URI is returned.</p>
-	<p>This method contains a workaround for the JDK 5.0 bug that chops off the
-		first few forward slashes for Windows network names.</p>
+	<p>This method correctly works with Windows UNC path file URIs, working around a JDK 5.x/6.x bug that chops off the first few forward slashes for Windows network names.</p>
 	@param uri The URI the base of which to change.
 	@param oldBaseURI The current base URI.
 	@param newBaseURI The base URI of the new URI to construct.
-	@return A new URI constructed by relativizing the URI to the old base URI and
-		resolving the resulting URI agains the new base URI.
+	@return A new URI constructed by relativizing the URI to the old base URI and resolving the resulting URI agains the new base URI.
+	@see #isUNCFileURI(URI)
 	@see URI#relativize(URI)
-	@see URI#resolve(URI)
-	@throws IllegalArgumentException Thrown if <var>oldBaseURI</code> is not
-		a base URI of <var>uri</var>.
+	@see #resolve(URI, URI)
+	@throws IllegalArgumentException if <var>oldBaseURI</code> is not a base URI of <var>uri</var>.
 	*/
 	public static URI changeBase(final URI uri, final URI oldBaseURI, final URI newBaseURI)
 	{
@@ -2192,44 +2247,12 @@ public class URIs
 		{
 			return uri; //the URI will not change
 		}
-		//G***del Log.trace("changing base of ", uri, "from", oldBaseURI, "to", newBaseURI);
 		final URI relativeURI=oldBaseURI.relativize(uri); //get a URI relative to the old base URI
 		if(relativeURI.isAbsolute()) //if we couldn't relativize the the URI to the old base URI and come up with a relative URI
 		{
-			throw new IllegalArgumentException(oldBaseURI.toString()
-					+" is not a base URI of "+uri);
+			throw new IllegalArgumentException(oldBaseURI.toString()+" is not a base URI of "+uri);
 		}
-		URI newURI=newBaseURI.resolve(relativeURI); //resolve the relative URI to the new base URI
-		//G***del Log.trace("new URI:", newURI);
-		final String newBaseURIString=newBaseURI.toString(); //get the string of the new base URI
-		//G***del; maybe not needed		final StringBuilder newURIStringBuilder=new StringBuilder(newURI.toString());	//get the string of the new URI
-		final String newURIString=newURI.toString(); //get the string version of the new URI
-		/*G***del
-					//if the old URI ended with '/' but the new URI doesn't (this can occur when the new URI references a directory
-				if(endsWith(uri.toString(), PATH_SEPARATOR) && !endsWith(newURIStringBuilder, PATH_SEPARATOR))
-				{
-					
-				}
-		*/
-
-		//check for the JDK 5.0 bug that chops off the first few forward slashes for Windows network names
-		if(!newURIString.startsWith(newBaseURIString)) //if the new URI doesn't start with the new base URI we were expecting
-		{
-			if(newBaseURIString.startsWith(EXPECTED_URI_PREFIX)
-					&&newURIString.startsWith(RESULT_URI_PREFIX))
-			{
-				final String fixedURIString=EXPECTED_URI_PREFIX
-						+newURIString.substring(RESULT_URI_PREFIX.length()); //replace the incorrect beginning section
-				newURI=URI.create(fixedURIString); //return create a URI that goes back to the new base URI we expected
-			}
-			else
-			//if this is a different bug than we expected
-			{
-				throw new AssertionError(newURIString
-						+" does not begin with expected new base URI "+newBaseURIString);
-			}
-		}
-		return newURI; //return the new URI with the changed base
+		return resolve(newBaseURI, relativeURI); //resolve the relative URI to the new base URI, using our Windows UNC path-aware resolve method
 	}
 
 	/**Determines whether the given URI is a child relative to the given base URI.

@@ -730,7 +730,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 				return baseURI;	//return the base URI
 			}
 		}
-		return baseURI.resolve(uri);	//resolve the URI against the base URI normally
+		return resolve(baseURI, uri);	//resolve the URI against the base URI normally
 	}
 
 }

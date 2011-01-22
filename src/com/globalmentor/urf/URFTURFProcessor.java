@@ -1519,7 +1519,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 			final URI legacyNamespaceURI=removeFragment(legacyNamespacedURI);	//remove the fragment to get the legacy namespace
 			if(LEGACY_NAMESPACE_URIS.contains(legacyNamespaceURI))	//if this is a legacy URI
 			{
-				return convertLegacyNamespaceURI(legacyNamespaceURI).resolve(rawFragment);	//convert that namespace and resolve the fragment against it
+				return resolve(convertLegacyNamespaceURI(legacyNamespaceURI), rawFragment);	//convert that namespace and resolve the fragment against it
 			}
 		}
 		return legacyNamespacedURI;	//the URI didn't need converting

@@ -811,15 +811,17 @@ public class Files
 	{
 		URI uri=file.toURI();	//create a URI from the file normally; Java may allow non-ASCII characters in this version
 			//test the entire URI for non-ASCII characters, as well the ';' character, which has a special meaning in URIs
-		String rawPath=uri.getRawPath();	//get the path of the URI; assuming that most URIs do not have non-ASCII characters, it will be more efficient to check the characters first, as we may not have to do any conversion
-		for(int i=rawPath.length()-1; i>=0; --i)	//for each character (iteration order doesn't matter)
+			//get the scheme-specific of the URI, as Windows UNC path URIs hide an extra couple of slash characters elsewhere than in the path
+			//assuming that most URIs do not have non-ASCII characters, it will be more efficient to check the characters first, as we may not have to do any conversion
+		String rawSSP=uri.getRawSchemeSpecificPart();
+		for(int i=rawSSP.length()-1; i>=0; --i)	//for each character (iteration order doesn't matter)
 		{
-			final char c=rawPath.charAt(i);
-			if(c>127 || c==';')	//if we found a non-ASCII character or the special
+			final char c=rawSSP.charAt(i);
+			if(c>127 || c==';')	//if we found a non-ASCII character or the special character ';'
 			{
-					//escape the path from scratch, but only consider the ';' character and characters above 127 invalid so as to preserve the originally encoded characters, if any 
-				rawPath=CharSequences.escapeHex(rawPath, null, String.valueOf(';'), 127, URIs.ESCAPE_CHAR, 2, Case.LOWERCASE);
-				uri=URIs.changeRawPath(uri, rawPath);	//change the path of the URI
+					//escape the scheme-specific part from scratch, but only consider the ';' character and characters above 127 invalid so as to preserve the originally encoded characters, if any 
+				rawSSP=CharSequences.escapeHex(rawSSP, null, String.valueOf(';'), 127, URIs.ESCAPE_CHAR, 2, Case.LOWERCASE);
+				uri=URIs.changeRawSchemeSpecificPart(uri, rawSSP);	//change the scheme-specific part of the URI
 				break;	//skip looking at the rest of the string
 			}
 		}

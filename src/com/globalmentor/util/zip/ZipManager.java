@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.zip.*;
 import com.globalmentor.io.*;
 import com.globalmentor.net.*;
+import static com.globalmentor.net.URIs.*;
 
 /**Facilitates access to a zip file.
 	Keeps track of zip contents by zip entry name as a URI as if each zip entry
@@ -184,7 +185,7 @@ public class ZipManager implements URIInputStreamable
 	*/
 	public URI getURI(final String href)
 	{
-		return getBaseURI().resolve(href);	//resolve the file location against the base URI to yield a full URI
+		return resolve(getBaseURI(), href);	//resolve the file location against the base URI to yield a full URI
 	}
 
 	/**Creates a URI to represent the given zip entry, based upon the zip entry's
