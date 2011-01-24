@@ -40,7 +40,7 @@ public abstract class AbstractFileCache<K, Q extends AbstractCache.Query<K>> ext
 	If no modified time is known, this will not influence the staleness determination of cached information.
 	@author Garret Wilson
 	*/
-	public static class FileData extends Data<File>
+	public static class FileData extends Cache.Data<File>
 	{
 
 		/**The last known modified time of the resource represented, or <code>null</code> if the last modified time is not known.*/
