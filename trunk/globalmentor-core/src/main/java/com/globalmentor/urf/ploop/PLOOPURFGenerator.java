@@ -11,8 +11,10 @@ import static com.globalmentor.urf.URF.*;
 
 import com.globalmentor.net.*;
 import com.globalmentor.urf.*;
+/*TODO fix for Guise
 import com.guiseframework.style.Color;
 import com.guiseframework.style.RGBColor;
+*/
 
 /**Class that generates an URF instance from a Java object.
 This PLOOP processor recognizes {@link Resource} objects and writes their URIs.
@@ -147,10 +149,12 @@ public class PLOOPURFGenerator
 			{
 				object=new String((char[])object);	//use the string version of the character array
 			}
+/*TODO fix for Guise
 			else if(object instanceof Color)	//if the object is a color
 			{
 				object=((Color)object).asRGB().toString();	//use the RGB string representation of the color
 			}
+*/
 			else if(object instanceof URIPath)	//if the required type is URIPath
 			{
 				object=object.toString();	//use the string form of the URI path

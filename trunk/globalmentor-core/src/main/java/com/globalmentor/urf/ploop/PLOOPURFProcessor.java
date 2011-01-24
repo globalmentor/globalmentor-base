@@ -18,8 +18,10 @@ import com.globalmentor.net.*;
 import com.globalmentor.urf.*;
 import com.globalmentor.util.*;
 
+/*TODO fix for Guise
 import com.guiseframework.style.AbstractModeledColor;
 import com.guiseframework.style.Color;
+*/
 
 /**Processes PLOOP objects from an URF data model.
 <p>This is a stateful processor and may only be used for one URF data model instance.</p>
@@ -586,10 +588,12 @@ public class PLOOPURFProcessor
 					{
 						return stringObject.toCharArray();	//return the string as a character array
 					}
+/*TODO fix for Guise
 					else if(Color.class.isAssignableFrom(requiredType))	//if the required type is Color
 					{
 						return AbstractModeledColor.valueOf(stringObject);	//compile a color from the string
 					}
+*/
 					else if(Pattern.class.isAssignableFrom(requiredType))	//if the required type is Pattern
 					{
 						return Pattern.compile(stringObject);	//compile a pattern from the string
