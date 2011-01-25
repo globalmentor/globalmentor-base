@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 
 	<name>core</name>
-	<url>http://maven.apache.org</url>
+	<url>http://www.globalmentor.com/</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,12 +28,12 @@
 			<version>6.0</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.14</version>
-      </dependency>
-		
-  </dependencies>
+		</dependency>
+
+	</dependencies>
 </project>
