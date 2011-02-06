@@ -1,5 +1,5 @@
 /*
- * Copyright © 2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2009-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,21 @@
 
 package com.globalmentor.config;
 
-import com.globalmentor.java.Disposable;
-
 /**
- * Represents a configuration that can be specified locally via a {@link ConfigurationManagedThreadGroup}, or as a
- * global default using {@link Configurator#setDefaultConfiguration(Configuration)}.
+ * An abstract base class for a configuration.
+ * 
  * @author Garret Wilson
+ * 
  * @see Configurator
  */
-public interface Configuration extends Disposable
+public abstract class AbstractConfiguration implements Configuration
 {
+
+	/**
+	 * {@inheritDoc} This version does nothing.
+	 */
+	public void dispose()
+	{
+	}
+
 }
