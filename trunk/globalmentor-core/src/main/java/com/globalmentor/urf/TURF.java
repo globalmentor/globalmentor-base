@@ -24,7 +24,6 @@ import com.globalmentor.java.Characters;
 import com.globalmentor.net.ContentType;
 
 import static com.globalmentor.java.Characters.*;
-import static com.globalmentor.text.xml.XML.XML_SUBTYPE_SUFFIX;
 import static com.globalmentor.urf.URF.*;
 
 /**Constants relating to the text serialization of URF, TURF.
@@ -128,9 +127,9 @@ public class TURF
 	public final static char REGULAR_EXPRESSION_END=REGULAR_EXPRESSION_BEGIN;
 
 	/**The delimiter that begins URI references.*/
-	public final static char REFERENCE_BEGIN='\u00AB';	//«
+	public final static char REFERENCE_BEGIN=LEFT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR;	//«
 	/**The delimiter that ends URI references.*/
-	public final static char REFERENCE_END='\u00BB';	//»
+	public final static char REFERENCE_END=RIGHT_POINTING_DOUBLE_ANGLE_QUOTATION_MARK_CHAR;	//»
 
 	/**The delimiter that begins selector declarations.*/
 	public final static char SELECTOR_BEGIN='(';

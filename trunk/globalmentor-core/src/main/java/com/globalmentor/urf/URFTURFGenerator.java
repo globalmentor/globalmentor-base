@@ -335,7 +335,7 @@ public class URFTURFGenerator
 	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
 	@param formatted Whether output is formatted.
 	@param namespaceLabelManager The manager of namespaces and labels.
-	@excepion NullPointerException if the given namespace label manager is <code>null</code>.
+	@exception NullPointerException if the given namespace label manager is <code>null</code>.
 	*/
 	public URFTURFGenerator(final URI baseURI, final boolean formatted, final TURFNamespaceLabelManager namespaceLabelManager)
 	{
@@ -572,9 +572,9 @@ public class URFTURFGenerator
 					}
 					final String prefix=namespaceLabelManager.determineNamespaceLabel(namespaceURI);	//get a namespace label for the URI
 					assert prefix!=null;	//the only namespace that should have no prefix is the default namespace, which we should already have skipped
-					writeString(writer, prefix);	//write the prefix
+					appendString(writer, prefix);	//write the prefix
 					writer.write(NAMESPACE_ASSOCIATION_DELIMITER);	//write the property-value delimiter
-					writeURI(writer, namespaceURI);	//write the URI
+					appendURI(writer, namespaceURI);	//write the URI
 				}
 			}
 			if(startedProperties)	//if we have a preamble
@@ -687,7 +687,7 @@ public class URFTURFGenerator
 		}
 		if(label!=null)	//if there is a label
 		{
-			writeLabel(writer, label);	//write the label
+			appendLabel(writer, label);	//write the label
 		}
 			//reference
 		if(uri!=null && (!isGenerated || label==null))	//if there is a URI (don't show the URI if the resource is already generated and we already generated a label here)
@@ -1287,17 +1287,17 @@ public class URFTURFGenerator
 			}
 			else if(REGULAR_EXPRESSION_CLASS_URI.equals(inlineTypeURI))	//if this is a regular expression
 			{
-				writeRegularExpression(writer, lexicalForm);	//write the regular expression short form
+				appendRegularExpression(writer, lexicalForm);	//write the regular expression short form
 				return inlineTypeURI;
 			}
 			else if(STRING_CLASS_URI.equals(inlineTypeURI))	//if this is a string
 			{
-				writeString(writer, lexicalForm);	//write the string short form
+				appendString(writer, lexicalForm);	//write the string short form
 				return inlineTypeURI;
 			}
 			else if(URI_CLASS_URI.equals(inlineTypeURI))	//if this is a URI
 			{
-				writeURI(writer, lexicalForm);	//write the URI short form
+				appendURI(writer, lexicalForm);	//write the URI short form
 				return inlineTypeURI;
 			}
 		}
@@ -1355,7 +1355,7 @@ public class URFTURFGenerator
 			writer.write(TYPE_BEGIN);	//start a type declaration
 			generateReference(writer, inlineTypeURI, namespaceLabelManager, baseURI, determinePrefix);	//generate a reference to the inline type, determining a new prefix if needed
 			writer.write(SELECTOR_BEGIN);	//start the selector
-			writeString(writer, lexicalForm);	//write the string lexical form			
+			appendString(writer, lexicalForm);	//write the string lexical form			
 			writer.write(SELECTOR_END);	//end the selector
 		}
 		else	//if this URI is not in an inline namespace
@@ -1407,83 +1407,198 @@ public class URFTURFGenerator
 		}
 	}
 
-	/**Writes a label with appropriate delimiters.
-	@param writer The writer used for generating the information.
-	@param label The label to write.
-	@exception NullPointerException if the given writer and/or label is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
+	/**Appends a label to an appendable with appropriate delimiters.
+	@param appendable The appendable to which the information should be appended.
+	@param label The label to append.
+	@return The appendable with the new information appended.
+	@exception NullPointerException if the given appendable and/or label is <code>null</code>.
+	@exception IOException if there was an error appending to the appendable.
 	*/
-	public static void writeLabel(final Writer writer, final String label) throws IOException
+	public static Appendable appendLabel(final Appendable appendable, final String label) throws IOException
 	{
-		writer.append(LABEL_BEGIN).append(checkInstance(label, "Label cannot be null.")).append(LABEL_END);	//write the label
+		return appendable.append(LABEL_BEGIN).append(checkInstance(label, "Label cannot be null.")).append(LABEL_END);	//append the label
 	}
 
-	/**Writes a regular expression surrounded by the regular expression short form delimiters.
+	/**Returns a label short form with appropriate delimiters.
+	@param label The label to store in the string.
+	@return The string containing the label short form.
+	@exception NullPointerException if the given label is <code>null</code>.
+	*/
+	public static String toLabelString(final Appendable appendable, final String label)
+	{
+		try
+		{
+			return appendLabel(new StringBuilder(), label).toString();
+		}
+		catch(final IOException ioException)
+		{
+			throw new AssertionError(ioException);
+		}
+	}
+	
+	/**Appends a regular expression to an appendable surrounded by the regular expression short form delimiters.
 	The usual reserved string characters, along with the regular expression delimiter, will be escaped.
-	@param writer The writer used for generating the information.
-	@param regularExpression The regular expression to write.
-	@exception NullPointerException if the given writer and/or regular expression is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
+	@param appendable The appendable to which the information should be appended.
+	@param regularExpression The regular expression to append.
+	@return The appendable with the new information appended.
+	@exception NullPointerException if the given appendable and/or regular expression is <code>null</code>.
+	@exception IOException if there was an error appending to the appendable.
 	@see TURF#REGULAR_EXPRESSION_BEGIN
 	@see TURF#REGULAR_EXPRESSION_END
 	*/
-	public static void writeRegularExpression(final Writer writer, final String regularExpression) throws IOException
+	public static Appendable appendRegularExpression(final Appendable appendable, final String regularExpression) throws IOException
 	{
-		writeString(writer, regularExpression, REGULAR_EXPRESSION_BEGIN, REGULAR_EXPRESSION_END);	//write the regular expression using the regular expression short form delimiters
+		return appendString(appendable, regularExpression, REGULAR_EXPRESSION_BEGIN, REGULAR_EXPRESSION_END);	//append the regular expression using the regular expression short form delimiters
 	}
 
-	/**Writes a string surrounded by the string short form delimiters.
+	/**Returns a regular expression short form surrounded by the regular expression short form delimiters.
+	The usual reserved string characters, along with the regular expression delimiter, will be escaped.
+	@param regularExpression The regular expression to store in the string.
+	@return The string containing the regular expression short form.
+	@exception NullPointerException if the given regular expression is <code>null</code>.
+	@see TURF#REGULAR_EXPRESSION_BEGIN
+	@see TURF#REGULAR_EXPRESSION_END
+	*/
+	public static String toRegularExpressionString(final String regularExpression)
+	{
+		try
+		{
+			return appendRegularExpression(new StringBuilder(), regularExpression).toString();
+		}
+		catch(final IOException ioException)
+		{
+			throw new AssertionError(ioException);
+		}
+	}
+
+	/**Appends a string to an appendable surrounded by the string short form delimiters.
 	The usual reserved string characters, along with the string delimiter, will be escaped.
-	@param writer The writer used for generating the information.
-	@param string The string to write.
-	@exception NullPointerException if the given writer and/or string is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
+	@param appendable The appendable to which the information should be appended.
+	@param string The string to append.
+	@return The appendable with the new information appended.
+	@exception NullPointerException if the given appendable and/or string is <code>null</code>.
+	@exception IOException if there was an error appending to the appendable.
 	@see TURF#STRING_BEGIN
 	@see TURF#STRING_END
 	*/
-	public static void writeString(final Writer writer, final String string) throws IOException
+	public static Appendable appendString(final Appendable appendable, final String string) throws IOException
 	{
-		writeString(writer, string, STRING_BEGIN, STRING_END);	//write the string using the string short form delimiters
+		return appendString(appendable, string, STRING_BEGIN, STRING_END);	//append the string using the string short form delimiters
 	}
 
-	/**Writes a URI surrounded by the URI short form delimiters.
-	@param writer The writer used for generating the information.
-	@param uri The URI to write.
-	@exception NullPointerException if the given writer and/or URI is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
+	/**Returns a string short form surrounded by the string short form delimiters.
+	The usual reserved string characters, along with the string delimiter, will be escaped.
+	@param string The string to store in the string.
+	@return The string containing the string short form.
+	@exception NullPointerException if the given string is <code>null</code>.
+	@see TURF#STRING_BEGIN
+	@see TURF#STRING_END
+	*/
+	public static String toStringString(final String string)
+	{
+		try
+		{
+			return appendString(new StringBuilder(), string).toString();
+		}
+		catch(final IOException ioException)
+		{
+			throw new AssertionError(ioException);
+		}
+	}
+
+	/**Appends a URI to an appendable surrounded by the URI short form delimiters.
+	@param appendable The appendable to which the information should be appended.
+	@param uri The URI to append.
+	@return The appendable with the new information appended.
+	@exception NullPointerException if the given appendable and/or URI is <code>null</code>.
+	@exception IOException if there was an error appending to the appendable.
 	@see TURF#URI_BEGIN
 	@see TURF#URI_END
 	*/
-	public static void writeURI(final Writer writer, final URI uri) throws IOException
+	public static Appendable appendURI(final Appendable appendable, final URI uri) throws IOException
 	{
-		writeURI(writer, uri.toString());	//write the string form of the URI
+		return appendURI(appendable, uri.toString());	//append the string form of the URI
 	}
 
-	/**Writes a URI surrounded by the URI short form delimiters.
-	@param writer The writer used for generating the information.
-	@param uri The URI to write.
-	@exception NullPointerException if the given writer and/or URI is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
+	/**Returns a URI short form surrounded by the URI short form delimiters.
+	@param uri The URI to store in the string.
+	@return The string containing the URI short form.
+	@exception NullPointerException if the given URI is <code>null</code>.
 	@see TURF#URI_BEGIN
 	@see TURF#URI_END
 	*/
-	public static void writeURI(final Writer writer, final String uri) throws IOException
+	public static String toURIString(final URI uri)
 	{
-		writer.append(URI_BEGIN).append(uri).append(URI_END);	//write a URI short form
+		try
+		{
+			return appendURI(new StringBuilder(), uri).toString();
+		}
+		catch(final IOException ioException)
+		{
+			throw new AssertionError(ioException);
+		}
 	}
 
-	/**Writes a string surrounded by specified string delimiters.
+	/**Appends a resource reference to an appendable surrounded by the reference short form delimiters.
+	@param appendable The appendable to which the information should be appended.
+	@param referenceURI The URI of the reference to append.
+	@return The appendable with the new information appended.
+	@exception NullPointerException if the given appendable and/or reference URI is <code>null</code>.
+	@exception IOException if there was an error appending to the appendable.
+	@see TURF#REFERENCE_BEGIN
+	@see TURF#REFERENCE_END
+	*/
+	public static Appendable appendReference(final Appendable appendable, final URI referenceURI) throws IOException
+	{
+		return appendable.append(REFERENCE_BEGIN).append(referenceURI.toString()).append(REFERENCE_END);	//append a reference short form
+	}
+
+	/**Returns a resource reference short form surrounded by the reference short form delimiters.
+	@param uri The URI of the reference to store in the string.
+	@return The string containing the reference short form.
+	@exception NullPointerException if the given reference URI is <code>null</code>.
+	@see TURF#REFERENCE_BEGIN
+	@see TURF#REFERENCE_END
+	*/
+	public static String toReferenceString(final URI uri)
+	{
+		try
+		{
+			return appendReference(new StringBuilder(), uri).toString();
+		}
+		catch(final IOException ioException)
+		{
+			throw new AssertionError(ioException);
+		}
+	}
+	
+	/**Appends a URI to an appendable surrounded by the URI short form delimiters.
+	@param appendable The appendable to which the information should be appended.
+	@param uri The URI to append.
+	@return The appendable with the new information appended.
+	@exception NullPointerException if the given appendable and/or URI is <code>null</code>.
+	@exception IOException if there was an error appending to the appendable.
+	@see TURF#URI_BEGIN
+	@see TURF#URI_END
+	*/
+	protected static Appendable appendURI(final Appendable appendable, final String uri) throws IOException
+	{
+		return appendable.append(URI_BEGIN).append(uri).append(URI_END);	//append a URI short form
+	}
+
+	/**Appends a string to an appendable surrounded by specified string delimiters.
 	The usual reserved string characters, along with the string end delimiter, will be escaped.
-	@param writer The writer used for generating the information.
-	@param string The string to write.
+	@param appendable The appendable to which the information should be appended.
+	@param string The string to append.
 	@param stringBegin The beginning string delimiter.
 	@param stringEnd The ending string delimiter.
-	@exception NullPointerException if the given writer and/or string is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
+	@return The appendable with the new information appended.
+	@exception NullPointerException if the given appendable and/or string is <code>null</code>.
+	@exception IOException if there was an error appending to the appendable.
 	*/
-	public static void writeString(final Writer writer, final String string, final char stringBegin, final char stringEnd) throws IOException
+	protected static Appendable appendString(final Appendable appendable, final String string, final char stringBegin, final char stringEnd) throws IOException
 	{
-		writer.write(stringBegin);	//write the string beginning delimiter
+		appendable.append(stringBegin);	//append the string beginning delimiter
 		final int length=string.length();	//get the length of the string
 		for(int i=0; i<length; ++i)	//for each character index
 		{
@@ -1516,11 +1631,11 @@ public class URFTURFGenerator
 					break;
 				case START_OF_STRING_CHAR:	//start of string
 					escaped=true;	//show that we should escape the character
-					c=ESCAPED_START_OF_STRING;	//use \left double quotation mark for start of string
+					c=ESCAPED_START_OF_STRING;	//use left double quotation mark for start of string
 					break;
 				case STRING_TERMINATOR_CHAR:	//string terminator
 					escaped=true;	//show that we should escape the character
-					c=ESCAPED_STRING_TERMINATOR;	//use \right double quotation mark for string terminator
+					c=ESCAPED_STRING_TERMINATOR;	//use right double quotation mark for string terminator
 					break;
 				default:
 					if(c==stringEnd)	//if this is one of the string ending delimiter
@@ -1531,19 +1646,20 @@ public class URFTURFGenerator
 			}
 			if(escaped)	//if we should escape this character
 			{
-				writer.write(STRING_ESCAPE);	//write an escape character
-				writer.write(c);	//write the character normally
+				appendable.append(STRING_ESCAPE);	//append an escape character
+				appendable.append(c);	//append the character normally
 			}
 			else if(Character.isISOControl(c))	//if this is a control character
 			{
-				writer.append(STRING_ESCAPE).append(ESCAPED_UNICODE).append(Integers.toHexString(c, 4));	//append a Unicode escaped version of the character
+				appendable.append(STRING_ESCAPE).append(ESCAPED_UNICODE).append(Integers.toHexString(c, 4));	//append a Unicode escaped version of the character
 			}
 			else	//if this character is not escaped and not a control character
 			{
-				writer.write(c);	//write the character normally
+				appendable.append(c);	//append the character normally
 			}
 		}
-		writer.write(stringEnd);	//write the string ending delimiter
+		appendable.append(stringEnd);	//append the string ending delimiter
+		return appendable;
 	}
 
 	/**Writes a list separator.

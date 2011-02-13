@@ -435,16 +435,7 @@ public class URF
 	*/
 	public static URI createInlineURI(final URI typeURI, final String lexicalForm)
 	{
-		final StringWriter localNameWriter=new StringWriter(lexicalForm.length()*3/2);	//create a new string writer with extra room to encode the lexical form
-		try
-		{
-			URFTURFGenerator.writeString(localNameWriter, lexicalForm);	//write the lexical form as a string
-		}
-		catch(final IOException ioException)
-		{
-			throw new AssertionError(ioException);
-		}
-		return createResourceURI(createInlineNamespaceURI(typeURI), localNameWriter.toString());	//get the appropriate inline namespace and form a resource URI from the local name we just created
+		return createResourceURI(createInlineNamespaceURI(typeURI), URFTURFGenerator.toStringString(lexicalForm));	//get the appropriate inline namespace and form a resource URI from the lexical form of the local name
 	}
 
 	/**Creates a URI to represent URF binary data.

@@ -16,6 +16,7 @@
 
 package com.globalmentor.urf;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.locks.*;
 
@@ -207,6 +208,16 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	/**@return A string representation of the property.*/
 	public String toString()
 	{
-		return new StringBuilder().append('(').append(TURF.REFERENCE_BEGIN).append(getPropertyURI()).append(TURF.REFERENCE_END).append(',').append(getValue()).toString();
+		try
+		{
+			final StringBuilder stringBuilder=new StringBuilder();
+			stringBuilder.append('(');
+			URFTURFGenerator.appendReference(stringBuilder, getPropertyURI());
+			return stringBuilder.append(',').append(getValue()).toString();
+		}
+		catch(final IOException ioException)
+		{
+			throw new AssertionError(ioException);
+		}
 	}
 }
