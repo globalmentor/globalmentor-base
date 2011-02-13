@@ -1,3 +1,19 @@
+/*
+ * Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.globalmentor.urf;
 
 import java.util.*;
@@ -14,12 +30,6 @@ All entry objects that are not instances of {@link URFMapEntryResource} are igno
 This implementation does not follow the {@link Map#keySet()}, {@link Map#values()}, and {@link Map#entrySet()} contracts in that the values
 returned by this implementation are not backed by the map.
 This implementation currently performs an inefficient traversal of all entries for each lookup.
-<p>Copyright © 2007 GlobalMentor, Inc.
-This source code can be freely used for any purpose, as long as the following conditions are met.
-Any object code derived from this source code must include the following text to users using along with other "about" notifications:
-"Uniform Resource Framework (URF) &lt;http://www.urf.name/&gt; specification and processing
-written by Garret Wilson &lt;http://www.garretwilson.com/&gt; and Copyright © 2007 GlobalMentor, Inc. &lt;http://www.globalmentor.com/&gt;."
-Any redistribution of this source code or derived source code must include these comments unmodified.</p>
 @param <K> The type of keys maintained by the map.
 @param <V> The type of mapped values.
 @author Garret Wilson
