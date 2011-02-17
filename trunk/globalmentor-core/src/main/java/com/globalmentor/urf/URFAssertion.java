@@ -16,10 +16,10 @@
 
 package com.globalmentor.urf;
 
-import java.net.URI;
 import java.util.List;
 
 import com.globalmentor.model.NameValuePair;
+import com.globalmentor.net.Resource;
 
 /**
  * Represents an assertion in URF.
@@ -30,14 +30,14 @@ import com.globalmentor.model.NameValuePair;
 public interface URFAssertion
 {
 	/** @return The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value. */
-	public List<NameValuePair<URI, URI>> getScopeChain();
+	public List<NameValuePair<Resource, Resource>> getScopeChain();
 
-	/** @return The URI of the assertion subject. */
-	public URI getSubjectURI();
+	/** @return The assertion subject. */
+	public Resource getSubject();
 
-	/** @return The URI of the assertion predicate. */
-	public URI getPredicateURI();
+	/** @return The assertion predicate. */
+	public Resource getPredicate();
 
-	/** @return The URI of the assertion object. */
-	public URI getObjectURI();
+	/** @return The assertion object. */
+	public Resource getObject();
 }

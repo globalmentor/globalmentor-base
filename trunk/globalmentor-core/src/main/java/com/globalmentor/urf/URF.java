@@ -460,7 +460,7 @@ public class URF
 	}
 
 	/**Creates a URI to represent an URF character.
-	@param c The charactervalue to represent.
+	@param c The character value to represent.
 	@return A URI representing the given URF character.
 	@see #CHARACTER_CLASS_URI
 	*/

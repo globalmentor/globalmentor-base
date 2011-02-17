@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package com.globalmentor.net;
+package com.globalmentor.collections;
 
-import java.net.URI;
+import java.util.Collection;
 
-/**
- * Represents a generic resource with an identifying URI.
+/**A marker interface indicating that the collection is immutable.
+ * 
  * @author Garret Wilson
+ *
+ * @param <E> The type of element contained in the collection.
  */
-public interface Resource
+public interface ImmutableCollection<E> extends Collection<E>
 {
-
-	/** The Java property name of a resource's URI. */
-	public final static String URI_PROPERTY_NAME = "uri";
-
-	/** @return The resource identifier URI, or <code>null</code> if the identifier is not known. */
-	public URI getURI();
-
 }

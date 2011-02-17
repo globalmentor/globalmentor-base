@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,20 @@
 
 package com.globalmentor.net;
 
-import java.net.URI;
-
 /**
- * Represents a generic resource with an identifying URI.
+ * A resource that represents some value object instance. The value object is normally immutable.
+ * 
+ * @param <V> The type of value represented by the resource.
+ * 
  * @author Garret Wilson
  */
-public interface Resource
+public interface ValueResource<V> extends Resource
 {
 
-	/** The Java property name of a resource's URI. */
-	public final static String URI_PROPERTY_NAME = "uri";
+	/** @return The class representing the type of value represented by the resource. */
+	public Class<V> getValueClass();
 
-	/** @return The resource identifier URI, or <code>null</code> if the identifier is not known. */
-	public URI getURI();
+	/** @return The non-<code>null</code> value represented by the resource. */
+	public V getValue();
 
 }
