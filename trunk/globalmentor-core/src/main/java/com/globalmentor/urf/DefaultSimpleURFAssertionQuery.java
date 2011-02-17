@@ -19,8 +19,8 @@ package com.globalmentor.urf;
 import java.net.URI;
 import java.util.*;
 
-import com.globalmentor.collections.Sets;
-import com.globalmentor.model.NameValuePair;
+import com.globalmentor.collections.*;
+import com.globalmentor.net.ReferenceResource;
 
 /**
  * The default implementation of a simple assertion query.
@@ -45,30 +45,61 @@ public class DefaultSimpleURFAssertionQuery implements SimpleURFAssertionQuery
 		return assertionPredicateURIs;
 	}
 
-	private final Set<NameValuePair<URI, URI>> subjectPredicateValueURIs;
+	private final Map<URI, Object> subjectPredicateURIValues;
 
 	/** {@inheritDoc} */
-	public Set<NameValuePair<URI, URI>> getSubjectPredicateValueURIs()
+	public Map<URI, Object> getSubjectPredicateURIValues()
 	{
-		return subjectPredicateValueURIs;
+		return subjectPredicateURIValues;
 	}
 
 	/**
 	 * Full constructor.
+	 * <p>
+	 * The value of each predicate/value pair is a value object or a {@link ReferenceResource}
+	 * </p>
 	 * @param assertionSubjectURIs The URIs identifying the subjects of the assertions to be returned, or <code>null</code> if there is no restriction of
 	 *          subjects.
 	 * @param assertionPredicateURIs The URIs identifying the predicates of the assertions to be returned, or <code>null</code> if there is no restriction of
 	 *          predicates.
-	 * @param subjectPredicateValueURIs The URIs identifying the predicate/value pairs identifying which subjects should be returned, or <code>null</code> if
-	 *          there are no required predicate values.
+	 * @param subjectPredicateURIValues The the predicate/value pairs identifying which subjects should be returned, or <code>null</code> if there are no required
+	 *          predicate values.
 	 */
 	public DefaultSimpleURFAssertionQuery(final Set<URI> assertionSubjectURIs, final Set<URI> assertionPredicateURIs,
-			final Set<NameValuePair<URI, URI>> subjectPredicateValueURIs)
+			final Map<URI, Object> subjectPredicateURIValues)
 	{
 		this.assertionSubjectURIs = assertionSubjectURIs != null ? Sets.toImmutableSet(assertionSubjectURIs) : null;
 		this.assertionPredicateURIs = assertionPredicateURIs != null ? Sets.toImmutableSet(assertionPredicateURIs) : null;
-		this.subjectPredicateValueURIs = subjectPredicateValueURIs != null ? Sets.toImmutableSet(subjectPredicateValueURIs) : null;
+		this.subjectPredicateURIValues = subjectPredicateURIValues != null ? Maps.toImmutableMap(subjectPredicateURIValues) : null;
 	}
 
-	//TODO create query builder
+	/**
+	 * Creates a query for retrieving all assertions for the identified subject.
+	 * @param subjectURI The URI of the subject resource for which assertions should be returned.
+	 * @return The assertions meeting the given criteria.
+	 */
+/*TODO del
+	public static DefaultSimpleURFAssertionQuery getAssertionsBySubject(final URI subjectURI)
+	{
+		return new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, null);
+	}
+*/
+	/**
+	 * Creates a query for retrieving all assertions for the identified subject for which there exist all the indicated predicate values. If a subject does not have predicate/value
+	 * pairs matching all of those indicated here, no assertions will be returned for that subject.
+	 * <p>
+	 * The value of each predicate/value pair is a value object or a {@link ReferenceResource}.
+	 * </p>
+	 * @param subjectURI The URI of the subject resource for which assertions should be returned.
+	 * @param predicateURIValues The the predicate/value pairs identifying which subjects should be returned, or <code>null</code> if there are no required
+	 *          predicate values.
+	 * @return The assertions meeting the given criteria.
+	 */
+/*TODO del
+	public static DefaultSimpleURFAssertionQuery forSubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues)
+	{
+		return new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, predicateURIValues);
+	}
+*/
+	
 }

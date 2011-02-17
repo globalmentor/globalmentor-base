@@ -14,17 +14,35 @@
  * limitations under the License.
  */
 
-package com.globalmentor.collections;
+package com.globalmentor.net;
 
-import java.util.Collection;
+import java.net.URI;
+
+import com.globalmentor.java.Objects;
 
 /**
- * A marker interface indicating that the collection is immutable.
- * 
+ * A class that represents a reference to another resource via its URI.
  * @author Garret Wilson
- * 
- * @param <E> The type of element contained in the collection.
  */
-public interface ImmutableCollection<E> extends Collection<E>
+public class ReferenceResource extends AbstractResource
 {
+
+	private final URI uri;
+
+	/** {@inheritDoc} */
+	public URI getURI()
+	{
+		return uri;
+	}
+
+	/**
+	 * URI constructor.
+	 * @param uri The resource identifier URI.
+	 * @throws NullPointerException if the given URI is <code>null</code>.
+	 */
+	public ReferenceResource(final URI uri)
+	{
+		this.uri = Objects.checkInstance(uri, "URI cannot be null.");
+	}
+
 }

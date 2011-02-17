@@ -17,18 +17,15 @@
 package com.globalmentor.urf;
 
 import java.net.URI;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import com.globalmentor.java.Objects;
-import com.globalmentor.model.NameValuePair;
 
 /**
  * An implementation of an URF assertion store based upon a set.
  * @author Garret Wilson
  */
-public class SetURFAssertionStore extends AbstractURFAssertionSource
+public class SetURFAssertionStore extends AbstractURFAssertionSource implements URFAssertionStore
 {
 
 	/** The store of assertions. */
@@ -57,6 +54,26 @@ public class SetURFAssertionStore extends AbstractURFAssertionSource
 		this.assertions = Objects.checkInstance(assertions, "Assertion set cannot be null.");
 	}
 
+	/** {@inheritDoc} */
+	public void addAssertion(final URFAssertion assertion)
+	{
+		this.assertions.add(assertion);
+	}
+
+	/**
+	 * {@inheritDoc} This implementation delegates to {@link #addAssertion(URFAssertion)}.
+	 */
+	public final void addAssertion(final URI subjectURI, final URI predicateURI, final Object object)
+	{
+		addAssertion(new DefaultURFAssertion(subjectURI, predicateURI, object));
+	}
+
+	/** {@inheritDoc} */
+	public void addAssertions(final Collection<? extends URFAssertion> assertions)
+	{
+		this.assertions.addAll(assertions);
+	}
+
 	/**
 	 * {@inheritDoc} This implementation only supports assertion queries of type {@link SimpleURFAssertionQuery}.
 	 */
@@ -69,22 +86,56 @@ public class SetURFAssertionStore extends AbstractURFAssertionSource
 		final SimpleURFAssertionQuery simpleURFAssertionQuery = (SimpleURFAssertionQuery) assertionQuery;
 		final Set<URI> assertionSubjectURIs = simpleURFAssertionQuery.getAssertionSubjectURIs();
 		final Set<URI> assertionPredicateURIs = simpleURFAssertionQuery.getAssertionPredicateURIs();
-		final Set<NameValuePair<URI, URI>> subjectPredicateValueURIs = simpleURFAssertionQuery.getSubjectPredicateValueURIs();
+		final Map<URI, Object> subjectPredicateURIValues = simpleURFAssertionQuery.getSubjectPredicateURIValues();
 		final Set<URFAssertion> resultAssertions = new HashSet<URFAssertion>(); //create a new set in which to store assertions
+		final Set<URI> retainSubjectsURIs = new HashSet<URI>(); //keep track of which subjects to retain
 		for(final URFAssertion assertion : this) //iterate through all our assertions
 		{
-			if(assertionSubjectURIs != null && !assertionSubjectURIs.contains(assertion.getSubject().getURI())) //if this subject is prohibited
+			if(assertionSubjectURIs != null && !assertionSubjectURIs.contains(assertion.getSubjectURI())) //if this subject is prohibited
 			{
 				continue; //skip this assertion
 			}
-			if(assertionPredicateURIs != null && !assertionPredicateURIs.contains(assertion.getPredicate().getURI())) //if this predicate is prohibited
+			if(assertionPredicateURIs != null && !assertionPredicateURIs.contains(assertion.getPredicateURI())) //if this predicate is prohibited
 			{
 				continue; //skip this assertion
 			}
 			resultAssertions.add(assertion); //add this assertion to our result set
+			retainSubjectsURIs.add(assertion.getSubjectURI()); //for now, we'll keep this subject
 		}
-		//TODO check predicate/values
-		return resultAssertions; //return the resulting assertions
+		//recheck the subject URIs to make sure they have the required predicate/value pairs
+		if(subjectPredicateURIValues != null) //if we have predicate/value tests
+		{
+			final Iterator<URI> subjectURIIterator = retainSubjectsURIs.iterator(); //check all the subjects we have so far
+			while(subjectURIIterator.hasNext())
+			{
+				final URI subjectURI = subjectURIIterator.next();
+				boolean hasAllPredicateValues = true; //start out assuming that this subject will have all the required predicate values
+				for(final Map.Entry<URI, Object> subjectPredicateURIValue : subjectPredicateURIValues.entrySet())
+				{
+					//if there is no assertion for this subject with the required predicate/value
+					if(!resultAssertions.contains(new DefaultURFAssertion(subjectURI, subjectPredicateURIValue.getKey(), subjectPredicateURIValue.getValue())))
+					{
+						hasAllPredicateValues = false; //this subject doesn't meet the criteria
+						break;
+					}
+				}
+				if(!hasAllPredicateValues) //if didn't find all the predicate/values for this subject
+				{
+					subjectURIIterator.remove(); //we don't want this subject anymore
+				}
+			}
+		}
+		//now throw out all results for subjects we don't want
+		final Iterator<URFAssertion> resultAssertionIterator = resultAssertions.iterator();
+		while(resultAssertionIterator.hasNext())
+		{
+			final URFAssertion resultAssertion = resultAssertionIterator.next();
+			if(!retainSubjectsURIs.contains(resultAssertion.getSubjectURI())) //if this assertion is for a subject we don't want
+			{
+				resultAssertionIterator.remove(); //throw out this assertion
+			}
+		}
+		return resultAssertions; //return the assertions we wound up with
 	}
 
 }

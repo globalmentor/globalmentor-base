@@ -27,7 +27,6 @@ import java.util.regex.*;
 import static com.globalmentor.io.Files.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Strings.*;
-import static com.globalmentor.net.ContentTypeConstants.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.URLs.*;
 
@@ -100,14 +99,25 @@ public class Classes
 	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/</code>.
 	@param objectPackage The package to use in creating the <code>java:</code> URI.
 	@return A <code>java:</code> URI based upon the given class.
-	@exception NullPointerException if the given class is <code>null</code>.
+	@exception NullPointerException if the given package name is <code>null</code>.
 	*/
 	public static URI createJavaURI(final Package objectPackage)
 	{
-		final String packagePath=URIPath.encodeSegment(objectPackage.getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the package path by replacing the package separators with path separators after encoding
-		return URI.create(JAVA_URI_SCHEME+SCHEME_SEPARATOR+ROOT_PATH+packagePath+PATH_SEPARATOR);	//create and return a new Java URI for the package
+		return createJavaPackageURI(objectPackage.getName());
 	}
 
+	/**Creates a Java URI for a named Java package using the {@value Java#JAVA_URI_SCHEME} scheme
+	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/</code>.
+	@param objectPackageName The name of the package to use in creating the <code>java:</code> URI.
+	@return A <code>java:</code> URI based upon the given class.
+	@exception NullPointerException if the given package name is <code>null</code>.
+	*/
+	public static URI createJavaPackageURI(final String objectPackageName)
+	{
+		final String packagePath=URIPath.encodeSegment(objectPackageName).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the package path by replacing the package separators with path separators after encoding
+		return URI.create(JAVA_URI_SCHEME+SCHEME_SEPARATOR+ROOT_PATH+packagePath+PATH_SEPARATOR);	//create and return a new Java URI for the package
+	}
+	
 	/**Creates a Java URI for a Java class using the {@value Java#JAVA_URI_SCHEME} scheme
 	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.
 	@param objectClass The class to use in creating the <code>java:</code> URI.
@@ -116,10 +126,21 @@ public class Classes
 	*/
 	public static URI createJavaURI(final Class<?> objectClass)
 	{
-		final String classPath=URIPath.encodeSegment(objectClass.getName()).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the class path by replacing the package separators with path separators after encoding
-		return URI.create(JAVA_URI_SCHEME+SCHEME_SEPARATOR+ROOT_PATH+classPath);	//create and return a new Java URI for the class
+		return createJavaClassURI(objectClass.getName());
 	}
 
+	/**Creates a Java URI for a named Java class using the {@value Java#JAVA_URI_SCHEME} scheme
+	in the form <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.
+	@param objectClassName The name of hte class class to use in creating the <code>java:</code> URI.
+	@return A <code>java:</code> URI based upon the given class.
+	@exception NullPointerException if the given class name is <code>null</code>.
+	*/
+	public static URI createJavaClassURI(final String objectClassName)
+	{
+		final String classPath=URIPath.encodeSegment(objectClassName).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);	//get the class path by replacing the package separators with path separators after encoding
+		return URI.create(JAVA_URI_SCHEME+SCHEME_SEPARATOR+ROOT_PATH+classPath);	//create and return a new Java URI for the class
+	}
+	
 	/**Returns a content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
 	@param objectClass The class for which a content type should be returned.
 	@return A content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
@@ -170,14 +191,14 @@ public class Classes
 	</ul>
 	*/
 	@SuppressWarnings("unchecked")	//casts are used because arrays are not generic-aware
-	public static <T> Constructor<T>[] getCompatibleConstructors(final Class<T> objectClass, final Class ... parameterTypes) throws SecurityException
+	public static <T> Constructor<T>[] getCompatibleConstructors(final Class<T> objectClass, final Class<?> ... parameterTypes) throws SecurityException
 	{
 		final int parameterCount=parameterTypes.length;	//get the number of requested parameters
-		final Constructor[] constructors=objectClass.getConstructors();	//get all constructors for this class
+		final Constructor<?>[] constructors=objectClass.getConstructors();	//get all constructors for this class
 		final List<Constructor<T>> compatibleConstructors=new ArrayList<Constructor<T>>(constructors.length);	//create a list sufficiently large to hold all constructors
-		for(final Constructor constructor:constructors)	//for each constructor
+		for(final Constructor<?> constructor:constructors)	//for each constructor
 		{
-			final Class[] formalParameterTypes=constructor.getParameterTypes();	//get the formal parameter types
+			final Class<?>[] formalParameterTypes=constructor.getParameterTypes();	//get the formal parameter types
 			if(formalParameterTypes.length==parameterCount)	//if this constructor has the correct number of formal parameters
 			{
 				boolean isCompatible=true;	//start out assuming this is a compatible constructor

@@ -17,9 +17,10 @@
 package com.globalmentor.urf;
 
 import java.net.URI;
-import java.util.Set;
+import java.util.*;
 
-import com.globalmentor.collections.ObjectSet;
+import com.globalmentor.collections.*;
+import com.globalmentor.java.Objects;
 import com.globalmentor.model.NameValuePair;
 
 /**
@@ -32,7 +33,7 @@ public abstract class AbstractURFAssertionSource implements URFAssertionSource
 	/**
 	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
 	 */
-	public final Set<URFAssertion> getAssertions(final URI subjectURI)
+	public final Set<URFAssertion> getAssertionsBySubject(final URI subjectURI)
 	{
 		return getAssertions(new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, null));
 	}
@@ -40,9 +41,53 @@ public abstract class AbstractURFAssertionSource implements URFAssertionSource
 	/**
 	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
 	 */
-	public final Set<URFAssertion> getAssertions(final URI subjectURI, final Set<NameValuePair<URI, URI>> predicateValues)
+	public Set<URFAssertion> getAssertionsByPredicate(final URI predicateURI)
 	{
-		return getAssertions(new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, predicateValues));
+		return getAssertions(new DefaultSimpleURFAssertionQuery(null, new ObjectSet<URI>(Objects.checkInstance(predicateURI)), null));
+	}
+
+	/**
+	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
+	 */
+	public Set<URFAssertion> getAssertionsBySubjectAndPredicate(final URI subjectURI, final URI predicateURI)
+	{
+		return getAssertions(new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(Objects.checkInstance(subjectURI)), new ObjectSet<URI>(
+				Objects.checkInstance(predicateURI)), null));
+	}
+
+	/**
+	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
+	 */
+	public Set<URFAssertion> getAssertionsWithPredicateValue(final URI predicateURI, final Object predicateValue)
+	{
+		return getAssertions(new DefaultSimpleURFAssertionQuery(null, null, new MapEntryMap<URI, Object>(new NameValuePair<URI, Object>(
+				Objects.checkInstance(predicateURI), Objects.checkInstance(predicateValue)))));
+	}
+
+	/**
+	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
+	 */
+	public Set<URFAssertion> getAssertionsBySubjectWithPredicateValue(final URI subjectURI, final URI predicateURI, final Object predicateValue)
+	{
+		return getAssertions(new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(Objects.checkInstance(subjectURI)), null, new MapEntryMap<URI, Object>(
+				new NameValuePair<URI, Object>(Objects.checkInstance(predicateURI), Objects.checkInstance(predicateValue)))));
+	}
+
+	/**
+	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
+	 */
+	public Set<URFAssertion> getAssertionsWithPredicateValues(final Map<URI, Object> predicateURIValues)
+	{
+		return getAssertions(new DefaultSimpleURFAssertionQuery(null, null, Objects.checkInstance(predicateURIValues)));
+	}
+
+	/**
+	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
+	 */
+	public final Set<URFAssertion> getAssertionsBySubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues)
+	{
+		return getAssertions(new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(Objects.checkInstance(subjectURI)), null,
+				Objects.checkInstance(predicateURIValues)));
 	}
 
 }

@@ -16,13 +16,19 @@
 
 package com.globalmentor.urf;
 
+import java.net.URI;
 import java.util.List;
 
 import com.globalmentor.model.NameValuePair;
-import com.globalmentor.net.Resource;
+import com.globalmentor.net.ReferenceResource;
 
 /**
  * Represents an assertion in URF.
+ * 
+ * <p>
+ * For efficiency the object will be either a value object (such as a primitive class instance, a string, or an immutable object instance) or a
+ * {@link ReferenceResource}, the URI of which will indicate the referent object.
+ * </p>
  * 
  * @author Garret Wilson
  * 
@@ -30,14 +36,14 @@ import com.globalmentor.net.Resource;
 public interface URFAssertion
 {
 	/** @return The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value. */
-	public List<NameValuePair<Resource, Resource>> getScopeChain();
+	public List<NameValuePair<URI, Object>> getScopeChain();
 
-	/** @return The assertion subject. */
-	public Resource getSubject();
+	/** @return The URI of the assertion subject. */
+	public URI getSubjectURI();
 
-	/** @return The assertion predicate. */
-	public Resource getPredicate();
+	/** @return The URI of the assertion predicate. */
+	public URI getPredicateURI();
 
-	/** @return The assertion object. */
-	public Resource getObject();
+	/** @return The assertion object; either a value object or a {@link ReferenceResource}. */
+	public Object getObject();
 }

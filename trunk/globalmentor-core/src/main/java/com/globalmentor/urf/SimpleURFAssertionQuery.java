@@ -19,7 +19,7 @@ package com.globalmentor.urf;
 import java.net.URI;
 import java.util.*;
 
-import com.globalmentor.model.NameValuePair;
+import com.globalmentor.net.ReferenceResource;
 
 /**
  * A simple query query describing which assertions should be retrieved from an {@link URFAssertionSource}.
@@ -45,8 +45,10 @@ public interface SimpleURFAssertionQuery extends URFAssertionQuery
 	 * Indicates a restriction on assertions with certain subjects, based upon whether those subjects have the identified predicate/value pairs. That is,
 	 * if a subject does not have predicate/value pairs matching all of those indicated here, no assertions will be returned for that subject.
 	 * 
-	 * @return The URIs identifying the predicate/value pairs identifying which subjects should be returned, or <code>null</code> if there are no required predicate values.
+	 * <p>The value of each pair is a value object or a {@link ReferenceResource}</p>
+	 * 
+	 * @return The the predicate/value pairs identifying which subjects should be returned, or <code>null</code> if there are no required predicate values.
 	 */
-	public Set<NameValuePair<URI, URI>> getSubjectPredicateValueURIs();
+	public Map<URI, Object> getSubjectPredicateURIValues();
 
 }

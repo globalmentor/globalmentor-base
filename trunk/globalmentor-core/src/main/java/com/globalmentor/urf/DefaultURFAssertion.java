@@ -20,67 +20,74 @@ import static com.globalmentor.collections.Lists.*;
 import static com.globalmentor.java.Objects.*;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 import com.globalmentor.java.Objects;
 import com.globalmentor.model.NameValuePair;
-import com.globalmentor.net.Resource;
+import com.globalmentor.net.ReferenceResource;
 
 /**
  * The default implementation of an URF assertion.
+ * 
+ * <p>
+ * For efficiency the object will be either a value object (such as a primitive class instance, a string, or an immutable object instance) or a
+ * {@link ReferenceResource}, the URI of which will indicate the referent object.
+ * </p>
+ * 
  * @author Garret Wilson
  */
-public class DefaultURFAssertion
+public class DefaultURFAssertion implements URFAssertion	//TODO add specific support for Long, etc. and prevent Integer, etc.
 {
 
 	/** The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value. */
-	private final List<NameValuePair<Resource, Resource>> scopeChain;
+	private final List<NameValuePair<URI, Object>> scopeChain;
 
 	/** @return The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value. */
-	public List<NameValuePair<Resource, Resource>> getScopeChain()
+	public List<NameValuePair<URI, Object>> getScopeChain()
 	{
 		return scopeChain;
 	}
 
-	/** The assertion subject. */
-	private Resource subject;
+	/** The URI of the assertion subject. */
+	private URI subjectURI;
 
-	/** @return The assertion subject. */
-	public Resource getSubject()
+	/** @return The URI of the assertion subject. */
+	public URI getSubjectURI()
 	{
-		return subject;
+		return subjectURI;
 	}
 
-	/** The assertion predicate. */
-	private Resource predicate;
+	/** The URI of the assertion predicate. */
+	private URI predicateURI;
 
-	/** @return The assertion predicate. */
-	public Resource getPredicate()
+	/** @return The URI of the assertion predicate. */
+	public URI getPredicateURI()
 	{
-		return predicate;
+		return predicateURI;
 	}
 
 	/** The assertion object. */
-	private Resource object;
+	private Object object;
 
-	/** @return The assertion object. */
-	public Resource getObject()
+	/** @return The assertion object; either a value object or a {@link ReferenceResource}. */
+	public Object getObject()
 	{
 		return object;
 	}
 
 	/**
-	 * Creates a new assertion from subject, predicate, and object resources.
-	 * @param subject The subject of the assertion.
-	 * @param predicate The predicate of the assertion.
-	 * @param object The object of the assertion.
+	 * Creates a new assertion from a subject, predicate, and object.
+	 * @param subjectURI The URI of the subject of the assertion.
+	 * @param predicateURI The URI of the predicate of the assertion.
+	 * @param object The object of the assertion; a value object or a {@link ReferenceResource}.
 	 * @param scopeChain The chain of scope, each element representing a property and value to serve as scope for the subsequent property and value.
-	 * @exception NullPointerException if the given subject, predicate, object, and/or scope chain is <code>null</code>.
+	 * @exception NullPointerException if the given subject URI, predicate URI, object, and/or scope chain is <code>null</code>.
 	 */
-	public DefaultURFAssertion(final Resource subject, final Resource predicate, final Resource object, final NameValuePair<Resource, Resource>... scopeChain)
+	public DefaultURFAssertion(final URI subjectURI, final URI predicateURI, final Object object, final NameValuePair<URI, Object>... scopeChain)
 	{
-		this.subject = checkInstance(subject, "Subject cannot be null.");
-		this.predicate = checkInstance(predicate, "Predicate cannot be null.");
+		this.subjectURI = checkInstance(subjectURI, "Subject URI cannot be null.");
+		this.predicateURI = checkInstance(predicateURI, "Predicate URI cannot be null.");
 		this.object = checkInstance(object, "Object cannot be null.");
 		this.scopeChain = createReadOnlyList(scopeChain);
 	}
@@ -88,21 +95,21 @@ public class DefaultURFAssertion
 	/** @return A hash code value for the assertion. */
 	public int hashCode()
 	{
-		return Objects.hashCode(getSubject(), getPredicate(), getObject(), getScopeChain()); //hash and return the subject, predicate, object, and scope chain
+		return Objects.hashCode(getSubjectURI(), getPredicateURI(), getObject(), getScopeChain()); //hash and return the subject, predicate, object, and scope chain
 	}
 
 	/**
-	 * Compares assertions based upon subject, predicate, and object.
+	 * Compares assertions based upon subject URI, predicate URI, and object.
 	 * @param object The object with which to compare this assertion.
-	 * @return <code>true<code> if the other object is an {@link URFAssertion} and the subjects, predicates, objects, and scope chains of the two assertions are equal.
+	 * @return <code>true<code> if the other object is an {@link URFAssertion} and the subject URIs, predicate URIs, objects, and scope chains of the two assertions are equal.
 	 */
 	public boolean equals(final Object object)
 	{
 		if(object instanceof URFAssertion) //if the other object is a assertion
 		{
 			final URFAssertion assertion2 = (URFAssertion) object; //cast the object to a assertion
-			return getSubject().equals(assertion2.getSubject()) //compare subjects
-					&& getPredicate().equals(assertion2.getPredicate()) //compare predicates
+			return getSubjectURI().equals(assertion2.getSubjectURI()) //compare subjects
+					&& getPredicateURI().equals(assertion2.getPredicateURI()) //compare predicates
 					&& getObject().equals(assertion2.getObject()) //compare objects
 					&& getScopeChain().equals(assertion2.getScopeChain()); //compare scope chains
 		}
@@ -111,7 +118,7 @@ public class DefaultURFAssertion
 
 	/**
 	 * @return A string representation of the assertion in the form:
-	 *         "{<var>subject</var>; <var>scope</var>, <var>scope</var>...; <var>predicate</var>; <var>object</var>}".
+	 *         "{<var>subjectURI</var>; <var>scope</var>, <var>scope</var>...; <var>predicateURI</var>; <var>object</var>}".
 	 */
 	public String toString()
 	{
@@ -119,25 +126,23 @@ public class DefaultURFAssertion
 		{
 			final StringBuilder stringBuilder = new StringBuilder(); //create a new string builder
 			stringBuilder.append('{');
-			URFTURFGenerator.appendReference(stringBuilder, getSubject().getURI());
+			URFTURFGenerator.appendReference(stringBuilder, getSubjectURI());
 			stringBuilder.append(';').append(' '); //{subject;
 			stringBuilder.append('('); //begin scopes
 			int scopeCount = 0; //keep track of the number of scopes
-			for(final NameValuePair<Resource, Resource> scope : getScopeChain()) //for each scope in the scope chain
+			for(final NameValuePair<URI, Object> scope : getScopeChain()) //for each scope in the scope chain
 			{
 				if(scopeCount > 0) //if this isn't the first scope
 				{
 					stringBuilder.append(',').append(' '); //separate scopes
 				}
-				URFTURFGenerator.appendReference(stringBuilder, scope.getName().getURI());
-				stringBuilder.append('=');
-				URFTURFGenerator.appendReference(stringBuilder, scope.getValue().getURI()); //property=value
+				URFTURFGenerator.appendReference(stringBuilder, scope.getName());
+				stringBuilder.append('=').append(scope.getValue()); //property=value
 				++scopeCount; //indicate we appended another scope
 			}
 			stringBuilder.append(')').append(';').append(' '); //end scopes
-			URFTURFGenerator.appendReference(stringBuilder, getPredicate().getURI());
-			stringBuilder.append(';').append(' '); //predicate;
-			URFTURFGenerator.appendReference(stringBuilder, getObject().getURI());
+			URFTURFGenerator.appendReference(stringBuilder, getPredicateURI());
+			stringBuilder.append(';').append(' ').append(getObject());
 			stringBuilder.append('}'); //object}
 			return stringBuilder.toString(); //return the string we just constructed
 		}
