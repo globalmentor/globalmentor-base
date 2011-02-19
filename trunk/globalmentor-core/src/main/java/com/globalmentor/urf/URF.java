@@ -251,6 +251,18 @@ public class URF
 		return checkPlainURI(checkCollectionURI(checkAbsolute(namespaceURI)));
 	}
 
+	/**Creates a resource URI from a local name.
+	The default namespace is assumed.
+	@param localName The unencoded local name of the resource.
+	@return A URI constructed from the default namespace and the given local name.
+	@exception NullPointerException if the given local name is <code>null</code>.
+	@see #DEFAULT_NAMESPACE_URI
+	*/
+	public static URI createResourceURI(final String localName)
+	{
+		return createResourceURI(DEFAULT_NAMESPACE_URI, localName);	//use the default namespace
+	}
+	
 	/**Creates a resource URI from a given namespace URI and a local name.
 	The local name is encoded and appended to the URI.
 	@param namespaceURI The URI of the namespace.

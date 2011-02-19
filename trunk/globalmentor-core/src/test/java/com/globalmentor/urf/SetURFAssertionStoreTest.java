@@ -19,6 +19,9 @@ package com.globalmentor.urf;
 import java.util.Set;
 
 import org.junit.*;
+
+import com.globalmentor.net.ReferenceResource;
+
 import static org.junit.Assert.*;
 
 /**
@@ -35,7 +38,7 @@ public class SetURFAssertionStoreTest extends AbstractURFAssertionStoreTest
 	 * @return A populated assertion store for testing.
 	 * @see AbstractURFAssertionStoreTest#populateTestURFAssertionStore(URFAssertionStore)
 	 */
-	protected URFAssertionStore createTestURFAssertionStore()
+	public static URFAssertionStore createTestURFAssertionStore()
 	{
 		return populateTestURFAssertionStore(new SetURFAssertionStore());
 	}
@@ -46,9 +49,10 @@ public class SetURFAssertionStoreTest extends AbstractURFAssertionStoreTest
 	{
 		final URFAssertionStore assertionStore = createTestURFAssertionStore();
 		final Set<URFAssertion> assertions = assertionStore.getAssertionsBySubject(CUSTOMER1_URI);
-		assertTrue(assertions.size() == 3);
-		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, URF.TYPE_PROPERTY_URI, CUSTOMER_CLASS_URI)));
+		assertTrue(assertions.size() == 4);
+		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, URF.TYPE_PROPERTY_URI, new ReferenceResource(CUSTOMER_CLASS_URI))));
 		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, NAME_PROPERTY_URI, CUSTOMER1_NAME)));
+		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, ALIASES_PROPERTY_URI, new ReferenceResource(CUSTOMER1_ALIASES_URI))));
 		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, AGE_PROPERTY_URI, CUSTOMER1_AGE)));
 	}
 
@@ -58,10 +62,11 @@ public class SetURFAssertionStoreTest extends AbstractURFAssertionStoreTest
 	{
 		final URFAssertionStore assertionStore = createTestURFAssertionStore();
 		final Set<URFAssertion> assertions = assertionStore.getAssertionsByPredicate(URF.TYPE_PROPERTY_URI);
-		assertTrue(assertions.size() == 3);
-		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, URF.TYPE_PROPERTY_URI, CUSTOMER_CLASS_URI)));
-		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER2_URI, URF.TYPE_PROPERTY_URI, CUSTOMER_CLASS_URI)));
-		assertTrue(assertions.contains(new DefaultURFAssertion(ORDER1_URI, URF.TYPE_PROPERTY_URI, ORDER_CLASS_URI)));
+		assertTrue(assertions.size() == 4);
+		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, URF.TYPE_PROPERTY_URI, new ReferenceResource(CUSTOMER_CLASS_URI))));
+		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER2_URI, URF.TYPE_PROPERTY_URI, new ReferenceResource(CUSTOMER_CLASS_URI))));
+		assertTrue(assertions.contains(new DefaultURFAssertion(ORDER1_URI, URF.TYPE_PROPERTY_URI, new ReferenceResource(ORDER_CLASS_URI))));
+		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_ALIASES_URI, URF.TYPE_PROPERTY_URI, new ReferenceResource(URF.SET_CLASS_URI))));
 	}
 
 	/** Tests whether resources can be retrieved by subject URI and predicate URI. */
@@ -71,7 +76,7 @@ public class SetURFAssertionStoreTest extends AbstractURFAssertionStoreTest
 		final URFAssertionStore assertionStore = createTestURFAssertionStore();
 		final Set<URFAssertion> assertions = assertionStore.getAssertionsBySubjectAndPredicate(CUSTOMER1_URI, URF.TYPE_PROPERTY_URI);
 		assertTrue(assertions.size() == 1);
-		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, URF.TYPE_PROPERTY_URI, CUSTOMER_CLASS_URI)));
+		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, URF.TYPE_PROPERTY_URI, new ReferenceResource(CUSTOMER_CLASS_URI))));
 	}
 
 	/** Tests whether resources can be retrieved by predicate value. */
@@ -79,12 +84,13 @@ public class SetURFAssertionStoreTest extends AbstractURFAssertionStoreTest
 	public void testQueryWithPredicateValue()
 	{
 		final URFAssertionStore assertionStore = createTestURFAssertionStore();
-		final Set<URFAssertion> assertions = assertionStore.getAssertionsWithPredicateValue(URF.TYPE_PROPERTY_URI, CUSTOMER_CLASS_URI);
-		assertTrue(assertions.size() == 6);
-		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, URF.TYPE_PROPERTY_URI, CUSTOMER_CLASS_URI)));
+		final Set<URFAssertion> assertions = assertionStore.getAssertionsWithPredicateValue(URF.TYPE_PROPERTY_URI, new ReferenceResource(CUSTOMER_CLASS_URI));
+		assertTrue(assertions.size() == 7);
+		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, URF.TYPE_PROPERTY_URI, new ReferenceResource(CUSTOMER_CLASS_URI))));
 		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, NAME_PROPERTY_URI, CUSTOMER1_NAME)));
+		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, ALIASES_PROPERTY_URI, new ReferenceResource(CUSTOMER1_ALIASES_URI))));
 		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER1_URI, AGE_PROPERTY_URI, CUSTOMER1_AGE)));
-		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER2_URI, URF.TYPE_PROPERTY_URI, CUSTOMER_CLASS_URI)));
+		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER2_URI, URF.TYPE_PROPERTY_URI, new ReferenceResource(CUSTOMER_CLASS_URI))));
 		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER2_URI, NAME_PROPERTY_URI, CUSTOMER2_NAME)));
 		assertTrue(assertions.contains(new DefaultURFAssertion(CUSTOMER2_URI, AGE_PROPERTY_URI, CUSTOMER2_AGE)));
 	}
