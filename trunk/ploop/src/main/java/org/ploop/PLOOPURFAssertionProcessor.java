@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.globalmentor.urf.ploop;
+package org.ploop;
 
 import java.lang.reflect.*;
 import java.net.URI;
