@@ -17,10 +17,8 @@
 package com.globalmentor.urf;
 
 import java.net.URI;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import com.globalmentor.model.NameValuePair;
 import com.globalmentor.net.ReferenceResource;
 
 /**

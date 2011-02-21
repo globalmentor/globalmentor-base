@@ -31,6 +31,7 @@ import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
 
 import com.globalmentor.collections.Collections;
+import com.globalmentor.config.ConfigurationException;
 import com.globalmentor.java.Classes;
 import com.globalmentor.java.Objects;
 import com.globalmentor.net.*;
@@ -44,9 +45,6 @@ import com.guiseframework.style.Color;
 
 /**
  * Processes PLOOP objects from an {@link URFAssertionSource}.
- * <p>
- * This is a stateful processor and may only be used for one URF data model instance.
- * </p>
  * <p>
  * This processor is not thread safe.
  * </p>
@@ -62,15 +60,24 @@ import com.guiseframework.style.Color;
 public class PLOOPURFAssertionProcessor
 {
 
-	/** The source of assertions. */
+	/** The source of cached PLOOP resources. */
+	private final PLOOPSource ploopSource;
+
+	/** @return The source of cached PLOOP resources. */
+	public PLOOPSource getPLOOPSource()
+	{
+		return ploopSource;
+	}
+
+	/** The source of assertions to be processed. */
 	private final URFAssertionSource assertionSource;
 
-	/** @return The source of assertions. */
+	/** @return The source of assertions to be processed. */
 	public URFAssertionSource getAssertionSource()
 	{
 		return assertionSource;
 	}
-	
+
 	/** The default arguments that can be used in calling class constructors. */
 	private final Set<Object> defaultConstructorArguments = new CopyOnWriteArraySet<Object>();
 
@@ -80,286 +87,243 @@ public class PLOOPURFAssertionProcessor
 		return defaultConstructorArguments;
 	}
 
-	/** The map of created objects keyed to the resource URIs from which they were created. */
-	protected final Map<URI, Object> resourceObjectMap = new HashMap<URI, Object>();	//TODO convert to PLOOP session cache lookup
-
 	/**
-	 * Default arguments constructor.
+	 * Assertion source, and default arguments constructor.
+	 * <p>
+	 * This constructor creates an internal PLOOP source that caches resources locally and never releases them for the life of the assertion processor.
+	 * @param assertionSource The source of assertions to be processed.
 	 * @param defaultConstructorArguments The objects that can be used as default arguments in class constructors.
+	 * @throws NullPointerException if the given session is <code>null</code>.
 	 */
 	public PLOOPURFAssertionProcessor(final URFAssertionSource assertionSource, final Object... defaultConstructorArguments)
 	{
-		this.assertionSource=Objects.checkInstance(assertionSource, "Assertion source cannot be null.");
+		this.ploopSource = new AbstractPLOOPSource(new HashMap<URI, Object>()) //use a PLOOP source that uses this assertion processor
+		{
+			@Override
+			protected PLOOPURFAssertionProcessor getAssertionProcessor()
+			{
+				return PLOOPURFAssertionProcessor.this;
+			}
+		};
+		this.assertionSource = Objects.checkInstance(assertionSource, "Assertion source cannot be null.");
 		addAll(this.defaultConstructorArguments, defaultConstructorArguments); //add all the given default constructor arguments to our set of default constructor arguments
 	}
 
-	
-	public <T> T getResource(final Class<T> resourceClass, final URI resourceURI)
+	/**
+	 * PLOOP source, assertion source, and default arguments constructor.
+	 * @param ploopSource The source of cached PLOOP resources.
+	 * @param assertionSource The source of assertions to be processed.
+	 * @param defaultConstructorArguments The objects that can be used as default arguments in class constructors.
+	 * @throws NullPointerException if the given session is <code>null</code>.
+	 */
+	public PLOOPURFAssertionProcessor(final PLOOPSource ploopSource, final URFAssertionSource assertionSource, final Object... defaultConstructorArguments)
 	{
-		return resourceClass.cast(resourceURI);
+		this.ploopSource = Objects.checkInstance(ploopSource, "PLOOP source cannot be null.");
+		this.assertionSource = Objects.checkInstance(assertionSource, "Assertion source cannot be null.");
+		addAll(this.defaultConstructorArguments, defaultConstructorArguments); //add all the given default constructor arguments to our set of default constructor arguments
 	}
 
 	/**
-	 * Retrieves an object to represent the given URF resource. If the the object for the resource has already been created, the existing object will be returned.
-	 * Otherwise the object is created using {@link #createObject(URFResource)} and a reference to the created object is stored for later retrieval inside
-	 * {@link #setObjectProperties(Object, URFResource, Map)}.
-	 * @param resource The resource describing the Java object to be created.
-	 * @return A created and initialized object according to the given resource description.
-	 * @exception NullPointerException if the given resource is <code>null</code>.
-	 * @exception DataException if a resource does not specify Java type information.
-	 * @exception DataException if a resource is a Java-typed resource the class of which cannot be found.
-	 * @exception DataException if a resource indicates a Java class that has no appropriate constructor.
-	 * @exception DataException if a resource indicates a Java class that is an interface or an abstract class.
-	 * @exception DataException if a resource indicates a Java class the constructor of which is not accessible.
-	 * @exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
+	 * Processes and existing object, retrieving a resource if necessary.
+	 * <p>
+	 * If the given object is a {@link ReferenceResource}, the resource is retrieved using {@link PLOOPSource#findByURI(URI)}. Otherwise, the object is returned
+	 * as-is.
+	 * @param object The object to process.
+	 * @return The resulting object, or <code>null</code> if the given object was a {@link ReferenceResource} that referenced a resource that no longer exists.
+	 * @throws ConfigurationException if a resource is a Java-typed resource the class of which cannot be found.
+	 * @throws ConfigurationException if a resource indicates a Java class that has no appropriate constructor.
+	 * @throws ConfigurationException if a resource indicates a Java class that is an interface or an abstract class.
+	 * @throws ConfigurationException if a resource indicates a Java class the constructor of which is not accessible.
+	 * @throws IllegalStateException if a resource indicates a Java class the constructor of which throws an exception.
+	 * @throws DataException if a resource does not specify Java type information.
+	 * @throws DataException if the given object references a resource that does not exist.
+	 * @throws DataException if some value could not be converted.
 	 */
-	public Object getObject(final URI resourceURI) throws DataException, InvocationTargetException
+	public Object processObject(final Object object) throws ConfigurationException, IllegalStateException, DataException
 	{
-		Object object = resourceObjectMap.get(resourceURI); //look up an existing object if the description, if any
-		if(object == null) //if we don't have an object already
+		if(object instanceof ReferenceResource) //if the object refers to a resource, find that resource
 		{
-			object = createObject(resourceURI); //create the object from the description
-		}
-		return object; //return the created object
-	}
-
-	/**
-	 * Creates and initializes an object to represent the given URF resource by taking the following steps:
-	 * <ol>
-	 * <li>If the resource is an {@link URFListResource}, a new {@link List} containing converted list element objects will be returned.</li>
-	 * <li>If the resource is an {@link URFSetResource}, a new {@link Set} containing converted set element objects will be returned.</li>
-	 * <li>If the resource is an {@link URFMapResource}, a new {@link Map} containing the converted keys and converted value objects will be returned.</li>
-	 * <li>If the resource specifies a Java type, the indicated Java class is instantiated and initialized from the resource description.</li>
-	 * <li>If the resource otherwise indicates a value that can be represented by a Java object (such as an integer), such an object will be returned.</li>
-	 * <li>If the resource does not meet any of the above criteria, the resource itself will be returned.</li> </ul>
-	 * @param urfResource The URF resource describing the Java object to be created.
-	 * @return A created and initialized object according to the given resource description.
-	 * @exception NullPointerException if the given resource is <code>null</code>.
-	 * @exception DataException if the given resource does not specify Java type information.
-	 * @exception DataException if the given resource is a Java-typed resource the class of which cannot be found.
-	 * @exception DataException if the given resource indicates a Java class that has no appropriate constructor.
-	 * @exception DataException if the given resourceindicates a Java class that is an interface or an abstract class.
-	 * @exception DataException if the given resourceindicates a Java class the constructor of which is not accessible.
-	 * @exception DataException If a particular property could not be accessed.
-	 * @exception InvocationTargetException if the given resource indicates a Java class the constructor of which throws an exception.
-	 * @see #convertObject(Object, Class)
-	 */
-	protected Object createObject(final URI resourceURI) throws DataException, InvocationTargetException
-	{
-		
-		
-/*TODO fix
-		
-		if(resource instanceof URFListResource<?>) //if the object is an URF array
-		{
-			final URFListResource<?> urfListResource = (URFListResource<?>) resource; //cast the object to a list
-			final List<Object> list = new ArrayList<Object>(); //create a new list TODO eventually create a list but later check to see if the setter will accept a collection
-			urfListResource.readLock().lock(); //get a read lock
-			try
+			final URI resourceURI = ((ReferenceResource) object).getURI();
+			final Object referencedObject = getPLOOPSource().findByURI(resourceURI); //look up the resource TODO change to referencedResource
+			if(referencedObject == null)
 			{
-				for(final URFResource urfListElement : urfListResource) //for each URF resource in the list
-				{
-					list.add(getObject(urfListElement)); //get or create an object from this URF list element and add it to our list
-				}
+				throw new DataException("Referenced resource " + resourceURI + " does not exist.");
 			}
-			finally
-			{
-				urfListResource.readLock().unlock(); //always release the read lock
-			}
-			return list; //return the list of objects we created
-		}
-		else if(resource instanceof URFSetResource<?>) //if the object is an URF set
-		{
-			final URFSetResource<?> urfSetResource = (URFSetResource<?>) resource; //cast the object to a set
-			final Set<Object> set = new HashSet<Object>(); //create a new set TODO eventually create a set but later check to see if the setter will accept a collection
-			urfSetResource.readLock().lock(); //get a read lock
-			try
-			{
-				for(final URFResource urfSetElement : urfSetResource) //for each URF resource in the set
-				{
-					set.add(getObject(urfSetElement)); //get or create an object from this URF set element and add it to our set
-				}
-			}
-			finally
-			{
-				urfSetResource.readLock().unlock(); //always release the read lock
-			}
-			return set; //return the set of objects we created
-		}
-		else if(resource instanceof URFMapResource<?, ?>) //if the object is an URF map
-		{
-			final URFMapResource<?, ?> urfMapResource = (URFMapResource<?, ?>) resource; //cast the object to a map
-			final Map<Object, Object> map = new HashMap<Object, Object>(); //create a new map
-			urfMapResource.readLock().lock(); //get a read lock
-			try
-			{
-				for(final Map.Entry<? extends URFResource, ? extends URFResource> mapEntry : urfMapResource.entrySet()) //for each map entry in the URF map
-				{
-					map.put(getObject(mapEntry.getKey()), getObject(mapEntry.getValue())); //get or create objects for the key and value, and store them in the map 
-				}
-			}
-			finally
-			{
-				urfMapResource.readLock().unlock(); //always release the read lock
-			}
-			return map; //return the map of objects we created
+			return referencedObject;
 		}
 		else
-		//if this is another type of resource, see if we can create an object for it
+		//otherwise, return the object as-is
 		{
-*/
-/*TODO del		
-		
-			final Object simpleObject = asObject(resource); //see if we can turn the resource into a simple object (do this first, because it may be an enum)
-			if(simpleObject != null) //if we know what type of object it is
+			return object;
+		}
+	}
+
+	/**
+	 * Creates and initializes an object to represent the identified resource using the assertions in the given source. TODO describe process
+	 * @param referenceURI The URI identifying the resource for which a Java object should be created.
+	 * @return A created and initialized object according to the given resource description.
+	 * @throws NullPointerException if the given resource URI is <code>null</code>.
+	 * @throws ConfigurationException if a resource is a Java-typed resource the class of which cannot be found.
+	 * @throws ConfigurationException if a resource indicates a Java class that has no appropriate constructor.
+	 * @throws ConfigurationException if a resource indicates a Java class that is an interface or an abstract class.
+	 * @throws ConfigurationException if a resource indicates a Java class the constructor of which is not accessible.
+	 * @throws IllegalStateException if a resource indicates a Java class the constructor of which throws an exception.
+	 * @throws DataException if a resource does not specify Java type information.
+	 * @throws DataException if an assertion references a resource that does not exist.
+	 * @throws DataException if some value could not be converted.
+	 * @see #processObject(Object)
+	 * @see #convertObject(Object, Class)
+	 */
+	public Object createObject(final URI resourceURI) throws ConfigurationException, IllegalStateException, DataException
+	{
+		final URFAssertionSource assertionSource = getAssertionSource();
+		Class<?> valueClass = null; //we'll try to find a Java class from one of the types
+		for(final URFAssertion typeAssertion : assertionSource.getAssertionsBySubjectAndPredicate(resourceURI, TYPE_PROPERTY_URI)) //look at each type
+		{
+			final Resource type = Objects.asInstance(typeAssertion.getObject(), Resource.class); //the type value should be a resource indicating the type
+			if(type != null) //ignore type values we don't understand
 			{
-				return simpleObject; //return the object
-			}
-*/
-		
-		
-			Class<?> valueClass = null; //we'll try to find a Java class from one of the types
-			for(final URFAssertion typeAssertion : getAssertionSource().getAssertionsBySubjectAndPredicate(resourceURI, TYPE_PROPERTY_URI))	//look at each type
-			{
-//TODO del				final URFResource type = typeProperty.getValue(); //get this type
-				final Resource type=Objects.asInstance(typeAssertion.getObject(), Resource.class);	//the type value should be a resource indicating the type
-				if(type!=null)	//ignore type values we don't understand
+				final URI typeURI = type.getURI(); //get the type URI
+				//TODO make sure type is not null; this would be a data error
+				if(JAVA_URI_SCHEME.equals(typeURI.getScheme())) //if this is an a java: URI
 				{
-					final URI typeURI=type.getURI();	//get the type URI
-					//TODO make sure type is not null; this would be a data error
-					if(JAVA_URI_SCHEME.equals(typeURI.getScheme()))	//if this is an a java: URI
+					try
 					{
-						try
-						{
-							valueClass = Classes.asClass(type.getURI()); //try to get a class from the type URI
-						}
-						catch(final ClassNotFoundException classNotFoundException)
-						{
-							throw new DataException(classNotFoundException);
-						}
+						valueClass = Classes.asClass(type.getURI()); //try to get a class from the type URI
 					}
-					else if(SET_CLASS_URI.equals(typeURI))	//if this is an URF set
+					catch(final ClassNotFoundException classNotFoundException)
 					{
-						final Set<Object> set=new HashSet<Object>();	//create a new set
-						for(final URFAssertion elementAssertion : getAssertionSource().getAssertionsBySubjectAndPredicate(resourceURI, ELEMENT_PROPERTY_URI))	//look at each set element
-						{
-							final Object element=getObject(elementAssertion.getObject());	//transform the object into an element, creating a resource if necessary
-							set.add(element);	//add this element to the set
-						}
-						return set;	//return the new set
+						throw new DataException(classNotFoundException);
 					}
 				}
-				if(valueClass != null) //if we know the value class, try to construct a Java object
+				else if(SET_CLASS_URI.equals(typeURI)) //if this is an URF set
 				{
-					final Map<URI, PropertyDescription> propertyDescriptionMap = getPropertyDescriptionMap(valueClass, resourceURI); //get the property descriptions for this resource
-					Constructor<?> constructor = null; //we'll store an appropriate constructor here
-					Object[] arguments = null; //we'll keep track of the arguments here
-					final Constructor<?>[] constructors = valueClass.getConstructors(); //get all available constructors
-/*TODO fix
-					final URFListResource<?> selector = asListInstance(typeProperty.getScope().getPropertyValue(SELECTOR_PROPERTY_URI)); //get the selector list, if any
-					if(selector != null) //if a selector was specified
+					final Set<Object> set = new HashSet<Object>(); //create a new set
+					for(final URFAssertion elementAssertion : assertionSource.getAssertionsBySubjectAndPredicate(resourceURI, ELEMENT_PROPERTY_URI)) //look at each set element
 					{
-						final int argumentCount = selector.size(); //see how many selector arguments there are
-						for(final Constructor<?> candidateConstructor : constructors) //look at each constructor to find one with the correct number of parameters
-						{
-							final Class<?>[] parameterTypes = candidateConstructor.getParameterTypes(); //get the parameter types for this constructor
-							if(parameterTypes.length == argumentCount) //if this constructor has the correct number of parameters
-							{
-								arguments = new Object[argumentCount]; //create an array sufficient for the arguments
-								for(int parameterIndex = 0; parameterIndex < argumentCount; ++parameterIndex) //for each parameter, as long we we have matching parameters
-								{
-									final Class<?> parameterType = parameterTypes[parameterIndex]; //get this parameter type
-									final Object argument = convertObject(getObject(selector.get(parameterIndex)), parameterType); //get an object from the selector resource and covert it to the correct type
-									if(argument != null) //if we successfully converted this constructor argument
+						final Object element = processObject(elementAssertion.getObject()); //transform the object into an element, creating a resource if necessary
+						set.add(element); //add this element to the set
+					}
+					return set; //return the new set
+				}
+			}
+			if(valueClass != null) //if we know the value class, try to construct a Java object
+			{
+				final Map<URI, PropertyDescription> propertyDescriptionMap = getPropertyDescriptionMap(valueClass, resourceURI); //get the property descriptions for this resource
+				Constructor<?> constructor = null; //we'll store an appropriate constructor here
+				Object[] arguments = null; //we'll keep track of the arguments here
+				final Constructor<?>[] constructors = valueClass.getConstructors(); //get all available constructors
+				/*TODO fix
+									final URFListResource<?> selector = asListInstance(typeProperty.getScope().getPropertyValue(SELECTOR_PROPERTY_URI)); //get the selector list, if any
+									if(selector != null) //if a selector was specified
 									{
-										arguments[parameterIndex] = argument; //store the argument
+										final int argumentCount = selector.size(); //see how many selector arguments there are
+										for(final Constructor<?> candidateConstructor : constructors) //look at each constructor to find one with the correct number of parameters
+										{
+											final Class<?>[] parameterTypes = candidateConstructor.getParameterTypes(); //get the parameter types for this constructor
+											if(parameterTypes.length == argumentCount) //if this constructor has the correct number of parameters
+											{
+												arguments = new Object[argumentCount]; //create an array sufficient for the arguments
+												for(int parameterIndex = 0; parameterIndex < argumentCount; ++parameterIndex) //for each parameter, as long we we have matching parameters
+												{
+													final Class<?> parameterType = parameterTypes[parameterIndex]; //get this parameter type
+													final Object argument = convertObject(getObject(selector.get(parameterIndex)), parameterType); //get an object from the selector resource and covert it to the correct type
+													if(argument != null) //if we successfully converted this constructor argument
+													{
+														arguments[parameterIndex] = argument; //store the argument
+													}
+													else
+													//if we couldn't convert this constructor argument
+													{
+														arguments = null; //these arguments won't work
+														break; //stop looking at this constructor
+													}
+												}
+											}
+											if(arguments != null) //if these arguments worked
+											{
+												constructor = candidateConstructor; //use this constructor
+												break; //stop looking for a matching constructor
+											}
+										}
+										if(constructor == null) //if we didn't find an appropriate constructor
+										{
+											throw new DataException("Value class " + valueClass + " does not have a constructor appropriate for the specified selector parameters: "
+													+ Collections.toString(selector));
+										}
 									}
 									else
-									//if we couldn't convert this constructor argument
-									{
-										arguments = null; //these arguments won't work
-										break; //stop looking at this constructor
-									}
-								}
-							}
-							if(arguments != null) //if these arguments worked
-							{
-								constructor = candidateConstructor; //use this constructor
-								break; //stop looking for a matching constructor
-							}
-						}
-						if(constructor == null) //if we didn't find an appropriate constructor
+				*/
+				//if there is no type selector
+				{
+					if(Resource.class.isAssignableFrom(valueClass)) //if the value class is a Resource, see if we can create it with a single URI
+					{
+						constructor = getCompatibleConstructor(valueClass, URI.class); //see if there is a single URI parameter constructor
+						if(constructor != null) //if there is a single URI parameter constructor for the Resource
 						{
-							throw new DataException("Value class " + valueClass + " does not have a constructor appropriate for the specified selector parameters: "
-									+ Collections.toString(selector));
+							arguments = new Object[] { resourceURI }; //the resource URI will be constructor argument
 						}
 					}
-					else
-*/
-					//if there is no type selector
+					if(constructor == null) //if we still don't have a constructor
 					{
-						if(Resource.class.isAssignableFrom(valueClass)) //if the value class is a Resource, see if we can create it with a single URI
+						constructor = getPublicDefaultConstructor(valueClass); //see if there's a default constructor
+						if(constructor != null) //if there is a default constructor
 						{
-							constructor = getCompatibleConstructor(valueClass, URI.class); //see if there is a single URI parameter constructor
-							if(constructor != null) //if there is a single URI parameter constructor for the Resource
-							{
-								arguments = new Object[] { resourceURI }; //the resource URI will be constructor argument
-							}
+							arguments = EMPTY_OBJECT_ARRAY; //the default constructor has no arguments
 						}
-						if(constructor == null) //if we still don't have a constructor
-						{
-							constructor = getPublicDefaultConstructor(valueClass); //see if there's a default constructor
-							if(constructor != null) //if there is a default constructor
-							{
-								arguments = EMPTY_OBJECT_ARRAY; //the default constructor has no arguments
-							}
-						}
-					}
-					if(constructor != null) //if we found a constructor
-					{
-						assert arguments != null : "Found constructor but missing arguments.";
-						try
-						{
-							final Object object = constructor.newInstance(arguments); //invoke the constructor with the arguments
-							setObjectProperties(object, resourceURI, propertyDescriptionMap); //initialize the object with the properties
-							return object; //return the constructed and initialized object
-						}
-						catch(final InstantiationException instantiationException)
-						{
-							throw new DataException(instantiationException);
-						}
-						catch(final IllegalAccessException illegalAccessException)
-						{
-							throw new DataException(illegalAccessException);
-						}
-					}
-					else
-					//if we didn't find a constructor
-					{
-						throw new DataException("Value class " + valueClass + " does not have an appropriate constructor.");
 					}
 				}
+				if(constructor != null) //if we found a constructor
+				{
+					assert arguments != null : "Found constructor but missing arguments.";
+					try
+					{
+						final Object object = constructor.newInstance(arguments); //invoke the constructor with the arguments
+						setObjectProperties(object, propertyDescriptionMap); //initialize the object with the properties
+						return object; //return the constructed and initialized object
+					}
+					catch(final InstantiationException instantiationException)
+					{
+						throw new DataException(instantiationException);
+					}
+					catch(final IllegalAccessException illegalAccessException)
+					{
+						throw new DataException(illegalAccessException);
+					}
+					catch(final IllegalArgumentException illegalArgumentException)
+					{
+						throw new IllegalStateException(illegalArgumentException);
+					}
+					catch(final InvocationTargetException invocationTargetException)
+					{
+						throw new IllegalStateException(invocationTargetException);
+					}
+				}
+				else
+				//if we didn't find a constructor
+				{
+					throw new DataException("Value class " + valueClass + " does not have an appropriate constructor.");
+				}
 			}
-			throw new IllegalArgumentException("Insufficient data to create object for resource "+resourceURI);
-//TODO del			return resource; //return the resource itself
-//TODO del		}
+		}
+		throw new IllegalArgumentException("Insufficient data to create object for resource " + resourceURI);
+		//TODO del			return resource; //return the resource itself
+		//TODO del		}
 	}
-	
+
 	/**
-	 * Initializes an object based upon the given URI and property descriptions. The object being initialized will be stored locally keyed to the resource
-	 * description for later lookup. This implementation also recognizes the {@link URFResource} type and will transfer all non-PLOOP properties to the object
-	 * when an instance is encountered.
+	 * Initializes an object based upon the given URI and property descriptions. TODO This implementation also recognizes the {@link URFResource} type and will
+	 * transfer all non-PLOOP properties to the object when an instance is encountered.
 	 * @param object The object to initialize.
-	 * @param resource The description for the object.
 	 * @param propertyDescriptionMap The property descriptions for initializing the object.
-	 * @exception NullPointerException if the given object, resource, and/or property description map is <code>null</code>.
-	 * @exception DataException if a resource is a Java-typed resource the class of which cannot be found.
-	 * @exception DataException if a particular value is not an appropriate argument for the corresponding property.
-	 * @exception DataException If a particular property could not be accessed.
-	 * @exception InvocationTargetException a resource indicates a Java class the constructor of which throws an exception.
+	 * @throws NullPointerException if the given object and/or property description map is <code>null</code>.
+	 * @throws ConfigurationException if a resource is a Java-typed resource the class of which cannot be found.
+	 * @throws ConfigurationException if a particular value is not an appropriate argument for the corresponding property.
+	 * @throws ConfigurationException If a particular property could not be accessed.
+	 * @throws IllegalStateException if a resource indicates a Java class the constructor of which throws an exception.
 	 */
-	protected void setObjectProperties(final Object object, final URI resourceURI, final Map<URI, PropertyDescription> propertyDescriptionMap)
-			throws DataException, InvocationTargetException
+	protected void setObjectProperties(final Object object, final Map<URI, PropertyDescription> propertyDescriptionMap) throws ConfigurationException,
+			IllegalStateException
 	{
 		for(final PropertyDescription propertyDescription : propertyDescriptionMap.values()) //for each property description
 		{
@@ -369,71 +333,33 @@ public class PLOOPURFAssertionProcessor
 				setObjectProperty(object, setter, propertyDescription.getValue()); //set the value for the property
 			}
 		}
-/*TODO del if not needed
-		if(object instanceof URFResource) //if the object is an URF resource, add any non-PLOOP properties to the new URF resource
-		{
-			for(final URFProperty property : resource.getProperties()) //for each property of the source resource
-			{
-				final URI propertyURI = property.getPropertyURI(); //get the property URI
-				if(!propertyDescriptionMap.containsKey(propertyURI)) //if this was not a PLOOP property
+		/*TODO del if not needed
+				if(object instanceof URFResource) //if the object is an URF resource, add any non-PLOOP properties to the new URF resource
 				{
-					((URFResource) object).addPropertyValue(propertyURI, property.getValue()); //add this property and value to the created URF resource
+					for(final URFProperty property : resource.getProperties()) //for each property of the source resource
+					{
+						final URI propertyURI = property.getPropertyURI(); //get the property URI
+						if(!propertyDescriptionMap.containsKey(propertyURI)) //if this was not a PLOOP property
+						{
+							((URFResource) object).addPropertyValue(propertyURI, property.getValue()); //add this property and value to the created URF resource
+						}
+					}
 				}
-			}
-		}
-*/
-		resourceObjectMap.put(resourceURI, object); //associate the initialized object with its resource description
+		*/
+		//TODO del		resourceObjectMap.put(resourceURI, object); //associate the initialized object with its resource description
 	}
-	
-	/**
-	 * Sets the property of an object based upon the stored property value in a given resource description. If the given resource has no such property, no action
-	 * will occur.
-	 * @param object The object to initialize.
-	 * @param resource The description for the object.
-	 * @param propertyName The name of the property to set.
-	 * @return <code>true</code> if the given resource description contained a corresponding property and that property was used to update the given object.
-	 * @exception NullPointerException if the given object, resource, and/or property name is <code>null</code>.
-	 * @exception DataException if a resource is a Java-typed resource the class of which cannot be found.
-	 * @exception DataException if the object has no setter method for the given property.
-	 * @exception DataException if the particular value is not an appropriate argument for the given property.
-	 * @exception DataException If the given property could not be accessed.
-	 * @exception InvocationTargetException if the given resource indicates a Java class the constructor of which throws an exception.
-	 */
-/*TODO del
-	public boolean setObjectProperty(final Object object, final URFResource resource, final String propertyName) throws DataException, InvocationTargetException
-	{
-		final URI propertyURI = createResourceURI(DEFAULT_NAMESPACE_URI, propertyName); //get the property URI for the given property of the object
-		final URFResource propertyValue = resource.getPropertyValue(propertyURI); //get the value for this property
-		//TODO fix to support null values		if(propertyValue==null && !resource.hasProperty(propertyURI))	//if the resource does not have a value for the property
-		if(propertyValue == null && !resource.hasProperty(propertyURI)) //if the resource does not have a value for the property
-		{
-			return false; //indicate that there is no such property value
-		}
-		final PropertyDescription propertyDescription = getPropertyDescription(object.getClass(), propertyName, propertyValue); //get the property description
-		if(propertyDescription != null) //if we found a property description
-		{
-			final Method setterMethod = propertyDescription.getSetter(); //get the setter
-			if(setterMethod != null) //if there is a setter method
-			{
-				setObjectProperty(object, setterMethod, propertyDescription.getValue()); //set the property
-				return true; //indicate that we set the property successfully
-			}
-		}
-		throw new DataException("Object " + object + " has no property " + propertyName);
-	}
-*/
 
 	/**
 	 * Sets the property of an object using the given setter method and value.
 	 * @param object The object to initialize.
 	 * @param setterMethod The method to use in setting the object property.
 	 * @param value The value to set.
-	 * @exception NullPointerException if the given object and/or setter method is <code>null</code>.
-	 * @exception DataException if the given value is not an appropriate argument for the given property.
-	 * @exception DataException If the given property could not be accessed.
-	 * @exception InvocationTargetException if the given Java property method throws an exception.
+	 * @throws NullPointerException if the given object and/or setter method is <code>null</code>.
+	 * @throws ConfigurationException if the given value is not an appropriate argument for the given property.
+	 * @throws ConfigurationException If the given property could not be accessed.
+	 * @throws IllegalStateException if the given Java property method throws an exception.
 	 */
-	public static void setObjectProperty(final Object object, final Method setterMethod, final Object value) throws DataException, InvocationTargetException
+	public static void setObjectProperty(final Object object, final Method setterMethod, final Object value) throws ConfigurationException, IllegalStateException
 	{
 		try
 		{
@@ -441,35 +367,47 @@ public class PLOOPURFAssertionProcessor
 		}
 		catch(final IllegalAccessException illegalAccessException) //if we can't access this setter
 		{
-			throw new DataException(illegalAccessException);
+			throw new ConfigurationException(illegalAccessException);
+		}
+		catch(final IllegalArgumentException illegalArgumentException)
+		{
+			throw new ConfigurationException(illegalArgumentException);
+		}
+		catch(final InvocationTargetException invocationTargetException)
+		{
+			throw new IllegalStateException(invocationTargetException);
 		}
 	}
 
 	/**
-	 * Constructs a map of property descriptions for a class based upon a resource description, using the object's class to determine the property namespace. If
-	 * there are duplicate properties, only one will be stored.
+	 * Constructs a map of property descriptions for a class based upon a resource description. If there are duplicate properties, only one will be stored.
 	 * @param objectClass The class of the object to be constructed.
-	 * @param resource The description fo the object.
+	 * @param resourceURI The URI of the resource.
 	 * @return A map of property descriptions keyed to property URIs.
-	 * @exception DataException if a resource does not specify Java type information.
-	 * @exception DataException if a resource is a Java-typed resource the class of which cannot be found.
-	 * @exception DataException if a resource indicates a Java class that has no appropriate constructor.
-	 * @exception DataException if a resource indicates a Java class that is an interface or an abstract class.
-	 * @exception DataException if a resource indicates a Java class the constructor of which is not accessible.
-	 * @exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
+	 * @throws NullPointerException if the given object class, and/or resource URI is <code>null</code>.
+	 * @throws ConfigurationException if a resource is a Java-typed resource the class of which cannot be found.
+	 * @throws ConfigurationException if a resource indicates a Java class that has no appropriate constructor.
+	 * @throws ConfigurationException if a resource indicates a Java class that is an interface or an abstract class.
+	 * @throws ConfigurationException if a resource indicates a Java class the constructor of which is not accessible.
+	 * @throws IllegalStateException if a resource indicates a Java class the constructor of which throws an exception.
+	 * @throws DataException if a resource does not specify Java type information.
+	 * @throws DataException if an assertion references a resource that does not exist.
+	 * @throws DataException if some value could not be converted.
 	 */
-	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URI resourceURI) throws DataException,
-			InvocationTargetException
+	protected Map<URI, PropertyDescription> getPropertyDescriptionMap(final Class<?> objectClass, final URI resourceURI) throws ConfigurationException,
+			IllegalStateException, DataException
 	{
-		final Set<URFAssertion> assertions=getAssertionSource().getAssertionsBySubject(resourceURI);	//get the assertions describing this resource
+		final URFAssertionSource assertionSource = getAssertionSource();
+		final Set<URFAssertion> assertions = assertionSource.getAssertionsBySubject(resourceURI); //get the assertions describing this resource
 		final Map<URI, PropertyDescription> propertyDescriptionMap = new HashMap<URI, PropertyDescription>(assertions.size()); //create a map to hold property descriptions, with a least enough capacity to hold descriptions for all properties
-		for(final URFAssertion assertion:getAssertionSource().getAssertionsBySubject(resourceURI))	//for each resource property
+		for(final URFAssertion assertion : assertionSource.getAssertionsBySubject(resourceURI)) //for each resource property
 		{
 			final URI propertyURI = assertion.getPredicateURI(); //get the property URI
 			if(DEFAULT_NAMESPACE_URI.equals(getNamespaceURI(propertyURI))) //if this property is in the default namespace
 			{
 				final String propertyName = getLocalName(propertyURI); //get the local name of the property
-				final PropertyDescription propertyDescription = getPropertyDescription(objectClass, propertyName, assertion.getObject()); //get a description for this property
+				final Object propertyValue = processObject(assertion.getObject()); //process the object so that it can be set as a value
+				final PropertyDescription propertyDescription = getPropertyDescription(objectClass, propertyName, propertyValue); //get a description for this property
 				if(propertyDescription != null) //if this was a recognized property
 				{
 					propertyDescriptionMap.put(propertyURI, propertyDescription); //store this property description in the map
@@ -478,36 +416,20 @@ public class PLOOPURFAssertionProcessor
 		}
 		return propertyDescriptionMap; //return the property description map
 	}
-	
+
 	/**
-	 * Gets a description of a property of the object based upon the given property name and value. An URF property is considered to be a PLOOP property the
-	 * property is in the namespace indicatd by the class package and there the class has either a getter or setter for the URF property's local name. The
-	 * returned property description will indicate a setter method if the property is settable.
+	 * Gets a description of a property of the object based upon the given property name and value. The returned property description will indicate a setter
+	 * method if the property is settable.
 	 * @param objectClass The class of the object to be updated.
 	 * @param propertyName The name of the property potentially representing an object property.
-	 * @param propertyValueResource The value of the URF property potentially representing a object property.
+	 * @param propertyValue The value potentially representing an object property.
 	 * @return A description of the property, or <code>null</code> if the property is not recognized.
-	 * @exception NullPointerException if the given object class and/or property name is <code>null</code>.
-	 * @exception DataException if a resource does not specify Java type information.
-	 * @exception DataException if a resource is a Java-typed resource the class of which cannot be found.
-	 * @exception DataException if a resource indicates a Java class that has no appropriate constructor.
-	 * @exception DataException if a resource indicates a Java class that is an interface or an abstract class.
-	 * @exception DataException if a resource indicates a Java class the constructor of which is not accessible.
-	 * @exception InvocationTargetException if a resource indicates a Java class the constructor of which throws an exception.
+	 * @throws NullPointerException if the given object class, property name, and/or property value is <code>null</code>.
+	 * @throws DataException if a value could not be converted.
 	 */
-	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, final String propertyName, final Object object)
-			throws DataException, InvocationTargetException
+	protected PropertyDescription getPropertyDescription(final Class<?> objectClass, final String propertyName, final Object propertyValue) throws DataException
 	{
-		final Object propertyValue;
-		if(object instanceof Resource)	//if the object is a resource
-		{
-			propertyValue=getObject(((Resource)object).getURI());	//look up the object for that resource based upon its URI
-		}
-		else	//if the object isn't a resource
-		{
-			propertyValue=object;	//we'll use the object as-is
-		}
-		final Class<?> propertyValueType = propertyValue.getClass(); //get the type of the value
+		//TODO del		final Class<?> propertyValueType = propertyValue.getClass(); //get the type of the value
 		//try to find a compatible setter method; get the variable name from each supposed setter in case the setter has multiple capital letters, such as setID()
 		final Method[] methods = objectClass.getMethods(); //get all the class methods
 		for(final Method method : methods) //for each method
@@ -543,19 +465,6 @@ public class PLOOPURFAssertionProcessor
 		return null; //indicate that we don't recognize this property
 	}
 
-	protected Object getObject(final Object object) throws DataException, InvocationTargetException
-	{
-		if(object instanceof ReferenceResource)
-		{
-			return getObject(((ReferenceResource)object).getURI());
-		}
-		else
-		{
-			return object;
-		}
-		
-	}
-	
 	/**
 	 * Converts an object to the correct Java type if possible. If the object is already of the correct type, no action occurs. The following types can be
 	 * converted to the listed types:
@@ -572,9 +481,9 @@ public class PLOOPURFAssertionProcessor
 	 * @param object The object to convert.
 	 * @param requiredType The required type of the object.
 	 * @return The object as the required type, or <code>null</code> if the object cannot be converted to the required type.
-	 * @exception NullPointerException if the given object is <code>null</code>.
-	 * @exception DataException if the given object should be able to be converted to the required type but something about its state, format, or contents
-	 *              prevented the conversion.
+	 * @throws NullPointerException if the given object is <code>null</code>.
+	 * @throws DataException if the given object should be able to be converted to the required type but something about its state, format, or contents prevented
+	 *           the conversion.
 	 */
 	protected Object convertObject(final Object object, final Class<?> requiredType) throws DataException //TODO search for a string constructor or a static valueOf() method
 	{
@@ -692,7 +601,7 @@ public class PLOOPURFAssertionProcessor
 		 * Value constructor.
 		 * @param propertyClass The class representing the property type.
 		 * @param value The property value.
-		 * @exception NullPointerException if the given property URI and/or property class is <code>null</code>.
+		 * @throws NullPointerException if the given property URI and/or property class is <code>null</code>.
 		 */
 		public PropertyDescription(final Class<?> propertyClass, final Object value)
 		{
@@ -704,7 +613,7 @@ public class PLOOPURFAssertionProcessor
 		 * @param propertyURI The URI identifying the property.
 		 * @param setter The setter method to be invoked, or <code>null</code> if no setting method is known.
 		 * @param value The property value.
-		 * @exception NullPointerException if the given property URI and/or property class is <code>null</code>.
+		 * @throws NullPointerException if the given property URI and/or property class is <code>null</code>.
 		 */
 		public PropertyDescription(final Class<?> propertyClass, final Object value, final Method setter)
 		{

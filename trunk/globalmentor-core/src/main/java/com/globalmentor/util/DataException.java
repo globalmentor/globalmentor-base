@@ -21,6 +21,8 @@ package com.globalmentor.util;
 */
 public class DataException extends Exception
 {
+	private static final long serialVersionUID = 1L;
+
 	/**Constructs a new exception with no detail message.*/
 	public DataException()
 	{
