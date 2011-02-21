@@ -340,7 +340,7 @@ public class Classes
 	@exception NullPointerException if <code>name</code> is <code>null</code>
 	@exception  SecurityException If a security manager, <i>s</i>, is present and any of the following conditions is met:
 	<ul>
-		<li>invocation of <code>{@link SecurityManager#checkMemberAccess s.checkMemberAccess(this, Member.PUBLIC)}</code> deniesaccess to the method</li>
+		<li>invocation of <code>{@link SecurityManager#checkMemberAccess s.checkMemberAccess(this, Member.PUBLIC)}</code> denies access to the method</li>
 		<li> the caller's class loader is not the same as or an ancestor of the class loader for the current class and invocation of <code>{@link SecurityManager#checkPackageAccess s.checkPackageAccess()}</code> denies access to the package of this class</li>
 	</ul>
 	@since JDK1.1
