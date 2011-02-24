@@ -136,7 +136,7 @@ public class Collections
 	 * @see Collection#isEmpty()
 	 * @see Collection#iterator()
 	 */
-	public <T> T get(final Collection<T> collection)
+	public static <T> T get(final Collection<T> collection)
 	{
 		return collection.isEmpty() ? null : collection.iterator().next();
 	}
