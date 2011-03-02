@@ -74,6 +74,26 @@ public class SetURFAssertionStore extends AbstractURFAssertionSource implements 
 		this.assertions.addAll(assertions);
 	}
 
+	/** {@inheritDoc} */
+	public void removeAssertion(final URFAssertion assertion)
+	{
+		this.assertions.remove(assertion);
+	}
+
+	/**
+	 * {@inheritDoc} This implementation delegates to {@link #removeAssertion(URFAssertion)}.
+	 */
+	public final void removeAssertion(final URI subjectURI, final URI predicateURI, final Object object)
+	{
+		removeAssertion(new DefaultURFAssertion(subjectURI, predicateURI, object));
+	}
+
+	/** {@inheritDoc} */
+	public void removeAssertions(final Collection<? extends URFAssertion> assertions)
+	{
+		this.assertions.removeAll(assertions);
+	}
+
 	/**
 	 * {@inheritDoc} This implementation only supports assertion queries of type {@link SimpleURFAssertionQuery}.
 	 */
@@ -83,7 +103,7 @@ public class SetURFAssertionStore extends AbstractURFAssertionSource implements 
 		{
 			throw new UnsupportedOperationException("URF assertion query of type " + assertionQuery.getClass().getName() + " not supported.");
 		}
-		final SimpleURFAssertionQuery simpleURFAssertionQuery = (SimpleURFAssertionQuery) assertionQuery;
+		final SimpleURFAssertionQuery simpleURFAssertionQuery = (SimpleURFAssertionQuery)assertionQuery;
 		final Set<URI> assertionSubjectURIs = simpleURFAssertionQuery.getAssertionSubjectURIs();
 		final Set<URI> assertionPredicateURIs = simpleURFAssertionQuery.getAssertionPredicateURIs();
 		final Map<URI, Object> subjectPredicateURIValues = simpleURFAssertionQuery.getSubjectPredicateURIValues();

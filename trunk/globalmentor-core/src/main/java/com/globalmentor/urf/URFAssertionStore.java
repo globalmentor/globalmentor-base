@@ -36,7 +36,7 @@ public interface URFAssertionStore extends URFAssertionSource
 	public void addAssertion(final URFAssertion assertion);
 
 	/**
-	 * Adds a new assertion from a subject, predicate, and object.
+	 * Adds a new assertion by a subject, predicate, and object.
 	 * @param subjectURI The URI of the subject of the assertion.
 	 * @param predicateURI The URI of the predicate of the assertion.
 	 * @param object The object of the assertion; a value object or a {@link ReferenceResource}.
@@ -51,4 +51,27 @@ public interface URFAssertionStore extends URFAssertionSource
 	 */
 	public void addAssertions(final Collection<? extends URFAssertion> assertions);
 
+	/**
+	 * Removes an assertion from the assertion store.
+	 * @param assertion The assertion to remove.
+	 * @throws NullPointerException if the given assertion is <code>null</code>.
+	 */
+	public void removeAssertion(final URFAssertion assertion);
+
+	/**
+	 * Removes an assertion by a subject, predicate, and object.
+	 * @param subjectURI The URI of the subject of the assertion.
+	 * @param predicateURI The URI of the predicate of the assertion.
+	 * @param object The object of the assertion; a value object or a {@link ReferenceResource}.
+	 * @exception NullPointerException if the given subject URI, predicate URI, and/or object is <code>null</code>.
+	 */
+	public void removeAssertion(final URI subjectURI, final URI predicateURI, final Object object);
+	
+	/**
+	 * Removes assertions from the assertion store.
+	 * @param assertions The assertions to remove.
+	 * @throws NullPointerException if the given assertion collection is <code>null</code>.
+	 */
+	public void removeAssertions(final Collection<? extends URFAssertion> assertions);
+	
 }
