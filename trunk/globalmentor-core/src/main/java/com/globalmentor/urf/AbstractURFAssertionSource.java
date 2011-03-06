@@ -30,10 +30,16 @@ import com.globalmentor.model.NameValuePair;
 public abstract class AbstractURFAssertionSource implements URFAssertionSource
 {
 
+	/**{@inheritDoc} This implementation delegates to {@link #hasAssertion(URFAssertion)}.*/
+	public boolean hasAssertion(final URI subjectURI, final URI predicateURI, final Object object)
+	{
+		return hasAssertion(new DefaultURFAssertion(subjectURI, predicateURI, object));
+	}
+	
 	/**
 	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
 	 */
-	public final Set<URFAssertion> getAssertionsBySubject(final URI subjectURI)
+	public Set<URFAssertion> getAssertionsBySubject(final URI subjectURI)
 	{
 		return getAssertions(new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, null));
 	}
@@ -84,7 +90,7 @@ public abstract class AbstractURFAssertionSource implements URFAssertionSource
 	/**
 	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
 	 */
-	public final Set<URFAssertion> getAssertionsBySubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues)
+	public Set<URFAssertion> getAssertionsBySubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues)
 	{
 		return getAssertions(new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(Objects.checkInstance(subjectURI)), null,
 				Objects.checkInstance(predicateURIValues)));

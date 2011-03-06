@@ -198,7 +198,7 @@ public class URIs
 	 */
 	public final static URI checkInfoNamespace(final URI uri, final String infoNamespace)
 	{
-		if(!checkScheme(uri, URIs.INFO_SCHEME).getRawSchemeSpecificPart().startsWith(infoNamespace + URIs.INFO_SCHEME_NAMESPACE_DELIMITER)) //check for the info scheme; if the scheme-specific part is not what was expected
+		if(!checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart().startsWith(infoNamespace + INFO_SCHEME_NAMESPACE_DELIMITER)) //check for the info scheme; if the scheme-specific part is not what was expected
 		{
 			throw new IllegalArgumentException("Info namespace of URI " + uri + " must be " + infoNamespace);
 		}
@@ -214,8 +214,8 @@ public class URIs
 	 */
 	public final static String getInfoNamespace(final URI uri)
 	{
-		final String ssp = checkScheme(uri, URIs.INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
-		final int namespaceDelimiterIndex = ssp.indexOf(URIs.INFO_SCHEME_NAMESPACE_DELIMITER); //get the index of the info URI namespace delimiter
+		final String ssp = checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
+		final int namespaceDelimiterIndex = ssp.indexOf(INFO_SCHEME_NAMESPACE_DELIMITER); //get the index of the info URI namespace delimiter
 		if(namespaceDelimiterIndex < 1) //if there is no namespace delimiter, or there are no namespace characters
 		{
 			throw new IllegalArgumentException("info URI " + uri + " missing delimited namespace.");
@@ -236,7 +236,7 @@ public class URIs
 	}
 
 	/**
-	 * Determines the raw, encoded info indentifier of the given {@value URIs#INFO_SCHEME} scheme URI.
+	 * Determines the raw, encoded info identifier of the given {@value URIs#INFO_SCHEME} scheme URI.
 	 * @param uri The URI from which the info identifier should be retrieved.
 	 * @return The raw, encoded info identifier of the given info URI.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
@@ -244,8 +244,8 @@ public class URIs
 	 */
 	public final static String getInfoRawIdentifier(final URI uri)
 	{
-		final String ssp = checkScheme(uri, URIs.INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
-		final int namespaceDelimiterIndex = ssp.indexOf(URIs.INFO_SCHEME_NAMESPACE_DELIMITER); //get the index of the info URI namespace delimiter
+		final String ssp = checkScheme(uri, INFO_SCHEME).getRawSchemeSpecificPart(); //get the raw scheme-specific part after checking to make sure this is an info URI
+		final int namespaceDelimiterIndex = ssp.indexOf(INFO_SCHEME_NAMESPACE_DELIMITER); //get the index of the info URI namespace delimiter
 		if(namespaceDelimiterIndex < 1) //if there is no namespace delimiter, or there are no namespace characters
 		{
 			throw new IllegalArgumentException("info URI " + uri + " missing delimited namespace.");
@@ -262,7 +262,7 @@ public class URIs
 	 */
 	public final static boolean isInfoNamespace(final URI uri, final String infoNamespace)
 	{
-		return URIs.INFO_SCHEME.equals(uri.getScheme()) && uri.getRawSchemeSpecificPart().startsWith(infoNamespace + URIs.INFO_SCHEME_NAMESPACE_DELIMITER); //check for the info scheme and the info namespace
+		return INFO_SCHEME.equals(uri.getScheme()) && uri.getRawSchemeSpecificPart().startsWith(infoNamespace + INFO_SCHEME_NAMESPACE_DELIMITER); //check for the info scheme and the info namespace
 	}
 
 	/**
@@ -280,7 +280,7 @@ public class URIs
 		if(rawPath == null) //if Java sees no path, it must be a relative path; extract it manually
 		{
 			rawPath = uri.getRawSchemeSpecificPart(); //the raw path is the scheme-specific part
-			final int queryStart = rawPath.indexOf(URIs.QUERY_SEPARATOR); //see if this URI has a query (the scheme-specific part will not include the fragment, if any
+			final int queryStart = rawPath.indexOf(QUERY_SEPARATOR); //see if this URI has a query (the scheme-specific part will not include the fragment, if any
 			if(queryStart >= 0) //if a query is present
 			{
 				rawPath = rawPath.substring(0, queryStart); //remove the query
@@ -357,11 +357,11 @@ public class URIs
 			return uri; //the URI remains unchanged
 		}
 		final StringBuilder stringBuilder = new StringBuilder(); //create a new string builder
-		stringBuilder.append(uri.getScheme()).append(URIs.SCHEME_SEPARATOR).append(newRawSSP); //append the scheme and the scheme-specific part
+		stringBuilder.append(uri.getScheme()).append(SCHEME_SEPARATOR).append(newRawSSP); //append the scheme and the scheme-specific part
 		final String rawFragment = uri.getRawFragment(); //get the raw fragment, if any
 		if(rawFragment != null) //if there is a raw fragment
 		{
-			stringBuilder.append(URIs.FRAGMENT_SEPARATOR).append(rawFragment); //include the raw fragment
+			stringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment); //include the raw fragment
 		}
 		return URI.create(stringBuilder.toString()); //create a URI from the constructed string
 	}
@@ -391,16 +391,16 @@ public class URIs
 		if(length > 0) //if there are path characters
 		{
 			int endIndex = length; //start at the end of the path (endIndex will always be one position after the ending character)
-			if(path.charAt(endIndex - 1) == URIs.PATH_SEPARATOR) //if the path ends with a path separator
+			if(path.charAt(endIndex - 1) == PATH_SEPARATOR) //if the path ends with a path separator
 			{
 				--endIndex; //skip the ending path separator
 			}
-			final int beginIndex = path.lastIndexOf(URIs.PATH_SEPARATOR, endIndex - 1) + 1; //get the index after the previous separator; if there are no previous separators, this will correctly yield index 0
+			final int beginIndex = path.lastIndexOf(PATH_SEPARATOR, endIndex - 1) + 1; //get the index after the previous separator; if there are no previous separators, this will correctly yield index 0
 			if(endIndex - beginIndex > 0) //if there are characters to collect (if not, this is the root path, "/")
 			{
 				return path.substring(beginIndex, endIndex); //return the name we found
 			}
-			assert URIs.ROOT_PATH.equals(path) : "Path unexpectedly not the root path.";
+			assert ROOT_PATH.equals(path) : "Path unexpectedly not the root path.";
 		}
 		return path; //the path (either "" or "/") is already its name
 	}
@@ -416,7 +416,7 @@ public class URIs
 	 */
 	public static String getRawName(final URI uri) //TODO important: update all references to check for null
 	{
-		final String rawPath = uri.isOpaque() && URIs.INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath(); //get the raw path, using the scheme-specific part of any info URI
+		final String rawPath = uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme()) ? uri.getRawSchemeSpecificPart() : uri.getRawPath(); //get the raw path, using the scheme-specific part of any info URI
 		return rawPath != null ? getName(rawPath) : null; //if we have a raw path, return the name
 	}
 
@@ -456,11 +456,11 @@ public class URIs
 			return name; //the empty path becomes the name itself
 		}
 		int endIndex = length; //start at the end of the path (endIndex will always be one position after the ending character)
-		if(path.charAt(endIndex - 1) == URIs.PATH_SEPARATOR) //if the path ends with a path separator
+		if(path.charAt(endIndex - 1) == PATH_SEPARATOR) //if the path ends with a path separator
 		{
 			--endIndex; //skip the ending path separator
 		}
-		final int beginIndex = path.lastIndexOf(URIs.PATH_SEPARATOR, endIndex - 1) + 1; //get the index after the previous separator; if there are no previous separators, this will correctly yield index 0
+		final int beginIndex = path.lastIndexOf(PATH_SEPARATOR, endIndex - 1) + 1; //get the index after the previous separator; if there are no previous separators, this will correctly yield index 0
 		final StringBuilder pathStringBuilder = new StringBuilder(path); //create a new string builder from the given path
 		if(endIndex - beginIndex > 1) //if there are characters to collect (there must be more than one position difference in the start and end positions, because the end position is the index after the last character)
 		{
@@ -469,8 +469,8 @@ public class URIs
 		else
 		//if there are no characters to collect, this must be the root path ("/")
 		{
-			assert URIs.ROOT_PATH.equals(path) : "Path unexpectedly not the root path.";
-			pathStringBuilder.append(name).append(URIs.PATH_SEPARATOR); //append "name/" to the root path to yield "/name/"
+			assert ROOT_PATH.equals(path) : "Path unexpectedly not the root path.";
+			pathStringBuilder.append(name).append(PATH_SEPARATOR); //append "name/" to the root path to yield "/name/"
 		}
 		return pathStringBuilder.toString(); //return the new path we determined
 	}
@@ -488,7 +488,7 @@ public class URIs
 	 */
 	public static URI changeRawName(final URI uri, final String rawName)
 	{
-		if(uri.isOpaque() && URIs.INFO_SCHEME.equals(uri.getScheme())) //if this is an info URI
+		if(uri.isOpaque() && INFO_SCHEME.equals(uri.getScheme())) //if this is an info URI
 		{
 			final String rawSSP = uri.getRawSchemeSpecificPart(); //get the raw scheme-specific part
 			final String newRawSSP = changeName(rawSSP, rawName); //change the name to the given name
@@ -706,7 +706,7 @@ public class URIs
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder
 		if(absolute) //if this should be an absolute path
 		{
-			stringBuilder.append(URIs.PATH_SEPARATOR); //prepend '/'
+			stringBuilder.append(PATH_SEPARATOR); //prepend '/'
 		}
 		boolean hasPath = false; //don't assume we have any path elements
 		for(final String pathElement : pathElements) //look at each path element
@@ -715,7 +715,7 @@ public class URIs
 			{
 				//TODO fix encoding using a real encoder, not the www-encoding URLEncoder				stringBuilder.append(encode(pathElement, UTF_8));	//encode and append this path element
 				stringBuilder.append(pathElement); //encode and append this path element
-				stringBuilder.append(URIs.PATH_SEPARATOR); //separate the path elements
+				stringBuilder.append(PATH_SEPARATOR); //separate the path elements
 			}
 			/*G***fix
 						catch(final UnsupportedEncodingException unsupportedEncodingException)	//we should always support UTF-8
@@ -752,7 +752,7 @@ public class URIs
 		final StringBuilder query = new StringBuilder();
 		if(params.length() > 0) //if there is at least one parameter character
 		{
-			query.append(URIs.QUERY_SEPARATOR); //append the query prefix
+			query.append(QUERY_SEPARATOR); //append the query prefix
 			query.append(params); //append the params
 		}
 		return query.toString(); //return the query string we constructed
@@ -767,8 +767,8 @@ public class URIs
 	 */
 	public static URI appendRawQuery(final URI uri, final String rawQuery)
 	{
-		final StringBuilder stringBuilder = new StringBuilder(uri.toString()); //create a string builder from the URI
-		stringBuilder.append(uri.getRawQuery() != null ? URIs.QUERY_NAME_VALUE_PAIR_DELIMITER : URIs.QUERY_SEPARATOR); //if there already is a query, separate the new parameters from the existing ones; otherwise, add the query introduction character
+		final StringBuilder stringBuilder = new StringBuilder(uri.toASCIIString()); //create a string builder from the URI
+		stringBuilder.append(uri.getRawQuery() != null ? QUERY_NAME_VALUE_PAIR_DELIMITER : QUERY_SEPARATOR); //if there already is a query, separate the new parameters from the existing ones; otherwise, add the query introduction character
 		stringBuilder.append(checkInstance(rawQuery, "Query cannot be null.")); //add the new query information
 		return URI.create(stringBuilder.toString()); //return the new URI
 	}
@@ -815,7 +815,7 @@ public class URIs
 	public static String appendQueryParameters(final String query, final URIQueryParameter... params)
 	{
 		final String queryParameters = constructQueryParameters(params); //get query parameters
-		return query != null && query.length() > 0 ? query + URIs.QUERY_NAME_VALUE_PAIR_DELIMITER + queryParameters : queryParameters; //if there was a query, append the new parameters; otherwise, just return the parameters
+		return query != null && query.length() > 0 ? query + QUERY_NAME_VALUE_PAIR_DELIMITER + queryParameters : queryParameters; //if there was a query, append the new parameters; otherwise, just return the parameters
 	}
 
 	/**
@@ -831,9 +831,9 @@ public class URIs
 			for(NameValuePair<String, String> param : params) //look at each parameter
 			{
 				paramStringBuilder.append(encode(param.getName())); //append the parameter name
-				paramStringBuilder.append(URIs.QUERY_NAME_VALUE_ASSIGNMENT); //append the value-assignment character
+				paramStringBuilder.append(QUERY_NAME_VALUE_ASSIGNMENT); //append the value-assignment character
 				paramStringBuilder.append(encode(param.getValue())); //append the parameter value
-				paramStringBuilder.append(URIs.QUERY_NAME_VALUE_PAIR_DELIMITER); //append the name-value pair delimiter
+				paramStringBuilder.append(QUERY_NAME_VALUE_PAIR_DELIMITER); //append the name-value pair delimiter
 			}
 			paramStringBuilder.delete(paramStringBuilder.length() - 1, paramStringBuilder.length()); //remove the last name-value pair delimiter
 		}
@@ -1027,12 +1027,12 @@ public class URIs
 			{
 				return new NameValuePair[0]; //return an empty array
 			}
-			final String[] parameterStrings = query.split(String.valueOf(URIs.QUERY_NAME_VALUE_PAIR_DELIMITER)); //split the query into parameters
+			final String[] parameterStrings = query.split(String.valueOf(QUERY_NAME_VALUE_PAIR_DELIMITER)); //split the query into parameters
 			final NameValuePair<String, String>[] parameters = new NameValuePair[parameterStrings.length]; //create an array to hold parameters
 			int i = 0;
 			for(final String parameterString : parameterStrings) //for each parameters
 			{
-				final String[] nameValue = parameterString.split(String.valueOf(URIs.QUERY_NAME_VALUE_ASSIGNMENT)); //split the parameter into its name and value
+				final String[] nameValue = parameterString.split(String.valueOf(QUERY_NAME_VALUE_ASSIGNMENT)); //split the parameter into its name and value
 				final String name; //we'll get the parameter name
 				final String value; //we'll get the parameter value
 				if(nameValue.length > 0) //if there was at least one token
@@ -1223,7 +1223,7 @@ public class URIs
 	 */
 	public static URI getCurrentLevel(final URI uri)
 	{
-		return resolve(uri, URIs.CURRENT_LEVEL_PATH_SEGMENT); //resolve the URI to "."
+		return resolve(uri, CURRENT_LEVEL_PATH_SEGMENT); //resolve the URI to "."
 	}
 
 	/**
@@ -1233,7 +1233,7 @@ public class URIs
 	 */
 	public static URI getParentLevel(final URI uri)
 	{
-		return resolve(uri, URIs.PARENT_LEVEL_PATH_SEGMENT); //resolve the URI to ".."
+		return resolve(uri, PARENT_LEVEL_PATH_SEGMENT); //resolve the URI to ".."
 	}
 
 	/**
@@ -1347,7 +1347,7 @@ public class URIs
 	 */
 	public static URI createURN(final String nid, final String nss)
 	{
-		return URI.create(URIs.URN_SCHEME + URIs.SCHEME_SEPARATOR + nid + URIs.SCHEME_SEPARATOR + nss); //construct and return the URN
+		return URI.create(URN_SCHEME + SCHEME_SEPARATOR + nid + SCHEME_SEPARATOR + nss); //construct and return the URN
 	}
 
 	/**
@@ -1377,12 +1377,12 @@ public class URIs
 	public static URI createInfoURI(final String namespace, final String rawIdentifier, final String rawFragment)
 	{
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder
-		stringBuilder.append(URIs.INFO_SCHEME).append(URIs.SCHEME_SEPARATOR).append(checkInstance(namespace, "Namespace cannot be null."))
-				.append(URIs.INFO_SCHEME_NAMESPACE_DELIMITER); //info:namespace/
+		stringBuilder.append(INFO_SCHEME).append(SCHEME_SEPARATOR).append(checkInstance(namespace, "Namespace cannot be null."))
+				.append(INFO_SCHEME_NAMESPACE_DELIMITER); //info:namespace/
 		stringBuilder.append(rawIdentifier); //identifier
 		if(rawFragment != null) //if there is a fragment
 		{
-			stringBuilder.append(URIs.FRAGMENT_SEPARATOR).append(rawFragment); //#fragment
+			stringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment); //#fragment
 		}
 		return URI.create(stringBuilder.toString()); //construct and return an info URI from the string builder
 	}
@@ -1398,7 +1398,7 @@ public class URIs
 	 */
 	public static URI createMailtoURI(final String username, final String domain)
 	{
-		return URI.create(URIs.MAILTO_SCHEME + URIs.SCHEME_SEPARATOR + encode(username) + URIs.MAILTO_USERNAME_DOMAIN_SEPARATOR + encode(domain)); //construct and return the mailto URI
+		return URI.create(MAILTO_SCHEME + SCHEME_SEPARATOR + encode(username) + MAILTO_USERNAME_DOMAIN_SEPARATOR + encode(domain)); //construct and return the mailto URI
 	}
 
 	/**
@@ -1532,12 +1532,12 @@ public class URIs
 		final String rawQuery = uri.getRawQuery(); //get the query
 		if(rawQuery != null) //if there is a query
 		{
-			stringBuilder.append(URIs.QUERY_SEPARATOR).append(rawQuery); //?query
+			stringBuilder.append(QUERY_SEPARATOR).append(rawQuery); //?query
 		}
 		final String rawFragment = uri.getRawFragment(); //get the fragment
 		if(rawFragment != null) //if there is a fragment
 		{
-			stringBuilder.append(URIs.FRAGMENT_SEPARATOR).append(rawFragment); //#query			
+			stringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment); //#query			
 		}
 		//if any of the components were present (which is distinct from them having string content), return the constructed string; otherwise, return null
 		return rawPath != null || rawFragment != null || rawFragment != null ? stringBuilder.toString() : null;
@@ -1650,7 +1650,7 @@ public class URIs
 		{
 			throw new IllegalArgumentException("Path is not absolute: " + absolutePath);
 		}
-		return absolutePath.substring(URIs.ROOT_PATH.length()); //remove the beginning root path indicator
+		return absolutePath.substring(ROOT_PATH.length()); //remove the beginning root path indicator
 	}
 
 	/**
@@ -1710,7 +1710,7 @@ public class URIs
 	 */
 	public static boolean isCollectionPath(final String rawPath)
 	{
-		return endsWith(rawPath, URIs.PATH_SEPARATOR); //see if the path ends with '/'		
+		return endsWith(rawPath, PATH_SEPARATOR); //see if the path ends with '/'		
 	}
 
 	/**
@@ -1732,7 +1732,7 @@ public class URIs
 	 */
 	public static boolean isAbsolutePath(final String path)
 	{
-		return checkInstance(path, "Path cannot be null").startsWith(URIs.ROOT_PATH); //see if the path begins with '/'		
+		return checkInstance(path, "Path cannot be null").startsWith(ROOT_PATH); //see if the path begins with '/'		
 	}
 
 	/**
@@ -1880,8 +1880,8 @@ public class URIs
 	{
 		if(baseURI.isOpaque()) //if the base URI is opaque, do special processing
 		{
-			final String childURIString = childURI.toString(); //get the child URI as a string
-			if(startsWith(childURIString, URIs.FRAGMENT_SEPARATOR)) //if the child URI is a fragment
+			final String childURIString = childURI.toASCIIString(); //get the child URI as a string
+			if(startsWith(childURIString, FRAGMENT_SEPARATOR)) //if the child URI is a fragment
 			{
 				return URI.create(removeFragment(baseURI).toString() + childURIString); //remove the fragment, if any, from the base URI, and append the fragment
 			}
@@ -1915,7 +1915,23 @@ public class URIs
 	}
 
 	/**
-	 * Returns a URI constructed from a given URI and a fragment identifier.
+	 * Returns a URI constructed from a given URI and a fragment identifier. The fragment will first be URI-encoded.
+	 * <p>
+	 * If no URI is provided, a URI is created from the fragment itself.
+	 * </p>
+	 * @param uri The URI to which to add a fragment identifier, or <code>null</code> if a URI should be created from just the fragment.
+	 * @param fragment The unencoded fragment to add to the end of the URI.
+	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given information.
+	 * @see #encodeURI(String)
+	 * @see URI#create(String)
+	 */
+	public static URI resolveFragment(final URI uri, final String fragment) throws IllegalArgumentException
+	{
+		return resolveRawFragment(uri, encodeURI(fragment));	//encode and resolve the fragment
+	}
+		
+	/**
+	 * Returns a URI constructed from a given URI and a raw fragment identifier.
 	 * <p>
 	 * If the URI is not syntactically correct, an <code>IllegalArgumentException</code>will be thrown.
 	 * <p>
@@ -1924,14 +1940,14 @@ public class URIs
 	 * <p>
 	 * If no URI is provided, a URI is created from the fragment itself.
 	 * </p>
-	 * @param uri The URI to which to add a fragement identifier, or <code>null</code> if a URI chould be created from just the fragment.
-	 * @param fragment The raw, encoded fragment to add to the end of the URI.
+	 * @param uri The URI to which to add a fragment identifier, or <code>null</code> if a URI should be created from just the fragment.
+	 * @param rawFragment The raw, encoded fragment to add to the end of the URI.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given information.
 	 * @see URI#create(String)
 	 */
-	public static URI resolveFragment(final URI uri, final String fragment) throws IllegalArgumentException
+	public static URI resolveRawFragment(final URI uri, final String rawFragment) throws IllegalArgumentException
 	{
-		final String fragmentSuffix = new StringBuilder().append(URIs.FRAGMENT_SEPARATOR).append(fragment).toString(); //create a suffix that includes the fragment separator and the fragment
+		final String fragmentSuffix = new StringBuilder().append(FRAGMENT_SEPARATOR).append(rawFragment).toString(); //create a suffix that includes the fragment separator and the fragment
 		final URI fragmentURI = URI.create(fragmentSuffix); //create a URI from the fragment
 		return uri != null ? resolve(uri, fragmentURI) : fragmentURI; //if a URI was given, resolve the fragment against the URI; otherwise, just return the fragment suffix itself 
 	}
@@ -1961,9 +1977,9 @@ public class URIs
 		if(oldRawFragment != null) //if there is currently a fragment
 		{
 			final int oldRawFragmentLength = oldRawFragment.length(); //get theh length of the current raw fragment
-			final StringBuilder uriStringBuilder = new StringBuilder(uri.toString()); //get the string representation of the URI
+			final StringBuilder uriStringBuilder = new StringBuilder(uri.toASCIIString()); //get the string representation of the URI
 			final int uriLength = uriStringBuilder.length(); //get the length of the URI
-			assert uriStringBuilder.toString().endsWith(new StringBuilder().append(URIs.FRAGMENT_SEPARATOR).append(oldRawFragment).toString());
+			assert uriStringBuilder.toString().endsWith(new StringBuilder().append(FRAGMENT_SEPARATOR).append(oldRawFragment).toString());
 			if(newRawFragment != null) //if a new raw fragment was given
 			{
 				uriStringBuilder.replace(uriLength - oldRawFragmentLength, uriLength, newRawFragment); //replace the old fragment with the new one
@@ -1980,7 +1996,7 @@ public class URIs
 		{
 			if(newRawFragment != null) //if a new raw fragment was given
 			{
-				return URI.create(uri.toString() + URIs.FRAGMENT_SEPARATOR + newRawFragment); //append the new raw fragment
+				return URI.create(uri.toASCIIString() + FRAGMENT_SEPARATOR + newRawFragment); //append the new raw fragment
 			}
 			else
 			//if no new raw fragment was given
@@ -2019,7 +2035,7 @@ public class URIs
 		final StringBuilder stringBuilder = new StringBuilder(); //we'll use this to construct the URI
 		if(scheme != null) //if there is a scheme
 		{
-			stringBuilder.append(scheme).append(URIs.SCHEME_SEPARATOR); //append the scheme and its separator
+			stringBuilder.append(scheme).append(SCHEME_SEPARATOR); //append the scheme and its separator
 		}
 		if(rawSchemeSpecificPart != null) //if there is a scheme-specific part
 		{
@@ -2027,7 +2043,7 @@ public class URIs
 		}
 		if(rawFragment != null) //if there is a fragment
 		{
-			stringBuilder.append(URIs.FRAGMENT_SEPARATOR).append(rawFragment); //append the fragment
+			stringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment); //append the fragment
 		}
 		return URI.create(stringBuilder.toString()); //create and return a new URI
 	}
@@ -2072,19 +2088,19 @@ public class URIs
 		final StringBuilder stringBuilder = new StringBuilder(); //we'll use this to construct the URI
 		if(scheme != null) //if there is a scheme
 		{
-			stringBuilder.append(scheme).append(URIs.SCHEME_SEPARATOR); //append the scheme and its separator
+			stringBuilder.append(scheme).append(SCHEME_SEPARATOR); //append the scheme and its separator
 		}
 		if(host != null) //if there is authority information
 		{
-			stringBuilder.append(URIs.AUTHORITY_PREFIX); //append the authority prefix
+			stringBuilder.append(AUTHORITY_PREFIX); //append the authority prefix
 			if(rawUserInfo != null) //if there is user information
 			{
-				stringBuilder.append(rawUserInfo).append(URIs.USER_INFO_SEPARATOR); //append the user information
+				stringBuilder.append(rawUserInfo).append(USER_INFO_SEPARATOR); //append the user information
 			}
 			stringBuilder.append(host); //append the host
 			if(port >= 0) //if there is a port
 			{
-				stringBuilder.append(URIs.PORT_SEPARATOR).append(port); //append the port
+				stringBuilder.append(PORT_SEPARATOR).append(port); //append the port
 			}
 		}
 		else
@@ -2105,11 +2121,11 @@ public class URIs
 		}
 		if(rawQuery != null) //if there is a query
 		{
-			stringBuilder.append(URIs.QUERY_SEPARATOR).append(rawQuery); //append the query
+			stringBuilder.append(QUERY_SEPARATOR).append(rawQuery); //append the query
 		}
 		if(rawFragment != null) //if there is a fragment
 		{
-			stringBuilder.append(URIs.FRAGMENT_SEPARATOR).append(rawFragment); //append the fragment
+			stringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment); //append the fragment
 		}
 		return URI.create(stringBuilder.toString()); //create and return a new URI
 	}
@@ -2143,13 +2159,13 @@ public class URIs
 	 */
 	public static String encode(final String string, final String extraValidCharacters, final String extraInvalidCharacters)
 	{
-		final String validCharacters = extraValidCharacters != null ? URIs.NORMAL_CHARS + extraValidCharacters : URIs.NORMAL_CHARS; //if extra valid characters were given, add them to our string
-		final String invalidCharacters = extraInvalidCharacters != null ? extraInvalidCharacters + URIs.ESCAPE_CHAR : String.valueOf(URIs.ESCAPE_CHAR); //if extra invalid characters were given, make note of them, but always consider the escape character invalid
+		final String validCharacters = extraValidCharacters != null ? NORMAL_CHARS + extraValidCharacters : NORMAL_CHARS; //if extra valid characters were given, add them to our string
+		final String invalidCharacters = extraInvalidCharacters != null ? extraInvalidCharacters + ESCAPE_CHAR : String.valueOf(ESCAPE_CHAR); //if extra invalid characters were given, make note of them, but always consider the escape character invalid
 		final StringBuilder stringBuilder = new StringBuilder(string); //put the string in a string builder so that we can work with it; although inserting encoded sequences may seem inefficient, it should be noted that filling a string buffer with the entire string is more efficient than doing it one character at a time, that characters needed encoding are generally uncommon, and that any copying of the string characters during insertion is done via a native method, which should happen very quickly
-		for(int characterIndex = stringBuilder.length() - 1; characterIndex >= 0; --characterIndex) //work backwords; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
+		for(int characterIndex = stringBuilder.length() - 1; characterIndex >= 0; --characterIndex) //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
 		{
 			final char c = stringBuilder.charAt(characterIndex); //get the current character
-			final boolean encode = c == URIs.ESCAPE_CHAR || (validCharacters != null && validCharacters.indexOf(c) < 0) //encode if there is a list of valid characters and this character is not one of them
+			final boolean encode = c == ESCAPE_CHAR || (validCharacters != null && validCharacters.indexOf(c) < 0) //encode if there is a list of valid characters and this character is not one of them
 					|| (invalidCharacters != null && invalidCharacters.indexOf(c) >= 0); //encode if there is a list of invalid characters and this character is one of them
 			if(encode) //if we should encode this character
 			{
@@ -2158,7 +2174,7 @@ public class URIs
 				final StringBuilder encodeStringBuilder = new StringBuilder(byteCount * 3); //create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
 				for(int byteIndex = 0; byteIndex < byteCount; ++byteIndex) //look at each byte
 				{
-					encodeStringBuilder.append(URIs.ESCAPE_CHAR); //&
+					encodeStringBuilder.append(ESCAPE_CHAR); //&
 					encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], 2).toUpperCase()); //HH
 				}
 				stringBuilder.replace(characterIndex, characterIndex + 1, encodeStringBuilder.toString()); //replace the character with its encoding
@@ -2176,7 +2192,7 @@ public class URIs
 	 */
 	public static String encodeURI(final URI uri)
 	{
-		return encodeURI(uri.toString()); //encode the string version of the URI
+		return encodeURI(uri.toASCIIString()); //encode the string version of the URI
 	}
 
 	/**
@@ -2188,7 +2204,7 @@ public class URIs
 	 */
 	public static String encodeURI(final URI uri, final char escapeChar)
 	{
-		return encodeURI(uri.toString(), escapeChar); //encode all string version of the URI
+		return encodeURI(uri.toASCIIString(), escapeChar); //encode all string version of the URI
 	}
 
 	/**
@@ -2200,7 +2216,7 @@ public class URIs
 	 */
 	public static String encodeURI(final String string)
 	{
-		return encodeURI(string, URIs.ESCAPE_CHAR); //encode the URI using the standard escape character
+		return encodeURI(string, ESCAPE_CHAR); //encode the URI using the standard escape character
 	}
 
 	/**
@@ -2212,7 +2228,7 @@ public class URIs
 	 */
 	public static String encodeURI(final String string, final char escapeChar)
 	{
-		return uriEncode(string, URIs.UNRESERVED_CHARS, escapeChar); //encode all non-unreserved characters
+		return uriEncode(string, UNRESERVED_CHARS, escapeChar); //encode all non-unreserved characters
 	}
 
 	/**
@@ -2225,7 +2241,7 @@ public class URIs
 	 */
 	static String uriEncode(final String string, final String validCharacters)
 	{
-		return uriEncode(string, validCharacters, URIs.ESCAPE_CHAR); //encode the string with the normal escape character
+		return uriEncode(string, validCharacters, ESCAPE_CHAR); //encode the string with the normal escape character
 	}
 
 	/**
@@ -2253,7 +2269,7 @@ public class URIs
 	 */
 	public static String uriDecode(final String uri)
 	{
-		return uriDecode(uri, URIs.ESCAPE_CHAR); //decode the string using the standard URI escape character
+		return uriDecode(uri, ESCAPE_CHAR); //decode the string using the standard URI escape character
 	}
 
 	/**
@@ -2280,7 +2296,7 @@ public class URIs
 	 */
 	public static URI toCanonicalURI(final URI uri)
 	{
-		final String uriString = uri.toString(); //get the string version of the URI
+		final String uriString = uri.toASCIIString(); //get the string version of the URI
 		final int uriStringLength = uriString.length(); //get the length of the string
 		StringBuilder uriStringBuilder = null; //we'll only create a string builder if we need one
 		for(int i = 0; i < uriStringLength; ++i) //for each character, make sure that the escape sequences are in lowercase
@@ -2336,7 +2352,7 @@ public class URIs
 		final URI relativeURI = oldBaseURI.relativize(uri); //get a URI relative to the old base URI
 		if(relativeURI.isAbsolute()) //if we couldn't relativize the the URI to the old base URI and come up with a relative URI
 		{
-			throw new IllegalArgumentException(oldBaseURI.toString() + " is not a base URI of " + uri);
+			throw new IllegalArgumentException(oldBaseURI.toASCIIString() + " is not a base URI of " + uri);
 		}
 		return resolve(newBaseURI, relativeURI); //resolve the relative URI to the new base URI, using our Windows UNC path-aware resolve method
 	}
@@ -2387,10 +2403,10 @@ public class URIs
 	*/
 
 	/** URI alphabetic and digit characters. */
-	private final static String COMPRESS_NORMAL_CHARS = URIs.ALPHA_CHARS + URIs.DIGIT_CHARS; //"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" length 62
+	private final static String COMPRESS_NORMAL_CHARS = ALPHA_CHARS + DIGIT_CHARS; //"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" length 62
 
 	/** Characters that will be compressed. */
-	private final static String OTHER_CHARS = URIs.SAFE_CHARS + URIs.EXTRA_CHARS + URIs.ESCAPE_CHAR + URIs.RESERVED_CHARS; //"$-_@.&!*\"'(),%=;/#?: " length 21
+	private final static String OTHER_CHARS = SAFE_CHARS + EXTRA_CHARS + ESCAPE_CHAR + RESERVED_CHARS; //"$-_@.&!*\"'(),%=;/#?: " length 21
 
 	/** Characters that can appear in a URI path with no escape sequences. */
 	private final static String COMPRESS_ENCODE_CHARS = "-_()@"; //length 5
@@ -2403,7 +2419,7 @@ public class URIs
 	public static String safeEncode(final URI uri)
 	{
 		final int ENCODE_BASE = COMPRESS_ENCODE_CHARS.length(); //this is the base into which we'll encode certain characters
-		final String uriString = uri.toString();
+		final String uriString = uri.toASCIIString();
 		final StringBuilder stringBuilder = new StringBuilder();
 		for(int i = 0; i < uriString.length(); ++i) //look at each URI character
 		{

@@ -25,17 +25,11 @@ import com.globalmentor.java.Objects;
  * An implementation of an URF assertion store based upon a set.
  * @author Garret Wilson
  */
-public class SetURFAssertionStore extends AbstractURFAssertionSource implements URFAssertionStore
+public class SetURFAssertionStore extends AbstractURFAssertionStore
 {
 
 	/** The store of assertions. */
 	private final Set<URFAssertion> assertions;
-
-	/** {@inheritDoc} */
-	public Iterator<URFAssertion> iterator()
-	{
-		return assertions.iterator(); //delegate to our 
-	}
 
 	/** Default constructor creating an assertion store backed by a hash set. */
 	public SetURFAssertionStore()
@@ -55,17 +49,21 @@ public class SetURFAssertionStore extends AbstractURFAssertionSource implements 
 	}
 
 	/** {@inheritDoc} */
+	public Iterator<URFAssertion> iterator()
+	{
+		return assertions.iterator(); //delegate to our 
+	}
+
+	/** {@inheritDoc} */
+	public boolean hasAssertion(final URFAssertion assertion)
+	{
+		return assertions.contains(assertion);
+	}
+
+	/** {@inheritDoc} */
 	public void addAssertion(final URFAssertion assertion)
 	{
 		this.assertions.add(assertion);
-	}
-
-	/**
-	 * {@inheritDoc} This implementation delegates to {@link #addAssertion(URFAssertion)}.
-	 */
-	public final void addAssertion(final URI subjectURI, final URI predicateURI, final Object object)
-	{
-		addAssertion(new DefaultURFAssertion(subjectURI, predicateURI, object));
 	}
 
 	/** {@inheritDoc} */
@@ -78,14 +76,6 @@ public class SetURFAssertionStore extends AbstractURFAssertionSource implements 
 	public void removeAssertion(final URFAssertion assertion)
 	{
 		this.assertions.remove(assertion);
-	}
-
-	/**
-	 * {@inheritDoc} This implementation delegates to {@link #removeAssertion(URFAssertion)}.
-	 */
-	public final void removeAssertion(final URI subjectURI, final URI predicateURI, final Object object)
-	{
-		removeAssertion(new DefaultURFAssertion(subjectURI, predicateURI, object));
 	}
 
 	/** {@inheritDoc} */

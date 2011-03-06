@@ -260,7 +260,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			}
 			else if(anchorID!=null)  //if there is an anchor ID
 			{
-				resourceURI=getResourceURI(resolveFragment(XMLBase.getBaseURI(element, baseURI), anchorID));  //create a URI from the document base URI and the anchor ID and get an URF version of the URI
+				resourceURI=getResourceURI(resolveRawFragment(XMLBase.getBaseURI(element, baseURI), anchorID));  //create a URI from the document base URI and the anchor ID and get an URF version of the URI
 			}
 			else  //if there is neither a resource ID nor an anchor ID
 			{

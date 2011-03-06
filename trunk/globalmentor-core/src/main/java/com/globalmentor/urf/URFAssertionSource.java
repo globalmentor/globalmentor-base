@@ -29,6 +29,23 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 {
 
 	/**
+	 * Determines whether this assertion source has the given assertion.
+	 * @param assertion The assertion to check for.
+	 * @return <code>true</code> if the given assertion exists in the source.
+	 * @throws NullPointerException if the given assertion is <code>null</code>.
+	 */
+	public boolean hasAssertion(final URFAssertion assertion);
+
+	/**
+	 * Determines whether this assertion source has the assertion identified by the given subject, predicate, and object.
+	 * @param subjectURI The URI of the subject of the assertion.
+	 * @param predicateURI The URI of the predicate of the assertion.
+	 * @param object The object of the assertion; a value object or a {@link ReferenceResource}.
+	 * @exception NullPointerException if the given subject URI, predicate URI, and/or object is <code>null</code>.
+	 */
+	public boolean hasAssertion(final URI subjectURI, final URI predicateURI, final Object object);
+
+	/**
 	 * Retrieves assertions based upon the given query.
 	 * @param query The query that specifies which assertions should be returned.
 	 * @return The assertions meeting the given criteria.
@@ -50,7 +67,7 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * @throws NullPointerException if the given predicate URI is <code>null</code>.
 	 */
 	public Set<URFAssertion> getAssertionsByPredicate(final URI predicateURI);
-	
+
 	/**
 	 * Retrieves all assertions for the identified subject and predicate.
 	 * @param subjectURI The URI of the subject resource for which assertions should be returned.
@@ -59,10 +76,10 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * @throws NullPointerException if the given subject URI and/or predicate URI is <code>null</code>.
 	 */
 	public Set<URFAssertion> getAssertionsBySubjectAndPredicate(final URI subjectURI, final URI predicateURI);
-	
+
 	/**
-	 * Retrieves all assertions for which there exists the indicated predicate value. If a subject does not have a predicate/value
-	 * pair matching all of the one indicated here, no assertions will be returned for that subject.
+	 * Retrieves all assertions for which there exists the indicated predicate value. If a subject does not have a predicate/value pair matching all of the one
+	 * indicated here, no assertions will be returned for that subject.
 	 * <p>
 	 * The value of the predicate/value pair is a value object or a {@link ReferenceResource}.
 	 * </p>
@@ -72,10 +89,10 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * @throws NullPointerException if the given predicate URI and/or predicate value is <code>null</code>.
 	 */
 	public Set<URFAssertion> getAssertionsWithPredicateValue(final URI predicateURI, final Object predicateValue);
-	
+
 	/**
-	 * Retrieves all assertions for the identified subject for which there exists the indicated predicate value. If a subject does not have a predicate/value
-	 * pair matching all of the one indicated here, no assertions will be returned for that subject.
+	 * Retrieves all assertions for the identified subject for which there exists the indicated predicate value. If a subject does not have a predicate/value pair
+	 * matching all of the one indicated here, no assertions will be returned for that subject.
 	 * <p>
 	 * The value of the predicate/value pair is a value object or a {@link ReferenceResource}.
 	 * </p>
@@ -88,8 +105,8 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	public Set<URFAssertion> getAssertionsBySubjectWithPredicateValue(final URI subjectURI, final URI predicateURI, final Object predicateValue);
 
 	/**
-	 * Retrieves all assertions for which there exist all the indicated predicate values. If a subject does not have predicate/value
-	 * pairs matching all of those indicated here, no assertions will be returned for that subject.
+	 * Retrieves all assertions for which there exist all the indicated predicate values. If a subject does not have predicate/value pairs matching all of those
+	 * indicated here, no assertions will be returned for that subject.
 	 * <p>
 	 * The value of each predicate/value pair is a value object or a {@link ReferenceResource}.
 	 * </p>
@@ -98,7 +115,7 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * @throws NullPointerException if the given and/or predicate/value pairs map is <code>null</code>.
 	 */
 	public Set<URFAssertion> getAssertionsWithPredicateValues(final Map<URI, Object> predicateURIValues);
-	
+
 	/**
 	 * Retrieves all assertions for the identified subject for which there exist all the indicated predicate values. If a subject does not have predicate/value
 	 * pairs matching all of those indicated here, no assertions will be returned for that subject.
@@ -106,7 +123,7 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * The value of each predicate/value pair is a value object or a {@link ReferenceResource}.
 	 * </p>
 	 * @param subjectURI The URI of the subject resource for which assertions should be returned.
-	 * @param predicateURIValues The the predicate/value pairs identifying which subjects should be returned
+	 * @param predicateURIValues The the predicate/value pairs identifying which subjects should be returned.
 	 * @return The assertions meeting the given criteria.
 	 * @throws NullPointerException if the given subject URI and/or predicate/value pairs map is <code>null</code>.
 	 */

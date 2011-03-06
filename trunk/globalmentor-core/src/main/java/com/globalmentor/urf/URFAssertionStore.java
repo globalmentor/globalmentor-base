@@ -17,12 +17,12 @@
 package com.globalmentor.urf;
 
 import java.net.URI;
-import java.util.Collection;
+import java.util.*;
 
 import com.globalmentor.net.ReferenceResource;
 
 /**
- * A source of URF assertions, such as a database or a TURF file.
+ * A storage of URF assertions, such as a database or a TURF file.
  * @author Garret Wilson
  */
 public interface URFAssertionStore extends URFAssertionSource
@@ -73,5 +73,107 @@ public interface URFAssertionStore extends URFAssertionSource
 	 * @throws NullPointerException if the given assertion collection is <code>null</code>.
 	 */
 	public void removeAssertions(final Collection<? extends URFAssertion> assertions);
+
+	/**
+	 * Removes assertions based upon the given query.
+	 * @param query The query that specifies which assertions should be removed.
+	 */
+	public void removeAssertions(final URFAssertionQuery assertionQuery);
+
+	/**
+	 * Removes all assertions for the identified subject.
+	 * @param subjectURI The URI of the subject resource for which assertions should be removed.
+	 * @throws NullPointerException if the given subject URI is <code>null</code>.
+	 */
+	public void removeAssertionsBySubject(final URI subjectURI);
+
+	/**
+	 * Removes all assertions for the identified predicate.
+	 * @param predicateURI The URI of the predicate resource for which assertions should be removed.
+	 * @throws NullPointerException if the given predicate URI is <code>null</code>.
+	 */
+	public void removeAssertionsByPredicate(final URI predicateURI);
 	
+	/**
+	 * Removes all assertions for the identified subject and predicate.
+	 * @param subjectURI The URI of the subject resource for which assertions should be removed.
+	 * @param predicateURI The URI of the predicate resource for which assertions should be removed.
+	 * @throws NullPointerException if the given subject URI and/or predicate URI is <code>null</code>.
+	 */
+	public void removeAssertionsBySubjectAndPredicate(final URI subjectURI, final URI predicateURI);
+	
+	/**
+	 * Removes all assertions for which there exists the indicated predicate value. If a subject does not have a predicate/value
+	 * pair matching all of the one indicated here, no assertions will be removed for that subject.
+	 * <p>
+	 * The value of the predicate/value pair is a value object or a {@link ReferenceResource}.
+	 * </p>
+	 * @param predicateURI The the predicateURI identifying which subjects should be removed.
+	 * @param predicateValue The the value of the predicate identifying which subjects should be removed.
+	 * @throws NullPointerException if the given predicate URI and/or predicate value is <code>null</code>.
+	 */
+	public void removeAssertionsWithPredicateValue(final URI predicateURI, final Object predicateValue);
+	
+	/**
+	 * Removes all assertions for the identified subject for which there exists the indicated predicate value. If a subject does not have a predicate/value
+	 * pair matching all of the one indicated here, no assertions will be removed for that subject.
+	 * <p>
+	 * The value of the predicate/value pair is a value object or a {@link ReferenceResource}.
+	 * </p>
+	 * @param subjectURI The URI of the subject resource for which assertions should be removed.
+	 * @param predicateURI The the predicateURI identifying which subjects should be removed.
+	 * @param predicateValue The the value of the predicate identifying which subjects should be removed.
+	 * @throws NullPointerException if the given subject URI, predicate URI, and/or predicate value pair is <code>null</code>.
+	 */
+	public void removeAssertionsBySubjectWithPredicateValue(final URI subjectURI, final URI predicateURI, final Object predicateValue);
+
+	/**
+	 * Removes all assertions for which there exist all the indicated predicate values. If a subject does not have predicate/value
+	 * pairs matching all of those indicated here, no assertions will be removed for that subject.
+	 * <p>
+	 * The value of each predicate/value pair is a value object or a {@link ReferenceResource}.
+	 * </p>
+	 * @param predicateURIValues The the predicate/value pairs identifying which subjects should be removed.
+	 * @throws NullPointerException if the given and/or predicate/value pairs map is <code>null</code>.
+	 */
+	public void removeAssertionsWithPredicateValues(final Map<URI, Object> predicateURIValues);
+	
+	/**
+	 * Removes all assertions for the identified subject for which there exist all the indicated predicate values. If a subject does not have predicate/value
+	 * pairs matching all of those indicated here, no assertions will be removed for that subject.
+	 * <p>
+	 * The value of each predicate/value pair is a value object or a {@link ReferenceResource}.
+	 * </p>
+	 * @param subjectURI The URI of the subject resource for which assertions should be removed.
+	 * @param predicateURIValues The the predicate/value pairs identifying which subjects should be removed.
+	 * @throws NullPointerException if the given subject URI and/or predicate/value pairs map is <code>null</code>.
+	 */
+	public void removeAssertionsBySubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues);
+
+	/**
+	 * Sets an assertion in the assertion store.
+	 * All other assertions with the same subject and predicate URI will be removed.
+	 * @param assertion The assertion to set.
+	 * @throws NullPointerException if the given assertion is <code>null</code>.
+	 */
+	public void setAssertion(final URFAssertion assertion);
+
+	/**
+	 * Sets an assertion by a subject, predicate, and object.
+	 * All other assertions with the same subject and predicate URI will be removed.
+	 * @param subjectURI The URI of the subject of the assertion.
+	 * @param predicateURI The URI of the predicate of the assertion.
+	 * @param object The object of the assertion; a value object or a {@link ReferenceResource}.
+	 * @exception NullPointerException if the given subject URI, predicate URI, and/or object is <code>null</code>.
+	 */
+	public void setAssertion(final URI subjectURI, final URI predicateURI, final Object object);
+	
+	/**
+	 * Removes assertions from the assertion store.
+	 * All other assertions with the same subject and predicate URI as one of the given assertions will be removed.
+	 * @param assertions The assertions to set.
+	 * @throws NullPointerException if the given assertion collection is <code>null</code>.
+	 */
+	public void setAssertions(final Collection<? extends URFAssertion> assertions);
+
 }

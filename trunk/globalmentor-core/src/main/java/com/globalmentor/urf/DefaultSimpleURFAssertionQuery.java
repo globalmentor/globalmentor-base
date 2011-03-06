@@ -54,6 +54,33 @@ public class DefaultSimpleURFAssertionQuery implements SimpleURFAssertionQuery
 	}
 
 	/**
+	 * Subject URIs and subject predicate URI values constructor.
+	 * <p>
+	 * The value of each predicate/value pair is a value object or a {@link ReferenceResource}
+	 * </p>
+	 * @param assertionSubjectURIs The URIs identifying the subjects of the assertions to be returned, or <code>null</code> if there is no restriction of
+	 *          subjects.
+	 * @param subjectPredicateURIValues The the predicate/value pairs identifying which subjects should be returned, or <code>null</code> if there are no required
+	 *          predicate values.
+	 */
+	public DefaultSimpleURFAssertionQuery(final Set<URI> assertionSubjectURIs, final Map<URI, Object> subjectPredicateURIValues)
+	{
+		this(assertionSubjectURIs, null, subjectPredicateURIValues);
+	}
+
+	/**
+	 * Subject URIs and predicate URIs constructor.
+	 * @param assertionSubjectURIs The URIs identifying the subjects of the assertions to be returned, or <code>null</code> if there is no restriction of
+	 *          subjects.
+	 * @param assertionPredicateURIs The URIs identifying the predicates of the assertions to be returned, or <code>null</code> if there is no restriction of
+	 *          predicates.
+	 */
+	public DefaultSimpleURFAssertionQuery(final Set<URI> assertionSubjectURIs, final Set<URI> assertionPredicateURIs)
+	{
+		this(assertionSubjectURIs, assertionPredicateURIs, null);
+	}
+
+	/**
 	 * Full constructor.
 	 * <p>
 	 * The value of each predicate/value pair is a value object or a {@link ReferenceResource}
@@ -78,15 +105,15 @@ public class DefaultSimpleURFAssertionQuery implements SimpleURFAssertionQuery
 	 * @param subjectURI The URI of the subject resource for which assertions should be returned.
 	 * @return The assertions meeting the given criteria.
 	 */
-/*TODO del
-	public static DefaultSimpleURFAssertionQuery getAssertionsBySubject(final URI subjectURI)
-	{
-		return new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, null);
-	}
-*/
+	/*TODO del
+		public static DefaultSimpleURFAssertionQuery getAssertionsBySubject(final URI subjectURI)
+		{
+			return new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, null);
+		}
+	*/
 	/**
-	 * Creates a query for retrieving all assertions for the identified subject for which there exist all the indicated predicate values. If a subject does not have predicate/value
-	 * pairs matching all of those indicated here, no assertions will be returned for that subject.
+	 * Creates a query for retrieving all assertions for the identified subject for which there exist all the indicated predicate values. If a subject does not
+	 * have predicate/value pairs matching all of those indicated here, no assertions will be returned for that subject.
 	 * <p>
 	 * The value of each predicate/value pair is a value object or a {@link ReferenceResource}.
 	 * </p>
@@ -95,11 +122,11 @@ public class DefaultSimpleURFAssertionQuery implements SimpleURFAssertionQuery
 	 *          predicate values.
 	 * @return The assertions meeting the given criteria.
 	 */
-/*TODO del
-	public static DefaultSimpleURFAssertionQuery forSubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues)
-	{
-		return new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, predicateURIValues);
-	}
-*/
-	
+	/*TODO del
+		public static DefaultSimpleURFAssertionQuery forSubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues)
+		{
+			return new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, predicateURIValues);
+		}
+	*/
+
 }
