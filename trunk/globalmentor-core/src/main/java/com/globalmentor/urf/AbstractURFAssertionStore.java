@@ -155,7 +155,7 @@ public abstract class AbstractURFAssertionStore extends AbstractURFAssertionSour
 	*/
 
 	/** {@inheritDoc} */
-	public void setAssertions(final Collection<? extends URFAssertion> assertions)
+	public void setAssertions(final Iterable<? extends URFAssertion> assertions)
 	{
 		final CollectionMap<URI, URI, Set<URI>> subjectPredicates = new HashSetHashMap<URI, URI>(); //create a map of predicates for subjects
 		for(final URFAssertion assertion : assertions)

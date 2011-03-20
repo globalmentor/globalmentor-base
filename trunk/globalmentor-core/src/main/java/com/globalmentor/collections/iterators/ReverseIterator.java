@@ -18,7 +18,7 @@ package com.globalmentor.collections.iterators;
 
 import java.util.*;
 
-import static com.globalmentor.collections.Collections.*;
+import static com.globalmentor.collections.Lists.*;
 import static com.globalmentor.java.Objects.*;
 
 /**An iterator that wraps an existing list iterator and provides its elements in reverse order.

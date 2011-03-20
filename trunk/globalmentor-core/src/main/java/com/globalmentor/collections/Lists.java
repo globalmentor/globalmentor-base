@@ -62,7 +62,7 @@ public class Lists
 	 */
 	public static <E> List<E> createReadOnlyList(final E... elements)
 	{
-		return java.util.Collections.unmodifiableList(java.util.Arrays.asList(elements.clone()));	//clone the array defensively so that it won't be modified by the caller
+		return java.util.Collections.unmodifiableList(java.util.Arrays.asList(elements.clone())); //clone the array defensively so that it won't be modified by the caller
 	}
 
 	/**
@@ -74,6 +74,37 @@ public class Lists
 	public static <E> List<E> createReadOnlyList(final Collection<? extends E> collection)
 	{
 		return java.util.Collections.unmodifiableList(addAll(new ArrayList<E>(), collection));
+	}
+
+	/**
+	 * Returns a list to represent the given iterable. If the given iterable is a {@link List}, it will be returned. If the given iterable is not a {@link List},
+	 * a temporary list will be created and filled with the contents of the given iterable.
+	 * @param <T> The type of elements contained in the iterable.
+	 * @param iterable The iterable of elements.
+	 * @return A list containing the elements of the given iterable.
+	 */
+	public static <T> List<T> toList(final Iterable<T> iterable)
+	{
+		if(iterable instanceof List) //if the iterable is a list
+		{
+			return (List<T>)iterable; //return the iterable itself
+		}
+		else
+		//we'll have to create a list
+		{
+			final List<T> list; //we'll create a list, prepopulated if possible
+			if(iterable instanceof Collection) //if the iterable is a collection
+			{
+				list = new ArrayList<T>((Collection<T>)iterable); //construct a list from the contents of the iterable
+			}
+			else
+			//if the iterable isn't a collection
+			{
+				list = new ArrayList<T>(); //create a new list
+				Collections.addAll(list, iterable); //fill the list with the contents of the iterable
+			}
+			return list; //return the list we created
+		}
 	}
 
 }

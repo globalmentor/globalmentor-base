@@ -49,7 +49,7 @@ public interface URFAssertionStore extends URFAssertionSource
 	 * @param assertions The assertions to store.
 	 * @throws NullPointerException if the given assertion collection is <code>null</code>.
 	 */
-	public void addAssertions(final Collection<? extends URFAssertion> assertions);
+	public void addAssertions(final Iterable<? extends URFAssertion> assertions);
 
 	/**
 	 * Removes an assertion from the assertion store.
@@ -72,7 +72,7 @@ public interface URFAssertionStore extends URFAssertionSource
 	 * @param assertions The assertions to remove.
 	 * @throws NullPointerException if the given assertion collection is <code>null</code>.
 	 */
-	public void removeAssertions(final Collection<? extends URFAssertion> assertions);
+	public void removeAssertions(final Iterable<? extends URFAssertion> assertions);
 
 	/**
 	 * Removes assertions based upon the given query.
@@ -174,6 +174,6 @@ public interface URFAssertionStore extends URFAssertionSource
 	 * @param assertions The assertions to set.
 	 * @throws NullPointerException if the given assertion collection is <code>null</code>.
 	 */
-	public void setAssertions(final Collection<? extends URFAssertion> assertions);
+	public void setAssertions(final Iterable<? extends URFAssertion> assertions);
 
 }

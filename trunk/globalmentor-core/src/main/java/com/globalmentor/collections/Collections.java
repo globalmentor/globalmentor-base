@@ -55,7 +55,7 @@ public class Collections
 	 */
 	public static <T> boolean addAll(final Collection<T> collection, final Iterable<? extends T> iterable)
 	{
-		return addAll(collection, iterable.iterator()); //get an iterable and add all the elements
+		return addAll(collection, iterable.iterator()); //get an iterator and add all the elements
 	}
 
 	/**
@@ -75,6 +75,17 @@ public class Collections
 			}
 		}
 		return changed; //return whether or not we changed the collection
+	}
+
+	/**
+	 * Removes all of the elements specified by the given iterable from the specified collection.
+	 * @param collection The collection from which objects will be removed.
+	 * @param iterable The source of the removed objects.
+	 * @return <code>true</code> if the collection changed as a result of the call.
+	 */
+	public static <T> boolean removeAll(final Collection<T> collection, final Iterable<? extends T> iterable)
+	{
+		return removeAll(collection, iterable.iterator()); //get an iterator and remove all the elements
 	}
 
 	/**
@@ -142,6 +153,25 @@ public class Collections
 	}
 
 	/**
+	 * Retrieves the first iterated object, if any, from the iterable.
+	 * @param <T> The type of object stored in the iterable.
+	 * @param iterable The iterable from which the object should be retrieved.
+	 * @return The first iterated object from the iterable, or <code>null</code> if the iterable is empty.
+	 * @throws NullPointerException if the given iterable is <code>null</code>.
+	 * @see Collection#isEmpty()
+	 * @see Iterable#iterator()
+	 */
+	public static <T> T get(final Iterable<T> iterable)
+	{
+		if(iterable instanceof Collection && ((Collection<T>)iterable).isEmpty()) //if the iterable is an empty collection
+		{
+			return null; //short circuit the tests; there is nothing to return
+		}
+		final Iterator<T> iterator = iterable.iterator();
+		return iterator.hasNext() ? iterator.next() : null;
+	}
+
+	/**
 	 * Sorts the specified collection into ascending order, according to the <dfn>natural ordering</dfn> of its elements, and returns an array with the results.
 	 * @param collection The collection to be sorted.
 	 * @return An array containing the sorted contents of the collection.
@@ -199,6 +229,24 @@ public class Collections
 	*/
 
 	/**
+	 * Converts an iterable to a collection. If the iterable is already a collection, it is returned as such. If the the iterable is not already a collection, a
+	 * new collection is returned with the contents of the iterable.
+	 * @param <T> The type of object in the iterable.
+	 * @param iterable The iterable to convert.
+	 * @return A collection with the current contents of the iterable.
+	 */
+	public static <T> Collection<T> toCollection(final Iterable<T> iterable)
+	{
+		if(iterable instanceof Collection) //if the iterable is already a collection
+		{
+			return (Collection<T>)iterable; //return it
+		}
+		final List<T> list = new ArrayList<T>();
+		addAll(list, iterable);
+		return list;
+	}
+
+	/**
 	 * Converts a collection to a string by concatenating the string values of each member of the collection, separated by a comma.
 	 * @param collection The collection to convert to a string.
 	 * @return A string representation of the collection of elements.
@@ -228,37 +276,6 @@ public class Collections
 	public static <T> String toString(final Collection<T> collection, final String delimiter)
 	{
 		return formatList(new StringBuilder(), delimiter, collection).toString(); //format the list into a string buffer and return the resulting string
-	}
-
-	/**
-	 * Returns a list to represent the given iterable. If the given iterable is a {@link List}, it will be returned. If the given iterable is not a {@link List},
-	 * a temporary list will be created and filled with the contents of the given iterable.
-	 * @param <T> The type of elements contained in the iterable.
-	 * @param iterable The iterable of elements.
-	 * @return A list containing the elements of the given iterable.
-	 */
-	public static <T> List<T> toList(final Iterable<T> iterable)
-	{
-		if(iterable instanceof List) //if the iterable is a list
-		{
-			return (List<T>) iterable; //return the iterable itself
-		}
-		else
-		//we'll have to create a list
-		{
-			final List<T> list; //we'll create a list, prepopulated if possible
-			if(iterable instanceof Collection) //if the iterable is a collection
-			{
-				list = new ArrayList<T>((Collection<T>) iterable); //construct a list from the contents of the iterable
-			}
-			else
-			//if the iterable isn't a collection
-			{
-				list = new ArrayList<T>(); //create a new list
-				addAll(list, iterable); //fill the list with the contents of the iterable
-			}
-			return list; //return the list we created
-		}
 	}
 
 }

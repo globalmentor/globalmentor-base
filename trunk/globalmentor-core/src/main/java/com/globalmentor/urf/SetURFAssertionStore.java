@@ -19,6 +19,7 @@ package com.globalmentor.urf;
 import java.net.URI;
 import java.util.*;
 
+import com.globalmentor.collections.Collections;
 import com.globalmentor.java.Objects;
 
 /**
@@ -67,9 +68,9 @@ public class SetURFAssertionStore extends AbstractURFAssertionStore
 	}
 
 	/** {@inheritDoc} */
-	public void addAssertions(final Collection<? extends URFAssertion> assertions)
+	public void addAssertions(final Iterable<? extends URFAssertion> assertions)
 	{
-		this.assertions.addAll(assertions);
+		Collections.addAll(this. assertions, assertions);
 	}
 
 	/** {@inheritDoc} */
@@ -79,9 +80,9 @@ public class SetURFAssertionStore extends AbstractURFAssertionStore
 	}
 
 	/** {@inheritDoc} */
-	public void removeAssertions(final Collection<? extends URFAssertion> assertions)
+	public void removeAssertions(final Iterable<? extends URFAssertion> assertions)
 	{
-		this.assertions.removeAll(assertions);
+		Collections.removeAll(this.assertions, assertions);
 	}
 
 	/**

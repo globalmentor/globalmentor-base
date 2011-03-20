@@ -39,7 +39,7 @@ public abstract class AbstractURFAssertionSource implements URFAssertionSource
 	/**
 	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
 	 */
-	public Set<URFAssertion> getAssertionsBySubject(final URI subjectURI)
+	public Iterable<URFAssertion> getAssertionsBySubject(final URI subjectURI)
 	{
 		return getAssertions(new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, null));
 	}
@@ -47,7 +47,7 @@ public abstract class AbstractURFAssertionSource implements URFAssertionSource
 	/**
 	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
 	 */
-	public Set<URFAssertion> getAssertionsByPredicate(final URI predicateURI)
+	public Iterable<URFAssertion> getAssertionsByPredicate(final URI predicateURI)
 	{
 		return getAssertions(new DefaultSimpleURFAssertionQuery(null, new ObjectSet<URI>(Objects.checkInstance(predicateURI)), null));
 	}
@@ -55,7 +55,7 @@ public abstract class AbstractURFAssertionSource implements URFAssertionSource
 	/**
 	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
 	 */
-	public Set<URFAssertion> getAssertionsBySubjectAndPredicate(final URI subjectURI, final URI predicateURI)
+	public Iterable<URFAssertion> getAssertionsBySubjectAndPredicate(final URI subjectURI, final URI predicateURI)
 	{
 		return getAssertions(new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(Objects.checkInstance(subjectURI)), new ObjectSet<URI>(
 				Objects.checkInstance(predicateURI)), null));
@@ -64,7 +64,7 @@ public abstract class AbstractURFAssertionSource implements URFAssertionSource
 	/**
 	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
 	 */
-	public Set<URFAssertion> getAssertionsWithPredicateValue(final URI predicateURI, final Object predicateValue)
+	public Iterable<URFAssertion> getAssertionsWithPredicateValue(final URI predicateURI, final Object predicateValue)
 	{
 		return getAssertions(new DefaultSimpleURFAssertionQuery(null, null, new MapEntryMap<URI, Object>(new NameValuePair<URI, Object>(
 				Objects.checkInstance(predicateURI), Objects.checkInstance(predicateValue)))));
@@ -73,7 +73,7 @@ public abstract class AbstractURFAssertionSource implements URFAssertionSource
 	/**
 	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
 	 */
-	public Set<URFAssertion> getAssertionsBySubjectWithPredicateValue(final URI subjectURI, final URI predicateURI, final Object predicateValue)
+	public Iterable<URFAssertion> getAssertionsBySubjectWithPredicateValue(final URI subjectURI, final URI predicateURI, final Object predicateValue)
 	{
 		return getAssertions(new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(Objects.checkInstance(subjectURI)), null, new MapEntryMap<URI, Object>(
 				new NameValuePair<URI, Object>(Objects.checkInstance(predicateURI), Objects.checkInstance(predicateValue)))));
@@ -82,7 +82,7 @@ public abstract class AbstractURFAssertionSource implements URFAssertionSource
 	/**
 	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
 	 */
-	public Set<URFAssertion> getAssertionsWithPredicateValues(final Map<URI, Object> predicateURIValues)
+	public Iterable<URFAssertion> getAssertionsWithPredicateValues(final Map<URI, Object> predicateURIValues)
 	{
 		return getAssertions(new DefaultSimpleURFAssertionQuery(null, null, Objects.checkInstance(predicateURIValues)));
 	}
@@ -90,7 +90,7 @@ public abstract class AbstractURFAssertionSource implements URFAssertionSource
 	/**
 	 * {@inheritDoc} This implementation delegates to {@link #getAssertions(URFAssertionQuery)};
 	 */
-	public Set<URFAssertion> getAssertionsBySubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues)
+	public Iterable<URFAssertion> getAssertionsBySubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues)
 	{
 		return getAssertions(new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(Objects.checkInstance(subjectURI)), null,
 				Objects.checkInstance(predicateURIValues)));

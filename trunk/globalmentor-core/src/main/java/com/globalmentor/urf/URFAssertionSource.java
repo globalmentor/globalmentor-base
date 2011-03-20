@@ -50,7 +50,7 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * @param query The query that specifies which assertions should be returned.
 	 * @return The assertions meeting the given criteria.
 	 */
-	public Set<URFAssertion> getAssertions(final URFAssertionQuery assertionQuery);
+	public Iterable<URFAssertion> getAssertions(final URFAssertionQuery assertionQuery);
 
 	/**
 	 * Retrieves all assertions for the identified subject.
@@ -58,7 +58,7 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * @return The assertions meeting the given criteria.
 	 * @throws NullPointerException if the given subject URI is <code>null</code>.
 	 */
-	public Set<URFAssertion> getAssertionsBySubject(final URI subjectURI);
+	public Iterable<URFAssertion> getAssertionsBySubject(final URI subjectURI);
 
 	/**
 	 * Retrieves all assertions for the identified predicate.
@@ -66,7 +66,7 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * @return The assertions meeting the given criteria.
 	 * @throws NullPointerException if the given predicate URI is <code>null</code>.
 	 */
-	public Set<URFAssertion> getAssertionsByPredicate(final URI predicateURI);
+	public Iterable<URFAssertion> getAssertionsByPredicate(final URI predicateURI);
 
 	/**
 	 * Retrieves all assertions for the identified subject and predicate.
@@ -75,7 +75,7 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * @return The assertions meeting the given criteria.
 	 * @throws NullPointerException if the given subject URI and/or predicate URI is <code>null</code>.
 	 */
-	public Set<URFAssertion> getAssertionsBySubjectAndPredicate(final URI subjectURI, final URI predicateURI);
+	public Iterable<URFAssertion> getAssertionsBySubjectAndPredicate(final URI subjectURI, final URI predicateURI);
 
 	/**
 	 * Retrieves all assertions for which there exists the indicated predicate value. If a subject does not have a predicate/value pair matching all of the one
@@ -88,7 +88,7 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * @return The assertions meeting the given criteria.
 	 * @throws NullPointerException if the given predicate URI and/or predicate value is <code>null</code>.
 	 */
-	public Set<URFAssertion> getAssertionsWithPredicateValue(final URI predicateURI, final Object predicateValue);
+	public Iterable<URFAssertion> getAssertionsWithPredicateValue(final URI predicateURI, final Object predicateValue);
 
 	/**
 	 * Retrieves all assertions for the identified subject for which there exists the indicated predicate value. If a subject does not have a predicate/value pair
@@ -102,7 +102,7 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * @return The assertions meeting the given criteria.
 	 * @throws NullPointerException if the given subject URI, predicate URI, and/or predicate value pair is <code>null</code>.
 	 */
-	public Set<URFAssertion> getAssertionsBySubjectWithPredicateValue(final URI subjectURI, final URI predicateURI, final Object predicateValue);
+	public Iterable<URFAssertion> getAssertionsBySubjectWithPredicateValue(final URI subjectURI, final URI predicateURI, final Object predicateValue);
 
 	/**
 	 * Retrieves all assertions for which there exist all the indicated predicate values. If a subject does not have predicate/value pairs matching all of those
@@ -114,7 +114,7 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * @return The assertions meeting the given criteria.
 	 * @throws NullPointerException if the given and/or predicate/value pairs map is <code>null</code>.
 	 */
-	public Set<URFAssertion> getAssertionsWithPredicateValues(final Map<URI, Object> predicateURIValues);
+	public Iterable<URFAssertion> getAssertionsWithPredicateValues(final Map<URI, Object> predicateURIValues);
 
 	/**
 	 * Retrieves all assertions for the identified subject for which there exist all the indicated predicate values. If a subject does not have predicate/value
@@ -127,6 +127,6 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	 * @return The assertions meeting the given criteria.
 	 * @throws NullPointerException if the given subject URI and/or predicate/value pairs map is <code>null</code>.
 	 */
-	public Set<URFAssertion> getAssertionsBySubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues);
+	public Iterable<URFAssertion> getAssertionsBySubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues);
 
 }
