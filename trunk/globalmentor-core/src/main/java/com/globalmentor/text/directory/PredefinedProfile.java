@@ -24,6 +24,7 @@ import static com.globalmentor.text.ABNF.*;
 import static com.globalmentor.text.directory.DirectoryUtilities.*;
 
 import com.globalmentor.io.*;
+import com.globalmentor.java.Characters;
 import com.globalmentor.model.LocaledText;
 import com.globalmentor.model.NameValuePair;
 import com.globalmentor.util.*;
@@ -190,7 +191,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 								stringBuilder.append(escapedChar);	//escaped backslashes and commas get appended normally
 								break;
 							default:	//if something else was escaped, we don't recognize it
-								throw new ParseUnexpectedDataException("\\,"+Directory.TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR+Directory.TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR, escapedChar, reader);	//show that we didn't expect this character here				
+								throw new ParseUnexpectedDataException(new Characters('\\', ',', Directory.TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR, Directory.TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR), escapedChar, reader);	//show that we didn't expect this character here				
 						}
 					}
 					break;
@@ -198,7 +199,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 				case CR:	//if we just read a carriage return
 					break;	//don't do anything---we'll just collect our characters and leave
 				default:	//if we read anything else (there shouldn't be anything else unless there is a logic error)					
-					throw new ParseUnexpectedDataException(TEXT_VALUE_DELIMITER_CHARS, delimiter, reader);	//show that we didn't expect this character here
+					throw new ParseUnexpectedDataException(new Characters(TEXT_VALUE_DELIMITER_CHARS), delimiter, reader);	//show that we didn't expect this character here TODO switch to using Characters throughout
 			}
 		}
 		while(delimiter!=Directory.VALUE_SEPARATOR_CHAR && delimiter!=CR);	//keep collecting parts of the string until we encounter a ',' or a CR

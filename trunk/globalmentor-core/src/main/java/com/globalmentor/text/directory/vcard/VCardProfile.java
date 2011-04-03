@@ -608,7 +608,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 								stringBuilder.append(escapedChar);	//escaped backslashes and commas get appended normally
 								break;
 							default:	//if something else was escaped, we don't recognize it
-								throw new ParseUnexpectedDataException("\\;,"+TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR+TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR, escapedChar, reader);	//show that we didn't expect this character here				
+								throw new ParseUnexpectedDataException(new Characters('\\', ';', ',', TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR, TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR), escapedChar, reader);	//show that we didn't expect this character here				
 						}
 					}
 					break;
@@ -616,7 +616,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 				case CR:	//if we just read a carriage return
 					break;	//don't do anything---we'll just collect our characters and leave
 				default:	//if we read anything else (there shouldn't be anything else unless there is a logic error)					
-					throw new ParseUnexpectedDataException(STRUCTURED_TEXT_VALUE_DELIMITER_CHARS, delimiter, reader);	//show that we didn't expect this character here
+					throw new ParseUnexpectedDataException(new Characters(STRUCTURED_TEXT_VALUE_DELIMITER_CHARS), delimiter, reader);	//show that we didn't expect this character here TODO switch to using Characters throughout
 			}
 		}
 		while(delimiter!=STRUCTURED_TEXT_VALUE_DELIMITER && delimiter!=CR);	//keep collecting parts of the string until we encounter a ';' or a CR

@@ -21,143 +21,159 @@ import java.util.*;
 import static com.globalmentor.text.directory.Directory.*;
 
 import com.globalmentor.model.NameValuePair;
-import com.globalmentor.util.*;
 
-/**A line in a directory of type <code>text/directory</code> as defined in
-	<a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
-	"A MIME Content-Type for Directory Information".
-@author Garret Wilson
-*/
+/**
+ * A line in a directory of type <code>text/directory</code> as defined in <a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
+ * "A MIME Content-Type for Directory Information".
+ * @author Garret Wilson
+ */
 public class ContentLine extends NameValuePair<String, Object>
 {
 
-	/**The profile of this content line, or <code>null</code> if there is no profile.*/
-	private String profile=null;	
-	
-		/**@return The profile of this content line, or <code>null</code> if there is no profile.*/
-		public String getProfile() {return profile;}
+	/** The profile of this content line, or <code>null</code> if there is no profile. */
+	private String profile = null;
 
-		/**Sets the profile.
-		@param profile The profile of this content line, or <code>null</code> if there is no profile.
-		*/
-		public void setProfile(final String profile) {this.profile=profile;}
+	/** @return The profile of this content line, or <code>null</code> if there is no profile. */
+	public String getProfile()
+	{
+		return profile;
+	}
 
-	/**The group specification, or <code>null</code> if there is no group.*/
-	private String group=null;	
-	
-		/**@return The group specification, or <code>null</code> if there is no group.*/
-		public String getGroup() {return group;}
+	/**
+	 * Sets the profile.
+	 * @param profile The profile of this content line, or <code>null</code> if there is no profile.
+	 */
+	public void setProfile(final String profile)
+	{
+		this.profile = profile;
+	}
 
-		/**Sets the group.
-		@param group The group specification, or <code>null</code> if there is no group.
-		*/
-		public void setGroup(final String group) {this.group=group;}
-	
-	/**The list of parameters.*/
+	/** The group specification, or <code>null</code> if there is no group. */
+	private String group = null;
+
+	/** @return The group specification, or <code>null</code> if there is no group. */
+	public String getGroup()
+	{
+		return group;
+	}
+
+	/**
+	 * Sets the group.
+	 * @param group The group specification, or <code>null</code> if there is no group.
+	 */
+	public void setGroup(final String group)
+	{
+		this.group = group;
+	}
+
+	/** The list of parameters. */
 	private final List<NameValuePair<String, String>> paramList;
 
-		/**@return The list of parameters, each item of which is a
-			<code>NameValuePair</code> with a name of type <code>String</code> and a
-			value of type <code>String</code>.
-		@see NameValuePair
-		*/
-		public List<NameValuePair<String, String>> getParamList() {return paramList;}
+	/**
+	 * @return The list of parameters, each item of which is a <code>NameValuePair</code> with a name of type <code>String</code> and a value of type
+	 *         <code>String</code>.
+	 * @see NameValuePair
+	 */
+	public List<NameValuePair<String, String>> getParamList()
+	{
+		return paramList;
+	}
 
-	/**Creates a directory content line with a name and value.
-	@param name The name of the information.
-	@param value The value of the information.
-	*/
+	/**
+	 * Creates a directory content line with a name and value.
+	 * @param name The name of the information.
+	 * @param value The value of the information.
+	 */
 	public ContentLine(final String name, final Object value)
 	{
-		this(null, name, value);	//create a content line with no group
+		this(null, name, value); //create a content line with no group
 	}
 
-	/**Creates a directory content line with a group, name, and value.
-	@param group The group specification, or <code>null</code> if there is no group.
-	@param name The name of the information.
-	@param value The value of the information.
-	*/
+	/**
+	 * Creates a directory content line with a group, name, and value.
+	 * @param group The group specification, or <code>null</code> if there is no group.
+	 * @param name The name of the information.
+	 * @param value The value of the information.
+	 */
 	public ContentLine(final String group, final String name, final Object value)
 	{
-		this(null, group, name, value);	//create a content line with no profile
+		this(null, group, name, value); //create a content line with no profile
 	}
 
-	/**Creates a directory content line with a group, name, parameter list, and value.
-	@param group The group specification, or <code>null</code> if there is no group.
-	@param name The name of the information.
-	@param paramList The list of parameters, each item of which is a
-		<code>NameValuePair</code> with a name of type <code>String</code> and a
-		value of type <code>String</code>.
-	@param value The value of the information.
-	*/
+	/**
+	 * Creates a directory content line with a group, name, parameter list, and value.
+	 * @param group The group specification, or <code>null</code> if there is no group.
+	 * @param name The name of the information.
+	 * @param paramList The list of parameters, each item of which is a <code>NameValuePair</code> with a name of type <code>String</code> and a value of type
+	 *          <code>String</code>.
+	 * @param value The value of the information.
+	 */
 	public ContentLine(final String group, final String name, final List<NameValuePair<String, String>> paramList, final Object value)
 	{
-		this(null, group, name, paramList, value);	//create a content line with no profile
+		this(null, group, name, paramList, value); //create a content line with no profile
 	}
 
-	/**Creates a directory content line with a profile, group, name, and value.
-	@param profile The profile of this content line, or <code>null</code> if
-		there is no profile.
-	@param group The group specification, or <code>null</code> if there is no group.
-	@param name The name of the information.
-	@param value The value of the information.
-	*/
+	/**
+	 * Creates a directory content line with a profile, group, name, and value.
+	 * @param profile The profile of this content line, or <code>null</code> if there is no profile.
+	 * @param group The group specification, or <code>null</code> if there is no group.
+	 * @param name The name of the information.
+	 * @param value The value of the information.
+	 */
 	public ContentLine(final String profile, final String group, final String name, final Object value)
 	{
-		this(profile, group, name, new ArrayList<NameValuePair<String, String>>(), value);	//create a content line with an empty param list
-	}
-	
-	/**Creates a directory content line with a profile, group, name, parameter list, and value.
-	@param profile The profile of this content line, or <code>null</code> if
-		there is no profile.
-	@param group The group specification, or <code>null</code> if there is no group.
-	@param name The name of the information.
-	@param paramList The list of parameters, each item of which is a
-		<code>NameValuePair</code> with a name of type <code>String</code> and a
-		value of type <code>String</code>.
-	@param value The value of the information.
-	*/
-	public ContentLine(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList, final Object value)
-	{
-		super(name, value);	//construct the parent class
-		this.profile=profile;	//save the profile
-		this.group=group;	//save the group
-		this.paramList=paramList;	//save the parameter list
-	}
-	
-	/**Retrieves a parameter value of the content line.
-	@param paramName The name of the parameter, which will be matched against
-		available parameters in a case insensitive way.
-	@return The value of the first matching parameter, or <code>null</code> if
-		there is no matching parameter. 
-	*/
-	public String getParamValue(final String paramName)
-	{
-		return DirectoryUtilities.getParamValue(getParamList(), paramName);	//get the value from the parameter list 
+		this(profile, group, name, new ArrayList<NameValuePair<String, String>>(), value); //create a content line with an empty param list
 	}
 
-	/**@return A string representation of this content line.*/
+	/**
+	 * Creates a directory content line with a profile, group, name, parameter list, and value.
+	 * @param profile The profile of this content line, or <code>null</code> if there is no profile.
+	 * @param group The group specification, or <code>null</code> if there is no group.
+	 * @param name The name of the information.
+	 * @param paramList The list of parameters, each item of which is a <code>NameValuePair</code> with a name of type <code>String</code> and a value of type
+	 *          <code>String</code>.
+	 * @param value The value of the information.
+	 */
+	public ContentLine(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList, final Object value)
+	{
+		super(name, value); //construct the parent class
+		this.profile = profile; //save the profile
+		this.group = group; //save the group
+		this.paramList = paramList; //save the parameter list
+	}
+
+	/**
+	 * Retrieves a parameter value of the content line.
+	 * @param paramName The name of the parameter, which will be matched against available parameters in a case insensitive way.
+	 * @return The value of the first matching parameter, or <code>null</code> if there is no matching parameter.
+	 */
+	public String getParamValue(final String paramName)
+	{
+		return DirectoryUtilities.getParamValue(getParamList(), paramName); //get the value from the parameter list 
+	}
+
+	/** @return A string representation of this content line. */
 	public String toString()
 	{
-		final StringBuilder stringBuilder=new StringBuilder();	//create a string builder to use in constructing the string
-		if(getProfile()!=null)	//if there's a profile
+		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder to use in constructing the string
+		if(getProfile() != null) //if there's a profile
 		{
-			stringBuilder.append('[').append(getProfile()).append(']').append(' ');	//append the profile
+			stringBuilder.append('[').append(getProfile()).append(']').append(' '); //append the profile
 		}
-		if(getGroup()!=null)	//if there's a group
+		if(getGroup() != null) //if there's a group
 		{
-			stringBuilder.append(getGroup()).append(GROUP_NAME_SEPARATOR_CHAR);	//append the group
+			stringBuilder.append(getGroup()).append(GROUP_NAME_SEPARATOR_CHAR); //append the group
 		}
-		stringBuilder.append(getName());	//append the type name
-		if(getParamList().size()>0)	//if there are parameters
+		stringBuilder.append(getName()); //append the type name
+		if(getParamList().size() > 0) //if there are parameters
 		{
-			for(final NameValuePair<String, String> parameter:getParamList())	//for each parameter
+			for(final NameValuePair<String, String> parameter : getParamList()) //for each parameter
 			{
-					//append the parameter name and value
+				//append the parameter name and value
 				stringBuilder.append(PARAM_SEPARATOR_CHAR).append(parameter.getName()).append(PARAM_NAME_VALUE_SEPARATOR_CHAR).append(parameter.getValue());
 			}
 		}
-		stringBuilder.append(NAME_VALUE_SEPARATOR_CHAR).append(getValue().toString());	//append the value
-		return stringBuilder.toString();	//return the string we constructed
+		stringBuilder.append(NAME_VALUE_SEPARATOR_CHAR).append(getValue().toString()); //append the value
+		return stringBuilder.toString(); //return the string we constructed
 	}
 }

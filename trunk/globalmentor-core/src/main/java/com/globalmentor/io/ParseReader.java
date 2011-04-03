@@ -18,11 +18,13 @@ package com.globalmentor.io;
 
 import java.io.*;
 
+import com.globalmentor.java.Characters;
+
 /**Class which provides methods for parsing data from a stream.
 @author Garret Wilson
-@deprecated
 */
-public class ParseReader extends BufferedPushbackReader
+@Deprecated
+public class ParseReader extends ProcessingBufferedReader	//TODO clean up and undeprecate
 {
 
 	/**The source of the data (e.g. a String, File, or URL).*/
@@ -124,14 +126,14 @@ public class ParseReader extends BufferedPushbackReader
 		will, when updated, be one character behind the read index.
 	@see #getLineIndex
 	@see #getCharIndex
-	@see BufferedPushbackReader#getReadIndex
+	@see ProcessingBufferedReader#getReadIndex
 	*/
 	private int LastPositionIndex;
 
 		/**@return The index of the last time the line and character indexes were updated.
 		@see #getLineIndex
 		@see #getCharIndex
-		@see BufferedPushbackReader#getReadIndex
+		@see ProcessingBufferedReader#getReadIndex
 		*/
 		protected int getLastPositionIndex() {return LastPositionIndex;}
 
@@ -140,7 +142,7 @@ public class ParseReader extends BufferedPushbackReader
 		@param lastPositionIndex The index of the last time the line and character indexes were updated.
 		@see #getLineIndex
 		@see #getCharIndex
-		@see BufferedPushbackReader#getReadIndex
+		@see ProcessingBufferedReader#getReadIndex
 		*/
 		protected void setLastPositionIndex(final int lastPositionIndex) {LastPositionIndex=lastPositionIndex;}
 
@@ -190,7 +192,7 @@ public class ParseReader extends BufferedPushbackReader
 	@param inReader The reader that contains the data.
 	@param prereadCharacters The characters that have already been read.
 	@exception IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
-	@see BufferedPushbackReader
+	@see ProcessingBufferedReader
 	*/
 	public ParseReader(final Reader inReader, final StringBuffer prereadCharacters) throws IOException
 	{
@@ -276,7 +278,7 @@ public class ParseReader extends BufferedPushbackReader
 	@see #getCharIndex
 	@see #getLastPositionIndex
 	@see #moveBuffer
-	@see BufferedPushbackReader#getReadIndex
+	@see ProcessingBufferedReader#getReadIndex
 	*/
 	protected void updatePosition(final int updateIndex)
 	{
@@ -315,7 +317,7 @@ public class ParseReader extends BufferedPushbackReader
 		if(i!=-1)	//if we haven't reached the end of the file
 			return (char)i;	//return the character
 		else	//if we did reach the end of the file
-			throw new ParseEOFException("End of stream reached while reading a character.", getLineIndex(), getCharIndex(), getName());	//show that we hit the end of the file
+			throw new ParseEOFException("End of stream reached while reading a character.", getLineIndex(), getCharIndex());	//show that we hit the end of the file
 	}
 
 	/**Peeks at the next character to be read, and throws an exception if there are no more characters to read.
@@ -336,7 +338,7 @@ public class ParseReader extends BufferedPushbackReader
 		if(i!=-1)	//if we haven't reached the end of the file
 			return (char)i;	//return the character
 		else	//if we did reach the end of the file
-			throw new ParseEOFException("End of stream reached while reading a character.", getLineIndex(), getCharIndex(), getName());	//show that we hit the end of the file
+			throw new ParseEOFException("End of stream reached while reading a character.", getLineIndex(), getCharIndex());	//show that we hit the end of the file
 	}
 
 	
@@ -351,7 +353,7 @@ public class ParseReader extends BufferedPushbackReader
 	{
 		final char[] charArray=new char[len];	//create a character array with enough room to hold these characters
 		if(peek(charArray, 0, len)!=len)	//read the appropriate number of characters; if we didn't read enough
-			throw new ParseEOFException("End of stream reached while peeking a character.", getLineIndex(), getCharIndex(), getName());	//show that we hit the end of the file
+			throw new ParseEOFException("End of stream reached while peeking a character.", getLineIndex(), getCharIndex());	//show that we hit the end of the file
 		return new String(charArray);	//create and return a string from the characters we peeked
 	}
 
@@ -436,8 +438,8 @@ public class ParseReader extends BufferedPushbackReader
 				return i;	//show that this string matches what we're peeking
 			}
 		}
-		if(isEOF())	//if we reached the end of the file
-			throw new ParseEOFException("End of stream reached while reading data.", beginLineIndex, beginCharIndex, getName());	//show that we hit the end of the file
+		if(isEnd())	//if we reached the end of the file
+			throw new ParseEOFException("End of stream reached while reading data.", beginLineIndex, beginCharIndex);	//show that we hit the end of the file
 		else	//if we didn't reach the end of the file
 		{
 			throw new ParseUnexpectedDataException(expectedStrings, stringBuilder.toString(), beginLineIndex, beginCharIndex, getName());	//show that we didn't get the string we were expecting TODO we may want to have an XMLUnexpectedStringException or something
@@ -476,7 +478,7 @@ public class ParseReader extends BufferedPushbackReader
 	public long skipChars(long n) throws IOException, ParseEOFException
 	{
 		if(skip(n)!=n)	//skip the requested number of characters; if we could not read as many as were requested
-			throw new ParseEOFException("End of stream reached while reading a character.", getLineIndex(), getCharIndex(), getName());	//show that we hit the end of the file
+			throw new ParseEOFException("End of stream reached while reading a character.", getLineIndex(), getCharIndex());	//show that we hit the end of the file
 		return n;	//if we make it here, we will have skipped all the characters
 	}
 
@@ -491,8 +493,8 @@ public class ParseReader extends BufferedPushbackReader
 	public long skipChars(final String skipChars) throws IOException, ParseEOFException
 	{
 		final long numCharsSkipped=skipCharsEOF(skipChars);	//skip characters without throwing an exception when we run out of data
-		if(isEOF())	//if we reached the end of the file
-			throw new ParseEOFException("End of stream reached while skipping data.", getLineIndex(), getCharIndex(), getName());	//show that we hit the end of the file
+		if(isEnd())	//if we reached the end of the file
+			throw new ParseEOFException("End of stream reached while skipping data.", getLineIndex(), getCharIndex());	//show that we hit the end of the file
 		return numCharsSkipped;	//return the number of characters we skipped
 	}
 
@@ -508,7 +510,7 @@ public class ParseReader extends BufferedPushbackReader
 		resetPeek();	//reset our peeking so that we'll really be peeking the next character
 		long numCharsSkipped=0;	//show that we haven't skipped any characters yet
 		boolean foundNonDelimiter=false;	//show that we haven't found a non-matching character yet
-		while(!isEOF())	//if we're not at the end of the file
+		while(!isEnd())	//if we're not at the end of the file
 		{
 			final char[] buffer=getBuffer();	//get a reference to the buffer; the buffer address will always remain the same within this loop; future versions of fetchBuffer() may change the buffer though, so this variable shouldn't be relied upon after a call to fetchBuffer()
 			int checkIndex=getReadIndex();	//start looking where we're supposed to start reading
@@ -569,8 +571,8 @@ public class ParseReader extends BufferedPushbackReader
 	public String readStringUntilChar(String delimiterCharString) throws IOException, ParseEOFException
 	{
 		final String characterString=readStringUntilCharEOF(delimiterCharString);	//read the characters until the delimiter without throwing an error when we run out of data
-		if(isEOF())	//if we reached the end of the file
-			throw new ParseEOFException("End of stream reached while reading data.", getLineIndex(), getCharIndex(), getName());	//show that we hit the end of the file
+		if(isEnd())	//if we reached the end of the file
+			throw new ParseEOFException("End of stream reached while reading data.", getLineIndex(), getCharIndex());	//show that we hit the end of the file
 		return characterString;	//return the string we read
 	}
 
@@ -633,7 +635,7 @@ public class ParseReader extends BufferedPushbackReader
 	{
 		final StringBuilder stringBuilder=new StringBuilder();	//this will receive the characters we've read
 		boolean foundDelimiter=false;	//show that we haven't found the character, yet
-		while(!isEOF())	//if we're not at the end of the file
+		while(!isEnd())	//if we're not at the end of the file
 		{
 			final char[] buffer=getBuffer();	//get a reference to the buffer; the buffer address will always remain the same within this loop; future versions of fetchBuffer() may change the buffer though, so this variable shouldn't be relied upon after a call to fetchBuffer()
 			int checkIndex=getReadIndex();	//start looking where we're supposed to start reading
@@ -667,7 +669,7 @@ public class ParseReader extends BufferedPushbackReader
 	{
 		char c=readChar();	//read a character
 		if(c!=expectedChar)	//if we don't get the character we expected
-			throw new ParseUnexpectedDataException(expectedChar, c, getLineIndex(), getCharIndex(), getName());	//show that we didn't get the character we were expecting
+			throw new ParseUnexpectedDataException(expectedChar, c, getLineIndex(), getCharIndex());	//show that we didn't get the character we were expecting
 		return c;	//return the character we read
 	}
 
@@ -682,7 +684,7 @@ public class ParseReader extends BufferedPushbackReader
 	{
 		char c=readChar();	//read a character
 		if(expectedChars.indexOf(c)==-1)	//if this character doesn't match any we expect
-			throw new ParseUnexpectedDataException(expectedChars, c, getLineIndex(), getCharIndex(), getName());	//show that we didn't get the character we were expecting
+			throw new ParseUnexpectedDataException(new Characters(expectedChars), c, getLineIndex(), getCharIndex());	//show that we didn't get the character we were expecting TODO switch to using Characters throughout
 		return c;	//return the character we read
 	}
 
@@ -696,7 +698,7 @@ public class ParseReader extends BufferedPushbackReader
 	{
 		final char[] charArray=new char[len];	//create a character array with enough room to hold these characters
 		if(read(charArray, 0, len)!=len)	//read the appropriate number of characters; if we didn't read enough
-			throw new ParseEOFException("End of stream reached while reading a character.", getLineIndex(), getCharIndex(), getName());	//show that we hit the end of the file
+			throw new ParseEOFException("End of stream reached while reading a character.", getLineIndex(), getCharIndex());	//show that we hit the end of the file
 		return new String(charArray);	//create and return a string from the characters we read
 	}
 
