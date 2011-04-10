@@ -31,9 +31,12 @@ import com.globalmentor.text.RomanNumerals;
 /**
  * An immutable set of characters that supports various searching and other functions. This essentially provides an efficient yet immutable array with
  * object-oriented functionality.
+ * 
  * <p>
  * This class is similar to {@link String}, except that it discards duplicate characters. Furthermore, this class allows no Unicode surrogates; the characters
- * contained are interpreted as complete Unicode code points. This also makes comparison more efficient.
+ * contained are interpreted as complete Unicode code points. This also makes comparison more efficient. As this class is similar to an ordered set than a list,
+ * it doesn't implement {@link CharSequence} in order to prevent signature conflicts; and provides {@link #size()} to count its contents instead of a "length"
+ * property.
  * </p>
  * <p>
  * This class also provides static utilities and constants for interacting with characters in general.
@@ -44,7 +47,7 @@ import com.globalmentor.text.RomanNumerals;
  * @author Garret Wilson
  * @see <a href="http://unicode.org/unicode/standard/reports/tr13/tr13-5.html">Unicode Newline Guidelines</a>
  */
-public final class Characters implements CharSequence
+public final class Characters
 {
 
 	/** A shared instance of an empty array of characters. */
@@ -475,28 +478,10 @@ public final class Characters implements CharSequence
 		return chars.length == 0;
 	}
 
-	/** {@inheritDoc} */
-	public int length()
+	/** @return The number of characters. */
+	public int size()
 	{
 		return chars.length;
-	}
-
-	/** {@inheritDoc} */
-	public char charAt(int index)
-	{
-		return chars[index];
-	}
-
-	/** {@inheritDoc} */
-	public CharSequence subSequence(int start, int end)
-	{
-		return new Characters(chars, start, end);
-	}
-
-	/** {@inheritDoc} */
-	public String toString()
-	{
-		return new String(chars);
 	}
 
 	/**
@@ -600,6 +585,12 @@ public final class Characters implements CharSequence
 			}
 		}
 		return this; //if we didn't have any of the given characters to begin with, return the characters the way they are
+	}
+
+	/** @return A string containing these characters. */
+	public String toString()
+	{
+		return new String(chars);
 	}
 
 	/**
@@ -796,10 +787,6 @@ public final class Characters implements CharSequence
 	 */
 	public static String toLabelArrayString(final CharSequence characters)
 	{
-		if(characters instanceof Characters)
-		{
-			return ((Characters)characters).toLabelArrayString();
-		}
 		return appendLabelArrayString(new StringBuilder(characters.length() * 8), characters.toString().toCharArray()).toString(); //most of the time, each character will just take up five to eight characters
 	}
 

@@ -84,8 +84,8 @@ public class ReaderParser
 	 * @return The character returned the reader's {@link Reader#read()} operation.
 	 * @exception NullPointerException if the given reader is <code>null</code>.
 	 * @exception IOException if there is an error reading from the reader.
-	 * @exception ParseUnexpectedDataException if the current character in the reader does not match the specified character or if the reader has no more
-	 *              characters.
+	 * @exception ParseUnexpectedDataException if the current character in the reader does not match the specified character.
+	 * @exception ParseEOFException if the reader has no more characters.
 	 */
 	public static char check(final Reader reader, final char character) throws IOException, ParseUnexpectedDataException
 	{
@@ -106,8 +106,8 @@ public class ReaderParser
 	 * @return The character returned the reader's {@link Reader#read()} operation.
 	 * @exception NullPointerException if the given reader is <code>null</code>.
 	 * @exception IOException if there is an error reading from the reader.
-	 * @exception ParseUnexpectedDataException if the current character in the reader does not fall within the given range or if the reader has no more
-	 *              characters.
+	 * @exception ParseUnexpectedDataException if the current character in the reader does not fall within the given range.
+	 * @exception ParseEOFException if the reader has no more characters.
 	 */
 	public static char check(final Reader reader, final char lowerBound, final char upperBound) throws IOException, ParseUnexpectedDataException
 	{
@@ -128,8 +128,8 @@ public class ReaderParser
 	 * @return The character returned the reader's {@link Reader#read()} operation.
 	 * @exception NullPointerException if the given reader and/or the given characters is <code>null</code>.
 	 * @exception IOException if there is an error reading from the reader.
-	 * @exception ParseUnexpectedDataException if the current character in the reader does not match one of the specified characters or if the reader has no more
-	 *              characters.
+	 * @exception ParseUnexpectedDataException if the current character in the reader does not match one of the specified characters.
+	 * @exception ParseEOFException if the reader has no more characters.
 	 */
 	public static char check(final Reader reader, final Characters characters) throws IOException, ParseUnexpectedDataException
 	{
@@ -149,8 +149,8 @@ public class ReaderParser
 	 * @return The character sequence that was checked.
 	 * @exception NullPointerException if the given reader and/or match character sequence is <code>null</code>.
 	 * @exception IOException if there is an error reading from the reader.
-	 * @exception ParseUnexpectedDataException if the current character in the reader does not match the specified character sequence or if the reader has no more
-	 *              characters.
+	 * @exception ParseUnexpectedDataException if the current character in the reader does not match the specified character sequence.
+	 * @exception ParseEOFException if the reader has no more characters.
 	 */
 	public static CharSequence check(final Reader reader, final CharSequence match) throws IOException, ParseUnexpectedDataException
 	{
@@ -219,6 +219,36 @@ public class ReaderParser
 	}
 
 	/**
+	 * Reads a string and, if the string does not match the given character sequence, resets the reader as if the string was not read.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param charSequence The character sequence to accept.
+	 * @return <code>true</code> if a string matching the character sequence was read, or <code>false</code> if the next characters do not match the given
+	 *         character sequence and were therefore replaced.
+	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @exception IOException if there is an error reading from the reader.
+	 */
+	public static boolean confirm(final Reader reader, final CharSequence charSequence) throws IOException
+	{
+		final int length = charSequence.length();
+		final char[] buffer = new char[length]; //create a buffer for reading all the characters more efficiently than one at a time
+		reader.mark(length); //mark our current position
+		if(reader.read(buffer) < length) //read the characters; if there weren't enough characters left before the end
+		{
+			reader.reset(); //reset to the last mark, right before we read the string
+			return false;
+		}
+		for(int i = 0; i < length; ++i) //check all the characters
+		{
+			if(buffer[i] != charSequence.charAt(i)) //if a character doesn't match
+			{
+				reader.reset(); //reset to the last mark, right before we read the string
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Reads a character, throwing an error if the end of the reader was reached.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @return The character returned from the reader's {@link Reader#read()} operation.
@@ -265,7 +295,8 @@ public class ReaderParser
 	 * @exception NullPointerException if the given reader is <code>null</code>.
 	 * @exception IllegalArgumentException if the given count is less than zero.
 	 * @exception IOException if there is an error reading from the reader.
-	 * @exception ParseUnexpectedDataException if a character in the string does not fall within the given range or if the reader has no more characters.
+	 * @exception ParseUnexpectedDataException if a character in the string does not fall within the given range.
+	 * @exception ParseEOFException if the reader has no more characters.
 	 */
 	public static String readStringCheck(final Reader reader, final int count, final char lowerBound, final char upperBound) throws IOException,
 			ParseUnexpectedDataException
@@ -306,6 +337,21 @@ public class ReaderParser
 	}
 
 	/**
+	 * Reads a character and and resets the reader as if the character were not read, throwing an exception if the end of the reader has been reached.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @return The next character that will be returned the reader's {@link Reader#read()} operation.
+	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @exception IOException if there is an error reading from the reader.
+	 * @exception ParseEOFException if the reader has no more characters.
+	 */
+	public static char peek(final Reader reader) throws IOException, ParseEOFException
+	{
+		final int c = peekEnd(reader); //peek a character
+		checkReaderNotEnd(reader, c); //make sure we're not at the end of the reader
+		return (char)c; //return the character peeked
+	}
+
+	/**
 	 * Reads a character and, if a character was read (i.e. the reader is not out of data), resets the reader as if the character were not read.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @return The next character that will be returned the reader's {@link Reader#read()} operation, or <code>-1</code> if the end of the reader has been
@@ -313,12 +359,10 @@ public class ReaderParser
 	 * @exception NullPointerException if the given reader is <code>null</code>.
 	 * @exception IOException if there is an error reading from the reader.
 	 */
-	public static int peek(final Reader reader) throws IOException
+	public static int peekEnd(final Reader reader) throws IOException
 	{
-		//Log.trace("ready to peek");
 		reader.mark(1); //mark our current position
 		final int c = reader.read(); //get the current character
-		//Log.trace("peek-read char", c);
 		if(c >= 0) //if the reader is not out of data
 		{
 			reader.reset(); //reset to the last mark, which was set right before the character we found
@@ -462,6 +506,24 @@ public class ReaderParser
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder
 		skip(reader, lowerBound, upperBound, stringBuilder); //read the characters
 		return stringBuilder.toString(); //return the collected characters
+	}
+
+	/**
+	 * Reads text from a reader that has certain beginning and ending delimiter characters. The delimiters will be discarded.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param startDelimiter The character to expect at the first of the characters.
+	 * @param endDelimiter The character to expect at the end of the characters.
+	 * @except IOException Thrown when an I/O error occurs.
+	 * @except ParseUnexpectedDataException Thrown when an unexpected character is found.
+	 * @except ParseEOFException Thrown when the end of the reader is reached unexpectedly.
+	 * @return The characters between the delimiters.
+	 */
+	public static String readDelimited(final Reader reader, final char startDelimiter, final char endDelimiter) throws IOException, ParseUnexpectedDataException,
+			ParseEOFException
+	{
+		check(reader, startDelimiter); //read the first delimiter
+		final String string = reachAfter(reader, endDelimiter); //read until the end delimiter is reached
+		return string; //return the string in-between
 	}
 
 	/**

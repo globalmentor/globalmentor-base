@@ -572,7 +572,9 @@ public class ParseReader extends ProcessingBufferedReader	//TODO clean up and un
 	{
 		final String characterString=readStringUntilCharEOF(delimiterCharString);	//read the characters until the delimiter without throwing an error when we run out of data
 		if(isEnd())	//if we reached the end of the file
+		{
 			throw new ParseEOFException("End of stream reached while reading data.", getLineIndex(), getCharIndex());	//show that we hit the end of the file
+		}
 		return characterString;	//return the string we read
 	}
 

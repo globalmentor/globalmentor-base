@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,7 +149,7 @@ public class ContentLine extends NameValuePair<String, Object>
 	 */
 	public String getParamValue(final String paramName)
 	{
-		return DirectoryUtilities.getParamValue(getParamList(), paramName); //get the value from the parameter list 
+		return Directory.getParamValue(getParamList(), paramName); //get the value from the parameter list 
 	}
 
 	/** @return A string representation of this content line. */

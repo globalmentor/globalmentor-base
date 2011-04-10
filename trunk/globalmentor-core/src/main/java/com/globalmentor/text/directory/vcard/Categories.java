@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import com.globalmentor.model.LocaledText;
 @author Garret Wilson
 @see LocaledText
 */
+@Deprecated
 public class Categories
 {
 	
@@ -44,7 +45,7 @@ public class Categories
 		if(availableCategorySet==null)	//if we have not yet created our set of available categories
 		{
 			availableCategorySet=new ModifiableSet(new HashSet());	//create a new set of categories
-			availableCategorySet.add(new LocaledText("Business", Locale.ENGLISH));	//add the default categories G***i18n
+			availableCategorySet.add(new LocaledText("Business", Locale.ENGLISH));	//add the default categories TODO i18n
 			availableCategorySet.add(new LocaledText("Competition", Locale.ENGLISH));
 			availableCategorySet.add(new LocaledText("Favorite", Locale.ENGLISH));
 			availableCategorySet.add(new LocaledText("Familiy", Locale.ENGLISH));

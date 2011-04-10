@@ -470,7 +470,7 @@ public class URFTemporalComponents
 			}
 			else	//if we should at least allow a UTC offset
 			{
-				final int utcOffsetDelimiter=peek(reader);	//peek the next character
+				final int utcOffsetDelimiter=peekEnd(reader);	//peek the next character
 				if(utcOffsetDelimiter=='+' || utcOffsetDelimiter=='-')	//if this is the start of a UTC offset
 				{
 					check(reader, (char)utcOffsetDelimiter);	//read the delimiter

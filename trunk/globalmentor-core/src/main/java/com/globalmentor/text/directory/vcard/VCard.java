@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -144,7 +144,7 @@ public class VCard extends Directory
 	 */
 	public final static String EMAIL_TYPE = "EMAIL";
 
-	/** An internet email address. */
+	/** An Internet email address. */
 	public final static String EMAIL_INTERNET_PARAM_VALUE = "internet";
 	/** An X.400 addressing type. */
 	public final static String EMAIL_X400_PARAM_VALUE = "x400";

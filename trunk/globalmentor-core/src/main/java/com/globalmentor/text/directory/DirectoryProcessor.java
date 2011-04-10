@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -188,21 +188,9 @@ public class DirectoryProcessor
 	protected final static Characters GROUPLESS_CONTENT_LINE_DELIMITER_CHARACTERS = new Characters(PARAM_SEPARATOR_CHAR, NAME_VALUE_SEPARATOR_CHAR, CR, LF);
 
 	/**
-	 * The delimiter characters separating the main components of a content line with no group provided (';', ':', CR, and LF).
-	 */
-	@Deprecated
-	protected final static String GROUPLESS_CONTENT_LINE_DELIMITER_CHARS = "" + PARAM_SEPARATOR_CHAR + NAME_VALUE_SEPARATOR_CHAR + CR + LF;
-
-	/**
 	 * The delimiter characters separating the main components of a content line ('.', ';', ':', CR, and LF).
 	 */
 	protected final static Characters CONTENT_LINE_DELIMITER_CHARACTERS = GROUPLESS_CONTENT_LINE_DELIMITER_CHARACTERS.add(GROUP_NAME_SEPARATOR_CHAR);
-
-	/**
-	 * The delimiter characters separating the main components of a content line ('.', ';', ':', CR, and LF).
-	 */
-	@Deprecated
-	protected final static String CONTENT_LINE_DELIMITER_CHARS = GROUP_NAME_SEPARATOR_CHAR + GROUPLESS_CONTENT_LINE_DELIMITER_CHARS;
 
 	/**
 	 * Processes the content lines from a directory of type <code>text/directory</code>.
@@ -212,9 +200,9 @@ public class DirectoryProcessor
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public Directory processDirectory(final Reader reader, final Object sourceObject) throws IOException, ParseIOException	//TODO remove sourceObject
+	public Directory processDirectory(final Reader reader, final Object sourceObject) throws IOException, ParseIOException //TODO remove sourceObject
 	{
-		return processDirectory(new LineUnfoldParseReader(reader)); //create a new line unfold parse reader and use that to process the directory
+		return processDirectory(new LineUnfoldReader(reader)); //create a new line unfold parse reader and use that to process the directory TODO see if the reader is already a LineUnfoldParseReader
 	}
 
 	/**
@@ -225,7 +213,7 @@ public class DirectoryProcessor
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public Directory processDirectory(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public Directory processDirectory(final Reader reader) throws IOException, ParseIOException
 	{
 		final Set<String> checkedProfileNameSet = new HashSet<String>(); //create a set to store the profile names we check
 		final ContentLine[] contentLines = processContentLines(reader); //process the content lines
@@ -257,59 +245,55 @@ public class DirectoryProcessor
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public ContentLine[] processContentLines(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public ContentLine[] processContentLines(final Reader reader) throws IOException, ParseIOException
 	{
 		profileStack = new LinkedList<String>(); //create a new profile stack
 		defaultProfile = null; //show that there is no default profile
 		useDefaultProfile = false; //don't use the default profile
 		final List<ContentLine> contentLineList = new ArrayList<ContentLine>(); //create an array in which to told the content lines
-		while(!reader.isEnd()) //while we haven't reached the end of the file
+		ContentLine[] contentLines;
+		while((contentLines = processContentLine(reader)) != null) //process one or more lines of contents, all of which should have the same type, while we haven't reached the end of the reader
 		{
-			final ContentLine[] contentLines = processContentLine(reader); //process one or more lines of contents, all of which should have the same type
-			if(contentLines != null) //if there were one or more content lines
+			for(final ContentLine contentLine : contentLines) //look at each line of content
 			{
-				for(int i = 0; i < contentLines.length; ++i) //look at each line of content
-				{
-					final ContentLine contentLine = contentLines[i]; //get a reference to this content line
-					//TODO del Log.trace("just processed content line: ", contentLine);	//TODO del
-					final String typeName = contentLine.getName(); //get the type
-					/*TODO del when works
-										if(NAME_TYPE.equalsIgnoreCase(typeName))	//if this is NAME
+				//TODO del Log.trace("just processed content line: ", contentLine);	//TODO del
+				final String typeName = contentLine.getName(); //get the type
+				/*TODO del when works
+									if(NAME_TYPE.equalsIgnoreCase(typeName))	//if this is NAME
+									{
+										if(directory.getName()==null)	//if the directory does not yet have a name
 										{
-											if(directory.getName()==null)	//if the directory does not yet have a name
-											{
-												directory.setName((String)contentLine.getValue());	//get the directory name
-											}
+											directory.setName((String)contentLine.getValue());	//get the directory name
 										}
-					*/
-					if(PROFILE_TYPE.equalsIgnoreCase(typeName)) //if this is PROFILE
-					{
-						final String profile = ((LocaledText)contentLine.getValue()).getText(); //get the profile
-						contentLine.setProfile(profile); //a profile type should have the same profile as the one it sets
-						setProfile(profile); //set the profile to the new profile
-					}
-					else if(BEGIN_TYPE.equalsIgnoreCase(typeName)) //if this is BEGIN:xxx
-					{
-						final String profile = ((LocaledText)contentLine.getValue()).getText(); //get the profile
-						contentLine.setProfile(profile); //a beginning profile type should have the same profile as the one it sets
-						pushProfile(profile); //push the new profile
-					}
-					else if(END_TYPE.equalsIgnoreCase(typeName)) //if this is END:xxx
-					{
-						final String profile = ((LocaledText)contentLine.getValue()).getText(); //get the profile
-						contentLine.setProfile(profile); //an ending profile type should have the same profile to which it refers
-						try
-						{
-							final String oldProfile = popProfile(); //pop the profile from the stack
-							//TODO make sure the old profile is what we expect
-						}
-						catch(final NoSuchElementException noSuchElementException) //if there are no more profiles on the stack
-						{
-							throw new ParseIOException(reader, "Profile \"" + profile + "\" END without BEGIN."); //throw an error indicating that there was no beginning to the profile
-						}
-					}
-					contentLineList.add(contentLine); //add this content line to the list of content lines
+									}
+				*/
+				if(PROFILE_TYPE.equalsIgnoreCase(typeName)) //if this is PROFILE
+				{
+					final String profile = ((LocaledText)contentLine.getValue()).getText(); //get the profile
+					contentLine.setProfile(profile); //a profile type should have the same profile as the one it sets
+					setProfile(profile); //set the profile to the new profile
 				}
+				else if(BEGIN_TYPE.equalsIgnoreCase(typeName)) //if this is BEGIN:xxx
+				{
+					final String profile = ((LocaledText)contentLine.getValue()).getText(); //get the profile
+					contentLine.setProfile(profile); //a beginning profile type should have the same profile as the one it sets
+					pushProfile(profile); //push the new profile
+				}
+				else if(END_TYPE.equalsIgnoreCase(typeName)) //if this is END:xxx
+				{
+					final String profile = ((LocaledText)contentLine.getValue()).getText(); //get the profile
+					contentLine.setProfile(profile); //an ending profile type should have the same profile to which it refers
+					try
+					{
+						final String oldProfile = popProfile(); //pop the profile from the stack
+						//TODO make sure the old profile is what we expect
+					}
+					catch(final NoSuchElementException noSuchElementException) //if there are no more profiles on the stack
+					{
+						throw new ParseIOException(reader, "Profile \"" + profile + "\" END without BEGIN."); //throw an error indicating that there was no beginning to the profile
+					}
+				}
+				contentLineList.add(contentLine); //add this content line to the list of content lines
 			}
 		}
 		profileStack = null; //release the profile stack
@@ -320,23 +304,24 @@ public class DirectoryProcessor
 
 	/**
 	 * Retrieves one or more content lines from a directory, all of which will have the same type name. If the parsed content line has multiple values, a new
-	 * identical content line will be created for to contain each value, differing only in the value.
+	 * identical content line will be created for to contain each value, differing only in the value. If the content line has only whitespace, an empty array will
+	 * be returned. If there are no content lines before the end of the reader is reached, <code>null</code> will be returned.
 	 * @param reader The reader that contains the lines of the directory.
-	 * @return A one or more content lines from the directory, or <code>null</code> if the line contained only whitespace.
+	 * @return A one or more content lines from the directory (an empty array if the line contained only whitespace), or <code>null</code> if there are no more
+	 *         content lines.
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public ContentLine[] processContentLine(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public ContentLine[] processContentLine(final Reader reader) throws IOException, ParseIOException
 	{
 		String profile = getProfile(); //get the current profile, if there is one
 		String group = null; //we'll store the group here
 		String name = null; //we'll store the name here
 		List<NameValuePair<String, String>> paramList = null; //we'll store parameters here, if we have any
-		
-		String token=reachEnd(reader, CONTENT_LINE_DELIMITER_CHARACTERS);	//read the next line token; don't throw an exception if the end of the file is reached, because this could be an empty line
-/*TODO del
-		String token = reader.readStringUntilCharEOF(CONTENT_LINE_DELIMITER_CHARS); //read the next line token; don't throw an exception if the end of the file is reached, because this could be an empty line
-		if(reader.isEOF()) //if we reached the end of the file
+
+		String token = reachEnd(reader, CONTENT_LINE_DELIMITER_CHARACTERS); //read the next line token; don't throw an exception if the end of the file is reached, because this could be an empty line
+		final int c = reader.read(); //get the delimiter character we encountered
+		if(c < 0) //if we reached the end of the file
 		{
 			if(token.trim().length() > 0) //if there is non-whitespace content before the end of the line, but none of the other delimiters we expect, there's a syntax error in the line
 			{
@@ -345,36 +330,28 @@ public class DirectoryProcessor
 			else
 			//if this was an empty line
 			{
-				return null; //there's no content on this line			
+				if(token.isEmpty()) //if no characters were read before the end of the line
+				{
+					return null; //the end of the reader was reached
+				}
+				else
+				//if only whitespace was read
+				{
+					return new ContentLine[0]; //return an empty content line indicator
+				}
 			}
 		}
-*/
-		final int c = reader.read();	//get the delimiter character we encountered
-//		char c=reader.readChar(); //get the delimiter character we encountered
-		if(c<0) //if we reached the end of the file
-		{
-			if(token.trim().length() > 0) //if there is non-whitespace content before the end of the line, but none of the other delimiters we expect, there's a syntax error in the line
-			{
-				throw new ParseEOFException(reader); //show that we didn't expect to run out of data here
-			}
-			else
-			//if this was an empty line
-			{
-				return null; //there's no content on this line			
-			}
-		}
-		char character=(char)c;
+		char character = (char)c;
 		if(character == GROUP_NAME_SEPARATOR_CHAR) //if we just read a group
 		{
 			//TODO check the syntax of the group
 			group = token; //save the group we read
 			//TODO del Log.trace("found group: ", group);
 			token = reach(reader, GROUPLESS_CONTENT_LINE_DELIMITER_CHARACTERS); //read the next line token after the group, which should be the name
-//			token = reader.readStringUntilChar(GROUPLESS_CONTENT_LINE_DELIMITER_CHARS); //read the next line token after the group, which should be the name
-//			c = reader.readChar(); //get the delimiter character we encountered, and fall through to checking the name
 			character = readCharacter(reader); //get the delimiter character we encountered, and fall through to checking the name
 		}
-		switch(character)	//see which delimiter character we encountered
+		switch(character)
+		//see which delimiter character we encountered
 		{
 			case PARAM_SEPARATOR_CHAR: //if we just read a parameter separator
 			case NAME_VALUE_SEPARATOR_CHAR: //if we just read the character separates the name from the value
@@ -385,7 +362,7 @@ public class DirectoryProcessor
 				{
 					paramList = processParameters(reader); //process the parameters
 					confirm(reader, NAME_VALUE_SEPARATOR_CHAR); //read the ':' that we expect to come after the parameters
-//					reader.readExpectedChar(NAME_VALUE_SEPARATOR_CHAR); //read the ':' that we expect to come after the parameters
+					//					reader.readExpectedChar(NAME_VALUE_SEPARATOR_CHAR); //read the ':' that we expect to come after the parameters
 				}
 				else
 				//if there were no parameters
@@ -394,7 +371,7 @@ public class DirectoryProcessor
 				}
 				//		TODO del Log.trace("ready to process value");
 				final Object[] values = processValue(profile, group, name, paramList, reader); //process the value and get an object that represents the object
-				reader.readExpectedString(CRLF); //there should always be a CRLF after the value
+				check(reader, CRLF); //there should always be a CRLF after the value
 				final ContentLine[] contentLines = new ContentLine[values.length]; //create an array of content lines that we'll fill with new content lines
 				for(int i = 0; i < values.length; ++i) //look at each value
 				{
@@ -406,8 +383,8 @@ public class DirectoryProcessor
 				{
 					throw new ParseUnexpectedDataException(new Characters(PARAM_SEPARATOR_CHAR, NAME_VALUE_SEPARATOR_CHAR), character, reader); //show that we didn't expect this character here
 				}
-				reader.readExpectedChar(LF); //there should always be an LF after a CR
-				return null; //TODO decide what to do with an empty line
+				check(reader, LF); //there should always be an LF after a CR
+				return new ContentLine[0]; //return an empty content line indicator
 			case LF: //if we see an LF before a CR
 			default: //if we read anything else (there shouldn't be anything else unless there is a logic error)					
 				throw new ParseUnexpectedDataException(new Characters(PARAM_SEPARATOR_CHAR, NAME_VALUE_SEPARATOR_CHAR), character, reader); //show that we didn't expect this character here
@@ -415,16 +392,11 @@ public class DirectoryProcessor
 	}
 
 	/**
-	 * When reading the parameter name, we expect either a parameter name/value separator ('=') or the line name/value separator (':'), indicating we've finished
-	 * parameters.
-	 */
-	//TODO del	protected final static String PARAM_NAME_DELIMITER_CHARS=""+PARAM_NAME_VALUE_SEPARATOR_CHAR+NAME_VALUE_SEPARATOR_CHAR;
-
-	/**
 	 * After reading the parameter value, we expect either a parameter separator (';') the parameter value separator (',') indicating more values, or the line
 	 * name/value separator (':'), indicating we've finished parameters.
 	 */
-	protected final static String PARAM_VALUE_DELIMITER_CHARS = "" + PARAM_SEPARATOR_CHAR + PARAM_VALUE_SEPARATOR_CHAR + NAME_VALUE_SEPARATOR_CHAR;
+	protected final static Characters PARAM_VALUE_DELIMITER_CHARACTERS = new Characters(PARAM_SEPARATOR_CHAR, PARAM_VALUE_SEPARATOR_CHAR,
+			NAME_VALUE_SEPARATOR_CHAR);
 
 	/**
 	 * Retrieves parameters from a line of content from a directory.
@@ -438,14 +410,14 @@ public class DirectoryProcessor
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
 	 * @see NameValuePair
 	 */
-	public List<NameValuePair<String, String>> processParameters(final LineUnfoldParseReader reader) throws IOException, ParseIOException
+	public List<NameValuePair<String, String>> processParameters(final Reader reader) throws IOException, ParseIOException
 	{
 		final List<NameValuePair<String, String>> paramList = new ArrayList<NameValuePair<String, String>>(); //create a list of parameters
 		char nextCharacter; //we'll store the last peeked delimiter here each time in the loop
 		do //read each parameter
 		{
 			//read the parameter name
-			final String paramName = reader.readStringUntilChar(PARAM_NAME_VALUE_SEPARATOR_CHAR); //get the parameter name, which is everything up to the ':' characters
+			final String paramName = reach(reader, PARAM_NAME_VALUE_SEPARATOR_CHAR); //get the parameter name, which is everything up to the ':' characters
 			//		TODO del Log.trace("found param name: ", paramName);
 			//TODO check the param name for validity
 			final List<String> paramValueList = new ArrayList<String>(); //create a list to hold the parameter values
@@ -453,20 +425,20 @@ public class DirectoryProcessor
 			{
 				reader.skip(1); //skip the delimiter that got us here
 				final String paramValue; //we'll read the value and store it here
-				switch(reader.peekChar())
+				switch(peek(reader))
 				//see what character is first in the value
 				{
 					case DQUOTE: //if the string starts with a quote
-						paramValue = reader.readDelimitedString(DQUOTE, DQUOTE); //read the value within the quotes 
+						paramValue = readDelimited(reader, DQUOTE, DQUOTE); //read the value within the quotes 
 						break;
 					default: //if the string doesn't end with a quote
-						paramValue = reader.readStringUntilChar(PARAM_VALUE_DELIMITER_CHARS); //read everything until the end of this parameter
+						paramValue = reach(reader, PARAM_VALUE_DELIMITER_CHARACTERS); //read everything until the end of this parameter
 						break;
 				}
 				//			TODO del Log.trace("found param value: ", paramValue);
 				//TODO check the parameter value, here
 				paramList.add(new NameValuePair<String, String>(paramName, paramValue)); //add this name/value pair to our list of parameters
-				nextCharacter = reader.peekChar(); //see what delimiter will come next
+				nextCharacter = peek(reader); //see what delimiter will come next
 			}
 			while(nextCharacter == PARAM_VALUE_SEPARATOR_CHAR); //keep getting parameter values while there are more parameter value separators
 			if(nextCharacter == PARAM_SEPARATOR_CHAR) //if the next character is the character that separates multiple parameters
@@ -475,7 +447,6 @@ public class DirectoryProcessor
 			}
 		}
 		while(nextCharacter != NAME_VALUE_SEPARATOR_CHAR); //keep reading parameters until we get to the '=' that separates the name from the value
-		reader.resetPeek(); //reset peeking, since we've been peeking
 		return paramList; //return the list of parameters we filled
 	}
 
@@ -508,11 +479,11 @@ public class DirectoryProcessor
 	 * @see NameValuePair
 	 */
 	protected Object[] processValue(final String profileName, final String group, final String name, final List<NameValuePair<String, String>> paramList,
-			final LineUnfoldParseReader reader) throws IOException, ParseIOException
+			final Reader reader) throws IOException, ParseIOException
 	{
 		Object[] objects = null; //start out by assuming we can't process the value
 		final Profile profile = getProfile(profileName); //see if we have a profile registered with this profile name
-		String valueType = DirectoryUtilities.getParamValue(paramList, VALUE_PARAM_NAME); //get the value type parameter value
+		String valueType = getParamValue(paramList, VALUE_PARAM_NAME); //get the value type parameter value
 		if(valueType == null) //if the value type wasn't explicitly given
 		{
 			if(profile != null) //if there is a profile for this profile name
@@ -538,7 +509,7 @@ public class DirectoryProcessor
 		}
 		if(objects == null) //if no objects were created
 		{
-			final String valueString = reader.readStringUntilChar(CR); //everything before the carriage return will constitute the value
+			final String valueString = reach(reader, CR); //everything before the carriage return will constitute the value
 			objects = new String[] { valueString }; //put the single value string in an array of strings and use that for the value objects
 		}
 		return objects; //return the value objects we processed

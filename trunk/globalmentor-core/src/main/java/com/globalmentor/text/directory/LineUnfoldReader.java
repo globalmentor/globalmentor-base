@@ -18,7 +18,7 @@ package com.globalmentor.text.directory;
 
 import java.io.*;
 
-import com.globalmentor.io.ParseReader;
+import com.globalmentor.io.ProcessingBufferedReader;
 
 import static com.globalmentor.text.ABNF.*;
 
@@ -26,14 +26,14 @@ import static com.globalmentor.text.ABNF.*;
  * Reader that unfolds lines of type <code>text/directory</code> as defined "RFC 2425: A MIME Content-Type for Directory Information".
  * @author Garret Wilson
  */
-public class LineUnfoldParseReader extends ParseReader
+public class LineUnfoldReader extends ProcessingBufferedReader
 {
 
 	/**
 	 * Constructor that specifies another reader.
 	 * @param reader The reader that contains the directory data.
 	 */
-	public LineUnfoldParseReader(final Reader reader)
+	public LineUnfoldReader(final Reader reader)
 	{
 		super(reader); //construct the base class
 	}

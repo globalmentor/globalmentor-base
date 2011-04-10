@@ -149,7 +149,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 							c=skipListSeparators(reader, PROPERTIES_END);	//skip list separators and peek the next character
 							if(c==LIST_DELIMITER)	//if we passed a list separator
 							{
-								c=peek(reader);	//peek the next character
+								c=peekEnd(reader);	//peek the next character
 							}
 							else	//if there's anything besides a list delimiter, we've reached the end of the list
 							{
@@ -344,7 +344,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		final int c=skipListSeparators(reader, listEnd);	//skip the list separators
 		if(c==LIST_DELIMITER)	//if we passed a list separator
 		{
-			return peek(reader);	//return the next character
+			return peekEnd(reader);	//return the next character
 		}
 		else	//if we didn't pass a list separator as expected
 		{
@@ -413,7 +413,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		String label=null;	//the label of the resource, if any
 		final List<Resource> types=new ArrayList<Resource>();	//we'll keep track of all the types we find
 		boolean foundComponent=false;	//we'll keep track of whether at least one description component was present
-		int c=peek(reader);	//peek the next character
+		int c=peekEnd(reader);	//peek the next character
 		if(c==LABEL_BEGIN)	//check for a label
 		{
 			foundComponent=true;	//indicate that at least one description component is present
@@ -545,7 +545,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 					c=skipListSeparators(reader, PROPERTIES_END);	//skip list separators and peek the next character
 					if(c==LIST_DELIMITER)	//if we passed a list separator
 					{
-						c=peek(reader);	//peek the next character
+						c=peekEnd(reader);	//peek the next character
 					}
 					else	//if there's anything besides a list delimiter, we've reached the end of the list
 					{
@@ -622,7 +622,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 					c=skipListSeparators(reader, SET_END);	//skip list separators and peek the next character
 					if(c==LIST_DELIMITER)	//if we passed a list separator
 					{
-						c=peek(reader);	//peek the next character
+						c=peekEnd(reader);	//peek the next character
 					}
 					else	//if there's anything besides a list delimiter, we've reached the end of the list
 					{
@@ -663,7 +663,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 					c=skipListSeparators(reader, MAP_END);	//skip list separators and peek the next character
 					if(c==LIST_DELIMITER)	//if we passed a list separator
 					{
-						c=peek(reader);	//peek the next character
+						c=peekEnd(reader);	//peek the next character
 					}
 					else	//if there's anything besides a list delimiter, we've reached the end of the list
 					{
@@ -711,7 +711,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				c=skipListSeparators(reader, listEnd);	//skip list separators and peek the next character
 				if(c==LIST_DELIMITER)	//if we passed a list separator
 				{
-					c=peek(reader);	//peek the next character
+					c=peekEnd(reader);	//peek the next character
 				}
 				else	//if there's anything besides a list delimiter, we've reached the end of the list
 				{
@@ -778,7 +778,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				c=skipListSeparators(reader, sequenceEnd);	//skip list separators and peek the next character
 				if(c==LIST_DELIMITER)	//if we passed a list separator
 				{
-					c=peek(reader);	//peek the next character
+					c=peekEnd(reader);	//peek the next character
 				}
 				else	//if there's anything besides a list delimiter, we've reached the end of the list
 				{
@@ -815,7 +815,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				c=skipListSeparators(reader, listEnd);	//skip list separators and peek the next character
 				if(c==LIST_DELIMITER)	//if we passed a list separator
 				{
-					c=peek(reader);	//peek the next character
+					c=peekEnd(reader);	//peek the next character
 				}
 				else	//if there's anything besides a list delimiter, we've reached the end of the list
 				{
@@ -895,7 +895,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	private static URI parseReference(final Reader reader, final URI baseURI, final Map<String, URI> prefixNamespaceURIMap, final boolean legacyAllowed) throws IOException, ParseIOException, DataException
 	{
-		final int c=peek(reader);	//peek the next character
+		final int c=peekEnd(reader);	//peek the next character
 		switch(c)	//check for a reference or a short form
 		{
 			case REFERENCE_BEGIN:
@@ -1090,7 +1090,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	{
 		check(reader, BOOLEAN_BEGIN);	//read the beginning boolean delimiter
 		final boolean b;	//we'll store the boolean here
-		int c=peek(reader);	//peek the next character
+		int c=peekEnd(reader);	//peek the next character
 		switch(c)	//see what the next character is
 		{
 			case BOOLEAN_FALSE_BEGIN:	//false
@@ -1134,14 +1134,14 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to use when reading the number
 		if(allowMinus)	//if we should allow the minus sign
 		{
-			c=peek(reader);	//peek the first character
+			c=peekEnd(reader);	//peek the first character
 			if(c=='-')	//if the number starts with a minus sign
 			{
 				stringBuilder.append(check(reader, '-'));	//append the character
 			}
 		}
 		stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
-		c=peek(reader);	//peek the next character
+		c=peekEnd(reader);	//peek the next character
 		if(c>=0)	//if we're not at the end of the reader
 		{
 			if(allowDecimal && c==DECIMAL_DELIMITER)	//if we should allow a decimal part and this is a floating point number
@@ -1149,13 +1149,13 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				hasFraction=true;	//we found a fraction
 				stringBuilder.append(check(reader, DECIMAL_DELIMITER));	//read and append the beginning decimal point
 				stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
-				c=peek(reader);	//peek the next character
+				c=peekEnd(reader);	//peek the next character
 			}
 			if(allowExponent && c==EXPONENT_DELIMITER)	//if we should allow an exponent part and this is an exponent
 			{
 				hasExponent=true;	//we found an exponent
 				stringBuilder.append(check(reader, EXPONENT_DELIMITER));	//read and append the exponent character
-				c=peek(reader);	//peek the next character
+				c=peekEnd(reader);	//peek the next character
 				if(c=='-' || c=='+')	//if the exponent starts with a sign
 				{
 					stringBuilder.append(readCharacter(reader));	//append the sign
@@ -1198,13 +1198,13 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		int c;	//we'll use this to keep track of the next character
 		final StringBuilder stringBuilder=new StringBuilder();	//create a new string builder to use when reading the temporal
 		final URI inlineTypeURI;	//determine which type of temporal this is
-		c=peek(reader);	//peek the first character
+		c=peekEnd(reader);	//peek the first character
 		if(c==DURATION_LEXICAL_FORM_BEGIN)	//if this temporal starts with a duration delimiter
 		{
 			inlineTypeURI=DURATION_CLASS_URI;	//this is a duration
 			stringBuilder.append(check(reader, DURATION_LEXICAL_FORM_BEGIN));	//read and add the delimiter
 			boolean hasComponent=false;	//we'll see if the duration has some component
-			c=peek(reader);	//peek the next character
+			c=peekEnd(reader);	//peek the next character
 			if(c!=TIME_BEGIN)	//if this is not the beginning of a time
 			{
 				hasComponent=true;	//indicate that there is some duration component
@@ -1217,7 +1217,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 					//days
 				stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
 				stringBuilder.append(check(reader, DURATION_DAYS_DELIMITER));	//read and add the delimiter
-				c=peek(reader);	//peek the next character
+				c=peekEnd(reader);	//peek the next character
 			}
 			if(c==TIME_BEGIN)	//if this is the beginning of a time
 			{
@@ -1231,7 +1231,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				stringBuilder.append(check(reader, DURATION_MINUTES_DELIMITER));	//read and add the delimiter
 					//seconds
 				stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all digits; there should be at least one
-				c=peek(reader);	//peek the next character
+				c=peekEnd(reader);	//peek the next character
 				if(c==DECIMAL_DELIMITER)	//if this is a decimal delimiter
 				{
 					stringBuilder.append(check(reader, DECIMAL_DELIMITER));	//read and append the time delimiter
@@ -1264,7 +1264,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read the month
 				stringBuilder.append(check(reader, DATE_DELIMITER));	//read and add the date delimiter
 				stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read the day
-				c=peek(reader);	//peek the next character
+				c=peekEnd(reader);	//peek the next character
 				if(c==TIME_BEGIN)	//if this is the beginning of a time
 				{
 					inlineTypeURI=DATE_TIME_CLASS_URI;	//this is a date time
@@ -1297,13 +1297,13 @@ public class URFTURFProcessor extends AbstractURFProcessor
 				stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read the minutes
 				stringBuilder.append(check(reader, TIME_DELIMITER));	//read and add the time delimiter
 				stringBuilder.append(readStringCheck(reader, 2, '0', '9')); //read the seconds
-				c=peek(reader);	//peek the next character
+				c=peekEnd(reader);	//peek the next character
 				if(c==DECIMAL_DELIMITER)	//if this is a decimal delimiter
 				{
 					stringBuilder.append(check(reader, DECIMAL_DELIMITER));	//read and append the time delimiter
 					stringBuilder.append(readMinimum(reader, 1, '0', '9')); //read all subseconds
 				}
-				c=peek(reader);	//peek the next character
+				c=peekEnd(reader);	//peek the next character
 				if(c=='+' || c=='-')	//if this is the start of a UTC offset
 				{
 					stringBuilder.append(check(reader, (char)c));	//read and add the delimiter
@@ -1456,7 +1456,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	private static URI parseURI(final Reader reader, final URI baseURI, final char uriBegin, final char uriEnd, final Map<String, URI> prefixNamespaceURIMap, final boolean legacyAllowed) throws IOException, ParseIOException, DataException
 	{
 		check(reader, uriBegin);	//read the beginning URI delimiter
-		int c=peek(reader);	//peek the next character
+		int c=peekEnd(reader);	//peek the next character
 		final String lexicalForm;	//the lexical form, if any
 		final URI uri;	//we'll store the unresolve URI here
 		try
