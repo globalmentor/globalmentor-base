@@ -172,6 +172,52 @@ public class Collections
 	}
 
 	/**
+	 * Sets the contents of the collection to the contents of the other given collection. This is a convenience method for {@link Collection#clear()} followed by
+	 * {@link Collection#addAll(Collection)}.
+	 * @param <T> The type of objects in the collection.
+	 * @param collection The collection to set.
+	 * @param newCollection The elements to set in the collection.
+	 * @return <code>true</code> if the collection changed as a result of the call.
+	 */
+	public static <T> boolean set(final Collection<T> collection, final Collection<? extends T> newCollection)
+	{
+		boolean changed = false;
+		if(!collection.isEmpty())
+		{
+			collection.clear(); //clear the contents of the collection
+			changed = true;
+		}
+		if(collection.addAll(newCollection)) //add all the contents of the new collection
+		{
+			changed = true;
+		}
+		return changed;
+	}
+
+	/**
+	 * Sets the contents of the collection to the contents of the other given collection. This is a convenience method for {@link Collection#clear()} followed by
+	 * {@link java.util.Collections#addAll(Collection, Object...)}.
+	 * @param <T> The type of objects in the collection.
+	 * @param collection The collection to set.
+	 * @param newElements The elements to set in the collection.
+	 * @return <code>true</code> if the collection changed as a result of the call.
+	 */
+	public static <T> boolean set(final Collection<T> collection, final T... newElements)
+	{
+		boolean changed = false;
+		if(!collection.isEmpty())
+		{
+			collection.clear(); //clear the contents of the collection
+			changed = true;
+		}
+		if(java.util.Collections.addAll(collection, newElements)) //add all the contents of the new collection
+		{
+			changed = true;
+		}
+		return changed;
+	}
+
+	/**
 	 * Determines whether the iterable is empty.
 	 * @param <T> The type of object stored in the iterable.
 	 * @param iterable The iterable from which the object would be retrieved.
@@ -184,10 +230,10 @@ public class Collections
 	{
 		if(iterable instanceof Collection) //if the iterable is a collection
 		{
-			return ((Collection<?>)iterable).isEmpty();	//delegate to the collection
+			return ((Collection<?>)iterable).isEmpty(); //delegate to the collection
 		}
 		final Iterator<T> iterator = iterable.iterator();
-		return iterator.hasNext() ? false : true;	//return true if there is no next element
+		return iterator.hasNext() ? false : true; //return true if there is no next element
 	}
 
 	/**

@@ -37,42 +37,42 @@ public class W3CDateFormat extends SimpleDateFormat
 	/**The specific style of W3C date format.*/
 	public enum Style
 	{
-		/**Style for year: YYYY (eg 1997)*/
+		/**Style for year: YYYY (e.g. 1997)*/
 		YEAR,
-		/**Pattern for year and month: YYYY-MM (eg 1997-07)*/
+		/**Pattern for year and month: YYYY-MM (e.g. 1997-07)*/
 		YEAR_MONTH,
-		/**Pattern for complete date: YYYY-MM-DD (eg 1997-07-16)*/
+		/**Pattern for complete date: YYYY-MM-DD (e.g. 1997-07-16)*/
 		DATE,
 		/**Pattern for complete date plus hours and minutes:
-			YYYY-MM-DDThh:mmTZD (eg 1997-07-16T19:20+01:00)
+			YYYY-MM-DDThh:mmTZD (e.g. 1997-07-16T19:20+01:00)
 		*/
 		DATE_HOURS_MINUTES,
 		/**Pattern for complete date plus hours, minutes and seconds:
-			YYYY-MM-DDThh:mm:ssTZD (eg 1997-07-16T19:20:30+01:00)
+			YYYY-MM-DDThh:mm:ssTZD (e.g. 1997-07-16T19:20:30+01:00)
 		*/
 		DATE_HOURS_MINUTES_SECONDS,
 		/**Pattern for complete date plus hours, minutes, seconds and a decimal fraction of a second:
-			YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
+			YYYY-MM-DDThh:mm:ss.sTZD (e.g. 1997-07-16T19:20:30.45+01:00)
 		*/
 		DATE_TIME
 	};
 
-	/**Pattern for year: YYYY (eg 1997)*/
+	/**Pattern for year: YYYY (e.g. 1997)*/
 	private final static String YEAR_PATTERN="yyyy";
-	/**Pattern for year and month: YYYY-MM (eg 1997-07)*/
+	/**Pattern for year and month: YYYY-MM (e.g. 1997-07)*/
 	private final static String YEAR_MONTH_PATTERN=YEAR_PATTERN+"-MM";
-	/**Pattern for complete date: YYYY-MM-DD (eg 1997-07-16)*/
+	/**Pattern for complete date: YYYY-MM-DD (e.g. 1997-07-16)*/
 	private final static String DATE_PATTERN=YEAR_MONTH_PATTERN+"-dd";
 	/**Pattern for complete date plus hours and minutes:
-		YYYY-MM-DDThh:mmTZD (eg 1997-07-16T19:20+01:00)
+		YYYY-MM-DDThh:mmTZD (e.g. 1997-07-16T19:20+01:00)
 	*/
 	private final static String DATE_HOURS_MINUTES_PATTERN=DATE_PATTERN+"'T'HH:mmZ";
 	/**Pattern for complete date plus hours, minutes and seconds:
-		YYYY-MM-DDThh:mm:ssTZD (eg 1997-07-16T19:20:30+01:00)
+		YYYY-MM-DDThh:mm:ssTZD (e.g. 1997-07-16T19:20:30+01:00)
 	*/
 	private final static String DATE_HOURS_MINUTES_SECONDS_PATTERN=DATE_PATTERN+"'T'HH:mm:ssZ";
 	/**Pattern for complete date plus hours, minutes, seconds and a decimal fraction of a second:
-		YYYY-MM-DDThh:mm:ss.sTZD (eg 1997-07-16T19:20:30.45+01:00)
+		YYYY-MM-DDThh:mm:ss.sTZD (e.g. 1997-07-16T19:20:30.45+01:00)
 	*/
 //G***testing 	private final static String DATE_TIME_PATTERN=DATE_HOURS_MINUTES_SECONDS_PATTERN;
 	private final static String DATE_TIME_PATTERN=DATE_PATTERN+"'T'HH:mm:ss.SSSZ";

@@ -26,8 +26,8 @@ import static com.globalmentor.text.directory.Directory.*;
 
 import com.globalmentor.io.*;
 import com.globalmentor.java.Characters;
-import com.globalmentor.model.LocaledText;
-import com.globalmentor.model.NameValuePair;
+import com.globalmentor.model.*;
+import com.globalmentor.urf.*;
 
 /**
  * Profile for predefined types of a <code>text/directory</code> as defined in <a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
@@ -110,6 +110,18 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		else if(URI_VALUE_TYPE.equalsIgnoreCase(valueType)) //uri
 		{
 			return new Object[] { processURIValue(reader) }; //process the URI value type			
+		}
+		else if(DATE_VALUE_TYPE.equalsIgnoreCase(valueType)) //date
+		{
+			return new Object[] { URFDate.valueOfLiberal(reach(reader, CR)) };
+		}
+		else if(TIME_VALUE_TYPE.equalsIgnoreCase(valueType)) //time
+		{
+			return new Object[] { URFTime.valueOf(reach(reader, CR)) };
+		}
+		else if(DATE_TIME_VALUE_TYPE.equalsIgnoreCase(valueType)) //date-time
+		{
+			return new Object[] { URFDateTime.valueOfLiberal(reach(reader, CR)) };
 		}
 		return null; //show that we can't create a value
 	}

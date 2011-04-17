@@ -798,32 +798,19 @@ public class CharSequences
 	}
 
 	/**
-	 * Concatenates the given character sequences.
+	 * Concatenates the given character sequences with no delimiter between them.
 	 * @param charSequences The character sequences to be concatenated.
 	 * @return The string containing the concatenated character sequences.
 	 * @throws NullPointerException if the given character sequences is <code>null</code>.
 	 */
 	public static CharSequence join(final CharSequence... charSequences)
 	{
-		final int length = charSequences.length; //find out how many character sequences there are
-		if(length > 1) //if there are more than one character sequence
-		{
-			return StringBuilders.append(new StringBuilder(), charSequences); //join the character strings using a string builder
-		}
-		else if(length == 1) //if there is only one character sequence
-		{
-			return charSequences[0]; //return the one character sequence
-		}
-		else
-		//if there are no character sequences
-		{
-			return ""; //return the empty string
-		}
+		return join(NULL_CHAR, charSequences);	//join with no delimiter
 	}
 
 	/**
 	 * Concatenates the given character sequences, separated by the given delimiter.
-	 * @param delimiter The delimiter to be placed between each character sequence.
+	 * @param delimiter The delimiter to be placed between each character sequence, or {@link Characters#NULL_CHAR} if no delimiter should be placed between the character sequences.
 	 * @param charSequences The character sequences to be concatenated.
 	 * @return The string containing the concatenated character sequences.
 	 * @throws NullPointerException if the given character sequences is <code>null</code>.
@@ -833,6 +820,23 @@ public class CharSequences
 		final int length = charSequences.length; //find out how many character sequences there are
 		if(length > 1) //if there are more than one character sequence
 		{
+			CharSequence nonEmptyCharSequence = null; //see if we can short-circuit the process if there is only one non-empty character sequence
+			for(final CharSequence charSequence : charSequences)
+			{
+				if(charSequence.length() > 0) //if this character sequence has characters
+				{
+					if(nonEmptyCharSequence != null) //if we already found another character sequence with characters (i.e. there are at least two)
+					{
+						nonEmptyCharSequence = null; //don't try anymore
+						break; //stop searching
+					}
+					nonEmptyCharSequence = charSequence; //keep track of the first (and so far, only) character sequence with characters
+				}
+			}
+			if(nonEmptyCharSequence != null) //if there was one and only one character sequence with characters
+			{
+				return nonEmptyCharSequence; //there's no use joining---just return the character sequence
+			}
 			return StringBuilders.append(new StringBuilder(), delimiter, charSequences); //join the character strings using a string builder
 		}
 		else if(length == 1) //if there is only one character sequence

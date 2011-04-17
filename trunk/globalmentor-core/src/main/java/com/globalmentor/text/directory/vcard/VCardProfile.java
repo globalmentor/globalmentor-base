@@ -32,6 +32,7 @@ import com.globalmentor.model.LocaledText;
 import com.globalmentor.model.NameValuePair;
 import com.globalmentor.text.ArgumentSyntaxException;
 import com.globalmentor.text.directory.*;
+import com.globalmentor.urf.AbstractURFDateTime;
 
 /**
  * Class that can create values for the "VCARD" profile of a <code>text/directory</code>as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC
@@ -53,7 +54,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		registerValueType(N_TYPE, null); //N: structured text
 		registerValueType(NICKNAME_TYPE, TEXT_VALUE_TYPE); //NICKNAME: text
 		registerValueType(PHOTO_TYPE, BINARY_VALUE_TYPE); //PHOTO: binary
-		registerValueType(BDAY_TYPE, DATE_VALUE_TYPE); //BDAY: date
+		registerValueType(BDAY_TYPE, null); //BDAY: date, optionally date-time
 		//delivery addressing types
 		registerValueType(ADR_TYPE, null); //ADR: structured text
 		registerValueType(LABEL_TYPE, TEXT_VALUE_TYPE); //LABEL: text
@@ -135,6 +136,10 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		{
 			return new Object[] { processNValue(reader, paramList) }; //process the N value
 		}
+		else if(BDAY_TYPE.equalsIgnoreCase(name)) //BDAY
+		{
+			return new Object[] { AbstractURFDateTime.valueOfLiberal(reach(reader, CR)) }; //a birthday should normally be a date, but sometimes it could be a date-time as well
+		}
 		//delivery addressing types
 		else if(ADR_TYPE.equalsIgnoreCase(name)) //ADR
 		{
@@ -184,8 +189,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public static Name processNValue(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException,
-			ParseIOException
+	public static Name processNValue(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
 	{
 		final Locale locale = getLanguageParamValue(paramList); //get the language, if there is one
 		final String[][] fields = processStructuredTextValue(reader); //process the structured text fields
@@ -272,8 +276,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public static Address processADRValue(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException,
-			ParseIOException
+	public static Address processADRValue(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
 	{
 		final Locale locale = getLanguageParamValue(paramList); //get the language, if there is one
 		int addressType; //we'll determine the address type
@@ -511,8 +514,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public static LocaledText[] processORGValue(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException,
-			ParseIOException
+	public static LocaledText[] processORGValue(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
 	{
 		final Locale locale = getLanguageParamValue(paramList); //get the language, if there is one
 		final List<LocaledText> orgList = new ArrayList<LocaledText>(); //create a list into which we will place the organizational name and units, as we'll ignore any structured components that are empty 
@@ -847,29 +849,34 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			}
 			else if(NICKNAME_TYPE.equalsIgnoreCase(typeName)) //NICKNAME
 			{
-				vcard.getNicknameList().add((LocaledText)contentLine.getValue()); //add this nickname to our list
+				vcard.getNicknames().add((LocaledText)contentLine.getValue()); //add this nickname to our list
+				continue; //don't process this content line further
+			}
+			else if(BDAY_TYPE.equalsIgnoreCase(typeName)) //BDAY
+			{
+				vcard.setBirthday((AbstractURFDateTime)contentLine.getValue()); //set the birthday
 				continue; //don't process this content line further
 			}
 			//delivery addressing types
 			else if(ADR_TYPE.equalsIgnoreCase(typeName)) //ADR
 			{
-				vcard.getAddressList().add((Address)contentLine.getValue()); //add this address to our list
+				vcard.getAddresses().add((Address)contentLine.getValue()); //add this address to our list
 				continue; //don't process this content line further
 			}
 			else if(LABEL_TYPE.equalsIgnoreCase(typeName)) //LABEL
 			{
-				vcard.getLabelList().add((Label)contentLine.getValue()); //add this label to our list
+				vcard.getLabels().add((Label)contentLine.getValue()); //add this label to our list
 				continue; //don't process this content line further
 			}
 			//telecommunications addressing types
 			else if(TEL_TYPE.equalsIgnoreCase(typeName)) //TEL
 			{
-				vcard.getTelephoneList().add((Telephone)contentLine.getValue()); //add this telephone to our list
+				vcard.getTelephones().add((Telephone)contentLine.getValue()); //add this telephone to our list
 				continue; //don't process this content line further
 			}
 			else if(EMAIL_TYPE.equalsIgnoreCase(typeName)) //EMAIL
 			{ //TODO decide if we want to add the email object when this line is processed
-			//TODO del when works					vcard.getEmailList().add((Email)contentLine.getValue());	//add this email to our list
+				//TODO del when works					vcard.getEmailList().add((Email)contentLine.getValue());	//add this email to our list
 				int emailType; //we'll determine the email type
 				final String[] types = getParamValues(contentLine.getParamList(), TYPE_PARAM_NAME); //get the email types specified
 				if(types.length > 0) //if there are types given
@@ -886,21 +893,22 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 					emailType = Email.DEFAULT_EMAIL_TYPE; //use the default email type
 				}
 				final Email email = new Email(((LocaledText)contentLine.getValue()).getText(), emailType); //create an email from the address and type we parsed
-				vcard.getEmailList().add(email); //add this email to our list
+				vcard.getEmails().add(email); //add this email to our list
 				continue; //don't process this content line further
 			}
 			//organizational type
 			else if(ORG_TYPE.equalsIgnoreCase(typeName)) //ORG
 			{
-				final LocaledText[] org = (LocaledText[])contentLine.getValue(); //get the organization information
-				if(org.length > 0 && vcard.getOrganizationName() == null) //if there is an organization name, and we haven't yet stored an organization name
+				@SuppressWarnings("unchecked")
+				final List<LocaledText> org = (List<LocaledText>)contentLine.getValue(); //get the organization information
+				if(!org.isEmpty() && vcard.getOrganizationName() == null) //if there is an organization name, and we haven't yet stored an organization name
 				{
-					vcard.setOrganizationName(org[0]); //set the organization name from the first oganizational component
-					if(org.length > 1) //if there are units specified
+					vcard.setOrganizationName(org.get(0)); //set the organization name from the first organizational component
+					if(org.size() > 1) //if there are units specified
 					{
-						final LocaledText[] units = new LocaledText[org.length - 1]; //create a string array to contain all the units (ignore the first item, the organization name)
-						System.arraycopy(org, 1, units, 0, units.length); //copy the units from the organizational array to the units array
-						vcard.setOrganizationUnits(units); //set the vCard units 
+						final List<LocaledText> units = new ArrayList<LocaledText>(org); //create a list to contain all the units
+						units.remove(0); //remove the first item, the organization name
+						vcard.setOrganizationUnits(units.toArray(new LocaledText[units.size()])); //set the vCard units 
 					}
 					continue; //don't process this content line further
 				}
@@ -925,16 +933,13 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			//explanatory types
 			else if(CATEGORIES_TYPE.equalsIgnoreCase(typeName)) //CATEGORIES
 			{
-				vcard.getCategoryList().add((LocaledText)contentLine.getValue()); //add this category to our list
+				vcard.getCategories().add((LocaledText)contentLine.getValue()); //add this category to our list
 				continue; //don't process this content line further
 			}
 			else if(NOTE_TYPE.equalsIgnoreCase(typeName)) //NOTE
 			{
-				if(vcard.getNote() == null) //if there is not yet a note
-				{
-					vcard.setNote((LocaledText)contentLine.getValue()); //set the note
-					continue; //don't process this content line further
-				}
+				vcard.getNotes().add((LocaledText)contentLine.getValue()); //add this note to our list
+				continue; //don't process this content line further
 			}
 			/*TODO fix when we allow this to be edited
 						else if(SORT_STRING_TYPE.equalsIgnoreCase(typeName))	//SORT-STRING
@@ -995,12 +1000,12 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		{
 			contentLineList.add(createContentLine(VCARD_PROFILE_NAME, null, N_TYPE, vcard.getName(), vcard.getName().getLocale())); //N
 		}
-		for(final LocaledText nickname : vcard.getNicknameList()) //for each nickname
+		for(final LocaledText nickname : vcard.getNicknames()) //for each nickname
 		{
 			contentLineList.add(createContentLine(VCARD_PROFILE_NAME, null, NICKNAME_TYPE, nickname)); //NICKNAME			
 		}
 		//delivery addressing types
-		for(final Address address : vcard.getAddressList()) //for each address
+		for(final Address address : vcard.getAddresses()) //for each address
 		{
 			final ContentLine contentLine = createContentLine(VCARD_PROFILE_NAME, null, ADR_TYPE, address, address.getLocale()); //ADR
 			for(final String addressTypeName : getAddressTypeNames(address.getAddressType())) //for each address type name
@@ -1009,7 +1014,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			}
 			contentLineList.add(contentLine); //add the content line
 		}
-		for(final Label label : vcard.getLabelList()) //for each label
+		for(final Label label : vcard.getLabels()) //for each label
 		{
 			final ContentLine contentLine = createContentLine(VCARD_PROFILE_NAME, null, LABEL_TYPE, label); //LABEL
 			for(final String addressTypeName : getAddressTypeNames(label.getAddressType())) //for each address type name
@@ -1019,7 +1024,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			contentLineList.add(contentLine); //add the content line
 		}
 		//telecommunications addressing types
-		for(final Telephone telephone : vcard.getTelephoneList()) //for each telephone
+		for(final Telephone telephone : vcard.getTelephones()) //for each telephone
 		{
 			final ContentLine contentLine = new ContentLine(VCARD_PROFILE_NAME, null, TEL_TYPE, telephone); //TEL
 			for(final String telephoneTypeName : getTelephoneTypeNames(telephone.getTelephoneType())) //for each telephone type name
@@ -1028,7 +1033,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			}
 			contentLineList.add(contentLine); //add the content line
 		}
-		for(final Email email : vcard.getEmailList()) //for each email
+		for(final Email email : vcard.getEmails()) //for each email
 		{
 			final ContentLine contentLine = createContentLine(VCARD_PROFILE_NAME, null, EMAIL_TYPE, new LocaledText(email.getAddress(), email.getLocale())); //EMAIL TODO maybe fix to store the email object, if that's what we decide to store there when reading the value
 			for(final String emailTypeName : getEmailTypeNames(email.getEmailType())) //for each email type name
@@ -1038,22 +1043,22 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			contentLineList.add(contentLine); //add the content line
 		}
 		//organizational type
-		final LocaledText[] org; //we'll create an array for the org or, if there is no org name, just use the units array
-		final LocaledText[] units = vcard.getOrganizationUnits(); //get the organizational units
+		final List<LocaledText> org; //we'll create an array for the org or, if there is no org name, just use the units array
+		final List<LocaledText> units = vcard.getOrganizationUnits(); //get the organizational units
 		if(vcard.getOrganizationName() != null) //if a name is supplied
 		{
-			org = new LocaledText[units.length + 1]; //create a new array with room for the name and the units
-			org[0] = vcard.getOrganizationName(); //store the organization name as the first element
-			System.arraycopy(units, 0, org, 1, units.length); //copy the units into the org array after the organization name
+			org = new ArrayList<LocaledText>(units.size() + 1); //create a new list with room for the name and the units
+			org.add(vcard.getOrganizationName()); //store the organization name as the first element
+			org.addAll(units); //copy the units into the list array after the organization name
 		}
 		else
 		//if there is no name supplied
 		{
 			org = units; //just use the units, since there is no organization name
 		}
-		if(org.length > 0) //ORG
+		if(!org.isEmpty()) //ORG
 		{
-			final Locale orgLocale = org[0].getLocale(); //get the locale of the first organization component
+			final Locale orgLocale = org.get(0).getLocale(); //get the locale of the first organization component
 			contentLineList.add(createContentLine(VCARD_PROFILE_NAME, null, ORG_TYPE, org, orgLocale)); //ORG
 		}
 		if(vcard.getTitle() != null) //TITLE
@@ -1065,7 +1070,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			contentLineList.add(createContentLine(VCARD_PROFILE_NAME, null, ROLE_TYPE, vcard.getRole())); //ROLE
 		}
 		//explanatory types
-		for(final LocaledText category : vcard.getCategoryList()) //for each category
+		for(final LocaledText category : vcard.getCategories()) //for each category
 		{
 			contentLineList.add(createContentLine(VCARD_PROFILE_NAME, null, CATEGORIES_TYPE, category)); //CATEGORIES
 		}

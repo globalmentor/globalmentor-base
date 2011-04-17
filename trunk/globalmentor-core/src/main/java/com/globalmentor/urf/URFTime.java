@@ -66,9 +66,6 @@ public class URFTime implements URFTemporal
 		public URFUTCOffset getUTCOffset() {return utcOffset;}
 
 	/**Full Constructor.
-	@param year The year, 0-9999.
-	@param month The month, 1-12.
-	@param day The day, 1-31.
 	@param hours The hours, 0-23.
 	@param minutes The minutes, 0-59.
 	@param seconds The seconds, 0-60 (allowing leap-seconds; see ISO 8601:2004(E) 4.2.1).

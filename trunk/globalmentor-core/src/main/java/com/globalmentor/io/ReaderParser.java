@@ -219,6 +219,35 @@ public class ReaderParser
 	}
 
 	/**
+	 * Reads a character and, if a character does not match a character in the given range, resets the reader as if the character were not read.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param lowerBound The lowest character in the range.
+	 * @param upperBound The highest character in the range.
+	 * @return <code>true</code> if a character in the given range was read, or <code>false</code> if the next character is not one of the expected characters and
+	 *         was therefore replaced if the end of the reader was not reached.
+	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @exception IOException if there is an error reading from the reader.
+	 */
+	public static boolean confirm(final Reader reader, final char lowerBound, final char upperBound) throws IOException
+	{
+		reader.mark(1); //mark our current position
+		final int c = reader.read(); //get the current character
+		if(c >= 0) //if the end of the reader was not reached
+		{
+			if(c >= lowerBound && c <= upperBound) //if this character is in the range
+			{
+				return true; //indicate that the character was the one expected
+			}
+			else
+			//if the character was not the one expected
+			{
+				reader.reset(); //reset to the last mark, which was set right before the character we found
+			}
+		}
+		return false; //indicate that another character was encountered or the end of the reader was reached
+	}
+
+	/**
 	 * Reads a string and, if the string does not match the given character sequence, resets the reader as if the string was not read.
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param charSequence The character sequence to accept.
@@ -368,6 +397,22 @@ public class ReaderParser
 			reader.reset(); //reset to the last mark, which was set right before the character we found
 		}
 		return c; //return the character read
+	}
+
+	/**
+	 * Reads a character and, if a character was read (i.e. the reader is not out of data), resets the reader as if the character were not readm returning whether
+	 * the character matches a character in the given range.
+	 * @param reader The reader the contents of which to be parsed.
+	 * @param lowerBound The lowest character in the range.
+	 * @param upperBound The highest character in the range.
+	 * @return <code>true</code> if a characters in the given range was peeked.
+	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @exception IOException if there is an error reading from the reader.
+	 */
+	public static boolean isPeek(final Reader reader, final char lowerBound, final char upperBound) throws IOException
+	{
+		final char c = peek(reader);
+		return c >= lowerBound && c <= upperBound; //see if this character is in the range
 	}
 
 	/**
