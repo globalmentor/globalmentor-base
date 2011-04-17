@@ -52,7 +52,7 @@ public class SetURFAssertionStore extends AbstractURFAssertionStore
 	/** {@inheritDoc} */
 	public Iterator<URFAssertion> iterator()
 	{
-		return assertions.iterator(); //delegate to our 
+		return assertions.iterator(); //delegate to our internal set
 	}
 
 	/** {@inheritDoc} */
@@ -70,7 +70,7 @@ public class SetURFAssertionStore extends AbstractURFAssertionStore
 	/** {@inheritDoc} */
 	public void addAssertions(final Iterable<? extends URFAssertion> assertions)
 	{
-		Collections.addAll(this. assertions, assertions);
+		Collections.addAll(this.assertions, assertions);
 	}
 
 	/** {@inheritDoc} */
@@ -86,9 +86,28 @@ public class SetURFAssertionStore extends AbstractURFAssertionStore
 	}
 
 	/**
+	 * {@inheritDoc} This implementation delegates to {@link #retrieveAssertions(URFAssertionQuery)} and only supports assertion queries of type
+	 * {@link SimpleURFAssertionQuery}.
+	 */
+	public Iterable<URFAssertion> getAssertions(final URFAssertionQuery assertionQuery)
+	{
+		return retrieveAssertions(assertionQuery);
+	}
+
+	/**
+	 * {@inheritDoc} This implementation delegates to {@link #retrieveAssertions(URFAssertionQuery)} and only supports assertion queries of type
+	 * {@link SimpleURFAssertionQuery}.
+	 */
+	public long countAssertions(final URFAssertionQuery assertionQuery)
+	{
+		final int size = retrieveAssertions(assertionQuery).size();	//perform the query and determine the number of assertions returned
+		return size < Integer.MAX_VALUE ? size : Long.MAX_VALUE;	//if the number of assertions returned is unknown, return the value for unknown
+	}
+
+	/**
 	 * {@inheritDoc} This implementation only supports assertion queries of type {@link SimpleURFAssertionQuery}.
 	 */
-	public Set<URFAssertion> getAssertions(final URFAssertionQuery assertionQuery)
+	protected Set<URFAssertion> retrieveAssertions(final URFAssertionQuery assertionQuery)
 	{
 		if(!(assertionQuery instanceof SimpleURFAssertionQuery))
 		{

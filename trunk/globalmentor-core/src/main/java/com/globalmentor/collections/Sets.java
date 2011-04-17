@@ -45,6 +45,21 @@ public class Sets
 	}
 
 	/**
+	 * Creates a read-only set containing the elements of the provided collection along with the given elements.
+	 * @param <E> The type of element contained in the set.
+	 * @param collection The existing collection to augment.
+	 * @param elements The elements to be contained in the set.
+	 * @throws NullPointerException if the given collection and/or array of elements is <code>null</code>.
+	 */
+	public static <E> Set<E> immutableSetOf(final Collection<? extends E> collection, final E... elements) //TODO improve to return an ImmutableSet<E>
+	{
+		//TODO check for Enum and return an EnumSet
+		final Set<E> set = new HashSet<E>(collection); //create a new set, starting with the elements in the given collection
+		Collections.addAll(set, elements); //add all the elements
+		return Collections.unmodifiableSet(set); //wrap the set in an unmodifiable set
+	}
+
+	/**
 	 * Creates a read-only copy of the given set. If the set is already read-only, the set itself is returned.
 	 * @param <E> The type of element contained in the set.
 	 * @param set The set which should be returned in read-only form.

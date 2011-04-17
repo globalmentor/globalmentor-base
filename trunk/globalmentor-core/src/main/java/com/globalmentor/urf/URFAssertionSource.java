@@ -53,6 +53,14 @@ public interface URFAssertionSource extends Iterable<URFAssertion>
 	public Iterable<URFAssertion> getAssertions(final URFAssertionQuery assertionQuery);
 
 	/**
+	 * Counts the number of assertions available based upon the given query. If the number of assertions to be returned for the given query is unknown, this
+	 * method returns {@link Long#MAX_VALUE}.
+	 * @param query The query that specifies which assertions should be counted.
+	 * @return The number of assertions meeting the given criteria, or {@link Long#MAX_VALUE} if the number of assertions is unknown.
+	 */
+	public long countAssertions(final URFAssertionQuery assertionQuery);
+
+	/**
 	 * Retrieves all assertions for the identified subject.
 	 * @param subjectURI The URI of the subject resource for which assertions should be returned.
 	 * @return The assertions meeting the given criteria.

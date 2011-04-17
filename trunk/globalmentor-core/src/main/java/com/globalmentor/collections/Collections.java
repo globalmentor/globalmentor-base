@@ -172,6 +172,25 @@ public class Collections
 	}
 
 	/**
+	 * Determines whether the iterable is empty.
+	 * @param <T> The type of object stored in the iterable.
+	 * @param iterable The iterable from which the object would be retrieved.
+	 * @return <code>true</code> if an iterator returned from the iterable would return zero elements.
+	 * @throws NullPointerException if the given iterable is <code>null</code>.
+	 * @see Collection#isEmpty()
+	 * @see Iterable#iterator()
+	 */
+	public static <T> boolean isEmpty(final Iterable<T> iterable)
+	{
+		if(iterable instanceof Collection) //if the iterable is a collection
+		{
+			return ((Collection<?>)iterable).isEmpty();	//delegate to the collection
+		}
+		final Iterator<T> iterator = iterable.iterator();
+		return iterator.hasNext() ? false : true;	//return true if there is no next element
+	}
+
+	/**
 	 * Sorts the specified collection into ascending order, according to the <dfn>natural ordering</dfn> of its elements, and returns an array with the results.
 	 * @param collection The collection to be sorted.
 	 * @return An array containing the sorted contents of the collection.

@@ -20,6 +20,8 @@ import java.net.URI;
 import java.util.*;
 
 import com.globalmentor.collections.*;
+import com.globalmentor.java.Objects;
+import com.globalmentor.model.NameValuePair;
 import com.globalmentor.net.ReferenceResource;
 
 /**
@@ -101,32 +103,104 @@ public class DefaultSimpleURFAssertionQuery implements SimpleURFAssertionQuery
 	}
 
 	/**
-	 * Creates a query for retrieving all assertions for the identified subject.
+	 * Creates a query to retrieve all assertions for the identified subject.
 	 * @param subjectURI The URI of the subject resource for which assertions should be returned.
-	 * @return The assertions meeting the given criteria.
+	 * @return A query to retrieve the assertions meeting the given criteria.
+	 * @throws NullPointerException if the given subject URI is <code>null</code>.
 	 */
-	/*TODO del
-		public static DefaultSimpleURFAssertionQuery getAssertionsBySubject(final URI subjectURI)
-		{
-			return new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, null);
-		}
-	*/
+	public static SimpleURFAssertionQuery bySubject(final URI subjectURI)
+	{
+		return new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, null);
+	}
+
 	/**
-	 * Creates a query for retrieving all assertions for the identified subject for which there exist all the indicated predicate values. If a subject does not
-	 * have predicate/value pairs matching all of those indicated here, no assertions will be returned for that subject.
+	 * Creates a query to retrieve all assertions for the identified predicate.
+	 * @param predicateURI The URI of the predicate resource for which assertions should be returned.
+	 * @return A query to retrieve the assertions meeting the given criteria.
+	 * @throws NullPointerException if the given predicate URI is <code>null</code>.
+	 */
+	public static SimpleURFAssertionQuery byPredicate(final URI predicateURI)
+	{
+		return new DefaultSimpleURFAssertionQuery(null, new ObjectSet<URI>(Objects.checkInstance(predicateURI)), null);
+	}
+
+	/**
+	 * Creates a query to retrieve all assertions for the identified subject and predicate.
+	 * @param subjectURI The URI of the subject resource for which assertions should be returned.
+	 * @param predicateURI The URI of the predicate resource for which assertions should be returned.
+	 * @return A query to retrieve the assertions meeting the given criteria.
+	 * @throws NullPointerException if the given subject URI and/or predicate URI is <code>null</code>.
+	 */
+	public static SimpleURFAssertionQuery bySubjectAndPredicate(final URI subjectURI, final URI predicateURI)
+	{
+		return new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(Objects.checkInstance(subjectURI)), new ObjectSet<URI>(Objects.checkInstance(predicateURI)),
+				null);
+	}
+
+	/**
+	 * Creates a query to retrieve all assertions for which there exists the indicated predicate value. If a subject does not have a predicate/value pair matching
+	 * all of the one indicated here, no assertions will be returned for that subject.
+	 * <p>
+	 * The value of the predicate/value pair is a value object or a {@link ReferenceResource}.
+	 * </p>
+	 * @param predicateURI The the predicateURI identifying which subjects should be returned.
+	 * @param predicateValue The the value of the predicate identifying which subjects should be returned.
+	 * @return A query to retrieve the assertions meeting the given criteria.
+	 * @throws NullPointerException if the given predicate URI and/or predicate value is <code>null</code>.
+	 */
+	public static SimpleURFAssertionQuery withPredicateValue(final URI predicateURI, final Object predicateValue)
+	{
+		return new DefaultSimpleURFAssertionQuery(null, null, new MapEntryMap<URI, Object>(new NameValuePair<URI, Object>(Objects.checkInstance(predicateURI),
+				Objects.checkInstance(predicateValue))));
+	}
+
+	/**
+	 * Creates a query to retrieve all assertions for the identified subject for which there exists the indicated predicate value. If a subject does not have a
+	 * predicate/value pair matching all of the one indicated here, no assertions will be returned for that subject.
+	 * <p>
+	 * The value of the predicate/value pair is a value object or a {@link ReferenceResource}.
+	 * </p>
+	 * @param subjectURI The URI of the subject resource for which assertions should be returned.
+	 * @param predicateURI The the predicateURI identifying which subjects should be returned.
+	 * @param predicateValue The the value of the predicate identifying which subjects should be returned.
+	 * @return A query to retrieve the assertions meeting the given criteria.
+	 * @throws NullPointerException if the given subject URI, predicate URI, and/or predicate value pair is <code>null</code>.
+	 */
+	public static SimpleURFAssertionQuery bySubjectWithPredicateValue(final URI subjectURI, final URI predicateURI, final Object predicateValue)
+	{
+		return new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(Objects.checkInstance(subjectURI)), null, new MapEntryMap<URI, Object>(
+				new NameValuePair<URI, Object>(Objects.checkInstance(predicateURI), Objects.checkInstance(predicateValue))));
+	}
+
+	/**
+	 * Creates a query to retrieve all assertions for which there exist all the indicated predicate values. If a subject does not have predicate/value pairs
+	 * matching all of those indicated here, no assertions will be returned for that subject.
+	 * <p>
+	 * The value of each predicate/value pair is a value object or a {@link ReferenceResource}.
+	 * </p>
+	 * @param predicateURIValues The the predicate/value pairs identifying which subjects should be returned.
+	 * @return A query to retrieve the assertions meeting the given criteria.
+	 * @throws NullPointerException if the given and/or predicate/value pairs map is <code>null</code>.
+	 */
+	public static SimpleURFAssertionQuery withPredicateValues(final Map<URI, Object> predicateURIValues)
+	{
+		return new DefaultSimpleURFAssertionQuery(null, null, Objects.checkInstance(predicateURIValues));
+	}
+
+	/**
+	 * Creates a query to retrieve all assertions for the identified subject for which there exist all the indicated predicate values. If a subject does not have
+	 * predicate/value pairs matching all of those indicated here, no assertions will be returned for that subject.
 	 * <p>
 	 * The value of each predicate/value pair is a value object or a {@link ReferenceResource}.
 	 * </p>
 	 * @param subjectURI The URI of the subject resource for which assertions should be returned.
-	 * @param predicateURIValues The the predicate/value pairs identifying which subjects should be returned, or <code>null</code> if there are no required
-	 *          predicate values.
-	 * @return The assertions meeting the given criteria.
+	 * @param predicateURIValues The the predicate/value pairs identifying which subjects should be returned.
+	 * @return A query to retrieve the assertions meeting the given criteria.
+	 * @throws NullPointerException if the given subject URI and/or predicate/value pairs map is <code>null</code>.
 	 */
-	/*TODO del
-		public static DefaultSimpleURFAssertionQuery forSubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues)
-		{
-			return new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(subjectURI), null, predicateURIValues);
-		}
-	*/
+	public static SimpleURFAssertionQuery bySubjectWithPredicateValues(final URI subjectURI, final Map<URI, Object> predicateURIValues)
+	{
+		return new DefaultSimpleURFAssertionQuery(new ObjectSet<URI>(Objects.checkInstance(subjectURI)), null, Objects.checkInstance(predicateURIValues));
+	}
 
 }

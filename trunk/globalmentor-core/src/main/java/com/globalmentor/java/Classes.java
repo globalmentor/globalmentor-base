@@ -20,16 +20,19 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
 import java.util.*;
+
 import static java.util.Collections.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.*;
 
 import static com.globalmentor.io.Files.*;
 import static com.globalmentor.java.Java.*;
+import static com.globalmentor.java.Objects.checkInstance;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.URLs.*;
 
+import com.globalmentor.collections.Sets;
 import com.globalmentor.io.IO;
 import com.globalmentor.io.InputStreams;
 import com.globalmentor.model.NameValuePair;
@@ -42,6 +45,10 @@ import com.globalmentor.net.*;
 public class Classes
 {
 
+	/** The set of classes that wrap primitive types. */
+	public final static Set<Class<?>> PRIMITIVE_WRAPPER_CLASSES = Sets.<Class<?>> immutableSetOf(Boolean.class, Byte.class, Character.class, Short.class,
+			Integer.class, Long.class, Float.class, Double.class);
+	
 	/** The name extension for Java class files. */
 	public final static String CLASS_NAME_EXTENSION = "class";
 
@@ -305,6 +312,18 @@ public class Classes
 		{
 			return objectClass.isAssignableFrom(compatibleClass); //see if we can assign the compatible class to the object class
 		}
+	}
+
+	/**
+	 * Determines whether the given class is a wrapper of one of the primitive types. Specifically, those classes are {@link Boolean}, {@link Byte},
+	 * {@link Character}, {@link Short}, {@link Integer}, {@link Long}, {@link Float}, {@link Double}.
+	 * @param objectClass The class to check.
+	 * @return <code>true</code> if the class is one of the primitive wrapper classes.
+	 * @throws NullPointerException if the given class is <code>null</code>.
+	 */
+	public static boolean isPrimitiveWrapper(final Class<?> objectClass)
+	{
+		return PRIMITIVE_WRAPPER_CLASSES.contains(checkInstance(objectClass));
 	}
 
 	/**
