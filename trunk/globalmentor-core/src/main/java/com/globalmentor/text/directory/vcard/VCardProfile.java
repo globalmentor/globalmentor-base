@@ -306,77 +306,6 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	}
 
 	/**
-	 * The reference to a map of {@link Integer}s representing telephone types, keyed to lowercase versions of telephone type names. This map can be reclaimed by
-	 * the JVM if it is not being used.
-	 * @see Address
-	 */
-	private static SoftReference<Map<String, Integer>> telephoneTypeIntegerMapReference = null;
-
-	/**
-	 * @return The map of {@link Integer}s representing telephone types, keyed to lowercase versions of telephone type names, or a new map if the old one has been
-	 *         reclaimed by the JVM.
-	 */
-	protected static Map<String, Integer> getTelephoneTypeIntegerMap()
-	{
-		//get the map, if it has been created and hasn't been reclaimed
-		Map<String, Integer> telephoneTypeIntegerMap = telephoneTypeIntegerMapReference != null ? telephoneTypeIntegerMapReference.get() : null;
-		if(telephoneTypeIntegerMap == null) //if we no longer have a map, create one and initialize it with lowercase telephone type values
-		{
-			telephoneTypeIntegerMap = new HashMap<String, Integer>(); //create a new map
-			telephoneTypeIntegerMap.put(TEL_HOME_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.HOME_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_MSG_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.MESSAGE_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_WORK_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.WORK_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_PREF_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.PREFERRED_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_VOICE_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.VOICE_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_FAX_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.FAX_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_CELL_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.CELL_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_VIDEO_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.VIDEO_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_PAGER_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.PAGER_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_BBS_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.BBS_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_MODEM_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.MODEM_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_CAR_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.CAR_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_ISDN_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.ISDN_TELEPHONE_TYPE));
-			telephoneTypeIntegerMap.put(TEL_PCS_PARAM_VALUE.toLowerCase(), Integer.valueOf(Telephone.PCS_TELEPHONE_TYPE));
-			telephoneTypeIntegerMapReference = new SoftReference<Map<String, Integer>>(telephoneTypeIntegerMap); //store the map in a soft reference, so it can be reclaimed if needed			
-		}
-		return telephoneTypeIntegerMap; //return the map
-	}
-
-	/**
-	 * Determines the integer telephone type value to represent the given telephone type name. Comparison is made without regard to case.
-	 * @param telephoneTypeName The name of the telephone type.
-	 * @return The telephone type, one of the <code>Telephone.XXX_TELEPHONE_TYPE</code> constants, or {@link Telephone#NO_TELEPHONE_TYPE} if the telephone type
-	 *         name was not recognized.
-	 * @see Telephone
-	 */
-	public static int getTelephoneType(final String telephoneTypeName)
-	{
-		final Map<String, Integer> telephoneTypeIntegerMap = getTelephoneTypeIntegerMap(); //get the map of integers keyed to telephone types
-		final Integer telephoneTypeInteger = telephoneTypeIntegerMap.get(telephoneTypeName.toLowerCase()); //get the integer representing this telephone type name
-		return telephoneTypeInteger != null ? telephoneTypeInteger.intValue() : Telephone.NO_TELEPHONE_TYPE; //return the telephone type we found, or NO_TELEPHONE_TYPE if we didn't find a telephone type
-	}
-
-	/**
-	 * Determines the telephone type names to represent the given telephone type.
-	 * @param telephoneType The telephone types, one or more of the <code>Telephone.XXX_TELEPHONE_TYPE</code> constants ORed together.
-	 * @return The names of the of the given telephone type.
-	 * @see Telephone
-	 */
-	public static String[] getTelephoneTypeNames(final int telephoneType)
-	{
-		final List<String> telephoneTypeNameList = new ArrayList<String>(); //create an array of telephone type names
-		for(final Map.Entry<String, Integer> telephoneTypeEntry : getTelephoneTypeIntegerMap().entrySet()) //for each telephone type entry
-		{
-			final int telephoneTypeIntValue = telephoneTypeEntry.getValue().intValue(); //get the value of this telephone type
-			if((telephoneType & telephoneTypeIntValue) == telephoneTypeIntValue) //if our telephone type includes this value
-			{
-				telephoneTypeNameList.add(telephoneTypeEntry.getKey()); //add this telephone type name to our list 
-			}
-		}
-		return telephoneTypeNameList.toArray(new String[telephoneTypeNameList.size()]); //return our list of telephone type names as an array
-	}
-
-	/**
 	 * Processes the value for the <code>TEL</code> type name.
 	 * <p>
 	 * Whatever delimiter ended the value will be left in the reader.
@@ -392,24 +321,22 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	{
 		final Locale locale = getLanguageParamValue(paramList); //get the language, if there is one
 		final String telephoneNumberString = reach(reader, CR); //read the string representing the telephone number
-		int telephoneType; //we'll determine the telephone type
-		final String[] types = getParamValues(paramList, TYPE_PARAM_NAME); //get the telephone types specified
-		if(types.length > 0) //if there are types given
+		final Set<Telephone.Type> telephoneTypes = EnumSet.noneOf(Telephone.Type.class); //we'll determine the telephone type
+		final String[] typeStrings = getParamValues(paramList, TYPE_PARAM_NAME); //get the telephone types specified
+		for(final String typeString : typeStrings)
 		{
-			telephoneType = Telephone.NO_TELEPHONE_TYPE; //start out not knowing any telephone type
-			for(int typeIndex = types.length - 1; typeIndex >= 0; --typeIndex) //look at each telephone type
+			try
 			{
-				telephoneType |= getTelephoneType(types[typeIndex]); //get this telephone type and combine it with the ones we've found already
+				telephoneTypes.add(Telephone.Type.valueOf(typeString.toUpperCase()));
 			}
-		}
-		else
-		//if there are no types given
-		{
-			telephoneType = Telephone.DEFAULT_TELEPHONE_TYPE; //use the default telephone type
+			catch(final IllegalArgumentException illegalArgumentException)
+			{
+				throw new ParseIOException("Unrecognized phone telephone type: " + typeString, illegalArgumentException);
+			}
 		}
 		try
 		{
-			return new Telephone(telephoneNumberString, telephoneType); //create a telephone from the telephone number and telephone type
+			return new Telephone(telephoneNumberString, telephoneTypes); //create a telephone from the telephone number and telephone type
 		}
 		catch(final ArgumentSyntaxException syntaxException) //if the telephone number was not syntactically correct
 		{
@@ -1027,9 +954,9 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		for(final Telephone telephone : vcard.getTelephones()) //for each telephone
 		{
 			final ContentLine contentLine = new ContentLine(VCARD_PROFILE_NAME, null, TEL_TYPE, telephone); //TEL
-			for(final String telephoneTypeName : getTelephoneTypeNames(telephone.getTelephoneType())) //for each telephone type name
+			for(final Telephone.Type telephoneType : telephone.getTelephoneTypes()) //for each telephone type
 			{
-				addParam(contentLine.getParamList(), TYPE_PARAM_NAME, telephoneTypeName); //add this telephone type parameter
+				addParam(contentLine.getParamList(), TYPE_PARAM_NAME, telephoneType.toString()); //add this telephone type parameter
 			}
 			contentLineList.add(contentLine); //add the content line
 		}

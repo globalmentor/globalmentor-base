@@ -54,7 +54,12 @@ public class VCardTest
 		assertThat(vcard.getFormattedName().toString(), is("Ms. Jane Lívia Doe"));
 		final Telephone homeTelephone = vcard.getTelephone(new TelephoneNumber("+14155551212"));
 		assertNotNull(homeTelephone);
-		//TODO fix for Nokia VCard files; switch to using enums	assertThat(homeTelephone.getTelephoneType() & Telephone.HOME_TELEPHONE_TYPE, is(Telephone.HOME_TELEPHONE_TYPE));
+		/*TODO fix for Nokia
+				assertThat(homeTelephone.getTelephoneTypes().size(), is(3));
+				assertTrue(homeTelephone.getTelephoneTypes().contains(Telephone.Type.PREFERRED));
+				assertTrue(homeTelephone.getTelephoneTypes().contains(Telephone.Type.HOME));
+				assertTrue(homeTelephone.getTelephoneTypes().contains(Telephone.Type.VOICE));
+		*/
 
 		/*
 		TEL;PREF;HOME;VOICE;ENCODING=8BIT:+14155551212
