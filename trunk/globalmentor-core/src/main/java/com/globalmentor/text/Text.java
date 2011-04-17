@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.text.Collator;
 import java.util.regex.Pattern;
 
-import com.globalmentor.collections.Arrays;
 import com.globalmentor.collections.comparators.SortOrder;
 import com.globalmentor.java.Characters;
 import com.globalmentor.net.ContentType;
@@ -48,22 +47,26 @@ public class Text
 	/**The string representing the CR EOL character sequence.
 	@see {@link Characters#CARRIAGE_RETURN_CHAR}
 	*/
+	@Deprecated
 	public final static String CARRIAGE_RETURN_STRING=new StringBuilder().append(CARRIAGE_RETURN_CHAR).toString();
 
 	/**The string representing the LF EOL character sequence. 
 	@see {@link Characters#LINE_FEED_CHAR}
 	*/
+	@Deprecated
 	public final static String LINE_FEED_STRING=new StringBuilder().append(LINE_FEED_CHAR).toString();
 
 	/**The pattern that can split a line based upon linefeeds.
 	@see {@link Characters#LINE_FEED_CHAR}
 	*/
+	@Deprecated
 	public final static Pattern LINE_FEED_PATTERN=Pattern.compile(LINE_FEED_STRING);
 	
 	/**The string representing the CRLF EOL sequence. 
 	@see {@link Characters#CARRIAGE_RETURN_CHAR}
 	@see {@link Characters#LINE_FEED_CHAR}
 	*/
+	@Deprecated
 	public final static String CRLF_STRING=CARRIAGE_RETURN_STRING+LINE_FEED_STRING;
 
 	/**Compares two strings for order in ascending order using the specified collator.
@@ -193,7 +196,7 @@ public class Text
 	@return A string containing the escaped data.
 	@exception NullPointerException if the given character sequence is <code>null</code>.
 	*/
-	public static String escape(final CharSequence charSequence, final char[] restricted, final char escape)
+	public static String escape(final CharSequence charSequence, final Characters restricted, final char escape)
 	{
 		if(!contains(charSequence, restricted))	//if there are no restricted characters in the string (assuming that most strings won't need to be escaped, it's less expensive to check up-front before we start allocating and copying)
 		{
@@ -203,7 +206,7 @@ public class Text
 		for(int characterIndex=stringBuilder.length()-1; characterIndex>=0; --characterIndex)	//work backwords; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
 		{
 			final char c=stringBuilder.charAt(characterIndex);	//get the current character
-			if(c==escape || Arrays.contains(restricted, c))	//if we should encode this character (always encode the escape character)
+			if(c==escape || restricted.contains(c))	//if we should encode this character (always encode the escape character)
 			{
 				stringBuilder.insert(characterIndex, escape);	//insert the escape character
 			}
@@ -231,7 +234,7 @@ public class Text
 		StringBuilder stringBuilder=null;	//don't create a string builder unless we need to
 		while(currentIndex<length)	//keep searching until we finish the string
 		{
-			resultIndex=indexOfLength(charSequence, EOL_CHARS, currentIndex);	//perform the next search
+			resultIndex=indexOfLength(charSequence, EOL_CHARACTERS, currentIndex);	//perform the next search
 			if(stringBuilder==null)	//if we don't yet have a string builder
 			{
 				if(resultIndex==length)	//if there are no characters in the entire character sequence

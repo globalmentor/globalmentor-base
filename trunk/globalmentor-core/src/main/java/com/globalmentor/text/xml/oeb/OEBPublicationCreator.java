@@ -1412,11 +1412,11 @@ Log.trace("Looking for TOC element: ", childNode.toString());
 						//create an href to the element within the document
 					final String href=URLs.getFileName(getContextURL())+'#'+id; //TODO pass the href; do something better than getContextURL(); use a constant for '#'
 						//get the text of this element, collapsing all whitespace into single spaces
-					final String elementText=Strings.collapseEveryChar(XML.getText(element, true), WHITESPACE_CHAR_STRING, " ");
+					final String elementText=Strings.collapseEveryChar(XML.getText(element, true), WHITESPACE_CHARACTERS, " ");
 						//making sure it's not too long
 					final String shortText=Strings.truncate(elementText, 32);  //TODO use a constant
 						//remove everything but the first line and trim it
-					final String line=Strings.truncateChar(shortText, EOL_CHAR_STRING).trim();
+					final String line=Strings.truncateChar(shortText, EOL_CHARACTERS).trim();
 						//if we removed part of the string, indicate as much
 					final String title=line.length()==elementText.length() ? line : line+"..."; //TODO use a constant; should we use a real ellipsis?
 					final String guideType; //we'll decide what type of guide this is, based upon whether this is a heading
@@ -1667,10 +1667,10 @@ Log.trace("byIndex: "+byIndex);
 								if(wordIndex>=0)  //if the word appears before "by"
 								{
 										//for "etext", we don't care if "etext by" appears as long as it is "Project Gutenberg etext by" (e.g. jjstg10.txt), not "etext by"
-									if(!"etext".equals(word) || CharSequences.charIndexOf(text, "Project Gutenberg")<byIndex)
+									if(!"etext".equals(word) || text.indexOf("Project Gutenberg")<byIndex)
 									{
 											//if there is just whitespace between the word and "by" (e.g. "donated by"), this is unacceptable
-										if(CharSequences.notCharIndexOf(text, WHITESPACE_CHAR_STRING, wordIndex+word.length())>=byIndex)
+										if(CharSequences.notCharIndexOf(text, WHITESPACE_CHARACTERS, wordIndex+word.length())>=byIndex)
 										{
 											isAcceptableBy=false; //don't accept this phrase
 											break;  //stop looking for an unacceptable phrase; we just found one
@@ -1681,9 +1681,9 @@ Log.trace("byIndex: "+byIndex);
 							if(isAcceptableBy)  //if this "by" is acceptable
 							{
 								final String authorText=text.substring(byIndex+BY.length());  //get everything after "by"
-								if(CharSequences.charIndexOf(authorText, EOL_CHAR_STRING)<0 //if everything's on a single line
+								if(CharSequences.charIndexOf(authorText, EOL_CHARACTERS)<0 //if everything's on a single line
 												//or if the other lines are just numbers and hyphens (hack for hrlnd10.txt)
-										|| CharSequences.charIndexOf(Strings.trim(authorText, WHITESPACE_CHAR_STRING+"0123456789-"), EOL_CHAR_STRING)<0)
+										|| CharSequences.charIndexOf(Strings.trim(authorText, WHITESPACE_CHARACTERS.add(Characters.range('0', '9').add('-'))), EOL_CHARACTERS)<0)
 								{
 										//get the author and trim it of certain delimiters, and then collapse the whitespace
 									final String author=ProjectGutenbergXHTMLTidier.tidyAuthor(authorText);  //TODO use a common method, not in PGUtilities

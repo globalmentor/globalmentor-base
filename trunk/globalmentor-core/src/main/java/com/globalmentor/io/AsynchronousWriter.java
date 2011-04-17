@@ -187,7 +187,7 @@ public class AsynchronousWriter extends Writer
 	 */
 	public void write(final char[] charBuffer, final int offset, final int length) throws IOException
 	{
-		produce(createCopy(charBuffer, offset, length)); //create and produce a copy of the relevant characters
+		produce(createCopy(charBuffer, offset, offset+length)); //create and produce a copy of the relevant characters
 	}
 
 	/** The lock used for sending synchronous indicators to the consumer. */

@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,9 +27,6 @@ public class Arrays
 
 	/**An object array that contains no elements.*/
 	public final static Object[] EMPTY_OBJECT_ARRAY=new Object[]{};
-
-	/**A string array that contains no elements.*/
-	public final static String[] EMPTY_STRING_ARRAY=new String[]{};
 
 	/**Creates a new array and appends the value to the contents of the given array.
 	@param array The array holding the original values.
@@ -146,52 +143,66 @@ public class Arrays
 		return newArray;  //return the new array
 	}
 
+	/**Creates a shallow copy of the given array containing the specified range.
+	@param source The array to copy.
+	@param start The offset from which to start copying elements.
+	@return A new array containing the specified range of elements from the source array.
+	@exception IllegalArgumentException if the first index is greater than the last index.
+	@exception ArrayIndexOutOfBoundsException if one of the indices is outside the array range.
+	*/
+	public static <T> T[] createCopy(final T[] source, final int start)
+	{
+		return createCopy(source, start, source.length);
+	}
 	
 	/**Creates a shallow copy of the given array containing the specified range.
 	@param source The array to copy.
-	@param offset The offset from which to start copying elements.
-	@param length The number of elements to copy.
+	@param start The offset from which to start copying elements.
+	@param end The index after the last element to copy.
 	@return A new array containing the specified range of elements from the source array.
 	@exception IllegalArgumentException if the first index is greater than the last index.
 	@exception ArrayIndexOutOfBoundsException if one of the indices is outside the array range.
 	*/
-	public static <T> T[] createCopy(final T[] source, final int offset, final int length)
+	public static <T> T[] createCopy(final T[] source, final int start, final int end)
 	{
-		checkRange(source.length, offset, length);	//check the validity of the given range
+		checkRange(source.length, start, end);	//check the validity of the given range
+		final int length=end-start;
 		final T[] destination=createArray(source, length);	//create a destination array of the correct length
-		System.arraycopy(source, offset, destination, 0, length);  //copy the specified number of elements to the destination copy
+		System.arraycopy(source, start, destination, 0, length);  //copy the specified number of elements to the destination copy
 		return destination;	//return the new copy
 	}
 
 	/**Creates a copy of the given array containing the specified range.
 	@param source The array to copy.
-	@param offset The offset from which to start copying elements.
-	@param length The number of elements to copy.
+	@param start The offset from which to start copying elements.
+	@param end The index after the last element to copy.
 	@return A new array containing the specified range of elements from the source array.
 	@exception IllegalArgumentException if the first index is greater than the last index.
 	@exception ArrayIndexOutOfBoundsException if one of the indices is outside the array range.
 	*/
-	public static char[] createCopy(final char[] source, final int offset, final int length)
+	public static char[] createCopy(final char[] source, final int start, final int end)
 	{
-		checkRange(source.length, offset, length);	//check the validity of the given range
+		checkRange(source.length, start, end);	//check the validity of the given range
+		final int length=end-start;
 		final char[] destination=new char[length];	//create a destination array of the correct length
-		System.arraycopy(source, offset, destination, 0, length);  //copy the specified number of elements to the destination copy
+		System.arraycopy(source, start, destination, 0, length);  //copy the specified number of elements to the destination copy
 		return destination;	//return the new copy
 	}
 
 	/**Creates a copy of the given array containing the specified range.
 	@param source The array to copy.
-	@param offset The offset from which to start copying elements.
-	@param length The number of elements to copy.
+	@param start The offset from which to start copying elements.
+	@param end The number of elements to copy.
 	@return A new array containing the specified range of elements from the source array.
 	@exception IllegalArgumentException if the first index is greater than the last index.
 	@exception ArrayIndexOutOfBoundsException if one of the indices is outside the array range.
 	*/
-	public static int[] createCopy(final int[] source, final int offset, final int length)
+	public static int[] createCopy(final int[] source, final int start, final int end)
 	{
-		checkRange(source.length, offset, length);	//check the validity of the given range
+		checkRange(source.length, start, end);	//check the validity of the given range
+		final int length=end-start;
 		final int[] destination=new int[length];	//create a destination array of the correct length
-		System.arraycopy(source, offset, destination, 0, length);  //copy the specified number of elements to the destination copy
+		System.arraycopy(source, start, destination, 0, length);  //copy the specified number of elements to the destination copy
 		return destination;	//return the new copy
 	}
 

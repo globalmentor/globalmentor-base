@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2010 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import java.util.*;
 import com.globalmentor.collections.*;
 import com.globalmentor.io.*;
 import static com.globalmentor.io.Charsets.*;
+
+import com.globalmentor.java.Characters;
 import com.globalmentor.java.Integers;
 import com.globalmentor.model.NameValuePair;
 import static com.globalmentor.java.CharSequences.*;
@@ -114,43 +116,44 @@ public class URIs
 	public final static char MAILTO_USERNAME_DOMAIN_SEPARATOR = '@'; //TODO reuse EmailAddress definition
 
 	/** Alphabetic characters as defined by RFC 2396. */
-	public final static String ALPHA_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"; //length 52
+	public final static Characters ALPHA_CHARACTERS = Characters.range('a', 'z').add(Characters.range('A', 'Z')); //count 52
 
 	/** Digit characters as defined by RFC 2396. */
-	public final static String DIGIT_CHARS = "0123456789"; //length 10
+	public final static Characters DIGIT_CHARACTERS = Characters.range('0', '9'); //count 10
 
 	/** Safe characters as defined by RFC 2396. */
-	public final static String SAFE_CHARS = "$-_@.&"; //length 6
+	public final static Characters SAFE_CHARACTERS = new Characters('$', '-', '_', '@', '.', '&'); //count 6
 
 	/** Extra characters as defined by RFC 2396. */
-	public final static String EXTRA_CHARS = "!*\"'(),"; //length 7
+	public final static Characters EXTRA_CHARACTERS = new Characters('!', '*', '"', '\'', '(', ')', ','); //count 7
 
 	/** The character to use for escaping URI data as defined by RFC 2396. */
-	public final static char ESCAPE_CHAR = '%'; //length 1
+	public final static char ESCAPE_CHAR = '%'; //count 1
 
 	/** Reserved characters as defined by RFC 2396. */
-	public final static String RESERVED_CHARS = "=;/#?: "; //length 7
+	public final static Characters RESERVED_CHARACTERS = new Characters('=', ';', '/', '#', '?', ':', ' '); //count 7
 
 	/** Characters that can appear in a URI as defined by RFC 2396. */
-	public final static String URI_CHARS = ALPHA_CHARS + DIGIT_CHARS + SAFE_CHARS + EXTRA_CHARS + ESCAPE_CHAR + RESERVED_CHARS; //length 83
+	public final static Characters URI_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add(SAFE_CHARACTERS).add(EXTRA_CHARACTERS).add(ESCAPE_CHAR)
+			.add(RESERVED_CHARACTERS); //count 83
 
 	/** Characters that can appear in a URI path with no escape sequences. */
-	public final static String NORMAL_CHARS = ALPHA_CHARS + DIGIT_CHARS + SAFE_CHARS + EXTRA_CHARS; //length 76
+	public final static Characters NORMAL_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add(SAFE_CHARACTERS).add(EXTRA_CHARACTERS); //length 76
 
 	/** Unreserved characters defined by RFC 3986. */
-	public final static String UNRESERVED_CHARS = ALPHA_CHARS + DIGIT_CHARS + "-._~";
+	public final static Characters UNRESERVED_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add('-', '.', '_', '~');
 
 	/** General delimiter characters defined by RFC 3986. */
-	public final static String GEN_DELIM_CHARACTERS = ":/?#[]@";
+	public final static Characters GEN_DELIM_CHARACTERS = new Characters(':', '/', '?', '#', '[', ']', '@');
 
 	/** Subdelimiter characters defined by RFC 3986. */
-	public final static String SUB_DELIM_CHARACTERS = "!$&'()*+,;=";
+	public final static Characters SUB_DELIM_CHARACTERS = new Characters('!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=');
 
 	/** Path segment characters defined by RFC 3986. */
-	public final static String PATH_SEGMENT_CHARACTERS = UNRESERVED_CHARS + SUB_DELIM_CHARACTERS + ":@";
+	public final static Characters PATH_SEGMENT_CHARACTERS = UNRESERVED_CHARACTERS.add(SUB_DELIM_CHARACTERS).add(':', '@');
 
 	/** Path characters defined by RFC 3986. */
-	public final static String PATH_CHARACTERS = PATH_SEGMENT_CHARACTERS + '/';
+	public final static Characters PATH_CHARACTERS = PATH_SEGMENT_CHARACTERS.add('/');
 
 	/**
 	 * The maximum URL length allowed by Microsoft Internet Explorer for HTTP GET.
@@ -167,7 +170,7 @@ public class URIs
 	 */
 	public static String createURIList(final URI... uris)
 	{
-		return TextFormatter.formatList(new StringBuilder(), "\r\n", (Object[]) uris).toString(); //create the URI list
+		return TextFormatter.formatList(new StringBuilder(), "\r\n", (Object[])uris).toString(); //create the URI list
 	}
 
 	/**
@@ -711,13 +714,13 @@ public class URIs
 		boolean hasPath = false; //don't assume we have any path elements
 		for(final String pathElement : pathElements) //look at each path element
 		{
-			//G***fix			try
+			//TODO fix			try
 			{
 				//TODO fix encoding using a real encoder, not the www-encoding URLEncoder				stringBuilder.append(encode(pathElement, UTF_8));	//encode and append this path element
 				stringBuilder.append(pathElement); //encode and append this path element
 				stringBuilder.append(PATH_SEPARATOR); //separate the path elements
 			}
-			/*G***fix
+			/*TODO fix
 						catch(final UnsupportedEncodingException unsupportedEncodingException)	//we should always support UTF-8
 						{
 							throw new AssertionError(unsupportedEncodingException);
@@ -974,7 +977,7 @@ public class URIs
 					else	//if there is no equals character
 					{
 						name=token;	//take the token as it is for the name
-						value=null;	//there is no value G***is this the correct thing to do? should it be ""?
+						value=null;	//there is no value TODO is this the correct thing to do? should it be ""?
 					}
 					parameterList.add(new NameValuePair<String, String>(name, value));	//add this parameter to the list 
 				}
@@ -1258,7 +1261,7 @@ public class URIs
 	 */
 	public static URI getRootURI(final URI uri)
 	{
-		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), (URIPath) null, null, null);
+		return createURI(uri.getScheme(), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), (URIPath)null, null, null);
 	}
 
 	/**
@@ -1417,15 +1420,15 @@ public class URIs
 		{
 			//TODO if the string contains illegal URI characters, such as spaces, this won't work
 			//TODO also check to see if the string is null.
-			return resolve((URI) contextObject, new URI(string)); //resolve the URI form of the string, creating a URISyntaxException if there is a problem
+			return resolve((URI)contextObject, new URI(string)); //resolve the URI form of the string, creating a URISyntaxException if there is a problem
 		}
 		else if(contextObject instanceof URL) //if the context is a URL
 		{
-			return resolve(((URL) contextObject).toURI(), string); //convert the URL to a URI and use it as a context
+			return resolve(((URL)contextObject).toURI(), string); //convert the URL to a URI and use it as a context
 		}
 		else if(contextObject instanceof File) //if the context object is a file
 		{
-			return createURI(Files.toURI(((File) contextObject)), string); //convert the File to a URI and use it as a context
+			return createURI(Files.toURI(((File)contextObject)), string); //convert the File to a URI and use it as a context
 		}
 		else
 		//if we don't recognize the context object
@@ -1461,7 +1464,7 @@ public class URIs
 				return Files.toURI(new File(string)); //a local file must have been requested				
 			}
 		}
-		/*G***del if not needed
+		/*TODO del if not needed
 				catch(IllegalArgumentException illegalArgumentException)	//if the string is not an absolute URI
 				{
 					return Files.toURI(new File(string));	//construct a file object and convert that to a URI
@@ -1481,7 +1484,7 @@ public class URIs
 	 */
 	public static URL getDirectoryURL(final URL url) throws MalformedURLException
 	{
-		return new URL(url, "."); //create a new URL from the directory of the URL G***use a constant here
+		return new URL(url, "."); //create a new URL from the directory of the URL TODO use a constant here
 	}
 
 	/**
@@ -1494,7 +1497,7 @@ public class URIs
 		final String host = uri.getHost(); //get the host
 		final int port = uri.getPort(); //get the port
 		return host != null ? new Host(host, port) : null; //if there is a hostname, return the host information
-		/*G***del		
+		/*TODO del		
 				if(host!=null)	//if a host is given
 				{
 					final int port=uri.getPort();	//get the port
@@ -1545,18 +1548,18 @@ public class URIs
 
 	/**
 	 * Returns a relative path to the URL from the given context URL. This version requires the file to be on the same branch of the context path (e.g.
-	 * "http://abc.de/a/c/d.html" is not on the same branch of "http://abc.de/a/b"). G***del The context URL must be a URL of a directory, ending with the
+	 * "http://abc.de/a/c/d.html" is not on the same branch of "http://abc.de/a/b"). TODO del The context URL must be a URL of a directory, ending with the
 	 * directory divider character '/'
 	 * @param contextURL The reference URL to use in making the relative path.
 	 * @param url The URL for which a relative path should be returned, in relation to the context URL.
 	 * @return A relative path to the URL in relation to the context URL.
 	 * @throws MalformedURLException Thrown if a relative URL cannot be determined from the context URL.
 	 */
-	/*G***fix
+	/*TODO fix
 		public static String getRelativePath(final URL contextURL, final URL url) throws MalformedURLException
 		{
 
-			  //G***check this new implementation; this simply chops off everything that matches
+			  //TODO check this new implementation; this simply chops off everything that matches
 
 			if(urlPath.startsWith(directoryURLPath)) //if the directory URL path is at the beginning of the URL path
 			{
@@ -1572,8 +1575,8 @@ public class URIs
 	 * @param url The URL a connection to which should be opened.
 	 * @return A connection to the given URL or the URL to which it redirects.
 	 */
-	/*G***fix; we need to leave the old version in XMLTextPane because it changes the URL appropriately instead of just automatically redirecting
-		public static URLConnection openConnection(final URL url)//G***fix throws IOException
+	/*TODO fix; we need to leave the old version in XMLTextPane because it changes the URL appropriately instead of just automatically redirecting
+		public static URLConnection openConnection(final URL url)//TODO fix throws IOException
 		{
 			final URLConnection urlConnection=url.openConnection(); //open a connection to the URL
 			if(urlConnection instanceof HttpURLConnection)  //if this is a HTTP connection
@@ -1583,8 +1586,8 @@ public class URIs
 		    int response = hconn.getResponseCode();
 		    boolean redirect = (response >= 300 && response <= 399);
 
-	//G***del In the case of a redirect, we want to actually change the URL
-	//G***del that was input to the new, redirected URL
+	//TODO del In the case of a redirect, we want to actually change the URL
+	//TODO del that was input to the new, redirected URL
 
 		    if (redirect) {
 			String loc = conn.getHeaderField("L4ocation");
@@ -1608,7 +1611,7 @@ public class URIs
 	 * @throws IOException Thrown if there is an error loading the bytes.
 	 * @see InputStreamUtilities#getBytes
 	 */
-	/*G***fix
+	/*TODO fix
 		public static byte[] readBytes(final URL url) throws IOException
 		{
 			final InputStream urlInputStream=url.openConnection().getInputStream();  //create an input stream to the URL
@@ -1630,7 +1633,7 @@ public class URIs
 	 * @return A string containing the contents of the URL.
 	 * @throws IOException Thrown if there is an error loading the bytes.
 	 */
-	/*G***fix
+	/*TODO fix
 		public static String readString(final URL url, final String encoding) throws IOException
 		{
 			final byte[] bytes=readBytes(url); //load the contents of the URL
@@ -1927,9 +1930,9 @@ public class URIs
 	 */
 	public static URI resolveFragment(final URI uri, final String fragment) throws IllegalArgumentException
 	{
-		return resolveRawFragment(uri, encodeURI(fragment));	//encode and resolve the fragment
+		return resolveRawFragment(uri, encodeURI(fragment)); //encode and resolve the fragment
 	}
-		
+
 	/**
 	 * Returns a URI constructed from a given URI and a raw fragment identifier.
 	 * <p>
@@ -2133,11 +2136,11 @@ public class URIs
 	/**
 	 * Encodes the URI reserved characters in the string, using '%' as an escape character, according to the URI encoding rules in <a
 	 * href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax". All characters not considered
-	 * {@link URIs#NORMAL_CHARS} are encoded. The escape character {@link URIs#ESCAPE_CHAR} will always be encoded.
+	 * {@link URIs#NORMAL_CHARACTERS} are encoded. The escape character {@link URIs#ESCAPE_CHAR} will always be encoded.
 	 * @param string The data to URI-encode.
 	 * @return A string containing the escaped data.
 	 * @see URIs#ESCAPE_CHAR
-	 * @see URIs#NORMAL_CHARS
+	 * @see URIs#NORMAL_CHARACTERS
 	 * @deprecated
 	 */
 	public static String encode(final String string)
@@ -2148,25 +2151,25 @@ public class URIs
 	/**
 	 * Encodes the URI reserved characters in the string, using '%' as an escape character, according to the URI encoding rules in <a
 	 * href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax". All characters not considered
-	 * {@link URIs#NORMAL_CHARS} are encoded. The escape character {@link URIs#ESCAPE_CHAR} will always be encoded.
+	 * {@link URIs#NORMAL_CHARACTERS} are encoded. The escape character {@link URIs#ESCAPE_CHAR} will always be encoded.
 	 * @param string The data to URI-encode.
 	 * @param extraValidCharacters Characters to be categorically not , or <code>null</code> if no extra valid characters are given.
 	 * @param extraInvalidCharacters Characters to be categorically encoded, or <code>null</code> if no extra invalid characters are given.
 	 * @return A string containing the escaped data.
 	 * @see URIs#ESCAPE_CHAR
-	 * @see URIs#NORMAL_CHARS
+	 * @see URIs#NORMAL_CHARACTERS
 	 * @deprecated
 	 */
-	public static String encode(final String string, final String extraValidCharacters, final String extraInvalidCharacters)
+	public static String encode(final String string, final Characters extraValidCharacters, final Characters extraInvalidCharacters)
 	{
-		final String validCharacters = extraValidCharacters != null ? NORMAL_CHARS + extraValidCharacters : NORMAL_CHARS; //if extra valid characters were given, add them to our string
-		final String invalidCharacters = extraInvalidCharacters != null ? extraInvalidCharacters + ESCAPE_CHAR : String.valueOf(ESCAPE_CHAR); //if extra invalid characters were given, make note of them, but always consider the escape character invalid
+		final Characters validCharacters = extraValidCharacters != null ? NORMAL_CHARACTERS.add(extraValidCharacters) : NORMAL_CHARACTERS; //if extra valid characters were given, add them to our string
+		final Characters invalidCharacters = extraInvalidCharacters != null ? extraInvalidCharacters.add(ESCAPE_CHAR) : new Characters(ESCAPE_CHAR); //if extra invalid characters were given, make note of them, but always consider the escape character invalid
 		final StringBuilder stringBuilder = new StringBuilder(string); //put the string in a string builder so that we can work with it; although inserting encoded sequences may seem inefficient, it should be noted that filling a string buffer with the entire string is more efficient than doing it one character at a time, that characters needed encoding are generally uncommon, and that any copying of the string characters during insertion is done via a native method, which should happen very quickly
 		for(int characterIndex = stringBuilder.length() - 1; characterIndex >= 0; --characterIndex) //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
 		{
 			final char c = stringBuilder.charAt(characterIndex); //get the current character
-			final boolean encode = c == ESCAPE_CHAR || (validCharacters != null && validCharacters.indexOf(c) < 0) //encode if there is a list of valid characters and this character is not one of them
-					|| (invalidCharacters != null && invalidCharacters.indexOf(c) >= 0); //encode if there is a list of invalid characters and this character is one of them
+			final boolean encode = c == ESCAPE_CHAR || (validCharacters != null && !validCharacters.contains(c)) //encode if there is a list of valid characters and this character is not one of them
+					|| (invalidCharacters != null && invalidCharacters.contains(c)); //encode if there is a list of invalid characters and this character is one of them
 			if(encode) //if we should encode this character
 			{
 				final byte[] bytes = String.valueOf(c).getBytes(UTF_8_CHARSET); //convert this character to a sequence of UTF-8 bytes
@@ -2228,7 +2231,7 @@ public class URIs
 	 */
 	public static String encodeURI(final String string, final char escapeChar)
 	{
-		return uriEncode(string, UNRESERVED_CHARS, escapeChar); //encode all non-unreserved characters
+		return uriEncode(string, UNRESERVED_CHARACTERS, escapeChar); //encode all non-unreserved characters
 	}
 
 	/**
@@ -2239,7 +2242,7 @@ public class URIs
 	 * @return A string containing the escaped data.
 	 * @see URIs#ESCAPE_CHAR
 	 */
-	static String uriEncode(final String string, final String validCharacters)
+	static String uriEncode(final String string, final Characters validCharacters)
 	{
 		return uriEncode(string, validCharacters, ESCAPE_CHAR); //encode the string with the normal escape character
 	}
@@ -2253,7 +2256,7 @@ public class URIs
 	 * @parm escapeChar The escape character to use, which will always be escaped.
 	 * @return A string containing the escaped data.
 	 */
-	static String uriEncode(final String string, final String validCharacters, final char escapeChar)
+	static String uriEncode(final String string, final Characters validCharacters, final char escapeChar)
 	{
 		return escapeHex(string, validCharacters, null, Integer.MAX_VALUE, escapeChar, 2, Case.LOWERCASE); //escape the string using two escape hex digits; don't use an upper bound, as the valid characters take inherently care of this
 	}
@@ -2287,7 +2290,7 @@ public class URIs
 	}
 
 	/**
-	 * Ensures that the given URI is in canonical form. This implemention, following the examples in RFC 3986, ensures that all hexadecimal escape codes are in
+	 * Ensures that the given URI is in canonical form. This implementation, following the examples in RFC 3986, ensures that all hexadecimal escape codes are in
 	 * lowercase.
 	 * @param uri The URI to be returned in canonical form.
 	 * @return The canonical form of the given URI.
@@ -2315,8 +2318,8 @@ public class URIs
 					{
 						uriStringBuilder = new StringBuilder(uriString); //create a new string builder for manipulating the URI
 					}
-					uriStringBuilder.setCharAt(i + 1, hex1 >= 'A' && hex1 <= 'Z' ? (char) (hex1 + ('a' - 'A')) : hex1); //convert any hex characters to lowercase
-					uriStringBuilder.setCharAt(i + 2, hex2 >= 'A' && hex2 <= 'Z' ? (char) (hex2 + ('a' - 'A')) : hex2);
+					uriStringBuilder.setCharAt(i + 1, hex1 >= 'A' && hex1 <= 'Z' ? (char)(hex1 + ('a' - 'A')) : hex1); //convert any hex characters to lowercase
+					uriStringBuilder.setCharAt(i + 2, hex2 >= 'A' && hex2 <= 'Z' ? (char)(hex2 + ('a' - 'A')) : hex2);
 				}
 				i += 2; //skip the escape sequence
 			}
@@ -2373,13 +2376,13 @@ public class URIs
 	}
 
 	/** Characters that can appear in a URI path with no escape sequences. */
-	//G***del	protected final static String COMPRESS_CHARS=ALPHA_CHARS+DIGIT_CHARS;	//length 49
+	//TODO del	protected final static String COMPRESS_CHARS=ALPHA_CHARS+DIGIT_CHARS;	//length 49
 	/**
 	 * Compresses a URI into a shorter string representation. The resulting string consists only of URI <code>xalpha</code> characters with no escape sequences.
 	 * @param uri The URI to compress.
 	 * @return A compressed string representation of the URI.
 	 */
-	/*G***fix
+	/*TODO fix
 		public static String compress(final URI uri)
 		{
 			final int INPUT_CHAR_WIDTH=6;	//no URI character can be more than six bits wide 
@@ -2403,13 +2406,13 @@ public class URIs
 	*/
 
 	/** URI alphabetic and digit characters. */
-	private final static String COMPRESS_NORMAL_CHARS = ALPHA_CHARS + DIGIT_CHARS; //"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" length 62
+	private final static Characters COMPRESS_NORMAL_CHARS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS); //"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" count 62
 
 	/** Characters that will be compressed. */
-	private final static String OTHER_CHARS = SAFE_CHARS + EXTRA_CHARS + ESCAPE_CHAR + RESERVED_CHARS; //"$-_@.&!*\"'(),%=;/#?: " length 21
+	private final static String OTHER_CHARS = SAFE_CHARACTERS.add(EXTRA_CHARACTERS).add(ESCAPE_CHAR).add(RESERVED_CHARACTERS).toString(); //"$-_@.&!*\"'(),%=;/#?: " count 21
 
 	/** Characters that can appear in a URI path with no escape sequences. */
-	private final static String COMPRESS_ENCODE_CHARS = "-_()@"; //length 5
+	private final static String COMPRESS_ENCODE_CHARS = "-_()@"; //count 5
 
 	/**
 	 * Compresses a URI into a shorter string representation.
@@ -2424,7 +2427,7 @@ public class URIs
 		for(int i = 0; i < uriString.length(); ++i) //look at each URI character
 		{
 			final char character = uriString.charAt(i); //get the next character
-			if(COMPRESS_NORMAL_CHARS.indexOf(character) >= 0) //if this is a normal character
+			if(COMPRESS_NORMAL_CHARS.contains(character)) //if this is a normal character
 			{
 				stringBuilder.append(character); //add the character normally
 			}
@@ -2455,7 +2458,7 @@ public class URIs
 		for(int i = 0; i < string.length(); ++i) //look at each character
 		{
 			final char character = string.charAt(i); //get the next character
-			if(COMPRESS_NORMAL_CHARS.indexOf(character) >= 0) //if this is a normal character
+			if(COMPRESS_NORMAL_CHARS.contains(character)) //if this is a normal character
 			{
 				stringBuilder.append(character); //add the character normally
 			}

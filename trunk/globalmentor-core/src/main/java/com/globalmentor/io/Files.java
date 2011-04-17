@@ -65,41 +65,41 @@ public class Files
 	private final static String TEMP_EXTENSION="temp";
 
 	/**Path separator characters used on several systems.*/
-	public final static String FILE_PATH_SEPARATOR_CHARACTERS="\\/";
+	public final static Characters FILE_PATH_SEPARATOR_CHARACTERS=new Characters('\\', '/');
 
 	/**The characters which may not be used in POSIX filenames.
 	@see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	@see #encodeFilename(String)
 	*/
-	public final static String POSIX_FILENAME_RESERVED_CHARACTERS="\u0000/";
+	public final static Characters POSIX_FILENAME_RESERVED_CHARACTERS=new Characters('\u0000', '/');
 
 	/**The characters which may not be used in Windows filenames.
 	@see <a href="http://msdn.microsoft.com/en-us/library/aa365247.aspx">MSDN: Naming a File or Directory</a>
 	@see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	@see #encodeFilename(String)
 	*/
-	public final static String WINDOWS_FILENAME_RESERVED_CHARACTERS="\u0000<>:\"/\\|?*";
+	public final static Characters WINDOWS_FILENAME_RESERVED_CHARACTERS=new Characters('\u0000', '<', '>', ':', '"', '/', '\\', '|', '?', '*');
 
 	/**The characters which may not be used as the last character of Windows filenames.
 	@see <a href="http://msdn.microsoft.com/en-us/library/aa365247.aspx">MSDN: Naming a File or Directory</a>
 	@see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	@see #encodeFilename(String)
 	*/
-	public final static String WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS=". ";
+	public final static Characters WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS=new Characters('.', ' ');
 
 	/**The characters which may not be used in various file system filenames.
 	@see <a href="http://msdn.microsoft.com/en-us/library/aa365247.aspx">MSDN: Naming a File or Directory</a>
 	@see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	@see #encodeFilename(String)
 	*/
-	public final static String CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS="\u0000<>:\"/\\|?*";
+	public final static Characters CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS=new Characters('\u0000', '<', '>', ':', '"', '/', '\\', '|', '?', '*');
 
 	/**The characters which may not be used as the last character of various file system filenames.
 	@see <a href="http://msdn.microsoft.com/en-us/library/aa365247.aspx">MSDN: Naming a File or Directory</a>
 	@see <a href="http://hypermail.idiosynkrasia.net/linux-kernel/archived/2001/week50/1017.html">Linux Kernal Mailing List 2001:50:1017</a>
 	@see #encodeFilename(String)
 	*/
-	public final static String CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS=". ";
+	public final static Characters CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS=new Characters('.', ' ');
 
 	/**The prefix used by Unix to designate a hidden file.*/
 	public final static String UNIX_HIDDEN_FILENAME_PREFIX=".";
@@ -626,16 +626,16 @@ public class Files
 		final character doesn't have to meet special rules.
 	@return <code>true</code> if the string contains no reserved filename characters.
 	*/
-	public static boolean isFilename(final String string, final String reservedCharacters, final String reservedFinalCharacters)
+	public static boolean isFilename(final String string, final Characters reservedCharacters, final Characters reservedFinalCharacters)
 	{
 			//the string is a filename if the string ing isn't null and there are no illegal characters in the string
 		final boolean isFilename=string!=null && charIndexOf(string, reservedCharacters)<0;
-		if(isFilename && reservedFinalCharacters!=null && reservedFinalCharacters.length()>0)	//if we should check the final character
+		if(isFilename && reservedFinalCharacters!=null && !reservedFinalCharacters.isEmpty())	//if we should check the final character
 		{
 			if(string.length()>0)	//if we have any characters at all
 			{
 				final char lastChar=string.charAt(string.length()-1);	//see what the last character is
-				if(reservedFinalCharacters.indexOf(lastChar)>=0)	//if the last character is reserved
+				if(reservedFinalCharacters.contains(lastChar))	//if the last character is reserved
 				{
 					return false;	//this is not a valid filename
 				}
@@ -704,7 +704,8 @@ public class Files
 		method should only be called on filenames, not paths.</p>
 	@param string The filename string to be encoded.
 	@return The string modified to be a filename.
-	@see RESERVED_CHARACTERS
+	@see #CROSS_PLATFORM_FILENAME_RESERVED_CHARACTERS
+	@see #CROSS_PLATFORM_FILENAME_RESERVED_FINAL_CHARACTERS
 	@see #FILENAME_ESCAPE_CHAR
 	@see CharSequences#escapeHex(CharSequence, String, String, int, char, int, Case)
 	@see #isFilename(String, String, String)
@@ -722,7 +723,9 @@ public class Files
 		operating system.</p>
 	@param string The filename string to be encoded.
 	@return The string modified to be a filename.
-	@see RESERVED_CHARACTERS
+	@see #WINDOWS_PLATFORM_FILENAME_RESERVED_CHARACTERS
+	@see #WINDOWS_FILENAME_RESERVED_FINAL_CHARACTERS
+	@see #POSIX_FILENAME_RESERVED_CHARACTERS
 	@see #FILENAME_ESCAPE_CHAR
 	@see CharSequences#escapeHex(CharSequence, String, String, int, char, int, Case)
 	@see #isFilename(String, String, String)
@@ -745,12 +748,11 @@ public class Files
 		appear in the final position of the filename, or <code>null</code> if the
 		final character doesn't have to meet special rules.
 	@return The string modified to be a filename.
-	@see #RESERVED_CHARACTERS
 	@see #FILENAME_ESCAPE_CHAR
 	@see CharSequences#escapeHex(CharSequence, String, String, int, char, int, Case)
 	@see #isFilename(String, String, String)
 	*/
-	public static String encodeFilename(final String filename, final String reservedCharacters, final String reservedFinalCharacters)
+	public static String encodeFilename(final String filename, final Characters reservedCharacters, final Characters reservedFinalCharacters)
 	{
 			//check to see if this is already a valid filename; if so (it usually is), this will give us a performance increase
 			//even if this is a valid filename, make sure it doesn't have the escape character in it---we would have to escape that, too, even though it isn't reserved
@@ -762,15 +764,14 @@ public class Files
 		else	//if something about the filename isn't correct
 		{
 			final String encodedFilename=escapeHex(filename, null, reservedCharacters, Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2, Case.UPPERCASE);
-			if(reservedFinalCharacters!=null && reservedFinalCharacters.length()>0)	//if we should check the final character (e.g. on Windows)
+			if(reservedFinalCharacters!=null && !reservedFinalCharacters.isEmpty())	//if we should check the final character (e.g. on Windows)
 			{
 				if(encodedFilename.length()>0)	//if we have a filename
 				{
 					final char lastChar=encodedFilename.charAt(encodedFilename.length()-1);	//see what the last character is
-					if(reservedFinalCharacters.indexOf(lastChar)>=0)	//if the last character is a reserved character
+					if(reservedFinalCharacters.contains(lastChar))	//if the last character is a reserved character
 					{
-						final String lastCharString=String.valueOf(lastChar);	//convert the last character to a string
-						final String replacementString=escapeHex(lastCharString, null, lastCharString, Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2, Case.UPPERCASE);	//escape the last character						
+						final String replacementString=escapeHex(String.valueOf(lastChar), null, new Characters(lastChar), Integer.MAX_VALUE, FILENAME_ESCAPE_CHAR, 2, Case.UPPERCASE);	//escape the last character						
 						return encodedFilename.substring(0, encodedFilename.length()-1)+replacementString;	//replace the last character with its escaped form
 					}
 				}
@@ -783,7 +784,6 @@ public class Files
 		using '^' as an escape character followed by two hex digits.
 	@param string The filename string to be decoded.
 	@return The filename string decoded back to a normal string.
-	@see #RESERVED_CHARACTERS
 	@see #FILENAME_ESCAPE_CHAR
 	@see CharSequences#unescapeHex(CharSequence, char, int)
 	*/
@@ -820,7 +820,7 @@ public class Files
 			if(c>127 || c==';')	//if we found a non-ASCII character or the special character ';'
 			{
 					//escape the scheme-specific part from scratch, but only consider the ';' character and characters above 127 invalid so as to preserve the originally encoded characters, if any 
-				rawSSP=CharSequences.escapeHex(rawSSP, null, String.valueOf(';'), 127, URIs.ESCAPE_CHAR, 2, Case.LOWERCASE);
+				rawSSP=CharSequences.escapeHex(rawSSP, null, new Characters(';'), 127, URIs.ESCAPE_CHAR, 2, Case.LOWERCASE);	//TODO use a constant
 				uri=URIs.changeRawSchemeSpecificPart(uri, rawSSP);	//change the scheme-specific part of the URI
 				break;	//skip looking at the rest of the string
 			}

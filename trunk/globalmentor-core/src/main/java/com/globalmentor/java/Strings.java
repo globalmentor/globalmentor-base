@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.io.*;
 import java.net.URI;
 import java.nio.charset.Charset;
 
-import static com.globalmentor.collections.Arrays.*;
 import static com.globalmentor.io.Charsets.*;
 import com.globalmentor.io.IO;
 import static com.globalmentor.java.Characters.*;
@@ -37,6 +36,10 @@ import com.globalmentor.text.*;
 */
 public class Strings 
 {
+	
+	/**A shared empty array of strings.*/
+	public final static String[] NO_STRINGS=new String[0];
+	
 	//TODO move most of the methods that reference CharSequences to that class
 	//TODO convert StringBuffer code to StringBuilder
 
@@ -48,7 +51,7 @@ public class Strings
 	*/
 	public static String[] createArray(final String string)
 	{
-		return string!=null ? new String[]{string} : EMPTY_STRING_ARRAY;	//return an array containing the string, or an empty array if the string is null
+		return string!=null ? new String[]{string} : NO_STRINGS;	//return an array containing the string, or an empty array if the string is null
 	}
 	
 	/**Concatenates the string representations of the objects in the array.
@@ -340,7 +343,7 @@ public class Strings
 	@param delimiters The characters to use for delimiters.
 	@return The index of the specified token number, or -1 if that token was not found.
 	*/
-	static public int tokenIndex(final String inString, int tokenNumber, final String delimiters)
+	static public int tokenIndex(final String inString, int tokenNumber, final Characters delimiters)
 	{
 		int i=0;	//start at the beginning of the string
 		while(true)
@@ -367,7 +370,7 @@ public class Strings
 	@param delimiters The characters to use for delimiters.
 	@return The index of one character past the last character of the specified token number, or -1 if that token was not found.
 	*/
-	static public int tokenEndIndex(final String inString, final int tokenNumber, final String delimiters)
+	static public int tokenEndIndex(final String inString, final int tokenNumber, final Characters delimiters)
 	{
 		int i=tokenIndex(inString, tokenNumber, delimiters);	//find the beginning of the specified token
 		if(i!=-1)	//if we found the beginning of the specified token
@@ -385,7 +388,7 @@ public class Strings
 	@param delimiters The characters to use for delimiters.
 	@return The specified numbered (one-based) token in the specified string, separated by delimiters, or "" if that token was not found.
 	*/
-	static public String stringToken(final String inString, final int tokenNumber, final String delimiters)
+	static public String stringToken(final String inString, final int tokenNumber, final Characters delimiters)
 	{
 		String token="";	//assume we couldn't find the specified token
 		int beginIndex=tokenIndex(inString, tokenNumber, delimiters);	//find the beginning of the specified token
@@ -404,7 +407,7 @@ public class Strings
 	*/
 	static public int wordIndex(final String inString, final int wordNumber)
 	{
-		return tokenIndex(inString, wordNumber, WORD_DELIMITER_CHARS);	//return the index of the word (a word is a token surrounded by word delimiters)
+		return tokenIndex(inString, wordNumber, WORD_DELIMITER_CHARACTERS);	//return the index of the word (a word is a token surrounded by word delimiters)
 	}
 
 	/**Returns the index right after the given numbered (one-based) word.
@@ -414,7 +417,7 @@ public class Strings
 	*/
 	static public int wordEndIndex(final String inString, final int wordNumber)
 	{
-		return tokenEndIndex(inString, wordNumber, WORD_DELIMITER_CHARS);	//return the ending index of the word (a word is a token surrounded by word delimiters)
+		return tokenEndIndex(inString, wordNumber, WORD_DELIMITER_CHARACTERS);	//return the ending index of the word (a word is a token surrounded by word delimiters)
 	}
 
 	/**Returns the specified numbered (one-based) word in the specified string.
@@ -424,7 +427,7 @@ public class Strings
 	*/
 	static public String stringWord(final String inString, final int wordNumber)
 	{
-		return stringToken(inString, wordNumber, WORD_DELIMITER_CHARS);	//return the word (a word is a token surrounded by word delimiters)
+		return stringToken(inString, wordNumber, WORD_DELIMITER_CHARACTERS);	//return the word (a word is a token surrounded by word delimiters)
 	}
 
 	/**Returns the beginning of the word at index. If the character at index is whitespace, the beginning of the previous word will be returned.
@@ -459,7 +462,7 @@ public class Strings
 		int fromIndex=0;	//we'll start looking for links at the beginning of the string
 		while(fromIndex<outString.length())	//keep looking until we run out of characters
 		{
-			int checkIndex=CharSequences.charIndexOf(outString, ".@", fromIndex);	//see if we can find any of the hyperlink characters
+			int checkIndex=CharSequences.charIndexOf(outString, new Characters('.', '@'), fromIndex);	//see if we can find any of the hyperlink characters TODO use a constant
 			if(checkIndex!=-1)	//if we found one of them
 			{
 				int wordBegin=getWordBeginning(outString, checkIndex);	//find the beginning of this word
@@ -586,11 +589,11 @@ public class Strings
 		removed, or the original string if no characters were in the supplied set
 		of delimiters.
 	*/
-	public static String removeAfterFirstChar(String string, final String delimiters)
+	public static String removeAfterFirstChar(String string, final Characters delimiters)
 	{
 		for(int i=0; i<string.length(); ++i)  //look at each character in the string
 		{
-			if(delimiters.indexOf(string.charAt(i))>=0) //if this character is one of our delimiters
+			if(delimiters.contains(string.charAt(i))) //if this character is one of our delimiters
 				return string.substring(0, i);  //return all the characters before this character
 		}
 		return string;  //return the original string if we couldn't find a match
@@ -756,10 +759,10 @@ public class Strings
 	*/
 	public static String replace(final String inString, final String matchChars, final char replacementChar)
 	{
-		final StringBuffer outStringBuffer=new StringBuffer(inString);  //the output string will be identical in length to the input string, because we're replacing characters with characters
-			//replace the characters in the string buffer; if there were actually any replacments made
-		if(StringBuffers.replace(outStringBuffer, matchChars, replacementChar)>0)
-			return outStringBuffer.toString();  //return the new string
+		final StringBuilder outStringBuilder=new StringBuilder(inString);  //the output string will be identical in length to the input string, because we're replacing characters with characters
+			//replace the characters in the string buffer; if there were actually any replacements made
+		if(StringBuilders.replace(outStringBuilder, matchChars, replacementChar)>0)
+			return outStringBuilder.toString();  //return the new string
 		else  //if no replacements were made
 			return inString;  //just return the original string, which should be faster than converting the string buffer to a string
 	}
@@ -779,9 +782,9 @@ public class Strings
 		{
 			if(string.indexOf(matchChar)>=0)	//if the string contains this match character
 			{
-				final StringBuffer stringBuffer=new StringBuffer(string); //create a new string buffer with the given text
-				StringBuffers.replace(stringBuffer, matchChars, replacementStrings);  //do the replacement on the buffer
-				return stringBuffer.toString(); //convert the results to a string and return it
+				final StringBuilder stringBuilder=new StringBuilder(string); //create a new string buffer with the given text
+				StringBuilders.replace(stringBuilder, matchChars, replacementStrings);  //do the replacement on the buffer
+				return stringBuilder.toString(); //convert the results to a string and return it
 			}
 		}
 		return string;	//if there are no matching match characters in the string, there's nothing to replace, so just return the original string
@@ -807,19 +810,19 @@ public class Strings
 	@return The string with the first occuring character and everything after it
 	  removed, or the original string if no changes were made.
 	*/
-	public static String truncateChar(final String string, final String delimiters)
+	public static String truncateChar(final String string, final Characters delimiters)
 	{
 		final int index=CharSequences.charIndexOf(string, delimiters);  //find the first occurrence of one of the characters
 			//if one of the characters is present, remove it and everything following
 		return index>=0 ? string.substring(0, index) : string;
 	}
 
-	/**Collapses every run of any number of collapseChars to a single replaceChar.
+	/**Collapses every run of any number of collapseChars to a single replacement string.
 	@param inString the String in which the information will be collapsed.
 	@param collapseChars The characters to be removed from the string.
 	@param replaceString The string which will replace the collapseChars.
 	@return A new string with the specified information collapsed.*/
-	static public String collapseEveryChar(final String inString, final String collapseChars, final String replaceString)
+	static public String collapseEveryChar(final String inString, final Characters collapseChars, final String replaceString)
 	{
 		if(CharSequences.charIndexOf(inString, collapseChars)>=0)  //first search the string to see if we would replace something; if so
 		{
@@ -835,12 +838,12 @@ public class Strings
 	@param inString The string to be processed.
 	@param delimiters The string containing delimiter characters.
 	*/
-	static public String trim(final String inString, final String delimiters) //TODO call the StringBuffer version---or maybe not---this may be more efficient
+	static public String trim(final String inString, final Characters delimiters) //TODO call the StringBuffer version---or maybe not---this may be more efficient
 	{
 		int beginIndex, endIndex;
 		final int length=inString.length(); //get the length of the original string
-		for(beginIndex=0; beginIndex<length && delimiters.indexOf(inString.charAt(beginIndex))!=-1; ++beginIndex);	//find the first non-delimiter in the string
-		for(endIndex=length; endIndex>beginIndex && delimiters.indexOf(inString.charAt(endIndex-1))!=-1; --endIndex);	//find the last non-delimiter in the string
+		for(beginIndex=0; beginIndex<length && delimiters.contains(inString.charAt(beginIndex)); ++beginIndex);	//find the first non-delimiter in the string
+		for(endIndex=length; endIndex>beginIndex && delimiters.contains(inString.charAt(endIndex-1)); --endIndex);	//find the last non-delimiter in the string
 		if(beginIndex>0 || endIndex<length) //if there is something to trim
 			return inString.substring(beginIndex, endIndex);	//return the substring minus the beginning and ending delimiters
 		else  //if there is nothing to trim

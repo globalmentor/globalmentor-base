@@ -259,12 +259,6 @@ public final class Characters
 	/** Unicode whitespace characters. */
 	public final static Characters WHITESPACE_CHARACTERS = NEWLINE_CHARACTERS.add(CHARACTER_TABULATION_CHAR, SPACE_CHAR); //TODO finish
 
-	/**
-	 * Unicode whitespace characters.
-	 * @deprecated
-	 */
-	public final static String WHITESPACE_CHAR_STRING = "" + CHARACTER_TABULATION_CHAR + LINE_FEED_CHAR + LINE_TABULATION_CHAR + FORM_FEED_CHAR
-			+ CARRIAGE_RETURN_CHAR + SPACE_CHAR;
 	/*TODO add
 				  * U0085 NEL
 				  * U00A0 NBSP
@@ -285,19 +279,13 @@ public final class Characters
 			+ WORD_JOINER_CHAR + ZERO_WIDTH_NO_BREAK_SPACE_CHAR;
 
 	/** Characters considered to be end-of-line markers (e.g. CR and LF). */
-	public final static char[] EOL_CHARS = new char[] { CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR };
-
-	/**
-	 * Characters considered to be end-of-line markers (e.g. CR and LF).
-	 * @deprecated
-	 */
-	public final static String EOL_CHAR_STRING = new String(EOL_CHARS);
+	public final static Characters EOL_CHARACTERS = new Characters(CARRIAGE_RETURN_CHAR, LINE_FEED_CHAR);
 
 	/**
 	 * Characters that do not contain visible "content", and may be trimmed from ends of a string. These include whitespace, control characters, and formatting
 	 * characters.
 	 */
-	public final static String TRIM_CHARS = WHITESPACE_CHAR_STRING + CONTROL_CHARS + FORMAT_CHARS;
+	public final static Characters TRIM_CHARACTERS = WHITESPACE_CHARACTERS.add(CONTROL_CHARS).add(FORMAT_CHARS);
 
 	/**
 	 * A regular expression pattern for the class of trim characters.
@@ -307,9 +295,9 @@ public final class Characters
 
 	/**
 	 * Characters that delimit a list separated by trim characters, commas, and/or semicolons.
-	 * @see #TRIM_CHARS
+	 * @see #TRIM_CHARACTERS
 	 */
-	public final static String LIST_DELIMITER_CHARS = TRIM_CHARS + ",;";
+	public final static String LIST_DELIMITER_CHARS = TRIM_CHARACTERS + ",;";
 
 	/**
 	 * A regular expression character class pattern for the class of list delimiter characters.
@@ -338,28 +326,28 @@ public final class Characters
 			+ SINGLE_RIGHT_POINTING_ANGLE_QUOTATION_MARK_CHAR;
 
 	/** Characters used to punctuate phrases and sentences. */
-	public final static String PHRASE_PUNCTUATION_CHARS = ".,:;?!"; //TODO use constants here
+	public final static Characters PHRASE_PUNCTUATION_CHARACTERS = new Characters('.', ',', ':', ';', '?', '!'); //TODO use constants here
 
 	/** Punctuation that expects a character to follow at some point. */
-	public final static String DEPENDENT_PUNCTUATION_CHARS = "" + COLON_CHAR + ';' + COMMA_CHAR + HYPHEN_MINUS_CHAR + EM_DASH_CHAR + EN_DASH_CHAR; //TODO use a constant
+	public final static Characters DEPENDENT_PUNCTUATION_CHARACTERS = new Characters(COLON_CHAR, ';', COMMA_CHAR, HYPHEN_MINUS_CHAR, EM_DASH_CHAR, EN_DASH_CHAR); //TODO use a constant
 
 	/** Left punctuation used to group characters. */
-	public final static String LEFT_GROUP_PUNCTUATION_CHARS = "([{<"; //TODO use constants
+	public final static Characters LEFT_GROUP_PUNCTUATION_CHARACTERS = new Characters('(', '[', '{', '<'); //TODO use constants
 
 	/** Right punctuation used to group characters. */
-	public final static String RIGHT_GROUP_PUNCTUATION_CHARS = ")]}>"; //TODO use constants
+	public final static Characters RIGHT_GROUP_PUNCTUATION_CHARACTERS = new Characters(')', ']', '}', '>'); //TODO use constants
 
 	/** Punctuation used to group characters. */
-	public final static String GROUP_PUNCTUATION_CHARS = LEFT_GROUP_PUNCTUATION_CHARS + RIGHT_GROUP_PUNCTUATION_CHARS;
+	public final static Characters GROUP_PUNCTUATION_CHARACTERS = LEFT_GROUP_PUNCTUATION_CHARACTERS.add(RIGHT_GROUP_PUNCTUATION_CHARACTERS);
 
 	/**
 	 * Characters used to punctuate phrases and sentences, as well as general punctuation such as quotes.
 	 */
-	public final static String PUNCTUATION_CHARS = PHRASE_PUNCTUATION_CHARS + GROUP_PUNCTUATION_CHARS + QUOTE_CHARS + HYPHEN_MINUS_CHAR + EM_DASH_CHAR
-			+ EN_DASH_CHAR;
+	public final static Characters PUNCTUATION_CHARS = PHRASE_PUNCTUATION_CHARACTERS.add(GROUP_PUNCTUATION_CHARACTERS).add(QUOTE_CHARS).add(HYPHEN_MINUS_CHAR)
+			.add(EM_DASH_CHAR).add(EN_DASH_CHAR);
 
 	/** Characters that separate words. */
-	public final static String WORD_DELIMITER_CHARS = WHITESPACE_CHAR_STRING + PUNCTUATION_CHARS; //TODO this needs fixed
+	public final static Characters WORD_DELIMITER_CHARACTERS = WHITESPACE_CHARACTERS.add(PUNCTUATION_CHARS); //TODO this needs fixed
 
 	/**
 	 * A regular expression pattern for the class of word delimiter characters.
@@ -368,7 +356,7 @@ public final class Characters
 	//TODO fix; these characters must be escaped, or this Pattern.toString() will run into an endless loop!	public final static Pattern WORD_DELIMITER_PATTERN=Pattern.compile("["+WORD_DELIMITER_CHARS+"]");
 
 	/** Characters that allow words to wrap. */
-	public final static String WORD_WRAP_CHARS = WHITESPACE_CHAR_STRING + "-/"; //TODO use constants
+	public final static String WORD_WRAP_CHARS = WHITESPACE_CHARACTERS + "-/"; //TODO use constants
 
 	/** The set of sorted characters, with no duplicates or surrogates. */
 	private final char[] chars;
@@ -378,6 +366,9 @@ public final class Characters
 
 	/** The highest character, or -1 if there are no characters.. */
 	private final int maxChar;
+
+	/** The shared instance of no characters. */
+	public final static Characters NONE = new Characters();
 
 	/**
 	 * Characters constructor. Duplicates are ignored.
@@ -459,6 +450,28 @@ public final class Characters
 			minChar = maxChar = -1;
 		}
 		this.chars = characters; //save the processed characters
+	}
+
+	/**
+	 * Creates a range of characters.
+	 * @param first The first of the range, inclusive.
+	 * @param last The last of the range, inclusive.
+	 * @return Characters representing the indicated range.
+	 * @throws IllegalArgumentException if the last character comes before the first character.
+	 */
+	public static Characters range(final char first, final char last)
+	{
+		if(last < first)
+		{
+			throw new IllegalArgumentException("Last character in range " + getLabel(last) + " cannot come before first character " + getLabel(first) + ".");
+		}
+		final int length = last - first + 1;
+		final char[] chars = new char[length];
+		for(int i = 0; i < length; ++i)
+		{
+			chars[i] = (char)(first + i);
+		}
+		return new Characters(chars);
 	}
 
 	/**
@@ -705,7 +718,7 @@ public final class Characters
 	 */
 	public static boolean isPunctuation(final char c)
 	{
-		return PUNCTUATION_CHARS.indexOf(c) >= 0; //return true if we can find the character in the string of punctuation characters TODO update the list of punctuation characters
+		return PUNCTUATION_CHARS.contains(c); //return true if we can find the character in the string of punctuation characters TODO update the list of punctuation characters
 	}
 
 	/**
@@ -725,7 +738,7 @@ public final class Characters
 	 */
 	public static boolean isWhitespace(final char c)
 	{
-		return WHITESPACE_CHAR_STRING.indexOf(c) >= 0; //return true if we can find the character in the string of whitespace characters
+		return WHITESPACE_CHARACTERS.contains(c); //return true if we can find the character in the string of whitespace characters
 	}
 
 	/**
@@ -735,7 +748,7 @@ public final class Characters
 	 */
 	public static boolean isWordDelimiter(final char c)
 	{
-		return WORD_DELIMITER_CHARS.indexOf(c) >= 0; //return true if we can find the character in the string of word delimiter characters
+		return WORD_DELIMITER_CHARACTERS.contains(c); //return true if we can find the character in the string of word delimiter characters
 	}
 
 	/**

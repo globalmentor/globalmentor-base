@@ -18,6 +18,7 @@ package com.globalmentor.text.csv;
 
 import java.io.*;
 
+import com.globalmentor.java.Characters;
 import com.globalmentor.net.ContentType;
 
 import static com.globalmentor.java.Characters.*;
@@ -46,9 +47,9 @@ public class CSV
 	public final static String RECORD_DELIMITER_STRING=""+CARRIAGE_RETURN_CHAR+LINE_FEED_CHAR;
 
 	/**Characters that require a field to be quoted.*/
-	public final static String RESTRICTED_CHARACTERS=RECORD_DELIMITER_STRING+FIELD_DELIMITER_CHAR+QUOTATION_MARK_CHAR;
+	public final static Characters RESTRICTED_CHARACTERS=new Characters(RECORD_DELIMITER_STRING.toCharArray()).add(FIELD_DELIMITER_CHAR, QUOTATION_MARK_CHAR);
 
-	/**A quote character that has been escapted.*/
+	/**A quote character that has been escaped.*/
 	public final static String ESCAPED_QUOTATION_MARK_STRING=""+QUOTATION_MARK_CHAR+QUOTATION_MARK_CHAR;
 
 	/**Appends a record to the given file with no headers. The information is encoded using UTF-8.

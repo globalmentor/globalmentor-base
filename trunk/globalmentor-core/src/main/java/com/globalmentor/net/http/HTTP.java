@@ -22,9 +22,10 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.globalmentor.java.Characters;
+
 import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.Characters.*;
-import static com.globalmentor.java.Strings.*;
 
 /**Constants and utilities relating to the HyperText Transfer Protocol (HTTP) as defined by
 <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>,	"Hypertext Transfer Protocol -- HTTP/1.1".
@@ -362,7 +363,7 @@ public class HTTP
 	public final static char WILDCARD_CHAR='*';
 
   /**US-ASCII control characters.*/
-	public final static String CTL_CHARS=createString((char)0, (char)31)+(char)127;
+	public final static Characters CTL_CHARACTERS=Characters.range((char)0, (char)31).add((char)127);
 
   /**US-ASCII carriage return.*/
 	public final static char CR=(char)13;
@@ -379,18 +380,18 @@ public class HTTP
 	public final static String CRLF=""+CR+LF;
 
 	/**Characters that must be in a quoted string to be included in a parameter value.*/
-	public final static String SEPARATOR_CHARS=new StringBuilder().append("()<>@,;:\\").append(QUOTE).append("/[]?={}").append(SP).append(HT).toString();
+	public final static Characters SEPARATOR_CHARACTERS=new Characters('(', ')', '<', '>', '@', ',', ';', ':', '\\', QUOTE, '/', '[', ']', '?', '=', '{', '}', SP, HT);
 
 	/**Characters that delimit tokens.*/
-	public final static String DELIMITER_CHARS=CTL_CHARS+SEPARATOR_CHARS; 
+	public final static Characters DELIMITER_CHARACTERS=CTL_CHARACTERS.add(SEPARATOR_CHARACTERS); 
 
 	/**Linear whitespace characters which can, in the correct sequence, be folded into single spaces.*/
-	public final static String LWS_CHARS=new StringBuilder(CRLF).append(SP).append(HT).toString();
+	public final static Characters LWS_CHARACTERS=new Characters(CR, LF, SP, HT);
 
 	/**The regular expression string matching linear whitespace.*/
 	public final static String LWS_REGULAR_EXPRESSION="[\\r\\f \\t]";
 
-	/**The regular expression attern for a weighted list element.
+	/**The regular expression pattern for a weighted list element.
 	Matching group 1 is the list element.
 	Matching group 2 is the quality value, which may be null if no quality value is present.
 	*/

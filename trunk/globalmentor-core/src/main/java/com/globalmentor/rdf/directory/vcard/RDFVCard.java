@@ -29,6 +29,7 @@ import static com.globalmentor.text.directory.vcard.VCard.*;
 import static com.globalmentor.collections.Arrays.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.java.Strings.NO_STRINGS;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.rdf.RDFResources.*;
 
@@ -149,7 +150,7 @@ public class RDFVCard extends RDFDirectory
 			{
 				final RDFObject nComponentObject=nResource.getPropertyValue(N_COMPONENT_PROPERTY_URIS[i]);	//get this name component
 					//if there is a name component, convert it to one or more LocaleText objects and then convert that to a string; otherwise, use an empty string array
-				nameComponentValues[i]=nComponentObject!=null ? toStringArray(getTexts(nComponentObject)) : EMPTY_STRING_ARRAY;
+				nameComponentValues[i]=nComponentObject!=null ? toStringArray(getTexts(nComponentObject)) : NO_STRINGS;
 			}			
 			return new Name(nameComponentValues[0], nameComponentValues[1], nameComponentValues[2], nameComponentValues[3], nameComponentValues[4], language);	//return a new name from the values we read
 		}

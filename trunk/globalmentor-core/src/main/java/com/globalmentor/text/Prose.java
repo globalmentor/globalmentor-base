@@ -130,7 +130,7 @@ public class Prose
 			if(text.length()>0) //if there is text at all
 			{
 					//find out how many lines there are TODO testing
-				final int lineCount=(new StringTokenizer(text, EOL_CHAR_STRING, true).countTokens()+1)/2;
+				final int lineCount=(new StringTokenizer(text, EOL_CHARACTERS.toString(), true).countTokens()+1)/2;
 				if(lineCount<4) //if there are less than four lines
 				{
 					if(isBreak(text))  //if this is text for a page break
@@ -161,7 +161,7 @@ public class Prose
 	*/
 					else
 					{
-						final String line=Strings.removeAfterFirstChar(text, EOL_CHAR_STRING);  //get the first line of text
+						final String line=Strings.removeAfterFirstChar(text, EOL_CHARACTERS);  //get the first line of text
 							//see if this is one of the fixed hierarchical headings
 						if(isTitleHeading(line))  //if this is a title heading
 						{
@@ -241,10 +241,10 @@ public class Prose
 		public static boolean isBreak(final String text)
 		{
 			  //if the string is only made up of asterisks and hyphens
-			if(text.length()>2 && isAllChars(text, "*-_"+EM_DASH_CHAR+EN_DASH_CHAR))  //TODO use constants
+			if(text.length()>2 && isAllChars(text, new Characters('*', '-', '_', EM_DASH_CHAR, EN_DASH_CHAR)))  //TODO use constants
 				return true;  //this is a page break heading
 					//if this line contains "page" surrounded by only punctuation
-			else if("page".equalsIgnoreCase(Strings.trim(text, PUNCTUATION_CHARS+TRIM_CHARS)))
+			else if("page".equalsIgnoreCase(Strings.trim(text, PUNCTUATION_CHARS.add(TRIM_CHARACTERS))))
 				return true;  //this is a page break indication
 			else  //if this is not a page break heading
 				return false; //show that we don't think this is a page break heading
@@ -258,13 +258,13 @@ public class Prose
 		*/
 		public static boolean isPageNumber(final String text) //TODO put this in some common routine in a common package
 		{
-			if(CharSequences.charIndexOf(text, EOL_CHAR_STRING)>0)  //if the text is not on a single line
+			if(CharSequences.charIndexOf(text, EOL_CHARACTERS)>0)  //if the text is not on a single line
 				return false; //this isn't a page number
 			/**The strings that count as page indications.*/
 			final String[] pageStrings=new String[]{"p", "P", "pg", "Pg", "PG", "page", "Page", "PAGE"};
 			int pageCount=0;  //the number of times we find a representation for "page" on the line
 			int numberCount=0;  //the number of times we find a representation of a number
-			final String pageNumberDelimiters=TRIM_CHARS+"-*.[]<>";  //these characters separate the page numbers
+			final String pageNumberDelimiters=TRIM_CHARACTERS+"-*.[]<>";  //these characters separate the page numbers
 			final StringTokenizer stringTokenizer=new StringTokenizer(text, pageNumberDelimiters);  //tokenize the page number
 			while(stringTokenizer.hasMoreTokens())  //while there are more tokens
 			{
@@ -324,7 +324,7 @@ public class Prose
 	*/
 			int wordCount=0;  //we'll keep track of the number of words
 			int exceptionCount=0; //we'll keep track of the number of exceptions
-			final StringTokenizer wordTokenizer=new StringTokenizer(text, WORD_DELIMITER_CHARS);  //tokenize the title into words
+			final StringTokenizer wordTokenizer=new StringTokenizer(text, WORD_DELIMITER_CHARACTERS.toString());  //tokenize the title into words
 			while(wordTokenizer.hasMoreTokens())  //while there are more tokens
 			{
 				final String word=wordTokenizer.nextToken();  //get the next word
@@ -404,7 +404,7 @@ public class Prose
 		{
 			final String requiredLabel=requiredLabels[i]; //get this required label
 			boolean isMatch=false; //show that we haven't found a match for the required label yet
-			final StringTokenizer wordTokenizer=new StringTokenizer(text, WORD_DELIMITER_CHARS); //look at each word
+			final StringTokenizer wordTokenizer=new StringTokenizer(text, WORD_DELIMITER_CHARACTERS.toString()); //look at each word
 			while(wordTokenizer.hasMoreTokens())  //while there are more words
 			{
 				final String word=wordTokenizer.nextToken();  //get the next word
@@ -417,7 +417,7 @@ public class Prose
 			if(!isMatch)  //if we didn't match this required label
 				return false; //show that a required label wasn't found
 		}
-		final StringTokenizer wordTokenizer=new StringTokenizer(text, WORD_DELIMITER_CHARS); //look at each word
+		final StringTokenizer wordTokenizer=new StringTokenizer(text, WORD_DELIMITER_CHARACTERS.toString()); //look at each word
 		while(wordTokenizer.hasMoreTokens())  //while there are more words
 		{
 			final String word=wordTokenizer.nextToken();  //get the next word
@@ -466,12 +466,12 @@ public class Prose
 		*/
 	public static int getSectionNumber(final String text, final String sectionLabel)
 		{
-			final int eolIndex=CharSequences.charIndexOf(text, EOL_CHAR_STRING);  //find the end of the line
+			final int eolIndex=CharSequences.charIndexOf(text, EOL_CHARACTERS);  //find the end of the line
 			final String line=text.substring(0, eolIndex>=0 ? eolIndex : text.length());  //get the text up to our delimiter, if there is one
 			if(isQuoted(line))  //if this line is quoted
 			  return -1; //quoted strings are not headings
 			  //tokenize the string on whitespace and punctuation
-			final StringTokenizer tokenizer=new StringTokenizer(line, WORD_DELIMITER_CHARS);
+			final StringTokenizer tokenizer=new StringTokenizer(line, WORD_DELIMITER_CHARACTERS.toString());
 			if(tokenizer.hasMoreTokens()) //if there is a token
 			{
 				String firstToken=tokenizer.nextToken();  //get the first token
@@ -525,13 +525,13 @@ public class Prose
 	public static boolean isQuoted(final String string)
 	{
 		  //get the index of the first non-whitespace character
-		final int firstCharIndex=CharSequences.notCharIndexOf(string, TRIM_CHARS);
+		final int firstCharIndex=CharSequences.notCharIndexOf(string, TRIM_CHARACTERS);
 		if(firstCharIndex>=0) //if there is a first character (which also means there's a last character
 		{
 			if(LEFT_QUOTE_CHARS.indexOf(string.charAt(firstCharIndex))>=0) //if the line starts with a quote character
 				return true; //show that we found a quote
 				//get the index of the last non-whitespace character (we don't need to make sure it's valid--if there's a first character, there's a last character)
-			final int lastCharIndex=CharSequences.notCharLastIndexOf(string, TRIM_CHARS);
+			final int lastCharIndex=CharSequences.notCharLastIndexOf(string, TRIM_CHARACTERS);
 			if(RIGHT_QUOTE_CHARS.indexOf(string.charAt(lastCharIndex))>=0) //if the line ends with a quote character
 				return true; //show that we found a quote
 		}

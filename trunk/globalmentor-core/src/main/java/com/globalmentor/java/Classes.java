@@ -30,10 +30,10 @@ import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.URLs.*;
 
+import com.globalmentor.io.IO;
 import com.globalmentor.io.InputStreams;
 import com.globalmentor.model.NameValuePair;
-import com.globalmentor.net.ContentType;
-import com.globalmentor.net.URIPath;
+import com.globalmentor.net.*;
 
 /**
  * Utilities for manipulating Java classes.
@@ -955,4 +955,23 @@ public class Classes
 		return file; //return the file to the resource contents, or null if there was no such resource
 	}
 
+	/**
+	 * Reads a class resource using the given class' class loader and the given I/O support.
+	 * @param class The class relative to which the given resource will be located.
+	 * @param name The name of the resource to read.
+	 * @param io The I/O support for reading the object.
+	 * @return The object read from the resource.
+	 * @throws NullPointerException if the given class, name, and/or I/O support is <code>null</code>.
+	 * @throws IOException if there is an error reading the data.
+	 * @throws FileNotFoundException if the indicated resource does not exist.
+	 */
+	public static <T> T readResource(final Class<?> objectClass, final String name, final IO<T> io) throws IOException
+	{
+		final URL url = objectClass.getResource(name); //get a URL to the resource
+		if(url == null) //if the resource doesn't exist
+		{
+			throw new FileNotFoundException("Could not find resource " + name + " for " + objectClass.getName());
+		}
+		return URLs.read(url, io);
+	}
 }

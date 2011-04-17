@@ -20,6 +20,8 @@ import java.io.Reader;
 import java.io.IOException;
 import java.util.*;
 
+import com.globalmentor.java.Characters;
+
 import static com.globalmentor.java.Characters.*;
 
 /**Tokenizes input from a reader, recognizing groups.
@@ -32,9 +34,9 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 {
 
 	/**The default delimiter characters: whitespace.
-	@see Characters#TRIM_CHARS
+	@see Characters#TRIM_CHARACTERS
 	*/
-	protected final static String DEFAULT_DELIMITERS=TRIM_CHARS;
+	protected final static Characters DEFAULT_DELIMITERS=TRIM_CHARACTERS;
 
 	/**The default beginning group characters: "([{".*/
 	protected final static String DEFAULT_GROUP_BEGINS="([{";
@@ -49,10 +51,10 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 		protected Reader getReader() {return reader;}
 
 	/**The characters delimiting tokens.*/
-	private String delimiters;
+	private Characters delimiters;
 
 		/**@return The characters delimiting tokens.*/
-		public String getDelimiters() {return delimiters;}
+		public Characters getDelimiters() {return delimiters;}
 
 	/**The valid group beginning characters.*/
 	private final String groupBegins;
@@ -147,7 +149,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	@param reader The input characters to tokenize.
 	@param delimiters The delimiter characters.
 	*/
-	public ReaderTokenizer(final Reader reader, final String delimiters)
+	public ReaderTokenizer(final Reader reader, final Characters delimiters)
 	{
 		this(reader, delimiters, null, null);	//construct the tokenizer with no group recognition
 	}
@@ -158,7 +160,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	@param groupBegins The valid group beginning characters.
 	@param groupEnds The valid group ending characters, matching to beginning characters.
 	*/
-	public ReaderTokenizer(final Reader reader, final String delimiters, final String groupBegins, final String groupEnds)
+	public ReaderTokenizer(final Reader reader, final Characters delimiters, final String groupBegins, final String groupEnds)
 	{
 		this.reader=reader;
 		this.delimiters=delimiters;
@@ -234,7 +236,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 		if(primedToken==null)	//if there is no token primed
 		{
 			final Reader reader=getReader();	//get a reference to our reader
-			final String delimiters=getDelimiters();	//get our delimiters
+			final Characters delimiters=getDelimiters();	//get our delimiters
 			final String groupBegins=getGroupBegins();	//get our group beginning delimiters
 			final String groupEnds=getGroupEnds();	//get our group ending delimiters
 			final StringBuilder stringBuilder=new StringBuilder();	//create a string builder to build our token
@@ -250,7 +252,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 						break;	//stop processing characters
 					}
 					final char character=(char)value;	//cast the character value to a char
-					if(getGroupDepth()==0 && delimiters.indexOf(character)>=0)	//only look at delimiters when we're not in a group
+					if(getGroupDepth()==0 && delimiters.contains(character))	//only look at delimiters when we're not in a group
 					{
 						this.lastDelimiter=this.delimiter;	//move the delimiter to the last delimiter
 						this.delimiter=character;	//save the delimiter							

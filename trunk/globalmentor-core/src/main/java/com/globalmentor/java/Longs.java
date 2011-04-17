@@ -22,6 +22,9 @@ package com.globalmentor.java;
 public class Longs
 {
 
+	/**The shared empty array of longs.*/
+	public final static long[] NO_LONGS=new long[0];
+
 	/**This class cannot be publicly instantiated.*/
 	private Longs() {}
 

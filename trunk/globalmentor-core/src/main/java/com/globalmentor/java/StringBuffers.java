@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2009 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,12 +29,12 @@ package com.globalmentor.java;
 public class StringBuffers
 {
 
-	/**Collapses every run of any number of collapseChars to a single replaceString.
+	/**Collapses every run of any number of collapseChars to a single replacement string
 	@param stringBuffer The buffer in which the information will be collapsed.
 	@param collapseChars The characters to be removed from the string.
 	@param replaceString The string which will replace the collapseChars.
 	*/
-	public static void collapse(final StringBuffer stringBuffer, final String collapseChars, final String replaceString)
+	public static void collapse(final StringBuffer stringBuffer, final Characters collapseChars, final String replaceString)
 	{
 //TODO del Log.trace("ready to collapse: ", stringBuffer); //TODO del
 //TODO shouldn't we trim the string, first? no, probably not
@@ -45,11 +45,11 @@ public class StringBuffers
 //TODO del System.out.println(outString.length());	//TODO del
 //TODO del Log.trace("checking index: ", nextIndex); //TODO del
 //TODO del Log.trace("checking character: "+(int)stringBuffer.charAt(nextIndex)+" "+stringBuffer.charAt(nextIndex)); //TODO del
-			if(collapseChars.indexOf(stringBuffer.charAt(nextIndex))>=0)	//if this character is one of our remove characters
+			if(collapseChars.contains(stringBuffer.charAt(nextIndex)))	//if this character is one of our remove characters
 			{
 //TODO del Log.trace("found collapse character at index: ", nextIndex);  //TODO del
 				int removeEnd=nextIndex+1;	//start looking at the next character to see how long this run is
-				while(removeEnd<stringBuffer.length() && collapseChars.indexOf(stringBuffer.charAt(removeEnd))>=0)	//while we still have more characters, and the characters we're finding are characters to remove
+				while(removeEnd<stringBuffer.length() && collapseChars.contains(stringBuffer.charAt(removeEnd)))	//while we still have more characters, and the characters we're finding are characters to remove
 					++removeEnd;
 //TODO del				final int removeLength=removeEnd-nextIndex;	//find out how many characters to remove
 //TODO del System.out.println("Ready to remove stuff from: "+StringManipulator.replace(outString, '\n', "\\n"));	//TODO del
@@ -131,9 +131,9 @@ public class StringBuffers
 	@param delimiters A string of characters to search for.
 	@return The string buffer after removal.
 	*/
-	public static StringBuffer removeFirstCharLength(final StringBuffer stringBuffer, final String delimiters)
+	public static StringBuffer removeFirstCharLength(final StringBuffer stringBuffer, final Characters delimiters)
 	{
-		final int index=CharSequences.charIndexOf(stringBuffer, delimiters);  //find the first occurence of the delimiters
+		final int index=CharSequences.charIndexOf(stringBuffer, delimiters);  //find the first occurrence of the delimiters
 		if(index>=0)  //if one of the delimiters was found
 			stringBuffer.delete(index, stringBuffer.length());  //remove everything after and including the character
 		return stringBuffer;  //return the string buffer
