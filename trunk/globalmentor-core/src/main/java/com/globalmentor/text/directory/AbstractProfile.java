@@ -52,16 +52,10 @@ public abstract class AbstractProfile implements Profile
 	}
 
 	/**
-	 * Determines the value type of the given content line value.
+	 * {@inheritDoc}
 	 * <p>
 	 * This version determines the value type by the value name.
 	 * </p>
-	 * @param profile The profile of this content line, or <code>null</code> if there is no profile.
-	 * @param group The group specification, or <code>null</code> if there is no group.
-	 * @param name The name of the information.
-	 * @param paramList The list of parameters.
-	 * @return The value type of the content line, or <code>null</code> if the value type cannot be determined.
-	 * @see #getValueType(String)
 	 */
 	public String getValueType(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList)
 	{

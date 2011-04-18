@@ -21,6 +21,7 @@ import static com.globalmentor.text.ABNF.*;
 import java.util.*;
 
 import com.globalmentor.java.Characters;
+import com.globalmentor.java.Objects;
 import com.globalmentor.java.StringBuilders;
 import com.globalmentor.model.*;
 import com.globalmentor.net.ContentType;
@@ -180,8 +181,7 @@ public class Directory
 
 	/**
 	 * Creates a <code>LocaleText</code> by combining the language param, if present, with the string value of the given object.
-	 * @param paramList The list of parameters, each item of which is a <code>NameValuePair</code> with a name of type <code>String</code> and a value of type
-	 *          <code>String</code>.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param value The content line value.
 	 * @return An object representing the text and locale of the value
 	 */
@@ -190,12 +190,12 @@ public class Directory
 		final Locale locale = getLanguageParamValue(paramList); //get the locale
 		return new LocaledText(value.toString(), locale); //create and return the locale text
 	}
-	
+
 	//parameters
 
 	/**
 	 * Retrieves the first value of a parameter with the given name.
-	 * @param paramList The list of parameters.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param paramName The name of the parameter, which will be matched against available parameters in a case insensitive way.
 	 * @return The value of the first matching parameter, or <code>null</code> if there is no matching parameter.
 	 */
@@ -213,11 +213,11 @@ public class Directory
 
 	/**
 	 * Retrieves the values of all parameters with the given name.
-	 * @param paramList The list of parameters.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param paramName The name of the parameter, which will be matched against available parameters in a case insensitive way.
 	 * @return The values of all matching parameters.
 	 */
-	public static String[] getParamValues(final List<NameValuePair<String, String>> paramList, final String paramName)
+	public static List<String> getParamValues(final List<NameValuePair<String, String>> paramList, final String paramName)
 	{
 		final List<String> paramValueList = new ArrayList<String>(paramList.size()); //create a list to hold parameter values, knowing we won't need room for more parameters than the we were given
 		for(final NameValuePair<String, String> parameter : paramList) //for each parameter
@@ -227,12 +227,31 @@ public class Directory
 				paramValueList.add(parameter.getValue()); //add the parameter value
 			}
 		}
-		return paramValueList.toArray(new String[paramValueList.size()]); //return an array version of the list of values
+		return paramValueList; //return the list of values
+	}
+
+	/**
+	 * Retrieves the names of all parameters with the given value.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
+	 * @param paramValue The value of the parameter, which may be <code>null</code>.
+	 * @return The names of all matching parameters.
+	 */
+	public static List<String> getParamNamesByValue(final List<NameValuePair<String, String>> paramList, final String paramValue)
+	{
+		final List<String> paramNameList = new ArrayList<String>(paramList.size()); //create a list to hold parameter values, knowing we won't need room for more parameters than the we were given
+		for(final NameValuePair<String, String> parameter : paramList) //for each parameter
+		{
+			if(Objects.equals(paramValue, parameter.getValue())) //if this parameter has a matching value
+			{
+				paramNameList.add(parameter.getName()); //add the parameter name
+			}
+		}
+		return paramNameList; //return the list of names
 	}
 
 	/**
 	 * Removes all parameters with the given name.
-	 * @param paramList The list of parameters.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param paramName The name of the parameter, which will be matched against available parameters in a case insensitive way.
 	 */
 	public static void removeParams(final List<NameValuePair<String, String>> paramList, final String paramName)
@@ -250,7 +269,7 @@ public class Directory
 
 	/**
 	 * Removes all parameters with the given name and adds a new parameter with the given value.
-	 * @param paramList The list of parameters.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param paramName The name of the parameter, which will be matched against available parameters in a case insensitive way.
 	 * @param paramValue The value to give to the added parameter.
 	 * @see #removeParams(List, String)
@@ -264,7 +283,7 @@ public class Directory
 
 	/**
 	 * Adds a new parameter with the given value.
-	 * @param paramList The list of parameters.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param paramName The name of the parameter, which will be matched against available parameters in a case insensitive way.
 	 * @param paramValue The value to give to the added parameter.
 	 */
@@ -277,7 +296,7 @@ public class Directory
 
 	/**
 	 * Retrieves the value of the first language parameter as a <code>Locale</code>.
-	 * @param paramList The list of parameters.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return A locale representing the given language, or <code>null</code> if no language is indicated.
 	 */
 	public static Locale getLanguageParamValue(final List<NameValuePair<String, String>> paramList)
@@ -290,7 +309,7 @@ public class Directory
 
 	/**
 	 * Sets the language parameter to the value of a {@link Locale}.
-	 * @param paramList The list of parameters.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param locale The value to give to the language parameter.
 	 */
 	public static void setLanguageParamValue(final List<NameValuePair<String, String>> paramList, final Locale locale)
@@ -299,7 +318,7 @@ public class Directory
 	}
 
 	//text
-	
+
 	/**
 	 * The characters that must be escaped in text: CR, LF, '\\', and ','. (Note that CRLF runs should first be replaced with a single LF to prevent duplicate
 	 * linefeeds.
@@ -308,8 +327,7 @@ public class Directory
 
 	/** The strings to replace the characters to be escaped in text. */
 	protected final static String[] TEXT_REPLACEMENT_STRINGS = new String[] { TEXT_ESCAPE_STRING + TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR,
-			TEXT_ESCAPE_STRING + TEXT_ESCAPE_CHAR, TEXT_ESCAPE_STRING + VALUE_SEPARATOR_CHAR,
-			TEXT_ESCAPE_STRING + TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR };
+			TEXT_ESCAPE_STRING + TEXT_ESCAPE_CHAR, TEXT_ESCAPE_STRING + VALUE_SEPARATOR_CHAR, TEXT_ESCAPE_STRING + TEXT_LINE_BREAK_ESCAPED_LOWERCASE_CHAR };
 
 	/**
 	 * Encodes a text value.
@@ -343,7 +361,6 @@ public class Directory
 		StringBuilders.replace(stringBuilder, TEXT_ESCAPE_STRING + VALUE_SEPARATOR_CHAR, String.valueOf(VALUE_SEPARATOR_CHAR)); //replace an escaped comma with ','
 		return stringBuilder.toString(); //return the resulting string
 	}
-	
 
 	/** The display name of the directory. */
 	private LocaledText displayName = null;

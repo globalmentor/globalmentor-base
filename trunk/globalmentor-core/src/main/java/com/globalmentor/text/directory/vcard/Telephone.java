@@ -44,11 +44,11 @@ public class Telephone extends TelephoneNumber
 		/** A telephone number associated with a residence. */
 		HOME,
 		/** A telephone number that has voice messaging support. */
-		MESSAGE,
+		MSG,
 		/** A telephone number associated with a place of work. */
 		WORK,
 		/** A preferred-use telephone number. */
-		PREFERRED,
+		PREF,
 		/** A voice telephone number. */
 		VOICE,
 		/** A facsimile telephone number. */
@@ -68,10 +68,10 @@ public class Telephone extends TelephoneNumber
 		/** An ISDN service telephone number. */
 		ISDN,
 		/** A personal communication services telephone number. */
-		PCS_TELEPHONE;
+		PCS;
 
 		/** {@inheritDoc} */
-		public String getID()	//TODO del if not needed
+		public String getID() //TODO del if not needed
 		{
 			return getSerializationName(this);
 		}

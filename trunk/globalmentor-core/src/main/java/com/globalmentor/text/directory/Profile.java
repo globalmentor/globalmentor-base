@@ -37,8 +37,7 @@ public interface Profile
 	 * @param profile The profile of this content line, or <code>null</code> if there is no profile.
 	 * @param group The group specification, or <code>null</code> if there is no group.
 	 * @param name The name of the information.
-	 * @param paramList The list of parameters, each item of which is a <code>NameValuePair</code> with a name of type <code>String</code> and a value of type
-	 *          <code>String</code>.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return The value type of the content line, or <code>null</code> if the value type cannot be determined.
 	 */
 	public String getValueType(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList);

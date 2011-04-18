@@ -392,6 +392,13 @@ public class DirectoryProcessor
 	}
 
 	/**
+	 * After reading the parameter name, we expect either a parameter name-value separator ('=') indicating a value, the parameter separator (';') indicating more
+	 * parameters, or the line name/value separator (':'), indicating we've finished parameters.
+	 */
+	protected final static Characters PARAM_NAME_DELIMITER_CHARACTERS = new Characters(PARAM_NAME_VALUE_SEPARATOR_CHAR, PARAM_SEPARATOR_CHAR,
+			NAME_VALUE_SEPARATOR_CHAR);
+
+	/**
 	 * After reading the parameter value, we expect either a parameter separator (';') the parameter value separator (',') indicating more values, or the line
 	 * name/value separator (':'), indicating we've finished parameters.
 	 */
@@ -404,8 +411,7 @@ public class DirectoryProcessor
 	 * Whatever delimiter ended the value will be left in the reader.
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
-	 * @param The list of parameters, each item of which is a <code>NameValuePair</code> with a name of type <code>String</code> and a value of type
-	 *          <code>String</code>.
+	 * @param The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
 	 * @see NameValuePair
@@ -417,30 +423,36 @@ public class DirectoryProcessor
 		do //read each parameter
 		{
 			//read the parameter name
-			final String paramName = reach(reader, PARAM_NAME_VALUE_SEPARATOR_CHAR); //get the parameter name, which is everything up to the ':' characters
-			//		TODO del Log.trace("found param name: ", paramName);
+			final String paramName = reach(reader, PARAM_NAME_DELIMITER_CHARACTERS); //get the parameter name, which is usually everything up to the '=' character
 			//TODO check the param name for validity
-			final List<String> paramValueList = new ArrayList<String>(); //create a list to hold the parameter values
-			do //read the parameter value(s)
+			nextCharacter = peek(reader); //see what delimiter will come next
+			if(nextCharacter == PARAM_NAME_VALUE_SEPARATOR_CHAR) //if there is at least one value waiting
 			{
-				reader.skip(1); //skip the delimiter that got us here
-				final String paramValue; //we'll read the value and store it here
-				switch(peek(reader))
-				//see what character is first in the value
+				do //read the parameter value(s)
 				{
-					case DQUOTE: //if the string starts with a quote
-						paramValue = readDelimited(reader, DQUOTE, DQUOTE); //read the value within the quotes 
-						break;
-					default: //if the string doesn't end with a quote
-						paramValue = reach(reader, PARAM_VALUE_DELIMITER_CHARACTERS); //read everything until the end of this parameter
-						break;
+					reader.skip(1); //skip the delimiter that got us here
+					final String paramValue; //we'll read the value and store it here
+					switch(peek(reader))
+					//see what character is first in the value
+					{
+						case DQUOTE: //if the string starts with a quote
+							paramValue = readDelimited(reader, DQUOTE, DQUOTE); //read the value within the quotes 
+							break;
+						default: //if the string doesn't end with a quote
+							paramValue = reach(reader, PARAM_VALUE_DELIMITER_CHARACTERS); //read everything until the end of this parameter
+							break;
+					}
+					//			TODO del Log.trace("found param value: ", paramValue);
+					//TODO check the parameter value, here
+					paramList.add(new NameValuePair<String, String>(paramName, paramValue)); //add this name/value pair to our list of parameters
+					nextCharacter = peek(reader); //see what delimiter will come next
 				}
-				//			TODO del Log.trace("found param value: ", paramValue);
-				//TODO check the parameter value, here
-				paramList.add(new NameValuePair<String, String>(paramName, paramValue)); //add this name/value pair to our list of parameters
-				nextCharacter = peek(reader); //see what delimiter will come next
+				while(nextCharacter == PARAM_VALUE_SEPARATOR_CHAR); //keep getting parameter values while there are more parameter value separators
 			}
-			while(nextCharacter == PARAM_VALUE_SEPARATOR_CHAR); //keep getting parameter values while there are more parameter value separators
+			else	//if there is no '='
+			{
+				paramList.add(new NameValuePair<String, String>(paramName, null)); //add a name/value pair with null as the value
+			}
 			if(nextCharacter == PARAM_SEPARATOR_CHAR) //if the next character is the character that separates multiple parameters
 			{
 				reader.skip(1); //skip the parameter separator
@@ -470,8 +482,7 @@ public class DirectoryProcessor
 	 * @param profile The profile of this content line, or <code>null</code> if there is no profile.
 	 * @param group The group specification, or <code>null</code> if there is no group.
 	 * @param name The name of the information.
-	 * @param paramList The list of parameters, each item of which is a <code>NameValuePair</code> with a name of type <code>String</code> and a value of type
-	 *          <code>String</code>.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param reader The reader that contains the lines of the directory.
 	 * @return An array of objects represent the value string.
 	 * @exception IOException Thrown if there is an error reading the directory.

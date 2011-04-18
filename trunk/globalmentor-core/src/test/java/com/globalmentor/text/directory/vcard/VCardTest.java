@@ -54,18 +54,25 @@ public class VCardTest
 		assertThat(vcard.getFormattedName().toString(), is("Ms. Jane Lívia Doe"));
 		final Telephone homeTelephone = vcard.getTelephone(new TelephoneNumber("+14155551212"));
 		assertNotNull(homeTelephone);
-		/*TODO fix for Nokia
-				assertThat(homeTelephone.getTelephoneTypes().size(), is(3));
-				assertTrue(homeTelephone.getTelephoneTypes().contains(Telephone.Type.PREFERRED));
-				assertTrue(homeTelephone.getTelephoneTypes().contains(Telephone.Type.HOME));
-				assertTrue(homeTelephone.getTelephoneTypes().contains(Telephone.Type.VOICE));
-		*/
-
+		assertThat(homeTelephone.getTelephoneTypes().size(), is(3));
+		assertTrue(homeTelephone.getTelephoneTypes().contains(Telephone.Type.PREF));
+		assertTrue(homeTelephone.getTelephoneTypes().contains(Telephone.Type.HOME));
+		assertTrue(homeTelephone.getTelephoneTypes().contains(Telephone.Type.VOICE));
+		final Telephone cellTelephone = vcard.getTelephone(new TelephoneNumber("+19185551212"));
+		assertNotNull(cellTelephone);
+		assertThat(cellTelephone.getTelephoneTypes().size(), is(2));
+		assertTrue(cellTelephone.getTelephoneTypes().contains(Telephone.Type.CELL));
+		assertTrue(cellTelephone.getTelephoneTypes().contains(Telephone.Type.VOICE));
+		final Telephone telephone = vcard.getTelephone(new TelephoneNumber("+5105551212"));
+		assertNotNull(telephone);
+		assertThat(telephone.getTelephoneTypes().size(), is(1));
+		assertTrue(telephone.getTelephoneTypes().contains(Telephone.Type.VOICE));
+		final Telephone workTelephone = vcard.getTelephone(new TelephoneNumber("+552138232003"));
+		assertNotNull(workTelephone);
+		assertThat(workTelephone.getTelephoneTypes().size(), is(2));
+		assertTrue(workTelephone.getTelephoneTypes().contains(Telephone.Type.WORK));
+		assertTrue(workTelephone.getTelephoneTypes().contains(Telephone.Type.VOICE));
 		/*
-		TEL;PREF;HOME;VOICE;ENCODING=8BIT:+14155551212
-		TEL;CELL;VOICE;ENCODING=8BIT:+19185551212
-		TEL;VOICE;ENCODING=8BIT:+5105551212
-		TEL;WORK;VOICE;ENCODING=8BIT:+552138232003
 		EMAIL;CHARSET=UTF-8;ENCODING=8BIT:jane@example.com
 		URL;CHARSET=UTF-8;ENCODING=8BIT:http://www.example.com/
 		NOTE;ENCODING=BASE64:VGhpcyBpcyBqdXN0IGEgdGVzdC4KSXNzbyDDqSBzw7MgdW0gZXhlbX

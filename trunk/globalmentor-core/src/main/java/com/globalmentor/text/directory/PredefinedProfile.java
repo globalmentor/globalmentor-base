@@ -135,7 +135,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * Whatever delimiter ended the value will be left in the reader.
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
-	 * @param paramList The list of parameters.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return An array of locale text objects representing the values.
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
@@ -298,15 +298,10 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	}
 
 	/**
-	 * Creates a directory from the given content lines.
-	 * <p>
-	 * Unrecognized or unusable content lines within the directory object will be saved as literal content lines so that their information will be preserved.
-	 * </p>
+	 * {@inheritDoc}
 	 * <p>
 	 * This version creates a basic <code>Directory</code> object.
 	 * </p>
-	 * @param contentLines The content lines that make up the directory.
-	 * @return A directory object representing the directory, or <code>null</code> if this profile cannot create a directory from the given information.
 	 */
 	public Directory createDirectory(final ContentLine[] contentLines)
 	{
@@ -324,7 +319,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 				}
 			}
 			//if we make it to here, we either don't recognize the content line
-			//	or we can't proces it (e.g. a duplicate value we don't support)
+			//	or we can't process it (e.g. a duplicate value we don't support)
 			directory.getContentLineList().add(contentLine); //add this unprocessed content line to the directory's list of content lines
 		}
 		return directory; //return the directory we created

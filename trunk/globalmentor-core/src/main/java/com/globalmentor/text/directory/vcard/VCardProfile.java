@@ -149,13 +149,13 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		{
 			final LocaledText[] localeTexts = PredefinedProfile.processTextValueList(reader, paramList); //process the text values
 			int addressType; //we'll determine the address type
-			final String[] types = getParamValues(paramList, TYPE_PARAM_NAME); //get the address types specified
-			if(types.length > 0) //if there are types given
+			final List<String> types = getParamValues(paramList, TYPE_PARAM_NAME); //get the address types specified
+			if(types.size() > 0) //if there are types given
 			{
 				addressType = Address.NO_ADDRESS_TYPE; //start out not knowing any address type
-				for(int i = types.length - 1; i >= 0; --i) //look at each address type
+				for(int i = types.size() - 1; i >= 0; --i) //look at each address type
 				{
-					addressType |= getAddressType(types[i]); //get this address type and combine it with the ones we've found already
+					addressType |= getAddressType(types.get(i)); //get this address type and combine it with the ones we've found already
 				}
 			}
 			else
@@ -184,7 +184,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * Whatever delimiter ended the value will be left in the reader.
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
-	 * @param paramList The list of parameters.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return An object representing the vCard structured name.
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
@@ -271,7 +271,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * Whatever delimiter ended the value will be left in the reader.
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
-	 * @param paramList The list of parameters.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return An address object representing the value.
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
@@ -280,13 +280,13 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	{
 		final Locale locale = getLanguageParamValue(paramList); //get the language, if there is one
 		int addressType; //we'll determine the address type
-		final String[] types = getParamValues(paramList, TYPE_PARAM_NAME); //get the address types specified
-		if(types.length > 0) //if there are types given
+		final List<String> types = getParamValues(paramList, TYPE_PARAM_NAME); //get the address types specified
+		if(types.size() > 0) //if there are types given
 		{
 			addressType = Address.NO_ADDRESS_TYPE; //start out not knowing any address type
-			for(int i = types.length - 1; i >= 0; --i) //look at each address type
+			for(int i = types.size() - 1; i >= 0; --i) //look at each address type
 			{
-				addressType |= getAddressType(types[i]); //get this address type and combine it with the ones we've found already
+				addressType |= getAddressType(types.get(i)); //get this address type and combine it with the ones we've found already
 			}
 		}
 		else
@@ -311,7 +311,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * Whatever delimiter ended the value will be left in the reader.
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
-	 * @param paramList The list of parameters.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return A telephone object representing the value.
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
@@ -322,7 +322,12 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		final Locale locale = getLanguageParamValue(paramList); //get the language, if there is one
 		final String telephoneNumberString = reach(reader, CR); //read the string representing the telephone number
 		final Set<Telephone.Type> telephoneTypes = EnumSet.noneOf(Telephone.Type.class); //we'll determine the telephone type
-		final String[] typeStrings = getParamValues(paramList, TYPE_PARAM_NAME); //get the telephone types specified
+		List<String> typeStrings = getParamValues(paramList, TYPE_PARAM_NAME); //get the telephone types specified
+		//some VCard producers, such as Nokia, provide types as bare parameter names instead of in the form TYPE=XXX
+		if(typeStrings.isEmpty()) //if no telephone types were given, see if bare parameter names were given
+		{
+			typeStrings = getParamNamesByValue(paramList, null);
+		}
 		for(final String typeString : typeStrings)
 		{
 			try
@@ -409,8 +414,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * Whatever delimiter ended the value will be left in the reader.
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
-	 * @param paramList The list of parameters, each item of which is a <code>NameValuePair</code> with a name of type <code>String</code> and a value of type
-	 *          <code>String</code>.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return An email object representing the value.
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
@@ -435,8 +439,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * Whatever delimiter ended the value will be left in the reader.
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
-	 * @param paramList The list of parameters, each item of which is a <code>NameValuePair</code> with a name of type <code>String</code> and a value of type
-	 *          <code>String</code>.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return An array of locale text objects representing the organizational name and units.
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
@@ -728,13 +731,12 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	}
 
 	/**
-	 * Creates a directory from the given content lines. Unrecognized or unusable content lines within the directory object will be saved as literal content lines
-	 * so that their information will be preserved. This version creates a <code>VCard</code> object.
-	 * @param contentLines The content lines that make up the directory.
-	 * @return A directory object representing the directory, or <code>null</code> if this profile cannot create a directory from the given information.
-	 * @see VCard
+	 * {@inheritDoc}
+	 * <p>
+	 * This version creates a VCard.
+	 * </p>
 	 */
-	public Directory createDirectory(final ContentLine[] contentLines)
+	public VCard createDirectory(final ContentLine[] contentLines)
 	{
 		final VCard vcard = new VCard(); //we'll store the vCard information here
 		for(int i = 0; i < contentLines.length; ++i) //look at each content line
@@ -805,13 +807,13 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			{ //TODO decide if we want to add the email object when this line is processed
 				//TODO del when works					vcard.getEmailList().add((Email)contentLine.getValue());	//add this email to our list
 				int emailType; //we'll determine the email type
-				final String[] types = getParamValues(contentLine.getParamList(), TYPE_PARAM_NAME); //get the email types specified
-				if(types.length > 0) //if there are types given
+				final List<String> types = getParamValues(contentLine.getParamList(), TYPE_PARAM_NAME); //get the email types specified
+				if(types.size() > 0) //if there are types given
 				{
 					emailType = Email.NO_EMAIL_TYPE; //start out not knowing any email type
-					for(int typeIndex = types.length - 1; typeIndex >= 0; --typeIndex) //look at each email type
+					for(int typeIndex = types.size() - 1; typeIndex >= 0; --typeIndex) //look at each email type
 					{
-						emailType |= getEmailType(types[typeIndex]); //get this email type and combine it with the ones we've found already
+						emailType |= getEmailType(types.get(typeIndex)); //get this email type and combine it with the ones we've found already
 					}
 				}
 				else
