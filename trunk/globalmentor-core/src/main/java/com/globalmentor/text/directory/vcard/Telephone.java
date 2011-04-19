@@ -16,15 +16,13 @@
 
 package com.globalmentor.text.directory.vcard;
 
-import static com.globalmentor.collections.Collections.*;
-import static com.globalmentor.java.Enums.*;
+import static com.globalmentor.collections.Sets.immutableSetOf;
 import static com.globalmentor.java.Strings.*;
 
 import java.util.EnumSet;
 import java.util.Set;
 
 import com.globalmentor.itu.*;
-import com.globalmentor.model.IDed;
 import com.globalmentor.text.ArgumentSyntaxException;
 
 /**
@@ -39,7 +37,7 @@ public class Telephone extends TelephoneNumber
 	 * The type of telephone.
 	 * @author Garret Wilson
 	 */
-	public enum Type implements IDed<String>
+	public enum Type
 	{
 		/** A telephone number associated with a residence. */
 		HOME,
@@ -69,44 +67,29 @@ public class Telephone extends TelephoneNumber
 		ISDN,
 		/** A personal communication services telephone number. */
 		PCS;
-
-		/** {@inheritDoc} */
-		public String getID() //TODO del if not needed
-		{
-			return getSerializationName(this);
-		}
 	}
 
 	/** The default telephone type. */
-	public final static Type DEFAULT_TELEPHONE_TYPE = Type.VOICE;
+	public final static Type DEFAULT_TYPE = Type.VOICE;
 
 	/** The intended use. */
-	private final Set<Type> telephoneTypes = EnumSet.noneOf(Type.class);
+	private final Set<Type> types;
 
 	/** @return The intended uses. */
-	public Set<Type> getTelephoneTypes()
+	public Set<Type> getTypes()
 	{
-		return telephoneTypes;
-	}
-
-	/**
-	 * Sets the intended use.
-	 * @param telephoneTypes The intended uses.
-	 */
-	public void setTelephoneTypes(final Set<Type> telephoneTypes)
-	{
-		set(this.telephoneTypes, telephoneTypes);
+		return types;
 	}
 
 	/**
 	 * Telephone number and type constructor.
 	 * @param telephoneNumber The telephone number from which values should be used for initialization.
-	 * @param telephoneTypes The intended use.
+	 * @param types The intended use.
 	 * @exception ArgumentSyntaxException Thrown if the values violate ITU-T E.164.
 	 */
-	public Telephone(final TelephoneNumber telephoneNumber, final Set<Type> telephoneTypes) throws ArgumentSyntaxException
+	public Telephone(final TelephoneNumber telephoneNumber, final Set<Type> types) throws ArgumentSyntaxException
 	{
-		this(telephoneNumber.toString(), telephoneTypes); //TODO check
+		this(telephoneNumber.toString(), types); //TODO check
 	}
 
 	/**
@@ -114,46 +97,60 @@ public class Telephone extends TelephoneNumber
 	 * @param cc The country code for geographic areas.
 	 * @param ndc The national destination code
 	 * @param sn The subscriber number.
-	 * @param telephoneTypes The intended use.
+	 * @param types The intended use.
 	 * @exception ArgumentSyntaxException Thrown if the values violate ITU-T E.164.
 	 */
-	public Telephone(final String cc, final String ndc, final String sn, final Set<Type> telephoneTypes) throws ArgumentSyntaxException
+	public Telephone(final String cc, final String ndc, final String sn, final Set<Type> types) throws ArgumentSyntaxException
 	{
 		super(cc, ndc, sn); //construct the parent class
-		setTelephoneTypes(telephoneTypes); //set the telephone types
+		this.types = immutableSetOf(types); //set the telephone types
+	}
+
+	/**
+	 * Constructs a telephone by parsing the given string and assigning a telephone type. Expects the country code to begin with '+' and accepts code field
+	 * delimiters of '-' and ' '.
+	 * <p>
+	 * This constructor uses a default type of {@value Telephone#DEFAULT_TYPE}.
+	 * </p>
+	 * @param string The string to be parsed into a telephone number.
+	 * @exception ArgumentSyntaxException Thrown if the value violates ITU-T E.164.
+	 */
+	public Telephone(final String string) throws ArgumentSyntaxException
+	{
+		this(string, EnumSet.of(DEFAULT_TYPE));
 	}
 
 	/**
 	 * Constructs a telephone by parsing the given string and assigning a telephone type. Expects the country code to begin with '+' and accepts code field
 	 * delimiters of '-' and ' '.
 	 * @param string The string to be parsed into a telephone number.
-	 * @param telephoneTypes The intended use.
+	 * @param types The intended use.
 	 * @exception ArgumentSyntaxException Thrown if the value violates ITU-T E.164.
 	 */
-	public Telephone(final String string, final Set<Type> telephoneTypes) throws ArgumentSyntaxException
+	public Telephone(final String string, final Set<Type> types) throws ArgumentSyntaxException
 	{
 		super(string); //construct the parent class
-		setTelephoneTypes(telephoneTypes); //set the telephone types
+		this.types = immutableSetOf(types); //set the telephone types
 	}
 
 	/** @return A string to represent the telephone type. */
-	public String getTelephoneTypeString()
+	public String getTypeString()
 	{
-		return getTelephoneTypeString(getTelephoneTypes()); //return a string for our telephone type
+		return getTypeString(getTypes()); //return a string for our telephone type
 	}
 
 	/**
-	 * Constructs a string to represent the given telephone type.
-	 * @param telephoneTypes The intended use.
+	 * Constructs a string to represent the given telephone types.
+	 * @param types The intended use.
 	 */
-	public static String getTelephoneTypeString(final Set<Type> telephoneTypes) //TODO i18n
+	public static String getTypeString(final Set<Type> types)
 	{
-		return concat(telephoneTypes, ",");
+		return concat(types, ",");
 	}
 
 	/** @return A string representation of the telephone. */
 	public String toString()
 	{
-		return super.toString() + " (" + getTelephoneTypeString() + ")"; //return the telephone type appended to the telephone number 
+		return super.toString() + " (" + getTypeString() + ")"; //return the telephone type appended to the telephone number 
 	}
 }

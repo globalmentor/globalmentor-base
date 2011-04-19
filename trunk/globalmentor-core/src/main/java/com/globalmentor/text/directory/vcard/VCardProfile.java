@@ -321,23 +321,31 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	{
 		final Locale locale = getLanguageParamValue(paramList); //get the language, if there is one
 		final String telephoneNumberString = reach(reader, CR); //read the string representing the telephone number
-		final Set<Telephone.Type> telephoneTypes = EnumSet.noneOf(Telephone.Type.class); //we'll determine the telephone type
+		final Set<Telephone.Type> telephoneTypes = EnumSet.noneOf(Telephone.Type.class); //we'll determine the telephone types
 		List<String> typeStrings = getParamValues(paramList, TYPE_PARAM_NAME); //get the telephone types specified
 		//some VCard producers, such as Nokia, provide types as bare parameter names instead of in the form TYPE=XXX
 		if(typeStrings.isEmpty()) //if no telephone types were given, see if bare parameter names were given
 		{
 			typeStrings = getParamNamesByValue(paramList, null);
 		}
-		for(final String typeString : typeStrings)
+		if(!typeStrings.isEmpty()) //if we now know telephone types
 		{
-			try
+			for(final String typeString : typeStrings)
 			{
-				telephoneTypes.add(Telephone.Type.valueOf(typeString.toUpperCase()));
+				try
+				{
+					telephoneTypes.add(Telephone.Type.valueOf(typeString.toUpperCase()));
+				}
+				catch(final IllegalArgumentException illegalArgumentException)
+				{
+					throw new ParseIOException("Unrecognized telephone type: " + typeString, illegalArgumentException);
+				}
 			}
-			catch(final IllegalArgumentException illegalArgumentException)
-			{
-				throw new ParseIOException("Unrecognized phone telephone type: " + typeString, illegalArgumentException);
-			}
+		}
+		else
+		//if there are no types given
+		{
+			telephoneTypes.add(Telephone.DEFAULT_TYPE); //use the default type
 		}
 		try
 		{
@@ -348,90 +356,6 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			throw new ParseIOException(reader, syntaxException); //create an I/O parse exception from the telephone number syntax exception
 		}
 	}
-
-	/**
-	 * The reference to a map of {@link Integer}s representing email types, keyed to lowercase versions of email type names. This map can be reclaimed by the JVM
-	 * if it is not being used.
-	 * @see Address
-	 */
-	private static SoftReference<Map<String, Integer>> emailTypeIntegerMapReference = null;
-
-	/**
-	 * @return The map of {@link Integer}s representing email types, keyed to lowercase versions of email type names, or a new map if the old one has been
-	 *         reclaimed by the JVM.
-	 */
-	protected static Map<String, Integer> getEmailTypeIntegerMap()
-	{
-		//get the map, if it has been created and hasn't been reclaimed
-		Map<String, Integer> emailTypeIntegerMap = emailTypeIntegerMapReference != null ? emailTypeIntegerMapReference.get() : null;
-		if(emailTypeIntegerMap == null) //if we no longer have a map, create one and initialize it with lowercase email type values
-		{
-			emailTypeIntegerMap = new HashMap<String, Integer>(); //create a new map
-			emailTypeIntegerMap.put(EMAIL_INTERNET_PARAM_VALUE.toLowerCase(), new Integer(Email.INTERNET_EMAIL_TYPE));
-			emailTypeIntegerMap.put(EMAIL_X400_PARAM_VALUE.toLowerCase(), new Integer(Email.X400_EMAIL_TYPE));
-			emailTypeIntegerMap.put(EMAIL_PREF_PARAM_VALUE.toLowerCase(), new Integer(Email.PREFERRED_EMAIL_TYPE));
-			emailTypeIntegerMapReference = new SoftReference<Map<String, Integer>>(emailTypeIntegerMap); //store the map in a soft reference, so it can be reclaimed if needed			
-		}
-		return emailTypeIntegerMap; //return the map
-	}
-
-	/**
-	 * Determines the integer email type value to represent the given email type name. Comparison is made without regard to case.
-	 * @param emailTypeName The name of the email type.
-	 * @return The email type, one of the <code>Email.XXX_EMAIL_TYPE</code> constants, or {@link Email#NO_EMAIL_TYPE} if the email type name was not recognized.
-	 * @see Email
-	 */
-	public static int getEmailType(final String emailTypeName)
-	{
-		final Map<String, Integer> emailTypeIntegerMap = getEmailTypeIntegerMap(); //get the map of integers keyed to email types
-		final Integer emailTypeInteger = emailTypeIntegerMap.get(emailTypeName.toLowerCase()); //get the integer representing this email type name
-		return emailTypeInteger != null ? emailTypeInteger.intValue() : Email.NO_EMAIL_TYPE; //return the email type we found, or NO_EMAIL_TYPE if we didn't find an email type
-	}
-
-	/**
-	 * Determines the email type names to represent the given email type.
-	 * @param addressType The email types, one or more of the <code>Email.XXX_EMAIL_TYPE</code> constants ORed together.
-	 * @return The names of the of the given email type.
-	 * @see Email
-	 */
-	public static String[] getEmailTypeNames(final int emailType)
-	{
-		final List<String> emailTypeNameList = new ArrayList<String>(); //create an array of email type names
-		for(final Map.Entry<String, Integer> emailTypeEntry : getEmailTypeIntegerMap().entrySet()) //for each email type entry
-		{
-			final int emailTypeIntValue = emailTypeEntry.getValue().intValue(); //get the value of this email type
-			if((emailType & emailTypeIntValue) == emailTypeIntValue) //if our email type includes this value
-			{
-				emailTypeNameList.add(emailTypeEntry.getKey()); //add this email type name to our list 
-			}
-		}
-		return emailTypeNameList.toArray(new String[emailTypeNameList.size()]); //return our list of email type names as an array
-	}
-
-	/**
-	 * Processes the value for the <code>EMAIL</code> type name.
-	 * <p>
-	 * Whatever delimiter ended the value will be left in the reader.
-	 * </p>
-	 * @param reader The reader that contains the lines of the directory.
-	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
-	 * @return An email object representing the value.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
-	 */
-	/*TODO del when works	
-		public static Email processEMAILValue(final Reader reader, final List paramList) throws IOException, ParseIOException
-		{
-			int emailType=Email.NO_EMAIL_TYPE;	//start out not knowing any email type
-			final String[] types=DirectoryUtilities.getParamValues(paramList, TYPE_PARAM_NAME);	//get the email types specified
-			for(int i=types.length-1; i>=0; --i)	//look at each email type
-			{
-				emailType|=getEmailType(types[i]);	//get this email type and combine it with the ones we've found already
-			}
-			final String emailAddress=reader.readStringUntilChar(CR);	//read the string representing the email address
-			return new Email(emailAddress, emailType);	//create and return an email from the address and type we parsed
-		}
-	*/
 
 	/**
 	 * Processes the value for the <code>ORG</code> type name.
@@ -804,24 +728,33 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 				continue; //don't process this content line further
 			}
 			else if(EMAIL_TYPE.equalsIgnoreCase(typeName)) //EMAIL
-			{ //TODO decide if we want to add the email object when this line is processed
-				//TODO del when works					vcard.getEmailList().add((Email)contentLine.getValue());	//add this email to our list
-				int emailType; //we'll determine the email type
-				final List<String> types = getParamValues(contentLine.getParamList(), TYPE_PARAM_NAME); //get the email types specified
-				if(types.size() > 0) //if there are types given
+			{
+				final Set<Email.Type> emailTypes = EnumSet.noneOf(Email.Type.class); //we'll determine the email types
+				List<String> typeStrings = getParamValues(contentLine.getParamList(), TYPE_PARAM_NAME); //get the email types specified
+				if(typeStrings.isEmpty()) //if no telephone types were given, see if bare parameter names were given, in case some producers provide types as bare names instead of in the form TYPE=XXX
 				{
-					emailType = Email.NO_EMAIL_TYPE; //start out not knowing any email type
-					for(int typeIndex = types.size() - 1; typeIndex >= 0; --typeIndex) //look at each email type
+					typeStrings = getParamNamesByValue(contentLine.getParamList(), null);
+				}
+				if(!typeStrings.isEmpty()) //if we now know email types
+				{
+					for(final String typeString : typeStrings)
 					{
-						emailType |= getEmailType(types.get(typeIndex)); //get this email type and combine it with the ones we've found already
+						try
+						{
+							emailTypes.add(Email.Type.valueOf(typeString.toUpperCase()));
+						}
+						catch(final IllegalArgumentException illegalArgumentException)
+						{
+							throw new IllegalArgumentException("Unrecognized email type: " + typeString, illegalArgumentException);
+						}
 					}
 				}
 				else
 				//if there are no types given
 				{
-					emailType = Email.DEFAULT_EMAIL_TYPE; //use the default email type
+					emailTypes.add(Email.DEFAULT_TYPE); //use the default type
 				}
-				final Email email = new Email(((LocaledText)contentLine.getValue()).getText(), emailType); //create an email from the address and type we parsed
+				final Email email = new Email(((LocaledText)contentLine.getValue()).getText(), emailTypes); //create an email from the address and types we parsed
 				vcard.getEmails().add(email); //add this email to our list
 				continue; //don't process this content line further
 			}
@@ -956,7 +889,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		for(final Telephone telephone : vcard.getTelephones()) //for each telephone
 		{
 			final ContentLine contentLine = new ContentLine(VCARD_PROFILE_NAME, null, TEL_TYPE, telephone); //TEL
-			for(final Telephone.Type telephoneType : telephone.getTelephoneTypes()) //for each telephone type
+			for(final Telephone.Type telephoneType : telephone.getTypes()) //for each telephone type
 			{
 				addParam(contentLine.getParamList(), TYPE_PARAM_NAME, telephoneType.toString()); //add this telephone type parameter
 			}
@@ -965,9 +898,9 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		for(final Email email : vcard.getEmails()) //for each email
 		{
 			final ContentLine contentLine = createContentLine(VCARD_PROFILE_NAME, null, EMAIL_TYPE, new LocaledText(email.getAddress(), email.getLocale())); //EMAIL TODO maybe fix to store the email object, if that's what we decide to store there when reading the value
-			for(final String emailTypeName : getEmailTypeNames(email.getEmailType())) //for each email type name
+			for(final Email.Type emailType : email.getTypes()) //for each email type
 			{
-				addParam(contentLine.getParamList(), TYPE_PARAM_NAME, emailTypeName); //add this email type parameter
+				addParam(contentLine.getParamList(), TYPE_PARAM_NAME, emailType.toString()); //add this email type parameter
 			}
 			contentLineList.add(contentLine); //add the content line
 		}

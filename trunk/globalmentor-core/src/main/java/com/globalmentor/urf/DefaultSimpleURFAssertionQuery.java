@@ -97,8 +97,8 @@ public class DefaultSimpleURFAssertionQuery implements SimpleURFAssertionQuery
 	public DefaultSimpleURFAssertionQuery(final Set<URI> assertionSubjectURIs, final Set<URI> assertionPredicateURIs,
 			final Map<URI, Object> subjectPredicateURIValues)
 	{
-		this.assertionSubjectURIs = assertionSubjectURIs != null ? Sets.toImmutableSet(assertionSubjectURIs) : null;
-		this.assertionPredicateURIs = assertionPredicateURIs != null ? Sets.toImmutableSet(assertionPredicateURIs) : null;
+		this.assertionSubjectURIs = assertionSubjectURIs != null ? Sets.immutableSetOf(assertionSubjectURIs) : null;
+		this.assertionPredicateURIs = assertionPredicateURIs != null ? Sets.immutableSetOf(assertionPredicateURIs) : null;
 		this.subjectPredicateURIValues = subjectPredicateURIValues != null ? Maps.toImmutableMap(subjectPredicateURIValues) : null;
 	}
 

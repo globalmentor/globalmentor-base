@@ -16,6 +16,8 @@
 
 package com.globalmentor.collections;
 
+import static java.util.Collections.emptySet;
+
 import java.util.*;
 import java.util.Collections;
 
@@ -34,14 +36,7 @@ public class Sets
 	 */
 	public static <E> Set<E> immutableSetOf(final E... elements) //TODO improve to return an ImmutableSet<E>
 	{
-		if(elements.length == 1) //if there is only one element
-		{
-			return new ObjectSet<E>(elements[0]); //return an immutable set containing only one object
-		}
-		//TODO check for Enum and return an EnumSet
-		final Set<E> set = new HashSet<E>(); //create a new set
-		Collections.addAll(set, elements); //add all the elements
-		return Collections.unmodifiableSet(set); //wrap the set in an unmodifiable set
+		return immutableSetOf(Collections.<E> emptySet(), elements);
 	}
 
 	/**
@@ -53,30 +48,79 @@ public class Sets
 	 */
 	public static <E> Set<E> immutableSetOf(final Collection<? extends E> collection, final E... elements) //TODO improve to return an ImmutableSet<E>
 	{
-		//TODO check for Enum and return an EnumSet
-		final Set<E> set = new HashSet<E>(collection); //create a new set, starting with the elements in the given collection
-		Collections.addAll(set, elements); //add all the elements
-		return Collections.unmodifiableSet(set); //wrap the set in an unmodifiable set
-	}
-
-	/**
-	 * Creates a read-only copy of the given set. If the set is already read-only, the set itself is returned.
-	 * @param <E> The type of element contained in the set.
-	 * @param set The set which should be returned in read-only form.
-	 * @throws NullPointerException if the given set is <code>null</code>.
-	 */
-	public static <E> Set<E> toImmutableSet(final Set<E> set) //TODO improve to return an ImmutableSet<E>
-	{
-		if(set instanceof ImmutableCollection) //if the set is already immutable TODO fix for Java's immutable sets
+		if(collection.isEmpty()) //if the collection is empty, take some shortcuts
 		{
-			return set;
+			final int size = elements.length; //find out the size of the set we will create for the elements
+			if(size == 0) //if the set will be empty
+			{
+				return emptySet(); //return the shared empty set
+			}
+			final E element = elements[0]; //get the first element
+			if(size == 1) //if there is only one element
+			{
+				return new ObjectSet<E>(element); //return an immutable set containing only one object
+			}
+			Set<E> set = null;
+			if(element instanceof Enum) //if the elements are enums
+			{
+				final Class<?> enumClass = element.getClass(); //get the class of enum we're dealing with
+				boolean areAllSameEnums = true; //make sure all elements are of the same class
+				for(int i = elements.length - 1; i > 0; --i) //look at all the other elements
+				{
+					final E enumElement = elements[i];
+					if(enumElement != null && !enumClass.isInstance(enumElement)) //if this isn't an enum of the same type
+					{
+						areAllSameEnums = false;
+						break;
+					}
+				}
+				if(areAllSameEnums)
+				{
+					final Enum<?>[] enumElements = (Enum<?>[])elements;
+					@SuppressWarnings({ "unchecked", "rawtypes" })
+					final Set<E> enumSet = (Set<E>)EnumSet.<Enum> of(enumElements[0], enumElements);
+					set = enumSet;
+				}
+			}
+			if(set == null) //if the elements are of any other type
+			{
+				set = new HashSet<E>(); //create a new set
+				Collections.addAll(set, elements); //add all the elements
+			}
+			return Collections.unmodifiableSet(set); //wrap the set in an unmodifiable set
 		}
-		final int size = set.size(); //see how big the set is
-		if(size == 1) //if the set only contains one element
+		if(elements.length == 0) //if no extra elements are given, take some shortcuts
 		{
-			return new ObjectSet<E>(set.iterator().next()); //return an immutable set containing only one object
+			if(collection instanceof Set && collection instanceof ImmutableCollection) //if the collection is already an immutable set TODO fix for Java's immutable sets
+			{
+				@SuppressWarnings("unchecked")
+				final Set<E> set = (Set<E>)collection; //this is already an immutable set, so return it; it doesn't matter if it contains subclasses, we can use it as a Set<E> because it is immutable
+				return set;
+			}
+			final int size = collection.size(); //see how big the collection is
+			if(size == 0) //if the collection is empty
+			{
+				return emptySet(); //return the shared empty set
+			}
+			if(size == 1) //if the collection only contains one element
+			{
+				return new ObjectSet<E>(collection.iterator().next()); //return an immutable set containing only one object
+			}
 		}
-		return Collections.unmodifiableSet(new HashSet<E>(set)); //copy the set and wrap it in an unmodifiable set
+		final Set<E> newSet;
+		if(collection instanceof EnumSet) //if the collection is an EnumSet
+		{
+			@SuppressWarnings("unchecked")
+			final Set<E> newEnumSet = (Set<E>)EnumSet.copyOf((EnumSet<?>)collection);
+			newSet = newEnumSet;
+		}
+		else
+		//if we don't know of any enums
+		{
+			newSet = new HashSet<E>(); //use a normal set
+		}
+		Collections.addAll(newSet, elements); //add all the elements
+		return Collections.unmodifiableSet(newSet); //wrap the set in an unmodifiable set
 	}
 
 }
