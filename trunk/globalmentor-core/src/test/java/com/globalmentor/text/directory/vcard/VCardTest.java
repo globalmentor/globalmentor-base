@@ -16,8 +16,11 @@
 
 package com.globalmentor.text.directory.vcard;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -42,11 +45,12 @@ import com.globalmentor.urf.URFDateTime;
 public class VCardTest
 {
 
-	@Test
-	public void testReadNokiaC301JaneDoe() throws IOException
+	/**
+	 * Performs tests on a VCard to ensure that it has the appropriate properties of Jane Doe.
+	 * @param vcard The VCard to test.
+	 */
+	public void testJaneDoe(final VCard vcard)
 	{
-		final IO<VCard> vcardIO = new VCardIO();
-		final VCard vcard = Classes.readResource(getClass(), "nokia-c3-01-janedoe.vcf", vcardIO);
 		assertThat(vcard.getName().getGivenName(), is("Jane"));
 		assertThat(vcard.getName().getFamilyName(), is("Doe"));
 		assertThat(vcard.getAddress().getExtendedAddress(), is("Oak and Pine"));
@@ -84,13 +88,28 @@ public class VCardTest
 	}
 
 	@Test
-	public void testWriteJaneDoe() throws IOException
+	public void testReadNokiaC301JaneDoe() throws IOException
 	{
 		final IO<VCard> vcardIO = new VCardIO();
 		final VCard vcard = Classes.readResource(getClass(), "nokia-c3-01-janedoe.vcf", vcardIO);
+		testJaneDoe(vcard);
+	}
+
+	@Test
+	public void testWriteJaneDoe() throws IOException
+	{
+		final IO<VCard> vcardIO = new VCardIO();
+		//read the card from resources
+		final VCard inputVCard = Classes.readResource(getClass(), "nokia-c3-01-janedoe.vcf", vcardIO);
 		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		vcardIO.write(outputStream, null, vcard);
-		//System.out.print(new String(outputStream.toByteArray(), Charsets.UTF_8_CHARSET));
+		//write the card to a byte array
+		vcardIO.write(outputStream, null, inputVCard);
+		//System.out.print(new String(outputStream.toByteArray(), Charsets.UTF_8_CHARSET));		
+		final ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		//read the card back in
+		final VCard outputVCard = vcardIO.read(inputStream, null);
+		//test to make sure it's what we started with
+		testJaneDoe(outputVCard);
 	}
 
 }

@@ -792,6 +792,10 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		{
 			contentLineList.add(createContentLine(VCARD_PROFILE_NAME, null, NICKNAME_TYPE, nickname)); //NICKNAME			
 		}
+		if(vcard.getBirthday() != null) //BDAY
+		{
+			contentLineList.add(createContentLine(VCARD_PROFILE_NAME, null, BDAY_TYPE, vcard.getBirthday())); //BDAY
+		}
 		//delivery addressing types
 		for(final Address address : vcard.getAddresses()) //for each address
 		{
@@ -862,9 +866,9 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		{
 			contentLineList.add(createContentLine(VCARD_PROFILE_NAME, null, CATEGORIES_TYPE, category)); //CATEGORIES
 		}
-		if(vcard.getNote() != null) //NOTE
+		for(final LocaledText note : vcard.getNotes()) //for each note
 		{
-			contentLineList.add(createContentLine(VCARD_PROFILE_NAME, null, NOTE_TYPE, vcard.getNote())); //NOTE
+			contentLineList.add(createContentLine(VCARD_PROFILE_NAME, null, NOTE_TYPE, note)); //NOTE
 		}
 		/*TODO fix when we allow this to be edited
 				if(vcard.getSortString()!=null)	//SORT-STRING

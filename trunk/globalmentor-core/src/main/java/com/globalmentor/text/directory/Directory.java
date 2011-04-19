@@ -166,6 +166,18 @@ public class Directory
 	}
 
 	/**
+	 * Creates a directory content line with no language specified.
+	 * @param profile The profile of this content line, or <code>null</code> if there is no profile.
+	 * @param group The group specification, or <code>null</code> if there is no group.
+	 * @param name The name of the information.
+	 * @param value The value of the information.
+	 */
+	public static ContentLine createContentLine(final String profile, final String group, final String name, final Object value)
+	{
+		return createContentLine(profile, group, name, value, null);
+	}
+
+	/**
 	 * Creates a directory content line with the given language parameter.
 	 * @param profile The profile of this content line, or <code>null</code> if there is no profile.
 	 * @param group The group specification, or <code>null</code> if there is no group.
