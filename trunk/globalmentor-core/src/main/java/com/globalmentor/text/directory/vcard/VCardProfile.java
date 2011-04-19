@@ -17,7 +17,6 @@
 package com.globalmentor.text.directory.vcard;
 
 import java.io.*;
-import java.lang.ref.*;
 import java.net.*;
 import java.util.*;
 
@@ -25,6 +24,7 @@ import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.text.ABNF.*;
 import static com.globalmentor.text.directory.Directory.*;
 import static com.globalmentor.text.directory.vcard.VCard.*;
+import static java.util.Arrays.asList;
 
 import com.globalmentor.io.*;
 import com.globalmentor.java.*;
@@ -148,25 +148,28 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		else if(LABEL_TYPE.equalsIgnoreCase(name)) //LABEL
 		{
 			final LocaledText[] localeTexts = PredefinedProfile.processTextValueList(reader, paramList); //process the text values
-			int addressType; //we'll determine the address type
-			final List<String> types = getParamValues(paramList, TYPE_PARAM_NAME); //get the address types specified
-			if(types.size() > 0) //if there are types given
+
+			final Set<Address.Type> addressTypes = EnumSet.noneOf(Address.Type.class); //we'll determine the address types
+			List<String> typeStrings = getParamValues(paramList, TYPE_PARAM_NAME); //get the address types specified
+			if(typeStrings.isEmpty()) //if no types were given, see if bare parameter names were given, in case some producers provide types as bare names instead of in the form TYPE=XXX
 			{
-				addressType = Address.NO_ADDRESS_TYPE; //start out not knowing any address type
-				for(int i = types.size() - 1; i >= 0; --i) //look at each address type
-				{
-					addressType |= getAddressType(types.get(i)); //get this address type and combine it with the ones we've found already
-				}
+				typeStrings = getParamNamesByValue(paramList, null);
 			}
-			else
-			//if there are no types given
+			for(final String typeString : typeStrings)
 			{
-				addressType = Address.DEFAULT_ADDRESS_TYPE; //use the default address type
+				try
+				{
+					addressTypes.add(Address.Type.valueOf(typeString.toUpperCase()));
+				}
+				catch(final IllegalArgumentException illegalArgumentException)
+				{
+					throw new ParseIOException("Unrecognized address type: " + typeString, illegalArgumentException);
+				}
 			}
 			final Label[] labels = new Label[localeTexts.length]; //create a new array of labels
 			for(int i = localeTexts.length - 1; i >= 0; --i) //look at each locale text object
 			{
-				labels[i] = new Label(localeTexts[i], addressType); //create a label from the locale text
+				labels[i] = new Label(localeTexts[i], addressTypes); //create a label from the locale text
 			}
 			return labels; //return the labels we constructed from the locale test information
 		}
@@ -202,70 +205,6 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	}
 
 	/**
-	 * The reference to a map of {@link Integer}s representing address types, keyed to lowercase versions of address type names. This map can be reclaimed by the
-	 * JVM if it is not being used.
-	 * @see Address
-	 */
-	private static SoftReference<Map<String, Integer>> addressTypeIntegerMapReference = null;
-
-	/**
-	 * @return The map of {@link Integer}s representing address types, keyed to lowercase versions of address type names, or a new map if the old one has been
-	 *         reclaimed by the JVM.
-	 */
-	protected static Map<String, Integer> getAddressTypeIntegerMap()
-	{
-		//get the map, if it has been created and hasn't been reclaimed
-		Map<String, Integer> addressTypeIntegerMap = addressTypeIntegerMapReference != null ? addressTypeIntegerMapReference.get() : null;
-		if(addressTypeIntegerMap == null) //if we no longer have a map, create one and initialize it with lowercase address type values
-		{
-			addressTypeIntegerMap = new HashMap<String, Integer>(); //create a new map
-			addressTypeIntegerMap.put(ADR_DOM_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.DOMESTIC_ADDRESS_TYPE));
-			addressTypeIntegerMap.put(ADR_INTL_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.INTERNATIONAL_ADDRESS_TYPE));
-			addressTypeIntegerMap.put(ADR_POSTAL_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.POSTAL_ADDRESS_TYPE));
-			addressTypeIntegerMap.put(ADR_PARCEL_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.PARCEL_ADDRESS_TYPE));
-			addressTypeIntegerMap.put(ADR_HOME_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.HOME_ADDRESS_TYPE));
-			addressTypeIntegerMap.put(ADR_WORK_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.WORK_ADDRESS_TYPE));
-			addressTypeIntegerMap.put(ADR_PREF_PARAM_VALUE.toLowerCase(), Integer.valueOf(Address.PREFERRED_ADDRESS_TYPE));
-			addressTypeIntegerMapReference = new SoftReference<Map<String, Integer>>(addressTypeIntegerMap); //store the map in a soft reference, so it can be reclaimed if needed			
-		}
-		return addressTypeIntegerMap; //return the map
-	}
-
-	/**
-	 * Determines the integer address type value to represent the given address type name. Comparison is made without regard to case.
-	 * @param addressTypeName The name of the address type.
-	 * @return The delivery address type, one of the <code>Address.XXX_ADDRESS_TYPE</code> constants, or {@link Address#NO_ADDRESS_TYPE} if the address type name
-	 *         was not recognized.
-	 * @see Address
-	 */
-	public static int getAddressType(final String addressTypeName)
-	{
-		final Map<String, Integer> addressTypeIntegerMap = getAddressTypeIntegerMap(); //get the map of integers keyed to address types
-		final Integer addressTypeInteger = addressTypeIntegerMap.get(addressTypeName.toLowerCase()); //get the integer representing this address type name
-		return addressTypeInteger != null ? addressTypeInteger.intValue() : Address.NO_ADDRESS_TYPE; //return the address type we found, or NO_ADDRESS_TYPE if we didn't find an address type
-	}
-
-	/**
-	 * Determines the address type names to represent the given address type.
-	 * @param addressType The delivery address types, one or more of the <code>Address.XXX_ADDRESS_TYPE</code> constants ORed together.
-	 * @return The names of the of the given address type.
-	 * @see Address
-	 */
-	public static String[] getAddressTypeNames(final int addressType)
-	{
-		final List<String> addressTypeNameList = new ArrayList<String>(); //create an array of address type names
-		for(final Map.Entry<String, Integer> addressTypeEntry : getAddressTypeIntegerMap().entrySet()) //for each address type entry
-		{
-			final int addressTypeIntValue = addressTypeEntry.getValue().intValue(); //get the value of this address type
-			if((addressType & addressTypeIntValue) == addressTypeIntValue) //if our address type includes this value
-			{
-				addressTypeNameList.add(addressTypeEntry.getKey()); //add this address type name to our list 
-			}
-		}
-		return addressTypeNameList.toArray(new String[addressTypeNameList.size()]); //return our list of address type names as an array
-	}
-
-	/**
 	 * Processes the value for the <code>ADR</code> type name.
 	 * <p>
 	 * Whatever delimiter ended the value will be left in the reader.
@@ -279,20 +218,22 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	public static Address processADRValue(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
 	{
 		final Locale locale = getLanguageParamValue(paramList); //get the language, if there is one
-		int addressType; //we'll determine the address type
-		final List<String> types = getParamValues(paramList, TYPE_PARAM_NAME); //get the address types specified
-		if(types.size() > 0) //if there are types given
+		final Set<Address.Type> addressTypes = EnumSet.noneOf(Address.Type.class); //we'll determine the address types
+		List<String> typeStrings = getParamValues(paramList, TYPE_PARAM_NAME); //get the address types specified
+		if(typeStrings.isEmpty()) //if no types were given, see if bare parameter names were given, in case some producers provide types as bare names instead of in the form TYPE=XXX
 		{
-			addressType = Address.NO_ADDRESS_TYPE; //start out not knowing any address type
-			for(int i = types.size() - 1; i >= 0; --i) //look at each address type
-			{
-				addressType |= getAddressType(types.get(i)); //get this address type and combine it with the ones we've found already
-			}
+			typeStrings = getParamNamesByValue(paramList, null);
 		}
-		else
-		//if there are no types given
+		for(final String typeString : typeStrings)
 		{
-			addressType = Address.DEFAULT_ADDRESS_TYPE; //use the default address type
+			try
+			{
+				addressTypes.add(Address.Type.valueOf(typeString.toUpperCase()));
+			}
+			catch(final IllegalArgumentException illegalArgumentException)
+			{
+				throw new ParseIOException("Unrecognized address type: " + typeString, illegalArgumentException);
+			}
 		}
 		final String[][] fields = processStructuredTextValue(reader); //process the structured text fields
 		final String postOfficeBox = fields.length > 0 && fields[0].length > 0 ? fields[0][0] : null; //get the post office box, if present
@@ -302,7 +243,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		final String region = fields.length > 4 && fields[4].length > 0 ? fields[4][0] : null; //get the region, if present
 		final String postalCode = fields.length > 5 && fields[5].length > 0 ? fields[5][0] : null; //get the postal code, if present
 		final String countryName = fields.length > 6 && fields[6].length > 0 ? fields[6][0] : null; //get the country name, if present
-		return new Address(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, addressType, locale); //create and return a vCard address with the parsed information
+		return new Address(postOfficeBox, asList(extendedAddresses), asList(streetAddresses), locality, region, postalCode, countryName, addressTypes, locale); //create and return a vCard address with the parsed information
 	}
 
 	/**
@@ -328,24 +269,16 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		{
 			typeStrings = getParamNamesByValue(paramList, null);
 		}
-		if(!typeStrings.isEmpty()) //if we now know telephone types
+		for(final String typeString : typeStrings)
 		{
-			for(final String typeString : typeStrings)
+			try
 			{
-				try
-				{
-					telephoneTypes.add(Telephone.Type.valueOf(typeString.toUpperCase()));
-				}
-				catch(final IllegalArgumentException illegalArgumentException)
-				{
-					throw new ParseIOException("Unrecognized telephone type: " + typeString, illegalArgumentException);
-				}
+				telephoneTypes.add(Telephone.Type.valueOf(typeString.toUpperCase()));
 			}
-		}
-		else
-		//if there are no types given
-		{
-			telephoneTypes.add(Telephone.DEFAULT_TYPE); //use the default type
+			catch(final IllegalArgumentException illegalArgumentException)
+			{
+				throw new ParseIOException("Unrecognized telephone type: " + typeString, illegalArgumentException);
+			}
 		}
 		try
 		{
@@ -581,8 +514,9 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	{
 		//place the field arrays into an array
 		final String[][] adr = new String[][] { new String[] { address.getPostOfficeBox() != null ? address.getPostOfficeBox() : "" },
-				address.getExtendedAddresses(), address.getStreetAddresses(), new String[] { address.getLocality() != null ? address.getLocality() : "" },
-				new String[] { address.getRegion() != null ? address.getRegion() : "" },
+				address.getExtendedAddresses().toArray(new String[address.getExtendedAddresses().size()]),
+				address.getStreetAddresses().toArray(new String[address.getStreetAddresses().size()]),
+				new String[] { address.getLocality() != null ? address.getLocality() : "" }, new String[] { address.getRegion() != null ? address.getRegion() : "" },
 				new String[] { address.getPostalCode() != null ? address.getPostalCode() : "" },
 				new String[] { address.getCountryName() != null ? address.getCountryName() : "" } };
 		serializeStructuredTextValue(adr, writer); //serialize the value
@@ -731,28 +665,20 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			{
 				final Set<Email.Type> emailTypes = EnumSet.noneOf(Email.Type.class); //we'll determine the email types
 				List<String> typeStrings = getParamValues(contentLine.getParamList(), TYPE_PARAM_NAME); //get the email types specified
-				if(typeStrings.isEmpty()) //if no telephone types were given, see if bare parameter names were given, in case some producers provide types as bare names instead of in the form TYPE=XXX
+				if(typeStrings.isEmpty()) //if no types were given, see if bare parameter names were given, in case some producers provide types as bare names instead of in the form TYPE=XXX
 				{
 					typeStrings = getParamNamesByValue(contentLine.getParamList(), null);
 				}
-				if(!typeStrings.isEmpty()) //if we now know email types
+				for(final String typeString : typeStrings)
 				{
-					for(final String typeString : typeStrings)
+					try
 					{
-						try
-						{
-							emailTypes.add(Email.Type.valueOf(typeString.toUpperCase()));
-						}
-						catch(final IllegalArgumentException illegalArgumentException)
-						{
-							throw new IllegalArgumentException("Unrecognized email type: " + typeString, illegalArgumentException);
-						}
+						emailTypes.add(Email.Type.valueOf(typeString.toUpperCase()));
 					}
-				}
-				else
-				//if there are no types given
-				{
-					emailTypes.add(Email.DEFAULT_TYPE); //use the default type
+					catch(final IllegalArgumentException illegalArgumentException)
+					{
+						throw new IllegalArgumentException("Unrecognized email type: " + typeString, illegalArgumentException);
+					}
 				}
 				final Email email = new Email(((LocaledText)contentLine.getValue()).getText(), emailTypes); //create an email from the address and types we parsed
 				vcard.getEmails().add(email); //add this email to our list
@@ -870,18 +796,18 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		for(final Address address : vcard.getAddresses()) //for each address
 		{
 			final ContentLine contentLine = createContentLine(VCARD_PROFILE_NAME, null, ADR_TYPE, address, address.getLocale()); //ADR
-			for(final String addressTypeName : getAddressTypeNames(address.getAddressType())) //for each address type name
+			for(final Address.Type addressType : address.getTypes()) //for each address type
 			{
-				addParam(contentLine.getParamList(), TYPE_PARAM_NAME, addressTypeName); //add this address type parameter
+				addParam(contentLine.getParamList(), TYPE_PARAM_NAME, addressType.toString()); //add this address type parameter
 			}
 			contentLineList.add(contentLine); //add the content line
 		}
 		for(final Label label : vcard.getLabels()) //for each label
 		{
 			final ContentLine contentLine = createContentLine(VCARD_PROFILE_NAME, null, LABEL_TYPE, label); //LABEL
-			for(final String addressTypeName : getAddressTypeNames(label.getAddressType())) //for each address type name
+			for(final Address.Type addressType : label.getAddressTypes()) //for each address type
 			{
-				addParam(contentLine.getParamList(), TYPE_PARAM_NAME, addressTypeName); //add this address type parameter
+				addParam(contentLine.getParamList(), TYPE_PARAM_NAME, addressType.toString()); //add this address type parameter
 			}
 			contentLineList.add(contentLine); //add the content line
 		}

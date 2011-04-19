@@ -16,6 +16,11 @@
 
 package com.globalmentor.text.directory.vcard;
 
+import static com.globalmentor.collections.Lists.*;
+import static com.globalmentor.collections.Sets.*;
+import static com.globalmentor.java.Strings.*;
+import static java.util.Arrays.*;
+
 import java.util.*;
 
 import com.globalmentor.java.*;
@@ -28,49 +33,42 @@ import com.globalmentor.java.*;
 public class Address
 {
 
-	/** Indicates no address type is specified. */
-	public final static int NO_ADDRESS_TYPE = 0; //TODO switch to using enums and enum sets
-	/** A domestic delivery address. */
-	public final static int DOMESTIC_ADDRESS_TYPE = 1 << 0;
-	/** An international delivery address. */
-	public final static int INTERNATIONAL_ADDRESS_TYPE = 1 << 1;
-	/** A postal delivery address. */
-	public final static int POSTAL_ADDRESS_TYPE = 1 << 2;
-	/** A parcel delivery address. */
-	public final static int PARCEL_ADDRESS_TYPE = 1 << 3;
-	/** A delivery address for a residence. */
-	public final static int HOME_ADDRESS_TYPE = 1 << 4;
-	/** A delivery address for a place of work. */
-	public final static int WORK_ADDRESS_TYPE = 1 << 5;
-	/** The preferred delivery address. */
-	public final static int PREFERRED_ADDRESS_TYPE = 1 << 6;
-
-	/** The default delivery address type. */
-	public final static int DEFAULT_ADDRESS_TYPE = INTERNATIONAL_ADDRESS_TYPE | POSTAL_ADDRESS_TYPE | PARCEL_ADDRESS_TYPE | WORK_ADDRESS_TYPE;
-
-	/** The delivery address type. */
-	private int addressType;
-
 	/**
-	 * @return The delivery address type; defaults to <code>INTERNATIONTAL_ADDRESS_TYPE</code> | </code>POSTAL_ADDRESS_TYPE</code> |
-	 *         <code>PARCEL_ADDRESS_TYPE</code> | <code>WORK_ADDRESS_TYPE</code>.
+	 * The type of address.
+	 * @author Garret Wilson
 	 */
-	public int getAddressType()
+	public enum Type
 	{
-		return addressType;
+		/** A domestic delivery address. */
+		DOM,
+		/** An international delivery address. */
+		INTL,
+		/** A postal delivery address. */
+		POSTAL,
+		/** A parcel delivery address. */
+		PARCEL,
+		/** A delivery address for a residence. */
+		HOME,
+		/** A delivery address for a place of work. */
+		WORK,
+		/** The preferred delivery address. */
+		PREF
 	}
 
-	/**
-	 * Sets the delivery address type.
-	 * @param addressType The delivery address type, one or more of the <code>XXX_ADDRESS_TYPE</code> constants ORed together.
-	 */
-	public void setAddressType(final int addressType)
+	/** The default delivery address type. */
+	public final static Set<Type> DEFAULT_TYPES = EnumSet.of(Type.INTL, Type.POSTAL, Type.PARCEL, Type.WORK);
+
+	/** The delivery address types. */
+	private final Set<Type> types;
+
+	/** @return The delivery address types. */
+	public Set<Type> getTypes()
 	{
-		this.addressType = addressType;
+		return types;
 	}
 
 	/** The post office box. */
-	private String postOfficeBox;
+	private final String postOfficeBox;
 
 	/** @return The post office box. */
 	public String getPostOfficeBox()
@@ -78,20 +76,11 @@ public class Address
 		return postOfficeBox;
 	}
 
-	/**
-	 * Sets the post office box.
-	 * @param postOfficeBox The post office box, or <code>null</code> for no post office box.
-	 */
-	public void setPostOfficeBox(final String postOfficeBox)
-	{
-		this.postOfficeBox = postOfficeBox;
-	}
-
-	/** The extended addresses. */
-	private String[] extendedAddresses;
+	/** The read-only list of extended addresses. */
+	private List<String> extendedAddresses;
 
 	/** @return The extended addresses. */
-	public String[] getExtendedAddresses()
+	public List<String> getExtendedAddresses()
 	{
 		return extendedAddresses;
 	}
@@ -99,32 +88,14 @@ public class Address
 	/** @return The first extended address, or <code>null</code> if there are no extended addresses. */
 	public String getExtendedAddress()
 	{
-		return extendedAddresses.length > 0 ? extendedAddresses[0] : null;
+		return !extendedAddresses.isEmpty() ? extendedAddresses.get(0) : null;
 	}
 
-	/**
-	 * Sets the extended adresses.
-	 * @param extendedAddresses The extended addresses.
-	 */
-	public void setExtendedAddresses(final String[] extendedAddresses)
-	{
-		this.extendedAddresses = extendedAddresses;
-	}
-
-	/**
-	 * Sets the extended address.
-	 * @param extendedAddress The extended address, or <code>null</code> for no extended address.
-	 */
-	public void setExtendedAddress(final String extendedAddress)
-	{
-		setExtendedAddresses(Strings.createArray(extendedAddress));
-	}
-
-	/** The street addresses. */
-	private String[] streetAddresses;
+	/** The read-only list of street addresses. */
+	private final List<String> streetAddresses;
 
 	/** @return The street addresses. */
-	public String[] getStreetAddresses()
+	public List<String> getStreetAddresses()
 	{
 		return streetAddresses;
 	}
@@ -132,29 +103,11 @@ public class Address
 	/** @return The first street address, or <code>null</code> if there are no street addresses. */
 	public String getStreetAddress()
 	{
-		return streetAddresses.length > 0 ? streetAddresses[0] : null;
-	}
-
-	/**
-	 * Sets the street addresses.
-	 * @param streetAddresses The street addresses.
-	 */
-	public void setStreetAddresses(final String[] streetAddresses)
-	{
-		this.streetAddresses = streetAddresses;
-	}
-
-	/**
-	 * Sets the street address.
-	 * @param streetAddress The street address, or <code>null</code> for no street address.
-	 */
-	public void setStreetAddress(final String streetAddress)
-	{
-		setStreetAddresses(Strings.createArray(streetAddress));
+		return !streetAddresses.isEmpty() ? streetAddresses.get(0) : null;
 	}
 
 	/** The locality (e.g. city). */
-	private String locality;
+	private final String locality;
 
 	/** @return The locality (e.g. city). */
 	public String getLocality()
@@ -162,17 +115,8 @@ public class Address
 		return locality;
 	}
 
-	/**
-	 * Sets the locality (e.g. city).
-	 * @param locality The locality (e.g. city), or <code>null</code> for no locality.
-	 */
-	public void setLocality(final String locality)
-	{
-		this.locality = locality;
-	}
-
 	/** The region (e.g. state or province). */
-	private String region;
+	private final String region;
 
 	/** @return The region (e.g. state or province). */
 	public String getRegion()
@@ -180,17 +124,8 @@ public class Address
 		return region;
 	}
 
-	/**
-	 * Sets the region (e.g. state or province).
-	 * @param region The region (e.g. state or province), or <code>null</code> for no region.
-	 */
-	public void setRegion(final String region)
-	{
-		this.region = region;
-	}
-
 	/** The postal code. */
-	private String postalCode;
+	private final String postalCode;
 
 	/** @return The postal code. */
 	public String getPostalCode()
@@ -198,17 +133,8 @@ public class Address
 		return postalCode;
 	}
 
-	/**
-	 * Sets the postal code.
-	 * @param postalCode The postal code, or <code>null</code> for no postal code.
-	 */
-	public void setPostalCode(final String postalCode)
-	{
-		this.postalCode = postalCode;
-	}
-
 	/** The country name. */
-	private String countryName;
+	private final String countryName;
 
 	/** @return The country name. */
 	public String getCountryName()
@@ -216,46 +142,25 @@ public class Address
 		return countryName;
 	}
 
-	/**
-	 * Sets the country name.
-	 * @param countryName The country name, or <code>null</code> for no country name.
-	 */
-	public void setCountryName(final String countryName)
-	{
-		this.countryName = countryName;
-	}
+	/** The locale that represents the language of the text, or <code>null</code> if no language is indicated. */
+	private final Locale locale;
 
-	/**
-	 * The locale that represents the language of the text, or <code>null</code> if no language is indicated.
-	 */
-	private Locale locale;
-
-	/**
-	 * @return The locale that represents the language of the text, or <code>null</code> if no language is indicated.
-	 */
+	/** @return The locale that represents the language of the text, or <code>null</code> if no language is indicated. */
 	public Locale getLocale()
 	{
 		return locale;
 	}
 
-	/**
-	 * Sets the language used by the text.
-	 * @param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
-	 */
-	public void setLocale(final Locale locale)
-	{
-		this.locale = locale;
-	}
-
 	/** Default constructor. */
-	public Address()
-	{
-		this((String)null, (String)null, (String)null, (String)null, (String)null, (String)null, (String)null); //construct a default address with no information
-	}
+	/*TODO del
+		public Address()
+		{
+			this((String)null, (String)null, (String)null, (String)null, (String)null, (String)null, (String)null); //construct a default address with no information
+		}
+	*/
 
 	/**
-	 * Constructor with default address type of <code>INTERNATIONTAL_ADDRESS_TYPE</code> | </code>POSTAL_ADDRESS_TYPE</code> | <code>PARCEL_ADDRESS_TYPE</code> |
-	 * <code>WORK_ADDRESS_TYPE</code>.
+	 * Constructor with default address types of {@value #DEFAULT_TYPES}.
 	 * @param postOfficeBox The post office box, or <code>null</code> for no post office box.
 	 * @param extendedAddresses The extended addresses.
 	 * @param streetAddresses The street addresses.
@@ -264,10 +169,10 @@ public class Address
 	 * @param postalCode The postal code, or <code>null</code> for no postal code.
 	 * @param countryName The country name, or <code>null</code> for no country name.
 	 */
-	public Address(final String postOfficeBox, final String[] extendedAddresses, final String[] streetAddresses, final String locality, final String region,
-			final String postalCode, final String countryName)
+	public Address(final String postOfficeBox, final List<String> extendedAddresses, final List<String> streetAddresses, final String locality,
+			final String region, final String postalCode, final String countryName)
 	{
-		this(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, DEFAULT_ADDRESS_TYPE); //construct an address with the default address type
+		this(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, DEFAULT_TYPES); //construct an address with the default address types
 	}
 
 	/**
@@ -279,12 +184,12 @@ public class Address
 	 * @param region The region (e.g. state or province), or <code>null</code> for no region.
 	 * @param postalCode The postal code, or <code>null</code> for no postal code.
 	 * @param countryName The country name, or <code>null</code> for no country name.
-	 * @param addressType The delivery address type, one or more of the <code>XXX_ADDRESS_TYPE</code> constants ORed together.
+	 * @param types The delivery address types.
 	 */
-	public Address(final String postOfficeBox, final String[] extendedAddresses, final String[] streetAddresses, final String locality, final String region,
-			final String postalCode, final String countryName, final int addressType)
+	public Address(final String postOfficeBox, final List<String> extendedAddresses, final List<String> streetAddresses, final String locality,
+			final String region, final String postalCode, final String countryName, final Set<Type> types)
 	{
-		this(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, addressType, null); //construct an address with no locale		
+		this(postOfficeBox, extendedAddresses, streetAddresses, locality, region, postalCode, countryName, types, null); //construct an address with no locale		
 	}
 
 	/**
@@ -296,26 +201,25 @@ public class Address
 	 * @param region The region (e.g. state or province), or <code>null</code> for no region.
 	 * @param postalCode The postal code, or <code>null</code> for no postal code.
 	 * @param countryName The country name, or <code>null</code> for no country name.
-	 * @param addressType The delivery address type, one or more of the <code>XXX_ADDRESS_TYPE</code> constants ORed together.
+	 * @param types The delivery address types.
 	 * @param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
 	 */
-	public Address(final String postOfficeBox, final String[] extendedAddresses, final String[] streetAddresses, final String locality, final String region,
-			final String postalCode, final String countryName, final int addressType, final Locale locale)
+	public Address(final String postOfficeBox, final List<String> extendedAddresses, final List<String> streetAddresses, final String locality,
+			final String region, final String postalCode, final String countryName, final Set<Type> types, final Locale locale)
 	{
-		setPostOfficeBox(postOfficeBox);
-		setExtendedAddresses(extendedAddresses);
-		setStreetAddresses(streetAddresses);
-		setLocality(locality);
-		setRegion(region);
-		setPostalCode(postalCode);
-		setCountryName(countryName);
-		setAddressType(addressType);
-		setLocale(locale);
+		this.postOfficeBox = postOfficeBox;
+		this.extendedAddresses = immutableListOf(extendedAddresses);
+		this.streetAddresses = immutableListOf(streetAddresses);
+		this.locality = locality;
+		this.region = region;
+		this.postalCode = postalCode;
+		this.countryName = countryName;
+		this.types = immutableSetOf(types);
+		this.locale = locale;
 	}
 
 	/**
-	 * Single constructor with default address type of <code>INTERNATIONTAL_ADDRESS_TYPE</code> | </code>POSTAL_ADDRESS_TYPE</code> |
-	 * <code>PARCEL_ADDRESS_TYPE</code> | <code>WORK_ADDRESS_TYPE</code>.
+	 * Single constructor with default address types of {@value #DEFAULT_TYPES}.
 	 * @param postOfficeBox The post office box, or <code>null</code> for no post office box.
 	 * @param extendedAddress The extended address, or <code>null</code> for no extended address.
 	 * @param streetAddress The street address, or <code>null</code> for no street address.
@@ -327,11 +231,11 @@ public class Address
 	public Address(final String postOfficeBox, final String extendedAddress, final String streetAddress, final String locality, final String region,
 			final String postalCode, final String countryName)
 	{
-		this(postOfficeBox, extendedAddress, streetAddress, locality, region, postalCode, countryName, DEFAULT_ADDRESS_TYPE); //construct the address with the default address type
+		this(postOfficeBox, extendedAddress, streetAddress, locality, region, postalCode, countryName, DEFAULT_TYPES); //construct the address with the default address types
 	}
 
 	/**
-	 * Address type constructor.
+	 * Single address type constructor.
 	 * @param postOfficeBox The post office box, or <code>null</code> for no post office box.
 	 * @param extendedAddress The extended address, or <code>null</code> for no extended address.
 	 * @param streetAddress The street address, or <code>null</code> for no street address.
@@ -339,12 +243,12 @@ public class Address
 	 * @param region The region (e.g. state or province), or <code>null</code> for no region.
 	 * @param postalCode The postal code, or <code>null</code> for no postal code.
 	 * @param countryName The country name, or <code>null</code> for no country name.
-	 * @param addressType The delivery address type, one or more of the <code>XXX_ADDRESS_TYPE</code> constants ORed together.
+	 * @param types The delivery address types.
 	 */
 	public Address(final String postOfficeBox, final String extendedAddress, final String streetAddress, final String locality, final String region,
-			final String postalCode, final String countryName, final int addressType)
+			final String postalCode, final String countryName, final Set<Type> types)
 	{
-		this(postOfficeBox, extendedAddress, streetAddress, locality, region, postalCode, countryName, addressType, null); //construct the address with no locale	
+		this(postOfficeBox, extendedAddress, streetAddress, locality, region, postalCode, countryName, types, null); //construct the address with no locale	
 	}
 
 	/**
@@ -356,83 +260,28 @@ public class Address
 	 * @param region The region (e.g. state or province), or <code>null</code> for no region.
 	 * @param postalCode The postal code, or <code>null</code> for no postal code.
 	 * @param countryName The country name, or <code>null</code> for no country name.
+	 * @param types The delivery address types.
 	 * @param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
 	 */
 	public Address(final String postOfficeBox, final String extendedAddress, final String streetAddress, final String locality, final String region,
-			final String postalCode, final String countryName, final int addressType, final Locale locale)
+			final String postalCode, final String countryName, final Set<Type> types, final Locale locale)
 	{
-		setPostOfficeBox(postOfficeBox);
-		setExtendedAddress(extendedAddress);
-		setStreetAddress(streetAddress);
-		setLocality(locality);
-		setRegion(region);
-		setPostalCode(postalCode);
-		setCountryName(countryName);
-		setAddressType(addressType);
-		setLocale(locale);
+		this(postOfficeBox, asList(extendedAddress), asList(streetAddress), locality, region, postalCode, countryName, types, locale);
+	}
+
+	/** @return A string to represent the delivery address types. */
+	public String getTypeString()
+	{
+		return getTypeString(getTypes()); //return a string for our telephone type
 	}
 
 	/**
-	 * The string for separating the components of the string representation of the address type.
+	 * Constructs a string to represent the given delivery address types.
+	 * @param types The delivery address types.
 	 */
-	protected final static String ADDRESS_TYPE_SEPARATOR = ", ";
-
-	/** @return A string to represent the delivery address type. */
-	public String getAddressTypeString()
+	public static String getTypeString(final Set<Type> types)
 	{
-		return getAddressTypeString(getAddressType()); //return a string for our address type
-	}
-
-	/**
-	 * Constructs a string to represent the given delivery address type.
-	 * @param addressType The intended use, one or more of the <code>XXX_ADDRESS_TYPE</code> constants ORed together.
-	 */
-	public static String getAddressTypeString(final int addressType) //TODO i18n
-	{
-		final StringBuffer stringBuffer = new StringBuffer();
-		if((addressType & PREFERRED_ADDRESS_TYPE) != 0)
-		{
-			if(stringBuffer.length() > 0)
-				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
-			stringBuffer.append("preferred");
-		}
-		if((addressType & WORK_ADDRESS_TYPE) != 0)
-		{
-			if(stringBuffer.length() > 0)
-				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
-			stringBuffer.append("work");
-		}
-		if((addressType & HOME_ADDRESS_TYPE) != 0)
-		{
-			if(stringBuffer.length() > 0)
-				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
-			stringBuffer.append("home");
-		}
-		if((addressType & INTERNATIONAL_ADDRESS_TYPE) != 0)
-		{
-			if(stringBuffer.length() > 0)
-				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
-			stringBuffer.append("international");
-		}
-		if((addressType & DOMESTIC_ADDRESS_TYPE) != 0)
-		{
-			if(stringBuffer.length() > 0)
-				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
-			stringBuffer.append("domestic");
-		}
-		if((addressType & PARCEL_ADDRESS_TYPE) != 0)
-		{
-			if(stringBuffer.length() > 0)
-				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
-			stringBuffer.append("parcel");
-		}
-		if((addressType & POSTAL_ADDRESS_TYPE) != 0)
-		{
-			if(stringBuffer.length() > 0)
-				stringBuffer.append(ADDRESS_TYPE_SEPARATOR);
-			stringBuffer.append("postal");
-		}
-		return stringBuffer.toString();
+		return concat(types, ",");
 	}
 
 	/** @return A string representation of the address. */
@@ -440,30 +289,52 @@ public class Address
 	{
 		final StringBuilder stringBuilder = new StringBuilder(); //create a new string buffer to hold the string we'll construct
 		if(postOfficeBox != null) //if there is a post office box
+		{
 			stringBuilder.append("PO Box ").append(postOfficeBox); //append the post office box TODO i18n
+		}
 		if(postOfficeBox != null
-				&& (extendedAddresses.length > 0 || streetAddresses.length > 0 || locality != null || region != null || postalCode != null || countryName != null)) //if we added information and there is more information following
+				&& (!extendedAddresses.isEmpty() || !streetAddresses.isEmpty() || locality != null || region != null || postalCode != null || countryName != null)) //if we added information and there is more information following
+		{
 			stringBuilder.append('\n'); //append a newline
+		}
 		StringBuilders.append(stringBuilder, extendedAddresses, '\n'); //append the extended addresses, separated by a newline
-		if(extendedAddresses.length > 0 && (streetAddresses.length > 0 || locality != null || region != null || postalCode != null || countryName != null)) //if we added information and there is more information following
+		if(!extendedAddresses.isEmpty() && (!streetAddresses.isEmpty() || locality != null || region != null || postalCode != null || countryName != null)) //if we added information and there is more information following
+		{
 			stringBuilder.append('\n'); //append a newline
+		}
 		StringBuilders.append(stringBuilder, streetAddresses, '\n'); //append the street addresses, separated by a newline
-		if(streetAddresses.length > 0 && (locality != null || region != null || postalCode != null || countryName != null)) //if we added information and there is more information following
+		if(!streetAddresses.isEmpty() && (locality != null || region != null || postalCode != null || countryName != null)) //if we added information and there is more information following
+		{
 			stringBuilder.append('\n'); //append a newline
+		}
 		if(locality != null) //if there is a locality
+		{
 			stringBuilder.append(locality); //append the locality
+		}
 		if(locality != null && (region != null || postalCode != null || countryName != null)) //if we added information and there is more information following
+		{
 			stringBuilder.append(", "); //append a comma and a space
+		}
 		if(region != null) //if there is a region
+		{
 			stringBuilder.append(region); //append the region
+		}
 		if(region != null && (postalCode != null || countryName != null)) //if we added information and there is more information following
+		{
 			stringBuilder.append('\n'); //append a newline
+		}
 		if(postalCode != null) //if there is a postal code
+		{
 			stringBuilder.append(postalCode); //append the postal code
+		}
 		if(postalCode != null && (countryName != null)) //if we added information and there is more information following
+		{
 			stringBuilder.append(' '); //append a space
+		}
 		if(countryName != null) //if there is a country name
+		{
 			stringBuilder.append(countryName); //append the country name
+		}
 		return stringBuilder.toString(); //return the string we constructed
 	}
 }

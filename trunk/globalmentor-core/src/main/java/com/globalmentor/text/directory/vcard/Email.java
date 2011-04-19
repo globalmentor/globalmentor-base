@@ -38,7 +38,6 @@ public class Email
 	 */
 	public enum Type
 	{
-
 		/** An Internet email address. */
 		INTERNET,
 		/** An X.400 addressing type. */

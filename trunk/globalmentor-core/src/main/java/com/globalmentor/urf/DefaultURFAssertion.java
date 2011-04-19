@@ -89,7 +89,7 @@ public class DefaultURFAssertion implements URFAssertion	//TODO add specific sup
 		this.subjectURI = checkInstance(subjectURI, "Subject URI cannot be null.");
 		this.predicateURI = checkInstance(predicateURI, "Predicate URI cannot be null.");
 		this.object = checkInstance(object, "Object cannot be null.");
-		this.scopeChain = createReadOnlyList(scopeChain);
+		this.scopeChain = immutableListOf(scopeChain);
 	}
 
 	/** @return A hash code value for the assertion. */

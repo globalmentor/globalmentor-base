@@ -72,7 +72,7 @@ public class Strings
 	 */
 	public static String concat(final Object[] objects, final char separator)
 	{
-		return StringBuilders.append(new StringBuilder(), objects, separator).toString(); //append the objects to a string builder and return the string
+		return TextFormatter.formatList(new StringBuilder(), separator, objects).toString(); //append the objects to a string builder and return the string
 	}
 
 	/**
@@ -99,9 +99,22 @@ public class Strings
 	 */
 	public static String concat(final Object[] objects, final String separator)
 	{
-		return StringBuilders.append(new StringBuilder(), objects, separator).toString(); //append the objects to a string builder and return the string
+		return TextFormatter.formatList(new StringBuilder(), separator, objects).toString(); //append the objects to a string builder and return the string
 	}
 
+	/**
+	 * Concatenates the string representations of the objects in the array, separated by the given separator character. Null objects are represented by the string
+	 * "null".
+	 * @param objects The objects (such as strings) to be concatenated.
+	 * @param separator The separator string to be inserted between the object strings, or <code>null</code> if no separator should be used.
+	 * @return A concatenation of string representations of all given objects, separated by the separator.
+	 * @see Object#toString()
+	 */
+	public static String concat(final Iterable<?> objects, final char separator)
+	{
+		return StringBuilders.append(new StringBuilder(), objects, separator).toString(); //append the objects to a string builder and return the string
+	}
+	
 	/**
 	 * Concatenates the string representations of the objects in the array, separated by the given separator string. Null objects are represented by the string
 	 * "null".
@@ -112,7 +125,7 @@ public class Strings
 	 */
 	public static String concat(final Iterable<?> objects, final String separator)
 	{
-		return StringBuilders.append(new StringBuilder(), objects, separator).toString(); //append the objects to a string builder and return the string
+		return TextFormatter.formatList(new StringBuilder(), separator, objects).toString(); //append the objects to a string builder and return the string
 	}
 	
 	/**

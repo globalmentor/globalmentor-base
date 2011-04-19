@@ -55,25 +55,62 @@ public class Lists
 	}
 
 	/**
-	 * Creates a read-only list with the given elements.
-	 * @param <E> The type of element the list will contain.
-	 * @param elements The elements to add to the new list.
-	 * @return A read-only list containing the given elements.
+	 * Creates a read-only list containing the given elements.
+	 * @param <E> The type of element contained in the list.
+	 * @param elements The elements to be contained in the list.
+	 * @throws NullPointerException if the given array of elements is <code>null</code>.
 	 */
-	public static <E> List<E> createReadOnlyList(final E... elements)
+	public static <E> List<E> immutableListOf(final E... elements) //TODO improve to return an ImmutableList<E>
 	{
-		return java.util.Collections.unmodifiableList(java.util.Arrays.asList(elements.clone())); //clone the array defensively so that it won't be modified by the caller
+		return immutableListOf(java.util.Collections.<E> emptyList(), elements);
 	}
 
 	/**
-	 * Creates a read-only list with the contents of the given collection.
-	 * @param <E> The type of element the list will contain.
-	 * @param collection The collection to add to the new list.
-	 * @return A read-only list with the contents of the given collection.
+	 * Creates a read-only list containing the elements of the provided collection along with the given elements.
+	 * @param <E> The type of element contained in the list.
+	 * @param collection The existing collection to augment.
+	 * @param elements The elements to be contained in the list.
+	 * @throws NullPointerException if the given collection and/or array of elements is <code>null</code>.
 	 */
-	public static <E> List<E> createReadOnlyList(final Collection<? extends E> collection)
+	public static <E> List<E> immutableListOf(final Collection<? extends E> collection, final E... elements) //TODO improve to return an ImmutableList<E>
 	{
-		return java.util.Collections.unmodifiableList(addAll(new ArrayList<E>(), collection));
+		if(collection.isEmpty()) //if the collection is empty, take some shortcuts
+		{
+			final int size = elements.length; //find out the size of the list we will create for the elements
+			if(size == 0) //if the list will be empty
+			{
+				return java.util.Collections.emptyList(); //return the shared empty list
+			}
+			/*TODO fix
+						final E element = elements[0]; //get the first element
+						if(size == 1) //if there is only one element
+						{
+							return new ObjectSet<E>(element); //return an immutable set containing only one object
+						}
+			*/
+			return java.util.Collections.unmodifiableList(java.util.Arrays.asList(elements.clone())); //clone the array defensively so that it won't be modified by the caller
+		}
+		if(elements.length == 0) //if no extra elements are given, take some shortcuts
+		{
+			if(collection instanceof List && collection instanceof ImmutableCollection) //if the collection is already an immutable list TODO fix for Java's immutable lists
+			{
+				@SuppressWarnings("unchecked")
+				final List<E> list = (List<E>)collection; //this is already an immutable list, so return it; it doesn't matter if it contains subclasses, we can use it as a List<E> because it is immutable
+				return list;
+			}
+			final int size = collection.size(); //see how big the collection is
+			if(size == 0) //if the collection is empty
+			{
+				return java.util.Collections.emptyList(); //return the shared empty list
+			}
+			/*TODO fix
+						if(size == 1) //if the collection only contains one element
+						{
+							return new ObjectSet<E>(collection.iterator().next()); //return an immutable set containing only one object
+						}
+			*/
+		}
+		return java.util.Collections.unmodifiableList(new ArrayList<E>(collection)); //copy the collection and return an immutable version of it
 	}
 
 	/**

@@ -16,11 +16,9 @@
 
 package com.globalmentor.java;
 
-import static com.globalmentor.io.Charsets.UTF_8_CHARSET;
+import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.CharSequences.*;
-import static com.globalmentor.java.Characters.NULL_CHAR;
-
-import java.util.Iterator;
+import static com.globalmentor.java.Characters.*;
 
 import com.globalmentor.text.Case;
 
@@ -120,24 +118,11 @@ public class StringBuilders
 	 * @param stringBuilder The string builder into which the result should be placed.
 	 * @param objects The array of objects (such as strings) to be concatenated.
 	 * @param separator The separator character to be inserted between the object strings.
-	 * @return A concatenation of string representations of all objects in the array, separted by the separator character.
-	 * @see Object#toString()
-	 */
-	public static StringBuilder append(final StringBuilder stringBuilder, final Object[] objects, final char separator)
-	{
-		return append(stringBuilder, objects, separator, null); //append the objects without ignoring any
-	}
-
-	/**
-	 * Concatenates the string representations of the objects in the array, separated by the given separator character, by appending them to the string builder.
-	 * Null objects are handled as per {@link StringBuilder#append(Object)}.
-	 * @param stringBuilder The string builder into which the result should be placed.
-	 * @param objects The array of objects (such as strings) to be concatenated.
-	 * @param separator The separator character to be inserted between the object strings.
 	 * @param ignoreObject The object to ignore, or <code>null</code> if no objects should be ignored.
-	 * @return A concatenation of string representations of all objects in the array, separted by the separator character.
+	 * @return A concatenation of string representations of all objects in the array, separated by the separator character.
 	 * @see Object#toString()
 	 */
+	@Deprecated	//TODO move to TextFormatter
 	public static StringBuilder append(final StringBuilder stringBuilder, final Object[] objects, final char separator, final Object ignoreObject)
 	{
 		for(final Object object : objects) //look at each object
@@ -151,50 +136,6 @@ public class StringBuilders
 		if(objects.length > 0) //if we added information
 		{
 			stringBuilder.deleteCharAt(stringBuilder.length() - 1); //remove the last separator
-		}
-		return stringBuilder; //return the string builder, now containing the new information
-	}
-
-	/**
-	 * Concatenates the string representations of the objects in the array, separated by the given separator string, by appending them to the string builder.
-	 * @param stringBuilder The string builder into which the result should be placed.
-	 * @param objects The array of objects (such as strings) to be concatenated.
-	 * @param separator The separator string to be inserted between the object strings, or <code>null</code> if no separator should be used.
-	 * @return A concatenation of string representations of all objects in the array, separated by the separator.
-	 * @see Object#toString()
-	 */
-	public static StringBuilder append(final StringBuilder stringBuilder, final Object[] objects, final String separator)
-	{
-		final int length = objects.length;
-		for(int i = 0; i < objects.length; ++i) //look at each object
-		{
-			stringBuilder.append(objects[i]); //add this object to the string builder
-			if(i < length - 1 && separator != null) //if this isn't the last object, and there is a separator string
-				stringBuilder.append(separator); //append the separator character 			
-		}
-		return stringBuilder; //return the string builder, now containing the new information
-	}
-
-	/**
-	 * Concatenates the string representations of the objects in the array, separated by the given separator string, by appending them to the string builder.
-	 * @param <T> The type of object being appended.
-	 * @param stringBuilder The string builder into which the result should be placed.
-	 * @param objects The objects (such as strings) to be concatenated.
-	 * @param separator The separator string to be inserted between the object strings, or <code>null</code> if no separator should be used.
-	 * @return A concatenation of string representations of all given objects, separated by the separator.
-	 * @see Object#toString()
-	 */
-	public static <T> StringBuilder append(final StringBuilder stringBuilder, final Iterable<T> objects, final String separator)
-	{
-		final Iterator<T> iterator = objects.iterator();
-		while(iterator.hasNext())
-		{
-			final T object = iterator.next();
-			stringBuilder.append(object); //add this object to the string builder
-			if(separator != null && iterator.hasNext()) //if this isn't the last object, and there is a separator string
-			{
-				stringBuilder.append(separator); //append the separator character 			
-			}
 		}
 		return stringBuilder; //return the string builder, now containing the new information
 	}
