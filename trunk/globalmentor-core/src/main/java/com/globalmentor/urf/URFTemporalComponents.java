@@ -447,12 +447,12 @@ public class URFTemporalComponents
 			if(hasDate) //if we should parse a date
 			{
 				year = Integer.parseInt(readStringCheck(reader, 4, '0', '9')); //read the year
-				if(requireDelimiters || confirm(reader, DATE_DELIMITER))
+				if(requireDelimiters || peek(reader)==DATE_DELIMITER)
 				{
 					check(reader, DATE_DELIMITER); //check the date delimiter
 				}
 				month = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the month
-				if(requireDelimiters || confirm(reader, DATE_DELIMITER))
+				if(requireDelimiters || peek(reader)==DATE_DELIMITER)
 				{
 					check(reader, DATE_DELIMITER); //check the date delimiter
 				}
@@ -476,12 +476,12 @@ public class URFTemporalComponents
 					check(reader, TIME_BEGIN); //check the beginning of the time section
 				}
 				hours = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the hours
-				if(requireDelimiters || confirm(reader, TIME_DELIMITER))
+				if(requireDelimiters || peek(reader)== TIME_DELIMITER)
 				{
 					check(reader, TIME_DELIMITER); //check the time delimiter
 				}
 				minutes = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the minutes
-				if(!lenient || confirm(reader, TIME_DELIMITER)) //if there are seconds (seconds are only optional if we are parsing leniently)
+				if(!lenient || peek(reader)==TIME_DELIMITER) //if there are seconds (seconds are only optional if we are parsing leniently)
 				{
 					check(reader, TIME_DELIMITER); //check the time delimiter
 					seconds = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the seconds
