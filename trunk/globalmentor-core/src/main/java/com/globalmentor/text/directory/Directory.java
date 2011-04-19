@@ -103,6 +103,9 @@ public class Directory
 	/** The binary encoding type from RFC 2047. */
 	public final static String B_ENCODING_TYPE = "b"; //TODO check to see how this relates to RFC 2047, and if this constant should be defined elsewhere	
 
+	/** The base64 encoding type; equivalent to {@link #B_ENCODING_TYPE} as per RFC 2047. Used by some VCard producers such as Nokia. */
+	public final static String BASE64_ENCODING_TYPE = "base64";
+
 	/** The value type predefined type. */
 	public final static String VALUE_PARAM_NAME = "value";
 
@@ -203,7 +206,7 @@ public class Directory
 	{
 		for(final NameValuePair<String, String> parameter : paramList) //for each parameter
 		{
-			if(paramName.equals(parameter.getName())) //if this is the correct parameter
+			if(paramName.equalsIgnoreCase(parameter.getName())) //if this is the correct parameter
 			{
 				return parameter.getValue(); //return the parameter value
 			}
@@ -222,7 +225,7 @@ public class Directory
 		final List<String> paramValueList = new ArrayList<String>(paramList.size()); //create a list to hold parameter values, knowing we won't need room for more parameters than the we were given
 		for(final NameValuePair<String, String> parameter : paramList) //for each parameter
 		{
-			if(paramName.equals(parameter.getName())) //if this is the correct parameter
+			if(paramName.equalsIgnoreCase(parameter.getName())) //if this is the correct parameter
 			{
 				paramValueList.add(parameter.getValue()); //add the parameter value
 			}
@@ -260,7 +263,7 @@ public class Directory
 		while(paramIterator.hasNext()) //while there are more parameters
 		{
 			final NameValuePair<String, String> parameter = paramIterator.next(); //get the next parameter name/value pair
-			if(paramName.equals(parameter.getName())) //if this is the correct parameter
+			if(paramName.equalsIgnoreCase(parameter.getName())) //if this is the correct parameter
 			{
 				paramIterator.remove(); //remove this parameter
 			}

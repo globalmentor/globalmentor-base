@@ -17,6 +17,7 @@
 package com.globalmentor.text.directory.vcard;
 
 import java.io.IOException;
+import java.net.URI;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -27,6 +28,7 @@ import org.junit.Test;
 import com.globalmentor.io.IO;
 import com.globalmentor.itu.TelephoneNumber;
 import com.globalmentor.java.Classes;
+import com.globalmentor.model.LocaledText;
 import com.globalmentor.urf.AbstractURFDateTime;
 import com.globalmentor.urf.URFDateTime;
 
@@ -72,12 +74,11 @@ public class VCardTest
 		assertThat(workTelephone.getTypes().size(), is(2));
 		assertTrue(workTelephone.getTypes().contains(Telephone.Type.WORK));
 		assertTrue(workTelephone.getTypes().contains(Telephone.Type.VOICE));
-		/*
-		EMAIL;CHARSET=UTF-8;ENCODING=8BIT:jane@example.com
-		URL;CHARSET=UTF-8;ENCODING=8BIT:http://www.example.com/
-		NOTE;ENCODING=BASE64:VGhpcyBpcyBqdXN0IGEgdGVzdC4KSXNzbyDDqSBzw7MgdW0gZXhlbX
-		 Bsby4=
-		 */
+		assertThat(vcard.getEmail().getAddress(), is(new Email("jane@example.com").getAddress()));
+		assertThat(vcard.getURL(), is(URI.create("http://www.example.com/")));
+		assertThat(vcard.getNotes().size(), is(2));
+		assertTrue(vcard.getNotes().contains(new LocaledText("This is just a test.\nIsso é só um exemplo.")));
+		assertTrue(vcard.getNotes().contains(new LocaledText("This is another note.")));
 	}
 
 }

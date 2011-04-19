@@ -20,6 +20,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.text.ABNF.*;
 import static com.globalmentor.text.directory.Directory.*;
@@ -28,6 +29,7 @@ import com.globalmentor.io.*;
 import com.globalmentor.java.Characters;
 import com.globalmentor.model.*;
 import com.globalmentor.urf.*;
+import com.globalmentor.util.Base64;
 
 /**
  * Profile for predefined types of a <code>text/directory</code> as defined in <a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
@@ -148,7 +150,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		char delimiter; //we'll store the last delimiter peeked		
 		do
 		{
-			final String string = processTextValue(reader); //read a string
+			final String string = processTextValue(reader, paramList); //read a string
 			//		TODO del Log.trace("read text string: ", string);	//TODO del
 			localeTextList.add(new LocaledText(string, locale)); //add the text to our list			
 			delimiter = peek(reader); //see what character is next
@@ -170,12 +172,22 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * Whatever delimiter ended the value will be left in the reader.
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return An array of strings representing the values.
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
-	public static String processTextValue(final Reader reader) throws IOException, ParseIOException
+	public static String processTextValue(Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
 	{
+		//check for the non-standard base64 encoding used by producers such as Nokia
+		final String encoding = getParamValue(paramList, ENCODING_PARAM_NAME); //see if an encoding is indicated
+		if(B_ENCODING_TYPE.equalsIgnoreCase(encoding) || BASE64_ENCODING_TYPE.equalsIgnoreCase(encoding)) //if the text is encoded as binary (Nokia does this, for unknown reasons)
+		{
+			final String base64String = reach(reader, CR); //read the text
+			final byte[] bytes = Base64.decode(base64String); //decode the text into bytes
+			final String encodedString = new String(bytes, UTF_8_CHARSET); //hope that the bytes represent UTF-8; using base64 for text is non-standard and undocumented
+			reader = new StringReader(encodedString + CR); //replace the reader with the new, decoded content, adding a CR to mimic the original data
+		}
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder to hold whatever string we're processing
 		char delimiter; //we'll store the last delimiter peeked		
 		do

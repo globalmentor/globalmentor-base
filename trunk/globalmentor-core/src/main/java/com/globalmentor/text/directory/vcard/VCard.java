@@ -487,6 +487,12 @@ public class VCard extends Directory
 		return emailList;
 	}
 
+	/** @return The first electronic mail addresses for communication with the object the vCard represents. */
+	public Email getEmail()
+	{
+		return get(getEmails());
+	}
+	
 	/**
 	 * Sets the electronic mail addresses for communication with the object the vCard represents.
 	 * @param emails The array of email addresses.
