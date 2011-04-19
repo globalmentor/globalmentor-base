@@ -16,6 +16,7 @@
 
 package com.globalmentor.text.directory.vcard;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 
@@ -25,6 +26,7 @@ import static org.junit.Assert.*;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
+import com.globalmentor.io.Charsets;
 import com.globalmentor.io.IO;
 import com.globalmentor.itu.TelephoneNumber;
 import com.globalmentor.java.Classes;
@@ -65,7 +67,7 @@ public class VCardTest
 		assertThat(cellTelephone.getTypes().size(), is(2));
 		assertTrue(cellTelephone.getTypes().contains(Telephone.Type.CELL));
 		assertTrue(cellTelephone.getTypes().contains(Telephone.Type.VOICE));
-		final Telephone telephone = vcard.getTelephone(new TelephoneNumber("+5105551212"));
+		final Telephone telephone = vcard.getTelephone(new TelephoneNumber("+15105551212"));
 		assertNotNull(telephone);
 		assertThat(telephone.getTypes().size(), is(1));
 		assertTrue(telephone.getTypes().contains(Telephone.Type.VOICE));
@@ -79,6 +81,16 @@ public class VCardTest
 		assertThat(vcard.getNotes().size(), is(2));
 		assertTrue(vcard.getNotes().contains(new LocaledText("This is just a test.\nIsso é só um exemplo.")));
 		assertTrue(vcard.getNotes().contains(new LocaledText("This is another note.")));
+	}
+
+	@Test
+	public void testWriteJaneDoe() throws IOException
+	{
+		final IO<VCard> vcardIO = new VCardIO();
+		final VCard vcard = Classes.readResource(getClass(), "nokia-c3-01-janedoe.vcf", vcardIO);
+		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		vcardIO.write(outputStream, null, vcard);
+		//System.out.print(new String(outputStream.toByteArray(), Charsets.UTF_8_CHARSET));
 	}
 
 }
