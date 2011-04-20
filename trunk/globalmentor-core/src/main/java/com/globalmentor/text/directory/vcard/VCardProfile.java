@@ -773,6 +773,8 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		//TODO del		final List contentLineList=new ArrayList(vcard.getContentLineList());	//create a content line list initially containing all the unrecognized content lines of the vCard
 		final List<ContentLine> contentLineList = new ArrayList<ContentLine>(); //create a content line list to fill
 		contentLineList.add(new ContentLine(BEGIN_TYPE, new LocaledText(VCARD_PROFILE_NAME))); //BEGIN:VCARD
+		//ignore the given vCard version, and always create "version:3.0"
+		contentLineList.add(new ContentLine(VERSION_TYPE, new LocaledText(VCARD_VERSION_VALUE))); //VERSION
 		//predefined directory types
 		if(vcard.getDisplayName() != null) //NAME
 		{
@@ -880,8 +882,6 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		{
 			contentLineList.add(new ContentLine(VCARD_PROFILE_NAME, null, VCard.URL_TYPE, vcard.getURL())); //URL
 		}
-		//ignore the given vCard version, and always create "version:3.0"
-		contentLineList.add(new ContentLine(VERSION_TYPE, new LocaledText(VCARD_VERSION_VALUE))); //VERSION
 		contentLineList.addAll(vcard.getContentLineList()); //add all of our unrecognized content lines
 		contentLineList.add(new ContentLine(END_TYPE, new LocaledText(VCARD_PROFILE_NAME))); //END:VCARD
 		return (ContentLine[])contentLineList.toArray(new ContentLine[contentLineList.size()]); //return the content lines we produced	
