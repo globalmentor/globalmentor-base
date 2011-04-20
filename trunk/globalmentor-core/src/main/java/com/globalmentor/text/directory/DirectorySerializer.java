@@ -19,8 +19,12 @@ package com.globalmentor.text.directory;
 import java.io.*;
 import java.util.*;
 
+import static com.globalmentor.collections.Sets.*;
+import static com.globalmentor.java.Characters.*;
+import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.text.ABNF.*;
 import static com.globalmentor.text.directory.Directory.*;
+import static java.util.Collections.*;
 
 import com.globalmentor.model.LocaledText;
 import com.globalmentor.model.NameValuePair;
@@ -28,12 +32,51 @@ import com.globalmentor.model.NameValuePair;
 /**
  * Class that can serialize a directory of type <code>text/directory</code> as defined in <a href="http://www.ietf.org/rfc/rfc2425.txt">RFC 2425</a>,
  * "A MIME Content-Type for Directory Information".
+ * <p>
+ * Every content line with a name in {@link #getSingleValueNames()}, will be collapsed into a single content line for each name. If the values are of type
+ * {@link LocaledText}, the string will be concatenated with a delimiter, using the locale of the first value. Combining values of other value types is not
+ * currently supported.
+ * </p>
  * @author Garret Wilson
  * @see Profile
  * @see PredefinedProfile
  */
 public class DirectorySerializer
 {
+
+	/**
+	 * The delimiter string used for combining content line text values.
+	 * @see #getSingleValueNames()
+	 * @see <a href="http://tools.ietf.org/html/rfc3676#section-4.3">RFC 3676 4.3. Usenet Signature Convention</a>
+	 */
+	public final static String CONTENT_LINE_TEXT_COMBINE_STRING = stringOf(LINE_FEED_CHAR, HYPHEN_MINUS_CHAR, HYPHEN_MINUS_CHAR, LINE_FEED_CHAR);
+
+	/** The names of contact lines that should be reduced to single content lines. */
+	private Set<String> singleValueNames = emptySet();
+
+	/** @return The names of contact lines that should be reduced to a single value in single content lines. */
+	public Set<String> getSingleValueNames()
+	{
+		return singleValueNames;
+	}
+
+	/**
+	 * Sets the names of contact lines that should be reduced to a single value in a single content lines.
+	 * @param singleValueNames The names of contact lines that should be reduced to a single value in a single content lines.
+	 */
+	public void setSingleValueNames(final Set<String> singleValueNames)
+	{
+		this.singleValueNames = immutableSetOf(singleValueNames);
+	}
+
+	/**
+	 * Sets the names of contact lines that should be reduced to a single value in a single content lines upon serialization.
+	 * @param singleValueNames The names of contact lines that should be reduced to a single value in a single content lines.
+	 */
+	public void setSerializationSingleValueNames(final String... singleValueNames)
+	{
+		this.singleValueNames = immutableSetOf(singleValueNames);
+	}
 
 	/** The profile for the predefined types. */
 	private final PredefinedProfile predefinedProfile = new PredefinedProfile();
@@ -50,7 +93,7 @@ public class DirectorySerializer
 	/**
 	 * Registers a profile.
 	 * @param profileName The name of the profile.
-	 * @param profile The profile to be registered with this profilename.
+	 * @param profile The profile to be registered with this profile name.
 	 */
 	public void registerProfile(final String profileName, final Profile profile)
 	{
@@ -183,19 +226,92 @@ public class DirectorySerializer
 	}
 
 	/**
+	 * Combines the values of two content lines.
+	 * <p>
+	 * This implementation only supports combining of values of type {@link LocaledText}.
+	 * </p>
+	 * @param contentLine1 The first content line to combine.
+	 * @param contentLine2 The second content line to combine.
+	 * @return A new content line with the combined values of the original two content lines.
+	 * @throws IllegalArgumentException if the type of one of the content lines is not {@link LocaledText}.
+	 * @see LocaledText
+	 * @see #CONTENT_LINE_TEXT_COMBINE_STRING
+	 */
+	protected ContentLine combineValues(final ContentLine contentLine1, final ContentLine contentLine2)
+	{
+		final Object value1 = contentLine1.getValue();
+		final Object value2 = contentLine2.getValue();
+		final LocaledText newValue;
+		if(value1 instanceof LocaledText && value2 instanceof LocaledText)
+		{
+			//combine the strings: value1+"\nP\n"+value2, where 'P' is the paragraph separator symbol
+			final String combinedStringValue = value1.toString() + CONTENT_LINE_TEXT_COMBINE_STRING + value2.toString();
+			newValue = new LocaledText(combinedStringValue, ((LocaledText)value1).getLocale()); //use the locale, if any, of the first value
+		}
+		else
+		{
+			throw new IllegalArgumentException("Cannot combine content lines for " + contentLine1.getName() + " with values of types "
+					+ contentLine1.getValue().getClass() + " and " + contentLine2.getValue().getClass() + ".");
+		}
+		//Log.warn("Combining", contentLine1.getName(), "content line values for", value1, "and", value2, "yielding", newValue);
+		return new ContentLine(contentLine1.getProfile(), contentLine1.getGroup(), contentLine1.getName(), contentLine1.getParamList(), newValue); //return a new content line with the new, combined value
+	}
+
+	/**
 	 * Serializes content lines from a directory of type <code>text/directory</code>.
-	 * @param contentLines An array of content lines in the directory.
+	 * @param contentLineArray An array of content lines in the directory.
 	 * @param writer The writer to which the lines of the directory should be serialized.
 	 * @exception IOException Thrown if there is an error writing to the directory.
 	 */
-	protected void serializeContentLines(final ContentLine[] contentLines, final LineFoldWriter writer) throws IOException
+	protected void serializeContentLines(final ContentLine[] contentLineArray, final LineFoldWriter writer) throws IOException
 	{
+		final List<ContentLine> contentLines = new ArrayList<ContentLine>();
+		Collections.addAll(contentLines, contentLineArray);
+		//collapse named content lines if requested
+		for(final String singleValueName : getSingleValueNames())
+		{
+			ContentLine firstContentLine = null; //keep track of the first content line to combine values for
+			ContentLine combinedValueContentLine = null; //we'll combine values and place them here
+			final Iterator<ContentLine> contentLineIterator = contentLines.iterator();
+			while(contentLineIterator.hasNext())
+			{
+				final ContentLine contentLine = contentLineIterator.next();
+				if(contentLine.getName().equals(singleValueName)) //if this is a content line to combine values for
+				{
+					if(firstContentLine == null) //if this is the first content line with that name so far
+					{
+						firstContentLine = contentLine; //make note of this content line
+					}
+					else
+					//if we already have other content lines with this name
+					{
+						if(combinedValueContentLine == null) //if we haven't combined any values, yet
+						{
+							combinedValueContentLine = firstContentLine; //start with the first line
+						}
+						try
+						{
+							combinedValueContentLine = combineValues(combinedValueContentLine, contentLine); //combine the new value with what we had before
+						}
+						catch(final IllegalArgumentException illegalArgumentException)
+						{
+							throw new UnsupportedOperationException(illegalArgumentException);
+						}
+						contentLineIterator.remove(); //remove this content line; it has been combined with a previous one
+					}
+				}
+			}
+			if(combinedValueContentLine != null) //if we combined any values
+			{
+				assert firstContentLine != null;
+				contentLines.set(contentLines.indexOf(firstContentLine), combinedValueContentLine); //replace the first content line with the combined value content line
+			}
+		}
 		profileStack = new LinkedList<String>(); //create a new profile stack
 		defaultProfile = null; //show that there is no default profile
 		useDefaultProfile = false; //don't use the default profile
-		for(int i = 0; i < contentLines.length; ++i) //look at each content line
+		for(final ContentLine contentLine : contentLines) //look at each processed content line
 		{
-			final ContentLine contentLine = contentLines[i]; //get a reference to this content line
 			serializeContentLine(contentLine, writer); //serialize the content line
 		}
 		profileStack = null; //release the profile stack

@@ -18,12 +18,15 @@ package com.globalmentor.text.directory.vcard;
 
 import java.io.*;
 import java.net.*;
+import java.util.Set;
 
 import com.globalmentor.io.*;
 import com.globalmentor.text.directory.*;
 
+import static com.globalmentor.collections.Sets.*;
 import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.text.directory.vcard.VCard.*;
+import static java.util.Collections.emptySet;
 
 /**
  * Class for loading and saving a a vCard <code>text/directory</code> profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>,
@@ -34,6 +37,33 @@ import static com.globalmentor.text.directory.vcard.VCard.*;
 public class VCardIO implements IO<VCard>
 {
 
+	/** The names of contact lines that should be reduced to single content lines upon serialization. */
+	private Set<String> serializationSingleValueNames = emptySet();
+
+	/** @return The names of contact lines that should be reduced to a single value in single content lines upon serialization. */
+	public Set<String> getSerializationSingleValueNames()
+	{
+		return serializationSingleValueNames;
+	}
+
+	/**
+	 * Sets the names of contact lines that should be reduced to a single value in a single content lines upon serialization.
+	 * @param singleValueNames The names of contact lines that should be reduced to a single value in a single content lines.
+	 */
+	public void setSerializationSingleValueNames(final Set<String> singleValueNames)
+	{
+		this.serializationSingleValueNames = immutableSetOf(singleValueNames);
+	}
+
+	/**
+	 * Sets the names of contact lines that should be reduced to a single value in a single content lines upon serialization.
+	 * @param singleValueNames The names of contact lines that should be reduced to a single value in a single content lines.
+	 */
+	public void setSerializationSingleValueNames(final String... singleValueNames)
+	{
+		this.serializationSingleValueNames = immutableSetOf(singleValueNames);
+	}
+	
 	/** The profile to handle vCards. */
 	protected final static VCardProfile VCARD_PROFILE = new VCardProfile();
 
@@ -57,6 +87,7 @@ public class VCardIO implements IO<VCard>
 	{
 		final ContentLine[] contentLines = VCardProfile.createContentLines(object); //create content lines from the vCard
 		final DirectorySerializer directorySerializer = new DirectorySerializer(); //create a new directory serializer
+		directorySerializer.setSingleValueNames(getSerializationSingleValueNames()); //set the single-value names, if any
 		directorySerializer.registerProfile(VCARD_PROFILE_NAME, VCARD_PROFILE); //register the vCard profile with the vCard serializer
 		final Writer writer = new OutputStreamWriter(outputStream, UTF_8_CHARSET); //write the vCard using UTF-8
 		directorySerializer.serializeContentLines(contentLines, writer); //serialize the content lines of the vCard TODO maybe allow the serializer to find a profile and convert to content lines automatically

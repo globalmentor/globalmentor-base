@@ -149,7 +149,7 @@ public class Telephone extends TelephoneNumber
 	}
 
 	/** @return A string representation of the telephone. */
-	public String toString()
+	public String toString()	//TODO remove this, so that the telephone always returns just the telephone number; make super method final
 	{
 		return super.toString() + " (" + getTypeString() + ")"; //return the telephone type appended to the telephone number 
 	}

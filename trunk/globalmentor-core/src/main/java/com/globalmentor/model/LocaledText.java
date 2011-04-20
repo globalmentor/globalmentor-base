@@ -180,7 +180,7 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 	/**@return A string representation of this object's text.
 	@see #getText()
 	*/
-	public String toString()
+	public final String toString()	//this is just a wrapper around a string with some metadata; the original string should always be returned from this method
 	{
 		return getText();	//return the text
 	}

@@ -34,6 +34,7 @@ import com.globalmentor.io.IO;
 import com.globalmentor.itu.TelephoneNumber;
 import com.globalmentor.java.Classes;
 import com.globalmentor.model.LocaledText;
+import com.globalmentor.text.directory.DirectorySerializer;
 import com.globalmentor.urf.AbstractURFDateTime;
 import com.globalmentor.urf.URFDateTime;
 
@@ -110,6 +111,25 @@ public class VCardTest
 		final VCard outputVCard = vcardIO.read(inputStream, null);
 		//test to make sure it's what we started with
 		testJaneDoe(outputVCard);
+	}
+
+	/** Tests the ability to combine NOTEs when serializing, for consumers such as GMail that don't allow multiple notes. */
+	@Test
+	public void testWriteJaneDoeCombineNotes() throws IOException
+	{
+		final VCardIO vcardIO = new VCardIO();
+		vcardIO.setSerializationSingleValueNames(VCard.NOTE_TYPE); //combine notes
+		//read the card from resources
+		final VCard inputVCard = Classes.readResource(getClass(), "nokia-c3-01-janedoe.vcf", vcardIO);
+		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		//write the card to a byte array
+		vcardIO.write(outputStream, null, inputVCard);
+		//System.out.print(new String(outputStream.toByteArray(), Charsets.UTF_8_CHARSET));
+		final ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		//read the card back in
+		final VCard outputVCard = vcardIO.read(inputStream, null);
+		assertTrue(outputVCard.getNotes().contains(
+				new LocaledText("This is just a test.\nIsso é só um exemplo." + DirectorySerializer.CONTENT_LINE_TEXT_COMBINE_STRING + "This is another note.")));
 	}
 
 }

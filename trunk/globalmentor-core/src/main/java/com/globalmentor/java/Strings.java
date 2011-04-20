@@ -42,6 +42,21 @@ public class Strings
 	//TODO convert StringBuffer code to StringBuilder
 
 	/**
+	 * Convenience method to create a string from characters using varargs.
+	 * @param chars The characters that should make up the string.
+	 * @return A string created from the given characters.
+	 * @throws NullPointerException if the given chars is <code>null</code>.
+	 */
+	public final static String stringOf(final char... chars)
+	{
+		if(chars.length == 0)
+		{
+			return ""; //return the shared empty string
+		}
+		return new String(chars);
+	}
+
+	/**
 	 * Creates an array of strings from the given string.
 	 * @param string The string to include in the array, or <code>null</code> if the array should be empty.
 	 * @return A non-<code>null</code> array containing the string, or empty if the string is <code>null</code>.
@@ -114,7 +129,7 @@ public class Strings
 	{
 		return StringBuilders.append(new StringBuilder(), objects, separator).toString(); //append the objects to a string builder and return the string
 	}
-	
+
 	/**
 	 * Concatenates the string representations of the objects in the array, separated by the given separator string. Null objects are represented by the string
 	 * "null".
@@ -127,7 +142,7 @@ public class Strings
 	{
 		return TextFormatter.formatList(new StringBuilder(), separator, objects).toString(); //append the objects to a string builder and return the string
 	}
-	
+
 	/**
 	 * Compares two strings to make sure that the strings are equal without regard to case, or that the strings are both set to <code>null</code>. If the first
 	 * string is not <code>null</code>, it is compared to the second using the first string's {@link String#equalsIgnoreCase(String)} method. This is a
