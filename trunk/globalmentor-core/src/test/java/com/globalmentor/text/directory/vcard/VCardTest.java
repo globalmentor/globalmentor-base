@@ -16,11 +16,8 @@
 
 package com.globalmentor.text.directory.vcard;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.*;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -29,7 +26,6 @@ import static org.junit.Assert.*;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
-import com.globalmentor.io.Charsets;
 import com.globalmentor.io.IO;
 import com.globalmentor.itu.TelephoneNumber;
 import com.globalmentor.java.Classes;
@@ -55,7 +51,7 @@ public class VCardTest
 		assertThat(vcard.getName().getGivenName(), is("Jane"));
 		assertThat(vcard.getName().getFamilyName(), is("Doe"));
 		assertThat(vcard.getAddress().getExtendedAddress(), is("Oak and Pine"));
-		assertThat(vcard.getAddress().getStreetAddress(), is("123 Oak Street"));
+		assertThat(vcard.getAddress().getStreetAddress(), is("123 Oak Street\nDowntown"));
 		assertThat(vcard.getAddress().getLocality(), is("San Francisco"));
 		assertThat(vcard.getAddress().getPostalCode(), is("94120"));
 		assertThat(vcard.getAddress().getCountryName(), is("USA"));

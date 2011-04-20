@@ -21,6 +21,7 @@ import java.net.*;
 import java.util.*;
 
 import static com.globalmentor.io.ReaderParser.*;
+import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.text.ABNF.*;
 import static com.globalmentor.text.directory.Directory.*;
 import static com.globalmentor.text.directory.vcard.VCard.*;
@@ -41,6 +42,10 @@ import com.globalmentor.urf.URFDateTime;
  * <p>
  * The processor knows how to process the vCard types: <code>BINARY_VALUE_TYPE</code>, <code>VCARD_VALUE_TYPE</code>, <code>PHONE_NUMBER_VALUE_TYPE</code>, and
  * <code>UTC_OFFSET_VALUE_TYPE</code>.
+ * </p>
+ * <p>
+ * This implementation recognizes the non-standard {@link Characters#LINE_SEPARATOR_CHAR} character (U+2028) used by some producers (e.g. Nokia) to indicate
+ * line breaks in structured text values. This value will be converted to a standard '\n' newline character.
  * </p>
  * @author Garret Wilson
  */
@@ -344,9 +349,15 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		return fieldList.toArray(new String[fieldList.size()][]); //convert the list of string arrays to an array of string arrays and return the array
 	}
 
-	/** The delimiters that can divide a structured text value: '\\', ';' ',' and CR. */
+	/**
+	 * The delimiters that can divide a structured text value: '\\', ';' ',' and CR.
+	 * <p>
+	 * This implementation also recognizes the non-standard {@link Characters#LINE_SEPARATOR_CHAR} character (U+2028) used by some producers (e.g. Nokia) to
+	 * indicate line breaks in structured text values. This value will be converted to a standard '\n' newline character.
+	 * </p>
+	 */
 	protected final static Characters STRUCTURED_TEXT_VALUE_DELIMITER_CHARACTERS = new Characters(TEXT_ESCAPE_CHAR, STRUCTURED_TEXT_VALUE_DELIMITER,
-			VALUE_SEPARATOR_CHAR, CR);
+			VALUE_SEPARATOR_CHAR, CR, LINE_SEPARATOR_CHAR);
 
 	/**
 	 * Processes a single field of a structured text value.
@@ -404,6 +415,10 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 				case STRUCTURED_TEXT_VALUE_DELIMITER: //if this is the character separating fields in the structured text value (';')
 				case CR: //if we just peeked a carriage return
 					break; //don't do anything---we'll just collect our characters and leave
+				case LINE_SEPARATOR_CHAR: //if this is the non-standard character to represent a line break
+					reader.skip(1); //skip this non-standard character
+					stringBuilder.append('\n'); //replace the character with a true line break, which according to VCard 3.0 should have been escaped (or in VCard 2.1 the entire value should have been encoded)
+					break;
 				default: //if we peeked anything else (there shouldn't be anything else unless there is a logic error)					
 					throw new AssertionError("The only possible values should have been " + STRUCTURED_TEXT_VALUE_DELIMITER_CHARACTERS + "; found "
 							+ Characters.getLabel(delimiter));
