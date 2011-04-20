@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -134,6 +134,21 @@ public class URFDateTime extends AbstractURFDateTime
 	}
 
 	/**
+	 * Returns whether the time, if any, represents midnight at the beginning of the day (00:00:00:00) in whatever UTC offset, if any, is indicated.
+	 * <p>
+	 * If this method returns <code>true</code>, it indicates that {@link #getURFTime()} is not <code>null</code>, as this date and time can only indicate
+	 * midnight when there is an URF time component present.
+	 * </p>
+	 * @return <code>true</code> if this time represents midnight at the beginning of the day (00:00:00:00) in whatever UTC offset, if any, is indicated.
+	 * @see URFTime#isMidnight()
+	 */
+	public boolean isMidnight()
+	{
+		final URFTime urfTime = getURFTime();
+		return urfTime != null && urfTime.isMidnight(); //see if there is a time and if it is midnight
+	}
+
+	/**
 	 * Returns a date that represents this temporal information in the given time zone.
 	 * @param timeZone The time zone which the date should represent.
 	 * @return The date this object represents in relation to the given time zone.
@@ -150,6 +165,13 @@ public class URFDateTime extends AbstractURFDateTime
 			Calendars.setTime(calendar, time.getHours(), time.getMinutes(), time.getSeconds(), time.getMicroseconds() / 1000); //set the time
 		}
 		return calendar.getTime(); //return the calendar time
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public URFDate toURFDate()
+	{
+		return new URFDate(getYear(), getMonth(), getDay());
 	}
 
 	/**

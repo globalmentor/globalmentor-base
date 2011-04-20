@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -217,6 +217,12 @@ public abstract class AbstractURFDateTime extends Date implements URFTemporal
 	 * @throws NullPointerException if the given time zone is <code>null</code>.
 	 */
 	public abstract Date toDate(final TimeZone timeZone);
+
+	/**
+	 * Returns the date portion of this date and time.
+	 * @return A date and time object with only the date part of this instance.
+	 */
+	public abstract URFDate toURFDate();
 
 	/**
 	 * Returns the canonical lexical representation of this date time in the form "YYYY-MM-DDThh:mm:ss[.s+]+/-hh:mm".

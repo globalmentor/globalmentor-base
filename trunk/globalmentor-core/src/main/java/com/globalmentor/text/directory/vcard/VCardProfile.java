@@ -33,6 +33,7 @@ import com.globalmentor.model.NameValuePair;
 import com.globalmentor.text.ArgumentSyntaxException;
 import com.globalmentor.text.directory.*;
 import com.globalmentor.urf.AbstractURFDateTime;
+import com.globalmentor.urf.URFDateTime;
 
 /**
  * Class that can create values for the "VCARD" profile of a <code>text/directory</code>as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC
@@ -641,7 +642,18 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			}
 			else if(BDAY_TYPE.equalsIgnoreCase(typeName)) //BDAY
 			{
-				vcard.setBirthday((AbstractURFDateTime)contentLine.getValue()); //set the birthday
+				AbstractURFDateTime bday = (AbstractURFDateTime)contentLine.getValue();
+				//if a date and time were given, make sure it's not something that could be represented by just a date
+				//(Google, for instance, doesn't recognize birthdays composed of both date and time)
+				if(bday instanceof URFDateTime)
+				{
+					final URFDateTime bdayDateTime = (URFDateTime)bday;
+					if(bdayDateTime.isMidnight() && bdayDateTime.getURFTime().getUTCOffset() == null) //if this date and time is midnight with no UTC offset specified
+					{
+						bday = bdayDateTime.toURFDate(); //the time is superfluous; only use the date
+					}
+				}
+				vcard.setBirthday(bday); //set the birthday
 				continue; //don't process this content line further
 			}
 			//delivery addressing types

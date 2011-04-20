@@ -114,6 +114,13 @@ public class URFDate extends AbstractURFDateTime
 		return calendar.getTime(); //return the calendar time
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public URFDate toURFDate()
+	{
+		return this;
+	}
+
 	/**
 	 * Returns an URF date object holding the value of the specified string.
 	 * @param string The string to be parsed as a date.
