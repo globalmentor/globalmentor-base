@@ -576,10 +576,14 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			{
 				serializeStructuredTextFieldValue(fieldValues[fieldValueIndex], writer); //write this structured text field value
 				if(fieldValueIndex < fieldValues.length - 1) //if this is not the last field value
+				{
 					writer.write(VALUE_SEPARATOR_CHAR); //write the value separator ','
+				}
 			}
 			if(fieldIndex < structuredText.length - 1) //if this is not the last field
+			{
 				writer.write(STRUCTURED_TEXT_VALUE_DELIMITER); //write the field separator ';'
+			}
 		}
 	}
 
@@ -587,7 +591,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	private final static char[] STRUCTURED_TEXT_MATCH_CHARS = new char[] { '\n', '\\', ';', ',' };
 
 	/** The strings to replace the characters to be escaped in structured text. */
-	private final static String[] STRUCTURED_TEXT_REPLACEMENT_STRINGS = new String[] { "\n", "\\", "\\;", "\\," };
+	private final static String[] STRUCTURED_TEXT_REPLACEMENT_STRINGS = new String[] { "\\n", "\\", "\\;", "\\," };
 
 	/**
 	 * Serializes a structured text field value.
