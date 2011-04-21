@@ -61,49 +61,57 @@ public class LineUnfoldReader extends ProcessingBufferedReader
 		final int bufferEndIndex = getFetchBufferIndex(); //find out the effective end of our new data
 		int sourceIndex, destIndex; //we'll start looking at the beginning of the new data
 		//start at the beginning of the data and go to the end, copying data backwards to erase characters if needed
-		//ignore the last two characters for the moment, giving us enough guaranteed room to look for CRLF+SP at the end of the line
-		for(sourceIndex = newDataBeginIndex, destIndex = newDataBeginIndex; sourceIndex < bufferEndIndex - 2; ++sourceIndex, ++destIndex)
+		//TODO del		boolean test = false;
+		for(sourceIndex = newDataBeginIndex, destIndex = newDataBeginIndex; sourceIndex < bufferEndIndex; ++sourceIndex, ++destIndex)
 		{
 			if(buffer[sourceIndex] == CR) //if we find a CR, see what is after it
 			{
-				if(buffer[sourceIndex + 1] == LF && buffer[sourceIndex + 2] == SP) //if this is CRLF+SP
+				if(sourceIndex < bufferEndIndex - 2 && buffer[sourceIndex + 1] == LF && buffer[sourceIndex + 2] == SP) //if this is CRLF+SP
 				{
+					/*TODO del
+										if(buffer[sourceIndex - 1] == 'T' && buffer[sourceIndex - 2] == '9')
+										{
+											Log.debug("testing");
+											test = true;
+										}
+					*/
 					sourceIndex += 3; //skip the entire CRLF+SP
+					//TODO del					Log.info("after CRLFSPACE: ", Characters.getLabel(buffer[sourceIndex]));
 				}
-				else if(buffer[sourceIndex + 1] == LINE_SEPARATOR_CHAR) //if this is CR+LINE_SEPARATOR (an oddity of Nokia VCards)
+				else if(sourceIndex < bufferEndIndex - 1 && buffer[sourceIndex + 1] == LINE_SEPARATOR_CHAR) //if this is CR+LINE_SEPARATOR (an oddity of Nokia VCards)
 				{
-					sourceIndex += 1; //skip just the CR; leave the LINE_SEPARATOR, as it is a non-standard indication of a line break in the middle of a field 
+					sourceIndex += 1; //skip just the CR; leave the LINE_SEPARATOR, as it is a non-standard indication of a line break in the middle of a field
 				}
 			}
 			if(sourceIndex != destIndex) //if we've collapsed at least one CRLF+SP, we'll be copying information
 			{
 				buffer[destIndex] = buffer[sourceIndex]; //copy this byte
+				/*TODO del
+								if(test)
+								{
+									Log.info("char: ", Characters.getLabel(buffer[sourceIndex]));
+								}
+				*/
 			}
 		}
-		int uncertainCharacterCount = 0; //we'll determine if there are characters at the end of which we are doubtful of whether they form a CRLF+SP
-		if(sourceIndex < bufferEndIndex) //if we haven't reached the end of the buffer, copy the remaining characters (if the last characters were CRLF+SP, we will have already finished all the characters and we won't need to do anything here)
+		final int uncertainCharacterCount; //we'll determine if there are characters at the end of which we are doubtful of whether they form a CRLF+SP
+		if(buffer[bufferEndIndex - 2] == CR && buffer[bufferEndIndex + 1] == LF) //if the buffer ends in CRLF
 		{
-			if(buffer[sourceIndex] == CR && buffer[sourceIndex + 1] == LF) //if the buffer ends in CRLF
-			{
-				uncertainCharacterCount = 2; //there are two character's we're uncertain about
-			}
-			else if(buffer[sourceIndex + 1] == CR) //if the buffer ends in CR
-			{
-				uncertainCharacterCount = 1; //there is one character's we're uncertain about
-			}
-			if(sourceIndex != destIndex) //if we've collapsed at least one line, we'll be copying information
-			{
-				buffer[destIndex] = buffer[sourceIndex]; //copy this byte
-				buffer[destIndex + 1] = buffer[sourceIndex + 1]; //copy the next byte (the last byte)
-			}
-			sourceIndex += 2; //advance the source index to include the two characters we copied
-			destIndex += 2; //advance the destination index to include the two characters we copied
+			uncertainCharacterCount = 2; //there are two characters we're uncertain about
+		}
+		else if(buffer[bufferEndIndex - 1] == CR) //if the buffer ends in CR
+		{
+			uncertainCharacterCount = 1; //there is one character's we're uncertain about
+		}
+		else
+		{
+			uncertainCharacterCount = 0;
 		}
 		final int moveDistance = bufferEndIndex - destIndex; //find out how far to move the buffer pointers back
 		setBufferEndIndex(getBufferEndIndex() - moveDistance); //show where the new end of the buffer is
-		if(!isLastBuffer() && uncertainCharacterCount > 0) //if there were characters we were uncertain about and it's the last buffer
+		if(!isLastBuffer() && uncertainCharacterCount > 0) //if there were characters we were uncertain about and it's not the last buffer
 		{
-			setFetchBufferIndex(getFetchBufferIndex() - moveDistance); //move the fetch buffer index back, compensating for the characters we're not sure about
+			setFetchBufferIndex(getFetchBufferIndex() - (moveDistance + uncertainCharacterCount)); //move the fetch buffer index back, compensating for the characters we're not sure about
 		}
 		else
 		//if this is the last buffer, or we weren't concerned about any of the ending characters
