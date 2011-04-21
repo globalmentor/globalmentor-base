@@ -61,37 +61,25 @@ public class LineUnfoldReader extends ProcessingBufferedReader
 		final int bufferEndIndex = getFetchBufferIndex(); //find out the effective end of our new data
 		int sourceIndex, destIndex; //we'll start looking at the beginning of the new data
 		//start at the beginning of the data and go to the end, copying data backwards to erase characters if needed
-		//TODO del		boolean test = false;
 		for(sourceIndex = newDataBeginIndex, destIndex = newDataBeginIndex; sourceIndex < bufferEndIndex; ++sourceIndex, ++destIndex)
 		{
 			if(buffer[sourceIndex] == CR) //if we find a CR, see what is after it
 			{
 				if(sourceIndex < bufferEndIndex - 2 && buffer[sourceIndex + 1] == LF && buffer[sourceIndex + 2] == SP) //if this is CRLF+SP
 				{
-					/*TODO del
-										if(buffer[sourceIndex - 1] == 'T' && buffer[sourceIndex - 2] == '9')
-										{
-											Log.debug("testing");
-											test = true;
-										}
-					*/
 					sourceIndex += 3; //skip the entire CRLF+SP
-					//TODO del					Log.info("after CRLFSPACE: ", Characters.getLabel(buffer[sourceIndex]));
 				}
 				else if(sourceIndex < bufferEndIndex - 1 && buffer[sourceIndex + 1] == LINE_SEPARATOR_CHAR) //if this is CR+LINE_SEPARATOR (an oddity of Nokia VCards)
 				{
 					sourceIndex += 1; //skip just the CR; leave the LINE_SEPARATOR, as it is a non-standard indication of a line break in the middle of a field
 				}
 			}
-			if(sourceIndex != destIndex) //if we've collapsed at least one CRLF+SP, we'll be copying information
+			if(sourceIndex < bufferEndIndex) //if we haven't reached the end
 			{
-				buffer[destIndex] = buffer[sourceIndex]; //copy this byte
-				/*TODO del
-								if(test)
-								{
-									Log.info("char: ", Characters.getLabel(buffer[sourceIndex]));
-								}
-				*/
+				if(sourceIndex != destIndex) //if we've collapsed at least one CRLF+SP, we'll be copying information
+				{
+					buffer[destIndex] = buffer[sourceIndex]; //copy this byte
+				}
 			}
 		}
 		final int uncertainCharacterCount; //we'll determine if there are characters at the end of which we are doubtful of whether they form a CRLF+SP
