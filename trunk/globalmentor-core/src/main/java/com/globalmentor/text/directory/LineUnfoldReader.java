@@ -20,10 +20,15 @@ import java.io.*;
 
 import com.globalmentor.io.ProcessingBufferedReader;
 
+import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.text.ABNF.*;
 
 /**
  * Reader that unfolds lines of type <code>text/directory</code> as defined "RFC 2425: A MIME Content-Type for Directory Information".
+ * <p>
+ * This implementation also compensates for non-standard indications of mid-field line breaks by some consumers, by converting <code>CR+LINE_SEPARATOR</code> to
+ * simply <code>LINE_SEPARATOR</code>.
+ * </p>
  * @author Garret Wilson
  */
 public class LineUnfoldReader extends ProcessingBufferedReader
@@ -59,20 +64,33 @@ public class LineUnfoldReader extends ProcessingBufferedReader
 		//ignore the last two characters for the moment, giving us enough guaranteed room to look for CRLF+SP at the end of the line
 		for(sourceIndex = newDataBeginIndex, destIndex = newDataBeginIndex; sourceIndex < bufferEndIndex - 2; ++sourceIndex, ++destIndex)
 		{
-			if(buffer[sourceIndex] == CR && buffer[sourceIndex + 1] == LF && buffer[sourceIndex + 2] == SP) //if this is CRLF+SP
+			if(buffer[sourceIndex] == CR) //if we find a CR, see what is after it
 			{
-				sourceIndex += 3; //skip the entire CRLF+SP
+				if(buffer[sourceIndex + 1] == LF && buffer[sourceIndex + 2] == SP) //if this is CRLF+SP
+				{
+					sourceIndex += 3; //skip the entire CRLF+SP
+				}
+				else if(buffer[sourceIndex + 1] == LINE_SEPARATOR_CHAR) //if this is CR+LINE_SEPARATOR (an oddity of Nokia VCards)
+				{
+					sourceIndex += 1; //skip just the CR; leave the LINE_SEPARATOR, as it is a non-standard indication of a line break in the middle of a field 
+				}
 			}
 			if(sourceIndex != destIndex) //if we've collapsed at least one CRLF+SP, we'll be copying information
+			{
 				buffer[destIndex] = buffer[sourceIndex]; //copy this byte
+			}
 		}
 		int uncertainCharacterCount = 0; //we'll determine if there are characters at the end of which we are doubtful of whether they form a CRLF+SP
 		if(sourceIndex < bufferEndIndex) //if we haven't reached the end of the buffer, copy the remaining characters (if the last characters were CRLF+SP, we will have already finished all the characters and we won't need to do anything here)
 		{
 			if(buffer[sourceIndex] == CR && buffer[sourceIndex + 1] == LF) //if the buffer ends in CRLF
+			{
 				uncertainCharacterCount = 2; //there are two character's we're uncertain about
+			}
 			else if(buffer[sourceIndex + 1] == CR) //if the buffer ends in CR
+			{
 				uncertainCharacterCount = 1; //there is one character's we're uncertain about
+			}
 			if(sourceIndex != destIndex) //if we've collapsed at least one line, we'll be copying information
 			{
 				buffer[destIndex] = buffer[sourceIndex]; //copy this byte
