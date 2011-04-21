@@ -55,11 +55,11 @@ public class FileExtensionFilter implements FileFilter, FilenameFilter
 
   /**Tests whether or not the specified abstract pathname should be included in a pathname list.
 	This version accepts a file if the extension is included in the extension set.
-	@param  pathname  The abstract pathname to be tested.
+	@param  file  The abstract pathname to be tested.
 	@return <code>true</code> if and only if <code>pathname</code> should be included
 	*/
-  public boolean accept(final File pathname)
+  public boolean accept(final File file)
   {
-		return getExtensionSet().contains(getExtension(pathname));	//see if the extension set contains the extension of the file  	
+		return getExtensionSet().contains(getExtension(file));	//see if the extension set contains the extension of the file  	
   }
 }

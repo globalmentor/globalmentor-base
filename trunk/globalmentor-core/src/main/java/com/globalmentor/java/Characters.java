@@ -882,6 +882,7 @@ public final class Characters
 				stringBuilder.append(',').append(' '); //add delimiters
 			}
 		}
+		stringBuilder.append(']');
 		return stringBuilder;
 	}
 

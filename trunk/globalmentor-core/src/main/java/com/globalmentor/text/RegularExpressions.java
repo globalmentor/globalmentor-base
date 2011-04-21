@@ -27,6 +27,18 @@ import com.globalmentor.java.Characters;
 public class RegularExpressions
 {
 
+	/** The regular expression character that matches any character. */
+	public final static char WILDCARD_CHAR = '.';
+
+	/** The symbol for specifying zero or one repetitions. */
+	public final static char ZERO_OR_ONE_CHAR = '?';
+
+	/** The symbol for specifying zero or more repetitions. */
+	public final static char ZERO_OR_MORE_CHAR = '*';
+
+	/** The symbol for specifying one or more repetitions. */
+	public final static char ONE_OR_MORE_CHAR = '+';
+
 	/** The beginning character of a character class. */
 	public final static char CHARACTER_CLASS_BEGIN = '[';
 
@@ -34,7 +46,8 @@ public class RegularExpressions
 	public final static char CHARACTER_CLASS_END = ']';
 
 	/** The restricted characters which must be escaped in regular expressions. */
-	public final static Characters RESTRICTED = new Characters('+', '*', '-', '(', ')', CHARACTER_CLASS_BEGIN, CHARACTER_CLASS_END);
+	public final static Characters RESTRICTED = new Characters(ZERO_OR_ONE_CHAR, ZERO_OR_MORE_CHAR, ONE_OR_MORE_CHAR, WILDCARD_CHAR, '-', '(', ')',
+			CHARACTER_CLASS_BEGIN, CHARACTER_CLASS_END);
 
 	/** The character used for escaping regular expressions. */
 	public final static char ESCAPE = '\\';

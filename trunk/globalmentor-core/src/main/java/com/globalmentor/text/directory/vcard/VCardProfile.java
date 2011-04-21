@@ -259,7 +259,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
 	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
-	 * @return A telephone object representing the value.
+	 * @return A telephone object representing the value, or <code>null</code> if no value was present.
 	 * @exception IOException Thrown if there is an error reading the directory.
 	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
@@ -288,7 +288,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		}
 		try
 		{
-			return new Telephone(telephoneNumberString, telephoneTypes); //create a telephone from the telephone number and telephone type
+			return !telephoneNumberString.isEmpty() ? new Telephone(telephoneNumberString, telephoneTypes) : null; //if there is text, create a telephone from the telephone number and telephone type
 		}
 		catch(final ArgumentSyntaxException syntaxException) //if the telephone number was not syntactically correct
 		{
@@ -401,9 +401,9 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 						case TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR: //"\N"
 							stringBuilder.append('\n'); //append a single newline character
 							break;
-						case '\\':
-						case ';':
-						case ',':
+						case TEXT_ESCAPE_CHAR:
+						case STRUCTURED_TEXT_VALUE_DELIMITER:
+						case VALUE_SEPARATOR_CHAR:
 							stringBuilder.append(escapedChar); //escaped backslashes and commas get appended normally
 							break;
 						default: //if something else was escaped, we don't recognize it
@@ -689,7 +689,11 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			//telecommunications addressing types
 			else if(TEL_TYPE.equalsIgnoreCase(typeName)) //TEL
 			{
-				vcard.getTelephones().add((Telephone)contentLine.getValue()); //add this telephone to our list
+				final Telephone telephone = (Telephone)contentLine.getValue();
+				if(telephone != null) //TODO add null recognition and checks for all other non-string fields, as presumably some consumer may leave it blank
+				{
+					vcard.getTelephones().add(telephone); //add this telephone to our list
+				}
 				continue; //don't process this content line further
 			}
 			else if(EMAIL_TYPE.equalsIgnoreCase(typeName)) //EMAIL
@@ -718,8 +722,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			//organizational type
 			else if(ORG_TYPE.equalsIgnoreCase(typeName)) //ORG
 			{
-				@SuppressWarnings("unchecked")
-				final List<LocaledText> org = (List<LocaledText>)contentLine.getValue(); //get the organization information
+				final List<LocaledText> org = asList((LocaledText[])contentLine.getValue()); //get the organization information
 				if(!org.isEmpty() && vcard.getOrganizationName() == null) //if there is an organization name, and we haven't yet stored an organization name
 				{
 					vcard.setOrganizationName(org.get(0)); //set the organization name from the first organizational component
@@ -884,7 +887,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		if(!org.isEmpty()) //ORG
 		{
 			final Locale orgLocale = org.get(0).getLocale(); //get the locale of the first organization component
-			contentLineList.add(createContentLine(VCARD_PROFILE_NAME, null, ORG_TYPE, org, orgLocale)); //ORG
+			contentLineList.add(createContentLine(VCARD_PROFILE_NAME, null, ORG_TYPE, org.toArray(new LocaledText[org.size()]), orgLocale)); //ORG
 		}
 		if(vcard.getTitle() != null) //TITLE
 		{

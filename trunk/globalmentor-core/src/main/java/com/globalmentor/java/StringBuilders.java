@@ -655,17 +655,17 @@ public class StringBuilders
 	/**
 	 * Replaces each matching character with the given replacement.
 	 * @param stringBuilder The buffer in which the replacements will be made.
-	 * @param matchChars The characters, each of which will to be replaced.
+	 * @param matchCharacters The characters, each of which will to be replaced.
 	 * @param replacementChar The character for replacing the match characters.
 	 * @return The number of replacements made.
 	 */
-	public static int replace(final StringBuilder stringBuilder, final String matchChars, final char replacementChar)
+	public static int replace(final StringBuilder stringBuilder, final Characters matchCharacters, final char replacementChar)
 	{
 		int replacementCount = 0; //show that we have not replaced any characters, yet
 		final int length = stringBuilder.length(); //get the length of the string buffer
 		for(int i = 0; i < length; ++i) //look at each character in the string buffer
 		{
-			if(matchChars.indexOf(stringBuilder.charAt(i)) >= 0) //if this character matches one of the match characters
+			if(matchCharacters.contains(stringBuilder.charAt(i))) //if this character matches one of the match characters
 			{
 				stringBuilder.setCharAt(i, replacementChar); //replace the original character with its replacement
 				++replacementCount; //show that we replaced a character
@@ -674,6 +674,36 @@ public class StringBuilders
 		return replacementCount; //show how many characters we replaced
 	}
 
+	/**
+	 * Replaces each matching character with the given replacement string.
+	 * @param stringBuilder The buffer in which the replacements will be made.
+	 * @param matchCharacters The characters, each of which will to be replaced.
+	 * @param replacementString The string for replacing the match characters.
+	 * @return The number of replacements made.
+	 */
+	public static int replace(final StringBuilder stringBuilder, final Characters matchCharacters, final String replacementString)
+	{
+		int replacementCount = 0; //show that we have not replaced any characters, yet
+		int beginSearchIndex = 0; //we'll start searching from the beginning of the string
+		int nextReplaceIndex; //this will hold the next location of the replaceString each time we search for it
+		while(beginSearchIndex < stringBuilder.length()) //while we haven't examined all the characters
+		{
+			nextReplaceIndex = charIndexOf(stringBuilder, matchCharacters, beginSearchIndex); //search for another occurrence of the characters
+			if(nextReplaceIndex >= 0) //if there is another occurrence of the character to replace
+			{
+				stringBuilder.replace(nextReplaceIndex, nextReplaceIndex + 1, replacementString); //replace this character with the replacement string
+				beginSearchIndex = nextReplaceIndex + replacementString.length(); //skip over the string we replaced in the input string
+				++replacementCount; //show that we replaced a character
+			}
+			else
+			//if there are no more occurrences of the string to replace
+			{
+				break; //stop searching for more matches
+			}
+		}
+		return replacementCount; //show how many characters we replaced
+	}
+	
 	/**
 	 * Replaces each matching character with the corresponding replacement string.
 	 * @param stringBuilder The buffer in which the replacements will be made.

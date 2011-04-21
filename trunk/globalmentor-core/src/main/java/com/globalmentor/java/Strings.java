@@ -743,22 +743,49 @@ public class Strings
 	}
 
 	/**
-	 * Replaces any of several matching characters with a paricular character.
+	 * Replaces any of several matching characters with a particular character.
 	 * @param inString The string in which characters should be replaced.
-	 * @param matchChars The string containing characters to be matched; every character that matches one of these characters will be replaced with the
+	 * @param matchCharacters The string containing characters to be matched; every character that matches one of these characters will be replaced with the
 	 *          replacement character.
 	 * @param replacementChar The character to replace any matched character.
 	 * @return A string with the appropriate characters replaced by the replacement character.
 	 */
-	public static String replace(final String inString, final String matchChars, final char replacementChar)
+	public static String replace(final String inString, final Characters matchCharacters, final char replacementChar)
 	{
 		final StringBuilder outStringBuilder = new StringBuilder(inString); //the output string will be identical in length to the input string, because we're replacing characters with characters
-		//replace the characters in the string buffer; if there were actually any replacements made
-		if(StringBuilders.replace(outStringBuilder, matchChars, replacementChar) > 0)
+		//replace the characters in the string builder; if there were actually any replacements made
+		if(StringBuilders.replace(outStringBuilder, matchCharacters, replacementChar) > 0)
+		{
 			return outStringBuilder.toString(); //return the new string
+		}
 		else
-			//if no replacements were made
+		//if no replacements were made
+		{
 			return inString; //just return the original string, which should be faster than converting the string buffer to a string
+		}
+	}
+
+	/**
+	 * Replaces any of several matching characters with a particular string.
+	 * @param inString The string in which characters should be replaced.
+	 * @param matchCharacters The string containing characters to be matched; every character that matches one of these characters will be replaced with the
+	 *          replacement string.
+	 * @param replacementString The string to replace any matched character.
+	 * @return A string with the appropriate characters replaced by the replacement string.
+	 */
+	public static String replace(final String inString, final Characters matchCharacters, final String replacementString)
+	{
+		final StringBuilder outStringBuilder = new StringBuilder(inString); //the output string will be identical in length to the input string, because we're replacing characters with characters
+		//replace the characters in the string builder; if there were actually any replacements made
+		if(StringBuilders.replace(outStringBuilder, matchCharacters, replacementString) > 0)
+		{
+			return outStringBuilder.toString(); //return the new string
+		}
+		else
+		//if no replacements were made
+		{
+			return inString; //just return the original string, which should be faster than converting the string buffer to a string
+		}
 	}
 
 	/**

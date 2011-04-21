@@ -425,7 +425,7 @@ public class DirectorySerializer
 	 * Serializes a directory content line's parameters. If multiple parameters exist with identical names, compared without regard to case, the values will be
 	 * combined into multiple values for a single parameter. The parameter delimiters will be written, including the beginning parameters separator that appears
 	 * before any parameters.
-	 * @param paramList The list of parameters.
+	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param writer The writer to which the lines of the directory should be serialized.
 	 * @exception IOException Thrown if there is an error writing to the directory.
 	 */
@@ -443,22 +443,30 @@ public class DirectorySerializer
 				final NameValuePair<String, String> param = paramIterator.next(); //get the first parameter (there will always be at least one, because we checked the size first)
 				if(param.getName().equalsIgnoreCase(firstParamName)) //if this parameter has the same name as the first parameter
 				{
-					valueList.add(param.getValue()); //add the parameter value to the list
+					final String value = param.getValue(); //get the parameter value
+					if(value != null) //if the parameter has a value
+					{
+						valueList.add(param.getValue()); //add the parameter value to the list
+					}
 					paramIterator.remove(); //remove this parameter from the remaining parameter list
 				}
 			}
 			//write the parameter name and all the parameter values
 			writer.write(PARAM_SEPARATOR_CHAR); //write the parameter separator ';'
 			writer.write(firstParamName); //write the parameter name
-			writer.write(PARAM_NAME_VALUE_SEPARATOR_CHAR); //write the parameter name-value separator '='
 			final Iterator<String> valueIterator = valueList.iterator(); //get an iterator to the values
-			while(valueIterator.hasNext()) //while there are more values
+			if(valueIterator.hasNext()) //if there are values
 			{
-				writer.write(valueIterator.next()); //write the next value
-				if(valueIterator.hasNext()) //if there is another value
+				writer.write(PARAM_NAME_VALUE_SEPARATOR_CHAR); //write the parameter name-value separator '='
+				do
 				{
-					writer.write(PARAM_VALUE_SEPARATOR_CHAR); //write the separator between param values ','
+					writer.write(valueIterator.next()); //write the next value
+					if(valueIterator.hasNext()) //if there is another value
+					{
+						writer.write(PARAM_VALUE_SEPARATOR_CHAR); //write the separator between param values ','
+					}
 				}
+				while(valueIterator.hasNext()); //while there are more values
 			}
 		}
 	}

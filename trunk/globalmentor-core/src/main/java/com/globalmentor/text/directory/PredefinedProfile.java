@@ -166,7 +166,9 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	/**
 	 * Processes a single text value.
 	 * <p>
-	 * The sequence "\n" or "\N" will be converted to a single newline character, '\n', and '\\' and ',' must be escaped with '\\'.
+	 * The sequence "\n" or "\N" will be converted to a single newline character, '\n', and '\\' and ',' must be escaped with '\\'. This implementation also
+	 * recognizes the non-standard escape sequence "\;" and converts it to ';'. Some producers (e.g. Nokia) may use this escape sequence because it appears in
+	 * standard VCard structured types.
 	 * </p>
 	 * <p>
 	 * Whatever delimiter ended the value will be left in the reader.
@@ -209,8 +211,9 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 						case TEXT_LINE_BREAK_ESCAPED_UPPERCASE_CHAR: //"\N"
 							stringBuilder.append('\n'); //append a single newline character
 							break;
-						case '\\':
-						case ',':
+						case TEXT_ESCAPE_CHAR:
+						case VALUE_SEPARATOR_CHAR:
+						case ';':	//accept "\;" from VCard structured types, even though it is not mentioned in RFC 2425
 							stringBuilder.append(escapedChar); //escaped backslashes and commas get appended normally
 							break;
 						default: //if something else was escaped, we don't recognize it

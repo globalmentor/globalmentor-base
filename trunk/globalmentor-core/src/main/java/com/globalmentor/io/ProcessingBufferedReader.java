@@ -20,6 +20,8 @@ import static com.globalmentor.java.Preconditions.checkArgument;
 
 import java.io.*;
 
+import com.globalmentor.log.Log;
+
 /**
  * A reader that buffers data and allows this data to be processed before handing it to the consumer. This class also allows marking and resetting, as well as
  * peeking upcoming buffered characters.
@@ -465,7 +467,6 @@ public class ProcessingBufferedReader extends Reader
 			if(numCharsToRead > 0) //if we have any room left in our buffer
 			{
 				final int numCharactersRead = getReader().read(getBuffer(), destIndex, numCharsToRead); //read characters into our array and find out how many characters we read
-
 				if(numCharactersRead != END_VALUE) //if we read any characters at all
 				{
 					final int newDataBeginIndex = getFetchBufferIndex(); //we'll count everything after the "fetch buffer" marker as new data, even though it may be data that was read last time
