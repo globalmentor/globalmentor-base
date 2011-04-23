@@ -181,21 +181,23 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 */
 	public static String processTextValue(Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
 	{
+		Characters delimiters = TEXT_VALUE_DELIMITER_CHARACTERS; //we'll start out assuming the normal delimiters
 		//check for the non-standard base64 encoding used by producers such as Nokia
 		final String encoding = getParamValue(paramList, ENCODING_PARAM_NAME); //see if an encoding is indicated
 		if(B_ENCODING_TYPE.equalsIgnoreCase(encoding) || BASE64_ENCODING_TYPE.equalsIgnoreCase(encoding)) //if the text is encoded as binary (Nokia does this, for unknown reasons)
 		{
-			final String base64String = reach(reader, CR); //read the text
+			final String base64String = reach(reader, CR); //read the text TODO could some implementations have multiple encoded values, separated by commas?
 			final byte[] bytes = Base64.decode(base64String); //decode the text into bytes
 			final String encodedString = new String(bytes, UTF_8_CHARSET); //hope that the bytes represent UTF-8; using base64 for text is non-standard and undocumented
 			reader = new StringReader(encodedString + CR); //replace the reader with the new, decoded content, adding a CR to mimic the original data
+			delimiters = new Characters(CR); //because the text was Base64-encoded, it won't separate values using commas or escape characters---that was the purpose of the Base64 encoding
 		}
 		final StringBuilder stringBuilder = new StringBuilder(); //create a string builder to hold whatever string we're processing
 		char delimiter; //we'll store the last delimiter peeked		
 		do
 		{
 			//		TODO del Log.trace("string buffer so far: ", stringBuffer);	//TODO del			
-			stringBuilder.append(reach(reader, TEXT_VALUE_DELIMITER_CHARACTERS)); //read all undelimited characters until we find a delimiter
+			stringBuilder.append(reach(reader, delimiters)); //read all undelimited characters until we find a delimiter
 			delimiter = peek(reader); //see what the delimiter will be
 			switch(delimiter)
 			//see which delimiter we found
@@ -213,7 +215,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 							break;
 						case TEXT_ESCAPE_CHAR:
 						case VALUE_SEPARATOR_CHAR:
-						case ';':	//accept "\;" from VCard structured types, even though it is not mentioned in RFC 2425
+						case ';': //accept "\;" from VCard structured types, even though it is not mentioned in RFC 2425
 							stringBuilder.append(escapedChar); //escaped backslashes and commas get appended normally
 							break;
 						default: //if something else was escaped, we don't recognize it
