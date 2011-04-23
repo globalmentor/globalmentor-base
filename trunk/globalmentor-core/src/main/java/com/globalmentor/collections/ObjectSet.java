@@ -16,7 +16,6 @@
 
 package com.globalmentor.collections;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import com.globalmentor.collections.iterators.ObjectIterator;
@@ -79,10 +78,7 @@ public class ObjectSet<E> implements Set<E>, ImmutableCollection<E>
 	@SuppressWarnings("unchecked")
 	public <T> T[] toArray(T[] a)
 	{
-		if(a.length < 1)
-		{
-			a = (T[]) Array.newInstance(a.getClass().getComponentType(), 1);
-		}
+		a=Arrays.getArray(a, 1);	//make sure our array is large enough
 		a[0] = (T) object;
 		if(a.length > 1)
 		{

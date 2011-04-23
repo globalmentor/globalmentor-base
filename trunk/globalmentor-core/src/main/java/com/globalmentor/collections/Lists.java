@@ -42,19 +42,6 @@ public class Lists
 	}
 
 	/**
-	 * Appends the contents of a collection to a list. This method functions identical to {@link List#addAll(Collection)}, except that this method returns the
-	 * given list. This is useful for chaining methods.
-	 * @param <E> The type of element contained in the list.
-	 * @param collection The collection to add to the list.
-	 * @return The given list.
-	 */
-	public static <E> List<E> addAll(final List<E> list, final Collection<? extends E> collection)
-	{
-		list.addAll(collection);
-		return list;
-	}
-
-	/**
 	 * Creates a read-only list containing the given elements.
 	 * @param <E> The type of element contained in the list.
 	 * @param elements The elements to be contained in the list.

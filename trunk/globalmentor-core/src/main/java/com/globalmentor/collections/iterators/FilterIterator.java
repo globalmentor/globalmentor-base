@@ -125,9 +125,9 @@ public class FilterIterator<E> extends IteratorDecorator<E>
 	protected Object getNext()
 	{
 		final Filter<E> filter=getFilter();	//get our filter, if there is one
-		while(iterator.hasNext())	//while there are available items in the proxied iterator
+		while(getIterator().hasNext())	//while there are available items in the proxied iterator
 		{
-			final E next=iterator.next();	//get the next element from the iterator
+			final E next=getIterator().next();	//get the next element from the iterator
 			final boolean isPass=filter==null || filter.isPass(next);	//see if our next element passes
 			if(isPass)	//if this item isn't filtered out
 			{

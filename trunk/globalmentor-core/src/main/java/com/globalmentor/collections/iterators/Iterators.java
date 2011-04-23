@@ -38,7 +38,7 @@ public class Iterators
 	/**The singleton immutable empty iterable.*/
 	public final static Iterable<?> EMPTY_ITERABLE=new EmptyIterable<Object>();
 
-		/**@return The immutable empty iterablke.*/
+		/**@return The immutable empty iterable.*/
 		@SuppressWarnings("unchecked")
 		public static final <T> Iterable<T> emptyIterable() {return (Iterable<T>)EMPTY_ITERABLE;}	//return the singleton empty iterable cast to the correct type
 

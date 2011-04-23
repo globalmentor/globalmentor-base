@@ -16,10 +16,10 @@
 
 package com.globalmentor.rdf;
 
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.util.*;
 
+import com.globalmentor.collections.Arrays;
 import com.globalmentor.java.Objects;
 import static com.globalmentor.rdf.RDF.*;
 import static com.globalmentor.rdf.RDFResources.*;
@@ -398,10 +398,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	public <T> T[] toArray(T[] array)
 	{
 		final int size=size();	//get our size
-		if(array.length<size)	//if the given array is not large enough
-		{
-			array=(T[])Array.newInstance(array.getClass().getComponentType(), size);	//create a new array
-		}
+		array=Arrays.getArray(array, size);	//make sure our array is large enough
 		int i=0;	//this will index into the array we're filling
 		final Iterator<E> iterator=iterator();	//get an iterator to the elements
 		while(iterator.hasNext())	//while there are more elements

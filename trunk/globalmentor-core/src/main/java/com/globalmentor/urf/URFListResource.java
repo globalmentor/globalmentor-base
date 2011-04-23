@@ -17,10 +17,10 @@
 package com.globalmentor.urf;
 
 import java.util.*;
-import java.lang.reflect.Array;
 import java.net.URI;
 import static java.lang.System.*;
 
+import com.globalmentor.collections.Arrays;
 import com.globalmentor.collections.iterators.DefaultListIterator;
 import com.globalmentor.java.Integers;
 
@@ -214,7 +214,7 @@ public class URFListResource<E extends URFResource> extends DefaultURFResource i
 				if(index>=length)	//if we run out of array indexes
 				{
 					final int size=size();	//we'll have to actually calculate our size now
-					final T[] newArray=(T[])Array.newInstance(array.getClass().getComponentType(), size);	//create a new array with the correct size
+					final T[] newArray=Arrays.createArray(array, size);	//create a new array with the correct size
 					arraycopy(array, 0, newArray, 0, length);	//copy over everything we've copied so far
 					array=newArray;	//replace the array
 					length=size;	//replace the length with the new length

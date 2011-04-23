@@ -17,8 +17,9 @@
 package com.globalmentor.urf;
 
 import java.util.*;
-import java.lang.reflect.Array;
 import java.net.URI;
+
+import com.globalmentor.collections.Arrays;
 
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;
@@ -148,10 +149,7 @@ public class URFSetResource<E extends URFResource> extends DefaultURFResource im
 		try
 		{
 			final int count=(int)getPropertyValueCount(ELEMENT_PROPERTY_URI);	//get the number of elements
-			if(array.length<count)	//if the given array is not large enough
-			{
-				array=(T[])Array.newInstance(array.getClass().getComponentType(), count);	//create a new array that is large enough
-			}
+			array=Arrays.getArray(array, count);	//make sure our array is large enough
 			int index=0;	//start at the first index
 			for(final URFResource element:getPropertyValues(ELEMENT_PROPERTY_URI))	//for each element
 			{
