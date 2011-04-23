@@ -49,7 +49,7 @@ public class VCardCat extends AbstractApplication
 	public final static String COPYRIGHT = "Copyright " + COPYRIGHT_SIGN + " 2011 GlobalMentor, Inc. All Rights Reserved."; //TODO i18n
 
 	/** The version of the application. */
-	public final static String VERSION = "1.0-SNAPSHOT build 2010-04-20";
+	public final static String VERSION = "1.0-SNAPSHOT build 2010-04-22";
 
 	/** Application command-line parameters. */
 	public enum Parameter
@@ -85,7 +85,7 @@ public class VCardCat extends AbstractApplication
 			System.out.println(TITLE);
 			System.out.println(VERSION);
 			System.out.println(COPYRIGHT);
-			System.out.println("Usage: VCardCat --input <file> [--output file]");
+			System.out.println("Usage: VCardCat --input <file[wildcard]> [--output file]");
 			return 0;
 		}
 		final String outputString = getOption(args, getSerializationName(Parameter.OUTPUT)); //get the output parameter, if any
