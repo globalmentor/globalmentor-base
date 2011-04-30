@@ -816,30 +816,6 @@ public final class Characters
 	/**
 	 * Converts an array of characters to an array of bytes, using the given character encoding.
 	 * @param characters The characters to convert to bytes.
-	 * @param encoding The encoding to use when converting characters to bytes.
-	 * @return An array of bytes representing the given characters in the specified encoding.
-	 * @exception UnsupportedEncodingException if the given encoding is not supported.
-	 * @deprecated
-	 */
-	public static byte[] toByteArray(final char[] characters, final String encoding) throws UnsupportedEncodingException
-	{
-		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); //create a byte array output stream
-		final Writer writer = new OutputStreamWriter(byteArrayOutputStream, encoding); //create a writer for converting characters to bytes
-		try
-		{
-			writer.write(characters); //write the characters to the writer in one batch (writing them individually would be extremely inefficient)
-			writer.flush(); //flush everything we've written to the byte output stream
-		}
-		catch(IOException ioException) //we don't expect any errors
-		{
-			throw new AssertionError(ioException);
-		}
-		return byteArrayOutputStream.toByteArray(); //return the bytes we collected from the character conversion
-	}
-
-	/**
-	 * Converts an array of characters to an array of bytes, using the given character encoding.
-	 * @param characters The characters to convert to bytes.
 	 * @param charset The charset to use when converting characters to bytes.
 	 * @return An array of bytes representing the given characters in the specified encoding.
 	 */
