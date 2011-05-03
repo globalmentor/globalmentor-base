@@ -21,7 +21,8 @@ import static com.globalmentor.java.Objects.checkInstance;
 import com.globalmentor.model.NameValuePair;
 
 /**
- * A URI query parameter name/value pair. Neither the name nor the value of a URI query parameter can be <code>null</code>.
+ * A URI query parameter name/value pair. The name cannot be <code>null</code>, but the value is allowed to be <code>null</code> indicating that no value should
+ * be provided for this parameter in the URI query.
  * @author Garret Wilson
  */
 public class URIQueryParameter extends NameValuePair<String, String>
@@ -30,11 +31,11 @@ public class URIQueryParameter extends NameValuePair<String, String>
 	 * Constructor specifying the name and value.
 	 * @param name The parameter name.
 	 * @param value The parameter value.
-	 * @exception NullPointerException if the given name and/or value is <code>null</code>.
+	 * @exception NullPointerException if the given name is <code>null</code>.
 	 */
 	public URIQueryParameter(final String name, final String value)
 	{
-		super(checkInstance(name, "URI query parameter name cannot be null."), checkInstance(value, "URI query parameter value cannot be null.")); //construct the parent class
+		super(checkInstance(name, "URI query parameter name cannot be null."), value); //construct the parent class
 	}
 
 }

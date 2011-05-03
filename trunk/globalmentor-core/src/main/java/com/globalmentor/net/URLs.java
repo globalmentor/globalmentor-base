@@ -41,7 +41,7 @@ public class URLs
 	 * <ul>
 	 * <li>{@value URIs#FILE_SCHEME}</li>
 	 * <li>{@value HTTP#HTTP_URI_SCHEME}</li>
-	 * <li>{@value HTTP#HTTPS_SCHEME}</li>
+	 * <li>{@value HTTP#HTTPS_URI_SCHEME}</li>
 	 * </ul>
 	 * <p>
 	 * URLs using other protocols are assumed to exist.
@@ -56,7 +56,7 @@ public class URLs
 		{
 			return getFile(url).exists(); //create a file from the URL and see if it exists
 		}
-		else if(HTTP_URI_SCHEME.equals(protocol) || HTTPS_SCHEME.equals(protocol)) //if this is the HTTP protocol
+		else if(HTTP_URI_SCHEME.equals(protocol) || HTTPS_URI_SCHEME.equals(protocol)) //if this is the HTTP protocol
 		{
 			try
 			{

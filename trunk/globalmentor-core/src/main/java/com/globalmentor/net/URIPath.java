@@ -380,7 +380,7 @@ public final class URIPath
 	*/
 	public static String encode(final String path)
 	{
-		return uriEncode(path, PATH_CHARACTERS);	//encode all non-path characters
+		return URIs.encode(path, PATH_CHARACTERS);	//encode all non-path characters
 		//TODO important: encode "." and ".."
 	}
 
@@ -390,7 +390,7 @@ public final class URIPath
 	*/
 	public static String encodeSegment(final String pathSegment)
 	{
-		return uriEncode(pathSegment, PATH_SEGMENT_CHARACTERS);	//encode all non-path segment characters
+		return URIs.encode(pathSegment, PATH_SEGMENT_CHARACTERS);	//encode all non-path segment characters
 		//TODO important: encode "." and ".."
 	}
 }

@@ -22,10 +22,8 @@ import java.util.*;
 
 import com.globalmentor.collections.*;
 import com.globalmentor.io.*;
-import static com.globalmentor.io.Charsets.*;
 
 import com.globalmentor.java.Characters;
-import com.globalmentor.java.Integers;
 import com.globalmentor.model.NameValuePair;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
@@ -191,6 +189,20 @@ public class URIs
 	}
 
 	/**
+	 * Creates a new URI identical to the supplied URI with a different scheme.
+	 * @param uri The URI to change.
+	 * @param newScheme The new scheme information.
+	 * @return A new URI with the new scheme information.
+	 * @throws NullPointerException if the given URI and/or new scheme is <code>null</code>.
+	 * @throws IllegalArgumentException if the given URI has no scheme or if the given scheme results in an invalid URI.
+	 */
+	public static URI changeScheme(final URI uri, final String newScheme)
+	{
+		return createURI(checkInstance(newScheme, "Scheme cannot be null."), uri.getRawUserInfo(), uri.getHost(), uri.getPort(), uri.getRawPath(),
+				uri.getRawQuery(), uri.getRawFragment()); //construct an identical URI except with a different scheme
+	}
+
+	/**
 	 * Verifies that the given URI is an {@value URIs#INFO_SCHEME} scheme URI with the given namespace.
 	 * @param uri The URI to check.
 	 * @param infoNamespace The info namespace to match for the URI.
@@ -235,7 +247,7 @@ public class URIs
 	 */
 	public final static String getInfoIdentifier(final URI uri)
 	{
-		return uriDecode(getInfoRawIdentifier(uri)); //decode the raw identifier of the info URI
+		return decode(getInfoRawIdentifier(uri)); //decode the raw identifier of the info URI
 	}
 
 	/**
@@ -437,7 +449,7 @@ public class URIs
 	public static String getName(final URI uri) //TODO important: update all references to check for null
 	{
 		final String rawName = getRawName(uri); //get the raw name of the URI
-		return rawName != null ? uriDecode(rawName) : null; //if there is a raw name, decode and return it
+		return rawName != null ? decode(rawName) : null; //if there is a raw name, decode and return it
 	}
 
 	/**
@@ -567,7 +579,7 @@ public class URIs
 	public static String getNameExtension(final URI uri)
 	{
 		final String rawNameExtension = getRawNameExtension(uri);
-		return rawNameExtension != null ? uriDecode(rawNameExtension) : null; //if there is a raw extension, decode it
+		return rawNameExtension != null ? decode(rawNameExtension) : null; //if there is a raw extension, decode it
 	}
 
 	/**
@@ -822,7 +834,8 @@ public class URIs
 	}
 
 	/**
-	 * Constructs a query string for a URI by URI-encoding each name-value pair, separating them with '&'.
+	 * Constructs a query string for a URI by URI-encoding each name-value pair, separating them with '&'. Parameters are allowed to have <code>null</code>
+	 * values, in which case no '=' delimiter will be used.
 	 * @param params The name-value pairs representing the query parameters.
 	 * @return A string representing the constructed query, or the empty string if there were no parameters.
 	 */
@@ -834,8 +847,12 @@ public class URIs
 			for(NameValuePair<String, String> param : params) //look at each parameter
 			{
 				paramStringBuilder.append(encode(param.getName())); //append the parameter name
-				paramStringBuilder.append(QUERY_NAME_VALUE_ASSIGNMENT); //append the value-assignment character
-				paramStringBuilder.append(encode(param.getValue())); //append the parameter value
+				final String value = param.getValue();
+				if(value != null) //if there is a value
+				{
+					paramStringBuilder.append(QUERY_NAME_VALUE_ASSIGNMENT); //append the value-assignment character
+					paramStringBuilder.append(encode(param.getValue())); //append the parameter value
+				}
 				paramStringBuilder.append(QUERY_NAME_VALUE_PAIR_DELIMITER); //append the name-value pair delimiter
 			}
 			paramStringBuilder.delete(paramStringBuilder.length() - 1, paramStringBuilder.length()); //remove the last name-value pair delimiter
@@ -1040,8 +1057,8 @@ public class URIs
 				final String value; //we'll get the parameter value
 				if(nameValue.length > 0) //if there was at least one token
 				{
-					name = uriDecode(nameValue[0]); //the first token is the name
-					value = nameValue.length > 1 ? uriDecode(nameValue[1]) : ""; //use the empty string for the value if no value was provided
+					name = decode(nameValue[0]); //the first token is the name
+					value = nameValue.length > 1 ? decode(nameValue[1]) : ""; //use the empty string for the value if no value was provided
 				}
 				else
 				//if there wasn't at least one token
@@ -1925,12 +1942,12 @@ public class URIs
 	 * @param uri The URI to which to add a fragment identifier, or <code>null</code> if a URI should be created from just the fragment.
 	 * @param fragment The unencoded fragment to add to the end of the URI.
 	 * @throws IllegalArgumentException if the a URI cannot be constructed from the given information.
-	 * @see #encodeURI(String)
+	 * @see #encode(String)
 	 * @see URI#create(String)
 	 */
 	public static URI resolveFragment(final URI uri, final String fragment) throws IllegalArgumentException
 	{
-		return resolveRawFragment(uri, encodeURI(fragment)); //encode and resolve the fragment
+		return resolveRawFragment(uri, encode(fragment)); //encode and resolve the fragment
 	}
 
 	/**
@@ -2134,104 +2151,51 @@ public class URIs
 	}
 
 	/**
-	 * Encodes the URI reserved characters in the string, using '%' as an escape character, according to the URI encoding rules in <a
-	 * href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax". All characters not considered
-	 * {@link URIs#NORMAL_CHARACTERS} are encoded. The escape character {@link URIs#ESCAPE_CHAR} will always be encoded.
+	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
+	 * "Uniform Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
+	 * @param uri The URI to URI-encode.
+	 * @return A string containing the escaped data.
+	 * @see URIs#ESCAPE_CHAR
+	 */
+	public static String encode(final URI uri)
+	{
+		return encode(uri.toASCIIString()); //encode the string version of the URI
+	}
+
+	/**
+	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
+	 * "Uniform Resource Identifiers (URI): Generic Syntax".
+	 * @param uri The URI to URI-encode.
+	 * @param escapeChar The escape character to use, which will always be escaped.
+	 * @return A string containing the escaped data.
+	 */
+	public static String encode(final URI uri, final char escapeChar)
+	{
+		return encode(uri.toASCIIString(), escapeChar); //encode all string version of the URI
+	}
+
+	/**
+	 * Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
+	 * "Uniform Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
 	 * @param string The data to URI-encode.
 	 * @return A string containing the escaped data.
 	 * @see URIs#ESCAPE_CHAR
-	 * @see URIs#NORMAL_CHARACTERS
-	 * @deprecated
 	 */
 	public static String encode(final String string)
 	{
-		return encode(string, null, null); //encode the string with no extra valid or invalid characters
-	}
-
-	/**
-	 * Encodes the URI reserved characters in the string, using '%' as an escape character, according to the URI encoding rules in <a
-	 * href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax". All characters not considered
-	 * {@link URIs#NORMAL_CHARACTERS} are encoded. The escape character {@link URIs#ESCAPE_CHAR} will always be encoded.
-	 * @param string The data to URI-encode.
-	 * @param extraValidCharacters Characters to be categorically not , or <code>null</code> if no extra valid characters are given.
-	 * @param extraInvalidCharacters Characters to be categorically encoded, or <code>null</code> if no extra invalid characters are given.
-	 * @return A string containing the escaped data.
-	 * @see URIs#ESCAPE_CHAR
-	 * @see URIs#NORMAL_CHARACTERS
-	 * @deprecated
-	 */
-	public static String encode(final String string, final Characters extraValidCharacters, final Characters extraInvalidCharacters)
-	{
-		final Characters validCharacters = extraValidCharacters != null ? NORMAL_CHARACTERS.add(extraValidCharacters) : NORMAL_CHARACTERS; //if extra valid characters were given, add them to our string
-		final Characters invalidCharacters = extraInvalidCharacters != null ? extraInvalidCharacters.add(ESCAPE_CHAR) : new Characters(ESCAPE_CHAR); //if extra invalid characters were given, make note of them, but always consider the escape character invalid
-		final StringBuilder stringBuilder = new StringBuilder(string); //put the string in a string builder so that we can work with it; although inserting encoded sequences may seem inefficient, it should be noted that filling a string buffer with the entire string is more efficient than doing it one character at a time, that characters needed encoding are generally uncommon, and that any copying of the string characters during insertion is done via a native method, which should happen very quickly
-		for(int characterIndex = stringBuilder.length() - 1; characterIndex >= 0; --characterIndex) //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
-		{
-			final char c = stringBuilder.charAt(characterIndex); //get the current character
-			final boolean encode = c == ESCAPE_CHAR || (validCharacters != null && !validCharacters.contains(c)) //encode if there is a list of valid characters and this character is not one of them
-					|| (invalidCharacters != null && invalidCharacters.contains(c)); //encode if there is a list of invalid characters and this character is one of them
-			if(encode) //if we should encode this character
-			{
-				final byte[] bytes = String.valueOf(c).getBytes(UTF_8_CHARSET); //convert this character to a sequence of UTF-8 bytes
-				final int byteCount = bytes.length; //find out how many bytes there are
-				final StringBuilder encodeStringBuilder = new StringBuilder(byteCount * 3); //create a string builder to hold three characters for each byte we have (the escape character plus a two-digit encoded value)
-				for(int byteIndex = 0; byteIndex < byteCount; ++byteIndex) //look at each byte
-				{
-					encodeStringBuilder.append(ESCAPE_CHAR); //&
-					encodeStringBuilder.append(Integers.toHexString(bytes[byteIndex], 2).toUpperCase()); //HH
-				}
-				stringBuilder.replace(characterIndex, characterIndex + 1, encodeStringBuilder.toString()); //replace the character with its encoding
-			}
-		}
-		return stringBuilder.toString(); //return the encoded version of the string
-	}
-
-	/**
-	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
-	 * "Uniform Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
-	 * @param uri The URI to URI-encode.
-	 * @return A string containing the escaped data.
-	 * @see URIs#ESCAPE_CHAR
-	 */
-	public static String encodeURI(final URI uri)
-	{
-		return encodeURI(uri.toASCIIString()); //encode the string version of the URI
-	}
-
-	/**
-	 * Encodes all URI reserved characters in the URI according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
-	 * "Uniform Resource Identifiers (URI): Generic Syntax".
-	 * @param uri The URI to URI-encode.
-	 * @parm escapeChar The escape character to use, which will always be escaped.
-	 * @return A string containing the escaped data.
-	 */
-	public static String encodeURI(final URI uri, final char escapeChar)
-	{
-		return encodeURI(uri.toASCIIString(), escapeChar); //encode all string version of the URI
-	}
-
-	/**
-	 * Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
-	 * "Uniform Resource Identifiers (URI): Generic Syntax" using the URI escape character, {@value URIs#ESCAPE_CHAR}.
-	 * @param string The data to URI-encode.
-	 * @return A string containing the escaped data.
-	 * @see URIs#ESCAPE_CHAR
-	 */
-	public static String encodeURI(final String string)
-	{
-		return encodeURI(string, ESCAPE_CHAR); //encode the URI using the standard escape character
+		return encode(string, ESCAPE_CHAR); //encode the URI using the standard escape character
 	}
 
 	/**
 	 * Encodes all URI reserved characters in the string according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
 	 * "Uniform Resource Identifiers (URI): Generic Syntax".
 	 * @param string The data to URI-encode.
-	 * @parm escapeChar The escape character to use, which will always be escaped.
+	 * @param escapeChar The escape character to use, which will always be escaped.
 	 * @return A string containing the escaped data.
 	 */
-	public static String encodeURI(final String string, final char escapeChar)
+	public static String encode(final String string, final char escapeChar)
 	{
-		return uriEncode(string, UNRESERVED_CHARACTERS, escapeChar); //encode all non-unreserved characters
+		return encode(string, UNRESERVED_CHARACTERS, escapeChar); //encode all non-unreserved characters
 	}
 
 	/**
@@ -2242,9 +2206,9 @@ public class URIs
 	 * @return A string containing the escaped data.
 	 * @see URIs#ESCAPE_CHAR
 	 */
-	static String uriEncode(final String string, final Characters validCharacters)
+	static String encode(final String string, final Characters validCharacters)
 	{
-		return uriEncode(string, validCharacters, ESCAPE_CHAR); //encode the string with the normal escape character
+		return encode(string, validCharacters, ESCAPE_CHAR); //encode the string with the normal escape character
 	}
 
 	/**
@@ -2253,10 +2217,10 @@ public class URIs
 	 * escape codes.
 	 * @param string The data to URI-encode.
 	 * @param validCharacters Characters that should not be encoded; all other characters will be encoded.
-	 * @parm escapeChar The escape character to use, which will always be escaped.
+	 * @param escapeChar The escape character to use, which will always be escaped.
 	 * @return A string containing the escaped data.
 	 */
-	static String uriEncode(final String string, final Characters validCharacters, final char escapeChar)
+	static String encode(final String string, final Characters validCharacters, final char escapeChar)
 	{
 		return escapeHex(string, validCharacters, null, Integer.MAX_VALUE, escapeChar, 2, Case.LOWERCASE); //escape the string using two escape hex digits; don't use an upper bound, as the valid characters take inherently care of this
 	}
@@ -2270,21 +2234,21 @@ public class URIs
 	 * @throws IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
 	 * @see URIs#ESCAPE_CHAR
 	 */
-	public static String uriDecode(final String uri)
+	public static String decode(final String uri)
 	{
-		return uriDecode(uri, ESCAPE_CHAR); //decode the string using the standard URI escape character
+		return decode(uri, ESCAPE_CHAR); //decode the string using the standard URI escape character
 	}
 
 	/**
 	 * Decodes the escaped ('%') characters in the character iterator according to the URI encoding rules in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC
 	 * 2396</a>, "Uniform Resource Identifiers (URI): Generic Syntax".
 	 * @param uri The data to URI-decode.
-	 * @parm escapeChar The escape character.
+	 * @param escapeChar The escape character.
 	 * @return A string containing the encoded URI data.
 	 * @throws IllegalArgumentException if the given URI string contains a character greater than U+00FF.
 	 * @throws IllegalArgumentException if a given escape character is not followed by a two-digit escape sequence.
 	 */
-	public static String uriDecode(final String uri, final char escapeChar)
+	public static String decode(final String uri, final char escapeChar)
 	{
 		return unescapeHex(uri, escapeChar, 2); //unescape the string using two escape hex digits
 	}

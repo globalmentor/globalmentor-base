@@ -273,7 +273,7 @@ public class URF
 	*/
 	public static URI createResourceURI(final URI namespaceURI, final String localName)
 	{
-		return resolve(checkNamespaceURI(namespaceURI), encodeURI(localName));	//encode the local name and resolve it to the namespace
+		return resolve(checkNamespaceURI(namespaceURI), encode(localName));	//encode the local name and resolve it to the namespace
 	}
 
 	/**Retrieves the namespace from the given URI.
@@ -306,7 +306,7 @@ public class URF
 		final String rawPath=uri.getRawPath();	//get the raw path
 		if(rawPath!=null && !endsWith(rawPath, PATH_SEPARATOR))	//if there is a raw path that isn't a collection
 		{
-			return uriDecode(getName(rawPath));	//return the name from the raw path
+			return decode(getName(rawPath));	//return the name from the raw path
 		}
 		return null;	//indicate that this URI has no namespace
 	}
@@ -425,7 +425,7 @@ public class URF
 		{
 			throw new IllegalArgumentException("URI "+namespaceURI+" is not an inline namespace URI.");
 		}
-		return URI.create(uriDecode(inlineNamespaceURIString.substring(BASE_INLINE_NAMESPACE_URI_STRING.length(), inlineNamespaceURIString.length()-1)));	//retrieve the type substring and decode it
+		return URI.create(decode(inlineNamespaceURIString.substring(BASE_INLINE_NAMESPACE_URI_STRING.length(), inlineNamespaceURIString.length()-1)));	//retrieve the type substring and decode it
 	}
 	
 	/**Creates an inline namespace URI for the given resource type.
@@ -435,7 +435,7 @@ public class URF
 	*/
 	public static URI createInlineNamespaceURI(final URI typeURI)
 	{
-		return URI.create(BASE_INLINE_NAMESPACE_URI.toString()+encodeURI(typeURI.toString())+PATH_SEPARATOR);	//encode the type and append it to the inline namespace URI
+		return URI.create(BASE_INLINE_NAMESPACE_URI.toString()+encode(typeURI.toString())+PATH_SEPARATOR);	//encode the type and append it to the inline namespace URI
 	}
 
 	/**Creates a URI in an inline namespace for the given resource type and lexical form.

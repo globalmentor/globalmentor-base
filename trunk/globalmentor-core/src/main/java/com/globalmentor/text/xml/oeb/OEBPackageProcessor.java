@@ -151,7 +151,7 @@ public class OEBPackageProcessor
 			if("uri".equals(scheme) || URN_SCHEME.equals(scheme)	//TODO del "uri" scheme if not needed
 				  || dcIdentifierElementText.startsWith(URN_SCHEME+SCHEME_SEPARATOR)
 				  || dcIdentifierElementText.startsWith(HTTP_URI_SCHEME+SCHEME_SEPARATOR)
-				  || dcIdentifierElementText.startsWith(HTTPS_SCHEME+SCHEME_SEPARATOR)
+				  || dcIdentifierElementText.startsWith(HTTPS_URI_SCHEME+SCHEME_SEPARATOR)
 				  || dcIdentifierElementText.startsWith(FILE_SCHEME+SCHEME_SEPARATOR))
 			{
 				publicationReferenceURI=new URI(dcIdentifierElementText);  //use the identifier as the publication resource reference URI

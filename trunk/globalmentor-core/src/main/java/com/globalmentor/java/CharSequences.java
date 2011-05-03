@@ -378,7 +378,7 @@ public class CharSequences
 	}
 
 	/**
-	 * Decodes the escaped characters in the character sequence by converting the hex value after each occurance of the escape character to the corresponding
+	 * Decodes the escaped characters in the character sequence by converting the hex value after each occurrence of the escape character to the corresponding
 	 * Unicode character using UTF-8.
 	 * @param charSequence The data to unescape.
 	 * @param escapeChar The character that prefixes the hex representation.
