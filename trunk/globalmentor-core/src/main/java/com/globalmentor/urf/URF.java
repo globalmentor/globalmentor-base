@@ -149,7 +149,7 @@ public class URF
 	public final static URI TYPE_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "type");
 	/**The URI of the property indicating the value of a map entry.*/
 	public final static URI VALUE_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "value");
-	/**The identifier of the version of hte resource.*/
+	/**The identifier of the version of the resource.*/
 	public final static URI VERSION_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "version");
 
 		//inline namespaces
