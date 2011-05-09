@@ -1492,7 +1492,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		{
 			throw new DataException(uriSyntaxException);
 		}
-		return baseURI!=null ? resolve(baseURI, uri) : uri;	//return the URI, resolved against the base URI if there is a base URI
+		return baseURI!=null ? resolve(baseURI, uri, true) : uri;	//return the URI, resolved against the base URI if there is a base URI
 	}
 
 	/**Converts a legacy namespace URI to a standard namespace URI.

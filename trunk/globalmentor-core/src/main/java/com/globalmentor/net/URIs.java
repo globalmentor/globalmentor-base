@@ -24,6 +24,7 @@ import com.globalmentor.collections.*;
 import com.globalmentor.io.*;
 
 import com.globalmentor.java.Characters;
+import com.globalmentor.log.Log;
 import com.globalmentor.model.NameValuePair;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
@@ -1898,6 +1899,39 @@ public class URIs
 	 */
 	public static URI resolve(final URI baseURI, final URI childURI)
 	{
+		return resolve(baseURI, childURI, false);
+	}
+
+	/**
+	 * Resolves a relative URI against a base URI with added functionality and bug fixes over {@link URI#resolve(URI)}. If a deep resolution is requested, a URI's
+	 * contents will be further resolved if possible, even if the URI itself is already absolute. For example, a deep resolution of <code>file:/foo/bar.txt</code>
+	 * against <code>file:///C:/test</code> would yield <code>file:///C:/test/foo/bar.txt</code>.
+	 * <p>
+	 * This implementation supports deep resolution of the following URI schemes:
+	 * </p>
+	 * <ul>
+	 * <li>Files{@value #FILE_SCHEME}</li>
+	 * </ul>
+	 * <p>
+	 * The empty string is appended to the given base URI with no fragment.
+	 * </p>
+	 * <p>
+	 * This method correctly resolves fragment URIs against opaque base URIs.
+	 * </p>
+	 * <p>
+	 * This method corrects Java's erroneous collapsing of slashes in UNC paths in {@link URI#resolve(URI)}, so that for example
+	 * <code>file:////server/file.ext</code> can successfully be resolved against.
+	 * </p>
+	 * @param baseURI The URI against which the child URI should be resolved.
+	 * @param childURI The URI to resolve against the base URI.
+	 * @param deep Whether the relative contents of the URI should also be resolved, even if the URI itself is absolute.
+	 * @return The child URI resolved against the base URI.
+	 * @throws NullPointerException if the base URI and/or the child URI is <code>null</code>.
+	 * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
+	 * @see #isUNCFileURI(URI)
+	 */
+	public static URI resolve(final URI baseURI, final URI childURI, final boolean deep)
+	{
 		if(baseURI.isOpaque()) //if the base URI is opaque, do special processing
 		{
 			final String childURIString = childURI.toASCIIString(); //get the child URI as a string
@@ -1918,6 +1952,28 @@ public class URIs
 		if(isUNCFileURI(baseURI) && !childURI.isAbsolute()) //if we resolved a relative URI against a Windows UNC path file URI, the resulting URI should also be a UNC path file URI
 		{
 			resolvedURI = fixUNCPathFileURI(resolvedURI); //restore the URI to a UNC path file URI, as Java will have collapsed several slashes
+		}
+		if(deep) //if we are doing a deep resolve
+		{
+			if(FILE_SCHEME.equals(resolvedURI.getScheme()) && FILE_SCHEME.equals(baseURI.getScheme())) //if both URIs are file URIs
+			{
+				final String resolvedFilePath = resolvedURI.getSchemeSpecificPart(); //determine the file's path from its SSP; if the file is relative, the URI path will be null
+				File resolvedFile = new File(resolvedFilePath);
+				if(!resolvedFile.isAbsolute()) //if the resolved file isn't absolute
+				{
+					final File baseFile = new File(getCurrentLevel(baseURI).getSchemeSpecificPart()); //get the directory (URI current level) of the base file
+					resolvedFile = new File(baseFile, resolvedFilePath); //resolve the file against the base file
+					try
+					{
+						resolvedFile = resolvedFile.getCanonicalFile(); //try to get the canonical form of the file 
+					}
+					catch(final IOException ioException) //if we had a problem getting the canonical form
+					{
+						Log.warn("Error getting canonical form of file: " + resolvedFile, ioException);
+					}
+					resolvedURI = Files.toURI(resolvedFile); //update the resolved URI to the new resolved file 
+				}
+			}
 		}
 		return resolvedURI;
 	}
