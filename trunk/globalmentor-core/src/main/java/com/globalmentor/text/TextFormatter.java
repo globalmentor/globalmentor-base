@@ -64,6 +64,25 @@ public class TextFormatter
 	}
 
 	/**
+	 * Appends the string representations of the given items separated by a {@value Characters#COMMA_CHAR}.
+	 * <p>
+	 * <code>null</code> objects are handled as per {@link StringBuilder#append(Object)}.
+	 * </p>
+	 * @param <T> The type of item being formatted.
+	 * @param stringBuilder The string builder into which the result should be placed.
+	 * @param separator The separator character to be inserted between the item strings, or {@link Characters#NULL_CHAR} (Unicode code point 0) if there should be
+	 *          no separator.
+	 * @param items The items to be formatted.
+	 * @return The string builder containing the new information.
+	 * @see Object#toString()
+	 * @see Characters#COMMA_CHAR
+	 */
+	public static <T> StringBuilder formatList(final StringBuilder stringBuilder, final Iterable<T> items)
+	{
+		return formatList(stringBuilder, COMMA_CHAR, items);
+	}
+
+	/**
 	 * Appends the string representations of the given items separated by a separator character.
 	 * <p>
 	 * <code>null</code> objects are handled as per {@link StringBuilder#append(Object)}.
@@ -179,6 +198,90 @@ public class TextFormatter
 			}
 		}
 		return stringBuilder; //return the string builder we used
+	}
+
+	/**
+	 * Appends the string representations of the given items separated by a {@value Characters#COMMA_CHAR}.
+	 * <p>
+	 * <code>null</code> objects are handled as per {@link StringBuilder#append(Object)}.
+	 * </p>
+	 * @param <T> The type of item being formatted.
+	 * @param separator The separator character to be inserted between the item strings, or {@link Characters#NULL_CHAR} (Unicode code point 0) if there should be
+	 *          no separator.
+	 * @param items The items to be formatted.
+	 * @return The string containing the formatted list.
+	 * @see Object#toString()
+	 * @see Characters#COMMA_CHAR
+	 */
+	public static <T> String formatList(final Iterable<T> items)
+	{
+		return formatList(new StringBuilder(), items).toString();
+	}
+	
+	/**
+	 * Appends the string representations of the given items separated by a separator character.
+	 * <p>
+	 * <code>null</code> objects are handled as per {@link StringBuilder#append(Object)}.
+	 * </p>
+	 * @param <T> The type of item being formatted.
+	 * @param separator The separator character to be inserted between the item strings, or {@link Characters#NULL_CHAR} (Unicode code point 0) if there should be
+	 *          no separator.
+	 * @param items The items to be formatted.
+	 * @return The string containing the formatted list.
+	 * @see Object#toString()
+	 */
+	public static <T> String formatList(final char separator, final Iterable<T> items)
+	{
+		return formatList(new StringBuilder(), separator, items).toString();
+	}
+
+	/**
+	 * Appends the string representations of the given items separated by a separator string.
+	 * <p>
+	 * <code>null</code> objects are handled as per {@link StringBuilder#append(Object)}.
+	 * </p>
+	 * @param <T> The type of item being formatted.
+	 * @param separator The separator to be inserted between the item strings, or <code>null</code> if there should be no separator.
+	 * @param items The items to be formatted.
+	 * @return The string containing the formatted list.
+	 * @see Object#toString()
+	 */
+	public static <T> String formatList(final String separator, final Iterable<T> items)
+	{
+		return formatList(new StringBuilder(), separator, items).toString();
+	}
+
+	/**
+	 * Appends the string representations of the given items separated by a separator character.
+	 * <p>
+	 * <code>null</code> objects are handled as per {@link StringBuilder#append(Object)}.
+	 * </p>
+	 * @param <T> The type of item being formatted.
+	 * @param separator The separator character to be inserted between the object strings, or {@link Characters#NULL_CHAR} (Unicode code point 0) if there should
+	 *          be no separator.
+	 * @param items The items to be formatted.
+	 * @return The string containing the formatted list.
+	 * @see Object#toString()
+	 */
+	public static <T> String formatList(final char separator, final T... items)
+	{
+		return formatList(new StringBuilder(), separator, items).toString();
+	}
+
+	/**
+	 * Appends the string representations of the given items separated by a separator string.
+	 * <p>
+	 * <code>null</code> objects are handled as per {@link StringBuilder#append(Object)}.
+	 * </p>
+	 * @param <T> The type of item being formatted.
+	 * @param separator The separator string to be inserted between the object strings, or <code>null</code> if there should be no separator.
+	 * @param items The items to be formatted.
+	 * @return The string containing the formatted list.
+	 * @see Object#toString()
+	 */
+	public static <T> String formatList(final String separator, final T... items)
+	{
+		return formatList(new StringBuilder(), separator, items).toString();
 	}
 
 	/**
