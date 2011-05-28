@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,18 @@ otherwise, resources are equal only if they both have <code>null</code> URIs and
 public interface URFResource extends Resource, URFScope
 {
 
+	/**Returns the icon of this resource, if any.
+	@return The URI value of the icon property, or <code>null</code> if there is no such property or the property value is not an icon.
+	@see URF#ICON_PROPERTY_URI
+	*/
+	public URI getIcon();
+
+	/**Set the icon of this resource.
+	@param icon The new icon, or <code>null</code> if there should be no icon.
+	@see URF#ICON_PROPERTY_URI
+	*/
+	public void setIcon(final URI icon);
+	
 	/**Returns the label of this resource, if any.
 	@return The string value of the label property, or <code>null</code> if there is no such property or the property value is not a string.
 	@see URF#LABEL_PROPERTY_URI

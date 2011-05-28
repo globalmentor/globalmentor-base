@@ -125,6 +125,8 @@ public class URF
 	public final static URI ELEMENT_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "element");
 	/**The URI of the property indicating an entry of a map.*/
 	public final static URI ENTRY_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "entry");
+	/**A visual representation associated with the resource.*/
+	public final static URI ICON_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "icon");
 	/**The interface implemented by a class.*/
 	public final static URI IMPLEMENTATION_OF_PROPERTY_URI=createResourceURI(NAMESPACE_URI, "implementationOf");
 	/**The URI of the property indicating the key of a map entry.*/
