@@ -30,52 +30,6 @@ import com.globalmentor.text.CharacterEncoding;
 public class InputStreams
 {
 
-	/**Copies all information from an input stream to an output stream.
-		Both streams are used as-is. If buffered reading and writing is desired,
-		the streams should be wrapped in a {@link BufferedInputStream} and
-		a {@link BufferedOutputStream} and those should be passed as parameters.
-		After copying is finished, both streams are left open.
-	@param inputStream The source of the data.
-	@param outputStream The destination of the data.
-	@return The total number of bytes copied.
-	@exception IOException Thrown if there is an error reading from or writing to a stream.
-	*/
-	public static long copy(final InputStream inputStream, final OutputStream outputStream) throws IOException
-	{
-		return copy(inputStream, outputStream, -1);	//we don't know how many bytes to expect
-	}
-
-	/**Copies all information from an input stream to an output stream.
-		Both streams are used as-is. If buffered reading and writing is desired,
-		the streams should be wrapped in a {@link BufferedInputStream} and
-		a {@link BufferedOutputStream} and those should be passed as parameters.
-		After copying is finished, both streams are left open.
-	@param inputStream The source of the data.
-	@param outputStream The destination of the data.
-	@param expectedContentLength The length of content expected, or -1 if the length is unknown.
-	@return The total number of bytes copied.
-	@throws IOException Thrown if there is an error reading from or writing to a stream.
-	@throws IOException if an expected content length was given and the number of bytes written to the output stream is not what was expected.
-	*/
-	public static long copy(final InputStream inputStream, final OutputStream outputStream, final long expectedContentLength) throws IOException
-	{
-		final int bufferSize=expectedContentLength>=16*1024*1024 ? 10*1024*1024 : 64*1024;	//create a buffer of the correct size, based upon the expected length if known; use a 10MB buffer for anything at least 10MB, or a 16KB buffer for everything else
-	  final byte[] buffer=new byte[bufferSize];	//create a buffer for copying data
-		long totalBytesCopied=0; //show that we have not copied any data
-		int bytesRead;	//this will store the number of bytes read each time
-		while((bytesRead=inputStream.read(buffer))>=0)	//read bytes until the end of the input stream is reached
-		{
-			outputStream.write(buffer, 0, bytesRead);	//write the bytes to the output stream
-			totalBytesCopied+=bytesRead;  //update the total bytes read
-		}
-		if(expectedContentLength>=0 && totalBytesCopied!=expectedContentLength)	//if we didn't copy what was expected
-		{
-			throw new IOException("Error transferring information; expected to transfer "+expectedContentLength+" bytes and instead transferred "+totalBytesCopied);
-		}
-		return totalBytesCopied;  //return the total number of bytes copied
-	}
-
-
 	/**Loads the contents of an input stream into an array of bytes. This is
 		accomplished by creating a series of smaller buffers and, once the end of
 		the stream has been reached, creating a new buffer and copying the contents

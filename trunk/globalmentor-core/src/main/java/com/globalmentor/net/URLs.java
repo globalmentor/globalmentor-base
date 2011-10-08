@@ -321,7 +321,7 @@ public class URLs
 		final InputStream bufferedInputStream = new BufferedInputStream(url.openConnection().getInputStream()); //created a buffered input stream to the URL
 		try
 		{
-			InputStreams.copy(bufferedInputStream, outputStream); //copy the contents of the input stream to the output stream
+			Streams.copy(bufferedInputStream, outputStream); //copy the contents of the input stream to the output stream
 		}
 		finally
 		{

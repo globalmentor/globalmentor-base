@@ -1263,7 +1263,7 @@ public class Files
 		final OutputStream fileOutputStream = new BufferedOutputStream(new FileOutputStream(file)); //created a buffered output stream to the file
 		try
 		{
-			InputStreams.copy(inputStream, fileOutputStream); //copy the contents of the input stream to the output stream
+			Streams.copy(inputStream, fileOutputStream); //copy the contents of the input stream to the output stream
 		}
 		finally
 		{
@@ -1282,7 +1282,7 @@ public class Files
 		final InputStream fileInputStream = new BufferedInputStream(new FileInputStream(file)); //created a buffered input stream to the file
 		try
 		{
-			InputStreams.copy(fileInputStream, outputStream, file.length()); //copy the contents of the input stream to the output stream
+			Streams.copy(fileInputStream, outputStream, file.length()); //copy the contents of the input stream to the output stream
 		}
 		finally
 		{

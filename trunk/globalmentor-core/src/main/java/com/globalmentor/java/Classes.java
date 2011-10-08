@@ -34,7 +34,7 @@ import static com.globalmentor.net.URLs.*;
 
 import com.globalmentor.collections.Sets;
 import com.globalmentor.io.IO;
-import com.globalmentor.io.InputStreams;
+import com.globalmentor.io.Streams;
 import com.globalmentor.model.NameValuePair;
 import com.globalmentor.net.*;
 
@@ -957,7 +957,7 @@ public class Classes
 					final OutputStream outputStream = new FileOutputStream(file); //create an output stream to the file
 					try
 					{
-						InputStreams.copy(inputStream, outputStream); //copy the resource input stream to the output stream to the temporary file
+						Streams.copy(inputStream, outputStream); //copy the resource input stream to the output stream to the temporary file
 					}
 					finally
 					{
