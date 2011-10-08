@@ -16,6 +16,8 @@
 
 package com.globalmentor.event;
 
+import static com.globalmentor.java.Strings.createString;
+
 import java.util.EventObject;
 
 /**
@@ -89,23 +91,33 @@ public class ProgressEvent extends EventObject
 		this.maximum = maximum;
 	}
 
-	/**@return A string representing a progress bar.*/
+	/** @return A string representing a progress bar with the current progress. */
 	public String getProgressBarString()
 	{
-		
+		final long value = getValue();
+		final long maximum = getMaximum();
+		if(value >= 0 && maximum >= 0) //if we know enough information to plot the progress
+		{
+			final int progress = (int)(value * 10 / maximum); //get the progress out of 10
+			return createString('X', progress) + createString('.', 10 - progress); //create a string in the form "XXX......."
+		}
+		else
+		{
+			return "?.........";
+		}
 	}
 
-	/**{@inheritDoc}
-	 * This implementation returns a string indicating the current progress in the form <code>123/1000</code>.
+	/**
+	 * {@inheritDoc} This implementation returns a string indicating the current progress in the form <code>123/1000</code>.
 	 */
 	public String toString()
 	{
-		final StringBuilder stringBuilder=new StringBuilder();
-		if(value>=0)
+		final StringBuilder stringBuilder = new StringBuilder();
+		if(value >= 0)
 		{
 			stringBuilder.append(value);
 		}
-		if(maximum>=0)
+		if(maximum >= 0)
 		{
 			stringBuilder.append('/').append(maximum);
 		}
