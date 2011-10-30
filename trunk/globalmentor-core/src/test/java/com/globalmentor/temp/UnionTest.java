@@ -234,6 +234,10 @@ public class UnionTest
 				}
 				//if we haven't seen the item before, it definitely isn't in the union, so don't even consider it
 			}
+			//we could improve the algorithm here, for the uncommon cases in which, say, the first two lists have a great number of
+			//items in common but the others don't, by keeping a count of who many items had their count incremented; if this
+			//number is significantly smaller than the current size of the map (e.g. 50% or less), then we could take time to
+			//compact the map (i.e. throw out non-union items) on a one-time basis without severely impacting overall performance
 		}
 		//the union is all entries with a count equal to the number of lists,
 		//but in this hybrid approach, the list will be much smaller as we started out with a smaller union
