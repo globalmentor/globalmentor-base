@@ -54,9 +54,9 @@ public class UnionTest
 	 * <p>
 	 * The test performs several iterations, generating new test data each time. The test data generation is rather inefficient: the friends generated are
 	 * "oversampled" (that is, random friends are generated more times than there are people) in order to make it more likely that there exist friends in common
-	 * with all people. The numbers are therefore not arbitrary to create what is believed to be a reasonable/typical number of friends in common. A better test
-	 * data generator would "force" the number of common friends to some predetermined number, but this would require a more complicated test generation
-	 * algorithm.
+	 * with all people (as the random number generator will create duplicates). The numbers are therefore not arbitrary to create what is believed to be a
+	 * reasonable/typical number of friends in common. A better test data generator would "force" the number of common friends to some predetermined number, but
+	 * this would require a more complicated test generation algorithm.
 	 * </p>
 	 */
 	@Test
@@ -64,6 +64,10 @@ public class UnionTest
 	{
 		final int iterationCount = 10; //the number of tests to perform
 		final int personCount = 1000; //the number of people
+		//the number of friends each person has
+		//we'll use a large number here just to increase likelihood of common friends, as we use a random number generator which may wind up choosing the same friend multiple times
+		//try changing this to a higher number to increase the number of friends in common
+		//at 10000, for example, the average number of friends in common is 96%, and the hybrid approach shows an improvement of around 50% over the carry-forward approach
 		final int maxFriendCount = 6000; //the number of friends each person has; we'll use a large number here just to increase likelihood of common friends
 		final Random random = new Random();
 		long byCountTime = 0, byCarryTime = 0, byHybridTime = 0;
