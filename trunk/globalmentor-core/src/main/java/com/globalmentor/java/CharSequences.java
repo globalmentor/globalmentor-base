@@ -1034,6 +1034,6 @@ public class CharSequences
 	 */
 	public static <CS extends CharSequence> CS nullify(final CS charSequence)
 	{
-		return charSequence.length() > 0 ? charSequence : null;
+		return charSequence != null && charSequence.length() > 0 ? charSequence : null;
 	}
 }
