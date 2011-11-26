@@ -805,12 +805,13 @@ public class CharSequences
 	 */
 	public static CharSequence join(final CharSequence... charSequences)
 	{
-		return join(NULL_CHAR, charSequences);	//join with no delimiter
+		return join(NULL_CHAR, charSequences); //join with no delimiter
 	}
 
 	/**
 	 * Concatenates the given character sequences, separated by the given delimiter.
-	 * @param delimiter The delimiter to be placed between each character sequence, or {@link Characters#NULL_CHAR} if no delimiter should be placed between the character sequences.
+	 * @param delimiter The delimiter to be placed between each character sequence, or {@link Characters#NULL_CHAR} if no delimiter should be placed between the
+	 *          character sequences.
 	 * @param charSequences The character sequences to be concatenated.
 	 * @return The string containing the concatenated character sequences.
 	 * @throws NullPointerException if the given character sequences is <code>null</code>.
@@ -1021,8 +1022,18 @@ public class CharSequences
 	 * @param character The character to compare with the character sequence.
 	 * @return <code>true</code> if the character sequence is composed of one character and that character matches the given character.
 	 */
-	public final static boolean equals(final CharSequence charSequence, final char character)
+	public static boolean equals(final CharSequence charSequence, final char character)
 	{
 		return charSequence.length() == 1 && charSequence.charAt(0) == character; //see if the character sequence has only one character, the given character
+	}
+
+	/**
+	 * Turns an empty character sequence into <code>null</code>.
+	 * @param charSequence The character sequence to examine, or <code>null</code>.
+	 * @return The given character sequence, or <code>null</code> if the given character sequence has no characters or no character sequence was given.
+	 */
+	public static <CS extends CharSequence> CS nullify(final CS charSequence)
+	{
+		return charSequence.length() > 0 ? charSequence : null;
 	}
 }
