@@ -20,8 +20,6 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletResponse;
-
 import com.globalmentor.java.Characters;
 import com.globalmentor.java.Objects;
 
@@ -33,8 +31,7 @@ import static com.globalmentor.net.URIs.*;
  * Constants and utilities relating to the HyperText Transfer Protocol (HTTP) as defined by <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>,
  * "Hypertext Transfer Protocol -- HTTP/1.1".
  * <p>
- * Status code declarations and comments used from Tomcat org.apache.catalina.servlets.WebdavServlet by Remy Maucherat Revision: 1.19 $ $Date: 2004/09/19
- * 01:20:10.
+ * Some status code comments used from Tomcat org.apache.catalina.servlets.WebdavServlet by Remy Maucherat Revision: 1.19 $ $Date: 2004/09/19 01:20:10.
  * </p>
  * @see <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>
  * @author Garret Wilson
@@ -187,87 +184,67 @@ public class HTTP
 	public final static String REALM_PARAMETER = "realm";
 
 	/**
+	 * Status code (100) indicating the client may continue with its request. This interim response is used to inform the client that the initial part of the
+	 * request has been received and has not yet been rejected by the server.
+	 */
+	public static final int SC_CONTINUE = 100;
+
+	/**
 	 * Status code (200) indicating the request succeeded normally.
 	 */
-	public static final int SC_OK = HttpServletResponse.SC_OK;
+	public static final int SC_OK = 200;
 
 	/**
 	 * Status code (201) indicating the request succeeded and created a new resource on the server.
 	 */
-	public static final int SC_CREATED = HttpServletResponse.SC_CREATED;
+	public static final int SC_CREATED = 201;
 
 	/**
 	 * Status code (202) indicating that a request was accepted for processing, but was not completed.
 	 */
-	public static final int SC_ACCEPTED = HttpServletResponse.SC_ACCEPTED;
+	public static final int SC_ACCEPTED = 202;
 
 	/**
 	 * Status code (204) indicating that the request succeeded but that there was no new information to return.
 	 */
-	public static final int SC_NO_CONTENT = HttpServletResponse.SC_NO_CONTENT;
+	public static final int SC_NO_CONTENT = 204;
 
 	/**
 	 * Status code (301) indicating that the resource has permanently moved to a new location, and that future references should use a new URI with their
 	 * requests.
 	 */
-	public static final int SC_MOVED_PERMANENTLY = HttpServletResponse.SC_MOVED_PERMANENTLY;
+	public static final int SC_MOVED_PERMANENTLY = 301;
 
 	/**
 	 * Status code (302) indicating that the resource has temporarily moved to another location, but that future references should still use the original URI to
 	 * access the resource.
 	 */
-	public static final int SC_MOVED_TEMPORARILY = HttpServletResponse.SC_MOVED_TEMPORARILY;
+	public static final int SC_MOVED_TEMPORARILY = 302;
 
 	/**
 	 * Status code (304) indicating that a conditional GET operation found that the resource was available and not modified.
 	 */
-	public static final int SC_NOT_MODIFIED = HttpServletResponse.SC_NOT_MODIFIED;
+	public static final int SC_NOT_MODIFIED = 304;
 
 	/**
 	 * Status code (400) indicating the request sent by the client was syntactically incorrect.
 	 */
-	public static final int SC_BAD_REQUEST = HttpServletResponse.SC_BAD_REQUEST;
+	public static final int SC_BAD_REQUEST = 400;
 
 	/**
 	 * Status code (401) indicating that the request requires HTTP authentication.
 	 */
-	public static final int SC_UNAUTHORIZED = HttpServletResponse.SC_UNAUTHORIZED;
+	public static final int SC_UNAUTHORIZED = 401;
 
 	/**
 	 * Status code (403) indicating the server understood the request but refused to fulfill it.
 	 */
-	public static final int SC_FORBIDDEN = HttpServletResponse.SC_FORBIDDEN;
+	public static final int SC_FORBIDDEN = 403;
 
 	/**
 	 * Status code (404) indicating that the requested resource is not available.
 	 */
-	public static final int SC_NOT_FOUND = HttpServletResponse.SC_NOT_FOUND;
-
-	/**
-	 * Status code (500) indicating an error inside the HTTP service which prevented it from fulfilling the request.
-	 */
-	public static final int SC_INTERNAL_SERVER_ERROR = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-
-	/**
-	 * Status code (501) indicating the HTTP service does not support the functionality needed to fulfill the request.
-	 */
-	public static final int SC_NOT_IMPLEMENTED = HttpServletResponse.SC_NOT_IMPLEMENTED;
-
-	/**
-	 * Status code (502) indicating that the HTTP server received an invalid response from a server it consulted when acting as a proxy or gateway.
-	 */
-	public static final int SC_BAD_GATEWAY = HttpServletResponse.SC_BAD_GATEWAY;
-
-	/**
-	 * Status code (503) indicating that the HTTP service is temporarily overloaded, and unable to handle the request.
-	 */
-	public static final int SC_SERVICE_UNAVAILABLE = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
-
-	/**
-	 * Status code (100) indicating the client may continue with its request. This interim response is used to inform the client that the initial part of the
-	 * request has been received and has not yet been rejected by the server.
-	 */
-	public static final int SC_CONTINUE = 100;
+	public static final int SC_NOT_FOUND = 404;
 
 	/**
 	 * Status code (405) indicating the method specified is not allowed for the resource.
@@ -301,6 +278,26 @@ public class HTTP
 	 * resource for the requested method.
 	 */
 	public static final int SC_UNSUPPORTED_MEDIA_TYPE = 415;
+
+	/**
+	 * Status code (500) indicating an error inside the HTTP service which prevented it from fulfilling the request.
+	 */
+	public static final int SC_INTERNAL_SERVER_ERROR = 500;
+
+	/**
+	 * Status code (501) indicating the HTTP service does not support the functionality needed to fulfill the request.
+	 */
+	public static final int SC_NOT_IMPLEMENTED = 501;
+
+	/**
+	 * Status code (502) indicating that the HTTP server received an invalid response from a server it consulted when acting as a proxy or gateway.
+	 */
+	public static final int SC_BAD_GATEWAY = 502;
+
+	/**
+	 * Status code (503) indicating that the HTTP service is temporarily overloaded, and unable to handle the request.
+	 */
+	public static final int SC_SERVICE_UNAVAILABLE = 503;
 
 	/** The character '.' which separates components of an HTTP version. */
 	public final static char VERSION_DELIMITER = '.';
