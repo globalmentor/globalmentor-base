@@ -16,7 +16,7 @@
 
 package com.globalmentor.model;
 
-import static com.globalmentor.java.Integers.*;
+import static com.globalmentor.java.Preconditions.*;
 
 import java.beans.PropertyVetoException;
 
@@ -47,7 +47,7 @@ public abstract class AbstractSequenceTask extends AbstractTask implements Seque
 		protected void setSequenceIndex(final int newSequenceIndex) throws PropertyVetoException
 		{
 			final int oldSequenceIndex=sequenceIndex; //get the current index
-			if(checkRange(newSequenceIndex, getMinSequenceIndex(), getMaxSequenceIndex())!=oldSequenceIndex)  //if the index is really changing
+			if(checkArgumentRange(newSequenceIndex, getMinSequenceIndex(), getMaxSequenceIndex())!=oldSequenceIndex)  //if the index is really changing
 			{
 				fireVetoableChange(SEQUENCE_INDEX_PROPERTY, oldSequenceIndex, newSequenceIndex);	//notify vetoable change listeners of the impending change
 				sequenceIndex=newSequenceIndex; //change the index

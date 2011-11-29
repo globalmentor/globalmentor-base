@@ -16,7 +16,7 @@
 
 package com.globalmentor.text;
 
-import static com.globalmentor.java.Integers.*;
+import static com.globalmentor.java.Preconditions.*;
 
 import com.globalmentor.util.DataException;
 
@@ -150,7 +150,7 @@ public class SyntaxException extends DataException
 	*/ 
 	public static String createMessage(String message, final Throwable cause, final String input, final int index)
 	{
-		checkMinimum(index, -1);	//make sure the index is not less than negative one, the "unknown index" value
+		checkArgumentMinimum(index, -1);	//make sure the index is not less than negative one, the "unknown index" value
 		if(message==null)	//if there is no message
 		{
 			message=cause!=null ? cause.getMessage() : null;	//try to get the message from the cause

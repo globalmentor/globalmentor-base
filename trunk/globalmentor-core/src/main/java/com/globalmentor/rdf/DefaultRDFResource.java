@@ -20,7 +20,7 @@ import java.lang.ref.*;
 import java.net.URI;
 import java.util.*;
 
-import com.globalmentor.collections.Arrays;
+import com.globalmentor.java.Arrays;
 import com.globalmentor.net.BoundPropertyResource;
 import com.globalmentor.rdf.rdfs.RDFS;
 import static com.globalmentor.rdf.RDFResources.*;

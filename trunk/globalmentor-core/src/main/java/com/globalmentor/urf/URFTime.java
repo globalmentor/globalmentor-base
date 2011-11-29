@@ -22,7 +22,7 @@ import com.globalmentor.java.Integers;
 import com.globalmentor.text.*;
 
 import static com.globalmentor.iso.ISO8601.*;
-import static com.globalmentor.java.Integers.*;
+import static com.globalmentor.java.Preconditions.*;
 import static com.globalmentor.java.StringBuilders.*;
 import static com.globalmentor.urf.URF.*;
 
@@ -92,10 +92,10 @@ public class URFTime implements URFTemporal
 	 */
 	public URFTime(final int hours, final int minutes, final int seconds, final int microseconds, final URFUTCOffset utcOffset)
 	{
-		this.hours = checkRange(hours, 0, 23);
-		this.minutes = checkRange(minutes, 0, 59);
-		this.seconds = checkRange(seconds, 0, 60); //allow leap-seconds (see ISO 8601:2004(E) 4.2.1)
-		this.microseconds = checkRange(microseconds, 0, 999999);
+		this.hours = checkArgumentRange(hours, 0, 23);
+		this.minutes = checkArgumentRange(minutes, 0, 59);
+		this.seconds = checkArgumentRange(seconds, 0, 60); //allow leap-seconds (see ISO 8601:2004(E) 4.2.1)
+		this.microseconds = checkArgumentRange(microseconds, 0, 999999);
 		this.utcOffset = utcOffset;
 	}
 

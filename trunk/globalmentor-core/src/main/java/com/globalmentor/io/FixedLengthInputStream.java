@@ -18,7 +18,7 @@ package com.globalmentor.io;
 
 import java.io.*;
 
-import static com.globalmentor.java.Longs.*;
+import static com.globalmentor.java.Preconditions.*;
 
 /**Wraps an existing input stream and only returns a fixed number of bytes.
 <p>This stream should always be closed when access is finished; otherwise the underlying stream could be corrupted.</p>
@@ -59,7 +59,7 @@ public class FixedLengthInputStream extends InputStreamDecorator<InputStream>
 	public FixedLengthInputStream(final InputStream inputStream, final long length, final boolean closeDecoratedStream)
 	{
 		super(inputStream);
-		this.length=checkMinimum(length, 0);
+		this.length=checkArgumentMinimum(length, 0);
 		this.closeDecoratedStream=closeDecoratedStream;
 	}
 

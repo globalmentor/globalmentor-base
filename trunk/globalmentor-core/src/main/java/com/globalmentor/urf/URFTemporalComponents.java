@@ -22,13 +22,14 @@ import static java.util.Calendar.*;
 
 import com.globalmentor.io.ParseIOException;
 import com.globalmentor.iso.ISO8601;
+
 import static com.globalmentor.java.Characters.*;
 import com.globalmentor.text.SyntaxException;
 
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.iso.ISO8601.*;
-import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.java.Preconditions.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.model.Calendars.*;
 import static com.globalmentor.model.TimeZones.*;
@@ -175,18 +176,18 @@ public class URFTemporalComponents
 		{
 			if(hours >= 0 && minutes >= 0 && seconds >= 0 && microseconds >= 0) //if date and time is available
 			{
-				setDateTime(calendar, checkRange(year, 0, 9999), checkRange(month, 1, 12) - 1, checkRange(day, 1, 31), checkRange(hours, 0, 23),
-						checkRange(minutes, 0, 59), checkRange(seconds, 0, 60), checkRange(microseconds, 0, 999999) / 1000); //set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
+				setDateTime(calendar, checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31), checkArgumentRange(hours, 0, 23),
+						checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60), checkArgumentRange(microseconds, 0, 999999) / 1000); //set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
 			}
 			else
 			//if no time is available
 			{
-				calendar.set(checkRange(year, 0, 9999), checkRange(month, 1, 12) - 1, checkRange(day, 1, 31)); //set the calendar's date
+				calendar.set(checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31)); //set the calendar's date
 			}
 		}
 		else if(hours >= 0 && minutes >= 0 && seconds >= 0 && microseconds >= 0) //if only time is available
 		{
-			setTime(calendar, checkRange(hours, 0, 23), checkRange(minutes, 0, 59), checkRange(seconds, 0, 60), checkRange(microseconds, 0, 999999) / 1000); //set the calendar's time, converting the microseconds to milliseconds
+			setTime(calendar, checkArgumentRange(hours, 0, 23), checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60), checkArgumentRange(microseconds, 0, 999999) / 1000); //set the calendar's time, converting the microseconds to milliseconds
 		}
 		this.time = calendar.getTimeInMillis(); //get the time from the calendar
 	}
@@ -320,8 +321,8 @@ public class URFTemporalComponents
 		final Calendar calendar = new GregorianCalendar(utcOffset != null ? utcOffset.toTimeZone() : URFUTCOffset.GMT, checkInstance(locale,
 				"Locale cannot be null.")); //get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
 		calendar.clear(); //clear the calendar
-		return setDateTime(calendar, checkRange(year, 0, 9999), checkRange(month, 1, 12) - 1, checkRange(day, 1, 31), checkRange(hours, 0, 23),
-				checkRange(minutes, 0, 59), checkRange(seconds, 0, 60), checkRange(microseconds, 0, 999999) / 1000); //set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
+		return setDateTime(calendar, checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31), checkArgumentRange(hours, 0, 23),
+				checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60), checkArgumentRange(microseconds, 0, 999999) / 1000); //set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
 	}
 
 	/**

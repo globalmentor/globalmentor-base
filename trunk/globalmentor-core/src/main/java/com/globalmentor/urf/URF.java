@@ -31,11 +31,13 @@ import com.globalmentor.collections.CollectionMap;
 import com.globalmentor.collections.IdentityHashSet;
 import com.globalmentor.collections.IdentityHashSetMap;
 import com.globalmentor.java.*;
+
 import static com.globalmentor.java.Booleans.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.java.Preconditions.*;
 import static com.globalmentor.model.Locales.*;
 import com.globalmentor.net.*;
 import static com.globalmentor.net.URIs.*;
@@ -534,7 +536,7 @@ public class URF
 	*/
 	public static URI createOrdinalURI(final long ordinal)
 	{
-		return ordinal==0 ? ORDINAL_0_URI : createInlineURI(ORDINAL_CLASS_URI, Long.toString(Longs.checkMinimum(ordinal, 0)));	//create an ordinal URI, using the pre-made zero ordinal URI if we can and making sure that the value is not less than zero
+		return ordinal==0 ? ORDINAL_0_URI : createInlineURI(ORDINAL_CLASS_URI, Long.toString(checkArgumentMinimum(ordinal, 0)));	//create an ordinal URI, using the pre-made zero ordinal URI if we can and making sure that the value is not less than zero
 	}
 
 	/**Creates a URI to represent an URF rational.

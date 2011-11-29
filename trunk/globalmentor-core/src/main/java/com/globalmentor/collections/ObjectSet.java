@@ -19,6 +19,7 @@ package com.globalmentor.collections;
 import java.util.*;
 
 import com.globalmentor.collections.iterators.ObjectIterator;
+import com.globalmentor.java.Arrays;
 
 import static com.globalmentor.java.Objects.*;
 

@@ -18,8 +18,8 @@ package com.globalmentor.collections.iterators;
 
 import java.util.*;
 
-import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.java.Preconditions.*;
 
 /**A default list iterator that can iterate over a given list.
 The iterator provides a way to return only a subset of list items by overriding the {@link #isIncluded(int)} method.
@@ -68,7 +68,7 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 	{
 		this.list=checkInstance(list, "List cannot be null.");
 		final int size=list.size();	//get the size of the list
-		nextIndex=checkIndexBounds(index, 0, size+1);	//make sure the next index is within the list or at the size of the list 
+		nextIndex=checkIndexBounds(index, size+1);	//make sure the next index is within the list or at the size of the list 
 	}
 
 	/**Ensures that the current next and previous indexes are included.

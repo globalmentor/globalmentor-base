@@ -27,53 +27,6 @@ public class Integers
 	/**This class cannot be publicly instantiated.*/
 	private Integers() {}
 
-	/**Checks to make sure that a given index is within the given range.
-	@param index The index to check.
-	@param rangeMin The minimum range index, inclusive.
-	@param rangeMax The maximum range index, exclusive.
-	@exception IndexOutOfBoundsException if the index is less than the range minimum, or equal to or greater than the range maximum.
-	@return The given index.
-	*/
-	public static int checkIndexBounds(final int index, final int rangeMin, final int rangeMax)
-	{
-		if(index<rangeMin || index>=rangeMax)	//if the index not within its bounds
-		{
-			throw new IndexOutOfBoundsException("Index out of bounds: "+index);
-		}
-		return index;	//return the index, which has been determined to be in bounds
-  }
-
-	/**Checks to make sure that a given value is within the given range.
-	@param value The value to check.
-	@param rangeMin The minimum range value, inclusive.
-	@param rangeMax The maximum range value, inclusive.
-	@exception IllegalArgumentException if the value is less than the range minimum or greater than the range maximum.
-	@return The given value.
-	*/
-	public static int checkRange(final int value, final int rangeMin, final int rangeMax)
-	{
-		if(value<rangeMin || value>rangeMax)	//if the value not within the range
-		{
-			throw new IllegalArgumentException("Value "+value+" is not within the range "+rangeMin+" to "+rangeMax);
-		}
-		return value;	//return the value, which has been determined to be within the range
-  }
-
-	/**Checks to make sure that a given value is not smaller than the given minimum.
-	@param value The value to check.
-	@param rangeMin The minimum range value, inclusive.
-	@exception IllegalArgumentException if the value is less than the range minimum.
-	@return The given value.
-	*/
-	public static int checkMinimum(final int value, final int rangeMin)
-	{
-		if(value<rangeMin)	//if the value not within the range
-		{
-			throw new IllegalArgumentException("Value "+value+" cannot be less than "+rangeMin);
-		}
-		return value;	//return the value, which has been determined to be within the range
-  }
-
 	/**Compares an integer object with the value of a literal integer.
 	@param integerObject The object that supposedly holds an integer.
 	@param integer The literal integer value to compare to the integer object.

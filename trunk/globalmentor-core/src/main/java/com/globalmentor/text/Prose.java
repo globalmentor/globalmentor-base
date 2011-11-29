@@ -18,8 +18,8 @@ package com.globalmentor.text;
 
 import java.util.StringTokenizer;
 
-import com.globalmentor.collections.Arrays;
 import com.globalmentor.java.*;
+
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
 

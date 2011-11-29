@@ -16,8 +16,8 @@
 
 package com.globalmentor.country.us;
 
-import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.java.Preconditions.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -99,7 +99,7 @@ public class SSN
 	*/
 	public SSN(final int ssn) throws ArgumentSyntaxException
 	{
-		this(Integers.toString(checkRange(ssn, 0, 999999999), 10, AREA_NUMBER_LENGTH+GROUP_NUMBER_LENGTH+SERIAL_NUMBER_LENGTH));	//create a string from the SSN value
+		this(Integers.toString(checkArgumentRange(ssn, 0, 999999999), 10, AREA_NUMBER_LENGTH+GROUP_NUMBER_LENGTH+SERIAL_NUMBER_LENGTH));	//create a string from the SSN value
 	}
 		
 	/**Character sequence constructor.

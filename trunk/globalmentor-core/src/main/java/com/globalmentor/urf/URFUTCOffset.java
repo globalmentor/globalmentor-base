@@ -22,7 +22,7 @@ import com.globalmentor.java.Integers;
 import com.globalmentor.text.*;
 
 import static com.globalmentor.iso.ISO8601.*;
-import static com.globalmentor.java.Integers.*;
+import static com.globalmentor.java.Preconditions.*;
 import static com.globalmentor.model.TimeZones.*;
 
 /**The class representing an <code>urf.UTCOffset</code> type.
@@ -57,7 +57,7 @@ public class URFUTCOffset implements URFTemporal
 	public URFUTCOffset(final int hours, final int minutes)
 	{
 		this.hours=hours;	//save the hours
-		this.minutes=checkMinimum(minutes, 0);	//save the minutes, but don't allow negative offset minutes
+		this.minutes=checkArgumentMinimum(minutes, 0);	//save the minutes, but don't allow negative offset minutes
 	}
 
 	/**Returns an URF UTC offset object holding the value of the specified string.

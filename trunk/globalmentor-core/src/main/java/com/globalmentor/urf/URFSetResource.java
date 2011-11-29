@@ -19,7 +19,7 @@ package com.globalmentor.urf;
 import java.util.*;
 import java.net.URI;
 
-import com.globalmentor.collections.Arrays;
+import com.globalmentor.java.Arrays;
 
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.URF.*;

@@ -16,8 +16,8 @@
 
 package com.globalmentor.country.us;
 
-import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.java.Preconditions.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -142,7 +142,7 @@ public class RTN
 	*/
 	public RTN(final int rtn) throws ArgumentSyntaxException
 	{
-		this(Integers.toString(checkRange(rtn, 1, 999999999), 10, LENGTH));	//create a string from the RTN value
+		this(Integers.toString(checkArgumentRange(rtn, 1, 999999999), 10, LENGTH));	//create a string from the RTN value
 	}
 		
 	/**Character sequence constructor.

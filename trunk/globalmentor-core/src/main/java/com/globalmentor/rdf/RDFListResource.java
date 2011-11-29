@@ -19,7 +19,7 @@ package com.globalmentor.rdf;
 import java.net.URI;
 import java.util.*;
 
-import com.globalmentor.collections.Arrays;
+import com.globalmentor.java.Arrays;
 import com.globalmentor.java.Objects;
 import static com.globalmentor.rdf.RDF.*;
 import static com.globalmentor.rdf.RDFResources.*;

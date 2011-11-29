@@ -18,8 +18,8 @@ package com.globalmentor.collections.iterators;
 
 import java.util.*;
 
-import static com.globalmentor.collections.Arrays.*;
 import static com.globalmentor.collections.Collections.*;
+import static com.globalmentor.java.Arrays.*;
 
 /**Various utilities to be used with iterators.
 @author Garret Wilson

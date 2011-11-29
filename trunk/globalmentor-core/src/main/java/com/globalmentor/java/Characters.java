@@ -23,9 +23,9 @@ import java.nio.charset.Charset;
 import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Integers.*;
+import static com.globalmentor.java.Preconditions.*;
 import static com.globalmentor.java.StringBuilders.*;
 
-import com.globalmentor.collections.Arrays;
 import com.globalmentor.text.RomanNumerals;
 
 /**
@@ -638,7 +638,7 @@ public final class Characters
 	 */
 	public StringBuilder toStringBuilder(final int extraCapacity)
 	{
-		return new StringBuilder(chars.length + checkMinimum(extraCapacity, 0)).append(chars); //allow room for more characters
+		return new StringBuilder(chars.length + checkArgumentMinimum(extraCapacity, 0)).append(chars); //allow room for more characters
 	}
 
 	/**
