@@ -61,17 +61,17 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 		/**@return The local part of the email address.*/
 		public String getLocalPart() {return localPart;}
 
-	/**The domain of the email addrsess.*/
+	/**The domain of the email address.*/
 	private final String domain;
 
-		/**@return The domain of the email addrsess.*/
+		/**@return The domain of the email address.*/
 		public String getDomain() {return domain;}
 		
 	/**Constructs an email address from its separate components.
 	@param localPart The local part of the email address.
 	@param domain The domain of the email address.
 	@exception NullPointerException if the given local part and/or domain is <code>null</code>.
-	@exception ArgumentSyntaxException if the given local part and/or domain iolates RFC 2822.
+	@exception ArgumentSyntaxException if the given local part and/or domain violates RFC 2822.
 	*/
 	public EmailAddress(final String localPart, final String domain) throws ArgumentSyntaxException	//TODO resolve encoding differences between this class and URIUtilities.createMailtoURI(); decide if we want the parameters to be encoded or raw
 	{
