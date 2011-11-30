@@ -35,4 +35,5 @@ public class Time
 
 	/** The number of hours in a day. */
 	public static int HOURS_PER_DAY = 24;
+
 }
