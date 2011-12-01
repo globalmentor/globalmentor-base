@@ -30,15 +30,15 @@ public enum PredefinedCategory implements Labeled
 	ACTIVITIES("Activities"), BUSINESSES("Businesses"), GROUPS("Groups"), ORGANIZATIONS("Organizations"), PEOPLE("People"), PLACES("Places"), PRODUCTS_ENTERTAINMENT(
 			"Products and Entertainment"), WEBSITES("Websites");
 
-	private final String label;
+	private final CharSequence label;
 
 	/** {@inheritDoc} */
-	public String getLabel()
+	public CharSequence getLabel()
 	{
 		return label;
 	}
 
-	PredefinedCategory(final String label)
+	PredefinedCategory(final CharSequence label)
 	{
 		this.label = checkInstance(label);
 	}

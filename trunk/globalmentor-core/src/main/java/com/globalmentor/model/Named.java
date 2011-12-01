@@ -16,13 +16,18 @@
 
 package com.globalmentor.model;
 
-/**An object that has a name.
-@author Garret Wilson
-*/
+/**
+ * An object that has a name.
+ * <p>
+ * A name is considered to be semantically similar to an id, which may or may not be for human consumption, but has weaker unique constraints.
+ * </p>
+ * @author Garret Wilson
+ * @see Labeled
+ */
 public interface Named<N>
 {
-	
-	/**@return The name of the object, or <code>null</code> if the object has no name.*/
+
+	/** @return The name of the object, or <code>null</code> if the object has no name. */
 	public N getName();
-	
+
 }

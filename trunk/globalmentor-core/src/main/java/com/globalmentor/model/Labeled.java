@@ -18,12 +18,13 @@ package com.globalmentor.model;
 
 /**
  * An object that can provide a human-readable label.
+ * 
  * @author Garret Wilson
  */
 public interface Labeled
 {
 
 	/** @return A label meant for human consumption identifying the object. */
-	public String getLabel();
+	public CharSequence getLabel();
 
 }
