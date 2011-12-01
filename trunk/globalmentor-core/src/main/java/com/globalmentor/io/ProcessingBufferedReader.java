@@ -16,7 +16,7 @@
 
 package com.globalmentor.io;
 
-import static com.globalmentor.java.Preconditions.checkArgument;
+import static com.globalmentor.java.Conditions.checkArgument;
 
 import java.io.*;
 

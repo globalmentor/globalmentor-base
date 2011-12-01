@@ -19,7 +19,7 @@ package com.globalmentor.collections.iterators;
 import java.util.*;
 
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.java.Preconditions.*;
+import static com.globalmentor.java.Conditions.*;
 
 /**A default list iterator that can iterate over a given list.
 The iterator provides a way to return only a subset of list items by overriding the {@link #isIncluded(int)} method.

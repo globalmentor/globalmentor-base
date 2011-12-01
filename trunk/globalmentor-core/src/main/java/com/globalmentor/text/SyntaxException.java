@@ -16,7 +16,7 @@
 
 package com.globalmentor.text;
 
-import static com.globalmentor.java.Preconditions.*;
+import static com.globalmentor.java.Conditions.*;
 
 import com.globalmentor.util.DataException;
 

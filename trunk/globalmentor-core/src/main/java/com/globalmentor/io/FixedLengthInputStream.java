@@ -18,7 +18,7 @@ package com.globalmentor.io;
 
 import java.io.*;
 
-import static com.globalmentor.java.Preconditions.*;
+import static com.globalmentor.java.Conditions.*;
 
 /**Wraps an existing input stream and only returns a fixed number of bytes.
 <p>This stream should always be closed when access is finished; otherwise the underlying stream could be corrupted.</p>

@@ -23,7 +23,7 @@ import java.nio.charset.Charset;
 import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Integers.*;
-import static com.globalmentor.java.Preconditions.*;
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
 
 import com.globalmentor.text.RomanNumerals;

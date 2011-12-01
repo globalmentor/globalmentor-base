@@ -17,7 +17,7 @@
 package com.globalmentor.country.us;
 
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.java.Preconditions.*;
+import static com.globalmentor.java.Conditions.*;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

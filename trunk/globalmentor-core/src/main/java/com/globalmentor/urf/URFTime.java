@@ -22,7 +22,7 @@ import com.globalmentor.java.Integers;
 import com.globalmentor.text.*;
 
 import static com.globalmentor.iso.ISO8601.*;
-import static com.globalmentor.java.Preconditions.*;
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
 import static com.globalmentor.urf.URF.*;
 

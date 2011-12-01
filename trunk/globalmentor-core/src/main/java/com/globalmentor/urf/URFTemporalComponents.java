@@ -29,7 +29,7 @@ import com.globalmentor.text.SyntaxException;
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.iso.ISO8601.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.java.Preconditions.*;
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.model.Calendars.*;
 import static com.globalmentor.model.TimeZones.*;

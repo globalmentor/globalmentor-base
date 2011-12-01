@@ -37,7 +37,7 @@ import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Java.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.java.Preconditions.*;
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.model.Locales.*;
 import com.globalmentor.net.*;
 import static com.globalmentor.net.URIs.*;

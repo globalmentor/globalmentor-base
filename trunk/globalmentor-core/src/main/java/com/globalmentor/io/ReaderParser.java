@@ -20,7 +20,7 @@ import java.io.*;
 
 import com.globalmentor.java.Characters;
 
-import static com.globalmentor.java.Preconditions.*;
+import static com.globalmentor.java.Conditions.*;
 
 /**
  * Parsing methods that work on a {@link Reader}. The reader must support marking.
