@@ -27,7 +27,7 @@ import java.util.regex.*;
 
 import static com.globalmentor.io.Files.*;
 import static com.globalmentor.java.Java.*;
-import static com.globalmentor.java.Objects.checkInstance;
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.Strings.*;
 import static com.globalmentor.net.URIs.*;
 import static com.globalmentor.net.URLs.*;

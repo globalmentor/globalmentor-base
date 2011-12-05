@@ -99,6 +99,38 @@ public class Conditions
 	}
 
 	/**
+	 * Checks to make sure that a given value is not smaller than the given minimum.
+	 * <p>
+	 * This is a precondition check.
+	 * </p>
+	 * @param value The value to check.
+	 * @param rangeMin The minimum range value, inclusive.
+	 * @throws IllegalArgumentException if the value is negative.
+	 * @return The given value.
+	 * @see #checkArgumentMinimum(int, int)
+	 */
+	public static int checkArgumentNotNegative(final int value)
+	{
+		return checkArgumentMinimum(value, 0);
+	}
+
+	/**
+	 * Checks to make sure that a given value is not negative.
+	 * <p>
+	 * This is a precondition check.
+	 * </p>
+	 * @param value The value to check.
+	 * @param rangeMin The minimum range value, inclusive.
+	 * @throws IllegalArgumentException if the value is negative.
+	 * @return The given value.
+	 * @see #checkArgumentMinimum(long, long)
+	 */
+	public static long checkArgumentNotNegative(final long value)
+	{
+		return checkArgumentMinimum(value, 0);
+	}
+
+	/**
 	 * Checks to make sure that a given argument value is within the given range.
 	 * <p>
 	 * This is a precondition check.

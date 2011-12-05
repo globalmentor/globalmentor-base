@@ -16,8 +16,7 @@
 
 package com.globalmentor.java;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Java.*;
@@ -163,6 +162,42 @@ public class Objects
 	{
 		//if the first object isn't null, compare it to the second; otherwise, see if the second object is null as well
 		return object1 != null ? object1.equals(object2) : object2 == null;
+	}
+
+	/**
+	 * Returns the first object that is an instance of {@link Object} (i.e. that is not <code>null</code>).
+	 * @param objects The objects to investigate.
+	 * @return The first object that is not <code>null</code>, or <code>null</code> if all objects are <code>null</code>.
+	 */
+	public static <T> T getInstance(final T... objects)
+	{
+		for(final T object : objects) //look at all the references
+		{
+			if(object != null) //if the object isn't null (it is faster to just check for null rather than to delegate to the class-based getInstance() version
+			{
+				return object; //return the object
+			}
+		}
+		return null; //we couldn't find such an instance
+	}
+
+	/**
+	 * Returns the first object that is an instance of the given object type.
+	 * @param objectClass The class of the type of object to return
+	 * @param objects The objects to investigate.
+	 * @return The first object that is the instance of the given type, or <code>null</code> if no object is an instance of the indicated type.
+	 * @throws NullPointerException if the given object class is <code>null</code>.
+	 */
+	public static <T, C extends T> C getInstance(final Class<C> objectClass, final T... objects)
+	{
+		for(final T object : objects) //look at all the references
+		{
+			if(objectClass.isInstance(object)) //if this object is an instance of the given class
+			{
+				return objectClass.cast(object); //cast and return the object
+			}
+		}
+		return null; //we couldn't find such an instance
 	}
 
 	/**
