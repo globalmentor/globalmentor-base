@@ -49,9 +49,8 @@ import java.util.*;
  * @param <S> The type of state being managed.
  * 
  * @author Garret Wilson
- * 
  */
-public class PollStateManager<S> //TODO move to general utility class
+public class PollStateManager<S>
 {
 	/** The ordered list of states and corresponding info. */
 	private final List<StateInfo> stateInfos = new ArrayList<StateInfo>();
