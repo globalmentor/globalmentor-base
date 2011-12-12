@@ -221,7 +221,7 @@ public class ContentType extends MimeType
 	public int hashCode()
 	{
 		final MimeTypeParameterList parameterList=getParameters();	//get our parameter list
-		return parameterList==null || parameterList.size()==0 ? Objects.hashCode(getPrimaryType(), getSubType()) : toString().hashCode();	//if there are parameters (probary a minority of cases), use the expensive toString() operation  
+		return parameterList==null || parameterList.size()==0 ? Objects.getHashCode(getPrimaryType(), getSubType()) : toString().hashCode();	//if there are parameters (probably a minority of cases), use the expensive toString() operation  
 	}
 
 	/**Indicates whether some other object is "equal to" this one.

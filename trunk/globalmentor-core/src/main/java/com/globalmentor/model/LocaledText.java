@@ -139,10 +139,10 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 		return result;	//return the result of the comparison
 	}
 
-	/**@return A hashcode value composed from the text and the locale.*/
+	/**@return A hash code value composed from the text and the locale.*/
 	public int hashCode()
 	{
-		return Objects.hashCode(getText(), getLocale());	//create a hash code from the text and locale
+		return Objects.getHashCode(getText(), getLocale());	//create a hash code from the text and locale
 	}
 
 	/**@return  the number of <code>char</code>s in this sequence.*/

@@ -584,7 +584,7 @@ public abstract class AbstractURFProcessor
 		/**@return A hash code value for the assertion.*/
 		public int hashCode()
 		{
-			return Objects.hashCode(getSubject(), getPredicate(), getObject(), getScopeChain());	//hash and return the subject, predicate, object, and scope chain
+			return Objects.getHashCode(getSubject(), getPredicate(), getObject(), getScopeChain());	//hash and return the subject, predicate, object, and scope chain
 		}
 
 		/**Compares assertions based upon subject, predicate, and object.

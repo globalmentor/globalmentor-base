@@ -49,7 +49,7 @@ public abstract class AbstractHashObject
 	 */
 	public int hashCode()
 	{
-		return Objects.hashCode(objects); //return the hash code of the objects
+		return Objects.getHashCode(objects); //return the hash code of the objects
 	}
 
 	/**

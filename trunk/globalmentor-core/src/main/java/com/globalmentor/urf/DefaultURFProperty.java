@@ -183,7 +183,7 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	*/
 	public int hashCode()
 	{
-		return Objects.hashCode(getPropertyURI(), getValue());	//calculate a hash code from the property URI and value
+		return Objects.getHashCode(getPropertyURI(), getValue());	//calculate a hash code from the property URI and value
 	}
 
 	/**Determines if the given object is an equivalent URF property.

@@ -41,7 +41,7 @@ public class Objects
 	 * @param <T> The type of variable to check.
 	 * @param variable The variable to check.
 	 * @return The given variable.
-	 * @exception NullPointerException if the given variable is <code>null</code>.
+	 * @throws NullPointerException if the given variable is <code>null</code>.
 	 */
 	public static <T> T checkInstance(final T variable)
 	{
@@ -54,7 +54,7 @@ public class Objects
 	 * @param variable The variable to check.
 	 * @param description A description of the variable to be used when generating an exception, or <code>null</code> for no description.
 	 * @return The given variable.
-	 * @exception NullPointerException if the given variable is <code>null</code>.
+	 * @throws NullPointerException if the given variable is <code>null</code>.
 	 */
 	public static <T> T checkInstance(final T variable, final String description)
 	{
@@ -71,7 +71,7 @@ public class Objects
 	 * @param variable The variable to check, or <code>null</code>.
 	 * @param type The type to verify.
 	 * @return The given variable.
-	 * @exception ClassCastException if the given variable is not <code>null</code> and not an instance of type <var>type</var>.
+	 * @throws ClassCastException if the given variable is not <code>null</code> and not an instance of type <var>type</var>.
 	 */
 	public static <T> T checkType(final Object variable, final Class<T> type)
 	{
@@ -85,7 +85,7 @@ public class Objects
 	 * @param type The type to verify.
 	 * @param description A description of the variable to be used when generating an exception, or <code>null</code> for no description.
 	 * @return The given variable.
-	 * @exception ClassCastException if the given variable is not <code>null</code> and not an instance of type <var>type</var>.
+	 * @throws ClassCastException if the given variable is not <code>null</code> and not an instance of type <var>type</var>.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T checkType(final Object variable, final Class<T> type, final String description)
@@ -206,12 +206,12 @@ public class Objects
 	 * @param object The object the property of which to retrieve.
 	 * @param propertyName The name of the property to retrieve.
 	 * @return The value of the given property.
-	 * @exception NullPointerException if the given object is <code>null</code>.
-	 * @exception NoSuchMethodException if the given object has no method with the name "get<var>PropertyName</var>", or the name "is<var>PropertyName</var>"
-	 *              having a {@link Boolean#TYPE}.
-	 * @exception IllegalAccessException if the getter method enforces Java language access control and the getter method is inaccessible.
-	 * @exception InvocationTargetException if the getter method throws an exception.
-	 * @exception ExceptionInInitializerError if the initialization provoked by the getter method fails.
+	 * @throws NullPointerException if the given object is <code>null</code>.
+	 * @throws NoSuchMethodException if the given object has no method with the name "get<var>PropertyName</var>", or the name "is<var>PropertyName</var>" having
+	 *           a {@link Boolean#TYPE}.
+	 * @throws IllegalAccessException if the getter method enforces Java language access control and the getter method is inaccessible.
+	 * @throws InvocationTargetException if the getter method throws an exception.
+	 * @throws ExceptionInInitializerError if the initialization provoked by the getter method fails.
 	 */
 	public static Object getProperty(final Object object, final String propertyName) throws NoSuchMethodException, InvocationTargetException,
 			IllegalAccessException
@@ -231,14 +231,14 @@ public class Objects
 	/**
 	 * Generates a hash code based upon a series of objects. This method is based upon the algorithm explained in <cite>Effective Java</cite> (2001) by Joshua
 	 * Bloch (pp. 38-39) as well as the hash code generation of the Java runtime library. Any or all objects can be <code>null</code>. Arrays are deeply
-	 * traversed. This methods delegates to {@link #hashCode(int, Object...)} with a seed value of 17.
+	 * traversed. This methods delegates to {@link #getSeededHashCode(int, Object...)} with a seed value of 17.
 	 * @param objects The objects to be used in generating a hash code.
 	 * @return A hash code taking into account the given objects.
-	 * @exception NullPointerException if the given array of objects is <code>null</code>.
+	 * @throws NullPointerException if the given array of objects is <code>null</code>.
 	 */
-	public static int hashCode(final Object... objects)
+	public static int getHashCode(final Object... objects)
 	{
-		return hashCode(17, objects); //generate a hash code with a particular seed
+		return getSeededHashCode(17, objects); //generate a hash code with a particular seed
 	}
 
 	/**
@@ -248,18 +248,57 @@ public class Objects
 	 * @param seed The seed with which to start.
 	 * @param objects The objects to be used in generating a hash code.
 	 * @return A hash code starting with the given seed and taking into account the given objects.
-	 * @exception NullPointerException if the given array of objects is <code>null</code>.
+	 * @throws NullPointerException if the given array of objects is <code>null</code>.
 	 */
-	public static int hashCode(int seed, final Object... objects)
+	public static int getSeededHashCode(int seed, final Object... objects)
 	{
 		for(final Object object : objects) //for each object
 		{
-			final int hashCode = object != null ? (object.getClass().isArray() ? hashCode((Object[])object) : object.hashCode()) : 0; //get the object's hash code, or zero if the object is null
+			final int hashCode = object != null ? (object.getClass().isArray() ? getHashCode((Object[])object) : object.hashCode()) : 0; //get the object's hash code, or zero if the object is null
 			seed = 37 * seed + hashCode; //multiply by 37 and add the hash code of this object
 		}
 		return seed; //return the entire result
 	}
 
+	/**
+	 * Generates a hash code based upon a series of integer values. This is a convenience varargs method that delegates to the
+	 * {@link java.util.Arrays#hashCode(int[])} version.
+	 * @param values The values to be used in generating a hash code.
+	 * @return A hash code taking into account the given values.
+	 * @throws NullPointerException if the given array of values is <code>null</code>.
+	 * @see java.util.Arrays#hashCode(int[])
+	 */
+	public static int getIntHashCode(final int... values)
+	{
+		return java.util.Arrays.hashCode(values);
+	}
+
+	/**
+	 * Generates a hash code based upon a series of long values. This is a convenience varargs method that delegates to the
+	 * {@link java.util.Arrays#hashCode(long[])} version.
+	 * @param values The values to be used in generating a hash code.
+	 * @return A hash code taking into account the given values.
+	 * @throws NullPointerException if the given array of values is <code>null</code>.
+	 * @see java.util.Arrays#hashCode(long[])
+	 */
+	public static int getLongHashCode(final long... values)
+	{
+		return java.util.Arrays.hashCode(values);
+	}
+
+	/**
+	 * Generates a hash code based upon a series of integer values. This is a convenience varargs method that delegates to the
+	 * {@link java.util.Arrays#hashCode(double[])} version.
+	 * @param values The values to be used in generating a hash code.
+	 * @return A hash code taking into account the given values.
+	 * @throws NullPointerException if the given array of values is <code>null</code>.
+	 * @see java.util.Arrays#hashCode(double[])
+	 */
+	public static int getDoubleHashCode(final double... values)
+	{
+		return java.util.Arrays.hashCode(values);
+	}
+	
 	/**
 	 * Determines of which, if any, of the provided classes the given object is an instance.
 	 * @param object The object to check as an instance; may be <code>null</code>.

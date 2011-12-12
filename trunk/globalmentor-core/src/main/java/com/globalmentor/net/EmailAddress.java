@@ -125,7 +125,7 @@ public class EmailAddress implements Resource, Comparable<EmailAddress>
 	/** @return A hash code representing this object. */
 	public int hashCode()
 	{
-		return Objects.hashCode(getLocalPart(), getDomain()); //return a hash code for the local part and domain
+		return Objects.getHashCode(getLocalPart(), getDomain()); //return a hash code for the local part and domain
 	}
 
 	/**

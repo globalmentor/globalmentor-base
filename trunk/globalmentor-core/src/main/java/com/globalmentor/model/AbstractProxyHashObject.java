@@ -48,7 +48,7 @@ public abstract class AbstractProxyHashObject
 	*/
 	public int hashCode()
 	{
-		return Objects.hashCode(proxiedObjects);	//calculate a hash code from the proxied objects
+		return Objects.getHashCode(proxiedObjects);	//calculate a hash code from the proxied objects
 	}
 
 	/**Indicates whether some other object is "equal to" this one.

@@ -180,7 +180,7 @@ public class PAN implements Comparable<PAN>
 		this.individualAccountID=Integer.parseInt(iaiString);	//save the individual account identification
 		this.checkDigit=checkDigit-'0';	//save the check digit value
 		this.value=Long.parseLong(toString());	//save the long value of the PAN
-		this.hashCode=Objects.hashCode(getIIN(), getIndividualAccountID());	//a PAN is uniquely identified by its IIN and IAI
+		this.hashCode=Objects.getIntHashCode(getIIN(), getIndividualAccountID());	//a PAN is uniquely identified by its IIN and IAI
 	}
 
 	/**@return A hash code representing this object.*/

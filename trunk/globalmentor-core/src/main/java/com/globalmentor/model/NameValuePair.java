@@ -66,7 +66,7 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>
 	/** @return A hash code value for the object. */
 	public int hashCode()
 	{
-		return Objects.hashCode(getName(), getValue()); //calculate a hash code from the name and value
+		return Objects.getHashCode(getName(), getValue()); //calculate a hash code from the name and value
 	}
 
 	/**

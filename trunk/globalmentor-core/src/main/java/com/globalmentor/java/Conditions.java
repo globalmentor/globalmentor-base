@@ -241,6 +241,30 @@ public class Conditions
 	}
 
 	/**
+	 * Checks to make sure a given state is <code>true</code>.
+	 * @param state The state to check.
+	 * @throws IllegalStateException if the given state is <code>false</code>.
+	 */
+	public static void checkState(final boolean state)
+	{
+		checkState(state, null);
+	}
+
+	/**
+	 * Checks to make sure a given state is <code>true</code>.
+	 * @param state The state to check.
+	 * @param description A description of the state to be used when generating an exception, or <code>null</code> for no description.
+	 * @throws IllegalStateException if the given state is <code>false</code>.
+	 */
+	public static void checkState(final boolean state, final String description)
+	{
+		if(!state)
+		{
+			throw new IllegalStateException(description);
+		}
+	}
+
+	/**
 	 * Creates a throwable indicating an unexpected condition, which can be thrown by the caller.
 	 * <p>
 	 * An <dfn>unexpected</dfn> condition is one that is logically possible to occur, but yet should not occur because of an API contract, for instance. For

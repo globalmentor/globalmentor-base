@@ -418,7 +418,7 @@ public class URFMapResource<K extends URFResource, V extends URFResource> extend
 				final URFMapEntryResource<K, V> entry=asMapEntryInstance(entryProperty.getValue());	//get the entry
 				if(entry!=null)	//if this is a map entry
 				{
-					hashCode+=Objects.hashCode(entry.getKey(), entry.getValue());	//add the property-value hash code to our total
+					hashCode+=Objects.getHashCode(entry.getKey(), entry.getValue());	//add the property-value hash code to our total
 				}
 			}
 			return hashCode;	//return the calculated hash code

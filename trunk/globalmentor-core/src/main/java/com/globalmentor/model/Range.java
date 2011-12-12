@@ -61,10 +61,10 @@ public class Range<T extends Comparable<T>> implements Comparable<Range<T>>
 	/**@return A unique hash code for the bounds of this range.*/
 	public int hashCode()
 	{
-		return Objects.hashCode(getLowerBound(), getUpperBound());	//return a hash code composed of the bounds, if any
+		return Objects.getHashCode(getLowerBound(), getUpperBound());	//return a hash code composed of the bounds, if any
 	}
 
-	/**Determins if this object is equal to another object.
+	/**Determines if this object is equal to another object.
 	This method find equality if the object is another range and the lower and upper bounds are equal (including matching <code>null</code>s).
 	*/
 	public boolean equals(final Object object)

@@ -95,7 +95,7 @@ public class DefaultURFAssertion implements URFAssertion	//TODO add specific sup
 	/** @return A hash code value for the assertion. */
 	public int hashCode()
 	{
-		return Objects.hashCode(getSubjectURI(), getPredicateURI(), getObject(), getScopeChain()); //hash and return the subject, predicate, object, and scope chain
+		return Objects.getHashCode(getSubjectURI(), getPredicateURI(), getObject(), getScopeChain()); //hash and return the subject, predicate, object, and scope chain
 	}
 
 	/**

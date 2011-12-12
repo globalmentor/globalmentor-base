@@ -337,7 +337,7 @@ public class CharacterEncoding	//TODO remove BOM storage, and then replace class
 	/**@return A hashcode value constructed from the family and the endianness.*/
 	public int hashCode()
 	{
-		return Objects.hashCode(getFamily(), getEndian());	//return a hash code composed of the family and the endianness
+		return Objects.getHashCode(getFamily(), getEndian());	//return a hash code composed of the family and the endianness
 	}
 
 }
