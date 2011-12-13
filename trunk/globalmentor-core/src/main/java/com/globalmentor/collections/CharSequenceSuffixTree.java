@@ -22,10 +22,10 @@ import static com.globalmentor.java.Objects.*;
 import java.io.PrintStream;
 import java.util.*;
 
-import com.globalmentor.java.Objects;
-import com.globalmentor.java.StringBuilders;
-import com.globalmentor.java.Strings;
+import com.globalmentor.collections.iterators.*;
+import com.globalmentor.java.*;
 import com.globalmentor.log.Log;
+import com.globalmentor.model.Filter;
 
 /**
  * A suffix tree for a sequence of characters.
@@ -120,7 +120,7 @@ public class CharSequenceSuffixTree
 	 */
 	protected Edge addEdge(final int parentNodeIndex, final int childNodeIndex, final int start, final int end)
 	{
-//		Log.debug("Adding edge from node ", parentNodeIndex, "to node", childNodeIndex, "starting at character", start, "for substring", getCharSequence().subSequence(start, end));
+		//		Log.debug("Adding edge from node ", parentNodeIndex, "to node", childNodeIndex, "starting at character", start, "for substring", getCharSequence().subSequence(start, end));
 		final Edge edge = new Edge(parentNodeIndex, childNodeIndex, start, end); //create a new edge
 		addEdge(edge); //add the edge
 		return edge; //return the edge
@@ -193,6 +193,12 @@ public class CharSequenceSuffixTree
 		return newNodeIndex; //return the index of the new node
 	}
 
+	/** @return An iterable to the root edges of the suffix tree's root node. */
+	public Iterable<Edge> getRootEdges()
+	{
+		return new NodeEdgeIterable(0); //the root node is always the first node in the liast
+	}
+
 	/**
 	 * Suffix tree builder factory method which creates a new suffix tree for a given character sequence.
 	 * @param charSequence The character sequence for which a suffix tree should be built.
@@ -226,7 +232,7 @@ public class CharSequenceSuffixTree
 				else
 				{ //if the state is implicit, ending in the middle of an edge
 					edge = suffixTree.getEdge(state.getNodeIndex(), charSequence.charAt(state.getStart())); //get the edge at which the implicit part of the state starts
-					Log.debug("implicit edge: "+edge);
+					Log.debug("implicit edge: " + edge);
 					final int stateLength = state.getLength();
 					if(charSequence.charAt(edge.getStart() + stateLength) == character) //if the next character along the edge is the character we're extending
 					{
@@ -255,36 +261,33 @@ public class CharSequenceSuffixTree
 				suffixTree.getNode(lastParentNodeIndex).setSuffixNodeIndex(parentNodeIndex);
 			}
 			state.next(); //go to the next character
-//			suffixTree.printTree(System.out);	//TODO del
-//			System.out.println("\n*\n");
+			//			suffixTree.printTree(System.out);	//TODO del
+			//			System.out.println("\n*\n");
 		}
 
 		return suffixTree; //return the suffix tree we created and built
 	};
 
-	protected void printTree(final PrintStream printStream)	//TODO comment
+	protected void printTree(final PrintStream printStream) //TODO comment
 	{
-		printTree(printStream, 0, 0);
+		printTree(printStream, getRootEdges(), 0);
 	}
 
-	private void printTree(final PrintStream printStream, final CharSequenceSuffixTree.Edge edge, final int level)
+	private void printTree(final PrintStream printStream, final Edge edge, final int level)
 	{
-		printStream.println(Strings.createString('\t', level)+edge.toString());
-		printTree(printStream, edge.getChildNodeIndex(), level + 1);
+		printStream.println(Strings.createString('\t', level) + edge.toString());
+		printTree(printStream, edge.getChildEdges(), level + 1);
 
 	}
 
-	private void printTree(final PrintStream printStream, final int parentNodeIndex, final int level)
+	private void printTree(final PrintStream printStream, final Iterable<Edge> edges, final int level)
 	{
-		for(final CharSequenceSuffixTree.Edge edge : getEdges()) //look at all the edges
+		for(final Edge edge : edges) //look at all the edges
 		{
-			if(edge.getParentNodeIndex() == parentNodeIndex) //if this edge extends from our parent node TODO improve API
-			{
-				printTree(printStream, edge, level);
-			}
+			printTree(printStream, edge, level);
 		}
 	}
-	
+
 	/**
 	 * Represents a node in a suffix tree.
 	 * 
@@ -428,6 +431,15 @@ public class CharSequenceSuffixTree
 			return end;
 		}
 
+		/**
+		 * Returns the length of the edge, i.e. <code>end</code>-<code>start</code>.
+		 * @return The number of characters on the edge.
+		 */
+		public int getLength()
+		{
+			return end - start;
+		}
+
 		/** @return The first character of the edge. */
 		@Override
 		public char getFirstChar()
@@ -457,13 +469,10 @@ public class CharSequenceSuffixTree
 			this.end = checkArgumentMinimum(end, start + 1);
 		}
 
-		/**
-		 * Returns the length of the edge, i.e. <code>end</code>-<code>start</code>.
-		 * @return The number of characters on the edge.
-		 */
-		public int getLength()
+		/** @return An iterable to the child edges of this edge's child node. */
+		public Iterable<Edge> getChildEdges()
 		{
-			return end - start;
+			return new NodeEdgeIterable(getChildNodeIndex());
 		}
 
 		@Override
@@ -625,4 +634,57 @@ public class CharSequenceSuffixTree
 		}
 
 	}
+
+	/**
+	 * An iterable that returns an iterator to edges for a given node.
+	 * 
+	 * @author Garret Wilson
+	 */
+	private class NodeEdgeIterable implements Iterable<Edge>
+	{
+
+		/** The index of the node serving as the parent of all edges to return. */
+		private final int parentNodeIndex;
+
+		/**
+		 * Parent node index constructor.
+		 * @param parentNodeIndex The index of the node serving as the parent of all edges to return.
+		 */
+		public NodeEdgeIterable(final int parentNodeIndex)
+		{
+			this.parentNodeIndex = parentNodeIndex;
+		}
+
+		@Override
+		public Iterator<Edge> iterator()
+		{
+			return new MapEntryNodeEdgeIterator(parentNodeIndex);
+		}
+	}
+
+	/**
+	 * An iterator that iterates through all edges for a given node by iterating through all entries in the edge map. This is an expensive operation, guaranteeing
+	 * that all node edges are found by a brute force search.
+	 * 
+	 * @author Garret Wilson
+	 */
+	private class MapEntryNodeEdgeIterator extends DefaultFilteredIterator<Edge>
+	{
+		/**
+		 * Parent node index constructor.
+		 * @param parentNodeIndex The index of the node serving as the parent of all edges to return.
+		 */
+		public MapEntryNodeEdgeIterator(final int parentNodeIndex)
+		{
+			super(edgeMap.values().iterator(), new Filter<Edge>() //we'll filter the edges
+					{
+						public boolean isPass(final Edge edge)
+						{
+							return edge.getParentNodeIndex() == parentNodeIndex;
+						}
+					});
+		}
+
+	}
+
 }

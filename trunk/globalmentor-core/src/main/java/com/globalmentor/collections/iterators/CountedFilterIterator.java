@@ -27,7 +27,8 @@ import com.globalmentor.model.Filter;
 	given maximum.</p>
 @author Garret Wilson
 */
-public class FilterIterator<E> extends IteratorDecorator<E>
+@Deprecated
+public class CountedFilterIterator<E> extends IteratorDecorator<E>	//TODO refactor by extending FilterIterator and adding count and max count
 {
 
 	/**The number of elements to return, or -1 if all of the elements in the
@@ -62,7 +63,7 @@ public class FilterIterator<E> extends IteratorDecorator<E>
 	/**Iterator constructor.
 	@param iterator The iterator this iterator should proxy.
 	*/
-	public FilterIterator(final Iterator<E> iterator)
+	public CountedFilterIterator(final Iterator<E> iterator)
 	{
 		this(iterator, -1);	//construct a filter iterator that uses all the elements in the proxied iterator
 	}
@@ -72,7 +73,7 @@ public class FilterIterator<E> extends IteratorDecorator<E>
 	@param maxCount The number of elements to return, or -1 if all of the elements
 		in the proxied iterator should be returned.
 	*/
-	public FilterIterator(final Iterator<E> iterator, final int maxCount)
+	public CountedFilterIterator(final Iterator<E> iterator, final int maxCount)
 	{
 		super(iterator);	//construct the parent class
 		primedNext=NO_NEXT_OBJECT;	//show that we have no primed next value
