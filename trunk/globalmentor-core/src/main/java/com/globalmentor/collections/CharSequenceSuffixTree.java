@@ -24,15 +24,15 @@ import java.util.*;
 
 import com.globalmentor.collections.iterators.*;
 import com.globalmentor.java.*;
-import com.globalmentor.log.Log;
 import com.globalmentor.model.Filter;
 
 /**
  * A suffix tree for a sequence of characters.
  * 
  * <p>
- * Notes:
- * </p>
+ * This class builds a suffix tree from a sequence of characters in O(N) time following Ukkonen's algorithm. The first version of this algorithm was followed by
+ * closely following Mark Nelson's explanation and C++ algorithm presented in <a href="http://marknelson.us/1996/08/01/suffix-trees/">Fast String Searching With
+ * Suffix Trees</a>. Note that:
  * <ul>
  * <li>The original implementation needlessly tied the edge splitting logic to a particular suffix. While this doesn't affect functionality, it doesn't
  * logically isolate the process of splitting an edge at a particular location, which is completely independent from a suffix. It merely needs to be known at
@@ -43,11 +43,16 @@ import com.globalmentor.model.Filter;
  * logic to simply "consume edges until the next edge is not small enough to consume or the state is explicit".</li>
  * <li>The original implementation kept a record of the current last character being added. With every iteration the suffix/state had its endpoint incremented,
  * making a separate last-character variable redundant.</li>
+ * <li>The algorithm here checks to see when the state start has gone past the end; this signals that the current iteration is finished, and there is no need
+ * loop around and check for an edge emanating from the current active node, because the state was explicit in the previous iteration so an edge had to have
+ * been created.</li>
  * </ul>
+ * </p>
  * 
  * @author Garret Wilson
  * 
- * @see <a href="http://marknelson.us/1996/08/01/suffix-trees/">Fast String Searching With Suffix Trees</a>
+ * @see <a href="http://marknelson.us/1996/08/01/suffix-trees/">Mark Nelson: Fast String Searching With Suffix Trees</a>
+ * @see <a href="http://marknelson.us/code-use-policy/">Mark Nelson: Liberal Code Use Policy</a>
  */
 public class CharSequenceSuffixTree
 {
@@ -65,12 +70,10 @@ public class CharSequenceSuffixTree
 	private final List<Node> nodes = new ArrayList<Node>();
 
 	/** @return A read-only list of the nodes in the tree. */
-	/*TODO del
-		protected List<Node> getNodes()
-		{
-			return java.util.Collections.unmodifiableList(nodes);
-		}
-	*/
+	protected List<Node> getNodes()
+	{
+		return java.util.Collections.unmodifiableList(nodes);
+	}
 
 	/** @return The number of nodes in the suffix tree. */
 	public int getNodeCount()
@@ -126,7 +129,6 @@ public class CharSequenceSuffixTree
 	 */
 	protected Edge addEdge(final int parentNodeIndex, final int childNodeIndex, final int start, final int end)
 	{
-		//		Log.debug("Adding edge from node ", parentNodeIndex, "to node", childNodeIndex, "starting at character", start, "for substring", getCharSequence().subSequence(start, end));
 		final Edge edge = new Edge(parentNodeIndex, childNodeIndex, start, end); //create a new edge
 		addEdge(edge); //add the edge
 		return edge; //return the edge
@@ -156,7 +158,7 @@ public class CharSequenceSuffixTree
 	 */
 	public Edge getEdge(final int parentNodeIndex, final char firstChar)
 	{
-		checkIndexBounds(parentNodeIndex, nodes.size());
+		checkIndexBounds(parentNodeIndex, getNodeCount());
 		return edgeMap.get(LOOKUP_EDGE_KEY.forEdge(parentNodeIndex, firstChar)); //retrieve an edge from the map, reusing the existing edge key
 	}
 
@@ -216,7 +218,7 @@ public class CharSequenceSuffixTree
 	 */
 	public Iterable<Edge> getChildEdges(final int parentNodeIndex)
 	{
-		return new NodeEdgeIterable(checkIndexBounds(parentNodeIndex, nodes.size()));
+		return new NodeEdgeIterable(checkIndexBounds(parentNodeIndex, getNodeCount()));
 	}
 
 	/**
@@ -229,32 +231,32 @@ public class CharSequenceSuffixTree
 	{
 		final CharSequenceSuffixTree suffixTree = new CharSequenceSuffixTree(charSequence); //create a new suffix tree that hasn't yet been built
 		final State state = new State(suffixTree); //create a new state for processing the suffix tree
-		while(state.hasNext()) //while there are more characters to process
+		while(state.hasNextChar()) //while there are more characters to process
 		{
-			final int charIndex = state.getCharIndex(); //get the index of the character
-			final char character = charSequence.charAt(charIndex);
+			final int nextCharIndex = state.getCharIndex(); //get the index of the next character to process
+			final char nextChar = charSequence.charAt(nextCharIndex); //get the next character
 
 			int parentNodeIndex;
 			int lastParentNodeIndex = -1;
-			while(true)
+			do
 			{
 				parentNodeIndex = state.getNodeIndex(); //start at the active node
 				//try to find an appropriate edge coming out of the active node; if there is such an edge (either explicit or implicit), we are finished
 				final Edge edge;
 				if(state.isExplicit()) //if the active state ends on a node (it doesn't end in the middle of an edge)
 				{
-					edge = suffixTree.getEdge(state.getNodeIndex(), character); //the node at which the state ends has an edge starting with the next character
+					edge = suffixTree.getEdge(state.getNodeIndex(), nextChar); //the node at which the state ends has an edge starting with the next character
 					if(edge != null) //if there is an edge
 					{
 						break; //there's nothing to do
 					}
 				}
 				else
-				{ //if the state is implicit, ending in the middle of an edge
+				//if the state is implicit, ending in the middle of an edge
+				{
 					edge = suffixTree.getEdge(state.getNodeIndex(), charSequence.charAt(state.getStart())); //get the edge at which the implicit part of the state starts
-					Log.debug("implicit edge: " + edge);
 					final int stateLength = state.getLength();
-					if(charSequence.charAt(edge.getStart() + stateLength) == character) //if the next character along the edge is the character we're extending
+					if(charSequence.charAt(edge.getStart() + stateLength) == nextChar) //if the next character along the edge is the character we're extending
 					{
 						break; //there's nothing to do---we simply have another implicit suffix
 					}
@@ -268,63 +270,86 @@ public class CharSequenceSuffixTree
 
 				//if there is no matching edge (or we split an existing edge), we'll need to create a new edge
 				//since we are going to smaller and smaller suffixes, if we created an edge for a larger suffix earlier, link that parent back to this one
-				suffixTree.addEdge(parentNodeIndex, suffixTree.createNode(), charIndex, charSequence.length()); //create a new edge from the next character to the end of the sequence
+				suffixTree.addEdge(parentNodeIndex, suffixTree.createNode(), nextCharIndex, charSequence.length()); //create a new edge from the next character to the end of the sequence
 				if(lastParentNodeIndex > 0) //if we already created an edge for a larger suffix
 				{
 					suffixTree.getNode(lastParentNodeIndex).setSuffixNodeIndex(parentNodeIndex); //link the node for the larger suffix back to this node, which is for a smaller suffix
 				}
 				lastParentNodeIndex = parentNodeIndex; //move to the next parent node
-				state.navigate(); //move to the next smaller suffix
 			}
+			while(state.nextSmallerSuffix()); //move to the next smaller suffix
 			if(lastParentNodeIndex > 0)
 			{
 				suffixTree.getNode(lastParentNodeIndex).setSuffixNodeIndex(parentNodeIndex);
 			}
-			state.next(); //go to the next character
-			//			suffixTree.printTree(System.out);	//TODO del
-			//			System.out.println("\n*\n");
+			state.nextChar(); //go to the next character
 		}
 
 		return suffixTree; //return the suffix tree we created and built
 	};
 
-	protected void printTree(final PrintStream printStream) //TODO comment
+	/**
+	 * Prints a character representation of the tree and its branches, starting from the root node.
+	 * @param printStream The destination to which the tree should be printed.
+	 * @throws NullPointerException if the given print stream is <code>null</code>.
+	 */
+	protected void printTree(final PrintStream printStream)
 	{
-		printTree(printStream, getRootEdges(), 0);
+		printTree(printStream, getRootEdges(), 0); //print the root edges at a level of zero
 	}
 
+	/**
+	 * Prints a character representation of the child edges of the given edge.
+	 * @param printStream The destination to which the tree should be printed.
+	 * @param edge The edge the child edges of which to print.
+	 * @param level The zero-based level of the tree from the root.
+	 * @throws NullPointerException if the given print stream and/or edge is <code>null</code>.
+	 */
 	private void printTree(final PrintStream printStream, final Edge edge, final int level)
 	{
-		printStream.println(Strings.createString('\t', level) + edge.toString());
-		printTree(printStream, edge.getChildEdges(), level + 1);
+		printStream.println(Strings.createString('\t', level) + edge.toString()); //indent and print the edge
+		printTree(printStream, edge.getChildEdges(), level + 1); //print the edge's child edges at one more level down
 
 	}
 
+	/**
+	 * Prints a character representation of the given child edges.
+	 * @param printStream The destination to which the tree should be printed.
+	 * @param edges The child edges to print.
+	 * @param level The zero-based level of the tree from the root.
+	 * @throws NullPointerException if the given print stream and/or edges is <code>null</code>.
+	 */
 	private void printTree(final PrintStream printStream, final Iterable<Edge> edges, final int level)
 	{
 		for(final Edge edge : edges) //look at all the given edges
 		{
-			printTree(printStream, edge, level);
+			printTree(printStream, edge, level); //print each edge at the requested level
 		}
 	}
 
 	/**
-	 * Represents a node in a suffix tree.
+	 * Represents a node in a suffix tree. Each node defaults to having no suffix node.
 	 * 
 	 * @author Garret Wilson
 	 */
-	public static class Node
+	public class Node
 	{
 		private int suffixNodeIndex = -1;
 
+		/** The index of the node representing the next smaller suffix, or -1 if there is no known smaller suffix node. */
 		public int getSuffixNodeIndex()
 		{
 			return suffixNodeIndex;
-		} //TODO comment
+		}
 
+		/**
+		 * Sets the index of the node representing the next smaller suffix.
+		 * @param suffixNodeIndex The index of the node representing the next smaller suffix.
+		 * @throws IndexOutOfBoundsException if the suffix node index does not represent a valid node.
+		 */
 		public void setSuffixNodeIndex(final int suffixNodeIndex)
 		{
-			this.suffixNodeIndex = suffixNodeIndex;
+			this.suffixNodeIndex = checkIndexBounds(suffixNodeIndex, getNodeCount());
 		}
 
 	};
@@ -510,15 +535,17 @@ public class CharSequenceSuffixTree
 	/**
 	 * Encapsulation of the current processing state of a suffix tree.
 	 * <p>
-	 * Before each iteration, the state indicates whether there are more characters to process using {@link State#hasNext()}. If there are more characters to
-	 * process, {@link State#next()} is called and the current character is retrieved using {@link State#getChar()}. On each iteration the state is set to the
-	 * active point and moved to smaller and smaller suffixes until the end point is reached using {@link State#navigate()}.
+	 * Before each processing iteration, the state indicates whether there are more characters to process using {@link State#hasNextChar()}. The character to
+	 * process on each iteration is found at the index {@link State#getCharIndex()}. On each iteration the state is set to the active point and moved to smaller
+	 * and smaller suffixes until the end point is reached using {@link State#nextSmallerSuffix()}. After each iteration, {@link State#nextChar()} is called and
+	 * the next character can be retrieved again using {@link State#getCharIndex()}.
 	 * </p>
 	 * <p>
 	 * The state end is exclusive, representing one character past the last character in the current suffix. The state start is inclusive, and represents the
-	 * first character of an implicit suffix extending past the node. If the start is equal to the end, then there is no implicit suffix and the state is
-	 * explicit.
+	 * first character of an implicit suffix extending past the node. If the start is equal to or greater than the end, then there is no implicit suffix and the
+	 * state is explicit.
 	 * </p>
+	 * 
 	 * @author Garret Wilson
 	 */
 	private static class State
@@ -551,7 +578,17 @@ public class CharSequenceSuffixTree
 		}
 
 		/**
-		 * Constructor. Starts the state on the first node at the first position with no characters. TODO fix {@link #next()} must be called before using.
+		 * Returns The index of the character currently being processed. This is a convenience method that delegates to {@link #getEnd()}.
+		 * @return The index of the character currently being processed.
+		 * @see #getEnd()
+		 */
+		public final int getCharIndex()
+		{
+			return getEnd();
+		}
+
+		/**
+		 * Constructor. Starts the state on the first node at the first position with no characters.
 		 * @param suffixTree The suffix tree being processed.
 		 * @throws NullPointerException if the given suffix tree is <code>null</code>.
 		 */
@@ -560,18 +597,7 @@ public class CharSequenceSuffixTree
 			this.suffixTree = checkInstance(suffixTree);
 			this.nodeIndex = 0;
 			this.start = 0;
-			this.end = 0; //TODO fix; perhaps add start() and isEnd() methods
-		}
-
-		/**
-		 * Retrieves the index of the character currently being processed in this iteration.
-		 * @return The index of the character currently being processed in this iteration. //TODO fix * @throws IllegalStateException if {@link #next()} has never
-		 *         been called.
-		 */
-		public int getCharIndex()
-		{
-			//TODO fix			checkState(getEnd() > 0, "In initial state; next() has not yet been called.");
-			return getEnd();
+			this.end = 0;
 		}
 
 		/**
@@ -589,20 +615,27 @@ public class CharSequenceSuffixTree
 		 */
 		public boolean isExplicit()
 		{
-			return start >= end; //TODO fix end business
+			return start >= end; //this algorithm implementation allows the start to temporarily become greater than the end
 		}
 
 		/**
 		 * Navigates to the next position in the suffix tree, which will represent the next smallest suffix. This method is to be called after each suffix
 		 * extension.
-		 * @throws IllegalStateException if the state is on the first node and the start is already equal to the end.
+		 * @return <code>true</code> if there exist smaller suffixes, or <code>false</code> if this pass is finished and the next character, if any, should be
+		 *         processed.
+		 * @throws IllegalStateException if the state is on the first node and the start is already past the end, reflecting that logically the algorithm will never
+		 *           require the start to extend more than one position past the end.
 		 */
-		public void navigate()
+		public boolean nextSmallerSuffix()
 		{
 			if(nodeIndex == 0) //if we're on the first node, there is no linked suffix node
 			{
-				//TODO fix				checkState(start < end, "Cannot increment start of state past its end.");
-				start++; //just increment the start of the state to get a smaller suffix
+				checkState(start <= end, "Cannot increment start of state when it is already past its end.");
+				start++; //just increment the start of the state to get a smaller suffix; this algorithm allows the start to temporarily pass the end
+				if(start > end)
+				{
+					return false;
+				}
 			}
 			else
 			//for all other suffixes, we can navigate to the smaller suffix by traversing suffix links
@@ -610,13 +643,14 @@ public class CharSequenceSuffixTree
 				nodeIndex = suffixTree.getNode(nodeIndex).getSuffixNodeIndex(); //navigate to the previous suffix
 			}
 			canonize(); //canonize the state by consuming edges if we can
+			return true;
 		}
 
 		/**
 		 * Determines whether there are more characters to be processed.
-		 * @return <code>true</code> if there remain unprocessed characters.
+		 * @return <code>false</code> if there remain unprocessed characters.
 		 */
-		public boolean hasNext()
+		public boolean hasNextChar()
 		{
 			return getEnd() < suffixTree.getCharSequence().length();
 		}
@@ -624,11 +658,11 @@ public class CharSequenceSuffixTree
 		/**
 		 * Navigates to the next character. This method is to be called after navigation to the end point for each character.
 		 * @throws IllegalStateException if there are no more characters in the character sequence.
-		 * @see #hasNext()
+		 * @see #hasNextChar()
 		 */
-		public void next()
+		public void nextChar()
 		{
-			checkState(hasNext(), "No more characters to process.");
+			checkState(hasNextChar(), "No more characters to process.");
 			end++; //go to the next character
 			canonize();
 		}
@@ -704,7 +738,5 @@ public class CharSequenceSuffixTree
 						}
 					});
 		}
-
 	}
-
 }
