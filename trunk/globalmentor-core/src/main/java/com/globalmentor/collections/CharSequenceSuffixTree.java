@@ -72,6 +72,12 @@ public class CharSequenceSuffixTree
 		}
 	*/
 
+	/** @return The number of nodes in the suffix tree. */
+	public int getNodeCount()
+	{
+		return nodes.size();
+	}
+
 	/**
 	 * Retrieves the identified node.
 	 * @param nodeIndex The index of the node to retrieve.
@@ -193,10 +199,24 @@ public class CharSequenceSuffixTree
 		return newNodeIndex; //return the index of the new node
 	}
 
-	/** @return An iterable to the root edges of the suffix tree's root node. */
+	/**
+	 * Returns an iterable to the child edges of the suffix tree's root node.
+	 * @return An iterable to the child edges of the root node.
+	 */
 	public Iterable<Edge> getRootEdges()
 	{
-		return new NodeEdgeIterable(0); //the root node is always the first node in the liast
+		return getChildEdges(0); //the root node is always the first node in the list
+	}
+
+	/**
+	 * Returns an iterable to the child edges of a node in the suffix tree.
+	 * @param parentNodeIndex The index of the parent node.
+	 * @return An iterable to the child edges of the indicated node.
+	 * @throws IndexOutOfBoundsException if the given parent node index does not represent a valid node.
+	 */
+	public Iterable<Edge> getChildEdges(final int parentNodeIndex)
+	{
+		return new NodeEdgeIterable(checkIndexBounds(parentNodeIndex, nodes.size()));
 	}
 
 	/**
@@ -282,7 +302,7 @@ public class CharSequenceSuffixTree
 
 	private void printTree(final PrintStream printStream, final Iterable<Edge> edges, final int level)
 	{
-		for(final Edge edge : edges) //look at all the edges
+		for(final Edge edge : edges) //look at all the given edges
 		{
 			printTree(printStream, edge, level);
 		}
@@ -668,7 +688,7 @@ public class CharSequenceSuffixTree
 	 * 
 	 * @author Garret Wilson
 	 */
-	private class MapEntryNodeEdgeIterator extends DefaultFilteredIterator<Edge>
+	private class MapEntryNodeEdgeIterator extends FilteredIterator<Edge>
 	{
 		/**
 		 * Parent node index constructor.

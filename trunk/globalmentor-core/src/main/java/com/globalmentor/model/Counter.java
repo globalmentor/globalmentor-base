@@ -69,6 +69,15 @@ public class Counter
 	}
 
 	/**
+	 * Decrements the counter and returns the new value.
+	 * @return The new, decremented count value.
+	 */
+	public long decrement()
+	{
+		return --count;
+	}
+
+	/**
 	 * {@inheritDoc} This implementation outputs the current count.
 	 * @see #getCount()
 	 **/
@@ -93,13 +102,60 @@ public class Counter
 	 */
 	public static <K> long incrementCounterMapCount(final Map<K, Counter> map, final K key)
 	{
-		Counter counter = map.get(key); //get the current count
+		Counter counter = map.get(key); //get the current counter
 		if(counter == null) //if the key does not exist in the map
 		{
 			counter = new Counter(); //create a new counter and put it in the map keyed to the key 
 			map.put(key, counter);
 		}
 		return counter.increment(); //increment the counter and return the new count
+	}
+
+	/**
+	 * Decrements the occurrence count of the given key using the given map. In other words, the associated count for the key will be decreased by one. If the
+	 * counter gets to zero, it will be removed from the map.
+	 * <p>
+	 * This is a convenience method for keeping track of the count of some key in a map.
+	 * </p>
+	 * <p>
+	 * This implementation does not allow <code>null</code> counter values. This implementation does not support counts less than zero.
+	 * </p>
+	 * @param map The map containing the counts.
+	 * @param key The key being counted.
+	 * @return The new count of the key in the map.
+	 * @throws IllegalStateException if the key does not exist in the map (i.e. the count is zero).
+	 */
+	public static <K> long decrementCounterMapCount(final Map<K, Counter> map, final K key)
+	{
+		final Counter counter = map.get(key); //get the current counter
+		if(counter == null) //if the key does not exist in the map
+		{
+			throw new IllegalStateException("Key " + key + " does not exist in the counter map (it has an effective zero count).");
+		}
+		final long count = counter.decrement(); //decrement the counter
+		if(count == 0L) //if we reached zero
+		{
+			map.remove(key); //remove the counter from the map altogether
+		}
+		return count; //return the new count
+	}
+
+	/**
+	 * Returns the current count of the given key in the given map. If the key does not exist in the map, the count is considered zero.
+	 * <p>
+	 * This is a convenience method for keeping track of the count of some key in a map.
+	 * </p>
+	 * <p>
+	 * This implementation does not allow <code>null</code> counter values.
+	 * </p>
+	 * @param map The map containing the counts.
+	 * @param key The key being counted.
+	 * @return The count value of the counter of the key in the map.
+	 */
+	public static <K> long getCount(final Map<K, Counter> map, final K key)
+	{
+		final Counter counter = map.get(key); //get the current counter
+		return counter != null ? counter.getCount() : 0L; //return the count, considering no counter to indicate a count of zero
 	}
 
 	/**

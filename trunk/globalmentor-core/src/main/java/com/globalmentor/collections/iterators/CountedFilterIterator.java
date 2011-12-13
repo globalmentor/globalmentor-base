@@ -27,7 +27,6 @@ import com.globalmentor.model.Filter;
 	given maximum.</p>
 @author Garret Wilson
 */
-@Deprecated
 public class CountedFilterIterator<E> extends IteratorDecorator<E>	//TODO refactor by extending FilterIterator and adding count and max count
 {
 
