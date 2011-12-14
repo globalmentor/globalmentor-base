@@ -34,13 +34,12 @@ public interface SuffixTree
 	public int getNodeCount();
 
 	/**
-	 * Retrieves the root node of the tree.
-	 * This is a convenience method to retrieve the node with index zero.
+	 * Retrieves the root node of the tree. This is a convenience method to retrieve the node with index zero.
 	 * @param nodeIndex The index of the node to retrieve.
 	 * @return The identified node.
 	 */
 	public Node getRootNode();
-	
+
 	/**
 	 * Retrieves the identified node.
 	 * @param nodeIndex The index of the node to retrieve.
@@ -59,10 +58,13 @@ public interface SuffixTree
 	 */
 	public interface Node
 	{
-		/**@return The index of the node.*/
+		/** @return The index of the node. */
 		public int getIndex();
 
-		/**@return The node representing the next smaller suffix, or <code>null</code> if there is no known smaller suffix node. */
+		/** @return Whether this node is a leaf node in the suffix tree. */
+		public boolean isLeaf();
+
+		/** @return The node representing the next smaller suffix, or <code>null</code> if there is no known smaller suffix node. */
 		public Node getSuffixNode();
 
 		/**

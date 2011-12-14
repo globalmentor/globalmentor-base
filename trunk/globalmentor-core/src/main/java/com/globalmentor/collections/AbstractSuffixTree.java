@@ -40,6 +40,9 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	/** The nodes in the suffix tree. */
 	private final List<Node> nodes = new ArrayList<Node>();
 
+	/** The bit set that keeps track of which nodes are leaf nodes. */
+	private final BitSet leafNodeIndexes = new BitSet();
+
 	@Override
 	public Iterable<Node> getNodes()
 	{
@@ -57,7 +60,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	{
 		return getNode(0);
 	}
-	
+
 	@Override
 	public Node getNode(final int nodeIndex)
 	{
@@ -71,20 +74,23 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	protected final AbstractNode addNode()
 	{
 		final int nodeIndex = nodes.size();
-		final AbstractNode node=createNode(nodeIndex);
+		final AbstractNode node = createNode(nodeIndex);
 		nodes.add(nodeIndex, node);
 		return node;
 	}
 
 	/**
-	 * Creates a new node.
+	 * Creates a new node. By default a node is considered a leaf node.
 	 * @param index The index of the node to create.
 	 * @return The index of the newly created node.
 	 */
 	protected abstract AbstractNode createNode(final int index);
 
 	/**
-	 * Creates a new edge and adds it to the tree. This method delegates to {@link #createEdge(int, int, int, int)}.
+	 * Creates a new edge and adds it to the tree. The parent node will be set to be a branch node.
+	 * <p>
+	 * This method delegates to {@link #createEdge(int, int, int, int)}.
+	 * </p>
 	 * @param parentNode The parent node representing the root end of the edge.
 	 * @param childNode The child node representing the leaf end of the edge.
 	 * @param start The position of the start element, inclusive.
@@ -92,16 +98,19 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	 * @throws NullPointerException if the given parent node and/or child node is <code>null</code>.
 	 * @throws IllegalArgumentException if the given end is less than the start.
 	 * @throws IllegalStateException if there already exists an edge with the same parent node and first element.
+	 * @throws ClassCastException if the given parent node is not an {@link AbstractNode}.
+	 * @see AbstractNode#setLeaf(boolean)
 	 */
 	protected final E addEdge(final Node parentNode, final Node childNode, final int start, final int end)
 	{
 		final E edge = createEdge(parentNode, childNode, start, end); //create a new edge
 		addEdge(edge); //add the edge
+		((AbstractNode)parentNode).setLeaf(false); //TODO improve generics to prevent casting, or turn off warning
 		return edge; //return the edge
 	}
 
 	/**
-	 * Creates a new edge and adds it to the tree. This method delegates to {@link #addEdge(Edge)}.
+	 * Creates a new edge.
 	 * @param parentNode The parent node representing the root end of the edge.
 	 * @param childNode The child node representing the leaf end of the edge.
 	 * @param start The position of the start element, inclusive.
@@ -171,7 +180,22 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 			return index;
 		}
 
-		private Node suffixNode= null;
+		@Override
+		public boolean isLeaf()
+		{
+			return leafNodeIndexes.get(getIndex());
+		}
+
+		/**
+		 * Sets whether this node is a leaf.
+		 * @param leaf Whether this node is a leaf.
+		 */
+		protected void setLeaf(final boolean leaf)
+		{
+			leafNodeIndexes.set(getIndex(), leaf);
+		}
+
+		private Node suffixNode = null;
 
 		@Override
 		public Node getSuffixNode()
@@ -184,24 +208,32 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 		 * @param suffixNode The node representing the next smaller suffix.
 		 * @throws NullPointerException if the given node is <code>null</code>.
 		 */
-		public void setSuffixNode(final Node suffixNode)
+		protected void setSuffixNode(final Node suffixNode)
 		{
 			this.suffixNode = checkInstance(suffixNode);
 		}
 
 		/**
-		 * Index constructor.
+		 * Index constructor. The node defaults to being a leaf node.
 		 * @param index The index of the node.
 		 */
 		public AbstractNode(final int index)
 		{
 			this.index = index;
+			setLeaf(true); //default to being a leaf node
 		}
 
+		/** @{inheritDoc This implementation returns a string in the form <code>(<var>index</var>)*</code>, where '*' indicates a leaf node. */
 		@Override
 		public String toString()
 		{
-			return "("+getIndex()+")";
+			final StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append('(').append(getIndex()).append(')');
+			if(isLeaf()) //add a leaf designation if appropriate
+			{
+				stringBuilder.append('*');
+			}
+			return stringBuilder.toString();
 		}
 
 	};

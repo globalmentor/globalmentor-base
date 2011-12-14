@@ -72,5 +72,23 @@ public class SuffixTrees
 	}
 
 
-//	public static void walk(final SuffixTree)
+//	public static void visit(final SuffixTree suffixTree, final )
+	
+
+	/**A general visitor strategy for visiting nodes.
+	 * This can be used to implement a pure visitor pattern, in which the destination is aware of and accepts the visitor,
+	 * or a strategy visitor pattern in which a third object does the traversal.
+	 * 
+	 * @author Garret Wilson
+	 */
+/*TODO fix
+	public interface Visitor
+	{
+		
+		public boolean visit(final SuffixTree suffixTree, final Node node, final int start, final );
+
+	}
+*/
+	
+	
 }

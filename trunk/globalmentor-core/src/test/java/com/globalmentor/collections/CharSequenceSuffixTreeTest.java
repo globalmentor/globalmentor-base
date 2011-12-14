@@ -59,12 +59,12 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 			//test creating an implicit suffix tree
 			final CharSequenceSuffixTree implicitSuffixTree = CharSequenceSuffixTree.create(testString, false);
 			//dumpEdges(implicitSuffixTree, System.out);
-			print(implicitSuffixTree, System.out);
+			//print(implicitSuffixTree, System.out);
 			validate(implicitSuffixTree);
 			//test creating an explicit suffix tree
 			final CharSequenceSuffixTree explicitSuffixTree = CharSequenceSuffixTree.create(testString, true);
 			//dumpEdges(explicitSuffixTree, System.out);
-			print(explicitSuffixTree, System.out);
+			//print(explicitSuffixTree, System.out);
 			validate(explicitSuffixTree);
 		}
 	}
@@ -169,7 +169,8 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 			}
 		}
 		nodeChildEdgeCountMap.put(node, new Counter(edgeCount)); //set the count of edges for this parent node
-		if(edgeCount == 0) //if this is a leaf node (it has no child edges)
+		assertThat("The leaf node designation of the node did not match child edge count.", edgeCount == 0, equalTo(node.isLeaf()));
+		if(node.isLeaf()) //if this is a leaf node
 		{
 			final CharSequence suffix = stringBuilder.subSequence(0, length); //get our collected suffix up to the parent node
 			final CharSequence expectedSuffix = suffixTree.getCharSequence().subSequence(suffixTree.getCharSequence().length() - length,
@@ -177,11 +178,7 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 			//Log.debug("Suffix:", suffix);
 			assertThat("Bad suffix at position " + length + " for leaf node " + node + ".", suffix, equalTo(expectedSuffix));
 			Counter.incrementCounterMapCount(suffixLengthCountMap, length); //show that we found a suffix of this length (at the end we should only have one of each)
-			return true; //indicate that this is a leaf node
 		}
-		else
-		{
-			return false; //indicate that this is not a leaf node
-		}
+		return node.isLeaf();
 	}
 }
