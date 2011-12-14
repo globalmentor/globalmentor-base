@@ -87,7 +87,8 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	protected abstract AbstractNode createNode(final int index);
 
 	/**
-	 * Creates a new edge and adds it to the tree. The parent node will be set to be a branch node.
+	 * Creates a new edge and adds it to the tree. The given parent node will be set to be a branch node, and the given child node
+	 * will have its parent node set to the given parent node.
 	 * <p>
 	 * This method delegates to {@link #createEdge(int, int, int, int)}.
 	 * </p>
@@ -99,6 +100,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	 * @throws IllegalArgumentException if the given end is less than the start.
 	 * @throws IllegalStateException if there already exists an edge with the same parent node and first element.
 	 * @throws ClassCastException if the given parent node is not an {@link AbstractNode}.
+	 * @see AbstractNode#setParentNode(Node)
 	 * @see AbstractNode#setLeaf(boolean)
 	 */
 	protected final E addEdge(final Node parentNode, final Node childNode, final int start, final int end)
@@ -106,6 +108,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 		final E edge = createEdge(parentNode, childNode, start, end); //create a new edge
 		addEdge(edge); //add the edge
 		((AbstractNode)parentNode).setLeaf(false); //TODO improve generics to prevent casting, or turn off warning
+		((AbstractNode)childNode).setParentNode(parentNode); //TODO improve generics to prevent casting, or turn off warning
 		return edge; //return the edge
 	}
 
@@ -195,6 +198,24 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 			leafNodeIndexes.set(getIndex(), leaf);
 		}
 
+		private Node parentNode = null;
+
+		@Override
+		public Node getParentNode()
+		{
+			return parentNode;
+		}
+
+		/**
+		 * Sets the node indicating this node's parent.
+		 * @param parentNode The node representing the parent of this node.
+		 * @throws NullPointerException if the given node is <code>null</code>.
+		 */
+		protected void setParentNode(final Node parentNode)
+		{
+			this.parentNode = checkInstance(parentNode);
+		}
+
 		private Node suffixNode = null;
 
 		@Override
@@ -222,6 +243,8 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 			this.index = index;
 			setLeaf(true); //default to being a leaf node
 		}
+		
+		//TODO add hash and equal methods based upon index
 
 		/** @{inheritDoc This implementation returns a string in the form <code>(<var>index</var>)*</code>, where '*' indicates a leaf node. */
 		@Override

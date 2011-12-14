@@ -97,7 +97,7 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 		final StringBuilder stringBuilder = new StringBuilder(); //keep track of the suffix down each path
 		final Map<Node, Counter> nodeChildEdgeCountMap = new HashMap<Node, Counter>(); //keep track of the count of each edge for each node
 		final Map<Integer, Counter> suffixLengthCountMap = new HashMap<Integer, Counter>(); //keep track of how many times we've seen each suffix
-		//TODO del		suffixCountMap.put(0, new Counter(1)); //there is inherently a suffix of length zero in the suffix tree
+		assertNull("Root node shouldn't have a parent node.", suffixTree.getRootNode().getParentNode());
 		validate(suffixTree, suffixTree.getRootNode(), 0, stringBuilder, nodeChildEdgeCountMap, suffixLengthCountMap);
 		final CharSequence charSequence = suffixTree.getCharSequence();
 		final int charSequenceLength = charSequence.length();
@@ -158,6 +158,8 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 		int edgeCount = 0; //keep track of the edges from this node
 		for(final Edge childEdge : node.getChildEdges()) //look at all the child edges for this node
 		{
+			assertThat("Edge child node's parent node doesn't equal the parent node of the edge.", childEdge.getChildNode().getParentNode(),
+					equalTo(childEdge.getParentNode()));
 			final CharSequenceEdge charSequenceChildEdge = (CharSequenceEdge)childEdge;
 			assertFalse("Node " + node + " already counted.", nodeChildEdgeCountMap.containsKey(node));
 			edgeCount++; //update our local record of edges for the parent node
