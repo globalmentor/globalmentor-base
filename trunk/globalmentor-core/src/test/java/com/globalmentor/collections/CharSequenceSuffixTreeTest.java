@@ -16,7 +16,6 @@
 
 package com.globalmentor.collections;
 
-import static com.globalmentor.java.Characters.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
@@ -41,7 +40,8 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 {
 
 	/** Interesting test string to use for creating suffix trees. */
-	private final static Set<String> TEST_STRINGS = Sets.immutableSetOf("xabxa", "bananas", "bookkeeper", "mississippi", "dooodah");
+	private final static Set<String> TEST_STRINGS = Sets.immutableSetOf("xabxa", "bananas", "bookkeeper", "mississippi", "dooodah",
+			"I at once heard the rickety crickety creaking of the bridge.");
 
 	/**
 	 * Tests the creation of suffix trees based upon supplied strings.
@@ -52,10 +52,16 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 	{
 		for(final String testString : TEST_STRINGS)
 		{
-			final CharSequenceSuffixTree suffixTree = CharSequenceSuffixTree.create(testString + NULL_CHAR); //TODO fix to automatically create explicit suffix trees
-			//dumpEdges(suffixTree, System.out);
-			//suffixTree.printTree(System.out);
-			validate(suffixTree); //validate the tree
+			//test creating an implicit suffix tree
+			final CharSequenceSuffixTree implicitSuffixTree = CharSequenceSuffixTree.create(testString, false);
+			//dumpEdges(implicitSuffixTree, System.out);
+			//implicitSuffixTree.printTree(System.out);
+			validate(implicitSuffixTree);
+			//test creating an explicit suffix tree
+			final CharSequenceSuffixTree explicitSuffixTree = CharSequenceSuffixTree.create(testString, true);
+			//dumpEdges(explicitSuffixTree, System.out);
+			//explicitSuffixTree.printTree(System.out);
+			validate(explicitSuffixTree);
 		}
 	}
 
@@ -87,16 +93,18 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 		final StringBuilder stringBuilder = new StringBuilder(); //keep track of the suffix down each path
 		final Map<Integer, Counter> nodeChildEdgeCountMap = new HashMap<Integer, Counter>(); //keep track of the count of each edge for each node
 		final Map<Integer, Counter> suffixCountMap = new HashMap<Integer, Counter>(); //keep track of how many times we've seen each suffix
-		suffixCountMap.put(0, new Counter(1)); //there is inherently a suffix of length zero in the suffix tree
+		//TODO del		suffixCountMap.put(0, new Counter(1)); //there is inherently a suffix of length zero in the suffix tree
 		validate(suffixTree, 0, 0, stringBuilder, nodeChildEdgeCountMap, suffixCountMap);
 		final CharSequence charSequence = suffixTree.getCharSequence();
 		final int charSequenceLength = charSequence.length();
 
-		//TODO fix for implicit trees
-		for(int suffixLength = 0; suffixLength < charSequenceLength; ++suffixLength) //make sure we have one and only one suffix of each length
+		if(suffixTree.isExplicit())
 		{
-			final long suffixCount = Counter.getCount(suffixCountMap, suffixLength); //get the number of suffixes of this length
-			assertThat("Unexpeted suffix count for suffix " + charSequence.subSequence(0, suffixLength) + ".", suffixCount, equalTo(1L));
+			for(int suffixLength = 0; suffixLength < charSequenceLength; ++suffixLength) //make sure we have one and only one suffix of each length
+			{
+				final long suffixCount = Counter.getCount(suffixCountMap, suffixLength); //get the number of suffixes of this length
+				assertThat("Unexpected suffix count for suffix " + charSequence.subSequence(0, suffixLength) + ".", suffixCount, equalTo(1L));
+			}
 		}
 
 		final int nodeCount = suffixTree.getNodeCount();
@@ -116,9 +124,10 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 			}
 		}
 
-		//TODO fix for implicit trees
-		assertThat("Leaf count not equal to number of characters in the sequence.", leafNodeCount, equalTo(charSequenceLength));
-
+		if(suffixTree.isExplicit())
+		{
+			assertThat("Leaf count not equal to number of characters in the sequence.", leafNodeCount, equalTo(charSequenceLength + 1));
+		}
 		assertThat("Branch count not equal to number of nodes minus one.", branchCount, equalTo(nodeCount - 1));
 	}
 

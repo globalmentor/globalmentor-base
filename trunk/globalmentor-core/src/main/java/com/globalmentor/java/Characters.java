@@ -230,7 +230,7 @@ public final class Characters
 	public final static char OBJECT_REPLACEMENT_CHAR = 0xFFFC;
 	/** Represents a character that is unknown or unrepresentable in Unicode. */
 	public final static char REPLACEMENT_CHAR = 0xFFFD;
-	/** An invalid, undefined Unicode character. */
+	/** An invalid, undefined Unicode character which is "guaranteed not to be a Unicode character at all. */
 	public final static char UNDEFINED_CHAR = 0xFFFF;
 
 	/** Unicode control characters (0x0000-0x001F, 0x007F-0x09F). */
