@@ -25,7 +25,8 @@ import java.util.*;
 
 import org.junit.Test;
 
-import com.globalmentor.collections.CharSequenceSuffixTree.Edge;
+import com.globalmentor.collections.CharSequenceSuffixTree.*;
+import com.globalmentor.collections.SuffixTree.*;
 //import com.globalmentor.log.Log;
 import com.globalmentor.model.Counter;
 import com.globalmentor.test.AbstractTest;
@@ -78,10 +79,10 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 	public static void dumpEdges(final CharSequenceSuffixTree suffixTree, final PrintStream printStream)
 	{
 		printStream.println("  From     To Suffix  First   Last String");
-		for(final Edge edge : suffixTree.getEdges())
+		for(final Edge edge : suffixTree.getRootNode().getChildEdges())
 		{
-			printStream.format("%6d %6d %6d %6d %6d %s\n", edge.getParentNodeIndex(), edge.getChildNodeIndex(), suffixTree.getNode(edge.getChildNodeIndex())
-					.getSuffixNodeIndex(), edge.getStart(), edge.getEnd(), edge.getSubSequence());
+			printStream.format("%6d %6d %6d %6d %6d %s\n", edge.getParentNode(), edge.getChildNode(), edge.getChildNode().getSuffixNode(), edge.getStart(),
+					edge.getEnd(), ((CharSequenceEdge)edge).getSubSequence());
 		}
 	}
 
@@ -94,10 +95,10 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 	public static void validate(final CharSequenceSuffixTree suffixTree)
 	{
 		final StringBuilder stringBuilder = new StringBuilder(); //keep track of the suffix down each path
-		final Map<Integer, Counter> nodeChildEdgeCountMap = new HashMap<Integer, Counter>(); //keep track of the count of each edge for each node
-		final Map<Integer, Counter> suffixCountMap = new HashMap<Integer, Counter>(); //keep track of how many times we've seen each suffix
+		final Map<Node, Counter> nodeChildEdgeCountMap = new HashMap<Node, Counter>(); //keep track of the count of each edge for each node
+		final Map<Integer, Counter> suffixLengthCountMap = new HashMap<Integer, Counter>(); //keep track of how many times we've seen each suffix
 		//TODO del		suffixCountMap.put(0, new Counter(1)); //there is inherently a suffix of length zero in the suffix tree
-		validate(suffixTree, 0, 0, stringBuilder, nodeChildEdgeCountMap, suffixCountMap);
+		validate(suffixTree, suffixTree.getRootNode(), 0, stringBuilder, nodeChildEdgeCountMap, suffixLengthCountMap);
 		final CharSequence charSequence = suffixTree.getCharSequence();
 		final int charSequenceLength = charSequence.length();
 
@@ -105,7 +106,7 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 		{
 			for(int suffixLength = 0; suffixLength < charSequenceLength; ++suffixLength) //make sure we have one and only one suffix of each length
 			{
-				final long suffixCount = Counter.getCount(suffixCountMap, suffixLength); //get the number of suffixes of this length
+				final long suffixCount = Counter.getCount(suffixLengthCountMap, suffixLength); //get the number of suffixes of this length
 				assertThat("Unexpected suffix count for suffix " + charSequence.subSequence(0, suffixLength) + ".", suffixCount, equalTo(1L));
 			}
 		}
@@ -113,11 +114,11 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 		final int nodeCount = suffixTree.getNodeCount();
 		int leafNodeCount = 0;
 		int branchCount = 0;
-		for(int nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++) //check that we counted each node, and update the leaf/branch counts
+		for(final Node node : suffixTree.getNodes()) //check that we counted each node, and update the leaf/branch counts
 		{
-			assertTrue("Node " + nodeIndex + " never counted.", nodeChildEdgeCountMap.containsKey(nodeIndex));
-			final long childBranchCount = Counter.getCount(nodeChildEdgeCountMap, nodeIndex);
-			if(Counter.getCount(nodeChildEdgeCountMap, nodeIndex) == 0L) //update the branch/leaf count
+			assertTrue("Node " + node + " never counted.", nodeChildEdgeCountMap.containsKey(node));
+			final long childBranchCount = Counter.getCount(nodeChildEdgeCountMap, node);
+			if(Counter.getCount(nodeChildEdgeCountMap, node) == 0L) //update the branch/leaf count
 			{
 				leafNodeCount++;
 			}
@@ -140,41 +141,42 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 	 * The node child edge count map will always be updated with a counter, even for a count of zero.
 	 * </p>
 	 * @param suffixTree The suffix tree to validate.
-	 * @param nodeIndex The index of the node to validate
+	 * @param node The node to validate
 	 * @param length The length of characters already validated.
 	 * @param stringBuilder The string builder containing the characters that have up till now been validated; this will be at least length characters, and maybe
 	 *          more.
 	 * @param nodeChildEdgeCountMap The map containing the counts of child edges for each node; this is to always be updated, even for a count of zero (indicating
 	 *          a leaf node).
-	 * @param suffixCountMap The map of counts of suffixes of each length.
+	 * @param suffixLengthCountMap The map of counts of suffixes of each length.
 	 * @return <code>true</code> if it was determined that this node was a leaf node.
 	 * @throws NullPointerException if the given suffix tree, string builder, node child edge count map, and/or suffix count map is <code>null</code>.
 	 * @throws AssertionError if the suffix tree is not valid.
 	 */
-	protected static boolean validate(final CharSequenceSuffixTree suffixTree, final int nodeIndex, final int length, final StringBuilder stringBuilder,
-			final Map<Integer, Counter> nodeChildEdgeCountMap, final Map<Integer, Counter> suffixCountMap)
+	protected static boolean validate(final CharSequenceSuffixTree suffixTree, final Node node, final int length, final StringBuilder stringBuilder,
+			final Map<Node, Counter> nodeChildEdgeCountMap, final Map<Integer, Counter> suffixLengthCountMap)
 	{
 		int edgeCount = 0; //keep track of the edges from this node
-		for(final Edge childEdge : suffixTree.getChildEdges(nodeIndex)) //look at all the child edges for this node
+		for(final Edge childEdge : node.getChildEdges()) //look at all the child edges for this node
 		{
-			assertFalse("Node " + nodeIndex + " already counted.", nodeChildEdgeCountMap.containsKey(nodeIndex));
+			final CharSequenceEdge charSequenceChildEdge = (CharSequenceEdge)childEdge;
+			assertFalse("Node " + node + " already counted.", nodeChildEdgeCountMap.containsKey(node));
 			edgeCount++; //update our local record of edges for the parent node
-			stringBuilder.replace(length, stringBuilder.length(), childEdge.getSubSequence().toString()); //add the substring from this edge to our growing suffix (replacing any leftover text from previous edges)
-			if(validate(suffixTree, childEdge.getChildNodeIndex(), stringBuilder.length(), stringBuilder, nodeChildEdgeCountMap, suffixCountMap)) //validate this edge; if the edge's child node is a leaf node
+			stringBuilder.replace(length, stringBuilder.length(), charSequenceChildEdge.getSubSequence().toString()); //add the substring from this edge to our growing suffix (replacing any leftover text from previous edges)
+			if(validate(suffixTree, childEdge.getChildNode(), stringBuilder.length(), stringBuilder, nodeChildEdgeCountMap, suffixLengthCountMap)) //validate this edge; if the edge's child node is a leaf node
 			{
-				assertTrue("Leaf node " + childEdge.getChildNodeIndex() + " should have no children.",
-						Counter.getCount(nodeChildEdgeCountMap, childEdge.getChildNodeIndex()) == 0);
+				assertTrue("Leaf node " + childEdge.getChildNode() + " should have no children.",
+						Counter.getCount(nodeChildEdgeCountMap, childEdge.getChildNode()) == 0);
 			}
 		}
-		nodeChildEdgeCountMap.put(nodeIndex, new Counter(edgeCount)); //set the count of edges for this parent node
+		nodeChildEdgeCountMap.put(node, new Counter(edgeCount)); //set the count of edges for this parent node
 		if(edgeCount == 0) //if this is a leaf node (it has no child edges)
 		{
 			final CharSequence suffix = stringBuilder.subSequence(0, length); //get our collected suffix up to the parent node
 			final CharSequence expectedSuffix = suffixTree.getCharSequence().subSequence(suffixTree.getCharSequence().length() - length,
 					suffixTree.getCharSequence().length()); //get what we would have expected if we were looking directly at the underlying character sequence
 			//Log.debug("Suffix:", suffix);
-			assertThat("Bad suffix at position " + length + " for leaf node " + nodeIndex + ".", suffix, equalTo(expectedSuffix));
-			Counter.incrementCounterMapCount(suffixCountMap, length); //show that we found a suffix of this length (at the end we should only have one of each)
+			assertThat("Bad suffix at position " + length + " for leaf node " + node + ".", suffix, equalTo(expectedSuffix));
+			Counter.incrementCounterMapCount(suffixLengthCountMap, length); //show that we found a suffix of this length (at the end we should only have one of each)
 			return true; //indicate that this is a leaf node
 		}
 		else

@@ -19,7 +19,7 @@ package com.globalmentor.collections;
 import java.io.PrintStream;
 
 import com.globalmentor.java.*;
-import com.globalmentor.collections.SuffixTree.Edge;
+import com.globalmentor.collections.SuffixTree.*;
 
 /**
  * Utilities for working with suffix trees.
@@ -37,9 +37,25 @@ public class SuffixTrees
 	 */
 	public static void print(final SuffixTree suffixTree, final PrintStream printStream)
 	{
-		print(suffixTree, printStream, suffixTree.getRootEdges(), 0); //print the root edges at a level of zero
+		print(suffixTree, printStream, suffixTree.getRootNode(), 0); //print the root edges at a level of zero
 	}
 
+	/**
+	 * Prints a character representation of the given node.
+	 * @param suffixTree The suffix tree to print.
+	 * @param printStream The destination to which the tree should be printed.
+	 * @param node The node the child edges to print.
+	 * @param level The zero-based level of the tree from the root.
+	 * @throws NullPointerException if the given suffix tree, print stream, and/or node is <code>null</code>.
+	 */
+	protected static void print(final SuffixTree suffixTree, final PrintStream printStream, final Node node, final int level)
+	{
+		for(final Edge edge : node.getChildEdges()) //look at all the child edges
+		{
+			print(suffixTree, printStream, edge, level); //print each edge at the requested level
+		}
+	}
+	
 	/**
 	 * Prints a character representation of the child edges of the given edge.
 	 * @param suffixTree The suffix tree to print.
@@ -51,25 +67,10 @@ public class SuffixTrees
 	protected static void print(final SuffixTree suffixTree, final PrintStream printStream, final Edge edge, final int level)
 	{
 		printStream.println(Strings.createString('\t', level) + edge.toString()); //indent and print the edge
-		print(suffixTree, printStream, edge.getChildEdges(), level + 1); //print the edge's child edges at one more level down
+		print(suffixTree, printStream, edge.getChildNode(), level + 1); //print the edge's child edges at one more level down
 
 	}
 
-	/**
-	 * Prints a character representation of the given child edges.
-	 * @param suffixTree The suffix tree to print.
-	 * @param printStream The destination to which the tree should be printed.
-	 * @param edges The child edges to print.
-	 * @param level The zero-based level of the tree from the root.
-	 * @throws NullPointerException if the given suffix tree and/or print stream and/or edges is <code>null</code>.
-	 */
-	protected static void print(final SuffixTree suffixTree, final PrintStream printStream, final Iterable<? extends Edge> edges, final int level)
-	{
-		for(final Edge edge : edges) //look at all the given edges
-		{
-			print(suffixTree, printStream, edge, level); //print each edge at the requested level
-		}
-	}
 
 //	public static void walk(final SuffixTree)
 }

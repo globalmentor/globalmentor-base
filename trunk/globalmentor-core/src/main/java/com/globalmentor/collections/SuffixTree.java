@@ -34,6 +34,14 @@ public interface SuffixTree
 	public int getNodeCount();
 
 	/**
+	 * Retrieves the root node of the tree.
+	 * This is a convenience method to retrieve the node with index zero.
+	 * @param nodeIndex The index of the node to retrieve.
+	 * @return The identified node.
+	 */
+	public Node getRootNode();
+	
+	/**
 	 * Retrieves the identified node.
 	 * @param nodeIndex The index of the node to retrieve.
 	 * @return The identified node.
@@ -45,20 +53,6 @@ public interface SuffixTree
 	public Iterable<? extends Edge> getEdges();
 
 	/**
-	 * Returns an iterable to the child edges of the suffix tree's root node.
-	 * @return An iterable to the child edges of the root node.
-	 */
-	public Iterable<? extends Edge> getRootEdges();
-
-	/**
-	 * Returns an iterable to the child edges of a node in the suffix tree.
-	 * @param parentNodeIndex The index of the parent node.
-	 * @return An iterable to the child edges of the indicated node.
-	 * @throws IndexOutOfBoundsException if the given parent node index does not represent a valid node.
-	 */
-	public Iterable<? extends Edge> getChildEdges(final int parentNodeIndex);
-
-	/**
 	 * Represents a node in a suffix tree. Each node defaults to having no suffix node.
 	 * 
 	 * @author Garret Wilson
@@ -68,8 +62,13 @@ public interface SuffixTree
 		/**@return The index of the node.*/
 		public int getIndex();
 
-		/**@return The index of the node representing the next smaller suffix, or -1 if there is no known smaller suffix node. */
-		public int getSuffixNodeIndex();
+		/**@return The node representing the next smaller suffix, or <code>null</code> if there is no known smaller suffix node. */
+		public Node getSuffixNode();
+
+		/**
+		 * @return An iterable to the child edges of this node.
+		 */
+		public Iterable<? extends Edge> getChildEdges();
 
 	};
 
@@ -81,11 +80,11 @@ public interface SuffixTree
 	public interface Edge
 	{
 
-		/** @return The index of the parent node representing the root end of the edge. */
-		public int getParentNodeIndex();
+		/** @return The parent node representing the root end of the edge. */
+		public Node getParentNode();
 
-		/** @return The index of the child node representing the leaf end of the edge. */
-		public int getChildNodeIndex();
+		/** @return The child node representing the leaf end of the edge. */
+		public Node getChildNode();
 
 		/** @return The position of the start element, inclusive. */
 		public int getStart();

@@ -16,7 +16,7 @@
 
 package com.globalmentor.collections;
 
-import static com.globalmentor.java.Conditions.*;
+import static com.globalmentor.java.Objects.*;
 
 import java.util.*;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * 
  * @author Garret Wilson
  */
-public abstract class AbstractSuffixTree<N extends SuffixTree.Node, E extends SuffixTree.Edge> implements SuffixTree
+public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements SuffixTree
 {
 
 	/** Whether the suffix tree is explicit, with every suffix ending on a leaf node. */
@@ -38,10 +38,10 @@ public abstract class AbstractSuffixTree<N extends SuffixTree.Node, E extends Su
 	}
 
 	/** The nodes in the suffix tree. */
-	private final List<N> nodes = new ArrayList<N>();
+	private final List<Node> nodes = new ArrayList<Node>();
 
 	@Override
-	public Iterable<N> getNodes()
+	public Iterable<Node> getNodes()
 	{
 		return java.util.Collections.unmodifiableList(nodes);
 	}
@@ -53,20 +53,27 @@ public abstract class AbstractSuffixTree<N extends SuffixTree.Node, E extends Su
 	}
 
 	@Override
-	public N getNode(final int nodeIndex)
+	public Node getRootNode()
+	{
+		return getNode(0);
+	}
+	
+	@Override
+	public Node getNode(final int nodeIndex)
 	{
 		return nodes.get(nodeIndex);
 	}
 
 	/**
 	 * Creates a new node and adds it to the internal list of nodes. This implementation delegates to {@link #createNode()}.
-	 * @return The index of the newly created node.
+	 * @return The newly created node.
 	 */
-	protected final int addNode()
+	protected final AbstractNode addNode()
 	{
 		final int nodeIndex = nodes.size();
-		nodes.add(nodeIndex, createNode(nodeIndex));
-		return nodeIndex;
+		final AbstractNode node=createNode(nodeIndex);
+		nodes.add(nodeIndex, node);
+		return node;
 	}
 
 	/**
@@ -74,34 +81,36 @@ public abstract class AbstractSuffixTree<N extends SuffixTree.Node, E extends Su
 	 * @param index The index of the node to create.
 	 * @return The index of the newly created node.
 	 */
-	protected abstract N createNode(final int index);
+	protected abstract AbstractNode createNode(final int index);
 
 	/**
 	 * Creates a new edge and adds it to the tree. This method delegates to {@link #createEdge(int, int, int, int)}.
-	 * @param parentNodeIndex The index of the parent node representing the root end of the edge.
-	 * @param childNodeIndex The index of the child node representing the leaf end of the edge.
+	 * @param parentNode The parent node representing the root end of the edge.
+	 * @param childNode The child node representing the leaf end of the edge.
 	 * @param start The position of the start element, inclusive.
 	 * @param end The position of the end element, exclusive.
+	 * @throws NullPointerException if the given parent node and/or child node is <code>null</code>.
 	 * @throws IllegalArgumentException if the given end is less than the start.
 	 * @throws IllegalStateException if there already exists an edge with the same parent node and first element.
 	 */
-	protected final E addEdge(final int parentNodeIndex, final int childNodeIndex, final int start, final int end)
+	protected final E addEdge(final Node parentNode, final Node childNode, final int start, final int end)
 	{
-		final E edge = createEdge(parentNodeIndex, childNodeIndex, start, end); //create a new edge
+		final E edge = createEdge(parentNode, childNode, start, end); //create a new edge
 		addEdge(edge); //add the edge
 		return edge; //return the edge
 	}
 
 	/**
 	 * Creates a new edge and adds it to the tree. This method delegates to {@link #addEdge(Edge)}.
-	 * @param parentNodeIndex The index of the parent node representing the root end of the edge.
-	 * @param childNodeIndex The index of the child node representing the leaf end of the edge.
+	 * @param parentNode The parent node representing the root end of the edge.
+	 * @param childNode The child node representing the leaf end of the edge.
 	 * @param start The position of the start element, inclusive.
 	 * @param end The position of the end element, exclusive.
+	 * @throws NullPointerException if the given parent node and/or child node is <code>null</code>.
 	 * @throws IllegalArgumentException if the given end is less than the start.
 	 * @throws IllegalStateException if there already exists an edge with the same parent node and first element.
 	 */
-	protected abstract E createEdge(final int parentNodeIndex, final int childNodeIndex, final int start, final int end);
+	protected abstract E createEdge(final Node parentNode, final Node childNode, final int start, final int end);
 
 	/**
 	 * Adds an edge to the tree.
@@ -124,16 +133,16 @@ public abstract class AbstractSuffixTree<N extends SuffixTree.Node, E extends Su
 	 * edge and the parent node of the second edge.
 	 * @param edge The edge to split.
 	 * @param length The position at which to split the edge.
-	 * @return The index of the created node splitting the edge.
+	 * @return The created node splitting the edge.
 	 */
-	protected int splitEdge(final E edge, final int length)
+	protected AbstractNode splitEdge(final E edge, final int length)
 	{
 		removeEdge(edge); //remove the existing edge from our map, because we're going to create two edges to replace it
-		final int newNodeIndex = addNode(); //create a new node with which to split the edge into two
+		final AbstractNode newNode = addNode(); //create a new node with which to split the edge into two
 		final int split = edge.getStart() + length; //the element location at which to make the split
-		addEdge(edge.getParentNodeIndex(), newNodeIndex, edge.getStart(), split); //the near edge will start at the same place as the old edge, but only go part way---to the new node
-		addEdge(newNodeIndex, edge.getChildNodeIndex(), split, edge.getEnd()); //the far edge starts where the new near edge ends
-		return newNodeIndex; //return the index of the new node
+		addEdge(edge.getParentNode(), newNode, edge.getStart(), split); //the near edge will start at the same place as the old edge, but only go part way---to the new node
+		addEdge(newNode, edge.getChildNode(), split, edge.getEnd()); //the far edge starts where the new near edge ends
+		return newNode; //return the index of the new node
 	}
 
 	/**
@@ -146,18 +155,12 @@ public abstract class AbstractSuffixTree<N extends SuffixTree.Node, E extends Su
 		addNode(); //create the root node
 	}
 
-	@Override
-	public Iterable<? extends Edge> getRootEdges()
-	{
-		return getChildEdges(0); //the root node is always the first node in the list
-	}
-
 	/**
 	 * Represents a node in a suffix tree. Each node defaults to having no suffix node.
 	 * 
 	 * @author Garret Wilson
 	 */
-	protected class Node implements SuffixTree.Node
+	protected abstract class AbstractNode implements SuffixTree.Node
 	{
 
 		private final int index;
@@ -168,32 +171,39 @@ public abstract class AbstractSuffixTree<N extends SuffixTree.Node, E extends Su
 			return index;
 		}
 
-		private int suffixNodeIndex = -1;
+		private Node suffixNode= null;
 
 		@Override
-		public int getSuffixNodeIndex()
+		public Node getSuffixNode()
 		{
-			return suffixNodeIndex;
+			return suffixNode;
 		}
 
 		/**
-		 * Sets the index of the node representing the next smaller suffix.
-		 * @param suffixNodeIndex The index of the node representing the next smaller suffix.
-		 * @throws IndexOutOfBoundsException if the suffix node index does not represent a valid node.
+		 * Sets the node representing the next smaller suffix.
+		 * @param suffixNode The node representing the next smaller suffix.
+		 * @throws NullPointerException if the given node is <code>null</code>.
 		 */
-		public void setSuffixNodeIndex(final int suffixNodeIndex)
+		public void setSuffixNode(final Node suffixNode)
 		{
-			this.suffixNodeIndex = checkIndexBounds(suffixNodeIndex, getNodeCount());
+			this.suffixNode = checkInstance(suffixNode);
 		}
 
 		/**
 		 * Index constructor.
 		 * @param index The index of the node.
 		 */
-		public Node(final int index)
+		public AbstractNode(final int index)
 		{
 			this.index = index;
 		}
+
+		@Override
+		public String toString()
+		{
+			return "("+getIndex()+")";
+		}
+
 	};
 
 }
