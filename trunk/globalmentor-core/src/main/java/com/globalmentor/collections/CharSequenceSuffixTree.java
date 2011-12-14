@@ -61,7 +61,7 @@ import com.globalmentor.model.Filter;
  * @see <a href="http://marknelson.us/1996/08/01/suffix-trees/">Mark Nelson: Fast String Searching With Suffix Trees</a>
  * @see <a href="http://marknelson.us/code-use-policy/">Mark Nelson: Liberal Code Use Policy</a>
  */
-public class CharSequenceSuffixTree
+public class CharSequenceSuffixTree extends AbstractSuffixTree<AbstractSuffixTree.Node, CharSequenceSuffixTree.Edge>
 {
 
 	/** The character sequence represented by the suffix tree. */
@@ -73,50 +73,10 @@ public class CharSequenceSuffixTree
 		return charSequence;
 	}
 
-	/** Whether the suffix tree is explicit, with every suffix ending on a leaf node. */
-	private final boolean explicit;
-
-	/** @return Whether the suffix tree is explicit, with every suffix ending on a leaf node. */
-	public boolean isExplicit()
+	@Override
+	protected AbstractSuffixTree.Node createNode(final int index)
 	{
-		return explicit;
-	}
-
-	/** The nodes in the suffix tree. */
-	private final List<Node> nodes = new ArrayList<Node>();
-
-	/** @return A read-only list of the nodes in the tree. */
-	protected List<Node> getNodes()
-	{
-		return java.util.Collections.unmodifiableList(nodes);
-	}
-
-	/** @return The number of nodes in the suffix tree. */
-	public int getNodeCount()
-	{
-		return nodes.size();
-	}
-
-	/**
-	 * Retrieves the identified node.
-	 * @param nodeIndex The index of the node to retrieve.
-	 * @return The identified node.
-	 * @throws IndexOutOfBoundsException if the given node index does not identify a node in this suffix tree.
-	 */
-	public Node getNode(final int nodeIndex)
-	{
-		return nodes.get(nodeIndex);
-	}
-
-	/**
-	 * Creates a new node and adds it to the internal list of nodes.
-	 * @return The index of the newly created node.
-	 */
-	private int createNode()
-	{
-		final int nodeIndex = nodes.size();
-		nodes.add(nodeIndex, new Node());
-		return nodeIndex;
+		return new AbstractSuffixTree.Node(index);
 	}
 
 	/** Private reusable key for looking up edges. */
@@ -129,13 +89,14 @@ public class CharSequenceSuffixTree
 	private final Map<EdgeKey, Edge> edgeMap = new HashMap<EdgeKey, Edge>();
 
 	/** @return A read-only iterable of edges in the tree. */
+	@Override
 	public Collection<Edge> getEdges()
 	{
 		return java.util.Collections.unmodifiableCollection(edgeMap.values());
 	}
 
 	/**
-	 * Creates a new edge and adds it to the tree.
+	 * Creates a new edge.
 	 * @param parentNodeIndex The index of the parent node representing the root end of the edge.
 	 * @param childNodeIndex The index of the child node representing the leaf end of the edge.
 	 * @param start The position of the start character, inclusive.
@@ -143,11 +104,10 @@ public class CharSequenceSuffixTree
 	 * @throws IllegalArgumentException if the given end is less than the start.
 	 * @throws IllegalStateException if there already exists an edge with the same parent node and first character.
 	 */
-	protected Edge addEdge(final int parentNodeIndex, final int childNodeIndex, final int start, final int end)
+	@Override
+	protected Edge createEdge(final int parentNodeIndex, final int childNodeIndex, final int start, final int end)
 	{
-		final Edge edge = new Edge(parentNodeIndex, childNodeIndex, start, end); //create a new edge
-		addEdge(edge); //add the edge
-		return edge; //return the edge
+		return new Edge(parentNodeIndex, childNodeIndex, start, end); //create a new edge
 	}
 
 	/**
@@ -156,7 +116,8 @@ public class CharSequenceSuffixTree
 	 * @throws NullPointerException if the given edge is <code>null</code>.
 	 * @throws IllegalStateException if there already exists an edge with the same parent node and first character.
 	 */
-	private void addEdge(final Edge edge)
+	@Override
+	protected void addEdge(final Edge edge)
 	{
 		checkState(!edgeMap.containsKey(checkInstance(edge)), "Duplicate edge: " + edge);
 		edgeMap.put(edge, edge); //an edge is its own key
@@ -183,6 +144,7 @@ public class CharSequenceSuffixTree
 	 * @param edge The edge to remove.
 	 * @throws NullPointerException if the given edge is <code>null</code>.
 	 */
+	@Override
 	protected void removeEdge(final Edge edge)
 	{
 		edgeMap.remove(checkInstance(edge));
@@ -196,36 +158,8 @@ public class CharSequenceSuffixTree
 	 */
 	private CharSequenceSuffixTree(final CharSequence charSequence, final boolean explicit)
 	{
+		super(explicit);
 		this.charSequence = checkInstance(charSequence);
-		this.explicit = explicit;
-		createNode(); //create the root node
-	}
-
-	/**
-	 * Splits an edge into two. The first, near edge will be of the given length; the second, far edge will be of the remaining length (that is, the length of the
-	 * original edge minus the given length). A new node will be created as the mid-point between the original edge nodes, becoming the child node of the first
-	 * edge and the parent node of the second edge.
-	 * @param edge The edge to split.
-	 * @param length The position at which to split the edge.
-	 * @return The index of the created node splitting the edge.
-	 */
-	private int splitEdge(final Edge edge, final int length)
-	{
-		removeEdge(edge); //remove the existing edge from our map, because we're going to create two edges to replace it
-		final int newNodeIndex = createNode(); //create a new node with which to split the edge into two
-		final int split = edge.getStart() + length; //the character location at which to make the split
-		addEdge(edge.getParentNodeIndex(), newNodeIndex, edge.getStart(), split); //the near edge will start at the same place as the old edge, but only go part way---to the new node
-		addEdge(newNodeIndex, edge.childNodeIndex, split, edge.getEnd()); //the far edge starts where the new near edge ends
-		return newNodeIndex; //return the index of the new node
-	}
-
-	/**
-	 * Returns an iterable to the child edges of the suffix tree's root node.
-	 * @return An iterable to the child edges of the root node.
-	 */
-	public Iterable<Edge> getRootEdges()
-	{
-		return getChildEdges(0); //the root node is always the first node in the list
 	}
 
 	/**
@@ -234,159 +168,11 @@ public class CharSequenceSuffixTree
 	 * @return An iterable to the child edges of the indicated node.
 	 * @throws IndexOutOfBoundsException if the given parent node index does not represent a valid node.
 	 */
+	@Override
 	public Iterable<Edge> getChildEdges(final int parentNodeIndex)
 	{
 		return new NodeEdgeIterable(checkIndexBounds(parentNodeIndex, getNodeCount()));
 	}
-
-	/**
-	 * Suffix tree builder factory method which creates a new, explicit suffix tree for a given character sequence.
-	 * @param charSequence The character sequence for which a suffix tree should be built.
-	 * @return The new suffix tree for the given character sequence.
-	 * @throws NullPointerException if the given character sequence is <code>null</code>.
-	 */
-	public static CharSequenceSuffixTree create(final CharSequence charSequence)
-	{
-		return create(charSequence, true);
-	}
-
-	/**
-	 * Suffix tree builder factory method which creates a new suffix tree for a given character sequence.
-	 * @param charSequence The character sequence for which a suffix tree should be built.
-	 * @param explicit Whether an explicit suffix tree should be constructed.
-	 * @return The new suffix tree for the given character sequence.
-	 * @throws NullPointerException if the given character sequence is <code>null</code>.
-	 */
-	protected static CharSequenceSuffixTree create(final CharSequence charSequence, final boolean explicit)
-	{
-		final int charSequenceLength = charSequence.length();
-		final CharSequenceSuffixTree suffixTree = new CharSequenceSuffixTree(charSequence, explicit); //create a new suffix tree that hasn't yet been built
-		final State state = new State(suffixTree, explicit); //create a new state for processing the suffix tree
-		while(state.hasNextChar()) //while there are more characters to process
-		{
-			final int nextCharIndex = state.getCharIndex(); //get the index of the next character to process
-			assert explicit ? nextCharIndex <= charSequenceLength : nextCharIndex < charSequenceLength; //explicit tree construction allows us to go one character past the end of the sequence
-			final boolean isExplicitRound = nextCharIndex == charSequenceLength; //see if we're on the final, explicit round, in which the possibly implicit suffix tree is turned into an explicit suffix tree
-			final char nextChar = isExplicitRound ? UNDEFINED_CHAR : charSequence.charAt(nextCharIndex); //get the next character (or some dummy character, if we are on the explicit round)
-
-			int parentNodeIndex;
-			int lastParentNodeIndex = -1;
-			do
-			{
-				parentNodeIndex = state.getNodeIndex(); //start at the active node
-				//try to find an appropriate edge coming out of the active node; if there is such an edge (either explicit or implicit), we are finished
-
-				if(state.isExplicit()) //if the active state ends on a node (it doesn't end in the middle of an edge)
-				{
-					if(!isExplicitRound && suffixTree.getEdge(state.getNodeIndex(), nextChar) != null) //if there is already an edge from the state node starting with the next character (the explicit round always results in a new edge)
-					{
-						break; //there's nothing to do
-					}
-				}
-				else
-				//if the state is implicit, ending in the middle of an edge
-				{
-					final Edge edge = suffixTree.getEdge(state.getNodeIndex(), charSequence.charAt(state.getStart())); //get the edge at which the implicit part of the state starts
-					final int stateLength = state.getLength();
-					if(!isExplicitRound && charSequence.charAt(edge.getStart() + stateLength) == nextChar) //if the next character along the edge is the character we're extending  (the explicit round always results in a new edge)
-					{
-						break; //there's nothing to do---we simply have another implicit suffix
-					}
-					else
-					//if a different character appears in the middle of the edge, we'll need to split the edge to add another edge
-					{
-						parentNodeIndex = suffixTree.splitEdge(edge, stateLength); //split out a new edge from the existing edge; the new node will become the new parent to which we'll add a new edge
-						suffixTree.getNode(parentNodeIndex).setSuffixNodeIndex(state.getNodeIndex()); //the new node is an extension of the old extension---so point its suffix back to the node that is the original suffix
-					}
-				}
-				//if there is no matching edge (or we split an existing edge), we'll need to create a new edge
-				//since we are going to smaller and smaller suffixes, if we created an edge for a larger suffix earlier, link that parent back to this one
-				//TODO del; it seems useful to have an empty string indication				if(!isExplicitRound || parentNodeIndex != 0) //don't create an edge from the root representing the empty string, created in an explicit round
-				{
-					suffixTree.addEdge(parentNodeIndex, suffixTree.createNode(), nextCharIndex, charSequenceLength); //create a new edge from the next character to the end of the sequence
-				}
-				if(lastParentNodeIndex > 0) //if we already created an edge for a larger suffix
-				{
-					suffixTree.getNode(lastParentNodeIndex).setSuffixNodeIndex(parentNodeIndex); //link the node for the larger suffix back to this node, which is for a smaller suffix
-				}
-				lastParentNodeIndex = parentNodeIndex; //move to the next parent node
-			}
-			while(state.nextSmallerSuffix()); //move to the next smaller suffix
-			if(lastParentNodeIndex > 0)
-			{
-				suffixTree.getNode(lastParentNodeIndex).setSuffixNodeIndex(parentNodeIndex);
-			}
-			state.nextChar(); //go to the next character
-		}
-
-		return suffixTree; //return the suffix tree we created and built
-	};
-
-	/**
-	 * Prints a character representation of the tree and its branches, starting from the root node.
-	 * @param printStream The destination to which the tree should be printed.
-	 * @throws NullPointerException if the given print stream is <code>null</code>.
-	 */
-	protected void printTree(final PrintStream printStream)
-	{
-		printTree(printStream, getRootEdges(), 0); //print the root edges at a level of zero
-	}
-
-	/**
-	 * Prints a character representation of the child edges of the given edge.
-	 * @param printStream The destination to which the tree should be printed.
-	 * @param edge The edge the child edges of which to print.
-	 * @param level The zero-based level of the tree from the root.
-	 * @throws NullPointerException if the given print stream and/or edge is <code>null</code>.
-	 */
-	private void printTree(final PrintStream printStream, final Edge edge, final int level)
-	{
-		printStream.println(Strings.createString('\t', level) + edge.toString()); //indent and print the edge
-		printTree(printStream, edge.getChildEdges(), level + 1); //print the edge's child edges at one more level down
-
-	}
-
-	/**
-	 * Prints a character representation of the given child edges.
-	 * @param printStream The destination to which the tree should be printed.
-	 * @param edges The child edges to print.
-	 * @param level The zero-based level of the tree from the root.
-	 * @throws NullPointerException if the given print stream and/or edges is <code>null</code>.
-	 */
-	private void printTree(final PrintStream printStream, final Iterable<Edge> edges, final int level)
-	{
-		for(final Edge edge : edges) //look at all the given edges
-		{
-			printTree(printStream, edge, level); //print each edge at the requested level
-		}
-	}
-
-	/**
-	 * Represents a node in a suffix tree. Each node defaults to having no suffix node.
-	 * 
-	 * @author Garret Wilson
-	 */
-	public class Node
-	{
-		private int suffixNodeIndex = -1;
-
-		/** The index of the node representing the next smaller suffix, or -1 if there is no known smaller suffix node. */
-		public int getSuffixNodeIndex()
-		{
-			return suffixNodeIndex;
-		}
-
-		/**
-		 * Sets the index of the node representing the next smaller suffix.
-		 * @param suffixNodeIndex The index of the node representing the next smaller suffix.
-		 * @throws IndexOutOfBoundsException if the suffix node index does not represent a valid node.
-		 */
-		public void setSuffixNodeIndex(final int suffixNodeIndex)
-		{
-			this.suffixNodeIndex = checkIndexBounds(suffixNodeIndex, getNodeCount());
-		}
-
-	};
 
 	/**
 	 * A key identifying an edge of a node, uniquely identified by its parent node and first character (as no node in a suffix tree contains more than one edge
@@ -394,7 +180,7 @@ public class CharSequenceSuffixTree
 	 * 
 	 * @author Garret Wilson
 	 */
-	public interface EdgeKey
+	protected interface EdgeKey
 	{
 		/** @return The index of the parent node. */
 		public int getParentNodeIndex();
@@ -471,11 +257,11 @@ public class CharSequenceSuffixTree
 	}
 
 	/**
-	 * Represents an edge between a parent node and a child node in a suffix tree. Every edge must span at least one character.
+	 * Represents an edge between a parent node and a child node in a suffix tree.
 	 * 
 	 * @author Garret Wilson
 	 */
-	public class Edge extends AbstractEdgeKey
+	protected class Edge extends AbstractEdgeKey implements SuffixTree.Edge
 	{
 		private final int parentNodeIndex;
 
@@ -489,6 +275,7 @@ public class CharSequenceSuffixTree
 		private final int childNodeIndex;
 
 		/** @return The index of the child node representing the leaf end of the edge. */
+		@Override
 		public int getChildNodeIndex()
 		{
 			return childNodeIndex;
@@ -497,6 +284,7 @@ public class CharSequenceSuffixTree
 		private final int start;
 
 		/** @return The position of the start character, inclusive. */
+		@Override
 		public int getStart()
 		{
 			return start;
@@ -505,6 +293,7 @@ public class CharSequenceSuffixTree
 		private final int end;
 
 		/** @return The position of the last character, exclusive. */
+		@Override
 		public int getEnd()
 		{
 			return end;
@@ -514,12 +303,14 @@ public class CharSequenceSuffixTree
 		 * Returns the length of the edge, i.e. <code>end</code>-<code>start</code>.
 		 * @return The number of characters on the edge.
 		 */
+		@Override
 		public int getLength()
 		{
 			return end - start;
 		}
 
 		/** @return <code>true</code> if this edge is empty and has no characters. */
+		@Override
 		public boolean isEmpty()
 		{
 			return end == start;
@@ -795,4 +586,87 @@ public class CharSequenceSuffixTree
 					});
 		}
 	}
+
+	/**
+	 * Suffix tree builder factory method which creates a new, explicit suffix tree for a given character sequence.
+	 * @param charSequence The character sequence for which a suffix tree should be built.
+	 * @return The new suffix tree for the given character sequence.
+	 * @throws NullPointerException if the given character sequence is <code>null</code>.
+	 */
+	public static CharSequenceSuffixTree create(final CharSequence charSequence)
+	{
+		return create(charSequence, true);
+	}
+
+	/**
+	 * Suffix tree builder factory method which creates a new suffix tree for a given character sequence.
+	 * @param charSequence The character sequence for which a suffix tree should be built.
+	 * @param explicit Whether an explicit suffix tree should be constructed.
+	 * @return The new suffix tree for the given character sequence.
+	 * @throws NullPointerException if the given character sequence is <code>null</code>.
+	 */
+	protected static CharSequenceSuffixTree create(final CharSequence charSequence, final boolean explicit)
+	{
+		final int charSequenceLength = charSequence.length();
+		final CharSequenceSuffixTree suffixTree = new CharSequenceSuffixTree(charSequence, explicit); //create a new suffix tree that hasn't yet been built
+		final State state = new State(suffixTree, explicit); //create a new state for processing the suffix tree
+		while(state.hasNextChar()) //while there are more characters to process
+		{
+			final int nextCharIndex = state.getCharIndex(); //get the index of the next character to process
+			assert explicit ? nextCharIndex <= charSequenceLength : nextCharIndex < charSequenceLength; //explicit tree construction allows us to go one character past the end of the sequence
+			final boolean isExplicitRound = nextCharIndex == charSequenceLength; //see if we're on the final, explicit round, in which the possibly implicit suffix tree is turned into an explicit suffix tree
+			final char nextChar = isExplicitRound ? UNDEFINED_CHAR : charSequence.charAt(nextCharIndex); //get the next character (or some dummy character, if we are on the explicit round)
+
+			int parentNodeIndex;
+			int lastParentNodeIndex = -1;
+			do
+			{
+				parentNodeIndex = state.getNodeIndex(); //start at the active node
+				//try to find an appropriate edge coming out of the active node; if there is such an edge (either explicit or implicit), we are finished
+
+				if(state.isExplicit()) //if the active state ends on a node (it doesn't end in the middle of an edge)
+				{
+					if(!isExplicitRound && suffixTree.getEdge(state.getNodeIndex(), nextChar) != null) //if there is already an edge from the state node starting with the next character (the explicit round always results in a new edge)
+					{
+						break; //there's nothing to do
+					}
+				}
+				else
+				//if the state is implicit, ending in the middle of an edge
+				{
+					final Edge edge = suffixTree.getEdge(state.getNodeIndex(), charSequence.charAt(state.getStart())); //get the edge at which the implicit part of the state starts
+					final int stateLength = state.getLength();
+					if(!isExplicitRound && charSequence.charAt(edge.getStart() + stateLength) == nextChar) //if the next character along the edge is the character we're extending  (the explicit round always results in a new edge)
+					{
+						break; //there's nothing to do---we simply have another implicit suffix
+					}
+					else
+					//if a different character appears in the middle of the edge, we'll need to split the edge to add another edge
+					{
+						parentNodeIndex = suffixTree.splitEdge(edge, stateLength); //split out a new edge from the existing edge; the new node will become the new parent to which we'll add a new edge
+						suffixTree.getNode(parentNodeIndex).setSuffixNodeIndex(state.getNodeIndex()); //the new node is an extension of the old extension---so point its suffix back to the node that is the original suffix
+					}
+				}
+				//if there is no matching edge (or we split an existing edge), we'll need to create a new edge
+				//since we are going to smaller and smaller suffixes, if we created an edge for a larger suffix earlier, link that parent back to this one
+				//TODO del; it seems useful to have an empty string indication				if(!isExplicitRound || parentNodeIndex != 0) //don't create an edge from the root representing the empty string, created in an explicit round
+				{
+					suffixTree.addEdge(parentNodeIndex, suffixTree.addNode(), nextCharIndex, charSequenceLength); //create a new edge from the next character to the end of the sequence
+				}
+				if(lastParentNodeIndex > 0) //if we already created an edge for a larger suffix
+				{
+					suffixTree.getNode(lastParentNodeIndex).setSuffixNodeIndex(parentNodeIndex); //link the node for the larger suffix back to this node, which is for a smaller suffix
+				}
+				lastParentNodeIndex = parentNodeIndex; //move to the next parent node
+			}
+			while(state.nextSmallerSuffix()); //move to the next smaller suffix
+			if(lastParentNodeIndex > 0)
+			{
+				suffixTree.getNode(lastParentNodeIndex).setSuffixNodeIndex(parentNodeIndex);
+			}
+			state.nextChar(); //go to the next character
+		}
+
+		return suffixTree; //return the suffix tree we created and built
+	};
 }

@@ -16,6 +16,7 @@
 
 package com.globalmentor.collections;
 
+import static com.globalmentor.collections.SuffixTrees.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
@@ -43,6 +44,8 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 	private final static Set<String> TEST_STRINGS = Sets.immutableSetOf("xabxa", "bananas", "bookkeeper", "mississippi", "dooodah",
 			"I at once heard the rickety crickety creaking of the bridge.");
 
+	//	private final static Set<String> TEST_STRINGS = Sets.immutableSetOf("xabcdabcdyefefzghijklmnoprghijklmnops");
+
 	/**
 	 * Tests the creation of suffix trees based upon supplied strings.
 	 * @see #TEST_STRINGS
@@ -55,12 +58,12 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 			//test creating an implicit suffix tree
 			final CharSequenceSuffixTree implicitSuffixTree = CharSequenceSuffixTree.create(testString, false);
 			//dumpEdges(implicitSuffixTree, System.out);
-			//implicitSuffixTree.printTree(System.out);
+			print(implicitSuffixTree, System.out);
 			validate(implicitSuffixTree);
 			//test creating an explicit suffix tree
 			final CharSequenceSuffixTree explicitSuffixTree = CharSequenceSuffixTree.create(testString, true);
 			//dumpEdges(explicitSuffixTree, System.out);
-			//explicitSuffixTree.printTree(System.out);
+			print(explicitSuffixTree, System.out);
 			validate(explicitSuffixTree);
 		}
 	}
