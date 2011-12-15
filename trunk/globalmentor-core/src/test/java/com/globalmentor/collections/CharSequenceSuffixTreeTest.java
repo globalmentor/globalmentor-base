@@ -46,8 +46,6 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 	private final static Set<String> TEST_STRINGS = Sets.immutableSetOf("xabxa", "bananas", "bookkeeper", "mississippi", "dooodah",
 			"I at once heard the rickety crickety creaking of the bridge.");
 
-	//	private final static Set<String> TEST_STRINGS = Sets.immutableSetOf("xabcdabcdyefefzghijklmnoprghijklmnops");
-
 	/**
 	 * Tests the creation of suffix trees based upon supplied strings.
 	 * @see #TEST_STRINGS
@@ -188,8 +186,19 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 	@Test
 	public void testLongestRepeatedSubsequence()
 	{
-		assertThat(getLongestRepeatedSubsequence("One and two and three then four, Mr. Balfour.").toString(), equalTo(" and t"));
 		assertNull(getLongestRepeatedSubsequence("1234abcd"));
+		assertThat(getLongestRepeatedSubsequence("One and two and three then four, Mr. Balfour."), equalTo((CharSequence)" and t"));
+	}
+
+	@Test
+	public void testLongestSequentialRepeatedSubsequence()
+	{
+		assertNull(getLongestSequentialRepeatedSubsequence("1234abcd"));
+		assertThat(getLongestSequentialRepeatedSubsequence("One and two and three then four, Mr. Balfour."), equalTo((CharSequence)"e"));
+		assertThat(getLongestSequentialRepeatedSubsequence("thisisareallyreallylongstring"), equalTo((CharSequence)"really"));
+		assertThat(getLongestSequentialRepeatedSubsequence("oneonetwooneone"), equalTo((CharSequence)"one"));
+		assertThat(getLongestSequentialRepeatedSubsequence("xabcdabcdyefefzghijklmnoprghijklmnops"), equalTo((CharSequence)"abcd"));
+		assertThat(getLongestSequentialRepeatedSubsequence("xabcdabcdyefefzghijklmnopghijklmnops"), equalTo((CharSequence)"ghijklmnop"));
 	}
 
 }

@@ -73,7 +73,7 @@ public class SuffixTrees
 	}
 
 	/**
-	 * Visits all the nodes in a given suffix tree.
+	 * Recursively visits all the nodes in a given suffix tree.
 	 * @param <N> The type of node.
 	 * @param <E> The type of edge.
 	 * @param suffixTree The suffix tree to visit.
@@ -88,7 +88,7 @@ public class SuffixTrees
 	}
 
 	/**
-	 * Visits a given node and all descendant nodes in a subtree of a suffix tree.
+	 * Recursively visits a given node and all descendant nodes in a subtree of a suffix tree.
 	 * @param <N> The type of node.
 	 * @param <E> The type of edge.
 	 * @param suffixTree The suffix tree to visit.
@@ -98,14 +98,30 @@ public class SuffixTrees
 	 * @param visitor The visitor to visit the nodes of the suffix tree.
 	 * @return <code>true</code> if visiting completed all the nodes.
 	 */
-	@SuppressWarnings("unchecked")
-	protected static <N extends Node, E extends Edge> boolean visit(final SuffixTree suffixTree, final N node, final E parentEdge, final int length,
+	public static <N extends Node, E extends Edge> boolean visit(final SuffixTree suffixTree, final N node, final E parentEdge, final int length,
 			final Visitor<N, E> visitor)
 	{
 		if(!visitor.visit(suffixTree, node, parentEdge, length)) //visit this node, stopping if requested
 		{
 			return false;
 		}
+		return visitChildren(suffixTree, node, length, visitor); //visit the children
+	}
+
+	/**
+	 * Recursively visits all descendant nodes in a subtree of a suffix tree.
+	 * @param <N> The type of node.
+	 * @param <E> The type of edge.
+	 * @param suffixTree The suffix tree to visit.
+	 * @param node The node being visited.
+	 * @param length The length of elements up to the visited node, including the length of the parent edge.
+	 * @param visitor The visitor to visit the nodes of the suffix tree.
+	 * @return <code>true</code> if visiting completed all the nodes.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <N extends Node, E extends Edge> boolean visitChildren(final SuffixTree suffixTree, final N node, final int length,
+			final Visitor<N, E> visitor)
+	{
 		for(final Edge childEdge : node.getChildEdges()) //iterate the child edges
 		{
 			if(!visit(suffixTree, (N)childEdge.getChildNode(), (E)childEdge, length + childEdge.getLength(), visitor)) //visit each child node, stopping if requested

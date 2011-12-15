@@ -1028,6 +1028,70 @@ public class CharSequences
 	}
 
 	/**
+	 * Compares the characters in one character sequence with characters in another character sequence.
+	 * @param charSequence1 The character sequence to compare.
+	 * @param charSequence2 The character sequence to compare with.
+	 * @return <code>true</code> if the characters in the first character sequence equal the characters in the second character sequence.
+	 */
+	public static boolean equals(final CharSequence charSequence1, final CharSequence charSequence2)
+	{
+		return equals(charSequence1, charSequence2, 0);
+	}
+
+	/**
+	 * Compares the characters in one character sequence with characters in another character sequence, starting at the given location to the end of the second
+	 * character sequence.
+	 * @param charSequence1 The character sequence to compare.
+	 * @param charSequence2 The character sequence to compare with.
+	 * @param start The starting location in the second character sequence, inclusive.
+	 * @return <code>true</code> if the characters in the first character sequence equal the indicated characters in the second character sequence.
+	 * @throws StringIndexOutOfBoundsException if <code>start</code> is negative or greater than the length of the second character sequence.
+	 */
+	public static boolean equals(final CharSequence charSequence1, final CharSequence charSequence2, final int start)
+	{
+		return equals(charSequence1, charSequence2, start, charSequence2.length());
+	}
+
+	/**
+	 * Compares the characters in one character sequence with characters in another character sequence.
+	 * @param charSequence1 The character sequence to compare.
+	 * @param charSequence2 The character sequence to compare with.
+	 * @param start The starting location in the second character sequence, inclusive.
+	 * @param end The ending location in the second character sequence, exclusive.
+	 * @return <code>true</code> if the characters in the first character sequence equal the indicated characters in the second character sequence.
+	 * @throws StringIndexOutOfBoundsException if <code>start</code> or <code>end</code> are negative or greater than <code>length()</code>, or <code>start</code>
+	 *           is greater than <code>end</code>.
+	 */
+	public static boolean equals(final CharSequence charSequence1, final CharSequence charSequence2, final int start, final int end)
+	{
+		if(start < 0)
+		{
+			throw new StringIndexOutOfBoundsException(start);
+		}
+		if(end > charSequence2.length())
+		{
+			throw new StringIndexOutOfBoundsException(end);
+		}
+		final int count = end - start;
+		if(count < 0)
+		{
+			throw new StringIndexOutOfBoundsException(count);
+		}
+		if(charSequence1.length() != count) //if the lengths differ
+		{
+			return false;
+		}
+		for(int i = 0; i < count; ++i) //look at each character
+		{
+			if(charSequence1.charAt(i) != charSequence2.charAt(i)) //if these characters don't match
+			{
+				return false;
+			}
+		}
+		return true; //everything matches		
+	}
+
+	/**
 	 * Turns an empty character sequence into <code>null</code>.
 	 * @param charSequence The character sequence to examine, or <code>null</code>.
 	 * @return The given character sequence, or <code>null</code> if the given character sequence has no characters or no character sequence was given.

@@ -16,8 +16,10 @@
 
 package com.globalmentor.collections;
 
+import static com.globalmentor.collections.SuffixTrees.*;
+
 import com.globalmentor.collections.CharSequenceSuffixTree.*;
-import com.globalmentor.collections.SuffixTrees.*;
+import com.globalmentor.java.CharSequences;
 import com.globalmentor.model.ObjectHolder;
 
 /**
@@ -37,21 +39,71 @@ public class CharSequenceSuffixTrees
 	public static CharSequence getLongestRepeatedSubsequence(final CharSequence charSequence)
 	{
 		final CharSequenceSuffixTree suffixTree = CharSequenceSuffixTree.create(charSequence); //create a suffix tree
-		//		final ObjectHolder<CharSequenceEdge> edgeHolder=new ObjectHolder<CharSequenceEdge>();	//create an object to hold the edge with the longest repeated subsequence
-		final ObjectHolder<CharSequence> result = new ObjectHolder<CharSequence>(); //create an object to hold the resulting char sequence
-		SuffixTrees.visit(suffixTree, new AbstractCharSequenceVisitor()
+		final ObjectHolder<String> result = new ObjectHolder<String>(); //create an object to hold the resulting string
+		visit(suffixTree, new AbstractCharSequenceVisitor()
 		{
 			int maxLength = 0; //keep track of the longest length
 
 			@Override
-			public boolean visit(SuffixTree suffixTree, CharSequenceNode node, CharSequenceEdge parentEdge, int length, CharSequence sequence)
+			public boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence sequence)
 			{
 				if(!node.isLeaf()) //ignore leaf nodes---they aren't repeated sequences
 				{
-					if(length > maxLength) //if this depth is farther than any before
+					if(sequence.length() > maxLength) //if this depth is farther than any before
 					{
-						maxLength = length; //update our max length
-						result.setObject(sequence.toString()); //keep track of the resulting string
+						maxLength = sequence.length(); //update our max length
+						result.setObject(sequence.toString()); //make a copy and keep track of the resulting string
+					}
+				}
+				return true;
+			}
+		});
+		return result.getObject(); //return the result, if any
+	}
+
+	/**
+	 * Determines the longest subsequence that is repeated in the given subsequence.
+	 * @param charSequence The character sequence to check.
+	 * @return The longest repeated subsequence in the given character sequence, or <code>null</code> if no subsequence is repeated.
+	 * @throws NullPointerException if the given character sequence is <code>null</code>.
+	 */
+	public static CharSequence getLongestSequentialRepeatedSubsequence(final CharSequence charSequence)
+	{
+		final CharSequenceSuffixTree suffixTree = CharSequenceSuffixTree.create(charSequence); //create a suffix tree
+		final ObjectHolder<String> result = new ObjectHolder<String>(); //create an object to hold the resulting string
+		visit(suffixTree, new AbstractCharSequenceVisitor()
+		{
+			int maxLength = 0; //keep track of the longest length
+
+			@Override
+			public boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence sequence)
+			{
+				if(!node.isLeaf()) //ignore leaf nodes---they aren't repeated sequences
+				{
+					if(sequence.length() > maxLength) //if this depth is farther than any before, see if the repeat sequence is sequential
+					{
+						final CharSequence sequentialSequence = sequence;
+						//create a new visitor just to visit children of this node and see if the sequence is repeated
+						final Visitor<CharSequenceNode, CharSequenceEdge> sequentialVisitor = new AbstractCharSequenceVisitor()
+						{
+							@Override
+							public boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence sequence)
+							{
+								if(sequence.length() >= sequentialSequence.length()) //if our collected sequence is long enough to compare
+								{
+									if(CharSequences.equals(sequentialSequence, sequence, 0, sequentialSequence.length())) //if there is a sequentially repeated portion
+									{
+										return false; //stop visiting; a repeated sequence was found
+									}
+								}
+								return true; //continue visiting								
+							}
+						};
+						if(!visitChildren(suffixTree, (CharSequenceNode)parentEdge.getChildNode(), 0, sequentialVisitor)) //visit the children under this node; if we were interrupted, it is because we found a match
+						{
+							maxLength = sequentialSequence.length(); //update our max length
+							result.setObject(sequentialSequence.toString()); //make a copy and keep track of the sequentially repeated sequence
+						}
 					}
 				}
 				return true;
@@ -62,17 +114,34 @@ public class CharSequenceSuffixTrees
 
 	/**
 	 * An abstract implementation of a visitor for character sequences. This implementation keeps track of the current sequence being visited for each node. Child
-	 * classes must override {@link #visit(SuffixTree, CharSequenceNode, CharSequenceEdge, int, CharSequence)}.
+	 * classes must override {@link #visit(SuffixTree, CharSequenceNode, CharSequenceEdge, CharSequence)}.
 	 * 
 	 * @author Garret Wilson
 	 */
 	public static abstract class AbstractCharSequenceVisitor implements Visitor<CharSequenceNode, CharSequenceEdge>
 	{
-		final StringBuilder sequenceBuilder = new StringBuilder(); //keep track of the current sequence
+		/** The string builder to keep track of the current sequence. */
+		final StringBuilder sequenceBuilder;
+
+		/** Default constructor starting an empty sequence. */
+		public AbstractCharSequenceVisitor()
+		{
+			this("");
+		}
 
 		/**
-		 * {@inheritDoc} This version first updates the current sequence and then calls
-		 * {@link #visit(SuffixTree, CharSequenceNode, CharSequenceEdge, int, CharSequence)}.
+		 * Character sequence constructor. This constructor is useful for creating a visitor that will begin on a non-root node.
+		 * @param charSequence The initial character sequence.
+		 * @throws NullPointerException if the given character sequence is <code>null</code>.
+		 */
+		public AbstractCharSequenceVisitor(final CharSequence charSequence)
+		{
+			sequenceBuilder = new StringBuilder(charSequence);
+		}
+
+		/**
+		 * {@inheritDoc} This version first updates the current sequence and then calls {@link #visit(SuffixTree, CharSequenceNode, CharSequenceEdge, CharSequence)}
+		 * .
 		 */
 		@Override
 		public final boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final int length)
@@ -81,7 +150,7 @@ public class CharSequenceSuffixTrees
 			{
 				sequenceBuilder.replace(length - parentEdge.getLength(), sequenceBuilder.length(), parentEdge.getSubSequence().toString()); //append this edge's subsequence to our current position (the string builder will be filled sequentially)
 			}
-			return visit(suffixTree, node, parentEdge, length, sequenceBuilder); //visit the node with the current sequence
+			return visit(suffixTree, node, parentEdge, sequenceBuilder); //visit the node with the current sequence
 		}
 
 		/**
@@ -90,12 +159,10 @@ public class CharSequenceSuffixTrees
 		 * @param suffixTree The suffix tree being visited.
 		 * @param node The node being visited.
 		 * @param parentEdge The parent edge of the node being visited, or <code>null</code> if the node has no parent.
-		 * @param length The length of elements up to the visited node, including the length of the parent edge.
 		 * @param sequence The current sequence from the root to the node being visited.
 		 * @return <code>true</code> if visiting should continue to other nodes.
 		 */
-		public abstract boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final int length,
-				final CharSequence sequence);
+		public abstract boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence sequence);
 	}
 
 }
