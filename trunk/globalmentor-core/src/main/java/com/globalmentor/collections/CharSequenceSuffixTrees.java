@@ -30,7 +30,11 @@ public class CharSequenceSuffixTrees
 {
 
 	/**
-	 * Determines the longest subsequence that is repeated in the given subsequence. TODO explain algorithm
+	 * Determines the longest subsequence that is repeated in the given subsequence.
+	 * <p>
+	 * This implementation walks the tree and finds the non-leaf node that is farthest in terms of characters from the root of the tree. The repeated subsequence
+	 * is the sequence of characters from the root to that node.
+	 * </p>
 	 * @param charSequence The character sequence to check.
 	 * @return The longest repeated subsequence in the given character sequence, or <code>null</code> if no subsequence is repeated.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
@@ -61,7 +65,12 @@ public class CharSequenceSuffixTrees
 	}
 
 	/**
-	 * Determines the longest subsequence that is repeated in the given subsequence. TODO explain algorithm
+	 * Determines the longest subsequence that is repeated in the given subsequence.
+	 * <p>
+	 * This implementation walks the tree and, for every non-leaf node (which indicates a repeated sequence as the sequence of characters from the root to that
+	 * node), determines if there exists the exact sequence <em>starting</em> with the node just found (which indicates that the repeated sequence is followed by
+	 * an identical sequence). This process continues until the longest of these sequences is determined.
+	 * </p>
 	 * @param charSequence The character sequence to check.
 	 * @return The longest repeated subsequence in the given character sequence, or <code>null</code> if no subsequence is repeated.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.

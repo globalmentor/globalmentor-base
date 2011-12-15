@@ -299,12 +299,23 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	protected static abstract class AbstractEdgeKey implements EdgeKey
 	{
 
+		/**
+		 * {@inheritDoc} This version hashes the index of the parent node, if any, and first character.
+		 * @see #getParentNode()
+		 * @see #getFirstChar()
+		 */
 		@Override
 		public int hashCode()
 		{
-			return Objects.getLongHashCode(getParentNode().getIndex(), getFirstChar());
+			final Node parentNode = getParentNode();
+			return Objects.getLongHashCode(parentNode != null ? getParentNode().getIndex() : 0, getFirstChar());
 		}
 
+		/**
+		 * {@inheritDoc} This version compares parent node, if any, and first character.
+		 * @see #getParentNode()
+		 * @see #getFirstChar()
+		 */
 		@Override
 		public boolean equals(final Object object)
 		{
@@ -317,7 +328,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 				return false;
 			}
 			final EdgeKey edgeKey = (EdgeKey)object;
-			return getParentNode().getIndex() == edgeKey.getParentNode().getIndex() && getFirstChar() == edgeKey.getFirstChar(); //TODO add equals() method
+			return Objects.equals(getParentNode(), edgeKey.getParentNode()) && getFirstChar() == edgeKey.getFirstChar();
 		}
 	}
 
@@ -709,7 +720,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	 * 
 	 * @author Garret Wilson
 	 */
-	private class MapEntryNodeEdgeIterator extends FilteredIterator<CharSequenceEdge>
+	private class MapEntryNodeEdgeIterator extends FilteredIterator<CharSequenceEdge> //TODO add per-node linked lists or other shortcuts to speed iteration
 	{
 		/**
 		 * Parent node constructor.
@@ -790,10 +801,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 				}
 				//if there is no matching edge (or we split an existing edge), we'll need to create a new edge
 				//since we are going to smaller and smaller suffixes, if we created an edge for a larger suffix earlier, link that parent back to this one
-				//TODO del; it seems useful to have an empty string indication				if(!isExplicitRound || parentNodeIndex != 0) //don't create an edge from the root representing the empty string, created in an explicit round
-				{
-					suffixTree.addEdge(parentNode, suffixTree.addNode(), nextCharIndex, charSequenceLength); //create a new edge from the next character to the end of the sequence
-				}
+				suffixTree.addEdge(parentNode, suffixTree.addNode(), nextCharIndex, charSequenceLength); //create a new edge from the next character to the end of the sequence
 				if(lastParentNode != null) //if we already created an edge for a larger suffix
 				{
 					lastParentNode.setSuffixNode(parentNode); //link the node for the larger suffix back to this node, which is for a smaller suffix

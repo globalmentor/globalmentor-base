@@ -87,8 +87,8 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 	protected abstract AbstractNode createNode(final int index);
 
 	/**
-	 * Creates a new edge and adds it to the tree. The given parent node will be set to be a branch node, and the given child node
-	 * will have its parent node set to the given parent node.
+	 * Creates a new edge and adds it to the tree. The given parent node will be set to be a branch node, and the given child node will have its parent node set
+	 * to the given parent node.
 	 * <p>
 	 * This method delegates to {@link #createEdge(int, int, int, int)}.
 	 * </p>
@@ -243,8 +243,34 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 			this.index = index;
 			setLeaf(true); //default to being a leaf node
 		}
-		
-		//TODO add hash and equal methods based upon index
+
+		/**
+		 * {@inheritDoc} This version returns the node index.
+		 * @see #getIndex()
+		 */
+		@Override
+		public int hashCode()
+		{
+			return getIndex();
+		}
+
+		/**
+		 * {@inheritDoc} This version compares node indexes.
+		 * @see #getIndex()
+		 */
+		@Override
+		public boolean equals(final Object object)
+		{
+			if(object == this)
+			{
+				return true;
+			}
+			if(!(object instanceof Node))
+			{
+				return false;
+			}
+			return getIndex() == ((Node)object).getIndex();
+		}
 
 		/** @{inheritDoc This implementation returns a string in the form <code>(<var>index</var>)*</code>, where '*' indicates a leaf node. */
 		@Override
