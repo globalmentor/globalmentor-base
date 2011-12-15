@@ -739,7 +739,8 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	}
 
 	/**
-	 * Suffix tree builder factory method which creates a new, explicit suffix tree for a given character sequence.
+	 * Suffix tree builder factory method which creates a new, explicit suffix tree for a given character sequence. The created suffix tree will have one more
+	 * leaf node than the number of characters in the sequence, because there will exist an empty edge from the root indicating the empty string.
 	 * @param charSequence The character sequence for which a suffix tree should be built.
 	 * @return The new suffix tree for the given character sequence.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
@@ -750,7 +751,9 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	}
 
 	/**
-	 * Suffix tree builder factory method which creates a new suffix tree for a given character sequence.
+	 * Suffix tree builder factory method which creates a new suffix tree for a given character sequence. If an explicit suffix tree is requested, the created
+	 * suffix tree will have one more leaf node than the number of characters in the sequence, because there will exist an empty edge from the root indicating the
+	 * empty string.
 	 * @param charSequence The character sequence for which a suffix tree should be built.
 	 * @param explicit Whether an explicit suffix tree should be constructed.
 	 * @return The new suffix tree for the given character sequence.

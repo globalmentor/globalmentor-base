@@ -129,7 +129,7 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 
 		if(suffixTree.isExplicit())
 		{
-			assertThat("Leaf count not equal to number of characters in the sequence.", leafNodeCount, equalTo(charSequenceLength + 1));
+			assertThat("Leaf count not equal to one more than the number of characters in the sequence.", leafNodeCount, equalTo(charSequenceLength + 1));
 		}
 		assertThat("Branch count not equal to number of nodes minus one.", branchCount, equalTo(nodeCount - 1));
 	}
