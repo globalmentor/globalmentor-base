@@ -80,7 +80,7 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 		printStream.println("  From     To Suffix  First   Last String");
 		for(final Edge edge : suffixTree.getRootNode().getChildEdges())
 		{
-			printStream.format("%6d %6d %6d %6d %6d %s\n", edge.getParentNode(), edge.getChildNode(), edge.getChildNode().getSuffixNode(), edge.getStart(),
+			printStream.format("%6s %6s %6s %6d %6d %s\n", edge.getParentNode(), edge.getChildNode(), edge.getChildNode().getSuffixNode(), edge.getStart(),
 					edge.getEnd(), ((CharSequenceEdge)edge).getSubSequence());
 		}
 	}

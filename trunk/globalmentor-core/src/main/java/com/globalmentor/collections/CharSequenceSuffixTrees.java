@@ -19,7 +19,6 @@ package com.globalmentor.collections;
 import static com.globalmentor.collections.SuffixTrees.*;
 
 import com.globalmentor.collections.CharSequenceSuffixTree.*;
-import com.globalmentor.java.CharSequences;
 import com.globalmentor.model.ObjectHolder;
 
 /**
@@ -31,7 +30,7 @@ public class CharSequenceSuffixTrees
 {
 
 	/**
-	 * Determines the longest subsequence that is repeated in the given subsequence.
+	 * Determines the longest subsequence that is repeated in the given subsequence. TODO explain algorithm
 	 * @param charSequence The character sequence to check.
 	 * @return The longest repeated subsequence in the given character sequence, or <code>null</code> if no subsequence is repeated.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
@@ -45,14 +44,14 @@ public class CharSequenceSuffixTrees
 			int maxLength = 0; //keep track of the longest length
 
 			@Override
-			public boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence sequence)
+			public boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence charSequence)
 			{
 				if(!node.isLeaf()) //ignore leaf nodes---they aren't repeated sequences
 				{
-					if(sequence.length() > maxLength) //if this depth is farther than any before
+					if(charSequence.length() > maxLength) //if this depth is farther than any before
 					{
-						maxLength = sequence.length(); //update our max length
-						result.setObject(sequence.toString()); //make a copy and keep track of the resulting string
+						maxLength = charSequence.length(); //update our max length
+						result.setObject(charSequence.toString()); //make a copy and keep track of the resulting string
 					}
 				}
 				return true;
@@ -62,7 +61,7 @@ public class CharSequenceSuffixTrees
 	}
 
 	/**
-	 * Determines the longest subsequence that is repeated in the given subsequence.
+	 * Determines the longest subsequence that is repeated in the given subsequence. TODO explain algorithm
 	 * @param charSequence The character sequence to check.
 	 * @return The longest repeated subsequence in the given character sequence, or <code>null</code> if no subsequence is repeated.
 	 * @throws NullPointerException if the given character sequence is <code>null</code>.
@@ -76,33 +75,16 @@ public class CharSequenceSuffixTrees
 			int maxLength = 0; //keep track of the longest length
 
 			@Override
-			public boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence sequence)
+			public boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence charSequence)
 			{
 				if(!node.isLeaf()) //ignore leaf nodes---they aren't repeated sequences
 				{
-					if(sequence.length() > maxLength) //if this depth is farther than any before, see if the repeat sequence is sequential
+					if(charSequence.length() > maxLength) //if this depth is farther than any before, see if the repeat sequence is sequential
 					{
-						final CharSequence sequentialSequence = sequence;
-						//create a new visitor just to visit children of this node and see if the sequence is repeated
-						final Visitor<CharSequenceNode, CharSequenceEdge> sequentialVisitor = new AbstractCharSequenceVisitor()
+						if(parentEdge.getChildNode().startsWith(charSequence)) //if the same sequence appears starting with the edge's child node
 						{
-							@Override
-							public boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence sequence)
-							{
-								if(sequence.length() >= sequentialSequence.length()) //if our collected sequence is long enough to compare
-								{
-									if(CharSequences.equals(sequentialSequence, sequence, 0, sequentialSequence.length())) //if there is a sequentially repeated portion
-									{
-										return false; //stop visiting; a repeated sequence was found
-									}
-								}
-								return true; //continue visiting								
-							}
-						};
-						if(!visitChildren(suffixTree, (CharSequenceNode)parentEdge.getChildNode(), 0, sequentialVisitor)) //visit the children under this node; if we were interrupted, it is because we found a match
-						{
-							maxLength = sequentialSequence.length(); //update our max length
-							result.setObject(sequentialSequence.toString()); //make a copy and keep track of the sequentially repeated sequence
+							maxLength = charSequence.length(); //update our max length
+							result.setObject(charSequence.toString()); //make a copy and keep track of the sequentially repeated sequence
 						}
 					}
 				}
@@ -159,10 +141,10 @@ public class CharSequenceSuffixTrees
 		 * @param suffixTree The suffix tree being visited.
 		 * @param node The node being visited.
 		 * @param parentEdge The parent edge of the node being visited, or <code>null</code> if the node has no parent.
-		 * @param sequence The current sequence from the root to the node being visited.
+		 * @param charSequence The current sequence from the root to the node being visited.
 		 * @return <code>true</code> if visiting should continue to other nodes.
 		 */
-		public abstract boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence sequence);
+		public abstract boolean visit(final SuffixTree suffixTree, final CharSequenceNode node, final CharSequenceEdge parentEdge, final CharSequence charSequence);
 	}
 
 }

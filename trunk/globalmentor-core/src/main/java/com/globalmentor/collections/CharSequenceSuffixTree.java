@@ -16,6 +16,7 @@
 
 package com.globalmentor.collections;
 
+import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Objects.*;
@@ -38,6 +39,8 @@ import com.globalmentor.model.Filter;
  * Notes:
  * </p>
  * <ul>
+ * <li>This implementation uses exclusive end positions rather than inclusive end positions, which are more intuitive, make calculations easier, and interact
+ * nicely with the Java API.</li>
  * <li>The original implementation needlessly tied the edge splitting logic to a particular suffix. While this doesn't affect functionality, it doesn't
  * logically isolate the process of splitting an edge at a particular location, which is completely independent from a suffix. It merely needs to be known at
  * what point along the edge the split should occur. This implementation also splits an edge by creating two new edges rather than merely modifying one.</li>
@@ -73,6 +76,18 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	}
 
 	@Override
+	public CharSequenceNode getRootNode()
+	{
+		return (CharSequenceNode)super.getRootNode();
+	}
+
+	@Override
+	public CharSequenceNode getNode(final int nodeIndex)
+	{
+		return (CharSequenceNode)super.getNode(nodeIndex);
+	}
+
+	@Override
 	protected AbstractNode createNode(final int index)
 	{
 		return new CharSequenceNode(index);
@@ -94,10 +109,14 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		return java.util.Collections.unmodifiableCollection(edgeMap.values());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * @throws ClassCastException if the given parent node and/or child node is not an instance of {@link CharSequenceNode}.
+	 */
 	@Override
 	protected CharSequenceEdge createEdge(final Node parentNode, final Node childNode, final int start, final int end)
 	{
-		return new CharSequenceEdge(parentNode, childNode, start, end); //create a new edge
+		return new CharSequenceEdge((CharSequenceNode)parentNode, (CharSequenceNode)childNode, start, end); //create a new edge
 	}
 
 	/**
@@ -114,21 +133,6 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	}
 
 	/**
-	 * Retrieves the edge that extends from the given parent node and starts with the given character.
-	 * <p>
-	 * This method is not thread safe.
-	 * </p>
-	 * @param parentNode The parent node of the edge.
-	 * @param firstChar The first character along the edge.
-	 * @return The edge extending from the given parent node starting with the given character, or <code>null</code> if the given parent node has no such edge.
-	 * @throws NullPointerException if the given parent node is <code>null</code>.
-	 */
-	public CharSequenceEdge getEdge(final Node parentNode, final char firstChar)
-	{
-		return edgeMap.get(LOOKUP_EDGE_KEY.forEdge(parentNode, firstChar)); //retrieve an edge from the map, reusing the existing edge key
-	}
-
-	/**
 	 * Removes an edge from the tree. If the edge does not exist, no action occurs.
 	 * @param edge The edge to remove.
 	 * @throws NullPointerException if the given edge is <code>null</code>.
@@ -137,6 +141,12 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	protected void removeEdge(final CharSequenceEdge edge)
 	{
 		edgeMap.remove(checkInstance(edge));
+	}
+
+	@Override
+	protected CharSequenceNode splitEdge(final CharSequenceEdge edge, final int length)
+	{
+		return (CharSequenceNode)super.splitEdge(edge, length);
 	}
 
 	/**
@@ -149,6 +159,34 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 	{
 		super(explicit);
 		this.charSequence = checkInstance(charSequence);
+	}
+
+	/**
+	 * Compares a character sequence with the characters starting at the root node and continuing along child edges.
+	 * @param charSequence The character sequence to compare.
+	 * @return <code>true</code> if there is a path matching the given character sequence starting at this node and continuing along child edges.
+	 * @see CharSequenceNode#startsWith(CharSequence)
+	 * @see CharSequenceEdge#startsWith(CharSequence)
+	 */
+	public boolean startsWith(final CharSequence charSequence)
+	{
+		return startsWith(charSequence, 0, charSequence.length());
+	}
+
+	/**
+	 * Compares part of a character sequence with the characters starting at the root node and continuing along child edges.
+	 * @param charSequence The character sequence to compare.
+	 * @param start The start of the character sequence to compare, inclusive.
+	 * @param end The end of the character sequence to compare, exclusive.
+	 * @return <code>true</code> if there is a path matching the given character sequence starting at the root node and continuing along child edges.
+	 * @throws StringIndexOutOfBoundsException if <code>start</code> or <code>end</code> are negative or greater than <code>length()</code>, or <code>start</code>
+	 *           is greater than <code>end</code>.
+	 * @see CharSequenceNode#startsWith(CharSequence, int, int)
+	 * @see CharSequenceEdge#startsWith(CharSequence, int, int)
+	 */
+	public boolean startsWith(final CharSequence charSequence, final int start, final int end)
+	{
+		return getRootNode().startsWith(charSequence, start, end);
 	}
 
 	/**
@@ -168,11 +206,74 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		}
 
 		@Override
+		public CharSequenceNode getParentNode()
+		{
+			return (CharSequenceNode)super.getParentNode();
+		}
+
+		@Override
+		public CharSequenceNode getSuffixNode()
+		{
+			return (CharSequenceNode)super.getSuffixNode();
+		}
+
+		@Override
 		public Iterable<CharSequenceEdge> getChildEdges()
 		{
 			return new NodeEdgeIterable(this);
 		}
 
+		/**
+		 * Retrieves the edge that extends from this and starts with the given character.
+		 * @param firstChar The first character along the edge.
+		 * @return The edge extending from the node starting with the given character, or <code>null</code> if the node has no such edge.
+		 */
+		public CharSequenceEdge getEdge(final char firstChar)
+		{
+			return edgeMap.get(LOOKUP_EDGE_KEY.forEdge(this, firstChar)); //retrieve an edge from the map, reusing the existing edge key
+		}
+
+		/**
+		 * Compares a character sequence with the characters starting at this node and continuing along child edges.
+		 * @param charSequence The character sequence to compare.
+		 * @return <code>true</code> if there is a path matching the given character sequence starting at this node and continuing along child edges.
+		 * @see CharSequenceEdge#startsWith(CharSequence)
+		 */
+		public boolean startsWith(final CharSequence charSequence)
+		{
+			return startsWith(charSequence, 0, charSequence.length());
+		}
+
+		/**
+		 * Compares part of a character sequence with the characters starting at this node and continuing along child edges.
+		 * @param charSequence The character sequence to compare.
+		 * @param start The start of the character sequence to compare, inclusive.
+		 * @param end The end of the character sequence to compare, exclusive.
+		 * @return <code>true</code> if there is a path matching the given character sequence starting at this node and continuing along child edges.
+		 * @throws StringIndexOutOfBoundsException if <code>start</code> or <code>end</code> are negative or greater than <code>length()</code>, or
+		 *           <code>start</code> is greater than <code>end</code>.
+		 * @see CharSequenceEdge#startsWith(CharSequence, int, int)
+		 */
+		public boolean startsWith(final CharSequence charSequence, final int start, final int end)
+		{
+			checkBounds(charSequence, start, end);
+			if(isLeaf()) //leaves match no strings, not even the empty string
+			{
+				return false;
+			}
+			final int count = end - start;
+			if(count == 0) //branch nodes can always match the empty string
+			{
+				return true;
+			}
+			final char firstChar = charSequence.charAt(start); //get the starting character
+			final CharSequenceEdge childEdge = getEdge(firstChar); //see if we have an edge starting with this character
+			if(childEdge == null) //if there is no such edge, we can't compare further along the sequence 
+			{
+				return false;
+			}
+			return childEdge.startsWith(charSequence, start, end); //delegate to the child edge for comparison
+		}
 	}
 
 	/**
@@ -273,10 +374,10 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 			return parentNode;
 		}
 
-		private final Node childNode;
+		private final CharSequenceNode childNode;
 
 		@Override
-		public Node getChildNode()
+		public CharSequenceNode getChildNode()
 		{
 			return childNode;
 		}
@@ -332,7 +433,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		 * @throws NullPointerException if the given parent node and/or child node is <code>null</code>.
 		 * @throws IllegalArgumentException if the given end is less than the start.
 		 */
-		public CharSequenceEdge(final Node parentNode, final Node childNode, final int start, final int end)
+		public CharSequenceEdge(final CharSequenceNode parentNode, final CharSequenceNode childNode, final int start, final int end)
 		{
 			this.parentNode = checkInstance(parentNode);
 			this.childNode = checkInstance(childNode);
@@ -345,11 +446,53 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		{
 			return getCharSequence().subSequence(getStart(), getEnd());
 		}
-		
+
 		/** @return An iterable to the child edges of this edge's child node. */
 		public Iterable<CharSequenceEdge> getChildEdges()
 		{
 			return new NodeEdgeIterable(getChildNode());
+		}
+
+		/**
+		 * Compares a character sequence with the characters at the start of this child edge and continuing along child edges.
+		 * @param charSequence The character sequence to compare.
+		 * @return <code>true</code> if there is a path matching the given character sequence starting at this edge and continuing along child edges.
+		 * @see CharSequenceNode#startsWith(CharSequence)
+		 */
+		public boolean startsWith(final CharSequence charSequence)
+		{
+			return startsWith(charSequence, 0, charSequence.length());
+		}
+
+		/**
+		 * Compares part of a character sequence with the characters at the start of this child edge and continuing along child edges.
+		 * @param charSequence The character sequence to compare.
+		 * @param start The start of the character sequence to compare, inclusive.
+		 * @param end The end of the character sequence to compare, exclusive.
+		 * @return <code>true</code> if there is a path matching the given character sequence starting at this edge and continuing along child edges.
+		 * @throws StringIndexOutOfBoundsException if <code>start</code> or <code>end</code> are negative or greater than <code>length()</code>, or
+		 *           <code>start</code> is greater than <code>end</code>.
+		 * @see CharSequenceNode#startsWith(CharSequence, int, int)
+		 */
+		public boolean startsWith(final CharSequence charSequence, final int start, final int end)
+		{
+			checkBounds(charSequence, start, end);
+			final int count = end - start;
+			if(count == 0) //edges can always match the empty string
+			{
+				return true;
+			}
+			final int compareCount = Math.min(count, getLength()); //find out how many characters to compare; we can't compare more characters than we have
+			final CharSequence edgeCharSequence = getCharSequence(); //we'll compare with the underlying character sequence
+			if(!CharSequences.equals(edgeCharSequence, getStart(), getStart() + count, charSequence, start, start + count)) //compare just this portion; if they don't match
+			{
+				return false; //there is no other alternative for matching in a suffix tree (there is only one unique path from any given node)
+			}
+			if(compareCount == count) //if we compared all the remaining characters
+			{
+				return true; //we finished with a match
+			}
+			return getChildNode().startsWith(charSequence, start + compareCount, end); //compare the remaining characters with child edges
 		}
 
 		@Override
@@ -357,7 +500,6 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		{
 			return new StringBuilder().append(getParentNode()).append(' ').append(getSubSequence()).append(' ').append(getChildNode()).toString();
 		}
-
 	};
 
 	/**
@@ -381,10 +523,10 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		/** The suffix tree being processed. */
 		private final CharSequenceSuffixTree suffixTree;
 
-		private Node node;
+		private CharSequenceNode node;
 
 		/** @return The active node of the state. */
-		public Node getNode()
+		public CharSequenceNode getNode()
 		{
 			return node;
 		}
@@ -520,7 +662,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 			//keep eating edges until there are no more edges small enough to eat 
 			while(!isExplicit()) //if the state is explicit, there's no way we could eat an edge
 			{
-				final CharSequenceEdge edge = suffixTree.getEdge(getNode(), suffixTree.getCharSequence().charAt(getStart())); //get the edge coming from our node
+				final CharSequenceEdge edge = getNode().getEdge(suffixTree.getCharSequence().charAt(getStart())); //get the edge coming from our node
 				final int edgeLength = edge.getLength(); //get the length of that edge
 				if(edgeLength > getLength()) //if this edge is larger than our implicit characters
 				{
@@ -615,8 +757,8 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 			final boolean isExplicitRound = nextCharIndex == charSequenceLength; //see if we're on the final, explicit round, in which the possibly implicit suffix tree is turned into an explicit suffix tree
 			final char nextChar = isExplicitRound ? UNDEFINED_CHAR : charSequence.charAt(nextCharIndex); //get the next character (or some dummy character, if we are on the explicit round)
 
-			Node parentNode;
-			Node lastParentNode = null;
+			CharSequenceNode parentNode;
+			CharSequenceNode lastParentNode = null;
 			do
 			{
 				parentNode = state.getNode(); //start at the active node
@@ -624,7 +766,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 
 				if(state.isExplicit()) //if the active state ends on a node (it doesn't end in the middle of an edge)
 				{
-					if(!isExplicitRound && suffixTree.getEdge(state.getNode(), nextChar) != null) //if there is already an edge from the state node starting with the next character (the explicit round always results in a new edge)
+					if(!isExplicitRound && state.getNode().getEdge(nextChar) != null) //if there is already an edge from the state node starting with the next character (the explicit round always results in a new edge)
 					{
 						break; //there's nothing to do
 					}
@@ -632,7 +774,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 				else
 				//if the state is implicit, ending in the middle of an edge
 				{
-					final CharSequenceEdge edge = suffixTree.getEdge(state.getNode(), charSequence.charAt(state.getStart())); //get the edge at which the implicit part of the state starts
+					final CharSequenceEdge edge = state.getNode().getEdge(charSequence.charAt(state.getStart())); //get the edge at which the implicit part of the state starts
 					final int stateLength = state.getLength();
 					if(!isExplicitRound && charSequence.charAt(edge.getStart() + stateLength) == nextChar) //if the next character along the edge is the character we're extending  (the explicit round always results in a new edge)
 					{
@@ -641,7 +783,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 					else
 					//if a different character appears in the middle of the edge, we'll need to split the edge to add another edge
 					{
-						final AbstractNode newNode = suffixTree.splitEdge(edge, stateLength); //split out a new edge from the existing edge; the new node will become the new parent to which we'll add a new edge
+						final CharSequenceNode newNode = suffixTree.splitEdge(edge, stateLength); //split out a new edge from the existing edge; the new node will become the new parent to which we'll add a new edge
 						newNode.setSuffixNode(state.getNode()); //the new node is an extension of the old extension---so point its suffix back to the node that is the original suffix
 						parentNode = newNode;
 					}
@@ -654,14 +796,14 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 				}
 				if(lastParentNode != null) //if we already created an edge for a larger suffix
 				{
-					((AbstractNode)lastParentNode).setSuffixNode(parentNode); //link the node for the larger suffix back to this node, which is for a smaller suffix
+					lastParentNode.setSuffixNode(parentNode); //link the node for the larger suffix back to this node, which is for a smaller suffix
 				}
 				lastParentNode = parentNode; //move to the next parent node
 			}
 			while(state.nextSmallerSuffix()); //move to the next smaller suffix
 			if(lastParentNode != null)
 			{
-				((AbstractNode)lastParentNode).setSuffixNode(parentNode);
+				lastParentNode.setSuffixNode(parentNode);
 			}
 			state.nextChar(); //go to the next character
 		}

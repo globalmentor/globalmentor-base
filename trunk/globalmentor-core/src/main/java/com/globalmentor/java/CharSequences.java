@@ -34,6 +34,32 @@ public class CharSequences
 {
 
 	/**
+	 * Checks the given bounds of a character sequence.
+	 * @param charSequence The character sequence against which the bounds should be checked.
+	 * @param start The start to check, inclusive.
+	 * @param end The end to check, exclusive.
+	 * @return The given character sequence.
+	 * @throws StringIndexOutOfBoundsException if <code>start</code> or <code>end</code> are negative or greater than <code>length()</code>, or <code>start</code>
+	 *           is greater than <code>end</code>.
+	 */
+	public static CharSequence checkBounds(final CharSequence charSequence, final int start, final int end)
+	{
+		if(start < 0)
+		{
+			throw new StringIndexOutOfBoundsException(start);
+		}
+		if(end > charSequence.length())
+		{
+			throw new StringIndexOutOfBoundsException(end);
+		}
+		if(start > end)
+		{
+			throw new StringIndexOutOfBoundsException(end - start);
+		}
+		return charSequence;
+	}
+
+	/**
 	 * Searches a character sequence and returns the first index of any specified characters, starting at the beginning.
 	 * @param charSequence The character sequence to be searched.
 	 * @param characters The string of characters to check.
@@ -1035,6 +1061,10 @@ public class CharSequences
 	 */
 	public static boolean equals(final CharSequence charSequence1, final CharSequence charSequence2)
 	{
+		if(charSequence1 == charSequence2) //identity always implies equality
+		{
+			return true;
+		}
 		return equals(charSequence1, charSequence2, 0);
 	}
 
@@ -1064,26 +1094,33 @@ public class CharSequences
 	 */
 	public static boolean equals(final CharSequence charSequence1, final CharSequence charSequence2, final int start, final int end)
 	{
-		if(start < 0)
-		{
-			throw new StringIndexOutOfBoundsException(start);
-		}
-		if(end > charSequence2.length())
-		{
-			throw new StringIndexOutOfBoundsException(end);
-		}
-		final int count = end - start;
-		if(count < 0)
-		{
-			throw new StringIndexOutOfBoundsException(count);
-		}
-		if(charSequence1.length() != count) //if the lengths differ
+		return equals(charSequence1, 0, charSequence1.length(), charSequence2, start, end);
+	}
+
+	/**
+	 * Compares characters in one character sequence with characters in another character sequence.
+	 * @param charSequence1 The character sequence to compare.
+	 * @param start1 The starting location in the first character sequence, inclusive.
+	 * @param end1 The ending location in the first character sequence, exclusive.
+	 * @param charSequence2 The character sequence to compare with.
+	 * @param start2 The starting location in the second character sequence, inclusive.
+	 * @param end2 The ending location in the second character sequence, exclusive.
+	 * @return <code>true</code> if the indicated characters in the first character sequence equal the indicated characters in the second character sequence.
+	 * @throws StringIndexOutOfBoundsException if <code>start</code> or <code>end</code> are negative or greater than <code>length()</code>, or <code>start</code>
+	 *           is greater than <code>end</code>.
+	 */
+	public static boolean equals(final CharSequence charSequence1, final int start1, final int end1, final CharSequence charSequence2, final int start2,
+			final int end2)
+	{
+		checkBounds(charSequence1, start1, end1);
+		checkBounds(charSequence2, start2, end2);
+		if((end2 - start2) != (end1 - start1)) //if the counts differ
 		{
 			return false;
 		}
-		for(int i = 0; i < count; ++i) //look at each character
+		for(int i1 = start1, i2 = start2; i1 < end1; ++i1, ++i2) //look at each character; we only need to check one end position because we already made sure the counts are the same
 		{
-			if(charSequence1.charAt(i) != charSequence2.charAt(i)) //if these characters don't match
+			if(charSequence1.charAt(i1) != charSequence2.charAt(i2)) //if these characters don't match
 			{
 				return false;
 			}
