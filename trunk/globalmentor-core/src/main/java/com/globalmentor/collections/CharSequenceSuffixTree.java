@@ -320,13 +320,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 		@Override
 		public char getFirstChar()
 		{
-			return isEmpty() ? UNDEFINED_CHAR : getCharSequence().charAt(getStart()); //return the undefined characer if the edge is empty
-		}
-
-		/** @return The subsequence of characters this edge represents. */
-		public CharSequence getSubSequence()
-		{
-			return getCharSequence().subSequence(getStart(), getEnd());
+			return isEmpty() ? UNDEFINED_CHAR : getCharSequence().charAt(getStart()); //return the undefined character if the edge is empty
 		}
 
 		/**
@@ -346,6 +340,12 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 			this.end = checkArgumentMinimum(end, start);
 		}
 
+		/** @return The subsequence of characters this edge represents. */
+		public CharSequence getSubSequence()
+		{
+			return getCharSequence().subSequence(getStart(), getEnd());
+		}
+		
 		/** @return An iterable to the child edges of this edge's child node. */
 		public Iterable<CharSequenceEdge> getChildEdges()
 		{

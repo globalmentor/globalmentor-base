@@ -16,7 +16,8 @@
 
 package com.globalmentor.collections;
 
-import static com.globalmentor.collections.SuffixTrees.*;
+import static com.globalmentor.collections.CharSequenceSuffixTrees.*;
+//import static com.globalmentor.collections.SuffixTrees.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
@@ -183,4 +184,12 @@ public class CharSequenceSuffixTreeTest extends AbstractTest
 		}
 		return node.isLeaf();
 	}
+
+	@Test
+	public void testLongestRepeatedSubsequence()
+	{
+		assertThat(getLongestRepeatedSubsequence("One and two and three then four, Mr. Balfour.").toString(), equalTo(" and t"));
+		assertNull(getLongestRepeatedSubsequence("1234abcd"));
+	}
+
 }

@@ -16,6 +16,8 @@
 
 package com.globalmentor.collections;
 
+import static com.globalmentor.java.Objects.*;
+
 import java.io.PrintStream;
 
 import com.globalmentor.java.*;
@@ -55,7 +57,7 @@ public class SuffixTrees
 			print(suffixTree, printStream, edge, level); //print each edge at the requested level
 		}
 	}
-	
+
 	/**
 	 * Prints a character representation of the child edges of the given edge.
 	 * @param suffixTree The suffix tree to print.
@@ -68,27 +70,71 @@ public class SuffixTrees
 	{
 		printStream.println(Strings.createString('\t', level) + edge.toString()); //indent and print the edge
 		print(suffixTree, printStream, edge.getChildNode(), level + 1); //print the edge's child edges at one more level down
-
 	}
 
+	/**
+	 * Visits all the nodes in a given suffix tree.
+	 * @param <N> The type of node.
+	 * @param <E> The type of edge.
+	 * @param suffixTree The suffix tree to visit.
+	 * @param visitor The visitor to visit the nodes of the suffix tree.
+	 * @return <code>true</code> if visiting completed all the nodes.
+	 * @throws NullPointerException if the given suffix tree and/or visitor is <code>null</code>.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <N extends Node, E extends Edge> boolean visit(final SuffixTree suffixTree, final Visitor<N, E> visitor)
+	{
+		return visit(checkInstance(suffixTree), (N)suffixTree.getRootNode(), null, 0, checkInstance(visitor));
+	}
 
-//	public static void visit(final SuffixTree suffixTree, final )
-	
+	/**
+	 * Visits a given node and all descendant nodes in a subtree of a suffix tree.
+	 * @param <N> The type of node.
+	 * @param <E> The type of edge.
+	 * @param suffixTree The suffix tree to visit.
+	 * @param node The node being visited.
+	 * @param parentEdge The parent edge of the node being visited, or <code>null</code> if the node has no parent.
+	 * @param length The length of elements up to the visited node, including the length of the parent edge.
+	 * @param visitor The visitor to visit the nodes of the suffix tree.
+	 * @return <code>true</code> if visiting completed all the nodes.
+	 */
+	@SuppressWarnings("unchecked")
+	protected static <N extends Node, E extends Edge> boolean visit(final SuffixTree suffixTree, final N node, final E parentEdge, final int length,
+			final Visitor<N, E> visitor)
+	{
+		if(!visitor.visit(suffixTree, node, parentEdge, length)) //visit this node, stopping if requested
+		{
+			return false;
+		}
+		for(final Edge childEdge : node.getChildEdges()) //iterate the child edges
+		{
+			if(!visit(suffixTree, (N)childEdge.getChildNode(), (E)childEdge, length + childEdge.getLength(), visitor)) //visit each child node, stopping if requested
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 
-	/**A general visitor strategy for visiting nodes.
-	 * This can be used to implement a pure visitor pattern, in which the destination is aware of and accepts the visitor,
-	 * or a strategy visitor pattern in which a third object does the traversal.
+	/**
+	 * A general visitor strategy for visiting nodes. This can be used to implement a pure visitor pattern, in which the destination is aware of and accepts the
+	 * visitor, or a strategy visitor pattern in which a third object does the traversal.
 	 * 
 	 * @author Garret Wilson
+	 * 
+	 * @param <N> The type of node.
+	 * @param <E> The type of edge.
 	 */
-/*TODO fix
-	public interface Visitor
+	public interface Visitor<N extends Node, E extends Edge>
 	{
-		
-		public boolean visit(final SuffixTree suffixTree, final Node node, final int start, final );
-
+		/**
+		 * Visits the given node.
+		 * @param suffixTree The suffix tree being visited.
+		 * @param node The node being visited.
+		 * @param parentEdge The parent edge of the node being visited, or <code>null</code> if the node has no parent.
+		 * @param length The length of elements up to the visited node, including the length of the parent edge.
+		 * @return <code>true</code> if visiting should continue to other nodes.
+		 */
+		public boolean visit(final SuffixTree suffixTree, final N node, final E parentEdge, final int length);
 	}
-*/
-	
-	
 }
