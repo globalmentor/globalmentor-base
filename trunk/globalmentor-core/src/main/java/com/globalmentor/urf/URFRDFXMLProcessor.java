@@ -548,7 +548,7 @@ public class URFRDFXMLProcessor extends AbstractURFProcessor
 			propertyValue=determineResourceProxy(createStringURI(xmlContent));	//get a proxy to the serialized XML contents
 			final NameValuePair<Resource, Resource>[] scopeChain=new NameValuePair[]{new NameValuePair<Resource, Resource>(propertyResource, propertyValue)};	//create a scope chain consisting of the property literal value assignment			
 			final Resource contentTypePropertyResource=determineResourceProxy(Content.TYPE_PROPERTY_URI);	//get a proxy to the content.type property resource
-			final Resource contentTypeValueResource=determineResourceProxy(Content.createMediaTypeURI(XML_EXTERNAL_PARSED_ENTITY_CONTENT_TYPE));	//get a proxy to the text/xml-external-parsed-entity media type
+			final Resource contentTypeValueResource=determineResourceProxy(Content.createMediaTypeURI(EXTERNAL_PARSED_ENTITY_CONTENT_TYPE));	//get a proxy to the text/xml-external-parsed-entity media type
 			addAssertion(new Assertion(resource, contentTypePropertyResource, contentTypeValueResource, scopeChain));	//assert the content type within this property's scope
 /*alternate rdf:XMLLiteral representation using an anonymous value resource
 			propertyValue=createResourceProxy();	//the property value will be an anonymous resource with string contents and a content type of text/xml-external-parsed-entity

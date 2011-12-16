@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,6 +127,20 @@ public class ContentType extends MimeType
 		}
 	}
 
+	/**Creates a content type object from primary type, a subtype, and optional parameters.
+	This is a convenience method that delegates to {@link #getInstance(String, String, NameValuePair...)} merely
+	to prevent warnings for creating arrays of generic types in Java 6.
+	@param primaryType The primary type.
+	@param subType The subtype.
+	@param parameters Optional name-value pairs representing parameters of the content type.
+	@return A new content type object constructed from the given information.
+	*/
+	@SuppressWarnings("unchecked")
+	public static ContentType getInstance(final String primaryType, final String subType)
+	{
+		return getInstance(primaryType, subType, new NameValuePair[0]);	//create a new content type with no parameters
+	}
+	
 	/**Creates a content type object from primary type, a subtype, and optional parameters.
 	@param primaryType The primary type.
 	@param subType The subtype.

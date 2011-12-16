@@ -272,7 +272,7 @@ public abstract class AbstractSuffixTree<E extends SuffixTree.Edge> implements S
 			return getIndex() == ((Node)object).getIndex();
 		}
 
-		/** @{inheritDoc This implementation returns a string in the form <code>(<var>index</var>)*</code>, where '*' indicates a leaf node. */
+		/** {@inheritDoc This implementation returns a string in the form <code>(<var>index</var>)*</code>, where '*' indicates a leaf node. */
 		@Override
 		public String toString()
 		{

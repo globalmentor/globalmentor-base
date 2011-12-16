@@ -186,11 +186,11 @@ public class Files
 		tempFileExtensionContentTypeMap.put(Images.TIFF_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(RDF.RDF_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "rdf+xml")); //RFC 3870; move to RDF class
 		tempFileExtensionContentTypeMap.put(TURF.NAME_EXTENSION, TURF.CONTENT_TYPE);
-		tempFileExtensionContentTypeMap.put(Text.TXT_NAME_EXTENSION, Text.TEXT_PLAIN_CONTENT_TYPE);
+		tempFileExtensionContentTypeMap.put(Text.TXT_NAME_EXTENSION, Text.PLAIN_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, DIRECTORY_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Audio.WAV_NAME_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, X_WAV_SUBTYPE));
 		//		tempFileExtensionContentTypeMap.put(RDFXEB.XEB_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(XML.XML_NAME_EXTENSION, XML.XML_CONTENT_TYPE);
+		tempFileExtensionContentTypeMap.put(XML.XML_NAME_EXTENSION, XML.CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put(Archive.ZIP_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, ZIP_SUBTYPE));
 		FILE_EXTENSION_CONTENT_TYPE_MAP = unmodifiableMap(tempFileExtensionContentTypeMap); //store read-only access to the map		
 	}
