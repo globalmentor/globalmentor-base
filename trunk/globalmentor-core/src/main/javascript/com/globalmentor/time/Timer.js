@@ -57,10 +57,12 @@ com.globalmentor.clicktime.interview = com.globalmentor.clicktime.interview || {
  * @param ascending <code>true</code> if the timer should count up, or <code>false</code> if the timer should count
  *          down.
  * @param updateFrequency The number of milliseconds between updates (default 1000).
- * @property onValueUpdate The function, if any, that is called each time the timer updates its value.
+ * @property id The optional id of the timer; used when saving/loading values.
+ * @property onUpdate The function, if any, that is called each time the timer updates (which is usually but not
+ *           necessarily associated with a value change).
+ * @property onStateChange The function, if any, that is called when the timer's state changes.
  * 
- * Dependencies:
- * 	javascript.js
+ * Dependencies: javascript.js
  */
 com.globalmentor.clicktime.interview.Timer = function(targetElapsedTime, ascending, updateFrequency)
 {
@@ -81,7 +83,7 @@ com.globalmentor.clicktime.interview.Timer = function(targetElapsedTime, ascendi
 	 */
 	this._terminated = true;
 	/** The callback method, if any, to be called when the value is updated. */
-	this.onValueUpdate = null;
+	this.onUpdate = null;
 	/** The callback method, if any, to be called when the state changes. */
 	this.onStateChange = null;
 
@@ -104,9 +106,9 @@ com.globalmentor.clicktime.interview.Timer = function(targetElapsedTime, ascendi
 					this._stateChange(); //indicate that the state has changed
 				}
 			}
-			if(this.onValueUpdate) //if the caller has provided a callback method
+			if(this.onUpdate) //if the caller has provided a callback method
 			{
-				this.onValueUpdate(); //call the caller's callback method
+				this.onUpdate(); //call the caller's callback method
 			}
 		};
 
@@ -300,7 +302,8 @@ com.globalmentor.clicktime.interview.Timer = function(targetElapsedTime, ascendi
 		};
 
 		/**
-		 * Saves the state of the timer as strings in the given map.
+		 * Saves the state of the timer as strings in the given map. If a timer ID is defined, it is prepended to each
+		 * property in "id-propertyName" format.
 		 * @param map The map to receive the state of the timer; if no map is given, a new map will be created.
 		 * @returns The map into which properties were stored.
 		 */
@@ -310,35 +313,42 @@ com.globalmentor.clicktime.interview.Timer = function(targetElapsedTime, ascendi
 			{
 				map = {};
 			}
-			map["targetElapsedTime"] = this._targetElapsedTime.toString();
-			map["ascending"] = this._ascending.toString();
-			map["updateFrequency"] = this._updateFrequency.toString();
-			map["baseTime"] = this._baseTime.toString();
-			map["elapsedTime"] = this._elapsedTime.toString();
-			map["terminated"] = this._terminated.toString();
+			var prefix = this.id ? this.id + "-" : ""; //use the ID in the property names, if present
+			map[prefix + "targetElapsedTime"] = this._targetElapsedTime.toString();
+			map[prefix + "ascending"] = this._ascending.toString();
+			map[prefix + "updateFrequency"] = this._updateFrequency.toString();
+			map[prefix + "baseTime"] = this._baseTime.toString();
+			map[prefix + "elapsedTime"] = this._elapsedTime.toString();
+			map[prefix + "terminated"] = this._terminated.toString();
 			return map;
 		};
 
 		/**
-		 * Loads the state of the timer from strings in the given map.
+		 * Loads the state of the timer from strings in the given map. If this timer's state is not stored in the
+		 * properties, no action occurs. If a timer ID is defined, it is prepended to each property in "id-propertyName"
+		 * format.
 		 * @param map The map with string values representing the new state of the timer.
 		 */
 		proto.load = function(map)
 		{
-			if(this._timerID) //get rid of any timer we may have while we load new values
+			var prefix = this.id ? this.id + "-" : ""; //use the ID in the property names, if present
+			if(map[prefix + "targetElapsedTime"]) //make sure we have properties stored
 			{
-				clearTimeout(this._timerID);
-				this._timerID = null;
+				if(this._timerID) //get rid of any timer we may have while we load new values
+				{
+					clearTimeout(this._timerID);
+					this._timerID = null;
+				}
+				this._targetElapsedTime = Number(map[prefix + "targetElapsedTime"]);
+				this._ascending = Boolean(map[prefix + "ascending"]);
+				this._updateFrequency = Number(map[prefix + "updateFrequency"]);
+				this._baseTime = Number(map[prefix + "baseTime"]);
+				this._elapsedTime = Number(map[prefix + "elapsedTime"]);
+				this._terminated = Boolean(map[prefix + "terminated"]);
+				this._synchronizeState(); //start or stop a JavaScript timeout as needed
+				this._scheduleStateChange(); //indicate that the state has changed
+				this._scheduleUpdate(); //proactively call any callbacks
 			}
-			this._targetElapsedTime = Number(map["targetElapsedTime"]);
-			this._ascending = Boolean(map["ascending"]);
-			this._updateFrequency = Number(map["updateFrequency"]);
-			this._baseTime = Number(map["baseTime"]);
-			this._elapsedTime = Number(map["elapsedTime"]);
-			this._terminated = Boolean(map["terminated"]);
-			this._synchronizeState(); //start or stop a JavaScript timeout as needed
-			this._scheduleStateChange(); //indicate that the state has changed
-			this._scheduleUpdate(); //proactively call any callbacks
 		};
 	}
 
