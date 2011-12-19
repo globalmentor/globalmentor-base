@@ -16,8 +16,7 @@
 
 var com = com || {}; //create the com.globalmentor.clicktime.interview package
 com.globalmentor = com.globalmentor || {};
-com.globalmentor.clicktime = com.globalmentor.clicktime || {};
-com.globalmentor.clicktime.interview = com.globalmentor.clicktime.interview || {};
+com.globalmentor.time = com.globalmentor.time || {};
 
 /**
  * A class implementing a timer.
@@ -64,7 +63,7 @@ com.globalmentor.clicktime.interview = com.globalmentor.clicktime.interview || {
  * 
  * Dependencies: javascript.js
  */
-com.globalmentor.clicktime.interview.Timer = function(targetElapsedTime, ascending, updateFrequency)
+com.globalmentor.time.Timer = function(targetElapsedTime, ascending, updateFrequency)
 {
 	this._targetElapsedTime = targetElapsedTime;
 	this._ascending = !!ascending; //make sure we get an actual Boolean value
@@ -87,7 +86,7 @@ com.globalmentor.clicktime.interview.Timer = function(targetElapsedTime, ascendi
 	/** The callback method, if any, to be called when the state changes. */
 	this.onStateChange = null;
 
-	var proto = com.globalmentor.clicktime.interview.Timer.prototype;
+	var proto = com.globalmentor.time.Timer.prototype;
 	if(!proto._initialized)
 	{
 		proto._initialized = true;
