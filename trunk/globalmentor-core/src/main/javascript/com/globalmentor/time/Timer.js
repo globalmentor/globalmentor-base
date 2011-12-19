@@ -67,8 +67,8 @@ com.globalmentor.clicktime.interview = com.globalmentor.clicktime.interview || {
 com.globalmentor.clicktime.interview.Timer = function(targetElapsedTime, ascending, updateFrequency)
 {
 	this._targetElapsedTime = targetElapsedTime;
-	this._ascending = ascending;
-	this._updateFrequency = updateFrequency || 1000;
+	this._ascending = !!ascending; //make sure we get an actual Boolean value
+	this._updateFrequency = updateFrequency || 1000; //default to a one-second update frequency
 	this._timerID = null;
 	/** The time, in milliseconds past the epoch, at which the timer was first started or reset. */
 	this._baseTime = 0;
@@ -201,7 +201,14 @@ com.globalmentor.clicktime.interview.Timer = function(targetElapsedTime, ascendi
 		 */
 		proto.setTargetElapsedTime = function(targetElapsedTime)
 		{
-			this._targetElapsedTime = targetElapsedTime;
+			var finished = this.isFinished(); //see if we're finished so we can update our elapsed time appropriately
+			this._targetElapsedTime = targetElapsedTime; //update the target elapsed time
+			if(finished) //if we were finished
+			{
+				this._elapsedTime = targetElapsedTime; //update our current elapsed time so we'll still be finished
+			}
+			this._scheduleStateChange(); //indicate that the state has changed
+			this._scheduleUpdate(); //call any callbacks
 		};
 
 		/** @return The current value of the timer. */
@@ -340,11 +347,11 @@ com.globalmentor.clicktime.interview.Timer = function(targetElapsedTime, ascendi
 					this._timerID = null;
 				}
 				this._targetElapsedTime = Number(map[prefix + "targetElapsedTime"]);
-				this._ascending = Boolean(map[prefix + "ascending"]);
+				this._ascending = (map[prefix + "ascending"] == "true");
 				this._updateFrequency = Number(map[prefix + "updateFrequency"]);
 				this._baseTime = Number(map[prefix + "baseTime"]);
 				this._elapsedTime = Number(map[prefix + "elapsedTime"]);
-				this._terminated = Boolean(map[prefix + "terminated"]);
+				this._terminated = (map[prefix + "terminated"] == "true");
 				this._synchronizeState(); //start or stop a JavaScript timeout as needed
 				this._scheduleStateChange(); //indicate that the state has changed
 				this._scheduleUpdate(); //proactively call any callbacks
