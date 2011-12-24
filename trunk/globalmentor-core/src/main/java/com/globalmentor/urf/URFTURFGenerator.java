@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import com.globalmentor.java.Integers;
 
 import static com.globalmentor.collections.Collections.*;
 import static com.globalmentor.java.Characters.*;
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.urf.TURF.*;
 import static com.globalmentor.urf.URF.*;
@@ -365,83 +366,83 @@ public class URFTURFGenerator
 
 	/**Generates all the resources within a given data model.
 	A TURF container will be generated to contain the generated resources.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param urf The data model of which resources should be generated.
-	@return The writer.
-	@exception NullPointerException if the given writer and/or URF data model is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable and/or URF data model is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	public Writer generateResources(final Writer writer, final URF urf) throws IOException
+	public <A extends Appendable> A generateResources(final A appendable, final URF urf) throws IOException
 	{
-		return generateResources(writer, urf, true);	//generate the resources, indicating that a container should be generated
+		return generateResources(appendable, urf, true);	//generate the resources, indicating that a container should be generated
 	}
 
 	/**Generates all the resources within a given data model.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param urf The data model of which resources should be generated.
 	@param generateSignature Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
-	@return The writer.
-	@exception NullPointerException if the given writer and/or URF data model is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable and/or URF data model is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	public Writer generateResources(final Writer writer, final URF urf, final boolean generateSignature) throws IOException
+	public <A extends Appendable> A generateResources(final A appendable, final URF urf, final boolean generateSignature) throws IOException
 	{
-		return generateResources(writer, urf, generateSignature, null);	//generate all URF resources with no particular resource as the primary resource
+		return generateResources(appendable, urf, generateSignature, null);	//generate all URF resources with no particular resource as the primary resource
 	}
 
 	/**Generates the given resources and all related resources.
 	A TURF container will be generated to contain the generated resources.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param resources The resources to generate, with the first resource, if any, being the resource to appear first.
-	@return The writer.
-	@exception NullPointerException if the given writer and/or resources is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable and/or resources is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	public Writer generateResources(final Writer writer, final URFResource... resources) throws IOException
+	public <A extends Appendable> A generateResources(final A appendable, final URFResource... resources) throws IOException
 	{
-		return generateResources(writer, true, resources);	//generate the resources, indicating that a container should be generated
+		return generateResources(appendable, true, resources);	//generate the resources, indicating that a container should be generated
 	}
 
 	/**Generates the given resources and all related resources.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param generateSignature Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
 	@param resources The resources to generate, with the first resource, if any, being the resource to appear first.
-	@return The writer.
-	@exception NullPointerException if the given writer and/or resources is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable and/or resources is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	public Writer generateResources(final Writer writer, final boolean generateSignature, final URFResource... resources) throws IOException
+	public <A extends Appendable> A generateResources(final A appendable, final boolean generateSignature, final URFResource... resources) throws IOException
 	{
 		final URF urf=new URF();	//create a new URF data model
 		for(final URFResource resource:resources)	//for each given resource
 		{
 			urf.addResource(resource);	//add the resource to the data model
 		}
-		return generateResources(writer, urf, generateSignature, resources.length>0 ? resources[0] : null);	//generate all resources related to the given resources
+		return generateResources(appendable, urf, generateSignature, resources.length>0 ? resources[0] : null);	//generate all resources related to the given resources
 	}
 
 	/**Generates the given resources and all related resources.
 	A TURF container will be generated to contain the generated resources.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param resources The resources to generate, with the first resource, if any, being the resource to appear first.
-	@return The writer.
-	@exception NullPointerException if the given writer and/or resources is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable and/or resources is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	public Writer generateResources(final Writer writer, final Iterable<URFResource> resources) throws IOException
+	public <A extends Appendable> A generateResources(final A appendable, final Iterable<URFResource> resources) throws IOException
 	{
-		return generateResources(writer, true, resources);	//generate the resources, indicating that a container should be generated
+		return generateResources(appendable, true, resources);	//generate the resources, indicating that a container should be generated
 	}
 
 	/**Generates the given resources and all related resources.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param generateContainer Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
 	@param resources The resources to generate, with the first resource, if any, being the resource to appear first.
-	@return The writer.
-	@exception NullPointerException if the given writer and/or resources is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable and/or resources is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	public Writer generateResources(final Writer writer, final boolean generateContainer, final Iterable<URFResource> resources) throws IOException
+	public <A extends Appendable> A generateResources(final A appendable, final boolean generateContainer, final Iterable<URFResource> resources) throws IOException
 	{
 		final URF urf=new URF();	//create a new URF data model
 		URFResource firstResource=null;	//we'll note the first resource, if any
@@ -453,39 +454,39 @@ public class URFTURFGenerator
 				firstResource=resource;	//this is the first resource
 			}
 		}
-		return generateResources(writer, urf, generateContainer, firstResource);	//generate all resources related to the given resources
+		return generateResources(appendable, urf, generateContainer, firstResource);	//generate all resources related to the given resources
 	}
 
 	/**Generates all the resources within a given data model, indicating an optional resource that should appear first.
 	A TURF container will be generated to contain the generated resources.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param urf The data model of which resources should be generated.
 	@param primaryResource The main resource which should appear first, or <code>null</code> if there is no primary resource.
-	@return The writer.
-	@exception NullPointerException if the given writer and/or URF data model is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable and/or URF data model is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	public Writer generateResources(final Writer writer, final URF urf, final URFResource primaryResource) throws IOException
+	public <A extends Appendable> A generateResources(final A appendable, final URF urf, final URFResource primaryResource) throws IOException
 	{
-		return generateResources(writer, urf, true, primaryResource);	//generate the resources, indicating that a container should be generated
+		return generateResources(appendable, urf, true, primaryResource);	//generate the resources, indicating that a container should be generated
 	}
 
 	/**Generates all the resources within a given data model, indicating an optional resource that should appear first.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param urf The data model of which resources should be generated.
 	@param generateSignature Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
 	@param primaryResource The main resource which should appear first, or <code>null</code> if there is no primary resource.
-	@return The writer.
-	@exception NullPointerException if the given writer and/or URF data model is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable and/or URF data model is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	public Writer generateResources(final Writer writer, final URF urf, final boolean generateSignature, final URFResource primaryResource) throws IOException
+	public <A extends Appendable> A generateResources(final A appendable, final URF urf, final boolean generateSignature, final URFResource primaryResource) throws IOException
 	{
 		initialize();	//initialize the generator
 		final URF.ReferenceSummary referenceSummary=urf.getReferenceSummary();	//get a summary of all references to each resource
 		if(generateSignature)	//if we should generate a signature
 		{
-			writer.write(TURF_SIGNATURE);	//write the TURF signature
+			appendable.append(TURF_SIGNATURE);	//write the TURF signature
 				//gather namespace URIs used; namespace may be used more than once by the appearance of multiple resources in the same namespace and/or the same resource referenced multiple times
 			final boolean isShortTypesGenerated=isShortTypesGenerated();	//see if short types are generated
 			final Map<URI, Boolean> namespaceURIMultipleMap=new HashMap<URI, Boolean>();	//create a hash map with namespace URI keys to keep track if a namespace is used multiple times
@@ -561,36 +562,36 @@ public class URFTURFGenerator
 				{
 					if(startedProperties)	//if we already started the preamble
 					{
-						writeListSeparator(writer);	//write a list separator
+						writeListSeparator(appendable);	//write a list separator
 					}
 					else	//if we haven't started the properties, yet
 					{
-						writer.write(PROPERTIES_BEGIN);	//start the properties
+						appendable.append(PROPERTIES_BEGIN);	//start the properties
 						indent();	//indent the properties
-						writeNewLine(writer);
+						writeNewLine(appendable);
 						startedProperties=true;	//show that we've started the properties
 					}
 					final String prefix=namespaceLabelManager.determineNamespaceLabel(namespaceURI);	//get a namespace label for the URI
 					assert prefix!=null;	//the only namespace that should have no prefix is the default namespace, which we should already have skipped
-					appendString(writer, prefix);	//write the prefix
-					writer.write(NAMESPACE_ASSOCIATION_DELIMITER);	//write the property-value delimiter
-					appendURI(writer, namespaceURI);	//write the URI
+					appendString(appendable, prefix);	//write the prefix
+					appendable.append(NAMESPACE_ASSOCIATION_DELIMITER);	//write the property-value delimiter
+					appendURI(appendable, namespaceURI);	//write the URI
 				}
 			}
 			if(startedProperties)	//if we have a preamble
 			{
 				unindent();
-				writeNewLine(writer);
-				writer.write(PROPERTIES_END);	//end the properties
+				writeNewLine(appendable);
+				appendable.append(PROPERTIES_END);	//end the properties
 			}
-			writer.write(COMMUNITY_BEGIN);	//start the instance community
+			appendable.append(COMMUNITY_BEGIN);	//start the instance community
 			indent();	//indent the resources
-			writeNewLine(writer);
+			writeNewLine(appendable);
 		}
 			//generate the primary resource
 		if(primaryResource!=null)	//if there is a primary resource to generate
 		{
-			generateRootResource(writer, urf, referenceSummary, primaryResource);	//generate the primary resource
+			generateRootResource(appendable, urf, referenceSummary, primaryResource);	//generate the primary resource
 		}
 		final List<URFResource> resourceList=new ArrayList<URFResource>();	//create a list of resources
 		addAll(resourceList, urf.getResources());	//add all the resources in the data model to the list
@@ -599,74 +600,74 @@ public class URFTURFGenerator
 		{
 			if(!isGenerated(resource) && !referenceSummary.objectReferenceMap.hasItems(resource))	//if this resource has not yet been generated and the resource has no references to it
 			{
-				generateRootResource(writer, urf, referenceSummary, resource);	//generate this root resource
+				generateRootResource(appendable, urf, referenceSummary, resource);	//generate this root resource
 			}
 		}
 		for(final URFResource resource:resourceList)	//iterate over all the remaining resources, generating any that have not yet been generated
 		{
 			if(!isGenerated(resource))	//if this resource has not yet been generated
 			{
-				generateRootResource(writer, urf, referenceSummary, resource);	//generate this root resource
+				generateRootResource(appendable, urf, referenceSummary, resource);	//generate this root resource
 			}
 		}
 		if(generateSignature)	//if we generated a signature
 		{
 			unindent();
-			writeNewLine(writer);
-			writer.write(COMMUNITY_END);	//end the instance community
+			writeNewLine(appendable);
+			appendable.append(COMMUNITY_END);	//end the instance community
 		}
 		reset();	//reset the generator to conserve memory
-		return writer;	//return the writer
+		return appendable;	//return the appendable
 	}
 
 	/**Generates a single top-level resource, prepending a list delimiter if appropriate.
 	The resource is noted as having been generated.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param urf The URF data model.
 	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param resource The resource to generate.
-	@return The writer.
-	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable, URF data model, reference map, and/or resource is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	protected Writer generateRootResource(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final URFResource resource) throws IOException
+	protected <A extends Appendable> A generateRootResource(final A appendable, final URF urf, final URF.ReferenceSummary referenceSummary, final URFResource resource) throws IOException
 	{
 		if(getGeneratedResourceCount()>0)	//if we've already generated a least one resource
 		{
-			writeListSeparator(writer);	//write a list separator
+			writeListSeparator(appendable);	//write a list separator
 		}
-		return generateResource(writer, urf, referenceSummary, resource);	//generate the resource
+		return generateResource(appendable, urf, referenceSummary, resource);	//generate the resource
 	}
 
 	/**Generates a single resource.
 	The resource is noted as having been generated.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param urf The URF data model.
 	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param resource The resource to generate.
-	@return The writer.
-	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable, URF data model, reference map, and/or resource is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	protected Writer generateResource(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final URFResource resource) throws IOException
+	protected <A extends Appendable> A generateResource(final A appendable, final URF urf, final URF.ReferenceSummary referenceSummary, final URFResource resource) throws IOException
 	{
-		return generateResource(writer, urf, referenceSummary, null, null, resource, false);	//generate the single resource; there is no context URI
+		return generateResource(appendable, urf, referenceSummary, null, null, resource, false);	//generate the single resource; there is no context URI
 	}
 
 	/**Generates a single resource with no default namespace URI.
 	The resource is noted as having been generated.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param urf The URF data model.
 	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param subjectScope The scope to which the property and resource belongs, or <code>null</code> if the current resource is not in an object context.
 	@param scopePropertyURI The predicate for which the resource is a value, or <code>null</code> if the current resource is not in an object context.
 	@param resource The resource to generate.
 	@param inSequence Whether the resource being generated is in a sequence and its scoped order properties should therefore not be generated.
-	@return The writer.
-	@exception NullPointerException if the given writer, URF data model, reference map, and/or resource is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable, URF data model, reference map, and/or resource is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	protected Writer generateResource(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final URFScope subjectScope, final URI scopePropertyURI, final URFResource resource, final boolean inSequence) throws IOException
+	protected <A extends Appendable> A generateResource(final A appendable, final URF urf, final URF.ReferenceSummary referenceSummary, final URFScope subjectScope, final URI scopePropertyURI, final URFResource resource, final boolean inSequence) throws IOException
 	{
 		final boolean isGenerated=isGenerated(resource);	//see if this resource has already been generated
 		if(!isGenerated)	//if the resource hasn't been generated, yet
@@ -687,7 +688,7 @@ public class URFTURFGenerator
 		}
 		if(label!=null)	//if there is a label
 		{
-			appendLabel(writer, label);	//write the label
+			appendLabel(appendable, label);	//write the label
 		}
 			//reference
 		if(uri!=null && (!isGenerated || label==null))	//if there is a URI (don't show the URI if the resource is already generated and we already generated a label here)
@@ -696,7 +697,7 @@ public class URFTURFGenerator
 			{
 				inlineTypeURI=getInlineTypeURI(uri);	//get the inline type of the URI so that we don't generate it again
 			}
-			generateReference(writer, urf, uri);	//write a reference for the resource
+			generateReference(appendable, urf, uri);	//write a reference for the resource
 			generatedComponent=true;	//indicate that we generated a component
 		}
 
@@ -709,14 +710,14 @@ public class URFTURFGenerator
 				{
 					throw new IllegalArgumentException("No scope for given subject "+subjectScope+" and predicate URI "+scopePropertyURI);
 				}
-				if(generateProperties(writer, urf, referenceSummary, scope, true, 0, true, true, true, true, true, true, true, !inSequence)>0)	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence; if we generated any scoped properties
+				if(generateProperties(appendable, urf, referenceSummary, scope, true, 0, true, true, true, true, true, true, true, !inSequence)>0)	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence; if we generated any scoped properties
 				{
 					unindent();
-					writeNewLine(writer);
-					writer.write(PROPERTIES_END);	//end the properties declaration
+					writeNewLine(appendable);
+					appendable.append(PROPERTIES_END);	//end the properties declaration
 				}
 			}
-			return writer;	//there's no need to generate the resource again; we've already generated a label or a URI to represent it
+			return appendable;	//there's no need to generate the resource again; we've already generated a label or a URI to represent it
 		}
 		boolean isProposition=false;	//we'll see if this is a proposition
 		boolean isList=false;	//we'll see if this is a list
@@ -819,8 +820,8 @@ public class URFTURFGenerator
 					{
 						continue;	//we cannot generate a short type for this type
 					}
-					writer.append(TYPE_BEGIN);	//append the type delimiter
-					generateReference(writer, urf, typeURI);	//generate a reference to the type
+					appendable.append(TYPE_BEGIN);	//append the type delimiter
+					generateReference(appendable, urf, typeURI);	//generate a reference to the type
 					markReferenceGenerated(urf, TYPE_PROPERTY_URI);	//mark that the type property was generated unless it has some other quality needed to be generated separately
 					markReferenceGenerated(urf, typeURI);	//mark that the type was generated unless it has some other quality needed to be generated separately
 					generatedComponent=true;	//indicate that we generated a component
@@ -830,7 +831,7 @@ public class URFTURFGenerator
 					{
 						markReferenceGenerated(urf, SELECTOR_PROPERTY_URI);	//mark that the selector property was generated unless it has some other quality needed to be generated separately
 						setGenerated(selector, true);	//note that the selector list has been generated TODO make sure the selector list has no other properties that need to be generated
-						generateCollection(writer, urf, referenceSummary, selector.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), SELECTOR_BEGIN, SELECTOR_END, false);	//generate all the values of ordinal properties in the selector list on the same line
+						generateCollection(appendable, urf, referenceSummary, selector.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), SELECTOR_BEGIN, SELECTOR_END, false);	//generate all the values of ordinal properties in the selector list on the same line
 					}
 				}
 				//TODO make sure types without URIs get generated in the properties section
@@ -846,8 +847,8 @@ public class URFTURFGenerator
 				final URI superclassURI=superclass.getURI();	//get the URI of this superclass
 				if(superclassURI!=null)	//if the given superclass has a URI
 				{
-					writer.append(SUBCLASS_OF_BEGIN);	//append the superclass delimiter
-					generateReference(writer, urf, superclassURI);	//generate a reference to the superclass
+					appendable.append(SUBCLASS_OF_BEGIN);	//append the superclass delimiter
+					generateReference(appendable, urf, superclassURI);	//generate a reference to the superclass
 					markReferenceGenerated(urf, SUBCLASS_OF_PROPERTY_URI);	//mark that the superclass property was generated unless it has some other quality needed to be generated separately
 					markReferenceGenerated(urf, superclassURI);	//mark that the superclass was generated unless it has some other quality needed to be generated separately
 					generatedComponent=true;	//indicate that we generated a component
@@ -865,8 +866,8 @@ public class URFTURFGenerator
 				final URI interfaceURI=interfaceResource.getURI();	//get the URI of this interface
 				if(interfaceURI!=null)	//if the given interface has a URI
 				{
-					writer.append(IMPLEMENTATION_OF_BEGIN);	//append the interface delimiter
-					generateReference(writer, urf, interfaceURI);	//generate a reference to the interface
+					appendable.append(IMPLEMENTATION_OF_BEGIN);	//append the interface delimiter
+					generateReference(appendable, urf, interfaceURI);	//generate a reference to the interface
 					markReferenceGenerated(urf, IMPLEMENTATION_OF_PROPERTY_URI);	//mark that the interface property was generated unless it has some other quality needed to be generated separately
 					markReferenceGenerated(urf, interfaceURI);	//mark that the interface was generated unless it has some other quality needed to be generated separately
 					generatedComponent=true;	//indicate that we generated a component
@@ -876,7 +877,7 @@ public class URFTURFGenerator
 		}
 			//properties
 		int propertyCount=0;	//start with no properties being generating
-		propertyCount=generateProperties(writer, urf, referenceSummary, resource, false, propertyCount, !isShortTypesGenerated, !isShortSuperclassesGenerated, !isShortInterfacesGenerated, !isPropositionShortForm, !isListShortForm, !isSetShortForm, !isMapShortForm, true);	//generate properties
+		propertyCount=generateProperties(appendable, urf, referenceSummary, resource, false, propertyCount, !isShortTypesGenerated, !isShortSuperclassesGenerated, !isShortInterfacesGenerated, !isPropositionShortForm, !isListShortForm, !isSetShortForm, !isMapShortForm, true);	//generate properties
 		if(subjectScope!=null && scopePropertyURI!=null)	//if this resource is the value of a property
 		{
 			final URFScope scope=subjectScope.getScope(scopePropertyURI, resource);	//get the scope for this value
@@ -884,17 +885,17 @@ public class URFTURFGenerator
 			{
 				throw new IllegalArgumentException("No scope for given subject "+subjectScope+" and predicate URI "+scopePropertyURI);
 			}
-			propertyCount=generateProperties(writer, urf, referenceSummary, scope, true, propertyCount, true, true, true, true, true, true, true, !inSequence);	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence
+			propertyCount=generateProperties(appendable, urf, referenceSummary, scope, true, propertyCount, true, true, true, true, true, true, true, !inSequence);	//generate all scoped properties, suppressing generation of scoped order if we are in a sequence
 		}
 		if(propertyCount>0)	//if we started the properties section
 		{
 			unindent();
-			writeNewLine(writer);
-			writer.write(PROPERTIES_END);	//end the properties declaration
+			writeNewLine(appendable);
+			appendable.append(PROPERTIES_END);	//end the properties declaration
 		}
 		else if(!generatedComponent && !isPropositionShortForm && !isListShortForm && !isSetShortForm && !isMapShortForm)	//if we haven't generated any components, and there will be no proposition, list, set, and/or map short form, have a properties section even if it's empty
 		{
-			writer.append(PROPERTIES_BEGIN).append(PROPERTIES_END);	//write an empty properties declaration
+			appendable.append(PROPERTIES_BEGIN).append(PROPERTIES_END);	//write an empty properties declaration
 		}
 			//TODO implement community short form
 			//proposition
@@ -902,59 +903,59 @@ public class URFTURFGenerator
 		{
 			assert subject!=null && predicate!=null && object!=null : "Because this is a proposition short form, we should have already made sure the subject, predicate, and object are all non-null.";
 			markReferenceGenerated(urf, PROPOSITION_CLASS_URI);	//mark that the proposition type was generated unless it has some other quality needed to be generated separately
-			writer.write(PROPOSITION_BEGIN);	//start the proposition
+			appendable.append(PROPOSITION_BEGIN);	//start the proposition
 			markReferenceGenerated(urf, SUBJECT_PROPERTY_URI);	//mark that the subject property was generated unless it has some other quality needed to be generated separately
-			generateResource(writer, urf, referenceSummary, resource, SUBJECT_PROPERTY_URI, subject, false);	//generate the subject
-			writer.append(LIST_DELIMITER);	//separate the properties
+			generateResource(appendable, urf, referenceSummary, resource, SUBJECT_PROPERTY_URI, subject, false);	//generate the subject
+			appendable.append(LIST_DELIMITER);	//separate the properties
 			markReferenceGenerated(urf, PREDICATE_PROPERTY_URI);	//mark that the predicate property was generated unless it has some other quality needed to be generated separately
-			generateResource(writer, urf, referenceSummary, resource, PREDICATE_PROPERTY_URI, predicate, false);	//generate the predicate
-			writer.append(LIST_DELIMITER);	//separate the properties
+			generateResource(appendable, urf, referenceSummary, resource, PREDICATE_PROPERTY_URI, predicate, false);	//generate the predicate
+			appendable.append(LIST_DELIMITER);	//separate the properties
 			markReferenceGenerated(urf, OBJECT_PROPERTY_URI);	//mark that the object property was generated unless it has some other quality needed to be generated separately
-			generateResource(writer, urf, referenceSummary, resource, OBJECT_PROPERTY_URI, object, false);	//generate the object
-			writer.write(PROPOSITION_END);	//end the proposition
+			generateResource(appendable, urf, referenceSummary, resource, OBJECT_PROPERTY_URI, object, false);	//generate the object
+			appendable.append(PROPOSITION_END);	//end the proposition
 		}
 			//list
 		if(isListShortForm)	//if we should generate a list short form
 		{
 			markReferenceGenerated(urf, LIST_CLASS_URI);	//mark that the list type was generated unless it has some other quality needed to be generated separately
-			generateCollection(writer, urf, referenceSummary, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), LIST_BEGIN, LIST_END, true);	//generate all the values of ordinal properties in the list, using multiple lines if there are elements
+			generateCollection(appendable, urf, referenceSummary, resource.getNamespaceProperties(ORDINAL_NAMESPACE_URI).iterator(), LIST_BEGIN, LIST_END, true);	//generate all the values of ordinal properties in the list, using multiple lines if there are elements
 		}
 			//set
 		if(isSetShortForm)	//if we should generate a set short form
 		{
 			markReferenceGenerated(urf, SET_CLASS_URI);	//mark that the set type was generated unless it has some other quality needed to be generated separately
-			generateCollection(writer, urf, referenceSummary, resource.getProperties(ELEMENT_PROPERTY_URI).iterator(), SET_BEGIN, SET_END, true);	//generate all the values of element properties in the set, using multiple lines if there are elements
+			generateCollection(appendable, urf, referenceSummary, resource.getProperties(ELEMENT_PROPERTY_URI).iterator(), SET_BEGIN, SET_END, true);	//generate all the values of element properties in the set, using multiple lines if there are elements
 		}
 			//map
 		if(isMapShortForm)	//if we should generate a map short form
 		{
 			markReferenceGenerated(urf, MAP_CLASS_URI);	//mark that the map type was generated unless it has some other quality needed to be generated separately
-			generateMap(writer, urf, referenceSummary, resource.getProperties(ENTRY_PROPERTY_URI).iterator(), MAP_BEGIN, MAP_END, true);	//generate all the values of entry properties in the map, using multiple lines if there are entries
+			generateMap(appendable, urf, referenceSummary, resource.getProperties(ENTRY_PROPERTY_URI).iterator(), MAP_BEGIN, MAP_END, true);	//generate all the values of entry properties in the map, using multiple lines if there are entries
 		}
-		return writer;	//return the writer
+		return appendable;	//return the appendable
 	}
 
 	/**Generates the elements of a list or set.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param urf The URF data model.
 	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param elementPropertyIterator An iterator to the elements of the resource.
 	@param collectionBegin The beginning delimiter of the collection.
 	@param collectionEnd The end delimiter of the collection.
 	@param multipleLines Whether multiple lines should be used if elements are present.
-	@return The writer.
-	@exception NullPointerException if the given writer, URF data model, reference map, and/or element property iterator is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable, URF data model, reference map, and/or element property iterator is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	protected Writer generateCollection(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final Iterator<URFProperty> elementPropertyIterator, final char collectionBegin, final char collectionEnd, final boolean multipleLines) throws IOException
+	protected <A extends Appendable> A generateCollection(final A appendable, final URF urf, final URF.ReferenceSummary referenceSummary, final Iterator<URFProperty> elementPropertyIterator, final char collectionBegin, final char collectionEnd, final boolean multipleLines) throws IOException
 	{
 		if(elementPropertyIterator.hasNext())	//if there are elements in the collection
 		{
-			writer.write(collectionBegin);	//start the collection
+			appendable.append(collectionBegin);	//start the collection
 			if(multipleLines)	//if we should generate multiple lines
 			{
 				indent();	//indent the collection
-				writeNewLine(writer);
+				writeNewLine(appendable);
 			}
 			int elementCount=0;	//keep track of how many elements we have
 			while(elementPropertyIterator.hasNext())	//while there are elements
@@ -964,51 +965,51 @@ public class URFTURFGenerator
 				{
 					if(multipleLines)	//if we should generate multiple lines
 					{
-						writeListSeparator(writer);	//write a list separator, which will write multiple lines (also using a comma, if so configured), unless formatting is turned off, in which case only a list delimiter will be used
+						writeListSeparator(appendable);	//write a list separator, which will write multiple lines (also using a comma, if so configured), unless formatting is turned off, in which case only a list delimiter will be used
 					}
 					else
 					{
-						writer.append(LIST_DELIMITER);	//separate the elements using a list delimiter
+						appendable.append(LIST_DELIMITER);	//separate the elements using a list delimiter
 					}
 				}
-				generateResource(writer, urf, referenceSummary, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false);	//generate the element; each element value is an object of the element predicate, so use the element property URI as the context
+				generateResource(appendable, urf, referenceSummary, elementProperty.getSubjectScope(), elementProperty.getPropertyURI(), elementProperty.getValue(), false);	//generate the element; each element value is an object of the element predicate, so use the element property URI as the context
 				++elementCount;	//show that we generated another list element
 			}
 			if(multipleLines)	//if we should generate multiple lines
 			{
 				unindent();
-				writeNewLine(writer);
+				writeNewLine(appendable);
 			}
-			writer.write(collectionEnd);	//end the collection
+			appendable.append(collectionEnd);	//end the collection
 		}
 		else	//if there are no elements in the collection
 		{
-			writer.append(collectionBegin).append(collectionEnd);	//show the empty collection on the same line
+			appendable.append(collectionBegin).append(collectionEnd);	//show the empty collection on the same line
 		}
-		return writer;	//return the writer
+		return appendable;	//return the appendable
 	}
 
 	/**Generates the entries of a map.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param urf The URF data model.
 	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param entryPropertyIterator An iterator to the entries of the map.
 	@param mapBegin The beginning delimiter of the map.
 	@param mapEnd The end delimiter of the map.
 	@param multipleLines Whether multiple lines should be used if entries are present.
-	@return The writer.
-	@exception NullPointerException if the given writer, URF data model, reference map, and/or entry property iterator is <code>null</code>.
-	@exception IOException if there is an error writing to the writer.
+	@return The appendable.
+	@exception NullPointerException if the given appendable, URF data model, reference map, and/or entry property iterator is <code>null</code>.
+	@exception IOException if there is an error writing to the appendable.
 	*/
-	protected Writer generateMap(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final Iterator<URFProperty> entryPropertyIterator, final char mapBegin, final char mapEnd, final boolean multipleLines) throws IOException
+	protected <A extends Appendable> A generateMap(final A appendable, final URF urf, final URF.ReferenceSummary referenceSummary, final Iterator<URFProperty> entryPropertyIterator, final char mapBegin, final char mapEnd, final boolean multipleLines) throws IOException
 	{
 		if(entryPropertyIterator.hasNext())	//if there are entries in the collection
 		{
-			writer.write(mapBegin);	//start the map
+			appendable.append(mapBegin);	//start the map
 			if(multipleLines)	//if we should generate multiple lines
 			{
 				indent();	//indent the collection
-				writeNewLine(writer);
+				writeNewLine(appendable);
 			}
 			int entryCount=0;	//keep track of how many entries we have
 			while(entryPropertyIterator.hasNext())	//while there are entries
@@ -1018,11 +1019,11 @@ public class URFTURFGenerator
 				{
 					if(multipleLines)	//if we should generate multiple lines
 					{
-						writeListSeparator(writer);	//write a list separator, which will write multiple lines (also using a comma, if so configured), unless formatting is turned off, in which case only a list delimiter will be used
+						writeListSeparator(appendable);	//write a list separator, which will write multiple lines (also using a comma, if so configured), unless formatting is turned off, in which case only a list delimiter will be used
 					}
 					else
 					{
-						writer.append(LIST_DELIMITER);	//separate the entries without newlines
+						appendable.append(LIST_DELIMITER);	//separate the entries without newlines
 					}
 				}
 				final URFResource entry=entryProperty.getValue();	//get the entry, which is the subject of the key and value 
@@ -1030,10 +1031,10 @@ public class URFTURFGenerator
 				final URFResource value=entry.getPropertyValue(VALUE_PROPERTY_URI);	//get the value
 				if(key!=null && value!=null)	//if the entry has both a key and a value
 				{
-					generateResource(writer, urf, referenceSummary, entry, KEY_PROPERTY_URI, key, false);	//generate the key
+					generateResource(appendable, urf, referenceSummary, entry, KEY_PROPERTY_URI, key, false);	//generate the key
 					markReferenceGenerated(urf, KEY_PROPERTY_URI);	//mark that the key property was generated unless it has some other quality needed to be generated separately
-					writer.append(PROPERTY_VALUE_DELIMITER);	//=
-					generateResource(writer, urf, referenceSummary, entry, VALUE_PROPERTY_URI, value, false);	//generate the value
+					appendable.append(PROPERTY_VALUE_DELIMITER);	//=
+					generateResource(appendable, urf, referenceSummary, entry, VALUE_PROPERTY_URI, value, false);	//generate the value
 					setGenerated(entry, true);	//note that the entry has been generated TODO make sure the entry has no other properties that need to be generated
 					markReferenceGenerated(urf, VALUE_PROPERTY_URI);	//mark that the value property was generated unless it has some other quality needed to be generated separately
 					markReferenceGenerated(urf, TYPE_PROPERTY_URI);	//mark that the type property was generated unless it has some other quality needed to be generated separately
@@ -1045,20 +1046,20 @@ public class URFTURFGenerator
 			if(multipleLines)	//if we should generate multiple lines
 			{
 				unindent();
-				writeNewLine(writer);
+				writeNewLine(appendable);
 			}
-			writer.write(mapEnd);	//end the map
+			appendable.append(mapEnd);	//end the map
 		}
 		else	//if there are no entries in the map
 		{
-			writer.append(mapBegin).append(mapEnd);	//show the empty map on the same line
+			appendable.append(mapBegin).append(mapEnd);	//show the empty map on the same line
 		}
-		return writer;	//return the writer
+		return appendable;	//return the appendable
 	}
 
 	/**Generates the properties, if any, of a given scope.
 	The beginning property section delimiter will be added if needed, but no ending property section delimiter will be generated.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param urf The URF data model.
 	@param referenceSummary A summary of scope references to resources and property URIs.
 	@param scope The scope the properties of which should be generated.
@@ -1073,10 +1074,10 @@ public class URFTURFGenerator
 	@param generateEntries Whether the entry property should be generated.
 	@param generateOrder Whether the order property should be generated; if order properties are not generated, their values will be marked at generated if they have no other properties needed to be generated.
 	@return The new total number of properties generated, including the properties already generated before this method was called.
-	@exception NullPointerException if the given writer, URF data model, reference map, and/or scope is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
+	@exception NullPointerException if the given appendable, URF data model, reference map, and/or scope is <code>null</code>.
+	@exception IOException if there was an error writing to the appendable.
 	*/
-	protected int generateProperties(final Writer writer, final URF urf, final URF.ReferenceSummary referenceSummary, final URFScope scope, final boolean scoped, int propertyCount, final boolean generateTypes, final boolean generateSuperclasses, final boolean generateInterfaces, final boolean generateProposition, final boolean generateOrdinals, final boolean generateElements, final boolean generateEntries, final boolean generateOrder) throws IOException
+	protected <A extends Appendable> int generateProperties(final A appendable, final URF urf, final URF.ReferenceSummary referenceSummary, final URFScope scope, final boolean scoped, int propertyCount, final boolean generateTypes, final boolean generateSuperclasses, final boolean generateInterfaces, final boolean generateProposition, final boolean generateOrdinals, final boolean generateElements, final boolean generateEntries, final boolean generateOrder) throws IOException
 	{
 		URI sequencePropertyURI=null;	//this will indicate when we're in the middle of a sequence for a particular property
 		for(final URFProperty property:scope.getProperties())	//look at each property
@@ -1111,7 +1112,7 @@ public class URFTURFGenerator
 				if(!sequencePropertyURI.equals(propertyURI)	//we're changing to another property
 						|| property.getScope().getOrder()==null)	//or if we're still looking at the same property but we no longer have a scoped order
 				{
-					writer.write(SEQUENCE_END);	//end the sequence for this property
+					appendable.append(SEQUENCE_END);	//end the sequence for this property
 					sequencePropertyURI=null;	//indicate that we are no longer in a sequence for a property
 				}
 			}
@@ -1119,42 +1120,42 @@ public class URFTURFGenerator
 			{
 				if(propertyCount>0)	//if we've already generated a property
 				{
-					writeListSeparator(writer);	//write a list separator
+					writeListSeparator(appendable);	//write a list separator
 				}
 				else	//if we haven't yet started the properties section
 				{
-					writer.write(PROPERTIES_BEGIN);	//start the properties declaration
+					appendable.append(PROPERTIES_BEGIN);	//start the properties declaration
 					indent();	//indent the properties
-					writeNewLine(writer);
+					writeNewLine(appendable);
 				}
-				generateReference(writer, urf, propertyURI);	//generate the reference of the property
+				generateReference(appendable, urf, propertyURI);	//generate the reference of the property
 				markReferenceGenerated(urf, propertyURI);	//mark that this property was generated unless it has some other quality needed to be generated separately
 				if(scoped)	//if this is a scoped property
 				{
-					writer.append(SCOPE_DELIMITER);	//`
+					appendable.append(SCOPE_DELIMITER);	//`
 				}
-				writer.append(PROPERTY_VALUE_DELIMITER);	//=
+				appendable.append(PROPERTY_VALUE_DELIMITER);	//=
 				if(property.getScope().getOrder()!=null)	//if this property has a sequence
 				{
-					writer.write(SEQUENCE_BEGIN);	//start a sequence for this property
+					appendable.append(SEQUENCE_BEGIN);	//start a sequence for this property
 					sequencePropertyURI=propertyURI;	//indicate that we should have a sequence for this property
-					generateResource(writer, urf, referenceSummary, scope, propertyURI, value, true);	//generate the property value, indicating that the value is an element in a sequence
+					generateResource(appendable, urf, referenceSummary, scope, propertyURI, value, true);	//generate the property value, indicating that the value is an element in a sequence
 				}
 				else	//if this property has no sequence
 				{
-					generateResource(writer, urf, referenceSummary, scope, propertyURI, value, false);	//generate the property value normally, using the property URI as the context URI
+					generateResource(appendable, urf, referenceSummary, scope, propertyURI, value, false);	//generate the property value normally, using the property URI as the context URI
 				}
 			}
 			else	//if we are still in the middle of a sequence
 			{
-				writer.append(LIST_DELIMITER);	//separate the values in the sequence
-				generateResource(writer, urf, referenceSummary, scope, propertyURI, value, true);	//generate the property value, indicating that the value is an element in a sequence, and using the property URI as the context URI
+				appendable.append(LIST_DELIMITER);	//separate the values in the sequence
+				generateResource(appendable, urf, referenceSummary, scope, propertyURI, value, true);	//generate the property value, indicating that the value is an element in a sequence, and using the property URI as the context URI
 			}
 			++propertyCount;	//show that we generated another property
 		}
 		if(sequencePropertyURI!=null)	//if we were in the middle of a sequence
 		{
-			writer.write(SEQUENCE_END);	//end the sequence for this property, as we're out of properties
+			appendable.append(SEQUENCE_END);	//end the sequence for this property, as we're out of properties
 		}
 		return propertyCount;	//return the new property count
 	}
@@ -1166,7 +1167,7 @@ public class URFTURFGenerator
 	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
 	@return A string reference to the resource with the given URI.
 	@exception NullPointerException if the given URI and/or namespace label manager is <code>null</code>.
-	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
+	@see #generateURIReference(Appendable, URI, TURFNamespaceLabelManager, URI, boolean)
 	*/
 	public static String createReferenceString(final URI uri, final TURFNamespaceLabelManager namespaceLabelManager)
 	{
@@ -1181,7 +1182,7 @@ public class URFTURFGenerator
 	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
 	@return A string reference to the resource with the given URI.
 	@exception NullPointerException if the given URI and/or namespace label manager is <code>null</code>.
-	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
+	@see #generateURIReference(Appendable, URI, TURFNamespaceLabelManager, URI, URI)
 	*/
 	public static String createReferenceString(final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI)
 	{
@@ -1196,37 +1197,35 @@ public class URFTURFGenerator
 	@param determinePrefix <code>true</code> if a prefix should be determined if one is not available for the namespace URI, if any, of the given resource URI.
 	@return A string reference to the resource with the given URI.
 	@exception NullPointerException if the given URI and/or namespace label manager is <code>null</code>.
-	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
+	@see #generateURIReference(Appendable, URI, TURFNamespaceLabelManager, URI, URI)
 	*/
 	public static String createReferenceString(final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final boolean determinePrefix)
 	{
-		final StringWriter stringWriter=new StringWriter();	//create a new string writer for generating the reference
 		try
 		{
-			generateReference(stringWriter, uri, namespaceLabelManager, baseURI, determinePrefix);	//generate a reference into the string writer
+			return generateReference(new StringBuilder(), uri, namespaceLabelManager, baseURI, determinePrefix).toString();	//generate a reference using a string builder
 		}
-		catch(final IOException ioException)	//we should never get an I/O exception writing to a string writer
+		catch(final IOException ioException)	//we should never get an I/O exception writing to a string builder
 		{
-			throw new AssertionError(ioException);
+			throw unexpected(ioException);
 		}
-		return stringWriter.toString();	//return the string we generated
 	}
 
 	/**Generates a reference to a resource with the given URI with no default namespace URI.
 	A name reference or short form will be used if appropriate.
 	If a reference to an inline URI is generated, the corresponding inline type URI will be marked as generated if it has no other qualities needed to be generated separately.
 	No prefix will be determined if one is not already available for the namespace URI, if any, of the given resource URI.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param urf The URF data model.
 	@param uri The URI of the resource.
-	@exception NullPointerException if the given writer and/or URI is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
-	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
+	@exception NullPointerException if the given appendable and/or URI is <code>null</code>.
+	@exception IOException if there was an error writing to the appendable.
+	@see #generateURIReference(Appendable, URI, TURFNamespaceLabelManager, URI, URI)
 	@see #markReferenceGenerated(URF, URI)
 	*/
-	public void generateReference(final Writer writer, final URF urf, final URI uri) throws IOException
+	public <A extends Appendable> void generateReference(final A appendable, final URF urf, final URI uri) throws IOException
 	{
-		final URI inlineTypeURI=generateReference(writer, uri, namespaceLabelManager, baseURI, false);	//generate a reference, keeping track of the inline type URI generated, if any
+		final URI inlineTypeURI=generateReference(appendable, uri, namespaceLabelManager, baseURI, false);	//generate a reference, keeping track of the inline type URI generated, if any
 		if(inlineTypeURI!=null)	//if an inline URI was generated
 		{
 			markReferenceGenerated(urf, inlineTypeURI);	//mark that this inline type was generated unless it has some other quality needed to be generated separately
@@ -1235,17 +1234,17 @@ public class URFTURFGenerator
 
 	/**Generates a reference to a resource with the given URI.
 	A name reference or short form will be used if appropriate.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param uri The URI of the resource.
 	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
 	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
 	@param determinePrefix <code>true</code> if a prefix should be determined if one is not available for the namespace URI, if any, of the given resource URI.
 	@return The inline type URI, if a reference to an inline URI was generated, or <code>null</code> if no inline resource URI reference was generated.
-	@exception NullPointerException if the given writer URI, and/or namespace label manager is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
-	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI, URI)
+	@exception NullPointerException if the given appendable URI, and/or namespace label manager is <code>null</code>.
+	@exception IOException if there was an error writing to the appendable.
+	@see #generateURIReference(Appendable, URI, TURFNamespaceLabelManager, URI, URI)
 	*/
-	public static URI generateReference(final Writer writer, final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final boolean determinePrefix) throws IOException
+	public static <A extends Appendable> URI generateReference(final A appendable, final URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final boolean determinePrefix) throws IOException
 	{
 		URI inlineTypeURI=null;	//keep track of whether an inline type URI was generated
 		if(isInlineURI(uri))	//if this URI is in an inline namespace
@@ -1255,49 +1254,49 @@ public class URFTURFGenerator
 			assert lexicalForm!=null : "An inline namespace URI should always have a lexical form.";
 			if(BINARY_CLASS_URI.equals(inlineTypeURI))	//binary
 			{
-				writer.append(BINARY_BEGIN).append(lexicalForm).append(BINARY_END);	//write the binary short form
+				appendable.append(BINARY_BEGIN).append(lexicalForm).append(BINARY_END);	//write the binary short form
 				return inlineTypeURI;
 			}
 			else if(BOOLEAN_CLASS_URI.equals(inlineTypeURI))	//boolean
 			{
-				writer.append(BOOLEAN_BEGIN).append(lexicalForm).append(BOOLEAN_END);	//write the boolean short form
+				appendable.append(BOOLEAN_BEGIN).append(lexicalForm).append(BOOLEAN_END);	//write the boolean short form
 				return inlineTypeURI;
 			}
 			else if(CHARACTER_CLASS_URI.equals(inlineTypeURI))	//character
 			{
-				writer.append(CHARACTER_BEGIN).append(lexicalForm).append(CHARACTER_END);	//write the character short form
+				appendable.append(CHARACTER_BEGIN).append(lexicalForm).append(CHARACTER_END);	//write the character short form
 				return inlineTypeURI;
 			}
 			else if(DATE_CLASS_URI.equals(inlineTypeURI) || DATE_TIME_CLASS_URI.equals(inlineTypeURI)
 					|| DURATION_CLASS_URI.equals(inlineTypeURI) || TIME_CLASS_URI.equals(inlineTypeURI)
 					|| UTC_OFFSET_CLASS_URI.equals(inlineTypeURI))	//if this is a temporal
 			{
-				writer.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
+				appendable.append(TEMPORAL_BEGIN).append(lexicalForm).append(TEMPORAL_END);	//write a temporal short form
 				return inlineTypeURI;
 			}
 			else if(INTEGER_CLASS_URI.equals(inlineTypeURI) || RATIONAL_CLASS_URI.equals(inlineTypeURI))	//integer or rational
 			{
-				writer.append(NUMBER_BEGIN).append(lexicalForm).append(NUMBER_END);	//write the number short form
+				appendable.append(NUMBER_BEGIN).append(lexicalForm).append(NUMBER_END);	//write the number short form
 				return inlineTypeURI;
 			}
 			else if(ORDINAL_CLASS_URI.equals(inlineTypeURI))	//ordinal
 			{
-				writer.append(ORDINAL_BEGIN).append(lexicalForm).append(ORDINAL_END);	//write the ordinal short form
+				appendable.append(ORDINAL_BEGIN).append(lexicalForm).append(ORDINAL_END);	//write the ordinal short form
 				return inlineTypeURI;
 			}
 			else if(REGULAR_EXPRESSION_CLASS_URI.equals(inlineTypeURI))	//if this is a regular expression
 			{
-				appendRegularExpression(writer, lexicalForm);	//write the regular expression short form
+				appendRegularExpression(appendable, lexicalForm);	//write the regular expression short form
 				return inlineTypeURI;
 			}
 			else if(STRING_CLASS_URI.equals(inlineTypeURI))	//if this is a string
 			{
-				appendString(writer, lexicalForm);	//write the string short form
+				appendString(appendable, lexicalForm);	//write the string short form
 				return inlineTypeURI;
 			}
 			else if(URI_CLASS_URI.equals(inlineTypeURI))	//if this is a URI
 			{
-				appendURI(writer, lexicalForm);	//write the URI short form
+				appendURI(appendable, lexicalForm);	//write the URI short form
 				return inlineTypeURI;
 			}
 		}
@@ -1312,51 +1311,51 @@ public class URFTURFGenerator
 				assert localName!=null : "If a URI has a namespace, it should have a local name as well.";
 				if(prefix!=null)	//if there is a prefix
 				{
-					writer.append(prefix).append(NAME_PREFIX_DELIMITER);	//prefix.
+					appendable.append(prefix).append(NAME_PREFIX_DELIMITER);	//prefix.
 				}
-				writer.append(localName);	//prefix.localName
+				appendable.append(localName);	//prefix.localName
 				return inlineTypeURI;	//return the inline type URI, if any
 			}
 		}
-		generateURIReference(writer, uri, namespaceLabelManager, baseURI, determinePrefix);	//generate the URI reference normally by default
+		generateURIReference(appendable, uri, namespaceLabelManager, baseURI, determinePrefix);	//generate the URI reference normally by default
 		return inlineTypeURI;	//return the inline type URI, if any
 	}
 
 	/**Writes a URI reference to a resource with the given URI.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param uri The URI of the resource.
 	No prefix will be determined if one is not already available for the namespace URI, if any, of the given resource URI.
-	@exception NullPointerException if the given writer and/or URI is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
-	@see #generateURIReference(Writer, URI, TURFNamespaceLabelManager, URI)
+	@exception NullPointerException if the given appendable and/or URI is <code>null</code>.
+	@exception IOException if there was an error writing to the appendable.
+	@see #generateURIReference(Appendable, URI, TURFNamespaceLabelManager, URI)
 	*/
-	public void generateURIReference(final Writer writer, URI uri) throws IOException
+	public <A extends Appendable> void generateURIReference(final A appendable, URI uri) throws IOException
 	{
-		generateURIReference(writer, uri, getNamespaceLabelManager(), getBaseURI(), false);	//generate the URI reference using our own namespace label manager and base URI
+		generateURIReference(appendable, uri, getNamespaceLabelManager(), getBaseURI(), false);	//generate the URI reference using our own namespace label manager and base URI
 	}
 
 	/**Writes a URI reference to a resource with the given URI.
-	@param writer The writer used for generating the information.
+	@param appendable The appendable used for generating the information.
 	@param uri The URI of the resource.
 	@param namespaceLabelManager The manager responsible for generating namespace labels if needed.
 	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
 	@param determinePrefix <code>true</code> if a prefix should be determined if one is not available for the namespace URI, if any, of the given resource URI.
-	@exception NullPointerException if the given writer, URI, and/or namespace label manager is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
+	@exception NullPointerException if the given appendable, URI, and/or namespace label manager is <code>null</code>.
+	@exception IOException if there was an error writing to the appendable.
 	*/
-	public static void generateURIReference(final Writer writer, URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final boolean determinePrefix) throws IOException
+	public static <A extends Appendable> void generateURIReference(final A appendable, URI uri, final TURFNamespaceLabelManager namespaceLabelManager, final URI baseURI, final boolean determinePrefix) throws IOException
 	{
-		writer.write(REFERENCE_BEGIN);	//start the URI reference
+		appendable.append(REFERENCE_BEGIN);	//start the URI reference
 		if(isInlineURI(uri))	//if this URI is in an inline namespace
 		{
 			final URI inlineTypeURI=getInlineTypeURI(uri);	//get the inline type of the URI
 			final String lexicalForm=getInlineLexicalForm(uri);	//get the lexical form of the inline type
 			assert lexicalForm!=null : "An inline namespace URI should always have a lexical form.";
-			writer.write(TYPE_BEGIN);	//start a type declaration
-			generateReference(writer, inlineTypeURI, namespaceLabelManager, baseURI, determinePrefix);	//generate a reference to the inline type, determining a new prefix if needed
-			writer.write(SELECTOR_BEGIN);	//start the selector
-			appendString(writer, lexicalForm);	//write the string lexical form			
-			writer.write(SELECTOR_END);	//end the selector
+			appendable.append(TYPE_BEGIN);	//start a type declaration
+			generateReference(appendable, inlineTypeURI, namespaceLabelManager, baseURI, determinePrefix);	//generate a reference to the inline type, determining a new prefix if needed
+			appendable.append(SELECTOR_BEGIN);	//start the selector
+			appendString(appendable, lexicalForm);	//write the string lexical form			
+			appendable.append(SELECTOR_END);	//end the selector
 		}
 		else	//if this URI is not in an inline namespace
 		{
@@ -1364,9 +1363,9 @@ public class URFTURFGenerator
 			{
 				uri=baseURI.relativize(uri);	//relativize the URI to the base URI if possible
 			}
-			writer.write(uri.toString());	//write the relative URI
+			appendable.append(uri.toString());	//write the relative URI
 		}
-		writer.write(REFERENCE_END);	//end the URI reference
+		appendable.append(REFERENCE_END);	//end the URI reference
 	}
 
 	/**Marks a reference as generated if appropriate.
@@ -1667,45 +1666,45 @@ public class URFTURFGenerator
 	{@link TURF#LIST_DELIMITER}, depending on the setting of {@link #isFormattedListDelimiter()})
 	and and then indents at the current indent level.
 	If the generator is not formatted, a {@link TURF#LIST_DELIMITER} is generated.
-	@param writer The writer used for generating the information.
-	@exception NullPointerException if the given writer is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
+	@param appendable The appendable used for generating the information.
+	@exception NullPointerException if the given appendable is <code>null</code>.
+	@exception IOException if there was an error writing to the appendable.
 	@see #isFormatted()
 	@see #isFormattedListDelimiter()
-	@see #writeNewLine(Writer) 
+	@see #writeNewLine(Appendable) 
 	*/
-	public void writeListSeparator(final Writer writer) throws IOException
+	public <A extends Appendable> void writeListSeparator(final A appendable) throws IOException
 	{
 		if(isFormatted())	//if we should format the output
 		{
 			if(isFormattedListDelimiter())	//if we should nonetheless write a list delimiter even when formatted
 			{
-				writer.write(LIST_DELIMITER);	//write a list delimiter
+				appendable.append(LIST_DELIMITER);	//write a list delimiter
 			}
-			writeNewLine(writer);	//use a newline as a list delimiter
+			writeNewLine(appendable);	//use a newline as a list delimiter
 		}
 		else	//if we shouldn't format the output
 		{
-			writer.write(LIST_DELIMITER);	//write a list delimiter
+			appendable.append(LIST_DELIMITER);	//write a list delimiter
 		}
 	}
 
 	/**Writes the end of a line and then indents at the current indent level.
 	If the generator is not formatted, no action occurs.
-	@param writer The writer used for generating the information.
-	@exception NullPointerException if the given writer is <code>null</code>.
-	@exception IOException if there was an error writing to the writer.
+	@param appendable The appendable used for generating the information.
+	@exception NullPointerException if the given appendable is <code>null</code>.
+	@exception IOException if there was an error writing to the appendable.
 	@see #isFormatted()
 	@see #getIndentLevel()
 	*/
-	public void writeNewLine(final Writer writer) throws IOException
+	public <A extends Appendable> void writeNewLine(final A appendable) throws IOException
 	{
 		if(isFormatted())	//if we should format the output
 		{
-			writer.write(LINE_FEED_CHAR);	//newline
-			for(int i=getIndentLevel(); i>0; --i)	//for each indention
+			appendable.append(LINE_FEED_CHAR);	//newline
+			for(int i=getIndentLevel(); i>0; --i)	//for each indentation
 			{
-				writer.write(CHARACTER_TABULATION_CHAR);	//write a tab
+				appendable.append(CHARACTER_TABULATION_CHAR);	//write a tab
 			}
 		}
 	}
