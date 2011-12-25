@@ -170,16 +170,42 @@ public class URFTURFGenerator
 		*/
 		public void setFormattedListDelimiter(final boolean formattedListDelimiter) {this.formattedListDelimiter=formattedListDelimiter;}
 
+	/**Whether a preamble (required for correct TURF documents) of namespace prefix associations is generated.*/
+	//TODO del if not needed	private boolean preambleGenerated=true;
+
+		/**@return Whether a preamble (required for correct TURF documents) of namespaces prefix associations is generated.*/
+	//TODO del if not needed		public boolean isPreambleGenerated() {return preambleGenerated;}
+	
+		/**Sets whether a preamble (required for correct TUF documents) is generated with namespace prefix associations.
+		@param preambleGenerated <code>true</code> if a preamble is generated.
+		*/
+	//TODO del if not needed		public void setPreambleGenerated(final boolean preambleGenerated) {this.preambleGenerated=preambleGenerated;}
+
+	/**Whether namespace prefixes are always used for property resources not in the default namespace.*/
+	private boolean propertyNamespacePrefixesForced=false;
+
+		/**@return Whether namespace prefixes are always used for property resources not in the default namespace.*/
+		public boolean isPropertyNamespacePrefixesForced() {return propertyNamespacePrefixesForced;}
+		
+		/**Sets whether namespace prefixes are always used for property resources not in the default namespace.
+		If a container is generated, this implies that all property resources will receive a namespace prefix association,
+		regardless of the number of times that namespace is used. If a container is generated, this means that property
+		resource will be generated using prefixes that have no explicit namespace association; this is usually useful
+		only for human consumption.
+		@param propertyNamespacePrefixesForced Whether namespace prefixes are always used for property resources not in the default namespace.
+		*/
+		public void setPropertyNamespacePrefixesForced(final boolean propertyNamespacePrefixesForced) {this.propertyNamespacePrefixesForced=propertyNamespacePrefixesForced;}
+		
 	/**Whether prefixes are suppressed for inherited namespaces.*/
-	private boolean inheritedNamespacePrefixesSuppressed=true;
+//TODO del if not needed	private boolean inheritedNamespacePrefixesSuppressed=true;
 
 		/**@return Whether prefixes are suppressed for inherited namespaces.*/
-		public boolean isInheritedNamespacePrefixesSuppressed() {return inheritedNamespacePrefixesSuppressed;}
+	//TODO del if not needed		public boolean isInheritedNamespacePrefixesSuppressed() {return inheritedNamespacePrefixesSuppressed;}
 
 		/**Sets whether prefixes are suppressed for inherited namespaces.
 		@param inheritedNamespacePrefixesSuppressed Whether prefixes should be suppressed for inherited namespaces.
 		*/
-		public void setInheritedNamespacePrefixes(final boolean inheritedNamespacePrefixesSuppressed) {this.inheritedNamespacePrefixesSuppressed=inheritedNamespacePrefixesSuppressed;}
+	//TODO del if not needed		public void setInheritedNamespacePrefixes(final boolean inheritedNamespacePrefixesSuppressed) {this.inheritedNamespacePrefixesSuppressed=inheritedNamespacePrefixesSuppressed;}
 
 	/**Whether interfaces are generated as short forms.*/
 	private boolean shortInterfacesGenerated=true;
@@ -332,7 +358,7 @@ public class URFTURFGenerator
 		this(baseURI, formatted, new TURFNamespaceLabelManager());	//create the class with a default namespace label manager
 	}
 
-	/**Base URI, formatted, and namespace labek manager constructor.
+	/**Base URI, formatted, and namespace label manager constructor.
 	@param baseURI The base URI of the URF data model, or <code>null</code> if the base URI is unknown.
 	@param formatted Whether output is formatted.
 	@param namespaceLabelManager The manager of namespaces and labels.
@@ -380,14 +406,14 @@ public class URFTURFGenerator
 	/**Generates all the resources within a given data model.
 	@param appendable The appendable used for generating the information.
 	@param urf The data model of which resources should be generated.
-	@param generateSignature Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
+	@param generateContainer Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
 	@return The appendable.
 	@exception NullPointerException if the given appendable and/or URF data model is <code>null</code>.
 	@exception IOException if there is an error writing to the appendable.
 	*/
-	public <A extends Appendable> A generateResources(final A appendable, final URF urf, final boolean generateSignature) throws IOException
+	public <A extends Appendable> A generateResources(final A appendable, final URF urf, final boolean generateContainer) throws IOException
 	{
-		return generateResources(appendable, urf, generateSignature, null);	//generate all URF resources with no particular resource as the primary resource
+		return generateResources(appendable, urf, generateContainer, null);	//generate all URF resources with no particular resource as the primary resource
 	}
 
 	/**Generates the given resources and all related resources.
@@ -405,20 +431,20 @@ public class URFTURFGenerator
 
 	/**Generates the given resources and all related resources.
 	@param appendable The appendable used for generating the information.
-	@param generateSignature Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
+	@param generateContainer Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
 	@param resources The resources to generate, with the first resource, if any, being the resource to appear first.
 	@return The appendable.
 	@exception NullPointerException if the given appendable and/or resources is <code>null</code>.
 	@exception IOException if there is an error writing to the appendable.
 	*/
-	public <A extends Appendable> A generateResources(final A appendable, final boolean generateSignature, final URFResource... resources) throws IOException
+	public <A extends Appendable> A generateResources(final A appendable, final boolean generateContainer, final URFResource... resources) throws IOException
 	{
 		final URF urf=new URF();	//create a new URF data model
 		for(final URFResource resource:resources)	//for each given resource
 		{
 			urf.addResource(resource);	//add the resource to the data model
 		}
-		return generateResources(appendable, urf, generateSignature, resources.length>0 ? resources[0] : null);	//generate all resources related to the given resources
+		return generateResources(appendable, urf, generateContainer, resources.length>0 ? resources[0] : null);	//generate all resources related to the given resources
 	}
 
 	/**Generates the given resources and all related resources.
@@ -474,23 +500,25 @@ public class URFTURFGenerator
 	/**Generates all the resources within a given data model, indicating an optional resource that should appear first.
 	@param appendable The appendable used for generating the information.
 	@param urf The data model of which resources should be generated.
-	@param generateSignature Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
+	@param generateContainer Whether a TURF signature and instance community should be generated to hold the generated resources, if any.
 	@param primaryResource The main resource which should appear first, or <code>null</code> if there is no primary resource.
 	@return The appendable.
 	@exception NullPointerException if the given appendable and/or URF data model is <code>null</code>.
 	@exception IOException if there is an error writing to the appendable.
 	*/
-	public <A extends Appendable> A generateResources(final A appendable, final URF urf, final boolean generateSignature, final URFResource primaryResource) throws IOException
+	public <A extends Appendable> A generateResources(final A appendable, final URF urf, final boolean generateContainer, final URFResource primaryResource) throws IOException
 	{
 		initialize();	//initialize the generator
 		final URF.ReferenceSummary referenceSummary=urf.getReferenceSummary();	//get a summary of all references to each resource
-		if(generateSignature)	//if we should generate a signature
+		final boolean isPropertyNamespacePrefixesForced=isPropertyNamespacePrefixesForced();	//see if we should always have property namespace prefixes
+		if(generateContainer)	//if we should generate a container
 		{
-			appendable.append(TURF_SIGNATURE);	//write the TURF signature
+			appendable.append(SIGNATURE);	//write the TURF signature
+			boolean startedProperties=false;	//we'll keep track of whether we started a TURF preamble
 				//gather namespace URIs used; namespace may be used more than once by the appearance of multiple resources in the same namespace and/or the same resource referenced multiple times
 			final boolean isShortTypesGenerated=isShortTypesGenerated();	//see if short types are generated
 			final Map<URI, Boolean> namespaceURIMultipleMap=new HashMap<URI, Boolean>();	//create a hash map with namespace URI keys to keep track if a namespace is used multiple times
-					//gather all namespace URIs of resources used as objects
+				//gather all namespace URIs of resources used as objects
 			for(final Map.Entry<URFResource, Set<URFScope>> objectReferenceMapEntry:referenceSummary.objectReferenceMap.entrySet())//look at each resource and the number of references it has
 			{
 				final URI resourceURI=objectReferenceMapEntry.getKey().getURI();	//get the URI of this resource
@@ -518,7 +546,7 @@ public class URFTURFGenerator
 					}
 				}
 			}
-					//gather all namespace URIs of property URIs
+				//gather all namespace URIs of property URIs
 			for(final Map.Entry<URI, Set<URFScope>> propertyURIReferenceMapEntry:referenceSummary.propertyURIReferenceMap.entrySet())//look at each resource and the number of references it has
 			{
 				final URI propertyURI=propertyURIReferenceMapEntry.getKey();	//get the URI of the property
@@ -529,26 +557,32 @@ public class URFTURFGenerator
 				final URI namespaceURI=getNamespaceURI(propertyURI);	//get the namespace URI of this property URI
 				if(namespaceURI!=null && !isInlineNamespaceURI(namespaceURI))	//if this property URI has a namespace that isn't an inline namespace (URIs in inline namespaces have their own short forms)
 				{
-					final Integer referenceCountInteger=referenceSummary.propertyURIReferenceCountMap.get(propertyURI);	//see how many times this property URI is used as a property URI (either by distinct resources or by a single resource)
-					if(referenceCountInteger!=null && referenceCountInteger.intValue()>1)	//if this property URI is used more than once
+					if(isPropertyNamespacePrefixesForced)	//if we should always use prefixes for property namespaces
 					{
-						namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times, because the resource itself is referenced multiple times
+						namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//pretend that we've seen this namespace URI multiple times
 					}
-					else	//if this property URI is only used once or not at all
+					else	//if we're not forcing property namespaces, see if there are enough namespace occurrences to warrant a prefix
 					{
-						final Boolean hasMultipleReferences=namespaceURIMultipleMap.get(namespaceURI);	//see whether there are multiple references to this namespace
-						if(hasMultipleReferences==null)	//if we haven't seen this namespace URI before
+						final Integer referenceCountInteger=referenceSummary.propertyURIReferenceCountMap.get(propertyURI);	//see how many times this property URI is used as a property URI (either by distinct resources or by a single resource)
+						if(referenceCountInteger!=null && referenceCountInteger.intValue()>1)	//if this property URI is used more than once
 						{
-							namespaceURIMultipleMap.put(namespaceURI, Boolean.FALSE);	//show that we've seen this namespace URI, but there are not yet multiple references
+							namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times, because the resource itself is referenced multiple times
 						}
-						else if(hasMultipleReferences.booleanValue()==false)	//if we've only seen this namespace URI once
+						else	//if this property URI is only used once or not at all
 						{
-							namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times
+							final Boolean hasMultipleReferences=namespaceURIMultipleMap.get(namespaceURI);	//see whether there are multiple references to this namespace
+							if(hasMultipleReferences==null)	//if we haven't seen this namespace URI before
+							{
+								namespaceURIMultipleMap.put(namespaceURI, Boolean.FALSE);	//show that we've seen this namespace URI, but there are not yet multiple references
+							}
+							else if(hasMultipleReferences.booleanValue()==false)	//if we've only seen this namespace URI once
+							{
+								namespaceURIMultipleMap.put(namespaceURI, Boolean.TRUE);	//show that we've seen this namespace URI multiple times
+							}
 						}
 					}
 				}
 			}
-			boolean startedProperties=false;	//we'll keep track of whether we started a TURF preamble
 				//generate beginning labeled namespace URIs
 			final TURFNamespaceLabelManager namespaceLabelManager=getNamespaceLabelManager();	//get the namespace prefix manager
 			for(final Map.Entry<URI, Boolean> namespaceURIMultipleEntry:namespaceURIMultipleMap.entrySet())	//for each namespace URI entry
@@ -558,7 +592,8 @@ public class URFTURFGenerator
 				{
 					continue;
 				}
-				if(Boolean.TRUE.equals(namespaceURIMultipleEntry.getValue()) || namespaceLabelManager.isRecognized(namespaceURI))	//if this namespace URI is used more than one time, or if this is a namespace URI we specifically know is a namespace URI
+				//if this namespace URI is used more than one time, or if this is a namespace URI we specifically know is a namespace URI
+				if(Boolean.TRUE.equals(namespaceURIMultipleEntry.getValue()) || namespaceLabelManager.isRecognized(namespaceURI))
 				{
 					if(startedProperties)	//if we already started the preamble
 					{
@@ -588,6 +623,17 @@ public class URFTURFGenerator
 			indent();	//indent the resources
 			writeNewLine(appendable);
 		}
+		else if(isPropertyNamespacePrefixesForced)	//if we are not generating a container, but we still want property namespace prefixes, generate prefixes for all property namespaces, regardless of how often they are used
+		{
+			for(final URI propertyURI:referenceSummary.propertyURIReferenceMap.keySet())	//look at all property URIs
+			{
+				final URI namespaceURI=getNamespaceURI(propertyURI);	//get the namespace URI of this property URI
+				if(!DEFAULT_NAMESPACE_URI.equals(namespaceURI))	//ignore the default namespace
+				{
+					namespaceLabelManager.determineNamespaceLabel(namespaceURI);	//generate a namespace label for the URI
+				}
+			}
+		}
 			//generate the primary resource
 		if(primaryResource!=null)	//if there is a primary resource to generate
 		{
@@ -610,7 +656,7 @@ public class URFTURFGenerator
 				generateRootResource(appendable, urf, referenceSummary, resource);	//generate this root resource
 			}
 		}
-		if(generateSignature)	//if we generated a signature
+		if(generateContainer)	//if we generated a signature
 		{
 			unindent();
 			writeNewLine(appendable);

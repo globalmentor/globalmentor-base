@@ -66,11 +66,11 @@ public class URFTURFGeneratorTest
 	{
 		final URFResource sourceResource=sourceURF.getResourceByTypeURI(URI.create("http://guiseframework.com/namespaces/theme/Theme"));
 		assertNotNull("Could not find resource from source.", sourceResource);
-		final StringWriter writer=new StringWriter();
-		generator.generateResources(writer, sourceResource);
-		Log.info(writer.toString());
+		final StringBuilder stringBuilder=new StringBuilder();
+		generator.generateResources(stringBuilder, sourceResource);
+		Log.info(stringBuilder.toString());
 		final URFTURFProcessor urfProcessor=new URFTURFProcessor();
-		final StringReader reader=new StringReader(writer.toString());
+		final StringReader reader=new StringReader(stringBuilder.toString());
 		urfProcessor.process(new LineNumberReader(reader), null);
 		final URFResource destinationResource=urfProcessor.getURF().getResourceByTypeURI(URI.create("http://guiseframework.com/namespaces/theme/Theme"));
 		assertNotNull("Could not find resource from source.", sourceResource);

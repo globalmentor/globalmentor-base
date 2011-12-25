@@ -462,7 +462,7 @@ public class Files
 		final int pathLength = path.length(); //get the length of the path
 		final String filename = file.getName(); //get the name of the file
 		final int filenameLength = filename.length(); //get the length of the filename
-		assert path.substring(pathLength).equals(filename) : "Expected last part of path to be filename."; //the filename should always be the last part of the path, even if the file was originally crecated with an ending slash for a directory
+		assert path.substring(pathLength - filenameLength).equals(filename) : "Expected last part of path to be filename."; //the filename should always be the last part of the path, even if the file was originally created with an ending slash for a directory
 		return new File(path.substring(0, pathLength - filenameLength) + checkInstance(name, "Name cannot be null."));
 	}
 
@@ -496,6 +496,39 @@ public class Files
 			filename = addExtension(filename, extension); //add the requested extension
 		}
 		return filename; //return the new filename
+	}
+
+	/**
+	 * Checks to see if a given file exists as a directory, throwing an exception if not.
+	 * @param directory The file to check for existence as a directory.
+	 * @return The given file.
+	 * @throws FileNotFoundException if the given file does not exist or is not a directory.
+	 * @see File#isDirectory()
+	 */
+	public static File checkDirectoryExists(final File directory) throws FileNotFoundException
+	{
+		if(!directory.isDirectory()) //if the given file is not a directory
+		{
+			checkFileExists(directory); //see if the file isn't a directory or it doesn't exist altogether
+			throw new FileNotFoundException("File does not exist as a directory: " + directory);
+		}
+		return directory;
+	}
+
+	/**
+	 * Checks to see if a given file exists, throwing an exception if not.
+	 * @param file The file to check for existence.
+	 * @return The given file.
+	 * @throws FileNotFoundException if the given file does not exist.
+	 * @see File#exists()
+	 */
+	public static File checkFileExists(final File file) throws FileNotFoundException
+	{
+		if(!file.exists())
+		{
+			throw new FileNotFoundException("File does not exist: " + file);
+		}
+		return file;
 	}
 
 	/**
@@ -728,20 +761,14 @@ public class Files
 	}
 
 	/**
-	 * Escape all reserved filename characters to a two-digit hex representation using '^' as an escape character.
-	 * <p>
-	 * Note that this encodes path separators, and therefore this method should only be called on filenames, not paths.
-	 * </p>
-	 * @param string The filename string to be encoded.
-	 * 
-	 *          /**Checks to see if a particular file exists. If the file does not exist, yet a backup file exists, the backup file will be moved to the original
-	 *          file location. If this method returns true, there will be a file located at <code>file</code>.
+	 * Checks to see if a particular file exists. If the file does not exist, yet a backup file exists, the backup file will be moved to the original file
+	 * location. If this method returns true, there will be a file located at <code>file</code>.
 	 * @param file The file to check for existence.
 	 * @param backupFile The file to use as a backup if the original does not exist.
 	 * @return <code>true</code> if the file existed or exists now after moving the backup file, else <code>false</code> if neither file exists.
 	 * @exception IOException Thrown if the backup file cannot be moved.
 	 */
-	public static boolean checkExists(final File file, final File backupFile) throws IOException
+	public static boolean ensureExistsFromBackup(final File file, final File backupFile) throws IOException
 	{
 		if(file.exists()) //if the file exists
 		{
@@ -769,9 +796,9 @@ public class Files
 	 * @exception IOException Thrown if the backup file cannot be moved.
 	 * @see #getBackupFile
 	 */
-	public static boolean checkExists(final File file) throws IOException
+	public static boolean ensureExistsFromBackup(final File file) throws IOException
 	{
-		return checkExists(file, getBackupFile(file)); //check to see if the file exists, using the default filename for the backup file
+		return ensureExistsFromBackup(file, getBackupFile(file)); //check to see if the file exists, using the default filename for the backup file
 	}
 
 	protected final static char REPLACEMENT_CHAR = '_'; //the character to use to replace any other character  TODO maybe move these up and/or rename
@@ -880,8 +907,8 @@ public class Files
 	/**
 	 * Constructs a {@link URIs#FILE_SCHEME} scheme URI that represents this abstract pathname.
 	 * <p>
-	 * This functions similary to {@link File#toURI()}, except that this method always returns a true URI in which the characters all are within ranges allowed by
-	 * RFC 3986, notably that non-ASCII chracters are all encoded.
+	 * This functions similarly to {@link File#toURI()}, except that this method always returns a true URI in which the characters all are within ranges allowed
+	 * by RFC 3986, notably that non-ASCII characters are all encoded.
 	 * </p>
 	 * <p>
 	 * In addition, the character <code>';'</code> is encoded, as expected by HTTP servers such as Apache when part of the path.
@@ -890,8 +917,8 @@ public class Files
 	 * Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes.
 	 * </p>
 	 * @param file The file which should be converted to a URI.
-	 * @return An absolute, hierarchical URI with non-ASCII chracters encoded, with a {@link URIs#FILE_SCHEME} scheme, a path representing this abstract pathname,
-	 *         and undefined authority, query, and fragment components.
+	 * @return An absolute, hierarchical URI with non-ASCII characters encoded, with a {@link URIs#FILE_SCHEME} scheme, a path representing this abstract
+	 *         pathname, and undefined authority, query, and fragment components.
 	 * @throws NullPointerException if the given file is <code>null</code>.
 	 * @throws SecurityException If a required system property value cannot be accessed.
 	 * @see File#toURI()

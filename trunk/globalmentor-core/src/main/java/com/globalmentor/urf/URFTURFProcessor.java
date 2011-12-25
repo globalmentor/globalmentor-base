@@ -94,7 +94,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	}
 
 	/**Parses all resources and then processes the resulting URF instance.
-	The current position must be that of the TURF signature, {@value TURF#TURF_SIGNATURE}}.
+	The current position must be that of the TURF signature, {@value TURF#SIGNATURE}}.
 	The new position will be the end of the reader,
 	and any data appearing after the resources will be considered a syntax error.
 	@param reader The reader the contents of which to be parsed.
@@ -110,7 +110,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 		final List<URFResource> urfResourceList;
 		try
 		{
-			check(reader, TURF_SIGNATURE);	//read the TURF signature
+			check(reader, SIGNATURE);	//read the TURF signature
 			int c=skipFillers(reader);	//skip fillers
 			if(c==PROPERTIES_BEGIN)	//check for a TURF preamble
 			{

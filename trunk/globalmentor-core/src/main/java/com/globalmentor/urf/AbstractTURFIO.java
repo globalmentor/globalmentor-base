@@ -133,7 +133,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@param reader The reader from which to read the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The URF instance representing the data read.
-	@exception IOException if the reader does not suppport marking, or there is an error reading the data.
+	@exception IOException if the reader does not support marking, or there is an error reading the data.
 	*/
 	public static URF readTURF(final URF urf, final Reader reader, final URI baseURI) throws IOException
 	{
@@ -158,7 +158,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@param outputStream The output stream to which to write the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param urf The URF instance to write to the given output stream.
-	@excepion NullPointerException if the given output stream, and/or URF instance is <code>null</code>.
+	@exception NullPointerException if the given output stream, and/or URF instance is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
 	protected void writeURF(final OutputStream outputStream, final URI baseURI, final URF urf) throws IOException
@@ -183,7 +183,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@param outputStream The output stream to which to write the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param resource The resource to write to the given output stream.
-	@excepion NullPointerException if the given output stream and/or resource is <code>null</code>.
+	@exception NullPointerException if the given output stream and/or resource is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
 	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource) throws IOException
@@ -195,7 +195,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@param outputStream The output stream to which to write the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param urf The URF instance to write to the given output stream.
-	@excepion NullPointerException if the given output stream, and/or URF instance is <code>null</code>.
+	@exception NullPointerException if the given output stream, and/or URF instance is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
 	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf) throws IOException
@@ -209,7 +209,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@param resource The resource to write to the given output stream.
 	@param bomWritten Whether a byte order mark (BOM) is written.
 	@param formatted Whether output is formatted.
-	@excepion NullPointerException if the given output stream and/or resource is <code>null</code>.
+	@exception NullPointerException if the given output stream and/or resource is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
 	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource, final boolean bomWritten, final boolean formatted) throws IOException
@@ -223,7 +223,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@param urf The URF instance to write to the given output stream.
 	@param bomWritten Whether a byte order mark (BOM) is written.
 	@param formatted Whether output is formatted.
-	@excepion NullPointerException if the given output stream, and/or URF instance is <code>null</code>.
+	@exception NullPointerException if the given output stream, and/or URF instance is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
 	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf, final boolean bomWritten, final boolean formatted) throws IOException
@@ -236,7 +236,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param resource The resource to write to the given output stream.
 	@param namespacePrefixManager The manager of namespaces and prefixes.
-	@excepion NullPointerException if the given output stream, resource, and/or namespace prefix manager is <code>null</code>.
+	@exception NullPointerException if the given output stream, resource, and/or namespace prefix manager is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
 	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException
@@ -251,7 +251,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@param bomWritten Whether a byte order mark (BOM) is written.
 	@param formatted Whether output is formatted.
 	@param namespacePrefixManager The manager of namespaces and prefixes.
-	@excepion NullPointerException if the given output stream, resource, and/or namespace prefix manager is <code>null</code>.
+	@exception NullPointerException if the given output stream, resource, and/or namespace prefix manager is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
 	public static void writeTURFResource(final OutputStream outputStream, final URI baseURI, final URFResource resource, final boolean bomWritten, final boolean formatted, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException
@@ -271,7 +271,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param urf The URF instance to write to the given output stream.
 	@param namespacePrefixManager The manager of namespaces and prefixes.
-	@excepion NullPointerException if the given output stream, URF instance, and/or namespace prefix manager is <code>null</code>.
+	@exception NullPointerException if the given output stream, URF instance, and/or namespace prefix manager is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
 	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException
@@ -286,7 +286,7 @@ public abstract class AbstractTURFIO<T> extends AbstractURFIO<T>
 	@param bomWritten Whether a byte order mark (BOM) is written.
 	@param formatted Whether output is formatted.
 	@param namespacePrefixManager The manager of namespaces and prefixes.
-	@excepion NullPointerException if the given output stream, URF instance, and/or namespace prefix manager is <code>null</code>.
+	@exception NullPointerException if the given output stream, URF instance, and/or namespace prefix manager is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
 	public static void writeTURF(final OutputStream outputStream, final URI baseURI, final URF urf, final boolean bomWritten, final boolean formatted, final TURFNamespaceLabelManager namespacePrefixManager) throws IOException

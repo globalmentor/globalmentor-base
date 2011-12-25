@@ -196,7 +196,7 @@ public class TURF
 	public final static char BOOLEAN_TRUE_BEGIN='t';
 
 	/**The "magic number" marker indicating the beginning of TURF content.*/
-	public final static String TURF_SIGNATURE="`URF";
+	public final static String SIGNATURE="`URF";
 
 	/**The set of all URF class URIs that have short reference forms.*/
 	public final static Set<URI> SHORT_REFERENCE_CLASS_URIS;

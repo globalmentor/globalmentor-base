@@ -1409,16 +1409,14 @@ public class URF
 	 */
 	public static String toString(final URF urf)
 	{
-		final StringWriter stringWriter=new StringWriter();	//create a new string writer
 		try
 		{
-			new URFTURFGenerator().generateResources(stringWriter, urf);	//generate TURF from the URF
+			return new URFTURFGenerator().generateResources(new StringBuilder(), urf).toString();	//generate TURF from the URF
 		}
-		catch(final IOException ioException)	//there should never be a problem writing to a string writer
+		catch(final IOException ioException)	//there should never be a problem writing to a string builder
 		{
-			throw new AssertionError(ioException);
+			throw unexpected(ioException);
 		}
-		return stringWriter.toString();	//return the generated string contents
 	}
 	
 	/**Converts an URF resource to a string for debugging purposes.
@@ -1427,16 +1425,14 @@ public class URF
 	*/
 	public static String toString(final URFResource resource)
 	{
-		final StringWriter stringWriter=new StringWriter();	//create a new string writer
 		try
 		{
-			new URFTURFGenerator().generateResources(stringWriter, resource);	//generate TURF from the resource
+			return new URFTURFGenerator().generateResources(new StringBuilder(), resource).toString();	//generate TURF from the resource
 		}
-		catch(final IOException ioException)	//there should never be a problem writing to a string writer
+		catch(final IOException ioException)	//there should never be a problem writing to a string builder
 		{
-			throw new AssertionError(ioException);
+			throw unexpected(ioException);
 		}
-		return stringWriter.toString();	//return the generated string contents
 	}
 
 	/**Comparator for sorting resources in by their property counts, from few to many.*/

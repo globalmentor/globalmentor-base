@@ -154,7 +154,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	/**Adds a namespace URI and associates it with a default label.
 	@param namespaceURI The namespace URI to add.
 	@return <code>true</code> if the namespace was not previously known.
-	@excepion NullPointerException if the given namespace URI is <code>null</code>.
+	@exception NullPointerException if the given namespace URI is <code>null</code>.
 	*/
 	public boolean addNamespaceURI(final URI namespaceURI)
 	{
@@ -170,7 +170,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	}
 
 	/**Retrieves the label to use for the given namespace.
-	If a namespace is unrecognized (i.e. no label, inluding the <code>null</code> label, has been registered with the given namespace),
+	If a namespace is unrecognized (i.e. no label, including the <code>null</code> label, has been registered with the given namespace),
 	a new one will be created and stored in the map for future use.
 	The last package segment of any hierarchical URIs will be used as the namespace label if possible.
 	@param namespaceURI The namespace URI for which a label should be returned

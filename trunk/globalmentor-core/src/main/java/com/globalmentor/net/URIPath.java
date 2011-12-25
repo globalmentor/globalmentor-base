@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -235,6 +235,25 @@ public final class URIPath
 	}
 
 	/**
+	 * Relativizes a URI against a base URI and returns a {@link URIPath} object indicating the path relative to the base.
+	 * @param baseURI The base URI against which to relativize.
+	 * @param uri The URI to relativize against the base.
+	 * @return A new URI path relative to the base URI.
+	 * @see URI#relativize(URI)
+	 * @throws NullPointerException if the given base URI and/or URI is <code>null</code>.
+	 * @throws IllegalArgumentException if the given base URI is not actually a base URI of the given URI.
+	 */
+	public static URIPath relativize(final URI baseURI, final URI uri)
+	{
+		final URI relativeURI = baseURI.relativize(uri); //get a URI relative to the base URI
+		if(relativeURI.isAbsolute()) //if we couldn't relativize the the URI to the old base URI and come up with a relative URI
+		{
+			throw new IllegalArgumentException(baseURI.toASCIIString() + " is not a base URI of " + uri);
+		}
+		return new URIPath(relativeURI);
+	}
+
+	/**
 	 * Resolves the given path against this path. This is a convenience method that functions by creating a new {@link URIPath} from the given string and
 	 * delegating to {@link #resolve(URIPath)}.
 	 * <p>
@@ -447,7 +466,7 @@ public final class URIPath
 	 * For example, the path <code>one/two/three</code> will result in the base paths <code>one/</code>, <code>one/two/</code>, and <code>one/two/three</code>.
 	 * </p>
 	 * <p>
-	 * The tempty URI path and the root URI path <code>/</code> will each return a list containing only the URI path itself.
+	 * The empty URI path and the root URI path <code>/</code> will each return a list containing only the URI path itself.
 	 * </p>
 	 * @return The segments of the URI path.
 	 * @see #EMPTY_URI_PATH

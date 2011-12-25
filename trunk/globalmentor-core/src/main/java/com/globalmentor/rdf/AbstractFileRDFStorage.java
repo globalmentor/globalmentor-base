@@ -105,7 +105,7 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 		if(isBackupUsed())	//if backup files are used
 		{
 			final File backupFile=Files.getBackupFile(storageFile);  //get the expected backup file
-			return Files.checkExists(storageFile, backupFile);	//check to see if the file exists; if not, try to use the backup file instead
+			return Files.ensureExistsFromBackup(storageFile, backupFile);	//check to see if the file exists; if not, try to use the backup file instead
 		}
 		else	//if backup file use is not enabled
 		{
@@ -149,7 +149,7 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 		{
 			final File storageFile=new File(uri);	//get the file to represent the URI
 			final File backupFile=Files.getBackupFile(storageFile);  //get the expected backup file G***can't we just remove this parameter and use the default?
-			Files.checkExists(storageFile, backupFile);	//check to see if the file exists; if not, try to use the backup file instead
+			Files.ensureExistsFromBackup(storageFile, backupFile);	//check to see if the file exists; if not, try to use the backup file instead
 		}
 		super.retrieve(uri);	//attempt to retrieve the file normally		
 	}	

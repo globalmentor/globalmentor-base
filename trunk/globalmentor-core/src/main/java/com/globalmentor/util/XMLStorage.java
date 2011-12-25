@@ -615,7 +615,7 @@ Log.trace("using element: ", element.getNodeName());  //TODO del
 	public static Object retrieve(final File file, final Class type, final boolean useBackup) throws FileNotFoundException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
 	{
 		if(useBackup) //if we should use a backup file if the file doesn't exist
-			Files.checkExists(file);  //see if we can use a backup file if the file doesn't exist
+			Files.ensureExistsFromBackup(file);  //see if we can use a backup file if the file doesn't exist
 		final InputStream inputStream=new BufferedInputStream(new FileInputStream(file));  //create a buffered input stream for the file
 		try
 		{
