@@ -108,7 +108,7 @@ public abstract class AbstractDecoratorCollectionMap<K, V, C extends Collection<
 		return collection!=null ? collection : (Iterable<V>)EMPTY_ITERABLE;	//return the collection or an empty iterable if there is no collection for this key
 	}
 
-	/**Removes the first occurence of the given value from the collection of values, if any, associated with the key.
+	/**Removes the first occurrence of the given value from the collection of values, if any, associated with the key.
 	If all items from the collection are removed, the collection itself is removed from the map.
 	@param key The key in the map.
 	@param value The item to be removed from the collection, if present.
