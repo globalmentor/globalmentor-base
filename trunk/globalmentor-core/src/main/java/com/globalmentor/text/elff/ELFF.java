@@ -25,8 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.globalmentor.collections.Maps.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.StringBuilders.*;
-import static com.globalmentor.model.TimeZones.*;
 import static com.globalmentor.net.URIs.*;
+import static com.globalmentor.time.TimeZones.*;
 
 import com.globalmentor.model.NameValuePair;
 

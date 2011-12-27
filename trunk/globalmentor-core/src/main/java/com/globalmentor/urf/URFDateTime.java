@@ -19,8 +19,8 @@ package com.globalmentor.urf;
 import java.util.*;
 
 import com.globalmentor.iso.ISO8601;
-import com.globalmentor.model.Calendars;
 import com.globalmentor.text.*;
+import com.globalmentor.time.Calendars;
 
 /**
  * The class representing an <code>urf.DateTime</code> type. If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally

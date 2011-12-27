@@ -16,7 +16,7 @@
 
 package com.globalmentor.urf;
 
-import static com.globalmentor.model.TimeZones.*;
+import static com.globalmentor.time.TimeZones.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 

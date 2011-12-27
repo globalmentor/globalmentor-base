@@ -23,7 +23,7 @@ import com.globalmentor.text.*;
 
 import static com.globalmentor.iso.ISO8601.*;
 import static com.globalmentor.java.Conditions.*;
-import static com.globalmentor.model.TimeZones.*;
+import static com.globalmentor.time.TimeZones.*;
 
 /**The class representing an <code>urf.UTCOffset</code> type.
 @author Garret Wilson

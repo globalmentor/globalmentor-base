@@ -31,8 +31,8 @@ import static com.globalmentor.iso.ISO8601.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Strings.*;
-import static com.globalmentor.model.Calendars.*;
-import static com.globalmentor.model.TimeZones.*;
+import static com.globalmentor.time.Calendars.*;
+import static com.globalmentor.time.TimeZones.*;
 import static com.globalmentor.urf.URF.*;
 
 /**
