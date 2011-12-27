@@ -16,10 +16,9 @@
 
 package com.globalmentor.collections;
 
-import static java.util.Collections.emptySet;
+import static java.util.Collections.*;
 
 import java.util.*;
-import java.util.Collections;
 
 /**
  * Utilities to be used with sets.
@@ -36,7 +35,49 @@ public class Sets
 	 */
 	public static <E> Set<E> immutableSetOf(final E... elements) //TODO improve to return an ImmutableSet<E>
 	{
-		return immutableSetOf(Collections.<E> emptySet(), elements);
+		return immutableSetOf(java.util.Collections.<E> emptySet(), elements);
+	}
+
+	/**
+	 * Creates a read-only set containing the elements of the provided iterable along with the given elements.
+	 * @param <E> The type of element contained in the set.
+	 * @param iterable The existing iterable to augment.
+	 * @param elements The elements to be contained in the set.
+	 * @throws NullPointerException if the given iterable and/or array of elements is <code>null</code>.
+	 */
+	public static <E> Set<E> immutableSetOf(final Iterable<? extends E> iterable, final E... elements) //TODO improve to return an ImmutableSet<E>
+	{
+		if(iterable instanceof Collection<?>) //if a collection was given
+		{
+			return immutableSetOf((Collection<? extends E>)iterable, elements); //delegate to the collection version
+		}
+		@SuppressWarnings("unchecked")
+		final Iterator<E> iterator = (Iterator<E>)iterable.iterator();
+		if(!iterator.hasNext()) //if the iterable is empty, delegate to the collection version with no elements in the collection
+		{
+			return immutableSetOf(java.util.Collections.<E> emptySet(), elements);
+		}
+		E object = null; //we'll store an object here if we have one while doing checks
+		if(elements.length == 0) //if no extra elements are given, take some shortcuts
+		{
+			if(!iterator.hasNext()) //if there are no iterable elements, either
+			{
+				return emptySet(); //return the shared empty set
+			}
+			object = iterator.next(); //get the first object
+			if(!iterator.hasNext()) //if there is only one object
+			{
+				return new ObjectSet<E>(object); //return an immutable set containing only one object
+			}
+		}
+		final Set<E> newSet = new HashSet<E>(); //use a normal set TODO improve for enums
+		if(object != null) //if we have an object to add
+		{
+			newSet.add(object);
+		}
+		Collections.addAll(newSet, iterator); //add all the elements in the iterator
+		java.util.Collections.addAll(newSet, elements); //add all the extra elements
+		return java.util.Collections.unmodifiableSet(newSet); //wrap the set in an unmodifiable set
 	}
 
 	/**
@@ -85,9 +126,9 @@ public class Sets
 			if(set == null) //if the elements are of any other type
 			{
 				set = new HashSet<E>(); //create a new set
-				Collections.addAll(set, elements); //add all the elements
+				java.util.Collections.addAll(set, elements); //add all the elements
 			}
-			return Collections.unmodifiableSet(set); //wrap the set in an unmodifiable set
+			return java.util.Collections.unmodifiableSet(set); //wrap the set in an unmodifiable set
 		}
 		if(elements.length == 0) //if no extra elements are given, take some shortcuts
 		{
@@ -119,8 +160,8 @@ public class Sets
 		{
 			newSet = new HashSet<E>(); //use a normal set
 		}
-		Collections.addAll(newSet, elements); //add all the elements
-		return Collections.unmodifiableSet(newSet); //wrap the set in an unmodifiable set
+		java.util.Collections.addAll(newSet, elements); //add all the elements
+		return java.util.Collections.unmodifiableSet(newSet); //wrap the set in an unmodifiable set
 	}
 
 }

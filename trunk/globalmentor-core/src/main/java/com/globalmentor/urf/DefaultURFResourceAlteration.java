@@ -19,6 +19,8 @@ package com.globalmentor.urf;
 import java.net.URI;
 import java.util.*;
 
+import com.globalmentor.collections.Sets;
+
 import static java.util.Arrays.*;
 import static java.util.Collections.*;
 
@@ -76,7 +78,7 @@ public class DefaultURFResourceAlteration implements URFResourceAlteration
 	@param propertyAdditions The properties and values to add.
 	@throws NullPointerException if the given property URI removals and/or property additions is <code>null</code>.
 	*/
-	public DefaultURFResourceAlteration(final Collection<URI> propertyURIRemovals, final Collection<URFProperty> propertyAdditions)
+	public DefaultURFResourceAlteration(final Iterable<URI> propertyURIRemovals, final Iterable<URFProperty> propertyAdditions)
 	{
 		this(propertyURIRemovals, Collections.<URFProperty>emptySet(), propertyAdditions);	//construct the class without indicating property removals
 	}
@@ -87,7 +89,7 @@ public class DefaultURFResourceAlteration implements URFResourceAlteration
 	@param propertyAdditions The properties and values to add.
 	@throws NullPointerException if the given property URI removals and/or property additions is <code>null</code>.
 	*/
-	public DefaultURFResourceAlteration(final URI resourceURI, final Collection<URI> propertyURIRemovals, final Collection<URFProperty> propertyAdditions)
+	public DefaultURFResourceAlteration(final URI resourceURI, final Iterable<URI> propertyURIRemovals, final Iterable<URFProperty> propertyAdditions)
 	{
 		this(resourceURI, propertyURIRemovals, Collections.<URFProperty>emptySet(), propertyAdditions);	//construct the class without indicating property removals
 	}
@@ -99,7 +101,7 @@ public class DefaultURFResourceAlteration implements URFResourceAlteration
 	@param propertyAdditions The properties and values to add.
 	@throws NullPointerException if the given property URI removals, property removals, and/or property additions is <code>null</code>.
 	*/
-	public DefaultURFResourceAlteration(final Collection<URI> propertyURIRemovals, final Collection<URFProperty> propertyRemovals, final Collection<URFProperty> propertyAdditions)
+	public DefaultURFResourceAlteration(final Iterable<URI> propertyURIRemovals, final Iterable<URFProperty> propertyRemovals, final Iterable<URFProperty> propertyAdditions)
 	{
 		this(null, propertyURIRemovals, propertyRemovals, propertyAdditions);	//construct the class without indicating a new resource URI
 	}
@@ -111,12 +113,12 @@ public class DefaultURFResourceAlteration implements URFResourceAlteration
 	@param propertyAdditions The properties and values to add.
 	@throws NullPointerException if the given property URI removals, property removals, and/or property additions is <code>null</code>.
 	*/
-	public DefaultURFResourceAlteration(final URI resourceURI, final Collection<URI> propertyURIRemovals, final Collection<URFProperty> propertyRemovals, final Collection<URFProperty> propertyAdditions)
+	public DefaultURFResourceAlteration(final URI resourceURI, final Iterable<URI> propertyURIRemovals, final Iterable<URFProperty> propertyRemovals, final Iterable<URFProperty> propertyAdditions)
 	{
 		this(resourceURI,
-				unmodifiableSet(new HashSet<URI>(propertyURIRemovals)),
-				unmodifiableSet(new HashSet<URFProperty>(propertyRemovals)),
-				unmodifiableSet(new HashSet<URFProperty>(propertyAdditions)));
+				Sets.immutableSetOf(propertyURIRemovals),
+				Sets.immutableSetOf(propertyRemovals),
+				Sets.immutableSetOf(propertyAdditions));
 	}
 
 	/**Resource URI, property URI removals, property removals, and property additions constructor.
@@ -175,9 +177,9 @@ public class DefaultURFResourceAlteration implements URFResourceAlteration
 	@return A resource alteration indicating that the given properties should be added.
 	@throws NullPointerException if the given properties is <code>null</code>.
 	*/
-	public static DefaultURFResourceAlteration createAddPropertiesAlteration(final Collection<URFProperty> properties)
+	public static DefaultURFResourceAlteration createAddPropertiesAlteration(final Iterable<URFProperty> properties)
 	{
-		return new DefaultURFResourceAlteration(null, Collections.<URI>emptySet(), Collections.<URFProperty>emptySet(), unmodifiableSet(new HashSet<URFProperty>(properties)));
+		return new DefaultURFResourceAlteration(null, Collections.<URI>emptySet(), Collections.<URFProperty>emptySet(), Sets.immutableSetOf(properties));
 	}
 
 	/**Creates an alteration to set the given properties by removing all properties with the URIs of the properties to set
@@ -199,10 +201,10 @@ public class DefaultURFResourceAlteration implements URFResourceAlteration
 	@return A resource alteration indicating that the given properties should be set.
 	@throws NullPointerException if the given properties is <code>null</code>.
 	*/
-	public static DefaultURFResourceAlteration createSetPropertiesAlteration(final Collection<URFProperty> properties)
+	public static DefaultURFResourceAlteration createSetPropertiesAlteration(final Iterable<URFProperty> properties)
 	{
-		final Set<URI> propertyURIRemovals=new HashSet<URI>(properties.size());	//the URIs of the properties to remove
-		final Set<URFProperty> propertyAdditions=new HashSet<URFProperty>(properties.size());	//the properties to add
+		final Set<URI> propertyURIRemovals=new HashSet<URI>();	//the URIs of the properties to remove
+		final Set<URFProperty> propertyAdditions=new HashSet<URFProperty>();	//the properties to add
 		for(final URFProperty property:properties)	//for each property
 		{
 			propertyURIRemovals.add(property.getPropertyURI());	//indicate that we should remove all values of this property
@@ -219,7 +221,7 @@ public class DefaultURFResourceAlteration implements URFResourceAlteration
 	*/
 	public static DefaultURFResourceAlteration createRemovePropertiesAlteration(final URI... propertyURIRemovals)
 	{
-		return createRemovePropertiesAlteration(asList(propertyURIRemovals));
+		return new DefaultURFResourceAlteration(null, Sets.immutableSetOf(propertyURIRemovals), Collections.<URFProperty>emptySet(), Collections.<URFProperty>emptySet());
 	}
 
 	/**Creates an alteration to remove all values of the properties with the given URIs.
@@ -228,9 +230,9 @@ public class DefaultURFResourceAlteration implements URFResourceAlteration
 	@return A resource alteration indicating that the given properties should be removed.
 	@throws NullPointerException if the given properties is <code>null</code>.
 	*/
-	public static DefaultURFResourceAlteration createRemovePropertiesAlteration(final Collection<URI> propertyURIRemovals)
+	public static DefaultURFResourceAlteration createRemovePropertiesAlteration(final Iterable<URI> propertyURIRemovals)
 	{
-		return new DefaultURFResourceAlteration(null, unmodifiableSet(new HashSet<URI>(propertyURIRemovals)), Collections.<URFProperty>emptySet(), Collections.<URFProperty>emptySet());
+		return new DefaultURFResourceAlteration(null, Sets.immutableSetOf(propertyURIRemovals), Collections.<URFProperty>emptySet(), Collections.<URFProperty>emptySet());
 	}
 
 	/**Combines the given alterations with the alterations specified in this object and returns a new specification of the union of alterations.

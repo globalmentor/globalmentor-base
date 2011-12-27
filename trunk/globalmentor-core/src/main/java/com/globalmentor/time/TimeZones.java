@@ -52,7 +52,7 @@ public class TimeZones
 			final boolean negative=offset<0;	//see if the offset is negative
 			if(negative)	//if the offset is negative
 			{
-				offset=-offset;	//use the postive offset in our calculations
+				offset=-offset;	//use the positive offset in our calculations
 			}
 			final int hours=offset/(60*60*1000);	//get the hours
 			final int minutes=(offset-(hours*60*60*1000))/(60*1000);	//determine the minutes
