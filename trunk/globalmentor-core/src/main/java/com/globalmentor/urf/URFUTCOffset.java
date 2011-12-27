@@ -34,9 +34,6 @@ public class URFUTCOffset implements URFTemporal
 	/**The shared UTC offset representing Coordinated Universal Time (UTC), +00:00.*/
 	public final static URFUTCOffset UTC=new URFUTCOffset(0, 0);
 
-	/**The shared time zone representing Greenwich Mean Time (GMT).*/
-	public final static TimeZone GMT=TimeZone.getTimeZone(GMT_ID);
-
 	/**The offset hours.*/
 	private final int hours;
 

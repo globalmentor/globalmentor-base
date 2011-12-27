@@ -270,10 +270,10 @@ public class CharSequences
 	}
 
 	/**
-	 * Counts the number of occurences of a particular character in a character sequence.
+	 * Counts the number of occurrences of a particular character in a character sequence.
 	 * @param charSequence The character sequence to examine.
 	 * @param character The character to count.
-	 * @return The number of occurences of the character in the character sequence.
+	 * @return The number of occurrences of the character in the character sequence.
 	 */
 	public static int count(final CharSequence charSequence, final char character)
 	{
@@ -281,11 +281,11 @@ public class CharSequences
 	}
 
 	/**
-	 * Counts the number of occurences of a particular character in a character sequence, starting at a specified index and searching forward.
+	 * Counts the number of occurrences of a particular character in a character sequence, starting at a specified index and searching forward.
 	 * @param charSequence The character sequence to examine.
 	 * @param character The character to count.
 	 * @param fromIndex The index to start counting at.
-	 * @return The number of occurences of the character in the character sequence.
+	 * @return The number of occurrences of the character in the character sequence.
 	 */
 	public static int count(final CharSequence charSequence, final char character, final int fromIndex)
 	{
@@ -295,7 +295,7 @@ public class CharSequences
 		{
 			if(charSequence.charAt(i) == character) //if this character matches the given characters
 			{
-				++count; //show that we found one more occurence characters
+				++count; //show that we found one more occurrence characters
 			}
 		}
 		return count; //return the total count

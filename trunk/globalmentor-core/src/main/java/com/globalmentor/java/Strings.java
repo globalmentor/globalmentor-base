@@ -512,14 +512,26 @@ public class Strings
 	}
 
 	/**
-	 * Ensures that the given string is the correct length by adding or deleting characters to or from the front.
+	 * Ensures that the given string is the correct length by adding or deleting characters to or from the end.
+	 * @param inString The string to process.
+	 * @param len The requested length.
+	 * @param ch The character to be added to the string, if needed.
+	 * @return A string with the correct length.
+	 */
+	public static String makeStringLength(final String inString, final int len, final char ch) //TODO rename to forceLength
+	{
+		return makeStringLength(inString, len, ch, -1);
+	}
+
+	/**
+	 * Ensures that the given string is the correct length by adding or deleting characters to or from the requested position.
 	 * @param inString The string to process.
 	 * @param len The requested length.
 	 * @param ch The character to be added to the string, if needed.
 	 * @param pos The position at which to insert or delete characters, or -1 if the end should be used.
 	 * @return A string with the correct length.
 	 */
-	public static String makeStringLength(final String inString, final int len, final char ch, int pos) //TODO refactor this into a StringBuilderUtilities method
+	public static String makeStringLength(final String inString, final int len, final char ch, int pos) //TODO rename to forceLength
 	{
 		final int originalLength = inString.length(); //get the length of the original string
 		if(originalLength == len) //if the string is already the correct length
@@ -529,24 +541,7 @@ public class Strings
 		else
 		//if the string isn't the correct length already
 		{
-			final StringBuilder stringBuilder = new StringBuilder(inString); //create a new string builder with the contents of the existing string
-			if(pos == -1) //if they want to insert/delete characters at the end of the string
-			{
-				pos = originalLength; //find that position
-			}
-			if(originalLength > len) //if the string is too long
-			{
-				final int removeCount = originalLength - len; //find out how many characters to remove
-				if(pos > originalLength - removeCount) //if our position is too close to the end to successfully remove all characters
-					pos = originalLength - removeCount; //place our position at just the right place to remove the characters
-				stringBuilder.delete(pos, pos + removeCount); //remove the characters
-			}
-			else
-			//if the string is too short
-			{
-				StringBuilders.insert(stringBuilder, pos, ch, len - originalLength); //insert a string of the correct length at the correct position with the specified characters
-			}
-			return stringBuilder.toString(); //return a string representation of our string builder
+			return StringBuilders.appendForceLength(new StringBuilder(), inString, len, ch, pos).toString(); //append the needed characters to a string builder and return the resulting string
 		}
 	}
 

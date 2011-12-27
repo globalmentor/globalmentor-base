@@ -36,37 +36,37 @@ public class URFTime implements URFTemporal
 	/** The shared time representing midnight UTC, the time 00:00:00+00:00. */
 	public final static URFTime MIDNIGHT_UTC = new URFTime(0, 0, 0, 0, URFUTCOffset.UTC);
 
-	/** The hours. */
+	/** The hours, 0-23. */
 	private final int hours;
 
-	/** @return The hours. */
+	/** @return The hours, 0-23. */
 	public final int getHours()
 	{
 		return hours;
 	}
 
-	/** The minutes. */
+	/** The minutes, 0-59. */
 	private final int minutes;
 
-	/** @return The minutes. */
+	/** @return The minutes, 0-59. */
 	public final int getMinutes()
 	{
 		return minutes;
 	}
 
-	/** The seconds. */
+	/** The seconds, 0-60 (allowing leap-seconds; see ISO 8601:2004(E) 4.2.1). */
 	private final int seconds;
 
-	/** @return The seconds. */
+	/** @return The seconds, 0-60 (allowing leap-seconds; see ISO 8601:2004(E) 4.2.1). */
 	public final int getSeconds()
 	{
 		return seconds;
 	}
 
-	/** The microseconds. */
+	/** The microseconds, 0-999999. */
 	private final int microseconds;
 
-	/** @return The microseconds. */
+	/** @return The microseconds, 0-999999. */
 	public final int getMicroseconds()
 	{
 		return microseconds;
@@ -86,7 +86,7 @@ public class URFTime implements URFTemporal
 	 * @param hours The hours, 0-23.
 	 * @param minutes The minutes, 0-59.
 	 * @param seconds The seconds, 0-60 (allowing leap-seconds; see ISO 8601:2004(E) 4.2.1).
-	 * @param microseconds The microseconds, 0-999999
+	 * @param microseconds The microseconds, 0-999999.
 	 * @param utcOffset The UTC offset, or <code>null</code> if no UTC offset is known.
 	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
@@ -171,7 +171,7 @@ public class URFTime implements URFTemporal
 		{
 			stringBuilder.append(DECIMAL_DELIMITER); //indicate that subseconds are present
 			assert microseconds < 1000000 : "Unexpectedly more than a million microseconds."; //TODO check this in the constructor
-			stringBuilder.append(Integer.toString(microseconds)); //append the string form of the microseconds
+			appendForceLength(stringBuilder, Integer.toString(microseconds), 6, '0', 0); //append the string form of the microseconds, making sure the microseconds have a full six digits
 			trimEnd(stringBuilder, '0'); //remove trailing zeros
 		}
 		final URFUTCOffset utcOffset = getUTCOffset(); //get the UTC offset, if any

@@ -122,7 +122,8 @@ public class StringBuilders
 	 * @return A concatenation of string representations of all objects in the array, separated by the separator character.
 	 * @see Object#toString()
 	 */
-	@Deprecated	//TODO move to TextFormatter
+	@Deprecated
+	//TODO move to TextFormatter
 	public static StringBuilder append(final StringBuilder stringBuilder, final Object[] objects, final char separator, final Object ignoreObject)
 	{
 		for(final Object object : objects) //look at each object
@@ -417,8 +418,76 @@ public class StringBuilders
 			stringBuilder.deleteCharAt(matchIndex); //delete the escape character
 			matchIndex = indexOf(stringBuilder, escapeChar, matchIndex + 1); //find the next match character, ignoring the following character which is now at the current match position
 		}
-		;
 		return stringBuilder; //return the string builder
+	}
+
+	/**
+	 * Appends a character sequence, ensuring that the given character sequence is the correct length by adding or deleting characters to or from the end.
+	 * @param stringBuilder The string builder to which the character sequence should be added.
+	 * @param charSequence The character sequence to add.
+	 * @param forceLength The requested length.
+	 * @param character The character to be added to the character sequence, if needed.
+	 * @return A character sequence that is the requested number of characters longer.
+	 */
+	public static StringBuilder appendForceLength(final StringBuilder stringBuilder, final CharSequence charSequence, final int forceLength, final char character)
+	{
+		return appendForceLength(stringBuilder, charSequence, forceLength, character, -1);
+	}
+
+	/**
+	 * Appends a character sequence, ensuring that the given character sequence is the correct length by adding or deleting characters to or from the given
+	 * position.
+	 * @param stringBuilder The string builder to which the character sequence should be added.
+	 * @param charSequence The character sequence to add.
+	 * @param forceLength The requested length.
+	 * @param character The character to be added to the character sequence, if needed.
+	 * @param position The position at which to insert or delete characters, or -1 if the end should be used.
+	 * @return A character sequence that is the requested number of characters longer.
+	 */
+	public static StringBuilder appendForceLength(final StringBuilder stringBuilder, final CharSequence charSequence, final int forceLength,
+			final char character, int position)
+	{
+		final int originalLength = charSequence.length(); //get the length of the original string
+		if(originalLength == forceLength) //if the string is already the correct length
+		{
+			stringBuilder.append(charSequence); //append it as it is
+		}
+		else
+		//if we need to make changes
+		{
+			if(position == -1) //if they want to insert/delete characters at the end of the string
+			{
+				position = originalLength; //find that position
+			}
+			final int removeEnd;
+			if(originalLength > forceLength) //if the string is too long
+			{
+				final int removeCount = originalLength - forceLength; //find out how many characters to remove
+				if(position > originalLength - removeCount) //if our position is too close to the end to successfully remove all characters
+				{
+					position = originalLength - removeCount; //place our position at just the right place to remove the characters
+				}
+				removeEnd = position + removeCount; //remove the required number of characters
+			}
+			else
+			//if the string is too short
+			{
+				removeEnd = position; //there is nothing to remove
+			}
+			if(position > 0) //append the first part, if any
+			{
+				stringBuilder.append(charSequence, 0, position);
+			}
+			if(removeEnd == position) //if nothing is being removed, then we must be adding something
+			{
+				append(stringBuilder, character, forceLength - originalLength); //append the needed padding characters
+			}
+			if(removeEnd < originalLength) //if there are remaining characters
+			{
+				stringBuilder.append(charSequence, removeEnd, originalLength);
+			}
+		}
+		return stringBuilder;
 	}
 
 	/**
@@ -703,7 +772,7 @@ public class StringBuilders
 		}
 		return replacementCount; //show how many characters we replaced
 	}
-	
+
 	/**
 	 * Replaces each matching character with the corresponding replacement string.
 	 * @param stringBuilder The buffer in which the replacements will be made.

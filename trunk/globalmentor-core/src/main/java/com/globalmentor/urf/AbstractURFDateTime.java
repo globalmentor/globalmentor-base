@@ -33,28 +33,28 @@ import static com.globalmentor.iso.ISO8601.*;
 public abstract class AbstractURFDateTime extends Date implements URFTemporal
 {
 
-	/** The year. */
+	/** The year, 0-9999. */
 	private final int year;
 
-	/** @return The year. */
+	/** @return The year, 0-9999. */
 	public final int getYear()
 	{
 		return year;
 	}
 
-	/** The month. */
+	/** The month, 1-12. */
 	private final int month;
 
-	/** @return The month. */
+	/** @return The month, 1-12. */
 	public final int getMonth()
 	{
 		return month;
 	}
 
-	/** The day. */
+	/** The day, 1-31. */
 	private final int day;
 
-	/** @return The day. */
+	/** @return The day, 1-31. */
 	public final int getDay()
 	{
 		return day;

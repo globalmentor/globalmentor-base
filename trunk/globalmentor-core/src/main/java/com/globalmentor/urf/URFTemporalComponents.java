@@ -176,8 +176,9 @@ public class URFTemporalComponents
 		{
 			if(hours >= 0 && minutes >= 0 && seconds >= 0 && microseconds >= 0) //if date and time is available
 			{
-				setDateTime(calendar, checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31), checkArgumentRange(hours, 0, 23),
-						checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60), checkArgumentRange(microseconds, 0, 999999) / 1000); //set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
+				setDateTime(calendar, checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31),
+						checkArgumentRange(hours, 0, 23), checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60),
+						checkArgumentRange(microseconds, 0, 999999) / 1000); //set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
 			}
 			else
 			//if no time is available
@@ -187,7 +188,8 @@ public class URFTemporalComponents
 		}
 		else if(hours >= 0 && minutes >= 0 && seconds >= 0 && microseconds >= 0) //if only time is available
 		{
-			setTime(calendar, checkArgumentRange(hours, 0, 23), checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60), checkArgumentRange(microseconds, 0, 999999) / 1000); //set the calendar's time, converting the microseconds to milliseconds
+			setTime(calendar, checkArgumentRange(hours, 0, 23), checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60),
+					checkArgumentRange(microseconds, 0, 999999) / 1000); //set the calendar's time, converting the microseconds to milliseconds
 		}
 		this.time = calendar.getTimeInMillis(); //get the time from the calendar
 	}
@@ -318,11 +320,11 @@ public class URFTemporalComponents
 	public static Calendar createCalendar(final int year, final int month, final int day, final int hours, final int minutes, final int seconds,
 			final int microseconds, final URFUTCOffset utcOffset, final Locale locale)
 	{
-		final Calendar calendar = new GregorianCalendar(utcOffset != null ? utcOffset.toTimeZone() : URFUTCOffset.GMT, checkInstance(locale,
-				"Locale cannot be null.")); //get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
+		final Calendar calendar = new GregorianCalendar(utcOffset != null ? utcOffset.toTimeZone() : GMT, checkInstance(locale, "Locale cannot be null.")); //get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
 		calendar.clear(); //clear the calendar
-		return setDateTime(calendar, checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31), checkArgumentRange(hours, 0, 23),
-				checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60), checkArgumentRange(microseconds, 0, 999999) / 1000); //set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
+		return setDateTime(calendar, checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31),
+				checkArgumentRange(hours, 0, 23), checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60),
+				checkArgumentRange(microseconds, 0, 999999) / 1000); //set the calendar's date and the time, allowing leap-seconds (see ISO 8601:2004(E) 4.2.1); compensate for Calendar's zero-based month
 	}
 
 	/**
@@ -448,12 +450,12 @@ public class URFTemporalComponents
 			if(hasDate) //if we should parse a date
 			{
 				year = Integer.parseInt(readStringCheck(reader, 4, '0', '9')); //read the year
-				if(requireDelimiters || peek(reader)==DATE_DELIMITER)
+				if(requireDelimiters || peek(reader) == DATE_DELIMITER)
 				{
 					check(reader, DATE_DELIMITER); //check the date delimiter
 				}
 				month = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the month
-				if(requireDelimiters || peek(reader)==DATE_DELIMITER)
+				if(requireDelimiters || peek(reader) == DATE_DELIMITER)
 				{
 					check(reader, DATE_DELIMITER); //check the date delimiter
 				}
@@ -477,12 +479,12 @@ public class URFTemporalComponents
 					check(reader, TIME_BEGIN); //check the beginning of the time section
 				}
 				hours = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the hours
-				if(requireDelimiters || peek(reader)== TIME_DELIMITER)
+				if(requireDelimiters || peek(reader) == TIME_DELIMITER)
 				{
 					check(reader, TIME_DELIMITER); //check the time delimiter
 				}
 				minutes = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the minutes
-				if(!lenient || peek(reader)==TIME_DELIMITER) //if there are seconds (seconds are only optional if we are parsing leniently)
+				if(!lenient || peek(reader) == TIME_DELIMITER) //if there are seconds (seconds are only optional if we are parsing leniently)
 				{
 					check(reader, TIME_DELIMITER); //check the time delimiter
 					seconds = Integer.parseInt(readStringCheck(reader, 2, '0', '9')); //read the seconds
