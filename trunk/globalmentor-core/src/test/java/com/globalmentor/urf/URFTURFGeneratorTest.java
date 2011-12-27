@@ -20,7 +20,8 @@ import java.io.*;
 import java.net.*;
 
 import com.globalmentor.io.Charsets;
-import com.globalmentor.log.Log;
+//import com.globalmentor.log.Log;
+import com.globalmentor.test.AbstractTest;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -28,7 +29,7 @@ import org.junit.Test;
 /**Tests for URF generation of TURF.
 @author Garret Wilson
 */
-public class URFTURFGeneratorTest
+public class URFTURFGeneratorTest extends AbstractTest
 {
 
 	/**Retrieves URF for testing from a resource.
@@ -68,7 +69,7 @@ public class URFTURFGeneratorTest
 		assertNotNull("Could not find resource from source.", sourceResource);
 		final StringBuilder stringBuilder=new StringBuilder();
 		generator.generateResources(stringBuilder, sourceResource);
-		Log.info(stringBuilder.toString());
+		//Log.debug(stringBuilder.toString());
 		final URFTURFProcessor urfProcessor=new URFTURFProcessor();
 		final StringReader reader=new StringReader(stringBuilder.toString());
 		urfProcessor.process(new LineNumberReader(reader), null);

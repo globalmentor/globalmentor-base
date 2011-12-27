@@ -20,7 +20,8 @@ import java.io.*;
 import java.net.*;
 
 import com.globalmentor.io.Charsets;
-import com.globalmentor.log.Log;
+//import com.globalmentor.log.Log;
+import com.globalmentor.test.AbstractTest;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -28,7 +29,7 @@ import org.junit.Test;
 /**Tests for URF processing of TURF.
 @author Garret Wilson
 */
-public class URFTURFProcessorTest
+public class URFTURFProcessorTest extends AbstractTest
 {
 
 	/**Tests that the URF parser can parse a complex, comma-list-separated file.*/
@@ -46,7 +47,7 @@ public class URFTURFProcessorTest
 		{
 			reader.close();
 		}
-		Log.info(URF.toString(urfProcessor.getURF()));
+		//Log.debug(URF.toString(urfProcessor.getURF()));
 	}
 
 	/**Tests that the URF parser can parse a complex, comma-list-separated file.*/
@@ -64,7 +65,7 @@ public class URFTURFProcessorTest
 		{
 			reader.close();
 		}
-		Log.debug(URF.toString(urfProcessor.getURF()));
+		//Log.debug(URF.toString(urfProcessor.getURF()));
 	}
 
 	/**Tests that the URF parser can parse two complex, comma-list-separated and comma-newline-separated file and consider them equal.*/
@@ -116,7 +117,7 @@ public class URFTURFProcessorTest
 		{
 			reader.close();
 		}
-		Log.info(URF.toString(urfProcessor.getURF()));
+		//Log.debug(URF.toString(urfProcessor.getURF()));
 	}
 
 	/**Tests that the URF parser can parse a legacy TURF file containing old, deprecated features.*/
@@ -134,6 +135,6 @@ public class URFTURFProcessorTest
 		{
 			reader.close();
 		}
-		Log.info(URF.toString(urfProcessor.getURF()));
+		//Log.debug(URF.toString(urfProcessor.getURF()));
 	}
 }
