@@ -34,17 +34,17 @@ package com.globalmentor.java;
  * <blockquote>
  * 
  * <pre>
- * {@code
- * 	Disposable myDisposable=createDisposable();
- * 	try
- * 	{
- * 		...
- * 	}
- * 	finally
- * 	{
- * 		myDisposable.dispose();
- * 	}
+ * <code>
+ * Disposable myDisposable=createDisposable();
+ * try
+ * {
+ *   ...
  * }
+ * finally
+ * {
+ *   myDisposable.dispose();
+ * }
+ * </code>
  * </pre>
  * 
  * </blockquote>
