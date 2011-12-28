@@ -21,6 +21,8 @@ import static com.globalmentor.java.Conditions.*;
 
 import java.io.*;
 
+import com.globalmentor.log.Log;
+
 /**
  * An output stream used for the temporary collection of bytes. The bytes are collected in memory using a {@link ByteArrayOutputStream}. If the collected bytes
  * rise above a configured threshold, bytes are collected instead in a temporary file that is removed when the output stream is closed. No additional buffering
@@ -178,7 +180,7 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	@Override
 	public void write(byte b[]) throws IOException
 	{
-		beforeWrite(1);
+		beforeWrite(b.length);
 		super.write(b);
 	}
 
@@ -198,15 +200,10 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 	 * @throws IllegalArgumentException if the close decorated stream flag is <code>false</code>.
 	 */
 	@Override
-	public synchronized void close(final boolean closeDecoratedStream) throws IOException //this method is synchronized so that the closing operation can complete without being bothered by other threads
+	public synchronized void close(final boolean closeDecoratedStream) throws IOException
 	{
 		checkArgument(closeDecoratedStream == true, "This decorated output stream does not allow closing with closing the underlying stream.");
 		super.close(closeDecoratedStream);
-		if(tempFile != null) //the output stream has been closed at this point, but we may need to get rid of the temp file
-		{
-			delete(tempFile); //delete the temp file
-			tempFile = null; //show that our temporary file has been deleted
-		}
 	}
 
 	/**
@@ -219,20 +216,38 @@ public class TempOutputStream extends OutputStreamDecorator<OutputStream>
 		return Files.createTempFile(TempOutputStream.class.getSimpleName(), false); //create a temp file that won't automatically be deleted 
 	}
 
-	/** {@inheritDoc} This version closes the repository. */
+	/** {@inheritDoc} This version closes and releases the input stream, if any, and deletes the temporary file, if any. */
 	@Override
-	protected void finalize() throws Throwable
+	public synchronized void dispose()
 	{
 		try
 		{
-			super.finalize(); //try to close normally
+			super.dispose();
 		}
 		finally
-		//whatever happens, get rid of our temporary file if it's still around
 		{
+			if(inputStream != null) //if we still have an input stream in effect
+			{
+				try
+				{
+					inputStream.close(); //try to close the input stream
+				}
+				catch(final IOException ioException)
+				{
+					Log.error(ioException);
+				}
+				inputStream = null; //release the input stream
+			}
 			if(tempFile != null) //if we still have a temporary file
 			{
-				tempFile.delete(); //try to delete the temporary file
+				try
+				{
+					delete(tempFile); //try to delete the temporary file
+				}
+				catch(final IOException ioException)
+				{
+					Log.error(ioException);
+				}
 				tempFile = null;
 			}
 		}

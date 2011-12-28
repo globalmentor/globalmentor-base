@@ -18,6 +18,9 @@ package com.globalmentor.io;
 
 import java.io.*;
 
+import com.globalmentor.java.Disposable;
+import com.globalmentor.log.Log;
+
 import static com.globalmentor.java.Objects.*;
 
 /**
@@ -31,7 +34,7 @@ import static com.globalmentor.java.Objects.*;
  * @param <O> The type of output stream being decorated.
  * @author Garret Wilson
  */
-public class OutputStreamDecorator<O extends OutputStream> extends OutputStream
+public class OutputStreamDecorator<O extends OutputStream> extends OutputStream implements Disposable
 {
 
 	/** The output stream being decorated. */
@@ -128,11 +131,12 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream
 
 	/**
 	 * Closes this output stream and releases any system resources associated with the stream. A closed stream cannot perform output operations and cannot be
-	 * reopened.
+	 * reopened. {@link #dispose()} will be called after if closing is successful.
 	 * @param closeDecoratedStream Whether the decorated stream should also be closed.
 	 * @throws IOException if an I/O error occurs.
 	 * @see #beforeClose()
 	 * @see #afterClose()
+	 * @see #dispose()
 	 */
 	public synchronized void close(final boolean closeDecoratedStream) throws IOException //this method is synchronized so that the closing operation can complete without being bothered by other threads
 	{
@@ -144,16 +148,18 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream
 			{
 				outputStream.close(); //close the decorated output stream
 			}
-			this.outputStream = null; //release the decorated output stream if closing was successful
+			this.outputStream = null; //release the decorated output stream if closing was successful---even if we didn't close it (because we weren't requested to)
 			afterClose(); //perform actions after closing
 		}
+		dispose(); //dispose of the object
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@inheritDoc} {@link #dispose()} will be called after if closing is successful.
 	 * @see #beforeClose()
 	 * @see #afterClose()
 	 * @see #close(boolean)
+	 * @see #dispose()
 	 */
 	@Override
 	public void close() throws IOException
@@ -161,13 +167,31 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream
 		close(true); //close this stream and the underlying stream
 	}
 
-	/** {@inheritDoc} This version closes the output stream, if any. */
+	/** {@inheritDoc} This version closes the output stream and releases it, if still available. */
+	@Override
+	public synchronized void dispose()
+	{
+		if(outputStream != null) //if we still have an output stream
+		{
+			try
+			{
+				outputStream.close();
+			}
+			catch(final IOException ioException)
+			{
+				Log.error(ioException);
+			}
+			outputStream = null; //release the decorated output stream
+		}
+	}
+
+	/** {@inheritDoc} This version calls {@link #dispose()}. */
 	@Override
 	protected void finalize() throws Throwable
 	{
 		try
 		{
-			close(); //try to close the output stream TODO improve just to abandon the output stream, perhaps
+			dispose();
 		}
 		finally
 		{
