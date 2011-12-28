@@ -54,7 +54,7 @@ public class URFUTCOffset implements URFTemporal
 	public URFUTCOffset(final int hours, final int minutes)
 	{
 		this.hours=hours;	//save the hours
-		this.minutes=checkArgumentMinimum(minutes, 0);	//save the minutes, but don't allow negative offset minutes
+		this.minutes=checkArgumentNotNegative(minutes);	//save the minutes, but don't allow negative offset minutes
 	}
 
 	/**Returns an URF UTC offset object holding the value of the specified string.

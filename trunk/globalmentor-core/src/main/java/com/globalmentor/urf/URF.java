@@ -536,7 +536,7 @@ public class URF
 	*/
 	public static URI createOrdinalURI(final long ordinal)
 	{
-		return ordinal==0 ? ORDINAL_0_URI : createInlineURI(ORDINAL_CLASS_URI, Long.toString(checkArgumentMinimum(ordinal, 0)));	//create an ordinal URI, using the pre-made zero ordinal URI if we can and making sure that the value is not less than zero
+		return ordinal==0 ? ORDINAL_0_URI : createInlineURI(ORDINAL_CLASS_URI, Long.toString(checkArgumentNotNegative(ordinal)));	//create an ordinal URI, using the pre-made zero ordinal URI if we can and making sure that the value is not less than zero
 	}
 
 	/**Creates a URI to represent an URF rational.

@@ -638,7 +638,7 @@ public final class Characters
 	 */
 	public StringBuilder toStringBuilder(final int extraCapacity)
 	{
-		return new StringBuilder(chars.length + checkArgumentMinimum(extraCapacity, 0)).append(chars); //allow room for more characters
+		return new StringBuilder(chars.length + checkArgumentNotNegative(extraCapacity)).append(chars); //allow room for more characters
 	}
 
 	/**

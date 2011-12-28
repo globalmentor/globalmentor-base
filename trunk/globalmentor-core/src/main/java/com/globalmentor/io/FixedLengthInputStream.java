@@ -59,7 +59,7 @@ public class FixedLengthInputStream extends InputStreamDecorator<InputStream>
 	public FixedLengthInputStream(final InputStream inputStream, final long length, final boolean closeDecoratedStream)
 	{
 		super(inputStream);
-		this.length=checkArgumentMinimum(length, 0);
+		this.length=checkArgumentNotNegative(length);
 		this.closeDecoratedStream=closeDecoratedStream;
 	}
 

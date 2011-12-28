@@ -305,7 +305,7 @@ public class ReaderParser
 	 */
 	public static String readString(final Reader reader, final int count) throws IOException, ParseEOFException
 	{
-		checkArgumentMinimum(count, 0); //make sure the count isn't negative
+		checkArgumentNotNegative(count); //make sure the count isn't negative
 		final char[] characters = new char[count]; //create a new buffer
 		if(reader.read(characters) != count) //read the characters; if all the character weren't read
 		{
@@ -331,7 +331,7 @@ public class ReaderParser
 	public static String readStringCheck(final Reader reader, final int count, final char lowerBound, final char upperBound) throws IOException,
 			ParseUnexpectedDataException
 	{
-		checkArgumentMinimum(count, 0); //make sure the count isn't negative
+		checkArgumentNotNegative(count); //make sure the count isn't negative
 		final char[] characters = new char[count]; //create a new buffer
 		if(reader.read(characters) != count) //read the characters; if all the character weren't read
 		{

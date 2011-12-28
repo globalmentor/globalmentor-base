@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,185 +20,159 @@ import java.io.*;
 
 import static com.globalmentor.java.Objects.*;
 
-/**Wraps an existing output stream.
-The decorated output stream is released when this stream is closed.
-This decorator provides convenience methods {@link #beforeClose()} and {@link #afterClose()} called before and after the stream is closed, respectively.
-@param <O> The type of output stream being decorated.
-@author Garret Wilson
-*/
+/**
+ * Wraps an existing output stream.
+ * <p>
+ * The decorated output stream is released when this stream is closed.
+ * </p>
+ * <p>
+ * This decorator provides convenience methods {@link #beforeClose()} and {@link #afterClose()} called before and after the stream is closed, respectively.
+ * </p>
+ * @param <O> The type of output stream being decorated.
+ * @author Garret Wilson
+ */
 public class OutputStreamDecorator<O extends OutputStream> extends OutputStream
 {
-	
-	/**The output stream being decorated.*/
+
+	/** The output stream being decorated. */
 	private O outputStream;
 
-		/**@return The output stream being decorated, or <code>null</code> if it has been released after this stream was closed.*/
-		protected O getOutputStream() {return outputStream;}
+	/** @return The output stream being decorated, or <code>null</code> if it has been released after this stream was closed. */
+	protected O getOutputStream()
+	{
+		return outputStream;
+	}
 
-	/**Decorates the given output stream.
-	@param outputStream The output stream to decorate.
-	@exception NullPointerException if the given stream is <code>null</code>.
-	*/
+	/**
+	 * Changes the decorated output stream.
+	 * <p>
+	 * This method can be used by child classes to change the decorated output stream, but cannot be used to remove the output stream---this can be done only by
+	 * calling {@link #close()}.
+	 * </p>
+	 * @param outputStream The new output stream to decorate.
+	 * @throws NullPointerException if the given output stream is <code>null</code>.
+	 */
+	protected void setOutputStream(final O outputStream)
+	{
+		this.outputStream = checkInstance(outputStream);
+	}
+
+	/**
+	 * Decorates the given output stream.
+	 * @param outputStream The output stream to decorate.
+	 * @throws NullPointerException if the given stream is <code>null</code>.
+	 */
 	public OutputStreamDecorator(final O outputStream)
 	{
-		this.outputStream=checkInstance(outputStream, "Output stream cannot be null.");	//save the decorated output stream
+		this.outputStream = checkInstance(outputStream, "Output stream cannot be null."); //save the decorated output stream
 	}
 
-  /**
-   * Writes the specified byte to this output stream. The general 
-   * contract for <code>write</code> is that one byte is written 
-   * to the output stream. The byte to be written is the eight 
-   * low-order bits of the argument <code>b</code>. The 24 
-   * high-order bits of <code>b</code> are ignored.
-   * <p>
-   * Subclasses of <code>OutputStream</code> must provide an 
-   * implementation for this method. 
-   *
-   * @param      b   the <code>byte</code>.
-   * @exception  IOException  if an I/O error occurs. In particular, 
-   *             an <code>IOException</code> may be thrown if the 
-   *             output stream has been closed.
-   */
+	/** {@inheritDoc} */
+	@Override
 	public void write(int b) throws IOException
 	{
-  	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
-  	if(outputStream==null)	//if this stream is closed
-  	{
-  		throw new IOException("Stream already closed.");
-  	}
-  	outputStream.write(b);
+		checkOutputStream().write(b);
 	}
 
-  /**
-   * Writes <code>b.length</code> bytes from the specified byte array 
-   * to this output stream. The general contract for <code>write(b)</code> 
-   * is that it should have exactly the same effect as the call 
-   * <code>write(b, 0, b.length)</code>.
-   *
-   * @param      b   the data.
-   * @exception  IOException  if an I/O error occurs.
-   * @see        java.io.OutputStream#write(byte[], int, int)
-   */
-  public void write(byte b[]) throws IOException
+	/** {@inheritDoc} */
+	@Override
+	public void write(byte b[]) throws IOException
 	{
-  	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
-  	if(outputStream==null)	//if this stream is closed
-  	{
-  		throw new IOException("Stream already closed.");
-  	}
-  	outputStream.write(b);
-  }
-
-  /**
-   * Writes <code>len</code> bytes from the specified byte array 
-   * starting at offset <code>off</code> to this output stream. 
-   * The general contract for <code>write(b, off, len)</code> is that 
-   * some of the bytes in the array <code>b</code> are written to the 
-   * output stream in order; element <code>b[off]</code> is the first 
-   * byte written and <code>b[off+len-1]</code> is the last byte written 
-   * by this operation.
-   * <p>
-   * The <code>write</code> method of <code>OutputStream</code> calls 
-   * the write method of one argument on each of the bytes to be 
-   * written out. Subclasses are encouraged to override this method and 
-   * provide a more efficient implementation. 
-   * <p>
-   * If <code>b</code> is <code>null</code>, a 
-   * <code>NullPointerException</code> is thrown.
-   * <p>
-   * If <code>off</code> is negative, or <code>len</code> is negative, or 
-   * <code>off+len</code> is greater than the length of the array 
-   * <code>b</code>, then an <tt>IndexOutOfBoundsException</tt> is thrown.
-   *
-   * @param      b     the data.
-   * @param      off   the start offset in the data.
-   * @param      len   the number of bytes to write.
-   * @exception  IOException  if an I/O error occurs. In particular, 
-   *             an <code>IOException</code> is thrown if the output 
-   *             stream is closed.
-   */
-  public void write(byte b[], int off, int len) throws IOException
-	{
-  	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
-  	if(outputStream==null)	//if this stream is closed
-  	{
-  		throw new IOException("Stream already closed.");
-  	}
-  	outputStream.write(b, off, len);
-  }
-
-  /**
-   * Flushes this output stream and forces any buffered output bytes 
-   * to be written out. The general contract of <code>flush</code> is 
-   * that calling it is an indication that, if any bytes previously 
-   * written have been buffered by the implementation of the output 
-   * stream, such bytes should immediately be written to their 
-   * intended destination.
-   * <p>
-   * If the intended destination of this stream is an abstraction provided by
-   * the underlying operating system, for example a file, then flushing the
-   * stream guarantees only that bytes previously written to the stream are
-   * passed to the operating system for writing; it does not guarantee that
-   * they are actually written to a physical device such as a disk drive.
-   * <p>
-   *
-   * @exception  IOException  if an I/O error occurs.
-   */
-  public void flush() throws IOException
-	{
-  	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
-  	if(outputStream==null)	//if this stream is closed
-  	{
-  		throw new IOException("Stream already closed.");
-  	}
-		outputStream.flush();
-  }
-
-  /**Called before the stream is closed.
-	@exception IOException if an I/O error occurs.
-	*/
-  protected void beforeClose() throws IOException 
-  {
-  }
-
-  /**Called after the stream is successfully closed.
-	@exception IOException if an I/O error occurs.
-	*/
-  protected void afterClose() throws IOException
-  {
-  }
-
-	/**Closes this output stream and releases any system resources associated with the stream.
-	A closed stream cannot perform output operations and cannot be reopened.
-	@param closeDecoratedStream Whether the decorated stream should also be closed.
-	@exception IOException if an I/O error occurs.
-	@see #beforeClose()
-	@see #afterClose()
-	*/
-	public synchronized void close(final boolean closeDecoratedStream) throws IOException	//this method is synchronized so that the closing operation can complete without being bothered by other threads
-	{
-  	final OutputStream outputStream=getOutputStream();	//get the decorated output stream
-  	if(outputStream!=null)	//if we still have an output stream to decorate
-  	{
-  		beforeClose();	//perform actions before closing
-  		if(closeDecoratedStream)
-  		{
-  			outputStream.close();	//close the decorated output stream
-  		}
-  		this.outputStream=null;	//release the decorated output stream if closing was successful
-  		afterClose();	//perform actions after closing
-  	}
+		checkOutputStream().write(b);
 	}
 
-	/**Closes this output stream and releases any system resources associated with this stream. 
-	A closed stream cannot perform output operations and cannot be reopened.
-	@exception IOException if an I/O error occurs.
-	@see #beforeClose()
-	@see #afterClose()
-	@see #close(boolean)
-	*/
-  public void close() throws IOException 
+	/** {@inheritDoc} */
+	@Override
+	public void write(byte b[], int off, int len) throws IOException
 	{
-		close(true);	//close this stream and the underlying stream
+		checkOutputStream().write(b, off, len);
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void flush() throws IOException
+	{
+		checkOutputStream().flush();
+	}
+
+	/**
+	 * Checks to make sure the decorated output stream is available.
+	 * @return The decorated output stream.
+	 * @throws IOException if there is no output stream, indicating that the stream is already closed.
+	 */
+	protected OutputStream checkOutputStream() throws IOException
+	{
+		final OutputStream outputStream = getOutputStream(); //get the decorated output stream
+		if(outputStream == null) //if this stream is closed
+		{
+			throw new IOException("Stream already closed.");
+		}
+		return outputStream;
+	}
+
+	/**
+	 * Called before the stream is closed.
+	 * @throws IOException if an I/O error occurs.
+	 */
+	protected void beforeClose() throws IOException
+	{
+	}
+
+	/**
+	 * Called after the stream is successfully closed.
+	 * @throws IOException if an I/O error occurs.
+	 */
+	protected void afterClose() throws IOException
+	{
+	}
+
+	/**
+	 * Closes this output stream and releases any system resources associated with the stream. A closed stream cannot perform output operations and cannot be
+	 * reopened.
+	 * @param closeDecoratedStream Whether the decorated stream should also be closed.
+	 * @throws IOException if an I/O error occurs.
+	 * @see #beforeClose()
+	 * @see #afterClose()
+	 */
+	public synchronized void close(final boolean closeDecoratedStream) throws IOException //this method is synchronized so that the closing operation can complete without being bothered by other threads
+	{
+		final OutputStream outputStream = getOutputStream(); //get the decorated output stream
+		if(outputStream != null) //if we still have an output stream to decorate
+		{
+			beforeClose(); //perform actions before closing
+			if(closeDecoratedStream)
+			{
+				outputStream.close(); //close the decorated output stream
+			}
+			this.outputStream = null; //release the decorated output stream if closing was successful
+			afterClose(); //perform actions after closing
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @see #beforeClose()
+	 * @see #afterClose()
+	 * @see #close(boolean)
+	 */
+	@Override
+	public void close() throws IOException
+	{
+		close(true); //close this stream and the underlying stream
+	}
+
+	/** {@inheritDoc} This version closes the output stream, if any. */
+	@Override
+	protected void finalize() throws Throwable
+	{
+		try
+		{
+			close(); //try to close the output stream TODO improve just to abandon the output stream, perhaps
+		}
+		finally
+		{
+			super.finalize(); //always call the parent version
+		}
+	}
+
 }

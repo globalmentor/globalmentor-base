@@ -104,7 +104,6 @@ public class Conditions
 	 * This is a precondition check.
 	 * </p>
 	 * @param value The value to check.
-	 * @param rangeMin The minimum range value, inclusive.
 	 * @throws IllegalArgumentException if the value is negative.
 	 * @return The given value.
 	 * @see #checkArgumentMinimum(int, int)
@@ -120,7 +119,6 @@ public class Conditions
 	 * This is a precondition check.
 	 * </p>
 	 * @param value The value to check.
-	 * @param rangeMin The minimum range value, inclusive.
 	 * @throws IllegalArgumentException if the value is negative.
 	 * @return The given value.
 	 * @see #checkArgumentMinimum(long, long)

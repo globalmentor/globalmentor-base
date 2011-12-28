@@ -68,7 +68,7 @@ public class Bytes
 	 */
 	public static byte[] createRandom(final int length, final Random random)
 	{
-		checkArgumentMinimum(length, 0);
+		checkArgumentNotNegative(length);
 		final byte[] bytes = new byte[length]; //create a new array of bytes
 		random.nextBytes(bytes); //fill the byte array with random values
 		return bytes;

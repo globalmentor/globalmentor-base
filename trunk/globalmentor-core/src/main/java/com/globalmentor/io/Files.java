@@ -66,9 +66,9 @@ public class Files
 	public final static char FILENAME_ESCAPE_CHAR = '^';
 
 	/** The extension for backup files. */
-	private final static String BACKUP_EXTENSION = "backup";
+	private final static String BACKUP_EXTENSION = "bak";
 	/** The extension for temporary files. */
-	private final static String TEMP_EXTENSION = "temp";
+	private final static String TEMP_EXTENSION = "tmp";
 
 	/** Path separator characters used on several systems. */
 	public final static Characters FILE_PATH_SEPARATOR_CHARACTERS = new Characters('\\', '/');
@@ -286,6 +286,22 @@ public class Files
 	}
 
 	/**
+	 * Creates a temporary file in the standard temporary directory with automatic deletion on JVM exit, using a {@value #TEMP_EXTENSION} extension.
+	 * @param baseName The base filename to be used in generating the filename.
+	 * @return A new temporary file.
+	 * @exception NullPointerException if the given base name is <code>null</code>.
+	 * @exception IllegalArgumentException if the base name is the empty string.
+	 * @exception IOException if there is a problem creating the temporary file.
+	 * @see File#createTempFile(String, String)
+	 * @see File#deleteOnExit()
+	 * @see #TEMP_EXTENSION
+	 */
+	public static File createTempFile(final String baseName) throws IOException
+	{
+		return createTempFile(baseName, TEMP_EXTENSION); //create a temporary file with a temp extension
+	}
+
+	/**
 	 * Creates a temporary file in the standard temporary directory with automatic deletion on JVM exit. This convenience method provides more intuitive
 	 * parameters than {@link File#createTempFile(String, String)}.
 	 * @param baseName The base filename to be used in generating the filename.
@@ -300,6 +316,24 @@ public class Files
 	public static File createTempFile(final String baseName, final String extension) throws IOException
 	{
 		return createTempFile(baseName, extension, true); //create a temporary file that is automatically scheduled for deletion
+	}
+
+	/**
+	 * Creates a temporary file in the standard temporary directory with optional automatic deletion, using a {@value #TEMP_EXTENSION} extension. This convenience
+	 * method provides more intuitive parameters than {@link File#createTempFile(String, String)}.
+	 * @param baseName The base filename to be used in generating the filename.
+	 * @param deleteOnExit Whether the file should be deleted when the JVM exits.
+	 * @return A new temporary file.
+	 * @exception NullPointerException if the given base name is <code>null</code>.
+	 * @exception IllegalArgumentException if the base name is the empty string.
+	 * @exception IOException if there is a problem creating the temporary file.
+	 * @see File#createTempFile(String, String)
+	 * @see File#deleteOnExit()
+	 * @see #TEMP_EXTENSION
+	 */
+	public static File createTempFile(final String baseName, final boolean deleteOnExit) throws IOException
+	{
+		return createTempFile(baseName, TEMP_EXTENSION, deleteOnExit);
 	}
 
 	/**
@@ -318,6 +352,25 @@ public class Files
 	public static File createTempFile(final String baseName, final String extension, final boolean deleteOnExit) throws IOException
 	{
 		return createTempFile(baseName, extension, null, deleteOnExit); //create a temp file using the standard temporary directory
+	}
+
+	/**
+	 * Creates a temporary file in a given directory with optional automatic deletion, using a {@value #TEMP_EXTENSION} extension. This convenience method
+	 * provides more intuitive parameters than {@link File#createTempFile(String, String, File)}.
+	 * @param baseName The base filename to be used in generating the filename.
+	 * @param directory The directory in which the file is to be created, or <code>null</code> if the default temporary-file directory is to be used.
+	 * @param deleteOnExit Whether the file should be deleted when the JVM exits.
+	 * @return A new temporary file.
+	 * @exception NullPointerException if the given base name is <code>null</code>.
+	 * @exception IllegalArgumentException if the base name is the empty string.
+	 * @exception IOException if there is a problem creating the temporary file.
+	 * @see File#createTempFile(String, String, File)
+	 * @see File#deleteOnExit()
+	 * @see #TEMP_EXTENSION
+	 */
+	public static File createTempFile(String baseName, final File directory, final boolean deleteOnExit) throws IOException
+	{
+		return createTempFile(baseName, TEMP_EXTENSION, directory, deleteOnExit);
 	}
 
 	/**
@@ -664,7 +717,7 @@ public class Files
 	}
 
 	/**
-	 * Returns a file suitable for a temporary file, based on the specified filename, by adding a ".temp" extension.
+	 * Returns a file suitable for a temporary file, based on the specified filename, by adding an extension for a temporary file.
 	 * @param file The file for which a temporary file should be returned.
 	 * @return The file suitable for temporary access.
 	 * @see TEMP_EXTENSION
@@ -675,7 +728,7 @@ public class Files
 	}
 
 	/**
-	 * Returns a file suitable for backup, based on the specified filename, by adding a ".backup" extension.
+	 * Returns a file suitable for backup, based on the specified filename, by adding an extension for a backup file.
 	 * @param file The file for which a backup file should be returned.
 	 * @return The file suitable for backup.
 	 * @see BACKUP_EXTENSION
