@@ -355,6 +355,24 @@ public class Conditions
 	 * <p>
 	 * This is a convenience method that makes the semantics of the condition more readily apparent.
 	 * </p>
+	 * @return A throwable indicating an impossible condition.
+	 */
+	public static AssertionError impossible()
+	{
+		return impossible((String)null);
+	}
+
+	/**
+	 * Creates a throwable indicating a logically impossible condition, which can be thrown by the caller.
+	 * <p>
+	 * An <dfn>impossible</dfn> condition is one that is supposedly logically impossible to occur. For example, a default section of a switch statement covering
+	 * all possible values of an enum should never be executed; the throwable produced by this method provides a convenient outcome to indicate this condition
+	 * (for example, if a new enum value is later introduced and the switch statement isn't updated). The code following a method guaranteed to throw an exception
+	 * is another example.
+	 * </p>
+	 * <p>
+	 * This is a convenience method that makes the semantics of the condition more readily apparent.
+	 * </p>
 	 * @param message The detail message, or <code>null</code> if there is no detail message.
 	 * @return A throwable indicating an impossible condition.
 	 */

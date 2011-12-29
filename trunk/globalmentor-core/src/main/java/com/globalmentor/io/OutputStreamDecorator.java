@@ -37,6 +37,9 @@ import static com.globalmentor.java.Objects.*;
 public class OutputStreamDecorator<O extends OutputStream> extends OutputStream implements Disposable
 {
 
+	/** Whether the stream should be automatically disposed when closed. */
+	private final boolean autoDispose;
+
 	/** The output stream being decorated. */
 	private O outputStream;
 
@@ -61,13 +64,25 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 	}
 
 	/**
-	 * Decorates the given output stream.
+	 * Decorates the given output stream, automatically calling {@link #dispose()} when closed.
 	 * @param outputStream The output stream to decorate.
 	 * @throws NullPointerException if the given stream is <code>null</code>.
 	 */
 	public OutputStreamDecorator(final O outputStream)
 	{
+		this(outputStream, true);
+	}
+
+	/**
+	 * Decorates the given output stream.
+	 * @param outputStream The output stream to decorate.
+	 * @param autoDispose Whether the stream should be automatically disposed when closed.
+	 * @throws NullPointerException if the given stream is <code>null</code>.
+	 */
+	public OutputStreamDecorator(final O outputStream, final boolean autoDispose)
+	{
 		this.outputStream = checkInstance(outputStream, "Output stream cannot be null."); //save the decorated output stream
+		this.autoDispose = true;
 	}
 
 	/** {@inheritDoc} */
@@ -131,7 +146,7 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 
 	/**
 	 * Closes this output stream and releases any system resources associated with the stream. A closed stream cannot perform output operations and cannot be
-	 * reopened. {@link #dispose()} will be called after if closing is successful.
+	 * reopened. If auto-dispose is enabled, {@link #dispose()} will be called if closing is successful.
 	 * @param closeDecoratedStream Whether the decorated stream should also be closed.
 	 * @throws IOException if an I/O error occurs.
 	 * @see #beforeClose()
@@ -150,8 +165,11 @@ public class OutputStreamDecorator<O extends OutputStream> extends OutputStream 
 			}
 			this.outputStream = null; //release the decorated output stream if closing was successful---even if we didn't close it (because we weren't requested to)
 			afterClose(); //perform actions after closing
+			if(autoDispose)
+			{
+				dispose(); //dispose of the object
+			}
 		}
-		dispose(); //dispose of the object
 	}
 
 	/**
