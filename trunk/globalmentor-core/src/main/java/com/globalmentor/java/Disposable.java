@@ -50,6 +50,32 @@ package com.globalmentor.java;
  * </blockquote>
  * 
  * <p>
+ * Implementing classes should normally call {@link #dispose()} from <code>finalize</code> using the following pattern:
+ * </p>
+ * 
+ * <blockquote>
+ * 
+ * <pre>
+ * <code>
+ * @Override
+ * protected void finalize() throws Throwable
+ * {
+ *   try
+ *   {
+ *     dispose();
+ *   }
+ *   finally
+ *   {
+ *     super.finalize();
+ *   }
+ * }
+ * </code>
+ * </pre>
+ * 
+ * </blockquote>
+ * 
+ * 
+ * <p>
  * Such a pattern prevents the <code>try{} finally{ object.close() }</code> problem in which closing the object attempts to retry an operation which caused an
  * exception in the first place.
  * </p>
