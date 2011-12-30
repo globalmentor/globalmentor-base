@@ -35,11 +35,27 @@ public class Streams
 	 * @param inputStream The source of the data.
 	 * @param outputStream The destination of the data.
 	 * @return The total number of bytes copied.
-	 * @exception IOException Thrown if there is an error reading from or writing to a stream.
+	 * @throws IOException Thrown if there is an error reading from or writing to a stream.
 	 */
 	public static long copy(final InputStream inputStream, final OutputStream outputStream) throws IOException
 	{
-		return copy(inputStream, outputStream, -1); //we don't know how many bytes to expect
+		return copy(inputStream, outputStream, null);
+	}
+
+	/**
+	 * Copies all information from an input stream to an output stream. Both streams are used as-is. If buffered reading and writing is desired, the streams
+	 * should be wrapped in a {@link BufferedInputStream} and a {@link BufferedOutputStream} and those should be passed as parameters. After copying is finished,
+	 * both streams are left open.
+	 * @param inputStream The source of the data.
+	 * @param outputStream The destination of the data.
+	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
+	 * @return The total number of bytes copied.
+	 * @throws IOException Thrown if there is an error reading from or writing to a stream.
+	 * @throws IOException if an expected content length was given and the number of bytes written to the output stream is not what was expected.
+	 */
+	public static long copy(final InputStream inputStream, final OutputStream outputStream, final ProgressListener progressListener) throws IOException
+	{
+		return copy(inputStream, outputStream, -1, progressListener); //we don't know how many bytes to expect
 	}
 
 	/**
