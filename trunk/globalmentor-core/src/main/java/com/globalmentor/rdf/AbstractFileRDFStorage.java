@@ -133,7 +133,7 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 		final File tempFile=Files.getTempFile(storageFile);  //get a temporary file to write to
 		final File backupFile=isBackupUsed() ? Files.getBackupFile(storageFile) : null;  //get a backup file, if we should create a backup, or null if we shouldn't
 		store(document, Files.toURI(tempFile));	//store the document in the temporary file
-		Files.moveFile(tempFile, storageFile, backupFile); //move the temp file to the normal file, creating a backup if necessary
+		Files.move(tempFile, storageFile, backupFile); //move the temp file to the normal file, creating a backup if necessary
 	}
 
 	/**Retrieves the information from RDF stored at the given URI.

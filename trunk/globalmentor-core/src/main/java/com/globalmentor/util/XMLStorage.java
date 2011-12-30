@@ -662,7 +662,7 @@ Log.trace("Storing in file: ", file); //TODO del
 		{
 			outputStream.close(); //always close the output stream
 		}
-		Files.moveFile(tempFile, file, backupFile); //move the temp file to the normal file, creating a backup if necessary
+		Files.move(tempFile, file, backupFile); //move the temp file to the normal file, creating a backup if necessary
 	}
 
 	/**Constructs an instance of the specified class from the information stored

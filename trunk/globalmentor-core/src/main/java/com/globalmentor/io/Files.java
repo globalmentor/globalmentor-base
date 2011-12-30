@@ -221,7 +221,7 @@ public class Files
 	 * @param filename The filename to which to add an extension.
 	 * @param extension The extension to add.
 	 * @return The filename with the new extension.
-	 * @exception NullPointerException if the given extension is <code>null</code>.
+	 * @throws NullPointerException if the given extension is <code>null</code>.
 	 */
 	public static String addExtension(final String filename, final String extension)
 	{
@@ -293,9 +293,9 @@ public class Files
 	 * Creates a temporary file in the standard temporary directory with automatic deletion on JVM exit, using a {@value #TEMP_EXTENSION} extension.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @return A new temporary file.
-	 * @exception NullPointerException if the given base name is <code>null</code>.
-	 * @exception IllegalArgumentException if the base name is the empty string.
-	 * @exception IOException if there is a problem creating the temporary file.
+	 * @throws NullPointerException if the given base name is <code>null</code>.
+	 * @throws IllegalArgumentException if the base name is the empty string.
+	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String)
 	 * @see File#deleteOnExit()
 	 * @see #TEMP_EXTENSION
@@ -311,9 +311,9 @@ public class Files
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @param extension The extension to use for the temporary file, or <code>null</code> if a default extension should be used.
 	 * @return A new temporary file.
-	 * @exception NullPointerException if the given base name and/or extension is <code>null</code>.
-	 * @exception IllegalArgumentException if the base name is the empty string.
-	 * @exception IOException if there is a problem creating the temporary file.
+	 * @throws NullPointerException if the given base name and/or extension is <code>null</code>.
+	 * @throws IllegalArgumentException if the base name is the empty string.
+	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String)
 	 * @see File#deleteOnExit()
 	 */
@@ -328,9 +328,9 @@ public class Files
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @param deleteOnExit Whether the file should be deleted when the JVM exits.
 	 * @return A new temporary file.
-	 * @exception NullPointerException if the given base name is <code>null</code>.
-	 * @exception IllegalArgumentException if the base name is the empty string.
-	 * @exception IOException if there is a problem creating the temporary file.
+	 * @throws NullPointerException if the given base name is <code>null</code>.
+	 * @throws IllegalArgumentException if the base name is the empty string.
+	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String)
 	 * @see File#deleteOnExit()
 	 * @see #TEMP_EXTENSION
@@ -347,9 +347,9 @@ public class Files
 	 * @param extension The extension to use for the temporary file, or <code>null</code> if a default extension should be used.
 	 * @param deleteOnExit Whether the file should be deleted when the JVM exits.
 	 * @return A new temporary file.
-	 * @exception NullPointerException if the given base name and/or extension is <code>null</code>.
-	 * @exception IllegalArgumentException if the base name is the empty string.
-	 * @exception IOException if there is a problem creating the temporary file.
+	 * @throws NullPointerException if the given base name and/or extension is <code>null</code>.
+	 * @throws IllegalArgumentException if the base name is the empty string.
+	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String)
 	 * @see File#deleteOnExit()
 	 */
@@ -365,9 +365,9 @@ public class Files
 	 * @param directory The directory in which the file is to be created, or <code>null</code> if the default temporary-file directory is to be used.
 	 * @param deleteOnExit Whether the file should be deleted when the JVM exits.
 	 * @return A new temporary file.
-	 * @exception NullPointerException if the given base name is <code>null</code>.
-	 * @exception IllegalArgumentException if the base name is the empty string.
-	 * @exception IOException if there is a problem creating the temporary file.
+	 * @throws NullPointerException if the given base name is <code>null</code>.
+	 * @throws IllegalArgumentException if the base name is the empty string.
+	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String, File)
 	 * @see File#deleteOnExit()
 	 * @see #TEMP_EXTENSION
@@ -385,9 +385,9 @@ public class Files
 	 * @param directory The directory in which the file is to be created, or <code>null</code> if the default temporary-file directory is to be used.
 	 * @param deleteOnExit Whether the file should be deleted when the JVM exits.
 	 * @return A new temporary file.
-	 * @exception NullPointerException if the given base name and/or extension is <code>null</code>.
-	 * @exception IllegalArgumentException if the base name is the empty string.
-	 * @exception IOException if there is a problem creating the temporary file.
+	 * @throws NullPointerException if the given base name and/or extension is <code>null</code>.
+	 * @throws IllegalArgumentException if the base name is the empty string.
+	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String, File)
 	 * @see File#deleteOnExit()
 	 */
@@ -412,7 +412,7 @@ public class Files
 	/**
 	 * Creates a new file, throwing an exception if unsuccessful.
 	 * @param file The file to create.
-	 * @exception IOException Thrown if there is an error creating the file.
+	 * @throws IOException Thrown if there is an error creating the file.
 	 */
 	public static void createNewFile(final File file) throws IOException
 	{
@@ -433,7 +433,7 @@ public class Files
 	/**
 	 * Deletes a directory or file, throwing an exception if unsuccessful.
 	 * @param file The directory or file to delete.
-	 * @exception IOException Thrown if there is an problem deleting any directory or file.
+	 * @throws IOException Thrown if there is an problem deleting any directory or file.
 	 */
 	public static void delete(final File file) throws IOException
 	{
@@ -445,7 +445,7 @@ public class Files
 	 * @param file The directory or file to delete. If a directory is passed, all its child files and directories will recursively be deleted if
 	 *          <code>recursive</code> is <code>true</code>. If a file is passed, it will be deleted normally.
 	 * @param recursive <code>true</code> if all child directories and files of a directory should recursively be deleted.
-	 * @exception IOException Thrown if there is an problem deleting any directory or file.
+	 * @throws IOException Thrown if there is an problem deleting any directory or file.
 	 */
 	public static void delete(final File file, final boolean recursive) throws IOException
 	{
@@ -469,7 +469,7 @@ public class Files
 	 * characters after the last file path separator are returned. If there is no file path separator, the entire string is returned.
 	 * @param filePath The file path.
 	 * @return The filename after the last file path separator.
-	 * @exception NullPointerException if the given file path is <code>null</code>.
+	 * @throws NullPointerException if the given file path is <code>null</code>.
 	 * @see #FILE_PATH_SEPARATOR_CHARACTERS
 	 */
 	public static String getFilename(final String filePath) //TODO fix for Unix filenames; perhaps pass a system identification enum value
@@ -515,7 +515,7 @@ public class Files
 	 * @param file The file to examine.
 	 * @param name The new name of the file.
 	 * @return The file with the new name.
-	 * @exception NullPointerException if the given file and/or name is <code>null</code>.
+	 * @throws NullPointerException if the given file and/or name is <code>null</code>.
 	 */
 	public static File changeName(final File file, final String name)
 	{
@@ -660,28 +660,6 @@ public class Files
 	}
 
 	/**
-	 * Returns the appropriate URI for a directory, whether or not the directory exists. Contrast this behavior with {@link File#toURI()}, which will return a
-	 * file URI without a trailing slash if the directory does not exist.
-	 * @param directory The name of a directory, which may or may not exist.
-	 * @return A URI, with trailing slash, to represent the given directory.
-	 */
-	public static URI getDirectoryURI(final File directory)
-	{
-		final URI fileURI = toURI(directory); //create a URI from the file
-		final String fileRawPath = fileURI.getRawPath(); //get the raw path of the directory URI
-		if(endsWith(fileRawPath, PATH_SEPARATOR)) //if the file URI is a directory URI
-		{
-			return fileURI; //return the URI as-is
-		}
-		else
-		//if the file URI isn't yet a directory URI
-		{
-			//create a new URI with the path separator appended
-			return changeRawPath(fileURI, fileRawPath + PATH_SEPARATOR);
-		}
-	}
-
-	/**
 	 * Returns the media type for the specified filename based on its extension.
 	 * @param filename The filename to examine.
 	 * @return The default media type for the filename's extension, or <code>null</code> if no known media type is associated with this file's extension or if the
@@ -718,7 +696,7 @@ public class Files
 
 	/**
 	 * @return The user's current directory.
-	 * @exception SecurityException Thrown if we don't have permission to access the user's directory.
+	 * @throws SecurityException Thrown if we don't have permission to access the user's directory.
 	 * @see System
 	 * @see OperatingSystem#USER_DIR_PROPERTY
 	 */
@@ -797,7 +775,7 @@ public class Files
 	 * @param file The file to check for existence.
 	 * @param backupFile The file to use as a backup if the original does not exist.
 	 * @return <code>true</code> if the file existed or exists now after moving the backup file, else <code>false</code> if neither file exists.
-	 * @exception IOException Thrown if the backup file cannot be moved.
+	 * @throws IOException Thrown if the backup file cannot be moved.
 	 */
 	public static boolean ensureExistsFromBackup(final File file, final File backupFile) throws IOException
 	{
@@ -810,7 +788,7 @@ public class Files
 		{
 			if(backupFile.exists()) //if the backup file exists
 			{
-				renameTo(backupFile, file); //try to rename the backup file to the original file
+				move(backupFile, file); //try to move the backup file to the original file
 				return true; //show that a file now exists where it is expected to be
 			}
 			else
@@ -824,7 +802,7 @@ public class Files
 	 * location. If this method returns true, there will be a file located at <code>file</code>. This method automatically determines the name of the backup file.
 	 * @param file The file to check for existence.
 	 * @return <code>true</code> if the file existed or exists now after moving the backup file, else <code>false</code> if neither file exists.
-	 * @exception IOException Thrown if the backup file cannot be moved.
+	 * @throws IOException Thrown if the backup file cannot be moved.
 	 * @see #getBackupFile
 	 */
 	public static boolean ensureExistsFromBackup(final File file) throws IOException
@@ -947,6 +925,8 @@ public class Files
 	 * <p>
 	 * Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes.
 	 * </p>
+	 * <p>This method may not return a URI with a trailing slash for directories that don't exist. If it is known whether the file represents a directory,
+	 * {@link #toURI(File, boolean)} should be used instead.</p>
 	 * @param file The file which should be converted to a URI.
 	 * @return An absolute, hierarchical URI with non-ASCII characters encoded, with a {@link URIs#FILE_SCHEME} scheme, a path representing this abstract
 	 *         pathname, and undefined authority, query, and fragment components.
@@ -957,6 +937,35 @@ public class Files
 	 * @see URIs#PATH_CHARACTERS
 	 */
 	public static URI toURI(final File file)
+	{
+		return toURI(file, false);
+	}
+
+	/**
+	 * Constructs a {@link URIs#FILE_SCHEME} scheme URI that represents this abstract pathname.
+	 * <p>
+	 * This functions similarly to {@link File#toURI()}, except that this method always returns a true URI in which the characters all are within ranges allowed
+	 * by RFC 3986, notably that non-ASCII characters are all encoded.
+	 * </p>
+	 * <p>
+	 * In addition, the character <code>';'</code> is encoded, as expected by HTTP servers such as Apache when part of the path.
+	 * </p>
+	 * <p>
+	 * Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes.
+	 * </p>
+	 * <p>If a directory URI is requested, the appropriate URI for a directory is returned, whether or not the directory exists. Contrast this behavior with {@link File#toURI()}, which will return a
+	 * file URI without a trailing slash if the directory does not exist.</p>
+	 * @param file The file which should be converted to a URI.
+	 * @param forceDirectoryURI Whether the URI should be returned with a trailing slash, even if the file does not exist as a directory.
+	 * @return An absolute, hierarchical URI with non-ASCII characters encoded, with a {@link URIs#FILE_SCHEME} scheme, a path representing this abstract
+	 *         pathname, and undefined authority, query, and fragment components.
+	 * @throws NullPointerException if the given file is <code>null</code>.
+	 * @throws SecurityException If a required system property value cannot be accessed.
+	 * @see File#toURI()
+	 * @see URIs#toCanonicalURI(URI)
+	 * @see URIs#PATH_CHARACTERS
+	 */
+	public static URI toURI(final File file, final boolean forceDirectoryURI)
 	{
 		URI uri = file.toURI(); //create a URI from the file normally; Java may allow non-ASCII characters in this version
 		//test the entire URI for non-ASCII characters, as well the ';' character, which has a special meaning in URIs
@@ -974,7 +983,17 @@ public class Files
 				break; //skip looking at the rest of the string
 			}
 		}
-		return toCanonicalURI(uri); //return the URI in canonical form; even if we converted ASCII characters, the File.toURI() method might have produced uppercase hex escape codes when escaping illegal characters
+		uri=toCanonicalURI(uri); //convert the URI to canonical form; even if we converted ASCII characters, the File.toURI() method might have produced uppercase hex escape codes when escaping illegal characters
+		if(forceDirectoryURI)
+		{
+			final String fileRawPath = uri.getRawPath(); //get the raw path of the directory URI
+			if(!endsWith(fileRawPath, PATH_SEPARATOR)) //if the file URI isn't a directory URI
+			{
+				//create a new URI with the path separator appended
+				return changeRawPath(uri, fileRawPath + PATH_SEPARATOR);
+			}
+		}
+		return uri;
 	}
 
 	/**
@@ -1003,7 +1022,7 @@ public class Files
 	/**
 	 * Creates the directory named by this abstract pathname, throwing an exception if unsuccessful.
 	 * @param directory The directory to create.
-	 * @exception IOException Thrown if there is an error creating the directory.
+	 * @throws IOException Thrown if there is an error creating the directory.
 	 */
 	public static void mkdir(final File directory) throws IOException
 	{
@@ -1016,7 +1035,7 @@ public class Files
 	/**
 	 * Creates the directory named by this abstract pathname, including any necessary but nonexistent parent directories, throwing an exception if unsuccessful.
 	 * @param directory The directory to create.
-	 * @exception IOException Thrown if there is an error creating the directory.
+	 * @throws IOException Thrown if there is an error creating the directory.
 	 */
 	public static void mkdirs(final File directory) throws IOException
 	{
@@ -1031,7 +1050,7 @@ public class Files
 	 * throwing an exception if unsuccessful.
 	 * @param directory The directory to create if necessary.
 	 * @return The directory, which has been verified to exist.
-	 * @exception IOException Thrown if there is an error creating the directory.
+	 * @throws IOException Thrown if there is an error creating the directory.
 	 * @see #mkdirs(File)
 	 */
 	public static File ensureDirectoryExists(final File directory) throws IOException
@@ -1047,7 +1066,7 @@ public class Files
 	 * Loads the contents of a file into an array of bytes. The file is closed after the operation.
 	 * @param file The file from which to read.
 	 * @return An array of bytes from the input stream.
-	 * @exception IOException Thrown if there is an error loading the bytes.
+	 * @throws IOException Thrown if there is an error loading the bytes.
 	 * @see InputStreams#getBytes
 	 * @see #write
 	 */
@@ -1179,7 +1198,7 @@ public class Files
 	 * Stores an array of bytes in a file. The file is closed after the operation.
 	 * @param file The file in which the bytes should be stored.
 	 * @param bytes The bytes to store in the file.
-	 * @exception IOException Thrown if there is an error loading the bytes.
+	 * @throws IOException Thrown if there is an error loading the bytes.
 	 * @see #readBytes(File)
 	 */
 	public static void write(final File file, final byte[] bytes) throws IOException
@@ -1198,9 +1217,14 @@ public class Files
 
 	/**
 	 * Renames the file, throwing an exception if unsuccessful.
+	 * <p>
+	 * This method is a direct delegation to {@link File#renameTo(File)} with added exception handling. If overwriting of a destination file is desired, use
+	 * {@link #move(File, File)} or a related method.
+	 * </p>
 	 * @param source The file to rename.
 	 * @param destination The new name of the file
-	 * @exception IOException Thrown if there is an error renaming the file.
+	 * @throws IOException Thrown if there is an error renaming the file.
+	 * @see #move(File, File)
 	 */
 	public static void renameTo(final File source, final File destination) throws IOException
 	{
@@ -1214,11 +1238,32 @@ public class Files
 	 * Moves a file to a different location, overwriting the destination file if it exists.
 	 * @param sourceFile The file to be moved.
 	 * @param destinationFile The location to where the source files should be be moved.
-	 * @exception IOException Thrown if there is an error moving the file.
+	 * @throws IOException Thrown if there is an error moving the file.
 	 */
-	public static void moveFile(final File sourceFile, final File destinationFile) throws IOException
+	public static void move(final File sourceFile, final File destinationFile) throws IOException
 	{
-		moveFile(sourceFile, destinationFile, null); //move the source file to the destination file, specifying that no backup should be made
+		move(sourceFile, destinationFile, true);
+	}
+
+	/**
+	 * Moves a file to a different location, overwriting the destination file if it exists.
+	 * @param sourceFile The file to be moved.
+	 * @param destinationFile The location to where the source files should be be moved.
+	 * @param overwrite <code>true</code> if any existing file or directory at the destination should be overwritten, or <code>false</code> if an existing file or
+	 *          directory at the destination should cause an exception to be thrown.
+	 * @throws IllegalStateException if overwrite is turned off and a destination file exists.
+	 * @throws IOException Thrown if there is an error moving the file.
+	 */
+	public static void move(final File sourceFile, final File destinationFile, final boolean overwrite) throws IOException
+	{
+		if(!overwrite)
+		{
+			if(destinationFile.exists())
+			{
+				throw new IllegalStateException("Move destination file " + destinationFile + " already exists.");
+			}
+		}
+		move(sourceFile, destinationFile, null); //move the source file to the destination file, specifying that no backup should be made
 	}
 
 	/**
@@ -1227,73 +1272,21 @@ public class Files
 	 * @param sourceFile The file to be moved.
 	 * @param destinationFile The location to where the source files should be be moved.
 	 * @param backupFile The backup file to where the destination file, if any, will first be moved, or <code>null</code> if no backup file is necessary.
-	 * @exception IOException Thrown if there is an error renaming the file.
+	 * @throws IOException Thrown if there is an error renaming the file.
 	 */
-	public static void moveFile(final File sourceFile, final File destinationFile, final File backupFile) throws IOException
+	public static void move(final File sourceFile, final File destinationFile, final File backupFile) throws IOException
 	{
-		if(backupFile != null && destinationFile.exists()) //if we should backup the original destination file, and the original destination file exists
-		{
-			//try to move the destination file to the backup file
-			//if this fails, at worst it will leave the destination file at the same state it was in to begin with 
-			moveFile(destinationFile, backupFile);
-		}
 		if(destinationFile.exists()) //if the destination file exists
+		{
+			if(backupFile != null) //if we should backup the original destination file, and the original destination file exists
+			{
+				//try to move the destination file to the backup file; if this fails, at worst it will leave the destination file at the same state it was in to begin with 
+				move(destinationFile, backupFile);
+			}
 			delete(destinationFile); //delete the destination file, throwing an exception if there is an error
+		}
 		renameTo(sourceFile, destinationFile); //move the source file to the destination file
 	}
-
-	/**
-	 * Returns a relative path to the file from the given directory. This version requires the file to be on the same branch of the reference directory.
-	 * @param referenceDirectory The reference directory to use in making the relative path.
-	 * @param file The file for which a relative path should be returned, in relation to the reference directory.
-	 * @return A relative path to the file in relation to the reference directory, or <code>null</code> if a relative path could not be determined.
-	 * @exception IOException Thrown if an I/O error occurs, which is possible because the construction of canonical pathnames may require filesystem queries.
-	 */
-	/*TODO del
-		public static String getRelativePath(final File referenceDirectory, final File file) throws IOException
-		{
-			final String canonicalReferenceDirectoryPath=referenceDirectory.getCanonicalPath(); //convert the reference directory to its canonical form
-			final String canonicalFilePath=file.getCanonicalPath(); //convert the file to its canonical form
-			final int canonicalReferenceDirectoryPathLength=canonicalReferenceDirectoryPath.length(); //see how long the canonical directory is
-	Log.trace("Canonical directory: "+canonicalReferenceDirectoryPath);
-	Log.trace("Canonical file: "+canonicalFilePath);
-			if(canonicalReferenceDirectoryPathLength<canonicalFilePath.length())  //make sure the directory is shorter than the entire file path
-			{
-				if(canonicalFilePath.substring(0, canonicalReferenceDirectoryPathLength)) //if the file path contains the directory
-				{
-
-				}
-			}
-			return null;  //show that we couldn't determine a relative path
-		}
-	*/
-
-	/**
-	 * Returns a relative path to the file from the given directory. The result is appropriate for a URL reference. This version requires the file to be on the
-	 * same branch of the reference directory.
-	 * @param referenceDirectory The reference directory to use in making the relative path.
-	 * @param file The file for which a relative path should be returned, in relation to the reference directory.
-	 * @return A relative path to the file in relation to the reference directory, or <code>null</code> if a relative path could not be determined.
-	 * @exception IOException Thrown if an I/O error occurs, which is possible because the construction of canonical pathnames may require filesystem queries.
-	 */
-	/*TODO fix
-		public static String getRelativePath(final File referenceDirectory, final File file) throws IOException
-		{
-			final String canonicalReferenceDirectoryPath=referenceDirectory.getCanonicalPath(); //convert the reference directory to its canonical form
-			final String canonicalFilePath=file.getCanonicalPath(); //convert the file to its canonical form
-			final int canonicalReferenceDirectoryPathLength=canonicalReferenceDirectoryPath.length(); //see how long the canonical directory is
-	Log.trace("Canonical directory: "+canonicalReferenceDirectoryPath);
-	Log.trace("Canonical file: "+canonicalFilePath);
-			if(canonicalReferenceDirectoryPathLength<canonicalFilePath.length())  //make sure the directory is shorter than the entire file path
-			{
-				if(canonicalFilePath.substring(0, canonicalReferenceDirectoryPathLength)) //if the file path contains the directory
-				{
-
-				}
-			}
-			return null;  //show that we couldn't determine a relative path
-		}
-	*/
 
 	/**
 	 * Sorts a list of files in ascending order by modified time and secondly by file name. This method caches file information so that each file is accessed only
@@ -1337,7 +1330,7 @@ public class Files
 	 * Stores the contents of an input stream in a file.
 	 * @param inputStream The source of the file contents.
 	 * @param file The destination of the file contents.
-	 * @exception IOException Thrown if there is an error copying the information.
+	 * @throws IOException Thrown if there is an error copying the information.
 	 */
 	public static void copy(final InputStream inputStream, final File file) throws IOException
 	{
@@ -1349,7 +1342,7 @@ public class Files
 	 * @param inputStream The source of the file contents.
 	 * @param file The destination of the file contents.
 	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
-	 * @exception IOException Thrown if there is an error copying the information.
+	 * @throws IOException Thrown if there is an error copying the information.
 	 */
 	public static void copy(final InputStream inputStream, final File file, final ProgressListener progressListener) throws IOException
 	{
@@ -1368,7 +1361,7 @@ public class Files
 	 * Stores the contents of a file in an output stream.
 	 * @param file The file to copy.
 	 * @param outputStream The destination of the file contents.
-	 * @exception IOException Thrown if there is an error copying the file.
+	 * @throws IOException Thrown if there is an error copying the file.
 	 */
 	public static void copy(final File file, final OutputStream outputStream) throws IOException
 	{
@@ -1483,7 +1476,7 @@ public class Files
 	 * @param file The file to copy.
 	 * @param outputStream The destination of the file contents.
 	 * @param progressListener A listener to be notified of progress, or <code>null</code> if no progress notifications is requested.
-	 * @exception IOException Thrown if there is an error copying the file.
+	 * @throws IOException Thrown if there is an error copying the file.
 	 */
 	public static void copy(final File file, final OutputStream outputStream, final ProgressListener progressListener) throws IOException
 	{
