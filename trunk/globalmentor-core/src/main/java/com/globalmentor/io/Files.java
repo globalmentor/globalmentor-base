@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-201 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -925,8 +925,10 @@ public class Files
 	 * <p>
 	 * Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes.
 	 * </p>
-	 * <p>This method may not return a URI with a trailing slash for directories that don't exist. If it is known whether the file represents a directory,
-	 * {@link #toURI(File, boolean)} should be used instead.</p>
+	 * <p>
+	 * This method may not return a URI with a trailing slash for directories that don't exist. If it is known whether the file represents a directory,
+	 * {@link #toURI(File, boolean)} should be used instead.
+	 * </p>
 	 * @param file The file which should be converted to a URI.
 	 * @return An absolute, hierarchical URI with non-ASCII characters encoded, with a {@link URIs#FILE_SCHEME} scheme, a path representing this abstract
 	 *         pathname, and undefined authority, query, and fragment components.
@@ -953,8 +955,10 @@ public class Files
 	 * <p>
 	 * Following the examples in RFC 3986, this is guaranteed to produce only <em>lowercase</em> hexadecimal escape codes.
 	 * </p>
-	 * <p>If a directory URI is requested, the appropriate URI for a directory is returned, whether or not the directory exists. Contrast this behavior with {@link File#toURI()}, which will return a
-	 * file URI without a trailing slash if the directory does not exist.</p>
+	 * <p>
+	 * If a directory URI is requested, the appropriate URI for a directory is returned, whether or not the directory exists. Contrast this behavior with
+	 * {@link File#toURI()}, which will return a file URI without a trailing slash if the directory does not exist.
+	 * </p>
 	 * @param file The file which should be converted to a URI.
 	 * @param forceDirectoryURI Whether the URI should be returned with a trailing slash, even if the file does not exist as a directory.
 	 * @return An absolute, hierarchical URI with non-ASCII characters encoded, with a {@link URIs#FILE_SCHEME} scheme, a path representing this abstract
@@ -983,15 +987,10 @@ public class Files
 				break; //skip looking at the rest of the string
 			}
 		}
-		uri=toCanonicalURI(uri); //convert the URI to canonical form; even if we converted ASCII characters, the File.toURI() method might have produced uppercase hex escape codes when escaping illegal characters
-		if(forceDirectoryURI)
+		uri = toCanonicalURI(uri); //convert the URI to canonical form; even if we converted ASCII characters, the File.toURI() method might have produced uppercase hex escape codes when escaping illegal characters
+		if(forceDirectoryURI) //force a collection URI if needed
 		{
-			final String fileRawPath = uri.getRawPath(); //get the raw path of the directory URI
-			if(!endsWith(fileRawPath, PATH_SEPARATOR)) //if the file URI isn't a directory URI
-			{
-				//create a new URI with the path separator appended
-				return changeRawPath(uri, fileRawPath + PATH_SEPARATOR);
-			}
+			uri = toCollectionURI(uri);
 		}
 		return uri;
 	}

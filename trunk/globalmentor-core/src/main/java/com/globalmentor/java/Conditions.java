@@ -36,7 +36,7 @@ public class Conditions
 	 * This is a precondition check.
 	 * </p>
 	 * @param test The result of the test.
-	 * @throws IllegalArgumentException if the given value is <code>false</code>
+	 * @throws IllegalArgumentException if the given value is <code>false</code>.
 	 */
 	public static void checkArgument(final boolean test)
 	{
@@ -50,7 +50,7 @@ public class Conditions
 	 * </p>
 	 * @param test The result of the test.
 	 * @param description A description of the test to be used when generating an exception, or <code>null</code> for no description.
-	 * @throws IllegalArgumentException if the given value is <code>false</code>
+	 * @throws IllegalArgumentException if the given value is <code>false</code>.
 	 */
 	public static void checkArgument(final boolean test, final String description)
 	{
@@ -58,6 +58,39 @@ public class Conditions
 		{
 			throw new IllegalArgumentException(description);
 		}
+	}
+
+	/**
+	 * Check to make sure an argument isn't <code>null</code>, throwing {@link IllegalArgumentException} if the object is <code>null</code>.
+	 * <p>
+	 * This is a precondition check.
+	 * </p>
+	 * @param object The object to test.
+	 * @param return The given object.
+	 * @throws IllegalArgumentException if the given object is <code>null</code>.
+	 */
+	public static <T> T checkArgumentNotNull(final T object)
+	{
+		return checkArgumentNotNull(object, null); //check the object with no description
+	}
+
+	/**
+	 * Check to make sure an argument isn't <code>null</code>, throwing {@link IllegalArgumentException} if the object is <code>null</code>.
+	 * <p>
+	 * This is a precondition check.
+	 * </p>
+	 * @param object The object to test.
+	 * @param return The given object.
+	 * @param description A description of the test to be used when generating an exception, or <code>null</code> for no description.
+	 * @throws IllegalArgumentException if the given object is <code>null</code>.
+	 */
+	public static <T> T checkArgumentNotNull(final T object, final String description)
+	{
+		if(object == null)
+		{
+			throw new IllegalArgumentException(description);
+		}
+		return object;
 	}
 
 	/**

@@ -160,7 +160,8 @@ public class Sets
 		{
 			newSet = new HashSet<E>(); //use a normal set
 		}
-		java.util.Collections.addAll(newSet, elements); //add all the elements
+		newSet.addAll(collection); //add all the elements
+		java.util.Collections.addAll(newSet, elements); //add all the extra elements
 		return java.util.Collections.unmodifiableSet(newSet); //wrap the set in an unmodifiable set
 	}
 

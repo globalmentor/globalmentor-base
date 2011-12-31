@@ -28,6 +28,9 @@ import com.globalmentor.log.Log;
 import com.globalmentor.model.NameValuePair;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.net.URIs.PATH_SEPARATOR;
+import static com.globalmentor.net.URIs.changeRawPath;
+
 import com.globalmentor.text.*;
 
 /**
@@ -380,6 +383,29 @@ public class URIs
 			stringBuilder.append(FRAGMENT_SEPARATOR).append(rawFragment); //include the raw fragment
 		}
 		return URI.create(stringBuilder.toString()); //create a URI from the constructed string
+	}
+
+	/**
+	 * Forces a URI to represent a collection by appending a trailing path separator to the URI path, if any. If the URI has no path, no change is made.
+	 * <p>
+	 * This method is most useful for working with file systems that are imprecise about distinguishing between collection and non-collection nodes.
+	 * </p>
+	 * @param uri The URI to represent a collection.
+	 * @return A form of the URI representing a collection.
+	 * @throws NullPointerException if the given URI is <code>null</code>.
+	 */
+	public static URI toCollectionURI(URI uri)
+	{
+		final String rawPath = uri.getRawPath(); //get the raw path of the directory URI
+		if(rawPath != null) //if there is a path
+		{
+			if(!endsWith(rawPath, PATH_SEPARATOR)) //if the path isn't a collection path
+			{
+				//create a new URI with the path separator appended
+				uri = changeRawPath(uri, rawPath + PATH_SEPARATOR);
+			}
+		}
+		return uri;
 	}
 
 	/**
