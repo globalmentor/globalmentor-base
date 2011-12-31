@@ -16,42 +16,28 @@
 
 package com.globalmentor.time;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.globalmentor.java.Maths;
 import com.globalmentor.test.AbstractTest;
 
 /**
- * Tests for millisecond processing.
+ * Tests for the time class
  * 
  * @author Garret Wilson
  */
-public class MillisecondsTest extends AbstractTest
+public class TimeTest extends AbstractTest
 {
 
 	@Test
-	public void testSeconds()
+	public void testFloor()
 	{
-		assertEquals(5 * 1000, Milliseconds.fromSeconds(5));
-	}
-
-	@Test
-	public void testMinutes()
-	{
-		assertEquals(5 * 60 * 1000, Milliseconds.fromMinutes(5));
-	}
-
-	@Test
-	public void testHours()
-	{
-		assertEquals(5 * 60 * 60 * 1000, Milliseconds.fromHours(5));
-	}
-
-	@Test
-	public void testDays()
-	{
-		assertEquals(5 * 24 * 60 * 60 * 1000, Milliseconds.fromDays(5));
+		final Time time = new Time();
+		final Time floor = time.floor(Time.Resolution.SECONDS);
+		assertThat(floor.getTime(), equalTo(Maths.floor(time.getTime(), 3))); //round down to seconds
 	}
 
 }

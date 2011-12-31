@@ -22,6 +22,7 @@ import com.globalmentor.iso.ISO8601;
 import com.globalmentor.java.Integers;
 import com.globalmentor.text.ArgumentSyntaxException;
 import com.globalmentor.text.SyntaxException;
+import com.globalmentor.time.Time;
 
 import static com.globalmentor.iso.ISO8601.*;
 
@@ -30,7 +31,7 @@ import static com.globalmentor.iso.ISO8601.*;
  * time is stored internally in terms of UTC.
  * @author Garret Wilson
  */
-public abstract class AbstractURFDateTime extends Date implements URFTemporal
+public abstract class AbstractURFDateTime extends Time implements URFTemporal
 {
 
 	/** The year, 0-9999. */
