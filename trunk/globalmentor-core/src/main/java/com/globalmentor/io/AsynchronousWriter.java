@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,25 +27,32 @@ import static com.globalmentor.java.Objects.*;
 /**
  * Writer that queues information and writes the information to the underlying writer asynchronously.
  * 
- * <p>Information is written in the order in which character arrays are committed to the underlying queue. Characters
- * within a particular buffer are guaranteed to be written in the order received. This writer uses a producer/consumer
- * paradigm with multiple threads and a blocking queue. This writer is thread-safe. In addition, a copy is made of all
- * data written so that any data structure, such as a character buffer, can be reused after production has occurred.</p>
+ * <p>
+ * Information is written in the order in which character arrays are committed to the underlying queue. Characters within a particular buffer are guaranteed to
+ * be written in the order received. This writer uses a producer/consumer paradigm with multiple threads and a blocking queue. This writer is thread-safe. In
+ * addition, a copy is made of all data written so that any data structure, such as a character buffer, can be reused after production has occurred.
+ * </p>
  * 
- * <p>Because this writer does not synchronize production, the writer is not guaranteed to throw an {@link IOException}
- * if the writer is closed by another thread immediately before a write operation returns. This implies that that
- * information written to the writer at the same time another thread closes this writer has a slight possibility of
- * being discarded with no error. If synchronized production is desired, access to this writer's production methods
- * should be synchronized externally. If access to production methods are synchronized, they should be synchronized on
- * the lock used to construct the writer or, if no custom lock was used to construct the writer, on the writer
- * itself.</p>
+ * <p>
+ * Because this writer does not synchronize production, the writer is not guaranteed to throw an {@link IOException} if the writer is closed by another thread
+ * immediately before a write operation returns. This implies that that information written to the writer at the same time another thread closes this writer has
+ * a slight possibility of being discarded with no error. If synchronized production is desired, access to this writer's production methods should be
+ * synchronized externally. If access to production methods are synchronized, they should be synchronized on the lock used to construct the writer or, if no
+ * custom lock was used to construct the writer, on the writer itself.
+ * </p>
  * 
- * <p>The {@link #close()} and {@link #drain()} operations block until finished.</p>
+ * <p>
+ * The {@link #close()} and {@link #drain()} operations block until finished.
+ * </p>
  * 
- * <p>The {@link #flush()} operation does not block until finished.</p>
+ * <p>
+ * The {@link #flush()} operation does not block until finished.
+ * </p>
  * 
- * <p>Whether or not this writer is synchronized, it will block when producing information if the underlying blocking
- * queue has a fixed length and is full, as is the standard contract for {@link BlockingQueue}.</p>
+ * <p>
+ * Whether or not this writer is synchronized, it will block when producing information if the underlying blocking queue has a fixed length and is full, as is
+ * the standard contract for {@link BlockingQueue}.
+ * </p>
  * 
  * @author Garret Wilson
  */
@@ -59,9 +66,8 @@ public class AsynchronousWriter extends Writer
 	protected final static char[] CLOSE_INDICATOR = new char[0];
 
 	/**
-	 * The predefined, shared character buffer that, when produced, indicates that all queued writes should be drained. As
-	 * the appearance of this indicator indicates that the queue has already been drained, it functions as sort of a
-	 * signaling no-op.
+	 * The predefined, shared character buffer that, when produced, indicates that all queued writes should be drained. As the appearance of this indicator
+	 * indicates that the queue has already been drained, it functions as sort of a signaling no-op.
 	 */
 	protected final static char[] DRAIN_INDICATOR = new char[0];
 
@@ -75,14 +81,12 @@ public class AsynchronousWriter extends Writer
 	}
 
 	/**
-	 * The underlying blocking queue used for producing and consuming information, or <code>null</code> if the underlying
-	 * stream has been closed.
+	 * The underlying blocking queue used for producing and consuming information, or <code>null</code> if the underlying stream has been closed.
 	 */
 	private BlockingQueue<char[]> blockingQueue;
 
 	/**
-	 * @return The underlying blocking queue used for producing and consuming information, or <code>null</code> if the
-	 *         underlying stream has been closed.
+	 * @return The underlying blocking queue used for producing and consuming information, or <code>null</code> if the underlying stream has been closed.
 	 */
 	protected BlockingQueue<char[]> getBlockingQueue()
 	{
@@ -90,8 +94,7 @@ public class AsynchronousWriter extends Writer
 	}
 
 	/**
-	 * The thread-safe queue of any I/O errors encountered by the consumer thread, to be returned by the production
-	 * methods.
+	 * The thread-safe queue of any I/O errors encountered by the consumer thread, to be returned by the production methods.
 	 */
 	private final Queue<IOException> ioExceptionQueue = new ConcurrentLinkedQueue<IOException>();
 
@@ -102,8 +105,8 @@ public class AsynchronousWriter extends Writer
 	}
 
 	/**
-	 * Writer constructor with a default {@link LinkedBlockingQueue} used for data production and consumption, with
-	 * critical sections synchronized on the writer itself.
+	 * Writer constructor with a default {@link LinkedBlockingQueue} used for data production and consumption, with critical sections synchronized on the writer
+	 * itself.
 	 * @param writer The writer being decorated.
 	 * @exception NullPointerException if the given writer is <code>null</code>.
 	 */
@@ -154,14 +157,13 @@ public class AsynchronousWriter extends Writer
 	}
 
 	/**
-	 * Write a single character. The character to be written is contained in the 16 low-order bits of the given integer
-	 * value; the 16 high-order bits are ignored.
+	 * Write a single character. The character to be written is contained in the 16 low-order bits of the given integer value; the 16 high-order bits are ignored.
 	 * @param c int specifying a character to be written.
 	 * @exception IOException if an I/O error occurs.
 	 */
 	public void write(int c) throws IOException
 	{
-		produce(new char[] { (char) c }); //always create a new character array and produce the buffer, so that we won't hold up the production process from other threads; go ahead and produce the array because we don't need to make a copy
+		produce(new char[] { (char)c }); //always create a new character array and produce the buffer, so that we won't hold up the production process from other threads; go ahead and produce the array because we don't need to make a copy
 	}
 
 	/**
@@ -187,7 +189,7 @@ public class AsynchronousWriter extends Writer
 	 */
 	public void write(final char[] charBuffer, final int offset, final int length) throws IOException
 	{
-		produce(createCopy(charBuffer, offset, offset+length)); //create and produce a copy of the relevant characters
+		produce(createCopy(charBuffer, offset, offset + length)); //create and produce a copy of the relevant characters
 	}
 
 	/** The lock used for sending synchronous indicators to the consumer. */
@@ -200,8 +202,8 @@ public class AsynchronousWriter extends Writer
 	private final Condition drainCondition = lock.newCondition();
 
 	/**
-	 * Flush the stream by writing all data to the underlying writer and then flushing the underlying writer. This
-	 * implementation does not block waiting for data to be flush; flushing occurs asynchronously.
+	 * Flush the stream by writing all data to the underlying writer and then flushing the underlying writer. This implementation does not block waiting for data
+	 * to be flush; flushing occurs asynchronously.
 	 * @exception IOException if an I/O error occurs
 	 */
 	public void flush() throws IOException
@@ -224,9 +226,9 @@ public class AsynchronousWriter extends Writer
 			{
 				drainCondition.await(); //wait until the consumer reaches the drain point
 			}
-			catch (final InterruptedException interruptedException) //if we are interrupted while waiting
+			catch(final InterruptedException interruptedException) //if we are interrupted while waiting
 			{
-				throw (IOException) new IOException(interruptedException.getMessage()).initCause(interruptedException); //convert the interrupted exception to an IOException
+				throw (IOException)new IOException(interruptedException.getMessage()).initCause(interruptedException); //convert the interrupted exception to an IOException
 			}
 		}
 		finally
@@ -236,11 +238,10 @@ public class AsynchronousWriter extends Writer
 	}
 
 	/**
-	 * Close the stream, flushing it first. This implementation does not block waiting for the writer to close; closing
-	 * occurs asynchronously. Once a stream has been closed, further write() or {@link #flush()} invocations will cause an
-	 * {@link IOException} to be thrown. Closing a previously-closed stream, however, has no effect. This implementation
-	 * does not call this class' {@link #flush()} method, but because this operation involves flushing the underlying
-	 * writer this method's data production is synchronized.
+	 * Close the stream, flushing it first. This implementation does not block waiting for the writer to close; closing occurs asynchronously. Once a stream has
+	 * been closed, further write() or {@link #flush()} invocations will cause an {@link IOException} to be thrown. Closing a previously-closed stream, however,
+	 * has no effect. This implementation does not call this class' {@link #flush()} method, but because this operation involves flushing the underlying writer
+	 * this method's data production is synchronized.
 	 * @exception IOException if an I/O error occurs.
 	 */
 	public void close() throws IOException
@@ -248,16 +249,16 @@ public class AsynchronousWriter extends Writer
 		lock.lock(); //get a hold on the lock; this will prevent the close status from changing without signaling the close indicator
 		try
 		{
-			if (isOpen()) //only close the writer if it's open; the lock prevents a race condition
+			if(isOpen()) //only close the writer if it's open; the lock prevents a race condition
 			{
 				produce(CLOSE_INDICATOR); //produce a close indicator
 				try
 				{
 					closeCondition.await(); //wait until the consumer reaches the close point
 				}
-				catch (final InterruptedException interruptedException) //if we are interrupted while waiting
+				catch(final InterruptedException interruptedException) //if we are interrupted while waiting
 				{
-					throw (IOException) new IOException(interruptedException.getMessage()).initCause(interruptedException); //convert the interrupted exception to an IOException
+					throw (IOException)new IOException(interruptedException.getMessage()).initCause(interruptedException); //convert the interrupted exception to an IOException
 				}
 			}
 		}
@@ -268,31 +269,29 @@ public class AsynchronousWriter extends Writer
 	}
 
 	/**
-	 * Queues an array of characters for asynchronous writing, throwing an exception if this writer has been closed. The
-	 * calling method should not subsequently modify the contents of the buffer. No synchronization occurs in this method;
-	 * any desired synchronization should occur in the caller. This implementation delegates to
-	 * {@link #produce(char[], boolean)}.
+	 * Queues an array of characters for asynchronous writing, throwing an exception if this writer has been closed. The calling method should not subsequently
+	 * modify the contents of the buffer. No synchronization occurs in this method; any desired synchronization should occur in the caller. This implementation
+	 * delegates to {@link #produce(char[], boolean)}.
 	 * @param charBuffer The buffer of characters to write.
-	 * @exception IOException if this writer has been closed before production begins, or if this thread was interrupted
-	 *              while waiting for production to complete.
+	 * @exception IOException if this writer has been closed before production begins, or if this thread was interrupted while waiting for production to complete.
 	 */
 	protected void produce(final char[] charBuffer) throws IOException
 	{
 		final IOException ioException = ioExceptionQueue.poll(); //get any ioException waiting to be reported
-		if (ioException != null) //if there is a waiting I/O exception
+		if(ioException != null) //if there is a waiting I/O exception
 		{
-			throw (IOException) ioException.fillInStackTrace(); //add information about the program location and then throw the I/O exception
+			throw (IOException)ioException.fillInStackTrace(); //add information about the program location and then throw the I/O exception
 		}
 		final BlockingQueue<char[]> blockingQueue = getBlockingQueue(); //get the blocking queue to use
-		if (blockingQueue != null) //if the writer is still open
+		if(blockingQueue != null) //if the writer is still open
 		{
 			try
 			{
 				blockingQueue.put(charBuffer); //queue the character buffer for writing later
 			}
-			catch (final InterruptedException interruptedException) //if we were interrupted while adding the buffer to the queue
+			catch(final InterruptedException interruptedException) //if we were interrupted while adding the buffer to the queue
 			{
-				throw (IOException) new IOException(interruptedException.getMessage()).initCause(interruptedException); //convert the interrupted exception to an IOException
+				throw (IOException)new IOException(interruptedException.getMessage()).initCause(interruptedException); //convert the interrupted exception to an IOException
 			}
 		}
 		else
@@ -319,31 +318,29 @@ public class AsynchronousWriter extends Writer
 	}
 
 	/**
-	 * The consumer runnable that writes data to the underlying writer. This runnable's interruption policy is to close
-	 * the underlying writer and end execution.
+	 * The consumer runnable that writes data to the underlying writer. This runnable's interruption policy is to close the underlying writer and end execution.
 	 * @author Garret Wilson
 	 */
 	protected class Consumer implements Runnable
 	{
 
 		/**
-		 * The main functionality of the consumer, which consumes data from the blocking queue and writes it to the
-		 * underlying writer. If {@link AsynchronousWriter#FLUSH_INDICATOR} is consumed, the underlying writer is flushed.
-		 * If {@link AsynchronousWriter#CLOSE_INDICATOR} is consumed, the underlying writer is closed and the blocking queue
-		 * is removed.
+		 * The main functionality of the consumer, which consumes data from the blocking queue and writes it to the underlying writer. If
+		 * {@link AsynchronousWriter#FLUSH_INDICATOR} is consumed, the underlying writer is flushed. If {@link AsynchronousWriter#CLOSE_INDICATOR} is consumed, the
+		 * underlying writer is closed and the blocking queue is removed.
 		 */
 		public void run()
 		{
 			final BlockingQueue<char[]> blockingQueue = getBlockingQueue(); //get the blocking queue to use
 			try
 			{
-				while (true) //keep consuming until we break when interrupted
+				while(true) //keep consuming until we break when interrupted
 				{
 					assert blockingQueue != null : "Blocking queue unexpectedly null before asynchronous consumption has started."; //only the consumer is supposed to set the blocking queue to null
 					final char[] charBuffer = blockingQueue.take(); //get the next character buffer to write
 					try
 					{
-						if (charBuffer == CLOSE_INDICATOR) //if this is the close indicator
+						if(charBuffer == CLOSE_INDICATOR) //if this is the close indicator
 						{
 							lock.lock(); //get a hold on the lock; this will ensure that the producer thread has reached the point where it's waiting on the close signal
 							try
@@ -358,11 +355,11 @@ public class AsynchronousWriter extends Writer
 								lock.unlock(); //always release the lock
 							}
 						}
-						else if (charBuffer == FLUSH_INDICATOR) //if this is the flush indicator
+						else if(charBuffer == FLUSH_INDICATOR) //if this is the flush indicator
 						{
 							getWriter().flush(); //flush the decorated writer
 						}
-						else if (charBuffer == DRAIN_INDICATOR) //if the producer thread is waiting until we reach this point, and now wishes to be informed
+						else if(charBuffer == DRAIN_INDICATOR) //if the producer thread is waiting until we reach this point, and now wishes to be informed
 						{
 							lock.lock(); //get a hold on the lock; this will ensure that the producer thread has reached the point where it's waiting on the drain signal
 							try
@@ -380,23 +377,22 @@ public class AsynchronousWriter extends Writer
 							getWriter().write(charBuffer); //write the data to the underlying writer
 						}
 					}
-					catch (final IOException ioException) //if an I/O error occurs writing the the underlying writer
+					catch(final IOException ioException) //if an I/O error occurs writing the the underlying writer
 					{
 						ioExceptionQueue.add(ioException); //save the I/O exception for the producer to report it back
 					}
 				}
 			}
-			catch (final InterruptedException interruptedException) //if we're interrupted while waiting 
+			catch(final InterruptedException interruptedException) //if we're interrupted while waiting 
 			{
 				try
 				{
 					getWriter().close(); //close the writer
 				}
-				catch (final IOException ioException) //if an I/O error occurs writing the the underlying writer
+				catch(final IOException ioException) //if an I/O error occurs writing the the underlying writer
 				{
 					ioExceptionQueue.add(ioException); //save the I/O exception for the producer to report it back
 				}
-				Thread.currentThread().interrupt(); //interrupt the current thread, stop processing, and exit
 			}
 			finally
 			{

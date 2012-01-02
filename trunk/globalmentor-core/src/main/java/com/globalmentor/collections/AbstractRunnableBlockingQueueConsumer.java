@@ -57,7 +57,7 @@ public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consum
 	public void run()
 	{
 		started(); //indicate that consumption has started
-		while(true) //keep consuming until we break when interrupted
+		while(!Thread.interrupted()) //keep consuming until interrupted
 		{
 			try
 			{
@@ -66,14 +66,6 @@ public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consum
 			}
 			catch(final InterruptedException interruptedException) //if we're interrupted while waiting
 			{
-				try
-				{
-					stopped(); //indicate that consuming is finished
-				}
-				finally
-				{
-					Thread.currentThread().interrupt(); //interrupt the current thread, stop processing, and exit
-				}
 				break; //break out of the loop
 			}
 			catch(final Throwable throwable) //if any other exception occurs
@@ -81,6 +73,7 @@ public abstract class AbstractRunnableBlockingQueueConsumer<E> implements Consum
 				Log.error(throwable); //log the error and continue
 			}
 		}
+		stopped(); //indicate that consuming is finished
 	}
 
 	/** Called when the consumer is started before processing ends. */

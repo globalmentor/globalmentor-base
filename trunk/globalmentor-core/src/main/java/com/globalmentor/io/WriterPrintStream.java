@@ -67,7 +67,7 @@ public class WriterPrintStream extends PrintStream
 	}
 
 	/**Flushes the stream.
-	This version delgates to the decorated writer.
+	This version delegates to the decorated writer.
 	*/
   public void flush()
   {
@@ -88,8 +88,8 @@ public class WriterPrintStream extends PrintStream
   	}
   }
 
-  /**Closees the stream.
-	This version delgates to the decorated writer.
+  /**Closes the stream.
+	This version delegates to the decorated writer.
   */
   public void close()
   {

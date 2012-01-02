@@ -79,13 +79,13 @@ public abstract class AbstractOperation extends AbstractTask implements Operatio
 	 * {@inheritDoc} This version sets the state to {@link TaskState#INITIALIZE} and then calls {@link #initialize()}. The method then sets the state to
 	 * {@link TaskState#INCOMPLETE} and delegates to {@link #execute()}. After successful execution, the task state is set to {@link TaskState#COMPLETE}. If an
 	 * error occurs, the task state is set to {@link TaskState#ERROR}.
-	 * @throws IllegalStateException if the initial state is not {@link TaskState#UNSTARTED}.
+	 * @throws IllegalStateException if the state is {@link TaskState#INCOMPLETE}.
 	 * @see #initialize()
 	 */
 	@Override
 	public final void run()
 	{
-		checkState(getState() == TaskState.UNSTARTED, "Task isn't unstarted.");
+		checkState(getState() != TaskState.INCOMPLETE, "Task is running.");
 		try
 		{
 			setState(INITIALIZE);

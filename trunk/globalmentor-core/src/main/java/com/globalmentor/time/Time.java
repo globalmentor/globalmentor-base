@@ -96,6 +96,41 @@ public class Time extends Date
 	}
 
 	/**
+	 * Adds a duration to this time.
+	 * @param duration The duration to add.
+	 * @return A time object representing this time plus the given duration.
+	 * @throws NullPointerException if the given duration is <code>null</code>.
+	 */
+	public Time add(final Duration duration)
+	{
+		final long time = duration.getTime(); //if the duration is 0, we can just return this time
+		return time == 0 ? this : new Time(getTime() + time);
+	}
+
+	/**
+	 * Subtracts a duration from this time.
+	 * @param duration The duration to subtract.
+	 * @return A time object representing this time minus the given duration.
+	 * @throws NullPointerException if the given duration is <code>null</code>.
+	 */
+	public Time subtract(final Duration duration)
+	{
+		final long time = duration.getTime(); //if the duration is 0, we can just return this time
+		return time == 0 ? this : new Time(getTime() - time);
+	}
+
+	/**
+	 * Subtracts a time from this time. This operation may result in a negative duration.
+	 * @param time The time to subtract.
+	 * @return The duration between the two times, that is, this time minus the given time.
+	 * @throws NullPointerException if the given time is <code>null</code>.
+	 */
+	public Duration subtract(final Time time)
+	{
+		return Duration.of(getTime() - time.getTime());
+	}
+
+	/**
 	 * Retrieves the ceiling of this time by the given resolution. A resolution of {@link Resolution#MILLISECONDS} will simply return a time object equal to this
 	 * time object. A resolution of {@link Resolution#SECONDS}, for example, will effectively drop the milliseconds, rounding down to seconds.
 	 * @param resolution The resolution at which rounding should occur.
