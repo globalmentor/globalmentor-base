@@ -1,5 +1,5 @@
 /*
- * Copyright © 2005-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,34 +17,18 @@
 package com.globalmentor.model;
 
 /**
- * Represents the progress of a task.
+ * Represents some operation that can be executed. In essence this class is a lightweight task encapsulation. The operation can be canceled, which prevents its
+ * execution if execution has not yet started. Operation execution is initiated by a call to {@link #run()}.
+ * 
  * @author Garret Wilson
  */
-public enum TaskState
+public interface Operation extends Runnable
 {
 
-	/** The task has not yet begun. */
-	UNSTARTED,
+	/** Cancels the operation. If called before execution has started, the operation will not execute. */
+	public void cancel();
 
-	/** The task is preparing to begin. */
-	INITIALIZE,
-
-	/** The task has been started but is incomplete. */
-	INCOMPLETE,
-
-	/** The task has been started but there is an error. */
-	ERROR,
-
-	/** The task is temporarily paused. */
-	PAUSED,
-
-	/** The task is stopped. */
-	STOPPED,
-
-	/** The task has been abandoned. */
-	CANCELED,
-
-	/** The task has been completed. */
-	COMPLETE;
+	/** @return Whether this operation has been canceled and should not execute. */
+	public boolean isCanceled();
 
 }
