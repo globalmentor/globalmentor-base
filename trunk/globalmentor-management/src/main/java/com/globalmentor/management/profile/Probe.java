@@ -18,12 +18,18 @@ package com.globalmentor.management.profile;
 
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Java.*;
-import static com.globalmentor.model.Counter.*;
+import static com.globalmentor.model.Count.*;
+import static java.util.Collections.*;
 
+//import java.io.IOException;
+import java.io.IOException;
 import java.lang.management.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import com.globalmentor.collections.Maps;
+import com.globalmentor.collections.comparators.SortOrder;
+import com.globalmentor.java.StackTrace;
+//import com.globalmentor.log.Log;
 import com.globalmentor.model.*;
 import com.globalmentor.time.Duration;
 
@@ -40,28 +46,68 @@ public class Probe
 	/** The current stack probe operation, or <code>null</code> if there is no stack probe in progress. */
 	private static Operation stackProbeOperation = null;
 
-	private static final Map<String, Counter> methodCounters = new HashMap<String, Counter>();
+	private static long stackProbeCount = 0;
+
+	private static final Map<String, Count> methodCounters = new HashMap<String, Count>();
 
 	/**
 	 * Starts a stack probe.
-	 * @throws IllegalStateException if a stack probe is already started.
+	 * <p>
+	 * Every call to this method must have a later call to {@link #stopStackProbe()}.
+	 * </p>
+	 * @see #stopStackProbe()
 	 */
 	public synchronized static void startStackProbe()
 	{
-		checkState(stackProbeOperation == null, "Stack probe already started.");
-		stackProbeOperation = new StackProbeOperation();
-		probeOperationManager.schedule(stackProbeOperation, Duration.of(100), true); //schedule a stack probe operation every 100ms
+		if(stackProbeOperation == null)
+		{
+			stackProbeOperation = new StackProbeOperation();
+			probeOperationManager.schedule(stackProbeOperation, Duration.of(100), true); //schedule a stack probe operation every 100ms
+		}
+		++stackProbeCount;
 	}
 
 	/**
 	 * Stops a stack probe.
-	 * @throws IllegalStateException if a stack probe is not started.
+	 * <p>
+	 * This method must be called for each time that {@link #startStackProbe()} is called.
+	 * </p>
+	 * @throws IllegalStateException if this method is called before {@link #startStackProbe()} is called.
+	 * @see #startStackProbe()
 	 */
 	public synchronized static void stopStackProbe()
 	{
-		checkState(stackProbeOperation != null, "Stack probe not started.");
-		stackProbeOperation.cancel(); //cancel the stack probe operation
-		stackProbeOperation = null;
+		checkState(stackProbeCount > 0, "Stack probe stop not paired with start.");
+		if(--stackProbeCount == 0)
+		{
+			stackProbeOperation.cancel(); //cancel the stack probe operation
+			stackProbeOperation = null;
+		}
+	}
+
+	/** Retrieves a list of collected class+method names and their associated counts, in the order of highest to lowest occurrence. */
+	public synchronized static List<NameValuePair<String, Count>> getSortedStackProbeCounts()
+	{
+		//get the stack probe counts
+		final List<NameValuePair<String, Count>> stackProbeCounts = Maps.getKeyValuesCloned(methodCounters, new ArrayList<NameValuePair<String, Count>>());
+		sort(stackProbeCounts, new ValuedComparator<Count>(SortOrder.DESCENDING)); //sort the stack probe counts in order of highest to lowest count
+		return stackProbeCounts;
+	}
+
+	/**
+	 * Prints the currently collected stack probe results, in the order of highest to lowest occurrence.
+	 * @param appendable The appendable to which the results should be printed.
+	 * @return The given appendable.
+	 * @throws NullPointerException if the given appendable is <code>null</code>.
+	 * @throws IOException if there is an error printing to the given appendable.
+	 */
+	public static <A extends Appendable> A printStackProbeCounts(final A appendable) throws IOException
+	{
+		for(final NameValuePair<String, Count> stackProbeCount : getSortedStackProbeCounts())
+		{
+			appendable.append(stackProbeCount.toString()).append('\n');
+		}
+		return appendable;
 	}
 
 	/**
@@ -71,19 +117,41 @@ public class Probe
 	protected static class StackProbeOperation extends AbstractOperation
 	{
 
-		final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+		/** The stack trace of the execute method. */
+		//		private StackTrace executeStackTrace;
+
+		private final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 
 		@Override
-		protected void execute()
+		protected void execute() throws CancelException
 		{
+			/*
+						if(executeStackTrace == null) //create a new stack trace to represent this method
+						{
+							executeStackTrace = new StackTrace();
+							try
+							{
+								executeStackTrace.print(System.out);
+							}
+							catch(final IOException ioException)
+							{
+								throw unexpected(ioException);
+							}
+						}
+			*/
+			final long threadID = Thread.currentThread().getId();
 			final ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(false, false); //get info on all current threads
 			for(final ThreadInfo threadInfo : threadInfos) //look at info on each thread
 			{
-				final StackTraceElement[] stackTrace = threadInfo.getStackTrace(); //get a stack trace for this thread
-				for(final StackTraceElement stackTraceElement : stackTrace)
+				if(threadInfo.getThreadId() != threadID) //ignore ourselves
 				{
-					final String fullMethodName = stackTraceElement.getClassName() + PACKAGE_SEPARATOR + stackTraceElement.getMethodName();
-					incrementCounterMapCount(methodCounters, fullMethodName); //increment the number of times we've seen this method
+					final StackTrace stackTrace = new StackTrace(threadInfo.getStackTrace()); //get a stack trace for this thread
+					//				if(!executeStackTrace.isTopMethodIntersected(stackTrace)) //ignore the stack trace from this method---that is, ignore our own thread and all stack probes
+					for(final StackTraceElement stackTraceElement : stackTrace.getStackTraceElements())
+					{
+						final String fullMethodName = stackTraceElement.getClassName() + PACKAGE_SEPARATOR + stackTraceElement.getMethodName();
+						incrementCounterMapCount(methodCounters, fullMethodName); //increment the number of times we've seen this method
+					}
 				}
 			}
 		}
