@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package com.globalmentor.model;
 
 import java.util.*;
 
+import com.globalmentor.java.AbstractLong;
+import com.globalmentor.java.CloneSupported;
 import com.globalmentor.java.Longs;
 
 /**
@@ -29,7 +31,7 @@ import com.globalmentor.java.Longs;
  * 
  * @author Garret Wilson
  */
-public class Counter
+public class Count extends AbstractLong<Count> implements CloneSupported
 {
 
 	/** The current count. */
@@ -41,10 +43,17 @@ public class Counter
 		return count;
 	}
 
+	/** {@inheritDoc} This version delegates to {@link #getCount()}. */
+	@Override
+	public long longValue()
+	{
+		return getCount();
+	}
+
 	/**
 	 * Default constructor with a count of zero.
 	 */
-	public Counter()
+	public Count()
 	{
 		this(0L);
 	}
@@ -54,7 +63,7 @@ public class Counter
 	 * 
 	 * @param count The current count.
 	 */
-	public Counter(final long count)
+	public Count(final long count)
 	{
 		this.count = count;
 	}
@@ -63,7 +72,7 @@ public class Counter
 	 * Increments the counter and returns the new value.
 	 * @return The new, incremented count value.
 	 */
-	public long increment()
+	protected long increment()
 	{
 		return ++count;
 	}
@@ -72,9 +81,15 @@ public class Counter
 	 * Decrements the counter and returns the new value.
 	 * @return The new, decremented count value.
 	 */
-	public long decrement()
+	protected long decrement()
 	{
 		return --count;
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException
+	{
+		return super.clone();
 	}
 
 	/**
@@ -100,12 +115,12 @@ public class Counter
 	 * @param key The key being counted.
 	 * @return The new count of the key in the map.
 	 */
-	public static <K> long incrementCounterMapCount(final Map<K, Counter> map, final K key)
+	public static <K> long incrementCounterMapCount(final Map<K, Count> map, final K key)
 	{
-		Counter counter = map.get(key); //get the current counter
+		Count counter = map.get(key); //get the current counter
 		if(counter == null) //if the key does not exist in the map
 		{
-			counter = new Counter(); //create a new counter and put it in the map keyed to the key 
+			counter = new Count(); //create a new counter and put it in the map keyed to the key 
 			map.put(key, counter);
 		}
 		return counter.increment(); //increment the counter and return the new count
@@ -125,9 +140,9 @@ public class Counter
 	 * @return The new count of the key in the map.
 	 * @throws IllegalStateException if the key does not exist in the map (i.e. the count is zero).
 	 */
-	public static <K> long decrementCounterMapCount(final Map<K, Counter> map, final K key)
+	public static <K> long decrementCounterMapCount(final Map<K, Count> map, final K key)
 	{
-		final Counter counter = map.get(key); //get the current counter
+		final Count counter = map.get(key); //get the current counter
 		if(counter == null) //if the key does not exist in the map
 		{
 			throw new IllegalStateException("Key " + key + " does not exist in the counter map (it has an effective zero count).");
@@ -152,9 +167,9 @@ public class Counter
 	 * @param key The key being counted.
 	 * @return The count value of the counter of the key in the map.
 	 */
-	public static <K> long getCount(final Map<K, Counter> map, final K key)
+	public static <K> long getCount(final Map<K, Count> map, final K key)
 	{
-		final Counter counter = map.get(key); //get the current counter
+		final Count counter = map.get(key); //get the current counter
 		return counter != null ? counter.getCount() : 0L; //return the count, considering no counter to indicate a count of zero
 	}
 
@@ -166,10 +181,10 @@ public class Counter
 	 * @author Garret Wilson
 	 * @param <K> The type of key used in the map.
 	 */
-	public static class CounterMapEntryComparator<K> implements Comparator<Map.Entry<K, Counter>>
+	public static class CounterMapEntryComparator<K> implements Comparator<Map.Entry<K, Count>>
 	{
 		@Override
-		public int compare(final Map.Entry<K, Counter> entry1, final Map.Entry<K, Counter> entry2)
+		public int compare(final Map.Entry<K, Count> entry1, final Map.Entry<K, Count> entry2)
 		{
 			return Longs.compare(entry1.getValue().getCount(), entry2.getValue().getCount());
 		}

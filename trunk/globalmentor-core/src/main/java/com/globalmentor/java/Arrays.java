@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,25 +103,43 @@ public class Arrays
 	/**
 	 * Checks to make sure that a given index range is within the given sized array.
 	 * @param length The length of the array.
-	 * @param fromIndex The first index in the range.
-	 * @param toIndex The index after the last requested position in the array.
-	 * @throws IllegalArgumentException if the first index is greater than the last index.
-	 * @throws ArrayIndexOutOfBoundsException if one of the indices is outside the array range.
+	 * @param start The first index in the range.
+	 * @param end The index after the last requested position in the array.
+	 * @return The length of the checked range.
+	 * @throws IllegalArgumentException if the start index is greater than the end index.
+	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
-	public static void checkIndexRange(final int length, int fromIndex, int toIndex)
+	public static int checkIndexRange(final int length, int start, int end)
 	{
-		if(fromIndex > toIndex) //if the first index is greater than the last index
+		final int rangeLength = end - start;
+		if(rangeLength < 0) //if the first index is greater than the last index
 		{
-			throw new IllegalArgumentException("First range index " + fromIndex + " greater than " + toIndex);
+			throw new IllegalArgumentException("Start range index " + start + " greater than end range index" + end);
 		}
-		if(fromIndex < 0) //if the first index is too low
+		if(start < 0) //if the first index is too low
 		{
-			throw new ArrayIndexOutOfBoundsException(fromIndex);
+			throw new IllegalArgumentException("Start range index " + start + " cannot be less than zero.");
 		}
-		if(toIndex > length) //if the last index is too high
+		if(end > length) //if the last index is too high
 		{
-			throw new ArrayIndexOutOfBoundsException(toIndex);
+			throw new IllegalArgumentException("End range index " + end + " cannot be greater than length " + length);
 		}
+		return rangeLength;
+	}
+
+	/**
+	 * Checks to make sure that a given index range is within the given sized array.
+	 * @param array The array against which the range should be checked.
+	 * @param start The first index in the range.
+	 * @param end The index after the last requested position in the array.
+	 * @return The length of the checked range.
+	 * @throws NullPointerException if the given array is <code>null</code>.
+	 * @throws IllegalArgumentException if the start index is greater than the end index.
+	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
+	 */
+	public static int checkIndexRange(final Object[] array, int start, int end)
+	{
+		return checkIndexRange(array.length, start, end);
 	}
 
 	/**
@@ -129,7 +147,7 @@ public class Arrays
 	 * copy. The number of elements copied is equal to the minimum of the size of the original array and the size of the new array.
 	 * @param length The size at which the new array should be created.
 	 * @param a The array whose content will be copied, or <code>null</code> if there are no values to copy..
-	 * @return A new array with the content of the old array at the corresponding indeces.
+	 * @return A new array with the content of the old array at the corresponding indexes.
 	 */
 	public static int[] create(final int length, final int[] a)
 	{
@@ -147,8 +165,8 @@ public class Arrays
 	 * @param source The array to copy.
 	 * @param start The offset from which to start copying elements.
 	 * @return A new array containing the specified range of elements from the source array.
-	 * @throws IllegalArgumentException if the first index is greater than the last index.
-	 * @throws ArrayIndexOutOfBoundsException if one of the indices is outside the array range.
+	 * @throws IllegalArgumentException if the start index is greater than the end index.
+	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
 	public static <T> T[] createCopy(final T[] source, final int start)
 	{
@@ -161,8 +179,8 @@ public class Arrays
 	 * @param start The offset from which to start copying elements.
 	 * @param end The index after the last element to copy.
 	 * @return A new array containing the specified range of elements from the source array.
-	 * @throws IllegalArgumentException if the first index is greater than the last index.
-	 * @throws ArrayIndexOutOfBoundsException if one of the indices is outside the array range.
+	 * @throws IllegalArgumentException if the start index is greater than the end index.
+	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
 	public static <T> T[] createCopy(final T[] source, final int start, final int end)
 	{
@@ -179,8 +197,8 @@ public class Arrays
 	 * @param start The offset from which to start copying elements.
 	 * @param end The index after the last element to copy.
 	 * @return A new array containing the specified range of elements from the source array.
-	 * @throws IllegalArgumentException if the first index is greater than the last index.
-	 * @throws ArrayIndexOutOfBoundsException if one of the indices is outside the array range.
+	 * @throws IllegalArgumentException if the start index is greater than the end index.
+	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
 	public static char[] createCopy(final char[] source, final int start, final int end)
 	{
@@ -197,8 +215,8 @@ public class Arrays
 	 * @param start The offset from which to start copying elements.
 	 * @param end The number of elements to copy.
 	 * @return A new array containing the specified range of elements from the source array.
-	 * @throws IllegalArgumentException if the first index is greater than the last index.
-	 * @throws ArrayIndexOutOfBoundsException if one of the indices is outside the array range.
+	 * @throws IllegalArgumentException if the start index is greater than the end index.
+	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 */
 	public static int[] createCopy(final int[] source, final int start, final int end)
 	{
@@ -312,20 +330,20 @@ public class Arrays
 	}
 
 	/**
-	 * Assigns the specified value to each element of the specified range of the specified array. The range to be filled extends from index <code>fromIndex</code>
-	 * , inclusive, to index <code>toIndex</code>, exclusive.
-	 * @param array The array to be filled..
-	 * @param fromIndex The index of the first element (inclusive) to be filled with the specified value.
-	 * @param toIndex The index of the last element (exclusive) to be filled with the specified value.
+	 * Assigns the specified value to each element of the specified range of the specified array. The range to be filled extends from index <code>start</code> ,
+	 * inclusive, to index <code>start</code>, exclusive.
+	 * @param array The array to be filled.
+	 * @param start The index of the first element (inclusive) to be filled with the specified value.
+	 * @param end The index of the last element (exclusive) to be filled with the specified value.
 	 * @param value The value to be stored in all elements of the array.
-	 * @throws IllegalArgumentException if the first index is greater than the last index.
-	 * @throws ArrayIndexOutOfBoundsException if one of the indices is outside the array range.
+	 * @throws IllegalArgumentException if the start index is greater than the end index.
+	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 * @return The array that was filled.
 	 */
-	public static <T> T[] fill(final T[] array, final int fromIndex, final int toIndex, T value)
+	public static <T> T[] fill(final T[] array, final int start, final int end, T value)
 	{
-		checkIndexRange(array.length, fromIndex, toIndex); //check the given range
-		for(int i = fromIndex; i < toIndex; array[i++] = value)
+		checkIndexRange(array.length, start, end); //check the given range
+		for(int i = start; i < end; array[i++] = value)
 			; //store the value in each index of the array
 		return array; //return the array
 	}
@@ -342,20 +360,20 @@ public class Arrays
 	}
 
 	/**
-	 * Assigns the specified value to each element of the specified range of the specified array. The range to be filled extends from index <code>fromIndex</code>
-	 * , inclusive, to index <code>toIndex</code>, exclusive.
+	 * Assigns the specified value to each element of the specified range of the specified array. The range to be filled extends from index <code>start</code> ,
+	 * inclusive, to index <code>end</code>, exclusive.
 	 * @param array The array to be filled..
-	 * @param fromIndex The index of the first element (inclusive) to be filled with the specified value.
-	 * @param toIndex The index of the last element (exclusive) to be filled with the specified value.
+	 * @param start The index of the first element (inclusive) to be filled with the specified value.
+	 * @param end The index of the last element (exclusive) to be filled with the specified value.
 	 * @param value The value to be stored in all elements of the array.
-	 * @throws IllegalArgumentException if the first index is greater than the last index.
-	 * @throws ArrayIndexOutOfBoundsException if one of the indices is outside the array range.
+	 * @throws IllegalArgumentException if the start index is greater than the end index.
+	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
 	 * @return The array that was filled.
 	 */
-	public static double[] fill(final double[] array, final int fromIndex, final int toIndex, double value)
+	public static double[] fill(final double[] array, final int start, final int end, double value)
 	{
-		checkIndexRange(array.length, fromIndex, toIndex); //check the given range
-		for(int i = fromIndex; i < toIndex; array[i++] = value)
+		checkIndexRange(array.length, start, end); //check the given range
+		for(int i = start; i < end; array[i++] = value)
 			; //store the value in each index of the array
 		return array; //return the array
 	}

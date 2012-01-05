@@ -35,6 +35,10 @@ import com.globalmentor.text.*;
 public class Strings
 {
 
+	private Strings()
+	{
+	}
+
 	/** A shared empty array of strings. */
 	public final static String[] NO_STRINGS = new String[0];
 

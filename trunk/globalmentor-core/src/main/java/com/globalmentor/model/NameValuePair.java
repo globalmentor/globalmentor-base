@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import com.globalmentor.java.Objects;
  * A convenience tuple for a name and a value. The class allows identification (though not necessarily unique) through its name object.
  * @author Garret Wilson
  */
-public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>
+public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Valued<V>
 {
 
 	/** The value of the object. */
@@ -81,7 +81,7 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>
 		if(object instanceof NameValuePair) //if we're being compared with another name/value pair
 		{
 			//compare the names and values, taking into account that one or the other may be null
-			return Objects.equals(getName(), ((NameValuePair<?, ?>) object).getName()) && Objects.equals(getValue(), ((NameValuePair<?, ?>) object).getValue());
+			return Objects.equals(getName(), ((NameValuePair<?, ?>)object).getName()) && Objects.equals(getValue(), ((NameValuePair<?, ?>)object).getValue());
 		}
 		else
 		//if we're being compared with anything else

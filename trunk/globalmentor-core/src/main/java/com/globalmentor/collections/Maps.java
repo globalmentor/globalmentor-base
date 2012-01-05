@@ -19,6 +19,8 @@ package com.globalmentor.collections;
 import java.util.*;
 import java.util.Collections;
 
+import com.globalmentor.java.CloneSupported;
+import com.globalmentor.java.Objects;
 import com.globalmentor.model.NameValuePair;
 
 /**
@@ -104,6 +106,54 @@ public class Maps
 				entryIterator.remove(); //remove this entry
 			}
 		}
+	}
+
+	/**
+	 * Retrieves all map entries from the given map and returns them as a set of name value pairs.
+	 * @param <K> The type of key.
+	 * @param <V> The type of value.
+	 * @param map The map from which to the retrieve the key values.
+	 * @return A set of the key value pairs added.
+	 */
+	public static <K, V> Set<NameValuePair<K, V>> getKeyValues(final Map<K, V> map)
+	{
+		return getKeyValues(map, new HashSet<NameValuePair<K, V>>());
+	}
+
+	/**
+	 * Retrieves all map entries from the given map and returns them as name value pairs in the given collection.
+	 * @param <K> The type of key.
+	 * @param <V> The type of value.
+	 * @param <C> The type of collection.
+	 * @param map The map from which to the retrieve the key values.
+	 * @param collection The collection to which the key value pairs should be added.
+	 * @return The given collection, with the key value pairs added.
+	 */
+	public static <K, V, C extends Collection<NameValuePair<K, V>>> C getKeyValues(final Map<K, V> map, final C collection)
+	{
+		for(final Map.Entry<K, V> entry : map.entrySet()) //convert all the map entries to NameValues and add them to the collection
+		{
+			collection.add(new NameValuePair<K, V>(entry));
+		}
+		return collection;
+	}
+
+	/**
+	 * Retrieves all map entries from the given map and returns them as name value pairs in the given collection; the values are cloned.
+	 * @param <K> The type of key.
+	 * @param <V> The type of value.
+	 * @param <C> The type of collection.
+	 * @param map The map from which to the retrieve the key values.
+	 * @param collection The collection to which the key value pairs should be added.
+	 * @return The given collection, with the key value pairs added.
+	 */
+	public static <K, V extends CloneSupported, C extends Collection<NameValuePair<K, V>>> C getKeyValuesCloned(final Map<K, V> map, final C collection)
+	{
+		for(final Map.Entry<K, V> entry : map.entrySet()) //convert all the map entries to NameValues and add them to the collection
+		{
+			collection.add(new NameValuePair<K, V>(entry.getKey(), Objects.clone(entry.getValue())));	//clone the values
+		}
+		return collection;
 	}
 
 	/**

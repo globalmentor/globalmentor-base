@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2011-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,41 +46,47 @@ public class ObjectSet<E> implements Set<E>, ImmutableCollection<E>
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int size()
 	{
 		return 1;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isEmpty()
 	{
 		return false;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean contains(Object o)
 	{
 		return object.equals(o);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Iterator<E> iterator()
 	{
 		return new ObjectIterator<E>(object);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Object[] toArray()
 	{
 		return new Object[] { object };
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T[] toArray(T[] a)
 	{
-		a=Arrays.getArray(a, 1);	//make sure our array is large enough
-		a[0] = (T) object;
+		a = Arrays.getArray(a, 1); //make sure our array is large enough
+		a[0] = (T)object;
 		if(a.length > 1)
 		{
 			a[1] = null;
@@ -89,18 +95,21 @@ public class ObjectSet<E> implements Set<E>, ImmutableCollection<E>
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean add(E e)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean remove(Object o)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean containsAll(Collection<?> c)
 	{
 		final int size = c.size();
@@ -108,41 +117,47 @@ public class ObjectSet<E> implements Set<E>, ImmutableCollection<E>
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean addAll(Collection<? extends E> c)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean retainAll(Collection<?> c)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean removeAll(Collection<?> c)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void clear()
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean equals(Object o)
 	{
 		if(!(o instanceof Set))
 		{
 			return false;
 		}
-		final Set<?> set = (Set<?>) o;
+		final Set<?> set = (Set<?>)o;
 		return set.size() == 1 && object.equals(set.iterator().next());
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public int hashCode()
 	{
 		return object.hashCode();

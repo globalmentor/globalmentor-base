@@ -251,6 +251,120 @@ public class Threads
 		{
 			this.throwable = throwable; //save the throwable for later
 		}
+	}
+
+	/**
+	 * Returns the class of the caller on the stack before the class of this method's caller.
+	 * <p>
+	 * All callers from this class are ignored to allow for the various convenience forms of this method.
+	 * </p>
+	 * @return the class of the last line of program execution before a method in the class of the caller to this method.
+	 * @throws IllegalStateException if there was no caller in the stack before the caller to this method.
+	 */
+	public static Class<?> getCallingClass()
+	{
+		return getCallingClass(null); //get the calling class, ignoring no classes
+	}
+
+	/**
+	 * Returns the class of the caller on the stack before the class of this method's caller, ignoring any occurrences of the given class, if any.
+	 * <p>
+	 * All callers from this class are ignored to allow for the various convenience forms of this method.
+	 * </p>
+	 * @param ignoreClass The class to ignore in the stack, or <code>null</code> if the first caller before this method's caller should be returned and no other
+	 *          classes should be ignored.
+	 * @return the class of the last line of program execution before a method in the class of the caller to this method, skipping the ignore class, if any.
+	 * @throws IllegalStateException if no ignore class was provided and there was no caller in the stack before the caller to this method.
+	 * @throws IllegalArgumentException if an ignore class was provided and there was no caller in the stack before the caller to this method that wasn't from the
+	 *           given class.
+	 */
+	public static Class<?> getCallingClass(final Class<?> ignoreClass)
+	{
+		try
+		{
+			return Class.forName(getCallingClassStackTraceElement(ignoreClass).getClassName()); //get the calling class stack trace and determine the class
+		}
+		catch(final ClassNotFoundException classNotFoundException) //since the class is calling us, the class should exist and already be loaded
+		{
+			throw new AssertionError(classNotFoundException);
+		}
+	}
+
+	/**
+	 * Returns a stack trace element describing the caller on the stack before the class of this method's caller.
+	 * <p>
+	 * All callers from this class are ignored to allow for the various convenience forms of this method.
+	 * </p>
+	 * @return A stack trace element representing the last line of program execution before a method in the class of the caller to this method.
+	 * @throws IllegalStateException if there was no caller in the stack before the caller to this method.
+	 */
+	public static StackTraceElement getCallingClassStackTraceElement()
+	{
+		return getCallingClassStackTraceElement(null); //get the previous stack trace element, ignoring no classes
+	}
+
+	/**
+	 * Returns a stack trace element describing the caller on the stack before the class of this method's caller, ignoring any occurrences of the given class, if
+	 * any.
+	 * <p>
+	 * All callers from this class are ignored to allow for the various convenience forms of this method.
+	 * </p>
+	 * @param ignoreClass The class to ignore in the stack, or <code>null</code> if the first caller before this method's caller should be returned and no other
+	 *          classes should be ignored.
+	 * @return A stack trace element representing the last line of program execution before a method in the class of the caller to this method, skipping the
+	 *         ignore class, if any.
+	 * @throws IllegalStateException if no ignore class was provided and there was no caller in the stack before the caller to this method.
+	 * @throws IllegalArgumentException if an ignore class was provided and there was no caller in the stack before the caller to this method that wasn't from the
+	 *           given class.
+	 */
+	public static StackTraceElement getCallingClassStackTraceElement(final Class<?> ignoreClass)
+	{
+		final String thisClassName = Java.class.getName(); //get the name of this class so we can ignore it
+		final String ignoreClassName = ignoreClass != null ? ignoreClass.getName() : null;
+		final StackTraceElement[] stack = new Throwable().getStackTrace(); //get the current stack TODO integrate new StackTrace class
+		final int stackLength = stack.length;
+		assert stackLength > 1 : "There should have been at least two stack entries: this method, and the one before it.";
+		int i;
+		for(i = 0; i < stackLength && thisClassName.equals(stack[i].getClassName()); ++i)
+			; //skip all the callers from this class
+		assert i < stackLength : "There should have been a caller that is not in this class, as this class has no main() method.";
+		final String callerClassName = stack[i].getClassName(); //the current stack trace element should now be that of the caller
+		StackTraceElement beforeCallerStackTraceElement = null;
+		for(i = i + 1; i < stackLength; ++i) //start looking one stack element before the caller
+		{
+			final StackTraceElement stackTraceElement = stack[i];
+			final String stackTraceElementClassName = stackTraceElement.getClassName();
+			if(beforeCallerStackTraceElement == null) //if we haven't found the stack trace element before the caller
+			{
+				if(!callerClassName.equals(stackTraceElementClassName)) //if this location was before the caller
+				{
+					if(ignoreClassName == null || ignoreClassName.equals(callerClassName)) //if we shouldn't go back any further (either because there is no extra class to ignore, or because it is the same class as the caller)
+					{
+						return stackTraceElement; //return this location
+					}
+					else
+					//if we should keep looking back before some class
+					{
+						beforeCallerStackTraceElement = stackTraceElement; //note that we found the class before the caller
+					}
+				}
+			}
+			if(beforeCallerStackTraceElement != null) //if we've already found the class before the caller (we can only get here if an ignore class was provided)
+			{
+				if(!ignoreClassName.equals(stackTraceElementClassName)) //if this location was before the before class
+				{
+					return stackTraceElement; //we found the class before the before class
+				}
+			}
+		}
+		if(ignoreClass != null)
+		{
+			throw new IllegalArgumentException("No caller exists on the stack before class " + ignoreClassName);
+		}
+		else
+		{
+			throw new IllegalStateException("No caller exists on the stack before class " + callerClassName);
+		}
 	};
 
 }

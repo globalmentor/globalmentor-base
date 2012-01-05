@@ -94,6 +94,10 @@ public abstract class AbstractOperation extends AbstractTask implements Operatio
 			execute();
 			setState(COMPLETE);
 		}
+		catch(final CancelException cancelException) //if the operation was canceled
+		{
+			setState(CANCELED);
+		}
 		catch(final Throwable throwable) //if any error occurred
 		{
 			setState(ERROR);
@@ -101,7 +105,14 @@ public abstract class AbstractOperation extends AbstractTask implements Operatio
 		}
 	}
 
-	/** Executes the operation. */
-	protected abstract void execute();
+	/**
+	 * Executes the operation.
+	 * <p>
+	 * This method should <em>not</em> change its state by calling {@link #setState(TaskState)}. If cancellation is needed (to prevent recurrence, for example), a
+	 * {@link CancelException} should be thrown.
+	 * </p>
+	 * @throws CancelException if the current operation should be canceled.
+	 */
+	protected abstract void execute() throws CancelException;
 
 }

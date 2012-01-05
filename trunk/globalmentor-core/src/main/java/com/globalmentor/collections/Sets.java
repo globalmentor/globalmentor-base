@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,8 +76,8 @@ public class Sets
 			newSet.add(object);
 		}
 		Collections.addAll(newSet, iterator); //add all the elements in the iterator
-		java.util.Collections.addAll(newSet, elements); //add all the extra elements
-		return java.util.Collections.unmodifiableSet(newSet); //wrap the set in an unmodifiable set
+		addAll(newSet, elements); //add all the extra elements
+		return unmodifiableSet(newSet); //wrap the set in an unmodifiable set
 	}
 
 	/**
@@ -126,9 +126,9 @@ public class Sets
 			if(set == null) //if the elements are of any other type
 			{
 				set = new HashSet<E>(); //create a new set
-				java.util.Collections.addAll(set, elements); //add all the elements
+				addAll(set, elements); //add all the elements
 			}
-			return java.util.Collections.unmodifiableSet(set); //wrap the set in an unmodifiable set
+			return unmodifiableSet(set); //wrap the set in an unmodifiable set
 		}
 		if(elements.length == 0) //if no extra elements are given, take some shortcuts
 		{
@@ -161,8 +161,8 @@ public class Sets
 			newSet = new HashSet<E>(); //use a normal set
 		}
 		newSet.addAll(collection); //add all the elements
-		java.util.Collections.addAll(newSet, elements); //add all the extra elements
-		return java.util.Collections.unmodifiableSet(newSet); //wrap the set in an unmodifiable set
+		addAll(newSet, elements); //add all the extra elements
+		return unmodifiableSet(newSet); //wrap the set in an unmodifiable set
 	}
 
 }

@@ -113,4 +113,9 @@ public class Duration implements Comparable<Duration>
 		return Longs.compare(getTime(), duration.getTime());
 	}
 
+	@Override
+	public String toString()
+	{
+		return String.valueOf(getTime());
+	}
 }

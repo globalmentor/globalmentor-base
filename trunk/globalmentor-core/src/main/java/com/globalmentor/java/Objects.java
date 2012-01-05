@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.globalmentor.java;
 import java.lang.reflect.*;
 
 import static com.globalmentor.java.Classes.*;
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Java.*;
 
 /**
@@ -95,6 +96,26 @@ public class Objects
 			throw new ClassCastException(description);
 		}
 		return (T)variable; //return the variable
+	}
+
+	/**
+	 * Clones an object that supports cloning.
+	 * @param object The object that supports cloning through use of the {@link CloneSupported} interface.
+	 * @return The cloned object.
+	 * @throws IllegalStateException if the object's {@link CloneSupported#clone()} method throws a {@link CloneNotSupportedException}.
+	 * @see CloneSupported#clone()
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends CloneSupported> T clone(final T object)
+	{
+		try
+		{
+			return (T)object.clone();
+		}
+		catch(final CloneNotSupportedException cloneNotSupportedException)
+		{
+			throw unexpected(cloneNotSupportedException);
+		}
 	}
 
 	/**
@@ -298,7 +319,7 @@ public class Objects
 	{
 		return java.util.Arrays.hashCode(values);
 	}
-	
+
 	/**
 	 * Determines of which, if any, of the provided classes the given object is an instance.
 	 * @param object The object to check as an instance; may be <code>null</code>.

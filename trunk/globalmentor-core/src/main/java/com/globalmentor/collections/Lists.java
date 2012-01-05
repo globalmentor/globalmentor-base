@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,10 @@
  */
 
 package com.globalmentor.collections;
+
+import static com.globalmentor.java.Arrays.*;
+import static java.util.Arrays.*;
+import static java.util.Collections.*;
 
 import java.util.*;
 
@@ -49,7 +53,22 @@ public class Lists
 	 */
 	public static <E> List<E> immutableListOf(final E... elements) //TODO improve to return an ImmutableList<E>
 	{
-		return immutableListOf(java.util.Collections.<E> emptyList(), elements);
+		return immutableListOf(elements, 0, elements.length);
+	}
+
+	/**
+	 * Creates a read-only list containing the given elements in the given range.
+	 * @param <E> The type of element contained in the list.
+	 * @param elements The elements to be contained in the list.
+	 * @param start the initial index of the range to be included, inclusive
+	 * @param end the final index of the range to be included, exclusive.
+	 * @throws NullPointerException if the given array of elements is <code>null</code>.
+	 * @throws IllegalArgumentException if the start index is greater than the end index.
+	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
+	 */
+	public static <E> List<E> immutableListOf(final E[] elements, final int start, final int end) //TODO improve to return an ImmutableList<E>
+	{
+		return immutableListOf(java.util.Collections.<E> emptyList(), elements, start, end);
 	}
 
 	/**
@@ -57,27 +76,42 @@ public class Lists
 	 * @param <E> The type of element contained in the list.
 	 * @param collection The existing collection to augment.
 	 * @param elements The elements to be contained in the list.
+	 * @param start the initial index of the range to be included, inclusive
+	 * @param end the final index of the range to be included, exclusive.
 	 * @throws NullPointerException if the given collection and/or array of elements is <code>null</code>.
 	 */
 	public static <E> List<E> immutableListOf(final Collection<? extends E> collection, final E... elements) //TODO improve to return an ImmutableList<E>
 	{
+		return immutableListOf(collection, elements, 0, elements.length);
+	}
+
+	/**
+	 * Creates a read-only list containing the elements of the provided collection along with the given elements.
+	 * @param <E> The type of element contained in the list.
+	 * @param collection The existing collection to augment.
+	 * @param elements The elements to be contained in the list.
+	 * @param start the initial index of the range to be included, inclusive
+	 * @param end the final index of the range to be included, exclusive.
+	 * @throws NullPointerException if the given collection and/or array of elements is <code>null</code>.
+	 * @throws IllegalArgumentException if the start index is greater than the end index.
+	 * @throws ArrayIndexOutOfBoundsException if the start index is less than zero or the end index is greater than the length.
+	 */
+	public static <E> List<E> immutableListOf(final Collection<? extends E> collection, final E[] elements, final int start, final int end) //TODO improve to return an ImmutableList<E>
+	{
+		final int arrayLength = checkIndexRange(elements, start, end);
 		if(collection.isEmpty()) //if the collection is empty, take some shortcuts
 		{
-			final int size = elements.length; //find out the size of the list we will create for the elements
-			if(size == 0) //if the list will be empty
+			if(arrayLength == 0) //if the list will be empty
 			{
-				return java.util.Collections.emptyList(); //return the shared empty list
+				return emptyList(); //return the shared empty list
 			}
-			/*TODO fix
-						final E element = elements[0]; //get the first element
-						if(size == 1) //if there is only one element
-						{
-							return new ObjectSet<E>(element); //return an immutable set containing only one object
-						}
-			*/
-			return java.util.Collections.unmodifiableList(java.util.Arrays.asList(elements.clone())); //clone the array defensively so that it won't be modified by the caller
+			else if(arrayLength == 1) //if there will only be one element
+			{
+				return new ObjectList<E>(elements[start]); //return an immutable list containing only one object
+			}
+			return unmodifiableList(asList(copyOfRange(elements, start, end))); //clone the array defensively so that it won't be modified by the caller
 		}
-		if(elements.length == 0) //if no extra elements are given, take some shortcuts
+		if(arrayLength == 0) //if no extra elements are given, take some shortcuts
 		{
 			if(collection instanceof List && collection instanceof ImmutableCollection) //if the collection is already an immutable list TODO fix for Java's immutable lists
 			{
@@ -88,16 +122,16 @@ public class Lists
 			final int size = collection.size(); //see how big the collection is
 			if(size == 0) //if the collection is empty
 			{
-				return java.util.Collections.emptyList(); //return the shared empty list
+				return emptyList(); //return the shared empty list
 			}
-			/*TODO fix
-						if(size == 1) //if the collection only contains one element
-						{
-							return new ObjectSet<E>(collection.iterator().next()); //return an immutable set containing only one object
-						}
-			*/
+			if(size == 1) //if the collection only contains one element
+			{
+				return new ObjectList<E>(collection.iterator().next()); //return an immutable list containing only one object
+			}
 		}
-		return java.util.Collections.unmodifiableList(new ArrayList<E>(collection)); //copy the collection and return an immutable version of it
+		final List<E> newList = new ArrayList<E>(collection); //copy the collection
+		addAll(newList, elements); //add all the extra elements
+		return unmodifiableList(newList); //return an immutable version of the list
 	}
 
 	/**

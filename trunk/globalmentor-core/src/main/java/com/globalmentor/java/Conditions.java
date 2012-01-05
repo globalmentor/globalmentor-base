@@ -212,6 +212,35 @@ public class Conditions
 	}
 
 	/**
+	 * Checks to make sure that the given range is within the given range.
+	 * <p>
+	 * This is a precondition check.
+	 * </p>
+	 * @param from The beginning value to check, inclusive.
+	 * @param end The ending value to check, inclusive.
+	 * @param rangeMin The minimum range value, inclusive.
+	 * @param rangeMax The maximum range value, inclusive.
+	 * @return The given value.
+	 * @throws IllegalArgumentException if the from value is less than the range minimum or greater than the range maximum; or if the to value is less than the
+	 *           from value or greater than the range maximum.
+	 */
+	public static void checkArgumentRange(final int from, final int to, final int rangeMin, final int rangeMax)
+	{
+		if(to < from)
+		{
+			throw new IllegalArgumentException("Range from value " + from + " cannot be less than range to value " + to);
+		}
+		if(from < rangeMin) //if the from value is below the range
+		{
+			throw new IllegalArgumentException("Range from value " + from + " is not within the range " + rangeMin + " to " + rangeMax);
+		}
+		if(to < rangeMax) //if the to value is above the range
+		{
+			throw new IllegalArgumentException("Range to value " + to + " is not within the range " + rangeMin + " to " + rangeMax);
+		}
+	}
+
+	/**
 	 * Checks to make sure that a given argument value is within the given range.
 	 * <p>
 	 * This is a precondition check.

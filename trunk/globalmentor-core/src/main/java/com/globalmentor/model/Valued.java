@@ -1,5 +1,5 @@
 /*
- * Copyright © 2005-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2005-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package com.guiseframework.model;
+package com.globalmentor.model;
 
-import java.beans.PropertyVetoException;
-
-/**An object that contains a value.
-@param <V> The type of value contained in the object.
-@author Garret Wilson
-*/
+/**
+ * An object that contains a value.
+ * @param <V> The type of value contained in the object.
+ * @author Garret Wilson
+ */
 public interface Valued<V>
 {
 
-	/**@return The current value, or <code>null</code> if there is no value.*/
+	/** @return The current value, or <code>null</code> if there is no value. */
 	public V getValue();
-
-	/**Sets the new value.
-	@param newValue The new value.
-	@exception PropertyVetoException if the provided value is not valid or the change has otherwise been vetoed.
-	*/
-	public void setValue(final V newValue) throws PropertyVetoException;
 
 }

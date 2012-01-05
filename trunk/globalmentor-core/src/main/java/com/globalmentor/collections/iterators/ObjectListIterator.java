@@ -20,14 +20,14 @@ import java.util.*;
 
 /**
  * An iterable and iterator to a single object. This implementation allows <code>null</code> values. This implementation does not allow removal, as removing has
- * no meaning in this context. This version releases the object when iteration has occurred (i.e. when {@link #hasNext()} would return <code>false</code>).
+ * no meaning in this context.
  * @param <E> The type of elements in this iterator
  * @author Garret Wilson
  */
-public class ObjectIterator<E> implements Iterator<E>, Iterable<E>
+public class ObjectListIterator<E> extends ObjectIterator<E> implements ListIterator<E>
 {
 	/** The single object being iterated. */
-	protected E object;
+	private E object;
 
 	/** Whether we've not retrieved the object. */
 	protected boolean hasNext = true;
@@ -36,13 +36,12 @@ public class ObjectIterator<E> implements Iterator<E>, Iterable<E>
 	 * Object constructor.
 	 * @param object The single object over which iteration should occur.
 	 */
-	public ObjectIterator(final E object)
+	public ObjectListIterator(final E object)
 	{
-		this.object = object; //save the object
+		super(object);
 	}
 
-	/** {@inheritDoc} */
-	@Override
+	/** @return <code>true</code> if the single object has not yet been retrieved. */
 	public boolean hasNext()
 	{
 		return hasNext;
@@ -54,29 +53,63 @@ public class ObjectIterator<E> implements Iterator<E>, Iterable<E>
 	{
 		if(hasNext) //if we haven't returned the object, yet
 		{
-			final E next = object; //get the object
-			hasNext = false; //indicate we've retrieved the object
-			object = null; //release the object
-			return next; //return our copy of the object
+			hasNext = false;
+			return object; //return our copy of the object, but don't release it 
 		}
 		else
 		//if we've already returned the object
 		{
-			throw new NoSuchElementException("Already returned object.");
+			throw new NoSuchElementException();
 		}
 	}
 
-	/** {@inheritDoc} This implementation does not support removal. */
+	/** {@inheritDoc} */
 	@Override
-	public void remove()
+	public boolean hasPrevious()
 	{
-		throw new UnsupportedOperationException("This iterator does not support removing the object.");
+		return !hasNext;
 	}
 
-	/** {@inheritDoc} This implementation returns <code>this<code>. */
+	/** {@inheritDoc} */
 	@Override
-	public Iterator<E> iterator()
+	public E previous()
 	{
-		return this;
+		if(!hasNext) //if we've already returned the object
+		{
+			hasNext = true;
+			return object; //return our copy of the object, but don't release it 
+		}
+		else
+		{
+			throw new NoSuchElementException();
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int nextIndex()
+	{
+		return hasNext ? 0 : 1;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int previousIndex()
+	{
+		return hasNext ? -1 : 0;
+	}
+
+	/** {@inheritDoc} This implementation does not support setting the element. */
+	@Override
+	public void set(E e)
+	{
+		throw new UnsupportedOperationException("This iterator does not support setting the element.");
+	}
+
+	/** {@inheritDoc} This implementation does not support adding an element. */
+	@Override
+	public void add(final E e)
+	{
+		throw new UnsupportedOperationException("This iterator does not support adding an element.");
 	}
 }

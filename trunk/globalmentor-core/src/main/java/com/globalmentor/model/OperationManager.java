@@ -232,7 +232,7 @@ public class OperationManager
 						final ScheduledOperation scheduledOperation = scheduledOperationIterator.next();
 						final Duration duration = now.subtract(scheduledOperation.getScheduledTime()); //see how long it's been since this operation was scheduled
 						final Duration delayDuration = scheduledOperation.getDelayDuration(); //find out how long the operation should be delayed
-						final Duration remainingDuration = duration.subtract(delayDuration); //see how much time is remaining before this operation should be executed
+						final Duration remainingDuration = delayDuration.subtract(duration); //see how much time is remaining before this operation should be executed
 						if(remainingDuration.getTime() <= 0) //if the required amount of time has passed
 						{
 							final Operation operation = scheduledOperation.getOperation(); //get the operation
@@ -246,7 +246,7 @@ public class OperationManager
 								{
 									Log.error(throwable);
 								}
-								if(scheduledOperation.isRepeated()) //if the scheduled operation should be repeated
+								if(scheduledOperation.isRepeated() && !operation.isCanceled()) //if the scheduled operation should be repeated (if the operation has already been canceled, don't bother---remove it already)
 								{
 									scheduledOperation.resetScheduledTime(); //reset the scheduled time of the operation and leave it for next time
 									if(delayDuration.compareTo(timeoutDuration) < 0) //if the time we should wait before the next time this operation is executed is shorter than what we have on record
@@ -277,7 +277,10 @@ public class OperationManager
 					}
 					//poll for a new scheduled operation, timing out at the minimum duration we found
 					final ScheduledOperation scheduledOperation = blockingQueue.poll(timeoutDuration.getTime(), TimeUnit.MILLISECONDS);
-					scheduledOperations.add(scheduledOperation); //add this operation to our list of current scheduled operations; the next time around we'll process all of them, including the new one
+					if(scheduledOperation != null) //if we got a new scheduled operation before timeout
+					{
+						scheduledOperations.add(scheduledOperation); //add this operation to our list of current scheduled operations; the next time around we'll process all of them, including the new one
+					}
 				}
 				catch(final InterruptedException interruptedException) //if we're interrupted while waiting
 				{

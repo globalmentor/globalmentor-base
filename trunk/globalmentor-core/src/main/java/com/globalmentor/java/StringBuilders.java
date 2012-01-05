@@ -32,6 +32,10 @@ import com.globalmentor.text.Case;
 public class StringBuilders
 {
 
+	private StringBuilders()
+	{
+	}
+
 	/**
 	 * Concatenates the string representations of the objects in the array by appending them to the string buffer. Null objects are handled as per
 	 * {@link StringBuilder#append(Object)}.
