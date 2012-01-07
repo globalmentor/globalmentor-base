@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -339,13 +339,13 @@ public class DefaultURFResource extends AbstractURFScope implements URFResource
 	}
 
 	/**Returns a string representation of the resource.
-	This version returns the URI, if there is one, between TURF URI reference delimiters; otherwise the default string representation of the object is returned.
+	This version returns the URI, if there is one, between TURF URI reference delimiters; otherwise a compact yet human-oriented TURF representation is returned.
 	@return A string representation of the resource.
 	*/
 	public String toString()
 	{
 		final URI uri=getURI();	//get the URI, if any
-		return uri!=null ? URFTURFGenerator.toReferenceString(uri) : super.toString();	//return the URI, if available
+		return uri!=null ? URFTURFGenerator.toReferenceString(uri) : URF.toString(this);	//return the URI, if available; otherwise, generate a string for the source
 	}
 
 }

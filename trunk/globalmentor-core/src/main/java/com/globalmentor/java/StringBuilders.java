@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,35 +114,6 @@ public class StringBuilders
 	public static StringBuilder asStringBuilder(final CharSequence charSequence)
 	{
 		return charSequence instanceof StringBuilder ? (StringBuilder)charSequence : new StringBuilder(charSequence); //return a new or existing string builder
-	}
-
-	/**
-	 * Concatenates the string representations of the objects in the array, separated by the given separator character, by appending them to the string builder.
-	 * Null objects are handled as per {@link StringBuilder#append(Object)}.
-	 * @param stringBuilder The string builder into which the result should be placed.
-	 * @param objects The array of objects (such as strings) to be concatenated.
-	 * @param separator The separator character to be inserted between the object strings.
-	 * @param ignoreObject The object to ignore, or <code>null</code> if no objects should be ignored.
-	 * @return A concatenation of string representations of all objects in the array, separated by the separator character.
-	 * @see Object#toString()
-	 */
-	@Deprecated
-	//TODO move to TextFormatter
-	public static StringBuilder append(final StringBuilder stringBuilder, final Object[] objects, final char separator, final Object ignoreObject)
-	{
-		for(final Object object : objects) //look at each object
-		{
-			if(ignoreObject != null && object == ignoreObject) //ignore certain objects if requested 
-			{
-				continue;
-			}
-			stringBuilder.append(object).append(separator); //add this object to the string builder, along the separator
-		}
-		if(objects.length > 0) //if we added information
-		{
-			stringBuilder.deleteCharAt(stringBuilder.length() - 1); //remove the last separator
-		}
-		return stringBuilder; //return the string builder, now containing the new information
 	}
 
 	/**

@@ -1412,7 +1412,7 @@ Log.trace("Looking for TOC element: ", childNode.toString());
 						//create an href to the element within the document
 					final String href=URLs.getFileName(getContextURL())+'#'+id; //TODO pass the href; do something better than getContextURL(); use a constant for '#'
 						//get the text of this element, collapsing all whitespace into single spaces
-					final String elementText=Strings.collapseEveryChar(XML.getText(element, true), WHITESPACE_CHARACTERS, " ");
+					final String elementText=Strings.collapse(XML.getText(element, true), WHITESPACE_CHARACTERS, " ");
 						//making sure it's not too long
 					final String shortText=Strings.truncate(elementText, 32);  //TODO use a constant
 						//remove everything but the first line and trim it

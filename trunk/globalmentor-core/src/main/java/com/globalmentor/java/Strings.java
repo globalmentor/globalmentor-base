@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.net.URI;
 import java.nio.charset.Charset;
 
 import static com.globalmentor.io.Charsets.*;
+
 import com.globalmentor.io.IO;
 import static com.globalmentor.java.Characters.*;
 import com.globalmentor.text.*;
@@ -76,7 +77,7 @@ public class Strings
 	 * @return A concatenation of string representations of all objects in the array.
 	 * @see Object#toString()
 	 */
-	public static String append(final Object[] objects)
+	public static String concat(final Object[] objects)
 	{
 		return StringBuilders.append(new StringBuilder(), objects).toString(); //append the objects to a string builder and return the string
 	}
@@ -105,7 +106,7 @@ public class Strings
 	 */
 	public static String concat(final Object[] objects, final char separator, final Object ignoreObject)
 	{
-		return StringBuilders.append(new StringBuilder(), objects, separator, ignoreObject).toString(); //append the objects to a string builder and return the string
+		return TextFormatter.formatList(new StringBuilder(), objects, separator, ignoreObject).toString(); //append the objects to a string builder and return the string
 	}
 
 	/**
@@ -165,7 +166,7 @@ public class Strings
 	}
 
 	/**
-	 * Creates an array of bytes of the specified length and stores the bytes of the string, in UTF-8, in the array postpended with a zero byte. If the string is
+	 * Creates an array of bytes of the specified length and stores the bytes of the string, in UTF-8, in the array appended with a zero byte. If the string is
 	 * too long for the given length, it is truncated.
 	 * @param string The string to store in bytes.
 	 * @param length The length of bytes to return.
@@ -173,20 +174,20 @@ public class Strings
 	 */
 	public static byte[] getASCIIZBytes(final String string, final int length) throws UnsupportedEncodingException
 	{
-		return getASCIIZBytes(string, length, CharacterEncoding.UTF_8); //return the bytes, encoded using UTF-8
+		return getASCIIZBytes(string, length, UTF_8_CHARSET); //return the bytes, encoded using UTF-8
 	}
 
 	/**
-	 * Creates an array of bytes of the specified length and stores the bytes of the string, in the array postpended with a zero byte. If the string is too long
-	 * for the given length, it is truncated.
+	 * Creates an array of bytes of the specified length and stores the bytes of the string, in the array appended with a zero byte. If the string is too long for
+	 * the given length, it is truncated.
 	 * @param string The string to store in bytes.
 	 * @param length The length of bytes to return.
-	 * @param encoding The encoding to use in storing the string bytes.
+	 * @param charset The charset to use in storing the string bytes.
 	 * @exception UnsupportedEncodingException Thrown if the given encoding is not supported.
 	 */
-	public static byte[] getASCIIZBytes(String string, final int length, final String encoding) throws UnsupportedEncodingException
+	public static byte[] getASCIIZBytes(String string, final int length, final Charset charset) throws UnsupportedEncodingException
 	{
-		final byte[] stringBytes = string.getBytes(encoding); //get the bytes of the string
+		final byte[] stringBytes = string.getBytes(charset); //get the bytes of the string
 		final byte[] asciizBytes = new byte[length]; //create a byte array to return
 		final int copyLength = Math.min(string.length(), length - 1); //find out how many bytes to copy TODO fix; this assumes UTF-8
 		System.arraycopy(stringBytes, 0, asciizBytes, 0, copyLength); //copy the string bytes to the outgoing array
@@ -826,7 +827,7 @@ public class Strings
 	 * Removes everything after and including the first occurrence of one of the given characters.
 	 * @param string The string that may contain one or more of the characters.
 	 * @param delimiters The characters that will cause
-	 * @return The string with the first occuring character and everything after it removed, or the original string if no changes were made.
+	 * @return The string with the first occurring character and everything after it removed, or the original string if no changes were made.
 	 */
 	public static String truncateChar(final String string, final Characters delimiters)
 	{
@@ -842,13 +843,13 @@ public class Strings
 	 * @param replaceString The string which will replace the collapseChars.
 	 * @return A new string with the specified information collapsed.
 	 */
-	static public String collapseEveryChar(final String inString, final Characters collapseChars, final String replaceString)
+	public static String collapse(final String inString, final Characters collapseChars, final String replaceString)
 	{
 		if(CharSequences.charIndexOf(inString, collapseChars) >= 0) //first search the string to see if we would replace something; if so
 		{
-			final StringBuffer stringBuffer = new StringBuffer(inString); //create a new string buffer from the string
-			StringBuffers.collapse(stringBuffer, collapseChars, replaceString); //collapse the characters
-			return stringBuffer.toString(); //convert the string buffer back to a string and return it
+			final StringBuilder stringBuilder = new StringBuilder(inString); //create a new string builder from the string
+			StringBuilders.collapse(stringBuilder, collapseChars, replaceString); //collapse the characters
+			return stringBuilder.toString(); //convert the string buffer back to a string and return it
 		}
 		else
 			//if there are no characters to collapse
@@ -963,7 +964,7 @@ public class Strings
 	}
 
 	/**
-	 * If the input string ends with the specifid string, trims that string.
+	 * If the input string ends with the specified string, trims that string.
 	 * @param inString The string to be processed.
 	 * @param beginString The string to be trimmed, if it appears at the end of inString.
 	 * @return The string, trimmed if needed.

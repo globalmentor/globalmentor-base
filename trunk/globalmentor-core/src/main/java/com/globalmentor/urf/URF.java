@@ -732,7 +732,7 @@ public class URF
 			}
 			else if(object instanceof Package) //if this is a package
 			{
-				return Classes.createJavaURI((Package)object); //create a java: URI for a package
+				return Packages.createJavaURI((Package)object); //create a java: URI for a package
 			}
 		}
 		return null; //we can't represent this object as a resource URI

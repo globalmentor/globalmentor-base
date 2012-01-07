@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class Classes
 	/** The set of classes that wrap primitive types. */
 	public final static Set<Class<?>> PRIMITIVE_WRAPPER_CLASSES = Sets.<Class<?>> immutableSetOf(Boolean.class, Byte.class, Character.class, Short.class,
 			Integer.class, Long.class, Float.class, Double.class);
-	
+
 	/** The name extension for Java class files. */
 	public final static String CLASS_NAME_EXTENSION = "class";
 
@@ -114,31 +114,6 @@ public class Classes
 	}
 
 	/**
-	 * Creates a Java URI for a Java package using the {@value Java#JAVA_URI_SCHEME} scheme in the form
-	 * <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/</code>.
-	 * @param objectPackage The package to use in creating the <code>java:</code> URI.
-	 * @return A <code>java:</code> URI based upon the given class.
-	 * @exception NullPointerException if the given package name is <code>null</code>.
-	 */
-	public static URI createJavaURI(final Package objectPackage)
-	{
-		return createJavaPackageURI(objectPackage.getName());
-	}
-
-	/**
-	 * Creates a Java URI for a named Java package using the {@value Java#JAVA_URI_SCHEME} scheme in the form
-	 * <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/</code>.
-	 * @param objectPackageName The name of the package to use in creating the <code>java:</code> URI.
-	 * @return A <code>java:</code> URI based upon the given class.
-	 * @exception NullPointerException if the given package name is <code>null</code>.
-	 */
-	public static URI createJavaPackageURI(final String objectPackageName)
-	{
-		final String packagePath = URIPath.encodeSegment(objectPackageName).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR); //get the package path by replacing the package separators with path separators after encoding
-		return URI.create(JAVA_URI_SCHEME + SCHEME_SEPARATOR + ROOT_PATH + packagePath + PATH_SEPARATOR); //create and return a new Java URI for the package
-	}
-
-	/**
 	 * Creates a Java URI for a Java class using the {@value Java#JAVA_URI_SCHEME} scheme in the form
 	 * <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.
 	 * @param objectClass The class to use in creating the <code>java:</code> URI.
@@ -147,7 +122,7 @@ public class Classes
 	 */
 	public static URI createJavaURI(final Class<?> objectClass)
 	{
-		return createJavaClassURI(objectClass.getName());
+		return createJavaURI(objectClass.getName());
 	}
 
 	/**
@@ -157,7 +132,7 @@ public class Classes
 	 * @return A <code>java:</code> URI based upon the given class.
 	 * @exception NullPointerException if the given class name is <code>null</code>.
 	 */
-	public static URI createJavaClassURI(final String objectClassName)
+	public static URI createJavaURI(final String objectClassName)
 	{
 		final String classPath = URIPath.encodeSegment(objectClassName).replace(PACKAGE_SEPARATOR, PATH_SEPARATOR); //get the class path by replacing the package separators with path separators after encoding
 		return URI.create(JAVA_URI_SCHEME + SCHEME_SEPARATOR + ROOT_PATH + classPath); //create and return a new Java URI for the class
@@ -624,14 +599,50 @@ public class Classes
 
 	/**
 	 * Creates a property name by appending the property local name to the full class name.
+	 * @param className The full class name.
+	 * @param localName The local name of the property.
+	 * @return A full class name plus property name.
+	 * @see Packages#getFullName(Package, String)
+	 */
+	public static String getPropertyName(final String className, final String localName)
+	{
+		return className + OBJECT_PREDICATE_SEPARATOR + localName; //return the class name plus the local name separated by a package separator
+	}
+
+	/**
+	 * Creates a property name by appending the property local name to the full class name.
 	 * @param objectClass The class to supply the class name.
 	 * @param localName The local name of the property.
 	 * @return A full class name plus property name.
-	 * @see #getFullName(Package, String)
+	 * @see Packages#getFullName(Package, String)
 	 */
 	public static String getPropertyName(final Class<?> objectClass, final String localName)
 	{
-		return objectClass.getName() + OBJECT_PREDICATE_SEPARATOR + localName; //return the class name plus the local name separated by a package separator
+		return getPropertyName(objectClass.getName(), localName);
+	}
+
+	/**
+	 * Creates a full method name by appending the method local name to the full class name.
+	 * @param className The full class name.
+	 * @param methodLocalName The local name of the method.
+	 * @return A full class name plus method name.
+	 * @see #getPropertyName(Class, String)
+	 */
+	public static String getMethodName(final String className, final String methodLocalName)
+	{
+		return getPropertyName(className, methodLocalName); //return the method name as if it were a property
+	}
+
+	/**
+	 * Creates a full method name by appending the method local name to the full class name.
+	 * @param objectClass The class to supply the class name.
+	 * @param methodLocalName The local name of the method.
+	 * @return A full class name plus method name.
+	 * @see #getPropertyName(Class, String)
+	 */
+	public static String getMethodName(final Class<?> objectClass, final String methodlocalName)
+	{
+		return getMethodName(objectClass, methodlocalName);
 	}
 
 	/**
@@ -640,23 +651,11 @@ public class Classes
 	 * @param objectClass The class to supply the package name.
 	 * @param localName The local name for constructing the full name within the package.
 	 * @return A full class name in the package of the given class with the given local name.
-	 * @see #getFullName(Package, String)
+	 * @see Packages#getFullName(Package, String)
 	 */
 	public static String getFullName(final Class<?> objectClass, final String localName)
 	{
-		return getFullName(objectClass.getPackage(), localName); //return the package plus the name separated by a package separator
-	}
-
-	/**
-	 * Creates a full name given package and a local name. For example, a package of <code>com.example</code> and a local name of <code>Bar</code> will result in
-	 * a full name of <code>com.example.Bar</code>.
-	 * @param objectClass The class to supply the package name.
-	 * @param localName The local name for constructing the full name within the package.
-	 * @return A full class name in the given package and the given local name.
-	 */
-	public static String getFullName(final Package objectPackage, final String localName)
-	{
-		return objectPackage.getName() + PACKAGE_SEPARATOR + localName; //return the package plus the name separated by a package separator
+		return Packages.getFullName(objectClass.getPackage(), localName); //return the package plus the name separated by a package separator
 	}
 
 	/**

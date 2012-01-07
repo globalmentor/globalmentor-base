@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,10 +156,33 @@ public class TextFormatter
 	 */
 	public static <T> StringBuilder formatList(final StringBuilder stringBuilder, final char separator, final T... items)
 	{
+		return formatList(stringBuilder, items, separator, null);
+	}
+
+	/**
+	 * Appends the string representations of the given items separated by a separator character.
+	 * <p>
+	 * <code>null</code> objects are handled as per {@link StringBuilder#append(Object)}.
+	 * </p>
+	 * @param <T> The type of item being formatted.
+	 * @param stringBuilder The string builder into which the result should be placed.
+	 * @param items The items to be formatted.
+	 * @param separator The separator character to be inserted between the object strings, or {@link Characters#NULL_CHAR} (Unicode code point 0) if there should
+	 *          be no separator.
+	 * @param ignoreItem The item to ignore, or <code>null</code> if no items should be ignored.
+	 * @return The string builder containing the new information.
+	 * @see Object#toString()
+	 */
+	public static <T> StringBuilder formatList(final StringBuilder stringBuilder, final T[] items, final char separator, final T ignoreItem)
+	{
 		if(items.length > 0) //if there are items
 		{
 			for(final T item : items) //for each item
 			{
+				if(ignoreItem != null && item == ignoreItem) //ignore certain items if requested 
+				{
+					continue;
+				}
 				stringBuilder.append(item); //append the item
 				if(separator != NULL_CHAR) //if we have a separator
 				{
@@ -185,16 +208,39 @@ public class TextFormatter
 	 */
 	public static <T> StringBuilder formatList(final StringBuilder stringBuilder, final String separator, final T... items)
 	{
+		return formatList(stringBuilder, items, separator, null);
+	}
+
+	/**
+	 * Appends the string representations of the given items separated by a separator string.
+	 * <p>
+	 * <code>null</code> objects are handled as per {@link StringBuilder#append(Object)}.
+	 * </p>
+	 * @param <T> The type of item being formatted.
+	 * @param stringBuilder The string builder into which the result should be placed.
+	 * @param items The items to be formatted.
+	 * @param separator The separator string to be inserted between the object strings, or <code>null</code> if there should be no separator.
+	 * @param ignoreItem The item to ignore, or <code>null</code> if no items should be ignored.
+	 * @return The string builder containing the new information.
+	 * @see Object#toString()
+	 */
+	public static <T> StringBuilder formatList(final StringBuilder stringBuilder, final T[] items, final String separator, final T ignoreItem)
+	{
 		final int length = items.length; //see how many items there are
 		for(int i = 0; i < length; ++i) //for each item
 		{
+			int appendedItemCount = 0;
 			for(final T item : items) //for each item
 			{
-				stringBuilder.append(item); //append the item
-				if(separator != null && i < length - 1) //if we have a separator and this isn't the last item
+				if(ignoreItem != null && item == ignoreItem) //ignore certain items if requested 
+				{
+					continue;
+				}
+				if(appendedItemCount > 0) //if we have appended items
 				{
 					stringBuilder.append(separator); //append the separator
 				}
+				stringBuilder.append(item); //append the item
 			}
 		}
 		return stringBuilder; //return the string builder we used
@@ -217,7 +263,7 @@ public class TextFormatter
 	{
 		return formatList(new StringBuilder(), items).toString();
 	}
-	
+
 	/**
 	 * Appends the string representations of the given items separated by a separator character.
 	 * <p>
