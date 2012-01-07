@@ -319,7 +319,7 @@ public class Threads
 	 */
 	public static StackTraceElement getCallingClassStackTraceElement(final Class<?> ignoreClass)
 	{
-		final String thisClassName = Java.class.getName(); //get the name of this class so we can ignore it
+		final String thisClassName = Threads.class.getName(); //get the name of this class so we can ignore it
 		final String ignoreClassName = ignoreClass != null ? ignoreClass.getName() : null;
 		final StackTraceElement[] stack = new Throwable().getStackTrace(); //get the current stack TODO integrate new StackTrace class
 		final int stackLength = stack.length;
