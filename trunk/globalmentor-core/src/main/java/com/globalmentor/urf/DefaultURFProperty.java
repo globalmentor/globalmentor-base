@@ -213,7 +213,8 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 			final StringBuilder stringBuilder=new StringBuilder();
 			stringBuilder.append('(');
 			URFTURFGenerator.appendReference(stringBuilder, getPropertyURI());
-			return stringBuilder.append(',').append(getValue()).toString();
+			stringBuilder.append(',').append(getValue());
+			return stringBuilder.append(')').toString();
 		}
 		catch(final IOException ioException)
 		{
