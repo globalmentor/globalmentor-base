@@ -74,7 +74,7 @@ public class OperationManager
 	{
 		scheduledOperationQueue = new LinkedBlockingQueue<ScheduledOperation>(); //create a new queue for scheduling operations
 		scheduledOperationWorker = new ScheduledOperationWorker(scheduledOperationQueue); //create a consumer of operations
-		executionThread = new Thread(scheduledOperationWorker, getClass().getName()); //create a new send thread
+		executionThread = new Thread(scheduledOperationWorker, getClass().getSimpleName()); //create a new send thread
 		executionThread.setDaemon(true); //make the execution thread a daemon so that it won't hold up the application when the system shuts down
 		executionThread.start(); //start the execution thread
 	}

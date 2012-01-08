@@ -126,7 +126,7 @@ public class AsynchronousWriter extends Writer
 		super(); //construct the parent class using this class as a lock
 		this.writer = checkInstance(writer, "Writer cannot be null.");
 		this.blockingQueue = checkInstance(blockingQueue, "Blocking queue cannot be null.");
-		final Thread consumerThread = new Thread(new Consumer(), "async-writer-thread"); //create a new consumer thread
+		final Thread consumerThread = new Thread(new Consumer(), getClass().getSimpleName()); //create a new consumer thread
 		consumerThread.setDaemon(true); //make the consumer thread a daemon so that it won't hold up the application when the system shuts down
 		consumerThread.start(); //start the consumer thread
 	}

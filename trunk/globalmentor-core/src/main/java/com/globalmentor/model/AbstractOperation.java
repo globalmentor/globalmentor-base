@@ -30,7 +30,7 @@ import static com.globalmentor.model.TaskState.*;
  * </p>
  * 
  * <p>
- * This implementation is state thread-safe.
+ * This implementation's state is not governed by any thread locks.
  * </p>
  * 
  * @author Garret Wilson
@@ -38,24 +38,12 @@ import static com.globalmentor.model.TaskState.*;
 public abstract class AbstractOperation extends AbstractTask implements Operation, Runnable, Task
 {
 
-	@Override
-	public synchronized TaskState getState()
-	{
-		return super.getState();
-	}
-
-	@Override
-	public synchronized void setState(final TaskState newState)
-	{
-		super.setState(newState);
-	}
-
 	/**
 	 * {@inheritDoc} This implementation sets the state to {@link TaskState#CANCELED}.
 	 * @see #setState(TaskState)
 	 */
 	@Override
-	public synchronized void cancel()
+	public void cancel()
 	{
 		setState(CANCELED);
 	}

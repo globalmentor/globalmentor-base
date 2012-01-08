@@ -35,21 +35,6 @@ public class TextFormatter
 {
 
 	/**
-	 * Appends the string representations of the given objects separated by commas.
-	 * @param appendable The formatting destination.
-	 * @param items The objects to be formatted.
-	 * @return The appendable containing the new information.
-	 * @throws IOException if there is an error writing to the appendable.
-	 * @see Object#toString
-	 */
-	/*TODO bring back when it's known why this causes an ambiguity with other methods.
-		public static <A extends Appendable> A formatList(final A appendable, final Object... items) throws IOException
-		{
-			return formatList(appendable, COMMA_CHAR, items);	//format the list using a comma as a separator
-		}
-	*/
-
-	/**
 	 * Formats an array of bytes into a sequence of hex characters, with each character pair representing the hexadecimal value of the byte.
 	 * @param appendable The formatting destination.
 	 * @param bytes The values to convert.
@@ -222,7 +207,6 @@ public class TextFormatter
 	/**
 	 * Appends the string representations of the given items separated by a separator character. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
-	 * @param <T> The type of item being formatted.
 	 * @param appendable The formatting destination.
 	 * @param separator The separator character to be inserted between the object strings, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
 	 * @param items The items to be formatted.
@@ -230,7 +214,7 @@ public class TextFormatter
 	 * @throws IOException if there is an error writing to the appendable.
 	 * @see Object#toString()
 	 */
-	public static <A extends Appendable, T> A formatList(final A appendable, final char separator, final T... items) throws IOException
+	public static <A extends Appendable> A formatList(final A appendable, final char separator, final Object... items) throws IOException
 	{
 		return formatList(appendable, items, separator, null);
 	}
@@ -238,7 +222,6 @@ public class TextFormatter
 	/**
 	 * Appends the string representations of the given items separated by a {@value Characters#COMMA_CHAR}. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
-	 * @param <T> The type of item being formatted.
 	 * @param appendable The formatting destination.
 	 * @param items The items to be formatted.
 	 * @return The appendable containing the new information.
@@ -246,7 +229,7 @@ public class TextFormatter
 	 * @see Object#toString()
 	 * @see Characters#COMMA_CHAR
 	 */
-	public static <A extends Appendable, T> A formatList(final A appendable, final T... items) throws IOException
+	public static <A extends Appendable> A formatList(final A appendable, final Object... items) throws IOException
 	{
 		return formatList(appendable, COMMA_CHAR, items);
 	}
@@ -254,15 +237,13 @@ public class TextFormatter
 	/**
 	 * Appends the string representations of the given items separated by a {@value Characters#COMMA_CHAR}. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
-	 * @param <T> The type of item being formatted.
 	 * @param separator The separator character to be inserted between the item strings, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
 	 * @param items The items to be formatted.
 	 * @return The string containing the formatted list.
 	 * @see Object#toString()
 	 * @see Characters#COMMA_CHAR
 	 */
-/*TODO fix; ambiguous
-	public static <T> String formatList(final T... items)
+	public static String formatList(final Object... items)
 	{
 		try
 		{
@@ -273,18 +254,16 @@ public class TextFormatter
 			throw unexpected(ioException);
 		}
 	}
-*/
 
 	/**
 	 * Appends the string representations of the given items separated by a separator character. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
-	 * @param <T> The type of item being formatted.
 	 * @param separator The separator character to be inserted between the object strings, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
 	 * @param items The items to be formatted.
 	 * @return The string containing the formatted list.
 	 * @see Object#toString()
 	 */
-	public static <T> String formatList(final char separator, final T... items)
+	public static String formatList(final char separator, final Object... items)
 	{
 		try
 		{
@@ -352,7 +331,6 @@ public class TextFormatter
 	/**
 	 * Appends the string representations of the given items separated by a separator string. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
-	 * @param <T> The type of item being formatted.
 	 * @param appendable The formatting destination.
 	 * @param separator The separator string to be inserted between the object strings, or <code>null</code> if there should be no separator.
 	 * @param items The items to be formatted.
@@ -360,7 +338,7 @@ public class TextFormatter
 	 * @throws IOException if there is an error writing to the appendable.
 	 * @see Object#toString()
 	 */
-	public static <A extends Appendable, T> A formatList(final A appendable, final String separator, final T... items) throws IOException
+	public static <A extends Appendable> A formatList(final A appendable, final String separator, final Object... items) throws IOException
 	{
 		return formatList(appendable, items, separator, null);
 	}
@@ -368,13 +346,12 @@ public class TextFormatter
 	/**
 	 * Appends the string representations of the given items separated by a separator string. <code>null</code> objects are represented by
 	 * {@value Java#NULL_KEYWORD}.
-	 * @param <T> The type of item being formatted.
 	 * @param separator The separator string to be inserted between the object strings, or <code>null</code> if there should be no separator.
 	 * @param items The items to be formatted.
 	 * @return The string containing the formatted list.
 	 * @see Object#toString()
 	 */
-	public static <T> String formatList(final String separator, final T... items)
+	public static String formatList(final String separator, final Object... items)
 	{
 		try
 		{
@@ -418,6 +395,143 @@ public class TextFormatter
 	}
 
 	/**
+	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment and {@value Characters#QUOTATION_MARK_CHAR} for value
+	 * quotation.
+	 * @param appendable The formatting destination.
+	 * @param attribute The attribute to format.
+	 * @return The appendable used for formatting.
+	 * @throws IOException if there is an error writing to the appendable.
+	 */
+	public static <A extends Appendable> A formatAttribute(final A appendable, final Map.Entry<?, ?> attribute) throws IOException
+	{
+		return formatAttribute(appendable, attribute, QUOTATION_MARK_CHAR);
+	}
+
+	/**
+	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment.
+	 * @param appendable The formatting destination.
+	 * @param attribute The attribute to format.
+	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if the value should not be quoted.
+	 * @return The appendable used for formatting.
+	 * @throws IOException if there is an error writing to the appendable.
+	 */
+	public static <A extends Appendable> A formatAttribute(final A appendable, final Map.Entry<?, ?> attribute, final char quote) throws IOException
+	{
+		return formatAttribute(appendable, attribute, EQUALS_SIGN_CHAR, quote);
+	}
+
+	/**
+	 * Formats a single name-value attribute.
+	 * @param appendable The formatting destination.
+	 * @param attribute The attribute to format.
+	 * @param assignment The character for assigning the value to the attribute.
+	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if the value should not be quoted.
+	 * @return The appendable used for formatting.
+	 * @throws IOException if there is an error writing to the appendable.
+	 */
+	public static <A extends Appendable> A formatAttribute(final A appendable, final Map.Entry<?, ?> attribute, final char assignment, final char quote)
+			throws IOException
+	{
+		return formatAttribute(appendable, attribute.getKey(), attribute.getValue(), assignment, quote);
+	}
+
+	/**
+	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment and {@value Characters#QUOTATION_MARK_CHAR} for value
+	 * quotation.
+	 * @param appendable The formatting destination.
+	 * @param attribute The attribute to format.
+	 * @return The appendable used for formatting.
+	 * @throws IOException if there is an error writing to the appendable.
+	 */
+	public static <A extends Appendable> A formatAttribute(final A appendable, final NameValuePair<?, ?> attribute) throws IOException
+	{
+		return formatAttribute(appendable, attribute, QUOTATION_MARK_CHAR);
+	}
+
+	/**
+	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment.
+	 * @param appendable The formatting destination.
+	 * @param attribute The attribute to format.
+	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if the value should not be quoted.
+	 * @return The appendable used for formatting.
+	 * @throws IOException if there is an error writing to the appendable.
+	 */
+	public static <A extends Appendable> A formatAttribute(final A appendable, final NameValuePair<?, ?> attribute, final char quote) throws IOException
+	{
+		return formatAttribute(appendable, attribute, EQUALS_SIGN_CHAR, quote);
+	}
+
+	/**
+	 * Formats a single name-value attribute.
+	 * @param appendable The formatting destination.
+	 * @param attribute The attribute to format.
+	 * @param assignment The character for assigning the value to the attribute.
+	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if the value should not be quoted.
+	 * @return The appendable used for formatting.
+	 * @throws IOException if there is an error writing to the appendable.
+	 */
+	public static <A extends Appendable> A formatAttribute(final A appendable, final NameValuePair<?, ?> attribute, final char assignment, final char quote)
+			throws IOException
+	{
+		return formatAttribute(appendable, attribute.getName(), attribute.getValue(), assignment, quote);
+	}
+
+	/**
+	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment and {@value Characters#QUOTATION_MARK_CHAR} for value
+	 * quotation.
+	 * @param appendable The formatting destination.
+	 * @param name The name to format.
+	 * @param value The value to format.
+	 * @return The appendable used for formatting.
+	 * @throws IOException if there is an error writing to the appendable.
+	 */
+	public static <A extends Appendable> A formatAttribute(final A appendable, final Object name, final Object value) throws IOException
+	{
+		return formatAttribute(appendable, name, value, QUOTATION_MARK_CHAR);
+	}
+
+	/**
+	 * Formats a single name-value attribute using {@value Characters#EQUALS_SIGN_CHAR} for assignment.
+	 * @param appendable The formatting destination.
+	 * @param name The name to format.
+	 * @param value The value to format.
+	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if the value should not be quoted.
+	 * @return The appendable used for formatting.
+	 * @throws IOException if there is an error writing to the appendable.
+	 */
+	public static <A extends Appendable> A formatAttribute(final A appendable, final Object name, final Object value, final char quote) throws IOException
+	{
+		return formatAttribute(appendable, name, value, EQUALS_SIGN_CHAR, quote);
+	}
+
+	/**
+	 * Formats a single name-value attribute.
+	 * @param appendable The formatting destination.
+	 * @param name The name to format.
+	 * @param value The value to format.
+	 * @param assignment The character for assigning the value to the attribute.
+	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if the value should not be quoted.
+	 * @return The appendable used for formatting.
+	 * @throws IOException if there is an error writing to the appendable.
+	 */
+	public static <A extends Appendable> A formatAttribute(final A appendable, final Object name, final Object value, final char assignment, final char quote)
+			throws IOException
+	{
+		appendable.append(Objects.toString(name)); //name
+		appendable.append(assignment); //=
+		if(quote != UNDEFINED_CHAR) //if the attribute value is quoted
+		{
+			appendable.append(quote); //"
+		}
+		appendable.append(Objects.toString(value)); //value
+		if(quote != UNDEFINED_CHAR) //if the attribute value is quoted
+		{
+			appendable.append(quote); //"
+		}
+		return appendable; //return the appendable we used
+	}
+
+	/**
 	 * Formats a series of name-value pairs using the format: <var>name</var>="<var>value</value>", <var>name</var>="<var>value</value>"
 	 * @param appendable The formatting destination.
 	 * @param attributes The attributes to format.
@@ -432,9 +546,9 @@ public class TextFormatter
 	/**
 	 * Formats a series of name-value pairs.
 	 * @param appendable The formatting destination.
-	 * @param separator The character for separating the parameters, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
-	 * @param assignment The character for assigning the pairs.
-	 * @param quote The quote character to use for the value.
+	 * @param separator The character for separating the attribute, or {@link Characters#UNDEFINED_CHAR} if there should be no separator.
+	 * @param assignment The character for assigning the value to the attribute.
+	 * @param quote The quote character to use for the value, or {@link Characters#UNDEFINED_CHAR} if no values should be quoted.
 	 * @param unquotedNames The set of names that should not be quoted.
 	 * @param attributes The attributes to format.
 	 * @return The appendable used for formatting.
@@ -447,18 +561,8 @@ public class TextFormatter
 		for(final NameValuePair<?, ?> attribute : attributes) //for each attribute
 		{
 			final Object name = attribute.getName(); //get the attribute name
-			final boolean isQuoted = !unquotedNames.contains(name); //see if we should quote this attribute
-			appendable.append(Objects.toString(name)); //name
-			appendable.append(assignment); //=
-			if(isQuoted) //if this attribute is quoted
-			{
-				appendable.append(quote); //"
-			}
-			appendable.append(Objects.toString(attribute.getValue())); //value
-			if(isQuoted) //if this attribute is quoted
-			{
-				appendable.append(quote); //"
-			}
+			final char thisQuote = quote == UNDEFINED_CHAR || unquotedNames.contains(name) ? UNDEFINED_CHAR : quote; //if this is an unquoted name, turn of quotes for this value; short-circuit the lookup if quoting is already turned off
+			formatAttribute(appendable, attribute, separator, thisQuote);
 			if(appendedItemCount > 0 && separator != UNDEFINED_CHAR) //if we have already appended items and we have a separator
 			{
 				appendable.append(separator); //append a separator
