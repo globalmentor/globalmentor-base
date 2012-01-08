@@ -17,12 +17,12 @@
 package com.globalmentor.text.directory.vcard;
 
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.java.Strings.*;
 import static java.util.Collections.*;
 
 import java.util.*;
 
 import com.globalmentor.collections.Sets;
+import com.globalmentor.text.TextFormatter;
 
 /**
  * An object representing the "EMAIL" type of a vCard <code>text/directory</code> profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC
@@ -123,7 +123,7 @@ public class Email
 	 */
 	public static String getEmailTypeString(final Set<Type> types)
 	{
-		return concat(types, ",");
+		return TextFormatter.formatList(',', types);
 	}
 
 	/** @return A string representation of the email address. */

@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,7 @@ import com.globalmentor.log.Log;
 import com.globalmentor.model.NameValuePair;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.net.URIs.PATH_SEPARATOR;
-import static com.globalmentor.net.URIs.changeRawPath;
+import static com.globalmentor.text.TextFormatter.*;
 
 import com.globalmentor.text.*;
 
@@ -172,7 +171,7 @@ public class URIs
 	 */
 	public static String createURIList(final URI... uris)
 	{
-		return TextFormatter.formatList(new StringBuilder(), "\r\n", (Object[])uris).toString(); //create the URI list
+		return formatList("\r\n", uris); //create the URI list
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -329,7 +329,7 @@ public class Collections
 	 */
 	public static <T> String toString(final Collection<T> collection, final char delimiter)
 	{
-		return formatList(new StringBuilder(), delimiter, collection).toString(); //format the list into a string buffer and return the resulting string
+		return formatList(delimiter, collection).toString(); //format the list into a string buffer and return the resulting string
 	}
 
 	/**
@@ -340,7 +340,7 @@ public class Collections
 	 */
 	public static <T> String toString(final Collection<T> collection, final String delimiter)
 	{
-		return formatList(new StringBuilder(), delimiter, collection).toString(); //format the list into a string buffer and return the resulting string
+		return formatList(delimiter, collection).toString(); //format the list into a string buffer and return the resulting string
 	}
 
 }

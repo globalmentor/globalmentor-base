@@ -924,13 +924,13 @@ public class CharSequences
 	 */
 	public static CharSequence join(final CharSequence... charSequences)
 	{
-		return join(NULL_CHAR, charSequences); //join with no delimiter
+		return join(UNDEFINED_CHAR, charSequences); //join with no delimiter
 	}
 
 	/**
 	 * Concatenates the given character sequences, separated by the given delimiter.
-	 * @param delimiter The delimiter to be placed between each character sequence, or {@link Characters#NULL_CHAR} if no delimiter should be placed between the
-	 *          character sequences.
+	 * @param delimiter The delimiter to be placed between each character sequence, or {@link Characters#UNDEFINED_CHAR} if no delimiter should be placed between
+	 *          the character sequences.
 	 * @param charSequences The character sequences to be concatenated.
 	 * @return The string containing the concatenated character sequences.
 	 * @throws NullPointerException if the given character sequences is <code>null</code>.

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -170,7 +170,7 @@ public class URFTURFProcessor extends AbstractURFProcessor
 	*/
 	public List<URFResource> processResources(final Reader reader, final URI baseURI) throws IOException, ParseIOException
 	{
-		return processResources(reader, baseURI, NULL_CHAR, Collections.<String, URI>emptyMap());	//parse the resources, with no particular end of list indicated
+		return processResources(reader, baseURI, UNDEFINED_CHAR, Collections.<String, URI>emptyMap());	//parse the resources, with no particular end of list indicated
 	}
 
 	/**Parses a list of resources resources and then processes the resulting URF instance.

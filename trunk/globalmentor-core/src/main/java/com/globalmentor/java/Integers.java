@@ -184,7 +184,7 @@ public class Integers
 	*/
 	public static String toHexString(final int value, final int length, final Case hexCase)
 	{
-		String hexString=Integer.toHexString(value);	//conver the integer to hex
+		String hexString=Integer.toHexString(value);	//convert the integer to hex
 		if(hexCase==Case.UPPERCASE)	//if uppercase is requested
 		{
 			hexString=hexString.toUpperCase();

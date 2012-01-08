@@ -18,7 +18,7 @@ package com.globalmentor.text.directory.vcard;
 
 import static com.globalmentor.collections.Lists.*;
 import static com.globalmentor.collections.Sets.*;
-import static com.globalmentor.java.Strings.*;
+import static com.globalmentor.text.TextFormatter.*;
 import static java.util.Arrays.*;
 
 import java.util.*;
@@ -281,7 +281,7 @@ public class Address
 	 */
 	public static String getTypeString(final Set<Type> types)
 	{
-		return concat(types, ",");
+		return formatList(',', types);
 	}
 
 	/** @return A string representation of the address. */

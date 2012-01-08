@@ -16,8 +16,8 @@
 
 package com.globalmentor.text.directory.vcard;
 
-import static com.globalmentor.collections.Sets.immutableSetOf;
-import static com.globalmentor.java.Strings.*;
+import static com.globalmentor.collections.Sets.*;
+import static com.globalmentor.text.TextFormatter.*;
 
 import java.util.EnumSet;
 import java.util.Set;
@@ -145,7 +145,7 @@ public class Telephone extends TelephoneNumber
 	 */
 	public static String getTypeString(final Set<Type> types)
 	{
-		return concat(types, ",");
+		return formatList(',', types);
 	}
 
 	/** @return A string representation of the telephone. */

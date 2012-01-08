@@ -62,14 +62,14 @@ public class StringBuilders
 	 */
 	public static StringBuilder append(final StringBuilder stringBuilder, final CharSequence... charSequences)
 	{
-		return append(stringBuilder, NULL_CHAR, charSequences);
+		return append(stringBuilder, UNDEFINED_CHAR, charSequences);
 	}
 
 	/**
 	 * Concatenates the given character sequences by appending them to the string buffer, separated by the given delimiter.
 	 * @param stringBuilder The string builder which the result should be placed.
-	 * @param delimiter The delimiter to be placed between each character sequence, or {@link Characters#NULL_CHAR} if no delimiter should be placed between the
-	 *          character sequences.
+	 * @param delimiter The delimiter to be placed between each character sequence, or {@link Characters#UNDEFINED_CHAR} if no delimiter should be placed between
+	 *          the character sequences.
 	 * @param charSequences The character sequences to be appended.
 	 * @return The string builder containing the new information.
 	 * @throws NullPointerException if the given string builder and/or character sequences is <code>null</code>.
@@ -82,7 +82,7 @@ public class StringBuilders
 			for(final CharSequence charSequence : charSequences) //for each character sequence
 			{
 				stringBuilder.append(charSequence); //append this character sequence
-				if(delimiter != NULL_CHAR) //if we have a delimiter
+				if(delimiter != UNDEFINED_CHAR) //if we have a delimiter
 				{
 					stringBuilder.append(delimiter); //append the given delimiter
 				}
