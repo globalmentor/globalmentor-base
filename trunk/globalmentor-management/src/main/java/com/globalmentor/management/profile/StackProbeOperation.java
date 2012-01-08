@@ -16,15 +16,18 @@
 
 package com.globalmentor.management.profile;
 
+import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Classes.*;
-import static com.globalmentor.java.Objects.checkInstance;
+import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.Packages.*;
 import static com.globalmentor.model.Count.*;
+import static com.globalmentor.text.TextFormatter.*;
 import static java.util.Collections.*;
 
 import java.io.IOException;
 import java.lang.management.*;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.globalmentor.collections.*;
 import com.globalmentor.collections.comparators.SortOrder;
@@ -36,23 +39,24 @@ import com.globalmentor.model.*;
  * 
  * @author Garret Wilson
  */
-public class StackProbeOperation extends AbstractOperation
+public class StackProbeOperation extends AbstractReadWriteLockOperation
 {
 
 	/** The running count of class+method names. */
-	private final Map<String, Count> methodCounters = new HashMap<String, Count>();
-
-	/** The stack trace of the execute method. */
-	//		private StackTrace executeStackTrace;
+	private final ReadWriteLockMap<String, Count> classMethodCounts = new DecoratorReadWriteLockMap<String, Count>(new HashMap<String, Count>(), this);
 
 	/** The MX bean for analyzing current threads. */
 	private final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 
-	/** The package names to be ignored; these packages include child packages. This set also serves as a read/write lock for both sets. */
-	private final ReadWriteLockSet<String> ignoreParentPackageNames = new DecoratorReadWriteLockSet<String>(new HashSet<String>());
+	/** The package names to be ignored; these packages include child packages. */
+	private final ReadWriteLockSet<String> ignoreParentPackageNames = new DecoratorReadWriteLockSet<String>(new HashSet<String>(), this);
 
 	/** The explicit package names to be included. */
-	private final ReadWriteLockSet<String> includePackageNames = new DecoratorReadWriteLockSet<String>(new HashSet<String>(), ignoreParentPackageNames);
+	private final ReadWriteLockSet<String> includePackageNames = new DecoratorReadWriteLockSet<String>(new HashSet<String>(), this);
+
+	/** The map of line numbers for each class method found. */
+	private final ReadWriteLockCollectionMap<String, Integer, Set<Integer>> classMethodLineNumbers = new DecoratorReadWriteLockCollectionMap<String, Integer, Set<Integer>>(
+			new HashSetHashMap<String, Integer>());
 
 	/**
 	 * Adds a package to be ignored. Child packages will also be ignored.
@@ -72,7 +76,7 @@ public class StackProbeOperation extends AbstractOperation
 	public void addIgnoreParentPackage(final String packageName)
 	{
 		checkInstance(packageName);
-		ignoreParentPackageNames.writeLock().lock();
+		writeLock().lock();
 		try
 		{
 			ignoreParentPackageNames.add(packageName); //add the package name
@@ -89,27 +93,13 @@ public class StackProbeOperation extends AbstractOperation
 		}
 		finally
 		{
-			ignoreParentPackageNames.writeLock().unlock();
+			writeLock().unlock();
 		}
 	}
 
 	@Override
 	protected void execute() throws CancelException
 	{
-		/*
-					if(executeStackTrace == null) //create a new stack trace to represent this method
-					{
-						executeStackTrace = new StackTrace();
-						try
-						{
-							executeStackTrace.print(System.out);
-						}
-						catch(final IOException ioException)
-						{
-							throw unexpected(ioException);
-						}
-					}
-		*/
 		final long threadID = Thread.currentThread().getId();
 		final ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(false, false); //get info on all current threads
 		for(final ThreadInfo threadInfo : threadInfos) //look at info on each thread
@@ -134,7 +124,7 @@ public class StackProbeOperation extends AbstractOperation
 				final String className = stackTraceElement.getClassName();
 				final String packageName = getPackageName(className);
 				Boolean isPackageIncluded = null;
-				ignoreParentPackageNames.readLock().lock(); //first see if we know whether this package is included
+				readLock().lock(); //first see if we know whether this package is included
 				try
 				{
 					if(ignoreParentPackageNames.contains(packageName))
@@ -148,11 +138,11 @@ public class StackProbeOperation extends AbstractOperation
 				}
 				finally
 				{
-					ignoreParentPackageNames.readLock().unlock();
+					readLock().unlock();
 				}
 				if(isPackageIncluded == null) //if we don't know whether this package is included, look at all its parent classes to see if any are ignored; if not, the package is included 
 				{
-					ignoreParentPackageNames.writeLock().lock();
+					writeLock().lock();
 					try
 					{
 						for(final String parentPackageName : getParentPackageNames(packageName)) //look at all the parent packages
@@ -172,14 +162,19 @@ public class StackProbeOperation extends AbstractOperation
 					}
 					finally
 					{
-						ignoreParentPackageNames.writeLock().unlock();
+						writeLock().unlock();
 					}
 				}
 				assert isPackageIncluded != null;
 				if(isPackageIncluded.booleanValue()) //if we determined we can include this package
 				{
 					final String classMethodName = getMethodName(stackTraceElement.getClassName(), stackTraceElement.getMethodName());
-					incrementCounterMapCount(methodCounters, classMethodName); //increment the number of times we've seen this method
+					incrementCounterMapCount(classMethodCounts, classMethodName); //increment the number of times we've seen this method
+					final int lineNumber = stackTraceElement.getLineNumber();
+					if(lineNumber >= 0) //update our record of line numbers
+					{
+						classMethodLineNumbers.addItem(classMethodName, lineNumber);
+					}
 				}
 			}
 		}
@@ -188,8 +183,16 @@ public class StackProbeOperation extends AbstractOperation
 	/** Retrieves a list of collected class+method names and their associated counts, in the order of highest to lowest occurrence. */
 	public synchronized List<NameValuePair<String, Count>> getSortedStackProbeCounts()
 	{
-		//get the stack probe counts
-		final List<NameValuePair<String, Count>> stackProbeCounts = Maps.getKeyValuesCloned(methodCounters, new ArrayList<NameValuePair<String, Count>>());
+		final List<NameValuePair<String, Count>> stackProbeCounts;
+		readLock().lock();
+		try
+		{
+			stackProbeCounts = Maps.getKeyValuesCloned(classMethodCounts, new ArrayList<NameValuePair<String, Count>>()); //get the stack probe counts
+		}
+		finally
+		{
+			readLock().unlock();
+		}
 		sort(stackProbeCounts, new ValuedComparator<Count>(SortOrder.DESCENDING)); //sort the stack probe counts in order of highest to lowest count
 		return stackProbeCounts;
 	}
@@ -203,9 +206,26 @@ public class StackProbeOperation extends AbstractOperation
 	 */
 	public <A extends Appendable> A printStackProbeCounts(final A appendable) throws IOException
 	{
-		for(final NameValuePair<String, Count> stackProbeCount : getSortedStackProbeCounts())
+		readLock().lock();
+		try
 		{
-			appendable.append(stackProbeCount.toString()).append('\n');
+			for(final NameValuePair<String, Count> classMethodCountEntry : getSortedStackProbeCounts())
+			{
+				formatAttribute(appendable, classMethodCountEntry, UNDEFINED_CHAR); //name=value
+				final String classMethodName = classMethodCountEntry.getName();
+				final Set<Integer> lineNumbers = classMethodLineNumbers.get(classMethodName);
+				if(lineNumbers != null) //if we have any line numbers
+				{
+					appendable.append(' ').append('(');
+					formatList(appendable, lineNumbers); //format the list of line numbers
+					appendable.append(')');
+				}
+				appendable.append('\n');
+			}
+		}
+		finally
+		{
+			readLock().unlock();
 		}
 		return appendable;
 	}
