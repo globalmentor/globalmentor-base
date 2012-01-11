@@ -261,6 +261,7 @@ public class Threads
 	 * @return the class of the last line of program execution before a method in the class of the caller to this method.
 	 * @throws IllegalStateException if there was no caller in the stack before the caller to this method.
 	 */
+	@Deprecated
 	public static Class<?> getCallingClass()
 	{
 		return getCallingClass(null); //get the calling class, ignoring no classes
@@ -278,6 +279,7 @@ public class Threads
 	 * @throws IllegalArgumentException if an ignore class was provided and there was no caller in the stack before the caller to this method that wasn't from the
 	 *           given class.
 	 */
+	@Deprecated
 	public static Class<?> getCallingClass(final Class<?> ignoreClass)
 	{
 		try
@@ -298,6 +300,7 @@ public class Threads
 	 * @return A stack trace element representing the last line of program execution before a method in the class of the caller to this method.
 	 * @throws IllegalStateException if there was no caller in the stack before the caller to this method.
 	 */
+	@Deprecated
 	public static StackTraceElement getCallingClassStackTraceElement()
 	{
 		return getCallingClassStackTraceElement(null); //get the previous stack trace element, ignoring no classes
@@ -317,6 +320,7 @@ public class Threads
 	 * @throws IllegalArgumentException if an ignore class was provided and there was no caller in the stack before the caller to this method that wasn't from the
 	 *           given class.
 	 */
+	@Deprecated
 	public static StackTraceElement getCallingClassStackTraceElement(final Class<?> ignoreClass)
 	{
 		final String thisClassName = Threads.class.getName(); //get the name of this class so we can ignore it

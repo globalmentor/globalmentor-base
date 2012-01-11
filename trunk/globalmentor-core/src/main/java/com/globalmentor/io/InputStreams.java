@@ -32,6 +32,9 @@ import com.globalmentor.text.CharacterEncoding;
 public class InputStreams
 {
 
+	/**The shared instance of an input stream with no content.*/
+	public final static InputStream EMPTY_INPUT_STREAM=new EmptyInputStream();
+
 	/**
 	 * Loads the contents of an input stream into an array of bytes. This is accomplished by creating a series of smaller buffers and, once the end of the stream
 	 * has been reached, creating a new buffer and copying the contents of each buffer into the new buffer. This is assumed to be faster than using
@@ -178,7 +181,7 @@ public class InputStreams
 	 * Fills a buffer with bytes from an input stream, blocking until the buffer is full or the end of the stream is reached.
 	 * @param inputStream The input stream from which to read.
 	 * @param buffer The buffer to fill.
-	 * @return The number of bytes actually read.
+	 * @return The number of bytes actually read; if less than the size of the buffer, the end of the stream has been reached.
 	 * @throws IOException if there is an error reading from the input stream.
 	 */
 	public static int read(final InputStream inputStream, final byte[] buffer) throws IOException

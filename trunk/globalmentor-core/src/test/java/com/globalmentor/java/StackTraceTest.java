@@ -42,8 +42,8 @@ public class StackTraceTest
 	{
 		final StackTrace methodStackTrace1 = new StackTrace();
 		final StackTrace methodStackTrace2 = new StackTrace();
-		assertTrue(methodStackTrace1.isTopMethodIntersected(methodStackTrace2));
-		assertFalse(methodStackTrace1.isTopMethodIntersected(classVariableStackTrace));
+		assertTrue(methodStackTrace1.isCurrentMethodIntersected(methodStackTrace2));
+		assertFalse(methodStackTrace1.isCurrentMethodIntersected(classVariableStackTrace));
 	}
 
 }

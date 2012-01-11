@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,8 @@ public final class Characters
 	public final static char FORM_FEED_CHAR = 0x000C;
 	/** A carriage return. */
 	public final static char CARRIAGE_RETURN_CHAR = 0x000D;
+	/** Data Link Escape control character (0010;&lt;control&gt;;Cc;0;BN;;;;;N;DATA LINK ESCAPE;;;;). */
+	public final static char DATA_LINK_ESCAPE_CHAR = 0x0010;
 	/** The information separator four character. */
 	public final static char INFORMATION_SEPARATOR_FOUR_CHAR = 0x001C;
 	/** The information separator three character. */
@@ -207,6 +209,24 @@ public final class Characters
 	public final static char LEFT_POINTING_ANGLE_BRACKET = 0x2329;
 	/** A right-pointing angle bracket character (232A;RIGHT-POINTING ANGLE BRACKET;Pe;0;ON;3009;;;;Y;KET;;;;). */
 	public final static char RIGHT_POINTING_ANGLE_BRACKET = 0x232A;
+
+	/** The symbol for NULL (2400;SYMBOL FOR NULL;So;0;ON;;;;;N;GRAPHIC FOR NULL;;;;). */
+	public final static char NULL_SYMBOL = 0x2400;
+	/** The symbol for line feed (240A;SYMBOL FOR LINE FEED;So;0;ON;;;;;N;GRAPHIC FOR LINE FEED;;;;). */
+	public final static char LINE_FEED_SYMBOL = 0x240A;
+	/** The symbol for vertical tab (240B;SYMBOL FOR VERTICAL TABULATION;So;0;ON;;;;;N;GRAPHIC FOR VERTICAL TABULATION;;;;). */
+	public final static char VERTICAL_TAB_SYMBOL = 0x240B;
+	/** The symbol for form feed (240C;SYMBOL FOR FORM FEED;So;0;ON;;;;;N;GRAPHIC FOR FORM FEED;;;;). */
+	public final static char FORM_FEED_SYMBOL = 0x240C;
+	/** The symbol for carriage return (240D;SYMBOL FOR CARRIAGE RETURN;So;0;ON;;;;;N;GRAPHIC FOR CARRIAGE RETURN;;;;). */
+	public final static char CARRIAGE_RETURN_SYMBOL = 0x240D;
+	/** The symbol for end of transmission (2404;SYMBOL FOR END OF TRANSMISSION;So;0;ON;;;;;N;GRAPHIC FOR END OF TRANSMISSION;;;;). */
+	public final static char END_OF_TRANSMISSION_SYMBOL = 0x2404;
+	/** The symbol for space (2420;SYMBOL FOR SPACE;So;0;ON;;;;;N;GRAPHIC FOR SPACE;;;;). */
+	public final static char SPACE_SYMBOL = 0x2420;
+	/** The blank symbol (2422;BLANK SYMBOL;So;0;ON;;;;;N;BLANK;;;;). */
+	public final static char BLANK_SYMBOL = 0x2422;
+
 	/** A reversed double prime quotation mark. */
 	public final static char REVERSED_DOUBLE_PRIME_QUOTATION_MARK_CHAR = 0x301D;
 	/** A double prime quotation mark. */

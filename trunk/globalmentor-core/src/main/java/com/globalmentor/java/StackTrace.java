@@ -16,10 +16,14 @@
 
 package com.globalmentor.java;
 
+import static com.globalmentor.collections.Sets.*;
 import static com.globalmentor.java.Conditions.*;
+import static com.globalmentor.java.Packages.*;
 
 import java.io.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.globalmentor.collections.Lists;
 
@@ -101,7 +105,7 @@ public class StackTrace
 	 * @return <code>true</code> if the class and method of the initial stack trace element of this stack trace is found in the given stack trace.
 	 * @throws NullPointerException if the given stack trace is <code>null</code>.
 	 */
-	public boolean isTopMethodIntersected(final StackTrace stackTrace)
+	public boolean isCurrentMethodIntersected(final StackTrace stackTrace)
 	{
 		final List<StackTraceElement> stackTraceElements1 = getStackTraceElements();
 		final List<StackTraceElement> stackTraceElements2 = stackTrace.getStackTraceElements();
@@ -120,6 +124,149 @@ public class StackTrace
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Retrieves the class representing the caller of the class calling this method.
+	 * <p>
+	 * The current stack trace element is assumed to be in this method itself, so it is ignored. The stack trace element before that is assumed to be the called
+	 * to <em>this</em> method, and it is ignored as well. Therefore the class of the stack trace element at least two levels deep that isn't of the ignored
+	 * packaged is returned.
+	 * </p>
+	 * @param ignorePackage The package to ignore, or <code>null</code> if no package should be ignored.
+	 * @return The calling class, or <code>null</code> if no stack trace element meeting the given criteria could be found.
+	 */
+	public static Class<?> getCallingClass(final Package ignorePackage)
+	{
+		final StackTraceElement callingStackTraceElement = getCallingStackTraceElement(ignorePackage);
+		try
+		{
+			return callingStackTraceElement != null ? Class.forName(callingStackTraceElement.getClassName()) : null; //determine the class of the calling stack trace element
+		}
+		catch(final ClassNotFoundException classNotFoundException) //since the class is calling us, the class should exist and already be loaded
+		{
+			throw unexpected(classNotFoundException);
+		}
+	}
+
+	/**
+	 * Retrieves the stack trace element representing the caller of the class calling this method.
+	 * <p>
+	 * The current stack trace element is assumed to be in this method itself, so it is ignored. The stack trace element before that is assumed to be the called
+	 * to <em>this</em> method, and it is ignored as well. Therefore the stack trace element at least two levels deep that isn't of the ignored packaged is
+	 * returned.
+	 * </p>
+	 * @param ignorePackage The package to ignore, or <code>null</code> if no package should be ignored.
+	 * @return The calling stack trace element, or <code>null</code> if no stack trace element meeting the given criteria could be found.
+	 */
+	public static StackTraceElement getCallingStackTraceElement(final Package ignorePackage)
+	{
+		final StackTraceElement[] stackTraceElements = new Throwable().getStackTrace(); //get the current stack TODO integrate new StackTrace class
+		final int stackTraceElementsLength = stackTraceElements.length;
+		if(stackTraceElementsLength < 3)
+		{
+			return null;
+		}
+		if(ignorePackage == null) //if we shouldn't ignore any package
+		{
+			return stackTraceElements[2]; //return this caller's caller
+		}
+		final String ignorePackageName = ignorePackage.getName();
+		for(int i = 2; i < stackTraceElementsLength; ++i)
+		{
+			final StackTraceElement stackTraceElement = stackTraceElements[i];
+			if(!ignorePackageName.equals(getPackageName(stackTraceElement.getClassName()))) //if this stack trace element isn't from the ignored package
+			{
+				return stackTraceElement;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Retrieves the first stack trace element that is not from one of the ignored classes.
+	 * @param ignoreClasses The classes to ignore.
+	 * @return The stack trace element ignoring the classes, or <code>null</code> if there is no stack trace element without one of the ignored classes.
+	 */
+	public StackTraceElement getStackTraceElementIgnoreClasses(final Class<?>... ignoreClasses)
+	{
+		final Set<String> ignoreClassNames = new HashSet<String>(ignoreClasses.length);
+		for(final Class<?> ignoreClass : ignoreClasses)
+		{
+			ignoreClassNames.add(ignoreClass.getName());
+		}
+		return getStackTraceElementIgnoreClasses(ignoreClassNames);
+	}
+
+	/**
+	 * Retrieves the first stack trace element that is not from one of the ignored classes.
+	 * @param ignoreClassNames The names of the classes to ignore.
+	 * @return The stack trace element ignoring the named classes, or <code>null</code> if there is no stack trace element without one of the ignored class names.
+	 */
+	public StackTraceElement getStackTraceElementIgnoreClasses(final String... ignoreClassNames)
+	{
+		return getStackTraceElementIgnoreClasses(immutableSetOf(ignoreClassNames));
+	}
+
+	/**
+	 * Retrieves the first stack trace element that is not from one of the ignored classes.
+	 * @param ignoreClassNames The names of the classes to ignore.
+	 * @return The stack trace element ignoring the named classes, or <code>null</code> if there is no stack trace element without one of the ignored class names.
+	 */
+	public StackTraceElement getStackTraceElementIgnoreClasses(final Set<String> ignoreClassNames)
+	{
+		for(final StackTraceElement stackTraceElement : getStackTraceElements()) //look at the stack trace elements
+		{
+			if(!ignoreClassNames.contains(stackTraceElement.getClassName())) //if this stack trace element doesn't have an ignored class
+			{
+				return stackTraceElement;
+			}
+		}
+		return null; //we couldn't find a stack trace element without one of the ignored classes
+	}
+
+	/**
+	 * Retrieves the first stack trace element that is not from one of the ignored packages.
+	 * @param ignorePackages The packages to ignore.
+	 * @return The stack trace element ignoring the named packages, or <code>null</code> if there is no stack trace element without one of the ignored packages.
+	 */
+	public StackTraceElement getStackTraceElementIgnorePackages(final Package... ignorePackages)
+	{
+		final Set<String> ignorePackageNames = new HashSet<String>(ignorePackages.length);
+		for(final Package ignorePackage : ignorePackages)
+		{
+			ignorePackageNames.add(ignorePackage.getName());
+		}
+		return getStackTraceElementIgnoreClasses(ignorePackageNames);
+	}
+
+	/**
+	 * Retrieves the first stack trace element that is not from one of the ignored packages.
+	 * @param ignorePackageNames The names of the packages to ignore.
+	 * @return The stack trace element ignoring the named packages, or <code>null</code> if there is no stack trace element without one of the ignored package
+	 *         names.
+	 */
+	public StackTraceElement getStackTraceElementIgnorePackages(final String... ignorePackageNames)
+	{
+		return getStackTraceElementIgnorePackages(immutableSetOf(ignorePackageNames));
+	}
+
+	/**
+	 * Retrieves the first stack trace element that is not from one of the ignored packages.
+	 * @param ignorePackageNames The names of the packages to ignore.
+	 * @return The stack trace element ignoring the named packages, or <code>null</code> if there is no stack trace element without one of the ignored package
+	 *         names.
+	 */
+	public StackTraceElement getStackTraceElementIgnorePackages(final Set<String> ignorePackageNames)
+	{
+		for(final StackTraceElement stackTraceElement : getStackTraceElements()) //look at the stack trace elements
+		{
+			if(!ignorePackageNames.contains(getPackageName(stackTraceElement.getClassName()))) //if this stack trace element doesn't have an ignored package
+			{
+				return stackTraceElement;
+			}
+		}
+		return null; //we couldn't find a stack trace element without one of the ignored packages
 	}
 
 	@Override
