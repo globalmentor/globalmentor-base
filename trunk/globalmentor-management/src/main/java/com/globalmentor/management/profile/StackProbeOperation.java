@@ -27,7 +27,6 @@ import static java.util.Collections.*;
 import java.io.IOException;
 import java.lang.management.*;
 import java.util.*;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.globalmentor.collections.*;
 import com.globalmentor.collections.comparators.SortOrder;
