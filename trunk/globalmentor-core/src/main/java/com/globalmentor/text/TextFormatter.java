@@ -296,11 +296,11 @@ public class TextFormatter
 			{
 				continue;
 			}
-			appendable.append(Objects.toString(item)); //append the item
 			if(appendedItemCount > 0 && separator != UNDEFINED_CHAR) //if we have already appended items and we have a separator
 			{
 				appendable.append(separator); //append the separator
 			}
+			appendable.append(Objects.toString(item)); //append the item
 			appendedItemCount++; //show that we appended another item
 		}
 		return appendable; //return the appendable we used
@@ -560,13 +560,13 @@ public class TextFormatter
 		int appendedItemCount = 0;
 		for(final NameValuePair<?, ?> attribute : attributes) //for each attribute
 		{
-			final Object name = attribute.getName(); //get the attribute name
-			final char thisQuote = quote == UNDEFINED_CHAR || unquotedNames.contains(name) ? UNDEFINED_CHAR : quote; //if this is an unquoted name, turn of quotes for this value; short-circuit the lookup if quoting is already turned off
-			formatAttribute(appendable, attribute, separator, thisQuote);
 			if(appendedItemCount > 0 && separator != UNDEFINED_CHAR) //if we have already appended items and we have a separator
 			{
 				appendable.append(separator); //append a separator
 			}
+			final Object name = attribute.getName(); //get the attribute name
+			final char thisQuote = quote == UNDEFINED_CHAR || unquotedNames.contains(name) ? UNDEFINED_CHAR : quote; //if this is an unquoted name, turn of quotes for this value; short-circuit the lookup if quoting is already turned off
+			formatAttribute(appendable, attribute, separator, thisQuote);
 			appendedItemCount++; //show that we appended another item
 		}
 		return appendable; //return the appendable we used
