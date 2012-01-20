@@ -21,6 +21,7 @@ import static com.globalmentor.io.Charsets.*;
 
 import java.util.Collection;
 
+import com.globalmentor.io.UTF8;
 import com.globalmentor.text.Case;
 import com.globalmentor.text.unicode.UnicodeCharacter;
 
@@ -406,14 +407,17 @@ public class CharSequences
 	/**
 	 * Decodes the escaped characters in the character sequence by converting the hex value after each occurrence of the escape character to the corresponding
 	 * Unicode character using UTF-8.
+	 * <p>
+	 * This implementation does not allow non-escaped UTF-8 characters that would be escaped by UTF-8.
+	 * </p>
 	 * @param charSequence The data to unescape.
 	 * @param escapeChar The character that prefixes the hex representation.
 	 * @param escapeLength The number of characters used for the hex representation.
 	 * @return A string containing the unescaped data.
-	 * @exception IllegalArgumentException if the given characters contains a character greater than U+00FF.
+	 * @exception IllegalArgumentException if the given characters contains a character greater than U+007F.
 	 * @exception IllegalArgumentException if a given escape character is not followed by an escape sequence.
 	 */
-	public static String unescapeHex(final CharSequence charSequence, final char escapeChar, final int escapeLength) //TODO fix for UTF-8
+	public static String unescapeHex(final CharSequence charSequence, final char escapeChar, final int escapeLength)
 	{
 		final int charSequenceLength = charSequence.length(); //get the length of the character sequence
 		final byte[] decodedBytes = new byte[charSequenceLength]; //create an array of byte to hold the UTF-8 data
@@ -448,7 +452,7 @@ public class CharSequences
 			else
 			//if this is not an escaped character
 			{
-				if(c > 0xff) //if this character is larger than a byte, the character sequence was not encoded correctly
+				if(c > UTF8.MAX_ENCODED_BYTE_COUNT1) //if this character is larger than the largest UTF-8 encoding for a single byte, the character sequence was not encoded correctly
 				{
 					throw new IllegalArgumentException("Invalid encoded character " + UnicodeCharacter.getCodePointString(c) + " at index " + i
 							+ " in character sequence \"" + charSequence + "\".");

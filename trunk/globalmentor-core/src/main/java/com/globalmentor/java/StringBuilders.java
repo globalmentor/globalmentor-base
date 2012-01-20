@@ -299,7 +299,7 @@ public class StringBuilders
 	public static StringBuilder escapeHex(final StringBuilder stringBuilder, final Characters validCharacters, final Characters invalidCharacters,
 			final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase)
 	{
-		for(int characterIndex = stringBuilder.length() - 1; characterIndex >= 0; --characterIndex) //work backwords; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
+		for(int characterIndex = stringBuilder.length() - 1; characterIndex >= 0; --characterIndex) //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
 		{
 			final char c = stringBuilder.charAt(characterIndex); //get the current character
 			final boolean encode = (validCharacters != null && !validCharacters.contains(c)) //encode if there is a list of valid characters and this character is not one of them
@@ -316,7 +316,7 @@ public class StringBuilders
 	/**
 	 * Escapes the indicated character in the string builder using the supplied escape character. All characters are first encoded using UTF-8. The character is
 	 * converted to its Unicode hex equivalent and prefixed with the given escape character. This method uses <em>lowercase</em> hexadecimal escape codes.
-	 * @param stringBuilder The strinbg builder containing data to escape.
+	 * @param stringBuilder The string builder containing data to escape.
 	 * @param index The index of the character to escape.
 	 * @param escapeChar The character to prefix the hex representation.
 	 * @param escapeLength The number of characters to use for the hex representation.
@@ -332,7 +332,7 @@ public class StringBuilders
 	/**
 	 * Escapes the indicated character in the string builder using the supplied escape character. All characters are first encoded using UTF-8. The character is
 	 * converted to its Unicode hex equivalent and prefixed with the given escape character.
-	 * @param stringBuilder The strinbg builder containing data to escape.
+	 * @param stringBuilder The string builder containing data to escape.
 	 * @param index The index of the character to escape.
 	 * @param escapeChar The character to prefix the hex representation.
 	 * @param escapeLength The number of characters to use for the hex representation.
@@ -348,7 +348,7 @@ public class StringBuilders
 	/**
 	 * Escapes the indicated character in the string builder using the supplied escape character. All characters are first encoded using UTF-8. The character is
 	 * converted to its Unicode hex equivalent and prefixed with the given escape character.
-	 * @param stringBuilder The strinbg builder containing data to escape.
+	 * @param stringBuilder The string builder containing data to escape.
 	 * @param index The index of the character to replace.
 	 * @param c The character to be escaped.
 	 * @param escapeChar The character to prefix the hex representation.

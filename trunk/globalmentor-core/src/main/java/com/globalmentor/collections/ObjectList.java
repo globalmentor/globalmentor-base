@@ -16,6 +16,7 @@
 
 package com.globalmentor.collections;
 
+import java.io.IOException;
 import java.util.*;
 
 import com.globalmentor.collections.iterators.*;
@@ -23,7 +24,9 @@ import com.globalmentor.java.Arrays;
 import com.globalmentor.java.Objects;
 
 import static com.globalmentor.java.Arrays.*;
+import static com.globalmentor.java.Conditions.unexpected;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.text.TextFormatter.formatList;
 
 /**
  * A read-only list containing a single object.
@@ -32,7 +35,7 @@ import static com.globalmentor.java.Objects.*;
  * 
  * @param <E> The type of object contained in the list.
  */
-public class ObjectList<E> implements List<E>, ImmutableCollection<E>
+public class ObjectList<E> implements List<E>, ImmutableCollection<E>	//TODO refactor out ObjectCollection
 {
 	/** The object held in the list. */
 	private E object;
@@ -387,8 +390,6 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E>
 		return length==1 ? this : java.util.Collections.<E>emptyList();	//since the range is OK, there will only be one or no elements in the range
   }
 	
-	
-	
 	/** {@inheritDoc} */
 	public boolean equals(Object o)
 	{
@@ -406,4 +407,21 @@ public class ObjectList<E> implements List<E>, ImmutableCollection<E>
 		return object.hashCode();
 	}
 
+	@Override
+	public String toString()
+	{
+		try
+		{
+			final StringBuilder stringBuilder=new StringBuilder();
+			stringBuilder.append('[');
+			formatList(stringBuilder, this);
+			stringBuilder.append(']');
+			return stringBuilder.toString();
+		}
+		catch(final IOException ioException)
+		{
+			throw unexpected(ioException);
+		}
+	}
+	
 }

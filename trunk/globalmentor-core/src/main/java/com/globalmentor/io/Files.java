@@ -935,7 +935,7 @@ public class Files
 	 * @throws NullPointerException if the given file is <code>null</code>.
 	 * @throws SecurityException If a required system property value cannot be accessed.
 	 * @see File#toURI()
-	 * @see URIs#toCanonicalURI(URI)
+	 * @see URIs#canonicalize(URI)
 	 * @see URIs#PATH_CHARACTERS
 	 */
 	public static URI toURI(final File file)
@@ -966,7 +966,7 @@ public class Files
 	 * @throws NullPointerException if the given file is <code>null</code>.
 	 * @throws SecurityException If a required system property value cannot be accessed.
 	 * @see File#toURI()
-	 * @see URIs#toCanonicalURI(URI)
+	 * @see URIs#canonicalize(URI)
 	 * @see URIs#PATH_CHARACTERS
 	 */
 	public static URI toURI(final File file, final boolean forceDirectoryURI)
@@ -987,7 +987,7 @@ public class Files
 				break; //skip looking at the rest of the string
 			}
 		}
-		uri = toCanonicalURI(uri); //convert the URI to canonical form; even if we converted ASCII characters, the File.toURI() method might have produced uppercase hex escape codes when escaping illegal characters
+		uri = canonicalize(uri); //convert the URI to canonical form; even if we converted ASCII characters, the File.toURI() method might have produced uppercase hex escape codes when escaping illegal characters
 		if(forceDirectoryURI) //force a collection URI if needed
 		{
 			uri = toCollectionURI(uri);

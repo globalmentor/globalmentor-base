@@ -1898,7 +1898,7 @@ public class URIs
 	 * @see <a href="http://www.w3.org/TR/rdf-syntax-grammar/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	 * @see #isUNCFileURI(URI)
 	 */
-	public static URI resolve(final URI baseURI, final String childURI)
+	public static URI resolve(final URI baseURI, final String childURI) //TODO consider throwing an exception if the child URI is not a valid URI--that is, it has non-ASCII characters
 	{
 		return resolve(baseURI, URI.create(childURI));
 	}
@@ -2335,14 +2335,23 @@ public class URIs
 	}
 
 	/**
-	 * Ensures that the given URI is in canonical form. This implementation, following the examples in RFC 3986, ensures that all hexadecimal escape codes are in
-	 * lowercase.
+	 * Ensures that the given URI is in canonical form.
+	 * <p>
+	 * Java erroneously allows URIs that contain non-ASCII characters. This method ensures that only valid characters according to RFC 3986 are contained in the
+	 * URI.
+	 * </p>
+	 * <p>
+	 * This implementation, following the examples in RFC 3986, ensures that all hexadecimal escape codes are in lowercase. TODO change to uppercase
+	 * </p>
+	 * <p>
+	 * This method should be distinguished from {@link #normalize(URI)}, which normalizes path segments.
+	 * </p>
 	 * @param uri The URI to be returned in canonical form.
 	 * @return The canonical form of the given URI.
 	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @throws IllegalArgumentException if the given URI has an invalid escape sequence.
 	 */
-	public static URI toCanonicalURI(final URI uri)
+	public static URI canonicalize(final URI uri)
 	{
 		final String uriString = uri.toASCIIString(); //get the string version of the URI
 		final int uriStringLength = uriString.length(); //get the length of the string

@@ -16,12 +16,15 @@
 
 package com.globalmentor.collections;
 
+import java.io.IOException;
 import java.util.*;
 
-import com.globalmentor.collections.iterators.ObjectIterator;
+import com.globalmentor.collections.iterators.*;
 import com.globalmentor.java.Arrays;
 
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.text.TextFormatter.*;
 
 /**
  * A read-only set containing a single object.
@@ -163,4 +166,20 @@ public class ObjectSet<E> implements Set<E>, ImmutableCollection<E>
 		return object.hashCode();
 	}
 
+	@Override
+	public String toString()
+	{
+		try
+		{
+			final StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append('[');
+			formatList(stringBuilder, this);
+			stringBuilder.append(']');
+			return stringBuilder.toString();
+		}
+		catch(final IOException ioException)
+		{
+			throw unexpected(ioException);
+		}
+	}
 }

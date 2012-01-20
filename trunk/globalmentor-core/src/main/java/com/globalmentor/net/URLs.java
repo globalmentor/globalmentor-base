@@ -296,13 +296,13 @@ public class URLs
 	 * @return The URL as a URI.
 	 * @throws IllegalArgumentException if the given URL not formatted strictly according to to RFC 2396 and cannot be converted to a URI.
 	 * @see URL#toURI()
-	 * @see URIs#toCanonicalURI(URI)
+	 * @see URIs#canonicalize(URI)
 	 */
 	public static URI toURI(final URL url)
 	{
 		try
 		{
-			return URIs.toCanonicalURI(url.toURI());
+			return URIs.canonicalize(url.toURI());
 		}
 		catch(final URISyntaxException uriSyntaxException)
 		{
