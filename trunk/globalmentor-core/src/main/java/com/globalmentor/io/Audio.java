@@ -27,9 +27,9 @@ public class Audio
 
 	/**
 	 * The content type for an Ogg Vorbis file: <code>application/ogg</code>.
-	 * @see <a href="http://www.rfc-editor.org/rfc/rfc3534.txt">RFC 3534</a>
+	 * @see <a href="http://www.ietf.org/rfc/rfc3534.txt">RFC 3534</a>
 	 */
-	public static final ContentType OGG_CONTENT_TYPE = ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "ogg");
+	public static final ContentType OGG_CONTENT_TYPE = ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "ogg"); //TODO update to audio/ogg from http://wiki.xiph.org/MIME_Types_and_File_Extensions
 
 	/** The content type for MP3: <code>audio/mpeg</code>. */
 	public static final ContentType MPEG_CONTENT_TYPE = ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, "mpeg");
