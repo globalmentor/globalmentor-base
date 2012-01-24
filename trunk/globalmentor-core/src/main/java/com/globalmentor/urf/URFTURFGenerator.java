@@ -794,7 +794,7 @@ public class URFTURFGenerator
 			for(final URI propertyURI : referenceSummary.propertyURIReferenceMap.keySet()) //look at all property URIs
 			{
 				final URI namespaceURI = getNamespaceURI(propertyURI); //get the namespace URI of this property URI
-				if(!DEFAULT_NAMESPACE_URI.equals(namespaceURI)) //ignore the default namespace
+				if(namespaceURI != null && !DEFAULT_NAMESPACE_URI.equals(namespaceURI)) //ignore the default namespace
 				{
 					namespaceLabelManager.determineNamespaceLabel(namespaceURI); //generate a namespace label for the URI
 				}
