@@ -1,5 +1,4 @@
 /*
- * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +23,7 @@ import com.globalmentor.collections.*;
 import com.globalmentor.io.*;
 
 import com.globalmentor.java.Characters;
+import com.globalmentor.java.StringBuilders;
 import com.globalmentor.log.Log;
 import com.globalmentor.model.NameValuePair;
 import static com.globalmentor.java.CharSequences.*;
@@ -33,9 +33,10 @@ import static com.globalmentor.text.TextFormatter.*;
 import com.globalmentor.text.*;
 
 /**
- * Various URI manipulating functions for working with URIs as defined in <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>,
+ * Various URI manipulating functions for working with URIs as defined in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
  * "Uniform Resource Identifiers (URI): Generic Syntax".
  * @see URI
+ * @see <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986 - Uniform Resource Identifiers (URI): Generic Syntax</a>
  */
 public class URIs
 {
@@ -2473,7 +2474,7 @@ public class URIs
 	 * @param uri The URI to compress.
 	 * @return A compressed string representation of the URI.
 	 */
-	public static String safeEncode(final URI uri)
+	public static String compress(final URI uri)
 	{
 		final int ENCODE_BASE = COMPRESS_ENCODE_CHARS.length(); //this is the base into which we'll encode certain characters
 		final String uriString = uri.toASCIIString();
@@ -2500,12 +2501,12 @@ public class URIs
 	}
 
 	/**
-	 * Compresses a URI into a shorter string representation.
+	 * Decompresses a URI from a shorter string representation.
 	 * @param string The alphanumeric string.
 	 * @return An uncompressed URI from the alphanumeric string.
 	 * @throws SyntaxException Thrown if the given string is not correctly encoded.
 	 */
-	public static URI safeDecode(final String string) throws SyntaxException
+	public static URI decompress(final String string) throws SyntaxException
 	{
 		final int ENCODE_BASE = COMPRESS_ENCODE_CHARS.length(); //this is the base into which we'll encode certain characters TODO maybe place this outside the method
 		final StringBuilder stringBuilder = new StringBuilder();
@@ -2544,4 +2545,53 @@ public class URIs
 		return URI.create(stringBuilder.toString()); //return the original URI
 	}
 
+	/**
+	 * The character used for escaping characters in a URI plain encoding.
+	 * @see #plainEncode(URI)
+	 */
+	public final static char PLAIN_ENCODING_ESCAPE_CHAR = '_';
+
+	/**
+	 * The character used for replacing certain characters in a URI plain encoding.
+	 * @see #plainEncode(URI)
+	 */
+	public final static char PLAIN_ENCODING_REPLACE_CHAR = '-';
+
+	/** The characters that, at least initially, should not be encoded. Path separators will be replaced with {@value #PLAIN_ENCODING_REPLACE_CHAR}. */
+	protected final static Characters PLAIN_ENCODE_UNRESERVED_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add('.', PATH_SEPARATOR);
+
+	/**
+	 * Encodes an absolute URI into a plain string that is safe to be used in the path of another URI, for example. The resulting string will also be a valid XML
+	 * name.
+	 * 
+	 * <ol>
+	 * <li>The scheme separator character {@value #SCHEME_SEPARATOR} is replaced with {@value #PLAIN_ENCODING_REPLACE_CHAR}.</li>
+	 * <li>Every instance of the slash character {@value #PATH_SEPARATOR} is replaced with {@value #PLAIN_ENCODING_REPLACE_CHAR}.</li>
+	 * <li>The characters {@value #PLAIN_ENCODING_REPLACE_CHAR}, {@value #PLAIN_ENCODING_ESCAPE_CHAR}, and all other non-URI characters are escaped using
+	 * {@value #PLAIN_ENCODING_ESCAPE_CHAR} as the escape character.</li>
+	 * </ol>
+	 * <p>
+	 * This implementation, following the recommendation in RFC 3986, ensures that all hexadecimal escape codes are in uppercase.
+	 * </p>
+	 * @param uri The URI to encode
+	 * @return A string representing the plain encoding of the URI.
+	 * @throws IllegalArgumentException if the given URI is not absolute.
+	 */
+	public static String plainEncode(final URI uri)
+	{
+		checkAbsolute(uri);
+		final String scheme = uri.getScheme(); //find out the scheme of the URI
+		final int schemeLength = scheme.length();
+		final String uriString = uri.toASCIIString(); //start with the real string form of the URI
+		final StringBuilder stringBuilder = new StringBuilder(); //do the processing within a string builder
+		stringBuilder.append(scheme); //encode the scheme first
+		StringBuilders.escapeHex(stringBuilder, PLAIN_ENCODE_UNRESERVED_CHARACTERS, null, Integer.MAX_VALUE, PLAIN_ENCODING_ESCAPE_CHAR, 2, Case.UPPERCASE); //escape the scheme
+		stringBuilder.append(PLAIN_ENCODING_REPLACE_CHAR); //append a '-' in place of ':'
+		final int encodedSchemeLength = stringBuilder.length();
+		stringBuilder.append(uriString, schemeLength + 1, uriString.length()); //append the rest of the URI
+		StringBuilders.escapeHex(stringBuilder, encodedSchemeLength + 1, PLAIN_ENCODE_UNRESERVED_CHARACTERS, null, Integer.MAX_VALUE, PLAIN_ENCODING_ESCAPE_CHAR,
+				2, Case.UPPERCASE); //escape the rest of the URI (after the encoded scheme)
+		StringBuilders.replace(stringBuilder, PATH_SEPARATOR, PLAIN_ENCODING_REPLACE_CHAR); //replace the path characters with '-'
+		return stringBuilder.toString(); //at this point, the remaining bare '-' characters will represent '/', except for the first one, which represents ':'
+	}
 }

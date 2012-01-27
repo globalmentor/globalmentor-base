@@ -284,7 +284,7 @@ public class StringBuilders
 	 * otherwise. The escape character, if encountered, is not escaped unless it specifically meets one of the specified criteria; this allows re-escaping strings
 	 * that may contain escape characters produced under less-strict rules (e.g. a URI containing escaped restricted characters, but still containing non-ASCII
 	 * characters).
-	 * @param charSequence The data to escape.
+	 * @param stringBuilder The data to escape.
 	 * @param validCharacters The characters that should not be escaped and all others should be escaped, or <code>null</code> if characters should not be matched
 	 *          against valid characters.
 	 * @param invalidCharacters The characters that, if they appear, should be escaped, or <code>null</code> if characters should not be matched against invalid
@@ -299,7 +299,58 @@ public class StringBuilders
 	public static StringBuilder escapeHex(final StringBuilder stringBuilder, final Characters validCharacters, final Characters invalidCharacters,
 			final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase)
 	{
-		for(int characterIndex = stringBuilder.length() - 1; characterIndex >= 0; --characterIndex) //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
+		return escapeHex(stringBuilder, 0, stringBuilder.length(), validCharacters, invalidCharacters, maxCharacter, escapeChar, escapeLength, hexCase); //start at the beginning
+	}
+
+	/**
+	 * Escapes the indicated characters in the string builder using the supplied escape character. All characters are first encoded using UTF-8. Every invalid
+	 * character is converted to its Unicode hex equivalent and prefixed with the given escape character. Characters are assumed to be valid unless specified
+	 * otherwise. The escape character, if encountered, is not escaped unless it specifically meets one of the specified criteria; this allows re-escaping strings
+	 * that may contain escape characters produced under less-strict rules (e.g. a URI containing escaped restricted characters, but still containing non-ASCII
+	 * characters).
+	 * @param stringBuilder The data to escape.
+	 * @param start The starting index to escape, inclusive; escaping will continue to the end of the string.
+	 * @param validCharacters The characters that should not be escaped and all others should be escaped, or <code>null</code> if characters should not be matched
+	 *          against valid characters.
+	 * @param invalidCharacters The characters that, if they appear, should be escaped, or <code>null</code> if characters should not be matched against invalid
+	 *          characters.
+	 * @param maxCharacter The character value that represents the highest non-escaped value.
+	 * @param escapeChar The character to prefix the hex representation.
+	 * @param escapeLength The number of characters to use for the hex representation.
+	 * @param hexCase Whether the hex characters should be lowercase or uppercase.
+	 * @return The string builder, now containing the escaped data.
+	 * @exception IllegalArgumentException if neither valid nor invalid characters are given.
+	 */
+	public static StringBuilder escapeHex(final StringBuilder stringBuilder, final int start, final Characters validCharacters,
+			final Characters invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase) //go to the end
+	{
+		return escapeHex(stringBuilder, start, stringBuilder.length(), validCharacters, invalidCharacters, maxCharacter, escapeChar, escapeLength, hexCase);
+	}
+
+	/**
+	 * Escapes the indicated characters in the string builder using the supplied escape character. All characters are first encoded using UTF-8. Every invalid
+	 * character is converted to its Unicode hex equivalent and prefixed with the given escape character. Characters are assumed to be valid unless specified
+	 * otherwise. The escape character, if encountered, is not escaped unless it specifically meets one of the specified criteria; this allows re-escaping strings
+	 * that may contain escape characters produced under less-strict rules (e.g. a URI containing escaped restricted characters, but still containing non-ASCII
+	 * characters).
+	 * @param stringBuilder The data to escape.
+	 * @param start The starting index to escape, inclusive.
+	 * @param end The ending index to escape, exclusive.
+	 * @param validCharacters The characters that should not be escaped and all others should be escaped, or <code>null</code> if characters should not be matched
+	 *          against valid characters.
+	 * @param invalidCharacters The characters that, if they appear, should be escaped, or <code>null</code> if characters should not be matched against invalid
+	 *          characters.
+	 * @param maxCharacter The character value that represents the highest non-escaped value.
+	 * @param escapeChar The character to prefix the hex representation.
+	 * @param escapeLength The number of characters to use for the hex representation.
+	 * @param hexCase Whether the hex characters should be lowercase or uppercase.
+	 * @return The string builder, now containing the escaped data.
+	 * @exception IllegalArgumentException if neither valid nor invalid characters are given.
+	 */
+	public static StringBuilder escapeHex(final StringBuilder stringBuilder, final int start, final int end, final Characters validCharacters,
+			final Characters invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase)
+	{
+		for(int characterIndex = end - 1; characterIndex >= start; --characterIndex) //work backwards; this keeps us from having a separate variable for the length, but it also makes it simpler to calculate the next position when we swap out characters
 		{
 			final char c = stringBuilder.charAt(characterIndex); //get the current character
 			final boolean encode = (validCharacters != null && !validCharacters.contains(c)) //encode if there is a list of valid characters and this character is not one of them
