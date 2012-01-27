@@ -48,6 +48,12 @@ public class URIsTest extends AbstractTest
 		testPlainEncode(URI.create("http://www.example.com/foo-bar"), "http---www.example.com-foo_2Dbar", uris, encodedURIs); //encoded hyphens
 		testPlainEncode(URI.create("http://www.example.com/foo_bar"), "http---www.example.com-foo_5Fbar", uris, encodedURIs); //encoded underscores
 		testPlainEncode(URI.create("http://www.example.com/foo/bar#fooBar"), "http---www.example.com-foo-bar_23fooBar", uris, encodedURIs); //fragments
+		testPlainEncode(URI.create("http://www.example.com/foo!bar"), "http---www.example.com-foo_21bar", uris, encodedURIs); //non-name character
+		testPlainEncode(URI.create("http://www.example.com/foo%2Abar"), "http---www.example.com-foo_252Abar", uris, encodedURIs); //URI-encoded character
+		for(int i = encodedURIs.size() - 1; i >= 0; --i) //look at the encoded URIs, going backwards only for efficiency
+		{
+			assertThat(URIs.plainDecode(encodedURIs.get(i)), is(uris.get(i))); //make sure they all decode properly
+		}
 	}
 
 	/**

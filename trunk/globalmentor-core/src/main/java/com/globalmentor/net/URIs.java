@@ -28,6 +28,7 @@ import com.globalmentor.log.Log;
 import com.globalmentor.model.NameValuePair;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
+import static com.globalmentor.java.StringBuilders.replace;
 import static com.globalmentor.text.TextFormatter.*;
 
 import com.globalmentor.text.*;
@@ -2558,11 +2559,15 @@ public class URIs
 	public final static char PLAIN_ENCODING_REPLACE_CHAR = '-';
 
 	/** The characters that, at least initially, should not be encoded. Path separators will be replaced with {@value #PLAIN_ENCODING_REPLACE_CHAR}. */
-	protected final static Characters PLAIN_ENCODE_UNRESERVED_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add('.', PATH_SEPARATOR);
+	protected final static Characters PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS = ALPHA_CHARACTERS.add(DIGIT_CHARACTERS).add('.', PATH_SEPARATOR);
+
+	/** The characters that are allowed in a URI plain encoding. */
+	public final static Characters PLAIN_ENCODE_CHARACTERS = PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS.remove(PATH_SEPARATOR).add(PLAIN_ENCODING_ESCAPE_CHAR,
+			PLAIN_ENCODING_REPLACE_CHAR);
 
 	/**
-	 * Encodes an absolute URI into a plain string that is safe to be used in the path of another URI, for example. The resulting string will also be a valid XML
-	 * name.
+	 * Encodes an absolute URI into a plain string that is safe to be used in the path of another URI, for example. The resulting string will only contain
+	 * {@link #PLAIN_ENCODE_CHARACTERS}, making it also be a valid XML name.
 	 * 
 	 * <ol>
 	 * <li>The scheme separator character {@value #SCHEME_SEPARATOR} is replaced with {@value #PLAIN_ENCODING_REPLACE_CHAR}.</li>
@@ -2576,6 +2581,7 @@ public class URIs
 	 * @param uri The URI to encode
 	 * @return A string representing the plain encoding of the URI.
 	 * @throws IllegalArgumentException if the given URI is not absolute.
+	 * @see #PLAIN_ENCODE_CHARACTERS
 	 */
 	public static String plainEncode(final URI uri)
 	{
@@ -2585,13 +2591,33 @@ public class URIs
 		final String uriString = uri.toASCIIString(); //start with the real string form of the URI
 		final StringBuilder stringBuilder = new StringBuilder(); //do the processing within a string builder
 		stringBuilder.append(scheme); //encode the scheme first
-		StringBuilders.escapeHex(stringBuilder, PLAIN_ENCODE_UNRESERVED_CHARACTERS, null, Integer.MAX_VALUE, PLAIN_ENCODING_ESCAPE_CHAR, 2, Case.UPPERCASE); //escape the scheme
+		StringBuilders.escapeHex(stringBuilder, PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS, null, Integer.MAX_VALUE, PLAIN_ENCODING_ESCAPE_CHAR, 2, Case.UPPERCASE); //escape the scheme
 		stringBuilder.append(PLAIN_ENCODING_REPLACE_CHAR); //append a '-' in place of ':'
 		final int encodedSchemeLength = stringBuilder.length();
 		stringBuilder.append(uriString, schemeLength + 1, uriString.length()); //append the rest of the URI
-		StringBuilders.escapeHex(stringBuilder, encodedSchemeLength + 1, PLAIN_ENCODE_UNRESERVED_CHARACTERS, null, Integer.MAX_VALUE, PLAIN_ENCODING_ESCAPE_CHAR,
-				2, Case.UPPERCASE); //escape the rest of the URI (after the encoded scheme)
+		StringBuilders.escapeHex(stringBuilder, encodedSchemeLength + 1, PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS, null, Integer.MAX_VALUE,
+				PLAIN_ENCODING_ESCAPE_CHAR, 2, Case.UPPERCASE); //escape the rest of the URI (after the encoded scheme)
 		StringBuilders.replace(stringBuilder, PATH_SEPARATOR, PLAIN_ENCODING_REPLACE_CHAR); //replace the path characters with '-'
 		return stringBuilder.toString(); //at this point, the remaining bare '-' characters will represent '/', except for the first one, which represents ':'
+	}
+
+	/**
+	 * Decodes a plain-encoded URI.
+	 * @param string The string containing the plain-encoded URI.
+	 * @return The decoded URI.
+	 * @throws IllegalArgumentException if the given string is not a plain-encoded URI.
+	 */
+	public static URI plainDecode(final String string)
+	{
+		final StringBuilder stringBuilder = new StringBuilder(string); //start processing in a string builder
+		final int replaceIndex = indexOf(stringBuilder, PLAIN_ENCODING_REPLACE_CHAR); //get the first '-'
+		if(replaceIndex < 0) //if there is no '-', there can't be a ':', meaning the original URI was not absolute
+		{
+			throw new IllegalArgumentException("String " + string + " does not represent a valid plain-encoded absolute URI.");
+		}
+		stringBuilder.setCharAt(replaceIndex, SCHEME_SEPARATOR); //put ':' back where it belongs
+		replace(stringBuilder, PLAIN_ENCODING_REPLACE_CHAR, PATH_SEPARATOR); //the rest of the replacement characters represent path separators
+		final String decodedString = unescapeHex(stringBuilder, PLAIN_ENCODING_ESCAPE_CHAR, 2); //unescape the string using two escape hex digits
+		return URI.create(decodedString); //create and return a URI from the resulting string
 	}
 }
