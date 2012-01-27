@@ -23,12 +23,11 @@ import com.globalmentor.collections.*;
 import com.globalmentor.io.*;
 
 import com.globalmentor.java.Characters;
-import com.globalmentor.java.StringBuilders;
 import com.globalmentor.log.Log;
 import com.globalmentor.model.NameValuePair;
 import static com.globalmentor.java.CharSequences.*;
 import static com.globalmentor.java.Objects.*;
-import static com.globalmentor.java.StringBuilders.replace;
+import static com.globalmentor.java.StringBuilders.*;
 import static com.globalmentor.text.TextFormatter.*;
 
 import com.globalmentor.text.*;
@@ -2576,7 +2575,7 @@ public class URIs
 	 * {@value #PLAIN_ENCODING_ESCAPE_CHAR} as the escape character.</li>
 	 * </ol>
 	 * <p>
-	 * This implementation, following the recommendation in RFC 3986, ensures that all hexadecimal escape codes are in uppercase.
+	 * This implementation ensures that all hexadecimal escape codes are in lowercase.
 	 * </p>
 	 * @param uri The URI to encode
 	 * @return A string representing the plain encoding of the URI.
@@ -2591,13 +2590,14 @@ public class URIs
 		final String uriString = uri.toASCIIString(); //start with the real string form of the URI
 		final StringBuilder stringBuilder = new StringBuilder(); //do the processing within a string builder
 		stringBuilder.append(scheme); //encode the scheme first
-		StringBuilders.escapeHex(stringBuilder, PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS, null, Integer.MAX_VALUE, PLAIN_ENCODING_ESCAPE_CHAR, 2, Case.UPPERCASE); //escape the scheme
+		escapeHex(stringBuilder, PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS, null, Integer.MAX_VALUE, PLAIN_ENCODING_ESCAPE_CHAR, 2, Case.LOWERCASE); //escape the scheme
 		stringBuilder.append(PLAIN_ENCODING_REPLACE_CHAR); //append a '-' in place of ':'
 		final int encodedSchemeLength = stringBuilder.length();
 		stringBuilder.append(uriString, schemeLength + 1, uriString.length()); //append the rest of the URI
-		StringBuilders.escapeHex(stringBuilder, encodedSchemeLength + 1, PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS, null, Integer.MAX_VALUE,
-				PLAIN_ENCODING_ESCAPE_CHAR, 2, Case.UPPERCASE); //escape the rest of the URI (after the encoded scheme)
-		StringBuilders.replace(stringBuilder, PATH_SEPARATOR, PLAIN_ENCODING_REPLACE_CHAR); //replace the path characters with '-'
+		//TODO normalize existing hex escape values to lowercase
+		escapeHex(stringBuilder, encodedSchemeLength + 1, PLAIN_ENCODE_INITIAL_UNRESERVED_CHARACTERS, null, Integer.MAX_VALUE, PLAIN_ENCODING_ESCAPE_CHAR, 2,
+				Case.LOWERCASE); //escape the rest of the URI (after the encoded scheme)
+		replace(stringBuilder, PATH_SEPARATOR, PLAIN_ENCODING_REPLACE_CHAR); //replace the path characters with '-'
 		return stringBuilder.toString(); //at this point, the remaining bare '-' characters will represent '/', except for the first one, which represents ':'
 	}
 

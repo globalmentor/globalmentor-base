@@ -1,5 +1,5 @@
 /*
- * Copyright © 2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 import java.net.URI;
 import java.util.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.globalmentor.test.AbstractTest;
@@ -34,6 +35,17 @@ import com.globalmentor.test.AbstractTest;
 public class URIsTest extends AbstractTest
 {
 
+	/** Illustrates a bug in the JDK in which {@link URI#hashCode()} does not meet it obligations in regard to {@link URI#equals(Object)}. */
+	@Test
+	@Ignore
+	public void testURIHashCode()
+	{
+		final URI uri1 = URI.create("http://www.example.com/foo%2Abar");
+		final URI uri2 = URI.create("http://www.example.com/foo%2abar");
+		assertThat("URIs are not equal.", uri1, equalTo(uri2));
+		assertThat("Equal URIs do not have same hash code.", uri1.hashCode(), equalTo(uri2.hashCode()));
+	}
+
 	/**
 	 * Tests plain encoding of URIs.
 	 * @see URIs#plainEncode(URI)
@@ -44,9 +56,9 @@ public class URIsTest extends AbstractTest
 		final List<URI> uris = new ArrayList<URI>();
 		final List<String> encodedURIs = new ArrayList<String>();
 		testPlainEncode(URI.create("http://www.example.com/foo/bar"), "http---www.example.com-foo-bar", uris, encodedURIs); //simple URI
-		testPlainEncode(URI.create("x-foo.bar://www.example.com/foo/bar"), "x_2Dfoo.bar---www.example.com-foo-bar", uris, encodedURIs); //non-simple scheme
-		testPlainEncode(URI.create("http://www.example.com/foo-bar"), "http---www.example.com-foo_2Dbar", uris, encodedURIs); //encoded hyphens
-		testPlainEncode(URI.create("http://www.example.com/foo_bar"), "http---www.example.com-foo_5Fbar", uris, encodedURIs); //encoded underscores
+		testPlainEncode(URI.create("x-foo.bar://www.example.com/foo/bar"), "x_2dfoo.bar---www.example.com-foo-bar", uris, encodedURIs); //non-simple scheme
+		testPlainEncode(URI.create("http://www.example.com/foo-bar"), "http---www.example.com-foo_2dbar", uris, encodedURIs); //encoded hyphens
+		testPlainEncode(URI.create("http://www.example.com/foo_bar"), "http---www.example.com-foo_5fbar", uris, encodedURIs); //encoded underscores
 		testPlainEncode(URI.create("http://www.example.com/foo/bar#fooBar"), "http---www.example.com-foo-bar_23fooBar", uris, encodedURIs); //fragments
 		testPlainEncode(URI.create("http://www.example.com/foo!bar"), "http---www.example.com-foo_21bar", uris, encodedURIs); //non-name character
 		testPlainEncode(URI.create("http://www.example.com/foo%2Abar"), "http---www.example.com-foo_252Abar", uris, encodedURIs); //URI-encoded character
