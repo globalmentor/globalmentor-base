@@ -40,7 +40,7 @@ public class CharSequences
 	 * @param start The start to check, inclusive.
 	 * @param end The end to check, exclusive.
 	 * @return The given character sequence.
-	 * @throws StringIndexOutOfBoundsException if <code>start</code> or <code>end</code> are negative or greater than <code>length()</code>, or <code>start</code>
+	 * @throws StringIndexOutOfBoundsException if <code>start</code> or <code>end</code> is negative or greater than <code>length()</code>, or <code>start</code>
 	 *           is greater than <code>end</code>.
 	 */
 	public static CharSequence checkBounds(final CharSequence charSequence, final int start, final int end)
@@ -223,6 +223,47 @@ public class CharSequences
 			}
 		}
 		return false; //we found no non-whitespace
+	}
+
+	/**
+	 * Searches the given character sequence for one of the given tokens, separated by the given delimiters.
+	 * @param charSequence The character sequence to search.
+	 * @param delimiters The delimiters to skip.
+	 * @param tokens The tokens for which to check.
+	 * @return The <code>true</code> if one of the given tokens was found.
+	 * @throws NullPointerException if the given character sequence, delimiters, and/or tokens is <code>null</code>.
+	 */
+	public static boolean containsToken(final CharSequence charSequence, final Characters delimiters, final CharSequence... tokens)
+	{
+		return getToken(charSequence, delimiters, tokens) != null;
+	}
+
+	/**
+	 * Searches the given character sequence for one of the given tokens, separated by the given delimiters.
+	 * @param charSequence The character sequence to search.
+	 * @param delimiters The delimiters to skip.
+	 * @param tokens The tokens for which to check.
+	 * @return The token that was found, or <code>null</code> if no token was found.
+	 * @throws NullPointerException if the given character sequence, delimiters, and/or tokens is <code>null</code>.
+	 */
+	public static CharSequence getToken(final CharSequence charSequence, final Characters delimiters, final CharSequence... tokens)
+	{
+		final int length = charSequence.length();
+		for(int i = 0; i < length; ++i) //look through the sequence
+		{
+			if(delimiters.contains(charSequence.charAt(i))) //skip delimiters
+			{
+				continue;
+			}
+			for(final CharSequence token : tokens) //look at each token
+			{
+				if(equals(token, charSequence, i, i + token.length())) //if this token equals the characters starting at the current position
+				{
+					return token;
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -1193,14 +1234,16 @@ public class CharSequences
 	}
 
 	/**
-	 * Compares the characters in one character sequence with characters in another character sequence.
+	 * Compares the characters in one character sequence with characters in another character sequence. If the given end of the second character sequence (the
+	 * character sequence to which the first is being compared) is past the end, it is adjusted to be equal to the end of the second character sequence.
 	 * @param charSequence1 The character sequence to compare.
 	 * @param charSequence2 The character sequence to compare with.
 	 * @param start The starting location in the second character sequence, inclusive.
 	 * @param end The ending location in the second character sequence, exclusive.
 	 * @return <code>true</code> if the characters in the first character sequence equal the indicated characters in the second character sequence.
-	 * @throws StringIndexOutOfBoundsException if <code>start</code> or <code>end</code> are negative or greater than <code>length()</code>, or <code>start</code>
-	 *           is greater than <code>end</code>.
+	 * @throws StringIndexOutOfBoundsException if <code>start</code> or <code>end</code> is negative or greater than <code>length()</code>, or <code>start</code>
+	 *           is greater than <code>end</code>, with the exception that if <code>end</code> is greater than the length of the second character sequence it will
+	 *           be adjusted to equal the end.
 	 */
 	public static boolean equals(final CharSequence charSequence1, final CharSequence charSequence2, final int start, final int end)
 	{
@@ -1208,7 +1251,8 @@ public class CharSequences
 	}
 
 	/**
-	 * Compares characters in one character sequence with characters in another character sequence.
+	 * Compares characters in one character sequence with characters in another character sequence. If the given end of the second character sequence (the
+	 * character sequence to which the first is being compared) is past the end, it is adjusted to be equal to the end of the second character sequence.
 	 * @param charSequence1 The character sequence to compare.
 	 * @param start1 The starting location in the first character sequence, inclusive.
 	 * @param end1 The ending location in the first character sequence, exclusive.
@@ -1216,13 +1260,18 @@ public class CharSequences
 	 * @param start2 The starting location in the second character sequence, inclusive.
 	 * @param end2 The ending location in the second character sequence, exclusive.
 	 * @return <code>true</code> if the indicated characters in the first character sequence equal the indicated characters in the second character sequence.
-	 * @throws StringIndexOutOfBoundsException if <code>start</code> or <code>end</code> are negative or greater than <code>length()</code>, or <code>start</code>
-	 *           is greater than <code>end</code>.
+	 * @throws StringIndexOutOfBoundsException if <code>start</code> or <code>end</code> is negative or greater than <code>length()</code>, or <code>start</code>
+	 *           is greater than <code>end</code>, with the exception that if <code>end2</code> is greater than the length of the second character sequence it
+	 *           will be adjusted to equal the end.
 	 */
-	public static boolean equals(final CharSequence charSequence1, final int start1, final int end1, final CharSequence charSequence2, final int start2,
-			final int end2)
+	public static boolean equals(final CharSequence charSequence1, final int start1, final int end1, final CharSequence charSequence2, final int start2, int end2)
 	{
 		checkBounds(charSequence1, start1, end1);
+		final int length2 = charSequence2.length();
+		if(end2 > length2)
+		{
+			end2 = length2;
+		}
 		checkBounds(charSequence2, start2, end2);
 		if((end2 - start2) != (end1 - start1)) //if the counts differ
 		{

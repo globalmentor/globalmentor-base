@@ -16,6 +16,8 @@
 
 package com.globalmentor.io;
 
+import static com.globalmentor.net.ContentType.*;
+
 import com.globalmentor.net.ContentType;
 
 /**
@@ -26,13 +28,14 @@ public class Audio
 {
 
 	/**
-	 * The content type for an Ogg Vorbis file: <code>application/ogg</code>.
-	 * @see <a href="http://www.ietf.org/rfc/rfc3534.txt">RFC 3534</a>
+	 * The content type for an Ogg Vorbis file: <code>audio/ogg</code>.
+	 * @see <a href="http://www.ietf.org/rfc/rfc5334.txt">RFC 5334</a>
+	 * @see <a href="http://wiki.xiph.org/MIME_Types_and_File_Extensions">MIME Types and File Extensions</a>
 	 */
-	public static final ContentType OGG_CONTENT_TYPE = ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "ogg"); //TODO update to audio/ogg from http://wiki.xiph.org/MIME_Types_and_File_Extensions
+	public static final ContentType OGG_VORBIS_CONTENT_TYPE = ContentType.getInstance(AUDIO_PRIMARY_TYPE, "ogg");
 
 	/** The content type for MP3: <code>audio/mpeg</code>. */
-	public static final ContentType MPEG_CONTENT_TYPE = ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, "mpeg");
+	public static final ContentType MPEG_CONTENT_TYPE = ContentType.getInstance(AUDIO_PRIMARY_TYPE, "mpeg");
 
 	/** The name extension for audio files. */
 	public final static String AU_NAME_EXTENSION = "au";
@@ -62,16 +65,23 @@ public class Audio
 	 * </ul>
 	 * @param mediaType The content type to examine.
 	 * @return <code>true</code> if the content type represents audio.
+	 * @see <a href="http://www.ietf.org/rfc/rfc5334.txt">RFC 5334</a>
+	 * @see <a href="http://www.ietf.org/rfc/rfc3534.txt">RFC 3534</a>
+	 * @see <a href="http://wiki.xiph.org/MIME_Types_and_File_Extensions">MIME Types and File Extensions</a>
 	 */
 	public static boolean isAudio(final ContentType mediaType)
 	{
 		final String topLevelType = mediaType.getPrimaryType(); //get the content type top-level type
 		if(ContentType.AUDIO_PRIMARY_TYPE.equals(topLevelType)) //if this is a top-level audio content type
+		{
 			return true; //this is an audio content type
+		}
 		if(ContentType.APPLICATION_PRIMARY_TYPE.equals(topLevelType)) //if this is an application type
 		{
-			if(OGG_CONTENT_TYPE.getSubType().equals(mediaType.getSubType())) //if this is application/ogg
+			if(OGG_VORBIS_CONTENT_TYPE.getSubType().equals(mediaType.getSubType())) //if this is application/ogg
+			{
 				return true; //this is an Ogg Vorbis  audio file
+			}
 		}
 		return false; //we didn't recognize the type as an audio type
 	}

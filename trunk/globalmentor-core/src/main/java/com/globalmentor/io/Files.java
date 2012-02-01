@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-201 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -179,7 +179,7 @@ public class Files
 		tempFileExtensionContentTypeMap.put(Audio.MP3_NAME_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, MPEG_SUBTYPE)); //RFC 3003
 		tempFileExtensionContentTypeMap.put(Video.MPEG_NAME_EXTENSION, ContentType.getInstance(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Video.MPG_NAME_EXTENSION, ContentType.getInstance(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Audio.OGG_NAME_EXTENSION, Audio.OGG_CONTENT_TYPE); //application/ogg (RFC 3534)
+		tempFileExtensionContentTypeMap.put(Audio.OGG_NAME_EXTENSION, Audio.OGG_VORBIS_CONTENT_TYPE); //audio/ogg (RFC 5334)
 		tempFileExtensionContentTypeMap.put(OEB.OEB1_PACKAGE_NAME_EXTENSION,
 				ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, OEB.X_OEB1_PACKAGE_XML_SUBTYPE)); //opf
 		tempFileExtensionContentTypeMap.put(PDF_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, PDF_SUBTYPE)); //pdf
