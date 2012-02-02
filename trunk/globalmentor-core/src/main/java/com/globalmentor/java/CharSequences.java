@@ -18,6 +18,7 @@ package com.globalmentor.java;
 
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.io.Charsets.*;
+import static java.lang.Math.*;
 
 import java.util.Collection;
 
@@ -83,7 +84,9 @@ public class CharSequences
 		for(int i = index; i < charSequence.length(); ++i) //look at each character in the sequence
 		{
 			if(characters.contains(charSequence.charAt(i))) //if this character is in our characters
+			{
 				return i; //return the index we're at
+			}
 		}
 		return -1; //if we make it to here, we didn't find any of the characters
 	}
@@ -257,7 +260,8 @@ public class CharSequences
 			}
 			for(final CharSequence token : tokens) //look at each token
 			{
-				if(equals(token, charSequence, i, i + token.length())) //if this token equals the characters starting at the current position
+				final int tokenEnd = min(i + token.length(), length); //find where the end of the token would be
+				if(equals(token, charSequence, i, tokenEnd) && (tokenEnd == length || delimiters.contains(charSequence.charAt(tokenEnd)))) //if this token equals the characters starting at the current position and ends with a delimiter or the end of the sequence
 				{
 					return token;
 				}
@@ -1268,7 +1272,7 @@ public class CharSequences
 	{
 		checkBounds(charSequence1, start1, end1);
 		final int length2 = charSequence2.length();
-		if(end2 > length2)
+		if(end2 > length2) //adjust the second character sequence's end if needed
 		{
 			end2 = length2;
 		}
