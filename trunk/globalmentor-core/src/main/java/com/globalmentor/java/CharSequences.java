@@ -1292,9 +1292,21 @@ public class CharSequences
 	}
 
 	/**
+	 * Turns a null character sequence into an empty character sequence.
+	 * @param charSequence The character sequence to examine, or <code>null</code>.
+	 * @return The given character sequence, or an empty character sequence if the given character sequence is <code>null</code>;.
+	 * @see #nullify(CharSequence)
+	 */
+	public static CharSequence denull(final CharSequence charSequence)
+	{
+		return charSequence != null ? charSequence : "";
+	}
+
+	/**
 	 * Turns an empty character sequence into <code>null</code>.
 	 * @param charSequence The character sequence to examine, or <code>null</code>.
 	 * @return The given character sequence, or <code>null</code> if the given character sequence has no characters or no character sequence was given.
+	 * @see #denull(CharSequence)
 	 */
 	public static <CS extends CharSequence> CS nullify(final CS charSequence)
 	{

@@ -281,7 +281,7 @@ public class ASCII
 	 * @param charSequence The character sequence containing the text to convert.
 	 * @return A character sequence containing the converted text.
 	 */
-	final CharSequence toLowerCase(final CharSequence charSequence)
+	public static CharSequence toLowerCase(final CharSequence charSequence)
 	{
 		final int end = charSequence.length();
 		for(int i = 0; i < end; ++i) //look at each character
@@ -303,7 +303,7 @@ public class ASCII
 	 * @param stringBuilder The string builder containing the text to convert.
 	 * @return The string builder after the conversions.
 	 */
-	final StringBuilder toLowerCase(final StringBuilder stringBuilder)
+	public static StringBuilder toLowerCase(final StringBuilder stringBuilder)
 	{
 		return toLowerCase(stringBuilder, 0, stringBuilder.length());
 	}
@@ -318,7 +318,7 @@ public class ASCII
 	 * @param end The ending position, exclusive.
 	 * @return The string builder after the conversions.
 	 */
-	final StringBuilder toLowerCase(final StringBuilder stringBuilder, final int start, final int end)
+	public static StringBuilder toLowerCase(final StringBuilder stringBuilder, final int start, final int end)
 	{
 		for(int i = start; i < end; ++i) //look at each character
 		{
@@ -339,7 +339,7 @@ public class ASCII
 	 * @param charSequence The character sequence containing the text to convert.
 	 * @return A character sequence containing the converted text.
 	 */
-	final CharSequence toUpperCase(final CharSequence charSequence)
+	public static CharSequence toUpperCase(final CharSequence charSequence)
 	{
 		final int end = charSequence.length();
 		for(int i = 0; i < end; ++i) //look at each character
@@ -361,7 +361,7 @@ public class ASCII
 	 * @param stringBuilder The string builder containing the text to convert.
 	 * @return The string builder after the conversions.
 	 */
-	final StringBuilder toUpperCase(final StringBuilder stringBuilder)
+	public static StringBuilder toUpperCase(final StringBuilder stringBuilder)
 	{
 		return toUpperCase(stringBuilder, 0, stringBuilder.length());
 	}
@@ -376,7 +376,7 @@ public class ASCII
 	 * @param end The ending position, exclusive.
 	 * @return The string builder after the conversions.
 	 */
-	final StringBuilder toUpperCase(final StringBuilder stringBuilder, final int start, final int end)
+	public static StringBuilder toUpperCase(final StringBuilder stringBuilder, final int start, final int end)
 	{
 		for(int i = start; i < end; ++i) //look at each character
 		{

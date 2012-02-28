@@ -231,7 +231,7 @@ public class SOAP
 						|| XML.XMLNS_NAMESPACE_PREFIX.equals(attribute.getLocalName()) //or if this is the xmlns attribute being defined (e.g. xmlns="")
 						|| attribute.getNamespaceURI()==null)  //if the attribute has no namespace at all
 				{
-					soapElement.addAttribute(soapEnvelope.createName(XML.createQualifiedName(attribute.getPrefix(), attribute.getLocalName())), attribute.getValue());
+					soapElement.addAttribute(soapEnvelope.createName(XML.createQName(attribute.getPrefix(), attribute.getLocalName())), attribute.getValue());
 				}
 				else
 				{
@@ -361,7 +361,7 @@ public class SOAP
 	{
 		final Name soapParentElementName=soapParentElement.getElementName();  //get the name object of the element body
 		//create a qualified name for the document root element
-		final String documentElementQualifiedName=XML.createQualifiedName(soapParentElementName.getPrefix(), soapParentElementName.getLocalName());
+		final String documentElementQualifiedName=XML.createQName(soapParentElementName.getPrefix(), soapParentElementName.getLocalName());
 		final Document document=domImplementation.createDocument(soapParentElementName.getURI(), documentElementQualifiedName, null);	//create a document with the same element name as the SOAP body
 		final Element rootElement=document.getDocumentElement();	//get the document element
 		final Iterator soapElementIterator=soapParentElement.getChildElements(); //get an iterator to all SOAP body elements

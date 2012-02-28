@@ -112,15 +112,15 @@ public class XPackage
 	public static Document createDefaultXPackageDocument(final DOMImplementation domImplementation)
 	{
 		  //create an XPackage package description document
-		final Document document=domImplementation.createDocument(XPACKAGE_NAMESPACE_URI.toString(), XML.createQualifiedName(XPACKAGE_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION), null);
+		final Document document=domImplementation.createDocument(XPACKAGE_NAMESPACE_URI.toString(), XML.createQName(XPACKAGE_NAMESPACE_PREFIX, ELEMENT_DESCRIPTION), null);
 		  //get the xpackage:description element
 		final Element descriptionElement=document.getDocumentElement();
 		  //add the RDF namespace declaration prefix, xmlns:rdf
-		descriptionElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XML.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, RDF_NAMESPACE_PREFIX), RDF_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XML.createQName(XML.XMLNS_NAMESPACE_PREFIX, RDF_NAMESPACE_PREFIX), RDF_NAMESPACE_URI.toString());
 		  //add the XPackage namespace declaration prefix, xmlns:xpackage
-		descriptionElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XML.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, XPACKAGE_NAMESPACE_PREFIX), XPACKAGE_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XML.createQName(XML.XMLNS_NAMESPACE_PREFIX, XPACKAGE_NAMESPACE_PREFIX), XPACKAGE_NAMESPACE_URI.toString());
 		  //add the XLink namespace declaration prefix, xmlns:xlink
-		descriptionElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XML.createQualifiedName(XML.XMLNS_NAMESPACE_PREFIX, XLink.XLINK_NAMESPACE_PREFIX), XLink.XLINK_NAMESPACE_URI.toString());
+		descriptionElement.setAttributeNS(XML.XMLNS_NAMESPACE_URI.toString(), XML.createQName(XML.XMLNS_NAMESPACE_PREFIX, XLink.XLINK_NAMESPACE_PREFIX), XLink.XLINK_NAMESPACE_URI.toString());
 		final Element rdfElement=RDFXMLGenerator.createRDFElement(document);  //create an <rdf:RDF> element
 		descriptionElement.appendChild(rdfElement);	//add the RDF element to the document
 		return document;  //return the document we created

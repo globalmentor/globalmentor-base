@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,21 +49,18 @@ public class Text
 	 * The string representing the CR EOL character sequence.
 	 * @see {@link Characters#CARRIAGE_RETURN_CHAR}
 	 */
-	@Deprecated
 	public final static String CARRIAGE_RETURN_STRING = new StringBuilder().append(CARRIAGE_RETURN_CHAR).toString();
 
 	/**
 	 * The string representing the LF EOL character sequence.
 	 * @see {@link Characters#LINE_FEED_CHAR}
 	 */
-	@Deprecated
 	public final static String LINE_FEED_STRING = new StringBuilder().append(LINE_FEED_CHAR).toString();
 
 	/**
 	 * The pattern that can split a line based upon linefeeds.
 	 * @see {@link Characters#LINE_FEED_CHAR}
 	 */
-	@Deprecated
 	public final static Pattern LINE_FEED_PATTERN = Pattern.compile(LINE_FEED_STRING);
 
 	/**
@@ -71,7 +68,6 @@ public class Text
 	 * @see {@link Characters#CARRIAGE_RETURN_CHAR}
 	 * @see {@link Characters#LINE_FEED_CHAR}
 	 */
-	@Deprecated
 	public final static String CRLF_STRING = CARRIAGE_RETURN_STRING + LINE_FEED_STRING;
 
 	/**
@@ -143,7 +139,7 @@ public class Text
 	 * ISO/IEC 6429.
 	 * @param string The string from which a control string will be created.
 	 * @return An ECMA-48 control string with the given string as its content.
-	 * @exception NullPointerException if the given string is <code>null</code>.
+	 * @throws NullPointerException if the given string is <code>null</code>.
 	 * @see <a href="http://www.ecma-international.org/publications/standards/Ecma-048.htm">ECMA-48: Control Functions for Coded Character Sets</a>
 	 */
 	public final static String createControlString(final String string)
@@ -188,7 +184,7 @@ public class Text
 	 * @param oldEncoding The encoding used to create the string originally.
 	 * @param newEncoding The new encoding to use when creating the string.
 	 * @return The a string created from encoding the characters in the specified new encoding.
-	 * @exception UnsupportedEncodingException Thrown if either the old encoding or the new encoding is not supported.
+	 * @throws UnsupportedEncodingException Thrown if either the old encoding or the new encoding is not supported.
 	 */
 	public static String recode(final String string, final String oldEncoding, final String newEncoding) throws UnsupportedEncodingException
 	{
@@ -202,7 +198,7 @@ public class Text
 	 * @param restricted The characters to be escaped; should not include the escape character.
 	 * @param escape The character used to escape the restricted characters.
 	 * @return A string containing the escaped data.
-	 * @exception NullPointerException if the given character sequence is <code>null</code>.
+	 * @throws NullPointerException if the given character sequence is <code>null</code>.
 	 */
 	public static String escape(final CharSequence charSequence, final Characters restricted, final char escape) //TODO consolidate either in CharSequences or Formatter
 	{
@@ -219,7 +215,7 @@ public class Text
 	 * @param restricted The characters to be escaped; should not include the escape character.
 	 * @param escape The character used to escape the restricted characters.
 	 * @return A string containing the escaped data.
-	 * @exception NullPointerException if the given string builder is <code>null</code>.
+	 * @throws NullPointerException if the given string builder is <code>null</code>.
 	 */
 	public static StringBuilder escape(final StringBuilder stringBuilder, final Characters restricted, final char escape)
 	{
@@ -234,7 +230,7 @@ public class Text
 	 * @param escape The character used to escape the restricted characters.
 	 * @param escapeEscape <code>true</code> if the escape character should also be escaped.
 	 * @return A string containing the escaped data.
-	 * @exception NullPointerException if the given string builder is <code>null</code>.
+	 * @throws NullPointerException if the given string builder is <code>null</code>.
 	 */
 	public static StringBuilder escape(final StringBuilder stringBuilder, final Characters restricted, final char escape, final boolean escapeEscape)
 	{
@@ -252,9 +248,9 @@ public class Text
 	/**
 	 * Normalizes end-of-line sequences in the character sequence to the given . The following sequences are normalized to the provided EOL:
 	 * <ul>
-	 * <li>CR</li>
-	 * <li>LF</li>
-	 * <li>CRLF</li>
+	 * <li><code>CR</code></li>
+	 * <li><code>LF</code></li>
+	 * <li><code>CRLF</code></li>
 	 * </ul>
 	 * @param charSequence The character sequence to normalize.
 	 * @param eol The end of line characters to which to normalize the ends of lines.
