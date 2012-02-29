@@ -135,8 +135,40 @@ public class Lists
 	}
 
 	/**
+	 * Creates and returns a mutable list containing the contents of the given iterator with the additional elements, if any.
+	 * @param iterator The iterator a list of the contents of which should be returned.
+	 * @param elements The additional elements, if any, to add to the list.
+	 * @return A mutable list containing the indicated elements.
+	 */
+	public static <E> List<E> listOf(final Iterator<E> iterator, final E... elements)
+	{
+		final List<E> list = new ArrayList<E>();
+		Collections.addAll(list, iterator);
+		java.util.Collections.addAll(list, elements);
+		return list;
+	}
+
+	/**
+	 * Creates and returns a mutable list containing the contents of the given iterable with the additional elements, if any.
+	 * @param iterable The iterable a list of the contents of which should be returned.
+	 * @param elements The additional elements, if any, to add to the list.
+	 * @return A mutable list containing the indicated elements.
+	 */
+	public static <E> List<E> listOf(final Iterable<E> iterable, final E... elements)
+	{
+		final List<E> list = new ArrayList<E>();
+		Collections.addAll(list, iterable);
+		java.util.Collections.addAll(list, elements);
+		return list;
+	}
+
+	/**
 	 * Returns a list to represent the given iterable. If the given iterable is a {@link List}, it will be returned. If the given iterable is not a {@link List},
 	 * a temporary list will be created and filled with the contents of the given iterable.
+	 * <p>
+	 * In most cases the returned list should not be modified, as there are no guarantees of whether the list will be backed by existing data or whether the list
+	 * will even be mutable.
+	 * </p>
 	 * @param <T> The type of elements contained in the iterable.
 	 * @param iterable The iterable of elements.
 	 * @return A list containing the elements of the given iterable.
