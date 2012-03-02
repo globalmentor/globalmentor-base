@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,10 @@ package com.globalmentor.java;
 
 import java.util.EnumSet;
 
+import com.globalmentor.text.ASCII;
+
 import static com.globalmentor.java.Java.*;
+import static com.globalmentor.java.StringBuilders.*;
 
 /**
  * Utilities for working with enums.
@@ -34,7 +37,7 @@ public class Enums
 	 * @param enumClass The enum class.
 	 * @param enumElements The elements to be contained in the set.
 	 * @return A set of enums containing the given enum values.
-	 * @exception NullPointerException if the given enum class and/or enum elements is <code>null</code>.
+	 * @throws NullPointerException if the given enum class and/or enum elements is <code>null</code>.
 	 */
 	public static <E extends Enum<E>> EnumSet<E> createEnumSet(final Class<E> enumClass, final E... enumElements)
 	{
@@ -55,11 +58,14 @@ public class Enums
 	 */
 	public static <E extends Enum<E>> String getSerializationName(final E e)
 	{
-		return e.name().toLowerCase().replace('_', '-'); //convert the name to lowercase and replace underscores with hyphens
+		final StringBuilder stringBuilder = new StringBuilder(e.name()); //start with the name of the enum
+		ASCII.toLowerCase(stringBuilder); //convert the name to lowercase (enums names will only consist of ASCII characters)
+		replace(stringBuilder, '_', '-'); //replace underscores with hyphens
+		return stringBuilder.toString();
 	}
 
 	/**
-	 * Returns the appropriate enum that has been serialized. The name is converted to uppercase and all hypen characters ('-') are replaced by underscores ('_')
+	 * Returns the appropriate enum that has been serialized. The name is converted to uppercase and all hyphen characters ('-') are replaced by underscores ('_')
 	 * in order to determine the original enum name. For example, <code>file-not-found</code> would produce <code>FILE_NOT_FOUND</code>. This method assumes that
 	 * the original enum name does not contain lowercase letters.
 	 * @param enumType The class object of the enum type from which to return an enum.
@@ -72,14 +78,17 @@ public class Enums
 	 */
 	public static <E extends Enum<E>> E getSerializedEnum(final Class<E> enumType, final String serializationName)
 	{
-		return Enum.valueOf(enumType, serializationName.replace('-', '_').toUpperCase()); //convert the the enum name back to its original form and try to retrieve a corresponding enum
+		final StringBuilder stringBuilder = new StringBuilder(serializationName); //start with the serialization name
+		replace(stringBuilder, '-', '_'); //convert hyphens to underscores
+		ASCII.toUpperCase(stringBuilder); //convert the serialization name back to uppercase
+		return Enum.valueOf(enumType, stringBuilder.toString()); //try to retrieve a corresponding enum from the original form of the name
 	}
 
 	/**
 	 * Returns an identifying string for the enum that includes the enum class and the enum name. This ID is useful for resource keys, for example. The ID will be
 	 * in the form <code><var>com.example.EnumClass</var>.<var>NAME</var></code>.
 	 * @param e The enum instance for which to return an ID.
-	 * @exception NullPointerException if the given enum is <code>null</code>.
+	 * @throws NullPointerException if the given enum is <code>null</code>.
 	 * @see Classes#getPropertyName(Class, String)
 	 * @see Enum#getClass()
 	 * @see Enum#name()
@@ -96,7 +105,7 @@ public class Enums
 	 * @param e The enum instance for which to return an ID.
 	 * @param property The name of the enum property, or <code>null</code> if no property is desired.
 	 * @return A string identification of the enum.
-	 * @exception NullPointerException if the given enum is <code>null</code>.
+	 * @throws NullPointerException if the given enum is <code>null</code>.
 	 * @see Classes#getPropertyName(Class, String)
 	 * @see Enum#getClass()
 	 * @see Enum#name()
