@@ -2603,17 +2603,17 @@ public class URIs
 
 	/**
 	 * Decodes a plain-encoded URI.
-	 * @param string The string containing the plain-encoded URI.
+	 * @param charSequence The string containing the plain-encoded URI.
 	 * @return The decoded URI.
 	 * @throws IllegalArgumentException if the given string is not a plain-encoded URI.
 	 */
-	public static URI plainDecode(final String string)
+	public static URI plainDecode(final CharSequence charSequence)
 	{
-		final StringBuilder stringBuilder = new StringBuilder(string); //start processing in a string builder
+		final StringBuilder stringBuilder = new StringBuilder(charSequence); //start processing in a string builder
 		final int replaceIndex = indexOf(stringBuilder, PLAIN_ENCODING_REPLACE_CHAR); //get the first '-'
 		if(replaceIndex < 0) //if there is no '-', there can't be a ':', meaning the original URI was not absolute
 		{
-			throw new IllegalArgumentException("String " + string + " does not represent a valid plain-encoded absolute URI.");
+			throw new IllegalArgumentException("Character sequence " + charSequence + " does not represent a valid plain-encoded absolute URI.");
 		}
 		stringBuilder.setCharAt(replaceIndex, SCHEME_SEPARATOR); //put ':' back where it belongs
 		replace(stringBuilder, PLAIN_ENCODING_REPLACE_CHAR, PATH_SEPARATOR); //the rest of the replacement characters represent path separators
