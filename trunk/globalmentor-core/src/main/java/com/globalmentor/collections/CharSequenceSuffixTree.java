@@ -495,7 +495,7 @@ public class CharSequenceSuffixTree extends AbstractSuffixTree<CharSequenceSuffi
 			}
 			final int compareCount = Math.min(count, getLength()); //find out how many characters to compare; we can't compare more characters than we have
 			final CharSequence edgeCharSequence = getCharSequence(); //we'll compare with the underlying character sequence
-			if(!CharSequences.equals(edgeCharSequence, getStart(), getStart() + count, charSequence, start, start + count)) //compare just this portion; if they don't match
+			if(!CharSequences.equals(edgeCharSequence, getStart(), getStart() + compareCount, charSequence, start, start + compareCount)) //compare just this portion; if they don't match
 			{
 				return false; //there is no other alternative for matching in a suffix tree (there is only one unique path from any given node)
 			}
