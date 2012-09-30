@@ -23,7 +23,9 @@ import com.globalmentor.model.Locales;
 import com.globalmentor.rdf.*;
 import static com.globalmentor.rdf.RDFResources.*;
 import com.globalmentor.text.*;
-import static com.globalmentor.urf.dcmi.DCMI.*;
+
+import static org.urframework.dcmi.DCMI.*;
+
 import com.globalmentor.util.*;
 
 /**Utilities for working with Dublin Core stored in RDF.

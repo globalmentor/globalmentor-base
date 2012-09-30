@@ -33,7 +33,8 @@ import com.globalmentor.net.ContentType;
 import com.globalmentor.rdf.*;
 import com.globalmentor.text.xml.*;
 import com.globalmentor.text.xml.xpath.XPath;
-import static com.globalmentor.urf.dcmi.DCMI.*;
+
+import static org.urframework.dcmi.DCMI.*;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;

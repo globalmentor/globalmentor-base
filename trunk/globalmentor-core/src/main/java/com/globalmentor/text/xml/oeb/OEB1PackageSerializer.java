@@ -31,7 +31,8 @@ import com.globalmentor.rdf.xpackage.XPackage;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.text.xml.XML;
 import static com.globalmentor.text.xml.oeb.OEB.*;
-import static com.globalmentor.urf.dcmi.DCMI.*;
+import static org.urframework.dcmi.DCMI.*;
+
 import com.globalmentor.util.*;
 
 import org.w3c.dom.*;

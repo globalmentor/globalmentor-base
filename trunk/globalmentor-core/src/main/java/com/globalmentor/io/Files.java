@@ -19,6 +19,10 @@ package com.globalmentor.io;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
+import org.urframework.*;
+import org.urframework.maqro.MAQRO;
+
 import static java.util.Collections.*;
 
 import com.globalmentor.event.ProgressListener;
@@ -32,8 +36,6 @@ import com.globalmentor.text.xml.XML;
 import com.globalmentor.text.xml.oeb.OEB;
 import com.globalmentor.text.xml.stylesheets.css.XMLCSS;
 import com.globalmentor.text.xml.xhtml.XHTML;
-import com.globalmentor.urf.*;
-import com.globalmentor.urf.maqro.MAQRO;
 
 import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.java.CharSequences.*;

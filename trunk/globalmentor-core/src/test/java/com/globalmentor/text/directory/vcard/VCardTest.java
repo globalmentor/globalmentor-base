@@ -24,6 +24,8 @@ import static org.junit.Assert.*;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
+import org.urframework.AbstractURFDateTime;
+import org.urframework.URFDateTime;
 
 import com.globalmentor.io.Charsets;
 import com.globalmentor.io.IO;
@@ -31,8 +33,6 @@ import com.globalmentor.itu.TelephoneNumber;
 import com.globalmentor.java.Classes;
 import com.globalmentor.model.LocaledText;
 import com.globalmentor.text.directory.DirectorySerializer;
-import com.globalmentor.urf.AbstractURFDateTime;
-import com.globalmentor.urf.URFDateTime;
 
 /**
  * Tests for correctly reading and writing VCard data.

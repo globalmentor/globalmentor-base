@@ -19,6 +19,10 @@ package com.globalmentor.text.directory.vcard;
 import java.net.*;
 import java.util.*;
 
+import org.urframework.AbstractURFDateTime;
+import org.urframework.URFDate;
+import org.urframework.URFDateTime;
+
 import static com.globalmentor.collections.Collections.*;
 import static java.util.Collections.*;
 
@@ -26,9 +30,6 @@ import com.globalmentor.collections.Collections;
 import com.globalmentor.itu.TelephoneNumber;
 import com.globalmentor.model.LocaledText;
 import com.globalmentor.text.directory.*;
-import com.globalmentor.urf.AbstractURFDateTime;
-import com.globalmentor.urf.URFDate;
-import com.globalmentor.urf.URFDateTime;
 
 /**
  * An object representing a vCard <code>text/directory</code> profile as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC 2426</a>,

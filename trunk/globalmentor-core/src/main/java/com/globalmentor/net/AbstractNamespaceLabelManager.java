@@ -20,6 +20,14 @@ import java.net.URI;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.urframework.URF;
+import org.urframework.content.Content;
+import org.urframework.dcmi.DCMI;
+import org.urframework.foaf.FOAF;
+import org.urframework.maqro.MAQRO;
+import org.urframework.select.Select;
+import org.urframework.vcard.VCard;
+
 import static java.util.Collections.*;
 
 import static com.globalmentor.java.Objects.*;
@@ -39,13 +47,6 @@ import com.globalmentor.text.xml.oeb.OEB;
 import com.globalmentor.text.xml.schema.XMLSchema;
 import com.globalmentor.text.xml.xhtml.XHTML;
 import com.globalmentor.text.xml.xlink.XLink;
-import com.globalmentor.urf.URF;
-import com.globalmentor.urf.content.Content;
-import com.globalmentor.urf.dcmi.DCMI;
-import com.globalmentor.urf.foaf.FOAF;
-import com.globalmentor.urf.maqro.MAQRO;
-import com.globalmentor.urf.select.Select;
-import com.globalmentor.urf.vcard.VCard;
 
 /**Map managing namespace URIs and labels for serialization.
 Mapping labels to the <code>null</code> namespace or to the <code>null</code> label is allowed.

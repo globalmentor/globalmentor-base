@@ -20,6 +20,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import org.urframework.*;
+
 import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.text.ABNF.*;
@@ -28,7 +30,6 @@ import static com.globalmentor.text.directory.Directory.*;
 import com.globalmentor.io.*;
 import com.globalmentor.java.Characters;
 import com.globalmentor.model.*;
-import com.globalmentor.urf.*;
 import com.globalmentor.util.Base64;
 
 /**

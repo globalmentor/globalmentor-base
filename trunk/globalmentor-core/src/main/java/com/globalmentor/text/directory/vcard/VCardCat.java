@@ -23,10 +23,11 @@ import static com.globalmentor.java.Enums.*;
 import java.io.*;
 import java.net.URI;
 
+import org.urframework.dcmi.DCMI;
+
 import com.globalmentor.application.AbstractApplication;
 import com.globalmentor.io.Files;
 import com.globalmentor.log.Log;
-import com.globalmentor.urf.dcmi.DCMI;
 
 /**
  * Application and routines for concatenating the contents of one or more VCards into a single output file.

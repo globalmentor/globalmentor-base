@@ -20,6 +20,9 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import org.urframework.AbstractURFDateTime;
+import org.urframework.URFDateTime;
+
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.text.ABNF.*;
@@ -33,8 +36,6 @@ import com.globalmentor.model.LocaledText;
 import com.globalmentor.model.NameValuePair;
 import com.globalmentor.text.ArgumentSyntaxException;
 import com.globalmentor.text.directory.*;
-import com.globalmentor.urf.AbstractURFDateTime;
-import com.globalmentor.urf.URFDateTime;
 
 /**
  * Class that can create values for the "VCARD" profile of a <code>text/directory</code>as defined in <a href="http://www.ietf.org/rfc/rfc2426.txt">RFC
