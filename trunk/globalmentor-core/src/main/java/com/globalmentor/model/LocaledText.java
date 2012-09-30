@@ -18,7 +18,7 @@ package com.globalmentor.model;
 
 import java.util.*;
 
-import com.globalmentor.java.*;
+import com.globalmentor.java.Objects;
 
 import static com.globalmentor.java.Objects.*;
 

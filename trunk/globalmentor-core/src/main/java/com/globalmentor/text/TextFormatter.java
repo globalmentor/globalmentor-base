@@ -25,6 +25,7 @@ import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.java.Conditions.*;
 
 import com.globalmentor.java.*;
+import com.globalmentor.java.Objects;
 import com.globalmentor.model.NameValuePair;
 
 /**
@@ -243,6 +244,7 @@ public class TextFormatter
 	 * @see Object#toString()
 	 * @see Characters#COMMA_CHAR
 	 */
+	/*TODO fix; causes ambiguity
 	public static String formatList(final Object... items)
 	{
 		try
@@ -253,7 +255,7 @@ public class TextFormatter
 		{
 			throw unexpected(ioException);
 		}
-	}
+	}*/
 
 	/**
 	 * Appends the string representations of the given items separated by a separator character. <code>null</code> objects are represented by

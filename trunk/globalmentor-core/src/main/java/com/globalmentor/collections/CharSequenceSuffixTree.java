@@ -25,6 +25,7 @@ import java.util.*;
 
 import com.globalmentor.collections.iterators.*;
 import com.globalmentor.java.*;
+import com.globalmentor.java.Objects;
 import com.globalmentor.model.Filter;
 
 /**
