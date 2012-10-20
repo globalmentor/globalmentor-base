@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package org.urframework;
+package org.urframework.io;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.urframework.TURFNamespaceLabelManager;
+import org.urframework.URF;
+import org.urframework.URFResource;
+import org.urframework.URFResourceFactory;
 
 import static com.globalmentor.java.Objects.*;
 

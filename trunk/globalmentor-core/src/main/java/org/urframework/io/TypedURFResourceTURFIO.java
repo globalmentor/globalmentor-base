@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package org.urframework;
+package org.urframework.io;
 
 import java.io.*;
 import java.net.*;
+
+import org.urframework.JavaURFResourceFactory;
+import org.urframework.URF;
+import org.urframework.URFResource;
+import org.urframework.URFResourceFactory;
 
 import static com.globalmentor.java.Classes.*;
 import static com.globalmentor.java.Objects.*;

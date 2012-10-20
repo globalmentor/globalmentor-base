@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.urframework;
+package org.urframework.io;
 
 import java.io.*;
 import java.net.*;
+
+import org.urframework.URF;
 
 /**Class for saving and loading an URF instance as TURF.
 @author Garret Wilson

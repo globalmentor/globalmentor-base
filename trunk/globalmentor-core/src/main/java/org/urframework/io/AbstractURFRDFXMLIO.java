@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.urframework;
+package org.urframework.io;
 
 import java.io.*;
 import java.net.*;
@@ -24,6 +24,9 @@ import javax.xml.parsers.*;
 import com.globalmentor.text.xml.XML;
 import com.globalmentor.util.DataException;
 
+import org.urframework.URF;
+import org.urframework.URFRDFXMLProcessor;
+import org.urframework.URFResource;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

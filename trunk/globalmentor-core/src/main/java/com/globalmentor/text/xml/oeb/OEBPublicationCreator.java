@@ -38,6 +38,7 @@ import static com.globalmentor.text.xml.oeb.OEB.*;
 import com.globalmentor.text.xml.xhtml.*;
 import com.globalmentor.util.*;
 
+import org.urframework.io.URFFiles;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
@@ -1500,7 +1501,7 @@ Log.trace("Looking for TOC element: ", childNode.toString());
 			formattedTemplateFile=URLs.getFile(URLs.createURL(getContextURL(), templateFilename));
 		}
 			//write the resulting file
-		Files.write(formattedTemplateFile, formattedString.getBytes(CharacterEncoding.UTF_8));
+		URFFiles.write(formattedTemplateFile, formattedString.getBytes(CharacterEncoding.UTF_8));
 		return formattedTemplateFile.toURL(); //return a URL to the resulting file
 	}
 

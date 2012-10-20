@@ -20,14 +20,6 @@ import java.net.URI;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.urframework.URF;
-import org.urframework.content.Content;
-import org.urframework.dcmi.DCMI;
-import org.urframework.foaf.FOAF;
-import org.urframework.maqro.MAQRO;
-import org.urframework.select.Select;
-import org.urframework.vcard.VCard;
-
 import static java.util.Collections.*;
 
 import static com.globalmentor.java.Objects.*;
@@ -64,16 +56,17 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		final Set<URI> knownNamespaceURIs=new HashSet<URI>();	//create a temporary set to fill
 		knownNamespaceURIs.add(ApacheWebDAV.APACHE_WEBDAV_PROPERTY_NAMESPACE_URI);	//Apache WebDAV properties
 		knownNamespaceURIs.add(URI.create("http://example.com/example/"));	//example
-		knownNamespaceURIs.add(FOAF.FOAF_NAMESPACE_URI);	//FOAF
-		knownNamespaceURIs.add(URF.NAMESPACE_URI);	//URF
-		knownNamespaceURIs.add(URF.DEFAULT_NAMESPACE_URI);	//URF default
-		knownNamespaceURIs.add(Content.CONTENT_NAMESPACE_URI);	//URF Content
-		knownNamespaceURIs.add(Select.SELECT_NAMESPACE_URI);	//URF Select
-		knownNamespaceURIs.add(VCard.VCARD_NAMESPACE_URI);	//URF VCard
+		knownNamespaceURIs.add(URI.create("http://xmlns.com/foaf/0.1/"));	//FOAF
+		//TODO move many of these out into application-specific initializations
+		knownNamespaceURIs.add(URI.create("http://urf.name/urf/"));	//URF
+		knownNamespaceURIs.add(URI.create("http://urf.name/default/"));	//URF default
+		knownNamespaceURIs.add(URI.create("http://urf.name/content/"));	//URF Content
+		knownNamespaceURIs.add(URI.create("http://urf.name/select/"));	//URF Select
+		knownNamespaceURIs.add(URI.create("http://urf.name/vcard/"));	//URF VCard
 		KNOWN_NAMESPACE_URIS=unmodifiableSet(knownNamespaceURIs);	//store a static read-only set
 	}
 
-	/**The default map of namespace-label mappaings.*/
+	/**The default map of namespace-label mappings.*/
 	public final static Map<URI, String> DEFAULT_NAMESPACE_URI_LABEL_MAP;
 
 	static	//add the default labels
@@ -81,8 +74,8 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		final Map<URI, String> tempNamespaceURILabelMap=new HashMap<URI, String>();	//create a temporary map to fill
 			//add default labels for special namespace URIs
 		tempNamespaceURILabelMap.put(Dicto.DICTO_NAMESPACE_URI, Dicto.DICTO_NAMESPACE_PREFIX); //Dicto
-		tempNamespaceURILabelMap.put(DCMI.DCMI11_ELEMENTS_NAMESPACE_URI, DCMI.DCMI_ELEMENTS_NAMESPACE_PREFIX); //Dublin Core
-		tempNamespaceURILabelMap.put(FOAF.FOAF_NAMESPACE_URI, FOAF.FOAF_NAMESPACE_PREFIX); //FOAF
+		tempNamespaceURILabelMap.put(URI.create("http://purl.org/dc/elements/1.1/"), "dc"); //Dublin Core
+		tempNamespaceURILabelMap.put(URI.create("http://xmlns.com/foaf/0.1/"), "foaf"); //FOAF
 //TODO convert to URF		tempNamespaceURILabelMap.put(MAQRO.MAQRO_NAMESPACE_URI, MAQRO.MAQRO_NAMESPACE_PREFIX); //MAQRO
 		tempNamespaceURILabelMap.put(OEB.OEB1_DOCUMENT_NAMESPACE_URI, OEB.OEB1_DOCUMENT_NAMESPACE_PREFIX); //OEB 1
 		tempNamespaceURILabelMap.put(URI.create("http://globalmentor.com/namespaces/marmot#"), "marmot"); //Marmot TODO link to Marmot constants when Marmot is included in normal libraries
