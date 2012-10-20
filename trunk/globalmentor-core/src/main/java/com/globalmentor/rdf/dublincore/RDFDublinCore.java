@@ -24,9 +24,7 @@ import com.globalmentor.rdf.*;
 import static com.globalmentor.rdf.RDFResources.*;
 import com.globalmentor.text.*;
 
-import static org.urframework.dcmi.DCMI.*;
-
-import com.globalmentor.util.*;
+import static com.globalmentor.dcmi.DCMI.*;
 
 /**Utilities for working with Dublin Core stored in RDF.
 @author Garret Wilson
