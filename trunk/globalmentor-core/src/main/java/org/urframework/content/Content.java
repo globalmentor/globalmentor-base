@@ -21,6 +21,7 @@ import java.nio.charset.Charset;
 
 import org.urframework.*;
 
+import com.globalmentor.iso.datetime.ISODateTime;
 import com.globalmentor.net.ContentType;
 import com.globalmentor.net.Resource;
 
@@ -151,7 +152,7 @@ public class Content
 	@return The accessed date time of the resource, or <code>null</code> if there is no accessed date time or the property does not contain an <code>urf.DateTime</code>.
 	@see #ACCESSED_PROPERTY_URI
 	*/
-	public static URFDateTime getAccessed(final URFResource resource)
+	public static ISODateTime getAccessed(final URFResource resource)
 	{
 		return asDateTime(resource.getPropertyValue(ACCESSED_PROPERTY_URI));	//return the accessed timestamp as a date time
 	}
@@ -161,7 +162,7 @@ public class Content
 	@param dateTime The new accessed date and time.
 	@see #ACCESSED_PROPERTY_URI
 	*/
-	public static void setAccessed(final URFResource resource, final URFDateTime dateTime)
+	public static void setAccessed(final URFResource resource, final ISODateTime dateTime)
 	{
 		resource.setPropertyValue(ACCESSED_PROPERTY_URI, dateTime);	//create a date time resource and set the resource's accessed timestamp
 	}
@@ -232,7 +233,7 @@ public class Content
 	@return The created date time of the resource, or <code>null</code> if there is no created date time or the property does not contain an <code>urf.DateTime</code>.
 	@see #CREATED_PROPERTY_URI
 	*/
-	public static URFDateTime getCreated(final URFResource resource)
+	public static ISODateTime getCreated(final URFResource resource)
 	{
 		return asDateTime(resource.getPropertyValue(CREATED_PROPERTY_URI));	//return the created timestamp as a date time
 	}
@@ -242,7 +243,7 @@ public class Content
 	@param dateTime The new created date and time.
 	@see #CREATED_PROPERTY_URI
 	*/
-	public static void setCreated(final URFResource resource, final URFDateTime dateTime)
+	public static void setCreated(final URFResource resource, final ISODateTime dateTime)
 	{
 		resource.setPropertyValue(CREATED_PROPERTY_URI, dateTime);	//create a date time resource and set the resource's modified timestamp
 	}
@@ -336,7 +337,7 @@ public class Content
 	@return The modified date time of the resource, or <code>null</code> if there is no modified date time or the property does not contain an <code>urf.DateTime</code>.
 	@see #MODIFIED_PROPERTY_URI
 	*/
-	public static URFDateTime getModified(final URFResource resource)
+	public static ISODateTime getModified(final URFResource resource)
 	{
 		return asDateTime(resource.getPropertyValue(MODIFIED_PROPERTY_URI));	//return the modified timestamp as a date time
 	}
@@ -346,7 +347,7 @@ public class Content
 	@param dateTime The new modified date and time.
 	@see #MODIFIED_PROPERTY_URI
 	*/
-	public static void setModified(final URFResource resource, final URFDateTime dateTime)
+	public static void setModified(final URFResource resource, final ISODateTime dateTime)
 	{
 		resource.setPropertyValue(MODIFIED_PROPERTY_URI, dateTime);	//create a date time resource and set the resource's modified timestamp
 	}

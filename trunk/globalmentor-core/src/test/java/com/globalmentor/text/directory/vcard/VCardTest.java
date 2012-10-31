@@ -24,11 +24,11 @@ import static org.junit.Assert.*;
 
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-import org.urframework.AbstractURFDateTime;
-import org.urframework.URFDateTime;
 
 import com.globalmentor.io.Charsets;
 import com.globalmentor.io.IO;
+import com.globalmentor.iso.datetime.AbstractISODateTime;
+import com.globalmentor.iso.datetime.ISODateTime;
 import com.globalmentor.itu.TelephoneNumber;
 import com.globalmentor.java.Classes;
 import com.globalmentor.model.LocaledText;
@@ -55,7 +55,7 @@ public class VCardTest
 		assertThat(vcard.getAddress().getLocality(), is("San Francisco"));
 		assertThat(vcard.getAddress().getPostalCode(), is("94120"));
 		assertThat(vcard.getAddress().getCountryName(), is("USA"));
-		assertThat(vcard.getBirthday(), CoreMatchers.<AbstractURFDateTime> is(URFDateTime.valueOf("1970-01-02T00:00:00")));
+		assertThat(vcard.getBirthday(), CoreMatchers.<AbstractISODateTime> is(ISODateTime.valueOf("1970-01-02T00:00:00")));
 		assertThat(vcard.getFormattedName().toString(), is("Ms. Jane Lívia Doe"));
 		final Telephone homeTelephone = vcard.getTelephone(new TelephoneNumber("+14155551212"));
 		assertNotNull(homeTelephone);

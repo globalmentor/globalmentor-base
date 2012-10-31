@@ -20,6 +20,7 @@ import java.net.URI;
 
 import org.urframework.*;
 
+import com.globalmentor.iso.datetime.ISODateTime;
 import com.globalmentor.net.ContentType;
 
 /**An abstract implementation of a general resource that holds content in its description through the {@value Content#CONTENT_PROPERTY_URI} property.
@@ -44,7 +45,7 @@ public abstract class AbstractContentResource extends AbstractClassTypedURFResou
 	@return The created date time of the resource, or <code>null</code> if there is no created date time or the property does not contain an <code>urf.DateTime</code>.
 	@see Content#CREATED_PROPERTY_URI
 	*/
-	public URFDateTime getCreated()
+	public ISODateTime getCreated()
 	{
 		return Content.getCreated(this);
 	}
@@ -53,7 +54,7 @@ public abstract class AbstractContentResource extends AbstractClassTypedURFResou
 	@param dateTime The new created date and time.
 	@see Content#CREATED_PROPERTY_URI
 	*/
-	public void setCreated(final URFDateTime dateTime)
+	public void setCreated(final ISODateTime dateTime)
 	{
 		Content.setCreated(this, dateTime);
 	}
@@ -151,7 +152,7 @@ public abstract class AbstractContentResource extends AbstractClassTypedURFResou
 	@return The modified date time of the resource, or <code>null</code> if there is no modified date time or the property does not contain an <code>urf.DateTime</code>.
 	@see Content#MODIFIED_PROPERTY_URI
 	*/
-	public URFDateTime getModified()
+	public ISODateTime getModified()
 	{
 		return Content.getModified(this);
 	}
@@ -160,7 +161,7 @@ public abstract class AbstractContentResource extends AbstractClassTypedURFResou
 	@param dateTime The new modified date and time.
 	@see Content#MODIFIED_PROPERTY_URI
 	*/
-	public void setModified(final URFDateTime dateTime)
+	public void setModified(final ISODateTime dateTime)
 	{
 		Content.setModified(this, dateTime);
 	}

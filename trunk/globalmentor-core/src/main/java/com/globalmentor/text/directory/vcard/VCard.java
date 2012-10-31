@@ -19,14 +19,14 @@ package com.globalmentor.text.directory.vcard;
 import java.net.*;
 import java.util.*;
 
-import org.urframework.AbstractURFDateTime;
-import org.urframework.URFDate;
-import org.urframework.URFDateTime;
 
 import static com.globalmentor.collections.Collections.*;
 import static java.util.Collections.*;
 
 import com.globalmentor.collections.Collections;
+import com.globalmentor.iso.datetime.AbstractISODateTime;
+import com.globalmentor.iso.datetime.ISODate;
+import com.globalmentor.iso.datetime.ISODateTime;
 import com.globalmentor.itu.TelephoneNumber;
 import com.globalmentor.model.LocaledText;
 import com.globalmentor.text.directory.*;
@@ -379,20 +379,20 @@ public class VCard extends Directory
 		set(nicknameList, nicknames); //set the new values
 	}
 
-	/** The birthday, which may be an {@link URFDate} or an {@link URFDateTime}; or <code>null</code> if no birthday is indicated. */
-	private AbstractURFDateTime birthday;
+	/** The birthday, which may be an {@link ISODate} or an {@link ISODateTime}; or <code>null</code> if no birthday is indicated. */
+	private AbstractISODateTime birthday;
 
-	/** @return The birthday, which may be an {@link URFDate} or an {@link URFDateTime}; or <code>null</code> if no birthday is indicated. */
-	public AbstractURFDateTime getBirthday()
+	/** @return The birthday, which may be an {@link ISODate} or an {@link ISODateTime}; or <code>null</code> if no birthday is indicated. */
+	public AbstractISODateTime getBirthday()
 	{
 		return birthday;
 	}
 
 	/**
 	 * Sets the birthday.
-	 * @param birthday The birthday, which may be an {@link URFDate} or an {@link URFDateTime}; or <code>null</code> if no birthday is indicated.
+	 * @param birthday The birthday, which may be an {@link ISODate} or an {@link ISODateTime}; or <code>null</code> if no birthday is indicated.
 	 */
-	public void setBirthday(final AbstractURFDateTime birthday)
+	public void setBirthday(final AbstractISODateTime birthday)
 	{
 		this.birthday = birthday;
 	}

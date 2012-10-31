@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package org.urframework;
+package com.globalmentor.iso.datetime;
 
 import java.util.Date;
 
 import com.globalmentor.java.Integers;
 import com.globalmentor.text.*;
 
-import static com.globalmentor.iso.ISO8601.*;
+import static com.globalmentor.iso.datetime.ISO8601.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
-import static org.urframework.URF.*;
 
 /**
- * The class representing an <code>urf.Time</code> type.
+ * The class representing an ISO time type.
  * @author Garret Wilson
  */
-public class URFTime implements URFTemporal
+public class ISOTime implements ISOTemporal
 {
 
 	/** The shared time representing midnight UTC, the time 00:00:00+00:00. */
-	public final static URFTime MIDNIGHT_UTC = new URFTime(0, 0, 0, 0, URFUTCOffset.UTC);
+	public final static ISOTime MIDNIGHT_UTC = new ISOTime(0, 0, 0, 0, ISOUTCOffset.UTC);
 
 	/** The hours, 0-23. */
 	private final int hours;
@@ -73,10 +72,10 @@ public class URFTime implements URFTemporal
 	}
 
 	/** The UTC offset, or <code>null</code> if no UTC offset is known. */
-	private final URFUTCOffset utcOffset;
+	private final ISOUTCOffset utcOffset;
 
 	/** @return The UTC offset, or <code>null</code> if no UTC offset is known. */
-	public URFUTCOffset getUTCOffset()
+	public ISOUTCOffset getUTCOffset()
 	{
 		return utcOffset;
 	}
@@ -90,7 +89,7 @@ public class URFTime implements URFTemporal
 	 * @param utcOffset The UTC offset, or <code>null</code> if no UTC offset is known.
 	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
-	public URFTime(final int hours, final int minutes, final int seconds, final int microseconds, final URFUTCOffset utcOffset)
+	public ISOTime(final int hours, final int minutes, final int seconds, final int microseconds, final ISOUTCOffset utcOffset)
 	{
 		this.hours = checkArgumentRange(hours, 0, 23);
 		this.minutes = checkArgumentRange(minutes, 0, 59);
@@ -104,7 +103,7 @@ public class URFTime implements URFTemporal
 	 * @param temporalcomponents The temporal components from which to construct the class.
 	 * @exception NullPointerException if the given temporal components is <code>null</code>.
 	 */
-	protected URFTime(final URFTemporalComponents temporalComponents)
+	protected ISOTime(final ISOTemporalComponents temporalComponents)
 	{
 		this(temporalComponents.getHours(), temporalComponents.getMinutes(), temporalComponents.getSeconds(), temporalComponents.getMicroseconds(),
 				temporalComponents.asUTCOffset());
@@ -115,18 +114,18 @@ public class URFTime implements URFTemporal
 	 * @param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	 * @exception NullPointerException if the given date is <code>null</code>.
 	 */
-	public URFTime(final Date date)
+	public ISOTime(final Date date)
 	{
-		this(new URFTemporalComponents(date)); //construct the class from temporal components
+		this(new ISOTemporalComponents(date)); //construct the class from temporal components
 	}
 
 	/**
 	 * Millisecond time constructor. Any date-related information of the given time will be lost; only the time will be kept, in terms of midnight UTC.
 	 * @param time The difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	 */
-	public URFTime(final long time)
+	public ISOTime(final long time)
 	{
-		this(new URFTemporalComponents(time)); //construct the class from temporal components
+		this(new ISOTemporalComponents(time)); //construct the class from temporal components
 	}
 
 	/** @return <code>true</code> if this time represents midnight at the beginning of the day (00:00:00:00) in whatever UTC offset, if any, is indicated. */
@@ -136,17 +135,17 @@ public class URFTime implements URFTemporal
 	}
 
 	/**
-	 * Returns an URF time object holding the value of the specified string.
+	 * Returns an ISO time object holding the value of the specified string.
 	 * @param string The string to be parsed as a time.
-	 * @return An URF time object represented by the string.
+	 * @return An ISO time object represented by the string.
 	 * @exception NullPointerException if the given string is <code>null</code>
 	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
-	public static URFTime valueOf(final String string) throws ArgumentSyntaxException
+	public static ISOTime valueOf(final String string) throws ArgumentSyntaxException
 	{
 		try
 		{
-			return new URFTime(URFTemporalComponents.parseDateTimeUTCOffset(string, false, true)); //parse temporal components with only a time and use that to create a new time object
+			return new ISOTime(ISOTemporalComponents.parseDateTimeUTCOffset(string, false, true)); //parse temporal components with only a time and use that to create a new time object
 		}
 		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
 		{
@@ -169,12 +168,12 @@ public class URFTime implements URFTemporal
 		final int microseconds = getMicroseconds(); //get the microseconds
 		if(microseconds > 0) //if microseconds are given
 		{
-			stringBuilder.append(DECIMAL_DELIMITER); //indicate that subseconds are present
+			stringBuilder.append(TIME_SUBSECONDS_DELIMITER); //indicate that subseconds are present
 			assert microseconds < 1000000 : "Unexpectedly more than a million microseconds."; //TODO check this in the constructor
 			appendForceLength(stringBuilder, Integer.toString(microseconds), 6, '0', 0); //append the string form of the microseconds, making sure the microseconds have a full six digits
 			trimEnd(stringBuilder, '0'); //remove trailing zeros
 		}
-		final URFUTCOffset utcOffset = getUTCOffset(); //get the UTC offset, if any
+		final ISOUTCOffset utcOffset = getUTCOffset(); //get the UTC offset, if any
 		if(utcOffset != null) //if there is a UTC offset
 		{
 			utcOffset.append(stringBuilder); //append the lexical form of the UTC offset to our string builder

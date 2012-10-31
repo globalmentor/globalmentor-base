@@ -18,7 +18,8 @@ package com.globalmentor.time;
 
 import java.util.*;
 
-import static com.globalmentor.iso.ISO8601.*;
+import static com.globalmentor.iso.datetime.ISO8601.*;
+
 import com.globalmentor.java.Integers;
 import static com.globalmentor.java.Objects.*;
 

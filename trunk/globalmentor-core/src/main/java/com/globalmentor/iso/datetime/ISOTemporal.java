@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.urframework;
+package com.globalmentor.iso.datetime;
 
-/**The base for all URF temporal types.
+/**The base for all ISO 8601 types.
 @author Garret Wilson
 */
-public interface URFTemporal
+public interface ISOTemporal
 {
 
 	/**Appends the canonical lexical representation of this temporal.

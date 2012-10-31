@@ -30,6 +30,8 @@ import com.globalmentor.collections.ReadWriteLockDecorator;
 import com.globalmentor.collections.iterators.AbstractListIterator;
 import com.globalmentor.collections.iterators.Iterators;
 import com.globalmentor.collections.iterators.ObjectIterator;
+import com.globalmentor.iso.datetime.ISODate;
+import com.globalmentor.iso.datetime.ISODateTime;
 import com.globalmentor.java.*;
 import com.globalmentor.util.*;
 
@@ -655,7 +657,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	@return <code>true</code> if the value was added for the indicated property, else <code>false</code> if the property and value already existed.
 	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
 	*/
-	public boolean addPropertyValue(final URI propertyURI, final URFDateTime propertyValue)
+	public boolean addPropertyValue(final URI propertyURI, final ISODateTime propertyValue)
 	{
 		return addPropertyValue(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createDateTimeResource(propertyValue));	//create a resource add the property value
 	}
@@ -815,7 +817,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	@return The old property value, or <code>null</code> if there was no property value previously.
 	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
-	public URFResource setPropertyValue(final URI propertyURI, final URFDate propertyValue)
+	public URFResource setPropertyValue(final URI propertyURI, final ISODate propertyValue)
 	{
 		return setPropertyValue(propertyURI, propertyValue!=null ? DEFAULT_URF_RESOURCE_FACTORY.createDateResource(propertyValue) : null);	//create a resource and set the property value
 	}
@@ -826,7 +828,7 @@ public abstract class AbstractURFScope extends ReadWriteLockDecorator implements
 	@return The old property value, or <code>null</code> if there was no property value previously.
 	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
-	public URFResource setPropertyValue(final URI propertyURI, final URFDateTime propertyValue)
+	public URFResource setPropertyValue(final URI propertyURI, final ISODateTime propertyValue)
 	{
 		return setPropertyValue(propertyURI, propertyValue!=null ? DEFAULT_URF_RESOURCE_FACTORY.createDateTimeResource(propertyValue) : null);	//create a resource and set the property value
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package org.urframework;
+package com.globalmentor.iso.datetime;
 
 import java.util.*;
 
-import com.globalmentor.iso.ISO8601;
 import com.globalmentor.java.Integers;
 import com.globalmentor.text.ArgumentSyntaxException;
 import com.globalmentor.text.SyntaxException;
 import com.globalmentor.time.Time;
 
-import static com.globalmentor.iso.ISO8601.*;
+import static com.globalmentor.iso.datetime.ISO8601.*;
 
 /**
- * The abstract base type for <code>urf.Date</code> and <code>urf.DateTime</code> types. If there is no explicit UTC offset (i.e. this is a floating value), the
- * time is stored internally in terms of UTC.
+ * The abstract base type for ISO date and date time types. If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally in
+ * terms of UTC.
  * @author Garret Wilson
  */
-public abstract class AbstractURFDateTime extends Time implements URFTemporal
+public abstract class AbstractISODateTime extends Time implements ISOTemporal
 {
 
 	/** The year, 0-9999. */
@@ -62,48 +61,13 @@ public abstract class AbstractURFDateTime extends Time implements URFTemporal
 	}
 
 	/** The time, or <code>null</code> if there is a date with no time (not even midnight) */
-	private final URFTime time;
+	private final ISOTime time;
 
 	/** @return The time, or <code>null</code> if there is a date with no time (not even midnight) */
-	public URFTime getURFTime()
+	public ISOTime getISOTime()
 	{
 		return time;
 	}
-
-	/**
-	 * Date components and time constructor with a date specified in epoch terms.
-	 * @param year The year, 0-9999.
-	 * @param month The month, 1-12.
-	 * @param day The day, 1-31.
-	 * @param time The time, or <code>null</code> if there is a date with no time (not even midnight).
-	 * @param date The milliseconds since January 1, 1970, 00:00:00 GMT.
-	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
-	 */
-	/*TODO del
-		protected AbstractURFDateTime(final int year, final int month, final int day, final URFTime time, final long date)
-		{
-			super(date);	//construct the parent class with the date in epoch terms
-			this.year=checkRange(year, 0, 9999);
-			this.month=checkRange(month, 1, 12);
-			this.day=checkRange(day, 1, 31);
-			this.time=time;
-		}
-	*/
-
-	/**
-	 * Date components and time constructor in terms of UTC.
-	 * @param year The year, 0-9999.
-	 * @param month The month, 1-12.
-	 * @param day The day, 1-31.
-	 * @param time The time, or <code>null</code> if there is a date with no time (not even midnight).
-	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
-	 */
-	/*TODO del
-		protected AbstractURFDateTime(final int year, final int month, final int day, final URFTime time)
-		{
-			this(year, month, day, time, URFTemporalComponents.createCalendar(year, month, day, time!=null ? time : URFTime.MIDNIGHT_UTC, Locale.ENGLISH).getTimeInMillis());	//construct class with the time in milleconds the given information represents, using midnight UTC if no time was given; the locale shouldn't matter for just determining the time in milliseconds, so use a locale that is likely to be available
-		}
-	*/
 
 	/**
 	 * Temporal components constructor.
@@ -111,7 +75,7 @@ public abstract class AbstractURFDateTime extends Time implements URFTemporal
 	 * @param useTime <code>true</code> if the time should be used, or <code>false</code> if the given type components should be ignored.
 	 * @throws NullPointerException if the temporal components is null.
 	 */
-	protected AbstractURFDateTime(final URFTemporalComponents temporalComponents, final boolean useTime)
+	protected AbstractISODateTime(final ISOTemporalComponents temporalComponents, final boolean useTime)
 	{
 		super(temporalComponents.getTime()); //construct the parent class with the date time in milliseconds
 		this.year = temporalComponents.getYear();
@@ -132,7 +96,7 @@ public abstract class AbstractURFDateTime extends Time implements URFTemporal
 		stringBuilder.append(Integers.toString(getMonth(), 10, 2)); //append the month, using two digits
 		stringBuilder.append(DATE_DELIMITER); //append the date delimiter
 		stringBuilder.append(Integers.toString(getDay(), 10, 2)); //append the day, using two digits
-		final URFTime time = getURFTime(); //get the time, if any
+		final ISOTime time = getISOTime(); //get the time, if any
 		if(time != null) //if there is a time
 		{
 			stringBuilder.append(TIME_BEGIN); //indicate that the time is beginning
@@ -142,27 +106,27 @@ public abstract class AbstractURFDateTime extends Time implements URFTemporal
 	}
 
 	/**
-	 * Returns an URF date or date/time object holding the value of the specified string.
+	 * Returns an ISO date or date time object holding the value of the specified string.
 	 * <p>
 	 * Lenient parsing makes the following allowances:
 	 * <ul>
 	 * <li>Seconds are considered optional.</li>
 	 * <li>Whitespace before and after the date/time is allowed.</li>
 	 * <li>The looser RFC 3339 Internet timestamp format is allowed, allowing the UTC designator, {@value ISO8601#UTC_DESIGNATOR}, for example.</li>
-	 * <li>If time is present, an {@link URFDateTime} is returned; otherwise, an {@link URFDate} is returned.
+	 * <li>If time is present, an {@link ISODateTime} is returned; otherwise, an {@link ISODate} is returned.
 	 * </ul>
 	 * </p>
 	 * @param string The string to be parsed as a date time.
-	 * @return An URF date time object represented by the string.
+	 * @return An ISO date time object represented by the string.
 	 * @exception NullPointerException if the given string is <code>null</code>
 	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
-	public static AbstractURFDateTime valueOfLenient(final String string) throws ArgumentSyntaxException
+	public static AbstractISODateTime valueOfLenient(final String string) throws ArgumentSyntaxException
 	{
 		try
 		{
-			final URFTemporalComponents temporalComponents = URFTemporalComponents.parseDateTimeUTCOffset(string, true, null, true, true, true); //parse temporal components for both the date and the time and use that to create a new date time object, leniently accepting input
-			return temporalComponents.hasTimeComponents() ? new URFDateTime(temporalComponents) : new URFDate(temporalComponents); //return an URFDate or an URFDateTime, depending on which components were present
+			final ISOTemporalComponents temporalComponents = ISOTemporalComponents.parseDateTimeUTCOffset(string, true, null, true, true, true); //parse temporal components for both the date and the time and use that to create a new date time object, leniently accepting input
+			return temporalComponents.hasTimeComponents() ? new ISODateTime(temporalComponents) : new ISODate(temporalComponents); //return an ISO date or an ISO date time, depending on which components were present
 		}
 		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
 		{
@@ -171,28 +135,28 @@ public abstract class AbstractURFDateTime extends Time implements URFTemporal
 	}
 
 	/**
-	 * Returns an URF date or date/time object holding the value of the specified string.
+	 * Returns an ISO date or date time object holding the value of the specified string.
 	 * <p>
 	 * Liberal parsing makes the following allowances:
 	 * <ul>
 	 * <li>Seconds are considered optional.</li>
 	 * <li>Whitespace before and after the date/time is allowed.</li>
 	 * <li>The looser RFC 3339 Internet timestamp format is allowed, allowing the UTC designator, {@value ISO8601#UTC_DESIGNATOR}, for example.</li>
-	 * <li>If time is present, an {@link URFDateTime} is returned; otherwise, an {@link URFDate} is returned.
+	 * <li>If time is present, an {@link ISODateTime} is returned; otherwise, an {@link ISODate} is returned.
 	 * <li>Delimiters are optional.</li>
 	 * </ul>
 	 * </p>
 	 * @param string The string to be parsed as a date time.
-	 * @return An URF date time object represented by the string.
+	 * @return An ISO date time object represented by the string.
 	 * @exception NullPointerException if the given string is <code>null</code>
 	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
-	public static AbstractURFDateTime valueOfLiberal(final String string) throws ArgumentSyntaxException
+	public static AbstractISODateTime valueOfLiberal(final String string) throws ArgumentSyntaxException
 	{
 		try
 		{
-			final URFTemporalComponents temporalComponents = URFTemporalComponents.parseDateTimeUTCOffset(string, true, null, true, true, false); //parse temporal components for both the date and the time and use that to create a new date time object, liberally accepting input
-			return temporalComponents.hasTimeComponents() ? new URFDateTime(temporalComponents) : new URFDate(temporalComponents); //return an URFDate or an URFDateTime, depending on which components were present
+			final ISOTemporalComponents temporalComponents = ISOTemporalComponents.parseDateTimeUTCOffset(string, true, null, true, true, false); //parse temporal components for both the date and the time and use that to create a new date time object, liberally accepting input
+			return temporalComponents.hasTimeComponents() ? new ISODateTime(temporalComponents) : new ISODate(temporalComponents); //return an ISO date or an ISO date time , depending on which components were present
 		}
 		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
 		{
@@ -208,7 +172,7 @@ public abstract class AbstractURFDateTime extends Time implements URFTemporal
 	 */
 	public Calendar toCalendar(final Locale locale)
 	{
-		return URFTemporalComponents.createCalendar(getYear(), getMonth(), getDay(), getURFTime(), locale);
+		return ISOTemporalComponents.createCalendar(getYear(), getMonth(), getDay(), getISOTime(), locale);
 	}
 
 	/**
@@ -223,7 +187,7 @@ public abstract class AbstractURFDateTime extends Time implements URFTemporal
 	 * Returns the date portion of this date and time.
 	 * @return A date and time object with only the date part of this instance.
 	 */
-	public abstract URFDate toURFDate();
+	public abstract ISODate toISODate();
 
 	/**
 	 * Returns the canonical lexical representation of this date time in the form "YYYY-MM-DDThh:mm:ss[.s+]+/-hh:mm".

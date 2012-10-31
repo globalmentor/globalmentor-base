@@ -19,6 +19,9 @@ package org.urframework;
 import java.net.URI;
 import java.util.concurrent.locks.ReadWriteLock;
 
+import com.globalmentor.iso.datetime.ISODate;
+import com.globalmentor.iso.datetime.ISODateTime;
+
 /**A scope of URF properties.
 @author Garret Wilson
 */
@@ -216,7 +219,7 @@ public interface URFScope extends ReadWriteLock
 	@return <code>true</code> if the value was added for the indicated property, else <code>false</code> if the property and value already existed.
 	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
 	*/
-	public boolean addPropertyValue(final URI propertyURI, final URFDateTime propertyValue);
+	public boolean addPropertyValue(final URI propertyURI, final ISODateTime propertyValue);
 
 	/**Adds a number property value for the property with the given URI.
 	If the given property and value already exists, no action occurs.
@@ -276,7 +279,7 @@ public interface URFScope extends ReadWriteLock
 	@return The old property value, or <code>null</code> if there was no property value previously.
 	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
-	public URFResource setPropertyValue(final URI propertyURI, final URFDate propertyValue);
+	public URFResource setPropertyValue(final URI propertyURI, final ISODate propertyValue);
 
 	/**Sets a date time property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.
@@ -284,7 +287,7 @@ public interface URFScope extends ReadWriteLock
 	@return The old property value, or <code>null</code> if there was no property value previously.
 	@exception NullPointerException if the given property URI is <code>null</code>.
 	*/
-	public URFResource setPropertyValue(final URI propertyURI, final URFDateTime propertyValue);
+	public URFResource setPropertyValue(final URI propertyURI, final ISODateTime propertyValue);
 
 	/**Sets a number property value for the property with the given URI by removing all properties with the given URI and adding the given property value.
 	@param propertyURI The URI of the property of the value to set.

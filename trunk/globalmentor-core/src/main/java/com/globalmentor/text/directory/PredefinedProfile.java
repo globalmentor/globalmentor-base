@@ -28,6 +28,9 @@ import static com.globalmentor.text.ABNF.*;
 import static com.globalmentor.text.directory.Directory.*;
 
 import com.globalmentor.io.*;
+import com.globalmentor.iso.datetime.ISODate;
+import com.globalmentor.iso.datetime.ISODateTime;
+import com.globalmentor.iso.datetime.ISOTime;
 import com.globalmentor.java.Characters;
 import com.globalmentor.model.*;
 import com.globalmentor.util.Base64;
@@ -116,15 +119,15 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 		}
 		else if(DATE_VALUE_TYPE.equalsIgnoreCase(valueType)) //date
 		{
-			return new Object[] { URFDate.valueOfLiberal(reach(reader, CR)) };
+			return new Object[] { ISODate.valueOfLiberal(reach(reader, CR)) };
 		}
 		else if(TIME_VALUE_TYPE.equalsIgnoreCase(valueType)) //time
 		{
-			return new Object[] { URFTime.valueOf(reach(reader, CR)) };
+			return new Object[] { ISOTime.valueOf(reach(reader, CR)) };
 		}
 		else if(DATE_TIME_VALUE_TYPE.equalsIgnoreCase(valueType)) //date-time
 		{
-			return new Object[] { URFDateTime.valueOfLiberal(reach(reader, CR)) };
+			return new Object[] { ISODateTime.valueOfLiberal(reach(reader, CR)) };
 		}
 		return null; //show that we can't create a value
 	}

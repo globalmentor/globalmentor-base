@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.locks.*;
 
+import com.globalmentor.iso.datetime.ISODate;
+import com.globalmentor.iso.datetime.ISODateTime;
 import com.globalmentor.java.Objects;
 import com.globalmentor.net.ContentType;
 
@@ -70,7 +72,7 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	@param value The property value.
 	@exception NullPointerException if the given property URI and/or value is <code>null</code>.
 	*/
-	public DefaultURFProperty(final URI propertyURI, final URFDate value)
+	public DefaultURFProperty(final URI propertyURI, final ISODate value)
 	{
 		this(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createDateResource(value));	//construct the class with a resource created from the value
 	}
@@ -80,7 +82,7 @@ public class DefaultURFProperty extends DefaultURFValueContext implements URFPro
 	@param value The property value.
 	@exception NullPointerException if the given property URI and/or value is <code>null</code>.
 	*/
-	public DefaultURFProperty(final URI propertyURI, final URFDateTime value)
+	public DefaultURFProperty(final URI propertyURI, final ISODateTime value)
 	{
 		this(propertyURI, DEFAULT_URF_RESOURCE_FACTORY.createDateTimeResource(value));	//construct the class with a resource created from the value
 	}

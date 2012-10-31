@@ -18,6 +18,7 @@ package org.urframework.content;
 
 import org.urframework.*;
 
+import com.globalmentor.iso.datetime.ISODateTime;
 import com.globalmentor.net.ContentType;
 
 /**A general resource that holds content in its description through the {@value Content#CONTENT_PROPERTY_URI} property.
@@ -30,13 +31,13 @@ public interface ContentResource extends URFResource
 	@return The created date time of the resource, or <code>null</code> if there is no created date time or the property does not contain an <code>urf.DateTime</code>.
 	@see Content#CREATED_PROPERTY_URI
 	*/
-	public URFDateTime getCreated();
+	public ISODateTime getCreated();
 
 	/**Sets the created property of the resource
 	@param dateTime The new created date and time.
 	@see Content#CREATED_PROPERTY_URI
 	*/
-	public void setCreated(final URFDateTime dateTime);
+	public void setCreated(final ISODateTime dateTime);
 
 	/**Returns the resource that created this resource on the indicated created date and time.
 	@return The string value of the property, or <code>null</code> if there is no such property or the property value is not a string.
@@ -101,12 +102,12 @@ public interface ContentResource extends URFResource
 	@return The modified date time of the resource, or <code>null</code> if there is no modified date time or the property does not contain an <code>urf.DateTime</code>.
 	@see Content#MODIFIED_PROPERTY_URI
 	*/
-	public URFDateTime getModified();
+	public ISODateTime getModified();
 
 	/**Sets the modified property of the resource
 	@param dateTime The new modified date and time.
 	@see Content#MODIFIED_PROPERTY_URI
 	*/
-	public void setModified(final URFDateTime dateTime);
+	public void setModified(final ISODateTime dateTime);
 
 }

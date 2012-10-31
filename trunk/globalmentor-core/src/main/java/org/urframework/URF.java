@@ -35,6 +35,9 @@ import static com.globalmentor.io.Charsets.*;
 import com.globalmentor.collections.CollectionMap;
 import com.globalmentor.collections.IdentityHashSet;
 import com.globalmentor.collections.IdentityHashSetMap;
+import com.globalmentor.iso.datetime.AbstractISODateTime;
+import com.globalmentor.iso.datetime.ISODate;
+import com.globalmentor.iso.datetime.ISODateTime;
 import com.globalmentor.java.*;
 
 import static com.globalmentor.java.Booleans.*;
@@ -830,9 +833,9 @@ public class URF
 	 * <dt>{@value Content#MEDIA_TYPE_NAMESPACE_URI}</dt>
 	 * <dd>{@link ContentType}</dd>
 	 * <dt>{@value #DATE_NAMESPACE_URI}</dt>
-	 * <dd>{@link URFDate}</dd>
+	 * <dd>{@link ISODate}</dd>
 	 * <dt>{@value #DATE_TIME_NAMESPACE_URI}</dt>
-	 * <dd>{@link URFDateTime}</dd>
+	 * <dd>{@link ISODateTime}</dd>
 	 * <dt>{@value #ORDINAL_NAMESPACE_URI}</dt>
 	 * <dd>{@link Long}</dd>
 	 * <dt>{@value #RATIONAL_NAMESPACE_URI}</dt>
@@ -1071,7 +1074,7 @@ public class URF
 	 * @exception IllegalArgumentException if the given resource represents a date or date time that does not have the correct syntax.
 	 * @see #asAbstractDateTime(URI)
 	 */
-	public static AbstractURFDateTime asAbstractDateTime(final Resource resource)
+	public static AbstractISODateTime asAbstractDateTime(final Resource resource)
 	{
 		return resource != null ? asAbstractDateTime(resource.getURI()) : null; //if a resource was given, see if its URI represents a date or date time
 	}
@@ -1086,18 +1089,18 @@ public class URF
 	 * @see #DATE_TIME_CLASS_URI
 	 * @see #DATE_TIME_NAMESPACE_URI
 	 */
-	public static AbstractURFDateTime asAbstractDateTime(final URI resourceURI)
+	public static AbstractISODateTime asAbstractDateTime(final URI resourceURI)
 	{
 		if(resourceURI != null) //if there is a resource URI
 		{
 			final URI namespaceURI = getNamespaceURI(resourceURI); //get the namespace URI of the resource URI
 			if(DATE_NAMESPACE_URI.equals(namespaceURI)) //if a date URI was given
 			{
-				return URFDate.valueOf(getInlineLexicalForm(resourceURI)); //create a date from the value
+				return ISODate.valueOf(getInlineLexicalForm(resourceURI)); //create a date from the value TODO use specific valueOf() version that allows configuration for URF syntax
 			}
 			else if(DATE_TIME_NAMESPACE_URI.equals(namespaceURI)) //if a date time URI was given
 			{
-				return URFDateTime.valueOf(getInlineLexicalForm(resourceURI)); //create a date time from the value
+				return ISODateTime.valueOf(getInlineLexicalForm(resourceURI)); //create a date time from the value TODO use specific valueOf() version that allows configuration for URF syntax
 			}
 		}
 		return null; //no abstract date time could be found
@@ -1110,7 +1113,7 @@ public class URF
 	 * @exception IllegalArgumentException if the given resource represents a date that does not have the correct syntax.
 	 * @see #asDate(URI)
 	 */
-	public static URFDate asDate(final Resource resource)
+	public static ISODate asDate(final Resource resource)
 	{
 		return resource != null ? asDate(resource.getURI()) : null; //if a resource was given, see if its URI represents a date
 	}
@@ -1123,11 +1126,11 @@ public class URF
 	 * @see #DATE_CLASS_URI
 	 * @see #DATE_NAMESPACE_URI
 	 */
-	public static URFDate asDate(final URI resourceURI)
+	public static ISODate asDate(final URI resourceURI)
 	{
 		if(resourceURI != null && DATE_NAMESPACE_URI.equals(getNamespaceURI(resourceURI))) //if a date URI was given
 		{
-			return URFDate.valueOf(getInlineLexicalForm(resourceURI)); //create a date from the value
+			return ISODate.valueOf(getInlineLexicalForm(resourceURI)); //create a date from the value TODO use specific valueOf() version that allows configuration for URF syntax
 		}
 		return null; //no date could be found
 	}
@@ -1139,7 +1142,7 @@ public class URF
 	 * @exception IllegalArgumentException if the given resource represents a date time that does not have the correct syntax.
 	 * @see #asDateTime(URI)
 	 */
-	public static URFDateTime asDateTime(final Resource resource)
+	public static ISODateTime asDateTime(final Resource resource)
 	{
 		return resource != null ? asDateTime(resource.getURI()) : null; //if a resource was given, see if its URI represents a date time
 	}
@@ -1152,11 +1155,11 @@ public class URF
 	 * @see #DATE_TIME_CLASS_URI
 	 * @see #DATE_TIME_NAMESPACE_URI
 	 */
-	public static URFDateTime asDateTime(final URI resourceURI)
+	public static ISODateTime asDateTime(final URI resourceURI)
 	{
 		if(resourceURI != null && DATE_TIME_NAMESPACE_URI.equals(getNamespaceURI(resourceURI))) //if a date time URI was given
 		{
-			return URFDateTime.valueOf(getInlineLexicalForm(resourceURI)); //create a date time from the value
+			return ISODateTime.valueOf(getInlineLexicalForm(resourceURI)); //create a date time from the value TODO use specific valueOf() version that allows configuration for URF syntax
 		}
 		return null; //no pattern could be found
 	}

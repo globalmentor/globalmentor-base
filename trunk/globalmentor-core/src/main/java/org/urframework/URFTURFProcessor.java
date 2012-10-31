@@ -30,7 +30,7 @@ import com.globalmentor.io.ParseIOException;
 import com.globalmentor.java.Characters;
 
 import static com.globalmentor.io.ReaderParser.*;
-import static com.globalmentor.iso.ISO8601.*;
+import static com.globalmentor.iso.datetime.ISO8601.*;
 import static com.globalmentor.java.Characters.*;
 
 import com.globalmentor.model.NameValuePair;

@@ -20,6 +20,10 @@ import java.util.Locale;
 
 import org.urframework.*;
 
+import com.globalmentor.iso.datetime.AbstractISODateTime;
+import com.globalmentor.iso.datetime.ISODate;
+import com.globalmentor.iso.datetime.ISODateTime;
+
 import static org.urframework.URF.*;
 
 /**
@@ -38,7 +42,7 @@ public class DCMI extends com.globalmentor.dcmi.DCMI
 	 *         <code>urf.DateTime</code>.
 	 * @see #DATE_PROPERTY_URI
 	 */
-	public static AbstractURFDateTime getDate(final URFResource resource)
+	public static AbstractISODateTime getDate(final URFResource resource)
 	{
 		return asAbstractDateTime(resource.getPropertyValue(DATE_PROPERTY_URI)); //return the dc.date as a date or date time
 	}
@@ -71,15 +75,15 @@ public class DCMI extends com.globalmentor.dcmi.DCMI
 	 * @param date The new date.
 	 * @see #DATE_PROPERTY_URI
 	 */
-	public static void setDate(final URFResource resource, final AbstractURFDateTime date)
+	public static void setDate(final URFResource resource, final AbstractISODateTime date)
 	{
-		if(date instanceof URFDate) //if this is a date
+		if(date instanceof ISODate) //if this is a date
 		{
-			resource.setPropertyValue(DATE_PROPERTY_URI, (URFDate)date); //create a date resource and set the resource's dc.date
+			resource.setPropertyValue(DATE_PROPERTY_URI, (ISODate)date); //create a date resource and set the resource's dc.date
 		}
-		else if(date instanceof URFDateTime) //if this is a date time
+		else if(date instanceof ISODateTime) //if this is a date time
 		{
-			resource.setPropertyValue(DATE_PROPERTY_URI, (URFDateTime)date); //create a date time resource and set the resource's dc.date
+			resource.setPropertyValue(DATE_PROPERTY_URI, (ISODateTime)date); //create a date time resource and set the resource's dc.date
 		}
 		else
 		//if we don't recognize the type of abstract date time

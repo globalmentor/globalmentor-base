@@ -24,8 +24,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.junit.*;
-import org.urframework.URFDateTime;
 
+import com.globalmentor.iso.datetime.ISODateTime;
 //import com.globalmentor.log.Log;
 import com.globalmentor.test.AbstractTest;
 import com.globalmentor.time.Milliseconds;
@@ -47,25 +47,25 @@ public class URFDateTimeTest extends AbstractTest
 		{
 			final Calendar calendar = new GregorianCalendar(GMT); //get a calendar in UTC
 			calendar.setTimeInMillis(time); //set the calendar to our time
-			final URFDateTime datetime1 = new URFDateTime(time);
+			final ISODateTime datetime1 = new ISODateTime(time);
 			assertThat(datetime1.getYear(), equalTo(calendar.get(Calendar.YEAR)));
 			assertThat(datetime1.getMonth(), equalTo(calendar.get(Calendar.MONTH) + 1)); //Calendar's months are one-based
 			assertThat(datetime1.getDay(), equalTo(calendar.get(Calendar.DAY_OF_MONTH)));
-			assertThat(datetime1.getURFTime().getHours(), equalTo(calendar.get(Calendar.HOUR_OF_DAY)));
-			assertThat(datetime1.getURFTime().getMinutes(), equalTo(calendar.get(Calendar.MINUTE)));
-			assertThat(datetime1.getURFTime().getSeconds(), equalTo(calendar.get(Calendar.SECOND)));
-			assertThat(datetime1.getURFTime().getMicroseconds(), equalTo(calendar.get(Calendar.MILLISECOND) * 1000));
+			assertThat(datetime1.getISOTime().getHours(), equalTo(calendar.get(Calendar.HOUR_OF_DAY)));
+			assertThat(datetime1.getISOTime().getMinutes(), equalTo(calendar.get(Calendar.MINUTE)));
+			assertThat(datetime1.getISOTime().getSeconds(), equalTo(calendar.get(Calendar.SECOND)));
+			assertThat(datetime1.getISOTime().getMicroseconds(), equalTo(calendar.get(Calendar.MILLISECOND) * 1000));
 			assertThat("Constructed datetime's milliseconds doesn't equal the input time.", datetime1.getTime(), equalTo(time));
 			final String datetime1String = datetime1.toString();
 			//Log.debug(datetime1String);
-			final URFDateTime datetime2 = URFDateTime.valueOf(datetime1String); //create a new datetime from the string representation
+			final ISODateTime datetime2 = ISODateTime.valueOf(datetime1String); //create a new datetime from the string representation
 			assertThat(datetime2.getYear(), equalTo(calendar.get(Calendar.YEAR)));
 			assertThat(datetime2.getMonth(), equalTo(calendar.get(Calendar.MONTH) + 1)); //Calendar's months are one-based
 			assertThat(datetime2.getDay(), equalTo(calendar.get(Calendar.DAY_OF_MONTH)));
-			assertThat(datetime2.getURFTime().getHours(), equalTo(calendar.get(Calendar.HOUR_OF_DAY)));
-			assertThat(datetime2.getURFTime().getMinutes(), equalTo(calendar.get(Calendar.MINUTE)));
-			assertThat(datetime2.getURFTime().getSeconds(), equalTo(calendar.get(Calendar.SECOND)));
-			assertThat(datetime2.getURFTime().getMicroseconds(), equalTo(calendar.get(Calendar.MILLISECOND) * 1000));
+			assertThat(datetime2.getISOTime().getHours(), equalTo(calendar.get(Calendar.HOUR_OF_DAY)));
+			assertThat(datetime2.getISOTime().getMinutes(), equalTo(calendar.get(Calendar.MINUTE)));
+			assertThat(datetime2.getISOTime().getSeconds(), equalTo(calendar.get(Calendar.SECOND)));
+			assertThat(datetime2.getISOTime().getMicroseconds(), equalTo(calendar.get(Calendar.MILLISECOND) * 1000));
 			final String datetime2String = datetime1.toString();
 			assertThat("Round-trip datetime string equal beginning datetime string.", datetime2String, equalTo(datetime2String));
 			//Log.debug(datetime2String);

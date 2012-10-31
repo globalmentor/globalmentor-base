@@ -20,8 +20,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import org.urframework.AbstractURFDateTime;
-import org.urframework.URFDateTime;
 
 import static com.globalmentor.io.ReaderParser.*;
 import static com.globalmentor.java.Characters.*;
@@ -31,6 +29,8 @@ import static com.globalmentor.text.directory.vcard.VCard.*;
 import static java.util.Arrays.asList;
 
 import com.globalmentor.io.*;
+import com.globalmentor.iso.datetime.AbstractISODateTime;
+import com.globalmentor.iso.datetime.ISODateTime;
 import com.globalmentor.java.*;
 import com.globalmentor.model.LocaledText;
 import com.globalmentor.model.NameValuePair;
@@ -145,7 +145,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 		}
 		else if(BDAY_TYPE.equalsIgnoreCase(name)) //BDAY
 		{
-			return new Object[] { AbstractURFDateTime.valueOfLiberal(reach(reader, CR)) }; //a birthday should normally be a date, but sometimes it could be a date-time as well
+			return new Object[] { AbstractISODateTime.valueOfLiberal(reach(reader, CR)) }; //a birthday should normally be a date, but sometimes it could be a date-time as well
 		}
 		//delivery addressing types
 		else if(ADR_TYPE.equalsIgnoreCase(name)) //ADR
@@ -662,15 +662,15 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 			}
 			else if(BDAY_TYPE.equalsIgnoreCase(typeName)) //BDAY
 			{
-				AbstractURFDateTime bday = (AbstractURFDateTime)contentLine.getValue();
+				AbstractISODateTime bday = (AbstractISODateTime)contentLine.getValue();
 				//if a date and time were given, make sure it's not something that could be represented by just a date
 				//(Google, for instance, doesn't recognize birthdays composed of both date and time)
-				if(bday instanceof URFDateTime)
+				if(bday instanceof ISODateTime)
 				{
-					final URFDateTime bdayDateTime = (URFDateTime)bday;
-					if(bdayDateTime.isMidnight() && bdayDateTime.getURFTime().getUTCOffset() == null) //if this date and time is midnight with no UTC offset specified
+					final ISODateTime bdayDateTime = (ISODateTime)bday;
+					if(bdayDateTime.isMidnight() && bdayDateTime.getISOTime().getUTCOffset() == null) //if this date and time is midnight with no UTC offset specified
 					{
-						bday = bdayDateTime.toURFDate(); //the time is superfluous; only use the date
+						bday = bdayDateTime.toISODate(); //the time is superfluous; only use the date
 					}
 				}
 				vcard.setBirthday(bday); //set the birthday

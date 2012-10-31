@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,23 @@
  * limitations under the License.
  */
 
-package org.urframework;
+package com.globalmentor.iso.datetime;
 
 import java.util.*;
 
-import com.globalmentor.iso.ISO8601;
 import com.globalmentor.text.*;
 import com.globalmentor.time.Calendars;
 
 /**
- * The class representing an <code>urf.DateTime</code> type. If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally
+ * The class representing an ISO date time. If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally
  * in terms of UTC.
  * @author Garret Wilson
  */
-public class URFDateTime extends AbstractURFDateTime
+public class ISODateTime extends AbstractISODateTime
 {
 
 	/** Default constructor of a floating date time with the current time in terms of UTC. */
-	public URFDateTime()
+	public ISODateTime()
 	{
 		this(System.currentTimeMillis()); //construct the class with the current time in milliseconds
 	}
@@ -42,7 +41,7 @@ public class URFDateTime extends AbstractURFDateTime
 	 * @throws NullPointerException if the given time zone is <code>null</code>.
 	 * @throws IllegalArgumentException if a time zone was provided with an unsupported offset for the given time.
 	 */
-	public URFDateTime(final TimeZone timeZone)
+	public ISODateTime(final TimeZone timeZone)
 	{
 		this(System.currentTimeMillis(), timeZone); //construct the class with the current time in milliseconds
 	}
@@ -52,7 +51,7 @@ public class URFDateTime extends AbstractURFDateTime
 	 * @param temporalcomponents The temporal components from which to construct the class.
 	 * @exception NullPointerException if the given temporal components is <code>null</code>.
 	 */
-	protected URFDateTime(final URFTemporalComponents temporalComponents)
+	protected ISODateTime(final ISOTemporalComponents temporalComponents)
 	{
 		super(temporalComponents, true); //construct the parent class, using the time information
 	}
@@ -66,9 +65,9 @@ public class URFDateTime extends AbstractURFDateTime
 	 * @exception NullPointerException if the given time is <code>null</code>.
 	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
-	public URFDateTime(final int year, final int month, final int day, final URFTime time)
+	public ISODateTime(final int year, final int month, final int day, final ISOTime time)
 	{
-		this(new URFTemporalComponents(year, month, day, time.getHours(), time.getMinutes(), time.getSeconds(), time.getMicroseconds(),
+		this(new ISOTemporalComponents(year, month, day, time.getHours(), time.getMinutes(), time.getSeconds(), time.getMicroseconds(),
 				time.getUTCOffset() != null ? time.getUTCOffset().getHours() : -1, time.getUTCOffset() != null ? time.getUTCOffset().getMinutes() : -1)); //construct the class with only a date in UTC
 	}
 
@@ -84,10 +83,10 @@ public class URFDateTime extends AbstractURFDateTime
 	 * @param utcOffset The UTC offset, or <code>null</code> if no UTC offset is known.
 	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
-	public URFDateTime(final int year, final int month, final int day, final int hours, final int minutes, final int seconds, final int microseconds,
-			final URFUTCOffset utcOffset)
+	public ISODateTime(final int year, final int month, final int day, final int hours, final int minutes, final int seconds, final int microseconds,
+			final ISOUTCOffset utcOffset)
 	{
-		this(year, month, day, new URFTime(hours, minutes, seconds, microseconds, utcOffset));
+		this(year, month, day, new ISOTime(hours, minutes, seconds, microseconds, utcOffset));
 	}
 
 	/**
@@ -95,9 +94,9 @@ public class URFDateTime extends AbstractURFDateTime
 	 * @param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	 * @exception NullPointerException if the given date is <code>null</code>.
 	 */
-	public URFDateTime(final Date date)
+	public ISODateTime(final Date date)
 	{
-		this(new URFTemporalComponents(date)); //construct the class from temporal components
+		this(new ISOTemporalComponents(date)); //construct the class from temporal components
 	}
 
 	/**
@@ -107,18 +106,18 @@ public class URFDateTime extends AbstractURFDateTime
 	 * @throws NullPointerException if the given date and/or time zone is <code>null</code>.
 	 * @throws IllegalArgumentException if a time zone was provided with an unsupported offset for the given time.
 	 */
-	public URFDateTime(final Date date, final TimeZone timeZone)
+	public ISODateTime(final Date date, final TimeZone timeZone)
 	{
-		this(new URFTemporalComponents(date, timeZone)); //construct the class from temporal components
+		this(new ISOTemporalComponents(date, timeZone)); //construct the class from temporal components
 	}
 
 	/**
 	 * Millisecond time constructor in terms of UTC.
 	 * @param time The difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	 */
-	public URFDateTime(final long time)
+	public ISODateTime(final long time)
 	{
-		this(new URFTemporalComponents(time)); //construct the class from temporal components
+		this(new ISOTemporalComponents(time)); //construct the class from temporal components
 	}
 
 	/**
@@ -128,24 +127,24 @@ public class URFDateTime extends AbstractURFDateTime
 	 * @throws NullPointerException if the given time zone is <code>null</code>.
 	 * @throws IllegalArgumentException if a time zone was provided with an unsupported offset for the given time.
 	 */
-	public URFDateTime(final long time, final TimeZone timeZone)
+	public ISODateTime(final long time, final TimeZone timeZone)
 	{
-		this(new URFTemporalComponents(time, timeZone)); //construct the class from temporal components
+		this(new ISOTemporalComponents(time, timeZone)); //construct the class from temporal components
 	}
 
 	/**
 	 * Returns whether the time, if any, represents midnight at the beginning of the day (00:00:00:00) in whatever UTC offset, if any, is indicated.
 	 * <p>
-	 * If this method returns <code>true</code>, it indicates that {@link #getURFTime()} is not <code>null</code>, as this date and time can only indicate
-	 * midnight when there is an URF time component present.
+	 * If this method returns <code>true</code>, it indicates that {@link #getISOTime()} is not <code>null</code>, as this date and time can only indicate
+	 * midnight when there is an ISO time component present.
 	 * </p>
 	 * @return <code>true</code> if this time represents midnight at the beginning of the day (00:00:00:00) in whatever UTC offset, if any, is indicated.
-	 * @see URFTime#isMidnight()
+	 * @see ISOTime#isMidnight()
 	 */
 	public boolean isMidnight()
 	{
-		final URFTime urfTime = getURFTime();
-		return urfTime != null && urfTime.isMidnight(); //see if there is a time and if it is midnight
+		final ISOTime isoTime = getISOTime();
+		return isoTime != null && isoTime.isMidnight(); //see if there is a time and if it is midnight
 	}
 
 	/**
@@ -159,33 +158,33 @@ public class URFDateTime extends AbstractURFDateTime
 		final Calendar calendar = new GregorianCalendar(timeZone); //create a Gregorian calendar for the given time zone
 		calendar.clear(); //clear the calendar
 		calendar.set(getYear(), getMonth() - 1, getDay()); //set the calendar date, compensating for Calendar's zero-based month
-		final URFTime time = getURFTime(); //get the URF time, if any
-		if(time != null) //if we have time
+		final ISOTime isoTime = getISOTime(); //get the ISO time, if any
+		if(isoTime != null) //if we have time
 		{
-			Calendars.setTime(calendar, time.getHours(), time.getMinutes(), time.getSeconds(), time.getMicroseconds() / 1000); //set the time
+			Calendars.setTime(calendar, isoTime.getHours(), isoTime.getMinutes(), isoTime.getSeconds(), isoTime.getMicroseconds() / 1000); //set the time
 		}
 		return calendar.getTime(); //return the calendar time
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public URFDate toURFDate()
+	public ISODate toISODate()
 	{
-		return new URFDate(getYear(), getMonth(), getDay());
+		return new ISODate(getYear(), getMonth(), getDay());
 	}
 
 	/**
-	 * Returns an URF date time object holding the value of the specified string.
+	 * Returns an ISO date time object holding the value of the specified string.
 	 * @param string The string to be parsed as a date time.
-	 * @return An URF date time object represented by the string.
+	 * @return An ISO date time object represented by the string.
 	 * @exception NullPointerException if the given string is <code>null</code>
 	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
-	public static URFDateTime valueOf(final String string) throws ArgumentSyntaxException
+	public static ISODateTime valueOf(final String string) throws ArgumentSyntaxException
 	{
 		try
 		{
-			return new URFDateTime(URFTemporalComponents.parseDateTimeUTCOffset(string, true, true)); //parse temporal components for both the date and the time and use that to create a new date time object
+			return new ISODateTime(ISOTemporalComponents.parseDateTimeUTCOffset(string, true, true)); //parse temporal components for both the date and the time and use that to create a new date time object
 		}
 		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
 		{
@@ -194,7 +193,7 @@ public class URFDateTime extends AbstractURFDateTime
 	}
 
 	/**
-	 * Returns an URF date time object holding the value of the specified string.
+	 * Returns an ISO date time object holding the value of the specified string.
 	 * <p>
 	 * Lenient parsing makes the following allowances:
 	 * <ul>
@@ -204,15 +203,15 @@ public class URFDateTime extends AbstractURFDateTime
 	 * </ul>
 	 * </p>
 	 * @param string The string to be parsed as a date time.
-	 * @return An URF date time object represented by the string.
+	 * @return An ISO date time object represented by the string.
 	 * @exception NullPointerException if the given string is <code>null</code>
 	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
-	public static URFDateTime valueOfLenient(final String string) throws ArgumentSyntaxException
+	public static ISODateTime valueOfLenient(final String string) throws ArgumentSyntaxException
 	{
 		try
 		{
-			return new URFDateTime(URFTemporalComponents.parseDateTimeUTCOffset(string, true, true, true, true, true)); //parse temporal components for both the date and the time and use that to create a new date time object, leniently accepting input
+			return new ISODateTime(ISOTemporalComponents.parseDateTimeUTCOffset(string, true, true, true, true, true)); //parse temporal components for both the date and the time and use that to create a new date time object, leniently accepting input
 		}
 		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
 		{
@@ -221,7 +220,7 @@ public class URFDateTime extends AbstractURFDateTime
 	}
 
 	/**
-	 * Returns an URF date time object holding the value of the specified string.
+	 * Returns an ISO date time object holding the value of the specified string.
 	 * <p>
 	 * Liberal parsing makes the following allowances:
 	 * <ul>
@@ -232,15 +231,15 @@ public class URFDateTime extends AbstractURFDateTime
 	 * </ul>
 	 * </p>
 	 * @param string The string to be parsed as a date time.
-	 * @return An URF date time object represented by the string.
+	 * @return An ISO date time object represented by the string.
 	 * @exception NullPointerException if the given string is <code>null</code>
 	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
-	public static URFDateTime valueOfLiberal(final String string) throws ArgumentSyntaxException
+	public static ISODateTime valueOfLiberal(final String string) throws ArgumentSyntaxException
 	{
 		try
 		{
-			return new URFDateTime(URFTemporalComponents.parseDateTimeUTCOffset(string, true, true, true, true, false)); //parse temporal components for both the date and the time and use that to create a new date time object, liberally accepting input
+			return new ISODateTime(ISOTemporalComponents.parseDateTimeUTCOffset(string, true, true, true, true, false)); //parse temporal components for both the date and the time and use that to create a new date time object, liberally accepting input
 		}
 		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
 		{
@@ -249,21 +248,21 @@ public class URFDateTime extends AbstractURFDateTime
 	}
 
 	/**
-	 * Returns an URF date time object holding the value of the specified string. The looser RFC 3339 Internet timestamp format is allowed, which is used in
+	 * Returns an ISO date time object holding the value of the specified string. The looser RFC 3339 Internet timestamp format is allowed, which is used in
 	 * "W3C Date and Time Formats" as well as portions of WebDAV.
 	 * @param string The string to be parsed as a date time.
-	 * @return An URF date time object represented by the string.
+	 * @return An ISO date time object represented by the string.
 	 * @exception NullPointerException if the given string is <code>null</code>
 	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
 	 * @see <a href="http://www.ietf.org/rfc/rfc3339.txt">RFC 3339</a>
 	 * @see <a href="http://www.ietf.org/rfc/rfc2518.txt">RFC 2518</a>
 	 * @see <a href="http://www.w3.org/TR/NOTE-datetime">W3C Date and Time Formats</a>
 	 */
-	public static URFDateTime valueOfTimestamp(final String string) throws ArgumentSyntaxException
+	public static ISODateTime valueOfTimestamp(final String string) throws ArgumentSyntaxException
 	{
 		try
 		{
-			return new URFDateTime(URFTemporalComponents.parseDateTimeUTCOffset(string, true, true, true, false, true)); //parse temporal components for both the date and the time, allowing RFC 3339 format, and use that to create a new date time object
+			return new ISODateTime(ISOTemporalComponents.parseDateTimeUTCOffset(string, true, true, true, false, true)); //parse temporal components for both the date and the time, allowing RFC 3339 format, and use that to create a new date time object
 		}
 		catch(final SyntaxException syntaxException) //if the syntax of the string was not correct
 		{

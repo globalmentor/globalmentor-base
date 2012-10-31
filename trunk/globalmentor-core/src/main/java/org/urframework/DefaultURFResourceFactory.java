@@ -26,6 +26,8 @@ import static com.globalmentor.model.Locales.*;
 import static com.globalmentor.net.URIs.*;
 import static org.urframework.URF.*;
 
+import com.globalmentor.iso.datetime.ISODate;
+import com.globalmentor.iso.datetime.ISODateTime;
 import com.globalmentor.java.Classes;
 import com.globalmentor.net.ContentType;
 
@@ -110,7 +112,7 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 	@return A default date resource with the appropriate type property added.
 	@exception NullPointerException if the given date is <code>null</code>.
 	*/
-	public URFResource createDateResource(final URFDate date)
+	public URFResource createDateResource(final ISODate date)
 	{
 		return createInlineResource(DATE_CLASS_URI, date.toString());	//create and return a default date resource
 	}
@@ -121,7 +123,7 @@ public class DefaultURFResourceFactory implements URFResourceFactory
 	@return A default date time resource with the appropriate type property added.
 	@exception NullPointerException if the given date time is <code>null</code>.
 	*/
-	public URFResource createDateTimeResource(final URFDateTime dateTime)
+	public URFResource createDateTimeResource(final ISODateTime dateTime)
 	{
 		return createInlineResource(DATE_TIME_CLASS_URI, dateTime.toString());	//create and return a default date time resource
 	}
