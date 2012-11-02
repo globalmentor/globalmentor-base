@@ -23,8 +23,6 @@ import static com.globalmentor.java.Enums.*;
 import java.io.*;
 import java.net.URI;
 
-import org.urframework.dcmi.DCMI;
-
 import com.globalmentor.application.AbstractApplication;
 import com.globalmentor.io.Files;
 import com.globalmentor.log.Log;
@@ -67,10 +65,9 @@ public class VCardCat extends AbstractApplication
 	 */
 	public VCardCat(final String[] args)
 	{
-		super(APPLICATION_URI, args); //construct the parent class
-		DCMI.setTitle(this, TITLE); //set the application name
+		super(APPLICATION_URI, TITLE, args); //construct the parent class
 		//TODO set version somehow
-		DCMI.setRights(this, COPYRIGHT); //set the application copyright
+		//TODO set the copyright DCMI.setRights(this, COPYRIGHT); //set the application copyright
 	}
 
 	/**
