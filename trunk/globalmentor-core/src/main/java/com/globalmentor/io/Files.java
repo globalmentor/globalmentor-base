@@ -20,8 +20,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-import org.urframework.maqro.MAQRO;
-
 import static java.util.Collections.*;
 
 import com.globalmentor.event.ProgressListener;
@@ -176,7 +174,7 @@ public class Files
 		tempFileExtensionContentTypeMap.put(Images.JPG_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(JavaScript.JS_NAME_EXTENSION, JavaScript.JAVASCRIPT_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put("marmox", ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "x-marmox-page+rdf+xml"));
-		tempFileExtensionContentTypeMap.put(MAQRO.MENTOR_ACTIVITY_NAME_EXTENSION, MAQRO.MENTOR_ACTIVITY_CONTENT_TYPE);
+		tempFileExtensionContentTypeMap.put("mact", ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "x-mentor-activity+turf"));
 		tempFileExtensionContentTypeMap.put(Audio.MP3_NAME_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, MPEG_SUBTYPE)); //RFC 3003
 		tempFileExtensionContentTypeMap.put(Video.MPEG_NAME_EXTENSION, ContentType.getInstance(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Video.MPG_NAME_EXTENSION, ContentType.getInstance(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
