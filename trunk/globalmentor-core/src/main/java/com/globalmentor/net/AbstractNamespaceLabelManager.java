@@ -26,6 +26,7 @@ import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.net.URIs.*;
 
 import com.globalmentor.collections.MapDecorator;
+import com.globalmentor.foaf.FOAF;
 import com.globalmentor.net.http.webdav.ApacheWebDAV;
 import com.globalmentor.rdf.RDF;
 import com.globalmentor.rdf.dicto.Dicto;
@@ -56,7 +57,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 		final Set<URI> knownNamespaceURIs=new HashSet<URI>();	//create a temporary set to fill
 		knownNamespaceURIs.add(ApacheWebDAV.APACHE_WEBDAV_PROPERTY_NAMESPACE_URI);	//Apache WebDAV properties
 		knownNamespaceURIs.add(URI.create("http://example.com/example/"));	//example
-		knownNamespaceURIs.add(URI.create("http://xmlns.com/foaf/0.1/"));	//FOAF
+		knownNamespaceURIs.add(FOAF.FOAF_NAMESPACE_URI);	//FOAF
 		//TODO move many of these out into application-specific initializations
 		knownNamespaceURIs.add(URI.create("http://urf.name/urf/"));	//URF
 		knownNamespaceURIs.add(URI.create("http://urf.name/default/"));	//URF default
@@ -75,7 +76,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 			//add default labels for special namespace URIs
 		tempNamespaceURILabelMap.put(Dicto.DICTO_NAMESPACE_URI, Dicto.DICTO_NAMESPACE_PREFIX); //Dicto
 		tempNamespaceURILabelMap.put(URI.create("http://purl.org/dc/elements/1.1/"), "dc"); //Dublin Core
-		tempNamespaceURILabelMap.put(URI.create("http://xmlns.com/foaf/0.1/"), "foaf"); //FOAF
+		tempNamespaceURILabelMap.put(FOAF.FOAF_NAMESPACE_URI, FOAF.FOAF_NAMESPACE_PREFIX); //FOAF
 //TODO convert to URF		tempNamespaceURILabelMap.put(MAQRO.MAQRO_NAMESPACE_URI, MAQRO.MAQRO_NAMESPACE_PREFIX); //MAQRO
 		tempNamespaceURILabelMap.put(OEB.OEB1_DOCUMENT_NAMESPACE_URI, OEB.OEB1_DOCUMENT_NAMESPACE_PREFIX); //OEB 1
 		tempNamespaceURILabelMap.put(URI.create("http://globalmentor.com/namespaces/marmot#"), "marmot"); //Marmot TODO link to Marmot constants when Marmot is included in normal libraries
