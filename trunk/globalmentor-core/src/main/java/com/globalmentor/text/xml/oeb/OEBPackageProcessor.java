@@ -25,6 +25,7 @@ import javax.xml.parsers.DocumentBuilder;
 import static com.globalmentor.rdf.xpackage.XPackage.*;
 import static com.globalmentor.text.xml.oeb.OEB.*;
 
+import static com.globalmentor.dcmi.DCMI.*;
 import static com.globalmentor.java.Objects.*;
 import com.globalmentor.log.Log;
 import static com.globalmentor.net.URIs.*;
@@ -33,8 +34,6 @@ import com.globalmentor.net.ContentType;
 import com.globalmentor.rdf.*;
 import com.globalmentor.text.xml.*;
 import com.globalmentor.text.xml.xpath.XPath;
-
-import static org.urframework.dcmi.DCMI.*;
 
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;

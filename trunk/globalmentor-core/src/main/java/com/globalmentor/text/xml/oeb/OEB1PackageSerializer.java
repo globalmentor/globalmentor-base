@@ -21,8 +21,10 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import static com.globalmentor.dcmi.DCMI.*;
 import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.rdf.RDFResources.*;
+import static com.globalmentor.text.xml.oeb.OEB.*;
 
 import com.globalmentor.log.Log;
 import com.globalmentor.model.NameValuePair;
@@ -30,8 +32,6 @@ import com.globalmentor.rdf.*;
 import com.globalmentor.rdf.xpackage.XPackage;
 import com.globalmentor.text.xml.XMLSerializer;
 import com.globalmentor.text.xml.XML;
-import static com.globalmentor.text.xml.oeb.OEB.*;
-import static org.urframework.dcmi.DCMI.*;
 
 import com.globalmentor.util.*;
 
