@@ -38,7 +38,6 @@ import static com.globalmentor.text.xml.oeb.OEB.*;
 import com.globalmentor.text.xml.xhtml.*;
 import com.globalmentor.util.*;
 
-import org.urframework.io.URFFiles;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
@@ -1461,6 +1460,7 @@ Log.trace("Looking for TOC element: ", childNode.toString());
 	@exception IOException Thrown if there is an error accessing or copying the
 		template.
 	*/
+	@Deprecated	//TODO fix; currently throws an unsupported operation exception
 	protected URL useTemplate(final URL templateURL) throws IOException
 	{
 		final String filename=getContextURL()!=null //if we have a context URL, get the filename
@@ -1501,8 +1501,11 @@ Log.trace("Looking for TOC element: ", childNode.toString());
 			formattedTemplateFile=URLs.getFile(URLs.createURL(getContextURL(), templateFilename));
 		}
 			//write the resulting file
-		URFFiles.write(formattedTemplateFile, formattedString.getBytes(CharacterEncoding.UTF_8));
-		return formattedTemplateFile.toURL(); //return a URL to the resulting file
+		//TODO fix URFFiles.write(formattedTemplateFile, formattedString.getBytes(CharacterEncoding.UTF_8));
+		
+		throw new UnsupportedOperationException("OEB publication file creation from template not yet reimplemented.");
+		
+		//TODO fix return formattedTemplateFile.toURL(); //return a URL to the resulting file
 	}
 
 	/**Writes the specified XML document to the given file. The output is formatted.
