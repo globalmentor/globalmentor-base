@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.urframework;
+package com.globalmentor.iso.datetime;
 
 import static com.globalmentor.time.TimeZones.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -31,11 +31,11 @@ import com.globalmentor.test.AbstractTest;
 import com.globalmentor.time.Milliseconds;
 
 /**
- * Tests storage and retrieval of URF date/times.
+ * Tests storage and retrieval of ISO date/times.
  * 
  * @author Garret Wilson
  */
-public class URFDateTimeTest extends AbstractTest
+public class ISODateTimeTest extends AbstractTest
 {
 
 	@Test
