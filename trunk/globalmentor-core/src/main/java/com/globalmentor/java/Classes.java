@@ -697,7 +697,7 @@ public class Classes
 
 	/**
 	 * A comparator that sorts ancestor classes primarily in terms of height (distance from a descendant class), secondarily in terms of concreteness (concrete
-	 * class, abstract class, and then interface), and tertiarialy by class name.
+	 * class, abstract class, and then interface), and tertiarily by class name.
 	 */
 	public final static Comparator<NameValuePair<Class<?>, Integer>> CONCRETE_CLASS_HEIGHT_COMPARATOR = new Comparator<NameValuePair<Class<?>, Integer>>()
 	{
