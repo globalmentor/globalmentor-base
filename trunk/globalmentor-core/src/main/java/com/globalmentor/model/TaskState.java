@@ -16,11 +16,13 @@
 
 package com.globalmentor.model;
 
+import com.globalmentor.lex.Identifier;
+
 /**
  * Represents the progress of a task.
  * @author Garret Wilson
  */
-public enum TaskState
+public enum TaskState implements Identifier
 {
 
 	/** The task has not yet begun. */

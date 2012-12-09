@@ -18,6 +18,7 @@ package com.globalmentor.java;
 
 import java.util.EnumSet;
 
+import com.globalmentor.lex.Identifier;
 import com.globalmentor.text.ASCII;
 
 import static com.globalmentor.java.Java.*;
@@ -50,24 +51,36 @@ public class Enums
 	}
 
 	/**
-	 * Returns a form of the enum name appropriate for serialization. The name is converted to lowercase and all underscore characters ('_') are replaced by
-	 * hyphens ('-'). For example, <code>FILE_NOT_FOUND</code> would produce <code>file-not-found</code>.
+	 * Returns a form of the enum name appropriate for serialization.
+	 * <p>
+	 * If the enum is a lexical {@link Identifier}, the name is converted to lowercase and all underscore characters ('_') are replaced by hyphens ('-'). For
+	 * example, <code>FILE_NOT_FOUND</code> would produce <code>file-not-found</code>.
+	 * </p>
 	 * @param e The enum instance to convert to a serialization form.
 	 * @return A string representing the enum instance in a style appropriate for use in serialization.
 	 * @see Enum#name()
+	 * @see Identifier
 	 */
 	public static <E extends Enum<E>> String getSerializationName(final E e)
 	{
-		final StringBuilder stringBuilder = new StringBuilder(e.name()); //start with the name of the enum
-		ASCII.toLowerCase(stringBuilder); //convert the name to lowercase (enums names will only consist of ASCII characters)
-		replace(stringBuilder, '_', '-'); //replace underscores with hyphens
-		return stringBuilder.toString();
+		String name = e.name();
+		if(e instanceof Identifier) //if the enum is an identifier
+		{
+			final StringBuilder stringBuilder = new StringBuilder(e.name()); //start with the name of the enum
+			ASCII.toLowerCase(stringBuilder); //convert the name to lowercase (enums names will only consist of ASCII characters)
+			replace(stringBuilder, '_', '-'); //replace underscores with hyphens
+			name = stringBuilder.toString();
+		}
+		return name;
 	}
 
 	/**
-	 * Returns the appropriate enum that has been serialized. The name is converted to uppercase and all hyphen characters ('-') are replaced by underscores ('_')
-	 * in order to determine the original enum name. For example, <code>file-not-found</code> would produce <code>FILE_NOT_FOUND</code>. This method assumes that
-	 * the original enum name does not contain lowercase letters.
+	 * Returns the appropriate enum that has been serialized.
+	 * <p>
+	 * If the enum is a lexical {@link Identifier}, the name is converted to uppercase and all hyphen characters ('-') are replaced by underscores ('_') in order
+	 * to determine the original enum name. For example, <code>file-not-found</code> would produce <code>FILE_NOT_FOUND</code>. This method assumes that the
+	 * original enum name does not contain lowercase letters.
+	 * </p>
 	 * @param enumType The class object of the enum type from which to return an enum.
 	 * @param serializationName The serialization form of the name of the enum to return.
 	 * @return The enum constant of the specified enum type with the specified serialization name.
@@ -75,13 +88,18 @@ public class Enums
 	 * @throws IllegalArgumentException if the specified enum type has no constant with the specified serialization name, or the specified class object does not
 	 *           represent an enum type.
 	 * @see Enum#valueOf(Class, String)
+	 * @see Identifier
 	 */
-	public static <E extends Enum<E>> E getSerializedEnum(final Class<E> enumType, final String serializationName)
+	public static <E extends Enum<E>> E getSerializedEnum(final Class<E> enumType, String serializationName)
 	{
-		final StringBuilder stringBuilder = new StringBuilder(serializationName); //start with the serialization name
-		replace(stringBuilder, '-', '_'); //convert hyphens to underscores
-		ASCII.toUpperCase(stringBuilder); //convert the serialization name back to uppercase
-		return Enum.valueOf(enumType, stringBuilder.toString()); //try to retrieve a corresponding enum from the original form of the name
+		if(Identifier.class.isAssignableFrom(enumType)) //if the enum is an identifier
+		{
+			final StringBuilder stringBuilder = new StringBuilder(serializationName); //start with the serialization name
+			replace(stringBuilder, '-', '_'); //convert hyphens to underscores
+			ASCII.toUpperCase(stringBuilder); //convert the serialization name back to uppercase
+			serializationName = stringBuilder.toString();
+		}
+		return Enum.valueOf(enumType, serializationName); //try to retrieve a corresponding enum from the original form of the name
 	}
 
 	/**

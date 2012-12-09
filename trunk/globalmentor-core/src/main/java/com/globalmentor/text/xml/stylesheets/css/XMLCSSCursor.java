@@ -16,11 +16,13 @@
 
 package com.globalmentor.text.xml.stylesheets.css;
 
+import com.globalmentor.lex.Identifier;
+
 /**Standard cursors supported by CSS.
 @author Garret Wilson
 @see <a href="http://www.w3.org/TR/CSS21/ui.html">CSS 2.1 User Interface: Cursors</a>
 */
-public enum XMLCSSCursor
+public enum XMLCSSCursor implements Identifier
 {
 
 	/**The UA determines the cursor to display based on the current context.*/

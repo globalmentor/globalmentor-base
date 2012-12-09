@@ -25,6 +25,7 @@ import java.net.URI;
 
 import com.globalmentor.application.AbstractApplication;
 import com.globalmentor.io.Files;
+import com.globalmentor.lex.Identifier;
 import com.globalmentor.log.Log;
 
 /**
@@ -51,7 +52,7 @@ public class VCardCat extends AbstractApplication
 	public final static String VERSION = "1.0-SNAPSHOT build 2010-04-23";
 
 	/** Application command-line parameters. */
-	public enum Parameter
+	public enum Parameter implements Identifier
 	{
 		/** The input file or directory. */
 		INPUT,
