@@ -18,7 +18,6 @@ package com.globalmentor.text.directory.vcard;
 
 import static com.globalmentor.application.CommandLineArguments.*;
 import static com.globalmentor.java.Characters.*;
-import static com.globalmentor.java.Enums.*;
 
 import java.io.*;
 import java.net.URI;
@@ -78,7 +77,7 @@ public class VCardCat extends AbstractApplication
 	public int main()
 	{
 		final String[] args = getArgs(); //get the arguments
-		final String inputString = getOption(args, getSerializationName(Parameter.INPUT)); //get the input parameter
+		final String inputString = getOption(args, Parameter.INPUT); //get the input parameter
 		if(inputString == null) //if the source parameter is missing
 		{
 			System.out.println(TITLE);
@@ -87,7 +86,7 @@ public class VCardCat extends AbstractApplication
 			System.out.println("Usage: VCardCat --input <file[wildcard]> [--output file]");
 			return 0;
 		}
-		final String outputString = getOption(args, getSerializationName(Parameter.OUTPUT)); //get the output parameter, if any
+		final String outputString = getOption(args, Parameter.OUTPUT); //get the output parameter, if any
 		try
 		{
 			final OutputStream outputStream = outputString != null ? new BufferedOutputStream(new FileOutputStream(outputString)) : System.out;
