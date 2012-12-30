@@ -19,6 +19,9 @@ package com.globalmentor.java;
 import java.io.*;
 import static java.util.Arrays.*;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.CharSequences.*;
@@ -26,6 +29,7 @@ import static com.globalmentor.java.Integers.*;
 import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.StringBuilders.*;
 
+import com.globalmentor.collections.ObjectList;
 import com.globalmentor.text.RomanNumerals;
 
 /**
@@ -618,6 +622,54 @@ public final class Characters
 			}
 		}
 		return this; //if we didn't have any of the given characters to begin with, return the characters the way they are
+	}
+
+	/**
+	 * Splits a character sequence on the these characters. Runs of matching characters are removed and the interspersed tokens are returned.
+	 * <p>
+	 * This method is likely more efficient than a regular expression-based approach, especially in situations in which splitting is likely to occur at a small
+	 * frequency, because the setup cost is low and individual character testing is efficient.
+	 * </p>
+	 * <p>
+	 * TODO The current implementation does not support surrogate characters.
+	 * </p>
+	 * @param charSequence The character sequence to split.
+	 * @return A list of subsequences; the list may not be mutable.
+	 */
+	public List<CharSequence> split(final CharSequence charSequence)
+	{
+		ArrayList<CharSequence> subsequences = null; //we'll only create this if we have to
+		final int length = charSequence.length();
+		int start = 0;
+		while(start < length)
+		{
+			//skip delimiters
+			while(start < length && contains(charSequence.charAt(start)))
+			{
+				++start;
+			}
+			if(start == length) //if we've reached the end, stop
+			{
+				break;
+			}
+			//gather all non-delimiters to form a token
+			int end = start + 1;
+			while(end < length && !contains(charSequence.charAt(end)))
+			{
+				++end;
+			}
+			if(subsequences == null) //if we haven't created any subsequences
+			{
+				if(start == 0 && end == length) //if the whole character sequence is non-delimiters (there were no delimiters) 
+				{
+					return new ObjectList<CharSequence>(charSequence); //there is only one token to return
+				}
+				subsequences = new ArrayList<CharSequence>(); //if we're really splitting the string, we'll need a new list
+			}
+			subsequences.add(charSequence.subSequence(start, end)); //add this subsequence
+			start = end; //start over at the end of this subsequence
+		}
+		return subsequences != null ? subsequences : Collections.<CharSequence> emptyList();
 	}
 
 	/** @return A string containing these characters. */

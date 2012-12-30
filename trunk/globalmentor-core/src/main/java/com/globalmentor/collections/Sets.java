@@ -102,7 +102,13 @@ public class Sets
 				return new ObjectSet<E>(element); //return an immutable set containing only one object
 			}
 			Set<E> set = null;
-			if(element instanceof Enum) //if the elements are enums
+			if(collection instanceof EnumSet<?>) //if the collection is an EnumSet, just clone it
+			{
+				@SuppressWarnings("unchecked")
+				final Set<E> enumSet = (Set<E>)((EnumSet<?>)collection).clone();
+				set = enumSet;
+			}
+			else if(element instanceof Enum) //if the elements are enums
 			{
 				final Class<?> enumClass = element.getClass(); //get the class of enum we're dealing with
 				boolean areAllSameEnums = true; //make sure all elements are of the same class
