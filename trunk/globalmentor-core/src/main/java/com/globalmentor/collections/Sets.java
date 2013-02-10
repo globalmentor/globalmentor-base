@@ -171,4 +171,37 @@ public class Sets
 		return unmodifiableSet(newSet); //wrap the set in an unmodifiable set
 	}
 
+	/**
+	 * Checks that two sets are equal.
+	 * <p>
+	 * This method performs logic equivalent to {@link Set#equals(Object)}, except that a descriptive exception is thrown on inequality. This is particularly
+	 * useful for debugging.
+	 * </p>
+	 * @param set1 The first set to compare.
+	 * @param set2 The second test to compare.
+	 * @throws IllegalArgumentException if the sets are not equal.
+	 */
+	public static <E> void checkArgumentsEqual(Set<E> set1, Set<E> set2)
+	{
+		//if the sets are different sizes, make sure the first set is the larger set
+		final String set2Name;
+		if(set1.size() < set2.size())
+		{
+			set2Name = "first";
+			final Set<E> temp = set1;
+			set1 = set2;
+			set2 = temp;
+		}
+		else
+		{
+			set2Name = "second";
+		}
+		for(final E element : set1)
+		{
+			if(!set2.contains(element))
+			{
+				throw new IllegalArgumentException("The " + set2Name + " set is missing element " + element);
+			}
+		}
+	}
 }
