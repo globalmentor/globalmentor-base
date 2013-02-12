@@ -1,5 +1,5 @@
 /*
- * Copyright © 2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2008-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.globalmentor.java;
 
 import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
 
 /**
  * Various checks on objects. Some of these methods indicate <dfn>preconditions</dfn> on objects given as arguments in a method.
@@ -49,13 +50,24 @@ public class Conditions
 	 * This is a precondition check.
 	 * </p>
 	 * @param test The result of the test.
-	 * @param description A description of the test to be used when generating an exception, or <code>null</code> for no description.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @throws NullPointerException if the given arguments is <code>null</code>.
 	 * @throws IllegalArgumentException if the given value is <code>false</code>.
+	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
+	 *           format element(s) that use it.
+	 * @see MessageFormat#format(String, Object...)
 	 */
-	public static void checkArgument(final boolean test, final String description)
+	public static void checkArgument(final boolean test, String description, final Object... arguments)
 	{
 		if(!test)
 		{
+			//format the message if appropriate
+			if(description != null && arguments.length > 0)
+			{
+				description = MessageFormat.format(description, arguments);
+			}
 			throw new IllegalArgumentException(description);
 		}
 	}
@@ -81,13 +93,24 @@ public class Conditions
 	 * </p>
 	 * @param object The object to test.
 	 * @param return The given object.
-	 * @param description A description of the test to be used when generating an exception, or <code>null</code> for no description.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
 	 * @throws IllegalArgumentException if the given object is <code>null</code>.
+	 * @throws NullPointerException if the given arguments is <code>null</code>.
+	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
+	 *           format element(s) that use it.
+	 * @see MessageFormat#format(String, Object...)
 	 */
-	public static <T> T checkArgumentNotNull(final T object, final String description)
+	public static <T> T checkArgumentNotNull(final T object, String description, final Object... arguments)
 	{
 		if(object == null)
 		{
+			//format the message if appropriate
+			if(description != null && arguments.length > 0)
+			{
+				description = MessageFormat.format(description, arguments);
+			}
 			throw new IllegalArgumentException(description);
 		}
 		return object;
