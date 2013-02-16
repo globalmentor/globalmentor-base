@@ -61,7 +61,7 @@ public class Enums
 	 * @see Enum#name()
 	 * @see Identifier
 	 */
-	public static <E extends Enum<E>> String getSerializationName(final E e)
+	public static <E extends Enum<?>> String getSerializationName(final E e)	//JDK 6/7 does not work with some enum generics if Enum<E> is used; Eclipse 4.2.1 works fine
 	{
 		String name = e.name();
 		if(e instanceof Identifier) //if the enum is an identifier
