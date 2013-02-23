@@ -172,7 +172,7 @@ public class URIs
 	 */
 	public static String createURIList(final URI... uris)
 	{
-		return formatList("\r\n", uris); //create the URI list
+		return formatList("\r\n", (Object[])uris); //create the URI list
 	}
 
 	/**
@@ -1751,13 +1751,49 @@ public class URIs
 
 	/**
 	 * Determines whether the given path is a canonical collection path.
-	 * @param rawPath The raw path to examine.
+	 * @param path The raw path to examine.
 	 * @return <code>true</code> if the path ends with a slash ('/').
 	 * @throws NullPointerException if the given path is <code>null</code>.
 	 */
-	public static boolean isCollectionPath(final String rawPath)
+	public static boolean isCollectionPath(final String path)
 	{
-		return endsWith(rawPath, PATH_SEPARATOR); //see if the path ends with '/'		
+		return endsWith(path, PATH_SEPARATOR); //see if the path ends with '/'		
+	}
+
+	/**
+	 * Checks to see if a given path represents a canonical collection, that is, it has a path that ends with a slash ('/'). If the given path is not a collection
+	 * path, an exception is thrown.
+	 * @param path The raw path to examine.
+	 * @return The given collection path.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @throws IllegalArgumentException if the provided path does not end with a slash ('/').
+	 * @see #isCollectionPath(String)
+	 */
+	public static String checkCollectionPath(final String path)
+	{
+		if(!isCollectionPath(path)) //if the path is not a collection path
+		{
+			throw new IllegalArgumentException("The given path " + path + " is not a collection path.");
+		}
+		return path; //return the collection path
+	}
+
+	/**
+	 * Checks to see if a given path does not represents a canonical collection, that is, it does not have a path that ends with a slash ('/'). If the given path
+	 * is not a collection path, an exception is thrown.
+	 * @param path The raw path to examine.
+	 * @return The given non-collection path.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @throws IllegalArgumentException if the provided path ends with a slash ('/').
+	 * @see #isCollectionPath(String)
+	 */
+	public static String checkNotCollectionPath(final String path)
+	{
+		if(isCollectionPath(path)) //if the path is a collection path
+		{
+			throw new IllegalArgumentException("The given path " + path + " is a collection path.");
+		}
+		return path; //return the collection path
 	}
 
 	/**
