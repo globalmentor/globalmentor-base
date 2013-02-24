@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,15 @@ import com.globalmentor.net.URIPath;
 public class DefaultTypeConverter implements TypeConverter
 {
 
-	/** {@inheritDoc} */
+	/** The default, shared instance of the converter. */
+	public final static DefaultTypeConverter INSTANCE = new DefaultTypeConverter();
+
+	/** Default constructor; used only for the singleton instance and for extension. */
+	protected DefaultTypeConverter()
+	{
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T convert(final Object object, final Class<T> requiredType) throws IllegalArgumentException //TODO search for a string constructor or a static valueOf() method
 	{
@@ -56,33 +64,33 @@ public class DefaultTypeConverter implements TypeConverter
 		{
 			if(object instanceof Boolean) //if the object is a Boolean
 			{
-				if(Boolean.TYPE.equals(requiredType)) //if the required type is boolean (we already checked for Boolean when we checked to see if the types were the same)
+				if(boolean.class.isAssignableFrom(requiredType)) //if the required type is boolean (we already checked for Boolean when we checked to see if the types were the same)
 				{
 					return (T)object; //return the Boolean object
 				}
 			}
 			else if(object instanceof Character) //if the object is a Character
 			{
-				if(Character.TYPE.equals(requiredType)) //if the required type is char (we already checked for Character when we checked to see if the types were the same)
+				if(char.class.isAssignableFrom(requiredType)) //if the required type is char (we already checked for Character when we checked to see if the types were the same)
 				{
 					return (T)object; //return the Character object
 				}
 			}
 			else if(object instanceof Number) //if the object is a Number
 			{
-				if(Long.TYPE.equals(requiredType) || Long.class.isAssignableFrom(requiredType)) //if the required type is long or Long 
+				if(long.class.isAssignableFrom(requiredType) || Long.class.isAssignableFrom(requiredType)) //if the required type is long or Long 
 				{
 					return (T)(object instanceof Long ? object : Long.valueOf(((Number)object).longValue())); //return a Long version of the object
 				}
-				else if(Integer.TYPE.equals(requiredType) || Integer.class.isAssignableFrom(requiredType)) //if the required type is integer or integer 
+				else if(int.class.isAssignableFrom(requiredType) || Integer.class.isAssignableFrom(requiredType)) //if the required type is integer or integer 
 				{
 					return (T)(object instanceof Integer ? object : Integer.valueOf(((Number)object).intValue())); //return an Integer version of the object
 				}
-				else if(Double.TYPE.equals(requiredType) || Double.class.isAssignableFrom(requiredType)) //if the required type is double or Double
+				else if(double.class.isAssignableFrom(requiredType) || Double.class.isAssignableFrom(requiredType)) //if the required type is double or Double
 				{
 					return (T)(object instanceof Double ? object : Double.valueOf(((Number)object).doubleValue())); //return a Double version of the object
 				}
-				else if(Float.TYPE.equals(requiredType) || Float.class.isAssignableFrom(requiredType)) //if the required type is float or Float
+				else if(float.class.isAssignableFrom(requiredType) || Float.class.isAssignableFrom(requiredType)) //if the required type is float or Float
 				{
 					return (T)(object instanceof Double ? object : Float.valueOf(((Number)object).floatValue())); //return a Float version of the object
 				}
@@ -91,7 +99,7 @@ public class DefaultTypeConverter implements TypeConverter
 			else if(object instanceof String) //if the object is a string, see if we can convert it to the correct type
 			{
 				final String stringObject = (String)object; //cast the value to a String
-				if(requiredType.isArray() && Character.TYPE.equals(requiredType.getComponentType())) //if the required type is a character array
+				if(requiredType.isArray() && char.class.isAssignableFrom(requiredType.getComponentType())) //if the required type is a character array
 				{
 					return (T)stringObject.toCharArray(); //return the string as a character array
 				}
