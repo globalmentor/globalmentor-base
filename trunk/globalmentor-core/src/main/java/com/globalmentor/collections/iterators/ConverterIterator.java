@@ -24,9 +24,9 @@ import com.globalmentor.model.Converter;
 
 /**
  * An iterator that returns its objects converted using a {@link Converter}.
- * @author Garret Wilson
  * @param <I> The input type.
  * @param <O> The output type.
+ * @author Garret Wilson
  * @see Converter
  */
 public class ConverterIterator<I, O> implements Iterator<O>
@@ -61,7 +61,7 @@ public class ConverterIterator<I, O> implements Iterator<O>
 		this.converter = checkInstance(converter);
 	}
 
-	/** {@inheritDoc} */
+	@Override
 	public boolean hasNext()
 	{
 		return getIterator().hasNext();
@@ -74,12 +74,13 @@ public class ConverterIterator<I, O> implements Iterator<O>
 	 * </p>
 	 * @see Converter#convert(Object)
 	 */
+	@Override
 	public O next()
 	{
 		return getConverter().convert(getIterator().next());
 	}
 
-	/** {@inheritDoc} */
+	@Override
 	public void remove()
 	{
 		getIterator().remove();
