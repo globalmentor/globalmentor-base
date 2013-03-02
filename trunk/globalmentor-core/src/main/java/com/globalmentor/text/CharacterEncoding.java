@@ -248,7 +248,7 @@ public class CharacterEncoding	//TODO remove BOM storage, and then replace class
 		}
 		return true;	//the array of bytes passed all the tests
 	}
-
+	
 	/**Creates a <code>CharacterEncoding</code> object from the given Byte Order Mark.
 	If no valid Byte Order Mark is present, <code>null</code> is returned.
 	@param byteOrderMarkArray The array of bytes representing the Byte Order Mark.

@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,40 +17,43 @@
 package com.globalmentor.io;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
-import com.globalmentor.text.CharacterEncoding;
-
+import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.io.InputStreams.*;
-import static com.globalmentor.text.CharacterEncoding.*;
 
-/**A reader that attempts to autodetect the character encoding of an input stream from the beginning byte order mark (BOM).
-<p>The input stream must be at its beginning and must support marking and resetting.</p>
-@author Garret Wilson
-*/
-public class BOMInputStreamReader extends InputStreamReader	//TODO create a version of this class that does not depend on input stream marking and resetting.
+/**
+ * A reader that attempts to auto-detect the charset of an input stream from the beginning byte order mark (BOM).
+ * <p>
+ * The input stream must be at its beginning and must support marking and resetting.
+ * </p>
+ * @author Garret Wilson
+ * @see ByteOrderMark
+ */
+public class BOMInputStreamReader extends InputStreamReader //TODO create a version of this class that does not depend on input stream marking and resetting.
 {
 
-	/**Constructs an input stream reader that uses UTF-8 as the default character set
-	 	if the character set cannot be determined by the BOM.
-	@param inputStream An input stream; must be at its beginning and must support marking and resetting.
-	@exception IOException if there is an error attempting to read the byte order mark from the input stream.
-	@exception UnsupportedEncodingException if the named charset is not supported.
-	*/
+	/**
+	 * Constructs an input stream reader that uses UTF-8 as the default charset if the charset cannot be determined by the BOM.
+	 * @param inputStream An input stream; must be at its beginning and must support marking and resetting.
+	 * @throws IOException if there is an error attempting to read the byte order mark from the input stream.
+	 * @throws UnsupportedEncodingException if the named charset is not supported.
+	 */
 	public BOMInputStreamReader(final InputStream inputStream) throws IOException, UnsupportedEncodingException
 	{
-		this(inputStream, UTF_8);	//default to UTF-8 if we can't determine the character encoding by the BOM
+		this(inputStream, UTF_8_CHARSET); //default to UTF-8 if we can't determine the charset by the BOM
 	}
-	
-	/**Constructs an input stream reader that uses the given named character set as a default
-	 	if the character set cannot be determined by the BOM.
-	@param inputStream An input stream; must be at its beginning and must support marking and resetting.
-	@param defaultCharsetName The name of the default character set to use if one cannot be determined by the BOM.
-	@exception IOException if there is an error attempting to read the byte order mark from the input stream.
-	@exception UnsupportedEncodingException if the named charset is not supported.
-	*/
-	public BOMInputStreamReader(final InputStream inputStream, final String defaultCharsetName) throws IOException, UnsupportedEncodingException
+
+	/**
+	 * Constructs an input stream reader that uses the given named charset as a default if the charset cannot be determined by the BOM.
+	 * @param inputStream An input stream; must be at its beginning and must support marking and resetting.
+	 * @param defaultCharset The default charset to use if one cannot be determined by the BOM.
+	 * @throws IOException if there is an error attempting to read the byte order mark from the input stream.
+	 * @throws UnsupportedEncodingException if the named charset is not supported.
+	 */
+	public BOMInputStreamReader(final InputStream inputStream, final Charset defaultCharset) throws IOException, UnsupportedEncodingException
 	{
-		super(inputStream, getBOMEncoding(inputStream, new CharacterEncoding(defaultCharsetName)).toString());	//construct an input stream reader, guessing the encoding from the BOM if we can
+		super(inputStream, detectCharset(inputStream, defaultCharset)); //construct an input stream reader, guessing the encoding from the BOM if we can
 	}
 
 }

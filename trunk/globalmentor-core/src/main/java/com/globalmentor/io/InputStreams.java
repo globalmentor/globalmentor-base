@@ -17,6 +17,7 @@
 package com.globalmentor.io;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 import static com.globalmentor.java.Conditions.*;
 import static java.lang.System.*;
@@ -32,8 +33,8 @@ import com.globalmentor.text.CharacterEncoding;
 public class InputStreams
 {
 
-	/**The shared instance of an input stream with no content.*/
-	public final static InputStream EMPTY_INPUT_STREAM=new EmptyInputStream();
+	/** The shared instance of an input stream with no content. */
+	public final static InputStream EMPTY_INPUT_STREAM = new EmptyInputStream();
 
 	/**
 	 * Loads the contents of an input stream into an array of bytes. This is accomplished by creating a series of smaller buffers and, once the end of the stream
@@ -247,6 +248,62 @@ public class InputStreams
 		}
 		inputStream.reset(); //reset the stream back to where we found it
 		return defaultCharacterEncoding; //we couldn't find an encoding; return the default
+	}
+
+	/**
+	 * Attempts to automatically detect the charset of a particular input stream based upon its byte order marker (BOM).
+	 * <p>
+	 * The input stream must be at its beginning and must support marking and resetting.
+	 * </p>
+	 * @param inputStream The stream the charset of which will be detected.
+	 * @return The charset detected, or <code>null</code> if no byte order mark could be detected.
+	 * @throws IOException if an unusual byte order mark is encountered.
+	 * @throws IOException if an I/O error occurred.
+	 * @see ByteOrderMark
+	 * @see ByteOrderMark#isUnusual()
+	 */
+	public static Charset detectCharset(final InputStream inputStream) throws IOException
+	{
+		return detectCharset(inputStream, null); //detect the charset, returning null if the BOM can't be determined
+	}
+
+	/**
+	 * Attempts to automatically detect the charset from the byte order mark (BOM) of a particular input stream.
+	 * <p>
+	 * The input stream must be at its beginning and must support marking and resetting.
+	 * </p>
+	 * @param inputStream The stream the charset of which will be detected.
+	 * @param defaultCharset The charset to return if the encoding can't be determined by the byte order mark.
+	 * @return The charset detected, or the given default charset if no byte order mark could be detected.
+	 * @throws IOException if an unusual byte order mark is encountered.
+	 * @throws IOException if an I/O error occurred.
+	 * @see ByteOrderMark
+	 * @see ByteOrderMark#isUnusual()
+	 */
+	public static Charset detectCharset(final InputStream inputStream, final Charset defaultCharset) throws IOException
+	{
+		final int BYTE_ORDER_MARK_LENGTH = 4; //the number of bytes in the largest byte order mark
+		inputStream.mark(BYTE_ORDER_MARK_LENGTH); //we won't read more than the byte order mark
+		final byte[] bytes = new byte[BYTE_ORDER_MARK_LENGTH]; //create an array to hold the byte order mark
+		Arrays.fill(bytes, (byte)0); //fill the array with zeros, in case we can't completely fill it with bytes from the input stream
+		final int byteOrderMarkCount = inputStream.read(bytes); //read as many characters of the byte order mark as we can
+		if(byteOrderMarkCount > 0) //if we read any characters as all
+		{
+			ByteOrderMark bom = ByteOrderMark.detectByteOrderMark(bytes); //try to detect the byte order mark
+			if(bom != null) //if we discovered a BOM
+			{
+				bom.checkUsualIO(); //make sure this is a usual 
+				//throw away the BOM
+				inputStream.reset(); //reset the stream back to where we found it
+				for(int i = bom.getLength() - 1; i >= 0; --i) //throw away the correct number of bytes
+				{
+					inputStream.read(); //throw away a byte
+				}
+				return bom.toCharset(); //return the charset for this BOM
+			}
+		}
+		inputStream.reset(); //reset the stream back to where we found it
+		return defaultCharset; //we couldn't find a BOM; return the default charset
 	}
 
 }

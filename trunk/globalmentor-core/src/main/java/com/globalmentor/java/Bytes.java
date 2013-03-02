@@ -74,4 +74,26 @@ public class Bytes
 		return bytes;
 	}
 
+	/**
+	 * Determines if the given byte array starts with the specified prefix. Neither byte array is modified by this method.
+	 * @param bytes The bytes being examined.
+	 * @param prefix The prefix to compare with the given bytes.
+	 * @return Whether the given bytes start with the specified prefix.
+	 */
+	public static boolean startsWith(final byte[] bytes, final byte[] prefix)
+	{
+		if(bytes.length < prefix.length) //if the array of bytes is not as long as the specified prefix
+		{
+			return false; //there aren't enough bytes to compare
+		}
+		for(int i = prefix.length - 1; i >= 0; --i) //look at each of the prefix bytes
+		{
+			if(bytes[i] != prefix[i]) //if these bytes don't match
+			{
+				return false; //show that there is a mismatch
+			}
+		}
+		return true; //the array of bytes passed all the tests
+	}
+
 }
