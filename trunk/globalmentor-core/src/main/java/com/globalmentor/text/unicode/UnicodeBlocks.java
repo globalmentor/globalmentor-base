@@ -21,9 +21,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.*;
 
+import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.CharSequences.*;
-
-import com.globalmentor.text.CharacterEncoding;
 
 /**Accesses Unicode named character blocks.
 The set iterator will return the blocks in sequential order.
@@ -85,7 +84,7 @@ public class UnicodeBlocks
 			//get an input stream to our Unicode data resource file
 		final InputStream inputStream=UnicodeData.class.getResourceAsStream(BLOCKS_FILENAME);
 			//buffer the input stream and turn it into an ASCII reader
-		return new InputStreamReader(new BufferedInputStream(inputStream), CharacterEncoding.ISO_8859_1);
+		return new InputStreamReader(new BufferedInputStream(inputStream), ISO_8859_1_CHARSET);
 	}
 
 	/**Loads a set of Unicode blocks from the Unicode blocks resource text file.

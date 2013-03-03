@@ -16,8 +16,11 @@
 
 package com.globalmentor.text;
 
+import static com.globalmentor.io.Charsets.*;
+
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
 
 import com.globalmentor.io.*;
 
@@ -72,10 +75,9 @@ public class TextIOKit extends AbstractIOKit<StringBuilder>
 	*/ 
 	public StringBuilder load(final InputStream inputStream, final URI baseURI) throws IOException
 	{
-		final CharacterEncoding encoding=InputStreams.getBOMEncoding(inputStream);	//try to sense from the byte order mark the encoding of the text
+		final Charset charset=InputStreams.detectCharset(inputStream, Charset.defaultCharset());	//try to sense from the byte order mark the encoding of the text, defaulting to the JVM default TODO it would be better to define a better default	
 		final byte[] bytes=InputStreams.getBytes(inputStream);	//get the bytes from the input stream
-		//use the character encoding we sensed to create a string, using a default encoding if we couldn't sense one from the byte order mark
-		final String string=encoding!=null ? new String(bytes, encoding.toString()) : new String(bytes);
+		final String string=new String(bytes, charset);	//use the character encoding we sensed to create a string
 		return new StringBuilder(string);	//return a text model from the text we read
 	}
 	
@@ -86,8 +88,8 @@ public class TextIOKit extends AbstractIOKit<StringBuilder>
 	*/
 	public void save(final StringBuilder model, final OutputStream outputStream) throws IOException
 	{
-		outputStream.write(CharacterEncoding.BOM_UTF_8);	//write the UTF-8 byte order mark
-		final Writer writer=new OutputStreamWriter(outputStream, CharacterEncoding.UTF_8);	//create a UTF-8 writer
+		outputStream.write(ByteOrderMark.UTF_8.getBytes());	//write the UTF-8 byte order mark
+		final Writer writer=new OutputStreamWriter(outputStream, UTF_8_CHARSET);	//create a UTF-8 writer
 		writer.write(model.toString());	//write the text to the writer
 		writer.flush();	//flush the data to the output stream
 	}

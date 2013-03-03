@@ -47,6 +47,8 @@ public class Charsets
 	/**The canonical name of the Cp1252 charset.*/
 	public final static String WINDOWS_1252_NAME="windows-1252";
 
+	/**The ISO-88-59-1 charset.*/
+	public final static Charset ISO_8859_1_CHARSET=Charset.forName(ISO_8859_1_NAME);
 	/**The UTF-8 charset.*/
 	public final static Charset UTF_8_CHARSET=Charset.forName(UTF_8_NAME);
 	/**The US-ASCII charset.*/

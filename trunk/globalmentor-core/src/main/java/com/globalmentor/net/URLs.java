@@ -18,6 +18,7 @@ package com.globalmentor.net;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
 
 import com.globalmentor.io.*;
 import com.globalmentor.net.http.HTTP;
@@ -275,14 +276,14 @@ public class URLs
 	/**
 	 * Loads the contents of a URL into a string.
 	 * @param url The URL from which to read.
-	 * @param encoding The encoding (such as UTF-8) used to store the string.
+	 * @param charset The charset used to store the string.
 	 * @return A string containing the contents of the URL.
-	 * @exception IOException Thrown if there is an error loading the bytes.
+	 * @exception IOException if there is an error loading the bytes.
 	 */
-	public static String readString(final URL url, final String encoding) throws IOException
+	public static String readString(final URL url, final Charset charset) throws IOException
 	{
 		final byte[] bytes = readBytes(url); //load the contents of the URL
-		return new String(bytes, encoding); //convert the bytes into a string, using the given encoding
+		return new String(bytes, charset); //convert the bytes into a string, using the given encoding
 	}
 
 	/**

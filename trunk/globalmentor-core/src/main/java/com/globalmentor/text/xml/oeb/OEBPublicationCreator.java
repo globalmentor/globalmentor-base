@@ -18,11 +18,14 @@ package com.globalmentor.text.xml.oeb;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.*;
 
 import com.globalmentor.io.*;
 import com.globalmentor.java.*;
+
+import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.java.Characters.*;
 import com.globalmentor.log.Log;
 import com.globalmentor.model.Locales;
@@ -499,7 +502,7 @@ Log.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentURL
 	@param textURL The URL to the tetx document which should be included
 		in the publication.
 	@param referenceURI The identifying URI of the publication.
-	@param encoding The encoding to use when reading the text file.
+	@param charset The charset to use when reading the text file.
 	@param outputDir The output directory to use for writing files, or
 		<code>null</code> if the default should be used.
 	@return A new publication constructed from the text document.
@@ -508,7 +511,7 @@ Log.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentURL
 		from the directory. TODO fix comment
 	@exception IOException Thrown if there is an error reading or writing to a file.
 	*/
-	public OEBPublication createPublicationFromText(final URL textURL, URI referenceURI, final String encoding, final File outputDir) throws URISyntaxException, MalformedURLException, IOException
+	public OEBPublication createPublicationFromText(final URL textURL, URI referenceURI, final Charset charset, final File outputDir) throws URISyntaxException, MalformedURLException, IOException
 	{
 		if(outputDir!=null) //if an output directory is specified
 			setOutputDir(outputDir.getCanonicalFile());  //set the output directory TODO should we make sure this directory exists, and create it if  not?
@@ -517,7 +520,7 @@ Log.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentURL
 		try
 		{
 				//TODO maybe use a shared XHTMLCreator
-		  new XHTMLCreator().createXHTMLFromText(document, textInputStream, encoding);  //convert the text to XHTML
+		  new XHTMLCreator().createXHTMLFromText(document, textInputStream, charset);  //convert the text to XHTML
 			document.normalize(); //normalize the document so that all the consecutive text regions will be combined
 		}
 		finally
@@ -1481,7 +1484,7 @@ Log.trace("Looking for TOC element: ", childNode.toString());
 			  ? "projectgutenbergheader.html" //point to the header we created TODO use a constant
 				: URLs.getFileName(getContextURL());  //otherwise, just point to the main content TODO does this method always work?
 		  //read the template as a string, assuming UTF-8 encoding
-		final String templateString=URLs.readString(templateURL, CharacterEncoding.UTF_8);
+		final String templateString=URLs.readString(templateURL, UTF_8_CHARSET);
 			//store the title and author in the preface, making sure all the content is valid for XML content
 	  final String formattedString=MessageFormat.format(templateString,
 			  new Object[]{

@@ -23,11 +23,12 @@ import static java.util.Collections.*;
 import java.util.StringTokenizer;
 
 import com.globalmentor.log.Log;
+
+import static com.globalmentor.io.Charsets.*;
 import static com.globalmentor.text.unicode.UnicodeBlocks.*;
 import static com.globalmentor.text.unicode.UnicodeConstants.*;
 
 import com.globalmentor.java.Integers;
-import com.globalmentor.text.CharacterEncoding;
 
 /**Represents the Unicode data in the file <code>UnicodeData.txt</code>.
 <p>This class expects the Unicode data file to exist in the same package as
@@ -169,7 +170,7 @@ public class UnicodeData
 			//get an input stream to our Unicode data resource file
 		final InputStream inputStream=UnicodeData.class.getResourceAsStream(UNICODE_DATA_FILENAME);
 			//buffer the input stream and turn it into an ASCII reader
-		return new InputStreamReader(new BufferedInputStream(inputStream), CharacterEncoding.ISO_8859_1);
+		return new InputStreamReader(new BufferedInputStream(inputStream), ISO_8859_1_CHARSET);
 	}
 
 	/**Loads the list of Unicode characters from the Unicode data resource text file.

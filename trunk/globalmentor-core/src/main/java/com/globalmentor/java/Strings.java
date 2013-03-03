@@ -22,9 +22,9 @@ import java.nio.charset.Charset;
 
 import static com.globalmentor.io.Charsets.*;
 
+import com.globalmentor.io.Charsets;
 import com.globalmentor.io.IO;
 import static com.globalmentor.java.Characters.*;
-import com.globalmentor.text.*;
 
 /**
  * Various text manipulating functions. These methods work on {@link String} objects, which are immutable heavyweight objects that must be recreated with every
@@ -961,12 +961,12 @@ public class Strings
 	}
 
 	/**
-	 * Writes an object to a string using the given I/O support, converting bytes to a string using the {@value CharacterEncoding#UTF_8} encoding.
+	 * Writes an object to a string using the given I/O support, converting bytes to a string using the {@value Charsets#UTF_8_CHARSET}.
 	 * @param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	 * @param object The object to write to a string.
 	 * @param io The I/O support for writing the object.
 	 * @throws IOException if there is an error writing the data.
-	 * @throws UnsupportedEncodingException if the {@value CharacterEncoding#UTF_8} character encoding is not supported.
+	 * @throws UnsupportedEncodingException if the {@value Charsets#UTF_8_CHARSET} character encoding is not supported.
 	 */
 	public static <T> String write(final URI baseURI, final T object, final IO<T> io) throws IOException
 	{
