@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1102,27 +1102,48 @@ public class Files
 	}
 
 	/**
-	 * Reads an object from a file using the given RDF I/O support.
-	 * @param file The file from which to read.
-	 * @param rdf The RDF instance to use in creating new resources.
-	 * @param io The I/O support for reading the object.
-	 * @return The object read from the file.
-	 * @throws IOException if there is an error reading the data.
+	 * Reads the contents of the given file.
+	 * <p>
+	 * This is a convenience that obviates the need for boilerplate for getting an {@link InputStream} from a {@link File}.
+	 * </p>
+	 * @param file The file from which the information will be read.
+	 * @param inputStreamReadable The object to read the information from the file.
+	 * @throws IOException if there is an error loading the contents of the file.
 	 */
-	/*TODO move or delete
-		public static <T> T read(final File file, final RDF rdf, final RDFIO<T> io) throws IOException
+	public void read(final File file, final InputStreamReadable inputStreamReadable) throws IOException
+	{
+		final InputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file)); //create a buffered input stream to the file
+		try
 		{
-			final InputStream bufferedInputStream=new BufferedInputStream(new FileInputStream(file));	//create a buffered input stream to the file
-			try
-			{
-				return io.read(rdf, bufferedInputStream, toURI(file));	//read the object, using the given RDF instance and determining the base URI from the file
-			}
-			finally
-			{
-				bufferedInputStream.close();	//always close the input stream
-			}
+			inputStreamReadable.read(bufferedInputStream, toURI(file)); //read from the stream, determining the base URI from the file
 		}
-	*/
+		finally
+		{
+			bufferedInputStream.close(); //always close the input stream
+		}
+	}
+
+	/**
+	 * Writes to the given file.
+	 * <p>
+	 * This is a convenience that obviates the need for boilerplate for getting an {@link OutputStream} to a {@link File}.
+	 * </p>
+	 * @param file The file to which the information will be written.
+	 * @param outputStreamWritable The object to write the information to the file.
+	 * @throws IOException if there is an error writing the contents to the file.
+	 */
+	public void write(final File file, final OutputStreamWritable outputStreamWritable) throws IOException
+	{
+		final OutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file)); //create a buffered output stream to the file
+		try
+		{
+			outputStreamWritable.write(bufferedOutputStream, toURI(file)); //write to the stream, determining the base URI from the file
+		}
+		finally
+		{
+			bufferedOutputStream.close(); //always close the input stream
+		}
+	}
 
 	/**
 	 * Renames the file, throwing an exception if unsuccessful.
