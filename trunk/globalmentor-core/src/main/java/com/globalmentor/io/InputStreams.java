@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2011 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import static java.lang.System.*;
 import java.util.*;
 
 import com.globalmentor.java.Bytes;
-import com.globalmentor.text.CharacterEncoding;
 
 /**
  * Class to manipulate input streams.
@@ -199,55 +198,6 @@ public class InputStreams
 		}
 		while(segmentBytesRead >= 0 && bufferBytesRead < bufferLength); //keep reading segments while we haven't reached the end of the file and we haven't filled up the buffer
 		return bufferBytesRead; //return the number of bytes read
-	}
-
-	/**
-	 * Attempts to automatically detect the character encoding of a particular input stream based upon its byte order marker (BOM).
-	 * <p>
-	 * The input stream must be at its beginning and must support marking and resetting.
-	 * </p>
-	 * @param inputStream The stream the encoding of which will be detected.
-	 * @return The character encoding detected, or <code>null</code> no encoding could be detected.
-	 * @throws IOException Thrown if an I/O error occurred.
-	 */
-	public static CharacterEncoding getBOMEncoding(final InputStream inputStream) throws IOException
-	{
-		return getBOMEncoding(inputStream, null); //get the BOM encoding, returning null if the BOM encoding can't be determined
-	}
-
-	/**
-	 * Attempts to automatically detect the character encoding of a particular input stream based upon its byte order marker (BOM).
-	 * <p>
-	 * The input stream must be at its beginning and must support marking and resetting.
-	 * </p>
-	 * @param inputStream The stream the encoding of which will be detected.
-	 * @param defaultCharacterEncoding The character encoding to return if the encoding can't be determined by the byte order mark.
-	 * @return The character encoding detected, or the given default if no encoding could be detected.
-	 * @throws IOException Thrown if an I/O error occurred.
-	 */
-	public static CharacterEncoding getBOMEncoding(final InputStream inputStream, final CharacterEncoding defaultCharacterEncoding) throws IOException
-	{
-		final int BYTE_ORDER_MARK_LENGTH = 4; //the number of bytes in the largest byte order mark
-		inputStream.mark(BYTE_ORDER_MARK_LENGTH); //we won't read more than the byte order mark
-		final byte[] byteOrderMarkArray = new byte[BYTE_ORDER_MARK_LENGTH]; //create an array to hold the byte order mark
-		Arrays.fill(byteOrderMarkArray, (byte)0); //fill the array with zeros, in case we can't completely fill it with bytes from the input stream
-		final int byteOrderMarkCount = inputStream.read(byteOrderMarkArray); //read as many characters of the byte order mark as we can
-		if(byteOrderMarkCount > 0) //if we read any characters as all
-		{
-			CharacterEncoding characterEncoding = CharacterEncoding.create(byteOrderMarkArray); //see if we can recognize the encoding by the beginning characters
-			if(characterEncoding != null) //if we got a character encoding
-			{
-				//throw away the BOM
-				inputStream.reset(); //reset the stream back to where we found it
-				for(int i = characterEncoding.getByteOrderMark().length - 1; i >= 0; --i) //throw away the correct number of bytes
-				{
-					inputStream.read(); //throw away a byte
-				}
-				return characterEncoding; //return the encoding
-			}
-		}
-		inputStream.reset(); //reset the stream back to where we found it
-		return defaultCharacterEncoding; //we couldn't find an encoding; return the default
 	}
 
 	/**
