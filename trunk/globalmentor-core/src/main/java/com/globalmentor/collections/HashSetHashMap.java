@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,32 @@ package com.globalmentor.collections;
 
 import java.util.*;
 
-/**An implementation of a {@link HashMap} that stores an {@link HashSet} of values for each key, with special methods for retrieving single values.
-@author Garret Wilson
-*/
-public class HashSetHashMap<K, V> extends AbstractDecoratorCollectionMap<K, V, Set<V>> 
+/**
+ * An implementation of a {@link HashMap} that stores an {@link HashSet} of values for each key, with special methods for retrieving single values.
+ * @author Garret Wilson
+ */
+public class HashSetHashMap<K, V> extends AbstractDecoratorCollectionMap<K, V, Set<V>>
 {
 
-	/**Default constructor that decorates a {@link HashMap}.*/
+	/** Default constructor that decorates a {@link HashMap}. */
 	public HashSetHashMap()
 	{
-		super(new HashMap<K, Set<V>>());	//create a new hash map to decorate
+		super(new HashMap<K, Set<V>>()); //create a new hash map to decorate
 	}
 
-	/**Creates a collection in which to store values.
-	This version returns an {@link HashSet}.
-	*/
+	/**
+	 * Initial capacity constructor that decorates a {@link HashMap}.
+	 * @param initialCapacity the initial capacity.
+	 * @throws IllegalArgumentException if the initial capacity is negative.
+	 */
+	public HashSetHashMap(final int initialCapacity)
+	{
+		super(new HashMap<K, Set<V>>(initialCapacity)); //create a new hash map to decorate
+	}
+
+	/**
+	 * Creates a collection in which to store values. This version returns an {@link HashSet}.
+	 */
 	public Set<V> createCollection()
 	{
 		return new HashSet<V>();
