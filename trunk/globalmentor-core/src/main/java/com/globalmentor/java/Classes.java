@@ -131,7 +131,7 @@ public class Classes
 	/**
 	 * Creates a Java URI for a named Java class using the {@value Java#JAVA_URI_SCHEME} scheme in the form
 	 * <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.
-	 * @param objectClassName The name of hte class class to use in creating the <code>java:</code> URI.
+	 * @param objectClassName The name of the class class to use in creating the <code>java:</code> URI.
 	 * @return A <code>java:</code> URI based upon the given class.
 	 * @exception NullPointerException if the given class name is <code>null</code>.
 	 */
