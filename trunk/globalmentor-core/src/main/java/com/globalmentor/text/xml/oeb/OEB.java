@@ -100,13 +100,13 @@ public class OEB
 	public final static String X_OEB1_PACKAGE_XML_SUBTYPE=ContentType.SUBTYPE_EXTENSION_PREFIX+"oeb1-package"+ContentType.SUBTYPE_SUFFIX_DELIMITER_CHAR+XML_SUBTYPE_SUFFIX;
 
 	/**The media type of an OEB 1.0 package.*/
-	public final static ContentType OEB10_PACKAGE_MEDIA_TYPE=ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_OEB1_PACKAGE_XML_SUBTYPE);
+	public final static ContentType OEB10_PACKAGE_MEDIA_TYPE=ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, X_OEB1_PACKAGE_XML_SUBTYPE);
 
 		/**The media type of an OEB 1.0 document.*/
-	public final static ContentType OEB10_DOCUMENT_MEDIA_TYPE=ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, X_OEB1_DOCUMENT_SUBTYPE);
+	public final static ContentType OEB10_DOCUMENT_MEDIA_TYPE=ContentType.create(ContentType.TEXT_PRIMARY_TYPE, X_OEB1_DOCUMENT_SUBTYPE);
 
 		/**The media type of an OEB 1.0 CSS document.*/
-	public final static ContentType OEB10_CSS_MEDIA_TYPE=ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, X_OEB1_CSS_SUBTYPE);
+	public final static ContentType OEB10_CSS_MEDIA_TYPE=ContentType.create(ContentType.TEXT_PRIMARY_TYPE, X_OEB1_CSS_SUBTYPE);
 
 	/**The public ID for OEBPS 1.0.*/
 	public final static String OEB10_DOCUMENT_PUBLIC_ID="+//ISBN 0-9673008-1-9//DTD OEB 1.0 Document//EN";

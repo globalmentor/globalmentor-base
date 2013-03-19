@@ -149,8 +149,8 @@ public class Classes
 	 */
 	public static ContentType getObjectContentType(final Class<?> objectClass)
 	{
-		return ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, ContentType.X_JAVA_OBJECT,
-				new NameValuePair<String, String>("class", objectClass.getName())); //create a content type appropriate for this object class TODO use a constant; testing
+		return ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, ContentType.X_JAVA_OBJECT,
+				new ContentType.Parameter("class", objectClass.getName())); //create a content type appropriate for this object class TODO use a constant; testing
 	}
 
 	/**

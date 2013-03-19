@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2012-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import static java.lang.Math.*;
 import com.globalmentor.java.Characters;
 
 /**
- * Constants and utilities for working with ASCII.
+ * Constants and utilities for working with US_ASCII.
  * @author Garret Wilson
  */
 public class ASCII
@@ -40,6 +40,94 @@ public class ASCII
 
 	/** The difference in value between lowercase (higher values) and uppercase (lower values) ASCII letters. */
 	public final static short LOWERCASE_UPPERCASE_LETTER_DIFFERENCE = LOWERCASE_LETTER_FIRST - UPPERCASE_LETTER_FIRST;
+
+	/** The highest ASCII code point value that is a control character. */
+	public final static char MAX_CONTROL_VALUE = 31;
+
+	/** The highest ASCII code point value. */
+	public final static char MAX_VALUE = 127;
+
+	/**
+	 * Indicates whether a given character is within the ASCII range.
+	 * @param c The character to test.
+	 * @return <code>true</code> if the given character is not greater than {@value #MAX_VALUE}.
+	 * @see #MAX_VALUE
+	 */
+	public static boolean isASCII(final char c)
+	{
+		return c <= MAX_VALUE;
+	}
+
+	/**
+	 * Indicates whether a given character is within the ASCII range.
+	 * @param c The character to test.
+	 * @return <code>true</code> if the given character is not negative and not greater than {@value #MAX_VALUE}.
+	 * @see #MAX_VALUE
+	 */
+	public static boolean isASCII(final int c)
+	{
+		return c >= 0 && c <= MAX_VALUE;
+	}
+
+	/**
+	 * Determines whether a given character sequence contains only ASCII characters.
+	 * @param charSequence The character sequence to test.
+	 * @return <code>true</code> if no character(s) in the character sequence are outside the ASCII range.
+	 * @see #isASCII(char)
+	 */
+	public static boolean isASCII(final CharSequence charSequence)
+	{
+		for(int i = charSequence.length() - 1; i >= 0; --i)
+		{
+			if(!isASCII(charSequence.charAt(i)))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Indicates whether a given character is within the ASCII control range.
+	 * @param c The character to test.
+	 * @return <code>true</code> if the given character is not greater than {@value #MAX_CONTROL_VALUE}.
+	 * @see #MAX_CONTROL_VALUE
+	 */
+	public static boolean isASCIIControl(final char c)
+	{
+		return c <= MAX_CONTROL_VALUE;
+	}
+
+	/**
+	 * Indicates whether a given character is within the ASCII control range.
+	 * @param c The character to test.
+	 * @return <code>true</code> if the given character is not negative and not greater than {@value #MAX_VALUE}.
+	 * @see #MAX_CONTROL_VALUE
+	 */
+	public static boolean isASCIIControl(final int c)
+	{
+		return c >= 0 && c <= MAX_CONTROL_VALUE;
+	}
+
+	/**
+	 * Determines whether a given character sequence contains only non-control ASCII characters.
+	 * @param charSequence The character sequence to test.
+	 * @return <code>true</code> if no character(s) in the character sequence are outside the ASCII range of non-control characters.
+	 * @see #isASCII(char)
+	 * @see #isASCIIControl(char)
+	 */
+	public static boolean isASCIINonControl(final CharSequence charSequence)
+	{
+		for(int i = charSequence.length() - 1; i >= 0; --i)
+		{
+			final char c = charSequence.charAt(i);
+			if(!isASCII(c) || isASCIIControl(c))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Searches the given character sequence for one of the given tokens, separated by the given delimiters, without regard to ASCII case.

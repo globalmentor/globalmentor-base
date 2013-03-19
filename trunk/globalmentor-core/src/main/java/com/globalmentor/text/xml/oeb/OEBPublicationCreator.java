@@ -232,13 +232,13 @@ public class OEBPublicationCreator	//TODO update this class to work with XEbook;
 		public void setRights(final String newRights) {rights=newRights;}
 
 	/**A static application/java media type for quick reference when comparing media types.*/
-	protected final static ContentType APPLICATION_JAVA_MEDIA_TYPE=ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, ContentTypeConstants.JAVA_SUBTYPE);
+	protected final static ContentType APPLICATION_JAVA_MEDIA_TYPE=ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, ContentTypeConstants.JAVA_SUBTYPE);
 
 	/**A static image/gif media type for quick reference when comparing media types.*/
-	protected final static ContentType IMAGE_GIF_MEDIA_TYPE=ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, ContentTypeConstants.GIF_SUBTYPE);
+	protected final static ContentType IMAGE_GIF_MEDIA_TYPE=ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, ContentTypeConstants.GIF_SUBTYPE);
 
 	/**A static image/png media type for quick reference when comparing media types.*/
-	protected final static ContentType IMAGE_PNG_MEDIA_TYPE=ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, ContentTypeConstants.PNG_SUBTYPE);
+	protected final static ContentType IMAGE_PNG_MEDIA_TYPE=ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, ContentTypeConstants.PNG_SUBTYPE);
 
 	/**Whether we should load and tidy each OEB document.*/
 	private boolean tidy=false;
@@ -1022,7 +1022,7 @@ TODO fix outputDir
 							if(mediaType==null) //if no media type is given
 							{
 								mediaType=URLs.getMediaType(url);  //try to see which of media type the reference is by examining the URL
-								if(mediaType.match(XHTML_CONTENT_TYPE))  //if this is the "application/xhtml+xml" media type
+								if(mediaType.hasBaseType(XHTML_CONTENT_TYPE))  //if this is the "application/xhtml+xml" media type
 									mediaType=OEB10_DOCUMENT_MEDIA_TYPE;  //assume it's really the OEB document media type
 							}
 							assert mediaType!=null : "\""+url+"\" has unknown media type.";  //TODO put in better error handling here
@@ -1037,7 +1037,7 @@ TODO fix outputDir
 								Marmot.getContents(publication).add(oebItem); //add the item to the publication's manifest
 */
 								  //if this is an OEB document, and we should add it to the spine
-								if(shouldAddToSpine && mediaType.match(OEB10_DOCUMENT_MEDIA_TYPE))
+								if(shouldAddToSpine && mediaType.hasBaseType(OEB10_DOCUMENT_MEDIA_TYPE))
 								{
 								  publication.getSpine().add(oebItem);  //add the item to the spine as well
 								}
@@ -1058,7 +1058,7 @@ TODO fix outputDir
 											{
 													//if we're tidying and this is an OEB document, it will be copied automatically;
 													//  otherwise, we'll need to copy it ourselves
-												if(!isTidy() || !mediaType.match(OEB10_DOCUMENT_MEDIA_TYPE))
+												if(!isTidy() || !mediaType.hasBaseType(OEB10_DOCUMENT_MEDIA_TYPE))
 												{
 //TODO replace with a generalized copy method													NetworkUtilities.copy(url, outputFile); //copy the URL to the output directory
 												}

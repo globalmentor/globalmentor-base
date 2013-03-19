@@ -764,13 +764,13 @@ public final class Characters
 	}
 
 	/**
-	 * Determines whether a character is in the ASCII character range (0x00-0x80).
+	 * Determines whether a character is in the ASCII character range (0x00-0x7F).
 	 * @param c The character to examine.
 	 * @return <code>true</code> if the character is an ASCII character.
 	 */
-	public static boolean isASCII(final char c)
+	public static boolean isASCII(final char c)	//TODO reconcile with ASCII.isASCII()
 	{
-		return c >= 0 && c <= 0x80; //see if this character is between 0 and 128, inclusive
+		return c >= 0 && c < 0x80; //see if this character is between 0 and 128, inclusive
 	}
 
 	/**
@@ -780,7 +780,7 @@ public final class Characters
 	 */
 	public final static boolean isLatinDigit(final char c)
 	{
-		return c >= '0' && c <= '9'; //see if the character falls in the range of the latin digits
+		return c >= '0' && c <= '9'; //see if the character falls in the range of the Latin digits
 	}
 
 	/**

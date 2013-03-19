@@ -63,7 +63,8 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Val
 		this(mapEntry.getKey(), mapEntry.getValue());
 	}
 
-	/** @return A hash code value for the object. */
+
+	@Override
 	public int hashCode()
 	{
 		return Objects.getHashCode(getName(), getValue()); //calculate a hash code from the name and value
@@ -76,18 +77,19 @@ public class NameValuePair<N, V> extends DefaultNamed<N> implements IDed<N>, Val
 	 * @see #getName()
 	 * @see #getValue()
 	 */
-	public boolean equals(Object object)
+	@Override
+	public boolean equals(final Object object)
 	{
-		if(object instanceof NameValuePair) //if we're being compared with another name/value pair
+		if(this==object)
 		{
-			//compare the names and values, taking into account that one or the other may be null
-			return Objects.equals(getName(), ((NameValuePair<?, ?>)object).getName()) && Objects.equals(getValue(), ((NameValuePair<?, ?>)object).getValue());
+			return true;
 		}
-		else
-		//if we're being compared with anything else
+		if(!(object instanceof NameValuePair))
 		{
-			return false; //the objects aren't equal
+			return false;
 		}
+		//compare the names and values, taking into account that one or the other may be null
+		return Objects.equals(getName(), ((NameValuePair<?, ?>)object).getName()) && Objects.equals(getValue(), ((NameValuePair<?, ?>)object).getValue());
 	}
 
 	/**

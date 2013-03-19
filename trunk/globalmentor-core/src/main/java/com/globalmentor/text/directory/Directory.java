@@ -35,7 +35,7 @@ public class Directory
 {
 
 	/** The content type for directories: <code>text/directory</code>. */
-	public final static ContentType CONTENT_TYPE = ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, "directory");
+	public final static ContentType CONTENT_TYPE = ContentType.create(ContentType.TEXT_PRIMARY_TYPE, "directory");
 
 	/**
 	 * Whitespace as defined by RFC 2425: "space, ASCII decimal 32, or horizontal tab, ASCII decimal 9".

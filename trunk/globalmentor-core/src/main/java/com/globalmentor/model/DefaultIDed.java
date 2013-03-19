@@ -30,11 +30,19 @@ public class DefaultIDed<I> implements IDed<I>
 {
 
 	/**@The identifier, preferably unique, of the object; or <code>null</code> if the object has no ID.*/
-	private final I id;
+	private I id;
 
 		/**@return The identifier, preferably unique, of the object; or <code>null</code> if the object has no ID.*/
 		public I getID() {return id;}
 
+		/**Sets the identifier of the object.
+		 * @param id The identifier, preferably unique, of the object; or <code>null</code> if the object has no ID. 
+		 */
+		protected void setID(final I id)
+		{
+			this.id=id;
+		}
+		
 	/**Constructor specifying the ID.
 	@param id The ID of the object.
 	*/

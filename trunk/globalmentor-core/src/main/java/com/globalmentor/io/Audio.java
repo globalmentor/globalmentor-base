@@ -32,10 +32,10 @@ public class Audio
 	 * @see <a href="http://www.ietf.org/rfc/rfc5334.txt">RFC 5334</a>
 	 * @see <a href="http://wiki.xiph.org/MIME_Types_and_File_Extensions">MIME Types and File Extensions</a>
 	 */
-	public static final ContentType OGG_VORBIS_CONTENT_TYPE = ContentType.getInstance(AUDIO_PRIMARY_TYPE, "ogg");
+	public static final ContentType OGG_VORBIS_CONTENT_TYPE = ContentType.create(AUDIO_PRIMARY_TYPE, "ogg");
 
 	/** The content type for MP3: <code>audio/mpeg</code>. */
-	public static final ContentType MPEG_CONTENT_TYPE = ContentType.getInstance(AUDIO_PRIMARY_TYPE, "mpeg");
+	public static final ContentType MPEG_CONTENT_TYPE = ContentType.create(AUDIO_PRIMARY_TYPE, "mpeg");
 
 	/** The name extension for audio files. */
 	public final static String AU_NAME_EXTENSION = "au";

@@ -156,45 +156,45 @@ public class Files
 	static
 	{
 		final Map<String, ContentType> tempFileExtensionContentTypeMap = new HashMap<String, ContentType>(); //create a new hash map in which to store extensions, and add the default extensions
-		tempFileExtensionContentTypeMap.put("asi", ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "x-qti-assessment"));
-		tempFileExtensionContentTypeMap.put(Audio.AU_NAME_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, BASIC_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Images.BMP_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, X_BITMAP_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Classes.CLASS_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, JAVA_SUBTYPE));
+		tempFileExtensionContentTypeMap.put("asi", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "x-qti-assessment"));
+		tempFileExtensionContentTypeMap.put(Audio.AU_NAME_EXTENSION, ContentType.create(ContentType.AUDIO_PRIMARY_TYPE, BASIC_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Images.BMP_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, X_BITMAP_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Classes.CLASS_NAME_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, JAVA_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(CSV.CSV_NAME_EXTENSION, CSV.CSV_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put(XMLCSS.CSS_NAME_EXTENSION, XMLCSS.TEXT_CSS_CONTENT_TYPE); //text/css
 		//		tempFileExtensionContentTypeMap.put(Dicto.DICTO_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_DICTO_RDF_XML_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(DOC_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, MSWORD_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Images.GIF_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, GIF_SUBTYPE)); //image/gif
+		tempFileExtensionContentTypeMap.put(DOC_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, MSWORD_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Images.GIF_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, GIF_SUBTYPE)); //image/gif
 		tempFileExtensionContentTypeMap.put(XHTML.HTM_NAME_EXTENSION, XHTML.HTML_CONTENT_TYPE); //TODO make sure changing this to text/html doesn't cause other methods to fail; nevertheless, we can't assume all .html files are XHTML (i.e. valid XML)
 		tempFileExtensionContentTypeMap.put(XHTML.HTML_NAME_EXTENSION, XHTML.HTML_CONTENT_TYPE);
 		tempFileExtensionContentTypeMap.put(XHTML.XHTML_NAME_EXTENSION, XHTML.XHTML_CONTENT_TYPE);
-		tempFileExtensionContentTypeMap.put(ICAL_EXTENSION, ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, CALENDAR_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Java.JAVA_NAME_EXTENSION, ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, JAVA_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Images.JPEG_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Images.JPG_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(ICAL_EXTENSION, ContentType.create(ContentType.TEXT_PRIMARY_TYPE, CALENDAR_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Java.JAVA_NAME_EXTENSION, ContentType.create(ContentType.TEXT_PRIMARY_TYPE, JAVA_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Images.JPEG_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Images.JPG_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, JPEG_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(JavaScript.JS_NAME_EXTENSION, JavaScript.JAVASCRIPT_CONTENT_TYPE);
-		tempFileExtensionContentTypeMap.put("marmox", ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "x-marmox-page+rdf+xml"));
-		tempFileExtensionContentTypeMap.put("mact", ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "x-mentor-activity+turf"));
-		tempFileExtensionContentTypeMap.put(Audio.MP3_NAME_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, MPEG_SUBTYPE)); //RFC 3003
-		tempFileExtensionContentTypeMap.put(Video.MPEG_NAME_EXTENSION, ContentType.getInstance(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Video.MPG_NAME_EXTENSION, ContentType.getInstance(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put("marmox", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "x-marmox-page+rdf+xml"));
+		tempFileExtensionContentTypeMap.put("mact", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "x-mentor-activity+turf"));
+		tempFileExtensionContentTypeMap.put(Audio.MP3_NAME_EXTENSION, ContentType.create(ContentType.AUDIO_PRIMARY_TYPE, MPEG_SUBTYPE)); //RFC 3003
+		tempFileExtensionContentTypeMap.put(Video.MPEG_NAME_EXTENSION, ContentType.create(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Video.MPG_NAME_EXTENSION, ContentType.create(ContentType.VIDEO_PRIMARY_TYPE, MPEG_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(Audio.OGG_NAME_EXTENSION, Audio.OGG_VORBIS_CONTENT_TYPE); //audio/ogg (RFC 5334)
 		tempFileExtensionContentTypeMap.put(OEB.OEB1_PACKAGE_NAME_EXTENSION,
-				ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, OEB.X_OEB1_PACKAGE_XML_SUBTYPE)); //opf
-		tempFileExtensionContentTypeMap.put(PDF_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, PDF_SUBTYPE)); //pdf
-		tempFileExtensionContentTypeMap.put(Images.PNG_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, PNG_SUBTYPE));
-		tempFileExtensionContentTypeMap.put("qti", ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "x-qti")); //TODO use a constant here
-		tempFileExtensionContentTypeMap.put(Archive.RAR_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_RAR_COMPRESSED_SUBTYPTE));
-		tempFileExtensionContentTypeMap.put(Images.TIF_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Images.TIFF_NAME_EXTENSION, ContentType.getInstance(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(RDF.RDF_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, "rdf+xml")); //RFC 3870; move to RDF class
-		tempFileExtensionContentTypeMap.put("turf", ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, "urf"));
+				ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, OEB.X_OEB1_PACKAGE_XML_SUBTYPE)); //opf
+		tempFileExtensionContentTypeMap.put(PDF_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, PDF_SUBTYPE)); //pdf
+		tempFileExtensionContentTypeMap.put(Images.PNG_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, PNG_SUBTYPE));
+		tempFileExtensionContentTypeMap.put("qti", ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "x-qti")); //TODO use a constant here
+		tempFileExtensionContentTypeMap.put(Archive.RAR_NAME_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, X_RAR_COMPRESSED_SUBTYPTE));
+		tempFileExtensionContentTypeMap.put(Images.TIF_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Images.TIFF_NAME_EXTENSION, ContentType.create(ContentType.IMAGE_PRIMARY_TYPE, TIFF_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(RDF.RDF_NAME_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, "rdf+xml")); //RFC 3870; move to RDF class
+		tempFileExtensionContentTypeMap.put("turf", ContentType.create(ContentType.TEXT_PRIMARY_TYPE, "urf"));
 		tempFileExtensionContentTypeMap.put(Text.TXT_NAME_EXTENSION, Text.PLAIN_CONTENT_TYPE);
-		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, DIRECTORY_SUBTYPE));
-		tempFileExtensionContentTypeMap.put(Audio.WAV_NAME_EXTENSION, ContentType.getInstance(ContentType.AUDIO_PRIMARY_TYPE, X_WAV_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(VCF_EXTENSION, ContentType.create(ContentType.TEXT_PRIMARY_TYPE, DIRECTORY_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Audio.WAV_NAME_EXTENSION, ContentType.create(ContentType.AUDIO_PRIMARY_TYPE, X_WAV_SUBTYPE));
 		//		tempFileExtensionContentTypeMap.put(RDFXEB.XEB_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, X_XEBOOK_RDF_XML_SUBTYPE));
 		tempFileExtensionContentTypeMap.put(XML.XML_NAME_EXTENSION, XML.CONTENT_TYPE);
-		tempFileExtensionContentTypeMap.put(Archive.ZIP_NAME_EXTENSION, ContentType.getInstance(ContentType.APPLICATION_PRIMARY_TYPE, ZIP_SUBTYPE));
+		tempFileExtensionContentTypeMap.put(Archive.ZIP_NAME_EXTENSION, ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, ZIP_SUBTYPE));
 		FILE_EXTENSION_CONTENT_TYPE_MAP = unmodifiableMap(tempFileExtensionContentTypeMap); //store read-only access to the map		
 	}
 
@@ -752,8 +752,8 @@ public class Files
 	 */
 	public static boolean isFilename(final String string, final Characters reservedCharacters, final Characters reservedFinalCharacters)
 	{
-		//the string is a filename if the string ing isn't null and there are no illegal characters in the string
-		final boolean isFilename = string != null && charIndexOf(string, reservedCharacters) < 0;
+		//the string is a filename if the string isn't null and there are no illegal characters in the string
+		final boolean isFilename = string != null && !contains(string, reservedCharacters);
 		if(isFilename && reservedFinalCharacters != null && !reservedFinalCharacters.isEmpty()) //if we should check the final character
 		{
 			if(string.length() > 0) //if we have any characters at all
@@ -1110,7 +1110,7 @@ public class Files
 	 * @param inputStreamReadable The object to read the information from the file.
 	 * @throws IOException if there is an error loading the contents of the file.
 	 */
-	public void read(final File file, final InputStreamReadable inputStreamReadable) throws IOException
+	public static void read(final File file, final InputStreamReadable inputStreamReadable) throws IOException
 	{
 		final InputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(file)); //create a buffered input stream to the file
 		try
@@ -1132,7 +1132,7 @@ public class Files
 	 * @param outputStreamWritable The object to write the information to the file.
 	 * @throws IOException if there is an error writing the contents to the file.
 	 */
-	public void write(final File file, final OutputStreamWritable outputStreamWritable) throws IOException
+	public static void write(final File file, final OutputStreamWritable outputStreamWritable) throws IOException
 	{
 		final OutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file)); //create a buffered output stream to the file
 		try

@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,12 +143,12 @@ public class SyntaxException extends DataException
 	/**Creates a message based upon a given input string, an optional index, and an optional message.
 	@param message The message to include, or <code>null</code> if there is no custom message to include.
 	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
-	@param input The input string, or <code>null</code> if the input string is not known.
+	@param input The input character sequence, or <code>null</code> if the input string is not known.
 	@param index The index into the input string of the position at which the parse error occurred, or -1 if the position is not known.
 	@return A string explaining the exception based upon the given input and optional index.
 	@exception IllegalArgumentException if the given index is less than -1.
 	*/ 
-	public static String createMessage(String message, final Throwable cause, final String input, final int index)
+	public static String createMessage(String message, final Throwable cause, final CharSequence input, final int index)
 	{
 		checkArgumentMinimum(index, -1);	//make sure the index is not less than negative one, the "unknown index" value
 		if(message==null)	//if there is no message

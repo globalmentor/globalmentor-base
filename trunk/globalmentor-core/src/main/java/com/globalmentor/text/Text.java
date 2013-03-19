@@ -40,7 +40,7 @@ public class Text
 	public final static String PLAIN_SUBTYPE = "plain";
 
 	/** The content type for plain text: <code>text/plain</code>. */
-	public static final ContentType PLAIN_CONTENT_TYPE = ContentType.getInstance(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
+	public static final ContentType PLAIN_CONTENT_TYPE = ContentType.create(ContentType.TEXT_PRIMARY_TYPE, PLAIN_SUBTYPE);
 
 	/** The name extension for text files. */
 	public final static String TXT_NAME_EXTENSION = "txt";
