@@ -83,9 +83,9 @@ public class Classes
 	 * <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.
 	 * @param resourceURI The URI which is expected to represent a Java class, or <code>null</code>.
 	 * @return The Java class represented by the given URI, or <code>null</code> if the URI is not a <code>java:</code> URI.
-	 * @exception IllegalArgumentException if the given URI represents a Java class that does not have the correct syntax, e.g. it does not have an absolute
-	 *              non-collection path.
-	 * @exception ClassNotFoundException if the class represented by the given URI could not be found.
+	 * @throws IllegalArgumentException if the given URI represents a Java class that does not have the correct syntax, e.g. it does not have an absolute
+	 *           non-collection path.
+	 * @throws ClassNotFoundException if the class represented by the given URI could not be found.
 	 * @see Java#JAVA_URI_SCHEME
 	 */
 	public static Class<?> asClass(final URI resourceURI) throws ClassNotFoundException
@@ -121,7 +121,7 @@ public class Classes
 	 * <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.
 	 * @param objectClass The class to use in creating the <code>java:</code> URI.
 	 * @return A <code>java:</code> URI based upon the given class.
-	 * @exception NullPointerException if the given class is <code>null</code>.
+	 * @throws NullPointerException if the given class is <code>null</code>.
 	 */
 	public static URI createJavaURI(final Class<?> objectClass)
 	{
@@ -133,7 +133,7 @@ public class Classes
 	 * <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/<var>Class</var></code>.
 	 * @param objectClassName The name of the class class to use in creating the <code>java:</code> URI.
 	 * @return A <code>java:</code> URI based upon the given class.
-	 * @exception NullPointerException if the given class name is <code>null</code>.
+	 * @throws NullPointerException if the given class name is <code>null</code>.
 	 */
 	public static URI createJavaURI(final String objectClassName)
 	{
@@ -145,36 +145,30 @@ public class Classes
 	 * Returns a content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
 	 * @param objectClass The class for which a content type should be returned.
 	 * @return A content type identifying an object of the given class in the form <code>application/x-java-object;class=<var>package.Class</var></code>.
-	 * @exception IllegalArgumentException if the given object class is <code>null</code>.
+	 * @throws IllegalArgumentException if the given object class is <code>null</code>.
 	 */
 	public static ContentType getObjectContentType(final Class<?> objectClass)
 	{
-		return ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, ContentType.X_JAVA_OBJECT,
-				new ContentType.Parameter("class", objectClass.getName())); //create a content type appropriate for this object class TODO use a constant; testing
+		return ContentType.create(ContentType.APPLICATION_PRIMARY_TYPE, ContentType.X_JAVA_OBJECT, new ContentType.Parameter("class", objectClass.getName())); //create a content type appropriate for this object class TODO use a constant; testing
 	}
 
 	/**
-	 * Returns a constructor of a class that is compatible with the given parameter types. A constructor is considered compatible if each of the given parameter
-	 * types can be assigned to the formal parameter type in the constructor. A constructor is first located the formal parameter types of which match the given
-	 * parameters. If that fails, a compatible constructor is located.
+	 * Returns a public constructor of a class that is compatible with the given parameter types. A constructor is considered compatible if each of the given
+	 * parameter types can be assigned to the formal parameter type in the constructor. A constructor is first located the formal parameter types of which match
+	 * the given parameters. If that fails, a compatible constructor is located.
 	 * @param <T> The type of class.
 	 * @param objectClass The class for which compatible constructors should be returned.
 	 * @param parameterTypes The types of parameters to be used.
 	 * @return A compatible constructors, or <code>null</code> if no compatible constructor could be found.
-	 * @exception SecurityException If a security manager, <var>s</var>, is present and any of the following conditions is met:
-	 *              <ul>
-	 *              <li>Invocation of <code>{@link SecurityManager#checkMemberAccess(Class, int) s.checkMemberAccess(this, Member.PUBLIC)}</code> denies access to
-	 *              the constructor.</li>
-	 *              <li>The caller's class loader is not the same as or an ancestor of the class loader for the current class and invocation of
-	 *              <code>{@link SecurityManager#checkPackageAccess s.checkPackageAccess()}</code> denies access to the package of this class.</li>
-	 *              </ul>
+	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
+	 *           access to the package of this class.
 	 */
-	public static <T> Constructor<T> getCompatibleConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException
+	public static <T> Constructor<T> getCompatiblePublicConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException
 	{
 		Constructor<T> constructor = getConstructor(objectClass, parameterTypes); //see if we can find an exact constructor
 		if(constructor == null) //if there is no exact constructor
 		{
-			final Constructor<T>[] compatibleConstructors = getCompatibleConstructors(objectClass, parameterTypes); //get the compatible constructors, if any
+			final Constructor<T>[] compatibleConstructors = getCompatiblePublicConstructors(objectClass, parameterTypes); //get the compatible constructors, if any
 			if(compatibleConstructors.length > 0) //if there is at least one compatible constructor
 			{
 				constructor = compatibleConstructors[0]; //use the first compatible constructor
@@ -184,26 +178,77 @@ public class Classes
 	}
 
 	/**
-	 * Returns all constructors of a class that are compatible with the given parameter types. A constructor is considered compatible if each of the given
+	 * Returns all public constructors of a class that are compatible with the given parameter types. A constructor is considered compatible if each of the given
 	 * parameter types can be assigned to the formal parameter type in the constructor.
 	 * @param <T> The type of class.
 	 * @param objectClass The class for which compatible constructors should be returned.
 	 * @param parameterTypes The types of parameters to be used.
 	 * @return An array of compatible constructors.
-	 * @exception SecurityException If a security manager, <var>s</var>, is present and any of the following conditions is met:
-	 *              <ul>
-	 *              <li>Invocation of <code>{@link SecurityManager#checkMemberAccess(Class, int) s.checkMemberAccess(this, Member.PUBLIC)}</code> denies access to
-	 *              the constructor.</li>
-	 *              <li>The caller's class loader is not the same as or an ancestor of the class loader for the current class and invocation of
-	 *              <code>{@link SecurityManager#checkPackageAccess s.checkPackageAccess()}</code> denies access to the package of this class.</li>
-	 *              </ul>
+	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
+	 *           access to the package of this class.
+	 */
+	public static <T> Constructor<T>[] getCompatiblePublicConstructors(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException //casts are used because arrays are not generic-aware
+	{
+		return getCompatibleConstructors(objectClass, true, parameterTypes);
+	}
+
+	/**
+	 * Returns a constructor of a class that is compatible with the given parameter types, regardless of its visibility. A constructor is considered compatible if
+	 * each of the given parameter types can be assigned to the formal parameter type in the constructor. A constructor is first located the formal parameter
+	 * types of which match the given parameters. If that fails, a compatible constructor is located.
+	 * @param <T> The type of class.
+	 * @param objectClass The class for which compatible constructors should be returned.
+	 * @param parameterTypes The types of parameters to be used.
+	 * @return A compatible constructors, or <code>null</code> if no compatible constructor could be found.
+	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
+	 *           access to the package of this class.
+	 */
+	public static <T> Constructor<T> getCompatibleDeclaredConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException
+	{
+		Constructor<T> constructor = getDeclaredConstructor(objectClass, parameterTypes); //see if we can find an exact constructor
+		if(constructor == null) //if there is no exact constructor
+		{
+			final Constructor<T>[] compatibleConstructors = getCompatibleDeclaredConstructors(objectClass, parameterTypes); //get the compatible constructors, if any
+			if(compatibleConstructors.length > 0) //if there is at least one compatible constructor
+			{
+				constructor = compatibleConstructors[0]; //use the first compatible constructor
+			}
+		}
+		return constructor; //return the compatible constructor, if we found one
+	}
+
+	/**
+	 * Returns all constructors, even protected and private constructors, of a class that are compatible with the given parameter types. A constructor is
+	 * considered compatible if each of the given parameter types can be assigned to the formal parameter type in the constructor.
+	 * @param <T> The type of class.
+	 * @param objectClass The class for which compatible constructors should be returned.
+	 * @param parameterTypes The types of parameters to be used.
+	 * @return An array of compatible constructors.
+	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
+	 *           access to the package of this class.
+	 */
+	public static <T> Constructor<T>[] getCompatibleDeclaredConstructors(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException
+	{
+		return getCompatibleConstructors(objectClass, false, parameterTypes);
+	}
+
+	/**
+	 * Returns all constructors of a class that are compatible with the given parameter types. A constructor is considered compatible if each of the given
+	 * parameter types can be assigned to the formal parameter type in the constructor.
+	 * @param <T> The type of class.
+	 * @param objectClass The class for which compatible constructors should be returned.
+	 * @param requirePublic Whether only public constructors should be returned.
+	 * @param parameterTypes The types of parameters to be used.
+	 * @return An array of compatible constructors.
+	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
+	 *           access to the package of this class.
 	 */
 	@SuppressWarnings("unchecked")
-	//casts are used because arrays are not generic-aware
-	public static <T> Constructor<T>[] getCompatibleConstructors(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException
+	protected static <T> Constructor<T>[] getCompatibleConstructors(final Class<T> objectClass, final boolean requirePublic, final Class<?>... parameterTypes)
+			throws SecurityException //casts are used because arrays are not generic-aware
 	{
 		final int parameterCount = parameterTypes.length; //get the number of requested parameters
-		final Constructor<?>[] constructors = objectClass.getConstructors(); //get all constructors for this class
+		final Constructor<?>[] constructors = requirePublic ? objectClass.getConstructors() : objectClass.getDeclaredConstructors(); //get all constructors for this class, restricting them to public constructors if requested
 		final List<Constructor<T>> compatibleConstructors = new ArrayList<Constructor<T>>(constructors.length); //create a list sufficiently large to hold all constructors
 		for(final Constructor<?> constructor : constructors) //for each constructor
 		{
@@ -305,19 +350,36 @@ public class Classes
 	}
 
 	/**
-	 * Finds a defined constructor of a class. This method differs from {@link Class#getConstructor(Class[])} in that if no matching constructor is found,
+	 * Finds a defined constructor of a class. This method differs from {@link Class#getDeclaredConstructor(Class...)} in that if no matching constructor is
+	 * found, <code>null</code> is returned rather than a {@link NoSuchMethodException} being thrown.
+	 * @param objectClass The class for which the constructor should be found.
+	 * @param parameterTypes The constructor parameters.
+	 * @return The <code>Method</code> object of the public constructor that matches the specified <code>parameterTypes</code>, or <code>null</code> if no such
+	 *         constructor exists.
+	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
+	 *           access to the package of this class.
+	 */
+	public static <T> Constructor<T> getDeclaredConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException
+	{
+		try
+		{
+			return objectClass.getDeclaredConstructor(parameterTypes); //ask the class for the constructor
+		}
+		catch(final NoSuchMethodException noSuchMethodException) //if the constructor isn't found
+		{
+			return null; //indicate that the constructor couldn't be found
+		}
+	}
+
+	/**
+	 * Finds a defined constructor of a class. This method differs from {@link Class#getConstructor(Class...)} in that if no matching constructor is found,
 	 * <code>null</code> is returned rather than a {@link NoSuchMethodException} being thrown.
 	 * @param objectClass The class for which the constructor should be found.
 	 * @param parameterTypes The constructor parameters.
 	 * @return The <code>Method</code> object of the public constructor that matches the specified <code>parameterTypes</code>, or <code>null</code> if no such
 	 *         constructor exists.
-	 * @exception SecurityException If a security manager, <var>s</var>, is present and any of the following conditions is met:
-	 *              <ul>
-	 *              <li>Invocation of <code>{@link SecurityManager#checkMemberAccess(Class, int) s.checkMemberAccess(this, Member.PUBLIC)}</code> denies access to
-	 *              the constructor.</li>
-	 *              <li>The caller's class loader is not the same as or an ancestor of the class loader for the current class and invocation of
-	 *              <code>{@link SecurityManager#checkPackageAccess s.checkPackageAccess()}</code> denies access to the package of this class.</li>
-	 *              </ul>
+	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
+	 *           access to the package of this class.
 	 */
 	public static <T> Constructor<T> getConstructor(final Class<T> objectClass, final Class<?>... parameterTypes) throws SecurityException
 	{
@@ -332,6 +394,33 @@ public class Classes
 	}
 
 	/**
+	 * Convenience function to locate and return the default constructor of a particular class. This differs from <code>Class.getConstructor()</code> in that this
+	 * method returns <code>null</code> instead of throwing a {@link NoSuchMethodException} if the given constructor is not found.
+	 * <p>
+	 * The returned constructor may not be public.
+	 * </p>
+	 * @param objectClass The class for which the default constructor should be found.
+	 * @return The default constructor of the given class, or <code>null</code> if a default constructor does not exist.
+	 * @throws SecurityException Thrown if access to the information is denied.
+	 * @see Class#getConstructors
+	 */
+	@SuppressWarnings("unchecked")
+	//all the constructors of the class should be constructors of the class type, even if the API doesn't indicate that for arrays
+	public static <T> Constructor<T> getDeclaredDefaultConstructor(final Class<T> objectClass) throws SecurityException
+	{
+		final Constructor<T>[] constructors = (Constructor<T>[])objectClass.getDeclaredConstructors(); //look at each declared constructor, even non-public ones
+		for(int i = constructors.length - 1; i >= 0; --i) //look at each constructor
+		{
+			final Constructor<T> constructor = constructors[i]; //get a reference to this constructor
+			if(constructor.getParameterTypes().length == 0) //if this constructor has no parameters
+			{
+				return constructor; //we found the default constructor
+			}
+		}
+		return null; //show that we could not find a default constructor
+	}
+
+	/**
 	 * Convenience function to locate and return the public default constructor of a particular class. This differs from <code>Class.getConstructor()</code> in
 	 * that this method returns <code>null</code> instead of throwing a {@link NoSuchMethodException} if the given constructor is not found.
 	 * <p>
@@ -340,22 +429,13 @@ public class Classes
 	 * </p>
 	 * @param objectClass The class for which the default constructor should be found.
 	 * @return The default constructor of the given class, or <code>null</code> if a default constructor does not exist.
-	 * @exception SecurityException Thrown if access to the information is denied.
+	 * @throws SecurityException Thrown if access to the information is denied.
 	 * @see Class#getConstructors
 	 */
-	@SuppressWarnings("unchecked")
-	//all the constructors of the class should be constructors of the class type, even if the API doesn't indicate that for arrays
 	public static <T> Constructor<T> getPublicDefaultConstructor(final Class<T> objectClass) throws SecurityException
 	{
-		final Constructor<T>[] constructors = (Constructor<T>[])objectClass.getConstructors(); //look at each constructor
-		for(int i = constructors.length - 1; i >= 0; --i) //look at each constructor
-		{
-			final Constructor<T> constructor = constructors[i]; //get a reference to this constructor
-			//if this constructor has no parameters and is public
-			if(constructor.getParameterTypes().length == 0 && Modifier.isPublic(constructor.getModifiers()))
-				return constructor; //we found the default constructor
-		}
-		return null; //show that we could not find a default constructor
+		final Constructor<T> defaultConstructor = getDeclaredDefaultConstructor(objectClass);
+		return Modifier.isPublic(defaultConstructor.getModifiers()) ? defaultConstructor : null; //only return the constructor if it is public 
 	}
 
 	/**
@@ -367,13 +447,9 @@ public class Classes
 	 * @param parameterTypes The list of parameters.
 	 * @return The <code>Method</code> object that matches the specified <code>name</code> and <code>parameterTypes</code>, or <code>null</code> if a matching
 	 *         method is not found or if the name is is "&lt;init&gt;"or "&lt;clinit&gt;".
-	 * @exception NullPointerException if <code>name</code> is <code>null</code>
-	 * @exception SecurityException If a security manager, <i>s</i>, is present and any of the following conditions is met:
-	 *              <ul>
-	 *              <li>invocation of <code>{@link SecurityManager#checkMemberAccess s.checkMemberAccess(this, Member.PUBLIC)}</code> denies access to the method</li>
-	 *              <li>the caller's class loader is not the same as or an ancestor of the class loader for the current class and invocation of
-	 *              <code>{@link SecurityManager#checkPackageAccess s.checkPackageAccess()}</code> denies access to the package of this class</li>
-	 *              </ul>
+	 * @throws NullPointerException if <code>name</code> is <code>null</code>
+	 * @throws SecurityException If a security manager is present that denies access to the constructor or the caller's class loader is different and denies
+	 *           access to the package of this class.
 	 * @since JDK1.1
 	 */
 	public static Method getMethod(final Class<?> objectClass, final String name, final Class<?>... parameterTypes) throws SecurityException
@@ -385,6 +461,60 @@ public class Classes
 		catch(final NoSuchMethodException noSuchMethodException) //if the method isn't found
 		{
 			return null; //indicate that the method couldn't be found
+		}
+	}
+
+	/**
+	 * Gathers <em>all</em> declared methods in this class and its ancestors that could potentially be accessible to the class, including all public and protected
+	 * methods from the class and all its parents. If a method is declared with the same signature in several places, only the most shallow declaration (that is,
+	 * the one declared in or closest to the given class) will be included. No private methods above the given class will be retrieved. Only concrete methods will
+	 * be returned. Synthetic methods and super covariant methods are ignored. The actual accessibility of methods set via {@link Method#setAccessible(boolean)} will not be changed.
+	 * @param objectClass The class from which accessible methods will be gathered, along with its ancestors.
+	 * @return A set of methods potentially accessible to the class.
+	 */
+	public static Collection<Method> gatherAccessibleMethods(final Class<?> objectClass)
+	{
+		final Map<MethodSignature, Method> methods = new HashMap<MethodSignature, Method>();
+		gatherAccessibleMethods(objectClass, methods, true); //gather methods, including private methods just for this class
+		return methods.values();
+	}
+
+	/**
+	 * Gathers <em>all</em> declared methods in this class and its ancestors that could potentially be accessible to the class, including all public and protected
+	 * methods from the class and all its parents. If a method is declared with the same signature in several places, only the most shallow declaration (that is,
+	 * the one declared in or closest to the given class) will be included. No private methods above the given class will be retrieved; the option to gather
+	 * private methods only applies to the original class on which this method was invoked. Only concrete methods will be returned. Synthetic methods and super
+	 * covariant methods are ignored. The actual accessibility of methods set via {@link Method#setAccessible(boolean)} will not be changed.
+	 * @param objectClass The class from which accessible methods will be gathered, along with its ancestors.
+	 * @param methods The map into which the methods will be gathered.
+	 * @param includePrivateMethods Whether private methods should be included; from this class only.
+	 */
+	protected static void gatherAccessibleMethods(final Class<?> objectClass, final Map<MethodSignature, Method> methods, final boolean includePrivateMethods)
+	{
+		for(final Method method : objectClass.getDeclaredMethods()) //look at every method that was declared for this class
+		{
+			if(method.isSynthetic()) //ignore synthetic methods (those generated by the compiler, such as a T getFoo() that is overridden by a String getFoo())
+			{
+				continue;
+			}
+			final int modifiers = method.getModifiers();
+			if(Modifier.isAbstract(modifiers)) //skip abstract methods
+			{
+				continue;
+			}
+			if(Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers) || (includePrivateMethods && Modifier.isPrivate(modifiers))) //public, protected, or private (if requested)
+			{
+				final MethodSignature methodSignature = MethodSignature.forMethod(method, false);	//ignore return type to keep superclass covariance types from overriding subclass versions
+				if(!methods.containsKey(methodSignature)) //skip methods with the same signature
+				{
+					methods.put(methodSignature, method);
+				}
+			}
+		}
+		final Class<?> superClass = objectClass.getSuperclass();
+		if(superClass != null) //gather methods up the hierarchy
+		{
+			gatherAccessibleMethods(superClass, methods, false); //don't gather private methods from higher levels
 		}
 	}
 
@@ -747,7 +877,7 @@ public class Classes
 	 * class name, in increasing order of height and abstractness.
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @return The set of all super classes and implemented interfaces.
-	 * @exception NullPointerException if the given object class is <code>null</code>.
+	 * @throws NullPointerException if the given object class is <code>null</code>.
 	 * @see #CONCRETE_CLASS_HEIGHT_COMPARATOR
 	 */
 	public static List<Class<?>> getAncestorClasses(final Class<?> objectClass)
@@ -761,7 +891,7 @@ public class Classes
 	 * class name, in increasing order of height and abstractness.
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @return The set of all super classes and implemented interfaces.
-	 * @exception NullPointerException if the given object class is <code>null</code>.
+	 * @throws NullPointerException if the given object class is <code>null</code>.
 	 * @see #CONCRETE_CLASS_HEIGHT_COMPARATOR
 	 */
 	public static List<Class<?>> getProperAncestorClasses(final Class<?> objectClass)
@@ -777,7 +907,7 @@ public class Classes
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
 	 * @return The set of all super classes and implemented interfaces.
-	 * @exception NullPointerException if the given object class and/or root class is <code>null</code>.
+	 * @throws NullPointerException if the given object class and/or root class is <code>null</code>.
 	 * @see #CONCRETE_CLASS_HEIGHT_COMPARATOR
 	 */
 	public static <R> List<Class<? extends R>> getAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass)
@@ -794,7 +924,7 @@ public class Classes
 	 * @param objectClass The class for which super classes and interfaces should be found.
 	 * @param rootClass The root class or interface to retrieve, or <code>null</code> if all classes should be retrieved.
 	 * @return The set of all super classes and implemented interfaces.
-	 * @exception NullPointerException if the given object class and/or root class is <code>null</code>.
+	 * @throws NullPointerException if the given object class and/or root class is <code>null</code>.
 	 * @see #CONCRETE_CLASS_HEIGHT_COMPARATOR
 	 */
 	public static <R> List<Class<? extends R>> getProperAncestorClasses(final Class<? extends R> objectClass, final Class<R> rootClass)
@@ -815,7 +945,7 @@ public class Classes
 	 * @param includeAbstract Whether abstract classes should be returned.
 	 * @param includeInterfaces Whether implemented interfaces should be returned.
 	 * @param comparator The strategy for sorting the returned classes, or <code>null</code> if the order of classes is not important.
-	 * @exception NullPointerException if the given object class and/or root class is <code>null</code>.
+	 * @throws NullPointerException if the given object class and/or root class is <code>null</code>.
 	 * @return The set of all super classes and implemented interfaces.
 	 */
 	@SuppressWarnings("unchecked")
@@ -906,7 +1036,7 @@ public class Classes
 	 * @param objectClass The class to add.
 	 * @param height The zero-based distance towards the root away from the original class.
 	 * @param classHeightMap The map of class/height pairs keyed to the class.
-	 * @exception NullPointerException if the given object class is <code>null</code>.
+	 * @throws NullPointerException if the given object class is <code>null</code>.
 	 */
 	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<?>, NameValuePair<Class<?>, Integer>> classHeightMap)
 	//preferred signature, which works on Eclipse 3.4M3 but not on Sun JDK 1.6.0_03-b05:	private static <R> void addClass(final Class<? extends R> objectClass, final int height, final Map<Class<? extends R>, NameValuePair<Class<? extends R>, Integer>> classHeightMap)
@@ -932,7 +1062,7 @@ public class Classes
 	 * @param objectClass The class the class loader of which will be used to provide access to the resource.
 	 * @param name The name of the desired resource.
 	 * @return A file object or <code>null</code> if no resource with the given name is found.
-	 * @exception IOException if there is an I/O error accessing the resource.
+	 * @throws IOException if there is an I/O error accessing the resource.
 	 */
 	public static File getResource(final Class<?> objectClass, final String name) throws IOException
 	{

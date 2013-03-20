@@ -47,6 +47,16 @@ public class Strings
 	//TODO convert StringBuffer code to StringBuilder
 
 	/**
+	 * Returns the string or <code>null</code> if the string is the empty string ("").
+	 * @param string The string to examine.
+	 * @return <code>string</code> if the length of the string is greater than zero, otherwise <code>null</code>.
+	 */
+	public static String asNonEmptyString(final String string)
+	{
+		return string.length() > 0 ? string : null; //return the string if it has a positive length
+	}
+	
+	/**
 	 * Convenience method to create a string from characters using varargs.
 	 * @param chars The characters that should make up the string.
 	 * @return A string created from the given characters.
@@ -128,16 +138,6 @@ public class Strings
 	public static InputStream getInputStream(final String string, final String encoding) throws UnsupportedEncodingException
 	{
 		return new ByteArrayInputStream(string.getBytes(encoding)); //return an input stream to the bytes of the string, encoded using the given encoding
-	}
-
-	/**
-	 * Returns the string or <code>null</code> if the string is the empty string ("").
-	 * @param string The string to examine.
-	 * @return <code>string</code> if the length of the string is greater than zero, otherwise <code>null</code>.
-	 */
-	public static String getNonEmptyString(final String string)
-	{
-		return string.length() > 0 ? string : null; //return the string if it has a positive length
 	}
 
 	/**
