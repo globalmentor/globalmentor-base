@@ -36,12 +36,13 @@ import com.globalmentor.text.xml.xhtml.XHTML;
 
 import static com.globalmentor.io.InputStreams.*;
 import static com.globalmentor.java.CharSequences.*;
+import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Objects.*;
 import static com.globalmentor.java.OperatingSystem.*;
-import static com.globalmentor.java.StringBuilders.replace;
+import static com.globalmentor.java.StringBuilders.*;
 import static com.globalmentor.net.ContentTypeConstants.*;
 import static com.globalmentor.net.URIs.*;
-import static com.globalmentor.text.Text.escape;
+import static com.globalmentor.text.Text.*;
 
 /**
  * Various constants and utilities for examining files.
@@ -67,6 +68,8 @@ public class Files
 
 	/** The extension for backup files. */
 	private final static String BACKUP_EXTENSION = "bak";
+	/** The default prefix for temporary files. */
+	private final static String TEMP_PREFIX = "temp-";
 	/** The extension for temporary files. */
 	private final static String TEMP_EXTENSION = "tmp";
 
@@ -358,6 +361,60 @@ public class Files
 	}
 
 	/**
+	 * Creates a temporary file for another file.
+	 * <p>
+	 * This method can be used in two different ways, based upon the given file. If the given file is a directory, a temporary file will be created within the
+	 * directory with the prefix {@value #TEMP_PREFIX}. Otherwise, if the given file is a directory and filename, a temporary file will be created in the same
+	 * directory, using the given filename as a prefix.
+	 * </p>
+	 * @param file The file specifying the directory and optionally a filename to serve as a base name.
+	 * @return A new temporary file.
+	 * @throws NullPointerException if the given file is <code>null</code>.
+	 * @throws IllegalArgumentException if the given file neither is a directory nor has a parent directory; or if the file is not a directory yet has no
+	 *           filename.
+	 * @throws IOException if there is a problem creating the temporary file.
+	 * @see File#createTempFile(String, String, File)
+	 * @see #TEMP_PREFIX
+	 * @see #TEMP_EXTENSION
+	 */
+	public static File createTempFile(final File file) throws IOException
+	{
+		final File directory;
+		final String baseName;
+		if(file.isDirectory()) //if a directory is given
+		{
+			directory = file; //use the file as the directory
+			baseName = TEMP_PREFIX; //use a generic temp prefix
+		}
+		else
+		//if the file is a directory+file 
+		{
+			directory = file.getParentFile(); //put the temp file in the same directory
+			checkArgument(directory != null, "Non-directory file {0} has no parent directory.", file);
+			baseName = file.getName();
+			checkArgument(baseName != null, "Non-directory file {0} has no filename.", file);
+		}
+		return createTempFile(baseName, directory);
+	}
+
+	/**
+	 * Creates a temporary file in a given directory, using a {@value #TEMP_EXTENSION} extension. This convenience method provides more intuitive parameters than
+	 * {@link File#createTempFile(String, String, File)}.
+	 * @param baseName The base filename to be used in generating the filename.
+	 * @param directory The directory in which the file is to be created, or <code>null</code> if the default temporary-file directory is to be used.
+	 * @return A new temporary file.
+	 * @throws NullPointerException if the given base name is <code>null</code>.
+	 * @throws IllegalArgumentException if the base name is the empty string.
+	 * @throws IOException if there is a problem creating the temporary file.
+	 * @see File#createTempFile(String, String, File)
+	 * @see #TEMP_EXTENSION
+	 */
+	public static File createTempFile(final String baseName, final File directory) throws IOException
+	{
+		return createTempFile(baseName, directory, false);
+	}
+
+	/**
 	 * Creates a temporary file in a given directory with optional automatic deletion, using a {@value #TEMP_EXTENSION} extension. This convenience method
 	 * provides more intuitive parameters than {@link File#createTempFile(String, String, File)}.
 	 * @param baseName The base filename to be used in generating the filename.
@@ -371,7 +428,7 @@ public class Files
 	 * @see File#deleteOnExit()
 	 * @see #TEMP_EXTENSION
 	 */
-	public static File createTempFile(String baseName, final File directory, final boolean deleteOnExit) throws IOException
+	public static File createTempFile(final String baseName, final File directory, final boolean deleteOnExit) throws IOException
 	{
 		return createTempFile(baseName, TEMP_EXTENSION, directory, deleteOnExit);
 	}
@@ -431,6 +488,9 @@ public class Files
 
 	/**
 	 * Deletes a directory or file, throwing an exception if unsuccessful.
+	 * <p>
+	 * If the file does not exist, no action occurs.
+	 * </p>
 	 * @param file The directory or file to delete.
 	 * @throws IOException Thrown if there is an problem deleting any directory or file.
 	 */
@@ -441,6 +501,9 @@ public class Files
 
 	/**
 	 * Deletes a directory or file, throwing an exception if unsuccessful. The operation will stop on the first error.
+	 * <p>
+	 * If the file does not exist, no action occurs.
+	 * </p>
 	 * @param file The directory or file to delete. If a directory is passed, all its child files and directories will recursively be deleted if
 	 *          <code>recursive</code> is <code>true</code>. If a file is passed, it will be deleted normally.
 	 * @param recursive <code>true</code> if all child directories and files of a directory should recursively be deleted.
@@ -457,7 +520,7 @@ public class Files
 				delete(files[i], recursive); //delete this file
 			}
 		}
-		if(!file.delete()) //delete the file; if unsuccessful
+		if(file.exists() && !file.delete()) //delete the file; if unsuccessful
 		{
 			throw new IOException("Unable to delete " + file); //throw an exception TODO i18n
 		}
@@ -473,7 +536,7 @@ public class Files
 	 */
 	public static String getFilename(final String filePath) //TODO fix for Unix filenames; perhaps pass a system identification enum value
 	{
-		final int pathSeparatorIndex = charLastIndexOf(filePath, FILE_PATH_SEPARATOR_CHARACTERS); //see if there are any file path separator characters (unfortunately, this will strip away any backslash found in a Unix filename if the entire path was sent, but it's better to have a too-short filename in a rare case than one that includes the full Windows path)
+		final int pathSeparatorIndex = lastIndexOf(filePath, FILE_PATH_SEPARATOR_CHARACTERS); //see if there are any file path separator characters (unfortunately, this will strip away any backslash found in a Unix filename if the entire path was sent, but it's better to have a too-short filename in a rare case than one that includes the full Windows path)
 		return pathSeparatorIndex >= 0 ? filePath.substring(pathSeparatorIndex + 1) : filePath; //if there is a path separator, remove everything but what comes after the last path separator
 	}
 
@@ -638,7 +701,7 @@ public class Files
 		final int separatorIndex = path.lastIndexOf(FILENAME_EXTENSION_SEPARATOR); //see if we can find the extension separator, which will be the last such character in the string
 		if(separatorIndex >= 0) //if we found a separator
 		{
-			if(charIndexOf(path, FILE_PATH_SEPARATOR_CHARACTERS, separatorIndex + 1) < 0) //if there is no slash after after the extension separator
+			if(indexOf(path, FILE_PATH_SEPARATOR_CHARACTERS, separatorIndex + 1) < 0) //if there is no slash after after the extension separator
 			{
 				return separatorIndex; //return the index of the extension separator
 			}
