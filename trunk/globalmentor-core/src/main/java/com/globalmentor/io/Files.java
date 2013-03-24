@@ -292,14 +292,26 @@ public class Files
 	}
 
 	/**
-	 * Creates a temporary file in the standard temporary directory with automatic deletion on JVM exit, using a {@value #TEMP_EXTENSION} extension.
+	 * Creates a temporary file in the standard temporary directory with no automatic deletion on JVM exit, using a {@value #TEMP_PREFIX} prefix and a
+	 * {@value #TEMP_EXTENSION} extension.
+	 * @return A new temporary file.
+	 * @throws IOException if there is a problem creating the temporary file.
+	 * @see File#createTempFile(String, String)
+	 * @see #TEMP_EXTENSION
+	 */
+	public static File createTempFile() throws IOException
+	{
+		return createTempFile(TEMP_PREFIX);
+	}
+
+	/**
+	 * Creates a temporary file in the standard temporary directory with no automatic deletion on JVM exit, using a {@value #TEMP_EXTENSION} extension.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @return A new temporary file.
 	 * @throws NullPointerException if the given base name is <code>null</code>.
 	 * @throws IllegalArgumentException if the base name is the empty string.
 	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String)
-	 * @see File#deleteOnExit()
 	 * @see #TEMP_EXTENSION
 	 */
 	public static File createTempFile(final String baseName) throws IOException
@@ -308,7 +320,7 @@ public class Files
 	}
 
 	/**
-	 * Creates a temporary file in the standard temporary directory with automatic deletion on JVM exit. This convenience method provides more intuitive
+	 * Creates a temporary file in the standard temporary directory with no automatic deletion on JVM exit. This convenience method provides more intuitive
 	 * parameters than {@link File#createTempFile(String, String)}.
 	 * @param baseName The base filename to be used in generating the filename.
 	 * @param extension The extension to use for the temporary file, or <code>null</code> if a default extension should be used.
@@ -317,11 +329,10 @@ public class Files
 	 * @throws IllegalArgumentException if the base name is the empty string.
 	 * @throws IOException if there is a problem creating the temporary file.
 	 * @see File#createTempFile(String, String)
-	 * @see File#deleteOnExit()
 	 */
 	public static File createTempFile(final String baseName, final String extension) throws IOException
 	{
-		return createTempFile(baseName, extension, true); //create a temporary file that is automatically scheduled for deletion
+		return createTempFile(baseName, extension, false); //create a temporary file that is automatically scheduled for deletion
 	}
 
 	/**
@@ -361,7 +372,7 @@ public class Files
 	}
 
 	/**
-	 * Creates a temporary file for another file.
+	 * Creates a temporary file for another file, with no automatic deletion on JVM exit.
 	 * <p>
 	 * This method can be used in two different ways, based upon the given file. If the given file is a directory, a temporary file will be created within the
 	 * directory with the prefix {@value #TEMP_PREFIX}. Otherwise, if the given file is a directory and filename, a temporary file will be created in the same
