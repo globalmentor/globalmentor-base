@@ -46,7 +46,12 @@ import static com.globalmentor.text.Text.*;
 
 /**
  * Various constants and utilities for examining files.
+ * <p>
+ * For file URIs Java incorrectly uses the form <code>file:/mnt/sdcard/...</code> instead of <code>file:///mnt/sdcard/...</code>, but these utilities use the
+ * former for consistency.
+ * </p>
  * @author Garret Wilson
+ * @see <a href="http://blogs.msdn.com/b/ie/archive/2006/12/06/file-uris-in-windows.aspx">File URIs in Windows.</p>
  */
 public class Files
 {

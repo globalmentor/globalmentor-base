@@ -35,6 +35,10 @@ import com.globalmentor.text.*;
 /**
  * Various URI manipulating functions for working with URIs as defined in <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a>,
  * "Uniform Resource Identifiers (URI): Generic Syntax".
+ * <p>
+ * For file URIs Java incorrectly uses the form <code>file:/mnt/sdcard/...</code> instead of <code>file:///mnt/sdcard/...</code>, but these utilities use the
+ * former for consistency.
+ * </p>
  * @see URI
  * @see <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986 - Uniform Resource Identifiers (URI): Generic Syntax</a>
  */
@@ -156,6 +160,12 @@ public class URIs
 
 	/** Path characters defined by RFC 3986. */
 	public final static Characters PATH_CHARACTERS = PATH_SEGMENT_CHARACTERS.add('/');
+
+	/**
+	 * The sequence "//" which is supposed to be present in file URIs (e.g. <code>file:///mnt/sdcard/...</code>) but which isn't present in Java file URIs.
+	 * @see <a href="http://blogs.msdn.com/b/ie/archive/2006/12/06/file-uris-in-windows.aspx">File URIs in Windows.</p>
+	 */
+	public final static String FILE_URI_PATH_ROOT_PREFIX = ROOT_PATH + PATH_SEPARATOR;
 
 	/**
 	 * The maximum URL length allowed by Microsoft Internet Explorer for HTTP GET.
