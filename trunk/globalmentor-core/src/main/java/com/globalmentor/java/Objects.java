@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -219,6 +219,22 @@ public class Objects
 			}
 		}
 		return null; //we couldn't find such an instance
+	}
+
+	/**
+	 * Returns either and object or a default instance if the object is <code>null</code>.
+	 * <p>
+	 * This is equivalent to the JavaScript statement <code>var x = object || defaultInstance;</code>
+	 * </p>
+	 * @param object The object to examine.
+	 * @param defaultInstance The default instance to return if the object is <code>null</code>.
+	 * @return The object, or the default instance of the object is <code>null</code>.
+	 * @throws NullPointerException if the given default instance is <code>null</code>.
+	 * @see #checkInstance(Object)
+	 */
+	public static <T> T toInstance(final T object, final T defaultInstance)
+	{
+		return object != null ? object : checkInstance(defaultInstance);
 	}
 
 	/**
