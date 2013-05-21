@@ -19,6 +19,8 @@ package com.globalmentor.java;
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 
+import com.globalmentor.config.ConfigurationException;
+
 /**
  * Various checks on objects. Some of these methods indicate <dfn>preconditions</dfn> on objects given as arguments in a method.
  * 
@@ -281,6 +283,70 @@ public class Conditions
 			throw new IllegalArgumentException("Value " + value + " is not within the range " + rangeMin + " to " + rangeMax);
 		}
 		return value; //return the value, which has been determined to be within the range
+	}
+
+	/**
+	 * Checks the results of an expression to see if an argument is correct, and throws a {@link ConfigurationException} if the value is <code>false</code>.
+	 * @param test The result of the test.
+	 * @throws ConfigurationException if the given value is <code>false</code>.
+	 */
+	public static void checkConfiguration(final boolean test)
+	{
+		checkArgument(test, null); //check the test with no description
+	}
+
+	/**
+	 * Checks the results of an expression to see if an argument is correct, and throws a {@link ConfigurationException} if the value is <code>false</code>.
+	 * @param test The result of the test.
+	 * @param description A description of the test to be used when generating an exception, optionally formatted with arguments, or <code>null</code> for no
+	 *          description.
+	 * @param arguments The arguments to be applied when formatting, or an empty array if the message should not be formatted.
+	 * @throws NullPointerException if the given arguments is <code>null</code>.
+	 * @throws ConfigurationException if the given value is <code>false</code>.
+	 * @throws IllegalArgumentException if the description is an invalid pattern, or if an argument in the arguments array is not of the type expected by the
+	 *           format element(s) that use it.
+	 * @see MessageFormat#format(String, Object...)
+	 */
+	public static void checkConfiguration(final boolean test, String description, final Object... arguments)
+	{
+		if(!test)
+		{
+			//format the message if appropriate
+			if(description != null && arguments.length > 0)
+			{
+				description = MessageFormat.format(description, arguments);
+			}
+			throw new ConfigurationException(description);
+		}
+	}
+
+	/**
+	 * Checks to see if a given variable is an instance of any object, and throws a {@link ConfigurationException} if the variable is <code>null</code>.
+	 * @param <T> The type of variable to check.
+	 * @param variable The variable to check.
+	 * @return The given variable.
+	 * @throws ConfigurationException if the given variable is <code>null</code>.
+	 */
+	public static <T> T checkConfigurationNotNull(final T variable)
+	{
+		return checkConfigurationNotNull(variable, null); //check for null with no description
+	}
+
+	/**
+	 * Checks to see if a given variable is an instance of any object, and throws a {@link ConfigurationException} if the variable is <code>null</code>.
+	 * @param <T> The type of variable to check.
+	 * @param variable The variable to check.
+	 * @param description A description of the variable to be used when generating an exception, or <code>null</code> for no description.
+	 * @return The given variable.
+	 * @throws NullPointerException if the given variable is <code>null</code>.
+	 */
+	public static <T> T checkConfigurationNotNull(final T variable, final String description)
+	{
+		if(variable == null) //if the variable is null
+		{
+			throw new ConfigurationException(description);
+		}
+		return variable; //return the variable
 	}
 
 	/**
