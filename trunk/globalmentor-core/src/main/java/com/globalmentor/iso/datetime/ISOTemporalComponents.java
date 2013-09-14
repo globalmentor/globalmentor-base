@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -291,14 +291,15 @@ public class ISOTemporalComponents
 	 * @param year The year, 0-9999.
 	 * @param month The month, 1-12.
 	 * @param day The day, 1-31.
-	 * @param time The time.
+	 * @param time The time, or <code>null</code> if there should be no time component (set to midnight).
 	 * @param locale The locale for the calendar.
 	 * @exception NullPointerException if the given time and/or locale is <code>null</code>.
 	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
-	public static Calendar createCalendar(final int year, final int month, final int day, final ISOTime time, final Locale locale)
+	public static GregorianCalendar createCalendar(final int year, final int month, final int day, final ISOTime time, final Locale locale)
 	{
-		return createCalendar(year, month, day, time.getHours(), time.getMinutes(), time.getSeconds(), time.getMicroseconds(), time.getUTCOffset(), locale); //create a calendar using the time components
+		return createCalendar(year, month, day, time != null ? time.getHours() : 0, time != null ? time.getMinutes() : 0, time != null ? time.getSeconds() : 0,
+				time != null ? time.getMicroseconds() : 0, time != null ? time.getUTCOffset() : null, locale); //create a calendar using the time components
 	}
 
 	/**
@@ -315,10 +316,10 @@ public class ISOTemporalComponents
 	 * @exception NullPointerException if the given locale is <code>null</code>.
 	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
-	public static Calendar createCalendar(final int year, final int month, final int day, final int hours, final int minutes, final int seconds,
+	public static GregorianCalendar createCalendar(final int year, final int month, final int day, final int hours, final int minutes, final int seconds,
 			final int microseconds, final ISOUTCOffset utcOffset, final Locale locale)
 	{
-		final Calendar calendar = new GregorianCalendar(utcOffset != null ? utcOffset.toTimeZone() : GMT, checkInstance(locale, "Locale cannot be null.")); //get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
+		final GregorianCalendar calendar = new GregorianCalendar(utcOffset != null ? utcOffset.toTimeZone() : GMT, checkInstance(locale, "Locale cannot be null.")); //get Gregorian calendar for the locale using the time zone from the UTC offset, defaulting to a GMT time zone
 		calendar.clear(); //clear the calendar
 		return setDateTime(calendar, checkArgumentRange(year, 0, 9999), checkArgumentRange(month, 1, 12) - 1, checkArgumentRange(day, 1, 31),
 				checkArgumentRange(hours, 0, 23), checkArgumentRange(minutes, 0, 59), checkArgumentRange(seconds, 0, 60),

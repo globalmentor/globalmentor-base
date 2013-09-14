@@ -128,7 +128,7 @@ public class Objects
 	 *          objects.
 	 * @return A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
 	 */
-	public static <T extends Comparable<T>> int compare(final T object1, final T object2, final int nullBias)
+	public static <T extends Comparable<? super T>> int compare(final T object1, final T object2, final int nullBias)
 	{
 		if(object1 == null) //if the first object is null
 		{

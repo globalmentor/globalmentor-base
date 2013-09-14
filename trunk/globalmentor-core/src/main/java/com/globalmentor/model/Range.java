@@ -1,5 +1,5 @@
 /*
- * Copyright © 1996-2008 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 1996-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import static com.globalmentor.java.Objects.*;
 @author Garret Wilson
 @param <T> The type of value supported by the range.
 */
-public class Range<T extends Comparable<T>> implements Comparable<Range<T>>
+public class Range<T extends Comparable<? super T>> implements Comparable<Range<T>>
 {
 	/**The lower bound of the range, inclusive, or <code>null</code> for infinity.*/
 	private final T lowerBound;

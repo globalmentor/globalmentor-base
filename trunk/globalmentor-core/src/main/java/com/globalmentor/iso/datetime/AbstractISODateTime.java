@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -165,12 +165,22 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	}
 
 	/**
+	 * Returns a calendar representing this date and time for the default locale. If this object has no time information, midnight UTC will be assumed.
+	 * @return A calendar representing this date time in the default locale.
+	 * @see Locale#getDefault()
+	 */
+	public GregorianCalendar toCalendar()
+	{
+		return toCalendar(Locale.getDefault());
+	}
+
+	/**
 	 * Returns a calendar representing this date and time. If this object has no time information, midnight UTC will be assumed.
 	 * @param locale The locale for which a calendar should be returned.
 	 * @return A calendar representing this date time in the given locale.
 	 * @exception NullPointerException if the given locale is <code>null</code>.
 	 */
-	public Calendar toCalendar(final Locale locale)
+	public GregorianCalendar toCalendar(final Locale locale)
 	{
 		return ISOTemporalComponents.createCalendar(getYear(), getMonth(), getDay(), getISOTime(), locale);
 	}

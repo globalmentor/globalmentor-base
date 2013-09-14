@@ -16,10 +16,7 @@
 
 package com.globalmentor.iso.datetime;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.util.*;
 
 import com.globalmentor.text.*;
 
@@ -50,6 +47,18 @@ public class ISODate extends AbstractISODateTime
 	public ISODate(final int year, final int month, final int day)
 	{
 		this(new ISOTemporalComponents(year, month, day, -1, -1, -1, -1, 0, 0)); //construct the parent class with only a date in UTC
+	}
+
+	/**
+	 * Calendar constructor in terms of UTC. Any time-related information of the given calendar will be lost; only the date will be kept, in terms of the
+	 * calendar's time zone.
+	 * @param calendar The calendar representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC; and a time
+	 *          zone.
+	 * @exception NullPointerException if the given calendar is <code>null</code>.
+	 */
+	public ISODate(final GregorianCalendar calendar)
+	{
+		this(calendar.getTime(), calendar.getTimeZone());
 	}
 
 	/**
@@ -116,9 +125,9 @@ public class ISODate extends AbstractISODateTime
 	 * @return The calendar this object represents in relation to the given time zone.
 	 * @throws NullPointerException if the given time zone is <code>null</code>.
 	 */
-	public Calendar toCalendar(final TimeZone timeZone)
+	public GregorianCalendar toCalendar(final TimeZone timeZone)
 	{
-		final Calendar calendar = new GregorianCalendar(timeZone); //create a Gregorian calendar for the given time zone
+		final GregorianCalendar calendar = new GregorianCalendar(timeZone); //create a Gregorian calendar for the given time zone
 		calendar.clear(); //clear the calendar
 		calendar.set(getYear(), getMonth() - 1, getDay()); //set the calendar date, compensating for Calendar's zero-based month
 		return calendar; //return the calendar

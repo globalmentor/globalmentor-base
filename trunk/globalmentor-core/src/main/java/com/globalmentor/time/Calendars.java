@@ -16,12 +16,8 @@
 
 package com.globalmentor.time;
 
-import java.text.DateFormat;
 import java.util.*;
 
-import com.globalmentor.model.Range;
-
-import static com.globalmentor.java.Conditions.*;
 import static com.globalmentor.java.Longs.*;
 import static java.util.Calendar.*;
 
@@ -45,7 +41,7 @@ public class Calendars
 	 * @param amount The amount of date or time to be added to the field.
 	 * @see Calendar#add(int, int)
 	 */
-	public static Calendar add(final Calendar calendar, final int field, final int amount)
+	public static <C extends Calendar> C add(final C calendar, final int field, final int amount)
 	{
 		calendar.add(field, amount);
 		return calendar;
@@ -68,7 +64,7 @@ public class Calendars
 	 * @return The calendar being modified.
 	 * @throws NullPointerException if the given calendar is <code>null</code>.
 	 */
-	public static Calendar clearDate(final Calendar calendar)
+	public static <C extends Calendar> C clearDate(final C calendar)
 	{
 		calendar.clear(ERA); //clear the time-related fields
 		calendar.clear(YEAR);
@@ -96,7 +92,7 @@ public class Calendars
 	 * @return The calendar being modified.
 	 * @throws NullPointerException if the given calendar is <code>null</code>.
 	 */
-	public static Calendar clearTime(final Calendar calendar)
+	public static <C extends Calendar> C clearTime(final C calendar)
 	{
 		calendar.clear(HOUR_OF_DAY); //clear the time-related fields
 		calendar.clear(HOUR); //clear the 12-hour time field as well, because otherwise it may be used if the hour-of-day field is unset
@@ -119,7 +115,7 @@ public class Calendars
 	 * @param fromCalendar The calendar from which to get the time.
 	 * @throws NullPointerException if either of the given calendars is <code>null</code>.
 	 */
-	public static Calendar setTime(final Calendar calendar, final Calendar fromCalendar)
+	public static <C extends Calendar> C setTime(final C calendar, final Calendar fromCalendar)
 	{
 		return setTime(calendar, fromCalendar.get(HOUR_OF_DAY), fromCalendar.get(MINUTE), fromCalendar.get(SECOND), fromCalendar.get(MILLISECOND)); //set the time fields from the given calendar and return the modified calendar
 	}
@@ -137,7 +133,7 @@ public class Calendars
 	 * @throws NullPointerException if the given calendar is <code>null</code>.
 	 * @see Calendar#set(int, int, int, int, int, int)
 	 */
-	public static Calendar setDateTime(final Calendar calendar, final int year, final int month, final int date, final int hour, final int minute,
+	public static <C extends Calendar> C setDateTime(final C calendar, final int year, final int month, final int date, final int hour, final int minute,
 			final int second, final int millisecond)
 	{
 		calendar.set(year, month, date, hour, minute, second); //set the calendar
@@ -161,7 +157,7 @@ public class Calendars
 	 * @return The calendar being modified.
 	 * @throws NullPointerException if the given calendar is <code>null</code>.
 	 */
-	public static Calendar setTime(final Calendar calendar, final int hour, final int minute, final int second, final int millisecond)
+	public static <C extends Calendar> C setTime(final C calendar, final int hour, final int minute, final int second, final int millisecond)
 	{
 		calendar.set(HOUR_OF_DAY, hour); //clear the time-related fields
 		calendar.set(MINUTE, minute);
@@ -206,60 +202,6 @@ public class Calendars
 			++dayDifference;
 		}
 		return isNegative ? -dayDifference : dayDifference; //account for calendar order
-	}
-
-	/**
-	 * Calculates the totals for a particular date and a number of calendar days before that intersect a set of ranges. There will be <code>dayCount+1</code>
-	 * calendar days returned, including the given calendar date and previous dates, each associated with the total times it intersected with a range.
-	 * <p>
-	 * For example, passing a calendar date of 2000-01-01 with a day count of 365, will return, for each day in the previous year, the number of days that
-	 * intersect one of the ranges.
-	 * </p>
-	 * @param calendar The current calendar to use for calculations.
-	 * @param dayCount The number of days back to calculate.
-	 * @param ranges The ranges used for intersection.
-	 * @return A map of all calendar days and the total number of intersection with the ranges within that period.
-	 */
-	public static SortedMap<Calendar, Integer> getDaysTotals(Calendar calendar, final int dayCount, final Set<Range<Calendar>> ranges)
-	{
-		calendar = clearTime((Calendar)calendar.clone()); //clear the time of the calendar; just keep the date
-		final BitSet dayStatuses = new BitSet(dayCount * 2 - 1); //keep track of the status of each day, each index representing the days before the calendar date
-		for(final Range<Calendar> range : ranges) //fill the day statuses with all the ranges
-		{
-			final Calendar rangeCalendar = (Calendar)range.getLowerBound().clone(); //start at the bottom of the range
-			final Calendar rangeUpperBound = (Calendar)range.getUpperBound().clone();
-			checkArgument(rangeCalendar.compareTo(rangeUpperBound) <= 0, "Calendar range {0} cannot be greater than {1}.", rangeCalendar, rangeUpperBound);
-			while(rangeCalendar.compareTo(rangeUpperBound) <= 0 && rangeCalendar.compareTo(calendar) <= 0) //sweep the range until we go past the upper end of the range or the maximum date
-			{
-				final int dayDifference = getDayDifference(calendar, rangeCalendar); //find the number of days between the current date and this date
-				if(dayDifference < dayCount * 2) //ignore dates far in the past
-				{
-					dayStatuses.set(dayDifference); //mark that day as used
-				}
-				rangeCalendar.add(DAY_OF_YEAR, 1); //go to the next day in the range
-			}
-		}
-		final SortedMap<Calendar, Integer> dayTotals = new TreeMap<Calendar, Integer>();
-		//calculate all the day totals in the past
-		for(int dayDelta = -dayCount + 1; dayDelta <= 0; ++dayDelta) //this loop is not the most efficient, but the number should not be big
-		{
-			final Calendar day = add((Calendar)calendar.clone(), DAY_OF_YEAR, dayDelta); //add the delta to the calendar to get the date in the past
-			int total = 0; //calculate the total for this date
-			for(int i = dayDelta - dayCount + 1; i <= dayDelta; ++i) //go in the past before the current date
-			{
-				if(dayStatuses.get(-i)) //the index is in the past, so convert it to positive for the day lookup
-				{
-					++total;
-				}
-			}
-			/*
-			final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-			dateFormat.setTimeZone(TimeZones.GMT);
-			System.out.println("Totals for day: " + dateFormat.format(day.getTime()) + ": " + total);
-			*/
-			dayTotals.put(day, total); //store the total for this day
-		}
-		return dayTotals;
 	}
 
 }
