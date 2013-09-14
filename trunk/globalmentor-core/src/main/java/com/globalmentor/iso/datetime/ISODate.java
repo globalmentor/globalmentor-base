@@ -1,5 +1,5 @@
 /*
- * Copyright © 2007-2012 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2007-2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,7 @@ import java.util.TimeZone;
 import com.globalmentor.text.*;
 
 /**
- * The class representing an ISO date type. If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally in
- * terms of UTC.
+ * The class representing an ISO date type. If there is no explicit UTC offset (i.e. this is a floating value), the time is stored internally in terms of UTC.
  * @author Garret Wilson
  */
 public class ISODate extends AbstractISODateTime
@@ -64,7 +63,7 @@ public class ISODate extends AbstractISODateTime
 	}
 
 	/**
-	 * Date constructor in terms the gigen time zone. Any time-related information of the given date will be lost; only the date will be kept, in terms of the
+	 * Date constructor in terms the given time zone. Any time-related information of the given date will be lost; only the date will be kept, in terms of the
 	 * given time zone.
 	 * @param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
 	 * @param timeZone The time zone in which the time should be interpreted.
@@ -104,13 +103,25 @@ public class ISODate extends AbstractISODateTime
 	 * @param timeZone The time zone which the date should represent.
 	 * @return The date this object represents in relation to the given time zone.
 	 * @throws NullPointerException if the given time zone is <code>null</code>.
+	 * @see #toCalendar(TimeZone)
 	 */
 	public Date toDate(final TimeZone timeZone)
+	{
+		return toCalendar(timeZone).getTime(); //return the calendar time
+	}
+
+	/**
+	 * Returns a calendar that represents this temporal information in the given time zone.
+	 * @param timeZone The time zone which the date should represent.
+	 * @return The calendar this object represents in relation to the given time zone.
+	 * @throws NullPointerException if the given time zone is <code>null</code>.
+	 */
+	public Calendar toCalendar(final TimeZone timeZone)
 	{
 		final Calendar calendar = new GregorianCalendar(timeZone); //create a Gregorian calendar for the given time zone
 		calendar.clear(); //clear the calendar
 		calendar.set(getYear(), getMonth() - 1, getDay()); //set the calendar date, compensating for Calendar's zero-based month
-		return calendar.getTime(); //return the calendar time
+		return calendar; //return the calendar
 	}
 
 	/** {@inheritDoc} */
