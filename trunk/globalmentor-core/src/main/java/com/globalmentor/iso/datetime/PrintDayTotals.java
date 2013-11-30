@@ -30,7 +30,7 @@ import com.globalmentor.model.*;
  * compliance with visa restrictions.
  * 
  * <p>
- * <code>PrintDayTotals <var>date</var> <var>dayCount</var> [<var>maxDays</var>]</code>
+ * <code>PrintDayTotals <var>date</var> <var>windowSize</var> [<var>maxDays</var> [<var>historyCount</var>]]</code>
  * </p>
  * 
  * <p>
@@ -43,8 +43,13 @@ import com.globalmentor.model.*;
  * Output has three or four columns, depending on whether a maximum number of days was indicated:
  * <code><var>date</var>,<var>count</var>,<var>total</var>,<var>difference</var></code>, e.g.:
  * </p>
- * <blockquote><code>2013-02-18,1,136,44<br/>2013-02-19,1,136,44<br/>2013-02-20,0,135,45</code></blockquote> <h2>Examples:</h2>
+ * <blockquote><code>2013-02-18,1,136,44<br/>2013-02-19,1,136,44<br/>2013-02-20,0,135,45</code></blockquote>
  * 
+ * <p>
+ * If no <var>historyCount</var> is given, the value will default to <var>windowSize</var>.
+ * </p>
+ * 
+ * <h2>Examples:</h2>
  * <p>
  * Print totals from 2010-02-04 to 2011-02-03 from the file <code>ranges.txt</code>:
  * </p>
@@ -62,18 +67,28 @@ public class PrintDayTotals
 
 	public static void main(final String[] args) throws UnsupportedEncodingException, IOException
 	{
-		checkArgument(args.length >= 2 && args.length <= 3, "Must have at least a date and number of days with an optional maximum number of days.");
+		checkArgument(args.length >= 2 && args.length <= 4,
+				"Must have at least a date and number of days with an optional window size and history count: PrintDayTotals date windowSize [maxDays [historyCount]].");
 		//parse the parameters
 		final ISODate date = ISODate.valueOf(args[0]);
-		final int dayCount = Integer.parseInt(args[1]);
+		final int windowSize = Integer.parseInt(args[1]);
 		final long maxDays;
-		if(args.length == 3)
+		if(args.length >= 3)
 		{
 			maxDays = Long.parseLong(args[2]);
 		}
 		else
 		{
 			maxDays = -1;
+		}
+		final int historyCount;
+		if(args.length >= 4)
+		{
+			historyCount = Integer.parseInt(args[3]);
+		}
+		else
+		{
+			historyCount = windowSize;
 		}
 		//parse the ranges form System.in
 		final Set<Range<ISODate>> ranges = new HashSet<Range<ISODate>>();
@@ -90,7 +105,7 @@ public class PrintDayTotals
 		//count the days
 		final Map<ISODate, Count> dayCounts = getDayCounts(ranges);
 		//calculate the totals
-		final Map<ISODate, Long> dayTotals = getDayTotals(date, dayCount, dayCounts);
+		final Map<ISODate, Long> dayTotals = getDayTotals(date, windowSize, historyCount, dayCounts);
 		//print the results
 		for(final Map.Entry<ISODate, Long> dayTotal : dayTotals.entrySet())
 		{

@@ -61,19 +61,36 @@ public class ISODates
 	 * intersect one of the ranges.
 	 * </p>
 	 * @param calendar The current calendar to use for calculations.
-	 * @param dayCount The number of days back to calculate.
+	 * @param windowSize The number of days back to include in each total.
 	 * @param ranges The ranges used for intersection.
 	 * @return A map of all calendar days and the total number of intersection with the ranges within that period.
 	 */
-	public static SortedMap<ISODate, Long> getDayTotals(final ISODate date, final int dayCount, final Map<ISODate, Count> dayCounts)
+	public static SortedMap<ISODate, Long> getDayTotals(final ISODate date, final int windowSize, final Map<ISODate, Count> dayCounts)
+	{
+		return getDayTotals(date, windowSize, windowSize, dayCounts);
+	}
+
+	/**
+	 * Calculates the totals for a particular date and a number of calendar days before that date, including the given number of days in the history.
+	 * <p>
+	 * For example, passing a calendar date of 2000-01-01 with a window size of 365 and a history count of 730, will return, for 730 days prior to the given date,
+	 * the number of days that intersect one of the ranges within the window of 365 days before each date.
+	 * </p>
+	 * @param calendar The current calendar to use for calculations.
+	 * @param windowSize The number of days back to include in each total.
+	 * @param historyCount The number of day totals to include.
+	 * @param ranges The ranges used for intersection.
+	 * @return A map of all calendar days and the total number of intersection with the ranges within the indicated history period.
+	 */
+	public static SortedMap<ISODate, Long> getDayTotals(final ISODate date, final int windowSize, final int historyCount, final Map<ISODate, Count> dayCounts)
 	{
 		final GregorianCalendar dayCalendar = date.toCalendar();
 		final SortedMap<ISODate, Long> dayTotals = new TreeMap<ISODate, Long>();
-		for(int i = 0; i < dayCount; ++i) //calculate all the day totals in the past
+		for(int i = 0; i < historyCount; ++i) //calculate all the day totals in the past
 		{
 			final GregorianCalendar totalCalendar = (GregorianCalendar)dayCalendar.clone(); //use a separate calendar to calculate the totals for this day
 			long total = 0; //calculate the total for this date
-			for(int j = 0; j < dayCount; ++j) //look at previous days relative to the current calendar date
+			for(int j = 0; j < windowSize; ++j) //look at previous days relative to the current calendar date
 			{
 				final Count currentDayCount = dayCounts.get(new ISODate(totalCalendar)); //get the count for this day
 				if(currentDayCount != null)
