@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 GlobalMentor, Inc. <http://www.globalmentor.com/>
+ * Copyright © 2013-2014 GlobalMentor, Inc. <http://www.globalmentor.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,10 +40,10 @@ import com.globalmentor.model.*;
  * <blockquote><code>2010-01-02,2010-01-05<br/>2010-03-10,2010-04-04</code></blockquote>
  * 
  * <p>
- * Output has three or four columns, depending on whether a maximum number of days was indicated:
- * <code><var>date</var>,<var>count</var>,<var>total</var>,<var>difference</var></code>, e.g.:
+ * Output has five or six columns, depending on whether a maximum number of days was indicated:
+ * <code><var>positive-count-flag</var>,<var>date</var>,<var>count</var>,<var>run-total</var>,<var>window-total</var>,<var>difference</var></code>, e.g.:
  * </p>
- * <blockquote><code>2013-02-18,1,136,44<br/>2013-02-19,1,136,44<br/>2013-02-20,0,135,45</code></blockquote>
+ * <blockquote><code>*,2013-02-18,1,1,136,44<br/>*,2013-02-19,1,2,136,44<br/>*,2013-02-20,,,135,45</code></blockquote>
  * 
  * <p>
  * If no <var>historyCount</var> is given, the value will default to <var>windowSize</var>.
@@ -106,16 +106,39 @@ public class PrintDayTotals
 		final Map<ISODate, Count> dayCounts = getDayCounts(ranges);
 		//calculate the totals
 		final Map<ISODate, Long> dayTotals = getDayTotals(date, windowSize, historyCount, dayCounts);
-		//print the results
+		//print the results, calculating run totals on the fly
+		long runTotal = 0;
 		for(final Map.Entry<ISODate, Long> dayTotal : dayTotals.entrySet())
 		{
 			final ISODate day = dayTotal.getKey();
 			final Count count = dayCounts.get(day);
-			final long total = dayTotal.getValue().longValue();
-			System.out.print(day + "," + (count != null ? count : "0") + "," + total); //e.g. 2011-02-03,1,170
+			if(count != null && count.getCount() > 0) //if we have a positive count
+			{
+				System.out.print('*'); //positive count indicator
+				runTotal += count.getCount(); //update our run count
+			}
+			else
+			//if we don't have a positive count
+			{
+				runTotal = 0; //reset our run total
+			}
+			System.out.print(',');
+			final long windowTotal = dayTotal.getValue().longValue();
+			System.out.print(day + ","); //e.g. *,2011-02-03
+			if(count != null)
+			{
+				System.out.print(count); //e.g. *,2011-02-03,1
+			}
+			System.out.print(',');
+			if(runTotal != 0)
+			{
+				System.out.print(runTotal); //e.g. *,2011-02-03,1,5
+			}
+			System.out.print(',');
+			System.out.print(windowTotal); //e.g. ,2011-02-03,1,5,170
 			if(maxDays >= 0) //if we know the maximum number of days, include the days remaining
 			{
-				System.out.print("," + (maxDays - total)); //e.g. 2011-02-03,1,170,10
+				System.out.print("," + (maxDays - windowTotal)); //e.g. *,2011-02-03,1,5,170,10
 			}
 			System.out.println();
 		}
