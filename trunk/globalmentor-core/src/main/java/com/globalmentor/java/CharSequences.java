@@ -20,6 +20,7 @@ import static com.globalmentor.java.Characters.*;
 import static com.globalmentor.io.Charsets.*;
 import static java.lang.Math.*;
 
+import java.text.Normalizer;
 import java.util.Collection;
 
 import com.globalmentor.io.UTF8;
@@ -1292,6 +1293,24 @@ public class CharSequences
 			}
 		}
 		return new CharSequence[] { charSequence }; //return an array cotaining the character sequence itself if there are no characters or no delimiters
+	}
+
+	/**
+	 * Removes all normalized Unicode marks such as accents from a string, providing a string that can be used as liberally matching lookup without regard to
+	 * diacritics. For example:
+	 * <ul>
+	 * <li>'é' will be converted to 'e' (Unicode non-spacing marks)</li>
+	 * <li>vowel signs in Hindi will be removed ((Unicode spacing combining marks)</li>
+	 * <li>circles around characters will be removed (Unicode enclosing marks)</li>
+	 * </ul>
+	 * @param charSequence The character sequence from which to remove marks.
+	 * @return The normalized string with marks removed.
+	 * @see <a href="http://stackoverflow.com/q/3322152/421049">Java - getting rid of accents and converting them to regular letters</a>
+	 */
+	public static String removeMarks(final CharSequence charSequence)
+	{
+		final String string = Normalizer.normalize(charSequence, Normalizer.Form.NFD); //perform canonical decomposition
+		return string.replaceAll("\\p{M}", ""); //remove all resulting decomposed marks
 	}
 
 	/**
