@@ -17,19 +17,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
-			<artifactId>junit-dep</artifactId>
-			<version>4.10</version>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion> <!-- exclude old Hamcrest dependencies -->
-					<groupId>org.hamcrest</groupId>
-					<artifactId>hamcrest-core</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-integration</artifactId>
+			<artifactId>hamcrest-library</artifactId>
 			<version>1.3</version>
 			<scope>test</scope>
 		</dependency>
