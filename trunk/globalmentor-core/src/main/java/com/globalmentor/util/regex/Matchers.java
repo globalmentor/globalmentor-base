@@ -29,7 +29,7 @@ public class Matchers
 	That is, if a matcher contains groups "2", "3", and "null", the array <code>{2, 3, 0}</code> will be returned.  
 	@param matcher The matcher for which an integer array of group values should be returned.
 	@return An array of integers representing the integer values of the matcher groups.
-	@exception IllegalArgumentException if one of the matcher's groups is not <code>null</code> and cannot be parsed as an integer.
+	@throws IllegalArgumentException if one of the matcher's groups is not <code>null</code> and cannot be parsed as an integer.
 	*/
 	public static int[] getIntGroups(final Matcher matcher)
 	{
@@ -42,7 +42,7 @@ public class Matchers
 	@param matcher The matcher for which an integer array of group values should be returned.
 	@param beginGroupNumber The one-based group number at which to begin retrieving values.
 	@return An array of integers representing the integer values of the matcher groups.
-	@exception IllegalArgumentException if one of the matcher's groups is not <code>null</code> and cannot be parsed as an integer.
+	@throws IllegalArgumentException if one of the matcher's groups is not <code>null</code> and cannot be parsed as an integer.
 	*/
 	public static int[] getIntGroups(final Matcher matcher, final int beginGroupNumber)
 	{

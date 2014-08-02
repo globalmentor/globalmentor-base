@@ -43,9 +43,9 @@ public class Packages
 	 * <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/</code>.
 	 * @param resourceURI The URI which is expected to represent a Java package, or <code>null</code>.
 	 * @return The Java package represented by the given URI, or <code>null</code> if the URI is not a <code>java:</code> URI.
-	 * @exception IllegalArgumentException if the given URI represents a Java package that does not have the correct syntax, e.g. it does not have an absolute
+	 * @throws IllegalArgumentException if the given URI represents a Java package that does not have the correct syntax, e.g. it does not have an absolute
 	 *              collection path.
-	 * @exception ClassNotFoundException if the package represented by the given URI could not be found.
+	 * @throws ClassNotFoundException if the package represented by the given URI could not be found.
 	 * @see Java#JAVA_URI_SCHEME
 	 */
 	public static Package asPackage(final URI resourceURI) throws ClassNotFoundException
@@ -86,7 +86,7 @@ public class Packages
 	 * <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/</code>.
 	 * @param objectPackage The package to use in creating the <code>java:</code> URI.
 	 * @return A <code>java:</code> URI based upon the given class.
-	 * @exception NullPointerException if the given package name is <code>null</code>.
+	 * @throws NullPointerException if the given package name is <code>null</code>.
 	 */
 	public static URI createJavaURI(final Package objectPackage)
 	{
@@ -98,7 +98,7 @@ public class Packages
 	 * <code>java:/<var>com</var>/<var>example</var>/<var>package</var>/</code>.
 	 * @param objectPackageName The name of the package to use in creating the <code>java:</code> URI.
 	 * @return A <code>java:</code> URI based upon the given class.
-	 * @exception NullPointerException if the given package name is <code>null</code>.
+	 * @throws NullPointerException if the given package name is <code>null</code>.
 	 */
 	public static URI createJavaURI(final String objectPackageName)
 	{

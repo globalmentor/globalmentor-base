@@ -84,7 +84,7 @@ public class Numbers
 	@return The value <code>0</code> if the first number is numerically equal to the second number;
 		a value less than <code>0</code> if the first number is numerically less than the second number;
 		or a value greater than <code>0</code> if the first number is numerically greater than the second number.
-	@exception NullPointerException if either of the given numbers is <code>null</code>.
+	@throws NullPointerException if either of the given numbers is <code>null</code>.
 	*/
 	public static int compare(final Number number1, final Number number2)
 	{
@@ -109,7 +109,7 @@ public class Numbers
 	@return The value <code>0</code> if both are numbers and the first number is numerically equal to the second number;
 		a value less than <code>0</code> if only the first is a number, or both are numbers and the first number is numerically less than the second number;
 		or a value greater than <code>0</code> if only the second is a number, or both are numbers and the first number is numerically greater than the second number.
-	@exception IllegalArgumentException if neither of the given objects is an instance of {@link Number}.
+	@throws IllegalArgumentException if neither of the given objects is an instance of {@link Number}.
 	*/
 	public static int sort(final Object object1, final Object object2)
 	{
@@ -125,7 +125,7 @@ public class Numbers
 	@return The value <code>0</code> if both are numbers and the first number is numerically equal to the second number;
 		a value less than <code>0</code> if only the first is a number, or both are numbers and the first number is numerically less than the second number;
 		or a value greater than <code>0</code> if only the second is a number, or both are numbers and the first number is numerically greater than the second number.
-	@exception IllegalArgumentException if neither of the given objects is an instance of {@link Number} and non-ambiguous sorting is requested.
+	@throws IllegalArgumentException if neither of the given objects is an instance of {@link Number} and non-ambiguous sorting is requested.
 	*/
 	public static int sort(final Object object1, final Object object2, final boolean ambiguous)
 	{

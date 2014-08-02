@@ -41,7 +41,7 @@ public class ReadWriteLockDecorator implements ReadWriteLock
 
 	/**Read write lock constructor.
 	@param readWriteLock The lock for controlling access to the properties.
-	@exception NullPointerException if the given lock is <code>null</code>.
+	@throws NullPointerException if the given lock is <code>null</code>.
 	*/
 	public ReadWriteLockDecorator(final ReadWriteLock readWriteLock)
 	{

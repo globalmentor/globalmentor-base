@@ -41,7 +41,7 @@ public class FileResource extends DefaultResource
 	/**Constructs a resource with a file.
 	The reference URI will be set to the reference URI of the file.
 	@param file The file this resource represents.
-	@exception NullPointerException if the given file or reference URI is <code>null</code>.
+	@throws NullPointerException if the given file or reference URI is <code>null</code>.
 	*/
 	public FileResource(final File file)
 	{
@@ -51,7 +51,7 @@ public class FileResource extends DefaultResource
 	/**Constructs a resource with a file and a reference URI.
 	@param file The file this resource represents.
 	@param referenceURI The reference URI for the new resource.
-	@exception NullPointerException if the given file is <code>null</code>.
+	@throws NullPointerException if the given file is <code>null</code>.
 	*/
 	public FileResource(final File file, final URI referenceURI)
 	{

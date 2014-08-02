@@ -53,7 +53,7 @@ public class RDFPlainLiteral extends RDFLiteral
 
 	/**Constructs a plain literal with a lexical value.
 	@param lexicalValue The lexical form of the literal.
-	@exception NullPointerException if the given lexical value is <code>null</code>.
+	@throws NullPointerException if the given lexical value is <code>null</code>.
 	*/
 	public RDFPlainLiteral(final String lexicalValue)
 	{
@@ -63,7 +63,7 @@ public class RDFPlainLiteral extends RDFLiteral
 	/**Constructs a plain literal with a lexical value and a language.
 	@param lexicalValue The lexical form of the literal.
 	@param languageLocale A locale representing the language, or <code>null</code> if no language should be specified.
-	@exception NullPointerException if the given lexical value is <code>null</code>.
+	@throws NullPointerException if the given lexical value is <code>null</code>.
 	*/
 	public RDFPlainLiteral(final String lexicalValue, final Locale languageLocale)
 	{

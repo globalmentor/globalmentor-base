@@ -31,7 +31,7 @@ public interface IOKit<T> extends URIAccessible
 	/**Loads an object from a given URI.
 	@param uri The URI that identifies the object to be loaded.
 	@return The object containing the data of the resouce represented by the URI.
-	@exception IOException Thrown if there is an error reading the object.
+	@throws IOException Thrown if there is an error reading the object.
 	*/
 	public T load(final URI uri) throws IOException;
 
@@ -46,7 +46,7 @@ public interface IOKit<T> extends URIAccessible
 	/**Saves an object to a given URI.
 	@param object The object the data of which will be saved at the given URI.
 	@param uri The URI at which the object should be saved.
-	@exception IOException Thrown if there is an error writing the object.
+	@throws IOException Thrown if there is an error writing the object.
 	*/
 	public void save(final T object, final URI uri) throws IOException;
 

@@ -48,7 +48,7 @@ public class TypedRDFResourceIO<T extends RDFResource> extends AbstractRDFXMLIO<
 	The class name will be set to the local name of the given resource class.
 	@param resourceClass The class representing the type of resource expected from the RDF instance.
 	@param resourceNamespaceURI The namespace of the RDF resource supported.
-	@exception NullPointerException if the given class and/or namespace URI is <code>null</code>.
+	@throws NullPointerException if the given class and/or namespace URI is <code>null</code>.
 	*/
 	public TypedRDFResourceIO(final Class<T> resourceClass, final URI resourceNamespaceURI)
 	{
@@ -59,7 +59,7 @@ public class TypedRDFResourceIO<T extends RDFResource> extends AbstractRDFXMLIO<
 	@param resourceClass The class representing the type of resource expected from the RDF instance.
 	@param resourceNamespaceURI The namespace of the RDF resource supported.
 	@param resourceClassName The class name of the RDF resource supported.
-	@exception NullPointerException if the given class, namespace URI, and/or class name is <code>null</code>.
+	@throws NullPointerException if the given class, namespace URI, and/or class name is <code>null</code>.
 	*/
 	public TypedRDFResourceIO(final Class<T> resourceClass, final URI resourceNamespaceURI, final String resourceClassName)
 	{
@@ -73,7 +73,7 @@ public class TypedRDFResourceIO<T extends RDFResource> extends AbstractRDFXMLIO<
 	@param resourceNamespaceURI The namespace of the RDF resource supported.
 	@param resourceClassName The class name of the RDF resource supported.
 	@param resouceFactory The resource factory to register with the given namespace.
-	@exception NullPointerException if the given class, namespace URI, class name, and/or resource factory is <code>null</code>.
+	@throws NullPointerException if the given class, namespace URI, class name, and/or resource factory is <code>null</code>.
 	*/
 	public TypedRDFResourceIO(final Class<T> resourceClass, final URI resourceNamespaceURI, final String resourceClassName, final RDFResourceFactory resourceFactory)
 	{
@@ -86,9 +86,9 @@ public class TypedRDFResourceIO<T extends RDFResource> extends AbstractRDFXMLIO<
 	@param inputStream The input stream from which to read the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The resource read from the input stream.
-	@exception NullPointerException if the given RDF instance and/or input stream is <code>null</code>.
-	@exception IOException if there is an error reading the data.
-	@exception ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
+	@throws NullPointerException if the given RDF instance and/or input stream is <code>null</code>.
+	@throws IOException if there is an error reading the data.
+	@throws ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
 	*/ 
 	public T read(final RDF rdf, final InputStream inputStream, final URI baseURI) throws IOException
 	{

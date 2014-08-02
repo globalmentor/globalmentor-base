@@ -35,7 +35,7 @@ public class WriterDecorator extends Writer
 
 	/**Writer constructor with critical sections synchronized on the writer itself.
 	@param writer The writer being decorated.
-	@exception NullPointerException if the given writer is <code>null</code>.
+	@throws NullPointerException if the given writer is <code>null</code>.
 	*/
 	public WriterDecorator(final Writer writer)
 	{
@@ -46,7 +46,7 @@ public class WriterDecorator extends Writer
 	/**Writer and lock constructor.
 	@param writer The writer being decorated.
 	@param lock The object to synchronize on for operations such as {@link #flush()} and {@link #close()}.
-	@exception NullPointerException if the given writer and/or lock is <code>null</code>.
+	@throws NullPointerException if the given writer and/or lock is <code>null</code>.
 	*/
 	public WriterDecorator(final Writer writer, final Object lock)
 	{
@@ -63,7 +63,7 @@ public class WriterDecorator extends Writer
      * should override this method.
      *
      * @param c  int specifying a character to be written.
-     * @exception  IOException  If an I/O error occurs
+     * @throws  IOException  If an I/O error occurs
      */
     public void write(int c) throws IOException {getWriter().write(c);}
 
@@ -72,7 +72,7 @@ public class WriterDecorator extends Writer
      *
      * @param  cbuf  Array of characters to be written
      *
-     * @exception  IOException  If an I/O error occurs
+     * @throws  IOException  If an I/O error occurs
      */
     public void write(char cbuf[]) throws IOException {getWriter().write(cbuf);}
 
@@ -83,7 +83,7 @@ public class WriterDecorator extends Writer
      * @param  off   Offset from which to start writing characters
      * @param  len   Number of characters to write
      *
-     * @exception  IOException  If an I/O error occurs
+     * @throws  IOException  If an I/O error occurs
      */
     public void write(char cbuf[], int off, int len) throws IOException {getWriter().write(cbuf, off, len);}
 
@@ -92,7 +92,7 @@ public class WriterDecorator extends Writer
      *
      * @param  str  String to be written
      *
-     * @exception  IOException  If an I/O error occurs
+     * @throws  IOException  If an I/O error occurs
      */
     public void write(String str) throws IOException {getWriter().write(str);}
 
@@ -103,7 +103,7 @@ public class WriterDecorator extends Writer
      * @param  off  Offset from which to start writing characters
      * @param  len  Number of characters to write
      *
-     * @exception  IOException  If an I/O error occurs
+     * @throws  IOException  If an I/O error occurs
      */
     public void write(String str, int off, int len) throws IOException {getWriter().write(str, off, len);}
 
@@ -208,7 +208,7 @@ public class WriterDecorator extends Writer
      * passed to the operating system for writing; it does not guarantee that
      * they are actually written to a physical device such as a disk drive.
      *
-     * @exception  IOException  If an I/O error occurs
+     * @throws  IOException  If an I/O error occurs
      */
     public void flush() throws IOException {getWriter().flush();}
 
@@ -217,7 +217,7 @@ public class WriterDecorator extends Writer
      * further write() or flush() invocations will cause an IOException to be
      * thrown.  Closing a previously-closed stream, however, has no effect.
      *
-     * @exception  IOException  If an I/O error occurs
+     * @throws  IOException  If an I/O error occurs
      */
     public void close() throws IOException {getWriter().close();}
 

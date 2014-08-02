@@ -32,8 +32,8 @@ public class Luhn
 	If the sequence of digits is empty, this method returns <code>false</code>.
 	@param digits The digits to be verified against a trailing check digit.
 	@return <code>true</code> if this character sequence ends with a check digit that correctly checks the other characters according to the Luhn algorithm.
-	@exception NullPointerException if the given sequence of digits is <code>null</code>.
-	@exception IllegalArgumentException if one of the the given digits is not a character between '0' to '9', inclusive.
+	@throws NullPointerException if the given sequence of digits is <code>null</code>.
+	@throws IllegalArgumentException if one of the the given digits is not a character between '0' to '9', inclusive.
 	*/
 	public final static boolean isDigitsCheck(final CharSequence digits)
 	{
@@ -46,8 +46,8 @@ public class Luhn
 	Each digit must be a value from '0' to '9', inclusive.
 	@param digits The digits for which a check digit should be calculated.
 	@return The character representing the check digit generated for the given digits according to the Luhn algorithm.
-	@exception NullPointerException if the given sequence of digits is <code>null</code>.
-	@exception IllegalArgumentException if one of the the given digits is not a character between '0' to '9', inclusive.
+	@throws NullPointerException if the given sequence of digits is <code>null</code>.
+	@throws IllegalArgumentException if one of the the given digits is not a character between '0' to '9', inclusive.
 	*/
 	public final static char getCheckDigit(final CharSequence digits)
 	{
@@ -61,9 +61,9 @@ public class Luhn
 	@param startIndex The starting index for which a check digit should be calculated.
 	@param endIndex One more than the last index to include in a check digit calculation.
 	@return The character representing the check digit generated for the given digits according to the Luhn algorithm.
-	@exception NullPointerException if the given sequence of digits is <code>null</code>.
-	@exception IndexOutOfBoundsException if the given range references one or more indexes outside the character sequence.
-	@exception IllegalArgumentException if one of the the given digits is not a character between '0' to '9', inclusive.
+	@throws NullPointerException if the given sequence of digits is <code>null</code>.
+	@throws IndexOutOfBoundsException if the given range references one or more indexes outside the character sequence.
+	@throws IllegalArgumentException if one of the the given digits is not a character between '0' to '9', inclusive.
 	*/
 	public final static char getCheckDigit(final CharSequence digits, final int start, final int end)
 	{
@@ -80,8 +80,8 @@ public class Luhn
 	If the sequence of digits is empty, this method returns zero.
 	@param digitValues The values digits represent.
 	@return The check digit value the Luhn algorithm specifies.
-	@exception NullPointerException if the given array of values is <code>null</code>.
-	@exception IllegalArgumentException if one of the the given digit values is 10 or greater.
+	@throws NullPointerException if the given array of values is <code>null</code>.
+	@throws IllegalArgumentException if one of the the given digit values is 10 or greater.
 	*/
 	public final static int getCheckDigitValue(final int[] digitValues)
 	{
@@ -111,7 +111,7 @@ public class Luhn
 	/**Doubles the given digit value and adds the two decimal digits of the outcome.
 	@param digitValue The digit value to double and then add.
 	@return The sum of the decimal digits of the doubled value.
-	@exception IllegalArgumentException if the given digit value is 10 or greater.
+	@throws IllegalArgumentException if the given digit value is 10 or greater.
 	*/
 	public final static int doubleAdd(final int digitValue)
 	{

@@ -51,7 +51,7 @@ public class Range<T extends Comparable<? super T>> implements Comparable<Range<
 	/**Determines if this range contains the given value.
 	@param value The value to check.
 	@return <code>true</code> if the given value is within this range, inclusive.
-	@exception NullPointerException if the given value is <code>null</code>.
+	@throws NullPointerException if the given value is <code>null</code>.
 	 */
 	public boolean contains(final T value)
 	{

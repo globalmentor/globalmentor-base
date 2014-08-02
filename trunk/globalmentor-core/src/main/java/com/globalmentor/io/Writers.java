@@ -27,7 +27,7 @@ public class Writers
 	/**Copies the contents of a reader to a writer. Neither reader nor writer is closed after the operation.
 	@param reader The content to copy.
 	@param writer The destination of the reader contents.
-	@exception IOException Thrown if there is an error copying the content.
+	@throws IOException Thrown if there is an error copying the content.
 	*/
 	public static void write(final Reader reader, final Writer writer) throws IOException
 	{

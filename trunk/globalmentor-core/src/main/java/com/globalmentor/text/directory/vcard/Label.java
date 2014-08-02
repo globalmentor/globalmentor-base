@@ -47,7 +47,7 @@ public class Label extends LocaledText
 	/**
 	 * Text constructor with no locale specified and default address types of {@value Address#DEFAULT_TYPES}.
 	 * @param text The non-<code>null</code> text string to represent.
-	 * @exception NullPointerException Thrown if <code>text</code> is <code>null</code>.
+	 * @throws NullPointerException Thrown if <code>text</code> is <code>null</code>.
 	 */
 	public Label(final String text) throws NullPointerException
 	{
@@ -57,7 +57,7 @@ public class Label extends LocaledText
 	/**
 	 * Constructor with default address types of {@value Address#DEFAULT_TYPES}.
 	 * @param localeText The non-<code>null</code> object containing the text and optional locale.
-	 * @exception NullPointerException Thrown if <code>localeText</code> is <code>null</code>.
+	 * @throws NullPointerException Thrown if <code>localeText</code> is <code>null</code>.
 	 */
 	public Label(final LocaledText localeText) throws NullPointerException
 	{
@@ -68,7 +68,7 @@ public class Label extends LocaledText
 	 * Constructor with default address types of {@value Address#DEFAULT_TYPES}.
 	 * @param text The non-<code>null</code> text string to represent.
 	 * @param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
-	 * @exception NullPointerException Thrown if <code>text</code> is <code>null</code>.
+	 * @throws NullPointerException Thrown if <code>text</code> is <code>null</code>.
 	 */
 	public Label(final String text, final Locale locale) throws NullPointerException
 	{
@@ -79,7 +79,7 @@ public class Label extends LocaledText
 	 * Address type constructor with no locale.
 	 * @param text The non-<code>null</code> text string to represent.
 	 * @param addressTypes The delivery address types.
-	 * @exception NullPointerException Thrown if <code>text</code> and/or the types is <code>null</code>.
+	 * @throws NullPointerException Thrown if <code>text</code> and/or the types is <code>null</code>.
 	 */
 	public Label(final String text, final Set<Address.Type> addressTypes) throws NullPointerException
 	{
@@ -90,7 +90,7 @@ public class Label extends LocaledText
 	 * Full locale text constructor
 	 * @param localeText The non-<code>null</code> object containing the text and optional locale.
 	 * @param addressTypes The delivery address types.
-	 * @exception NullPointerException Thrown if <code>localeText</code> and/or types is <code>null</code>.
+	 * @throws NullPointerException Thrown if <code>localeText</code> and/or types is <code>null</code>.
 	 */
 	public Label(final LocaledText localeText, final Set<Address.Type> addressTypes) throws NullPointerException
 	{
@@ -103,7 +103,7 @@ public class Label extends LocaledText
 	 * @param text The non-<code>null</code> text string to represent.
 	 * @param addressTypes The delivery address types.
 	 * @param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
-	 * @exception NullPointerException Thrown if <code>text</code> and/or types is <code>null</code>.
+	 * @throws NullPointerException Thrown if <code>text</code> and/or types is <code>null</code>.
 	 */
 	public Label(final String text, final Set<Address.Type> addressTypes, final Locale locale) throws NullPointerException
 	{

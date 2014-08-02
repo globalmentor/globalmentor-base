@@ -70,7 +70,7 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 	The calling class has the responsibility for closing the input stream.
 	@param uri A URI to a resource.
 	@return An input stream to the contents of the resource represented by the given URI.
-	@exception IOException Thrown if an I/O error occurred.
+	@throws IOException Thrown if an I/O error occurred.
 	*/
 	public InputStream getInputStream(final URI uri) throws IOException
 	{
@@ -81,7 +81,7 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 	The calling class has the responsibility for closing the output stream.
 	@param uri A URI to a resource.
 	@return An output stream to the contents of the resource represented by the given URI.
-	@exception IOException Thrown if an I/O error occurred.
+	@throws IOException Thrown if an I/O error occurred.
 	*/
 	public OutputStream getOutputStream(final URI uri) throws IOException
 	{
@@ -96,7 +96,7 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 		the storage file exists.</p>
 	@return <code>true</code> if the storage file existed or exists now after
 		moving the backup file, else <code>false</code> if neither file exists.
-	@exception IOException Thrown if the backup file cannot be moved.
+	@throws IOException Thrown if the backup file cannot be moved.
 	@see #isBackupUsed
 	*/
 	public boolean exists() throws IOException
@@ -118,7 +118,7 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 	<p>Classes may override this method and provide last-minute modifications of
 		the XML document tree before it is serialized.</p>
 	@param document The XML document that contains the RDF data to store
-	@exception IOException Thrown if there is a problem storing the information.
+	@throws IOException Thrown if there is a problem storing the information.
 	@see #getStorageURI()
 	@see #isBackupUsed
 	*/
@@ -140,7 +140,7 @@ public abstract class AbstractFileRDFStorage extends AbstractRDFStorage
 	This version attempts to locate a backup copy if the requested file does not
 	exist.
 	@param uri The URI at which the information is be stored
-	@exception IOException Thrown if there is a problem retrieving the information.
+	@throws IOException Thrown if there is a problem retrieving the information.
 	@see #isBackupUsed
 	*/
 	public void retrieve(final URI uri) throws IOException

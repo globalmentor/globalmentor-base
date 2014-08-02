@@ -157,7 +157,7 @@ public class StringBuilders
 	 * @param character The character to append.
 	 * @param count The number of repetitions of the character.
 	 * @return The string builder with the inserted repetitions of the character.
-	 * @exception StringIndexOutOfBoundsException if the index is negative or greater than the length.
+	 * @throws StringIndexOutOfBoundsException if the index is negative or greater than the length.
 	 */
 	public static StringBuilder insert(final StringBuilder stringBuilder, final int offset, final char character, final int count)
 	{
@@ -173,7 +173,7 @@ public class StringBuilders
 	 * {@link StringBuilder#insert(int, java.lang.CharSequence)} and is provided here for backwards-compatibility using RetroWeaver, for example.
 	 * @param stringBuilder The string builder into which the characters should be inserted.
 	 * @param offset The index at which to insert the characters.
-	 * @exception IndexOutOfBoundsException if the given destination index is outside the bounds of the string builder.
+	 * @throws IndexOutOfBoundsException if the given destination index is outside the bounds of the string builder.
 	 * @see StringBuilder#insert(int, java.lang.CharSequence)
 	 */
 	public static StringBuilder insert(final StringBuilder stringBuilder, final int offset, CharSequence charSequence)
@@ -257,8 +257,8 @@ public class StringBuilders
 	/**
 	 * Deletes the last character of a string builder.
 	 * @param stringBuilder The string builder to modify.
-	 * @exception NullPointerException if the given string builder is <code>null</code>.
-	 * @exception StringIndexOutOfBoundsException if the given string builder has no characters.
+	 * @throws NullPointerException if the given string builder is <code>null</code>.
+	 * @throws StringIndexOutOfBoundsException if the given string builder has no characters.
 	 */
 	public static void deleteEnd(final StringBuilder stringBuilder)
 	{
@@ -269,8 +269,8 @@ public class StringBuilders
 	 * Deletes the last characters of a string builder.
 	 * @param stringBuilder The string builder to modify.
 	 * @param count The number of characters to delete.
-	 * @exception IllegalArgumentException if the given string builder has insuficient characters.
-	 * @exception StringIndexOutOfBoundsException if the given string builder is <code>null</code>.
+	 * @throws IllegalArgumentException if the given string builder has insuficient characters.
+	 * @throws StringIndexOutOfBoundsException if the given string builder is <code>null</code>.
 	 */
 	public static void deleteEnd(final StringBuilder stringBuilder, final int count)
 	{
@@ -294,7 +294,7 @@ public class StringBuilders
 	 * @param escapeLength The number of characters to use for the hex representation.
 	 * @param hexCase Whether the hex characters should be lowercase or uppercase.
 	 * @return The string builder, now containing the escaped data.
-	 * @exception IllegalArgumentException if neither valid nor invalid characters are given.
+	 * @throws IllegalArgumentException if neither valid nor invalid characters are given.
 	 */
 	public static StringBuilder escapeHex(final StringBuilder stringBuilder, final Characters validCharacters, final Characters invalidCharacters,
 			final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase)
@@ -319,7 +319,7 @@ public class StringBuilders
 	 * @param escapeLength The number of characters to use for the hex representation.
 	 * @param hexCase Whether the hex characters should be lowercase or uppercase.
 	 * @return The string builder, now containing the escaped data.
-	 * @exception IllegalArgumentException if neither valid nor invalid characters are given.
+	 * @throws IllegalArgumentException if neither valid nor invalid characters are given.
 	 */
 	public static StringBuilder escapeHex(final StringBuilder stringBuilder, final int start, final Characters validCharacters,
 			final Characters invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase) //go to the end
@@ -345,7 +345,7 @@ public class StringBuilders
 	 * @param escapeLength The number of characters to use for the hex representation.
 	 * @param hexCase Whether the hex characters should be lowercase or uppercase.
 	 * @return The string builder, now containing the escaped data.
-	 * @exception IllegalArgumentException if neither valid nor invalid characters are given.
+	 * @throws IllegalArgumentException if neither valid nor invalid characters are given.
 	 */
 	public static StringBuilder escapeHex(final StringBuilder stringBuilder, final int start, final int end, final Characters validCharacters,
 			final Characters invalidCharacters, final int maxCharacter, final char escapeChar, final int escapeLength, final Case hexCase)
@@ -429,8 +429,8 @@ public class StringBuilders
 	 * character and the subsequent character will be ignored.
 	 * @param stringBuilder The string builder to unescape.
 	 * @return The string builder with the unescaped content.
-	 * @exception NullPointerException if the given string builder is <code>null</code>.
-	 * @exception IllegalArgumentException if the string builder ends with the given escape character.
+	 * @throws NullPointerException if the given string builder is <code>null</code>.
+	 * @throws IllegalArgumentException if the string builder ends with the given escape character.
 	 */
 	public static StringBuilder unescape(final StringBuilder stringBuilder, final char escapeChar)
 	{

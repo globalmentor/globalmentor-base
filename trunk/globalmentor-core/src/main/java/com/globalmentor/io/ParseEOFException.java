@@ -29,7 +29,7 @@ public class ParseEOFException extends ParseIOException //TODO rename to ParseEn
 	/**
 	 * Reader constructor with a default message and no cause. This constructor will attempt to determine the location from the reader.
 	 * @param reader The reader from which the error occurred.
-	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @see LineNumberReader
 	 */
 	public ParseEOFException(final Reader reader)
@@ -41,7 +41,7 @@ public class ParseEOFException extends ParseIOException //TODO rename to ParseEn
 	 * Reader and message constructor with no cause. This constructor will attempt to determine the location from the reader.
 	 * @param reader The reader from which the error occurred.
 	 * @param message The error message, or <code>null</code> if there is no error message.
-	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 */
 	public ParseEOFException(final Reader reader, final String message)
 	{
@@ -53,7 +53,7 @@ public class ParseEOFException extends ParseIOException //TODO rename to ParseEn
 	 * @param message The error message, or <code>null</code> if there is no error message.
 	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
 	 * @param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
-	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 */
 	public ParseEOFException(final String message, final long lineIndex, final long charIndex)
 	{

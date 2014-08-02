@@ -190,7 +190,7 @@ public class DirectorySerializer
 	/**
 	 * Removes the profile from the top of the stack. Suspends the currently set profile, if any.
 	 * @return The profile from the top of the stack.
-	 * @exception NoSuchElementException Thrown if there are no more profiles on the stack.
+	 * @throws NoSuchElementException Thrown if there are no more profiles on the stack.
 	 */
 	protected String popProfile()
 	{
@@ -218,7 +218,7 @@ public class DirectorySerializer
 	 * Serializes content lines from a directory of type <code>text/directory</code>.
 	 * @param contentLines An array of content lines in the directory.
 	 * @param writer The writer to which the lines of the directory should be serialized.
-	 * @exception IOException Thrown if there is an error writing to the directory.
+	 * @throws IOException Thrown if there is an error writing to the directory.
 	 */
 	public void serializeContentLines(final ContentLine[] contentLines, final Writer writer) throws IOException
 	{
@@ -261,7 +261,7 @@ public class DirectorySerializer
 	 * Serializes content lines from a directory of type <code>text/directory</code>.
 	 * @param contentLineArray An array of content lines in the directory.
 	 * @param writer The writer to which the lines of the directory should be serialized.
-	 * @exception IOException Thrown if there is an error writing to the directory.
+	 * @throws IOException Thrown if there is an error writing to the directory.
 	 */
 	protected void serializeContentLines(final ContentLine[] contentLineArray, final LineFoldWriter writer) throws IOException
 	{
@@ -338,7 +338,7 @@ public class DirectorySerializer
 	 * </ol>
 	 * @param contentLine The directory content line to be serialized.
 	 * @param writer The writer to which the lines of the directory should be serialized.
-	 * @exception IOException Thrown if there is an error writing to the directory.
+	 * @throws IOException Thrown if there is an error writing to the directory.
 	 */
 	public void serializeContentLine(final ContentLine contentLine, final Writer writer) throws IOException
 	{
@@ -427,7 +427,7 @@ public class DirectorySerializer
 	 * before any parameters.
 	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param writer The writer to which the lines of the directory should be serialized.
-	 * @exception IOException Thrown if there is an error writing to the directory.
+	 * @throws IOException Thrown if there is an error writing to the directory.
 	 */
 	protected void serializeParameters(final List<NameValuePair<String, String>> paramList, final Writer writer) throws IOException
 	{

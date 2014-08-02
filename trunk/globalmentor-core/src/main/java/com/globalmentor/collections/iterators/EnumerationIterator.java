@@ -37,7 +37,7 @@ public class EnumerationIterator<E> implements Iterator<E>, Enumeration<E>
 
 	/**Enumeration constructor.
 	@param enumeration The adapted enumeration.
-	@exception NullPointerException if the given enumeration is <code>null</code>.
+	@throws NullPointerException if the given enumeration is <code>null</code>.
 	*/
 	public EnumerationIterator(final Enumeration<E> enumeration)
 	{
@@ -51,7 +51,7 @@ public class EnumerationIterator<E> implements Iterator<E>, Enumeration<E>
 	}
 
 	/**@return The next element in the iteration.
-	@exception NoSuchElementException if the iteration has no more elements.
+	@throws NoSuchElementException if the iteration has no more elements.
 	*/
 	public E next()
 	{
@@ -60,7 +60,7 @@ public class EnumerationIterator<E> implements Iterator<E>, Enumeration<E>
 
 	/**Removes from the underlying collection the last element returned by the iterator.
 	This implementation throws an exception, as removal is not supported.
-	@exception UnsupportedOperationException if the <code>remove</code> operation is not supported by this iterator.
+	@throws UnsupportedOperationException if the <code>remove</code> operation is not supported by this iterator.
 	*/
 	public void remove()
 	{
@@ -77,7 +77,7 @@ public class EnumerationIterator<E> implements Iterator<E>, Enumeration<E>
 
   /**@return The next element of this enumeration.
 	This implementation delegates to {@link #next()}.
-	@exception  NoSuchElementException if no more elements exist.
+	@throws  NoSuchElementException if no more elements exist.
 	*/
 	public E nextElement()
 	{

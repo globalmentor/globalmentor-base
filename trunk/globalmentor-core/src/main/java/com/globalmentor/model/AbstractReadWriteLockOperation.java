@@ -63,7 +63,7 @@ public abstract class AbstractReadWriteLockOperation extends AbstractOperation i
 	/**
 	 * Read write lock constructor.
 	 * @param readWriteLock The lock for controlling access to the properties.
-	 * @exception NullPointerException if the given lock is <code>null</code>.
+	 * @throws NullPointerException if the given lock is <code>null</code>.
 	 */
 	public AbstractReadWriteLockOperation(final ReadWriteLock readWriteLock)
 	{

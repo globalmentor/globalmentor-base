@@ -48,7 +48,7 @@ public class Host extends DefaultComparableNamed<String>
 	/**
 	 * Constructs a host from a string.
 	 * @param host A host and optional port in the form <code><var>hostname</var>[:<var>port</var>]</var>.
-	 * @exception IllegalArgumentException if the given host string is not syntactically correct.
+	 * @throws IllegalArgumentException if the given host string is not syntactically correct.
 	 */
 	public Host(final String host) throws IllegalArgumentException
 	{
@@ -81,7 +81,7 @@ public class Host extends DefaultComparableNamed<String>
 	 * Retrieves a port from a string containing a host and optional port.
 	 * @param host The host string to parse.
 	 * @return The port of the host, or <code>-1</code> if no port is specified.
-	 * @exception IllegalArgumentException if the given port is not a valid integer.
+	 * @throws IllegalArgumentException if the given port is not a valid integer.
 	 */
 	public static int getPort(final String host) throws NumberFormatException
 	{

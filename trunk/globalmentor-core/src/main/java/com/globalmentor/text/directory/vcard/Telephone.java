@@ -85,7 +85,7 @@ public class Telephone extends TelephoneNumber
 	 * Telephone number and type constructor.
 	 * @param telephoneNumber The telephone number from which values should be used for initialization.
 	 * @param types The intended use.
-	 * @exception ArgumentSyntaxException Thrown if the values violate ITU-T E.164.
+	 * @throws ArgumentSyntaxException Thrown if the values violate ITU-T E.164.
 	 */
 	public Telephone(final TelephoneNumber telephoneNumber, final Set<Type> types) throws ArgumentSyntaxException
 	{
@@ -98,7 +98,7 @@ public class Telephone extends TelephoneNumber
 	 * @param ndc The national destination code
 	 * @param sn The subscriber number.
 	 * @param types The intended use.
-	 * @exception ArgumentSyntaxException Thrown if the values violate ITU-T E.164.
+	 * @throws ArgumentSyntaxException Thrown if the values violate ITU-T E.164.
 	 */
 	public Telephone(final String cc, final String ndc, final String sn, final Set<Type> types) throws ArgumentSyntaxException
 	{
@@ -113,7 +113,7 @@ public class Telephone extends TelephoneNumber
 	 * This constructor uses a default type of {@value Telephone#DEFAULT_TYPE}.
 	 * </p>
 	 * @param string The string to be parsed into a telephone number.
-	 * @exception ArgumentSyntaxException Thrown if the value violates ITU-T E.164.
+	 * @throws ArgumentSyntaxException Thrown if the value violates ITU-T E.164.
 	 */
 	public Telephone(final String string) throws ArgumentSyntaxException
 	{
@@ -125,7 +125,7 @@ public class Telephone extends TelephoneNumber
 	 * delimiters of '-' and ' '.
 	 * @param string The string to be parsed into a telephone number.
 	 * @param types The intended use.
-	 * @exception ArgumentSyntaxException Thrown if the value violates ITU-T E.164.
+	 * @throws ArgumentSyntaxException Thrown if the value violates ITU-T E.164.
 	 */
 	public Telephone(final String string, final Set<Type> types) throws ArgumentSyntaxException
 	{

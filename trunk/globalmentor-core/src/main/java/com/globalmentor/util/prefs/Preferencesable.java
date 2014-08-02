@@ -25,7 +25,7 @@ public interface Preferencesable
 {
 
 	/**@return The preferences that should be used for this object, or the default preferences for this class if no preferences are specifically set.
-	@exception SecurityException Thrown if a security manager is present and it denies <code>RuntimePermission("preferences")</code>.
+	@throws SecurityException Thrown if a security manager is present and it denies <code>RuntimePermission("preferences")</code>.
 	*/
 	public Preferences getPreferences() throws SecurityException;
 	

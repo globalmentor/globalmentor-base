@@ -35,7 +35,7 @@ public class JoinIterator<E> implements Iterator<E>, Enumeration<E>	//TODO refac
 	/**Iterator constructor.
 	@param iterator1 The first iterator, or <code>null</code> if there is no first iterator.
 	@param iterator2 The second iterator, containing the elements to use when the first iterator is exhausted, or <code>null</code> if there is no second iterator.
-	@exception NullPointerException if one of the given iterators is null.
+	@throws NullPointerException if one of the given iterators is null.
 	*/
 	public JoinIterator(final Iterator<E> iterator1, final Iterator<E> iterator2)
 	{
@@ -61,7 +61,7 @@ public class JoinIterator<E> implements Iterator<E>, Enumeration<E>	//TODO refac
 	}
 
 	/**@return The next element in the iteration.
-	@exception NoSuchElementException if the iteration has no more elements.
+	@throws NoSuchElementException if the iteration has no more elements.
 	*/
 	public E next()
 	{
@@ -81,7 +81,7 @@ public class JoinIterator<E> implements Iterator<E>, Enumeration<E>	//TODO refac
 
 	/**Removes from the underlying collection the last element returned by the iterator.
 	This implementation throws an exception, as removal is not supported.
-	@exception UnsupportedOperationException if the <code>remove</code> operation is not supported by this iterator.
+	@throws UnsupportedOperationException if the <code>remove</code> operation is not supported by this iterator.
 	*/
 	public void remove()
 	{
@@ -98,7 +98,7 @@ public class JoinIterator<E> implements Iterator<E>, Enumeration<E>	//TODO refac
 
   /**@return The next element of this enumeration.
 	This implementation delegates to {@link #next()}.
-	@exception  NoSuchElementException if no more elements exist.
+	@throws  NoSuchElementException if no more elements exist.
 	*/
 	public E nextElement()
 	{

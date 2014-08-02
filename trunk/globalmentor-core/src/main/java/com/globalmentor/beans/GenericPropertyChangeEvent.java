@@ -57,7 +57,7 @@ public class GenericPropertyChangeEvent<V> extends PropertyChangeEvent implement
 	@param propertyName The programmatic name of the property that was changed.
 	@param oldValue The old value of the property, or <code>null</code> if no old value is not available.
 	@param newValue The new value of the property, or <code>null</code> if the new value is not available.
-	@exception NullPointerException if the given source and/or target is <code>null</code>.
+	@throws NullPointerException if the given source and/or target is <code>null</code>.
 	*/
 	public GenericPropertyChangeEvent(final Object source, final Object target, final String propertyName, final V oldValue, V newValue)
 	{
@@ -78,7 +78,7 @@ public class GenericPropertyChangeEvent<V> extends PropertyChangeEvent implement
 	If the property change event is {@link TargetedEvent}, the target is copied from that event; otherwise, the given source will be used as the target.
 	@param source The object on which the event initially occurred.
 	@param propertyChangeEvent A property change event the values of which will later cast to this class' generic type.
-	@exception NullPointerException if the given source is <code>null</code>.
+	@throws NullPointerException if the given source is <code>null</code>.
 	*/
 	@SuppressWarnings("unchecked")	//we can only assume that the given event's old and new values are of the correct type
 	public GenericPropertyChangeEvent(final Object source, final PropertyChangeEvent propertyChangeEvent)

@@ -28,7 +28,7 @@ public class OutputStreams
 	@param outputStream The stream the bytes should be written to.
 	@param b The byte to write; the 24 high-order bits are ignored.
 	@param count The number of bytes to write.
-	@exception IOException Thrown if there is an error writing to the output stream.
+	@throws IOException Thrown if there is an error writing to the output stream.
 	*/
 	public static void write(final OutputStream outputStream, final int b, int count) throws IOException
 	{
@@ -40,8 +40,8 @@ public class OutputStreams
 	@param outputStream The stream the bytes should be written to.
 	@param value The value to write.
 	@param byteCount The number of bytes to write (&lt;=4).
-	@exception IllegalArgumentException Thrown if the byte count is over four.
-	@exception IOException Thrown if there is an error writing to the output stream.
+	@throws IllegalArgumentException Thrown if the byte count is over four.
+	@throws IOException Thrown if there is an error writing to the output stream.
 	*/
 	public static void writeLowOrderFirst(final OutputStream outputStream, long value, int byteCount) throws IllegalArgumentException, IOException
 	{

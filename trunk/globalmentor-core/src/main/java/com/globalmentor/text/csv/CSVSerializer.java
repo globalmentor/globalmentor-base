@@ -32,7 +32,7 @@ public class CSVSerializer
 	/**Serializes the given objects to the provided writer.
 	@param writer The writer to which the objects will be serialized.
 	@param objects The objects to serialize, each of which may be <code>null</code>.
-	@exception IOException if there is an error writing the CSV record.
+	@throws IOException if there is an error writing the CSV record.
 	*/
 	public static void serialize(final Writer writer, final Object... objects) throws IOException
 	{

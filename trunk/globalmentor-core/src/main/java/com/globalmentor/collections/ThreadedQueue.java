@@ -94,7 +94,7 @@ public class ThreadedQueue implements Runnable, ObjectProcessor
 
 	/**Cleans up the queue when it is garbage collected.
 		Allows the queue processing thread to stop.
-	@exception Throwable Thrown if any error occurs during the method.
+	@throws Throwable Thrown if any error occurs during the method.
 	*/
 	protected void finalize() throws Throwable
 	{
@@ -112,7 +112,7 @@ public class ThreadedQueue implements Runnable, ObjectProcessor
 
 	/**Causes this queue to begin processing its contents, if any, in a separate
 		thread of execution. If the queue is already started, no action is performed.
-//TODO del	@exception IllegalThreadStateException Thrown if the processing thread was
+//TODO del	@throws IllegalThreadStateException Thrown if the processing thread was
 //TODO del		already started.
 	@see java.lang.Thread#start()
 	*/

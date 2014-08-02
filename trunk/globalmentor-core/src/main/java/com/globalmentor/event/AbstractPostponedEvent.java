@@ -58,7 +58,7 @@ public abstract class AbstractPostponedEvent<L extends EventListener, E extends 
 	@param eventListenerManager The manager that keeps track of event listeners, or <code>null</code> if there is no manager and therefore no listeners.
 	@param listenerKey The key under which listeners have been stored in the listener manager.
 	@param event The event that has been postponed.
-	@exception NullPointerException if the listener key and/or event is <code>null</code>.
+	@throws NullPointerException if the listener key and/or event is <code>null</code>.
 	*/
 	public AbstractPostponedEvent(final EventListenerManager eventListenerManager, final Class<L> listenerKey, final E event)
 	{
@@ -69,7 +69,7 @@ public abstract class AbstractPostponedEvent<L extends EventListener, E extends 
 
 	/**Fires the postponed event.
 	This method delegates to {@link #fireEvent(L, E)}, and concrete classes should usually override that method instead of this one.
-	@exception IllegalStateException if the postponed event has already been fired.
+	@throws IllegalStateException if the postponed event has already been fired.
 	*/
 	public void fireEvent()
 	{

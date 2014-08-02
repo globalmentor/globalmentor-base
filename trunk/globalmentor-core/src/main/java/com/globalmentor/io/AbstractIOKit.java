@@ -65,7 +65,7 @@ public abstract class AbstractIOKit<T> extends DefaultURIAccessible implements I
 	<p>This version opens a stream and delegates to <code>load(InputStream, URI)</code>.</p>
 	@param uri The URI that identifies the resource to be loaded.
 	@return An object containing the data of the resouce represented by the URI.
-	@exception IOException Thrown if there is an error reading the object.
+	@throws IOException Thrown if there is an error reading the object.
 	*/
 	public T load(final URI uri) throws IOException
 	{
@@ -85,7 +85,7 @@ public abstract class AbstractIOKit<T> extends DefaultURIAccessible implements I
 	<p>This version opens a stream and delegates to <code>save(T, OutputStream)</code>.</p>
 	@param object The object the data of which will be saved at the given URI.
 	@param uri The URI at which the object should be saved.
-	@exception IOException Thrown if there is an error writing the object.
+	@throws IOException Thrown if there is an error writing the object.
 	*/
 	public void save(final T object, final URI uri) throws IOException
 	{

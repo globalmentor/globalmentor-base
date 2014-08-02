@@ -104,7 +104,7 @@ public class RandomIntegerIterator implements Iterator<Integer>	//TODO maybe lat
 	@param maxValue The upper bound, exclusive, of the values to return.
 	@param maxCount The number of integers to return, or -1 if an unlimited
 		number of integers should be returned.
-	@exception IllegalArgumentException Thrown if the given maximum count is
+	@throws IllegalArgumentException Thrown if the given maximum count is
 		greater than the allowed range.
 	*/
 	public RandomIntegerIterator(final int maxValue, final int maxCount)
@@ -119,7 +119,7 @@ public class RandomIntegerIterator implements Iterator<Integer>	//TODO maybe lat
 	@param maxValue The upper bound, exclusive, of the values to return.
 	@param maxCount The number of integers to return, or -1 if an unlimited
 		number of integers should be returned.
-	@exception IllegalArgumentException Thrown if the given maximum count is
+	@throws IllegalArgumentException Thrown if the given maximum count is
 		greater than the allowed range.
 	*/
 	public RandomIntegerIterator(final Random random, final int maxValue, final int maxCount)
@@ -134,7 +134,7 @@ public class RandomIntegerIterator implements Iterator<Integer>	//TODO maybe lat
 	@param maxCount The number of integers to return, or -1 if an unlimited
 		number of integers should be returned.
 	@param repeat <code>true</code> if values should be repeated, else <code>false</code>.
-	@exception IllegalArgumentException Thrown if the given maximum count is
+	@throws IllegalArgumentException Thrown if the given maximum count is
 		greater than the allowed range.
 	*/
 	public RandomIntegerIterator(final int maxValue, final int maxCount, final boolean repeat)
@@ -150,7 +150,7 @@ public class RandomIntegerIterator implements Iterator<Integer>	//TODO maybe lat
 	@param maxCount The number of integers to return, or -1 if an unlimited
 		number of integers should be returned.
 	@param repeat <code>true</code> if values should be repeated, else <code>false</code>.
-	@exception IllegalArgumentException Thrown if the given maximum count is
+	@throws IllegalArgumentException Thrown if the given maximum count is
 		greater than the allowed range.
 	*/
 	public RandomIntegerIterator(final Random random, final int maxValue, final int maxCount, final boolean repeat)
@@ -164,7 +164,7 @@ public class RandomIntegerIterator implements Iterator<Integer>	//TODO maybe lat
 	@param maxCount The number of integers to return, or -1 if an unlimited
 		number of integers should be returned.
 	@param repeat <code>true</code> if values should be repeated, else <code>false</code>.
-	@exception IllegalArgumentException Thrown if the given maximum count is
+	@throws IllegalArgumentException Thrown if the given maximum count is
 		greater than the allowed range.
 	*/
 	public RandomIntegerIterator(final int rangeMin, final int rangeMax, final int maxCount, final boolean repeat)
@@ -179,7 +179,7 @@ public class RandomIntegerIterator implements Iterator<Integer>	//TODO maybe lat
 	@param maxCount The number of integers to return, or -1 if an unlimited
 		number of integers should be returned.
 	@param repeat <code>true</code> if values should be repeated, else <code>false</code>.
-	@exception IllegalArgumentException Thrown if the given maximum count is
+	@throws IllegalArgumentException Thrown if the given maximum count is
 		greater than the allowed range.
 	*/
 	public RandomIntegerIterator(final Random random, final int rangeMin, final int rangeMax, final int maxCount, final boolean repeat)
@@ -236,7 +236,7 @@ public class RandomIntegerIterator implements Iterator<Integer>	//TODO maybe lat
 	}
 
 	/**@return The next random integer in the iteration.
-	@exception NoSuchElementException Thrown if the iteration has no more elements.
+	@throws NoSuchElementException Thrown if the iteration has no more elements.
 	*/
 	public Integer next()
 	{
@@ -311,7 +311,7 @@ public class RandomIntegerIterator implements Iterator<Integer>	//TODO maybe lat
 
 	/**This implementation does not support element removal, and always throws
 		an exception.
-	@exception UnsupportedOperationException Thrown because the
+	@throws UnsupportedOperationException Thrown because the
 		<code>remove</code> operation is not supported by this iterator.
 	 */
 	public void remove()

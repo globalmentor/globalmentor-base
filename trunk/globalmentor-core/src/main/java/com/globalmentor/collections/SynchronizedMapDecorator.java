@@ -37,7 +37,7 @@ public class SynchronizedMapDecorator<K, V> implements Map<K, V>
 	/**Map constructor.
 	The new instance of this class is used as a mutex.
 	@param map The map this map should decorate.
-	@exception NullPointerException if the provided map is <code>null</code>.
+	@throws NullPointerException if the provided map is <code>null</code>.
 	*/
 	public SynchronizedMapDecorator(final Map<K, V> map)
 	{
@@ -48,7 +48,7 @@ public class SynchronizedMapDecorator<K, V> implements Map<K, V>
 	/**Map and mutex constructor.
 	@param map The map this map should decorate.
 	@param mutex The mutual exclusion synchronization object.
-	@exception NullPointerException if the provided map and/or mutex is <code>null</code>.
+	@throws NullPointerException if the provided map and/or mutex is <code>null</code>.
 	*/
 	public SynchronizedMapDecorator(final Map<K, V> map, final Object mutex)
 	{

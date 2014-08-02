@@ -56,7 +56,7 @@ public class RegularExpressions
 	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c').
 	 * @param characters The characters to be included in the character class.
 	 * @return The new character class including the given characters.
-	 * @exception NullPointerException if the given characters is <code>null</code>.
+	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @see #escapePatternString(String)
 	 */
 	public static String createCharacterClass(final char... characters)
@@ -68,7 +68,7 @@ public class RegularExpressions
 	 * Creates a regular expression character class (e.g. "[abc]") from the given characters (e.g. 'a', 'b', and 'c').
 	 * @param characters The characters to be included in the character class.
 	 * @return The new character class including the given characters.
-	 * @exception NullPointerException if the given characters is <code>null</code>.
+	 * @throws NullPointerException if the given characters is <code>null</code>.
 	 * @see #escapePatternString(String)
 	 */
 	public static String createCharacterClass(final Characters characters)

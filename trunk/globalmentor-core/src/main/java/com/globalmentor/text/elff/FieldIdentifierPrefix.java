@@ -52,7 +52,7 @@ public enum FieldIdentifierPrefix
 
 	/**Prefix ID constructor.
 	@param id The literal ID character sequence used to format this prefix.
-	@exception NullPointerException if the given ID is <code>null</code>.
+	@throws NullPointerException if the given ID is <code>null</code>.
 	*/
 	private FieldIdentifierPrefix(final String id)
 	{

@@ -87,7 +87,7 @@ public abstract class AbstractRDFXMLIO<T> implements RDFIO<T>
 
 	/**Class constructor.
 	@param objectClass The class representing the type of object being loaded and saved.
-	@exception NullPointerException if the given class is <code>null</code>.
+	@throws NullPointerException if the given class is <code>null</code>.
 	*/
 	public AbstractRDFXMLIO(final Class<T> objectClass)
 	{
@@ -111,7 +111,7 @@ public abstract class AbstractRDFXMLIO<T> implements RDFIO<T>
 
 	/**Creates a document builder appropriate for parsing XML storing RDF.
 	@return A new namespace-aware document builder.
-	@exception ParserConfigurationException if a document builder cannot be created which satisfies the configuration requested.
+	@throws ParserConfigurationException if a document builder cannot be created which satisfies the configuration requested.
 	*/
 	protected DocumentBuilder createDocumentBuilder() throws ParserConfigurationException
 	{
@@ -123,9 +123,9 @@ public abstract class AbstractRDFXMLIO<T> implements RDFIO<T>
 	@param inputStream The input stream from which to read the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The resource read from the input stream.
-	@exception NullPointerException if the given input stream is <code>null</code>.
-	@exception IOException if there is an error reading the data.
-	@exception ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
+	@throws NullPointerException if the given input stream is <code>null</code>.
+	@throws IOException if there is an error reading the data.
+	@throws ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
 	*/ 
 	public final T read(final InputStream inputStream, final URI baseURI) throws IOException
 	{
@@ -137,9 +137,9 @@ public abstract class AbstractRDFXMLIO<T> implements RDFIO<T>
 	@param inputStream The input stream from which to read the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The resource read from the input stream.
-	@exception NullPointerException if the given RDF instance and/or input stream is <code>null</code>.
-	@exception IOException if there is an error reading the data.
-	@exception ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
+	@throws NullPointerException if the given RDF instance and/or input stream is <code>null</code>.
+	@throws IOException if there is an error reading the data.
+	@throws ClassCastException if no appropriate resource factory was installed, and the loaded resource is not of the correct Java class.
 	*/ 
 	public abstract T read(final RDF rdf, final InputStream inputStream, final URI baseURI) throws IOException;
 
@@ -148,7 +148,7 @@ public abstract class AbstractRDFXMLIO<T> implements RDFIO<T>
 	@param inputStream The input stream from which to read the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The RDF instance representing the data read.
-	@exception IOException if there is an error reading the data.
+	@throws IOException if there is an error reading the data.
 	*/ 
 	protected RDF readRDF(final RDF rdf, final InputStream inputStream, final URI baseURI) throws IOException
 	{
@@ -178,7 +178,7 @@ public abstract class AbstractRDFXMLIO<T> implements RDFIO<T>
 	/**Generates an XML document representing the given RDF resource.
 	@param resource The RDF resource to represent as XML.
 	@return An XML document representing the given RDF resource.
-	@exception ParserConfigurationException if a document builder cannot be created which satisfies the configuration requested.
+	@throws ParserConfigurationException if a document builder cannot be created which satisfies the configuration requested.
 	*/
 /*TODO fix if needed
 	protected Document generateXML(final RDFResource resource) throws ParserConfigurationException

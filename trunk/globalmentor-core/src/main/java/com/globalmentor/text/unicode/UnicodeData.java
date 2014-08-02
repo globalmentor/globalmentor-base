@@ -176,7 +176,7 @@ public class UnicodeData
 	/**Loads the list of Unicode characters from the Unicode data resource text file.
 	<p>Every loaded character will be weakly cached for fast lookup in the future.</p>
 	@return A list of Unicode character objects.
-	@exception IOException Thrown if there was an error parsing the Unicode data.
+	@throws IOException Thrown if there was an error parsing the Unicode data.
 	*/
 	protected static List<UnicodeCharacter> load() throws IOException
 	{
@@ -189,7 +189,7 @@ public class UnicodeData
 	@return A Unicode character objects representing the given code value, or
 		<code>null</code> if character data for that code value could not be
 		found in the Unicode data file.
-	@exception IOException Thrown if there was an error parsing the Unicode data.
+	@throws IOException Thrown if there was an error parsing the Unicode data.
 	*/
 	protected static UnicodeCharacter load(final int codeValue) throws IOException
 	{
@@ -203,7 +203,7 @@ public class UnicodeData
 	@param lastCodeValue The last code point, inclusive, for which to return a
 		character.
 	@return A list of Unicode character objects.
-	@exception IOException Thrown if there was an error parsing the Unicode data.
+	@throws IOException Thrown if there was an error parsing the Unicode data.
 	*/
 	protected static List<UnicodeCharacter> load(final int firstCodeValue, final int lastCodeValue) throws IOException
 	{
@@ -241,7 +241,7 @@ public class UnicodeData
 		a list of Unicode characters.
 	@param reader The reader which contains the data in the Unicode data format.
 	@return A list of Unicode character objects.
-	@exception IOException Thrown if there was an error parsing the Unicode data.
+	@throws IOException Thrown if there was an error parsing the Unicode data.
 	@see UnicodeCharacter
 	@see UnicodeConstants
 	*/
@@ -257,7 +257,7 @@ public class UnicodeData
 	@param lastCodeValue The last code point, inclusive, for which to return a
 		character.
 	@return A list of Unicode character objects.
-	@exception IOException Thrown if there was an error parsing the Unicode data.
+	@throws IOException Thrown if there was an error parsing the Unicode data.
 	@see UnicodeCharacter
 	@see UnicodeConstants
 	*/
@@ -301,7 +301,7 @@ public class UnicodeData
 	@param unidataLine The line of text to parse.
 	@return The Unicode character object that represents the character the information
 		for which was contained in the line.
-	@exception IOException Thrown if there was an error parsing the Unicode data.
+	@throws IOException Thrown if there was an error parsing the Unicode data.
 	*/
 	protected static UnicodeCharacter parseLine(String unidataLine) throws IOException
 	{

@@ -240,7 +240,7 @@ public class Collections
 	 * Sorts the specified collection into ascending order, according to the <dfn>natural ordering</dfn> of its elements, and returns an array with the results.
 	 * @param collection The collection to be sorted.
 	 * @return An array containing the sorted contents of the collection.
-	 * @exception ClassCastException if the list contains elements that are not <dfn>mutually comparable</dfn> (for example, strings and integers).
+	 * @throws ClassCastException if the list contains elements that are not <dfn>mutually comparable</dfn> (for example, strings and integers).
 	 * @see Comparable
 	 */
 	/*TODO fix when toArray() is fixed
@@ -257,7 +257,7 @@ public class Collections
 	 * @param collection The collection to be sorted.
 	 * @param comparator The comparator to determine the order of the list, or <code>null</code> if the elements' <dfn>natural ordering</dfn> should be used.
 	 * @return An array containing the sorted contents of the collection.
-	 * @exception ClassCastException if the list contains elements that are not <dfn>mutually comparable</dfn> using the specified comparator.
+	 * @throws ClassCastException if the list contains elements that are not <dfn>mutually comparable</dfn> using the specified comparator.
 	 * @see Comparator
 	 */
 	/*TODO fix when toArray() is fixed

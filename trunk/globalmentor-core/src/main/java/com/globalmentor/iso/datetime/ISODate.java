@@ -30,7 +30,7 @@ public class ISODate extends AbstractISODateTime
 	/**
 	 * Temporal component constructor.
 	 * @param temporalcomponents The temporal components from which to construct the class.
-	 * @exception NullPointerException if the given temporal components is <code>null</code>.
+	 * @throws NullPointerException if the given temporal components is <code>null</code>.
 	 */
 	protected ISODate(final ISOTemporalComponents temporalComponents)
 	{
@@ -42,7 +42,7 @@ public class ISODate extends AbstractISODateTime
 	 * @param year The year, 0-9999.
 	 * @param month The month, 1-12.
 	 * @param day The day, 1-31.
-	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
+	 * @throws IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
 	public ISODate(final int year, final int month, final int day)
 	{
@@ -54,7 +54,7 @@ public class ISODate extends AbstractISODateTime
 	 * calendar's time zone.
 	 * @param calendar The calendar representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC; and a time
 	 *          zone.
-	 * @exception NullPointerException if the given calendar is <code>null</code>.
+	 * @throws NullPointerException if the given calendar is <code>null</code>.
 	 */
 	public ISODate(final GregorianCalendar calendar)
 	{
@@ -64,7 +64,7 @@ public class ISODate extends AbstractISODateTime
 	/**
 	 * Date constructor in terms of UTC. Any time-related information of the given date will be lost; only the date will be kept, in terms of midnight UTC.
 	 * @param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
-	 * @exception NullPointerException if the given date is <code>null</code>.
+	 * @throws NullPointerException if the given date is <code>null</code>.
 	 */
 	public ISODate(final Date date)
 	{
@@ -144,8 +144,8 @@ public class ISODate extends AbstractISODateTime
 	 * Returns an ISO date object holding the value of the specified string.
 	 * @param string The string to be parsed as a date.
 	 * @return An ISO date object represented by the string.
-	 * @exception NullPointerException if the given string is <code>null</code>
-	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
+	 * @throws NullPointerException if the given string is <code>null</code>
+	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
 	public static ISODate valueOf(final String string) throws ArgumentSyntaxException
 	{
@@ -171,8 +171,8 @@ public class ISODate extends AbstractISODateTime
 	 * </p>
 	 * @param string The string to be parsed as a date.
 	 * @return An ISO date object represented by the string.
-	 * @exception NullPointerException if the given string is <code>null</code>
-	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
+	 * @throws NullPointerException if the given string is <code>null</code>
+	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
 	public static ISODate valueOfLenient(final String string) throws ArgumentSyntaxException
 	{
@@ -199,8 +199,8 @@ public class ISODate extends AbstractISODateTime
 	 * </p>
 	 * @param string The string to be parsed as a date.
 	 * @return An ISO date object represented by the string.
-	 * @exception NullPointerException if the given string is <code>null</code>
-	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
+	 * @throws NullPointerException if the given string is <code>null</code>
+	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
 	public static ISODate valueOfLiberal(final String string) throws ArgumentSyntaxException
 	{

@@ -147,7 +147,7 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	The calling class has the responsibility for closing the input stream.
 	@param uri A URI to a resource.
 	@return An input stream to the contents of the resource represented by the given URI.
-	@exception IOException Thrown if an I/O error occurred.
+	@throws IOException Thrown if an I/O error occurred.
 	*/
 	public InputStream getInputStream(final URI uri) throws IOException
 	{
@@ -166,7 +166,7 @@ public class DefaultURIAccessible extends BoundPropertyObject implements URIAcce
 	The calling class has the responsibility for closing the output stream.
 	@param uri A URI to a resource.
 	@return An output stream to the contents of the resource represented by the given URI.
-	@exception IOException Thrown if an I/O error occurred.
+	@throws IOException Thrown if an I/O error occurred.
 	*/
 	public OutputStream getOutputStream(final URI uri) throws IOException
 	{

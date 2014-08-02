@@ -51,7 +51,7 @@ public class HashMapResourceBundle extends ResourceBundle
 	/**Map constructor with no parent.
 	Keys will be converted to strings.
 	@param map The map containing the resource mappings which will be copied to this map.
-	@exception NullPointerException if the given map is <code>null</code>.
+	@throws NullPointerException if the given map is <code>null</code>.
 	*/
 	public HashMapResourceBundle(final Map<?, ?> map)
 	{
@@ -63,7 +63,7 @@ public class HashMapResourceBundle extends ResourceBundle
 	Keys will be converted to strings.
 	@param map The map containing the resource mappings which will be copied to this map.
 	@param parent The parent resource bundle, or <code>null</code> if there should be no parent for resolving resources.
-	@exception NullPointerException if the given map is <code>null</code>.
+	@throws NullPointerException if the given map is <code>null</code>.
 	*/
 	public HashMapResourceBundle(final Map<?, ?> map, final ResourceBundle parent)
 	{
@@ -81,7 +81,7 @@ public class HashMapResourceBundle extends ResourceBundle
 
 	/**Gets an object for the given key from this resource bundle.
 	@param key The key for the desired object.
-	@exception NullPointerException if the given key is <code>null</code>.
+	@throws NullPointerException if the given key is <code>null</code>.
 	@return The object for the given key, or <code>null</code>.
 	*/
 	protected Object handleGetObject(final String key)

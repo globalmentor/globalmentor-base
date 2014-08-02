@@ -39,8 +39,8 @@ public class Booleans
 	/**Parses a string and returns its boolean value.
 	@param string A string expected to contain "true" or "false".
 	@return {@link Boolean#TRUE} if the value is "true", or {@link Boolean#FALSE} if the value is "true".
-	@exception NullPointerException if the given string is <code>null</code>
-	@exception IllegalArgumentException if the string neither "true" nor "false".
+	@throws NullPointerException if the given string is <code>null</code>
+	@throws IllegalArgumentException if the string neither "true" nor "false".
 	*/
 	public final static Boolean parseBoolean(final String string)
 	{

@@ -35,7 +35,7 @@ public class ReverseIterator<E> implements Iterator<E>
 	/**Iterable constructor.
 	A temporary collection will be created and filled with the contents of the given iterable unless the given iterable is a {@link List}.
 	@param iterable The iterable this iterator should decorate.
-	@exception NullPointerException if the given iterable is <code>null</code>.
+	@throws NullPointerException if the given iterable is <code>null</code>.
 	*/
 	public ReverseIterator(final Iterable<E> iterable)
 	{
@@ -46,7 +46,7 @@ public class ReverseIterator<E> implements Iterator<E>
 	The list list iterator will be placed at the end of the list. 
 	For added efficiency, the decorated list iterator should already be at the end of the list.
 	@param listIterator The list iterator this iterator should decorate.
-	@exception NullPointerException if the given iterator is <code>null</code>.
+	@throws NullPointerException if the given iterator is <code>null</code>.
 	*/
 	public ReverseIterator(final ListIterator<E> listIterator)
 	{
@@ -79,14 +79,14 @@ public class ReverseIterator<E> implements Iterator<E>
 	/**Returns the next element in the iteration.
 	This implementation delegates to the decorated iterator's opposite method, {@link ListIterator#previous()}.
 	@return The next element in the iteration, which for this implementation is in the reverse direction.
-	@exception NoSuchElementException iteration has no more elements.
+	@throws NoSuchElementException iteration has no more elements.
 	*/
 	public E next() {return listIterator.previous();}
 
 	/**Removes from the underlying collection the last element returned by the iterator (optional operation). 
 	This implementation delegates to the decorated iterator's {@link ListIterator#remove()} method.
-	@exception UnsupportedOperationException if the {@link #remove()} operation is not supported by this iterator.
-	@exception IllegalStateException if the {@link #next()} method has not yet been called,
+	@throws UnsupportedOperationException if the {@link #remove()} operation is not supported by this iterator.
+	@throws IllegalStateException if the {@link #next()} method has not yet been called,
 	or the {@link #remove()} method has already been called after the last call to the {@link #next()} method.
 	*/
 	public void remove() {listIterator.remove();}

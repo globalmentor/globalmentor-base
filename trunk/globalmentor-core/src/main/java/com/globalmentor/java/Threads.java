@@ -68,7 +68,7 @@ public class Threads
 	 * @param threadGroup The thread group in which the thread is to be run.
 	 * @param runnable The runnable interface to run in the thread.
 	 * @return The thread that has been run in the thread group.
-	 * @exception UndeclaredThrowableException if the thread throws any {@link Throwable} that is not an {@link Error} or a {@link RuntimeException}.
+	 * @throws UndeclaredThrowableException if the thread throws any {@link Throwable} that is not an {@link Error} or a {@link RuntimeException}.
 	 * @see #call(Thread)
 	 */
 	/*TODO del; this would be nice for supplementing the stack trace, but fillInStackTrace() erases the current stack trace
@@ -109,7 +109,7 @@ public class Threads
 	 * @param threadGroup The thread group in which the thread is to be run.
 	 * @param runnable The runnable interface to run in the thread.
 	 * @return The thread that has been run in the thread group.
-	 * @exception UndeclaredThrowableException if the thread throws any {@link Throwable} that is not an {@link Error} or a {@link RuntimeException}.
+	 * @throws UndeclaredThrowableException if the thread throws any {@link Throwable} that is not an {@link Error} or a {@link RuntimeException}.
 	 * @see #call(Thread)
 	 */
 	public static Thread call(final ThreadGroup threadGroup, final Runnable runnable)

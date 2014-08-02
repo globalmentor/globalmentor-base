@@ -33,8 +33,8 @@ public interface RDFIO<T> extends IO<T>
 	@param inputStream The input stream from which to read the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The resource read from the input stream.
-	@exception NullPointerException if the given RDF instance and/or input stream is <code>null</code>.
-	@exception IOException if there is an error reading the data.
+	@throws NullPointerException if the given RDF instance and/or input stream is <code>null</code>.
+	@throws IOException if there is an error reading the data.
 	*/ 
 	public T read(final RDF rdf, final InputStream inputStream, final URI baseURI) throws IOException;
 

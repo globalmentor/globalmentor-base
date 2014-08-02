@@ -27,7 +27,7 @@ public class NullOutputStream extends OutputStream
 	/**Writes the specified byte to this output stream.
 	This version does nothing.
 	@param b The byte to write.
-	@exception IOException if an I/O error occurs.
+	@throws IOException if an I/O error occurs.
 	*/
 	public void write(final int b) throws IOException {}
 

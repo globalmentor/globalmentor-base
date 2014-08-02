@@ -70,7 +70,7 @@ public class SyntaxException extends DataException
 	/**input and index constructor.
 	@param input The input, or <code>null</code> if the input is not known.
 	@param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
-	@exception IllegalArgumentException if the given index is less than -1.
+	@throws IllegalArgumentException if the given index is less than -1.
 	*/
 	public SyntaxException(final String input, final int index)
 	{
@@ -90,7 +90,7 @@ public class SyntaxException extends DataException
 	@param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
 	@param input The input, or <code>null</code> if the input is not known.
 	@param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
-	@exception IllegalArgumentException if the given index is less than -1.
+	@throws IllegalArgumentException if the given index is less than -1.
 	*/
 	public SyntaxException(final String message, final String input, final int index)
 	{
@@ -118,7 +118,7 @@ public class SyntaxException extends DataException
 	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
 	@param input The input, or <code>null</code> if the input is not known.
 	@param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
-	@exception IllegalArgumentException if the given index is less than -1.
+	@throws IllegalArgumentException if the given index is less than -1.
 	*/
 	public SyntaxException(final Throwable cause, final String input, final int index)
 	{
@@ -131,7 +131,7 @@ public class SyntaxException extends DataException
 	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
 	@param input The input, or <code>null</code> if the input is not known.
 	@param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
-	@exception IllegalArgumentException if the given index is less than -1.
+	@throws IllegalArgumentException if the given index is less than -1.
 	*/
 	public SyntaxException(final String message, final Throwable cause, final String input, final int index)
 	{
@@ -146,7 +146,7 @@ public class SyntaxException extends DataException
 	@param input The input character sequence, or <code>null</code> if the input string is not known.
 	@param index The index into the input string of the position at which the parse error occurred, or -1 if the position is not known.
 	@return A string explaining the exception based upon the given input and optional index.
-	@exception IllegalArgumentException if the given index is less than -1.
+	@throws IllegalArgumentException if the given index is less than -1.
 	*/ 
 	public static String createMessage(String message, final Throwable cause, final CharSequence input, final int index)
 	{

@@ -116,7 +116,7 @@ public class Maths
 	 * Determines the lowest integer from a collection of integers.
 	 * @param integers The collection of integers.
 	 * @return The minimum of the given integers, or the {@link Integer#MAX_VALUE} if there are no integers.
-	 * @exception NullPointerException if the given collection is <code>null</code> or one of its elements is <code>null</code>.
+	 * @throws NullPointerException if the given collection is <code>null</code> or one of its elements is <code>null</code>.
 	 */
 	public static int min(final Collection<? extends Integer> integers)
 	{
@@ -128,7 +128,7 @@ public class Maths
 	 * @param integers The collection of integers.
 	 * @param max The maximum value this method can return.
 	 * @return The minimum of the given integers, or the given maximum if there are no integers.
-	 * @exception NullPointerException if the given collection is <code>null</code> or one of its elements is <code>null</code>.
+	 * @throws NullPointerException if the given collection is <code>null</code> or one of its elements is <code>null</code>.
 	 */
 	public static int min(final Collection<? extends Integer> integers, int max)
 	{

@@ -329,7 +329,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	/**Determines if this list contains the specified element.
 	@param object The element whose presence in this list is to be tested.
 	@return <code>true</code> if this list contains the specified element
-	@exception ClassCastException Thrown if the specified element is not an {@link RDFObject}.
+	@throws ClassCastException Thrown if the specified element is not an {@link RDFObject}.
 	@see #indexOf(Object)
 	*/
 	public boolean contains(final Object object)
@@ -390,9 +390,9 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		stored, if it is big enough; otherwise, a new array of the same runtime
 		type is allocated for this purpose.
 	@return An array containing the elements of this list.
-	@exception ArrayStoreException Throw if the runtime type of the specified array
+	@throws ArrayStoreException Throw if the runtime type of the specified array
 	 is not a supertype of the runtime type of every element in this list.
-	@exception NullPointerException if the specified array is <code>null</code>.
+	@throws NullPointerException if the specified array is <code>null</code>.
 	*/
 	@SuppressWarnings("unchecked")
 	public <T> T[] toArray(T[] array)
@@ -449,7 +449,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	/**Returns the <code>RDFObject</code> at the specified position in this list.
 	@param index The index of the element to return.
 	@return The element at the specified position in this list.
-	@exception IndexOutOfBoundsException Thrown if the index is out of range
+	@throws IndexOutOfBoundsException Thrown if the index is out of range
 		(<var>index</var>&lt;0 || <var>index</var>&gt;=size()).
 	@see RDFObject
 	*/
@@ -475,11 +475,11 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	@param index The index of element to replace.
 	@param object The element to be stored at the specified position.
 	@return the element previously at the specified position.
-	@exception ClassCastException Thrown if the class of the specified element
+	@throws ClassCastException Thrown if the class of the specified element
 		prevents it from being added to this list.
-	@exception IllegalArgumentException if some aspect of the specified
+	@throws IllegalArgumentException if some aspect of the specified
 		element prevents it from being added to this list.
-	@exception IndexOutOfBoundsException Thrown if the index is out of range
+	@throws IndexOutOfBoundsException Thrown if the index is out of range
 		(index &lt; 0 || index &gt;= size()).
 	*/
 	@SuppressWarnings("unchecked")	//cast needed so that Sun JDK 1.6.0_03-b05 will know which type we want; not required for Eclipse 3.4M3
@@ -505,9 +505,9 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	<p>This implementation calls <code>add(size(), o)</code>.<p>
 	@param element The element to be appended to this list.
 	@return <code>true</code> if this collection changed as a result of the call.
-	@exception ClassCastException Thrown if the class of the specified element
+	@throws ClassCastException Thrown if the class of the specified element
 		prevents it from being added to this list.
-	@exception IllegalArgumentException Thrown some aspect of this element
+	@throws IllegalArgumentException Thrown some aspect of this element
 		prevents it from being added to this collection.
 	*/
 	public boolean add(final E object)
@@ -525,9 +525,9 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		parameters.</p>
 	@param index The index at which the specified element is to be inserted.
 	@param element The element to be inserted.
-	@exception ClassCastException Thrown if the class of the specified element
+	@throws ClassCastException Thrown if the class of the specified element
 		prevents it from being added to this list.
-	@exception IndexOutOfBoundsException Thrown if index is out of range
+	@throws IndexOutOfBoundsException Thrown if index is out of range
 		<code>(index &le; 0 || index &gt; size())</code>.
 	@see #create(RDF, URI, RDFObject, RDFResource)
 	*/
@@ -566,7 +566,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		if it is present
 	@param object The element to be removed from this list, if present.
 	@return <code>true</code> if this list changed as a result of the call.
-	@exception ClassCastException if the type of the specified element
+	@throws ClassCastException if the type of the specified element
 		is incompatible with this list.
 	*/
 	public boolean remove(final Object object)
@@ -595,7 +595,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	/**Removes the element at the specified position in this list.
 	@param index The index of the element to remove.
 	@return The element previously at the specified position.
-	@exception IndexOutOfBoundsException Thrown if the index is out of range
+	@throws IndexOutOfBoundsException Thrown if the index is out of range
 		(index &lt; 0 || index &gt;= size()).
 	*/
 	@SuppressWarnings("unchecked")	//cast needed so that Sun JDK 1.6.0_03-b05 will know which type we want; not required for Eclipse 3.4M3
@@ -628,9 +628,9 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	@param collection The collection to be checked for containment in this list.
 	@return <code>true</code> if this list contains all of the elements
 		in the specified collection
-	@exception ClassCastException Thrown if the types of one or more elements
+	@throws ClassCastException Thrown if the types of one or more elements
 		in the specified list are incompatible with this collection.
-	@exception NullPointerException Thrown if the specified collection is
+	@throws NullPointerException Thrown if the specified collection is
 		<code>null</code>.
 	@see #contains(Object)
 	*/
@@ -650,9 +650,9 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	/**Adds all of the elements in the specified collection to this list.
 	@param collection The elements to be inserted into this list.
 	@return <code>true</code> if this list changed as a result of the call.
-	@exception ClassCastException Thrown if the class of an element of the specified
+	@throws ClassCastException Thrown if the class of an element of the specified
 		collection prevents it from being added to this list.
-	@exception IllegalArgumentException some aspect of an element of the specified
+	@throws IllegalArgumentException some aspect of an element of the specified
 		collection prevents it from being added to this list.
 	@see #add(Object)
 	*/
@@ -708,9 +708,9 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		specified collection.
 	@param collection The elements to be removed from this list.
 	@return <code>true</code> if this list changed as a result of the call.
-	@exception ClassCastException Thrown if the class of an element of the specified
+	@throws ClassCastException Thrown if the class of an element of the specified
 		collection prevents it from being added to this list.
-	@exception NullPointerException Thrown if the specified collection is <code>null</code>.
+	@throws NullPointerException Thrown if the specified collection is <code>null</code>.
 	@see #remove(Object)
 	@see #contains(Object)
 	*/
@@ -732,11 +732,11 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	<p>This method is currently unsupported.</p>
 	@param collection The elements to be retained in this list.
 	@return <code>true</code> if this collection changed as a result of the call.
-	@exception UnsupportedOperationException Thrown if the <code>retainAll</code>
+	@throws UnsupportedOperationException Thrown if the <code>retainAll</code>
 		method is not supported by this list.
-	@exception ClassCastException Thrown if the class of an element of the specified
+	@throws ClassCastException Thrown if the class of an element of the specified
 		collection prevents it from being added to this list.
-	@exception NullPointerException Thrown if the specified collection is <code>null</code>
+	@throws NullPointerException Thrown if the specified collection is <code>null</code>
 	@see #remove(Object)
 	@see #contains(Object)
 	*/
@@ -750,7 +750,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	@param object The element to search for.
 	@return The index in this list of the first occurrence of the specified
 		element, or -1 if this list does not contain this element.
-	@exception ClassCastException Thrown if the type of the specified element
+	@throws ClassCastException Thrown if the type of the specified element
 		is incompatible with this list.
 	*/
 	public int indexOf(final Object object)
@@ -776,7 +776,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 	@param object The element to search for.
 	@return The index in this list of the last occurrence of the specified
 		element, or -1 if this list does not contain this element.
-	@exception ClassCastException Thrown if the type of the specified element
+	@throws ClassCastException Thrown if the type of the specified element
 		is incompatible with this list.
 	*/
 	public int lastIndexOf(final Object object)
@@ -868,7 +868,7 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		}
 
 		/**@return The next element in the iteration.
-		@exception NoSuchElementException iteration has no more elements.
+		@throws NoSuchElementException iteration has no more elements.
 		*/
 		@SuppressWarnings("unchecked")	//cast needed so that Sun JDK 1.6.0_03-b05 will know which type we want; not required for Eclipse 3.4M3
 		public E next()
@@ -889,8 +889,8 @@ public class RDFListResource<E extends RDFObject> extends TypedRDFResource imple
 		This method can be called only once per call to {@link #next()}. 
 		The behavior of an iterator is unspecified if the underlying collection is modified while the iteration is in progress in any way other than by calling this method.
 		This implementation always throws an {@link UnsupportedOperationException}.
-		@exception UnsupportedOperationException Thrown if the {@link #remove()} operation is not supported by this Iterator.
-		@exception IllegalStateException Thrown if the {@link #next()} method has not yet been called,
+		@throws UnsupportedOperationException Thrown if the {@link #remove()} operation is not supported by this Iterator.
+		@throws IllegalStateException Thrown if the {@link #next()} method has not yet been called,
 			or the {@link #remove()} method has already been called after the last call to the {@link #next()} method.
 		*/
 		public void remove()

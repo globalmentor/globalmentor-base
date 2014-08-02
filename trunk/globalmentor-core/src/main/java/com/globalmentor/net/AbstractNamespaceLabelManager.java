@@ -117,7 +117,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 
 	/**Map constructor.
 	@param map The map this map should decorate.
-	@exception NullPointerException if the provided map is <code>null</code>.
+	@throws NullPointerException if the provided map is <code>null</code>.
 	*/
 	public AbstractNamespaceLabelManager(final Map<URI, String> map)
 	{
@@ -149,7 +149,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	/**Adds a namespace URI and associates it with a default label.
 	@param namespaceURI The namespace URI to add.
 	@return <code>true</code> if the namespace was not previously known.
-	@exception NullPointerException if the given namespace URI is <code>null</code>.
+	@throws NullPointerException if the given namespace URI is <code>null</code>.
 	*/
 	public boolean addNamespaceURI(final URI namespaceURI)
 	{
@@ -198,7 +198,7 @@ public abstract class AbstractNamespaceLabelManager extends MapDecorator<URI, St
 	/**Determines whether the given string is a valid label
 	@param string The string to check for being a label.
 	@return <code>true</code> if the given string represents a valid label.
-	@exception NullPointerException if the given string is <code>null</code>.
+	@throws NullPointerException if the given string is <code>null</code>.
 	*/
 	protected abstract boolean isLabel(final String string);
 

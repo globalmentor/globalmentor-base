@@ -89,7 +89,7 @@ public class UnicodeBlocks
 
 	/**Loads a set of Unicode blocks from the Unicode blocks resource text file.
 	@return A set of Unicode blocks.
-	@exception IOException Thrown if there was an error parsing the blocks.
+	@throws IOException Thrown if there was an error parsing the blocks.
 	*/
 	protected static SortedSet<UnicodeBlock> load() throws IOException
 	{
@@ -108,7 +108,7 @@ public class UnicodeBlocks
 		and creates and returns a set of Unicode blocks.
 	@param reader The reader which contains the data in the Unicode blocks format.
 	@return A set of Unicode blocks objects.
-	@exception IOException Thrown if there was an error parsing the Unicode data.
+	@throws IOException Thrown if there was an error parsing the Unicode data.
 	@see UnicodeBlock
 	*/
 	protected static SortedSet<UnicodeBlock> parse(final Reader reader) throws IOException
@@ -139,7 +139,7 @@ public class UnicodeBlocks
 	@return The Unicode blocok object that represents the character range the
 		information for which was contained in the line, or <code>null</code> if
 		the line was a comment or an empty line.
-	@exception IOException Thrown if there was an error parsing the Unicode block data.
+	@throws IOException Thrown if there was an error parsing the Unicode block data.
 	*/
 	protected static UnicodeBlock parseLine(final String blockLine) throws IOException
 	{

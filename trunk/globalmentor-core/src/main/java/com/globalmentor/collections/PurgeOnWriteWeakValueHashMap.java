@@ -34,7 +34,7 @@ public class PurgeOnWriteWeakValueHashMap<K, V> extends AbstractPurgeOnWriteRefe
 	/**Empty map constructor with the specified initial capacity and load factor.
 	@param initialCapacity The initial capacity.
 	@param loadFactor The load factor.
-	@exception IllegalArgumentException if the initial capacity is negative or the load factor is nonpositive.
+	@throws IllegalArgumentException if the initial capacity is negative or the load factor is nonpositive.
 	*/
 	public PurgeOnWriteWeakValueHashMap(final int initialCapacity, final float loadFactor)
 	{
@@ -43,7 +43,7 @@ public class PurgeOnWriteWeakValueHashMap<K, V> extends AbstractPurgeOnWriteRefe
 
 	/**Empty map constructor with the specified initial capacity and a default load factor.
 	@param initialCapacity The initial capacity.
-	@exception IllegalArgumentException if the initial capacity is negative or the load factor is nonpositive.
+	@throws IllegalArgumentException if the initial capacity is negative or the load factor is nonpositive.
 	*/
 	public PurgeOnWriteWeakValueHashMap(final int initialCapacity)
 	{
@@ -58,7 +58,7 @@ public class PurgeOnWriteWeakValueHashMap<K, V> extends AbstractPurgeOnWriteRefe
 
 	/**Decorated map constructor.
 	@param map The map to decorate.
-	@exception NulPOinter
+	@throws NulPOinter
 	*/
 	protected PurgeOnWriteWeakValueHashMap(final Map<K, WeakValueReference<K, V>> map)
 	{
@@ -95,7 +95,7 @@ public class PurgeOnWriteWeakValueHashMap<K, V> extends AbstractPurgeOnWriteRefe
 		@param key The key with which the value is being associated.
 		@param value The value to which the new weak reference will refer.
 		@param referenceQueue The queue with which the reference is to be registered.
-		@exception NullPointerException if the given reference queue is <code>null</code>.
+		@throws NullPointerException if the given reference queue is <code>null</code>.
   	*/
     public WeakValueReference(final K key, final V value, ReferenceQueue<? super V> referenceQueue)
     {

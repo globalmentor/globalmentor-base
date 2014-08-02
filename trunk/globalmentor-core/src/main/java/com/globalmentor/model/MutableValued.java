@@ -29,7 +29,7 @@ public interface MutableValued<V> extends Valued<V>
 	/**
 	 * Sets the new value.
 	 * @param newValue The new value.
-	 * @exception PropertyVetoException if the provided value is not valid or the change has otherwise been vetoed.
+	 * @throws PropertyVetoException if the provided value is not valid or the change has otherwise been vetoed.
 	 */
 	public void setValue(final V newValue) throws PropertyVetoException;
 

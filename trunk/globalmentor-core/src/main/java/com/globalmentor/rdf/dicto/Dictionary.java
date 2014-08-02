@@ -49,7 +49,7 @@ public class Dictionary extends TypedRDFResource
 	}
 
 	/**@return The list of entries for this dictionary.
-	@exception ClassCastException if the value of the interactions property
+	@throws ClassCastException if the value of the interactions property
 		is not a list resource.
 	*/
 	public RDFListResource getEntries()

@@ -35,7 +35,7 @@ public abstract class AbstractProxyHashObject
 	/**Proxied object constructor.
 	Any or all of the proxied objects may be <code>null</code>, but the array of objects may not.
 	@param proxiedObjects The objects to be proxied for generation of hash code and equality determination.
-	@exception NullPointerException if the array of proxied objects is <code>null</code>.
+	@throws NullPointerException if the array of proxied objects is <code>null</code>.
 	*/
 	public AbstractProxyHashObject(final Object... proxiedObjects)
 	{

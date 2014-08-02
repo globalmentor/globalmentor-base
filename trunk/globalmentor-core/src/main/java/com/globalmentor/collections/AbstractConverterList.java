@@ -85,7 +85,7 @@ public abstract class AbstractConverterList<S, D> extends ListDecorator<D>	//TOD
 	/**Converts and returns the element at the specified position in this list.
 	@param index The index of element to convert and return.
 	@return The converted element at the specified position in this list.
-	@exception IndexOutOfBoundsException Thrown if the index is out of range (index &lt; 0 || index &gt; size()).
+	@throws IndexOutOfBoundsException Thrown if the index is out of range (index &lt; 0 || index &gt; size()).
 	*/
 	@SuppressWarnings("unchecked")
 	public D get(final int index)
@@ -111,7 +111,7 @@ public abstract class AbstractConverterList<S, D> extends ListDecorator<D>	//TOD
 	@param index The index of first element to be returned from the
 		list iterator (by a call to the <code>next</code> method).
 	@return A custom proxied list iterator that will convert returned elements.
-	@exception IndexOutOfBoundsException Thrown if the index is out of range
+	@throws IndexOutOfBoundsException Thrown if the index is out of range
 		(index &lt; 0 || index &gt; size()).
 	*/
 	@SuppressWarnings("unchecked")
@@ -137,7 +137,7 @@ public abstract class AbstractConverterList<S, D> extends ListDecorator<D>	//TOD
 	
 		/**Converts and returns the next element in the iteration.
 		@return An object representing the converted next element in the iteration.
-		@exception NoSuchElementException Thrown if the iteration has no more elements.
+		@throws NoSuchElementException Thrown if the iteration has no more elements.
 		*/
 		@SuppressWarnings("unchecked")
 		public D next()
@@ -166,7 +166,7 @@ public abstract class AbstractConverterList<S, D> extends ListDecorator<D>	//TOD
 	
 		/**Converts and returns the next element in the iteration.
 		@return An object representing the converted next element in the iteration.
-		@exception NoSuchElementException Thrown if the iteration has no more elements.
+		@throws NoSuchElementException Thrown if the iteration has no more elements.
 		*/
 		@SuppressWarnings("unchecked")
 		public D next()
@@ -176,7 +176,7 @@ public abstract class AbstractConverterList<S, D> extends ListDecorator<D>	//TOD
 
 		/**Converts and returns the previous element in the iteration.
 		@return An object representing the converted previous element in the iteration.
-		@exception NoSuchElementException Thrown if the iteration has no previous element.
+		@throws NoSuchElementException Thrown if the iteration has no previous element.
 		*/
 		@SuppressWarnings("unchecked")
 		public D previous()

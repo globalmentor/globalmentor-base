@@ -87,7 +87,7 @@ public class ISOTime implements ISOTemporal
 	 * @param seconds The seconds, 0-60 (allowing leap-seconds; see ISO 8601:2004(E) 4.2.1).
 	 * @param microseconds The microseconds, 0-999999.
 	 * @param utcOffset The UTC offset, or <code>null</code> if no UTC offset is known.
-	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
+	 * @throws IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
 	public ISOTime(final int hours, final int minutes, final int seconds, final int microseconds, final ISOUTCOffset utcOffset)
 	{
@@ -101,7 +101,7 @@ public class ISOTime implements ISOTemporal
 	/**
 	 * Temporal component constructor.
 	 * @param temporalcomponents The temporal components from which to construct the class.
-	 * @exception NullPointerException if the given temporal components is <code>null</code>.
+	 * @throws NullPointerException if the given temporal components is <code>null</code>.
 	 */
 	protected ISOTime(final ISOTemporalComponents temporalComponents)
 	{
@@ -112,7 +112,7 @@ public class ISOTime implements ISOTemporal
 	/**
 	 * Date constructor. Any date-related information of the given date will be lost; only the time will be kept, in terms of midnight UTC.
 	 * @param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
-	 * @exception NullPointerException if the given date is <code>null</code>.
+	 * @throws NullPointerException if the given date is <code>null</code>.
 	 */
 	public ISOTime(final Date date)
 	{
@@ -138,8 +138,8 @@ public class ISOTime implements ISOTemporal
 	 * Returns an ISO time object holding the value of the specified string.
 	 * @param string The string to be parsed as a time.
 	 * @return An ISO time object represented by the string.
-	 * @exception NullPointerException if the given string is <code>null</code>
-	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
+	 * @throws NullPointerException if the given string is <code>null</code>
+	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
 	public static ISOTime valueOf(final String string) throws ArgumentSyntaxException
 	{

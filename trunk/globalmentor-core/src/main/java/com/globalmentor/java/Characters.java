@@ -997,8 +997,8 @@ public final class Characters
 	 * Parses a string and returns its character value.
 	 * @param string A string expected to contain a single character.
 	 * @return The single character contained by the string.
-	 * @exception NullPointerException if the given string is <code>null</code>
-	 * @exception IllegalArgumentException if the string is not composed of a single character.
+	 * @throws NullPointerException if the given string is <code>null</code>
+	 * @throws IllegalArgumentException if the string is not composed of a single character.
 	 */
 	public final static Character parseCharacter(final String string)
 	{

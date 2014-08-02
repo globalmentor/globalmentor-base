@@ -29,7 +29,7 @@ public class ListIteratorDecorator<E> extends IteratorDecorator<E> implements Li
 
 	/**List iterator constructor.
 	@param listIterator The list iterator this list iterator should decorate.
-	@exception NullPointerException if the given iterator is <code>null</code>.
+	@throws NullPointerException if the given iterator is <code>null</code>.
 	*/
 	public ListIteratorDecorator(final ListIterator<E> listIterator)
 	{
@@ -59,7 +59,7 @@ public class ListIteratorDecorator<E> extends IteratorDecorator<E> implements Li
 	 *
 	 * @return the previous element in the list.
 	 * 
-	 * @exception NoSuchElementException if the iteration has no previous
+	 * @throws NoSuchElementException if the iteration has no previous
 	 *            element.
 	 */
 	public E previous() {return listIterator.previous();}
@@ -98,13 +98,13 @@ public class ListIteratorDecorator<E> extends IteratorDecorator<E> implements Li
 	 *
 	 * @param o the element with which to replace the last element returned by
 	 *          <tt>next</tt> or <tt>previous</tt>.
-	 * @exception UnsupportedOperationException if the <tt>set</tt> operation
+	 * @throws UnsupportedOperationException if the <tt>set</tt> operation
 	 * 		  is not supported by this list iterator.
-	 * @exception ClassCastException if the class of the specified element
+	 * @throws ClassCastException if the class of the specified element
 	 * 		  prevents it from being added to this list.
-	 * @exception IllegalArgumentException if some aspect of the specified
+	 * @throws IllegalArgumentException if some aspect of the specified
 	 *		  element prevents it from being added to this list.
-	 * @exception IllegalStateException if neither <tt>next</tt> nor
+	 * @throws IllegalStateException if neither <tt>next</tt> nor
 	 *	          <tt>previous</tt> have been called, or <tt>remove</tt> or
 	 *		  <tt>add</tt> have been called after the last call to
 	 * 		  <tt>next</tt> or <tt>previous</tt>.
@@ -124,13 +124,13 @@ public class ListIteratorDecorator<E> extends IteratorDecorator<E> implements Li
 	 * or <tt>previousIndex</tt>.)
 	 *
 	 * @param o the element to insert.
-	 * @exception UnsupportedOperationException if the <tt>add</tt> method is
+	 * @throws UnsupportedOperationException if the <tt>add</tt> method is
 	 * 		  not supported by this list iterator.
 	 * 
-	 * @exception ClassCastException if the class of the specified element
+	 * @throws ClassCastException if the class of the specified element
 	 * 		  prevents it from being added to this list.
 	 * 
-	 * @exception IllegalArgumentException if some aspect of this element
+	 * @throws IllegalArgumentException if some aspect of this element
 	 *            prevents it from being added to this list.
 	 */
 	public void add(E o) {listIterator.add(o);}

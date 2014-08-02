@@ -51,7 +51,7 @@ public class Name extends DefaultLocaleable
 	/**
 	 * Sets the family names.
 	 * @param familyNames The family names.
-	 * @exception NullPointerException if the provided family names is <code>null</code>.
+	 * @throws NullPointerException if the provided family names is <code>null</code>.
 	 */
 	public void setFamilyNames(final String... familyNames)
 	{
@@ -76,7 +76,7 @@ public class Name extends DefaultLocaleable
 	/**
 	 * Sets the given names.
 	 * @param givenNames The given names.
-	 * @exception NullPointerException if the provided given names is <code>null</code>.
+	 * @throws NullPointerException if the provided given names is <code>null</code>.
 	 */
 	public void setGivenNames(final String... givenNames)
 	{
@@ -101,7 +101,7 @@ public class Name extends DefaultLocaleable
 	/**
 	 * Sets the additional names.
 	 * @param additionalNames The additional names.
-	 * @exception NullPointerException if the provided additional names is <code>null</code>.
+	 * @throws NullPointerException if the provided additional names is <code>null</code>.
 	 */
 	public void setAdditionalNames(final String... additionalNames)
 	{
@@ -126,7 +126,7 @@ public class Name extends DefaultLocaleable
 	/**
 	 * Sets the honorific prefixes.
 	 * @param honorificPrefixes The honorific prefixes.
-	 * @exception NullPointerException if the provided honorific prefixes is <code>null</code>.
+	 * @throws NullPointerException if the provided honorific prefixes is <code>null</code>.
 	 */
 	public void setHonorificPrefixes(final String... honorificPrefixes)
 	{
@@ -151,7 +151,7 @@ public class Name extends DefaultLocaleable
 	/**
 	 * Sets the honorific suffixes.
 	 * @param honorificSuffixes The honorific suffixes.
-	 * @exception NullPointerException if the provided honorific suffixes is <code>null</code>.
+	 * @throws NullPointerException if the provided honorific suffixes is <code>null</code>.
 	 */
 	public void setHonorificSuffixes(final String... honorificSuffixes)
 	{

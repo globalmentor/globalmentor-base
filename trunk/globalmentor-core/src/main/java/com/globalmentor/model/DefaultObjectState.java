@@ -40,7 +40,7 @@ public class DefaultObjectState<T> extends DefaultModifiable implements ObjectSt
 		
 		/**Sets the object being described.
 		@param object The new object to describe.
-		@exception NullPointerException Thrown if the object is <code>null</code>.
+		@throws NullPointerException Thrown if the object is <code>null</code>.
 		*/
 		public void setObject(final T object)	//TODO determine if we want to make this public or not
 		{
@@ -92,7 +92,7 @@ public class DefaultObjectState<T> extends DefaultModifiable implements ObjectSt
 
 	/**Constructs an object state with an object.
 	@param object The non-<code>null</code> object being described
-	@exception NullPointerException Thrown if the object is <code>null</code>.
+	@throws NullPointerException Thrown if the object is <code>null</code>.
 	*/
 	public DefaultObjectState(final T object)
 	{

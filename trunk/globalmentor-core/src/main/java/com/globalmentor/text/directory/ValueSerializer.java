@@ -43,7 +43,7 @@ public interface ValueSerializer
 	 * @param valueType The type of value, or <code>null</code> if the type of value is unknown.
 	 * @param writer The writer to which the directory information should be written.
 	 * @return <code>true</code> if the operation was successful, else <code>false</code> if this class does not support writing the given value.
-	 * @exception IOException Thrown if there is an error writing to the directory.
+	 * @throws IOException Thrown if there is an error writing to the directory.
 	 * @see NameValuePair
 	 */
 	public boolean serializeValue(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList,

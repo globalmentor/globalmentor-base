@@ -59,7 +59,7 @@ public class Beans
 	/**Writes the given JavaBean to the file using long-term XML-encoded persistence.
 	@param object The object to store.
 	@param file The file in which the object should be stored.
-	@exception FileNotFoundException Thrown if the specified file is invalid.
+	@throws FileNotFoundException Thrown if the specified file is invalid.
 	*/
 	public static void xmlEncode(final Object object, final File file) throws FileNotFoundException
 	{
@@ -72,7 +72,7 @@ public class Beans
 	@param object The object to store.
 	@param file The file in which the object should be stored.
 	@param createBackup Whether existing files should be saved in a backup file.
-	@exception FileNotFoundException Thrown if the specified file is invalid.
+	@throws FileNotFoundException Thrown if the specified file is invalid.
 	*/
 	public static void xmlEncode(final Object object, final File file, final boolean createBackup) throws FileNotFoundException
 	{
@@ -98,7 +98,7 @@ public class Beans
 
 	/**Reads the given JavaBean to the file using long-term XML-encoded persistence.
 	@param file The file in which the object is stored.
-	@exception FileNotFoundException Thrown if the specified file does not exist.
+	@throws FileNotFoundException Thrown if the specified file does not exist.
 	*/
 	public static Object xmlDecode(final File file) throws FileNotFoundException
 	{

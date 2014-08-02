@@ -36,7 +36,7 @@ public class DecoratorReadWriteLockCollectionMap<K, V, C extends Collection<V>> 
 
 	/**Collection map constructor with a default reentrant read/write lock.
 	@param collectionMap The collection map this map should decorate.
-	@exception NullPointerException if the provided collection map is <code>null</code>.
+	@throws NullPointerException if the provided collection map is <code>null</code>.
 	*/
 	public DecoratorReadWriteLockCollectionMap(final CollectionMap<K, V, C> collectionMap)
 	{
@@ -46,7 +46,7 @@ public class DecoratorReadWriteLockCollectionMap<K, V, C extends Collection<V>> 
 	/**Collection map and read/write lock constructor.
 	@param collectionMap The collection map this map should decorate.
 	@param lock The lock for controlling access to the map.
-	@exception NullPointerException if the provided map and/or lock is <code>null</code>.
+	@throws NullPointerException if the provided map and/or lock is <code>null</code>.
 	*/
 	public DecoratorReadWriteLockCollectionMap(final CollectionMap<K, V, C> collectionMap, final ReadWriteLock lock)
 	{

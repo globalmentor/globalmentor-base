@@ -35,7 +35,7 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 	/**Map constructor with a default reentrant read/write lock.
 	@param map The map this map should decorate.
 	@param reverseMap The map to contain reverse lookup values.
-	@exception NullPointerException if the provided map and/or reverse map is <code>null</code>.
+	@throws NullPointerException if the provided map and/or reverse map is <code>null</code>.
 	*/
 	public DecoratorReadWriteLockReverseMap(final Map<K, V> map, final Map<V, K> reverseMap)
 	{
@@ -46,7 +46,7 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 	@param map The map this map should decorate.
 	@param reverseMap The map to contain reverse lookup values.
 	@param lock The lock for controlling access to the map.
-	@exception NullPointerException if the provided map, reverse map, and/or lock is <code>null</code>.
+	@throws NullPointerException if the provided map, reverse map, and/or lock is <code>null</code>.
 	*/
 	public DecoratorReadWriteLockReverseMap(final Map<K, V> map, final Map<V, K> reverseMap, final ReadWriteLock lock)
 	{
@@ -57,8 +57,8 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 	/**Returns the key that represents the given value. 
 	@param value The value whose associated key is to be returned.
 	@return The key to which this map reverse maps the specified value, or <code>null</code> if the map contains no reverse mapping for this value.
-	@exception ClassCastException Thrown if the value is of an inappropriate type for this map (optional).
-	@exception NullPointerException Thrown if the value is <code>null</code> and this map does not not permit <code>null</code> values (optional).
+	@throws ClassCastException Thrown if the value is of an inappropriate type for this map (optional).
+	@throws NullPointerException Thrown if the value is <code>null</code> and this map does not not permit <code>null</code> values (optional).
 	@see #containsValue(Object)
 	*/
 	public K getKey(final V value) {readLock().lock(); try{return reverseMap.get(value);} finally{readLock().unlock();}}	//return the key keyed to the given value in the key map
@@ -66,9 +66,9 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 	/**Removes the mapping for a value from this map if it is present.
 	@param value The value whose mapping is to be removed from the map.
 	@return The previous key associated with the value, or <code>null</code> if there was no mapping for the value.
-	@exception UnsupportedOperationException if the remove operation is not supported by this map
-	@exception ClassCastException if the value is of an inappropriate type for this map (optional).
-	@exception NullPointerException if the specified value is <code>null</code> and this map does not permit <code>null</code> values (optional).
+	@throws UnsupportedOperationException if the remove operation is not supported by this map
+	@throws ClassCastException if the value is of an inappropriate type for this map (optional).
+	@throws NullPointerException if the specified value is <code>null</code> and this map does not permit <code>null</code> values (optional).
 	*/
 	public K removeValue(final V value)
 	{
@@ -126,9 +126,9 @@ public class DecoratorReadWriteLockReverseMap<K, V> extends DecoratorReadWriteLo
 	/**Removes the mapping for this key from this map if it is present.
 	@param key The key whose mapping is to be removed from the map.
 	@return The previous value associated with specified key, or <code>null</code> if there was no mapping for key.
-	@exception ClassCastException if the key is of an inappropriate type for this map (optional).
-	@exception NullPointerException if the key is <code>null</code> and this map does not permit <code>null</code> keys (optional).
-	@exception UnsupportedOperationException if the remove method is not supported by this map.
+	@throws ClassCastException if the key is of an inappropriate type for this map (optional).
+	@throws NullPointerException if the key is <code>null</code> and this map does not permit <code>null</code> keys (optional).
+	@throws UnsupportedOperationException if the remove method is not supported by this map.
 	*/
 	public V remove(final Object key)
 	{

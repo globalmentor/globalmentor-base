@@ -115,7 +115,7 @@ public class SOAP
 	@param genericFaultCode One of generic SOAP fault codes.
 	@param exception The exception to convert to a SOAP fault.
 	@return The SOAP fault object created from the given exception.
-	@exception SOAPException Thrown if there is a problem constructing a SOAP fault.
+	@throws SOAPException Thrown if there is a problem constructing a SOAP fault.
 	*/
 	public static SOAPFault createSOAPFault(final SOAPBody soapBody, final String genericFaultCode, final Exception exception) throws SOAPException
 	{

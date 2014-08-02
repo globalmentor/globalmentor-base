@@ -48,7 +48,7 @@ public class OperatingSystem
 
 	/**Returns the system line separator string.
 	@return The the system line separator string.
-	@exception SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
+	@throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
 	@see #LINE_SEPARATOR_PROPERTY
 	*/
 	public static String getLineSeparator() throws SecurityException
@@ -58,7 +58,7 @@ public class OperatingSystem
 
 	/**Returns the home directory of the user.
 	@return The user home directory.
-	@exception SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
+	@throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
 	@see #USER_HOME_PROPERTY
 	*/
 	public static File getUserHomeDirectory() throws SecurityException
@@ -68,7 +68,7 @@ public class OperatingSystem
 
 	/**Returns the system temporary directory
 	@return The system temporary directory directory.
-	@exception SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
+	@throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
 	@see #JAVA_IO_TMPDIR_PROPERTY
 	*/
 	public static File getTempDirectory() throws SecurityException
@@ -78,7 +78,7 @@ public class OperatingSystem
 	
 
 	/**@return <code>true</code> if the operating system is a version of Windows.
-	@exception SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
+	@throws SecurityException if a security manager exists and its <code>checkPropertyAccess</code> method doesn't allow access to this system property.
 	@see #OS_NAME_PROPERTY
 	*/
 	public static boolean isWindowsOS()

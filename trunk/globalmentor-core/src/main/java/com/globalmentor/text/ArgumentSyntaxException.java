@@ -66,7 +66,7 @@ public class ArgumentSyntaxException extends IllegalArgumentException
 	/**input and index constructor.
 	@param input The input, or <code>null</code> if the input is not known.
 	@param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
-	@exception IllegalArgumentException if the given index is less than -1.
+	@throws IllegalArgumentException if the given index is less than -1.
 	*/
 	public ArgumentSyntaxException(final CharSequence input, final int index)
 	{
@@ -86,7 +86,7 @@ public class ArgumentSyntaxException extends IllegalArgumentException
 	@param message An explanation of why the input could not be parsed, or <code>null</code> if a default message should be used.
 	@param input The input, or <code>null</code> if the input is not known.
 	@param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
-	@exception IllegalArgumentException if the given index is less than -1.
+	@throws IllegalArgumentException if the given index is less than -1.
 	*/
 	public ArgumentSyntaxException(final String message, final CharSequence input, final int index)
 	{
@@ -114,7 +114,7 @@ public class ArgumentSyntaxException extends IllegalArgumentException
 	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
 	@param input The input, or <code>null</code> if the input is not known.
 	@param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
-	@exception IllegalArgumentException if the given index is less than -1.
+	@throws IllegalArgumentException if the given index is less than -1.
 	*/
 	public ArgumentSyntaxException(final Throwable cause, final CharSequence input, final int index)
 	{
@@ -127,7 +127,7 @@ public class ArgumentSyntaxException extends IllegalArgumentException
 	@param cause The cause error or <code>null</code> if the cause is nonexistent or unknown.
 	@param input The input, or <code>null</code> if the input is not known.
 	@param index The index into the input of the position at which the parse error occurred, or -1 if the position is not known.
-	@exception IllegalArgumentException if the given index is less than -1.
+	@throws IllegalArgumentException if the given index is less than -1.
 	*/
 	public ArgumentSyntaxException(final String message, final Throwable cause, final CharSequence input, final int index)
 	{

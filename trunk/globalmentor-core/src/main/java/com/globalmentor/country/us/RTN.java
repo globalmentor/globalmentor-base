@@ -136,9 +136,9 @@ public class RTN
 
 	/**RTN value constructor.
 	@param rtn The routing transit number value.
-	@exception IllegalArgumentException if the resulting string is longer than nine digits.
-	@exception IllegalArgumentException if the given RTN is zero.
-	@exception ArgumentSyntaxException if the first two digits are not recognized as a valid category ID.
+	@throws IllegalArgumentException if the resulting string is longer than nine digits.
+	@throws IllegalArgumentException if the given RTN is zero.
+	@throws ArgumentSyntaxException if the first two digits are not recognized as a valid category ID.
 	*/
 	public RTN(final int rtn) throws ArgumentSyntaxException
 	{
@@ -147,11 +147,11 @@ public class RTN
 		
 	/**Character sequence constructor.
 	@param rtn An RTN character sequence in the form "XXXXXXXXX".
-	@exception NullPointerException if the given character sequence is <code>null</code>.
-	@exception ArgumentSyntaxException if the character sequence is not in the form "XXXXXXXXX".
-	@exception ArgumentSyntaxException if the character sequence is "000000000".
-	@exception ArgumentSyntaxException if the character sequence does not have a valid checksum.
-	@exception ArgumentSyntaxException if the first two digits are not recognized as a valid category ID.
+	@throws NullPointerException if the given character sequence is <code>null</code>.
+	@throws ArgumentSyntaxException if the character sequence is not in the form "XXXXXXXXX".
+	@throws ArgumentSyntaxException if the character sequence is "000000000".
+	@throws ArgumentSyntaxException if the character sequence does not have a valid checksum.
+	@throws ArgumentSyntaxException if the first two digits are not recognized as a valid category ID.
 	*/
 	public RTN(final CharSequence rtn) throws ArgumentSyntaxException
 	{

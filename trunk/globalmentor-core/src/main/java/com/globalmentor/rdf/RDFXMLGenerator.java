@@ -735,7 +735,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 	/**Creates an RDF name for the given reference URI, taking into account registered namespaces namespaces.
 	@param referenceURI The reference URI for which an RDF name should be determined.
 	@return The RDF name for the reference URI, or <code>null</code> if the namespace URI and local name could not be determined.
-	@exception NullPointerException if the given reference URI is <code>null</code>.
+	@throws NullPointerException if the given reference URI is <code>null</code>.
 	*/
 	public RDFName getRDFName(final URI referenceURI)
 	{
@@ -762,7 +762,7 @@ public class RDFXMLGenerator	//TODO fix bug that doesn't serialize property valu
 	otherwise, the reference URI itself will be returned.
 	@param referenceURI The reference URI for which a label should be determined.
 	@return A label representing the given reference URI.
-	@exception NullPointerException if the given reference URI is <code>null</code>.
+	@throws NullPointerException if the given reference URI is <code>null</code>.
 	*/
 	public String getLabel(final URI referenceURI)
 	{

@@ -31,7 +31,7 @@ public class URIQueryParameter extends NameValuePair<String, String>
 	 * Constructor specifying the name and value.
 	 * @param name The parameter name.
 	 * @param value The parameter value.
-	 * @exception NullPointerException if the given name is <code>null</code>.
+	 * @throws NullPointerException if the given name is <code>null</code>.
 	 */
 	public URIQueryParameter(final String name, final String value)
 	{

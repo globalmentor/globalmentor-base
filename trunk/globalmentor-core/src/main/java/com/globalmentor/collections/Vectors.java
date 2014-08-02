@@ -37,7 +37,7 @@ public class Vectors
 
 	/**Sorts a vector containing {@link Comparable} objects using a quicksort algorithm.
 	@param vector The vector to be sorted.
-	@exception ClassCastException if an element in the vector does not implement {@link Comparable}.
+	@throws ClassCastException if an element in the vector does not implement {@link Comparable}.
 	@see #quickSort(Vector, int, int)
 	@see Comparable
 	*/
@@ -51,7 +51,7 @@ public class Vectors
 	@param vector The vector to be sorted.
 	@param low Left boundary of vector partition.
 	@param high Right boundary of vector partition.
-	@exception ClassCastException if an element in the vector does not implement {@link Comparable}.
+	@throws ClassCastException if an element in the vector does not implement {@link Comparable}.
 	@author Garret Wilson
 	@author James Gosling
 	@author Kevin A. Smith

@@ -28,7 +28,7 @@ public class IdentityHashSetMap<K, V> extends AbstractDecoratorCollectionMap<K, 
 
 	/**Map constructor.
 	@param map The map this map should decorate.
-	@exception NullPointerException if the provided map is <code>null</code>.
+	@throws NullPointerException if the provided map is <code>null</code>.
 	*/
 	public IdentityHashSetMap(final Map<K, Set<V>> map)
 	{

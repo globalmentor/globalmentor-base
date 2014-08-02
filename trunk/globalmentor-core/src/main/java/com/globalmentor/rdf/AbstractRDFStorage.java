@@ -169,7 +169,7 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	/**Stores the information in RDF at the storage URI.
 	<p>After this method, the <code>modified</code> bound property will be
 		<code>false</code>.</p>
-	@exception IOException Thrown if there is a problem storing the information.
+	@throws IOException Thrown if there is a problem storing the information.
 	@see #getStorageURI()
 	*/
 	public void store() throws IOException
@@ -194,7 +194,7 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 
 	/**Stores the RDF information at the storage URI.
 	@param document The XML document that contains the RDF data to store
-	@exception IOException Thrown if there is a problem storing the information.
+	@throws IOException Thrown if there is a problem storing the information.
 	@see #getStorageURI()
 	*/
 	protected void store(final Document document) throws IOException
@@ -205,7 +205,7 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	/**Stores the RDF information at the given URI.
 	@param document The XML document that contains the RDF data to store
 	@param uri The URI at which the information should be stored
-	@exception IOException Thrown if there is a problem storing the information.
+	@throws IOException Thrown if there is a problem storing the information.
 	@see #getStorageURI()
 	*/
 	protected synchronized void store(final Document document, final URI uri) throws IOException
@@ -225,7 +225,7 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	/**Retrieves the information from RDF stored at the storage URI.
 	<p>After this method, the <code>modified</code> bound property will be
 		<code>false</code>.</p>
-	@exception IOException Thrown if there is a problem retrieving the information.
+	@throws IOException Thrown if there is a problem retrieving the information.
 	@see #getStorageURI()
 	*/
 	public void retrieve() throws IOException
@@ -236,7 +236,7 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	
 	/**Retrieves the information from RDF stored at the given URI.
 	@param uri The URI at which the information is be stored
-	@exception IOException Thrown if there is a problem retrieving the information.
+	@throws IOException Thrown if there is a problem retrieving the information.
 	*/
 	public void retrieve(final URI uri) throws IOException
 	{
@@ -257,7 +257,7 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	/**Retrieves an RDF data model from the given XML document.
 	@param document The XML document containing RDF.
 	@return An RDF data model representing the RDF contained in the XML document.
-	@exception URISyntaxException Thrown if a URI is syntactically incorrect.	
+	@throws URISyntaxException Thrown if a URI is syntactically incorrect.	
 	*/
 	protected RDF retrieveRDF(final Document document) throws URISyntaxException
 	{
@@ -268,7 +268,7 @@ public abstract class AbstractRDFStorage extends DefaultModifiable implements UR
 	/**Retrieves an XML document from a URI.
 	@param uri The URI from which the information should be retrieved.
 	@return An XML document tree representing the information.
-	@exception IOException Thrown if there is a problem retrieving the information.
+	@throws IOException Thrown if there is a problem retrieving the information.
 	*/
 	protected synchronized Document retrieveXML(final URI uri) throws IOException
 	{

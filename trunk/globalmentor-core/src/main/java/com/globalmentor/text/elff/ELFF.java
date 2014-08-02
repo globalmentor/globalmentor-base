@@ -93,7 +93,7 @@ public class ELFF
 		
 	/**Fields constructor.
 	@param fields The fields to use for each log entry.
-	@exception NullPointerException if the writer and/or the array of fields is <code>null</code>.
+	@throws NullPointerException if the writer and/or the array of fields is <code>null</code>.
 	*/
 	public ELFF(final Field<?>... fields)
 	{
@@ -170,7 +170,7 @@ public class ELFF
 	@param field The field with which the value is associated.
 	@param value The value to write to the log, or <code>null</code> if this field has no value in the current entry.
 	@return The string builder with the new formatted content.
-	@exception ClassCastException if the given value is not compatible with the field's type
+	@throws ClassCastException if the given value is not compatible with the field's type
 	*/
 	public StringBuilder formatDirective(final StringBuilder stringBuilder, final String name, final String value)
 	{
@@ -192,7 +192,7 @@ public class ELFF
 	@param stringBuilder The string builder for formatting the value.
 	@param entry The entry to serialize.
 	@return The string builder with the new formatted content.
-	@exception ClassCastException if the given value is not compatible with the field's type
+	@throws ClassCastException if the given value is not compatible with the field's type
 	*/
 	public StringBuilder formatEntry(final StringBuilder stringBuilder, final Entry entry)
 	{
@@ -238,7 +238,7 @@ public class ELFF
 	@param field The field with which the value is associated.
 	@param value The value to write to the log, or <code>null</code> if this field has no value in the current entry.
 	@return The string builder with the new formatted content.
-	@exception ClassCastException if the given value is not compatible with the field's type
+	@throws ClassCastException if the given value is not compatible with the field's type
 	*/
 	public static <T> StringBuilder formatFieldValue(final StringBuilder stringBuilder, final Field<T> field, final T value)
 	{

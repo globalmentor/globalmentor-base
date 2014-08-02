@@ -108,7 +108,7 @@ public class AsynchronousWriter extends Writer
 	 * Writer constructor with a default {@link LinkedBlockingQueue} used for data production and consumption, with critical sections synchronized on the writer
 	 * itself.
 	 * @param writer The writer being decorated.
-	 * @exception NullPointerException if the given writer is <code>null</code>.
+	 * @throws NullPointerException if the given writer is <code>null</code>.
 	 */
 	public AsynchronousWriter(final Writer writer)
 	{
@@ -119,7 +119,7 @@ public class AsynchronousWriter extends Writer
 	 * Writer and blocking queue constructor, with critical sections synchronized on the writer itself.
 	 * @param writer The writer being decorated.
 	 * @param blockingQueue The implementation of blocking queue to use for producing and consuming data.
-	 * @exception NullPointerException if the given writer and/or blocking queue is <code>null</code>.
+	 * @throws NullPointerException if the given writer and/or blocking queue is <code>null</code>.
 	 */
 	public AsynchronousWriter(final Writer writer, final BlockingQueue<char[]> blockingQueue)
 	{
@@ -135,7 +135,7 @@ public class AsynchronousWriter extends Writer
 	 * Writer and lock constructor with a default {@link LinkedBlockingQueue} used for data production and consumption.
 	 * @param writer The writer being decorated.
 	 * @param lock The object to synchronize on for operations such as {@link #flush()} and {@link #close()}.
-	 * @exception NullPointerException if the given writer and/or lock is <code>null</code>.
+	 * @throws NullPointerException if the given writer and/or lock is <code>null</code>.
 	 */
 	public AsynchronousWriter(final Writer writer, final Object lock)
 	{
@@ -147,7 +147,7 @@ public class AsynchronousWriter extends Writer
 	 * @param writer The writer being decorated.
 	 * @param blockingQueue The implementation of blocking queue to use for producing and consuming data.
 	 * @param lock The object to synchronize on for operations such as {@link #flush()} and {@link #close()}.
-	 * @exception NullPointerException if the given writer, blocking queue, and/or lock is <code>null</code>.
+	 * @throws NullPointerException if the given writer, blocking queue, and/or lock is <code>null</code>.
 	 */
 	public AsynchronousWriter(final Writer writer, final BlockingQueue<char[]> blockingQueue, final Object lock)
 	{
@@ -159,7 +159,7 @@ public class AsynchronousWriter extends Writer
 	/**
 	 * Write a single character. The character to be written is contained in the 16 low-order bits of the given integer value; the 16 high-order bits are ignored.
 	 * @param c int specifying a character to be written.
-	 * @exception IOException if an I/O error occurs.
+	 * @throws IOException if an I/O error occurs.
 	 */
 	public void write(int c) throws IOException
 	{
@@ -171,7 +171,7 @@ public class AsynchronousWriter extends Writer
 	 * @param string The string to write.
 	 * @param offset The offset from which to start writing characters.
 	 * @param length The number of characters to write.
-	 * @exception IOException if an I/O error occurs.
+	 * @throws IOException if an I/O error occurs.
 	 */
 	public void write(final String string, final int offset, final int length) throws IOException
 	{
@@ -185,7 +185,7 @@ public class AsynchronousWriter extends Writer
 	 * @param charBuffer The array of characters to write.
 	 * @param offset The offset from which to start writing characters.
 	 * @param length The number of characters to write.
-	 * @exception IOException if an I/O error occurs.
+	 * @throws IOException if an I/O error occurs.
 	 */
 	public void write(final char[] charBuffer, final int offset, final int length) throws IOException
 	{
@@ -204,7 +204,7 @@ public class AsynchronousWriter extends Writer
 	/**
 	 * Flush the stream by writing all data to the underlying writer and then flushing the underlying writer. This implementation does not block waiting for data
 	 * to be flush; flushing occurs asynchronously.
-	 * @exception IOException if an I/O error occurs
+	 * @throws IOException if an I/O error occurs
 	 */
 	public void flush() throws IOException
 	{
@@ -242,7 +242,7 @@ public class AsynchronousWriter extends Writer
 	 * been closed, further write() or {@link #flush()} invocations will cause an {@link IOException} to be thrown. Closing a previously-closed stream, however,
 	 * has no effect. This implementation does not call this class' {@link #flush()} method, but because this operation involves flushing the underlying writer
 	 * this method's data production is synchronized.
-	 * @exception IOException if an I/O error occurs.
+	 * @throws IOException if an I/O error occurs.
 	 */
 	public void close() throws IOException
 	{
@@ -273,7 +273,7 @@ public class AsynchronousWriter extends Writer
 	 * modify the contents of the buffer. No synchronization occurs in this method; any desired synchronization should occur in the caller. This implementation
 	 * delegates to {@link #produce(char[], boolean)}.
 	 * @param charBuffer The buffer of characters to write.
-	 * @exception IOException if this writer has been closed before production begins, or if this thread was interrupted while waiting for production to complete.
+	 * @throws IOException if this writer has been closed before production begins, or if this thread was interrupted while waiting for production to complete.
 	 */
 	protected void produce(final char[] charBuffer) throws IOException
 	{

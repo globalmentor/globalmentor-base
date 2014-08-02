@@ -59,9 +59,9 @@ public final class URIPath
 	/**
 	 * Creates a URI path from the given string version of the raw path.
 	 * @param path The raw, encoded path information.
-	 * @exception NullPointerException if the given path is <code>null</code>.
-	 * @exception IllegalArgumentException if the given string violates URI RFC 2396.
-	 * @exception IllegalArgumentException if the provided path specifies a URI authority, query, and/or fragment.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @throws IllegalArgumentException if the given string violates URI RFC 2396.
+	 * @throws IllegalArgumentException if the provided path specifies a URI authority, query, and/or fragment.
 	 */
 	public URIPath(final String path)
 	{
@@ -71,9 +71,9 @@ public final class URIPath
 	/**
 	 * Creates a URI path from the raw path of the given path URI.
 	 * @param pathURI The URI that represents a path.
-	 * @exception NullPointerException if the given path URI is <code>null</code>.
-	 * @exception IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
-	 * @exception IllegalArgumentException if the given URI is not a path.
+	 * @throws NullPointerException if the given path URI is <code>null</code>.
+	 * @throws IllegalArgumentException if the provided URI specifies a URI scheme (i.e. the URI is absolute), authority, query, and/or fragment.
+	 * @throws IllegalArgumentException if the given URI is not a path.
 	 */
 	public URIPath(final URI pathURI)
 	{
@@ -103,7 +103,7 @@ public final class URIPath
 	/**
 	 * Checks to see if the path is absolute. If the path is not absolute, an exception is thrown.
 	 * @return This path.
-	 * @exception IllegalArgumentException if the path is not absolute.
+	 * @throws IllegalArgumentException if the path is not absolute.
 	 * @see #isAbsolute()
 	 */
 	public URIPath checkAbsolute() throws IllegalArgumentException
@@ -127,7 +127,7 @@ public final class URIPath
 	/**
 	 * Checks to see if the path represents a collection. If the path does not represent a collection, an exception is thrown.
 	 * @return This path.
-	 * @exception IllegalArgumentException if the path does not end with a slash ('/').
+	 * @throws IllegalArgumentException if the path does not end with a slash ('/').
 	 * @see #isCollection()
 	 */
 	public URIPath checkCollection() throws IllegalArgumentException
@@ -151,7 +151,7 @@ public final class URIPath
 	/**
 	 * Checks to see if the path is relative. If the path is not relative, an exception is thrown.
 	 * @return This path.
-	 * @exception IllegalArgumentException if the path is absolute.
+	 * @throws IllegalArgumentException if the path is absolute.
 	 * @see #isRelative()
 	 */
 	public URIPath checkRelative() throws IllegalArgumentException
@@ -201,7 +201,7 @@ public final class URIPath
 	 * Determines the parent path of this path.
 	 * @return A path representing the parent collection of this path; if the path ends in '/', equivalent to resolving the path ".." to the path; if the path
 	 *         does not end in '/', equivalent to resolving the path "." to the path.
-	 * @exception IllegalArgumentException if the URI does not have a path component.
+	 * @throws IllegalArgumentException if the URI does not have a path component.
 	 * @see #isCollection()
 	 * @see #getParentLevel()
 	 * @see #getParentPath()
@@ -216,7 +216,7 @@ public final class URIPath
 	 * delegating to {@link #relativize(URIPath)}.
 	 * @param path The path to be relativized against this path.
 	 * @return The resulting path.
-	 * @exception NullPointerException if the given path is <code>null</code>.
+	 * @throws NullPointerException if the given path is <code>null</code>.
 	 */
 	public URIPath relativize(final String path)
 	{
@@ -227,7 +227,7 @@ public final class URIPath
 	 * Relativizes the given path against this path.
 	 * @param path The path to be relativized against this path.
 	 * @return The resulting path.
-	 * @exception NullPointerException if the given path is <code>null</code>.
+	 * @throws NullPointerException if the given path is <code>null</code>.
 	 */
 	public URIPath relativize(final URIPath path)
 	{
@@ -261,9 +261,9 @@ public final class URIPath
 	 * </p>
 	 * @param path The path to be resolved against this path.
 	 * @return The resulting path.
-	 * @exception NullPointerException if the given path is <code>null</code>.
-	 * @exception IllegalArgumentException if the given string violates URI RFC 2396.
-	 * @exception IllegalArgumentException if the provided path specifies a URI scheme (i.e. the path represents an absolute URI) and/or authority.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @throws IllegalArgumentException if the given string violates URI RFC 2396.
+	 * @throws IllegalArgumentException if the provided path specifies a URI scheme (i.e. the path represents an absolute URI) and/or authority.
 	 * @see #resolve(URIPath)
 	 */
 	public final URIPath resolve(final String path)
@@ -278,7 +278,7 @@ public final class URIPath
 	 * </p>
 	 * @param path The path to be resolved against this path.
 	 * @return The resulting path.
-	 * @exception NullPointerException if the given path is <code>null</code>.
+	 * @throws NullPointerException if the given path is <code>null</code>.
 	 * @see URIs#resolve(URI, String)
 	 */
 	public URIPath resolve(final URIPath path)
@@ -293,7 +293,7 @@ public final class URIPath
 	 * </p>
 	 * @param uri The uri to be resolved against this path.
 	 * @return The resulting URI.
-	 * @exception NullPointerException if the given URI is <code>null</code>.
+	 * @throws NullPointerException if the given URI is <code>null</code>.
 	 * @see URIs#resolve(URI, URI)
 	 */
 	public URI resolve(final URI uri)
@@ -413,8 +413,8 @@ public final class URIPath
 	 * segment containing {@value URIs#SCHEME_SEPARATOR}. This method is no more than a URI factory that compensates for a path known to be a path and not a URI
 	 * and that may contain a {@value URIs#SCHEME_SEPARATOR} in its relative first segment.
 	 * @param path The raw, encoded path information.
-	 * @exception NullPointerException if the given path is <code>null</code>.
-	 * @exception IllegalArgumentException if the given string violates URI RFC 2396.
+	 * @throws NullPointerException if the given path is <code>null</code>.
+	 * @throws IllegalArgumentException if the given string violates URI RFC 2396.
 	 */
 	public static URI createURIPathURI(final String path)
 	{

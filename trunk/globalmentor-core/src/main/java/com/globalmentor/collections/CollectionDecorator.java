@@ -32,7 +32,7 @@ public class CollectionDecorator<E> implements Collection<E>
 
 	/**Collection constructor.
 	@param collection The collection this collection should decorate.
-	@exception NullPointerException if the provided collection is <code>null</code>.
+	@throws NullPointerException if the provided collection is <code>null</code>.
 	*/
 	public CollectionDecorator(final Collection<E> collection)
 	{

@@ -57,7 +57,7 @@ public class ISOUTCOffset implements ISOTemporal
 	 * Full Constructor.
 	 * @param hours The offset hours.
 	 * @param minutes The offset minutes.
-	 * @exception IllegalArgumentException if the given offset minutes is negative.
+	 * @throws IllegalArgumentException if the given offset minutes is negative.
 	 */
 	public ISOUTCOffset(final int hours, final int minutes)
 	{
@@ -69,8 +69,8 @@ public class ISOUTCOffset implements ISOTemporal
 	 * Returns an ISO UTC offset object holding the value of the specified string.
 	 * @param string The string to be parsed as a UTC offset.
 	 * @return An ISO UTC offset object represented by the string.
-	 * @exception NullPointerException if the given string is <code>null</code>
-	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
+	 * @throws NullPointerException if the given string is <code>null</code>
+	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
 	public static ISOUTCOffset valueOf(final String string) throws ArgumentSyntaxException
 	{

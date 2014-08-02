@@ -322,7 +322,7 @@ public class XPackage
 	@param resource The resource the manifest of which will be returned.
 	@return The location of the resource, or <code>null</code> if no location
 		property exists.
-	@exception ClassCastException Thrown if the location is not a resource (an
+	@throws ClassCastException Thrown if the location is not a resource (an
 		XPackage location should never be a literal).
 	*/
 	public static RDFResource getLocation(final RDFResource resource) throws ClassCastException
@@ -338,7 +338,7 @@ public class XPackage
 	@param resource The resource the manifest of which will be returned.
 	@return The location href of the resource, or <code>null</code> if no location
 		property exists, or if the location has no href.
-	@exception ClassCastException Thrown if the location is not a resource (an
+	@throws ClassCastException Thrown if the location is not a resource (an
 		XPackage location should never be a literal) or if the href is not a literal.
 	*/
 	public static String getLocationHRef(final RDFResource resource) throws ClassCastException

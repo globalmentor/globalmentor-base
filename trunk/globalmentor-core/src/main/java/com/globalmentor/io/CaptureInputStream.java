@@ -65,7 +65,7 @@ public class CaptureInputStream extends InputStreamDecorator<InputStream>
 
 	/**Decorates the given input stream.
 	@param inputStream The input stream to decorate.
-	@exception NullPointerException if the given stream is <code>null</code>.
+	@throws NullPointerException if the given stream is <code>null</code>.
 	*/
 	public CaptureInputStream(final InputStream inputStream)
 	{
@@ -84,7 +84,7 @@ public class CaptureInputStream extends InputStreamDecorator<InputStream>
    *
    * @return     the next byte of data, or <code>-1</code> if the end of the
    *             stream is reached.
-   * @exception  IOException  if an I/O error occurs.
+   * @throws  IOException  if an I/O error occurs.
    */
   public int read() throws IOException
 	{
@@ -129,8 +129,8 @@ public class CaptureInputStream extends InputStreamDecorator<InputStream>
    * @return     the total number of bytes read into the buffer, or
    *             <code>-1</code> is there is no more data because the end of
    *             the stream has been reached.
-   * @exception  IOException  if an I/O error occurs.
-   * @exception  NullPointerException  if <code>b</code> is <code>null</code>.
+   * @throws  IOException  if an I/O error occurs.
+   * @throws  NullPointerException  if <code>b</code> is <code>null</code>.
    * @see        java.io.InputStream#read(byte[], int, int)
    */
   public int read(byte b[]) throws IOException
@@ -201,8 +201,8 @@ public class CaptureInputStream extends InputStreamDecorator<InputStream>
    * @return     the total number of bytes read into the buffer, or
    *             <code>-1</code> if there is no more data because the end of
    *             the stream has been reached.
-   * @exception  IOException  if an I/O error occurs.
-   * @exception  NullPointerException  if <code>b</code> is <code>null</code>.
+   * @throws  IOException  if an I/O error occurs.
+   * @throws  NullPointerException  if <code>b</code> is <code>null</code>.
    * @see        java.io.InputStream#read()
    */
   public int read(byte b[], int off, int len) throws IOException
@@ -228,7 +228,7 @@ public class CaptureInputStream extends InputStreamDecorator<InputStream>
    *
    * @param      n   the number of bytes to be skipped.
    * @return     the actual number of bytes skipped.
-   * @exception  IOException  if an I/O error occurs.
+   * @throws  IOException  if an I/O error occurs.
    */
   public long skip(final long n) throws IOException
 	{

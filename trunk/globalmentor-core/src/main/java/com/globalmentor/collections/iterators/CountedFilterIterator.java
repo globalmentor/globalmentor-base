@@ -88,7 +88,7 @@ public class CountedFilterIterator<E> extends IteratorDecorator<E>	//TODO refact
 	}
 
 	/**@return The next element in the iteration.
-	@exception NoSuchElementException Thrown if the iteration has no more elements.
+	@throws NoSuchElementException Thrown if the iteration has no more elements.
 	*/
 	@SuppressWarnings("unchecked")
 	public E next()

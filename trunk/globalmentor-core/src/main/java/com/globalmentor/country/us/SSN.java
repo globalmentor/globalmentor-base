@@ -92,10 +92,10 @@ public class SSN
 
 	/**SSN value constructor.
 	@param ssn The social security number value.
-	@exception IllegalArgumentException if the resulting string is longer than nine digits.
-	@exception ArgumentSyntaxException if the resulting area number is 000.
-	@exception ArgumentSyntaxException if the resulting group number is 00.
-	@exception ArgumentSyntaxException if the resulting serial number is 0000.
+	@throws IllegalArgumentException if the resulting string is longer than nine digits.
+	@throws ArgumentSyntaxException if the resulting area number is 000.
+	@throws ArgumentSyntaxException if the resulting group number is 00.
+	@throws ArgumentSyntaxException if the resulting serial number is 0000.
 	*/
 	public SSN(final int ssn) throws ArgumentSyntaxException
 	{
@@ -104,11 +104,11 @@ public class SSN
 		
 	/**Character sequence constructor.
 	@param ssn A SSN character sequence in the form "XXXXXXXXX" or "XXX-XX-XXXX".
-	@exception NullPointerException if the given character sequence is <code>null</code>.
-	@exception ArgumentSyntaxException if the character sequence is not in the form "XXXXXXXXX" or "XXX-XX-XXXX".
-	@exception ArgumentSyntaxException if the area number is 000.
-	@exception ArgumentSyntaxException if the group number is 00.
-	@exception ArgumentSyntaxException if the serial number is 0000.
+	@throws NullPointerException if the given character sequence is <code>null</code>.
+	@throws ArgumentSyntaxException if the character sequence is not in the form "XXXXXXXXX" or "XXX-XX-XXXX".
+	@throws ArgumentSyntaxException if the area number is 000.
+	@throws ArgumentSyntaxException if the group number is 00.
+	@throws ArgumentSyntaxException if the serial number is 0000.
 	*/
 	public SSN(final CharSequence ssn) throws ArgumentSyntaxException
 	{

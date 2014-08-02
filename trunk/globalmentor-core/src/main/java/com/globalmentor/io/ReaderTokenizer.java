@@ -97,7 +97,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * Pops a group from the stack and returns the group beginning character.
 	 * @return The character used to begin the group.
 	 * @throws StringIndexOutOfBoundsException {@inheritDoc}
-	 * @exception EmptyStackException if there are no groups left.
+	 * @throws EmptyStackException if there are no groups left.
 	 */
 	protected char popGroup() throws EmptyStackException
 	{
@@ -119,7 +119,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 	 * Returns the character of the group currently on the stack.
 	 * @return The character used to begin the group.
 	 * @throws StringIndexOutOfBoundsException {@inheritDoc}
-	 * @exception EmptyStackException if there are no groups left.
+	 * @throws EmptyStackException if there are no groups left.
 	 */
 	protected char peekGroup() throws EmptyStackException
 	{
@@ -197,7 +197,7 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 
 	/**
 	 * @return The next token available.
-	 * @exception NoSuchElementException if there are no more tokens.
+	 * @throws NoSuchElementException if there are no more tokens.
 	 */
 	public String next()
 	{
@@ -216,8 +216,8 @@ public class ReaderTokenizer implements Iterator<String>, Iterable<String>
 
 	/**
 	 * Removes the last token from the underlying collection. This method is not supported, and an <code>UnsupportedOperationException</code> is always thrown.
-	 * @exception UnsupportedOperationException if the the remove operation is not supported .
-	 * @exception IllegalStateException if the <code>next()</code> method has not yet been called, or the <code>remove</code> method has already been called after
+	 * @throws UnsupportedOperationException if the the remove operation is not supported .
+	 * @throws IllegalStateException if the <code>next()</code> method has not yet been called, or the <code>remove</code> method has already been called after
 	 *              the last call to the <code>next</code> method.
 	 */
 	public void remove()

@@ -34,7 +34,7 @@ public class ProgressOutputStream extends OutputStreamDecorator<OutputStream>
 
 	/**Decorates the given output stream.
 	@param outputStream The output stream to decorate.
-	@exception NullPointerException if the given stream is <code>null</code>.
+	@throws NullPointerException if the given stream is <code>null</code>.
 	*/
 	public ProgressOutputStream(final OutputStream outputStream)
 	{
@@ -44,7 +44,7 @@ public class ProgressOutputStream extends OutputStreamDecorator<OutputStream>
 	/**Writes the specified byte to the decorated output stream.
 	This version delegates to {@link #write(int)} to ensure that no bytes written are noted more than once
 	@param b The byte to write.
-	@exception IOException if an I/O error occurs.
+	@throws IOException if an I/O error occurs.
 	*/
 	public void write(final int b) throws IOException
 	{
@@ -54,8 +54,8 @@ public class ProgressOutputStream extends OutputStreamDecorator<OutputStream>
 	/**Writes all the bytes from the specified byte array to the decorated output stream.
 	This version delegates to {@link #write(byte[], int, int)} to ensure that no bytes written are noted more than once
 	@param byes The bytes to write.
-	@exception NullPointerException if the given byte array is <code>null</code>.
-	@exception IOException if an I/O error occurs.
+	@throws NullPointerException if the given byte array is <code>null</code>.
+	@throws IOException if an I/O error occurs.
 	*/
   public void write(final byte bytes[]) throws IOException
 	{
@@ -66,9 +66,9 @@ public class ProgressOutputStream extends OutputStreamDecorator<OutputStream>
 	@param byes The bytes to write.
 	@param offset The start offset in the data.
 	@param length The number of bytes to write.
-	@exception NullPointerException if the given byte array is <code>null</code>.
-	@exception IndexOutOfBoundsException if the given offset is negative, or the given offset plus the given langth is greater than the length of the given array.  
-	@exception IOException if an I/O error occurs.
+	@throws NullPointerException if the given byte array is <code>null</code>.
+	@throws IndexOutOfBoundsException if the given offset is negative, or the given offset plus the given langth is greater than the length of the given array.  
+	@throws IOException if an I/O error occurs.
 	*/
   public synchronized void write(final byte bytes[], final int offset, final int length) throws IOException	//this method is synchronized so that the progress won't be updated and/or events sent out of order
 	{
@@ -80,7 +80,7 @@ public class ProgressOutputStream extends OutputStreamDecorator<OutputStream>
   /**Called before the stream is closed.
 	This version fires a final progress event indicating that the maximum value is now known and has been reached
 	(i.e. the progress reflects the maximum value), indicating no delta bytes written.
-	@exception IOException if an I/O error occurs.
+	@throws IOException if an I/O error occurs.
 	*/
 /*TODO del if not needed or wanted
   protected synchronized void beforeClose() throws IOException 

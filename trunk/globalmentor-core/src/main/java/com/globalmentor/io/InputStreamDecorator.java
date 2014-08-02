@@ -47,7 +47,7 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 	/**
 	 * Decorates the given input stream, automatically calling {@link #dispose()} when closed.
 	 * @param inputStream The input stream to decorate.
-	 * @exception NullPointerException if the given stream is <code>null</code>.
+	 * @throws NullPointerException if the given stream is <code>null</code>.
 	 */
 	public InputStreamDecorator(final I inputStream)
 	{
@@ -58,7 +58,7 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 	 * Decorates the given input stream.
 	 * @param inputStream The input stream to decorate.
 	 * @param autoDispose Whether the stream should be automatically disposed when closed.
-	 * @exception NullPointerException if the given stream is <code>null</code>.
+	 * @throws NullPointerException if the given stream is <code>null</code>.
 	 */
 	public InputStreamDecorator(final I inputStream, final boolean autoDispose)
 	{
@@ -138,7 +138,7 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 
 	/**
 	 * Called before the stream is closed.
-	 * @exception IOException if an I/O error occurs.
+	 * @throws IOException if an I/O error occurs.
 	 */
 	protected void beforeClose() throws IOException
 	{
@@ -146,7 +146,7 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 
 	/**
 	 * Called after the stream is successfully closed.
-	 * @exception IOException if an I/O error occurs.
+	 * @throws IOException if an I/O error occurs.
 	 */
 	protected void afterClose() throws IOException
 	{
@@ -156,7 +156,7 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 	 * Closes this input stream and releases any system resources associated with the stream. A closed stream cannot perform output operations and cannot be
 	 * reopened. If auto-dispose is enabled, {@link #dispose()} will be called if closing is successful.
 	 * @param closeDecoratedStream Whether the decorated stream should also be closed.
-	 * @exception IOException if an I/O error occurs.
+	 * @throws IOException if an I/O error occurs.
 	 * @see #beforeClose()
 	 * @see #afterClose()
 	 * @see #dispose()
@@ -183,7 +183,7 @@ public class InputStreamDecorator<I extends InputStream> extends InputStream imp
 	/**
 	 * Closes this input stream and releases any system resources associated with the stream. A closed stream cannot perform output operations and cannot be
 	 * reopened.
-	 * @exception IOException if an I/O error occurs.
+	 * @throws IOException if an I/O error occurs.
 	 * @see #beforeClose()
 	 * @see #afterClose()
 	 * @see #close(boolean)

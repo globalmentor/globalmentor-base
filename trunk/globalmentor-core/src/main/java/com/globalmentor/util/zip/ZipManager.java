@@ -83,7 +83,7 @@ public class ZipManager implements URIInputStreamable
 			{@link #releaseZipFile()}.
 			<p>This method is thread-safe.</p>
 		@return ZipFile An object allowing access to the zip file's contents.
-		@exception IOException Thrown if there is an error opening the zip file.
+		@throws IOException Thrown if there is an error opening the zip file.
 		@see #releaseZipFile
 		*/
 		public synchronized ZipFile grabZipFile() throws IOException
@@ -100,7 +100,7 @@ public class ZipManager implements URIInputStreamable
 		  (the hold count reaches zero), the zip file is closed and the zip file
 			variable is set to <code>null</code>.
 			<p>This method is thread-safe.</p>
-		@exception IOException Thrown if there is an error closing the zip file.
+		@throws IOException Thrown if there is an error closing the zip file.
 		*/
 		public synchronized void releaseZipFile() throws IOException
 		{
@@ -116,7 +116,7 @@ public class ZipManager implements URIInputStreamable
 		specified file.
 	@param zippedFile The file in which the zipped information is stored.
 	@param baseURI The base URI to use in determining zip entry URIs.
-	@exception IOException Thrown if there is an error accessing the given zip
+	@throws IOException Thrown if there is an error accessing the given zip
 		file.
 	*/
 	public ZipManager(final File zippedFile, final URI baseURI) throws IOException
@@ -130,7 +130,7 @@ public class ZipManager implements URIInputStreamable
 		For each zip entry, a URI is created for the canonical filename of the
 		entry as if it were extracted with its current path under the directory
 		of the zip file.
-	@exception IOException Thrown if there is an error opening and reading from
+	@throws IOException Thrown if there is an error opening and reading from
 		the zip file.
 	*/
 	protected void loadZipEntries() throws IOException
@@ -179,7 +179,7 @@ public class ZipManager implements URIInputStreamable
 	/**Creates a URI from the file location, based on the zip file's URI.
 	@param href The location, either a URI or a filename, of the file.
 	@return A URI representing the specified file.
-	@exception IllegalArgumentException if the given string violates RFC&nbsp;2396.
+	@throws IllegalArgumentException if the given string violates RFC&nbsp;2396.
 	@see #getZipFileURI
 	@see URIs
 	*/
@@ -192,7 +192,7 @@ public class ZipManager implements URIInputStreamable
 		path relative to the URI of the zip file itself.
 	@param zipEntry The zip entry for which a URI should be returned.
 	@return A URI representing the specified zip entry.
-	@exception IllegalArgumentException if the the zip entry does not have
+	@throws IllegalArgumentException if the the zip entry does not have
 		a valid filename (a URI cannot be constructed from the filename).
 	*/
 	public URI getURI(final ZipEntry zipEntry)
@@ -206,9 +206,9 @@ public class ZipManager implements URIInputStreamable
 		The input stream will be left open and should be closed after use.
 	@param uri A complete URI to a file.
 	@return An input stream to the contents of the file represented by the given URI.
-	@exception FileNotFoundException Thrown if the file referenced by the URI
+	@throws FileNotFoundException Thrown if the file referenced by the URI
 		could not be located.
-	@exception IOException Thrown if an I/O error occurred.
+	@throws IOException Thrown if an I/O error occurred.
 	*/
 	public InputStream getInputStream(final URI uri) throws FileNotFoundException, IOException
 	{

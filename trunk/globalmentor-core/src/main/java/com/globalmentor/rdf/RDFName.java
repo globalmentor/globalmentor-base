@@ -49,7 +49,7 @@ public class RDFName extends DefaultResource implements IDed<URI>
 	/**Namespace URI and local name constructor.
 	@param namespaceURI The namespace URI.
 	@param localName The local name.
-	@exception NullPointerException if the given namespace URI and/or local name is <code>null</code>.
+	@throws NullPointerException if the given namespace URI and/or local name is <code>null</code>.
 	*/	
 	public RDFName(final URI namespaceURI, final String localName)
 	{

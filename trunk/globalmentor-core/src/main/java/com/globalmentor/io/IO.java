@@ -30,7 +30,7 @@ public interface IO<T>
 	@param inputStream The input stream from which to read the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@return The object read from the input stream.
-	@exception NullPointerException if the given input stream is <code>null</code>.
+	@throws NullPointerException if the given input stream is <code>null</code>.
 	@throws IOException Thrown if there is an error reading the data.
 	*/ 
 	public T read(final InputStream inputStream, final URI baseURI) throws IOException;
@@ -39,7 +39,7 @@ public interface IO<T>
 	@param outputStream The output stream to which to write the data.
 	@param baseURI The base URI of the data, or <code>null</code> if no base URI is available.
 	@param object The object to write to the given output stream.
-	@exception NullPointerException if the given output stream and/or object is <code>null</code>.
+	@throws NullPointerException if the given output stream and/or object is <code>null</code>.
 	@throws IOException Thrown if there is an error writing the data.
 	*/
 	public void write(final OutputStream outputStream, final URI baseURI, final T object) throws IOException;

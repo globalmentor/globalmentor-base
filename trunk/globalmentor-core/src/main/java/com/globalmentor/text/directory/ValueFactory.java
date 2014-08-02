@@ -43,8 +43,8 @@ public interface ValueFactory
 	 * @param reader The reader that contains the lines of the directory.
 	 * @return An array of objects represent the value string, or <code>null</code> if the type of value cannot be determined by the given line information, in
 	 *         which case no information is removed from the reader.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 * @see NameValuePair
 	 */
 	public Object[] createValues(final String profile, final String group, final String name, final List<NameValuePair<String, String>> paramList,

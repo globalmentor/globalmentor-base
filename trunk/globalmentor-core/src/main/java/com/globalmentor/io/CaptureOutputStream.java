@@ -61,7 +61,7 @@ public class CaptureOutputStream extends OutputStreamDecorator<OutputStream>
 
 	/**Decorates the given output stream.
 	@param outputStream The output stream to decorate.
-	@exception NullPointerException if the given stream is <code>null</code>.
+	@throws NullPointerException if the given stream is <code>null</code>.
 	*/
 	public CaptureOutputStream(final OutputStream outputStream)
 	{
@@ -79,7 +79,7 @@ public class CaptureOutputStream extends OutputStreamDecorator<OutputStream>
    * implementation for this method. 
    *
    * @param      b   the <code>byte</code>.
-   * @exception  IOException  if an I/O error occurs. In particular, 
+   * @throws  IOException  if an I/O error occurs. In particular, 
    *             an <code>IOException</code> may be thrown if the 
    *             output stream has been closed.
    */
@@ -96,7 +96,7 @@ public class CaptureOutputStream extends OutputStreamDecorator<OutputStream>
    * <code>write(b, 0, b.length)</code>.
    *
    * @param      b   the data.
-   * @exception  IOException  if an I/O error occurs.
+   * @throws  IOException  if an I/O error occurs.
    * @see        java.io.OutputStream#write(byte[], int, int)
    */
   public void write(byte b[]) throws IOException
@@ -129,7 +129,7 @@ public class CaptureOutputStream extends OutputStreamDecorator<OutputStream>
    * @param      b     the data.
    * @param      off   the start offset in the data.
    * @param      len   the number of bytes to write.
-   * @exception  IOException  if an I/O error occurs. In particular, 
+   * @throws  IOException  if an I/O error occurs. In particular, 
    *             an <code>IOException</code> is thrown if the output 
    *             stream is closed.
    */

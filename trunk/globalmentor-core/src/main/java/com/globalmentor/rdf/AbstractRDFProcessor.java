@@ -232,7 +232,7 @@ public abstract class AbstractRDFProcessor
 	@param resource The resource, either an RDF resource or a proxy, for which an unproxied RDF resource should be returned,
 		or <code>null</code> if no specific resource should be returned.
 	@return The created resource from the given resource proxy, or the given resource itself if the resource is already an RDF resource.
-	@exception IllegalArgumentException if a resource was given that is not one of the resources in the list of RDF statements.
+	@throws IllegalArgumentException if a resource was given that is not one of the resources in the list of RDF statements.
 	@see ResourceProxy
 	*/
 	public RDFResource createResources(final Resource resource)	//TODO maybe check to make sure any RDFResource passed to us is really one of the ones in the list of statements

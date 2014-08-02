@@ -39,7 +39,7 @@ public class DefaultRDFResourceFactory implements RDFResourceFactory
 
 	/**Package constructor.
 	@param namespacePackage The package for which Java classes for this namespace will be created.
-	@exception NullPointerException if the given package is <code>null</code>.
+	@throws NullPointerException if the given package is <code>null</code>.
 	*/
 	public DefaultRDFResourceFactory(final Package namespacePackage)
 	{
@@ -48,7 +48,7 @@ public class DefaultRDFResourceFactory implements RDFResourceFactory
 
 	/**Package name constructor.
 	@param packageName The name of the package, with no '.' suffix, from which Java classes for this namespace will be created.
-	@exception NullPointerException if the given package name is <code>null</code>.
+	@throws NullPointerException if the given package name is <code>null</code>.
 	*/
 	public DefaultRDFResourceFactory(final String packageName)
 	{

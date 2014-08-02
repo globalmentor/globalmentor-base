@@ -113,7 +113,7 @@ public class URLs
 	 * @param contextObject The source context, such as a URL or File, or <code>null</code> if the filename should not be referenced from any object.
 	 * @param filename The name of the file, either relative or absolute, or a URL fragment beginning with "#".
 	 * @return A URL constructed from the filename and context object, or <code>null</code> if no URL could be constructed.
-	 * @exception MalformedURLException Thrown if the filename is not a valid filename or URL name.
+	 * @throws MalformedURLException Thrown if the filename is not a valid filename or URL name.
 	 * @see File
 	 * @see URL
 	 * @deprecated
@@ -180,7 +180,7 @@ public class URLs
 	 * </p>
 	 * @param url A complete URL to a file.
 	 * @return An input stream to the contents of the file represented by the given URL.
-	 * @exception IOException Thrown if an I/O error occurred.
+	 * @throws IOException Thrown if an I/O error occurred.
 	 * @see InputStreamLocator
 	 */
 	public static InputStream getInputStream(final URL url) throws IOException
@@ -257,7 +257,7 @@ public class URLs
 	 * Loads the contents of a URL into an array of bytes.
 	 * @param url The URL from which to read.
 	 * @return An array of bytes from the URL.
-	 * @exception IOException Thrown if there is an error loading the bytes.
+	 * @throws IOException Thrown if there is an error loading the bytes.
 	 * @see InputStreams#getBytes(InputStream)
 	 */
 	public static byte[] readBytes(final URL url) throws IOException
@@ -278,7 +278,7 @@ public class URLs
 	 * @param url The URL from which to read.
 	 * @param charset The charset used to store the string.
 	 * @return A string containing the contents of the URL.
-	 * @exception IOException if there is an error loading the bytes.
+	 * @throws IOException if there is an error loading the bytes.
 	 */
 	public static String readString(final URL url, final Charset charset) throws IOException
 	{
@@ -315,7 +315,7 @@ public class URLs
 	 * Stores the contents of a URL in an output stream.
 	 * @param url The URL to copy.
 	 * @param outputStream The destination of the URL contents.
-	 * @exception IOException Thrown if there is an error copying the URL.
+	 * @throws IOException Thrown if there is an error copying the URL.
 	 */
 	public static void write(final URL url, final OutputStream outputStream) throws IOException
 	{

@@ -79,7 +79,7 @@ public class XMLObjectDecoder
 	@param element The element from which an object should be created.
 	@return An object that represents this XML element, or <code>null</code>
 		if the element was not recognized.
-//TODO fix	@exception SOAPException Thrown if there is an error accessing the SOAP body element
+//TODO fix	@throws SOAPException Thrown if there is an error accessing the SOAP body element
 	*/
 	public Object decode(final Element element)
 	{

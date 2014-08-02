@@ -32,7 +32,7 @@ public interface PostponedEvent<E extends EventObject>
 	public E getEvent();
 
 	/**Fires the postponed event.
-	@exception IllegalStateException if the postponed event has already been fired.
+	@throws IllegalStateException if the postponed event has already been fired.
 	*/
 	public void fireEvent();
 }

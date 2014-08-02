@@ -36,7 +36,7 @@ public class IDCard
 	/**Determines the product from the given Primary Account Number.
 	@param pan The Primary Account Number (PAN).
 	@return The product this PAN represents, or <code>null</code> if a corresponding product could not be determined.
-	@exception NullPointerException if the given PAN is <code>null</code>.
+	@throws NullPointerException if the given PAN is <code>null</code>.
 	*/
 	public final static Product getProduct(final PAN pan)
 	{

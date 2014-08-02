@@ -92,7 +92,7 @@ public class Field<T> extends FieldIdentifier
 	/**Identifier constructor with no prefix.
 	@param identifier Identifier of information transferred between parties defined by the value prefix.
 	@param type The type of value stored in the field.
-	@exception NullPointerException if the given type and/or identifier is <code>null</code>.
+	@throws NullPointerException if the given type and/or identifier is <code>null</code>.
 	*/
 	public Field(final String identifier, final FieldType type)
 	{
@@ -103,7 +103,7 @@ public class Field<T> extends FieldIdentifier
 	@param identifier Identifier of information transferred between parties defined by the value prefix, or of an HTTP header if this field identifier represents a header.
 	@param isHeader <code>true</code> if the identifier represents an HTTP header, else <code>false</code> for normal identifiers.
 	@param type The type of value stored in the field.
-	@exception NullPointerException if the given type and/or identifier is <code>null</code>.
+	@throws NullPointerException if the given type and/or identifier is <code>null</code>.
 	*/
 	public Field(final String identifier, final boolean isHeader, final FieldType type)
 	{
@@ -114,7 +114,7 @@ public class Field<T> extends FieldIdentifier
 	@param prefix The identifier prefix, or <code>null</code> if there is no prefix.
 	@param identifier Identifier of information transferred between parties defined by the value prefix.
 	@param type The type of value stored in the field.
-	@exception NullPointerException if the given type and/or identifier is <code>null</code>.
+	@throws NullPointerException if the given type and/or identifier is <code>null</code>.
 	*/
 	public Field(final FieldIdentifierPrefix prefix, final String identifier, final FieldType type)
 	{
@@ -126,7 +126,7 @@ public class Field<T> extends FieldIdentifier
 	@param identifier Identifier of information transferred between parties defined by the value prefix, or of an HTTP header if this field identifier represents a header.
 	@param isHeader <code>true</code> if the identifier represents an HTTP header, else <code>false</code> for normal identifiers.
 	@param type The type of value stored in the field.
-	@exception NullPointerException if the given type and/or identifier is <code>null</code>.
+	@throws NullPointerException if the given type and/or identifier is <code>null</code>.
 	*/
 	public Field(final FieldIdentifierPrefix prefix, final String identifier, final boolean isHeader, final FieldType type)
 	{

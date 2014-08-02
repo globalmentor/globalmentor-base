@@ -73,7 +73,7 @@ public class DefaultNonce implements Nonce
 		This key must not contain any occurrences of the delimiter.
 	@param time The time stored in the nonce.
 	@param value A random value held by the nonce.
-	@exception IllegalArgumentException if the private key contains an occurrence of the delimiter.
+	@throws IllegalArgumentException if the private key contains an occurrence of the delimiter.
 	*/
 	protected DefaultNonce(final String privateKey, final Date time, final long value) throws IllegalArgumentException
 	{
@@ -89,7 +89,7 @@ public class DefaultNonce implements Nonce
 	/**Creates a nonce from a formatted string.
 	@param string The string containing the nonce.
 	@return A nonce containing values that would generate the same string as the one given.
-	@exception SyntaxException if the given string does not have the correct format for this type of nonce.
+	@throws SyntaxException if the given string does not have the correct format for this type of nonce.
 	*/
 	public DefaultNonce createNonce(final String string) throws SyntaxException
 	{

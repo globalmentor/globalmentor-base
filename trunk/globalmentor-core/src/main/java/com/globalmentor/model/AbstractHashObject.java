@@ -36,7 +36,7 @@ public abstract class AbstractHashObject
 	/**
 	 * Objects constructor.
 	 * @param objects The objects for hashing and equality, any or all of which can be <code>null</code>.
-	 * @exception NullPointerException if the given objects is <code>null</code>
+	 * @throws NullPointerException if the given objects is <code>null</code>
 	 */
 	public AbstractHashObject(final Object... objects)
 	{

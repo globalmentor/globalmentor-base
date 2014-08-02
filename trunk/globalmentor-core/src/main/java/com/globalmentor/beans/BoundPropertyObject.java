@@ -397,7 +397,7 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	@param propertyName The name of the property that is about to change.
 	@param oldValue The old value of the property.
 	@param newValue The new value of the property.
-	@exception PropertyVetoException if the recipient wishes the property change to be rolled back.
+	@throws PropertyVetoException if the recipient wishes the property change to be rolled back.
 	@see #fireVetoableChange(PropertyChangeEvent)
 	@see #hasVetoableChangeListeners(String)
 	@see GenericPropertyChangeEvent
@@ -420,7 +420,7 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	@param propertyName The name of the property that is about to change.
 	@param oldValue The old property value.
 	@param newValue The new property value.
-	@exception PropertyVetoException if the recipient wishes the property change to be rolled back.
+	@throws PropertyVetoException if the recipient wishes the property change to be rolled back.
 	*/
 	protected void fireVetoableChange(final String propertyName, final int oldValue, final int newValue) throws PropertyVetoException
 	{
@@ -436,7 +436,7 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	@param propertyName The name of the property that is about to change.
 	@param oldValue The old property value.
 	@param newValue The new property value.
-	@exception PropertyVetoException if the recipient wishes the property change to be rolled back.
+	@throws PropertyVetoException if the recipient wishes the property change to be rolled back.
 	*/
 	protected void fireVetoableChange(final String propertyName, final boolean oldValue, final boolean newValue) throws PropertyVetoException
 	{
@@ -451,7 +451,7 @@ public class BoundPropertyObject implements PropertyBindable, PropertyConstraina
 	No event is fired if old and new are equal and non-<code>null</code>.
 	This method does the actual delegation to the vetoable change support.
 	@param propertyChangeEvent The event to fire.
-	@exception PropertyVetoException if the recipient wishes the property change to be rolled back.
+	@throws PropertyVetoException if the recipient wishes the property change to be rolled back.
 	*/
 	public void fireVetoableChange(final PropertyChangeEvent propertyChangeEvent) throws PropertyVetoException
 	{

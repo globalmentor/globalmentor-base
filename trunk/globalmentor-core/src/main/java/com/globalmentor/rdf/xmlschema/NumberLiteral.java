@@ -33,7 +33,7 @@ public abstract class NumberLiteral<T extends Number> extends RDFTypedLiteral<T>
 	/**Constructs a typed number literal.
 	@param literalValue The literal value that the lexical form represents.
 	@param literalDatatypeURI The reference URI identifying the datatype of this literal.
-	@exception NullPointerException if the value and/or the datatype URI is <code>null</code>.
+	@throws NullPointerException if the value and/or the datatype URI is <code>null</code>.
 	*/
 	public NumberLiteral(final T literalValue, final URI literalDatatypeURI)
 	{

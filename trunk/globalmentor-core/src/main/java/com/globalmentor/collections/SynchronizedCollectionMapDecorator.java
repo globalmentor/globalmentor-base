@@ -36,7 +36,7 @@ public class SynchronizedCollectionMapDecorator<K, V, C extends Collection<V>> e
 	/**Collection map constructor.
 	The new instance of this class is used as a mutex.
 	@param collectionMap The collection map this collection map should decorate.
-	@exception NullPointerException if the provided collection map is <code>null</code>.
+	@throws NullPointerException if the provided collection map is <code>null</code>.
 	*/
 	public SynchronizedCollectionMapDecorator(final CollectionMap<K, V, C> collectionMap)
 	{
@@ -47,7 +47,7 @@ public class SynchronizedCollectionMapDecorator<K, V, C extends Collection<V>> e
 	/**Collection map constructor.
 	@param collectionMap The collection map this collection map should decorate.
 	@param mutex The mutual exclusion synchronization object.
-	@exception NullPointerException if the provided collection map and/or mutex is <code>null</code>.
+	@throws NullPointerException if the provided collection map and/or mutex is <code>null</code>.
 	*/
 	public SynchronizedCollectionMapDecorator(final CollectionMap<K, V, C> collectionMap, final Object mutex)
 	{

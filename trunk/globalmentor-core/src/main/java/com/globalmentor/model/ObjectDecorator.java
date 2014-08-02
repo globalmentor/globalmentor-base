@@ -29,7 +29,7 @@ public class ObjectDecorator<T> extends AbstractObjectDecorator<T>
 
 	/**Decorated object constructor.
 	@param decoratedObject The object to decorate.
-	@exception NullPointerException if the given object is <code>null</code>.
+	@throws NullPointerException if the given object is <code>null</code>.
 	*/
 	public ObjectDecorator(final T decoratedObject)
 	{

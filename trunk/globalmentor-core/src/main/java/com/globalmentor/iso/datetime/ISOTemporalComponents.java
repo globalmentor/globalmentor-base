@@ -195,7 +195,7 @@ public class ISOTemporalComponents
 	/**
 	 * Date constructor in terms of UTC.
 	 * @param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
-	 * @exception NullPointerException if the given date is <code>null</code>.
+	 * @throws NullPointerException if the given date is <code>null</code>.
 	 */
 	public ISOTemporalComponents(final Date date)
 	{
@@ -293,8 +293,8 @@ public class ISOTemporalComponents
 	 * @param day The day, 1-31.
 	 * @param time The time, or <code>null</code> if there should be no time component (set to midnight).
 	 * @param locale The locale for the calendar.
-	 * @exception NullPointerException if the given time and/or locale is <code>null</code>.
-	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
+	 * @throws NullPointerException if the given time and/or locale is <code>null</code>.
+	 * @throws IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
 	public static GregorianCalendar createCalendar(final int year, final int month, final int day, final ISOTime time, final Locale locale)
 	{
@@ -313,8 +313,8 @@ public class ISOTemporalComponents
 	 * @param microseconds The microseconds, 0-999999
 	 * @param utcOffset The UTC offset, or <code>null</code> if no UTC offset is known.
 	 * @param locale The locale for the calendar.
-	 * @exception NullPointerException if the given locale is <code>null</code>.
-	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
+	 * @throws IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
 	public static GregorianCalendar createCalendar(final int year, final int month, final int day, final int hours, final int minutes, final int seconds,
 			final int microseconds, final ISOUTCOffset utcOffset, final Locale locale)
@@ -333,8 +333,8 @@ public class ISOTemporalComponents
 	 * @param hasDate Whether this lexical representation has a date component.
 	 * @param hasTime Whether this lexical representation has a time component.
 	 * @return The temporal components parsed from the reader.
-	 * @exception NullPointerException if the given string is <code>null</code>.
-	 * @exception SyntaxException if the date/time is not of the correct format.
+	 * @throws NullPointerException if the given string is <code>null</code>.
+	 * @throws SyntaxException if the date/time is not of the correct format.
 	 */
 	static ISOTemporalComponents parseDateTimeUTCOffset(final String string, final boolean hasDate, final boolean hasTime) throws SyntaxException
 	{
@@ -359,8 +359,8 @@ public class ISOTemporalComponents
 	 *          for example.
 	 * @param lenient If the date/time components should be parsed leniently, allowing any non-ambiguous representation of the values.
 	 * @return The temporal components parsed from the reader.
-	 * @exception NullPointerException if the given string is <code>null</code>.
-	 * @exception SyntaxException if the date/time is not of the correct format.
+	 * @throws NullPointerException if the given string is <code>null</code>.
+	 * @throws SyntaxException if the date/time is not of the correct format.
 	 */
 	static ISOTemporalComponents parseDateTimeUTCOffset(final String string, final boolean hasDate, final Boolean hasTime, final boolean allowTimestampFormat,
 			final boolean lenient, final boolean requireDelimiters) throws SyntaxException
@@ -394,10 +394,10 @@ public class ISOTemporalComponents
 	 * @param hasDate Whether this lexical representation has a date component.
 	 * @param hasTime Whether this lexical representation has a time component.
 	 * @return The temporal components parsed from the reader.
-	 * @exception NullPointerException if the given reader is <code>null</code>.
-	 * @exception IOException if there is an error reading from the reader.
-	 * @exception ParseIOException if the reader has no more characters before the current date/time is completely parsed.
-	 * @exception SyntaxException if the date/time is not of the correct format.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
+	 * @throws IOException if there is an error reading from the reader.
+	 * @throws ParseIOException if the reader has no more characters before the current date/time is completely parsed.
+	 * @throws SyntaxException if the date/time is not of the correct format.
 	 */
 	public static ISOTemporalComponents parseDateTimeUTCOffset(final Reader reader, final boolean hasDate, final boolean hasTime) throws IOException,
 			ParseIOException, SyntaxException
@@ -424,10 +424,10 @@ public class ISOTemporalComponents
 	 * @param lenient If the date/time components should be parsed leniently, allowing any non-ambiguous representation of the values.
 	 * @param requireDelimiters Whether delimiters are required.
 	 * @return The temporal components parsed from the reader.
-	 * @exception NullPointerException if the given reader is <code>null</code>.
-	 * @exception IOException if there is an error reading from the reader.
-	 * @exception ParseIOException if the reader has no more characters before the current date/time is completely parsed.
-	 * @exception SyntaxException if the date/time is not of the correct format.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
+	 * @throws IOException if there is an error reading from the reader.
+	 * @throws ParseIOException if the reader has no more characters before the current date/time is completely parsed.
+	 * @throws SyntaxException if the date/time is not of the correct format.
 	 * @see <a href="http://www.ietf.org/rfc/rfc3339.txt">RFC 3339</a>
 	 * @see <a href="http://www.ietf.org/rfc/rfc2518.txt">RFC 2518</a>
 	 * @see <a href="http://www.w3.org/TR/NOTE-datetime">W3C Date and Time Formats</a>

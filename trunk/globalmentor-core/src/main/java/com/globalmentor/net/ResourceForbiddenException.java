@@ -28,7 +28,7 @@ public class ResourceForbiddenException extends ResourceIOException
 
 	/**Constructs a new exception for the specified resource URI.
 	@param resourceURI The URI of the resource to which the exception is related.
-	@exception NullPointerException if the given resource URI is <code>null</code>.
+	@throws NullPointerException if the given resource URI is <code>null</code>.
 	*/
 	public ResourceForbiddenException(final URI resourceURI)
 	{
@@ -38,7 +38,7 @@ public class ResourceForbiddenException extends ResourceIOException
 	/**Constructs a new exception with the specified resource URI and detail message.
 	@param resourceURI The URI of the resource to which the exception is related.
 	@param message The detail message.
-	@exception NullPointerException if the given resource URI is <code>null</code>.
+	@throws NullPointerException if the given resource URI is <code>null</code>.
 	*/
 	public ResourceForbiddenException(final URI resourceURI, final String message)
 	{
@@ -48,7 +48,7 @@ public class ResourceForbiddenException extends ResourceIOException
 	/**Constructs a new exception with the specified resource URI and cause, along with a detail message derived from the cause.
 	@param resourceURI The URI of the resource to which the exception is related.
 	@param cause The cause, or <code>null</code> to indicate the cause is nonexistent or unknown.
-	@exception NullPointerException if the given resource URI is <code>null</code>.
+	@throws NullPointerException if the given resource URI is <code>null</code>.
 	*/
 	public ResourceForbiddenException(final URI resourceURI, final Throwable cause)
 	{
@@ -59,7 +59,7 @@ public class ResourceForbiddenException extends ResourceIOException
 	@param resourceURI The URI of the resource to which the exception is related.
 	@param message The detail message.
 	@param cause The cause, or <code>null</code> to indicate the cause is nonexistent or unknown.
-	@exception NullPointerException if the given resource URI is <code>null</code>.
+	@throws NullPointerException if the given resource URI is <code>null</code>.
 	*/
 	public ResourceForbiddenException(final URI resourceURI, final String message, final Throwable cause)
 	{

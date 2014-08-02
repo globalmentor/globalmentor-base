@@ -35,7 +35,7 @@ public class StringTemplate
 
 	/**Component constructor.
 	@param components The components that make up the template
-	@exception NullPointerException if the given components array or one of the components is <code>null</code>.
+	@throws NullPointerException if the given components array or one of the components is <code>null</code>.
 	*/
 	public StringTemplate(final Object... components)
 	{
@@ -49,9 +49,9 @@ public class StringTemplate
 	/**Applies the given template using the given arguments.
 	@param arguments The arguments to be used when applying the template.
 	@return A string indicating the applied template with the given arguments.
-	@exception NullPointerException if the given arguments array or one of the arguments is <code>null</code>.
-	@exception ArrayIndexOutOfBoundsException if there are insufficient arguments for the parameters of the given template.
-	@exception IllegalArgumentException if there are more arguments than parameters of the given template.
+	@throws NullPointerException if the given arguments array or one of the arguments is <code>null</code>.
+	@throws ArrayIndexOutOfBoundsException if there are insufficient arguments for the parameters of the given template.
+	@throws IllegalArgumentException if there are more arguments than parameters of the given template.
 	*/
 	public String apply(final Object... arguments)
 	{

@@ -95,7 +95,7 @@ public abstract class RDFLiteral implements RDFObject, Comparable<RDFLiteral>
 	@return A negative integer, zero, or a positive integer if the first resource
 		lexical form is less than, equal to, or greater than the lexical form of
 		the second literal, respectively.
-	@exception ClassCastException Thrown if the specified object's type is not
+	@throws ClassCastException Thrown if the specified object's type is not
 		<code>RDFLiteral</code>.
 	@see #getCollator(RDFLiteral)
 	*/

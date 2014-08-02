@@ -47,7 +47,7 @@ public class WriterPrintStream extends PrintStream
 	/**Writer constructor.
 	The stream will not flush automatically when the end of a line is written.
 	@param writer The writer to which values and objects will be printed.
-	@exception NullPointerException if the given writer is <code>null</code>.
+	@throws NullPointerException if the given writer is <code>null</code>.
 	*/
 	public WriterPrintStream(final Writer writer)
 	{
@@ -57,7 +57,7 @@ public class WriterPrintStream extends PrintStream
 	/**Writer and autoflush constructor.
 	@param writer The writer to which values and objects will be printed.
 	@param autoFlush <code>true</code> writer should be flushed whenever a byte array is written, one of the <code>println</code> methods is invoked, or a newline character or byte (<code>'\n'</code>) is written.
-	@exception NullPointerException if the given writer is <code>null</code>.
+	@throws NullPointerException if the given writer is <code>null</code>.
 	*/
 	public WriterPrintStream(final Writer writer, final boolean autoFlush)
 	{

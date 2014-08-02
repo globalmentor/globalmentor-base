@@ -30,7 +30,7 @@ public class ListDecorator<E> extends CollectionDecorator<E> implements List<E>
 
 	/**List constructor.
 	@param list The list this list should decorate.
-	@exception NullPointerException if the provided list is <code>null</code>.
+	@throws NullPointerException if the provided list is <code>null</code>.
 	*/
 	public ListDecorator(final List<E> list)
 	{

@@ -56,7 +56,7 @@ public class CacheFetchEvent<Q, V> extends EventObject
 	@param source The bean that fired the event.
 	@param query The query used to request data from the cache.
 	@param value The fetched value.
-	@exception NullPointerException if the given source, query, and/or value is <code>null</code>.
+	@throws NullPointerException if the given source, query, and/or value is <code>null</code>.
 	*/
 	public CacheFetchEvent(final Cache<Q, V> source, final Q query, final V value)
 	{

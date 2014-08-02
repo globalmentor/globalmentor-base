@@ -71,7 +71,7 @@ public class ListRandomIterator<E> implements Iterator<E>	//TODO fix setRandomOr
 	<p>A default random number generator is used.</p>
 	@param list The list to randomly iterate.
 	@param maxCount The number of elements to return.
-	@exception IllegalArgumentException Thrown if the given maximum count is
+	@throws IllegalArgumentException Thrown if the given maximum count is
 		greater than the allowed range or less than zero.
 	*/
 	public ListRandomIterator(final List<E> list, final int maxCount)
@@ -84,7 +84,7 @@ public class ListRandomIterator<E> implements Iterator<E>	//TODO fix setRandomOr
 	@param list The list to randomly iterate.
 	@param random The random number generator.
 	@param maxCount The number of elements to return.
-	@exception IllegalArgumentException Thrown if the given maximum count is
+	@throws IllegalArgumentException Thrown if the given maximum count is
 		greater than the allowed range or less than zero.
 	*/
 	public ListRandomIterator(final List<E> list, final Random random, final int maxCount)
@@ -133,7 +133,7 @@ public class ListRandomIterator<E> implements Iterator<E>	//TODO fix setRandomOr
 	}
 
 	/**@return The next random element in the iteration.
-	@exception NoSuchElementException Thrown if the iteration has no more elements.
+	@throws NoSuchElementException Thrown if the iteration has no more elements.
 	*/
 	public E next()
 	{
@@ -142,7 +142,7 @@ public class ListRandomIterator<E> implements Iterator<E>	//TODO fix setRandomOr
 
 	/**This implementation does not support element removal, and always throws
 		an exception.
-	@exception UnsupportedOperationException Thrown because the
+	@throws UnsupportedOperationException Thrown because the
 		<code>remove</code> operation is not supported by this iterator.
 	 */
 	public void remove()

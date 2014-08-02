@@ -141,8 +141,8 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * @param reader The reader that contains the lines of the directory.
 	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return An array of locale text objects representing the values.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public static LocaledText[] processTextValueList(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException,
 			ParseIOException
@@ -178,8 +178,8 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * @param reader The reader that contains the lines of the directory.
 	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return An array of strings representing the values.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public static String processTextValue(Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
 	{
@@ -246,8 +246,8 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
 	 * @return A URI object representing the value.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public static URI processURIValue(final Reader reader) throws IOException, ParseIOException
 	{
@@ -309,7 +309,7 @@ public class PredefinedProfile extends AbstractProfile implements ValueFactory, 
 	 * </p>
 	 * @param text The text value to serialize.
 	 * @param writer The writer to which the directory information should be written.
-	 * @exception IOException Thrown if there is an error writing to the directory.
+	 * @throws IOException Thrown if there is an error writing to the directory.
 	 */
 	public void serializeTextValue(final String text, final Writer writer) throws IOException
 	{

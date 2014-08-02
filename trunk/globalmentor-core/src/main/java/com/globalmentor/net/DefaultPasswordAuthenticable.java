@@ -38,7 +38,7 @@ public final class DefaultPasswordAuthenticable extends AbstractAuthenticable
 	<p>The given password is cloned before it is stored in a new {@link PasswordAuthentication} object.</p>
 	@param username The user's username.
 	@param password the user's password.
-	@exception NullPointerException if the given username and/or password is <code>null</code>.
+	@throws NullPointerException if the given username and/or password is <code>null</code>.
 	*/
 	public DefaultPasswordAuthenticable(final String username, final char[] password)
 	{
@@ -47,7 +47,7 @@ public final class DefaultPasswordAuthenticable extends AbstractAuthenticable
 
 	/**Password authentication constructor.
 	@param passwordAuthentication The password authentication to provide.
-	@exception NullPointerException if the given password authentication is <code>null</code>.
+	@throws NullPointerException if the given password authentication is <code>null</code>.
 	*/
 	public DefaultPasswordAuthenticable(final PasswordAuthentication passwordAuthentication)
 	{

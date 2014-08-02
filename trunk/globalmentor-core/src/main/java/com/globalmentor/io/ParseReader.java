@@ -191,7 +191,7 @@ public class ParseReader extends ProcessingBufferedReader	//TODO clean up and un
 		the buffer.
 	@param inReader The reader that contains the data.
 	@param prereadCharacters The characters that have already been read.
-	@exception IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
+	@throws IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
 	@see ProcessingBufferedReader
 	*/
 	public ParseReader(final Reader inReader, final StringBuffer prereadCharacters) throws IOException
@@ -205,7 +205,7 @@ public class ParseReader extends ProcessingBufferedReader	//TODO clean up and un
 		the buffer.
 	@param inReader The reader that contains the data.
 	@param sourceObject The source of the data (e.g. a String, File, or URL).
-	@exception IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
+	@throws IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
 	@see BufferedPushbackReader
 	*/
 	public ParseReader(final Reader inReader, final Object sourceObject) throws IOException
@@ -222,7 +222,7 @@ public class ParseReader extends ProcessingBufferedReader	//TODO clean up and un
 	@param inReader The reader that contains the data.
 	@param prereadCharacters The characters that have already been read.
 	@param sourceObject The source of the data (e.g. a String, File, or URL).
-	@exception IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
+	@throws IOException Thrown if <code>prereadCharacters</code> is too long for the buffer.
 	@see BufferedPushbackReader
 	*/
 	public ParseReader(final Reader inReader, final StringBuffer prereadCharacters, final Object sourceObject) throws IOException

@@ -50,7 +50,7 @@ public class Word extends Entry
 
 	/**@return The part of speech of the word, or <code>null</code> if there is
 		no part of speech.
-	@exception ClassCastException Thrown if the property object is not a plain
+	@throws ClassCastException Thrown if the property object is not a plain
 		literal.
 	*/
 	public RDFPlainLiteral getSpeechPart()
@@ -60,7 +60,7 @@ public class Word extends Entry
 
 	/**@return The gender of the word, or <code>null</code> if there is
 		no gender.
-	@exception ClassCastException Thrown if the property object is not a plain
+	@throws ClassCastException Thrown if the property object is not a plain
 		literal.
 	*/
 	public RDFPlainLiteral getGender()

@@ -32,7 +32,7 @@ public class SynchronizedSetDecorator<E> extends SynchronizedCollectionDecorator
 	/**Set constructor.
 	The new instance of this class is used as a mutex.
 	@param set The set this set should decorate.
-	@exception NullPointerException if the provided set is <code>null</code>.
+	@throws NullPointerException if the provided set is <code>null</code>.
 	*/
 	public SynchronizedSetDecorator(final Set<E> set)
 	{
@@ -43,7 +43,7 @@ public class SynchronizedSetDecorator<E> extends SynchronizedCollectionDecorator
 	/**Set and mutext constructor.
 	@param set The set this set should decorate.
 	@param mutex The mutual exclusion synchronization object.
-	@exception NullPointerException if the provided set and/or mutex is <code>null</code>.
+	@throws NullPointerException if the provided set and/or mutex is <code>null</code>.
 	*/
 	public SynchronizedSetDecorator(final Set<E> set, final Object mutex)
 	{

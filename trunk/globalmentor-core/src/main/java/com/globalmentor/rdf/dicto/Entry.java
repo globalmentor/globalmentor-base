@@ -43,7 +43,7 @@ public abstract class Entry extends TypedRDFResource
 
 	/**@return The definition of the entry, or <code>null</code> if there is
 		no definition.
-	@exception ClassCastException Thrown if the property object is not a plain
+	@throws ClassCastException Thrown if the property object is not a plain
 		literal.
 	*/
 	public RDFPlainLiteral getDefinition()
@@ -53,7 +53,7 @@ public abstract class Entry extends TypedRDFResource
 
 	/**@return The orthography of the entry, or <code>null</code> if there is
 		no orthography.
-	@exception ClassCastException Thrown if the property object is not a plain
+	@throws ClassCastException Thrown if the property object is not a plain
 		literal.
 	*/
 	public RDFPlainLiteral getOrthography()
@@ -77,7 +77,7 @@ public abstract class Entry extends TypedRDFResource
 
 	/**@return The translation of the entry, or <code>null</code> if there is
 		no translation.
-	@exception ClassCastException Thrown if the property object is not a plain
+	@throws ClassCastException Thrown if the property object is not a plain
 		literal.
 	*/
 	public RDFPlainLiteral getTranslation()
@@ -87,7 +87,7 @@ public abstract class Entry extends TypedRDFResource
 
 	/**@return The transliteration of the entry, or <code>null</code> if there is
 		no transliteration.
-	@exception ClassCastException Thrown if the property object is not a plain
+	@throws ClassCastException Thrown if the property object is not a plain
 		literal.
 	*/
 	public RDFPlainLiteral getTransliteration()

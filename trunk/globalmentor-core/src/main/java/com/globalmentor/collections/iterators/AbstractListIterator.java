@@ -51,7 +51,7 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 
 	/**List constructor starting at the first index.
 	@param list The list over which to iterate.
-	@exception NullPointerException if the given list is <code>null</code>.
+	@throws NullPointerException if the given list is <code>null</code>.
 	*/
 	public AbstractListIterator(final List<E> list)
 	{
@@ -61,8 +61,8 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 	/**List and index constructor.
 	@param list The list over which to iterate.
 	@param index The index of first value to be returned from the list iterator (by a call to the {@link #next()} method).
-	@exception NullPointerException if the given list is <code>null</code>.
-	@exception IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt; <code>size()</code>).
+	@throws NullPointerException if the given list is <code>null</code>.
+	@throws IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt; <code>size()</code>).
 	*/
 	public AbstractListIterator(final List<E> list, final int index)
 	{
@@ -128,7 +128,7 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 
 	/**Returns the next element in the list.
 	@return The next element in the list.
-	@exception NoSuchElementException if the iteration has no next element.
+	@throws NoSuchElementException if the iteration has no next element.
 	*/
 	public I next()
 	{
@@ -154,7 +154,7 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 
 	/**Returns the previous element in the list.
 	@return The previous element in the list.
-	@exception NoSuchElementException if the iteration has no previous element.
+	@throws NoSuchElementException if the iteration has no previous element.
 	*/
 	public I previous()
 	{
@@ -185,7 +185,7 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 	}
 
 	/**Removes from the list the last element that was returned by {@link #next()} or {@link #previous()}.
-	@exception IllegalStateException neither {@link #next()} nor {@link #previous()} have been called,
+	@throws IllegalStateException neither {@link #next()} nor {@link #previous()} have been called,
 		or {@link #remove()} or {@link #add(Object)} have been called after the last call to {@link #next()} or {@link #previous()}.
 	*/
 	public void remove()
@@ -212,10 +212,10 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 
 	/**Replaces the last element returned by {@link #next()} or {@link #previous()} with the specified element.
 	@param object The element with which to replace the last element returned by {@link #next()} or {@link #previous()}.
-	@exception UnsupportedOperationException if the {@link #set(Object)} operation is not supported by this list iterator.
-	@exception ClassCastException if the class of the specified element prevents it from being added to this list.
-	@exception IllegalArgumentException if some aspect of the specified element prevents it from being added to this list.
-	@exception IllegalStateException neither {@link #next()} nor {@link #previous()} have been called,
+	@throws UnsupportedOperationException if the {@link #set(Object)} operation is not supported by this list iterator.
+	@throws ClassCastException if the class of the specified element prevents it from being added to this list.
+	@throws IllegalArgumentException if some aspect of the specified element prevents it from being added to this list.
+	@throws IllegalStateException neither {@link #next()} nor {@link #previous()} have been called,
 		or {@link #remove()} or {@link #add(Object)} have been called after the last call to {@link #next()} or {@link #previous()}.
 	 */
 	public void set(final I object)
@@ -246,9 +246,9 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 	call to {@link #next()} would be unaffected, and a subsequent call to {@link #previous()} would return the new element. 
 	(This call increases by one the value that would be returned by a call to {@link #nextIndex()} or {@link #previousIndex()}.)
 	@param object The element to insert.
-	@exception UnsupportedOperationException if the {@link #add(Object)} operation is not supported by this list iterator.
-	@exception ClassCastException if the class of the specified element prevents it from being added to this list.
-	@exception IllegalArgumentException if some aspect of this element prevents it from being added to this list.
+	@throws UnsupportedOperationException if the {@link #add(Object)} operation is not supported by this list iterator.
+	@throws ClassCastException if the class of the specified element prevents it from being added to this list.
+	@throws IllegalArgumentException if some aspect of this element prevents it from being added to this list.
 	*/
 	public void add(final I object)
 	{
@@ -261,7 +261,7 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 	/**Retrieves an item representing the element at the given position in the list.
 	@param index The list index
 	@return An item representing the element at the given index in the list
-	@exception IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt;= <code>size()</code>).
+	@throws IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt;= <code>size()</code>).
 	*/
 	protected abstract I getItem(final int index);
 
@@ -269,16 +269,16 @@ public abstract class AbstractListIterator<I, E> implements ListIterator<I>
 	@param index The list index
 	@param item The item representing the element to be stored at the specified position.
 	@return An item representing the element previously at the specified position.
-	@exception UnsupportedOperationException if the {@link #set(Object)} operation is not supported by this list iterator.
-	@exception IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt;= <code>size()</code>).
+	@throws UnsupportedOperationException if the {@link #set(Object)} operation is not supported by this list iterator.
+	@throws IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt;= <code>size()</code>).
 	*/
 	protected abstract I setItem(final int index, final I item);
 
 	/**Inserts an element at the given position in the list.
 	@param index The list index
 	@param item The item representing the element to be inserted at the specified position.
-	@exception UnsupportedOperationException if the {@link #add(Object)} operation is not supported by this list iterator.
-	@exception IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt; <code>size()</code>).
+	@throws UnsupportedOperationException if the {@link #add(Object)} operation is not supported by this list iterator.
+	@throws IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt; <code>size()</code>).
 	*/
 	protected abstract void addItem(final int index, final I item);
 }

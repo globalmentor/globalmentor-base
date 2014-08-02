@@ -35,7 +35,7 @@ public class RDFSLabelComparator implements Comparator
 	@return A negative integer, zero, or a positive integer if the first resource
 		label is less than, equal to, or greater than the label of the second
 		resource, respectively.
-	@exception ClassCastException Thrown if the specified objects' types are not
+	@throws ClassCastException Thrown if the specified objects' types are not
 		<code>RDFResource</code>.
 	@see RDFS#getLabel(RDFResource)
 	*/

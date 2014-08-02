@@ -344,7 +344,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	/**Removes the property with the given property URI and property value.
 	@param propertyURI The reference URI of the property resource of the property to be removed.
 	@param propertyvalue The value of the property to be removed.
-	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	@throws NullPointerException if the given property URI and/or property value is <code>null</code>.
 	*/
 	public void removeProperty(final URI propertyURI, final RDFObject propertyValue)
 	{
@@ -370,7 +370,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	@param namespaceURI The XML namespace URI that represents part of the reference URI of the property to be removed.
 	@param localName The XML local name that represents part of the reference URI of the property to be removed.
 	@param propertyValue The value of the property to be removed.
-	@exception NullPointerException if the given property URI and/or property value is <code>null</code>.
+	@throws NullPointerException if the given property URI and/or property value is <code>null</code>.
 	*/
 	public void removeProperty(final URI namespaceURI, final String localName, final RDFObject propertyValue)
 	{
@@ -604,7 +604,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	The new resource will use the same RDF data model, if any, of the given resource.
 	All properties will be copied from the given resource to the new one.
 	@param rdfResource The RDF resource from which resources should be copied.
-	@exception NullPointerException if the given resource is <code>null</code>.
+	@throws NullPointerException if the given resource is <code>null</code>.
 	*/
 	public DefaultRDFResource(final RDFResource rdfResource)
 	{
@@ -616,7 +616,7 @@ public class DefaultRDFResource extends BoundPropertyResource implements RDFReso
 	All properties will be copied from the given resource to the new one.
 	@param rdfResource The RDF resource from which resources should be copied.
 	@param referenceURI The reference URI for the new resource.
-	@exception NullPointerException if the given resource is <code>null</code>.
+	@throws NullPointerException if the given resource is <code>null</code>.
 	*/
 	public DefaultRDFResource(final RDFResource rdfResource, final URI referenceURI)
 	{

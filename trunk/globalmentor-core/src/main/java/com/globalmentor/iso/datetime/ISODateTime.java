@@ -49,7 +49,7 @@ public class ISODateTime extends AbstractISODateTime
 	/**
 	 * Temporal component constructor.
 	 * @param temporalcomponents The temporal components from which to construct the class.
-	 * @exception NullPointerException if the given temporal components is <code>null</code>.
+	 * @throws NullPointerException if the given temporal components is <code>null</code>.
 	 */
 	protected ISODateTime(final ISOTemporalComponents temporalComponents)
 	{
@@ -62,8 +62,8 @@ public class ISODateTime extends AbstractISODateTime
 	 * @param month The month, 1-12.
 	 * @param day The day, 1-31.
 	 * @param time The time.
-	 * @exception NullPointerException if the given time is <code>null</code>.
-	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
+	 * @throws NullPointerException if the given time is <code>null</code>.
+	 * @throws IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
 	public ISODateTime(final int year, final int month, final int day, final ISOTime time)
 	{
@@ -81,7 +81,7 @@ public class ISODateTime extends AbstractISODateTime
 	 * @param seconds The seconds, 0-60 (allowing leap-seconds; see ISO 8601:2004(E) 4.2.1).
 	 * @param microseconds The microseconds, 0-999999.
 	 * @param utcOffset The UTC offset, or <code>null</code> if no UTC offset is known.
-	 * @exception IllegalArgumentException if one of the given arguments is outside the allowed range.
+	 * @throws IllegalArgumentException if one of the given arguments is outside the allowed range.
 	 */
 	public ISODateTime(final int year, final int month, final int day, final int hours, final int minutes, final int seconds, final int microseconds,
 			final ISOUTCOffset utcOffset)
@@ -92,7 +92,7 @@ public class ISODateTime extends AbstractISODateTime
 	/**
 	 * Date constructor in terms of UTC.
 	 * @param date The date representing the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC.
-	 * @exception NullPointerException if the given date is <code>null</code>.
+	 * @throws NullPointerException if the given date is <code>null</code>.
 	 */
 	public ISODateTime(final Date date)
 	{
@@ -177,8 +177,8 @@ public class ISODateTime extends AbstractISODateTime
 	 * Returns an ISO date time object holding the value of the specified string.
 	 * @param string The string to be parsed as a date time.
 	 * @return An ISO date time object represented by the string.
-	 * @exception NullPointerException if the given string is <code>null</code>
-	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
+	 * @throws NullPointerException if the given string is <code>null</code>
+	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
 	public static ISODateTime valueOf(final String string) throws ArgumentSyntaxException
 	{
@@ -204,8 +204,8 @@ public class ISODateTime extends AbstractISODateTime
 	 * </p>
 	 * @param string The string to be parsed as a date time.
 	 * @return An ISO date time object represented by the string.
-	 * @exception NullPointerException if the given string is <code>null</code>
-	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
+	 * @throws NullPointerException if the given string is <code>null</code>
+	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
 	public static ISODateTime valueOfLenient(final String string) throws ArgumentSyntaxException
 	{
@@ -232,8 +232,8 @@ public class ISODateTime extends AbstractISODateTime
 	 * </p>
 	 * @param string The string to be parsed as a date time.
 	 * @return An ISO date time object represented by the string.
-	 * @exception NullPointerException if the given string is <code>null</code>
-	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
+	 * @throws NullPointerException if the given string is <code>null</code>
+	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
 	public static ISODateTime valueOfLiberal(final String string) throws ArgumentSyntaxException
 	{
@@ -252,8 +252,8 @@ public class ISODateTime extends AbstractISODateTime
 	 * "W3C Date and Time Formats" as well as portions of WebDAV.
 	 * @param string The string to be parsed as a date time.
 	 * @return An ISO date time object represented by the string.
-	 * @exception NullPointerException if the given string is <code>null</code>
-	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
+	 * @throws NullPointerException if the given string is <code>null</code>
+	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 * @see <a href="http://www.ietf.org/rfc/rfc3339.txt">RFC 3339</a>
 	 * @see <a href="http://www.ietf.org/rfc/rfc2518.txt">RFC 2518</a>
 	 * @see <a href="http://www.w3.org/TR/NOTE-datetime">W3C Date and Time Formats</a>

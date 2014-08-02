@@ -30,7 +30,7 @@ public interface GenericVetoableChangeListener<V> extends VetoableChangeListener
 
 	/**Called when a constrained property is changed.
 	@param genericPropertyChangeEvent An event object describing the event source, the property that is changing, and its old and new values.
-	@exception PropertyVetoException if the recipient wishes the property change to be rolled back.
+	@throws PropertyVetoException if the recipient wishes the property change to be rolled back.
 	*/
 	public void vetoableChange(final GenericPropertyChangeEvent<V> genericPropertyChangeEvent) throws PropertyVetoException; 
 }

@@ -72,7 +72,7 @@ public interface ModelViewable
 
 	/**Sets the view of the data.
 	@param newView The view of the data, such as <code>SUMMARY_MODEL_VIEW</code>.
-	@exception IllegalArgumentException Thrown if the given view is not supported.
+	@throws IllegalArgumentException Thrown if the given view is not supported.
 	*/
 	public void setModelView(final int newView);
 }

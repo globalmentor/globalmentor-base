@@ -40,7 +40,7 @@ public class URILiteral extends RDFTypedLiteral<URI>
 
 	/**Constructs a URI literal from a lexical value.
 	@param lexicalForm The lexical form of the URI value.
-	@exception URISyntaxException if the given string does not represent a valid URI.
+	@throws URISyntaxException if the given string does not represent a valid URI.
 	*/
 	public URILiteral(final String lexicalForm) throws URISyntaxException
 	{

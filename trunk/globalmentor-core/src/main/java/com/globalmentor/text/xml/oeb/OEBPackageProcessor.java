@@ -70,7 +70,7 @@ public class OEBPackageProcessor
 		will be converted to an XEbook.
 	@param packageInputStream The input stream containing the package information.
 	@return The RDF data model of the package information.
-	@exception IOException Thrown if there is an error reading the package
+	@throws IOException Thrown if there is an error reading the package
 		information from the input stream.
 	*/
 	//TODO add error reporting to this code
@@ -86,7 +86,7 @@ public class OEBPackageProcessor
 	@param packageURI The URI to the package information, or <code>null</code> if
 		the package URI is not available.
 	@return The RDF data model of the package information.
-	@exception IOException Thrown if there is an error reading the package
+	@throws IOException Thrown if there is an error reading the package
 		information from the input stream.
 	*/
 	//TODO add error reporting to this code
@@ -127,7 +127,7 @@ public class OEBPackageProcessor
 	@param oeb1PackageDocument The XML document containing the OEB 1.x package
 		information.
 	@return An RDF data model containing the converted publication resource.
-	@exception URISyntaxException Thrown if any of the URIs in the document are invalid.
+	@throws URISyntaxException Thrown if any of the URIs in the document are invalid.
 	*/
 	protected RDF convertOEB1Package(final RDF rdf, final Document oeb1PackageDocument) throws URISyntaxException
 	{

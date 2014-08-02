@@ -169,7 +169,7 @@ public class XMLStorage
 	@param defaultValue The value to use if the value cannot be found in the document.
 	@return The actual object retrieved, which will be either the value from the
 		document or, if the value did not exist in the document, the default value.
-	@exception IOException Thrown if <code>object</code> has no
+	@throws IOException Thrown if <code>object</code> has no
 		<code>set<em>name</em>()</code> method or <code>type</code> has no
 		<code>valueOf(String)</code> method. This is thrown in place of such exceptions
 		as java.lang.reflect.InvocationTargetException and java.lang.NoSuchMethodException.
@@ -273,7 +273,7 @@ public class XMLStorage
 		<code>type</code> must have a static <code>valueOf(String)</code> function.
 	@return The actual object retrieved, which will be either the value from the
 		document or, if the value did not exist in the document, the default value.
-	@exception IOException Thrown if <code>object</code> has no
+	@throws IOException Thrown if <code>object</code> has no
 		<code>set<em>name</em>()</code> method or <code>type</code> has no
 		<code>valueOf(String)</code> method. This is thrown in place of such exceptions
 		as java.lang.reflect.InvocationTargetException and java.lang.NoSuchMethodException;
@@ -505,7 +505,7 @@ Log.trace("using element: ", element.getNodeName());  //TODO del
 	/**Stores the given object as an XML document in the specified output stream.
 	@param object The object to be stored; must not be <code>null</code>.
 	@param outputStream The output stream to which the object should be written.
-	@exception IOException Thrown if there is an error writing to the output stream.
+	@throws IOException Thrown if there is an error writing to the output stream.
 	*/
 	protected static void store(final Object object, final OutputStream outputStream) throws IOException
 	{
@@ -528,14 +528,14 @@ Log.trace("using element: ", element.getNodeName());  //TODO del
 		input stream.
 	@param inputStream The source of the XML document in which the object is stored.
 	@param type The type of object stored in the XML document.
-	@exception IOException Thrown if there is an error reading from the input stream.
-	@exception InstantiationException Thrown if an instance of the given object
+	@throws IOException Thrown if there is an error reading from the input stream.
+	@throws InstantiationException Thrown if an instance of the given object
 		type could not be created.
-	@exception IllegalAccessException Thrown if the application cannot access the
+	@throws IllegalAccessException Thrown if the application cannot access the
 		given object type.
-	@exception InvocationTargetException Thrown if the object constructor throws
+	@throws InvocationTargetException Thrown if the object constructor throws
 		an exception.
-	@exception NoSuchMethodException Thrown if an initialization method, if
+	@throws NoSuchMethodException Thrown if an initialization method, if
 		needed, could not be found for the class.
 	*/
 	public static Object retrieve(final InputStream inputStream, final Class type) throws FileNotFoundException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
@@ -549,14 +549,14 @@ Log.trace("using element: ", element.getNodeName());  //TODO del
 	@param sourceObject An object (such as a <code>URL</code> or <code>File</code)
 		representing the source of the document.
 	@param type The type of object stored in the XML document.
-	@exception IOException Thrown if there is an error reading from the input stream.
-	@exception InstantiationException Thrown if an instance of the given object
+	@throws IOException Thrown if there is an error reading from the input stream.
+	@throws InstantiationException Thrown if an instance of the given object
 		type could not be created.
-	@exception IllegalAccessException Thrown if the application cannot access the
+	@throws IllegalAccessException Thrown if the application cannot access the
 		given object type.
-	@exception InvocationTargetException Thrown if the object constructor throws
+	@throws InvocationTargetException Thrown if the object constructor throws
 		an exception.
-	@exception NoSuchMethodException Thrown if an initialization method, if
+	@throws NoSuchMethodException Thrown if an initialization method, if
 		needed, could not be found for the class.
 	*/
 	protected static Object retrieve(final InputStream inputStream, final Object sourceObject, final Class type) throws IOException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
@@ -579,15 +579,15 @@ Log.trace("using element: ", element.getNodeName());  //TODO del
 		file.
 	@param file The file in which the object is stored.
 	@param type The type of object stored in the XML document.
-	@exception FileNotFoundException Thrown if the specified file does not exist.
-	@exception IOException Thrown if there is an error reading from the file.
-	@exception InstantiationException Thrown if an instance of the given object
+	@throws FileNotFoundException Thrown if the specified file does not exist.
+	@throws IOException Thrown if there is an error reading from the file.
+	@throws InstantiationException Thrown if an instance of the given object
 		type could not be created.
-	@exception IllegalAccessException Thrown if the application cannot access the
+	@throws IllegalAccessException Thrown if the application cannot access the
 		given object type.
-	@exception InvocationTargetException Thrown if the object constructor throws
+	@throws InvocationTargetException Thrown if the object constructor throws
 		an exception.
-	@exception NoSuchMethodException Thrown if an initialization method, if
+	@throws NoSuchMethodException Thrown if an initialization method, if
 		needed, could not be found for the class.
 	*/
 	public static Object retrieve(final File file, final Class type) throws FileNotFoundException, IOException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
@@ -600,15 +600,15 @@ Log.trace("using element: ", element.getNodeName());  //TODO del
 	@param file The file in which the object is stored.
 	@param type The type of object stored in the XML document.
 	@param useBackup Whether a backup file should be used if the file doesn't exist.
-	@exception FileNotFoundException Thrown if the specified file does not exist.
-	@exception IOException Thrown if there is an error reading from the file.
-	@exception InstantiationException Thrown if an instance of the given object
+	@throws FileNotFoundException Thrown if the specified file does not exist.
+	@throws IOException Thrown if there is an error reading from the file.
+	@throws InstantiationException Thrown if an instance of the given object
 		type could not be created.
-	@exception IllegalAccessException Thrown if the application cannot access the
+	@throws IllegalAccessException Thrown if the application cannot access the
 		given object type.
-	@exception InvocationTargetException Thrown if the object constructor throws
+	@throws InvocationTargetException Thrown if the object constructor throws
 		an exception.
-	@exception NoSuchMethodException Thrown if an initialization method, if
+	@throws NoSuchMethodException Thrown if an initialization method, if
 		needed, could not be found for the class.
 	@see Files#checkExists
 	*/
@@ -630,8 +630,8 @@ Log.trace("using element: ", element.getNodeName());  //TODO del
 	/**Stores the given object in the file as an XML document.
 	@param object The object to store.
 	@param file The file in which the object should be stored.
-	@exception FileNotFoundException Thrown if the specified file is invalid.
-	@exception IOException Thrown if there is an error writing to the file.
+	@throws FileNotFoundException Thrown if the specified file is invalid.
+	@throws IOException Thrown if there is an error writing to the file.
 	*/
 	public static void store(final Object object, final File file) throws FileNotFoundException, IOException
 	{
@@ -645,8 +645,8 @@ Log.trace("using element: ", element.getNodeName());  //TODO del
 	@param object The object to store.
 	@param file The file in which the object should be stored.
 	@param createBackup Whether existing files should be saved in a backup file.
-	@exception FileNotFoundException Thrown if the specified file is invalid.
-	@exception IOException Thrown if there is an error writing to the file.
+	@throws FileNotFoundException Thrown if the specified file is invalid.
+	@throws IOException Thrown if there is an error writing to the file.
 	*/  //TODO add a boolean return value which has the status of the actual file move
 	public static void store(final Object object, final File file, final boolean createBackup) throws FileNotFoundException, IOException
 	{
@@ -670,14 +670,14 @@ Log.trace("Storing in file: ", file); //TODO del
 	@param document The document that holds the information about the object.
 	@param objectClass The class for which an instance should be created.
 	@return An instance of the object class constructed from the given document.
-	@exception IllegalAccessException Thrown if the class or initializer of the
+	@throws IllegalAccessException Thrown if the class or initializer of the
 		object is not accessible.
-	@exception InstantiationException Thrown if the class represents an abstract
+	@throws InstantiationException Thrown if the class represents an abstract
 		class, an interface, an array class, a primitive type, or void; or if the
 		instantiation fails for some other reason.
-	@exception InvocationTargetException Thrown if the object constructor throws
+	@throws InvocationTargetException Thrown if the object constructor throws
 		an exception.
-	@exception NoSuchMethodException Thrown if an initialization method, if
+	@throws NoSuchMethodException Thrown if an initialization method, if
 		needed, could not be found for the class.
 	*/
 	public static Object retrieve(final Document document, final Class objectClass) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException
@@ -692,14 +692,14 @@ Log.trace("Storing in file: ", file); //TODO del
 	@return An instance of the object class constructed from the given element;
 		<code>null</code> may be returned if the stored object value was
 		<code>null</code>.
-	@exception IllegalAccessException Thrown if the class or initializer of the
+	@throws IllegalAccessException Thrown if the class or initializer of the
 		object is not accessible.
-	@exception InstantiationException Thrown if the class represents an abstract
+	@throws InstantiationException Thrown if the class represents an abstract
 		class, an interface, an array class, a primitive type, or void; or if the
 		instantiation fails for some other reason.
-	@exception InvocationTargetException Thrown if the object constructor throws
+	@throws InvocationTargetException Thrown if the object constructor throws
 		an exception.
-	@exception NoSuchMethodException Thrown if an initialization method, if
+	@throws NoSuchMethodException Thrown if an initialization method, if
 		needed, could not be found for the class.
 	*/
 	protected static Object retrieve(final Element element, final Class objectClass) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException
@@ -887,10 +887,10 @@ Log.trace("has one parameter of type: ", parameterType.getName());
 	@param element The element which contains initialization information for the
 		object.
 	@param type The type of class to create, which must have a default constructor.
-	@exception IllegalAccessException Thrown if the constructor could not be accessed.
-	@exception InstantiationException Thrown if there was an error creating the object.
-	@exception InvocationTargetException Thrown if the constructor throws an exception.
-	@exception NoSuchMethodException Thrown if an initialization method, if
+	@throws IllegalAccessException Thrown if the constructor could not be accessed.
+	@throws InstantiationException Thrown if there was an error creating the object.
+	@throws InvocationTargetException Thrown if the constructor throws an exception.
+	@throws NoSuchMethodException Thrown if an initialization method, if
 		needed, could not be found for the class.
 	*/
 	protected static Object createObject(final Element element, final Class type) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException
@@ -927,10 +927,10 @@ Log.trace("has one parameter of type: ", parameterType.getName());
 		appropriate for a <code>set</code> metehod, for initializing the object
 		in a constructor.
 	@return An object created from the appropriate constructor.
-	@exception IllegalAccessException Thrown if the constructor could not be accessed.
-	@exception InstantiationException Thrown if there was an error creating the object.
-	@exception InvocationTargetException Thrown if the constructor throws an exception.
-	@exception NoSuchMethodException Thrown if the given constructor could not be found
+	@throws IllegalAccessException Thrown if the constructor could not be accessed.
+	@throws InstantiationException Thrown if there was an error creating the object.
+	@throws InvocationTargetException Thrown if the constructor throws an exception.
+	@throws NoSuchMethodException Thrown if the given constructor could not be found
 		for the class.
 	*/
 	protected static Object createObject(final Element element, final Class type, final Class[] constructorParameterTypes, final String[] constructorPropertyNames) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException
@@ -986,10 +986,10 @@ Log.trace("has one parameter of type: ", parameterType.getName());
 		appropriate for a <code>set</code> method, for initializing the object
 		in a constructor.
 	@return An object created and initialized from the appropriate method.
-	@exception IllegalAccessException Thrown if the constructor could not be accessed.
-	@exception InstantiationException Thrown if there was an error creating the object.
-	@exception InvocationTargetException Thrown if the constructor throws an exception.
-	@exception NoSuchMethodException Thrown if the given method could not be found
+	@throws IllegalAccessException Thrown if the constructor could not be accessed.
+	@throws InstantiationException Thrown if there was an error creating the object.
+	@throws InvocationTargetException Thrown if the constructor throws an exception.
+	@throws NoSuchMethodException Thrown if the given method could not be found
 		for the class.
 	*/
 	protected static Object createObject(final Element element, final Class type, final String methodName, final Class[] methodParameterTypes, final String[] methodPropertyNames) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException
@@ -1076,7 +1076,7 @@ Log.trace("Initialized object: ", object);  //TODO del
 	@return An object representing the value of the property, created from the
 		information in the element; this value may be <code>null</code>, based upon
 		the value stored in the element.
-	@exception InstantiationException Thrown if a value could not be created for
+	@throws InstantiationException Thrown if a value could not be created for
 		the property from the information in the element.
 	*/
 	protected static Object getProperty(final Element element, final String propertyName, final Class propertyType) throws InstantiationException
@@ -1125,7 +1125,7 @@ Log.trace("Initialized object: ", object);  //TODO del
 	@param type The type of object which should represent the given string value.
 	@return An object of the appropriate type representing the given string value,
 		which may be null, based upon the value.
-	@exception InstantiationException Thrown if the object cannot be created for
+	@throws InstantiationException Thrown if the object cannot be created for
 		some reason.
 	@see NULL_STRING
 	*/

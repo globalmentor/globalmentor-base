@@ -47,7 +47,7 @@ public class Integers
 	@param string The string containing the integer value, which may or may not
 		have a decimal point, but if it does the decimal should be followed by zeros.
 	@return The integer value represented by the string.
-	@exception NumberFormatException Thrown if the string does not contain a
+	@throws NumberFormatException Thrown if the string does not contain a
 		parsable integer.
 	@see Integer#parseInt(String)
 	*/
@@ -95,7 +95,7 @@ public class Integers
 	@param ordinal The string containing an ordinal value, such as "first" or
 		"second".
 	@return The 1-based order of the string.
-	@exception NumberFormatException Thrown if the given string does not contain
+	@throws NumberFormatException Thrown if the given string does not contain
 		a valid ordinal value.
 	*/
 	public static int parseOrdinal(final String ordinal) throws NumberFormatException

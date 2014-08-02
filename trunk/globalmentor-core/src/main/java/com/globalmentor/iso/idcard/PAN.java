@@ -92,8 +92,8 @@ public class PAN implements Comparable<PAN>
 
 	/**String constructor.
 	@param pan The string representation of the primary account number.
-	@exception NullPointerException if the given primary account number string is <code>null</code>.
-	@exception SyntaxException if the string is less than {@value #MIN_PAN_LENGTH} in length, one of the components of the account number is not valid, and/or if the components do not match the ending check digit.
+	@throws NullPointerException if the given primary account number string is <code>null</code>.
+	@throws SyntaxException if the string is less than {@value #MIN_PAN_LENGTH} in length, one of the components of the account number is not valid, and/or if the components do not match the ending check digit.
 	*/
 /*TODO fix
 	public PrimaryAccountNumber(final String pan) throws SyntaxException
@@ -115,7 +115,7 @@ public class PAN implements Comparable<PAN>
 	/**Account number constructor.
 	This constructor is not reliable if a PAN has an IIN with one or more leading zeros. 
 	@param pan The primary account number value.
-	@exception ArgumentSyntaxException if the string form of the PAN is less than {@value #MIN_PAN_LENGTH} in length, one of the components of the account number is not valid, and/or if the components do not match the ending check digit.
+	@throws ArgumentSyntaxException if the string form of the PAN is less than {@value #MIN_PAN_LENGTH} in length, one of the components of the account number is not valid, and/or if the components do not match the ending check digit.
 	*/
 	public PAN(final int pan) throws ArgumentSyntaxException
 	{
@@ -124,8 +124,8 @@ public class PAN implements Comparable<PAN>
 		
 	/**Character sequence constructor.
 	@param pan The primary account number representation.
-	@exception NullPointerException if the given primary account number string is <code>null</code>.
-	@exception ArgumentSyntaxException if the string is less than {@value #MIN_PAN_LENGTH} in length, one of the components of the account number is not valid, and/or if the components do not match the ending check digit.
+	@throws NullPointerException if the given primary account number string is <code>null</code>.
+	@throws ArgumentSyntaxException if the string is less than {@value #MIN_PAN_LENGTH} in length, one of the components of the account number is not valid, and/or if the components do not match the ending check digit.
 	*/
 	public PAN(final CharSequence pan) throws ArgumentSyntaxException
 	{
@@ -138,11 +138,11 @@ public class PAN implements Comparable<PAN>
 	@param iin The Issuer Identification Number (IIN); six digits beginning with the Major Industry Identifier (MII). 
 	@param iai The individual account identification; a maximum of 12 digits.
 	@param checkDigit The check digit.
-	@exception NullPointerException if the given IIN and/or individual account identification is <code>null</code>.
-	@exception ArgumentSyntaxException if the given IIN is not {@value #IIN_LENGTH} digits in length and/or is not composed solely of Latin digits.
-	@exception ArgumentSyntaxException if the given individual account identification is more than {@value #MAX_IAD_LENGTH} digits in length and/or is not composed solely of Latin digits.
-	@exception ArgumentSyntaxException if the given check digit is not a Latin digit.
-	@exception ArgumentSyntaxException if the provided check digit is not the appropriate check digit for this primary account number.
+	@throws NullPointerException if the given IIN and/or individual account identification is <code>null</code>.
+	@throws ArgumentSyntaxException if the given IIN is not {@value #IIN_LENGTH} digits in length and/or is not composed solely of Latin digits.
+	@throws ArgumentSyntaxException if the given individual account identification is more than {@value #MAX_IAD_LENGTH} digits in length and/or is not composed solely of Latin digits.
+	@throws ArgumentSyntaxException if the given check digit is not a Latin digit.
+	@throws ArgumentSyntaxException if the provided check digit is not the appropriate check digit for this primary account number.
 	*/
 	public PAN(final CharSequence iin, final CharSequence iai, final char checkDigit) throws ArgumentSyntaxException
 	{

@@ -77,7 +77,7 @@ public enum SIPrefix implements Named<String>
 	 * @param name The prefix name.
 	 * @param symbol The prefix symbol.
 	 * @param factorPower The power of the prefix factor with 10 as the base.
-	 * @exception NullPointerException if the given symbol is <code>null</code>.
+	 * @throws NullPointerException if the given symbol is <code>null</code>.
 	 */
 	private SIPrefix(final String name, final String symbol, final int factorPower)
 	{

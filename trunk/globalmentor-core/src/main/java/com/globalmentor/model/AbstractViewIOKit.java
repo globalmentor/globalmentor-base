@@ -68,7 +68,7 @@ public abstract class AbstractViewIOKit<M> extends DefaultURIAccessible implemen
 	<p>This version opens a stream and delegates to <code>load(View, InputStream, URI)</code>.</p>
 		@param view The view into which the data should be loaded.
 	@param uri The URI that identifies the resource to be loaded.
-	@exception IOException Thrown if there is an error reading the data.
+	@throws IOException Thrown if there is an error reading the data.
 	*/
 	public void load(final ModelView<M> view, final URI uri) throws IOException
 	{
@@ -93,7 +93,7 @@ public abstract class AbstractViewIOKit<M> extends DefaultURIAccessible implemen
 	<p>This version opens a stream and delegates to <code>save(View, OutputStream)</code>.</p>
 	@param view The view the data of which will be saved at the given URI.
 	@param uri The URI at which the view data should be saved.
-	@exception IOException Thrown if there is an error writing the data.
+	@throws IOException Thrown if there is an error writing the data.
 	@see com.globalmentor.model.Modifiable
 	@see Verifiable#verify()
 	*/

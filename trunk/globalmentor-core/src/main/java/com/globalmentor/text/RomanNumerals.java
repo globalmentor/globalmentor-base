@@ -61,7 +61,7 @@ public class RomanNumerals
 	/**Parses the given Roman numerals and returns their integer value.
 	@param romanNumerals The characters representing the Roman numerals.
 	@return The value of the Roman numerals.
-	@exception NumberFormatException Thrown if the given string does not contain
+	@throws NumberFormatException Thrown if the given string does not contain
 		a valid Roman numeral value.
 	*/
 	public static int parseRomanNumerals(final String romanNumerals)

@@ -39,7 +39,7 @@ public class DecoratorIDedMappedList<K, E extends IDed<K>> extends ListDecorator
 	Any values already present in the list will be mapped.
 	@param map The map which stores the ID to list item associations.
 	@param list The list in which to store the list items.
-	@exception IllegalArgumentException if more than one item with the same
+	@throws IllegalArgumentException if more than one item with the same
 		ID exists in the list.
 	*/
 	public DecoratorIDedMappedList(final Map<K, E> map, final List<E> list)

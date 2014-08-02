@@ -158,7 +158,7 @@ public class DirectoryProcessor
 	/**
 	 * Removes the profile from the top of the stack. Suspends the currently set profile, if any.
 	 * @return The profile from the top of the stack.
-	 * @exception NoSuchElementException Thrown if there are no more profiles on the stack.
+	 * @throws NoSuchElementException Thrown if there are no more profiles on the stack.
 	 */
 	protected String popProfile()
 	{
@@ -197,8 +197,8 @@ public class DirectoryProcessor
 	 * @param reader The reader that contains the lines of the directory.
 	 * @param sourceObject The source of the data (e.g. a <code>String</code>, <code>File</code>, <code>URL</code>, or <code>URI</code>).
 	 * @return An object representing the directory.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public Directory processDirectory(final Reader reader, final Object sourceObject) throws IOException, ParseIOException //TODO remove sourceObject
 	{
@@ -210,8 +210,8 @@ public class DirectoryProcessor
 	 * used to create the directory object. Otherwise, the predefined profile will be used to create a default directory object containing the content lines.
 	 * @param reader The reader that contains the lines of the directory.
 	 * @return An object representing the directory.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public Directory processDirectory(final Reader reader) throws IOException, ParseIOException
 	{
@@ -242,8 +242,8 @@ public class DirectoryProcessor
 	 * Retrieves content lines from a directory of type <code>text/directory</code>.
 	 * @param reader The reader that contains the lines of the directory.
 	 * @return An array of content lines in the directory.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public ContentLine[] processContentLines(final Reader reader) throws IOException, ParseIOException
 	{
@@ -309,8 +309,8 @@ public class DirectoryProcessor
 	 * @param reader The reader that contains the lines of the directory.
 	 * @return A one or more content lines from the directory (an empty array if the line contained only whitespace), or <code>null</code> if there are no more
 	 *         content lines.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public ContentLine[] processContentLine(final Reader reader) throws IOException, ParseIOException
 	{
@@ -412,8 +412,8 @@ public class DirectoryProcessor
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
 	 * @param The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 * @see NameValuePair
 	 */
 	public List<NameValuePair<String, String>> processParameters(final Reader reader) throws IOException, ParseIOException
@@ -485,8 +485,8 @@ public class DirectoryProcessor
 	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @param reader The reader that contains the lines of the directory.
 	 * @return An array of objects represent the value string.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 * @see NameValuePair
 	 */
 	protected Object[] processValue(final String profileName, final String group, final String name, final List<NameValuePair<String, String>> paramList,

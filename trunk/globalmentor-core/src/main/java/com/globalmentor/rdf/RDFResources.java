@@ -136,7 +136,7 @@ public class RDFResources
 	@param namespaceURI The RDF namespace URI used in the serialization.
 	@param localName The RDF local name used in the serialization.
 	@return An RDF reference URI constructed from the given namespace and local name.
-	@exception NullPointerException if the given namespace URI and/or local name is <code>null</code>.
+	@throws NullPointerException if the given namespace URI and/or local name is <code>null</code>.
 	*/
 	public static URI createReferenceURI(final URI namespaceURI, final String localName) //TODO del if not needed throws URISyntaxException	//TODO del if not needed with QualifiedName.createReferenceURI
 	{
@@ -393,7 +393,7 @@ public class RDFResources
 	@param resource The resource the type of which will be returned.
 	@return The type value of the resource, or <code>null</code> if the resource
 		has no type specified.
-	@exception ClassCastException Thrown if the resource type property value is
+	@throws ClassCastException Thrown if the resource type property value is
 		not a <code>RDFResource</code> (such as a <code>RDFLiteral</code>), which would
 		indicate that an incorrect value has been stored for the type.
 	*/

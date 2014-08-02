@@ -34,7 +34,7 @@ public class IteratorDecorator<E> implements Iterator<E>
 	
 	/**Iterator constructor.
 	@param iterator The iterator this iterator should decorate.
-	@exception NullPointerException if the given iterator is <code>null</code>.
+	@throws NullPointerException if the given iterator is <code>null</code>.
 	*/
 	public IteratorDecorator(final Iterator<E> iterator)
 	{

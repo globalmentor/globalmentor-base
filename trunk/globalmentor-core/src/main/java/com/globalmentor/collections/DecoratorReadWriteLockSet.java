@@ -31,7 +31,7 @@ public class DecoratorReadWriteLockSet<E> extends DecoratorReadWriteLockCollecti
 
 	/**Set constructor with a default reentrant read/write lock.
 	@param set The set this set should decorate.
-	@exception NullPointerException if the provided set is <code>null</code>.
+	@throws NullPointerException if the provided set is <code>null</code>.
 	*/
 	public DecoratorReadWriteLockSet(final Set<E> set)
 	{
@@ -41,7 +41,7 @@ public class DecoratorReadWriteLockSet<E> extends DecoratorReadWriteLockCollecti
 	/**Set and read/write lock constructor.
 	@param set The set this set should decorate.
 	@param lock The lock for controlling access to the set.
-	@exception NullPointerException if the provided set and/or lock is <code>null</code>.
+	@throws NullPointerException if the provided set and/or lock is <code>null</code>.
 	*/
 	public DecoratorReadWriteLockSet(final Set<E> set, final ReadWriteLock lock)
 	{

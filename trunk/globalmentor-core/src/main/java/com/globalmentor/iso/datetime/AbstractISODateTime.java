@@ -118,8 +118,8 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	 * </p>
 	 * @param string The string to be parsed as a date time.
 	 * @return An ISO date time object represented by the string.
-	 * @exception NullPointerException if the given string is <code>null</code>
-	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
+	 * @throws NullPointerException if the given string is <code>null</code>
+	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
 	public static AbstractISODateTime valueOfLenient(final String string) throws ArgumentSyntaxException
 	{
@@ -148,8 +148,8 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	 * </p>
 	 * @param string The string to be parsed as a date time.
 	 * @return An ISO date time object represented by the string.
-	 * @exception NullPointerException if the given string is <code>null</code>
-	 * @exception ArgumentSyntaxException if the given string does not have the correct syntax.
+	 * @throws NullPointerException if the given string is <code>null</code>
+	 * @throws ArgumentSyntaxException if the given string does not have the correct syntax.
 	 */
 	public static AbstractISODateTime valueOfLiberal(final String string) throws ArgumentSyntaxException
 	{
@@ -178,7 +178,7 @@ public abstract class AbstractISODateTime extends Time implements ISOTemporal
 	 * Returns a calendar representing this date and time. If this object has no time information, midnight UTC will be assumed.
 	 * @param locale The locale for which a calendar should be returned.
 	 * @return A calendar representing this date time in the given locale.
-	 * @exception NullPointerException if the given locale is <code>null</code>.
+	 * @throws NullPointerException if the given locale is <code>null</code>.
 	 */
 	public GregorianCalendar toCalendar(final Locale locale)
 	{

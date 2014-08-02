@@ -38,7 +38,7 @@ public abstract class AbstractPurgeOnWriteReferenceValueMap<K, V, R extends Refe
 
 	/**Decorated map constructor.
 	@param map The map being decorated.
-	@exception NullPointerException if the given map is <code>null</code>.
+	@throws NullPointerException if the given map is <code>null</code>.
 	*/
 	public AbstractPurgeOnWriteReferenceValueMap(final Map<K, R> map)
 	{

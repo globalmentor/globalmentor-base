@@ -45,7 +45,7 @@ public class FieldIdentifier
 
 	/**Identifier constructor with no prefix.
 	@param identifier Identifier of information transferred between parties defined by the value prefix.
-	@exception NullPointerException if the given identifier is <code>null</code>.
+	@throws NullPointerException if the given identifier is <code>null</code>.
 	*/
 	public FieldIdentifier(final String identifier)
 	{
@@ -55,7 +55,7 @@ public class FieldIdentifier
 	/**Identifier/header constructor with no prefix.
 	@param identifier Identifier of information transferred between parties defined by the value prefix, or of an HTTP header if this field identifier represents a header.
 	@param isHeader <code>true</code> if the identifier represents an HTTP header, else <code>false</code> for normal identifiers.
-	@exception NullPointerException if the given identifier is <code>null</code>.
+	@throws NullPointerException if the given identifier is <code>null</code>.
 	*/
 	public FieldIdentifier(final String identifier, final boolean isHeader)
 	{
@@ -65,7 +65,7 @@ public class FieldIdentifier
 	/**Prefix and identifier constructor.
 	@param prefix The identifier prefix, or <code>null</code> if there is no prefix.
 	@param identifier Identifier of information transferred between parties defined by the value prefix.
-	@exception NullPointerException if the given identifier is <code>null</code>.
+	@throws NullPointerException if the given identifier is <code>null</code>.
 	*/
 	public FieldIdentifier(final FieldIdentifierPrefix prefix, final String identifier)
 	{
@@ -76,7 +76,7 @@ public class FieldIdentifier
 	@param prefix The identifier prefix, or <code>null</code> if there is no prefix.
 	@param identifier Identifier of information transferred between parties defined by the value prefix, or of an HTTP header if this field identifier represents a header.
 	@param isHeader <code>true</code> if the identifier represents an HTTP header, else <code>false</code> for normal identifiers.
-	@exception NullPointerException if the given identifier is <code>null</code>.
+	@throws NullPointerException if the given identifier is <code>null</code>.
 	*/
 	public FieldIdentifier(final FieldIdentifierPrefix prefix, final String identifier, final boolean isHeader)
 	{

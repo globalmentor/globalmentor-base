@@ -31,7 +31,7 @@ public abstract class AbstractGenericVetoableChangeListener<V> implements Generi
 	/**Called when a constrained property is changed.
 	This not-generics version calls the generic version, creating a new event if necessary.
 	@param propertyChangeEvent An event object describing the event source, the property that is changing, and its old and new values.
-	@exception PropertyVetoException if the recipient wishes the property change to be rolled back.
+	@throws PropertyVetoException if the recipient wishes the property change to be rolled back.
 	@see GenericPropertyChangeListener#propertyChange(GenericPropertyChangeEvent)
 	*/
 	@SuppressWarnings("unchecked")

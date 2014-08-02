@@ -52,8 +52,8 @@ public class OEB1PackageSerializer
 		stream using the UTF-8 encoding with the UTF-8 byte order mark.
 	@param publication The OEB publication to serialize.
 	@param outputStream The stream into which the document should be serialized.
-	@exception IOException Thrown if an I/O error occurred.
-	@exception UnsupportedEncodingException Thrown if the UTF-8 encoding not recognized.
+	@throws IOException Thrown if an I/O error occurred.
+	@throws UnsupportedEncodingException Thrown if the UTF-8 encoding not recognized.
 	*/
 	public static void serialize(final OEBPublication publication, final OutputStream outputStream) throws UnsupportedEncodingException, IOException
 	{
@@ -66,8 +66,8 @@ public class OEB1PackageSerializer
 	@param publication The OEB publication to serialize.
 	@param outputStream The stream into which the document should be serialized.
 	@param charset The charset to use when serializing.
-	@exception IOException Thrown if an I/O error occurred.
-	@exception UnsupportedEncodingException Thrown if the specified encoding is not recognized.
+	@throws IOException Thrown if an I/O error occurred.
+	@throws UnsupportedEncodingException Thrown if the specified encoding is not recognized.
 	*/
 	public static void serialize(final OEBPublication publication, final OutputStream outputStream, final Charset charset) throws IOException, UnsupportedEncodingException
 	{

@@ -87,7 +87,7 @@ public class UnicodeBlock implements Comparable<UnicodeBlock>
 	@return A negative integer, zero, or a positive integer as this block is
 		less than, equal to, or greater than the specified block, respectively.
 		If the blocks start at the same code, their ending codes are compared.
-	@exception ClassCastException Thrown if the specified object's type is not
+	@throws ClassCastException Thrown if the specified object's type is not
 		an <code>UnicodeBlock</code>.
 	@see #getStartCode
 	*/

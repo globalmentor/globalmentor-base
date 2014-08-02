@@ -55,7 +55,7 @@ public class RDFDirectory
 	In either case, a language designation by <code>xml:lang</code> for the actual literal text will take precedence, as this value is specified most closely to the text.
 	@param rdfObject The object that is supposed to represent text.
 	@return An object representing the text and any language specification, or <code>null</code> if the object does not represent text.
-	@exception NullPointerException if the given RDF object is <code>null</code>.
+	@throws NullPointerException if the given RDF object is <code>null</code>.
 	*/
 	public static LocaledText getText(final RDFObject rdfObject)
 	{
@@ -89,7 +89,7 @@ public class RDFDirectory
 	If the object is an {@link RDFLiteral} or {@link RDFResource}, an array with a single element will be returned containing the result of {@link #getText(RDFObject)}.
 	@param rdfObject The object that is supposed to represent text or a list of text.
 	@return An array of objects representing the text and any language specification.
-	@exception NullPointerException if the given RDF object is <code>null</code>.
+	@throws NullPointerException if the given RDF object is <code>null</code>.
 	*/
 	public static LocaledText[] getTexts(final RDFObject rdfObject)
 	{

@@ -196,8 +196,8 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * @param reader The reader that contains the lines of the directory.
 	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return An object representing the vCard structured name.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public static Name processNValue(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
 	{
@@ -219,8 +219,8 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * @param reader The reader that contains the lines of the directory.
 	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return An address object representing the value.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public static Address processADRValue(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
 	{
@@ -261,8 +261,8 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * @param reader The reader that contains the lines of the directory.
 	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return A telephone object representing the value, or <code>null</code> if no value was present.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public static Telephone processPhoneNumberValue(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException,
 			ParseIOException
@@ -305,8 +305,8 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * @param reader The reader that contains the lines of the directory.
 	 * @param paramList The list of parameters; a <code>null</code> value indicates that the name/value pair contained only a name.
 	 * @return An array of locale text objects representing the organizational name and units.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public static LocaledText[] processORGValue(final Reader reader, final List<NameValuePair<String, String>> paramList) throws IOException, ParseIOException
 	{
@@ -331,8 +331,8 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
 	 * @return An array of string arrays, each string array representing the values of each field.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public static String[][] processStructuredTextValue(final Reader reader) throws IOException, ParseIOException
 	{
@@ -370,8 +370,8 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * </p>
 	 * @param reader The reader that contains the lines of the directory.
 	 * @return An array of strings representing the values of the field.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public static String[] processStructuredTextFieldValue(final Reader reader) throws IOException, ParseIOException
 	{
@@ -504,7 +504,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * </p>
 	 * @param name An object representing the vCard structured name to serialize.
 	 * @param writer The writer to which the directory information should be written.
-	 * @exception IOException Thrown if there is an error reading the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
 	 */
 	public static void serializeNValue(final Name name, final Writer writer) throws IOException
 	{
@@ -525,7 +525,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * @param address An address object representing the value to serialize.
 	 * @param name An object representing the vCard structured name to serialize.
 	 * @param writer The writer to which the directory information should be written.
-	 * @exception IOException Thrown if there is an error reading the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
 	 */
 	public static void serializeADRValue(final Address address, final Writer writer) throws IOException
 	{
@@ -546,7 +546,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * </p>
 	 * @param org An array of locale text objects representing the organizational name and units.
 	 * @param writer The writer to which the directory information should be written.
-	 * @exception IOException Thrown if there is an error reading the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
 	 */
 	public static void serializeORGValue(final LocaledText[] org, final Writer writer) throws IOException
 	{
@@ -565,8 +565,8 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * </p>
 	 * @param structuredText An array of string arrays, each string array representing the values of each field.
 	 * @param writer The writer to which the directory information should be written.
-	 * @exception IOException Thrown if there is an error reading the directory.
-	 * @exception ParseIOException Thrown if there is a an error interpreting the directory.
+	 * @throws IOException Thrown if there is an error reading the directory.
+	 * @throws ParseIOException Thrown if there is a an error interpreting the directory.
 	 */
 	public static void serializeStructuredTextValue(final String[][] structuredText, final Writer writer) throws IOException
 	{
@@ -601,7 +601,7 @@ public class VCardProfile extends AbstractProfile implements ValueFactory, Value
 	 * </p>
 	 * @param text The structured text value to serialize.
 	 * @param writer The writer to which the directory information should be written.
-	 * @exception IOException Thrown if there is an error writing to the directory.
+	 * @throws IOException Thrown if there is an error writing to the directory.
 	 */
 	public static void serializeStructuredTextFieldValue(final String text, final Writer writer) throws IOException
 	{

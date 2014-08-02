@@ -101,7 +101,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	/**Determined if a non-stale value is in the cache.
 	@param query The query for requesting a value from the cache.
 	@return Whether the value associated with the given query is in the cache and not stale.
-	@exception IOException if there was an error checking the cached information for staleness.
+	@throws IOException if there was an error checking the cached information for staleness.
 	@see #isStaleData(Query, Data)
 	*/
 	public boolean isCached(final Q query) throws IOException
@@ -116,7 +116,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	@param data Data that was once and may still be associated with the given query in the cache.
 	@return Whether the given data is still associated with the given query is in the cache and not stale.
 	@throws NullPointerException if the given data is <code>null</code>.
-	@exception IOException if there was an error checking the cached data for staleness.
+	@throws IOException if there was an error checking the cached data for staleness.
 	@see #isStaleData(Query, Data)
 	*/
 /*TODO del
@@ -132,7 +132,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	Values are fetched from the backing store if needed, and this method blocks until the data is fetched.
 	@param query The query for requesting a value from the cache.
 	@return The cached value.
-	@exception IOException if there was an error fetching the value from the backing store.
+	@throws IOException if there was an error fetching the value from the backing store.
 	@see #isStaleData(Query, Data)
 	@see #fetchData(Query)
 	*/
@@ -146,7 +146,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	@param query The query for requesting a value from the cache.
 	@param deferFetch Whether fetching, if needed, should be deffered and performed in an asynchronous thread.
 	@return The cached value, or <code>null</code> if fetching was deferred.
-	@exception IOException if there was an error fetching the value from the backing store.
+	@throws IOException if there was an error fetching the value from the backing store.
 	@see #isStaleData(Query, Data)
 	@see #fetchData(Query)
 	*/
@@ -160,7 +160,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	Data is fetched from the backing store if needed, and this method blocks until the data is fetched.
 	@param query The query for requesting data from the cache.
 	@return The cached data.
-	@exception IOException if there was an error fetching the data from the backing store.
+	@throws IOException if there was an error fetching the data from the backing store.
 	@see #isStaleData(Query, Data)
 	@see #fetchData(Query)
 	*/
@@ -174,7 +174,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	@param query The query for requesting data from the cache.
 	@param deferFetch Whether fetching, if needed, should be deffered and performed in an asynchronous thread.
 	@return The cached data, or <code>null</code> if fetching was deferred.
-	@exception IOException if there was an error fetching the value from the backing store.
+	@throws IOException if there was an error fetching the value from the backing store.
 	@see #isStaleData(Query, Data)
 	@see #fetchData(Query)
 	*/
@@ -208,7 +208,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	/**Fetches data from the backing store, stores the data in the cache, and notifies any listeners.
 	@param query The query for requesting a value from the cache.
 	@return The fetched and cached data.
-	@exception IOException if there was an error fetching the value from the backing store.
+	@throws IOException if there was an error fetching the value from the backing store.
 	@see #fetchData(Query)
 	*/
 	protected final Data<V> retrieveData(final Q query) throws IOException
@@ -263,7 +263,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	/**Removes a value from the cache.
 	@param query The query for requesting a value from the cache.
 	@return The previously cached value, even if stale, or <code>null</code> if there was no cached value.
-	@exception IOException if there was an error removing the value from the cache.
+	@throws IOException if there was an error removing the value from the cache.
 	*/
 	public final V uncache(final Q query) throws IOException
 	{
@@ -277,7 +277,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	@param query The query for requesting a value from the cache.
 	@param cachedData The information that is cached.
 	@return <code>true</code> if the cached information has become stale.
-	@exception IOException if there was an error checking the cached information for staleness.
+	@throws IOException if there was an error checking the cached information for staleness.
 	@see Data#getCachedTime()
 	*/
 	protected boolean isStaleData(final Q query, final D cachedData) throws IOException
@@ -289,7 +289,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	This version does nothing.
 	@param key The key for the cached information.
 	@param cachedData The information that is cached.
-	@exception IOException if there was an error discarding the cached information.
+	@throws IOException if there was an error discarding the cached information.
 	*/
 	public void discard(final K key, final D cachedData) throws IOException
 	{
@@ -298,7 +298,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 	/**Fetches data from the backing store.
 	@param query The query for requesting a value from the cache.
 	@return New information to cache.
-	@exception IOException if there was an error fetching the value from the backing store.
+	@throws IOException if there was an error fetching the value from the backing store.
 	*/
 	protected abstract D fetchData(final Q query) throws IOException;
 
@@ -313,7 +313,7 @@ public abstract class AbstractCache<K, Q extends AbstractCache.Query<K>, V, D ex
 
 		/**Query constructor.
 		@param query The query for requesting a value from the cache.
-		@exception NullPointerException if the given query is <code>null</code>.
+		@throws NullPointerException if the given query is <code>null</code>.
 		*/
 		public Fetcher(final Q query)
 		{

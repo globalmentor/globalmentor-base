@@ -41,7 +41,7 @@ public class FixedLengthInputStream extends InputStreamDecorator<InputStream>
 	The underlying stream will be closed when this stream is closed.
 	@param inputStream The input stream to decorate.
 	@param length The number of bytes to read.
-	@exception NullPointerException if the given stream is <code>null</code>.
+	@throws NullPointerException if the given stream is <code>null</code>.
 	@throws IllegalArgumentException if the given length is less than zero.
 	*/
 	public FixedLengthInputStream(final InputStream inputStream, final long length)
@@ -53,7 +53,7 @@ public class FixedLengthInputStream extends InputStreamDecorator<InputStream>
 	@param inputStream The input stream to decorate.
 	@param length The number of bytes to read.
 	@param closeDecoratedStream Whether the decorated stream should be closed when this stream is closed.
-	@exception NullPointerException if the given stream is <code>null</code>.
+	@throws NullPointerException if the given stream is <code>null</code>.
 	@throws IllegalArgumentException if the given length is less than zero.
 	*/
 	public FixedLengthInputStream(final InputStream inputStream, final long length, final boolean closeDecoratedStream)
@@ -75,7 +75,7 @@ public class FixedLengthInputStream extends InputStreamDecorator<InputStream>
    *
    * @return     the next byte of data, or <code>-1</code> if the end of the
    *             stream is reached.
-   * @exception  IOException  if an I/O error occurs.
+   * @throws  IOException  if an I/O error occurs.
    */
   public int read() throws IOException
 	{
@@ -124,8 +124,8 @@ public class FixedLengthInputStream extends InputStreamDecorator<InputStream>
    * @return     the total number of bytes read into the buffer, or
    *             <code>-1</code> is there is no more data because the end of
    *             the stream has been reached.
-   * @exception  IOException  if an I/O error occurs.
-   * @exception  NullPointerException  if <code>b</code> is <code>null</code>.
+   * @throws  IOException  if an I/O error occurs.
+   * @throws  NullPointerException  if <code>b</code> is <code>null</code>.
    * @see        java.io.InputStream#read(byte[], int, int)
    */
   public final int read(byte b[]) throws IOException
@@ -191,8 +191,8 @@ public class FixedLengthInputStream extends InputStreamDecorator<InputStream>
    * @return     the total number of bytes read into the buffer, or
    *             <code>-1</code> if there is no more data because the end of
    *             the stream has been reached.
-   * @exception  IOException  if an I/O error occurs.
-   * @exception  NullPointerException  if <code>b</code> is <code>null</code>.
+   * @throws  IOException  if an I/O error occurs.
+   * @throws  NullPointerException  if <code>b</code> is <code>null</code>.
    * @see        java.io.InputStream#read()
    */
   public final int read(byte b[], int off, int len) throws IOException
@@ -229,7 +229,7 @@ public class FixedLengthInputStream extends InputStreamDecorator<InputStream>
    *
    * @param      n   the number of bytes to be skipped.
    * @return     the actual number of bytes skipped.
-   * @exception  IOException  if an I/O error occurs.
+   * @throws  IOException  if an I/O error occurs.
    */
   public long skip(long n) throws IOException
 	{
@@ -262,7 +262,7 @@ public class FixedLengthInputStream extends InputStreamDecorator<InputStream>
    *
    * @return     the number of bytes that can be read from this input stream
    *             without blocking.
-   * @exception  IOException  if an I/O error occurs.
+   * @throws  IOException  if an I/O error occurs.
    */
   public int available() throws IOException
 	{
@@ -271,7 +271,7 @@ public class FixedLengthInputStream extends InputStreamDecorator<InputStream>
 
 	/**Closes this input stream and releases any system resources associated with the stream.
 	A closed stream cannot perform output operations and cannot be reopened.
-	@exception IOException if an I/O error occurs.
+	@throws IOException if an I/O error occurs.
 	@see #beforeClose()
 	@see #afterClose()
 	@see #close(boolean)

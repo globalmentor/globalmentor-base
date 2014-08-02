@@ -37,7 +37,7 @@ public class DecoratorReverseMap<K, V> extends MapDecorator<K, V> implements Rev
 	/**Constructs a reverse map by decorating two other maps.
 	@param map The main map to be decorated.
 	@param reverseMap The map to contain reverse lookup values.
-	@exception NullPointerException if the given map and/or reverse map is <code>null</code>.
+	@throws NullPointerException if the given map and/or reverse map is <code>null</code>.
 	*/
 	public DecoratorReverseMap(final Map<K, V> map, final Map<V, K> reverseMap)
 	{
@@ -48,8 +48,8 @@ public class DecoratorReverseMap<K, V> extends MapDecorator<K, V> implements Rev
 	/**Returns the key that represents the given value. 
 	@param value The value whose associated key is to be returned.
 	@return The key to which this map reverse maps the specified value, or <code>null</code> if the map contains no reverse mapping for this value.
-	@exception ClassCastException Thrown if the value is of an inappropriate type for this map (optional).
-	@exception NullPointerException Thrown if the value is <code>null</code> and this map does not not permit <code>null</code> values (optional).
+	@throws ClassCastException Thrown if the value is of an inappropriate type for this map (optional).
+	@throws NullPointerException Thrown if the value is <code>null</code> and this map does not not permit <code>null</code> values (optional).
 	@see #containsValue(Object)
 	*/
 	public K getKey(final V value)
@@ -60,9 +60,9 @@ public class DecoratorReverseMap<K, V> extends MapDecorator<K, V> implements Rev
 	/**Removes the mapping for a value from this map if it is present.
 	@param value The value whose mapping is to be removed from the map.
 	@return The previous key associated with the value, or <code>null</code> if there was no mapping for the value.
-	@exception UnsupportedOperationException if the remove operation is not supported by this map
-	@exception ClassCastException if the value is of an inappropriate type for this map (optional).
-	@exception NullPointerException if the specified value is <code>null</code> and this map does not permit <code>null</code> values (optional).
+	@throws UnsupportedOperationException if the remove operation is not supported by this map
+	@throws ClassCastException if the value is of an inappropriate type for this map (optional).
+	@throws NullPointerException if the specified value is <code>null</code> and this map does not permit <code>null</code> values (optional).
 	*/
 	public K removeValue(final V value)
 	{
@@ -107,9 +107,9 @@ public class DecoratorReverseMap<K, V> extends MapDecorator<K, V> implements Rev
 	/**Removes the mapping for this key from this map if it is present.
 	@param key The key whose mapping is to be removed from the map.
 	@return The previous value associated with specified key, or <code>null</code> if there was no mapping for key.
-	@exception ClassCastException if the key is of an inappropriate type for this map (optional).
-	@exception NullPointerException if the key is <code>null</code> and this map does not permit <code>null</code> keys (optional).
-	@exception UnsupportedOperationException if the remove method is not supported by this map.
+	@throws ClassCastException if the key is of an inappropriate type for this map (optional).
+	@throws NullPointerException if the key is <code>null</code> and this map does not permit <code>null</code> keys (optional).
+	@throws UnsupportedOperationException if the remove method is not supported by this map.
 	*/
 	public V remove(final Object key)
 	{

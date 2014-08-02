@@ -39,7 +39,7 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 
 		/**Sets the represented text.
 		@param text The non-<code>null</code> text string to represent.
-		@exception NullPointerException if the given text is <code>null</code>.
+		@throws NullPointerException if the given text is <code>null</code>.
 		*/
 		public void setText(final String text) throws NullPointerException
 		{
@@ -48,7 +48,7 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 	
 	/**Copy constructor.
 	@param localeText The non-<code>null</code> object containing the text and optional locale to represent.
-	@exception NullPointerException if the given locale text is <code>null</code>.
+	@throws NullPointerException if the given locale text is <code>null</code>.
 	*/
 	public LocaledText(final LocaledText localeText) throws NullPointerException
 	{
@@ -57,7 +57,7 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 
 	/**Text constructor with no locale specified.
 	@param text The non-<code>null</code> text string to represent.
-	@exception NullPointerException if the given text is <code>null</code>.
+	@throws NullPointerException if the given text is <code>null</code>.
 	*/
 	public LocaledText(final String text) throws NullPointerException
 	{
@@ -67,7 +67,7 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 	/**Full constructor.
 	@param text The non-<code>null</code> text string to represent.
 	@param locale The locale that represents the language of the text, or <code>null</code> if no language should be indicated.
-	@exception NullPointerException if the given text is <code>null</code>.
+	@throws NullPointerException if the given text is <code>null</code>.
 	*/
 	public LocaledText(final String text, final Locale locale) throws NullPointerException
 	{
@@ -116,7 +116,7 @@ public class LocaledText extends DefaultLocaleable implements CharSequence, Comp
 	@return A negative integer, zero, or a positive integer as this text and locale is
 		less than, equal to, or greater than the text and locale of the specified object,
 		respectively.
-	@exception ClassCastException if the specified object's type prevents it from being compared to this object.
+	@throws ClassCastException if the specified object's type prevents it from being compared to this object.
 	@see #getLocale()
 	@see #getText()
 	*/

@@ -130,8 +130,8 @@ public class CharSequences
 	 * @param charSequence The character sequence to check.
 	 * @param minLength The minimum length required.
 	 * @return The given character sequence.
-	 * @exception NullPointerException if the given character sequence is <code>null</code>.
-	 * @exception IllegalArgumentException if the length of the given character sequence is less than the indicated minimum length.
+	 * @throws NullPointerException if the given character sequence is <code>null</code>.
+	 * @throws IllegalArgumentException if the length of the given character sequence is less than the indicated minimum length.
 	 */
 	public static <T extends CharSequence> T checkMinLength(final T charSequence, final int minLength)
 	{
@@ -461,7 +461,7 @@ public class CharSequences
 	 * @param escapeChar The character to prefix the hex representation.
 	 * @param escapeLength The number of characters to use for the hex representation.
 	 * @return A string containing the escaped data.
-	 * @exception IllegalArgumentException if neither valid nor invalid characters are given.
+	 * @throws IllegalArgumentException if neither valid nor invalid characters are given.
 	 */
 	public static String escapeHex(final CharSequence charSequence, final Characters validCharacters, final Characters invalidCharacters, final int maxCharacter,
 			final char escapeChar, final int escapeLength)
@@ -485,7 +485,7 @@ public class CharSequences
 	 * @param escapeLength The number of characters to use for the hex representation.
 	 * @param hexCase Whether the hex characters should be lowercase or uppercase.
 	 * @return A string containing the escaped data.
-	 * @exception IllegalArgumentException if neither valid nor invalid characters are given.
+	 * @throws IllegalArgumentException if neither valid nor invalid characters are given.
 	 */
 	public static String escapeHex(final CharSequence charSequence, final Characters validCharacters, final Characters invalidCharacters, final int maxCharacter,
 			final char escapeChar, final int escapeLength, final Case hexCase)
@@ -508,8 +508,8 @@ public class CharSequences
 	 * @param escapeChar The character that prefixes the hex representation.
 	 * @param escapeLength The number of characters used for the hex representation.
 	 * @return A string containing the unescaped data.
-	 * @exception IllegalArgumentException if the given characters contains a character greater than U+007F.
-	 * @exception IllegalArgumentException if a given escape character is not followed by an escape sequence.
+	 * @throws IllegalArgumentException if the given characters contains a character greater than U+007F.
+	 * @throws IllegalArgumentException if a given escape character is not followed by an escape sequence.
 	 */
 	public static String unescapeHex(final CharSequence charSequence, final char escapeChar, final int escapeLength)
 	{

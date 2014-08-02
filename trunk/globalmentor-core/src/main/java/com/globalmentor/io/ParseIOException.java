@@ -129,7 +129,7 @@ public class ParseIOException extends IOException
 	 * Reader and message constructor with no cause. This constructor will attempt to determine the location from the reader.
 	 * @param reader The reader from which the error occurred.
 	 * @param message The error message, or <code>null</code> if there is no error message.
-	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
@@ -142,7 +142,7 @@ public class ParseIOException extends IOException
 	 * Reader, and cause constructor. This constructor will attempt to determine the location from the reader.
 	 * @param reader The reader from which the error occurred.
 	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
-	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
@@ -156,7 +156,7 @@ public class ParseIOException extends IOException
 	 * @param reader The reader from which the error occurred.
 	 * @param message The error message, or <code>null</code> if there is no error message.
 	 * @param cause The cause of the error, or <code>null</code> if there is no cause.
-	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
@@ -206,7 +206,7 @@ public class ParseIOException extends IOException
 	 * @param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
 	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
 	 * @param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
-	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
@@ -222,7 +222,7 @@ public class ParseIOException extends IOException
 	 * @param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
 	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
 	 * @param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
-	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */
@@ -239,7 +239,7 @@ public class ParseIOException extends IOException
 	 * @param sourceName The name of the source of the data (perhaps a filename), or <code>null</code> if not known.
 	 * @param lineIndex The index of the line in which the error occurred, or -1 if not known.
 	 * @param charIndex The index of the character at which the error occurred on the current line, or -1 if not known.
-	 * @exception NullPointerException if the given reader is <code>null</code>.
+	 * @throws NullPointerException if the given reader is <code>null</code>.
 	 * @see LineNumberReader
 	 * @see ParseReader
 	 */

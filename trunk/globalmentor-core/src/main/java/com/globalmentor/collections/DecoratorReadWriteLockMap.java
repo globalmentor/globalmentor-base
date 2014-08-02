@@ -34,7 +34,7 @@ public class DecoratorReadWriteLockMap<K, V> extends ReadWriteLockDecorator impl
 
 	/**Map constructor with a default reentrant read/write lock.
 	@param map The map this map should decorate.
-	@exception NullPointerException if the provided map is <code>null</code>.
+	@throws NullPointerException if the provided map is <code>null</code>.
 	*/
 	public DecoratorReadWriteLockMap(final Map<K, V> map)
 	{
@@ -44,7 +44,7 @@ public class DecoratorReadWriteLockMap<K, V> extends ReadWriteLockDecorator impl
 	/**Map and read/write lock constructor.
 	@param map The map this map should decorate.
 	@param lock The lock for controlling access to the map.
-	@exception NullPointerException if the provided map and/or lock is <code>null</code>.
+	@throws NullPointerException if the provided map and/or lock is <code>null</code>.
 	*/
 	public DecoratorReadWriteLockMap(final Map<K, V> map, final ReadWriteLock lock)
 	{

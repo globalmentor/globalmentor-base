@@ -49,7 +49,7 @@ public class PostponedPropertyChangeEvent implements PostponedEvent<PropertyChan
 	/**Creates a postponed property change event.
 	@param propertyChangeSupport The property change support that will ultimately fire the property change event, or <code>null</code> if there is no property change support and therefore no listeners.
 	@param propertyChangeEvent The property change event that has been postponed.
-	@exception NullPointerException if the property change event is <code>null</code>.
+	@throws NullPointerException if the property change event is <code>null</code>.
 	*/
 	public PostponedPropertyChangeEvent(final PropertyChangeSupport propertyChangeSupport, final PropertyChangeEvent propertyChangeEvent)
 	{
@@ -59,7 +59,7 @@ public class PostponedPropertyChangeEvent implements PostponedEvent<PropertyChan
 
 	/**Reports that a bound property has changed.
 	This method does the actual delegation to the property change support.
-	@exception IllegalStateException if the postponed property change event has already been fired.
+	@throws IllegalStateException if the postponed property change event has already been fired.
 	*/
 	public void fireEvent()
 	{

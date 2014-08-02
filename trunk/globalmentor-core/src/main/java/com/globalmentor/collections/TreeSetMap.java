@@ -34,7 +34,7 @@ public class TreeSetMap<K, V> extends AbstractDecoratorCollectionMap<K, V, Set<V
 
 	/**Map constructor with a natural ordering of set values.
 	@param map The map this map should decorate.
-	@exception NullPointerException if the provided map is <code>null</code>.
+	@throws NullPointerException if the provided map is <code>null</code>.
 	*/
 	public TreeSetMap(final Map<K, Set<V>> map)
 	{
@@ -44,7 +44,7 @@ public class TreeSetMap<K, V> extends AbstractDecoratorCollectionMap<K, V, Set<V
 	/**Map and comparator constructor that sorts set values in the order specified by the comparator.
 	@param map The map this map should decorate.
 	@param comparator The comparator that will be used to order the values in the set, or <code>null</code> if natural ordering should be used.
-	@exception NullPointerException if the provided map is <code>null</code>.
+	@throws NullPointerException if the provided map is <code>null</code>.
 	*/
 	public TreeSetMap(final Map<K, Set<V>> map, final Comparator<? super V> comparator)
 	{

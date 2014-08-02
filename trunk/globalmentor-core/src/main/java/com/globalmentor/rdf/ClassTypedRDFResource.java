@@ -31,7 +31,7 @@ public abstract class ClassTypedRDFResource extends DefaultRDFResource
 	/**Constructs a resource with a reference URI.
 	@param referenceURI The reference URI for the new resource.
 	@param typeNamespaceURI The namespace of the type URI to be added after construction of the object.
-	@exception NullPointerException if the given type namespace URI is <code>null</code>.
+	@throws NullPointerException if the given type namespace URI is <code>null</code>.
 	*/
 	public ClassTypedRDFResource(final URI referenceURI, final URI typeNamespaceURI)
 	{
@@ -42,7 +42,7 @@ public abstract class ClassTypedRDFResource extends DefaultRDFResource
 	@param namespaceURI The XML namespace URI that represents part of the reference URI.
 	@param localName The XML local name that represents part of the reference URI.
 	@param typeNamespaceURI The namespace of the type URI to be added after construction of the object.
-	@exception NullPointerException if the given type namespace URI is <code>null</code>.
+	@throws NullPointerException if the given type namespace URI is <code>null</code>.
 	*/
 	public ClassTypedRDFResource(final URI namespaceURI, final String localName, final URI typeNamespaceURI)
 	{
@@ -54,7 +54,7 @@ public abstract class ClassTypedRDFResource extends DefaultRDFResource
 	@param namespaceURI The XML namespace URI used in the serialization.
 	@param localName The XML local name used in the serialization.
 	@param typeNamespaceURI The namespace of the type URI to be added after construction of the object.
-	@exception NullPointerException if the given type namespace URI is <code>null</code>.
+	@throws NullPointerException if the given type namespace URI is <code>null</code>.
 	*/
 	public ClassTypedRDFResource(final RDF rdf, final URI namespaceURI, final String localName, final URI typeNamespaceURI)
 	{
@@ -65,7 +65,7 @@ public abstract class ClassTypedRDFResource extends DefaultRDFResource
 	@param rdf The data model with which this resource should be associated.
 	@param referenceURI The reference URI for the new resource.
 	@param typeNamespaceURI The namespace of the type URI to be added after construction of the object.
-	@exception NullPointerException if the given type namespace URI is <code>null</code>.
+	@throws NullPointerException if the given type namespace URI is <code>null</code>.
 	*/
 	public ClassTypedRDFResource(final RDF rdf, final URI referenceURI, final URI typeNamespaceURI)
 	{

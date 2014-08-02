@@ -67,7 +67,7 @@ public abstract class AbstractConverterCollection<S, D> extends CollectionDecora
 	
 		/**Converts and returns the next element in the iteration.
 		@return An object representing the converted next element in the iteration.
-		@exception NoSuchElementException Thrown if the iteration has no more elements.
+		@throws NoSuchElementException Thrown if the iteration has no more elements.
 		*/
 		@SuppressWarnings("unchecked")
 		public D next()

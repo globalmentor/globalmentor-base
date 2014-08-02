@@ -103,7 +103,7 @@ public class Strings
 	 * too long for the given length, it is truncated.
 	 * @param string The string to store in bytes.
 	 * @param length The length of bytes to return.
-	 * @exception UnsupportedEncodingException Thrown if the given encoding is not supported.
+	 * @throws UnsupportedEncodingException Thrown if the given encoding is not supported.
 	 */
 	public static byte[] getASCIIZBytes(final String string, final int length) throws UnsupportedEncodingException
 	{
@@ -116,7 +116,7 @@ public class Strings
 	 * @param string The string to store in bytes.
 	 * @param length The length of bytes to return.
 	 * @param charset The charset to use in storing the string bytes.
-	 * @exception UnsupportedEncodingException Thrown if the given encoding is not supported.
+	 * @throws UnsupportedEncodingException Thrown if the given encoding is not supported.
 	 */
 	public static byte[] getASCIIZBytes(String string, final int length, final Charset charset) throws UnsupportedEncodingException
 	{
@@ -133,7 +133,7 @@ public class Strings
 	 * @param string The string for which an input stream should be created.
 	 * @param encoding The encoding to use to turn the string into bytes.
 	 * @return An input stream of the string bytes.
-	 * @exception UnsupportedEncodingException Thrown if the given encoding is not supported.
+	 * @throws UnsupportedEncodingException Thrown if the given encoding is not supported.
 	 */
 	public static InputStream getInputStream(final String string, final String encoding) throws UnsupportedEncodingException
 	{

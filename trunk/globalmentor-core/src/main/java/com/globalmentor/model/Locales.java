@@ -58,7 +58,7 @@ public class Locales
 		"Tags for Identifying Languages".
 	@param localeString The string containing the language, optional country, and optional variant.
 	@return A local corresponding to the given local string.
-	@exception IllegalArgumentException if the given locale string has more than three components.
+	@throws IllegalArgumentException if the given locale string has more than three components.
 	@see <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>
 	*/
 	public static Locale createLocale(final String localeString)
@@ -139,7 +139,7 @@ public class Locales
 	/**Determines the string to represent a language identifier according as
 		defined in <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>,
 		"Tags for the Identification of Languages".
-	@exception NullPointerException if the given locale is <code>null</code>.
+	@throws NullPointerException if the given locale is <code>null</code>.
 	@see <a href="http://www.ietf.org/rfc/rfc4646.txt">RFC 4646</a>
 	*/
 	public static String getLanguageTag(final Locale locale)
@@ -161,8 +161,8 @@ public class Locales
 	@param locale The locale to use in generating the candidate path.
 	@param depth The depth at which the candidate path should be generated.
 	@return The candidate path for provided base path at the given locale and depth, or <code>null</code> if the given locale does not have enough information to generate a candidate path at the given depth.
-	@exception NullPointerException if the given base path and/or locale is <code>null</code>.
-	@exception IllegalArgumentException if the given depth is not within the range (<var>depth</var>&gt;=0 and <var>depth</var>&lt;=3).
+	@throws NullPointerException if the given base path and/or locale is <code>null</code>.
+	@throws IllegalArgumentException if the given depth is not within the range (<var>depth</var>&gt;=0 and <var>depth</var>&lt;=3).
 	*/
 	public static String getLocaleCandidatePath(final String basePath, final Locale locale, final int depth)
 	{

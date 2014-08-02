@@ -26,7 +26,7 @@ public class Floats
 	@param value The value to check.
 	@param rangeMin The minimum range value, inclusive.
 	@param rangeMax The maximum range value, inclusive.
-	@exception IllegalArgumentException if the value is less than the range minimum or greater than the range maximum.
+	@throws IllegalArgumentException if the value is less than the range minimum or greater than the range maximum.
 	@return The given value.
 	*/
 	public static float checkRange(final float value, final float rangeMin, final float rangeMax)

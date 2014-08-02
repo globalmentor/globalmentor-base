@@ -417,9 +417,9 @@ public class OEBPublicationCreator	//TODO update this class to work with XEbook;
 		based on those files. Optionally tidies each OEB document and gathers all
 		references to files.
 	@param directory The base directory in which the publication files are located.
-	@exception MalformedURLException Thrown if there is an error creating a URL
+	@throws MalformedURLException Thrown if there is an error creating a URL
 		from the directory.
-	@exception IOException Thrown if there is an error reading or writing to a file.
+	@throws IOException Thrown if there is an error reading or writing to a file.
 	*/
 	public OEBPublication createPublicationFromDirectory(final File directory) throws MalformedURLException, IOException
 	{
@@ -438,9 +438,9 @@ Log.trace("OEBPublicationCreator.createPublication() directory: ", directory);
 	/**Creates a publication with the given OEB file.
 	Optionally tidies each OEB document and gathers all references to files.
 	@param oebFile The OEB file which should be included in the publication.
-	@exception MalformedURLException Thrown if there is an error creating a URL
+	@throws MalformedURLException Thrown if there is an error creating a URL
 		from the directory.
-	@exception IOException Thrown if there is an error reading or writing to a file.
+	@throws IOException Thrown if there is an error reading or writing to a file.
 	*/
 	public OEBPublication createPublicationFromOEBFile(final File oebFile) throws MalformedURLException, IOException
 	{
@@ -469,9 +469,9 @@ Log.trace("OEBPublicationCreator.createPublication() file: ", oebFile);
 	@param outputDir The output directory to use for writing files, or
 		<code>null</code> if the default should be used.
 	@return A new publication constructed from the OEB document.
-	@exception MalformedURLException Thrown if there is an error creating a URL
+	@throws MalformedURLException Thrown if there is an error creating a URL
 		from the directory. TODO fix comment
-	@exception IOException Thrown if there is an error reading or writing to a file.
+	@throws IOException Thrown if there is an error reading or writing to a file.
 	*/
 	public OEBPublication createPublicationFromOEBDocument(final URL oebDocumentURL, final URI referenceURI, final File outputDir) throws MalformedURLException, IOException
 	{
@@ -506,10 +506,10 @@ Log.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentURL
 	@param outputDir The output directory to use for writing files, or
 		<code>null</code> if the default should be used.
 	@return A new publication constructed from the text document.
-	@exception URISyntaxException Thrown if an invalid reference was discovered.
-	@exception MalformedURLException Thrown if there is an error creating a URL
+	@throws URISyntaxException Thrown if an invalid reference was discovered.
+	@throws MalformedURLException Thrown if there is an error creating a URL
 		from the directory. TODO fix comment
-	@exception IOException Thrown if there is an error reading or writing to a file.
+	@throws IOException Thrown if there is an error reading or writing to a file.
 	*/
 	public OEBPublication createPublicationFromText(final URL textURL, URI referenceURI, final Charset charset, final File outputDir) throws URISyntaxException, MalformedURLException, IOException
 	{
@@ -662,9 +662,9 @@ Log.trace("OEBPublicationCreator.createPublication() document: ", oebDocumentURL
 		based on those files.
 	@param publication The publication to which the manifest items should be added.
 	@param directory The base directory in which the publication files are located.
-	@exception MalformedURLException Thrown if there is an error creating a URL
+	@throws MalformedURLException Thrown if there is an error creating a URL
 		for an item.
-	@exception IOException Thrown if there is an error reading files from the
+	@throws IOException Thrown if there is an error reading files from the
 		directory.
 	*/
 	protected void gatherManifestItems(final OEBPublication publication, final File directory) throws MalformedURLException, IOException
@@ -703,9 +703,9 @@ Log.trace("Relative path: ", fileRelativePath);  //TODO fix
 		gathers references.
 	@param publication The publication whose manifest documents should be processed.
 	@see #isTidy
-	@exception MalformedURLException Thrown if there is an error creating a URL
+	@throws MalformedURLException Thrown if there is an error creating a URL
 		from an item.
-	@exception IOException Thrown if there is an error reading or writing to a file.
+	@throws IOException Thrown if there is an error reading or writing to a file.
 	*/
 	protected void processManifestItems(final OEBPublication publication) throws MalformedURLException, IOException
 	{
@@ -737,9 +737,9 @@ Log.trace("Relative path: ", fileRelativePath);  //TODO fix
 	@param publication The publication tow which the OEB item belongs.
 	@param oebItem The item being processed.
 	@see #isTidy
-	@exception MalformedURLException Thrown if there is an error creating a URL
+	@throws MalformedURLException Thrown if there is an error creating a URL
 		from the item.
-	@exception IOException Thrown if there is an error reading or writing to a file.
+	@throws IOException Thrown if there is an error reading or writing to a file.
 	*/
 	protected void processManifestItem(final OEBPublication publication, final OEBItem oebItem) throws MalformedURLException, IOException
 	{
@@ -800,8 +800,8 @@ Log.trace("ready to gatherReferences() for item: ", oebItem.getHRef());
 	@param itemURL The URL of the item which provides a context for relative hrefs.
 	@param itemDocument The document to be searched for references. This object
 		should also implement the <code>DocumentTraversal</code> interface.
-	@exception MalformedURLException Thrown if a an invalid reference is discovered.
-	@exception IOException Thrown if there is an error reading or writing to a file.
+	@throws MalformedURLException Thrown if a an invalid reference is discovered.
+	@throws IOException Thrown if there is an error reading or writing to a file.
 	@see DocumentTraversal
 	*/
 	protected void gatherReferences(final OEBPublication publication, final URL itemURL, final Document itemDocument) throws MalformedURLException, IOException
@@ -915,9 +915,9 @@ Log.trace("New image dimensions, width: "+element.getAttributeNS(null, ELEMENT_I
 		appeared in the manifext, or <code>null</code> if the item was not added and
 		did not already appear in the manifest.
 TODO fix outputDir
-	@exception URISyntaxException Thrown if an invalid reference was discovered.
-	@exception MalformedURLException Thrown if a an invalid reference is discovered.
-	@exception IOException Thrown if there is an error reading or writing to a file.
+	@throws URISyntaxException Thrown if an invalid reference was discovered.
+	@throws MalformedURLException Thrown if a an invalid reference is discovered.
+	@throws IOException Thrown if there is an error reading or writing to a file.
 	*/
 	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href) throws URISyntaxException, MalformedURLException, IOException
 	{
@@ -936,9 +936,9 @@ TODO fix outputDir
 	@return The item created to represent the reference or the item that already
 		appeared in the manifext, or <code>null</code> if the item was not added and
 		did not already appear in the manifest.
-	@exception URISyntaxException Thrown if an invalid reference was discovered.
-	@exception MalformedURLException Thrown if a an invalid reference is discovered.
-	@exception IOException Thrown if there is an error reading or writing to a file.
+	@throws URISyntaxException Thrown if an invalid reference was discovered.
+	@throws MalformedURLException Thrown if a an invalid reference is discovered.
+	@throws IOException Thrown if there is an error reading or writing to a file.
 	*/
 	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, ContentType mediaType) throws URISyntaxException, MalformedURLException, IOException
 	{
@@ -958,9 +958,9 @@ TODO fix outputDir
 		appeared in the manifext, or <code>null</code> if the item was not added and
 		did not already appear in the manifest.
 TODO fix outputDir
-	@exception URISyntaxException Thrown if an invalid reference was discovered.
-	@exception MalformedURLException Thrown if a an invalid reference is discovered.
-	@exception IOException Thrown if there is an error reading or writing to a file.
+	@throws URISyntaxException Thrown if an invalid reference was discovered.
+	@throws MalformedURLException Thrown if a an invalid reference is discovered.
+	@throws IOException Thrown if there is an error reading or writing to a file.
 	*/
 	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, final boolean shouldAddToSpine) throws URISyntaxException, MalformedURLException, IOException
 	{
@@ -981,9 +981,9 @@ TODO fix outputDir
 	@return The item created to represent the reference or the item that already
 		appeared in the manifext, or <code>null</code> if the item was not added and
 		did not already appear in the manifest.
-	@exception URISyntaxException Thrown if an invalid reference was discovered.
-	@exception MalformedURLException Thrown if a an invalid reference is discovered.
-	@exception IOException Thrown if there is an error reading or writing to a file.
+	@throws URISyntaxException Thrown if an invalid reference was discovered.
+	@throws MalformedURLException Thrown if a an invalid reference is discovered.
+	@throws IOException Thrown if there is an error reading or writing to a file.
 	*/
 	protected RDFResource gatherReference(final OEBPublication publication, final URL contextURL, final String href, ContentType mediaType, final boolean shouldAddToSpine) throws URISyntaxException, MalformedURLException, IOException
 	{
@@ -1145,7 +1145,7 @@ TODO fix outputDir
 	@param itemURL The URL of the item which provides a context for relative hrefs.
 	@param itemDocument The document to tidy.
 	@param outputFile The destination location to write the tidied file.
-	@exception IOException Thrown if there is an error reading or writing to a file.
+	@throws IOException Thrown if there is an error reading or writing to a file.
 	*/
 	protected void tidyDocument(final OEBPublication publication, final URL itemURL, final Document itemDocument, final File outputFile) throws IOException
 	{
@@ -1460,7 +1460,7 @@ Log.trace("Looking for TOC element: ", childNode.toString());
 		the appropriate location.
 	@param templateURL The location of the template.
 	@return The URL of the formatted template copy.
-	@exception IOException Thrown if there is an error accessing or copying the
+	@throws IOException Thrown if there is an error accessing or copying the
 		template.
 	*/
 	@Deprecated	//TODO fix; currently throws an unsupported operation exception
@@ -1514,7 +1514,7 @@ Log.trace("Looking for TOC element: ", childNode.toString());
 	/**Writes the specified XML document to the given file. The output is formatted.
 	@param document The document to write.
 	@param file The file into which to write the document's contents.
-	@exception IOException Thrown if there is an error writing to the file.
+	@throws IOException Thrown if there is an error writing to the file.
 	*/
 	public static void write(final Document document, final File file) throws IOException
 	{

@@ -17,7 +17,7 @@ public class MapDecorator<K, V> implements Map<K, V>
 
 	/**Map constructor.
 	@param map The map this map should decorate.
-	@exception NullPointerException if the provided map is <code>null</code>.
+	@throws NullPointerException if the provided map is <code>null</code>.
 	*/
 	public MapDecorator(final Map<K, V> map)
 	{

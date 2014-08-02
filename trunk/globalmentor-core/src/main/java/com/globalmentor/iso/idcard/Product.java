@@ -78,7 +78,7 @@ public enum Product
 
 	/**Constructs the product with the valid PAN lengths.
 	@param panLengths The valid PAN lengths for this product.
-	@exception NullPointerException if the given array is <code>null</code>.
+	@throws NullPointerException if the given array is <code>null</code>.
 	*/
 	Product(final int... panLengths)
 	{

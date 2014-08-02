@@ -28,7 +28,7 @@ public class ArrayListMap<K, V> extends AbstractDecoratorCollectionMap<K, V, Lis
 
 	/**Map constructor.
 	@param map The map this map should decorate.
-	@exception NullPointerException if the provided map is <code>null</code>.
+	@throws NullPointerException if the provided map is <code>null</code>.
 	*/
 	public ArrayListMap(final Map<K, List<V>> map)
 	{

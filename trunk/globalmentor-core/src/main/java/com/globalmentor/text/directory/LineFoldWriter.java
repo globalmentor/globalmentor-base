@@ -54,7 +54,7 @@ public class LineFoldWriter extends Writer
 	 * @param cbuf The array of characters.
 	 * @param off The offset from which to start writing characters.
 	 * @param len The number of characters to write.
-	 * @exception IOException Thrown if an I/O error occurs.
+	 * @throws IOException Thrown if an I/O error occurs.
 	 */
 	public void write(final char cbuf[], final int off, final int len) throws IOException
 	{
@@ -94,7 +94,7 @@ public class LineFoldWriter extends Writer
 	 * destination. Then, if that destination is another character or byte stream, flush it. Thus one flush() invocation will flush all the buffers in a chain of
 	 * Writers and OutputStreams.
 	 * 
-	 * @exception IOException If an I/O error occurs
+	 * @throws IOException If an I/O error occurs
 	 */
 	public void flush() throws IOException
 	{
@@ -105,7 +105,7 @@ public class LineFoldWriter extends Writer
 	 * Close the stream, flushing it first. Once a stream has been closed, further write() or flush() invocations will cause an IOException to be thrown. Closing
 	 * a previously-closed stream, however, has no effect.
 	 * 
-	 * @exception IOException If an I/O error occurs
+	 * @throws IOException If an I/O error occurs
 	 */
 	public void close() throws IOException
 	{

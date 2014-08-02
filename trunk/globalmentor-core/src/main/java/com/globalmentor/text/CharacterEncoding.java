@@ -99,7 +99,7 @@ public class CharacterEncoding	//TODO remove BOM storage, and then replace class
 	The character encoding will be given the canonical byte order mark for this family and endianness, if appropriate.
 	@param encoding The encoding string, specifying big or little-endian if appropriate.
 	@see #getByteOrderMark(String, Endian)
-	@exception NullPointerException if the encoding is <code>null</code>.
+	@throws NullPointerException if the encoding is <code>null</code>.
 	*/
 	public CharacterEncoding(final String encoding)
 	{
@@ -110,7 +110,7 @@ public class CharacterEncoding	//TODO remove BOM storage, and then replace class
 	@param encoding The encoding string, specifying big or little-endian if appropriate.
 	@param bom The non-<code>null</code> array of byte order mark bytes, if
 		any, that were used to determine this character encoding.
-	@exception NullPointerException if the encoding or byte order mark is <code>null</code>.
+	@throws NullPointerException if the encoding or byte order mark is <code>null</code>.
 	*/
 	public CharacterEncoding(final String encoding, final byte[] bom)
 	{
@@ -123,7 +123,7 @@ public class CharacterEncoding	//TODO remove BOM storage, and then replace class
 		<code>UTF16</code>, or <coode>UCS4</code>.
 	@param endian Whether the character encoding is little-endian or big-endian,
 		or <code>null</code> if endianness is not specified.
-	@exception NullPointerException if the family is <code>null</code>.
+	@throws NullPointerException if the family is <code>null</code>.
 	@see #getByteOrderMark(String, Endian)
 	*/
 	public CharacterEncoding(final String family, final Endian endian)
@@ -138,7 +138,7 @@ public class CharacterEncoding	//TODO remove BOM storage, and then replace class
 		or <code>null</code> if endianness is not specified.
 	@param bom The non-<code>null</code> array of byte order mark bytes, if
 		any, that were used to determine this character encoding.
-	@exception NullPointerException if the family or byte order mark is <code>null</code>.
+	@throws NullPointerException if the family or byte order mark is <code>null</code>.
 	*/
 	public CharacterEncoding(final String family, final Endian endian, final byte[] bom)
 	{

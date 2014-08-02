@@ -55,7 +55,7 @@ public class CSV
 	/**Appends a record to the given file with no headers. The information is encoded using UTF-8.
 	@param file The CSV file.
 	@param objects The objects to serialize.
-	@exception IOException if there is an error writing to the file.
+	@throws IOException if there is an error writing to the file.
 	*/
 	public static void appendRecord(final File file, final Object[] objects) throws IOException
 	{
@@ -71,7 +71,7 @@ public class CSV
 	@param objects The objects to serialize, each of which may be
 		<code>null</code>, or <code>null</code> if there are no
 		objects to serialize.
-	@exception IOException if there is an error writing to the file.
+	@throws IOException if there is an error writing to the file.
 	*/
 	public static void appendRecord(final File file, final String[] headers, final Object[] objects) throws IOException
 	{

@@ -27,7 +27,7 @@ public class DefaultListIterator<E> extends AbstractListIterator<E, E>
 
 	/**List constructor starting at the first index.
 	@param list The list over which to iterate.
-	@exception NullPointerException if the given list is <code>null</code>.
+	@throws NullPointerException if the given list is <code>null</code>.
 	*/
 	public DefaultListIterator(final List<E> list)
 	{
@@ -37,8 +37,8 @@ public class DefaultListIterator<E> extends AbstractListIterator<E, E>
 	/**List and index constructor.
 	@param list The list over which to iterate.
 	@param index The index of first value to be returned from the list iterator (by a call to the {@link #next()} method).
-	@exception NullPointerException if the given list is <code>null</code>.
-	@exception IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt; <code>size()</code>).
+	@throws NullPointerException if the given list is <code>null</code>.
+	@throws IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt; <code>size()</code>).
 	*/
 	public DefaultListIterator(final List<E> list, final int index)
 	{
@@ -59,7 +59,7 @@ public class DefaultListIterator<E> extends AbstractListIterator<E, E>
 	/**Retrieves an item representing the element at the given position in the list.
 	@param index The list index
 	@return An item representing the element at the given index in the list
-	@exception IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt;= <code>size()</code>).
+	@throws IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt;= <code>size()</code>).
 	*/
 	protected E getItem(final int index)
 	{
@@ -70,8 +70,8 @@ public class DefaultListIterator<E> extends AbstractListIterator<E, E>
 	@param index The list index
 	@param item The item representing the element to be stored at the specified position.
 	@return An item representing the element previously at the specified position.
-	@exception UnsupportedOperationException if the {@link #set(Object)} operation is not supported by this list iterator.
-	@exception IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt;= <code>size()</code>).
+	@throws UnsupportedOperationException if the {@link #set(Object)} operation is not supported by this list iterator.
+	@throws IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt;= <code>size()</code>).
 	*/
 	protected E setItem(final int index, final E item)
 	{
@@ -81,8 +81,8 @@ public class DefaultListIterator<E> extends AbstractListIterator<E, E>
 	/**Inserts an element at the given position in the list.
 	@param index The list index
 	@param item The item representing the element to be inserted at the specified position.
-	@exception UnsupportedOperationException if the {@link #add(Object)} operation is not supported by this list iterator.
-	@exception IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt; <code>size()</code>).
+	@throws UnsupportedOperationException if the {@link #add(Object)} operation is not supported by this list iterator.
+	@throws IndexOutOfBoundsException if the index is out of range (<var>index</var> &lt; 0 || <var>index</var> &gt; <code>size()</code>).
 	*/
 	protected void addItem(final int index, final E item)
 	{

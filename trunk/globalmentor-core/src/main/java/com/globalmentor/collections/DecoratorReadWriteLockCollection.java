@@ -36,7 +36,7 @@ public class DecoratorReadWriteLockCollection<E> extends ReadWriteLockDecorator 
 
 	/**Collection constructor with a default reentrant read/write lock.
 	@param collection The collection this collection should decorate.
-	@exception NullPointerException if the provided collection is <code>null</code>.
+	@throws NullPointerException if the provided collection is <code>null</code>.
 	*/
 	public DecoratorReadWriteLockCollection(final Collection<E> collection)
 	{
@@ -46,7 +46,7 @@ public class DecoratorReadWriteLockCollection<E> extends ReadWriteLockDecorator 
 	/**Collection and read/write lock constructor.
 	@param collection The collection this collection should decorate.
 	@param lock The lock for controlling access to the collection.
-	@exception NullPointerException if the provided collection and/or lock is <code>null</code>.
+	@throws NullPointerException if the provided collection and/or lock is <code>null</code>.
 	*/
 	public DecoratorReadWriteLockCollection(final Collection<E> collection, final ReadWriteLock lock)
 	{

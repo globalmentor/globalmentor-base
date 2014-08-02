@@ -73,7 +73,7 @@ public class Iterators
 	@param iterator The iterator the contents of which to return as an array.
 	@param elementClass The class representing the type of elements returned by the iterable.
 	@return A array containing the contents of the iterable.
-	@exception NullPointerException if the given iterator and/or element class is <code>null</code>.
+	@throws NullPointerException if the given iterator and/or element class is <code>null</code>.
 	*/
 	public static <E> E[] toArray(final Iterator<E> iterator, final Class<E> elementClass)
 	{
@@ -86,7 +86,7 @@ public class Iterators
 	@param iterable The iterable the contents of which to return as an array.
 	@param elementClass The class representing the type of elements returned by the iterable.
 	@return A array containing the contents of the iterable.
-	@exception NullPointerException if the given iterable and/or element class is <code>null</code>.
+	@throws NullPointerException if the given iterable and/or element class is <code>null</code>.
 	*/
 	public static <E> E[] toArray(final Iterable<E> iterable, final Class<E> elementClass)
 	{
@@ -105,14 +105,14 @@ public class Iterators
 		This implementation always throws an exception because the empty iterator
 		never has next elements.
 		@return The next element in the iteration.
-		@exception NoSuchElementException Thrown because the empty iteration has no elements.
+		@throws NoSuchElementException Thrown because the empty iteration has no elements.
 		*/
 		public E next() {throw new NoSuchElementException("The empty iterator has no elements.");}
 
 		/**Removes from the underlying collection the last element returned by the
 			iterator (optional operation).
 		This implementation does not support remove and always throws an exception.
-		@exception UnsupportedOperationException Thrown because the
+		@throws UnsupportedOperationException Thrown because the
 			<code>remove</code> operation is not supported by the empty iterator.
 		*/
 		public void remove() {throw new UnsupportedOperationException("The empty iterator does not support removal of elements.");}

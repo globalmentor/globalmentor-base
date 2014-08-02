@@ -32,7 +32,7 @@ public class SynchronizedListDecorator<E> extends SynchronizedCollectionDecorato
 	/**List constructor.
 	@param list The list this list should decorate.
 	@param mutex The mutual exclusion synchronization object.
-	@exception NullPointerException if the provided list and/or mutex is <code>null</code>.
+	@throws NullPointerException if the provided list and/or mutex is <code>null</code>.
 	*/
 	public SynchronizedListDecorator(final List<E> list, final Object mutex)
 	{

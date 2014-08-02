@@ -35,7 +35,7 @@ public class FileProperties extends Properties
 	/**Creates properties from the given file. If the given file exists, the
 		the properties will be automatically loaded.
 	@param file The file in which the properties should be stored.
-	@exception IOException Thrown if there is an error loading the properties.
+	@throws IOException Thrown if there is an error loading the properties.
 	@see #load
 	*/
 	public FileProperties(final File file) throws IOException
@@ -48,7 +48,7 @@ public class FileProperties extends Properties
 	}
 
 	/**Loads the properties from the file.
-	@exception IOException Thrown if there is an error loading the properties.
+	@throws IOException Thrown if there is an error loading the properties.
 	@see Properties#load
 	*/
 	public void load() throws IOException
@@ -65,7 +65,7 @@ public class FileProperties extends Properties
 	}
 
 	/**Saves the properties to the file.
-	@exception IOException Thrown if there is an error storing the properties.
+	@throws IOException Thrown if there is an error storing the properties.
 	@see Properties#store
 	*/
 	public void store() throws IOException

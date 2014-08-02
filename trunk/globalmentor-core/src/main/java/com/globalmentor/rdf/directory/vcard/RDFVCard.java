@@ -77,7 +77,7 @@ public class RDFVCard extends RDFDirectory
 	/**Sets the {@link #N_PROPERTY_NAME} name information for a resource.
 	@param resource The resource the <code>vcard:n</code> property of which should be set.
 	@param name The name information to set.
-	@exception NullPointerException if the given resource and/or name is <code>null</code>.
+	@throws NullPointerException if the given resource and/or name is <code>null</code>.
 	*/
 	public static void setName(final RDFResource resource, final Name name)
 	{
@@ -137,7 +137,7 @@ public class RDFVCard extends RDFDirectory
 	/**Retrieves the {@link #N_PROPERTY_NAME} name information from a resource.
 	@param resource The resource the name of which should be retrieved.
 	@return The name information, or <code>null</code> if there is no <code>vcard:n</code> property or the property value is not an {@link RDFResource}.
-	@exception NullPointerException if the given resource and/or name is <code>null</code>.
+	@throws NullPointerException if the given resource and/or name is <code>null</code>.
 	*/
 	public static Name getName(final RDFResource resource)
 	{
@@ -169,7 +169,7 @@ public class RDFVCard extends RDFDirectory
 	</ol>
 	@param resource The resource for which a formatted name should be determined.
 	@return The best possible formatted name string for the resource.
-	@exception NullPointerException if the given resource is <code>null</code>.
+	@throws NullPointerException if the given resource is <code>null</code>.
 	*/
 	public static String getFormattedName(final RDFResource resource)
 	{
@@ -190,8 +190,8 @@ public class RDFVCard extends RDFDirectory
 	@param resource The resource the email of which to set.
 	@param emailURI The URI expressing the email to set.
 	@return The resource value used to represent the email.
-	@exception NullPointerException if the given resource and/or email URI is <code>null</code>.
-	@exception IllegalArgumentException if the given email URI does not have a scheme of {@value URIs#MAILTO_SCHEME}.
+	@throws NullPointerException if the given resource and/or email URI is <code>null</code>.
+	@throws IllegalArgumentException if the given email URI does not have a scheme of {@value URIs#MAILTO_SCHEME}.
 	*/
 	public static RDFResource setEmail(final RDFResource resource, final URI emailURI)
 	{

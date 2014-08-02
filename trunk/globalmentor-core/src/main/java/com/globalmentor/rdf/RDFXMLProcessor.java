@@ -91,7 +91,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 
 		/**Sets whether and which namespace is required for an RDF attribute to be recognized as such.
 		@param namespaceRequirement Whether and which namespace is required for an RDF attribute to be recognized as such.
-		@exception NullPointerException if the given namespace requirement is <code>null</code>.
+		@throws NullPointerException if the given namespace requirement is <code>null</code>.
 		*/
 		public void setRDFAttributeNamespaceRequirement(final NamespaceRequirement namespaceRequirement) {this.rdfAttributeNamespaceRequirement=checkInstance(namespaceRequirement, "Namespace requirement cannot be null.");}
 
@@ -116,7 +116,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		known.
 	@return The RDF data model resulting from this processing and any previous
 		processing.
-	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
+	@throws URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
 	public RDF processRDF(final Document document, final URI baseURI) throws URISyntaxException
 	{
@@ -130,7 +130,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	@param document The XML document that might contain RDF data.
 	@return The RDF data model resulting from this processing and any previous
 		processing.
-	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
+	@throws URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
 	public RDF processRDF(final Document document) throws URISyntaxException
 	{
@@ -145,7 +145,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		known.
 	@return The RDF data model resulting from this processing and any previous
 		processing.
-	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
+	@throws URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
 	public RDF processRDF(final Element element, final URI baseURI) throws URISyntaxException
 	{
@@ -160,7 +160,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	@param element The XML element that might contain RDF data.
 	@return The RDF data model resulting from this processing and any previous
 		processing.
-	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
+	@throws URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
 	public RDF processRDF(final Element element) throws URISyntaxException
 	{
@@ -176,7 +176,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	Whatever base URI has been set is unchanged.
 	@param element The XML element that might contain RDF data.
 	@return The RDF data model resulting from this processing and any previous processing.
-	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
+	@throws URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
 	public RDFResource processRDFResource(final Element element) throws URISyntaxException
 	{
@@ -195,7 +195,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	@param element The XML element that might contain RDF data.
 	@return The RDF data model resulting from this processing and any previous
 		processing.
-	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
+	@throws URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
 	protected RDF processRDFIslands(final Element element) throws URISyntaxException
 	{
@@ -230,7 +230,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	/**Processes the given element as representing an RDF resource.
 	@param element The XML element that represents the RDF resource.
 	@return An object identifying the resource the XML element represents.
-	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
+	@throws URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
 	protected Resource processResource(final Element element) throws URISyntaxException
 	{
@@ -287,7 +287,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		child element properties should be added.
 	@param element The element that contains the attributes to be considered
 		properties.
-	@exception URISyntaxException Thrown if a URI is syntactically incorrect.
+	@throws URISyntaxException Thrown if a URI is syntactically incorrect.
 	*/
 	protected void processChildElementProperties(final Resource resource, final Element element) throws URISyntaxException
 	{
@@ -318,7 +318,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	@param context Whether the attributes are part of a resource description, a resource reference,
 		a reference to a blank node resource in short form, or the creation of a blank node from
 		an empty property element.
-	@exception URISyntaxException Thrown if an RDF URI is syntactically incorrect.
+	@throws URISyntaxException Thrown if an RDF URI is syntactically incorrect.
 	*/
 	protected void processAttributeProperties(final Resource resource, final Element element, final AttributePropertyContext context) throws URISyntaxException
 	{
@@ -441,7 +441,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 		<code>rdf:li</code>) the resource already contains.
 	@return The resource that represents the processed property, the predicate
 		of the added statement.
-	@exception URISyntaxException Thrown if an RDF URI is syntactically incorrect.
+	@throws URISyntaxException Thrown if an RDF URI is syntactically incorrect.
 	*/
 	public Resource processProperty(final Resource resource, final Element element, final int memberCount) throws URISyntaxException
 	{
@@ -579,7 +579,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	Nodes that are not elements are not capable of determining RDF typed literal datatypes and language tags
 	@param propertyNode The node the contents of which represents the property value.
 	@return An object representing the property value, such as an {@link RDFLiteral} or a {@link Resource} (which may be a proxy resource).
-	@exception URISyntaxException Thrown if an RDF URI is syntactically incorrect.
+	@throws URISyntaxException Thrown if an RDF URI is syntactically incorrect.
 	*/
 	public Object processPropertyValueContents(final Node propertyNode) throws URISyntaxException
 	{
@@ -700,8 +700,8 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	@param element The element for which a base URI should be determined.
 	@param uri The URI to resolve.
 	@return A URI resolved to the in-scope base URI of the given element.
-	@exception NullPointerException if the given element and/or URI is <code>null</code>.
-	@exception URISyntaxException Thrown if the constructed URI is invalid.
+	@throws NullPointerException if the given element and/or URI is <code>null</code>.
+	@throws URISyntaxException Thrown if the constructed URI is invalid.
 	@see XBase
 	@see #resolveURI(URI, URI)
 	*/
@@ -716,7 +716,7 @@ public class RDFXMLProcessor extends AbstractRDFProcessor
 	@param baseURI The in-scope base URI against which the URI should be resolved.
 	@param uri The URI to resolve.
 	@return A URI resolved to the given base URI according to RDF/XML processing rules.
-	@exception NullPointerException if the given element and/or URI is <code>null</code>.
+	@throws NullPointerException if the given element and/or URI is <code>null</code>.
 	@see <a href="http://www.w3.org/TR/2003/PR-rdf-syntax-grammar-20031215/#section-baseURIs">RDF/XML Syntax Specification (Revised) 5.3 Resolving URIs</a>
 	 */
 	public static URI resolveURI(final URI baseURI, final URI uri)

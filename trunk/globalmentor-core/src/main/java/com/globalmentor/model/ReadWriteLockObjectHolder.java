@@ -55,7 +55,7 @@ public class ReadWriteLockObjectHolder<T> extends ObjectHolder<T> implements Rea
 	/**
 	 * Read write lock constructor.
 	 * @param readWriteLock The lock for controlling access to the properties.
-	 * @exception NullPointerException if the given lock is <code>null</code>.
+	 * @throws NullPointerException if the given lock is <code>null</code>.
 	 */
 	public ReadWriteLockObjectHolder(final ReadWriteLock readWriteLock)
 	{
@@ -75,7 +75,7 @@ public class ReadWriteLockObjectHolder<T> extends ObjectHolder<T> implements Rea
 	 * Held object and read write lock constructor.
 	 * @param object The object to hold.
 	 * @param readWriteLock The lock for controlling access to the properties.
-	 * @exception NullPointerException if the given lock is <code>null</code>.
+	 * @throws NullPointerException if the given lock is <code>null</code>.
 	 */
 	public ReadWriteLockObjectHolder(final T object, final ReadWriteLock readWriteLock)
 	{
