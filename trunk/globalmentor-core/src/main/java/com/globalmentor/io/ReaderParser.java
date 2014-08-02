@@ -559,9 +559,9 @@ public class ReaderParser
 	 * @param reader The reader the contents of which to be parsed.
 	 * @param startDelimiter The character to expect at the first of the characters.
 	 * @param endDelimiter The character to expect at the end of the characters.
-	 * @except IOException Thrown when an I/O error occurs.
-	 * @except ParseUnexpectedDataException Thrown when an unexpected character is found.
-	 * @except ParseEOFException Thrown when the end of the reader is reached unexpectedly.
+	 * @throws IOException Thrown when an I/O error occurs.
+	 * @throws ParseUnexpectedDataException Thrown when an unexpected character is found.
+	 * @throws ParseEOFException Thrown when the end of the reader is reached unexpectedly.
 	 * @return The characters between the delimiters.
 	 */
 	public static String readDelimited(final Reader reader, final char startDelimiter, final char endDelimiter) throws IOException, ParseUnexpectedDataException,
